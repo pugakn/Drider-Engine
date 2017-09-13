@@ -33,6 +33,6 @@ defined(_M_ARM)           //Defined by VS
 #define DR_ARCH_ARM_64
 #endif
 
-namespace drider {
+namespace driderSDK {
 
 }

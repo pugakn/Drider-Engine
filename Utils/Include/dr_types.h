@@ -1,6 +1,6 @@
 #pragma once
 #include <dr_defines.h>
-namespace drider {
+namespace driderSDK {
 
 #ifdef DR_OPSYS_LINUX
 typedef Int8 signed char;

@@ -1,6 +1,6 @@
 #include <dr_ray.h>
 
-namespace drider {
+namespace driderSDK {
 
 namespace math {
 

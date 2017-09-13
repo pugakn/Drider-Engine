@@ -1,6 +1,6 @@
 #include <dr_vector2di.h>
 
-namespace drider {
+namespace driderSDK {
 
 namespace math {
 

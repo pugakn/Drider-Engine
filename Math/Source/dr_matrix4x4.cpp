@@ -1,6 +1,6 @@
 #include <dr_matrix4x4.h>
 
-namespace drider {
+namespace driderSDK {
 
 namespace math {
 

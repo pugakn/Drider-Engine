@@ -1,4 +1,4 @@
-namespace drider {
+namespace driderSDK {
 
 namespace math {
 

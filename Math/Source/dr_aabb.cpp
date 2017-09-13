@@ -1,6 +1,6 @@
 #include <dr_aabb.h>
 
-namespace drider {
+namespace driderSDK {
 
 namespace math {
 

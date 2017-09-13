@@ -1,6 +1,6 @@
 #include <dr_degree.h>
 
-namespace drider {
+namespace driderSDK {
 
 namespace math {
 

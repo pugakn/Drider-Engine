@@ -1,6 +1,6 @@
 #include <dr_frustrum.h>
 
-namespace drider {
+namespace driderSDK {
 
 namespace math {
 

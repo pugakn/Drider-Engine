@@ -1,6 +1,6 @@
 #include <dr_quaternion.h>
 
-namespace drider {
+namespace driderSDK {
 
 namespace math {
 

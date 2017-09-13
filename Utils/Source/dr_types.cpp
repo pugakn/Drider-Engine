@@ -1,3 +1,3 @@
-namespace drider {
+namespace driderSDK {
 
 }

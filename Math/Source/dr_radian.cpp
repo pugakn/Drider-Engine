@@ -1,6 +1,6 @@
 #include <dr_radian.h>
 
-namespace drider {
+namespace driderSDK {
 
 namespace math {
 

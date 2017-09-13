@@ -1,6 +1,6 @@
 #pragma once
 
-namespace drider {
+namespace driderSDKSDK {
 
 namespace math {
   

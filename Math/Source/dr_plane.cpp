@@ -1,6 +1,6 @@
 #include <dr_plane.h>
 
-namespace drider {
+namespace driderSDK {
 
 namespace math {
 

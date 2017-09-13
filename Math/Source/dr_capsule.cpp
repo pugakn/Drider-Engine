@@ -1,6 +1,6 @@
 #include <dr_capsule.h>
 
-namespace drider {
+namespace driderSDK {
 
 namespace math {
 
