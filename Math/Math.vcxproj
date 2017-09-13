@@ -75,6 +75,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)$(Projectname)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -91,6 +92,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)$(Projectname)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -111,6 +113,38 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Include\dr_aabb.h" />
+    <ClInclude Include="Include\dr_capsule.h" />
+    <ClInclude Include="Include\dr_degree.h" />
+    <ClInclude Include="Include\dr_frustrum.h" />
+    <ClInclude Include="Include\dr_matrix3x3.h" />
+    <ClInclude Include="Include\dr_matrix4x4.h" />
+    <ClInclude Include="Include\dr_matrixnxm.h" />
+    <ClInclude Include="Include\dr_plane.h" />
+    <ClInclude Include="Include\dr_quaternion.h" />
+    <ClInclude Include="Include\dr_radian.h" />
+    <ClInclude Include="Include\dr_ray.h" />
+    <ClInclude Include="Include\dr_sphere.h" />
+    <ClInclude Include="Include\dr_vector2d.h" />
+    <ClInclude Include="Include\dr_vector2di.h" />
+    <ClInclude Include="Include\dr_vectorn.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\dr_aabb.cpp" />
+    <ClCompile Include="Source\dr_capsule.cpp" />
+    <ClCompile Include="Source\dr_degree.cpp" />
+    <ClCompile Include="Source\dr_frustrum.cpp" />
+    <ClCompile Include="Source\dr_matrix3x3.cpp" />
+    <ClCompile Include="Source\dr_matrix4x4.cpp" />
+    <ClCompile Include="Source\dr_matrixnxm.cpp" />
+    <ClCompile Include="Source\dr_plane.cpp" />
+    <ClCompile Include="Source\dr_quaternion.cpp" />
+    <ClCompile Include="Source\dr_radian.cpp" />
+    <ClCompile Include="Source\dr_ray.cpp" />
+    <ClCompile Include="Source\dr_sphere.cpp" />
+    <ClCompile Include="Source\dr_vector2d.cpp" />
+    <ClCompile Include="Source\dr_vector2di.cpp" />
+    <ClCompile Include="Source\dr_vectorn.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

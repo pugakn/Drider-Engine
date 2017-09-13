@@ -2,4 +2,15 @@
 
 namespace drider {
 
+namespace math {
+
+class Degree
+{
+ public:
+ protected:
+ private:
+};
+
+}
+
 }

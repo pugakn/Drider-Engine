@@ -2,4 +2,15 @@
 
 namespace drider {
 
+namespace math {
+
+class Quaternion
+{
+ public:
+ protected:
+ private:
+};
+
+}
+
 }
