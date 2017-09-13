@@ -1,8 +1,0 @@
-namespace drider {
-
-namespace math {
-
-
-}
-
-}
