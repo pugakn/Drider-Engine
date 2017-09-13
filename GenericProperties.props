@@ -13,6 +13,9 @@
     <BuildLog>
       <Path>$(IntDir).log</Path>
     </BuildLog>
+    <Link>
+      <ImportLibrary>$(SolutionDir)Lib\$(PlatformTarget)\$(Projectname).lib</ImportLibrary>
+    </Link>
   </ItemDefinitionGroup>
   <ItemGroup />
 </Project>
