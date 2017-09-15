@@ -1,24 +1,54 @@
 #pragma once
-#include <dr_defines.h>
+
+#include <stdint.h>
+
+#include "dr_defines.h"
+
+#if DR_PLATFORM == DR_PLATFORM_PS4
+# include <scebase.h>
+#endif
+
 namespace driderSDK {
 
-#ifdef DR_OPSYS_LINUX
-typedef Int8 signed char;
-typedef Int16 signed short;
-typedef Int32 signed int;
-typedef Int64 signed long;
+/**********************************************************************
+*																	  *
+*						Basic Unsigned Types					      *
+*																	  *
+**********************************************************************/
 
-typedef Uint8 unsigned char;
-typedef Uint16 unsigned short;
-typedef Uint32 unsigned int;
-typedef Uint64 unsigned long long;
+  using  UInt8  = uint8_t;  //8-bit  unsigned.
+  using  UInt16 = uint16_t; //16-bit unsigned.
+  using  UInt32 = uint32_t; //32-bit unsigned.
+  using  UInt64 = uint64_t; //64-bit unsigned.
 
-typedef Float32 float;
-typedef Float64 double;
-typedef Char8 signed char;
-typedef Uchar8 unsigned char;
+/**********************************************************************
+*																	  *
+*						Basic Signed Types						      *
+*																	  *
+**********************************************************************/
 
-typedef Bool bool;
+  using Int8  = int8_t ; //8-bit  signed.
+  using Int16 = int16_t; //16-bit signed.
+  using Int32 = int32_t; //32-bit signed.
+  using Int64 = int64_t; //64-bit signed.
+
+  using Float32	= float;
+  using Float64 = double;
+
+#if DR_COMPILER == DR_COMPILER_MSV || DR_PLATFORM == DR_PLATFORM_PS4
+  using WChar = wchar_t;		//Wide Character (used by Visual Studio)
+#else
+  using WChar = unsigned short; //Wide Character (Any other compiler)
 #endif
-typedef Byte Uint8;
+  using ANSIChar = char;   //ANSI character type
+  using UNIChar  = WChar;  //UNICODE character type
+
+/**********************************************************************
+*																	  *
+*						      Null type								  *
+*																	  *
+**********************************************************************/
+  using NullType = Int32;
+
+  using SizeT = size_t;
 }

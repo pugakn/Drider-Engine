@@ -129,11 +129,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Include\dr_defines.h" />
+    <ClInclude Include="Include\dr_prerequisites.h" />
     <ClInclude Include="Include\dr_types.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Source\dr_defines.cpp" />
-    <ClCompile Include="Source\dr_types.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
