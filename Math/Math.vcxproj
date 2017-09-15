@@ -166,6 +166,8 @@
     <ClInclude Include="Include\dr_vector2d.h" />
     <ClInclude Include="Include\dr_vector2di.h" />
     <ClInclude Include="Include\dr_vectorn.h" />
+    <ClInclude Include="Vector3D.h" />
+    <ClInclude Include="Vector4D.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_aabb.cpp" />
@@ -183,6 +185,8 @@
     <ClCompile Include="Source\dr_vector2d.cpp" />
     <ClCompile Include="Source\dr_vector2di.cpp" />
     <ClCompile Include="Source\dr_vectorn.cpp" />
+    <ClCompile Include="Vector3D.cpp" />
+    <ClCompile Include="Vector4D.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
