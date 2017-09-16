@@ -5,7 +5,7 @@
 
 namespace driderSDK {
 
-class Vector2D
+class DR_API_EXPORT Vector2D
 {
  public:
   /**
