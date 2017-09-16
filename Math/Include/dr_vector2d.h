@@ -10,11 +10,13 @@ class DR_API_EXPORT Vector2D
  public:
   /**
   * Default constructor
+  *
+  * Values are initialized with 0.
   */
 
   Vector2D()
-    : m_x(0.0f),
-      m_y(0.0f)
+    : x(0.0f),
+      y(0.0f)
   {};
 
   /**
@@ -30,23 +32,23 @@ class DR_API_EXPORT Vector2D
   */
 
   Vector2D(const Vector2D & V)
-    : m_x(V.m_x),
-      m_y(V.m_y)
+    : x(V.x),
+      y(V.y)
   {};
 
   /**
   * Initialize constructor with values.
   *
-  * @param _x
+  * @param x
   * The x value of the vector
   *
-  * @param _y
+  * @param y
   * The y value of the vector
   */
 
   Vector2D(Float32 x, Float32 y)
-    : m_x(x),
-      m_y(y)
+    : x(x),
+      y(y)
   {};
 
   /**
@@ -58,11 +60,11 @@ class DR_API_EXPORT Vector2D
   {};
 
   /**
-  * Computes the dot product of this vector and the vector parameter.
+  * Computes the dot product between this vector and the vector parameter.
   * This operatios is commutative.
   *
   * @param B
-  *  Right value of operation.
+  *  The vector against which the dot product is calculated.
   *
   * @return
   *   The sum of the products of the corresponding entries of the
@@ -72,7 +74,7 @@ class DR_API_EXPORT Vector2D
   FORCEINLINE Float32
   dot(const Vector2D B) const
   {
-  return (m_x*B.m_x) + (m_y*B.m_y);
+  return (x*B.x) + (y*B.y);
   };
 
   /**
@@ -98,71 +100,71 @@ class DR_API_EXPORT Vector2D
   FORCEINLINE Vector2D
   normalize() const
   {
-  return (*this) / magnitude();
+  return (*this) * pow(magnitude(), -1);
   };
 
   FORCEINLINE Vector2D
   operator+ (const Vector2D & A) const
   {
-  return Vector2D(m_x + A.m_x, m_y + A.m_y);
+  return Vector2D(x + A.x, y + A.y);
   };
   FORCEINLINE Vector2D&
   operator+= (const Vector2D & A)
   {
-  m_x += A.m_x;
-  m_y += A.m_y;
+  x += A.x;
+  y += A.y;
   return *this;
   };
 
   FORCEINLINE Vector2D
   operator- (const Vector2D & A) const
   {
-  return Vector2D(m_x - A.m_x, m_y - A.m_y);
+  return Vector2D(x - A.x, y - A.y);
   };
   FORCEINLINE Vector2D&
   operator-= (const Vector2D & A)
   {
-  m_x -= A.m_x;
-  m_y -= A.m_y;
+  x -= A.x;
+  y -= A.y;
   return *this;
   };
 
   FORCEINLINE Vector2D
   operator* (const Vector2D & A) const
   {
-  return Vector2D(m_x*A.m_x, m_y*A.m_y);
+  return Vector2D(x*A.x, y*A.y);
   };
   FORCEINLINE Vector2D&
   operator*= (const Vector2D & A)
   {
-  m_x *= A.m_x;
-  m_y *= A.m_y;
+  x *= A.x;
+  y *= A.y;
   return *this;
   };
 
   FORCEINLINE Vector2D
   operator* (const Float32 S) const
   {
-    return Vector2D(m_x*S, m_y*S);
+    return Vector2D(x*S, y*S);
   };
   FORCEINLINE Vector2D&
   operator*= (const Float32 S)
   {
-    m_x *= S;
-    m_y *= S;
+    x *= S;
+    y *= S;
     return *this;
   };
 
   FORCEINLINE Vector2D
   operator/ (const Float32 S) const
   {
-  return Vector2D(m_x, m_y);
+  return Vector2D(x*pow(S, -1), y*pow(S, -1));
   };
   FORCEINLINE Vector2D&
   operator/= (const Float32 S)
   {
-  m_x;
-  m_y;
+  x *= pow(S, -1);
+  y *= pow(S, -1);
   return *this;
   };
 
@@ -170,7 +172,7 @@ class DR_API_EXPORT Vector2D
   {
     struct
     {
-      Float32 m_x, m_y;
+      Float32 x, y;
     };
     Float32 v[2];
   };

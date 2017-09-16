@@ -165,6 +165,8 @@
     <ClInclude Include="Include\dr_sphere.h" />
     <ClInclude Include="Include\dr_vector2d.h" />
     <ClInclude Include="Include\dr_vector2di.h" />
+    <ClInclude Include="Include\dr_vector3d.h" />
+    <ClInclude Include="Include\dr_vector4d.h" />
     <ClInclude Include="Include\dr_vectorn.h" />
   </ItemGroup>
   <ItemGroup>
@@ -179,8 +181,6 @@
     <ClCompile Include="Source\dr_radian.cpp" />
     <ClCompile Include="Source\dr_ray.cpp" />
     <ClCompile Include="Source\dr_sphere.cpp" />
-    <ClCompile Include="Source\dr_vector2d.cpp" />
-    <ClCompile Include="Source\dr_vector2di.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
