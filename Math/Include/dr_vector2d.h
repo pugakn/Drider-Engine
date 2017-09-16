@@ -40,10 +40,10 @@ class DR_API_EXPORT Vector2D
   * Initialize constructor with values.
   *
   * @param x
-  * The x value of the vector
+  *  The x value of the vector
   *
   * @param y
-  * The y value of the vector
+  *  The y value of the vector
   */
 
   Vector2D(Float32 x, Float32 y)
@@ -103,11 +103,16 @@ class DR_API_EXPORT Vector2D
   return (*this) * pow(magnitude(), -1);
   };
 
+  //Uncommented
+
   FORCEINLINE Vector2D
   operator+ (const Vector2D & A) const
   {
   return Vector2D(x + A.x, y + A.y);
   };
+
+  //Uncommented
+
   FORCEINLINE Vector2D&
   operator+= (const Vector2D & A)
   {
@@ -116,11 +121,16 @@ class DR_API_EXPORT Vector2D
   return *this;
   };
 
+  //Uncommented
+
   FORCEINLINE Vector2D
   operator- (const Vector2D & A) const
   {
   return Vector2D(x - A.x, y - A.y);
   };
+
+  //Uncommented
+
   FORCEINLINE Vector2D&
   operator-= (const Vector2D & A)
   {
@@ -129,11 +139,16 @@ class DR_API_EXPORT Vector2D
   return *this;
   };
 
+  //Uncommented
+
   FORCEINLINE Vector2D
   operator* (const Vector2D & A) const
   {
   return Vector2D(x*A.x, y*A.y);
   };
+
+  //Uncommented
+
   FORCEINLINE Vector2D&
   operator*= (const Vector2D & A)
   {
@@ -142,11 +157,16 @@ class DR_API_EXPORT Vector2D
   return *this;
   };
 
+  //Uncommented
+
   FORCEINLINE Vector2D
   operator* (const Float32 S) const
   {
     return Vector2D(x*S, y*S);
   };
+
+  //Uncommented
+
   FORCEINLINE Vector2D&
   operator*= (const Float32 S)
   {
@@ -155,11 +175,16 @@ class DR_API_EXPORT Vector2D
     return *this;
   };
 
+  //Uncommented
+
   FORCEINLINE Vector2D
   operator/ (const Float32 S) const
   {
   return Vector2D(x*pow(S, -1), y*pow(S, -1));
   };
+
+  //Uncommented
+
   FORCEINLINE Vector2D&
   operator/= (const Float32 S)
   {

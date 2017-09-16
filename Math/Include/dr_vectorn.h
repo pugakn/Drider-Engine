@@ -39,7 +39,7 @@ public:
   * Number of elements in the vector.
   *
   *	@return
-  *	 The number of elements the vector contains.
+  *   The number of elements the vector contains.
   *
   */
 

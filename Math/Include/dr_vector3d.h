@@ -5,7 +5,7 @@
 
 namespace driderSDK {
 
-class Vector3D
+class DR_API_EXPORT Vector3D
 {
  public:
   /**
@@ -42,13 +42,13 @@ class Vector3D
   * Initialize constructor with values.
   *
   * @param x
-  * The x value of the vector
+  *  The x value of the vector
   *
   * @param y
-  * The y value of the vector
+  *  The y value of the vector
   *
   * @param z
-  * The z value of the vector
+  *  The z value of the vector
   */
 
   Vector3D(Float32 x, Float32 y, Float32 z)
@@ -128,11 +128,16 @@ class Vector3D
   return (*this) * pow(magnitude(), -1);
   };
 
+  //Uncommented
+
   FORCEINLINE Vector3D
   operator+ (const Vector3D & A) const
   {
   return Vector3D(x + A.x, y + A.y, z + A.z);
   };
+
+  //Uncommented
+
   FORCEINLINE Vector3D&
   operator+= (const Vector3D & A)
   {
@@ -142,11 +147,16 @@ class Vector3D
   return *this;
   };
 
+  //Uncommented
+
   FORCEINLINE Vector3D
   operator- (const Vector3D & A) const
   {
   return Vector3D(x - A.x, y - A.y, z - A.z);
   };
+
+  //Uncommented
+
   FORCEINLINE Vector3D&
   operator-= (const Vector3D & A)
   {
@@ -156,11 +166,16 @@ class Vector3D
   return *this;
   };
 
+  //Uncommented
+
   FORCEINLINE Vector3D
   operator* (const Vector3D & A) const
   {
   return Vector3D(x*A.x, y*A.y, z*A.z);
   };
+
+  //Uncommented
+
   FORCEINLINE Vector3D&
   operator*= (const Vector3D & A)
   {
@@ -170,11 +185,16 @@ class Vector3D
   return *this;
   };
 
+  //Uncommented
+
   FORCEINLINE Vector3D
   operator* (const Float32 S) const
   {
     return Vector3D(x*S, y*S, z*S);
   };
+
+  //Uncommented
+
   FORCEINLINE Vector3D&
   operator*= (const Float32 S)
   {
@@ -184,11 +204,16 @@ class Vector3D
     return *this;
   };
 
+  //Uncommented
+
   FORCEINLINE Vector3D
   operator/ (const Float32 S) const
   {
   return Vector3D(x*pow(S, -1), y*pow(S, -1), z*pow(S, -1));
   };
+
+  //Uncommented
+
   FORCEINLINE Vector3D&
   operator/= (const Float32 S)
   {

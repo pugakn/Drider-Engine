@@ -5,9 +5,7 @@
 
 namespace driderSDK {
 
-namespace math {
-
-class Vector4D
+class DR_API_EXPORT Vector4D
 {
  public:
   /**
@@ -46,16 +44,16 @@ class Vector4D
   * Initialize constructor with values.
   *
   * @param x
-  * The x value of the vector
+  *  The x value of the vector
   *
   * @param y
-  * The y value of the vector
+  *  The y value of the vector
   *
   * @param z
-  * The z value of the vector
+  *  The z value of the vector
   *
   * @param w
-  * The w value of the vector
+  *  The w value of the vector
   */
 
   Vector4D(Float32 x, Float32 y, Float32 z, Float32 w)
@@ -137,11 +135,16 @@ class Vector4D
   return (*this) * pow(magnitude(), -1);
   };
 
+  //Uncommented
+
   FORCEINLINE Vector4D
   operator+ (const Vector4D & A) const
   {
   return Vector4D(x + A.x, y + A.y, z + A.z, w + A.w);
   };
+
+  //Uncommented
+
   FORCEINLINE Vector4D&
   operator+= (const Vector4D & A)
   {
@@ -152,11 +155,16 @@ class Vector4D
   return *this;
   };
 
+  //Uncommented
+
   FORCEINLINE Vector4D
   operator- (const Vector4D & A) const
   {
   return Vector4D(x - A.x, y - A.y, z - A.z, w - A.w);
   };
+
+  //Uncommented
+
   FORCEINLINE Vector4D&
   operator-= (const Vector4D & A)
   {
@@ -167,11 +175,16 @@ class Vector4D
   return *this;
   };
 
+  //Uncommented
+
   FORCEINLINE Vector4D
   operator* (const Vector4D & A) const
   {
   return Vector4D(x*A.x, y*A.y, z*A.z, w * A.w);
   };
+
+  //Uncommented
+
   FORCEINLINE Vector4D&
   operator*= (const Vector4D & A)
   {
@@ -182,11 +195,16 @@ class Vector4D
   return *this;
   };
 
+  //Uncommented
+
   FORCEINLINE Vector4D
   operator* (const Float32 S) const
   {
     return Vector4D(x*S, y*S, z*S, w*S);
   };
+
+  //Uncommented
+
   FORCEINLINE Vector4D&
   operator*= (const Float32 S)
   {
@@ -197,11 +215,16 @@ class Vector4D
     return *this;
   };
 
+  //Uncommented
+
   FORCEINLINE Vector4D
   operator/ (const Float32 S) const
   {
   return Vector4D(x*pow(S, -1), y*pow(S, -1), z*pow(S, -1), w*pow(S, -1));
   };
+
+  //Uncommented
+
   FORCEINLINE Vector4D&
   operator/= (const Float32 S)
   {
@@ -221,7 +244,5 @@ class Vector4D
     Float32 v[4];
   };
 };
-
-}
 
 }
