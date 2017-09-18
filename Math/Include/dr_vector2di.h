@@ -14,27 +14,21 @@ class DR_API_EXPORT Vector2DI
   * Values are initialized with 0.
   */
 
-  Vector2DI()
-    : x(0),
-      y(0)
-  {};
+  Vector2DI();
 
   /**
   * Move constructor
   *
   */
 
-  Vector2DI(Vector2DI && V) = default;
+  Vector2DI(Vector2DI&& V) = default;
 
   /**
   * Copy constructor
   *
   */
 
-  Vector2DI(const Vector2DI & V)
-    : x(V.x),
-      y(V.y)
-  {};
+  Vector2DI(const Vector2DI& V);
 
   /**
   * Initialize constructor with values.
@@ -46,18 +40,14 @@ class DR_API_EXPORT Vector2DI
   *  The y value of the vector
   */
 
-  Vector2DI(Int32 x, Int32 y)
-    : x(x),
-      y(y)
-  {};
+  Vector2DI(Int32 x, Int32 y);
 
   /**
   * Default destructor
   *
   */
 
-  ~Vector2DI()
-  {};
+  ~Vector2DI();
 
   /**
   * Computes the dot product between this vector and the vector parameter.
@@ -71,11 +61,8 @@ class DR_API_EXPORT Vector2DI
   *   vectors.
   */
 
-  FORCEINLINE Float32
-  dot(const Vector2DI B) const
-  {
-  return (x*B.x) + (y*B.y);
-  };
+  Float32
+  dot(const Vector2DI& B) const;
 
   /**
   * Computes the magnitude of this vector.
@@ -84,11 +71,8 @@ class DR_API_EXPORT Vector2DI
   *   The magnitude (or "size") of the vector.
   */
 
-  FORCEINLINE Float32
-  magnitude() const
-  {
-  return sqrt(dot(*this));
-  };
+  Float32
+  magnitude() const;
 
   /**
   * Get this vector normalized.
@@ -97,101 +81,58 @@ class DR_API_EXPORT Vector2DI
   *   This vector normalized.
   */
 
-  FORCEINLINE Vector2DI
-  normalize() const
-  {
-  return (*this) * pow(magnitude(), -1);
-  };
+  Vector2DI
+  normalize() const;
 
   //Uncommented
 
-  FORCEINLINE Vector2DI
-  operator+ (const Vector2DI & A) const
-  {
-  return Vector2DI(x + A.x, y + A.y);
-  };
+  Vector2DI
+  operator+(const Vector2DI & A) const;
 
   //Uncommented
 
-  FORCEINLINE Vector2DI&
-  operator+= (const Vector2DI & A)
-  {
-  x += A.x;
-  y += A.y;
-  return *this;
-  };
+  Vector2DI&
+  operator+=(const Vector2DI & A);
 
   //Uncommented
 
-  FORCEINLINE Vector2DI
-  operator- (const Vector2DI & A) const
-  {
-  return Vector2DI(x - A.x, y - A.y);
-  };
+  Vector2DI
+  operator-(const Vector2DI & A) const;
 
   //Uncommented
 
-  FORCEINLINE Vector2DI&
-  operator-= (const Vector2DI & A)
-  {
-  x -= A.x;
-  y -= A.y;
-  return *this;
-  };
+  Vector2DI&
+  operator-=(const Vector2DI & A);
 
   //Uncommented
 
-  FORCEINLINE Vector2DI
-  operator* (const Vector2DI & A) const
-  {
-  return Vector2DI(x*A.x, y*A.y);
-  };
+  Vector2DI
+  operator*(const Vector2DI & A) const;
 
   //Uncommented
 
-  FORCEINLINE Vector2DI&
-  operator*= (const Vector2DI & A)
-  {
-  x *= A.x;
-  y *= A.y;
-  return *this;
-  };
+  Vector2DI&
+  operator*=(const Vector2DI & A);
 
   //Uncommented
 
-  FORCEINLINE Vector2DI
-  operator* (const Float32 S) const
-  {
-  return Vector2DI(x*S, y*S);
-  };
+  Vector2DI
+  operator*(const Float32 S) const;
 
   //Uncommented
 
-  FORCEINLINE Vector2DI&
-  operator*= (const Float32 S)
-  {
-  x *= S;
-  y *= S;
-  return *this;
-  };
+  Vector2DI&
+  operator*=(const Float32 S);
 
   //Uncommented
 
-  FORCEINLINE Vector2DI
-  operator/ (const Float32 S) const
-  {
-  return Vector2DI(x*pow(S, -1), y*pow(S, -1));
-  };
+  Vector2DI
+  operator/(const Float32 S) const;
 
   //Uncommented
 
-  FORCEINLINE Vector2DI&
-  operator/= (const Float32 S)
-  {
-  x *= pow(S, -1);
-  y *= pow(S, -1);
-  return *this;
-  };
+  Vector2DI&
+  operator/=(const Float32 S);
 
   union
   {

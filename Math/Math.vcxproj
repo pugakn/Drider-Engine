@@ -155,6 +155,7 @@
     <ClInclude Include="Include\dr_capsule.h" />
     <ClInclude Include="Include\dr_degree.h" />
     <ClInclude Include="Include\dr_frustrum.h" />
+    <ClInclude Include="Include\dr_math.h" />
     <ClInclude Include="Include\dr_matrix3x3.h" />
     <ClInclude Include="Include\dr_matrix4x4.h" />
     <ClInclude Include="Include\dr_matrixnxm.h" />
@@ -170,7 +171,7 @@
     <ClInclude Include="Include\dr_vectorn.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Include\dr_vector2d.cpp" />
+    <ClCompile Include="Source\dr_vector2d.cpp" />
     <ClCompile Include="Source\dr_aabb.cpp" />
     <ClCompile Include="Source\dr_capsule.cpp" />
     <ClCompile Include="Source\dr_degree.cpp" />
@@ -182,6 +183,9 @@
     <ClCompile Include="Source\dr_radian.cpp" />
     <ClCompile Include="Source\dr_ray.cpp" />
     <ClCompile Include="Source\dr_sphere.cpp" />
+    <ClCompile Include="Source\dr_vector2di.cpp" />
+    <ClCompile Include="Source\dr_vector3d.cpp" />
+    <ClCompile Include="Source\dr_vector4d.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
