@@ -35,7 +35,7 @@ Int32 mulX4(Int32 value) {
 }
 
 /**********************************************************************
-*						               Math functions 					      
+*						            Basic Math functions 					      
 **********************************************************************/
 static FORCEINLINE Float32 
 cos(Float32 value){
@@ -84,11 +84,71 @@ exp(Float32 value) {
 	return std::expf(value);
 }
 
+static FORCEINLINE Int32
+truncate2Int(Float32 value) {
+	return static_cast<Int32>(value);
+}
 
+static FORCEINLINE Float32
+truncate2Float(Float32 value) {
+	return static_cast<Float32>(truncate2Int(value));
+}
+
+static FORCEINLINE Int32
+floor(Float32 value) {
+	return truncate2Int(std::floorf(value));
+}
+
+static FORCEINLINE Int32
+round(Float32 value) {
+	return truncate2Int(floor(value +0.5f));
+}
+
+static FORCEINLINE Float32
+logE(Float32 value) {
+	return std::logf(value);
+}
+
+static FORCEINLINE Float32
+logX(Float32 base,Float32 value) {
+	return logE(value) / logE(base);
+}
+
+/**********************************************************************
+*						         Math function templates
+**********************************************************************/
 template<class T>
 static FORCEINLINE T abs(const T A) {
 	return (A >= (T)0) ? A : -A;
 }
+
+template< class T >
+static FORCEINLINE T max(const T A, const T B)
+{
+	return (A >= B) ? A : B;
+}
+
+template< class T >
+static FORCEINLINE T min(const T A, const T B)
+{
+	return (A <= B) ? A : B;
+}
+
+template< class T >
+static FORCEINLINE T square(const T A)
+{
+	return A*A;
+}
+
+template< class T >
+static FORCEINLINE T clamp(const T X, const T Min, const T Max)
+{
+	return X<Min ? Min : X<Max ? X : Max;
+}
+
+/**********************************************************************
+*						          Template specialization
+**********************************************************************/
 template<>
 static FORCEINLINE Float32
 abs<Float32>(Float32 value) {
