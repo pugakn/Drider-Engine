@@ -14,10 +14,7 @@ class DR_API_EXPORT Vector2D
   * Values are initialized with 0.
   */
 
-  Vector2D()
-    : x(0.0f),
-      y(0.0f)
-  {};
+  Vector2D();
 
   /**
   * Move constructor
@@ -31,10 +28,7 @@ class DR_API_EXPORT Vector2D
   *
   */
 
-  Vector2D(const Vector2D & V)
-    : x(V.x),
-      y(V.y)
-  {};
+  Vector2D(const Vector2D & V);
 
   /**
   * Initialize constructor with values.
@@ -46,18 +40,14 @@ class DR_API_EXPORT Vector2D
   *  The y value of the vector
   */
 
-  Vector2D(Float32 x, Float32 y)
-    : x(x),
-      y(y)
-  {};
+  Vector2D(Float32 x, Float32 y);
 
   /**
   * Default destructor
   *
   */
 
-  ~Vector2D()
-  {};
+  ~Vector2D();
 
   /**
   * Computes the dot product between this vector and the vector parameter.
@@ -72,10 +62,7 @@ class DR_API_EXPORT Vector2D
   */
 
   FORCEINLINE Float32
-  dot(const Vector2D B) const
-  {
-  return (x*B.x) + (y*B.y);
-  };
+  dot(const Vector2D& B) const;
 
   /**
   * Computes the magnitude of this vector.
@@ -85,10 +72,7 @@ class DR_API_EXPORT Vector2D
   */
 
   FORCEINLINE Float32
-  magnitude() const
-  {
-  return sqrt(dot(*this));
-  };
+  magnitude() const;
 
   /**
   * Get this vector normalized.
@@ -98,100 +82,57 @@ class DR_API_EXPORT Vector2D
   */
 
   FORCEINLINE Vector2D
-  normalize() const
-  {
-  return (*this) * pow(magnitude(), -1);
-  };
+  normalize() const;
 
   //Uncommented
 
   FORCEINLINE Vector2D
-  operator+ (const Vector2D & A) const
-  {
-  return Vector2D(x + A.x, y + A.y);
-  };
+  operator+(const Vector2D & A) const;
 
   //Uncommented
 
   FORCEINLINE Vector2D&
-  operator+= (const Vector2D & A)
-  {
-  x += A.x;
-  y += A.y;
-  return *this;
-  };
+  operator+=(const Vector2D & A);
 
   //Uncommented
 
   FORCEINLINE Vector2D
-  operator- (const Vector2D & A) const
-  {
-  return Vector2D(x - A.x, y - A.y);
-  };
+  operator-(const Vector2D & A) const;
 
   //Uncommented
 
   FORCEINLINE Vector2D&
-  operator-= (const Vector2D & A)
-  {
-  x -= A.x;
-  y -= A.y;
-  return *this;
-  };
+  operator-=(const Vector2D & A);
 
   //Uncommented
 
   FORCEINLINE Vector2D
-  operator* (const Vector2D & A) const
-  {
-  return Vector2D(x*A.x, y*A.y);
-  };
+  operator*(const Vector2D & A) const;
 
   //Uncommented
 
   FORCEINLINE Vector2D&
-  operator*= (const Vector2D & A)
-  {
-  x *= A.x;
-  y *= A.y;
-  return *this;
-  };
+  operator*=(const Vector2D & A);
 
   //Uncommented
 
   FORCEINLINE Vector2D
-  operator* (const Float32 S) const
-  {
-    return Vector2D(x*S, y*S);
-  };
+  operator*(const Float32 S) const;
 
   //Uncommented
 
   FORCEINLINE Vector2D&
-  operator*= (const Float32 S)
-  {
-    x *= S;
-    y *= S;
-    return *this;
-  };
+  operator*=(const Float32 S);
 
   //Uncommented
 
   FORCEINLINE Vector2D
-  operator/ (const Float32 S) const
-  {
-  return Vector2D(x*pow(S, -1), y*pow(S, -1));
-  };
+  operator/(const Float32 S) const;
 
   //Uncommented
 
   FORCEINLINE Vector2D&
-  operator/= (const Float32 S)
-  {
-  x *= pow(S, -1);
-  y *= pow(S, -1);
-  return *this;
-  };
+  operator/=(const Float32 S);
 
   union
   {

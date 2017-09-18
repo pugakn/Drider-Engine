@@ -14,11 +14,7 @@ class DR_API_EXPORT Vector3D
   * Values are initialized with 0.
   */
 
-  Vector3D()
-    : x(0.0f),
-      y(0.0f),
-      z(0.0f)
-  {};
+  Vector3D();
 
   /**
   * Move constructor
@@ -32,11 +28,7 @@ class DR_API_EXPORT Vector3D
   *
   */
 
-  Vector3D(const Vector3D & V)
-    : x(V.x),
-      y(V.y),
-      z(V.z)
-  {};
+  Vector3D(const Vector3D & V);
 
   /**
   * Initialize constructor with values.
@@ -51,19 +43,14 @@ class DR_API_EXPORT Vector3D
   *  The z value of the vector
   */
 
-  Vector3D(Float32 x, Float32 y, Float32 z)
-    : x(x),
-      y(y),
-      z(z)
-  {};
+  Vector3D(Float32 x, Float32 y, Float32 z);
 
   /**
   * Default destructor
   *
   */
 
-  ~Vector3D()
-  {};
+  ~Vector3D();
 
   /**
   * Computes the dot product between this vector and the vector parameter.
@@ -77,11 +64,8 @@ class DR_API_EXPORT Vector3D
   *   vectors.
   */
 
-  FORCEINLINE Float32
-  dot(const Vector3D B) const
-  {
-  return (x*B.x) + (y*B.y) + (z*B.z);
-  };
+  Float32
+  dot(const Vector3D& B) const;
 
   /**
   * Computes the cross product between this vector and the vector parameter.
@@ -96,11 +80,8 @@ class DR_API_EXPORT Vector3D
   *   Result vector of the cross product
   */
 
-  FORCEINLINE Vector3D
-  cross(const Vector3D B) const
-  {
-  return Vector3D(y*B.z - z*B.y, z*B.x - x*B.z, x*B.y - y*B.x);
-  };
+  Vector3D
+  cross(const Vector3D& B) const;
 
   /**
   * Computes the magnitude of this vector.
@@ -109,11 +90,8 @@ class DR_API_EXPORT Vector3D
   *   The magnitude (or "size") of the vector.
   */
 
-  FORCEINLINE Float32
-  magnitude() const
-  {
-  return sqrt(dot(*this));
-  };
+  Float32
+  magnitude() const;
 
   /**
   * Get this vector normalized.
@@ -122,7 +100,7 @@ class DR_API_EXPORT Vector3D
   *   This vector normalized.
   */
 
-  FORCEINLINE Vector3D
+  Vector3D
   normalize() const
   {
   return (*this) * pow(magnitude(), -1);
@@ -130,98 +108,53 @@ class DR_API_EXPORT Vector3D
 
   //Uncommented
 
-  FORCEINLINE Vector3D
-  operator+ (const Vector3D & A) const
-  {
-  return Vector3D(x + A.x, y + A.y, z + A.z);
-  };
+  Vector3D
+  operator+(const Vector3D & A) const;
 
   //Uncommented
 
-  FORCEINLINE Vector3D&
-  operator+= (const Vector3D & A)
-  {
-  x += A.x;
-  y += A.y;
-  z += A.z;
-  return *this;
-  };
+  Vector3D&
+  operator+=(const Vector3D & A);
 
   //Uncommented
 
-  FORCEINLINE Vector3D
-  operator- (const Vector3D & A) const
-  {
-  return Vector3D(x - A.x, y - A.y, z - A.z);
-  };
+  Vector3D
+  operator-(const Vector3D & A) const;
 
   //Uncommented
 
-  FORCEINLINE Vector3D&
-  operator-= (const Vector3D & A)
-  {
-  x -= A.x;
-  y -= A.y;
-  z -= A.z;
-  return *this;
-  };
+  Vector3D&
+  operator-=(const Vector3D & A);
 
   //Uncommented
 
-  FORCEINLINE Vector3D
-  operator* (const Vector3D & A) const
-  {
-  return Vector3D(x*A.x, y*A.y, z*A.z);
-  };
+  Vector3D
+  operator*(const Vector3D & A) const;
 
   //Uncommented
 
-  FORCEINLINE Vector3D&
-  operator*= (const Vector3D & A)
-  {
-  x *= A.x;
-  y *= A.y;
-  z *= A.z;
-  return *this;
-  };
+  Vector3D&
+  operator*=(const Vector3D & A);
 
   //Uncommented
 
-  FORCEINLINE Vector3D
-  operator* (const Float32 S) const
-  {
-    return Vector3D(x*S, y*S, z*S);
-  };
+  Vector3D
+  operator*(const Float32 S) const;
 
   //Uncommented
 
-  FORCEINLINE Vector3D&
-  operator*= (const Float32 S)
-  {
-    x *= S;
-    y *= S;
-    z *= S;
-    return *this;
-  };
+  Vector3D&
+  operator*=(const Float32 S);
 
   //Uncommented
 
-  FORCEINLINE Vector3D
-  operator/ (const Float32 S) const
-  {
-  return Vector3D(x*pow(S, -1), y*pow(S, -1), z*pow(S, -1));
-  };
+  Vector3D
+  operator/(const Float32 S) const;
 
   //Uncommented
 
-  FORCEINLINE Vector3D&
-  operator/= (const Float32 S)
-  {
-  x *= pow(S, -1);
-  y *= pow(S, -1);
-  z *= pow(S, -1);
-  return *this;
-  };
+  Vector3D&
+  operator/=(const Float32 S);
 
   union
   {
