@@ -104,7 +104,7 @@
     <ClCompile Include="Source\dr_sphere.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\dr_vector2d.cpp">
+    <ClCompile Include="Include\dr_vector2d.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\dr_vector2di.cpp">
