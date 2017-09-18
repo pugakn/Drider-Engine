@@ -155,6 +155,7 @@
     <ClInclude Include="Include\dr_capsule.h" />
     <ClInclude Include="Include\dr_degree.h" />
     <ClInclude Include="Include\dr_frustrum.h" />
+    <ClInclude Include="Include\dr_math.h" />
     <ClInclude Include="Include\dr_matrix3x3.h" />
     <ClInclude Include="Include\dr_matrix4x4.h" />
     <ClInclude Include="Include\dr_matrixnxm.h" />
