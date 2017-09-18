@@ -183,6 +183,9 @@
     <ClCompile Include="Source\dr_radian.cpp" />
     <ClCompile Include="Source\dr_ray.cpp" />
     <ClCompile Include="Source\dr_sphere.cpp" />
+    <ClCompile Include="Source\dr_vector2di.cpp" />
+    <ClCompile Include="Source\dr_vector3d.cpp" />
+    <ClCompile Include="Source\dr_vector4d.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

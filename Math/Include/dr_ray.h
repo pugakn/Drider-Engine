@@ -140,6 +140,7 @@ class DR_API_EXPORT Ray
 	bool
 	intersects(const Frustrum& frustrum) const;
 
+
  private:
 	 Vector3D m_origin;
 	 Vector3D m_direction;
