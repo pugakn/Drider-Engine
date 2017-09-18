@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <algorithm>
 #include <dr_prerequisites.h>
 #include "dr_vectorn.h"
 
@@ -21,12 +22,9 @@ class MatrixNxM
   * Default constructor.
   *
   */
+
   MatrixNxM()
   {}
-
-  MatrixNxM( std::initializer_list<VectorN<_cols>> _rows ) : m_data(rows)
-  {
-  }
 
   /**
   * Constructor using a scalar value.
@@ -35,6 +33,7 @@ class MatrixNxM
   *	 All the elements of the matrix are initialized to this value.
   *
   */
+
   explicit MatrixNxM(Float32 _scalar) : MatrixNxM(VectorN<_cols>( _scalar ))
   {}
 
@@ -42,9 +41,10 @@ class MatrixNxM
   * Constructor using a vector.
   *
   *	@param _vec
-  *	 All the rows of the matrix are initialized to _vec.
+  *	 All the rows of the matrix are initialized to this vector.
   *
   */
+
   explicit MatrixNxM(const VectorN<_cols>& _vec)
   {
 	for(auto& row : m_data){
@@ -125,19 +125,12 @@ class MatrixNxM
   }
 
   /**
-  * Gets a constant pointer to the first element of the matrix.
+  * Gets the transposed matrix.
   *
-  * @return
-  *	  A constant pointer to the first element of the matrix.
+  *	@return
+  *	  The matrix transposed.
+  *
   */
-
-  FORCEINLINE const Float32*
-  ptr() const
-  {
-	return m_data[0][0];
-  }
-
-  //Uncommented
 
   FORCEINLINE MatrixNxM<_cols, _rows>
   transpose() const
@@ -153,7 +146,26 @@ class MatrixNxM
 	return transposed;
   }
 
-  //Uncommented
+  /**
+  * Gets a constant pointer to the first element of the matrix.
+  *
+  * @return
+  *	  A constant pointer to the first element of the matrix.
+  */
+
+  FORCEINLINE const Float32*
+  ptr() const
+  {
+	return m_data[0].ptr();
+  }
+
+  /**
+  *	Overload of binary operator *= 
+  *
+  *	@param scalar
+  *	 The value 
+  *
+  */
 
   FORCEINLINE MatrixNxM&
   operator*=(Float32 scalar)
@@ -163,16 +175,30 @@ class MatrixNxM
 	}
 
 	return *this;
+  }  
+
+  //Uncommented
+
+  template<SizeT _rhsCols>
+  FORCEINLINE MatrixNxM
+  operator*=(const MatrixNxM<_cols, _rhsCols>& rhs)
+  {
+	MatrixNxM<_rows, _rhsCols> temp;
+	MatrixNxM<_rhsCols, _cols> rhsTransposed = rhs.transpose();
+	
+	for(int iRows = 0; iRows < _rows; ++iRows){
+	  temp[iRows] = m_data[iRows].dot(rhsTransposed[iRows]);
+	}
+
+	return temp;
   }
 
   //Uncommented
 
-  FORCEINLINE MatrixNxM
-  operator*(Float32 scalar)
-  {
-	MatrixNxM temp(*this);
-	temp *= scalar;
-	return temp;
+  FORCEINLINE MatrixNxM&
+  operator/=(Float32 scalar)
+  {	
+	return *this *= (1.f / scalar);
   }
 
   //Uncommented
@@ -187,13 +213,47 @@ class MatrixNxM
 
 	return temp;
   }
-  
+
+  /**
+  * Computes the equality operator row to row of both matrices.
+  *
+  * @param rhs
+  *  The matrices with which the rows are compared.
+  *
+  *	@return 
+  *	  True if all rows of *this vector are equal to all rows of rhs
+  *	  vector, false otherwise.
+  *
+  */
+  FORCEINLINE bool
+  operator==(const MatrixNxM& rhs)
+  {
+	//Compares each element in the first range (m_data.begin()-m_data.end())
+	//to each element in the second range(rhs.m_data.begin()-m_data.end()
+	return std::equal(m_data.begin(), 
+					  m_data.end(), 
+					  rhs.m_data.begin(),
+					  rhs.m_data.end());
+  }
+
+  /**
+  *
+  *
+  */
+  FORCEINLINE bool
+  operator!=(const MatrixNxM& rhs)
+  {
+	return !(*this == rhs);
+  }
+
  protected:
 
  private:
    
   std::array<VectorN<_cols>, _rows> m_data;
 };
+
+//Uncommented
 
 template<SizeT _rows, SizeT _cols> 
 FORCEINLINE VectorN<_cols> 
@@ -205,6 +265,50 @@ operator*(const VectorN<_rows> lhs, const MatrixNxM<_rows, _cols> & rhs)
 	temp[iCol] = lhs.dot(rhsTransposed[iCol]);
   }
   return temp;
+}
+
+//Uncommented
+
+template<SizeT _rows, SizeT _cols>
+FORCEINLINE MatrixNxM<_rows, _cols>
+operator*(MatrixNxM<_rows, _cols> matrix, Float32 scalar)
+{
+  return matrix *= scalar;
+}
+
+//Uncommented
+
+template<SizeT _rows, SizeT _cols>
+FORCEINLINE MatrixNxM<_rows, _cols>
+operator*(Float32 scalar, const MatrixNxM<_rows, _cols>& matrix)
+{
+  return matrix * scalar;
+}
+
+//Uncommented
+template<SizeT _rows, SizeT _cols, SizeT _rhsCols>
+FORCEINLINE MatrixNxM<_rows, _rhsCols>
+operator*(const MatrixNxM<_rows, _cols>& lhs, const MatrixNxM<_cols, _rhsCols>& rhs)
+{
+  MatrixNxM<_rows, _rhsCols> temp;
+  MatrixNxM<_rhsCols, _cols> rhsTransposed = rhs.transpose();
+	
+  for(int iRows = 0; iRows < _rows; ++iRows){
+	for(int iCols = 0; iCols < _rhsCols; ++iCols){
+	  temp[iRows][iCols] = lhs[iRows].dot(rhsTransposed[iCols]); 
+	}
+  }
+
+  return temp;
+}
+
+//Uncommented
+
+template<SizeT _rows, SizeT _cols>
+FORCEINLINE MatrixNxM<_rows, _cols>
+operator/(MatrixNxM<_rows, _cols> matrix, Float32 scalar)
+{
+  return matrix /= scalar;
 }
 
 

@@ -15,9 +15,9 @@ class DR_API_EXPORT Vector2D
   */
 
   Vector2D()
-    : x(0.0f),
-      y(0.0f)
-  {};
+	: x(0.0f),
+	  y(0.0f)
+  {}
 
   /**
   * Move constructor
@@ -34,7 +34,7 @@ class DR_API_EXPORT Vector2D
   Vector2D(const Vector2D & V)
     : x(V.x),
       y(V.y)
-  {};
+  {}
 
   /**
   * Initialize constructor with values.
@@ -49,7 +49,7 @@ class DR_API_EXPORT Vector2D
   Vector2D(Float32 x, Float32 y)
     : x(x),
       y(y)
-  {};
+  {}
 
   /**
   * Default destructor
@@ -57,7 +57,7 @@ class DR_API_EXPORT Vector2D
   */
 
   ~Vector2D()
-  {};
+  {}
 
   /**
   * Computes the dot product between this vector and the vector parameter.
@@ -180,7 +180,7 @@ class DR_API_EXPORT Vector2D
   FORCEINLINE Vector2D
   operator/ (const Float32 S) const
   {
-  return Vector2D(x*pow(S, -1), y*pow(S, -1));
+	return Vector2D(x*pow(S, -1), y*pow(S, -1));
   };
 
   //Uncommented
@@ -188,9 +188,10 @@ class DR_API_EXPORT Vector2D
   FORCEINLINE Vector2D&
   operator/= (const Float32 S)
   {
-  x *= pow(S, -1);
-  y *= pow(S, -1);
-  return *this;
+
+	x *= pow(S, -1);
+	y *= pow(S, -1);
+	return *this;
   };
 
   union
