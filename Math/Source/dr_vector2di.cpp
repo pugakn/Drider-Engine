@@ -34,6 +34,13 @@ driderSDK::Vector2DI::normalize() const {
   return (*this) * (1 / magnitude());
 }
 
+driderSDK::Vector2DI&
+driderSDK::Vector2DI::operator=(const Vector2DI& A) {
+  x = A.x;
+  y = A.y;
+  return *this;
+}
+
 driderSDK::Vector2DI
 driderSDK::Vector2DI::operator+(const Vector2DI& A) const {
   return Vector2DI(x + A.x, y + A.y);

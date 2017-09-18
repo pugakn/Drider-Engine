@@ -197,7 +197,7 @@ class MatrixNxM
 
 template<SizeT _rows, SizeT _cols> 
 FORCEINLINE VectorN<_cols> 
-operator*(const VectorN<_rows> lhs, const MatrixNxM<_rows, _cols> & rhs)
+operator*(const VectorN<_rows> lhs, const MatrixNxM<_rows, _cols>& rhs)
 {
   VectorN<_cols> temp;
   MatrixNxM<_cols, _rows> rhsTransposed = rhs.transpose();

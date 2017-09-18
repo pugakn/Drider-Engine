@@ -43,6 +43,14 @@ driderSDK::Vector3D::normalize() const {
   return (*this) * (1 / magnitude());
 }
 
+driderSDK::Vector3D&
+driderSDK::Vector3D::operator=(const Vector3D& A) {
+  x = A.x;
+  y = A.y;
+  z = A.z;
+  return *this;
+}
+
 driderSDK::Vector3D
 driderSDK::Vector3D::operator+(const Vector3D& A) const {
   return Vector3D(x + A.x, y + A.y, z + A.z);

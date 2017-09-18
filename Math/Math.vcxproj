@@ -171,7 +171,6 @@
     <ClInclude Include="Include\dr_vectorn.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\dr_vector2d.cpp" />
     <ClCompile Include="Source\dr_aabb.cpp" />
     <ClCompile Include="Source\dr_capsule.cpp" />
     <ClCompile Include="Source\dr_degree.cpp" />
@@ -183,6 +182,7 @@
     <ClCompile Include="Source\dr_radian.cpp" />
     <ClCompile Include="Source\dr_ray.cpp" />
     <ClCompile Include="Source\dr_sphere.cpp" />
+    <ClCompile Include="Source\dr_vector2d.cpp" />
     <ClCompile Include="Source\dr_vector2di.cpp" />
     <ClCompile Include="Source\dr_vector3d.cpp" />
     <ClCompile Include="Source\dr_vector4d.cpp" />

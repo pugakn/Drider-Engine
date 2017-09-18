@@ -5,7 +5,7 @@ driderSDK::Vector2D::Vector2D()
     y(0.0f) {
 }
 
-driderSDK::Vector2D::Vector2D(const Vector2D & V)
+driderSDK::Vector2D::Vector2D(const Vector2D& V)
   : x(V.x),
     y(V.y) {
 }
@@ -34,37 +34,44 @@ driderSDK::Vector2D::normalize() const {
   return (*this) * (1 / magnitude());
 }
 
+driderSDK::Vector2D&
+driderSDK::Vector2D::operator=(const Vector2D& A) {
+  x = A.x;
+  y = A.y;
+  return *this;
+}
+
 driderSDK::Vector2D
-driderSDK::Vector2D::operator+(const Vector2D & A) const {
+driderSDK::Vector2D::operator+(const Vector2D& A) const {
   return Vector2D(x + A.x, y + A.y);
 }
 
 driderSDK::Vector2D&
-driderSDK::Vector2D::operator+=(const Vector2D & A) {
+driderSDK::Vector2D::operator+=(const Vector2D& A) {
   x += A.x;
   y += A.y;
   return *this;
 }
 
 driderSDK::Vector2D
-driderSDK::Vector2D::operator-(const Vector2D & A) const {
+driderSDK::Vector2D::operator-(const Vector2D& A) const {
   return Vector2D(x - A.x, y - A.y);
 }
 
 driderSDK::Vector2D&
-driderSDK::Vector2D::operator-=(const Vector2D & A) {
+driderSDK::Vector2D::operator-=(const Vector2D& A) {
   x -= A.x;
   y -= A.y;
   return *this;
 }
 
 driderSDK::Vector2D
-driderSDK::Vector2D::operator*(const Vector2D & A) const {
+driderSDK::Vector2D::operator*(const Vector2D& A) const {
   return Vector2D(x*A.x, y*A.y);
 }
 
 driderSDK::Vector2D&
-driderSDK::Vector2D::operator*=(const Vector2D & A) {
+driderSDK::Vector2D::operator*=(const Vector2D& A) {
   x *= A.x;
   y *= A.y;
   return *this;

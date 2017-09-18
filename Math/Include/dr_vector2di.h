@@ -86,33 +86,38 @@ class DR_API_EXPORT Vector2DI
 
   //Uncommented
 
-  Vector2DI
-  operator+(const Vector2DI & A) const;
-
-  //Uncommented
-
   Vector2DI&
-  operator+=(const Vector2DI & A);
+  operator=(const Vector2DI& A);
 
   //Uncommented
 
   Vector2DI
-  operator-(const Vector2DI & A) const;
+  operator+(const Vector2DI& A) const;
 
   //Uncommented
 
   Vector2DI&
-  operator-=(const Vector2DI & A);
+  operator+=(const Vector2DI& A);
 
   //Uncommented
 
   Vector2DI
-  operator*(const Vector2DI & A) const;
+  operator-(const Vector2DI& A) const;
 
   //Uncommented
 
   Vector2DI&
-  operator*=(const Vector2DI & A);
+  operator-=(const Vector2DI& A);
+
+  //Uncommented
+
+  Vector2DI
+  operator*(const Vector2DI& A) const;
+
+  //Uncommented
+
+  Vector2DI&
+  operator*=(const Vector2DI& A);
 
   //Uncommented
 
