@@ -5,8 +5,6 @@
 
 namespace driderSDK {
 
-namespace math {
-
 class DR_API_EXPORT Quaternion
 {
  public:
@@ -106,6 +104,9 @@ class DR_API_EXPORT Quaternion
   /**
   * Creates a matrix from the quaternion.
   *
+  * @param
+  *   ...
+  *
   * @return
   *   ...
   */
@@ -166,7 +167,5 @@ class DR_API_EXPORT Quaternion
   Float32 x, y, z, w;
 
 };
-
-}
 
 }
