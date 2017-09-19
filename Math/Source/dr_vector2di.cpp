@@ -21,7 +21,7 @@ driderSDK::Vector2DI::~Vector2DI() {
 
 driderSDK::Float32
 driderSDK::Vector2DI::dot(const Vector2DI& B) const {
-  return (x*B.x) + (y*B.y);
+  return static_cast<driderSDK::Float32>((x*B.x) + (y*B.y));
 }
 
 driderSDK::Float32
@@ -32,6 +32,13 @@ driderSDK::Vector2DI::magnitude() const {
 driderSDK::Vector2DI
 driderSDK::Vector2DI::normalize() const {
   return (*this) * (1 / magnitude());
+}
+
+driderSDK::Vector2DI&
+driderSDK::Vector2DI::operator=(const Vector2DI& A) {
+  x = A.x;
+  y = A.y;
+  return *this;
 }
 
 driderSDK::Vector2DI
@@ -72,24 +79,26 @@ driderSDK::Vector2DI::operator*=(const Vector2DI& A) {
 
 driderSDK::Vector2DI
 driderSDK::Vector2DI::operator*(const Float32 S) const {
-  return Vector2DI(x*S, y*S);
+  return Vector2DI(static_cast<driderSDK::Int32>(x*S),
+                   static_cast<driderSDK::Int32>(y*S));
 }
 
 driderSDK::Vector2DI&
 driderSDK::Vector2DI::operator*=(const Float32 S) {
-  x *= S;
-  y *= S;
+  x *= static_cast<driderSDK::Int32>(S);
+  y *= static_cast<driderSDK::Int32>(S);
   return *this;
 }
 
 driderSDK::Vector2DI
 driderSDK::Vector2DI::operator/(const Float32 S) const {
-  return Vector2DI(x*(1 / S), y*(1 / S));
+  return Vector2DI(static_cast<driderSDK::Int32>(x*(1 / S)),
+                   static_cast<driderSDK::Int32>(y*(1 / S)));
 }
 
 driderSDK::Vector2DI&
 driderSDK::Vector2DI::operator/=(const Float32 S) {
-  x *= (1 / S);
-  y *= (1 / S);
+  x *= static_cast<driderSDK::Int32>(1 / S);
+  y *= static_cast<driderSDK::Int32>(1 / S);
   return *this;
 }

@@ -21,14 +21,14 @@ class DR_API_EXPORT Vector2D
   *
   */
 
-  Vector2D(Vector2D && V) = default;
+  Vector2D(Vector2D&& V) = default;
 
   /**
   * Copy constructor
   *
   */
 
-  Vector2D(const Vector2D & V);
+  Vector2D(const Vector2D& V);
 
   /**
   * Initialize constructor with values.
@@ -61,7 +61,7 @@ class DR_API_EXPORT Vector2D
   *   vectors.
   */
 
-  FORCEINLINE Float32
+  Float32
   dot(const Vector2D& B) const;
 
   /**
@@ -71,7 +71,7 @@ class DR_API_EXPORT Vector2D
   *   The magnitude (or "size") of the vector.
   */
 
-  FORCEINLINE Float32
+  Float32
   magnitude() const;
 
   /**
@@ -81,57 +81,62 @@ class DR_API_EXPORT Vector2D
   *   This vector normalized.
   */
 
-  FORCEINLINE Vector2D
+  Vector2D
   normalize() const;
 
   //Uncommented
 
-  FORCEINLINE Vector2D
-  operator+(const Vector2D & A) const;
+  Vector2D&
+  operator=(const Vector2D& A);
 
   //Uncommented
 
-  FORCEINLINE Vector2D&
-  operator+=(const Vector2D & A);
+  Vector2D
+  operator+(const Vector2D& A) const;
 
   //Uncommented
 
-  FORCEINLINE Vector2D
-  operator-(const Vector2D & A) const;
+  Vector2D&
+  operator+=(const Vector2D& A);
 
   //Uncommented
 
-  FORCEINLINE Vector2D&
-  operator-=(const Vector2D & A);
+  Vector2D
+  operator-(const Vector2D& A) const;
 
   //Uncommented
 
-  FORCEINLINE Vector2D
-  operator*(const Vector2D & A) const;
+  Vector2D&
+  operator-=(const Vector2D& A);
 
   //Uncommented
 
-  FORCEINLINE Vector2D&
-  operator*=(const Vector2D & A);
+  Vector2D
+  operator*(const Vector2D& A) const;
 
   //Uncommented
 
-  FORCEINLINE Vector2D
+  Vector2D&
+  operator*=(const Vector2D& A);
+
+  //Uncommented
+
+  Vector2D
   operator*(const Float32 S) const;
 
   //Uncommented
 
-  FORCEINLINE Vector2D&
+  Vector2D&
   operator*=(const Float32 S);
 
   //Uncommented
 
-  FORCEINLINE Vector2D
+  Vector2D
   operator/(const Float32 S) const;
 
   //Uncommented
 
-  FORCEINLINE Vector2D&
+  Vector2D&
   operator/=(const Float32 S);
 
   union

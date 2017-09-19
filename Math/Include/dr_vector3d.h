@@ -21,14 +21,14 @@ class DR_API_EXPORT Vector3D
   *
   */
 
-  Vector3D(Vector3D && V) = default;
+  Vector3D(Vector3D&& V) = default;
 
   /**
   * Copy constructor
   *
   */
 
-  Vector3D(const Vector3D & V);
+  Vector3D(const Vector3D& V);
 
   /**
   * Initialize constructor with values.
@@ -105,33 +105,38 @@ class DR_API_EXPORT Vector3D
 
   //Uncommented
 
-  Vector3D
-  operator+(const Vector3D & A) const;
-
-  //Uncommented
-
   Vector3D&
-  operator+=(const Vector3D & A);
+  operator=(const Vector3D& A);
 
   //Uncommented
 
   Vector3D
-  operator-(const Vector3D & A) const;
+  operator+(const Vector3D& A) const;
 
   //Uncommented
 
   Vector3D&
-  operator-=(const Vector3D & A);
+  operator+=(const Vector3D& A);
 
   //Uncommented
 
   Vector3D
-  operator*(const Vector3D & A) const;
+  operator-(const Vector3D& A) const;
 
   //Uncommented
 
   Vector3D&
-  operator*=(const Vector3D & A);
+  operator-=(const Vector3D& A);
+
+  //Uncommented
+
+  Vector3D
+  operator*(const Vector3D& A) const;
+
+  //Uncommented
+
+  Vector3D&
+  operator*=(const Vector3D& A);
 
   //Uncommented
 

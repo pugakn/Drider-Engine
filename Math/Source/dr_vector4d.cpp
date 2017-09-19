@@ -45,6 +45,15 @@ driderSDK::Vector4D::normalize() const {
   return (*this) * (1 / magnitude());
 }
 
+driderSDK::Vector4D&
+driderSDK::Vector4D::operator=(const Vector4D& A) {
+  x = A.x;
+  y = A.y;
+  z = A.z;
+  w = A.w;
+  return *this;
+}
+
 driderSDK::Vector4D
 driderSDK::Vector4D::operator+(const Vector4D& A) const {
   return Vector4D(x + A.x, y + A.y, z + A.z, w + A.w);
