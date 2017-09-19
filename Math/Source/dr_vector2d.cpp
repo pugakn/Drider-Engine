@@ -47,15 +47,13 @@ Vector2D::normalize() const
 Float32&
 Vector2D::operator[](SizeT index)
 {
-  if (index >= 2) {
-    throw std::out_of_range("Index out of range");
-  }
   if (index == 0) {
     return x;
   }
-  if (index == 1) {
+  else if (index == 1) {
     return y;
   }
+  throw std::out_of_range("Index out of range");
 }
 
 Vector2D&

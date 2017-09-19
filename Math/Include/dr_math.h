@@ -100,7 +100,7 @@ floor(Float32 value) {
 
 static FORCEINLINE Int32
 round(Float32 value) {
-	return truncate2Int(floor(value +0.5f));
+	return truncate2Int(floor(value + 0.5f));
 }
 
 static FORCEINLINE Float32
