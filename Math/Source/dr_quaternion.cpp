@@ -137,8 +137,4 @@ Quaternion::operator/=(const Quaternion & Q) {
   return *this;
 }
 
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> origin/master
