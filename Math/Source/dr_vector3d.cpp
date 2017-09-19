@@ -43,24 +43,27 @@ Vector3D::cross(const Vector3D& B) const
 }
 
 Float32
-Vector3D::magnitude() const
+Vector3D::length() const
 {
   return sqrt(dot(*this));
+}
+
+Float32
+Vector3D::lengthSqr() const
+{
+  return dot(*this);
 }
 
 Vector3D
 Vector3D::normalize() const
 {
-  return (*this) * (1 / magnitude());
+  return (*this) * (1 / length());
 }
 
 Float32&
 Vector3D::operator[](SizeT index)
 {
-  if (index >= 3) {
-    throw std::out_of_range("Index out of range");
-  }
-  else if (index == 0) {
+  if (index == 0) {
     return x;
   }
   else if (index == 1) {
@@ -69,6 +72,7 @@ Vector3D::operator[](SizeT index)
   else if (index == 2) {
     return z;
   }
+  throw std::out_of_range("Index out of range");
 }
 
 Vector3D&

@@ -47,24 +47,27 @@ Vector4D::cross(const Vector4D& B) const
 }
 
 Float32
-Vector4D::magnitude() const
+Vector4D::length() const
 {
   return sqrt(dot(*this));
+}
+
+Float32
+Vector4D::lengthSqr() const
+{
+  return dot(*this);
 }
 
 Vector4D
 Vector4D::normalize() const
 {
-  return (*this) * (1 / magnitude());
+  return (*this) * (1 / length());
 }
 
 Float32&
 Vector4D::operator[](SizeT index)
 {
-  if (index >= 4) {
-    throw std::out_of_range("Index out of range");
-  }
-  else if (index == 0) {
+  if (index == 0) {
     return x;
   }
   else if (index == 1) {
@@ -76,6 +79,7 @@ Vector4D::operator[](SizeT index)
   else if (index == 3) {
     return w;
   }
+  throw std::out_of_range("Index out of range");
 }
 
 Vector4D&

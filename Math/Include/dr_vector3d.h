@@ -85,14 +85,24 @@ class DR_API_EXPORT Vector3D
   cross(const Vector3D& B) const;
 
   /**
-  * Computes the magnitude of this vector.
+  * Computes the length of this vector.
   *
   * @return
-  *   The magnitude (or "size") of the vector.
+  *   The length (or "size") of the vector.
   */
 
   Float32
-  magnitude() const;
+  length() const;
+
+  /**
+  * Computes the squared length of this vector.
+  *
+  * @return
+  *   The length (or "size") of the vector squared.
+  */
+
+  Float32
+  lengthSqr() const;
 
   /**
   * Get this vector normalized.
