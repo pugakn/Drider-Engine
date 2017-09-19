@@ -3,6 +3,7 @@
 #include <array>
 #include <algorithm>
 #include <dr_prerequisites.h>
+#include "dr_math.h"
 
 namespace driderSDK {
 
@@ -242,7 +243,7 @@ class VectorN
   /**
   * Overload of binary operator ==.
   *
-  * This operator performs a memberwise comparison.
+  * This operator performs a memberwise equality comparison.
   *
   * @param rhs
   *  Right operand (a vector with same number of elements).
@@ -266,7 +267,7 @@ class VectorN
   /**
   * Overload of binary operator ==.
   *
-  * This operator performs a memberwise comparison.
+  * This operator performs a memberwise inequality comparison.
   *
   *	@return 
   *	  True if an elements of *this vector is unequal to an elements of rhs

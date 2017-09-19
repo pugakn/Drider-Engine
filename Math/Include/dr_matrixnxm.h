@@ -33,7 +33,6 @@ class MatrixNxM
   *	 All the elements of the matrix are initialized to this value.
   *
   */
-
   explicit MatrixNxM(Float32 _scalar) : MatrixNxM(VectorN<_cols>( _scalar ))
   {}
 
@@ -44,7 +43,6 @@ class MatrixNxM
   *	 All the rows of the matrix are initialized to this vector.
   *
   */
-
   explicit MatrixNxM(const VectorN<_cols>& _vec)
   {
 	for(auto& row : m_data){
@@ -64,7 +62,6 @@ class MatrixNxM
   * @throws out_of_range
   *	  If the row is greater than number of rows in the matrix.
   */
-
   FORCEINLINE VectorN<_cols>&
   operator[](SizeT row)
   {
@@ -87,7 +84,6 @@ class MatrixNxM
   * @throws out_of_range
   *	  If the row is greater than number of rows in the matrix.
   */
-
   FORCEINLINE const VectorN<_cols>&
   operator[](SizeT row) const
   {
@@ -104,7 +100,6 @@ class MatrixNxM
   *	@return
   *	  The number of rows in the matrix.
   */
-
   FORCEINLINE SizeT
   rows() const
   {
@@ -117,7 +112,6 @@ class MatrixNxM
   * @return
   *	  The number of columns in the matrix.
   */
-
   FORCEINLINE SizeT
   cols() const noexcept
   {
@@ -131,7 +125,6 @@ class MatrixNxM
   *	  The matrix transposed.
   *
   */
-
   FORCEINLINE MatrixNxM<_cols, _rows>
   transpose() const
   {
@@ -152,7 +145,6 @@ class MatrixNxM
   * @return
   *	  A constant pointer to the first element of the matrix.
   */
-
   FORCEINLINE const Float32*
   ptr() const
   {
@@ -160,13 +152,17 @@ class MatrixNxM
   }
 
   /**
-  *	Overload of binary operator *= 
+  *	Overload of binary operator *=.
+  *
+  *	This overload performs the multiplication assignment by scalar 
+  *	to each row of the matrix.
   *
   *	@param scalar
-  *	 The value 
+  *	 Right side operand (a scalar)
   *
+  *	@return
+  *	  A reference to (*this).	
   */
-
   FORCEINLINE MatrixNxM&
   operator*=(Float32 scalar)
   {	
@@ -177,32 +173,36 @@ class MatrixNxM
 	return *this;
   }  
 
-  //Uncommented
-
-  template<SizeT _rhsCols>
-  FORCEINLINE MatrixNxM
-  operator*=(const MatrixNxM<_cols, _rhsCols>& rhs)
-  {
-	MatrixNxM<_rows, _rhsCols> temp;
-	MatrixNxM<_rhsCols, _cols> rhsTransposed = rhs.transpose();
-	
-	for(int iRows = 0; iRows < _rows; ++iRows){
-	  temp[iRows] = m_data[iRows].dot(rhsTransposed[iRows]);
-	}
-
-	return temp;
-  }
-
-  //Uncommented
-
+  /**
+  *	Overload of binary operator /=.
+  *
+  *	This overload performs the division assignment by scalar 
+  *	to each row of the matrix.
+  *
+  *	@param scalar
+  *	 Right side operand (a scalar)
+  *
+  *	@return
+  *	  A reference to (*this).	
+  */
   FORCEINLINE MatrixNxM&
   operator/=(Float32 scalar)
   {	
 	return *this *= (1.f / scalar);
   }
 
-  //Uncommented
-
+  /**
+  *	Overload of binary operator *.
+  *
+  *	This overload performs the matrix-vector product.
+  *	
+  *	@param rhs
+  *	 Right side operand (a vector with M (number of _cols of (*this))
+  *	 elements.
+  *
+  *	@return
+  *	  The transformed vector.	
+  */
   FORCEINLINE VectorN<_rows>
   operator*(const VectorN<_cols>& rhs)
   {
@@ -215,14 +215,17 @@ class MatrixNxM
   }
 
   /**
-  * Computes the equality operator row to row of both matrices.
+  *	Overload of binary operator ==.
+  *
+  *	This overload performs a memberwise equality comparision. 
   *
   * @param rhs
-  *  The matrices with which the rows are compared.
+  *  Right operand (a matrice of the same size with which the rows 
+  *	 are compared).
   *
   *	@return 
-  *	  True if all rows of *this vector are equal to all rows of rhs
-  *	  vector, false otherwise.
+  *	  True if all rows of *this matrix are equal to all rows of rhs
+  *	  matrix, false otherwise.
   *
   */
   FORCEINLINE bool
@@ -237,7 +240,17 @@ class MatrixNxM
   }
 
   /**
+  *	Overload of binary operator ==.
   *
+  *	This overload performs a memberwise inequality comparision. 
+  *
+  * @param rhs
+  *  Right operand (a matrice of the same size with which the rows 
+  *	 are compared).
+  *
+  *	@return 
+  *	  True if a row of *this matrix is unequal to a row of rhs
+  *	  matrix, false otherwise.
   *
   */
   FORCEINLINE bool
@@ -253,8 +266,20 @@ class MatrixNxM
   std::array<VectorN<_cols>, _rows> m_data;
 };
 
-//Uncommented
-
+/**
+* Overload of binary operator *.
+*
+* This overload performs the vector-matrix product.
+*
+* @param lhs
+*  Left side operand (a vector with N elements).
+*	
+* @param rhs
+*  Right side operand (a matrix with N rows and M columns).
+*
+* @return
+*	The transformed vector.	
+*/
 template<SizeT _rows, SizeT _cols> 
 FORCEINLINE VectorN<_cols> 
 operator*(const VectorN<_rows> lhs, const MatrixNxM<_rows, _cols>& rhs)
@@ -267,8 +292,21 @@ operator*(const VectorN<_rows> lhs, const MatrixNxM<_rows, _cols>& rhs)
   return temp;
 }
 
-//Uncommented
-
+/**
+* Overload of binary operator *.
+*
+* This overload performs the multiplication of each row of matrix
+* by scalar.
+*	
+* @param matrix
+*  Left side operand (a matrix with N rows and M columns).
+*
+* @param scalar
+*  Right side operand (a scalar).
+*
+* @return
+*	The transformed matrix.	
+*/
 template<SizeT _rows, SizeT _cols>
 FORCEINLINE MatrixNxM<_rows, _cols>
 operator*(MatrixNxM<_rows, _cols> matrix, Float32 scalar)
@@ -276,8 +314,21 @@ operator*(MatrixNxM<_rows, _cols> matrix, Float32 scalar)
   return matrix *= scalar;
 }
 
-//Uncommented
-
+/**
+* Overload of binary operator *.
+*
+* This overload performs the multiplication of each row of matrix
+* by scalar.
+*	
+* @param scalar
+*  Left side operand (a scalar).
+*
+* @param matrix
+*  Right side operand (a matrix with N rows and M columns).
+*
+* @return
+*	The transformed matrix.	
+*/
 template<SizeT _rows, SizeT _cols>
 FORCEINLINE MatrixNxM<_rows, _cols>
 operator*(Float32 scalar, const MatrixNxM<_rows, _cols>& matrix)
@@ -285,7 +336,42 @@ operator*(Float32 scalar, const MatrixNxM<_rows, _cols>& matrix)
   return matrix * scalar;
 }
 
-//Uncommented
+/**
+* Overload of binary operator /.
+*
+* This overload performs the division of each row of matrix
+* by scalar.
+*	
+* @param matrix
+*  Left side operand (a matrix with N rows and M columns).
+*
+* @param scalar
+*  Right side operand (a scalar).
+*
+* @return
+*	The transformed matrix.	
+*/
+template<SizeT _rows, SizeT _cols>
+FORCEINLINE MatrixNxM<_rows, _cols>
+operator/(MatrixNxM<_rows, _cols> matrix, Float32 scalar)
+{
+  return matrix /= scalar;
+}
+
+/**
+* Overload of binary operator *.
+* 
+* This overload performs the matrices product.
+* 
+* @param lhs
+*  Left size operand (a matrix of N rows x M columns).
+* 
+* @param rhs
+*  Right side operand (a matrix of M rows x P columns).
+* 
+* @return
+*   The matrices product (a matrix of N rows x P columns).	
+*/
 template<SizeT _rows, SizeT _cols, SizeT _rhsCols>
 FORCEINLINE MatrixNxM<_rows, _rhsCols>
 operator*(const MatrixNxM<_rows, _cols>& lhs, const MatrixNxM<_cols, _rhsCols>& rhs)
@@ -301,15 +387,5 @@ operator*(const MatrixNxM<_rows, _cols>& lhs, const MatrixNxM<_cols, _rhsCols>& 
 
   return temp;
 }
-
-//Uncommented
-
-template<SizeT _rows, SizeT _cols>
-FORCEINLINE MatrixNxM<_rows, _cols>
-operator/(MatrixNxM<_rows, _cols> matrix, Float32 scalar)
-{
-  return matrix /= scalar;
-}
-
 
 }

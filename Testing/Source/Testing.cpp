@@ -1,12 +1,9 @@
 #include <dr_prerequisites.h>
-#include <dr_vector2d.h>
 #include <dr_matrixnxm.h>
 #include <dr_vectorn.h>
 
 int main(int argc, char* argv[])
 {
-
-
 
   driderSDK::MatrixNxM<3, 5> m3x5;
   driderSDK::MatrixNxM<5, 4> m5x4;
@@ -24,6 +21,9 @@ int main(int argc, char* argv[])
   driderSDK::MatrixNxM<5,4> other(m5x4);
 
   auto bEqual = m5x4 == other;
+
+  driderSDK::VectorN<4> mlg;
+  auto vk = mlg.length();
 
   return 0;
 }
