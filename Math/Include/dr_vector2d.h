@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <stdexcept>
 #include <dr_prerequisites.h>
 
 namespace driderSDK {
@@ -86,6 +87,11 @@ class DR_API_EXPORT Vector2D
 
   //Uncommented
 
+  Float32&
+  operator[](SizeT index);
+
+  //Uncommented
+
   Vector2D&
   operator=(const Vector2D& A);
 
@@ -139,14 +145,7 @@ class DR_API_EXPORT Vector2D
   Vector2D&
   operator/=(const Float32 S);
 
-  union
-  {
-    struct
-    {
-      Float32 x, y;
-    };
-    Float32 v[2];
-  };
+  Float32 x, y;
 };
 
 }

@@ -6,7 +6,7 @@
 int main(int argc, char* argv[])
 {
 
-  
+
 
   driderSDK::MatrixNxM<3, 5> m3x5;
   driderSDK::MatrixNxM<5, 4> m5x4;
