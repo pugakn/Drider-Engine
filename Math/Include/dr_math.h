@@ -6,10 +6,11 @@ namespace driderSDK {
 /**********************************************************************
 *						              Basic math defines
 **********************************************************************/
+const Float32 DR_HALF_PI = 1.5707963267948966f;
+const Float32 DR_QUARTER_PI = 0.7853981633974483f;
 const Float32 DR_PI = 3.1415926535897932f;
-const Float32 DR_PI_2 = 1.5707963267948966f;
-const Float32 DR_PI_4 = 0.7853981633974483f;
-const Float32 DR_INV_PI = 0.31830988618f;
+const Float32 DR_TWO_PI	= 6.2831853071795867f;
+const Float32 DR_ONE_OVER_PI = 0.31830988618f;
 const Float32 DR_E = 2.7182818284590452f;
 
 /**********************************************************************
@@ -93,9 +94,15 @@ truncate2Float(Float32 value) {
 	return static_cast<Float32>(truncate2Int(value));
 }
 
-static FORCEINLINE Int32
+static FORCEINLINE Float32
+ceil(Float32 value)
+{
+  return std::ceilf(value);
+}
+
+static FORCEINLINE Float32
 floor(Float32 value) {
-	return truncate2Int(std::floorf(value));
+	return std::floorf(value);
 }
 
 static FORCEINLINE Int32

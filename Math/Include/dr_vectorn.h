@@ -7,7 +7,12 @@
 
 namespace driderSDK {
 
-
+/**
+*  Vector template with fixed number of elements.
+*
+* Sample usage:
+*	VectorN<8> myVectorWithEightElements;
+*/
 template <SizeT _elements>
 class VectorN
 {
@@ -134,7 +139,15 @@ class VectorN
   FORCEINLINE VectorN
   normalize() const
   {
-	Float32 invLength = 1.f / length();
+	Float32 invLength = 1.f / (length() + std::numeric_limits<Float32>::min());
+
+	if(len != 0) {
+	  invLength /=   	
+	}
+	else {
+	  invLength = 0.0f;
+	}
+
 	return (*this) * invLength;
   }
 

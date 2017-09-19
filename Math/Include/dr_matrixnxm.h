@@ -13,7 +13,6 @@ namespace driderSDK {
 * Sample usage:
 *	MatrixNxM<5,8> myMatrix;
 */
-
 template<SizeT _rows, SizeT _cols>
 class MatrixNxM
 {
@@ -22,7 +21,6 @@ class MatrixNxM
   * Default constructor.
   *
   */
-
   MatrixNxM()
   {}
 
@@ -281,7 +279,7 @@ class MatrixNxM
 *	The transformed vector.	
 */
 template<SizeT _rows, SizeT _cols> 
-FORCEINLINE VectorN<_cols> 
+static FORCEINLINE VectorN<_cols> 
 operator*(const VectorN<_rows> lhs, const MatrixNxM<_rows, _cols>& rhs)
 {
   VectorN<_cols> temp;
@@ -308,7 +306,7 @@ operator*(const VectorN<_rows> lhs, const MatrixNxM<_rows, _cols>& rhs)
 *	The transformed matrix.	
 */
 template<SizeT _rows, SizeT _cols>
-FORCEINLINE MatrixNxM<_rows, _cols>
+static FORCEINLINE MatrixNxM<_rows, _cols>
 operator*(MatrixNxM<_rows, _cols> matrix, Float32 scalar)
 {
   return matrix *= scalar;
@@ -330,7 +328,7 @@ operator*(MatrixNxM<_rows, _cols> matrix, Float32 scalar)
 *	The transformed matrix.	
 */
 template<SizeT _rows, SizeT _cols>
-FORCEINLINE MatrixNxM<_rows, _cols>
+static FORCEINLINE MatrixNxM<_rows, _cols>
 operator*(Float32 scalar, const MatrixNxM<_rows, _cols>& matrix)
 {
   return matrix * scalar;
@@ -352,7 +350,7 @@ operator*(Float32 scalar, const MatrixNxM<_rows, _cols>& matrix)
 *	The transformed matrix.	
 */
 template<SizeT _rows, SizeT _cols>
-FORCEINLINE MatrixNxM<_rows, _cols>
+static FORCEINLINE MatrixNxM<_rows, _cols>
 operator/(MatrixNxM<_rows, _cols> matrix, Float32 scalar)
 {
   return matrix /= scalar;
@@ -373,7 +371,7 @@ operator/(MatrixNxM<_rows, _cols> matrix, Float32 scalar)
 *   The matrices product (a matrix of N rows x P columns).	
 */
 template<SizeT _rows, SizeT _cols, SizeT _rhsCols>
-FORCEINLINE MatrixNxM<_rows, _rhsCols>
+static FORCEINLINE MatrixNxM<_rows, _rhsCols>
 operator*(const MatrixNxM<_rows, _cols>& lhs, const MatrixNxM<_cols, _rhsCols>& rhs)
 {
   MatrixNxM<_rows, _rhsCols> temp;
