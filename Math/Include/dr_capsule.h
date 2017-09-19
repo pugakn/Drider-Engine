@@ -1,8 +1,6 @@
 #pragma once
 
 namespace driderSDKSDK {
-
-namespace math {
   
 class Capsule
 {
@@ -10,7 +8,5 @@ class Capsule
  protected:
  private:
 };
-
-}
 
 }

@@ -5,7 +5,6 @@
 
 
 namespace driderSDK {
-using namespace math;
 class Sphere;
 class Capsule;
 class Ray;

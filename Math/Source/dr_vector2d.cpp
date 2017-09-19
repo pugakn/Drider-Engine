@@ -1,102 +1,137 @@
 #include "dr_vector2d.h"
 
-driderSDK::Vector2D::Vector2D()
+namespace driderSDK
+{
+
+Vector2D::Vector2D()
   : x(0.0f),
-    y(0.0f) {
+    y(0.0f)
+{
 }
 
-driderSDK::Vector2D::Vector2D(const Vector2D& V)
+Vector2D::Vector2D(const Vector2D& V)
   : x(V.x),
-    y(V.y) {
+    y(V.y)
+{
 }
 
-driderSDK::Vector2D::Vector2D(Float32 x,
-                              Float32 y)
+Vector2D::Vector2D(Float32 x,
+                   Float32 y)
   : x(x),
-    y(y) {
+    y(y)
+{
 }
 
-driderSDK::Vector2D::~Vector2D() {
+Vector2D::~Vector2D()
+{
 }
 
-driderSDK::Float32
-driderSDK::Vector2D::dot(const Vector2D& B) const {
+Float32
+Vector2D::dot(const Vector2D& B) const
+{
   return (x*B.x) + (y*B.y);
 }
 
-driderSDK::Float32
-driderSDK::Vector2D::magnitude() const {
+Float32
+Vector2D::magnitude() const
+{
   return sqrt(dot(*this));
 }
 
-driderSDK::Vector2D
-driderSDK::Vector2D::normalize() const {
+Vector2D
+Vector2D::normalize() const
+{
   return (*this) * (1 / magnitude());
 }
 
-driderSDK::Vector2D&
-driderSDK::Vector2D::operator=(const Vector2D& A) {
+Float32&
+Vector2D::operator[](SizeT index)
+{
+  if (index == 0) {
+    return x;
+  }
+  else if (index == 1) {
+    return y;
+  }
+  throw std::out_of_range("Index out of range");
+}
+
+Vector2D&
+Vector2D::operator=(const Vector2D& A)
+{
   x = A.x;
   y = A.y;
   return *this;
 }
 
-driderSDK::Vector2D
-driderSDK::Vector2D::operator+(const Vector2D& A) const {
+Vector2D
+Vector2D::operator+(const Vector2D& A) const
+{
   return Vector2D(x + A.x, y + A.y);
 }
 
-driderSDK::Vector2D&
-driderSDK::Vector2D::operator+=(const Vector2D& A) {
+Vector2D&
+Vector2D::operator+=(const Vector2D& A)
+{
   x += A.x;
   y += A.y;
   return *this;
 }
 
-driderSDK::Vector2D
-driderSDK::Vector2D::operator-(const Vector2D& A) const {
+Vector2D
+Vector2D::operator-(const Vector2D& A) const
+{
   return Vector2D(x - A.x, y - A.y);
 }
 
-driderSDK::Vector2D&
-driderSDK::Vector2D::operator-=(const Vector2D& A) {
+Vector2D&
+Vector2D::operator-=(const Vector2D& A)
+{
   x -= A.x;
   y -= A.y;
   return *this;
 }
 
-driderSDK::Vector2D
-driderSDK::Vector2D::operator*(const Vector2D& A) const {
+Vector2D
+Vector2D::operator*(const Vector2D& A) const
+{
   return Vector2D(x*A.x, y*A.y);
 }
 
-driderSDK::Vector2D&
-driderSDK::Vector2D::operator*=(const Vector2D& A) {
+Vector2D&
+Vector2D::operator*=(const Vector2D& A)
+{
   x *= A.x;
   y *= A.y;
   return *this;
 }
 
-driderSDK::Vector2D
-driderSDK::Vector2D::operator*(const Float32 S) const {
+Vector2D
+Vector2D::operator*(const Float32 S) const
+{
   return Vector2D(x*S, y*S);
 }
 
-driderSDK::Vector2D&
-driderSDK::Vector2D::operator*=(const Float32 S) {
+Vector2D&
+Vector2D::operator*=(const Float32 S)
+{
   x *= S;
   y *= S;
   return *this;
 }
 
-driderSDK::Vector2D
-driderSDK::Vector2D::operator/(const Float32 S) const {
+Vector2D
+Vector2D::operator/(const Float32 S) const
+{
   return Vector2D(x*(1 / S), y*(1 / S));
 }
 
-driderSDK::Vector2D&
-driderSDK::Vector2D::operator/=(const Float32 S) {
+Vector2D&
+Vector2D::operator/=(const Float32 S)
+{
   x *= (1 / S);
   y *= (1 / S);
   return *this;
+}
+
 }

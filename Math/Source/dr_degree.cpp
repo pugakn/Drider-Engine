@@ -2,8 +2,4 @@
 
 namespace driderSDK {
 
-namespace math {
-
-}
-
 }
