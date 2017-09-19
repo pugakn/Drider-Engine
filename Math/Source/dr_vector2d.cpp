@@ -33,15 +33,21 @@ Vector2D::dot(const Vector2D& B) const
 }
 
 Float32
-Vector2D::magnitude() const
+Vector2D::length() const
 {
   return sqrt(dot(*this));
+}
+
+Float32
+Vector2D::lengthSqr() const
+{
+  return dot(*this);
 }
 
 Vector2D
 Vector2D::normalize() const
 {
-  return (*this) * (1 / magnitude());
+  return (*this) * (1 / length());
 }
 
 Float32&

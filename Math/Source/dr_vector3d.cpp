@@ -43,15 +43,21 @@ Vector3D::cross(const Vector3D& B) const
 }
 
 Float32
-Vector3D::magnitude() const
+Vector3D::length() const
 {
   return sqrt(dot(*this));
+}
+
+Float32
+Vector3D::lengthSqr() const
+{
+  return dot(*this);
 }
 
 Vector3D
 Vector3D::normalize() const
 {
-  return (*this) * (1 / magnitude());
+  return (*this) * (1 / length());
 }
 
 Float32&

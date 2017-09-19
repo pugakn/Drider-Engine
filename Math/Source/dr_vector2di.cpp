@@ -33,15 +33,21 @@ Vector2DI::dot(const Vector2DI& B) const
 }
 
 Float32
-Vector2DI::magnitude() const
+Vector2DI::length() const
 {
   return sqrt(dot(*this));
+}
+
+Float32
+Vector2DI::lengthSqr() const
+{
+  return dot(*this);
 }
 
 Vector2DI
 Vector2DI::normalize() const
 {
-  return (*this) * (1 / magnitude());
+  return (*this) * (1 / length());
 }
 
 Int32&
