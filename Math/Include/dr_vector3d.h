@@ -101,10 +101,7 @@ class DR_API_EXPORT Vector3D
   */
 
   Vector3D
-  normalize() const
-  {
-  return (*this) * pow(magnitude(), -1);
-  };
+  normalize() const;
 
   //Uncommented
 
