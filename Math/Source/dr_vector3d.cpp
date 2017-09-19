@@ -1,34 +1,29 @@
 #include "dr_vector3d.h"
 
-namespace driderSDK
-{
+namespace driderSDK {
 
 Vector3D::Vector3D()
   : x(0.0f),
-    y(0.0f),
-    z(0.0f)
-{
-}
+  y(0.0f),
+  z(0.0f)
+{}
 
 Vector3D::Vector3D(const Vector3D& V)
   : x(V.x),
-    y(V.y),
-    z(V.z)
-{
-}
+  y(V.y),
+  z(V.z)
+{}
 
 Vector3D::Vector3D(Float32 x,
-                   Float32 y,
-                   Float32 z)
+				   Float32 y,
+				   Float32 z)
   : x(x),
-    y(y),
-    z(z)
-{
-}
+  y(y),
+  z(z)
+{}
 
 Vector3D::~Vector3D()
-{
-}
+{}
 
 Float32
 Vector3D::dot(const Vector3D& B) const
@@ -64,13 +59,13 @@ Float32&
 Vector3D::operator[](SizeT index)
 {
   if (index == 0) {
-    return x;
+	return x;
   }
   else if (index == 1) {
-    return y;
+	return y;
   }
   else if (index == 2) {
-    return z;
+	return z;
   }
   throw std::out_of_range("Index out of range");
 }
@@ -85,12 +80,14 @@ Vector3D::operator=(const Vector3D& A)
 }
 
 Vector3D
-Vector3D::operator+(const Vector3D& A) const {
+Vector3D::operator+(const Vector3D& A) const
+{
   return Vector3D(x + A.x, y + A.y, z + A.z);
 }
 
 Vector3D&
-Vector3D::operator+=(const Vector3D& A) {
+Vector3D::operator+=(const Vector3D& A)
+{
   x += A.x;
   y += A.y;
   z += A.z;
@@ -98,12 +95,14 @@ Vector3D::operator+=(const Vector3D& A) {
 }
 
 Vector3D
-Vector3D::operator-(const Vector3D& A) const {
+Vector3D::operator-(const Vector3D& A) const
+{
   return Vector3D(x - A.x, y - A.y, z - A.z);
 }
 
 Vector3D&
-Vector3D::operator-=(const Vector3D& A) {
+Vector3D::operator-=(const Vector3D& A)
+{
   x -= A.x;
   y -= A.y;
   z -= A.z;
@@ -111,12 +110,14 @@ Vector3D::operator-=(const Vector3D& A) {
 }
 
 Vector3D
-Vector3D::operator*(const Vector3D& A) const {
+Vector3D::operator*(const Vector3D& A) const
+{
   return Vector3D(x*A.x, y*A.y, z*A.z);
 }
 
 Vector3D&
-Vector3D::operator*=(const Vector3D& A) {
+Vector3D::operator*=(const Vector3D& A)
+{
   x *= A.x;
   y *= A.y;
   z *= A.z;
@@ -124,12 +125,14 @@ Vector3D::operator*=(const Vector3D& A) {
 }
 
 Vector3D
-Vector3D::operator*(const Float32 S) const {
+Vector3D::operator*(const Float32 S) const
+{
   return Vector3D(x*S, y*S, z*S);
 }
 
 Vector3D&
-Vector3D::operator*=(const Float32 S) {
+Vector3D::operator*=(const Float32 S)
+{
   x *= S;
   y *= S;
   z *= S;
@@ -137,15 +140,19 @@ Vector3D::operator*=(const Float32 S) {
 }
 
 Vector3D
-Vector3D::operator/(const Float32 S) const {
-  return Vector3D(x*pow(S, -1), y*pow(S, -1), z*pow(S, -1));
+Vector3D::operator/(const Float32 S) const
+{
+  Float32 invDiv = 1 / S;
+  return Vector3D(x*invDiv, y*invDiv, z*invDiv);
 }
 
 Vector3D&
-Vector3D::operator/=(const Float32 S) {
-  x *= pow(S, -1);
-  y *= pow(S, -1);
-  z *= pow(S, -1);
+Vector3D::operator/=(const Float32 S)
+{
+  Float32 invDiv = 1 / S;
+  x *= invDiv;
+  y *= invDiv;
+  z *= invDiv;
   return *this;
 }
 

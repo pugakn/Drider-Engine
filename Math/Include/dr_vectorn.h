@@ -21,7 +21,7 @@ class VectorN
   * Default constructor
   *
   */
-  VectorN() : m_data{}
+  VectorN()
   {}
 
   /**
@@ -127,6 +127,18 @@ class VectorN
   length() const
   {
 	return sqrt(dot(*this));
+  }
+
+  /**
+  * Computes the squared length of the vector.
+  *
+  * @return
+  *	  Squared length of the vector.
+  */
+  FORCEINLINE Float32
+  lengthSqr() const
+  {
+	return dot(*this);
   }
 
   /**
@@ -315,7 +327,7 @@ class VectorN
 *
 */
 template<SizeT _elements>
-FORCEINLINE VectorN<_elements>
+static FORCEINLINE VectorN<_elements>
 operator*(VectorN<_elements> vector, Float32 scalar)
 {
   return vector *= scalar;
@@ -337,7 +349,7 @@ operator*(VectorN<_elements> vector, Float32 scalar)
 *
 */
 template<SizeT _elements>
-FORCEINLINE VectorN<_elements>
+static FORCEINLINE VectorN<_elements>
 operator*(Float32 scalar, const VectorN<_elements>& vector)
 {
   return vector * scalar;
@@ -359,7 +371,7 @@ operator*(Float32 scalar, const VectorN<_elements>& vector)
 *
 */
 template<SizeT _elements>
-FORCEINLINE VectorN<_elements>
+static FORCEINLINE VectorN<_elements>
 operator/(VectorN<_elements> vector, Float32 scalar)
 {
   return vector /= scalar;
@@ -381,7 +393,7 @@ operator/(VectorN<_elements> vector, Float32 scalar)
 *
 */
 template<SizeT _elements>
-FORCEINLINE VectorN<_elements>
+static FORCEINLINE VectorN<_elements>
 operator+(VectorN<_elements> lhs, const VectorN<_elements>& rhs)
 {
   return lhs += rhs;
@@ -403,7 +415,7 @@ operator+(VectorN<_elements> lhs, const VectorN<_elements>& rhs)
 *
 */
 template<SizeT _elements>
-FORCEINLINE VectorN<_elements>
+static FORCEINLINE VectorN<_elements>
 operator-(VectorN<_elements> lhs, const VectorN<_elements>& rhs )
 {
   return lhs -= rhs;
