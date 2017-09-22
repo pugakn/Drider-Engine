@@ -10,12 +10,12 @@ namespace math {
 /**********************************************************************
 *						              Basic math defines
 **********************************************************************/
-const Float32 PI		  = static_cast<Float32>(4.0 * std::atan(1.0));
-const Float32 HALF_PI	  = static_cast<Float32>(PI * 0.5);
+const Float32 PI		      = static_cast<Float32>(4.0 * std::atan(1.0));
+const Float32 HALF_PI	    = static_cast<Float32>(PI * 0.5);
 const Float32 QUARTER_PI  = static_cast<Float32>(PI * 0.25);
 const Float32 TWO_PI  	  = static_cast<Float32>(PI * 2.0);
 const Float32 ONE_OVER_PI = static_cast<Float32>(1.0 / PI);
-const Float32 EULER		  = static_cast<Float32>(2.7182818284590452);
+const Float32 EULER		    = static_cast<Float32>(2.7182818284590452);
 
 /***********************************************************************
 * 								Limits								   *

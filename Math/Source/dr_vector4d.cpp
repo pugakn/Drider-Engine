@@ -8,11 +8,19 @@ Vector4D::Vector4D()
 }
 
 Vector4D::Vector4D(FORCE_INIT k)
-  : x(0.0f),
-    y(0.0f),
-    z(0.0f),
-    w(0.0f)
 {
+  if (k == FORCE_INIT::kIdentity) {
+    x = 0.0f;
+    y = 0.0f;
+    z = 0.0f;
+    w = 0.0f;
+  }
+  else {
+    x = 1.0f;
+    y = 1.0f;
+    z = 1.0f;
+    w = 1.0f;
+  }
 }
 
 Vector4D::Vector4D(const Vector4D& V)
@@ -72,6 +80,12 @@ Float32
 Vector4D::distance(const Vector4D& S) const
 {
   return (S - *this).length();
+}
+
+Float32
+Vector4D::distanceSqr(const Vector4D & S) const
+{
+  return (S - *this).lengthSqr();
 }
 
 Float32&

@@ -8,9 +8,15 @@ Vector2D::Vector2D()
 }
 
 Vector2D::Vector2D(FORCE_INIT k)
-  : x(0.0f),
-    y(0.0f)
 {
+  if (k == FORCE_INIT::kIdentity) {
+    x = 0.0f;
+    y = 0.0f;
+  }
+  else {
+    x = 1.0f;
+    y = 1.0f;
+  }
 }
 
 Vector2D::Vector2D(const Vector2D& V)
@@ -58,6 +64,12 @@ Float32
 Vector2D::distance(const Vector2D& S) const
 {
   return (S - *this).length();
+}
+
+Float32
+Vector2D::distanceSqr(const Vector2D& S) const
+{
+  return (S - *this).lengthSqr();
 }
 
 Float32&
