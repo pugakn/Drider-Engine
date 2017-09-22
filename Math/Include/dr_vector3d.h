@@ -1,8 +1,8 @@
 #pragma once
 
-#include <cmath>
 #include <stdexcept>
 #include <dr_prerequisites.h>
+#include "dr_math.h"
 
 namespace driderSDK {
 

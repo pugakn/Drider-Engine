@@ -53,7 +53,7 @@ Vector4D::cross(const Vector4D& B) const
 Float32
 Vector4D::length() const
 {
-  return sqrt(dot(*this));
+  return math::sqrt(dot(*this));
 }
 
 Float32
