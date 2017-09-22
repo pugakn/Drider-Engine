@@ -8,7 +8,7 @@ namespace driderSDK {
 class DR_API_EXPORT Matrix4x4
 {
  public:
-  enum INIT_MATRIX {
+  enum FORCE_INIT {
     kZero,
     kIdentity
   };
@@ -24,7 +24,7 @@ class DR_API_EXPORT Matrix4x4
   *
   * Values are initialized with 0(kZero) or identity matrix(kIdentity).
   */
-  Matrix4x4(INIT_MATRIX k);
+  Matrix4x4(FORCE_INIT k);
 
   /**
   * Move constructor
@@ -51,7 +51,7 @@ class DR_API_EXPORT Matrix4x4
   *  The x, y, z, w values of the vector, third raw
   *
   * @param v3x, v3y, v3z, v3w
-  *  The x, y, z, w values of the vector, third raw
+  *  The x, y, z, w values of the vector, quarter raw
   *
   */
   Matrix4x4(Float32 v0x, Float32 v0y, Float32 v0z, Float32 v0w,
@@ -83,18 +83,31 @@ class DR_API_EXPORT Matrix4x4
   ~Matrix4x4();
 
   /**
-  * Computes the dot product between this vector and the vector parameter.
-  * This operatios is commutative.
+  * Inverse
   *
-  * @param B
-  *  The vector against which the dot product is calculated.
-  *
-  * @return
-  *   The sum of the products of the corresponding entries of the
-  *   vectors.
   */
   Matrix4x4
-    inverse() const;
+  inverse() const;
+
+  /**
+  * Transpose
+  *
+  * Invert columns whith rows
+  * | A1 | A2 | A3 | A4 |T    | A1 | B1 | C1 | D1 |
+  * | B1 | B2 | B3 | B4 |     | A2 | B2 | C2 | D2 |
+  * | C1 | C2 | C3 | C4 |  =  | A3 | B3 | C3 | D3 |
+  * | D1 | D2 | D3 | C4 |     | A4 | B4 | C4 | D4 |
+  */
+  Matrix4x4
+  transpose() const;
+
+  /**
+  * Identity
+  *
+  * Tranform matrix to identity
+  */
+  Matrix4x4
+  identity();
 
   //Uncommented
   Vector4D&
@@ -141,8 +154,6 @@ class DR_API_EXPORT Matrix4x4
     operator*=(const Float32 S);
 
   Vector4D v0, v1, v2, v3;
- protected:
- private:
 };
 
 }
