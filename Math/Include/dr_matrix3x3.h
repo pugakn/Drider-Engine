@@ -75,6 +75,31 @@ class DR_API_EXPORT Matrix3x3
   ~Matrix3x3();
 
   /**
+  * Calculates the determinant of the matrix
+  *
+  * @return
+  *   determinant.
+  */
+  Float32 determinant();
+
+  /**
+  * Calculates the cofactor of the matrix
+  *
+  * @return
+  *   cofactor of matrix.
+  */
+  Matrix3x3 cofactor();
+
+  /**
+  * Calculates the adjugate of the matrix
+  * using transpose for cofactor matrix 
+  * 
+  * @return
+  *   adjugate.
+  */
+  Matrix3x3 adjugate();
+
+  /**
   * Computes the dot product between this vector and the vector parameter.
   * This operatios is commutative.
   *
@@ -152,6 +177,8 @@ class DR_API_EXPORT Matrix3x3
   operator*=(const Float32 S);
 
   Vector3D v0, v1, v2;
+
+ protected:
 };
 
 }

@@ -1,9 +1,16 @@
 #include <dr_prerequisites.h>
 #include <dr_matrixnxm.h>
+#include <dr_matrix3x3.h>
 #include <dr_vectorn.h>
 
 int main(int argc, char* argv[])
 {
+  driderSDK::Matrix3x3 lu(2, 1, 0, 1, -1, 1, 0, 2, -1);
+
+  float po = lu.determinant();
+
+  driderSDK::Matrix3x3 k = lu.cofactor();
+  driderSDK::Matrix3x3 k2 = lu.adjugate();
 
   driderSDK::MatrixNxM<3, 5> m3x5;
   driderSDK::MatrixNxM<5, 4> m5x4;
