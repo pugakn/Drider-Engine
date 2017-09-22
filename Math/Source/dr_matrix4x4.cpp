@@ -90,21 +90,25 @@ Matrix4x4 Matrix4x4::transpose() const
 {
   Matrix4x4 temp;
 
-  temp.v1.x = temp.v0.y;
-  temp.v2.x = temp.v0.z;
-  temp.v3.x = temp.v0.w;
+  temp.v0.x = v0.x;
+  temp.v1.x = v0.y;
+  temp.v2.x = v0.z;
+  temp.v3.x = v0.w;
 
-  temp.v0.y = temp.v1.x;
-  temp.v2.y = temp.v1.z;
-  temp.v3.y = temp.v1.w;
+  temp.v0.y = v1.x;
+  temp.v1.y = v1.y;
+  temp.v2.y = v1.z;
+  temp.v3.y = v1.w;
 
-  temp.v0.z = temp.v2.x;
-  temp.v1.z = temp.v2.y;
-  temp.v3.z = temp.v2.w;
+  temp.v0.z = v2.x;
+  temp.v1.z = v2.y;
+  temp.v2.z = v2.z;
+  temp.v3.z = v2.w;
 
-  temp.v0.w = temp.v3.x;
-  temp.v1.w = temp.v3.y;
-  temp.v2.w = temp.v3.z;
+  temp.v0.w = v3.x;
+  temp.v1.w = v3.y;
+  temp.v2.w = v3.z;
+  temp.v3.w = v3.w;
 
   return temp;
 }

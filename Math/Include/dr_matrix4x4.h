@@ -87,7 +87,7 @@ class DR_API_EXPORT Matrix4x4
   *
   */
   Matrix4x4
-    inverse() const;
+  inverse() const;
 
   /**
   * Transpose
@@ -99,7 +99,7 @@ class DR_API_EXPORT Matrix4x4
   * | D1 | D2 | D3 | C4 |     | A4 | B4 | C4 | D4 |
   */
   Matrix4x4
-    transpose() const;
+  transpose() const;
 
   /**
   * Identity
