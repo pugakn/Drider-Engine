@@ -8,9 +8,15 @@ Vector2DI::Vector2DI()
 }
 
 Vector2DI::Vector2DI(FORCE_INIT k)
-  : x(0),
-    y(0)
 {
+  if (k == FORCE_INIT::kIdentity) {
+    x = 0;
+    y = 0;
+  }
+  else {
+    x = 1;
+    y = 1;
+  }
 }
 
 Vector2DI::Vector2DI(const Vector2DI& V)
@@ -58,6 +64,12 @@ Float32
 Vector2DI::distance(const Vector2DI& S) const
 {
   return (S  - *this).length();
+}
+
+Float32
+Vector2DI::distanceSqr(const Vector2DI& S) const
+{
+  return (S - *this).lengthSqr();
 }
 
 Int32&
