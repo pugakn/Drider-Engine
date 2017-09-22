@@ -2,9 +2,9 @@
 
 namespace driderSDK {
 
-namespace math {
-
-
+Sphere::Sphere()
+{
+  
 }
 
 }
