@@ -270,4 +270,16 @@ Matrix3x3::operator*=(const Float32 S)
   return *this;
 }
 
+bool
+Matrix3x3::operator==(const Matrix3x3& M)
+{
+  return v0 == M.v0 && v1 == M.v1 && v2 == M.v2;
+}
+
+bool
+Matrix3x3::operator!=(const Matrix3x3& M)
+{
+  return !(*this == M);
+}
+
 }

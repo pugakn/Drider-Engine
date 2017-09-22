@@ -80,10 +80,67 @@ Matrix4x4::~Matrix4x4()
 {
 }
 
-Matrix4x4 
+Float32 Matrix4x4::determinant() const
+{
+  return v0.x*v1.y*v2.z*v3.w + v0.x*v1.z*v2.w*v3.y + v0.x*v1.w*v2.y*v3.z +
+         v0.y*v1.x*v2.w*v3.z + v0.y*v1.z*v2.x*v3.w + v0.y*v1.w*v2.z*v3.x +
+         v0.z*v1.x*v2.y*v3.w + v0.z*v1.y*v2.w*v3.x + v0.z*v1.w*v2.x*v3.y +
+         v0.w*v1.x*v2.z*v3.y + v0.w*v1.y*v2.x*v3.z + v0.w*v1.z*v2.y*v3.x -
+         v0.x*v1.y*v2.w*v3.z - v0.x*v1.z*v2.y*v3.w - v0.x*v1.w*v2.z*v3.y -
+         v0.y*v1.x*v2.z*v3.w - v0.y*v1.z*v2.w*v3.x - v0.y*v1.w*v2.x*v3.z -
+         v0.z*v1.x*v2.w*v3.y - v0.z*v1.y*v2.x*v3.w - v0.z*v1.w*v2.y*v3.x -
+         v0.w*v1.x*v2.y*v3.z - v0.w*v1.y*v2.z*v3.x - v0.w*v1.z*v2.x*v3.y;
+}
+
+Matrix4x4 Matrix4x4::cofactor() const
+{
+  Matrix4x4 temp;
+  
+  temp.v0.x = v1.y*v2.z*v3.w + v1.z*v2.w*v3.y + v1.w*v2.y*v3.z -
+              v1.y*v2.w*v3.z - v1.z*v2.y*v3.w - v1.w*v2.z*v3.y;
+  temp.v1.x = v0.y*v2.w*v3.z + v0.z*v2.y*v3.w + v0.w*v2.z*v3.y -
+              v0.y*v2.z*v3.w - v0.z*v2.w*v3.y - v0.w*v2.y*v3.z;
+  temp.v2.x = v0.y*v1.z*v3.w + v0.z*v1.w*v3.y + v0.w*v1.y*v3.z -
+              v0.y*v1.w*v3.z - v0.z*v1.y*v3.w - v0.w*v1.z*v3.y;
+  temp.v3.x = v0.y*v1.w*v2.z + v0.z*v1.y*v2.w + v0.w*v1.z*v2.y -
+              v0.y*v1.z*v2.w - v0.z*v1.w*v2.y - v0.w*v1.y*v2.z;
+  temp.v0.y = v1.x*v2.w*v3.z + v1.z*v2.x*v3.w + v1.w*v2.z*v3.x -
+              v1.x*v2.z*v3.w - v1.z*v2.w*v3.x - v1.w*v2.x*v3.z;
+  temp.v1.y = v0.x*v2.z*v3.w + v0.z*v2.w*v3.x + v0.w*v2.x*v3.z -
+              v0.x*v2.w*v3.z - v0.z*v2.x*v3.w - v0.w*v2.z*v3.x;
+  temp.v2.y = v0.x*v1.w*v3.z + v0.z*v1.x*v3.w + v0.w*v1.z*v3.x -
+              v0.x*v1.z*v3.w - v0.z*v1.w*v3.x - v0.w*v1.x*v3.z;
+  temp.v3.y = v0.x*v1.z*v2.w + v0.z*v1.w*v2.x + v0.w*v1.x*v2.z -
+              v0.x*v1.w*v2.z - v0.z*v1.x*v2.w - v0.w*v1.z*v2.x;
+  temp.v0.z = v1.x*v2.y*v3.w + v1.y*v2.w*v3.x + v1.w*v2.x*v3.y -
+              v1.x*v2.w*v3.y - v1.y*v2.x*v3.w - v1.w*v2.y*v3.x;
+  temp.v1.z = v0.x*v2.w*v3.y + v0.y*v2.x*v3.w + v0.w*v2.y*v3.x -
+              v0.x*v2.y*v3.w - v0.y*v2.w*v3.x - v0.w*v2.x*v3.y;
+  temp.v2.z = v0.x*v1.y*v3.w + v0.y*v1.w*v3.x + v0.w*v1.x*v3.y -
+              v0.x*v1.w*v3.y - v0.y*v1.x*v3.w - v0.w*v1.y*v3.x;
+  temp.v3.z = v0.x*v1.w*v2.y + v0.y*v1.x*v2.w + v0.w*v1.y*v2.x -
+              v0.x*v1.y*v2.w - v0.y*v1.w*v2.x - v0.w*v1.x*v2.y;
+  temp.v0.w = v1.x*v2.z*v3.y + v1.y*v2.x*v3.z + v1.z*v2.y*v3.x -
+              v1.x*v2.y*v3.z - v1.y*v2.z*v3.x - v1.z*v2.x*v3.y;
+  temp.v1.w = v0.x*v2.y*v3.z + v0.y*v2.z*v3.x + v0.z*v2.x*v3.y -
+              v0.x*v2.z*v3.y - v0.y*v2.x*v3.z - v0.z*v2.y*v3.x;
+  temp.v2.w = v0.x*v1.z*v3.y + v0.y*v1.x*v3.z + v0.z*v1.y*v3.x -
+              v0.x*v1.y*v3.z - v0.y*v1.z*v3.x - v0.z*v1.x*v3.y;
+  temp.v3.w = v0.x*v1.y*v2.z + v0.y*v1.z*v2.x + v0.z*v1.x*v2.y -
+              v0.x*v1.z*v2.y - v0.y*v1.x*v2.z - v0.z*v1.y*v2.x;
+
+  return temp;
+}
+
+Matrix4x4 Matrix4x4::adjugate() const
+{
+  return cofactor().transpose();
+}
+
+Matrix4x4
 Matrix4x4::inverse() const
 {
-  return Matrix4x4();
+  return adjugate() * (1 / determinant());
 }
 
 Matrix4x4 Matrix4x4::transpose() const

@@ -169,6 +169,14 @@ class DR_API_EXPORT Matrix3x3
   Matrix3x3&
   operator*=(const Float32 S);
 
+  //Uncommented
+  bool
+  operator==(const Matrix3x3& M);
+
+  //Uncommented
+  bool
+  operator!=(const Matrix3x3& M);
+
   Vector3D v0, v1, v2;
 
  protected:

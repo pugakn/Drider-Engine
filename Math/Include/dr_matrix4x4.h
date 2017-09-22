@@ -83,8 +83,33 @@ class DR_API_EXPORT Matrix4x4
   ~Matrix4x4();
 
   /**
-  * Inverse
+  * Calculates the determinant of the matrix
   *
+  * @return
+  *   determinant.
+  */
+  Float32 determinant() const;
+
+  /**
+  * Calculates the cofactor of the matrix
+  *
+  * @return
+  *   cofactor of matrix.
+  */
+  Matrix4x4 cofactor() const;
+
+  /**
+  * Calculates the adjugate of the matrix
+  * using transpose for cofactor matrix
+  *
+  * @return
+  *   adjugate.
+  */
+  Matrix4x4 adjugate() const;
+
+  /**
+  * Calculate inverse of matrix.
+  * using det * adjugate
   */
   Matrix4x4
   inverse() const;
