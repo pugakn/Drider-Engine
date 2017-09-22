@@ -1,7 +1,7 @@
 #pragma once
 
 #include <dr_prerequisites.h>
-#include <dr_vector3d.h>
+#include "dr_vector3d.h"
 
 namespace driderSDK {
 
@@ -9,10 +9,22 @@ class DR_API_EXPORT Sphere
 {
 
  public:
+  //Uncommented
   Sphere();
-  //Sphere(Float32 radio, Vector3D position);
-  Float32 GetRadio();
-  Vector3D GetPosition();
+
+  //Uncommented
+  FORCEINLINE Float32 
+  getRadio() const
+  {
+   return m_radio;
+  }
+  
+  //Uncommented
+  FORCEINLINE Vector3D
+  getCenter() const
+  {
+   return m_center;
+  }
 
   //void SetRadio();
   //void SetPosition();
@@ -20,7 +32,7 @@ class DR_API_EXPORT Sphere
  protected:
  private:
   Float32 m_radio;
-  Vector3D m_position;
+  Vector3D m_center;
 
 };
 
