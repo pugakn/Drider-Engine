@@ -3,7 +3,8 @@
 namespace driderSDK {
 
 Matrix3x3::Matrix3x3()
-{}
+{
+}
 
 Matrix3x3::Matrix3x3(INIT_MATRIX k)
 {
@@ -197,4 +198,6 @@ Matrix3x3::operator*=(const Float32 S)
   v2 = v2 * S;
 
   return *this;
+}
+
 }

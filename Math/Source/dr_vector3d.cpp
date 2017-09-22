@@ -4,26 +4,34 @@ namespace driderSDK {
 
 Vector3D::Vector3D()
   : x(0.0f),
-  y(0.0f),
-  z(0.0f)
+    y(0.0f),
+    z(0.0f)
 {}
+
+Vector3D::Vector3D(FORCE_INIT k)
+  : x(0.0f),
+    y(0.0f),
+    z(0.0f)
+{
+}
 
 Vector3D::Vector3D(const Vector3D& V)
   : x(V.x),
-  y(V.y),
-  z(V.z)
+    y(V.y),
+    z(V.z)
 {}
 
 Vector3D::Vector3D(Float32 x,
-				   Float32 y,
-				   Float32 z)
+				           Float32 y,
+				           Float32 z)
   : x(x),
-  y(y),
-  z(z)
+    y(y),
+    z(z)
 {}
 
 Vector3D::~Vector3D()
-{}
+{
+}
 
 Float32
 Vector3D::dot(const Vector3D& B) const
@@ -66,6 +74,21 @@ Vector3D::operator[](SizeT index)
   }
   else if (index == 2) {
 	return z;
+  }
+  throw std::out_of_range("Index out of range");
+}
+
+const Float32&
+Vector3D::operator[](SizeT index) const
+{
+  if (index == 0) {
+    return x;
+  }
+  else if (index == 1) {
+    return y;
+  }
+  else if (index == 2) {
+    return z;
   }
   throw std::out_of_range("Index out of range");
 }
@@ -154,6 +177,18 @@ Vector3D::operator/=(const Float32 S)
   y *= invDiv;
   z *= invDiv;
   return *this;
+}
+
+bool
+Vector3D::operator==(const Vector3D& S)
+{
+  return ((x == S.x) && (y == S.y) && (z == S.z));
+}
+
+bool
+Vector3D::operator!=(const Vector3D& S)
+{
+  return !((*this) == S);
 }
 
 }

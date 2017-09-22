@@ -9,26 +9,36 @@ namespace driderSDK {
 class DR_API_EXPORT Vector2DI
 {
  public:
+   enum FORCE_INIT
+   {
+     kZero,
+     kIdentity
+   };
   /**
   * Default constructor
   *
+  */
+  Vector2DI();
+
+  /**
+  * Default constructor
+  * 
+  * @param k
+  *
   * Values are initialized with 0.
   */
-
-  Vector2DI();
+  Vector2DI(FORCE_INIT k);
 
   /**
   * Move constructor
   *
   */
-
   Vector2DI(Vector2DI&& V) = default;
 
   /**
   * Copy constructor
   *
   */
-
   Vector2DI(const Vector2DI& V);
 
   /**
@@ -40,14 +50,12 @@ class DR_API_EXPORT Vector2DI
   * @param y
   *  The y value of the vector
   */
-
   Vector2DI(Int32 x, Int32 y);
 
   /**
   * Default destructor
   *
   */
-
   ~Vector2DI();
 
   /**
@@ -61,7 +69,6 @@ class DR_API_EXPORT Vector2DI
   *   The sum of the products of the corresponding entries of the
   *   vectors.
   */
-
   Float32
   dot(const Vector2DI& B) const;
 
@@ -71,7 +78,6 @@ class DR_API_EXPORT Vector2DI
   * @return
   *   The length (or "size") of the vector.
   */
-
   Float32
   length() const;
 
@@ -81,7 +87,6 @@ class DR_API_EXPORT Vector2DI
   * @return
   *   The length (or "size") of the vector squared.
   */
-
   Float32
   lengthSqr() const;
 
@@ -91,69 +96,90 @@ class DR_API_EXPORT Vector2DI
   * @return
   *   This vector normalized.
   */
-
   Vector2DI
   normalize() const;
 
-  //Uncommented
-
+  /**
+  * Gets a const reference to the specified element from the vector.
+  *
+  *	@param index
+  *	 The index of the element.
+  *
+  * @return
+  *	  A const reference to the element at the [index] position.
+  *
+  * @throws out_of_range
+  *	  If the index is greater than number of elements in the vector.
+  */
   Int32&
   operator[](SizeT index);
 
-  //Uncommented
+  /**
+  * Gets a const reference to the specified element from the vector.
+  *
+  *	@param index
+  *	 The index of the element.
+  *
+  * @return
+  *	  A const reference to the element at the [index] position.
+  *
+  * @throws out_of_range
+  *	  If the index is greater than number of elements in the vector.
+  */
+  const Int32&
+  operator[](SizeT index) const;
 
+  //Uncommented
   Vector2DI&
   operator=(const Vector2DI& A);
 
   //Uncommented
-
   Vector2DI
   operator+(const Vector2DI& A) const;
 
   //Uncommented
-
   Vector2DI&
   operator+=(const Vector2DI& A);
 
   //Uncommented
-
   Vector2DI
   operator-(const Vector2DI& A) const;
 
   //Uncommented
-
   Vector2DI&
   operator-=(const Vector2DI& A);
 
   //Uncommented
-
   Vector2DI
   operator*(const Vector2DI& A) const;
 
   //Uncommented
-
   Vector2DI&
   operator*=(const Vector2DI& A);
 
   //Uncommented
-
   Vector2DI
   operator*(const Float32 S) const;
 
   //Uncommented
-
   Vector2DI&
   operator*=(const Float32 S);
 
   //Uncommented
-
   Vector2DI
   operator/(const Float32 S) const;
 
   //Uncommented
-
   Vector2DI&
   operator/=(const Float32 S);
+
+  //Uncommented
+  bool
+  operator==(const Vector2DI& S);
+
+  //Uncommented
+  bool
+  operator!=(const Vector2DI& S);
 
   Int32 x, y;
 };
