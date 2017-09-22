@@ -5,9 +5,9 @@ namespace driderSDK {
 Matrix3x3::Matrix3x3()
 {}
 
-Matrix3x3::Matrix3x3(INIT_MATRIX k)
+Matrix3x3::Matrix3x3(FORCE_INIT k)
 {
-  if (k == INIT_MATRIX::kZero) {
+  if (k == FORCE_INIT::kZero) {
     v0.x = 0;
     v0.y = 0;
     v0.z = 0; 
@@ -63,6 +63,40 @@ Matrix3x3
 Matrix3x3::inverse() const
 {
   return Matrix3x3();
+}
+
+Matrix3x3 Matrix3x3::transpose() const
+{
+  Matrix3x3 temp;
+
+  temp.v1.x = temp.v0.y;
+  temp.v2.x = temp.v0.z;
+
+  temp.v0.y = temp.v1.x;
+  temp.v2.y = temp.v1.z;
+
+  temp.v0.z = temp.v2.x;
+  temp.v1.z = temp.v2.y;
+
+  return Matrix3x3();
+}
+
+Matrix3x3
+Matrix3x3::identity()
+{
+  v0.x = 1;
+  v0.y = 0;
+  v0.z = 0;
+
+  v1.x = 0;
+  v1.y = 1;
+  v1.z = 0;
+
+  v2.x = 0;
+  v2.y = 0;
+  v2.z = 1;
+  
+  return *this;
 }
 
 Vector3D&

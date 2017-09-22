@@ -5,9 +5,9 @@ namespace driderSDK {
 Matrix4x4::Matrix4x4()
 {}
 
-Matrix4x4::Matrix4x4(INIT_MATRIX k)
+Matrix4x4::Matrix4x4(FORCE_INIT k)
 {
-  if (k == INIT_MATRIX::kZero) {
+  if (k == FORCE_INIT::kZero) {
     v0.x = 0;
     v0.y = 0;
     v0.z = 0;
@@ -84,6 +84,55 @@ Matrix4x4
 Matrix4x4::inverse() const
 {
   return Matrix4x4();
+}
+
+Matrix4x4 Matrix4x4::transpose() const
+{
+  Matrix4x4 temp;
+
+  temp.v1.x = temp.v0.y;
+  temp.v2.x = temp.v0.z;
+  temp.v3.x = temp.v0.w;
+
+  temp.v0.y = temp.v1.x;
+  temp.v2.y = temp.v1.z;
+  temp.v3.y = temp.v1.w;
+
+  temp.v0.z = temp.v2.x;
+  temp.v1.z = temp.v2.y;
+  temp.v3.z = temp.v2.w;
+
+  temp.v0.w = temp.v3.x;
+  temp.v1.w = temp.v3.y;
+  temp.v2.w = temp.v3.z;
+
+  return temp;
+}
+
+Matrix4x4
+Matrix4x4::identity()
+{
+  v0.x = 1;
+  v0.y = 0;
+  v0.z = 0;
+  v0.w = 0;
+
+  v1.x = 0;
+  v1.y = 1;
+  v1.z = 0;
+  v1.w = 0;
+
+  v2.x = 0;
+  v2.y = 0;
+  v2.z = 1;
+  v2.w = 0;
+
+  v3.x = 0;
+  v3.y = 0;
+  v3.z = 0;
+  v3.w = 1;
+
+  return *this;
 }
 
 Vector4D&

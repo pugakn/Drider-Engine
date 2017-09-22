@@ -8,7 +8,7 @@ namespace driderSDK {
 class DR_API_EXPORT Matrix3x3                                                                 
 {
  public:
-  enum INIT_MATRIX {
+  enum FORCE_INIT {
     kZero,
     kIdentity
   };
@@ -24,7 +24,7 @@ class DR_API_EXPORT Matrix3x3
   *
   * Values are initialized with 0(kZero) or identity matrix(kIdentity).
   */
-  Matrix3x3(INIT_MATRIX k);
+  Matrix3x3(FORCE_INIT k);
 
   /**
   * Move constructor
@@ -41,13 +41,13 @@ class DR_API_EXPORT Matrix3x3
   /**
   * Initialize constructor with values.
   *
-  * @param v00-v02
+  *  @param v0x, v0y, v0z
   *  The x, y, z values of the vector, first raw
   *
-  * @param v10-v12
+  * @param v1x, v1y, v1z
   *  The x, y, z values of the vector, second raw
   *
-  * @param v20-v22
+  * @param v2x, v2y, v2z
   *  The x, y, z values of the vector, third raw
   */
   Matrix3x3(Float32 v0x, Float32 v0y, Float32 v0z,
@@ -87,6 +87,25 @@ class DR_API_EXPORT Matrix3x3
   */
   Matrix3x3
   inverse() const;
+
+  /**
+  * Transpose
+  *
+  * Invert columns whith rows
+  * | A1 | A2 | A3 |T    | A1 | B1 | C1 |
+  * | B1 | B2 | B3 |     | A2 | B2 | C2 |
+  * | C1 | C2 | C3 |  =  | A3 | B3 | C3 |
+  */
+  Matrix3x3
+  transpose() const;
+
+  /**
+  * Identity
+  *
+  * Tranform matrix to identity
+  */
+  Matrix3x3
+  identity();
 
    //Uncommented
   Vector3D&
@@ -133,8 +152,6 @@ class DR_API_EXPORT Matrix3x3
   operator*=(const Float32 S);
 
   Vector3D v0, v1, v2;
- protected:
- private:
 };
 
 }
