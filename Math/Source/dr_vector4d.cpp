@@ -159,16 +159,18 @@ Vector4D::operator*=(const Float32 S)
 Vector4D
 Vector4D::operator/(const Float32 S) const
 {
-  return Vector4D(x*pow(S, -1), y*pow(S, -1), z*pow(S, -1), w*pow(S, -1));
+  Float32 invDiv = 1 / S;
+  return Vector4D(x*invDiv, y*invDiv, z*invDiv, w*invDiv);
 }
 
 Vector4D&
 Vector4D::operator/=(const Float32 S)
 {
-  x *= pow(S, -1);
-  y *= pow(S, -1);
-  z *= pow(S, -1);
-  w *= pow(S, -1);
+  float invDiv = 1 / S;
+  x *= invDiv;
+  y *= invDiv;
+  z *= invDiv;
+  w *= invDiv;
   return *this;
 }
 

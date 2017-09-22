@@ -106,6 +106,9 @@ class DR_API_EXPORT Quaternion
   /**
   * Creates a matrix from the quaternion.
   *
+  * @param
+  *   ...
+  *
   * @return
   *   ...
   */

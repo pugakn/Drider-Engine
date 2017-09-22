@@ -59,6 +59,7 @@ Vector2D::operator[](SizeT index)
   else if (index == 1) {
     return y;
   }
+
   throw std::out_of_range("Index out of range");
 }
 
@@ -129,14 +130,14 @@ Vector2D::operator*=(const Float32 S)
 Vector2D
 Vector2D::operator/(const Float32 S) const
 {
-  return Vector2D(x*(1 / S), y*(1 / S));
+  return Vector2D(x / S, y / S);
 }
 
 Vector2D&
 Vector2D::operator/=(const Float32 S)
 {
-  x *= (1 / S);
-  y *= (1 / S);
+  x /= S;
+  y /= S;
   return *this;
 }
 
