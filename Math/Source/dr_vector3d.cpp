@@ -64,6 +64,12 @@ Vector3D::normalize() const
   return (*this) * (1 / length());
 }
 
+Float32
+Vector3D::distance(const Vector3D& S) const
+{
+  return (S - *this).length();
+}
+
 Float32&
 Vector3D::operator[](SizeT index)
 {

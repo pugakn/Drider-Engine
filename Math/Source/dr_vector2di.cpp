@@ -54,6 +54,12 @@ Vector2DI::normalize() const
   return (*this) * (1 / length());
 }
 
+Float32
+Vector2DI::distance(const Vector2DI& S) const
+{
+  return (S  - *this).length();
+}
+
 Int32&
 Vector2DI::operator[](SizeT index)
 {

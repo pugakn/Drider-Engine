@@ -54,6 +54,12 @@ Vector2D::normalize() const
   return (*this) * (1 / length());
 }
 
+Float32
+Vector2D::distance(const Vector2D& S) const
+{
+  return (S - *this).length();
+}
+
 Float32&
 Vector2D::operator[](SizeT index)
 {

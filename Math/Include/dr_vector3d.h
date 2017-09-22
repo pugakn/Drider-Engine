@@ -119,6 +119,18 @@ class DR_API_EXPORT Vector3D
   normalize() const;
 
   /**
+  * Computes the distance between two vectors.
+  *
+  * @param S
+  *   Vector to calculate the distance
+  *
+  * @return
+  *   Distance
+  */
+  Float32
+  distance(const Vector3D& S) const;
+
+  /**
   * Gets a reference to the specified element from the vector.
   *
   *	@param index

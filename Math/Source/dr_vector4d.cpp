@@ -68,6 +68,12 @@ Vector4D::normalize() const
   return (*this) * (1 / length());
 }
 
+Float32
+Vector4D::distance(const Vector4D& S) const
+{
+  return (S - *this).length();
+}
+
 Float32&
 Vector4D::operator[](SizeT index)
 {
