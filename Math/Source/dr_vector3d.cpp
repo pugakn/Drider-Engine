@@ -40,7 +40,8 @@ Vector3D::cross(const Vector3D& B) const
 Float32
 Vector3D::length() const
 {
-  return sqrt(dot(*this));
+  
+  return math::sqrt(dot(*this));
 }
 
 Float32

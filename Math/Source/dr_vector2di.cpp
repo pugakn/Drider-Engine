@@ -35,7 +35,7 @@ Vector2DI::dot(const Vector2DI& B) const
 Float32
 Vector2DI::length() const
 {
-  return sqrt(dot(*this));
+  return math::sqrt(dot(*this));
 }
 
 Float32

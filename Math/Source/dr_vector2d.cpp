@@ -35,7 +35,7 @@ Vector2D::dot(const Vector2D& B) const
 Float32
 Vector2D::length() const
 {
-  return sqrt(dot(*this));
+  return math::sqrt(dot(*this));
 }
 
 Float32
