@@ -50,9 +50,9 @@ class DR_API_EXPORT Matrix3x3
   * @param v20-v22
   *  The x, y, z values of the vector, third raw
   */
-  Matrix3x3(Float32 v1x, Float32 v1y, Float32 v1z,
-            Float32 v2x, Float32 v2y, Float32 v2z,
-            Float32 v3x, Float32 v3y, Float32 v3z);
+  Matrix3x3(Float32 v0x, Float32 v0y, Float32 v0z,
+            Float32 v1x, Float32 v1y, Float32 v1z,
+            Float32 v2x, Float32 v2y, Float32 v2z);
 
   /**
   * Initialize constructor with values.
