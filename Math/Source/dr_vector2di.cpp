@@ -1,104 +1,145 @@
 #include "dr_vector2di.h"
 
-driderSDK::Vector2DI::Vector2DI()
+namespace driderSDK
+{
+
+Vector2DI::Vector2DI()
   : x(0),
-    y(0) {
+    y(0)
+{
 }
 
-driderSDK::Vector2DI::Vector2DI(const Vector2DI& V)
+Vector2DI::Vector2DI(const Vector2DI& V)
   : x(V.x),
-    y(V.y) {
+    y(V.y)
+{
 }
 
-driderSDK::Vector2DI::Vector2DI(driderSDK::Int32 x,
-                                driderSDK::Int32 y)
+Vector2DI::Vector2DI(Int32 x,
+                     Int32 y)
   : x(x),
-    y(y) {
+    y(y)
+{
 }
 
-driderSDK::Vector2DI::~Vector2DI() {
+Vector2DI::~Vector2DI()
+{
 }
 
-driderSDK::Float32
-driderSDK::Vector2DI::dot(const Vector2DI& B) const {
-  return static_cast<driderSDK::Float32>((x*B.x) + (y*B.y));
+Float32
+Vector2DI::dot(const Vector2DI& B) const
+{
+  return static_cast<Float32>((x*B.x) + (y*B.y));
 }
 
-driderSDK::Float32
-driderSDK::Vector2DI::magnitude() const {
-  return sqrt(dot(*this));
+Float32
+Vector2DI::length() const
+{
+  return math::sqrt(dot(*this));
 }
 
-driderSDK::Vector2DI
-driderSDK::Vector2DI::normalize() const {
-  return (*this) * (1 / magnitude());
+Float32
+Vector2DI::lengthSqr() const
+{
+  return dot(*this);
 }
 
-driderSDK::Vector2DI&
-driderSDK::Vector2DI::operator=(const Vector2DI& A) {
+Vector2DI
+Vector2DI::normalize() const
+{
+  return (*this) * (1 / length());
+}
+
+Int32&
+Vector2DI::operator[](SizeT index)
+{
+  if (index == 0) {
+    return x;
+  }
+  else if (index == 1) {
+    return y;
+  }
+  throw std::out_of_range("Index out of range");
+}
+
+Vector2DI&
+Vector2DI::operator=(const Vector2DI& A)
+{
   x = A.x;
   y = A.y;
   return *this;
 }
 
-driderSDK::Vector2DI
-driderSDK::Vector2DI::operator+(const Vector2DI& A) const {
+Vector2DI
+Vector2DI::operator+(const Vector2DI& A) const
+{
   return Vector2DI(x + A.x, y + A.y);
 }
 
-driderSDK::Vector2DI&
-driderSDK::Vector2DI::operator+=(const Vector2DI& A) {
+Vector2DI&
+Vector2DI::operator+=(const Vector2DI& A)
+{
   x += A.x;
   y += A.y;
   return *this;
 }
 
-driderSDK::Vector2DI
-driderSDK::Vector2DI::operator-(const Vector2DI& A) const {
+Vector2DI
+Vector2DI::operator-(const Vector2DI& A) const
+{
   return Vector2DI(x - A.x, y - A.y);
 }
 
-driderSDK::Vector2DI&
-driderSDK::Vector2DI::operator-=(const Vector2DI& A) {
+Vector2DI&
+Vector2DI::operator-=(const Vector2DI& A)
+{
   x -= A.x;
   y -= A.y;
   return *this;
 }
 
-driderSDK::Vector2DI
-driderSDK::Vector2DI::operator*(const Vector2DI& A) const {
+Vector2DI
+Vector2DI::operator*(const Vector2DI& A) const
+{
   return Vector2DI(x*A.x, y*A.y);
 }
 
-driderSDK::Vector2DI&
-driderSDK::Vector2DI::operator*=(const Vector2DI& A) {
+Vector2DI&
+Vector2DI::operator*=(const Vector2DI& A)
+{
   x *= A.x;
   y *= A.y;
   return *this;
 }
 
-driderSDK::Vector2DI
-driderSDK::Vector2DI::operator*(const Float32 S) const {
-  return Vector2DI(static_cast<driderSDK::Int32>(x*S),
-                   static_cast<driderSDK::Int32>(y*S));
+Vector2DI
+Vector2DI::operator*(const Float32 S) const
+{
+  return Vector2DI(static_cast<Int32>(x*S),
+                   static_cast<Int32>(y*S));
 }
 
-driderSDK::Vector2DI&
-driderSDK::Vector2DI::operator*=(const Float32 S) {
-  x *= static_cast<driderSDK::Int32>(S);
-  y *= static_cast<driderSDK::Int32>(S);
+Vector2DI&
+Vector2DI::operator*=(const Float32 S)
+{
+  x *= static_cast<Int32>(S);
+  y *= static_cast<Int32>(S);
   return *this;
 }
 
-driderSDK::Vector2DI
-driderSDK::Vector2DI::operator/(const Float32 S) const {
-  return Vector2DI(static_cast<driderSDK::Int32>(x*(1 / S)),
-                   static_cast<driderSDK::Int32>(y*(1 / S)));
+Vector2DI
+Vector2DI::operator/(const Float32 S) const
+{
+  return Vector2DI(static_cast<Int32>(x*(1 / S)),
+                   static_cast<Int32>(y*(1 / S)));
 }
 
-driderSDK::Vector2DI&
-driderSDK::Vector2DI::operator/=(const Float32 S) {
-  x *= static_cast<driderSDK::Int32>(1 / S);
-  y *= static_cast<driderSDK::Int32>(1 / S);
+Vector2DI&
+Vector2DI::operator/=(const Float32 S)
+{
+  x *= static_cast<Int32>(1 / S);
+  y *= static_cast<Int32>(1 / S);
   return *this;
+}
+
 }

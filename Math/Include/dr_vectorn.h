@@ -3,10 +3,16 @@
 #include <array>
 #include <algorithm>
 #include <dr_prerequisites.h>
+#include "dr_math.h"
 
 namespace driderSDK {
 
-
+/**
+*  Vector template with fixed number of elements.
+*
+* Sample usage:
+*	VectorN<8> myVectorWithEightElements;
+*/
 template <SizeT _elements>
 class VectorN
 {
@@ -15,7 +21,7 @@ class VectorN
   * Default constructor
   *
   */
-  VectorN() : m_data{}
+  VectorN()
   {}
 
   /**
@@ -124,6 +130,18 @@ class VectorN
   }
 
   /**
+  * Computes the squared length of the vector.
+  *
+  * @return
+  *	  Squared length of the vector.
+  */
+  FORCEINLINE Float32
+  lengthSqr() const
+  {
+	return dot(*this);
+  }
+
+  /**
   * Gets the vector normalized.
   *
   * @return
@@ -133,7 +151,15 @@ class VectorN
   FORCEINLINE VectorN
   normalize() const
   {
-	Float32 invLength = 1.f / length();
+	Float32 invLength = 1.f / (length() + std::numeric_limits<Float32>::min());
+
+	if(len != 0) {
+	  invLength /=   	
+	}
+	else {
+	  invLength = 0.0f;
+	}
+
 	return (*this) * invLength;
   }
 
@@ -242,7 +268,7 @@ class VectorN
   /**
   * Overload of binary operator ==.
   *
-  * This operator performs a memberwise comparison.
+  * This operator performs a memberwise equality comparison.
   *
   * @param rhs
   *  Right operand (a vector with same number of elements).
@@ -266,7 +292,7 @@ class VectorN
   /**
   * Overload of binary operator ==.
   *
-  * This operator performs a memberwise comparison.
+  * This operator performs a memberwise inequality comparison.
   *
   *	@return 
   *	  True if an elements of *this vector is unequal to an elements of rhs
@@ -301,7 +327,7 @@ class VectorN
 *
 */
 template<SizeT _elements>
-FORCEINLINE VectorN<_elements>
+static FORCEINLINE VectorN<_elements>
 operator*(VectorN<_elements> vector, Float32 scalar)
 {
   return vector *= scalar;
@@ -323,7 +349,7 @@ operator*(VectorN<_elements> vector, Float32 scalar)
 *
 */
 template<SizeT _elements>
-FORCEINLINE VectorN<_elements>
+static FORCEINLINE VectorN<_elements>
 operator*(Float32 scalar, const VectorN<_elements>& vector)
 {
   return vector * scalar;
@@ -345,7 +371,7 @@ operator*(Float32 scalar, const VectorN<_elements>& vector)
 *
 */
 template<SizeT _elements>
-FORCEINLINE VectorN<_elements>
+static FORCEINLINE VectorN<_elements>
 operator/(VectorN<_elements> vector, Float32 scalar)
 {
   return vector /= scalar;
@@ -367,7 +393,7 @@ operator/(VectorN<_elements> vector, Float32 scalar)
 *
 */
 template<SizeT _elements>
-FORCEINLINE VectorN<_elements>
+static FORCEINLINE VectorN<_elements>
 operator+(VectorN<_elements> lhs, const VectorN<_elements>& rhs)
 {
   return lhs += rhs;
@@ -389,7 +415,7 @@ operator+(VectorN<_elements> lhs, const VectorN<_elements>& rhs)
 *
 */
 template<SizeT _elements>
-FORCEINLINE VectorN<_elements>
+static FORCEINLINE VectorN<_elements>
 operator-(VectorN<_elements> lhs, const VectorN<_elements>& rhs )
 {
   return lhs -= rhs;

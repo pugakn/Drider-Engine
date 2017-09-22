@@ -1,7 +1,8 @@
 #pragma once
 
-#include <cmath>
+#include <stdexcept>
 #include <dr_prerequisites.h>
+#include "dr_math.h"
 
 namespace driderSDK {
 
@@ -84,14 +85,24 @@ class DR_API_EXPORT Vector3D
   cross(const Vector3D& B) const;
 
   /**
-  * Computes the magnitude of this vector.
+  * Computes the length of this vector.
   *
   * @return
-  *   The magnitude (or "size") of the vector.
+  *   The length (or "size") of the vector.
   */
 
   Float32
-  magnitude() const;
+  length() const;
+
+  /**
+  * Computes the squared length of this vector.
+  *
+  * @return
+  *   The length (or "size") of the vector squared.
+  */
+
+  Float32
+  lengthSqr() const;
 
   /**
   * Get this vector normalized.
@@ -102,6 +113,11 @@ class DR_API_EXPORT Vector3D
 
   Vector3D
   normalize() const;
+
+  //Uncommented
+
+  Float32&
+  operator[](SizeT index);
 
   //Uncommented
 
@@ -158,14 +174,7 @@ class DR_API_EXPORT Vector3D
   Vector3D&
   operator/=(const Float32 S);
 
-  union
-  {
-    struct
-    {
-      Float32 x, y, z;
-    };
-    Float32 v[3];
-  };
+  Float32 x, y, z;
 };
 
 }
