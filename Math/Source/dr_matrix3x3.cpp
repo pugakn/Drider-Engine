@@ -198,3 +198,5 @@ Matrix3x3::operator*=(const Float32 S)
 
   return *this;
 }
+
+}
