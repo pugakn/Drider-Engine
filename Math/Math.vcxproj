@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClInclude Include="Include\dr_aabb.h" />
     <ClInclude Include="Include\dr_capsule.h" />
+    <ClInclude Include="Include\dr_collisions.h" />
     <ClInclude Include="Include\dr_degree.h" />
     <ClInclude Include="Include\dr_frustrum.h" />
     <ClInclude Include="Include\dr_math.h" />
@@ -171,6 +172,7 @@
     <ClInclude Include="Include\dr_vectorn.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\dr_collisions.cpp" />
     <ClCompile Include="Source\dr_vector2d.cpp" />
     <ClCompile Include="Source\dr_aabb.cpp" />
     <ClCompile Include="Source\dr_capsule.cpp" />
