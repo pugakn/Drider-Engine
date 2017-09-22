@@ -9,26 +9,38 @@ namespace driderSDK {
 class DR_API_EXPORT Vector4D
 {
  public:
+  enum FORCE_INIT
+  {
+    kZero,
+    kIdentity
+  };
+
   /**
   * Default constructor
   *
   * Values are initialized with 0.
   */
-
   Vector4D();
+
+  /**
+  * Default constructor
+  *
+  * @param k
+  *
+  * Values are initialized with 0.
+  */
+  Vector4D(FORCE_INIT k);
 
   /**
   * Move constructor
   *
   */
-
   Vector4D(Vector4D&& V) = default;
 
   /**
   * Copy constructor
   *
   */
-
   Vector4D(const Vector4D& V);
 
   /**
@@ -46,14 +58,12 @@ class DR_API_EXPORT Vector4D
   * @param w
   *  The w value of the vector
   */
-
   Vector4D(Float32 x, Float32 y, Float32 z, Float32 w);
 
   /**
   * Default destructor
   *
   */
-
   ~Vector4D();
 
   /**
@@ -67,7 +77,6 @@ class DR_API_EXPORT Vector4D
   *   The sum of the products of the corresponding entries of the
   *   vectors.
   */
-
   Float32
   dot(const Vector4D& B) const;
 
@@ -84,7 +93,6 @@ class DR_API_EXPORT Vector4D
   * @return
   *   Result vector of the cross product
   */
-
   Vector4D
   cross(const Vector4D& B) const;
 
@@ -94,7 +102,6 @@ class DR_API_EXPORT Vector4D
   * @return
   *   The length (or "size") of the vector.
   */
-
   Float32
   length() const;
 
@@ -104,7 +111,6 @@ class DR_API_EXPORT Vector4D
   * @return
   *   The length (or "size") of the vector squared.
   */
-
   Float32
   lengthSqr() const;
 
@@ -114,69 +120,90 @@ class DR_API_EXPORT Vector4D
   * @return
   *   This vector normalized.
   */
-
   Vector4D
   normalize() const;
 
-  //Uncommented
-
+  /**
+  * Gets a reference to the specified element from the vector.
+  *
+  *	@param index
+  *	 The index of the element.
+  *
+  * @return
+  *	  A const reference to the element at the [index] position.
+  *
+  * @throws out_of_range
+  *	  If the index is greater than number of elements in the vector.
+  */
   Float32&
   operator[](SizeT index);
 
-  //Uncommented
+  /**
+  * Gets a const reference to the specified element from the vector.
+  *
+  *	@param index
+  *	 The index of the element.
+  *
+  * @return
+  *	  A const reference to the element at the [index] position.
+  *
+  * @throws out_of_range
+  *	  If the index is greater than number of elements in the vector.
+  */
+  const Float32&
+  operator[](SizeT index) const;
 
+  //Uncommented
   Vector4D&
   operator=(const Vector4D& A);
 
   //Uncommented
-
   Vector4D
   operator+(const Vector4D& A) const;
 
   //Uncommented
-
   Vector4D&
   operator+=(const Vector4D& A);
 
   //Uncommented
-
   Vector4D
   operator-(const Vector4D& A) const;
 
   //Uncommented
-
   Vector4D&
   operator-=(const Vector4D& A);
 
   //Uncommented
-
   Vector4D
   operator*(const Vector4D& A) const;
 
   //Uncommented
-
   Vector4D&
   operator*=(const Vector4D& A);
 
   //Uncommented
-
   Vector4D
   operator*(const Float32 S) const;
 
   //Uncommented
-
   Vector4D&
   operator*=(const Float32 S);
 
   //Uncommented
-
   Vector4D
   operator/(const Float32 S) const;
 
   //Uncommented
-
   Vector4D&
   operator/=(const Float32 S);
+
+  //Uncommented
+  bool
+  operator==(const Vector4D& S);
+
+  //Uncommented
+  bool
+  operator!=(const Vector4D& S);
 
   Float32 x, y, z, w;
 };

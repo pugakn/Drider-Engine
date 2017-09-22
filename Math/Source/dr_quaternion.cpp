@@ -2,6 +2,8 @@
 
 namespace driderSDK {
 
+namespace math {
+
 Quaternion::Quaternion()
   : x(0.0f),
 	y(0.0f),
@@ -137,4 +139,5 @@ Quaternion::operator/=(const Quaternion & Q) {
   return *this;
 }
 
+}
 }

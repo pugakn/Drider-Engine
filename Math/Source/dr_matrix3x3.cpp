@@ -3,7 +3,8 @@
 namespace driderSDK {
 
 Matrix3x3::Matrix3x3()
-{}
+{
+}
 
 Matrix3x3::Matrix3x3(INIT_MATRIX k)
 {

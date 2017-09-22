@@ -5,6 +5,8 @@
 
 namespace driderSDK {
 
+namespace math {
+
 class DR_API_EXPORT Quaternion
 {
  public:
@@ -167,5 +169,7 @@ class DR_API_EXPORT Quaternion
   Float32 x, y, z, w;
 
 };
+
+}
 
 }
