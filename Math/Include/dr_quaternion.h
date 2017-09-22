@@ -2,35 +2,32 @@
 
 #include <cmath>
 #include <dr_prerequisites.h>
+#include "dr_matrix4x4.h"
 
 namespace driderSDK {
-
-namespace math {
 
 class DR_API_EXPORT Quaternion
 {
  public:
+
   /**
   * Default constructor.
   *
   * Initialize the values on (0,0,0,1).
   */
-
   Quaternion();
 
   /**
   * Move constructor.
   *
   */
-
-  Quaternion(Quaternion && Q) = default;
+  Quaternion(Quaternion&& Q) = default;
 
   /**
   * Copy constructor.
   *
   */
-
-  Quaternion(const Quaternion & Q);
+  Quaternion(const Quaternion& Q);
 
   /**
   * Initialize the constructor with the given values.
@@ -47,14 +44,12 @@ class DR_API_EXPORT Quaternion
   * @param w
   *   The w value of the quaternion.
   */
-
   Quaternion(Float32 x, Float32 y, Float32 z, Float32 w);
 
   /**
   * Default destructor.
   *
   */
-
   ~Quaternion();
 
   /**
@@ -63,7 +58,6 @@ class DR_API_EXPORT Quaternion
   * @return
   *	  Quaternion's lenght.
   */
-
   Float32
   measure();
 
@@ -73,7 +67,6 @@ class DR_API_EXPORT Quaternion
   * @return
   *   The conjugate quaternion.
   */
-
   Quaternion
   conjugate();
 
@@ -83,7 +76,6 @@ class DR_API_EXPORT Quaternion
   * @return
   *   This normalized quaternion.
   */
-
   Quaternion
   normalize();
 
@@ -99,77 +91,59 @@ class DR_API_EXPORT Quaternion
   * @return
   *   A rotated quaternion.
   */
-
   Quaternion
-  rotation(Float32 t, const Quaternion & A);
+  rotation(Float32 t, const Quaternion& A);
 
   /**
   * Creates a matrix from the quaternion.
   *
-  * @param
-  *   ...
-  *
-  * @return
-  *   ...
+  * @param M
+  *   Pointer to a matrix4x4 to be filled.
   */
-
   void
-  matrixFromQuaternion();
+  matrixFromQuaternion(Matrix4x4* M);
 
   //Uncommented
-
   Quaternion
-  operator+(const Quaternion & Q) const;
+  operator+(const Quaternion& Q) const;
 
   //Uncommented
-
   Quaternion&
-  operator+=(const Quaternion & Q);
+  operator+=(const Quaternion& Q);
 
   //Uncommented
-
   Quaternion
-  operator-(const Quaternion & Q) const;
+  operator-(const Quaternion& Q) const;
 
   //Uncommented
-
   Quaternion&
-  operator-=(const Quaternion & Q);
+  operator-=(const Quaternion& Q);
 
   //Uncommented
-
   Quaternion
-  operator*(const Quaternion & Q) const;
+  operator*(const Quaternion& Q) const;
 
   //Uncommented
-
   Quaternion
   operator*(Float32 s) const;
 
   //Uncommented
-
   Quaternion&
-  operator*=(const Quaternion & Q);
+  operator*=(const Quaternion& Q);
 
   //Uncommented
-
   Quaternion&
   operator*=(Float32 s);
 
   //Uncommented
-
   Quaternion
-  operator/(const Quaternion & Q) const;
+  operator/(const Quaternion& Q) const;
 
   //Uncommented
-
   Quaternion&
-  operator/=(const Quaternion & Q);
+  operator/=(const Quaternion& Q);
 
   Float32 x, y, z, w;
-
 };
-
-}
 
 }
