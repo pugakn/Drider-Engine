@@ -9,10 +9,17 @@ Vector3D::Vector3D()
 {}
 
 Vector3D::Vector3D(FORCE_INIT k)
-  : x(0.0f),
-    y(0.0f),
-    z(0.0f)
 {
+  if (k == FORCE_INIT::kIdentity) {
+    x = 0.0f;
+    y = 0.0f;
+    z = 0.0f;
+  }
+  else {
+    x = 1.0f;
+    y = 1.0f;
+    z = 1.0f;
+  }
 }
 
 Vector3D::Vector3D(const Vector3D& V)
@@ -68,6 +75,12 @@ Float32
 Vector3D::distance(const Vector3D& S) const
 {
   return (S - *this).length();
+}
+
+Float32
+Vector3D::distanceSqr(const Vector3D& S) const
+{
+  return (S - *this).lengthSqr();
 }
 
 Float32&

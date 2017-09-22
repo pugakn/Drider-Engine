@@ -112,6 +112,18 @@ class DR_API_EXPORT Vector2D
   distance(const Vector2D& S) const;
 
   /**
+  * Computes the squared distance between two vectors.
+  *
+  * @param S
+  *   Vector to calculate the distance
+  *
+  * @return
+  *   Distance
+  */
+  Float32
+  distanceSqr(const Vector2D& S) const;
+
+  /**
   * Gets a reference to the specified element from the vector.
   *
   *	@param index
