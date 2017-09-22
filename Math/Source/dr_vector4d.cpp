@@ -4,6 +4,10 @@ namespace driderSDK
 {
 
 Vector4D::Vector4D()
+{
+}
+
+Vector4D::Vector4D(FORCE_INIT k)
   : x(0.0f),
     y(0.0f),
     z(0.0f),
@@ -64,8 +68,32 @@ Vector4D::normalize() const
   return (*this) * (1 / length());
 }
 
+Float32
+Vector4D::distance(const Vector4D& S) const
+{
+  return (S - *this).length();
+}
+
 Float32&
 Vector4D::operator[](SizeT index)
+{
+  if (index == 0) {
+    return x;
+  }
+  else if (index == 1) {
+    return y;
+  }
+  else if (index == 2) {
+    return z;
+  }
+  else if (index == 3) {
+    return w;
+  }
+  throw std::out_of_range("Index out of range");
+}
+
+const Float32&
+Vector4D::operator[](SizeT index) const
 {
   if (index == 0) {
     return x;
@@ -172,6 +200,18 @@ Vector4D::operator/=(const Float32 S)
   z *= invDiv;
   w *= invDiv;
   return *this;
+}
+
+bool
+Vector4D::operator==(const Vector4D& S) 
+{
+  return ((x == S.x) && (y == S.y) && (z == S.z) && (w == S.w));
+}
+
+bool
+Vector4D::operator!=(const Vector4D& S)
+{
+  return !((*this) == S);
 }
 
 }

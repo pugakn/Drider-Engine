@@ -2,6 +2,7 @@
 #include <dr_matrixnxm.h>
 #include <dr_matrix3x3.h>
 #include <dr_vectorn.h>
+#include <dr_vector3d.h>
 
 int main(int argc, char* argv[])
 {
@@ -33,6 +34,15 @@ int main(int argc, char* argv[])
 
   driderSDK::VectorN<4> mlg;
   auto vk = mlg.length();
+
+  driderSDK::Vector3D pointA( 0.0f,  0.0f, 0.0f);
+  driderSDK::Vector3D pointB( 2.0f,  2.0f, 0.0f);
+  driderSDK::Vector3D pointC( 0.0f,  1.0f, 0.0f);
+
+  driderSDK::Vector3D dirAB = pointB - pointA;
+  driderSDK::Vector3D dirAC = pointC - pointA;
+
+  driderSDK::Vector3D result = dirAC * dirAB.normalize();
 
   return 0;
 }

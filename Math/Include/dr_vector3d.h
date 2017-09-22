@@ -9,26 +9,37 @@ namespace driderSDK {
 class DR_API_EXPORT Vector3D
 {
  public:
+  enum FORCE_INIT
+  {
+    kZero,
+    kIdentity
+  };
+
   /**
   * Default constructor
   *
+  */
+  Vector3D();
+
+  /**
+  * Default constructor
+  *
+  * @param k
+  *
   * Values are initialized with 0.
   */
-
-  Vector3D();
+  Vector3D(FORCE_INIT k);
 
   /**
   * Move constructor
   *
   */
-
   Vector3D(Vector3D&& V) = default;
 
   /**
   * Copy constructor
   *
   */
-
   Vector3D(const Vector3D& V);
 
   /**
@@ -43,14 +54,12 @@ class DR_API_EXPORT Vector3D
   * @param z
   *  The z value of the vector
   */
-
   Vector3D(Float32 x, Float32 y, Float32 z);
 
   /**
   * Default destructor
   *
   */
-
   ~Vector3D();
 
   /**
@@ -64,7 +73,6 @@ class DR_API_EXPORT Vector3D
   *   The sum of the products of the corresponding entries of the
   *   vectors.
   */
-
   Float32
   dot(const Vector3D& B) const;
 
@@ -80,7 +88,6 @@ class DR_API_EXPORT Vector3D
   * @return
   *   Result vector of the cross product
   */
-
   Vector3D
   cross(const Vector3D& B) const;
 
@@ -90,7 +97,6 @@ class DR_API_EXPORT Vector3D
   * @return
   *   The length (or "size") of the vector.
   */
-
   Float32
   length() const;
 
@@ -100,7 +106,6 @@ class DR_API_EXPORT Vector3D
   * @return
   *   The length (or "size") of the vector squared.
   */
-
   Float32
   lengthSqr() const;
 
@@ -110,69 +115,102 @@ class DR_API_EXPORT Vector3D
   * @return
   *   This vector normalized.
   */
-
   Vector3D
   normalize() const;
 
-  //Uncommented
+  /**
+  * Computes the distance between two vectors.
+  *
+  * @param S
+  *   Vector to calculate the distance
+  *
+  * @return
+  *   Distance
+  */
+  Float32
+  distance(const Vector3D& S) const;
 
+  /**
+  * Gets a reference to the specified element from the vector.
+  *
+  *	@param index
+  *	 The index of the element.
+  *
+  * @return
+  *	  A const reference to the element at the [index] position.
+  *
+  * @throws out_of_range
+  *	  If the index is greater than number of elements in the vector.
+  */
   Float32&
   operator[](SizeT index);
 
-  //Uncommented
+  /**
+  * Gets a reference to the specified element from the vector.
+  *
+  *	@param index
+  *	 The index of the element.
+  *
+  * @return
+  *	  A const reference to the element at the [index] position.
+  *
+  * @throws out_of_range
+  *	  If the index is greater than number of elements in the vector.
+  */
+  const Float32&
+  operator[](SizeT index) const;
 
+  //Uncommented
   Vector3D&
   operator=(const Vector3D& A);
 
   //Uncommented
-
   Vector3D
   operator+(const Vector3D& A) const;
 
   //Uncommented
-
   Vector3D&
   operator+=(const Vector3D& A);
 
   //Uncommented
-
   Vector3D
   operator-(const Vector3D& A) const;
 
   //Uncommented
-
   Vector3D&
   operator-=(const Vector3D& A);
 
   //Uncommented
-
   Vector3D
   operator*(const Vector3D& A) const;
 
   //Uncommented
-
   Vector3D&
   operator*=(const Vector3D& A);
 
   //Uncommented
-
   Vector3D
   operator*(const Float32 S) const;
 
   //Uncommented
-
   Vector3D&
   operator*=(const Float32 S);
 
   //Uncommented
-
   Vector3D
   operator/(const Float32 S) const;
 
   //Uncommented
-
   Vector3D&
   operator/=(const Float32 S);
+
+  //Uncommented
+  bool
+  operator==(const Vector3D& S);
+
+  //Uncommented
+  bool
+  operator!=(const Vector3D& S);
 
   Float32 x, y, z;
 };
