@@ -98,10 +98,10 @@ class DR_API_EXPORT Quaternion
   * Creates a matrix from the quaternion.
   *
   * @param M
-  *   Pointer to a matrix4x4 to be filled.
+  *   Matrix4x4 to be filled.
   */
   void
-  matrixFromQuaternion(Matrix4x4* M);
+  matrixFromQuaternion(Matrix4x4& M);
 
   //Uncommented
   Quaternion

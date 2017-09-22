@@ -52,8 +52,19 @@ Quaternion::rotation(Float32 t, const Quaternion& A) {
 }
 
 void
-Quaternion::matrixFromQuaternion(Matrix4x4* M) {
-  // TODO implement matrixFromQuaternion function
+Quaternion::matrixFromQuaternion(Matrix4x4& M) {
+  M[0][0] = 1.0f - (2.0f*y*y) - (2.0f*z*z);
+  M[0][1] = (2.0f*x*y) - (2.0f*z*w);
+  M[0][2] = (2.0f*x*z) + (2.0f*w*y);
+  M[1][0] = (2.0f*x*y) + (2.0f*z*w);
+  M[1][1] = 1.0f - (2.0f*x*x) - (2.0f*z*z);
+  M[1][2] = (2.0f*y*z) - (2.0f*x*w);
+  M[2][0] = (2.0f*x*z) - (2.0f*y*w);
+  M[2][1] = (2.0f*y*z) + (2.0f*x*w);
+  M[2][2] = 1.0f - (2*x*x) - (2.0f*y*y);
+  M[3][3] = 1.0f;
+  M[0][3] = M[1][3] = M[2][3] = M[3][0] = M[3][1] = M[3][2] = 0.0f;
+  return;
 }
 
 Quaternion
