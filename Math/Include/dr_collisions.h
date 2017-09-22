@@ -5,8 +5,14 @@ namespace driderSDK {
 class Sphere;
 class Capsule;
 class Ray;
+class Vector3D;
 
-bool CollSphereSphere(Sphere s1, Sphere s2);
-bool CollSphereCapsule(Sphere s1, Capsule c1);
-bool CollSphereRay(Sphere s1, Ray r1);
+//Uncommented
+bool PointInSphere(const Vector3D& vec, const Sphere& s1);
+//Uncommented
+bool CollSphereSphere(const Sphere& s1, const Sphere& s2);
+//Uncommented
+bool CollSphereCapsule(const Sphere& s1, const Capsule& c1);
+//Uncommented
+bool CollSphereRay(const Sphere& s1, const Ray& r1);
 }
