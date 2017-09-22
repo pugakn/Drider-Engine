@@ -61,14 +61,14 @@ Matrix3x3::~Matrix3x3()
 {}
 
 Float32 
-Matrix3x3::determinant()
+Matrix3x3::determinant() const
 {
   return (v0.x * v1.y * v2.z + v0.y * v1.z * v2.x + v0.z * v1.x * v2.y) -
     (v2.x * v1.y * v0.z + v2.y * v1.z * v0.x + v2.z * v1.x * v0.y);
 }
 
 Matrix3x3
-Matrix3x3::cofactor()
+Matrix3x3::cofactor() const
 {
   Matrix3x3 temp;
   
@@ -88,7 +88,7 @@ Matrix3x3::cofactor()
 }
 
 Matrix3x3
-Matrix3x3::adjugate()
+Matrix3x3::adjugate() const
 {
   return cofactor().transpose();
 }
@@ -96,7 +96,7 @@ Matrix3x3::adjugate()
 Matrix3x3 
 Matrix3x3::inverse() const
 {
-  return Matrix3x3();
+  return adjugate() * (1 / determinant());
 }
 
 Matrix3x3 Matrix3x3::transpose() const

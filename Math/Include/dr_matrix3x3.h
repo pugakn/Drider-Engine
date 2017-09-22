@@ -80,7 +80,7 @@ class DR_API_EXPORT Matrix3x3
   * @return
   *   determinant.
   */
-  Float32 determinant();
+  Float32 determinant() const;
 
   /**
   * Calculates the cofactor of the matrix
@@ -88,7 +88,7 @@ class DR_API_EXPORT Matrix3x3
   * @return
   *   cofactor of matrix.
   */
-  Matrix3x3 cofactor();
+  Matrix3x3 cofactor() const;
 
   /**
   * Calculates the adjugate of the matrix
@@ -97,18 +97,11 @@ class DR_API_EXPORT Matrix3x3
   * @return
   *   adjugate.
   */
-  Matrix3x3 adjugate();
+  Matrix3x3 adjugate() const;
 
   /**
-  * Computes the dot product between this vector and the vector parameter.
-  * This operatios is commutative.
-  *
-  * @param B
-  *  The vector against which the dot product is calculated.
-  *
-  * @return
-  *   The sum of the products of the corresponding entries of the
-  *   vectors.
+  * Calculate inverse of matrix.
+  * using det * adjugate
   */
   Matrix3x3
   inverse() const;
@@ -118,8 +111,8 @@ class DR_API_EXPORT Matrix3x3
   *
   * Invert columns whith rows
   * | A1 | A2 | A3 |T    | A1 | B1 | C1 |
-  * | B1 | B2 | B3 |     | A2 | B2 | C2 |
-  * | C1 | C2 | C3 |  =  | A3 | B3 | C3 |
+  * | B1 | B2 | B3 |  =  | A2 | B2 | C2 |
+  * | C1 | C2 | C3 |     | A3 | B3 | C3 |
   */
   Matrix3x3
   transpose() const;

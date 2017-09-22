@@ -6,12 +6,14 @@
 
 int main(int argc, char* argv[])
 {
-  driderSDK::Matrix3x3 lu(2, 1, 0, 1, -1, 1, 0, 2, -1);
+  driderSDK::Matrix3x3 lu(3, 0, 2, 2, 0, -2, 0, 1, 1);
 
   float po = lu.determinant();
 
   driderSDK::Matrix3x3 k = lu.cofactor();
   driderSDK::Matrix3x3 k2 = lu.adjugate();
+  driderSDK::Matrix3x3 k3 = lu.inverse();
+
 
   driderSDK::MatrixNxM<3, 5> m3x5;
   driderSDK::MatrixNxM<5, 4> m5x4;
