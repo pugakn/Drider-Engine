@@ -19,7 +19,6 @@ class VectorN
  public:
   /**
   * Default constructor
-  *
   */
   VectorN()
   {}
