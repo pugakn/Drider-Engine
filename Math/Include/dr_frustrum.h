@@ -2,16 +2,25 @@
 #include <dr_prerequisites.h>
 #include <dr_plane.h>
 #include <dr_matrix4x4.h>
+#include <dr_vector3d.h>
 
 
 namespace driderSDK {
+using namespace math;
 class Sphere;
 class Capsule;
 class Ray;
-class Vector3D;
-class Frustrum
+class DR_API_EXPORT Frustrum
 {
  public:
+	enum PLANES { 
+		kLeft, 
+		kRight,
+		kTop,
+		kBottom,
+		kNear,
+		kFar
+	}; 
 	/**
 	* Constructor using a View Projection matrix
 	*
@@ -28,7 +37,7 @@ class Frustrum
 	//Uncommented
 	FORCEINLINE Matrix4x4 
 	getVP() {
-		return VP;
+		return m_VP;
 	}
 
 	/**
@@ -164,7 +173,8 @@ class Frustrum
 
  private:
 	Plane m_planes[6];
-	Matrix4x4 VP;
+	Vector3D m_corners[8];
+	Matrix4x4 m_VP;
 };
 
 

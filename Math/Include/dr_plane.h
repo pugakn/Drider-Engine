@@ -48,6 +48,7 @@ class DR_API_EXPORT Plane
 
  protected:
  private:
+	friend class Frustrum;
   Vector3D m_normal;
   Float32 m_d;
 };

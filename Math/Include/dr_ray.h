@@ -102,6 +102,22 @@ class DR_API_EXPORT Ray
 	intersects(const Plane& plane) const;
 
 	/**
+	* Check if the ray intersects with a plane
+	*
+	*	@param plane
+	*	 The plane to check the intersecton.
+	*
+	* @out param t
+	*	 The parameter of the point intersection.
+	*
+	* @return
+	*	  True if the ray intersects with the plane
+	*
+	*/
+	bool
+	intersects(const Plane& plane, Float32* t) const;
+
+	/**
 	* Check if the ray intersects with a sphere
 	*
 	*	@param sphere
