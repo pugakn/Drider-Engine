@@ -2,12 +2,7 @@
 #include <dr_prerequisites.h>
 namespace driderSDK {
 
-class Sphere;
-class Capsule;
-class Ray;
 class Vector3D;
-class Frustrum;
-class Plane;
 class Matrix4x4;
 
 
@@ -15,17 +10,22 @@ class Matrix4x4;
 *						            Intersection functions
 **********************************************************************/
 //Uncommented
-bool 
-PointInSphere(const Vector3D& vec, const Sphere& s1);
+bool
+pointInSphere(const Vector3D& point, 
+             const Vector3D& sphPosition, 
+             const Float32& radio);
 //Uncommented
 bool 
-CollSphereSphere(const Sphere& s1, const Sphere& s2);
+sphereSphereIntersection(const Vector3D& sph1Position,
+                         const Float32& sph1Radio,
+                         const Vector3D& sph2Position,
+                         const Float32& sph2Radio);
 //Uncommented
 bool 
-CollSphereCapsule(const Sphere& s1, const Capsule& c1);
-//Uncommented
-bool 
-CollSphereRay(const Sphere& s1, const Ray& r1);
+sphereRayIntersection(const Vector3D& sphPosition,
+                      const Float32& sphRadio, 
+                      const Vector3D& rayOrigin,
+                      const Vector3D& rayDirection);
 
 //Uncommented
 bool 
@@ -46,11 +46,6 @@ bool
 rayFrustrumIntersection(const Vector3D& rayOrigin, 
 												const Vector3D& rayDirection, 
 												const Matrix4x4& frustrumVP);
-//Uncommented
-//static bool
-//rayCapsuleIntersection(const Vector3D& rayOrigin,
-//										   const Vector3D& rayDirection,
-//	                     const Matrix4x4& frustrumVP);
 //Uncommented
 bool
 rayRayIntersection(const Vector3D& rayAOrigin,

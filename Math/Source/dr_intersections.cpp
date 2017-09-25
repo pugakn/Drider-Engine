@@ -12,45 +12,42 @@ namespace driderSDK {
 *						            Intersection functions
 **********************************************************************/
 //Uncommented
-bool PointInSphere(
-  const Vector3D& vec,
-  const Sphere& s1)
+bool FORCEINLINE
+pointInSphere(const Vector3D& point,
+              const Vector3D& sphPosition,
+              const Float32& radio)
 {
-  return s1.getCenter().distance(vec) < s1.getRadio();
+  return static_cast<bool>(point.distance(sphPosition) < radio);
 }
 //Uncommented
-bool CollSphereSphere(
-  const Sphere& s1, 
-  const Sphere& s2)
+bool
+sphereSphereIntersection(const Vector3D& sph1Position,
+                         const Float32& sph1Radio,
+                         const Vector3D& sph2Position,
+                         const Float32& sph2Radio)
 {
- return s1.getCenter().distance(s2.getCenter()) <
-        (s1.getRadio() + s2.getRadio());
+ return static_cast<bool>(sph1Position.distance(sph2Position) <
+        (sph1Radio + sph2Radio));
 }
+//Uncommented
+bool
+sphereRayIntersection(const Vector3D& sphPosition,
+                      const Float32& sphRadio, 
+                      const Vector3D& rayOrigin,
+                      const Vector3D& rayDirection)
+{
+ if(pointInSphere(rayOrigin, sphPosition, sphRadio))
+  return true;
+ Vector3D vec(rayOrigin - sphPosition);
 
-//Uncommented
-bool CollSphereCapsule(
-  const Sphere& s1,
-  const Capsule& c1)
-{
+ float pDirection = vec.dot(rayDirection);
+
+ if(pDirection < 0.0f)
   return false;
-}
-//Uncommented
-bool CollSphereRay(
-  const Sphere& s1,
-  const Ray& r1)
-{
-  if(PointInSphere(r1.getOrigin(), s1))
-    return true;
-  Vector3D vec(r1.getOrigin() - s1.getCenter());
 
-  float pDirection = vec.dot(r1.getDirection());
+ Vector3D vecClosestPoint(rayOrigin + (rayDirection * pDirection));
 
-  if(pDirection < 0.0f)
-    return false;
-
-  Vector3D vecClosestPoint(r1.getOrigin() + (r1.getDirection() * pDirection));
-
-  return PointInSphere(vecClosestPoint, s1);
+ return pointInSphere(vecClosestPoint, sphPosition, sphRadio);
 }
 
 
