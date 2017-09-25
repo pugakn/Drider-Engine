@@ -113,6 +113,12 @@ sqrt(Float32 value)
 }
 
 static FORCEINLINE Float32
+inverseSqrt(Float32 value)
+{
+	return 1.0f / std::sqrtf(value);
+}
+
+static FORCEINLINE Float32
 pow(Float32 a, Float32 b) 
 {
 	return std::powf(a,b);
@@ -210,5 +216,60 @@ abs<Float32>(Float32 value)
 }
 
 } //math
+
+namespace fastMath {
+/**********************************************************************
+*						       Faster Math functions but less accurate
+**********************************************************************/
+static FORCEINLINE Float32
+cos(Float32 value)
+{
+	return std::cosf(value);
+}
+static FORCEINLINE Float32
+aCos(Float32 value)
+{
+	return std::acosf(value);
+}
+
+
+static FORCEINLINE Float32
+sin(Float32 value)
+{
+	return std::sinf(value);
+}
+static FORCEINLINE Float32
+aSin(Float32 value)
+{
+	return std::asinf(value);
+}
+
+static FORCEINLINE Float32
+tan(Float32 value)
+{
+	return std::tanf(value);
+}
+static FORCEINLINE Float32
+aTan(Float32 value)
+{
+	return std::atanf(value);
+}
+static FORCEINLINE Float32
+aTan2(Float32 y, Float32 x)
+{
+	return std::atan2f(y, x);
+}
+
+static FORCEINLINE Float32
+sqrt(Float32 value)
+{
+	return std::sqrtf(value);
+}
+static FORCEINLINE Float32
+inverseSqrt(Float32 value)
+{
+	return 1.0f/std::sqrtf(value);
+}
+} //fastMath
 
 } //driderSDK
