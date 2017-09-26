@@ -32,7 +32,7 @@ class VectorN
   */
   explicit VectorN(float _scalar)
   {
-	  for(auto& element : m_data){
+	  for(auto& element : m_elements){
 	    element = _scalar;
 	  }
   }
@@ -67,7 +67,7 @@ class VectorN
   {
     DR_ASSERT(index < elements);
 	  
-	  return m_data[index];
+	  return m_elements[index];
   }
 
   /**
@@ -86,9 +86,8 @@ class VectorN
   operator[](SizeT index) const
   {
 	  DR_ASSERT(index < elements);
-
-
-	  return m_data[index];
+    
+	  return m_elements[index];
   }
 
   /**
@@ -107,7 +106,7 @@ class VectorN
 
 	  //For each element on the vector
 	  for (Int32 iElement = 0; iElement < _elements; ++iElement) {
-	    sum += m_data[iElement] * other.m_data[iElement];
+	    sum += m_elements[iElement] * other.m_elements[iElement];
 	  }
 
 	  return sum;
@@ -144,14 +143,14 @@ class VectorN
   *	  The vector normalized.
   *
   */
-  FORCEINLINE VectorN
-  normalize() const
+  FORCEINLINE void
+  normalize()
   {
 	  float invLength = 1.f / length();
 
 	  DR_ASSERT(invLength);
 
-	  return (*this) * invLength;
+	  operator*=(invLength);
   }
 
    /**
@@ -163,7 +162,7 @@ class VectorN
   FORCEINLINE const float*
   ptr() const
   {
-	  return &m_data[0];
+	  return m_elements.data();
   }
 
   /**
@@ -183,7 +182,7 @@ class VectorN
   operator*=(float scalar)
   {
 	  //For each element on the vector do the multiplication assigment
-	  for(auto& element : m_data){
+	  for(auto& element : m_elements){
 	    element *= scalar;
 	  }
 
@@ -230,7 +229,7 @@ class VectorN
   {
 	  //For each element on the vector do the addition assigment
 	  for (Int32 iElement = 0; iElement < _elements; ++i) {
-	    m_data[iElement] += other.m_data[iElement];
+	    m_elements[iElement] += other.m_elements[iElement];
 	  }
   }
 
@@ -252,7 +251,7 @@ class VectorN
   {
 	  //For each element on the vector do the subtraction assigment
 	  for (Int32 iElement = 0; iElement < _elements; ++i) {
-	    m_data[iElement] -= other.m_data[iElement];
+	    m_elements[iElement] -= other.m_elements[iElement];
 	  }
   }
 
@@ -272,12 +271,12 @@ class VectorN
   FORCEINLINE bool
   operator==(const VectorN& rhs)
   {
-	  //Compares each element in the first range (m_data.begin()-m_data.end())
-	  //to each element in the second range(rhs.m_data.begin()-m_data.end()
-	  return std::equal(m_data.begin(), 
-					    m_data.end(), 
-					    rhs.m_data.begin(), 
-					    rhs.m_data.begin());
+	  //Compares each element in the first range (m_elements.begin()-m_elements.end())
+	  //to each element in the second range(rhs.m_elements.begin()-m_elements.end()
+	  return std::equal(m_elements.begin(), 
+					    m_elements.end(), 
+					    rhs.m_elements.begin(), 
+					    rhs.m_elements.begin());
   }
 	
   /**
@@ -299,7 +298,7 @@ class VectorN
  protected:
 
  private:
-  std::array<float, _elements> m_data;
+  std::array<float, _elements> m_elements;
 };
 
 /**
@@ -407,7 +406,7 @@ operator+(VectorN<_elements> lhs, const VectorN<_elements>& rhs)
 */
 template<SizeT _elements>
 static FORCEINLINE VectorN<_elements>
-operator-(VectorN<_elements> lhs, const VectorN<_elements>& rhs )
+operator-(VectorN<_elements> lhs, const VectorN<_elements>& rhs)
 {
   return lhs -= rhs;
 }

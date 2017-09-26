@@ -95,9 +95,9 @@
 #endif
 
 /**********************************************************************
-*																	  *
-*					  Force inline & Restrict						  *
-*																	  *
+*																	                                    *
+*					              Force inline & Restrict						            *
+*																	                                    *
 **********************************************************************/
 
 #if DR_COMPILER == DR_COMPILER_MSV            //If we are compiling on Visual Studio

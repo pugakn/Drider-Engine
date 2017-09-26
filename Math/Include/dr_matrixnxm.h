@@ -43,9 +43,9 @@ class MatrixNxM
   */
   explicit MatrixNxM(const VectorN<_cols>& _vec)
   {
-	for(auto& row : m_data){
-	  row = _vec;
-	}
+    for(auto& row : m_elements){
+	    row = _vec;
+    }
   }
 
   /**
@@ -63,11 +63,9 @@ class MatrixNxM
   FORCEINLINE VectorN<_cols>&
   operator[](SizeT row)
   {
-	if (row >= _rows) {
-	  throw std::out_of_range("Row out of range");
-	}
+	  DR_ASSERT(row < _rows);
 
-	return m_data[row];
+	  return m_elements[row];
   }
 
   /**
@@ -85,11 +83,9 @@ class MatrixNxM
   FORCEINLINE const VectorN<_cols>&
   operator[](SizeT row) const
   {
-	if (row >= _rows) {
-	  throw std::out_of_range("Row out of range");
-	}
+		DR_ASSERT(row < _rows);
 
-	return m_data[row];
+	  return m_elements[row];
   }
 
   /**
@@ -101,7 +97,7 @@ class MatrixNxM
   FORCEINLINE SizeT
   rows() const
   {
-	return _rows;
+	  return _rows;
   }
 
   /**
@@ -111,9 +107,9 @@ class MatrixNxM
   *	  The number of columns in the matrix.
   */
   FORCEINLINE SizeT
-  cols() const noexcept
+  cols() const
   {
-	return _cols;
+	  return _cols;
   }
 
   /**
@@ -126,15 +122,15 @@ class MatrixNxM
   FORCEINLINE MatrixNxM<_cols, _rows>
   transpose() const
   {
-	MatrixNxM<_cols, _rows> transposed;
+	  MatrixNxM<_cols, _rows> transposed;
 
-	for(Int32 iRow = 0; iRow < _rows; ++iRow){
-	  for(Int32 iCol = 0; iCol < _cols; ++iCol){
-		transposed[iCol][iRow] = m_data[iRow][iCol];
+	  for(Int32 iRow = 0; iRow < _rows; ++iRow) {
+	    for(Int32 iCol = 0; iCol < _cols; ++iCol) {
+		    transposed[iCol][iRow] = m_elements[iRow][iCol];
+	    }
 	  }
-	}
 
-	return transposed;
+	  return transposed;
   }
 
   /**
@@ -146,7 +142,7 @@ class MatrixNxM
   FORCEINLINE const float*
   ptr() const
   {
-	return m_data[0].ptr();
+	  return m_elements[0].ptr();
   }
 
   /**
@@ -164,11 +160,11 @@ class MatrixNxM
   FORCEINLINE MatrixNxM&
   operator*=(float scalar)
   {	
-	for(auto& row : m_data){
-	  row *= scalar;	
-	}
+	  for(auto& row : m_elements){
+	    row *= scalar;	
+	  }
 
-	return *this;
+	  return *this;
   }  
 
   /**
@@ -186,7 +182,7 @@ class MatrixNxM
   FORCEINLINE MatrixNxM&
   operator/=(float scalar)
   {	
-	return *this *= (1.f / scalar);
+	  return *this *= (1.f / scalar);
   }
 
   /**
@@ -204,12 +200,12 @@ class MatrixNxM
   FORCEINLINE VectorN<_rows>
   operator*(const VectorN<_cols>& rhs)
   {
-	VectorN<_rows> temp;
-	for(Int32 iRow = 0; iRow < _rows; ++iRow){
-	  temp[iRow] = rhs.dot(m_data[iRow]);	
-	}
+	  VectorN<_rows> temp;
+	  for(Int32 iRow = 0; iRow < _rows; ++iRow){
+	    temp[iRow] = rhs.dot(m_elements[iRow]);	
+	  }
 
-	return temp;
+	  return temp;
   }
 
   /**
@@ -229,12 +225,12 @@ class MatrixNxM
   FORCEINLINE bool
   operator==(const MatrixNxM& rhs)
   {
-	//Compares each element in the first range (m_data.begin()-m_data.end())
-	//to each element in the second range(rhs.m_data.begin()-m_data.end()
-	return std::equal(m_data.begin(), 
-					  m_data.end(), 
-					  rhs.m_data.begin(),
-					  rhs.m_data.end());
+	  //Compares each element in the first range (m_elements.begin()-m_elements.end())
+	  //to each element in the second range(rhs.m_elements.begin()-m_elements.end()
+	  return std::equal(m_elements.begin(), 
+					    m_elements.end(), 
+					    rhs.m_elements.begin(),
+					    rhs.m_elements.end());
   }
 
   /**
@@ -254,14 +250,14 @@ class MatrixNxM
   FORCEINLINE bool
   operator!=(const MatrixNxM& rhs)
   {
-	return !(*this == rhs);
+	  return !(*this == rhs);
   }
 
  protected:
 
  private:
    
-  std::array<VectorN<_cols>, _rows> m_data;
+  std::array<VectorN<_cols>, _rows> m_elements;
 };
 
 /**
@@ -285,7 +281,7 @@ operator*(const VectorN<_rows> lhs, const MatrixNxM<_rows, _cols>& rhs)
   VectorN<_cols> temp;
   MatrixNxM<_cols, _rows> rhsTransposed = rhs.transpose();
   for(Int32 iCol = 0; iCol < _cols; ++iCol){
-	temp[iCol] = lhs.dot(rhsTransposed[iCol]);
+	  temp[iCol] = lhs.dot(rhsTransposed[iCol]);
   }
   return temp;
 }
@@ -377,10 +373,10 @@ operator*(const MatrixNxM<_rows, _cols>& lhs, const MatrixNxM<_cols, _rhsCols>& 
   MatrixNxM<_rows, _rhsCols> temp;
   MatrixNxM<_rhsCols, _cols> rhsTransposed = rhs.transpose();
 	
-  for(int iRows = 0; iRows < _rows; ++iRows){
-	for(int iCols = 0; iCols < _rhsCols; ++iCols){
-	  temp[iRows][iCols] = lhs[iRows].dot(rhsTransposed[iCols]); 
-	}
+  for(int iRows = 0; iRows < _rows; ++iRows)  {
+	  for(int iCols = 0; iCols < _rhsCols; ++iCols) {
+	    temp[iRows][iCols] = lhs[iRows].dot(rhsTransposed[iCols]); 
+	  }
   }
 
   return temp;
