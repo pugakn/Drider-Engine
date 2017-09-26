@@ -1,9 +1,6 @@
 #include "dr_intersections.h"
 
 #include "dr_math.h"
-#include "dr_sphere.h"
-#include "dr_capsule.h"
-#include "dr_ray.h"
 #include "dr_vector3d.h"
 
 
@@ -127,6 +124,64 @@ frustrumSphereIntersection(const Matrix4x4& frustrumVP,
 	                         const Vector3D& sphereOrigin, 
 	                         const Float32& sphereRadius)
 {
+	return false;
+}
+
+bool
+aabbAabbIntersect(const Vector3D& aabb1Center,
+	const Float32& aabb1Size,
+	const Vector3D& aabb2Center,
+	const Float32& aabb2Size)
+{
+	//TODO : implement aabb intersection function
+	return false;
+}
+
+bool
+aabbSphereIntersect(const Vector3D& aabbCenter,
+	const Float32& aabbSize,
+	const Vector3D& sphereOrigin,
+	const Float32& sphereRadius)
+{
+	//TODO : implement aabb intersection function
+	return false;
+}
+
+bool
+aabbPlaneIntersect(const Vector3D& aabbCenter,
+	const Float32& aabbSize,
+	const Vector3D& planeNormal,
+	const Vector3D& planePoint)
+{
+	//TODO : implement aabb intersection function
+	return false;
+}
+
+bool
+aabbFrustrumIntersect(const Vector3D& aabbCenter,
+	const Float32& aabbSize,
+	const Matrix4x4& frustrumVP)
+{
+	//TODO : implement aabb intersection function
+	return false;
+}
+
+bool
+aabbRayIntersect(const Vector3D& aabbCenter,
+	const Float32& aabbSize,
+	const Vector3D& rayOrigin,
+	const Vector3D& rayDirection)
+{
+	//TODO : implement aabb intersection function
+	return false;
+}
+
+bool
+pointInAabb(const Vector3D& aabbCenter,
+	const Float32& aabbSize,
+	const Vector3D& point)
+{
+	//TODO : implement aabb intersection function
 	return false;
 }
 

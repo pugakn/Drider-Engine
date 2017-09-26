@@ -14,9 +14,9 @@ Quaternion::Quaternion(const Quaternion& Q)
 }
 
 Quaternion::Quaternion(Float32 x,
- 					   Float32 y,
-					   Float32 z,
-					   Float32 w)
+ 					     Float32 y,
+					     Float32 z,
+					     Float32 w)
   : x(x),
 	y(y),
 	z(z),
