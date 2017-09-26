@@ -12,61 +12,61 @@ class Matrix4x4;
 //Uncommented
 bool
 pointInSphere(const Vector3D& point, 
-             const Vector3D& sphPosition, 
-             const Float32& radio);
+              const Vector3D& sphPosition, 
+              float radio);
 //Uncommented
 bool 
 sphereSphereIntersection(const Vector3D& sph1Position,
-                         const Float32& sph1Radio,
+                         float sph1Radio,
                          const Vector3D& sph2Position,
-                         const Float32& sph2Radio);
+                         float sph2Radio);
 //Uncommented
 bool 
 sphereRayIntersection(const Vector3D& sphPosition,
-                      const Float32& sphRadio, 
+                      float sphRadio, 
                       const Vector3D& rayOrigin,
                       const Vector3D& rayDirection);
 
 //Uncommented
 bool 
 rayPlaneIntersection(const Vector3D& rayOrigin, 
-										 const Vector3D& rayDirection, 
-										 const Vector3D& planeNormal, 
-										 const Vector3D& planePoint);
+										           const Vector3D& rayDirection, 
+										           const Vector3D& planeNormal, 
+										           const Vector3D& planePoint);
 //Uncommented
 bool
 rayPlaneIntersection(const Vector3D& rayOrigin,
-	                   const Vector3D& rayDirection,
-	                   const Vector3D& planeNormal,
-	                   const Vector3D& planePoint,
-	                   Float32* intersectionPoint);
+	                    const Vector3D& rayDirection,
+	                    const Vector3D& planeNormal,
+	                    const Vector3D& planePoint,
+	                    float* intersectionPoint);
 
 //Uncommented
 bool 
 rayFrustrumIntersection(const Vector3D& rayOrigin, 
-												const Vector3D& rayDirection, 
-												const Matrix4x4& frustrumVP);
+												            const Vector3D& rayDirection, 
+											            	const Matrix4x4& frustrumVP);
 //Uncommented
 bool
 rayRayIntersection(const Vector3D& rayAOrigin,
-	                 const Vector3D& rayADirection,
-	                 const Vector3D& rayBOrigin,
-	                 const Vector3D& rayBDirection);
+	                  const Vector3D& rayADirection,
+	                  const Vector3D& rayBOrigin,
+	                  const Vector3D& rayBDirection);
 
 //Uncommented
 bool
 frustrumPlaneIntersection(const Matrix4x4& frustrumVP,
-	                        const Vector3D& sphereOrigin,
-	                        const Vector3D& planePoint);
+	                         const Vector3D& sphereOrigin,
+	                         const Vector3D& planePoint);
 //Uncommented
 bool
 frustrumFrustrumIntersection(const Matrix4x4& frustrumAVP,
-	                           const Matrix4x4& frustrumBVP);
+	                            const Matrix4x4& frustrumBVP);
 //Uncommented
 bool
 frustrumSphereIntersection(const Matrix4x4& frustrumVP,
-	                         const Vector3D& sphereOrigin,
-	                         const Float32& sphereRadius);
+	                          const Vector3D& sphereOrigin,
+	                          float sphereRadius);
 //Uncommented
 //static bool
 //frustrumCapsuleIntersection(const Matrix4x4& frustrumVP);
@@ -89,7 +89,7 @@ frustrumContainsFrustrum(const Matrix4x4& frustrumAVP,
 bool
 frustrumContainsSphere(const Matrix4x4& frustrumVP,
 	                     const Vector3D& sphereOrigin,
-	                     const Float32& sphereRadius);
+	                     float sphereRadius);
 
 
 

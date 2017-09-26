@@ -15,16 +15,16 @@ namespace driderSDK {
 bool FORCEINLINE
 pointInSphere(const Vector3D& point,
               const Vector3D& sphPosition,
-              const Float32& radio)
+              float radio)
 {
   return static_cast<bool>(point.distance(sphPosition) < radio);
 }
 //Uncommented
 bool
 sphereSphereIntersection(const Vector3D& sph1Position,
-                         const Float32& sph1Radio,
+                         float sph1Radio,
                          const Vector3D& sph2Position,
-                         const Float32& sph2Radio)
+                         float sph2Radio)
 {
  return static_cast<bool>(sph1Position.distance(sph2Position) <
         (sph1Radio + sph2Radio));
@@ -32,7 +32,7 @@ sphereSphereIntersection(const Vector3D& sph1Position,
 //Uncommented
 bool
 sphereRayIntersection(const Vector3D& sphPosition,
-                      const Float32& sphRadio, 
+                      float sphRadio, 
                       const Vector3D& rayOrigin,
                       const Vector3D& rayDirection)
 {
@@ -71,7 +71,7 @@ rayPlaneIntersection(const Vector3D& rayOrigin,
 	                   const Vector3D& rayDirection, 
 	                   const Vector3D& planeNormal, 
 	                   const Vector3D& planePoint, 
-	                   Float32* intersectionPoint)
+	                   float* intersectionPoint)
 {
 	Float32 denom = planeNormal.dot(rayDirection);
 	if (denom > math::SMALL_NUMBER) {
@@ -125,7 +125,7 @@ frustrumFrustrumIntersection(const Matrix4x4& frustrumAVP,
 bool 
 frustrumSphereIntersection(const Matrix4x4& frustrumVP, 
 	                         const Vector3D& sphereOrigin, 
-	                         const Float32& sphereRadius)
+	                         float sphereRadius)
 {
 	return false;
 }
@@ -151,7 +151,7 @@ frustrumContainsFrustrum(const Matrix4x4& frustrumAVP,
 bool 
 frustrumContainsSphere(const Matrix4x4& frustrumVP, 
 	                     const Vector3D& sphereOrigin, 
-	                     const Float32& sphereRadius)
+	                     float sphereRadius)
 {
 	return false;
 }
