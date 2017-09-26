@@ -5,8 +5,8 @@ namespace driderSDK
 
 Vector2D::Vector2D() {}
 
-Vector2D::Vector2D(FORCE_INIT k) {
-  if (k == FORCE_INIT::kIdentity) {
+Vector2D::Vector2D(math::FORCE_INIT k) {
+  if (k == math::FORCE_INIT::kIdentity) {
     x = 0.0f;
     y = 0.0f;
   }

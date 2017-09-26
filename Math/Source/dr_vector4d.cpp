@@ -5,8 +5,8 @@ namespace driderSDK
 
 Vector4D::Vector4D() {}
 
-Vector4D::Vector4D(FORCE_INIT k) {
-  if (FORCE_INIT::kIdentity == k) {
+Vector4D::Vector4D(math::FORCE_INIT k) {
+  if (math::FORCE_INIT::kIdentity == k) {
     x = 0.0f;
     y = 0.0f;
     z = 0.0f;

@@ -8,11 +8,6 @@ namespace driderSDK {
 class DR_API_EXPORT Matrix4x4
 {
  public:
-  enum FORCE_INIT {
-    kZero,
-    kIdentity
-  };
-
   /**
   * Default constructor
   *
@@ -24,7 +19,7 @@ class DR_API_EXPORT Matrix4x4
   *
   * Values are initialized with 0(kZero) or identity matrix(kIdentity).
   */
-  Matrix4x4(FORCE_INIT k);
+  Matrix4x4(math::FORCE_INIT k);
 
   /**
   * Move constructor
@@ -41,23 +36,23 @@ class DR_API_EXPORT Matrix4x4
   /**
   * Initialize constructor with values.
   *
-  * @param vector0x, vector0y, vector0z, vector0w
+  * @param v0x, v0y, v0z, v0w
   *  The x, y, z, w values of the vector, first row
   *
-  * @param vector1x, vector1y, vector1z, vector1w
+  * @param v1x, v1y, v1z, v1w
   *  The x, y, z, w values of the vector, second row
   *
-  * @param vector2x, vector2y, vector2z, vector2w
+  * @param v2x, v2y, v2z, v2w
   *  The x, y, z, w values of the vector, third row
   *
-  * @param vector3x, vector3y, vector3z, vector3w
+  * @param v3x, v3y, v3z, v3w
   *  The x, y, z, w values of the vector, quarter row
   *
   */
-  Matrix4x4(float vector0x, float vector0y, float vector0z, float vector0w,
-            float vector1x, float vector1y, float vector1z, float vector1w,
-            float vector2x, float vector2y, float vector2z, float vector2w,
-            float vector3x, float vector3y, float vector3z, float vector3w);
+  Matrix4x4(float v0x, float v0y, float v0z, float v0w,
+            float v1x, float v1y, float v1z, float v1w,
+            float v2x, float v2y, float v2z, float v2w,
+            float v3x, float v3y, float v3z, float v3w);
 
   /**
   * Initialize constructor with values.

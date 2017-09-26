@@ -9,11 +9,6 @@ namespace driderSDK {
 class DR_API_EXPORT Vector2DI
 {
  public:
-   enum FORCE_INIT
-   {
-     kZero,
-     kIdentity
-   };
   /**
   * Default constructor
   *
@@ -27,7 +22,7 @@ class DR_API_EXPORT Vector2DI
   *
   * Values are initialized with 0.
   */
-  Vector2DI(FORCE_INIT k);
+  Vector2DI(math::FORCE_INIT k);
 
   /**
   * Move constructor

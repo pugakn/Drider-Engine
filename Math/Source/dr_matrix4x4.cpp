@@ -1,11 +1,12 @@
 #include <dr_matrix4x4.h>
 
-namespace driderSDK {
+namespace driderSDK
+{
 
 Matrix4x4::Matrix4x4() {}
 
-Matrix4x4::Matrix4x4(FORCE_INIT k) {
-  if (FORCE_INIT::kZero == k) {
+Matrix4x4::Matrix4x4(math::FORCE_INIT k) {
+  if (math::FORCE_INIT::kZero == k) {
     vector0.x = 0;
     vector0.y = 0;
     vector0.z = 0;

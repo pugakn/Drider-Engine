@@ -1,11 +1,12 @@
 #include "dr_vector3d.h"
 
-namespace driderSDK {
+namespace driderSDK
+{
 
 Vector3D::Vector3D() : x(0.0f), y(0.0f), z(0.0f) {}
 
-Vector3D::Vector3D(FORCE_INIT k) {
-  if (FORCE_INIT::kIdentity == k) {
+Vector3D::Vector3D(math::FORCE_INIT k) {
+  if (math::FORCE_INIT::kIdentity == k) {
     x = 0.0f;
     y = 0.0f;
     z = 0.0f;

@@ -9,16 +9,9 @@ namespace driderSDK {
 class DR_API_EXPORT Vector4D
 {
  public:
-  enum FORCE_INIT
-  {
-    kZero,
-    kIdentity
-  };
-
   /**
   * Default constructor
   *
-  * Values are initialized with 0.
   */
   Vector4D();
 
@@ -29,7 +22,7 @@ class DR_API_EXPORT Vector4D
   *
   * Values are initialized with 0.
   */
-  Vector4D(FORCE_INIT k);
+  Vector4D(math::FORCE_INIT k);
 
   /**
   * Move constructor

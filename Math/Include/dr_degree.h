@@ -5,12 +5,9 @@
 
 namespace driderSDK {
 
-class Radian;
-
 class Degree
 {
  public:
-public:
   /**
   * Default constructor.
   *
@@ -38,14 +35,6 @@ public:
   Degree(float value);
 
   /**
-  * Initialize with Radian.
-  *
-  * @param value
-  *  Initial value of the class.
-  */
-  Degree(const Radian& value);
-
-  /**
   * Default destructor.
   *
   */
@@ -58,7 +47,7 @@ public:
   * @return
   *   Class radian.
   */
-  Radian toRadian() const;
+  float toRadian() const;
 
   //Uncomented
   operator float();
@@ -66,12 +55,7 @@ public:
   //Uncomented
   Degree&
   operator=(float V);
-
-  //Uncomented
-  Degree&
-  operator=(const Radian& V);
 private:
-  friend class Radian;
   float m_value;
 };
 
