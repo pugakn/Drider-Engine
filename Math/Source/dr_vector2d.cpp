@@ -25,8 +25,8 @@ Vector2D::Vector2D(const Vector2D& V)
 {
 }
 
-Vector2D::Vector2D(Float32 x,
-                   Float32 y)
+Vector2D::Vector2D(float x,
+                   float y)
   : x(x),
     y(y)
 {
@@ -36,19 +36,19 @@ Vector2D::~Vector2D()
 {
 }
 
-Float32
+float
 Vector2D::dot(const Vector2D& B) const
 {
   return (x*B.x) + (y*B.y);
 }
 
-Float32
+float
 Vector2D::length() const
 {
   return math::sqrt(dot(*this));
 }
 
-Float32
+float
 Vector2D::lengthSqr() const
 {
   return dot(*this);
@@ -60,19 +60,19 @@ Vector2D::normalize() const
   return (*this) * (1 / length());
 }
 
-Float32
+float
 Vector2D::distance(const Vector2D& S) const
 {
   return (S - *this).length();
 }
 
-Float32
+float
 Vector2D::distanceSqr(const Vector2D& S) const
 {
   return (S - *this).lengthSqr();
 }
 
-Float32&
+float&
 Vector2D::operator[](SizeT index)
 {
   if (index == 0) {
@@ -85,7 +85,7 @@ Vector2D::operator[](SizeT index)
   throw std::out_of_range("Index out of range");
 }
 
-const Float32&
+const float&
 Vector2D::operator[](SizeT index) const
 {
   if (index == 0) {
@@ -149,13 +149,13 @@ Vector2D::operator*=(const Vector2D& A)
 }
 
 Vector2D
-Vector2D::operator*(const Float32 S) const
+Vector2D::operator*(const float S) const
 {
   return Vector2D(x*S, y*S);
 }
 
 Vector2D&
-Vector2D::operator*=(const Float32 S)
+Vector2D::operator*=(const float S)
 {
   x *= S;
   y *= S;
@@ -163,13 +163,13 @@ Vector2D::operator*=(const Float32 S)
 }
 
 Vector2D
-Vector2D::operator/(const Float32 S) const
+Vector2D::operator/(const float S) const
 {
   return Vector2D(x / S, y / S);
 }
 
 Vector2D&
-Vector2D::operator/=(const Float32 S)
+Vector2D::operator/=(const float S)
 {
   x /= S;
   y /= S;

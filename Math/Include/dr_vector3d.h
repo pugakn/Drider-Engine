@@ -54,7 +54,7 @@ class DR_API_EXPORT Vector3D
   * @param z
   *  The z value of the vector
   */
-  Vector3D(Float32 x, Float32 y, Float32 z);
+  Vector3D(float x, float y, float z);
 
   /**
   * Default destructor
@@ -73,7 +73,7 @@ class DR_API_EXPORT Vector3D
   *   The sum of the products of the corresponding entries of the
   *   vectors.
   */
-  Float32
+  float
   dot(const Vector3D& B) const;
 
   /**
@@ -97,7 +97,7 @@ class DR_API_EXPORT Vector3D
   * @return
   *   The length (or "size") of the vector.
   */
-  Float32
+  float
   length() const;
 
   /**
@@ -106,7 +106,7 @@ class DR_API_EXPORT Vector3D
   * @return
   *   The length (or "size") of the vector squared.
   */
-  Float32
+  float
   lengthSqr() const;
 
   /**
@@ -127,7 +127,7 @@ class DR_API_EXPORT Vector3D
   * @return
   *   Distance
   */
-  Float32
+  float
   distance(const Vector3D& S) const;
 
   /**
@@ -139,7 +139,7 @@ class DR_API_EXPORT Vector3D
   * @return
   *   Distance
   */
-  Float32
+  float
   distanceSqr(const Vector3D& S) const;
 
   /**
@@ -154,7 +154,7 @@ class DR_API_EXPORT Vector3D
   * @throws out_of_range
   *	  If the index is greater than number of elements in the vector.
   */
-  Float32&
+  float&
   operator[](SizeT index);
 
   /**
@@ -169,7 +169,7 @@ class DR_API_EXPORT Vector3D
   * @throws out_of_range
   *	  If the index is greater than number of elements in the vector.
   */
-  const Float32&
+  const float&
   operator[](SizeT index) const;
 
   //Uncommented
@@ -202,19 +202,19 @@ class DR_API_EXPORT Vector3D
 
   //Uncommented
   Vector3D
-  operator*(const Float32 S) const;
+  operator*(const float S) const;
 
   //Uncommented
   Vector3D&
-  operator*=(const Float32 S);
+  operator*=(const float S);
 
   //Uncommented
   Vector3D
-  operator/(const Float32 S) const;
+  operator/(const float S) const;
 
   //Uncommented
   Vector3D&
-  operator/=(const Float32 S);
+  operator/=(const float S);
 
   //Uncommented
   bool
@@ -224,7 +224,7 @@ class DR_API_EXPORT Vector3D
   bool
   operator!=(const Vector3D& S);
 
-  Float32 x, y, z;
+  float x, y, z;
 };
 
 }

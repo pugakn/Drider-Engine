@@ -31,7 +31,7 @@ class MatrixNxM
   *	 All the elements of the matrix are initialized to this value.
   *
   */
-  explicit MatrixNxM(Float32 _scalar) : MatrixNxM(VectorN<_cols>( _scalar ))
+  explicit MatrixNxM(float _scalar) : MatrixNxM(VectorN<_cols>( _scalar ))
   {}
 
   /**
@@ -143,7 +143,7 @@ class MatrixNxM
   * @return
   *	  A constant pointer to the first element of the matrix.
   */
-  FORCEINLINE const Float32*
+  FORCEINLINE const float*
   ptr() const
   {
 	return m_data[0].ptr();
@@ -162,7 +162,7 @@ class MatrixNxM
   *	  A reference to (*this).	
   */
   FORCEINLINE MatrixNxM&
-  operator*=(Float32 scalar)
+  operator*=(float scalar)
   {	
 	for(auto& row : m_data){
 	  row *= scalar;	
@@ -184,7 +184,7 @@ class MatrixNxM
   *	  A reference to (*this).	
   */
   FORCEINLINE MatrixNxM&
-  operator/=(Float32 scalar)
+  operator/=(float scalar)
   {	
 	return *this *= (1.f / scalar);
   }
@@ -307,7 +307,7 @@ operator*(const VectorN<_rows> lhs, const MatrixNxM<_rows, _cols>& rhs)
 */
 template<SizeT _rows, SizeT _cols>
 static FORCEINLINE MatrixNxM<_rows, _cols>
-operator*(MatrixNxM<_rows, _cols> matrix, Float32 scalar)
+operator*(MatrixNxM<_rows, _cols> matrix, float scalar)
 {
   return matrix *= scalar;
 }
@@ -329,7 +329,7 @@ operator*(MatrixNxM<_rows, _cols> matrix, Float32 scalar)
 */
 template<SizeT _rows, SizeT _cols>
 static FORCEINLINE MatrixNxM<_rows, _cols>
-operator*(Float32 scalar, const MatrixNxM<_rows, _cols>& matrix)
+operator*(float scalar, const MatrixNxM<_rows, _cols>& matrix)
 {
   return matrix * scalar;
 }
@@ -351,7 +351,7 @@ operator*(Float32 scalar, const MatrixNxM<_rows, _cols>& matrix)
 */
 template<SizeT _rows, SizeT _cols>
 static FORCEINLINE MatrixNxM<_rows, _cols>
-operator/(MatrixNxM<_rows, _cols> matrix, Float32 scalar)
+operator/(MatrixNxM<_rows, _cols> matrix, float scalar)
 {
   return matrix /= scalar;
 }

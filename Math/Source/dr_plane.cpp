@@ -5,7 +5,7 @@ namespace driderSDK {
 Plane::Plane()
 {}
 
-Plane::Plane(const Vector3D & _normal, Float32 _d)
+Plane::Plane(const Vector3D & _normal, float _d)
   : m_normal(_normal),
 	m_d(_d)
 {}
@@ -29,7 +29,7 @@ Plane::Plane(const Plane & other)
 	m_d(other.m_d)
 {}
 
-Float32 Plane::distanceToPoint(const Vector3D & point)
+float Plane::distanceToPoint(const Vector3D & point)
 {
   /******Formula*******
    	 N = Plane Normal 
@@ -44,7 +44,32 @@ Float32 Plane::distanceToPoint(const Vector3D & point)
   //since N is normalized sqrt(dot(N,N)) == 1 there
   //is no need for division
 
-  return math::abs(point.dot(m_normal) + m_d);
+  return math::abs(point.dot(m_normal) + m_d) / m_normal.length();
+}
+
+float Plane::signedDistanceToPoint(const Vector3D & point)
+{
+  return (point.dot(m_normal) + m_d)  / m_normal.length();
+}
+
+bool Plane::intersects(const Vector3D & point)
+{
+  //Ax+By+Cz = D
+  //Ax + By + Cz - D = 0 If this is true the point is in the plane
+
+  //Little presicion error 
+  float error = 0.0001f;
+
+  float res = m_normal.dot(point) - m_d;
+
+  return math::abs(res) < error;  
+}
+
+Plane Plane::normalize() const
+{
+  float invLength = 1.f / m_normal.length();
+  
+  return Plane(m_normal * invLength, m_d * invLength);
 }
 
 Vector3D Plane::getNormal() const
@@ -52,7 +77,7 @@ Vector3D Plane::getNormal() const
   return m_normal;
 }
 
-Float32 Plane::getGap() const
+float Plane::getGap() const
 {
   return m_d;
 }
@@ -61,6 +86,7 @@ Plane& Plane::operator=(const Plane & other)
 {
   m_normal = other.m_normal;
   m_d = other.m_d;
+  return *this;
 }
 
 bool Plane::operator==(const Plane & rhs)

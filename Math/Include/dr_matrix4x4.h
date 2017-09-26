@@ -54,10 +54,10 @@ class DR_API_EXPORT Matrix4x4
   *  The x, y, z, w values of the vector, quarter raw
   *
   */
-  Matrix4x4(Float32 v0x, Float32 v0y, Float32 v0z, Float32 v0w,
-            Float32 v1x, Float32 v1y, Float32 v1z, Float32 v1w,
-            Float32 v2x, Float32 v2y, Float32 v2z, Float32 v2w,
-            Float32 v3x, Float32 v3y, Float32 v3z, Float32 v3w);
+  Matrix4x4(float v0x, float v0y, float v0z, float v0w,
+            float v1x, float v1y, float v1z, float v1w,
+            float v2x, float v2y, float v2z, float v2w,
+            float v3x, float v3y, float v3z, float v3w);
 
   /**
   * Initialize constructor with values.
@@ -88,7 +88,7 @@ class DR_API_EXPORT Matrix4x4
   * @return
   *   determinant.
   */
-  Float32 determinant() const;
+  float determinant() const;
 
   /**
   * Calculates the cofactor of the matrix
@@ -172,11 +172,11 @@ class DR_API_EXPORT Matrix4x4
 
   //Uncommented
   Matrix4x4
-    operator*(const Float32 S) const;
+    operator*(const float S) const;
 
   //Uncommented
   Matrix4x4&
-    operator*=(const Float32 S);
+    operator*=(const float S);
 
   Vector4D v0, v1, v2, v3;
 };

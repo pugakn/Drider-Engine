@@ -50,9 +50,9 @@ class DR_API_EXPORT Matrix3x3
   * @param v2x, v2y, v2z
   *  The x, y, z values of the vector, third raw
   */
-  Matrix3x3(Float32 v0x, Float32 v0y, Float32 v0z,
-            Float32 v1x, Float32 v1y, Float32 v1z,
-            Float32 v2x, Float32 v2y, Float32 v2z);
+  Matrix3x3(float v0x, float v0y, float v0z,
+            float v1x, float v1y, float v1z,
+            float v2x, float v2y, float v2z);
 
   /**
   * Initialize constructor with values.
@@ -80,7 +80,7 @@ class DR_API_EXPORT Matrix3x3
   * @return
   *   determinant.
   */
-  Float32 determinant() const;
+  float determinant() const;
 
   /**
   * Calculates the cofactor of the matrix
@@ -163,11 +163,11 @@ class DR_API_EXPORT Matrix3x3
 
   //Uncommented
   Matrix3x3
-  operator*(const Float32 S) const;
+  operator*(const float S) const;
 
   //Uncommented
   Matrix3x3&
-  operator*=(const Float32 S);
+  operator*=(const float S);
 
   //Uncommented
   bool

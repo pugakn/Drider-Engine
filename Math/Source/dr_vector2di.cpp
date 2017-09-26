@@ -36,19 +36,19 @@ Vector2DI::~Vector2DI()
 {
 }
 
-Float32
+float
 Vector2DI::dot(const Vector2DI& B) const
 {
-  return static_cast<Float32>((x*B.x) + (y*B.y));
+  return static_cast<float>((x*B.x) + (y*B.y));
 }
 
-Float32
+float
 Vector2DI::length() const
 {
   return math::sqrt(dot(*this));
 }
 
-Float32
+float
 Vector2DI::lengthSqr() const
 {
   return dot(*this);
@@ -60,13 +60,13 @@ Vector2DI::normalize() const
   return (*this) * (1 / length());
 }
 
-Float32
+float
 Vector2DI::distance(const Vector2DI& S) const
 {
   return (S  - *this).length();
 }
 
-Float32
+float
 Vector2DI::distanceSqr(const Vector2DI& S) const
 {
   return (S - *this).lengthSqr();
@@ -147,14 +147,14 @@ Vector2DI::operator*=(const Vector2DI& A)
 }
 
 Vector2DI
-Vector2DI::operator*(const Float32 S) const
+Vector2DI::operator*(const float S) const
 {
   return Vector2DI(static_cast<Int32>(x*S),
                    static_cast<Int32>(y*S));
 }
 
 Vector2DI&
-Vector2DI::operator*=(const Float32 S)
+Vector2DI::operator*=(const float S)
 {
   x *= static_cast<Int32>(S);
   y *= static_cast<Int32>(S);
@@ -162,14 +162,14 @@ Vector2DI::operator*=(const Float32 S)
 }
 
 Vector2DI
-Vector2DI::operator/(const Float32 S) const
+Vector2DI::operator/(const float S) const
 {
   return Vector2DI(static_cast<Int32>(x*(1 / S)),
                    static_cast<Int32>(y*(1 / S)));
 }
 
 Vector2DI&
-Vector2DI::operator/=(const Float32 S)
+Vector2DI::operator/=(const float S)
 {
   x *= static_cast<Int32>(1 / S);
   y *= static_cast<Int32>(1 / S);

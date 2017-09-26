@@ -13,7 +13,6 @@ class DR_API_EXPORT Quaternion
   /**
   * Default constructor.
   *
-  * Initialize the values on (0,0,0,1).
   */
   Quaternion();
 

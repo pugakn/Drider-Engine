@@ -32,7 +32,7 @@ namespace driderSDK {
   using Int32 = int32_t; //32-bit signed.
   using Int64 = int64_t; //64-bit signed.
 
-  using Float32	= float;
+  using float	= float;
   using Float64 = double;
 
 #if DR_COMPILER == DR_COMPILER_MSV || DR_PLATFORM == DR_PLATFORM_PS4

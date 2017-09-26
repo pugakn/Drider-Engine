@@ -50,7 +50,7 @@ class DR_API_EXPORT Vector2D
   * @param y
   *  The y value of the vector
   */
-  Vector2D(Float32 x, Float32 y);
+  Vector2D(float x, float y);
 
   /**
   * Default destructor
@@ -69,7 +69,7 @@ class DR_API_EXPORT Vector2D
   *   The sum of the products of the corresponding entries of the
   *   vectors.
   */
-  Float32
+  float
   dot(const Vector2D& B) const;
 
   /**
@@ -78,7 +78,7 @@ class DR_API_EXPORT Vector2D
   * @return
   *   The length (or "size") of the vector.
   */
-  Float32
+  float
   length() const;
 
   /**
@@ -87,7 +87,7 @@ class DR_API_EXPORT Vector2D
   * @return
   *   The length (or "size") of the vector squared.
   */
-  Float32
+  float
   lengthSqr() const;
 
   /**
@@ -108,7 +108,7 @@ class DR_API_EXPORT Vector2D
   * @return
   *   Distance
   */
-  Float32
+  float
   distance(const Vector2D& S) const;
 
   /**
@@ -120,7 +120,7 @@ class DR_API_EXPORT Vector2D
   * @return
   *   Distance
   */
-  Float32
+  float
   distanceSqr(const Vector2D& S) const;
 
   /**
@@ -135,7 +135,7 @@ class DR_API_EXPORT Vector2D
   * @throws out_of_range
   *	  If the index is greater than number of elements in the vector.
   */
-  Float32&
+  float&
   operator[](SizeT index);
 
   /**
@@ -150,7 +150,7 @@ class DR_API_EXPORT Vector2D
   * @throws out_of_range
   *	  If the index is greater than number of elements in the vector.
   */
-  const Float32&
+  const float&
   operator[](SizeT index) const;
 
   //Uncommented
@@ -183,19 +183,19 @@ class DR_API_EXPORT Vector2D
 
   //Uncommented
   Vector2D
-  operator*(const Float32 S) const;
+  operator*(const float S) const;
 
   //Uncommented
   Vector2D&
-  operator*=(const Float32 S);
+  operator*=(const float S);
 
   //Uncommented
   Vector2D
-  operator/(const Float32 S) const;
+  operator/(const float S) const;
 
   //Uncommented
   Vector2D&
-  operator/=(const Float32 S);
+  operator/=(const float S);
 
   //Uncommented
   bool
@@ -205,7 +205,7 @@ class DR_API_EXPORT Vector2D
   bool
   operator!=(const Vector2D& S);
 
-  Float32 x, y;
+  float x, y;
 };
 
 }

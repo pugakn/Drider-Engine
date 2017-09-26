@@ -30,11 +30,11 @@ class VectorN
   *	 All the elements of the vector are initialized to this value.
   *
   */
-  explicit VectorN(Float32 _scalar)
+  explicit VectorN(float _scalar)
   {
-	for(auto& element : m_data){
-	  element = _scalar;
-	}
+	  for(auto& element : m_data){
+	    element = _scalar;
+	  }
   }
   
   /**
@@ -47,7 +47,7 @@ class VectorN
   FORCEINLINE SizeT
   elements() const
   {
-	return _elements;
+	  return _elements;
   }
 
   /**
@@ -62,14 +62,12 @@ class VectorN
   * @throws out_of_range
   *	  If the index is greater than number of elements in the vector.
   */
-  FORCEINLINE Float32&
+  FORCEINLINE float&
   operator[](SizeT index)
   {
-	if (index >= _elements) {
-	  throw std::out_of_range("Index out of range");
-	}
-
-	return m_data[index];
+    DR_ASSERT(index < elements);
+	  
+	  return m_data[index];
   }
 
   /**
@@ -84,14 +82,13 @@ class VectorN
   * @throws out_of_range
   *	  If the index is greater than number of elements in the vector.
   */
-  FORCEINLINE const Float32&
+  FORCEINLINE const float&
   operator[](SizeT index) const
   {
-	if (index >= _elements) {
-	  throw std::out_of_range("Index out of range");
-	}
+	  DR_ASSERT(index < elements);
 
-	return m_data[index];
+
+	  return m_data[index];
   }
 
   /**
@@ -103,17 +100,17 @@ class VectorN
   * @return
   *	  A const reference to the element at the [index] position.
   */
-  FORCEINLINE Float32
+  FORCEINLINE float
   dot(const VectorN& other) const
   {
-	Float32 sum = 0;
+	  float sum = 0;
 
-	//For each element on the vector
-	for (Int32 iElement = 0; iElement < _elements; ++iElement) {
-	  sum += m_data[iElement] * other.m_data[iElement];
-	}
+	  //For each element on the vector
+	  for (Int32 iElement = 0; iElement < _elements; ++iElement) {
+	    sum += m_data[iElement] * other.m_data[iElement];
+	  }
 
-	return sum;
+	  return sum;
   }
 
   /**
@@ -122,10 +119,10 @@ class VectorN
   * @return
   *	  Length of the vector.
   */
-  FORCEINLINE Float32
+  FORCEINLINE float
   length() const
   {
-	return sqrt(dot(*this));
+	  return sqrt(dot(*this));
   }
 
   /**
@@ -134,10 +131,10 @@ class VectorN
   * @return
   *	  Squared length of the vector.
   */
-  FORCEINLINE Float32
+  FORCEINLINE float
   lengthSqr() const
   {
-	return dot(*this);
+	  return dot(*this);
   }
 
   /**
@@ -150,16 +147,11 @@ class VectorN
   FORCEINLINE VectorN
   normalize() const
   {
-	Float32 invLength = 1.f / (length() + std::numeric_limits<Float32>::min());
+	  float invLength = 1.f / length();
 
-	if(len != 0) {
-	  invLength /=   	
-	}
-	else {
-	  invLength = 0.0f;
-	}
+	  DR_ASSERT(invLength);
 
-	return (*this) * invLength;
+	  return (*this) * invLength;
   }
 
    /**
@@ -168,10 +160,10 @@ class VectorN
   * @return
   *	  A constant pointer to the first element of the vector.
   */
-  FORCEINLINE const Float32*
+  FORCEINLINE const float*
   ptr() const
   {
-	return &m_data[0];
+	  return &m_data[0];
   }
 
   /**
@@ -188,14 +180,14 @@ class VectorN
   *
   */
   FORCEINLINE VectorN&
-  operator*=(Float32 scalar)
+  operator*=(float scalar)
   {
-	//For each element on the vector do the multiplication assigment
-	for(auto& element : m_data){
-	  element *= scalar;
-	}
+	  //For each element on the vector do the multiplication assigment
+	  for(auto& element : m_data){
+	    element *= scalar;
+	  }
 
-	return *this;
+    return *this;
   }
 
   /**
@@ -212,12 +204,12 @@ class VectorN
   *
   */
   FORCEINLINE VectorN&
-  operator/=(Float32 scalar)
+  operator/=(float scalar)
   {
-	//Multiply by reciprocal instead of multiple divisions
-	Float32 invScalar = 1.f / scalar;
-	(*this) *= invScalar;
-	return (*this);
+    //Multiply by reciprocal instead of multiple divisions
+	  float invScalar = 1.f / scalar;
+	  (*this) *= invScalar;
+	  return (*this);
   }
 
   /**
@@ -236,10 +228,10 @@ class VectorN
   FORCEINLINE VectorN&
   operator+=(const VectorN& rhs)
   {
-	//For each element on the vector do the addition assigment
-	for (Int32 iElement = 0; iElement < _elements; ++i) {
-	  m_data[iElement] += other.m_data[iElement];
-	}
+	  //For each element on the vector do the addition assigment
+	  for (Int32 iElement = 0; iElement < _elements; ++i) {
+	    m_data[iElement] += other.m_data[iElement];
+	  }
   }
 
   /**
@@ -258,10 +250,10 @@ class VectorN
   FORCEINLINE VectorN&
   operator-=(const VectorN& rhs)
   {
-	//For each element on the vector do the subtraction assigment
-	for (Int32 iElement = 0; iElement < _elements; ++i) {
-	  m_data[iElement] -= other.m_data[iElement];
-	}
+	  //For each element on the vector do the subtraction assigment
+	  for (Int32 iElement = 0; iElement < _elements; ++i) {
+	    m_data[iElement] -= other.m_data[iElement];
+	  }
   }
 
   /**
@@ -280,12 +272,12 @@ class VectorN
   FORCEINLINE bool
   operator==(const VectorN& rhs)
   {
-	//Compares each element in the first range (m_data.begin()-m_data.end())
-	//to each element in the second range(rhs.m_data.begin()-m_data.end()
-	return std::equal(m_data.begin(), 
-					  m_data.end(), 
-					  rhs.m_data.begin(), 
-					  rhs.m_data.begin());
+	  //Compares each element in the first range (m_data.begin()-m_data.end())
+	  //to each element in the second range(rhs.m_data.begin()-m_data.end()
+	  return std::equal(m_data.begin(), 
+					    m_data.end(), 
+					    rhs.m_data.begin(), 
+					    rhs.m_data.begin());
   }
 	
   /**
@@ -301,13 +293,13 @@ class VectorN
   FORCEINLINE bool
   operator!=(const VectorN& rhs)
   {
-	return !(*this == rhs);
+	  return !(*this == rhs);
   }
 
  protected:
 
  private:
-  std::array<Float32, _elements> m_data;
+  std::array<float, _elements> m_data;
 };
 
 /**
@@ -316,7 +308,7 @@ class VectorN
 * This operator performs a multiplication of each member of vector by scalar.
 *
 * @param vector
-*	Left operand (a vector).
+*  Left operand (a vector).
 *
 * @param scalar
 *  Right operand (a scalar).
@@ -327,7 +319,7 @@ class VectorN
 */
 template<SizeT _elements>
 static FORCEINLINE VectorN<_elements>
-operator*(VectorN<_elements> vector, Float32 scalar)
+operator*(VectorN<_elements> vector, float scalar)
 {
   return vector *= scalar;
 }
@@ -349,7 +341,7 @@ operator*(VectorN<_elements> vector, Float32 scalar)
 */
 template<SizeT _elements>
 static FORCEINLINE VectorN<_elements>
-operator*(Float32 scalar, const VectorN<_elements>& vector)
+operator*(float scalar, const VectorN<_elements>& vector)
 {
   return vector * scalar;
 }
@@ -371,7 +363,7 @@ operator*(Float32 scalar, const VectorN<_elements>& vector)
 */
 template<SizeT _elements>
 static FORCEINLINE VectorN<_elements>
-operator/(VectorN<_elements> vector, Float32 scalar)
+operator/(VectorN<_elements> vector, float scalar)
 {
   return vector /= scalar;
 }
