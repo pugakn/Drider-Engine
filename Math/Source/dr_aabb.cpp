@@ -34,7 +34,8 @@ AABB::intersect(Sphere& sphere) {
 
 bool
 AABB::intersect(Plane& plane) {
-  return aabbPlaneIntersect(m_center, m_fSize, plane.getNormal(), plane.getNormal() * plane.getGap());
+  Vector3D planePoint = plane.getNormal() * plane.getGap();
+  return aabbPlaneIntersect(m_center, m_fSize, plane.getNormal(), planePoint);
 }
 
 bool
