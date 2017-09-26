@@ -48,7 +48,7 @@ class DR_API_EXPORT Quaternion
   *   The w value of the quaternion.
   */
 
-  Quaternion(Float32 x, Float32 y, Float32 z, Float32 w);
+  Quaternion(float x, float y, float z, float w);
 
   /**
   * Default destructor.
@@ -64,7 +64,7 @@ class DR_API_EXPORT Quaternion
   *	  Quaternion's lenght.
   */
 
-  Float32
+  float
   measure();
 
   /**
@@ -101,7 +101,7 @@ class DR_API_EXPORT Quaternion
   */
 
   Quaternion
-  rotation(Float32 t, const Quaternion & A);
+  rotation(float t, const Quaternion & A);
 
   /**
   * Creates a matrix from the quaternion.
@@ -144,7 +144,7 @@ class DR_API_EXPORT Quaternion
   //Uncommented
 
   Quaternion
-  operator*(Float32 s) const;
+  operator*(float s) const;
 
   //Uncommented
 
@@ -154,7 +154,7 @@ class DR_API_EXPORT Quaternion
   //Uncommented
 
   Quaternion&
-  operator*=(Float32 s);
+  operator*=(float s);
 
   //Uncommented
 
@@ -166,7 +166,7 @@ class DR_API_EXPORT Quaternion
   Quaternion&
   operator/=(const Quaternion & Q);
 
-  Float32 x, y, z, w;
+  float x, y, z, w;
 
 };
 

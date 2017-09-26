@@ -12,7 +12,7 @@ Radian::Radian(const Radian& V) : m_value(V.m_value)
 {
 }
 
-Radian::Radian(Float32 value) : m_value(value)
+Radian::Radian(float value) : m_value(value)
 {
 }
 
@@ -30,13 +30,13 @@ Radian::toDegree() const
   return Degree(m_value*180/math::PI);
 }
 
-Radian::operator Float32()
+Radian::operator float()
 {
   return m_value;
 }
 
 Radian&
-Radian::operator=(Float32 V)
+Radian::operator=(float V)
 {
   m_value = V;
   return *this;

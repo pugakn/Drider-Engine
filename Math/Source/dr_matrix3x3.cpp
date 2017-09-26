@@ -43,9 +43,9 @@ Matrix3x3::Matrix3x3(const Matrix3x3& M)
     v2(M.v2)
 {}
 
-Matrix3x3::Matrix3x3(Float32 v0x, Float32 v0y, Float32 v0z,
-                     Float32 v1x, Float32 v1y, Float32 v1z,
-                     Float32 v2x, Float32 v2y, Float32 v2z)
+Matrix3x3::Matrix3x3(float v0x, float v0y, float v0z,
+                     float v1x, float v1y, float v1z,
+                     float v2x, float v2y, float v2z)
   : v0(v0x, v0y, v0z),
     v1(v1x, v1y, v1z),
     v2(v2x, v2y, v2z)
@@ -60,7 +60,7 @@ Matrix3x3::Matrix3x3(Vector3D vector0, Vector3D vector1, Vector3D vector2)
 Matrix3x3::~Matrix3x3()
 {}
 
-Float32 
+float 
 Matrix3x3::determinant() const
 {
   return (v0.x * v1.y * v2.z + v0.y * v1.z * v2.x + v0.z * v1.x * v2.y) -
@@ -249,7 +249,7 @@ Matrix3x3::operator*(const Vector3D S) const
 }
 
 Matrix3x3
-Matrix3x3::operator*(const Float32 S) const
+Matrix3x3::operator*(const float S) const
 {
   Matrix3x3 temp;
 
@@ -261,7 +261,7 @@ Matrix3x3::operator*(const Float32 S) const
 }
 
 Matrix3x3&
-Matrix3x3::operator*=(const Float32 S)
+Matrix3x3::operator*=(const float S)
 {
   v0 = v0 * S;
   v1 = v1 * S;

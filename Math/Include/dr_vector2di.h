@@ -69,7 +69,7 @@ class DR_API_EXPORT Vector2DI
   *   The sum of the products of the corresponding entries of the
   *   vectors.
   */
-  Float32
+  float
   dot(const Vector2DI& B) const;
 
   /**
@@ -78,7 +78,7 @@ class DR_API_EXPORT Vector2DI
   * @return
   *   The length (or "size") of the vector.
   */
-  Float32
+  float
   length() const;
 
   /**
@@ -87,7 +87,7 @@ class DR_API_EXPORT Vector2DI
   * @return
   *   The length (or "size") of the vector squared.
   */
-  Float32
+  float
   lengthSqr() const;
 
   /**
@@ -108,7 +108,7 @@ class DR_API_EXPORT Vector2DI
   * @return
   *   Distance
   */
-  Float32
+  float
   distance(const Vector2DI& S) const;
 
   /**
@@ -120,7 +120,7 @@ class DR_API_EXPORT Vector2DI
   * @return
   *   Distance
   */
-  Float32
+  float
   distanceSqr(const Vector2DI& S) const;
 
   /**
@@ -183,19 +183,19 @@ class DR_API_EXPORT Vector2DI
 
   //Uncommented
   Vector2DI
-  operator*(const Float32 S) const;
+  operator*(const float S) const;
 
   //Uncommented
   Vector2DI&
-  operator*=(const Float32 S);
+  operator*=(const float S);
 
   //Uncommented
   Vector2DI
-  operator/(const Float32 S) const;
+  operator/(const float S) const;
 
   //Uncommented
   Vector2DI&
-  operator/=(const Float32 S);
+  operator/=(const float S);
 
   //Uncommented
   bool

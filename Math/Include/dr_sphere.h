@@ -13,7 +13,7 @@ class DR_API_EXPORT Sphere
   Sphere();
 
   //Uncommented
-  FORCEINLINE Float32 
+  FORCEINLINE float 
   getRadio() const
   {
    return m_radio;
@@ -31,7 +31,7 @@ class DR_API_EXPORT Sphere
 
  protected:
  private:
-  Float32 m_radio;
+  float m_radio;
   Vector3D m_center;
 
 };

@@ -11,7 +11,7 @@ Degree::Degree(const Degree& V) : m_value(V.m_value)
 {
 }
 
-Degree::Degree(Float32 value) : m_value(value)
+Degree::Degree(float value) : m_value(value)
 {
 }
 
@@ -29,13 +29,13 @@ Degree::toRadian() const
   return Radian(m_value*math::PI/180);
 }
 
-Degree::operator Float32()
+Degree::operator float()
 {
   return m_value;
 }
 
 Degree&
-Degree::operator=(Float32 V)
+Degree::operator=(float V)
 {
   m_value = V;
   return *this;

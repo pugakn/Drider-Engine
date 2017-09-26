@@ -10,20 +10,23 @@ namespace math {
 /**********************************************************************
 *						              Basic math defines
 **********************************************************************/
-const Float32 PI		      = static_cast<Float32>(4.0 * std::atan(1.0));
-const Float32 HALF_PI	    = static_cast<Float32>(PI * 0.5);
-const Float32 QUARTER_PI  = static_cast<Float32>(PI * 0.25);
-const Float32 TWO_PI  	  = static_cast<Float32>(PI * 2.0);
-const Float32 ONE_OVER_PI = static_cast<Float32>(1.0 / PI);
-const Float32 EULER		    = static_cast<Float32>(2.7182818284590452);
+
+static const float PI;		     
+static const float HALF_PI;	   
+static const float QUARTER_PI; 
+static const float TWO_PI;  	 
+static const float ONE_OVER_PI;
+static const float EULER;		   
+static const float DEGREE_TO_RADIAN;
+static const float RADIAN_TO_DEGREE;
 
 /***********************************************************************
 * 								Limits								   *
 ***********************************************************************/
 
-const Float32 MAX_FLOAT = std::numeric_limits<Float32>::max();
-const Float32 MIN_FLOAT = std::numeric_limits<Float32>::lowest();
-const Float32 MIN_POSITIVE_FLOAT = std::numeric_limits<Float32>::min();
+const float MAX_FLOAT = std::numeric_limits<float>::max();
+const float MIN_FLOAT = std::numeric_limits<float>::lowest();
+const float MIN_POSITIVE_FLOAT = std::numeric_limits<float>::min();
 
 const Int64 MAX_INT64 = std::numeric_limits<Int64>::max();
 const Int64 MIN_INT64 = std::numeric_limits<Int64>::lowest();
@@ -61,88 +64,88 @@ Int32 mulX4(Int32 value) {
 }
 
 /**********************************************************************
-*						            Basic Math functions 					      
+*						  Basic Math functions 					      
 **********************************************************************/
-static FORCEINLINE Float32 
-cos(Float32 value){
+static FORCEINLINE float 
+cos(float value){
 	return std::cosf(value);
 }
-static FORCEINLINE Float32
-aCos(Float32 value) {
+static FORCEINLINE float
+aCos(float value) {
 	return std::acosf(value);
 }
 
 
-static FORCEINLINE Float32
-sin(Float32 value) {
+static FORCEINLINE float
+sin(float value) {
 	return std::sinf(value);
 }
-static FORCEINLINE Float32
-aSin(Float32 value) {
+static FORCEINLINE float
+aSin(float value) {
 	return std::asinf(value);
 }
 
-static FORCEINLINE Float32
-tan(Float32 value) {
+static FORCEINLINE float
+tan(float value) {
 	return std::tanf(value);
 }
-static FORCEINLINE Float32
-aTan(Float32 value) {
+static FORCEINLINE float
+aTan(float value) {
 	return std::atanf(value);
 }
-static FORCEINLINE Float32
-aTan2(Float32 y, Float32 x) {
+static FORCEINLINE float
+aTan2(float y, float x) {
 	return std::atan2f(y,x);
 }
 
-static FORCEINLINE Float32
-sqrt(Float32 value) {
+static FORCEINLINE float
+sqrt(float value) {
 	return std::sqrtf(value);
 }
 
-static FORCEINLINE Float32
-pow(Float32 a, Float32 b) {
+static FORCEINLINE float
+pow(float a, float b) {
 	return std::powf(a,b);
 }
 
-static FORCEINLINE Float32
-exp(Float32 value) {
+static FORCEINLINE float
+exp(float value) {
 	return std::expf(value);
 }
 
 static FORCEINLINE Int32
-truncate2Int(Float32 value) {
+truncate2Int(float value) {
 	return static_cast<Int32>(value);
 }
 
-static FORCEINLINE Float32
-truncate2Float(Float32 value) {
-	return static_cast<Float32>(truncate2Int(value));
+static FORCEINLINE float
+truncate2Float(float value) {
+	return static_cast<float>(truncate2Int(value));
 }
 
-static FORCEINLINE Float32
-ceil(Float32 value)
+static FORCEINLINE float
+ceil(float value)
 {
   return std::ceilf(value);
 }
 
-static FORCEINLINE Float32
-floor(Float32 value) {
+static FORCEINLINE float
+floor(float value) {
 	return std::floorf(value);
 }
 
 static FORCEINLINE Int32
-round(Float32 value) {
+round(float value) {
 	return truncate2Int(floor(value + 0.5f));
 }
 
-static FORCEINLINE Float32
-logE(Float32 value) {
+static FORCEINLINE float
+logE(float value) {
 	return std::logf(value);
 }
 
-static FORCEINLINE Float32
-logX(Float32 base,Float32 value) {
+static FORCEINLINE float
+logX(float base,float value) {
 	return logE(value) / logE(base);
 }
 
@@ -182,8 +185,8 @@ static FORCEINLINE T clamp(const T X, const T Min, const T Max)
 *						          Template specialization
 **********************************************************************/
 template<>
-static FORCEINLINE Float32
-abs<Float32>(Float32 value) {
+static FORCEINLINE float
+abs<float>(float value) {
 	return std::fabsf(value);
 }
 

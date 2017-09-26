@@ -59,10 +59,10 @@ Matrix4x4::Matrix4x4(const Matrix4x4 & M)
     v3(M.v3)
 {}
 
-Matrix4x4::Matrix4x4(Float32 v0x, Float32 v0y, Float32 v0z, Float32 v0w,
-                     Float32 v1x, Float32 v1y, Float32 v1z, Float32 v1w,
-                     Float32 v2x, Float32 v2y, Float32 v2z, Float32 v2w,
-                     Float32 v3x, Float32 v3y, Float32 v3z, Float32 v3w)
+Matrix4x4::Matrix4x4(float v0x, float v0y, float v0z, float v0w,
+                     float v1x, float v1y, float v1z, float v1w,
+                     float v2x, float v2y, float v2z, float v2w,
+                     float v3x, float v3y, float v3z, float v3w)
   : v0(v0x, v0y, v0z, v0w),
     v1(v1x, v1y, v1z, v1w),
     v2(v2x, v2y, v2z, v2w),
@@ -80,7 +80,7 @@ Matrix4x4::~Matrix4x4()
 {
 }
 
-Float32 Matrix4x4::determinant() const
+float Matrix4x4::determinant() const
 {
   return v0.x*v1.y*v2.z*v3.w + v0.x*v1.z*v2.w*v3.y + v0.x*v1.w*v2.y*v3.z +
          v0.y*v1.x*v2.w*v3.z + v0.y*v1.z*v2.x*v3.w + v0.y*v1.w*v2.z*v3.x +
@@ -337,7 +337,7 @@ Matrix4x4::operator*(const Vector4D S) const
 }
 
 Matrix4x4
-Matrix4x4::operator*(const Float32 S) const
+Matrix4x4::operator*(const float S) const
 {
   Matrix4x4 temp;
 
@@ -350,7 +350,7 @@ Matrix4x4::operator*(const Float32 S) const
 }
 
 Matrix4x4&
-Matrix4x4::operator*=(const Float32 S)
+Matrix4x4::operator*=(const float S)
 {
   v0 = v0 * S;
   v1 = v1 * S;

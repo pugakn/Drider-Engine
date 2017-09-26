@@ -34,7 +34,7 @@ class Radian
   * @param value
   *  Initial value.
   */
-  Radian(Float32 value);
+  Radian(float value);
 
   /**
   * Initialize class with value.
@@ -60,18 +60,18 @@ class Radian
   Degree toDegree() const;
 
   //Uncomented
-  operator Float32();
+  operator float();
 
   //Uncomented
   Radian&
-  operator=(Float32 V);
+  operator=(float V);
 
   //Uncomented
   Radian&
   operator=(const Degree& V);
 private:
   friend class Degree;
-  Float32 m_value;
+  float m_value;
 };
 
 }

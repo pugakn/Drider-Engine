@@ -31,10 +31,10 @@ Vector4D::Vector4D(const Vector4D& V)
 {
 }
 
-Vector4D::Vector4D(Float32 x,
-                   Float32 y,
-                   Float32 z,
-                   Float32 w)
+Vector4D::Vector4D(float x,
+                   float y,
+                   float z,
+                   float w)
   : x(x),
     y(y),
     z(z),
@@ -46,7 +46,7 @@ Vector4D::~Vector4D()
 {
 }
 
-Float32
+float
 Vector4D::dot(const Vector4D& B) const
 {
   return (x*B.x) + (y*B.y) + (z*B.z) + (w*B.w);
@@ -58,13 +58,13 @@ Vector4D::cross(const Vector4D& B) const
   return Vector4D(y*B.z - z*B.y, z*B.x - x*B.z, x*B.y - y*B.x, 0.0f);
 }
 
-Float32
+float
 Vector4D::length() const
 {
   return math::sqrt(dot(*this));
 }
 
-Float32
+float
 Vector4D::lengthSqr() const
 {
   return dot(*this);
@@ -76,19 +76,19 @@ Vector4D::normalize() const
   return (*this) * (1 / length());
 }
 
-Float32
+float
 Vector4D::distance(const Vector4D& S) const
 {
   return (S - *this).length();
 }
 
-Float32
+float
 Vector4D::distanceSqr(const Vector4D & S) const
 {
   return (S - *this).lengthSqr();
 }
 
-Float32&
+float&
 Vector4D::operator[](SizeT index)
 {
   if (index == 0) {
@@ -106,7 +106,7 @@ Vector4D::operator[](SizeT index)
   throw std::out_of_range("Index out of range");
 }
 
-const Float32&
+const float&
 Vector4D::operator[](SizeT index) const
 {
   if (index == 0) {
@@ -183,13 +183,13 @@ Vector4D::operator*=(const Vector4D& A)
 }
 
 Vector4D
-Vector4D::operator*(const Float32 S) const
+Vector4D::operator*(const float S) const
 {
   return Vector4D(x*S, y*S, z*S, w*S);
 }
 
 Vector4D&
-Vector4D::operator*=(const Float32 S)
+Vector4D::operator*=(const float S)
 {
   x *= S;
   y *= S;
@@ -199,14 +199,14 @@ Vector4D::operator*=(const Float32 S)
 }
 
 Vector4D
-Vector4D::operator/(const Float32 S) const
+Vector4D::operator/(const float S) const
 {
-  Float32 invDiv = 1 / S;
+  float invDiv = 1 / S;
   return Vector4D(x*invDiv, y*invDiv, z*invDiv, w*invDiv);
 }
 
 Vector4D&
-Vector4D::operator/=(const Float32 S)
+Vector4D::operator/=(const float S)
 {
   float invDiv = 1 / S;
   x *= invDiv;
