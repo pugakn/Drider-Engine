@@ -69,7 +69,7 @@
     <ClInclude Include="Include\dr_math.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\dr_collisions.h">
+    <ClInclude Include="Include\dr_intersections.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -119,7 +119,7 @@
     <ClCompile Include="Source\dr_vector2d.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\dr_collisions.cpp">
+    <ClCompile Include="Source\dr_intersections.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
