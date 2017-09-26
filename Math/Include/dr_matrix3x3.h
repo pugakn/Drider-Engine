@@ -1,7 +1,8 @@
 #pragma once
 
-#include "dr_vector3d.h"
+#include <cassert>
 #include <dr_prerequisites.h>
+#include "dr_vector3d.h"
 
 namespace driderSDK {
 
@@ -177,7 +178,14 @@ class DR_API_EXPORT Matrix3x3
   bool
   operator!=(const Matrix3x3& M);
 
-  Vector3D v0, v1, v2;
+  union
+  {
+    struct
+    {
+      Vector3D v0, v1, v2;
+    };
+    Vector3D data[3];
+  };
 
  protected:
 };

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <stdexcept>
+#include <cassert>
 #include <dr_prerequisites.h>
 #include "dr_math.h"
 
@@ -205,7 +205,18 @@ class DR_API_EXPORT Vector2DI
   bool
   operator!=(const Vector2DI& S);
 
-  Int32 x, y;
+  //Uncommented
+  Vector2DI
+  operator-() const;
+
+  union
+  {
+    struct
+    {
+      Int32 x, y;
+    };
+    Int32 data[2];
+  };
 };
 
 }

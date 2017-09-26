@@ -1,6 +1,6 @@
 #pragma once
 
-#include <stdexcept>
+#include <cassert>
 #include <dr_prerequisites.h>
 #include "dr_math.h"
 
@@ -205,7 +205,18 @@ class DR_API_EXPORT Vector2D
   bool
   operator!=(const Vector2D& S);
 
-  float x, y;
+  //Uncommented
+  Vector2D
+  operator-() const;
+
+  union
+  {
+    struct
+    {
+      float x, y;
+    };
+    float data[2];
+  };
 };
 
 }
