@@ -5,7 +5,7 @@
 
 namespace driderSDK {
 
-class Radian
+class DR_API_EXPORT Radian
 {
  public:
   /**

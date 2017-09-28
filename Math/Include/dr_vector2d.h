@@ -86,13 +86,10 @@ class DR_API_EXPORT Vector2D
   lengthSqr() const;
 
   /**
-  * Get this vector normalized.
-  *
-  * @return
-  *   This vector normalized.
+  * Normalize the vector.
   */
-  Vector2D
-  normalize() const;
+  void
+  normalize();
 
   /**
   * Computes the distance between two vectors.

@@ -5,7 +5,7 @@
 
 namespace driderSDK {
 
-class Degree
+class DR_API_EXPORT Degree
 {
  public:
   /**

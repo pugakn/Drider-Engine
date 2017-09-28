@@ -46,9 +46,9 @@ Vector4D::lengthSqr() const {
   return dot(*this);
 }
 
-Vector4D
-Vector4D::normalize() const {
-  return (*this) * (1 / length());
+void
+Vector4D::normalize() {
+  *this = (*this) * (1 / length());
 }
 
 float
@@ -166,7 +166,7 @@ Vector4D::operator!=(const Vector4D& S) {
 
 Vector4D
 Vector4D::operator-() const {
-  return Vector4D(x-, -y, -z, -w);
+  return Vector4D(-x, -y, -z, -w);
 }
 
 }

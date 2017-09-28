@@ -86,13 +86,10 @@ class DR_API_EXPORT Vector2DI
   lengthSqr() const;
 
   /**
-  * Get this vector normalized.
-  *
-  * @return
-  *   This vector normalized.
+  * Normalize the vector.
   */
-  Vector2DI
-  normalize() const;
+  void
+  normalize();
 
   /**
   * Computes the distance between two vectors.

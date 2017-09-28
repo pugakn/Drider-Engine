@@ -44,9 +44,9 @@ Vector3D::lengthSqr() const {
   return dot(*this);
 }
 
-Vector3D
-Vector3D::normalize() const {
-  return (*this) * (1 / length());
+void
+Vector3D::normalize() {
+  *this = (*this) * (1 / length());
 }
 
 float

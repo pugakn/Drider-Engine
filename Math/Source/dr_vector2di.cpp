@@ -37,9 +37,9 @@ Vector2DI::lengthSqr() const {
   return dot(*this);
 }
 
-Vector2DI
-Vector2DI::normalize() const {
-  return (*this) * (1 / length());
+void
+Vector2DI::normalize() {
+  *this = (*this) * (1 / length());
 }
 
 float
