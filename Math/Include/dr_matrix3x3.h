@@ -1,18 +1,14 @@
 #pragma once
 
-#include "dr_vector3d.h"
+#include <cassert>
 #include <dr_prerequisites.h>
+#include "dr_vector3d.h"
 
 namespace driderSDK {
 
 class DR_API_EXPORT Matrix3x3                                                                 
 {
  public:
-  enum FORCE_INIT {
-    kZero,
-    kIdentity
-  };
-
   /**
   * Default constructor
   *
@@ -24,7 +20,7 @@ class DR_API_EXPORT Matrix3x3
   *
   * Values are initialized with 0(kZero) or identity matrix(kIdentity).
   */
-  Matrix3x3(FORCE_INIT k);
+  Matrix3x3(math::FORCE_INIT k);
 
   /**
   * Move constructor
@@ -41,7 +37,7 @@ class DR_API_EXPORT Matrix3x3
   /**
   * Initialize constructor with values.
   *
-  *  @param v0x, v0y, v0z
+  * @param v0x, v0y, v0z
   *  The x, y, z values of the vector, first raw
   *
   * @param v1x, v1y, v1z
@@ -57,14 +53,14 @@ class DR_API_EXPORT Matrix3x3
   /**
   * Initialize constructor with values.
   *
-  * @param v0
-  *  The vector0(x, y, z) values of the vector, first raw
+  * @param vector0
+  *  The vector0(x, y, z) values of the vector, first row
   *
-  * @param v10-v12
-  *  The vector1(x, y, z) values of the vector, second raw
+  * @param vector10-vector12
+  *  The vector1(x, y, z) values of the vector, second row
   *
-  * @param v20-v22
-  *  The vector2(x, y, z) values of the vector, third raw
+  * @param vector20-vector22
+  *  The vector2(x, y, z) values of the vector, third row
   */
   Matrix3x3(Vector3D vector0, Vector3D vector1, Vector3D vector2);
 
@@ -177,7 +173,14 @@ class DR_API_EXPORT Matrix3x3
   bool
   operator!=(const Matrix3x3& M);
 
-  Vector3D v0, v1, v2;
+  union
+  {
+    struct
+    {
+      Vector3D vector0, vector1, vector2;
+    };
+    Vector3D data[3];
+  };
 
  protected:
 };

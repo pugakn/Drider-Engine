@@ -191,6 +191,15 @@ abs<float>(float value) {
 	return std::fabsf(value);
 }
 
+/**********************************************************************
+*						                Force init
+**********************************************************************/
+enum FORCE_INIT
+{
+  kZero,
+  kIdentity
+};
+
 } //math
 
 } //driderSDK

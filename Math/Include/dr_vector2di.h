@@ -1,6 +1,6 @@
 #pragma once
 
-#include <stdexcept>
+#include <cassert>
 #include <dr_prerequisites.h>
 #include "dr_math.h"
 
@@ -9,11 +9,6 @@ namespace driderSDK {
 class DR_API_EXPORT Vector2DI
 {
  public:
-   enum FORCE_INIT
-   {
-     kZero,
-     kIdentity
-   };
   /**
   * Default constructor
   *
@@ -27,7 +22,7 @@ class DR_API_EXPORT Vector2DI
   *
   * Values are initialized with 0.
   */
-  Vector2DI(FORCE_INIT k);
+  Vector2DI(math::FORCE_INIT k);
 
   /**
   * Move constructor
@@ -205,7 +200,18 @@ class DR_API_EXPORT Vector2DI
   bool
   operator!=(const Vector2DI& S);
 
-  Int32 x, y;
+  //Uncommented
+  Vector2DI
+  operator-() const;
+
+  union
+  {
+    struct
+    {
+      Int32 x, y;
+    };
+    Int32 data[2];
+  };
 };
 
 }

@@ -8,11 +8,6 @@ namespace driderSDK {
 class DR_API_EXPORT Matrix4x4
 {
  public:
-  enum FORCE_INIT {
-    kZero,
-    kIdentity
-  };
-
   /**
   * Default constructor
   *
@@ -24,7 +19,7 @@ class DR_API_EXPORT Matrix4x4
   *
   * Values are initialized with 0(kZero) or identity matrix(kIdentity).
   */
-  Matrix4x4(FORCE_INIT k);
+  Matrix4x4(math::FORCE_INIT k);
 
   /**
   * Move constructor
@@ -42,16 +37,16 @@ class DR_API_EXPORT Matrix4x4
   * Initialize constructor with values.
   *
   * @param v0x, v0y, v0z, v0w
-  *  The x, y, z, w values of the vector, first raw
+  *  The x, y, z, w values of the vector, first row
   *
   * @param v1x, v1y, v1z, v1w
-  *  The x, y, z, w values of the vector, second raw
+  *  The x, y, z, w values of the vector, second row
   *
   * @param v2x, v2y, v2z, v2w
-  *  The x, y, z, w values of the vector, third raw
+  *  The x, y, z, w values of the vector, third row
   *
   * @param v3x, v3y, v3z, v3w
-  *  The x, y, z, w values of the vector, quarter raw
+  *  The x, y, z, w values of the vector, quarter row
   *
   */
   Matrix4x4(float v0x, float v0y, float v0z, float v0w,
@@ -62,16 +57,16 @@ class DR_API_EXPORT Matrix4x4
   /**
   * Initialize constructor with values.
   *
-  * @param v0
+  * @param vector0
   *  The vector0(x, y, z, w) values of the vector, first raw
   *
-  * @param v1
+  * @param vector1
   *  The vector1(x, y, z, w) values of the vector, second raw
   *
-  * @param v3
+  * @param vector3
   *  The vector2(x, y, z, w) values of the vector, third raw
   *
-  * @param v4
+  * @param vector4
   *  The vector2(x, y, z, w) values of the vector, quarter raw
   */
   Matrix4x4(Vector4D vector0, Vector4D vector1, Vector4D vector2, Vector4D vector3);
@@ -136,49 +131,56 @@ class DR_API_EXPORT Matrix4x4
 
   //Uncommented
   Vector4D&
-    operator[](SizeT index);
+  operator[](SizeT index);
 
   //Uncommented
   Matrix4x4&
-    operator=(const Matrix4x4& A);
+  operator=(const Matrix4x4& A);
 
   //Uncommented
   Matrix4x4
-    operator+(const Matrix4x4& A) const;
+  operator+(const Matrix4x4& A) const;
 
   //Uncommented
   Matrix4x4&
-    operator+=(const Matrix4x4& A);
+  operator+=(const Matrix4x4& A);
 
   //Uncommented
   Matrix4x4
-    operator-(const Matrix4x4& A) const;
+  operator-(const Matrix4x4& A) const;
 
   //Uncommented
   Matrix4x4&
-    operator-=(const Matrix4x4& A);
+  operator-=(const Matrix4x4& A);
 
   //Uncommented
   Matrix4x4
-    operator*(const Matrix4x4& A) const;
+  operator*(const Matrix4x4& A) const;
 
   //Uncommented
   Matrix4x4&
-    operator*=(const Matrix4x4& A);
+  operator*=(const Matrix4x4& A);
 
   //Uncommented
   Vector4D
-    operator*(const Vector4D S) const;
+  operator*(const Vector4D S) const;
 
   //Uncommented
   Matrix4x4
-    operator*(const float S) const;
+  operator*(const float S) const;
 
   //Uncommented
   Matrix4x4&
-    operator*=(const float S);
+  operator*=(const float S);
 
-  Vector4D v0, v1, v2, v3;
+  union
+  {
+    struct
+    {
+      Vector4D vector0, vector1, vector2, vector3;
+    };
+    Vector4D data[4];
+  };
 };
 
 }
