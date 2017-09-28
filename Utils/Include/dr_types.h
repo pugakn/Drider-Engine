@@ -11,9 +11,9 @@
 namespace driderSDK {
 
 /**********************************************************************
-*																	  *
-*						Basic Unsigned Types					      *
-*																	  *
+*																	                                    *
+*						                      Basic Unsigned Types					      *
+*																	                                    *
 **********************************************************************/
 
   using  UInt8  = uint8_t;  //8-bit  unsigned.
@@ -22,9 +22,9 @@ namespace driderSDK {
   using  UInt64 = uint64_t; //64-bit unsigned.
 
 /**********************************************************************
-*																	  *
-*						Basic Signed Types						      *
-*																	  *
+*																	                                    *
+*						              Basic Signed Types						              *
+*																	                                    *
 **********************************************************************/
 
   using Int8  = int8_t ; //8-bit  signed.
@@ -32,7 +32,7 @@ namespace driderSDK {
   using Int32 = int32_t; //32-bit signed.
   using Int64 = int64_t; //64-bit signed.
 
-  using float	= float;
+  //using float	= float;
   using Float64 = double;
 
 #if DR_COMPILER == DR_COMPILER_MSV || DR_PLATFORM == DR_PLATFORM_PS4
@@ -44,9 +44,9 @@ namespace driderSDK {
   using UNIChar  = WChar;  //UNICODE character type
 
 /**********************************************************************
-*																	  *
-*						      Null type								  *
-*																	  *
+*																	                                    *
+*						                  Null type								                *
+*																	                                    *
 **********************************************************************/
   using NullType = Int32;
 

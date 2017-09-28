@@ -30,7 +30,7 @@ class DR_API_EXPORT AABB
   * @param C
   *  Center of the box given by a vector 3D
   */
-  AABB(Float32 s, const Vector3D& C);
+  AABB(float s, const Vector3D& C);
 
   /**
   * Default destructor
@@ -44,7 +44,7 @@ class DR_API_EXPORT AABB
   * @return
   *  Size of the AABB
   */
-  FORCEINLINE Float32
+  FORCEINLINE float
   getSize() {
     return m_fSize;
   }
@@ -67,7 +67,7 @@ class DR_API_EXPORT AABB
   *  Center of the AABB
   */
   FORCEINLINE void
-  setSize(Float32& s) {
+  setSize(float& s) {
     m_fSize = s;
   }
 
@@ -156,7 +156,7 @@ class DR_API_EXPORT AABB
   
  protected:
  private:
-  Float32 m_fSize;
+  float m_fSize;
   Vector3D m_center;
 };
 

@@ -166,7 +166,7 @@ Vector4D::operator!=(const Vector4D& S) {
 
 Vector4D
 Vector4D::operator-() const {
-  return Vector4D(x-, -y, -z, -w);
+  return Vector4D(-x, -y, -z, -w);
 }
 
 }

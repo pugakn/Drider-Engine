@@ -7,7 +7,7 @@ bool Ray::intersects(const Plane& plane) const
 	Vector3D n =  plane.getNormal();
 	return rayPlaneIntersection(m_origin, m_direction, plane.getNormal(), plane.getNormal() * plane.getGap());
 }
-bool Ray::intersects(const Plane & plane, Float32 * t) const
+bool Ray::intersects(const Plane & plane, float * t) const
 {
 	return rayPlaneIntersection(m_origin, m_direction, plane.getNormal(), plane.getNormal() * plane.getGap(), t);
 }

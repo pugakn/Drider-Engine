@@ -12,7 +12,7 @@ AABB::AABB() {
 
 }
 
-AABB::AABB(Float32 s, const Vector3D& C) 
+AABB::AABB(float s, const Vector3D& C) 
   : m_fSize(s),
     m_center(C) {
 

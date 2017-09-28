@@ -13,10 +13,10 @@ Quaternion::Quaternion(const Quaternion& Q)
 	w(Q.w) {
 }
 
-Quaternion::Quaternion(Float32 x,
- 					     Float32 y,
-					     Float32 z,
-					     Float32 w)
+Quaternion::Quaternion(float x,
+ 					     float y,
+					     float z,
+					     float w)
   : x(x),
 	y(y),
 	z(z),
@@ -27,7 +27,7 @@ Quaternion::~Quaternion() {
 
 }
 
-Float32
+float
 Quaternion::measure() {
   return sqrtf(x*x + y*y + z*z + w*w);
 }
@@ -43,7 +43,7 @@ Quaternion::normalize() {
 }
 
 Quaternion
-Quaternion::rotation(Float32 t, const Quaternion& A) {
+Quaternion::rotation(float t, const Quaternion& A) {
   Quaternion Axis = A - *this;
   Axis.normalize();
   Axis *= sin(t / 2);
@@ -104,7 +104,7 @@ Quaternion::operator*(const Quaternion& Q) const {
 }
 
 Quaternion
-Quaternion::operator*(Float32 s) const {
+Quaternion::operator*(float s) const {
   return Quaternion(x*s, y*s, z*s, w*s);
 }
 
@@ -118,7 +118,7 @@ Quaternion::operator*=(const Quaternion& Q) {
 }
 
 Quaternion&
-Quaternion::operator*=(Float32 s) {
+Quaternion::operator*=(float s) {
   x *= s;
   y *= s;
   z *= s;
@@ -129,7 +129,7 @@ Quaternion::operator*=(Float32 s) {
 
 Quaternion
 Quaternion::operator/(const Quaternion& Q) const {
-  Float32 div = 1 / (Q.x*Q.x + Q.y*Q.y + Q.z*Q.z + Q.w*Q.w);
+  float div = 1 / (Q.x*Q.x + Q.y*Q.y + Q.z*Q.z + Q.w*Q.w);
   Quaternion R(-Q.x, -Q.y, -Q.z, Q.w);
   R *= div;
   return Quaternion((*this)*R);
@@ -137,7 +137,7 @@ Quaternion::operator/(const Quaternion& Q) const {
 
 Quaternion&
 Quaternion::operator/=(const Quaternion& Q) {
-  Float32 div = 1 / (Q.x*Q.x + Q.y*Q.y + Q.z*Q.z + Q.w*Q.w);
+  float div = 1 / (Q.x*Q.x + Q.y*Q.y + Q.z*Q.z + Q.w*Q.w);
   Quaternion R(-Q.x, -Q.y, -Q.z, Q.w);
   R *= div;
   (*this) *= (R * div);

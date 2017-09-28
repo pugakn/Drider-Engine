@@ -54,10 +54,10 @@ rayPlaneIntersection(const Vector3D& rayOrigin,
 	                   const Vector3D& planeNormal, 
 	                   const Vector3D& planePoint)
 {
-	Float32 denom = planeNormal.dot(rayDirection);
+	float denom = planeNormal.dot(rayDirection);
 	if (denom > math::SMALL_NUMBER) {
 		Vector3D planeToRayOrigin = planePoint - rayOrigin;
-		Float32 t = planeToRayOrigin.dot(planeNormal) / denom;
+		float t = planeToRayOrigin.dot(planeNormal) / denom;
 		return static_cast<bool>(t >= 0);
 	}
 	return false;
@@ -70,7 +70,7 @@ rayPlaneIntersection(const Vector3D& rayOrigin,
 	                   const Vector3D& planePoint, 
 	                   float* intersectionPoint)
 {
-	Float32 denom = planeNormal.dot(rayDirection);
+	float denom = planeNormal.dot(rayDirection);
 	if (denom > math::SMALL_NUMBER) {
 		Vector3D planeToRayOrigin = planePoint - rayOrigin;
 		*intersectionPoint = planeToRayOrigin.dot(planeNormal) / denom;
@@ -129,9 +129,9 @@ frustrumSphereIntersection(const Matrix4x4& frustrumVP,
 
 bool
 aabbAabbIntersect(const Vector3D& aabb1Center,
-	const Float32& aabb1Size,
+	const float& aabb1Size,
 	const Vector3D& aabb2Center,
-	const Float32& aabb2Size)
+	const float& aabb2Size)
 {
 	//TODO : implement aabb intersection function
 	return false;
@@ -139,9 +139,9 @@ aabbAabbIntersect(const Vector3D& aabb1Center,
 
 bool
 aabbSphereIntersect(const Vector3D& aabbCenter,
-	const Float32& aabbSize,
+	const float& aabbSize,
 	const Vector3D& sphereOrigin,
-	const Float32& sphereRadius)
+	const float& sphereRadius)
 {
 	//TODO : implement aabb intersection function
 	return false;
@@ -149,7 +149,7 @@ aabbSphereIntersect(const Vector3D& aabbCenter,
 
 bool
 aabbPlaneIntersect(const Vector3D& aabbCenter,
-	const Float32& aabbSize,
+	const float& aabbSize,
 	const Vector3D& planeNormal,
 	const Vector3D& planePoint)
 {
@@ -159,7 +159,7 @@ aabbPlaneIntersect(const Vector3D& aabbCenter,
 
 bool
 aabbFrustrumIntersect(const Vector3D& aabbCenter,
-	const Float32& aabbSize,
+	const float& aabbSize,
 	const Matrix4x4& frustrumVP)
 {
 	//TODO : implement aabb intersection function
@@ -168,7 +168,7 @@ aabbFrustrumIntersect(const Vector3D& aabbCenter,
 
 bool
 aabbRayIntersect(const Vector3D& aabbCenter,
-	const Float32& aabbSize,
+	const float& aabbSize,
 	const Vector3D& rayOrigin,
 	const Vector3D& rayDirection)
 {
@@ -178,7 +178,7 @@ aabbRayIntersect(const Vector3D& aabbCenter,
 
 bool
 pointInAabb(const Vector3D& aabbCenter,
-	const Float32& aabbSize,
+	const float& aabbSize,
 	const Vector3D& point)
 {
 	//TODO : implement aabb intersection function

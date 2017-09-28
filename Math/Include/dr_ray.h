@@ -115,7 +115,7 @@ class DR_API_EXPORT Ray
 	*
 	*/
 	bool
-	intersects(const Plane& plane, Float32* t) const;
+	intersects(const Plane& plane, float* t) const;
 
 	/**
 	* Check if the ray intersects with a sphere

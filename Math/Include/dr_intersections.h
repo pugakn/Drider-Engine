@@ -74,41 +74,41 @@ frustrumSphereIntersection(const Matrix4x4& frustrumVP,
 //Uncommented
 bool
 aabbAabbIntersect(const Vector3D& aabb1Center,
-				    const Float32& aabb1Size,
+				    const float& aabb1Size,
 					const Vector3D& aabb2Center,
-					const Float32& aabb2Size);
+					const float& aabb2Size);
 
 //Uncommented
 bool
 aabbSphereIntersect(const Vector3D& aabbCenter,
-					  const Float32& aabbSize,
+					  const float& aabbSize,
 					  const Vector3D& sphereOrigin,
-					  const Float32& sphereRadius);
+					  const float& sphereRadius);
 
 //Uncommented
 bool
 aabbPlaneIntersect(const Vector3D& aabbCenter,
-				     const Float32& aabbSize, 
+				     const float& aabbSize, 
 					 const Vector3D& planeNormal,
 					 const Vector3D& planePoint);
 
 //Uncommented
 bool
 aabbFrustrumIntersect(const Vector3D& aabbCenter,
-					    const Float32& aabbSize,
+					    const float& aabbSize,
 					    const Matrix4x4& frustrumVP);
 
 //Uncommented
 bool
 aabbRayIntersect(const Vector3D& aabbCenter,
-				   const Float32& aabbSize, 
+				   const float& aabbSize, 
 				   const Vector3D& rayOrigin,
 				   const Vector3D& rayDirection);
 
 //Uncommented
 bool
 pointInAabb(const Vector3D& aabbCenter,
-			  const Float32& aabbSize, 
+			  const float& aabbSize, 
 			  const Vector3D& point);
 
 
