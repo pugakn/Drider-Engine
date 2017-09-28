@@ -49,6 +49,15 @@ class DR_API_EXPORT Degree
   */
   float toRadian() const;
 
+  /**
+  * Limit the value in [0, 360)
+  *
+  * @return
+  *   A reference to this class.
+  */
+  Degree&
+  toRange();
+
   //Uncomented
   operator float();
 
