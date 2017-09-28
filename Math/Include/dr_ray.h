@@ -47,33 +47,6 @@ class DR_API_EXPORT Ray
   ~Ray()
   {}
 
-  //Uncommented
-  FORCEINLINE void
-  setOrigin(const Vector3D& _origin) 
-  {
-    m_origin = _origin;
-  }
-
-  //Uncommented
-  FORCEINLINE Vector3D
-  getOrigin() const
-  {
-	  return m_origin;
-  }
-
-  //Uncommented
-  FORCEINLINE void
-  setDirection(const Vector3D& _direction)
-  {
-	  m_direction = _direction;
-  }
-
-  //Uncommented
-  FORCEINLINE Vector3D
-  getDirection() const
-  {
-	  return m_direction;
-  }
 
 	/**
 	* Check if the ray intersects other ray
@@ -156,10 +129,9 @@ class DR_API_EXPORT Ray
 	bool
 	intersects(const Frustrum& frustrum) const;
 
+	Vector3D m_origin;
+	Vector3D m_direction;
 
- private:
-	 Vector3D m_origin;
-	 Vector3D m_direction;
 };
 
 

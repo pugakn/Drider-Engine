@@ -104,13 +104,10 @@ class DR_API_EXPORT Vector3D
   lengthSqr() const;
 
   /**
-  * Get this vector normalized.
-  *
-  * @return
-  *   This vector normalized.
+  * Normalize the vector.
   */
-  Vector3D
-  normalize() const;
+  void
+  normalize();
 
   /**
   * Computes the distance between two vectors.

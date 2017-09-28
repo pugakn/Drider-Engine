@@ -5,7 +5,7 @@
 
 namespace driderSDK {
 
-class Radian
+class DR_API_EXPORT Radian
 {
  public:
   /**
@@ -48,6 +48,15 @@ class Radian
   *   Class degree.
   */
   float toDegree() const;
+
+  /**
+  * Limit the value in [0, 360)
+  *
+  * @return
+  *   A reference to this class.
+  */
+  Radian&
+  toRange();
 
   //Uncomented
   operator float();

@@ -4,11 +4,10 @@
 namespace driderSDK {
 bool Ray::intersects(const Plane& plane) const
 {
-	Vector3D n =  plane.getNormal();
-	return rayPlaneIntersection(m_origin, m_direction, plane.getNormal(), plane.getNormal() * plane.getGap());
+	return rayPlaneIntersection(m_origin, m_direction, plane, plane * plane.m_d);
 }
 bool Ray::intersects(const Plane & plane, float * t) const
 {
-	return rayPlaneIntersection(m_origin, m_direction, plane.getNormal(), plane.getNormal() * plane.getGap(), t);
+	return rayPlaneIntersection(m_origin, m_direction, plane, plane * plane.m_d, t);
 }
 }

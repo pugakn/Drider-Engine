@@ -15,9 +15,9 @@ int main(int argc, char* argv[])
   driderSDK::Matrix4x4 lu(1,4,-1,0,2,3,5,-2,0,3,1,6,3,0,2,1);
 
   float po = lu.determinant();
-  driderSDK::Matrix4x4 k = lu.cofactor();
-  driderSDK::Matrix4x4 k2 = lu.adjugate();
-  driderSDK::Matrix4x4 k3 = lu.inverse();
+  lu.cofactor();
+  lu.adjugate();
+  lu.inverse();
 
   driderSDK::VectorN<4> mlg;
   auto vk = mlg.length();

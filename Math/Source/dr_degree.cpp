@@ -16,6 +16,20 @@ Degree::toRadian() const {
   return (m_value*math::DEGREE_TO_RADIAN);
 }
 
+Degree&
+Degree::toRange() {
+  while (m_value < 0 || m_value >= 360)
+  {
+    if (m_value < 0) {
+      m_value += 360;
+    }
+    else if (m_value >= 360) {
+      m_value -= 360;
+    }
+  }
+  return *this;
+}
+
 Degree::operator float() {
   return m_value;
 }

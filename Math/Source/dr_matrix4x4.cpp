@@ -89,8 +89,8 @@ Matrix4x4::determinant() const {
          vector0.w*vector1.x*vector2.y*vector3.z - vector0.w*vector1.y*vector2.z*vector3.x - vector0.w*vector1.z*vector2.x*vector3.y;
 }
 
-Matrix4x4
-Matrix4x4::cofactor() const {
+void
+Matrix4x4::cofactor() {
   Matrix4x4 temp;
   
   temp.vector0.x = vector1.y*vector2.z*vector3.w + vector1.z*vector2.w*vector3.y + vector1.w*vector2.y*vector3.z -
@@ -126,21 +126,24 @@ Matrix4x4::cofactor() const {
   temp.vector3.w = vector0.x*vector1.y*vector2.z + vector0.y*vector1.z*vector2.x + vector0.z*vector1.x*vector2.y -
               vector0.x*vector1.z*vector2.y - vector0.y*vector1.x*vector2.z - vector0.z*vector1.y*vector2.x;
 
-  return temp;
+  *this = temp;
 }
 
-Matrix4x4
-Matrix4x4::adjugate() const {
-  return cofactor().transpose();
+void
+Matrix4x4::adjugate() {
+  cofactor();
+  transpose();
 }
 
-Matrix4x4
-Matrix4x4::inverse() const {
-  return adjugate() * (1 / determinant());
+void
+Matrix4x4::inverse() {
+  float deter = determinant();
+  adjugate();
+  *this * (1 / deter);
 }
 
-Matrix4x4
-Matrix4x4::transpose() const {
+void
+Matrix4x4::transpose() {
   Matrix4x4 temp;
 
   temp.vector0.x = vector0.x;
@@ -162,11 +165,10 @@ Matrix4x4::transpose() const {
   temp.vector1.w = vector3.y;
   temp.vector2.w = vector3.z;
   temp.vector3.w = vector3.w;
-
-  return temp;
+  *this = temp;
 }
 
-Matrix4x4
+void
 Matrix4x4::identity() {
   vector0.x = 1;
   vector0.y = 0;
@@ -187,8 +189,6 @@ Matrix4x4::identity() {
   vector3.y = 0;
   vector3.z = 0;
   vector3.w = 1;
-
-  return *this;
 }
 
 Vector4D&
