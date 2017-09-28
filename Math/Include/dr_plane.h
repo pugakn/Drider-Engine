@@ -11,7 +11,7 @@ class Capsule;
 class AABB;
 class Frustrum;
 
-class DR_API_EXPORT Plane
+class DR_API_EXPORT Plane : public Vector3D
 {
  public:
   /**
@@ -40,7 +40,7 @@ class DR_API_EXPORT Plane
   /**
   *	Copy constructor
   */
-  Plane(const Plane& other);
+  Plane(const Plane&  );
 
   float distanceToPoint(const Vector3D& point);
 
@@ -75,23 +75,19 @@ class DR_API_EXPORT Plane
   * @return
   *	  The plane normalized.
   */
-  Plane normalize() const;
-
-  Vector3D getNormal() const;
-
-  float getGap() const;
-
+  void normalize();
+  
   Plane& operator=(const Plane& other);
 
   bool operator==(const Plane& rhs);
 
   bool operator!=(const Plane& rhs);
 
+  //gap
+  float m_d;
+
  protected:
  private:
-	friend class Frustrum;
-  Vector3D m_normal;
-  float m_d;
 };
 
 }

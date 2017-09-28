@@ -19,28 +19,29 @@ static const float ONE_OVER_PI;
 static const float EULER;		   
 static const float DEGREE_TO_RADIAN;
 static const float RADIAN_TO_DEGREE;
+static const float EPSILON;
 
 /***********************************************************************
-* 								Limits								   *
+* 								            Limits            								       *
 ***********************************************************************/
 
-const float MAX_FLOAT = std::numeric_limits<float>::max();
-const float MIN_FLOAT = std::numeric_limits<float>::lowest();
-const float MIN_POSITIVE_FLOAT = std::numeric_limits<float>::min();
+static const float MAX_FLOAT;
+static const float MIN_FLOAT;
+static const float MIN_POSITIVE_FLOAT;
 
-const Int64 MAX_INT64 = std::numeric_limits<Int64>::max();
-const Int64 MIN_INT64 = std::numeric_limits<Int64>::lowest();
-const Int32 MAX_INT32 = std::numeric_limits<Int32>::max();
-const Int32 MIN_INT32 = std::numeric_limits<Int32>::lowest();
-const Int16 MAX_INT16 = std::numeric_limits<Int16>::max();
-const Int16 MIN_INT16 = std::numeric_limits<Int16>::lowest();
-const Int8 MAX_INT8 = std::numeric_limits<Int8>::max();
-const Int8 MIN_INT8 = std::numeric_limits<Int8>::lowest();
+static const Int64 MAX_INT64;
+static const Int64 MIN_INT64;
+static const Int32 MAX_INT32;
+static const Int32 MIN_INT32;
+static const Int16 MAX_INT16;
+static const Int16 MIN_INT16;
+static const Int8 MAX_INT8;
+static const Int8 MIN_INT8;
 
-const UInt64 MAX_UINT64 = std::numeric_limits<UInt64>::max();
-const UInt32 MAX_UINT32 = std::numeric_limits<UInt32>::max();
-const UInt16 MAX_UINT16 = std::numeric_limits<UInt16>::max();
-const UInt8 MAX_UINT8 = std::numeric_limits<UInt8>::max();
+static const UInt64 MAX_UINT64;
+static const UInt32 MAX_UINT32;
+static const UInt16 MAX_UINT16;
+static const UInt8 MAX_UINT8;
 
 /**********************************************************************
 *						    Multiply and divide with bit shifts

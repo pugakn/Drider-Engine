@@ -1,29 +1,29 @@
 #pragma once
 
-#define DR_PLATFORM_WINDOWS	 1  //Windows Platform 
-#define DR_PLATFORM_LINUX	 2	 //Linux Platform
-#define DR_PLATFORM_OSX		 3	 //Mac Platfomr
-#define DR_PLATFORM_IOS		 4	 //iPhone Platform
-#define DR_PLATFORM_ANDROID	 5	 //Android Platform
-#define DR_PLATFORM_PS4		 6	 //Play Station 4 Platform
+#define DR_PLATFORM_WINDOWS	 1      //Windows Platform 
+#define DR_PLATFORM_LINUX	 2	      //Linux Platform
+#define DR_PLATFORM_OSX		 3	      //Mac Platfomr
+#define DR_PLATFORM_IOS		 4	      //iPhone Platform
+#define DR_PLATFORM_ANDROID	 5	    //Android Platform
+#define DR_PLATFORM_PS4		 6	      //Play Station 4 Platform
 
-#define DR_COMPILER_MSV   1  //VS Compiler
-#define DR_COMPILER_GNU   2  //GCC Compiler
-#define DR_COMPILER_INTEL 3  //Intel Compiler
-#define DR_COMPILER_CLANG 4  //Clang Compiler
+#define DR_COMPILER_MSV   1         //VS Compiler
+#define DR_COMPILER_GNU   2         //GCC Compiler
+#define DR_COMPILER_INTEL 3         //Intel Compiler
+#define DR_COMPILER_CLANG 4         //Clang Compiler
 
 #define DR_ARCHITECTURE_X86_32 1		  
 #define DR_ARCHITECTURE_X86_64 2
 
-#define DR_ENDIAN_LITTLE  1	 //Little endinan
-#define DR_ENDIAN_BIG	  2	 //Big endian
+#define DR_ENDIAN_LITTLE  1	        //Little endinan
+#define DR_ENDIAN_BIG	  2	          //Big endian
 
 #define DR_ENDINAN DR_ENDIAN_LITTLE
 
 /**********************************************************************
-*																	  *
-*                                         Debug Macros							  *
-*																	  *
+*																	                                    *
+*                             Debug Macros							              *
+*																	                                    *
 **********************************************************************/
 
 //If this is a debug build
@@ -42,9 +42,9 @@
 #endif
 
 /**********************************************************************
-*																	  *
-*						  Compiler									  *
-*																	  *
+*																	                                    *
+*						                  Compiler									              *
+*																	                                    *
 **********************************************************************/
 
 #if defined( _MSC_VER )                       //Visual Studio
@@ -73,9 +73,9 @@
 #endif
 
 /**********************************************************************
-*																	  *
-*						  Current Platform							  *
-*																	  *
+*                                 																	  *
+*                           Current Platform							            *
+*                       					          												  *
 **********************************************************************/
 
 #if defined(_WIN32) || defined(__WIN32__)	  //Windows OS
@@ -122,9 +122,9 @@
 #endif
 
 /**********************************************************************
-*																	  *
-*							Architecture							  *
-*																	  *
+*																	                                    *
+*							                Architecture							              *
+*																	                                    *
 **********************************************************************/
 
 #if defined(__x86_64__) || defined(_M_X64)    //If this is a x64 compile
@@ -134,9 +134,9 @@
 #endif
 
 /**********************************************************************
-*																	  *
-*					     Windows Specifics							  *
-*																	  *
+*															                                  		  *
+*					                  Windows Specifics							            *
+*																	                                    *
 **********************************************************************/
 
 #if DR_PLATFORM == DR_PLATFORM_WINDOWS
@@ -156,9 +156,9 @@
 #endif
 
 /**********************************************************************
-*																	  *
-*					     Linux Specifics							  *
-*																	  *
+*																	                                    *
+*                   	    	  Linux Specifics							            *
+*																	                                    *
 **********************************************************************/
 
 #if DR_PLATFORM == DR_PLATFORM_LINUX || DR_PLATFORM == DR_PLATFORM_OSX

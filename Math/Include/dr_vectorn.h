@@ -17,6 +17,7 @@ template <SizeT _elements>
 class VectorN
 {
  public:
+
   /**
   * Default constructor
   */

@@ -142,7 +142,8 @@ class MatrixNxM
   FORCEINLINE const float*
   ptr() const
   {
-	  return m_elements[0].ptr();
+	  return m_elements.data()->ptr()
+      ;
   }
 
   /**

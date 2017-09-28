@@ -6,27 +6,28 @@ Plane::Plane()
 {}
 
 Plane::Plane(const Vector3D & _normal, float _d)
-  : m_normal(_normal),
+  : Vector3D(_normal),
 	m_d(_d)
 {}
 
 Plane::Plane(const Vector3D & _normal, const Vector3D & _point)
 {
-  m_normal = _normal;
-  m_d = -_point.dot(m_normal);
+  Vector3D::operator=(_normal);
+  m_d = -dot(_point);
 }
 
 Plane::Plane(const Vector3D & point0, 
 			 const Vector3D & point1, 
 			 const Vector3D & point2)
 {
-  m_normal = (point1 - point0).cross(point2 - point0).normalize();
-  m_d = -point0.dot(m_normal);
+  Vector3D::operator=(point1 - point0).cross(point2 - point0);
+  normalize();
+  m_d = -dot(point0);
 }
 
 Plane::Plane(const Plane & other)
-  : m_normal(other.m_normal),
-	m_d(other.m_d)
+  : Vector3D(other),
+	  m_d(other.m_d)
 {}
 
 float Plane::distanceToPoint(const Vector3D & point)
@@ -44,12 +45,12 @@ float Plane::distanceToPoint(const Vector3D & point)
   //since N is normalized sqrt(dot(N,N)) == 1 there
   //is no need for division
 
-  return math::abs(point.dot(m_normal) + m_d) / m_normal.length();
+  return math::abs(dot(point) + m_d) / length();
 }
 
 float Plane::signedDistanceToPoint(const Vector3D & point)
 {
-  return (point.dot(m_normal) + m_d)  / m_normal.length();
+  return (dot(point) + m_d)  / length();
 }
 
 bool Plane::intersects(const Vector3D & point)
@@ -60,38 +61,27 @@ bool Plane::intersects(const Vector3D & point)
   //Little presicion error 
   float error = 0.0001f;
 
-  float res = m_normal.dot(point) - m_d;
+  float res = dot(point) - m_d;
 
-  return math::abs(res) < error;  
+  return math::abs(res) < math::EPSILON;  
 }
 
-Plane Plane::normalize() const
+void Plane::normalize()
 {
-  float invLength = 1.f / m_normal.length();
-  
-  return Plane(m_normal * invLength, m_d * invLength);
-}
-
-Vector3D Plane::getNormal() const
-{
-  return m_normal;
-}
-
-float Plane::getGap() const
-{
-  return m_d;
+  float invLength = 1.f / length();
 }
 
 Plane& Plane::operator=(const Plane & other)
 {
-  m_normal = other.m_normal;
+  Vector3D::operator=(other);
   m_d = other.m_d;
+
   return *this;
 }
 
-bool Plane::operator==(const Plane & rhs)
+bool Plane::operator==(const Plane& rhs)
 {
-  return m_normal == rhs.m_normal && m_d == rhs.m_d;
+  return Vector3D::operator==(rhs) && m_d == rhs.m_d;
 }
 
 bool Plane::operator!=(const Plane & rhs)

@@ -122,5 +122,8 @@
     <ClCompile Include="Source\dr_intersections.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="dr_math.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
