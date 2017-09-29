@@ -2,12 +2,14 @@
 #include <dr_intersections.h>
 #include <dr_plane.h>
 namespace driderSDK {
+
 bool Ray::intersects(const Plane& plane) const
 {
-	return rayPlaneIntersection(m_origin, m_direction, plane, plane * plane.m_d);
+	return rayPlaneIntersection(origin, direction, plane, plane * plane.d);
 }
-bool Ray::intersects(const Plane & plane, float * t) const
+bool Ray::intersects(const Plane & plane, float* t) const
 {
-	return rayPlaneIntersection(m_origin, m_direction, plane, plane * plane.m_d, t);
+	return rayPlaneIntersection(origin, direction, plane, plane * plane.d, t);
 }
+
 }

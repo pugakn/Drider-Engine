@@ -7,13 +7,13 @@ Plane::Plane()
 
 Plane::Plane(const Vector3D & _normal, float _d)
   : Vector3D(_normal),
-	  m_d(_d)
+	  d(_d)
 {}
 
 Plane::Plane(const Vector3D & _normal, const Vector3D & _point)
 {
   Vector3D::operator=(_normal);
-  m_d = -dot(_point);
+  d = -dot(_point);
 }
 
 Plane::Plane(const Vector3D & point0, 
@@ -22,12 +22,12 @@ Plane::Plane(const Vector3D & point0,
 {
   Vector3D::operator=(point1 - point0).cross(point2 - point0);
   normalize();
-  m_d = -dot(point0);
+  d = -dot(point0);
 }
 
 Plane::Plane(const Plane & other)
   : Vector3D(other),
-	  m_d(other.m_d)
+	  d(other.d)
 {}
 
 float Plane::distanceToPoint(const Vector3D & point)
@@ -45,12 +45,12 @@ float Plane::distanceToPoint(const Vector3D & point)
   //since N is normalized sqrt(dot(N,N)) == 1 there
   //is no need for division
 
-  return Math::abs(dot(point) + m_d) / length();
+  return Math::abs(dot(point) + d) / length();
 }
 
 float Plane::signedDistanceToPoint(const Vector3D & point)
 {
-  return (dot(point) + m_d)  / length();
+  return (dot(point) + d)  / length();
 }
 
 bool Plane::intersects(const Vector3D & point)
@@ -61,7 +61,7 @@ bool Plane::intersects(const Vector3D & point)
   //Little presicion error 
   float error = 0.0001f;
 
-  float res = dot(point) - m_d;
+  float res = dot(point) - d;
 
   return Math::abs(res) < Math::EPSILON;  
 }
@@ -74,14 +74,14 @@ void Plane::normalize()
 Plane& Plane::operator=(const Plane & other)
 {
   Vector3D::operator=(other);
-  m_d = other.m_d;
+  d = other.d;
 
   return *this;
 }
 
 bool Plane::operator==(const Plane& rhs)
 {
-  return Vector3D::operator==(rhs) && m_d == rhs.m_d;
+  return Vector3D::operator==(rhs) && d == rhs.d;
 }
 
 bool Plane::operator!=(const Plane & rhs)

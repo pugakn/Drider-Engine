@@ -84,7 +84,7 @@ class DR_API_EXPORT Plane : public Vector3D
   bool operator!=(const Plane& rhs);
 
   //gap
-  float m_d;
+  float d;
 
  protected:
  private:

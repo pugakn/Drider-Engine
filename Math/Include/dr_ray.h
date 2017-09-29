@@ -36,8 +36,8 @@ class DR_API_EXPORT Ray
   *
   */
   Ray(Vector3D _origin, Vector3D _direction)
-    : m_origin(_origin),
-	    m_direction(_direction)
+    : origin(_origin),
+	    direction(_direction)
   {}
 
   /**
@@ -129,8 +129,8 @@ class DR_API_EXPORT Ray
 	bool
 	intersects(const Frustrum& frustrum) const;
 
-	Vector3D m_origin;
-	Vector3D m_direction;
+	Vector3D origin;
+	Vector3D direction;
 
 };
 

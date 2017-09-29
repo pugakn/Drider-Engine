@@ -40,23 +40,23 @@ bool
 AABB::intersect(Plane& plane) {
   return aabbPlaneIntersect(m_center, 
                             m_fSize, 
-	                        plane.getNormal(), 
-	                        plane.getNormal()*plane.getGap());
+	                          static_cast<Vector3D&>(plane), 
+	                          static_cast<Vector3D&>(plane) * plane.d);
 }
 
 bool
 AABB::intersect(Frustrum& frustrum) {
   return aabbFrustrumIntersect(m_center, 
                                m_fSize, 
-	                           frustrum.getVP());
+	                             frustrum.getVP());
 }
 
 bool
 AABB::intersect(Ray& ray) {
   return aabbRayIntersect(m_center, 
                           m_fSize, 
-	                      ray.m_origin, 
-	                      ray.m_direction);
+	                        ray.origin, 
+	                        ray.direction);
 }
 
 bool
