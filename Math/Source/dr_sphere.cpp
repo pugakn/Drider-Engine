@@ -2,8 +2,4 @@
 
 namespace driderSDK {
 
-Sphere::Sphere()
-{
-  
-}
 }

@@ -32,8 +32,8 @@ bool
 AABB::intersect(Sphere& sphere) {
   return aabbSphereIntersect(m_center, 
                              m_fSize, 
-                             sphere.getCenter(), 
-                             sphere.getRadio());
+                             sphere.center, 
+                             sphere.radio);
 }
 
 bool
@@ -48,7 +48,7 @@ bool
 AABB::intersect(Frustrum& frustrum) {
   return aabbFrustrumIntersect(m_center, 
                                m_fSize, 
-	                             frustrum.getVP());
+	                             frustrum.planes);
 }
 
 bool
@@ -61,7 +61,7 @@ AABB::intersect(Ray& ray) {
 
 bool
 AABB::intersect(Vector3D& point) {
-  return pointInAabb(m_center, m_fSize, point);
+  return aabbPointIntersect(m_center, m_fSize, point);
 }
 
 } 

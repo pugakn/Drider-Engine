@@ -1,4 +1,5 @@
 #pragma once
+#include <array>
 #include <dr_prerequisites.h>
 #include <dr_plane.h>
 #include <dr_matrix4x4.h>
@@ -172,8 +173,8 @@ class DR_API_EXPORT Frustrum
 	bool
 	contains(const Frustrum& frustrum) const;
 
- private:
-	Plane m_planes[6];
+  std::array<Plane,6> planes;
+
 };
 
 

@@ -9,7 +9,7 @@ namespace driderSDK {
 *						            Intersection functions
 **********************************************************************/
 //Uncommented
-bool FORCEINLINE
+bool
 spherePointIntersect(const Vector3D& point,
                      const Vector3D& sphPosition,
                      float radio)
@@ -23,68 +23,70 @@ sphereSphereIntersect(const Vector3D& sph1Position,
                       const Vector3D& sph2Position,
                       float sph2Radio)
 {
- return static_cast<bool>(sph1Position.distance(sph2Position) <
-        (sph1Radio + sph2Radio));
+  return static_cast<bool>(sph1Position.distance(sph2Position) <
+         (sph1Radio + sph2Radio));
 }
 //Uncommented
 bool
 sphereRayIntersect(const Vector3D& sphPosition,
-                      float sphRadio, 
-                      const Vector3D& rayOrigin,
-                      const Vector3D& rayDirection)
+                   float sphRadio,
+                   const Vector3D& rayOrigin,
+                   const Vector3D& rayDirection)
 {
- if(spherePointIntersect(rayOrigin, sphPosition, sphRadio))
-  return true;
- Vector3D vec(rayOrigin - sphPosition);
+  if (spherePointIntersect(rayOrigin, sphPosition, sphRadio)) {
+    return true;
+  }
+  Vector3D vec(rayOrigin - sphPosition);
 
- float pDirection = vec.dot(rayDirection);
+  float pDirection = vec.dot(rayDirection);
 
- if(pDirection < 0.0f)
-  return false;
+  if (pDirection < 0.0f) {
+    return false;
+  }
 
- Vector3D vecClosestPoint(rayOrigin + (rayDirection * pDirection));
+  Vector3D vecClosestPoint(rayOrigin + (rayDirection * pDirection));
 
- return spherePointIntersect(vecClosestPoint, sphPosition, sphRadio);
+  return spherePointIntersect(vecClosestPoint, sphPosition, sphRadio);
 }
 
 
-bool 
-rayPlaneIntersect(const Vector3D& rayOrigin, 
-	                 const Vector3D& rayDirection, 
-	                 const Vector3D& planeNormal, 
-	                 const Vector3D& planePoint)
+bool
+rayPlaneIntersect(const Vector3D& rayOrigin,
+                  const Vector3D& rayDirection,
+                  const Vector3D& planeNormal,
+                  const Vector3D& planePoint)
 {
   float denom = planeNormal.dot(rayDirection);
   if (denom > Math::SMALL_NUMBER) {
-  	Vector3D planeToRayOrigin = planePoint - rayOrigin;
-  	float t = planeToRayOrigin.dot(planeNormal) / denom;
-  	return static_cast<bool>(t >= 0);
+    Vector3D planeToRayOrigin = planePoint - rayOrigin;
+    float t = planeToRayOrigin.dot(planeNormal) / denom;
+    return static_cast<bool>(t >= 0);
   }
   return false;
 }
 
-bool 
-rayPlaneIntersect(const Vector3D& rayOrigin, 
-	              const Vector3D& rayDirection, 
-	              const Vector3D& planeNormal, 
-	              const Vector3D& planePoint, 
-	              float* intersectionPoint)
+bool
+rayPlaneIntersect(const Vector3D& rayOrigin,
+                  const Vector3D& rayDirection,
+                  const Vector3D& planeNormal,
+                  const Vector3D& planePoint,
+                  float* intersectionPoint)
 {
   float denom = planeNormal.dot(rayDirection);
   if (denom > Math::SMALL_NUMBER) {
-  	Vector3D planeToRayOrigin = planePoint - rayOrigin;
-  	*intersectionPoint = planeToRayOrigin.dot(planeNormal) / denom;
-  	return static_cast<bool>(*intersectionPoint >= 0);
+    Vector3D planeToRayOrigin = planePoint - rayOrigin;
+    *intersectionPoint = planeToRayOrigin.dot(planeNormal) / denom;
+    return static_cast<bool>(*intersectionPoint >= 0);
   }
   return false;
 }
 
-bool 
-rayFrustrumIntersect(const Vector3D& rayOrigin, 
-	                 const Vector3D& rayDirection, 
-	                 const Plane frustrumPlanes[6])
+bool
+rayFrustrumIntersect(const Vector3D& rayOrigin,
+                     const Vector3D& rayDirection,
+                     const std::array<Plane, 6>& frustrumPlanes)
 {
-	return false;
+  return false;
 }
 
 //bool 
@@ -95,36 +97,36 @@ rayFrustrumIntersect(const Vector3D& rayOrigin,
 //	return false;
 //}
 
-bool 
-rayRayIntersect(const Vector3D& rayAOrigin, 
-	            const Vector3D& rayADirection, 
-	            const Vector3D& rayBOrigin, 
-	            const Vector3D& rayBDirection)
+bool
+rayRayIntersect(const Vector3D& rayAOrigin,
+                const Vector3D& rayADirection,
+                const Vector3D& rayBOrigin,
+                const Vector3D& rayBDirection)
 {
-	return false;
+  return false;
 }
 
-bool 
-frustrumPlaneIntersect(const Plane frustrumPlanes[6],
-	                   const Vector3D& sphereOrigin, 
-	                   const Vector3D& planePoint)
+bool
+frustrumPlaneIntersect(const std::array<Plane, 6>& frustrumPlanes,
+                       const Vector3D& sphereOrigin,
+                       const Vector3D& planePoint)
 {
-	return false;
+  return false;
 }
 
-bool 
-frustrumFrustrumIntersect(const Plane frustrumPlanesA[6], 
-	                      const Plane frustrumPlanesB[6])
+bool
+frustrumFrustrumIntersect(const std::array<Plane, 6>& frustrumAPlanes,
+                          const std::array<Plane, 6>& frustrumBPlanes)
 {
-	return false;
+  return false;
 }
 
-bool 
-frustrumSphereIntersect(const Plane frustrumPlanes[6],
-	                    const Vector3D& sphereOrigin, 
-	                    float sphereRadius)
+bool
+frustrumSphereIntersect(const std::array<Plane, 6>& frustrumPlanes,
+                        const Vector3D& sphereOrigin,
+                        float sphereRadius)
 {
-	return false;
+  return false;
 }
 
 bool
@@ -133,8 +135,8 @@ aabbAabbIntersect(const Vector3D& aabb1Center,
                   const Vector3D& aabb2Center,
                   float aabb2Size)
 {
-	//TODO : implement aabb intersection function
-	return false;
+  //TODO : implement aabb intersection function
+  return false;
 }
 
 bool
@@ -143,8 +145,8 @@ aabbSphereIntersect(const Vector3D& aabbCenter,
                     const Vector3D& sphereOrigin,
                     float sphereRadius)
 {
-	//TODO : implement aabb intersection function
-	return false;
+  //TODO : implement aabb intersection function
+  return false;
 }
 
 bool
@@ -153,17 +155,17 @@ aabbPlaneIntersect(const Vector3D& aabbCenter,
                    const Vector3D& planeNormal,
                    const Vector3D& planePoint)
 {
-	//TODO : implement aabb intersection function
-	return false;
+  //TODO : implement aabb intersection function
+  return false;
 }
 
 bool
 aabbFrustrumIntersect(const Vector3D& aabbCenter,
                       float aabbSize,
-                      const Plane frustrumPlanes[6])
+                      const std::array<Plane, 6>& frustrumPlanes)
 {
-	//TODO : implement aabb intersection function
-	return false;
+  //TODO : implement aabb intersection function
+  return false;
 }
 
 bool
@@ -172,43 +174,43 @@ aabbRayIntersect(const Vector3D& aabbCenter,
                  const Vector3D& rayOrigin,
                  const Vector3D& rayDirection)
 {
-	//TODO : implement aabb intersection function
-	return false;
+  //TODO : implement aabb intersection function
+  return false;
 }
 
 bool
 aabbPointIntersect(const Vector3D& aabbCenter,
-            float aabbSize,
-            const Vector3D& point)
+                   float aabbSize,
+                   const Vector3D& point)
 {
-	//TODO : implement aabb intersection function
-	return false;
+  //TODO : implement aabb intersection function
+  return false;
 }
 
 /**********************************************************************
 *						            Containing functions
 **********************************************************************/
-bool FORCEINLINE
-frustrumContainsPlane(const Matrix4x4& frustrumVP, 
-	                    const Vector3D& planeNormal, 
-	                    const Vector3D& planePoint)
+bool
+frustrumContainsPlane(const std::array<Plane, 6>& frustrumPlanes,
+                      const Vector3D& planeNormal,
+                      const Vector3D& planePoint)
 {
-	return frustrumPlaneIntersection(frustrumVP, planeNormal, planePoint);
+  return frustrumPlaneIntersect(frustrumPlanes, planeNormal, planePoint);
 }
 
-bool 
-frustrumContainsFrustrum(const Matrix4x4& frustrumAVP, 
-	                       const Matrix4x4& frustrumBVP)
+bool
+frustrumContainsFrustrum(const std::array<Plane, 6>& frustrumAPlanes,
+                         const std::array<Plane, 6>& frustrumBPlanes)
 {
-	return false;
+  return false;
 }
 
-bool 
-frustrumContainsSphere(const Matrix4x4& frustrumVP, 
-	                     const Vector3D& sphereOrigin, 
-	                     float sphereRadius)
+bool
+frustrumContainsSphere(const std::array<Plane, 6>& frustrumPlanes,
+                       const Vector3D& sphereOrigin,
+                       float sphereRadius)
 {
-	return false;
+  return false;
 }
 
 }

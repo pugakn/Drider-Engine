@@ -37,7 +37,7 @@ class DR_API_EXPORT Ray
   */
   Ray(Vector3D _origin, Vector3D _direction)
     : origin(_origin),
-	    direction(_direction)
+	     direction(_direction)
   {}
 
   /**

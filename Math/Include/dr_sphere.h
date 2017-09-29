@@ -10,8 +10,8 @@ class DR_API_EXPORT Sphere
   //Uncommented
   Sphere()
   {}
-  float m_radio;
-  Vector3D m_center;
+  float radio;
+  Vector3D center;
   //void SetRadio();
   //void SetPosition();
 

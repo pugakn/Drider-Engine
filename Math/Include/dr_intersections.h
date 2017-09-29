@@ -1,4 +1,5 @@
 #pragma once
+#include <array>
 #include <dr_prerequisites.h>
 namespace driderSDK {
 
@@ -45,7 +46,7 @@ rayPlaneIntersect(const Vector3D& rayOrigin,
 bool 
 rayFrustrumIntersect(const Vector3D& rayOrigin, 
                      const Vector3D& rayDirection, 
-                     const Plane frustrumPlanes[6]);
+                     const std::array<Plane,6>& frustrumPlanes);
 //Uncommented
 bool
 rayRayIntersect(const Vector3D& rayAOrigin,
@@ -55,16 +56,16 @@ rayRayIntersect(const Vector3D& rayAOrigin,
 
 //Uncommented
 bool
-frustrumPlaneIntersect(const Plane frustrumPlanes[6],
+frustrumPlaneIntersect(const std::array<Plane, 6>& frustrumPlanes,
                        const Vector3D& sphereOrigin,
                        const Vector3D& planePoint);
 //Uncommented
 bool
-frustrumFrustrumIntersect(const Plane frustrumPlanesA[6],
-                          const Plane frustrumPlanesB[6]);
+frustrumFrustrumIntersect(const std::array<Plane,6>& frustrumAPlanes,
+                          const std::array<Plane,6>& frustrumBPlanes);
 //Uncommented
 bool
-frustrumSphereIntersect(const Plane frustrumPlanes[6],
+frustrumSphereIntersect(const std::array<Plane, 6>& frustrumPlanes,
                         const Vector3D& sphereOrigin,
                         float sphereRadius);
 //Uncommented
@@ -96,7 +97,7 @@ aabbPlaneIntersect(const Vector3D& aabbCenter,
 bool
 aabbFrustrumIntersect(const Vector3D& aabbCenter,
                       float aabbSize,
-                      const Plane frustrumPlanes[6]);
+                      const std::array<Plane, 6>& frustrumPlanes);
 
 //Uncommented
 bool
@@ -118,16 +119,16 @@ aabbPointIntersect(const Vector3D& aabbCenter,
 
 //Uncommented
 bool
-frustrumContainsPlane(const Matrix4x4& frustrumVP,
-	                    const Vector3D& planeNormal,
-	                    const Vector3D& planePointD);
+frustrumContainsPlane(std::array<Plane, 6>& frustrumPlanes,
+	                     const Vector3D& planeNormal,
+	                     const Vector3D& planePointD);
 //Uncommented
 bool
-frustrumContainsFrustrum(const Matrix4x4& frustrumAVP,
-	                       const Matrix4x4& frustrumBVP);
+frustrumContainsFrustrum(const std::array<Plane, 6>& frustrumAPlanes,
+	                        const std::array<Plane, 6>& frustrumBPlanes);
 //Uncommented
 bool
-frustrumContainsSphere(const Matrix4x4& frustrumVP,
+frustrumContainsSphere(const std::array<Plane, 6>& frustrumPlanes,
 	                     const Vector3D& sphereOrigin,
 	                     float sphereRadius);
 
