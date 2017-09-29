@@ -43,13 +43,13 @@ Vector2D::normalize() {
 }
 
 float
-Vector2D::distance(const Vector2D& S) const {
-  return (S - *this).length();
+Vector2D::distance(const Vector2D& otherVector) const {
+  return (otherVector - *this).length();
 }
 
 float
-Vector2D::distanceSqr(const Vector2D& S) const {
-  return (S - *this).lengthSqr();
+Vector2D::distanceSqr(const Vector2D& otherVector) const {
+  return (otherVector - *this).lengthSqr();
 }
 
 float&
@@ -108,37 +108,37 @@ Vector2D::operator*=(const Vector2D& A) {
 }
 
 Vector2D
-Vector2D::operator*(const float S) const {
-  return Vector2D(x*S, y*S);
+Vector2D::operator*(const float scalar) const {
+  return Vector2D(x*scalar, y*scalar);
 }
 
 Vector2D&
-Vector2D::operator*=(const float S) {
-  x *= S;
-  y *= S;
+Vector2D::operator*=(const float scalar) {
+  x *= scalar;
+  y *= scalar;
   return *this;
 }
 
 Vector2D
-Vector2D::operator/(const float S) const {
-  return Vector2D(x / S, y / S);
+Vector2D::operator/(const float scalar) const {
+  return Vector2D(x / scalar, y / scalar);
 }
 
 Vector2D&
-Vector2D::operator/=(const float S) {
-  x /= S;
-  y /= S;
+Vector2D::operator/=(const float scalar) {
+  x /= scalar;
+  y /= scalar;
   return *this;
 }
 
 bool
-Vector2D::operator==(const Vector2D& S) {
-  return (x == S.x) && (y == S.y);
+Vector2D::operator==(const Vector2D& otherVector) {
+  return (x == otherVector.x) && (y == otherVector.y);
 }
 
 bool
-Vector2D::operator!=(const Vector2D& S) {
-  return !((*this) == S);
+Vector2D::operator!=(const Vector2D& otherVector) {
+  return !((*this) == otherVector);
 }
 
 Vector2D

@@ -50,13 +50,13 @@ Vector3D::normalize() {
 }
 
 float
-Vector3D::distance(const Vector3D& S) const {
-  return (S - *this).length();
+Vector3D::distance(const Vector3D& otherVector) const {
+  return (otherVector - *this).length();
 }
 
 float
-Vector3D::distanceSqr(const Vector3D& S) const {
-  return (S - *this).lengthSqr();
+Vector3D::distanceSqr(const Vector3D& otherVector) const {
+  return (otherVector - *this).lengthSqr();
 }
 
 float&
@@ -119,27 +119,27 @@ Vector3D::operator*=(const Vector3D& A) {
 }
 
 Vector3D
-Vector3D::operator*(const float S) const {
-  return Vector3D(x*S, y*S, z*S);
+Vector3D::operator*(const float scalar) const {
+  return Vector3D(x*scalar, y*scalar, z*scalar);
 }
 
 Vector3D&
-Vector3D::operator*=(const float S) {
-  x *= S;
-  y *= S;
-  z *= S;
+Vector3D::operator*=(const float scalar) {
+  x *= scalar;
+  y *= scalar;
+  z *= scalar;
   return *this;
 }
 
 Vector3D
-Vector3D::operator/(const float S) const {
-  float invDiv = 1 / S;
+Vector3D::operator/(const float scalar) const {
+  float invDiv = 1 / scalar;
   return Vector3D(x*invDiv, y*invDiv, z*invDiv);
 }
 
 Vector3D&
-Vector3D::operator/=(const float S) {
-  float invDiv = 1 / S;
+Vector3D::operator/=(const float scalar) {
+  float invDiv = 1 / scalar;
   x *= invDiv;
   y *= invDiv;
   z *= invDiv;
@@ -147,13 +147,13 @@ Vector3D::operator/=(const float S) {
 }
 
 bool
-Vector3D::operator==(const Vector3D& S) {
-  return ((x == S.x) && (y == S.y) && (z == S.z));
+Vector3D::operator==(const Vector3D& otherVector) {
+  return ((x == otherVector.x) && (y == otherVector.y) && (z == otherVector.z));
 }
 
 bool
-Vector3D::operator!=(const Vector3D& S) {
-  return !((*this) == S);
+Vector3D::operator!=(const Vector3D& otherVector) {
+  return !((*this) == otherVector);
 }
 
 Vector3D

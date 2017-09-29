@@ -22,7 +22,7 @@ class DR_API_EXPORT Vector2D
   *
   * Values are initialized with 0.
   */
-  Vector2D(Math::FORCE_INIT k);
+  explicit Vector2D(Math::FORCE_INIT k);
 
   /**
   * Move constructor
@@ -94,26 +94,26 @@ class DR_API_EXPORT Vector2D
   /**
   * Computes the distance between two vectors.
   *
-  * @param S
+  * @param scalar
   *   Vector to calculate the distance
   *
   * @return
   *   Distance
   */
   float
-  distance(const Vector2D& S) const;
+  distance(const Vector2D& otherVector) const;
 
   /**
   * Computes the squared distance between two vectors.
   *
-  * @param S
+  * @param scalar
   *   Vector to calculate the distance
   *
   * @return
   *   Distance
   */
   float
-  distanceSqr(const Vector2D& S) const;
+  distanceSqr(const Vector2D& otherVector) const;
 
   /**
   * Gets a reference to the specified element from the vector.
@@ -175,27 +175,27 @@ class DR_API_EXPORT Vector2D
 
   //Uncommented
   Vector2D
-  operator*(const float S) const;
+  operator*(const float scalar) const;
 
   //Uncommented
   Vector2D&
-  operator*=(const float S);
+  operator*=(const float scalar);
 
   //Uncommented
   Vector2D
-  operator/(const float S) const;
+  operator/(const float scalar) const;
 
   //Uncommented
   Vector2D&
-  operator/=(const float S);
+  operator/=(const float scalar);
 
   //Uncommented
   bool
-  operator==(const Vector2D& S);
+  operator==(const Vector2D& otherVector);
 
   //Uncommented
   bool
-  operator!=(const Vector2D& S);
+  operator!=(const Vector2D& otherVector);
 
   //Uncommented
   Vector2D

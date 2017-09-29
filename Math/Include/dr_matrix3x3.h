@@ -20,7 +20,7 @@ class DR_API_EXPORT Matrix3x3
   *
   * Values are initialized with 0(kZero) or identity matrix(kIdentity).
   */
-  Matrix3x3(Math::FORCE_INIT k);
+  explicit Matrix3x3(Math::FORCE_INIT k);
 
   /**
   * Move constructor

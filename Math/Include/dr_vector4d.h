@@ -22,7 +22,7 @@ class DR_API_EXPORT Vector4D
   *
   * Values are initialized with 0.
   */
-  Vector4D(Math::FORCE_INIT k);
+  explicit Vector4D(Math::FORCE_INIT k);
 
   /**
   * Move constructor
@@ -116,26 +116,26 @@ class DR_API_EXPORT Vector4D
   /**
   * Computes the distance between two vectors.
   *
-  * @param S
+  * @param scalar
   *   Vector to calculate the distance
   *
   * @return
   *   Distance
   */
   float
-  distance(const Vector4D& S) const;
+  distance(const Vector4D& otherVector) const;
 
   /**
   * Computes the squared distance between two vectors.
   *
-  * @param S
+  * @param scalar
   *   Vector to calculate the distance
   *
   * @return
   *   Distance
   */
   float
-  distanceSqr(const Vector4D& S) const;
+  distanceSqr(const Vector4D& otherVector) const;
 
   /**
   * Gets a reference to the specified element from the vector.
@@ -197,27 +197,27 @@ class DR_API_EXPORT Vector4D
 
   //Uncommented
   Vector4D
-  operator*(const float S) const;
+  operator*(const float scalar) const;
 
   //Uncommented
   Vector4D&
-  operator*=(const float S);
+  operator*=(const float scalar);
 
   //Uncommented
   Vector4D
-  operator/(const float S) const;
+  operator/(const float scalar) const;
 
   //Uncommented
   Vector4D&
-  operator/=(const float S);
+  operator/=(const float scalar);
 
   //Uncommented
   bool
-  operator==(const Vector4D& S);
+  operator==(const Vector4D& otherVector);
 
   //Uncommented
   bool
-  operator!=(const Vector4D& S);
+  operator!=(const Vector4D& otherVector);
 
   //Uncommented
   Vector4D

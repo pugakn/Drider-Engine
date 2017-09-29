@@ -22,7 +22,7 @@ class DR_API_EXPORT Vector3D
   *
   * Values are initialized with 0.
   */
-  Vector3D(Math::FORCE_INIT k);
+  explicit Vector3D(Math::FORCE_INIT k);
 
   /**
   * Move constructor
@@ -112,26 +112,26 @@ class DR_API_EXPORT Vector3D
   /**
   * Computes the distance between two vectors.
   *
-  * @param S
+  * @param scalar
   *   Vector to calculate the distance
   *
   * @return
   *   Distance
   */
   float
-  distance(const Vector3D& S) const;
+  distance(const Vector3D& otherVector) const;
 
   /**
   * Computes the squared distance between two vectors.
   *
-  * @param S
+  * @param scalar
   *   Vector to calculate the distance
   *
   * @return
   *   Distance
   */
   float
-  distanceSqr(const Vector3D& S) const;
+  distanceSqr(const Vector3D& otherVector) const;
 
   /**
   * Gets a reference to the specified element from the vector.
@@ -193,27 +193,27 @@ class DR_API_EXPORT Vector3D
 
   //Uncommented
   Vector3D
-  operator*(const float S) const;
+  operator*(const float scalar) const;
 
   //Uncommented
   Vector3D&
-  operator*=(const float S);
+  operator*=(const float scalar);
 
   //Uncommented
   Vector3D
-  operator/(const float S) const;
+  operator/(const float scalar) const;
 
   //Uncommented
   Vector3D&
-  operator/=(const float S);
+  operator/=(const float scalar);
 
   //Uncommented
   bool
-  operator==(const Vector3D& S);
+  operator==(const Vector3D& otherVector);
 
   //Uncommented
   bool
-  operator!=(const Vector3D& S);
+  operator!=(const Vector3D& otherVector);
 
   //Uncommented
   Vector3D

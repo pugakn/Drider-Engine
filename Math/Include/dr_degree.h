@@ -32,7 +32,7 @@ class DR_API_EXPORT Degree
   * @param value
   *  Initial value of the class.
   */
-  Degree(float value);
+  explicit Degree(float value);
 
   /**
   * Default destructor.

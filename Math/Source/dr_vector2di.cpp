@@ -43,13 +43,13 @@ Vector2DI::normalize() {
 }
 
 float
-Vector2DI::distance(const Vector2DI& S) const {
-  return (S  - *this).length();
+Vector2DI::distance(const Vector2DI& otherVector) const {
+  return (otherVector - *this).length();
 }
 
 float
-Vector2DI::distanceSqr(const Vector2DI& S) const {
-  return (S - *this).lengthSqr();
+Vector2DI::distanceSqr(const Vector2DI& otherVector) const {
+  return (otherVector - *this).lengthSqr();
 }
 
 Int32&
@@ -108,38 +108,38 @@ Vector2DI::operator*=(const Vector2DI& A) {
 }
 
 Vector2DI
-Vector2DI::operator*(const float S) const {
-  return Vector2DI(static_cast<Int32>(x*S), static_cast<Int32>(y*S));
+Vector2DI::operator*(const float scalar) const {
+  return Vector2DI(static_cast<Int32>(x*scalar), static_cast<Int32>(y*scalar));
 }
 
 Vector2DI&
-Vector2DI::operator*=(const float S) {
-  x *= static_cast<Int32>(S);
-  y *= static_cast<Int32>(S);
+Vector2DI::operator*=(const float scalar) {
+  x *= static_cast<Int32>(scalar);
+  y *= static_cast<Int32>(scalar);
   return *this;
 }
 
 Vector2DI
-Vector2DI::operator/(const float S) const {
-  return Vector2DI(static_cast<Int32>(x*(1 / S)),
-                   static_cast<Int32>(y*(1 / S)));
+Vector2DI::operator/(const float scalar) const {
+  return Vector2DI(static_cast<Int32>(x*(1 / scalar)),
+                   static_cast<Int32>(y*(1 / scalar)));
 }
 
 Vector2DI&
-Vector2DI::operator/=(const float S) {
-  x *= static_cast<Int32>(1 / S);
-  y *= static_cast<Int32>(1 / S);
+Vector2DI::operator/=(const float scalar) {
+  x *= static_cast<Int32>(1 / scalar);
+  y *= static_cast<Int32>(1 / scalar);
   return *this;
 }
 
 bool
-Vector2DI::operator==(const Vector2DI& S) {
-  return ((x == S.x) && (y == S.y));
+Vector2DI::operator==(const Vector2DI& otherVector) {
+  return ((x == otherVector.x) && (y == otherVector.y));
 }
 
 bool
-Vector2DI::operator!=(const Vector2DI& S) {
-  return !((*this) == S);
+Vector2DI::operator!=(const Vector2DI& otherVector) {
+  return !((*this) == otherVector);
 }
 
 Vector2DI

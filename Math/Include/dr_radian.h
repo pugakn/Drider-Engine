@@ -32,7 +32,7 @@ class DR_API_EXPORT Radian
   * @param value
   *  Initial value.
   */
-  Radian(float value);
+  explicit Radian(float value);
 
   /**
   * Default destructor.

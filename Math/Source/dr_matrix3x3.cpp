@@ -35,21 +35,22 @@ Matrix3x3::Matrix3x3(Math::FORCE_INIT k) {
   }
 }
 
-Matrix3x3::Matrix3x3(const Matrix3x3& M) : vector0(M.vector0), vector1(M.vector1), vector2(M.vector2) {}
+Matrix3x3::Matrix3x3(const Matrix3x3& M)
+  : vector0(M.vector0),
+    vector1(M.vector1),
+    vector2(M.vector2) {}
 
 Matrix3x3::Matrix3x3(float v0x, float v0y, float v0z,
                      float v1x, float v1y, float v1z,
                      float v2x, float v2y, float v2z)
   : vector0(v0x, v0y, v0z),
     vector1(v1x, v1y, v1z),
-    vector2(v2x, v2y, v2z)
-{}
+    vector2(v2x, v2y, v2z) {}
 
 Matrix3x3::Matrix3x3(Vector3D vector0, Vector3D vector1, Vector3D vector2)
   : vector0(vector0),
     vector1(vector1),
-    vector2(vector2)
-{}
+    vector2(vector2) {}
 
 Matrix3x3::~Matrix3x3() {}
 

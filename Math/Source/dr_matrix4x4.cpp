@@ -55,8 +55,7 @@ Matrix4x4::Matrix4x4(const Matrix4x4 & M)
   : vector0(M.vector0),
     vector1(M.vector1),
     vector2(M.vector2),
-    vector3(M.vector3)
-{}
+    vector3(M.vector3) {}
 
 Matrix4x4::Matrix4x4(float vector0x, float vector0y, float vector0z, float vector0w,
                      float vector1x, float vector1y, float vector1z, float vector1w,
@@ -65,66 +64,99 @@ Matrix4x4::Matrix4x4(float vector0x, float vector0y, float vector0z, float vecto
   : vector0(vector0x, vector0y, vector0z, vector0w),
     vector1(vector1x, vector1y, vector1z, vector1w),
     vector2(vector2x, vector2y, vector2z, vector2w),
-    vector3(vector3x, vector3y, vector3z, vector3w)
-{}
+    vector3(vector3x, vector3y, vector3z, vector3w) {}
 
-Matrix4x4::Matrix4x4(Vector4D vector0, Vector4D vector1, Vector4D vector2, Vector4D vector3)
+Matrix4x4::Matrix4x4(Vector4D vector0,
+                     Vector4D vector1,
+                     Vector4D vector2,
+                     Vector4D vector3)
   : vector0(vector0),
     vector1(vector1),
     vector2(vector2),
-    vector3(vector3)
-{}
+    vector3(vector3) {}
 
 Matrix4x4::~Matrix4x4() {}
 
 float
 Matrix4x4::determinant() const {
-  return vector0.x*vector1.y*vector2.z*vector3.w + vector0.x*vector1.z*vector2.w*vector3.y + vector0.x*vector1.w*vector2.y*vector3.z +
-         vector0.y*vector1.x*vector2.w*vector3.z + vector0.y*vector1.z*vector2.x*vector3.w + vector0.y*vector1.w*vector2.z*vector3.x +
-         vector0.z*vector1.x*vector2.y*vector3.w + vector0.z*vector1.y*vector2.w*vector3.x + vector0.z*vector1.w*vector2.x*vector3.y +
-         vector0.w*vector1.x*vector2.z*vector3.y + vector0.w*vector1.y*vector2.x*vector3.z + vector0.w*vector1.z*vector2.y*vector3.x -
-         vector0.x*vector1.y*vector2.w*vector3.z - vector0.x*vector1.z*vector2.y*vector3.w - vector0.x*vector1.w*vector2.z*vector3.y -
-         vector0.y*vector1.x*vector2.z*vector3.w - vector0.y*vector1.z*vector2.w*vector3.x - vector0.y*vector1.w*vector2.x*vector3.z -
-         vector0.z*vector1.x*vector2.w*vector3.y - vector0.z*vector1.y*vector2.x*vector3.w - vector0.z*vector1.w*vector2.y*vector3.x -
-         vector0.w*vector1.x*vector2.y*vector3.z - vector0.w*vector1.y*vector2.z*vector3.x - vector0.w*vector1.z*vector2.x*vector3.y;
+  return vector0.x*vector1.y*vector2.z*vector3.w +
+         vector0.x*vector1.z*vector2.w*vector3.y +
+         vector0.x*vector1.w*vector2.y*vector3.z +
+         vector0.y*vector1.x*vector2.w*vector3.z +
+         vector0.y*vector1.z*vector2.x*vector3.w +
+         vector0.y*vector1.w*vector2.z*vector3.x +
+         vector0.z*vector1.x*vector2.y*vector3.w +
+         vector0.z*vector1.y*vector2.w*vector3.x +
+         vector0.z*vector1.w*vector2.x*vector3.y +
+         vector0.w*vector1.x*vector2.z*vector3.y +
+         vector0.w*vector1.y*vector2.x*vector3.z +
+         vector0.w*vector1.z*vector2.y*vector3.x -
+         vector0.x*vector1.y*vector2.w*vector3.z -
+         vector0.x*vector1.z*vector2.y*vector3.w -
+         vector0.x*vector1.w*vector2.z*vector3.y -
+         vector0.y*vector1.x*vector2.z*vector3.w -
+         vector0.y*vector1.z*vector2.w*vector3.x -
+         vector0.y*vector1.w*vector2.x*vector3.z -
+         vector0.z*vector1.x*vector2.w*vector3.y -
+         vector0.z*vector1.y*vector2.x*vector3.w -
+         vector0.z*vector1.w*vector2.y*vector3.x -
+         vector0.w*vector1.x*vector2.y*vector3.z -
+         vector0.w*vector1.y*vector2.z*vector3.x -
+         vector0.w*vector1.z*vector2.x*vector3.y;
 }
 
 void
 Matrix4x4::cofactor() {
   Matrix4x4 temp;
   
-  temp.vector0.x = vector1.y*vector2.z*vector3.w + vector1.z*vector2.w*vector3.y + vector1.w*vector2.y*vector3.z -
-              vector1.y*vector2.w*vector3.z - vector1.z*vector2.y*vector3.w - vector1.w*vector2.z*vector3.y;
-  temp.vector1.x = vector0.y*vector2.w*vector3.z + vector0.z*vector2.y*vector3.w + vector0.w*vector2.z*vector3.y -
-              vector0.y*vector2.z*vector3.w - vector0.z*vector2.w*vector3.y - vector0.w*vector2.y*vector3.z;
-  temp.vector2.x = vector0.y*vector1.z*vector3.w + vector0.z*vector1.w*vector3.y + vector0.w*vector1.y*vector3.z -
-              vector0.y*vector1.w*vector3.z - vector0.z*vector1.y*vector3.w - vector0.w*vector1.z*vector3.y;
-  temp.vector3.x = vector0.y*vector1.w*vector2.z + vector0.z*vector1.y*vector2.w + vector0.w*vector1.z*vector2.y -
-              vector0.y*vector1.z*vector2.w - vector0.z*vector1.w*vector2.y - vector0.w*vector1.y*vector2.z;
-  temp.vector0.y = vector1.x*vector2.w*vector3.z + vector1.z*vector2.x*vector3.w + vector1.w*vector2.z*vector3.x -
-              vector1.x*vector2.z*vector3.w - vector1.z*vector2.w*vector3.x - vector1.w*vector2.x*vector3.z;
-  temp.vector1.y = vector0.x*vector2.z*vector3.w + vector0.z*vector2.w*vector3.x + vector0.w*vector2.x*vector3.z -
-              vector0.x*vector2.w*vector3.z - vector0.z*vector2.x*vector3.w - vector0.w*vector2.z*vector3.x;
-  temp.vector2.y = vector0.x*vector1.w*vector3.z + vector0.z*vector1.x*vector3.w + vector0.w*vector1.z*vector3.x -
-              vector0.x*vector1.z*vector3.w - vector0.z*vector1.w*vector3.x - vector0.w*vector1.x*vector3.z;
-  temp.vector3.y = vector0.x*vector1.z*vector2.w + vector0.z*vector1.w*vector2.x + vector0.w*vector1.x*vector2.z -
-              vector0.x*vector1.w*vector2.z - vector0.z*vector1.x*vector2.w - vector0.w*vector1.z*vector2.x;
-  temp.vector0.z = vector1.x*vector2.y*vector3.w + vector1.y*vector2.w*vector3.x + vector1.w*vector2.x*vector3.y -
-              vector1.x*vector2.w*vector3.y - vector1.y*vector2.x*vector3.w - vector1.w*vector2.y*vector3.x;
-  temp.vector1.z = vector0.x*vector2.w*vector3.y + vector0.y*vector2.x*vector3.w + vector0.w*vector2.y*vector3.x -
-              vector0.x*vector2.y*vector3.w - vector0.y*vector2.w*vector3.x - vector0.w*vector2.x*vector3.y;
-  temp.vector2.z = vector0.x*vector1.y*vector3.w + vector0.y*vector1.w*vector3.x + vector0.w*vector1.x*vector3.y -
-              vector0.x*vector1.w*vector3.y - vector0.y*vector1.x*vector3.w - vector0.w*vector1.y*vector3.x;
-  temp.vector3.z = vector0.x*vector1.w*vector2.y + vector0.y*vector1.x*vector2.w + vector0.w*vector1.y*vector2.x -
-              vector0.x*vector1.y*vector2.w - vector0.y*vector1.w*vector2.x - vector0.w*vector1.x*vector2.y;
-  temp.vector0.w = vector1.x*vector2.z*vector3.y + vector1.y*vector2.x*vector3.z + vector1.z*vector2.y*vector3.x -
-              vector1.x*vector2.y*vector3.z - vector1.y*vector2.z*vector3.x - vector1.z*vector2.x*vector3.y;
-  temp.vector1.w = vector0.x*vector2.y*vector3.z + vector0.y*vector2.z*vector3.x + vector0.z*vector2.x*vector3.y -
-              vector0.x*vector2.z*vector3.y - vector0.y*vector2.x*vector3.z - vector0.z*vector2.y*vector3.x;
-  temp.vector2.w = vector0.x*vector1.z*vector3.y + vector0.y*vector1.x*vector3.z + vector0.z*vector1.y*vector3.x -
-              vector0.x*vector1.y*vector3.z - vector0.y*vector1.z*vector3.x - vector0.z*vector1.x*vector3.y;
-  temp.vector3.w = vector0.x*vector1.y*vector2.z + vector0.y*vector1.z*vector2.x + vector0.z*vector1.x*vector2.y -
-              vector0.x*vector1.z*vector2.y - vector0.y*vector1.x*vector2.z - vector0.z*vector1.y*vector2.x;
+  temp.vector0.x = vector1.y*vector2.z*vector3.w + vector1.z*vector2.w*vector3.y +
+                   vector1.w*vector2.y*vector3.z - vector1.y*vector2.w*vector3.z -
+                   vector1.z*vector2.y*vector3.w - vector1.w*vector2.z*vector3.y;
+  temp.vector1.x = vector0.y*vector2.w*vector3.z + vector0.z*vector2.y*vector3.w +
+                   vector0.w*vector2.z*vector3.y - vector0.y*vector2.z*vector3.w -
+                   vector0.z*vector2.w*vector3.y - vector0.w*vector2.y*vector3.z;
+  temp.vector2.x = vector0.y*vector1.z*vector3.w + vector0.z*vector1.w*vector3.y +
+                   vector0.w*vector1.y*vector3.z - vector0.y*vector1.w*vector3.z -
+                   vector0.z*vector1.y*vector3.w - vector0.w*vector1.z*vector3.y;
+  temp.vector3.x = vector0.y*vector1.w*vector2.z + vector0.z*vector1.y*vector2.w +
+                   vector0.w*vector1.z*vector2.y - vector0.y*vector1.z*vector2.w -
+                   vector0.z*vector1.w*vector2.y - vector0.w*vector1.y*vector2.z;
+  temp.vector0.y = vector1.x*vector2.w*vector3.z + vector1.z*vector2.x*vector3.w +
+                   vector1.w*vector2.z*vector3.x - vector1.x*vector2.z*vector3.w -
+                   vector1.z*vector2.w*vector3.x - vector1.w*vector2.x*vector3.z;
+  temp.vector1.y = vector0.x*vector2.z*vector3.w + vector0.z*vector2.w*vector3.x +
+                   vector0.w*vector2.x*vector3.z - vector0.x*vector2.w*vector3.z -
+                   vector0.z*vector2.x*vector3.w - vector0.w*vector2.z*vector3.x;
+  temp.vector2.y = vector0.x*vector1.w*vector3.z + vector0.z*vector1.x*vector3.w +
+                   vector0.w*vector1.z*vector3.x - vector0.x*vector1.z*vector3.w -
+                   vector0.z*vector1.w*vector3.x - vector0.w*vector1.x*vector3.z;
+  temp.vector3.y = vector0.x*vector1.z*vector2.w + vector0.z*vector1.w*vector2.x +
+                   vector0.w*vector1.x*vector2.z - vector0.x*vector1.w*vector2.z -
+                   vector0.z*vector1.x*vector2.w - vector0.w*vector1.z*vector2.x;
+  temp.vector0.z = vector1.x*vector2.y*vector3.w + vector1.y*vector2.w*vector3.x +
+                   vector1.w*vector2.x*vector3.y - vector1.x*vector2.w*vector3.y -
+                   vector1.y*vector2.x*vector3.w - vector1.w*vector2.y*vector3.x;
+  temp.vector1.z = vector0.x*vector2.w*vector3.y + vector0.y*vector2.x*vector3.w +
+                   vector0.w*vector2.y*vector3.x - vector0.x*vector2.y*vector3.w -
+                   vector0.y*vector2.w*vector3.x - vector0.w*vector2.x*vector3.y;
+  temp.vector2.z = vector0.x*vector1.y*vector3.w + vector0.y*vector1.w*vector3.x +
+                   vector0.w*vector1.x*vector3.y - vector0.x*vector1.w*vector3.y -
+                   vector0.y*vector1.x*vector3.w - vector0.w*vector1.y*vector3.x;
+  temp.vector3.z = vector0.x*vector1.w*vector2.y + vector0.y*vector1.x*vector2.w +
+                   vector0.w*vector1.y*vector2.x - vector0.x*vector1.y*vector2.w -
+                   vector0.y*vector1.w*vector2.x - vector0.w*vector1.x*vector2.y;
+  temp.vector0.w = vector1.x*vector2.z*vector3.y + vector1.y*vector2.x*vector3.z +
+                   vector1.z*vector2.y*vector3.x - vector1.x*vector2.y*vector3.z -
+                   vector1.y*vector2.z*vector3.x - vector1.z*vector2.x*vector3.y;
+  temp.vector1.w = vector0.x*vector2.y*vector3.z + vector0.y*vector2.z*vector3.x +
+                   vector0.z*vector2.x*vector3.y - vector0.x*vector2.z*vector3.y -
+                   vector0.y*vector2.x*vector3.z - vector0.z*vector2.y*vector3.x;
+  temp.vector2.w = vector0.x*vector1.z*vector3.y + vector0.y*vector1.x*vector3.z +
+                   vector0.z*vector1.y*vector3.x - vector0.x*vector1.y*vector3.z -
+                   vector0.y*vector1.z*vector3.x - vector0.z*vector1.x*vector3.y;
+  temp.vector3.w = vector0.x*vector1.y*vector2.z + vector0.y*vector1.z*vector2.x +
+                   vector0.z*vector1.x*vector2.y - vector0.x*vector1.z*vector2.y -
+                   vector0.y*vector1.x*vector2.z - vector0.z*vector1.y*vector2.x;
 
   *this = temp;
 }
@@ -208,7 +240,10 @@ Matrix4x4::operator=(const Matrix4x4 & A) {
 
 Matrix4x4 
 Matrix4x4::operator+(const Matrix4x4 & A) const {
-  return Matrix4x4(vector0 + A.vector0, vector1 + A.vector1, vector2 + A.vector2, vector3 + A.vector3);
+  return Matrix4x4(vector0 + A.vector0,
+                   vector1 + A.vector1,
+                   vector2 + A.vector2,
+                   vector3 + A.vector3);
 }
 
 Matrix4x4&
@@ -222,7 +257,10 @@ Matrix4x4::operator+=(const Matrix4x4 & A) {
 
 Matrix4x4
 Matrix4x4::operator-(const Matrix4x4 & A) const {
-  return Matrix4x4(vector0 - A.vector0, vector1 - A.vector1, vector2 - A.vector2, vector3 - A.vector3);
+  return Matrix4x4(vector0 - A.vector0,
+                   vector1 - A.vector1,
+                   vector2 - A.vector2,
+                   vector3 - A.vector3);
 }
 
 Matrix4x4&
