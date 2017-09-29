@@ -13,8 +13,12 @@ bool recev( int& asin )
 int main(int argc, char* argv[])
 {
   driderSDK::Matrix4x4 lu(1,4,-1,0,2,3,5,-2,0,3,1,6,3,0,2,1);
-  driderSDK::Radian rad(5);
-  rad = rad +3;
+
+  driderSDK::Radian dckRad(5);
+  dckRad = dckRad + 3;
+  dckRad = -dckRad;
+
+
   float po = lu.determinant();
   lu.cofactor();
   lu.adjugate();
