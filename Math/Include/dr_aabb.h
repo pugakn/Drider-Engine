@@ -30,7 +30,7 @@ class DR_API_EXPORT AABB
   * @param C
   *  Center of the box given by a vector 3D
   */
-  AABB(float s, const Vector3D& C);
+  AABB(float width, float height, const Vector3D& C);
 
   /**
   * Move constructor.
@@ -122,8 +122,8 @@ class DR_API_EXPORT AABB
   bool
   intersect(Vector3D& point);
   
-  float m_fSize;
-  Vector3D m_center;
+  float width, height;
+  Vector3D center;
 };
 
 }

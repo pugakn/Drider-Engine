@@ -1,6 +1,5 @@
-#include <dr_aabb.h>
-#include <dr_matrixnxm.h>
-
+#include "dr_aabb.h"
+#include "dr_matrixnxm.h"
 #include "dr_intersections.h"
 #include "dr_sphere.h"
 #include "dr_plane.h"
@@ -11,57 +10,66 @@ namespace driderSDK {
 
 AABB::AABB() {}
 
-AABB::AABB(float s, const Vector3D& C) : m_fSize(s), m_center(C) {}
+AABB::AABB(float width, 
+           float height, 
+           const Vector3D& C) : width(width), height(height), center(C) {}
 
 AABB::AABB(const AABB& A) {
-  m_fSize = A.m_fSize;
-  m_center = A.m_center;
+  width = A.width;
+  height = A.height;
+  center = A.center;
 }
 
 AABB::~AABB() {}
 
 bool
 AABB::intersect(AABB& aabb) {
-  return aabbAabbIntersect(m_center, 
-                           m_fSize, 
-	                       aabb.m_center, 
-	                       aabb.m_fSize);
+  return aabbAabbIntersect(center, 
+                           width, 
+                           height,
+	                         aabb.center, 
+                           aabb.height,
+	                         aabb.width);
 }
 
 bool
 AABB::intersect(Sphere& sphere) {
-  return aabbSphereIntersect(m_center, 
-                             m_fSize, 
+  return aabbSphereIntersect(center, 
+                             width,
+                             height, 
                              sphere.center, 
                              sphere.radio);
 }
 
 bool
 AABB::intersect(Plane& plane) {
-  return aabbPlaneIntersect(m_center, 
-                            m_fSize, 
+  return aabbPlaneIntersect(center, 
+                            width,
+                            height,
 	                          static_cast<Vector3D&>(plane), 
 	                          static_cast<Vector3D&>(plane) * plane.d);
 }
 
 bool
 AABB::intersect(Frustrum& frustrum) {
-  return aabbFrustrumIntersect(m_center, 
-                               m_fSize, 
+  return aabbFrustrumIntersect(center, 
+                               width,
+                               height,
 	                             frustrum.planes);
 }
 
 bool
 AABB::intersect(Ray& ray) {
-  return aabbRayIntersect(m_center, 
-                          m_fSize, 
+  return aabbRayIntersect(center, 
+                          width,
+                          height,
 	                        ray.origin, 
 	                        ray.direction);
 }
 
 bool
 AABB::intersect(Vector3D& point) {
-  return aabbPointIntersect(m_center, m_fSize, point);
+  return aabbPointIntersect(center, width, height, point);
 }
 
 } 

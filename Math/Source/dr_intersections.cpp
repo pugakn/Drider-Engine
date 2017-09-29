@@ -1,5 +1,4 @@
 #include "dr_intersections.h"
-
 #include "dr_math.h"
 #include "dr_vector3d.h"
 #include "dr_plane.h"
@@ -131,9 +130,11 @@ frustrumSphereIntersect(const std::array<Plane, 6>& frustrumPlanes,
 
 bool
 aabbAabbIntersect(const Vector3D& aabb1Center,
-                  float aabb1Size,
+                  float aabbWidth,
+                  float aabbheight,
                   const Vector3D& aabb2Center,
-                  float aabb2Size)
+                  float aabbWidth2,
+                  float aabbheight2)
 {
   //TODO : implement aabb intersection function
   return false;
@@ -141,7 +142,8 @@ aabbAabbIntersect(const Vector3D& aabb1Center,
 
 bool
 aabbSphereIntersect(const Vector3D& aabbCenter,
-                    float aabbSize,
+                    float aabbWidth,
+                    float aabbheight,
                     const Vector3D& sphereOrigin,
                     float sphereRadius)
 {
@@ -151,7 +153,8 @@ aabbSphereIntersect(const Vector3D& aabbCenter,
 
 bool
 aabbPlaneIntersect(const Vector3D& aabbCenter,
-                   float aabbSize,
+                   float aabbWidth,
+                   float aabbheight,
                    const Vector3D& planeNormal,
                    const Vector3D& planePoint)
 {
@@ -161,7 +164,8 @@ aabbPlaneIntersect(const Vector3D& aabbCenter,
 
 bool
 aabbFrustrumIntersect(const Vector3D& aabbCenter,
-                      float aabbSize,
+                      float aabbWidth,
+                      float aabbheight,
                       const std::array<Plane, 6>& frustrumPlanes)
 {
   //TODO : implement aabb intersection function
@@ -170,7 +174,8 @@ aabbFrustrumIntersect(const Vector3D& aabbCenter,
 
 bool
 aabbRayIntersect(const Vector3D& aabbCenter,
-                 float aabbSize,
+                 float aabbWidth,
+                 float aabbheight,
                  const Vector3D& rayOrigin,
                  const Vector3D& rayDirection)
 {
@@ -180,7 +185,8 @@ aabbRayIntersect(const Vector3D& aabbCenter,
 
 bool
 aabbPointIntersect(const Vector3D& aabbCenter,
-                   float aabbSize,
+                   float aabbWidth,
+                   float aabbheight,
                    const Vector3D& point)
 {
   //TODO : implement aabb intersection function
