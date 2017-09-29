@@ -28,17 +28,17 @@ class DR_API_EXPORT Frustrum
 	*	 The View Projection matrix.
 	*
 	*/
-	Frustrum(const Matrix4x4& VP);
+	Frustrum(const Matrix4x4& ViewProjection);
 
-	//Uncommented
+	/**
+	* Create the frustrum planes with the View Projection matrix
+	*
+	* @param VP
+	*	 The View Projection matrix.
+	*
+	*/
 	void 
-	setVP(const Matrix4x4& VP);
-
-	//Uncommented
-	FORCEINLINE Matrix4x4 
-	getVP() {
-		return m_VP;
-	}
+	createFromVP(const Matrix4x4& ViewProjection);
 
 	/**
 	* Check if the frustrum intersects other ray
@@ -173,8 +173,6 @@ class DR_API_EXPORT Frustrum
 
  private:
 	Plane m_planes[6];
-	Vector3D m_corners[8];
-	Matrix4x4 m_VP;
 };
 
 
