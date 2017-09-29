@@ -2,7 +2,7 @@
 
 #include "dr_math.h"
 #include "dr_vector3d.h"
-
+#include "dr_plane.h"
 
 namespace driderSDK {
 /**********************************************************************
@@ -10,30 +10,30 @@ namespace driderSDK {
 **********************************************************************/
 //Uncommented
 bool FORCEINLINE
-pointInSphere(const Vector3D& point,
-              const Vector3D& sphPosition,
-              float radio)
+spherePointIntersect(const Vector3D& point,
+                     const Vector3D& sphPosition,
+                     float radio)
 {
   return static_cast<bool>(point.distance(sphPosition) < radio);
 }
 //Uncommented
 bool
-sphereSphereIntersection(const Vector3D& sph1Position,
-                         float sph1Radio,
-                         const Vector3D& sph2Position,
-                         float sph2Radio)
+sphereSphereIntersect(const Vector3D& sph1Position,
+                      float sph1Radio,
+                      const Vector3D& sph2Position,
+                      float sph2Radio)
 {
  return static_cast<bool>(sph1Position.distance(sph2Position) <
         (sph1Radio + sph2Radio));
 }
 //Uncommented
 bool
-sphereRayIntersection(const Vector3D& sphPosition,
+sphereRayIntersect(const Vector3D& sphPosition,
                       float sphRadio, 
                       const Vector3D& rayOrigin,
                       const Vector3D& rayDirection)
 {
- if(pointInSphere(rayOrigin, sphPosition, sphRadio))
+ if(spherePointIntersect(rayOrigin, sphPosition, sphRadio))
   return true;
  Vector3D vec(rayOrigin - sphPosition);
 
@@ -44,45 +44,45 @@ sphereRayIntersection(const Vector3D& sphPosition,
 
  Vector3D vecClosestPoint(rayOrigin + (rayDirection * pDirection));
 
- return pointInSphere(vecClosestPoint, sphPosition, sphRadio);
+ return spherePointIntersect(vecClosestPoint, sphPosition, sphRadio);
 }
 
 
 bool 
-rayPlaneIntersection(const Vector3D& rayOrigin, 
-	                   const Vector3D& rayDirection, 
-	                   const Vector3D& planeNormal, 
-	                   const Vector3D& planePoint)
+rayPlaneIntersect(const Vector3D& rayOrigin, 
+	                 const Vector3D& rayDirection, 
+	                 const Vector3D& planeNormal, 
+	                 const Vector3D& planePoint)
 {
-	float denom = planeNormal.dot(rayDirection);
-	if (denom > Math::SMALL_NUMBER) {
-		Vector3D planeToRayOrigin = planePoint - rayOrigin;
-		float t = planeToRayOrigin.dot(planeNormal) / denom;
-		return static_cast<bool>(t >= 0);
-	}
-	return false;
+  float denom = planeNormal.dot(rayDirection);
+  if (denom > Math::SMALL_NUMBER) {
+  	Vector3D planeToRayOrigin = planePoint - rayOrigin;
+  	float t = planeToRayOrigin.dot(planeNormal) / denom;
+  	return static_cast<bool>(t >= 0);
+  }
+  return false;
 }
 
 bool 
-rayPlaneIntersection(const Vector3D& rayOrigin, 
-	                   const Vector3D& rayDirection, 
-	                   const Vector3D& planeNormal, 
-	                   const Vector3D& planePoint, 
-	                   float* intersectionPoint)
+rayPlaneIntersect(const Vector3D& rayOrigin, 
+	              const Vector3D& rayDirection, 
+	              const Vector3D& planeNormal, 
+	              const Vector3D& planePoint, 
+	              float* intersectionPoint)
 {
-	float denom = planeNormal.dot(rayDirection);
-	if (denom > Math::SMALL_NUMBER) {
-		Vector3D planeToRayOrigin = planePoint - rayOrigin;
-		*intersectionPoint = planeToRayOrigin.dot(planeNormal) / denom;
-		return static_cast<bool>(*intersectionPoint >= 0);
-	}
-	return false;
+  float denom = planeNormal.dot(rayDirection);
+  if (denom > Math::SMALL_NUMBER) {
+  	Vector3D planeToRayOrigin = planePoint - rayOrigin;
+  	*intersectionPoint = planeToRayOrigin.dot(planeNormal) / denom;
+  	return static_cast<bool>(*intersectionPoint >= 0);
+  }
+  return false;
 }
 
 bool 
-rayFrustrumIntersection(const Vector3D& rayOrigin, 
-	                      const Vector3D& rayDirection, 
-	                      const Matrix4x4& frustrumVP)
+rayFrustrumIntersect(const Vector3D& rayOrigin, 
+	                 const Vector3D& rayDirection, 
+	                 const Plane frustrumPlanes[6])
 {
 	return false;
 }
@@ -96,42 +96,42 @@ rayFrustrumIntersection(const Vector3D& rayOrigin,
 //}
 
 bool 
-rayRayIntersection(const Vector3D& rayAOrigin, 
-	                 const Vector3D& rayADirection, 
-	                 const Vector3D& rayBOrigin, 
-	                 const Vector3D& rayBDirection)
+rayRayIntersect(const Vector3D& rayAOrigin, 
+	            const Vector3D& rayADirection, 
+	            const Vector3D& rayBOrigin, 
+	            const Vector3D& rayBDirection)
 {
 	return false;
 }
 
 bool 
-frustrumPlaneIntersection(const Matrix4x4& frustrumVP, 
-	                        const Vector3D& sphereOrigin, 
-	                        const Vector3D& planePoint)
+frustrumPlaneIntersect(const Plane frustrumPlanes[6],
+	                   const Vector3D& sphereOrigin, 
+	                   const Vector3D& planePoint)
 {
 	return false;
 }
 
 bool 
-frustrumFrustrumIntersection(const Matrix4x4& frustrumAVP, 
-	                           const Matrix4x4& frustrumBVP)
+frustrumFrustrumIntersect(const Plane frustrumPlanesA[6], 
+	                      const Plane frustrumPlanesB[6])
 {
 	return false;
 }
 
 bool 
-frustrumSphereIntersection(const Matrix4x4& frustrumVP, 
-	                         const Vector3D& sphereOrigin, 
-	                         float sphereRadius)
+frustrumSphereIntersect(const Plane frustrumPlanes[6],
+	                    const Vector3D& sphereOrigin, 
+	                    float sphereRadius)
 {
 	return false;
 }
 
 bool
 aabbAabbIntersect(const Vector3D& aabb1Center,
-	const float& aabb1Size,
-	const Vector3D& aabb2Center,
-	const float& aabb2Size)
+                  float aabb1Size,
+                  const Vector3D& aabb2Center,
+                  float aabb2Size)
 {
 	//TODO : implement aabb intersection function
 	return false;
@@ -139,9 +139,9 @@ aabbAabbIntersect(const Vector3D& aabb1Center,
 
 bool
 aabbSphereIntersect(const Vector3D& aabbCenter,
-	const float& aabbSize,
-	const Vector3D& sphereOrigin,
-	const float& sphereRadius)
+                    float aabbSize,
+                    const Vector3D& sphereOrigin,
+                    float sphereRadius)
 {
 	//TODO : implement aabb intersection function
 	return false;
@@ -149,9 +149,9 @@ aabbSphereIntersect(const Vector3D& aabbCenter,
 
 bool
 aabbPlaneIntersect(const Vector3D& aabbCenter,
-	const float& aabbSize,
-	const Vector3D& planeNormal,
-	const Vector3D& planePoint)
+                   float aabbSize,
+                   const Vector3D& planeNormal,
+                   const Vector3D& planePoint)
 {
 	//TODO : implement aabb intersection function
 	return false;
@@ -159,8 +159,8 @@ aabbPlaneIntersect(const Vector3D& aabbCenter,
 
 bool
 aabbFrustrumIntersect(const Vector3D& aabbCenter,
-	const float& aabbSize,
-	const Matrix4x4& frustrumVP)
+                      float aabbSize,
+                      const Plane frustrumPlanes[6])
 {
 	//TODO : implement aabb intersection function
 	return false;
@@ -168,18 +168,18 @@ aabbFrustrumIntersect(const Vector3D& aabbCenter,
 
 bool
 aabbRayIntersect(const Vector3D& aabbCenter,
-	const float& aabbSize,
-	const Vector3D& rayOrigin,
-	const Vector3D& rayDirection)
+                 float aabbSize,
+                 const Vector3D& rayOrigin,
+                 const Vector3D& rayDirection)
 {
 	//TODO : implement aabb intersection function
 	return false;
 }
 
 bool
-pointInAabb(const Vector3D& aabbCenter,
-	const float& aabbSize,
-	const Vector3D& point)
+aabbPointIntersect(const Vector3D& aabbCenter,
+            float aabbSize,
+            const Vector3D& point)
 {
 	//TODO : implement aabb intersection function
 	return false;
