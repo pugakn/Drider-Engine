@@ -20,6 +20,7 @@ struct DR_API_EXPORT Math
   static const float DEGREE_TO_RADIAN;
   static const float RADIAN_TO_DEGREE;
   static const float EPSILON;
+  static const float SMALL_NUMBER;
 
   /***********************************************************************
   * 								            Limits            								       *

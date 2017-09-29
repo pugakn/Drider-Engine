@@ -22,7 +22,7 @@ class DR_API_EXPORT Vector4D
   *
   * Values are initialized with 0.
   */
-  Vector4D(math::FORCE_INIT k);
+  Vector4D(Math::FORCE_INIT k);
 
   /**
   * Move constructor

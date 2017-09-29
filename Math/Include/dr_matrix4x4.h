@@ -19,7 +19,7 @@ class DR_API_EXPORT Matrix4x4
   *
   * Values are initialized with 0(kZero) or identity matrix(kIdentity).
   */
-  Matrix4x4(math::FORCE_INIT k);
+  Matrix4x4(Math::FORCE_INIT k);
 
   /**
   * Move constructor

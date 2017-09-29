@@ -138,10 +138,7 @@ class VectorN
   }
 
   /**
-  * Gets the vector normalized.
-  *
-  * @return
-  *	  The vector normalized.
+  * Normalize the plane
   *
   */
   FORCEINLINE void

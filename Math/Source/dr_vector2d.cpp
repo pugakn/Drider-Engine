@@ -5,8 +5,8 @@ namespace driderSDK
 
 Vector2D::Vector2D() {}
 
-Vector2D::Vector2D(math::FORCE_INIT k) {
-  if (k == math::FORCE_INIT::kIdentity) {
+Vector2D::Vector2D(Math::FORCE_INIT k) {
+  if (k == Math::FORCE_INIT::kIdentity) {
     x = 0.0f;
     y = 0.0f;
   }
@@ -29,7 +29,7 @@ Vector2D::dot(const Vector2D& B) const {
 
 float
 Vector2D::length() const {
-  return math::sqrt(dot(*this));
+  return Math::sqrt(dot(*this));
 }
 
 float

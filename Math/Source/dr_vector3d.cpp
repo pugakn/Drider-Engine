@@ -5,8 +5,8 @@ namespace driderSDK
 
 Vector3D::Vector3D() : x(0.0f), y(0.0f), z(0.0f) {}
 
-Vector3D::Vector3D(math::FORCE_INIT k) {
-  if (math::FORCE_INIT::kIdentity == k) {
+Vector3D::Vector3D(Math::FORCE_INIT k) {
+  if (Math::FORCE_INIT::kIdentity == k) {
     x = 0.0f;
     y = 0.0f;
     z = 0.0f;
@@ -36,7 +36,7 @@ Vector3D::cross(const Vector3D& B) const {
 
 float
 Vector3D::length() const {
-  return math::sqrt(dot(*this));
+  return Math::sqrt(dot(*this));
 }
 
 float

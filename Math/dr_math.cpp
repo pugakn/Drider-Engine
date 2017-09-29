@@ -6,14 +6,15 @@ namespace driderSDK {
 //Basic constants
 
 const float Math::PI = std::acosf(-1.f);		     
-const float Math::HALF_PI = PI * 0.5f;	   
-const float Math::QUARTER_PI = PI_HALF * 0.5f ; 
-const float Math::TWO_PI = 2.f * PI;  	 
-const float Math::ONE_OVER_PI = 1.f / PI;
+const float Math::HALF_PI = std::acosf(-1.f) * 0.5f;	   
+const float Math::QUARTER_PI = std::acosf(-1.f) * 0.5f ; 
+const float Math::TWO_PI = 2.f * std::acosf(-1.f);  	 
+const float Math::ONE_OVER_PI = 1.f / std::acosf(-1.f);
 const float Math::EULER = std::expf(1.0f);		   
-const float Math::DEGREE_TO_RADIAN = PI / 180.f;
-const float Math::RADIAN_TO_DEGREE = 180 / PI;
+const float Math::DEGREE_TO_RADIAN = std::acosf(-1.f) / 180.f;
+const float Math::RADIAN_TO_DEGREE = 180 / std::acosf(-1.f);
 const float Math::EPSILON = 0.0001f;
+const float Math::SMALL_NUMBER = std::numeric_limits<float>::min();
 
 //Limits
 
