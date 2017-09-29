@@ -40,4 +40,28 @@ Radian::operator=(float V) {
   return *this;
 }
 
+Radian&
+Radian::operator+=(float V)
+{
+  m_value += V;
+}
+
+Radian&
+Radian::operator-=(float V)
+{
+  m_value -= V;
+}
+
+Radian&
+Radian::operator*=(float V)
+{
+  m_value *= V;
+}
+
+Radian&
+Radian::operator/=(float V)
+{
+  m_value /= V;
+}
+
 }

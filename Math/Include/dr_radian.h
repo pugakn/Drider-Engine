@@ -64,6 +64,22 @@ class DR_API_EXPORT Radian
   //Uncomented
   Radian&
   operator=(float V);
+
+  //Uncomented
+  Radian&
+  operator+=(float V);
+
+  //Uncomented
+  Radian&
+  operator-=(float V);
+
+  //Uncomented
+  Radian&
+  operator*=(float V);
+
+  //Uncomented
+  Radian&
+  operator/=(float V);
 private:
   float m_value;
 };

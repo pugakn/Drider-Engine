@@ -172,7 +172,7 @@ Matrix4x4::inverse() {
   float deter = determinant();
   cofactor();
   transpose();
-  *this * (1 / deter);
+  *this = *this * (1 / deter);
 }
 
 void

@@ -40,4 +40,28 @@ Degree::operator=(float V) {
   return *this;
 }
 
+Degree&
+Degree::operator+=(float V)
+{
+  m_value += V;
+}
+
+Degree&
+Degree::operator-=(float V)
+{
+  m_value -= V;
+}
+
+Degree&
+Degree::operator*=(float V)
+{
+  m_value *= V;
+}
+
+Degree&
+Degree::operator/=(float V)
+{
+  m_value /= V;
+}
+
 }

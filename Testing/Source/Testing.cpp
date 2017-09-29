@@ -20,8 +20,8 @@ int main(int argc, char* argv[])
 
 
   float po = lu.determinant();
-  lu.cofactor();
-  lu.adjugate();
+  //lu.cofactor();
+  //lu.adjugate();
   lu.inverse();
 
   driderSDK::VectorN<4> mlg;

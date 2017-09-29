@@ -64,6 +64,22 @@ class DR_API_EXPORT Degree
   //Uncomented
   Degree&
   operator=(float V);
+
+  //Uncomented
+  Degree&
+  operator+=(float V);
+
+  //Uncomented
+  Degree&
+  operator-=(float V);
+
+  //Uncomented
+  Degree&
+  operator*=(float V);
+
+  //Uncomented
+  Degree&
+  operator/=(float V);
 private:
   float m_value;
 };
