@@ -22,7 +22,7 @@ class DR_API_EXPORT Vector2D
   *
   * Values are initialized with 0.
   */
-  Vector2D(math::FORCE_INIT k);
+  Vector2D(Math::FORCE_INIT k);
 
   /**
   * Move constructor

@@ -5,8 +5,9 @@ namespace driderSDK
 
 Vector4D::Vector4D() {}
 
-Vector4D::Vector4D(math::FORCE_INIT k) {
-  if (math::FORCE_INIT::kIdentity == k) {
+Vector4D::Vector4D(Math::FORCE_INIT k) {
+
+  if (Math::FORCE_INIT::kIdentity == k) {
     x = 0.0f;
     y = 0.0f;
     z = 0.0f;
@@ -38,7 +39,7 @@ Vector4D::cross(const Vector4D& B) const {
 
 float
 Vector4D::length() const {
-  return math::sqrt(dot(*this));
+  return Math::sqrt(dot(*this));
 }
 
 float

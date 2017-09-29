@@ -5,8 +5,8 @@ namespace driderSDK
 
 Matrix4x4::Matrix4x4() {}
 
-Matrix4x4::Matrix4x4(math::FORCE_INIT k) {
-  if (math::FORCE_INIT::kZero == k) {
+Matrix4x4::Matrix4x4(Math::FORCE_INIT k) {
+  if (Math::FORCE_INIT::kZero == k) {
     vector0.x = 0;
     vector0.y = 0;
     vector0.z = 0;

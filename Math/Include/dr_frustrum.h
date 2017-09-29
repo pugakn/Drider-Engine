@@ -6,10 +6,11 @@
 
 
 namespace driderSDK {
-using namespace math;
+
 class Sphere;
 class Capsule;
 class Ray;
+
 class DR_API_EXPORT Frustrum
 {
  public:

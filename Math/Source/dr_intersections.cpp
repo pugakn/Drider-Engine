@@ -55,7 +55,7 @@ rayPlaneIntersection(const Vector3D& rayOrigin,
 	                   const Vector3D& planePoint)
 {
 	float denom = planeNormal.dot(rayDirection);
-	if (denom > math::SMALL_NUMBER) {
+	if (denom > Math::SMALL_NUMBER) {
 		Vector3D planeToRayOrigin = planePoint - rayOrigin;
 		float t = planeToRayOrigin.dot(planeNormal) / denom;
 		return static_cast<bool>(t >= 0);
@@ -71,7 +71,7 @@ rayPlaneIntersection(const Vector3D& rayOrigin,
 	                   float* intersectionPoint)
 {
 	float denom = planeNormal.dot(rayDirection);
-	if (denom > math::SMALL_NUMBER) {
+	if (denom > Math::SMALL_NUMBER) {
 		Vector3D planeToRayOrigin = planePoint - rayOrigin;
 		*intersectionPoint = planeToRayOrigin.dot(planeNormal) / denom;
 		return static_cast<bool>(*intersectionPoint >= 0);

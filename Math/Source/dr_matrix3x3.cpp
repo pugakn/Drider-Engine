@@ -5,8 +5,8 @@ namespace driderSDK
 
 Matrix3x3::Matrix3x3() {}
 
-Matrix3x3::Matrix3x3(math::FORCE_INIT k) {
-  if (math::FORCE_INIT::kZero == k) {
+Matrix3x3::Matrix3x3(Math::FORCE_INIT k) {
+  if (Math::FORCE_INIT::kZero == k) {
     vector0.x = 0;
     vector0.y = 0;
     vector0.z = 0; 

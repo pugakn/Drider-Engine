@@ -13,7 +13,7 @@ Degree::~Degree() {}
 
 float
 Degree::toRadian() const {
-  return (m_value*math::DEGREE_TO_RADIAN);
+  return (m_value*Math::DEGREE_TO_RADIAN);
 }
 
 Degree&

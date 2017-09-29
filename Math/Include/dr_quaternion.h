@@ -81,7 +81,7 @@ class DR_API_EXPORT Quaternion
   /**
   * Rotates the quaternion given theta and another quaternion.
   *
-  * @param t
+  * @param theta
   *	  Angle of rotation.
   *
   * @param A
@@ -91,16 +91,16 @@ class DR_API_EXPORT Quaternion
   *   A rotated quaternion.
   */
   Quaternion
-  rotation(float t, const Quaternion& A);
+  rotation(float theta, const Quaternion& A);
 
   /**
   * Creates a matrix from the quaternion.
   *
-  * @param M
+  * @param Matrix
   *   Matrix4x4 to be filled.
   */
   void
-  matrixFromQuaternion(Matrix4x4& M);
+  matrixFromQuaternion(Matrix4x4& Matrix);
 
   //Uncommented
   Quaternion
@@ -142,7 +142,15 @@ class DR_API_EXPORT Quaternion
   Quaternion&
   operator/=(const Quaternion& Q);
 
-  float x, y, z, w;
+  union 
+  {
+    struct 
+    {
+	  float x, y, z, w;
+    };
+	float data[4];
+  };
+
 };
 
 }

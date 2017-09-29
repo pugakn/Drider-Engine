@@ -2,30 +2,16 @@
 
 namespace driderSDK {
 
-Quaternion::Quaternion() {
+Quaternion::Quaternion() {}
 
-}
-
-Quaternion::Quaternion(const Quaternion& Q)
-  : x(Q.x),
-	y(Q.y),
-	z(Q.z),
-	w(Q.w) {
-}
+Quaternion::Quaternion(const Quaternion& Q) : x(Q.x), y(Q.y), z(Q.z), w(Q.w) {}
 
 Quaternion::Quaternion(float x,
- 					     float y,
-					     float z,
-					     float w)
-  : x(x),
-	y(y),
-	z(z),
-	w(w) {
-}
+                       float y,
+                       float z,
+                       float w) : x(x), y(y), z(z), w(w) {}
 
-Quaternion::~Quaternion() {
-
-}
+Quaternion::~Quaternion() {}
 
 float
 Quaternion::measure() {
@@ -39,31 +25,32 @@ Quaternion::conjugate() {
 
 Quaternion
 Quaternion::normalize() {
-  return (*this)*(1 / this->measure());
+  return (*this)*(1 / measure());
 }
 
 Quaternion
-Quaternion::rotation(float t, const Quaternion& A) {
+Quaternion::rotation(float theta, const Quaternion& A) {
   Quaternion Axis = A - *this;
   Axis.normalize();
-  Axis *= sin(t / 2);
-  Axis.w = cos(t / 2);
+  Axis *= sin(theta / 2);
+  Axis.w = cos(theta / 2);
   return Axis;
 }
 
 void
-Quaternion::matrixFromQuaternion(Matrix4x4& M) {
-  M[0][0] = 1.0f - (2.0f*y*y) - (2.0f*z*z);
-  M[0][1] = (2.0f*x*y) - (2.0f*z*w);
-  M[0][2] = (2.0f*x*z) + (2.0f*w*y);
-  M[1][0] = (2.0f*x*y) + (2.0f*z*w);
-  M[1][1] = 1.0f - (2.0f*x*x) - (2.0f*z*z);
-  M[1][2] = (2.0f*y*z) - (2.0f*x*w);
-  M[2][0] = (2.0f*x*z) - (2.0f*y*w);
-  M[2][1] = (2.0f*y*z) + (2.0f*x*w);
-  M[2][2] = 1.0f - (2*x*x) - (2.0f*y*y);
-  M[3][3] = 1.0f;
-  M[0][3] = M[1][3] = M[2][3] = M[3][0] = M[3][1] = M[3][2] = 0.0f;
+Quaternion::matrixFromQuaternion(Matrix4x4& Matrix) {
+  Matrix[0][0] = 1.0f - (2.0f*y*y) - (2.0f*z*z);
+  Matrix[0][1] = (2.0f*x*y) - (2.0f*z*w);
+  Matrix[0][2] = (2.0f*x*z) + (2.0f*w*y);
+  Matrix[1][0] = (2.0f*x*y) + (2.0f*z*w);
+  Matrix[1][1] = 1.0f - (2.0f*x*x) - (2.0f*z*z);
+  Matrix[1][2] = (2.0f*y*z) - (2.0f*x*w);
+  Matrix[2][0] = (2.0f*x*z) - (2.0f*y*w);
+  Matrix[2][1] = (2.0f*y*z) + (2.0f*x*w);
+  Matrix[2][2] = 1.0f - (2*x*x) - (2.0f*y*y);
+  Matrix[3][3] = 1.0f;
+  Matrix[0][3] = Matrix[1][3] = Matrix[2][3] = 0.0f;
+  Matrix[3][0] = Matrix[3][1] = Matrix[3][2] = 0.0f;
   return;
 }
 
@@ -98,9 +85,9 @@ Quaternion::operator-=(const Quaternion& Q) {
 Quaternion
 Quaternion::operator*(const Quaternion& Q) const {
   return Quaternion((w*Q.x) + (y*Q.z) - (z*Q.y) + (x*Q.w),
-  					(w*Q.y) + (z*Q.x) - (x*Q.z) + (y*Q.w),
-  					(w*Q.z) + (x*Q.y) - (y*Q.x) + (z*Q.w),
-  					(w*Q.w) - (x*Q.x) - (y*Q.y) - (z*Q.z));
+                    (w*Q.y) + (z*Q.x) - (x*Q.z) + (y*Q.w),
+                    (w*Q.z) + (x*Q.y) - (y*Q.x) + (z*Q.w),
+                    (w*Q.w) - (x*Q.x) - (y*Q.y) - (z*Q.z));
 }
 
 Quaternion

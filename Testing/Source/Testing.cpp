@@ -28,11 +28,9 @@ int main(int argc, char* argv[])
 
   driderSDK::Vector3D dirAB = pointB - pointA;
   driderSDK::Vector3D dirAC = pointC - pointA;
-
-  driderSDK::Vector3D result = dirAC * dirAB.normalize();
-
+  
   driderSDK::Plane plane({0, -1, 1}, 3);
-  plane = plane.normalize();
+  plane.normalize();
   auto distance = plane.distanceToPoint({1,3,4});
 
   return 0;

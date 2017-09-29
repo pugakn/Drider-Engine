@@ -33,54 +33,22 @@ class DR_API_EXPORT AABB
   AABB(float s, const Vector3D& C);
 
   /**
+  * Move constructor.
+  *
+  */
+  AABB(AABB&& A) = default;
+
+  /**
+  * Copy constructor.
+  *
+  */
+  AABB(const AABB& A);
+
+  /**
   * Default destructor
   *
   */
   ~AABB();
-
-  /**
-  * Get the size of the AABB
-  * 
-  * @return
-  *  Size of the AABB
-  */
-  FORCEINLINE float
-  getSize() {
-    return m_fSize;
-  }
-
-  /**
-  * Get the center of the AABB
-  *
-  * @return
-  *  Center of the AABB
-  */
-  FORCEINLINE Vector3D
-  getCenter() {
-    return m_center;
-  }
-
-  /**
-  * Adjust the size of the AABB
-  *
-  * @param s
-  *  Center of the AABB
-  */
-  FORCEINLINE void
-  setSize(float& s) {
-    m_fSize = s;
-  }
-
-  /**
-  * Adjust the center of the AABB
-  *
-  * @param C
-  *  Center of the AABB
-  */
-  FORCEINLINE void
-  setCenter(Vector3D& C) {
-    m_center = C;
-  }
 
   /**
   * Checks for an intersection with another AABB
@@ -115,7 +83,7 @@ class DR_API_EXPORT AABB
   * @return
   *  True if it intersects
   */
-  FORCEINLINE bool
+  bool
   intersect(Plane& plane);
 
   /**
@@ -127,7 +95,7 @@ class DR_API_EXPORT AABB
   * @return
   *  True if it intersects
   */
-  FORCEINLINE bool
+  bool
   intersect(Frustrum& frustrum);
 
   /**
@@ -139,7 +107,7 @@ class DR_API_EXPORT AABB
   * @return
   *  True if the ray intersects with the AABB
   */
-  FORCEINLINE bool
+  bool
   intersect(Ray& ray);
 
   /**
@@ -151,11 +119,9 @@ class DR_API_EXPORT AABB
   * @return
   *  True if the point is inside
   */
-  FORCEINLINE bool
+  bool
   intersect(Vector3D& point);
   
- protected:
- private:
   float m_fSize;
   Vector3D m_center;
 };
