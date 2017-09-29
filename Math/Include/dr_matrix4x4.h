@@ -83,7 +83,8 @@ class DR_API_EXPORT Matrix4x4
   * @return
   *   determinant.
   */
-  float determinant() const;
+  float
+  determinant() const;
 
   /**
   * Calculates the cofactor of the matrix
@@ -91,7 +92,8 @@ class DR_API_EXPORT Matrix4x4
   * @return
   *   cofactor of matrix.
   */
-  void cofactor();
+  void
+  cofactor();
 
   /**
   * Calculates the adjugate of the matrix
@@ -100,13 +102,15 @@ class DR_API_EXPORT Matrix4x4
   * @return
   *   adjugate.
   */
-  void adjugate();
+  void
+  adjugate();
 
   /**
   * Calculate inverse of matrix.
   * using det * adjugate
   */
-  void inverse();
+  void
+  inverse();
 
   /**
   * Transpose
@@ -117,14 +121,16 @@ class DR_API_EXPORT Matrix4x4
   * | C1 | C2 | C3 | C4 |  =  | A3 | B3 | C3 | D3 |
   * | D1 | D2 | D3 | C4 |     | A4 | B4 | C4 | D4 |
   */
-  void transpose();
+  void
+  transpose();
 
   /**
   * Identity
   *
   * Tranform matrix to identity
   */
-  void identity();
+  void
+  identity();
 
   //Uncommented
   Vector4D&

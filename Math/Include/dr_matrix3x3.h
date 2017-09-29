@@ -76,7 +76,8 @@ class DR_API_EXPORT Matrix3x3
   * @return
   *   determinant.
   */
-  float determinant() const;
+  float
+  determinant() const;
 
   /**
   * Calculates the cofactor of the matrix
@@ -84,7 +85,8 @@ class DR_API_EXPORT Matrix3x3
   * @return
   *   cofactor of matrix.
   */
-  Matrix3x3 cofactor() const;
+  void
+  cofactor();
 
   /**
   * Calculates the adjugate of the matrix
@@ -93,14 +95,15 @@ class DR_API_EXPORT Matrix3x3
   * @return
   *   adjugate.
   */
-  Matrix3x3 adjugate() const;
+  void
+  adjugate();
 
   /**
   * Calculate inverse of matrix.
   * using det * adjugate
   */
-  Matrix3x3
-  inverse() const;
+  void
+  inverse();
 
   /**
   * Transpose
@@ -110,15 +113,15 @@ class DR_API_EXPORT Matrix3x3
   * | B1 | B2 | B3 |  =  | A2 | B2 | C2 |
   * | C1 | C2 | C3 |     | A3 | B3 | C3 |
   */
-  Matrix3x3
-  transpose() const;
+  void
+  transpose();
 
   /**
   * Identity
   *
   * Tranform matrix to identity
   */
-  Matrix3x3
+  void
   identity();
 
    //Uncommented
