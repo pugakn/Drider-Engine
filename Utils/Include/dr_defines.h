@@ -1,4 +1,5 @@
 #pragma once
+#pragma warning(disable : 4201)
 
 #define DR_PLATFORM_WINDOWS	  1   //Windows Platform 
 #define DR_PLATFORM_LINUX	    2	  //Linux Platform

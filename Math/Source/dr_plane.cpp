@@ -58,9 +58,6 @@ bool Plane::intersects(const Vector3D & point)
   //Ax+By+Cz = D
   //Ax + By + Cz - D = 0 If this is true the point is in the plane
 
-  //Little presicion error 
-  float error = 0.0001f;
-
   float res = dot(point) - d;
 
   return Math::abs(res) < Math::EPSILON;  
@@ -69,6 +66,8 @@ bool Plane::intersects(const Vector3D & point)
 void Plane::normalize()
 {
   float invLength = 1.f / length();
+  Vector3D::operator*=(invLength);
+  d *= invLength;
 }
 
 Plane& Plane::operator=(const Plane & other)
