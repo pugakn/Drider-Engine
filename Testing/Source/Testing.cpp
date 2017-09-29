@@ -4,7 +4,7 @@
 #include <dr_vectorn.h>
 #include <dr_vector3d.h>
 #include <dr_plane.h>
-
+#include <dr_radian.h>
 bool recev( int& asin )
 {
   return false;
@@ -13,6 +13,11 @@ bool recev( int& asin )
 int main(int argc, char* argv[])
 {
   driderSDK::Matrix4x4 lu(1,4,-1,0,2,3,5,-2,0,3,1,6,3,0,2,1);
+
+  driderSDK::Radian dckRad(5);
+  dckRad = dckRad + 3;
+  dckRad = -dckRad;
+
 
   float po = lu.determinant();
   lu.cofactor();

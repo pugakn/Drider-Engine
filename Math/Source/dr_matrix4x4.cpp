@@ -170,7 +170,8 @@ Matrix4x4::adjugate() {
 void
 Matrix4x4::inverse() {
   float deter = determinant();
-  adjugate();
+  cofactor();
+  transpose();
   *this * (1 / deter);
 }
 

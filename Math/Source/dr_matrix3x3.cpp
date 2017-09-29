@@ -64,8 +64,8 @@ Matrix3x3::determinant() const {
           vector2.z * vector1.x * vector0.y);
 }
 
-Matrix3x3
-Matrix3x3::cofactor() const {
+void
+Matrix3x3::cofactor() {
   Matrix3x3 temp;
   
   temp.vector0.x = vector1.y * vector2.z - vector2.y * vector1.z;
@@ -80,21 +80,25 @@ Matrix3x3::cofactor() const {
   temp.vector2.y = vector1.x * vector0.z - vector0.x * vector1.z;
   temp.vector2.z = vector0.x * vector1.y - vector1.x * vector0.y;
 
-  return temp;
+  *this = temp;
 }
 
-Matrix3x3
-Matrix3x3::adjugate() const {
-  return cofactor().transpose();
+void
+Matrix3x3::adjugate() {
+  cofactor();
+  transpose();
 }
 
-Matrix3x3 
-Matrix3x3::inverse() const {
-  return adjugate() * (1 / determinant());
+void 
+Matrix3x3::inverse() {
+  float deter = determinant();
+  cofactor();
+  transpose();
+  *this * (1 / deter);
 }
 
-Matrix3x3
-Matrix3x3::transpose() const {
+void
+Matrix3x3::transpose() {
   Matrix3x3 temp;
   temp.vector0.x = vector0.x;
   temp.vector1.x = vector0.y;
@@ -108,10 +112,10 @@ Matrix3x3::transpose() const {
   temp.vector1.z = vector2.y;
   temp.vector2.z = vector2.z;
 
-  return temp;
+  *this = temp;
 }
 
-Matrix3x3
+void
 Matrix3x3::identity() {
   vector0.x = 1;
   vector0.y = 0;
@@ -124,8 +128,6 @@ Matrix3x3::identity() {
   vector2.x = 0;
   vector2.y = 0;
   vector2.z = 1;
-  
-  return *this;
 }
 
 Vector3D&
