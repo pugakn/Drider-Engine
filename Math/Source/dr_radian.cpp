@@ -44,24 +44,28 @@ Radian&
 Radian::operator+=(float V)
 {
   m_value += V;
+  return *this;
 }
 
 Radian&
 Radian::operator-=(float V)
 {
   m_value -= V;
+  return *this;
 }
 
 Radian&
 Radian::operator*=(float V)
 {
   m_value *= V;
+  return *this;
 }
 
 Radian&
 Radian::operator/=(float V)
 {
   m_value /= V;
+  return *this;
 }
 
 }
