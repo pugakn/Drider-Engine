@@ -134,6 +134,21 @@ class DR_API_EXPORT Vector3D
   distanceSqr(const Vector3D& otherVector) const;
 
   /**
+  * Computes the squared distance between a point and a segment.
+  *
+  * @param pointA
+  *   Point a of the segment.
+  *
+  * @param pointB
+  *   Point b of the segment.
+  *
+  * @return
+  *   Distance
+  */
+  float
+  sqrDistSegment(const Vector3D& pointA, const Vector3D& pointB) const;
+
+  /**
   * Gets a reference to the specified element from the vector.
   *
   *	@param index

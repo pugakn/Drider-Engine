@@ -7,32 +7,48 @@ namespace driderSDK {
 /**********************************************************************
 *						            Intersection functions
 **********************************************************************/
-//Uncommented
-bool
-spherePointIntersect(const Vector3D& point,
-                     const Vector3D& sphPosition,
-                     float radio)
-{
-  return static_cast<bool>(point.distance(sphPosition) < radio);
-}
-//Uncommented
+
 bool
 sphereSphereIntersect(const Vector3D& sph1Position,
-                      float sph1Radio,
+                      float sph1Radius,
                       const Vector3D& sph2Position,
-                      float sph2Radio)
+                      float sph2Radius)
 {
   return static_cast<bool>(sph1Position.distance(sph2Position) <
-         (sph1Radio + sph2Radio));
+         (sph1Radius + sph2Radius));
 }
-//Uncommented
+
+bool
+sphereCapsuleIntersect(const Vector3D& sphPosition,
+                       float sphRadio,
+                       const Vector3D& capsuleA,
+                       const Vector3D& capsuleB,
+                       float capsuleRadius)
+{
+  float dist = sphPosition.sqrDistSegment(capsuleA, capsuleB);
+
+  float radius = sphRadio + capsuleRadius;
+  return dist <= radius * radius;
+}
+
+bool
+capsuleCapsuleIntersect(const Vector3D& capsule1A,
+                        const Vector3D& capsule1B,
+                        const Vector3D& capsule1Radius,
+                        const Vector3D& capsule2A,
+                        const Vector3D& capsule2B,
+                        const Vector3D& capsule2Radius)
+{
+  // I need ClosestPtSegmentSegment, but i don't know where i put it.
+  return false;
+}
 bool
 sphereRayIntersect(const Vector3D& sphPosition,
                    float sphRadio,
                    const Vector3D& rayOrigin,
                    const Vector3D& rayDirection)
 {
-  if (spherePointIntersect(rayOrigin, sphPosition, sphRadio)) {
+  if (sphereContainsPoint(rayOrigin, sphPosition, sphRadio)) {
     return true;
   }
   Vector3D vec(rayOrigin - sphPosition);
@@ -45,7 +61,7 @@ sphereRayIntersect(const Vector3D& sphPosition,
 
   Vector3D vecClosestPoint(rayOrigin + (rayDirection * pDirection));
 
-  return spherePointIntersect(vecClosestPoint, sphPosition, sphRadio);
+  return sphereContainsPoint(vecClosestPoint, sphPosition, sphRadio);
 }
 
 
@@ -196,6 +212,14 @@ aabbPointIntersect(const Vector3D& aabbCenter,
 /**********************************************************************
 *						            Containing functions
 **********************************************************************/
+bool
+sphereContainsPoint(const Vector3D& point,
+                    const Vector3D& sphPosition,
+                    float radius)
+{
+  return static_cast<bool>(point.distance(sphPosition) < radius);
+}
+
 bool
 frustrumContainsPlane(const std::array<Plane, 6>& frustrumPlanes,
                       const Vector3D& planeNormal,

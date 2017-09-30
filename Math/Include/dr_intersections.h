@@ -10,17 +10,91 @@ class Plane;
 /**********************************************************************
 *						            Intersection functions
 **********************************************************************/
-//Uncommented
-bool
-spherePointIntersect(const Vector3D& point,
-                     const Vector3D& sphPosition, 
-                     float radio);
-//Uncommented
+
+/**
+* Check if one sphere intersects with another.
+*
+* @param sph1Position
+*   Center of the first sphere.
+*
+* @param sph1Radio
+*   Radius of the first sphere.
+*
+* @param sph2Position
+*   Center of the second sphere.
+*
+* @param sph2Radius
+*   Radius of the second sphere.
+*
+* @return
+*   True if the point is inside, otherwise returns false.
+*/
 bool 
 sphereSphereIntersect(const Vector3D& sph1Position,
-                      float sph1Radio,
+                      float sph1Radius,
                       const Vector3D& sph2Position,
-                      float sph2Radio);
+                      float sph2Radius);
+
+/**
+* Check if there was an intersection between a sphere and a capsule.
+*
+* @param sphPosition
+*   Center of the sphere.
+*
+* @param sphRadio
+*   Radius of the sphere.
+*
+* @param capsuleA
+*   Point A of the capsule.
+*
+* @param capsuleB
+*   Point B of the capsule.
+*
+* @param capsuleRadius
+*   Radius of the capsule.
+*
+* @return
+*   True if there is intersection, if not False
+*/
+bool
+sphereCapsuleIntersect(const Vector3D& sphPosition,
+                       float sphRadio,
+                       const Vector3D& capsuleA,
+                       const Vector3D& capsuleB,
+                       float capsuleRadius);
+
+/**
+* Check if there was an intersection between a sphere and a capsule.
+*
+* @param capsule1A
+*   Point A of capsule 1.
+*
+* @param capsule1B
+*   Point B of capsule 1.
+*
+* @param capsule1Radius
+*   Radius of capsuele 1.
+*
+* @param capsule2A
+*   Point A of capsule 2.
+*
+* @param capsule2B
+*   Point B of capsule 2.
+*
+* @param capsule2Radius
+*   Radius of capsuele 2.
+*
+* @return
+*   True if there is intersection, if not False
+*/
+bool
+capsuleCapsuleIntersect(const Vector3D& capsule1A,
+                        const Vector3D& capsule1B,
+                        const Vector3D& capsule1Radius,
+                        const Vector3D& capsule2A,
+                        const Vector3D& capsule2B,
+                        const Vector3D& capsule2Radius);
+
 //Uncommented
 bool 
 sphereRayIntersect(const Vector3D& sphPosition,
@@ -123,6 +197,26 @@ aabbPointIntersect(const Vector3D& aabbCenter,
 /**********************************************************************
 *						            Containing functions
 **********************************************************************/
+
+/**
+* Check if a point is inside a sphere.
+*
+* @param point
+*   Point to test.
+*
+* @param sphPosition
+*   Center of the sphere.
+*
+* @param radius
+*   Radius of the sphere.
+*
+* @return
+*   True if the point is inside, otherwise returns false.
+*/
+bool
+sphereContainsPoint(const Vector3D& point,
+                     const Vector3D& sphPosition,
+                     float radius);
 
 //Uncommented
 bool

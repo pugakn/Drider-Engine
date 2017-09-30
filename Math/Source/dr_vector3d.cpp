@@ -59,6 +59,26 @@ Vector3D::distanceSqr(const Vector3D& otherVector) const {
   return (otherVector - *this).lengthSqr();
 }
 
+float
+Vector3D::sqrDistSegment(const Vector3D& pointA, const Vector3D& pointB) const {
+  Vector3D AB = pointB - pointA;
+  Vector3D AC = *this - pointA;
+  Vector3D BC = *this - pointB;
+  float e = AC.dot(AB);
+
+  if (e <= 0.0f) {
+   return AC.dot(AC);
+  }
+
+  float f = AB.dot(AB);
+  
+  if(e >= f) {
+   return BC.dot(BC);
+  }
+  
+  return AC.dot(AC) - (e * e / f);
+}
+
 float&
 Vector3D::operator[](SizeT index) {
   assert(index >= 0 && index < 3);
