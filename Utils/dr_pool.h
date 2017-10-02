@@ -3,8 +3,7 @@
 #include <vector>
 #include <memory>
 
-namespace driderSDK 
-{
+namespace driderSDK {
 template<class T, UInt32 poolSize>
 class Pool
 {
