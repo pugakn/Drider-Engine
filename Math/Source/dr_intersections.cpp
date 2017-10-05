@@ -225,7 +225,8 @@ aabbRayIntersect(const Vector3D& aabbCenter,
 	Vector3D aabbMin(aabbCenter.x - (aabbWidth / 2),
 									 aabbCenter.y - (aabbHeight / 2),
 									 aabbCenter.z - (aabbWidth / 2));
-	float tmin = 0.0f, tmax = 0.0f, t1 = 0.0f, t2 = 0.0f, i;
+	float tmin = 0.0f, tmax = 0.0f, t1 = 0.0f, t2 = 0.0f;
+	int i = 0;
 	t1 = (aabbMin.x - rayOrigin.x) * invertedDirection.x;
 	t2 = (aabbMax.x - rayOrigin.x) * invertedDirection.x;
 	tmin = std::min(t1, t2);
