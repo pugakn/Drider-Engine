@@ -1,0 +1,247 @@
+\hypertarget{classdrider_s_d_k_1_1_frustrum}{}\section{drider\+S\+DK\+:\+:Frustrum Class Reference}
+\label{classdrider_s_d_k_1_1_frustrum}\index{drider\+S\+D\+K\+::\+Frustrum@{drider\+S\+D\+K\+::\+Frustrum}}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_frustrum_afb452e1845d8d057840dec11ad282f0a}\label{classdrider_s_d_k_1_1_frustrum_afb452e1845d8d057840dec11ad282f0a}} 
+enum {\bfseries P\+L\+A\+N\+ES} \{ \newline
+{\bfseries k\+Left}, 
+{\bfseries k\+Right}, 
+{\bfseries k\+Top}, 
+{\bfseries k\+Bottom}, 
+\newline
+{\bfseries k\+Near}, 
+{\bfseries k\+Far}
+ \}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classdrider_s_d_k_1_1_frustrum_a4a79e8234bbf25c8cf850f01a6485a1a}{Frustrum} (const \hyperlink{classdrider_s_d_k_1_1_matrix4x4}{Matrix4x4} \&View\+Projection)
+\item 
+void \hyperlink{classdrider_s_d_k_1_1_frustrum_a852e86146dc8621a99c5581e03d587de}{create\+From\+VP} (const \hyperlink{classdrider_s_d_k_1_1_matrix4x4}{Matrix4x4} \&View\+Projection)
+\item 
+bool \hyperlink{classdrider_s_d_k_1_1_frustrum_ad81116f896faad5acada10c16c3e7518}{intersects} (const \hyperlink{classdrider_s_d_k_1_1_ray}{Ray} \&b\+Ray) const
+\item 
+bool \hyperlink{classdrider_s_d_k_1_1_frustrum_ae816e17c5b6d6829a92e73d79305b224}{intersects} (const \hyperlink{classdrider_s_d_k_1_1_plane}{Plane} \&plane) const
+\item 
+bool \hyperlink{classdrider_s_d_k_1_1_frustrum_ab55226117775a0a5a9dd7f6a43faf2c0}{intersects} (const \hyperlink{classdrider_s_d_k_1_1_sphere}{Sphere} \&sphere) const
+\item 
+bool \hyperlink{classdrider_s_d_k_1_1_frustrum_a3780470da8c8263dec38ecaa267a46e8}{intersects} (const \hyperlink{classdrider_s_d_k_1_1_capsule}{Capsule} \&capsule) const
+\item 
+bool \hyperlink{classdrider_s_d_k_1_1_frustrum_ae7d0c8ccb2301939f6b41c09d26b8304}{intersects} (const \hyperlink{classdrider_s_d_k_1_1_frustrum}{Frustrum} \&frustrum) const
+\item 
+bool \hyperlink{classdrider_s_d_k_1_1_frustrum_a9ea85ba52dce08ebf3d18a5241d2d387}{contains} (const \hyperlink{classdrider_s_d_k_1_1_vector3_d}{Vector3D} \&point) const
+\item 
+bool \hyperlink{classdrider_s_d_k_1_1_frustrum_a274ab52ab613e407bbfbba7d33801287}{contains} (const \hyperlink{classdrider_s_d_k_1_1_plane}{Plane} \&plane) const
+\item 
+bool \hyperlink{classdrider_s_d_k_1_1_frustrum_a5f13fa643c3a24c64f9419d7de45cffe}{contains} (const \hyperlink{classdrider_s_d_k_1_1_sphere}{Sphere} \&sphere) const
+\item 
+bool \hyperlink{classdrider_s_d_k_1_1_frustrum_adea6a6bbf8c644411daa82fd3828bae5}{contains} (const \hyperlink{classdrider_s_d_k_1_1_capsule}{Capsule} \&capsule) const
+\item 
+bool \hyperlink{classdrider_s_d_k_1_1_frustrum_aa0d6748145ce571b0bffdee5d799c091}{contains} (const \hyperlink{classdrider_s_d_k_1_1_frustrum}{Frustrum} \&frustrum) const
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_frustrum_a91edbb60fc8a536d9f62ac4b340a262c}\label{classdrider_s_d_k_1_1_frustrum_a91edbb60fc8a536d9f62ac4b340a262c}} 
+std\+::array$<$ \hyperlink{classdrider_s_d_k_1_1_plane}{Plane}, 6 $>$ {\bfseries planes}
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_frustrum_a4a79e8234bbf25c8cf850f01a6485a1a}\label{classdrider_s_d_k_1_1_frustrum_a4a79e8234bbf25c8cf850f01a6485a1a}} 
+\index{drider\+S\+D\+K\+::\+Frustrum@{drider\+S\+D\+K\+::\+Frustrum}!Frustrum@{Frustrum}}
+\index{Frustrum@{Frustrum}!drider\+S\+D\+K\+::\+Frustrum@{drider\+S\+D\+K\+::\+Frustrum}}
+\subsubsection{\texorpdfstring{Frustrum()}{Frustrum()}}
+{\footnotesize\ttfamily drider\+S\+D\+K\+::\+Frustrum\+::\+Frustrum (\begin{DoxyParamCaption}\item[{const \hyperlink{classdrider_s_d_k_1_1_matrix4x4}{Matrix4x4} \&}]{View\+Projection }\end{DoxyParamCaption})}
+
+Constructor using a View Projection matrix
+
+
+\begin{DoxyParams}{Parameters}
+{\em VP} & The View Projection matrix. \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_frustrum_a9ea85ba52dce08ebf3d18a5241d2d387}\label{classdrider_s_d_k_1_1_frustrum_a9ea85ba52dce08ebf3d18a5241d2d387}} 
+\index{drider\+S\+D\+K\+::\+Frustrum@{drider\+S\+D\+K\+::\+Frustrum}!contains@{contains}}
+\index{contains@{contains}!drider\+S\+D\+K\+::\+Frustrum@{drider\+S\+D\+K\+::\+Frustrum}}
+\subsubsection{\texorpdfstring{contains()}{contains()}\hspace{0.1cm}{\footnotesize\ttfamily [1/5]}}
+{\footnotesize\ttfamily bool drider\+S\+D\+K\+::\+Frustrum\+::contains (\begin{DoxyParamCaption}\item[{const \hyperlink{classdrider_s_d_k_1_1_vector3_d}{Vector3D} \&}]{point }\end{DoxyParamCaption}) const}
+
+Check if the frustrum intersects contains a point
+
+
+\begin{DoxyParams}{Parameters}
+{\em point} & The point to check.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if the frustrum contains the point 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_frustrum_a274ab52ab613e407bbfbba7d33801287}\label{classdrider_s_d_k_1_1_frustrum_a274ab52ab613e407bbfbba7d33801287}} 
+\index{drider\+S\+D\+K\+::\+Frustrum@{drider\+S\+D\+K\+::\+Frustrum}!contains@{contains}}
+\index{contains@{contains}!drider\+S\+D\+K\+::\+Frustrum@{drider\+S\+D\+K\+::\+Frustrum}}
+\subsubsection{\texorpdfstring{contains()}{contains()}\hspace{0.1cm}{\footnotesize\ttfamily [2/5]}}
+{\footnotesize\ttfamily bool drider\+S\+D\+K\+::\+Frustrum\+::contains (\begin{DoxyParamCaption}\item[{const \hyperlink{classdrider_s_d_k_1_1_plane}{Plane} \&}]{plane }\end{DoxyParamCaption}) const}
+
+Check if the frustrum intersects contains a plane
+
+
+\begin{DoxyParams}{Parameters}
+{\em plane} & The plane to check.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if the frustrum contains the plane 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_frustrum_a5f13fa643c3a24c64f9419d7de45cffe}\label{classdrider_s_d_k_1_1_frustrum_a5f13fa643c3a24c64f9419d7de45cffe}} 
+\index{drider\+S\+D\+K\+::\+Frustrum@{drider\+S\+D\+K\+::\+Frustrum}!contains@{contains}}
+\index{contains@{contains}!drider\+S\+D\+K\+::\+Frustrum@{drider\+S\+D\+K\+::\+Frustrum}}
+\subsubsection{\texorpdfstring{contains()}{contains()}\hspace{0.1cm}{\footnotesize\ttfamily [3/5]}}
+{\footnotesize\ttfamily bool drider\+S\+D\+K\+::\+Frustrum\+::contains (\begin{DoxyParamCaption}\item[{const \hyperlink{classdrider_s_d_k_1_1_sphere}{Sphere} \&}]{sphere }\end{DoxyParamCaption}) const}
+
+Check if the frustrum intersects contains a sphere
+
+
+\begin{DoxyParams}{Parameters}
+{\em sphere} & The sphere to check.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if the frustrum contains the sphere 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_frustrum_adea6a6bbf8c644411daa82fd3828bae5}\label{classdrider_s_d_k_1_1_frustrum_adea6a6bbf8c644411daa82fd3828bae5}} 
+\index{drider\+S\+D\+K\+::\+Frustrum@{drider\+S\+D\+K\+::\+Frustrum}!contains@{contains}}
+\index{contains@{contains}!drider\+S\+D\+K\+::\+Frustrum@{drider\+S\+D\+K\+::\+Frustrum}}
+\subsubsection{\texorpdfstring{contains()}{contains()}\hspace{0.1cm}{\footnotesize\ttfamily [4/5]}}
+{\footnotesize\ttfamily bool drider\+S\+D\+K\+::\+Frustrum\+::contains (\begin{DoxyParamCaption}\item[{const \hyperlink{classdrider_s_d_k_1_1_capsule}{Capsule} \&}]{capsule }\end{DoxyParamCaption}) const}
+
+Check if the frustrum intersects contains a capsule
+
+
+\begin{DoxyParams}{Parameters}
+{\em capsule} & The capsule to check.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if the frustrum contains the capsule 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_frustrum_aa0d6748145ce571b0bffdee5d799c091}\label{classdrider_s_d_k_1_1_frustrum_aa0d6748145ce571b0bffdee5d799c091}} 
+\index{drider\+S\+D\+K\+::\+Frustrum@{drider\+S\+D\+K\+::\+Frustrum}!contains@{contains}}
+\index{contains@{contains}!drider\+S\+D\+K\+::\+Frustrum@{drider\+S\+D\+K\+::\+Frustrum}}
+\subsubsection{\texorpdfstring{contains()}{contains()}\hspace{0.1cm}{\footnotesize\ttfamily [5/5]}}
+{\footnotesize\ttfamily bool drider\+S\+D\+K\+::\+Frustrum\+::contains (\begin{DoxyParamCaption}\item[{const \hyperlink{classdrider_s_d_k_1_1_frustrum}{Frustrum} \&}]{frustrum }\end{DoxyParamCaption}) const}
+
+Check if the frustrum intersects contains a frustrum
+
+
+\begin{DoxyParams}{Parameters}
+{\em frustrum} & The frustrum to check.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if the frustrum contains the frustrum 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_frustrum_a852e86146dc8621a99c5581e03d587de}\label{classdrider_s_d_k_1_1_frustrum_a852e86146dc8621a99c5581e03d587de}} 
+\index{drider\+S\+D\+K\+::\+Frustrum@{drider\+S\+D\+K\+::\+Frustrum}!create\+From\+VP@{create\+From\+VP}}
+\index{create\+From\+VP@{create\+From\+VP}!drider\+S\+D\+K\+::\+Frustrum@{drider\+S\+D\+K\+::\+Frustrum}}
+\subsubsection{\texorpdfstring{create\+From\+V\+P()}{createFromVP()}}
+{\footnotesize\ttfamily void drider\+S\+D\+K\+::\+Frustrum\+::create\+From\+VP (\begin{DoxyParamCaption}\item[{const \hyperlink{classdrider_s_d_k_1_1_matrix4x4}{Matrix4x4} \&}]{View\+Projection }\end{DoxyParamCaption})}
+
+Create the frustrum planes with the View Projection matrix
+
+
+\begin{DoxyParams}{Parameters}
+{\em VP} & The View Projection matrix. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_frustrum_ad81116f896faad5acada10c16c3e7518}\label{classdrider_s_d_k_1_1_frustrum_ad81116f896faad5acada10c16c3e7518}} 
+\index{drider\+S\+D\+K\+::\+Frustrum@{drider\+S\+D\+K\+::\+Frustrum}!intersects@{intersects}}
+\index{intersects@{intersects}!drider\+S\+D\+K\+::\+Frustrum@{drider\+S\+D\+K\+::\+Frustrum}}
+\subsubsection{\texorpdfstring{intersects()}{intersects()}\hspace{0.1cm}{\footnotesize\ttfamily [1/5]}}
+{\footnotesize\ttfamily bool drider\+S\+D\+K\+::\+Frustrum\+::intersects (\begin{DoxyParamCaption}\item[{const \hyperlink{classdrider_s_d_k_1_1_ray}{Ray} \&}]{b\+Ray }\end{DoxyParamCaption}) const}
+
+Check if the frustrum intersects other ray
+
+
+\begin{DoxyParams}{Parameters}
+{\em b\+Ray} & The ray to check the intersecton.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if the frustrum intersects with the other ray 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_frustrum_ae816e17c5b6d6829a92e73d79305b224}\label{classdrider_s_d_k_1_1_frustrum_ae816e17c5b6d6829a92e73d79305b224}} 
+\index{drider\+S\+D\+K\+::\+Frustrum@{drider\+S\+D\+K\+::\+Frustrum}!intersects@{intersects}}
+\index{intersects@{intersects}!drider\+S\+D\+K\+::\+Frustrum@{drider\+S\+D\+K\+::\+Frustrum}}
+\subsubsection{\texorpdfstring{intersects()}{intersects()}\hspace{0.1cm}{\footnotesize\ttfamily [2/5]}}
+{\footnotesize\ttfamily bool drider\+S\+D\+K\+::\+Frustrum\+::intersects (\begin{DoxyParamCaption}\item[{const \hyperlink{classdrider_s_d_k_1_1_plane}{Plane} \&}]{plane }\end{DoxyParamCaption}) const}
+
+Check if the frustrum intersects with a plane
+
+
+\begin{DoxyParams}{Parameters}
+{\em plane} & The plane to check the intersecton.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if the frustrum intersects with the plane 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_frustrum_ab55226117775a0a5a9dd7f6a43faf2c0}\label{classdrider_s_d_k_1_1_frustrum_ab55226117775a0a5a9dd7f6a43faf2c0}} 
+\index{drider\+S\+D\+K\+::\+Frustrum@{drider\+S\+D\+K\+::\+Frustrum}!intersects@{intersects}}
+\index{intersects@{intersects}!drider\+S\+D\+K\+::\+Frustrum@{drider\+S\+D\+K\+::\+Frustrum}}
+\subsubsection{\texorpdfstring{intersects()}{intersects()}\hspace{0.1cm}{\footnotesize\ttfamily [3/5]}}
+{\footnotesize\ttfamily bool drider\+S\+D\+K\+::\+Frustrum\+::intersects (\begin{DoxyParamCaption}\item[{const \hyperlink{classdrider_s_d_k_1_1_sphere}{Sphere} \&}]{sphere }\end{DoxyParamCaption}) const}
+
+Check if the frustrum intersects with a sphere
+
+
+\begin{DoxyParams}{Parameters}
+{\em sphere} & The sphere to check the intersecton.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if the frustrum intersects with the sphere 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_frustrum_a3780470da8c8263dec38ecaa267a46e8}\label{classdrider_s_d_k_1_1_frustrum_a3780470da8c8263dec38ecaa267a46e8}} 
+\index{drider\+S\+D\+K\+::\+Frustrum@{drider\+S\+D\+K\+::\+Frustrum}!intersects@{intersects}}
+\index{intersects@{intersects}!drider\+S\+D\+K\+::\+Frustrum@{drider\+S\+D\+K\+::\+Frustrum}}
+\subsubsection{\texorpdfstring{intersects()}{intersects()}\hspace{0.1cm}{\footnotesize\ttfamily [4/5]}}
+{\footnotesize\ttfamily bool drider\+S\+D\+K\+::\+Frustrum\+::intersects (\begin{DoxyParamCaption}\item[{const \hyperlink{classdrider_s_d_k_1_1_capsule}{Capsule} \&}]{capsule }\end{DoxyParamCaption}) const}
+
+Check if the frustrum intersects with a capsule
+
+
+\begin{DoxyParams}{Parameters}
+{\em capsule} & The capsule to check the intersecton.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if the frustrum intersects with the capsule 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_frustrum_ae7d0c8ccb2301939f6b41c09d26b8304}\label{classdrider_s_d_k_1_1_frustrum_ae7d0c8ccb2301939f6b41c09d26b8304}} 
+\index{drider\+S\+D\+K\+::\+Frustrum@{drider\+S\+D\+K\+::\+Frustrum}!intersects@{intersects}}
+\index{intersects@{intersects}!drider\+S\+D\+K\+::\+Frustrum@{drider\+S\+D\+K\+::\+Frustrum}}
+\subsubsection{\texorpdfstring{intersects()}{intersects()}\hspace{0.1cm}{\footnotesize\ttfamily [5/5]}}
+{\footnotesize\ttfamily bool drider\+S\+D\+K\+::\+Frustrum\+::intersects (\begin{DoxyParamCaption}\item[{const \hyperlink{classdrider_s_d_k_1_1_frustrum}{Frustrum} \&}]{frustrum }\end{DoxyParamCaption}) const}
+
+Check if the frustrum intersects with a frustrum
+
+
+\begin{DoxyParams}{Parameters}
+{\em frustrum} & The frustrum to check the intersecton.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if the frustrum intersects with the frustrum 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/\+Francisco/source/repos/\+Drider-\/\+Engine/\+Math/\+Include/dr\+\_\+frustrum.\+h\item 
+C\+:/\+Users/\+Francisco/source/repos/\+Drider-\/\+Engine/\+Math/\+Source/dr\+\_\+frustrum.\+cpp\end{DoxyCompactItemize}

@@ -1,0 +1,55 @@
+\hypertarget{classtesting_1_1_assertion_result}{}\section{testing\+:\+:Assertion\+Result Class Reference}
+\label{classtesting_1_1_assertion_result}\index{testing\+::\+Assertion\+Result@{testing\+::\+Assertion\+Result}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classtesting_1_1_assertion_result_a27788116f03f90aec4daf592fd809ead}\label{classtesting_1_1_assertion_result_a27788116f03f90aec4daf592fd809ead}} 
+{\bfseries Assertion\+Result} (const \hyperlink{classtesting_1_1_assertion_result}{Assertion\+Result} \&other)
+\item 
+\mbox{\Hypertarget{classtesting_1_1_assertion_result_a9b8d1d6d0a979d0769ed4ff97d06c4e3}\label{classtesting_1_1_assertion_result_a9b8d1d6d0a979d0769ed4ff97d06c4e3}} 
+{\footnotesize template$<$typename T $>$ }\\{\bfseries Assertion\+Result} (const T \&success, typename \hyperlink{structtesting_1_1internal_1_1_enable_if}{internal\+::\+Enable\+If}$<$ !\hyperlink{classtesting_1_1internal_1_1_implicitly_convertible}{internal\+::\+Implicitly\+Convertible}$<$ T, \hyperlink{classtesting_1_1_assertion_result}{Assertion\+Result} $>$\+::value $>$\+::type $\ast$=N\+U\+LL)
+\item 
+\mbox{\Hypertarget{classtesting_1_1_assertion_result_aad9274c7b69eda67eb9306963a790839}\label{classtesting_1_1_assertion_result_aad9274c7b69eda67eb9306963a790839}} 
+\hyperlink{classtesting_1_1_assertion_result}{Assertion\+Result} \& {\bfseries operator=} (\hyperlink{classtesting_1_1_assertion_result}{Assertion\+Result} other)
+\item 
+\mbox{\Hypertarget{classtesting_1_1_assertion_result_ab3f34b1623c82762ef4a8f52b535159c}\label{classtesting_1_1_assertion_result_ab3f34b1623c82762ef4a8f52b535159c}} 
+{\bfseries operator bool} () const
+\item 
+\mbox{\Hypertarget{classtesting_1_1_assertion_result_a5b0784686a756660ac8dfe528d89386b}\label{classtesting_1_1_assertion_result_a5b0784686a756660ac8dfe528d89386b}} 
+\hyperlink{classtesting_1_1_assertion_result}{Assertion\+Result} {\bfseries operator!} () const
+\item 
+\mbox{\Hypertarget{classtesting_1_1_assertion_result_a33c14dafd28e3393c841e03f4b70a017}\label{classtesting_1_1_assertion_result_a33c14dafd28e3393c841e03f4b70a017}} 
+const char $\ast$ {\bfseries message} () const
+\item 
+\mbox{\Hypertarget{classtesting_1_1_assertion_result_aa38908d5a48c912434a80c8725f52583}\label{classtesting_1_1_assertion_result_aa38908d5a48c912434a80c8725f52583}} 
+const char $\ast$ {\bfseries failure\+\_\+message} () const
+\item 
+\mbox{\Hypertarget{classtesting_1_1_assertion_result_a3230efa81aafe7c61f5fb878cfa39e91}\label{classtesting_1_1_assertion_result_a3230efa81aafe7c61f5fb878cfa39e91}} 
+{\footnotesize template$<$typename T $>$ }\\\hyperlink{classtesting_1_1_assertion_result}{Assertion\+Result} \& {\bfseries operator$<$$<$} (const T \&value)
+\item 
+\mbox{\Hypertarget{classtesting_1_1_assertion_result_a43ae8a260843ce2ff3dc9af262672b8b}\label{classtesting_1_1_assertion_result_a43ae8a260843ce2ff3dc9af262672b8b}} 
+\hyperlink{classtesting_1_1_assertion_result}{Assertion\+Result} \& {\bfseries operator$<$$<$} (\+::std\+::ostream \&($\ast$basic\+\_\+manipulator)(\+::std\+::ostream \&stream))
+\end{DoxyCompactItemize}
+\subsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classtesting_1_1_assertion_result_a5b55e01f1321d744a594dbe51d46a139}\label{classtesting_1_1_assertion_result_a5b55e01f1321d744a594dbe51d46a139}} 
+void {\bfseries Append\+Message} (const \hyperlink{classtesting_1_1_message}{Message} \&a\+\_\+message)
+\item 
+\mbox{\Hypertarget{classtesting_1_1_assertion_result_ab5b92c1be40f9ce9d7c3e0cf7bf65c61}\label{classtesting_1_1_assertion_result_ab5b92c1be40f9ce9d7c3e0cf7bf65c61}} 
+void {\bfseries swap} (\hyperlink{classtesting_1_1_assertion_result}{Assertion\+Result} \&other)
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classtesting_1_1_assertion_result_ae7348f9fffe7a20980dfc94fc261d7ca}\label{classtesting_1_1_assertion_result_ae7348f9fffe7a20980dfc94fc261d7ca}} 
+bool {\bfseries success\+\_\+}
+\item 
+\mbox{\Hypertarget{classtesting_1_1_assertion_result_a5dee995939457def35f0bf496d070957}\label{classtesting_1_1_assertion_result_a5dee995939457def35f0bf496d070957}} 
+\hyperlink{classtesting_1_1internal_1_1scoped__ptr}{internal\+::scoped\+\_\+ptr}$<$ \+::std\+::string $>$ {\bfseries message\+\_\+}
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/\+Francisco/source/repos/\+Drider-\/\+Engine/packages/\+Microsoft.\+googletest.\+v140.\+windesktop.\+msvcstl.\+dyn.\+rt-\/dyn.\+1.\+8.\+0/build/native/include/gtest/gtest.\+h\end{DoxyCompactItemize}

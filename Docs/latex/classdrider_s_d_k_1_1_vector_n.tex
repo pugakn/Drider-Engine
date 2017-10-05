@@ -1,0 +1,312 @@
+\hypertarget{classdrider_s_d_k_1_1_vector_n}{}\section{drider\+S\+DK\+:\+:VectorN$<$ \+\_\+elements $>$ Class Template Reference}
+\label{classdrider_s_d_k_1_1_vector_n}\index{drider\+S\+D\+K\+::\+Vector\+N$<$ \+\_\+elements $>$@{drider\+S\+D\+K\+::\+Vector\+N$<$ \+\_\+elements $>$}}
+
+
+{\ttfamily \#include $<$dr\+\_\+vectorn.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classdrider_s_d_k_1_1_vector_n_a791435c4907a5ed662d12737f446dc3e}{VectorN} ()
+\item 
+\hyperlink{classdrider_s_d_k_1_1_vector_n_ada33981d7f60f3b1d8a1cfdee2276d77}{VectorN} (float \+\_\+scalar)
+\item 
+F\+O\+R\+C\+E\+I\+N\+L\+I\+NE SizeT \hyperlink{classdrider_s_d_k_1_1_vector_n_a2aa5dfff2cdcc4ae187905b2fbddfa57}{elements} () const
+\item 
+F\+O\+R\+C\+E\+I\+N\+L\+I\+NE float \& \hyperlink{classdrider_s_d_k_1_1_vector_n_a8f090f0b90344080de98745f8f2bc6fb}{operator\mbox{[}$\,$\mbox{]}} (SizeT index)
+\item 
+F\+O\+R\+C\+E\+I\+N\+L\+I\+NE const float \& \hyperlink{classdrider_s_d_k_1_1_vector_n_a39f258b71bfa7e6d5d87f855206e4e28}{operator\mbox{[}$\,$\mbox{]}} (SizeT index) const
+\item 
+F\+O\+R\+C\+E\+I\+N\+L\+I\+NE float \hyperlink{classdrider_s_d_k_1_1_vector_n_ad48030d3daf764a398547631a348055a}{dot} (const \hyperlink{classdrider_s_d_k_1_1_vector_n}{VectorN} \&other) const
+\item 
+F\+O\+R\+C\+E\+I\+N\+L\+I\+NE float \hyperlink{classdrider_s_d_k_1_1_vector_n_af753c889a14e3c1a9c65b6069ca74125}{length} () const
+\item 
+F\+O\+R\+C\+E\+I\+N\+L\+I\+NE float \hyperlink{classdrider_s_d_k_1_1_vector_n_a2bb749769feebfc048289194481a553b}{length\+Sqr} () const
+\item 
+F\+O\+R\+C\+E\+I\+N\+L\+I\+NE void \hyperlink{classdrider_s_d_k_1_1_vector_n_aaab9e71b71c9f03ffd44e802f3872d0f}{normalize} ()
+\item 
+F\+O\+R\+C\+E\+I\+N\+L\+I\+NE const float $\ast$ \hyperlink{classdrider_s_d_k_1_1_vector_n_a54fc08312e0789aa3bd7dcb5c2076f4d}{ptr} () const
+\item 
+F\+O\+R\+C\+E\+I\+N\+L\+I\+NE \hyperlink{classdrider_s_d_k_1_1_vector_n}{VectorN} \& \hyperlink{classdrider_s_d_k_1_1_vector_n_a9a4739551cb0d3809b77432213dc174e}{operator$\ast$=} (float scalar)
+\item 
+F\+O\+R\+C\+E\+I\+N\+L\+I\+NE \hyperlink{classdrider_s_d_k_1_1_vector_n}{VectorN} \& \hyperlink{classdrider_s_d_k_1_1_vector_n_accaaea8ae68ab302ab373087d453535e}{operator/=} (float scalar)
+\item 
+F\+O\+R\+C\+E\+I\+N\+L\+I\+NE \hyperlink{classdrider_s_d_k_1_1_vector_n}{VectorN} \& \hyperlink{classdrider_s_d_k_1_1_vector_n_aeced03636e133a2622be3440ae01af63}{operator+=} (const \hyperlink{classdrider_s_d_k_1_1_vector_n}{VectorN} \&rhs)
+\item 
+F\+O\+R\+C\+E\+I\+N\+L\+I\+NE \hyperlink{classdrider_s_d_k_1_1_vector_n}{VectorN} \& \hyperlink{classdrider_s_d_k_1_1_vector_n_afa5153ab687f62e42974889f9f3b4b16}{operator-\/=} (const \hyperlink{classdrider_s_d_k_1_1_vector_n}{VectorN} \&rhs)
+\item 
+F\+O\+R\+C\+E\+I\+N\+L\+I\+NE bool \hyperlink{classdrider_s_d_k_1_1_vector_n_a29db976f9adbfcbee7f88ed80dc039cc}{operator==} (const \hyperlink{classdrider_s_d_k_1_1_vector_n}{VectorN} \&rhs)
+\item 
+F\+O\+R\+C\+E\+I\+N\+L\+I\+NE bool \hyperlink{classdrider_s_d_k_1_1_vector_n_a3cddf30e8751d5d6f926252e169979d2}{operator!=} (const \hyperlink{classdrider_s_d_k_1_1_vector_n}{VectorN} \&rhs)
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_vector_n_a127175ab6bcccd0c12590f92db70da4f}\label{classdrider_s_d_k_1_1_vector_n_a127175ab6bcccd0c12590f92db70da4f}} 
+std\+::array$<$ float, \+\_\+elements $>$ {\bfseries m\+\_\+elements}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$SizeT \+\_\+elements$>$\newline
+class drider\+S\+D\+K\+::\+Vector\+N$<$ \+\_\+elements $>$}
+
+Vector template with fixed number of elements.
+
+Sample usage\+: Vector\+N$<$8$>$ my\+Vector\+With\+Eight\+Elements; 
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_vector_n_a791435c4907a5ed662d12737f446dc3e}\label{classdrider_s_d_k_1_1_vector_n_a791435c4907a5ed662d12737f446dc3e}} 
+\index{drider\+S\+D\+K\+::\+VectorN@{drider\+S\+D\+K\+::\+VectorN}!VectorN@{VectorN}}
+\index{VectorN@{VectorN}!drider\+S\+D\+K\+::\+VectorN@{drider\+S\+D\+K\+::\+VectorN}}
+\subsubsection{\texorpdfstring{Vector\+N()}{VectorN()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$SizeT \+\_\+elements$>$ \\
+\hyperlink{classdrider_s_d_k_1_1_vector_n}{drider\+S\+D\+K\+::\+VectorN}$<$ \+\_\+elements $>$\+::\hyperlink{classdrider_s_d_k_1_1_vector_n}{VectorN} (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Default constructor \mbox{\Hypertarget{classdrider_s_d_k_1_1_vector_n_ada33981d7f60f3b1d8a1cfdee2276d77}\label{classdrider_s_d_k_1_1_vector_n_ada33981d7f60f3b1d8a1cfdee2276d77}} 
+\index{drider\+S\+D\+K\+::\+VectorN@{drider\+S\+D\+K\+::\+VectorN}!VectorN@{VectorN}}
+\index{VectorN@{VectorN}!drider\+S\+D\+K\+::\+VectorN@{drider\+S\+D\+K\+::\+VectorN}}
+\subsubsection{\texorpdfstring{Vector\+N()}{VectorN()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$SizeT \+\_\+elements$>$ \\
+\hyperlink{classdrider_s_d_k_1_1_vector_n}{drider\+S\+D\+K\+::\+VectorN}$<$ \+\_\+elements $>$\+::\hyperlink{classdrider_s_d_k_1_1_vector_n}{VectorN} (\begin{DoxyParamCaption}\item[{float}]{\+\_\+scalar }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [explicit]}}
+
+Constructor using a scalar value.
+
+
+\begin{DoxyParams}{Parameters}
+{\em \+\_\+scalar} & All the elements of the vector are initialized to this value. \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_vector_n_ad48030d3daf764a398547631a348055a}\label{classdrider_s_d_k_1_1_vector_n_ad48030d3daf764a398547631a348055a}} 
+\index{drider\+S\+D\+K\+::\+VectorN@{drider\+S\+D\+K\+::\+VectorN}!dot@{dot}}
+\index{dot@{dot}!drider\+S\+D\+K\+::\+VectorN@{drider\+S\+D\+K\+::\+VectorN}}
+\subsubsection{\texorpdfstring{dot()}{dot()}}
+{\footnotesize\ttfamily template$<$SizeT \+\_\+elements$>$ \\
+F\+O\+R\+C\+E\+I\+N\+L\+I\+NE float \hyperlink{classdrider_s_d_k_1_1_vector_n}{drider\+S\+D\+K\+::\+VectorN}$<$ \+\_\+elements $>$\+::dot (\begin{DoxyParamCaption}\item[{const \hyperlink{classdrider_s_d_k_1_1_vector_n}{VectorN}$<$ \+\_\+elements $>$ \&}]{other }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Computes the dot product between 2 vectors.
+
+
+\begin{DoxyParams}{Parameters}
+{\em other} & The vector against which the dot product is calculated.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A const reference to the element at the \mbox{[}index\mbox{]} position. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_vector_n_a2aa5dfff2cdcc4ae187905b2fbddfa57}\label{classdrider_s_d_k_1_1_vector_n_a2aa5dfff2cdcc4ae187905b2fbddfa57}} 
+\index{drider\+S\+D\+K\+::\+VectorN@{drider\+S\+D\+K\+::\+VectorN}!elements@{elements}}
+\index{elements@{elements}!drider\+S\+D\+K\+::\+VectorN@{drider\+S\+D\+K\+::\+VectorN}}
+\subsubsection{\texorpdfstring{elements()}{elements()}}
+{\footnotesize\ttfamily template$<$SizeT \+\_\+elements$>$ \\
+F\+O\+R\+C\+E\+I\+N\+L\+I\+NE SizeT \hyperlink{classdrider_s_d_k_1_1_vector_n}{drider\+S\+D\+K\+::\+VectorN}$<$ \+\_\+elements $>$\+::elements (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Number of elements in the vector.
+
+\begin{DoxyReturn}{Returns}
+The number of elements the vector contains. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_vector_n_af753c889a14e3c1a9c65b6069ca74125}\label{classdrider_s_d_k_1_1_vector_n_af753c889a14e3c1a9c65b6069ca74125}} 
+\index{drider\+S\+D\+K\+::\+VectorN@{drider\+S\+D\+K\+::\+VectorN}!length@{length}}
+\index{length@{length}!drider\+S\+D\+K\+::\+VectorN@{drider\+S\+D\+K\+::\+VectorN}}
+\subsubsection{\texorpdfstring{length()}{length()}}
+{\footnotesize\ttfamily template$<$SizeT \+\_\+elements$>$ \\
+F\+O\+R\+C\+E\+I\+N\+L\+I\+NE float \hyperlink{classdrider_s_d_k_1_1_vector_n}{drider\+S\+D\+K\+::\+VectorN}$<$ \+\_\+elements $>$\+::length (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Computes the length of the vector.
+
+\begin{DoxyReturn}{Returns}
+Length of the vector. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_vector_n_a2bb749769feebfc048289194481a553b}\label{classdrider_s_d_k_1_1_vector_n_a2bb749769feebfc048289194481a553b}} 
+\index{drider\+S\+D\+K\+::\+VectorN@{drider\+S\+D\+K\+::\+VectorN}!length\+Sqr@{length\+Sqr}}
+\index{length\+Sqr@{length\+Sqr}!drider\+S\+D\+K\+::\+VectorN@{drider\+S\+D\+K\+::\+VectorN}}
+\subsubsection{\texorpdfstring{length\+Sqr()}{lengthSqr()}}
+{\footnotesize\ttfamily template$<$SizeT \+\_\+elements$>$ \\
+F\+O\+R\+C\+E\+I\+N\+L\+I\+NE float \hyperlink{classdrider_s_d_k_1_1_vector_n}{drider\+S\+D\+K\+::\+VectorN}$<$ \+\_\+elements $>$\+::length\+Sqr (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Computes the squared length of the vector.
+
+\begin{DoxyReturn}{Returns}
+Squared length of the vector. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_vector_n_aaab9e71b71c9f03ffd44e802f3872d0f}\label{classdrider_s_d_k_1_1_vector_n_aaab9e71b71c9f03ffd44e802f3872d0f}} 
+\index{drider\+S\+D\+K\+::\+VectorN@{drider\+S\+D\+K\+::\+VectorN}!normalize@{normalize}}
+\index{normalize@{normalize}!drider\+S\+D\+K\+::\+VectorN@{drider\+S\+D\+K\+::\+VectorN}}
+\subsubsection{\texorpdfstring{normalize()}{normalize()}}
+{\footnotesize\ttfamily template$<$SizeT \+\_\+elements$>$ \\
+F\+O\+R\+C\+E\+I\+N\+L\+I\+NE void \hyperlink{classdrider_s_d_k_1_1_vector_n}{drider\+S\+D\+K\+::\+VectorN}$<$ \+\_\+elements $>$\+::normalize (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Normalize the plane \mbox{\Hypertarget{classdrider_s_d_k_1_1_vector_n_a3cddf30e8751d5d6f926252e169979d2}\label{classdrider_s_d_k_1_1_vector_n_a3cddf30e8751d5d6f926252e169979d2}} 
+\index{drider\+S\+D\+K\+::\+VectorN@{drider\+S\+D\+K\+::\+VectorN}!operator"!=@{operator"!=}}
+\index{operator"!=@{operator"!=}!drider\+S\+D\+K\+::\+VectorN@{drider\+S\+D\+K\+::\+VectorN}}
+\subsubsection{\texorpdfstring{operator"!=()}{operator!=()}}
+{\footnotesize\ttfamily template$<$SizeT \+\_\+elements$>$ \\
+F\+O\+R\+C\+E\+I\+N\+L\+I\+NE bool \hyperlink{classdrider_s_d_k_1_1_vector_n}{drider\+S\+D\+K\+::\+VectorN}$<$ \+\_\+elements $>$\+::operator!= (\begin{DoxyParamCaption}\item[{const \hyperlink{classdrider_s_d_k_1_1_vector_n}{VectorN}$<$ \+\_\+elements $>$ \&}]{rhs }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Overload of binary operator ==.
+
+This operator performs a memberwise inequality comparison.
+
+\begin{DoxyReturn}{Returns}
+True if an elements of $\ast$this vector is unequal to an elements of rhs vector, false otherwise. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_vector_n_a9a4739551cb0d3809b77432213dc174e}\label{classdrider_s_d_k_1_1_vector_n_a9a4739551cb0d3809b77432213dc174e}} 
+\index{drider\+S\+D\+K\+::\+VectorN@{drider\+S\+D\+K\+::\+VectorN}!operator$\ast$=@{operator$\ast$=}}
+\index{operator$\ast$=@{operator$\ast$=}!drider\+S\+D\+K\+::\+VectorN@{drider\+S\+D\+K\+::\+VectorN}}
+\subsubsection{\texorpdfstring{operator$\ast$=()}{operator*=()}}
+{\footnotesize\ttfamily template$<$SizeT \+\_\+elements$>$ \\
+F\+O\+R\+C\+E\+I\+N\+L\+I\+NE \hyperlink{classdrider_s_d_k_1_1_vector_n}{VectorN}\& \hyperlink{classdrider_s_d_k_1_1_vector_n}{drider\+S\+D\+K\+::\+VectorN}$<$ \+\_\+elements $>$\+::operator$\ast$= (\begin{DoxyParamCaption}\item[{float}]{scalar }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Overload of binary operator $\ast$=
+
+This operator performs a memberwise multiplication by a scalar and assigns the result to $\ast$this.
+
+
+\begin{DoxyParams}{Parameters}
+{\em scalar} & Right operand (a scalar value).\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A reference to the transformed vector ($\ast$this). 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_vector_n_aeced03636e133a2622be3440ae01af63}\label{classdrider_s_d_k_1_1_vector_n_aeced03636e133a2622be3440ae01af63}} 
+\index{drider\+S\+D\+K\+::\+VectorN@{drider\+S\+D\+K\+::\+VectorN}!operator+=@{operator+=}}
+\index{operator+=@{operator+=}!drider\+S\+D\+K\+::\+VectorN@{drider\+S\+D\+K\+::\+VectorN}}
+\subsubsection{\texorpdfstring{operator+=()}{operator+=()}}
+{\footnotesize\ttfamily template$<$SizeT \+\_\+elements$>$ \\
+F\+O\+R\+C\+E\+I\+N\+L\+I\+NE \hyperlink{classdrider_s_d_k_1_1_vector_n}{VectorN}\& \hyperlink{classdrider_s_d_k_1_1_vector_n}{drider\+S\+D\+K\+::\+VectorN}$<$ \+\_\+elements $>$\+::operator+= (\begin{DoxyParamCaption}\item[{const \hyperlink{classdrider_s_d_k_1_1_vector_n}{VectorN}$<$ \+\_\+elements $>$ \&}]{rhs }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Overload of binary operator +=.
+
+This operator performs a memberwise addition of both vectors and assigns the result to $\ast$this.
+
+
+\begin{DoxyParams}{Parameters}
+{\em rhs} & Right operand (a vector with same number of elements).\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A reference to the transformed vector ($\ast$this). 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_vector_n_afa5153ab687f62e42974889f9f3b4b16}\label{classdrider_s_d_k_1_1_vector_n_afa5153ab687f62e42974889f9f3b4b16}} 
+\index{drider\+S\+D\+K\+::\+VectorN@{drider\+S\+D\+K\+::\+VectorN}!operator-\/=@{operator-\/=}}
+\index{operator-\/=@{operator-\/=}!drider\+S\+D\+K\+::\+VectorN@{drider\+S\+D\+K\+::\+VectorN}}
+\subsubsection{\texorpdfstring{operator-\/=()}{operator-=()}}
+{\footnotesize\ttfamily template$<$SizeT \+\_\+elements$>$ \\
+F\+O\+R\+C\+E\+I\+N\+L\+I\+NE \hyperlink{classdrider_s_d_k_1_1_vector_n}{VectorN}\& \hyperlink{classdrider_s_d_k_1_1_vector_n}{drider\+S\+D\+K\+::\+VectorN}$<$ \+\_\+elements $>$\+::operator-\/= (\begin{DoxyParamCaption}\item[{const \hyperlink{classdrider_s_d_k_1_1_vector_n}{VectorN}$<$ \+\_\+elements $>$ \&}]{rhs }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Overload of binary operator +=.
+
+This operator performs a memberwise subtraction of both vectors and assigns the result to $\ast$this.
+
+
+\begin{DoxyParams}{Parameters}
+{\em rhs} & Right operand (a vector with same number of elements).\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A reference to the transformed vector ($\ast$this). 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_vector_n_accaaea8ae68ab302ab373087d453535e}\label{classdrider_s_d_k_1_1_vector_n_accaaea8ae68ab302ab373087d453535e}} 
+\index{drider\+S\+D\+K\+::\+VectorN@{drider\+S\+D\+K\+::\+VectorN}!operator/=@{operator/=}}
+\index{operator/=@{operator/=}!drider\+S\+D\+K\+::\+VectorN@{drider\+S\+D\+K\+::\+VectorN}}
+\subsubsection{\texorpdfstring{operator/=()}{operator/=()}}
+{\footnotesize\ttfamily template$<$SizeT \+\_\+elements$>$ \\
+F\+O\+R\+C\+E\+I\+N\+L\+I\+NE \hyperlink{classdrider_s_d_k_1_1_vector_n}{VectorN}\& \hyperlink{classdrider_s_d_k_1_1_vector_n}{drider\+S\+D\+K\+::\+VectorN}$<$ \+\_\+elements $>$\+::operator/= (\begin{DoxyParamCaption}\item[{float}]{scalar }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Overload of binary operator $\ast$=
+
+This operator performs a memberwise division by a scalar and assigns the result to $\ast$this.
+
+
+\begin{DoxyParams}{Parameters}
+{\em scalar} & Right operand (a scalar value).\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A reference to the transformed vector ($\ast$this). 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_vector_n_a29db976f9adbfcbee7f88ed80dc039cc}\label{classdrider_s_d_k_1_1_vector_n_a29db976f9adbfcbee7f88ed80dc039cc}} 
+\index{drider\+S\+D\+K\+::\+VectorN@{drider\+S\+D\+K\+::\+VectorN}!operator==@{operator==}}
+\index{operator==@{operator==}!drider\+S\+D\+K\+::\+VectorN@{drider\+S\+D\+K\+::\+VectorN}}
+\subsubsection{\texorpdfstring{operator==()}{operator==()}}
+{\footnotesize\ttfamily template$<$SizeT \+\_\+elements$>$ \\
+F\+O\+R\+C\+E\+I\+N\+L\+I\+NE bool \hyperlink{classdrider_s_d_k_1_1_vector_n}{drider\+S\+D\+K\+::\+VectorN}$<$ \+\_\+elements $>$\+::operator== (\begin{DoxyParamCaption}\item[{const \hyperlink{classdrider_s_d_k_1_1_vector_n}{VectorN}$<$ \+\_\+elements $>$ \&}]{rhs }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Overload of binary operator ==.
+
+This operator performs a memberwise equality comparison.
+
+
+\begin{DoxyParams}{Parameters}
+{\em rhs} & Right operand (a vector with same number of elements).\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if all elements of $\ast$this vector are equal to all elements of rhs vector, false otherwise. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_vector_n_a8f090f0b90344080de98745f8f2bc6fb}\label{classdrider_s_d_k_1_1_vector_n_a8f090f0b90344080de98745f8f2bc6fb}} 
+\index{drider\+S\+D\+K\+::\+VectorN@{drider\+S\+D\+K\+::\+VectorN}!operator\mbox{[}\mbox{]}@{operator[]}}
+\index{operator\mbox{[}\mbox{]}@{operator[]}!drider\+S\+D\+K\+::\+VectorN@{drider\+S\+D\+K\+::\+VectorN}}
+\subsubsection{\texorpdfstring{operator[]()}{operator[]()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$SizeT \+\_\+elements$>$ \\
+F\+O\+R\+C\+E\+I\+N\+L\+I\+NE float\& \hyperlink{classdrider_s_d_k_1_1_vector_n}{drider\+S\+D\+K\+::\+VectorN}$<$ \+\_\+elements $>$\+::operator\mbox{[}$\,$\mbox{]} (\begin{DoxyParamCaption}\item[{SizeT}]{index }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Gets a reference to the specified element from the vector.
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & The index of the element.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A reference to the element at the \mbox{[}index\mbox{]} position.
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em out\+\_\+of\+\_\+range} & If the index is greater than number of elements in the vector. \\
+\hline
+\end{DoxyExceptions}
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_vector_n_a39f258b71bfa7e6d5d87f855206e4e28}\label{classdrider_s_d_k_1_1_vector_n_a39f258b71bfa7e6d5d87f855206e4e28}} 
+\index{drider\+S\+D\+K\+::\+VectorN@{drider\+S\+D\+K\+::\+VectorN}!operator\mbox{[}\mbox{]}@{operator[]}}
+\index{operator\mbox{[}\mbox{]}@{operator[]}!drider\+S\+D\+K\+::\+VectorN@{drider\+S\+D\+K\+::\+VectorN}}
+\subsubsection{\texorpdfstring{operator[]()}{operator[]()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$SizeT \+\_\+elements$>$ \\
+F\+O\+R\+C\+E\+I\+N\+L\+I\+NE const float\& \hyperlink{classdrider_s_d_k_1_1_vector_n}{drider\+S\+D\+K\+::\+VectorN}$<$ \+\_\+elements $>$\+::operator\mbox{[}$\,$\mbox{]} (\begin{DoxyParamCaption}\item[{SizeT}]{index }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Gets a const reference to the specified element from the vector.
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & The index of the element.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A const reference to the element at the \mbox{[}index\mbox{]} position.
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em out\+\_\+of\+\_\+range} & If the index is greater than number of elements in the vector. \\
+\hline
+\end{DoxyExceptions}
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_vector_n_a54fc08312e0789aa3bd7dcb5c2076f4d}\label{classdrider_s_d_k_1_1_vector_n_a54fc08312e0789aa3bd7dcb5c2076f4d}} 
+\index{drider\+S\+D\+K\+::\+VectorN@{drider\+S\+D\+K\+::\+VectorN}!ptr@{ptr}}
+\index{ptr@{ptr}!drider\+S\+D\+K\+::\+VectorN@{drider\+S\+D\+K\+::\+VectorN}}
+\subsubsection{\texorpdfstring{ptr()}{ptr()}}
+{\footnotesize\ttfamily template$<$SizeT \+\_\+elements$>$ \\
+F\+O\+R\+C\+E\+I\+N\+L\+I\+NE const float$\ast$ \hyperlink{classdrider_s_d_k_1_1_vector_n}{drider\+S\+D\+K\+::\+VectorN}$<$ \+\_\+elements $>$\+::ptr (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Gets a constant pointer to the first element of the vector.
+
+\begin{DoxyReturn}{Returns}
+A constant pointer to the first element of the vector. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/\+Francisco/source/repos/\+Drider-\/\+Engine/\+Math/\+Include/dr\+\_\+vectorn.\+h\end{DoxyCompactItemize}

@@ -1,0 +1,178 @@
+\hypertarget{classdrider_s_d_k_1_1_ray}{}\section{drider\+S\+DK\+:\+:Ray Class Reference}
+\label{classdrider_s_d_k_1_1_ray}\index{drider\+S\+D\+K\+::\+Ray@{drider\+S\+D\+K\+::\+Ray}}
+
+
+{\ttfamily \#include $<$dr\+\_\+ray.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classdrider_s_d_k_1_1_ray_abff6862c02165733a7c6d68b669b795d}{Ray} ()
+\item 
+\hyperlink{classdrider_s_d_k_1_1_ray_aa34f727ec759f76cb389e8162b26cb23}{Ray} (\hyperlink{classdrider_s_d_k_1_1_vector3_d}{Vector3D} \+\_\+origin, \hyperlink{classdrider_s_d_k_1_1_vector3_d}{Vector3D} \+\_\+direction)
+\item 
+\hyperlink{classdrider_s_d_k_1_1_ray_ac2aa7e3196cacec5d6a8b739cef4405f}{$\sim$\+Ray} ()
+\item 
+bool \hyperlink{classdrider_s_d_k_1_1_ray_ae82712f2cf693847b3a5f7f15254ed16}{intersects} (const \hyperlink{classdrider_s_d_k_1_1_ray}{Ray} \&b\+Ray) const
+\item 
+bool \hyperlink{classdrider_s_d_k_1_1_ray_af5b4d7cdb8e422fd3808b85789122d4d}{intersects} (const \hyperlink{classdrider_s_d_k_1_1_plane}{Plane} \&plane) const
+\item 
+bool \hyperlink{classdrider_s_d_k_1_1_ray_a712c0636a31b4fe72f2b6cc14decf117}{intersects} (const \hyperlink{classdrider_s_d_k_1_1_plane}{Plane} \&plane, float $\ast$t) const
+\item 
+bool \hyperlink{classdrider_s_d_k_1_1_ray_a05055967612158c946b36e965b0d817a}{intersects} (const \hyperlink{classdrider_s_d_k_1_1_sphere}{Sphere} \&sphere) const
+\item 
+bool \hyperlink{classdrider_s_d_k_1_1_ray_a3575c298825f7130c067490f65bcd60e}{intersects} (const \hyperlink{classdrider_s_d_k_1_1_capsule}{Capsule} \&capsule) const
+\item 
+bool \hyperlink{classdrider_s_d_k_1_1_ray_a9c83c1a5befaa12d3f65fe0c7cc45a7b}{intersects} (const \hyperlink{classdrider_s_d_k_1_1_frustrum}{Frustrum} \&frustrum) const
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_ray_a19e9f70cb5ea9b4f3e7ba4e90b94da8a}\label{classdrider_s_d_k_1_1_ray_a19e9f70cb5ea9b4f3e7ba4e90b94da8a}} 
+\hyperlink{classdrider_s_d_k_1_1_vector3_d}{Vector3D} {\bfseries origin}
+\item 
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_ray_ae4e57aeec93651bda9f40ec59270511e}\label{classdrider_s_d_k_1_1_ray_ae4e57aeec93651bda9f40ec59270511e}} 
+\hyperlink{classdrider_s_d_k_1_1_vector3_d}{Vector3D} {\bfseries direction}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\hyperlink{classdrider_s_d_k_1_1_ray}{Ray} class with origin and direction
+
+Sample usage\+: \hyperlink{classdrider_s_d_k_1_1_ray}{Ray}(Vector3\+D(0,0,0), \hyperlink{classdrider_s_d_k_1_1_vector3_d}{Vector3D}(1,0.\+5,0.\+9)); 
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_ray_abff6862c02165733a7c6d68b669b795d}\label{classdrider_s_d_k_1_1_ray_abff6862c02165733a7c6d68b669b795d}} 
+\index{drider\+S\+D\+K\+::\+Ray@{drider\+S\+D\+K\+::\+Ray}!Ray@{Ray}}
+\index{Ray@{Ray}!drider\+S\+D\+K\+::\+Ray@{drider\+S\+D\+K\+::\+Ray}}
+\subsubsection{\texorpdfstring{Ray()}{Ray()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily drider\+S\+D\+K\+::\+Ray\+::\+Ray (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Default constructor. \mbox{\Hypertarget{classdrider_s_d_k_1_1_ray_aa34f727ec759f76cb389e8162b26cb23}\label{classdrider_s_d_k_1_1_ray_aa34f727ec759f76cb389e8162b26cb23}} 
+\index{drider\+S\+D\+K\+::\+Ray@{drider\+S\+D\+K\+::\+Ray}!Ray@{Ray}}
+\index{Ray@{Ray}!drider\+S\+D\+K\+::\+Ray@{drider\+S\+D\+K\+::\+Ray}}
+\subsubsection{\texorpdfstring{Ray()}{Ray()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily drider\+S\+D\+K\+::\+Ray\+::\+Ray (\begin{DoxyParamCaption}\item[{\hyperlink{classdrider_s_d_k_1_1_vector3_d}{Vector3D}}]{\+\_\+origin,  }\item[{\hyperlink{classdrider_s_d_k_1_1_vector3_d}{Vector3D}}]{\+\_\+direction }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Constructor using origin and direction
+
+
+\begin{DoxyParams}{Parameters}
+{\em \+\_\+origin} & The origin of the ray.\\
+\hline
+{\em \+\_\+direction} & The direction of the ray \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_ray_ac2aa7e3196cacec5d6a8b739cef4405f}\label{classdrider_s_d_k_1_1_ray_ac2aa7e3196cacec5d6a8b739cef4405f}} 
+\index{drider\+S\+D\+K\+::\+Ray@{drider\+S\+D\+K\+::\+Ray}!````~Ray@{$\sim$\+Ray}}
+\index{````~Ray@{$\sim$\+Ray}!drider\+S\+D\+K\+::\+Ray@{drider\+S\+D\+K\+::\+Ray}}
+\subsubsection{\texorpdfstring{$\sim$\+Ray()}{~Ray()}}
+{\footnotesize\ttfamily drider\+S\+D\+K\+::\+Ray\+::$\sim$\+Ray (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Destructor 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_ray_ae82712f2cf693847b3a5f7f15254ed16}\label{classdrider_s_d_k_1_1_ray_ae82712f2cf693847b3a5f7f15254ed16}} 
+\index{drider\+S\+D\+K\+::\+Ray@{drider\+S\+D\+K\+::\+Ray}!intersects@{intersects}}
+\index{intersects@{intersects}!drider\+S\+D\+K\+::\+Ray@{drider\+S\+D\+K\+::\+Ray}}
+\subsubsection{\texorpdfstring{intersects()}{intersects()}\hspace{0.1cm}{\footnotesize\ttfamily [1/6]}}
+{\footnotesize\ttfamily bool drider\+S\+D\+K\+::\+Ray\+::intersects (\begin{DoxyParamCaption}\item[{const \hyperlink{classdrider_s_d_k_1_1_ray}{Ray} \&}]{b\+Ray }\end{DoxyParamCaption}) const}
+
+Check if the ray intersects other ray
+
+
+\begin{DoxyParams}{Parameters}
+{\em b\+Ray} & The other ray to check the intersecton.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if the ray intersects with the other ray 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_ray_af5b4d7cdb8e422fd3808b85789122d4d}\label{classdrider_s_d_k_1_1_ray_af5b4d7cdb8e422fd3808b85789122d4d}} 
+\index{drider\+S\+D\+K\+::\+Ray@{drider\+S\+D\+K\+::\+Ray}!intersects@{intersects}}
+\index{intersects@{intersects}!drider\+S\+D\+K\+::\+Ray@{drider\+S\+D\+K\+::\+Ray}}
+\subsubsection{\texorpdfstring{intersects()}{intersects()}\hspace{0.1cm}{\footnotesize\ttfamily [2/6]}}
+{\footnotesize\ttfamily bool drider\+S\+D\+K\+::\+Ray\+::intersects (\begin{DoxyParamCaption}\item[{const \hyperlink{classdrider_s_d_k_1_1_plane}{Plane} \&}]{plane }\end{DoxyParamCaption}) const}
+
+Check if the ray intersects with a plane
+
+
+\begin{DoxyParams}{Parameters}
+{\em plane} & The plane to check the intersecton.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if the ray intersects with the plane 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_ray_a712c0636a31b4fe72f2b6cc14decf117}\label{classdrider_s_d_k_1_1_ray_a712c0636a31b4fe72f2b6cc14decf117}} 
+\index{drider\+S\+D\+K\+::\+Ray@{drider\+S\+D\+K\+::\+Ray}!intersects@{intersects}}
+\index{intersects@{intersects}!drider\+S\+D\+K\+::\+Ray@{drider\+S\+D\+K\+::\+Ray}}
+\subsubsection{\texorpdfstring{intersects()}{intersects()}\hspace{0.1cm}{\footnotesize\ttfamily [3/6]}}
+{\footnotesize\ttfamily bool drider\+S\+D\+K\+::\+Ray\+::intersects (\begin{DoxyParamCaption}\item[{const \hyperlink{classdrider_s_d_k_1_1_plane}{Plane} \&}]{plane,  }\item[{float $\ast$}]{t }\end{DoxyParamCaption}) const}
+
+Check if the ray intersects with a plane
+
+
+\begin{DoxyParams}{Parameters}
+{\em plane} & The plane to check the intersecton.\\
+\hline
+\end{DoxyParams}
+param t The parameter of the point intersection.
+
+\begin{DoxyReturn}{Returns}
+True if the ray intersects with the plane 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_ray_a05055967612158c946b36e965b0d817a}\label{classdrider_s_d_k_1_1_ray_a05055967612158c946b36e965b0d817a}} 
+\index{drider\+S\+D\+K\+::\+Ray@{drider\+S\+D\+K\+::\+Ray}!intersects@{intersects}}
+\index{intersects@{intersects}!drider\+S\+D\+K\+::\+Ray@{drider\+S\+D\+K\+::\+Ray}}
+\subsubsection{\texorpdfstring{intersects()}{intersects()}\hspace{0.1cm}{\footnotesize\ttfamily [4/6]}}
+{\footnotesize\ttfamily bool drider\+S\+D\+K\+::\+Ray\+::intersects (\begin{DoxyParamCaption}\item[{const \hyperlink{classdrider_s_d_k_1_1_sphere}{Sphere} \&}]{sphere }\end{DoxyParamCaption}) const}
+
+Check if the ray intersects with a sphere
+
+
+\begin{DoxyParams}{Parameters}
+{\em sphere} & The sphere to check the intersecton.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if the ray intersects with the sphere 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_ray_a3575c298825f7130c067490f65bcd60e}\label{classdrider_s_d_k_1_1_ray_a3575c298825f7130c067490f65bcd60e}} 
+\index{drider\+S\+D\+K\+::\+Ray@{drider\+S\+D\+K\+::\+Ray}!intersects@{intersects}}
+\index{intersects@{intersects}!drider\+S\+D\+K\+::\+Ray@{drider\+S\+D\+K\+::\+Ray}}
+\subsubsection{\texorpdfstring{intersects()}{intersects()}\hspace{0.1cm}{\footnotesize\ttfamily [5/6]}}
+{\footnotesize\ttfamily bool drider\+S\+D\+K\+::\+Ray\+::intersects (\begin{DoxyParamCaption}\item[{const \hyperlink{classdrider_s_d_k_1_1_capsule}{Capsule} \&}]{capsule }\end{DoxyParamCaption}) const}
+
+Check if the ray intersects with a capsule
+
+
+\begin{DoxyParams}{Parameters}
+{\em capsule} & The capsule to check the intersecton.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if the ray intersects with the capsule 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_ray_a9c83c1a5befaa12d3f65fe0c7cc45a7b}\label{classdrider_s_d_k_1_1_ray_a9c83c1a5befaa12d3f65fe0c7cc45a7b}} 
+\index{drider\+S\+D\+K\+::\+Ray@{drider\+S\+D\+K\+::\+Ray}!intersects@{intersects}}
+\index{intersects@{intersects}!drider\+S\+D\+K\+::\+Ray@{drider\+S\+D\+K\+::\+Ray}}
+\subsubsection{\texorpdfstring{intersects()}{intersects()}\hspace{0.1cm}{\footnotesize\ttfamily [6/6]}}
+{\footnotesize\ttfamily bool drider\+S\+D\+K\+::\+Ray\+::intersects (\begin{DoxyParamCaption}\item[{const \hyperlink{classdrider_s_d_k_1_1_frustrum}{Frustrum} \&}]{frustrum }\end{DoxyParamCaption}) const}
+
+Check if the ray intersects with a frustrum
+
+
+\begin{DoxyParams}{Parameters}
+{\em frustrum} & The frustrum to check the intersecton.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if the ray intersects with the frustrum 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/\+Francisco/source/repos/\+Drider-\/\+Engine/\+Math/\+Include/dr\+\_\+ray.\+h\item 
+C\+:/\+Users/\+Francisco/source/repos/\+Drider-\/\+Engine/\+Math/\+Source/dr\+\_\+ray.\+cpp\end{DoxyCompactItemize}
