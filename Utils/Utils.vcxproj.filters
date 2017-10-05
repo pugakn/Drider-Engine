@@ -24,7 +24,7 @@
     <ClInclude Include="Include\dr_prerequisites.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="dr_pool.h">
+    <ClInclude Include="Include\dr_pool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

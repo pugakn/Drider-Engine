@@ -128,8 +128,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="dr_pool.h" />
     <ClInclude Include="Include\dr_defines.h" />
+    <ClInclude Include="Include\dr_pool.h" />
     <ClInclude Include="Include\dr_prerequisites.h" />
     <ClInclude Include="Include\dr_types.h" />
   </ItemGroup>
