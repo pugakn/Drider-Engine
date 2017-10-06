@@ -226,7 +226,7 @@ Matrix4x4::identity() {
 
 Vector4D&
 Matrix4x4::operator[](SizeT index) {
-  assert(index >= 0 && index < 4);
+  DR_ASSERT(index >= 0 && index < 4);
   return data[index];
 }
 

@@ -56,7 +56,7 @@ class DR_API_EXPORT Radian
   *   A reference to this class.
   */
   Radian&
-  toRange();
+  unwind();
 
   //Uncomented
   operator float();

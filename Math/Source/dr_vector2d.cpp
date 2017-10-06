@@ -54,15 +54,21 @@ Vector2D::distanceSqr(const Vector2D& otherVector) const {
 
 float&
 Vector2D::operator[](SizeT index) {
-  assert(index >= 0 && index < 2);
+  DR_ASSERT(index >= 0 && index < 2);
   return data[index];
 }
 
 const float&
 Vector2D::operator[](SizeT index) const {
-  assert(index >= 0 && index < 2);
+  DR_ASSERT(index >= 0 && index < 2);
   return data[index];
 }
+
+float
+Vector2D::operator|(const Vector2D& B) const {
+  return dot(B);
+}
+
 
 Vector2D&
 Vector2D::operator=(const Vector2D& A) {
