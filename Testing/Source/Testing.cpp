@@ -5,6 +5,12 @@
 #include <dr_vector3d.h>
 #include <dr_plane.h>
 #include <dr_radian.h>
+#include <gtest\gtest.h>
+
+TEST(SquareRootTest, PositiveNos) {
+  EXPECT_TRUE(true);
+}
+
 bool recev( int& asin )
 {
   return false;
@@ -12,6 +18,8 @@ bool recev( int& asin )
 
 int main(int argc, char* argv[])
 {
+  ::testing::InitGoogleTest(&argc, argv);
+  RUN_ALL_TESTS();
   driderSDK::Matrix4x4 lu(1,4,-1,0,2,3,5,-2,0,3,1,6,3,0,2,1);
 
   driderSDK::Radian dckRad(5);
