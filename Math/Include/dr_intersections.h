@@ -90,10 +90,10 @@ sphereCapsuleIntersect(const Vector3D& sphPosition,
 bool
 capsuleCapsuleIntersect(const Vector3D& capsule1A,
                         const Vector3D& capsule1B,
-                        const Vector3D& capsule1Radius,
+                        float capsule1Radius,
                         const Vector3D& capsule2A,
                         const Vector3D& capsule2B,
-                        const Vector3D& capsule2Radius);
+                        float capsule2Radius);
 
 //Uncommented
 bool 
@@ -314,6 +314,15 @@ frustrumContainsSphere(const std::array<Plane, 6>& frustrumPlanes,
 	                     float sphereRadius);
 
 
+float 
+closestPtSegmentSegment(const Vector3D& p1,
+                        const Vector3D& q1,
+                        const Vector3D& p2,
+                        const Vector3D& q2,
+                        float &s, 
+                        float &t, 
+                        Vector3D& c1,
+                        Vector3D& c2);
 
 
 
