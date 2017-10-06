@@ -21,8 +21,8 @@ bld/
 [Bb]in/
 [Oo]bj/
 [Ll]og/
-/Docs/html
-/Docs/latex
+/Docs/html/
+/Docs/latex/
 
 # Visual Studio 2015 cache/options directory
 .vs/
