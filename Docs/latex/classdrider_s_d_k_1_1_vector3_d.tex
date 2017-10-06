@@ -41,6 +41,10 @@ float \& \hyperlink{classdrider_s_d_k_1_1_vector3_d_ac7f67c8043cc9f9d801a7e7a2f2
 \item 
 const float \& \hyperlink{classdrider_s_d_k_1_1_vector3_d_a54c01f85259ba8f84eb37dcf1001e59e}{operator\mbox{[}$\,$\mbox{]}} (SizeT index) const
 \item 
+float \hyperlink{classdrider_s_d_k_1_1_vector3_d_a4681c3fae6e11a1bc33100f638a8bb25}{operator$\vert$} (const \hyperlink{classdrider_s_d_k_1_1_vector3_d}{Vector3D} \&B) const
+\item 
+\hyperlink{classdrider_s_d_k_1_1_vector3_d}{Vector3D} \hyperlink{classdrider_s_d_k_1_1_vector3_d_a174bcd0e5030b457337a74c90ab061fe}{operator$^\wedge$} (const \hyperlink{classdrider_s_d_k_1_1_vector3_d}{Vector3D} \&B) const
+\item 
 \mbox{\Hypertarget{classdrider_s_d_k_1_1_vector3_d_a6f290466b4c2583b0687861372bd6bd2}\label{classdrider_s_d_k_1_1_vector3_d_a6f290466b4c2583b0687861372bd6bd2}} 
 \hyperlink{classdrider_s_d_k_1_1_vector3_d}{Vector3D} \& {\bfseries operator=} (const \hyperlink{classdrider_s_d_k_1_1_vector3_d}{Vector3D} \&A)
 \item 
@@ -294,6 +298,38 @@ A const reference to the element at the \mbox{[}index\mbox{]} position.
 {\em out\+\_\+of\+\_\+range} & If the index is greater than number of elements in the vector. \\
 \hline
 \end{DoxyExceptions}
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_vector3_d_a174bcd0e5030b457337a74c90ab061fe}\label{classdrider_s_d_k_1_1_vector3_d_a174bcd0e5030b457337a74c90ab061fe}} 
+\index{drider\+S\+D\+K\+::\+Vector3D@{drider\+S\+D\+K\+::\+Vector3D}!operator$^\wedge$@{operator$^\wedge$}}
+\index{operator$^\wedge$@{operator$^\wedge$}!drider\+S\+D\+K\+::\+Vector3D@{drider\+S\+D\+K\+::\+Vector3D}}
+\subsubsection{\texorpdfstring{operator$^\wedge$()}{operator^()}}
+{\footnotesize\ttfamily \hyperlink{classdrider_s_d_k_1_1_vector3_d}{Vector3D} drider\+S\+D\+K\+::\+Vector3\+D\+::operator$^\wedge$ (\begin{DoxyParamCaption}\item[{const \hyperlink{classdrider_s_d_k_1_1_vector3_d}{Vector3D} \&}]{B }\end{DoxyParamCaption}) const}
+
+Computes the cross product between this vector and the vector parameter. This operatios is N\+OT commutative.
+
+
+\begin{DoxyParams}{Parameters}
+{\em B} & The vector against which the cross product is calculated. B (vector parameter) is the rigth value of operation AxB\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Result vector of the cross product 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_vector3_d_a4681c3fae6e11a1bc33100f638a8bb25}\label{classdrider_s_d_k_1_1_vector3_d_a4681c3fae6e11a1bc33100f638a8bb25}} 
+\index{drider\+S\+D\+K\+::\+Vector3D@{drider\+S\+D\+K\+::\+Vector3D}!operator\texttt{"|}@{operator\texttt{"|}}}
+\index{operator\texttt{"|}@{operator\texttt{"|}}!drider\+S\+D\+K\+::\+Vector3D@{drider\+S\+D\+K\+::\+Vector3D}}
+\subsubsection{\texorpdfstring{operator\texttt{"|}()}{operator|()}}
+{\footnotesize\ttfamily float drider\+S\+D\+K\+::\+Vector3\+D\+::operator$\vert$ (\begin{DoxyParamCaption}\item[{const \hyperlink{classdrider_s_d_k_1_1_vector3_d}{Vector3D} \&}]{B }\end{DoxyParamCaption}) const}
+
+Computes the dot product between this vector and the vector parameter. This operatios is commutative.
+
+
+\begin{DoxyParams}{Parameters}
+{\em B} & The vector against which the dot product is calculated.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The sum of the products of the corresponding entries of the vectors. 
+\end{DoxyReturn}
 \mbox{\Hypertarget{classdrider_s_d_k_1_1_vector3_d_a17428bbe32652edcba681b55e27853b2}\label{classdrider_s_d_k_1_1_vector3_d_a17428bbe32652edcba681b55e27853b2}} 
 \index{drider\+S\+D\+K\+::\+Vector3D@{drider\+S\+D\+K\+::\+Vector3D}!sqr\+Dist\+Segment@{sqr\+Dist\+Segment}}
 \index{sqr\+Dist\+Segment@{sqr\+Dist\+Segment}!drider\+S\+D\+K\+::\+Vector3D@{drider\+S\+D\+K\+::\+Vector3D}}

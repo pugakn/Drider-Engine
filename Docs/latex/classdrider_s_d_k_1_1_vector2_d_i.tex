@@ -31,6 +31,8 @@ Int32 \& \hyperlink{classdrider_s_d_k_1_1_vector2_d_i_a0a9232594d7e6bb774ce85ada
 \item 
 const Int32 \& \hyperlink{classdrider_s_d_k_1_1_vector2_d_i_ad842c5082bbdfbc017fcfac8240197bb}{operator\mbox{[}$\,$\mbox{]}} (SizeT index) const
 \item 
+float \hyperlink{classdrider_s_d_k_1_1_vector2_d_i_a9a101d51a408b48cbc846073b54bf30e}{operator$\vert$} (const \hyperlink{classdrider_s_d_k_1_1_vector2_d_i}{Vector2\+DI} \&B) const
+\item 
 \mbox{\Hypertarget{classdrider_s_d_k_1_1_vector2_d_i_aeca5f2fe0ee64fadce1fbeceec369dbf}\label{classdrider_s_d_k_1_1_vector2_d_i_aeca5f2fe0ee64fadce1fbeceec369dbf}} 
 \hyperlink{classdrider_s_d_k_1_1_vector2_d_i}{Vector2\+DI} \& {\bfseries operator=} (const \hyperlink{classdrider_s_d_k_1_1_vector2_d_i}{Vector2\+DI} \&A)
 \item 
@@ -265,6 +267,22 @@ A const reference to the element at the \mbox{[}index\mbox{]} position.
 {\em out\+\_\+of\+\_\+range} & If the index is greater than number of elements in the vector. \\
 \hline
 \end{DoxyExceptions}
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_vector2_d_i_a9a101d51a408b48cbc846073b54bf30e}\label{classdrider_s_d_k_1_1_vector2_d_i_a9a101d51a408b48cbc846073b54bf30e}} 
+\index{drider\+S\+D\+K\+::\+Vector2\+DI@{drider\+S\+D\+K\+::\+Vector2\+DI}!operator\texttt{"|}@{operator\texttt{"|}}}
+\index{operator\texttt{"|}@{operator\texttt{"|}}!drider\+S\+D\+K\+::\+Vector2\+DI@{drider\+S\+D\+K\+::\+Vector2\+DI}}
+\subsubsection{\texorpdfstring{operator\texttt{"|}()}{operator|()}}
+{\footnotesize\ttfamily float drider\+S\+D\+K\+::\+Vector2\+D\+I\+::operator$\vert$ (\begin{DoxyParamCaption}\item[{const \hyperlink{classdrider_s_d_k_1_1_vector2_d_i}{Vector2\+DI} \&}]{B }\end{DoxyParamCaption}) const}
+
+Computes the dot product between this vector and the vector parameter. This operatios is commutative.
+
+
+\begin{DoxyParams}{Parameters}
+{\em B} & The vector against which the dot product is calculated.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The sum of the products of the corresponding entries of the vectors. 
+\end{DoxyReturn}
 
 
 The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}

@@ -31,6 +31,8 @@ float \& \hyperlink{classdrider_s_d_k_1_1_vector2_d_a9aece4842a4d26f5cd069c8c024
 \item 
 const float \& \hyperlink{classdrider_s_d_k_1_1_vector2_d_a4ac344eb74d7e2ae9a9538cf837272af}{operator\mbox{[}$\,$\mbox{]}} (SizeT index) const
 \item 
+float \hyperlink{classdrider_s_d_k_1_1_vector2_d_adcbc696a9be264565d40c43c34003e0c}{operator$\vert$} (const \hyperlink{classdrider_s_d_k_1_1_vector2_d}{Vector2D} \&B) const
+\item 
 \mbox{\Hypertarget{classdrider_s_d_k_1_1_vector2_d_abc274607e1dd8c481c1059540236a480}\label{classdrider_s_d_k_1_1_vector2_d_abc274607e1dd8c481c1059540236a480}} 
 \hyperlink{classdrider_s_d_k_1_1_vector2_d}{Vector2D} \& {\bfseries operator=} (const \hyperlink{classdrider_s_d_k_1_1_vector2_d}{Vector2D} \&A)
 \item 
@@ -265,6 +267,22 @@ A const reference to the element at the \mbox{[}index\mbox{]} position.
 {\em out\+\_\+of\+\_\+range} & If the index is greater than number of elements in the vector. \\
 \hline
 \end{DoxyExceptions}
+\mbox{\Hypertarget{classdrider_s_d_k_1_1_vector2_d_adcbc696a9be264565d40c43c34003e0c}\label{classdrider_s_d_k_1_1_vector2_d_adcbc696a9be264565d40c43c34003e0c}} 
+\index{drider\+S\+D\+K\+::\+Vector2D@{drider\+S\+D\+K\+::\+Vector2D}!operator\texttt{"|}@{operator\texttt{"|}}}
+\index{operator\texttt{"|}@{operator\texttt{"|}}!drider\+S\+D\+K\+::\+Vector2D@{drider\+S\+D\+K\+::\+Vector2D}}
+\subsubsection{\texorpdfstring{operator\texttt{"|}()}{operator|()}}
+{\footnotesize\ttfamily float drider\+S\+D\+K\+::\+Vector2\+D\+::operator$\vert$ (\begin{DoxyParamCaption}\item[{const \hyperlink{classdrider_s_d_k_1_1_vector2_d}{Vector2D} \&}]{B }\end{DoxyParamCaption}) const}
+
+Computes the dot product between this vector and the vector parameter. This operatios is commutative.
+
+
+\begin{DoxyParams}{Parameters}
+{\em B} & The vector against which the dot product is calculated.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The sum of the products of the corresponding entries of the vectors. 
+\end{DoxyReturn}
 
 
 The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}

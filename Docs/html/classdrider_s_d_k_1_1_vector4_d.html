@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>DriderDox: driderSDK::Vector4D Class Reference</title>
+<title>DriderEngine: driderSDK::Vector4D Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectlogo"><img alt="Logo" src="DriderEngineLogo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">DriderDox
+   <div id="projectname">DriderEngine
    &#160;<span id="projectnumber">0.0</span>
    </div>
    <div id="projectbrief">Engine project</div>
@@ -106,6 +106,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a22777557bf66b8adeb50f24f2943fc66"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6da3ce7013d8b4fef78986433af25971"><td class="memItemLeft" align="right" valign="top">const float &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdrider_s_d_k_1_1_vector4_d.html#a6da3ce7013d8b4fef78986433af25971">operator[]</a> (SizeT index) const</td></tr>
 <tr class="separator:a6da3ce7013d8b4fef78986433af25971"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a40c293b7041c65fd20f8741b4c3c312d"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdrider_s_d_k_1_1_vector4_d.html#a40c293b7041c65fd20f8741b4c3c312d">operator|</a> (const <a class="el" href="classdrider_s_d_k_1_1_vector4_d.html">Vector4D</a> &amp;B) const</td></tr>
+<tr class="separator:a40c293b7041c65fd20f8741b4c3c312d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae6ce7f847b9c2aaa07ba0e992d189587"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdrider_s_d_k_1_1_vector4_d.html">Vector4D</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdrider_s_d_k_1_1_vector4_d.html#ae6ce7f847b9c2aaa07ba0e992d189587">operator^</a> (const <a class="el" href="classdrider_s_d_k_1_1_vector4_d.html">Vector4D</a> &amp;B) const</td></tr>
+<tr class="separator:ae6ce7f847b9c2aaa07ba0e992d189587"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a98eb14acc45ecbb0214fdaa25923aa9e"><td class="memItemLeft" align="right" valign="top"><a id="a98eb14acc45ecbb0214fdaa25923aa9e"></a>
 <a class="el" href="classdrider_s_d_k_1_1_vector4_d.html">Vector4D</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (const <a class="el" href="classdrider_s_d_k_1_1_vector4_d.html">Vector4D</a> &amp;A)</td></tr>
 <tr class="separator:a98eb14acc45ecbb0214fdaa25923aa9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -563,6 +567,58 @@ union {</td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="ae6ce7f847b9c2aaa07ba0e992d189587"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae6ce7f847b9c2aaa07ba0e992d189587">&#9670;&nbsp;</a></span>operator^()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdrider_s_d_k_1_1_vector4_d.html">Vector4D</a> driderSDK::Vector4D::operator^ </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classdrider_s_d_k_1_1_vector4_d.html">Vector4D</a> &amp;&#160;</td>
+          <td class="paramname"><em>B</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Computes the cross product between this vector and the vector parameter. This operatios is NOT commutative.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">B</td><td>The vector against which the cross product is calculated. B (vector parameter) is the rigth value of operation AxB</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Result vector of the cross product </dd></dl>
+
+</div>
+</div>
+<a id="a40c293b7041c65fd20f8741b4c3c312d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a40c293b7041c65fd20f8741b4c3c312d">&#9670;&nbsp;</a></span>operator|()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float driderSDK::Vector4D::operator| </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classdrider_s_d_k_1_1_vector4_d.html">Vector4D</a> &amp;&#160;</td>
+          <td class="paramname"><em>B</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Computes the dot product between this vector and the vector parameter. This operatios is commutative.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">B</td><td>The vector against which the dot product is calculated.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The sum of the products of the corresponding entries of the vectors. </dd></dl>
 
 </div>
 </div>
