@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cassert>
 #include <dr_prerequisites.h>
 #include "dr_math.h"
 

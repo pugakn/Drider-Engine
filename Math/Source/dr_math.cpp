@@ -36,4 +36,94 @@ const UInt32 Math::MAX_UINT32 = std::numeric_limits<UInt32>::max();
 const UInt16 Math::MAX_UINT16 = std::numeric_limits<UInt16>::max();
 const UInt8 Math::MAX_UINT8 = std::numeric_limits<UInt8>::max();
 
+float
+Math::fast_invSqrt(float number) {
+  long i;
+  float x2 = number * 0.5F, y = number;
+  const float threehalfs = 1.5F;
+
+  i = *(long *)&y;                    // evil floating point bit level hacking
+  //std::memcpy(&i, &y, sizeof(float)); // good floating point bit level hacking
+
+  i = 0x5f3759df - (i >> 1);          // what the fuck? 
+
+  y = *(float *)&i;                  
+  //std::memcpy(&y, &i, sizeof(float));
+
+  y = y * (threehalfs - (x2*y*y));    // 1st iteration
+  //y = y * (threehalfs - (x2*y* y));   // 2nd iteration, this can be removed
+
+  return y;
+}
+
+float
+Math::fast_sin(float value) {
+  return
+  //1: x
+  value
+  //2: - (x^3)/3!
+  - (value*value*value)*0.166667f
+  //3: + (x^5)/5!
+  + (value*value*value*value*value)*0.00833333f
+  //4: - (x^7)/7!
+  - (value*value*value*value*value*value*value)*0.000198413f
+  ;
+}
+
+float
+Math::fast_aSin(float value) {
+  return
+  //1: x
+  value
+  //2: (x^3)*1/6
+  + (value*value*value)*0.16666666666f
+  //3: (x^5)*3/40
+  + (value*value*value*value*value)*0.075f
+  //4: (x^7)*5/112
+  + (value*value*value*value*value*value*value)*0.04464285714f;
+}
+
+float
+Math::fast_cos(float value) {
+  return
+  //1: 1
+  1.0f
+  //2: - (x^2)/2!
+  - (value*value)*0.5f
+  //3: + (x^4)/4!
+  + (value*value*value*value)*0.04166666666f
+  //4: - (x^6)/6!
+  - (value*value*value*value*value*value)*0.00138888888f;
+}
+
+float
+Math::fast_aCos(float value) {
+  //1: pi/2 - x
+  HALF_PI - value
+  //2: - (x^3)*1/6
+  - (value*value*value)*0.16666666666f
+  //3: - (x^5)*3/40
+  - (value*value*value*value*value)*0.075f
+  //4: - (x^7)*5/112
+  - (value*value*value*value*value*value*value)*0.04464285714f;
+}
+
+float
+Math::fast_tan(float value) {
+  return fast_sin(value)/fast_cos(value);
+}
+
+float
+Math::fast_aTan(float value) {
+  return
+  //1: x
+  value
+  //2: - (x^3)*1/3
+  - (value*value*value)*0.33333333333f
+  //3: + (x^5)*1/5
+  + (value*value*value*value*value)*0.2f
+  //4: - (x^7)*1/7
+  - (value*value*value*value*value*value*value)*0.14285714285f;
+}
+
 }
