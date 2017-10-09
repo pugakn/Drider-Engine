@@ -1,6 +1,5 @@
 #include "dr_math.h"
 
-
 namespace driderSDK {
 
 //Basic constants
