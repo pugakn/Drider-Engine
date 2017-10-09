@@ -56,7 +56,7 @@ class DR_API_EXPORT Degree
   *   A reference to this class.
   */
   Degree&
-  toRange();
+  unwind();
 
   //Uncomented
   operator float();

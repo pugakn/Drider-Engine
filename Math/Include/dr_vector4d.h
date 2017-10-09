@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cassert>
 #include <dr_prerequisites.h>
 #include "dr_math.h"
 
@@ -166,6 +165,35 @@ class DR_API_EXPORT Vector4D
   */
   const float&
   operator[](SizeT index) const;
+
+  /**
+  * Computes the dot product between this vector and the vector parameter.
+  * This operatios is commutative.
+  *
+  * @param B
+  *  The vector against which the dot product is calculated.
+  *
+  * @return
+  *   The sum of the products of the corresponding entries of the
+  *   vectors.
+  */
+  float
+  operator|(const Vector4D& B) const;
+
+  /**
+  * Computes the cross product between this vector and the vector parameter.
+  * This operatios is NOT commutative.
+  *
+  * @param B
+  *  The vector against which the cross product is calculated.
+  *  B (vector parameter) is the rigth value of operation
+  *  AxB
+  *
+  * @return
+  *   Result vector of the cross product
+  */
+  Vector4D
+  operator^(const Vector4D& B) const;
 
   //Uncommented
   Vector4D&

@@ -132,7 +132,7 @@ Matrix3x3::identity() {
 
 Vector3D&
 Matrix3x3::operator[](SizeT index) {
-  assert(index >= 0 && index < 3);
+  DR_ASSERT(index >= 0 && index < 3);
   return data[index];
 }
 

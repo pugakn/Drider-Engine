@@ -81,14 +81,24 @@ Vector3D::sqrDistSegment(const Vector3D& pointA, const Vector3D& pointB) const {
 
 float&
 Vector3D::operator[](SizeT index) {
-  assert(index >= 0 && index < 3);
+  DR_ASSERT(index >= 0 && index < 3);
   return data[index];
 }
 
 const float&
 Vector3D::operator[](SizeT index) const {
-  assert(index >= 0 && index < 3);
+  DR_ASSERT(index >= 0 && index < 3);
   return data[index];
+}
+
+float
+Vector3D::operator|(const Vector3D& B) const {
+  return dot(B);
+}
+
+Vector3D
+Vector3D::operator^(const Vector3D& B) const {
+  return cross(B);
 }
 
 Vector3D&

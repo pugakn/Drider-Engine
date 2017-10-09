@@ -64,14 +64,24 @@ Vector4D::distanceSqr(const Vector4D & otherVector) const {
 
 float&
 Vector4D::operator[](SizeT index) {
-  assert(index >= 0 && index < 4);
+  DR_ASSERT(index >= 0 && index < 4);
   return data[index];
 }
 
 const float&
 Vector4D::operator[](SizeT index) const {
-  assert(index >= 0 && index < 4);
+  DR_ASSERT(index >= 0 && index < 4);
   return data[index];
+}
+
+float
+Vector4D::operator|(const Vector4D& B) const {
+  return dot(B);
+}
+
+Vector4D
+Vector4D::operator^(const Vector4D& B) const {
+  return cross(B);
 }
 
 Vector4D&

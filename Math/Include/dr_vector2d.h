@@ -1,8 +1,14 @@
 #pragma once
 
-#include <cassert>
 #include <dr_prerequisites.h>
 #include "dr_math.h"
+
+//TODO
+/*
+all vectors
+InvSqrt();
+FastInvSqrt();
+*/
 
 namespace driderSDK {
 
@@ -144,6 +150,20 @@ class DR_API_EXPORT Vector2D
   */
   const float&
   operator[](SizeT index) const;
+
+  /**
+  * Computes the dot product between this vector and the vector parameter.
+  * This operatios is commutative.
+  *
+  * @param B
+  *  The vector against which the dot product is calculated.
+  *
+  * @return
+  *   The sum of the products of the corresponding entries of the
+  *   vectors.
+  */
+  float
+  operator|(const Vector2D& B) const;
 
   //Uncommented
   Vector2D&

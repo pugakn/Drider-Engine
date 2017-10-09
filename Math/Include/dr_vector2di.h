@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cassert>
 #include <dr_prerequisites.h>
 #include "dr_math.h"
 
@@ -144,6 +143,20 @@ class DR_API_EXPORT Vector2DI
   */
   const Int32&
   operator[](SizeT index) const;
+
+  /**
+  * Computes the dot product between this vector and the vector parameter.
+  * This operatios is commutative.
+  *
+  * @param B
+  *  The vector against which the dot product is calculated.
+  *
+  * @return
+  *   The sum of the products of the corresponding entries of the
+  *   vectors.
+  */
+  float
+  operator|(const Vector2DI& B) const;
 
   //Uncommented
   Vector2DI&
