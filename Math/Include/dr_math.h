@@ -210,6 +210,12 @@ struct DR_API_EXPORT Math
   fast_invSqrt(float number);
 
   static float
+  fast_exp(float value);
+
+  static float
+  fast_ln(float value);
+
+  static float
   fast_sin(float value);
 
   static float

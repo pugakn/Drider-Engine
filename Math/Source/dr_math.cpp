@@ -57,6 +57,25 @@ Math::fast_invSqrt(float number) {
 }
 
 float
+Math::fast_exp(float value) {
+  return
+  1.0f
+  + value
+  + (value*value)*0.5f
+  + (value*value*value)*0.16666666666f
+  + (value*value*value*value)*0.04166666666f;
+}
+
+float
+Math::fast_ln(float value) {
+  return
+    value
+  - (value*value)*0.5f
+  + (value*value*value)*0.33333333333f
+  - (value*value*value*value)*0.25f;
+}
+
+float
 Math::fast_sin(float value) {
   return
   //1: x
@@ -98,6 +117,7 @@ Math::fast_cos(float value) {
 
 float
 Math::fast_aCos(float value) {
+  return
   //1: pi/2 - x
   HALF_PI - value
   //2: - (x^3)*1/6
