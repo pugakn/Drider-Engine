@@ -183,10 +183,9 @@ aabbPlaneIntersect(const Vector3D& aabbCenter,
 bool
 aabbFrustrumIntersect(const Vector3D& aabbCenter,
                       float aabbWidth,
-                      float aabbHeight,
-                      const std::array<Plane, 6>& frustrumPlanes)
-{
-
+                      float aabbheight,
+                      const std::array<Plane, 6>& frustrumPlanes) {
+  //TODO : implement aabb intersection function
   return false;
 }
 
