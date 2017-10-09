@@ -102,6 +102,12 @@ sphereRayIntersect(const Vector3D& sphPosition,
                    const Vector3D& rayOrigin,
                    const Vector3D& rayDirection);
 
+bool 
+rayPlaneIntersect(const Vector3D& rayOrigin,
+                  const Vector3D& rayDirection,
+                  const Vector3D& planeNormal, 
+                  float planeGap);
+
 //Uncommented
 bool 
 rayPlaneIntersect(const Vector3D& rayOrigin,
@@ -286,10 +292,15 @@ aabbPlaneIntersect(const Vector3D& aabbCenter,
                    const Vector3D& planeNormal,
                    float planeGap);
 
+bool segmentPlaneIntersect(const Vector3D& linePointA,
+                           const Vector3D& linePointB,
+                           const Vector3D& planeNormal,
+                           float planeGap);
+
 bool 
 capsulePlaneIntersect(const Vector3D& capsuleA,
                       const Vector3D& capsuleB,
-                      const Vector3D& capsuleRadius,
+                      float capsuleRadius,
                       const Vector3D& planeNormal,
                       float planeGap);
 
