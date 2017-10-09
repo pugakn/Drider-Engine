@@ -11,7 +11,7 @@ TEST(SquareRootTest, PositiveNos) {
   EXPECT_TRUE(true);
 }
 
-bool recev( int& asin )
+bool recev(int& asin)
 {
   return false;
 }
@@ -20,7 +20,7 @@ int main(int argc, char* argv[])
 {
   ::testing::InitGoogleTest(&argc, argv);
   RUN_ALL_TESTS();
-  driderSDK::Matrix4x4 lu(1,4,-1,0,2,3,5,-2,0,3,1,6,3,0,2,1);
+  driderSDK::Matrix4x4 lu(1, 4, -1, 0, 2, 3, 5, -2, 0, 3, 1, 6, 3, 0, 2, 1);
 
   driderSDK::Radian dckRad(5);
   dckRad = dckRad + 3;
@@ -35,16 +35,16 @@ int main(int argc, char* argv[])
   driderSDK::VectorN<4> mlg;
   auto vk = mlg.length();
 
-  driderSDK::Vector3D pointA( 0.0f,  0.0f, 0.0f);
-  driderSDK::Vector3D pointB( 2.0f,  2.0f, 0.0f);
-  driderSDK::Vector3D pointC( 0.0f,  1.0f, 0.0f);
+  driderSDK::Vector3D pointA(0.0f, 0.0f, 0.0f);
+  driderSDK::Vector3D pointB(2.0f, 2.0f, 0.0f);
+  driderSDK::Vector3D pointC(0.0f, 1.0f, 0.0f);
 
   driderSDK::Vector3D dirAB = pointB - pointA;
   driderSDK::Vector3D dirAC = pointC - pointA;
-  
-  driderSDK::Plane plane({0, -1, 1}, 3);
+
+  driderSDK::Plane plane({ 0, -1, 1 }, 3);
   plane.normalize();
-  auto distance = plane.distanceToPoint({1,3,4});
+  auto distance = plane.distanceToPoint({ 1,3,4 });
 
   return 0;
- }
+}
