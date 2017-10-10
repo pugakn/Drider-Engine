@@ -121,6 +121,13 @@ rayRayIntersect(const Vector3D& rayAOrigin,
 }
 
 bool
+frustrumPlaneIntersect(const std::array<Plane, 6>& frustrumPlanes,
+  const Vector3D& sphereOrigin,
+  const Vector3D& planePoint) {
+  return false;
+}
+
+bool
 frustrumFrustrumIntersect(const std::array<Plane, 6>& frustrumAPlanes,
                           const std::array<Plane, 6>& frustrumBPlanes) {
   return false;
