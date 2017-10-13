@@ -16,13 +16,13 @@ class DR_API_EXPORT Vector2D
 {
  public:
   /**
-  * Default constructor
+  * Default constructor.
   *
   */
   Vector2D();
 
   /**
-  * Default constructor
+  * Default constructor.
   * 
   * @param k
   *
@@ -31,13 +31,13 @@ class DR_API_EXPORT Vector2D
   explicit Vector2D(Math::FORCE_INIT k);
 
   /**
-  * Move constructor
+  * Move constructor.
   *
   */
   Vector2D(Vector2D&& V) = default;
 
   /**
-  * Copy constructor
+  * Copy constructor.
   *
   */
   Vector2D(const Vector2D& V);
@@ -46,15 +46,15 @@ class DR_API_EXPORT Vector2D
   * Initialize constructor with values.
   *
   * @param x
-  *  The x value of the vector
+  *  The x value of the vector.
   *
   * @param y
-  *  The y value of the vector
+  *  The y value of the vector.
   */
   Vector2D(float x, float y);
 
   /**
-  * Default destructor
+  * Default destructor.
   *
   */
   ~Vector2D();
@@ -100,11 +100,11 @@ class DR_API_EXPORT Vector2D
   /**
   * Computes the distance between two vectors.
   *
-  * @param scalar
-  *   Vector to calculate the distance
+  * @param otherVector
+  *   Vector to calculate the distance.
   *
   * @return
-  *   Distance
+  *   Distance.
   */
   float
   distance(const Vector2D& otherVector) const;
@@ -112,14 +112,43 @@ class DR_API_EXPORT Vector2D
   /**
   * Computes the squared distance between two vectors.
   *
-  * @param scalar
-  *   Vector to calculate the distance
+  * @param otherVector
+  *   Vector to calculate the distance.
   *
   * @return
-  *   Distance
+  *   Distance.
   */
   float
   distanceSqr(const Vector2D& otherVector) const;
+
+  /**
+  * Check's if the other vector is equal to this vector with an error
+  * range of a SMALL_NuMBER.
+  *
+  * @param otherVector
+  *   Vector to compare with this vector.
+  *
+  * @return
+  *   bool expression of condition.
+  */
+  bool
+  equals(const Vector2D& otherVector) const;
+
+  /**
+  * Check's if the other vector is equal to this vector with an error
+  * range.
+  *
+  * @param otherVector
+  *   Vector to compare with this vector.
+  *
+  * @param errorRange
+  *   The value of the error range.
+  *
+  * @return
+  *   bool expression of condition.
+  */
+  bool
+  equals(const Vector2D& otherVector, float errorRange) const;
 
   /**
   * Gets a reference to the specified element from the vector.

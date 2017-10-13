@@ -52,6 +52,18 @@ Vector2D::distanceSqr(const Vector2D& otherVector) const {
   return (otherVector - *this).lengthSqr();
 }
 
+bool
+Vector2D::equals(const Vector2D& otherVector) const {
+  return (Math::abs(x - otherVector.x) < Math::SMALL_NUMBER) &&
+         (Math::abs(y - otherVector.y) < Math::SMALL_NUMBER);
+}
+
+bool
+Vector2D::equals(const Vector2D& otherVector, float errorRange) const {
+  return (Math::abs(x - otherVector.x) < errorRange) &&
+         (Math::abs(y - otherVector.y) < errorRange);
+}
+
 float&
 Vector2D::operator[](SizeT index) {
   DR_ASSERT(index >= 0 && index < 2);
