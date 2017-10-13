@@ -166,7 +166,7 @@ class DR_API_EXPORT Matrix4x4
 
   //Uncommented
   Vector4D
-  operator*(const Vector4D S) const;
+  operator*(const Vector4D& S) const;
 
   //Uncommented
   Matrix4x4

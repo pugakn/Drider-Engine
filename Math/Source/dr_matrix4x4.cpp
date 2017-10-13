@@ -338,7 +338,7 @@ Matrix4x4::operator*=(const Matrix4x4 & A) {
 }
 
 Vector4D
-Matrix4x4::operator*(const Vector4D S) const {
+Matrix4x4::operator*(const Vector4D& S) const {
   Vector4D temp;
 
   temp.x = vector0.dot(S);
