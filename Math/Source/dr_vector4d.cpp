@@ -24,6 +24,8 @@ Vector4D::Vector4D(Math::FORCE_INIT k) {
 
 Vector4D::Vector4D(const Vector4D& V) : x(V.x), y(V.y), z(V.z), w(V.w) {}
 
+Vector4D::Vector4D(const Vector3D& V, float w) : x(V.x), y(V.y), z(V.z), w(w) {}
+
 Vector4D::Vector4D(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
 
 Vector4D::~Vector4D() {}
@@ -50,7 +52,7 @@ Vector4D::lengthSqr() const {
 
 void
 Vector4D::normalize() {
-  *this = (*this) * (1 / length());
+  *this = (*this) * Math::pow(length(), -1.0f);
 }
 
 float
@@ -176,13 +178,13 @@ Vector4D::operator*=(const float scalar) {
 
 Vector4D
 Vector4D::operator/(const float scalar) const {
-  float invDiv = 1 / scalar;
+  float invDiv = Math::pow(scalar, -1.0f);
   return Vector4D(x*invDiv, y*invDiv, z*invDiv, w*invDiv);
 }
 
 Vector4D&
 Vector4D::operator/=(const float scalar) {
-  float invDiv = 1 / scalar;
+  float invDiv = Math::pow(scalar, -1.0f);
   x *= invDiv;
   y *= invDiv;
   z *= invDiv;

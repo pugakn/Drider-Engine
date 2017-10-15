@@ -21,6 +21,8 @@ Vector3D::Vector3D(Math::FORCE_INIT k) {
 
 Vector3D::Vector3D(const Vector3D& V) : x(V.x), y(V.y), z(V.z) {}
 
+Vector3D::Vector3D(const Vector4D& V) : x(x), y(y), z(z) {}
+
 Vector3D::Vector3D(float x, float y, float z) : x(x), y(y), z(z) {}
 
 Vector3D::~Vector3D() {}
@@ -28,7 +30,7 @@ Vector3D::~Vector3D() {}
 float
 Vector3D::dot(const Vector3D& B) const {
   return (x*B.x) + (y*B.y) + (z*B.z);
-}
+} 
 
 Vector3D
 Vector3D::cross(const Vector3D& B) const {
@@ -47,7 +49,7 @@ Vector3D::lengthSqr() const {
 
 void
 Vector3D::normalize() {
-  *this = (*this) * (1 / length());
+  *this = (*this) * Math::pow(length(), -1.0f);
 }
 
 float
@@ -186,13 +188,13 @@ Vector3D::operator*=(const float scalar) {
 
 Vector3D
 Vector3D::operator/(const float scalar) const {
-  float invDiv = 1 / scalar;
+  float invDiv = Math::pow(scalar, -1.0f);
   return Vector3D(x*invDiv, y*invDiv, z*invDiv);
 }
 
 Vector3D&
 Vector3D::operator/=(const float scalar) {
-  float invDiv = 1 / scalar;
+  float invDiv = Math::pow(scalar, -1.0f);
   x *= invDiv;
   y *= invDiv;
   z *= invDiv;
