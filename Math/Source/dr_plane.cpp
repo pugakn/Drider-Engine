@@ -1,5 +1,10 @@
 #include "dr_plane.h"
 #include "dr_intersections.h"
+#include "dr_ray.h"
+#include "dr_aabb.h"
+#include "dr_sphere.h"
+#include "dr_capsule.h"
+#include "dr_frustrum.h"
 
 namespace driderSDK {
 
@@ -50,7 +55,8 @@ Plane::distanceToPoint(const Vector3D& point) {
       sqrt(dot(N,N))  
   *********************/
 
-  return Math::abs(dot(point) + d) / length();
+  //Warning: Assumes the normal is normalized
+  return Math::abs(dot(point) + d);
 }
 
 Math::PLANE_INTERSECT 
@@ -78,22 +84,30 @@ bool Plane::intersects(const Plane & other)
 
 bool Plane::intersects(const Sphere & sphere)
 {
-  return false;
+  return spherePlaneIntersect(*this, d, sphere.center, sphere.radio);
 }
 
 bool Plane::intersects(const AABB & aabb)
 {
-  return false;
+  return aabbPlaneIntersect(aabb.center, aabb.width, aabb.height, *this, d);
 }
 
 bool Plane::intersects(const Capsule & capsule)
 {
-  return false;
+  return capsulePlaneIntersect(capsule.pointA,
+                               capsule.pointB, 
+                               capsule.radio,
+                               *this,
+                               d);
 }
 
 bool Plane::intersects(const Frustrum & frustrum)
 {
-  return false;
+  return frustrumPlaneIntersect(frustrum.planes, *this, d);
+}
+
+bool Plane::intersects(const Ray & ray) {
+  return rayPlaneIntersect(ray.origin, ray.direction, *this, d);
 }
 
 void

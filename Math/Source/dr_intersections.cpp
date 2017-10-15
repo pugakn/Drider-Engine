@@ -60,6 +60,13 @@ sphereRayIntersect(const Vector3D& sphPosition,
   return sphereContainsPoint(vecClosestPoint, sphPosition, sphRadio);
 }
 
+bool rayPlaneIntersect(const Vector3D& rayOrigin,
+                       const Vector3D& rayDirection,
+                       const Vector3D& planeNormal,
+                       float planeGap) {
+  return false;
+}
+
 
 bool
 rayPlaneIntersect(const Vector3D& rayOrigin,
@@ -114,6 +121,13 @@ rayRayIntersect(const Vector3D& rayAOrigin,
 }
 
 bool
+frustrumPlaneIntersect(const std::array<Plane, 6>& frustrumPlanes,
+  const Vector3D& sphereOrigin,
+  const Vector3D& planePoint) {
+  return false;
+}
+
+bool
 frustrumFrustrumIntersect(const std::array<Plane, 6>& frustrumAPlanes,
                           const std::array<Plane, 6>& frustrumBPlanes) {
   return false;
@@ -132,14 +146,13 @@ aabbAabbIntersect(const Vector3D& aabbCenter,
                   float aabbHeight,
                   const Vector3D& aabbCenter2,
                   float aabbWidth2,
-                  float aabbheight2)
-{
-  return abs(aabbCenter.x - aabbCenter2.x) <= 
-		     ((aabbWidth / 2) + (aabbWidth2 / 2)) &&
-		     abs(aabbCenter.y - aabbCenter2.y) <= 
-	     	 ((aabbHeight / 2) + (aabbheight2 / 2)) && 
-		     abs(aabbCenter.z - aabbCenter2.z) <= 
-		     ((aabbWidth / 2) + (aabbWidth2 / 2));
+                  float aabbheight2) {
+  return abs(aabbCenter.x - aabbCenter2.x) <=
+    ((aabbWidth / 2) + (aabbWidth2 / 2)) &&
+    abs(aabbCenter.y - aabbCenter2.y) <=
+    ((aabbHeight / 2) + (aabbheight2 / 2)) &&
+    abs(aabbCenter.z - aabbCenter2.z) <=
+    ((aabbWidth / 2) + (aabbWidth2 / 2));
 }
 
 bool
@@ -147,27 +160,26 @@ aabbSphereIntersect(const Vector3D& aabbCenter,
                     float aabbWidth,
                     float aabbHeight,
                     const Vector3D& sphereOrigin,
-                    float sphereRadius)
-{
-	Vector3D distance = sphereOrigin - aabbCenter;
-	float trueDistance = distance.length();
-	distance.normalize();
-	if (distance.x >= distance.y && distance.x >= distance.z) {
-		distance /= distance.x;
-	}
-	else if (distance.y >= distance.x && distance.y >= distance.z) {
-		distance /= distance.y;
-	}
-	else {
-		distance /= distance.z;
-	}
-	distance.x *= aabbWidth / 2;
-	distance.y *= aabbHeight / 2;
-	distance.z *= aabbWidth / 2;
-	if (trueDistance <= (sphereRadius + distance.length())) {
-		return true;
-	}
-	return false;
+                    float sphereRadius) {
+  Vector3D distance = sphereOrigin - aabbCenter;
+  float trueDistance = distance.length();
+  distance.normalize();
+  if (distance.x >= distance.y && distance.x >= distance.z) {
+    distance /= distance.x;
+  }
+  else if (distance.y >= distance.x && distance.y >= distance.z) {
+    distance /= distance.y;
+  }
+  else {
+    distance /= distance.z;
+  }
+  distance.x *= aabbWidth / 2;
+  distance.y *= aabbHeight / 2;
+  distance.z *= aabbWidth / 2;
+  if (trueDistance <= (sphereRadius + distance.length())) {
+    return true;
+  }
+  return false;
 }
 
 bool
@@ -183,10 +195,9 @@ aabbPlaneIntersect(const Vector3D& aabbCenter,
 bool
 aabbFrustrumIntersect(const Vector3D& aabbCenter,
                       float aabbWidth,
-                      float aabbHeight,
-                      const std::array<Plane, 6>& frustrumPlanes)
-{
-
+                      float aabbheight,
+                      const std::array<Plane, 6>& frustrumPlanes) {
+  //TODO : implement aabb intersection function
   return false;
 }
 
@@ -195,44 +206,44 @@ aabbRayIntersect(const Vector3D& aabbCenter,
                  float aabbWidth,
                  float aabbHeight,
                  const Vector3D& rayOrigin,
-                 const Vector3D& rayDirection)
-{
-	Vector3D invertedDirection(1.0f / rayDirection.x, 
-														 1.0f / rayDirection.y, 
-														 1.0f / rayDirection.z);
-	Vector3D aabbMax(aabbCenter.x + (aabbWidth / 2),
-									 aabbCenter.y + (aabbHeight / 2),
-									 aabbCenter.z + (aabbWidth / 2));
-	Vector3D aabbMin(aabbCenter.x - (aabbWidth / 2),
-									 aabbCenter.y - (aabbHeight / 2),
-									 aabbCenter.z - (aabbWidth / 2));
-	float tmin = 0.0f, tmax = 0.0f, t1 = 0.0f, t2 = 0.0f;
-	int i = 0;
-	t1 = (aabbMin.x - rayOrigin.x) * invertedDirection.x;
-	t2 = (aabbMax.x - rayOrigin.x) * invertedDirection.x;
-	tmin = std::min(t1, t2);
-	tmax = std::max(t1, t2);
-	for (i = 1; i < 3; ++i) {
-		t1 = (aabbMin[i] - rayOrigin[i]) * invertedDirection[i];
-		t2 = (aabbMax[i] - rayOrigin[i]) * invertedDirection[i];
-		tmin = std::max(tmin, std::min(t1, t2));
-		tmax = std::min(tmax, std::max(t1, t2));
-	}
-	return tmax > std::max(tmin, 0.0f);
+                 const Vector3D& rayDirection) {
+
+  Vector3D invertedDirection(1.0f / rayDirection.x,
+                             1.0f / rayDirection.y,
+                             1.0f / rayDirection.z);
+  Vector3D aabbMax(aabbCenter.x + (aabbWidth / 2),
+                   aabbCenter.y + (aabbHeight / 2),
+                   aabbCenter.z + (aabbWidth / 2));
+  Vector3D aabbMin(aabbCenter.x - (aabbWidth / 2),
+                   aabbCenter.y - (aabbHeight / 2),
+                   aabbCenter.z - (aabbWidth / 2));
+
+  float t1 = (aabbMin.x - rayOrigin.x) * invertedDirection.x;
+  float t2 = (aabbMax.x - rayOrigin.x) * invertedDirection.x;
+  float tmin = std::min(t1, t2);
+  float tmax = std::max(t1, t2);
+
+  int i = 0;
+  for (i = 1; i < 3; ++i) {
+    t1 = (aabbMin[i] - rayOrigin[i]) * invertedDirection[i];
+    t2 = (aabbMax[i] - rayOrigin[i]) * invertedDirection[i];
+    tmin = std::max(tmin, std::min(t1, t2));
+    tmax = std::min(tmax, std::max(t1, t2));
+  }
+  return tmax > std::max(tmin, 0.0f);
 }
 
 bool
 aabbPointIntersect(const Vector3D& aabbCenter,
                    float aabbWidth,
                    float aabbHeight,
-                   const Vector3D& point)
-{
-	return (aabbCenter.x - (aabbWidth / 2)) <= point.x &&
-		     (aabbCenter.x + (aabbWidth / 2)) >= point.x &&
-	       (aabbCenter.y - (aabbHeight / 2)) <= point.y &&
-		     (aabbCenter.y + (aabbHeight / 2)) >= point.y &&
-         (aabbCenter.z - (aabbWidth / 2)) <= point.z &&
-		     (aabbCenter.z + (aabbWidth / 2)) >= point.z;
+                   const Vector3D& point) {
+  return (aabbCenter.x - (aabbWidth / 2)) <= point.x &&
+    (aabbCenter.x + (aabbWidth / 2)) >= point.x &&
+    (aabbCenter.y - (aabbHeight / 2)) <= point.y &&
+    (aabbCenter.y + (aabbHeight / 2)) >= point.y &&
+    (aabbCenter.z - (aabbWidth / 2)) <= point.z &&
+    (aabbCenter.z + (aabbWidth / 2)) >= point.z;
 }
 
 bool
@@ -240,9 +251,8 @@ spherePlaneIntersect(const Vector3D& planeNormal,
                      float planeGap,
                      const Vector3D& sphereCenter,
                      float sphereRadius) {
-  Plane plane(planeNormal, planeGap);
 
-  return (plane.distanceToPoint(sphereCenter) < sphereRadius);
+  return (planeNormal.dot(sphereCenter)) + planeGap < sphereRadius;
 }
 
 bool aabbPlaneIntersect(const Vector3D& aabbCenter,
@@ -250,15 +260,71 @@ bool aabbPlaneIntersect(const Vector3D& aabbCenter,
                         float aabbHeight,
                         const Vector3D& planeNormal,
                         float planeGap) {
-  return false;
+
+  Vector3D extents = aabbCenter;
+  extents.x += aabbWidth * 0.5f;
+  extents.y += aabbHeight * 0.5f;
+
+  float intervalRad = extents.x*Math::abs(planeNormal.x) +
+                      extents.y*Math::abs(planeNormal.y) +
+                      extents.z*Math::abs(planeNormal.z);
+
+  float distance = Math::abs(planeNormal.dot(aabbCenter) + planeGap);
+
+  return distance <= intervalRad;
+}
+
+bool segmentPlaneIntersect(const Vector3D& linePointA,
+                           const Vector3D& linePointB,
+                           const Vector3D& planeNormal,
+                           float planeGap) {
+
+  Vector3D segmentDir = linePointB - linePointB;
+  segmentDir.normalize();
+    
+  float d = planeNormal.dot(segmentDir);
+
+  if(d < Math::EPSILON) {
+    return false;
+  }
+
+  //Method to calculate point in the plane
+  //x = 0
+  //y = 0
+  //z = d/nz
+
+  //nx * x + ny * y + nz * z = d
+  // 0 + 0 + (nz)(d) / nz = d --> d = d
+
+
+  Vector3D point(0,0, planeGap/planeNormal.z);
+
+  float s = planeNormal.dot(point-linePointA) / d;
+
+  return 0 <= s && s <= 1;
 }
 
 bool capsulePlaneIntersect(const Vector3D& capsuleA,
                            const Vector3D& capsuleB,
-                           const Vector3D& capsuleRadius,
+                           float capsuleRadius,
                            const Vector3D& planeNormal,
                            float planeGap) {
-  return false;
+  //Test the 2 spheres of the capsule with the plane
+  //and the segment AB with the plane, if any of those instersects
+  //there is a collision with the capsule
+
+  return spherePlaneIntersect(planeNormal, 
+                              planeGap, 
+                              capsuleA, 
+                              capsuleRadius) ||
+         spherePlaneIntersect(planeNormal,
+                              planeGap , 
+                              capsuleB, 
+                              capsuleRadius) ||
+         segmentPlaneIntersect(capsuleA, 
+                               capsuleB, 
+                               planeNormal, 
+                               planeGap);
 }
 
 bool frustrumPlaneIntersect(const std::array<Plane, 6>& frustrumPlanes,

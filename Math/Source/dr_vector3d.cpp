@@ -1,4 +1,5 @@
 #include "dr_vector3d.h"
+#include "dr_vector4d.h"
 
 namespace driderSDK
 {
@@ -59,6 +60,20 @@ Vector3D::distanceSqr(const Vector3D& otherVector) const {
   return (otherVector - *this).lengthSqr();
 }
 
+bool
+Vector3D::equals(const Vector3D& otherVector) const {
+  return (Math::abs(x - otherVector.x) < Math::SMALL_NUMBER) &&
+         (Math::abs(y - otherVector.y) < Math::SMALL_NUMBER) &&
+         (Math::abs(z - otherVector.z) < Math::SMALL_NUMBER);
+}
+
+bool
+Vector3D::equals(const Vector3D& otherVector, float errorRange) const {
+  return (Math::abs(x - otherVector.x) < errorRange) &&
+         (Math::abs(y - otherVector.y) < errorRange) &&
+         (Math::abs(z - otherVector.z) < errorRange);
+}
+
 float
 Vector3D::sqrDistSegment(const Vector3D& pointA, const Vector3D& pointB) const {
   Vector3D AB = pointB - pointA;
@@ -103,6 +118,14 @@ Vector3D::operator^(const Vector3D& B) const {
 
 Vector3D&
 Vector3D::operator=(const Vector3D& A) {
+  x = A.x;
+  y = A.y;
+  z = A.z;
+  return *this;
+}
+
+Vector3D&
+Vector3D::operator=(const Vector4D& A) {
   x = A.x;
   y = A.y;
   z = A.z;

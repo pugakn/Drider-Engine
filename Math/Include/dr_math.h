@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <cstring>
 #include <limits>
 #include <dr_prerequisites.h>
 

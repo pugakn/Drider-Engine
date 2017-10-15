@@ -62,6 +62,7 @@ class Module
   startUp(Args&& ...args) {
     if (!isShutDown()) {
       //GE_EXCEPT(InternalErrorException, "Trying to start an already started module.");
+      return;
     }
 
     _instance() = dr_new<T>(std::forward<Args>(args)...);

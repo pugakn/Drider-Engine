@@ -1,4 +1,5 @@
 #include "dr_vector4d.h"
+#include "dr_vector3d.h"
 
 namespace driderSDK
 {
@@ -58,8 +59,24 @@ Vector4D::distance(const Vector4D& otherVector) const {
 }
 
 float
-Vector4D::distanceSqr(const Vector4D & otherVector) const {
+Vector4D::distanceSqr(const Vector4D& otherVector) const {
   return (otherVector - *this).lengthSqr();
+}
+
+bool
+Vector4D::equals(const Vector4D& otherVector) const {
+  return (Math::abs(x - otherVector.x) < Math::SMALL_NUMBER) &&
+         (Math::abs(y - otherVector.y) < Math::SMALL_NUMBER) &&
+         (Math::abs(z - otherVector.z) < Math::SMALL_NUMBER) &&
+         (Math::abs(w - otherVector.w) < Math::SMALL_NUMBER);
+}
+
+bool
+Vector4D::equals(const Vector4D& otherVector, float errorRange) const {
+  return (Math::abs(x - otherVector.x) < errorRange) &&
+         (Math::abs(y - otherVector.y) < errorRange) &&
+         (Math::abs(z - otherVector.z) < errorRange) &&
+         (Math::abs(w - otherVector.w) < errorRange);
 }
 
 float&
@@ -90,6 +107,14 @@ Vector4D::operator=(const Vector4D& A) {
   y = A.y;
   z = A.z;
   w = A.w;
+  return *this;
+}
+
+Vector4D&
+Vector4D::operator=(const Vector3D& A) {
+  x = A.x;
+  y = A.y;
+  z = A.z;
   return *this;
 }
 

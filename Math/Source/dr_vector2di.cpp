@@ -52,6 +52,18 @@ Vector2DI::distanceSqr(const Vector2DI& otherVector) const {
   return (otherVector - *this).lengthSqr();
 }
 
+bool
+Vector2DI::equals(const Vector2DI& otherVector) const {
+  return (Math::abs(x - otherVector.x) < Math::SMALL_NUMBER) &&
+         (Math::abs(y - otherVector.y) < Math::SMALL_NUMBER);
+}
+
+bool
+Vector2DI::equals(const Vector2DI& otherVector, float errorRange) const {
+  return (Math::abs(x - otherVector.x) < errorRange) &&
+         (Math::abs(y - otherVector.y) < errorRange);
+}
+
 Int32&
 Vector2DI::operator[](SizeT index) {
   DR_ASSERT(index >= 0 && index < 2);

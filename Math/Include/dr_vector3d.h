@@ -5,6 +5,8 @@
 
 namespace driderSDK {
 
+class Vector4D;
+
 class DR_API_EXPORT Vector3D
 {
  public:
@@ -133,6 +135,35 @@ class DR_API_EXPORT Vector3D
   distanceSqr(const Vector3D& otherVector) const;
 
   /**
+  * Check's if the other vector is equal to this vector with an error
+  * range of a SMALL_NuMBER.
+  *
+  * @param otherVector
+  *   Vector to compare with this vector.
+  *
+  * @return
+  *   bool expression of condition.
+  */
+  bool
+  equals(const Vector3D& otherVector) const;
+
+  /**
+  * Check's if the other vector is equal to this vector with an error
+  * range.
+  *
+  * @param otherVector
+  *   Vector to compare with this vector.
+  *
+  * @param errorRange
+  *   The value of the error range.
+  *
+  * @return
+  *   bool expression of condition.
+  */
+  bool
+  equals(const Vector3D& otherVector, float errorRange) const;
+
+  /**
   * Computes the squared distance between a point and a segment.
   *
   * @param pointA
@@ -209,6 +240,10 @@ class DR_API_EXPORT Vector3D
   //Uncommented
   Vector3D&
   operator=(const Vector3D& A);
+
+  //Uncommented
+  Vector3D&
+  operator=(const Vector4D& A);
 
   //Uncommented
   Vector3D
