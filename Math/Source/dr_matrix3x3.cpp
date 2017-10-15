@@ -1,4 +1,5 @@
-#include <dr_matrix3x3.h>
+#include "dr_matrix3x3.h"
+#include "dr_matrix4x4.h"
 
 namespace driderSDK
 {
@@ -144,6 +145,15 @@ Matrix3x3::operator=(const Matrix3x3& A) {
   return *this;
 }
 
+Matrix3x3&
+Matrix3x3::operator=(const Matrix4x4 & A)
+{
+  vector0 = A.vector0;
+  vector1 = A.vector1;
+  vector2 = A.vector2;
+  return *this;
+}
+
 Matrix3x3
 Matrix3x3::operator+(const Matrix3x3& A) const {
   return Matrix3x3(vector0 + A.vector0,
@@ -219,7 +229,7 @@ Matrix3x3::operator*=(const Matrix3x3& A) {
 }
 
 Vector3D
-Matrix3x3::operator*(const Vector3D S) const {
+Matrix3x3::operator*(const Vector3D& S) const {
   Vector3D temp;
 
   temp.x = vector0.dot(S);

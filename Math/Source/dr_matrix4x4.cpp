@@ -1,4 +1,5 @@
-#include <dr_matrix4x4.h>
+#include "dr_matrix4x4.h"
+#include "dr_matrix3x3.h"
 
 namespace driderSDK
 {
@@ -239,6 +240,15 @@ Matrix4x4::operator=(const Matrix4x4 & A) {
   return *this;
 }
 
+Matrix4x4&
+Matrix4x4::operator=(const Matrix3x3 & A)
+{
+  vector0 = A.vector0;
+  vector1 = A.vector1;
+  vector2 = A.vector2;
+  return *this;
+}
+
 Matrix4x4 
 Matrix4x4::operator+(const Matrix4x4 & A) const {
   return Matrix4x4(vector0 + A.vector0,
@@ -369,6 +379,21 @@ Matrix4x4::operator*=(const float S) {
   vector3 = vector3 * S;
 
   return *this;
+}
+
+bool
+Matrix4x4::operator==(const Matrix4x4 & M)
+{
+  return vector0 == M.vector0 &&
+         vector1 == M.vector1 &&
+         vector2 == M.vector2 &&
+         vector3 == M.vector3;
+}
+
+bool
+Matrix4x4::operator!=(const Matrix4x4 & M)
+{
+  return !(*this == M);
 }
 
 }
