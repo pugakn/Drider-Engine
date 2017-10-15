@@ -2,7 +2,13 @@
 
 #include <dr_prerequisites.h>
 #include "dr_vector3d.h"
+#include "dr_intersections.h"
+
 namespace driderSDK {
+class Plane;
+class AABB;
+class Capsule;
+class Frustrum;
 
 class DR_API_EXPORT Sphere
 {
@@ -10,7 +16,7 @@ class DR_API_EXPORT Sphere
   //Uncommented
   Sphere()
   {}
-  float radio;
+  float radius;
   Vector3D center;
   //void SetRadio();
   //void SetPosition();
@@ -18,7 +24,7 @@ class DR_API_EXPORT Sphere
   bool 
   intersects(const Vector3D& point);
   bool 
-  intersects(const Plane& other);
+  intersects(const Plane& plane);
   bool 
   intersects(const Sphere& sphere);
   bool 
@@ -27,8 +33,6 @@ class DR_API_EXPORT Sphere
   intersects(const Capsule& capsule);
   bool 
   intersects(const Frustrum& frustrum);
- protected:
- private:
 
 };
 

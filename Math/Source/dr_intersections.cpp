@@ -108,20 +108,94 @@ rayPlaneIntersect(const Vector3D& rayOrigin,
 }
 
 bool
+rayCapsuleIntersect(const Vector3D& pointSA,
+                    const Vector3D& pointSB,
+                    const Vector3D& pointP,
+                    const Vector3D& pointQ,
+                    float r,
+                    float &t)
+{
+  Vector3D dir = pointSB - pointSA;
+  dir.normalize();
+  if(sphereRayIntersect(pointP, r, pointSA, dir)) {
+   return true;
+  }
+
+  dir = pointSB - pointSA;
+  if (sphereRayIntersect(pointQ, r, pointSA, dir)) {
+   return true;
+  }
+
+  Vector3D d = pointQ - pointP, m = pointSA - pointP, n = pointSB - pointSA;
+  float md = m.dot(d);
+  float nd = n.dot(d);
+  float dd = d.dot(d);
+
+  if (md < 0.0f && md + nd < 0.0f) {
+   return false; 
+  }
+  if (md > dd && md + nd > dd) {
+   return false; 
+  }
+  float nn = n.dot(n);
+  float mn = m.dot(n);
+  float a = dd * nn - nd * nd;
+  float k = m.dot(m) - r * r;
+  float c = dd * k - md * md;
+
+  if (Math::abs(a) < Math::EPSILON) {
+   
+   if (c > 0.0f) {
+    return false; 
+   }                        
+   
+   if (md < 0.0f) {
+    t = -mn / nn; 
+   } else if (md > dd) {
+     t = (nd - mn) / nn;
+   }
+   else {
+    t = 0.0f;
+   }
+   return true;
+
+  }
+
+  float b = dd * mn - nd * md;
+  float discr = b * b - a * c;
+  if (discr < 0.0f) {
+   return false; 
+  }
+
+  t = (-b - Math::sqrt(discr)) / a;
+  if (t < 0.0f || t > 1.0f) {
+   return false;
+  }
+  if (md + t * nd < 0.0f) {
+   if (nd <= 0.0f) {
+    return 0; 
+   }
+   t = -md / nd;
+   return k + 2 * t * (mn + t * nn) <= 0.0f;
+  }
+  else if (md + t * nd > dd) {
+   if (nd >= 0.0f) {
+    return false;
+   }
+   t = (dd - md) / nd;
+   return k + dd - 2 * md + t * (2 * (mn - nd) + t * nn) <= 0.0f;
+  }
+  return true;
+}
+
+
+bool
 rayFrustrumIntersect(const Vector3D& rayOrigin,
                      const Vector3D& rayDirection,
                      const std::array<Plane, 6>& frustrumPlanes)
 {
   return false;
 }
-
-//bool 
-//rayCapsuleIntersection(const Vector3D& rayOrigin, 
-//	                     const Vector3D& rayDirection, 
-//	                     const Matrix4x4& frustrumVP)
-//{
-//	return false;
-//}
 
 bool
 rayRayIntersect(const Vector3D& rayAOrigin,
