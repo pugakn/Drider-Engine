@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="1">
-    <root name="C:/Users/Gerardo/Desktop/Engines/DriderEngine"/>
-    <builddir>C:/Users/Gerardo/Desktop/Engines/DriderEngine</builddir>
     <importproject>../DriderEngine.sln</importproject>
+    <exclude>
+        <path name="F:/projectsVS2017/Drider-Engine/3rdParties/*/*"/>
+    </exclude>
     <libraries>
         <library>windows</library>
     </libraries>
