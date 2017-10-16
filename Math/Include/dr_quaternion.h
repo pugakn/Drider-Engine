@@ -3,6 +3,7 @@
 #include <cmath>
 #include <dr_prerequisites.h>
 #include "dr_matrix4x4.h"
+#include "dr_matrix3x3.h"
 
 namespace driderSDK {
 
@@ -94,13 +95,22 @@ class DR_API_EXPORT Quaternion
   rotation(float theta, const Quaternion& A);
 
   /**
-  * Creates a matrix from the quaternion.
+  * Creates a 4D matrix from the quaternion.
   *
   * @param Matrix
   *   Matrix4x4 to be filled.
   */
   void
   matrixFromQuaternion(Matrix4x4& Matrix);
+
+	/**
+	* Creates a 3D matrix from the quaternion.
+	*
+	* @param Matrix
+	*   Matrix3x3 to be filled.
+	*/
+	void
+	matrixFromQuaternion(Matrix3x3& Matrix);
 
   //Uncommented
   Quaternion

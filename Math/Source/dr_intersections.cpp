@@ -220,17 +220,16 @@ aabbRayIntersect(const Vector3D& aabbCenter,
 
   float t1 = (aabbMin.x - rayOrigin.x) * invertedDirection.x;
   float t2 = (aabbMax.x - rayOrigin.x) * invertedDirection.x;
-  float tmin = std::min(t1, t2);
-  float tmax = std::max(t1, t2);
+  float tmin = Math::min(t1, t2);
+  float tmax = Math::max(t1, t2);
 
-  int i = 0;
-  for (i = 1; i < 3; ++i) {
+  for (int i = 1; i < 3; ++i) {
     t1 = (aabbMin[i] - rayOrigin[i]) * invertedDirection[i];
     t2 = (aabbMax[i] - rayOrigin[i]) * invertedDirection[i];
-    tmin = std::max(tmin, std::min(t1, t2));
-    tmax = std::min(tmax, std::max(t1, t2));
+    tmin =  Math::max(tmin, Math::min(t1, t2));
+    tmax =  Math::min(tmax, Math::max(t1, t2));
   }
-  return tmax > std::max(tmin, 0.0f);
+  return tmax > Math::max(tmin, 0.0f);
 }
 
 bool
