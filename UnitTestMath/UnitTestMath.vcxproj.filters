@@ -18,5 +18,8 @@
     <ClCompile Include="unitTestMath.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="dr_unitTest_matrix3x3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

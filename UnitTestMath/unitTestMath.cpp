@@ -7,31 +7,6 @@
 #include <dr_radian.h>
 #include <gtest\gtest.h>
 
-TEST(SquareRootTest, PositiveNos) {
-  driderSDK::Matrix4x4 lu(driderSDK::Math::FORCE_INIT::kIdentity);
-  EXPECT_EQ(1, lu[0][0]);
-  EXPECT_EQ(0, lu[0][1]);
-  EXPECT_EQ(0, lu[0][2]);
-  EXPECT_EQ(0, lu[0][3]);
-
-  EXPECT_EQ(0, lu[1][0]);
-  EXPECT_EQ(1, lu[1][1]);
-  EXPECT_EQ(0, lu[1][2]);
-  EXPECT_EQ(0, lu[1][3]);
-
-  EXPECT_EQ(0, lu[2][0]);
-  EXPECT_EQ(0, lu[2][1]);
-  EXPECT_EQ(1, lu[2][2]);
-  EXPECT_EQ(0, lu[2][3]);
-
-  EXPECT_EQ(0, lu[3][0]);
-  EXPECT_EQ(0, lu[3][1]);
-  EXPECT_EQ(0, lu[3][2]);
-  EXPECT_EQ(1, lu[3][3]);
-
-  EXPECT_TRUE(true);
-}
-
 bool recev(int& asin)
 {
   return false;
@@ -46,7 +21,10 @@ int main(int argc, char* argv[])
   driderSDK::Radian dckRad(5);
   dckRad = dckRad + 3;
   dckRad = -dckRad;
+  float lucas = 10;
+  float lucas2 = 11;
 
+  lucas -= lucas2;
 
   float po = lu.determinant();
   //lu.cofactor();
