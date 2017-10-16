@@ -145,6 +145,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="dr_unitTest_matrix3x3.cpp" />
+    <ClCompile Include="dr_unitTest_matrix4x4.cpp" />
     <ClCompile Include="unitTestMath.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

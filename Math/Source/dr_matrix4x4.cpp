@@ -318,32 +318,35 @@ Matrix4x4::operator*(const Matrix4x4 & A) const {
 
 Matrix4x4&
 Matrix4x4::operator*=(const Matrix4x4 & A) {
+  Matrix4x4 temp;
+
   Vector4D c0(A.vector0.x, A.vector1.x, A.vector2.x, A.vector3.x);
   Vector4D c1(A.vector0.y, A.vector1.y, A.vector2.y, A.vector3.y);
   Vector4D c2(A.vector0.z, A.vector1.z, A.vector2.z, A.vector3.z);
   Vector4D c3(A.vector0.w, A.vector1.w, A.vector2.w, A.vector3.w);
 
 
-  vector0.x = vector0.dot(c0);
-  vector0.y = vector0.dot(c1);
-  vector0.z = vector0.dot(c2);
-  vector0.w = vector0.dot(c3);
+  temp.vector0.x = vector0.dot(c0);
+  temp.vector0.y = vector0.dot(c1);
+  temp.vector0.z = vector0.dot(c2);
+  temp.vector0.w = vector0.dot(c3);
 
-  vector1.x = vector1.dot(c0);
-  vector1.y = vector1.dot(c1);
-  vector1.z = vector1.dot(c2);
-  vector1.w = vector1.dot(c3);
+  temp.vector1.x = vector1.dot(c0);
+  temp.vector1.y = vector1.dot(c1);
+  temp.vector1.z = vector1.dot(c2);
+  temp.vector1.w = vector1.dot(c3);
 
-  vector2.x = vector2.dot(c0);
-  vector2.y = vector2.dot(c1);
-  vector2.z = vector2.dot(c2);
-  vector2.w = vector2.dot(c3);
+  temp.vector2.x = vector2.dot(c0);
+  temp.vector2.y = vector2.dot(c1);
+  temp.vector2.z = vector2.dot(c2);
+  temp.vector2.w = vector2.dot(c3);
 
-  vector3.x = vector3.dot(c0);
-  vector3.y = vector3.dot(c1);
-  vector3.z = vector3.dot(c2);
-  vector3.w = vector3.dot(c3);
+  temp.vector3.x = vector3.dot(c0);
+  temp.vector3.y = vector3.dot(c1);
+  temp.vector3.z = vector3.dot(c2);
+  temp.vector3.w = vector3.dot(c3);
 
+  *this = temp;
   return *this;
 }
 
