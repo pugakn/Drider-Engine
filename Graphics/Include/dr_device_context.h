@@ -1,7 +1,14 @@
 #pragma once
 #include <dr_prerequisites.h>
-#include "dr_shader.h"
 #include "dr_texture.h"
+#include "dr_vertex_shader.h"
+#include "dr_fragment_shader.h"
+#include "dr_compute_shader.h"
+#include "dr_teselation_shader.h"
+#include "dr_domain_shader.h"
+#include "sr_texture_shader.h"
+#include "dr_index_buffer.h"
+#include "dr_vertex_buffer.h"
 namespace driderSDK {
 class DeviceContext {
  public:
@@ -10,20 +17,23 @@ class DeviceContext {
 
    virtual void draw() = 0;
 
-   virtual void generateMipMaps() = 0;
-   virtual void map() = 0;
+   virtual void generateMipMaps(Texture* texture) = 0;
+   virtual void map(Texture* texture) = 0;
    virtual void unmap() = 0;
 
-   virtual void updateSubResources() = 0;
+   virtual void setShader(VertexShader* shader) = 0;
+   virtual void setShader(FragmentShader* shader) = 0;
+   virtual void setShader(ComputeShader* shader) = 0;
+   virtual void setShader(TeselationShader* shader) = 0;
+   virtual void setShader(DomainShader* shader) = 0;
+   virtual void setShader(TextureShader* shader) = 0;
 
-   virtual void setShader(Shader* shader) = 0;
-   virtual Shader* getShader() = 0;
-   virtual void setShaderTexture(Shader* shader,UInt32 slot, Texture* texture) = 0;
    virtual void updateTexture(Texture* texture,char* buffer,UInt32 bufferSize) = 0;
-   virtual void getShaderResources() = 0;
-   virtual void setConstantBuffers() = 0;
-   virtual void getConstantBuffers() = 0;
-   virtual void setSamplers() = 0;
-   virtual void getSamplers() = 0;
+   virtual void updateBuffer(Buffer* buffer,char dataBuffer, UInt32 bufferSize) = 0;
+
+   virtual void setIndexBuffer(IndexBuffer* indexBuffer, UInt32 offset) = 0;
+   virtual void setVertexBuffers(UInt32 slot, UInt32 numBuffers, ConstantBuffer* buffer, UInt32 stride, UInt32 offset) = 0;
+
+   virtual void setPrimitiveTopology() = 0;
 };
 }

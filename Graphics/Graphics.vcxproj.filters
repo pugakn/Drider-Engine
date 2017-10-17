@@ -33,9 +33,6 @@
     <ClInclude Include="Include\dr_swap_chain.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="Include\dr_index_buffer.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
     <ClInclude Include="Include\dr_input_layout.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
@@ -43,9 +40,6 @@
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="Include\dr_sample_state.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\dr_hull_shader.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="Include\sr_texture_shader.h">
@@ -69,9 +63,6 @@
     <ClInclude Include="Include\dr_shader.h">
       <Filter>Archivos de encabezado\Shaders</Filter>
     </ClInclude>
-    <ClInclude Include="Include\dr_vertex_buffer.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
     <ClInclude Include="Include\dr_buffer.h">
       <Filter>Archivos de encabezado\Buffers</Filter>
     </ClInclude>
@@ -80,6 +71,18 @@
     </ClInclude>
     <ClInclude Include="Include\dr_constant_buffer.h">
       <Filter>Archivos de encabezado\Buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_index_buffer.h">
+      <Filter>Archivos de encabezado\Buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_vertex_buffer.h">
+      <Filter>Archivos de encabezado\Buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_hull_shader.h">
+      <Filter>Archivos de encabezado\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_rasterizer_state.h">
+      <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

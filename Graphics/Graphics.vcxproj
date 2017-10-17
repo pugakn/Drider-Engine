@@ -146,6 +146,7 @@
     <ClInclude Include="Include\dr_hull_shader.h" />
     <ClInclude Include="Include\dr_index_buffer.h" />
     <ClInclude Include="Include\dr_input_layout.h" />
+    <ClInclude Include="Include\dr_rasterizer_state.h" />
     <ClInclude Include="Include\dr_sample_state.h" />
     <ClInclude Include="Include\dr_shader.h" />
     <ClInclude Include="Include\dr_swap_chain.h" />

@@ -12,23 +12,41 @@ enum E
 namespace DR_FORMAT {
 enum E 
 {
-  APLPHA,
-  RGB4,
-  RGBA4,
-  RGB8,
-  RGB8A,
-  RGB16,
-  RGBA16,
-  RGB32,
-  RGBA32
+  kAplha,
+  kR4G4B4,
+  kR4G4B4A4,
+  kR8G8B8,
+  kR8G8B8A8,
+  kR16G16B16,
+  kR16G16B16A16,
+  kR32G32B32,
+  kR32G32B32A32
 };
 
 } 
-namespace DR_TEXTURE_TILING {
+namespace DR_TEXTURE_ADDRESS {
 enum E 
 {
-  TILED,
-  CLAMP_TO_EDGE,
-  MIRROR
+  kTiled,
+  kClampToEdge,
+  kMirror
 };
 }
+
+namespace DR_TEXTURE_FILTER {
+enum E {
+  kPoint,
+  kLinear,
+  kAnisotropic
+};
+}
+
+struct DrSampleDesc 
+{
+  DR_TEXTURE_FILTER::E Filter;
+  DR_TEXTURE_ADDRESS::E addressU;
+  DR_TEXTURE_ADDRESS::E addressV;
+  DR_TEXTURE_ADDRESS::E addressW;
+};
+
+
