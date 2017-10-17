@@ -96,6 +96,14 @@ Vector3D::sqrDistSegment(const Vector3D& pointA, const Vector3D& pointB) const {
   return AC.dot(AC) - (e * e / f);
 }
 
+float* Vector3D::ptr() {
+  return data;
+}
+
+const float* Vector3D::ptr() const {
+  return data;
+}
+
 float&
 Vector3D::operator[](SizeT index) {
   DR_ASSERT(index >= 0 && index < 3);

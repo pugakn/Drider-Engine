@@ -64,6 +64,14 @@ Vector2DI::equals(const Vector2DI& otherVector, float errorRange) const {
          (Math::abs(y - otherVector.y) < errorRange);
 }
 
+int* Vector2DI::ptr() {
+  return data;
+}
+
+const int* Vector2DI::ptr() const {
+  return data;
+}
+
 Int32&
 Vector2DI::operator[](SizeT index) {
   DR_ASSERT(index >= 0 && index < 2);

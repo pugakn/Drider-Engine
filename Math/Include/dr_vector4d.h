@@ -179,6 +179,24 @@ class DR_API_EXPORT Vector4D
   bool
   equals(const Vector4D& otherVector, float errorRange) const;
 
+   /**
+  * Gets a pointer to the first element of the matrix.
+  *
+  * @return
+  *	  A pointer to the first element of the matrix.
+  */
+  float*
+  ptr();
+
+  /**
+  * Gets a constant pointer to the first element of the matrix.
+  *
+  * @return
+  *	  A constant pointer to the first element of the matrix.
+  */
+  const float*
+  ptr() const;
+
   /**
   * Gets a reference to the specified element from the vector.
   *

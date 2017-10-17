@@ -84,6 +84,14 @@ Vector4D::equals(const Vector4D& otherVector, float errorRange) const {
          (Math::abs(w - otherVector.w) < errorRange);
 }
 
+float* Vector4D::ptr() {
+  return data;
+}
+
+const float* Vector4D::ptr() const {
+  return data;
+}
+
 float&
 Vector4D::operator[](SizeT index) {
   DR_ASSERT(index >= 0 && index < 4);
