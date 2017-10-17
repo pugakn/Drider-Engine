@@ -131,6 +131,14 @@ Matrix3x3::identity() {
   vector2.z = 1;
 }
 
+float* Matrix3x3::ptr() {
+  return data->ptr();
+}
+
+const float* Matrix3x3::ptr() const {
+  return data->ptr();
+}
+
 Vector3D&
 Matrix3x3::operator[](SizeT index) {
   DR_ASSERT(index >= 0 && index < 3);

@@ -134,6 +134,18 @@ class MatrixNxM
   }
 
   /**
+  * Gets a pointer to the first element of the matrix.
+  *
+  * @return
+  *	  A pointer to the first element of the matrix.
+  */
+  FORCEINLINE float*
+  ptr() 
+  {
+    return m_elements[0].ptr();
+  }
+
+  /**
   * Gets a constant pointer to the first element of the matrix.
   *
   * @return
@@ -142,8 +154,7 @@ class MatrixNxM
   FORCEINLINE const float*
   ptr() const
   {
-	  return m_elements.data()->ptr()
-      ;
+	  return m_elements[0].ptr();
   }
 
   /**

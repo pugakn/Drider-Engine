@@ -150,19 +150,31 @@ class VectorN
 
 	  operator*=(invLength);
   }
+    
+  /**
+  * Gets a pointer to the first element of the vector.
+  *
+  * @return
+  *	  The pointer to the first element of the vector.
+  */
+  FORCEINLINE float*
+  ptr() 
+  {
+	  return m_elements.data();
+  }
 
    /**
   * Gets a constant pointer to the first element of the vector.
   *
   * @return
-  *	  A constant pointer to the first element of the vector.
+  *	  The constant pointer to the first element of the vector.
   */
   FORCEINLINE const float*
   ptr() const
   {
 	  return m_elements.data();
   }
-
+  
   /**
   *	Overload of binary operator *=
   *
@@ -205,8 +217,8 @@ class VectorN
   {
     //Multiply by reciprocal instead of multiple divisions
 	  float invScalar = 1.f / scalar;
-	  (*this) *= invScalar;
-	  return (*this);
+	  operator*=(invScalar);
+	  return *this;
   }
 
   /**
@@ -272,9 +284,9 @@ class VectorN
 	  //Compares each element in the first range (m_elements.begin()-m_elements.end())
 	  //to each element in the second range(rhs.m_elements.begin()-m_elements.end()
 	  return std::equal(m_elements.begin(), 
-					    m_elements.end(), 
-					    rhs.m_elements.begin(), 
-					    rhs.m_elements.begin());
+					            m_elements.end(), 
+					            rhs.m_elements.begin(), 
+					            rhs.m_elements.begin());
   }
 	
   /**

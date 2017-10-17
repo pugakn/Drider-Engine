@@ -33,5 +33,8 @@
     <ClInclude Include="Include\dr_logger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="dr_memory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

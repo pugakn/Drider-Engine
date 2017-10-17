@@ -225,6 +225,14 @@ Matrix4x4::identity() {
   vector3.w = 1;
 }
 
+float* Matrix4x4::ptr() {
+  return data->ptr();
+}
+
+const float* Matrix4x4::ptr() const {
+  return data->ptr();
+}
+
 Vector4D&
 Matrix4x4::operator[](SizeT index) {
   DR_ASSERT(index >= 0 && index < 4);
