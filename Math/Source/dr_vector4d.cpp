@@ -24,6 +24,9 @@ Vector4D::Vector4D(Math::FORCE_INIT k) {
 
 Vector4D::Vector4D(const Vector4D& V) : x(V.x), y(V.y), z(V.z), w(V.w) {}
 
+Vector4D::Vector4D(const Vector3D& V) : x(V.x), y(V.y), z(V.z) {
+}
+
 Vector4D::Vector4D(const Vector3D& V, float w) : x(V.x), y(V.y), z(V.z), w(w) {}
 
 Vector4D::Vector4D(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}

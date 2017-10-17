@@ -47,7 +47,8 @@ class DR_API_EXPORT Radian
   * @return
   *   Class degree.
   */
-  float toDegree() const;
+  float
+toDegree() const;
 
   /**
   * Limit the value in [0, 360)
