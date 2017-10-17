@@ -44,17 +44,6 @@ void Plane::compute(const Vector3D& _normal, const Vector3D& point) {
 
 float
 Plane::distanceToPoint(const Vector3D& point) {
-  
-  /******Formula*******
-   	 N = Plane Normal 
-   	 P = Point		  
-   	 d = Plane gap
-
-   	 |dot(N, P) + d|  
-   	 ---------------  
-      sqrt(dot(N,N))  
-  *********************/
-
   //Warning: Assumes the normal is normalized
   return Math::abs(dot(point) + d);
 }
