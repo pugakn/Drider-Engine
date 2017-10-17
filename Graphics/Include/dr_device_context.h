@@ -28,12 +28,12 @@ class DeviceContext {
    virtual void setShader(DomainShader* shader) = 0;
    virtual void setShader(TextureShader* shader) = 0;
 
-   virtual void updateTexture(Texture* texture,char* buffer,UInt32 bufferSize) = 0;
-   virtual void updateBuffer(Buffer* buffer,char dataBuffer, UInt32 bufferSize) = 0;
+   virtual void updateTexture(Texture* texture,const char* databuffer,UInt32 bufferSize) = 0;
+   virtual void updateBuffer(Buffer* buffer,const char* dataBuffer, UInt32 bufferSize) = 0;
 
    virtual void setIndexBuffer(IndexBuffer* indexBuffer, UInt32 offset) = 0;
    virtual void setVertexBuffers(UInt32 slot, UInt32 numBuffers, ConstantBuffer* buffer, UInt32 stride, UInt32 offset) = 0;
 
-   virtual void setPrimitiveTopology() = 0;
+   virtual void setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::E topology) = 0;
 };
 }

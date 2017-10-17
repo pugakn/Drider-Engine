@@ -3,6 +3,7 @@
 #include "dr_graphics_defines.h"
 namespace driderSDK {
 class SamplerState {
+ public:
   DrSampleDesc sampleDesc;
 };
 }
