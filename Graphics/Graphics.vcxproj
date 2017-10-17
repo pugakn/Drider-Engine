@@ -135,12 +135,25 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Include\dr_buffer.h" />
+    <ClInclude Include="Include\dr_command_buffer.h" />
+    <ClInclude Include="Include\dr_compute_shader.h" />
+    <ClInclude Include="Include\dr_constant_buffer.h" />
+    <ClInclude Include="Include\dr_domain_shader.h" />
+    <ClInclude Include="Include\dr_fragment_shader.h" />
+    <ClInclude Include="Include\dr_graphics_defines.h" />
     <ClInclude Include="Include\dr_device.h" />
-    <ClInclude Include="Include\dr_gl_device.h" />
+    <ClInclude Include="Include\dr_device_context.h" />
+    <ClInclude Include="Include\dr_hull_shader.h" />
+    <ClInclude Include="Include\dr_index_buffer.h" />
+    <ClInclude Include="Include\dr_input_layout.h" />
+    <ClInclude Include="Include\dr_sample_state.h" />
+    <ClInclude Include="Include\dr_shader.h" />
+    <ClInclude Include="Include\dr_swap_chain.h" />
+    <ClInclude Include="Include\dr_teselation_shader.h" />
     <ClInclude Include="Include\dr_texture.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Source\dr_gl_device.cpp" />
+    <ClInclude Include="Include\dr_vertex_buffer.h" />
+    <ClInclude Include="Include\dr_vertex_shader.h" />
+    <ClInclude Include="Include\sr_texture_shader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

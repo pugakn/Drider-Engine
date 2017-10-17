@@ -1,6 +1,13 @@
 #pragma once
-#include "dr_swap_chain.h"
 #include <dr_prerequisites.h>
+#include "dr_swap_chain.h"
+#include "dr_vertex_shader.h"
+#include "dr_fragment_shader.h"
+#include "dr_compute_shader.h"
+#include "dr_teselation_shader.h"
+#include "dr_domain_shader.h"
+#include "sr_texture_shader.h"
+
 namespace driderSDK {
 class Device
 {
@@ -10,14 +17,12 @@ class Device
 
   virtual void createBuffer() = 0;
 
-  virtual void createFragmentShader() = 0;
-  virtual void crateVertexShader() = 0;
-  virtual void createComputeShader() = 0;
-  virtual void createGeometryShader() = 0;
-  virtual void createHullShader() = 0;
-  virtual void createTextureShader() = 0;
-  virtual void createDomainShader() = 0;
-  virtual void createTeselationShader() = 0;
+  virtual void createShader(char* shaderBuffer, VertexShader* shader) = 0;
+  virtual void createShader(char* shaderBuffer, FragmentShader* shader) = 0;
+  virtual void createShader(char* shaderBuffer, ComputeShader* shader) = 0;
+  virtual void createShader(char* shaderBuffer, TeselationShader* shader) = 0;
+  virtual void createShader(char* shaderBuffer, DomainShader* shader) = 0;
+  virtual void createShader(char* shaderBuffer, TextureShader* shader) = 0;
 
   virtual void createBlendState() = 0;
   virtual void createSamplerState() = 0;
