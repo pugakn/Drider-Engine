@@ -115,6 +115,35 @@ class DR_API_EXPORT Vector2DI
   distanceSqr(const Vector2DI& otherVector) const;
 
   /**
+  * Check's if the other vector is equal to this vector with an error
+  * range of a SMALL_NuMBER.
+  *
+  * @param otherVector
+  *   Vector to compare with this vector.
+  *
+  * @return
+  *   bool expression of condition.
+  */
+  bool
+  equals(const Vector2DI& otherVector) const;
+
+  /**
+  * Check's if the other vector is equal to this vector with an error
+  * range.
+  *
+  * @param otherVector
+  *   Vector to compare with this vector.
+  *
+  * @param errorRange
+  *   The value of the error range.
+  *
+  * @return
+  *   bool expression of condition.
+  */
+  bool
+  equals(const Vector2DI& otherVector, float errorRange) const;
+
+  /**
   * Gets a const reference to the specified element from the vector.
   *
   *	@param index

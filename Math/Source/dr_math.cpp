@@ -41,13 +41,13 @@ Math::fast_invSqrt(float number) {
   float x2 = number * 0.5F, y = number;
   const float threehalfs = 1.5F;
 
-  i = *(long *)&y;                    // evil floating point bit level hacking
-  //std::memcpy(&i, &y, sizeof(float)); // good floating point bit level hacking
+  //i = *(long *)&y;                    // evil floating point bit level hacking
+  std::memcpy(&i, &y, sizeof(float)); // good floating point bit level hacking
 
   i = 0x5f3759df - (i >> 1);          // what the fuck? 
 
-  y = *(float *)&i;                  
-  //std::memcpy(&y, &i, sizeof(float));
+  //y = *(float *)&i;                  
+  std::memcpy(&y, &i, sizeof(float));
 
   y = y * (threehalfs - (x2*y*y));    // 1st iteration
   //y = y * (threehalfs - (x2*y* y));   // 2nd iteration, this can be removed

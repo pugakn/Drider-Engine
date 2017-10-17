@@ -38,7 +38,7 @@ AABB::intersect(Sphere& sphere) {
                              width,
                              height, 
                              sphere.center, 
-                             sphere.radio);
+                             sphere.radius);
 }
 
 bool

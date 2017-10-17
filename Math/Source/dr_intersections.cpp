@@ -32,12 +32,24 @@ sphereCapsuleIntersect(const Vector3D& sphPosition,
 bool
 capsuleCapsuleIntersect(const Vector3D& capsule1A,
                         const Vector3D& capsule1B,
-                        const Vector3D& capsule1Radius,
+                        float capsule1Radius,
                         const Vector3D& capsule2A,
                         const Vector3D& capsule2B,
-                        const Vector3D& capsule2Radius) {
-  // I need ClosestPtSegmentSegment, but i don't know where i put it.
-  return false;
+                        float capsule2Radius)
+{
+ // Compute (squared) distance between the inner structures of the capsules
+ float s, t;
+ Vector3D c1, c2;
+ float dist2 = closestPtSegmentSegment(capsule1A, 
+                                       capsule1B,
+                                       capsule2A, 
+                                       capsule2B, 
+                                       s, 
+                                       t, 
+                                       c1, 
+                                       c2);
+ float radius = capsule1Radius + capsule2Radius;
+ return dist2 <= radius * radius;
 }
 bool
 sphereRayIntersect(const Vector3D& sphPosition,
@@ -98,25 +110,106 @@ rayPlaneIntersect(const Vector3D& rayOrigin,
 }
 
 bool
+rayCapsuleIntersect(const Vector3D& pointSA,
+                    const Vector3D& pointSB,
+                    const Vector3D& pointP,
+                    const Vector3D& pointQ,
+                    float r,
+                    float &t)
+{
+  Vector3D dir = pointSB - pointSA;
+  dir.normalize();
+  if(sphereRayIntersect(pointP, r, pointSA, dir)) {
+   return true;
+  }
+
+  dir = pointSB - pointSA;
+  if (sphereRayIntersect(pointQ, r, pointSA, dir)) {
+   return true;
+  }
+
+  Vector3D d = pointQ - pointP, m = pointSA - pointP, n = pointSB - pointSA;
+  float md = m.dot(d);
+  float nd = n.dot(d);
+  float dd = d.dot(d);
+
+  if (md < 0.0f && md + nd < 0.0f) {
+   return false; 
+  }
+  if (md > dd && md + nd > dd) {
+   return false; 
+  }
+  float nn = n.dot(n);
+  float mn = m.dot(n);
+  float a = dd * nn - nd * nd;
+  float k = m.dot(m) - r * r;
+  float c = dd * k - md * md;
+
+  if (Math::abs(a) < Math::EPSILON) {
+   
+   if (c > 0.0f) {
+    return false; 
+   }                        
+   
+   if (md < 0.0f) {
+    t = -mn / nn; 
+   } else if (md > dd) {
+     t = (nd - mn) / nn;
+   }
+   else {
+    t = 0.0f;
+   }
+   return true;
+
+  }
+
+  float b = dd * mn - nd * md;
+  float discr = b * b - a * c;
+  if (discr < 0.0f) {
+   return false; 
+  }
+
+  t = (-b - Math::sqrt(discr)) / a;
+  if (t < 0.0f || t > 1.0f) {
+   return false;
+  }
+  if (md + t * nd < 0.0f) {
+   if (nd <= 0.0f) {
+    return 0; 
+   }
+   t = -md / nd;
+   return k + 2 * t * (mn + t * nn) <= 0.0f;
+  }
+  else if (md + t * nd > dd) {
+   if (nd >= 0.0f) {
+    return false;
+   }
+   t = (dd - md) / nd;
+   return k + dd - 2 * md + t * (2 * (mn - nd) + t * nn) <= 0.0f;
+  }
+  return true;
+}
+
+
+bool
 rayFrustrumIntersect(const Vector3D& rayOrigin,
                      const Vector3D& rayDirection,
                      const std::array<Plane, 6>& frustrumPlanes) {
   return false;
 }
 
-//bool 
-//rayCapsuleIntersection(const Vector3D& rayOrigin, 
-//	                     const Vector3D& rayDirection, 
-//	                     const Matrix4x4& frustrumVP)
-//{
-//	return false;
-//}
-
 bool
 rayRayIntersect(const Vector3D& rayAOrigin,
                 const Vector3D& rayADirection,
                 const Vector3D& rayBOrigin,
                 const Vector3D& rayBDirection) {
+  return false;
+}
+
+bool
+frustrumPlaneIntersect(const std::array<Plane, 6>& frustrumPlanes,
+  const Vector3D& sphereOrigin,
+  const Vector3D& planePoint) {
   return false;
 }
 
@@ -210,19 +303,19 @@ aabbRayIntersect(const Vector3D& aabbCenter,
   Vector3D aabbMin(aabbCenter.x - (aabbWidth / 2),
                    aabbCenter.y - (aabbHeight / 2),
                    aabbCenter.z - (aabbWidth / 2));
-  float tmin = 0.0f, tmax = 0.0f, t1 = 0.0f, t2 = 0.0f;
-  int i = 0;
-  t1 = (aabbMin.x - rayOrigin.x) * invertedDirection.x;
-  t2 = (aabbMax.x - rayOrigin.x) * invertedDirection.x;
-  tmin = std::min(t1, t2);
-  tmax = std::max(t1, t2);
-  for (i = 1; i < 3; ++i) {
+
+  float t1 = (aabbMin.x - rayOrigin.x) * invertedDirection.x;
+  float t2 = (aabbMax.x - rayOrigin.x) * invertedDirection.x;
+  float tmin = Math::min(t1, t2);
+  float tmax = Math::max(t1, t2);
+
+  for (int i = 1; i < 3; ++i) {
     t1 = (aabbMin[i] - rayOrigin[i]) * invertedDirection[i];
     t2 = (aabbMax[i] - rayOrigin[i]) * invertedDirection[i];
-    tmin = std::max(tmin, std::min(t1, t2));
-    tmax = std::min(tmax, std::max(t1, t2));
+    tmin =  Math::max(tmin, Math::min(t1, t2));
+    tmax =  Math::min(tmax, Math::max(t1, t2));
   }
-  return tmax > std::max(tmin, 0.0f);
+  return tmax > Math::max(tmin, 0.0f);
 }
 
 bool
@@ -396,4 +489,75 @@ frustrumContainsSphere(const std::array<Plane, 6>& frustrumPlanes,
   return false;
 }
 
+
+float 
+closestPtSegmentSegment(const Vector3D& p1,
+                        const Vector3D& q1,
+                        const Vector3D& p2,
+                        const Vector3D& q2,
+                        float &s,
+                        float &t,
+                        Vector3D& c1,
+                        Vector3D& c2)
+{
+ Vector3D d1 = q1 - p1; // Direction vector of segment S1
+ Vector3D d2 = q2 - p2; // Direction vector of segment S2
+ Vector3D r = p1 - p2;
+ float a = d1.dot(d1); // Squared length of segment S1, always nonnegative
+ float e = d2.dot( d2); // Squared length of segment S2, always nonnegative
+ float f = d2.dot(r);
+
+ // Check if either or both segments degenerate into points
+ if (a <= Math::EPSILON && e <= Math::EPSILON) {
+  // Both segments degenerate into points
+  s = t = 0.0f;
+  c1 = p1;
+  c2 = p2;
+  return (c1 - c2).dot(c1 - c2);
+ }
+ if (a <= Math::EPSILON) {
+  // First segment degenerates into a point
+  s = 0.0f;
+  t = f / e; // s = 0 => t = (b*s + f) / e = f / e
+  t = Math::clamp(t, 0.0f, 1.0f);
+ } else 
+ {
+  float c = d1.dot( r);
+  if (e <= Math::EPSILON) {
+   // Second segment degenerates into a point
+   t = 0.0f;
+   s = Math::clamp(-c / a, 0.0f, 1.0f); // t = 0 => s = (b*t - c) / a = -c / a
+ }
+ else {
+  // The general nondegenerate case starts here
+  float b = d1.dot(d2);
+  float denom = a*e - b*b; // Always nonnegative
+                               // If segments not parallel, compute closest point on L1 to L2 and
+                               // clamp to segment S1. Else pick arbitrary s (here 0)
+  if (denom != 0.0f) {
+  s = Math::clamp((b*f - c*e) / denom, 0.0f, 1.0f);
+  }
+  else {
+   s = 0.0f;
+  }
+   // Compute point on L2 closest to S1(s) using
+   // t = Dot((P1 + D1*s) - P2,D2) / Dot(D2,D2) = (b*s + f) / e
+   t = (b*s + f) / e;
+   // If t in [0,1] done. Else clamp t, recompute s for the new value
+   // of t using s = Dot((P2 + D2*t) - P1,D1) / Dot(D1,D1)= (t*b - c) / a
+   // and clamp s to [0, 1]
+   if (t < 0.0f) {
+    t = 0.0f;
+    s = Math::clamp(-c / a, 0.0f, 1.0f);
+   }
+   else if (t > 1.0f) {
+    t = 1.0f;
+    s = Math::clamp((b - c) / a, 0.0f, 1.0f);
+   }
+  }
+ }
+ c1 = p1 + d1 * s;
+ c2 = p2 + d2 * t;
+ return (c1 - c2).dot(c1 - c2);
+}
 }
