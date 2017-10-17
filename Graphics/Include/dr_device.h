@@ -12,7 +12,7 @@
 #include "dr_constant_buffer.h"
 
 namespace driderSDK {
-class Device
+class DR_API_EXPORT Device
 {
  public:
   virtual void createVertexBuffer(const DrBufferDesc& desc,char* initialData,VertexBuffer* vertexBuffer) = 0;

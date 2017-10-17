@@ -1,7 +1,7 @@
 #pragma once
 #include "dr_buffer.h"
 namespace driderSDK {
-class CommandBuffer : public Buffer
+class DR_API_EXPORT CommandBuffer : public Buffer
 {
 public:
 

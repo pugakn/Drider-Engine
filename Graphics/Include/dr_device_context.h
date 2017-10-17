@@ -10,7 +10,7 @@
 #include "dr_index_buffer.h"
 #include "dr_vertex_buffer.h"
 namespace driderSDK {
-class DeviceContext {
+class DR_API_EXPORT DeviceContext {
  public:
    virtual void clearDepthStencilView() = 0;
    virtual void clearRenderTargetView() = 0;

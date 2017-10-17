@@ -140,6 +140,7 @@
     <ClInclude Include="Include\dr_constant_buffer.h" />
     <ClInclude Include="Include\dr_domain_shader.h" />
     <ClInclude Include="Include\dr_fragment_shader.h" />
+    <ClInclude Include="Include\dr_geometry_shader.h" />
     <ClInclude Include="Include\dr_graphics_defines.h" />
     <ClInclude Include="Include\dr_device.h" />
     <ClInclude Include="Include\dr_device_context.h" />

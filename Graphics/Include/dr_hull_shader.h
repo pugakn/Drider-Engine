@@ -1,7 +1,7 @@
 #pragma once
 #include "dr_shader.h"
 namespace driderSDK {
-class HullShader : public Shader
+class DR_API_EXPORT HullShader : public Shader
 {
 
 };

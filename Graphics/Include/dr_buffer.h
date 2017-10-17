@@ -3,7 +3,7 @@
 #include "dr_graphics_defines.h"
 
 namespace driderSDK {
-class Buffer 
+class DR_API_EXPORT Buffer
 {
  public:
   DrBufferDesc bufferDesc;

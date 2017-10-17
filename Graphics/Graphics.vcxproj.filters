@@ -84,5 +84,8 @@
     <ClInclude Include="Include\dr_rasterizer_state.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
+    <ClInclude Include="Include\dr_geometry_shader.h">
+      <Filter>Archivos de encabezado\Shaders</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

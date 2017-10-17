@@ -1,7 +1,7 @@
 #pragma once
 #include "dr_shader.h"
 namespace driderSDK {
-class VertexShader : public Shader
+class DR_API_EXPORT VertexShader : public Shader
 {
 
 };

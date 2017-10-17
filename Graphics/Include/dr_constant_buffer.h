@@ -2,9 +2,9 @@
 
 #include "dr_buffer.h"
 namespace driderSDK {
-class ConstantBuffer : public Buffer
+class DR_API_EXPORT ConstantBuffer : public Buffer
 {
-public:
-
+ public:
+  virtual void setConstantBuffers(UInt32 slot, UInt32 numBuffers, ConstantBuffer* buffer) = 0;
 };
 }
