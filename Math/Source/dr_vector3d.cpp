@@ -49,6 +49,7 @@ Vector3D::lengthSqr() const {
 
 void
 Vector3D::normalize() {
+  DR_ASSERT(!(length() == 0));
   *this = (*this) * Math::pow(length(), -1.0f);
 }
 

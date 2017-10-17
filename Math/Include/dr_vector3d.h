@@ -26,7 +26,7 @@ class DR_API_EXPORT Vector3D
   explicit Vector3D(Math::FORCE_INIT k);
 
   /**
-  * Move constructor
+-  * Move constructor
   *
   */
   Vector3D(Vector3D&& V) = default;

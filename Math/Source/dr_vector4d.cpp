@@ -86,13 +86,13 @@ Vector4D::equals(const Vector4D& otherVector, float errorRange) const {
 
 float&
 Vector4D::operator[](SizeT index) {
-  DR_ASSERT(index >= 0 && index < 4);
+  DR_ASSERT(index < 4);
   return data[index];
 }
 
 const float&
 Vector4D::operator[](SizeT index) const {
-  DR_ASSERT(index >= 0 && index < 4);
+  DR_ASSERT(index < 4);
   return data[index];
 }
 
