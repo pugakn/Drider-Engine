@@ -7,6 +7,5 @@ class Logger
 {
 public:
   Logger() {};
-  void Init() {};
 };
 }
