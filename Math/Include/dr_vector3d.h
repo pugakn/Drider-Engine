@@ -1,10 +1,11 @@
 #pragma once
 
-#include <cassert>
 #include <dr_prerequisites.h>
 #include "dr_math.h"
 
 namespace driderSDK {
+
+class Vector4D;
 
 class DR_API_EXPORT Vector3D
 {
@@ -35,6 +36,12 @@ class DR_API_EXPORT Vector3D
   *
   */
   Vector3D(const Vector3D& V);
+
+  /**
+  * Copy constructor for vec4 to vec3
+  *
+  */
+  Vector3D(const Vector4D& V);
 
   /**
   * Initialize constructor with values.
@@ -134,6 +141,35 @@ class DR_API_EXPORT Vector3D
   distanceSqr(const Vector3D& otherVector) const;
 
   /**
+  * Check's if the other vector is equal to this vector with an error
+  * range of a SMALL_NuMBER.
+  *
+  * @param otherVector
+  *   Vector to compare with this vector.
+  *
+  * @return
+  *   bool expression of condition.
+  */
+  bool
+  equals(const Vector3D& otherVector) const;
+
+  /**
+  * Check's if the other vector is equal to this vector with an error
+  * range.
+  *
+  * @param otherVector
+  *   Vector to compare with this vector.
+  *
+  * @param errorRange
+  *   The value of the error range.
+  *
+  * @return
+  *   bool expression of condition.
+  */
+  bool
+  equals(const Vector3D& otherVector, float errorRange) const;
+
+  /**
   * Computes the squared distance between a point and a segment.
   *
   * @param pointA
@@ -178,9 +214,42 @@ class DR_API_EXPORT Vector3D
   const float&
   operator[](SizeT index) const;
 
+  /**
+  * Computes the dot product between this vector and the vector parameter.
+  * This operatios is commutative.
+  *
+  * @param B
+  *  The vector against which the dot product is calculated.
+  *
+  * @return
+  *   The sum of the products of the corresponding entries of the
+  *   vectors.
+  */
+  float
+  operator|(const Vector3D& B) const;
+
+  /**
+  * Computes the cross product between this vector and the vector parameter.
+  * This operatios is NOT commutative.
+  *
+  * @param B
+  *  The vector against which the cross product is calculated.
+  *  B (vector parameter) is the rigth value of operation
+  *  AxB
+  *
+  * @return
+  *   Result vector of the cross product
+  */
+  Vector3D
+  operator^(const Vector3D& B) const;
+
   //Uncommented
   Vector3D&
   operator=(const Vector3D& A);
+
+  //Uncommented
+  Vector3D&
+  operator=(const Vector4D& A);
 
   //Uncommented
   Vector3D

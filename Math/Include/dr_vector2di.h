@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cassert>
 #include <dr_prerequisites.h>
 #include "dr_math.h"
 
@@ -116,6 +115,35 @@ class DR_API_EXPORT Vector2DI
   distanceSqr(const Vector2DI& otherVector) const;
 
   /**
+  * Check's if the other vector is equal to this vector with an error
+  * range of a SMALL_NuMBER.
+  *
+  * @param otherVector
+  *   Vector to compare with this vector.
+  *
+  * @return
+  *   bool expression of condition.
+  */
+  bool
+  equals(const Vector2DI& otherVector) const;
+
+  /**
+  * Check's if the other vector is equal to this vector with an error
+  * range.
+  *
+  * @param otherVector
+  *   Vector to compare with this vector.
+  *
+  * @param errorRange
+  *   The value of the error range.
+  *
+  * @return
+  *   bool expression of condition.
+  */
+  bool
+  equals(const Vector2DI& otherVector, float errorRange) const;
+
+  /**
   * Gets a const reference to the specified element from the vector.
   *
   *	@param index
@@ -144,6 +172,20 @@ class DR_API_EXPORT Vector2DI
   */
   const Int32&
   operator[](SizeT index) const;
+
+  /**
+  * Computes the dot product between this vector and the vector parameter.
+  * This operatios is commutative.
+  *
+  * @param B
+  *  The vector against which the dot product is calculated.
+  *
+  * @return
+  *   The sum of the products of the corresponding entries of the
+  *   vectors.
+  */
+  float
+  operator|(const Vector2DI& B) const;
 
   //Uncommented
   Vector2DI&

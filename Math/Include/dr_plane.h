@@ -2,6 +2,7 @@
 
 #include <dr_prerequisites.h>
 #include "dr_vector3d.h"
+#include "dr_math.h"
 
 namespace driderSDK {
 
@@ -10,6 +11,7 @@ class Sphere;
 class Capsule;
 class AABB;
 class Frustrum;
+class Line;
 
 class DR_API_EXPORT Plane : public Vector3D
 {
@@ -40,48 +42,84 @@ class DR_API_EXPORT Plane : public Vector3D
   /**
   *	Copy constructor
   */
-  Plane(const Plane&  );
-
-  float distanceToPoint(const Vector3D& point);
+  Plane(const Plane& other);
 
   /**
-  *	Computes the signed distance to a point.
-  *
-  *	@param point
-  *	 The point used to calculate the distance.
-  *
-  *	@return 
-  *	  The signed distance to the point, this is useful
-  *	  to know if a point is behind or in front of the plane.
+  * Computes the normal and gap of the plain from 3 points.
   */
-  float signedDistanceToPoint(const Vector3D& point);
-  
+  void 
+  compute(const Vector3D& point0, 
+		      const Vector3D& point1, 
+		      const Vector3D& point2);
+
   /**
-  * Computes the intersection with a point
+  * Computes the normal and gap of the plain from a normal and 1 point.
+  */
+  void 
+  compute(const Vector3D& _normal, const Vector3D& point);
+
+  float 
+  distanceToPoint(const Vector3D& point);
+   
+  /**
+  * Computes the relationship between a point and the plane.
   *
   *	@return
-  *	  True if the point is in the plane, false otherwise
+  *	  The relationship of the point with the plane.
   */
-  bool intersects(const Vector3D& point);
-  bool intersects(const Plane& other);
-  bool intersects(const Sphere& sphere);
-  bool intersects(const AABB& aabb);
-  bool intersects(const Capsule& capsule);
-  bool intersects(const Frustrum& frustrum);
+  Math::PLANE_INTERSECT 
+  intersects(const Vector3D& point);
+
+  bool 
+  intersects(const Plane& other);
+
+  bool 
+  intersects(const Plane& other, Line& intersectionLine);
+
+  bool 
+  intersects(const Sphere& sphere);
+
+  bool 
+  intersects(const AABB& aabb);
+
+  bool 
+  intersects(const Capsule& capsule);
+
+  bool 
+  intersects(const Frustrum& frustrum);
+
+  bool 
+  intersects(const Ray& ray);
 
   /**
-  * Gets the plane normalized
-  * 
-  * @return
-  *	  The plane normalized.
+	* Checks if a ray intersects with the plane.
+	*
+	*	@param ray
+	*	 The ray to check the intersecton.
+	*
+	* @out intersection
+	*	 The intersection point parameter.
+	*
+	* @return
+	*	  True if the ray intersects with the plane, false otherwise.
+	*/
+  bool 
+  intersects(const Ray& ray, float& intersection);
+
+  /**
+  * Normalizes the plane. This modifies the normal and the gap. 
   */
-  void normalize();
+  void 
+  normalize();
   
-  Plane& operator=(const Plane& other);
+  Plane& 
+  operator=(const Plane& other);
 
-  bool operator==(const Plane& rhs);
+  bool
+  operator==(const Plane& rhs);
 
-  bool operator!=(const Plane& rhs);
+  bool 
+  operator!=(const Plane& rhs);
 
   //gap
   float d;
