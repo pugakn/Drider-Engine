@@ -5,6 +5,8 @@
 
 namespace driderSDK {
 
+class Matrix3x3;
+
 class DR_API_EXPORT Matrix4x4
 {
  public:
@@ -140,6 +142,9 @@ class DR_API_EXPORT Matrix4x4
   Matrix4x4&
   operator=(const Matrix4x4& A);
 
+  Matrix4x4&
+  operator=(const Matrix3x3& A);
+
   //Uncommented
   Matrix4x4
   operator+(const Matrix4x4& A) const;
@@ -166,7 +171,7 @@ class DR_API_EXPORT Matrix4x4
 
   //Uncommented
   Vector4D
-  operator*(const Vector4D S) const;
+  operator*(const Vector4D& S) const;
 
   //Uncommented
   Matrix4x4
@@ -175,6 +180,14 @@ class DR_API_EXPORT Matrix4x4
   //Uncommented
   Matrix4x4&
   operator*=(const float S);
+
+  //Uncommented
+  bool
+  operator==(const Matrix4x4& M);
+
+  //Uncommented
+  bool
+  operator!=(const Matrix4x4& M);
 
   union
   {

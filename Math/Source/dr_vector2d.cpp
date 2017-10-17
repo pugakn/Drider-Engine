@@ -39,7 +39,7 @@ Vector2D::lengthSqr() const {
 
 void
 Vector2D::normalize() {
-  *this = (*this) * (1 / length());
+  *this = (*this) * Math::pow(length(), -1.0f);
 }
 
 float
@@ -52,17 +52,35 @@ Vector2D::distanceSqr(const Vector2D& otherVector) const {
   return (otherVector - *this).lengthSqr();
 }
 
+bool
+Vector2D::equals(const Vector2D& otherVector) const {
+  return (Math::abs(x - otherVector.x) < Math::SMALL_NUMBER) &&
+         (Math::abs(y - otherVector.y) < Math::SMALL_NUMBER);
+}
+
+bool
+Vector2D::equals(const Vector2D& otherVector, float errorRange) const {
+  return (Math::abs(x - otherVector.x) < errorRange) &&
+         (Math::abs(y - otherVector.y) < errorRange);
+}
+
 float&
 Vector2D::operator[](SizeT index) {
-  assert(index >= 0 && index < 2);
+  DR_ASSERT(index >= 0 && index < 2);
   return data[index];
 }
 
 const float&
 Vector2D::operator[](SizeT index) const {
-  assert(index >= 0 && index < 2);
+  DR_ASSERT(index >= 0 && index < 2);
   return data[index];
 }
+
+float
+Vector2D::operator|(const Vector2D& B) const {
+  return dot(B);
+}
+
 
 Vector2D&
 Vector2D::operator=(const Vector2D& A) {
@@ -121,13 +139,13 @@ Vector2D::operator*=(const float scalar) {
 
 Vector2D
 Vector2D::operator/(const float scalar) const {
-  return Vector2D(x / scalar, y / scalar);
+  return Vector2D(x * Math::pow(scalar, -1.0f), y * Math::pow(scalar, -1.0f));
 }
 
 Vector2D&
 Vector2D::operator/=(const float scalar) {
-  x /= scalar;
-  y /= scalar;
+  x *= Math::pow(scalar, -1.0f);
+  y *= Math::pow(scalar, -1.0f);
   return *this;
 }
 

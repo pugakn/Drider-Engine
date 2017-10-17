@@ -359,6 +359,74 @@ aabbPointIntersect(const Vector3D& aabbCenter,
                    float aabbheight,
                    const Vector3D& point);
 
+bool
+spherePlaneIntersect(const Vector3D& planeNormal, 
+                      float planeGap,
+                      const Vector3D& sphereCenter,
+                      float sphereRadius);
+
+bool 
+aabbPlaneIntersect(const Vector3D& aabbCenter,
+                   float aabbWidth,
+                   float aabbHeight,
+                   const Vector3D& planeNormal,
+                   float planeGap);
+
+bool segmentPlaneIntersect(const Vector3D& linePointA,
+                           const Vector3D& linePointB,
+                           const Vector3D& planeNormal,
+                           float planeGap);
+
+bool 
+capsulePlaneIntersect(const Vector3D& capsuleA,
+                      const Vector3D& capsuleB,
+                      float capsuleRadius,
+                      const Vector3D& planeNormal,
+                      float planeGap);
+
+bool 
+frustrumPlaneIntersect(const std::array<Plane, 6>& frustrumPlanes,
+                       const Vector3D& planeNormal,
+                       float planeGap);
+
+/**
+* Checks if there is an intersection between 2 planes.
+*
+* @param plane1Normal
+*  Normal of the first plane.
+*
+* @parama plane1Gap
+*  Gap of the first plane.
+*
+* @param plane2Normal
+*  Normal of the second plane.
+*
+* @param plane2Gap
+*  Gap of the second plane.
+*
+* @out point
+*  A point of the intersection line.
+* 
+* @out direction
+*  Direction of the instersection line.
+* 
+* @return
+*   True if the planes intersect, false if they are
+*   parallel (and separated) or coincident.
+*/
+bool
+planePlaneIntersect(const Vector3D& plane1Normal,
+                    float plane1Gap,
+                    const Vector3D& plane2Normal,
+                    float plane2Gap,
+                    Vector3D& point,
+                    Vector3D& direction);
+
+bool
+planePlaneIntersect(const Vector3D& plane1Normal,
+                    float plane1Gap,
+                    const Vector3D& plane2Normal,
+                    float plane2Gap);
 
 /**********************************************************************
 *						            Containing functions

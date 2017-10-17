@@ -1,5 +1,7 @@
 #pragma once
+
 #include <cmath>
+#include <cstring>
 #include <limits>
 #include <dr_prerequisites.h>
 
@@ -8,7 +10,7 @@ namespace driderSDK {
 struct DR_API_EXPORT Math 
 {
   /**********************************************************************
-  *						              Basic math defines
+  *                        Basic math defines                           *
   **********************************************************************/
 
   static const float PI;		     
@@ -23,7 +25,7 @@ struct DR_API_EXPORT Math
   static const float SMALL_NUMBER;
 
   /***********************************************************************
-  * 								            Limits            								       *
+  *                             Limits                                   *
   ***********************************************************************/
 
   static const float MAX_FLOAT;
@@ -45,7 +47,7 @@ struct DR_API_EXPORT Math
   static const UInt8 MAX_UINT8;
 
   /**********************************************************************
-  *						    Multiply and divide with bit shifts
+  *               Multiply and divide with bit shifts                   *
   **********************************************************************/
 
   static FORCEINLINE 
@@ -66,7 +68,7 @@ struct DR_API_EXPORT Math
   }
 
   /**********************************************************************
-  *						  Basic Math functions 					      
+  *                        Basic Math functions                         *
   **********************************************************************/
   static FORCEINLINE float 
   cos(float value){
@@ -76,7 +78,6 @@ struct DR_API_EXPORT Math
   aCos(float value) {
 	  return std::acosf(value);
   }
-
 
   static FORCEINLINE float
   sin(float value) {
@@ -152,11 +153,11 @@ struct DR_API_EXPORT Math
   }
 
   /**********************************************************************
-  *						         Math function templates
+  *                    Math function templates                          *
   **********************************************************************/
   template<class T>
   static FORCEINLINE T abs(const T A) {
-	  return (A >= (T)0) ? A : -A;
+	  return (A >= static_cast<T>(0)) ? A : -A;
   }
 
   template< class T >
@@ -184,7 +185,7 @@ struct DR_API_EXPORT Math
   }
 
   /**********************************************************************
-  *						          Template specialization
+  *                     Template specialization                         *
   **********************************************************************/
   template<>
   static FORCEINLINE float
@@ -193,12 +194,56 @@ struct DR_API_EXPORT Math
   }
 
   /**********************************************************************
-  *						                Force init
+  *                           Force init                                *
   **********************************************************************/
   enum FORCE_INIT
   {
     kZero,
     kIdentity
+  };
+
+  /**********************************************************************
+  *                      Fast AF math functions                         *
+  **********************************************************************/
+
+  // John Carmack Fast Inv Sqrt
+  static float
+  fast_invSqrt(float number);
+
+  static float
+  fast_exp(float value);
+
+  static float
+  fast_ln(float value);
+
+  static float
+  fast_sin(float value);
+
+  static float
+  fast_aSin(float value);
+
+  static float
+  fast_cos(float value);
+
+  static float
+  fast_aCos(float value);
+
+  static float
+  fast_tan(float value);
+
+  static float
+  fast_aTan(float value); 
+
+  //Enum used to describe the relationship between a point
+  //and a plane.
+  enum PLANE_INTERSECT
+  {
+    //The point is in front of the plane.
+    kFront, 
+    //The point is in the plane.
+    kIn,
+    //The point is behind plane.
+    kBehind,
   };
 
 }; //math

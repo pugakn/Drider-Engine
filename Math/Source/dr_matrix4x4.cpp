@@ -1,4 +1,5 @@
-#include <dr_matrix4x4.h>
+#include "dr_matrix4x4.h"
+#include "dr_matrix3x3.h"
 
 namespace driderSDK
 {
@@ -170,8 +171,8 @@ Matrix4x4::adjugate() {
 void
 Matrix4x4::inverse() {
   float deter = determinant();
-  cofactor();
-  transpose();
+  DR_ASSERT(deter != 0);
+  adjugate();
   *this = *this * (1 / deter);
 }
 
@@ -226,7 +227,7 @@ Matrix4x4::identity() {
 
 Vector4D&
 Matrix4x4::operator[](SizeT index) {
-  assert(index >= 0 && index < 4);
+  DR_ASSERT(index >= 0 && index < 4);
   return data[index];
 }
 
@@ -236,6 +237,15 @@ Matrix4x4::operator=(const Matrix4x4 & A) {
   vector1 = A.vector1;
   vector2 = A.vector2;
   vector3 = A.vector3;
+  return *this;
+}
+
+Matrix4x4&
+Matrix4x4::operator=(const Matrix3x3 & A)
+{
+  vector0 = A.vector0;
+  vector1 = A.vector1;
+  vector2 = A.vector2;
   return *this;
 }
 
@@ -308,37 +318,40 @@ Matrix4x4::operator*(const Matrix4x4 & A) const {
 
 Matrix4x4&
 Matrix4x4::operator*=(const Matrix4x4 & A) {
+  Matrix4x4 temp;
+
   Vector4D c0(A.vector0.x, A.vector1.x, A.vector2.x, A.vector3.x);
   Vector4D c1(A.vector0.y, A.vector1.y, A.vector2.y, A.vector3.y);
   Vector4D c2(A.vector0.z, A.vector1.z, A.vector2.z, A.vector3.z);
   Vector4D c3(A.vector0.w, A.vector1.w, A.vector2.w, A.vector3.w);
 
 
-  vector0.x = vector0.dot(c0);
-  vector0.y = vector0.dot(c1);
-  vector0.z = vector0.dot(c2);
-  vector0.w = vector0.dot(c3);
+  temp.vector0.x = vector0.dot(c0);
+  temp.vector0.y = vector0.dot(c1);
+  temp.vector0.z = vector0.dot(c2);
+  temp.vector0.w = vector0.dot(c3);
 
-  vector1.x = vector1.dot(c0);
-  vector1.y = vector1.dot(c1);
-  vector1.z = vector1.dot(c2);
-  vector1.w = vector1.dot(c3);
+  temp.vector1.x = vector1.dot(c0);
+  temp.vector1.y = vector1.dot(c1);
+  temp.vector1.z = vector1.dot(c2);
+  temp.vector1.w = vector1.dot(c3);
 
-  vector2.x = vector2.dot(c0);
-  vector2.y = vector2.dot(c1);
-  vector2.z = vector2.dot(c2);
-  vector2.w = vector2.dot(c3);
+  temp.vector2.x = vector2.dot(c0);
+  temp.vector2.y = vector2.dot(c1);
+  temp.vector2.z = vector2.dot(c2);
+  temp.vector2.w = vector2.dot(c3);
 
-  vector3.x = vector3.dot(c0);
-  vector3.y = vector3.dot(c1);
-  vector3.z = vector3.dot(c2);
-  vector3.w = vector3.dot(c3);
+  temp.vector3.x = vector3.dot(c0);
+  temp.vector3.y = vector3.dot(c1);
+  temp.vector3.z = vector3.dot(c2);
+  temp.vector3.w = vector3.dot(c3);
 
+  *this = temp;
   return *this;
 }
 
 Vector4D
-Matrix4x4::operator*(const Vector4D S) const {
+Matrix4x4::operator*(const Vector4D& S) const {
   Vector4D temp;
 
   temp.x = vector0.dot(S);
@@ -369,6 +382,21 @@ Matrix4x4::operator*=(const float S) {
   vector3 = vector3 * S;
 
   return *this;
+}
+
+bool
+Matrix4x4::operator==(const Matrix4x4 & M)
+{
+  return vector0 == M.vector0 &&
+         vector1 == M.vector1 &&
+         vector2 == M.vector2 &&
+         vector3 == M.vector3;
+}
+
+bool
+Matrix4x4::operator!=(const Matrix4x4 & M)
+{
+  return !(*this == M);
 }
 
 }

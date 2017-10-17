@@ -17,13 +17,16 @@ Radian::toDegree() const {
 }
 
 Radian&
-Radian::toRange() {
-  while (m_value < 0 || m_value >= Math::TWO_PI)
+Radian::unwind() {
+  while (m_value < 0)
   {
     if (m_value < 0) {
       m_value += Math::TWO_PI;
     }
-    else if (m_value >= Math::TWO_PI) {
+  }
+  while (m_value >= Math::TWO_PI)
+  {
+    if (m_value >= Math::TWO_PI) {
       m_value -= Math::TWO_PI;
     }
   }

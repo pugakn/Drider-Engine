@@ -39,7 +39,7 @@ Vector2DI::lengthSqr() const {
 
 void
 Vector2DI::normalize() {
-  *this = (*this) * (1 / length());
+  *this = (*this) * Math::pow(length(), -1.0f);
 }
 
 float
@@ -52,16 +52,33 @@ Vector2DI::distanceSqr(const Vector2DI& otherVector) const {
   return (otherVector - *this).lengthSqr();
 }
 
+bool
+Vector2DI::equals(const Vector2DI& otherVector) const {
+  return (Math::abs(x - otherVector.x) < Math::SMALL_NUMBER) &&
+         (Math::abs(y - otherVector.y) < Math::SMALL_NUMBER);
+}
+
+bool
+Vector2DI::equals(const Vector2DI& otherVector, float errorRange) const {
+  return (Math::abs(x - otherVector.x) < errorRange) &&
+         (Math::abs(y - otherVector.y) < errorRange);
+}
+
 Int32&
 Vector2DI::operator[](SizeT index) {
-  assert(index >= 0 && index < 2);
+  DR_ASSERT(index >= 0 && index < 2);
   return data[index];
 }
 
 const Int32&
 Vector2DI::operator[](SizeT index) const {
-  assert(index >= 0 && index < 2);
+  DR_ASSERT(index >= 0 && index < 2);
   return data[index];
+}
+
+float
+Vector2DI::operator|(const Vector2DI& B) const {
+  return dot(B);
 }
 
 Vector2DI&
@@ -121,14 +138,14 @@ Vector2DI::operator*=(const float scalar) {
 
 Vector2DI
 Vector2DI::operator/(const float scalar) const {
-  return Vector2DI(static_cast<Int32>(x*(1 / scalar)),
-                   static_cast<Int32>(y*(1 / scalar)));
+  return Vector2DI(static_cast<Int32>(x*Math::pow(scalar, -1.0f)),
+                   static_cast<Int32>(y*Math::pow(scalar, -1.0f)));
 }
 
 Vector2DI&
 Vector2DI::operator/=(const float scalar) {
-  x *= static_cast<Int32>(1 / scalar);
-  y *= static_cast<Int32>(1 / scalar);
+  x *= static_cast<Int32>(Math::pow(scalar, -1.0f));
+  y *= static_cast<Int32>(Math::pow(scalar, -1.0f));
   return *this;
 }
 
