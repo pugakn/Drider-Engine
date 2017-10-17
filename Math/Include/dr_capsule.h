@@ -4,11 +4,10 @@
 
 namespace driderSDK {
 
-class Plane;
 class Sphere;
-class Capsule;
+class Plane;
+class AABB;
 class Frustrum;
-class Ray;
 
 class DR_API_EXPORT Capsule
 {
@@ -19,7 +18,18 @@ class DR_API_EXPORT Capsule
 
   Vector3D pointA;
   Vector3D pointB;
-  float radio;
+  float radius;
+  
+  bool
+  intersects(const Plane& plane);
+  bool
+  intersects(const Sphere& sphere);
+  bool
+  intersects(const AABB& aabb);
+  bool
+  intersects(const Capsule& capsule);
+  bool
+  intersects(const Frustrum& frustrum);
  protected:
  private:
 };

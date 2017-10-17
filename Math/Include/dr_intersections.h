@@ -90,18 +90,53 @@ sphereCapsuleIntersect(const Vector3D& sphPosition,
 bool
 capsuleCapsuleIntersect(const Vector3D& capsule1A,
                         const Vector3D& capsule1B,
-                        const Vector3D& capsule1Radius,
+                        float capsule1Radius,
                         const Vector3D& capsule2A,
                         const Vector3D& capsule2B,
-                        const Vector3D& capsule2Radius);
+                        float capsule2Radius);
 
-//Uncommented
+/**
+* Check if there was an intersection between a sphere and a capsule.
+*
+* @param sphPosition
+*   Center of the sphere to check.
+*
+* @param sphRadio
+*   Radius of the sphere.
+*
+* @param rayOrigin
+*   Origin of the sphere.
+*
+* @param rayDirection
+*   Directions of the ray.
+*
+* @return
+*   True if there is intersection, if not False
+*/
 bool 
 sphereRayIntersect(const Vector3D& sphPosition,
                    float sphRadio, 
                    const Vector3D& rayOrigin,
                    const Vector3D& rayDirection);
 
+/**
+* Check if there was an intersection between a sphere and a capsule.
+*
+* @param rayOrigin
+*   Origin of the ray.
+*
+* @param rayDirection
+*   Direction of the ray.
+*
+* @param planeNormal
+*   Normal vector of the plane.
+*
+* @param planePoint
+*   Point on the plane.
+*
+* @return
+*   True if there is intersection, if not False
+*/
 bool 
 rayPlaneIntersect(const Vector3D& rayOrigin,
                   const Vector3D& rayDirection,
@@ -114,7 +149,27 @@ rayPlaneIntersect(const Vector3D& rayOrigin,
                   const Vector3D& rayDirection, 
                   const Vector3D& planeNormal, 
                   const Vector3D& planePoint);
-//Uncommented
+/**
+* Check if there was an intersection between a sphere and a capsule.
+*
+* @param rayOrigin
+*   Origin of the ray.
+*
+* @param rayDirection
+*   Direction of the ray.
+*
+* @param planeNormal
+*   Normal vector of the plane.
+*
+* @param planePoint
+*   Point on the plane.
+*
+* @param intersectionPoint
+*   Return the intersect point.
+*
+* @return
+*   True if there is intersection, if not False
+*/
 bool
 rayPlaneIntersect(const Vector3D& rayOrigin,
                   const Vector3D& rayDirection,
@@ -122,6 +177,38 @@ rayPlaneIntersect(const Vector3D& rayOrigin,
                   const Vector3D& planePoint,
                   float* intersectionPoint);
 
+
+/**
+* Check if there was an intersection between a sphere and a capsule.
+*
+* @param pointSA
+*   Min point of the capsule.
+*
+* @param pointSB
+*   Max point of the capsule.
+*
+* @param pointP
+*   Origin of the ray.
+*
+* @param pointQ
+*   Final point of the ray.
+*
+* @param r
+*   Radius of the capsule.
+*
+* @param t
+*   Range of intersection.
+*
+* @return
+*   True if there is intersection, if not False
+*/
+bool
+rayCapsuleIntersect(const Vector3D& pointSA,
+                    const Vector3D& pointSB,
+                    const Vector3D& pointP,
+                    const Vector3D& pointQ,
+                    float r,
+                    float &t);
 //Uncommented
 bool 
 rayFrustrumIntersect(const Vector3D& rayOrigin, 
@@ -388,6 +475,15 @@ frustrumContainsSphere(const std::array<Plane, 6>& frustrumPlanes,
 	                     float sphereRadius);
 
 
+float 
+closestPtSegmentSegment(const Vector3D& p1,
+                        const Vector3D& q1,
+                        const Vector3D& p2,
+                        const Vector3D& q2,
+                        float &s, 
+                        float &t, 
+                        Vector3D& c1,
+                        Vector3D& c2);
 
 
 

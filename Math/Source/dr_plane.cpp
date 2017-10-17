@@ -84,7 +84,7 @@ bool Plane::intersects(const Plane & other)
 
 bool Plane::intersects(const Sphere & sphere)
 {
-  return spherePlaneIntersect(*this, d, sphere.center, sphere.radio);
+  return spherePlaneIntersect(*this, d, sphere.center, sphere.radius);
 }
 
 bool Plane::intersects(const AABB & aabb)
@@ -96,7 +96,7 @@ bool Plane::intersects(const Capsule & capsule)
 {
   return capsulePlaneIntersect(capsule.pointA,
                                capsule.pointB, 
-                               capsule.radio,
+                               capsule.radius,
                                *this,
                                d);
 }

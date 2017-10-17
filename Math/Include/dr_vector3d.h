@@ -41,7 +41,7 @@ class DR_API_EXPORT Vector3D
   * Copy constructor for vec4 to vec3
   *
   */
-  Vector3D(const Vector4D& V);
+  explicit Vector3D(const Vector4D& V);
 
   /**
   * Initialize constructor with values.

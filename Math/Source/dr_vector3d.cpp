@@ -7,7 +7,7 @@ namespace driderSDK
 Vector3D::Vector3D() : x(0.0f), y(0.0f), z(0.0f) {}
 
 Vector3D::Vector3D(Math::FORCE_INIT k) {
-  if (Math::FORCE_INIT::kIdentity == k) {
+  if (Math::FORCE_INIT::kZero == k) {
     x = 0.0f;
     y = 0.0f;
     z = 0.0f;
