@@ -21,7 +21,7 @@ Vector3D::Vector3D(Math::FORCE_INIT k) {
 
 Vector3D::Vector3D(const Vector3D& V) : x(V.x), y(V.y), z(V.z) {}
 
-Vector3D::Vector3D(const Vector4D& V) : x(x), y(y), z(z) {}
+Vector3D::Vector3D(const Vector4D& V) : x(V.x), y(V.y), z(V.z) {}
 
 Vector3D::Vector3D(float x, float y, float z) : x(x), y(y), z(z) {}
 
