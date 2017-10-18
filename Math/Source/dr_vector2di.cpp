@@ -6,7 +6,7 @@ namespace driderSDK
 Vector2DI::Vector2DI() {}
 
 Vector2DI::Vector2DI(Math::FORCE_INIT k) {
-  if (k == Math::FORCE_INIT::kIdentity) {
+  if (Math::FORCE_INIT::kZero == k) {
     x = 0;
     y = 0;
   }

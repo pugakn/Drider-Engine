@@ -8,7 +8,7 @@ Vector4D::Vector4D() {}
 
 Vector4D::Vector4D(Math::FORCE_INIT k) {
 
-  if (Math::FORCE_INIT::kIdentity == k) {
+  if (Math::FORCE_INIT::kZero == k) {
     x = 0.0f;
     y = 0.0f;
     z = 0.0f;
@@ -23,6 +23,9 @@ Vector4D::Vector4D(Math::FORCE_INIT k) {
 }
 
 Vector4D::Vector4D(const Vector4D& V) : x(V.x), y(V.y), z(V.z), w(V.w) {}
+
+Vector4D::Vector4D(const Vector3D& V) : x(V.x), y(V.y), z(V.z) {
+}
 
 Vector4D::Vector4D(const Vector3D& V, float w) : x(V.x), y(V.y), z(V.z), w(w) {}
 

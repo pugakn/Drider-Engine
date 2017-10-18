@@ -11,13 +11,13 @@ class DR_API_EXPORT Vector4D
 {
  public:
   /**
-  * Default constructor
+  * Default constructor.
   *
   */
   Vector4D();
 
   /**
-  * Default constructor
+  * Default constructor.
   *
   * @param k
   *
@@ -26,19 +26,25 @@ class DR_API_EXPORT Vector4D
   explicit Vector4D(Math::FORCE_INIT k);
 
   /**
-  * Move constructor
+  * Move constructor.
   *
   */
   Vector4D(Vector4D&& V) = default;
 
   /**
-  * Copy constructor
+  * Copy constructor.
   *
   */
   Vector4D(const Vector4D& V);
 
   /**
-  * Copy constructor for vec3 to vec4
+  * Copy constructor for vec3 to vec4.
+  *
+  */
+  Vector4D(const Vector3D& V);
+
+  /**
+  * Copy constructor for vec3 to vec4 with W value.
   *
   */
   Vector4D(const Vector3D& V, float w);
