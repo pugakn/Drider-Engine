@@ -131,17 +131,19 @@ Matrix3x3::identity() {
   vector2.z = 1;
 }
 
-float* Matrix3x3::ptr() {
+float*
+Matrix3x3::ptr() {
   return data->ptr();
 }
 
-const float* Matrix3x3::ptr() const {
+const float*
+Matrix3x3::ptr() const {
   return data->ptr();
 }
 
 Vector3D&
-Matrix3x3::operator[](SizeT index) {
-  DR_ASSERT(index >= 0 && index < 3);
+Matrix3x3::operator[](SizeT index){
+  DR_ASSERT(index < 3);
   return data[index];
 }
 
@@ -154,7 +156,7 @@ Matrix3x3::operator=(const Matrix3x3& A) {
 }
 
 Matrix3x3&
-Matrix3x3::operator=(const Matrix4x4 & A)
+Matrix3x3::operator=(const Matrix4x4& A)
 {
   vector0 = A.vector0;
   vector1 = A.vector1;

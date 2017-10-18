@@ -57,74 +57,80 @@ Math::fast_invSqrt(float number) {
 
 float
 Math::fast_exp(float value) {
+  const float two_times_value = value*value;
   return
   1.0f
   + value
-  + (value*value)*0.5f
-  + (value*value*value)*0.16666666666f
-  + (value*value*value*value)*0.04166666666f;
+  + (two_times_value)*0.5f
+  + (two_times_value*value)*0.16666666666f
+  + (two_times_value*two_times_value)*0.04166666666f;
 }
 
 float
 Math::fast_ln(float value) {
+  const float two_times_value = value*value;
   return
     value
-  - (value*value)*0.5f
-  + (value*value*value)*0.33333333333f
-  - (value*value*value*value)*0.25f;
+  - (two_times_value)*0.5f
+  + (two_times_value*value)*0.33333333333f
+  - (two_times_value*two_times_value)*0.25f;
 }
 
 float
 Math::fast_sin(float value) {
+  const float three_times_value = value*value*value;
   return
   //1: x
   value
   //2: - (x^3)/3!
-  - (value*value*value)*0.166667f
+  - (three_times_value)*0.166667f
   //3: + (x^5)/5!
-  + (value*value*value*value*value)*0.00833333f
+  + (three_times_value*value*value)*0.00833333f
   //4: - (x^7)/7!
-  - (value*value*value*value*value*value*value)*0.000198413f
+  - (three_times_value*three_times_value*value)*0.000198413f
   ;
 }
 
 float
 Math::fast_aSin(float value) {
+  const float three_times_value = value*value*value;
   return
   //1: x
   value
   //2: (x^3)*1/6
-  + (value*value*value)*0.16666666666f
+  + (three_times_value)*0.16666666666f
   //3: (x^5)*3/40
-  + (value*value*value*value*value)*0.075f
+  + (three_times_value*value*value)*0.075f
   //4: (x^7)*5/112
-  + (value*value*value*value*value*value*value)*0.04464285714f;
+  + (three_times_value*three_times_value*value)*0.04464285714f;
 }
 
 float
 Math::fast_cos(float value) {
+  const float two_times_value = value*value;
   return
   //1: 1
   1.0f
   //2: - (x^2)/2!
-  - (value*value)*0.5f
+  - (two_times_value)*0.5f
   //3: + (x^4)/4!
-  + (value*value*value*value)*0.04166666666f
+  + (two_times_value*two_times_value)*0.04166666666f
   //4: - (x^6)/6!
-  - (value*value*value*value*value*value)*0.00138888888f;
+  - (two_times_value*two_times_value*two_times_value)*0.00138888888f;
 }
 
 float
 Math::fast_aCos(float value) {
+  const float three_times_value = value*value*value;
   return
   //1: pi/2 - x
   HALF_PI - value
   //2: - (x^3)*1/6
-  - (value*value*value)*0.16666666666f
+  - (three_times_value)*0.16666666666f
   //3: - (x^5)*3/40
-  - (value*value*value*value*value)*0.075f
+  - (three_times_value*value*value)*0.075f
   //4: - (x^7)*5/112
-  - (value*value*value*value*value*value*value)*0.04464285714f;
+  - (three_times_value*three_times_value*value)*0.04464285714f;
 }
 
 float
@@ -134,15 +140,16 @@ Math::fast_tan(float value) {
 
 float
 Math::fast_aTan(float value) {
+  const float three_times_value = value*value*value;
   return
   //1: x
   value
   //2: - (x^3)*1/3
-  - (value*value*value)*0.33333333333f
+  - (three_times_value)*0.33333333333f
   //3: + (x^5)*1/5
-  + (value*value*value*value*value)*0.2f
+  + (three_times_value*value*value)*0.2f
   //4: - (x^7)*1/7
-  - (value*value*value*value*value*value*value)*0.14285714285f;
+  - (three_times_value*three_times_value*value)*0.14285714285f;
 }
 
 }

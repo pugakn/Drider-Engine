@@ -18,13 +18,18 @@ Vector2DI::Vector2DI(Math::FORCE_INIT k) {
 
 Vector2DI::Vector2DI(const Vector2DI& V) : x(V.x), y(V.y) {}
 
-Vector2DI::Vector2DI(Int32 x, Int32 y) : x(x), y(y) {}
+Vector2DI::Vector2DI(Int32 _x, Int32 _y) : x(_x), y(_y) {}
 
 Vector2DI::~Vector2DI() {}
 
 float
 Vector2DI::dot(const Vector2DI& B) const {
   return static_cast<float>((x*B.x) + (y*B.y));
+}
+
+Vector2DI
+Vector2DI::cross() const {
+  return Vector2DI(x*y - y*x, 0);
 }
 
 float
@@ -53,34 +58,30 @@ Vector2DI::distanceSqr(const Vector2DI& otherVector) const {
 }
 
 bool
-Vector2DI::equals(const Vector2DI& otherVector) const {
-  return (Math::abs(x - otherVector.x) < Math::SMALL_NUMBER) &&
-         (Math::abs(y - otherVector.y) < Math::SMALL_NUMBER);
-}
-
-bool
 Vector2DI::equals(const Vector2DI& otherVector, float errorRange) const {
   return (Math::abs(x - otherVector.x) < errorRange) &&
          (Math::abs(y - otherVector.y) < errorRange);
 }
 
-int* Vector2DI::ptr() {
-  return data;
+Int32*
+Vector2DI::ptr() {
+  return &data[0];
 }
 
-const int* Vector2DI::ptr() const {
-  return data;
+const Int32*
+Vector2DI::ptr() const {
+  return &data[0];
 }
 
 Int32&
-Vector2DI::operator[](SizeT index) {
-  DR_ASSERT(index >= 0 && index < 2);
+Vector2DI::operator[](const SizeT index) {
+  DR_ASSERT(index < 2);
   return data[index];
 }
 
 const Int32&
-Vector2DI::operator[](SizeT index) const {
-  DR_ASSERT(index >= 0 && index < 2);
+Vector2DI::operator[](const SizeT index) const {
+  DR_ASSERT(index < 2);
   return data[index];
 }
 

@@ -18,13 +18,18 @@ Vector2D::Vector2D(Math::FORCE_INIT k) {
 
 Vector2D::Vector2D(const Vector2D& V) : x(V.x), y(V.y) {}
 
-Vector2D::Vector2D(float x, float y) : x(x), y(y) {}
+Vector2D::Vector2D(float _x, float _y) : x(_x), y(_y) {}
 
 Vector2D::~Vector2D() {}
 
 float
 Vector2D::dot(const Vector2D& B) const {
   return (x*B.x) + (y*B.y);
+}
+
+Vector2D
+Vector2D::cross() const {
+  return Vector2D(x*y - y*x, 0);
 }
 
 float
@@ -53,26 +58,30 @@ Vector2D::distanceSqr(const Vector2D& otherVector) const {
 }
 
 bool
-Vector2D::equals(const Vector2D& otherVector) const {
-  return (Math::abs(x - otherVector.x) < Math::SMALL_NUMBER) &&
-         (Math::abs(y - otherVector.y) < Math::SMALL_NUMBER);
-}
-
-bool
 Vector2D::equals(const Vector2D& otherVector, float errorRange) const {
   return (Math::abs(x - otherVector.x) < errorRange) &&
          (Math::abs(y - otherVector.y) < errorRange);
 }
 
+float*
+Vector2D::ptr() {
+  return &data[0];
+}
+
+const float*
+Vector2D::ptr() const {
+  return &data[0];
+}
+
 float&
-Vector2D::operator[](SizeT index) {
-  DR_ASSERT(index >= 0 && index < 2);
+Vector2D::operator[](const SizeT index){
+  DR_ASSERT(index < 2);
   return data[index];
 }
 
 const float&
-Vector2D::operator[](SizeT index) const {
-  DR_ASSERT(index >= 0 && index < 2);
+Vector2D::operator[](const SizeT index) const {
+  DR_ASSERT(index < 2);
   return data[index];
 }
 
