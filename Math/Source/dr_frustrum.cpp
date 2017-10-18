@@ -1,14 +1,12 @@
 #include <dr_frustrum.h>
 
 namespace driderSDK {
-Frustrum::Frustrum(const Matrix4x4& ViewProjection)
-{
+Frustrum::Frustrum(const Matrix4x4& ViewProjection) {
 	createFromVP(ViewProjection);
 }
 
 void
-driderSDK::Frustrum::createFromVP(const Matrix4x4& ViewProjection)
-{
+driderSDK::Frustrum::createFromVP(const Matrix4x4& ViewProjection) {
 	// Left clipping plane   
 	planes[0].x = ViewProjection.vector0[3] + ViewProjection.vector0[0];
 	planes[0].y = ViewProjection.vector1[3] + ViewProjection.vector1[0];

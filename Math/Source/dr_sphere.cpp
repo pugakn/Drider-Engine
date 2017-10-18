@@ -32,4 +32,5 @@ bool
 Sphere::intersects(const Frustrum& frustrum) {
   return frustrum.kBottom > 0; // frustrumSphere(); Error frustrum no implemented
 }
+
 }
