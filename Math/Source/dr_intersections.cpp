@@ -33,7 +33,7 @@ Intersect::capsuleCapsule(const Vector3D& capsule1A,
                           const Vector3D& capsule1B,
                           float capsule1Radius,
                           const Vector3D& capsule2A,
-                          const Vector3D& capsule2B,
+                          const Vector3D & capsule2B,
                           float capsule2Radius) {
   // Compute (squared) distance between the inner structures of the capsules
   float s, t;
@@ -51,7 +51,7 @@ Intersect::capsuleCapsule(const Vector3D& capsule1A,
 }
 
 bool
-Intersect::sphereRay(const Vector3D& sphPosition, float sphRadio, const Vector3D& rayOrigin, const Vector3D& rayDirection) {
+Intersect::sphereRay(const Vector3D & sphPosition, float sphRadio, const Vector3D & rayOrigin, const Vector3D & rayDirection) {
   if (sphereContainsPoint(rayOrigin, sphPosition, sphRadio)) {
     return true;
   }
@@ -209,7 +209,7 @@ Intersect::frustrumFrustrum(const std::array<Plane, 6>& frustrumAPlanes,
 
 bool
 Intersect::frustrumSphere(const std::array<Plane, 6>& frustrumPlanes,
-                          const Vector3D& sphereOrigin,
+                          const Vector3D & sphereOrigin,
                           float sphereRadius) {
   return false;
 }
@@ -392,7 +392,7 @@ Intersect::planePlane(const Vector3D& plane1Normal,
                       float plane1Gap, 
                       const Vector3D& plane2Normal, 
                       float plane2Gap, 
-                      Vector3D& point, Vector3D& direction) {
+                      Vector3D& point, Vector3D & direction) {
   //Warning: This assumes that normal1 and normal2 are normalized.
 
   direction = plane1Normal.cross(plane2Normal);
@@ -442,7 +442,7 @@ Intersect::frustrumContainsSphere(const std::array<Plane, 6>& frustrumPlanes,
   return false;
 }
 
-float Intersect::closestPointSegmentSegment(const Vector3D& p1, const Vector3D& q1, const Vector3D& p2, const Vector3D& q2, float& s, float& t, Vector3D& c1, Vector3D& c2) {
+float Intersect::closestPointSegmentSegment(const Vector3D & p1, const Vector3D & q1, const Vector3D & p2, const Vector3D & q2, float & s, float & t, Vector3D & c1, Vector3D & c2) {
   Vector3D d1 = q1 - p1; // Direction vector of segment S1
   Vector3D d2 = q2 - p2; // Direction vector of segment S2
   Vector3D r = p1 - p2;
