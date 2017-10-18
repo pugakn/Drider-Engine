@@ -9,27 +9,27 @@ namespace driderSDK {
 
 bool
 Sphere::intersects(const Vector3D& point) {
-  return sphereContainsPoint(point, center, radius);
+  return Intersect::sphereContainsPoint(point, center, radius);
 }
 
 bool
 Sphere::intersects(const Plane& plane) {
-  return plane.d > 0; // Error, Intersects plane no implemented
+  return Intersect::spherePlane(plane, plane.d, center, radius);
 }
 bool
 Sphere::intersects(const Sphere& sphere) {
-  return sphereSphereIntersect(center, radius, sphere.center, sphere.radius);
+  return Intersect::sphereSphere(center, radius, sphere.center, sphere.radius);
 }
 bool
 Sphere::intersects(const AABB& aabb) {
-  return aabbSphereIntersect(aabb.center, aabb.width, aabb.height, center, radius);
+  return Intersect::aabbSphere(aabb.center, aabb.width, aabb.height, center, radius);
 }
 bool
 Sphere::intersects(const Capsule& capsule) {
-  return sphereCapsuleIntersect(center, radius, capsule.pointA, capsule.pointB, capsule.radius);
+  return Intersect::sphereCapsule(center, radius, capsule.pointA, capsule.pointB, capsule.radius);
 }
 bool
 Sphere::intersects(const Frustrum& frustrum) {
-  return frustrum.kBottom > 0; // frustrumSphereIntersect(); Error frustrum no implemented
+  return frustrum.kBottom > 0; // frustrumSphere(); Error frustrum no implemented
 }
 }

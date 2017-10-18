@@ -2,9 +2,12 @@
 
 #include <dr_prerequisites.h>
 #include "dr_vector3d.h"
-#include "dr_math.h"
 
 namespace driderSDK {
+
+namespace PLANE_INTERSECT {
+enum E;
+}
 
 class Ray;
 class Sphere;
@@ -67,7 +70,7 @@ class DR_API_EXPORT Plane : public Vector3D
   *	@return
   *	  The relationship of the point with the plane.
   */
-  Math::PLANE_INTERSECT 
+  PLANE_INTERSECT::E
   intersects(const Vector3D& point);
 
   bool 
