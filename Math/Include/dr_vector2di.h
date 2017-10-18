@@ -143,6 +143,24 @@ class DR_API_EXPORT Vector2DI
   bool
   equals(const Vector2DI& otherVector, float errorRange) const;
 
+   /**
+  * Gets a pointer to the first element of the matrix.
+  *
+  * @return
+  *	  A pointer to the first element of the matrix.
+  */
+  int*
+  ptr();
+
+  /**
+  * Gets a constant pointer to the first element of the matrix.
+  *
+  * @return
+  *	  A constant pointer to the first element of the matrix.
+  */
+  const int*
+  ptr() const;
+
   /**
   * Gets a const reference to the specified element from the vector.
   *

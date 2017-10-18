@@ -126,6 +126,24 @@ class DR_API_EXPORT Matrix3x3
   void
   identity();
 
+   /**
+  * Gets a pointer to the first element of the matrix.
+  *
+  * @return
+  *	  A pointer to the first element of the matrix.
+  */
+  float*
+  ptr();
+
+  /**
+  * Gets a constant pointer to the first element of the matrix.
+  *
+  * @return
+  *	  A constant pointer to the first element of the matrix.
+  */
+  const float*
+  ptr() const;
+
    //Uncommented
   Vector3D&
   operator[](SizeT index);

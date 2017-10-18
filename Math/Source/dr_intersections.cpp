@@ -457,7 +457,6 @@ bool planePlaneIntersect(const Vector3D& plane1Normal,
   Vector3D d = plane1Normal.cross(plane2Normal);
 
   return d.lengthSqr() > Math::EPSILON;
-
 }
 
 /**********************************************************************
