@@ -130,12 +130,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="dr_parser.h" />
+    <ClInclude Include="Include\dr_face.h" />
+    <ClInclude Include="Include\dr_parser.h" />
+    <ClInclude Include="Include\dr_polygon.h" />
+    <ClInclude Include="Include\dr_resource.h" />
+    <ClInclude Include="Include\dr_resourceManager.h" />
     <ClInclude Include="Include\dr_vertex.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="dr_parser.cpp" />
     <ClCompile Include="Include\dr_vertex.cpp" />
+    <ClCompile Include="Source\dr_face.cpp" />
+    <ClCompile Include="Source\dr_parser.cpp" />
+    <ClCompile Include="Source\dr_polygon.cpp" />
+    <ClCompile Include="Source\dr_resource.cpp" />
+    <ClCompile Include="Source\dr_resourceManager.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

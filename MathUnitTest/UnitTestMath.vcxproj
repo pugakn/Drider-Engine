@@ -22,7 +22,7 @@
     <ClCompile Include="dr_unitTest_quaternion.cpp" />
     <ClCompile Include="Source\dr_unitTest_matrix3x3.cpp" />
     <ClCompile Include="Source\dr_unitTest_matrix4x4.cpp" />
-    <ClCompile Include="Source\dr_unitTest_sphere.cpp" />
+    <ClCompile Include="Source\dr_sphere_unitTest.cpp" />
     <ClCompile Include="Source\dr_unitTest_vector2D.cpp" />
     <ClCompile Include="Source\unitTestMath.cpp" />
   </ItemGroup>
