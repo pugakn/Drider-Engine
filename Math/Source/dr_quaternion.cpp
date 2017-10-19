@@ -46,9 +46,10 @@ Quaternion::conjugate() {
   return Quaternion(-x, -y, -z, w);
 }
 
-Quaternion
+void
 Quaternion::normalize() {
-  return (*this)*(1 / measure());
+	DR_ASSERT(measure() != 0.0f);
+  *this = (*this)*(1 / measure());
 }
 
 Quaternion
@@ -103,13 +104,13 @@ Quaternion::ptr() const {
 
 float&
 Quaternion::operator[](const SizeT index) {
-	DR_ASSERT(index > 4);
+	DR_ASSERT(index < 4);
 	return data[index];
 }
 
 const float&
 Quaternion::operator[](const SizeT index) const {
-	DR_ASSERT(index > 4);
+	DR_ASSERT(index < 4);
 	return data[index];
 }
 
@@ -156,10 +157,7 @@ Quaternion::operator*(float s) const {
 
 Quaternion&
 Quaternion::operator*=(const Quaternion& Q) {
-  x = (w*Q.x) + (y*Q.z) - (z*Q.y) + (x*Q.w);
-  y = (w*Q.y) + (z*Q.x) - (x*Q.z) + (y*Q.w);
-  z = (w*Q.z) + (x*Q.y) - (y*Q.x) + (z*Q.w);
-  w = (w*Q.w) - (x*Q.x) - (y*Q.y) - (z*Q.z);
+	*this = (*this) * Q;
   return *this;
 }
 
@@ -189,6 +187,30 @@ Quaternion::operator/=(const Quaternion& Q) {
   R *= div;
   (*this) *= (R * div);
   return *this;
+}
+
+Quaternion&
+Quaternion::operator=(const Quaternion& Q) {
+	x = Q.x;
+	y = Q.y;
+	z = Q.z;
+	w = Q.w;
+	return *this;
+}
+
+bool
+Quaternion::operator==(const Quaternion& Q) {
+	return ((x == Q.x) && (y == Q.y) && (z = Q.z) && (w == Q.w));
+}
+
+bool
+Quaternion::operator!=(const Quaternion& Q) {
+	return (!(*this == Q));
+}
+
+Quaternion
+Quaternion::operator-() const {
+	return Quaternion(-x, -y, -z, -w);
 }
 
 }

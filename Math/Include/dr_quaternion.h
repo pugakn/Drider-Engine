@@ -88,12 +88,10 @@ class DR_API_EXPORT Quaternion
   conjugate();
 
   /**
-  * Computes the normalized quaternion.
+  * Normalize the quaternion.
   *
-  * @return
-  *   This normalized quaternion.
   */
-  Quaternion
+  void
   normalize();
 
   /**
@@ -284,6 +282,49 @@ class DR_API_EXPORT Quaternion
 	*/
   Quaternion&
   operator/=(const Quaternion& Q);
+
+	/**
+	* Assigns the values from another quaternion
+	*
+	* @param Q
+	*  The quaternion to take the values from.
+	*
+	* @return
+	*   A reference to this quaternion
+	*/
+	Quaternion&
+	operator=(const Quaternion& Q);
+
+	/**
+	* Checks if quaternion is equal to another quaternion
+	*
+	* @param Q
+	*  The quaternion to compare.
+	*
+	* @return
+	*   True if it is equal
+	*/
+	bool
+	operator==(const Quaternion& Q);
+
+	/**
+	* Checks if quaternion is not equal to another quaternion
+	*
+	* @param Q
+	*  The quaternion to compare.
+	*
+	* @return
+	*   True if it is not equal
+	*/
+	bool
+	operator!=(const Quaternion& Q);
+
+	/**
+	* Returns this quaternion with negated values.
+	*
+	*/
+	Quaternion
+	operator-() const;
 
   union 
   {
