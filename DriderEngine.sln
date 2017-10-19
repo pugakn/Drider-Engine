@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.15
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Utils", "Utils\Utils.vcxproj", "{96C93CF8-BB4C-4D60-8C5D-3F439477662D}"
 EndProject
@@ -24,21 +24,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Graphics", "Graphics\Graphi
 		{96C93CF8-BB4C-4D60-8C5D-3F439477662D} = {96C93CF8-BB4C-4D60-8C5D-3F439477662D}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTestMath", "UnitTestMath\UnitTestMath.vcxproj", "{EC9E791F-9375-4F43-9592-0BE28E642E13}"
-	ProjectSection(ProjectDependencies) = postProject
-		{4C420F92-670E-4FFF-8EF6-B8F33B482386} = {4C420F92-670E-4FFF-8EF6-B8F33B482386}
-		{96C93CF8-BB4C-4D60-8C5D-3F439477662D} = {96C93CF8-BB4C-4D60-8C5D-3F439477662D}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MathUnitTest", "MathUnitTest\UnitTestMath.vcxproj", "{EC9E791F-9375-4F43-9592-0BE28E642E13}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTestGraphics", "UnitTestGraphics\UnitTestGraphics.vcxproj", "{15B70D51-D47C-4642-97A0-03DA600A56EB}"
-	ProjectSection(ProjectDependencies) = postProject
-		{2C6134FF-9270-4CD2-BD4E-254C5888942A} = {2C6134FF-9270-4CD2-BD4E-254C5888942A}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GraphicsUnitTest", "GraphicsUnitTest\UnitTestGraphics.vcxproj", "{15B70D51-D47C-4642-97A0-03DA600A56EB}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTestEngine", "UnitTestEngine\UnitTestEngine.vcxproj", "{4216D5A9-F009-4330-B3C5-262FBD6570F5}"
-	ProjectSection(ProjectDependencies) = postProject
-		{AB89A20F-171B-40CD-A7E8-84F4C35BECDC} = {AB89A20F-171B-40CD-A7E8-84F4C35BECDC}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EngineUnitTest", "EngineUnitTest\UnitTestEngine.vcxproj", "{4216D5A9-F009-4330-B3C5-262FBD6570F5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

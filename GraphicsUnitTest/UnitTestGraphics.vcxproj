@@ -23,6 +23,7 @@
     <ProjectGuid>{15B70D51-D47C-4642-97A0-03DA600A56EB}</ProjectGuid>
     <RootNamespace>UnitTestGraphics</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <ProjectName>GraphicsUnitTest</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -144,12 +145,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="unitTestGraphics.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Math\Math.vcxproj">
       <Project>{4c420f92-670e-4fff-8ef6-b8f33b482386}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\unitTestGraphics.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
