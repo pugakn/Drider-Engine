@@ -4,12 +4,35 @@ namespace driderSDK {
 
 Quaternion::Quaternion() {}
 
+Quaternion::Quaternion(Math::FORCE_INIT k) {
+	if (k == Math::kZero) {
+		x = 0.f;
+		y = 0.f;
+		z = 0.f;
+		w = 0.f;
+	}
+	//kIdentity
+	else {
+		x = 0.f;
+		y = 0.f;
+		z = 0.f;
+		w = 1.f;
+	}
+}
+
 Quaternion::Quaternion(const Quaternion& Q) : x(Q.x), y(Q.y), z(Q.z), w(Q.w) {}
 
-Quaternion::Quaternion(float x,
-                       float y,
-                       float z,
-                       float w) : x(x), y(y), z(z), w(w) {}
+Quaternion::Quaternion(float _x,
+                       float _y,
+                       float _z,
+                       float _w) : x(_x), y(_y), z(_z), w(_w) {}
+
+Quaternion::Quaternion(const Vector4D& V) {
+	x = V.x;
+	y = V.y;
+	z = V.z;
+	w = V.w;
+}
 
 Quaternion::~Quaternion() {}
 
@@ -66,6 +89,28 @@ Quaternion::matrixFromQuaternion(Matrix3x3& Matrix) {
 	Matrix[2][1] = (2.f*y*z) + (2.f*x*w);
 	Matrix[2][2] = 1.f - (2.f*x*x) - (2.f*y*y);
 	return;
+}
+
+float*
+Quaternion::ptr() {
+	return &data[0];
+}
+
+const float*
+Quaternion::ptr() const {
+	return &data[0];
+}
+
+float&
+Quaternion::operator[](const SizeT index) {
+	DR_ASSERT(index > 4);
+	return data[index];
+}
+
+const float&
+Quaternion::operator[](const SizeT index) const {
+	DR_ASSERT(index > 4);
+	return data[index];
 }
 
 Quaternion
@@ -127,9 +172,9 @@ Quaternion::operator*=(float s) {
   return *this;
 }
 
-
 Quaternion
 Quaternion::operator/(const Quaternion& Q) const {
+	DR_ASSERT((Q.x + Q.y + Q.z + Q.w) != 0.0f);
   float div = 1 / (Q.x*Q.x + Q.y*Q.y + Q.z*Q.z + Q.w*Q.w);
   Quaternion R(-Q.x, -Q.y, -Q.z, Q.w);
   R *= div;
@@ -138,6 +183,7 @@ Quaternion::operator/(const Quaternion& Q) const {
 
 Quaternion&
 Quaternion::operator/=(const Quaternion& Q) {
+	DR_ASSERT((Q.x + Q.y + Q.z + Q.w) != 0.0f);
   float div = 1 / (Q.x*Q.x + Q.y*Q.y + Q.z*Q.z + Q.w*Q.w);
   Quaternion R(-Q.x, -Q.y, -Q.z, Q.w);
   R *= div;
