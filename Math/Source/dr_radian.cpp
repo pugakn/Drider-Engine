@@ -18,9 +18,9 @@ Radian::toDegree() const {
 
 Radian&
 Radian::unwind() {
-  while (m_value < 0)
+  while (m_value < 0.0f)
   {
-    if (m_value < 0) {
+    if (m_value < 0.0f) {
       m_value += Math::TWO_PI;
     }
   }
