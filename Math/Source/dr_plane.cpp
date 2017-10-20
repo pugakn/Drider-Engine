@@ -37,6 +37,8 @@ Plane::compute(const Vector3D & point0,
   compute(normal, point0);
 }
 
+Plane::~Plane() {}
+
 void Plane::compute(const Vector3D& _normal, const Vector3D& point) {
   Vector3D::operator=(_normal);
   d = dot(point);
@@ -66,32 +68,27 @@ Plane::intersects(const Vector3D& point) {
   }
 }
 
-bool Plane::intersects(const Plane & other)
-{
+bool Plane::intersects(const Plane & other) {
   return Intersect::planePlane(*this, other);
 }
 
-bool Plane::intersects(const Sphere & sphere)
-{
+bool Plane::intersects(const Sphere & sphere) {
   return Intersect::spherePlane(*this, d, sphere.center, sphere.radius);
 }
 
-bool Plane::intersects(const AABB & aabb)
-{
+bool Plane::intersects(const AABB & aabb) {
   return Intersect::aabbPlane(aabb.center, aabb.width, aabb.height, *this, d);
 }
 
-bool Plane::intersects(const Capsule & capsule)
-{
+bool Plane::intersects(const Capsule & capsule) {
   return Intersect::capsulePlane(capsule.pointA,
-                               capsule.pointB, 
-                               capsule.radius,
-                               *this,
-                               d);
+                                 capsule.pointB, 
+                                 capsule.radius,
+                                 *this,
+                                 d);
 }
 
-bool Plane::intersects(const Frustrum & frustrum)
-{
+bool Plane::intersects(const Frustrum & frustrum) {
   return Intersect::frustrumPlane(frustrum.planes, *this);
 }
 
