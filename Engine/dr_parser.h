@@ -33,12 +33,16 @@ struct DR_API_EXPORT Parser
   * @param source
   *   String to be copied.
   *
+  * @param size
+  *   Size of the buffer.
+  *
   * @return
-  *   detination is returned.
+  *  Returns zero on success, returns non-zero on error.
   */
-  char *
-  strCpy(char* destination, 
-         const char * source);
+  int
+  strNCpy(char* destination, 
+          const char * source,
+          size_t size);
   
   
   /**

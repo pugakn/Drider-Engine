@@ -8,10 +8,11 @@ Parser::strStr(const char* str1,
   return strstr(str1, str2);   
 }
 
-char *
-Parser::strCpy(char* destination,
-                const char * source) {
-  return strcpy(destination, source);
+int
+Parser::strNCpy(char* destination,
+                const char * source,
+                size_t size) {
+  return strcpy_s(destination, size, source);
 
 }
 
