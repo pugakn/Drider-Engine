@@ -94,9 +94,9 @@ TEST(Matrix3x3, identity) {
   driderSDK::Matrix3x3 testMatrix(1, 2, 3, 4, 5, 6, 7, 8, 9);
   testMatrix.identity();
   checkValuesMatrix(testMatrix,
-    1, 0, 0,
-    0, 1, 0,
-    0, 0, 1);
+                    1, 0, 0,
+                    0, 1, 0,
+                    0, 0, 1);
 }
 
 TEST(Matrix3x3, operatorEqual) {
@@ -105,9 +105,9 @@ TEST(Matrix3x3, operatorEqual) {
 
   testMatrix1 = testMatrix;
   checkValuesMatrix(testMatrix,
-    1, 2, 3,
-    4, 5, 6,
-    7, 8, 9);
+                    1, 2, 3,
+                    4, 5, 6,
+                    7, 8, 9);
 }
 
 TEST(Matrix3x3, operatorEqualMatrix4x4) {

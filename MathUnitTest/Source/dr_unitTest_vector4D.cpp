@@ -1,4 +1,5 @@
 #include <dr_vector4d.h>
+#include <dr_vector3d.h>
 #include <gtest\gtest.h>
 
 void checkValuesVector(driderSDK::Vector4D& testVector, float vx, float vy, float vz, float vw) {
@@ -8,95 +9,311 @@ void checkValuesVector(driderSDK::Vector4D& testVector, float vx, float vy, floa
   EXPECT_FLOAT_EQ(vw, testVector[3]);
 }
 
-TEST(forceInitZero, Vector4D) {
-  driderSDK::Vector4D testVector(driderSDK::Math::FORCE_INIT::kZero);
-
-  checkValuesVector(testVector, 0, 0, 0, 0);
+void checkValuesVector(driderSDK::Vector4D& testVectorA, driderSDK::Vector4D& testVectorB) {
+  checkValuesVector(testVectorA, testVectorB.x, testVectorB.y, testVectorB.z, testVectorB.w);
 }
 
-TEST(forceInitOne, Vector4D) {
-  driderSDK::Vector4D testVector(driderSDK::Math::FORCE_INIT::kIdentity);
-
-  checkValuesVector(testVector, 1, 1, 1, 1);
+void checkValuesVector(driderSDK::Vector4D& testVectorA, driderSDK::Vector3D& testVectorB) {
+  EXPECT_FLOAT_EQ(testVectorA[0], testVectorB[0]);
+  EXPECT_FLOAT_EQ(testVectorA[1], testVectorB[1]);
+  EXPECT_FLOAT_EQ(testVectorA[2], testVectorB[2]);
 }
 
-TEST(constructForVector2D, Vector4D) {
-  driderSDK::Vector4D testVector(0, 1, 2, 3);
-  driderSDK::Vector4D testVector2(testVector);
-
-  checkValuesVector(testVector, 0, 1, 2, 3);
+void checkValuesVector(driderSDK::Vector3D& testVectorA, driderSDK::Vector4D& testVectorB) {
+  checkValuesVector(testVectorB, testVectorA);
 }
 
-TEST(constructorFor2Floats, Vector4D) {
-  driderSDK::Vector4D testVector(0, 1, 2, 3);
-
-  checkValuesVector(testVector, 0, 1, 2, 3);
+void checkValuesVector(driderSDK::Vector4D& testVectorA, driderSDK::Vector3D& testVectorB, float wValue) {
+  checkValuesVector(testVectorA, testVectorB.x, testVectorB.y, testVectorB.z, wValue);
 }
 
-TEST(dot, Vector4D) {
-  driderSDK::Vector4D testVector(1, 2, 0, 0);
-  driderSDK::Vector4D testVector1(3, 4, 0, 0);
+TEST(Vector4D, forceInit) {
+  driderSDK::Vector4D testVector1(driderSDK::Math::FORCE_INIT::kZero);
+  checkValuesVector(testVector1, 0, 0, 0, 0);
 
-  EXPECT_FLOAT_EQ(11, testVector.dot(testVector1));
-
-  driderSDK::Vector4D testVector2(-2.14f, -7.f, 0, 0);
-  driderSDK::Vector4D testVector3(3.00014f, -100.f, 0, 0);
-
-  EXPECT_FLOAT_EQ(693.5797004f, testVector2.dot(testVector3));
-
-  driderSDK::Vector4D testVector4(1, 1024, 0, 0);
-  driderSDK::Vector4D testVector5(0.0000001f, 1024.f, 0, 0);
-
-  EXPECT_FLOAT_EQ(1048576, testVector4.dot(testVector5));
+  driderSDK::Vector4D testVector2(driderSDK::Math::FORCE_INIT::kIdentity);
+  checkValuesVector(testVector2, 1, 1, 1, 1);
 }
 
-TEST(length, Vector4D) {
-  driderSDK::Vector4D testVector(1, 0, 0, 0);
-  EXPECT_FLOAT_EQ(1, testVector.length());
+TEST(Vector4D, copyConstructor4D) {
+  driderSDK::Vector4D trueVector(123, 432, 567, 0.0001f);
+  driderSDK::Vector4D testVector(trueVector);
 
-  driderSDK::Vector4D testVector1(3, 4, 0, 0);
-  EXPECT_FLOAT_EQ(5, testVector1.length());
-
-  driderSDK::Vector4D testVector2(1.001f, -9.99999f, 0, 0);
-  EXPECT_FLOAT_EQ(10.049965223825405f, testVector2.length());
+  checkValuesVector(trueVector, testVector);
 }
 
-TEST(lengthSQR, Vector4D) {
-  driderSDK::Vector4D testVector(1, 0, 0, 0);
-  EXPECT_FLOAT_EQ(1, testVector.lengthSqr());
+TEST(Vector4D, copyConstructor3D) {
+  driderSDK::Vector3D trueVector(123, 432, 0.0001f);
+  driderSDK::Vector4D testVector(trueVector);
 
-  driderSDK::Vector4D testVector1(3, 4, 0, 0);
-  EXPECT_FLOAT_EQ(25, testVector1.lengthSqr());
-
-  driderSDK::Vector4D testVector2(1.001f, -9.99999f, 0, 0);
-  EXPECT_FLOAT_EQ(101.00180100010002281946192341403f, testVector2.lengthSqr());
+  checkValuesVector(trueVector, testVector);
 }
 
-TEST(normalize, Vector4D) {
-  driderSDK::Vector4D testVector(1, 1, 0, 0);
-  testVector.normalize();
-  checkValuesVector(testVector, 0.70710678118f, 0.70710678118f, 0, 0);
+TEST(Vector4D, copyConstructor3DwithW) {
+  driderSDK::Vector3D trueVector(123, 432, 0.0001f);
+  float newW = 567;
+  driderSDK::Vector4D testVector(trueVector, newW);
 
-  driderSDK::Vector4D testVector2(100, 0.1, 0, 0);
-  testVector2.normalize();
-  EXPECT_FLOAT_EQ(1, testVector2.length());
-
-  driderSDK::Vector4D testVector3(1, 10, 0, 0);
-  testVector3.normalize();
-  checkValuesVector(testVector3, 0.09950371902f, 0.99503719021f, 0, 0);
-  EXPECT_FLOAT_EQ(1, testVector3.length());
+  checkValuesVector(testVector, trueVector, newW);
 }
 
-TEST(distance, Vector4D) {
-  driderSDK::Vector4D testVector(0, 0, 0, 0);
-  driderSDK::Vector4D testVector1(1, 0, 0, 0);
-  EXPECT_FLOAT_EQ(1, testVector.distance(testVector1));
+TEST(Vector4D, floatsConstructor) {
+  float newX = 9045.6458f;
+  float newY = 5345.04f;
+  float newZ = 5876;
+  float newW = 567;
 
-  driderSDK::Vector4D testVector2(0, 1, 0, 0);
-  driderSDK::Vector4D testVector3(1, 0, 0, 0);
-  EXPECT_FLOAT_EQ(2.0f / driderSDK::Math::sqrt(2), testVector2.distance(testVector3));
+  driderSDK::Vector4D testVector(newX, newY, newZ, newW);
 
-  driderSDK::Vector4D testVector4(777, 666, 0, 0);
-  driderSDK::Vector4D testVector5(3.1415f, 0.1f, 0, 0);
-  EXPECT_FLOAT_EQ(1020.92105f, testVector4.distance(testVector5));
+  checkValuesVector(testVector, newX, newY, newZ, newW);
+}
+
+TEST(Vector4D, dot3) {
+  driderSDK::Vector4D testVector1(1, 2, 3, 4);
+  driderSDK::Vector4D testVector2(4, 3, 2, 1);
+
+  EXPECT_FLOAT_EQ(testVector1.dot3(testVector2), 16);
+}
+
+TEST(Vector4D, dot) {
+  driderSDK::Vector4D testVector1(1, 2, 3, 4);
+  driderSDK::Vector4D testVector2(4, 3, 2, 1);
+
+  EXPECT_FLOAT_EQ(testVector1.dot(testVector2), 20);
+}
+
+TEST(Vector4D, cross) {
+  driderSDK::Vector4D testVector1(1, 2, 3, 4);
+  driderSDK::Vector4D testVector2(4, 3, 2, 1);
+
+  driderSDK::Vector4D testVectorResult = testVector1.cross(testVector2);
+
+  checkValuesVector(testVectorResult, -5, 10, -5, 0);
+}
+
+TEST(Vector4D, length3) {
+  driderSDK::Vector4D testVector1(666, 42, 3, 0);
+  EXPECT_FLOAT_EQ(testVector1.length3(), 3*sqrt(49481));
+}
+
+TEST(Vector4D, length) {
+  driderSDK::Vector4D testVector1(777, 89, 11, 1024);
+  EXPECT_FLOAT_EQ(testVector1.length(), sqrt(611771));
+}
+
+TEST(Vector4D, lengthSqr3) {
+  driderSDK::Vector4D testVector1(666, 42, 3, 0);
+  EXPECT_FLOAT_EQ(testVector1.lengthSqr3(), pow(3 * sqrt(49481), 2));
+}
+
+TEST(Vector4D, lengthSqr) {
+  driderSDK::Vector4D testVector1(777, 89, 11, 1024);
+  EXPECT_FLOAT_EQ(testVector1.lengthSqr(), 611771);
+}
+
+TEST(Vector4D, normalize3) {
+  driderSDK::Vector4D testVector1(1, 2, 3, 4);
+  testVector1.normalize3();
+
+  checkValuesVector(testVector1, 0.267261, 0.534522, 0.801784, 4);
+}
+
+TEST(Vector4D, normalize) {
+  driderSDK::Vector4D testVector1(1, 2, 3, 4);
+  testVector1.normalize();
+
+  checkValuesVector(testVector1, 0.182574, 0.365148, 0.547723, 0.730297);
+}
+
+TEST(Vector4D, distance3) {
+  driderSDK::Vector4D testVector1(0, 0, 0, 1024.666f);
+  driderSDK::Vector4D testVector2(3, 3, 3, 42.0f);
+
+  EXPECT_FLOAT_EQ(testVector1.distance3(testVector2), 5.196152422706632);
+}
+
+TEST(Vector4D, distance) {
+  driderSDK::Vector4D testVector1(5, 6, 7, 8);
+  driderSDK::Vector4D testVector2(1, 2, 3, 4);
+
+  EXPECT_FLOAT_EQ(testVector1.distance(testVector2), 8);
+}
+
+TEST(Vector4D, distanceSqr3) {
+  driderSDK::Vector4D testVector1(0, 0, 0, 1024.666f);
+  driderSDK::Vector4D testVector2(3, 3, 3, 42.0f);
+
+  EXPECT_FLOAT_EQ(testVector1.distanceSqr3(testVector2), pow(5.196152422706632, 2));
+}
+
+TEST(Vector4D, distanceSqr) {
+  driderSDK::Vector4D testVector1(5, 6, 7, 8);
+  driderSDK::Vector4D testVector2(1, 2, 3, 4);
+
+  EXPECT_FLOAT_EQ(testVector1.distanceSqr(testVector2), pow(8, 2));
+}
+
+TEST(Vector4D, equals) {
+  driderSDK::Vector4D testVector1(1, 2.5f, 5, 10.5);
+  driderSDK::Vector4D testVector2(0.9f, 2.4f, 5.1f, 10.6);
+
+  EXPECT_TRUE(testVector1.equals(testVector2, 0.2f));
+}
+
+TEST(Vector4D, ptrOperator) {
+  driderSDK::Vector4D testVector1(1, 2, 3, 4);
+
+  float* floatSpy1 = testVector1.ptr()+0;
+  float* floatSpy2 = testVector1.ptr()+1;
+  float* floatSpy3 = testVector1.ptr()+2;
+  float* floatSpy4 = testVector1.ptr()+3;
+
+  checkValuesVector(testVector1, *floatSpy1, *floatSpy2, *floatSpy3, *floatSpy4);
+}
+
+TEST(Vector4D, constPtrOperator) {
+  driderSDK::Vector4D testVector1(1, 2, 3, 4);
+
+  const float* floatSpy1 = testVector1.ptr() + 0;
+  const float* floatSpy2 = testVector1.ptr() + 1;
+  const float* floatSpy3 = testVector1.ptr() + 2;
+  const float* floatSpy4 = testVector1.ptr() + 3;
+
+  checkValuesVector(testVector1, *floatSpy1, *floatSpy2, *floatSpy3, *floatSpy4);
+}
+
+TEST(Vector4D, indexOperator) {
+  driderSDK::Vector4D testVector1(1, 2, 3, 4);
+
+  EXPECT_FLOAT_EQ(testVector1[2], 3);
+}
+
+TEST(Vector4D, equalvec4Operator) {
+  driderSDK::Vector4D testVector1(0, 0, 0, 0);
+  driderSDK::Vector4D testVector2(1, 2, 3, 4);
+
+  testVector1 = testVector2;
+
+  checkValuesVector(testVector1, testVector2);
+}
+
+TEST(Vector4D, equalvec3Operator) {
+  driderSDK::Vector4D testVector1(0, 0, 0, 0);
+  driderSDK::Vector3D testVector2(1, 2, 3);
+
+  testVector1 = testVector2;
+
+  checkValuesVector(testVector1, testVector2);
+}
+
+TEST(Vector4D, addition) {
+  driderSDK::Vector4D testVector1(1, 2, 3, 4);
+  driderSDK::Vector4D testVector2(5, 6, 7, 8);
+
+  driderSDK::Vector4D testVector3 = testVector1 + testVector2;
+
+  checkValuesVector(testVector3, 6, 8, 10, 12);
+}
+
+TEST(Vector4D, addEqual) {
+  driderSDK::Vector4D testVector1(1, 2, 3, 4);
+  driderSDK::Vector4D testVector2(5, 6, 7, 8);
+
+  testVector1 = testVector1 + testVector2;
+
+  checkValuesVector(testVector1, 6, 8, 10, 12);
+}
+
+TEST(Vector4D, substraction) {
+  driderSDK::Vector4D testVector1(1, 2, 3, 4);
+  driderSDK::Vector4D testVector2(5, 6, 7, 8);
+
+  driderSDK::Vector4D testVector3 = testVector2 - testVector1;
+
+  checkValuesVector(testVector3, 4, 4, 4, 4);
+}
+
+TEST(Vector4D, lessEqual) {
+  driderSDK::Vector4D testVector1(1, 2, 3, 4);
+  driderSDK::Vector4D testVector2(5, 6, 7, 8);
+
+  testVector2 -= testVector1;
+
+  checkValuesVector(testVector2, 4, 4, 4, 4);
+}
+
+TEST(Vector4D, multiplication) {
+  driderSDK::Vector4D testVector1(1, 2, 3, 4);
+  driderSDK::Vector4D testVector2(5, 6, 7, 8);
+
+  driderSDK::Vector4D testVector3 = testVector1*testVector2;
+
+  checkValuesVector(testVector3, 5, 12, 21, 32);
+}
+
+TEST(Vector4D, mulEqual) {
+  driderSDK::Vector4D testVector1(1, 2, 3, 4);
+  driderSDK::Vector4D testVector2(5, 6, 7, 8);
+
+  testVector1 *= testVector2;
+
+  checkValuesVector(testVector1, 5, 12, 21, 32);
+}
+
+TEST(Vector4D, multiplicationFloat) {
+  driderSDK::Vector4D testVector1(5, 6, 7, 8);
+
+  driderSDK::Vector4D testVector2 = testVector1*2;
+
+  checkValuesVector(testVector2, 10, 12, 14, 16);
+}
+
+TEST(Vector4D, mulEqualFloat) {
+  driderSDK::Vector4D testVector1(5, 6, 7, 8);
+
+  testVector1 *= 2;
+
+  checkValuesVector(testVector1, 10, 12, 14, 16);
+}
+
+TEST(Vector4D, divitionFloat) {
+  driderSDK::Vector4D testVector1(10, 20, 30, 40);
+
+  driderSDK::Vector4D testVector2 = testVector1/2;
+
+  checkValuesVector(testVector2, 5, 10, 15, 20);
+}
+
+TEST(Vector4D, divEqualFloat) {
+  driderSDK::Vector4D testVector1(10, 20, 30, 40);
+
+  testVector1 /= 2;
+
+  checkValuesVector(testVector1, 5, 10, 15, 20);
+}
+
+TEST(Vector4D, equalOperator) {
+  driderSDK::Vector4D testVector1(10, 20, 30, 40);
+  driderSDK::Vector4D testVector2(10, 20, 30, 40);
+
+  EXPECT_TRUE(testVector1 == testVector2);
+}
+
+TEST(Vector4D, notEqualOperator) {
+  driderSDK::Vector4D testVector1(10, 20, 30, 40);
+  driderSDK::Vector4D testVector2(10, 20, 30, 40.001f);
+
+  EXPECT_TRUE(testVector1 != testVector2);
+}
+
+TEST(Vector4D, unaryLess) {
+  float newX = 1;
+  float newY = 2;
+  float newZ = 3;
+  float newW = 4;
+
+  driderSDK::Vector4D testVector1(newX, newY, newZ, newW);
+  driderSDK::Vector4D testVector2 = -testVector1;
+
+  checkValuesVector(testVector2, -newX, -newY, -newZ, -newW);
 }
