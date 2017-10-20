@@ -68,9 +68,9 @@ Vector4D::lengthSqr() const {
 void Vector4D::normalize3() {
   DR_ASSERT(length() != 0);
   float Length3 = length3();
-  x *= Length3;
-  y *= Length3;
-  z *= Length3;
+  x /= Length3;
+  y /= Length3;
+  z /= Length3;
 }
 
 void
