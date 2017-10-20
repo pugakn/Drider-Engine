@@ -21,7 +21,7 @@ Parser::strCpyBetween(const char* source,
               const char* strFrom,
               const char* strTo,
               char& destinationOut) {
-  NULL; // No implemented
+  return NULL; // No implemented
 }
 
 }
