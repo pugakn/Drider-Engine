@@ -1,5 +1,8 @@
 #include <gtest\gtest.h>
 #include <dr_quaternion.h>
+#include <dr_matrix4x4.h>
+#include <dr_matrix3x3.h>
+
 
 void checkQuaternionValues(driderSDK::Quaternion& TestQuaternion,
 													 float x,
@@ -7,10 +10,10 @@ void checkQuaternionValues(driderSDK::Quaternion& TestQuaternion,
 													 float z,
 													 float w)
 {
-	EXPECT_EQ(TestQuaternion.x, x);
-	EXPECT_EQ(TestQuaternion.y, y);
-	EXPECT_EQ(TestQuaternion.z, z);
-	EXPECT_EQ(TestQuaternion.w, w);
+	EXPECT_FLOAT_EQ(TestQuaternion.x, x);
+	EXPECT_FLOAT_EQ(TestQuaternion.y, y);
+	EXPECT_FLOAT_EQ(TestQuaternion.z, z);
+	EXPECT_FLOAT_EQ(TestQuaternion.w, w);
 }
 
 TEST(Quaternion, forceInitZero) {
@@ -43,7 +46,7 @@ TEST(Quaternion, constructFromVector4D) {
 TEST(Quaternion, measure) {
 	driderSDK::Quaternion TestQuaternion(1.f, 2.f, 3.f, 5.f);
 	float TestResult = driderSDK::Math::sqrt((1.f*1.f) + (2.f*2.f) + (3.f*3.f) + (5.f*5.f));
-	EXPECT_EQ(TestQuaternion.measure(), TestResult);
+	EXPECT_FLOAT_EQ(TestQuaternion.measure(), TestResult);
 }
 
 TEST(Quaternion, conjugate) {
@@ -54,7 +57,7 @@ TEST(Quaternion, conjugate) {
 TEST(Quaternion, normalize) {
 	driderSDK::Quaternion TestQuaternion(5.f, 3.f, 1.f, 2.f);
 	TestQuaternion.normalize();
-	EXPECT_EQ(TestQuaternion.measure(), 1);
+	EXPECT_FLOAT_EQ(TestQuaternion.measure(), 1);
 }
 
 //TEST(rotation, Quaternion)
@@ -64,18 +67,34 @@ TEST(Quaternion, normalize) {
 //
 //TEST(matrixFromQuaternion4x4, Quaternion)
 //{
-//
+//	driderSDK::Quaternion TestQuaternion(8.f, );
 //}
 //
-//TEST(matrixFromQuaternion3x3, Quaternion)
+//TEST(Quaternion, matrixFromQuaternion3x3)
 //{
+//	driderSDK::Quaternion TestQuaternion(6.f, 3.f, 4.f, 8.f);
+//	driderSDK::Matrix3x3 TestMatrix3;
+//	//driderSDK::Matrix3x3 Result(3 * std::pow(5,-1), -28 * std::pow(125, -1), 96 * std::pow(125,-1),
+//	//														4 * std::pow(5,-1), 21 * std::pow(125,-1), -72 * std::pow(125,-1), 
+//	//														0, 24 * std::pow(25,-1), 7 *std::pow(25,-1));
+//	TestQuaternion.matrixFromQuaternion(TestMatrix3);
+//
+//	EXPECT_FLOAT_EQ(Result[0][0], TestMatrix3[0][0]);
+//	EXPECT_FLOAT_EQ(Result[0][1], TestMatrix3[0][1]);
+//	EXPECT_FLOAT_EQ(Result[0][2], TestMatrix3[0][2]);
+//	EXPECT_FLOAT_EQ(Result[1][0], TestMatrix3[1][0]);
+//	EXPECT_FLOAT_EQ(Result[1][1], TestMatrix3[1][1]);
+//	EXPECT_FLOAT_EQ(Result[1][2], TestMatrix3[1][2]);
+//	EXPECT_FLOAT_EQ(Result[2][0], TestMatrix3[2][0]);
+//	EXPECT_FLOAT_EQ(Result[2][1], TestMatrix3[2][1]);
+//	EXPECT_FLOAT_EQ(Result[2][2], TestMatrix3[2][2]);
 //
 //}
 
 TEST(Quaternion, operatorBrackets) {
 	driderSDK::Quaternion TestQuaternion(1.f, 6.f, 8.f, 5.f);
 	float Testfloat = TestQuaternion[3];
-	EXPECT_EQ(Testfloat, 5.f);
+	EXPECT_FLOAT_EQ(Testfloat, 5.f);
 }
 
 TEST(Quaternion, operatorAdd) {

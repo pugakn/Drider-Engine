@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites tests="28" failures="0" disabled="0" errors="0" timestamp="2017-10-19T21:20:53" time="0.035" name="AllTests">
+  <testsuite name="Vector2D" tests="28" failures="0" disabled="0" errors="0" time="0.033">
+    <testcase name="forceInitZero" status="run" time="0" classname="Vector2D" />
+    <testcase name="forceInitOne" status="run" time="0" classname="Vector2D" />
+    <testcase name="constructForVector2D" status="run" time="0" classname="Vector2D" />
+    <testcase name="constructorFor2Floats" status="run" time="0" classname="Vector2D" />
+    <testcase name="dot" status="run" time="0" classname="Vector2D" />
+    <testcase name="length" status="run" time="0" classname="Vector2D" />
+    <testcase name="lengthSQR" status="run" time="0" classname="Vector2D" />
+    <testcase name="normalize" status="run" time="0" classname="Vector2D" />
+    <testcase name="distance" status="run" time="0" classname="Vector2D" />
+    <testcase name="distanceSqr" status="run" time="0" classname="Vector2D" />
+    <testcase name="equals" status="run" time="0" classname="Vector2D" />
+    <testcase name="operatorBrackets" status="run" time="0" classname="Vector2D" />
+    <testcase name="operatorBracketsPtr" status="run" time="0" classname="Vector2D" />
+    <testcase name="operatorOr" status="run" time="0" classname="Vector2D" />
+    <testcase name="operatorEqual" status="run" time="0" classname="Vector2D" />
+    <testcase name="operatorAdd" status="run" time="0" classname="Vector2D" />
+    <testcase name="operatorAddEqual" status="run" time="0" classname="Vector2D" />
+    <testcase name="operatorMinus" status="run" time="0" classname="Vector2D" />
+    <testcase name="operatorMinusEqual" status="run" time="0" classname="Vector2D" />
+    <testcase name="operatorMultiplication" status="run" time="0" classname="Vector2D" />
+    <testcase name="operatorMultiplicationEqual" status="run" time="0" classname="Vector2D" />
+    <testcase name="operatorMultiplicationScalar" status="run" time="0" classname="Vector2D" />
+    <testcase name="operatorMultiplicationEqualScalar" status="run" time="0" classname="Vector2D" />
+    <testcase name="operatorDivisionScalar" status="run" time="0" classname="Vector2D" />
+    <testcase name="operatorDivisionEqualScalar" status="run" time="0" classname="Vector2D" />
+    <testcase name="operatorEqualEqual" status="run" time="0" classname="Vector2D" />
+    <testcase name="operatorNotEqual" status="run" time="0" classname="Vector2D" />
+    <testcase name="operatorNegate" status="run" time="0" classname="Vector2D" />
+  </testsuite>
+</testsuites>
