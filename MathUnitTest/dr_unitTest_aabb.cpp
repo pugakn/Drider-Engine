@@ -34,13 +34,13 @@ TEST(aabb, intersectPlane) {
 }
 
 TEST(aabb, intersectFrustrum) {
-	//xd
+	
 }
 
 TEST(aabb, intersectRay) {
 	driderSDK::AABB TestAABB(1, 1, driderSDK::Vector3D(0, 0, 0));
-	driderSDK::Ray TrueRay(driderSDK::Vector3D(0, 0, -10), driderSDK::Vector3D(0, 0, 1));
-	driderSDK::Ray FalseRay(driderSDK::Vector3D(0, 0, -10), driderSDK::Vector3D(0, 1, 0));
+	driderSDK::Ray TrueRay(driderSDK::Vector3D(0, 0, -10), driderSDK::Vector3D(0.01, 0.01, 1));
+	driderSDK::Ray FalseRay(driderSDK::Vector3D(0, 0, -10), driderSDK::Vector3D(0.1, 1, 0.1));
 	EXPECT_TRUE(TestAABB.intersect(TrueRay));
 	EXPECT_FALSE(TestAABB.intersect(FalseRay));
 }

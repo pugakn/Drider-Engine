@@ -47,7 +47,7 @@ AABB::intersect(Plane& plane) {
                               width,
                               height,
 	                            static_cast<Vector3D&>(plane), 
-	                            static_cast<Vector3D&>(plane) * plane.d);
+	                            plane.d);
 }
 
 bool
