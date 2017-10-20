@@ -49,8 +49,8 @@ Vector3D::lengthSqr() const {
 
 void
 Vector3D::normalize() {
-  DR_ASSERT(!(length() == 0));
-  *this = (*this) * Math::pow(length(), -1.0f);
+  DR_ASSERT(length() != 0.0f);
+  *this /= length();
 }
 
 float
@@ -190,16 +190,16 @@ Vector3D::operator*=(const float scalar) {
 
 Vector3D
 Vector3D::operator/(const float scalar) const {
-  float invDiv = Math::pow(scalar, -1.0f);
-  return Vector3D(x*invDiv, y*invDiv, z*invDiv);
+  DR_ASSERT(scalar != 0.0f);
+  return Vector3D(x/ scalar, y/ scalar, z/ scalar);
 }
 
 Vector3D&
 Vector3D::operator/=(const float scalar) {
-  float invDiv = Math::pow(scalar, -1.0f);
-  x *= invDiv;
-  y *= invDiv;
-  z *= invDiv;
+  DR_ASSERT(scalar != 0.0f);
+  x /= scalar;
+  y /= scalar;
+  z /= scalar;
   return *this;
 }
 

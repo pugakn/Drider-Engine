@@ -4,10 +4,10 @@
 
 namespace driderSDK {
 
-class DR_API_EXPORT Face : public Resource {
+class DR_API_EXPORT Face {
  public:
   Face() {}
-  virtual ~Face() {}
+  ~Face() {}
 };
 
 }
