@@ -5,7 +5,7 @@ namespace driderSDK {
 Quaternion::Quaternion() {}
 
 Quaternion::Quaternion(Math::FORCE_INIT k) {
-	if (k == Math::kZero) {
+	if (Math::kZero == k) {
 		x = 0.f;
 		y = 0.f;
 		z = 0.f;
@@ -49,7 +49,7 @@ Quaternion::conjugate() {
 void
 Quaternion::normalize() {
 	DR_ASSERT(measure() != 0.0f);
-  *this = (*this)*(1 / measure());
+  *this *= 1 / measure();
 }
 
 Quaternion
@@ -57,7 +57,7 @@ Quaternion::rotation(float theta, const Quaternion& A) {
   Quaternion Axis = A - *this;
   Axis.normalize();
   Axis *= sin(theta*0.5f);
-  Axis.w = cos(theta / 2);
+  Axis.w = cos(theta*0.5f);
   return Axis;
 }
 
@@ -75,7 +75,6 @@ Quaternion::matrixFromQuaternion(Matrix4x4& Matrix) {
   Matrix[3][3] = 1.f;
   Matrix[0][3] = Matrix[1][3] = Matrix[2][3] = 0.f;
   Matrix[3][0] = Matrix[3][1] = Matrix[3][2] = 0.f;
-  return;
 }
 
 void
@@ -89,7 +88,6 @@ Quaternion::matrixFromQuaternion(Matrix3x3& Matrix) {
 	Matrix[2][0] = (2.f*x*z) - (2.f*y*w);
 	Matrix[2][1] = (2.f*y*z) + (2.f*x*w);
 	Matrix[2][2] = 1.f - (2.f*x*x) - (2.f*y*y);
-	return;
 }
 
 float*
@@ -176,7 +174,7 @@ Quaternion::operator/(const Quaternion& Q) const {
   float div = 1 / (Q.x*Q.x + Q.y*Q.y + Q.z*Q.z + Q.w*Q.w);
   Quaternion R(-Q.x, -Q.y, -Q.z, Q.w);
   R *= div;
-  return Quaternion((*this)*R);
+  return (*this)*R;
 }
 
 Quaternion&
@@ -205,7 +203,7 @@ Quaternion::operator==(const Quaternion& Q) {
 
 bool
 Quaternion::operator!=(const Quaternion& Q) {
-	return (!(*this == Q));
+	return !(*this == Q);
 }
 
 Quaternion

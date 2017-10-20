@@ -63,6 +63,7 @@ Radian::operator*=(float V) {
 
 Radian&
 Radian::operator/=(float V) {
+  DR_ASSERT(V != 0.0f);
   m_value /= V;
   return *this;
 }

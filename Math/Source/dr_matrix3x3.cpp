@@ -133,12 +133,12 @@ Matrix3x3::identity() {
 
 float*
 Matrix3x3::ptr() {
-  return data->ptr();
+  return data[0].ptr();
 }
 
 const float*
 Matrix3x3::ptr() const {
-  return data->ptr();
+  return data[0].ptr();
 }
 
 Vector3D&
