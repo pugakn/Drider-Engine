@@ -1,7 +1,7 @@
 #pragma once
+#include <memory>
 #include <dr_prerequisites.h>
 #include <dr_resource.h>
-#include <memory>
 #include "dr_codec.h"
 
 namespace driderSDK {
@@ -39,7 +39,7 @@ class DR_API_EXPORT ResourceManager {
   std::shared_ptr<Resource>
   getReference(std::string key);
   
-  std::map<std::string, std::shared_ptr<Resource>> resourceContent;
+ std::map<std::string, std::shared_ptr<Resource>> resourceContent;
 
 
 };

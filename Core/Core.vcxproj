@@ -162,13 +162,11 @@
     <ClInclude Include="Include\dr_module.h" />
     <ClInclude Include="Include\dr_parser.h" />
     <ClInclude Include="Include\dr_resource.h" />
-    <ClInclude Include="Include\dr_r_texture.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_logger.cpp" />
     <ClCompile Include="Source\dr_parser.cpp" />
     <ClCompile Include="Source\dr_resource.cpp" />
-    <ClCompile Include="Source\dr_r_texture.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
