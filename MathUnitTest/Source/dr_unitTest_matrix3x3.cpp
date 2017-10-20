@@ -4,9 +4,9 @@
 #include <gtest\gtest.h>
 
 void checkValuesMatrix(driderSDK::Matrix3x3& testMatrix,
-  float v0x, float v0y, float v0z,
-  float v1x, float v1y, float v1z,
-  float v2x, float v2y, float v2z) {
+                       float v0x, float v0y, float v0z,
+                       float v1x, float v1y, float v1z,
+                       float v2x, float v2y, float v2z) {
 
   EXPECT_FLOAT_EQ(v0x, testMatrix[0][0]);
   EXPECT_FLOAT_EQ(v0y, testMatrix[0][1]);
@@ -24,17 +24,17 @@ void checkValuesMatrix(driderSDK::Matrix3x3& testMatrix,
 TEST(Matrix3x3, forceInitZero) {
   driderSDK::Matrix3x3 testMatrix(driderSDK::Math::FORCE_INIT::kZero);
   checkValuesMatrix(testMatrix,
-    0, 0, 0,
-    0, 0, 0,
-    0, 0, 0);
+                    0, 0, 0,
+                    0, 0, 0,
+                    0, 0, 0);
 }
 
 TEST(Matrix3x3, forceInitIdentiy) {
   driderSDK::Matrix3x3 testMatrix(driderSDK::Math::FORCE_INIT::kIdentity);
   checkValuesMatrix(testMatrix,
-    1, 0, 0,
-    0, 1, 0,
-    0, 0, 1);
+                    1, 0, 0,
+                    0, 1, 0,
+                    0, 0, 1);
 }
 
 TEST(Matrix3x3, constructForMatrix3x3) {
@@ -42,18 +42,18 @@ TEST(Matrix3x3, constructForMatrix3x3) {
   driderSDK::Matrix3x3 testMatrix(firstMatrix);
 
   checkValuesMatrix(testMatrix,
-    1, 0, 0,
-    0, 1, 0,
-    0, 0, 1);
+                    1, 0, 0,
+                    0, 1, 0,
+                    0, 0, 1);
 }
 
 TEST(Matrix3x3, constructFor9Floats) {
   driderSDK::Matrix3x3 testMatrix(1, 2, 3, 4, 5, 6, 7, 8, 9);
 
   checkValuesMatrix(testMatrix,
-    1, 2, 3,
-    4, 5, 6,
-    7, 8, 9);
+                    1, 2, 3,
+                    4, 5, 6,
+                    7, 8, 9);
 }
 
 TEST(Matrix3x3, determinant) {
@@ -71,23 +71,23 @@ TEST(Matrix3x3, inverse) {
   driderSDK::Matrix3x3 testMatrix(1, 2, 3, 12, 51, 64, 70, 8, 9);
   testMatrix.inverse();
   checkValuesMatrix(testMatrix,
-    53.0f / 1731.0f, -2.0f / 577.0f, 25.0f / 1731.0f,
-    -4372.0f / 1731.0f, 67.0f / 577.0f, 28.0f / 1731.0f,
-    1158.0f / 577.0f, -44.0f / 577.0f, -9.0f / 577.0f);
+                    53.0f / 1731.0f, -2.0f / 577.0f, 25.0f / 1731.0f,
+                    -4372.0f / 1731.0f, 67.0f / 577.0f, 28.0f / 1731.0f,
+                    1158.0f / 577.0f, -44.0f / 577.0f, -9.0f / 577.0f);
 
   driderSDK::Matrix3x3 testMatrix2(41, 52, 73, 14, 15, 86, 7, 8, 29);
   testMatrix2.inverse();
   checkValuesMatrix(testMatrix2,
-    -23.0f / 30, -14.0f / 5.0f, 307.0f / 30.0f,
-    98.0f / 165.0f, 113.0f / 55.0f, -1252.0f / 165.0f,
-    7.0f / 330.0f, 6.0f / 55.0f, -113.0f / 330.0f);
+                    -23.0f / 30, -14.0f / 5.0f, 307.0f / 30.0f,
+                    98.0f / 165.0f, 113.0f / 55.0f, -1252.0f / 165.0f,
+                    7.0f / 330.0f, 6.0f / 55.0f, -113.0f / 330.0f);
 
   driderSDK::Matrix3x3 testMatrix3(8, 2, 0, 3, 2, 1, 0, 5, 6);
   testMatrix3.inverse();
   checkValuesMatrix(testMatrix3,
-    7.0f / 20.0f, -3.0f / 5.0f, 1.0f / 10.0f,
-    -9.0f / 10.0f, 12.0f / 5.0f, -2.0f / 5.0f,
-    3.0f / 4.0f, -2.0f, 1.0f / 2.0f);
+                    7.0f / 20.0f, -3.0f / 5.0f, 1.0f / 10.0f,
+                    -9.0f / 10.0f, 12.0f / 5.0f, -2.0f / 5.0f,
+                    3.0f / 4.0f, -2.0f, 1.0f / 2.0f);
 }
 
 TEST(Matrix3x3, identity) {
@@ -112,16 +112,16 @@ TEST(Matrix3x3, operatorEqual) {
 
 TEST(Matrix3x3, operatorEqualMatrix4x4) {
   driderSDK::Matrix4x4 testMatrix(1, 2, 3, 4,
-    5, 6, 7, 8,
-    9, 10, 11, 12,
-    13, 14, 15, 16);
+                                  5, 6, 7, 8,
+                                  9, 10, 11, 12,
+                                  13, 14, 15, 16);
   driderSDK::Matrix3x3 testMatrix1;
 
   testMatrix1 = testMatrix;
   checkValuesMatrix(testMatrix1,
-    1, 2, 3,
-    5, 6, 7,
-    9, 10, 11);
+                    1, 2, 3,
+                    5, 6, 7,
+                    9, 10, 11);
 }
 
 TEST(Matrix3x3, operatorAdd) {
@@ -129,9 +129,9 @@ TEST(Matrix3x3, operatorAdd) {
   driderSDK::Matrix3x3 testMatrix1(10, 11, 12, 13, 14, 15, 16, 17, 18);
   driderSDK::Matrix3x3 testMatrix2 = testMatrix + testMatrix1;
   checkValuesMatrix(testMatrix2,
-    11, 13, 15,
-    17, 19, 21,
-    23, 25, 27);
+                    11, 13, 15,
+                    17, 19, 21,
+                    23, 25, 27);
 }
 
 TEST(Matrix3x3, operatorAddEqual) {
@@ -139,9 +139,9 @@ TEST(Matrix3x3, operatorAddEqual) {
   driderSDK::Matrix3x3 testMatrix1(10, 11, 12, 13, 14, 15, 16, 17, 18);
   testMatrix1 += testMatrix;
   checkValuesMatrix(testMatrix1,
-    11, 13, 15,
-    17, 19, 21,
-    23, 25, 27);
+                    11, 13, 15,
+                    17, 19, 21,
+                    23, 25, 27);
 }
 
 TEST(Matrix3x3, operatorMinus) {
@@ -149,9 +149,9 @@ TEST(Matrix3x3, operatorMinus) {
   driderSDK::Matrix3x3 testMatrix1(10, 11, 12, 13, 14, 15, 16, 17, 18);
   driderSDK::Matrix3x3 testMatrix2 = testMatrix - testMatrix1;
   checkValuesMatrix(testMatrix2,
-    -9, -9, -9,
-    -9, -9, -9,
-    -9, -9, -9);
+                    -9, -9, -9,
+                    -9, -9, -9,
+                    -9, -9, -9);
 }
 
 TEST(Matrix3x3, operatorMinusEqual) {
@@ -159,9 +159,9 @@ TEST(Matrix3x3, operatorMinusEqual) {
   driderSDK::Matrix3x3 testMatrix1(10, 11, 12, 13, 14, 15, 16, 17, 18);
   testMatrix -= testMatrix1;
   checkValuesMatrix(testMatrix,
-    -9, -9, -9,
-    -9, -9, -9,
-    -9, -9, -9);
+                    -9, -9, -9,
+                    -9, -9, -9,
+                    -9, -9, -9);
 }
 
 TEST(Matrix3x3, operatorMultiplication) {
@@ -170,9 +170,9 @@ TEST(Matrix3x3, operatorMultiplication) {
   driderSDK::Matrix3x3 testMatrix2 = testMatrix * testMatrix1;
 
   checkValuesMatrix(testMatrix2,
-    54, 90, 30,
-    33, 51, 28,
-    59, 71, 83);
+                    54, 90, 30,
+                    33, 51, 28,
+                    59, 71, 83);
 }
 
 TEST(Matrix3x3, operatorMultiplicationEqual) {
@@ -181,9 +181,9 @@ TEST(Matrix3x3, operatorMultiplicationEqual) {
   testMatrix *= testMatrix1;
 
   checkValuesMatrix(testMatrix,
-    54, 90, 30,
-    33, 51, 28,
-    59, 71, 83);
+                    54, 90, 30,
+                    33, 51, 28,
+                    59, 71, 83);
 }
 
 TEST(Matrix3x3, operatorMultiplicationForVector3) {
@@ -201,9 +201,9 @@ TEST(Matrix3x3, operatorMultiplicationFloat) {
   driderSDK::Matrix3x3 testMatrix1 = testMatrix * 2;
 
   checkValuesMatrix(testMatrix1,
-    16, 4, 0,
-    6, 4, 2,
-    0, 10, 12);
+                    16, 4, 0,
+                    6, 4, 2,
+                    0, 10, 12);
 }
 
 TEST(Matrix3x3, operatorMultiplicationEqualFloat) {
@@ -211,9 +211,9 @@ TEST(Matrix3x3, operatorMultiplicationEqualFloat) {
   testMatrix *= 2;
 
   checkValuesMatrix(testMatrix,
-    16, 4, 0,
-    6, 4, 2,
-    0, 10, 12);
+                    16, 4, 0,
+                    6, 4, 2,
+                    0, 10, 12);
 }
 
 TEST(Matrix3x3, operatorEqualEqual) {
