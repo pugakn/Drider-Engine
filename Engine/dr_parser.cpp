@@ -18,10 +18,35 @@ Parser::strNCpy(char* destination,
 
 char*
 Parser::strCpyBetween(const char* source,
-              const char* strFrom,
-              const char* strTo,
-              char& destinationOut) {
-  return NULL; // No implemented
+                      const char* strFrom,
+                      const char* strTo,
+                      char& destinationOut) {
+  const char * pChar = Parser::strStr(source, strFrom);
+  const char * pLastChar = Parser::strStr(source, strTo);
+  char * buffer = "";
+
+  if(*pChar != NULL && *pLastChar != NULL) {
+   while(*pChar != *pLastChar) {
+     buffer += *pChar;
+     pChar++;
+   }
+  } else {
+   return NULL;
+  }
+  
+  destinationOut = *buffer;
+  return buffer;
+}
+
+template <typename T> T
+Parser::tryParse(T typeParse, const char *source) {
+  return static_cast<T>(source);
+}
+
+template <typename T> char*
+Parser::toString(T value) {
+  char* r = "";
+  return static_cast<char*>(*value);
 }
 
 }
