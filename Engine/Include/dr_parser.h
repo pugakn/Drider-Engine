@@ -1,7 +1,7 @@
 #pragma once
 #include <dr_prerequisites.h>
 
-#include <string.h>
+#include <string>
 
 namespace driderSDK {
 
@@ -20,7 +20,7 @@ struct DR_API_EXPORT Parser
    * @return
    *   if the string str2 exist in buffer str1 return the pointer to the first, else return null.
    */
-  const char*
+  static const char*
   strStr (const char* str1,
           const char* str2);
 
@@ -39,7 +39,7 @@ struct DR_API_EXPORT Parser
   * @return
   *  Returns zero on success, returns non-zero on error.
   */
-  int
+  static int
   strNCpy(char* destination, 
           const char * source,
           size_t size);
@@ -61,15 +61,43 @@ struct DR_API_EXPORT Parser
   *   Destination string.
   *
   * @return
-  *   detination is returned.
+  *   If successful return the destinationOut, otherwise return null.
   */
-  char*
+  static char*
   strCpyBetween(const char* source,
                 const char* strFrom, 
                 const char* strTo,
                 char& destinationOut);
 
-   
+  /**
+  * Parse a string to type defined.
+  *
+  * @param typeParse
+  *   Type to parse the string.
+  *
+  * @param source
+  *   String to parse.
+  *
+  * @return
+  *   The string parsed to typeParse type.
+  */
+  template <typename T> static T
+  tryParse(T typeParse, const char *source);
+
+  /**
+  * Parse a type of value to a string.
+  *
+  * @param typeParse
+  *   Type to parse the string.
+  *
+  * @param source
+  *   String to parse.
+  *
+  * @return
+  *   The value parse to string.
+  */
+  template <typename T> static char*
+  toString(T value);   
 };
 
 }

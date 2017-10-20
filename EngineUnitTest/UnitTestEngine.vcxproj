@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\dr_unitTest_parser.cpp" />
+    <ClCompile Include="Source\dr_parser_unitTest.cpp" />
     <ClCompile Include="Source\unitTestEngine.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -109,7 +109,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)Math\Include;$(SolutionDir)3rdParties\GoogleTest\include;$(SolutionDir)Utils\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Math\Include;$(SolutionDir)3rdParties\GoogleTest\include;$(SolutionDir)Utils\Include;$(SolutionDir)Engine\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);$(SolutionDir)3rdParties\GoogleTest\Lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>

@@ -3,7 +3,7 @@
 int main(int argc, char* argv[])
 {
   ::testing::InitGoogleTest(&argc, argv);
-  ::testing::GTEST_FLAG(filter) = "*.Sphere";
+  ::testing::GTEST_FLAG(filter) = "Quaternion.*";
   RUN_ALL_TESTS();
 
   return 0;
