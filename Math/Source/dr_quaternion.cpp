@@ -56,22 +56,26 @@ Quaternion
 Quaternion::rotation(float theta, const Quaternion& A) {
   Quaternion Axis = A - *this;
   Axis.normalize();
-  Axis *= sin(theta*0.5f);
-  Axis.w = cos(theta*0.5f);
+  Axis *= sin(theta * 0.5f);
+  Axis.w = cos(theta * 0.5f);
   return Axis;
 }
 
 void
 Quaternion::matrixFromQuaternion(Matrix4x4& Matrix) {
+	Quaternion Normalized(*this);
+	if (Normalized.measure() != 1.f) {
+		Normalized.normalize();
+	}
   Matrix[0][0] = 1.f - (2.f*y*y) - (2.f*z*z);
-  Matrix[0][1] = (2.f*x*y) - (2.f*z*w);
-  Matrix[0][2] = (2.f*x*z) + (2.f*w*y);
-  Matrix[1][0] = (2.f*x*y) + (2.f*z*w);
-  Matrix[1][1] = 1.f - (2.f*x*x) - (2.f*z*z);
-  Matrix[1][2] = (2.f*y*z) - (2.f*x*w);
-  Matrix[2][0] = (2.f*x*z) - (2.f*y*w);
-  Matrix[2][1] = (2.f*y*z) + (2.f*x*w);
-  Matrix[2][2] = 1.f - (2.f*x*x) - (2.f*y*y);
+  Matrix[0][1] = (2.f*Normalized.x*Normalized.y) - (2.f*Normalized.z*Normalized.w);
+  Matrix[0][2] = (2.f*Normalized.x*Normalized.z) + (2.f*Normalized.w*Normalized.y);
+  Matrix[1][0] = (2.f*Normalized.x*Normalized.y) + (2.f*Normalized.z*Normalized.w);
+  Matrix[1][1] = 1.f - (2.f*Normalized.x*Normalized.x) - (2.f*Normalized.z*Normalized.z);
+  Matrix[1][2] = (2.f*Normalized.y*Normalized.z) - (2.f*Normalized.x*Normalized.w);
+  Matrix[2][0] = (2.f*Normalized.x*Normalized.z) - (2.f*Normalized.y*Normalized.w);
+  Matrix[2][1] = (2.f*Normalized.y*Normalized.z) + (2.f*Normalized.x*Normalized.w);
+  Matrix[2][2] = 1.f - (2.f*Normalized.x*Normalized.x) - (2.f*Normalized.y*Normalized.y);
   Matrix[3][3] = 1.f;
   Matrix[0][3] = Matrix[1][3] = Matrix[2][3] = 0.f;
   Matrix[3][0] = Matrix[3][1] = Matrix[3][2] = 0.f;
@@ -79,15 +83,19 @@ Quaternion::matrixFromQuaternion(Matrix4x4& Matrix) {
 
 void
 Quaternion::matrixFromQuaternion(Matrix3x3& Matrix) {
-	Matrix[0][0] = (2.f*y*y) - (2.f*z*z);
-	Matrix[0][1] = (2.f*x*y) - (2.f*z*w);
-	Matrix[0][2] = (2.f*x*z) + (2.f*y*w);
-	Matrix[1][0] = (2.f*x*y) + (2.f*z*w);
-	Matrix[1][1] = 1.f - (2.f*x*x) - (2.f*z*z);
-	Matrix[1][2] = (2.f*y*z) - (2.f*x*w);
-	Matrix[2][0] = (2.f*x*z) - (2.f*y*w);
-	Matrix[2][1] = (2.f*y*z) + (2.f*x*w);
-	Matrix[2][2] = 1.f - (2.f*x*x) - (2.f*y*y);
+	Quaternion Normalized(*this);
+	if (Normalized.measure() != 1.f) {
+		Normalized.normalize();
+	}
+	Matrix[0][0] = (2.f*Normalized.y*Normalized.y) - (2.f*Normalized.z*Normalized.z);
+	Matrix[0][1] = (2.f*Normalized.x*Normalized.y) - (2.f*Normalized.z*Normalized.w);
+	Matrix[0][2] = (2.f*Normalized.x*Normalized.z) + (2.f*Normalized.y*Normalized.w);
+	Matrix[1][0] = (2.f*Normalized.x*Normalized.y) + (2.f*Normalized.z*Normalized.w);
+	Matrix[1][1] = 1.f - (2.f*Normalized.x*Normalized.x) - (2.f*Normalized.z*Normalized.z);
+	Matrix[1][2] = (2.f*Normalized.y*Normalized.z) - (2.f*Normalized.x*Normalized.w);
+	Matrix[2][0] = (2.f*Normalized.x*Normalized.z) - (2.f*Normalized.y*Normalized.w);
+	Matrix[2][1] = (2.f*Normalized.y*Normalized.z) + (2.f*Normalized.x*Normalized.w);
+	Matrix[2][2] = 1.f - (2.f*Normalized.x*Normalized.x) - (2.f*Normalized.y*Normalized.y);
 }
 
 float*
@@ -179,11 +187,7 @@ Quaternion::operator/(const Quaternion& Q) const {
 
 Quaternion&
 Quaternion::operator/=(const Quaternion& Q) {
-	DR_ASSERT((Q.x + Q.y + Q.z + Q.w) != 0.0f);
-  float div = 1 / (Q.x*Q.x + Q.y*Q.y + Q.z*Q.z + Q.w*Q.w);
-  Quaternion R(-Q.x, -Q.y, -Q.z, Q.w);
-  R *= div;
-  (*this) *= (R * div);
+	(*this) = *this / Q;
   return *this;
 }
 
