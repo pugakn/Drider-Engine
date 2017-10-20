@@ -4,6 +4,7 @@
 #include <dr_prerequisites.h>
 #include "dr_matrix4x4.h"
 #include "dr_matrix3x3.h"
+#include "dr_vector4d.h"
 
 namespace driderSDK {
 
@@ -16,6 +17,14 @@ class DR_API_EXPORT Quaternion
   *
   */
   Quaternion();
+
+	/**
+	* Default constructor
+	*
+	* @param k
+	*  Values are initialized with 0(kZero) or identity quaternion(kIdentity)
+	*/
+	explicit Quaternion(Math::FORCE_INIT k);
 
   /**
   * Move constructor.
@@ -32,19 +41,27 @@ class DR_API_EXPORT Quaternion
   /**
   * Initialize the constructor with the given values.
   *
-  * @param x
+  * @param _x
   *   The x value of the quaternion.
   *
-  * @param y
+  * @param _y
   *   The y value of the quaternion.
   *
-  * @param z
+  * @param _z
   *   The z value of the quaternion.
   *
-  * @param w
+  * @param _w
   *   The w value of the quaternion.
   */
-  Quaternion(float x, float y, float z, float w);
+  Quaternion(float _x, float _y, float _z, float _w);
+
+	/**
+	* Initialize the constructor with a vector4D
+	*
+	* @param V
+	*   The vector to construct the quaternion
+	*/
+	Quaternion(const Vector4D& V);
 
   /**
   * Default destructor.
@@ -59,7 +76,7 @@ class DR_API_EXPORT Quaternion
   *	  Quaternion's lenght.
   */
   float
-  measure();
+	measure();
 
   /**
   * Computes the conjugate of the quaternion.
@@ -112,43 +129,159 @@ class DR_API_EXPORT Quaternion
 	void
 	matrixFromQuaternion(Matrix3x3& Matrix);
 
-  //Uncommented
+	/**
+	* Gets a pointer to the first element of the quaternion.
+	*
+	* @return
+	*   A pointer to the first element.
+	*/
+	float*
+	ptr();
+
+	/**
+	* Gets a constant pointer to the first element of the quaternion.
+	*
+	* @return
+	*   A constant pointer to the first element.
+	*/
+	const float*
+	ptr() const;
+
+	/**
+	* Gets a reference to a specific element of the quaternion.
+	*
+	* @return
+	*   Reference to an element of the quaternion.
+	*/
+	float&
+	operator[](const SizeT index);
+
+	/**
+	* Gets a constant reference to a specific element of the quaternion.
+	*
+	* @return
+	*   Constant reference to an element of the quaternion.
+	*/
+	const float&
+	operator[](const SizeT index) const;
+
+	/**
+	* Adds two quaternions.
+	*
+	* @param Q
+	*  The other quaternion.
+	*
+	* @return
+	*   The result quaternion of the operation.
+	*/
   Quaternion
   operator+(const Quaternion& Q) const;
 
-  //Uncommented
+	/**
+	* Adds two quaternions and stores the result in this quaternion
+	*
+	* @param Q
+	*  The other quaternion.
+	*
+	* @return
+	*   A reference to this quaternion
+	*/
   Quaternion&
   operator+=(const Quaternion& Q);
 
-  //Uncommented
+	/**
+	* Substracts two quaternions.
+	*
+	* @param Q
+	*  The other quaternion.
+	*
+	* @return
+	*   The result quaternion of the operation.
+	*/
   Quaternion
   operator-(const Quaternion& Q) const;
 
-  //Uncommented
+	/**
+	* Substracts two quaternions and stores the result in this quaternion
+	*
+	* @param Q
+	*  The other quaternion.
+	*
+	* @return
+	*   A reference to this quaternion
+	*/
   Quaternion&
   operator-=(const Quaternion& Q);
 
-  //Uncommented
+	/**
+	* Multiplies two quaternions.
+	*
+	* @param Q
+	*  The other quaternion.
+	*
+	* @return
+	*   The result quaternion of the operation.
+	*/
   Quaternion
   operator*(const Quaternion& Q) const;
 
-  //Uncommented
+	/**
+	* Multiplies quaternion with an scalar.
+	*
+	* @param s
+	*  The value to operate with.
+	*
+	* @return
+	*   The result quaternion of the operation.
+	*/
   Quaternion
   operator*(float s) const;
 
-  //Uncommented
+	/**
+	* Multiplies two quaternions and stores the result in this quaternion
+	*
+	* @param Q
+	*  The other quaternion.
+	*
+	* @return
+	*   A reference to this quaternion
+	*/
   Quaternion&
   operator*=(const Quaternion& Q);
 
-  //Uncommented
+	/**
+	* Multiplies quaternion with an scalar and stores the result in this quaternion
+	*
+	* @param s
+	*  The value to operate with.
+	*
+	* @return
+	*   A reference to this quaternion
+	*/
   Quaternion&
   operator*=(float s);
 
-  //Uncommented
+	/**
+	* Divides two quaternions.
+	*
+	* @param Q
+	*  The other quaternion.
+	*
+	* @return
+	*   The result quaternion of the operation.
+	*/
   Quaternion
   operator/(const Quaternion& Q) const;
 
-  //Uncommented
+	/**
+	* Divides two quaternions and stores the result in this quaternion
+	*
+	* @param Q
+	*  The other quaternion.
+	*
+	* @return
+	*   A reference to this quaternion
+	*/
   Quaternion&
   operator/=(const Quaternion& Q);
 
