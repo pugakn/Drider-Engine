@@ -6,16 +6,20 @@
 
 namespace driderSDK
 {
-class Logger : public Module<Logger>
+class DR_API_EXPORT Logger : public Module<Logger>
 {
-public:
-  Logger() : LoggerCalls(0), WarningCalls(0), ErrorCalls(0) {};
+ public:
+  Logger() {};
+
+  virtual
+  ~Logger() {};
 
   /**
   * This function reset the content of the logger's html.
   *
   */
-  void reset();
+  void
+  reset();
 
   /**
   * Adds a message in the error area.
@@ -23,9 +27,10 @@ public:
   * Use __LINE__ in the Filename parameter.
   *
   */
-  void addError(const std::string Filename,
-                int lineNumber,
-                const std::string message);
+  void
+  addError(const std::string Filename,
+           int lineNumber,
+           const std::string message);
 
   /**
   * Adds a message in the warning area.
@@ -33,13 +38,17 @@ public:
   * Use __LINE__ in the Filename parameter.
   *
   */
-  void addWarning(const std::string Filename,
-                  int lineNumber,
-                  const std::string message);
+  void
+  addWarning(const std::string Filename,
+             int lineNumber,
+             const std::string message);
 
-  private:
-    int LoggerCalls;
-    int WarningCalls;
-    int ErrorCalls;
+ private:
+  int LoggerCalls;
+  int WarningCalls;
+  int ErrorCalls;
+
+  std::string filePath;
 };
+
 }

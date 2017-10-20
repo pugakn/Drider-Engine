@@ -1,9 +1,13 @@
 #include "dr_logger.h"
 
+namespace driderSDK
+{
+
 void
-driderSDK::Logger::reset() {
+Logger::reset() {
   std::ofstream loggerHtmlFile;
-  loggerHtmlFile.open("logger.html", std::ios::out | std::ios::trunc);
+  filePath = "../Docs/Logger/logger.html";
+  loggerHtmlFile.open(filePath, std::ios::out | std::ios::trunc);
 
   loggerHtmlFile <<
   "<!DOCTYPE html>\n\
@@ -32,7 +36,7 @@ driderSDK::Logger::reset() {
 }
 
 void
-driderSDK::Logger::addError(const std::string Filename,
+Logger::addError(const std::string Filename,
                  int lineNumber,
                  const std::string message) {
   std::string fullMessage("");
@@ -46,7 +50,7 @@ driderSDK::Logger::addError(const std::string Filename,
   fullMessage += message;
   fullMessage += "</a>\n";
 
-  std::ifstream loggerHtmlFile("logger.html");
+  std::ifstream loggerHtmlFile(filePath);
   std::string fileInString = std::string(std::istreambuf_iterator<char>(loggerHtmlFile),
                                          std::istreambuf_iterator<char>());
   loggerHtmlFile.close();
@@ -54,7 +58,7 @@ driderSDK::Logger::addError(const std::string Filename,
   size_t lastErrorIndex = fileInString.find("</section>");
   fileInString.insert(lastErrorIndex, fullMessage);
 
-  std::ofstream finalFile("logger.html", std::ofstream::out | std::ofstream::trunc);
+  std::ofstream finalFile(filePath, std::ofstream::out | std::ofstream::trunc);
   finalFile << fileInString;
   finalFile.close();
 
@@ -63,7 +67,7 @@ driderSDK::Logger::addError(const std::string Filename,
 }
 
 void
-driderSDK::Logger::addWarning(const std::string Filename,
+Logger::addWarning(const std::string Filename,
                    int lineNumber,
                    const std::string message) {
   std::string fullMessage("");
@@ -77,7 +81,7 @@ driderSDK::Logger::addWarning(const std::string Filename,
   fullMessage += message;
   fullMessage += "</a>\n";
 
-  std::ifstream loggerHtmlFile("logger.html");
+  std::ifstream loggerHtmlFile(filePath);
   std::string fileInString = std::string(std::istreambuf_iterator<char>(loggerHtmlFile),
                                          std::istreambuf_iterator<char>());
   loggerHtmlFile.close();
@@ -85,10 +89,12 @@ driderSDK::Logger::addWarning(const std::string Filename,
   size_t lastErrorIndex = fileInString.find("</article>");
   fileInString.insert(lastErrorIndex, fullMessage);
 
-  std::ofstream finalFile("logger.html", std::ofstream::out | std::ofstream::trunc);
+  std::ofstream finalFile(filePath, std::ofstream::out | std::ofstream::trunc);
   finalFile << fileInString;
   finalFile.close();
 
   LoggerCalls++;
   WarningCalls++;
+}
+
 }

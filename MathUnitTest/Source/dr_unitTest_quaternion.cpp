@@ -60,36 +60,67 @@ TEST(Quaternion, normalize) {
 	EXPECT_FLOAT_EQ(TestQuaternion.measure(), 1);
 }
 
-//TEST(rotation, Quaternion)
-//{
-//	
-//}
-//
-//TEST(matrixFromQuaternion4x4, Quaternion)
-//{
-//	driderSDK::Quaternion TestQuaternion(8.f, );
-//}
-//
-//TEST(Quaternion, matrixFromQuaternion3x3)
-//{
-//	driderSDK::Quaternion TestQuaternion(6.f, 3.f, 4.f, 8.f);
-//	driderSDK::Matrix3x3 TestMatrix3;
-//	//driderSDK::Matrix3x3 Result(3 * std::pow(5,-1), -28 * std::pow(125, -1), 96 * std::pow(125,-1),
-//	//														4 * std::pow(5,-1), 21 * std::pow(125,-1), -72 * std::pow(125,-1), 
-//	//														0, 24 * std::pow(25,-1), 7 *std::pow(25,-1));
-//	TestQuaternion.matrixFromQuaternion(TestMatrix3);
-//
-//	EXPECT_FLOAT_EQ(Result[0][0], TestMatrix3[0][0]);
-//	EXPECT_FLOAT_EQ(Result[0][1], TestMatrix3[0][1]);
-//	EXPECT_FLOAT_EQ(Result[0][2], TestMatrix3[0][2]);
-//	EXPECT_FLOAT_EQ(Result[1][0], TestMatrix3[1][0]);
-//	EXPECT_FLOAT_EQ(Result[1][1], TestMatrix3[1][1]);
-//	EXPECT_FLOAT_EQ(Result[1][2], TestMatrix3[1][2]);
-//	EXPECT_FLOAT_EQ(Result[2][0], TestMatrix3[2][0]);
-//	EXPECT_FLOAT_EQ(Result[2][1], TestMatrix3[2][1]);
-//	EXPECT_FLOAT_EQ(Result[2][2], TestMatrix3[2][2]);
-//
-//}
+TEST(Quaternion, rotation) {
+	float theta = driderSDK::Math::PI / 2;
+	driderSDK::Quaternion OtherQuaternion(0.f, sinf(theta), 0.f, cosf(theta));
+	driderSDK::Quaternion TestQuaternion(0.f, 0.f, 1.f, 0.f);
+
+	TestQuaternion.rotation(theta, OtherQuaternion);
+
+	checkQuaternionValues(TestQuaternion, 1.f, 0.f, 0.f, 0.f);
+	
+}
+
+TEST(Quaternion, matrixFromQuaternion4x4)
+{
+	driderSDK::Quaternion TestQuaternion(3.f, 3.f, 2.f, 5.f);
+	driderSDK::Matrix4x4 TestMatrix4;
+	driderSDK::Matrix4x4 Result(21.f/47.f, -2.f/47.f, 42.f/47.f, 0.f,
+															38.f/47.f, 21.f/47.f, -18.f/47.f, 0.f,
+															-18.f/47.f, 42.f/47.f, 11.f/47.f, 0.f, 
+															0.f, 0.f, 0.f, 1.f);
+	TestQuaternion.matrixFromQuaternion(TestMatrix4);
+	EXPECT_FLOAT_EQ(Result[0][0], TestMatrix4[0][0]);
+	EXPECT_FLOAT_EQ(Result[0][1], TestMatrix4[0][1]);
+	EXPECT_FLOAT_EQ(Result[0][2], TestMatrix4[0][2]);
+	EXPECT_FLOAT_EQ(Result[0][3], TestMatrix4[0][3]);
+
+	EXPECT_FLOAT_EQ(Result[1][0], TestMatrix4[1][0]);
+	EXPECT_FLOAT_EQ(Result[1][1], TestMatrix4[1][1]);
+	EXPECT_FLOAT_EQ(Result[1][2], TestMatrix4[1][2]);
+	EXPECT_FLOAT_EQ(Result[1][3], TestMatrix4[1][3]);
+
+	EXPECT_FLOAT_EQ(Result[2][0], TestMatrix4[2][0]);
+	EXPECT_FLOAT_EQ(Result[2][1], TestMatrix4[2][1]);
+	EXPECT_FLOAT_EQ(Result[2][2], TestMatrix4[2][2]);
+	EXPECT_FLOAT_EQ(Result[2][3], TestMatrix4[2][3]);
+
+	EXPECT_FLOAT_EQ(Result[3][0], TestMatrix4[3][0]);
+	EXPECT_FLOAT_EQ(Result[3][1], TestMatrix4[3][1]);
+	EXPECT_FLOAT_EQ(Result[3][2], TestMatrix4[3][2]);
+	EXPECT_FLOAT_EQ(Result[3][3], TestMatrix4[3][3]);
+}
+
+TEST(Quaternion, matrixFromQuaternion3x3)
+{
+	driderSDK::Quaternion TestQuaternion(6.f, 3.f, 4.f, 8.f);
+	driderSDK::Matrix3x3 TestMatrix3;
+	driderSDK::Matrix3x3 Result(3.f/5.f, -28.f/125.f, 96.f/125.f,
+															4.f/5.f, 21.f/125.f, -72.f/125.f, 
+															0, 24.f/25.f, 7.f/25.f);
+	TestQuaternion.matrixFromQuaternion(TestMatrix3);
+
+	EXPECT_FLOAT_EQ(Result[0][0], TestMatrix3[0][0]);
+	EXPECT_FLOAT_EQ(Result[0][1], TestMatrix3[0][1]);
+	EXPECT_FLOAT_EQ(Result[0][2], TestMatrix3[0][2]);
+	EXPECT_FLOAT_EQ(Result[1][0], TestMatrix3[1][0]);
+	EXPECT_FLOAT_EQ(Result[1][1], TestMatrix3[1][1]);
+	EXPECT_FLOAT_EQ(Result[1][2], TestMatrix3[1][2]);
+	EXPECT_FLOAT_EQ(Result[2][0], TestMatrix3[2][0]);
+	EXPECT_FLOAT_EQ(Result[2][1], TestMatrix3[2][1]);
+	EXPECT_FLOAT_EQ(Result[2][2], TestMatrix3[2][2]);
+
+}
 
 TEST(Quaternion, operatorBrackets) {
 	driderSDK::Quaternion TestQuaternion(1.f, 6.f, 8.f, 5.f);
@@ -149,13 +180,21 @@ TEST(Quaternion, operatorMultiplyByScalarEquals) {
 	checkQuaternionValues(TestQuaternion, 24.f, 16.f, 8.f, 4.f);
 }
 
-//TEST(Quaternion, operatorDivide) {
-//
-//}
-//
-//TEST(Quaternion, operatorDivideEquals) {
-//
-//}
+TEST(Quaternion, operatorDivide) {
+	driderSDK::Quaternion TestQuaternion(2.f, 3.f, 2.f, 1.f);
+	driderSDK::Quaternion OtherQuaternion(4.f, 2.f, 3.f, 3.f);
+	checkQuaternionValues(OtherQuaternion/ TestQuaternion, 
+												5.f/18.f, -5.f/18.f, -1.f/6.f, 25.f/18.f);
+}
+
+TEST(Quaternion, operatorDivideEquals) {
+	driderSDK::Quaternion TestQuaternion(3.f, 1.f, 1.f, 2.f);
+	driderSDK::Quaternion OtherQuaternion(1.f, 2.f, 6.f, 1.f);
+
+	TestQuaternion /= OtherQuaternion;
+	checkQuaternionValues(OtherQuaternion / TestQuaternion,
+												2.f / 21.f, -5.f / 21.f, -17.f / 42.f, 1.f / 42.f);
+}
 
 TEST(Quaternion, operatorAssign) {
 	driderSDK::Quaternion TestQuaternion(driderSDK::Math::kZero);
