@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites tests="28" failures="0" disabled="0" errors="0" timestamp="2017-10-19T21:02:27" time="0.045" name="AllTests">
-  <testsuite name="Vector2D" tests="28" failures="0" disabled="0" errors="0" time="0.042">
+<testsuites tests="28" failures="0" disabled="0" errors="0" timestamp="2017-10-19T21:20:53" time="0.035" name="AllTests">
+  <testsuite name="Vector2D" tests="28" failures="0" disabled="0" errors="0" time="0.033">
     <testcase name="forceInitZero" status="run" time="0" classname="Vector2D" />
     <testcase name="forceInitOne" status="run" time="0" classname="Vector2D" />
     <testcase name="constructForVector2D" status="run" time="0" classname="Vector2D" />
     <testcase name="constructorFor2Floats" status="run" time="0" classname="Vector2D" />
-    <testcase name="dot" status="run" time="0.001" classname="Vector2D" />
+    <testcase name="dot" status="run" time="0" classname="Vector2D" />
     <testcase name="length" status="run" time="0" classname="Vector2D" />
     <testcase name="lengthSQR" status="run" time="0" classname="Vector2D" />
     <testcase name="normalize" status="run" time="0" classname="Vector2D" />
