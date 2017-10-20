@@ -30,18 +30,15 @@ void checkValuesMatrix(driderSDK::Matrix4x4& testMatrix,
   EXPECT_FLOAT_EQ(v3w, testMatrix[3][3]);
 }
 
-TEST(Matrix4x4, forceInitZero) {
+TEST(Matrix4x4, forceInit) {
   driderSDK::Matrix4x4 testMatrix(driderSDK::Math::FORCE_INIT::kZero);
   checkValuesMatrix(testMatrix,
                     0, 0, 0, 0,
                     0, 0, 0, 0,
                     0, 0, 0, 0,
                     0, 0, 0, 0);
-}
-
-TEST(Matrix4x4, forceInitIdentiy) {
-  driderSDK::Matrix4x4 testMatrix(driderSDK::Math::FORCE_INIT::kIdentity);
-  checkValuesMatrix(testMatrix,
+  driderSDK::Matrix4x4 testMatrix1(driderSDK::Math::FORCE_INIT::kIdentity);
+  checkValuesMatrix(testMatrix1,
                     1, 0, 0, 0,
                     0, 1, 0, 0,
                     0, 0, 1, 0,
