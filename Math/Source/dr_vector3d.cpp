@@ -21,9 +21,9 @@ Vector3D::Vector3D(Math::FORCE_INIT k) {
 
 Vector3D::Vector3D(const Vector3D& V) : x(V.x), y(V.y), z(V.z) {}
 
-Vector3D::Vector3D(const Vector4D& V) : x(x), y(y), z(z) {}
+Vector3D::Vector3D(const Vector4D& V) : x(V.x), y(V.y), z(V.z) {}
 
-Vector3D::Vector3D(float x, float y, float z) : x(x), y(y), z(z) {}
+Vector3D::Vector3D(float _x, float _y, float _z) : x(_x), y(_y), z(_z) {}
 
 Vector3D::~Vector3D() {}
 
@@ -49,6 +49,7 @@ Vector3D::lengthSqr() const {
 
 void
 Vector3D::normalize() {
+  DR_ASSERT(!(length() == 0));
   *this = (*this) * Math::pow(length(), -1.0f);
 }
 
@@ -60,13 +61,6 @@ Vector3D::distance(const Vector3D& otherVector) const {
 float
 Vector3D::distanceSqr(const Vector3D& otherVector) const {
   return (otherVector - *this).lengthSqr();
-}
-
-bool
-Vector3D::equals(const Vector3D& otherVector) const {
-  return (Math::abs(x - otherVector.x) < Math::SMALL_NUMBER) &&
-         (Math::abs(y - otherVector.y) < Math::SMALL_NUMBER) &&
-         (Math::abs(z - otherVector.z) < Math::SMALL_NUMBER);
 }
 
 bool
@@ -97,22 +91,22 @@ Vector3D::sqrDistSegment(const Vector3D& pointA, const Vector3D& pointB) const {
 }
 
 float* Vector3D::ptr() {
-  return data;
+  return &data[0];
 }
 
 const float* Vector3D::ptr() const {
-  return data;
+  return &data[0];
 }
 
 float&
-Vector3D::operator[](SizeT index) {
-  DR_ASSERT(index >= 0 && index < 3);
+Vector3D::operator[](const SizeT index){
+  DR_ASSERT(index < 3);
   return data[index];
 }
 
 const float&
-Vector3D::operator[](SizeT index) const {
-  DR_ASSERT(index >= 0 && index < 3);
+Vector3D::operator[](const SizeT index) const {
+  DR_ASSERT(index < 3);
   return data[index];
 }
 

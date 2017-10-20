@@ -16,7 +16,11 @@ Capsule::intersects(const Plane& plane) {
 
 bool
 Capsule::intersects(const Sphere& sphere) {
-  return sphereCapsuleIntersect(sphere.center, sphere.radius, pointA, pointB, radius);
+  return Intersect::sphereCapsule(sphere.center, 
+                                  sphere.radius, 
+                                  pointA, 
+                                  pointB, 
+                                  radius);
 }
 
 bool
@@ -27,9 +31,13 @@ Capsule::intersects(const AABB& aabb) {
 
 bool
 Capsule::intersects(const Capsule& capsule) {
-  return capsuleCapsuleIntersect(pointA, pointB, radius, capsule.pointA, capsule.pointB, capsule.radius);
+  return Intersect::capsuleCapsule(pointA, 
+                                   pointB, 
+                                   radius, 
+                                   capsule.pointA, 
+                                   capsule.pointB,
+                                   capsule.radius);
 }
-
 
 bool
 Capsule::intersects(const Frustrum& frustrum) {

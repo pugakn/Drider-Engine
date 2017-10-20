@@ -26,7 +26,7 @@ class DR_API_EXPORT Vector3D
   explicit Vector3D(Math::FORCE_INIT k);
 
   /**
-  * Move constructor
+-  * Move constructor
   *
   */
   Vector3D(Vector3D&& V) = default;
@@ -46,16 +46,16 @@ class DR_API_EXPORT Vector3D
   /**
   * Initialize constructor with values.
   *
-  * @param x
+  * @param _x
   *  The x value of the vector
   *
-  * @param y
+  * @param _y
   *  The y value of the vector
   *
-  * @param z
+  * @param _z
   *  The z value of the vector
   */
-  Vector3D(float x, float y, float z);
+  Vector3D(float _x, float _y, float _z);
 
   /**
   * Default destructor
@@ -142,19 +142,6 @@ class DR_API_EXPORT Vector3D
 
   /**
   * Check's if the other vector is equal to this vector with an error
-  * range of a SMALL_NuMBER.
-  *
-  * @param otherVector
-  *   Vector to compare with this vector.
-  *
-  * @return
-  *   bool expression of condition.
-  */
-  bool
-  equals(const Vector3D& otherVector) const;
-
-  /**
-  * Check's if the other vector is equal to this vector with an error
   * range.
   *
   * @param otherVector
@@ -167,7 +154,7 @@ class DR_API_EXPORT Vector3D
   *   bool expression of condition.
   */
   bool
-  equals(const Vector3D& otherVector, float errorRange) const;
+  equals(const Vector3D& otherVector, float errorRange = Math::SMALL_NUMBER) const;
 
   /**
   * Computes the squared distance between a point and a segment.
@@ -215,7 +202,7 @@ class DR_API_EXPORT Vector3D
   *	  If the index is greater than number of elements in the vector.
   */
   float&
-  operator[](SizeT index);
+  operator[](const SizeT index);
 
   /**
   * Gets a reference to the specified element from the vector.
@@ -230,7 +217,7 @@ class DR_API_EXPORT Vector3D
   *	  If the index is greater than number of elements in the vector.
   */
   const float&
-  operator[](SizeT index) const;
+  operator[](const SizeT index) const;
 
   /**
   * Computes the dot product between this vector and the vector parameter.
@@ -261,63 +248,182 @@ class DR_API_EXPORT Vector3D
   Vector3D
   operator^(const Vector3D& B) const;
 
-  //Uncommented
+  /**
+  * Set the x, y, z values of this vector
+  * with the x, y, z of the other vector.
+  *
+  * @param A
+  *  The vector with the values to use.
+  *
+  * @return
+  *   A reference to this vector.
+  */
   Vector3D&
   operator=(const Vector3D& A);
 
-  //Uncommented
+  /**
+  * Set the x, y, z values of this vector
+  * with the x, y, z of the other vector.
+  *
+  * @param A
+  *  The vector with the values to use.
+  *
+  * @return
+  *   A reference to this vector.
+  */
   Vector3D&
   operator=(const Vector4D& A);
 
-  //Uncommented
+  /**
+  * Adds elements of the vector with
+  * the elements of the other vector.
+  *
+  * @param A
+  *  The vector with the values to use.
+  *
+  * @return
+  *   A vector with the result values.
+  */
   Vector3D
   operator+(const Vector3D& A) const;
 
-  //Uncommented
+  /**
+  * Adds elements of the vector with
+  * the elements of the other vector
+  * and stores it in this vector.
+  *
+  * @param A
+  *  The vector with the values to use.
+  *
+  * @return
+  *   A reference to this vector.
+  */
   Vector3D&
   operator+=(const Vector3D& A);
 
-  //Uncommented
+  /**
+  * Substracts elements of the vector with
+  * the elements of the other vector.
+  *
+  * @param A
+  *  The vector with the values to use.
+  *
+  * @return
+  *   A vector with the result values.
+  */
   Vector3D
   operator-(const Vector3D& A) const;
 
-  //Uncommented
+  /**
+  * Substracts elements of the vector with
+  * the elements of the other vector and
+  * stores it in this vector.
+  *
+  * @param A
+  *  The vector with the values to use.
+  *
+  * @return
+  *   A reference to this vector.
+  */
   Vector3D&
   operator-=(const Vector3D& A);
 
-  //Uncommented
+  /**
+  * Multiplies elements of the vector with
+  * the elements of the other vector.
+  *
+  * @param A
+  *  The vector with the factors to use.
+  *
+  * @return
+  *   A vector with the result values.
+  */
   Vector3D
   operator*(const Vector3D& A) const;
 
-  //Uncommented
+  /**
+  * Multiplies elements of the vector with
+  * the elements of the other vector, and stores
+  * the result in this vector.
+  *
+  * @param A
+  *  The vector with the factors to use.
+  *
+  * @return
+  *   A reference to this vector.
+  */
   Vector3D&
   operator*=(const Vector3D& A);
 
-  //Uncommented
+  /**
+  * Multiplies elements of the vector.
+  *
+  * @param scalar
+  *  The factor.
+  *
+  * @return
+  *   A vector with the result values.
+  */
   Vector3D
   operator*(const float scalar) const;
 
-  //Uncommented
+  /**
+  * Multiplies elements of the vector and stores it in the vector.
+  *
+  * @param scalar
+  *  The factor.
+  *
+  * @return
+  *   A reference to this vector.
+  */
   Vector3D&
   operator*=(const float scalar);
 
-  //Uncommented
+  /**
+  * Divide elements of the vector.
+  *
+  * @param scalar
+  *  The dividend.
+  *
+  * @return
+  *   A vector with the result values.
+  */
   Vector3D
   operator/(const float scalar) const;
 
-  //Uncommented
+  /**
+  * Divide elements of the vector and stores it in the vector.
+  *
+  * @param scalar
+  *  The dividend.
+  *
+  * @return
+  *   A reference to this vector.
+  */
   Vector3D&
   operator/=(const float scalar);
 
-  //Uncommented
+  /**
+  * Checks if the values of the vectors are equal.
+  *
+  * @return
+  *   Flag if vectors are equal.
+  */
   bool
   operator==(const Vector3D& otherVector);
 
-  //Uncommented
+  /**
+  * Checks if the values of the vectors aren't equal.
+  *
+  * @return
+  *   Flag if vectors aren't equal.
+  */
   bool
   operator!=(const Vector3D& otherVector);
 
-  //Uncommented
+  /**
+  * Returns this vector with negated values.
+  */
   Vector3D
   operator-() const;
 

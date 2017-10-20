@@ -3,13 +3,6 @@
 #include <dr_prerequisites.h>
 #include "dr_math.h"
 
-//TODO
-/*
-all vectors
-InvSqrt();
-FastInvSqrt();
-*/
-
 namespace driderSDK {
 
 class DR_API_EXPORT Vector2D
@@ -45,13 +38,13 @@ class DR_API_EXPORT Vector2D
   /**
   * Initialize constructor with values.
   *
-  * @param x
+  * @param _x
   *  The x value of the vector.
   *
-  * @param y
+  * @param _y
   *  The y value of the vector.
   */
-  Vector2D(float x, float y);
+  Vector2D(float _x, float _y);
 
   /**
   * Default destructor.
@@ -72,6 +65,15 @@ class DR_API_EXPORT Vector2D
   */
   float
   dot(const Vector2D& B) const;
+
+  /**
+  * Computes the cross product between himself.
+  *
+  * @return
+  *   Result vector of the cross product
+  */
+  Vector2D
+  cross() const;
 
   /**
   * Computes the length of this vector.
@@ -123,19 +125,6 @@ class DR_API_EXPORT Vector2D
 
   /**
   * Check's if the other vector is equal to this vector with an error
-  * range of a SMALL_NuMBER.
-  *
-  * @param otherVector
-  *   Vector to compare with this vector.
-  *
-  * @return
-  *   bool expression of condition.
-  */
-  bool
-  equals(const Vector2D& otherVector) const;
-
-  /**
-  * Check's if the other vector is equal to this vector with an error
   * range.
   *
   * @param otherVector
@@ -148,7 +137,7 @@ class DR_API_EXPORT Vector2D
   *   bool expression of condition.
   */
   bool
-  equals(const Vector2D& otherVector, float errorRange) const;
+  equals(const Vector2D& otherVector, float errorRange = Math::SMALL_NUMBER) const;
 
   /**
   * Gets a reference to the specified element from the vector.
@@ -182,7 +171,7 @@ class DR_API_EXPORT Vector2D
   ptr() const;
 
   float&
-  operator[](SizeT index);
+  operator[](const SizeT index);
 
   /**
   * Gets a reference to the specified element from the vector.
@@ -197,7 +186,7 @@ class DR_API_EXPORT Vector2D
   *	  If the index is greater than number of elements in the vector.
   */
   const float&
-  operator[](SizeT index) const;
+  operator[](const SizeT index) const;
 
   /**
   * Computes the dot product between this vector and the vector parameter.
@@ -213,59 +202,169 @@ class DR_API_EXPORT Vector2D
   float
   operator|(const Vector2D& B) const;
 
-  //Uncommented
+  /**
+  * Set the x, y values of this vector
+  * with the x, y of the other vector.
+  *
+  * @param A
+  *  The vector with the values to use.
+  *
+  * @return
+  *   A reference to this vector.
+  */
   Vector2D&
   operator=(const Vector2D& A);
 
-  //Uncommented
+  /**
+  * Adds elements of the vector with
+  * the elements of the other vector.
+  *
+  * @param A
+  *  The vector with the values to use.
+  *
+  * @return
+  *   A vector with the result values.
+  */
   Vector2D
   operator+(const Vector2D& A) const;
 
-  //Uncommented
+  /**
+  * Adds elements of the vector with
+  * the elements of the other vector
+  * and stores it in this vector.
+  *
+  * @param A
+  *  The vector with the values to use.
+  *
+  * @return
+  *   A reference to this vector.
+  */
   Vector2D&
   operator+=(const Vector2D& A);
 
-  //Uncommented
+  /**
+  * Substracts elements of the vector with
+  * the elements of the other vector.
+  *
+  * @param A
+  *  The vector with the values to use.
+  *
+  * @return
+  *   A vector with the result values.
+  */
   Vector2D
   operator-(const Vector2D& A) const;
 
-  //Uncommented
+  /**
+  * Substracts elements of the vector with
+  * the elements of the other vector and
+  * stores it in this vector.
+  *
+  * @param A
+  *  The vector with the values to use.
+  *
+  * @return
+  *   A reference to this vector.
+  */
   Vector2D&
   operator-=(const Vector2D& A);
 
-  //Uncommented
+  /**
+  * Multiplies elements of the vector with
+  * the elements of the other vector.
+  *
+  * @param A
+  *  The vector with the factors to use.
+  *
+  * @return
+  *   A vector with the result values.
+  */
   Vector2D
   operator*(const Vector2D& A) const;
 
-  //Uncommented
+  /**
+  * Multiplies elements of the vector with
+  * the elements of the other vector, and stores
+  * the result in this vector.
+  *
+  * @param A
+  *  The vector with the factors to use.
+  *
+  * @return
+  *   A reference to this vector.
+  */
   Vector2D&
   operator*=(const Vector2D& A);
 
-  //Uncommented
+  /**
+  * Multiplies elements of the vector.
+  *
+  * @param scalar
+  *  The factor.
+  *
+  * @return
+  *   A vector with the result values.
+  */
   Vector2D
   operator*(const float scalar) const;
 
-  //Uncommented
+  /**
+  * Multiplies elements of the vector and stores it in the vector.
+  *
+  * @param scalar
+  *  The factor.
+  *
+  * @return
+  *   A reference to this vector.
+  */
   Vector2D&
   operator*=(const float scalar);
 
-  //Uncommented
+  /**
+  * Divide elements of the vector.
+  *
+  * @param scalar
+  *  The dividend.
+  *
+  * @return
+  *   A vector with the result values.
+  */
   Vector2D
   operator/(const float scalar) const;
 
-  //Uncommented
+  /**
+  * Divide elements of the vector and stores it in the vector.
+  *
+  * @param scalar
+  *  The dividend.
+  *
+  * @return
+  *   A reference to this vector.
+  */
   Vector2D&
   operator/=(const float scalar);
 
-  //Uncommented
+  /**
+  * Checks if the values of the vectors are equal.
+  *
+  * @return
+  *   Flag if vectors are equal.
+  */
   bool
   operator==(const Vector2D& otherVector);
 
-  //Uncommented
+  /**
+  * Checks if the values of the vectors aren't equal.
+  *
+  * @return
+  *   Flag if vectors aren't equal.
+  */
   bool
   operator!=(const Vector2D& otherVector);
 
-  //Uncommented
+  /**
+  * Returns this vector with negated values.
+  */
   Vector2D
   operator-() const;
 

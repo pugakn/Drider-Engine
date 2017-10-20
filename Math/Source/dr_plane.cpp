@@ -29,15 +29,16 @@ Plane::Plane(const Plane& other)
 	  d(other.d) {}
 
 void
-Plane::compute(const Vector3D & point0,
-               const Vector3D & point1, 
-               const Vector3D & point2) {
+Plane::compute(const Vector3D& point0,
+               const Vector3D& point1, 
+               const Vector3D& point2) {
   Vector3D normal = (point1 - point0).cross(point2 - point0);
   normal.normalize();
   compute(normal, point0);
 }
 
-void Plane::compute(const Vector3D& _normal, const Vector3D& point) {
+void
+Plane::compute(const Vector3D& _normal, const Vector3D& point) {
   Vector3D::operator=(_normal);
   d = dot(point);
 }
@@ -48,7 +49,7 @@ Plane::distanceToPoint(const Vector3D& point) {
   return Math::abs(dot(point) + d);
 }
 
-Math::PLANE_INTERSECT 
+PLANE_INTERSECT::E
 Plane::intersects(const Vector3D& point) {
   //Ax+By+Cz = D
   //Ax + By + Cz - D = 0 If this is true the point is in the plane
@@ -56,47 +57,48 @@ Plane::intersects(const Vector3D& point) {
   float signedDistance = (dot(point) + d) / length();
   
   if (signedDistance > Math::EPSILON) {
-    return Math::kFront;
+    return PLANE_INTERSECT::kFront;
   }
   else if (signedDistance < -Math::EPSILON) {
-    return Math::kBehind;
+    return PLANE_INTERSECT::kBehind;
   }
   else {
-    return Math::kIn;
+    return PLANE_INTERSECT::kIn;
   }
 }
 
-bool Plane::intersects(const Plane & other)
-{
-  return planePlaneIntersect(*this, d, other, other.d);
+bool
+Plane::intersects(const Plane& other) {
+  return Intersect::planePlane(*this, other);
 }
 
-bool Plane::intersects(const Sphere & sphere)
-{
-  return spherePlaneIntersect(*this, d, sphere.center, sphere.radius);
+bool
+Plane::intersects(const Sphere& sphere) {
+  return Intersect::spherePlane(*this, d, sphere.center, sphere.radius);
 }
 
-bool Plane::intersects(const AABB & aabb)
-{
-  return aabbPlaneIntersect(aabb.center, aabb.width, aabb.height, *this, d);
+bool
+Plane::intersects(const AABB& aabb) {
+  return Intersect::aabbPlane(aabb.center, aabb.width, aabb.height, *this, d);
 }
 
-bool Plane::intersects(const Capsule & capsule)
-{
-  return capsulePlaneIntersect(capsule.pointA,
-                               capsule.pointB, 
-                               capsule.radius,
-                               *this,
-                               d);
+bool
+Plane::intersects(const Capsule& capsule) {
+  return Intersect::capsulePlane(capsule.pointA,
+                                 capsule.pointB, 
+                                 capsule.radius,
+                                 *this,
+                                 d);
 }
 
-bool Plane::intersects(const Frustrum & frustrum)
-{
-  return frustrumPlaneIntersect(frustrum.planes, *this, d);
+bool
+Plane::intersects(const Frustrum& frustrum) {
+  return Intersect::frustrumPlane(frustrum.planes, *this);
 }
 
-bool Plane::intersects(const Ray & ray) {
-  return rayPlaneIntersect(ray.origin, ray.direction, *this, d);
+bool
+Plane::intersects(const Ray& ray) {
+  return Intersect::rayPlane(ray.origin, ray.direction, *this, d);
 }
 
 void
