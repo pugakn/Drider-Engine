@@ -32,7 +32,7 @@ TEST(Vector4D, forceInit) {
   checkValuesVector(testVector1, 0, 0, 0, 0);
 
   driderSDK::Vector4D testVector2(driderSDK::Math::FORCE_INIT::kIdentity);
-  checkValuesVector(testVector2, 1, 1, 1, 1);
+  checkValuesVector(testVector2, 0, 0, 0, 1);
 }
 
 TEST(Vector4D, copyConstructor4D) {

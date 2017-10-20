@@ -14,9 +14,9 @@ Vector4D::Vector4D(Math::FORCE_INIT k) {
     w = 0.0f;
   }
   else {
-    x = 1.0f;
-    y = 1.0f;
-    z = 1.0f;
+    x = 0.0f;
+    y = 0.0f;
+    z = 0.0f;
     w = 1.0f;
   }
 }
@@ -67,16 +67,16 @@ Vector4D::lengthSqr() const {
 
 void Vector4D::normalize3() {
   DR_ASSERT(length() != 0);
-  float invLength = Math::pow(length3(), -1.0f);
-  x *= invLength;
-  y *= invLength;
-  z *= invLength;
+  float Length3 = length3();
+  x *= Length3;
+  y *= Length3;
+  z *= Length3;
 }
 
 void
 Vector4D::normalize() {
   DR_ASSERT(length() != 0);
-  *this = (*this) * Math::pow(length(), -1.0f);
+  *this /= length();
 }
 
 float Vector4D::distance3(const Vector4D& otherVector) const {
@@ -213,18 +213,16 @@ Vector4D::operator*=(const float scalar) {
 Vector4D
 Vector4D::operator/(const float scalar) const {
   DR_ASSERT(scalar != 0.0f);
-  float invDiv = Math::pow(scalar, -1.0f);
-  return Vector4D(x*invDiv, y*invDiv, z*invDiv, w*invDiv);
+  return Vector4D(x / scalar, y / scalar, z / scalar, w / scalar);
 }
 
 Vector4D&
 Vector4D::operator/=(const float scalar) {
   DR_ASSERT(scalar != 0.0f);
-  float invDiv = Math::pow(scalar, -1.0f);
-  x *= invDiv;
-  y *= invDiv;
-  z *= invDiv;
-  w *= invDiv;
+  x /= scalar;
+  y /= scalar;
+  z /= scalar;
+  w /= scalar;
   return *this;
 }
 
