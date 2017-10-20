@@ -130,12 +130,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="dr_parser.h" />
+    <ClInclude Include="Include\dr_parser.h" />
     <ClInclude Include="Include\dr_vertex.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="dr_parser.cpp" />
     <ClCompile Include="Include\dr_vertex.cpp" />
+    <ClCompile Include="Source\dr_parser.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

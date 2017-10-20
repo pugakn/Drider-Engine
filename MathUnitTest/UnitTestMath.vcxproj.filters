@@ -21,13 +21,13 @@
     <ClCompile Include="Source\dr_unitTest_matrix4x4.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\dr_unitTest_sphere.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\dr_unitTest_vector2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\unitTestMath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_sphere_unitTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
