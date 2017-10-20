@@ -5,32 +5,33 @@ void checkValuesVector(driderSDK::Vector2D& testVector, float vx, float vy) {
   EXPECT_FLOAT_EQ(vx, testVector[0]);
   EXPECT_FLOAT_EQ(vy, testVector[1]);
 }
-TEST(forceInitZero, Vector2D) {
+
+TEST(Vector2D, forceInitZero) {
   driderSDK::Vector2D testVector(driderSDK::Math::FORCE_INIT::kZero);
 
   checkValuesVector(testVector, 0, 0);
 }
 
-TEST(forceInitOne, Vector2D) {
+TEST(Vector2D, forceInitOne) {
   driderSDK::Vector2D testVector(driderSDK::Math::FORCE_INIT::kIdentity);
 
   checkValuesVector(testVector, 1, 1);
 }
 
-TEST(constructForVector2D, Vector2D) {
+TEST(Vector2D, constructForVector2D) {
   driderSDK::Vector2D testVector(0, 1);
   driderSDK::Vector2D testVector2(testVector);
 
   checkValuesVector(testVector, 0, 1);
 }
 
-TEST(constructorFor2Floats, Vector2D) {
+TEST(Vector2D, constructorFor2Floats) {
   driderSDK::Vector2D testVector(0, 1);
 
   checkValuesVector(testVector, 0, 1);
 }
 
-TEST(dot, Vector2D) {
+TEST(Vector2D, dot) {
   driderSDK::Vector2D testVector(1, 2);
   driderSDK::Vector2D testVector1(3, 4);
 
@@ -47,7 +48,7 @@ TEST(dot, Vector2D) {
   EXPECT_FLOAT_EQ(1048576, testVector4.dot(testVector5));
 }
 
-TEST(length, Vector2D) {
+TEST(Vector2D, length) {
   driderSDK::Vector2D testVector(1, 0);
   EXPECT_FLOAT_EQ(1, testVector.length());
 
@@ -58,7 +59,7 @@ TEST(length, Vector2D) {
   EXPECT_FLOAT_EQ( 10.049965223825405f, testVector2.length());
 }
 
-TEST(lengthSQR, Vector2D) {
+TEST(Vector2D, lengthSQR) {
   driderSDK::Vector2D testVector(1, 0);
   EXPECT_FLOAT_EQ(1, testVector.lengthSqr());
 
@@ -69,7 +70,7 @@ TEST(lengthSQR, Vector2D) {
   EXPECT_FLOAT_EQ(101.00180100010002281946192341403f, testVector2.lengthSqr());
 }
 
-TEST(normalize, Vector2D) {
+TEST(Vector2D, normalize) {
   driderSDK::Vector2D testVector(1, 1);
   testVector.normalize();
   checkValuesVector(testVector, 0.70710678118f, 0.70710678118f);
@@ -84,7 +85,7 @@ TEST(normalize, Vector2D) {
   EXPECT_FLOAT_EQ(1, testVector3.length());
 }
 
-TEST(distance, Vector2D) {
+TEST(Vector2D, distance) {
   driderSDK::Vector2D testVector(0, 0);
   driderSDK::Vector2D testVector1(1, 0);
   EXPECT_FLOAT_EQ(1, testVector.distance(testVector1));

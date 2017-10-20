@@ -7,6 +7,12 @@
 
 namespace driderSDK {
 
+Sphere::Sphere(Vector3D _center,
+               float _radius) : 
+               center(_center),
+               radius(_radius) {
+}
+
 bool
 Sphere::intersects(const Vector3D& point) {
   return Intersect::sphereContainsPoint(point, center, radius);
@@ -30,6 +36,7 @@ Sphere::intersects(const Capsule& capsule) {
 }
 bool
 Sphere::intersects(const Frustrum& frustrum) {
-  return frustrum.kBottom > 0; // frustrumSphere(); Error frustrum no implemented
+  return Intersect::frustrumSphere(frustrum.planes, center, radius); // frustrumSphere(); Error frustrum no implemented
 }
+
 }

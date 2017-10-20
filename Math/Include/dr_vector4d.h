@@ -44,33 +44,47 @@ class DR_API_EXPORT Vector4D
   Vector4D(const Vector3D& V);
 
   /**
-  * Copy constructor for vec3 to vec4 with W value.
+  * Copy constructor for vec3 to vec4 with w value.
   *
   */
-  Vector4D(const Vector3D& V, float w);
+  Vector4D(const Vector3D& V, float _w);
 
   /**
   * Initialize constructor with values.
   *
-  * @param x
-  *  The x value of the vector
+  * @param _x
+  *  The _x value of the vector
   *
-  * @param y
-  *  The y value of the vector
+  * @param _y
+  *  The _y value of the vector
   *
-  * @param z
-  *  The z value of the vector
+  * @param _z
+  *  The _z value of the vector
   *
-  * @param w
-  *  The w value of the vector
+  * @param _w
+  *  The _w value of the vector
   */
-  Vector4D(float x, float y, float z, float w);
+  Vector4D(float _x, float _y, float _z, float _w);
 
   /**
   * Default destructor
   *
   */
   ~Vector4D();
+
+  /**
+  * Computes the dot product (excluding w) between this vector and the vector parameter.
+  * This operatios is commutative.
+  *
+  * @param B
+  *  The vector against which the dot product is calculated.
+  *
+  * @return
+  *   The sum of the products of the corresponding entries of the
+  *   vectors.
+  */
+  float
+  dot3(const Vector4D& B) const;
 
   /**
   * Computes the dot product between this vector and the vector parameter.
@@ -109,7 +123,25 @@ class DR_API_EXPORT Vector4D
   *   The length (or "size") of the vector.
   */
   float
+  length3() const;
+
+  /**
+  * Computes the length of this vector.
+  *
+  * @return
+  *   The length (or "size") of the vector.
+  */
+  float
   length() const;
+
+  /**
+  * Computes the squared length of this vector.
+  *
+  * @return
+  *   The length (or "size") of the vector squared.
+  */
+  float
+  lengthSqr3() const;
 
   /**
   * Computes the squared length of this vector.
@@ -124,7 +156,25 @@ class DR_API_EXPORT Vector4D
   * Normalize the vector.
   */
   void
+  normalize3();
+
+  /**
+  * Normalize the vector.
+  */
+  void
   normalize();
+
+  /**
+  * Computes the distance between two vectors.
+  *
+  * @param scalar
+  *   Vector to calculate the distance
+  *
+  * @return
+  *   Distance
+  */
+  float
+  distance3(const Vector4D& otherVector) const;
 
   /**
   * Computes the distance between two vectors.
@@ -148,20 +198,19 @@ class DR_API_EXPORT Vector4D
   *   Distance
   */
   float
-  distanceSqr(const Vector4D& otherVector) const;
+  distanceSqr3(const Vector4D& otherVector) const;
 
   /**
-  * Check's if the other vector is equal to this vector with an error
-  * range of a SMALL_NuMBER.
+  * Computes the squared distance between two vectors.
   *
-  * @param otherVector
-  *   Vector to compare with this vector.
+  * @param scalar
+  *   Vector to calculate the distance
   *
   * @return
-  *   bool expression of condition.
+  *   Distance
   */
-  bool
-  equals(const Vector4D& otherVector) const;
+  float
+  distanceSqr(const Vector4D& otherVector) const;
 
   /**
   * Check's if the other vector is equal to this vector with an error
@@ -177,7 +226,7 @@ class DR_API_EXPORT Vector4D
   *   bool expression of condition.
   */
   bool
-  equals(const Vector4D& otherVector, float errorRange) const;
+  equals(const Vector4D& otherVector, float errorRange = Math::SMALL_NUMBER) const;
 
    /**
   * Gets a pointer to the first element of the matrix.
@@ -210,7 +259,7 @@ class DR_API_EXPORT Vector4D
   *	  If the index is greater than number of elements in the vector.
   */
   float&
-  operator[](SizeT index);
+  operator[](const SizeT index);
 
   /**
   * Gets a const reference to the specified element from the vector.
@@ -225,7 +274,7 @@ class DR_API_EXPORT Vector4D
   *	  If the index is greater than number of elements in the vector.
   */
   const float&
-  operator[](SizeT index) const;
+  operator[](const SizeT index) const;
 
   /**
   * Computes the dot product between this vector and the vector parameter.
@@ -256,63 +305,182 @@ class DR_API_EXPORT Vector4D
   Vector4D
   operator^(const Vector4D& B) const;
 
-  //Uncommented
+  /**
+  * Set the x, y, z, w values of this vector
+  * with the x, y, z, w of the other vector.
+  *
+  * @param A
+  *  The vector with the values to use.
+  *
+  * @return
+  *   A reference to this vector.
+  */
   Vector4D&
   operator=(const Vector4D& A);
 
-  //Uncommented
+  /**
+  * Set the x, y, z values of this vector
+  * with the x, y, z of the other vector.
+  *
+  * @param A
+  *  The vector with the values to use.
+  *
+  * @return
+  *   A reference to this vector.
+  */
   Vector4D&
   operator=(const Vector3D& A);
 
-  //Uncommented
+  /**
+  * Adds elements of the vector with
+  * the elements of the other vector.
+  *
+  * @param A
+  *  The vector with the values to use.
+  *
+  * @return
+  *   A vector with the result values.
+  */
   Vector4D
   operator+(const Vector4D& A) const;
 
-  //Uncommented
+  /**
+  * Adds elements of the vector with
+  * the elements of the other vector
+  * and stores it in this vector.
+  *
+  * @param A
+  *  The vector with the values to use.
+  *
+  * @return
+  *   A reference to this vector.
+  */
   Vector4D&
   operator+=(const Vector4D& A);
 
-  //Uncommented
+  /**
+  * Substracts elements of the vector with
+  * the elements of the other vector.
+  *
+  * @param A
+  *  The vector with the values to use.
+  *
+  * @return
+  *   A vector with the result values.
+  */
   Vector4D
   operator-(const Vector4D& A) const;
 
-  //Uncommented
+  /**
+  * Substracts elements of the vector with
+  * the elements of the other vector and
+  * stores it in this vector.
+  *
+  * @param A
+  *  The vector with the values to use.
+  *
+  * @return
+  *   A reference to this vector.
+  */
   Vector4D&
   operator-=(const Vector4D& A);
 
-  //Uncommented
+  /**
+  * Multiplies elements of the vector with
+  * the elements of the other vector.
+  *
+  * @param A
+  *  The vector with the factors to use.
+  *
+  * @return
+  *   A vector with the result values.
+  */
   Vector4D
   operator*(const Vector4D& A) const;
 
-  //Uncommented
+  /**
+  * Multiplies elements of the vector with
+  * the elements of the other vector, and stores
+  * the result in this vector.
+  *
+  * @param A
+  *  The vector with the factors to use.
+  *
+  * @return
+  *   A reference to this vector.
+  */
   Vector4D&
   operator*=(const Vector4D& A);
 
-  //Uncommented
+  /**
+  * Multiplies elements of the vector.
+  *
+  * @param scalar
+  *  The factor.
+  *
+  * @return
+  *   A vector with the result values.
+  */
   Vector4D
   operator*(const float scalar) const;
 
-  //Uncommented
+  /**
+  * Multiplies elements of the vector and stores it in the vector.
+  *
+  * @param scalar
+  *  The factor.
+  *
+  * @return
+  *   A reference to this vector.
+  */
   Vector4D&
   operator*=(const float scalar);
 
-  //Uncommented
+  /**
+  * Divide elements of the vector.
+  *
+  * @param scalar
+  *  The dividend.
+  *
+  * @return
+  *   A vector with the result values.
+  */
   Vector4D
   operator/(const float scalar) const;
 
-  //Uncommented
+  /**
+  * Divide elements of the vector and stores it in the vector.
+  *
+  * @param scalar
+  *  The dividend.
+  *
+  * @return
+  *   A reference to this vector.
+  */
   Vector4D&
   operator/=(const float scalar);
 
-  //Uncommented
+  /**
+  * Checks if the values of the vectors are equal.
+  *
+  * @return
+  *   Flag if vectors are equal.
+  */
   bool
   operator==(const Vector4D& otherVector);
 
-  //Uncommented
+  /**
+  * Checks if the values of the vectors aren't equal.
+  *
+  * @return
+  *   Flag if vectors aren't equal.
+  */
   bool
   operator!=(const Vector4D& otherVector);
 
-  //Uncommented
+  /**
+  * Returns this vector with negated values.
+  */
   Vector4D
   operator-() const;
 

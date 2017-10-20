@@ -44,29 +44,26 @@ Degree::operator=(float V) {
 }
 
 Degree&
-Degree::operator+=(float V)
-{
+Degree::operator+=(float V) {
   m_value += V;
   return *this;
 }
 
 Degree&
-Degree::operator-=(float V)
-{
+Degree::operator-=(float V) {
   m_value -= V;
   return *this;
 }
 
 Degree&
-Degree::operator*=(float V)
-{
+Degree::operator*=(float V) {
   m_value *= V;
   return *this;
 }
 
 Degree&
-Degree::operator/=(float V)
-{
+Degree::operator/=(float V) {
+  DR_ASSERT(V != 0.0f);
   m_value /= V;
   return *this;
 }

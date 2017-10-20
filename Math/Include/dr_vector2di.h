@@ -38,13 +38,13 @@ class DR_API_EXPORT Vector2DI
   /**
   * Initialize constructor with values.
   *
-  * @param x
+  * @param _x
   *  The x value of the vector
   *
-  * @param y
+  * @param _y
   *  The y value of the vector
   */
-  Vector2DI(Int32 x, Int32 y);
+  Vector2DI(Int32 _x, Int32 _y);
 
   /**
   * Default destructor
@@ -65,6 +65,15 @@ class DR_API_EXPORT Vector2DI
   */
   float
   dot(const Vector2DI& B) const;
+
+  /**
+  * Computes the cross product between himself.
+  *
+  * @return
+  *   Result vector of the cross product
+  */
+  Vector2DI
+  cross() const;
 
   /**
   * Computes the length of this vector.
@@ -116,19 +125,6 @@ class DR_API_EXPORT Vector2DI
 
   /**
   * Check's if the other vector is equal to this vector with an error
-  * range of a SMALL_NuMBER.
-  *
-  * @param otherVector
-  *   Vector to compare with this vector.
-  *
-  * @return
-  *   bool expression of condition.
-  */
-  bool
-  equals(const Vector2DI& otherVector) const;
-
-  /**
-  * Check's if the other vector is equal to this vector with an error
   * range.
   *
   * @param otherVector
@@ -141,7 +137,7 @@ class DR_API_EXPORT Vector2DI
   *   bool expression of condition.
   */
   bool
-  equals(const Vector2DI& otherVector, float errorRange) const;
+  equals(const Vector2DI& otherVector, float errorRange = Math::SMALL_NUMBER) const;
 
    /**
   * Gets a pointer to the first element of the matrix.
@@ -149,7 +145,7 @@ class DR_API_EXPORT Vector2DI
   * @return
   *	  A pointer to the first element of the matrix.
   */
-  int*
+  Int32*
   ptr();
 
   /**
@@ -158,7 +154,7 @@ class DR_API_EXPORT Vector2DI
   * @return
   *	  A constant pointer to the first element of the matrix.
   */
-  const int*
+  const Int32*
   ptr() const;
 
   /**
@@ -174,7 +170,7 @@ class DR_API_EXPORT Vector2DI
   *	  If the index is greater than number of elements in the vector.
   */
   Int32&
-  operator[](SizeT index);
+  operator[](const SizeT index);
 
   /**
   * Gets a const reference to the specified element from the vector.
@@ -189,7 +185,7 @@ class DR_API_EXPORT Vector2DI
   *	  If the index is greater than number of elements in the vector.
   */
   const Int32&
-  operator[](SizeT index) const;
+  operator[](const SizeT index) const;
 
   /**
   * Computes the dot product between this vector and the vector parameter.
@@ -205,59 +201,169 @@ class DR_API_EXPORT Vector2DI
   float
   operator|(const Vector2DI& B) const;
 
-  //Uncommented
+  /**
+  * Set the x, y values of this vector
+  * with the x, y of the other vector.
+  *
+  * @param A
+  *  The vector with the values to use.
+  *
+  * @return
+  *   A reference to this vector.
+  */
   Vector2DI&
   operator=(const Vector2DI& A);
 
-  //Uncommented
+  /**
+  * Adds elements of the vector with
+  * the elements of the other vector.
+  *
+  * @param A
+  *  The vector with the values to use.
+  *
+  * @return
+  *   A vector with the result values.
+  */
   Vector2DI
   operator+(const Vector2DI& A) const;
 
-  //Uncommented
+  /**
+  * Adds elements of the vector with
+  * the elements of the other vector
+  * and stores it in this vector.
+  *
+  * @param A
+  *  The vector with the values to use.
+  *
+  * @return
+  *   A reference to this vector.
+  */
   Vector2DI&
   operator+=(const Vector2DI& A);
 
-  //Uncommented
+  /**
+  * Substracts elements of the vector with
+  * the elements of the other vector.
+  *
+  * @param A
+  *  The vector with the values to use.
+  *
+  * @return
+  *   A vector with the result values.
+  */
   Vector2DI
   operator-(const Vector2DI& A) const;
 
-  //Uncommented
+  /**
+  * Substracts elements of the vector with
+  * the elements of the other vector and
+  * stores it in this vector.
+  *
+  * @param A
+  *  The vector with the values to use.
+  *
+  * @return
+  *   A reference to this vector.
+  */
   Vector2DI&
   operator-=(const Vector2DI& A);
 
-  //Uncommented
+  /**
+  * Multiplies elements of the vector with
+  * the elements of the other vector.
+  *
+  * @param A
+  *  The vector with the factors to use.
+  *
+  * @return
+  *   A vector with the result values.
+  */
   Vector2DI
   operator*(const Vector2DI& A) const;
 
-  //Uncommented
+  /**
+  * Multiplies elements of the vector with
+  * the elements of the other vector, and stores
+  * the result in this vector.
+  *
+  * @param A
+  *  The vector with the factors to use.
+  *
+  * @return
+  *   A reference to this vector.
+  */
   Vector2DI&
   operator*=(const Vector2DI& A);
 
-  //Uncommented
+  /**
+  * Multiplies elements of the vector.
+  *
+  * @param scalar
+  *  The factor.
+  *
+  * @return
+  *   A vector with the result values.
+  */
   Vector2DI
   operator*(const float scalar) const;
 
-  //Uncommented
+  /**
+  * Multiplies elements of the vector and stores it in the vector.
+  *
+  * @param scalar
+  *  The factor.
+  *
+  * @return
+  *   A reference to this vector.
+  */
   Vector2DI&
   operator*=(const float scalar);
 
-  //Uncommented
+  /**
+  * Divide elements of the vector.
+  *
+  * @param scalar
+  *  The dividend.
+  *
+  * @return
+  *   A vector with the result values.
+  */
   Vector2DI
   operator/(const float scalar) const;
 
-  //Uncommented
+  /**
+  * Divide elements of the vector and stores it in the vector.
+  *
+  * @param scalar
+  *  The dividend.
+  *
+  * @return
+  *   A reference to this vector.
+  */
   Vector2DI&
   operator/=(const float scalar);
 
-  //Uncommented
+  /**
+  * Checks if the values of the vectors are equal.
+  *
+  * @return
+  *   Flag if vectors are equal.
+  */
   bool
   operator==(const Vector2DI& otherVector);
 
-  //Uncommented
+  /**
+  * Checks if the values of the vectors aren't equal.
+  *
+  * @return
+  *   Flag if vectors aren't equal.
+  */
   bool
   operator!=(const Vector2DI& otherVector);
 
-  //Uncommented
+  /**
+  * Returns this vector with negated values.
+  */
   Vector2DI
   operator-() const;
 

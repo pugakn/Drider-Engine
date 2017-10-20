@@ -1,10 +1,11 @@
 #include <dr_sphere.h>
-#include <dr_vector3d.h>
+#include <dr_capsule.h>
 #include <dr_aabb.h>
+#include <dr_vector3d.h>
 
 #include <gtest\gtest.h>
 
-TEST(intersect_point, Sphere) {
+TEST(Sphere, intersect_point) {
   driderSDK::Sphere sphere;
   sphere.center = driderSDK::Vector3D(0.0f, 0.0f, 0.0f);
   sphere.radius = 0.5f;
@@ -16,7 +17,7 @@ TEST(intersect_point, Sphere) {
   EXPECT_FALSE(sphere.intersects(point2));
 }
 
-TEST(intersect_sphere, Sphere) {
+TEST(Sphere, intersect_sphere) {
   driderSDK::Sphere sphere;
   sphere.center = driderSDK::Vector3D(0.0f, 0.0f, 0.0f);
   sphere.radius = 0.5f;
@@ -27,13 +28,13 @@ TEST(intersect_sphere, Sphere) {
 
   driderSDK::Sphere sphere2;
   sphere2.center = driderSDK::Vector3D(1.0f, 0.0f, 0.0f);
-  sphere1.radius = 0.4f;
+  sphere2.radius = 0.4f;
 
   EXPECT_TRUE(sphere.intersects(sphere1));
   EXPECT_FALSE(sphere.intersects(sphere2));
 }
 
-/*TEST(intersect_aabb, Sphere) {
+/*TEST(Sphere, intersect_aabb) {
   driderSDK::Sphere sphere;
   sphere.center = driderSDK::Vector3D(0.0f, 0.0f, 0.0f);
   sphere.radius = 0.5f;
@@ -45,4 +46,23 @@ TEST(intersect_sphere, Sphere) {
 
   EXPECT_TRUE(sphere.intersects(Aabb));
 }*/
+
+TEST(Sphere, intersect_capsule) {
+  driderSDK::Sphere sphere;
+  sphere.center = driderSDK::Vector3D(0.0f, 0.0f, 0.0f);
+  sphere.radius = 0.5f;
+
+  driderSDK::Capsule capsule;
+  capsule.pointA = driderSDK::Vector3D(1.0f, -0.5, 0.0f);
+  capsule.pointB = driderSDK::Vector3D(1.0f, 0.5f, 0.0f);
+  capsule.radius = 0.5f;
+
+  EXPECT_TRUE(sphere.intersects(capsule));
+  
+  capsule.pointA = driderSDK::Vector3D(1.5f, -0.5, 0.0f);
+  capsule.pointB = driderSDK::Vector3D(1.5f, 0.5f, 0.0f);
+  capsule.radius = 0.5f;
+  
+  EXPECT_FALSE(sphere.intersects(capsule));
+}
 

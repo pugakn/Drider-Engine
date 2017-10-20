@@ -52,7 +52,7 @@ Matrix4x4::Matrix4x4(Math::FORCE_INIT k) {
   }
 }
 
-Matrix4x4::Matrix4x4(const Matrix4x4 & M)
+Matrix4x4::Matrix4x4(const Matrix4x4& M)
   : vector0(M.vector0),
     vector1(M.vector1),
     vector2(M.vector2),
@@ -171,9 +171,9 @@ Matrix4x4::adjugate() {
 void
 Matrix4x4::inverse() {
   float deter = determinant();
-  DR_ASSERT(deter != 0);
+  DR_ASSERT(deter != 0.0f);
   adjugate();
-  *this = *this * (1 / deter);
+  *this = *this * Math::pow(deter, -1);
 }
 
 void
@@ -225,22 +225,24 @@ Matrix4x4::identity() {
   vector3.w = 1;
 }
 
-float* Matrix4x4::ptr() {
-  return data->ptr();
+float*
+Matrix4x4::ptr() {
+  return data[0].ptr();
 }
 
-const float* Matrix4x4::ptr() const {
-  return data->ptr();
+const float*
+Matrix4x4::ptr() const {
+  return data[0].ptr();
 }
 
 Vector4D&
-Matrix4x4::operator[](SizeT index) {
-  DR_ASSERT(index >= 0 && index < 4);
+Matrix4x4::operator[](SizeT index){
+  DR_ASSERT(index < 4);
   return data[index];
 }
 
 Matrix4x4&
-Matrix4x4::operator=(const Matrix4x4 & A) {
+Matrix4x4::operator=(const Matrix4x4& A) {
   vector0 = A.vector0;
   vector1 = A.vector1;
   vector2 = A.vector2;
@@ -249,8 +251,7 @@ Matrix4x4::operator=(const Matrix4x4 & A) {
 }
 
 Matrix4x4&
-Matrix4x4::operator=(const Matrix3x3 & A)
-{
+Matrix4x4::operator=(const Matrix3x3& A) {
   vector0 = A.vector0;
   vector1 = A.vector1;
   vector2 = A.vector2;
@@ -258,7 +259,7 @@ Matrix4x4::operator=(const Matrix3x3 & A)
 }
 
 Matrix4x4 
-Matrix4x4::operator+(const Matrix4x4 & A) const {
+Matrix4x4::operator+(const Matrix4x4& A) const {
   return Matrix4x4(vector0 + A.vector0,
                    vector1 + A.vector1,
                    vector2 + A.vector2,
@@ -266,7 +267,7 @@ Matrix4x4::operator+(const Matrix4x4 & A) const {
 }
 
 Matrix4x4&
-Matrix4x4::operator+=(const Matrix4x4 & A) {
+Matrix4x4::operator+=(const Matrix4x4& A) {
   vector0 += A.vector0;
   vector1 += A.vector1;
   vector2 += A.vector2;
@@ -275,7 +276,7 @@ Matrix4x4::operator+=(const Matrix4x4 & A) {
 }
 
 Matrix4x4
-Matrix4x4::operator-(const Matrix4x4 & A) const {
+Matrix4x4::operator-(const Matrix4x4& A) const {
   return Matrix4x4(vector0 - A.vector0,
                    vector1 - A.vector1,
                    vector2 - A.vector2,
@@ -283,7 +284,7 @@ Matrix4x4::operator-(const Matrix4x4 & A) const {
 }
 
 Matrix4x4&
-Matrix4x4::operator-=(const Matrix4x4 & A) {
+Matrix4x4::operator-=(const Matrix4x4& A) {
   vector0 -= A.vector0;
   vector1 -= A.vector1;
   vector2 -= A.vector2;
@@ -292,7 +293,7 @@ Matrix4x4::operator-=(const Matrix4x4 & A) {
 }
 
 Matrix4x4
-Matrix4x4::operator*(const Matrix4x4 & A) const {
+Matrix4x4::operator*(const Matrix4x4& A) const {
   Matrix4x4 temp;
 
   Vector4D c0(A.vector0.x, A.vector1.x, A.vector2.x, A.vector3.x);
@@ -325,7 +326,7 @@ Matrix4x4::operator*(const Matrix4x4 & A) const {
 }
 
 Matrix4x4&
-Matrix4x4::operator*=(const Matrix4x4 & A) {
+Matrix4x4::operator*=(const Matrix4x4& A) {
   Matrix4x4 temp;
 
   Vector4D c0(A.vector0.x, A.vector1.x, A.vector2.x, A.vector3.x);
@@ -393,7 +394,7 @@ Matrix4x4::operator*=(const float S) {
 }
 
 bool
-Matrix4x4::operator==(const Matrix4x4 & M)
+Matrix4x4::operator==(const Matrix4x4& M)
 {
   return vector0 == M.vector0 &&
          vector1 == M.vector1 &&
@@ -402,7 +403,7 @@ Matrix4x4::operator==(const Matrix4x4 & M)
 }
 
 bool
-Matrix4x4::operator!=(const Matrix4x4 & M)
+Matrix4x4::operator!=(const Matrix4x4& M)
 {
   return !(*this == M);
 }

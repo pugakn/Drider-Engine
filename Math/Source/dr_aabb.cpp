@@ -15,9 +15,9 @@ AABB::AABB(float width,
            const Vector3D& C) : width(width), height(height), center(C) {}
 
 AABB::AABB(const AABB& A) {
-  width = A.width;
-  height = A.height;
-  center = A.center;
+            width = A.width;
+            height = A.height;
+            center = A.center;
 }
 
 AABB::~AABB() {}
