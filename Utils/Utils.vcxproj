@@ -136,6 +136,9 @@
     <ClInclude Include="Include\dr_prerequisites.h" />
     <ClInclude Include="Include\dr_types.h" />
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Include\dr_logger.cpp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
