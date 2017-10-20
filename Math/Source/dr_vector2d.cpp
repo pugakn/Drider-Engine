@@ -29,7 +29,7 @@ Vector2D::dot(const Vector2D& B) const {
 
 Vector2D
 Vector2D::cross() const {
-  return Vector2D(x*y - y*x, 0);
+  return Vector2D(x, -y);
 }
 
 float

@@ -56,7 +56,7 @@ Quaternion
 Quaternion::rotation(float theta, const Quaternion& A) {
   Quaternion Axis = A - *this;
   Axis.normalize();
-  Axis *= sin(theta / 2);
+  Axis *= sin(theta*0.5f);
   Axis.w = cos(theta / 2);
   return Axis;
 }
@@ -200,7 +200,7 @@ Quaternion::operator=(const Quaternion& Q) {
 
 bool
 Quaternion::operator==(const Quaternion& Q) {
-	return ((x == Q.x) && (y == Q.y) && (z = Q.z) && (w == Q.w));
+	return ((x == Q.x) && (y == Q.y) && (z == Q.z) && (w == Q.w));
 }
 
 bool

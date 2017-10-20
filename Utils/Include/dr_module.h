@@ -65,7 +65,7 @@ class Module
       return;
     }
 
-    _instance() = dr_new<T>(std::forward<Args>(args)...);
+    _instance() = new T(std::forward<Args>(args)...);
     isShutDown() = false;
 
     static_cast<Module*>(_instance())->onStartUp();
@@ -85,7 +85,7 @@ class Module
       //GE_EXCEPT(InternalErrorException, "Trying to start an already started module.");
     }
 
-    _instance() = dr_new<SubType>(std::forward<Args>(args)...);
+    _instance() = new SubType(std::forward<Args>(args)...);
     isShutDown() = false;
 
     static_cast<Module*>(_instance())->onStartUp();
@@ -103,7 +103,7 @@ class Module
 
     static_cast<Module*>(_instance())->onShutDown();
 
-    dr_delete(_instance());
+    delete(_instance());
     isShutDown() = true;
   }
 
