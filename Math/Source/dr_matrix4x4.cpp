@@ -171,7 +171,7 @@ Matrix4x4::adjugate() {
 void
 Matrix4x4::inverse() {
   float deter = determinant();
-  DR_ASSERT(deter != 0);
+  DR_ASSERT(deter != 0.0f);
   adjugate();
   *this = *this * Math::pow(deter, -1);
 }
@@ -251,8 +251,7 @@ Matrix4x4::operator=(const Matrix4x4& A) {
 }
 
 Matrix4x4&
-Matrix4x4::operator=(const Matrix3x3& A)
-{
+Matrix4x4::operator=(const Matrix3x3& A) {
   vector0 = A.vector0;
   vector1 = A.vector1;
   vector2 = A.vector2;

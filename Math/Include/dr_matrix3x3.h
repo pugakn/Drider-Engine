@@ -21,6 +21,8 @@ class DR_API_EXPORT Matrix3x3
   * Default constructor
   *
   * Values are initialized with 0(kZero) or identity matrix(kIdentity).
+  *
+  * \brief TEST::forceInit
   */
   explicit Matrix3x3(Math::FORCE_INIT k);
 
@@ -33,6 +35,7 @@ class DR_API_EXPORT Matrix3x3
   /**
   * Copy constructor
   *
+  * \brief TEST::constructForMatrix3x3
   */
   Matrix3x3(const Matrix3x3& M);
 
@@ -47,6 +50,8 @@ class DR_API_EXPORT Matrix3x3
   *
   * @param v2x, v2y, v2z
   *  The x, y, z values of the vector, third raw
+  *
+  * \brief TEST::constructFor9Floats
   */
   Matrix3x3(float v0x, float v0y, float v0z,
             float v1x, float v1y, float v1z,
@@ -63,6 +68,7 @@ class DR_API_EXPORT Matrix3x3
   *
   * @param vector20-vector22
   *  The vector2(x, y, z) values of the vector, third row
+  *
   */
   Matrix3x3(Vector3D vector0, Vector3D vector1, Vector3D vector2);
 
@@ -77,6 +83,8 @@ class DR_API_EXPORT Matrix3x3
   *
   * @return
   *   determinant.
+  *
+  * \brief TEST::determinant
   */
   float
   determinant() const;
@@ -86,6 +94,8 @@ class DR_API_EXPORT Matrix3x3
   *
   * @return
   *   cofactor of matrix.
+  *
+  * \brief TEST::inverse
   */
   void
   cofactor();
@@ -96,6 +106,8 @@ class DR_API_EXPORT Matrix3x3
   * 
   * @return
   *   adjugate.
+  *
+  * \brief TEST::inverse
   */
   void
   adjugate();
@@ -103,6 +115,8 @@ class DR_API_EXPORT Matrix3x3
   /**
   * Calculate inverse of matrix.
   * using det * adjugate
+  *
+  * \brief TEST::inverse
   */
   void
   inverse();
@@ -114,6 +128,8 @@ class DR_API_EXPORT Matrix3x3
   * | A1 | A2 | A3 |T    | A1 | B1 | C1 |
   * | B1 | B2 | B3 |  =  | A2 | B2 | C2 |
   * | C1 | C2 | C3 |     | A3 | B3 | C3 |
+  *
+  * \brief TEST::inverse
   */
   void
   transpose();
@@ -122,11 +138,13 @@ class DR_API_EXPORT Matrix3x3
   * Identity
   *
   * Tranform matrix to identity
+  *
+  * \brief TEST::identity
   */
   void
   identity();
 
-   /**
+  /**
   * Gets a pointer to the first element of the matrix.
   *
   * @return
@@ -144,58 +162,87 @@ class DR_API_EXPORT Matrix3x3
   const float*
   ptr() const;
 
-   //Uncommented
+  /**
+  *
+  */
   Vector3D&
   operator[](SizeT index);
 
-  //Uncommented
+  /**
+  * \brief TEST::operatorEqual
+  */
   Matrix3x3&
   operator=(const Matrix3x3& A);
 
+  /**
+  * \brief TEST::operatorEqualMatrix4x4
+  */
   Matrix3x3&
   operator=(const Matrix4x4& A);
 
-  //Uncommented
+  /**
+  * \brief TEST::operatorAdd
+  */
   Matrix3x3
   operator+(const Matrix3x3& A) const;
 
-  //Uncommented
+  /**
+  * \brief TEST::operatorAddEqual
+  */
   Matrix3x3&
   operator+=(const Matrix3x3& A);
 
-  //Uncommented
+  /**
+  * \brief TEST::operatorMinus
+  */
   Matrix3x3
   operator-(const Matrix3x3& A) const;
 
-  //Uncommented
+  /**
+  * \brief TEST::operatorMinusEqual
+  */
   Matrix3x3&
   operator-=(const Matrix3x3& A);
 
-  //Uncommented
+  /**
+  * \brief TEST::operatorMultiplication
+  */
   Matrix3x3
   operator*(const Matrix3x3& A) const;
 
-  //Uncommented
+  /**
+  * \brief TEST::operatorMultiplicationEqual
+  */
   Matrix3x3&
   operator*=(const Matrix3x3& A);
 
-  //Uncommented
+  /**
+  * \brief TEST::operatorMultiplicationForVector3
+  */
   Vector3D
   operator*(const Vector3D& S) const;
 
-  //Uncommented
+  /**
+  * \brief TEST::operatorMultiplicationFloat
+  */
   Matrix3x3
   operator*(const float S) const;
 
-  //Uncommented
+  /**
+  * \brief TEST::operatorMultiplicationEqualFloat
+  */
   Matrix3x3&
   operator*=(const float S);
 
-  //Uncommented
+  /**
+  * \brief TEST::operatorEqualEqual
+  */
   bool
   operator==(const Matrix3x3& M);
 
-  //Uncommented
+  /**
+  * \brief TEST::operatorNotEqual
+  */
   bool
   operator!=(const Matrix3x3& M);
 

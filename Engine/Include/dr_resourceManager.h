@@ -6,7 +6,7 @@ namespace driderSDK {
 class DR_API_EXPORT ResourceManager {
 public:
   ResourceManager() {}
-  virtual ~ResourceManager() {}
+  ~ResourceManager() {}
 
 
 };

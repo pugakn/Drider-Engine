@@ -4,10 +4,10 @@
 #include <gtest\gtest.h>
 
 void checkValuesMatrix(driderSDK::Matrix4x4& testMatrix,
-  float v0x, float v0y, float v0z, float v0w,
-  float v1x, float v1y, float v1z, float v1w,
-  float v2x, float v2y, float v2z, float v2w,
-  float v3x, float v3y, float v3z, float v3w) {
+                       float v0x, float v0y, float v0z, float v0w,
+                       float v1x, float v1y, float v1z, float v1w,
+                       float v2x, float v2y, float v2z, float v2w,
+                       float v3x, float v3y, float v3z, float v3w) {
 
   EXPECT_FLOAT_EQ(v0x, testMatrix[0][0]);
   EXPECT_FLOAT_EQ(v0y, testMatrix[0][1]);
@@ -30,25 +30,22 @@ void checkValuesMatrix(driderSDK::Matrix4x4& testMatrix,
   EXPECT_FLOAT_EQ(v3w, testMatrix[3][3]);
 }
 
-TEST(forceInitZero, Matrix4x4) {
+TEST(Matrix4x4, forceInit) {
   driderSDK::Matrix4x4 testMatrix(driderSDK::Math::FORCE_INIT::kZero);
   checkValuesMatrix(testMatrix,
                     0, 0, 0, 0,
                     0, 0, 0, 0,
                     0, 0, 0, 0,
                     0, 0, 0, 0);
-}
-
-TEST(forceInitIdentiy, Matrix4x4) {
-  driderSDK::Matrix4x4 testMatrix(driderSDK::Math::FORCE_INIT::kIdentity);
-  checkValuesMatrix(testMatrix,
+  driderSDK::Matrix4x4 testMatrix1(driderSDK::Math::FORCE_INIT::kIdentity);
+  checkValuesMatrix(testMatrix1,
                     1, 0, 0, 0,
                     0, 1, 0, 0,
                     0, 0, 1, 0,
                     0, 0, 0, 1);
 }
 
-TEST(constructForMatrix4x4, Matrix4x4) {
+TEST(Matrix4x4, constructForMatrix4x4) {
   driderSDK::Matrix4x4 firstMatrix(driderSDK::Math::FORCE_INIT::kIdentity);
   driderSDK::Matrix4x4 testMatrix(firstMatrix);
 
@@ -59,7 +56,7 @@ TEST(constructForMatrix4x4, Matrix4x4) {
                     0, 0, 0, 1);
 }
 
-TEST(constructFor16Floats, Matrix4x4) {
+TEST(Matrix4x4, constructFor16Floats) {
   driderSDK::Matrix4x4 testMatrix(1, 2, 3, 4,
                                   5, 6, 7, 8,
                                   9, 10, 11, 12,
@@ -72,7 +69,7 @@ TEST(constructFor16Floats, Matrix4x4) {
                     13, 14, 15, 16);
 }
 
-TEST(determinant, Matrix4x4) {
+TEST(Matrix4x4, determinant) {
   driderSDK::Matrix4x4 testMatrix(1, 2, 3, 4,
                                   5, 6, 7, 8,
                                   9, 10, 11, 12,
@@ -80,17 +77,17 @@ TEST(determinant, Matrix4x4) {
   EXPECT_FLOAT_EQ(0, testMatrix.determinant());
 }
 
-TEST(inverse, Matrix4x4) {
+TEST(Matrix4x4, inverse) {
   driderSDK::Matrix4x4 testMatrix(1, 2, 3, 4,
                                   5, 6, 7, 8,
                                   9, 2, 11, 0,
                                   4, 14, 3, 1);
   testMatrix.inverse();
   checkValuesMatrix(testMatrix,
-                    -283.0f/276.0f, 12.0f/23.0f, -3.0f/92.0f, -5.0f/69.0f,
-                    3.0f/23.0f, -7.0f/92.0f, -1.0f/92.0f, 2.0f/23.0f,
-                    75.0f/92.0f, -19.0f/46.0f, 11.0f/92.0f, 1.0f/23.0f,
-                    -47.0f/276.0f, 5.0f/23.0f, -7.0f/92.0f, -4.0f/69.0f);
+                    -283.0f / 276.0f, 12.0f / 23.0f, -3.0f / 92.0f, -5.0f / 69.0f,
+                    3.0f / 23.0f, -7.0f / 92.0f, -1.0f / 92.0f, 2.0f / 23.0f,
+                    75.0f / 92.0f, -19.0f / 46.0f, 11.0f / 92.0f, 1.0f / 23.0f,
+                    -47.0f / 276.0f, 5.0f / 23.0f, -7.0f / 92.0f, -4.0f / 69.0f);
 
   driderSDK::Matrix4x4 testMatrix2(41, 52, 73, 14,
                                    15, 86, 7, 8,
@@ -119,7 +116,7 @@ TEST(inverse, Matrix4x4) {
                     8.0f / 7.0f, 1, -13.0f / 7.0f, 3.0f / 7.0f);
 }
 
-TEST(identity, Matrix4x4) {
+TEST(Matrix4x4, identity) {
   driderSDK::Matrix4x4 testMatrix(1, 2, 3, 4,
                                   5, 6, 7, 8,
                                   9, 10, 11, 12,
@@ -132,7 +129,7 @@ TEST(identity, Matrix4x4) {
                     0, 0, 0, 1);
 }
 
-TEST(operatorEqual, Matrix4x4) {
+TEST(Matrix4x4, operatorEqual) {
   driderSDK::Matrix4x4 testMatrix(1, 2, 3, 4,
                                   5, 6, 7, 8,
                                   9, 10, 11, 12,
@@ -147,8 +144,8 @@ TEST(operatorEqual, Matrix4x4) {
                     13, 14, 15, 16);
 }
 
-TEST(operatorEqualMatrix3x3, Matrix4x4) {
-  driderSDK::Matrix3x3 testMatrix(1, 2, 3, 4, 5, 6, 7, 8,9);
+TEST(Matrix4x4, operatorEqualMatrix3x3) {
+  driderSDK::Matrix3x3 testMatrix(1, 2, 3, 4, 5, 6, 7, 8, 9);
   driderSDK::Matrix4x4 testMatrix1(driderSDK::Math::FORCE_INIT::kZero);
 
   testMatrix1 = testMatrix;
@@ -159,7 +156,7 @@ TEST(operatorEqualMatrix3x3, Matrix4x4) {
                     0, 0, 0, 0);
 }
 
-TEST(operatorAdd, Matrix4x4) {
+TEST(Matrix4x4, operatorAdd) {
   driderSDK::Matrix4x4 testMatrix(1, 2, 3, 4,
                                   5, 6, 7, 8,
                                   9, 10, 11, 12,
@@ -176,7 +173,7 @@ TEST(operatorAdd, Matrix4x4) {
                     26, 28, 30, 32);
 }
 
-TEST(operatorAddEqual, Matrix4x4) {
+TEST(Matrix4x4, operatorAddEqual) {
   driderSDK::Matrix4x4 testMatrix(1, 2, 3, 4,
                                   5, 6, 7, 8,
                                   9, 10, 11, 12,
@@ -193,7 +190,7 @@ TEST(operatorAddEqual, Matrix4x4) {
                     26, 28, 30, 32);
 }
 
-TEST(operatorMinus, Matrix4x4) {
+TEST(Matrix4x4, operatorMinus) {
   driderSDK::Matrix4x4 testMatrix(1, 2, 3, 4,
                                   5, 6, 7, 8,
                                   9, 10, 11, 12,
@@ -210,7 +207,7 @@ TEST(operatorMinus, Matrix4x4) {
                     0, 0, 0, 0);
 }
 
-TEST(operatorMinusEqual, Matrix4x4) {
+TEST(Matrix4x4, operatorMinusEqual) {
   driderSDK::Matrix4x4 testMatrix(1, 2, 3, 4,
                                   5, 6, 7, 8,
                                   9, 10, 11, 12,
@@ -227,7 +224,7 @@ TEST(operatorMinusEqual, Matrix4x4) {
                     0, 0, 0, 0);
 }
 
-TEST(operatorMultiplication, Matrix4x4) {
+TEST(Matrix4x4, operatorMultiplication) {
   driderSDK::Matrix4x4 testMatrix(8, 2, 0, 3,
                                   2, 1, 0, 5,
                                   6, 2, 3, 4,
@@ -245,7 +242,7 @@ TEST(operatorMultiplication, Matrix4x4) {
                     122, 136, 150, 164);
 }
 
-TEST(operatorMultiplicationEqual, Matrix4x4) {
+TEST(Matrix4x4, operatorMultiplicationEqual) {
   driderSDK::Matrix4x4 testMatrix(8, 2, 0, 3,
                                   2, 1, 0, 5,
                                   6, 2, 3, 4,
@@ -263,7 +260,7 @@ TEST(operatorMultiplicationEqual, Matrix4x4) {
                     122, 136, 150, 164);
 }
 
-TEST(operatorMultiplicationForVector4, Matrix4x4) {
+TEST(Matrix4x4, operatorMultiplicationForVector4) {
   driderSDK::Matrix4x4 testMatrix(1, 2, 3, 4,
                                   5, 6, 7, 8,
                                   9, 10, 11, 12,
@@ -277,7 +274,7 @@ TEST(operatorMultiplicationForVector4, Matrix4x4) {
   EXPECT_FLOAT_EQ(254, testVector2[3]);
 }
 
-TEST(operatorMultiplicationFloat, Matrix4x4) {
+TEST(Matrix4x4, operatorMultiplicationFloat) {
   driderSDK::Matrix4x4 testMatrix(1, 2, 3, 4,
                                   5, 6, 7, 8,
                                   9, 10, 11, 12,
@@ -291,7 +288,7 @@ TEST(operatorMultiplicationFloat, Matrix4x4) {
                     26, 28, 30, 32);
 }
 
-TEST(operatorMultiplicationEqualFloat, Matrix4x4) {
+TEST(Matrix4x4, operatorMultiplicationEqualFloat) {
   driderSDK::Matrix4x4 testMatrix(1, 2, 3, 4,
                                   5, 6, 7, 8,
                                   9, 10, 11, 12,
@@ -305,7 +302,7 @@ TEST(operatorMultiplicationEqualFloat, Matrix4x4) {
                     26, 28, 30, 32);
 }
 
-TEST(operatorEqualEqual, Matrix4x4) {
+TEST(Matrix4x4, operatorEqualEqual) {
   driderSDK::Matrix4x4 testMatrix(1, 2, 3, 4,
                                   5, 6, 7, 8,
                                   9, 10, 11, 12,
@@ -318,11 +315,11 @@ TEST(operatorEqualEqual, Matrix4x4) {
   EXPECT_TRUE(testMatrix == testMatrix1);
 }
 
-TEST(operatorNotEqual, Matrix4x4) {
+TEST(Matrix4x4, operatorNotEqual) {
   driderSDK::Matrix4x4 testMatrix(1, 2, 3, 4,
-                                  5, 6, 7, 8,
-                                  9, 10, 11, 12,
-                                  13, 14, 15, 16);
+                                 5, 6, 7, 8,
+                                 9, 10, 11, 12,
+                                 13, 14, 15, 16);
   driderSDK::Matrix4x4 testMatrix1(1, 2, 3, 4,
                                    5, 6, 7, 8,
                                    9, 10, 1, 12,

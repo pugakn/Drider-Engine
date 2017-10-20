@@ -385,8 +385,8 @@ operator*(const MatrixNxM<_rows, _cols>& lhs, const MatrixNxM<_cols, _rhsCols>& 
   MatrixNxM<_rows, _rhsCols> temp;
   MatrixNxM<_rhsCols, _cols> rhsTransposed = rhs.transpose();
 	
-  for(int iRows = 0; iRows < _rows; ++iRows)  {
-	  for(int iCols = 0; iCols < _rhsCols; ++iCols) {
+  for (Int32 iRows = 0; iRows < _rows; ++iRows)  {
+	  for (Int32 iCols = 0; iCols < _rhsCols; ++iCols) {
 	    temp[iRows][iCols] = lhs[iRows].dot(rhsTransposed[iCols]); 
 	  }
   }

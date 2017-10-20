@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <fstream>
+#include <dr_prerequisites.h>
 #include "dr_module.h"
 
 namespace driderSDK
