@@ -98,7 +98,7 @@ TEST(Vector4D, length3) {
 
 TEST(Vector4D, length) {
   driderSDK::Vector4D testVector1(777, 89, 11, 1024);
-  EXPECT_FLOAT_EQ(testVector1.length(), sqrt(611771));
+  EXPECT_FLOAT_EQ(testVector1.length(), 3.0f*sqrt(184483.0f));
 }
 
 TEST(Vector4D, lengthSqr3) {
@@ -108,21 +108,21 @@ TEST(Vector4D, lengthSqr3) {
 
 TEST(Vector4D, lengthSqr) {
   driderSDK::Vector4D testVector1(777, 89, 11, 1024);
-  EXPECT_FLOAT_EQ(testVector1.lengthSqr(), 611771);
+  EXPECT_FLOAT_EQ(testVector1.lengthSqr(), pow(3.0f*sqrt(184483.0f), 2));
 }
 
 TEST(Vector4D, normalize3) {
   driderSDK::Vector4D testVector1(1, 2, 3, 4);
   testVector1.normalize3();
 
-  checkValuesVector(testVector1, 0.267261, 0.534522, 0.801784, 4);
+  checkValuesVector(testVector1, 0.26726124, 0.53452247, 0.80178368, 4);
 }
 
 TEST(Vector4D, normalize) {
   driderSDK::Vector4D testVector1(1, 2, 3, 4);
   testVector1.normalize();
 
-  checkValuesVector(testVector1, 0.182574, 0.365148, 0.547723, 0.730297);
+  checkValuesVector(testVector1, 0.18257418, 0.36514837, 0.54772258, 0.73029674);
 }
 
 TEST(Vector4D, distance3) {
