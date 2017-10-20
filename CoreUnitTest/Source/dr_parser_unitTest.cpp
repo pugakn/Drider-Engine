@@ -1,4 +1,4 @@
-#include "dr_parser.h"
+#include <dr_parser.h>
 
 #include <gtest\gtest.h>
 
@@ -6,12 +6,14 @@ TEST (Parser, strStr) {
   char* str1 = "La manzana es verde";
   char* str2 = "es";
 
-  EXPECT_TRUE(driderSDK::Parser::compare(driderSDK::Parser::strStr(str1, str2), "es verde"));
+  EXPECT_TRUE(driderSDK::Parser::compare(driderSDK::Parser::strStr(str1, str2),
+                                         "es verde"));
 
   str1 = "el niño llora, la niña está riendo";
   str2 = "niño";
 
-  EXPECT_TRUE(driderSDK::Parser::compare(driderSDK::Parser::strStr(str1, str2), "niño llora, la niña está riendo"));
+  EXPECT_TRUE(driderSDK::Parser::compare(driderSDK::Parser::strStr(str1, str2),
+                                         "niño llora, la niña está riendo"));
 
   str1 = "mi mente no deja de correr";  
   str2 = "hola";

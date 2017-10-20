@@ -29,9 +29,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Include\dr_vertex.cpp">
-      <Filter>Archivos de código fuente</Filter>
-    </ClCompile>
     <ClCompile Include="Source\dr_resourceManager.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
