@@ -22,6 +22,7 @@ Lib/
 [Ll]og/
 /Docs/html/
 /Docs/latex/
+/Docs/xml/
 !/3rdParties/*/*
 
 # Visual Studio 2015 cache/options directory
