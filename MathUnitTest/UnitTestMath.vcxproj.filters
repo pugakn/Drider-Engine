@@ -27,10 +27,10 @@
     <ClCompile Include="Source\unitTestMath.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\dr_unitTest_quaternion.cpp">
+    <ClCompile Include="Source\dr_sphere_unitTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\dr_sphere_unitTest.cpp">
+    <ClCompile Include="dr_unitTest_quaternion.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
