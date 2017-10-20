@@ -51,7 +51,10 @@ Intersect::capsuleCapsule(const Vector3D& capsule1A,
 }
 
 bool
-Intersect::sphereRay(const Vector3D& sphPosition, float sphRadio, const Vector3D& rayOrigin, const Vector3D& rayDirection) {
+Intersect::sphereRay(const Vector3D& sphPosition, 
+                     float sphRadio, 
+                     const Vector3D& rayOrigin, 
+                     const Vector3D& rayDirection) {
   if (sphereContainsPoint(rayOrigin, sphPosition, sphRadio)) {
     return true;
   }
@@ -442,7 +445,14 @@ Intersect::frustrumContainsSphere(const std::array<Plane, 6>& frustrumPlanes,
   return false;
 }
 
-float Intersect::closestPointSegmentSegment(const Vector3D& p1, const Vector3D& q1, const Vector3D& p2, const Vector3D& q2, float& s, float& t, Vector3D& c1, Vector3D& c2) {
+float Intersect::closestPointSegmentSegment(const Vector3D& p1, 
+                                            const Vector3D& q1, 
+                                            const Vector3D& p2, 
+                                            const Vector3D& q2, 
+                                            float& s, 
+                                            float& t, 
+                                            Vector3D& c1, 
+                                            Vector3D& c2) {
   Vector3D d1 = q1 - p1; // Direction vector of segment S1
   Vector3D d2 = q2 - p2; // Direction vector of segment S2
   Vector3D r = p1 - p2;
