@@ -49,15 +49,15 @@ Quaternion::conjugate() {
 void
 Quaternion::normalize() {
 	DR_ASSERT(measure() != 0.0f);
-  *this = (*this)*(Math::pow(measure(), -1));
+  *this = (*this)*(1/ measure());
 }
 
 Quaternion
 Quaternion::rotation(float theta, const Quaternion& A) {
   Quaternion Axis = A - *this;
   Axis.normalize();
-  Axis *= sin(theta * Math::pow(2, -1));
-  Axis.w = cos(theta * Math::pow(2, -1));
+  Axis *= sin(theta * 0.5f);
+  Axis.w = cos(theta * 0.5f);
   return Axis;
 }
 
@@ -189,11 +189,6 @@ Quaternion::operator/(const Quaternion& Q) const {
 
 Quaternion&
 Quaternion::operator/=(const Quaternion& Q) {
-	//DR_ASSERT((Q.x + Q.y + Q.z + Q.w) != 0.0f);
-	//float div = Math::pow((Q.x*Q.x + Q.y*Q.y + Q.z*Q.z + Q.w*Q.w), -1);
- // Quaternion R(-Q.x, -Q.y, -Q.z, Q.w);
- // R *= div;
- // (*this) *= (R * div);
 	(*this) = *this / Q;
   return *this;
 }
