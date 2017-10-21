@@ -29,7 +29,7 @@ Vector2DI::dot(const Vector2DI& B) const {
 
 Vector2DI
 Vector2DI::cross() const {
-  return Vector2DI(x*y - y*x, 0);
+  return Vector2DI(x, -y);
 }
 
 float
@@ -44,7 +44,8 @@ Vector2DI::lengthSqr() const {
 
 void
 Vector2DI::normalize() {
-  *this = (*this) * Math::pow(length(), -1.0f);
+  DR_ASSERT(length() != 0.0f);
+  *this /= length();
 }
 
 float
@@ -147,14 +148,16 @@ Vector2DI::operator*=(const float scalar) {
 
 Vector2DI
 Vector2DI::operator/(const float scalar) const {
-  return Vector2DI(static_cast<Int32>(x*Math::pow(scalar, -1.0f)),
-                   static_cast<Int32>(y*Math::pow(scalar, -1.0f)));
+  DR_ASSERT(scalar != 0.0f);
+  return Vector2DI(static_cast<Int32>(x/scalar),
+                   static_cast<Int32>(y/scalar));
 }
 
 Vector2DI&
 Vector2DI::operator/=(const float scalar) {
-  x *= static_cast<Int32>(Math::pow(scalar, -1.0f));
-  y *= static_cast<Int32>(Math::pow(scalar, -1.0f));
+  DR_ASSERT(scalar != 0.0f);
+  x /= scalar;
+  y /= scalar;
   return *this;
 }
 

@@ -225,11 +225,11 @@ Intersect::aabbAabb(const Vector3D& aabbCenter,
                     float aabbWidth2,
                     float aabbheight2) {
   return abs(aabbCenter.x - aabbCenter2.x) <=
-    ((aabbWidth / 2) + (aabbWidth2 / 2)) &&
+    ((aabbWidth * 0.5f) + (aabbWidth2 * 0.5f)) &&
     abs(aabbCenter.y - aabbCenter2.y) <=
-    ((aabbHeight / 2) + (aabbheight2 / 2)) &&
+    ((aabbHeight * 0.5f) + (aabbheight2 * 0.5f)) &&
     abs(aabbCenter.z - aabbCenter2.z) <=
-    ((aabbWidth / 2) + (aabbWidth2 / 2));
+    ((aabbWidth * 0.5f) + (aabbWidth2 * 0.5f));
 }
 
 bool
@@ -250,9 +250,9 @@ Intersect::aabbSphere(const Vector3D& aabbCenter,
   else {
     distance /= distance.z;
   }
-  distance.x *= aabbWidth / 2;
-  distance.y *= aabbHeight / 2;
-  distance.z *= aabbWidth / 2;
+  distance.x *= aabbWidth * 0.5f;
+  distance.y *= aabbHeight * 0.5f;
+  distance.z *= aabbWidth * 0.5f;
   if (trueDistance <= (sphereRadius + distance.length())) {
     return true;
   }
@@ -283,22 +283,25 @@ Intersect::aabbRay(const Vector3D& aabbCenter,
                    float aabbHeight,
                    const Vector3D& rayOrigin,
                    const Vector3D& rayDirection) {
+  DR_ASSERT(rayDirection.x != 0.0f);
+  DR_ASSERT(rayDirection.y != 0.0f);
+  DR_ASSERT(rayDirection.z != 0.0f);
   Vector3D invertedDirection(1.0f / rayDirection.x,
                              1.0f / rayDirection.y,
                              1.0f / rayDirection.z);
-  Vector3D aabbMax(aabbCenter.x + (aabbWidth / 2),
-                   aabbCenter.y + (aabbHeight / 2),
-                   aabbCenter.z + (aabbWidth / 2));
-  Vector3D aabbMin(aabbCenter.x - (aabbWidth / 2),
-                   aabbCenter.y - (aabbHeight / 2),
-                   aabbCenter.z - (aabbWidth / 2));
+  Vector3D aabbMax(aabbCenter.x + (aabbWidth * 0.5f),
+                   aabbCenter.y + (aabbHeight * 0.5f),
+                   aabbCenter.z + (aabbWidth * 0.5f));
+  Vector3D aabbMin(aabbCenter.x - (aabbWidth * 0.5f),
+                   aabbCenter.y - (aabbHeight * 0.5f),
+                   aabbCenter.z - (aabbWidth * 0.5f));
 
   float t1 = (aabbMin.x - rayOrigin.x) * invertedDirection.x;
   float t2 = (aabbMax.x - rayOrigin.x) * invertedDirection.x;
   float tmin = Math::min(t1, t2);
   float tmax = Math::max(t1, t2);
 
-  for (int i = 1; i < 3; ++i) {
+  for (Int32 i = 1; i < 3; ++i) {
     t1 = (aabbMin[i] - rayOrigin[i]) * invertedDirection[i];
     t2 = (aabbMax[i] - rayOrigin[i]) * invertedDirection[i];
     tmin = Math::max(tmin, Math::min(t1, t2));
@@ -312,12 +315,12 @@ Intersect::aabbPoint(const Vector3D& aabbCenter,
                      float aabbWidth,
                      float aabbHeight,
                      const Vector3D& point) {
-  return (aabbCenter.x - (aabbWidth / 2)) <= point.x &&
-    (aabbCenter.x + (aabbWidth / 2)) >= point.x &&
-    (aabbCenter.y - (aabbHeight / 2)) <= point.y &&
-    (aabbCenter.y + (aabbHeight / 2)) >= point.y &&
-    (aabbCenter.z - (aabbWidth / 2)) <= point.z &&
-    (aabbCenter.z + (aabbWidth / 2)) >= point.z;
+  return (aabbCenter.x - (aabbWidth * 0.f)) <= point.x &&
+    (aabbCenter.x + (aabbWidth * 0.f)) >= point.x &&
+    (aabbCenter.y - (aabbHeight * 0.f)) <= point.y &&
+    (aabbCenter.y + (aabbHeight * 0.f)) >= point.y &&
+    (aabbCenter.z - (aabbWidth * 0.f)) <= point.z &&
+    (aabbCenter.z + (aabbWidth * 0.f)) >= point.z;
 }
 
 bool
@@ -361,6 +364,7 @@ Intersect::segmentPlane(const Vector3D& linePointA,
     return false;
   }
 
+  DR_ASSERT(planeNormal.z != 0.0f);
   Vector3D point(0, 0, planeGap / planeNormal.z);
 
   float s = planeNormal.dot(point - linePointA) / d;
@@ -375,8 +379,8 @@ Intersect::capsulePlane(const Vector3D& capsuleA,
                         const Vector3D& planeNormal,
                         float planeGap) {
   return  spherePlane(planeNormal, planeGap, capsuleA, capsuleRadius) ||
-    spherePlane(planeNormal, planeGap, capsuleB, capsuleRadius) ||
-    segmentPlane(capsuleA, capsuleB, planeNormal, planeGap);
+          spherePlane(planeNormal, planeGap, capsuleB, capsuleRadius) ||
+          segmentPlane(capsuleA, capsuleB, planeNormal, planeGap);
 }
 
 bool

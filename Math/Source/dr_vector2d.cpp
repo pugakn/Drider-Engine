@@ -29,7 +29,7 @@ Vector2D::dot(const Vector2D& B) const {
 
 Vector2D
 Vector2D::cross() const {
-  return Vector2D(x*y - y*x, 0);
+  return Vector2D(x, -y);
 }
 
 float
@@ -44,7 +44,8 @@ Vector2D::lengthSqr() const {
 
 void
 Vector2D::normalize() {
-  *this = (*this) * Math::pow(length(), -1.0f);
+  DR_ASSERT(length() != 0.0f);
+  *this /= length();
 }
 
 float
@@ -148,13 +149,15 @@ Vector2D::operator*=(const float scalar) {
 
 Vector2D
 Vector2D::operator/(const float scalar) const {
-  return Vector2D(x * Math::pow(scalar, -1.0f), y * Math::pow(scalar, -1.0f));
+  DR_ASSERT(scalar != 0.0f);
+  return Vector2D(x / scalar, y / scalar);
 }
 
 Vector2D&
 Vector2D::operator/=(const float scalar) {
-  x *= Math::pow(scalar, -1.0f);
-  y *= Math::pow(scalar, -1.0f);
+  DR_ASSERT(scalar != 0.0f);
+  x /= scalar;
+  y /= scalar;
   return *this;
 }
 

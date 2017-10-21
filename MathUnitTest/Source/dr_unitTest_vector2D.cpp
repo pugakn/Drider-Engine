@@ -5,6 +5,7 @@ void checkValuesVector(driderSDK::Vector2D& testVector, float vx, float vy) {
   EXPECT_FLOAT_EQ(vx, testVector[0]);
   EXPECT_FLOAT_EQ(vy, testVector[1]);
 }
+
 TEST(forceInitZero, Vector2D) {
   driderSDK::Vector2D testVector(driderSDK::Math::FORCE_INIT::kZero);
 

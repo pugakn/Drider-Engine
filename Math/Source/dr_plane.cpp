@@ -54,6 +54,7 @@ Plane::intersects(const Vector3D& point) {
   //Ax+By+Cz = D
   //Ax + By + Cz - D = 0 If this is true the point is in the plane
 
+  DR_ASSERT(length() != 0.0f);
   float signedDistance = (dot(point) + d) / length();
   
   if (signedDistance > Math::EPSILON) {
@@ -103,6 +104,7 @@ Plane::intersects(const Ray& ray) {
 
 void
 Plane::normalize() {
+  DR_ASSERT(length() != 0.0f);
   float invLength = 1.f / length();
   Vector3D::operator*=(invLength);
   d *= invLength;

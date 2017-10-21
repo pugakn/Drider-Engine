@@ -19,10 +19,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\dr_unitTest_degree.cpp" />
     <ClCompile Include="Source\dr_unitTest_matrix3x3.cpp" />
     <ClCompile Include="Source\dr_unitTest_matrix4x4.cpp" />
     <ClCompile Include="Source\dr_sphere_unitTest.cpp" />
+    <ClCompile Include="Source\dr_unitTest_quaternion.cpp" />
+    <ClCompile Include="Source\dr_unitTest_radian.cpp" />
     <ClCompile Include="Source\dr_unitTest_vector2D.cpp" />
+    <ClCompile Include="Source\dr_unitTest_vector2DI.cpp" />
+    <ClCompile Include="Source\dr_unitTest_vector3D.cpp" />
+    <ClCompile Include="Source\dr_unitTest_vector4D.cpp" />
     <ClCompile Include="Source\unitTestMath.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

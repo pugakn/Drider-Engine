@@ -144,7 +144,8 @@ class VectorN
   FORCEINLINE void
   normalize()
   {
-	  float invLength = 1.f / length();
+    DR_ASSERT(length() != 0.0f);
+    float invLength = 1.f / length();
 
 	  DR_ASSERT(invLength);
 
@@ -215,6 +216,7 @@ class VectorN
   FORCEINLINE VectorN&
   operator/=(float scalar)
   {
+    DR_ASSERT(scalar != 0.0f);
     //Multiply by reciprocal instead of multiple divisions
 	  float invScalar = 1.f / scalar;
 	  operator*=(invScalar);
@@ -374,6 +376,7 @@ template<SizeT _elements>
 static FORCEINLINE VectorN<_elements>
 operator/(VectorN<_elements> vector, float scalar)
 {
+  DR_ASSERT(scalar != 0.0f);
   return vector /= scalar;
 }
 
