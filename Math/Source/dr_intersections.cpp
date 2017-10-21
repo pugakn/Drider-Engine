@@ -260,16 +260,6 @@ Intersect::aabbSphere(const Vector3D& aabbCenter,
 }
 
 bool
-Intersect::aabbPlane(const Vector3D& aabbCenter,
-                     float aabbWidth,
-                     float aabbheight,
-                     const Vector3D& planeNormal,
-                     const Vector3D& planePoint) {
-  
-  return false;
-}
-
-bool
 Intersect::aabbFrustrum(const Vector3D& aabbCenter,
                         float aabbWidth,
                         float aabbheight,
@@ -286,9 +276,11 @@ Intersect::aabbRay(const Vector3D& aabbCenter,
   DR_ASSERT(rayDirection.x != 0.0f);
   DR_ASSERT(rayDirection.y != 0.0f);
   DR_ASSERT(rayDirection.z != 0.0f);
-  Vector3D invertedDirection(1.0f / rayDirection.x,
-                             1.0f / rayDirection.y,
-                             1.0f / rayDirection.z);
+	Vector3D normDirection(rayDirection);
+	normDirection.normalize();
+  Vector3D invertedDirection(1.0f / normDirection.x,
+                             1.0f / normDirection.y,
+                             1.0f / normDirection.z);
   Vector3D aabbMax(aabbCenter.x + (aabbWidth * 0.5f),
                    aabbCenter.y + (aabbHeight * 0.5f),
                    aabbCenter.z + (aabbWidth * 0.5f));
@@ -315,12 +307,15 @@ Intersect::aabbPoint(const Vector3D& aabbCenter,
                      float aabbWidth,
                      float aabbHeight,
                      const Vector3D& point) {
-  return (aabbCenter.x - (aabbWidth * 0.f)) <= point.x &&
-    (aabbCenter.x + (aabbWidth * 0.f)) >= point.x &&
-    (aabbCenter.y - (aabbHeight * 0.f)) <= point.y &&
-    (aabbCenter.y + (aabbHeight * 0.f)) >= point.y &&
-    (aabbCenter.z - (aabbWidth * 0.f)) <= point.z &&
-    (aabbCenter.z + (aabbWidth * 0.f)) >= point.z;
+	Vector3D aabbMax(aabbCenter.x + (aabbWidth * 0.5f),
+									 aabbCenter.y + (aabbHeight * 0.5f),
+									 aabbCenter.z + (aabbWidth * 0.5f));
+	Vector3D aabbMin(aabbCenter.x - (aabbWidth * 0.5f),
+									 aabbCenter.y - (aabbHeight * 0.5f),
+									 aabbCenter.z - (aabbWidth * 0.5f));
+	return (point.x > aabbMin.x && point.x < aabbMax.x &&
+					point.y > aabbMin.y && point.y < aabbMax.y &&
+					point.z > aabbMin.z && point.z < aabbMax.z);
 }
 
 bool

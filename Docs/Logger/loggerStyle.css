@@ -46,25 +46,22 @@ html, body {
 }
 	
 .file {
-    display: block;
-	float: left;
-	width: 20%;
+    display: inline-block;
+	width: 92%;
 	margin: 0%;
 	padding-left: 4%;
+	padding-right: 4%;
 	padding-top: 1%;
-	padding-bottom: 1%;
 	background-color: #000000;
 }
 
 .line {
-    display: block;
-	float: right;
-	width: 72%;
-	margin: 0%;
-	padding-right: 4%;
-	padding-top: 1%;
-	padding-bottom: 1%;
+    display: inline-block;
+	width: 92%;
 	margin: 0px;
+	padding-left: 4%;
+	padding-right: 4%;
+	padding-bottom: 1%;
 	background-color: #000000;
 }
 

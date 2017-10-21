@@ -37,8 +37,9 @@ Plane::compute(const Vector3D& point0,
   compute(normal, point0);
 }
 
-void
-Plane::compute(const Vector3D& _normal, const Vector3D& point) {
+Plane::~Plane() {}
+
+void Plane::compute(const Vector3D& _normal, const Vector3D& point) {
   Vector3D::operator=(_normal);
   d = dot(point);
 }

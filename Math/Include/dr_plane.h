@@ -55,6 +55,8 @@ class DR_API_EXPORT Plane : public Vector3D
 		      const Vector3D& point1, 
 		      const Vector3D& point2);
 
+  ~Plane();
+
   /**
   * Computes the normal and gap of the plain from a normal and 1 point.
   */
