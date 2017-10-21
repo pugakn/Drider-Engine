@@ -11,12 +11,16 @@ class DR_API_EXPORT Matrix4x4
 {
  public:
   /**
+  * TEST::operatorEqual
+  *
   * Default constructor
   *
   */
   Matrix4x4();
 
   /**
+  * TEST::forceInit
+  *
   * Default constructor
   *
   * Values are initialized with 0(kZero) or identity matrix(kIdentity).

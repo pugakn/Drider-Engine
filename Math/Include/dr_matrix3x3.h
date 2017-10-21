@@ -12,6 +12,8 @@ class DR_API_EXPORT Matrix3x3
 {
  public:
   /**
+  * TEST::operatorEqual
+  *
   * Default constructor
   *
   */
@@ -28,6 +30,8 @@ class DR_API_EXPORT Matrix3x3
   explicit Matrix3x3(Math::FORCE_INIT k);
 
   /**
+  * TEST::moveConstructor
+  *
   * Move constructor
   *
   */
@@ -61,6 +65,8 @@ class DR_API_EXPORT Matrix3x3
             float v2x, float v2y, float v2z);
 
   /**
+  * TEST::constructFor3Vectors
+  *
   * Initialize constructor with values.
   *
   * @param vector0
@@ -76,6 +82,7 @@ class DR_API_EXPORT Matrix3x3
   Matrix3x3(Vector3D vector0, Vector3D vector1, Vector3D vector2);
 
   /**
+  * TEST::destructor
   * Default destructor
   *
   */
@@ -155,6 +162,8 @@ class DR_API_EXPORT Matrix3x3
   identity();
 
   /**
+  * TEST::getPointer
+  *
   * Gets a pointer to the first element of the matrix.
   *
   * @return
@@ -164,6 +173,8 @@ class DR_API_EXPORT Matrix3x3
   ptr();
 
   /**
+  * TEST::getPointerConst
+  *
   * Gets a constant pointer to the first element of the matrix.
   *
   * @return
@@ -173,7 +184,7 @@ class DR_API_EXPORT Matrix3x3
   ptr() const;
 
   /**
-  *
+  * TEST::forceInit
   */
   Vector3D&
   operator[](SizeT index);

@@ -23,6 +23,7 @@ Lib/
 /Docs/html/
 /MathUnitTest/test_detail.xml
 /Docs/latex/
+/Docs/Logger/logger.html
 /Docs/xml/
 !/3rdParties/*/*
 test_detail.xml
