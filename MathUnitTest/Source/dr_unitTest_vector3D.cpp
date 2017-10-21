@@ -99,7 +99,7 @@ TEST(Vector3D, length) {
   EXPECT_FLOAT_EQ(10.05046273f, testVector2.length());
 }
 
-TEST(Vector3D, lengthSQR) {
+TEST(Vector3D, lengthSqr) {
   driderSDK::Vector3D testVector(1, 0, 2);
   EXPECT_FLOAT_EQ(5, testVector.lengthSqr());
 
@@ -181,7 +181,7 @@ TEST(Vector3D, operatorBracketsPtr) {
   EXPECT_FLOAT_EQ(10, (*temp));
 }
 
-TEST(Vector3D, operatorOr) {
+TEST(Vector3D, operatorDot) {
   driderSDK::Vector3D testVector(1, 2, 3);
   driderSDK::Vector3D testVector1(3, 4, 5);
 
