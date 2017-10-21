@@ -6,6 +6,21 @@ void checkValuesVector(driderSDK::Vector2D& testVector, float vx, float vy) {
   EXPECT_FLOAT_EQ(vy, testVector[1]);
 }
 
+void checkValuesVector(driderSDK::Vector2D& testVectorA, driderSDK::Vector2D& testVectorB) {
+  EXPECT_FLOAT_EQ(testVectorA[0], testVectorB[0]);
+  EXPECT_FLOAT_EQ(testVectorA[1], testVectorB[1]);
+}
+
+TEST(Vector2D, defaultConstructor) {
+  driderSDK::Vector2D* testingVec = nullptr;
+
+  testingVec = new driderSDK::Vector2D();
+
+  EXPECT_FALSE(nullptr == testingVec);
+
+  delete testingVec;
+}
+
 TEST(Vector2D, forceInitZero) {
   driderSDK::Vector2D testVector(driderSDK::Math::FORCE_INIT::kZero);
 
