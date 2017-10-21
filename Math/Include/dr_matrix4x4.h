@@ -28,18 +28,23 @@ class DR_API_EXPORT Matrix4x4
   explicit Matrix4x4(Math::FORCE_INIT k);
 
   /**
+  * TEST::moveConstructor
+  *
   * Move constructor
   *
   */
   Matrix4x4(Matrix4x4&& M) = default;
 
   /**
+  * TEST::constructForMatrix4x4
+  *
   * Copy constructor
   *
   */
   Matrix4x4(const Matrix4x4& M);
 
   /**
+  * TEST::constructFor16Floats
   * Initialize constructor with values.
   *
   * @param v0x, v0y, v0z, v0w
@@ -61,6 +66,8 @@ class DR_API_EXPORT Matrix4x4
             float v3x, float v3y, float v3z, float v3w);
 
   /**
+  * TEST::constructFor4Vectors
+  *
   * Initialize constructor with values.
   *
   * @param vector0
@@ -78,12 +85,18 @@ class DR_API_EXPORT Matrix4x4
   Matrix4x4(Vector4D vector0, Vector4D vector1, Vector4D vector2, Vector4D vector3);
 
   /**
+  * TEST::destructor
+  *
+  * Destructor
+  *
   * Default destructor
   *
   */
   ~Matrix4x4();
 
   /**
+  * TEST::determinant
+  *
   * Calculates the determinant of the matrix
   *
   * @return
@@ -93,6 +106,8 @@ class DR_API_EXPORT Matrix4x4
   determinant() const;
 
   /**
+  * TEST::inverse
+  *
   * Calculates the cofactor of the matrix
   *
   * @return
@@ -102,6 +117,8 @@ class DR_API_EXPORT Matrix4x4
   cofactor();
 
   /**
+  * TEST::inverse
+  *
   * Calculates the adjugate of the matrix
   * using transpose for cofactor matrix
   *
@@ -112,6 +129,8 @@ class DR_API_EXPORT Matrix4x4
   adjugate();
 
   /**
+  * TEST::inverse
+  *
   * Calculate inverse of matrix.
   * using det * adjugate
   */
@@ -119,6 +138,8 @@ class DR_API_EXPORT Matrix4x4
   inverse();
 
   /**
+  * TEST::inverse
+  *
   * Transpose
   *
   * Invert columns whith rows
@@ -131,6 +152,8 @@ class DR_API_EXPORT Matrix4x4
   transpose();
 
   /**
+  * TEST::identity
+  *
   * Identity
   *
   * Tranform matrix to identity
@@ -139,6 +162,8 @@ class DR_API_EXPORT Matrix4x4
   identity();
 
   /**
+  * TEST::getPointer
+  *
   * Gets a pointer to the first element of the matrix.
   *
   * @return
@@ -148,6 +173,8 @@ class DR_API_EXPORT Matrix4x4
   ptr();
 
   /**
+  * TEST::getPointerConst
+  *
   * Gets a constant pointer to the first element of the matrix.
   *
   * @return
@@ -156,58 +183,87 @@ class DR_API_EXPORT Matrix4x4
   const float*
   ptr() const;
 
-  //Uncommented
+  /**
+  * TEST::forceInit
+  */
   Vector4D&
   operator[](SizeT index);
 
-  //Uncommented
+  /**
+  * TEST::operatorEqual
+  */
   Matrix4x4&
   operator=(const Matrix4x4& A);
 
+  /**
+  * TEST::operatorEqualMatrix3x3
+  */
   Matrix4x4&
   operator=(const Matrix3x3& A);
 
-  //Uncommented
+  /**
+  * TEST::operatorAdd
+  */
   Matrix4x4
   operator+(const Matrix4x4& A) const;
 
-  //Uncommented
+  /**
+  * TEST::operatorAddEqual
+  */
   Matrix4x4&
   operator+=(const Matrix4x4& A);
 
-  //Uncommented
+  /**
+  * TEST::operatorMinus
+  */
   Matrix4x4
   operator-(const Matrix4x4& A) const;
 
-  //Uncommented
+  /**
+  * TEST::operatorMinusEqual
+  */
   Matrix4x4&
   operator-=(const Matrix4x4& A);
 
-  //Uncommented
+  /**
+  * TEST::operatorMultiplication
+  */
   Matrix4x4
   operator*(const Matrix4x4& A) const;
 
-  //Uncommented
+  /**
+  * TEST::operatorMultiplicationEqual
+  */
   Matrix4x4&
   operator*=(const Matrix4x4& A);
 
-  //Uncommented
+  /**
+  * TEST::operatorMultiplicationForVector4
+  */
   Vector4D
   operator*(const Vector4D& S) const;
 
-  //Uncommented
+  /**
+  * TEST::operatorMultiplicationFloat
+  */
   Matrix4x4
   operator*(const float S) const;
 
-  //Uncommented
+  /**
+  * TEST::operatorMultiplicationEqualFloat
+  */
   Matrix4x4&
   operator*=(const float S);
 
-  //Uncommented
+  /**
+  * TEST::operatorEqualEqual
+  */
   bool
   operator==(const Matrix4x4& M);
 
-  //Uncommented
+  /**
+  * TEST::operatorNotEqual
+  */
   bool
   operator!=(const Matrix4x4& M);
 
