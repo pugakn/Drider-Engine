@@ -112,20 +112,20 @@ class DR_API_EXPORT Quaternion
   /**
   * Creates a 4D matrix from the quaternion.
   *
-  * @param Matrix
+  * @param MatrixOut
   *   Matrix4x4 to be filled.
   */
   void
-  matrixFromQuaternion(Matrix4x4& Matrix);
+  matrixFromQuaternion(Matrix4x4& MatrixOut);
 
 	/**
 	* Creates a 3D matrix from the quaternion.
 	*
-	* @param Matrix
+	* @param MatrixOut
 	*   Matrix3x3 to be filled.
 	*/
 	void
-	matrixFromQuaternion(Matrix3x3& Matrix);
+	matrixFromQuaternion(Matrix3x3& MatrixOut);
 
 	/**
 	* Gets a pointer to the first element of the quaternion.
