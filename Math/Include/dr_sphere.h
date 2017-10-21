@@ -13,13 +13,17 @@ class Frustrum;
 class DR_API_EXPORT Sphere
 {
  public:
-  //Uncommented
-  Sphere()
-  {}
-  float radius;
-  Vector3D center;
-  //void SetRadio();
-  //void SetPosition();
+  /**
+  *	Default constructor.
+  */
+  Sphere() {}
+
+  /**
+  *	Constructor with center and radius.
+  */
+  Sphere(Vector3D _center,
+         float _radius);
+  ~Sphere() {}
  
   /**
   * Checks if a point is on a sphare.
@@ -92,7 +96,9 @@ class DR_API_EXPORT Sphere
   */
   bool 
   intersects(const Frustrum& frustrum);
-
+  
+  float radius;
+  Vector3D center;
 };
 
 }
