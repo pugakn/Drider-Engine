@@ -27,12 +27,29 @@ void checkValuesVector(driderSDK::Vector4D& testVectorA, driderSDK::Vector3D& te
   checkValuesVector(testVectorA, testVectorB.x, testVectorB.y, testVectorB.z, wValue);
 }
 
+TEST(Vector4D, defaultConstructor) {
+  driderSDK::Vector4D* testingVec = nullptr;
+
+  testingVec = new driderSDK::Vector4D();
+
+  EXPECT_FALSE(nullptr == testingVec);
+
+  delete testingVec;
+}
+
 TEST(Vector4D, forceInit) {
   driderSDK::Vector4D testVector1(driderSDK::Math::FORCE_INIT::kZero);
   checkValuesVector(testVector1, 0, 0, 0, 0);
 
   driderSDK::Vector4D testVector2(driderSDK::Math::FORCE_INIT::kIdentity);
   checkValuesVector(testVector2, 0, 0, 0, 1);
+}
+
+TEST(Vector4D, moveContructor) {
+  driderSDK::Vector4D vec1(0, 0, 0, 1);
+  driderSDK::Vector4D vec2(std::move(vec1));
+
+  checkValuesVector(vec2, 0, 0, 0, 1);
 }
 
 TEST(Vector4D, copyConstructor4D) {
@@ -55,6 +72,12 @@ TEST(Vector4D, copyConstructor3DwithW) {
   driderSDK::Vector4D testVector(trueVector, newW);
 
   checkValuesVector(testVector, trueVector, newW);
+}
+
+TEST(Vector4D, destructor) {
+  driderSDK::Vector4D testVector(0, 0, 0, 1);
+  testVector.~testVector();
+  checkValuesVector(testVector, 0, 0, 0, 1);
 }
 
 TEST(Vector4D, floatsConstructor) {
