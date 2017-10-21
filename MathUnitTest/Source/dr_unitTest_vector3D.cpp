@@ -26,7 +26,7 @@ TEST(Vector3D, forceInit) {
   checkValuesVector(testVector1, 1, 1, 1);
 }
 
-TEST(Vector3D, moveContructor) {
+TEST(Vector3D, moveConstructor) {
   driderSDK::Vector3D vec1(0, 0, 1);
   driderSDK::Vector3D vec2(std::move(vec1));
 
@@ -154,6 +154,48 @@ TEST(Vector3D, distanceSqr) {
 }
 
 TEST(Vector3D, equals) {
+  driderSDK::Vector3D testVector(0, 0, 10);
+  driderSDK::Vector3D testVector1(1, 0, 20);
+  EXPECT_FALSE(testVector.equals(testVector1));
+
+  driderSDK::Vector3D testVector2(1.02f, 1.0222f, 3.3f);
+  driderSDK::Vector3D testVector3(1.02f, 1.0222f, 3.3f);
+  EXPECT_TRUE(testVector2.equals(testVector3));
+
+  driderSDK::Vector3D testVector4(1.02f, 1.0222f, 2);
+  driderSDK::Vector3D testVector5(1.02f, 1.0322f, 2);
+  EXPECT_TRUE(testVector4.equals(testVector5, 0.05f));
+}
+
+TEST(Vector3D, sqrDistSegment) {
+  driderSDK::Vector3D testVector(0, 0, 10);
+  driderSDK::Vector3D testVector1(1, 0, 20);
+  EXPECT_FALSE(testVector.equals(testVector1));
+
+  driderSDK::Vector3D testVector2(1.02f, 1.0222f, 3.3f);
+  driderSDK::Vector3D testVector3(1.02f, 1.0222f, 3.3f);
+  EXPECT_TRUE(testVector2.equals(testVector3));
+
+  driderSDK::Vector3D testVector4(1.02f, 1.0222f, 2);
+  driderSDK::Vector3D testVector5(1.02f, 1.0322f, 2);
+  EXPECT_TRUE(testVector4.equals(testVector5, 0.05f));
+}
+
+TEST(Vector3D, ptrOperator) {
+  driderSDK::Vector3D testVector(0, 0, 10);
+  driderSDK::Vector3D testVector1(1, 0, 20);
+  EXPECT_FALSE(testVector.equals(testVector1));
+
+  driderSDK::Vector3D testVector2(1.02f, 1.0222f, 3.3f);
+  driderSDK::Vector3D testVector3(1.02f, 1.0222f, 3.3f);
+  EXPECT_TRUE(testVector2.equals(testVector3));
+
+  driderSDK::Vector3D testVector4(1.02f, 1.0222f, 2);
+  driderSDK::Vector3D testVector5(1.02f, 1.0322f, 2);
+  EXPECT_TRUE(testVector4.equals(testVector5, 0.05f));
+}
+
+TEST(Vector3D, constPtrOperator) {
   driderSDK::Vector3D testVector(0, 0, 10);
   driderSDK::Vector3D testVector1(1, 0, 20);
   EXPECT_FALSE(testVector.equals(testVector1));

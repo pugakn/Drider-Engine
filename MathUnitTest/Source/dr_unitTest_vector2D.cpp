@@ -22,11 +22,11 @@ TEST(Vector2D, defaultConstructor) {
 }
 
 TEST(Vector2D, forceInit) {
-  driderSDK::Vector2D testVector(driderSDK::Math::FORCE_INIT::kZero);
-  checkValuesVector(testVector, 0, 0);
+  driderSDK::Vector2D testVector1(driderSDK::Math::FORCE_INIT::kZero);
+  checkValuesVector(testVector1, 0, 0);
 
-  driderSDK::Vector2D testVector(driderSDK::Math::FORCE_INIT::kIdentity);
-  checkValuesVector(testVector, 1, 1);
+  driderSDK::Vector2D testVector2(driderSDK::Math::FORCE_INIT::kIdentity);
+  checkValuesVector(testVector2, 1, 1);
 }
 
 TEST(Vector2D, moveContructor) {

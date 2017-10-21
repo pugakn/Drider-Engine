@@ -28,14 +28,14 @@ class DR_API_EXPORT Vector3D
   explicit Vector3D(Math::FORCE_INIT k);
 
   /**
-  * TEST::moveContructor
+  * TEST::moveConstructor
 - * Move constructor
   *
   */
   Vector3D(Vector3D&& V) = default;
 
   /**
-  * constructForVector3D
+  * TEST::constructForVector3D
   * Copy constructor
   *
   */
@@ -102,7 +102,7 @@ class DR_API_EXPORT Vector3D
   cross(const Vector3D& B) const;
 
   /**
-  * TEST::legth
+  * TEST::length
   * Computes the length of this vector.
   *
   * @return
@@ -172,7 +172,7 @@ class DR_API_EXPORT Vector3D
   equals(const Vector3D& otherVector, float errorRange = Math::SMALL_NUMBER) const;
 
   /**
-  * TEST::
+  * TEST::sqrDistSegment
   * Computes the squared distance between a point and a segment.
   *
   * @param pointA
@@ -188,7 +188,7 @@ class DR_API_EXPORT Vector3D
   sqrDistSegment(const Vector3D& pointA, const Vector3D& pointB) const;
 
   /**
-  * TEST::
+  * TEST::ptrOperator
   * Gets a pointer to the first element of the matrix.
   *
   * @return
@@ -198,7 +198,7 @@ class DR_API_EXPORT Vector3D
   ptr();
 
   /**
-  * TEST::
+  * TEST::constPtrOperator
   * Gets a constant pointer to the first element of the matrix.
   *
   * @return

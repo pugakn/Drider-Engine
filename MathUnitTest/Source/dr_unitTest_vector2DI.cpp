@@ -17,13 +17,13 @@ TEST(Vector2DI, defaultConstructor) {
 }
 
 TEST(Vector2DI, forceInit) {
-  driderSDK::Vector2DI testVector(driderSDK::Math::FORCE_INIT::kZero);
+  driderSDK::Vector2DI testVector1(driderSDK::Math::FORCE_INIT::kZero);
 
-  checkValuesVector(testVector, 0, 0);
+  checkValuesVector(testVector1, 0, 0);
 
-  driderSDK::Vector2DI testVector(driderSDK::Math::FORCE_INIT::kIdentity);
+  driderSDK::Vector2DI testVector2(driderSDK::Math::FORCE_INIT::kIdentity);
 
-  checkValuesVector(testVector, 1, 1);
+  checkValuesVector(testVector2, 1, 1);
 }
 
 TEST(Vector2DI, moveContructor) {
