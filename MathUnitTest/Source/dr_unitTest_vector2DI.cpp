@@ -6,16 +6,31 @@ void checkValuesVector(driderSDK::Vector2DI& testVector, driderSDK::Int32 vx, dr
   EXPECT_EQ(vy, testVector[1]);
 }
 
-TEST(Vector2DI, forceInitZero) {
+TEST(Vector2DI, defaultConstructor) {
+  driderSDK::Vector2DI* testingVec = nullptr;
+
+  testingVec = new driderSDK::Vector2DI();
+
+  EXPECT_FALSE(nullptr == testingVec);
+
+  delete testingVec;
+}
+
+TEST(Vector2DI, forceInit) {
   driderSDK::Vector2DI testVector(driderSDK::Math::FORCE_INIT::kZero);
 
   checkValuesVector(testVector, 0, 0);
-}
 
-TEST(Vector2DI, forceInitOne) {
   driderSDK::Vector2DI testVector(driderSDK::Math::FORCE_INIT::kIdentity);
 
   checkValuesVector(testVector, 1, 1);
+}
+
+TEST(Vector2DI, moveContructor) {
+  driderSDK::Vector2DI vec1(0, 1);
+  driderSDK::Vector2DI vec2(std::move(vec1));
+
+  checkValuesVector(vec2, 0, 1);
 }
 
 TEST(Vector2DI, constructForVector2DI) {
@@ -28,6 +43,12 @@ TEST(Vector2DI, constructForVector2DI) {
 TEST(Vector2DI, constructorFor2Int32) {
   driderSDK::Vector2DI testVector(0, 1);
 
+  checkValuesVector(testVector, 0, 1);
+}
+
+TEST(Vector2DI, destructor) {
+  driderSDK::Vector2DI testVector(0, 1);
+  testVector.~testVector();
   checkValuesVector(testVector, 0, 1);
 }
 

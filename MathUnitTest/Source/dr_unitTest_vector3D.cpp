@@ -8,12 +8,29 @@ void checkValuesVector(driderSDK::Vector3D& testVector, float vx, float vy, floa
   EXPECT_FLOAT_EQ(vz, testVector[2]);
 }
 
+TEST(Vector3D, defaultConstructor) {
+  driderSDK::Vector3D* testingVec = nullptr;
+
+  testingVec = new driderSDK::Vector3D();
+
+  EXPECT_FALSE(nullptr == testingVec);
+
+  delete testingVec;
+}
+
 TEST(Vector3D, forceInit) {
   driderSDK::Vector3D testVector(driderSDK::Math::FORCE_INIT::kZero);
   checkValuesVector(testVector, 0, 0, 0);
 
   driderSDK::Vector3D testVector1(driderSDK::Math::FORCE_INIT::kIdentity);
   checkValuesVector(testVector1, 1, 1, 1);
+}
+
+TEST(Vector3D, moveContructor) {
+  driderSDK::Vector3D vec1(0, 0, 1);
+  driderSDK::Vector3D vec2(std::move(vec1));
+
+  checkValuesVector(vec2, 0, 0, 1);
 }
 
 TEST(Vector3D, constructForVector3D) {
@@ -34,6 +51,12 @@ TEST(Vector3D, constructorFor3Floats) {
   driderSDK::Vector3D testVector(0, 1, 2);
 
   checkValuesVector(testVector, 0, 1, 2);
+}
+
+TEST(Vector3D, destructor) {
+  driderSDK::Vector3D testVector(0, 0, 1);
+  testVector.~testVector();
+  checkValuesVector(testVector, 0, 0, 1);
 }
 
 TEST(Vector3D, dot) {
