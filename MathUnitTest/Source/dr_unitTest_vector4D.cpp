@@ -74,12 +74,6 @@ TEST(Vector4D, copyConstructor3DwithW) {
   checkValuesVector(testVector, trueVector, newW);
 }
 
-TEST(Vector4D, destructor) {
-  driderSDK::Vector4D testVector(0, 0, 0, 1);
-  testVector.~testVector();
-  checkValuesVector(testVector, 0, 0, 0, 1);
-}
-
 TEST(Vector4D, floatsConstructor) {
   float newX = 9045.6458f;
   float newY = 5345.04f;
@@ -89,6 +83,12 @@ TEST(Vector4D, floatsConstructor) {
   driderSDK::Vector4D testVector(newX, newY, newZ, newW);
 
   checkValuesVector(testVector, newX, newY, newZ, newW);
+}
+
+TEST(Vector4D, destructor) {
+  driderSDK::Vector4D testVector(0, 0, 0, 1);
+  testVector.~testVector();
+  checkValuesVector(testVector, 0, 0, 0, 1);
 }
 
 TEST(Vector4D, dot3) {
@@ -206,6 +206,24 @@ TEST(Vector4D, constPtrOperator) {
 }
 
 TEST(Vector4D, indexOperator) {
+  driderSDK::Vector4D testVector1(1, 2, 3, 4);
+
+  EXPECT_FLOAT_EQ(testVector1[2], 3);
+}
+
+TEST(Vector4D, constIndexOperator) {
+  driderSDK::Vector4D testVector1(1, 2, 3, 4);
+
+  EXPECT_FLOAT_EQ(testVector1[2], 3);
+}
+
+TEST(Vector4D, dotOperator) {
+  driderSDK::Vector4D testVector1(1, 2, 3, 4);
+
+  EXPECT_FLOAT_EQ(testVector1[2], 3);
+}
+
+TEST(Vector4D, crossOperator) {
   driderSDK::Vector4D testVector1(1, 2, 3, 4);
 
   EXPECT_FLOAT_EQ(testVector1[2], 3);

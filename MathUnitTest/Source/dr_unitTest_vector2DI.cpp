@@ -69,6 +69,14 @@ TEST(Vector2DI, dot) {
   EXPECT_FLOAT_EQ(1048576, testVector4.dot(testVector5));
 }
 
+TEST(Vector2DI, cross) {
+  driderSDK::Vector2DI trueVector(1, 2);
+
+  driderSDK::Vector2DI testVector = trueVector.cross();
+
+  checkValuesVector(testVector, 1, -2);
+}
+
 TEST(Vector2DI, length) {
   driderSDK::Vector2DI testVector(1, 0);
   EXPECT_FLOAT_EQ(1, testVector.length());
@@ -80,7 +88,7 @@ TEST(Vector2DI, length) {
   EXPECT_FLOAT_EQ(10.049965223825405f, testVector2.length());
 }
 
-TEST(Vector2DI, lengthSQR) {
+TEST(Vector2DI, lengthSqr) {
   driderSDK::Vector2DI testVector(1, 0);
   EXPECT_FLOAT_EQ(1, testVector.lengthSqr());
 
