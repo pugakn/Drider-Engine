@@ -18,11 +18,12 @@ class DR_API_EXPORT Matrix3x3
   Matrix3x3();
 
   /**
+  * TEST::forceInit
+  *
   * Default constructor
   *
   * Values are initialized with 0(kZero) or identity matrix(kIdentity).
   *
-  * \brief TEST::forceInit
   */
   explicit Matrix3x3(Math::FORCE_INIT k);
 
@@ -33,13 +34,16 @@ class DR_API_EXPORT Matrix3x3
   Matrix3x3(Matrix3x3&& M) = default;
 
   /**
+  * TEST::constructForMatrix3x3
+  *
   * Copy constructor
   *
-  * \brief TEST::constructForMatrix3x3
   */
   Matrix3x3(const Matrix3x3& M);
 
   /**
+  * TEST::constructFor9Floats
+  *
   * Initialize constructor with values.
   *
   * @param v0x, v0y, v0z
@@ -51,7 +55,6 @@ class DR_API_EXPORT Matrix3x3
   * @param v2x, v2y, v2z
   *  The x, y, z values of the vector, third raw
   *
-  * \brief TEST::constructFor9Floats
   */
   Matrix3x3(float v0x, float v0y, float v0z,
             float v1x, float v1y, float v1z,
@@ -79,49 +82,56 @@ class DR_API_EXPORT Matrix3x3
   ~Matrix3x3();
 
   /**
+  * TEST::determinant
+  *
   * Calculates the determinant of the matrix
   *
   * @return
   *   determinant.
   *
-  * \brief TEST::determinant
   */
   float
   determinant() const;
 
   /**
+  * TEST::inverse
+  *
   * Calculates the cofactor of the matrix
   *
   * @return
   *   cofactor of matrix.
   *
-  * \brief TEST::inverse
   */
   void
   cofactor();
 
   /**
+  *
+  * TEST::inverse
+  *
   * Calculates the adjugate of the matrix
   * using transpose for cofactor matrix 
   * 
   * @return
   *   adjugate.
   *
-  * \brief TEST::inverse
   */
   void
   adjugate();
 
   /**
+  * TEST::inverse
+  *
   * Calculate inverse of matrix.
   * using det * adjugate
   *
-  * \brief TEST::inverse
   */
   void
   inverse();
 
   /**
+  * TEST::inverse
+  *
   * Transpose
   *
   * Invert columns whith rows
@@ -129,17 +139,17 @@ class DR_API_EXPORT Matrix3x3
   * | B1 | B2 | B3 |  =  | A2 | B2 | C2 |
   * | C1 | C2 | C3 |     | A3 | B3 | C3 |
   *
-  * \brief TEST::inverse
   */
   void
   transpose();
 
   /**
+  * TEST::identity
+  *
   * Identity
   *
   * Tranform matrix to identity
   *
-  * \brief TEST::identity
   */
   void
   identity();
@@ -169,79 +179,79 @@ class DR_API_EXPORT Matrix3x3
   operator[](SizeT index);
 
   /**
-  * \brief TEST::operatorEqual
+  * TEST::operatorEqual
   */
   Matrix3x3&
   operator=(const Matrix3x3& A);
 
   /**
-  * \brief TEST::operatorEqualMatrix4x4
+  * TEST::operatorEqualMatrix4x4
   */
   Matrix3x3&
   operator=(const Matrix4x4& A);
 
   /**
-  * \brief TEST::operatorAdd
+  * TEST::operatorAdd
   */
   Matrix3x3
   operator+(const Matrix3x3& A) const;
 
   /**
-  * \brief TEST::operatorAddEqual
+  * TEST::operatorAddEqual
   */
   Matrix3x3&
   operator+=(const Matrix3x3& A);
 
   /**
-  * \brief TEST::operatorMinus
+  * TEST::operatorMinus
   */
   Matrix3x3
   operator-(const Matrix3x3& A) const;
 
   /**
-  * \brief TEST::operatorMinusEqual
+  * TEST::operatorMinusEqual
   */
   Matrix3x3&
   operator-=(const Matrix3x3& A);
 
   /**
-  * \brief TEST::operatorMultiplication
+  * TEST::operatorMultiplication
   */
   Matrix3x3
   operator*(const Matrix3x3& A) const;
 
   /**
-  * \brief TEST::operatorMultiplicationEqual
+  * TEST::operatorMultiplicationEqual
   */
   Matrix3x3&
   operator*=(const Matrix3x3& A);
 
   /**
-  * \brief TEST::operatorMultiplicationForVector3
+  * TEST::operatorMultiplicationForVector3
   */
   Vector3D
   operator*(const Vector3D& S) const;
 
   /**
-  * \brief TEST::operatorMultiplicationFloat
+  * TEST::operatorMultiplicationFloat
   */
   Matrix3x3
   operator*(const float S) const;
 
   /**
-  * \brief TEST::operatorMultiplicationEqualFloat
+  * TEST::operatorMultiplicationEqualFloat
   */
   Matrix3x3&
   operator*=(const float S);
 
   /**
-  * \brief TEST::operatorEqualEqual
+  * TEST::operatorEqualEqual
   */
   bool
   operator==(const Matrix3x3& M);
 
   /**
-  * \brief TEST::operatorNotEqual
+  * TEST::operatorNotEqual
   */
   bool
   operator!=(const Matrix3x3& M);
