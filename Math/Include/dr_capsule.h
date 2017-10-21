@@ -13,8 +13,9 @@ class DR_API_EXPORT Capsule
 {
  public:
 
-  Capsule()
-  {}
+  Capsule() {}
+
+  ~Capsule() {}
 
   Vector3D pointA;
   Vector3D pointB;
