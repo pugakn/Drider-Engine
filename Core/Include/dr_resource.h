@@ -4,9 +4,16 @@
 namespace driderSDK {
 
 class DR_API_EXPORT Resource {
-public:
-  Resource() {}
-  virtual ~Resource() {}
+ public:
+  /**
+  *	Default constructor.
+  */
+  Resource() { }
+
+  /**
+  *	Default destructor.
+  */
+  virtual ~Resource() { }
 };
 
 }
