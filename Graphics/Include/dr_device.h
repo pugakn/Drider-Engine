@@ -10,29 +10,24 @@
 #include "dr_index_buffer.h"
 #include "dr_vertex_buffer.h"
 #include "dr_constant_buffer.h"
-
+#include "dr_texture.h"
 namespace driderSDK {
 class DR_API_EXPORT Device
 {
  public:
-  virtual void createVertexBuffer(const DrBufferDesc& desc,char* initialData,VertexBuffer* vertexBuffer) = 0;
-  virtual void createIndexBuffer(const DrBufferDesc& desc, char* initialData, IndexBuffer* indexBuffer) = 0;
-  virtual void createConstantBuffer(const DrBufferDesc& desc, char* initialData, ConstantBuffer* constantBuffer) = 0;
+  virtual void createVertexBuffer(const DrBufferDesc& desc,char* initialData,VertexBuffer& vertexBuffer) = 0;
+  virtual void createIndexBuffer(const DrBufferDesc& desc, char* initialData, IndexBuffer& indexBuffer) = 0;
+  virtual void createConstantBuffer(const DrBufferDesc& desc, char* initialData, ConstantBuffer& constantBuffer) = 0;
 
-  virtual void createShader(const char* shaderBuffer, VertexShader* shader) = 0;
-  virtual void createShader(const char* shaderBuffer, FragmentShader* shader) = 0;
-  virtual void createShader(const char* shaderBuffer, ComputeShader* shader) = 0;
-  virtual void createShader(const char* shaderBuffer, TeselationShader* shader) = 0;
-  virtual void createShader(const char* shaderBuffer, DomainShader* shader) = 0;
-  virtual void createShader(const char* shaderBuffer, TextureShader* shader) = 0;
+  virtual void createShaderFromMemory(const char* shaderBuffer, Shader& shader) = 0;
 
   virtual void createBlendState() = 0;
   virtual void createSamplerState() = 0;
   virtual void createRasteizerState() = 0;
 
-  virtual void createTexture1D() = 0;
-  virtual void createTexture2D() = 0;
-  virtual void createTexture3D() = 0;
+  virtual void createTexture1D(const char* buffer, Texture& texture) = 0;
+  virtual void createTexture2D(const char* buffer, Texture& texture) = 0;
+  virtual void createTexture3D(const char* buffer, Texture& texture) = 0;
 
   virtual void createDepthStencilState() = 0;
 

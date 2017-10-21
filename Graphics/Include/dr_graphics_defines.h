@@ -53,6 +53,13 @@ namespace DR_PRIMITIVE_TOPOLOGY {
   };
 }
 
+namespace DR_GRAPHICS_ERROR {
+  enum E {
+    ERROR_NONE = 0,
+
+  };
+}
+
 struct DR_API_EXPORT DrInputDesc
 {
   UInt32 semanticIndex;

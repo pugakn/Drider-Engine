@@ -6,5 +6,15 @@
 namespace driderSDK {
 class DR_API_EXPORT Shader
 {
+public:
+  virtual void set() = 0;
+  virtual void unset() = 0;
+  virtual void createFromMemory(const char* buffer, size_t bufferSize) = 0;
+  virtual void createFromFile(const char* path) = 0;
+
+  virtual void loadFromFileToSystemMemory() = 0;
+  virtual void loadFromMemoryToSystemMemory() = 0;
+  
+  virtual void free() = 0;
 };
 }

@@ -87,5 +87,22 @@
     <ClInclude Include="Include\dr_geometry_shader.h">
       <Filter>Archivos de encabezado\Shaders</Filter>
     </ClInclude>
+    <ClInclude Include="Include\dr_d3d_device_context.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_d3d_device.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="dr_d3d_vertex_buffer.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\dr_d3d_device.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="dr_d3d_vertex_buffer.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
