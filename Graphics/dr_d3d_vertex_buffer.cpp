@@ -1,7 +1,7 @@
 #include "dr_d3d_vertex_buffer.h"
-#include "dr_d3d_device.h"
 #include <iostream>
-
+#include "dr_d3d_device.h"
+#include "dr_d3d_device_context.h"
 namespace driderSDK {
 D3DVertexBuffer::D3DVertexBuffer()
 {
@@ -21,8 +21,19 @@ void D3DVertexBuffer::create(const Device& device, const DrBufferDesc & desc, ch
   D3D11_SUBRESOURCE_DATA subData = { initialData, 0, 0 };
   if (static_cast<const D3DDevice*>(&device)->D3D11Device->CreateBuffer(&bdesc, &subData, &VB) != S_OK) {
     std::cout << "Error Creating VB" << std::endl;
-    return;
   }
+}
+
+void D3DVertexBuffer::set(const DeviceContext& deviceContext, 
+                          UInt32 slot, 
+                          UInt32 numBuffers, 
+                          UInt32 stride, 
+                          UInt32 offset) {
+  static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->IASetVertexBuffers(slot, 
+                                                                                               numBuffers, 
+                                                                                               VB.GetAddressOf(), 
+                                                                                               &stride, 
+                                                                                               &offset);
 }
 }
 

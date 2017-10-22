@@ -5,12 +5,14 @@
 #include <d3d11.h>
 #include <dxgi.h>
 namespace driderSDK {
-  class DR_API_EXPORT D3DIndexBuffer : public IndexBuffer
-  {
-  public:
-    D3DIndexBuffer();
-    ~D3DIndexBuffer();
-    void create(const Device& device, const DrBufferDesc& desc, char* initialData) override;
-    Microsoft::WRL::ComPtr<ID3D11Buffer> IB;
-  };
+class DeviceContext;
+class DR_API_EXPORT D3DIndexBuffer : public IndexBuffer
+{
+public:
+  D3DIndexBuffer();
+  ~D3DIndexBuffer();
+  void create(const Device& device, const DrBufferDesc& desc, char* initialData) override;
+  void set(const DeviceContext& deviceContext, UInt32 offset) override;
+  Microsoft::WRL::ComPtr<ID3D11Buffer> IB;
+};
 }

@@ -2,7 +2,16 @@
 #include <d3dcompiler.h>
 #include <iostream>
 #include "dr_d3d_device.h"
-namespace driderSDK{
+#include "dr_d3d_device_context.h"
+namespace driderSDK {
+void D3DVertexShader::set(const DeviceContext& deviceContext)
+{
+  static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->VSSetShader(VS.Get(),0,0);
+};
+void D3DVertexShader::unset(const DeviceContext& deviceContext)
+{
+  //atic_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->VSGetShader(VS.Get());
+};
 void D3DVertexShader::createFromMemory(const Device& device, const char* buffer, size_t bufferSize) {
   Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
   Microsoft::WRL::ComPtr<ID3DBlob> VS_blob;
@@ -20,4 +29,5 @@ void D3DVertexShader::createFromMemory(const Device& device, const char* buffer,
     return;
   }
 }
+
 }

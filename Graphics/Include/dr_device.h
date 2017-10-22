@@ -2,11 +2,11 @@
 #include <dr_prerequisites.h>
 #include "dr_graphics_defines.h"
 namespace driderSDK {
-  class VertexBuffer;
-  class IndexBuffer;
-  class ConstantBuffer;
-  class Shader;
-  class Texture;
+class VertexBuffer;
+class IndexBuffer;
+class ConstantBuffer;
+class Shader;
+class Texture;
 class DR_API_EXPORT Device
 {
  public:

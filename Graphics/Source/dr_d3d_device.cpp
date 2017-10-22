@@ -1,8 +1,9 @@
 #include "dr_d3d_device.h"
+#include <iostream>
 #include "dr_d3d_vertex_buffer.h"
 #include "dr_d3d_index_buffer.h"
 #include "dr_d3d_constant_buffer.h"
-#include <iostream>
+#include "dr_shader.h"
 namespace driderSDK {
 void D3DDevice::createVertexBuffer(const DrBufferDesc& desc, 
                                     char * initialData, 

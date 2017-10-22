@@ -40,6 +40,9 @@
     <Filter Include="Archivos de código fuente\DirectX11\Buffers">
       <UniqueIdentifier>{652451d2-f024-4164-bc20-44eb289c0a99}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Archivos de encabezado\Base\Textures">
+      <UniqueIdentifier>{b4d28edc-0d57-42e4-8baf-95d1b281e669}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\sr_texture_shader.h">
@@ -129,9 +132,6 @@
     <ClInclude Include="Include\dr_swap_chain.h">
       <Filter>Archivos de encabezado\Base</Filter>
     </ClInclude>
-    <ClInclude Include="Include\dr_texture.h">
-      <Filter>Archivos de encabezado\Base</Filter>
-    </ClInclude>
     <ClInclude Include="Include\dr_d3d_compute_shader.h">
       <Filter>Archivos de encabezado\DirectX11\Shaders</Filter>
     </ClInclude>
@@ -146,6 +146,15 @@
     </ClInclude>
     <ClInclude Include="Include\dr_d3d_geometry_shader.h">
       <Filter>Archivos de encabezado\DirectX11\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_d3d_command_buffer.h">
+      <Filter>Archivos de encabezado\DirectX11\Buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_texture.h">
+      <Filter>Archivos de encabezado\Base\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\dr_d3d_command_buffer.cpp">
+      <Filter>Archivos de código fuente\DirectX11\Buffers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -184,6 +193,9 @@
     </ClCompile>
     <ClCompile Include="Source\dr_d3d_geometry_shader.cpp">
       <Filter>Archivos de código fuente\DirectX11\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_d3d_device_context.cpp">
+      <Filter>Archivos de código fuente\DirectX11</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

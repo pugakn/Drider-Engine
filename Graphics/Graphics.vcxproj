@@ -135,6 +135,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="dr_d3d_vertex_buffer.h" />
+    <ClInclude Include="Include\dr_d3d_command_buffer.h" />
     <ClInclude Include="Include\dr_d3d_compute_shader.h" />
     <ClInclude Include="Include\dr_d3d_device.h" />
     <ClInclude Include="Include\dr_buffer.h" />
@@ -168,6 +169,7 @@
     <ClInclude Include="Include\dr_vertex_buffer.h" />
     <ClInclude Include="Include\dr_vertex_shader.h" />
     <ClInclude Include="Include\sr_texture_shader.h" />
+    <ClInclude Include="Source\dr_d3d_command_buffer.cpp" />
     <ClInclude Include="Source\dr_d3d_constant_buffer.h" />
   </ItemGroup>
   <ItemGroup>
@@ -175,6 +177,7 @@
     <ClCompile Include="Source\dr_d3d_compute_shader.cpp" />
     <ClCompile Include="Source\dr_d3d_constant_buffer.cpp" />
     <ClCompile Include="Source\dr_d3d_device.cpp" />
+    <ClCompile Include="Source\dr_d3d_device_context.cpp" />
     <ClCompile Include="Source\dr_d3d_domain_shader.cpp" />
     <ClCompile Include="Source\dr_d3d_fragment_shader.cpp" />
     <ClCompile Include="Source\dr_d3d_geometry_shader.cpp" />
