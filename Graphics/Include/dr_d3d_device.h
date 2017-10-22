@@ -24,7 +24,7 @@ public:
   void createTexture2D(const char* buffer, Texture& texture) override;
   void createTexture3D(const char* buffer, Texture& texture) override;
 
-private:
   Microsoft::WRL::ComPtr<ID3D11Device> D3D11Device;
+private:
 };
 }

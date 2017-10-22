@@ -3,6 +3,5 @@
 namespace driderSDK {
 class DR_API_EXPORT HullShader : public Shader
 {
-
 };
 }

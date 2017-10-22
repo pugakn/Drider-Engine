@@ -3,18 +3,14 @@
 #include "dr_texture.h"
 #include "dr_sample_state.h"
 #include "dr_constant_buffer.h"
+#include "dr_device.h"
 namespace driderSDK {
 class DR_API_EXPORT Shader
 {
 public:
   virtual void set() = 0;
   virtual void unset() = 0;
-  virtual void createFromMemory(const char* buffer, size_t bufferSize) = 0;
-  virtual void createFromFile(const char* path) = 0;
-
-  virtual void loadFromFileToSystemMemory() = 0;
-  virtual void loadFromMemoryToSystemMemory() = 0;
-  
+  virtual void createFromMemory(const Device& device,const char* buffer, size_t bufferSize) = 0;
   virtual void free() = 0;
 };
 }

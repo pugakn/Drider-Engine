@@ -135,12 +135,21 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="dr_d3d_vertex_buffer.h" />
+    <ClInclude Include="Include\dr_d3d_compute_shader.h" />
     <ClInclude Include="Include\dr_d3d_device.h" />
     <ClInclude Include="Include\dr_buffer.h" />
     <ClInclude Include="Include\dr_command_buffer.h" />
     <ClInclude Include="Include\dr_compute_shader.h" />
     <ClInclude Include="Include\dr_constant_buffer.h" />
     <ClInclude Include="Include\dr_d3d_device_context.h" />
+    <ClInclude Include="Include\dr_d3d_domain_shader.h" />
+    <ClInclude Include="Include\dr_d3d_fragment_shader.h" />
+    <ClInclude Include="Include\dr_d3d_geometry_shader.h" />
+    <ClInclude Include="Include\dr_d3d_hull_shader.h" />
+    <ClInclude Include="Include\dr_d3d_index_buffer.h" />
+    <ClInclude Include="Include\dr_d3d_teselation_shader.h" />
+    <ClInclude Include="Include\dr_d3d_texture_shader.h" />
+    <ClInclude Include="Include\dr_d3d_vertex_shader.h" />
     <ClInclude Include="Include\dr_domain_shader.h" />
     <ClInclude Include="Include\dr_fragment_shader.h" />
     <ClInclude Include="Include\dr_geometry_shader.h" />
@@ -159,10 +168,21 @@
     <ClInclude Include="Include\dr_vertex_buffer.h" />
     <ClInclude Include="Include\dr_vertex_shader.h" />
     <ClInclude Include="Include\sr_texture_shader.h" />
+    <ClInclude Include="Source\dr_d3d_constant_buffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dr_d3d_vertex_buffer.cpp" />
+    <ClCompile Include="Source\dr_d3d_compute_shader.cpp" />
+    <ClCompile Include="Source\dr_d3d_constant_buffer.cpp" />
     <ClCompile Include="Source\dr_d3d_device.cpp" />
+    <ClCompile Include="Source\dr_d3d_domain_shader.cpp" />
+    <ClCompile Include="Source\dr_d3d_fragment_shader.cpp" />
+    <ClCompile Include="Source\dr_d3d_geometry_shader.cpp" />
+    <ClCompile Include="Source\dr_d3d_hull_shader.cpp" />
+    <ClCompile Include="Source\dr_d3d_index_buffer.cpp" />
+    <ClCompile Include="Source\dr_d3d_teselation_shader.cpp" />
+    <ClCompile Include="Source\dr_d3d_texture_shader.cpp" />
+    <ClCompile Include="Source\dr_d3d_vertex_shader.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
