@@ -4,6 +4,6 @@ namespace driderSDK {
 class DR_API_EXPORT CommandBuffer : public Buffer
 {
 public:
-
+  virtual ~CommandBuffer() {}
 };
 }

@@ -13,7 +13,7 @@ public:
   void createVertexBuffer(const DrBufferDesc& desc, char* initialData, VertexBuffer& vertexBuffer) override;
   void createIndexBuffer(const DrBufferDesc& desc, char* initialData, IndexBuffer& indexBuffer) override;
   void createConstantBuffer(const DrBufferDesc& desc, char* initialData, ConstantBuffer& constantBuffer) override;
-  void createShaderFromMemory(const char* shaderBuffer, Shader& shader) override;
+  void createShaderFromMemory(const char* shaderBuffer, size_t bufferSize, Shader& shader) override;
 
   void createBlendState() override;
   void createSamplerState() override;

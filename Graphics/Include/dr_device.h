@@ -19,7 +19,7 @@ class DR_API_EXPORT Device
   virtual void createIndexBuffer(const DrBufferDesc& desc, char* initialData, IndexBuffer& indexBuffer) = 0;
   virtual void createConstantBuffer(const DrBufferDesc& desc, char* initialData, ConstantBuffer& constantBuffer) = 0;
 
-  virtual void createShaderFromMemory(const char* shaderBuffer, Shader& shader) = 0;
+  virtual void createShaderFromMemory(const char* shaderBuffer, size_t bufferSize, Shader& shader) = 0;
 
   virtual void createBlendState() = 0;
   virtual void createSamplerState() = 0;

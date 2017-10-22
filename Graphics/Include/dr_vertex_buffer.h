@@ -4,7 +4,7 @@ namespace driderSDK {
 class DR_API_EXPORT VertexBuffer : public Buffer
 {
 public:
-
+  virtual ~VertexBuffer() {}
 private:
 };
 }

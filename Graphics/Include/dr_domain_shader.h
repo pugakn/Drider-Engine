@@ -3,6 +3,6 @@
 namespace driderSDK {
 class DR_API_EXPORT DomainShader : public Shader
 {
-
+  virtual ~DomainShader() {}
 };
 }

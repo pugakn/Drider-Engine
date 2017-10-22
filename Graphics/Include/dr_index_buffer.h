@@ -4,6 +4,6 @@ namespace driderSDK {
 class DR_API_EXPORT IndexBuffer : public Buffer
 {
 public:
-
+  virtual ~IndexBuffer() {}
 };
 }

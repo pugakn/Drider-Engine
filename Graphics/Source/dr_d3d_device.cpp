@@ -18,9 +18,9 @@ void D3DDevice::createConstantBuffer(const DrBufferDesc & desc, char * initialDa
 {
   constantBuffer.create(*this, desc, initialData);
 }
-void D3DDevice::createShaderFromMemory(const char * shaderBuffer, Shader & shader)
+void D3DDevice::createShaderFromMemory(const char * shaderBuffer,size_t bufferSize, Shader & shader)
 {
-  shader.createFromMemory(*this,shaderBuffer);
+  shader.createFromMemory(*this,shaderBuffer,bufferSize);
 }
 
 }
