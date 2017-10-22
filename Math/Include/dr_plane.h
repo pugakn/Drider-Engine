@@ -55,6 +55,8 @@ class DR_API_EXPORT Plane : public Vector3D
 		      const Vector3D& point1, 
 		      const Vector3D& point2);
 
+  ~Plane();
+
   /**
   * Computes the normal and gap of the plain from a normal and 1 point.
   */
@@ -76,8 +78,8 @@ class DR_API_EXPORT Plane : public Vector3D
   bool 
   intersects(const Plane& other);
 
-  bool 
-  intersects(const Plane& other, Line& intersectionLine);
+  /*bool 
+  intersects(const Plane& other, Line& intersectionLine);*/
 
   bool 
   intersects(const Sphere& sphere);
@@ -106,8 +108,8 @@ class DR_API_EXPORT Plane : public Vector3D
 	* @return
 	*	  True if the ray intersects with the plane, false otherwise.
 	*/
-  bool 
-  intersects(const Ray& ray, float& intersection);
+ /* bool 
+  intersects(const Ray& ray, float& intersection);*/
 
   /**
   * Normalizes the plane. This modifies the normal and the gap. 

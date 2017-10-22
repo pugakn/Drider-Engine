@@ -27,12 +27,6 @@
     <ClInclude Include="Include\dr_pool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\dr_module.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\dr_logger.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="dr_memory.h">
       <Filter>Header Files</Filter>
     </ClInclude>

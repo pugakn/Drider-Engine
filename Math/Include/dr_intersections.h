@@ -310,14 +310,6 @@ struct DR_API_EXPORT Intersect
 
   //Uncommented
   static bool
-  aabbPlane(const Vector3D& aabbCenter,
-            float aabbWidth,
-            float aabbheight,
-            const Vector3D& planeNormal,
-            const Vector3D& planePoint);
-
-  //Uncommented
-  static bool
   aabbFrustrum(const Vector3D& aabbCenter,
                float aabbWidth,
                float aabbheight,

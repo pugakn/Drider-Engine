@@ -7,7 +7,6 @@ namespace driderSDK
 Vector4D::Vector4D() {}
 
 Vector4D::Vector4D(Math::FORCE_INIT k) {
-
   if (Math::FORCE_INIT::kZero == k) {
     x = 0.0f;
     y = 0.0f;
@@ -15,9 +14,9 @@ Vector4D::Vector4D(Math::FORCE_INIT k) {
     w = 0.0f;
   }
   else {
-    x = 1.0f;
-    y = 1.0f;
-    z = 1.0f;
+    x = 0.0f;
+    y = 0.0f;
+    z = 0.0f;
     w = 1.0f;
   }
 }
@@ -27,11 +26,16 @@ Vector4D::Vector4D(const Vector4D& V) : x(V.x), y(V.y), z(V.z), w(V.w) {}
 Vector4D::Vector4D(const Vector3D& V) : x(V.x), y(V.y), z(V.z) {
 }
 
-Vector4D::Vector4D(const Vector3D& V, float w) : x(V.x), y(V.y), z(V.z), w(w) {}
+Vector4D::Vector4D(const Vector3D& V, float _w) : x(V.x), y(V.y), z(V.z), w(_w) {}
 
-Vector4D::Vector4D(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
+Vector4D::Vector4D(float _x, float _y, float _z, float _w) : x(_x), y(_y), z(_z), w(_w) {}
 
 Vector4D::~Vector4D() {}
+
+float
+Vector4D::dot3(const Vector4D& B) const {
+  return (x*B.x) + (y*B.y) + (z*B.z);
+}
 
 float
 Vector4D::dot(const Vector4D& B) const {
@@ -43,9 +47,17 @@ Vector4D::cross(const Vector4D& B) const {
   return Vector4D(y*B.z - z*B.y, z*B.x - x*B.z, x*B.y - y*B.x, 0.0f);
 }
 
+float Vector4D::length3() const {
+  return Math::sqrt(dot3(*this));
+}
+
 float
 Vector4D::length() const {
   return Math::sqrt(dot(*this));
+}
+
+float Vector4D::lengthSqr3() const {
+  return dot3(*this);
 }
 
 float
@@ -53,9 +65,22 @@ Vector4D::lengthSqr() const {
   return dot(*this);
 }
 
+void Vector4D::normalize3() {
+  DR_ASSERT(length() != 0);
+  float Length3 = length3();
+  x /= Length3;
+  y /= Length3;
+  z /= Length3;
+}
+
 void
 Vector4D::normalize() {
-  *this = (*this) * Math::pow(length(), -1.0f);
+  DR_ASSERT(length() != 0);
+  *this /= length();
+}
+
+float Vector4D::distance3(const Vector4D& otherVector) const {
+  return (otherVector - *this).length3();
 }
 
 float
@@ -63,17 +88,13 @@ Vector4D::distance(const Vector4D& otherVector) const {
   return (otherVector - *this).length();
 }
 
+float Vector4D::distanceSqr3(const Vector4D& otherVector) const {
+  return (otherVector - *this).lengthSqr3();
+}
+
 float
 Vector4D::distanceSqr(const Vector4D& otherVector) const {
   return (otherVector - *this).lengthSqr();
-}
-
-bool
-Vector4D::equals(const Vector4D& otherVector) const {
-  return (Math::abs(x - otherVector.x) < Math::SMALL_NUMBER) &&
-         (Math::abs(y - otherVector.y) < Math::SMALL_NUMBER) &&
-         (Math::abs(z - otherVector.z) < Math::SMALL_NUMBER) &&
-         (Math::abs(w - otherVector.w) < Math::SMALL_NUMBER);
 }
 
 bool
@@ -84,23 +105,25 @@ Vector4D::equals(const Vector4D& otherVector, float errorRange) const {
          (Math::abs(w - otherVector.w) < errorRange);
 }
 
-float* Vector4D::ptr() {
-  return data;
+float*
+Vector4D::ptr() {
+  return &data[0];
 }
 
-const float* Vector4D::ptr() const {
-  return data;
+const float*
+Vector4D::ptr() const {
+  return &data[0];
 }
 
 float&
-Vector4D::operator[](SizeT index) {
-  DR_ASSERT(index >= 0 && index < 4);
+Vector4D::operator[](const SizeT index){
+  DR_ASSERT(index < 4);
   return data[index];
 }
 
 const float&
-Vector4D::operator[](SizeT index) const {
-  DR_ASSERT(index >= 0 && index < 4);
+Vector4D::operator[](const SizeT index) const {
+  DR_ASSERT(index < 4);
   return data[index];
 }
 
@@ -189,17 +212,17 @@ Vector4D::operator*=(const float scalar) {
 
 Vector4D
 Vector4D::operator/(const float scalar) const {
-  float invDiv = Math::pow(scalar, -1.0f);
-  return Vector4D(x*invDiv, y*invDiv, z*invDiv, w*invDiv);
+  DR_ASSERT(scalar != 0.0f);
+  return Vector4D(x / scalar, y / scalar, z / scalar, w / scalar);
 }
 
 Vector4D&
 Vector4D::operator/=(const float scalar) {
-  float invDiv = Math::pow(scalar, -1.0f);
-  x *= invDiv;
-  y *= invDiv;
-  z *= invDiv;
-  w *= invDiv;
+  DR_ASSERT(scalar != 0.0f);
+  x /= scalar;
+  y /= scalar;
+  z /= scalar;
+  w /= scalar;
   return *this;
 }
 

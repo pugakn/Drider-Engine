@@ -233,6 +233,18 @@ struct DR_API_EXPORT Math
 
   static float
   fast_aTan(float value); 
+
+  //Enum used to describe the relationship between a point		
+  //and a plane.		
+  enum PLANE_INTERSECT
+  {
+    //The point is in front of the plane.		
+    kFront,
+    //The point is in the plane.		
+    kIn,
+    //The point is behind plane.		
+    kBehind,
+  };
 }; //math
 
 } //driderSDK

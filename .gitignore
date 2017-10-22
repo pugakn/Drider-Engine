@@ -21,8 +21,12 @@ Lib/
 [Oo]bj/
 [Ll]og/
 /Docs/html/
+/MathUnitTest/test_detail.xml
 /Docs/latex/
+/Docs/Logger/logger.html
+/Docs/xml/
 !/3rdParties/*/*
+test_detail.xml
 
 # Visual Studio 2015 cache/options directory
 .vs/
