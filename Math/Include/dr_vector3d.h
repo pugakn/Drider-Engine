@@ -38,6 +38,12 @@ class DR_API_EXPORT Vector3D
   Vector3D(const Vector3D& V);
 
   /**
+  * Copy constructor for vec4 to vec3
+  *
+  */
+  explicit Vector3D(const Vector4D& V);
+
+  /**
   * Initialize constructor with values.
   *
   * @param x
@@ -177,6 +183,24 @@ class DR_API_EXPORT Vector3D
   */
   float
   sqrDistSegment(const Vector3D& pointA, const Vector3D& pointB) const;
+
+   /**
+  * Gets a pointer to the first element of the matrix.
+  *
+  * @return
+  *	  A pointer to the first element of the matrix.
+  */
+  float*
+  ptr();
+
+  /**
+  * Gets a constant pointer to the first element of the matrix.
+  *
+  * @return
+  *	  A constant pointer to the first element of the matrix.
+  */
+  const float*
+  ptr() const;
 
   /**
   * Gets a reference to the specified element from the vector.

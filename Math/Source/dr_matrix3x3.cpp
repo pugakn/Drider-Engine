@@ -1,4 +1,5 @@
-#include <dr_matrix3x3.h>
+#include "dr_matrix3x3.h"
+#include "dr_matrix4x4.h"
 
 namespace driderSDK
 {
@@ -92,8 +93,8 @@ Matrix3x3::adjugate() {
 void 
 Matrix3x3::inverse() {
   float deter = determinant();
-  cofactor();
-  transpose();
+  DR_ASSERT(deter != 0);
+  adjugate();
   *this = *this * (1 / deter);
 }
 
@@ -130,6 +131,14 @@ Matrix3x3::identity() {
   vector2.z = 1;
 }
 
+float* Matrix3x3::ptr() {
+  return data->ptr();
+}
+
+const float* Matrix3x3::ptr() const {
+  return data->ptr();
+}
+
 Vector3D&
 Matrix3x3::operator[](SizeT index) {
   DR_ASSERT(index >= 0 && index < 3);
@@ -138,6 +147,15 @@ Matrix3x3::operator[](SizeT index) {
 
 Matrix3x3&
 Matrix3x3::operator=(const Matrix3x3& A) {
+  vector0 = A.vector0;
+  vector1 = A.vector1;
+  vector2 = A.vector2;
+  return *this;
+}
+
+Matrix3x3&
+Matrix3x3::operator=(const Matrix4x4 & A)
+{
   vector0 = A.vector0;
   vector1 = A.vector1;
   vector2 = A.vector2;
@@ -199,27 +217,30 @@ Matrix3x3::operator*(const Matrix3x3& A) const {
 
 Matrix3x3&
 Matrix3x3::operator*=(const Matrix3x3& A) {
+  Matrix3x3 temp;
+
   Vector3D c0(A.vector0.x, A.vector1.x, A.vector2.x);
   Vector3D c1(A.vector0.y, A.vector1.y, A.vector2.y);
   Vector3D c2(A.vector0.z, A.vector1.z, A.vector2.z);
 
-  vector0.x = vector0.dot(c0);
-  vector0.y = vector0.dot(c1);
-  vector0.z = vector0.dot(c2);
+  temp.vector0.x = vector0.dot(c0);
+  temp.vector0.y = vector0.dot(c1);
+  temp.vector0.z = vector0.dot(c2);
 
-  vector1.x = vector1.dot(c0);
-  vector1.y = vector1.dot(c1);
-  vector1.z = vector1.dot(c2);
+  temp.vector1.x = vector1.dot(c0);
+  temp.vector1.y = vector1.dot(c1);
+  temp.vector1.z = vector1.dot(c2);
 
-  vector2.x = vector2.dot(c0);
-  vector2.y = vector2.dot(c1);
-  vector2.z = vector2.dot(c2);
-
+  temp.vector2.x = vector2.dot(c0);
+  temp.vector2.y = vector2.dot(c1);
+  temp.vector2.z = vector2.dot(c2);
+  
+  *this = temp;
   return *this;
 }
 
 Vector3D
-Matrix3x3::operator*(const Vector3D S) const {
+Matrix3x3::operator*(const Vector3D& S) const {
   Vector3D temp;
 
   temp.x = vector0.dot(S);

@@ -6,6 +6,8 @@
 
 namespace driderSDK {
 
+ class Matrix4x4;
+
 class DR_API_EXPORT Matrix3x3                                                                 
 {
  public:
@@ -124,6 +126,24 @@ class DR_API_EXPORT Matrix3x3
   void
   identity();
 
+   /**
+  * Gets a pointer to the first element of the matrix.
+  *
+  * @return
+  *	  A pointer to the first element of the matrix.
+  */
+  float*
+  ptr();
+
+  /**
+  * Gets a constant pointer to the first element of the matrix.
+  *
+  * @return
+  *	  A constant pointer to the first element of the matrix.
+  */
+  const float*
+  ptr() const;
+
    //Uncommented
   Vector3D&
   operator[](SizeT index);
@@ -131,6 +151,9 @@ class DR_API_EXPORT Matrix3x3
   //Uncommented
   Matrix3x3&
   operator=(const Matrix3x3& A);
+
+  Matrix3x3&
+  operator=(const Matrix4x4& A);
 
   //Uncommented
   Matrix3x3
@@ -158,7 +181,7 @@ class DR_API_EXPORT Matrix3x3
 
   //Uncommented
   Vector3D
-  operator*(const Vector3D S) const;
+  operator*(const Vector3D& S) const;
 
   //Uncommented
   Matrix3x3

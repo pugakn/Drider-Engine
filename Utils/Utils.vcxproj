@@ -128,7 +128,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="dr_memory.h" />
     <ClInclude Include="Include\dr_defines.h" />
+    <ClInclude Include="Include\dr_logger.h" />
     <ClInclude Include="Include\dr_module.h" />
     <ClInclude Include="Include\dr_pool.h" />
     <ClInclude Include="Include\dr_prerequisites.h" />

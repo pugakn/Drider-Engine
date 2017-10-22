@@ -11,13 +11,13 @@ class DR_API_EXPORT Vector4D
 {
  public:
   /**
-  * Default constructor
+  * Default constructor.
   *
   */
   Vector4D();
 
   /**
-  * Default constructor
+  * Default constructor.
   *
   * @param k
   *
@@ -26,16 +26,28 @@ class DR_API_EXPORT Vector4D
   explicit Vector4D(Math::FORCE_INIT k);
 
   /**
-  * Move constructor
+  * Move constructor.
   *
   */
   Vector4D(Vector4D&& V) = default;
 
   /**
-  * Copy constructor
+  * Copy constructor.
   *
   */
   Vector4D(const Vector4D& V);
+
+  /**
+  * Copy constructor for vec3 to vec4.
+  *
+  */
+  Vector4D(const Vector3D& V);
+
+  /**
+  * Copy constructor for vec3 to vec4 with W value.
+  *
+  */
+  Vector4D(const Vector3D& V, float w);
 
   /**
   * Initialize constructor with values.
@@ -166,6 +178,24 @@ class DR_API_EXPORT Vector4D
   */
   bool
   equals(const Vector4D& otherVector, float errorRange) const;
+
+   /**
+  * Gets a pointer to the first element of the matrix.
+  *
+  * @return
+  *	  A pointer to the first element of the matrix.
+  */
+  float*
+  ptr();
+
+  /**
+  * Gets a constant pointer to the first element of the matrix.
+  *
+  * @return
+  *	  A constant pointer to the first element of the matrix.
+  */
+  const float*
+  ptr() const;
 
   /**
   * Gets a reference to the specified element from the vector.

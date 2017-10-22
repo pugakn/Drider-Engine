@@ -39,19 +39,33 @@ Quaternion::rotation(float theta, const Quaternion& A) {
 
 void
 Quaternion::matrixFromQuaternion(Matrix4x4& Matrix) {
-  Matrix[0][0] = 1.0f - (2.0f*y*y) - (2.0f*z*z);
-  Matrix[0][1] = (2.0f*x*y) - (2.0f*z*w);
-  Matrix[0][2] = (2.0f*x*z) + (2.0f*w*y);
-  Matrix[1][0] = (2.0f*x*y) + (2.0f*z*w);
-  Matrix[1][1] = 1.0f - (2.0f*x*x) - (2.0f*z*z);
-  Matrix[1][2] = (2.0f*y*z) - (2.0f*x*w);
-  Matrix[2][0] = (2.0f*x*z) - (2.0f*y*w);
-  Matrix[2][1] = (2.0f*y*z) + (2.0f*x*w);
-  Matrix[2][2] = 1.0f - (2*x*x) - (2.0f*y*y);
-  Matrix[3][3] = 1.0f;
-  Matrix[0][3] = Matrix[1][3] = Matrix[2][3] = 0.0f;
-  Matrix[3][0] = Matrix[3][1] = Matrix[3][2] = 0.0f;
+  Matrix[0][0] = 1.f - (2.f*y*y) - (2.f*z*z);
+  Matrix[0][1] = (2.f*x*y) - (2.f*z*w);
+  Matrix[0][2] = (2.f*x*z) + (2.f*w*y);
+  Matrix[1][0] = (2.f*x*y) + (2.f*z*w);
+  Matrix[1][1] = 1.f - (2.f*x*x) - (2.f*z*z);
+  Matrix[1][2] = (2.f*y*z) - (2.f*x*w);
+  Matrix[2][0] = (2.f*x*z) - (2.f*y*w);
+  Matrix[2][1] = (2.f*y*z) + (2.f*x*w);
+  Matrix[2][2] = 1.f - (2.f*x*x) - (2.f*y*y);
+  Matrix[3][3] = 1.f;
+  Matrix[0][3] = Matrix[1][3] = Matrix[2][3] = 0.f;
+  Matrix[3][0] = Matrix[3][1] = Matrix[3][2] = 0.f;
   return;
+}
+
+void
+Quaternion::matrixFromQuaternion(Matrix3x3& Matrix) {
+	Matrix[0][0] = (2.f*y*y) - (2.f*z*z);
+	Matrix[0][1] = (2.f*x*y) - (2.f*z*w);
+	Matrix[0][2] = (2.f*x*z) + (2.f*y*w);
+	Matrix[1][0] = (2.f*x*y) + (2.f*z*w);
+	Matrix[1][1] = 1.f - (2.f*x*x) - (2.f*z*z);
+	Matrix[1][2] = (2.f*y*z) - (2.f*x*w);
+	Matrix[2][0] = (2.f*x*z) - (2.f*y*w);
+	Matrix[2][1] = (2.f*y*z) + (2.f*x*w);
+	Matrix[2][2] = 1.f - (2.f*x*x) - (2.f*y*y);
+	return;
 }
 
 Quaternion
