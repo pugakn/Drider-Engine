@@ -9,18 +9,21 @@ class DR_API_EXPORT Degree
 {
  public:
   /**
+  * TEST::defaultConstructor
   * Default constructor.
   *
   */
   Degree();
 
   /**
+  * TEST::moveConstructor
   * Move constructor.
   *
   */
   Degree(Degree&& V) = default;
 
   /**
+  * TEST::copyConstructor
   * Copy constructor.
   *
   */
@@ -35,12 +38,14 @@ class DR_API_EXPORT Degree
   explicit Degree(float value);
 
   /**
+  * TEST::destructor
   * Default destructor.
   *
   */
   ~Degree();
 
   /**
+  * TEST::ToRadian
   * Returns a Radian class with a value equal to the
   * actual degrees in radians.
   *
@@ -51,6 +56,7 @@ class DR_API_EXPORT Degree
   toRadian() const;
 
   /**
+  * TEST::Unwind
   * Limit the value in [0, 360)
   *
   * @return
@@ -59,10 +65,22 @@ class DR_API_EXPORT Degree
   Degree&
   unwind();
 
-  //Uncomented
+  /**
+  * TEST::floatOperator
+  * return the value as a float.
+  *
+  * @return
+  *   A float value.
+  */
   operator float();
 
-  //Uncomented
+  /**
+  * TEST::equalFloat
+  * Sets the value to the float param.
+  *
+  * Param V
+  *   The new value.
+  */
   Degree&
   operator=(float V);
 
