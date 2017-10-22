@@ -6,25 +6,21 @@
 namespace driderSDK {
 void D3DVertexShader::set(const DeviceContext& deviceContext)
 {
-  static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->VSSetShader(VS.Get(),0,0);
-};
-void D3DVertexShader::unset(const DeviceContext& deviceContext)
-{
-  //atic_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->VSGetShader(VS.Get());
+  static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->VSSetShader(APIShader.Get(),0,0);
 };
 void D3DVertexShader::createFromMemory(const Device& device, const char* buffer, size_t bufferSize) {
   Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
   Microsoft::WRL::ComPtr<ID3DBlob> VS_blob;
   if (D3DCompile(buffer, bufferSize, 0, 0, 0, "VS", "vs_5_0", 0, 0, &VS_blob, &errorBlob) != S_OK) {
     if (errorBlob) {
-      std::cout << "ErrorBlob shader" << (char*)errorBlob->GetBufferPointer();
+      std::cout << "ErrorBlob shader" << static_cast<char*>(errorBlob->GetBufferPointer());
       return;
     }
     if (VS_blob) {
       return;
     }
   }
-  if (static_cast<const D3DDevice*>(&device)->D3D11Device->CreateVertexShader(VS_blob->GetBufferPointer(), VS_blob->GetBufferSize(), 0, &VS) != S_OK) {
+  if (static_cast<const D3DDevice*>(&device)->D3D11Device->CreateVertexShader(VS_blob->GetBufferPointer(), VS_blob->GetBufferSize(), 0, &APIShader) != S_OK) {
     std::cout << "Error Creatong Vertex Shader" << std::endl;
     return;
   }

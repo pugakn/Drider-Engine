@@ -38,9 +38,39 @@ void D3DConstantBuffer::create(const Device& device, const DrBufferDesc & desc, 
     std::cout << "Error Creating Buffer Layout" << std::endl;
   }
 }
-void D3DConstantBuffer::set(const DeviceContext& deviceContext, UInt32 slot, UInt32 numBuffers) 
+void D3DConstantBuffer::set(const DeviceContext& deviceContext, UInt32 slot, UInt32 numBuffers, DR_SHADER_TYPE_FLAG::E typeFlag)
 {
-  static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->VSSetConstantBuffers(slot, numBuffers, CB.GetAddressOf());
-  static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->PSSetConstantBuffers(slot, numBuffers, CB.GetAddressOf());
+  if (typeFlag & DR_SHADER_TYPE_FLAG::kVertex)
+  {
+    static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->VSSetConstantBuffers(slot, numBuffers, CB.GetAddressOf());
+  }
+  if (typeFlag & DR_SHADER_TYPE_FLAG::kFragment)
+  {
+    static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->PSSetConstantBuffers(slot, numBuffers, CB.GetAddressOf());
+  }
+  if (typeFlag & DR_SHADER_TYPE_FLAG::kCompute)
+  {
+    static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->CSSetConstantBuffers(slot, numBuffers, CB.GetAddressOf());
+  }
+  if (typeFlag & DR_SHADER_TYPE_FLAG::kDomain)
+  {
+    static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->DSSetConstantBuffers(slot, numBuffers, CB.GetAddressOf());
+  }
+  if (typeFlag & DR_SHADER_TYPE_FLAG::kHull)
+  {
+    static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->HSSetConstantBuffers(slot, numBuffers, CB.GetAddressOf());
+  }
+  if (typeFlag & DR_SHADER_TYPE_FLAG::kGeometry)
+  {
+    static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->GSSetConstantBuffers(slot, numBuffers, CB.GetAddressOf());
+  }
+  if (typeFlag & DR_SHADER_TYPE_FLAG::kTeselation)
+  {
+    //Not implemented
+  }
+  if (typeFlag & DR_SHADER_TYPE_FLAG::kTexture)
+  {
+    //Not implemented
+  }
 }
 }

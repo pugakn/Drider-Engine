@@ -11,7 +11,7 @@ namespace driderSDK {
     D3DConstantBuffer();
     ~D3DConstantBuffer();
     void create(const Device& device, const DrBufferDesc& desc, char* initialData) override;
-    void set(const DeviceContext& deviceContext, UInt32 slot, UInt32 numBuffers) override;
+    void set(const DeviceContext& deviceContext, UInt32 slot, UInt32 numBuffers, DR_SHADER_TYPE_FLAG::E typeFlag) override;
     Microsoft::WRL::ComPtr<ID3D11Buffer> CB;
   };
 }

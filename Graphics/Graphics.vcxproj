@@ -137,6 +137,7 @@
     <ClInclude Include="dr_d3d_vertex_buffer.h" />
     <ClInclude Include="Include\dr_d3d_command_buffer.h" />
     <ClInclude Include="Include\dr_d3d_compute_shader.h" />
+    <ClInclude Include="Include\dr_d3d_depth_stencil.h" />
     <ClInclude Include="Include\dr_d3d_device.h" />
     <ClInclude Include="Include\dr_buffer.h" />
     <ClInclude Include="Include\dr_command_buffer.h" />
@@ -148,9 +149,13 @@
     <ClInclude Include="Include\dr_d3d_geometry_shader.h" />
     <ClInclude Include="Include\dr_d3d_hull_shader.h" />
     <ClInclude Include="Include\dr_d3d_index_buffer.h" />
+    <ClInclude Include="Include\dr_d3d_render_target.h" />
     <ClInclude Include="Include\dr_d3d_teselation_shader.h" />
+    <ClInclude Include="Include\dr_d3d_texture.h" />
     <ClInclude Include="Include\dr_d3d_texture_shader.h" />
     <ClInclude Include="Include\dr_d3d_vertex_shader.h" />
+    <ClInclude Include="Include\dr_depth_stencil.h" />
+    <ClInclude Include="Include\dr_depth_stencil_state.h" />
     <ClInclude Include="Include\dr_domain_shader.h" />
     <ClInclude Include="Include\dr_fragment_shader.h" />
     <ClInclude Include="Include\dr_geometry_shader.h" />
@@ -161,6 +166,7 @@
     <ClInclude Include="Include\dr_index_buffer.h" />
     <ClInclude Include="Include\dr_input_layout.h" />
     <ClInclude Include="Include\dr_rasterizer_state.h" />
+    <ClInclude Include="Include\dr_render_target.h" />
     <ClInclude Include="Include\dr_sample_state.h" />
     <ClInclude Include="Include\dr_shader.h" />
     <ClInclude Include="Include\dr_swap_chain.h" />
@@ -176,6 +182,7 @@
     <ClCompile Include="dr_d3d_vertex_buffer.cpp" />
     <ClCompile Include="Source\dr_d3d_compute_shader.cpp" />
     <ClCompile Include="Source\dr_d3d_constant_buffer.cpp" />
+    <ClCompile Include="Source\dr_d3d_depth_stencil.cpp" />
     <ClCompile Include="Source\dr_d3d_device.cpp" />
     <ClCompile Include="Source\dr_d3d_device_context.cpp" />
     <ClCompile Include="Source\dr_d3d_domain_shader.cpp" />
@@ -183,7 +190,9 @@
     <ClCompile Include="Source\dr_d3d_geometry_shader.cpp" />
     <ClCompile Include="Source\dr_d3d_hull_shader.cpp" />
     <ClCompile Include="Source\dr_d3d_index_buffer.cpp" />
+    <ClCompile Include="Source\dr_d3d_render_target.cpp" />
     <ClCompile Include="Source\dr_d3d_teselation_shader.cpp" />
+    <ClCompile Include="Source\dr_d3d_texture.cpp" />
     <ClCompile Include="Source\dr_d3d_texture_shader.cpp" />
     <ClCompile Include="Source\dr_d3d_vertex_shader.cpp" />
   </ItemGroup>

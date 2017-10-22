@@ -43,6 +43,12 @@
     <Filter Include="Archivos de encabezado\Base\Textures">
       <UniqueIdentifier>{b4d28edc-0d57-42e4-8baf-95d1b281e669}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Archivos de código fuente\DirectX11\Textures">
+      <UniqueIdentifier>{fa79f33a-45f0-4b64-a1aa-a32e6a006773}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\DirectX11\Textures">
+      <UniqueIdentifier>{eb41d4c2-213b-41c9-a45a-f78dd647414e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\sr_texture_shader.h">
@@ -156,6 +162,24 @@
     <ClInclude Include="Source\dr_d3d_command_buffer.cpp">
       <Filter>Archivos de código fuente\DirectX11\Buffers</Filter>
     </ClInclude>
+    <ClInclude Include="Include\dr_render_target.h">
+      <Filter>Archivos de encabezado\Base\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_depth_stencil.h">
+      <Filter>Archivos de encabezado\Base\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_depth_stencil_state.h">
+      <Filter>Archivos de encabezado\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_d3d_texture.h">
+      <Filter>Archivos de encabezado\DirectX11\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_d3d_render_target.h">
+      <Filter>Archivos de encabezado\DirectX11\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_d3d_depth_stencil.h">
+      <Filter>Archivos de encabezado\DirectX11\Textures</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_d3d_device.cpp">
@@ -196,6 +220,15 @@
     </ClCompile>
     <ClCompile Include="Source\dr_d3d_device_context.cpp">
       <Filter>Archivos de código fuente\DirectX11</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_d3d_texture.cpp">
+      <Filter>Archivos de código fuente\DirectX11\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_d3d_render_target.cpp">
+      <Filter>Archivos de código fuente\DirectX11\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_d3d_depth_stencil.cpp">
+      <Filter>Archivos de código fuente\DirectX11\Textures</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

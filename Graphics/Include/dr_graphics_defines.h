@@ -56,8 +56,31 @@ namespace DR_PRIMITIVE_TOPOLOGY {
 namespace DR_GRAPHICS_ERROR {
   enum E {
     ERROR_NONE = 0,
-
+    COMPILE_SHADER_ERROR = -1,
+    CREATE_SHADER_ERROR  = -2,
+    CREATE_BUFFER_ERROR  = -3,
   };
+}
+
+namespace DR_DEPTH_STENCIL_CLEAR_TYPE {
+enum E {
+  kClearDepth,
+  kClearStencil,
+  kClearDepthStencil
+};
+}
+
+namespace DR_SHADER_TYPE_FLAG {
+enum E {
+  kVertex = 1,
+  kFragment = 1 << 1,
+  kHull = 1 << 2,
+  kCompute = 1 << 3,
+  kTexture = 1 << 4,
+  kTeselation = 1 << 5,
+  kDomain = 1 << 6,
+  kGeometry = 1 << 8
+};
 }
 
 struct DR_API_EXPORT DrInputDesc
