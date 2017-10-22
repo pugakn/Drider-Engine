@@ -4,6 +4,7 @@
 namespace driderSDK {
 class DR_API_EXPORT SamplerState {
  public:
+  virtual ~SamplerState() {}
   DrSampleDesc sampleDesc;
 };
 }

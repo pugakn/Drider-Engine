@@ -1,20 +1,16 @@
 #pragma once
 #include <dr_prerequisites.h>
-#include "dr_swap_chain.h"
-#include "dr_vertex_shader.h"
-#include "dr_fragment_shader.h"
-#include "dr_compute_shader.h"
-#include "dr_teselation_shader.h"
-#include "dr_domain_shader.h"
-#include "sr_texture_shader.h"
-#include "dr_index_buffer.h"
-#include "dr_vertex_buffer.h"
-#include "dr_constant_buffer.h"
-#include "dr_texture.h"
+#include "dr_graphics_defines.h"
 namespace driderSDK {
+  class VertexBuffer;
+  class IndexBuffer;
+  class ConstantBuffer;
+  class Shader;
+  class Texture;
 class DR_API_EXPORT Device
 {
  public:
+  virtual ~Device() {}
   virtual void createVertexBuffer(const DrBufferDesc& desc,char* initialData,VertexBuffer& vertexBuffer) = 0;
   virtual void createIndexBuffer(const DrBufferDesc& desc, char* initialData, IndexBuffer& indexBuffer) = 0;
   virtual void createConstantBuffer(const DrBufferDesc& desc, char* initialData, ConstantBuffer& constantBuffer) = 0;

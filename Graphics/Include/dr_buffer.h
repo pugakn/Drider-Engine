@@ -1,9 +1,9 @@
 #pragma once
 #include <dr_prerequisites.h>
-#include "dr_device.h"
 #include "dr_graphics_defines.h"
 
 namespace driderSDK {
+class Device;
 class DR_API_EXPORT Buffer
 {
  public:

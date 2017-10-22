@@ -1,17 +1,16 @@
 #pragma once
 #include <dr_prerequisites.h>
-#include "dr_texture.h"
-#include "dr_vertex_shader.h"
-#include "dr_fragment_shader.h"
-#include "dr_compute_shader.h"
-#include "dr_teselation_shader.h"
-#include "dr_domain_shader.h"
-#include "sr_texture_shader.h"
-#include "dr_index_buffer.h"
-#include "dr_vertex_buffer.h"
+#include "dr_graphics_defines.h"
 namespace driderSDK {
+class Texture;
+class VertexBuffer;
+class IndexBuffer;
+class Shader;
+class Buffer;
+
 class DR_API_EXPORT DeviceContext {
  public:
+   virtual ~DeviceContext() {}
    virtual void clearDepthStencilView() = 0;
    virtual void clearRenderTargetView() = 0;
 

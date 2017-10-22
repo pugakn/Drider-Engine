@@ -4,6 +4,7 @@ namespace driderSDK {
 class DR_API_EXPORT RasterizerState
 {
  public:
+   virtual ~RasterizerState() {}
 
 };
 }

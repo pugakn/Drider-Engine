@@ -2,10 +2,12 @@
 #include <dr_prerequisites.h>
 #include "dr_graphics_defines.h"
 #include <string>
-namespace driderSDK {
 
+namespace driderSDK {
+class SamplerState;
 class DR_API_EXPORT Texture {
  public:
+  virtual ~Texture(){}
   virtual void setTexture(UInt32 slot, UInt32 numTextures, Texture* texture) = 0;
   virtual void setSampler(UInt32 slot, UInt32 numSamplers, SamplerState* texture) = 0;
   virtual void map(char* buffer) = 0;

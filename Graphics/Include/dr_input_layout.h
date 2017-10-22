@@ -4,6 +4,8 @@
 namespace driderSDK {
 class DR_API_EXPORT InputLayout
 {
+public:
+  virtual ~InputLayout(){}
   DrInputDesc inputDesc;
 };
 }

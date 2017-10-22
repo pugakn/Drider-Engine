@@ -3,8 +3,8 @@
 #include "dr_texture.h"
 #include "dr_sample_state.h"
 #include "dr_constant_buffer.h"
-#include "dr_device.h"
 namespace driderSDK {
+class Device;
 class DR_API_EXPORT Shader
 {
 public:
