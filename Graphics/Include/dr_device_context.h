@@ -27,6 +27,8 @@ class DR_API_EXPORT DeviceContext {
    virtual void setVertexBuffer(const VertexBuffer& buffer, UInt32 stride, UInt32 offset) const = 0;
    virtual void setConstantBuffer(DR_SHADER_TYPE_FLAG::E typeFlag) const = 0;
 
+   //virtual void getShader(const Shader& shader) const = 0;
+
    virtual void clearDepthStencilView(DepthStencil& depthstencil, DR_DEPTH_STENCIL_CLEAR_TYPE::E clearType, float depthValue, UInt32 stencilValue) = 0;
    virtual void clearRenderTargetView(RenderTarget& renderTarget, const float colorRGBA[4]) = 0;
    virtual void setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::E topology) = 0;

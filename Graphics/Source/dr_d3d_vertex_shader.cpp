@@ -8,7 +8,12 @@ namespace driderSDK {
 void D3DVertexShader::set(const DeviceContext& deviceContext) const
 {
   static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->VSSetShader(APIShader.Get(),0,0);
-};
+}
+void D3DVertexShader::release()
+{
+  APIShader.Get()->Release();
+}
+;
 DR_GRAPHICS_ERROR::E D3DVertexShader::createFromMemory(const Device& device, const char* buffer, size_t bufferSize) {
   Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
   Microsoft::WRL::ComPtr<ID3DBlob> VS_blob;

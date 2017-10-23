@@ -195,6 +195,7 @@
     <ClCompile Include="Source\dr_d3d_geometry_shader.cpp" />
     <ClCompile Include="Source\dr_d3d_hull_shader.cpp" />
     <ClCompile Include="Source\dr_d3d_index_buffer.cpp" />
+    <ClCompile Include="Source\dr_d3d_input_layout.cpp" />
     <ClCompile Include="Source\dr_d3d_render_target.cpp" />
     <ClCompile Include="Source\dr_d3d_teselation_shader.cpp" />
     <ClCompile Include="Source\dr_d3d_texture.cpp" />

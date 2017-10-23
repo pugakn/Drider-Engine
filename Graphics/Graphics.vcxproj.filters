@@ -245,5 +245,8 @@
     <ClCompile Include="Source\dr_d3d_depth_stencil.cpp">
       <Filter>Archivos de código fuente\DirectX11\Textures</Filter>
     </ClCompile>
+    <ClCompile Include="Source\dr_d3d_input_layout.cpp">
+      <Filter>Archivos de código fuente\DirectX11</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
