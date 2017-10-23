@@ -1,5 +1,4 @@
 #include "dr_d3d_vertex_buffer.h"
-#include <iostream>
 #include <d3d11.h>
 #include <dxgi.h>
 #include "dr_d3d_device.h"
@@ -9,12 +8,7 @@ D3DVertexBuffer::D3DVertexBuffer()
 {
 }
 
-
-D3DVertexBuffer::~D3DVertexBuffer()
-{
-}
-
-void D3DVertexBuffer::create(const Device& device, const DrBufferDesc & desc, char * initialData)
+DR_GRAPHICS_ERROR::E D3DVertexBuffer::create(const Device& device, const DrBufferDesc & desc, char * initialData)
 {
   D3D11_BUFFER_DESC bdesc = { 0 };
   switch (desc.usage)
@@ -35,20 +29,23 @@ void D3DVertexBuffer::create(const Device& device, const DrBufferDesc & desc, ch
   bdesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
   D3D11_SUBRESOURCE_DATA subData = { initialData, 0, 0 };
   if (static_cast<const D3DDevice*>(&device)->D3D11Device->CreateBuffer(&bdesc, &subData, &VB) != S_OK) {
-    std::cout << "Error Creating VB" << std::endl;
+    return DR_GRAPHICS_ERROR::CREATE_BUFFER_ERROR;
   }
+  return DR_GRAPHICS_ERROR::ERROR_NONE;
 }
 
 void D3DVertexBuffer::set(const DeviceContext& deviceContext, 
-                          UInt32 slot, 
-                          UInt32 numBuffers, 
                           UInt32 stride, 
                           UInt32 offset) const {
-  static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->IASetVertexBuffers(slot, 
-                                                                                               numBuffers, 
+  static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->IASetVertexBuffers(0, 
+                                                                                               1, 
                                                                                                VB.GetAddressOf(), 
                                                                                                &stride, 
                                                                                                &offset);
+}
+void D3DVertexBuffer::release()
+{
+  VB.Get()->Release();
 }
 }
 

@@ -1,5 +1,4 @@
 #include "dr_d3d_index_buffer.h"
-#include <iostream>
 #include <d3d11.h>
 #include <dxgi.h>
 #include "dr_d3d_device.h"
@@ -9,12 +8,7 @@ D3DIndexBuffer::D3DIndexBuffer()
 {
 }
 
-
-D3DIndexBuffer::~D3DIndexBuffer()
-{
-}
-
-void D3DIndexBuffer::create(const Device& device, const DrBufferDesc & desc, char * initialData)
+DR_GRAPHICS_ERROR::E D3DIndexBuffer::create(const Device& device, const DrBufferDesc & desc, char * initialData)
 {
   D3D11_BUFFER_DESC bdesc = { 0 };
   switch (desc.usage)
@@ -35,12 +29,17 @@ void D3DIndexBuffer::create(const Device& device, const DrBufferDesc & desc, cha
   bdesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
   D3D11_SUBRESOURCE_DATA subData = { initialData, 0, 0 };
   if (static_cast<const D3DDevice*>(&device)->D3D11Device->CreateBuffer(&bdesc, &subData, &IB) != S_OK) {
-    std::cout << "Error Creating Index Buffer" << std::endl;
+    return DR_GRAPHICS_ERROR::CREATE_BUFFER_ERROR;
   }
+  return DR_GRAPHICS_ERROR::ERROR_NONE;
 }
 
 void D3DIndexBuffer::set(const DeviceContext& deviceContext, UInt32 offset) const
 {
   static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->IASetIndexBuffer(IB.Get(), DXGI_FORMAT_R16_UINT, offset);
+}
+void D3DIndexBuffer::release()
+{
+  IB.Get()->Release();
 }
 }

@@ -9,9 +9,9 @@ class DR_API_EXPORT D3DVertexBuffer : public VertexBuffer
 {
 public:
   D3DVertexBuffer();
-  ~D3DVertexBuffer();
-  void create(const Device& device, const DrBufferDesc& desc, char* initialData) override;
-  void set(const DeviceContext& deviceContext, UInt32 slot, UInt32 numBuffers, UInt32 stride, UInt32 offset) const override;
+  DR_GRAPHICS_ERROR::E create(const Device& device, const DrBufferDesc& desc, char* initialData) override;
+  void set(const DeviceContext& deviceContext, UInt32 stride, UInt32 offset) const override;
+  void release() override;
   Microsoft::WRL::ComPtr<ID3D11Buffer> VB;
 };
 }

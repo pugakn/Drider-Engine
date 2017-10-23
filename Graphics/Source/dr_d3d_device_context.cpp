@@ -18,18 +18,19 @@ void D3DDeviceContext::clearRenderTargetView(RenderTarget& renderTarget, const f
   D3D11DeviceContext->ClearRenderTargetView(renderTarget, colorRGBA);
 }
 
-void D3DDeviceContext::setShader(const Shader& shader) 
+void D3DDeviceContext::setShader(const Shader& shader) const
 {
   shader.set(*this);
 }
 
-void D3DDeviceContext::setIndexBuffer(const IndexBuffer& indexBuffer, UInt32 offset)
+void D3DDeviceContext::setIndexBuffer(const IndexBuffer& indexBuffer, UInt32 offset) const
 {
   indexBuffer.set(*this,offset);
 }
-void D3DDeviceContext::setVertexBuffers(UInt32 slot, UInt32 numBuffers, const VertexBuffer& buffer, UInt32 stride, UInt32 offset)
+void D3DDeviceContext::setVertexBuffer(const VertexBuffer& buffer, UInt32 stride, UInt32 offset) const
 {
-  buffer.set(*this,slot, numBuffers, stride, offset);
+
+  buffer.set(*this, stride, offset);
 }
 
 void D3DDeviceContext::setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::E topology)

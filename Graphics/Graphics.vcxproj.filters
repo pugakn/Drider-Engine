@@ -180,6 +180,21 @@
     <ClInclude Include="Include\dr_d3d_depth_stencil.h">
       <Filter>Archivos de encabezado\DirectX11\Textures</Filter>
     </ClInclude>
+    <ClInclude Include="Include\dr_d3d_resterizer_state.h">
+      <Filter>Archivos de encabezado\DirectX11</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_d3d_swap_chain.h">
+      <Filter>Archivos de encabezado\DirectX11</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_d3d_sample_state.h">
+      <Filter>Archivos de encabezado\DirectX11</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_d3d_input_layout.h">
+      <Filter>Archivos de encabezado\DirectX11</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_d3d_depth_stencil_state.h">
+      <Filter>Archivos de encabezado\DirectX11</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_d3d_device.cpp">

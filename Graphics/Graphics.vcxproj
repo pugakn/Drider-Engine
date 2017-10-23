@@ -138,6 +138,7 @@
     <ClInclude Include="Include\dr_d3d_command_buffer.h" />
     <ClInclude Include="Include\dr_d3d_compute_shader.h" />
     <ClInclude Include="Include\dr_d3d_depth_stencil.h" />
+    <ClInclude Include="Include\dr_d3d_depth_stencil_state.h" />
     <ClInclude Include="Include\dr_d3d_device.h" />
     <ClInclude Include="Include\dr_buffer.h" />
     <ClInclude Include="Include\dr_command_buffer.h" />
@@ -149,7 +150,11 @@
     <ClInclude Include="Include\dr_d3d_geometry_shader.h" />
     <ClInclude Include="Include\dr_d3d_hull_shader.h" />
     <ClInclude Include="Include\dr_d3d_index_buffer.h" />
+    <ClInclude Include="Include\dr_d3d_input_layout.h" />
     <ClInclude Include="Include\dr_d3d_render_target.h" />
+    <ClInclude Include="Include\dr_d3d_resterizer_state.h" />
+    <ClInclude Include="Include\dr_d3d_sample_state.h" />
+    <ClInclude Include="Include\dr_d3d_swap_chain.h" />
     <ClInclude Include="Include\dr_d3d_teselation_shader.h" />
     <ClInclude Include="Include\dr_d3d_texture.h" />
     <ClInclude Include="Include\dr_d3d_texture_shader.h" />

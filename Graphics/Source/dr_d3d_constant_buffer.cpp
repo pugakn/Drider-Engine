@@ -1,5 +1,4 @@
 #include "dr_d3d_constant_buffer.h"
-#include <iostream>
 #include <d3d11.h>
 #include <dxgi.h>
 #include "dr_d3d_device.h"
@@ -10,12 +9,7 @@ D3DConstantBuffer::D3DConstantBuffer()
 {
 }
 
-
-D3DConstantBuffer::~D3DConstantBuffer()
-{
-}
-
-void D3DConstantBuffer::create(const Device& device, const DrBufferDesc & desc, char * initialData)
+DR_GRAPHICS_ERROR::E D3DConstantBuffer::create(const Device& device, const DrBufferDesc & desc, char * initialData)
 {
   D3D11_BUFFER_DESC bdesc = { 0 };
   switch (desc.usage)
@@ -37,37 +31,36 @@ void D3DConstantBuffer::create(const Device& device, const DrBufferDesc & desc, 
   bdesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
   D3D11_SUBRESOURCE_DATA subData = { initialData, 0, 0 };
   if (static_cast<const D3DDevice*>(&device)->D3D11Device->CreateBuffer(&bdesc, &subData, &CB) != S_OK) {
-    std::cout << "Error Creating Buffer Layout" << std::endl;
+    return DR_GRAPHICS_ERROR::CREATE_BUFFER_ERROR;
   }
+  return DR_GRAPHICS_ERROR::ERROR_NONE;
 }
-void D3DConstantBuffer::set(const DeviceContext& deviceContext, UInt32 slot, UInt32 numBuffers, DR_SHADER_TYPE_FLAG::E typeFlag) const
+void D3DConstantBuffer::set(const DeviceContext& deviceContext, DR_SHADER_TYPE_FLAG::E typeFlag) const
 {
   if (typeFlag & DR_SHADER_TYPE_FLAG::kVertex)
   {
     static_cast<const D3DDeviceContext*>
-    (&deviceContext)->D3D11DeviceContext->VSSetConstantBuffers(slot, 
-                                                               numBuffers, 
-                                                               CB.GetAddressOf());
+    (&deviceContext)->D3D11DeviceContext->VSSetConstantBuffers(0, 1, CB.GetAddressOf());
   }
   if (typeFlag & DR_SHADER_TYPE_FLAG::kFragment)
   {
-    static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->PSSetConstantBuffers(slot, numBuffers, CB.GetAddressOf());
+    static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->PSSetConstantBuffers(0, 1, CB.GetAddressOf());
   }
   if (typeFlag & DR_SHADER_TYPE_FLAG::kCompute)
   {
-    static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->CSSetConstantBuffers(slot, numBuffers, CB.GetAddressOf());
+    static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->CSSetConstantBuffers(0, 1, CB.GetAddressOf());
   }
   if (typeFlag & DR_SHADER_TYPE_FLAG::kDomain)
   {
-    static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->DSSetConstantBuffers(slot, numBuffers, CB.GetAddressOf());
+    static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->DSSetConstantBuffers(0, 1, CB.GetAddressOf());
   }
   if (typeFlag & DR_SHADER_TYPE_FLAG::kHull)
   {
-    static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->HSSetConstantBuffers(slot, numBuffers, CB.GetAddressOf());
+    static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->HSSetConstantBuffers(0, 1, CB.GetAddressOf());
   }
   if (typeFlag & DR_SHADER_TYPE_FLAG::kGeometry)
   {
-    static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->GSSetConstantBuffers(slot, numBuffers, CB.GetAddressOf());
+    static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->GSSetConstantBuffers(0, 1, CB.GetAddressOf());
   }
   if (typeFlag & DR_SHADER_TYPE_FLAG::kTeselation)
   {
@@ -77,5 +70,9 @@ void D3DConstantBuffer::set(const DeviceContext& deviceContext, UInt32 slot, UIn
   {
     //Not implemented
   }
+}
+void D3DConstantBuffer::release()
+{
+  CB.Get()->Release();
 }
 }
