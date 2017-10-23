@@ -12,6 +12,7 @@ class DR_API_EXPORT Vector3D
  public:
   /**
   * TEST::defaultConstructor
+  *
   * Default constructor
   *
   */
@@ -19,6 +20,7 @@ class DR_API_EXPORT Vector3D
 
   /**
   * TEST::forceInit
+  *
   * Default constructor
   *
   * @param k
@@ -29,13 +31,15 @@ class DR_API_EXPORT Vector3D
 
   /**
   * TEST::moveConstructor
-- * Move constructor
+  *
+  - * Move constructor
   *
   */
   Vector3D(Vector3D&& V) = default;
 
   /**
   * TEST::constructForVector3D
+  *
   * Copy constructor
   *
   */
@@ -43,6 +47,7 @@ class DR_API_EXPORT Vector3D
 
   /**
   * TEST::constructForVector4D
+  *
   * Copy constructor for vec4 to vec3
   *
   */
@@ -50,6 +55,7 @@ class DR_API_EXPORT Vector3D
 
   /**
   * TEST::constructorFor3Floats
+  *
   * Initialize constructor with values.
   *
   * @param _x
@@ -65,6 +71,7 @@ class DR_API_EXPORT Vector3D
 
   /**
   * TEST::destructor
+  *
   * Default destructor
   *
   */
@@ -72,6 +79,7 @@ class DR_API_EXPORT Vector3D
 
   /**
   * TEST::dot
+  *
   * Computes the dot product between this vector and the vector parameter.
   * This operatios is commutative.
   *
@@ -87,6 +95,7 @@ class DR_API_EXPORT Vector3D
 
   /**
   * TEST::cross
+  *
   * Computes the cross product between this vector and the vector parameter.
   * This operatios is NOT commutative.
   *
@@ -103,6 +112,7 @@ class DR_API_EXPORT Vector3D
 
   /**
   * TEST::length
+  *
   * Computes the length of this vector.
   *
   * @return
@@ -113,6 +123,7 @@ class DR_API_EXPORT Vector3D
 
   /**
   * TEST::lengthSqr
+  *
   * Computes the squared length of this vector.
   *
   * @return
@@ -123,6 +134,7 @@ class DR_API_EXPORT Vector3D
 
   /**
   * TEST::normalize
+  *
   * Normalize the vector.
   */
   void
@@ -130,6 +142,7 @@ class DR_API_EXPORT Vector3D
 
   /**
   * TEST::distance
+  *
   * Computes the distance between two vectors.
   *
   * @param scalar
@@ -143,6 +156,7 @@ class DR_API_EXPORT Vector3D
 
   /**
   * TEST::distanceSqr
+  *
   * Computes the squared distance between two vectors.
   *
   * @param scalar
@@ -156,6 +170,7 @@ class DR_API_EXPORT Vector3D
 
   /**
   * TEST::equals
+  *
   * Check's if the other vector is equal to this vector with an error
   * range.
   *
@@ -173,6 +188,7 @@ class DR_API_EXPORT Vector3D
 
   /**
   * TEST::sqrDistSegment
+  *
   * Computes the squared distance between a point and a segment.
   *
   * @param pointA
@@ -189,6 +205,7 @@ class DR_API_EXPORT Vector3D
 
   /**
   * TEST::ptrOperator
+  *
   * Gets a pointer to the first element of the matrix.
   *
   * @return
@@ -199,6 +216,7 @@ class DR_API_EXPORT Vector3D
 
   /**
   * TEST::constPtrOperator
+  *
   * Gets a constant pointer to the first element of the matrix.
   *
   * @return
@@ -209,6 +227,7 @@ class DR_API_EXPORT Vector3D
 
   /**
   * TEST::operatorBrackets
+  *
   * Gets a reference to the specified element from the vector.
   *
   *	@param index
@@ -225,6 +244,7 @@ class DR_API_EXPORT Vector3D
 
   /**
   * TEST::operatorBracketsPtr
+  *
   * Gets a reference to the specified element from the vector.
   *
   *	@param index
@@ -241,6 +261,7 @@ class DR_API_EXPORT Vector3D
 
   /**
   * TEST::operatorDot
+  *
   * Computes the dot product between this vector and the vector parameter.
   * This operatios is commutative.
   *
@@ -256,6 +277,7 @@ class DR_API_EXPORT Vector3D
 
   /**
   * TEST::operatorCross
+  *
   * Computes the cross product between this vector and the vector parameter.
   * This operatios is NOT commutative.
   *
@@ -272,6 +294,7 @@ class DR_API_EXPORT Vector3D
 
   /**
   * TEST::operatorEqualVector3
+  *
   * Set the x, y, z values of this vector
   * with the x, y, z of the other vector.
   *
@@ -286,6 +309,7 @@ class DR_API_EXPORT Vector3D
 
   /**
   * TEST::operatorEqualVector4
+  *
   * Set the x, y, z values of this vector
   * with the x, y, z of the other vector.
   *
@@ -300,6 +324,7 @@ class DR_API_EXPORT Vector3D
 
   /**
   * TEST::operatorAdd
+  *
   * Adds elements of the vector with
   * the elements of the other vector.
   *
@@ -314,6 +339,7 @@ class DR_API_EXPORT Vector3D
 
   /**
   * TEST::operatorAddEqual
+  *
   * Adds elements of the vector with
   * the elements of the other vector
   * and stores it in this vector.
@@ -329,6 +355,7 @@ class DR_API_EXPORT Vector3D
 
   /**
   * TEST::operatorMinus
+  *
   * Substracts elements of the vector with
   * the elements of the other vector.
   *
@@ -343,6 +370,7 @@ class DR_API_EXPORT Vector3D
 
   /**
   * TEST::operatorMinusEqual
+  *
   * Substracts elements of the vector with
   * the elements of the other vector and
   * stores it in this vector.
@@ -358,6 +386,7 @@ class DR_API_EXPORT Vector3D
 
   /**
   * TEST::operatorMultiplication
+  *
   * Multiplies elements of the vector with
   * the elements of the other vector.
   *
@@ -372,6 +401,7 @@ class DR_API_EXPORT Vector3D
 
   /**
   * TEST::operatorMultiplicationEqual
+  *
   * Multiplies elements of the vector with
   * the elements of the other vector, and stores
   * the result in this vector.
@@ -387,6 +417,7 @@ class DR_API_EXPORT Vector3D
 
   /**
   * TEST::operatorMultiplicationScalar
+  *
   * Multiplies elements of the vector.
   *
   * @param scalar
@@ -400,6 +431,7 @@ class DR_API_EXPORT Vector3D
 
   /**
   * TEST::operatorMultiplicationEqualScalar
+  *
   * Multiplies elements of the vector and stores it in the vector.
   *
   * @param scalar
@@ -413,6 +445,7 @@ class DR_API_EXPORT Vector3D
 
   /**
   * TEST::operatorDivisionScalar
+  *
   * Divide elements of the vector.
   *
   * @param scalar
@@ -426,6 +459,7 @@ class DR_API_EXPORT Vector3D
 
   /**
   * TEST::operatorDivisionEqualScalar
+  *
   * Divide elements of the vector and stores it in the vector.
   *
   * @param scalar
@@ -439,6 +473,7 @@ class DR_API_EXPORT Vector3D
 
   /**
   * TEST::operatorEqualEqual
+  *
   * Checks if the values of the vectors are equal.
   *
   * @return
@@ -449,6 +484,7 @@ class DR_API_EXPORT Vector3D
 
   /**
   * TEST::operatorNotEqual
+  *
   * Checks if the values of the vectors aren't equal.
   *
   * @return
@@ -459,6 +495,7 @@ class DR_API_EXPORT Vector3D
 
   /**
   * TEST::operatorNegate
+  *
   * Returns this vector with negated values.
   */
   Vector3D

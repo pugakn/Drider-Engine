@@ -12,6 +12,7 @@ class DR_API_EXPORT Vector4D
  public:
   /**
   * TEST::defaultConstructor
+  *
   * Default constructor.
   *
   */
@@ -19,6 +20,7 @@ class DR_API_EXPORT Vector4D
 
   /**
   * TEST::forceInit
+  *
   * Default constructor.
   *
   * @param k
@@ -29,6 +31,7 @@ class DR_API_EXPORT Vector4D
 
   /**
   * TEST::moveContructor
+  *
   * Move constructor.
   *
   */
@@ -36,6 +39,7 @@ class DR_API_EXPORT Vector4D
 
   /**
   * TEST::copyConstructor4D
+  *
   * Copy constructor.
   *
   */
@@ -43,6 +47,7 @@ class DR_API_EXPORT Vector4D
 
   /**
   * TEST::copyConstructor3D
+  *
   * Copy constructor for vec3 to vec4.
   *
   */
@@ -50,6 +55,7 @@ class DR_API_EXPORT Vector4D
 
   /**
   * TEST::copyConstructor3DwithW
+  *
   * Copy constructor for vec3 to vec4 with w value.
   *
   */
@@ -57,6 +63,7 @@ class DR_API_EXPORT Vector4D
 
   /**
   * TEST::floatsConstructor
+  *
   * Initialize constructor with values.
   *
   * @param _x
@@ -75,6 +82,7 @@ class DR_API_EXPORT Vector4D
 
   /**
   * TEST::destructor
+  *
   * Default destructor
   *
   */
@@ -82,6 +90,7 @@ class DR_API_EXPORT Vector4D
 
   /**
   * TEST::dot3
+  *
   * Computes the dot product (excluding w) between this vector and the vector parameter.
   * This operatios is commutative.
   *
@@ -97,6 +106,7 @@ class DR_API_EXPORT Vector4D
 
   /**
   * TEST::dot
+  *
   * Computes the dot product between this vector and the vector parameter.
   * This operatios is commutative.
   *
@@ -112,6 +122,7 @@ class DR_API_EXPORT Vector4D
 
   /**
   * TEST::cross
+  *
   * Computes the cross product between this vector and the vector parameter.
   * W value is not used, and it's final value will be 0.
   * This operatios is NOT commutative.
@@ -129,6 +140,7 @@ class DR_API_EXPORT Vector4D
 
   /**
   * TEST::length3
+  *
   * Computes the length of this vector.
   *
   * @return
@@ -139,6 +151,7 @@ class DR_API_EXPORT Vector4D
 
   /**
   * TEST::length
+  *
   * Computes the length of this vector.
   *
   * @return
@@ -149,6 +162,7 @@ class DR_API_EXPORT Vector4D
 
   /**
   * TEST::lengthSqr3
+  *
   * Computes the squared length of this vector.
   *
   * @return
@@ -159,6 +173,7 @@ class DR_API_EXPORT Vector4D
 
   /**
   * TEST::lengthSqr
+  *
   * Computes the squared length of this vector.
   *
   * @return
@@ -169,6 +184,7 @@ class DR_API_EXPORT Vector4D
 
   /**
   * TEST::normalize3
+  *
   * Normalize the vector.
   */
   void
@@ -176,6 +192,7 @@ class DR_API_EXPORT Vector4D
 
   /**
   * TEST::normalize
+  *
   * Normalize the vector.
   */
   void
@@ -183,6 +200,7 @@ class DR_API_EXPORT Vector4D
 
   /**
   * TEST::distance3
+  *
   * Computes the distance between two vectors.
   *
   * @param scalar
@@ -196,6 +214,7 @@ class DR_API_EXPORT Vector4D
 
   /**
   * TEST::distance
+  *
   * Computes the distance between two vectors.
   *
   * @param scalar
@@ -209,6 +228,7 @@ class DR_API_EXPORT Vector4D
 
   /**
   * TEST::distanceSqr3
+  *
   * Computes the squared distance between two vectors.
   *
   * @param scalar
@@ -222,6 +242,7 @@ class DR_API_EXPORT Vector4D
 
   /**
   * TEST::distanceSqr
+  *
   * Computes the squared distance between two vectors.
   *
   * @param scalar
@@ -235,6 +256,7 @@ class DR_API_EXPORT Vector4D
 
   /**
   * TEST::equals
+  *
   * Check's if the other vector is equal to this vector with an error
   * range.
   *
@@ -252,6 +274,7 @@ class DR_API_EXPORT Vector4D
 
   /**
   * TEST::ptrOperator
+  *
   * Gets a pointer to the first element of the matrix.
   *
   * @return
@@ -262,6 +285,7 @@ class DR_API_EXPORT Vector4D
 
   /**
   * TEST::constPtrOperator
+  *
   * Gets a constant pointer to the first element of the matrix.
   *
   * @return
@@ -272,6 +296,7 @@ class DR_API_EXPORT Vector4D
 
   /**
   * TEST::indexOperator
+  *
   * Gets a reference to the specified element from the vector.
   *
   *	@param index
@@ -288,6 +313,7 @@ class DR_API_EXPORT Vector4D
 
   /**
   * TEST::constIndexOperator
+  *
   * Gets a const reference to the specified element from the vector.
   *
   *	@param index
@@ -304,6 +330,7 @@ class DR_API_EXPORT Vector4D
 
   /**
   * TEST::dotOperator
+  *
   * Computes the dot product between this vector and the vector parameter.
   * This operatios is commutative.
   *
@@ -319,6 +346,7 @@ class DR_API_EXPORT Vector4D
 
   /**
   * TEST::crossOperator
+  *
   * Computes the cross product between this vector and the vector parameter.
   * This operatios is NOT commutative.
   *
@@ -335,6 +363,7 @@ class DR_API_EXPORT Vector4D
 
   /**
   * TEST::equalvec4Operator
+  *
   * Set the x, y, z, w values of this vector
   * with the x, y, z, w of the other vector.
   *
@@ -349,6 +378,7 @@ class DR_API_EXPORT Vector4D
 
   /**
   * TEST::equalvec3Operator
+  *
   * Set the x, y, z values of this vector
   * with the x, y, z of the other vector.
   *
@@ -363,6 +393,7 @@ class DR_API_EXPORT Vector4D
 
   /**
   * TEST::addition
+  *
   * Adds elements of the vector with
   * the elements of the other vector.
   *
@@ -377,6 +408,7 @@ class DR_API_EXPORT Vector4D
 
   /**
   * TEST::addEqual
+  *
   * Adds elements of the vector with
   * the elements of the other vector
   * and stores it in this vector.
@@ -392,6 +424,7 @@ class DR_API_EXPORT Vector4D
 
   /**
   * TEST::substraction
+  *
   * Substracts elements of the vector with
   * the elements of the other vector.
   *
@@ -406,6 +439,7 @@ class DR_API_EXPORT Vector4D
 
   /**
   * TEST::lessEqual
+  *
   * Substracts elements of the vector with
   * the elements of the other vector and
   * stores it in this vector.
@@ -421,6 +455,7 @@ class DR_API_EXPORT Vector4D
 
   /**
   * TEST::multiplication
+  *
   * Multiplies elements of the vector with
   * the elements of the other vector.
   *
@@ -435,6 +470,7 @@ class DR_API_EXPORT Vector4D
 
   /**
   * TEST::mulEqual
+  *
   * Multiplies elements of the vector with
   * the elements of the other vector, and stores
   * the result in this vector.
@@ -450,6 +486,7 @@ class DR_API_EXPORT Vector4D
 
   /**
   * TEST::multiplicationFloat
+  *
   * Multiplies elements of the vector.
   *
   * @param scalar
@@ -463,6 +500,7 @@ class DR_API_EXPORT Vector4D
 
   /**
   * TEST::mulEqualFloat
+  *
   * Multiplies elements of the vector and stores it in the vector.
   *
   * @param scalar
@@ -476,6 +514,7 @@ class DR_API_EXPORT Vector4D
 
   /**
   * TEST::divitionFloat
+  *
   * Divide elements of the vector.
   *
   * @param scalar
@@ -489,6 +528,7 @@ class DR_API_EXPORT Vector4D
 
   /**
   * TEST::divEqualFloat
+  *
   * Divide elements of the vector and stores it in the vector.
   *
   * @param scalar
@@ -502,6 +542,7 @@ class DR_API_EXPORT Vector4D
 
   /**
   * TEST::equalOperator
+  *
   * Checks if the values of the vectors are equal.
   *
   * @return
@@ -512,6 +553,7 @@ class DR_API_EXPORT Vector4D
 
   /**
   * TEST::notEqualOperator
+  *
   * Checks if the values of the vectors aren't equal.
   *
   * @return
@@ -522,6 +564,7 @@ class DR_API_EXPORT Vector4D
 
   /**
   * TEST::unaryLess
+  *
   * Returns this vector with negated values.
   */
   Vector4D
