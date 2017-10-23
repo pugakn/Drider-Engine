@@ -45,6 +45,17 @@ TEST(Matrix4x4, forceInit) {
                     0, 0, 0, 1);
 }
 
+TEST(Matrix4x4, moveConstructor) {
+  driderSDK::Matrix4x4 firstMatrix(driderSDK::Math::FORCE_INIT::kIdentity);
+  driderSDK::Matrix4x4 testMatrix(std::move(firstMatrix));
+
+  checkValuesMatrix(testMatrix,
+                    1, 0, 0, 0,
+                    0, 1, 0, 0,
+                    0, 0, 1, 0,
+                    0, 0, 0, 1);
+}
+
 TEST(Matrix4x4, constructForMatrix4x4) {
   driderSDK::Matrix4x4 firstMatrix(driderSDK::Math::FORCE_INIT::kIdentity);
   driderSDK::Matrix4x4 testMatrix(firstMatrix);
@@ -67,6 +78,30 @@ TEST(Matrix4x4, constructFor16Floats) {
                     5, 6, 7, 8,
                     9, 10, 11, 12,
                     13, 14, 15, 16);
+}
+
+TEST(Matrix4x4, constructFor4Vectors) {
+  driderSDK::Vector4D vectorTes1(1, 2, 3, 4);
+  driderSDK::Vector4D vectorTes2(5, 6, 7, 8);
+  driderSDK::Vector4D vectorTes3(9, 10, 11, 12);
+  driderSDK::Vector4D vectorTes4(13, 14, 15, 16);
+
+  driderSDK::Matrix4x4 testMatrix(vectorTes1, vectorTes2, vectorTes3, vectorTes4);
+
+  checkValuesMatrix(testMatrix,
+                    1, 2, 3, 4,
+                    5, 6, 7, 8,
+                    9, 10, 11, 12,
+                    13, 14, 15, 16);
+}
+
+TEST(Matrix4x4, destructor) {
+  driderSDK::Matrix4x4 testMatrix(1, 2, 3, 4,
+                                  5, 6, 7, 8,
+                                  9, 10, 11, 12,
+                                  13, 14, 15, 16);
+  testMatrix.~Matrix4x4();
+  EXPECT_TRUE(true);
 }
 
 TEST(Matrix4x4, determinant) {
@@ -127,6 +162,32 @@ TEST(Matrix4x4, identity) {
                     0, 1, 0, 0,
                     0, 0, 1, 0,
                     0, 0, 0, 1);
+}
+
+TEST(Matrix4x4, getPointer) {
+  driderSDK::Matrix4x4* ptr;
+  driderSDK::Matrix4x4 testMatrix(1, 2, 3, 4,
+                                  5, 6, 7, 8,
+                                  9, 10, 11, 12,
+                                  13, 14, 15, 16);
+  ptr = &testMatrix;
+
+  checkValuesMatrix((*ptr),
+                    1, 2, 3, 4,
+                    5, 6, 7, 8,
+                    9, 10, 11, 12,
+                    13, 14, 15, 16);
+}
+
+TEST(Matrix4x4, getPointerConst) {
+  driderSDK::Matrix4x4 const *ptr;
+  driderSDK::Matrix4x4 testMatrix(1, 2, 3, 4,
+                                  5, 6, 7, 8,
+                                  9, 10, 11, 12,
+                                  13, 14, 15, 16);
+  ptr = &testMatrix;
+
+  EXPECT_TRUE(ptr == &testMatrix);
 }
 
 TEST(Matrix4x4, operatorEqual) {

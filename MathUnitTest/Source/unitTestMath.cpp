@@ -28,6 +28,7 @@ int main(int argc, char* argv[])
   //::testing::GTEST_FLAG(filter) = "Vector4D.*";
   //::testing::GTEST_FLAG(filter) = "Radian.*";
   //::testing::GTEST_FLAG(filter) = "Vector3D.*";
+  //::testing::GTEST_FLAG(filter) = "Matrix3x3.*";
 	//::testing::GTEST_FLAG(filter) = "aabb.*";
 
   //::testing::GTEST_FLAG(filter) = "Capsule.*";

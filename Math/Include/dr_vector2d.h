@@ -9,12 +9,14 @@ class DR_API_EXPORT Vector2D
 {
  public:
   /**
+  * TEST::defaultConstructor
   * Default constructor.
   *
   */
   Vector2D();
 
   /**
+  * TEST:forceInit
   * Default constructor.
   * 
   * @param k
@@ -24,18 +26,21 @@ class DR_API_EXPORT Vector2D
   explicit Vector2D(Math::FORCE_INIT k);
 
   /**
+  * TEST::moveContructor
   * Move constructor.
   *
   */
   Vector2D(Vector2D&& V) = default;
 
   /**
+  * TEST::constructForVector2DI
   * Copy constructor.
   *
   */
   Vector2D(const Vector2D& V);
 
   /**
+  * TEST::constructorFor2Int32
   * Initialize constructor with values.
   *
   * @param _x
@@ -47,12 +52,14 @@ class DR_API_EXPORT Vector2D
   Vector2D(float _x, float _y);
 
   /**
+  * TEST::destructor
   * Default destructor.
   *
   */
   ~Vector2D();
 
   /**
+  * TEST:: dot
   * Computes the dot product between this vector and the vector parameter.
   * This operatios is commutative.
   *
@@ -67,6 +74,7 @@ class DR_API_EXPORT Vector2D
   dot(const Vector2D& B) const;
 
   /**
+  * TEST::cross
   * Computes the cross product between himself.
   *
   * @return
@@ -76,6 +84,7 @@ class DR_API_EXPORT Vector2D
   cross() const;
 
   /**
+  * TEST::length
   * Computes the length of this vector.
   *
   * @return
@@ -85,6 +94,7 @@ class DR_API_EXPORT Vector2D
   length() const;
 
   /**
+  * TEST::lengthSqr
   * Computes the squared length of this vector.
   *
   * @return
@@ -94,12 +104,14 @@ class DR_API_EXPORT Vector2D
   lengthSqr() const;
 
   /**
+  * TEST::normalize
   * Normalize the vector.
   */
   void
   normalize();
 
   /**
+  * TEST::distance
   * Computes the distance between two vectors.
   *
   * @param otherVector

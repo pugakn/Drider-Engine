@@ -5,16 +5,24 @@
 
 namespace driderSDK {
 
+/**
+* Vector with 2 elements (x, y)
+*
+* Sample usage:
+* Vector2D vectorName;
+*/
 class DR_API_EXPORT Vector2DI
 {
  public:
   /**
+  * TEST::defaultConstructor
   * Default constructor
   *
   */
   Vector2DI();
 
   /**
+  * TEST::forceInit
   * Default constructor
   * 
   * @param k
@@ -24,18 +32,21 @@ class DR_API_EXPORT Vector2DI
   explicit Vector2DI(Math::FORCE_INIT k);
 
   /**
+  * TEST::moveContructor
   * Move constructor
   *
   */
   Vector2DI(Vector2DI&& V) = default;
 
   /**
+  * TEST::copyConstructor
   * Copy constructor
   *
   */
   Vector2DI(const Vector2DI& V);
 
   /**
+  * TEST::constructorFor2Floats
   * Initialize constructor with values.
   *
   * @param _x
@@ -47,12 +58,14 @@ class DR_API_EXPORT Vector2DI
   Vector2DI(Int32 _x, Int32 _y);
 
   /**
+  * TEST::destructor
   * Default destructor
   *
   */
   ~Vector2DI();
 
   /**
+  * TEST::dot
   * Computes the dot product between this vector and the vector parameter.
   * This operatios is commutative.
   *
@@ -67,6 +80,7 @@ class DR_API_EXPORT Vector2DI
   dot(const Vector2DI& B) const;
 
   /**
+  * TEST::cross
   * Computes the cross product between himself.
   *
   * @return
@@ -76,6 +90,7 @@ class DR_API_EXPORT Vector2DI
   cross() const;
 
   /**
+  * TEST::length
   * Computes the length of this vector.
   *
   * @return
@@ -85,6 +100,7 @@ class DR_API_EXPORT Vector2DI
   length() const;
 
   /**
+  * TEST::lengthSqr
   * Computes the squared length of this vector.
   *
   * @return
@@ -94,12 +110,14 @@ class DR_API_EXPORT Vector2DI
   lengthSqr() const;
 
   /**
+  * TEST::normalize
   * Normalize the vector.
   */
   void
   normalize();
 
   /**
+  * TEST::distance
   * Computes the distance between two vectors.
   *
   * @param scalar
