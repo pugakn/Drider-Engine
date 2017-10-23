@@ -350,7 +350,7 @@ Intersect::segmentPlane(const Vector3D& linePointA,
                         const Vector3D& linePointB,
                         const Vector3D& planeNormal,
                         float planeGap) {
-  Vector3D segmentDir = linePointB - linePointB;
+  Vector3D segmentDir = linePointB - linePointA;
   segmentDir.normalize();
 
   float d = planeNormal.dot(segmentDir);
