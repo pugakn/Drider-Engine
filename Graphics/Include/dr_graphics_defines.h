@@ -172,7 +172,8 @@ namespace DR_GRAPHICS_ERROR {
     CREATE_SHADER_ERROR  = -2,
     CREATE_BUFFER_ERROR  = -3,
     ERROR_NOT_IMPLEMENTED = -4,
-    CREATE_INPUT_LAYOUT_ERROR = -5
+    CREATE_INPUT_LAYOUT_ERROR = -5,
+    CREATE_RASTERIZER_STATE_ERROR = -6
   };
 }
 
@@ -200,6 +201,21 @@ namespace DR_CPU_ACCESS_FLAG{
 enum E {
   drWrite = 0x10000L,
   drRead  = 0x20000L
+};
+}
+
+namespace DR_FILL_MODE {
+enum E {
+  kWireframe = 2,
+  kSolid = 3
+};
+}
+
+namespace DR_CULL_MODE {
+enum E {
+  kNone = 1,
+  kFront = 2,
+  kBack = 3
 };
 }
 
@@ -246,4 +262,17 @@ struct DR_API_EXPORT DrTextureDesc
   UInt32 CPUAccessFlags;
 };
 
+struct DR_API_EXPORT DrRasterizerDesc
+{
+  DR_FILL_MODE::E fillMode;
+  DR_CULL_MODE::E cullMode;
+  bool  frontCounterClockwise;
+  Int32 depthBias;
+  float depthBiasClamp;
+  float slopeScaledDepthBias;
+  bool depthClipEnable;
+  bool scissorEnable;
+  bool multisampleEnable;
+  bool antialiasedLineEnable;
+};
 }

@@ -180,9 +180,6 @@
     <ClInclude Include="Include\dr_d3d_depth_stencil.h">
       <Filter>Archivos de encabezado\DirectX11\Textures</Filter>
     </ClInclude>
-    <ClInclude Include="Include\dr_d3d_resterizer_state.h">
-      <Filter>Archivos de encabezado\DirectX11</Filter>
-    </ClInclude>
     <ClInclude Include="Include\dr_d3d_swap_chain.h">
       <Filter>Archivos de encabezado\DirectX11</Filter>
     </ClInclude>
@@ -195,11 +192,11 @@
     <ClInclude Include="Include\dr_d3d_depth_stencil_state.h">
       <Filter>Archivos de encabezado\DirectX11</Filter>
     </ClInclude>
+    <ClInclude Include="Include\dr_d3d_rasterizer_state.h">
+      <Filter>Archivos de encabezado\DirectX11</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\dr_d3d_device.cpp">
-      <Filter>Archivos de código fuente</Filter>
-    </ClCompile>
     <ClCompile Include="Source\dr_d3d_constant_buffer.cpp">
       <Filter>Archivos de código fuente\DirectX11\Buffers</Filter>
     </ClCompile>
@@ -246,6 +243,12 @@
       <Filter>Archivos de código fuente\DirectX11\Textures</Filter>
     </ClCompile>
     <ClCompile Include="Source\dr_d3d_input_layout.cpp">
+      <Filter>Archivos de código fuente\DirectX11</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_d3d_rasterizer_state.cpp">
+      <Filter>Archivos de código fuente\DirectX11</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_d3d_device.cpp">
       <Filter>Archivos de código fuente\DirectX11</Filter>
     </ClCompile>
   </ItemGroup>

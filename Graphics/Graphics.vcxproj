@@ -152,7 +152,7 @@
     <ClInclude Include="Include\dr_d3d_index_buffer.h" />
     <ClInclude Include="Include\dr_d3d_input_layout.h" />
     <ClInclude Include="Include\dr_d3d_render_target.h" />
-    <ClInclude Include="Include\dr_d3d_resterizer_state.h" />
+    <ClInclude Include="Include\dr_d3d_rasterizer_state.h" />
     <ClInclude Include="Include\dr_d3d_sample_state.h" />
     <ClInclude Include="Include\dr_d3d_swap_chain.h" />
     <ClInclude Include="Include\dr_d3d_teselation_shader.h" />
@@ -196,6 +196,7 @@
     <ClCompile Include="Source\dr_d3d_hull_shader.cpp" />
     <ClCompile Include="Source\dr_d3d_index_buffer.cpp" />
     <ClCompile Include="Source\dr_d3d_input_layout.cpp" />
+    <ClCompile Include="Source\dr_d3d_rasterizer_state.cpp" />
     <ClCompile Include="Source\dr_d3d_render_target.cpp" />
     <ClCompile Include="Source\dr_d3d_teselation_shader.cpp" />
     <ClCompile Include="Source\dr_d3d_texture.cpp" />
