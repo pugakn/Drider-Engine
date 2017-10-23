@@ -7,7 +7,7 @@
 #include "dr_shader.h"
 #include "dr_buffer.h"
 namespace driderSDK {
-class D3DDeviceContext : public DeviceContext {
+class DR_API_EXPORT D3DDeviceContext : public DeviceContext {
 public:
 
   void create() override;

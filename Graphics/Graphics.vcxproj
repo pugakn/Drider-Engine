@@ -198,6 +198,7 @@
     <ClCompile Include="Source\dr_d3d_input_layout.cpp" />
     <ClCompile Include="Source\dr_d3d_rasterizer_state.cpp" />
     <ClCompile Include="Source\dr_d3d_render_target.cpp" />
+    <ClCompile Include="Source\dr_d3d_sample_state.cpp" />
     <ClCompile Include="Source\dr_d3d_teselation_shader.cpp" />
     <ClCompile Include="Source\dr_d3d_texture.cpp" />
     <ClCompile Include="Source\dr_d3d_texture_shader.cpp" />

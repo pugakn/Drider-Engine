@@ -4,7 +4,7 @@
 #include <wrl.h>
 #include <wrl/client.h>
 namespace driderSDK {
-class DR_API_EXPORT D3DDevice : public Device
+class DR_API_EXPORT DR_API_EXPORT D3DDevice : public Device
 {
 public:
   DR_GRAPHICS_ERROR::E createVertexBuffer(const DrBufferDesc& desc, char* initialData, VertexBuffer& vertexBuffer) override;

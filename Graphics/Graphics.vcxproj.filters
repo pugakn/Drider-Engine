@@ -251,5 +251,8 @@
     <ClCompile Include="Source\dr_d3d_device.cpp">
       <Filter>Archivos de código fuente\DirectX11</Filter>
     </ClCompile>
+    <ClCompile Include="Source\dr_d3d_sample_state.cpp">
+      <Filter>Archivos de código fuente\DirectX11</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
