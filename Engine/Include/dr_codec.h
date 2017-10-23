@@ -20,9 +20,29 @@ namespace ResourceType {
 
 struct DR_API_EXPORT Codec
 {
+  /**
+  * TEST::codecDecode
+  * Decodes and load a resource.
+  *
+  * @param pathName
+  *   Path of the file (include extension).
+  *
+  * @return
+  *   The type of the resource ResourceType::E.
+  */
   static ResourceType::E
   decode(std::string pathName);
 
+  /**
+  * TEST::codecEncode
+  * Encode and save a resource.
+  *
+  * @param pathName
+  *   Path of the file (include extension).
+  *
+  * @return
+  *   Shared_ptr to a Resource.
+  */
   static std::shared_ptr<Resource>
   encode(std::string pathName);
 };

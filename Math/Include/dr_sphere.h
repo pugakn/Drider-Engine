@@ -14,18 +14,27 @@ class DR_API_EXPORT Sphere
 {
  public:
   /**
+  * TEST::sphereConstructor
   *	Default constructor.
   */
   Sphere() {}
 
   /**
+  * TEST::sphereConstructor
   *	Constructor with center and radius.
   */
   Sphere(Vector3D _center,
          float _radius);
+
+  /**
+  * TEST::sphereDestructor
+  *	Destructor.
+  */
+
   ~Sphere() {}
  
   /**
+  * TEST::intersectsPoint
   * Checks if a point is on a sphare.
   *
   * @param point
@@ -38,6 +47,7 @@ class DR_API_EXPORT Sphere
   intersects(const Vector3D& point);
 
   /**
+  * TEST::intersectsPlane
   * Checks if a plane intersets with a sphere.
   *
   * @param plane
@@ -50,6 +60,7 @@ class DR_API_EXPORT Sphere
   intersects(const Plane& plane);
 
   /**
+  * TEST::intersectsSphere
   * Checks if a sphere intersets with other sphere.
   *
   * @param sphere
@@ -62,6 +73,7 @@ class DR_API_EXPORT Sphere
   intersects(const Sphere& sphere);
 
   /**
+  * TEST::intersectsAabb
   * Checks if a aabb intersets with a sphere.
   *
   * @param aabb
@@ -74,6 +86,7 @@ class DR_API_EXPORT Sphere
   intersects(const AABB& aabb);
 
   /**
+  * TEST::intersectsCapsule
   * Checks if a capsule intersets with a sphere.
   *
   * @param capsule
@@ -86,6 +99,7 @@ class DR_API_EXPORT Sphere
   intersects(const Capsule& capsule);
 
   /**
+  * TEST::intersectsFrustrum
   * Checks if a frustrum intersets with a sphere.
   *
   * @param frustrum
