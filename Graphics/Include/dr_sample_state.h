@@ -5,6 +5,7 @@ namespace driderSDK {
 class DR_API_EXPORT SamplerState {
  public:
   virtual ~SamplerState() {}
+  virtual void set(UInt32 slot, UInt32 numSamplers) const = 0;
   DrSampleDesc sampleDesc;
 };
 }

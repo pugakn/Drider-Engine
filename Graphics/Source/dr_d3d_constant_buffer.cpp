@@ -1,5 +1,7 @@
 #include "dr_d3d_constant_buffer.h"
 #include <iostream>
+#include <d3d11.h>
+#include <dxgi.h>
 #include "dr_d3d_device.h"
 #include "dr_d3d_device_context.h"
 
@@ -38,11 +40,14 @@ void D3DConstantBuffer::create(const Device& device, const DrBufferDesc & desc, 
     std::cout << "Error Creating Buffer Layout" << std::endl;
   }
 }
-void D3DConstantBuffer::set(const DeviceContext& deviceContext, UInt32 slot, UInt32 numBuffers, DR_SHADER_TYPE_FLAG::E typeFlag)
+void D3DConstantBuffer::set(const DeviceContext& deviceContext, UInt32 slot, UInt32 numBuffers, DR_SHADER_TYPE_FLAG::E typeFlag) const
 {
   if (typeFlag & DR_SHADER_TYPE_FLAG::kVertex)
   {
-    static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->VSSetConstantBuffers(slot, numBuffers, CB.GetAddressOf());
+    static_cast<const D3DDeviceContext*>
+    (&deviceContext)->D3D11DeviceContext->VSSetConstantBuffers(slot, 
+                                                               numBuffers, 
+                                                               CB.GetAddressOf());
   }
   if (typeFlag & DR_SHADER_TYPE_FLAG::kFragment)
   {

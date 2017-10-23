@@ -6,6 +6,6 @@ class DR_API_EXPORT IndexBuffer : public Buffer
 {
 public:
   virtual ~IndexBuffer() {}
-  virtual void set(const DeviceContext& device, UInt32 offset) = 0;
+  virtual void set(const DeviceContext& device, UInt32 offset) const = 0;
 };
 }

@@ -11,21 +11,22 @@ class DR_API_EXPORT Device
 {
  public:
   virtual ~Device() {}
-  virtual void createVertexBuffer(const DrBufferDesc& desc,char* initialData,VertexBuffer& vertexBuffer) = 0;
-  virtual void createIndexBuffer(const DrBufferDesc& desc, char* initialData, IndexBuffer& indexBuffer) = 0;
-  virtual void createConstantBuffer(const DrBufferDesc& desc, char* initialData, ConstantBuffer& constantBuffer) = 0;
+  virtual DR_GRAPHICS_ERROR::E create() = 0;
+  virtual void release() = 0;
 
-  virtual void createShaderFromMemory(const char* shaderBuffer, size_t bufferSize, Shader& shader) = 0;
+  virtual DR_GRAPHICS_ERROR::E createVertexBuffer(const DrBufferDesc& desc,char* initialData,VertexBuffer& vertexBuffer) = 0;
+  virtual DR_GRAPHICS_ERROR::E createIndexBuffer(const DrBufferDesc& desc, char* initialData, IndexBuffer& indexBuffer) = 0;
+  virtual DR_GRAPHICS_ERROR::E createConstantBuffer(const DrBufferDesc& desc, char* initialData, ConstantBuffer& constantBuffer) = 0;
 
-  virtual void createBlendState() = 0;
-  virtual void createSamplerState() = 0;
-  virtual void createRasteizerState() = 0;
+  virtual DR_GRAPHICS_ERROR::E createShaderFromMemory(const char* shaderBuffer, size_t bufferSize, Shader& shader) = 0;
 
-  virtual void createTexture1D(const char* buffer, Texture& texture) = 0;
-  virtual void createTexture2D(const char* buffer, Texture& texture) = 0;
-  virtual void createTexture3D(const char* buffer, Texture& texture) = 0;
+  virtual DR_GRAPHICS_ERROR::E createBlendState() = 0;
+  virtual DR_GRAPHICS_ERROR::E createSamplerState() = 0;
+  virtual DR_GRAPHICS_ERROR::E createRasteizerState() = 0;
 
-  virtual void createDepthStencilState() = 0;
+  virtual DR_GRAPHICS_ERROR::E createTexture(const char* buffer, const DrTextureDesc& desc, Texture& texture) = 0;
+
+  virtual DR_GRAPHICS_ERROR::E createDepthStencilState() = 0;
 
  private:
 

@@ -7,6 +7,6 @@ class DR_API_EXPORT ConstantBuffer : public Buffer
 {
  public:
   virtual ~ConstantBuffer() {}
-  virtual void set(const DeviceContext& deviceContext, UInt32 slot, UInt32 numBuffers, DR_SHADER_TYPE_FLAG::E typeFlag) = 0;
+  virtual void set(const DeviceContext& deviceContext, DR_SHADER_TYPE_FLAG::E typeFlag) const = 0;
 };
 }

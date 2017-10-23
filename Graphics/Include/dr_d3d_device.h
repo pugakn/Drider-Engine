@@ -3,9 +3,6 @@
 #include "dr_device.h"
 #include <wrl.h>
 #include <wrl/client.h>
-#include <D3Dcompiler.h>
-#include <d3d11.h>
-#include <dxgi.h>
 namespace driderSDK {
 class DR_API_EXPORT D3DDevice : public Device
 {

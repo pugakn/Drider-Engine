@@ -1,4 +1,6 @@
 #include "dr_d3d_device_context.h"
+#include <d3d11.h>
+#include <dxgi.h>
 #include "dr_shader.h"
 #include "dr_d3d_vertex_buffer.h"
 #include "dr_d3d_index_buffer.h"

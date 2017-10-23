@@ -6,7 +6,7 @@ class DR_API_EXPORT VertexBuffer : public Buffer
 {
 public:
   virtual ~VertexBuffer() {}
-  virtual void set(const DeviceContext& deviceContext, UInt32 slot, UInt32 numBuffers, UInt32 stride, UInt32 offset) = 0;
+  virtual void set(const DeviceContext& deviceContext, UInt32 stride, UInt32 offset) const = 0;
 private:
 };
 }

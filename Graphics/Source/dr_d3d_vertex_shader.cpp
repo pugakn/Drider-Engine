@@ -1,10 +1,12 @@
 #include "dr_d3d_vertex_shader.h"
-#include <d3dcompiler.h>
+#include <D3Dcompiler.h>
+#include <d3d11.h>
+#include <dxgi.h>
 #include <iostream>
 #include "dr_d3d_device.h"
 #include "dr_d3d_device_context.h"
 namespace driderSDK {
-void D3DVertexShader::set(const DeviceContext& deviceContext)
+void D3DVertexShader::set(const DeviceContext& deviceContext) const
 {
   static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->VSSetShader(APIShader.Get(),0,0);
 };

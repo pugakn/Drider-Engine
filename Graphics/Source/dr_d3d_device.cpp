@@ -1,5 +1,8 @@
 #include "dr_d3d_device.h"
 #include <iostream>
+#include <D3Dcompiler.h>
+#include <d3d11.h>
+#include <dxgi.h>
 #include "dr_d3d_vertex_buffer.h"
 #include "dr_d3d_index_buffer.h"
 #include "dr_d3d_constant_buffer.h"

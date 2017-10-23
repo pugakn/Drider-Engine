@@ -82,7 +82,20 @@ enum E {
   kGeometry = 1 << 8
 };
 }
+namespace DR_CPU_ACCESS_FLAG{
+enum E {
+  drWrite = 0x10000L,
+  drRead  = 0x20000L
+};
+}
 
+namespace DR_TEXTURE_TYPE {
+enum E {
+  dr1D,
+  dr2D,
+  dr3D
+};
+}
 struct DR_API_EXPORT DrInputDesc
 {
   UInt32 semanticIndex;
@@ -101,8 +114,20 @@ struct DR_API_EXPORT DrSampleDesc
 struct DR_API_EXPORT DrBufferDesc
 {
   DR_BUFFER_USAGE::E usage;
-  uint32_t stride;
-  uint32_t sizeInBytes;
+  UInt32 stride;
+  UInt32 sizeInBytes;
+};
+
+struct DR_API_EXPORT DrTextureDesc
+{
+  DR_FORMAT::E Format;
+  DrSampleDesc SampleDesc;
+  DR_BUFFER_USAGE::E Usage;
+  UInt32 width;
+  UInt32 height;
+  UInt32 pitch;
+  UInt32 mipLevels;
+  UInt32 CPUAccessFlags;
 };
 
 }
