@@ -8,9 +8,17 @@
 
 namespace driderSDK {
 
+Capsule::Capsule(const Vector3D& _pointA,
+        const Vector3D& _pointB,
+        float _radius) :
+        pointA(_pointA),
+        pointB(_pointB),
+        radius(_radius) {};
+
 bool
 Capsule::intersects(const Plane& plane) {
-  return plane.d > 1; // Error, intersects plane no implemented
+  return Intersect::capsulePlane(pointA, pointB, radius, 
+                                 plane, plane.d);
 }
 
 

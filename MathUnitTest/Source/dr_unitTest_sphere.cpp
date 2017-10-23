@@ -5,7 +5,7 @@
 
 #include <gtest\gtest.h>
 
-TEST(Sphere, intersect_point) {
+TEST(Sphere, intersectPoint) {
   driderSDK::Sphere sphere;
   sphere.center = driderSDK::Vector3D(0.0f, 0.0f, 0.0f);
   sphere.radius = 0.5f;
@@ -17,7 +17,7 @@ TEST(Sphere, intersect_point) {
   EXPECT_FALSE(sphere.intersects(point2));
 }
 
-TEST(Sphere, intersect_sphere) {
+TEST(Sphere, intersectSphere) {
   driderSDK::Sphere sphere;
   sphere.center = driderSDK::Vector3D(0.0f, 0.0f, 0.0f);
   sphere.radius = 0.5f;
@@ -47,7 +47,7 @@ TEST(Sphere, intersect_sphere) {
   EXPECT_TRUE(sphere.intersects(Aabb));
 }*/
 
-TEST(Sphere, intersect_capsule) {
+TEST(Sphere, intersectCapsule) {
   driderSDK::Sphere sphere;
   sphere.center = driderSDK::Vector3D(0.0f, 0.0f, 0.0f);
   sphere.radius = 0.5f;
