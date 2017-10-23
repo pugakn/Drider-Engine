@@ -29,6 +29,7 @@
     <ClCompile Include="Source\dr_unitTest_vector2DI.cpp" />
     <ClCompile Include="Source\dr_unitTest_vector3D.cpp" />
     <ClCompile Include="Source\dr_unitTest_vector4D.cpp" />
+    <ClCompile Include="Source\dr_unitTest_vectorN.cpp" />
     <ClCompile Include="Source\unitTestMath.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

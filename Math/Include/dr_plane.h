@@ -79,9 +79,6 @@ class DR_API_EXPORT Plane : public Vector3D
   intersects(const Plane& other);
 
   bool 
-  intersects(const Plane& other, Line& intersectionLine);
-
-  bool 
   intersects(const Sphere& sphere);
 
   bool 
@@ -95,21 +92,6 @@ class DR_API_EXPORT Plane : public Vector3D
 
   bool 
   intersects(const Ray& ray);
-
-  /**
-	* Checks if a ray intersects with the plane.
-	*
-	*	@param ray
-	*	 The ray to check the intersecton.
-	*
-	* @out intersection
-	*	 The intersection point parameter.
-	*
-	* @return
-	*	  True if the ray intersects with the plane, false otherwise.
-	*/
-  bool 
-  intersects(const Ray& ray, float& intersection);
 
   /**
   * Normalizes the plane. This modifies the normal and the gap. 

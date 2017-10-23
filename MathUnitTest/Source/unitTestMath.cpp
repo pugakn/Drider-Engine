@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
 
   ::testing::GTEST_FLAG(output) = "xml";
   ::testing::InitGoogleTest(&argc, argv);
-  //::testing::GTEST_FLAG(filter) = "Vector4D.*";
+  ::testing::GTEST_FLAG(filter) = "VectorN.*";
   //::testing::GTEST_FLAG(filter) = "Radian.*";
   //::testing::GTEST_FLAG(filter) = "Vector3D.*";
   RUN_ALL_TESTS();

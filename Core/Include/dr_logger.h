@@ -20,7 +20,6 @@ class DR_API_EXPORT Logger : public Module<Logger>
   */
   void
   reset();
-
   /**
   * Adds a message in the error area.
   * Use __FILE__ in the Filename parameter.
