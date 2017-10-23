@@ -8,12 +8,29 @@ void checkValuesVector(driderSDK::Vector3D& testVector, float vx, float vy, floa
   EXPECT_FLOAT_EQ(vz, testVector[2]);
 }
 
+TEST(Vector3D, defaultConstructor) {
+  driderSDK::Vector3D* testingVec = nullptr;
+
+  testingVec = new driderSDK::Vector3D();
+
+  EXPECT_FALSE(nullptr == testingVec);
+
+  delete testingVec;
+}
+
 TEST(Vector3D, forceInit) {
   driderSDK::Vector3D testVector(driderSDK::Math::FORCE_INIT::kZero);
   checkValuesVector(testVector, 0, 0, 0);
 
   driderSDK::Vector3D testVector1(driderSDK::Math::FORCE_INIT::kIdentity);
   checkValuesVector(testVector1, 1, 1, 1);
+}
+
+TEST(Vector3D, moveConstructor) {
+  driderSDK::Vector3D vec1(0, 0, 1);
+  driderSDK::Vector3D vec2(std::move(vec1));
+
+  checkValuesVector(vec2, 0, 0, 1);
 }
 
 TEST(Vector3D, constructForVector3D) {
@@ -34,6 +51,12 @@ TEST(Vector3D, constructorFor3Floats) {
   driderSDK::Vector3D testVector(0, 1, 2);
 
   checkValuesVector(testVector, 0, 1, 2);
+}
+
+TEST(Vector3D, destructor) {
+  driderSDK::Vector3D testVector(0, 0, 1);
+  testVector.~testVector();
+  checkValuesVector(testVector, 0, 0, 1);
 }
 
 TEST(Vector3D, dot) {
@@ -76,7 +99,7 @@ TEST(Vector3D, length) {
   EXPECT_FLOAT_EQ(10.05046273f, testVector2.length());
 }
 
-TEST(Vector3D, lengthSQR) {
+TEST(Vector3D, lengthSqr) {
   driderSDK::Vector3D testVector(1, 0, 2);
   EXPECT_FLOAT_EQ(5, testVector.lengthSqr());
 
@@ -144,6 +167,48 @@ TEST(Vector3D, equals) {
   EXPECT_TRUE(testVector4.equals(testVector5, 0.05f));
 }
 
+TEST(Vector3D, sqrDistSegment) {
+  driderSDK::Vector3D testVector(0, 0, 10);
+  driderSDK::Vector3D testVector1(1, 0, 20);
+  EXPECT_FALSE(testVector.equals(testVector1));
+
+  driderSDK::Vector3D testVector2(1.02f, 1.0222f, 3.3f);
+  driderSDK::Vector3D testVector3(1.02f, 1.0222f, 3.3f);
+  EXPECT_TRUE(testVector2.equals(testVector3));
+
+  driderSDK::Vector3D testVector4(1.02f, 1.0222f, 2);
+  driderSDK::Vector3D testVector5(1.02f, 1.0322f, 2);
+  EXPECT_TRUE(testVector4.equals(testVector5, 0.05f));
+}
+
+TEST(Vector3D, ptrOperator) {
+  driderSDK::Vector3D testVector(0, 0, 10);
+  driderSDK::Vector3D testVector1(1, 0, 20);
+  EXPECT_FALSE(testVector.equals(testVector1));
+
+  driderSDK::Vector3D testVector2(1.02f, 1.0222f, 3.3f);
+  driderSDK::Vector3D testVector3(1.02f, 1.0222f, 3.3f);
+  EXPECT_TRUE(testVector2.equals(testVector3));
+
+  driderSDK::Vector3D testVector4(1.02f, 1.0222f, 2);
+  driderSDK::Vector3D testVector5(1.02f, 1.0322f, 2);
+  EXPECT_TRUE(testVector4.equals(testVector5, 0.05f));
+}
+
+TEST(Vector3D, constPtrOperator) {
+  driderSDK::Vector3D testVector(0, 0, 10);
+  driderSDK::Vector3D testVector1(1, 0, 20);
+  EXPECT_FALSE(testVector.equals(testVector1));
+
+  driderSDK::Vector3D testVector2(1.02f, 1.0222f, 3.3f);
+  driderSDK::Vector3D testVector3(1.02f, 1.0222f, 3.3f);
+  EXPECT_TRUE(testVector2.equals(testVector3));
+
+  driderSDK::Vector3D testVector4(1.02f, 1.0222f, 2);
+  driderSDK::Vector3D testVector5(1.02f, 1.0322f, 2);
+  EXPECT_TRUE(testVector4.equals(testVector5, 0.05f));
+}
+
 TEST(Vector3D, operatorBrackets) {
   driderSDK::Vector3D testVector(10, 90, 100);
   EXPECT_FLOAT_EQ(10, testVector[0]);
@@ -158,7 +223,7 @@ TEST(Vector3D, operatorBracketsPtr) {
   EXPECT_FLOAT_EQ(10, (*temp));
 }
 
-TEST(Vector3D, operatorOr) {
+TEST(Vector3D, operatorDot) {
   driderSDK::Vector3D testVector(1, 2, 3);
   driderSDK::Vector3D testVector1(3, 4, 5);
 

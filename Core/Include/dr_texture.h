@@ -1,22 +1,20 @@
 #pragma once
 #include <dr_prerequisites.h>
-#include <map>
+#include "dr_resource.h"
 
 namespace driderSDK {
 
-class DR_API_EXPORT Resource {
+class DR_API_EXPORT Texture : public Resource {
  public:
   /**
-  * TEST::resourceConstructor
   *	Default constructor.
   */
-  Resource() { }
+  Texture() { }
 
   /**
-  * TEST::resourceDestructor
   *	Default destructor.
   */
-  virtual ~Resource() { };
+  virtual ~Texture() { }
 };
+} 
 
-}

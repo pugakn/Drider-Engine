@@ -8,17 +8,25 @@
 
 namespace driderSDK {
 
+/**
+*  Quaternion class with real and imaginary values.
+*
+* Sample usage:
+*	Quaternion myQuaternion(0.5, 0.1, 0.0, 1.0);
+*/
 class DR_API_EXPORT Quaternion
 {
  public:
 
   /**
+	* TEST::defaultConstructor
   * Default constructor.
   *
   */
   Quaternion();
 
 	/**
+	* TEST::forceInitZero
 	* Default constructor
 	*
 	* @param k
@@ -27,18 +35,21 @@ class DR_API_EXPORT Quaternion
 	explicit Quaternion(Math::FORCE_INIT k);
 
   /**
+	* TEST::moveConstructor
   * Move constructor.
   *
   */
   Quaternion(Quaternion&& Q) = default;
 
   /**
+	* TEST::constructFromQuaternion
   * Copy constructor.
   *
   */
   Quaternion(const Quaternion& Q);
 
   /**
+	* TEST::constructFrom4floats
   * Initialize the constructor with the given values.
   *
   * @param _x
@@ -56,6 +67,7 @@ class DR_API_EXPORT Quaternion
   Quaternion(float _x, float _y, float _z, float _w);
 
 	/**
+	* TEST::constructFromVector4D
 	* Initialize the constructor with a vector4D
 	*
 	* @param V
@@ -64,12 +76,14 @@ class DR_API_EXPORT Quaternion
 	Quaternion(const Vector4D& V);
 
   /**
+	* TEST::destructor
   * Default destructor.
   *
   */
   ~Quaternion();
 
   /**
+	* TEST::measure
   * Computes the measure of the quaternion.
   *
   * @return
@@ -79,6 +93,7 @@ class DR_API_EXPORT Quaternion
 	measure();
 
   /**
+	* TEST::conjugate
   * Computes the conjugate of the quaternion.
   *
   * @return
@@ -88,6 +103,7 @@ class DR_API_EXPORT Quaternion
   conjugate();
 
   /**
+	* TEST::normalize
   * Normalize the quaternion.
   *
   */
@@ -95,6 +111,7 @@ class DR_API_EXPORT Quaternion
   normalize();
 
   /**
+	* TEST::rotation
   * Rotates the quaternion given theta and another quaternion.
   *
   * @param theta
@@ -110,22 +127,24 @@ class DR_API_EXPORT Quaternion
   rotation(float theta, const Quaternion& A);
 
   /**
+	* TEST::matrixFromQuaternion4x4
   * Creates a 4D matrix from the quaternion.
   *
-  * @param Matrix
+  * @param MatrixOut
   *   Matrix4x4 to be filled.
   */
   void
-  matrixFromQuaternion(Matrix4x4& Matrix);
+  matrixFromQuaternion(Matrix4x4& MatrixOut);
 
 	/**
+	* TEST::matrixFromQuaternion3x3
 	* Creates a 3D matrix from the quaternion.
 	*
-	* @param Matrix
+	* @param MatrixOut
 	*   Matrix3x3 to be filled.
 	*/
 	void
-	matrixFromQuaternion(Matrix3x3& Matrix);
+	matrixFromQuaternion(Matrix3x3& MatrixOut);
 
 	/**
 	* Gets a pointer to the first element of the quaternion.
@@ -146,6 +165,7 @@ class DR_API_EXPORT Quaternion
 	ptr() const;
 
 	/**
+	* TEST::operatorBrackets
 	* Gets a reference to a specific element of the quaternion.
 	*
 	* @return
@@ -164,6 +184,7 @@ class DR_API_EXPORT Quaternion
 	operator[](const SizeT index) const;
 
 	/**
+	* TEST::operatorAdd
 	* Adds two quaternions.
 	*
 	* @param Q
@@ -176,6 +197,7 @@ class DR_API_EXPORT Quaternion
   operator+(const Quaternion& Q) const;
 
 	/**
+	* TEST::operatorAddEquals
 	* Adds two quaternions and stores the result in this quaternion
 	*
 	* @param Q
@@ -188,6 +210,7 @@ class DR_API_EXPORT Quaternion
   operator+=(const Quaternion& Q);
 
 	/**
+	* TEST::operatorMinus
 	* Substracts two quaternions.
 	*
 	* @param Q
@@ -200,6 +223,7 @@ class DR_API_EXPORT Quaternion
   operator-(const Quaternion& Q) const;
 
 	/**
+	* TEST::operatorMinusEquals
 	* Substracts two quaternions and stores the result in this quaternion
 	*
 	* @param Q
@@ -212,6 +236,7 @@ class DR_API_EXPORT Quaternion
   operator-=(const Quaternion& Q);
 
 	/**
+	* TEST::operatorMultiplyByQuaternion
 	* Multiplies two quaternions.
 	*
 	* @param Q
@@ -224,6 +249,7 @@ class DR_API_EXPORT Quaternion
   operator*(const Quaternion& Q) const;
 
 	/**
+	* TEST::operatorMultiplyByScalar
 	* Multiplies quaternion with an scalar.
 	*
 	* @param s
@@ -236,6 +262,7 @@ class DR_API_EXPORT Quaternion
   operator*(float s) const;
 
 	/**
+	* TEST::operatorMultiplyByQuaternionEquals
 	* Multiplies two quaternions and stores the result in this quaternion
 	*
 	* @param Q
@@ -248,6 +275,7 @@ class DR_API_EXPORT Quaternion
   operator*=(const Quaternion& Q);
 
 	/**
+	* TEST::operatorMultiplyByScalarEquals
 	* Multiplies quaternion with an scalar and stores the result in this quaternion
 	*
 	* @param s
@@ -260,6 +288,7 @@ class DR_API_EXPORT Quaternion
   operator*=(float s);
 
 	/**
+	* TEST::operatorDivide
 	* Divides two quaternions.
 	*
 	* @param Q
@@ -272,6 +301,7 @@ class DR_API_EXPORT Quaternion
   operator/(const Quaternion& Q) const;
 
 	/**
+	* TEST::operatorDivideEquals
 	* Divides two quaternions and stores the result in this quaternion
 	*
 	* @param Q
@@ -284,6 +314,7 @@ class DR_API_EXPORT Quaternion
   operator/=(const Quaternion& Q);
 
 	/**
+	* TEST::operatorAssign
 	* Assigns the values from another quaternion
 	*
 	* @param Q
@@ -296,6 +327,7 @@ class DR_API_EXPORT Quaternion
 	operator=(const Quaternion& Q);
 
 	/**
+	* TEST::operatorEqual
 	* Checks if quaternion is equal to another quaternion
 	*
 	* @param Q
@@ -308,6 +340,7 @@ class DR_API_EXPORT Quaternion
 	operator==(const Quaternion& Q);
 
 	/**
+	* TEST::operatorNotEqual
 	* Checks if quaternion is not equal to another quaternion
 	*
 	* @param Q
@@ -320,6 +353,7 @@ class DR_API_EXPORT Quaternion
 	operator!=(const Quaternion& Q);
 
 	/**
+	* TEST::operatorNot
 	* Returns this quaternion with negated values.
 	*
 	*/

@@ -6,16 +6,31 @@ void checkValuesVector(driderSDK::Vector2DI& testVector, driderSDK::Int32 vx, dr
   EXPECT_EQ(vy, testVector[1]);
 }
 
-TEST(Vector2DI, forceInitZero) {
-  driderSDK::Vector2DI testVector(driderSDK::Math::FORCE_INIT::kZero);
+TEST(Vector2DI, defaultConstructor) {
+  driderSDK::Vector2DI* testingVec = nullptr;
 
-  checkValuesVector(testVector, 0, 0);
+  testingVec = new driderSDK::Vector2DI();
+
+  EXPECT_FALSE(nullptr == testingVec);
+
+  delete testingVec;
 }
 
-TEST(Vector2DI, forceInitOne) {
-  driderSDK::Vector2DI testVector(driderSDK::Math::FORCE_INIT::kIdentity);
+TEST(Vector2DI, forceInit) {
+  driderSDK::Vector2DI testVector1(driderSDK::Math::FORCE_INIT::kZero);
 
-  checkValuesVector(testVector, 1, 1);
+  checkValuesVector(testVector1, 0, 0);
+
+  driderSDK::Vector2DI testVector2(driderSDK::Math::FORCE_INIT::kIdentity);
+
+  checkValuesVector(testVector2, 1, 1);
+}
+
+TEST(Vector2DI, moveContructor) {
+  driderSDK::Vector2DI vec1(0, 1);
+  driderSDK::Vector2DI vec2(std::move(vec1));
+
+  checkValuesVector(vec2, 0, 1);
 }
 
 TEST(Vector2DI, constructForVector2DI) {
@@ -28,6 +43,12 @@ TEST(Vector2DI, constructForVector2DI) {
 TEST(Vector2DI, constructorFor2Int32) {
   driderSDK::Vector2DI testVector(0, 1);
 
+  checkValuesVector(testVector, 0, 1);
+}
+
+TEST(Vector2DI, destructor) {
+  driderSDK::Vector2DI testVector(0, 1);
+  testVector.~testVector();
   checkValuesVector(testVector, 0, 1);
 }
 
@@ -48,6 +69,14 @@ TEST(Vector2DI, dot) {
   EXPECT_FLOAT_EQ(1048576, testVector4.dot(testVector5));
 }
 
+TEST(Vector2DI, cross) {
+  driderSDK::Vector2DI trueVector(1, 2);
+
+  driderSDK::Vector2DI testVector = trueVector.cross();
+
+  checkValuesVector(testVector, 1, -2);
+}
+
 TEST(Vector2DI, length) {
   driderSDK::Vector2DI testVector(1, 0);
   EXPECT_FLOAT_EQ(1, testVector.length());
@@ -59,7 +88,7 @@ TEST(Vector2DI, length) {
   EXPECT_FLOAT_EQ(10.049965223825405f, testVector2.length());
 }
 
-TEST(Vector2DI, lengthSQR) {
+TEST(Vector2DI, lengthSqr) {
   driderSDK::Vector2DI testVector(1, 0);
   EXPECT_FLOAT_EQ(1, testVector.lengthSqr());
 

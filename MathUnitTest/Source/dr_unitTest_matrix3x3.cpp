@@ -2,6 +2,7 @@
 #include <dr_vector3d.h>
 #include <dr_matrix4x4.h>
 #include <gtest\gtest.h>
+#include <utility>
 
 void checkValuesMatrix(driderSDK::Matrix3x3& testMatrix,
                        float v0x, float v0y, float v0z,
@@ -34,6 +35,15 @@ TEST(Matrix3x3, forceInit) {
                     0, 0, 1);
 }
 
+TEST(Matrix3x3, moveConstructor) {
+  driderSDK::Matrix3x3 firstMatrix(driderSDK::Math::FORCE_INIT::kIdentity);
+  driderSDK::Matrix3x3 testMatrix(std::move(firstMatrix));
+
+  checkValuesMatrix(testMatrix,
+                    1, 0, 0,
+                    0, 1, 0,
+                    0, 0, 1);
+}
 
 TEST(Matrix3x3, constructForMatrix3x3) {
   driderSDK::Matrix3x3 firstMatrix(driderSDK::Math::FORCE_INIT::kIdentity);
@@ -52,6 +62,23 @@ TEST(Matrix3x3, constructFor9Floats) {
                     1, 2, 3,
                     4, 5, 6,
                     7, 8, 9);
+}
+
+TEST(Matrix3x3, constructFor3Vectors) {
+  driderSDK::Vector3D testVector(1, 2, 3);
+  driderSDK::Vector3D testVector1(4, 5, 6);
+  driderSDK::Vector3D testVector2(7, 8, 9);
+  driderSDK::Matrix3x3 testMatrix(testVector, testVector1, testVector2);
+  checkValuesMatrix(testMatrix,
+                    1, 2, 3,
+                    4, 5, 6,
+                    7, 8, 9);
+}
+
+TEST(Matrix3x3, destructor) {
+  driderSDK::Matrix3x3 testMatrix(1, 2, 3, 4, 5, 6, 7, 8, 9);
+  testMatrix.~Matrix3x3();
+  EXPECT_TRUE(true);
 }
 
 TEST(Matrix3x3, determinant) {
@@ -92,9 +119,28 @@ TEST(Matrix3x3, identity) {
   driderSDK::Matrix3x3 testMatrix(1, 2, 3, 4, 5, 6, 7, 8, 9);
   testMatrix.identity();
   checkValuesMatrix(testMatrix,
-    1, 0, 0,
-    0, 1, 0,
-    0, 0, 1);
+                    1, 0, 0,
+                    0, 1, 0,
+                    0, 0, 1);
+}
+
+TEST(Matrix3x3, getPointer) {
+  driderSDK::Matrix3x3* ptr;
+  driderSDK::Matrix3x3 testMatrix(1, 2, 3, 4, 5, 6, 7, 8, 9);
+  ptr = &testMatrix;
+
+  checkValuesMatrix((*ptr),
+                    1, 2, 3,
+                    4, 5, 6,
+                    7, 8, 9);
+}
+
+TEST(Matrix3x3, getPointerConst) {
+  driderSDK::Matrix3x3 const *ptr;
+  driderSDK::Matrix3x3 testMatrix(1, 2, 3, 4, 5, 6, 7, 8, 9);
+  ptr = &testMatrix;
+
+  EXPECT_TRUE(ptr == &testMatrix);
 }
 
 TEST(Matrix3x3, operatorEqual) {
@@ -103,9 +149,9 @@ TEST(Matrix3x3, operatorEqual) {
 
   testMatrix1 = testMatrix;
   checkValuesMatrix(testMatrix,
-    1, 2, 3,
-    4, 5, 6,
-    7, 8, 9);
+                    1, 2, 3,
+                    4, 5, 6,
+                    7, 8, 9);
 }
 
 TEST(Matrix3x3, operatorEqualMatrix4x4) {
