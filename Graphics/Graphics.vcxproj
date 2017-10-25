@@ -177,6 +177,7 @@
     <ClInclude Include="Include\dr_swap_chain.h" />
     <ClInclude Include="Include\dr_teselation_shader.h" />
     <ClInclude Include="Include\dr_texture.h" />
+    <ClInclude Include="Include\dr_vertex_buffer.h" />
     <ClInclude Include="Include\dr_vertex_shader.h" />
     <ClInclude Include="Include\sr_texture_shader.h" />
     <ClInclude Include="Source\dr_d3d_command_buffer.cpp" />
