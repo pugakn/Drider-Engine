@@ -25,6 +25,7 @@ class VectorN
   {}
 
   /**
+  * TEST::constructorOneFloat
   * Constructor using a scalar value.
   *
   *	@param _scalar
@@ -39,6 +40,7 @@ class VectorN
   }
   
   /**
+  * TEST::elements
   * Number of elements in the vector.
   *
   *	@return
@@ -52,6 +54,7 @@ class VectorN
   }
 
   /**
+  * TEST::operatorBrakets
   * Gets a reference to the specified element from the vector.
   *
   *	@param index
@@ -66,12 +69,13 @@ class VectorN
   FORCEINLINE float&
   operator[](SizeT index)
   {
-    DR_ASSERT(index < elements);
+    DR_ASSERT(index < _elements);
 	  
 	  return m_elements[index];
   }
 
   /**
+  * TEST::operatorBrakets
   * Gets a const reference to the specified element from the vector.
   *
   *	@param index
@@ -86,12 +90,13 @@ class VectorN
   FORCEINLINE const float&
   operator[](SizeT index) const
   {
-	  DR_ASSERT(index < elements);
+	  DR_ASSERT(index < _elements);
     
 	  return m_elements[index];
   }
 
   /**
+  * TEST::dot
   * Computes the dot product between 2 vectors.
   *
   *	@param other
@@ -114,6 +119,7 @@ class VectorN
   }
 
   /**
+  * TEST::length
   * Computes the length of the vector.
   *
   * @return
@@ -126,6 +132,7 @@ class VectorN
   }
 
   /**
+  * TEST::lengthSqr
   * Computes the squared length of the vector.
   *
   * @return
@@ -138,21 +145,24 @@ class VectorN
   }
 
   /**
+  * TEST::normalize
   * Normalize the plane
   *
   */
   FORCEINLINE void
   normalize()
   {
-    DR_ASSERT(length() != 0.0f);
-    float invLength = 1.f / length();
+    float len = length();
 
-	  DR_ASSERT(invLength);
+    DR_ASSERT(len != 0.0f);
+
+    float invLength = 1.f / len;
 
 	  operator*=(invLength);
   }
     
   /**
+  * TEST::ptr
   * Gets a pointer to the first element of the vector.
   *
   * @return
@@ -161,10 +171,11 @@ class VectorN
   FORCEINLINE float*
   ptr() 
   {
-	  return m_elements.data();
+	  return &m_elements[0];
   }
 
-   /**
+  /**
+  * TEST::ptr
   * Gets a constant pointer to the first element of the vector.
   *
   * @return
@@ -173,10 +184,11 @@ class VectorN
   FORCEINLINE const float*
   ptr() const
   {
-	  return m_elements.data();
+	  return &m_elements[0];
   }
   
   /**
+  * TEST::assignmentByMultply
   *	Overload of binary operator *=
   *
   *	This operator performs a memberwise multiplication by a scalar
@@ -201,6 +213,7 @@ class VectorN
   }
 
   /**
+  * TEST::assignmentByDivision
   *	Overload of binary operator *=
   *
   *	This operator performs a memberwise division by a scalar
@@ -224,6 +237,7 @@ class VectorN
   }
 
   /**
+  * TEST::assignmentByAddition
   *	Overload of binary operator +=.
   * 
   *	This operator performs a memberwise addition of both vectors
@@ -240,12 +254,15 @@ class VectorN
   operator+=(const VectorN& rhs)
   {
 	  //For each element on the vector do the addition assigment
-	  for (Int32 iElement = 0; iElement < _elements; ++i) {
-	    m_elements[iElement] += other.m_elements[iElement];
+	  for (Int32 iElement = 0; iElement < _elements; ++iElement) {
+	    m_elements[iElement] += rhs.m_elements[iElement];
 	  }
+
+    return *this;
   }
 
   /**
+  * TEST::assignmentBySubtraction
   *	Overload of binary operator +=.
   * 
   *	This operator performs a memberwise subtraction of both vectors
@@ -262,12 +279,36 @@ class VectorN
   operator-=(const VectorN& rhs)
   {
 	  //For each element on the vector do the subtraction assigment
-	  for (Int32 iElement = 0; iElement < _elements; ++i) {
-	    m_elements[iElement] -= other.m_elements[iElement];
+	  for (Int32 iElement = 0; iElement < _elements; ++iElement) {
+	    m_elements[iElement] -= rhs.m_elements[iElement];
 	  }
+
+    return *this;
   }
 
   /**
+  * TEST::unaryMinus
+  *	Overload of unary operator -.
+  * 
+  *	Gets the vector with all of its elements negated.
+  *
+  * @return
+  *	  The vector with negated elements.
+  *
+  */
+  FORCEINLINE VectorN
+  operator-()
+  {
+    VectorN out;
+    for(int i = 0; i < _elements; ++i) {
+      out[i] = -m_elements[i];
+    }
+
+    return out;
+  }
+
+  /**
+  * TEST::equality
   * Overload of binary operator ==.
   *
   * This operator performs a memberwise equality comparison.
@@ -281,17 +322,18 @@ class VectorN
   *
   */
   FORCEINLINE bool
-  operator==(const VectorN& rhs)
+  operator==(const VectorN& rhs) const
   {
 	  //Compares each element in the first range (m_elements.begin()-m_elements.end())
 	  //to each element in the second range(rhs.m_elements.begin()-m_elements.end()
 	  return std::equal(m_elements.begin(), 
 					            m_elements.end(), 
 					            rhs.m_elements.begin(), 
-					            rhs.m_elements.begin());
+					            rhs.m_elements.end());
   }
 	
   /**
+  * TEST::inequality
   * Overload of binary operator ==.
   *
   * This operator performs a memberwise inequality comparison.
@@ -302,11 +344,10 @@ class VectorN
   *
   */
   FORCEINLINE bool
-  operator!=(const VectorN& rhs)
+  operator!=(const VectorN& rhs) const
   {
 	  return !(*this == rhs);
   }
-
  protected:
 
  private:
@@ -314,6 +355,7 @@ class VectorN
 };
 
 /**
+* TEST::multiplyScalarRight
 * Overload of binary operator *.
 *
 * This operator performs a multiplication of each member of vector by scalar.
@@ -336,6 +378,7 @@ operator*(VectorN<_elements> vector, float scalar)
 }
 
 /**
+* TEST::multiplyScalarLeft
 * Overload of binary operator *.
 *
 * This operator performs a multiplication of each member of vector by scalar.
@@ -358,6 +401,7 @@ operator*(float scalar, const VectorN<_elements>& vector)
 }
 
 /**
+* TEST::divisionScalarRight
 * Overload of binary operator /.
 *
 * This operator performs a division of each member of vector by scalar.
@@ -381,6 +425,7 @@ operator/(VectorN<_elements> vector, float scalar)
 }
 
 /**
+* TEST::additionVector
 * Overload of binary operator +.
 *
 * This operator performs a memberwise addition of both vectors.
@@ -403,6 +448,7 @@ operator+(VectorN<_elements> lhs, const VectorN<_elements>& rhs)
 }
 
 /**
+* TEST::subtractionVector
 * Overload of binary operator -.
 *
 * This operator performs a memberwise subtraction of both vectors.
