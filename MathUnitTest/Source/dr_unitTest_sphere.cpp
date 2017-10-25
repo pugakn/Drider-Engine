@@ -65,7 +65,7 @@ TEST(Sphere, intersectsAabb) {
   sphere.radius = 0.5f;
 
   driderSDK::AABB Aabb;
-  Aabb.center = driderSDK::Vector3D(0.5f, 0.0f, 0.0f);
+  Aabb.center = driderSDK::Vector3D(0.5f, 0.1f, 0.1f);
   Aabb.height = 1.0f;
   Aabb.width = 0.6f;
 

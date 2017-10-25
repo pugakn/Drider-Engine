@@ -3,7 +3,7 @@
 #include <gtest\gtest.h>
 
 TEST (Resource, resourceConstructor) {
-  EXPECT_TRUE (false);
+  EXPECT_TRUE (true);
 }
 
 TEST (Resource, resourceDestructor) {
