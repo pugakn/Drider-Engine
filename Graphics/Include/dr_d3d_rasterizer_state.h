@@ -7,8 +7,8 @@ namespace driderSDK {
 class DR_API_EXPORT D3DRasterizerState : public RasterizerState
 {
 public:
-  DR_GRAPHICS_ERROR::E create(const Device& device,const DrRasterizerDesc& desc);
-  void set(const DeviceContext& deviceContext);
+  DR_GRAPHICS_ERROR::E create(const Device& device,const DrRasterizerDesc& desc) override;
+  void set(const DeviceContext& deviceContext)const override;
   void release() override;
   Microsoft::WRL::ComPtr<ID3D11RasterizerState> APIState;
 };

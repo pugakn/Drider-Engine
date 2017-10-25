@@ -23,7 +23,7 @@ namespace driderSDK {
     }
     return DR_GRAPHICS_ERROR::ERROR_NONE;
   }
-  void D3DInputLayout::set(const DeviceContext & deviceContext)
+  void D3DInputLayout::set(const DeviceContext & deviceContext) const
   {
     static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->IASetInputLayout(APILayout.Get());
   }

@@ -254,5 +254,8 @@
     <ClCompile Include="Source\dr_d3d_swap_chain.cpp">
       <Filter>Archivos de código fuente\DirectX11</Filter>
     </ClCompile>
+    <ClCompile Include="Source\dr_d3d_depth_stencil_state.cpp">
+      <Filter>Archivos de código fuente\DirectX11</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -25,7 +25,6 @@ namespace driderSDK {
     {
       return DR_GRAPHICS_ERROR::CREATE_RESOURCE_VIEW_ERROR;
     }
-    
     return DR_GRAPHICS_ERROR::ERROR_NONE;
   }
   void D3DRenderTarget::set(const DeviceContext & deviceContext, const DepthStencil& depthStencil) const

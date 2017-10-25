@@ -23,7 +23,7 @@ namespace driderSDK {
     }
     return DR_GRAPHICS_ERROR::ERROR_NONE;
   }
-  void D3DRasterizerState::set(const DeviceContext & deviceContext)
+  void D3DRasterizerState::set(const DeviceContext & deviceContext) const
   {
     static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->RSSetState(APIState.Get());
   }

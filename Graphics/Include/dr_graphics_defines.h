@@ -204,8 +204,8 @@ namespace DR_GRAPHICS_ERROR {
   enum E {
     ERROR_NONE = 0,
     COMPILE_SHADER_ERROR = -1,
-    CREATE_SHADER_ERROR  = -2,
-    CREATE_BUFFER_ERROR  = -3,
+    CREATE_SHADER_ERROR = -2,
+    CREATE_BUFFER_ERROR = -3,
     ERROR_NOT_IMPLEMENTED = -4,
     CREATE_INPUT_LAYOUT_ERROR = -5,
     CREATE_RASTERIZER_STATE_ERROR = -6,
@@ -214,7 +214,8 @@ namespace DR_GRAPHICS_ERROR {
     CREATE_SWAP_CHAIN_ERROR = -9,
     CREATE_TEXTURE_ERROR = -10,
     CREATE_RESOURCE_VIEW_ERROR = -11,
-    MAP_RESOURCE_ERROR = -12
+    MAP_RESOURCE_ERROR = -12,
+    CREATE_DEPTH_STATE_ERROR = -13
   };
 }
 
@@ -358,5 +359,14 @@ struct DR_API_EXPORT DrSwapChainDesc
   UInt32 bufferCount;
   void* windowHandler;
   bool windowed;
+};
+
+struct DR_API_EXPORT DrDepthStencilDesc
+{
+  bool depthEnable;
+  DR_COMPARISON_FUNC::E depthFunc; 
+  bool stencilEnable;
+  UInt8 stencilReadMask;
+  UInt8 stencilWriteMask;
 };
 }

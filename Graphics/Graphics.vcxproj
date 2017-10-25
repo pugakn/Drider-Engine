@@ -186,6 +186,7 @@
     <ClCompile Include="Source\dr_d3d_compute_shader.cpp" />
     <ClCompile Include="Source\dr_d3d_constant_buffer.cpp" />
     <ClCompile Include="Source\dr_d3d_depth_stencil.cpp" />
+    <ClCompile Include="Source\dr_d3d_depth_stencil_state.cpp" />
     <ClCompile Include="Source\dr_d3d_device.cpp" />
     <ClCompile Include="Source\dr_d3d_device_context.cpp" />
     <ClCompile Include="Source\dr_d3d_domain_shader.cpp" />
