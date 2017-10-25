@@ -136,6 +136,23 @@ static struct DR_API_EXPORT Parser
   static std::vector<std::string>
   split(char* str,
         const char* divider);
+
+  /**
+  * TEST::strcpy
+  * Divede in strings other string where ther is a diveder character.
+  *
+  * @param str
+  *   Buffer to be checked.
+  *
+  * @param divider
+  *   Delimiter of each string.
+  *
+  * @return
+  *   std::vector with the string created.
+  */
+  static char * 
+  strCopy(char* des,
+                 const char* source);
 };
 
 }

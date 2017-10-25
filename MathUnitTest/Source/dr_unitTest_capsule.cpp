@@ -64,6 +64,7 @@ TEST(Capsule, intersectCapsule) {
 
 TEST(Capsule, intersectFrustrum) {
   driderSDK::Capsule capsule(driderSDK::Vector3D(0.f, 0.f, 0.f), driderSDK::Vector3D(0.f, 1.f, 0.f), 0.5f);
+  EXPECT_FALSE(true);
   //driderSDK::Frustrum frustrum;
 
   //EXPECT_TRUE(capsule.intersects(frustrum));

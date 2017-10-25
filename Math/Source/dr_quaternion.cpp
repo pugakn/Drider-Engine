@@ -67,7 +67,7 @@ Quaternion::matrixFromQuaternion(Matrix4x4& MatrixOut) {
 	if (Normalized.measure() != 1.f) {
 		Normalized.normalize();
 	}
-  MatrixOut[0][0] = 1.f - (2.f*y*y) - (2.f*z*z);
+  MatrixOut[0][0] = 1.f - (2.f*Normalized.y*Normalized.y) - (2.f*Normalized.z*Normalized.z);
   MatrixOut[0][1] = (2.f*Normalized.x*Normalized.y) - (2.f*Normalized.z*Normalized.w);
   MatrixOut[0][2] = (2.f*Normalized.x*Normalized.z) + (2.f*Normalized.w*Normalized.y);
   MatrixOut[1][0] = (2.f*Normalized.x*Normalized.y) + (2.f*Normalized.z*Normalized.w);
@@ -87,7 +87,7 @@ Quaternion::matrixFromQuaternion(Matrix3x3& MatrixOut) {
 	if (Normalized.measure() != 1.f) {
 		Normalized.normalize();
 	}
-	MatrixOut[0][0] = (2.f*Normalized.y*Normalized.y) - (2.f*Normalized.z*Normalized.z);
+	MatrixOut[0][0] = 1.f - (2.f*Normalized.y*Normalized.y) - (2.f*Normalized.z*Normalized.z);
 	MatrixOut[0][1] = (2.f*Normalized.x*Normalized.y) - (2.f*Normalized.z*Normalized.w);
 	MatrixOut[0][2] = (2.f*Normalized.x*Normalized.z) + (2.f*Normalized.y*Normalized.w);
 	MatrixOut[1][0] = (2.f*Normalized.x*Normalized.y) + (2.f*Normalized.z*Normalized.w);

@@ -4,32 +4,39 @@
 #include <dr_math.h>
 
 namespace driderSDK {
-
+/**
+*  Degree class with value representing the angle.
+*
+* Sample usage:
+*	Degree RaidanName;
+*/
 class DR_API_EXPORT Degree
 {
  public:
   /**
   * TEST::defaultConstructor
-  * Default constructor.
   *
+  * Default constructor.
   */
   Degree();
 
   /**
   * TEST::moveConstructor
-  * Move constructor.
   *
+  * Move constructor.
   */
   Degree(Degree&& V) = default;
 
   /**
   * TEST::copyConstructor
-  * Copy constructor.
   *
+  * Copy constructor.
   */
   Degree(const Degree& V);
 
   /**
+  * TEST::floatConstructor
+  *
   * Initialize class with value.
   *
   * @param value
@@ -38,14 +45,15 @@ class DR_API_EXPORT Degree
   explicit Degree(float value);
 
   /**
-  * TEST::destructor
-  * Default destructor.
+  * TEST::defaultDestructor
   *
+  * Default destructor.
   */
   ~Degree();
 
   /**
-  * TEST::ToRadian
+  * TEST::toRadian
+  *
   * Returns a Radian class with a value equal to the
   * actual degrees in radians.
   *
@@ -56,7 +64,8 @@ class DR_API_EXPORT Degree
   toRadian() const;
 
   /**
-  * TEST::Unwind
+  * TEST::unwind
+  *
   * Limit the value in [0, 360)
   *
   * @return
@@ -76,27 +85,71 @@ class DR_API_EXPORT Degree
 
   /**
   * TEST::equalFloat
+  *
   * Sets the value to the float param.
   *
-  * Param V
+  * @param V
   *   The new value.
+  *
+  * return
+  *   A reference to this.
   */
   Degree&
   operator=(float V);
 
-  //Uncomented
+  /**
+  * TEST::plusEqualFloat
+  *
+  * Adds the given float to the class value.
+  *
+  * @param V
+  *   The new value.
+  *
+  * return
+  *   A reference to this.
+  */
   Degree&
   operator+=(float V);
 
-  //Uncomented
+  /**
+  * TEST::lessEqualFloat
+  *
+  * Subs the given float to the class value.
+  *
+  * @param V
+  *   The value to sub.
+  *
+  * return
+  *   A reference to this.
+  */
   Degree&
   operator-=(float V);
 
-  //Uncomented
+  /**
+  * TEST::mulEqualFloat
+  *
+  * Multiplies the given float to the class value.
+  *
+  * @param V
+  *   The factor value.
+  *
+  * return
+  *   A reference to this.
+  */
   Degree&
   operator*=(float V);
 
-  //Uncomented
+  /**
+  * TEST::divEqualFloat
+  *
+  * Divides the class value with the given float.
+  *
+  * @param V
+  *   The dividend value.
+  *
+  * return
+  *   A reference to this.
+  */
   Degree&
   operator/=(float V);
 private:
