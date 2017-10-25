@@ -29,6 +29,6 @@ namespace driderSDK {
   }
   void D3DInputLayout::release()
   {
-    APILayout.Get()->Release();
+    APILayout.Reset();
   }
 }

@@ -11,7 +11,7 @@ void D3DVertexShader::set(const DeviceContext& deviceContext) const
 }
 void D3DVertexShader::release()
 {
-  APIShader.Get()->Release();
+  APIShader.Reset();
 }
 ;
 DR_GRAPHICS_ERROR::E D3DVertexShader::createFromMemory(const Device& device, const char* buffer, size_t bufferSize) {

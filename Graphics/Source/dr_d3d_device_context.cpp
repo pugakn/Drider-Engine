@@ -10,7 +10,21 @@ void D3DDeviceContext::clearDepthStencilView(DepthStencil& depthstencil,
   float depthValue,
   UInt32 stencilValue)
 {
-  D3D11DeviceContext->ClearDepthStencilView(depthstencil, , depthValue, stencilValue);
+  UInt32 clearFlags = 0;
+  switch (clearType)
+  {
+  case DR_DEPTH_STENCIL_CLEAR_TYPE::kClearDepth:
+    clearFlags |= D3D11_CLEAR_DEPTH;
+    break;
+  case DR_DEPTH_STENCIL_CLEAR_TYPE::kClearStencil:
+    clearFlags |= D3D11_CLEAR_STENCIL;
+    break;
+  case DR_DEPTH_STENCIL_CLEAR_TYPE::kClearDepthStencil:
+    clearFlags |= D3D11_CLEAR_DEPTH;
+    clearFlags |= D3D11_CLEAR_STENCIL;
+    break;
+  }
+  D3D11DeviceContext->ClearDepthStencilView(depthstencil, clearFlags, depthValue, stencilValue);
 }
 
 void D3DDeviceContext::clearRenderTargetView(RenderTarget& renderTarget, const float colorRGBA[4])

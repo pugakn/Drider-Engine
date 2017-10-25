@@ -73,6 +73,6 @@ void D3DConstantBuffer::set(const DeviceContext& deviceContext, DR_SHADER_TYPE_F
 }
 void D3DConstantBuffer::release()
 {
-  CB.Get()->Release();
+  CB.Reset();
 }
 }

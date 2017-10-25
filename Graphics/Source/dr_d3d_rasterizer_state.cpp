@@ -29,6 +29,6 @@ namespace driderSDK {
   }
   void D3DRasterizerState::release()
   {
-    APIState.Get()->Release();
+    APIState.Reset();
   }
 }

@@ -3,6 +3,7 @@
 #include "dr_graphics_defines.h"
 namespace driderSDK {
 class DeviceContext;
+class Device;
 class DR_API_EXPORT RasterizerState
 {
  public:

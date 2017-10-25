@@ -84,9 +84,6 @@
     <ClInclude Include="Include\dr_index_buffer.h">
       <Filter>Archivos de encabezado\Base\Buffers</Filter>
     </ClInclude>
-    <ClInclude Include="Include\dr_vertex_buffer.h">
-      <Filter>Archivos de encabezado\Base\Buffers</Filter>
-    </ClInclude>
     <ClInclude Include="Include\dr_hull_shader.h">
       <Filter>Archivos de encabezado\Base\Shaders</Filter>
     </ClInclude>
@@ -94,9 +91,6 @@
       <Filter>Archivos de encabezado\Base\Shaders</Filter>
     </ClInclude>
     <ClInclude Include="Source\dr_d3d_constant_buffer.h">
-      <Filter>Archivos de encabezado\DirectX11\Buffers</Filter>
-    </ClInclude>
-    <ClInclude Include="dr_d3d_vertex_buffer.h">
       <Filter>Archivos de encabezado\DirectX11\Buffers</Filter>
     </ClInclude>
     <ClInclude Include="Include\dr_d3d_index_buffer.h">
@@ -195,15 +189,15 @@
     <ClInclude Include="Include\dr_d3d_rasterizer_state.h">
       <Filter>Archivos de encabezado\DirectX11</Filter>
     </ClInclude>
+    <ClInclude Include="Include\dr_d3d_vertex_buffer.h">
+      <Filter>Archivos de encabezado\DirectX11\Buffers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_d3d_constant_buffer.cpp">
       <Filter>Archivos de código fuente\DirectX11\Buffers</Filter>
     </ClCompile>
     <ClCompile Include="Source\dr_d3d_index_buffer.cpp">
-      <Filter>Archivos de código fuente\DirectX11\Buffers</Filter>
-    </ClCompile>
-    <ClCompile Include="dr_d3d_vertex_buffer.cpp">
       <Filter>Archivos de código fuente\DirectX11\Buffers</Filter>
     </ClCompile>
     <ClCompile Include="Source\dr_d3d_fragment_shader.cpp">
@@ -252,6 +246,12 @@
       <Filter>Archivos de código fuente\DirectX11</Filter>
     </ClCompile>
     <ClCompile Include="Source\dr_d3d_sample_state.cpp">
+      <Filter>Archivos de código fuente\DirectX11</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_d3d_vertex_buffer.cpp">
+      <Filter>Archivos de código fuente\DirectX11\Buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_d3d_swap_chain.cpp">
       <Filter>Archivos de código fuente\DirectX11</Filter>
     </ClCompile>
   </ItemGroup>

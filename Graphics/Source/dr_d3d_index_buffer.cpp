@@ -40,6 +40,6 @@ void D3DIndexBuffer::set(const DeviceContext& deviceContext, UInt32 offset) cons
 }
 void D3DIndexBuffer::release()
 {
-  IB.Get()->Release();
+  IB.Reset();
 }
 }

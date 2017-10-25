@@ -13,6 +13,6 @@ namespace driderSDK {
   }
   void D3DCommandBuffer::release()
   {
-    CB.Get()->Release();
+    CB.Reset();
   }
 }

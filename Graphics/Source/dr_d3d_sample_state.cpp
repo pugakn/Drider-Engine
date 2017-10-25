@@ -64,6 +64,6 @@ void D3D11SamplerState::set(const DeviceContext & deviceContext, DR_SHADER_TYPE_
 }
 void D3D11SamplerState::release()
 {
-  APIState.Get()->Release();
+  APIState.Reset();
 }
 }

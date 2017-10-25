@@ -11,7 +11,7 @@ namespace driderSDK {
   }
   void D3DComputeShader::release()
   {
-    APIShader.Get()->Release();
+    APIShader.Reset();
   }
   DR_GRAPHICS_ERROR::E D3DComputeShader::createFromMemory(const Device & device, const char * buffer, size_t bufferSize)
   {

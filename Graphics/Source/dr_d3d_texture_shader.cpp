@@ -10,7 +10,7 @@ namespace driderSDK {
   }
   void D3DTextreShader::release()
   {
-    //APIShader.Get()->Release();
+    //APIShader.Reset();
   }
   DR_GRAPHICS_ERROR::E D3DTextreShader::createFromMemory(const Device & device, const char * buffer, size_t bufferSize)
   {

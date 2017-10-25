@@ -4,19 +4,20 @@
 #include <string>
 
 namespace driderSDK {
-class SamplerState;
+class Device;
+class DeviceContext;
 class DR_API_EXPORT Texture {
  public:
   virtual ~Texture(){}
-  virtual DR_GRAPHICS_ERROR::E create(const DrTextureDesc& desc, UInt32 w, UInt32 h) = 0;
-  virtual DR_GRAPHICS_ERROR::E map(char* buffer) = 0;
-  virtual void set() const = 0;
+  virtual DR_GRAPHICS_ERROR::E createFromMemory(const Device& device, const DrTextureDesc& desc, const char* buffer) = 0;
+  virtual DR_GRAPHICS_ERROR::E createEmpty(const Device& device, const DrTextureDesc& desc) = 0;
+  virtual DR_GRAPHICS_ERROR::E map(const DeviceContext& deviceContext,char* buffer) = 0;
+  virtual void set(const DeviceContext& deviceContext, UInt32 slot) const = 0;
   virtual void release() = 0;
-  virtual void unmap() = 0;
-  virtual void udpateFromMemory(const char* buffer, size_t bufferSize) = 0;
-  virtual void generateMipMaps() = 0;
-
-  DrTextureDesc desc;
- private:
+  virtual void unmap(const DeviceContext& deviceContext) = 0;
+  virtual void udpateFromMemory(const DeviceContext& deviceContext, const char* buffer, size_t bufferSize) = 0;
+  virtual void generateMipMaps(const DeviceContext & deviceContext) = 0;
+ protected:
+   DrTextureDesc descriptor;
 };
 }

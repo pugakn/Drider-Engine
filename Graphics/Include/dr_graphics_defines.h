@@ -209,7 +209,12 @@ namespace DR_GRAPHICS_ERROR {
     ERROR_NOT_IMPLEMENTED = -4,
     CREATE_INPUT_LAYOUT_ERROR = -5,
     CREATE_RASTERIZER_STATE_ERROR = -6,
-    CREATE_SAMPLER_STATE_ERROR = -7
+    CREATE_SAMPLER_STATE_ERROR = -7,
+    CREATE_FACTORY_ERROR = -8,
+    CREATE_SWAP_CHAIN_ERROR = -9,
+    CREATE_TEXTURE_ERROR = -10,
+    CREATE_RESOURCE_VIEW_ERROR = -11,
+    MAP_RESOURCE_ERROR = -12
   };
 }
 
@@ -276,6 +281,15 @@ enum E
   kALWAYS = 8
 };
 }
+namespace DR_SWAP_EFFECT {
+enum E 
+{
+  kEFFECT_DISCARD = 0,
+  kEFFECT_SEQUENTIAL = 1,
+  kEFFECT_FLIP_SEQUENTIAL = 3,
+  kEFFECT_FLIP_DISCARD = 4
+};
+}
 struct DR_API_EXPORT DrInputElementDesc
 {
   char*  semanticName;
@@ -309,7 +323,6 @@ struct DR_API_EXPORT DrBufferDesc
 struct DR_API_EXPORT DrTextureDesc
 {
   DR_FORMAT::E Format;
-  DrSampleDesc SampleDesc;
   DR_BUFFER_USAGE::E Usage;
   UInt32 width;
   UInt32 height;
@@ -330,5 +343,20 @@ struct DR_API_EXPORT DrRasterizerDesc
   bool scissorEnable;
   bool multisampleEnable;
   bool antialiasedLineEnable;
+};
+struct DR_API_EXPORT DrRationalNumber
+{
+  UInt32 numerator;
+  UInt32 denominator;
+};
+struct DR_API_EXPORT DrSwapChainDesc 
+{
+  UInt32 width;
+  UInt32 height;
+  DrRationalNumber refreshRate;
+  DR_FORMAT::E Format;
+  UInt32 bufferCount;
+  void* windowHandler;
+  bool windowed;
 };
 }
