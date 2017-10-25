@@ -25,6 +25,7 @@ int main(int argc, char* argv[])
   ::testing::GTEST_FLAG(output) = "xml";*/
   //::testing::GTEST_FLAG(output) = "xml";
   ::testing::InitGoogleTest(&argc, argv);
+<<<<<<< HEAD
   ::testing::GTEST_FLAG(filter) = "VectorN.*";
   //::testing::GTEST_FLAG(filter) = "Radian.*";
   //::testing::GTEST_FLAG(filter) = "Vector3D.*";
@@ -32,6 +33,8 @@ int main(int argc, char* argv[])
 	//::testing::GTEST_FLAG(filter) = "AABB.*";
 	::testing::GTEST_FLAG(filter) = "Quaternion.*";
   //::testing::GTEST_FLAG(filter) = "Capsule.*";
+=======
+>>>>>>> Documentation
   RUN_ALL_TESTS();
 
   return 0;
