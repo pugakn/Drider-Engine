@@ -49,6 +49,6 @@ Capsule::intersects(const Capsule& capsule) {
 
 bool
 Capsule::intersects(const Frustrum& frustrum) {
-  return false;
+  return frustrum.kFar > 0; // Error, frustrum no implemented
 }
 }

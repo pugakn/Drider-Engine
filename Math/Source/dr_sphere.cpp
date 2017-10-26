@@ -4,7 +4,6 @@
 #include "dr_aabb.h"
 #include "dr_capsule.h"
 #include "dr_frustrum.h"
-#include "dr_intersections.h"
 
 namespace driderSDK {
 

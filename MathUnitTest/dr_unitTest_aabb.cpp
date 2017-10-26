@@ -89,18 +89,12 @@ TEST(AABB, intersectFrustrum) {
 	
 }
 
-TEST(AABB, DISABLED_intersectSphere)
+TEST(AABB, intersectSphere)
 {
-	driderSDK::Sphere sphere;
-	sphere.center = driderSDK::Vector3D(0.0f, 0.0f, 0.0f);
-	sphere.radius = 0.5f;
+	driderSDK::Sphere sphere(driderSDK::Vector3D(0.f, 0.f, 0.f), 0.5f);
+	driderSDK::AABB Aabb(0.6f, 1.f, driderSDK::Vector3D(0.f, 0.f, 0.f));
 
-	driderSDK::AABB Aabb;
-	Aabb.center = driderSDK::Vector3D(0.5f, 0.0f, 0.0f);
-	Aabb.height = 1.0f;
-	Aabb.width = 0.6f;
-
-	EXPECT_TRUE(sphere.intersects(Aabb));
+	EXPECT_TRUE(Aabb.intersect(sphere));
 }
 
 TEST(AABB, intersectRay) {

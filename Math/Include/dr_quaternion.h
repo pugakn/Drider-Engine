@@ -147,6 +147,7 @@ class DR_API_EXPORT Quaternion
 	matrixFromQuaternion(Matrix3x3& MatrixOut);
 
 	/**
+	* TEST::pointer
 	* Gets a pointer to the first element of the quaternion.
 	*
 	* @return
@@ -156,6 +157,7 @@ class DR_API_EXPORT Quaternion
 	ptr();
 
 	/**
+	* TEST::constPointer
 	* Gets a constant pointer to the first element of the quaternion.
 	*
 	* @return
@@ -175,6 +177,7 @@ class DR_API_EXPORT Quaternion
 	operator[](const SizeT index);
 
 	/**
+	* TEST::constOperatorBrackets
 	* Gets a constant reference to a specific element of the quaternion.
 	*
 	* @return
