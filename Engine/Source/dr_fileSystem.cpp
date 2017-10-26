@@ -15,15 +15,13 @@ FileSystem::load(const std::string filename,
   std::ifstream fileLoaded;
 
   fileLoaded.open(filename);
-  if (fileLoaded.is_open())
-  {
+  if (fileLoaded.is_open()) {
     bufferOut = std::string(std::istreambuf_iterator<char>(fileLoaded),
                             std::istreambuf_iterator<char>());
     fileLoaded.close();
     return true;
   }
-  else
-  {
+  else {
     fileLoaded.close();
     return false;
   }
@@ -35,14 +33,12 @@ FileSystem::save(const std::string filename,
   std::ofstream fileLoaded;
 
   fileLoaded.open(filename, std::ios::out | std::ios::trunc);
-  if (fileLoaded.is_open())
-  {
+  if (fileLoaded.is_open()) {
     fileLoaded << bufferToSave;
     fileLoaded.close();
     return true;
   }
-  else
-  {
+  else {
     fileLoaded.close();
     return false;
   }
@@ -51,17 +47,15 @@ FileSystem::save(const std::string filename,
 bool
 FileSystem::append(const std::string filename,
                    const std::string& bufferToAppend) {
-  std::ofstream fileLoaded;
+  std::fstream fileLoaded;
 
   fileLoaded.open(filename, std::ios::out | std::ios::app);
-  if (fileLoaded.is_open())
-  {
+  if (fileLoaded.is_open()) {
     fileLoaded << bufferToAppend;
     fileLoaded.close();
     return true;
   }
-  else
-  {
+  else {
     fileLoaded.close();
     return false;
   }

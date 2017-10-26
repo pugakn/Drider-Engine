@@ -139,19 +139,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Include\dr_codec.h" />
-    <ClInclude Include="Include\dr_face.h" />
     <ClInclude Include="Include\dr_fileSystem.h" />
-    <ClInclude Include="Include\dr_polygon.h" />
     <ClInclude Include="Include\dr_resourceManager.h" />
-    <ClInclude Include="Include\dr_vertex.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_codec.cpp" />
-    <ClCompile Include="Source\dr_face.cpp" />
     <ClCompile Include="Source\dr_fileSystem.cpp" />
-    <ClCompile Include="Source\dr_polygon.cpp" />
     <ClCompile Include="Source\dr_resourceManager.cpp" />
-    <ClCompile Include="Source\dr_vertex.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

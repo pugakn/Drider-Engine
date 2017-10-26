@@ -5,18 +5,31 @@
 
 namespace driderSDK {
 
+/**
+* Class to load files in buffers
+*
+* Sample usage:
+* FileSystem sampleName;
+* sampleName.load("fileToOpen", bufferToStoreFile);
+* sampleName.save("fileToWrite", bufferToSaveToFile);
+* sampleName.append("fileToAppend", bufferToAddInFile);
+*/
 class DR_API_EXPORT FileSystem
 {
  public:
   
   /**
+  * TEST::defaultConstructor
+  *
   * Default FileSystem constructor
   */
    FileSystem();
 
-   /**
-   * Default FileSystem constructor
-   */
+  /**
+  * TEST::defaultDestructor
+  *
+  * Default FileSystem constructor
+  */
   ~FileSystem();
   
   /**

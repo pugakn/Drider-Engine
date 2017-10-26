@@ -4,6 +4,7 @@
 #include <dr_plane.h>
 #include <dr_matrix4x4.h>
 #include <dr_vector3d.h>
+#include "dr_intersections.h"
 
 
 namespace driderSDK {
@@ -11,6 +12,10 @@ namespace driderSDK {
 class Sphere;
 class Capsule;
 class Ray;
+
+/**
+* Frustrum class
+*/
 
 class DR_API_EXPORT Frustrum
 {
@@ -23,7 +28,15 @@ class DR_API_EXPORT Frustrum
 		kNear,
 		kFar
 	}; 
+  
+  /**
+  * TEST::frustrumConstructor
+  * Default constructor
+  */
+  Frustrum () {}
+
 	/**
+  * TEST::frustrumConstructorVPM
 	* Constructor using a View Projection matrix
 	*
 	* @param VP
@@ -33,6 +46,7 @@ class DR_API_EXPORT Frustrum
 	Frustrum(const Matrix4x4& ViewProjection);
 
 	/**
+  * TEST::createFromVP
 	* Create the frustrum planes with the View Projection matrix
 	*
 	* @param VP
@@ -43,6 +57,7 @@ class DR_API_EXPORT Frustrum
 	createFromVP(const Matrix4x4& ViewProjection);
 
 	/**
+  * TEST::intersectsRay
 	* Check if the frustrum intersects other ray
 	*
 	*	@param bRay
@@ -52,8 +67,8 @@ class DR_API_EXPORT Frustrum
 	*	  True if the frustrum intersects with the other ray
 	*
 	*/
-	bool
-	intersects(const Ray& bRay) const;
+	/*bool
+	intersects(const Ray& bRay) const;*/
 
 	/**
 	* Check if the frustrum intersects with a plane
@@ -65,10 +80,11 @@ class DR_API_EXPORT Frustrum
 	*	  True if the frustrum intersects with the plane
 	*
 	*/
-	bool
-	intersects(const Plane& plane) const;
+	/*bool
+	intersects(const Plane& plane) const;*/
 
 	/**
+  * TEST::frustrumSphere
 	* Check if the frustrum intersects with a sphere
 	*
 	*	@param sphere
@@ -91,8 +107,8 @@ class DR_API_EXPORT Frustrum
 	*	  True if the frustrum intersects with the capsule
 	*
 	*/
-	bool
-	intersects(const Capsule& capsule) const;
+	/*bool
+	intersects(const Capsule& capsule) const;*/
 
 	/**
 	* Check if the frustrum intersects with a frustrum
@@ -104,8 +120,8 @@ class DR_API_EXPORT Frustrum
 	*	  True if the frustrum intersects with the frustrum
 	*
 	*/
-	bool
-	intersects(const Frustrum& frustrum) const;
+	/*bool
+	intersects(const Frustrum& frustrum) const;*/
 
 
 	/**
@@ -118,8 +134,8 @@ class DR_API_EXPORT Frustrum
 	*	  True if the frustrum contains the point
 	*
 	*/
-	bool
-	contains(const Vector3D& point) const;
+	/*bool
+	contains(const Vector3D& point) const;*/
 
 	/**
 	* Check if the frustrum intersects contains a plane
@@ -131,8 +147,8 @@ class DR_API_EXPORT Frustrum
 	*	  True if the frustrum contains the plane
 	*
 	*/
-	bool
-	contains(const Plane& plane) const;
+	/*bool
+	contains(const Plane& plane) const;*/
 
 	/**
 	* Check if the frustrum intersects contains a sphere
@@ -144,8 +160,8 @@ class DR_API_EXPORT Frustrum
 	*	  True if the frustrum contains the sphere
 	*
 	*/
-	bool
-	contains(const Sphere& sphere) const;
+	/*bool
+	contains(const Sphere& sphere) const;*/
 
 	/**
 	* Check if the frustrum intersects contains a capsule
@@ -157,8 +173,8 @@ class DR_API_EXPORT Frustrum
 	*	  True if the frustrum contains the capsule
 	*
 	*/
-	bool
-	contains(const Capsule& capsule) const;
+	/*bool
+	contains(const Capsule& capsule) const;*/
 
 	/**
 	* Check if the frustrum intersects contains a frustrum
@@ -170,8 +186,8 @@ class DR_API_EXPORT Frustrum
 	*	  True if the frustrum contains the frustrum
 	*
 	*/
-	bool
-	contains(const Frustrum& frustrum) const;
+	/*bool
+	contains(const Frustrum& frustrum) const;*/
 
   std::array<Plane,6> planes;
 

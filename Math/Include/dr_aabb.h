@@ -22,12 +22,14 @@ class DR_API_EXPORT AABB
  public:
   
   /**
+	* TEST::defaultConstructor
   * Default constructor
   *
   */
   AABB();
 
   /**
+	* TEST::constructFromValues
   * Initialize the constructor with the given values
   *
   * @param s
@@ -39,18 +41,21 @@ class DR_API_EXPORT AABB
   AABB(float width, float height, const Vector3D& C);
 
   /**
+	* TEST::moveConstructor
   * Move constructor.
   *
   */
   AABB(AABB&& A) = default;
 
   /**
+	* TEST::constructFromAABB
   * Copy constructor.
   *
   */
   AABB(const AABB& A);
 
   /**
+	* TEST::destructor
   * Default destructor
   *
   */
@@ -70,6 +75,7 @@ class DR_API_EXPORT AABB
   intersect(AABB& aabb);
 
   /**
+	* TEST::intersectSphere
   * Checks for an intersection with a sphere
   *
   * @param sphere
