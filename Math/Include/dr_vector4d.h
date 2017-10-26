@@ -7,6 +7,12 @@ namespace driderSDK {
 
 class Vector3D;
 
+/**
+* Vector with 4 elements (x, y, z, w)
+*
+* Sample usage:
+* Vector3D vectorName;
+*/
 class DR_API_EXPORT Vector4D
 {
  public:

@@ -6,8 +6,8 @@ namespace driderSDK
 void
 Logger::reset() {
   std::ofstream loggerHtmlFile;
-  filePath = "../Docs/Logger/logger.html";
-  loggerHtmlFile.open(filePath, std::ios::out | std::ios::trunc);
+  m_filePath = "../Docs/Logger/logger.html";
+  loggerHtmlFile.open(m_filePath, std::ios::out | std::ios::trunc);
 
   loggerHtmlFile <<
   "<!DOCTYPE html>\n\
@@ -30,9 +30,6 @@ Logger::reset() {
   </html> ";
 
   loggerHtmlFile.close();
-  LoggerCalls = 0;
-  WarningCalls = 0;
-  ErrorCalls = 0;
 }
 
 void
@@ -50,7 +47,7 @@ Logger::addError(const std::string Filename,
   fullMessage += message;
   fullMessage += "</a>\n";
 
-  std::ifstream loggerHtmlFile(filePath);
+  std::ifstream loggerHtmlFile(m_filePath);
   std::string fileInString = std::string(std::istreambuf_iterator<char>(loggerHtmlFile),
                                          std::istreambuf_iterator<char>());
   loggerHtmlFile.close();
@@ -58,12 +55,9 @@ Logger::addError(const std::string Filename,
   size_t lastErrorIndex = fileInString.find("</section>");
   fileInString.insert(lastErrorIndex, fullMessage);
 
-  std::ofstream finalFile(filePath, std::ofstream::out | std::ofstream::trunc);
+  std::ofstream finalFile(m_filePath, std::ofstream::out | std::ofstream::trunc);
   finalFile << fileInString;
   finalFile.close();
-
-  LoggerCalls++;
-  ErrorCalls++;
 }
 
 void
@@ -81,7 +75,7 @@ Logger::addWarning(const std::string Filename,
   fullMessage += message;
   fullMessage += "</a>\n";
 
-  std::ifstream loggerHtmlFile(filePath);
+  std::ifstream loggerHtmlFile(m_filePath);
   std::string fileInString = std::string(std::istreambuf_iterator<char>(loggerHtmlFile),
                                          std::istreambuf_iterator<char>());
   loggerHtmlFile.close();
@@ -89,12 +83,9 @@ Logger::addWarning(const std::string Filename,
   size_t lastErrorIndex = fileInString.find("</article>");
   fileInString.insert(lastErrorIndex, fullMessage);
 
-  std::ofstream finalFile(filePath, std::ofstream::out | std::ofstream::trunc);
+  std::ofstream finalFile(m_filePath, std::ofstream::out | std::ofstream::trunc);
   finalFile << fileInString;
   finalFile.close();
-
-  LoggerCalls++;
-  WarningCalls++;
 }
 
 }

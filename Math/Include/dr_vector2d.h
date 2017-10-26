@@ -5,6 +5,12 @@
 
 namespace driderSDK {
 
+/**
+* Vector with 2 elements (x, y)
+*
+* Sample usage:
+* Vector2D vectorName;
+*/
 class DR_API_EXPORT Vector2D
 {
  public:
