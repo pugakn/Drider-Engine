@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dr_unitTest_aabb.cpp" />
+    <ClCompile Include="dr_unitTest_matrixNxM.cpp" />
     <ClCompile Include="Source\dr_unitTest_capsule.cpp" />
     <ClCompile Include="Source\dr_unitTest_degree.cpp" />
     <ClCompile Include="Source\dr_unitTest_frustrum.cpp" />
