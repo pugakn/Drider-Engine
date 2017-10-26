@@ -6,7 +6,12 @@
 namespace driderSDK {
 
 class Matrix3x3;
-
+/**
+* Matrix with 4x4 elements
+*
+* Sample usage:
+* Matrix4x4 matrixName;
+*/
 class DR_API_EXPORT Matrix4x4
 {
  public:
