@@ -3,6 +3,12 @@
 #include <dr_resource.h>
 #include <memory>
 
+/**
+* Structure with Decode and Encode functions.
+*
+* Sample usage:
+*	Codec::decode("file_path/name_resource.png");
+*/
 namespace driderSDK {
 
 namespace ResourceType {
