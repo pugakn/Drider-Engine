@@ -14,9 +14,9 @@ TEST (Capsule, capsuleConstructor) {
   EXPECT_TRUE(capsule.pointA.x == 0.0f);
 
   driderSDK::Capsule capsule2(driderSDK::Vector3D(1.0f,0.0f,0.0f), driderSDK::Vector3D(0.0f,0.0f,0.0f), 0.5f);
-  EXPECT_TRUE(capsule.pointA == driderSDK::Vector3D(1.0f, 0.0f, 0.0f));
-  EXPECT_TRUE(capsule.pointB == driderSDK::Vector3D(0.0f, 0.0f, 0.0f));
-  EXPECT_TRUE(capsule.radius == 0.5f);
+  EXPECT_TRUE(capsule2.pointA == driderSDK::Vector3D(1.0f, 0.0f, 0.0f));
+  EXPECT_TRUE(capsule2.pointB == driderSDK::Vector3D(0.0f, 0.0f, 0.0f));
+  EXPECT_TRUE(capsule2.radius == 0.5f);
 }
 
 TEST (Capsule, capsuleDestructor) {
@@ -39,7 +39,7 @@ TEST(Capsule, intersectSphere) {
   driderSDK::Capsule capsule(driderSDK::Vector3D(0.f, 0.f, 0.f), driderSDK::Vector3D(0.f, 1.f, 0.f), 0.5f);
   driderSDK::Sphere sphere(driderSDK::Vector3D(0.0f,0.0f,0.0f), .5f);
 
-  EXPECT_FALSE(capsule.intersects(sphere));
+  EXPECT_TRUE(capsule.intersects(sphere));
 }
 
 TEST(Capsule, intersectAabb) {
@@ -57,15 +57,21 @@ TEST(Capsule, intersectCapsule) {
   EXPECT_TRUE(capsule1.intersects(capsule2));
 
   capsule2.pointA.x = 6.f;
-  capsule2.pointA.x = 6.f;
+  capsule2.pointB.x = 6.f;
 
   EXPECT_FALSE(capsule1.intersects(capsule2));
 }
 
 TEST(Capsule, intersectFrustrum) {
   driderSDK::Capsule capsule(driderSDK::Vector3D(0.f, 0.f, 0.f), driderSDK::Vector3D(0.f, 1.f, 0.f), 0.5f);
-  EXPECT_FALSE(true);
-  //driderSDK::Frustrum frustrum;
+  driderSDK::Frustrum frustrum;
+  
+  driderSDK::Matrix4x4 vpm; 
+  
+  frustrum.createFromVP(driderSDK::Matrix4x4(1.0,0.0,0.0,1.0,
+                                             0.0,1.0,0.0,1.0,
+                                             0.0,0.0,1.0,1.0,
+                                             0.0,0.0,0.0,1.0));
 
-  //EXPECT_TRUE(capsule.intersects(frustrum));
+  EXPECT_TRUE(capsule.intersects(frustrum));
 }

@@ -2,7 +2,6 @@
 
 #include <dr_prerequisites.h>
 #include "dr_vector3d.h"
-#include "dr_intersections.h"
 
 namespace driderSDK {
 class Plane;

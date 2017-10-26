@@ -49,7 +49,7 @@ Vector3D::lengthSqr() const {
 
 void
 Vector3D::normalize() {
-  DR_ASSERT(length() != 0.0f);
+  DR_ASSERT(length() != 0.0f); // No funciona xd, para el test
   *this /= length();
 }
 

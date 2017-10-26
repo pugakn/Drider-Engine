@@ -13,7 +13,7 @@ TEST (Sphere, sphereConstructor) {
   EXPECT_TRUE(sphere.radius == 0.6f);  
 
   driderSDK::Sphere sphere2(driderSDK::Vector3D(0.0f,0.0f,0.0f), 0.5f);
-  EXPECT_TRUE(sphere2.radius == 0.6f && sphere2.center == driderSDK::Vector3D(0.0f, 0.0f, 0.0f));
+  EXPECT_TRUE(sphere2.radius == 0.5f && sphere2.center == driderSDK::Vector3D(0.0f, 0.0f, 0.0f));
 }
 
 TEST (Sphere, sphereDestructor) {
