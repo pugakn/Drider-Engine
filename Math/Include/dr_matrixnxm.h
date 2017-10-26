@@ -394,4 +394,11 @@ operator*(const MatrixNxM<_rows, _cols>& lhs, const MatrixNxM<_cols, _rhsCols>& 
   return temp;
 }
 
+/* \fn ohola fiuncioonasd asldkaj sd ;sajdhf asd
+\brief A test class.
+
+A more detailed class description.
+*/
+void lucas() {};
+
 }

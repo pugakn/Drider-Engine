@@ -26,7 +26,7 @@ Lib/
 /Docs/Logger/logger.html
 /Docs/xml/
 !/3rdParties/*/*
-test_detail.xml
+/test_detail.xml
 
 # Visual Studio 2015 cache/options directory
 .vs/
