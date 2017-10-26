@@ -95,7 +95,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParties\GoogleTest\include;$(SolutionDir)Utils\Include;$(SolutionDir)Math\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParties\GoogleTest\include;$(SolutionDir)Utils\Include;$(SolutionDir)Math\Include;$(SolutionDir)Graphics\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -109,7 +109,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParties\GoogleTest\include;$(SolutionDir)Utils\Include;$(SolutionDir)Math\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParties\GoogleTest\include;$(SolutionDir)Utils\Include;$(SolutionDir)Math\Include;$(SolutionDir)Graphics\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);$(SolutionDir)3rdParties\GoogleTest\Lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -121,7 +121,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParties\GoogleTest\include;$(SolutionDir)Utils\Include;$(SolutionDir)Math\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParties\GoogleTest\include;$(SolutionDir)Utils\Include;$(SolutionDir)Math\Include;$(SolutionDir)Graphics\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);$(SolutionDir)3rdParties\GoogleTest\Lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -135,7 +135,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParties\GoogleTest\include;$(SolutionDir)Utils\Include;$(SolutionDir)Math\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParties\GoogleTest\include;$(SolutionDir)Utils\Include;$(SolutionDir)Math\Include;$(SolutionDir)Graphics\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -150,6 +150,52 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\dr_unitTest_command_buffer.cpp" />
+    <ClCompile Include="Source\dr_unitTest_compute_shader.cpp" />
+    <ClCompile Include="Source\dr_unitTest_constant_buffer.cpp" />
+    <ClCompile Include="Source\dr_unitTest_d3d_command_buffer.cpp" />
+    <ClCompile Include="Source\dr_unitTest_d3d_compute_shader.cpp" />
+    <ClCompile Include="Source\dr_unitTest_d3d_depth_stencil.cpp" />
+    <ClCompile Include="Source\dr_unitTest_d3d_depth_stencil_state.cpp" />
+    <ClCompile Include="Source\dr_unitTest_d3d_device.cpp" />
+    <ClCompile Include="Source\dr_unitTest_d3d_device_context.cpp" />
+    <ClCompile Include="Source\dr_unitTest_d3d_domain_shader.cpp" />
+    <ClCompile Include="Source\dr_unitTest_d3d_fragment_shader.cpp" />
+    <ClCompile Include="Source\dr_unitTest_d3d_geometry_shader.cpp" />
+    <ClCompile Include="Source\dr_unitTest_d3d_hull_shader.cpp" />
+    <ClCompile Include="Source\dr_unitTest_d3d_index_buffer.cpp" />
+    <ClCompile Include="Source\dr_unitTest_d3d_input_layout.cpp" />
+    <ClCompile Include="Source\dr_unitTest_d3d_rasterizer_state.cpp" />
+    <ClCompile Include="Source\dr_unitTest_d3d_render_target.cpp" />
+    <ClCompile Include="Source\dr_unitTest_d3d_sample_state.cpp" />
+    <ClCompile Include="Source\dr_unitTest_d3d_swap_chain.cpp" />
+    <ClCompile Include="Source\dr_unitTest_d3d_teselation_shader.cpp" />
+    <ClCompile Include="Source\dr_unitTest_d3d_texture.cpp" />
+    <ClCompile Include="Source\dr_unitTest_d3d_texture_shader.cpp" />
+    <ClCompile Include="Source\dr_unitTest_d3d_vertex_buffer.cpp" />
+    <ClCompile Include="Source\dr_unitTest_d3d_vertex_shader.cpp" />
+    <ClCompile Include="Source\dr_unitTest_depth_stencil.cpp" />
+    <ClCompile Include="Source\dr_unitTest_depth_stencil_state.cpp" />
+    <ClCompile Include="Source\dr_unitTest_device.cpp" />
+    <ClCompile Include="Source\dr_unitTest_device_context.cpp" />
+    <ClCompile Include="Source\dr_unitTest_domain_shader.cpp" />
+    <ClCompile Include="Source\dr_unitTest_fragment_shader.cpp" />
+    <ClCompile Include="Source\dr_unitTest_geometry_shader.cpp" />
+    <ClCompile Include="Source\dr_unitTest_graphics_defines.cpp" />
+    <ClCompile Include="Source\dr_unitTest_hull_shader.cpp" />
+    <ClCompile Include="Source\dr_unitTest_index_buffer.cpp" />
+    <ClCompile Include="Source\dr_unitTest_input_layout.cpp" />
+    <ClCompile Include="Source\dr_unitTest_rasterizer_state.cpp" />
+    <ClCompile Include="Source\dr_unitTest_render_target.cpp" />
+    <ClCompile Include="Source\dr_unitTest_sample_state.cpp" />
+    <ClCompile Include="Source\dr_unitTest_shader.cpp" />
+    <ClCompile Include="Source\dr_unitTest_swap_chain.cpp" />
+    <ClCompile Include="Source\dr_unitTest_teselation_shader.cpp" />
+    <ClCompile Include="Source\dr_unitTest_texture.cpp" />
+    <ClCompile Include="Source\dr_unitTest_texture_shader.cpp" />
+    <ClCompile Include="Source\dr_unitTest_unitTest_buffer.cpp" />
+    <ClCompile Include="Source\dr_unitTest_vertex_buffer.cpp" />
+    <ClCompile Include="Source\dr_unitTest_vertex_shader.cpp" />
     <ClCompile Include="Source\unitTestGraphics.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
