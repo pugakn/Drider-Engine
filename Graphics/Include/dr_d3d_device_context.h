@@ -6,7 +6,7 @@ struct ID3D11DeviceContext;
 namespace driderSDK {
 class DR_API_EXPORT D3DDeviceContext : public DeviceContext {
 public:
-  void release() = 0;
+  void release();
 
   void generateMipMaps(const Texture& texture) const override;
   void updateTextureFromMemory(Texture& texture, const char* databuffer, size_t bufferSize) const override;

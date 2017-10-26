@@ -46,6 +46,11 @@ void D3DDeviceContext::clearRenderTargetView(RenderTarget& renderTarget, const f
   }
 }
 
+void D3DDeviceContext::release()
+{
+  D3D11DeviceContext.Reset();
+}
+
 void D3DDeviceContext::generateMipMaps(const Texture & texture) const
 {
   texture.generateMipMaps(*this);
