@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
   yourWaifuIsShit();
 
   ::testing::GTEST_FLAG(output) = "xml";*/
-  //::testing::GTEST_FLAG(output) = "xml";
+  ::testing::GTEST_FLAG(output) = "xml";
   ::testing::InitGoogleTest(&argc, argv);
   //::testing::GTEST_FLAG(filter) = "VectorN.*";
   //::testing::GTEST_FLAG(filter) = "Radian.*";
@@ -32,6 +32,8 @@ int main(int argc, char* argv[])
 	//::testing::GTEST_FLAG(filter) = "AABB.*";
 	//::testing::GTEST_FLAG(filter) = "Quaternion.*";
   //::testing::GTEST_FLAG(filter) = "Capsule.*";
+  //::testing::GTEST_FLAG(filter) = "Math.*";
+  
   RUN_ALL_TESTS();
 
   return 0;

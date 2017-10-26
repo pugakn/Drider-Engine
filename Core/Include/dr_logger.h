@@ -6,25 +6,49 @@
 
 namespace driderSDK
 {
+
+/**
+* Vector with 2 elements (x, y)
+*
+* Sample usage:
+* Logger sampleName;
+* if(!sampleName.isStarted()) {
+*   sampleName.startUp();
+*   sampleName.reset();
+* }
+*/
 class DR_API_EXPORT Logger : public Module<Logger>
 {
  public:
+  /**
+  * TEST::defaultConstructor
+  *
+  * Default constructor.
+  */
   Logger() {};
 
+  /**
+  * TEST::defaultDestructor
+  *
+  * Default destructor.
+  */
   virtual
   ~Logger() {};
 
   /**
-  * This function reset the content of the logger's html.
+  * TEST::reset
   *
+  * This function reset the content of the logger's html.
   */
   void
   reset();
+
   /**
+  * TEST::addError
+  *
   * Adds a message in the error area.
   * Use __FILE__ in the Filename parameter.
   * Use __LINE__ in the Filename parameter.
-  *
   */
   void
   addError(const std::string Filename,
@@ -32,10 +56,11 @@ class DR_API_EXPORT Logger : public Module<Logger>
            const std::string message);
 
   /**
+  * TEST::addWarning
+  *
   * Adds a message in the warning area.
   * Use __FILE__ in the Filename parameter.
   * Use __LINE__ in the Filename parameter.
-  *
   */
   void
   addWarning(const std::string Filename,
@@ -43,11 +68,7 @@ class DR_API_EXPORT Logger : public Module<Logger>
              const std::string message);
 
  private:
-  int LoggerCalls;
-  int WarningCalls;
-  int ErrorCalls;
-
-  std::string filePath;
+  std::string m_filePath;
 };
 
 }
