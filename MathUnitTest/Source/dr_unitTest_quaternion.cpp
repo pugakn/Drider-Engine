@@ -144,7 +144,26 @@ TEST(Quaternion, matrixFromQuaternion3x3)
 
 }
 
+TEST(Quaternion, pointer)
+{
+	driderSDK::Quaternion TestQuaternion(25.f, 0.f, 1.f, 5.f);
+	EXPECT_FLOAT_EQ(25.f, *TestQuaternion.ptr());
+}
+
+TEST(Quaternion, constPointer)
+{
+	driderSDK::Quaternion TestQuaternion(27.f, 0.f, 1.f, 5.f);
+	EXPECT_FLOAT_EQ(27.f, *TestQuaternion.ptr());
+}
+
 TEST(Quaternion, operatorBrackets) {
+	driderSDK::Quaternion TestQuaternion(1.f, 6.f, 8.f, 5.f);
+	float Testfloat = TestQuaternion[3];
+	EXPECT_FLOAT_EQ(Testfloat, 5.f);
+}
+
+TEST(Quaternion, constOperatorBrackets)
+{
 	driderSDK::Quaternion TestQuaternion(1.f, 6.f, 8.f, 5.f);
 	float Testfloat = TestQuaternion[3];
 	EXPECT_FLOAT_EQ(Testfloat, 5.f);
