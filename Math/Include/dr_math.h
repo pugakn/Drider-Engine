@@ -6,7 +6,12 @@
 #include <dr_prerequisites.h>
 
 namespace driderSDK {
-
+/**
+* Functions basics Math
+*
+* Sample usage:
+* driderSDK::Math::function;
+*/
 struct DR_API_EXPORT Math 
 {
   /**********************************************************************

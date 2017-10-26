@@ -89,7 +89,7 @@ TEST(AABB, intersectFrustrum) {
 	
 }
 
-TEST(AABB, intersectSphere)
+TEST(AABB, DISABLED_intersectSphere)
 {
 	driderSDK::Sphere sphere;
 	sphere.center = driderSDK::Vector3D(0.0f, 0.0f, 0.0f);
