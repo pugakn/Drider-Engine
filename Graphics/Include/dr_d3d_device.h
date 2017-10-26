@@ -3,7 +3,7 @@
 #include "dr_device.h"
 #include <wrl.h>
 #include <wrl/client.h>
-struct ID3D11Device;
+class ID3D11Device;
 namespace driderSDK {
 class DR_API_EXPORT D3DDevice : public Device
 {

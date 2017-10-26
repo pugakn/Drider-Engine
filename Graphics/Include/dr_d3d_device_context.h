@@ -2,7 +2,7 @@
 #include <wrl.h>
 #include <wrl/client.h>
 #include "dr_device_context.h"
-struct ID3D11DeviceContext;
+class ID3D11DeviceContext;
 namespace driderSDK {
 class DR_API_EXPORT D3DDeviceContext : public DeviceContext {
 public:
