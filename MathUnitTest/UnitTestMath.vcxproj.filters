@@ -66,5 +66,8 @@
     <ClCompile Include="Source\dr_unitTest_frustrum.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\dr_unitTest_ray.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
