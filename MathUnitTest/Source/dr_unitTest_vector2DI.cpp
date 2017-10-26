@@ -33,7 +33,7 @@ TEST(Vector2DI, moveContructor) {
   checkValuesVector(vec2, 0, 1);
 }
 
-TEST(Vector2DI, constructForVector2DI) {
+TEST(Vector2DI, copyConstructor) {
   driderSDK::Vector2DI testVector(0, 1);
   driderSDK::Vector2DI testVector2(testVector);
 
