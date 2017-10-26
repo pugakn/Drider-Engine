@@ -111,9 +111,6 @@
     <ClCompile Include="Source\dr_unitTest_geometry_shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\dr_unitTest_graphics_defines.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\dr_unitTest_hull_shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -145,9 +142,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\dr_unitTest_texture_shader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\dr_unitTest_unitTest_buffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\dr_unitTest_vertex_buffer.cpp">

@@ -16,7 +16,7 @@ DR_GRAPHICS_ERROR::E D3DTexture::createFromMemory(const Device& device,
   apiDesc.ArraySize = 1;
   apiDesc.Format = static_cast<DXGI_FORMAT>(desc.Format);
   apiDesc.SampleDesc.Count = 1;
-  apiDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET; //Hardcoded
+  apiDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET | D3D11_BIND_DEPTH_STENCIL; //Hardcoded
   apiDesc.MiscFlags = D3D11_RESOURCE_MISC_GENERATE_MIPS;//Hardcoded
 
   D3D11_SUBRESOURCE_DATA initData{};

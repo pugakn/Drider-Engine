@@ -7,20 +7,24 @@ namespace driderSDK {
 template<class T, UInt32 poolSize>
 class Pool
 {
- public:
-  Pool() 
+public:
+  Pool()
   {
-    m_pool.resize(poolSize);
+    m_pool.reserve(poolSize);
   }
-  T* aquire()
+  template <typename ...Args>
+  void* malloc(size_t numObjects, Args... args)
   {
-    if (m_nextObjectIndex == poolSize) {
-      m_nextObjectIndex = 0;
+    for (size_t i; i < numObjects; ++i) {
+      new (m_pool[(m_nextObjectIndex + i + 1) % poolSize]) T();
     }
-    return m_pool[m_nextObjectIndex++].get();
+    size_t tempIndex = m_nextObjectIndex;
+    m_nextObjectIndex = (m_nextObjectIndex + numObjects + 1) % numObjects;
+    return &m_pool[tempIndex];
   }
- private:
-  std::vector<std::unique_ptr<T>> m_pool;
+  void free(void* object) { }
+private:
+  std::vector<T> m_pool;
   UInt32 m_nextObjectIndex;
 };
 }
