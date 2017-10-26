@@ -30,36 +30,140 @@ class DR_API_EXPORT Device
   virtual void 
   release() = 0;
 
-
+  /**
+  * Create a vertex buffer
+  *
+  * @param DrBufferDesc
+  *   Describes the buffer parameters
+  *
+  * @param initialData
+  *   The initial data of the buffer
+  *
+  * @param out vertexBuffer
+  *   The vertexbuffer taht will be filled
+  *
+  * @return
+  *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
+  */
   virtual DR_GRAPHICS_ERROR::E 
   createVertexBuffer(const DrBufferDesc& desc,
                      char* initialData,
                      VertexBuffer& vertexBuffer) = 0;
 
+  /**
+  * Create a vertex buffer
+  *
+  * @param DrBufferDesc
+  *   Describes the buffer parameters
+  *
+  * @param initialData
+  *   The initial data of the buffer
+  *
+  * @param out indexBuffer
+  *   The indexbuffer taht will be filled
+  *
+  * @return
+  *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
+  */
   virtual DR_GRAPHICS_ERROR::E 
   createIndexBuffer(const DrBufferDesc& desc, 
                     char* initialData, 
                     IndexBuffer& indexBuffer) = 0;
 
+  /**
+  * Create a constant buffer
+  *
+  * @param DrBufferDesc
+  *   Describes the buffer parameters
+  *
+  * @param initialData
+  *   The initial data of the buffer
+  *
+  * @param out constantBuffer
+  *   The constantBuffer taht will be filled out
+  *
+  * @return
+  *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
+  */
   virtual DR_GRAPHICS_ERROR::E 
   createConstantBuffer(const DrBufferDesc& desc, 
                        char* initialData, 
                        ConstantBuffer& constantBuffer) = 0;
 
+
+  /**
+  * Create a shader from a plain text buffer
+  *
+  * @param shaderBuffer
+  *   The plain text shader buffer
+  *
+  * @param bufferSize
+  *   The plain text shader buffer size
+  *
+  * @param out shader
+  *   The shader object taht will be filled out
+  *
+  * @return
+  *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
+  */
   virtual DR_GRAPHICS_ERROR::E 
   createShaderFromMemory(const char* shaderBuffer, 
                          size_t bufferSize, 
                          Shader& shader) = 0;
 
+
+  /**
+  * Create a texture from a memory buffer
+  *
+  * @param buffer
+  *   The texture data
+  *
+  * @param desc
+  *   Describes the texture parameters
+  *
+  * @param out texture
+  *   The texture object taht will be filled out
+  *
+  * @return
+  *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
+  */
   virtual DR_GRAPHICS_ERROR::E 
   createTextureFromMemory(const char* buffer, 
                           const DrTextureDesc& desc, 
                           Texture& texture) = 0;
 
+  /**
+  * Create a texture without initial data
+  *
+  * @param desc
+  *   Describes the texture parameters
+  *
+  * @param out texture
+  *   The texture object taht will be filled out
+  *
+  * @return
+  *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
+  */
   virtual DR_GRAPHICS_ERROR::E 
   createEmptyTexture(const DrTextureDesc& desc, 
                      Texture& texture) = 0;
 
+
+  /**
+  * Create a render target
+  *
+  * @param desc
+  *   Describes the render target parameters
+  *
+  * @param _numColorTextures
+  *   The number of textures the RR will have
+  *
+  * @param out renderTarget
+  *   The RenderTarget object taht will be filled out
+  *
+  * @return
+  *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
+  */
   virtual DR_GRAPHICS_ERROR::E 
   createRenderTarget(const DrTextureDesc& desc, 
                      RenderTarget& renderTarget, 
