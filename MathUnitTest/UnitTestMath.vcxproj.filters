@@ -57,5 +57,8 @@
     <ClCompile Include="Source\dr_unitTest_vectorN.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="dr_unitTest_matrixNxM.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -11,185 +11,185 @@ void elementsEqualToValue(const VectorN<_elements>& vector, float value) {
 }
 
 TEST(VectorN, constructorOneFloat) {
-  VectorN<4> testVector(20.5f);
+  VectorN<4> vector(20.5f);
 
   for(int i = 0; i < 4; ++i) {
-      EXPECT_FLOAT_EQ(testVector[i], 20.5f); 
+      EXPECT_FLOAT_EQ(vector[i], 20.5f); 
   }
 }
 
 TEST(VectorN, elements) {
-  VectorN<223> test;
+  VectorN<223> vector;
 
-  EXPECT_TRUE(test.elements() == 223);
+  EXPECT_TRUE(vector.elements() == 223);
 }
 
 TEST(VectorN, operatorBrakets){
-  VectorN<33> test(1.44f);
-  const VectorN<33> testConst(3.88f);
-  test[32] = 2.4f;
-  EXPECT_FLOAT_EQ(test[32], 2.4f);
-  EXPECT_FLOAT_EQ(testConst[32], 3.88f);
+  VectorN<33> vector(1.44f);
+  const VectorN<33> vectorConst(3.88f);
+  vector[32] = 2.4f;
+  EXPECT_FLOAT_EQ(vector[32], 2.4f);
+  EXPECT_FLOAT_EQ(vectorConst[32], 3.88f);
 }
 
 TEST(VectorN, dot) {
-  VectorN<5> test;
-  test[0] = 1;
-  test[1] = 2;
-  test[2] = 3;
-  test[3] = 4;
-  test[4] = 5;
+  VectorN<5> vector;
+  vector[0] = 1;
+  vector[1] = 2;
+  vector[2] = 3;
+  vector[3] = 4;
+  vector[4] = 5;
 
-  VectorN<5> test2;
+  VectorN<5> vector2;
 
-  test2[0] = 1.5f;
-  test2[1] = 2.5f;
-  test2[2] = 3.5f;
-  test2[3] = 4.5f;
-  test2[4] = 5.5f;
+  vector2[0] = 1.5f;
+  vector2[1] = 2.5f;
+  vector2[2] = 3.5f;
+  vector2[3] = 4.5f;
+  vector2[4] = 5.5f;
 
-  EXPECT_FLOAT_EQ(test.dot(test2), 62.5f);
+  EXPECT_FLOAT_EQ(vector.dot(vector2), 62.5f);
 }
 
 TEST(VectorN, length) {
-  VectorN<4> test;
-  test[0] = 2.2f;
-  test[1] = 4.4f;
-  test[2] = 5.5f;
-  test[3] = 6.1f;
+  VectorN<4> vector;
+  vector[0] = 2.2f;
+  vector[1] = 4.4f;
+  vector[2] = 5.5f;
+  vector[3] = 6.1f;
 
-  EXPECT_FLOAT_EQ(test.length(), 9.57392f);
+  EXPECT_FLOAT_EQ(vector.length(), 9.57392f);
 }
 
 TEST(VectorN, lengthSqr) {
-  VectorN<4> test;
-  test[0] = 2.2f;
-  test[1] = 4.4f;
-  test[2] = 5.5f;
-  test[3] = 6.1f;
+  VectorN<4> vector;
+  vector[0] = 2.2f;
+  vector[1] = 4.4f;
+  vector[2] = 5.5f;
+  vector[3] = 6.1f;
 
-  EXPECT_FLOAT_EQ(test.lengthSqr(), 91.66f);
+  EXPECT_FLOAT_EQ(vector.lengthSqr(), 91.66f);
 }
 
 TEST(VectorN, normalize) {
-  VectorN<4> test;
-  test[0] = 2.2f;
-  test[1] = 4.4f;
-  test[2] = 5.5f;
-  test[3] = 6.1f;
-  test.normalize();
-  EXPECT_FLOAT_EQ(test[0], 0.22979087f);
-  EXPECT_FLOAT_EQ(test[1], 0.45958173f);
-  EXPECT_FLOAT_EQ(test[2], 0.57447714f);
-  EXPECT_FLOAT_EQ(test[3], 0.63714737f);
+  VectorN<4> vector;
+  vector[0] = 2.2f;
+  vector[1] = 4.4f;
+  vector[2] = 5.5f;
+  vector[3] = 6.1f;
+  vector.normalize();
+  EXPECT_FLOAT_EQ(vector[0], 0.22979087f);
+  EXPECT_FLOAT_EQ(vector[1], 0.45958173f);
+  EXPECT_FLOAT_EQ(vector[2], 0.57447714f);
+  EXPECT_FLOAT_EQ(vector[3], 0.63714737f);
 }
 
 TEST(VectorN, ptr) {
-  VectorN<3> test;
-  const VectorN<3> testConst;
-  EXPECT_EQ(test.ptr(), &test[0]);
-  EXPECT_EQ(testConst.ptr(), &testConst[0]);
+  VectorN<3> vector;
+  const VectorN<3> vectorConst;
+  EXPECT_EQ(vector.ptr(), &vector[0]);
+  EXPECT_EQ(vectorConst.ptr(), &vectorConst[0]);
 }
 
 TEST(VectorN, assignmentByMultply) {
-  VectorN<3> test(3);
+  VectorN<3> vector(3);
 
-  test *= 4.5f;
+  vector *= 4.5f;
 
-  elementsEqualToValue(test, 13.5f);
+  elementsEqualToValue(vector, 13.5f);
 }
 
 TEST(VectorN, assignmentByDivision) {
-  VectorN<3> test(10.5f);
+  VectorN<3> vector(10.5f);
 
-  test /= 2.1f;
+  vector /= 2.1f;
 
-  elementsEqualToValue(test, 5.f);
+  elementsEqualToValue(vector, 5.f);
 }
 
 TEST(VectorN, assignmentByAddition) {
-  VectorN<3> test(4.4f);
-  VectorN<3> test2(2.6f);
+  VectorN<3> vector(4.4f);
+  VectorN<3> vector2(2.6f);
 
-  test += test2;
+  vector += vector2;
 
-  elementsEqualToValue(test, 7.0f);
+  elementsEqualToValue(vector, 7.0f);
 }
 
 TEST(VectorN, assignmentBySubtraction) {
-  VectorN<3> test(4.4f);
-  VectorN<3> test2(2.6f);
+  VectorN<3> vector(4.4f);
+  VectorN<3> vector2(2.6f);
 
-  test -= test2;
+  vector -= vector2;
 
-  elementsEqualToValue(test, 1.8f);
+  elementsEqualToValue(vector, 1.8f);
 }
 
 TEST(VectorN, unaryMinus) {
-  VectorN<4> test(-19.f);
-  VectorN<4> test2(20.f);
+  VectorN<4> vector(-19.f);
+  VectorN<4> vector2(20.f);
 
-  test = -test;
-  test2 = -test2;
+  vector = -vector;
+  vector2 = -vector2;
 
-  elementsEqualToValue(test, 19.f);
-  elementsEqualToValue(test2, -20.f);
+  elementsEqualToValue(vector, 19.f);
+  elementsEqualToValue(vector2, -20.f);
 }
 
 TEST(VectorN, equality) {
-  VectorN<3> test(4.4f);
-  VectorN<3> test2(2.6f);
+  VectorN<3> vector(4.4f);
+  VectorN<3> vector2(2.6f);
 
-  EXPECT_TRUE(test == test);
-  EXPECT_FALSE(test == test2);
+  EXPECT_TRUE(vector == vector);
+  EXPECT_FALSE(vector == vector2);
 }
 
 TEST(VectorN, inequality) {
-  VectorN<3> test(4.4f);
-  VectorN<3> test2(2.6f);
+  VectorN<3> vector(4.4f);
+  VectorN<3> vector2(2.6f);
 
-  EXPECT_FALSE(test != test);
-  EXPECT_TRUE(test != test2);
+  EXPECT_FALSE(vector != vector);
+  EXPECT_TRUE(vector != vector2);
 }
 
 TEST(VectorN, multiplyScalarRight) {
-  VectorN<4> test(3.f);
+  VectorN<4> vector(3.f);
   
-  test = test * 4.f;
+  vector = vector * 4.f;
 
-  elementsEqualToValue(test, 12.f);
+  elementsEqualToValue(vector, 12.f);
 }
 
 TEST(VectorN, multiplyScalarLeft) {
-  VectorN<4> test(3.f);
+  VectorN<4> vector(3.f);
   
-  test = 4.f * test;
+  vector = 4.f * vector;
 
-  elementsEqualToValue(test, 12.f);
+  elementsEqualToValue(vector, 12.f);
 }
 
 TEST(VectorN, divisionScalarRight) {
-  VectorN<4> test(100.f);
+  VectorN<4> vector(100.f);
   
-  test = test / 5.f;
+  vector = vector / 5.f;
 
-  elementsEqualToValue(test, 20.f);
+  elementsEqualToValue(vector, 20.f);
 }
 
 TEST(VectorN, additionVector) {
-  VectorN<4> test(100.f);
-  VectorN<4> test2(50.f);
+  VectorN<4> vector(100.f);
+  VectorN<4> vector2(50.f);
 
-  test = test + test2;
+  vector = vector + vector2;
 
-  elementsEqualToValue(test, 150.f);  
+  elementsEqualToValue(vector, 150.f);  
 }
 
 TEST(VectorN, subtractionVector) {
-  VectorN<4> test(100.f);
-  VectorN<4> test2(50.f);
+  VectorN<4> vector(100.f);
+  VectorN<4> vector2(50.f);
 
-  test = test - test2;
+  vector = vector - vector2;
 
-  elementsEqualToValue(test, 50.f);  
+  elementsEqualToValue(vector, 50.f);  
 }

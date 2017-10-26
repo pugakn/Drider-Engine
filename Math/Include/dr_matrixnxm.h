@@ -25,6 +25,7 @@ class MatrixNxM
   {}
 
   /**
+  * TEST::constructorOneFloat
   * Constructor using a scalar value.
   *
   *	@param _scalar
@@ -35,6 +36,7 @@ class MatrixNxM
   {}
 
   /**
+  * TEST::constructorOneVector
   * Constructor using a vector.
   *
   *	@param _vec
@@ -47,8 +49,9 @@ class MatrixNxM
 	    row = _vec;
     }
   }
-
+  
   /**
+  * TEST::operatorBrackets
   * Gets a reference to the specified row (Vector) from the matrix.
   *
   *	@param row
@@ -69,6 +72,7 @@ class MatrixNxM
   }
 
   /**
+  * TEST::operatorBrackets
   * Gets a const reference to the specified row (Vector) from the matrix.
   *
   *	@param row
@@ -89,6 +93,7 @@ class MatrixNxM
   }
 
   /**
+  * TEST::rows
   * Gets the number of rows in the matrix.
   *
   *	@return
@@ -101,6 +106,7 @@ class MatrixNxM
   }
 
   /**
+  * TEST::cols
   * Gets the number of columns in the matrix.
   *
   * @return
@@ -113,6 +119,7 @@ class MatrixNxM
   }
 
   /**
+  * TEST::transpose
   * Gets the transposed matrix.
   *
   *	@return
@@ -134,6 +141,7 @@ class MatrixNxM
   }
 
   /**
+  * TEST::ptr
   * Gets a pointer to the first element of the matrix.
   *
   * @return
@@ -146,6 +154,7 @@ class MatrixNxM
   }
 
   /**
+  * TEST::ptr
   * Gets a constant pointer to the first element of the matrix.
   *
   * @return
@@ -158,6 +167,7 @@ class MatrixNxM
   }
 
   /**
+  * TEST::assignByMultiplicationFloat
   *	Overload of binary operator *=.
   *
   *	This overload performs the multiplication assignment by scalar 
@@ -180,6 +190,7 @@ class MatrixNxM
   }  
 
   /**
+  * TEST::assignByDivisionFloat
   *	Overload of binary operator /=.
   *
   *	This overload performs the division assignment by scalar 
@@ -198,29 +209,7 @@ class MatrixNxM
   }
 
   /**
-  *	Overload of binary operator *.
-  *
-  *	This overload performs the matrix-vector product.
-  *	
-  *	@param rhs
-  *	 Right side operand (a vector with M (number of _cols of (*this))
-  *	 elements.
-  *
-  *	@return
-  *	  The transformed vector.	
-  */
-  FORCEINLINE VectorN<_rows>
-  operator*(const VectorN<_cols>& rhs)
-  {
-	  VectorN<_rows> temp;
-	  for(Int32 iRow = 0; iRow < _rows; ++iRow){
-	    temp[iRow] = rhs.dot(m_elements[iRow]);	
-	  }
-
-	  return temp;
-  }
-
-  /**
+  * TEST::operatorEquality
   *	Overload of binary operator ==.
   *
   *	This overload performs a memberwise equality comparision. 
@@ -246,6 +235,7 @@ class MatrixNxM
   }
 
   /**
+  * TEST::operatorInequality
   *	Overload of binary operator ==.
   *
   *	This overload performs a memberwise inequality comparision. 
@@ -273,6 +263,7 @@ class MatrixNxM
 };
 
 /**
+* TEST::operatorMultiplicationVectorLeft
 * Overload of binary operator *.
 *
 * This overload performs the vector-matrix product.
@@ -299,6 +290,35 @@ operator*(const VectorN<_rows> lhs, const MatrixNxM<_rows, _cols>& rhs)
 }
 
 /**
+* TEST::operatorMultiplicationVectorRight
+*	Overload of binary operator *.
+*
+*	This overload performs the matrix-vector product.
+*	
+* @param lhs
+*  Left side operand (a matrix)
+*
+*	@param rhs
+*	 Right side operand (a vector with _cols number of elements)
+*	 elements.
+*
+*	@return
+*	  The transformed vector.	
+*/
+template<SizeT _rows, SizeT _cols> 
+static FORCEINLINE VectorN<_rows> 
+operator*(const MatrixNxM<_rows, _cols>& lhs, const VectorN<_cols> rhs)
+{
+    VectorN<_rows> temp;
+	  for(Int32 iRow = 0; iRow < _rows; ++iRow){
+	    temp[iRow] = rhs.dot(lhs[iRow]);	
+	  }
+
+	  return temp;
+}
+
+/**
+* TEST::opeartorMultiplicationScalarRight
 * Overload of binary operator *.
 *
 * This overload performs the multiplication of each row of matrix
@@ -321,6 +341,7 @@ operator*(MatrixNxM<_rows, _cols> matrix, float scalar)
 }
 
 /**
+* TEST::opeartorMultiplicationScalarLeft
 * Overload of binary operator *.
 *
 * This overload performs the multiplication of each row of matrix
@@ -343,6 +364,7 @@ operator*(float scalar, const MatrixNxM<_rows, _cols>& matrix)
 }
 
 /**
+* TEST::operatorDivisionScalar
 * Overload of binary operator /.
 *
 * This overload performs the division of each row of matrix
@@ -365,6 +387,7 @@ operator/(MatrixNxM<_rows, _cols> matrix, float scalar)
 }
 
 /**
+* TEST::operatorMultiplicationMatrix
 * Overload of binary operator *.
 * 
 * This overload performs the matrices product.
