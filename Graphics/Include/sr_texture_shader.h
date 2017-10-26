@@ -1,6 +1,8 @@
 #pragma once
 #include "dr_shader.h"
+
 namespace driderSDK {
+
 /**
 * Base class for texture shader
 *
@@ -9,8 +11,12 @@ namespace driderSDK {
 */
 class DR_API_EXPORT TextureShader : public Shader
 {
-public:
-  virtual 
+ public:
+  /**
+  * Virtual destructor.
+  */
+  virtual
   ~TextureShader() {}
 };
+
 }

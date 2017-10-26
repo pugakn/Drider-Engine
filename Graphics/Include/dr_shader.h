@@ -1,9 +1,12 @@
 #pragma once
 #include <dr_prerequisites.h>
 #include "dr_graphics_defines.h"
+
 namespace driderSDK {
+
 class Device;
 class DeviceContext;
+
 /**
 * Base class for shaders
 *
@@ -13,6 +16,9 @@ class DeviceContext;
 class DR_API_EXPORT Shader
 {
  public:
+  /**
+  * Virtual destructor.
+  */
   virtual
   ~Shader() {};
 
@@ -23,8 +29,8 @@ class DR_API_EXPORT Shader
   *   The device context to set the shader
   *
   */
-  virtual 
-  void set(const DeviceContext& deviceContext) const = 0;
+  virtual void
+  set(const DeviceContext& deviceContext) const = 0;
 
   /**
   * Release the allocated memory
@@ -47,7 +53,8 @@ class DR_API_EXPORT Shader
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  virtual DR_GRAPHICS_ERROR::E 
+  virtual DR_GRAPHICS_ERROR::E
   createFromMemory(const Device& device,const char* buffer, size_t bufferSize) = 0;
 };
+
 }

@@ -1,14 +1,21 @@
 #pragma once
 #include <dr_prerequisites.h>
 #include "dr_graphics_defines.h"
+
 namespace driderSDK {
+
 class Device;
 class DeviceContext;
+
 class DR_API_EXPORT InputLayout
 {
-public:
-  virtual 
-  ~InputLayout(){}
+ public:
+  /**
+  * Class virutal destructor.
+  */
+  virtual
+  ~InputLayout() {}
+
   /**
   * Create a input layout
   *
@@ -24,10 +31,10 @@ public:
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  virtual 
-  DR_GRAPHICS_ERROR::E create(const Device & device, 
-                              const DrInputElementDesc* inputDescArray, 
-                              UInt32 arraySize) = 0;
+  virtual DR_GRAPHICS_ERROR::E
+  create(const Device & device,
+         const DrInputElementDesc* inputDescArray,
+         UInt32 arraySize) = 0;
 
   /**
   * Set the input layout
@@ -36,13 +43,14 @@ public:
   *   The device context to set the layout
   *
   */
-  virtual void 
-  set(const DeviceContext& deviceContext)const = 0;
+  virtual void
+  set(const DeviceContext& deviceContext) const = 0;
 
   /**
   * Release the allocated memory
   */
-  virtual void 
+  virtual void
   release() = 0;
 };
+
 }

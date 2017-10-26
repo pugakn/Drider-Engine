@@ -1,11 +1,14 @@
 #pragma once
 #include <dr_prerequisites.h>
 #include "dr_graphics_defines.h"
+
 namespace driderSDK {
+
 class Device;
 class DeviceContext;
+
 class DR_API_EXPORT DepthStencilState {
-public:
+ public:
   /**
   * Create a detph stencil state that describes the behavior
   * of the deth stencil
@@ -19,7 +22,7 @@ public:
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  virtual DR_GRAPHICS_ERROR::E 
+  virtual DR_GRAPHICS_ERROR::E
   create(const Device& device, const DrDepthStencilDesc& desc) = 0;
 
   /**
@@ -32,13 +35,14 @@ public:
   *   Ther reference value to perform against when doing a 
   *   depth-stencil test
   */
-  virtual void 
-  set(const DeviceContext& deviceContext, UInt32 refValue)const = 0;
+  virtual void
+  set(const DeviceContext& deviceContext, UInt32 refValue) const = 0;
 
   /**
   * Release the allocated memory
   */
-  virtual void 
+  virtual void
   release() = 0;
 };
+
 }

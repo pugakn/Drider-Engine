@@ -1,7 +1,10 @@
 #pragma once
 #include "dr_buffer.h"
+
 namespace driderSDK {
+
 class DeviceContext;
+
 /**
 * Base class for index buffer shader resource
 *
@@ -10,8 +13,11 @@ class DeviceContext;
 */
 class DR_API_EXPORT IndexBuffer : public Buffer
 {
-public:
-  virtual 
+ public:
+  /**
+  * Virtual destructor.
+  */
+  virtual
   ~IndexBuffer() {}
 
   /**
@@ -24,7 +30,8 @@ public:
   *   The offset of the first element
   *
   */
-  virtual void 
+  virtual void
   set(const DeviceContext& deviceContext, UInt32 offset) const = 0;
 };
+
 }

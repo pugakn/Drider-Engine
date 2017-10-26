@@ -1,7 +1,9 @@
 #pragma once
 #include <dr_prerequisites.h>
 #include "dr_graphics_defines.h"
+
 namespace driderSDK {
+
 class VertexBuffer;
 class IndexBuffer;
 class ConstantBuffer;
@@ -15,19 +17,23 @@ class SwapChain;
 class RenderTarget;
 class DepthStencil;
 class DeviceContext;
+
 class DR_API_EXPORT Device
 {
  public:
-  virtual 
+  /**
+  * Class virtual destructor.
+  */
+  virtual
   ~Device() {}
 
-  virtual DR_GRAPHICS_ERROR::E 
+  virtual DR_GRAPHICS_ERROR::E
   createDeviceAndDeviceContext(DeviceContext& deviceContext) = 0;
 
   /**
   * Release the allocated memory
   */
-  virtual void 
+  virtual void
   release() = 0;
 
   /**
@@ -45,7 +51,7 @@ class DR_API_EXPORT Device
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  virtual DR_GRAPHICS_ERROR::E 
+  virtual DR_GRAPHICS_ERROR::E
   createVertexBuffer(const DrBufferDesc& desc,
                      char* initialData,
                      VertexBuffer& vertexBuffer) = 0;
@@ -65,9 +71,9 @@ class DR_API_EXPORT Device
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  virtual DR_GRAPHICS_ERROR::E 
-  createIndexBuffer(const DrBufferDesc& desc, 
-                    char* initialData, 
+  virtual DR_GRAPHICS_ERROR::E
+  createIndexBuffer(const DrBufferDesc& desc,
+                    char* initialData,
                     IndexBuffer& indexBuffer) = 0;
 
   /**
@@ -85,11 +91,10 @@ class DR_API_EXPORT Device
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  virtual DR_GRAPHICS_ERROR::E 
-  createConstantBuffer(const DrBufferDesc& desc, 
-                       char* initialData, 
+  virtual DR_GRAPHICS_ERROR::E
+  createConstantBuffer(const DrBufferDesc& desc,
+                       char* initialData,
                        ConstantBuffer& constantBuffer) = 0;
-
 
   /**
   * Create a shader from a plain text buffer
@@ -106,11 +111,10 @@ class DR_API_EXPORT Device
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  virtual DR_GRAPHICS_ERROR::E 
-  createShaderFromMemory(const char* shaderBuffer, 
-                         size_t bufferSize, 
+  virtual DR_GRAPHICS_ERROR::E
+  createShaderFromMemory(const char* shaderBuffer,
+                         size_t bufferSize,
                          Shader& shader) = 0;
-
 
   /**
   * Create a texture from a memory buffer
@@ -127,9 +131,9 @@ class DR_API_EXPORT Device
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  virtual DR_GRAPHICS_ERROR::E 
-  createTextureFromMemory(const char* buffer, 
-                          const DrTextureDesc& desc, 
+  virtual DR_GRAPHICS_ERROR::E
+  createTextureFromMemory(const char* buffer,
+                          const DrTextureDesc& desc,
                           Texture& texture) = 0;
 
   /**
@@ -144,10 +148,9 @@ class DR_API_EXPORT Device
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  virtual DR_GRAPHICS_ERROR::E 
-  createEmptyTexture(const DrTextureDesc& desc, 
+  virtual DR_GRAPHICS_ERROR::E
+  createEmptyTexture(const DrTextureDesc& desc,
                      Texture& texture) = 0;
-
 
   /**
   * Create a render target
@@ -164,11 +167,10 @@ class DR_API_EXPORT Device
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  virtual DR_GRAPHICS_ERROR::E 
-  createRenderTarget(const DrTextureDesc& desc, 
-                     RenderTarget& renderTarget, 
+  virtual DR_GRAPHICS_ERROR::E
+  createRenderTarget(const DrTextureDesc& desc,
+                     RenderTarget& renderTarget,
                      UInt32 _numColorTextures) = 0;
-
 
   /**
   * Create a depth stencil
@@ -182,8 +184,8 @@ class DR_API_EXPORT Device
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  virtual DR_GRAPHICS_ERROR::E 
-  createDepthStencil(const DrTextureDesc& desc, 
+  virtual DR_GRAPHICS_ERROR::E
+  createDepthStencil(const DrTextureDesc& desc,
                      DepthStencil& depthStencil) = 0;
 
   /**
@@ -198,10 +200,9 @@ class DR_API_EXPORT Device
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  virtual DR_GRAPHICS_ERROR::E 
-  createSamplerState(const DrSampleDesc& desc, 
+  virtual DR_GRAPHICS_ERROR::E
+  createSamplerState(const DrSampleDesc& desc,
                      SamplerState& state) = 0;
-
 
   /**
   * Create a sampler rasterizer state
@@ -215,10 +216,9 @@ class DR_API_EXPORT Device
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  virtual DR_GRAPHICS_ERROR::E 
-  createRasteizerState(const DrRasterizerDesc& desc, 
+  virtual DR_GRAPHICS_ERROR::E
+  createRasteizerState(const DrRasterizerDesc& desc,
                        RasterizerState& state) = 0;
-
 
   /**
   * Create a deth stencil state
@@ -232,10 +232,9 @@ class DR_API_EXPORT Device
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  virtual DR_GRAPHICS_ERROR::E 
-  createDepthStencilState(const DrDepthStencilDesc& desc, 
+  virtual DR_GRAPHICS_ERROR::E
+  createDepthStencilState(const DrDepthStencilDesc& desc,
                           DepthStencilState& state) = 0;
-
 
   /**
   * Create a input layout
@@ -252,11 +251,10 @@ class DR_API_EXPORT Device
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  virtual DR_GRAPHICS_ERROR::E 
-  createInputLayout(const DrInputElementDesc* inputDescArray, 
-                    UInt32 arraySize, 
+  virtual DR_GRAPHICS_ERROR::E
+  createInputLayout(const DrInputElementDesc* inputDescArray,
+                    UInt32 arraySize,
                     InputLayout& layout) = 0;
-
 
   /**
   * Create a swap chain
@@ -270,8 +268,9 @@ class DR_API_EXPORT Device
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  virtual DR_GRAPHICS_ERROR::E 
-  createSwapChain(const DrSwapChainDesc& desc, 
+  virtual DR_GRAPHICS_ERROR::E
+  createSwapChain(const DrSwapChainDesc& desc,
                   SwapChain& swapChain) = 0;
 };
+
 }
