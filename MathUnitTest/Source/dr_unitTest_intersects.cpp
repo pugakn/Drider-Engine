@@ -3,7 +3,7 @@
 
 #include <gtest\gtest.h>
 
-TEST (Intersects, sphereSphere) {
+TEST (Intersect, sphereSphere) {
   driderSDK::Vector3D center1(0.0,0.0,0.0);
   driderSDK::Vector3D center2(.5,0.0,0.0);
 
@@ -11,7 +11,7 @@ TEST (Intersects, sphereSphere) {
   EXPECT_TRUE(driderSDK::Intersect::sphereSphere(center1, radius, center2, radius));
 }
 
-TEST(Intersects, sphereCapsule) {
+TEST(Intersect, sphereCapsule) {
   driderSDK::Vector3D center(0.0,0.0,0.0);
   driderSDK::Vector3D pA(0.0,0.0,0.0);
   driderSDK::Vector3D pB(0.0,1.0,0.0);
@@ -19,7 +19,7 @@ TEST(Intersects, sphereCapsule) {
   EXPECT_TRUE(driderSDK::Intersect::sphereCapsule(center, 0.5f, pA, pB, 0.5f));
 }
 
-TEST(Intersects, capsuleCapsule) {
+TEST(Intersect, capsuleCapsule) {
   driderSDK::Vector3D pA(0.0, 0.0, 0.0);
   driderSDK::Vector3D pB(0.0, 1.0, 0.0);
 
@@ -31,7 +31,7 @@ TEST(Intersects, capsuleCapsule) {
   EXPECT_TRUE(driderSDK::Intersect::capsuleCapsule(pA, pB, radius, pA2, pB2, radius));
 }
 
-TEST (Intersects, sphereRay) {
+TEST (Intersect, sphereRay) {
   driderSDK::Vector3D center(0.0, 0.0, 0.0);
   float radius = .5;
 
@@ -40,7 +40,7 @@ TEST (Intersects, sphereRay) {
   EXPECT_TRUE(driderSDK::Intersect::sphereRay(center, radius, origing, dir));
 }
 
-TEST(Intersects, rayPlane) {
+TEST(Intersect, rayPlane) {
   driderSDK::Vector3D center(0.0, 0.0, 0.0);
   float radius = .5;
 
@@ -57,7 +57,7 @@ TEST(Intersects, rayPlane) {
   EXPECT_TRUE(driderSDK::Intersect::rayPlane(rOrigin, rDir, pNormal, pPoint));
 }
 
-TEST(Intersects, rayCapsule) {
+TEST(Intersect, rayCapsule) {
   driderSDK::Vector3D rOrigin(0.0, 5.0, 0.0);
   driderSDK::Vector3D rDir(0.0,0.0,0.0);
   rDir += driderSDK::Vector3D(0.0,10.0,0.0);
@@ -71,22 +71,22 @@ TEST(Intersects, rayCapsule) {
   EXPECT_TRUE(driderSDK::Intersect::rayCapsule(rOrigin, rDir, pA, pB, r, t));
 }
 
-TEST (Intersects, frustrumFrustrum) {
+TEST (Intersect, frustrumFrustrum) {
   EXPECT_TRUE(false);
 }
 
-TEST(Intersects, frustrumSphere) {
+TEST(Intersect, frustrumSphere) {
   EXPECT_TRUE(false);
 }
 
-TEST(Intersects, aabbAabb) {
+TEST(Intersect, aabbAabb) {
   driderSDK::Vector3D c1(0.0,0.0,0.0);
   driderSDK::Vector3D c2(3.0,0.1, 0.0);
   
   EXPECT_TRUE(driderSDK::Intersect::aabbAabb(c1, 4, 4, c2, 4, 4));
 }
 
-TEST(Intersects, aabbSphere) {
+TEST(Intersect, aabbSphere) {
   driderSDK::Vector3D c1(0.0, 0.0, 0.0);
   driderSDK::Vector3D c2(1.0, 0.0, 0.0);
 

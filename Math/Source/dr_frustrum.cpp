@@ -1,4 +1,5 @@
-#include <dr_frustrum.h>
+#include "dr_frustrum.h"
+#include "dr_sphere.h"
 
 namespace driderSDK {
 Frustrum::Frustrum(const Matrix4x4& ViewProjection) {
@@ -44,5 +45,10 @@ driderSDK::Frustrum::createFromVP(const Matrix4x4& ViewProjection) {
 	planes[3].normalize();
 	planes[4].normalize();
 	planes[5].normalize();
+}
+
+bool
+Frustrum::intersects(const Sphere& sphere) const {
+  return Intersect::frustrumSphere(planes, sphere.center, sphere.radius);
 }
 }

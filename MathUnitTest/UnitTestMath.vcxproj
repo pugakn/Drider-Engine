@@ -22,10 +22,12 @@
     <ClCompile Include="dr_unitTest_aabb.cpp" />
     <ClCompile Include="Source\dr_unitTest_capsule.cpp" />
     <ClCompile Include="Source\dr_unitTest_degree.cpp" />
+    <ClCompile Include="Source\dr_unitTest_frustrum.cpp" />
     <ClCompile Include="Source\dr_unitTest_intersects.cpp" />
     <ClCompile Include="Source\dr_unitTest_math.cpp" />
     <ClCompile Include="Source\dr_unitTest_matrix3x3.cpp" />
     <ClCompile Include="Source\dr_unitTest_matrix4x4.cpp" />
+    <ClCompile Include="Source\dr_unitTest_ray.cpp" />
     <ClCompile Include="Source\dr_unitTest_sphere.cpp" />
     <ClCompile Include="Source\dr_unitTest_quaternion.cpp" />
     <ClCompile Include="Source\dr_unitTest_radian.cpp" />
