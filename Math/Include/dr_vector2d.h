@@ -142,6 +142,8 @@ class DR_API_EXPORT Vector2D
   distance(const Vector2D& otherVector) const;
 
   /**
+  * TEST::distanceSqr
+  *
   * Computes the squared distance between two vectors.
   *
   * @param otherVector
@@ -154,6 +156,8 @@ class DR_API_EXPORT Vector2D
   distanceSqr(const Vector2D& otherVector) const;
 
   /**
+  * TEST::equals
+  *
   * Check's if the other vector is equal to this vector with an error
   * range.
   *
@@ -170,6 +174,30 @@ class DR_API_EXPORT Vector2D
   equals(const Vector2D& otherVector, float errorRange = Math::SMALL_NUMBER) const;
 
   /**
+  * TEST::opPtr
+  *
+  * Gets a pointer to the first element of the matrix.
+  *
+  * @return
+  *	  A pointer to the first element of the matrix.
+  */
+  float*
+  ptr();
+
+  /**
+  * TEST::constOpPtr
+  *
+  * Gets a constant pointer to the first element of the matrix.
+  *
+  * @return
+  *	  A constant pointer to the first element of the matrix.
+  */
+  const float*
+  ptr() const;
+
+  /**
+  * TEST::operatorBrackets
+  *
   * Gets a reference to the specified element from the vector.
   *
   *	@param index
@@ -181,29 +209,12 @@ class DR_API_EXPORT Vector2D
   * @throws out_of_range
   *	  If the index is greater than number of elements in the vector.
   */
-
-   /**
-  * Gets a pointer to the first element of the matrix.
-  *
-  * @return
-  *	  A pointer to the first element of the matrix.
-  */
-  float*
-  ptr();
-
-  /**
-  * Gets a constant pointer to the first element of the matrix.
-  *
-  * @return
-  *	  A constant pointer to the first element of the matrix.
-  */
-  const float*
-  ptr() const;
-
   float&
   operator[](const SizeT index);
 
   /**
+  * TEST::operatorBracketsPtr
+  *
   * Gets a reference to the specified element from the vector.
   *
   *	@param index
@@ -219,6 +230,8 @@ class DR_API_EXPORT Vector2D
   operator[](const SizeT index) const;
 
   /**
+  * TEST::operatorOr
+  *
   * Computes the dot product between this vector and the vector parameter.
   * This operatios is commutative.
   *
@@ -233,6 +246,8 @@ class DR_API_EXPORT Vector2D
   operator|(const Vector2D& B) const;
 
   /**
+  * TEST::operatorEqual
+  *
   * Set the x, y values of this vector
   * with the x, y of the other vector.
   *
@@ -246,6 +261,8 @@ class DR_API_EXPORT Vector2D
   operator=(const Vector2D& A);
 
   /**
+  * TEST::operatorAdd
+  *
   * Adds elements of the vector with
   * the elements of the other vector.
   *
@@ -259,6 +276,8 @@ class DR_API_EXPORT Vector2D
   operator+(const Vector2D& A) const;
 
   /**
+  * TEST::operatorAddEqual
+  *
   * Adds elements of the vector with
   * the elements of the other vector
   * and stores it in this vector.
@@ -273,6 +292,8 @@ class DR_API_EXPORT Vector2D
   operator+=(const Vector2D& A);
 
   /**
+  * TEST::operatorMinus
+  *
   * Substracts elements of the vector with
   * the elements of the other vector.
   *
@@ -286,6 +307,8 @@ class DR_API_EXPORT Vector2D
   operator-(const Vector2D& A) const;
 
   /**
+  * TEST::operatorMinusEqual
+  *
   * Substracts elements of the vector with
   * the elements of the other vector and
   * stores it in this vector.
@@ -300,6 +323,8 @@ class DR_API_EXPORT Vector2D
   operator-=(const Vector2D& A);
 
   /**
+  * TEST::operatorMultiplication
+  *
   * Multiplies elements of the vector with
   * the elements of the other vector.
   *
@@ -313,6 +338,8 @@ class DR_API_EXPORT Vector2D
   operator*(const Vector2D& A) const;
 
   /**
+  * TEST::operatorMultiplicationEqual
+  *
   * Multiplies elements of the vector with
   * the elements of the other vector, and stores
   * the result in this vector.
@@ -327,6 +354,8 @@ class DR_API_EXPORT Vector2D
   operator*=(const Vector2D& A);
 
   /**
+  * TEST::operatorMultiplicationScalar
+  *
   * Multiplies elements of the vector.
   *
   * @param scalar
@@ -339,6 +368,8 @@ class DR_API_EXPORT Vector2D
   operator*(const float scalar) const;
 
   /**
+  * TEST::operatorMultiplicationEqualScalar
+  *
   * Multiplies elements of the vector and stores it in the vector.
   *
   * @param scalar
@@ -351,6 +382,8 @@ class DR_API_EXPORT Vector2D
   operator*=(const float scalar);
 
   /**
+  * TEST::operatorDivisionScalar
+  *
   * Divide elements of the vector.
   *
   * @param scalar
@@ -363,6 +396,8 @@ class DR_API_EXPORT Vector2D
   operator/(const float scalar) const;
 
   /**
+  * TEST::operatorDivisionEqualScalar
+  *
   * Divide elements of the vector and stores it in the vector.
   *
   * @param scalar
@@ -375,6 +410,8 @@ class DR_API_EXPORT Vector2D
   operator/=(const float scalar);
 
   /**
+  * TEST::operatorEqualEqual
+  *
   * Checks if the values of the vectors are equal.
   *
   * @return
@@ -384,6 +421,8 @@ class DR_API_EXPORT Vector2D
   operator==(const Vector2D& otherVector);
 
   /**
+  * TEST::operatorNotEqual
+  *
   * Checks if the values of the vectors aren't equal.
   *
   * @return
@@ -393,6 +432,8 @@ class DR_API_EXPORT Vector2D
   operator!=(const Vector2D& otherVector);
 
   /**
+  * TEST::operatorNegate
+  *
   * Returns this vector with negated values.
   */
   Vector2D

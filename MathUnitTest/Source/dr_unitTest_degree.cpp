@@ -5,7 +5,7 @@ TEST(Degree, defaultConstructor) {
   driderSDK::Degree* testDegree = nullptr;
   testDegree = new driderSDK::Degree();
 
-  EXPECT_FALSE(testDegree, nullptr);
+  EXPECT_FALSE(nullptr == testDegree);
 
   delete testDegree;
 }
@@ -41,7 +41,7 @@ TEST(Degree, defaultDestructor) {
   delete testDegree;
   testDegree = nullptr;
 
-  EXPECT_TRUE(testDegree, nullptr);
+  EXPECT_TRUE(nullptr == testDegree);
 }
 
 TEST(Degree, toRadian) {
