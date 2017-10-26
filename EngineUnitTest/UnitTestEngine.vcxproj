@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dr_unitTest_codec.cpp" />
+    <ClCompile Include="Source\dr_unitTest_FileSystem.cpp" />
     <ClCompile Include="Source\dr_unitTest_resourceManager.cpp" />
     <ClCompile Include="Source\unitTestEngine.cpp" />
   </ItemGroup>

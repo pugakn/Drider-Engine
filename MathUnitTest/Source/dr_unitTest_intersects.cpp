@@ -94,7 +94,7 @@ TEST(Intersect, aabbSphere) {
 }
 
 
-TEST(Intersects, aabbRay) {
+TEST(Intersect, aabbRay) {
   driderSDK::Vector3D c1(0.0,0.0,0.0);
   driderSDK::Vector3D origin(0.0,5.0,0.0);  
   driderSDK::Vector3D dir(0.0,-1.0,0.0);
@@ -102,27 +102,27 @@ TEST(Intersects, aabbRay) {
   EXPECT_TRUE(driderSDK::Intersect::aabbRay(c1, 5,5,origin, dir));
 }
 
-TEST(Intersects, aabbPoint) {
+TEST(Intersect, aabbPoint) {
   driderSDK::Vector3D c1(0.0, 0.0, 0.0);
   driderSDK::Vector3D point(0.0, 0.0, 0.0);
   EXPECT_TRUE(driderSDK::Intersect::aabbPoint(c1,5,5,point));
 }
 
-TEST (Intersects, spherePlane) {
+TEST (Intersect, spherePlane) {
   driderSDK::Vector3D pnormal(0.0,1.0,0.0);
   driderSDK::Vector3D c(0.0,0.0,0.0);
   
   EXPECT_TRUE(driderSDK::Intersect::spherePlane(pnormal, 0, c, .5));
 }
 
-TEST(Intersects, aabbPlane) {
+TEST(Intersect, aabbPlane) {
   driderSDK::Vector3D pnormal(0.0, 1.0, 0.0);
   driderSDK::Vector3D c(0.0, 0.0, 0.0);
 
   EXPECT_TRUE(driderSDK::Intersect::aabbPlane(c, 5,5,pnormal,0));
 }
 
-TEST(Intersects, segmentPlane) {
+TEST(Intersect, segmentPlane) {
   driderSDK::Vector3D pnormal(0.0, 1.0, 0.0);
   driderSDK::Vector3D pA(0.0, 0.0, 0.0);
   driderSDK::Vector3D pB(0.0, 0.0, 0.0);
@@ -130,7 +130,7 @@ TEST(Intersects, segmentPlane) {
   EXPECT_TRUE(driderSDK::Intersect::segmentPlane(pA, pB,pnormal,1));
 }
 
-TEST(Intersects, capsulePlane) {
+TEST(Intersect, capsulePlane) {
   driderSDK::Vector3D pA(0.0, 0.0, 0.0);
   driderSDK::Vector3D pB(0.0, 1.0, 0.0);
   float radius = .5f;
@@ -139,14 +139,14 @@ TEST(Intersects, capsulePlane) {
   EXPECT_TRUE(driderSDK::Intersect::capsulePlane(pA, pB, radius, pNormal, 0));
 }
 
-TEST (Intersects, frustrumPlane) {
+TEST (Intersect, frustrumPlane) {
   //std::array<driderSDK::Plane, 6> planes;
   
   //EXPECT_TRUE(driderSDK::Intersect::frustrumPlane(planes, driderSDK::Vector3D(0,1,0)));
   EXPECT_TRUE(true);
 }
 
-TEST(Intersects, planePlane) {
+TEST(Intersect, planePlane) {
   EXPECT_TRUE(driderSDK::Intersect::planePlane(driderSDK::Vector3D(1, 0, 0),
               driderSDK::Vector3D(0, 1, 0)));
 
@@ -158,15 +158,17 @@ TEST(Intersects, planePlane) {
                                                driderSDK::Vector3D(0, 1, 0)));
 }
 
-TEST(Intersects, sphereContainsPoint) {
+TEST(Intersect, sphereContainsPoint) {
   
   EXPECT_TRUE(driderSDK::Intersect::sphereContainsPoint(driderSDK::Vector3D(0, 0, 0),
                                                         driderSDK::Vector3D(0, 0, 0),
                                                         .5f));
 }
 
-TEST (Intersects, closestPointSegmentSegment) {
-  EXPECT_TRUE(true);
+TEST (Intersect, closestPointSegmentSegment) {
+  EXPECT_TRUE(false);
 }
 
-
+TEST(Intersect, NoImplemented) {
+  EXPECT_TRUE(false);
+}

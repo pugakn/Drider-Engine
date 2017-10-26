@@ -137,7 +137,9 @@ struct DR_API_EXPORT Intersect
             float sphRadio,
             const Vector3D& rayOrigin,
             const Vector3D& rayDirection);
-
+  /**
+  * TEST::NoImplemented
+  */
   static bool
   rayPlane(const Vector3D& rayOrigin,
            const Vector3D& rayDirection,
@@ -338,7 +340,7 @@ struct DR_API_EXPORT Intersect
              float sphereRadius);
 
   /**
-  * TEST::intersectsNoImplemented
+  * TEST::NoImplemented
   * Check if a ray intersects with an AABB.
   *
   * @param aabbCenter
