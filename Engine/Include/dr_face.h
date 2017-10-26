@@ -3,6 +3,11 @@
 
 namespace driderSDK {
 
+class Vector3D;
+/**
+* Contains the elements of e face.
+*
+*/
 class DR_API_EXPORT Face {
  public:
   /**
@@ -16,6 +21,8 @@ class DR_API_EXPORT Face {
   * Default destructor
   **/
   ~Face() {}
+
+   int ID;
 };
 
 }

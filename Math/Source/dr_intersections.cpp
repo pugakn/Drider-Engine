@@ -241,14 +241,16 @@ Intersect::aabbSphere(const Vector3D& aabbCenter,
   Vector3D distance = sphereOrigin - aabbCenter;
   float trueDistance = distance.length();
   distance.normalize();
-  if (distance.x >= distance.y && distance.x >= distance.z) {
-    distance /= distance.x;
-  }
-  else if (distance.y >= distance.x && distance.y >= distance.z) {
-    distance /= distance.y;
-  }
-  else {
-    distance /= distance.z;
+  if(distance.x > 0, distance.y > 0, distance.z > 0) {
+   if (distance.x >= distance.y && distance.x >= distance.z) {
+     distance /= distance.x;
+   }
+   else if (distance.y >= distance.x && distance.y >= distance.z) {
+     distance /= distance.y;
+   }
+   else {
+     distance /= distance.z;
+   }
   }
   distance.x *= aabbWidth * 0.5f;
   distance.y *= aabbHeight * 0.5f;

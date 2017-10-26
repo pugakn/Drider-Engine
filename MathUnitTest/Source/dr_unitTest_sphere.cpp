@@ -70,6 +70,12 @@ TEST(Sphere, intersectsAabb) {
   Aabb.width = 0.6f;
 
   EXPECT_TRUE(sphere.intersects(Aabb));
+
+  Aabb.center = driderSDK::Vector3D(0.5f, 0.0f, 0.0f);
+  Aabb.height = 1.0f;
+  Aabb.width = 0.6f;
+
+  EXPECT_TRUE(sphere.intersects(Aabb));
 }
 
 TEST(Sphere, intersectsCapsule) {
