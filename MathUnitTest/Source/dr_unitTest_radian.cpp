@@ -5,7 +5,7 @@ TEST(Radian, defaultConstructor) {
   driderSDK::Radian* ptrRadian = nullptr;
   ptrRadian = new driderSDK::Radian();
 
-  EXPECT_FALSE(ptrRadian, nullptr);
+  EXPECT_FALSE(nullptr == ptrRadian);
 
   delete ptrRadian;
 }
@@ -41,7 +41,7 @@ TEST(Radian, defaultDestructor) {
   delete ptrRadian;
   ptrRadian = nullptr;
 
-  EXPECT_TRUE(ptrRadian, nullptr);
+  EXPECT_TRUE(nullptr == ptrRadian);
 }
 
 TEST(Radian, ToDegree) {

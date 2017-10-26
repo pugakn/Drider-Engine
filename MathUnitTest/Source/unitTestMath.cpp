@@ -27,6 +27,7 @@ int main(int argc, char* argv[])
   ::testing::InitGoogleTest(&argc, argv);
   //::testing::GTEST_FLAG(filter) = "VectorN.*";
   //::testing::GTEST_FLAG(filter) = "Radian.*";
+  //::testing::GTEST_FLAG(filter) = "Degree.*";
   //::testing::GTEST_FLAG(filter) = "Vector3D.*";
   //::testing::GTEST_FLAG(filter) = "Matrix3x3.*";
 	//::testing::GTEST_FLAG(filter) = "AABB.*";
