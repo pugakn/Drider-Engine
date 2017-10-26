@@ -4,29 +4,40 @@
 #include <dr_math.h>
 
 namespace driderSDK {
-
+/**
+*  Radian class with value representing the angle.
+*
+* Sample usage:
+*	Radian RaidanName;
+*/
 class DR_API_EXPORT Radian
 {
  public:
   /**
-  * Default constructor.
+  * TEST::defaultConstructor
   *
+  * Default constructor.
   */
   Radian();
 
   /**
+  * TEST::moveConstructor
+  *
   * Move constructor.
   *
   */
   Radian(Radian&& V) = default;
 
   /**
-  * Copy constructor.
+  * TEST::copyConstructor
   *
+  * Copy constructor.
   */
   Radian(const Radian& V);
 
   /**
+  * TEST::floatConstructor
+  *
   * Initialize class with value.
   *
   * @param value
@@ -35,22 +46,27 @@ class DR_API_EXPORT Radian
   explicit Radian(float value);
 
   /**
-  * Default destructor.
+  * TEST::defaultDestructor
   *
+  * Default destructor.
   */
   ~Radian();
 
   /**
-  * Returns a Degree class with a value equal to the
+  * TEST::ToDegree
+  *
+  * Returns a Degree value equal to the
   * actual radian in degrees.
   *
   * @return
   *   Class degree.
   */
   float
-toDegree() const;
+  toDegree() const;
 
   /**
+  * TEST::Unwind
+  *
   * Limit the value in [0, 360)
   *
   * @return
@@ -59,26 +75,67 @@ toDegree() const;
   Radian&
   unwind();
 
-  //Uncomented
+  /**
+  * TEST::floatOperator
+  *
+  * @eeturn
+  *   The class value as a float.
+  */
   operator float();
 
-  //Uncomented
+  /**
+  * TEST::equalFloat
+  *
+  * Sets the class value to the given float.
+  *
+  * @return
+  *   Reference to this.
+  */
   Radian&
   operator=(float V);
 
-  //Uncomented
+  /**
+  * TEST::plusEqualFloat
+  *
+  * Add the given float to the class value.
+  *
+  * @return
+  *   Reference to this.
+  */
   Radian&
   operator+=(float V);
 
-  //Uncomented
+  /**
+  * TEST::lessEqualFloat
+  *
+  * Subs the given float to the class value.
+  *
+  * @return
+  *   Reference to this.
+  */
   Radian&
   operator-=(float V);
 
-  //Uncomented
+  /**
+  * TEST::mulEqualFloat
+  *
+  * Multiplies the given float to the class value.
+  *
+  * @return
+  *   Reference to this.
+  */
   Radian&
   operator*=(float V);
 
-  //Uncomented
+
+  /**
+  * TEST::divEqualFloat
+  *
+  * Divides the class value with the given float.
+  *
+  * @return
+  *   Reference to this.
+  */
   Radian&
   operator/=(float V);
 private:

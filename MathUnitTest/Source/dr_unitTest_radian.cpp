@@ -1,11 +1,27 @@
 #include <dr_radian.h>
 #include <gtest\gtest.h>
 
-TEST(Radian, floatOperator) {
-  driderSDK::Radian testDegree(3.0f);
-  float theDegreeValue = testDegree;
+TEST(Radian, defaultConstructor) {
+  driderSDK::Radian* ptrRadian = nullptr;
+  ptrRadian = new driderSDK::Radian();
 
-  EXPECT_FLOAT_EQ(theDegreeValue, 3.0f);
+  EXPECT_FALSE(ptrRadian, nullptr);
+
+  delete ptrRadian;
+}
+
+TEST(Radian, moveConstructor) {
+  driderSDK::Radian trueRadian(1.0f);
+  driderSDK::Radian testRadian(std::move(trueRadian));
+
+  EXPECT_FLOAT_EQ(trueRadian, testRadian);
+}
+
+TEST(Radian, copyConstructor) {
+  driderSDK::Radian realDegree(45.0f);
+  driderSDK::Radian testDegree(realDegree);
+
+  EXPECT_FLOAT_EQ(realDegree, testDegree);
 }
 
 TEST(Radian, floatConstructor) {
@@ -18,14 +34,17 @@ TEST(Radian, floatConstructor) {
   EXPECT_FLOAT_EQ(testDegree3, 1000.0f);
 }
 
-TEST(Radian, CopyConstructor) {
-  driderSDK::Radian realDegree(45.0f);
-  driderSDK::Radian testDegree(realDegree);
+TEST(Radian, defaultDestructor) {
+  driderSDK::Radian* ptrRadian = nullptr;
+  ptrRadian = new driderSDK::Radian();
 
-  EXPECT_FLOAT_EQ(testDegree, 45.0f);
+  delete ptrRadian;
+  ptrRadian = nullptr;
+
+  EXPECT_TRUE(ptrRadian, nullptr);
 }
 
-TEST(Radian, ToRadian) {
+TEST(Radian, ToDegree) {
   driderSDK::Radian testDegree1(driderSDK::Math::PI);
   driderSDK::Radian testDegree2(driderSDK::Math::HALF_PI);
 
@@ -39,6 +58,13 @@ TEST(Radian, Unwind) {
 
   EXPECT_FLOAT_EQ(testDegree1.unwind(), driderSDK::Math::PI);
   EXPECT_FLOAT_EQ(testDegree2.unwind(), 3.0f*driderSDK::Math::HALF_PI);
+}
+
+TEST(Radian, floatOperator) {
+  driderSDK::Radian testDegree(3.0f);
+  float theDegreeValue = testDegree;
+
+  EXPECT_FLOAT_EQ(theDegreeValue, 3.0f);
 }
 
 TEST(Radian, equalFloat) {
