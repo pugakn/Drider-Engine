@@ -31,8 +31,8 @@ namespace driderSDK {
   }
   DR_GRAPHICS_ERROR::E D3DSwapChain::getBackBuffer(Texture& texture)
   {
-    if (APISwapchain->GetBuffer(0, __uuidof(ID3D11Texture2D), &static_cast<D3DTexture>(texture)) != S_OK)
-    return DR_GRAPHICS_ERROR::E();
+    if (APISwapchain->GetBuffer(0, __uuidof(ID3D11Texture2D), &static_cast<D3DTexture*>(&texture)->APITexture) != S_OK)
+    return DR_GRAPHICS_ERROR::ERROR_NONE;
   }
   void D3DSwapChain::release()
   {

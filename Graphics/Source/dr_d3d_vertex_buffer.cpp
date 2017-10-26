@@ -41,6 +41,10 @@ void D3DVertexBuffer::set(const DeviceContext& deviceContext,
                                                                                                &stride, 
                                                                                                &offset);
 }
+void D3DVertexBuffer::updateFromMemory(const DeviceContext & deviceContext, const char * dataBuffer, size_t bufferSize)
+{
+  static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->UpdateSubresource(VB.Get(),0,0,dataBuffer,0,0);
+}
 void D3DVertexBuffer::release()
 {
   VB.Reset();

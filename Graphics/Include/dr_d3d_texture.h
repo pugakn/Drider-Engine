@@ -2,8 +2,8 @@
 #include "dr_texture.h"
 #include <wrl.h>
 #include <wrl/client.h>
-class ID3D11Texture2D;
-class ID3D11ShaderResourceView;
+struct ID3D11Texture2D;
+struct ID3D11ShaderResourceView;
 namespace driderSDK{
 class DR_API_EXPORT D3DTexture : public Texture{
 public:
@@ -14,7 +14,7 @@ public:
   void release() override;
   void unmap(const DeviceContext & deviceContext) override;
   void udpateFromMemory(const DeviceContext& deviceContext, const char* buffer, size_t bufferSize) override;
-  void generateMipMaps(const DeviceContext & deviceContext) override;
+  void generateMipMaps(const DeviceContext & deviceContext) const override;
 
   Microsoft::WRL::ComPtr<ID3D11Texture2D> APITexture;
   Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> APIView;

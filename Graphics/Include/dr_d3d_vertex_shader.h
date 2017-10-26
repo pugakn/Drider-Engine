@@ -2,7 +2,7 @@
 #include "dr_vertex_shader.h"
 #include <wrl.h>
 #include <wrl/client.h>
-class ID3D11VertexShader;
+struct ID3D11VertexShader;
 namespace driderSDK {
 class DR_API_EXPORT D3DVertexShader : public VertexShader
 {

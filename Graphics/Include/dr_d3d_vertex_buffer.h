@@ -11,6 +11,7 @@ public:
   D3DVertexBuffer();
   DR_GRAPHICS_ERROR::E create(const Device& device, const DrBufferDesc& desc, char* initialData) override;
   void set(const DeviceContext& deviceContext, UInt32 stride, UInt32 offset) const override;
+  void updateFromMemory(const DeviceContext& deviceContext, const char * dataBuffer, size_t bufferSize) override;
   void release() override;
   Microsoft::WRL::ComPtr<ID3D11Buffer> VB;
 };

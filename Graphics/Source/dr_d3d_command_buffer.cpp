@@ -11,6 +11,9 @@ namespace driderSDK {
   {
     return DR_GRAPHICS_ERROR::ERROR_NOT_IMPLEMENTED;
   }
+  void D3DCommandBuffer::updateFromMemory(const DeviceContext & deviceContext, const char * dataBuffer, size_t bufferSize)
+  {
+  }
   void D3DCommandBuffer::release()
   {
     CB.Reset();

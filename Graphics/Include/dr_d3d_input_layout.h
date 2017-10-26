@@ -2,8 +2,7 @@
 #include "dr_input_layout.h"
 #include <wrl.h>
 #include <wrl/client.h>
-class ID3D11InputLayout;
-class Shader;
+struct ID3D11InputLayout;
 namespace driderSDK {
 class DR_API_EXPORT D3DInputLayout : public InputLayout
 {

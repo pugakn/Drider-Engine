@@ -71,6 +71,10 @@ void D3DConstantBuffer::set(const DeviceContext& deviceContext, DR_SHADER_TYPE_F
     //Not implemented
   }
 }
+void D3DConstantBuffer::updateFromMemory(const DeviceContext & deviceContext, const char * dataBuffer, size_t bufferSize)
+{
+  static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->UpdateSubresource(CB.Get(), 0, 0, dataBuffer, 0, 0);
+}
 void D3DConstantBuffer::release()
 {
   CB.Reset();

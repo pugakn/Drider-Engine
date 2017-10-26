@@ -38,6 +38,10 @@ void D3DIndexBuffer::set(const DeviceContext& deviceContext, UInt32 offset) cons
 {
   static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->IASetIndexBuffer(IB.Get(), DXGI_FORMAT_R16_UINT, offset);
 }
+void D3DIndexBuffer::updateFromMemory(const DeviceContext & deviceContext, const char * dataBuffer, size_t bufferSize)
+{
+  static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->UpdateSubresource(IB.Get(), 0, 0, dataBuffer, 0, 0);
+}
 void D3DIndexBuffer::release()
 {
   IB.Reset();

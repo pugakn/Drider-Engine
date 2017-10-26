@@ -2,7 +2,7 @@
 #include "dr_sample_state.h"
 #include <wrl.h>
 #include <wrl/client.h>
-class ID3D11SamplerState;
+struct ID3D11SamplerState;
 namespace driderSDK {
 class DR_API_EXPORT D3D11SamplerState : public SamplerState
 {

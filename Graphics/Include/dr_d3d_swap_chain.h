@@ -2,8 +2,8 @@
 #include "dr_swap_chain.h"
 #include <wrl.h>
 #include <wrl/client.h>
-class IDXGISwapChain;
-class ID3D11RenderTargetView;
+struct IDXGISwapChain;
+struct ID3D11RenderTargetView;
 namespace driderSDK {
 class D3DSwapChain : public SwapChain {
 public:

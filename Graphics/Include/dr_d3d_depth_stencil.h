@@ -2,7 +2,7 @@
 #include "dr_depth_stencil.h"
 #include <wrl.h>
 #include <wrl/client.h>
-class ID3D11DepthStencilView;
+struct ID3D11DepthStencilView;
 namespace driderSDK {
 class DR_API_EXPORT D3DDepthStencil : public DepthStencil {
 public:

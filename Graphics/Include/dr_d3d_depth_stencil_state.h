@@ -2,7 +2,8 @@
 #include "dr_depth_stencil_state.h"
 #include <wrl.h>
 #include <wrl/client.h>
-class ID3D11DepthStencilState;
+class Shader; 
+struct ID3D11DepthStencilState;
 namespace driderSDK {
 class D3DDepthStencilState : DepthStencilState {
 public:

@@ -2,7 +2,7 @@
 #include "dr_rasterizer_state.h"
 #include <wrl.h>
 #include <wrl/client.h>
-class ID3D11RasterizerState;
+struct ID3D11RasterizerState;
 namespace driderSDK {
 class DR_API_EXPORT D3DRasterizerState : public RasterizerState
 {

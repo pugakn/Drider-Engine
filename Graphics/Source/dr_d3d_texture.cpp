@@ -68,7 +68,7 @@ namespace driderSDK {
     initData.SysMemPitch = descriptor.pitch;
     static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->UpdateSubresource(APITexture.Get(), 0, 0, buffer, initData.SysMemPitch, 0);
   }
-  void D3DTexture::generateMipMaps(const DeviceContext & deviceContext)
+  void D3DTexture::generateMipMaps(const DeviceContext & deviceContext) const
   {
     static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->GenerateMips(APIView.Get());
   }
