@@ -59,7 +59,7 @@ TEST(Sphere, intersectsSphere) {
   EXPECT_FALSE(sphere.intersects(sphere2));
 }
 
-TEST(Sphere, DISABLED_intersectsAabb) {
+TEST(Sphere, intersectsAabb) {
   driderSDK::Sphere sphere;
   sphere.center = driderSDK::Vector3D(0.0f, 0.0f, 0.0f);
   sphere.radius = 0.5f;
