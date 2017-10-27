@@ -19,12 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-<<<<<<< HEAD
-    <ClCompile Include="dr_unitTest_codec.cpp" />
-    <ClCompile Include="Source\dr_unitTest_FileSystem.cpp" />
-=======
     <ClCompile Include="Source\dr_unitTest_codec.cpp" />
->>>>>>> fda600a7107dc2bbf6c6ea8afc677ef89a69d9a2
+    <ClCompile Include="Source\dr_unitTest_FileSystem.cpp" />
     <ClCompile Include="Source\dr_unitTest_resourceManager.cpp" />
     <ClCompile Include="Source\unitTestEngine.cpp" />
   </ItemGroup>
