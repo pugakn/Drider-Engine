@@ -21,8 +21,7 @@ TEST(D3DConstantBuffer, create) {
 	desc.usage = driderSDK::DR_BUFFER_USAGE::kDefault;
 
 	char initData[10];
-	cb.create(device, desc, initData);
-	EXPECT_TRUE(true);
+	EXPECT_TRUE(!cb.create(device, desc, initData));
 }
 
 TEST(D3DConstantBuffer, set) {

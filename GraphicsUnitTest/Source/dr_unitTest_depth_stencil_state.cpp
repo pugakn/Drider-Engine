@@ -13,8 +13,7 @@ TEST(DepthStencilState, create) {
 	driderSDK::DrDepthStencilDesc desc;
 	desc.depthEnable = true;
 	desc.depthFunc = driderSDK::DR_COMPARISON_FUNC::kGREATER;
-	state.create(device, desc);
-  EXPECT_TRUE(true);
+  EXPECT_TRUE(!state.create(device, desc));
 }
 
 TEST(DepthStencilState, set) {

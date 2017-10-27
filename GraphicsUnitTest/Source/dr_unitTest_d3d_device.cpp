@@ -101,6 +101,7 @@ TEST(Device, createEmptyTexture) {
 	desc.mipLevels = 1;
 	desc.Format = driderSDK::DR_FORMAT::kDrFormat_R8G8B8A8_UNORM;
 	desc.CPUAccessFlags = 0;
+	tex.createEmpty(device, desc);
 	EXPECT_TRUE(!device.createEmptyTexture(desc, tex));
 }
 
