@@ -2,6 +2,7 @@
 #include "dr_render_target.h"
 #include <wrl.h>
 #include <wrl/client.h>
+#include <vector>
 class ID3D11RenderTargetView;
 namespace driderSDK {
 class DepthStencil;
