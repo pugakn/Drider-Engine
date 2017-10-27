@@ -24,7 +24,9 @@ TEST(D3DVertexShader, release) {
   device.createDeviceAndDeviceContext(context);
   char *source = "cbuffer ConstantBuffer{float4x4 WVP;}struct VS_INPUT {float4 position : POSITION;};struct VS_OUTPUT {float4 hposition : SV_POSITION;};VS_OUTPUT VS(VS_INPUT input) {VS_OUTPUT OUT;OUT.hposition = mul(WVP, input.position);return OUT;}";
   bool b = obj.createFromMemory(device, source, GTEST_ARRAY_SIZE_(source));
-  obj.release();
+  if (b) {
+    obj.release();
+  }
   EXPECT_TRUE(!obj.APIShader.Get());
 }
 

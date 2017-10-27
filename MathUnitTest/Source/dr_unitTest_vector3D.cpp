@@ -9,9 +9,7 @@ void checkValuesVector(driderSDK::Vector3D& testVector, float vx, float vy, floa
 }
 
 TEST(Vector3D, defaultConstructor) {
-  driderSDK::Vector3D* testingVec = nullptr;
-
-  testingVec = new driderSDK::Vector3D();
+  driderSDK::Vector3D* testingVec = new driderSDK::Vector3D();
 
   EXPECT_FALSE(nullptr == testingVec);
 

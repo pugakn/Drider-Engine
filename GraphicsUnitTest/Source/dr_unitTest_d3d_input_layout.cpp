@@ -17,7 +17,7 @@ TEST(D3DInputLayout, create) {
   desc.inputSlot = 0;
   desc.semanticIndex = 0;
   desc.semanticName = "POSITION";
-  char init[10];
+  //char init[10];
   EXPECT_TRUE(!obj.create(device,&desc, 1));
 }
 
@@ -32,7 +32,7 @@ TEST(D3DInputLayout, set) {
   desc.inputSlot = 0;
   desc.semanticIndex = 0;
   desc.semanticName = "POSITION";
-  char init[10];
+  //char init[10];
   obj.create(device, &desc, 1);
   obj.set(context);
   EXPECT_TRUE(true);
@@ -49,7 +49,7 @@ TEST(D3DInputLayout, release) {
   desc.inputSlot = 0;
   desc.semanticIndex = 0;
   desc.semanticName = "POSITION";
-  char init[10];
+  //char init[10];
   obj.create(device, &desc, 1);
   obj.release();
   EXPECT_TRUE(obj.APILayout.Get());
