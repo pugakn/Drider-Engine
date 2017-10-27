@@ -141,9 +141,9 @@ struct DR_API_EXPORT Parser
   * @return
   *   std::vector with the string created.
   */
-  static std::vector<std::string>
-  split(char* str,
-        const char* divider);
+  static std::vector<TString>
+  split(TString str,
+        TString divider);
 };
 
 }

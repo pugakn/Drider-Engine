@@ -65,32 +65,36 @@ Parser::addUntilFind(TString source,
   return buffer;
 }
 
-std::vector<std::string>
-Parser::split(char* str,
-              const char* divider) {
-
- /*std::vector<std::string> result;
+std::vector<TString>
+Parser::split(TString str,
+      TString divider) {
+ str.push_back(divider[0]);
+ TString::iterator it = str.begin();
  
- size_t len = strlen(str);
+ size_t sizeD = driderSDK::Parser::strLen(divider);
+ 
+ std::vector<TString> result;
+ TString buffer;
+ bool bAdd = true;
 
- char* ret = new char[len + 2];
- char *r = ret;
- ret[10] = 'a';
- Parser::strCopy(ret, str);
- ret[len] = divider[0];
- ret[len + 1] = '\0';
-
- while(ret != "\0") {
-  char* nString = "";
-  Parser::addUntilFind(ret, divider, nString);
-  ret += strlen(nString) / sizeof(char) + 1;
-  if(nString != "" && nString != divider) {
-   result.push_back(nString);
+ while(it != str.end()) {
+  bAdd = true;
+  for(size_t i = 0; i < sizeD; i++) {
+   if(*it == divider[i]) {
+    bAdd = false;
+   }
   }
+  if(bAdd) {
+   buffer += *it;
+  } else {
+   if(buffer.size() > 0) {
+    result.push_back(buffer);
+    buffer.clear();
+   }
+  }
+  it++;
  }
- delete[] r;
- return result;*/
- return std::vector<std::string>();
+ return result;
 }
 
 }

@@ -33,8 +33,12 @@ TEST(Parser, parserStringToFloat) {
 TEST (Parser, parserAddUntilFind) {
   driderSDK::TString out;
   driderSDK::Parser::addUntilFind(L"1.0, 25.0, 236", L",", out);
+  EXPECT_TRUE(out == L"1.0");
 }
 
 TEST (Parser, parserSplit) {
-
+  std::vector<driderSDK::TString> result;
+  std::vector<driderSDK::TString> compare {L"azul", L"rojo", L"verde", L"amarillo"};
+  result = driderSDK::Parser::split(L"azul, rojo,verde, amarillo", L", ");
+  EXPECT_TRUE(result == compare);
 }
