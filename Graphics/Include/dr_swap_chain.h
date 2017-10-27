@@ -8,7 +8,8 @@ class Device;
 class DeviceContext;
 class Texture;
 
-class DR_API_EXPORT SwapChain {
+class DR_API_EXPORT SwapChain
+{
  public:
   /**
   * Class virutal destructor.

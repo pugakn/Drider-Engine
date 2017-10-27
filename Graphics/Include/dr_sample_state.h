@@ -7,7 +7,8 @@ namespace driderSDK {
 class Device;
 class DeviceContext;
 
-class DR_API_EXPORT SamplerState {
+class DR_API_EXPORT SamplerState
+{
  public:
   /**
   * Class virutal destructor.

@@ -2,9 +2,11 @@
 #include <d3d11.h>
 #include "dr_d3d_device.h"
 #include "dr_d3d_device_context.h"
+
 namespace driderSDK {
-DR_GRAPHICS_ERROR::E D3D11SamplerState::create(const Device & device, const DrSampleDesc & desc)
-{
+
+DR_GRAPHICS_ERROR::E
+D3D11SamplerState::create(const Device& device, const DrSampleDesc& desc) {
   D3D11_SAMPLER_DESC apiDesc;
   apiDesc.AddressU = static_cast<D3D11_TEXTURE_ADDRESS_MODE>(desc.addressU);
   apiDesc.AddressV = static_cast<D3D11_TEXTURE_ADDRESS_MODE>(desc.addressV);
@@ -20,50 +22,58 @@ DR_GRAPHICS_ERROR::E D3D11SamplerState::create(const Device & device, const DrSa
   apiDesc.MinLOD = desc.minLOD;
   apiDesc.MipLODBias = desc.mipLODBias;
 
-  if (static_cast<const D3DDevice*>(&device)->D3D11Device->CreateSamplerState(&apiDesc,APIState.GetAddressOf()) != S_OK)
-  {
+  if (static_cast<const D3DDevice*>(&device)->
+        D3D11Device->
+          CreateSamplerState(&apiDesc,APIState.GetAddressOf()) != S_OK) {
       DR_GRAPHICS_ERROR::CREATE_SAMPLER_STATE_ERROR;
   }
   return DR_GRAPHICS_ERROR::ERROR_NONE;
 }
-void D3D11SamplerState::set(const DeviceContext & deviceContext, DR_SHADER_TYPE_FLAG::E typeFlag) const
-{
-  if (typeFlag & DR_SHADER_TYPE_FLAG::kVertex)
-  {
-    static_cast<const D3DDeviceContext*>
-      (&deviceContext)->D3D11DeviceContext->VSSetSamplers(0, 1, APIState.GetAddressOf());
+
+void
+D3D11SamplerState::set(const DeviceContext& deviceContext,
+                       DR_SHADER_TYPE_FLAG::E typeFlag) const {
+  if (typeFlag & DR_SHADER_TYPE_FLAG::kVertex) {
+    static_cast<const D3DDeviceContext*>(&deviceContext)->
+      D3D11DeviceContext->
+        VSSetSamplers(0, 1, APIState.GetAddressOf());
   }
-  if (typeFlag & DR_SHADER_TYPE_FLAG::kFragment)
-  {
-    static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->PSSetSamplers(0, 1, APIState.GetAddressOf());
+  if (typeFlag & DR_SHADER_TYPE_FLAG::kFragment) {
+    static_cast<const D3DDeviceContext*>(&deviceContext)->
+      D3D11DeviceContext->
+        PSSetSamplers(0, 1, APIState.GetAddressOf());
   }
-  if (typeFlag & DR_SHADER_TYPE_FLAG::kCompute)
-  {
-    static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->CSSetSamplers(0, 1, APIState.GetAddressOf());
+  if (typeFlag & DR_SHADER_TYPE_FLAG::kCompute) {
+    static_cast<const D3DDeviceContext*>(&deviceContext)->
+      D3D11DeviceContext->
+        CSSetSamplers(0, 1, APIState.GetAddressOf());
   }
-  if (typeFlag & DR_SHADER_TYPE_FLAG::kDomain)
-  {
-    static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->DSSetSamplers(0, 1, APIState.GetAddressOf());
+  if (typeFlag & DR_SHADER_TYPE_FLAG::kDomain) {
+    static_cast<const D3DDeviceContext*>(&deviceContext)->
+      D3D11DeviceContext->
+        DSSetSamplers(0, 1, APIState.GetAddressOf());
   }
-  if (typeFlag & DR_SHADER_TYPE_FLAG::kHull)
-  {
-    static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->HSSetSamplers(0, 1, APIState.GetAddressOf());
+  if (typeFlag & DR_SHADER_TYPE_FLAG::kHull) {
+    static_cast<const D3DDeviceContext*>(&deviceContext)->
+      D3D11DeviceContext->
+        HSSetSamplers(0, 1, APIState.GetAddressOf());
   }
-  if (typeFlag & DR_SHADER_TYPE_FLAG::kGeometry)
-  {
-    static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->GSSetSamplers(0, 1, APIState.GetAddressOf());
+  if (typeFlag & DR_SHADER_TYPE_FLAG::kGeometry) {
+    static_cast<const D3DDeviceContext*>(&deviceContext)->
+      D3D11DeviceContext->
+        GSSetSamplers(0, 1, APIState.GetAddressOf());
   }
-  if (typeFlag & DR_SHADER_TYPE_FLAG::kTeselation)
-  {
+  if (typeFlag & DR_SHADER_TYPE_FLAG::kTeselation) {
     //Not implemented
   }
-  if (typeFlag & DR_SHADER_TYPE_FLAG::kTexture)
-  {
+  if (typeFlag & DR_SHADER_TYPE_FLAG::kTexture) {
     //Not implemented
   }
 }
-void D3D11SamplerState::release()
-{
+
+void
+D3D11SamplerState::release() {
   APIState.Reset();
 }
+
 }

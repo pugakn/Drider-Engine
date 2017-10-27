@@ -12,9 +12,7 @@ void checkValuesVector(driderSDK::Vector2D& testVectorA, driderSDK::Vector2D& te
 }
 
 TEST(Vector2D, defaultConstructor) {
-  driderSDK::Vector2D* testingVec = nullptr;
-
-  testingVec = new driderSDK::Vector2D();
+  driderSDK::Vector2D* testingVec = new driderSDK::Vector2D();
 
   EXPECT_FALSE(nullptr == testingVec);
 

@@ -2,8 +2,7 @@
 #include <gtest\gtest.h>
 
 TEST(Radian, defaultConstructor) {
-  driderSDK::Radian* ptrRadian = nullptr;
-  ptrRadian = new driderSDK::Radian();
+  driderSDK::Radian* ptrRadian = new driderSDK::Radian();
 
   EXPECT_FALSE(nullptr == ptrRadian);
 
@@ -35,13 +34,12 @@ TEST(Radian, floatConstructor) {
 }
 
 TEST(Radian, defaultDestructor) {
-  driderSDK::Radian* ptrRadian = nullptr;
-  ptrRadian = new driderSDK::Radian();
+  driderSDK::Radian* ptrRadian = new driderSDK::Radian();
 
   delete ptrRadian;
   ptrRadian = nullptr;
 
-  EXPECT_TRUE(nullptr == ptrRadian);
+  EXPECT_FALSE(ptrRadian);
 }
 
 TEST(Radian, ToDegree) {

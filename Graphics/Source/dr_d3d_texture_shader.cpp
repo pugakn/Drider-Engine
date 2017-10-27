@@ -8,16 +8,16 @@
 namespace driderSDK {
 
 void
-D3DTextreShader::set(const DeviceContext& deviceContext) const {
+D3DTextureShader::set(const DeviceContext& deviceContext) const {
 }
 
 void
-D3DTextreShader::release() {
+D3DTextureShader::release() {
   //APIShader.Reset();
 }
 
 DR_GRAPHICS_ERROR::E
-D3DTextreShader::createFromMemory(const Device& device,
+D3DTextureShader::createFromMemory(const Device& device,
                                   const char* buffer,
                                   size_t bufferSize) {
   return DR_GRAPHICS_ERROR::ERROR_NOT_IMPLEMENTED;

@@ -8,8 +8,10 @@
 namespace driderSDK {
 
 void
-D3DDomainShader::set(const DeviceContext & deviceContext) const {
-  static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->DSSetShader(APIShader.Get(), 0, 0);
+D3DDomainShader::set(const DeviceContext& deviceContext) const {
+  static_cast<const D3DDeviceContext*>(&deviceContext)->
+    D3D11DeviceContext->
+      DSSetShader(APIShader.Get(), 0, 0);
 }
 
 void
@@ -18,7 +20,9 @@ D3DDomainShader::release() {
 }
 
 DR_GRAPHICS_ERROR::E
-D3DDomainShader::createFromMemory(const Device & device, const char * buffer, size_t bufferSize) {
+D3DDomainShader::createFromMemory(const Device& device,
+                                  const char* buffer,
+                                  size_t bufferSize) {
   Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
   Microsoft::WRL::ComPtr<ID3DBlob> shader_blob;
   if (D3DCompile(buffer,

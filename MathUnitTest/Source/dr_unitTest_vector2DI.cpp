@@ -7,9 +7,7 @@ void checkValuesVector(driderSDK::Vector2DI& testVector, driderSDK::Int32 vx, dr
 }
 
 TEST(Vector2DI, defaultConstructor) {
-  driderSDK::Vector2DI* testingVec = nullptr;
-
-  testingVec = new driderSDK::Vector2DI();
+  driderSDK::Vector2DI* testingVec = new driderSDK::Vector2DI();
 
   EXPECT_FALSE(nullptr == testingVec);
 
@@ -33,7 +31,7 @@ TEST(Vector2DI, moveContructor) {
   checkValuesVector(vec2, 0, 1);
 }
 
-TEST(Vector2DI, constructForVector2DI) {
+TEST(Vector2DI, copyConstructor) {
   driderSDK::Vector2DI testVector(0, 1);
   driderSDK::Vector2DI testVector2(testVector);
 

@@ -56,7 +56,7 @@ class DR_API_EXPORT Frustrum
 	void 
 	createFromVP(const Matrix4x4& ViewProjection);
 
-	/**
+	/*
   * TEST::intersectsRay
 	* Check if the frustrum intersects other ray
 	*
@@ -70,7 +70,7 @@ class DR_API_EXPORT Frustrum
 	/*bool
 	intersects(const Ray& bRay) const;*/
 
-	/**
+	/*
 	* Check if the frustrum intersects with a plane
 	*
 	*	@param plane
