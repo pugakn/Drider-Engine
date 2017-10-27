@@ -11,7 +11,6 @@ TEST(D3DIndexBuffer, constructor) {
 }
 
 TEST(D3DIndexBuffer, create) {
-
   driderSDK::D3DIndexBuffer vb;
   driderSDK::D3DDevice device;
   driderSDK::D3DDeviceContext context;
@@ -37,6 +36,10 @@ TEST(D3DIndexBuffer, set) {
   vb.create(device, desc, init);
   vb.set(context, 0);
   EXPECT_TRUE(true);
+}
+
+TEST(D3DIndexBuffer, updateFromMemory) {
+  EXPECT_TRUE(false);
 }
 
 TEST(D3DIndexBuffer, release) {

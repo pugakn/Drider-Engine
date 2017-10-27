@@ -13,6 +13,8 @@ class DR_API_EXPORT D3DSwapChain : public SwapChain
 {
  public:
   /**
+  * TEST::
+  *
   * Create a swap chain
   *
   * @param device
@@ -28,6 +30,8 @@ class DR_API_EXPORT D3DSwapChain : public SwapChain
   create(const Device& device, const DrSwapChainDesc& desc) override;
 
   /**
+  * TEST::
+  *
   * Get the back buffer
   *
   * @param out texture
@@ -40,12 +44,16 @@ class DR_API_EXPORT D3DSwapChain : public SwapChain
   getBackBuffer(Texture& texture) override;
 
   /**
+  * TEST::
+  *
   * Release the allocated memory
   */
   void
   release() override;
 
   /**
+  * TEST::
+  *
   * Swap back-front buffer
   */
   void

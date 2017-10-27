@@ -11,6 +11,8 @@ class DR_API_EXPORT D3DTextureShader : public TextureShader
 {
  public:
   /**
+  * TEST::
+  *
   * Set the shader to the stage
   *
   * @param deviceContext
@@ -21,12 +23,16 @@ class DR_API_EXPORT D3DTextureShader : public TextureShader
   set(const DeviceContext& deviceContext) const override;
 
   /**
+  * TEST::
+  *
   * Release the allocated memory
   */
   void
   release() override;
 
   /**
+  * TEST::
+  *
   * Update the buffer with new data
   *
   * @param deviceContext

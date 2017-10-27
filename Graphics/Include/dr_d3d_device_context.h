@@ -10,13 +10,17 @@ namespace driderSDK {
 class DR_API_EXPORT D3DDeviceContext : public DeviceContext
 {
  public:
-  /**
+   /**
+   * TEST::
+   *
   * Release the allocated memory
   */
   void
   release() override;
 
   /**
+  * TEST::
+  *
   * Generate mip maps of the texture
   *
   * @param texture
@@ -27,6 +31,8 @@ class DR_API_EXPORT D3DDeviceContext : public DeviceContext
   generateMipMaps(const Texture& texture) const override;
 
   /**
+  * TEST::
+  *
   * Update the data of the texture
   *
   * @param texture
@@ -45,6 +51,8 @@ class DR_API_EXPORT D3DDeviceContext : public DeviceContext
                           size_t bufferSize) const override;
 
   /**
+  * TEST::
+  *
   * Update the data of the texture
   *
   * @param buffer
@@ -63,6 +71,8 @@ class DR_API_EXPORT D3DDeviceContext : public DeviceContext
                          size_t bufferSize) const override;
 
   /**
+  * TEST::
+  *
   * Set the render target and depth stencil
   *
   * @param renderTarget
@@ -77,6 +87,8 @@ class DR_API_EXPORT D3DDeviceContext : public DeviceContext
                   const DepthStencil& depthStencil) const override;
 
   /**
+  * TEST::
+  *
   * Set the texture to the shader
   *
   * @param texture
@@ -90,6 +102,8 @@ class DR_API_EXPORT D3DDeviceContext : public DeviceContext
   setTexture(const Texture& texture, UInt32 slot) const override;
 
   /**
+  * TEST::
+  *
   * Set the shader to the current context
   *
   * @param shader
@@ -100,6 +114,8 @@ class DR_API_EXPORT D3DDeviceContext : public DeviceContext
   setShader(const Shader& shader) const override;
 
   /**
+  * TEST::
+  *
   * Set the index buffer to the current context
   *
   * @param indexBuffer
@@ -114,6 +130,8 @@ class DR_API_EXPORT D3DDeviceContext : public DeviceContext
                  UInt32 offset) const override;
 
   /**
+  * TEST::
+  *
   * Set the vertex buffer to the current context
   *
   * @param buffer
@@ -132,6 +150,8 @@ class DR_API_EXPORT D3DDeviceContext : public DeviceContext
                   UInt32 offset) const override;
 
   /**
+  * TEST::
+  *
   * Set the constant buffer to all shaders specifyed on typeFlag
   *
   * @param buffer
@@ -146,6 +166,8 @@ class DR_API_EXPORT D3DDeviceContext : public DeviceContext
                     DR_SHADER_TYPE_FLAG::E typeFlag) const override;
 
   /**
+  * TEST::
+  *
   * Clear the depth stencil
   *
   * @param depthstencil
@@ -168,6 +190,8 @@ class DR_API_EXPORT D3DDeviceContext : public DeviceContext
                         UInt32 stencilValue) const override;
 
   /**
+  * TEST::
+  *
   * Clear a render target
   *
   * @param renderTarget
@@ -182,6 +206,8 @@ class DR_API_EXPORT D3DDeviceContext : public DeviceContext
                         const float colorRGBA[4]) const override;
 
   /**
+  * TEST::
+  *
   * Set the tipe of topology to use on the draw
   *
   * @param topology
@@ -192,6 +218,8 @@ class DR_API_EXPORT D3DDeviceContext : public DeviceContext
   setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::E topology) const override;
 
   /**
+  * TEST::
+  *
   * Draw the primitives
   *
   * @param indexCount

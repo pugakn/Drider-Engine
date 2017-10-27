@@ -17,6 +17,8 @@ class DR_API_EXPORT D3DVertexShader : public VertexShader
 {
  public:
   /**
+  * TEST::set
+  *
   * Set the shader to the stage
   *
   * @param deviceContext
@@ -27,12 +29,16 @@ class DR_API_EXPORT D3DVertexShader : public VertexShader
   set(const DeviceContext& deviceContext) const override;
 
   /**
+  * TEST::release
+  *
   * Release the allocated memory
   */
   void
   release() override;
 
   /**
+  * TEST::createFromMemory
+  *
   * Update the buffer with new data
   *
   * @param deviceContext

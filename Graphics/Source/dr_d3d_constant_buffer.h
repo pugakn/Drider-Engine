@@ -19,11 +19,15 @@ class DR_API_EXPORT D3DConstantBuffer : public ConstantBuffer
 {
  public:
   /**
+  * TEST::
+  *
   * Class default constructor.
   */
   D3DConstantBuffer();
 
   /**
+  * TEST::
+  *
   * Create a buffer shader resource
   *
   * @param device
@@ -44,6 +48,8 @@ class DR_API_EXPORT D3DConstantBuffer : public ConstantBuffer
          char* initialData) override;
 
   /**
+  * TEST::
+  *
   * Set the constant buffer to all shaders specifyed on typeFlag
   *
   * @param deviceContext
@@ -58,6 +64,8 @@ class DR_API_EXPORT D3DConstantBuffer : public ConstantBuffer
       DR_SHADER_TYPE_FLAG::E typeFlag) const override;
 
   /**
+  * TEST::
+  *
   * Update the buffer with new data
   *
   * @param deviceContext
@@ -75,6 +83,8 @@ class DR_API_EXPORT D3DConstantBuffer : public ConstantBuffer
                    size_t bufferSize) override;
 
   /**
+  * TEST::
+  *
   * Release the allocated memory
   */
   void

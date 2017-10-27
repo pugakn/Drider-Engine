@@ -28,12 +28,16 @@ class DR_API_EXPORT D3DDomainShader : public DomainShader
   set(const DeviceContext& deviceContext) const override;
 
   /**
+  * TEST::
+  *
   * Release the allocated memory
   */
   void
   release() override;
 
   /**
+  * TEST::
+  *
   * Update the buffer with new data
   *
   * @param deviceContext

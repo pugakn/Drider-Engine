@@ -19,6 +19,8 @@ class DR_API_EXPORT D3DRenderTarget : public RenderTarget
 {
  public:
   /**
+  * TEST::create
+  *
   * Create a render target on this object
   *
   * @param device
@@ -39,6 +41,8 @@ class DR_API_EXPORT D3DRenderTarget : public RenderTarget
          UInt32 numRT) override;
 
   /**
+  * TEST::set
+  *
   * Set the render target and depth stencil
   *
   * @param deviceContext
@@ -53,6 +57,8 @@ class DR_API_EXPORT D3DRenderTarget : public RenderTarget
       const DepthStencil& depthStencil) const override;
 
   /**
+  * TEST::release
+  *
   * Release the allocated memory
   */
   void

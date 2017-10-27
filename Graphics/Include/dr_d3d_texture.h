@@ -18,6 +18,8 @@ class DR_API_EXPORT D3DTexture : public Texture
 {
  public:
   /**
+  * TEST::
+  *
   * Create a texture with initial data
   *
   * @param device
@@ -38,6 +40,8 @@ class DR_API_EXPORT D3DTexture : public Texture
                    const char* buffer) override;
 
   /**
+  * TEST::
+  *
   * Create a texture
   *
   * @param device
@@ -53,6 +57,8 @@ class DR_API_EXPORT D3DTexture : public Texture
   createEmpty(const Device& device, const DrTextureDesc& desc) override;
 
   /**
+  * TEST::
+  *
   * Map the resource on a system memory buffer
   *
   * @param deviceContext
@@ -68,6 +74,8 @@ class DR_API_EXPORT D3DTexture : public Texture
   map(const DeviceContext& deviceContext, char* buffer) override;
 
   /**
+  * TEST::
+  *
   * Set the texture to the shader
   *
   * @param deviceContext
@@ -81,12 +89,16 @@ class DR_API_EXPORT D3DTexture : public Texture
   set(const DeviceContext& deviceContext, UInt32 slot) const override;
 
   /**
+  * TEST::
+  *
   * Release the allocated memory
   */
   void
   release() override;
 
   /**
+  * TEST::
+  *
   * Unmap the resource from system memory
   *
   * @param deviceContext
@@ -96,6 +108,8 @@ class DR_API_EXPORT D3DTexture : public Texture
   unmap(const DeviceContext& deviceContext) override;
 
   /**
+  * TEST::
+  *
   * Update the data of the texture
   *
   * @param deviceContext
@@ -113,6 +127,8 @@ class DR_API_EXPORT D3DTexture : public Texture
                    size_t bufferSize) override;
 
   /**
+  * TEST::
+  *
   * Generate mip maps for the current texture
   *
   * @param deviceContext

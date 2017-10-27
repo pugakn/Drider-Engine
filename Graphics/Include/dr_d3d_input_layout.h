@@ -11,6 +11,8 @@ class DR_API_EXPORT D3DInputLayout : public InputLayout
 {
  public:
   /**
+  * TEST::create
+  *
   * Create a input layout
   *
   * @param device
@@ -31,6 +33,8 @@ class DR_API_EXPORT D3DInputLayout : public InputLayout
          UInt32 arraySize) override;
 
   /**
+  * TEST::set
+  *
   * Set the input layout
   *
   * @param deviceContext
@@ -41,6 +45,8 @@ class DR_API_EXPORT D3DInputLayout : public InputLayout
   set(const DeviceContext& deviceContext) const override;
 
   /**
+  * TEST::release
+  *
   * Release the allocated memory
   */
   void

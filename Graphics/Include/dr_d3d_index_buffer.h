@@ -19,11 +19,15 @@ class DR_API_EXPORT D3DIndexBuffer : public IndexBuffer
 {
  public:
   /**
+  * TEST::constructor
+  *
   * Default constructor.
   */
   D3DIndexBuffer();
 
   /**
+  * TEST::create
+  *
   * Create a buffer shader resource
   *
   * @param device
@@ -42,6 +46,8 @@ class DR_API_EXPORT D3DIndexBuffer : public IndexBuffer
   create(const Device& device, const DrBufferDesc& desc, char* initialData) override;
 
   /**
+  * TEST::set
+  *
   * Set the index buffer to the stage
   *
   * @param deviceContext
@@ -55,6 +61,8 @@ class DR_API_EXPORT D3DIndexBuffer : public IndexBuffer
   set(const DeviceContext& deviceContext, UInt32 offset) const override;
 
   /**
+  * TEST::updateFromMemory
+  *
   * Update the buffer with new data
   *
   * @param deviceContext
@@ -72,6 +80,8 @@ class DR_API_EXPORT D3DIndexBuffer : public IndexBuffer
                    size_t bufferSize) override;
 
   /**
+  * TEST::release
+  *
   * Release the allocated memory
   */
   void
