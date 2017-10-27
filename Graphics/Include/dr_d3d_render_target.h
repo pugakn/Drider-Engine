@@ -2,7 +2,7 @@
 #include "dr_render_target.h"
 #include <wrl.h>
 #include <wrl/client.h>
-
+#include <vector>
 class ID3D11RenderTargetView;
 
 namespace driderSDK {
@@ -54,7 +54,7 @@ class DR_API_EXPORT D3DRenderTarget : public RenderTarget {
   void
   release() override;
 
-  std::vector<Microsoft::WRL::ComPtr<ID3D11RenderTargetView>> APIColorView; 
+  std::vector<Microsoft::WRL::ComPtr<ID3D11RenderTargetView>> APIColorViews; 
 };
 
 }

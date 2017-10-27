@@ -12,6 +12,7 @@ D3DInputLayout::create(const Device& device,
                        const DrInputElementDesc* inputDescArray,
                        UInt32 arraySize) {
   std::vector<D3D11_INPUT_ELEMENT_DESC> desc;
+  desc.resize(arraySize);
 
   for (size_t i = 0; i < arraySize; i++) {
     desc[i].Format = (DXGI_FORMAT)inputDescArray[i].format;
@@ -20,7 +21,7 @@ D3DInputLayout::create(const Device& device,
     desc[i].SemanticName = inputDescArray[i].semanticName;
     desc[i].SemanticIndex = inputDescArray[i].inputSlot;
   }
-   
+
   if (static_cast<const D3DDevice*>(&device)->
         D3D11Device->
           CreateInputLayout(&desc[0], arraySize, 0, 0, APILayout.GetAddressOf()) != S_OK) {
