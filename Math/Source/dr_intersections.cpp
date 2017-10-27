@@ -76,7 +76,21 @@ Intersect::rayPlane(const Vector3D& rayOrigin,
                     const Vector3D& rayDirection,
                     const Vector3D& planeNormal,
                     float planeGap) {
-  return false;
+  Vector3D segment = rayDirection;
+
+	float den = planeNormal.dot(segment);
+
+	if (Math::abs(den) <= Math::EPSILON) {
+		return false;
+	}
+
+	float dist = (planeNormal.dot(rayOrigin) - planeGap) / den;
+
+	if (dist > Math::EPSILON) {
+		return false;
+	}
+
+  return true;
 }
 
 bool
@@ -318,7 +332,7 @@ Intersect::spherePlane(const Vector3D& planeNormal,
                        float planeGap,
                        const Vector3D& sphereCenter,
                        float sphereRadius) {
-  return planeNormal.dot(sphereCenter) + planeGap < sphereRadius;
+  return Math::abs(planeNormal.dot(sphereCenter) - planeGap) < sphereRadius;
 }
 
 bool
@@ -345,21 +359,21 @@ Intersect::segmentPlane(const Vector3D& linePointA,
                         const Vector3D& linePointB,
                         const Vector3D& planeNormal,
                         float planeGap) {
-  Vector3D segmentDir = linePointB - linePointA;
-  //segmentDir.normalize(); Debe ser normalizado solo que normalize no funciona
+  Vector3D segmentDir = linePointA - linePointB;
 
   float d = planeNormal.dot(segmentDir);
 
-  if (d < Math::EPSILON) {
+  if (Math::abs(d) < Math::EPSILON) {
     return false;
   }
 
-  DR_ASSERT(planeNormal.z != 0.0f);
-  Vector3D point(0, 0, planeGap / planeNormal.z);
+  float dist = (planeNormal.dot(linePointA) - planeGap) / d;
 
-  float s = planeNormal.dot(point - linePointA) / d;
+  if (dist < -Math::EPSILON || dist > (1.0 + Math::EPSILON)) {
+		return false;
+	}
 
-  return 0 <= s && s <= 1;
+  return true;
 }
 
 bool

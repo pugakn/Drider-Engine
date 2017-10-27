@@ -24,8 +24,6 @@ rowsEqualToVector(const MatrixNxM<_rows, _cols>& matrix,
   }
 }
 
-
-
 TEST(MatrixNxM, constructorOneFloat) {
   MatrixNxM<4, 4> matrix(1.44f);
 
@@ -107,7 +105,6 @@ TEST(MatrixNxM, assignByDivisionFloat) {
 
   elementsEqualToValue(matrix, 2.5f);
 }
-
 
 TEST(MatrixNxM, operatorEquality) {
   MatrixNxM<2,2> matrixA(10.f);

@@ -14,41 +14,29 @@ Plane::Plane(const Vector3D& _normal, float _d)
   : Vector3D(_normal),
 	  d(_d) {}
 
-Plane::Plane(const Vector3D& _normal, const Vector3D& _point) {
-  compute(_normal, _point);
-}
+Plane::Plane(const Vector3D& _normal, const Vector3D& _point) 
+  : Vector3D(_normal),
+    d(dot(_point)) {}
 
 Plane::Plane(const Vector3D& point0, 
 			       const Vector3D& point1, 
-			       const Vector3D& point2) {
-  compute(point0, point1, point2);
+			       const Vector3D& point2) 
+  : Vector3D((point1 - point0).cross(point2 - point0)) {
+    Vector3D::normalize();
+    d = dot(point0);
 }
 
 Plane::Plane(const Plane& other)
   : Vector3D(other),
 	  d(other.d) {}
 
-void
-Plane::compute(const Vector3D& point0,
-               const Vector3D& point1, 
-               const Vector3D& point2) {
-  Vector3D normal = (point1 - point0).cross(point2 - point0);
-  normal.normalize();
-  compute(normal, point0);
-}
-
 Plane::~Plane() {
-}
-
-void Plane::compute(const Vector3D& _normal, const Vector3D& point) {
-  Vector3D::operator=(_normal);
-  d = dot(point);
 }
 
 float
 Plane::distanceToPoint(const Vector3D& point) {
   //Warning: Assumes the normal is normalized
-  return Math::abs(dot(point) + d);
+  return Math::abs(dot(point) - d);
 }
 
 PLANE_INTERSECT::E

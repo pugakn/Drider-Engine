@@ -20,25 +20,31 @@ class DR_API_EXPORT Plane : public Vector3D
 {
  public:
   /**
-  * TEST::sphereSphere
+  * TEST::constructorDefault
   *	Default constructor.
   */
   Plane();
 
   /**
-  * TEST::sphereCapsule
+  * TEST::destructor
+  * Destructor.
+  */
+  ~Plane();
+
+  /**
+  * TEST::constructorNormalGap
   * Constructor which takes a normal and a gap .
   */
   Plane(const Vector3D& _normal, float _d);
 
   /**
-  * TEST::capsuleCapsule
+  * TEST::constructorNormalPoint
   *	Constructor using a normal and a point to calculate the gap.
   */
   Plane(const Vector3D& _normal, const Vector3D& point);
 
   /**
-  * TEST::sphereRay
+  * TEST::constructorThreePoints
   * Constructor using 3 points in the plane which are used to 
   *	calculate the normal of the plane and the gap.
   */
@@ -47,37 +53,26 @@ class DR_API_EXPORT Plane : public Vector3D
 		    const Vector3D& point2);
 
   /**
-  * TEST::rayPlane
+  * TEST::constructorCopy
   *	Copy constructor
   */
   Plane(const Plane& other);
 
-  /**
-  * TEST::rayCapsule
-  * Computes the normal and gap of the plain from 3 points.
+  /*
+  * TEST:distanceToPoint
+  * Computes the distance from the plane to a point
+  * 
+  * @param point
+  *  The point from which distance is measured.
+  * 
+  * @return distance to the point.
+  *
   */
-  void 
-  compute(const Vector3D& point0, 
-		      const Vector3D& point1, 
-		      const Vector3D& point2);
-  /**
-  * TEST::frustrumFrustrum
-  * Destructor.
-  */
-  ~Plane();
-
-  /**
-  * TEST::rayPlane
-  * Computes the normal and gap of the plain from a normal and 1 point.
-  */
-  void 
-  compute(const Vector3D& _normal, const Vector3D& point);
-
   float 
   distanceToPoint(const Vector3D& point);
    
   /**
-  * TEST::frustrumSphere
+  * TEST::intersectsPoint
   * Computes the relationship between a point and the plane.
   *
   *	@return
@@ -85,61 +80,70 @@ class DR_API_EXPORT Plane : public Vector3D
   */
   PLANE_INTERSECT::E
   intersects(const Vector3D& point);
+
   /**
-  * TEST::aabbAabb 
+  * TEST::intersectsPlane
   */
   bool 
   intersects(const Plane& other);
+
   /**
-  * TEST::aabbSphere
+  * TEST::intersectsSphere
   */
   bool 
   intersects(const Sphere& sphere);
+
   /**
-  * TEST::aabbRay
+  * TEST::intersectsAABB
   */
   bool 
   intersects(const AABB& aabb);
+
   /**
-  * TEST::aabbPoint
+  * TEST::intersectsCapsule
   */
   bool 
   intersects(const Capsule& capsule);
+
   /**
-  * TEST::spherePlane
+  * TEST::intersectsFrustrum
   */
   bool 
   intersects(const Frustrum& frustrum);
+
   /**
-  * TEST::aabbPlane
+  * TEST::intersectsRay
   */
   bool 
   intersects(const Ray& ray);
 
   /**
-  * TEST::segmentPlane
+  * TEST::normalize
   * Normalizes the plane. This modifies the normal and the gap. 
   */
   void 
   normalize();
+
   /**
-  * TEST::capsulePlane
+  * TEST::operatorCopyAssignment
   */
   Plane& 
   operator=(const Plane& other);
+
   /**
-  * TEST::frustrumPlane
+  * TEST::operatorEquality
   */
   bool
   operator==(const Plane& rhs);
+
   /**
-  * TEST::planePlane
+  * TEST::operatorInequality
   */
   bool 
   operator!=(const Plane& rhs);
+
   //gap
   float d;
-
  protected:
  private:
 };

@@ -19,6 +19,7 @@ class VectorN
  public:
 
   /**
+  * TEST::elements
   * Default constructor
   */
   VectorN()
