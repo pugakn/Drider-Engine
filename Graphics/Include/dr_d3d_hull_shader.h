@@ -17,7 +17,7 @@ class DR_API_EXPORT D3DHullShader : public HullShader
 {
  public:
   /**
-  * TEST::
+  * TEST::set
   *
   * Set the shader to the stage
   *
@@ -29,7 +29,7 @@ class DR_API_EXPORT D3DHullShader : public HullShader
   set(const DeviceContext& deviceContext) const override;
 
   /**
-  * TEST::
+  * TEST::release
   *
   * Release the allocated memory
   */
@@ -37,7 +37,7 @@ class DR_API_EXPORT D3DHullShader : public HullShader
   release() override;
 
   /**
-  * TEST::
+  * TEST::createFromMemory
   *
   * Update the buffer with new data
   *
