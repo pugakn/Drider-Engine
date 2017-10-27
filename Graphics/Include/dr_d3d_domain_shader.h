@@ -17,8 +17,7 @@ class DR_API_EXPORT D3DDomainShader : public DomainShader
 {
  public:
   /**
-  * TEST::
-  *
+  * TEST::set
   * Set the shader to the stage
   *
   * @param deviceContext
