@@ -13,6 +13,8 @@ class DR_API_EXPORT D3DDepthStencilState : public DepthStencilState
 {
  public:
   /**
+  * TEST::
+  *
   * Create a detph stencil state that describes the behavior
   * of the deth stencil
   *
@@ -29,6 +31,8 @@ class DR_API_EXPORT D3DDepthStencilState : public DepthStencilState
   create(const Device& device, const DrDepthStencilDesc& desc) override;
 
   /**
+  * TEST::
+  *
   * Set the depth stencil state
   *
   * @param deviceContext
@@ -42,6 +46,8 @@ class DR_API_EXPORT D3DDepthStencilState : public DepthStencilState
   set(const DeviceContext& deviceContext, UInt32 refValue) const override;
 
   /**
+  * TEST::
+  *
   * Release the allocated memory
   */
   void

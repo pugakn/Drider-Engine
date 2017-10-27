@@ -17,6 +17,8 @@ class DR_API_EXPORT D3DDepthStencil : public DepthStencil
 {
  public:
   /**
+  * TEST::create
+  *
   * Create a depth stencil on this object
   *
   * @param device
@@ -35,6 +37,8 @@ class DR_API_EXPORT D3DDepthStencil : public DepthStencil
   //set(const DeviceContext& deviceContext, const DepthStencil& depthStencil) const = 0;
 
   /**
+  * TEST::release
+  *
   * Release the allocated memory
   */
   void

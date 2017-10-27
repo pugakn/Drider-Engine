@@ -11,16 +11,24 @@ namespace driderSDK {
 class DR_API_EXPORT D3DDevice : public Device
 {
  public:
+  /**
+  * TEST::
+  *
+  */
   DR_GRAPHICS_ERROR::E
   createDeviceAndDeviceContext(DeviceContext& deviceContext) override;
 
   /**
+  * TEST::
+  *
   * Release the allocated memory
   */
   void
   release() override;
 
   /**
+  * TEST::createVertexBuffer
+  *
   * Create a vertex buffer
   *
   * @param DrBufferDesc
@@ -41,6 +49,8 @@ class DR_API_EXPORT D3DDevice : public Device
                      VertexBuffer& vertexBuffer) override;
 
   /**
+  * TEST::createIndexBuffer
+  *
   * Create a vertex buffer
   *
   * @param DrBufferDesc
@@ -61,6 +71,8 @@ class DR_API_EXPORT D3DDevice : public Device
                     IndexBuffer& indexBuffer) override;
 
   /**
+  * TEST::createConstantBuffer
+  *
   * Create a constant buffer
   *
   * @param DrBufferDesc
@@ -81,6 +93,8 @@ class DR_API_EXPORT D3DDevice : public Device
                        ConstantBuffer& constantBuffer) override;
 
   /**
+  * TEST::createShaderFromMemory
+  *
   * Create a shader from a plain text buffer
   *
   * @param shaderBuffer
@@ -101,6 +115,8 @@ class DR_API_EXPORT D3DDevice : public Device
                          Shader& shader) override;
 
   /**
+  * TEST::createTextureFromMemory
+  *
   * Create a texture from a memory buffer
   *
   * @param buffer
@@ -121,6 +137,8 @@ class DR_API_EXPORT D3DDevice : public Device
                           Texture& texture) override;
 
   /**
+  * TEST::createEmptyTexture
+  *
   * Create a texture without initial data
   *
   * @param desc
@@ -137,6 +155,8 @@ class DR_API_EXPORT D3DDevice : public Device
                      Texture& texture) override;
 
   /**
+  * TEST::createRenderTarget
+  *
   * Create a render target
   *
   * @param desc
@@ -157,6 +177,8 @@ class DR_API_EXPORT D3DDevice : public Device
                      UInt32 _numColorTextures) override;
 
   /**
+  * TEST::createDepthStencil
+  *
   * Create a depth stencil
   *
   * @param desc
@@ -173,6 +195,8 @@ class DR_API_EXPORT D3DDevice : public Device
                      DepthStencil& depthStencil) override;
 
   /**
+  * TEST::createSamplerState
+  *
   * Create a sampler state
   *
   * @param desc
@@ -189,6 +213,8 @@ class DR_API_EXPORT D3DDevice : public Device
                      SamplerState& state) override;
 
   /**
+  * TEST::createRasteizerState
+  *
   * Create a sampler rasterizer state
   *
   * @param desc
@@ -205,6 +231,8 @@ class DR_API_EXPORT D3DDevice : public Device
                        RasterizerState& state) override;
 
   /**
+  * TEST::createDepthStencilState
+  *
   * Create a deth stencil state
   *
   * @param desc
@@ -221,6 +249,8 @@ class DR_API_EXPORT D3DDevice : public Device
                           DepthStencilState& state) override;
 
   /**
+  * TEST::createInputLayout
+  *
   * Create a input layout
   *
   * @param inputDescArray
@@ -241,6 +271,8 @@ class DR_API_EXPORT D3DDevice : public Device
                     InputLayout& layout) override;
 
   /**
+  * TEST::createSwapChain
+  *
   * Create a swap chain
   *
   * @param desc

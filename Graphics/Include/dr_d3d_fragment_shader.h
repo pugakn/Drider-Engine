@@ -17,6 +17,8 @@ class DR_API_EXPORT D3DFragmentShader : public FragmentShader
 {
  public:
   /**
+  * TEST::set
+  *
   * Set the shader to the stage
   *
   * @param deviceContext
@@ -27,12 +29,16 @@ class DR_API_EXPORT D3DFragmentShader : public FragmentShader
   set(const DeviceContext& deviceContext) const override;
 
   /**
+  * TEST::release
+  *
   * Release the allocated memory
   */
   void
   release() override;
 
   /**
+  * TEST::createFromMemory
+  *
   * Update the buffer with new data
   *
   * @param deviceContext

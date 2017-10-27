@@ -11,6 +11,8 @@ class DR_API_EXPORT D3D11SamplerState : public SamplerState
 {
  public:
   /**
+  * TEST::create
+  *
   * Create a sample state
   *
   * @param device
@@ -26,6 +28,8 @@ class DR_API_EXPORT D3D11SamplerState : public SamplerState
   create(const Device& device, const DrSampleDesc& desc) override;
 
   /**
+  * TEST::set
+  *
   * Set the state
   *
   * @param deviceContext
@@ -39,6 +43,8 @@ class DR_API_EXPORT D3D11SamplerState : public SamplerState
       DR_SHADER_TYPE_FLAG::E typeFlag) const override;
 
   /**
+  * TEST::release
+  *
   * Release the allocated memory
   */
   void
