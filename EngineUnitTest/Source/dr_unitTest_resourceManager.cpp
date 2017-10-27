@@ -33,3 +33,10 @@ TEST(ResourceManager, isCompatible) {
 TEST(ResourceManager, existInResourceContent) {
   EXPECT_TRUE(rm.existInResourceContent("test"));
 }
+
+TEST(ResourceManager, getReference) {
+  rm.loadResource("test.png", "resources/images");
+  rm.createResource(driderSDK::ResourceType::PNG, "test");
+  EXPECT_TRUE(rm.getReference("test") == nullptr);
+  EXPECT_FALSE(true);
+}

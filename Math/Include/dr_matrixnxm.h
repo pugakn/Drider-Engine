@@ -18,6 +18,7 @@ class MatrixNxM
 {
  public:
   /**
+  * TEST::constructorOneVector
   * Default constructor.
   *
   */
