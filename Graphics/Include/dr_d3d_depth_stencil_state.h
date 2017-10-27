@@ -3,12 +3,11 @@
 #include <wrl.h>
 #include <wrl/client.h>
 
-
 class ID3D11DepthStencilState;
 
 namespace driderSDK {
 
-class D3DDepthStencilState : DepthStencilState {
+class DR_API_EXPORT D3DDepthStencilState : public DepthStencilState {
  public:
 
   /**
