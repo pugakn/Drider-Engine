@@ -39,27 +39,6 @@
     <ClCompile Include="Source\dr_unitTest_constant_buffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\dr_unitTest_d3d_depth_stencil_state.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\dr_unitTest_d3d_device.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\dr_unitTest_d3d_device_context.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\dr_unitTest_d3d_input_layout.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\dr_unitTest_d3d_rasterizer_state.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\dr_unitTest_d3d_sample_state.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\dr_unitTest_d3d_swap_chain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\dr_unitTest_depth_stencil.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -164,6 +143,27 @@
     </ClCompile>
     <ClCompile Include="Source\dr_unitTest_d3d_texture.cpp">
       <Filter>Source Files\DirectX11\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_unitTest_d3d_depth_stencil_state.cpp">
+      <Filter>Source Files\DirectX11</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_unitTest_d3d_device.cpp">
+      <Filter>Source Files\DirectX11</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_unitTest_d3d_device_context.cpp">
+      <Filter>Source Files\DirectX11</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_unitTest_d3d_input_layout.cpp">
+      <Filter>Source Files\DirectX11</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_unitTest_d3d_rasterizer_state.cpp">
+      <Filter>Source Files\DirectX11</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_unitTest_d3d_sample_state.cpp">
+      <Filter>Source Files\DirectX11</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_unitTest_d3d_swap_chain.cpp">
+      <Filter>Source Files\DirectX11</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

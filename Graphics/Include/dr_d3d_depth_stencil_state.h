@@ -1,5 +1,6 @@
 #pragma once
 #include "dr_depth_stencil_state.h"
+#include <dr_prerequisites.h>
 #include <wrl.h>
 #include <wrl/client.h>
 
@@ -8,7 +9,7 @@ class ID3D11DepthStencilState;
 
 namespace driderSDK {
 
-class D3DDepthStencilState : public DepthStencilState
+class DR_API_EXPORT D3DDepthStencilState : public DepthStencilState
 {
  public:
   /**

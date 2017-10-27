@@ -1,5 +1,6 @@
 #pragma once
 #include "dr_swap_chain.h"
+#include <dr_prerequisites.h>
 #include <wrl.h>
 #include <wrl/client.h>
 
@@ -8,7 +9,7 @@ struct ID3D11RenderTargetView;
 
 namespace driderSDK {
 
-class D3DSwapChain : public SwapChain
+class DR_API_EXPORT D3DSwapChain : public SwapChain
 {
  public:
   /**
