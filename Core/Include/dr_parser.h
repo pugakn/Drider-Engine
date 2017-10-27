@@ -88,7 +88,7 @@ struct DR_API_EXPORT Parser
   }
 
   /**
-  * TEST::parserStringToFloat;
+  * TEST::parserStringToFloat
   * Parse a string to a float.
   *
   * @param str
