@@ -19,6 +19,7 @@ class DR_API_EXPORT Ray
 {
  public:
   /**
+  * TEST::defaultConstructor
   * Default constructor.
   *
   */
@@ -26,6 +27,7 @@ class DR_API_EXPORT Ray
   {}
 
   /**
+  * TEST::origingDirectionCons
   * Constructor using origin and direction
   *
   * @param _origin
@@ -41,27 +43,15 @@ class DR_API_EXPORT Ray
   {}
 
   /**
+  * TEST::defaultDestructor
   * Destructor
   *
   */
   ~Ray()
   {}
 
-
 	/**
-	* Check if the ray intersects other ray
-	*
-	*	@param bRay
-	*	 The other ray to check the intersecton.
-	*
-	* @return
-	*	  True if the ray intersects with the other ray
-	*
-	*/
-	bool
-  intersects(const Ray& bRay) const;
-
-	/**
+  * TEST::intersectPlane
 	* Check if the ray intersects with a plane
 	*
 	*	@param plane
@@ -75,6 +65,7 @@ class DR_API_EXPORT Ray
 	intersects(const Plane& plane) const;
 
 	/**
+  * TEST::intersectPlaneT
 	* Check if the ray intersects with a plane
 	*
 	*	@param plane
@@ -99,8 +90,8 @@ class DR_API_EXPORT Ray
 	* @return
 	*	  True if the ray intersects with the sphere
 	*
-	*/
-	bool
+	
+	/*bool
 	intersects(const Sphere& sphere) const;
 
 	/**
@@ -113,8 +104,8 @@ class DR_API_EXPORT Ray
 	*	  True if the ray intersects with the capsule
 	*
 	*/
-	bool
-	intersects(const Capsule& capsule) const;
+	/*bool
+	intersects(const Capsule& capsule) const;*/
 
 	/**
 	* Check if the ray intersects with a frustrum
@@ -126,8 +117,8 @@ class DR_API_EXPORT Ray
 	*	  True if the ray intersects with the frustrum
 	*
 	*/
-	bool
-	intersects(const Frustrum& frustrum) const;
+	/*bool
+	intersects(const Frustrum& frustrum) const;*/
 
 	Vector3D origin;
 	Vector3D direction;
