@@ -35,7 +35,7 @@ TEST(D3DRenderTarget, set) {
   desc.mipLevels = 1;
   desc.Format = driderSDK::DR_FORMAT::kDrFormat_R8G8B8A8_UNORM;
   desc.CPUAccessFlags = 0;
-  obj.create(device, desc, 1);
+  bool b = obj.create(device, desc, 1);
 
   driderSDK::D3DDepthStencil obj2;
   desc.width = 1920;
@@ -44,10 +44,15 @@ TEST(D3DRenderTarget, set) {
   desc.mipLevels = 1;
   desc.Format = driderSDK::DR_FORMAT::kDrFormat_R8G8B8A8_UNORM;
   desc.CPUAccessFlags = 0;
-  obj2.create(device, desc);
-
-  obj.set(context,obj2);
-  EXPECT_TRUE(true);
+  bool b2 = obj2.create(device, desc);
+  
+  if (!b || !b2)
+  {
+    obj.set(context,obj2);
+    EXPECT_TRUE(true);
+  }
+  else
+    EXPECT_TRUE(false);
 }
 
 TEST(D3DRenderTarget, release) {

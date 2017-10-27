@@ -8,6 +8,7 @@ namespace driderSDK {
   DR_GRAPHICS_ERROR::E D3DInputLayout::create(const Device & device, const DrInputElementDesc* inputDescArray, UInt32 arraySize)
   {
     std::vector<D3D11_INPUT_ELEMENT_DESC> desc;
+    desc.resize(arraySize);
     for (size_t i = 0; i < arraySize; i++)
     {
       desc[i].Format = (DXGI_FORMAT)inputDescArray[i].format;
