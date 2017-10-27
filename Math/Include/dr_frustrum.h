@@ -23,7 +23,15 @@ class DR_API_EXPORT Frustrum
 		kNear,
 		kFar
 	}; 
+  
+  /**
+  * TEST::frustrumConstructor
+  * Default constructor
+  */
+  Frustrum () {}
+
 	/**
+  * TEST::frustrumConstructorVPM
 	* Constructor using a View Projection matrix
 	*
 	* @param VP
@@ -33,6 +41,7 @@ class DR_API_EXPORT Frustrum
 	Frustrum(const Matrix4x4& ViewProjection);
 
 	/**
+  * TEST::frustrumConstructorVP
 	* Create the frustrum planes with the View Projection matrix
 	*
 	* @param VP
@@ -43,6 +52,7 @@ class DR_API_EXPORT Frustrum
 	createFromVP(const Matrix4x4& ViewProjection);
 
 	/**
+  * TEST::intersectsRay
 	* Check if the frustrum intersects other ray
 	*
 	*	@param bRay

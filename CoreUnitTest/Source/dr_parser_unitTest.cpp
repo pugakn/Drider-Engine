@@ -2,7 +2,7 @@
 
 #include <gtest\gtest.h>
 
-TEST (Parser, strStr) {
+TEST (Parser, parserCompareAndStrstr) {
   char* str1 = "La manzana es verde";
   char* str2 = "es";
 
@@ -19,11 +19,9 @@ TEST (Parser, strStr) {
   str2 = "hola";
 
   EXPECT_FALSE(driderSDK::Parser::strStr(str1, str2));
-}
 
-TEST (Parser, compare) {
-  char* str1 = "hola";
-  char* str2 = "no";
+  str1 = "hola";
+  str2 = "no";
   
   EXPECT_FALSE(driderSDK::Parser::compare(str1, str2));
 
@@ -33,7 +31,7 @@ TEST (Parser, compare) {
   EXPECT_TRUE(driderSDK::Parser::compare(str1, str2));
 }
 
-TEST(Parser, strCpyBetween) {
+TEST(Parser, parserStrCpyBetween) {
   char* source = "hola a todos, que hacen";
   char* destinationOut = "";
   char* result = "";
@@ -43,18 +41,18 @@ TEST(Parser, strCpyBetween) {
   EXPECT_TRUE(driderSDK::Parser::compare(result, "todos"));
 }
 
-TEST (Parser, stringToInt32) {
+TEST(Parser, parserStringToInt32) {
   EXPECT_TRUE(driderSDK::Parser::stringToInt32("10") == 10);
-  EXPECT_TRUE(driderSDK::Parser::stringToInt32("10.1") == 10);  
+  EXPECT_TRUE(driderSDK::Parser::stringToInt32("10.1") == 10);
 }
 
-TEST(Parser, stringToFloat) {
+TEST(Parser, parserStringToFloat) {
   EXPECT_TRUE(driderSDK::Parser::stringToFloat("21.2") == 21.2f);
   EXPECT_TRUE(driderSDK::Parser::stringToFloat("21.23.3") == 21.23f);
   EXPECT_TRUE(driderSDK::Parser::stringToFloat("21") == 21.0f);
 }
 
-TEST (Parser, addUntilFind) {
+TEST (Parser, parserAddUntilFind) {
   char *source = "muchos años y uno cree, que el caer es...";
   char *result = "";
   char *strTest = driderSDK::Parser::addUntilFind(source, " ,", result);
@@ -69,7 +67,7 @@ TEST (Parser, addUntilFind) {
   EXPECT_TRUE(driderSDK::Parser::compare(result, "hola"));
 }
 
-TEST (Parser, split) {
+TEST (Parser, parserSplit) {
   char *p = "hola, mundo";
   std::vector<std::string> vStrings = driderSDK::Parser::split(p, " ,");
   std::vector<std::string> vTest {"hola", "mundo"};

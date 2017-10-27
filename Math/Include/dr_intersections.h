@@ -28,7 +28,8 @@ enum E
 struct DR_API_EXPORT Intersect
 {
   /**
-  * Check if one sphere intersects with another.
+  * TEST::sphereSphere
+  * Checks if one sphere intersects with another.
   *
   * @param sph1Position
   *   Center of the first sphere.
@@ -52,6 +53,7 @@ struct DR_API_EXPORT Intersect
                float sph2Radius);
 
   /**
+  * TEST::sphereCapsule
   * Check if there was an intersection between a sphere and a capsule.
   *
   * @param sphPosition
@@ -79,6 +81,7 @@ struct DR_API_EXPORT Intersect
                 const Vector3D& capsuleB,
                 float capsuleRadius);
   /**
+  * TEST::capsuleCapsule
   * Check if there was an intersection between a sphere and a capsule.
   *
   * @param capsule1A
@@ -111,6 +114,7 @@ struct DR_API_EXPORT Intersect
                  float capsule2Radius);
 
   /**
+  * TEST::sphereRay
   * Check if there was an intersection between a sphere and a capsule.
   *
   * @param sphPosition
@@ -134,7 +138,14 @@ struct DR_API_EXPORT Intersect
             const Vector3D& rayOrigin,
             const Vector3D& rayDirection);
 
+  static bool
+  rayPlane(const Vector3D& rayOrigin,
+           const Vector3D& rayDirection,
+           const Vector3D& planeNormal,
+           float planeGap);
+
   /**
+  * TEST::rayPlane
   * Check if there was an intersection between a sphere and a capsule.
   *
   * @param rayOrigin
@@ -156,15 +167,9 @@ struct DR_API_EXPORT Intersect
   rayPlane(const Vector3D& rayOrigin,
            const Vector3D& rayDirection,
            const Vector3D& planeNormal,
-           float planeGap);
-
-  //Uncommented
-  static bool
-  rayPlane(const Vector3D& rayOrigin,
-           const Vector3D& rayDirection,
-           const Vector3D& planeNormal,
            const Vector3D& planePoint);
   /**
+  * TEST::rayPlane
   * Check if there was an intersection between a sphere and a capsule.
   *
   * @param rayOrigin
@@ -194,6 +199,7 @@ struct DR_API_EXPORT Intersect
 
 
   /**
+  * TEST::rayCapsule
   * Check if there was an intersection between a sphere and a capsule.
   *
   * @param pointSA
@@ -224,31 +230,53 @@ struct DR_API_EXPORT Intersect
              const Vector3D& pointQ,
              float r,
              float &t);
-  //Uncommented
-  static bool
+
+  /*static bool
   rayFrustrum(const Vector3D& rayOrigin,
               const Vector3D& rayDirection,
-              const std::array<Plane, 6>& frustrumPlanes);
-  //Uncommented
-  static bool
-  rayRay(const Vector3D& rayAOrigin,
-         const Vector3D& rayADirection,
-         const Vector3D& rayBOrigin,
-         const Vector3D& rayBDirection);
-  //Uncommented
+              const std::array<Plane, 6>& frustrumPlanes);*/
+  /**
+  * TEST::frustrumFrustrum
+  * Check if there was an intersection between a frustrum and other frustrum.
+  *
+  * @param frustrumAPlanes
+  *   Planes of the first frustrum.
+  *
+  * @param frustrumBPlanes
+  *   Planes of the second frustrum.
+  *
+  * @return
+  *   True if there is intersection, if not false
+  */
+ 
   static bool
   frustrumFrustrum(const std::array<Plane, 6>& frustrumAPlanes,
                    const std::array<Plane, 6>& frustrumBPlanes);
-  //Uncommented
+
+  /**
+  * TEST::frustrumSphere
+  * Check if there was an intersection between a frustrum and a sphere.
+  *
+  * @param frustrumPlanes
+  *   Planes of the frustrum.
+  *
+  * @param sphereOrigin
+  *   Origin of the sphere.
+  *
+  * @return
+  *   True if there is intersection, if not false
+  */
   static bool
   frustrumSphere(const std::array<Plane, 6>& frustrumPlanes,
                  const Vector3D& sphereOrigin,
                  float sphereRadius);
-  //Uncommented
-  //static bool
-  //frustrumCapsuleIntersection(const Matrix4x4& frustrumVP);
+
+
+  /*static bool
+  frustrumCapsuleIntersection(const Matrix4x4& frustrumVP);*/
 
   /**
+  * TEST::aabbAabb
   * Check if an AABB intersects with another AABB.
   *
   * @param aabbCenter
@@ -281,6 +309,7 @@ struct DR_API_EXPORT Intersect
            float aabbheight2);
 
   /**
+  * TEST::aabbSphere
   * Check if a sphere intersects with an AABB.
   *
   * @param aabbCenter
@@ -308,7 +337,25 @@ struct DR_API_EXPORT Intersect
              const Vector3D& sphereOrigin,
              float sphereRadius);
 
-  //Uncommented
+  /**
+  * TEST::intersectsNoImplemented
+  * Check if a ray intersects with an AABB.
+  *
+  * @param aabbCenter
+  *   Center of the AABB.
+  *
+  * @param aabbWidth
+  *   Width of the AABB.
+  *
+  * @param aabbHeight
+  *   Heigh of the AABB.
+  *
+  * @param frustrumPlanes
+  *   Planes of the frustrum.
+  *
+  * @return
+  *   True if the ray intersects, else returns false.
+  */
   static bool
   aabbFrustrum(const Vector3D& aabbCenter,
                float aabbWidth,
@@ -316,6 +363,7 @@ struct DR_API_EXPORT Intersect
                const std::array<Plane, 6>& frustrumPlanes);
 
   /**
+  * TEST::aabbRay
   * Check if a ray intersects with an AABB.
   *
   * @param aabbCenter
@@ -344,6 +392,7 @@ struct DR_API_EXPORT Intersect
           const Vector3D& rayDirection);
 
   /**
+  * TEST::aabbPoint
   * Check if a point is inside an AABB.
   *
   * @param aabbCenter
@@ -367,12 +416,53 @@ struct DR_API_EXPORT Intersect
             float aabbHeight,
             const Vector3D& point);
 
+  /**
+  * TEST::spherePlane
+  * Check if a sphere intersects with a plane.
+  *
+  * @param planeNormal
+  *   Normal of the plane.
+  *
+  * @param planeGap
+  *   Gap of the plane.
+  *
+  * @param sphereCenter
+  *   Center of the sphere.
+  *
+  * @param sphereRadius
+  *   Radius of the sphere.
+  *
+  * @return
+  *   True if the plane intersects with plane, else returns false.
+  */
   static bool
   spherePlane(const Vector3D& planeNormal,
               float planeGap,
               const Vector3D& sphereCenter,
               float sphereRadius);
 
+  /**
+  * TEST::aabbPlane
+  * Check if a aabb intersects with a plane.
+  *
+  * @param aabbCenter
+  *   Center of Aabb.
+  *
+  * @param aabbWidth
+  *   Width of Aabb.
+  *
+  * @param aabbHeight
+  *   Height of Aabb.
+  *
+  * @param planeNormal
+  *   Normal of the plane.
+  *
+  * @param planeGap
+  *  Gap of the plane.
+  *
+  * @return
+  *   True if the aabb intersects with a plane, else returns false.
+  */
   static bool
   aabbPlane(const Vector3D& aabbCenter,
             float aabbWidth,
@@ -380,12 +470,55 @@ struct DR_API_EXPORT Intersect
             const Vector3D& planeNormal,
             float planeGap);
 
+  /**
+  * TEST::segmentPlane
+  * Check if a segment intersects a plane.
+  *
+  * @param linePointA
+  *   Origin of the line.
+  *
+  * @param linePointB
+  *   End of the line.
+  *
+  * @param aabbHeight
+  *   Height of Aabb.
+  *
+  * @param planeNormal
+  *   Normal of the plane.
+  *
+  * @param planeGap
+  *  Gap of the plane.
+  *
+  * @return
+  *   True if the segmen intersects with a plane, else returns false.
+  */
   static bool
   segmentPlane(const Vector3D& linePointA,
                          const Vector3D& linePointB,
                          const Vector3D& planeNormal,
                          float planeGap);
-
+  /**
+  * TEST::capsulePlane
+  * Check if a capsule intersects with a plane.
+  *
+  * @param capsuleA
+  *   Point a of the capsule.
+  *
+  * @param capsuleB
+  *   Point b of the capsule.
+  *
+  * @param capsuleRadius
+  *   Capsule's radius.
+  *
+  * @param planeNormal
+  *   Normal of the plane.
+  *
+  * @param planeGap
+  *  Gap of the plane.
+  *
+  * @return
+  *   True if the capsule intersects with a plane, else returns false.
+  */
   static bool
   capsulePlane(const Vector3D& capsuleA,
                const Vector3D& capsuleB,
@@ -393,11 +526,25 @@ struct DR_API_EXPORT Intersect
                const Vector3D& planeNormal,
                float planeGap);
 
+  /**
+  * TEST::frustrumPlane
+  * Check if a frustrum intersects with a plane.
+  *
+  * @param frustrumPlanes
+  *   Frustrum's planes.
+  *
+  * @param planeNormal
+  *   Plane's normal.
+  *
+  * @return
+  *   True if the frustrum intersects with a plane, else returns false.
+  */
   static bool
   frustrumPlane(const std::array<Plane, 6>& frustrumPlanes,
                 const Vector3D& planeNormal);
 
   /**
+  * TEST::planePlane
   * Checks if there is an intersection between 2 planes.
   *
   * @param plane1Normal
@@ -429,7 +576,21 @@ struct DR_API_EXPORT Intersect
              float plane2Gap,
              Vector3D& point,
              Vector3D& direction);
-
+  
+  /**
+  * TEST::planePlane
+  * Checks if there is an intersection between 2 planes.
+  *
+  * @param plane1Normal
+  *  Normal of the first plane.
+  *
+  * @parama plane2Normal
+  *  Gap of the first plane.
+  *
+  * @return
+  *   True if the planes intersect, false if they are
+  *   parallel (and separated) or coincident.
+  */
   static bool
   planePlane(const Vector3D& plane1Normal,
              const Vector3D& plane2Normal);
@@ -439,6 +600,7 @@ struct DR_API_EXPORT Intersect
   **********************************************************************/
 
   /**
+  * TEST::sphereContainsPoint
   * Check if a point is inside a sphere.
   *
   * @param point
@@ -457,7 +619,7 @@ struct DR_API_EXPORT Intersect
   sphereContainsPoint(const Vector3D& point,
                       const Vector3D& sphPosition,
                       float radius);
-  //Uncommented
+  /*//Uncommented
   static bool
   frustrumContainsFrustrum(const std::array<Plane, 6>& frustrumAPlanes,
                            const std::array<Plane, 6>& frustrumBPlanes);
@@ -465,8 +627,40 @@ struct DR_API_EXPORT Intersect
   static bool
   frustrumContainsSphere(const std::array<Plane, 6>& frustrumPlanes,
                          const Vector3D& sphereOrigin,
-                         float sphereRadius);
-
+                         float sphereRadius);*/
+  /**
+  * TEST::closestPointSegmentSegment
+  * Computes closest points C1 and C2 of S1(s)=P1+s*(Q1-P1) and
+  * S2(t)=P2+t*(Q2-P2).
+  *
+  * @param p1
+  *   Origing segment 1.
+  *
+  * @param q1
+  *   Final point segment 1.
+  *
+  * @param p2
+  *   Origing segment 2.
+  *
+  * @param q2
+  *   Final point segment 2.
+  *
+  * @param s
+  *   Segment final.
+  *
+  * @param t
+  *   Intersect interval.
+  *
+  * @param c1
+  *   Intersect point 1.
+  *
+  * @param c2
+  *   Intersect point 2.
+  *
+  * @return
+  *   Returning s and t. Function result is squared distance
+  *   between between S1(s) and S2(t).
+  */
   static float
   closestPointSegmentSegment(const Vector3D& p1,
                              const Vector3D& q1,

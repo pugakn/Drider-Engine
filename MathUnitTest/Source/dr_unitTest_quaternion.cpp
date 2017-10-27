@@ -16,6 +16,14 @@ void checkQuaternionValues(driderSDK::Quaternion& TestQuaternion,
 	EXPECT_FLOAT_EQ(TestQuaternion.w, w);
 }
 
+TEST(Quaternion, defaultConstructor)
+{
+	driderSDK::Quaternion* pQuaternion;
+	pQuaternion = new driderSDK::Quaternion;
+	EXPECT_FALSE(nullptr == pQuaternion);
+	delete pQuaternion;
+}
+
 TEST(Quaternion, forceInitZero) {
 	driderSDK::Quaternion TestQuaternion(driderSDK::Math::kZero);
 	checkQuaternionValues(TestQuaternion, 0.f, 0.f, 0.f, 0.f);
@@ -24,6 +32,13 @@ TEST(Quaternion, forceInitZero) {
 TEST(Quaternion, forceInitIdentity) {
 	driderSDK::Quaternion TestQuaternion(driderSDK::Math::kIdentity);
 	checkQuaternionValues(TestQuaternion, 0.f, 0.f, 0.f, 1.f);
+}
+
+TEST(Quaternion, moveConstructor)
+{
+	driderSDK::Quaternion TestQuaternion(1.f, 1.f, 1.f, 2.f);
+	driderSDK::Quaternion OtherQuaternion(std::move(TestQuaternion));
+	checkQuaternionValues(OtherQuaternion, 1.f, 1.f, 1.f, 2.f);
 }
 
 TEST(Quaternion, constructFromQuaternion) {
@@ -41,6 +56,13 @@ TEST(Quaternion, constructFromVector4D) {
 	driderSDK::Vector4D TestVector(5.f, 3.f, 2.f, 1.f);
 	driderSDK::Quaternion TestQuaternion(TestVector);
 	checkQuaternionValues(TestQuaternion, 5.f, 3.f, 2.f, 1.f);
+}
+
+TEST(Quaternion, destructor)
+{
+	driderSDK::Quaternion TestQuaternion(1.f, 3.f, 0.f, 5.f);
+	TestQuaternion.~Quaternion();
+	checkQuaternionValues(TestQuaternion, 1.f, 3.f, 0.f, 5.f);
 }
 
 TEST(Quaternion, measure) {
@@ -75,7 +97,7 @@ TEST(Quaternion, matrixFromQuaternion4x4)
 {
 	driderSDK::Quaternion TestQuaternion(3.f, 3.f, 2.f, 5.f);
 	driderSDK::Matrix4x4 TestMatrix4;
-	driderSDK::Matrix4x4 Result(21.f/47.f, -2.f/47.f, 42.f/47.f, 0.f,
+	driderSDK::Matrix4x4 Result(21.f/47.f, -0.042553157f, 42.f/47.f, 0.f,
 															38.f/47.f, 21.f/47.f, -18.f/47.f, 0.f,
 															-18.f/47.f, 42.f/47.f, 11.f/47.f, 0.f, 
 															0.f, 0.f, 0.f, 1.f);

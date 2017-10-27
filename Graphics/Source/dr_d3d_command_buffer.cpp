@@ -4,18 +4,26 @@
 #include "dr_d3d_device.h"
 #include "dr_d3d_device_context.h"
 namespace driderSDK {
-  D3DCommandBuffer::D3DCommandBuffer()
-  {
-  }
-  DR_GRAPHICS_ERROR::E D3DCommandBuffer::create(const Device & device, const DrBufferDesc & desc, char * initialData)
-  {
-    return DR_GRAPHICS_ERROR::ERROR_NOT_IMPLEMENTED;
-  }
-  void D3DCommandBuffer::updateFromMemory(const DeviceContext & deviceContext, const char * dataBuffer, size_t bufferSize)
-  {
-  }
-  void D3DCommandBuffer::release()
-  {
-    CB.Reset();
-  }
+
+D3DCommandBuffer::D3DCommandBuffer() {
+}
+
+DR_GRAPHICS_ERROR::E
+D3DCommandBuffer::create(const Device& device,
+                         const DrBufferDesc& desc,
+                         char* initialData) {
+  return DR_GRAPHICS_ERROR::ERROR_NOT_IMPLEMENTED;
+}
+
+void
+D3DCommandBuffer::updateFromMemory(const DeviceContext& deviceContext,
+                                   const char* dataBuffer,
+                                   size_t bufferSize) {
+}
+
+void
+D3DCommandBuffer::release() {
+  CB.Reset();
+}
+
 }

@@ -1,11 +1,17 @@
 #pragma once
 #include <dr_prerequisites.h>
 #include "dr_graphics_defines.h"
+
 namespace driderSDK {
+
 class Device;
 class DeviceContext;
+
 class DR_API_EXPORT SamplerState {
  public:
+  /**
+  * Class virutal destructor.
+  */
   virtual 
   ~SamplerState() {}
 
@@ -21,9 +27,8 @@ class DR_API_EXPORT SamplerState {
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  virtual DR_GRAPHICS_ERROR::E 
+  virtual DR_GRAPHICS_ERROR::E
   create(const Device& device, const DrSampleDesc& desc) = 0;
-
 
   /**
   * Set the state
@@ -33,16 +38,16 @@ class DR_API_EXPORT SamplerState {
   *
   * @param typeFlag
   *   Specifyes the shaders to bind with a bitflag
-  *
   */
-  virtual void 
-  set(const DeviceContext& deviceContext, 
+  virtual void
+  set(const DeviceContext& deviceContext,
       DR_SHADER_TYPE_FLAG::E typeFlag) const = 0;
 
   /**
   * Release the allocated memory
   */
-  virtual void 
+  virtual void
   release() = 0;
 };
+
 }

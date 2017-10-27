@@ -6,26 +6,28 @@
 
 namespace driderSDK {
 
-struct DR_API_EXPORT Parser 
+static struct DR_API_EXPORT Parser 
 {
- public:
-   /**
-   * Find in string other string.
-   *
-   * @param str1
-   *   Buffer where string will be searched.
-   *
-   * @param str2
-   *   String to compare.
-   *
-   * @return
-   *   if the string str2 exist in buffer str1 return the pointer to the first, else return null.
-   */
+ public:    
+  /**
+  * TEST::parserCompareAndStrstr
+  * Find in string other string.
+  *
+  * @param str1
+  *   Buffer where string will be searched.
+  *
+  * @param str2
+  *   String to compare.
+  *
+  * @return
+  *   if the string str2 exist in buffer str1 return the pointer to the first, else return null.
+  */
   static const char*
   strStr (const char* str1,
           const char* str2);  
   
   /**
+  * TEST::parserStrCpyBetween
   * Copy a string between two strings.
   *
   * @param source
@@ -50,6 +52,7 @@ struct DR_API_EXPORT Parser
                 char*& destinationOut);
   
   /**
+  * TEST::parserCompareAndStrstr
   * Compares two strings.
   *
   * @param str1
@@ -66,6 +69,7 @@ struct DR_API_EXPORT Parser
           const char* str2);
 
   /**
+  * TEST::parserStringToInt32
   * Parse a string to a Int32.
   *
   * @param str
@@ -80,6 +84,7 @@ struct DR_API_EXPORT Parser
   }
 
   /**
+  * TEST::parserStringToFloat;
   * Parse a string to a float.
   *
   * @param str
@@ -95,6 +100,7 @@ struct DR_API_EXPORT Parser
   }
   
   /**
+  * TEST::parserAddUntilFind
   * Add a string's characters to a buffer until you find a delimiter.
   *
   * @param source
@@ -115,6 +121,7 @@ struct DR_API_EXPORT Parser
                        char *& strOut);
 
   /**
+  * TEST::parserSplit
   * Divede in strings other string where ther is a diveder character.
   *
   * @param str
@@ -129,6 +136,23 @@ struct DR_API_EXPORT Parser
   static std::vector<std::string>
   split(char* str,
         const char* divider);
+
+  /**
+  * TEST::strcpy
+  * Divede in strings other string where ther is a diveder character.
+  *
+  * @param str
+  *   Buffer to be checked.
+  *
+  * @param divider
+  *   Delimiter of each string.
+  *
+  * @return
+  *   std::vector with the string created.
+  */
+  static char * 
+  strCopy(char* des,
+                 const char* source);
 };
 
 }

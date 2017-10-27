@@ -3,10 +3,13 @@
 #include <memory>
 #include <vector>
 #include "dr_texture.h"
+
 namespace driderSDK {
+
 class Device;
 class DeviceContext;
 class DepthStencil;
+
 /**
 * Base class for render target
 *
@@ -14,8 +17,11 @@ class DepthStencil;
 *	RenderTarget* = new D3DRenderTarget;
 */
 class DR_API_EXPORT RenderTarget {
-public:
-  virtual 
+ public:
+  /**
+  * Class virtual destructor.
+  */
+  virtual
   ~RenderTarget() {};
 
   /**
@@ -33,7 +39,7 @@ public:
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  virtual DR_GRAPHICS_ERROR::E 
+  virtual DR_GRAPHICS_ERROR::E
   create(const Device& device, const DrTextureDesc& desc, UInt32 _numColorTextures) = 0;
 
   /**
@@ -46,17 +52,18 @@ public:
   *   The depth stencil to set with the render target
   *
   */
-  virtual void 
+  virtual void
   set(const DeviceContext& deviceContext, const DepthStencil& depthStencil) const = 0;
 
   /**
   * Release the allocated memory
   */
-  virtual void 
+  virtual void
   release() = 0;
 
   std::vector<Texture*> colorTextures;
-protected:
+ protected:
   UInt32 numColorTextures;
 };
+
 }

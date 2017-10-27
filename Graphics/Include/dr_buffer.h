@@ -1,9 +1,12 @@
 #pragma once
 #include <dr_prerequisites.h>
 #include "dr_graphics_defines.h"
+
 namespace driderSDK {
+
 class Device;
 class DeviceContext;
+
 /**
 * Base class for buffer shader resource
 *
@@ -13,7 +16,10 @@ class DeviceContext;
 class DR_API_EXPORT Buffer
 {
  public:
-  virtual 
+  /**
+  * Virtual destructor.
+  */
+  virtual
   ~Buffer() {};
 
   /**
@@ -31,7 +37,7 @@ class DR_API_EXPORT Buffer
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  virtual DR_GRAPHICS_ERROR::E 
+  virtual DR_GRAPHICS_ERROR::E
   create(const Device& device, const DrBufferDesc& desc, char* initialData) = 0;
 
   /**
@@ -46,7 +52,7 @@ class DR_API_EXPORT Buffer
   * @param bufferSize
   *   The new data buffer size
   */
-  virtual void 
+  virtual void
   updateFromMemory(const DeviceContext& deviceContext, 
                    const char * dataBuffer, 
                    size_t bufferSize) = 0;
@@ -54,7 +60,8 @@ class DR_API_EXPORT Buffer
   /**
   * Release the allocated memory
   */
-  virtual void 
+  virtual void
   release() = 0;
 };
+
 }

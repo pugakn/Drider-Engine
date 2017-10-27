@@ -12,7 +12,7 @@ void yourWaifuIsShit() {
 
 int main(int argc, char* argv[])
 {
-  driderSDK::Logger ModuleLogger;
+  /*driderSDK::Logger ModuleLogger;
   if (!ModuleLogger.isStarted()) {
     ModuleLogger.startUp();
   }
@@ -22,13 +22,19 @@ int main(int argc, char* argv[])
 
   yourWaifuIsShit();
 
+  ::testing::GTEST_FLAG(output) = "xml";*/
   ::testing::GTEST_FLAG(output) = "xml";
   ::testing::InitGoogleTest(&argc, argv);
-  //::testing::GTEST_FLAG(filter) = "Vector4D.*";
+  //::testing::GTEST_FLAG(filter) = "VectorN.*";
   //::testing::GTEST_FLAG(filter) = "Radian.*";
+  //::testing::GTEST_FLAG(filter) = "Degree.*";
   //::testing::GTEST_FLAG(filter) = "Vector3D.*";
   //::testing::GTEST_FLAG(filter) = "Matrix3x3.*";
-	//::testing::GTEST_FLAG(filter) = "aabb.*";
+	//::testing::GTEST_FLAG(filter) = "AABB.*";
+	//::testing::GTEST_FLAG(filter) = "Quaternion.*";
+  //::testing::GTEST_FLAG(filter) = "Capsule.*";
+  //::testing::GTEST_FLAG(filter) = "Math.*";
+  
   RUN_ALL_TESTS();
 
   return 0;

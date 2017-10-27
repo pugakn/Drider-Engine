@@ -11,17 +11,25 @@ class Capsule;
 class Frustrum;
 class Ray;
 
+/**
+*  Axis aligned bounding box class with center and length
+*
+* Sample usage:
+*	AABB myAabb(5.0, 2.0, driderSDK::Vector3D(0,0,0));
+*/
 class DR_API_EXPORT AABB
 {
  public:
   
   /**
+	* TEST::defaultConstructor
   * Default constructor
   *
   */
   AABB();
 
   /**
+	* TEST::constructFromValues
   * Initialize the constructor with the given values
   *
   * @param s
@@ -33,24 +41,28 @@ class DR_API_EXPORT AABB
   AABB(float width, float height, const Vector3D& C);
 
   /**
+	* TEST::moveConstructor
   * Move constructor.
   *
   */
   AABB(AABB&& A) = default;
 
   /**
+	* TEST::constructFromAABB
   * Copy constructor.
   *
   */
   AABB(const AABB& A);
 
   /**
+	* TEST::destructor
   * Default destructor
   *
   */
   ~AABB();
 
   /**
+	* TEST::intersectAABB
   * Checks for an intersection with another AABB
   *
   * @param aabb
@@ -63,6 +75,7 @@ class DR_API_EXPORT AABB
   intersect(AABB& aabb);
 
   /**
+	* TEST::intersectSphere
   * Checks for an intersection with a sphere
   *
   * @param sphere
@@ -75,6 +88,7 @@ class DR_API_EXPORT AABB
   intersect(Sphere& sphere);
 
   /**
+	* TEST::intersectPlane
   * Checks for an intersection with a plane
   *
   * @param plane
@@ -87,6 +101,7 @@ class DR_API_EXPORT AABB
   intersect(Plane& plane);
 
   /**
+	* TEST::intersectFrustrum
   * Checks for an intersection with a frustrum
   *
   * @param frustrum
@@ -99,6 +114,7 @@ class DR_API_EXPORT AABB
   intersect(Frustrum& frustrum);
 
   /**
+	* TEST::intersectRay
   * Checks for an intersection with a ray
   *
   * @param ray
@@ -111,6 +127,7 @@ class DR_API_EXPORT AABB
   intersect(Ray& ray);
 
   /**
+	* TEST::intersectPoint
   * Checks if the point is in the AABB
   *
   * @param point

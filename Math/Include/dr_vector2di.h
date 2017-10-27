@@ -16,6 +16,7 @@ class DR_API_EXPORT Vector2DI
  public:
   /**
   * TEST::defaultConstructor
+  *
   * Default constructor
   *
   */
@@ -23,6 +24,7 @@ class DR_API_EXPORT Vector2DI
 
   /**
   * TEST::forceInit
+  *
   * Default constructor
   * 
   * @param k
@@ -33,6 +35,7 @@ class DR_API_EXPORT Vector2DI
 
   /**
   * TEST::moveContructor
+  *
   * Move constructor
   *
   */
@@ -40,6 +43,7 @@ class DR_API_EXPORT Vector2DI
 
   /**
   * TEST::copyConstructor
+  *
   * Copy constructor
   *
   */
@@ -47,6 +51,7 @@ class DR_API_EXPORT Vector2DI
 
   /**
   * TEST::constructorFor2Floats
+  *
   * Initialize constructor with values.
   *
   * @param _x
@@ -59,6 +64,7 @@ class DR_API_EXPORT Vector2DI
 
   /**
   * TEST::destructor
+  *
   * Default destructor
   *
   */
@@ -66,6 +72,7 @@ class DR_API_EXPORT Vector2DI
 
   /**
   * TEST::dot
+  *
   * Computes the dot product between this vector and the vector parameter.
   * This operatios is commutative.
   *
@@ -81,6 +88,7 @@ class DR_API_EXPORT Vector2DI
 
   /**
   * TEST::cross
+  *
   * Computes the cross product between himself.
   *
   * @return
@@ -91,6 +99,7 @@ class DR_API_EXPORT Vector2DI
 
   /**
   * TEST::length
+  *
   * Computes the length of this vector.
   *
   * @return
@@ -101,6 +110,7 @@ class DR_API_EXPORT Vector2DI
 
   /**
   * TEST::lengthSqr
+  *
   * Computes the squared length of this vector.
   *
   * @return
@@ -111,6 +121,7 @@ class DR_API_EXPORT Vector2DI
 
   /**
   * TEST::normalize
+  *
   * Normalize the vector.
   */
   void
@@ -118,6 +129,7 @@ class DR_API_EXPORT Vector2DI
 
   /**
   * TEST::distance
+  *
   * Computes the distance between two vectors.
   *
   * @param scalar
@@ -130,6 +142,8 @@ class DR_API_EXPORT Vector2DI
   distance(const Vector2DI& otherVector) const;
 
   /**
+  * TEST::distanceSqr
+  *
   * Computes the squared distance between two vectors.
   *
   * @param scalar
@@ -142,6 +156,8 @@ class DR_API_EXPORT Vector2DI
   distanceSqr(const Vector2DI& otherVector) const;
 
   /**
+  * TEST::equals
+  *
   * Check's if the other vector is equal to this vector with an error
   * range.
   *
@@ -157,7 +173,9 @@ class DR_API_EXPORT Vector2DI
   bool
   equals(const Vector2DI& otherVector, float errorRange = Math::SMALL_NUMBER) const;
 
-   /**
+  /**
+  * TEST::opPtr
+  *
   * Gets a pointer to the first element of the matrix.
   *
   * @return
@@ -167,6 +185,8 @@ class DR_API_EXPORT Vector2DI
   ptr();
 
   /**
+  * TEST::constOpPtr
+  *
   * Gets a constant pointer to the first element of the matrix.
   *
   * @return
@@ -176,6 +196,8 @@ class DR_API_EXPORT Vector2DI
   ptr() const;
 
   /**
+  * TEST::operatorBrackets
+  *
   * Gets a const reference to the specified element from the vector.
   *
   *	@param index
@@ -191,6 +213,8 @@ class DR_API_EXPORT Vector2DI
   operator[](const SizeT index);
 
   /**
+  * TEST::operatorBracketsPtr
+  *
   * Gets a const reference to the specified element from the vector.
   *
   *	@param index
@@ -206,6 +230,8 @@ class DR_API_EXPORT Vector2DI
   operator[](const SizeT index) const;
 
   /**
+  * TEST::operatorOr
+  *
   * Computes the dot product between this vector and the vector parameter.
   * This operatios is commutative.
   *
@@ -220,6 +246,8 @@ class DR_API_EXPORT Vector2DI
   operator|(const Vector2DI& B) const;
 
   /**
+  * TEST::operatorEqual
+  *
   * Set the x, y values of this vector
   * with the x, y of the other vector.
   *
@@ -233,6 +261,8 @@ class DR_API_EXPORT Vector2DI
   operator=(const Vector2DI& A);
 
   /**
+  * TEST::operatorAdd
+  *
   * Adds elements of the vector with
   * the elements of the other vector.
   *
@@ -246,6 +276,8 @@ class DR_API_EXPORT Vector2DI
   operator+(const Vector2DI& A) const;
 
   /**
+  * TEST::operatorAddEqual
+  *
   * Adds elements of the vector with
   * the elements of the other vector
   * and stores it in this vector.
@@ -260,6 +292,8 @@ class DR_API_EXPORT Vector2DI
   operator+=(const Vector2DI& A);
 
   /**
+  * TEST::operatorMinus
+  *
   * Substracts elements of the vector with
   * the elements of the other vector.
   *
@@ -273,6 +307,8 @@ class DR_API_EXPORT Vector2DI
   operator-(const Vector2DI& A) const;
 
   /**
+  * TEST::operatorMinusEqual
+  *
   * Substracts elements of the vector with
   * the elements of the other vector and
   * stores it in this vector.
@@ -287,6 +323,8 @@ class DR_API_EXPORT Vector2DI
   operator-=(const Vector2DI& A);
 
   /**
+  * TEST::operatorMultiplication
+  *
   * Multiplies elements of the vector with
   * the elements of the other vector.
   *
@@ -300,6 +338,8 @@ class DR_API_EXPORT Vector2DI
   operator*(const Vector2DI& A) const;
 
   /**
+  * TEST::operatorMultiplicationEqual
+  *
   * Multiplies elements of the vector with
   * the elements of the other vector, and stores
   * the result in this vector.
@@ -314,6 +354,8 @@ class DR_API_EXPORT Vector2DI
   operator*=(const Vector2DI& A);
 
   /**
+  * TEST::operatorMultiplicationScalar
+  *
   * Multiplies elements of the vector.
   *
   * @param scalar
@@ -326,6 +368,8 @@ class DR_API_EXPORT Vector2DI
   operator*(const float scalar) const;
 
   /**
+  * TEST::operatorMultiplicationEqualScalar
+  *
   * Multiplies elements of the vector and stores it in the vector.
   *
   * @param scalar
@@ -338,6 +382,8 @@ class DR_API_EXPORT Vector2DI
   operator*=(const float scalar);
 
   /**
+  * TEST::operatorDivisionScalar
+  *
   * Divide elements of the vector.
   *
   * @param scalar
@@ -350,6 +396,8 @@ class DR_API_EXPORT Vector2DI
   operator/(const float scalar) const;
 
   /**
+  * TEST::operatorDivisionEqualScalar
+  *
   * Divide elements of the vector and stores it in the vector.
   *
   * @param scalar
@@ -362,6 +410,8 @@ class DR_API_EXPORT Vector2DI
   operator/=(const float scalar);
 
   /**
+  * TEST::operatorEqualEqual
+  *
   * Checks if the values of the vectors are equal.
   *
   * @return
@@ -371,6 +421,8 @@ class DR_API_EXPORT Vector2DI
   operator==(const Vector2DI& otherVector);
 
   /**
+  * TEST::operatorNotEqual
+  *
   * Checks if the values of the vectors aren't equal.
   *
   * @return
@@ -380,6 +432,8 @@ class DR_API_EXPORT Vector2DI
   operator!=(const Vector2DI& otherVector);
 
   /**
+  * TEST::operatorNegate
+  *
   * Returns this vector with negated values.
   */
   Vector2DI

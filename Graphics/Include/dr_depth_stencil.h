@@ -2,7 +2,9 @@
 #include <dr_prerequisites.h>
 #include <memory>
 #include "dr_texture.h"
+
 namespace driderSDK {
+
 /**
 * Base class for depth stencil
 *
@@ -10,8 +12,11 @@ namespace driderSDK {
 *	DepthStencil* = new D3DdepthStencil;
 */
 class DR_API_EXPORT DepthStencil {
-public:
-  virtual 
+ public:
+  /**
+  * Class virtual destructor.
+  */
+  virtual
   ~DepthStencil() {};
 
   /**
@@ -26,7 +31,7 @@ public:
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  virtual DR_GRAPHICS_ERROR::E 
+  virtual DR_GRAPHICS_ERROR::E
   create(const Device& device, const DrTextureDesc& desc) = 0;
 
   //virtual void 
@@ -35,9 +40,10 @@ public:
   /**
   * Release the allocated memory
   */
-  virtual void 
+  virtual void
   release() = 0;
 
   std::unique_ptr<Texture> depthTexture;
 };
+
 }

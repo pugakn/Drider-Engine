@@ -1,11 +1,27 @@
 #include <dr_degree.h>
 #include <gtest\gtest.h>
 
-TEST(Degree, floatOperator) {
-  driderSDK::Degree testDegree(3.0f);
-  float theDegreeValue = testDegree;
+TEST(Degree, defaultConstructor) {
+  driderSDK::Degree* testDegree = nullptr;
+  testDegree = new driderSDK::Degree();
 
-  EXPECT_FLOAT_EQ(theDegreeValue, 3.0f);
+  EXPECT_FALSE(nullptr == testDegree);
+
+  delete testDegree;
+}
+
+TEST(Degree, moveConstructor) {
+  driderSDK::Degree trueDegree(3.0f);
+  driderSDK::Degree testDegree(std::move(trueDegree));
+
+  EXPECT_FLOAT_EQ(trueDegree, testDegree);
+}
+
+TEST(Degree, copyConstructor) {
+  driderSDK::Degree realDegree(45.0f);
+  driderSDK::Degree testDegree(realDegree);
+
+  EXPECT_FLOAT_EQ(testDegree, 45.0f);
 }
 
 TEST(Degree, floatConstructor) {
@@ -18,14 +34,17 @@ TEST(Degree, floatConstructor) {
   EXPECT_FLOAT_EQ(testDegree3, 1000.0f);
 }
 
-TEST(Degree, CopyConstructor) {
-  driderSDK::Degree realDegree(45.0f);
-  driderSDK::Degree testDegree(realDegree);
+TEST(Degree, defaultDestructor) {
+  driderSDK::Degree* testDegree = nullptr;
+  testDegree = new driderSDK::Degree();
 
-  EXPECT_FLOAT_EQ(testDegree, 45.0f);
+  delete testDegree;
+  testDegree = nullptr;
+
+  EXPECT_TRUE(nullptr == testDegree);
 }
 
-TEST(Degree, ToRadian) {
+TEST(Degree, toRadian) {
   driderSDK::Degree testDegree1(180.0f);
   driderSDK::Degree testDegree2(90.0f);
 
@@ -33,12 +52,19 @@ TEST(Degree, ToRadian) {
   EXPECT_FLOAT_EQ(testDegree2.toRadian(), driderSDK::Math::HALF_PI);
 }
 
-TEST(Degree, Unwind) {
+TEST(Degree, unwind) {
   driderSDK::Degree testDegree1(-90.0f);
   driderSDK::Degree testDegree2(450.0f);
 
   EXPECT_FLOAT_EQ(testDegree1.unwind(), 270.0f);
   EXPECT_FLOAT_EQ(testDegree2.unwind(), 90.0f);
+}
+
+TEST(Degree, floatOperator) {
+  driderSDK::Degree testDegree(3.0f);
+  float theDegreeValue = testDegree;
+
+  EXPECT_FLOAT_EQ(theDegreeValue, 3.0f);
 }
 
 TEST(Degree, equalFloat) {

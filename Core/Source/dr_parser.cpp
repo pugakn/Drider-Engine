@@ -86,8 +86,9 @@ Parser::split(char* str,
  size_t len = strlen(str);
 
  char* ret = new char[len + 2];
-
- strcpy_s(ret, len * 4, str);
+ char *r = ret;
+ ret[10] = 'a';
+ Parser::strCopy(ret, str);
  ret[len] = divider[0];
  ret[len + 1] = '\0';
 
@@ -99,7 +100,14 @@ Parser::split(char* str,
    result.push_back(nString);
   }
  }
+ delete[] r;
  return result;
+}
+
+char *
+Parser::strCopy(char* des,
+               const char* source) {
+  return strcpy(des, source);
 }
 
 }

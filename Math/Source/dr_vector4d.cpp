@@ -4,7 +4,7 @@
 namespace driderSDK
 {
 
-Vector4D::Vector4D() {}
+Vector4D::Vector4D() { }
 
 Vector4D::Vector4D(Math::FORCE_INIT k) {
   if (Math::FORCE_INIT::kZero == k) {
