@@ -18,6 +18,9 @@ class DeviceContext;
 class DR_API_EXPORT D3DIndexBuffer : public IndexBuffer
 {
  public:
+  /**
+  * Default constructor.
+  */
   D3DIndexBuffer();
 
   /**

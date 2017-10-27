@@ -1,5 +1,5 @@
 #pragma once
-#include "sr_texture_shader.h"
+#include "dr_texture_shader.h"
 #include <wrl.h>
 #include <wrl/client.h>
 #include <d3d11.h>
@@ -42,7 +42,9 @@ class DR_API_EXPORT D3DTextreShader : public TextureShader
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   DR_GRAPHICS_ERROR::E
-  createFromMemory(const Device& device, const char* buffer, size_t bufferSize) override;
+  createFromMemory(const Device& device,
+                   const char* buffer,
+                   size_t bufferSize) override;
   //Microsoft::WRL::ComPtr<ID3D11TextureShader> APIShader;
 };
 

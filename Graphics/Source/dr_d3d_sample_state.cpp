@@ -6,8 +6,7 @@
 namespace driderSDK {
 
 DR_GRAPHICS_ERROR::E
-D3D11SamplerState::create(const Device & device, const DrSampleDesc & desc)
-{
+D3D11SamplerState::create(const Device& device, const DrSampleDesc& desc) {
   D3D11_SAMPLER_DESC apiDesc;
   apiDesc.AddressU = static_cast<D3D11_TEXTURE_ADDRESS_MODE>(desc.addressU);
   apiDesc.AddressV = static_cast<D3D11_TEXTURE_ADDRESS_MODE>(desc.addressV);

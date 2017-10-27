@@ -15,7 +15,6 @@ class DeviceContext;
 class DR_API_EXPORT ConstantBuffer : public Buffer
 {
  public:
-
   /**
   * Virtual destructor.
   */

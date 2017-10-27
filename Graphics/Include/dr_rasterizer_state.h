@@ -40,7 +40,7 @@ class DR_API_EXPORT RasterizerState
   *
   */
   virtual void
-  set(const DeviceContext& deviceContext)const = 0;
+  set(const DeviceContext& deviceContext) const = 0;
 
   /**
   * Release the allocated memory

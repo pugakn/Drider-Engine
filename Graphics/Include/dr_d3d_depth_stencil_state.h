@@ -8,9 +8,9 @@ class ID3D11DepthStencilState;
 
 namespace driderSDK {
 
-class D3DDepthStencilState : DepthStencilState {
+class D3DDepthStencilState : DepthStencilState
+{
  public:
-
   /**
   * Create a detph stencil state that describes the behavior
   * of the deth stencil

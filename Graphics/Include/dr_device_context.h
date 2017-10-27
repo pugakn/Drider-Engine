@@ -13,7 +13,8 @@ class RenderTarget;
 class DepthStencil;
 class ConstantBuffer;
 
-class DR_API_EXPORT DeviceContext {
+class DR_API_EXPORT DeviceContext
+{
  public:
   /**
   * Class virtual destructor.

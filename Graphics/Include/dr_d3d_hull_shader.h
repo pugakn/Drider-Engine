@@ -48,7 +48,9 @@ class DR_API_EXPORT D3DHullShader : public HullShader
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   DR_GRAPHICS_ERROR::E
-  createFromMemory(const Device& device, const char* buffer, size_t bufferSize) override;
+  createFromMemory(const Device& device,
+                   const char* buffer,
+                   size_t bufferSize) override;
 
   Microsoft::WRL::ComPtr<ID3D11HullShader> APIShader;
 };

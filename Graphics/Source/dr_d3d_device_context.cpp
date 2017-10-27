@@ -49,10 +49,11 @@ void
 D3DDeviceContext::clearRenderTargetView(RenderTarget& renderTarget,
                                         const float colorRGBA[4]) const {
   for (size_t i = 0;
-       i < static_cast<D3DRenderTarget*>(&renderTarget)->APIColorView.size();
+       i < static_cast<D3DRenderTarget*>(&renderTarget)->APIColorViews.size();
        i++) {
     D3D11DeviceContext->
-      ClearRenderTargetView(static_cast<D3DRenderTarget*>(&renderTarget)->APIColorView[i].Get(),
+      ClearRenderTargetView(static_cast<D3DRenderTarget*>(&renderTarget)->
+                              APIColorViews[i].Get(),
                             colorRGBA);
   }
 }
@@ -107,7 +108,6 @@ void
 D3DDeviceContext::setVertexBuffer(const VertexBuffer& buffer,
                                   UInt32 stride,
                                   UInt32 offset) const {
-
   buffer.set(*this, stride, offset);
 }
 

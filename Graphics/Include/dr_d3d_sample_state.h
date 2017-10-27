@@ -35,7 +35,8 @@ class DR_API_EXPORT D3D11SamplerState : public SamplerState
   *   Specifyes the shaders to bind with a bitflag
   */
   void
-  set(const DeviceContext& deviceContext, DR_SHADER_TYPE_FLAG::E typeFlag) const override;
+  set(const DeviceContext& deviceContext,
+      DR_SHADER_TYPE_FLAG::E typeFlag) const override;
 
   /**
   * Release the allocated memory

@@ -6,7 +6,7 @@
 struct ID3D11Texture2D;
 struct ID3D11ShaderResourceView;
 
-namespace driderSDK{
+namespace driderSDK {
 
 /**
 * Class for texture
@@ -14,7 +14,8 @@ namespace driderSDK{
 * Sample usage:
 *	texture* = new D3DTexture;
 */
-class DR_API_EXPORT D3DTexture : public Texture{
+class DR_API_EXPORT D3DTexture : public Texture
+{
  public:
   /**
   * Create a texture with initial data
@@ -64,7 +65,7 @@ class DR_API_EXPORT D3DTexture : public Texture{
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   DR_GRAPHICS_ERROR::E
-  map(const DeviceContext & deviceContext, char* buffer) override;
+  map(const DeviceContext& deviceContext, char* buffer) override;
 
   /**
   * Set the texture to the shader
@@ -92,7 +93,7 @@ class DR_API_EXPORT D3DTexture : public Texture{
   *   The device context to get the resource
   */
   void
-  unmap(const DeviceContext & deviceContext) override;
+  unmap(const DeviceContext& deviceContext) override;
 
   /**
   * Update the data of the texture
@@ -118,7 +119,7 @@ class DR_API_EXPORT D3DTexture : public Texture{
   *   The device context to set the resource
   */
   void
-  generateMipMaps(const DeviceContext & deviceContext) const override;
+  generateMipMaps(const DeviceContext& deviceContext) const override;
 
   Microsoft::WRL::ComPtr<ID3D11Texture2D> APITexture;
   Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> APIView;

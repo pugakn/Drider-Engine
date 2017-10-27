@@ -24,7 +24,11 @@ D3DInputLayout::create(const Device& device,
 
   if (static_cast<const D3DDevice*>(&device)->
         D3D11Device->
-          CreateInputLayout(&desc[0], arraySize, 0, 0, APILayout.GetAddressOf()) != S_OK) {
+          CreateInputLayout(&desc[0],
+                            arraySize,
+                            0,
+                            0,
+                            APILayout.GetAddressOf()) != S_OK) {
     return DR_GRAPHICS_ERROR::CREATE_INPUT_LAYOUT_ERROR;
   }
 
@@ -32,15 +36,14 @@ D3DInputLayout::create(const Device& device,
 }
 
 void
-D3DInputLayout::set(const DeviceContext & deviceContext) const {
+D3DInputLayout::set(const DeviceContext& deviceContext) const {
   static_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext->
       IASetInputLayout(APILayout.Get());
 }
 
 void
-D3DInputLayout::release()
-{
+D3DInputLayout::release() {
   APILayout.Reset();
 }
 

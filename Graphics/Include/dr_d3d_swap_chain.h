@@ -8,7 +8,8 @@ struct ID3D11RenderTargetView;
 
 namespace driderSDK {
 
-class D3DSwapChain : public SwapChain {
+class D3DSwapChain : public SwapChain
+{
  public:
   /**
   * Create a swap chain

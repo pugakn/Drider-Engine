@@ -16,7 +16,8 @@ class DepthStencil;
 * Sample usage:
 *	RenderTarget* = new D3DRenderTarget;
 */
-class DR_API_EXPORT RenderTarget {
+class DR_API_EXPORT RenderTarget
+{
  public:
   /**
   * Class virtual destructor.

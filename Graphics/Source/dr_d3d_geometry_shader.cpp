@@ -21,7 +21,7 @@ D3DGeometryShader::release() {
 
 DR_GRAPHICS_ERROR::E 
 D3DGeometryShader::createFromMemory(const Device& device,
-                                    const char * buffer,
+                                    const char* buffer,
                                     size_t bufferSize) {
   Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
   Microsoft::WRL::ComPtr<ID3DBlob> shader_blob;

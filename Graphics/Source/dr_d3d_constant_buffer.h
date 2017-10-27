@@ -71,7 +71,7 @@ class DR_API_EXPORT D3DConstantBuffer : public ConstantBuffer
   */
   void
   updateFromMemory(const DeviceContext& deviceContext,
-                   const char * dataBuffer,
+                   const char* dataBuffer,
                    size_t bufferSize) override;
 
   /**

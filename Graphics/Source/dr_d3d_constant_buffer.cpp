@@ -44,41 +44,41 @@ D3DConstantBuffer::create(const Device& device,
 void
 D3DConstantBuffer::set(const DeviceContext& deviceContext,
                        DR_SHADER_TYPE_FLAG::E typeFlag) const {
-  if (typeFlag& DR_SHADER_TYPE_FLAG::kVertex) {
+  if (typeFlag & DR_SHADER_TYPE_FLAG::kVertex) {
     static_cast<const D3DDeviceContext*>
     (&deviceContext)->
       D3D11DeviceContext->
         VSSetConstantBuffers(0, 1, CB.GetAddressOf());
   }
-  if (typeFlag& DR_SHADER_TYPE_FLAG::kFragment) {
+  if (typeFlag & DR_SHADER_TYPE_FLAG::kFragment) {
     static_cast<const D3DDeviceContext*>(&deviceContext)->
       D3D11DeviceContext->
         PSSetConstantBuffers(0, 1, CB.GetAddressOf());
   }
-  if (typeFlag& DR_SHADER_TYPE_FLAG::kCompute) {
+  if (typeFlag & DR_SHADER_TYPE_FLAG::kCompute) {
     static_cast<const D3DDeviceContext*>(&deviceContext)->
       D3D11DeviceContext->
         CSSetConstantBuffers(0, 1, CB.GetAddressOf());
   }
-  if (typeFlag& DR_SHADER_TYPE_FLAG::kDomain) {
+  if (typeFlag & DR_SHADER_TYPE_FLAG::kDomain) {
     static_cast<const D3DDeviceContext*>(&deviceContext)->
       D3D11DeviceContext->
         DSSetConstantBuffers(0, 1, CB.GetAddressOf());
   }
-  if (typeFlag& DR_SHADER_TYPE_FLAG::kHull) {
+  if (typeFlag & DR_SHADER_TYPE_FLAG::kHull) {
     static_cast<const D3DDeviceContext*>(&deviceContext)->
       D3D11DeviceContext->
         HSSetConstantBuffers(0, 1, CB.GetAddressOf());
   }
-  if (typeFlag& DR_SHADER_TYPE_FLAG::kGeometry) {
+  if (typeFlag & DR_SHADER_TYPE_FLAG::kGeometry) {
     static_cast<const D3DDeviceContext*>(&deviceContext)->
       D3D11DeviceContext->
         GSSetConstantBuffers(0, 1, CB.GetAddressOf());
   }
-  if (typeFlag& DR_SHADER_TYPE_FLAG::kTeselation) {
+  if (typeFlag & DR_SHADER_TYPE_FLAG::kTeselation) {
     //Not implemented
   }
-  if (typeFlag& DR_SHADER_TYPE_FLAG::kTexture) {
+  if (typeFlag & DR_SHADER_TYPE_FLAG::kTexture) {
     //Not implemented
   }
 }

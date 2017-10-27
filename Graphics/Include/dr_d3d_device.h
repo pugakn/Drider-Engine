@@ -10,7 +10,7 @@ namespace driderSDK {
 
 class DR_API_EXPORT D3DDevice : public Device
 {
-public:
+ public:
   DR_GRAPHICS_ERROR::E
   createDeviceAndDeviceContext(DeviceContext& deviceContext) override;
 
