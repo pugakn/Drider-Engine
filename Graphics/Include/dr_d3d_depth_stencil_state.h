@@ -8,7 +8,7 @@ class ID3D11DepthStencilState;
 
 namespace driderSDK {
 
-class D3DDepthStencilState : DepthStencilState
+class D3DDepthStencilState : public DepthStencilState
 {
  public:
   /**
