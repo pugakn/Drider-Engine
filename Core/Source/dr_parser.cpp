@@ -2,86 +2,74 @@
 
 namespace driderSDK {
 
-const char*
-Parser::strStr(const char* str1,
-               const char* str2) {
- return strstr(str1, str2);   
+TString
+Parser::strStr(TString str1,
+               TString str2) {
+ #ifdef _UNICODE
+  return wcsstr(str1.c_str(), str2.c_str());
+ #else
+  return strstr(str1.c_str(), str2.c_str());
+ #endif // _UNICODE
 }
 
-char*
-Parser::strCpyBetween(const char* source,
-                      const char* strFrom,
-                      const char* strTo,
-                      char*& destinationOut) {
- const char * pChar = Parser::strStr(source, strFrom);
- pChar+= sizeof(strFrom) / 2;
+size_t
+Parser::strLen(TString str) {
+ #ifdef _UNICODE
+  return wcslen(str.c_str());
+ #else
+  return strlen(str.c_str());
+ #endif // _UNICODE
 
- const char * pLastChar = Parser::strStr(source, strTo);
+}
 
- size_t newSize = (strlen(pChar) / sizeof(char)) - (strlen(pLastChar) / sizeof(char));
+TString
+Parser::strCpyBetween(TString source,
+                      TString strFrom,
+                      TString strTo,
+                      TString &destinationOut) {
 
- char* buffer = new char[newSize + 1]{};
+ TString first = Parser::strStr(source, strFrom);
+ TString last = Parser::strStr(first, strTo);
 
- if(*pChar != NULL && *pLastChar != NULL) {
-  Int16 index = 0;
-  while((char*)pChar != (char*)pLastChar) {
-   buffer[index++] = *pChar;
-   pChar++;
+ if (first != L"" && last != L"") {
+  size_t offset = Parser::strLen(first.c_str()) - Parser::strLen(last.c_str());
+  TString buffer;
+  TString::iterator it = first.begin();
+
+  size_t strSize = Parser::strLen(strFrom.c_str());
+  offset -= strSize;
+  while(strSize > 0) {
+    strSize--;
+    *it++;
   }
- } else {
-  return NULL;
- }
- 
- destinationOut = &buffer[0];
- return buffer;
-}
-
-bool
-Parser::compare(const char* str1,
-                const char* str2) {
-
- std::string s1 = str1;
- std::string s2 = str2;
- 
- return s1.compare(s2) == 0;
-}
-
-char *
-Parser::addUntilFind(const char* source,
-                     const char* delimiter,
-                     char *& strOut) {
-
- size_t sizeSource = strlen(source) / sizeof(char);
- size_t sizeDelimiter = strlen(delimiter) / sizeof(char);
-
- char* str = (char*)source;
- char* result = new char[sizeSource] {};
- 
- for(size_t i = 0; i < sizeSource; i++) {
-  bool use = true;
   
-  for(size_t j = 0; j < sizeDelimiter; j++) {
-   if(str[i] == delimiter[j]) {
-     use = false;
-   }
+  while(offset-- > 0) {
+    buffer.push_back(*it++);
   }
-
-  if(use) {
-    result[i] += str[i];
-  } else {
-    strOut = result;
-    return result;
-  }
+  destinationOut = buffer;
+  return buffer;
  }
- strOut = result;
- return result;
+ return L"";
+}
+
+TString
+Parser::addUntilFind(TString source,
+                     TString delimiter,
+                     TString& strOut) {
+  TString buffer;
+  TString::iterator it = source.begin();
+  while(*&it[0] != delimiter[0]) {
+    buffer.push_back(*it++);
+  }
+  strOut = buffer;
+  return buffer;
 }
 
 std::vector<std::string>
 Parser::split(char* str,
               const char* divider) {
 
- std::vector<std::string> result;
+ /*std::vector<std::string> result;
  
  size_t len = strlen(str);
 
@@ -92,22 +80,17 @@ Parser::split(char* str,
  ret[len] = divider[0];
  ret[len + 1] = '\0';
 
- while(Parser::compare(ret, "\0") != true) {
+ while(ret != "\0") {
   char* nString = "";
   Parser::addUntilFind(ret, divider, nString);
   ret += strlen(nString) / sizeof(char) + 1;
-  if(!Parser::compare(nString, "") && !Parser::compare(nString, divider)) {
+  if(nString != "" && nString != divider) {
    result.push_back(nString);
   }
  }
  delete[] r;
- return result;
-}
-
-char *
-Parser::strCopy(char* des,
-               const char* source) {
-  return strcpy(des, source);
+ return result;*/
+ return std::vector<std::string>();
 }
 
 }

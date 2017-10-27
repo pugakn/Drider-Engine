@@ -4,13 +4,17 @@
 #include <string>
 #include <vector>
 
+#ifdef _UNICODE
+  #include <wchar.h> 
+#endif // _UNICODE
+
 namespace driderSDK {
 
-static struct DR_API_EXPORT Parser 
+struct DR_API_EXPORT Parser 
 {
  public:    
   /**
-  * TEST::parserCompareAndStrstr
+  * TEST::parserStrstr
   * Find in string other string.
   *
   * @param str1
@@ -22,9 +26,22 @@ static struct DR_API_EXPORT Parser
   * @return
   *   if the string str2 exist in buffer str1 return the pointer to the first, else return null.
   */
-  static const char*
-  strStr (const char* str1,
-          const char* str2);  
+  static TString
+  strStr (TString str1,
+          TString str2);
+
+  /**
+  * TEST::parserStrCpyBetween
+  * Find in string other string.
+  *
+  * @param str
+  *   Buffer to measure.
+  *
+  * @return
+  *   The number of charactes in the buffer.
+  */
+  static size_t
+  strLen(TString str);
   
   /**
   * TEST::parserStrCpyBetween
@@ -45,28 +62,11 @@ static struct DR_API_EXPORT Parser
   * @return
   *   If successful return the destinationOut, otherwise return null.
   */
-  static char*
-  strCpyBetween(const char* source,
-                const char* strFrom, 
-                const char* strTo,
-                char*& destinationOut);
-  
-  /**
-  * TEST::parserCompareAndStrstr
-  * Compares two strings.
-  *
-  * @param str1
-  *   First string.
-  *
-  * @param strFrom
-  *   Second string.
-  *
-  * @return
-  *   If successful return 0, otherwise return other value.
-  */
-  static bool
-  compare(const char* str1,
-          const char* str2);
+  static TString
+  strCpyBetween(TString source,
+                TString strFrom,
+                TString strTo,
+                TString &destinationOut);
 
   /**
   * TEST::parserStringToInt32
@@ -79,8 +79,12 @@ static struct DR_API_EXPORT Parser
   *   The string parsed.
   */
   static Int32 
-  FORCEINLINE stringToInt32(const char* str) {
-   return std::atoi(str);
+  FORCEINLINE stringToInt32(TString str) {
+    #ifdef _UNICODE
+      return _wtoi(str.c_str());
+    #else
+      return std::atoi(str.c_str());
+    #endif // _UNICODE
   }
 
   /**
@@ -95,8 +99,12 @@ static struct DR_API_EXPORT Parser
   *   If the converted value would be out of the range of representable values by an int, it causes undefined behavior.
   */
   static float
-  FORCEINLINE stringToFloat(const char* str) {
-   return (float)std::atof(str);
+  FORCEINLINE stringToFloat(TString str) {
+    #ifdef _UNICODE
+        return _wtof(str.c_str());
+    #else
+        return (float)std::atof(str);
+    #endif // _UNICODE
   }
   
   /**
@@ -115,10 +123,10 @@ static struct DR_API_EXPORT Parser
   * @return
   *   The string created.
   */
-  static char *
-  Parser::addUntilFind(const char* source,
-                       const char* delimiter,
-                       char *& strOut);
+  static TString
+  addUntilFind(TString source,
+               TString delimiter,
+               TString& strOut);
 
   /**
   * TEST::parserSplit
@@ -136,23 +144,6 @@ static struct DR_API_EXPORT Parser
   static std::vector<std::string>
   split(char* str,
         const char* divider);
-
-  /**
-  * TEST::strcpy
-  * Divede in strings other string where ther is a diveder character.
-  *
-  * @param str
-  *   Buffer to be checked.
-  *
-  * @param divider
-  *   Delimiter of each string.
-  *
-  * @return
-  *   std::vector with the string created.
-  */
-  static char * 
-  strCopy(char* des,
-                 const char* source);
 };
 
 }
