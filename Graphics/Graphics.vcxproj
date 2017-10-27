@@ -136,6 +136,7 @@
   <ItemGroup>
     <ClInclude Include="Include\dr_d3d_command_buffer.h" />
     <ClInclude Include="Include\dr_d3d_compute_shader.h" />
+    <ClInclude Include="Include\dr_d3d_constant_buffer.h" />
     <ClInclude Include="Include\dr_d3d_depth_stencil.h" />
     <ClInclude Include="Include\dr_d3d_depth_stencil_state.h" />
     <ClInclude Include="Include\dr_d3d_device.h" />
@@ -181,7 +182,6 @@
     <ClInclude Include="Include\dr_vertex_shader.h" />
     <ClInclude Include="Include\sr_texture_shader.h" />
     <ClInclude Include="Source\dr_d3d_command_buffer.cpp" />
-    <ClInclude Include="Source\dr_d3d_constant_buffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_d3d_compute_shader.cpp" />

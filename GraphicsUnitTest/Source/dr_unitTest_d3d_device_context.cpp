@@ -9,6 +9,7 @@
 #include <dr_d3d_vertex_buffer.h>
 #include <dr_d3d_index_buffer.h>
 #include <dr_d3d_vertex_shader.h>
+#include <dr_d3d_constant_buffer.h>
 #include <d3d11.h>
 #include <dxgi.h>
 
@@ -151,9 +152,15 @@ TEST(D3DDeviceContext, setConstantBuffer) {
 	driderSDK::D3DDevice device;
 	driderSDK::D3DDeviceContext context;
 	device.createDeviceAndDeviceContext(context);
-	//need constant buffer
-
-  //EXPECT_TRUE(true);
+	driderSDK::D3DConstantBuffer cb;
+	driderSDK::DrBufferDesc desc;
+	desc.sizeInBytes = 10;
+	desc.stride = 0;
+	desc.usage = driderSDK::DR_BUFFER_USAGE::kDefault;
+	char data[10];
+	cb.create(device, desc, data);
+	context.setConstantBuffer(cb, driderSDK::DR_SHADER_TYPE_FLAG::E::kCompute);
+  EXPECT_TRUE(true);
 }
 
 TEST(D3DDeviceContext, clearDepthStencilView) {

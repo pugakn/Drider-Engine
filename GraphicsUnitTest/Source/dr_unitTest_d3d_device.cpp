@@ -5,7 +5,7 @@
 #include <dr_d3d_vertex_buffer.h>
 #include <dr_d3d_index_buffer.h>
 #include <dr_d3d_device_context.h>
-//#include <dr_d3d_constant_buffer.h>
+#include <dr_d3d_constant_buffer.h>
 #include <dr_d3d_texture.h>
 #include <dr_d3d_vertex_shader.h>
 #include <dr_d3d_render_target.h>
@@ -55,10 +55,10 @@ TEST(Device, createConstantBuffer) {
 	desc.sizeInBytes = 10;
 	desc.stride = 0;
 	desc.usage = driderSDK::DR_BUFFER_USAGE::kDefault;
-	//driderSDK::D3DConstantBuffer;  <-????
-
+	driderSDK::D3DConstantBuffer cb;
 	char initData[10];
-
+	cb.create(device, desc, initData);
+	device.createConstantBuffer(desc, initData, cb);
   EXPECT_TRUE(false);
 }
 

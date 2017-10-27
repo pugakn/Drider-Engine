@@ -3,7 +3,7 @@
 #include <wrl.h>
 #include <wrl/client.h>
 
-class Shader; 
+
 class ID3D11DepthStencilState;
 
 namespace driderSDK {
