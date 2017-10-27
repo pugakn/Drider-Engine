@@ -40,7 +40,7 @@ Parser::strCpyBetween(TString source,
   offset -= strSize;
   while(strSize > 0) {
     strSize--;
-    *it++;
+    (*it)++;
   }
   
   while(offset-- > 0) {
@@ -67,34 +67,35 @@ Parser::addUntilFind(TString source,
 
 std::vector<TString>
 Parser::split(TString str,
-      TString divider) {
- str.push_back(divider[0]);
- TString::iterator it = str.begin();
+              TString divider) {
+  str.push_back(divider[0]);
+  TString::iterator it = str.begin();
  
- size_t sizeD = driderSDK::Parser::strLen(divider);
+  size_t sizeD = driderSDK::Parser::strLen(divider);
  
- std::vector<TString> result;
- TString buffer;
- bool bAdd = true;
+  std::vector<TString> result;
+  TString buffer;
 
- while(it != str.end()) {
-  bAdd = true;
-  for(size_t i = 0; i < sizeD; i++) {
-   if(*it == divider[i]) {
-    bAdd = false;
-   }
+  while(it != str.end())
+  {
+    bool bAdd = true;
+    for(size_t i = 0; i < sizeD; i++) {
+      if(*it == divider[i]) {
+        bAdd = false;
+    }
   }
   if(bAdd) {
-   buffer += *it;
-  } else {
-   if(buffer.size() > 0) {
-    result.push_back(buffer);
-    buffer.clear();
-   }
+    buffer += *it;
   }
-  it++;
- }
- return result;
+  else {
+    if(buffer.size() > 0) {
+      result.push_back(buffer);
+      buffer.clear();
+    }
+  }
+  ++it;
+  }
+  return result;
 }
 
 }
