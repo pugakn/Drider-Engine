@@ -20,7 +20,7 @@ class DR_API_EXPORT D3DRenderTarget : public RenderTarget {
   void
   release() override;
 
-  std::vector<Microsoft::WRL::ComPtr<ID3D11RenderTargetView>> APIColorView; 
+  std::vector<Microsoft::WRL::ComPtr<ID3D11RenderTargetView>> APIColorViews; 
 };
 
 }
