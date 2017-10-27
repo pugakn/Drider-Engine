@@ -155,6 +155,7 @@
     <ClCompile Include="Source\dr_unitTest_constant_buffer.cpp" />
     <ClCompile Include="Source\dr_unitTest_d3d_command_buffer.cpp" />
     <ClCompile Include="Source\dr_unitTest_d3d_compute_shader.cpp" />
+    <ClCompile Include="Source\dr_unitTest_d3d_constant_buffer.cpp" />
     <ClCompile Include="Source\dr_unitTest_d3d_depth_stencil.cpp" />
     <ClCompile Include="Source\dr_unitTest_d3d_depth_stencil_state.cpp" />
     <ClCompile Include="Source\dr_unitTest_d3d_device.cpp" />

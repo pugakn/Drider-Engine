@@ -12,9 +12,9 @@ namespace driderSDK {
 class DR_API_EXPORT FragmentShader : public Shader
 {
  public:
-   /**
-   * Virtual destructor.
-   */
+  /**
+  * Virtual destructor.
+  */
   virtual
   ~FragmentShader() {};
 };

@@ -7,11 +7,12 @@ class ID3D11DeviceContext;
 
 namespace driderSDK {
 
-class DR_API_EXPORT D3DDeviceContext : public DeviceContext {
+class DR_API_EXPORT D3DDeviceContext : public DeviceContext
+{
  public:
-   /**
-   * Release the allocated memory
-   */
+  /**
+  * Release the allocated memory
+  */
   void
   release() override;
 

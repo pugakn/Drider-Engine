@@ -19,7 +19,8 @@
 
 namespace driderSDK {
 
-DR_GRAPHICS_ERROR::E D3DDevice::createDeviceAndDeviceContext(DeviceContext& deviceContext) {
+DR_GRAPHICS_ERROR::E
+D3DDevice::createDeviceAndDeviceContext(DeviceContext& deviceContext) {
   if (D3D11CreateDevice(0,
                         D3D_DRIVER_TYPE_HARDWARE,
                         0,
@@ -44,9 +45,9 @@ D3DDevice::release() {
 
 DR_GRAPHICS_ERROR::E
 D3DDevice::createVertexBuffer(const DrBufferDesc& desc,
-                                  char* initialData, 
-                                  VertexBuffer& vertexBuffer) {
-  return vertexBuffer.create(*this,desc,initialData);
+                              char* initialData, 
+                              VertexBuffer& vertexBuffer) {
+  return vertexBuffer.create(*this, desc, initialData);
 }
 
 DR_GRAPHICS_ERROR::E
@@ -67,7 +68,7 @@ DR_GRAPHICS_ERROR::E
 D3DDevice::createShaderFromMemory(const char* shaderBuffer,
                                   size_t bufferSize,
                                   Shader& shader) {
-  return shader.createFromMemory(*this,shaderBuffer,bufferSize);
+  return shader.createFromMemory(*this, shaderBuffer, bufferSize);
 }
 
 DR_GRAPHICS_ERROR::E
@@ -86,7 +87,7 @@ DR_GRAPHICS_ERROR::E
 D3DDevice::createRenderTarget(const DrTextureDesc& desc,
                               RenderTarget& renderTarget,
                               UInt32 _numColorTextures) {
-  return renderTarget.create(*this,desc,_numColorTextures);
+  return renderTarget.create(*this, desc, _numColorTextures);
 }
 
 DR_GRAPHICS_ERROR::E

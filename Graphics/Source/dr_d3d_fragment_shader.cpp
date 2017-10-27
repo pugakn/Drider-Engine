@@ -8,8 +8,10 @@
 namespace driderSDK {
 
 void
-D3DFragmentShader::set(const DeviceContext & deviceContext) const {
-  static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->PSSetShader(APIShader.Get(), 0, 0);
+D3DFragmentShader::set(const DeviceContext& deviceContext) const {
+  static_cast<const D3DDeviceContext*>(&deviceContext)->
+    D3D11DeviceContext->
+      PSSetShader(APIShader.Get(), 0, 0);
 }
 
 void

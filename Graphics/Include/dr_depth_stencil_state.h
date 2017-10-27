@@ -7,7 +7,8 @@ namespace driderSDK {
 class Device;
 class DeviceContext;
 
-class DR_API_EXPORT DepthStencilState {
+class DR_API_EXPORT DepthStencilState
+{
  public:
   /**
   * Create a detph stencil state that describes the behavior

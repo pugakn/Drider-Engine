@@ -49,7 +49,9 @@ class DR_API_EXPORT D3DCommandBuffer : public CommandBuffer
   *   The new data buffer size
   */
   void
-  updateFromMemory(const DeviceContext& deviceContext, const char * dataBuffer, size_t bufferSize) override;
+  updateFromMemory(const DeviceContext& deviceContext,
+                   const char* dataBuffer,
+                   size_t bufferSize) override;
 
   /**
   * Release the allocated memory

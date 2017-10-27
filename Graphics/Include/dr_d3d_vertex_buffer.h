@@ -58,7 +58,8 @@ class DR_API_EXPORT D3DVertexBuffer : public VertexBuffer
   */
   void
   set(const DeviceContext& deviceContext,
-  UInt32 stride, UInt32 offset) const override;
+      UInt32 stride,
+      UInt32 offset) const override;
 
   /**
   * Update the buffer with new data
@@ -74,7 +75,7 @@ class DR_API_EXPORT D3DVertexBuffer : public VertexBuffer
   */
   void
   updateFromMemory(const DeviceContext& deviceContext,
-                   const char * dataBuffer,
+                   const char* dataBuffer,
                    size_t bufferSize) override;
 
   /**
