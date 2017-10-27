@@ -45,9 +45,6 @@
     <ClCompile Include="Source\dr_unitTest_radian.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="dr_unitTest_aabb.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\dr_unitTest_sphere.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -70,6 +67,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\dr_unitTest_plane.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_unitTest_aabb.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_unitTest_matrixNxM.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
