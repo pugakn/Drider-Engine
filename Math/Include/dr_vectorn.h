@@ -19,6 +19,7 @@ class VectorN
  public:
 
   /**
+  * TEST::dot
   * Default constructor
   */
   VectorN()

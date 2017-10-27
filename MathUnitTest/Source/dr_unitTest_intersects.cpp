@@ -166,7 +166,9 @@ TEST(Intersect, sphereContainsPoint) {
 }
 
 TEST (Intersect, closestPointSegmentSegment) {
-  EXPECT_TRUE(true);
+  EXPECT_TRUE(false);
 }
 
-
+TEST(Intersect, NoImplemented) {
+  EXPECT_TRUE(false);
+}

@@ -111,6 +111,11 @@ TEST(Vector3D, lengthSqr) {
 }
 
 TEST(Vector3D, normalize) {
+
+  driderSDK::Vector3D TEODIOMONTI(0, 1, 0);
+  TEODIOMONTI.normalize();
+  checkValuesVector(TEODIOMONTI, 0.0f, 1.0f, 0.0f);
+
   driderSDK::Vector3D testVector(1, 1, 1);
   testVector.normalize();
   checkValuesVector(testVector, 0.5773502692f, 0.5773502692f, 0.5773502692f);
