@@ -13,14 +13,14 @@ class DR_API_EXPORT D3DCommandBuffer : public CommandBuffer
 {
  public:
   /**
-  * TEST::
+  * TEST::constructor
   *
   * Default constructor.
   */
   D3DCommandBuffer();
 
   /**
-  * TEST::
+  * TEST::create
   *
   * Create a buffer shader resource
   *
@@ -41,7 +41,7 @@ class DR_API_EXPORT D3DCommandBuffer : public CommandBuffer
   //void set(const DeviceContext& deviceContext, DR_SHADER_TYPE_FLAG::E typeFlag) const override;
 
   /**
-  * TEST::
+  * TEST::updateFromMemory
   *
   * Update the buffer with new data
   *
@@ -60,6 +60,7 @@ class DR_API_EXPORT D3DCommandBuffer : public CommandBuffer
                    size_t bufferSize) override;
 
   /**
+  * TEST::release
   * Release the allocated memory
   */
   void

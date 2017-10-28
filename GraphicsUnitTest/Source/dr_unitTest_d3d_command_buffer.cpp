@@ -17,6 +17,13 @@ TEST(D3DCommandBuffer, create) {
   EXPECT_TRUE(true);
 }
 
+TEST(D3DCommandBuffer, updateFromMemory) {
+
+  //NOT IMPLEMENTED ON DX11
+  EXPECT_TRUE(true);
+}
+
+
 TEST(D3DCommandBuffer, release) {
   //NOT IMPLEMENTED ON DX11
   EXPECT_TRUE(true);
