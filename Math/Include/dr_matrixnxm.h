@@ -60,9 +60,6 @@ class MatrixNxM
   *
   * @return
   *	  A reference to the element at the [row] position.
-  *
-  * @throws out_of_range
-  *	  If the row is greater than number of rows in the matrix.
   */
   FORCEINLINE VectorN<_cols>&
   operator[](SizeT row)
@@ -81,9 +78,6 @@ class MatrixNxM
   *
   * @return
   *	  A const reference to the element at the [row] position.
-  *
-  * @throws out_of_range
-  *	  If the row is greater than number of rows in the matrix.
   */
   FORCEINLINE const VectorN<_cols>&
   operator[](SizeT row) const

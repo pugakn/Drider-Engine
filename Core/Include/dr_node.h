@@ -7,7 +7,9 @@
 
 namespace driderSDK {
 
-class Node  
+class Matrix4x4;
+
+class DR_API_EXPORT Node  
 {
 public:
   using SharedNode = std::shared_ptr<Node>;
@@ -15,9 +17,9 @@ public:
 
   Node(const TString& _name, WeakNode _parent = WeakNode());
   virtual ~Node(){}
-  virtual void update();
+  virtual void update(const Matrix4x4& parentTransform);
   void addChild(SharedNode child);
-  void setParent(WeakNode parent);
+  void setParent(SharedNode parent);
   void setName(const TString& name);
   void removeChild(const TString& childName);
   TString getName();

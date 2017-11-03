@@ -1,4 +1,5 @@
 #include "dr_node.h"
+#include <dr_matrix4x4.h>
 
 namespace driderSDK {
 Node::Node(const TString & _name, WeakNode _parent) 
@@ -7,9 +8,13 @@ Node::Node(const TString & _name, WeakNode _parent)
 
 }
 
-void Node::update() {
+void Node::update(const Matrix4x4& parentTransform) {
+
+  Matrix4x4 accumulatedTransform = m_transform.getTransformMatrix() *
+                                   parentTransform;
+
   for(auto& child : m_childs) {
-    child->update();
+    child->update(accumulatedTransform);
   }
 }
 
@@ -17,7 +22,7 @@ void Node::addChild(SharedNode child) {
   m_childs.push_back(child);
 }
 
-void Node::setParent(WeakNode parent) {
+void Node::setParent(SharedNode parent) {
   m_parent = parent;
 }
 
