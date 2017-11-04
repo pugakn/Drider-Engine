@@ -143,7 +143,7 @@ class DR_API_EXPORT Vector3D
   *
   * Normalize the vector.
   */
-  void
+  Vector3D&
   normalize();
 
   /**

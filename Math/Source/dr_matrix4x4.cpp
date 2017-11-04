@@ -8,47 +8,11 @@ Matrix4x4::Matrix4x4() {}
 
 Matrix4x4::Matrix4x4(Math::FORCE_INIT k) {
   if (Math::FORCE_INIT::kZero == k) {
-    vector0.x = 0;
-    vector0.y = 0;
-    vector0.z = 0;
-    vector0.w = 0;
-
-    vector1.x = 0;
-    vector1.y = 0;
-    vector1.z = 0;
-    vector1.w = 0;
-
-    vector2.x = 0;
-    vector2.y = 0;
-    vector2.z = 0;
-    vector2.w = 0;
-
-    vector3.x = 0;
-    vector3.y = 0;
-    vector3.z = 0;
-    vector3.w = 0;
+    *this = zerosMat4x4;
   }
   //kIdentity
   else {
-    vector0.x = 1;
-    vector0.y = 0;
-    vector0.z = 0;
-    vector0.w = 0;
-
-    vector1.x = 0;
-    vector1.y = 1;
-    vector1.z = 0;
-    vector1.w = 0;
-
-    vector2.x = 0;
-    vector2.y = 0;
-    vector2.z = 1;
-    vector2.w = 0;
-
-    vector3.x = 0;
-    vector3.y = 0;
-    vector3.z = 0;
-    vector3.w = 1;
+    *this = identityMat4x4;
   }
 }
 
@@ -106,7 +70,7 @@ Matrix4x4::determinant() const {
          vector0.w*vector1.z*vector2.x*vector3.y;
 }
 
-void
+Matrix4x4&
 Matrix4x4::cofactor() {
   Matrix4x4 temp;
   
@@ -160,23 +124,26 @@ Matrix4x4::cofactor() {
                    vector0.y*vector1.x*vector2.z - vector0.z*vector1.y*vector2.x;
 
   *this = temp;
+  return *this;
 }
 
-void
+Matrix4x4&
 Matrix4x4::adjugate() {
   cofactor();
   transpose();
+  return *this;
 }
 
-void
+Matrix4x4&
 Matrix4x4::inverse() {
   float deter = determinant();
   DR_ASSERT(deter != 0.0f);
   adjugate();
   *this = *this * Math::pow(deter, -1);
+  return *this;
 }
 
-void
+Matrix4x4&
 Matrix4x4::transpose() {
   Matrix4x4 temp;
 
@@ -200,29 +167,140 @@ Matrix4x4::transpose() {
   temp.vector2.w = vector3.z;
   temp.vector3.w = vector3.w;
   *this = temp;
+  return *this;
 }
 
-void
+Matrix4x4&
 Matrix4x4::identity() {
-  vector0.x = 1;
-  vector0.y = 0;
-  vector0.z = 0;
-  vector0.w = 0;
+  *this = identityMat4x4;
+  return *this;
+}
 
-  vector1.x = 0;
-  vector1.y = 1;
-  vector1.z = 0;
-  vector1.w = 0;
+Matrix4x4&
+Matrix4x4::Translation(const Vector3D & Pos)
+{
+  vector0.w = Pos.x;
+  vector1.w = Pos.y;
+  vector2.w = Pos.z;
+  return *this;
+}
 
-  vector2.x = 0;
-  vector2.y = 0;
-  vector2.z = 1;
-  vector2.w = 0;
+Matrix4x4&
+Matrix4x4::Move(const Vector3D & Move)
+{
+  vector0.w += Move.x;
+  vector1.w += Move.y;
+  vector2.w += Move.z;
+  return *this;
+}
 
-  vector3.x = 0;
-  vector3.y = 0;
-  vector3.z = 0;
-  vector3.w = 1;
+Matrix4x4&
+Matrix4x4::Scale(const Vector3D &Scale)
+{
+  Matrix4x4 temp(Math::FORCE_INIT::kIdentity);
+  temp.vector0.x = Scale.x;
+  temp.vector1.y = Scale.y;
+  temp.vector2.z = Scale.z;
+
+  *this = *this * temp;
+  return *this;
+}
+
+Matrix4x4&
+Matrix4x4::Rotation(const float tetax, const float tetay, const float tetaz)
+{
+  *this = *this * RotationY(tetay) * RotationX(tetax) * RotationZ(tetaz);
+  return *this;
+}
+
+Matrix4x4&
+Matrix4x4::RotationX(const float teta)
+{
+  float tempCos = Math::cos(teta);
+  float tempSin = Math::sin(teta);
+
+  Matrix4x4 temp(Math::FORCE_INIT::kIdentity);
+  temp[1][1] = tempCos;
+  temp[1][2] = -tempSin;
+  temp[2][1] = tempSin;
+  temp[2][2] = tempCos;
+
+  *this = *this * temp;
+  return *this;
+}
+
+Matrix4x4&
+Matrix4x4::RotationY(const float teta)
+{
+  float tempCos = Math::cos(teta);
+  float tempSin = Math::sin(teta);
+
+  Matrix4x4 temp(Math::FORCE_INIT::kIdentity);
+  temp[0][0] = tempCos;
+  temp[0][2] = tempSin;
+  temp[2][0] = -tempSin;
+  temp[2][2] = tempCos;
+
+  *this = *this * temp; 
+  return *this;
+}
+
+Matrix4x4&
+Matrix4x4::RotationZ(const float teta)
+{
+  float tempCos = Math::cos(teta);
+  float tempSin = Math::sin(teta);
+
+  Matrix4x4 temp(Math::FORCE_INIT::kIdentity);
+  temp[0][0] = tempCos;
+  temp[0][1] = -tempSin;
+  temp[1][0] = tempSin;
+  temp[1][1] = tempCos;
+
+  *this = *this * temp;
+  return *this;
+}
+
+Matrix4x4&
+Matrix4x4::LookAt(const Vector3D & Eye, const Vector3D & At, const Vector3D & Up)
+{
+  Vector3D XAxis, YAxis, ZAxis;
+  ZAxis = (Eye - At).normalize();
+  XAxis = Up.cross(ZAxis).normalize();
+  YAxis = ZAxis.cross(XAxis).normalize();
+
+  (*this)[0][0] = XAxis.x;
+  (*this)[0][1] = XAxis.y;
+  (*this)[0][2] = XAxis.z;
+  (*this)[0][3] = -(XAxis.dot(Eye));
+
+  (*this)[1][0] = YAxis.x;
+  (*this)[1][1] = YAxis.y;
+  (*this)[1][2] = YAxis.z;
+  (*this)[1][3] = -(YAxis.dot(Eye));
+
+  (*this)[2][0] = ZAxis.x;
+  (*this)[2][1] = ZAxis.y;
+  (*this)[2][2] = ZAxis.z;
+  (*this)[2][3] = -(ZAxis.dot(Eye));
+
+  (*this)[3][0] = 0.0f;
+  (*this)[3][1] = 0.0f;
+  (*this)[3][2] = 0.0f;
+  (*this)[3][3] = 1.0f;
+  return *this;
+}
+
+Matrix4x4&
+Matrix4x4::Orthogonal(float Width, float Height, float ZNear, float ZFar)
+{
+  (*this) = zerosMat4x4;
+  (*this)[0][0] = 2.0f / Width;
+  (*this)[1][1] = 2.0f / Height;
+  (*this)[2][2] = 1.0f / (ZNear - ZFar);
+  (*this)[2][3] = ZNear / (ZNear - ZFar);
+  (*this)[3][3] = 1.0f;
+  return *this;
 }
 
 float*
@@ -408,4 +486,14 @@ Matrix4x4::operator!=(const Matrix4x4& M)
   return !(*this == M);
 }
 
+Matrix4x4
+Matrix4x4::identityMat4x4(1, 0, 0, 0,
+                          0, 1, 0, 0,
+                          0, 0, 1, 0,
+                          0, 0, 0, 1);
+Matrix4x4
+Matrix4x4::zerosMat4x4(0, 0, 0, 0,
+                          0, 0, 0, 0,
+                          0, 0, 0, 0,
+                          0, 0, 0, 0);
 }

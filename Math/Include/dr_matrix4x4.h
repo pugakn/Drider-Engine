@@ -118,7 +118,7 @@ class DR_API_EXPORT Matrix4x4
   * @return
   *   cofactor of matrix.
   */
-  void
+  Matrix4x4&
   cofactor();
 
   /**
@@ -130,7 +130,7 @@ class DR_API_EXPORT Matrix4x4
   * @return
   *   adjugate.
   */
-  void
+  Matrix4x4&
   adjugate();
 
   /**
@@ -139,7 +139,7 @@ class DR_API_EXPORT Matrix4x4
   * Calculate inverse of matrix.
   * using det * adjugate
   */
-  void
+  Matrix4x4&
   inverse();
 
   /**
@@ -153,7 +153,7 @@ class DR_API_EXPORT Matrix4x4
   * | C1 | C2 | C3 | C4 |  =  | A3 | B3 | C3 | D3 |
   * | D1 | D2 | D3 | C4 |     | A4 | B4 | C4 | D4 |
   */
-  void
+  Matrix4x4&
   transpose();
 
   /**
@@ -163,8 +163,109 @@ class DR_API_EXPORT Matrix4x4
   *
   * Tranform matrix to identity
   */
-  void
+  Matrix4x4&
   identity();
+
+  /**
+  * TEST::Translation
+  *
+  * Translate
+  *
+  * Change position to vector
+  */
+  Matrix4x4&
+  Translation(const Vector3D &Pos);
+
+  /**
+  * TEST::Move
+  *
+  * Move
+  *
+  * Add position to vector
+  */
+  Matrix4x4&
+  Move(const Vector3D &Move);
+
+  /**
+  * TEST::Scale
+  *
+  * Scale
+  *
+  * Change scale of matrix
+  */
+  Matrix4x4&
+  Scale(const Vector3D &Scale);
+
+  /**
+  * TEST::Rotation
+  *
+  * Rotation
+  *
+  * Aplication rotation z, x, y
+  */
+  Matrix4x4&
+  Rotation(const float Yaw, const float Pitch, const float Roll);
+
+  /**
+  * TEST::RotationX
+  *
+  * Rotation
+  *
+  * Aplication rotation x
+  */
+  Matrix4x4&
+  RotationX(const float teta);
+
+  /**
+  * TEST::RotationY
+  *
+  * RotationY
+  *
+  * Aplication rotation Y
+  */
+  Matrix4x4&
+  RotationY(const float teta);
+
+  /**
+  * TEST::RotationZ
+  *
+  * RotationZ
+  *
+  * Aplication rotation Z
+  */
+  Matrix4x4&
+  RotationZ(const float teta);
+
+  /**
+  * TEST:
+  */
+  Matrix4x4&
+  LookAt(const Vector3D &Eye, const Vector3D &At, const Vector3D &Up);
+
+  /**
+  * TEST:
+  */
+  Matrix4x4&
+  Projection();
+
+  /**
+  * TEST:
+  */
+  Matrix4x4&
+  Orthographic();
+
+  /**
+  * TEST:
+  */
+  Matrix4x4&
+  Orthogonal(float Width, float Height, float ZNear, float ZFar);
+
+  /**
+  * TEST:
+  */
+  Matrix4x4&
+  Reflection();
+  
 
   /**
   * TEST::getPointer
@@ -280,6 +381,9 @@ class DR_API_EXPORT Matrix4x4
     };
     Vector4D data[4];
   };
+
+  static Matrix4x4 identityMat4x4;
+  static Matrix4x4 zerosMat4x4;
 };
 
 }
