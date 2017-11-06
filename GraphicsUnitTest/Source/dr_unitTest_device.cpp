@@ -2,7 +2,7 @@
 #include <dr_graphics_defines.h>
 #include <gtest\gtest.h>
 
-TEST(Device, destructor) {
+/*TEST(Device, destructor) {
   EXPECT_TRUE(true);
 }
 
@@ -48,4 +48,4 @@ TEST(Device, createTexture) {
 
 TEST(Device, createDepthStencilState) {
   EXPECT_TRUE(true);
-}
+}*/

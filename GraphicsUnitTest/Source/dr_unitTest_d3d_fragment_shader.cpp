@@ -3,7 +3,6 @@
 #include <gtest\gtest.h>
 #include <dr_d3d_device.h>
 #include <dr_d3d_device_context.h>
-#include <d3d11.h>
 #include <dxgi.h>
 
 TEST(D3DFragmentShader, set) {
@@ -25,7 +24,7 @@ TEST(D3DFragmentShader, release) {
   char *source = "cbuffer ConstantBuffer{float4x4 WVP;}struct VS_OUTPUT {float4 hposition : SV_POSITION;};float4 FS(VS_OUTPUT input) : SV_TARGET{return float4(1,0,1,1);}";
   bool b = obj.createFromMemory(device, source, GTEST_ARRAY_SIZE_(source));
   obj.release();
-  EXPECT_TRUE(!obj.APIShader.Get());
+  EXPECT_TRUE(!obj.APIShader);
 }
 
 TEST(D3DFragmentShader, createFromMemory) {

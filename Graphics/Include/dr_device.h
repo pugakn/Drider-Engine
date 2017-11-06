@@ -1,5 +1,6 @@
 #pragma once
 #include <dr_prerequisites.h>
+#include <vector>
 #include "dr_graphics_defines.h"
 
 namespace driderSDK {
@@ -252,8 +253,7 @@ class DR_API_EXPORT Device
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   virtual DR_GRAPHICS_ERROR::E
-  createInputLayout(const DrInputElementDesc* inputDescArray,
-                    UInt32 arraySize,
+  createInputLayout(const std::vector<DrInputElementDesc>& inputDescArray,
                     InputLayout& layout) = 0;
 
   /**

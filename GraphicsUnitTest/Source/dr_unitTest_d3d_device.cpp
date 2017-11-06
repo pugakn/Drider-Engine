@@ -1,5 +1,4 @@
 #pragma once
-#include <dr_device.h>
 #include <gtest\gtest.h>
 #include <dr_d3d_device.h>
 #include <dr_d3d_vertex_buffer.h>
@@ -15,8 +14,6 @@
 #include <dr_d3d_depth_stencil_state.h>
 #include <dr_d3d_input_layout.h>
 #include <dr_d3d_swap_chain.h>
-#include <d3d11.h>
-#include <dxgi.h>
 
 
 TEST(Device, createVertexBuffer) {
@@ -194,14 +191,16 @@ TEST(Device, createInputLayout) {
 	driderSDK::D3DDeviceContext context;
 	device.createDeviceAndDeviceContext(context);
 	driderSDK::D3DInputLayout layout;
-	driderSDK::DrInputElementDesc desc;
-	desc.format = driderSDK::DR_FORMAT::kDrFormat_R32G32B32A32_FLOAT;
-	desc.offset = 0;
-	desc.inputSlot = 0;
-	desc.semanticIndex = 0;
-	desc.semanticName = "POSITION";
-	layout.create(device, &desc, 1);
-	EXPECT_TRUE(!device.createInputLayout(&desc, 1, layout));
+  std::vector<driderSDK::DrInputElementDesc> desc;
+  driderSDK::DrInputElementDesc n;
+  n.format = driderSDK::DR_FORMAT::kDrFormat_R32G32B32A32_FLOAT;
+  n.offset = 0;
+  n.inputSlot = 0;
+  n.semanticIndex = 0;
+  n.semanticName = "POSITION";
+  desc.push_back(n);
+	layout.create(device, desc);
+	EXPECT_TRUE(!device.createInputLayout(desc, layout));
 }
 
 TEST(Device, createSwapChain) {

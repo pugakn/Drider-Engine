@@ -26,7 +26,7 @@ TEST(D3DVertexBuffer, release) {
   char init[10];
   vb.create(device, desc, init);
   vb.release();
-  EXPECT_TRUE(!vb.VB.Get());
+  EXPECT_TRUE(!vb.VB);
 }
 
 TEST(D3DVertexBuffer, create) {

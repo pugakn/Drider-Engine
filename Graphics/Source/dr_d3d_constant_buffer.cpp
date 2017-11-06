@@ -13,6 +13,7 @@ DR_GRAPHICS_ERROR::E
 D3DConstantBuffer::create(const Device& device,
                           const DrBufferDesc& desc,
                           char* initialData) {
+  descriptor = desc;
   D3D11_BUFFER_DESC bdesc = { 0 };
 
   switch (desc.usage) {

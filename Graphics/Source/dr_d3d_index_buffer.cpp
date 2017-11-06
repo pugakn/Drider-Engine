@@ -13,6 +13,7 @@ DR_GRAPHICS_ERROR::E
 D3DIndexBuffer::create(const Device& device,
                        const DrBufferDesc& desc,
                        char* initialData) {
+  descriptor = desc;
   D3D11_BUFFER_DESC bdesc = { 0 };
 
   switch (desc.usage) {
@@ -46,7 +47,7 @@ void
 D3DIndexBuffer::set(const DeviceContext& deviceContext, UInt32 offset) const {
   static_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext->
-      IASetIndexBuffer(IB.Get(), DXGI_FORMAT_R16_UINT, offset);
+      IASetIndexBuffer(IB, DXGI_FORMAT_R16_UINT, offset);
 }
 
 void

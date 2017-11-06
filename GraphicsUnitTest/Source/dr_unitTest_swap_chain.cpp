@@ -1,12 +1,8 @@
 #pragma once
 #include <dr_graphics_defines.h>
-#include <dr_d3d_swap_chain.h>
-#include <dr_d3d_device.h>
-#include <dr_d3d_device_context.h>
-#include <dr_d3d_texture.h>
 #include <gtest\gtest.h>
 
-TEST(SwapChain, destructor) {
+/*TEST(SwapChain, destructor) {
   EXPECT_TRUE(true);
 }
 
@@ -86,4 +82,4 @@ TEST(SwapChain, swapBuffers) {
 	swapchain.create(device, desc);
 	swapchain.swapBuffers();
   EXPECT_TRUE(true);
-}
+}*/

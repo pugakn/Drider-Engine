@@ -47,6 +47,8 @@ class DR_API_EXPORT RasterizerState
   */
   virtual void
   release() = 0;
+
+  DrRasterizerDesc descriptor;
 };
 
 }

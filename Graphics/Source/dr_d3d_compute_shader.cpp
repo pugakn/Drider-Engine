@@ -1,6 +1,5 @@
 #include "dr_d3d_compute_shader.h"
 #include <D3Dcompiler.h>
-#include <d3d11.h>
 #include <dxgi.h>
 #include "dr_d3d_device.h"
 #include "dr_d3d_device_context.h"
@@ -11,21 +10,19 @@ void
 D3DComputeShader::set(const DeviceContext& deviceContext) const {
   static_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext->
-      CSSetShader(APIShader.Get(), 0, 0);
+      CSSetShader(APIShader, 0, 0);
 }
 
 void
 D3DComputeShader::release() {
-  APIShader.Reset();
+  APIShader->Release();
 }
 
 DR_GRAPHICS_ERROR::E
 D3DComputeShader::createFromMemory(const Device& device,
                                    const char* buffer,
                                    size_t bufferSize) {
-  Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
-  Microsoft::WRL::ComPtr<ID3DBlob> shader_blob;
-
+  errorBlob = nullptr;
   if (D3DCompile(buffer,
                  bufferSize,
                  0,

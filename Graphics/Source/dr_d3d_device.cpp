@@ -27,10 +27,10 @@ DR_GRAPHICS_ERROR::E D3DDevice::createDeviceAndDeviceContext(DeviceContext& devi
                         0,
                         0,
                         D3D11_SDK_VERSION,
-                        D3D11Device.GetAddressOf(),
+                        &D3D11Device,
                         0,
-                        static_cast<D3DDeviceContext*>(&deviceContext)->
-                          D3D11DeviceContext.GetAddressOf()) != S_OK) {
+                        &static_cast<D3DDeviceContext*>(&deviceContext)->
+                          D3D11DeviceContext) != S_OK) {
     return DR_GRAPHICS_ERROR::CREATE_DEVICE_ERROR;
   }
 
@@ -39,7 +39,7 @@ DR_GRAPHICS_ERROR::E D3DDevice::createDeviceAndDeviceContext(DeviceContext& devi
 
 void
 D3DDevice::release() {
-  D3D11Device.Reset();
+  D3D11Device->Release();
 }
 
 DR_GRAPHICS_ERROR::E
@@ -113,10 +113,9 @@ D3DDevice::createDepthStencilState(const DrDepthStencilDesc& desc,
 }
 
 DR_GRAPHICS_ERROR::E
-D3DDevice::createInputLayout(const DrInputElementDesc* inputDescArray,
-                             UInt32 arraySize,
+D3DDevice::createInputLayout(const std::vector<DrInputElementDesc>& inputDescArray,
                              InputLayout& layout) {
-  return layout.create(*this, inputDescArray, arraySize);
+  return layout.create(*this, inputDescArray);
 }
 
 DR_GRAPHICS_ERROR::E

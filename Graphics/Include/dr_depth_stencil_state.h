@@ -43,6 +43,8 @@ class DR_API_EXPORT DepthStencilState {
   */
   virtual void
   release() = 0;
+
+  DrDepthStencilDesc descriptor;
 };
 
 }

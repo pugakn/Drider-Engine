@@ -12,6 +12,7 @@ DR_GRAPHICS_ERROR::E
 D3DCommandBuffer::create(const Device& device,
                          const DrBufferDesc& desc,
                          char* initialData) {
+  descriptor = desc;
   return DR_GRAPHICS_ERROR::ERROR_NOT_IMPLEMENTED;
 }
 

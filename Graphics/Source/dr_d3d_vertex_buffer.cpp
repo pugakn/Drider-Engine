@@ -13,6 +13,7 @@ DR_GRAPHICS_ERROR::E
 D3DVertexBuffer::create(const Device& device,
                         const DrBufferDesc& desc,
                         char* initialData) {
+  descriptor = desc;
   D3D11_BUFFER_DESC bdesc = { 0 };
   switch (desc.usage) {
   case DR_BUFFER_USAGE::kDefault:
@@ -48,7 +49,7 @@ D3DVertexBuffer::set(const DeviceContext& deviceContext,
     D3D11DeviceContext->
       IASetVertexBuffers(0, 
                          1, 
-                         VB.GetAddressOf(), 
+                         &VB, 
                          &stride, 
                          &offset);
 }
@@ -59,12 +60,12 @@ D3DVertexBuffer::updateFromMemory(const DeviceContext& deviceContext,
                                   size_t bufferSize) {
   static_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext->
-      UpdateSubresource(VB.Get(), 0, 0, dataBuffer, 0, 0);
+      UpdateSubresource(VB, 0, 0, dataBuffer, 0, 0);
 }
 
 void
 D3DVertexBuffer::release() {
-  VB.Reset();
+  VB->Release();
 }
 
 }

@@ -48,6 +48,8 @@ class DR_API_EXPORT SamplerState {
   */
   virtual void
   release() = 0;
+
+  DrSampleDesc descriptor;
 };
 
 }

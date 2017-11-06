@@ -9,6 +9,7 @@ namespace driderSDK {
 
 DR_GRAPHICS_ERROR::E D3DSwapChain::create(const Device& device,
                                           const DrSwapChainDesc& desc) {
+  descriptor = desc;
   DXGI_SWAP_CHAIN_DESC apiDesc;
   apiDesc.BufferCount = desc.bufferCount;
   apiDesc.Flags = 0;
@@ -26,9 +27,9 @@ DR_GRAPHICS_ERROR::E D3DSwapChain::create(const Device& device,
   if (CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)(&factory)) != S_OK) {
     return DR_GRAPHICS_ERROR::CREATE_FACTORY_ERROR;
   }
-  if (factory->CreateSwapChain(static_cast<const D3DDevice*>(&device)->D3D11Device.Get(),
+  if (factory->CreateSwapChain(static_cast<const D3DDevice*>(&device)->D3D11Device,
                                &apiDesc,
-                               APISwapchain.GetAddressOf()) != S_OK) {
+                               &APISwapchain) != S_OK) {
     return DR_GRAPHICS_ERROR::CREATE_SWAP_CHAIN_ERROR;
   }
   factory->Release();
@@ -40,13 +41,13 @@ DR_GRAPHICS_ERROR::E
 D3DSwapChain::getBackBuffer(Texture& texture) {
   if (APISwapchain->GetBuffer(0,
                               __uuidof(ID3D11Texture2D),
-                              &static_cast<D3DTexture*>(&texture)->APITexture) != S_OK)
+                               (void**)&static_cast<D3DTexture*>(&texture)->APITexture) != S_OK)
   return DR_GRAPHICS_ERROR::ERROR_NONE;
 }
 
 void
 D3DSwapChain::release() {
-  APISwapchain.Reset();
+  APISwapchain->Release();
 }
 
 void

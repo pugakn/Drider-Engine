@@ -8,6 +8,7 @@ namespace driderSDK {
 DR_GRAPHICS_ERROR::E
 D3DRasterizerState::create(const Device& device,const DrRasterizerDesc & desc)
 {
+  descriptor = desc;
   D3D11_RASTERIZER_DESC rasterizerState;
   rasterizerState.FillMode = static_cast<D3D11_FILL_MODE>(desc.fillMode);
   rasterizerState.CullMode = static_cast<D3D11_CULL_MODE>(desc.cullMode);
@@ -22,7 +23,7 @@ D3DRasterizerState::create(const Device& device,const DrRasterizerDesc & desc)
 
   HRESULT result = static_cast<const D3DDevice*>(&device)->
                      D3D11Device->
-                       CreateRasterizerState(&rasterizerState, APIState.GetAddressOf());
+                       CreateRasterizerState(&rasterizerState, &APIState);
   if (FAILED(result)) {
     return DR_GRAPHICS_ERROR::CREATE_RASTERIZER_STATE_ERROR;
   }
@@ -34,12 +35,12 @@ void
 D3DRasterizerState::set(const DeviceContext& deviceContext) const {
   static_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext->
-      RSSetState(APIState.Get());
+      RSSetState(APIState);
 }
 
 void
 D3DRasterizerState::release() {
-  APIState.Reset();
+  APIState->Release();
 }
 
 }

@@ -62,6 +62,8 @@ class DR_API_EXPORT Buffer
   */
   virtual void
   release() = 0;
+
+  DrBufferDesc descriptor;
 };
 
 }

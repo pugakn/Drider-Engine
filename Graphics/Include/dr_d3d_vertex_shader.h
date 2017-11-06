@@ -1,7 +1,6 @@
 #pragma once
 #include "dr_vertex_shader.h"
-
-struct ID3D11VertexShader;
+#include <d3d11.h>
 
 namespace driderSDK {
 
@@ -49,6 +48,8 @@ class DR_API_EXPORT D3DVertexShader : public VertexShader
   createFromMemory(const Device& device, const char* buffer, size_t bufferSize) override;
 
   ID3D11VertexShader* APIShader;
+  ID3DBlob* errorBlob;
+  ID3DBlob* shader_blob;
 };
 
 }

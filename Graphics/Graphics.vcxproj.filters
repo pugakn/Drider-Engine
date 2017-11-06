@@ -51,9 +51,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Include\sr_texture_shader.h">
-      <Filter>Archivos de encabezado\Base\Shaders</Filter>
-    </ClInclude>
     <ClInclude Include="Include\dr_vertex_shader.h">
       <Filter>Archivos de encabezado\Base\Shaders</Filter>
     </ClInclude>

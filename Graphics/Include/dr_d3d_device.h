@@ -234,8 +234,7 @@ public:
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   DR_GRAPHICS_ERROR::E
-  createInputLayout(const DrInputElementDesc* inputDescArray,
-                    UInt32 arraySize,
+  createInputLayout(const std::vector<DrInputElementDesc>& inputDescArray,
                     InputLayout& layout) override;
 
   /**

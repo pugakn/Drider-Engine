@@ -9,21 +9,19 @@ namespace driderSDK {
 
 void
 D3DFragmentShader::set(const DeviceContext & deviceContext) const {
-  static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->PSSetShader(APIShader.Get(), 0, 0);
+  static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->PSSetShader(APIShader, 0, 0);
 }
 
 void
 D3DFragmentShader::release() {
-  APIShader.Reset();
+  APIShader->Release();
 }
 
 DR_GRAPHICS_ERROR::E
 D3DFragmentShader::createFromMemory(const Device& device,
                                     const char* buffer,
                                     size_t bufferSize) {
-  Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
-  Microsoft::WRL::ComPtr<ID3DBlob> shader_blob;
-
+  errorBlob = nullptr;
   if (D3DCompile(buffer,
                  bufferSize,
                  0,

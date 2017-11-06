@@ -35,5 +35,5 @@ TEST(D3DDepthStencil, release) {
   desc.Format = driderSDK::DR_FORMAT::kDrFormat_R8G8B8A8_UNORM;
   desc.CPUAccessFlags = 0;
   obj.create(device, desc);
-  EXPECT_TRUE(!obj.APIDepthView.Get());
+  EXPECT_TRUE(!obj.APIDepthView);
 }

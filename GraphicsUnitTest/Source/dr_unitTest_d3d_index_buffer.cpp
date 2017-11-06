@@ -51,5 +51,5 @@ TEST(D3DIndexBuffer, release) {
   char init[10];
   vb.create(device, desc, init);
   vb.release();
-  EXPECT_TRUE(!vb.IB.Get());
+  EXPECT_TRUE(!vb.IB);
 }

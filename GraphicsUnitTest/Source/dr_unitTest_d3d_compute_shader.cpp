@@ -3,7 +3,6 @@
 #include <gtest\gtest.h>
 #include <dr_d3d_device.h>
 #include <dr_d3d_device_context.h>
-#include <d3d11.h>
 #include <dxgi.h>
 
 TEST(D3DComputeShader, set) {
@@ -24,7 +23,7 @@ TEST(D3DComputeShader, release) {
   device.createDeviceAndDeviceContext(context);
   char *source = "cbuffer ConstantBuffer{float4x4 WVP;}struct VS_INPUT {float4 position : POSITION;};struct VS_OUTPUT {float4 hposition : SV_POSITION;};VS_OUTPUT VS(VS_INPUT input) {VS_OUTPUT OUT;OUT.hposition = mul(WVP, input.position);return OUT;}";
   obj.createFromMemory(device, source, GTEST_ARRAY_SIZE_(source));
-  EXPECT_TRUE(!obj.APIShader.Get());
+  EXPECT_TRUE(!obj.APIShader);
 }
 
 TEST(D3DComputeShader, createFromMemory) {

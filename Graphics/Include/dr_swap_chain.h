@@ -54,6 +54,8 @@ class DR_API_EXPORT SwapChain {
   */
   virtual void
   swapBuffers() = 0;
+
+  DrSwapChainDesc descriptor;
 };
 
 }

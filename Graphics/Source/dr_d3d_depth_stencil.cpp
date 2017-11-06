@@ -25,7 +25,7 @@ DR_GRAPHICS_ERROR::E D3DDepthStencil::create(const Device& device,
   if (static_cast<const D3DDevice*>(&device)->
         D3D11Device->
           CreateDepthStencilView(static_cast<D3DTexture*>(depthTexture.get())->
-                                   APITexture.Get(),
+                                   APITexture,
                                  &dDesc, &APIDepthView) != S_OK) {
     return DR_GRAPHICS_ERROR::CREATE_RESOURCE_VIEW_ERROR;
   }
@@ -35,7 +35,7 @@ DR_GRAPHICS_ERROR::E D3DDepthStencil::create(const Device& device,
 void
 D3DDepthStencil::release() {
   depthTexture.release();
-  APIDepthView.Reset();
+  APIDepthView->Release();
 }
 
 }

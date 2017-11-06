@@ -1,7 +1,6 @@
 #pragma once
 #include "dr_domain_shader.h"
-
-class ID3D11DomainShader;
+#include <d3d11.h>
 
 namespace driderSDK {
 
@@ -49,6 +48,8 @@ class DR_API_EXPORT D3DDomainShader : public DomainShader
   createFromMemory(const Device& device, const char* buffer, size_t bufferSize) override;
 
   ID3D11DomainShader* APIShader;
+  ID3DBlob* errorBlob;
+  ID3DBlob* shader_blob;
 };
 
 }

@@ -1,7 +1,6 @@
 #pragma once
 #include "dr_compute_shader.h"
-
-class ID3D11ComputeShader;
+#include <d3d11.h>
 
 namespace driderSDK {
 
@@ -49,6 +48,8 @@ class DR_API_EXPORT D3DComputeShader : public ComputeShader
   createFromMemory(const Device& device, const char* buffer, size_t bufferSize) override;
 
   ID3D11ComputeShader* APIShader;
+  ID3DBlob* errorBlob;
+  ID3DBlob* shader_blob;
 };
 
 }

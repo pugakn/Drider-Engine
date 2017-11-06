@@ -1,7 +1,6 @@
 #pragma once
 #include "dr_hull_shader.h"
-
-class ID3D11HullShader;
+#include <d3d11.h>
 
 namespace driderSDK {
 
@@ -49,6 +48,8 @@ class DR_API_EXPORT D3DHullShader : public HullShader
   createFromMemory(const Device& device, const char* buffer, size_t bufferSize) override;
 
   ID3D11HullShader* APIShader;
+  ID3DBlob* errorBlob;
+  ID3DBlob* shader_blob;
 };
 
 }

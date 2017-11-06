@@ -11,20 +11,19 @@ void
 D3DGeometryShader::set(const DeviceContext& deviceContext) const {
   static_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext->
-      GSSetShader(APIShader.Get(), 0, 0);
+      GSSetShader(APIShader, 0, 0);
 }
 
 void
 D3DGeometryShader::release() {
-  APIShader.Reset();
+  APIShader->Release();
 }
 
 DR_GRAPHICS_ERROR::E 
 D3DGeometryShader::createFromMemory(const Device& device,
                                     const char * buffer,
                                     size_t bufferSize) {
-  Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
-  Microsoft::WRL::ComPtr<ID3DBlob> shader_blob;
+  errorBlob = nullptr;
   if (D3DCompile(buffer,
                  bufferSize,
                  0,

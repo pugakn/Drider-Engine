@@ -1,11 +1,11 @@
 #pragma once
 #include <dr_prerequisites.h>
+#include <vector>
 #include "dr_graphics_defines.h"
-
 namespace driderSDK {
 
 class Device;
-class DeviceContext;
+class DeviceContext; 
 
 class DR_API_EXPORT InputLayout
 {
@@ -33,8 +33,7 @@ class DR_API_EXPORT InputLayout
   */
   virtual DR_GRAPHICS_ERROR::E
   create(const Device & device,
-         const DrInputElementDesc* inputDescArray,
-         UInt32 arraySize) = 0;
+         const std::vector<DrInputElementDesc>& inputDescArray) = 0;
 
   /**
   * Set the input layout
@@ -51,6 +50,8 @@ class DR_API_EXPORT InputLayout
   */
   virtual void
   release() = 0;
+
+  std::vector<DrInputElementDesc> descriptorVec;
 };
 
 }

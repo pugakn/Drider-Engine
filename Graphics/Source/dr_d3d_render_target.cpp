@@ -27,17 +27,17 @@ D3DRenderTarget::create(const Device& device,
       return DRErr;
     }
 
-    Microsoft::WRL::ComPtr<ID3D11RenderTargetView> RTV;
+    ID3D11RenderTargetView* RTV;
     if (static_cast<const D3DDevice*>(&device)->
           D3D11Device->
             CreateRenderTargetView(static_cast<D3DTexture*>(colorTextures.back())->
-                                     APITexture.Get(),
+                                     APITexture,
                                    NULL,
                                    &RTV) != S_OK) {
       return DR_GRAPHICS_ERROR::CREATE_RESOURCE_VIEW_ERROR;
     }
 
-    APIColorView.push_back(RTV);
+    APIColorViews.push_back(RTV);
   }
   return DR_GRAPHICS_ERROR::ERROR_NONE;
 }
@@ -48,16 +48,16 @@ D3DRenderTarget::set(const DeviceContext& deviceContext,
   static_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext->
       OMSetRenderTargets(numColorTextures,
-                         APIColorView.back().GetAddressOf(),
+                         &APIColorViews.back(),
                          static_cast<const D3DDepthStencil*>(&depthStencil)->
-                           APIDepthView.Get());
+                           APIDepthView);
 }
 
 void
 D3DRenderTarget::release() {
   for (size_t i = 0; i < numColorTextures; ++i) {
     delete colorTextures[i];
-    APIColorView[i].Reset();
+    APIColorViews[i]->Release();
   }
 }
 
