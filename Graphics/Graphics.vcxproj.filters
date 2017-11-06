@@ -90,9 +90,6 @@
     <ClInclude Include="Include\dr_geometry_shader.h">
       <Filter>Archivos de encabezado\Base\Shaders</Filter>
     </ClInclude>
-    <ClInclude Include="Source\dr_d3d_constant_buffer.h">
-      <Filter>Archivos de encabezado\DirectX11\Buffers</Filter>
-    </ClInclude>
     <ClInclude Include="Include\dr_d3d_index_buffer.h">
       <Filter>Archivos de encabezado\DirectX11\Buffers</Filter>
     </ClInclude>
@@ -194,6 +191,9 @@
     </ClInclude>
     <ClInclude Include="Include\dr_vertex_buffer.h">
       <Filter>Archivos de encabezado\Base\Buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_d3d_constant_buffer.h">
+      <Filter>Archivos de encabezado\DirectX11\Buffers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

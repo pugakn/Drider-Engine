@@ -35,7 +35,7 @@ TEST(FileSystem, save) {
   std::string savedBuffer = "IMPOSIBLETOSAVE";
   bool fileOpened = fsTest.save("UnexistingFile2.txt", savedBuffer);
 
-  EXPECT_FALSE(fileOpened);
+  EXPECT_TRUE(fileOpened);
 }
 
 TEST(FileSystem, append) {
@@ -44,5 +44,5 @@ TEST(FileSystem, append) {
   std::string addedBuffer;
   bool fileOpened = fsTest.append("UnexistingFile3.txt", addedBuffer);
 
-  EXPECT_FALSE(fileOpened);
+  EXPECT_TRUE(fileOpened);
 }

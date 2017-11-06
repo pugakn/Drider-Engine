@@ -1,5 +1,7 @@
 #pragma once
-#include "dr_vertex_buffer.h"
+#include "dr_constant_buffer.h"
+#include <wrl.h>
+#include <wrl/client.h>
 
 class ID3D11Buffer;
 
@@ -8,18 +10,18 @@ namespace driderSDK {
 class DeviceContext;
 
 /**
-* Class for vertex buffer shader resource
+* Class for constant buffer shader resource
 *
 * Sample usage:
-*	VertexBuffer* = new D3DVertexBuffer;
+*	ConstantBuffer* = new D3DConstantBuffer;
 */
-class DR_API_EXPORT D3DVertexBuffer : public VertexBuffer
+class DR_API_EXPORT D3DConstantBuffer : public ConstantBuffer
 {
  public:
   /**
-  * Default constructor.
+  * Class default constructor.
   */
-  D3DVertexBuffer();
+  D3DConstantBuffer();
 
   /**
   * Create a buffer shader resource
@@ -42,21 +44,18 @@ class DR_API_EXPORT D3DVertexBuffer : public VertexBuffer
          char* initialData) override;
 
   /**
-  * Set the vertex buffer to the stage
+  * Set the constant buffer to all shaders specifyed on typeFlag
   *
   * @param deviceContext
   *   The device context to set the resource
   *
-  * @param stride
-  *   The size of one vertex data in bytes
-  *
-  * @param offset
-  *   The offset of the first element
+  * @param typeFlag
+  *   Bit flag that specifyes the shaders to set the constant buffer
   *
   */
   void
   set(const DeviceContext& deviceContext,
-  UInt32 stride, UInt32 offset) const override;
+      DR_SHADER_TYPE_FLAG::E typeFlag) const override;
 
   /**
   * Update the buffer with new data
@@ -81,7 +80,7 @@ class DR_API_EXPORT D3DVertexBuffer : public VertexBuffer
   void
   release() override;
 
-  ID3D11Buffer* VB;
+  Microsoft::WRL::ComPtr<ID3D11Buffer> CB;
 };
 
 }

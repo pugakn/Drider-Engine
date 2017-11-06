@@ -50,7 +50,7 @@ class DR_API_EXPORT Vector2DI
   Vector2DI(const Vector2DI& V);
 
   /**
-  * TEST::constructorFor2Floats
+  * TEST::constructorFor2Int32
   *
   * Initialize constructor with values.
   *

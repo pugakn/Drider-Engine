@@ -23,7 +23,7 @@ class DR_API_EXPORT Vector2D
   Vector2D();
 
   /**
-  * TEST:forceInit
+  * TEST::forceInit
   *
   * Default constructor.
   * 
@@ -42,7 +42,7 @@ class DR_API_EXPORT Vector2D
   Vector2D(Vector2D&& V) = default;
 
   /**
-  * TEST::constructForVector2DI
+  * TEST::copyConstructor
   *
   * Copy constructor.
   *
@@ -50,7 +50,7 @@ class DR_API_EXPORT Vector2D
   Vector2D(const Vector2D& V);
 
   /**
-  * TEST::constructorFor2Int32
+  * TEST::constructorFor2Floats
   *
   * Initialize constructor with values.
   *
@@ -71,7 +71,7 @@ class DR_API_EXPORT Vector2D
   ~Vector2D();
 
   /**
-  * TEST:: dot
+  * TEST::dot
   *
   * Computes the dot product between this vector and the vector parameter.
   * This operatios is commutative.

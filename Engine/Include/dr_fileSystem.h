@@ -33,6 +33,8 @@ class DR_API_EXPORT FileSystem
   ~FileSystem();
   
   /**
+  * TEST::load
+  *
   * The Load operation determines how many bytes are in the file and returns the
   * amount in riSize.
   *
@@ -53,7 +55,8 @@ class DR_API_EXPORT FileSystem
   static bool
   load (const std::string filename, std::string& bufferOut);
 
-  /*
+  /**
+  * TEST::save
   * The Save operation writes the input buffer to disk.
   *
   * Param filename
@@ -71,7 +74,8 @@ class DR_API_EXPORT FileSystem
   static bool
   save (const std::string filename, const std::string& bufferToSave);
 
-  /*
+  /**
+  * TEST::append
   * The Append operation is identical in structure to Save, except that the file
   * is opened for appending.
   * The input buffer is written at the end of an already existing file. If the
