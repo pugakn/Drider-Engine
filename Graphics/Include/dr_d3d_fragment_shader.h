@@ -1,7 +1,5 @@
 #pragma once
 #include "dr_fragment_shader.h"
-#include <wrl.h>
-#include <wrl/client.h>
 
 class ID3D11PixelShader;
 
@@ -19,7 +17,7 @@ class DR_API_EXPORT D3DFragmentShader : public FragmentShader
   DR_GRAPHICS_ERROR::E
   createFromMemory(const Device& device, const char* buffer, size_t bufferSize) override;
 
-  Microsoft::WRL::ComPtr<ID3D11PixelShader> APIShader;
+  ID3D11PixelShader* APIShader;
 };
 
 }

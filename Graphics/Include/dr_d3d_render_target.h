@@ -1,7 +1,5 @@
 #pragma once
 #include "dr_render_target.h"
-#include <wrl.h>
-#include <wrl/client.h>
 #include <vector>
 class ID3D11RenderTargetView;
 
@@ -20,7 +18,7 @@ class DR_API_EXPORT D3DRenderTarget : public RenderTarget {
   void
   release() override;
 
-  std::vector<Microsoft::WRL::ComPtr<ID3D11RenderTargetView>> APIColorViews; 
+  std::vector<ID3D11RenderTargetView*> APIColorViews; 
 };
 
 }

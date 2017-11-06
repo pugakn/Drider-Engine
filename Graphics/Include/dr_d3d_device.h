@@ -1,8 +1,6 @@
 #pragma once
 #include <dr_prerequisites.h>
 #include "dr_device.h"
-#include <wrl.h>
-#include <wrl/client.h>
 
 class ID3D11Device;
 
@@ -76,7 +74,7 @@ public:
   createSwapChain(const DrSwapChainDesc& desc,
                   SwapChain& swapChain) override;
 
-  Microsoft::WRL::ComPtr<ID3D11Device> D3D11Device;
+  ID3D11Device* D3D11Device;
 };
 
 }

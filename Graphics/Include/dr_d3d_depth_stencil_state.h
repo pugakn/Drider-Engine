@@ -1,7 +1,5 @@
 #pragma once
 #include "dr_depth_stencil_state.h"
-#include <wrl.h>
-#include <wrl/client.h>
 
 class Shader; 
 class ID3D11DepthStencilState;
@@ -19,7 +17,7 @@ class D3DDepthStencilState : DepthStencilState {
   void
   release() override;
 
-  Microsoft::WRL::ComPtr<ID3D11DepthStencilState> APIState;
+  ID3D11DepthStencilState* APIState;
 };
 
 }

@@ -28,7 +28,7 @@ class DR_API_EXPORT D3DIndexBuffer : public IndexBuffer
   void
   release() override;
 
-  Microsoft::WRL::ComPtr<ID3D11Buffer> IB;
+  ID3D11Buffer* IB;
 };
 
 }

@@ -1,6 +1,4 @@
 #pragma once
-#include <wrl.h>
-#include <wrl/client.h>
 #include "dr_device_context.h"
 
 class ID3D11DeviceContext;
@@ -66,7 +64,7 @@ class DR_API_EXPORT D3DDeviceContext : public DeviceContext {
        UInt32 startIndexLocation,
        UInt32 startVertexLocation) const override;
 
-  Microsoft::WRL::ComPtr<ID3D11DeviceContext> D3D11DeviceContext;
+  ID3D11DeviceContext* D3D11DeviceContext;
 };
 
 }

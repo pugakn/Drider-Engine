@@ -1,7 +1,5 @@
 #pragma once
 #include "dr_sample_state.h"
-#include <wrl.h>
-#include <wrl/client.h>
 
 struct ID3D11SamplerState;
 
@@ -19,7 +17,7 @@ class DR_API_EXPORT D3D11SamplerState : public SamplerState
   void
   release() override;
 
-  Microsoft::WRL::ComPtr<ID3D11SamplerState> APIState;
+  ID3D11SamplerState* APIState;
 };
 
 }

@@ -1,7 +1,5 @@
 #pragma once
 #include "dr_input_layout.h"
-#include <wrl.h>
-#include <wrl/client.h>
 
 struct ID3D11InputLayout;
 
@@ -21,7 +19,7 @@ class DR_API_EXPORT D3DInputLayout : public InputLayout
   void
   release() override;
 
-  Microsoft::WRL::ComPtr<ID3D11InputLayout> APILayout;
+  ID3D11InputLayout* APILayout;
 };
 
 }

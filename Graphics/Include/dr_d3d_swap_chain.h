@@ -1,7 +1,5 @@
 #pragma once
 #include "dr_swap_chain.h"
-#include <wrl.h>
-#include <wrl/client.h>
 
 struct IDXGISwapChain;
 struct ID3D11RenderTargetView;
@@ -22,8 +20,8 @@ class D3DSwapChain : public SwapChain {
   void
   swapBuffers() override;
 
-  Microsoft::WRL::ComPtr<IDXGISwapChain> APISwapchain;
-  Microsoft::WRL::ComPtr<ID3D11RenderTargetView> APIRenderTargetView;  // View into the back buffer
+  IDXGISwapChain* APISwapchain;
+  ID3D11RenderTargetView* APIRenderTargetView;  // View into the back buffer
 };
 
 }

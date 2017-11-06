@@ -1,7 +1,5 @@
 #pragma once
 #include "dr_vertex_shader.h"
-#include <wrl.h>
-#include <wrl/client.h>
 
 struct ID3D11VertexShader;
 
@@ -19,7 +17,7 @@ class DR_API_EXPORT D3DVertexShader : public VertexShader
   DR_GRAPHICS_ERROR::E
   createFromMemory(const Device& device, const char* buffer, size_t bufferSize) override;
 
-  Microsoft::WRL::ComPtr<ID3D11VertexShader> APIShader;
+  ID3D11VertexShader* APIShader;
 };
 
 }

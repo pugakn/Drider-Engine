@@ -1,7 +1,5 @@
 #pragma once
 #include "dr_teselation_shader.h"
-#include <wrl.h>
-#include <wrl/client.h>
 #include <d3d11.h>
 #include <dxgi.h>
 

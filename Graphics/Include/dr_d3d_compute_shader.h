@@ -1,7 +1,5 @@
 #pragma once
 #include "dr_compute_shader.h"
-#include <wrl.h>
-#include <wrl/client.h>
 
 class ID3D11ComputeShader;
 
@@ -19,7 +17,7 @@ class DR_API_EXPORT D3DComputeShader : public ComputeShader
   DR_GRAPHICS_ERROR::E
   createFromMemory(const Device& device, const char* buffer, size_t bufferSize) override;
 
-  Microsoft::WRL::ComPtr<ID3D11ComputeShader> APIShader;
+  ID3D11ComputeShader* APIShader;
 };
 
 }

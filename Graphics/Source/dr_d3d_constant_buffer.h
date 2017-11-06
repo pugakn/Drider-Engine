@@ -1,7 +1,5 @@
 #pragma once
 #include "dr_constant_buffer.h"
-#include <wrl.h>
-#include <wrl/client.h>
 
 class ID3D11Buffer;
 
@@ -34,7 +32,7 @@ class DR_API_EXPORT D3DConstantBuffer : public ConstantBuffer
   void
   release() override;
 
-  Microsoft::WRL::ComPtr<ID3D11Buffer> CB;
+  ID3D11Buffer* CB;
 };
 
 }

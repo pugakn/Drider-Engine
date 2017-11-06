@@ -1,7 +1,5 @@
 #pragma once
 #include "dr_depth_stencil.h"
-#include <wrl.h>
-#include <wrl/client.h>
 
 struct ID3D11DepthStencilView;
 
@@ -16,7 +14,7 @@ class DR_API_EXPORT D3DDepthStencil : public DepthStencil {
   void
   release() override;
 
-  Microsoft::WRL::ComPtr<ID3D11DepthStencilView> APIDepthView;
+  ID3D11DepthStencilView* APIDepthView;
 };
 
 }

@@ -23,7 +23,7 @@ D3DCommandBuffer::updateFromMemory(const DeviceContext& deviceContext,
 
 void
 D3DCommandBuffer::release() {
-  CB.Reset();
+  CB->Release();
 }
 
 }

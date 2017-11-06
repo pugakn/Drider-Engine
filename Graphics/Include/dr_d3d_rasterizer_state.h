@@ -1,7 +1,5 @@
 #pragma once
 #include "dr_rasterizer_state.h"
-#include <wrl.h>
-#include <wrl/client.h>
 
 struct ID3D11RasterizerState;
 
@@ -19,7 +17,7 @@ class DR_API_EXPORT D3DRasterizerState : public RasterizerState
   void
   release() override;
 
-  Microsoft::WRL::ComPtr<ID3D11RasterizerState> APIState;
+  ID3D11RasterizerState* APIState;
 };
 
 }

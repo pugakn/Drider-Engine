@@ -1,7 +1,5 @@
 #pragma once
 #include "sr_texture_shader.h"
-#include <wrl.h>
-#include <wrl/client.h>
 #include <d3d11.h>
 #include <dxgi.h>
 

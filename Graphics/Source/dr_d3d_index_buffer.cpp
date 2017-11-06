@@ -55,12 +55,12 @@ D3DIndexBuffer::updateFromMemory(const DeviceContext& deviceContext,
                                  size_t bufferSize) {
   static_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext->
-      UpdateSubresource(IB.Get(), 0, 0, dataBuffer, 0, 0);
+      UpdateSubresource(IB, 0, 0, dataBuffer, 0, 0);
 }
 
 void
 D3DIndexBuffer::release() {
-  IB.Reset();
+  IB->Release();
 }
 
 }

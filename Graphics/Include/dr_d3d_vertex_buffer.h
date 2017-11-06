@@ -1,7 +1,5 @@
 #pragma once
 #include "dr_vertex_buffer.h"
-#include <wrl.h>
-#include <wrl/client.h>
 
 class ID3D11Buffer;
 
@@ -31,7 +29,7 @@ class DR_API_EXPORT D3DVertexBuffer : public VertexBuffer
   void
   release() override;
 
-  Microsoft::WRL::ComPtr<ID3D11Buffer> VB;
+  ID3D11Buffer* VB;
 };
 
 }
