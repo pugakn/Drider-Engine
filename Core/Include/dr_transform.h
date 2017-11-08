@@ -30,7 +30,7 @@ public:
   * @return 
   *   The transformation matrix.
   */
-  Matrix4x4 getTransformMatrix();
+  const Matrix4x4& getTransformMatrix();
 
   const Vector3D& getPosition();
   const Vector3D& getRotation();

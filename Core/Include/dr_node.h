@@ -17,7 +17,7 @@ public:
 
   Node(const TString& _name, WeakNode _parent = WeakNode());
   virtual ~Node(){}
-  virtual void update(const Matrix4x4& parentTransform);
+  virtual void update(const Matrix4x4& accumulatedTransform);
   void addChild(SharedNode child);
   void setParent(SharedNode parent);
   void setName(const TString& name);
@@ -25,11 +25,13 @@ public:
   TString getName();
   WeakNode getParent();
   WeakNode getChild(const TString& childName);
+
+
+  Transform transform;
 protected:
   std::vector<SharedNode> m_childs;
   WeakNode m_parent;
   TString m_name;
-  Transform m_transform;
 private:
 };
 }

@@ -8,14 +8,15 @@ Node::Node(const TString & _name, WeakNode _parent)
 
 }
 
-void Node::update(const Matrix4x4& parentTransform) {
+void Node::update(const Matrix4x4& accumulatedTransform) {
 
-  Matrix4x4 accumulatedTransform = m_transform.getTransformMatrix() *
-                                   parentTransform;
+  Matrix4x4 accumulatedTransform = accumulatedTransform * 
+                                   m_transform.getTransformMatrix();
 
   for(auto& child : m_childs) {
     child->update(accumulatedTransform);
   }
+
 }
 
 void Node::addChild(SharedNode child) {

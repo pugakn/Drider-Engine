@@ -12,7 +12,7 @@ Transform::Transform()
 
 }
 
-Matrix4x4 Transform::getTransformMatrix() {
+const Matrix4x4& Transform::getTransformMatrix() {
 
   if(m_outdatedTransform){
       update();
