@@ -44,10 +44,10 @@ TEST(Capsule, intersectSphere) {
 
 TEST(Capsule, intersectAabb) {
   driderSDK::Capsule capsule(driderSDK::Vector3D(0.f, 0.f, 0.f), driderSDK::Vector3D(0.f, 1.f, 0.f), 0.5f);
-  driderSDK::AABB aabb(4.f, 5.f, driderSDK::Vector3D(0.0f,0.0f,0.0f));
+  driderSDK::AABB aabb(4.f, 5.f, 4.f, driderSDK::Vector3D(0.0f,0.0f,0.0f));
   EXPECT_TRUE(capsule.intersects(aabb));
 
-  driderSDK::AABB aabb2(4.f, 5.f, driderSDK::Vector3D(10.0f, 0.0f, 0.0f));
+  driderSDK::AABB aabb2(4.f, 5.f, 4.f, driderSDK::Vector3D(10.0f, 0.0f, 0.0f));
   EXPECT_FALSE(capsule.intersects(aabb2));
 }
 

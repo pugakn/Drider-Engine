@@ -70,7 +70,12 @@ Plane::intersects(const Sphere& sphere) {
 
 bool
 Plane::intersects(const AABB& aabb) {
-  return Intersect::aabbPlane(aabb.center, aabb.width, aabb.height, *this, d);
+	return Intersect::aabbPlane(aabb.center, 
+															aabb.width, 
+															aabb.height,
+															aabb.depth, 
+															*this, 
+															d);
 }
 
 bool
