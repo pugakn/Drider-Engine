@@ -1,11 +1,14 @@
 #pragma once
 
-#include "dr_vector4d.h"
 #include <dr_prerequisites.h>
+#include "dr_vector4d.h"
+#include "dr_quaternion.h"
 
 namespace driderSDK {
 
 class Matrix3x3;
+class Quaternion;
+
 /**
 * Matrix with 4x4 elements
 *
@@ -31,6 +34,27 @@ class DR_API_EXPORT Matrix4x4
   * Values are initialized with 0(kZero) or identity matrix(kIdentity).
   */
   explicit Matrix4x4(Math::FORCE_INIT k);
+
+  /**
+  * TEST::Constructor3x3
+  *
+  * Constructor for matrix3x3
+  *
+  * Values are initialized with values for matrix3x3
+  * vector0, vector1 and vector2 
+  * values of w initialize in 0 except vector4.w in 1
+  *
+  */
+  explicit Matrix4x4(const Matrix3x3& M);
+
+  /**
+  * TEST::ConstructorQuaternion
+  *
+  * Constructor for quaternion
+  * values of w intitalize in 0 and vector4.w in 1
+  *
+  */
+  explicit Matrix4x4(const Quaternion& Q);
 
   /**
   * TEST::moveConstructor
@@ -165,6 +189,24 @@ class DR_API_EXPORT Matrix4x4
   */
   Matrix4x4&
   identity();
+
+  /**
+  * TEST::equals
+  *
+  * Check's if the other matrix is equal to this matrix with an error
+  * range.
+  *
+  * @param otherMatrix
+  *   Matrix to compare with this matrix.
+  *
+  * @param errorRange
+  *   The value of the error range.
+  *
+  * @return
+  *   bool expression of condition.
+  */
+  bool
+  equals(const Matrix4x4& otherMatrix, float errorRange = Math::SMALL_NUMBER) const;
 
   /**
   * TEST::Translation
@@ -303,6 +345,7 @@ class DR_API_EXPORT Matrix4x4
 
   /**
   * TEST::operatorEqualMatrix3x3
+  * w value not modified or asigned
   */
   Matrix4x4&
   operator=(const Matrix3x3& A);
@@ -360,6 +403,18 @@ class DR_API_EXPORT Matrix4x4
   */
   Matrix4x4&
   operator*=(const float S);
+
+   /**
+  * TEST::operatorDivide
+  */
+  Matrix4x4
+  operator/(const Matrix4x4& M) const;
+
+  /**
+  * TEST::operatorDivideEqual
+  */
+  Matrix4x4&
+  operator/=(const Matrix4x4& M);
 
   /**
   * TEST::operatorEqualEqual

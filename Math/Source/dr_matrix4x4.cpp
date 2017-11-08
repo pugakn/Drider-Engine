@@ -16,6 +16,24 @@ Matrix4x4::Matrix4x4(Math::FORCE_INIT k) {
   }
 }
 
+Matrix4x4::Matrix4x4(const Matrix3x3 & M)
+  : vector0(M.vector0),
+    vector1(M.vector1),
+    vector2(M.vector2),
+    vector3(Math::FORCE_INIT::kZero) {
+  vector0.w = 0.f;
+  vector1.w = 0.f;
+  vector2.w = 0.f;
+  vector3.w = 1.f;
+}
+
+Matrix4x4::Matrix4x4(const Quaternion & Q)
+{
+  Matrix3x3 temp(Q);
+  Matrix4x4 result(temp);
+  (*this) = result;
+}
+
 Matrix4x4::Matrix4x4(const Matrix4x4& M)
   : vector0(M.vector0),
     vector1(M.vector1),
@@ -139,7 +157,7 @@ Matrix4x4::inverse() {
   float deter = determinant();
   DR_ASSERT(deter != 0.0f);
   adjugate();
-  *this = *this * Math::pow(deter, -1);
+  *this *= Math::pow(deter, -1.f);
   return *this;
 }
 
@@ -176,6 +194,15 @@ Matrix4x4::identity() {
   return *this;
 }
 
+bool
+Matrix4x4::equals(const Matrix4x4 & otherMatrix, float errorRange) const
+{
+  return data[0].equals(otherMatrix.data[0]) &&
+         data[1].equals(otherMatrix.data[1]) &&
+         data[2].equals(otherMatrix.data[2]) &&
+         data[3].equals(otherMatrix.data[3]);
+}
+
 Matrix4x4&
 Matrix4x4::Translation(const Vector3D & Pos)
 {
@@ -202,14 +229,14 @@ Matrix4x4::Scale(const Vector3D &Scale)
   temp.vector1.y = Scale.y;
   temp.vector2.z = Scale.z;
 
-  *this = *this * temp;
+  *this *= temp;
   return *this;
 }
 
 Matrix4x4&
 Matrix4x4::Rotation(const float tetax, const float tetay, const float tetaz)
 {
-  *this = *this * RotationY(tetay) * RotationX(tetax) * RotationZ(tetaz);
+  *this *= RotationY(tetay) * RotationX(tetax) * RotationZ(tetaz);
   return *this;
 }
 
@@ -225,7 +252,7 @@ Matrix4x4::RotationX(const float teta)
   temp[2][1] = tempSin;
   temp[2][2] = tempCos;
 
-  *this = *this * temp;
+  *this *= temp;
   return *this;
 }
 
@@ -241,7 +268,7 @@ Matrix4x4::RotationY(const float teta)
   temp[2][0] = -tempSin;
   temp[2][2] = tempCos;
 
-  *this = *this * temp; 
+  *this *= temp; 
   return *this;
 }
 
@@ -257,7 +284,7 @@ Matrix4x4::RotationZ(const float teta)
   temp[1][0] = tempSin;
   temp[1][1] = tempCos;
 
-  *this = *this * temp;
+  *this *= temp;
   return *this;
 }
 
@@ -463,11 +490,26 @@ Matrix4x4::operator*(const float S) const {
 
 Matrix4x4&
 Matrix4x4::operator*=(const float S) {
-  vector0 = vector0 * S;
-  vector1 = vector1 * S;
-  vector2 = vector2 * S;
-  vector3 = vector3 * S;
+  vector0 *= S;
+  vector1 *= S;
+  vector2 *= S;
+  vector3 *= S;
 
+  return *this;
+}
+
+Matrix4x4
+Matrix4x4::operator/(const Matrix4x4 & M) const
+{
+  Matrix4x4 temp(M);
+  return *this * temp.inverse();
+}
+
+Matrix4x4&
+Matrix4x4::operator/=(const Matrix4x4 & M)
+{
+  Matrix4x4 temp(M);
+  *this *= temp.inverse();
   return *this;
 }
 
@@ -487,13 +529,13 @@ Matrix4x4::operator!=(const Matrix4x4& M)
 }
 
 Matrix4x4
-Matrix4x4::identityMat4x4(1, 0, 0, 0,
-                          0, 1, 0, 0,
-                          0, 0, 1, 0,
-                          0, 0, 0, 1);
+Matrix4x4::identityMat4x4(1.f, 0.f, 0.f, 0.f,
+                          0.f, 1.f, 0.f, 0.f,
+                          0.f, 0.f, 1.f, 0.f,
+                          0.f, 0.f, 0.f, 1.f);
 Matrix4x4
-Matrix4x4::zerosMat4x4(0, 0, 0, 0,
-                          0, 0, 0, 0,
-                          0, 0, 0, 0,
-                          0, 0, 0, 0);
+Matrix4x4::zerosMat4x4(0.f, 0.f, 0.f, 0.f,
+                       0.f, 0.f, 0.f, 0.f,
+                       0.f, 0.f, 0.f, 0.f,
+                       0.f, 0.f, 0.f, 0.f);
 }
