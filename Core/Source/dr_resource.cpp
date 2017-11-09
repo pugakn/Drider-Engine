@@ -2,8 +2,5 @@
 
 namespace driderSDK {
 
-Resource::Resource() {
-}
-
 
 }
