@@ -1,6 +1,6 @@
 #include <dr_intersections.h>
 #include <dr_vector3d.h>
-
+#include <dr_aabb.h>
 #include <gtest\gtest.h>
 
 TEST (Intersect, sphereSphere) {
@@ -81,16 +81,20 @@ TEST(Intersect, frustrumSphere) {
 
 TEST(Intersect, aabbAabb) {
   driderSDK::Vector3D c1(0.0,0.0,0.0);
-  driderSDK::Vector3D c2(3.0,0.1, 0.0);
+  driderSDK::Vector3D c2(3.f,0.1f, 0.f);
   
-  EXPECT_TRUE(driderSDK::Intersect::aabbAabb(c1, 4, 4, c2, 4, 4));
+  EXPECT_TRUE(driderSDK::Intersect::aabbAabb(c1, 4, 4, 4, c2, 4, 4, 4));
 }
 
 TEST(Intersect, aabbSphere) {
   driderSDK::Vector3D c1(0.0, 0.0, 0.0);
   driderSDK::Vector3D c2(1.0, 0.0, 0.0);
-
-  EXPECT_TRUE(driderSDK::Intersect::aabbSphere(c1, 5.0,5.0, c2,.5f));
+	driderSDK::AABB aabb(5.0, 5.0, 5.0, c1);
+	EXPECT_TRUE(driderSDK::Intersect::aabbSphere(c1, 
+																							 aabb.getMaxPoint(), 
+																							 aabb.getMinPoint(), 
+																							 c2, 
+																							 .5f));
 }
 
 
@@ -98,14 +102,22 @@ TEST(Intersect, aabbRay) {
   driderSDK::Vector3D c1(0.0,0.0,0.0);
   driderSDK::Vector3D origin(0.0,5.0,0.0);  
   driderSDK::Vector3D dir(0.0,-1.0,0.0);
-
-  EXPECT_TRUE(driderSDK::Intersect::aabbRay(c1, 5,5,origin, dir));
+	driderSDK::AABB aabb(5, 5, 5, c1);
+	EXPECT_TRUE(driderSDK::Intersect::aabbRay(c1, 
+																						aabb.getMaxPoint(), 
+																						aabb.getMinPoint(), 
+																						origin, 
+																						dir));
 }
 
 TEST(Intersect, aabbPoint) {
   driderSDK::Vector3D c1(0.0, 0.0, 0.0);
   driderSDK::Vector3D point(0.0, 0.0, 0.0);
-  EXPECT_TRUE(driderSDK::Intersect::aabbPoint(c1,5,5,point));
+	driderSDK::AABB aabb(5, 5, 5, c1);
+	EXPECT_TRUE(driderSDK::Intersect::aabbPoint(c1, 
+																							aabb.getMaxPoint(), 
+																							aabb.getMinPoint(), 
+																							point));
 }
 
 TEST (Intersect, spherePlane) {
@@ -119,7 +131,7 @@ TEST(Intersect, aabbPlane) {
   driderSDK::Vector3D pnormal(0.0, 1.0, 0.0);
   driderSDK::Vector3D c(0.0, 0.0, 0.0);
 
-  EXPECT_TRUE(driderSDK::Intersect::aabbPlane(c, 5,5,pnormal,0));
+  EXPECT_TRUE(driderSDK::Intersect::aabbPlane(c, 5,5,5,pnormal,0));
 }
 
 TEST(Intersect, segmentPlane) {
