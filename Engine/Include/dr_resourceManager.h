@@ -1,8 +1,9 @@
 #pragma once
 #include <memory>
 #include <dr_prerequisites.h>
-#include <dr_resource.h>
+#include "dr_resource.h"
 #include "dr_codec.h"
+#include <map>
 
 namespace driderSDK {
 

@@ -40,7 +40,8 @@ Parser::strCpyBetween(TString source,
   offset -= strSize;
   while(strSize > 0) {
     strSize--;
-    (*it)++;
+    first.erase(it);
+    //(*it)++;
   }
   
   while(offset-- > 0) {

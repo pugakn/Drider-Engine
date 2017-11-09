@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\dr_resource_unitTest.cpp" />
     <ClCompile Include="Source\dr_unitTest_codec.cpp" />
     <ClCompile Include="Source\dr_unitTest_FileSystem.cpp" />
     <ClCompile Include="Source\dr_unitTest_resourceManager.cpp" />

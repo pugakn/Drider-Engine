@@ -1,6 +1,5 @@
 #pragma once
 #include <dr_prerequisites.h>
-#include <map>
 
 namespace driderSDK {
 
@@ -8,15 +7,14 @@ class DR_API_EXPORT Resource {
  public:
   /**
   * TEST::resourceConstructor
-  *	Default constructor.
+  * Default constructor
   */
-  Resource() { }
+  Resource();
 
   /**
   * TEST::resourceDestructor
-  *	Default destructor.
+  * Default destructor
   */
-  virtual ~Resource() { };
+  virtual ~Resource(){};
 };
-
 }

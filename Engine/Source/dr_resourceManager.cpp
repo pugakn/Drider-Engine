@@ -23,14 +23,7 @@ ResourceManager::createResource(ResourceType::E resourceType, std::string resour
 bool
 ResourceManager::isCompatible(std::string resource,
                               ResourceType::E& resourceTypeOut) {
-  resourceTypeOut = Codec::decode(resource);
- if(resourceTypeOut != ResourceType::UNSUPPORTED) {
-  return true;
- } else {
   return false;
- }
-return false;
-
 }
 
 bool
