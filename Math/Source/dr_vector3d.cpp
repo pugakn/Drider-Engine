@@ -47,10 +47,11 @@ Vector3D::lengthSqr() const {
   return dot(*this);
 }
 
-void
+Vector3D&
 Vector3D::normalize() {
   DR_ASSERT(length() != 0.0f); // No funciona xd, para el test
   *this /= length();
+  return *this;
 }
 
 float

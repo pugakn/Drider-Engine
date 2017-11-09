@@ -21,7 +21,7 @@
     <ClCompile Include="Source\unitTestCore.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
-    <ClCompile Include="Source\dr_resource_unitTest.cpp">
+    <ClCompile Include="Source\dr_unitTest_loader.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
   </ItemGroup>

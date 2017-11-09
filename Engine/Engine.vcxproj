@@ -135,11 +135,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Include\dr_codec.h" />
+    <ClInclude Include="Include\dr_engineTexture.h" />
     <ClInclude Include="Include\dr_fileSystem.h" />
     <ClInclude Include="Include\dr_resourceManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_codec.cpp" />
+    <ClCompile Include="Source\dr_engineTexture.cpp" />
     <ClCompile Include="Source\dr_fileSystem.cpp" />
     <ClCompile Include="Source\dr_resourceManager.cpp" />
   </ItemGroup>

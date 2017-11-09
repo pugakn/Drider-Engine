@@ -225,31 +225,27 @@ Intersect::frustrumSphere(const std::array<Plane, 6>& frustrumPlanes,
 
 bool
 Intersect::aabbAabb(const Vector3D& aabbCenter,
-                    float aabbWidth,
-                    float aabbHeight,
+										float aabbWidth,
+										float aabbHeight,
+										float aabbDepth,
                     const Vector3D& aabbCenter2,
-                    float aabbWidth2,
-                    float aabbheight2) {
+										float aabbWidth2,
+										float aabbHeight2,
+										float aabbDepth2) {
   return abs(aabbCenter.x - aabbCenter2.x) <=
     ((aabbWidth * 0.5f) + (aabbWidth2 * 0.5f)) &&
     abs(aabbCenter.y - aabbCenter2.y) <=
-    ((aabbHeight * 0.5f) + (aabbheight2 * 0.5f)) &&
+    ((aabbHeight * 0.5f) + (aabbHeight2 * 0.5f)) &&
     abs(aabbCenter.z - aabbCenter2.z) <=
-    ((aabbWidth * 0.5f) + (aabbWidth2 * 0.5f));
+    ((aabbDepth * 0.5f) + (aabbDepth2 * 0.5f));
 }
 
 bool
 Intersect::aabbSphere(const Vector3D& aabbCenter,
-                      float aabbWidth,
-                      float aabbHeight,
+											const Vector3D& aabbMax,
+											const Vector3D& aabbMin,
                       const Vector3D& sphereOrigin,
                       float sphereRadius) {
-	Vector3D aabbMax(aabbCenter.x + (aabbWidth * 0.5f),
-									 aabbCenter.y + (aabbHeight * 0.5f),
-									 aabbCenter.z + (aabbWidth * 0.5f));
-	Vector3D aabbMin(aabbCenter.x - (aabbWidth * 0.5f),
-									 aabbCenter.y - (aabbHeight * 0.5f),
-									 aabbCenter.z - (aabbWidth * 0.5f));
 	float dmin = 0.f;
 	float squareRadius = sphereRadius*sphereRadius;
 
@@ -268,16 +264,17 @@ Intersect::aabbSphere(const Vector3D& aabbCenter,
 
 bool
 Intersect::aabbFrustrum(const Vector3D& aabbCenter,
-                        float aabbWidth,
-                        float aabbheight,
+												float aabbWidth,
+												float aabbHeight,
+												float aabbDepth,
                         const std::array<Plane, 6>& frustrumPlanes) {
   return false;
 }
 
 bool
 Intersect::aabbRay(const Vector3D& aabbCenter,
-                   float aabbWidth,
-                   float aabbHeight,
+									 const Vector3D& aabbMax,
+									 const Vector3D& aabbMin,
                    const Vector3D& rayOrigin,
                    const Vector3D& rayDirection) {
   if(rayDirection.x != 0 || rayDirection.y != 0 || rayDirection.z != 0)
@@ -290,13 +287,6 @@ Intersect::aabbRay(const Vector3D& aabbCenter,
   Vector3D invertedDirection(1.0f / normDirection.x,
                              1.0f / normDirection.y,
                              1.0f / normDirection.z);
-  Vector3D aabbMax(aabbCenter.x + (aabbWidth * 0.5f),
-                   aabbCenter.y + (aabbHeight * 0.5f),
-                   aabbCenter.z + (aabbWidth * 0.5f));
-  Vector3D aabbMin(aabbCenter.x - (aabbWidth * 0.5f),
-                   aabbCenter.y - (aabbHeight * 0.5f),
-                   aabbCenter.z - (aabbWidth * 0.5f));
-
   float t1 = (aabbMin.x - rayOrigin.x) * invertedDirection.x;
   float t2 = (aabbMax.x - rayOrigin.x) * invertedDirection.x;
   float tmin = Math::min(t1, t2);
@@ -313,15 +303,10 @@ Intersect::aabbRay(const Vector3D& aabbCenter,
 
 bool
 Intersect::aabbPoint(const Vector3D& aabbCenter,
-                     float aabbWidth,
-                     float aabbHeight,
+										 const Vector3D& aabbMax,
+										 const Vector3D& aabbMin,
                      const Vector3D& point) {
-	Vector3D aabbMax(aabbCenter.x + (aabbWidth * 0.5f),
-									 aabbCenter.y + (aabbHeight * 0.5f),
-									 aabbCenter.z + (aabbWidth * 0.5f));
-	Vector3D aabbMin(aabbCenter.x - (aabbWidth * 0.5f),
-									 aabbCenter.y - (aabbHeight * 0.5f),
-									 aabbCenter.z - (aabbWidth * 0.5f));
+
 	return (point.x > aabbMin.x && point.x < aabbMax.x &&
 					point.y > aabbMin.y && point.y < aabbMax.y &&
 					point.z > aabbMin.z && point.z < aabbMax.z);
@@ -337,8 +322,9 @@ Intersect::spherePlane(const Vector3D& planeNormal,
 
 bool
 Intersect::aabbPlane(const Vector3D& aabbCenter,
-                     float aabbWidth,
-                     float aabbHeight,
+										 float aabbWidth,
+										 float aabbHeight,
+										 float aabbDepth,
                      const Vector3D& planeNormal,
                      float planeGap) {
   Vector3D extents = aabbCenter;

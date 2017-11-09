@@ -1,6 +1,7 @@
 #pragma once
 #include <dr_prerequisites.h>
 #include <dr_resource.h>
+
 #include <memory>
 
 /**
@@ -36,8 +37,8 @@ struct DR_API_EXPORT Codec
   * @return
   *   The type of the resource ResourceType::E.
   */
-  static ResourceType::E
-  decode(std::string pathName);
+  static std::shared_ptr<Resource>
+  decode(TString pathName);
 
   /**
   * TEST::codecEncode
@@ -49,8 +50,15 @@ struct DR_API_EXPORT Codec
   * @return
   *   Shared_ptr to a Resource.
   */
-  static std::shared_ptr<Resource>
-  encode(std::string pathName);
+  static void
+  encode(TString pathName,
+         ResourceType::E resourceType);
+
+  /**
+  * TEST::isCompatible
+  */
+  static ResourceType::E
+  isCompatible (TString pathName);
 };
  
 
