@@ -1,20 +1,21 @@
 #include "dr_node.h"
-#include <dr_matrix4x4.h>
 
 namespace driderSDK {
 Node::Node(const TString & _name, WeakNode _parent) 
-  : m_parent(_parent), 
+  : m_parent(_parent),
+    m_finalTransform(Matrix4x4::identityMat4x4),
     m_name(_name) {
-
 }
 
 void Node::update(const Matrix4x4& accumulatedTransform) {
 
-  Matrix4x4 accumulatedTransform = accumulatedTransform * 
-                                   m_transform.getTransformMatrix();
+  transform.update();
+
+  m_finalTransform = accumulatedTransform * 
+                     transform.getTransformMatrix();
 
   for(auto& child : m_childs) {
-    child->update(accumulatedTransform);
+    child->update(m_finalTransform);
   }
 
 }
@@ -54,6 +55,10 @@ Node::WeakNode Node::getChild(const TString & childName) {
       return child;
     }
   }
+}
+
+const Matrix4x4& Node::getWorldTransform() const{
+  return m_finalTransform;
 }
 
 }

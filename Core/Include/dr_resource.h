@@ -4,7 +4,8 @@
 
 namespace driderSDK {
 
-class DR_API_EXPORT Resource {
+class DR_API_EXPORT Resource 
+{
  public:
   /**
   * TEST::resourceConstructor

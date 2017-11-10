@@ -9,27 +9,21 @@ Transform::Transform()
     m_position(0,0,0),
     m_scale(1,1,1),
     m_rotation(0,0,0) {
-
 }
 
-const Matrix4x4& Transform::getTransformMatrix() {
-
-  if(m_outdatedTransform){
-      update();
-  }
-  
+const Matrix4x4& Transform::getTransformMatrix() const {  
   return m_transform;
 }
 
-const Vector3D & Transform::getPosition() {
+const Vector3D & Transform::getPosition() const {
   return m_position;
 }
 
-const Vector3D & Transform::getRotation() {
+const Vector3D & Transform::getRotation() const {
   return m_rotation;
 }
 
-const Vector3D & Transform::getScale() {
+const Vector3D & Transform::getScale() const {
   return m_scale;
 }
 
@@ -101,9 +95,13 @@ void Transform::invalidate() {
 }
 
 void Transform::update() {
-  //TODO: Transform m_transform
-  
-  m_outdatedTransform = false;
+  if(m_outdatedTransform){
+    m_outdatedTransform = false;
+    m_transform.identity();
+    m_transform.Translation(m_position);
+    m_transform.Rotation(m_rotation.x, m_rotation.y, m_rotation.z);
+    m_transform.Scale(m_scale);
+  }  
 }
 
 }

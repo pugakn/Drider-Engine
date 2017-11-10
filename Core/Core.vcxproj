@@ -100,7 +100,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include;$(SolutionDir)$(Projectname)\Include;$(DRIDER_DEPENDENCIES);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include;$(SolutionDir)$(Projectname)\Include;$(DRIDER_DEPENDENCIES);%(AdditionalIncludeDirectories);$(SolutionDir)Math\Include</AdditionalIncludeDirectories>
     </ClCompile>
     <BuildLog>
       <Path>$(IntDir).log</Path>
@@ -116,7 +116,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include;$(SolutionDir)$(Projectname)\Include;$(DRIDER_DEPENDENCIES);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include;$(SolutionDir)$(Projectname)\Include;$(DRIDER_DEPENDENCIES);%(AdditionalIncludeDirectories);$(SolutionDir)Math\Include</AdditionalIncludeDirectories>
     </ClCompile>
     <BuildLog>
       <Path>$(IntDir).log</Path>
@@ -134,7 +134,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include;$(SolutionDir)$(Projectname)\Include;$(SolutionDir)Math\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include;$(SolutionDir)$(Projectname)\Include;$(SolutionDir)Math\Include;%(AdditionalIncludeDirectories);$(SolutionDir)Math\Include;$(DRIDER_DEPENDENCIES)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -153,7 +153,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include;$(SolutionDir)$(Projectname)\Include;$(SolutionDir)Math\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include;$(SolutionDir)$(Projectname)\Include;$(SolutionDir)Math\Include;%(AdditionalIncludeDirectories);$(SolutionDir)Math\Include;$(DRIDER_DEPENDENCIES)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -169,6 +169,8 @@
     <ClInclude Include="Include\dr_bone.h" />
     <ClInclude Include="Include\dr_graph.h" />
     <ClInclude Include="Include\dr_logger.h" />
+    <ClInclude Include="Include\dr_mesh.h" />
+    <ClInclude Include="Include\dr_model.h" />
     <ClInclude Include="Include\dr_module.h" />
     <ClInclude Include="Include\dr_node.h" />
     <ClInclude Include="Include\dr_parser.h" />

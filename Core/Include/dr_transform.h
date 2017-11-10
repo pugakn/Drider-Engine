@@ -19,8 +19,7 @@ namespace AXIS {
 
 class DR_API_EXPORT Transform 
 {
-  
-public:
+ public:
   Transform();
 
   /**
@@ -30,11 +29,10 @@ public:
   * @return 
   *   The transformation matrix.
   */
-  const Matrix4x4& getTransformMatrix();
-
-  const Vector3D& getPosition();
-  const Vector3D& getRotation();
-  const Vector3D& getScale();
+  const Matrix4x4& getTransformMatrix() const;
+  const Vector3D& getPosition() const;
+  const Vector3D& getRotation() const;
+  const Vector3D& getScale() const;
 
   /**
   * Sets the value of the specified position component.
@@ -101,7 +99,13 @@ public:
   */  
   void scale(float scale, AXIS::E axis);
   void scale(const Vector3D& scale);
-private:
+
+  /**
+  * Computes the transformation matrix according to the position, 
+  * rotation and scale established.
+  */
+  void update();
+ private:
   /**
   * Invalidates the transform matrix.
   * 
@@ -109,12 +113,6 @@ private:
   * and the transformation matrix needs to be updated.
   */
   void invalidate();
-
-  /**
-  * Computes the transformation matrix according to the position, 
-  * rotation and scale established.
-  */
-  void update();
 
   bool m_outdatedTransform;
   Vector3D m_position;

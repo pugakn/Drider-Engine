@@ -12,5 +12,7 @@ void driderSDK::SceneGraph::setRoot(SharedNode root) {
 }
 
 void driderSDK::SceneGraph::update() {
-  //m_root->update()
+  if(m_root) {
+    m_root->update(Matrix4x4::identityMat4x4);
+  }
 }
