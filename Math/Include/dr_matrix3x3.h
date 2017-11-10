@@ -3,7 +3,6 @@
 #include <cassert>
 #include <dr_prerequisites.h>
 #include "dr_vector3d.h"
-#include "dr_quaternion.h"
 
 namespace driderSDK {
 

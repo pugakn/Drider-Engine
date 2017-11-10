@@ -1,5 +1,6 @@
 #include "dr_matrix3x3.h"
 #include "dr_matrix4x4.h"
+#include "dr_quaternion.h"
 
 namespace driderSDK
 {
