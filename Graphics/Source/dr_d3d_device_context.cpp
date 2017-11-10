@@ -39,7 +39,7 @@ D3DDeviceContext::clearDepthStencilView(DepthStencil& depthstencil,
   }
 
   D3D11DeviceContext->
-    ClearDepthStencilView(static_cast<D3DDepthStencil*>(&depthstencil)->APIDepthView,
+    ClearDepthStencilView(reinterpret_cast<D3DDepthStencil*>(&depthstencil)->APIDepthView,
                           clearFlags,
                           depthValue,
                           stencilValue);
@@ -49,7 +49,7 @@ void
 D3DDeviceContext::clearRenderTargetView(RenderTarget& renderTarget,
                                         const float colorRGBA[4]) const {
   for (size_t i = 0;
-       i < static_cast<D3DRenderTarget*>(&renderTarget)->APIColorViews.size();
+       i < reinterpret_cast<D3DRenderTarget*>(&renderTarget)->APIColorViews.size();
        i++) {
     D3D11DeviceContext->
       ClearRenderTargetView(static_cast<D3DRenderTarget*>(&renderTarget)->APIColorViews[i],
@@ -76,9 +76,8 @@ D3DDeviceContext::updateTextureFromMemory(Texture& texture,
 
 void
 D3DDeviceContext::updateBufferFromMemory(Buffer& buffer,
-                                         const char* dataBuffer,
-                                         size_t bufferSize) const {
-  buffer.updateFromMemory(*this, dataBuffer, bufferSize);
+                                         const byte* dataBuffer) const {
+  buffer.updateFromBuffer(*this, dataBuffer);
 }
 
 void

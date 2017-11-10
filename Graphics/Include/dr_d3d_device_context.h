@@ -56,8 +56,7 @@ class DR_API_EXPORT D3DDeviceContext : public DeviceContext {
   */
   void
   updateBufferFromMemory(Buffer& buffer,
-                         const char* dataBuffer,
-                         size_t bufferSize) const override;
+                         const byte* dataBuffer) const override;
 
   /**
   * Set the render target and depth stencil

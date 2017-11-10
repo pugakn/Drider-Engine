@@ -41,7 +41,7 @@ class DR_API_EXPORT D3DConstantBuffer : public ConstantBuffer
   DR_GRAPHICS_ERROR::E
   create(const Device& device,
          const DrBufferDesc& desc,
-         char* initialData) override;
+         const byte* initialData) override;
 
   /**
   * Set the constant buffer to all shaders specifyed on typeFlag
@@ -70,9 +70,23 @@ class DR_API_EXPORT D3DConstantBuffer : public ConstantBuffer
   *   The new data buffer size
   */
   void
-  updateFromMemory(const DeviceContext& deviceContext,
-                   const char * dataBuffer,
-                   size_t bufferSize) override;
+    updateFromSysMemCpy(const DeviceContext& deviceContext) override;
+
+  /**
+  * Update the buffer with new data
+  *
+  * @param deviceContext
+  *   The device context to get acces to the resource
+  *
+  * @param dataBuffer
+  *   The new data buffer
+  *
+  * @param bufferSize
+  *   The new data buffer size
+  */
+  void
+  updateFromBuffer(const DeviceContext& deviceContext,
+                   const byte* dataBuffer) override;
 
   /**
   * Release the allocated memory
@@ -80,7 +94,7 @@ class DR_API_EXPORT D3DConstantBuffer : public ConstantBuffer
   void
   release() override;
 
-  Microsoft::WRL::ComPtr<ID3D11Buffer> CB;
+  ID3D11Buffer* CB;
 };
 
 }

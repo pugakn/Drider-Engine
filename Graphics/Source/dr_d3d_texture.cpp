@@ -9,6 +9,7 @@ namespace driderSDK {
 DR_GRAPHICS_ERROR::E D3DTexture::createFromMemory(const Device& device,
                                                   const DrTextureDesc& desc,
                                                   const char* buffer) {
+  const D3DDevice* apiDevice = reinterpret_cast<const D3DDevice*>(&device);
   descriptor = desc;
   D3D11_TEXTURE2D_DESC apiDesc = { 0 };
   apiDesc.Width = desc.width;
@@ -29,14 +30,14 @@ DR_GRAPHICS_ERROR::E D3DTexture::createFromMemory(const Device& device,
   srvDesc.Format = apiDesc.Format;
   srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D; //Hardcoded
   srvDesc.Texture2D.MipLevels = -1;                      //Hardcoded
-  if (static_cast<const D3DDevice*>(&device)->
+  if (apiDevice->
         D3D11Device->
           CreateTexture2D(&apiDesc,
                           buffer != 0 ? &initData : nullptr,
                           &APITexture) != S_OK) {
     return DR_GRAPHICS_ERROR::CREATE_TEXTURE_ERROR;
   }
-  if (static_cast<const D3DDevice*>(&device)->
+  if (apiDevice->
         D3D11Device->
           CreateShaderResourceView(APITexture,
                                    &srvDesc,
@@ -56,7 +57,7 @@ D3DTexture::map(const DeviceContext& deviceContext, char* buffer) {
   D3D11_MAPPED_SUBRESOURCE mappedResource;
 
   //Hardcoded
-  if (static_cast<const D3DDeviceContext*>(&deviceContext)->
+  if (reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
         D3D11DeviceContext->
           Map(APITexture,
               0,
@@ -72,7 +73,7 @@ D3DTexture::map(const DeviceContext& deviceContext, char* buffer) {
 
 void
 D3DTexture::set(const DeviceContext& deviceContext, UInt32 slot) const {
-  static_cast<const D3DDeviceContext*>(&deviceContext)->
+  reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext->
       PSSetShaderResources(slot, 1, &APIView);
 }
@@ -85,7 +86,7 @@ D3DTexture::release() {
 
 void
 D3DTexture::unmap(const DeviceContext& deviceContext) {
-  static_cast<const D3DDeviceContext*>(&deviceContext)->
+  reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext->
       Unmap(APITexture, 0);
 }
@@ -97,14 +98,14 @@ D3DTexture::udpateFromMemory(const DeviceContext& deviceContext,
   D3D11_SUBRESOURCE_DATA initData{};
   initData.pSysMem = buffer;
   initData.SysMemPitch = descriptor.pitch;
-  static_cast<const D3DDeviceContext*>(&deviceContext)->
+  reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext->
       UpdateSubresource(APITexture, 0, 0, buffer, initData.SysMemPitch, 0);
 }
 
 void
 D3DTexture::generateMipMaps(const DeviceContext& deviceContext) const {
-  static_cast<const D3DDeviceContext*>(&deviceContext)->
+  reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext->
       GenerateMips(APIView);
 }

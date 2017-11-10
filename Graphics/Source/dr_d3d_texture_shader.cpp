@@ -17,9 +17,13 @@ D3DTextreShader::release() {
 }
 
 DR_GRAPHICS_ERROR::E
-D3DTextreShader::createFromMemory(const Device& device,
-                                  const char* buffer,
-                                  size_t bufferSize) {
+D3DTextreShader::create(const Device& device) {
+  return DR_GRAPHICS_ERROR::ERROR_NOT_IMPLEMENTED;
+}
+
+DR_GRAPHICS_ERROR::E
+D3DTextreShader::compile(const Device& device, const char* buffer, size_t bufferSize)
+{
   return DR_GRAPHICS_ERROR::ERROR_NOT_IMPLEMENTED;
 }
 

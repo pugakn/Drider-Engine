@@ -29,7 +29,7 @@ DR_GRAPHICS_ERROR::E D3DDevice::createDeviceAndDeviceContext(DeviceContext& devi
                         D3D11_SDK_VERSION,
                         &D3D11Device,
                         0,
-                        &static_cast<D3DDeviceContext*>(&deviceContext)->
+                        &reinterpret_cast<D3DDeviceContext*>(&deviceContext)->
                           D3D11DeviceContext) != S_OK) {
     return DR_GRAPHICS_ERROR::CREATE_DEVICE_ERROR;
   }
@@ -44,21 +44,21 @@ D3DDevice::release() {
 
 DR_GRAPHICS_ERROR::E
 D3DDevice::createVertexBuffer(const DrBufferDesc& desc,
-                                  char* initialData, 
+                                  byte* initialData, 
                                   VertexBuffer& vertexBuffer) {
   return vertexBuffer.create(*this,desc,initialData);
 }
 
 DR_GRAPHICS_ERROR::E
 D3DDevice::createIndexBuffer(const DrBufferDesc& desc,
-                             char* initialData,
+  byte* initialData,
                              IndexBuffer& indexBuffer) {
   return indexBuffer.create(*this, desc, initialData);
 }
 
 DR_GRAPHICS_ERROR::E
 D3DDevice::createConstantBuffer(const DrBufferDesc& desc,
-                                char* initialData,
+  byte* initialData,
                                 ConstantBuffer& constantBuffer) {
   return constantBuffer.create(*this, desc, initialData);
 }
@@ -67,7 +67,8 @@ DR_GRAPHICS_ERROR::E
 D3DDevice::createShaderFromMemory(const char* shaderBuffer,
                                   size_t bufferSize,
                                   Shader& shader) {
-  return shader.createFromMemory(*this,shaderBuffer,bufferSize);
+  shader.compile(*this, shaderBuffer, bufferSize);
+  return shader.create(*this);
 }
 
 DR_GRAPHICS_ERROR::E
@@ -114,8 +115,9 @@ D3DDevice::createDepthStencilState(const DrDepthStencilDesc& desc,
 
 DR_GRAPHICS_ERROR::E
 D3DDevice::createInputLayout(const std::vector<DrInputElementDesc>& inputDescArray,
+                             const Shader& shader,
                              InputLayout& layout) {
-  return layout.create(*this, inputDescArray);
+  return layout.create(*this, inputDescArray,shader);
 }
 
 DR_GRAPHICS_ERROR::E

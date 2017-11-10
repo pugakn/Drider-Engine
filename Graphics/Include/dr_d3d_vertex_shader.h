@@ -45,10 +45,12 @@ class DR_API_EXPORT D3DVertexShader : public VertexShader
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   DR_GRAPHICS_ERROR::E
-  createFromMemory(const Device& device, const char* buffer, size_t bufferSize) override;
+  create(const Device& device) override;
+
+  DR_GRAPHICS_ERROR::E
+  compile(const Device& device, const char* buffer, size_t bufferSize) override;
 
   ID3D11VertexShader* APIShader;
-  ID3DBlob* errorBlob;
   ID3DBlob* shader_blob;
 };
 

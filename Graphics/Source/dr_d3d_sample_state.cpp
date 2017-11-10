@@ -24,7 +24,7 @@ D3D11SamplerState::create(const Device & device, const DrSampleDesc & desc)
   apiDesc.MinLOD = desc.minLOD;
   apiDesc.MipLODBias = desc.mipLODBias;
 
-  if (static_cast<const D3DDevice*>(&device)->
+  if (reinterpret_cast<const D3DDevice*>(&device)->
         D3D11Device->
           CreateSamplerState(&apiDesc,&APIState) != S_OK) {
       DR_GRAPHICS_ERROR::CREATE_SAMPLER_STATE_ERROR;
@@ -35,35 +35,24 @@ D3D11SamplerState::create(const Device & device, const DrSampleDesc & desc)
 void
 D3D11SamplerState::set(const DeviceContext& deviceContext,
                        DR_SHADER_TYPE_FLAG::E typeFlag) const {
+  const D3DDeviceContext* context = reinterpret_cast<const D3DDeviceContext*>(&deviceContext);
   if (typeFlag & DR_SHADER_TYPE_FLAG::kVertex) {
-    static_cast<const D3DDeviceContext*>(&deviceContext)->
-      D3D11DeviceContext->
-        VSSetSamplers(0, 1, &APIState);
+    context->D3D11DeviceContext->VSSetSamplers(0, 1, &APIState);
   }
   if (typeFlag & DR_SHADER_TYPE_FLAG::kFragment) {
-    static_cast<const D3DDeviceContext*>(&deviceContext)->
-      D3D11DeviceContext->
-        PSSetSamplers(0, 1, &APIState);
+    context->D3D11DeviceContext->PSSetSamplers(0, 1, &APIState);
   }
   if (typeFlag & DR_SHADER_TYPE_FLAG::kCompute) {
-    static_cast<const D3DDeviceContext*>(&deviceContext)->
-      D3D11DeviceContext->
-        CSSetSamplers(0, 1, &APIState);
+    context->D3D11DeviceContext->CSSetSamplers(0, 1, &APIState);
   }
   if (typeFlag & DR_SHADER_TYPE_FLAG::kDomain) {
-    static_cast<const D3DDeviceContext*>(&deviceContext)->
-      D3D11DeviceContext->
-        DSSetSamplers(0, 1, &APIState);
+    context->D3D11DeviceContext->DSSetSamplers(0, 1, &APIState);
   }
   if (typeFlag & DR_SHADER_TYPE_FLAG::kHull) {
-    static_cast<const D3DDeviceContext*>(&deviceContext)->
-      D3D11DeviceContext->
-        HSSetSamplers(0, 1, &APIState);
+    context->D3D11DeviceContext->HSSetSamplers(0, 1, &APIState);
   }
   if (typeFlag & DR_SHADER_TYPE_FLAG::kGeometry) {
-    static_cast<const D3DDeviceContext*>(&deviceContext)->
-      D3D11DeviceContext->
-        GSSetSamplers(0, 1, &APIState);
+    context->D3D11DeviceContext->GSSetSamplers(0, 1, &APIState);
   }
   if (typeFlag & DR_SHADER_TYPE_FLAG::kTeselation) {
     //Not implemented

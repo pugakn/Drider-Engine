@@ -21,7 +21,7 @@ D3DRasterizerState::create(const Device& device,const DrRasterizerDesc & desc)
   rasterizerState.MultisampleEnable = desc.multisampleEnable;
   rasterizerState.AntialiasedLineEnable = desc.antialiasedLineEnable;
 
-  HRESULT result = static_cast<const D3DDevice*>(&device)->
+  HRESULT result = reinterpret_cast<const D3DDevice*>(&device)->
                      D3D11Device->
                        CreateRasterizerState(&rasterizerState, &APIState);
   if (FAILED(result)) {
@@ -33,7 +33,7 @@ D3DRasterizerState::create(const Device& device,const DrRasterizerDesc & desc)
 
 void
 D3DRasterizerState::set(const DeviceContext& deviceContext) const {
-  static_cast<const D3DDeviceContext*>(&deviceContext)->
+  reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext->
       RSSetState(APIState);
 }

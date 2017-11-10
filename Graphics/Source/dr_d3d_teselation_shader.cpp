@@ -17,9 +17,13 @@ D3DTeselationShader::release() {
 }
 
 DR_GRAPHICS_ERROR::E
-D3DTeselationShader::createFromMemory(const Device& device,
-                                      const char* buffer,
-                                      size_t bufferSize) {
+D3DTeselationShader::create(const Device& device) {
+  return DR_GRAPHICS_ERROR::ERROR_NOT_IMPLEMENTED;
+}
+
+DR_GRAPHICS_ERROR::E
+D3DTeselationShader::compile(const Device& device, const char* buffer, size_t bufferSize)
+{
   return DR_GRAPHICS_ERROR::ERROR_NOT_IMPLEMENTED;
 }
 

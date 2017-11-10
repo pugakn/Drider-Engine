@@ -45,10 +45,12 @@ class DR_API_EXPORT D3DComputeShader : public ComputeShader
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   DR_GRAPHICS_ERROR::E
-  createFromMemory(const Device& device, const char* buffer, size_t bufferSize) override;
+  create(const Device& device);
+
+  DR_GRAPHICS_ERROR::E
+  compile(const Device& device, const char* buffer, size_t bufferSize);
 
   ID3D11ComputeShader* APIShader;
-  ID3DBlob* errorBlob;
   ID3DBlob* shader_blob;
 };
 

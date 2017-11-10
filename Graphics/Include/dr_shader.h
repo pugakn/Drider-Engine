@@ -6,6 +6,7 @@ namespace driderSDK {
 
 class Device;
 class DeviceContext;
+class CompiledShaderContainer;
 
 /**
 * Base class for shaders
@@ -54,7 +55,10 @@ class DR_API_EXPORT Shader
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   virtual DR_GRAPHICS_ERROR::E
-  createFromMemory(const Device& device,const char* buffer, size_t bufferSize) = 0;
+  create(const Device& device) = 0;
+
+  virtual DR_GRAPHICS_ERROR::E
+  compile(const Device& device, const char* buffer, size_t bufferSize) = 0;
 };
 
 }

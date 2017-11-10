@@ -192,6 +192,9 @@
     <ClInclude Include="Include\dr_d3d_constant_buffer.h">
       <Filter>Archivos de encabezado\DirectX11\Buffers</Filter>
     </ClInclude>
+    <ClInclude Include="Include\dr_compiled_shader_container.h">
+      <Filter>Archivos de encabezado\Base\Shaders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_d3d_constant_buffer.cpp">

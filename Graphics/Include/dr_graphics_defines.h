@@ -325,6 +325,14 @@ struct DR_API_EXPORT DrInputElementDesc {
   DR_FORMAT::E format;
   UInt32 inputSlot;
   UInt32 offset;
+  DrInputElementDesc()
+  {
+    format = DR_FORMAT::kDrFormat_B4G4R4A4_UNORM;
+    inputSlot = 0;
+    offset = 0;
+    semanticIndex = 0;
+    semanticName = "";
+  }
 };
 
 struct DR_API_EXPORT DrSampleDesc {
@@ -338,12 +346,32 @@ struct DR_API_EXPORT DrSampleDesc {
   float borderColor[4];
   float minLOD;
   float maxLOD;
+  DrSampleDesc() {
+    Filter = DR_TEXTURE_FILTER::kANISOTROPIC;
+    addressU = DR_TEXTURE_ADDRESS::kClamp;
+    addressV = DR_TEXTURE_ADDRESS::kClamp;
+    addressW = DR_TEXTURE_ADDRESS::kClamp;
+    mipLODBias = 0;
+    mipLODBias = 1;
+    comparisonFunc = DR_COMPARISON_FUNC::kGREATER;
+    borderColor[0] = 0;
+    borderColor[1] = 0;
+    borderColor[2] = 0;
+    borderColor[3] = 0;
+    minLOD = 0;
+    maxLOD = 0;
+  }
 };
 
 struct DR_API_EXPORT DrBufferDesc {
   DR_BUFFER_USAGE::E usage;
   UInt32 stride;
   UInt32 sizeInBytes;
+  DrBufferDesc() {
+    usage = DR_BUFFER_USAGE::kDefault;
+    stride = 0;
+    sizeInBytes = 0;
+  }
 };
 
 struct DR_API_EXPORT DrTextureDesc {
@@ -354,6 +382,15 @@ struct DR_API_EXPORT DrTextureDesc {
   UInt32 pitch;
   UInt32 mipLevels;
   UInt32 CPUAccessFlags;
+  DrTextureDesc(){
+    Format = DR_FORMAT::kDrFormat_B4G4R4A4_UNORM;
+    Usage = DR_BUFFER_USAGE::kDefault;
+    width = 0;
+    height = 0;
+    pitch = 0;
+    mipLevels = 0;
+    CPUAccessFlags = DR_CPU_ACCESS_FLAG::drRead | DR_CPU_ACCESS_FLAG::drWrite;
+  }
 };
 
 struct DR_API_EXPORT DrRasterizerDesc {
@@ -367,11 +404,27 @@ struct DR_API_EXPORT DrRasterizerDesc {
   bool scissorEnable;
   bool multisampleEnable;
   bool antialiasedLineEnable;
+  DrRasterizerDesc() {
+    fillMode = DR_FILL_MODE::kSolid;
+    cullMode = DR_CULL_MODE::kBack;
+    frontCounterClockwise = true;
+    depthBias = 1;
+    depthBiasClamp = 0.0f;
+    slopeScaledDepthBias = 0.0f;
+    depthClipEnable = true;
+    scissorEnable = true;
+    multisampleEnable = true;
+    antialiasedLineEnable = true;
+  }
 };
 
 struct DR_API_EXPORT DrRationalNumber {
   UInt32 numerator;
   UInt32 denominator;
+  DrRationalNumber() {
+    numerator = 1;
+    denominator = 1;
+  }
 };
 
 struct DR_API_EXPORT DrSwapChainDesc  {
@@ -382,6 +435,18 @@ struct DR_API_EXPORT DrSwapChainDesc  {
   UInt32 bufferCount;
   void* windowHandler;
   bool windowed;
+  DrSwapChainDesc() {
+    width = 0;
+    height = 0;
+    DrRationalNumber ref;
+    ref.denominator = 60;
+    ref.numerator = 1;
+    refreshRate = ref;
+    Format = DR_FORMAT::kDrFormat_B4G4R4A4_UNORM;
+    bufferCount = 1;
+    windowHandler = nullptr;
+    windowed = true;
+  }
 };
 
 struct DR_API_EXPORT DrDepthStencilDesc {
@@ -390,6 +455,13 @@ struct DR_API_EXPORT DrDepthStencilDesc {
   bool stencilEnable;
   UInt8 stencilReadMask;
   UInt8 stencilWriteMask;
+  DrDepthStencilDesc() {
+    depthEnable = true;
+    depthFunc = DR_COMPARISON_FUNC::kLESS_EQUAL;
+    stencilEnable = false;
+    stencilReadMask = 0;
+    stencilWriteMask = 0;
+  }
 };
 
 }

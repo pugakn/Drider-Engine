@@ -25,7 +25,8 @@ class DR_API_EXPORT D3DInputLayout : public InputLayout
    */
   DR_GRAPHICS_ERROR::E
   create(const Device& device,
-         const std::vector<DrInputElementDesc>& inputDescArray) override;
+         const std::vector<DrInputElementDesc>& inputDescArray,
+         const Shader& shader) override;
 
   /**
   * Set the input layout

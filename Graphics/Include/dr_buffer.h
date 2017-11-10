@@ -1,6 +1,7 @@
 #pragma once
 #include <dr_prerequisites.h>
 #include "dr_graphics_defines.h"
+#include <vector>
 
 namespace driderSDK {
 
@@ -38,7 +39,7 @@ class DR_API_EXPORT Buffer
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   virtual DR_GRAPHICS_ERROR::E
-  create(const Device& device, const DrBufferDesc& desc, char* initialData) = 0;
+  create(const Device& device, const DrBufferDesc& desc, const byte* initialData) = 0;
 
   /**
   * Update the buffer with new data
@@ -53,9 +54,23 @@ class DR_API_EXPORT Buffer
   *   The new data buffer size
   */
   virtual void
-  updateFromMemory(const DeviceContext& deviceContext, 
-                   const char * dataBuffer, 
-                   size_t bufferSize) = 0;
+  updateFromSysMemCpy(const DeviceContext& deviceContext) = 0;
+
+  /**
+  * Update the buffer with new data
+  *
+  * @param deviceContext
+  *   The device context to get acces to the resource
+  *
+  * @param dataBuffer
+  *   The new data buffer
+  *
+  * @param bufferSize
+  *   The new data buffer size
+  */
+  virtual void
+    updateFromBuffer(const DeviceContext& deviceContext,
+      const byte* buffer) = 0;
 
   /**
   * Release the allocated memory
@@ -63,6 +78,7 @@ class DR_API_EXPORT Buffer
   virtual void
   release() = 0;
 
+  std::vector<byte> sysMemCpy;
   DrBufferDesc descriptor;
 };
 

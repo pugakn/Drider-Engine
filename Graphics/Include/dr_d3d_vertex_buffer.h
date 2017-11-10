@@ -39,7 +39,7 @@ class DR_API_EXPORT D3DVertexBuffer : public VertexBuffer
   DR_GRAPHICS_ERROR::E
   create(const Device& device,
          const DrBufferDesc& desc,
-         char* initialData) override;
+         const byte* initialData) override;
 
   /**
   * Set the vertex buffer to the stage
@@ -58,6 +58,7 @@ class DR_API_EXPORT D3DVertexBuffer : public VertexBuffer
   set(const DeviceContext& deviceContext,
   UInt32 stride, UInt32 offset) const override;
 
+
   /**
   * Update the buffer with new data
   *
@@ -71,9 +72,23 @@ class DR_API_EXPORT D3DVertexBuffer : public VertexBuffer
   *   The new data buffer size
   */
   void
-  updateFromMemory(const DeviceContext& deviceContext,
-                   const char * dataBuffer,
-                   size_t bufferSize) override;
+    updateFromSysMemCpy(const DeviceContext& deviceContext) override;
+
+  /**
+  * Update the buffer with new data
+  *
+  * @param deviceContext
+  *   The device context to get acces to the resource
+  *
+  * @param dataBuffer
+  *   The new data buffer
+  *
+  * @param bufferSize
+  *   The new data buffer size
+  */
+  void
+  updateFromBuffer(const DeviceContext& deviceContext,
+                   const byte* dataBuffer) override;
 
   /**
   * Release the allocated memory

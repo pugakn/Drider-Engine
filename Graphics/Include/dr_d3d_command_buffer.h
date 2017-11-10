@@ -31,7 +31,7 @@ class DR_API_EXPORT D3DCommandBuffer : public CommandBuffer
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   DR_GRAPHICS_ERROR::E
-  create(const Device& device, const DrBufferDesc& desc, char* initialData) override;
+  create(const Device& device, const DrBufferDesc& desc, const byte* initialData) override;
   //void set(const DeviceContext& deviceContext, DR_SHADER_TYPE_FLAG::E typeFlag) const override;
 
   /**
@@ -47,7 +47,22 @@ class DR_API_EXPORT D3DCommandBuffer : public CommandBuffer
   *   The new data buffer size
   */
   void
-  updateFromMemory(const DeviceContext& deviceContext, const char * dataBuffer, size_t bufferSize) override;
+    updateFromSysMemCpy(const DeviceContext& deviceContext) override;
+
+  /**
+  * Update the buffer with new data
+  *
+  * @param deviceContext
+  *   The device context to get acces to the resource
+  *
+  * @param dataBuffer
+  *   The new data buffer
+  *
+  * @param bufferSize
+  *   The new data buffer size
+  */
+  void
+  updateFromBuffer(const DeviceContext& deviceContext, const byte* dataBuffer) override;
 
   /**
   * Release the allocated memory

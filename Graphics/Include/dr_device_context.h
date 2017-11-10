@@ -70,8 +70,7 @@ class DR_API_EXPORT DeviceContext {
   */
   virtual void
   updateBufferFromMemory(Buffer& buffer,
-                         const char* dataBuffer,
-                         size_t bufferSize) const = 0;
+                         const byte* dataBuffer) const = 0;
 
   /**
   * Set the render target and depth stencil

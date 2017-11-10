@@ -9,7 +9,7 @@ namespace driderSDK {
 
 void
 D3DFragmentShader::set(const DeviceContext & deviceContext) const {
-  static_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->PSSetShader(APIShader, 0, 0);
+  reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->D3D11DeviceContext->PSSetShader(APIShader, 0, 0);
 }
 
 void
@@ -18,26 +18,8 @@ D3DFragmentShader::release() {
 }
 
 DR_GRAPHICS_ERROR::E
-D3DFragmentShader::createFromMemory(const Device& device,
-                                    const char* buffer,
-                                    size_t bufferSize) {
-  errorBlob = nullptr;
-  if (D3DCompile(buffer,
-                 bufferSize,
-                 0,
-                 0,
-                 0,
-                 "FS",
-                 "ps_5_0",
-                 0,
-                 0,
-                 &shader_blob,
-                 &errorBlob) != S_OK) {
-    if (errorBlob) {
-      return DR_GRAPHICS_ERROR::COMPILE_SHADER_ERROR;
-    }
-  }
-  if (static_cast<const D3DDevice*>(&device)->
+D3DFragmentShader::create(const Device& device) {
+  if (reinterpret_cast<const D3DDevice*>(&device)->
         D3D11Device->
           CreatePixelShader(shader_blob->GetBufferPointer(),
                             shader_blob->GetBufferSize(),
@@ -48,4 +30,27 @@ D3DFragmentShader::createFromMemory(const Device& device,
   return DR_GRAPHICS_ERROR::ERROR_NONE;
 }
 
+
+DR_GRAPHICS_ERROR::E
+D3DFragmentShader::compile(const Device& device, const char* buffer, size_t bufferSize)
+{
+  ID3DBlob* errorBlob = nullptr;
+  if (D3DCompile(buffer,
+    bufferSize,
+    0,
+    0,
+    0,
+    "FS",
+    "ps_5_0",
+    0,
+    0,
+    &shader_blob,
+    &errorBlob) != S_OK) {
+      if (errorBlob) {
+        return DR_GRAPHICS_ERROR::COMPILE_SHADER_ERROR;
+      }
+    }
+  errorBlob->Release();
+  return DR_GRAPHICS_ERROR::ERROR_NONE;
+}
 }

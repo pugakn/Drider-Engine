@@ -8,7 +8,7 @@ namespace driderSDK {
 
 void
 D3DComputeShader::set(const DeviceContext& deviceContext) const {
-  static_cast<const D3DDeviceContext*>(&deviceContext)->
+  reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext->
       CSSetShader(APIShader, 0, 0);
 }
@@ -19,27 +19,8 @@ D3DComputeShader::release() {
 }
 
 DR_GRAPHICS_ERROR::E
-D3DComputeShader::createFromMemory(const Device& device,
-                                   const char* buffer,
-                                   size_t bufferSize) {
-  errorBlob = nullptr;
-  if (D3DCompile(buffer,
-                 bufferSize,
-                 0,
-                 0,
-                 0,
-                 "CS",
-                 "cs_5_0",
-                 0,
-                 0,
-                 &shader_blob,
-                 &errorBlob) != S_OK) {
-    if (errorBlob) {
-      return DR_GRAPHICS_ERROR::COMPILE_SHADER_ERROR;
-    }
-  }
-
-  if (static_cast<const D3DDevice*>(&device)->
+D3DComputeShader::create(const Device& device) {
+  if (reinterpret_cast<const D3DDevice*>(&device)->
         D3D11Device->
           CreateComputeShader(shader_blob->GetBufferPointer(),
                               shader_blob->GetBufferSize(),
@@ -47,6 +28,29 @@ D3DComputeShader::createFromMemory(const Device& device,
                               &APIShader) != S_OK) {
     return DR_GRAPHICS_ERROR::CREATE_SHADER_ERROR;
   }
+  return DR_GRAPHICS_ERROR::ERROR_NONE;
+}
+
+DR_GRAPHICS_ERROR::E
+D3DComputeShader::compile(const Device& device, const char* buffer, size_t bufferSize) 
+{
+  ID3DBlob* errorBlob = nullptr;
+  if (D3DCompile(buffer,
+    bufferSize,
+    0,
+    0,
+    0,
+    "CS",
+    "cs_5_0",
+    0,
+    0,
+    &shader_blob,
+    &errorBlob) != S_OK) {
+    if (errorBlob) {
+      return DR_GRAPHICS_ERROR::COMPILE_SHADER_ERROR;
+    }
+  }
+  errorBlob->Release();
   return DR_GRAPHICS_ERROR::ERROR_NONE;
 }
 

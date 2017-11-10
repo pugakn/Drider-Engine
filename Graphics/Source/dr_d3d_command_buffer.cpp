@@ -11,15 +11,18 @@ D3DCommandBuffer::D3DCommandBuffer() {
 DR_GRAPHICS_ERROR::E
 D3DCommandBuffer::create(const Device& device,
                          const DrBufferDesc& desc,
-                         char* initialData) {
+                         const byte* initialData) {
   descriptor = desc;
   return DR_GRAPHICS_ERROR::ERROR_NOT_IMPLEMENTED;
 }
 
 void
-D3DCommandBuffer::updateFromMemory(const DeviceContext& deviceContext,
-                                   const char* dataBuffer,
-                                   size_t bufferSize) {
+D3DCommandBuffer::updateFromSysMemCpy(const DeviceContext& deviceContext) {
+}
+
+void
+D3DCommandBuffer::updateFromBuffer(const DeviceContext& deviceContext,
+                                   const byte* dataBuffer) {
 }
 
 void

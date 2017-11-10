@@ -54,7 +54,7 @@ class DR_API_EXPORT Device
   */
   virtual DR_GRAPHICS_ERROR::E
   createVertexBuffer(const DrBufferDesc& desc,
-                     char* initialData,
+                     byte* initialData,
                      VertexBuffer& vertexBuffer) = 0;
 
   /**
@@ -74,7 +74,7 @@ class DR_API_EXPORT Device
   */
   virtual DR_GRAPHICS_ERROR::E
   createIndexBuffer(const DrBufferDesc& desc,
-                    char* initialData,
+                    byte* initialData,
                     IndexBuffer& indexBuffer) = 0;
 
   /**
@@ -94,7 +94,7 @@ class DR_API_EXPORT Device
   */
   virtual DR_GRAPHICS_ERROR::E
   createConstantBuffer(const DrBufferDesc& desc,
-                       char* initialData,
+                       byte* initialData,
                        ConstantBuffer& constantBuffer) = 0;
 
   /**

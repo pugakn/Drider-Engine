@@ -46,7 +46,10 @@ class DR_API_EXPORT D3DTeselationShader : public TeselationShader
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   DR_GRAPHICS_ERROR::E
-  createFromMemory(const Device& device, const char* buffer, size_t bufferSize) override;
+  create(const Device& device) override;
+
+  DR_GRAPHICS_ERROR::E
+  compile(const Device& device, const char* buffer, size_t bufferSize) override;
   //Microsoft::WRL::ComPtr<ID3D11Tes> APIShader;
 };
 

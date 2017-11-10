@@ -22,7 +22,7 @@ DR_GRAPHICS_ERROR::E D3DDepthStencil::create(const Device& device,
   dDesc.Format = static_cast<DXGI_FORMAT>(desc.Format);
   dDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;//Hardcoded
 
-  if (static_cast<const D3DDevice*>(&device)->
+  if (reinterpret_cast<const D3DDevice*>(&device)->
         D3D11Device->
           CreateDepthStencilView(static_cast<D3DTexture*>(depthTexture.get())->
                                    APITexture,

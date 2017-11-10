@@ -29,7 +29,7 @@ D3DDepthStencilState::create(const Device& device,
   dsDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
   dsDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
   dsDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-  if (static_cast<const D3DDevice*>(&device)->
+  if (reinterpret_cast<const D3DDevice*>(&device)->
         D3D11Device->
           CreateDepthStencilState(&dsDesc, &APIState) != S_OK) {
     return DR_GRAPHICS_ERROR::CREATE_DEPTH_STATE_ERROR;
@@ -40,7 +40,7 @@ D3DDepthStencilState::create(const Device& device,
 void
 D3DDepthStencilState::set(const DeviceContext& deviceContext,
                           UInt32 refValue) const {
-  static_cast<const D3DDeviceContext*>(&deviceContext)->
+  reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext->
       OMSetDepthStencilState(APIState, refValue);
 }

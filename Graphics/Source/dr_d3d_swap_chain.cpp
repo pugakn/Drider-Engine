@@ -27,7 +27,7 @@ DR_GRAPHICS_ERROR::E D3DSwapChain::create(const Device& device,
   if (CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)(&factory)) != S_OK) {
     return DR_GRAPHICS_ERROR::CREATE_FACTORY_ERROR;
   }
-  if (factory->CreateSwapChain(static_cast<const D3DDevice*>(&device)->D3D11Device,
+  if (factory->CreateSwapChain(reinterpret_cast<const D3DDevice*>(&device)->D3D11Device,
                                &apiDesc,
                                &APISwapchain) != S_OK) {
     return DR_GRAPHICS_ERROR::CREATE_SWAP_CHAIN_ERROR;
@@ -41,7 +41,7 @@ DR_GRAPHICS_ERROR::E
 D3DSwapChain::getBackBuffer(Texture& texture) {
   if (APISwapchain->GetBuffer(0,
                               __uuidof(ID3D11Texture2D),
-                               (void**)&static_cast<D3DTexture*>(&texture)->APITexture) != S_OK)
+                               (void**)&reinterpret_cast<D3DTexture*>(&texture)->APITexture) != S_OK)
   return DR_GRAPHICS_ERROR::ERROR_NONE;
 }
 

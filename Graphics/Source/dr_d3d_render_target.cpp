@@ -28,9 +28,9 @@ D3DRenderTarget::create(const Device& device,
     }
 
     ID3D11RenderTargetView* RTV;
-    if (static_cast<const D3DDevice*>(&device)->
+    if (reinterpret_cast<const D3DDevice*>(&device)->
           D3D11Device->
-            CreateRenderTargetView(static_cast<D3DTexture*>(colorTextures.back())->
+            CreateRenderTargetView(reinterpret_cast<D3DTexture*>(colorTextures.back())->
                                      APITexture,
                                    NULL,
                                    &RTV) != S_OK) {
@@ -45,11 +45,11 @@ D3DRenderTarget::create(const Device& device,
 void
 D3DRenderTarget::set(const DeviceContext& deviceContext,
                      const DepthStencil& depthStencil) const {
-  static_cast<const D3DDeviceContext*>(&deviceContext)->
+  reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext->
       OMSetRenderTargets(numColorTextures,
                          &APIColorViews.back(),
-                         static_cast<const D3DDepthStencil*>(&depthStencil)->
+                         reinterpret_cast<const D3DDepthStencil*>(&depthStencil)->
                            APIDepthView);
 }
 

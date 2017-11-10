@@ -17,7 +17,7 @@ class DeviceContext;
 */
 class DR_API_EXPORT D3DIndexBuffer : public IndexBuffer
 {
- public:
+public:
   D3DIndexBuffer();
 
   /**
@@ -36,7 +36,7 @@ class DR_API_EXPORT D3DIndexBuffer : public IndexBuffer
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   DR_GRAPHICS_ERROR::E
-  create(const Device& device, const DrBufferDesc& desc, char* initialData) override;
+    create(const Device& device, const DrBufferDesc& desc, const byte* initialData) override;
 
   /**
   * Set the index buffer to the stage
@@ -49,7 +49,7 @@ class DR_API_EXPORT D3DIndexBuffer : public IndexBuffer
   *
   */
   void
-  set(const DeviceContext& deviceContext, UInt32 offset) const override;
+    set(const DeviceContext& deviceContext, UInt32 offset) const override;
 
   /**
   * Update the buffer with new data
@@ -64,9 +64,23 @@ class DR_API_EXPORT D3DIndexBuffer : public IndexBuffer
   *   The new data buffer size
   */
   void
-  updateFromMemory(const DeviceContext& deviceContext,
-                   const char* dataBuffer,
-                   size_t bufferSize) override;
+    updateFromSysMemCpy(const DeviceContext& deviceContext) override;
+
+  /**
+  * Update the buffer with new data
+  *
+  * @param deviceContext
+  *   The device context to get acces to the resource
+  *
+  * @param dataBuffer
+  *   The new data buffer
+  *
+  * @param bufferSize
+  *   The new data buffer size
+  */
+  void
+  updateFromBuffer(const DeviceContext& deviceContext,
+                   const byte* dataBuffer) override;
 
   /**
   * Release the allocated memory
