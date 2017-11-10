@@ -149,6 +149,7 @@
     <ClInclude Include="Include\dr_d3d_domain_shader.h" />
     <ClInclude Include="Include\dr_d3d_fragment_shader.h" />
     <ClInclude Include="Include\dr_d3d_geometry_shader.h" />
+    <ClInclude Include="Include\dr_d3d_graphics_api.h" />
     <ClInclude Include="Include\dr_d3d_hull_shader.h" />
     <ClInclude Include="Include\dr_d3d_index_buffer.h" />
     <ClInclude Include="Include\dr_d3d_input_layout.h" />
@@ -166,6 +167,7 @@
     <ClInclude Include="Include\dr_domain_shader.h" />
     <ClInclude Include="Include\dr_fragment_shader.h" />
     <ClInclude Include="Include\dr_geometry_shader.h" />
+    <ClInclude Include="Include\dr_graphics_api.h" />
     <ClInclude Include="Include\dr_graphics_defines.h" />
     <ClInclude Include="Include\dr_device.h" />
     <ClInclude Include="Include\dr_device_context.h" />
@@ -193,6 +195,7 @@
     <ClCompile Include="Source\dr_d3d_domain_shader.cpp" />
     <ClCompile Include="Source\dr_d3d_fragment_shader.cpp" />
     <ClCompile Include="Source\dr_d3d_geometry_shader.cpp" />
+    <ClCompile Include="Source\dr_d3d_graphics_api.cpp" />
     <ClCompile Include="Source\dr_d3d_hull_shader.cpp" />
     <ClCompile Include="Source\dr_d3d_index_buffer.cpp" />
     <ClCompile Include="Source\dr_d3d_input_layout.cpp" />
