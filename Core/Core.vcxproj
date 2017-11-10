@@ -100,7 +100,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include;$(SolutionDir)$(Projectname)\Include;$(DRIDER_DEPENDENCIES);%(AdditionalIncludeDirectories);$(SolutionDir)Math\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include;$(SolutionDir)$(Projectname)\Include;$(DRIDER_DEPENDENCIES);%(AdditionalIncludeDirectories);$(SolutionDir)Math\Include;$(DRIDER_DEPENDENCIES)STB\stb-master</AdditionalIncludeDirectories>
     </ClCompile>
     <BuildLog>
       <Path>$(IntDir).log</Path>
@@ -116,7 +116,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include;$(SolutionDir)$(Projectname)\Include;$(DRIDER_DEPENDENCIES);%(AdditionalIncludeDirectories);$(SolutionDir)Math\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include;$(SolutionDir)$(Projectname)\Include;$(DRIDER_DEPENDENCIES);%(AdditionalIncludeDirectories);$(SolutionDir)Math\Include;$(DRIDER_DEPENDENCIES)STB\stb-master</AdditionalIncludeDirectories>
     </ClCompile>
     <BuildLog>
       <Path>$(IntDir).log</Path>
@@ -134,7 +134,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include;$(SolutionDir)$(Projectname)\Include;$(SolutionDir)Math\Include;%(AdditionalIncludeDirectories);$(SolutionDir)Math\Include;$(DRIDER_DEPENDENCIES)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include;$(SolutionDir)$(Projectname)\Include;$(SolutionDir)Math\Include;%(AdditionalIncludeDirectories);$(DRIDER_DEPENDENCIES)STB\stb-master;$(DRIDER_DEPENDENCIES)STB\stb-master</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -153,7 +153,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include;$(SolutionDir)$(Projectname)\Include;$(SolutionDir)Math\Include;%(AdditionalIncludeDirectories);$(SolutionDir)Math\Include;$(DRIDER_DEPENDENCIES)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include;$(SolutionDir)$(Projectname)\Include;$(SolutionDir)Math\Include;%(AdditionalIncludeDirectories);$(DRIDER_DEPENDENCIES)STB\stb-master;$(DRIDER_DEPENDENCIES)STB\stb-master</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -168,6 +168,7 @@
   <ItemGroup>
     <ClInclude Include="Include\dr_bone.h" />
     <ClInclude Include="Include\dr_graph.h" />
+    <ClInclude Include="Include\dr_loader.h" />
     <ClInclude Include="Include\dr_logger.h" />
     <ClInclude Include="Include\dr_mesh.h" />
     <ClInclude Include="Include\dr_model.h" />
@@ -180,6 +181,7 @@
   <ItemGroup>
     <ClCompile Include="Source\dr_bone.cpp" />
     <ClCompile Include="Source\dr_graph.cpp" />
+    <ClCompile Include="Source\dr_loader.cpp" />
     <ClCompile Include="Source\dr_logger.cpp" />
     <ClCompile Include="Source\dr_node.cpp" />
     <ClCompile Include="Source\dr_parser.cpp" />

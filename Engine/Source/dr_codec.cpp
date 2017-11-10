@@ -1,11 +1,12 @@
 #include "dr_codec.h"
 #include <dr_parser.h>
+#include <dr_loader.h>
 
 namespace driderSDK {
   
-std::shared_ptr<Resource>
+void *
 Codec::decode(TString pathName) {
-  return std::shared_ptr<Resource>();
+  
 }
 
 void
@@ -14,10 +15,10 @@ Codec::encode(TString pathName,
   return;
 }
 
-ResourceType::E
+bool
 Codec::isCompatible(TString pathName) {
 // No puedo utilizar parser
-  TString extension;// = Parser::strCpyBetween(pathName, _T("."), _T(" "), extension);
+  TString extension = Parser::strCpyBetween(pathName, _T("."), _T(" "), extension);
   extension = _T("png");
   if(extension == _T("png")) {
     return ResourceType::PNG;

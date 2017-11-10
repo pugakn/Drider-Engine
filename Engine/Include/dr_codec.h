@@ -15,18 +15,34 @@ namespace driderSDK {
 namespace ResourceType {
  enum E
  {
-  UNSUPPORTED,
-  PNG,
-  JPG,
-  OBJ_MODEL,
-  FBX_MODEL,
+  DR_TEXTURE,
+  DR_MODEL,
+  DR_SOUND,
   DR_SHADER,
-  DR_MAT  
+  DR_MATERIAL 
  };
 }
 
-struct DR_API_EXPORT Codec
+struct sImage
 {
+  Int32 w;
+  Int32 h;
+  Int32 channels;
+  unsigned char* data;
+};
+
+class DR_API_EXPORT Codec
+{
+  /**
+  * 
+  */ 
+  Codec() {}
+
+  /**
+  *
+  */
+  virtual ~Codec() {}    
+
   /**
   * TEST::codecDecode
   * Decodes and load a resource.
@@ -37,7 +53,7 @@ struct DR_API_EXPORT Codec
   * @return
   *   The type of the resource ResourceType::E.
   */
-  static std::shared_ptr<Resource>
+  virtual void*
   decode(TString pathName);
 
   /**
@@ -50,14 +66,14 @@ struct DR_API_EXPORT Codec
   * @return
   *   Shared_ptr to a Resource.
   */
-  static void
+  virtual void
   encode(TString pathName,
          ResourceType::E resourceType);
 
   /**
   * TEST::isCompatible
   */
-  static ResourceType::E
+  bool
   isCompatible (TString pathName);
 };
  

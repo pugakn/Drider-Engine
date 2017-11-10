@@ -32,18 +32,14 @@ class DR_API_EXPORT ResourceManager {
   * Checks if the resource is compatible, then load this
   * resource in the resourceContent.
   *
-  * @param nameResource
+  * @param resourceName
   *   Resource's name.
-  *
-  * @param pathFile
-  *   Resource's path.
   *
   * @return
   *   void.
   */
-  void
-  loadResource (std::string nameResource,
-                std::string pathFile);
+  std::shared_ptr<Resource>
+  loadResource (TString resourceName);
   
   /**
   * TEST::createResource
@@ -60,24 +56,7 @@ class DR_API_EXPORT ResourceManager {
   */
   void
   createResource(ResourceType::E resourceType, 
-                 std::string resourceName);
-  
-  /**
-  * TEST::isCompatible
-  * Checks if a resource is suported for Drider Engine
-  *
-  * @param resource
-  *   Name of the resource (include path and file extention).
-  *
-  * @param resourceTypeOut
-  *   Output of resource's type.
-  *
-  * @return
-  *   void.
-  */
-  bool
-  isCompatible(std::string resource,
-               ResourceType::E &resourceTypeOut);
+                 TString resourceKey);
 
   /**
   * TEST::existInResourceContent
@@ -90,7 +69,7 @@ class DR_API_EXPORT ResourceManager {
   *   Return true if the resource exist, else return false.
   */
   bool
-  existInResourceContent (std::string key);
+  existInResourceContent (TString key);
 
   /**
   * TEST::getReference
@@ -103,9 +82,9 @@ class DR_API_EXPORT ResourceManager {
   *   Return the shared_ptr to a Resource.
   */
   std::shared_ptr<Resource>
-  getReference(std::string key);
+  getReference(TString key);
   
-  std::map<std::string, std::shared_ptr<Resource>> resourceContent;
+  std::map<TString, std::shared_ptr<Resource>> resourceContent;
 
 
 };
