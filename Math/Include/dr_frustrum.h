@@ -1,6 +1,6 @@
 #pragma once
 #include <array>
-#include <dr_prerequisites.h>
+#include "dr_math_prerequisites.h"
 #include <dr_plane.h>
 #include <dr_matrix4x4.h>
 #include <dr_vector3d.h>
@@ -17,7 +17,7 @@ class Ray;
 * Frustrum class
 */
 
-class DR_API_EXPORT Frustrum
+class DR_MATH_EXPORT Frustrum
 {
  public:
 	enum PLANES { 

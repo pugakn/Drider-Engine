@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <fstream>
-#include <dr_prerequisites.h>
+#include "dr_core_prerequisites.h"
 #include "dr_module.h"
 
 namespace driderSDK
@@ -17,7 +17,7 @@ namespace driderSDK
 *   sampleName.reset();
 * }
 */
-class DR_API_EXPORT Logger : public Module<Logger>
+class DR_CORE_EXPORT Logger : public Module<Logger>
 {
  public:
   /**

@@ -1,5 +1,5 @@
 #pragma once
-#include <dr_prerequisites.h>
+#include "dr_graphics_prerequisites.h"
 #include "dr_graphics_defines.h"
 
 namespace driderSDK {
@@ -8,7 +8,7 @@ class Device;
 class DeviceContext;
 class Texture;
 
-class DR_API_EXPORT SwapChain
+class DR_GRAPHICS_EXPORT SwapChain
 {
  public:
   /**

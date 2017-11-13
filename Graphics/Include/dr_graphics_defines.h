@@ -1,5 +1,6 @@
 #pragma once
-#include <dr_prerequisites.h>
+
+#include "dr_graphics_prerequisites.h"
 
 namespace driderSDK {
 
@@ -319,7 +320,7 @@ enum E  {
 
 }
 
-struct DR_API_EXPORT DrInputElementDesc {
+struct DR_GRAPHICS_EXPORT DrInputElementDesc {
   char* semanticName;
   UInt32 semanticIndex;
   DR_FORMAT::E format;
@@ -327,7 +328,7 @@ struct DR_API_EXPORT DrInputElementDesc {
   UInt32 offset;
 };
 
-struct DR_API_EXPORT DrSampleDesc {
+struct DR_GRAPHICS_EXPORT DrSampleDesc {
   DR_TEXTURE_FILTER::E Filter;
   DR_TEXTURE_ADDRESS::E addressU;
   DR_TEXTURE_ADDRESS::E addressV;
@@ -340,13 +341,13 @@ struct DR_API_EXPORT DrSampleDesc {
   float maxLOD;
 };
 
-struct DR_API_EXPORT DrBufferDesc {
+struct DR_GRAPHICS_EXPORT DrBufferDesc {
   DR_BUFFER_USAGE::E usage;
   UInt32 stride;
   UInt32 sizeInBytes;
 };
 
-struct DR_API_EXPORT DrTextureDesc {
+struct DR_GRAPHICS_EXPORT DrTextureDesc {
   DR_FORMAT::E Format;
   DR_BUFFER_USAGE::E Usage;
   UInt32 width;
@@ -356,7 +357,7 @@ struct DR_API_EXPORT DrTextureDesc {
   UInt32 CPUAccessFlags;
 };
 
-struct DR_API_EXPORT DrRasterizerDesc {
+struct DR_GRAPHICS_EXPORT DrRasterizerDesc {
   DR_FILL_MODE::E fillMode;
   DR_CULL_MODE::E cullMode;
   bool  frontCounterClockwise;
@@ -369,12 +370,12 @@ struct DR_API_EXPORT DrRasterizerDesc {
   bool antialiasedLineEnable;
 };
 
-struct DR_API_EXPORT DrRationalNumber {
+struct DR_GRAPHICS_EXPORT DrRationalNumber {
   UInt32 numerator;
   UInt32 denominator;
 };
 
-struct DR_API_EXPORT DrSwapChainDesc  {
+struct DR_GRAPHICS_EXPORT DrSwapChainDesc  {
   UInt32 width;
   UInt32 height;
   DrRationalNumber refreshRate;
@@ -384,7 +385,7 @@ struct DR_API_EXPORT DrSwapChainDesc  {
   bool windowed;
 };
 
-struct DR_API_EXPORT DrDepthStencilDesc {
+struct DR_GRAPHICS_EXPORT DrDepthStencilDesc {
   bool depthEnable;
   DR_COMPARISON_FUNC::E depthFunc; 
   bool stencilEnable;

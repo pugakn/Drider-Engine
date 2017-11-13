@@ -15,7 +15,7 @@ class DeviceContext;
 * Sample usage:
 *	VertexBuffer* = new D3DVertexBuffer;
 */
-class DR_API_EXPORT D3DVertexBuffer : public VertexBuffer
+class DR_GRAPHICS_EXPORT D3DVertexBuffer : public VertexBuffer
 {
  public:
   /**

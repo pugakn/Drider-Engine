@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <fstream>
-#include <dr_defines.h>
+#include "dr_engine_prerequisites.h"
 
 namespace driderSDK {
 
@@ -14,7 +14,7 @@ namespace driderSDK {
 * sampleName.save("fileToWrite", bufferToSaveToFile);
 * sampleName.append("fileToAppend", bufferToAddInFile);
 */
-class DR_API_EXPORT FileSystem
+class DR_ENGINE_EXPORT FileSystem
 {
  public:
   

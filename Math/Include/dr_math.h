@@ -3,7 +3,7 @@
 #include <cmath>
 #include <cstring>
 #include <limits>
-#include <dr_prerequisites.h>
+#include "dr_math_prerequisites.h"
 
 namespace driderSDK {
 /**
@@ -12,7 +12,7 @@ namespace driderSDK {
 * Sample usage:
 * driderSDK::Math::function;
 */
-struct DR_API_EXPORT Math 
+struct DR_MATH_EXPORT Math 
 {
   /**********************************************************************
   *                        Basic math defines                           *

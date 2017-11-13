@@ -11,7 +11,7 @@ class DeviceContext;
 * Sample usage:
 *	IndexBuffer* = new D3DIndexBuffer;
 */
-class DR_API_EXPORT IndexBuffer : public Buffer
+class DR_GRAPHICS_EXPORT IndexBuffer : public Buffer
 {
  public:
   /**

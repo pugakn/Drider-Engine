@@ -1,5 +1,5 @@
 #pragma once
-#include <dr_prerequisites.h>
+#include "dr_graphics_prerequisites.h"
 #include "dr_graphics_defines.h"
 
 namespace driderSDK {
@@ -7,7 +7,7 @@ namespace driderSDK {
 class DeviceContext;
 class Device;
 
-class DR_API_EXPORT RasterizerState
+class DR_GRAPHICS_EXPORT RasterizerState
 {
  public:
   /**

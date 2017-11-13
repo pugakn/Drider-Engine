@@ -1,9 +1,10 @@
 #include "dr_node.h"
 
 namespace driderSDK {
+
 Node::Node(const TString & _name, WeakNode _parent) 
   : m_parent(_parent),
-    m_finalTransform(Matrix4x4::identityMat4x4),
+    m_finalTransform(Math::kIdentity),
     m_name(_name) {
 }
 

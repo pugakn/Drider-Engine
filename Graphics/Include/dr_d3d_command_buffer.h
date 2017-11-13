@@ -9,7 +9,7 @@ namespace driderSDK {
 
 class DeviceContext;
 
-class DR_API_EXPORT D3DCommandBuffer : public CommandBuffer
+class DR_GRAPHICS_EXPORT D3DCommandBuffer : public CommandBuffer
 {
  public:
   /**

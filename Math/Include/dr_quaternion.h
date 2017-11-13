@@ -1,7 +1,7 @@
 #pragma once
 
-#include <cmath>
-#include <dr_prerequisites.h>
+#include "dr_math_prerequisites.h"
+#include "dr_math.h"
 #include "dr_matrix4x4.h"
 #include "dr_matrix3x3.h"
 #include "dr_vector4d.h"
@@ -14,7 +14,7 @@ namespace driderSDK {
 * Sample usage:
 *	Quaternion myQuaternion(0.5, 0.1, 0.0, 1.0);
 */
-class DR_API_EXPORT Quaternion
+class DR_MATH_EXPORT Quaternion
 {
  public:
 

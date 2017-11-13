@@ -7,7 +7,7 @@ class ID3D11DeviceContext;
 
 namespace driderSDK {
 
-class DR_API_EXPORT D3DDeviceContext : public DeviceContext
+class DR_GRAPHICS_EXPORT D3DDeviceContext : public DeviceContext
 {
  public:
    /**

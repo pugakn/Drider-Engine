@@ -1,5 +1,5 @@
 #pragma once
-#include <dr_prerequisites.h>
+#include "dr_graphics_prerequisites.h"
 #include "dr_graphics_defines.h"
 #include <string>
 
@@ -14,7 +14,7 @@ class DeviceContext;
 * Sample usage:
 *	texture* = new D3DTexture;
 */
-class DR_API_EXPORT Texture
+class DR_GRAPHICS_EXPORT Texture
 {
  public:
   /**

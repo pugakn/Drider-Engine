@@ -1,5 +1,6 @@
 #pragma once
-#include <dr_prerequisites.h>
+
+#include "dr_math_prerequisites.h"
 #include "dr_vector3d.h"
 
 namespace driderSDK {
@@ -15,7 +16,7 @@ class Frustrum;
 * Sample usage:
 *	Ray(Vector3D(0,0,0), Vector3D(1,0.5,0.9));
 */
-class DR_API_EXPORT Ray
+class DR_MATH_EXPORT Ray
 {
  public:
   /**
@@ -39,7 +40,7 @@ class DR_API_EXPORT Ray
   */
   Ray(Vector3D _origin, Vector3D _direction)
     : origin(_origin),
-	     direction(_direction)
+	    direction(_direction)
   {}
 
   /**

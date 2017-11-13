@@ -1,5 +1,4 @@
 #pragma once
-#include <dr_prerequisites.h>
 
 #include <string>
 #include <vector>
@@ -8,9 +7,11 @@
   #include <wchar.h> 
 #endif // _UNICODE
 
+#include "dr_core_prerequisites.h"
+
 namespace driderSDK {
 
-struct DR_API_EXPORT Parser 
+struct DR_CORE_EXPORT Parser 
 {
  public:    
   /**

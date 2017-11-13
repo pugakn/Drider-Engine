@@ -1,8 +1,8 @@
 #pragma once
 
-#include <dr_prerequisites.h>
 #include <dr_vector3d.h>
 #include <dr_matrix4x4.h>
+#include "dr_core_prerequisites.h"
 
 namespace driderSDK {
 
@@ -17,7 +17,7 @@ namespace AXIS {
   };
 }
 
-class DR_API_EXPORT Transform 
+class DR_CORE_EXPORT Transform 
 {
  public:
   Transform();

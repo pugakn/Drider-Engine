@@ -7,7 +7,7 @@
 
 namespace driderSDK {
 
-class DR_API_EXPORT D3DTextureShader : public TextureShader
+class DR_GRAPHICS_EXPORT D3DTextureShader : public TextureShader
 {
  public:
   /**

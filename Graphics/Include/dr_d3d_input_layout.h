@@ -7,7 +7,7 @@ struct ID3D11InputLayout;
 
 namespace driderSDK {
 
-class DR_API_EXPORT D3DInputLayout : public InputLayout
+class DR_GRAPHICS_EXPORT D3DInputLayout : public InputLayout
 {
  public:
   /**

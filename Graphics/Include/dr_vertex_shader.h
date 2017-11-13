@@ -9,7 +9,7 @@ namespace driderSDK {
 * Sample usage:
 *	VertexShader* = new D3DVertexShader;
 */
-class DR_API_EXPORT VertexShader : public Shader
+class DR_GRAPHICS_EXPORT VertexShader : public Shader
 {
  public:
   /**

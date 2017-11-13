@@ -1,6 +1,8 @@
 #pragma once
+
 #include <array>
-#include <dr_prerequisites.h>
+#include "dr_math_prerequisites.h"
+
 namespace driderSDK {
 
 class Vector3D;
@@ -25,7 +27,7 @@ enum E
 };
 }
 
-struct DR_API_EXPORT Intersect
+struct DR_MATH_EXPORT Intersect
 {
   /**
   * TEST::sphereSphere

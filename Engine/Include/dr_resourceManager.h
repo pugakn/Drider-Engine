@@ -1,9 +1,9 @@
 #pragma once
 #include <memory>
-#include <dr_prerequisites.h>
-#include <dr_resource.h>
-#include "dr_codec.h"
 #include <map>
+#include <dr_resource.h>
+#include "dr_engine_prerequisites.h"
+#include "dr_codec.h"
 
 namespace driderSDK {
 
@@ -13,7 +13,7 @@ namespace driderSDK {
 * Sample usage:
 *	loadResource("name.png", "resorces/");
 */
-class DR_API_EXPORT ResourceManager {
+class DR_ENGINE_EXPORT ResourceManager {
  public:
   /**
   * TEST::resourceMConstructor

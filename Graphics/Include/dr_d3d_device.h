@@ -1,5 +1,5 @@
 #pragma once
-#include <dr_prerequisites.h>
+#include "dr_graphics_prerequisites.h"
 #include "dr_device.h"
 #include <wrl.h>
 #include <wrl/client.h>
@@ -8,7 +8,7 @@ class ID3D11Device;
 
 namespace driderSDK {
 
-class DR_API_EXPORT D3DDevice : public Device
+class DR_GRAPHICS_EXPORT D3DDevice : public Device
 {
  public:
   /**

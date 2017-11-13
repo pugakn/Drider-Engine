@@ -1,5 +1,5 @@
 #pragma once
-#include <dr_prerequisites.h>
+#include "dr_graphics_prerequisites.h"
 #include "dr_graphics_defines.h"
 
 namespace driderSDK {
@@ -13,7 +13,7 @@ class RenderTarget;
 class DepthStencil;
 class ConstantBuffer;
 
-class DR_API_EXPORT DeviceContext
+class DR_GRAPHICS_EXPORT DeviceContext
 {
  public:
   /**

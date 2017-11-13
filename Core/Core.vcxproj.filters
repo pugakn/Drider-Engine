@@ -45,7 +45,7 @@
     <ClInclude Include="Include\dr_mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\dr_loader.h">
+    <ClInclude Include="Include\dr_core_prerequisites.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -69,9 +69,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\dr_resource.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\dr_loader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

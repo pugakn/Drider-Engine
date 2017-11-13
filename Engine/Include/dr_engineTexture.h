@@ -1,9 +1,10 @@
 #pragma once
+#include "dr_engine_prerequisites.h"
 #include "dr_resource.h"
 
 namespace driderSDK {
 
-class DR_API_EXPORT EngineTexture {
+class DR_CORE_EXPORT EngineTexture {
  public:
   /**
   * TEST::defaultConstructor
