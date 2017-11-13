@@ -3,6 +3,7 @@
 #include <dr_prerequisites.h>
 #include <dr_vector3d.h>
 #include <dr_matrix4x4.h>
+#include <C:\DriderDependencies\Assimp\include\assimp\ai_assert.h>
 
 namespace driderSDK {
 

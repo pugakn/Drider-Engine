@@ -134,6 +134,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="dr_model_codec.h" />
     <ClInclude Include="Include\dr_codec.h" />
     <ClInclude Include="Include\dr_engineTexture.h" />
     <ClInclude Include="Include\dr_fileSystem.h" />

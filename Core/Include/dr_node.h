@@ -8,7 +8,6 @@
 
 namespace driderSDK {
 
-
 class DR_API_EXPORT Node  
 {
  public:

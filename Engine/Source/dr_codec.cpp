@@ -17,7 +17,7 @@ Codec::encode(TString pathName,
 ResourceType::E
 Codec::isCompatible(TString pathName) {
 // No puedo utilizar parser
-  TString extension;// = Parser::strCpyBetween(pathName, _T("."), _T(" "), extension);
+  TString extension = Parser::strCpyBetween(pathName, _T("."), _T(" "), extension);
   extension = _T("png");
   if(extension == _T("png")) {
     return ResourceType::PNG;

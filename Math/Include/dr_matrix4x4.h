@@ -287,14 +287,14 @@ class DR_API_EXPORT Matrix4x4
   /**
   * TEST:
   */
-  Matrix4x4&
-  Projection();
+ /* Matrix4x4&
+  Projection();*/
 
   /**
   * TEST:
   */
-  Matrix4x4&
-  Orthographic();
+  /*Matrix4x4&
+  Orthographic();*/
 
   /**
   * TEST:
@@ -305,8 +305,8 @@ class DR_API_EXPORT Matrix4x4
   /**
   * TEST:
   */
-  Matrix4x4&
-  Reflection();
+  /*Matrix4x4&
+  Reflection();*/
   
 
   /**
