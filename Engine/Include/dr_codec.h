@@ -1,5 +1,5 @@
 #pragma once
-#include <dr_prerequisites.h>
+#include "dr_core_prerequisites.h"
 #include <dr_resource.h>
 
 #include <memory>
@@ -31,7 +31,7 @@ struct sImage
   unsigned char* data;
 };
 
-class DR_API_EXPORT Codec
+class DR_CORE_EXPORT Codec
 {
   /**
   * 
