@@ -2,13 +2,14 @@
 
 #include <vector>
 #include <memory>
-#include <dr_prerequisites.h>
 #include <dr_matrix4x4.h>
+#include "dr_core_prerequisites.h"
 #include "dr_transform.h"
 
 namespace driderSDK {
 
-class DR_API_EXPORT Node  
+
+class DR_CORE_EXPORT Node  
 {
  public:
   using SharedNode = std::shared_ptr<Node>;

@@ -27,7 +27,7 @@
     <ClInclude Include="Include\dr_engineTexture.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="dr_model_codec.h">
+    <ClInclude Include="Include\dr_engine_prerequisites.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,5 +1,7 @@
 #include "dr_matrix4x4.h"
 #include "dr_matrix3x3.h"
+#include "dr_quaternion.h"
+#include "dr_plane.h"
 
 namespace driderSDK
 {
@@ -195,12 +197,12 @@ Matrix4x4::identity() {
 }
 
 bool
-Matrix4x4::equals(const Matrix4x4 & otherMatrix, float errorRange) const
+Matrix4x4::equals(const Matrix4x4& otherMatrix, float errorRange) const
 {
-  return data[0].equals(otherMatrix.data[0]) &&
-         data[1].equals(otherMatrix.data[1]) &&
-         data[2].equals(otherMatrix.data[2]) &&
-         data[3].equals(otherMatrix.data[3]);
+  return data[0].equals(otherMatrix.data[0], errorRange) &&
+         data[1].equals(otherMatrix.data[1], errorRange) &&
+         data[2].equals(otherMatrix.data[2], errorRange) &&
+         data[3].equals(otherMatrix.data[3], errorRange);
 }
 
 Matrix4x4&
@@ -319,6 +321,37 @@ Matrix4x4::LookAt(const Vector3D & Eye, const Vector3D & At, const Vector3D & Up
 }
 
 Matrix4x4&
+Matrix4x4::Projection(float Width, float Height, float ZNear, float ZFar)
+{
+  *this = zerosMat4x4;
+
+  data[0][0] = 2.0f * ZNear / Width;
+  data[1][1] = 2.0f * ZNear / Height;
+  data[2][2] = ZFar / (ZNear - ZFar);
+  data[2][3] = -1.0f;
+  data[3][2] = ZFar * ZNear / (ZNear - ZFar);
+
+  return *this;
+}
+
+Matrix4x4&
+Matrix4x4::ProjectionFov(float FOV, float Aspect, float ZNear, float ZFar)
+{
+  *this = zerosMat4x4;
+  float Width = 1.0f / tanf(FOV * .5f);
+  float Height = Aspect / tanf(FOV * .5f);
+
+
+  data[0][0] = -Width;
+  data[1][1] = Height;
+  data[2][2] = ZFar / (ZNear - ZFar);
+  data[2][3] = -1.0f;
+  data[3][2] = ZFar * ZNear / (ZNear - ZFar);
+
+  return *this;
+}
+
+Matrix4x4&
 Matrix4x4::Orthogonal(float Width, float Height, float ZNear, float ZFar)
 {
   (*this) = zerosMat4x4;
@@ -327,6 +360,39 @@ Matrix4x4::Orthogonal(float Width, float Height, float ZNear, float ZFar)
   (*this)[2][2] = 1.0f / (ZNear - ZFar);
   (*this)[2][3] = ZNear / (ZNear - ZFar);
   (*this)[3][3] = 1.0f;
+  return *this;
+}
+
+Matrix4x4&
+Matrix4x4::Reflection(Vector3D NormalOfMirror)
+{
+  float xPow2 = NormalOfMirror.x * NormalOfMirror.x;
+  float yPow2 = NormalOfMirror.y * NormalOfMirror.y;
+  float zPow2 = NormalOfMirror.z * NormalOfMirror.z;
+  float xy = -2.f * NormalOfMirror.x * NormalOfMirror.y;
+  float xz = -2.f * NormalOfMirror.x * NormalOfMirror.z;
+  float yz = -2.f *NormalOfMirror.y * NormalOfMirror.z;
+
+  data[0][0] = -xPow2 + yPow2 + zPow2;
+  data[0][1] = xy;
+  data[0][2] = xz;
+  data[0][3] = 0;
+
+  data[1][0] = xy;
+  data[1][1] = +xPow2 - yPow2 + zPow2;
+  data[1][2] = yz;
+  data[1][3] = 0.f;
+
+  data[2][0] = xz;
+  data[2][1] = yz;
+  data[2][2] = xPow2 + yPow2 - zPow2;
+  data[2][3] = 0.f;
+
+  data[3][0] = 0.f;
+  data[3][1] = 0.f;
+  data[3][2] = 0.f;
+  data[3][3] = 1.f;
+
   return *this;
 }
 

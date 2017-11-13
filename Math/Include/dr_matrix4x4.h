@@ -1,13 +1,14 @@
 #pragma once
 
 #include <dr_prerequisites.h>
+#include "dr_math.h"
 #include "dr_vector4d.h"
-#include "dr_quaternion.h"
 
 namespace driderSDK {
 
 class Matrix3x3;
 class Quaternion;
+class Plane;
 
 /**
 * Matrix with 4x4 elements
@@ -287,14 +288,14 @@ class DR_API_EXPORT Matrix4x4
   /**
   * TEST:
   */
- /* Matrix4x4&
-  Projection();*/
+  Matrix4x4&
+  Projection(float Width, float Height, float ZNear, float ZFar);
 
   /**
   * TEST:
   */
-  /*Matrix4x4&
-  Orthographic();*/
+  Matrix4x4&
+  ProjectionFov(float FOV, float Aspect, float ZNear, float ZFar);
 
   /**
   * TEST:
@@ -305,10 +306,9 @@ class DR_API_EXPORT Matrix4x4
   /**
   * TEST:
   */
-  /*Matrix4x4&
-  Reflection();*/
+  Matrix4x4&
+  Reflection(Vector3D NormalOfMirror);
   
-
   /**
   * TEST::getPointer
   *

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <stdint.h>
-
 #include "dr_defines.h"
 #include <string>
 
