@@ -13,7 +13,7 @@ namespace driderSDK {
 * Sample usage:
 *	TeselationShader* = new D3DTeselationShader;
 */
-class DR_API_EXPORT D3DTeselationShader : public TeselationShader
+class DR_GRAPHICS_EXPORT D3DTeselationShader : public TeselationShader
 {
  public:
   /**

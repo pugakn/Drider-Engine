@@ -9,7 +9,7 @@ namespace driderSDK {
 * Sample usage:
 *	TextureShader* = new D3DTextureShader;
 */
-class DR_API_EXPORT TextureShader : public Shader
+class DR_GRAPHICS_EXPORT TextureShader : public Shader
 {
  public:
   /**

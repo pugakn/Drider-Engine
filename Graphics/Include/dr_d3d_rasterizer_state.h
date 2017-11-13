@@ -7,7 +7,7 @@ struct ID3D11RasterizerState;
 
 namespace driderSDK {
 
-class DR_API_EXPORT D3DRasterizerState : public RasterizerState
+class DR_GRAPHICS_EXPORT D3DRasterizerState : public RasterizerState
 {
  public:
   /**

@@ -1,5 +1,5 @@
 #pragma once
-#include <dr_prerequisites.h>
+#include "dr_graphics_prerequisites.h"
 #include "dr_graphics_defines.h"
 
 namespace driderSDK {
@@ -13,7 +13,7 @@ class DeviceContext;
 * Sample usage:
 *	Buffer* = new D3DBuffer;
 */
-class DR_API_EXPORT Buffer
+class DR_GRAPHICS_EXPORT Buffer
 {
  public:
   /**

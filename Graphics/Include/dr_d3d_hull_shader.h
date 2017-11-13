@@ -13,7 +13,7 @@ namespace driderSDK {
 * Sample usage:
 *	HullShader* = new D3DhullShader;
 */
-class DR_API_EXPORT D3DHullShader : public HullShader
+class DR_GRAPHICS_EXPORT D3DHullShader : public HullShader
 {
  public:
   /**
