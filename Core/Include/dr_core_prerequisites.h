@@ -12,7 +12,7 @@
 
 #if DR_PLATFORM == DR_PLATFORM_WINDOWS
 # if defined( DR_STATIC_LIB )
-#   define DR_API_EXPORT
+#   define DR_CORE_EXPORT
 # else
 #	if defined(CORE_EXPORTS)
 #   define DR_CORE_EXPORT __declspec( dllexport )

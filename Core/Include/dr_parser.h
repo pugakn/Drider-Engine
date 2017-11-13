@@ -104,7 +104,7 @@ struct DR_CORE_EXPORT Parser
     #ifdef _UNICODE
         return _wtof(str.c_str());
     #else
-        return (float)std::atof(str);
+        return (float)std::atof(str.c_str());
     #endif // _UNICODE
   }
   

@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include <dr_prerequisites.h>
+#include "dr_core_prerequisites.h"
 #include <dr_vector2d.h>
 
 namespace driderSDK
@@ -17,7 +17,7 @@ namespace driderSDK
 * }
 */
 
-class DR_API_EXPORT ConvexHull
+class DR_CORE_EXPORT ConvexHull
 {
  public: //Public Methods
   /**

@@ -31,7 +31,7 @@ Parser::strCpyBetween(TString source,
  TString first = Parser::strStr(source, strFrom);
  TString last = Parser::strStr(first, strTo);
 
- if (first != L"" && last != L"") {
+ if (first != _T("") && last != _T("")) {
   size_t offset = Parser::strLen(first.c_str()) - Parser::strLen(last.c_str());
   TString buffer;
   TString::iterator it = first.begin();
@@ -50,7 +50,7 @@ Parser::strCpyBetween(TString source,
   destinationOut = buffer;
   return buffer;
  }
- return L"";
+ return _T("");
 }
 
 TString

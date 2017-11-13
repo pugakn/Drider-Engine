@@ -100,7 +100,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include;$(SolutionDir)$(Projectname)\Include;$(DRIDER_DEPENDENCIES);%(AdditionalIncludeDirectories);$(SolutionDir)Math\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Math\Include;$(DRIDER_DEPENDENCIES);$(SolutionDir)$(ProjectName)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>CORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <BuildLog>
@@ -117,7 +117,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include;$(SolutionDir)$(Projectname)\Include;$(DRIDER_DEPENDENCIES);%(AdditionalIncludeDirectories);$(SolutionDir)Math\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Math\Include;$(DRIDER_DEPENDENCIES);$(SolutionDir)$(ProjectName)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>CORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <BuildLog>
@@ -136,7 +136,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include;$(SolutionDir)$(Projectname)\Include;$(SolutionDir)Math\Include;%(AdditionalIncludeDirectories);$(SolutionDir)Math\Include;$(DRIDER_DEPENDENCIES)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Math\Include;$(DRIDER_DEPENDENCIES);$(SolutionDir)$(ProjectName)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>CORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -156,7 +156,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include;$(SolutionDir)$(Projectname)\Include;$(SolutionDir)Math\Include;%(AdditionalIncludeDirectories);$(SolutionDir)Math\Include;$(DRIDER_DEPENDENCIES)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Math\Include;$(DRIDER_DEPENDENCIES);$(SolutionDir)$(ProjectName)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>CORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -171,8 +171,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Include\dr_bone.h" />
+    <ClInclude Include="Include\dr_convexHull.h" />
     <ClInclude Include="Include\dr_core_prerequisites.h" />
     <ClInclude Include="Include\dr_graph.h" />
+    <ClInclude Include="Include\dr_loader.h" />
     <ClInclude Include="Include\dr_logger.h" />
     <ClInclude Include="Include\dr_mesh.h" />
     <ClInclude Include="Include\dr_model.h" />
@@ -184,7 +186,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_bone.cpp" />
+    <ClCompile Include="Source\dr_convexHull.cpp" />
     <ClCompile Include="Source\dr_graph.cpp" />
+    <ClCompile Include="Source\dr_loader.cpp" />
     <ClCompile Include="Source\dr_logger.cpp" />
     <ClCompile Include="Source\dr_node.cpp" />
     <ClCompile Include="Source\dr_parser.cpp" />
