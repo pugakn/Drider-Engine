@@ -1,13 +1,13 @@
 #pragma once
 
 #include <vector>
-#include <dr_prerequisites.h>
+#include "dr_core_prerequisites.h"
 
 namespace driderSDK {
 
 class Vertex;
 
-class Mesh
+class DR_CORE_EXPORT Mesh
 {
  public:
   std::vector<Vertex> vertices;

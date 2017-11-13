@@ -101,6 +101,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include;$(SolutionDir)$(Projectname)\Include;$(DRIDER_DEPENDENCIES);%(AdditionalIncludeDirectories);$(SolutionDir)Math\Include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>CORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <BuildLog>
       <Path>$(IntDir).log</Path>
@@ -117,6 +118,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include;$(SolutionDir)$(Projectname)\Include;$(DRIDER_DEPENDENCIES);%(AdditionalIncludeDirectories);$(SolutionDir)Math\Include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>CORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <BuildLog>
       <Path>$(IntDir).log</Path>
@@ -135,6 +137,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include;$(SolutionDir)$(Projectname)\Include;$(SolutionDir)Math\Include;%(AdditionalIncludeDirectories);$(SolutionDir)Math\Include;$(DRIDER_DEPENDENCIES)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>CORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -154,6 +157,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include;$(SolutionDir)$(Projectname)\Include;$(SolutionDir)Math\Include;%(AdditionalIncludeDirectories);$(SolutionDir)Math\Include;$(DRIDER_DEPENDENCIES)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>CORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -167,6 +171,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Include\dr_bone.h" />
+    <ClInclude Include="Include\dr_core_prerequisites.h" />
     <ClInclude Include="Include\dr_graph.h" />
     <ClInclude Include="Include\dr_logger.h" />
     <ClInclude Include="Include\dr_mesh.h" />

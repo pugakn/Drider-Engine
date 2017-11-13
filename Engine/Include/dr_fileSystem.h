@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <fstream>
-#include <dr_defines.h>
+#include "dr_engine_prerequisites.h"
 
 namespace driderSDK {
 

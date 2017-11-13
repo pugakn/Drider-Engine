@@ -21,9 +21,6 @@
     <ClInclude Include="Include\dr_types.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\dr_prerequisites.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Include\dr_pool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -31,6 +28,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\dt_stack_allocator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_util_prerequisites.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
