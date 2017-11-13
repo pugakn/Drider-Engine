@@ -13,7 +13,7 @@ namespace driderSDK {
 * Sample usage:
 *	loadResource("name.png", "resorces/");
 */
-class DR_API_EXPORT ResourceManager {
+class DR_ENGINE_EXPORT ResourceManager {
  public:
   /**
   * TEST::resourceMConstructor

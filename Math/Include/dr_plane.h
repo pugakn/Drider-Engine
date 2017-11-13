@@ -1,6 +1,6 @@
 #pragma once
 
-#include <dr_prerequisites.h>
+#include "dr_math_prerequisites.h"
 #include "dr_vector3d.h"
 
 namespace driderSDK {
@@ -16,7 +16,7 @@ class AABB;
 class Frustrum;
 class Line;
 
-class DR_API_EXPORT Plane : public Vector3D
+class DR_MATH_EXPORT Plane : public Vector3D
 {
  public:
   /**

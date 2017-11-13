@@ -14,7 +14,7 @@ namespace driderSDK {
 * sampleName.save("fileToWrite", bufferToSaveToFile);
 * sampleName.append("fileToAppend", bufferToAddInFile);
 */
-class DR_API_EXPORT FileSystem
+class DR_ENGINE_EXPORT FileSystem
 {
  public:
   

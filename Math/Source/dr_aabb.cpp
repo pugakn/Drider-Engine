@@ -29,14 +29,14 @@ AABB::AABB(const AABB& A) {
 
 AABB::~AABB() {}
 
-const Vector3D&
+const Vector3D
 AABB::getMaxPoint() const {
 	return Vector3D(center.x + (width * 0.5f),
 									center.y + (height * 0.5f),
 									center.z + (depth * 0.5f));
 }
 
-const Vector3D&
+const Vector3D
 AABB::getMinPoint() const {
 	return Vector3D(center.x - (width * 0.5f),
 									center.y - (height * 0.5f),

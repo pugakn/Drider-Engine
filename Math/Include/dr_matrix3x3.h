@@ -1,7 +1,6 @@
 #pragma once
 
-#include <cassert>
-#include <dr_prerequisites.h>
+#include "dr_math_prerequisites.h"
 #include "dr_vector3d.h"
 
 namespace driderSDK {
@@ -14,7 +13,7 @@ namespace driderSDK {
  * Sample usage:
  * Matrix3x3 matrixName;
  */
-class DR_API_EXPORT Matrix3x3                                                                 
+class DR_MATH_EXPORT Matrix3x3                                                                 
 {
  public:
   /**

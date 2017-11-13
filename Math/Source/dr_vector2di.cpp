@@ -156,8 +156,8 @@ Vector2DI::operator/(const float scalar) const {
 Vector2DI&
 Vector2DI::operator/=(const float scalar) {
   DR_ASSERT(scalar != 0.0f);
-  x /= scalar;
-  y /= scalar;
+  x /= static_cast<Int32>(scalar);
+  y /= static_cast<Int32>(scalar);
   return *this;
 }
 

@@ -1,9 +1,8 @@
 #pragma once
-#include <dr_prerequisites.h>
-#include <dr_resource.h>
 
 #include <memory>
-
+#include <dr_resource.h>
+#include "dr_engine_prerequisites.h"
 /**
 * Structure with Decode and Encode functions.
 *
@@ -25,7 +24,7 @@ namespace ResourceType {
  };
 }
 
-struct DR_API_EXPORT Codec
+struct DR_CORE_EXPORT Codec
 {
   /**
   * TEST::codecDecode
