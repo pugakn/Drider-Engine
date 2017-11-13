@@ -54,7 +54,7 @@ class DR_API_EXPORT Codec
   *   The type of the resource ResourceType::E.
   */
   virtual void*
-  decode(TString pathName);
+  decode(TString pathName) = 0;
 
   /**
   * TEST::codecEncode
@@ -68,13 +68,20 @@ class DR_API_EXPORT Codec
   */
   virtual void
   encode(TString pathName,
-         ResourceType::E resourceType);
+         ResourceType::E resourceType) = 0;
 
   /**
   * TEST::isCompatible
+  * Checks if a extension is compatible
+  * 
+  * @param resourceName
+  * The name of the resource, includ extension
+  *
+  * @return
+  * Returns true if the resource is compatible, otherwise return false
   */
-  bool
-  isCompatible (TString pathName);
+  virtual bool
+  isCompatible (TString resourceName) = 0;
 };
  
 
