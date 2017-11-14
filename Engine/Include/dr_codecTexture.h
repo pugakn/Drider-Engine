@@ -1,29 +1,29 @@
 #pragma once
 #include "dr_engine_prerequisites.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include <STB\stb-master\stb_image.h>
+#include <comdef.h>
 
-/**
-* Structure with Decode and Encode functions.
-*
-* Sample usage:
-*	Codec::decode("file_path/name_resource.png");
-*/
+#include "dr_imageInfo.h"
+#include "dr_codec.h"
+
 namespace driderSDK {
 
-class DR_ENGINE_EXPORT Codec
+class DR_ENGINE_EXPORT CodecTexture : public Codec
 {
  public:
   /**
-  * 
-  */ 
-  Codec() {}
+  *
+  */
+  CodecTexture() {};
 
   /**
   *
   */
-  virtual ~Codec() {}; 
+  virtual ~CodecTexture() {};
 
   /**
-  * TEST::codecDecode
+  * TEST::decode
   * Decodes and load a resource.
   *
   * @param pathName
@@ -32,11 +32,11 @@ class DR_ENGINE_EXPORT Codec
   * @return
   *   The type of the resource ResourceType::E.
   */
-  virtual void*
-  decode(TString pathName) = 0;
+  void*
+  decode(TString pathName);
 
   /**
-  * TEST::codecEncode
+  * TEST::encode
   * Encode and save a resource.
   *
   * @param pathName
@@ -45,22 +45,20 @@ class DR_ENGINE_EXPORT Codec
   * @return
   *   Shared_ptr to a Resource.
   */
-  virtual bool
-  encode(TString pathName) = 0;
+  bool
+  encode(TString pathName);
 
   /**
-  * TEST::isCompatible
+  * TEST::isC
   * Checks if a extension is compatible
-  * 
+  *
   * @param resourceName
   * The name of the resource, includ extension
   *
   * @return
   * Returns true if the resource is compatible, otherwise return false
   */
-  virtual bool
-  isCompatible (TString resourceName) = 0;
+  bool
+  isCompatible(TString resourceName);
 };
- 
-
 }

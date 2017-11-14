@@ -55,8 +55,7 @@ class DR_ENGINE_EXPORT ResourceManager {
   *   void.
   */
   void
-  createResource(ResourceType::E resourceType, 
-                 TString resourceKey);
+  createResource(TString resourceKey);
 
   /**
   * TEST::existInResourceContent

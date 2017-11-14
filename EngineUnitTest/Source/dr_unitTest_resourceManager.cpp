@@ -1,11 +1,8 @@
 #include <dr_resourceManager.h>
 #include <gtest\gtest.h>
 
-driderSDK::ResourceManager rm;
-
 TEST(ResourceManager, resourceMConstructor) {
-  driderSDK::ResourceManager r;
-  EXPECT_TRUE(r.resourceContent.size() == 0);
+  EXPECT_TRUE(false);
 }
 
 TEST(ResourceManager, resourceMDestructor) {
@@ -13,24 +10,18 @@ TEST(ResourceManager, resourceMDestructor) {
 }
 
 TEST(ResourceManager, loadResource) {
-  rm.resourceContent.clear();
-  rm.loadResource(_T("test.png"));
-  EXPECT_TRUE(rm.resourceContent.size() > 0);
+  EXPECT_TRUE(false);
 }
 
 TEST(ResourceManager, createResource) { 
-  rm.resourceContent.clear();
-  rm.createResource(driderSDK::ResourceType::PNG, "test");
-  EXPECT_TRUE(rm.resourceContent.size() > 0);
+  
+  EXPECT_TRUE(false);
 }
 
 TEST(ResourceManager, existInResourceContent) {
-  EXPECT_TRUE(rm.existInResourceContent("test"));
+  EXPECT_TRUE(false);
 }
 
 TEST(ResourceManager, getReference) {
-  rm.loadResource(_T("test.png"));
-  rm.createResource(driderSDK::ResourceType::PNG, "test");
-  EXPECT_TRUE(rm.getReference("test") == nullptr);
-  EXPECT_FALSE(true);
+  EXPECT_TRUE(false);
 }
