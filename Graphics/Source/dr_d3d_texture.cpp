@@ -80,6 +80,7 @@ void
 D3DTexture::release() {
   APITexture->Release();
   APIView->Release();
+  delete this;
 }
 
 void

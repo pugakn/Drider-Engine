@@ -92,6 +92,7 @@ D3DConstantBuffer::updateFromBuffer(const DeviceContext& deviceContext,
 void D3DConstantBuffer::release() {
   CB->Release();
   sysMemCpy.clear();
+  delete this;
 }
 
 }

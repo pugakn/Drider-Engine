@@ -65,6 +65,7 @@ D3D11SamplerState::set(const DeviceContext& deviceContext,
 void
 D3D11SamplerState::release() {
   APIState->Release();
+  delete this;
 }
 
 }

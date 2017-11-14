@@ -41,6 +41,7 @@ D3DRasterizerState::set(const DeviceContext& deviceContext) const {
 void
 D3DRasterizerState::release() {
   APIState->Release();
+  delete this;
 }
 
 }

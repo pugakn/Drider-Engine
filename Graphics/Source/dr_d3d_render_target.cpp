@@ -41,6 +41,7 @@ D3DRenderTarget::set(const DeviceContext& deviceContext,
 void
 D3DRenderTarget::release() {
     RTV->Release();
+    delete this;
 }
 
 }

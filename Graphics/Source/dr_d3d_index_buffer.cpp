@@ -71,6 +71,7 @@ void
 D3DIndexBuffer::release() {
   IB->Release();
   sysMemCpy.clear();
+  delete this;
 }
 
 }

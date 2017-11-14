@@ -40,7 +40,7 @@ class DR_API_EXPORT RenderTarget {
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   virtual DR_GRAPHICS_ERROR::E
-  create(const Device& device, const Texture& texture) = 0;
+  create(const Device& device,const Texture& texture) = 0;
 
   /**
   * Set the render target and depth stencil

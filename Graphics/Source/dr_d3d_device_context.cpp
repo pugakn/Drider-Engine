@@ -60,6 +60,7 @@ D3DDeviceContext::clearRenderTargetView(RenderTarget& renderTarget,
 void
 D3DDeviceContext::release() {
   D3D11DeviceContext->Release();
+  delete this;
 }
 
 void

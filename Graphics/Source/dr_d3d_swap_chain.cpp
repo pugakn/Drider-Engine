@@ -16,11 +16,11 @@ DR_GRAPHICS_ERROR::E D3DSwapChain::create(const Device& device,
   apiDesc.OutputWindow = static_cast<HWND>(desc.windowHandler);
   apiDesc.BufferDesc.Width = desc.width;
   apiDesc.BufferDesc.Height = desc.height;
-  apiDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT; //Hardcoded
+  apiDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
   apiDesc.BufferDesc.RefreshRate.Denominator = desc.refreshRate.denominator;
   apiDesc.BufferDesc.RefreshRate.Numerator = desc.refreshRate.numerator;
-  apiDesc.SampleDesc.Count = 1; //Hardcoded
-  apiDesc.SampleDesc.Quality = 0;//Hardcoded
+  apiDesc.SampleDesc.Count = 1; 
+  apiDesc.SampleDesc.Quality = 0;
   apiDesc.Windowed = desc.windowed;
 
   IDXGIFactory *factory;
@@ -48,6 +48,7 @@ D3DSwapChain::getBackBuffer(Texture& texture) {
 void
 D3DSwapChain::release() {
   APISwapchain->Release();
+  delete this;
 }
 
 void

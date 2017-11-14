@@ -20,6 +20,7 @@ D3DComputeShader::release() {
   APIShader->Release();
   apiShaderBytcode->Release();
   delete shaderBytecode;
+  delete this;
 }
 
 DR_GRAPHICS_ERROR::E

@@ -45,6 +45,7 @@ void
 D3DInputLayout::release()
 {
   APILayout->Release();
+  delete this;
 }
 
 }

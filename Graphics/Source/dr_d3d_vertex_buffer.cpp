@@ -75,6 +75,7 @@ void
 D3DVertexBuffer::release() {
   VB->Release();
   sysMemCpy.clear();
+  delete this;
 }
 
 }

@@ -48,6 +48,7 @@ D3DDepthStencilState::set(const DeviceContext& deviceContext,
 void
 D3DDepthStencilState::release() {
   APIState->Release();
+  delete this;
 }
 
 }

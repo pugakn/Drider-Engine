@@ -55,7 +55,7 @@ class DR_API_EXPORT Device
   virtual DR_GRAPHICS_ERROR::E
   createVertexBuffer(const DrBufferDesc& desc,
                      byte* initialData,
-                     VertexBuffer& vertexBuffer) = 0;
+                     VertexBuffer* vertexBuffer) = 0;
 
   /**
   * Create a vertex buffer
@@ -75,7 +75,7 @@ class DR_API_EXPORT Device
   virtual DR_GRAPHICS_ERROR::E
   createIndexBuffer(const DrBufferDesc& desc,
                     byte* initialData,
-                    IndexBuffer& indexBuffer) = 0;
+                    IndexBuffer* indexBuffer) = 0;
 
   /**
   * Create a constant buffer
@@ -95,7 +95,7 @@ class DR_API_EXPORT Device
   virtual DR_GRAPHICS_ERROR::E
   createConstantBuffer(const DrBufferDesc& desc,
                        byte* initialData,
-                       ConstantBuffer& constantBuffer) = 0;
+                       ConstantBuffer* constantBuffer) = 0;
 
   /**
   * Create a shader from a plain text buffer
@@ -116,7 +116,7 @@ class DR_API_EXPORT Device
   createShaderFromMemory(const char* shaderBuffer,
                          size_t bufferSize,
                          DR_SHADER_TYPE_FLAG::E shaderType,
-                         Shader& shader) = 0;
+                         Shader* shader) = 0;
 
   /**
   * Create a texture from a memory buffer
@@ -136,7 +136,7 @@ class DR_API_EXPORT Device
   virtual DR_GRAPHICS_ERROR::E
   createTextureFromMemory(const char* buffer,
                           const DrTextureDesc& desc,
-                          Texture& texture) = 0;
+                          Texture* texture) = 0;
 
   /**
   * Create a texture without initial data
@@ -152,7 +152,7 @@ class DR_API_EXPORT Device
   */
   virtual DR_GRAPHICS_ERROR::E
   createEmptyTexture(const DrTextureDesc& desc,
-                     Texture& texture) = 0;
+                     Texture* texture) = 0;
 
   /**
   * Create a render target
@@ -170,9 +170,8 @@ class DR_API_EXPORT Device
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   virtual DR_GRAPHICS_ERROR::E
-  createRenderTarget(const DrTextureDesc& desc,
-                     RenderTarget& renderTarget,
-                     UInt32 _numColorTextures) = 0;
+  createRenderTarget(const Texture& texture,
+                     RenderTarget* renderTarget) = 0;
 
   /**
   * Create a depth stencil
@@ -187,8 +186,8 @@ class DR_API_EXPORT Device
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   virtual DR_GRAPHICS_ERROR::E
-  createDepthStencil(const DrTextureDesc& desc,
-                     DepthStencil& depthStencil) = 0;
+  createDepthStencil(const Texture& texture,
+                     DepthStencil* depthStencil) = 0;
 
   /**
   * Create a sampler state
@@ -204,7 +203,7 @@ class DR_API_EXPORT Device
   */
   virtual DR_GRAPHICS_ERROR::E
   createSamplerState(const DrSampleDesc& desc,
-                     SamplerState& state) = 0;
+                     SamplerState* state) = 0;
 
   /**
   * Create a sampler rasterizer state
@@ -220,7 +219,7 @@ class DR_API_EXPORT Device
   */
   virtual DR_GRAPHICS_ERROR::E
   createRasteizerState(const DrRasterizerDesc& desc,
-                       RasterizerState& state) = 0;
+                       RasterizerState* state) = 0;
 
   /**
   * Create a deth stencil state
@@ -236,7 +235,7 @@ class DR_API_EXPORT Device
   */
   virtual DR_GRAPHICS_ERROR::E
   createDepthStencilState(const DrDepthStencilDesc& desc,
-                          DepthStencilState& state) = 0;
+                          DepthStencilState* state) = 0;
 
   /**
   * Create a input layout
@@ -256,7 +255,7 @@ class DR_API_EXPORT Device
   virtual DR_GRAPHICS_ERROR::E
   createInputLayout(const std::vector<DrInputElementDesc>& inputDescArray, 
                     const ShaderBytecode& shaderBytecode,
-                    InputLayout& layout) = 0;
+                    InputLayout* layout) = 0;
 
   /**
   * Create a swap chain
@@ -272,7 +271,7 @@ class DR_API_EXPORT Device
   */
   virtual DR_GRAPHICS_ERROR::E
   createSwapChain(const DrSwapChainDesc& desc,
-                  SwapChain& swapChain) = 0;
+                  SwapChain* swapChain) = 0;
 };
 
 }

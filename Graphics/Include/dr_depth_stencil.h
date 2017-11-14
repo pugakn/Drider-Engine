@@ -32,7 +32,7 @@ class DR_API_EXPORT DepthStencil {
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   virtual DR_GRAPHICS_ERROR::E
-  create(const Device& device, const Texture& texture) = 0;
+  create(const Device& device ,const Texture& texture) = 0;
 
   //virtual void 
   //set(const DeviceContext& deviceContext, const DepthStencil& depthStencil) const = 0;

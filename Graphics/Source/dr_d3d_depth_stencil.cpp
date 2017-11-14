@@ -27,6 +27,7 @@ DR_GRAPHICS_ERROR::E D3DDepthStencil::create(const Device& device,
 void
 D3DDepthStencil::release() {
   APIDepthView->Release();
+  delete this;
 }
 
 }

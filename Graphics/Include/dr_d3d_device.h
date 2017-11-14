@@ -5,7 +5,7 @@
 class ID3D11Device;
 
 namespace driderSDK {
-
+class ShaderBytecode;
 class DR_API_EXPORT D3DDevice : public Device
 {
 public:
@@ -36,7 +36,7 @@ public:
   DR_GRAPHICS_ERROR::E
   createVertexBuffer(const DrBufferDesc& desc,
                      byte* initialData,
-                     VertexBuffer& vertexBuffer) override;
+                     VertexBuffer* vertexBuffer) override;
 
   /**
   * Create a vertex buffer
@@ -56,7 +56,7 @@ public:
   DR_GRAPHICS_ERROR::E
   createIndexBuffer(const DrBufferDesc& desc,
                     byte* initialData,
-                    IndexBuffer& indexBuffer) override;
+                    IndexBuffer* indexBuffer) override;
 
   /**
   * Create a constant buffer
@@ -76,7 +76,7 @@ public:
   DR_GRAPHICS_ERROR::E
   createConstantBuffer(const DrBufferDesc& desc,
                        byte* initialData,
-                       ConstantBuffer& constantBuffer) override;
+                       ConstantBuffer* constantBuffer) override;
 
   /**
   * Create a shader from a plain text buffer
@@ -97,7 +97,7 @@ public:
   createShaderFromMemory(const char* shaderBuffer,
                          size_t bufferSize,
                          DR_SHADER_TYPE_FLAG::E shaderType,
-                         Shader& shader) override;
+                         Shader* shader) override;
 
   /**
   * Create a texture from a memory buffer
@@ -117,7 +117,7 @@ public:
   DR_GRAPHICS_ERROR::E
   createTextureFromMemory(const char* buffer,
                           const DrTextureDesc& desc,
-                          Texture& texture) override;
+                          Texture* texture) override;
 
   /**
   * Create a texture without initial data
@@ -133,7 +133,7 @@ public:
   */
   DR_GRAPHICS_ERROR::E
   createEmptyTexture(const DrTextureDesc& desc,
-                     Texture& texture) override;
+                     Texture* texture) override;
 
   /**
   * Create a render target
@@ -151,9 +151,8 @@ public:
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   DR_GRAPHICS_ERROR::E
-  createRenderTarget(const DrTextureDesc& desc,
-                     RenderTarget& renderTarget,
-                     UInt32 _numColorTextures) override;
+  createRenderTarget(const Texture& texture,
+                     RenderTarget* renderTarget) override;
 
   /**
   * Create a depth stencil
@@ -168,8 +167,8 @@ public:
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   DR_GRAPHICS_ERROR::E
-  createDepthStencil(const DrTextureDesc& desc,
-                     DepthStencil& depthStencil) override;
+  createDepthStencil(const Texture& texture,
+                     DepthStencil* depthStencil) override;
 
   /**
   * Create a sampler state
@@ -185,7 +184,7 @@ public:
   */
   DR_GRAPHICS_ERROR::E
   createSamplerState(const DrSampleDesc& desc,
-                     SamplerState& state) override;
+                     SamplerState* state) override;
 
   /**
   * Create a sampler rasterizer state
@@ -201,7 +200,7 @@ public:
   */
   DR_GRAPHICS_ERROR::E
   createRasteizerState(const DrRasterizerDesc& desc,
-                       RasterizerState& state) override;
+                       RasterizerState* state) override;
 
   /**
   * Create a deth stencil state
@@ -217,7 +216,7 @@ public:
   */
   DR_GRAPHICS_ERROR::E
   createDepthStencilState(const DrDepthStencilDesc& desc,
-                          DepthStencilState& state) override;
+                          DepthStencilState* state) override;
 
   /**
   * Create a input layout
@@ -235,9 +234,9 @@ public:
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   DR_GRAPHICS_ERROR::E
-  createInputLayout(const std::vector<DrInputElementDesc>& inputDescArray, 
+  createInputLayout(const std::vector<DrInputElementDesc>& inputDescArray,
                     const ShaderBytecode& shaderBytecode,
-                    InputLayout& layout) override;
+                    InputLayout* layout) override;
 
   /**
   * Create a swap chain
@@ -253,7 +252,7 @@ public:
   */
   DR_GRAPHICS_ERROR::E
   createSwapChain(const DrSwapChainDesc& desc,
-                  SwapChain& swapChain) override;
+                  SwapChain* swapChain) override;
 
   ID3D11Device* D3D11Device;
 };
