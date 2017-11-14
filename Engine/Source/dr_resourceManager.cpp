@@ -9,8 +9,7 @@ ResourceManager::loadResource(TString resourceName) {
 }
 
 void
-ResourceManager::createResource(ResourceType::E resourceType, 
-                                TString resourceKey) {
+ResourceManager::createResource(TString resourceKey) {
  resourceContent.insert({ resourceKey , std::shared_ptr<Resource>()});
 }
 
