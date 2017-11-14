@@ -10,7 +10,6 @@ CodecTexture::decode(TString pathName) {
   _bstr_t c(pathName.c_str());
   const char* a = c;
   unsigned char* data = stbi_load(a, &image->w, &image->h, &image->channels, 0);
-  //std::strncpy((char*)&image.data, (char*)&data, strlen((const char*)&data));
   stbi_image_free(data);
   return (void*)(image);
 }
