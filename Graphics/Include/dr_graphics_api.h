@@ -1,5 +1,5 @@
 #pragma once
-#include <dr_prerequisites.h>
+#include <dr_graphics_prerequisites.h>
 #include <memory>
 namespace driderSDK {
 
@@ -10,7 +10,7 @@ class SwapChain;
 class Texture;
 class DepthStencil;
 class RasterizerState;
-class DR_API_EXPORT GraphicsAPI {
+class DR_GRAPHICS_EXPORT GraphicsAPI {
 public:
   virtual void init(UInt32 w, UInt32 h, void* hwnd) = 0;
   virtual void destroy() = 0;
