@@ -319,6 +319,23 @@ enum E  {
 
 }
 
+namespace DR_BIND_FLAGS
+{
+enum E {
+  VERTEX_BUFFER = 0x1L,
+  INDEX_BUFFER = 0x2L,
+  CONSTANT_BUFFER = 0x4L,
+  SHADER_RESOURCE = 0x8L,
+  STREAM_OUTPUT = 0x10L,
+  RENDER_TARGET = 0x20L,
+  DEPTH_STENCIL = 0x40L,
+  UNORDERED_ACCESS = 0x80L,
+  DECODER = 0x200L,
+  VIDEO_ENCODER = 0x400L
+};
+
+}
+
 struct DR_API_EXPORT DrInputElementDesc {
   char* semanticName;
   UInt32 semanticIndex;
@@ -382,10 +399,12 @@ struct DR_API_EXPORT DrTextureDesc {
   UInt32 pitch;
   UInt32 mipLevels;
   UInt32 CPUAccessFlags;
+  UInt32 bindFlags;
   DrTextureDesc(){
     Format = DR_FORMAT::kDrFormat_B4G4R4A4_UNORM;
     Usage = DR_BUFFER_USAGE::kDefault;
     width = 0;
+    bindFlags = 0;
     height = 0;
     pitch = 0;
     mipLevels = 0;

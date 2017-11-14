@@ -115,6 +115,7 @@ class DR_API_EXPORT Device
   virtual DR_GRAPHICS_ERROR::E
   createShaderFromMemory(const char* shaderBuffer,
                          size_t bufferSize,
+                         DR_SHADER_TYPE_FLAG::E shaderType,
                          Shader& shader) = 0;
 
   /**
@@ -253,7 +254,8 @@ class DR_API_EXPORT Device
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   virtual DR_GRAPHICS_ERROR::E
-  createInputLayout(const std::vector<DrInputElementDesc>& inputDescArray,
+  createInputLayout(const std::vector<DrInputElementDesc>& inputDescArray, 
+                    const ShaderBytecode& shaderBytecode,
                     InputLayout& layout) = 0;
 
   /**

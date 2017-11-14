@@ -3,10 +3,7 @@
 #include "dr_graphics_defines.h"
 
 namespace driderSDK {
-class CompiledShaderContainer
+class DR_API_EXPORT ShaderBytecode
 {
- public:
-   virtual void get() = 0;
-   virtual void set() = 0;
 };
 }

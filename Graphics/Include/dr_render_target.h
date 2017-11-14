@@ -40,7 +40,7 @@ class DR_API_EXPORT RenderTarget {
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   virtual DR_GRAPHICS_ERROR::E
-  create(const Device& device, const DrTextureDesc& desc, UInt32 _numColorTextures) = 0;
+  create(const Device& device, const Texture& texture) = 0;
 
   /**
   * Set the render target and depth stencil
@@ -60,10 +60,6 @@ class DR_API_EXPORT RenderTarget {
   */
   virtual void
   release() = 0;
-
-  std::vector<Texture*> colorTextures;
- protected:
-  UInt32 numColorTextures;
 };
 
 }

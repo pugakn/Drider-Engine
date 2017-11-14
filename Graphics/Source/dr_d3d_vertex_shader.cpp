@@ -51,6 +51,7 @@ D3DVertexShader::compile(const Device& device, const char* buffer, size_t buffer
     &shader_blob,
     &errorBlob) != S_OK) {
     if (errorBlob) {
+      errorBlob->Release();
       return DR_GRAPHICS_ERROR::COMPILE_SHADER_ERROR;
     }
   }

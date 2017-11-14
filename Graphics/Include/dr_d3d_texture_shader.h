@@ -1,7 +1,6 @@
 #pragma once
 #include "dr_texture_shader.h"
 #include <d3d11.h>
-#include <dxgi.h>
 
 namespace driderSDK {
 

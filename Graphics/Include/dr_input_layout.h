@@ -6,7 +6,7 @@ namespace driderSDK {
 
 class Device;
 class DeviceContext; 
-class Shader;
+class ShaderBytecode;
 
 class DR_API_EXPORT InputLayout
 {
@@ -35,7 +35,7 @@ class DR_API_EXPORT InputLayout
   virtual DR_GRAPHICS_ERROR::E
   create(const Device & device,
          const std::vector<DrInputElementDesc>& inputDescArray,
-         const Shader& shader) = 0;
+         const ShaderBytecode& shaderBytecode) = 0;
 
   /**
   * Set the input layout

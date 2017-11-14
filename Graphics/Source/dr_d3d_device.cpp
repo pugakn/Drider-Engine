@@ -16,6 +16,7 @@
 #include "dr_d3d_rasterizer_state.h"
 #include "dr_d3d_input_layout.h"
 #include "dr_d3d_swap_chain.h"
+#include "dr_d3d_shader_bytecode.h"
 
 namespace driderSDK {
 
@@ -46,6 +47,8 @@ DR_GRAPHICS_ERROR::E
 D3DDevice::createVertexBuffer(const DrBufferDesc& desc,
                                   byte* initialData, 
                                   VertexBuffer& vertexBuffer) {
+  VertexBuffer *vb = &vertexBuffer;
+  vb = new D3DVertexBuffer;
   return vertexBuffer.create(*this,desc,initialData);
 }
 
@@ -53,6 +56,8 @@ DR_GRAPHICS_ERROR::E
 D3DDevice::createIndexBuffer(const DrBufferDesc& desc,
   byte* initialData,
                              IndexBuffer& indexBuffer) {
+  IndexBuffer *ib = &indexBuffer;
+  ib = new D3DIndexBuffer;
   return indexBuffer.create(*this, desc, initialData);
 }
 
@@ -60,13 +65,37 @@ DR_GRAPHICS_ERROR::E
 D3DDevice::createConstantBuffer(const DrBufferDesc& desc,
   byte* initialData,
                                 ConstantBuffer& constantBuffer) {
+  ConstantBuffer *cb = &constantBuffer;
+  cb = new D3DConstantBuffer;
   return constantBuffer.create(*this, desc, initialData);
 }
 
 DR_GRAPHICS_ERROR::E
 D3DDevice::createShaderFromMemory(const char* shaderBuffer,
                                   size_t bufferSize,
+                                  DR_SHADER_TYPE_FLAG::E shaderType,
                                   Shader& shader) {
+  switch (shaderType)
+  {
+  case driderSDK::DR_SHADER_TYPE_FLAG::kVertex:
+    break;
+  case driderSDK::DR_SHADER_TYPE_FLAG::kFragment:
+    break;
+  case driderSDK::DR_SHADER_TYPE_FLAG::kHull:
+    break;
+  case driderSDK::DR_SHADER_TYPE_FLAG::kCompute:
+    break;
+  case driderSDK::DR_SHADER_TYPE_FLAG::kTexture:
+    break;
+  case driderSDK::DR_SHADER_TYPE_FLAG::kTeselation:
+    break;
+  case driderSDK::DR_SHADER_TYPE_FLAG::kDomain:
+    break;
+  case driderSDK::DR_SHADER_TYPE_FLAG::kGeometry:
+    break;
+  default:
+    break;
+  }
   shader.compile(*this, shaderBuffer, bufferSize);
   return shader.create(*this);
 }
@@ -87,13 +116,13 @@ DR_GRAPHICS_ERROR::E
 D3DDevice::createRenderTarget(const DrTextureDesc& desc,
                               RenderTarget& renderTarget,
                               UInt32 _numColorTextures) {
-  return renderTarget.create(*this,desc,_numColorTextures);
+  return renderTarget.create(*this,);
 }
 
 DR_GRAPHICS_ERROR::E
 D3DDevice::createDepthStencil(const DrTextureDesc& desc,
                               DepthStencil& depthStencil) {
-  return depthStencil.create(*this, desc);
+  return depthStencil.create(*this,);
 }
 
 DR_GRAPHICS_ERROR::E
@@ -115,9 +144,9 @@ D3DDevice::createDepthStencilState(const DrDepthStencilDesc& desc,
 
 DR_GRAPHICS_ERROR::E
 D3DDevice::createInputLayout(const std::vector<DrInputElementDesc>& inputDescArray,
-                             const Shader& shader,
+                             const ShaderBytecode& shaderBytecode,
                              InputLayout& layout) {
-  return layout.create(*this, inputDescArray,shader);
+  return layout.create(*this, inputDescArray, shaderBytecode);
 }
 
 DR_GRAPHICS_ERROR::E

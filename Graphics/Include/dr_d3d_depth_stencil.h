@@ -26,7 +26,7 @@ class DR_API_EXPORT D3DDepthStencil : public DepthStencil {
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   DR_GRAPHICS_ERROR::E
-  create(const Device& device, const DrTextureDesc& desc) override;
+  create(const Device& device, const Texture& texture) override;
 
   //void
   //set(const DeviceContext& deviceContext, const DepthStencil& depthStencil) const = 0;

@@ -96,6 +96,7 @@ public:
   DR_GRAPHICS_ERROR::E
   createShaderFromMemory(const char* shaderBuffer,
                          size_t bufferSize,
+                         DR_SHADER_TYPE_FLAG::E shaderType,
                          Shader& shader) override;
 
   /**
@@ -234,7 +235,8 @@ public:
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   DR_GRAPHICS_ERROR::E
-  createInputLayout(const std::vector<DrInputElementDesc>& inputDescArray,
+  createInputLayout(const std::vector<DrInputElementDesc>& inputDescArray, 
+                    const ShaderBytecode& shaderBytecode,
                     InputLayout& layout) override;
 
   /**

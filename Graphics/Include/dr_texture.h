@@ -126,8 +126,8 @@ class DR_API_EXPORT Texture {
   virtual void
   generateMipMaps(const DeviceContext & deviceContext) const = 0;
 
- protected:
    DrTextureDesc descriptor;
+ protected:
 };
 
 }

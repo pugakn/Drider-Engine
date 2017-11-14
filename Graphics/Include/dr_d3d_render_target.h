@@ -31,7 +31,7 @@ class DR_API_EXPORT D3DRenderTarget : public RenderTarget {
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   DR_GRAPHICS_ERROR::E
-  create(const Device& device, const DrTextureDesc& colorDesc, UInt32 numRT) override;
+  create(const Device& device, const Texture& texture) override;
 
   /**
   * Set the render target and depth stencil
@@ -52,7 +52,7 @@ class DR_API_EXPORT D3DRenderTarget : public RenderTarget {
   void
   release() override;
 
-  std::vector<ID3D11RenderTargetView*> APIColorViews; 
+  ID3D11RenderTargetView* RTV;
 };
 
 }

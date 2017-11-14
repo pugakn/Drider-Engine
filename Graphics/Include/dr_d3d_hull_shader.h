@@ -51,7 +51,6 @@ class DR_API_EXPORT D3DHullShader : public HullShader
   compile(const Device& device, const char* buffer, size_t bufferSize) override;
 
   ID3D11HullShader* APIShader;
-  ID3DBlob* shader_blob;
 };
 
 }

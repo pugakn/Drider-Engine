@@ -6,7 +6,7 @@ namespace driderSDK {
 
 class Device;
 class DeviceContext;
-class CompiledShaderContainer;
+class ShaderBytecode;
 
 /**
 * Base class for shaders
@@ -59,6 +59,8 @@ class DR_API_EXPORT Shader
 
   virtual DR_GRAPHICS_ERROR::E
   compile(const Device& device, const char* buffer, size_t bufferSize) = 0;
+
+  ShaderBytecode* shaderBytecode;
 };
 
 }
