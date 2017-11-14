@@ -1,5 +1,5 @@
 #include <gtest\gtest.h>
-#include <dr_prerequisites.h>
+#include <dr_math_prerequisites.h>
 #include <dr_math.h>
 
 TEST(Math, divX2) {
