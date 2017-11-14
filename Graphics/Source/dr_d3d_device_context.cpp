@@ -48,13 +48,8 @@ D3DDeviceContext::clearDepthStencilView(DepthStencil& depthstencil,
 void
 D3DDeviceContext::clearRenderTargetView(RenderTarget& renderTarget,
                                         const float colorRGBA[4]) const {
-  for (size_t i = 0;
-       i < reinterpret_cast<D3DRenderTarget*>(&renderTarget)->APIColorViews.size();
-       i++) {
     D3D11DeviceContext->
-      ClearRenderTargetView(static_cast<D3DRenderTarget*>(&renderTarget)->APIColorViews[i],
-                            colorRGBA);
-  }
+      ClearRenderTargetView(static_cast<D3DRenderTarget*>(&renderTarget)->RTV,colorRGBA);
 }
 
 void
@@ -119,7 +114,23 @@ D3DDeviceContext::setConstantBuffer(const ConstantBuffer& buffer,
 
 void
 D3DDeviceContext::setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::E topology) const {
-  D3D11DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST); //Hardcoded
+  D3D11_PRIMITIVE_TOPOLOGY topo;
+  switch (topology)
+  {
+  case driderSDK::DR_PRIMITIVE_TOPOLOGY::kLineList:
+    topo = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
+    break;
+  case driderSDK::DR_PRIMITIVE_TOPOLOGY::kTriangleList:
+    topo = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+    break;
+  case driderSDK::DR_PRIMITIVE_TOPOLOGY::kLineStrip:
+    topo = D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP;
+    break;
+  case driderSDK::DR_PRIMITIVE_TOPOLOGY::kTriangleStrip:
+    topo = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP;
+    break;
+  }
+  D3D11DeviceContext->IASetPrimitiveTopology(topo); //Hardcoded
 }
 
 void

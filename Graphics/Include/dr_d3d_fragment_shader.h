@@ -51,7 +51,6 @@ class DR_API_EXPORT D3DFragmentShader : public FragmentShader
   compile(const Device& device, const char* buffer, size_t bufferSize) override;
 
   ID3D11PixelShader* APIShader;
-  ID3DBlob* shader_blob;
 };
 
 }

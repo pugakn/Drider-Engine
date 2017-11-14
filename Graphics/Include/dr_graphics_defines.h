@@ -201,9 +201,10 @@ enum E {
 namespace DR_PRIMITIVE_TOPOLOGY {
 
 enum E {
-  kLines,
-  kTriangles,
-  kQuads
+  kLineList,
+  kTriangleList,
+  kLineStrip,
+  kTriangleStrip
 };
 
 }

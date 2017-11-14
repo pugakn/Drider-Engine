@@ -25,10 +25,11 @@ D3DHullShader::release() {
 
 DR_GRAPHICS_ERROR::E
 D3DHullShader::create(const Device& device) {
+  ID3DBlob* apiShaderBytcode = reinterpret_cast<D3DShaderBytecode*>(shaderBytecode)->shader_blob;
   if (reinterpret_cast<const D3DDevice*>(&device)->
         D3D11Device->
-          CreateHullShader(shader_blob->GetBufferPointer(),
-                           shader_blob->GetBufferSize(),
+          CreateHullShader(apiShaderBytcode->GetBufferPointer(),
+                           apiShaderBytcode->GetBufferSize(),
                            0,
                            &APIShader) != S_OK) {
     return DR_GRAPHICS_ERROR::CREATE_SHADER_ERROR;
@@ -39,6 +40,8 @@ D3DHullShader::create(const Device& device) {
 DR_GRAPHICS_ERROR::E
 D3DHullShader::compile(const Device& device, const char* buffer, size_t bufferSize)
 {
+  shaderBytecode = new D3DShaderBytecode();
+  ID3DBlob* apiShaderBytcode = reinterpret_cast<D3DShaderBytecode*>(shaderBytecode)->shader_blob;
   ID3DBlob* errorBlob = nullptr;
   if (D3DCompile(buffer,
     bufferSize,
@@ -49,7 +52,7 @@ D3DHullShader::compile(const Device& device, const char* buffer, size_t bufferSi
     "hs_5_0",
     0,
     0,
-    &shader_blob,
+    &apiShaderBytcode,
     &errorBlob) != S_OK) {
       if (errorBlob) {
         return DR_GRAPHICS_ERROR::COMPILE_SHADER_ERROR;

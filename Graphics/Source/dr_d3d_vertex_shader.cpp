@@ -25,11 +25,11 @@ D3DVertexShader::release() {
 
 DR_GRAPHICS_ERROR::E
 D3DVertexShader::create(const Device& device) {
-
+  ID3DBlob* apiShaderBytcode = reinterpret_cast<D3DShaderBytecode*>(shaderBytecode)->shader_blob;
   if (reinterpret_cast<const D3DDevice*>(&device)->
         D3D11Device->
-          CreateVertexShader(shader_blob->GetBufferPointer(),
-                             shader_blob->GetBufferSize(),
+          CreateVertexShader(apiShaderBytcode->GetBufferPointer(),
+                             apiShaderBytcode->GetBufferSize(),
                              0,
                              &APIShader) != S_OK) {
     return DR_GRAPHICS_ERROR::CREATE_SHADER_ERROR;
@@ -42,6 +42,8 @@ D3DVertexShader::create(const Device& device) {
 DR_GRAPHICS_ERROR::E
 D3DVertexShader::compile(const Device& device, const char* buffer, size_t bufferSize)
 {
+  shaderBytecode = new D3DShaderBytecode();
+  ID3DBlob* apiShaderBytcode = reinterpret_cast<D3DShaderBytecode*>(shaderBytecode)->shader_blob;
   ID3DBlob* errorBlob = nullptr;
   if (D3DCompile(buffer,
     bufferSize,
@@ -52,7 +54,7 @@ D3DVertexShader::compile(const Device& device, const char* buffer, size_t buffer
     "vs_5_0",
     0,
     0,
-    &shader_blob,
+    &apiShaderBytcode,
     &errorBlob) != S_OK) {
     if (errorBlob) {
       errorBlob->Release();

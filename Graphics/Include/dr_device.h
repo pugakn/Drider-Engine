@@ -18,6 +18,7 @@ class SwapChain;
 class RenderTarget;
 class DepthStencil;
 class DeviceContext;
+class ShaderBytecode;
 
 class DR_API_EXPORT Device
 {

@@ -25,10 +25,11 @@ D3DGeometryShader::release() {
 
 DR_GRAPHICS_ERROR::E 
 D3DGeometryShader::create(const Device& device) {
+  ID3DBlob* apiShaderBytcode = reinterpret_cast<D3DShaderBytecode*>(shaderBytecode)->shader_blob;
   if (reinterpret_cast<const D3DDevice*>(&device)->
         D3D11Device->
-          CreateGeometryShader(shader_blob->GetBufferPointer(),
-                               shader_blob->GetBufferSize(),
+          CreateGeometryShader(apiShaderBytcode->GetBufferPointer(),
+                               apiShaderBytcode->GetBufferSize(),
                                0,
                                &APIShader) != S_OK) {
     return DR_GRAPHICS_ERROR::CREATE_SHADER_ERROR;
@@ -39,6 +40,8 @@ D3DGeometryShader::create(const Device& device) {
 DR_GRAPHICS_ERROR::E
 D3DGeometryShader::compile(const Device& device, const char* buffer, size_t bufferSize)
 {
+  shaderBytecode = new D3DShaderBytecode();
+  ID3DBlob* apiShaderBytcode = reinterpret_cast<D3DShaderBytecode*>(shaderBytecode)->shader_blob;
   ID3DBlob* errorBlob = nullptr;
   if (D3DCompile(buffer,
     bufferSize,
@@ -49,7 +52,7 @@ D3DGeometryShader::compile(const Device& device, const char* buffer, size_t buff
     "gs_5_0",
     0,
     0,
-    &shader_blob,
+    &apiShaderBytcode,
     &errorBlob) != S_OK) {
       if (errorBlob) {
         return DR_GRAPHICS_ERROR::COMPILE_SHADER_ERROR;

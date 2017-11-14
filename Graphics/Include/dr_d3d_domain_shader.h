@@ -51,7 +51,6 @@ class DR_API_EXPORT D3DDomainShader : public DomainShader
   compile(const Device& device, const char* buffer, size_t bufferSize) override;
 
   ID3D11DomainShader* APIShader;
-  ID3DBlob* shader_blob;
 };
 
 }
