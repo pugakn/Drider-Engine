@@ -142,8 +142,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="dr_model_codec.h" />
     <ClInclude Include="Include\dr_codec.h" />
+    <ClInclude Include="Include\dr_codec_model.h" />
     <ClInclude Include="Include\dr_engineTexture.h" />
     <ClInclude Include="Include\dr_engine_prerequisites.h" />
     <ClInclude Include="Include\dr_fileSystem.h" />
@@ -151,6 +151,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_codec.cpp" />
+    <ClCompile Include="Source\dr_codec_model.cpp" />
     <ClCompile Include="Source\dr_engineTexture.cpp" />
     <ClCompile Include="Source\dr_fileSystem.cpp" />
     <ClCompile Include="Source\dr_resourceManager.cpp" />

@@ -20,6 +20,8 @@ class DR_CORE_EXPORT Resource
   *	Default destructor.
   */
   virtual ~Resource() { };
+
+  virtual void create(void* pResourceInfo) = 0;
 };
 
 }
