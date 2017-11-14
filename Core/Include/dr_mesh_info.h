@@ -7,10 +7,10 @@ namespace driderSDK {
 
 class Vertex;
 
-struct DR_CORE_EXPORT Mesh
-{
+struct DR_CORE_EXPORT MeshInfo {
   std::vector<Vertex> vertices;
   std::vector<Int16> indices;
 };
 
 }
+

@@ -85,7 +85,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include;$(SolutionDir)Core\Include;$(SolutionDir)Math\Include;$(SolutionDir)\OpenGL\Include;$(SolutionDir)$(Projectname)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>GRAPHICS_EXPORTS;$(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GRAPHICS_EXPORTS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <ImportLibrary>$(SolutionDir)Lib\$(PlatformTarget)\$(Projectname)d.lib</ImportLibrary>
@@ -98,7 +98,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include;$(SolutionDir)Core\Include;$(SolutionDir)Math\Include;$(SolutionDir)\OpenGL\Include;$(SolutionDir)$(Projectname)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>GRAPHICS_EXPORTS;$(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GRAPHICS_EXPORTS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <ImportLibrary>$(SolutionDir)Lib\$(PlatformTarget)\$(Projectname)d.lib</ImportLibrary>
@@ -113,7 +113,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include;$(SolutionDir)Core\Include;$(SolutionDir)Math\Include;$(SolutionDir)\OpenGL\Include;$(SolutionDir)$(Projectname)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>GRAPHICS_EXPORTS;$(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GRAPHICS_EXPORTS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -129,7 +129,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include;$(SolutionDir)Core\Include;$(SolutionDir)Math\Include;$(SolutionDir)\OpenGL\Include;$(SolutionDir)$(Projectname)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>GRAPHICS_EXPORTS;$(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GRAPHICS_EXPORTS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
