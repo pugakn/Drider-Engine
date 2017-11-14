@@ -37,6 +37,8 @@ TEST(D3D11SamplerState, release) {
 
   driderSDK::DrSampleDesc desc;
   bool b = obj.create(device, desc);
-  obj.release();
-  EXPECT_TRUE(obj.APIState);
+  if (b) {
+    obj.release();
+  }
+  EXPECT_TRUE(obj.APIState.Get());
 }

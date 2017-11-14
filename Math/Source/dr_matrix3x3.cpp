@@ -1,5 +1,6 @@
 #include "dr_matrix3x3.h"
 #include "dr_matrix4x4.h"
+#include "dr_quaternion.h"
 
 namespace driderSDK
 {
@@ -8,32 +9,42 @@ Matrix3x3::Matrix3x3() {}
 
 Matrix3x3::Matrix3x3(Math::FORCE_INIT k) {
   if (Math::FORCE_INIT::kZero == k) {
-    vector0.x = 0;
-    vector0.y = 0;
-    vector0.z = 0; 
-    
-    vector1.x = 0;
-    vector1.y = 0;
-    vector1.z = 0;
-
-    vector2.x = 0;
-    vector2.y = 0;
-    vector2.z = 0;    
+    *this = zerosMat3x3;
   }
   //kIdentity
   else {
-    vector0.x = 1;
-    vector0.y = 0;
-    vector0.z = 0;
-
-    vector1.x = 0;
-    vector1.y = 1;
-    vector1.z = 0;
-
-    vector2.x = 0;
-    vector2.y = 0;
-    vector2.z = 1;
+    *this = identityMat3x3;
   }
+}
+
+Matrix3x3::Matrix3x3(const Matrix4x4 & M)
+  : vector0(M.vector0),
+    vector1(M.vector1),
+    vector2(M.vector2) {}
+
+Matrix3x3::Matrix3x3(const Quaternion & Q)
+{
+  float q1pow2 = Q.x * Q.x;
+  float q2pow2 = Q.y * Q.y;
+  float q3pow2 = Q.z * Q.z;
+  float q0q1 = Q.w * Q.x;
+  float q0q2 = Q.w * Q.y;
+  float q0q3 = Q.w * Q.z;
+  float q1q2 = Q.x * Q.y;
+  float q1q3 = Q.x * Q.z;
+  float q2q3 = Q.y * Q.z;
+
+  data[0][0] = 1.f - 2.f * (q2pow2 + q3pow2);
+  data[0][1] = 2.f * (q1q2 - q0q3);
+  data[0][2] = 2.f * (q0q2 + q1q3);
+
+  data[1][0] = 2.f * (q1q2 + q0q3);
+  data[1][1] = 1.f - 2.f * (q1pow2 + q3pow2);
+  data[1][2] = 2.f * (q2q3 - q0q1);
+
+  data[2][0] = 2.f * (q1q3 - q0q2);
+  data[2][1] = 2.f * (q0q1 + q2q3);
+  data[2][2] = 1.f - 2.f * (q1pow2 + q2pow2);
 }
 
 Matrix3x3::Matrix3x3(const Matrix3x3& M)
@@ -65,7 +76,7 @@ Matrix3x3::determinant() const {
           vector2.z * vector1.x * vector0.y);
 }
 
-void
+Matrix3x3&
 Matrix3x3::cofactor() {
   Matrix3x3 temp;
   
@@ -82,23 +93,26 @@ Matrix3x3::cofactor() {
   temp.vector2.z = vector0.x * vector1.y - vector1.x * vector0.y;
 
   *this = temp;
+  return *this;
 }
 
-void
+Matrix3x3&
 Matrix3x3::adjugate() {
   cofactor();
   transpose();
+  return *this;
 }
 
-void 
+Matrix3x3&
 Matrix3x3::inverse() {
   float deter = determinant();
   DR_ASSERT(deter != 0);
   adjugate();
-  *this = *this * (1 / deter);
+  *this *= (1.f / deter);
+  return *this;
 }
 
-void
+Matrix3x3&
 Matrix3x3::transpose() {
   Matrix3x3 temp;
   temp.vector0.x = vector0.x;
@@ -114,21 +128,32 @@ Matrix3x3::transpose() {
   temp.vector2.z = vector2.z;
 
   *this = temp;
+  return *this;
 }
 
-void
+Matrix3x3&
 Matrix3x3::identity() {
-  vector0.x = 1;
-  vector0.y = 0;
-  vector0.z = 0;
+  *this = identityMat3x3;
+  return *this;
+}
 
-  vector1.x = 0;
-  vector1.y = 1;
-  vector1.z = 0;
+bool
+Matrix3x3::equals(const Matrix3x3 & otherMatrix, float errorRange) const
+{
+  return data[0].equals(otherMatrix.data[0], errorRange) &&
+         data[1].equals(otherMatrix.data[1], errorRange) &&
+         data[2].equals(otherMatrix.data[2], errorRange);
+}
 
-  vector2.x = 0;
-  vector2.y = 0;
-  vector2.z = 1;
+Vector3D
+Matrix3x3::eulerAngles()
+{
+  Vector3D temp;
+  temp.x = Math::aTan2(data[1][2], data[2][2]);
+  float c = Math::sqrt(data[0][0] * data[0][0] + data[0][1] * data[0][1]);
+  temp.y = Math::aTan2(-data[0][2], c);
+  temp.z = Math::aTan2(data[0][1], data[0][0]);
+  return temp;
 }
 
 float*
@@ -265,10 +290,25 @@ Matrix3x3::operator*(const float S) const {
 
 Matrix3x3&
 Matrix3x3::operator*=(const float S) {
-  vector0 = vector0 * S;
-  vector1 = vector1 * S;
-  vector2 = vector2 * S;
+  vector0 *= S;
+  vector1 *= S;
+  vector2 *= S;
 
+  return *this;
+}
+
+Matrix3x3
+Matrix3x3::operator/(const Matrix3x3 & M) const
+{
+  Matrix3x3 temp(M);
+  return *this * temp.inverse();
+}
+
+Matrix3x3&
+Matrix3x3::operator/=(const Matrix3x3 & M)
+{
+  Matrix3x3 temp(M);
+  *this *= temp.inverse();
   return *this;
 }
 
@@ -281,5 +321,14 @@ bool
 Matrix3x3::operator!=(const Matrix3x3& M) {
   return !(*this == M);
 }
+
+Matrix3x3
+Matrix3x3::identityMat3x3(1.f, 0.f, 0.f,
+                          0.f, 1.f, 0.f,
+                          0.f, 0.f, 1.f);
+Matrix3x3
+Matrix3x3::zerosMat3x3(0.f, 0.f, 0.f,
+                       0.f, 0.f, 0.f,
+                       0.f, 0.f, 0.f);
 
 }

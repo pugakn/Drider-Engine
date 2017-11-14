@@ -1,14 +1,17 @@
 #pragma once
 #include "dr_depth_stencil_state.h"
+#include "dr_graphics_prerequisites.h"
 
 class ID3D11DepthStencilState;
 
 namespace driderSDK {
 
-class DR_API_EXPORT D3DDepthStencilState : public DepthStencilState {
+class DR_GRAPHICS_EXPORT D3DDepthStencilState : public DepthStencilState
+{
  public:
-
   /**
+  * TEST::
+  *
   * Create a detph stencil state that describes the behavior
   * of the deth stencil
   *
@@ -25,6 +28,8 @@ class DR_API_EXPORT D3DDepthStencilState : public DepthStencilState {
   create(const Device& device, const DrDepthStencilDesc& desc) override;
 
   /**
+  * TEST::
+  *
   * Set the depth stencil state
   *
   * @param deviceContext
@@ -38,6 +43,8 @@ class DR_API_EXPORT D3DDepthStencilState : public DepthStencilState {
   set(const DeviceContext& deviceContext, UInt32 refValue) const override;
 
   /**
+  * TEST::
+  *
   * Release the allocated memory
   */
   void

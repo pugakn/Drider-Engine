@@ -1,5 +1,5 @@
 #pragma once
-#include <dr_prerequisites.h>
+#include "dr_graphics_prerequisites.h"
 #include "dr_graphics_defines.h"
 
 namespace driderSDK {
@@ -14,7 +14,7 @@ class ShaderBytecode;
 * Sample usage:
 *	Shader* = new D3DFragmentShader;
 */
-class DR_API_EXPORT Shader
+class DR_GRAPHICS_EXPORT Shader
 {
  public:
   /**

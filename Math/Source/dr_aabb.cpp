@@ -10,33 +10,56 @@ namespace driderSDK {
 
 AABB::AABB() {}
 
-AABB::AABB(float width, 
-           float height, 
-           const Vector3D& C) : width(width), height(height), center(C) {}
+AABB::AABB(float _width, 
+           float _height, 
+					 float _depth,
+           const Vector3D& C) {
+	width = _width; 
+	height = _height; 
+	depth = _depth;
+	center = C;
+}
 
 AABB::AABB(const AABB& A) {
-            width = A.width;
-            height = A.height;
-            center = A.center;
+	width = A.width;  
+	height = A.height;
+	depth = A.depth;
+	center = A.center;
 }
 
 AABB::~AABB() {}
 
+const Vector3D
+AABB::getMaxPoint() const {
+	return Vector3D(center.x + (width * 0.5f),
+									center.y + (height * 0.5f),
+									center.z + (depth * 0.5f));
+}
+
+const Vector3D
+AABB::getMinPoint() const {
+	return Vector3D(center.x - (width * 0.5f),
+									center.y - (height * 0.5f),
+									center.z - (depth * 0.5f));
+}
+
 bool
 AABB::intersect(AABB& aabb) {
   return Intersect::aabbAabb(center, 
-                             width, 
-                             height,
-	                           aabb.center, 
-                             aabb.height,
-	                           aabb.width);
+														 width,
+														 height,
+														 depth,
+	                           aabb.center,
+														 aabb.width,
+														 aabb.height,
+														 aabb.depth);
 }
 
 bool
 AABB::intersect(Sphere& sphere) {
   return Intersect::aabbSphere(center, 
-                               width,
-                               height, 
+															 getMaxPoint(),
+															 getMinPoint(),
                                sphere.center, 
                                sphere.radius);
 }
@@ -44,25 +67,34 @@ AABB::intersect(Sphere& sphere) {
 bool
 AABB::intersect(Plane& plane) {
   return Intersect::aabbPlane(center, 
-                              width,
-                              height,
+															width,
+															height,
+															depth,
 	                            static_cast<Vector3D&>(plane), 
 	                            plane.d);
 }
 
 bool
 AABB::intersect(Frustrum& frustrum) {
-  return Intersect::aabbFrustrum(center, width, height, frustrum.planes);
+  return Intersect::aabbFrustrum(center, 
+																 width,
+																 height,
+																 depth,
+																 frustrum.planes);
 }
 
 bool
 AABB::intersect(Ray& ray) {
-  return Intersect::aabbRay(center, width, height, ray.origin, ray.direction);
+	return Intersect::aabbRay(center, 
+														getMaxPoint(), 
+														getMinPoint(), 
+														ray.origin, 
+														ray.direction);
 }
 
 bool
 AABB::intersect(Vector3D& point) {
-  return Intersect::aabbPoint(center, width, height, point);
+  return Intersect::aabbPoint(center, getMaxPoint(), getMinPoint(), point);
 }
 
 } 

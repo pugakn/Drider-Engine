@@ -1,5 +1,5 @@
 #pragma once
-#include <dr_prerequisites.h>
+#include "dr_graphics_prerequisites.h"
 #include "dr_graphics_defines.h"
 
 namespace driderSDK {
@@ -7,7 +7,8 @@ namespace driderSDK {
 class Device;
 class DeviceContext;
 
-class DR_API_EXPORT SamplerState {
+class DR_GRAPHICS_EXPORT SamplerState
+{
  public:
   /**
   * Class virutal destructor.

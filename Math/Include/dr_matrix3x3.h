@@ -1,19 +1,19 @@
 #pragma once
 
-#include <cassert>
-#include <dr_prerequisites.h>
+#include "dr_math_prerequisites.h"
 #include "dr_vector3d.h"
 
 namespace driderSDK {
 
  class Matrix4x4;
+ class Quaternion;
  /**
  * Matrix with 3x3 elements
  *
  * Sample usage:
  * Matrix3x3 matrixName;
  */
-class DR_API_EXPORT Matrix3x3                                                                 
+class DR_MATH_EXPORT Matrix3x3                                                                 
 {
  public:
   /**
@@ -33,6 +33,25 @@ class DR_API_EXPORT Matrix3x3
   *
   */
   explicit Matrix3x3(Math::FORCE_INIT k);
+
+  /**
+  * TEST::Constructor4X4
+  *
+  * Constructor for matrix4x4
+  *
+  * Values are initialized with values for matrix4x4 
+  * vector0, vector1 and vector2 values x,y,z 
+  *
+  */
+  explicit Matrix3x3(const Matrix4x4& M);
+
+  /**
+  * TEST::ConstructorQuaternion
+  *
+  * Constructor for quaternion
+  *
+  */
+  explicit Matrix3x3(const Quaternion& Q);
 
   /**
   * TEST::moveConstructor
@@ -114,7 +133,7 @@ class DR_API_EXPORT Matrix3x3
   *   cofactor of matrix.
   *
   */
-  void
+  Matrix3x3&
   cofactor();
 
   /**
@@ -128,7 +147,7 @@ class DR_API_EXPORT Matrix3x3
   *   adjugate.
   *
   */
-  void
+  Matrix3x3&
   adjugate();
 
   /**
@@ -138,7 +157,7 @@ class DR_API_EXPORT Matrix3x3
   * using det * adjugate
   *
   */
-  void
+  Matrix3x3&
   inverse();
 
   /**
@@ -152,7 +171,7 @@ class DR_API_EXPORT Matrix3x3
   * | C1 | C2 | C3 |     | A3 | B3 | C3 |
   *
   */
-  void
+  Matrix3x3&
   transpose();
 
   /**
@@ -163,8 +182,40 @@ class DR_API_EXPORT Matrix3x3
   * Tranform matrix to identity
   *
   */
-  void
+  Matrix3x3&
   identity();
+
+  /**
+  * TEST::equals
+  *
+  * Check's if the other matrix is equal to this matrix with an error
+  * range.
+  *
+  * @param otherMatrix
+  *   Matrix to compare with this matrix.
+  *
+  * @param errorRange
+  *   The value of the error range.
+  *
+  * @return
+  *   bool expression of condition.
+  */
+  bool
+  equals(const Matrix3x3& otherMatrix, float errorRange = Math::SMALL_NUMBER) const;
+
+  /**
+  * TEST::toEulerAngle
+  *
+  * Euler angles form quaternion.
+  *
+  * @param Quaternion
+  *   Matrix to extract euler angles.
+  *
+  * @return
+  *   vextor3d to values of angles.
+  */
+  Vector3D
+  eulerAngles();
 
   /**
   * TEST::getPointer
@@ -261,6 +312,18 @@ class DR_API_EXPORT Matrix3x3
   operator*=(const float S);
 
   /**
+  * TEST::operatorDivide
+  */
+  Matrix3x3
+  operator/(const Matrix3x3& M) const;
+
+  /**
+  * TEST::operatorDivideEqual
+  */
+  Matrix3x3&
+  operator/=(const Matrix3x3& M);
+
+  /**
   * TEST::operatorEqualEqual
   */
   bool
@@ -281,6 +344,8 @@ class DR_API_EXPORT Matrix3x3
     Vector3D data[3];
   };
 
+  static Matrix3x3 identityMat3x3;
+  static Matrix3x3 zerosMat3x3;
  protected:
 };
 

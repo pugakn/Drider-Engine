@@ -5,10 +5,12 @@ struct ID3D11RasterizerState;
 
 namespace driderSDK {
 
-class DR_API_EXPORT D3DRasterizerState : public RasterizerState
+class DR_GRAPHICS_EXPORT D3DRasterizerState : public RasterizerState
 {
  public:
   /**
+  * TEST::create
+  *
   * Create a sample state
   *
   * @param device
@@ -24,6 +26,8 @@ class DR_API_EXPORT D3DRasterizerState : public RasterizerState
   create(const Device& device, const DrRasterizerDesc& desc) override;
 
   /**
+  * TEST::set
+  *
   * Set the state
   *
   * @param deviceContext
@@ -36,6 +40,8 @@ class DR_API_EXPORT D3DRasterizerState : public RasterizerState
   set(const DeviceContext& deviceContext) const override;
 
   /**
+  * TEST::release
+  *
   * Release the allocated memory
   */
   void

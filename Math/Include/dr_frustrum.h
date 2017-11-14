@@ -1,6 +1,6 @@
 #pragma once
 #include <array>
-#include <dr_prerequisites.h>
+#include "dr_math_prerequisites.h"
 #include <dr_plane.h>
 #include <dr_matrix4x4.h>
 #include <dr_vector3d.h>
@@ -17,7 +17,7 @@ class Ray;
 * Frustrum class
 */
 
-class DR_API_EXPORT Frustrum
+class DR_MATH_EXPORT Frustrum
 {
  public:
 	enum PLANES { 
@@ -56,7 +56,7 @@ class DR_API_EXPORT Frustrum
 	void 
 	createFromVP(const Matrix4x4& ViewProjection);
 
-	/**
+	/*
   * TEST::intersectsRay
 	* Check if the frustrum intersects other ray
 	*
@@ -70,7 +70,7 @@ class DR_API_EXPORT Frustrum
 	/*bool
 	intersects(const Ray& bRay) const;*/
 
-	/**
+	/*
 	* Check if the frustrum intersects with a plane
 	*
 	*	@param plane

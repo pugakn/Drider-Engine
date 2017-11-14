@@ -102,7 +102,6 @@ void
 D3DDeviceContext::setVertexBuffer(const VertexBuffer& buffer,
                                   UInt32 stride,
                                   UInt32 offset) const {
-
   buffer.set(*this, stride, offset);
 }
 

@@ -1,24 +1,32 @@
 #pragma once
-#include <dr_prerequisites.h>
+#include "dr_graphics_prerequisites.h"
 #include "dr_device.h"
 
 class ID3D11Device;
 
 namespace driderSDK {
 class ShaderBytecode;
-class DR_API_EXPORT D3DDevice : public Device
+class DR_GRAPHICS_EXPORT D3DDevice : public Device
 {
-public:
+ public:
+  /**
+  * TEST::
+  *
+  */
   DR_GRAPHICS_ERROR::E
   createDeviceAndDeviceContext(DeviceContext& deviceContext) override;
 
   /**
+  * TEST::
+  *
   * Release the allocated memory
   */
   void
   release() override;
 
   /**
+  * TEST::createVertexBuffer
+  *
   * Create a vertex buffer
   *
   * @param DrBufferDesc
@@ -39,6 +47,8 @@ public:
                      VertexBuffer* vertexBuffer) override;
 
   /**
+  * TEST::createIndexBuffer
+  *
   * Create a vertex buffer
   *
   * @param DrBufferDesc
@@ -59,6 +69,8 @@ public:
                     IndexBuffer* indexBuffer) override;
 
   /**
+  * TEST::createConstantBuffer
+  *
   * Create a constant buffer
   *
   * @param DrBufferDesc
@@ -79,6 +91,8 @@ public:
                        ConstantBuffer* constantBuffer) override;
 
   /**
+  * TEST::createShaderFromMemory
+  *
   * Create a shader from a plain text buffer
   *
   * @param shaderBuffer
@@ -100,6 +114,8 @@ public:
                          Shader* shader) override;
 
   /**
+  * TEST::createTextureFromMemory
+  *
   * Create a texture from a memory buffer
   *
   * @param buffer
@@ -120,6 +136,8 @@ public:
                           Texture* texture) override;
 
   /**
+  * TEST::createEmptyTexture
+  *
   * Create a texture without initial data
   *
   * @param desc
@@ -136,6 +154,8 @@ public:
                      Texture* texture) override;
 
   /**
+  * TEST::createRenderTarget
+  *
   * Create a render target
   *
   * @param desc
@@ -155,6 +175,8 @@ public:
                      RenderTarget* renderTarget) override;
 
   /**
+  * TEST::createDepthStencil
+  *
   * Create a depth stencil
   *
   * @param desc
@@ -171,6 +193,8 @@ public:
                      DepthStencil* depthStencil) override;
 
   /**
+  * TEST::createSamplerState
+  *
   * Create a sampler state
   *
   * @param desc
@@ -187,6 +211,8 @@ public:
                      SamplerState* state) override;
 
   /**
+  * TEST::createRasteizerState
+  *
   * Create a sampler rasterizer state
   *
   * @param desc
@@ -203,6 +229,8 @@ public:
                        RasterizerState* state) override;
 
   /**
+  * TEST::createDepthStencilState
+  *
   * Create a deth stencil state
   *
   * @param desc
@@ -219,6 +247,8 @@ public:
                           DepthStencilState* state) override;
 
   /**
+  * TEST::createInputLayout
+  *
   * Create a input layout
   *
   * @param inputDescArray
@@ -239,6 +269,8 @@ public:
                     InputLayout* layout) override;
 
   /**
+  * TEST::createSwapChain
+  *
   * Create a swap chain
   *
   * @param desc

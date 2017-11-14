@@ -2,8 +2,7 @@
 #include <gtest\gtest.h>
 
 TEST(Degree, defaultConstructor) {
-  driderSDK::Degree* testDegree = nullptr;
-  testDegree = new driderSDK::Degree();
+  driderSDK::Degree* testDegree = new driderSDK::Degree();
 
   EXPECT_FALSE(nullptr == testDegree);
 
@@ -35,13 +34,12 @@ TEST(Degree, floatConstructor) {
 }
 
 TEST(Degree, defaultDestructor) {
-  driderSDK::Degree* testDegree = nullptr;
-  testDegree = new driderSDK::Degree();
+  driderSDK::Degree* testDegree = new driderSDK::Degree();
 
   delete testDegree;
   testDegree = nullptr;
 
-  EXPECT_TRUE(nullptr == testDegree);
+  EXPECT_FALSE(testDegree);
 }
 
 TEST(Degree, toRadian) {

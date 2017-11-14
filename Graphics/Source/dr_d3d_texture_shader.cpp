@@ -8,7 +8,7 @@
 namespace driderSDK {
 
 void
-D3DTextreShader::set(const DeviceContext& deviceContext) const {
+D3DTextureShader::set(const DeviceContext& deviceContext) const {
 }
 
 void

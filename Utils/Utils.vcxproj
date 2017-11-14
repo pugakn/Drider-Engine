@@ -131,8 +131,9 @@
     <ClInclude Include="Include\dr_defines.h" />
     <ClInclude Include="Include\dr_memory.h" />
     <ClInclude Include="Include\dr_pool.h" />
-    <ClInclude Include="Include\dr_prerequisites.h" />
+    <ClInclude Include="Include\dr_util_prerequisites.h" />
     <ClInclude Include="Include\dr_types.h" />
+    <ClInclude Include="Include\dt_stack_allocator.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

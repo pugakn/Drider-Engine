@@ -13,9 +13,12 @@ class DepthStencil;
 * Sample usage:
 *	RenderTarget* = new D3DRenderTarget;
 */
-class DR_API_EXPORT D3DRenderTarget : public RenderTarget {
+class DR_GRAPHICS_EXPORT D3DRenderTarget : public RenderTarget
+{
  public:
   /**
+  * TEST::create
+  *
   * Create a render target on this object
   *
   * @param device
@@ -34,6 +37,8 @@ class DR_API_EXPORT D3DRenderTarget : public RenderTarget {
   create(const Device& device, const Texture& texture) override;
 
   /**
+  * TEST::set
+  *
   * Set the render target and depth stencil
   *
   * @param deviceContext
@@ -44,9 +49,12 @@ class DR_API_EXPORT D3DRenderTarget : public RenderTarget {
   *
   */
   void
-  set(const DeviceContext& deviceContext, const DepthStencil& depthStencil) const override;
+  set(const DeviceContext& deviceContext,
+      const DepthStencil& depthStencil) const override;
 
   /**
+  * TEST::release
+  *
   * Release the allocated memory
   */
   void

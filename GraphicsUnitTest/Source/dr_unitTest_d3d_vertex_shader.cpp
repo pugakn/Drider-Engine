@@ -2,6 +2,7 @@
 #include <dr_d3d_vertex_shader.h>
 #include <dr_d3d_device.h>
 #include <dr_d3d_device_context.h>
+#include <d3d11.h>
 #include <dxgi.h>
 #include <gtest\gtest.h>
 
@@ -23,8 +24,10 @@ TEST(D3DVertexShader, release) {
   device.createDeviceAndDeviceContext(context);
   char *source = "cbuffer ConstantBuffer{float4x4 WVP;}struct VS_INPUT {float4 position : POSITION;};struct VS_OUTPUT {float4 hposition : SV_POSITION;};VS_OUTPUT VS(VS_INPUT input) {VS_OUTPUT OUT;OUT.hposition = mul(WVP, input.position);return OUT;}";
   bool b = obj.createFromMemory(device, source, GTEST_ARRAY_SIZE_(source));
-  obj.release();
-  EXPECT_TRUE(!obj.APIShader);
+  if (b) {
+    obj.release();
+  }
+  EXPECT_TRUE(!obj.APIShader.Get());
 }
 
 TEST(D3DVertexShader, createFromMemory) {

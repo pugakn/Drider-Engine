@@ -2,8 +2,7 @@
 #include <gtest\gtest.h>
 
 TEST(FileSystem, defaultConstructor) {
-  driderSDK::FileSystem* ptrFS = nullptr;
-  ptrFS = new driderSDK::FileSystem();
+  driderSDK::FileSystem* ptrFS = new driderSDK::FileSystem();
 
   EXPECT_FALSE(nullptr == ptrFS);
 
@@ -11,13 +10,12 @@ TEST(FileSystem, defaultConstructor) {
 }
 
 TEST(FileSystem, defaultDestructor) {
-  driderSDK::FileSystem* fsTest = nullptr;
-  fsTest = new driderSDK::FileSystem();
+  driderSDK::FileSystem* fsTest = new driderSDK::FileSystem();
 
   delete fsTest;
   fsTest = nullptr;
 
-  EXPECT_TRUE(nullptr == fsTest);
+  EXPECT_FALSE(fsTest);
 }
 
 TEST(FileSystem, load) {

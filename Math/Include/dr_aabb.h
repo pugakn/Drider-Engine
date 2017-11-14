@@ -1,6 +1,6 @@
 #pragma once
 
-#include <dr_prerequisites.h>
+#include "dr_math_prerequisites.h"
 #include "dr_vector3d.h"
 
 namespace driderSDK {
@@ -12,12 +12,12 @@ class Frustrum;
 class Ray;
 
 /**
-*  Axis aligned bounding box class with center and length
+*  Axis aligned bounding box class with center, width, height and depth
 *
 * Sample usage:
-*	AABB myAabb(5.0, 2.0, driderSDK::Vector3D(0,0,0));
+*	AABB myAabb(5.0, 2.0, 2.0, driderSDK::Vector3D(0,0,0));
 */
-class DR_API_EXPORT AABB
+class DR_MATH_EXPORT AABB
 {
  public:
   
@@ -32,13 +32,19 @@ class DR_API_EXPORT AABB
 	* TEST::constructFromValues
   * Initialize the constructor with the given values
   *
-  * @param s
-  *  Size of the AABB
+  * @param width
+  *  Width of the AABB
+	*
+	* @param height
+	*  Height of the AABB
+	*
+	* @param depth
+	*  Depth of the AABB
   *
   * @param C
   *  Center of the box given by a vector 3D
   */
-  AABB(float width, float height, const Vector3D& C);
+  AABB(float _width, float _height, float _depth, const Vector3D& C);
 
   /**
 	* TEST::moveConstructor
@@ -60,6 +66,28 @@ class DR_API_EXPORT AABB
   *
   */
   ~AABB();
+
+	/**
+	* TEST::getMaxPoint
+	* Gets the max point of the AABB.
+	*
+	* @return
+	*  AABB's max point
+	*
+	*/
+	const Vector3D
+	getMaxPoint() const;
+
+	/**
+	* TEST::getMinPoint
+	* Gets the min point of the AABB.
+	*
+	* @return
+	*  AABB's min point
+	*
+	*/
+	const Vector3D
+	getMinPoint() const;
 
   /**
 	* TEST::intersectAABB
@@ -139,8 +167,9 @@ class DR_API_EXPORT AABB
   bool
   intersect(Vector3D& point);
   
-  float width, height;
-  Vector3D center;
+	float width, height, depth;
+
+	Vector3D center;
 };
 
 }

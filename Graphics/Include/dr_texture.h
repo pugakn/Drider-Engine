@@ -1,5 +1,5 @@
 #pragma once
-#include <dr_prerequisites.h>
+#include "dr_graphics_prerequisites.h"
 #include "dr_graphics_defines.h"
 #include <string>
 
@@ -14,7 +14,8 @@ class DeviceContext;
 * Sample usage:
 *	texture* = new D3DTexture;
 */
-class DR_API_EXPORT Texture {
+class DR_GRAPHICS_EXPORT Texture
+{
  public:
   /**
   * Class virtual destructor.
@@ -124,7 +125,7 @@ class DR_API_EXPORT Texture {
   *   The device context to set the resource
   */
   virtual void
-  generateMipMaps(const DeviceContext & deviceContext) const = 0;
+  generateMipMaps(const DeviceContext& deviceContext) const = 0;
 
    DrTextureDesc descriptor;
  protected:

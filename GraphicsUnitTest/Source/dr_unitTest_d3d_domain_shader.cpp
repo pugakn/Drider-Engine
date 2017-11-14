@@ -1,18 +1,27 @@
 #pragma once
-#include <dr_domain_shader.h>
+#include <dr_d3d_domain_shader.h>
 #include <gtest\gtest.h>
 #include <dr_d3d_device.h>
 #include <dr_d3d_device_context.h>
 #include <dxgi.h>
 
+driderSDK::Device *device = new driderSDK::D3DDevice();
+driderSDK::DeviceContext *deviceContext = new driderSDK::D3DDeviceContext();
+driderSDK::D3DDomainShader *domainShader = new driderSDK::D3DDomainShader();
+
 TEST(D3DDomainShader, set) {
-  EXPECT_TRUE(true);
+  device->createDeviceAndDeviceContext(*deviceContext);
+  domainShader->set(*deviceContext);
+  EXPECT_TRUE(deviceContext != nullptr);
 }
 
 TEST(D3DDomainShader, release) {
-  EXPECT_TRUE(true);
+  domainShader->release();
+  EXPECT_TRUE(domainShader == nullptr);
 }
 
 TEST(D3DDomainShader, createFromMemory) {
-  EXPECT_TRUE(true);
+  char *shader = "";
+  domainShader->createFromMemory(*device, shader, 5);
+  EXPECT_TRUE(domainShader->APIShader != nullptr);
 }

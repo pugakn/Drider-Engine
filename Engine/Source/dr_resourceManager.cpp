@@ -1,46 +1,27 @@
 #include "dr_resourceManager.h"
+#include "dr_codec.h"
 
 namespace driderSDK {
 
-void
-ResourceManager::loadResource(std::string nameResource,
-                              std::string pathFile) {
- ResourceType::E resourceType;
- if(isCompatible(pathFile + nameResource, resourceType)) {
-  if(!existInResourceContent(nameResource)) {
-   createResource(resourceType, nameResource);
-  } else {
-   getReference(nameResource);
-  }
- }
+std::shared_ptr<Resource>
+ResourceManager::loadResource(TString resourceName) {
+  return nullptr;
 }
 
 void
-ResourceManager::createResource(ResourceType::E resourceType, std::string resourceName) {
- resourceContent.insert({ resourceName , std::shared_ptr<Resource>()});
+ResourceManager::createResource(ResourceType::E resourceType, 
+                                TString resourceKey) {
+ resourceContent.insert({ resourceKey , std::shared_ptr<Resource>()});
 }
 
 bool
-ResourceManager::isCompatible(std::string resource,
-                              ResourceType::E& resourceTypeOut) {
-  resourceTypeOut = Codec::decode(resource);
- if(resourceTypeOut != ResourceType::UNSUPPORTED) {
-  return true;
- } else {
-  return false;
- }
-return false;
-
-}
-
-bool
-ResourceManager::existInResourceContent(std::string key) {
- return resourceContent.find(key) != resourceContent.end();
+ResourceManager::existInResourceContent(TString resourceName) {
+  return resourceContent.find(resourceName) != resourceContent.end();
 }
 
 std::shared_ptr<Resource>
-ResourceManager::getReference(std::string key) {
- return resourceContent.find(key)->second;
+ResourceManager::getReference(TString resourceName) {
+  return resourceContent.find(resourceName)->second;
 }
 
 }

@@ -15,12 +15,19 @@ class DeviceContext;
 * Sample usage:
 *	IndexBuffer* = new D3DIndexBuffer;
 */
-class DR_API_EXPORT D3DIndexBuffer : public IndexBuffer
+class DR_GRAPHICS_EXPORT D3DIndexBuffer : public IndexBuffer
 {
-public:
+ public:
+  /**
+  * TEST::constructor
+  *
+  * Default constructor.
+  */
   D3DIndexBuffer();
 
   /**
+  * TEST::create
+  *
   * Create a buffer shader resource
   *
   * @param device
@@ -39,6 +46,8 @@ public:
     create(const Device& device, const DrBufferDesc& desc, const byte* initialData) override;
 
   /**
+  * TEST::set
+  *
   * Set the index buffer to the stage
   *
   * @param deviceContext
@@ -52,6 +61,8 @@ public:
     set(const DeviceContext& deviceContext, UInt32 offset) const override;
 
   /**
+  * TEST::updateFromMemory
+  *
   * Update the buffer with new data
   *
   * @param deviceContext
@@ -83,6 +94,8 @@ public:
                    const byte* dataBuffer) override;
 
   /**
+  * TEST::release
+  *
   * Release the allocated memory
   */
   void

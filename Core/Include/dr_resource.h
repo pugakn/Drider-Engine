@@ -1,10 +1,13 @@
 #pragma once
-#include <dr_prerequisites.h>
+
 #include <map>
+
+#include "dr_core_prerequisites.h"
 
 namespace driderSDK {
 
-class DR_API_EXPORT Resource {
+class DR_CORE_EXPORT Resource 
+{
  public:
   /**
   * TEST::resourceConstructor

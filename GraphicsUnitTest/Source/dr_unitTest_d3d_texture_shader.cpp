@@ -4,17 +4,17 @@
 #include <dr_d3d_device.h>
 #include <dr_d3d_device_context.h>
 
-TEST(D3DTextreShader, set) {
+TEST(D3DTextureShader, set) {
   //NOT IMPLEMENTED ON DX11
   EXPECT_TRUE(true);
 }
 
-TEST(D3DTextreShader, release) {
+TEST(D3DTextureShader, release) {
   //NOT IMPLEMENTED ON DX11
   EXPECT_TRUE(true);
 }
 
-TEST(D3DTextreShader, createFromMemory) {
+TEST(D3DTextureShader, createFromMemory) {
   //NOT IMPLEMENTED ON DX11
   EXPECT_TRUE(true);
 }

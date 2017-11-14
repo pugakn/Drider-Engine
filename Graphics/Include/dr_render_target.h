@@ -1,5 +1,5 @@
 #pragma once
-#include <dr_prerequisites.h>
+#include "dr_graphics_prerequisites.h"
 #include <memory>
 #include <vector>
 #include "dr_texture.h"
@@ -16,7 +16,8 @@ class DepthStencil;
 * Sample usage:
 *	RenderTarget* = new D3DRenderTarget;
 */
-class DR_API_EXPORT RenderTarget {
+class DR_GRAPHICS_EXPORT RenderTarget
+{
  public:
   /**
   * Class virtual destructor.

@@ -2,7 +2,7 @@
 
 #include <array>
 #include <algorithm>
-#include <dr_prerequisites.h>
+#include "dr_math_prerequisites.h"
 #include "dr_math.h"
 
 namespace driderSDK {
@@ -19,7 +19,7 @@ class VectorN
  public:
 
   /**
-  * TEST::dot
+  * TEST::elements
   * Default constructor
   */
   VectorN()
@@ -63,9 +63,6 @@ class VectorN
   *
   * @return
   *	  A reference to the element at the [index] position.
-  *
-  * @throws out_of_range
-  *	  If the index is greater than number of elements in the vector.
   */
   FORCEINLINE float&
   operator[](SizeT index)
@@ -84,9 +81,6 @@ class VectorN
   *
   * @return
   *	  A const reference to the element at the [index] position.
-  *
-  * @throws out_of_range
-  *	  If the index is greater than number of elements in the vector.
   */
   FORCEINLINE const float&
   operator[](SizeT index) const

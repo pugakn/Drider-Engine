@@ -2,7 +2,7 @@
 
 #include <array>
 #include <algorithm>
-#include <dr_prerequisites.h>
+#include "dr_math_prerequisites.h"
 #include "dr_vectorn.h"
 
 namespace driderSDK {
@@ -18,6 +18,7 @@ class MatrixNxM
 {
  public:
   /**
+  * TEST::constructorOneVector
   * Default constructor.
   *
   */
@@ -59,9 +60,6 @@ class MatrixNxM
   *
   * @return
   *	  A reference to the element at the [row] position.
-  *
-  * @throws out_of_range
-  *	  If the row is greater than number of rows in the matrix.
   */
   FORCEINLINE VectorN<_cols>&
   operator[](SizeT row)
@@ -80,9 +78,6 @@ class MatrixNxM
   *
   * @return
   *	  A const reference to the element at the [row] position.
-  *
-  * @throws out_of_range
-  *	  If the row is greater than number of rows in the matrix.
   */
   FORCEINLINE const VectorN<_cols>&
   operator[](SizeT row) const

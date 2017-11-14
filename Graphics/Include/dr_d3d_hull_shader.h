@@ -10,10 +10,12 @@ namespace driderSDK {
 * Sample usage:
 *	HullShader* = new D3DhullShader;
 */
-class DR_API_EXPORT D3DHullShader : public HullShader
+class DR_GRAPHICS_EXPORT D3DHullShader : public HullShader
 {
  public:
   /**
+  * TEST::set
+  *
   * Set the shader to the stage
   *
   * @param deviceContext
@@ -24,12 +26,16 @@ class DR_API_EXPORT D3DHullShader : public HullShader
   set(const DeviceContext& deviceContext) const override;
 
   /**
+  * TEST::release
+  *
   * Release the allocated memory
   */
   void
   release() override;
 
   /**
+  * TEST::createFromMemory
+  *
   * Update the buffer with new data
   *
   * @param deviceContext

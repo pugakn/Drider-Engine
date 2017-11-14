@@ -1,6 +1,8 @@
 #pragma once
+
 #include <array>
-#include <dr_prerequisites.h>
+#include "dr_math_prerequisites.h"
+
 namespace driderSDK {
 
 class Vector3D;
@@ -25,7 +27,7 @@ enum E
 };
 }
 
-struct DR_API_EXPORT Intersect
+struct DR_MATH_EXPORT Intersect
 {
   /**
   * TEST::sphereSphere
@@ -284,31 +286,39 @@ struct DR_API_EXPORT Intersect
   * @param aabbCenter
   *   Center of the first AABB.
   *
-  * @param aabbWidth
-  *   Width of the first AABB.
-  *
-  * @param aabbHeight
-  *   Heigh of the first AABB.
+	* @param aabbWidth
+	*   Width of the AABB
+	*
+	* @param aabbHeight
+	*   Height of the AABB
+	*
+	* @param aabbDepth
+	*   Depth of the AABB
   *
   * @param aabbCenter2
   *   Center of the second AABB.
   *
-  * @param aabbWidth2
-  *   Width of the second AABB.
-  *
-  * @param aabbHeight2
-  *   Heigh of the second AABB.
+	* @param aabbWidth2
+	*   Width of the other AABB
+	*
+	* @param aabbHeight2
+	*   Height of the other AABB
+	*
+	* @param aabbDepth2
+	*   Depth of the other AABB
   *
   * @return
   *   True if the AABB intesects, else returns false.
   */
   static bool
   aabbAabb(const Vector3D& aabbCenter,
-           float aabbWidth,
-           float aabbHeight,
+					 float aabbWidth,
+					 float aabbHeight,
+					 float aabbDepth,
            const Vector3D& aabbCenter2,
-           float aabbWidth2,
-           float aabbheight2);
+					 float aabbWidth2,
+					 float aabbHeight2,
+					 float aabbDepth2);
 
   /**
   * TEST::aabbSphere
@@ -317,11 +327,11 @@ struct DR_API_EXPORT Intersect
   * @param aabbCenter
   *   Center of the AABB.
   *
-  * @param aabbWidth
-  *   Width of the AABB.
-  *
-  * @param aabbheight
-  *   Heigh of the AABB.
+	* @param aabbMax
+	*   Vector3D containing maximum point of the AABB
+	*
+	* @param aabbMin
+	*   Vector3D containing minimum point of the AABB
   *
   * @param sphereOrigin
   *   Origin of the sphere.
@@ -334,8 +344,8 @@ struct DR_API_EXPORT Intersect
   */
   static bool
   aabbSphere(const Vector3D& aabbCenter,
-             float aabbWidth,
-             float aabbheight,
+						 const Vector3D& aabbMax,
+						 const Vector3D& aabbMin,
              const Vector3D& sphereOrigin,
              float sphereRadius);
 
@@ -346,12 +356,15 @@ struct DR_API_EXPORT Intersect
   * @param aabbCenter
   *   Center of the AABB.
   *
-  * @param aabbWidth
-  *   Width of the AABB.
+	* @param aabbWidth
+	*   Width of the AABB
   *
-  * @param aabbHeight
-  *   Heigh of the AABB.
-  *
+	* @param aabbHeight
+	*   Height of the AABB
+	*
+	* @param aabbDepth
+	*   Depth of the AABB
+	*
   * @param frustrumPlanes
   *   Planes of the frustrum.
   *
@@ -360,8 +373,9 @@ struct DR_API_EXPORT Intersect
   */
   static bool
   aabbFrustrum(const Vector3D& aabbCenter,
-               float aabbWidth,
-               float aabbheight,
+							 float aabbWidth,
+							 float aabbHeight,
+							 float aabbDepth,
                const std::array<Plane, 6>& frustrumPlanes);
 
   /**
@@ -371,11 +385,11 @@ struct DR_API_EXPORT Intersect
   * @param aabbCenter
   *   Center of the AABB.
   *
-  * @param aabbWidth
-  *   Width of the AABB.
-  *
-  * @param aabbHeight
-  *   Heigh of the AABB.
+	* @param aabbMax
+	*   Vector3D containing maximum point of the AABB
+	*
+	* @param aabbMin
+	*   Vector3D containing minimum point of the AABB
   *
   * @param rayOrigin
   *   Origin of the ray.
@@ -388,8 +402,8 @@ struct DR_API_EXPORT Intersect
   */
   static bool
   aabbRay(const Vector3D& aabbCenter,
-          float aabbWidth,
-          float aabbHeight,
+					const Vector3D& aabbMax,
+					const Vector3D& aabbMin,
           const Vector3D& rayOrigin,
           const Vector3D& rayDirection);
 
@@ -400,11 +414,11 @@ struct DR_API_EXPORT Intersect
   * @param aabbCenter
   *   Center of the AABB.
   *
-  * @param aabbWidth
-  *   Width of the AABB.
-  *
-  * @param aabbheight
-  *   Heigh of the AABB.
+	* @param aabbMax
+	*   Vector3D containing maximum point of the AABB
+	*
+	* @param aabbMin
+	*   Vector3D containing minimum point of the AABB
   *
   * @param point
   *   Point to check.
@@ -414,8 +428,8 @@ struct DR_API_EXPORT Intersect
   */
   static bool
   aabbPoint(const Vector3D& aabbCenter,
-            float aabbWidth,
-            float aabbHeight,
+						const Vector3D& aabbMax,
+						const Vector3D& aabbMin,
             const Vector3D& point);
 
   /**
@@ -450,11 +464,14 @@ struct DR_API_EXPORT Intersect
   * @param aabbCenter
   *   Center of Aabb.
   *
-  * @param aabbWidth
-  *   Width of Aabb.
-  *
-  * @param aabbHeight
-  *   Height of Aabb.
+	* @param aabbWidth
+	*   Width of the AABB
+	*
+	* @param aabbHeight
+	*   Height of the AABB
+	*
+	* @param aabbDepth
+	*   Depth of the AABB
   *
   * @param planeNormal
   *   Normal of the plane.
@@ -467,8 +484,9 @@ struct DR_API_EXPORT Intersect
   */
   static bool
   aabbPlane(const Vector3D& aabbCenter,
-            float aabbWidth,
-            float aabbHeight,
+						float aabbWidth,
+						float aabbHeight,
+						float aabbDepth,
             const Vector3D& planeNormal,
             float planeGap);
 

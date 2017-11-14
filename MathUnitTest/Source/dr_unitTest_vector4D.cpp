@@ -28,9 +28,7 @@ void checkValuesVector(driderSDK::Vector4D& testVectorA, driderSDK::Vector3D& te
 }
 
 TEST(Vector4D, defaultConstructor) {
-  driderSDK::Vector4D* testingVec = nullptr;
-
-  testingVec = new driderSDK::Vector4D();
+  driderSDK::Vector4D* testingVec = new driderSDK::Vector4D();
 
   EXPECT_FALSE(nullptr == testingVec);
 

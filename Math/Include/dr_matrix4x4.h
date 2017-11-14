@@ -1,18 +1,22 @@
 #pragma once
 
+#include "dr_math_prerequisites.h"
+#include "dr_math.h"
 #include "dr_vector4d.h"
-#include <dr_prerequisites.h>
 
 namespace driderSDK {
 
 class Matrix3x3;
+class Quaternion;
+class Plane;
+
 /**
 * Matrix with 4x4 elements
 *
 * Sample usage:
 * Matrix4x4 matrixName;
 */
-class DR_API_EXPORT Matrix4x4
+class DR_MATH_EXPORT Matrix4x4
 {
  public:
   /**
@@ -31,6 +35,27 @@ class DR_API_EXPORT Matrix4x4
   * Values are initialized with 0(kZero) or identity matrix(kIdentity).
   */
   explicit Matrix4x4(Math::FORCE_INIT k);
+
+  /**
+  * TEST::Constructor3x3
+  *
+  * Constructor for matrix3x3
+  *
+  * Values are initialized with values for matrix3x3
+  * vector0, vector1 and vector2 
+  * values of w initialize in 0 except vector4.w in 1
+  *
+  */
+  explicit Matrix4x4(const Matrix3x3& M);
+
+  /**
+  * TEST::ConstructorQuaternion
+  *
+  * Constructor for quaternion
+  * values of w intitalize in 0 and vector4.w in 1
+  *
+  */
+  explicit Matrix4x4(const Quaternion& Q);
 
   /**
   * TEST::moveConstructor
@@ -118,7 +143,7 @@ class DR_API_EXPORT Matrix4x4
   * @return
   *   cofactor of matrix.
   */
-  void
+  Matrix4x4&
   cofactor();
 
   /**
@@ -130,7 +155,7 @@ class DR_API_EXPORT Matrix4x4
   * @return
   *   adjugate.
   */
-  void
+  Matrix4x4&
   adjugate();
 
   /**
@@ -139,7 +164,7 @@ class DR_API_EXPORT Matrix4x4
   * Calculate inverse of matrix.
   * using det * adjugate
   */
-  void
+  Matrix4x4&
   inverse();
 
   /**
@@ -153,7 +178,7 @@ class DR_API_EXPORT Matrix4x4
   * | C1 | C2 | C3 | C4 |  =  | A3 | B3 | C3 | D3 |
   * | D1 | D2 | D3 | C4 |     | A4 | B4 | C4 | D4 |
   */
-  void
+  Matrix4x4&
   transpose();
 
   /**
@@ -163,9 +188,127 @@ class DR_API_EXPORT Matrix4x4
   *
   * Tranform matrix to identity
   */
-  void
+  Matrix4x4&
   identity();
 
+  /**
+  * TEST::equals
+  *
+  * Check's if the other matrix is equal to this matrix with an error
+  * range.
+  *
+  * @param otherMatrix
+  *   Matrix to compare with this matrix.
+  *
+  * @param errorRange
+  *   The value of the error range.
+  *
+  * @return
+  *   bool expression of condition.
+  */
+  bool
+  equals(const Matrix4x4& otherMatrix, float errorRange = Math::SMALL_NUMBER) const;
+
+  /**
+  * TEST::Translation
+  *
+  * Translate
+  *
+  * Change position to vector
+  */
+  Matrix4x4&
+  Translation(const Vector3D &Pos);
+
+  /**
+  * TEST::Move
+  *
+  * Move
+  *
+  * Add position to vector
+  */
+  Matrix4x4&
+  Move(const Vector3D &Move);
+
+  /**
+  * TEST::Scale
+  *
+  * Scale
+  *
+  * Change scale of matrix
+  */
+  Matrix4x4&
+  Scale(const Vector3D &Scale);
+
+  /**
+  * TEST::Rotation
+  *
+  * Rotation
+  *
+  * Aplication rotation z, x, y
+  */
+  Matrix4x4&
+  Rotation(const float Yaw, const float Pitch, const float Roll);
+
+  /**
+  * TEST::RotationX
+  *
+  * Rotation
+  *
+  * Aplication rotation x
+  */
+  Matrix4x4&
+  RotationX(const float teta);
+
+  /**
+  * TEST::RotationY
+  *
+  * RotationY
+  *
+  * Aplication rotation Y
+  */
+  Matrix4x4&
+  RotationY(const float teta);
+
+  /**
+  * TEST::RotationZ
+  *
+  * RotationZ
+  *
+  * Aplication rotation Z
+  */
+  Matrix4x4&
+  RotationZ(const float teta);
+
+  /**
+  * TEST:
+  */
+  Matrix4x4&
+  LookAt(const Vector3D &Eye, const Vector3D &At, const Vector3D &Up);
+
+  /**
+  * TEST:
+  */
+  Matrix4x4&
+  Projection(float Width, float Height, float ZNear, float ZFar);
+
+  /**
+  * TEST:
+  */
+  Matrix4x4&
+  ProjectionFov(float FOV, float Aspect, float ZNear, float ZFar);
+
+  /**
+  * TEST:
+  */
+  Matrix4x4&
+  Orthogonal(float Width, float Height, float ZNear, float ZFar);
+
+  /**
+  * TEST:
+  */
+  Matrix4x4&
+  Reflection(Vector3D NormalOfMirror);
+  
   /**
   * TEST::getPointer
   *
@@ -202,6 +345,7 @@ class DR_API_EXPORT Matrix4x4
 
   /**
   * TEST::operatorEqualMatrix3x3
+  * w value not modified or asigned
   */
   Matrix4x4&
   operator=(const Matrix3x3& A);
@@ -260,6 +404,18 @@ class DR_API_EXPORT Matrix4x4
   Matrix4x4&
   operator*=(const float S);
 
+   /**
+  * TEST::operatorDivide
+  */
+  Matrix4x4
+  operator/(const Matrix4x4& M) const;
+
+  /**
+  * TEST::operatorDivideEqual
+  */
+  Matrix4x4&
+  operator/=(const Matrix4x4& M);
+
   /**
   * TEST::operatorEqualEqual
   */
@@ -280,6 +436,9 @@ class DR_API_EXPORT Matrix4x4
     };
     Vector4D data[4];
   };
+
+  static Matrix4x4 identityMat4x4;
+  static Matrix4x4 zerosMat4x4;
 };
 
 }

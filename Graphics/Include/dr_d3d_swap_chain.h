@@ -1,14 +1,18 @@
 #pragma once
 #include "dr_swap_chain.h"
+#include "dr_graphics_prerequisites.h"
 
 struct IDXGISwapChain;
 struct ID3D11RenderTargetView;
 
 namespace driderSDK {
 
-class DR_API_EXPORT D3DSwapChain : public SwapChain {
+class DR_GRAPHICS_EXPORT D3DSwapChain : public SwapChain
+{
  public:
   /**
+  * TEST::create
+  *
   * Create a swap chain
   *
   * @param device
@@ -24,6 +28,8 @@ class DR_API_EXPORT D3DSwapChain : public SwapChain {
   create(const Device& device, const DrSwapChainDesc& desc) override;
 
   /**
+  * TEST::getBackBuffer
+  *
   * Get the back buffer
   *
   * @param out texture
@@ -36,12 +42,16 @@ class DR_API_EXPORT D3DSwapChain : public SwapChain {
   getBackBuffer(Texture& texture) override;
 
   /**
+  * TEST::release
+  *
   * Release the allocated memory
   */
   void
   release() override;
 
   /**
+  * TEST::swapBuffers
+  *
   * Swap back-front buffer
   */
   void

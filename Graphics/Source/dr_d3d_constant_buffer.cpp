@@ -66,10 +66,10 @@ D3DConstantBuffer::set(const DeviceContext& deviceContext,
   if (typeFlag& DR_SHADER_TYPE_FLAG::kGeometry) {
     context->D3D11DeviceContext->GSSetConstantBuffers(0, 1, &CB);
   }
-  if (typeFlag& DR_SHADER_TYPE_FLAG::kTeselation) {
+  if (typeFlag & DR_SHADER_TYPE_FLAG::kTeselation) {
     //Not implemented
   }
-  if (typeFlag& DR_SHADER_TYPE_FLAG::kTexture) {
+  if (typeFlag & DR_SHADER_TYPE_FLAG::kTexture) {
     //Not implemented
   }
 }

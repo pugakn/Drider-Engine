@@ -29,11 +29,19 @@ Sphere::intersects(const Sphere& sphere) {
 }
 bool
 Sphere::intersects(const AABB& aabb) {
-  return Intersect::aabbSphere(aabb.center, aabb.width, aabb.height, center, radius);
+  return Intersect::aabbSphere(aabb.center, 
+															 aabb.getMaxPoint(), 
+															 aabb.getMinPoint(), 
+															 center, 
+															 radius);
 }
 bool
 Sphere::intersects(const Capsule& capsule) {
-  return Intersect::sphereCapsule(center, radius, capsule.pointA, capsule.pointB, capsule.radius);
+  return Intersect::sphereCapsule(center, 
+																	radius, 
+																	capsule.pointA, 
+																	capsule.pointB, 
+																	capsule.radius);
 }
 bool
 Sphere::intersects(const Frustrum& frustrum) {

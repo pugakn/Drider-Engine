@@ -29,7 +29,8 @@
 
 namespace driderSDK {
 
-DR_GRAPHICS_ERROR::E D3DDevice::createDeviceAndDeviceContext(DeviceContext& deviceContext) {
+DR_GRAPHICS_ERROR::E
+D3DDevice::createDeviceAndDeviceContext(DeviceContext& deviceContext) {
   if (D3D11CreateDevice(0,
                         D3D_DRIVER_TYPE_HARDWARE,
                         0,

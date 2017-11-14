@@ -4,11 +4,13 @@
 #include <gtest\gtest.h>
 
 TEST (Codec, codecDecode) {
-  EXPECT_TRUE(driderSDK::Codec::decode("images.png") ==
-              driderSDK::ResourceType::PNG);
+  EXPECT_TRUE(false);
 }
 
 TEST(Codec, codecEncode) {
-  EXPECT_TRUE(driderSDK::Codec::encode("images.png") ==
-              std::shared_ptr<driderSDK::Resource>());
+  EXPECT_TRUE(false);
+}
+
+TEST(Codec, isCompatible) {
+  driderSDK::Codec::isCompatible(_T("test.png"));
 }

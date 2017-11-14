@@ -10,10 +10,11 @@ namespace driderSDK {
 * Sample usage:
 *	DomainShader* = new D3DDomainShader;
 */
-class DR_API_EXPORT D3DDomainShader : public DomainShader
+class DR_GRAPHICS_EXPORT D3DDomainShader : public DomainShader
 {
  public:
   /**
+  * TEST::set
   * Set the shader to the stage
   *
   * @param deviceContext
@@ -24,12 +25,16 @@ class DR_API_EXPORT D3DDomainShader : public DomainShader
   set(const DeviceContext& deviceContext) const override;
 
   /**
+  * TEST::release
+  *
   * Release the allocated memory
   */
   void
   release() override;
 
   /**
+  * TEST::createFromMemory
+  *
   * Update the buffer with new data
   *
   * @param deviceContext

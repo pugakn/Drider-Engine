@@ -1,8 +1,8 @@
 #pragma once
 
 #include <stdint.h>
-
 #include "dr_defines.h"
+#include <string>
 
 #if DR_PLATFORM == DR_PLATFORM_PS4
 # include <scebase.h>
@@ -43,6 +43,21 @@ namespace driderSDK {
 #endif
   using ANSIChar = char;   //ANSI character type
   using UNIChar  = WChar;  //UNICODE character type
+
+using String = std::basic_string<ANSIChar>;
+using WString = std::basic_string<UNIChar>;
+
+
+
+#ifdef _UNICODE
+  using TString  = WString;
+  using TChar = UNIChar;
+#define _T(src) L##src
+#else
+  using TString = String;
+  using TChar = ANSIChar;
+#define _T(src) src
+#endif
 
 /**********************************************************************
 *																	                                    *

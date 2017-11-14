@@ -1,5 +1,5 @@
 #pragma once
-#include <dr_prerequisites.h>
+#include "dr_graphics_prerequisites.h"
 #include <vector>
 #include "dr_graphics_defines.h"
 
@@ -20,7 +20,7 @@ class DepthStencil;
 class DeviceContext;
 class ShaderBytecode;
 
-class DR_API_EXPORT Device
+class DR_GRAPHICS_EXPORT Device
 {
  public:
   /**

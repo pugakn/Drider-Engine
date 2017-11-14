@@ -1,5 +1,6 @@
 #pragma once
-#include <dr_prerequisites.h>
+
+#include "dr_core_prerequisites.h"
 
 namespace driderSDK {
 

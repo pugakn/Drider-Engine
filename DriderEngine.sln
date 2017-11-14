@@ -1,13 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.16
+VisualStudioVersion = 15.0.27004.2005
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Utils", "Utils\Utils.vcxproj", "{96C93CF8-BB4C-4D60-8C5D-3F439477662D}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Math", "Math\Math.vcxproj", "{4C420F92-670E-4FFF-8EF6-B8F33B482386}"
 	ProjectSection(ProjectDependencies) = postProject
-		{0B6C9827-D942-42A2-8E8F-7F9E5DECF169} = {0B6C9827-D942-42A2-8E8F-7F9E5DECF169}
 		{96C93CF8-BB4C-4D60-8C5D-3F439477662D} = {96C93CF8-BB4C-4D60-8C5D-3F439477662D}
 	EndProjectSection
 EndProject
@@ -51,6 +50,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EngineUnitTest", "EngineUni
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Core", "Core\Core.vcxproj", "{0B6C9827-D942-42A2-8E8F-7F9E5DECF169}"
 	ProjectSection(ProjectDependencies) = postProject
+		{4C420F92-670E-4FFF-8EF6-B8F33B482386} = {4C420F92-670E-4FFF-8EF6-B8F33B482386}
 		{96C93CF8-BB4C-4D60-8C5D-3F439477662D} = {96C93CF8-BB4C-4D60-8C5D-3F439477662D}
 	EndProjectSection
 EndProject

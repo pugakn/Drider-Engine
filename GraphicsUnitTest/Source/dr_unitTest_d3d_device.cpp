@@ -16,7 +16,7 @@
 #include <dr_d3d_swap_chain.h>
 
 
-TEST(Device, createVertexBuffer) {
+TEST(D3DDevice, createVertexBuffer) {
 	driderSDK::D3DDevice device;
 	driderSDK::D3DDeviceContext context;
 	device.createDeviceAndDeviceContext(context);
@@ -30,7 +30,7 @@ TEST(Device, createVertexBuffer) {
 	EXPECT_TRUE(!device.createVertexBuffer(desc, initData, vb));
 }
 
-TEST(Device, createIndexBuffer) {
+TEST(D3DDevice, createIndexBuffer) {
 	driderSDK::D3DDevice device;
 	driderSDK::D3DDeviceContext context;
 	device.createDeviceAndDeviceContext(context);
@@ -44,7 +44,7 @@ TEST(Device, createIndexBuffer) {
 	EXPECT_TRUE(!device.createIndexBuffer(desc, initData, ib));
 }
 
-TEST(Device, createConstantBuffer) {
+TEST(D3DDevice, createConstantBuffer) {
 	driderSDK::D3DDevice device;
 	driderSDK::D3DDeviceContext context;
 	device.createDeviceAndDeviceContext(context);
@@ -52,14 +52,14 @@ TEST(Device, createConstantBuffer) {
 	desc.sizeInBytes = 10;
 	desc.stride = 0;
 	desc.usage = driderSDK::DR_BUFFER_USAGE::kDefault;
-	driderSDK::D3DConstantBuffer cb;
-	char initData[10];
-	cb.create(device, desc, initData);
-	device.createConstantBuffer(desc, initData, cb);
+	//driderSDK::D3DConstantBuffer;  <-????
+
+	//char initData[10];
+
   EXPECT_TRUE(false);
 }
 
-TEST(Device, createShaderFromMemory) {
+TEST(D3DDevice, createShaderFromMemory) {
 	driderSDK::D3DDevice device;
 	driderSDK::D3DDeviceContext context;
 	device.createDeviceAndDeviceContext(context);
@@ -69,7 +69,7 @@ TEST(Device, createShaderFromMemory) {
 	EXPECT_TRUE(!device.createShaderFromMemory(shaderdata, sizeof(shaderdata), shader));
 }
 
-TEST(Device, createTextureFromMemory) {
+TEST(D3DDevice, createTextureFromMemory) {
 	driderSDK::D3DDevice device;
 	driderSDK::D3DDeviceContext context;
 	driderSDK::D3DTexture tex;
@@ -86,7 +86,7 @@ TEST(Device, createTextureFromMemory) {
 	EXPECT_TRUE(!device.createTextureFromMemory(initData, desc, tex));
 }
 
-TEST(Device, createEmptyTexture) {
+TEST(D3DDevice, createEmptyTexture) {
 	driderSDK::D3DDevice device;
 	driderSDK::D3DDeviceContext context;
 	driderSDK::D3DTexture tex;
@@ -102,7 +102,7 @@ TEST(Device, createEmptyTexture) {
 	EXPECT_TRUE(!device.createEmptyTexture(desc, tex));
 }
 
-TEST(Device, createRenderTarget) {
+TEST(D3DDevice, createRenderTarget) {
 	driderSDK::D3DDevice device;
 	driderSDK::D3DDeviceContext context;
 	device.createDeviceAndDeviceContext(context);
@@ -118,7 +118,7 @@ TEST(Device, createRenderTarget) {
 	EXPECT_TRUE(!device.createRenderTarget(desc, rt, 1));
 }
 
-TEST(Device, createDepthStencil) {
+TEST(D3DDevice, createDepthStencil) {
 	driderSDK::D3DDevice device;
 	driderSDK::D3DDeviceContext context;
 	device.createDeviceAndDeviceContext(context);
@@ -134,7 +134,7 @@ TEST(Device, createDepthStencil) {
 	EXPECT_TRUE(!device.createDepthStencil(desc, ds));
 }
 
-TEST(Device, createSamplerState) {
+TEST(D3DDevice, createSamplerState) {
 	driderSDK::D3DDevice device;
 	driderSDK::D3DDeviceContext context;
 	device.createDeviceAndDeviceContext(context);
@@ -153,7 +153,7 @@ TEST(Device, createSamplerState) {
 	EXPECT_TRUE(!device.createSamplerState(desc, state));
 }
 
-TEST(Device, createRasteizerState) {
+TEST(D3DDevice, createRasteizerState) {
 	driderSDK::D3DDevice device;
 	driderSDK::D3DDeviceContext context;
 	device.createDeviceAndDeviceContext(context);
@@ -173,7 +173,7 @@ TEST(Device, createRasteizerState) {
 	EXPECT_TRUE(!device.createRasteizerState(desc, state));
 }
 
-TEST(Device, createDepthStencilState) {
+TEST(D3DDevice, createDepthStencilState) {
 	driderSDK::D3DDevice device;
 	driderSDK::D3DDeviceContext context;
 	device.createDeviceAndDeviceContext(context);
@@ -182,11 +182,10 @@ TEST(Device, createDepthStencilState) {
 	desc.depthEnable = true;
 	desc.depthFunc = driderSDK::DR_COMPARISON_FUNC::kGREATER;
 	state.create(device, desc);
-	device.createDepthStencilState(desc, state);
-	//EXPECT_TRUE(!);
+  EXPECT_EQ(0, device.createDepthStencilState(desc, state));
 }
 
-TEST(Device, createInputLayout) {
+TEST(D3DDevice, createInputLayout) {
 	driderSDK::D3DDevice device;
 	driderSDK::D3DDeviceContext context;
 	device.createDeviceAndDeviceContext(context);
@@ -203,7 +202,7 @@ TEST(Device, createInputLayout) {
 	EXPECT_TRUE(!device.createInputLayout(desc, layout));
 }
 
-TEST(Device, createSwapChain) {
+TEST(D3DDevice, createSwapChain) {
 	driderSDK::D3DDevice device;
 	driderSDK::D3DDeviceContext context;
 	device.createDeviceAndDeviceContext(context);

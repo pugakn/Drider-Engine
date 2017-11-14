@@ -1,80 +1,44 @@
 #include <dr_parser.h>
+#include <dr_prerequisites.h>
 
 #include <gtest\gtest.h>
 
-TEST (Parser, parserCompareAndStrstr) {
-  char* str1 = "La manzana es verde";
-  char* str2 = "es";
-
-  EXPECT_TRUE(driderSDK::Parser::compare(driderSDK::Parser::strStr(str1, str2),
-                                         "es verde"));
-
-  str1 = "el niño llora, la niña está riendo";
-  str2 = "niño";
-
-  EXPECT_TRUE(driderSDK::Parser::compare(driderSDK::Parser::strStr(str1, str2),
-                                         "niño llora, la niña está riendo"));
-
-  str1 = "mi mente no deja de correr";  
-  str2 = "hola";
-
-  EXPECT_FALSE(driderSDK::Parser::strStr(str1, str2));
-
-  str1 = "hola";
-  str2 = "no";
-  
-  EXPECT_FALSE(driderSDK::Parser::compare(str1, str2));
-
-  str1 = "mm";
-  str2 = "mm";
-
-  EXPECT_TRUE(driderSDK::Parser::compare(str1, str2));
+TEST (Parser, parserStrstr) {
+  driderSDK::TString str1 = L"hola mundo como estan";
+  driderSDK::TString str2 = driderSDK::Parser::strStr(str1, L"mundo");
+  EXPECT_TRUE(str1.compare(L"mundo como estan"));
 }
 
 TEST(Parser, parserStrCpyBetween) {
-  char* source = "hola a todos, que hacen";
-  char* destinationOut = "";
-  char* result = "";
-
-  result = driderSDK::Parser::strCpyBetween(source, "a a ", ",", destinationOut);
-  EXPECT_TRUE(driderSDK::Parser::compare(destinationOut, "todos"));
-  EXPECT_TRUE(driderSDK::Parser::compare(result, "todos"));
+  driderSDK::TString r;
+  driderSDK::TString s;
+  r = driderSDK::Parser::strCpyBetween(L"hola mundo, como estan",
+                                       L"mundo",
+                                       L"estan",
+                                       s);
+  EXPECT_TRUE(r == s);
+  EXPECT_TRUE(r == L", como ");
 }
 
 TEST(Parser, parserStringToInt32) {
-  EXPECT_TRUE(driderSDK::Parser::stringToInt32("10") == 10);
-  EXPECT_TRUE(driderSDK::Parser::stringToInt32("10.1") == 10);
+  EXPECT_TRUE(driderSDK::Parser::stringToInt32(L"10") == 10);
+  EXPECT_TRUE(driderSDK::Parser::stringToInt32(L"10.1") == 10);
 }
 
 TEST(Parser, parserStringToFloat) {
-  EXPECT_TRUE(driderSDK::Parser::stringToFloat("21.2") == 21.2f);
-  EXPECT_TRUE(driderSDK::Parser::stringToFloat("21.23.3") == 21.23f);
-  EXPECT_TRUE(driderSDK::Parser::stringToFloat("21") == 21.0f);
+  EXPECT_TRUE(driderSDK::Parser::stringToFloat(L"10") == 10.0f);
+  EXPECT_TRUE(driderSDK::Parser::stringToFloat(L"10.65") == 10.65f);
 }
 
 TEST (Parser, parserAddUntilFind) {
-  char *source = "muchos años y uno cree, que el caer es...";
-  char *result = "";
-  char *strTest = driderSDK::Parser::addUntilFind(source, " ,", result);
-
-  EXPECT_TRUE(driderSDK::Parser::compare(strTest, "muchos"));
-  EXPECT_TRUE(driderSDK::Parser::compare(strTest, result));
-  
-  source = "hola, xdxd";
-  strTest = driderSDK::Parser::addUntilFind(source, " ,", result);
-  
-  EXPECT_TRUE(driderSDK::Parser::compare(strTest, "hola"));
-  EXPECT_TRUE(driderSDK::Parser::compare(result, "hola"));
+  driderSDK::TString out;
+  driderSDK::Parser::addUntilFind(L"1.0, 25.0, 236", L",", out);
+  EXPECT_TRUE(out == L"1.0");
 }
 
 TEST (Parser, parserSplit) {
-  char *p = "hola, mundo";
-  std::vector<std::string> vStrings = driderSDK::Parser::split(p, " ,");
-  std::vector<std::string> vTest {"hola", "mundo"};
-  EXPECT_TRUE(vStrings == vTest);
-
-  p = "que, tal, como,estan todos";
-  std::vector<std::string> vStrings2 = driderSDK::Parser::split(p, " ,");
-  std::vector<std::string> vTest2{ "que", "tal", "como", "estan", "todos" };
-  EXPECT_TRUE(vStrings2 == vTest2);
+  std::vector<driderSDK::TString> result;
+  std::vector<driderSDK::TString> compare {L"azul", L"rojo", L"verde", L"amarillo"};
+  result = driderSDK::Parser::split(L"azul, rojo,verde, amarillo", L", ");
+  EXPECT_TRUE(result == compare);
 }

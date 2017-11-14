@@ -14,7 +14,7 @@ TEST(ResourceManager, resourceMDestructor) {
 
 TEST(ResourceManager, loadResource) {
   rm.resourceContent.clear();
-  rm.loadResource("test.png", "resources/images");
+  rm.loadResource(_T("test.png"));
   EXPECT_TRUE(rm.resourceContent.size() > 0);
 }
 
@@ -24,12 +24,13 @@ TEST(ResourceManager, createResource) {
   EXPECT_TRUE(rm.resourceContent.size() > 0);
 }
 
-TEST(ResourceManager, isCompatible) {
-  driderSDK::ResourceType::E type;
-  EXPECT_TRUE(rm.isCompatible("resources/test.png", type));
-  EXPECT_TRUE(type == driderSDK::ResourceType::PNG);
-}
-
 TEST(ResourceManager, existInResourceContent) {
   EXPECT_TRUE(rm.existInResourceContent("test"));
+}
+
+TEST(ResourceManager, getReference) {
+  rm.loadResource(_T("test.png"));
+  rm.createResource(driderSDK::ResourceType::PNG, "test");
+  EXPECT_TRUE(rm.getReference("test") == nullptr);
+  EXPECT_FALSE(true);
 }

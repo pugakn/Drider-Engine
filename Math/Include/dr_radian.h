@@ -1,6 +1,6 @@
 #pragma once
 
-#include <dr_prerequisites.h>
+#include "dr_math_prerequisites.h"
 #include <dr_math.h>
 
 namespace driderSDK {
@@ -10,7 +10,7 @@ namespace driderSDK {
 * Sample usage:
 *	Radian RaidanName;
 */
-class DR_API_EXPORT Radian
+class DR_MATH_EXPORT Radian
 {
  public:
   /**

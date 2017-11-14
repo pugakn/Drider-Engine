@@ -13,15 +13,19 @@ class DeviceContext;
 * Sample usage:
 *	VertexBuffer* = new D3DVertexBuffer;
 */
-class DR_API_EXPORT D3DVertexBuffer : public VertexBuffer
+class DR_GRAPHICS_EXPORT D3DVertexBuffer : public VertexBuffer
 {
  public:
   /**
+  * TEST::constructor
+  *
   * Default constructor.
   */
   D3DVertexBuffer();
 
   /**
+  * TEST::create
+  *
   * Create a buffer shader resource
   *
   * @param device
@@ -42,6 +46,8 @@ class DR_API_EXPORT D3DVertexBuffer : public VertexBuffer
          const byte* initialData) override;
 
   /**
+  * TEST::set
+  *
   * Set the vertex buffer to the stage
   *
   * @param deviceContext
@@ -52,14 +58,16 @@ class DR_API_EXPORT D3DVertexBuffer : public VertexBuffer
   *
   * @param offset
   *   The offset of the first element
-  *
   */
   void
   set(const DeviceContext& deviceContext,
-  UInt32 stride, UInt32 offset) const override;
+      UInt32 stride,
+      UInt32 offset) const override;
 
 
   /**
+  * TEST::updateFromMemory
+  *
   * Update the buffer with new data
   *
   * @param deviceContext
@@ -91,6 +99,8 @@ class DR_API_EXPORT D3DVertexBuffer : public VertexBuffer
                    const byte* dataBuffer) override;
 
   /**
+  * TEST::release
+  *
   * Release the allocated memory
   */
   void

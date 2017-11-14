@@ -1,5 +1,5 @@
 #pragma once
-#include <dr_prerequisites.h>
+#include "dr_graphics_prerequisites.h"
 #include <memory>
 #include "dr_texture.h"
 
@@ -11,7 +11,8 @@ namespace driderSDK {
 * Sample usage:
 *	DepthStencil* = new D3DdepthStencil;
 */
-class DR_API_EXPORT DepthStencil {
+class DR_GRAPHICS_EXPORT DepthStencil
+{
  public:
   /**
   * Class virtual destructor.

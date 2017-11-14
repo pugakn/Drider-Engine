@@ -1,5 +1,6 @@
 #pragma once
 #pragma warning(disable : 4201)
+#pragma warning(disable : 4251)
 
 #define DR_PLATFORM_WINDOWS	  1   //Windows Platform 
 #define DR_PLATFORM_LINUX	    2	  //Linux Platform
@@ -132,45 +133,4 @@
 # define DR_ARCH_TYPE DR_ARCHITECTURE_X86_64
 #else                                         //If it's a x86 compile
 # define DR_ARCH_TYPE DR_ARCHITECTURE_X86_32
-#endif
-
-/**********************************************************************
-*															                                  		  *
-*					                  Windows Specifics							            *
-*																	                                    *
-**********************************************************************/
-
-#if DR_PLATFORM == DR_PLATFORM_WINDOWS
-# if defined( DR_STATIC_LIB )
-#   define DR_API_EXPORT
-# else
-#	if defined(DR_EXPORT)
-#   define DR_API_EXPORT __declspec( dllexport )
-#   else
-#     if defined( __MINGW32__ )
-#       define DR_API_EXPORT              //Linux systems don't need this
-#     else
-#       define DR_API_EXPORT __declspec( dllimport )
-#     endif
-#   endif
-# endif
-#endif
-
-/**********************************************************************
-*																	                                    *
-*                   	    	  Linux Specifics							            *
-*																	                                    *
-**********************************************************************/
-
-#if DR_PLATFORM == DR_PLATFORM_LINUX || DR_PLATFORM == DR_PLATFORM_OSX
-//Enable GCC symbol visibility
-# if defined( DR_GCC_VISIBILITY )
-#   define DR_API_EXPORT  __attribute__ ((visibility("default")))
-# else
-#   define DR_API_EXPORT
-# endif
-
-# if DR_COMPILER == DR_COMPILER_INTEL
-#   define DR_THREADLOCAL __thread          //Set the local thread for the Intel compiler
-# endif
 #endif
