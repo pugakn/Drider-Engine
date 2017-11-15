@@ -33,5 +33,8 @@
     <ClCompile Include="Source\dr_unitTest_codecTexture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\dr_unitTest_codecModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

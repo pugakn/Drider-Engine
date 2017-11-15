@@ -1,5 +1,4 @@
 #include <dr_codecTexture.h>
-
 #include <gtest\gtest.h>
 
 TEST(Codec, decode) {

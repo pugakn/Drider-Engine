@@ -1,4 +1,6 @@
 #pragma once
+#include <memory>
+#include <functional>
 #include "dr_engine_prerequisites.h"
 
 /**
@@ -7,11 +9,16 @@
 * Sample usage:
 *	Codec::decode("file_path/name_resource.png");
 */
+
 namespace driderSDK {
 
 class DR_ENGINE_EXPORT Codec
 {
  public:
+
+  using VoidPtrDeleter = std::function<void(void*)>;
+  using UniqueVoidPtr = std::unique_ptr<void, VoidPtrDeleter>;
+  
   /**
   * 
   */ 
@@ -32,7 +39,7 @@ class DR_ENGINE_EXPORT Codec
   * @return
   *   The type of the resource ResourceType::E.
   */
-  virtual void*
+  virtual UniqueVoidPtr
   decode(TString pathName) = 0;
 
   /**

@@ -56,6 +56,8 @@ Node::WeakNode Node::getChild(const TString & childName) {
       return child;
     }
   }
+
+  return WeakNode();
 }
 
 const Matrix4x4& Node::getWorldTransform() const{

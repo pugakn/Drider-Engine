@@ -1,12 +1,22 @@
 #pragma once
-#include <memory>
-#include <utility>
-#include "dr_util_prerequisites.h"
 
-template<class T, class Alloc = std::allocator, class... Args>
-static T*
-dr_new(Args&&... args)
+#include <memory>
+
+namespace driderSDK {
+
+template<class T>
+void 
+void_deleter(void* pData)
 {
-  return Alloc<T>::allocate(std::forward<Args>(args)...);
+  T* pInfo = static_cast<T*>(pData);
+  delete pInfo;
 }
 
+template<class T, class... Args>
+std::unique_ptr<T>
+make_unique(Args&&... args) 
+{
+  return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
+}
+
+}

@@ -3,37 +3,22 @@
 
 #include <gtest\gtest.h>
 
-TEST (Parser, parserStrstr) {
-  driderSDK::TString str1 = _T("hola mundo como estan");
-  driderSDK::TString str2 = driderSDK::Parser::strStr(str1, _T("mundo"));
-  EXPECT_TRUE(str1.compare(_T("mundo como estan")));
-}
-
-TEST(Parser, parserStrCpyBetween) {
-  driderSDK::TString r;
-  driderSDK::TString s;
-  r = driderSDK::Parser::strCpyBetween(_T("hola mundo, como estan"),
-                                       _T("mundo"),
-                                       _T("estan"),
-                                       s);
-  EXPECT_TRUE(r == s);
-  EXPECT_TRUE(r == _T(", como "));
-}
 
 TEST(Parser, parserStringToInt32) {
-  EXPECT_TRUE(driderSDK::Parser::stringToInt32(_T("10")) == 10);
-  EXPECT_TRUE(driderSDK::Parser::stringToInt32(_T("10.1")) == 10);
+  EXPECT_TRUE(driderSDK::Parser::stringToInt(_T("10")) == 10);
+  EXPECT_TRUE(driderSDK::Parser::stringToInt(_T("10.19")) == 10);
 }
 
 TEST(Parser, parserStringToFloat) {
-  EXPECT_TRUE(driderSDK::Parser::stringToFloat(_T("10")) == 10.0f);
-  EXPECT_TRUE(driderSDK::Parser::stringToFloat(_T("10.65")) == 10.65f);
+  EXPECT_TRUE(driderSDK::Parser::stringToReal(_T("10")) == 10.0f);
+  EXPECT_TRUE(driderSDK::Parser::stringToReal(_T("10.65")) == 10.65f);
 }
 
-TEST (Parser, parserAddUntilFind) {
-  driderSDK::TString out;
-  driderSDK::Parser::addUntilFind(_T("1.0, 25.0, 236"), _T(","), out);
-  EXPECT_TRUE(out == _T("1.0"));
+TEST(Parser, parserToString) {
+  EXPECT_TRUE(driderSDK::Parser::toString(1.156f) == _T("1.156000"));
+  EXPECT_TRUE(driderSDK::Parser::toString(1233) == _T("1233"));
+  EXPECT_TRUE( driderSDK::Parser::toString(1.22) == _T("1.220000"));
+  EXPECT_TRUE(driderSDK::Parser::toString(-2222) == _T("-2222"));
 }
 
 TEST (Parser, parserSplit) {
@@ -42,3 +27,4 @@ TEST (Parser, parserSplit) {
   result = driderSDK::Parser::split(_T("azul, rojo,verde, amarillo"), _T(", "));
   EXPECT_TRUE(result == compare);
 }
+

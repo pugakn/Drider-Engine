@@ -31,6 +31,11 @@ class DR_CORE_EXPORT Transform
   */
   const Matrix4x4& getTransformMatrix() const;
   const Vector3D& getPosition() const;
+
+  /**
+  * Gets the rotation vector containing the X, Y & Z angles in
+  * radians.
+  */
   const Vector3D& getRotation() const;
   const Vector3D& getScale() const;
 
@@ -71,10 +76,25 @@ class DR_CORE_EXPORT Transform
   *  The rotation component (x|y|z) to be modified
   */  
   void setRotation(Degree angle, AXIS::E axis);
+
+   /**
+  * Sets the rotation vector of the transform.
+  * 
+  * @param orientation
+  *  Vector with the rotation angles in radians.
+  */ 
   void setRotation(const Vector3D& orientation);
+
   void rotate(Radian Radian, AXIS::E axis);
   void rotate(Degree Radian, AXIS::E axis);
-  void rotate(const Vector3D& orientation); 
+
+  /**
+  * Rotates the transform using a rotation vector.
+  * 
+  * @param rotation
+  *  Vector with the rotation angles in radians.
+  */ 
+  void rotate(const Vector3D& rotation); 
 
   /**
   * Sets the value of the specified scale component.

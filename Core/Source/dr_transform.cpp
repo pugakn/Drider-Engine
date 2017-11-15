@@ -15,15 +15,15 @@ const Matrix4x4& Transform::getTransformMatrix() const {
   return m_transform;
 }
 
-const Vector3D & Transform::getPosition() const {
+const Vector3D& Transform::getPosition() const {
   return m_position;
 }
 
-const Vector3D & Transform::getRotation() const {
+const Vector3D& Transform::getRotation() const {
   return m_rotation;
 }
 
-const Vector3D & Transform::getScale() const {
+const Vector3D& Transform::getScale() const {
   return m_scale;
 }
 
@@ -57,37 +57,44 @@ void Transform::setRotation(Degree angle, AXIS::E axis) {
   invalidate();
 }
 
-void Transform::setRotation(const Vector3D & orientation) {
+void Transform::setRotation(const Vector3D& orientation) {
   m_rotation = orientation;
   invalidate();
 }
 
 void Transform::rotate(Radian angle, AXIS::E axis) {
   m_rotation[axis] += angle;
+    invalidate();
 }
 
 void Transform::rotate(Degree angle, AXIS::E axis) {
   m_rotation[axis] += angle.toRadian();
+  invalidate();
 }
 
 void Transform::rotate(const Vector3D & orientation) {
   m_rotation += orientation;
+  invalidate();
 }
 
 void Transform::setScale(float scale, AXIS::E axis) {
   m_scale[axis] = scale;
+  invalidate();
 }
 
 void Transform::setScale(const Vector3D& scale) {
   m_scale = scale;
+  invalidate();
 }
 
 void Transform::scale(float scale, AXIS::E axis) {
   m_scale[axis] *= scale;
+  invalidate();
 }
 
 void Transform::scale(const Vector3D & scale) {
   m_scale *= scale;
+  invalidate();
 }
 
 void Transform::invalidate() {
