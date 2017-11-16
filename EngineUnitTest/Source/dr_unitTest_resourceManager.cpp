@@ -1,4 +1,4 @@
-#include <dr_resourceManager.h>
+#include <dr_resource_manager.h>
 #include <gtest\gtest.h>
 
 TEST(ResourceManager, resourceMConstructor) {
