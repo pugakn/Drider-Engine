@@ -28,6 +28,7 @@ class DR_ENGINE_EXPORT CodecModel : public Codec
 
   virtual bool 
   isCompatible(TString resourceName) override;
+
 };
 
 }

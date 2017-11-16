@@ -9,7 +9,7 @@ using driderSDK::CodecModel;
 using CodecPtr = std::unique_ptr<Codec>;
 
 TEST(CodecModel, decode) {
-  CodecPtr modelCodec = driderSDK::make_unique<CodecModel>();
+  CodecPtr modelCodec = driderSDK::dr_make_unique<CodecModel>();
 
   Codec::UniqueVoidPtr pData = modelCodec->decode(_T("Cube.fbx"));
 
@@ -21,7 +21,7 @@ TEST(CodecModel, decode) {
 
 TEST(CodecModel, isCompatible) {
 
-  CodecPtr modelCodec = driderSDK::make_unique<CodecModel>();
+  CodecPtr modelCodec = driderSDK::dr_make_unique<CodecModel>();
 
   EXPECT_TRUE(modelCodec->isCompatible(_T("frutsi.obj")));
   EXPECT_TRUE(modelCodec->isCompatible(_T("frutsi.fbx")));

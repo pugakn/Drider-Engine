@@ -10,8 +10,6 @@ Node::Node(const TString & _name, WeakNode _parent)
 
 void Node::update(const Matrix4x4& accumulatedTransform) {
 
-  transform.update();
-
   m_finalTransform = accumulatedTransform * 
                      transform.getTransformMatrix();
 

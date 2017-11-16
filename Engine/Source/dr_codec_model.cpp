@@ -13,8 +13,11 @@ Codec::UniqueVoidPtr
 CodecModel::decode(TString pathName) {
   
   Assimp::Importer importer;
+
   ModelInfo* pModelInfo = nullptr;
+
   UInt32 flags = 0;
+
   const aiScene* pScene = importer.ReadFile(Parser::toUTF8(pathName), flags);
 
   if (pScene) {
@@ -33,6 +36,7 @@ CodecModel::decode(TString pathName) {
         mesh.vertices[iVertex].position = Vector3D(pMesh->mVertices[iVertex].x,
                                                    pMesh->mVertices[iVertex].y,
                                                    pMesh->mVertices[iVertex].z);
+
         mesh.vertices[iVertex].normal = Vector3D(pMesh->mNormals[iVertex].x, 
                                                  pMesh->mNormals[iVertex].y,
                                                  pMesh->mNormals[iVertex].z);
@@ -42,20 +46,16 @@ CodecModel::decode(TString pathName) {
 
         aiFace& face = pMesh->mFaces[iFace];
     
-        for(SizeT indexCounter = 0; 
-            indexCounter < face.mNumIndices; 
-            ++indexCounter) {
+        for(SizeT indexCount = 0; indexCount < face.mNumIndices; ++indexCount) {
 
-          mesh.indices.push_back(static_cast<Int16>(face.mIndices[indexCounter]));
+          mesh.indices.push_back(static_cast<Int16>(face.mIndices[indexCount]));
 
         }
-       
       }
-    }
-        
+    }        
   }
 
-  return UniqueVoidPtr(pModelInfo, &void_deleter<ModelInfo>);
+  return UniqueVoidPtr(pModelInfo, &dr_void_deleter<ModelInfo>);
 }
 
 bool

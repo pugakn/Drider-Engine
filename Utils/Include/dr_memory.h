@@ -6,7 +6,7 @@ namespace driderSDK {
 
 template<class T>
 void 
-void_deleter(void* pData)
+dr_void_deleter(void* pData)
 {
   T* pInfo = static_cast<T*>(pData);
   delete pInfo;
@@ -14,7 +14,7 @@ void_deleter(void* pData)
 
 template<class T, class... Args>
 std::unique_ptr<T>
-make_unique(Args&&... args) 
+dr_make_unique(Args&&... args) 
 {
   return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
 }

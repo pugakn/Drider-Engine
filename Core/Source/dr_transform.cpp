@@ -11,7 +11,12 @@ Transform::Transform()
     m_rotation(0,0,0) {
 }
 
-const Matrix4x4& Transform::getTransformMatrix() const {  
+const Matrix4x4& Transform::getTransformMatrix() {  
+
+  if (m_outdatedTransform) {
+    update();
+  }
+
   return m_transform;
 }
 
@@ -102,13 +107,11 @@ void Transform::invalidate() {
 }
 
 void Transform::update() {
-  if(m_outdatedTransform){
-    m_outdatedTransform = false;
-    m_transform.identity();
-    m_transform.Translation(m_position);
-    m_transform.Rotation(m_rotation.x, m_rotation.y, m_rotation.z);
-    m_transform.Scale(m_scale);
-  }  
+  m_outdatedTransform = false;
+  m_transform.identity();
+  m_transform.Translation(m_position);
+  m_transform.Rotation(m_rotation.x, m_rotation.y, m_rotation.z);
+  m_transform.Scale(m_scale);
 }
 
 }

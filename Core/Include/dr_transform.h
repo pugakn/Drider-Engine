@@ -29,7 +29,7 @@ class DR_CORE_EXPORT Transform
   * @return 
   *   The transformation matrix.
   */
-  const Matrix4x4& getTransformMatrix() const;
+  const Matrix4x4& getTransformMatrix();
   const Vector3D& getPosition() const;
 
   /**
@@ -120,11 +120,6 @@ class DR_CORE_EXPORT Transform
   void scale(float scale, AXIS::E axis);
   void scale(const Vector3D& scale);
 
-  /**
-  * Computes the transformation matrix according to the position, 
-  * rotation and scale established.
-  */
-  void update();
  private:
   /**
   * Invalidates the transform matrix.
@@ -133,6 +128,12 @@ class DR_CORE_EXPORT Transform
   * and the transformation matrix needs to be updated.
   */
   void invalidate();
+
+  /**
+  * Computes the transformation matrix according to the position, 
+  * rotation and scale established.
+  */
+  void update();
 
   bool m_outdatedTransform;
   Vector3D m_position;

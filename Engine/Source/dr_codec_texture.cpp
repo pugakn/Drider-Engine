@@ -16,7 +16,7 @@ CodecTexture::decode(TString pathName) {
   const char* a = c;
   unsigned char* data = stbi_load(a, &image->w, &image->h, &image->channels, 0);
   stbi_image_free(data);
-  return UniqueVoidPtr(image, &void_deleter<sImage>);
+  return UniqueVoidPtr(image, &dr_void_deleter<sImage>);
 }
 
 bool
