@@ -135,9 +135,6 @@
     <ClInclude Include="Include\dr_d3d_teselation_shader.h">
       <Filter>Archivos de encabezado\DirectX11\Shaders</Filter>
     </ClInclude>
-    <ClInclude Include="Include\dr_d3d_texture_shader.h">
-      <Filter>Archivos de encabezado\DirectX11\Shaders</Filter>
-    </ClInclude>
     <ClInclude Include="Include\dr_d3d_geometry_shader.h">
       <Filter>Archivos de encabezado\DirectX11\Shaders</Filter>
     </ClInclude>
@@ -201,6 +198,15 @@
     <ClInclude Include="Include\dr_d3d_graphics_api.h">
       <Filter>Archivos de encabezado\DirectX11</Filter>
     </ClInclude>
+    <ClInclude Include="Include\dr_graphics_prerequisites.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_texture_shader.h">
+      <Filter>Archivos de encabezado\Base\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_d3d_texture_shader.h">
+      <Filter>Archivos de encabezado\DirectX11\Shaders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_d3d_constant_buffer.cpp">
@@ -225,9 +231,6 @@
       <Filter>Archivos de código fuente\DirectX11\Shaders</Filter>
     </ClCompile>
     <ClCompile Include="Source\dr_d3d_teselation_shader.cpp">
-      <Filter>Archivos de código fuente\DirectX11\Shaders</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\dr_d3d_texture_shader.cpp">
       <Filter>Archivos de código fuente\DirectX11\Shaders</Filter>
     </ClCompile>
     <ClCompile Include="Source\dr_d3d_geometry_shader.cpp">
@@ -268,6 +271,9 @@
     </ClCompile>
     <ClCompile Include="Source\dr_d3d_graphics_api.cpp">
       <Filter>Archivos de código fuente\DirectX11</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_d3d_texture_shader.cpp">
+      <Filter>Archivos de código fuente\DirectX11\Shaders</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

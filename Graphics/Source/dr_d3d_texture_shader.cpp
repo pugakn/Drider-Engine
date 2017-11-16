@@ -12,7 +12,7 @@ D3DTextureShader::set(const DeviceContext& deviceContext) const {
 }
 
 void
-D3DTextreShader::release() {
+D3DTextureShader::release() {
   ID3DBlob* apiShaderBytcode = reinterpret_cast<D3DShaderBytecode*>(shaderBytecode)->shader_blob;
   //APIShader->Release();
   apiShaderBytcode->Release();
@@ -21,12 +21,12 @@ D3DTextreShader::release() {
 }
 
 DR_GRAPHICS_ERROR::E
-D3DTextreShader::create(const Device& device) {
+D3DTextureShader::create(const Device& device) {
   return DR_GRAPHICS_ERROR::ERROR_NOT_IMPLEMENTED;
 }
 
 DR_GRAPHICS_ERROR::E
-D3DTextreShader::compile(const Device& device, const char* buffer, size_t bufferSize)
+D3DTextureShader::compile(const Device& device, const char* buffer, size_t bufferSize)
 {
   return DR_GRAPHICS_ERROR::ERROR_NOT_IMPLEMENTED;
 }

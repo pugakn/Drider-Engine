@@ -20,8 +20,8 @@ TEST(D3DDomainShader, release) {
   EXPECT_TRUE(domainShader == nullptr);
 }
 
-TEST(D3DDomainShader, createFromMemory) {
-  char *shader = "";
-  domainShader->createFromMemory(*device, shader, 5);
-  EXPECT_TRUE(domainShader->APIShader != nullptr);
-}
+//TEST(D3DDomainShader, createFromMemory) {
+//  char *shader = "";
+//  domainShader->createFromMemory(*device, shader, 5);
+//  EXPECT_TRUE(domainShader->APIShader != nullptr);
+//}
