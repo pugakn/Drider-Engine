@@ -10,8 +10,6 @@ Node::Node(const TString & _name, WeakNode _parent)
 
 void Node::update(const Matrix4x4& accumulatedTransform) {
 
-  transform.update();
-
   m_finalTransform = accumulatedTransform * 
                      transform.getTransformMatrix();
 
@@ -56,6 +54,8 @@ Node::WeakNode Node::getChild(const TString & childName) {
       return child;
     }
   }
+
+  return WeakNode();
 }
 
 const Matrix4x4& Node::getWorldTransform() const{

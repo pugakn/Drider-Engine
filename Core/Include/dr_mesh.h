@@ -2,10 +2,9 @@
 
 #include <vector>
 #include "dr_core_prerequisites.h"
+#include "dr_vertex.h"
 
 namespace driderSDK {
-
-class Vertex;
 
 struct DR_CORE_EXPORT Mesh
 {
