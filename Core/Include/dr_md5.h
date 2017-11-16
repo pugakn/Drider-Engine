@@ -15,6 +15,6 @@ namespace driderSDK {
 *   The encoded/encrypted string.
 */
 std::string DR_CORE_EXPORT
-MD5(std::string initial_msg);
+MD5(const std::string& initial_msg);
 
 }

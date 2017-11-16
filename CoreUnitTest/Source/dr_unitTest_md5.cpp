@@ -3,7 +3,6 @@
 #include <dr_core_prerequisites.h>
 #include <gtest\gtest.h>
 
-
 TEST(MD5, md5Encrypting) {
   std::string message = "";
   std::string md5Message = "";
