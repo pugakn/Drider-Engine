@@ -5,12 +5,12 @@
 #include <dr_image_info.h>
 #include <dr_memory.h>
 #include <dr_parser.h>
-
 #include <algorithm>
-#include <iostream>
 #include <vector>
 #include <iterator>
-#include <numeric>
+
+#include <dr_file_system.h>
+
 
 namespace driderSDK {
 
@@ -38,10 +38,10 @@ CodecTexture::encode(TString pathName) {
 
 bool
 CodecTexture::isCompatible(TString resourceName) {
- /* TString extension = Parser::(resourceName, _T("."), _T(" "), extension);
+  TString extension = FileSystem::getFileExtension(resourceName);
   if(extension == _T("png") || extension == _T("jpg")) {
     return true;
-  }*/
+  }
   return false;
 }
 
