@@ -1,10 +1,9 @@
 #include <dr_codecTexture.h>
-
 #include <gtest\gtest.h>
 
 TEST(Codec, decode) {
   driderSDK::CodecTexture odec;
-  odec.decode(_T("test.png"));
+  odec.decode(_T("testImage.jpg"));
   EXPECT_TRUE(false);
 }
 

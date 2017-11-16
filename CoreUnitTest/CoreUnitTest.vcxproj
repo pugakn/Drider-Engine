@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="Source\dr_parser_unitTest.cpp" />
     <ClCompile Include="Source\dr_unitTest_loader.cpp" />
+    <ClCompile Include="Source\dr_unitTest_md5.cpp" />
     <ClCompile Include="Source\unitTestCore.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -95,7 +96,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParties\GoogleTest\include;$(SolutionDir)Utils\Include;$(SolutionDir)Core\Include;$(DRIDER_DEPENDENCIES);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParties\GoogleTest\include;$(SolutionDir)Utils\Include;$(SolutionDir)Core\Include;$(DRIDER_DEPENDENCIES)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
@@ -108,7 +109,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParties\GoogleTest\include;$(SolutionDir)Utils\Include;$(SolutionDir)Core\Include;$(DRIDER_DEPENDENCIES);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParties\GoogleTest\include;$(SolutionDir)Utils\Include;$(SolutionDir)Core\Include;$(DRIDER_DEPENDENCIES)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
@@ -123,7 +124,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParties\GoogleTest\include;$(SolutionDir)Utils\Include;$(SolutionDir)Core\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParties\GoogleTest\include;$(SolutionDir)Utils\Include;$(SolutionDir)Core\Include;$(DRIDER_DEPENDENCIES)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -140,7 +141,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParties\GoogleTest\include;$(SolutionDir)Utils\Include;$(SolutionDir)Core\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rdParties\GoogleTest\include;$(SolutionDir)Utils\Include;$(SolutionDir)Core\Include;$(DRIDER_DEPENDENCIES)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

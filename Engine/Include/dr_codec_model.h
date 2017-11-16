@@ -5,16 +5,30 @@
 
 namespace driderSDK {
 
-class CodecModel : public Codec
+class DR_ENGINE_EXPORT CodecModel : public Codec
 {
  public:
+  /** 
+  * Default constructor
+  */
+  CodecModel() {}
+
+  /**
+  * Destructor
+  */
+  ~CodecModel() {}
+
  private:
-   // Inherited via Codec
-   virtual void* decode(TString pathName) override;
+  
+  virtual UniqueVoidPtr 
+  decode(TString pathName) override;
 
-   virtual void encode(TString pathName, ResourceType::E resourceType) override;
+  virtual bool 
+  encode(TString pathName) override;
 
-   virtual bool isCompatible(TString resourceName) override;
+  virtual bool 
+  isCompatible(TString resourceName) override;
+
 };
 
 }

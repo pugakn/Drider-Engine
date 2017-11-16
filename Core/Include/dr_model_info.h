@@ -2,10 +2,9 @@
 
 #include <vector>
 #include "dr_core_prerequisites.h"
+#include "dr_mesh_info.h"
 
 namespace driderSDK {
-
-struct MeshInfo;
 
 struct DR_CORE_EXPORT ModelInfo 
 {

@@ -8,8 +8,6 @@
 
 namespace driderSDK {
 
-struct Mesh;
-
 class DR_CORE_EXPORT Model : public Resource 
 {
  public:

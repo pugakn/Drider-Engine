@@ -14,61 +14,7 @@ namespace driderSDK {
 struct DR_CORE_EXPORT Parser 
 {
  public:    
-  /**
-  * TEST::parserStrstr
-  * Find in string other string.
-  *
-  * @param str1
-  *   Buffer where string will be searched.
-  *
-  * @param str2
-  *   String to compare.
-  *
-  * @return
-  *   if the string str2 exist in buffer str1 return the pointer to the first, else return null.
-  */
-  static TString
-  strStr (TString str1,
-          TString str2);
-
-  /**
-  * TEST::parserStrCpyBetween
-  * Find in string other string.
-  *
-  * @param str
-  *   Buffer to measure.
-  *
-  * @return
-  *   The number of charactes in the buffer.
-  */
-  static size_t
-  strLen(TString str);
   
-  /**
-  * TEST::parserStrCpyBetween
-  * Copy a string between two strings.
-  *
-  * @param source
-  *   String container.
-  *
-  * @param strFrom
-  *   Start string (no incluided in return).
-  *
-  * @param source
-  *   Last string (no incluided in return).
-  *
-  * @param destinationOut
-  *   Destination string.
-  *
-  * @return
-  *   If successful return the destinationOut, otherwise return null.
-  */
-  static TString
-  strCpyBetween(TString source,
-                TString strFrom,
-                TString strTo,
-                TString &destinationOut);
-
   /**
   * TEST::parserStringToInt32
   * Parse a string to a Int32.
@@ -79,13 +25,11 @@ struct DR_CORE_EXPORT Parser
   * @return
   *   The string parsed.
   */
-  static Int32 
-  FORCEINLINE stringToInt32(TString str) {
-    #ifdef _UNICODE
-      return _wtoi(str.c_str());
-    #else
-      return std::atoi(str.c_str());
-    #endif // _UNICODE
+  template<typename IntType = Int32>
+  FORCEINLINE static IntType 
+  stringToInt(const TString& str) 
+  {
+    return static_cast<IntType>(std::stoi(str));
   }
 
   /**
@@ -99,52 +43,54 @@ struct DR_CORE_EXPORT Parser
   *   On success, the function returns the converted integral number as an int value.
   *   If the converted value would be out of the range of representable values by an int, it causes undefined behavior.
   */
-  static float
-  FORCEINLINE stringToFloat(TString str) {
-    #ifdef _UNICODE
-        return _wtof(str.c_str());
-    #else
-        return (float)std::atof(str.c_str());
-    #endif // _UNICODE
+  template<typename RealType = float>
+  FORCEINLINE static RealType
+  stringToReal(const TString& str) 
+  {
+    return static_cast<RealType>(std::stof(str));
   }
-  
-  /**
-  * TEST::parserAddUntilFind
-  * Add a string's characters to a buffer until you find a delimiter.
-  *
-  * @param source
-  *   Buffer to be checked.
-  *
-  * @param delimiter
-  *   Delimiter.
-  *
-  * @param strOut
-  *   The string created.
-  *
-  * @return
-  *   The string created.
-  */
-  static TString
-  addUntilFind(TString source,
-               TString delimiter,
-               TString& strOut);
 
   /**
+  * TEST::parserToString
+  */
+  template<typename T>
+  FORCEINLINE static TString 
+  toString(T number)
+  {
+  #ifdef _UNICODE
+    return std::to_wstring(number);
+  #else
+    return std::to_string(number);
+  #endif
+  }
+
+  static String 
+  toUTF8(const TString& str);
+
+  static WString 
+  toUTF16(const TString& str);
+  
+  /**
   * TEST::parserSplit
-  * Divede in strings other string where ther is a diveder character.
+  * Tokenizes the passed string using 1 or more separator.
   *
   * @param str
-  *   Buffer to be checked.
+  *  String to be tokenized.
   *
-  * @param divider
-  *   Delimiter of each string.
+  * @param separator
+  *  Delimiters of each token.
+  * 
+  * @param keepEmptyTokens.
+  *  Specifies if empty tokens should be included or discarded.
   *
   * @return
-  *   std::vector with the string created.
+  *   Vector with all the tokens.
   */
   static std::vector<TString>
   split(TString str,
-        TString divider);
+        const TString& separators, 
+        bool keepEmptyTokens = false);
+
 };
 
 }
