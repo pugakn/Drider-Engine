@@ -176,6 +176,7 @@
     <ClInclude Include="Include\dr_graph.h" />
     <ClInclude Include="Include\dr_loader.h" />
     <ClInclude Include="Include\dr_logger.h" />
+    <ClInclude Include="Include\dr_md5.h" />
     <ClInclude Include="Include\dr_mesh.h" />
     <ClInclude Include="Include\dr_mesh_info.h" />
     <ClInclude Include="Include\dr_model.h" />
@@ -193,6 +194,7 @@
     <ClCompile Include="Source\dr_graph.cpp" />
     <ClCompile Include="Source\dr_loader.cpp" />
     <ClCompile Include="Source\dr_logger.cpp" />
+    <ClCompile Include="Source\dr_md5.cpp" />
     <ClCompile Include="Source\dr_model.cpp" />
     <ClCompile Include="Source\dr_node.cpp" />
     <ClCompile Include="Source\dr_parser.cpp" />

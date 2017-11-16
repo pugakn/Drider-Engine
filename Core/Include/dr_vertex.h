@@ -1,8 +1,8 @@
 #pragma once
 
 namespace driderSDK {
-  class Vertex 
-  {
-    
-  };
+class Vertex 
+{
+  
+};
 }

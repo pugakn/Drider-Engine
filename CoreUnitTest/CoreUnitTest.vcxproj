@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="Source\dr_parser_unitTest.cpp" />
     <ClCompile Include="Source\dr_unitTest_loader.cpp" />
+    <ClCompile Include="Source\dr_unitTest_md5.cpp" />
     <ClCompile Include="Source\unitTestCore.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

@@ -3,7 +3,8 @@
 
 namespace driderSDK {
 
-std::string MD5(std::string initial_msg) {
+std::string
+MD5(std::string initial_msg) {
   //Integers part of the sines of integers (in radians) * 2^32.
   static const UInt32 integerSin[64] = {
     0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
