@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2005
+VisualStudioVersion = 15.0.26730.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Utils", "Utils\Utils.vcxproj", "{96C93CF8-BB4C-4D60-8C5D-3F439477662D}"
 EndProject
@@ -59,6 +59,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CoreUnitTest", "CoreUnitTes
 		{0B6C9827-D942-42A2-8E8F-7F9E5DECF169} = {0B6C9827-D942-42A2-8E8F-7F9E5DECF169}
 		{96C93CF8-BB4C-4D60-8C5D-3F439477662D} = {96C93CF8-BB4C-4D60-8C5D-3F439477662D}
 	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GraphicsTestApplication", "GraphicsTestApplication\GraphicsTestApplication.vcxproj", "{5FA5BD82-85B5-48A1-A55F-43995C38DBF1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -140,6 +142,14 @@ Global
 		{725824F8-CF52-4987-8A88-2DABE1B078E1}.Release|x64.Build.0 = Release|x64
 		{725824F8-CF52-4987-8A88-2DABE1B078E1}.Release|x86.ActiveCfg = Release|Win32
 		{725824F8-CF52-4987-8A88-2DABE1B078E1}.Release|x86.Build.0 = Release|Win32
+		{5FA5BD82-85B5-48A1-A55F-43995C38DBF1}.Debug|x64.ActiveCfg = Debug|x64
+		{5FA5BD82-85B5-48A1-A55F-43995C38DBF1}.Debug|x64.Build.0 = Debug|x64
+		{5FA5BD82-85B5-48A1-A55F-43995C38DBF1}.Debug|x86.ActiveCfg = Debug|Win32
+		{5FA5BD82-85B5-48A1-A55F-43995C38DBF1}.Debug|x86.Build.0 = Debug|Win32
+		{5FA5BD82-85B5-48A1-A55F-43995C38DBF1}.Release|x64.ActiveCfg = Release|x64
+		{5FA5BD82-85B5-48A1-A55F-43995C38DBF1}.Release|x64.Build.0 = Release|x64
+		{5FA5BD82-85B5-48A1-A55F-43995C38DBF1}.Release|x86.ActiveCfg = Release|Win32
+		{5FA5BD82-85B5-48A1-A55F-43995C38DBF1}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -10,8 +10,10 @@ namespace driderSDK {
 void D3DGraphicsAPI::init(UInt32 w, UInt32 h, void* hwnd)
 {
   device = new D3DDevice;
-  device->createDeviceAndDeviceContext(*deviceContext);
+  deviceContext = new D3DDeviceContext;
   backBufferTexture = new D3DTexture;
+  DR_GRAPHICS_ERROR::E error;
+  error = device->createDeviceAndDeviceContext(*deviceContext);
 
   //	Descriptor of the Swap Chain
   DrSwapChainDesc swapDesc;
@@ -21,7 +23,7 @@ void D3DGraphicsAPI::init(UInt32 w, UInt32 h, void* hwnd)
   swapDesc.height = h;
   swapDesc.width = w;
 
-  device->createSwapChain(swapDesc, swapChain);
+  error =  device->createSwapChain(swapDesc, swapChain);
 
   DrTextureDesc depthTextureDesc;
   depthTextureDesc.bindFlags = DR_BIND_FLAGS::DEPTH_STENCIL;
@@ -29,12 +31,12 @@ void D3DGraphicsAPI::init(UInt32 w, UInt32 h, void* hwnd)
   depthTextureDesc.height = h;
   depthTextureDesc.mipLevels = 1;
   depthTextureDesc.Format = DR_FORMAT::kDrFormat_D24_UNORM_S8_UINT;
-  device->createEmptyTexture(depthTextureDesc,depthTexture);
-  device->createDepthStencil(*depthTexture,depthStencilView);
+  error =  device->createEmptyTexture(depthTextureDesc, depthTexture);
+  error =  device->createDepthStencil(*depthTexture,depthStencilView);
 
 
   swapChain->getBackBuffer(*backBufferTexture);
-  device->createRenderTarget(*backBufferTexture,backBufferView);
+  error =  device->createRenderTarget(*backBufferTexture,backBufferView);
   delete backBufferTexture;
 
   backBufferView->set(*deviceContext, *depthStencilView);

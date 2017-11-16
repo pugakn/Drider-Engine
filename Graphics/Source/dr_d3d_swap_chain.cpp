@@ -10,7 +10,7 @@ namespace driderSDK {
 DR_GRAPHICS_ERROR::E D3DSwapChain::create(const Device& device,
                                           const DrSwapChainDesc& desc) {
   descriptor = desc;
-  DXGI_SWAP_CHAIN_DESC apiDesc;
+  DXGI_SWAP_CHAIN_DESC apiDesc{0};
   apiDesc.BufferCount = desc.bufferCount;
   apiDesc.Flags = 0;
   apiDesc.OutputWindow = static_cast<HWND>(desc.windowHandler);
@@ -27,9 +27,10 @@ DR_GRAPHICS_ERROR::E D3DSwapChain::create(const Device& device,
   if (CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)(&factory)) != S_OK) {
     return DR_GRAPHICS_ERROR::CREATE_FACTORY_ERROR;
   }
-  if (factory->CreateSwapChain(reinterpret_cast<const D3DDevice*>(&device)->D3D11Device,
-                               &apiDesc,
-                               &APISwapchain) != S_OK) {
+  HRESULT res = factory->CreateSwapChain(reinterpret_cast<const D3DDevice*>(&device)->D3D11Device,
+    &apiDesc,
+    &APISwapchain);
+  if (res != S_OK) {
     return DR_GRAPHICS_ERROR::CREATE_SWAP_CHAIN_ERROR;
   }
   factory->Release();

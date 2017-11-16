@@ -28,11 +28,13 @@ DR_GRAPHICS_ERROR::E D3DTexture::createFromMemory(const Device& device,
   srvDesc.Format = apiDesc.Format;
   srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D; //Hardcoded
   srvDesc.Texture2D.MipLevels = -1;                      //Hardcoded
-  if (apiDevice->
-        D3D11Device->
-          CreateTexture2D(&apiDesc,
-                          buffer != 0 ? &initData : nullptr,
-                          &APITexture) != S_OK) {
+
+  HRESULT res = apiDevice->
+    D3D11Device->
+    CreateTexture2D(&apiDesc,
+      buffer != 0 ? &initData : 0,
+      &APITexture);
+  if (res != S_OK) {
     return DR_GRAPHICS_ERROR::CREATE_TEXTURE_ERROR;
   }
   if (apiDevice->
