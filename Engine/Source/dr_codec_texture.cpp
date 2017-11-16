@@ -5,7 +5,6 @@
 #include <dr_image_info.h>
 #include <dr_memory.h>
 #include <dr_parser.h>
-
 #include <algorithm>
 #include <vector>
 #include <iterator>
