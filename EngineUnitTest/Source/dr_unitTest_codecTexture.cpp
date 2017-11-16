@@ -4,7 +4,7 @@
 
 TEST(Codec, decode) {
   driderSDK::CodecTexture odec;
-  odec.decode(_T("testImage.png"));
+  odec.decode(_T("testImage.jpg"));
   EXPECT_TRUE(false);
 }
 

@@ -1,7 +1,7 @@
 #pragma once
 #include "dr_core_prerequisites.h"
 #define STB_IMAGE_IMPLEMENTATION
-#include <STB\stb-master\stb_image.h>
+#include <STB\stb_image.h>
 
 namespace driderSDK {
 
