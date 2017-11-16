@@ -1,12 +1,12 @@
 #include <dr_engine_prerequisites.h>
-#include <dr_codecTexture.h>
-#include <dr_imageInfo.h>
+#include <dr_codec_texture.h>
+#include <dr_image_info.h>
 
 #include <gtest\gtest.h>
 
 TEST(Codec, decode) {
   driderSDK::CodecTexture odec;
-  driderSDK::sImage *i = (driderSDK::sImage*)odec.decode(_T("testImage.jpg"));
+  driderSDK::sImage *i = static_cast<driderSDK::sImage*>(odec.decode(_T("testImage.jpg")).get);
   EXPECT_TRUE(i->data.size() != 0);
   EXPECT_TRUE(i->channels != 0);
 }
