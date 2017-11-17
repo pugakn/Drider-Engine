@@ -1,5 +1,6 @@
 #include "dr_md5.h"
 #include <sstream>
+#include <vector>
 
 namespace driderSDK {
 
@@ -105,18 +106,29 @@ MD5(const std::string& initial_msg) {
   free(msg);
 
   //Passing the result to a single string.
-  std::string sResult = "";
-  std::stringstream sstream;
-  UInt8 *p;
+  std::string sResult;
 
+  std::vector<char> cResult;
+  cResult.resize(32);
+
+  UInt8 *p = nullptr;
+
+  SizeT cResIndex = 0;
   for (SizeT hexIndex = 0; hexIndex < 4; ++hexIndex) {
     p = reinterpret_cast<UInt8 *>(&hex[hexIndex]);
     for (SizeT hexOffset = 0; hexOffset < 4; ++hexOffset) {
-      sstream.str("");
-      sstream << std::hex << (p[hexOffset] << 4);
-      sResult.append(sstream.str().substr(0, 2));
+      //sprintf_s(&cResult[cResIndex], sizeof(cResult) * 2, "%2.2x", p[hexOffset]);
+      sprintf_s(&cResult[cResIndex], sizeof(p)*2, "%2.2x", p[hexOffset]);
+      cResIndex += 2;
     }
   }
+
+  for (auto actualChar : cResult) {
+    sResult.push_back(actualChar);
+  }
+
+  p = nullptr;
+  cResult.clear();
 
   return sResult;
 }
