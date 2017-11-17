@@ -64,9 +64,8 @@ ConvexHull::GrahamScan(std::vector<Vector2D>& points,
     vecConnectionsOutTrueBack = vecConnectionsOut.back();
     vecConnectionsOut.pop_back();
 
-    while (orientation(vecConnectionsOut.back(),
-      vecConnectionsOutTrueBack,
-      points[i]) != 2) {
+    while (vecConnectionsOut.back().orientation(vecConnectionsOutTrueBack,
+                                                points[i]) != 2) {
       iConnectionsOutTrueBack = connectionsOut.back();
       connectionsOut.pop_back();
       vecConnectionsOutTrueBack = vecConnectionsOut.back();
@@ -112,7 +111,8 @@ ConvexHull::JarvisMarch(const std::vector<Vector2D>& points,
     //nextConnection = (lastConnection + 1) % pointsSz;
     nextConnection = 0;
     for (Int32 testPoint = 0; testPoint < pointsSz; ++testPoint) {
-      if (orientation(points[lastConnection], points[testPoint], points[nextConnection]) == 2) {
+      if (points[lastConnection].orientation(points[testPoint],
+                                             points[nextConnection]) == 2) {
         nextConnection = testPoint;
       }
     }
@@ -122,42 +122,6 @@ ConvexHull::JarvisMarch(const std::vector<Vector2D>& points,
     // Set lastConnection as nextConnection for next iteration
     lastConnection = nextConnection;
   } while (lastConnection != leftmostPoint);
-}
-
-Int32
-ConvexHull::orientation(Vector2D p, Vector2D q, Vector2D r) {
-  float val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
-
-  if (val == 0.0f) {
-    return 0;  // colinear
-  }
-  else if (val > 0.0f) {
-    return 1;
-  }
-  else {
-    return 2; // clock or counterclock wise
-  }
-}
-
-Int32
-ConvexHull::compare(const Vector2D p1, const Vector2D p2) {
-  Int32 compOrientation = orientation(gP0, p1, p2);
-
-  if (compOrientation == 0) {
-    if (gP0.distanceSqr(p1) < gP0.distanceSqr(p2)) {
-      return 1;
-    }
-    else {
-      return -1;
-    }
-  }
-
-  if (compOrientation == 2) {
-    return -1;
-  }
-  else {
-    return 1;
-  }
 }
 
 void
@@ -176,7 +140,7 @@ ConvexHull::partition(std::vector<Vector2D>& points, Int32 low, Int32 high) {
   Int32 smallesElement = low - 1, highestElement = high - 1;
 
   for (Int32 j = low; j <= highestElement; ++j) {
-    if (compare(points[j], points[high]) == -1) {
+    if (gP0.compare(points[j], points[high]) == -1) {
       std::swap(points[++smallesElement], points[j]);
     }
   }

@@ -64,40 +64,6 @@ class DR_CORE_EXPORT ConvexHull
               std::vector<Int32>& connectionsOut);
 
  protected: //Protected Methods
-  /**
-  * Finds the orientation of ordered triplet (p, q, r).
-  *
-  * @param p
-  *   Point.
-  *
-  * @param q
-  *   Point.
-  *
-  * @param r
-  *   Point.
-  *
-  * @return
-  *   0: p, q and r are colinear
-  *   1: Clockwise
-  *   2: Counterclockwise
-  */
-  Int32
-  orientation(Vector2D p, Vector2D q, Vector2D r);
-
-  /*
-  * Compares the polar angle of 2 points.
-  *
-  * @param p1
-  *   Actual point.
-  * @param p2
-  *   Point to compare.
-  *
-  * @return
-  *   -1: If it's counter clockwise.
-  *   +1: If it's clockwise.
-  */
-  Int32
-  compare(const Vector2D p1, const Vector2D p2);
 
   /*
   * The main function that implements QuickSort
@@ -113,11 +79,10 @@ class DR_CORE_EXPORT ConvexHull
   polarSort(std::vector<Vector2D>& points, Int32 low, Int32 high);
 
   /*
-  * This function takes last element as pivot, places
-  * the pivot element at its correct position in sorted
-  * array, and places all smaller (smaller than pivot)
-  * to left of pivot and all greater elements to right
-  * of pivot
+  * This function takes last element as pivot, places the pivot
+  * element at its correct position in sorted array, and places all
+  * smaller (smaller than pivot) to left of pivot and all greater
+  * elements to right of pivot.
   *
   * @param points
   *   Vector to be sorted.
