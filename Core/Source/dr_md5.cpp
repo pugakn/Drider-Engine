@@ -42,15 +42,25 @@ MD5(const std::string& initial_msg) {
 
   //Also appends "0" bits 
   //Allocing 64 extra bytes.
-  UInt8 *msg = (UInt8*)std::calloc(new_len + 64, 1);
+  std::vector<UInt8> msg;
+  msg.resize(new_len + 64);
 
-  std::memcpy(msg, initial_msg.c_str(), initial_len);
+  SizeT msgIndex = 0;
+  for (auto msgChar : initial_msg) {
+    msg[msgIndex] = msgChar;
+    ++msgIndex;
+  }
 
   //Write the "1" bit
   msg[initial_len] = 128;
 
-  UInt32 bits_len = 8 * initial_len;        //Note: we append the len
-  std::memcpy(msg + new_len, &bits_len, 4); //in bits at the end of the buffer.
+  UInt32 bits_len = 8 * initial_len;
+  UInt8* p = reinterpret_cast<UInt8 *>(&bits_len);
+  //Note: we append the len in bits at the end of the buffer.
+  msg[new_len + 0] = p[0];
+  msg[new_len + 1] = p[1];
+  msg[new_len + 2] = p[2];
+  msg[new_len + 3] = p[3];
 
   //Process the message in successive 512-bit chunks:
   //for each 512-bit chunk of message:
@@ -60,7 +70,7 @@ MD5(const std::string& initial_msg) {
   UInt32 hex[4] = { 0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476 };
   for (Int32 offset = 0; offset < new_len; offset += 64) {
     //Break chunk into sixteen 32-bit words w[j], 0 <= j <= 15
-    w = reinterpret_cast<UInt32 *>(msg + offset);
+    w = reinterpret_cast<UInt32 *>(&msg[offset]);
 
     //Initialize hash value for this chunk:
     a = hex[0];
@@ -103,14 +113,9 @@ MD5(const std::string& initial_msg) {
     hex[3] += d;
   }
 
-  //Cleanup
-  free(msg);
-
   //Passing the result to a single string.
   std::stringstream ss;
   ss << std::hex << std::setfill('0');
-
-  UInt8 *p = nullptr;
 
   for (SizeT hexIndex = 0; hexIndex < 4; ++hexIndex) {
     p = reinterpret_cast<UInt8 *>(&hex[hexIndex]);
