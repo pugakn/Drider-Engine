@@ -20,11 +20,34 @@ void Node::update(const Matrix4x4& accumulatedTransform) {
 }
 
 void Node::addChild(SharedNode child) {
-  m_childs.push_back(child);
+  auto childIt = std::find(m_childs.begin(), m_childs.end(), child);
+  //if child already exist in children list don't add
+  if (child && childIt == m_childs.end()) {
+    m_childs.push_back(child);
+    auto thisPtr = shared_from_this();
+    auto childParent = child->getParent();
+
+    if (childParent && childParent != thisPtr) {
+      //remove child from children list of previus parent
+      childParent->removeChild(child);
+    }
+
+    child->setParent(thisPtr);
+  }
 }
 
 void Node::setParent(SharedNode parent) {
-  m_parent = parent;
+  auto lastParent = getParent();
+  auto thisPtr = shared_from_this();
+
+  if (parent && lastParent != parent) {
+    if (lastParent) {
+      lastParent->removeChild(thisPtr);
+    }
+
+    parent->addChild(thisPtr);
+    m_parent = parent;
+  }
 }
 
 void Node::setName(const TString& name) {
@@ -40,22 +63,32 @@ void Node::removeChild(const TString& childName) {
   }
 }
 
+void Node::removeChild(SharedNode child) {
+
+  auto childIt = std::find(m_childs.begin(), m_childs.end(), child);
+
+  if (childIt != m_childs.end()) {
+    m_childs.erase(childIt);
+  }
+
+}
+
 TString Node::getName() {
   return m_name;
 }
 
-Node::WeakNode Node::getParent() {
-  return m_parent;
+Node::SharedNode Node::getParent() {
+  return m_parent.lock();
 }
 
-Node::WeakNode Node::getChild(const TString & childName) {
+Node::SharedNode Node::getChild(const TString & childName) {
   for(auto& child : m_childs) {
     if(childName == child->getName()) {
       return child;
     }
   }
 
-  return WeakNode();
+  return SharedNode();
 }
 
 const Matrix4x4& Node::getWorldTransform() const{

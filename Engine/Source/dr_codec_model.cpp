@@ -4,7 +4,7 @@
 #include <assimp\scene.h>
 #include <dr_memory.h>
 #include <dr_model_info.h>
-#include <dr_parser.h>
+#include <dr_string_utils.h>
 #include "dr_file_system.h"
 
 namespace driderSDK {
@@ -18,8 +18,9 @@ CodecModel::decode(TString pathName) {
 
   UInt32 flags = 0;
 
-  const aiScene* pScene = importer.ReadFile(Parser::toUTF8(pathName), flags);
-
+  const aiScene* pScene = importer.ReadFile(StringUtils::toString(pathName), 
+                                            flags);
+  
   if (pScene) {
 
     pModelInfo = new ModelInfo;

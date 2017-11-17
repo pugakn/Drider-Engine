@@ -1,25 +1,8 @@
 #include "dr_parser.h"
 #include <locale>
 #include <codecvt>
-#include <string>
 
 namespace driderSDK {
-
-String Parser::toUTF8(const TString& str) {
-#ifdef _UNICODE
-  return std::wstring_convert<std::codecvt_utf8_utf16<WChar>>().to_bytes(str);
-#else
-  return str;
-#endif
-}
-
-WString Parser::toUTF16(const TString& str) {
-#ifdef _UNICODE
-  return str;
-#else
-  return std::wstring_convert<std::codecvt_utf8_utf16<WChar>>().from_bytes(str);
-#endif
-}
 
 std::vector<TString>
 Parser::split(TString str,
