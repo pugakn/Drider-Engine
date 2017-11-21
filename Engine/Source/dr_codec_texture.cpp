@@ -37,12 +37,17 @@ CodecTexture::encode(TString pathName) {
 }
 
 bool
-CodecTexture::isCompatible(TString resourceName) {
-  TString extension = FileSystem::getFileExtension(resourceName);
+CodecTexture::isCompatible(TString extension) {
+  //TString extension = FileSystem::getFileExtension(resourceName);
   if(extension == _T("png") || extension == _T("jpg")) {
     return true;
   }
   return false;
+}
+
+CompatibleType::E
+CodecTexture::getType() {
+  return CompatibleType::TEXTURE;
 }
 
 

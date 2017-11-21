@@ -145,11 +145,15 @@
     <ClInclude Include="Include\dr_codec.h" />
     <ClInclude Include="Include\dr_codec_model.h" />
     <ClInclude Include="Include\dr_codec_texture.h" />
+    <ClInclude Include="Include\dr_compatible_types.h" />
     <ClInclude Include="Include\dr_engine_texture.h" />
     <ClInclude Include="Include\dr_engine_prerequisites.h" />
     <ClInclude Include="Include\dr_file_system.h" />
     <ClInclude Include="Include\dr_image_info.h" />
+    <ClInclude Include="Include\dr_model_resource.h" />
+    <ClInclude Include="Include\dr_resource_factory.h" />
     <ClInclude Include="Include\dr_resource_manager.h" />
+    <ClInclude Include="Include\dr_texture_resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_codec.cpp" />
@@ -157,7 +161,10 @@
     <ClCompile Include="Source\dr_codec_texture.cpp" />
     <ClCompile Include="Source\dr_engine_texture.cpp" />
     <ClCompile Include="Source\dr_file_system.cpp" />
+    <ClCompile Include="Source\dr_model_resource.cpp" />
+    <ClCompile Include="Source\dr_resource_factory.cpp" />
     <ClCompile Include="Source\dr_resource_manager.cpp" />
+    <ClCompile Include="Source\dr_texture_resource.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

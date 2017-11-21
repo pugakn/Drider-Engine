@@ -66,15 +66,18 @@ CodecModel::encode(TString pathName) {
 }
 
 bool
-CodecModel::isCompatible(TString resourceName) {
+CodecModel::isCompatible(TString extension) {
 
-  TString ext = FileSystem::getFileExtension(resourceName);
-
-  if (!ext.empty()) {
-    return Assimp::Importer().IsExtensionSupported(String(ext.begin(), ext.end()));
+  if (!extension.empty()) {
+    return Assimp::Importer().IsExtensionSupported(String(extension.begin(), extension.end()));
   }
 
   return false;
+}
+
+CompatibleType::E
+CodecModel::getType() {
+   return CompatibleType::MODEL;
 }
 
 }
