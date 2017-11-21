@@ -64,6 +64,42 @@ Vector2D::equals(const Vector2D& otherVector, float errorRange) const {
          (Math::abs(y - otherVector.y) < errorRange);
 }
 
+Int32
+Vector2D::compare(const Vector2D p1, const Vector2D p2) {
+  Int32 compOrientation = orientation(p1, p2);
+
+  if (compOrientation == 0) {
+    if (distanceSqr(p1) < distanceSqr(p2)) {
+      return 1;
+    }
+    else {
+      return -1;
+    }
+  }
+
+  if (compOrientation == 2) {
+    return -1;
+  }
+  else {
+    return 1;
+  }
+}
+
+Int32
+Vector2D::orientation(const Vector2D q, const Vector2D r) const {
+  float val = (q.y - y) * (r.x - q.x) - (q.x - x) * (r.y - q.y);
+
+  if (val == 0.0f) {
+    return 0;  // colinear
+  }
+  else if (val > 0.0f) {
+    return 1;
+  }
+  else {
+    return 2; // clock or counterclock wise
+  }
+}
+
 float*
 Vector2D::ptr() {
   return &data[0];
