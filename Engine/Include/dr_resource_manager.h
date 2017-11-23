@@ -20,7 +20,7 @@ class DR_ENGINE_EXPORT ResourceManager {
   * TEST::resourceMConstructor
   *	Default constructor.
   */
-  ResourceManager() {}
+  ResourceManager() { Init(); }
 
   /**
   * TEST::resourceMDestructor
