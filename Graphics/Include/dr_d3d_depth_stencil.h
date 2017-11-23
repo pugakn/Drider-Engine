@@ -13,7 +13,7 @@ namespace driderSDK {
 * Sample usage:
 *	DepthStencil* = new D3DdepthStencil;
 */
-class DR_API_EXPORT D3DDepthStencil : public DepthStencil
+class DR_GRAPHICS_EXPORT D3DDepthStencil : public DepthStencil
 {
  public:
   /**

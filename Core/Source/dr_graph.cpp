@@ -1,4 +1,4 @@
-#include "..\Include\dr_graph.h"
+#include "dr_graph.h"
 #include <dr_matrix4x4.h>
 #include "dr_node.h"
 

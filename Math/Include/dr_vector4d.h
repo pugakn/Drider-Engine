@@ -1,6 +1,6 @@
 #pragma once
 
-#include <dr_prerequisites.h>
+#include "dr_math_prerequisites.h"
 #include "dr_math.h"
 
 namespace driderSDK {
@@ -13,7 +13,7 @@ class Vector3D;
 * Sample usage:
 * Vector3D vectorName;
 */
-class DR_API_EXPORT Vector4D
+class DR_MATH_EXPORT Vector4D
 {
  public:
   /**

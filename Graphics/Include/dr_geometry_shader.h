@@ -9,7 +9,7 @@ namespace driderSDK {
 * Sample usage:
 *	Geometryshader* = new D3DGeometryShader;
 */
-class DR_API_EXPORT GeometryShader : public Shader
+class DR_GRAPHICS_EXPORT GeometryShader : public Shader
 {
  public:
   /**

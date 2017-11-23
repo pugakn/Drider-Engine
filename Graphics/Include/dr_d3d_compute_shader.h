@@ -13,7 +13,7 @@ namespace driderSDK {
 * Sample usage:
 *	ComputeShader* = new D3DComputeShader;
 */
-class DR_API_EXPORT D3DComputeShader : public ComputeShader
+class DR_GRAPHICS_EXPORT D3DComputeShader : public ComputeShader
 {
  public:
   /**

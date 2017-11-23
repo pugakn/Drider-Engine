@@ -15,7 +15,7 @@ class DeviceContext;
 * Sample usage:
 *	ConstantBuffer* = new D3DConstantBuffer;
 */
-class DR_API_EXPORT D3DConstantBuffer : public ConstantBuffer
+class DR_GRAPHICS_EXPORT D3DConstantBuffer : public ConstantBuffer
 {
  public:
   /**

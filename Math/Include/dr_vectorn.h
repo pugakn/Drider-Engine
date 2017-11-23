@@ -2,7 +2,7 @@
 
 #include <array>
 #include <algorithm>
-#include <dr_prerequisites.h>
+#include "dr_math_prerequisites.h"
 #include "dr_math.h"
 
 namespace driderSDK {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <dr_prerequisites.h>
+#include "dr_math_prerequisites.h"
 #include "dr_math.h"
 
 namespace driderSDK {
@@ -11,7 +11,7 @@ namespace driderSDK {
 * Sample usage:
 * Vector2D vectorName;
 */
-class DR_API_EXPORT Vector2D
+class DR_MATH_EXPORT Vector2D
 {
  public:
   /**
@@ -172,6 +172,40 @@ class DR_API_EXPORT Vector2D
   */
   bool
   equals(const Vector2D& otherVector, float errorRange = Math::SMALL_NUMBER) const;
+
+  /*
+  * TEST::compare
+  * Compares the polar angle of 2 points.
+  *
+  * @param p1
+  *   Actual point.
+  * @param p2
+  *   Point to compare.
+  *
+  * @return
+  *   -1: If it's counter clockwise.
+  *   +1: If it's clockwise.
+  */
+  Int32
+  compare(const Vector2D p1, const Vector2D p2);
+
+  /**
+  * TEST::orientation
+  * Finds the orientation of ordered triplet p.(q, r).
+  *
+  * @param q
+  *   Point.
+  *
+  * @param r
+  *   Point.
+  *
+  * @return
+  *   0: p, q and r are colinear
+  *   1: Clockwise
+  *   2: Counterclockwise
+  */
+  Int32
+  orientation(const Vector2D q, const Vector2D r) const;
 
   /**
   * TEST::opPtr

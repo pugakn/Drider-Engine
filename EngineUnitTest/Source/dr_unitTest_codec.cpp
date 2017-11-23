@@ -12,5 +12,5 @@ TEST(Codec, codecEncode) {
 }
 
 TEST(Codec, isCompatible) {
-  driderSDK::Codec::isCompatible(_T("test.png"));
+  EXPECT_TRUE(false);
 }

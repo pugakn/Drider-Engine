@@ -1,6 +1,6 @@
 #pragma once
 
-#include <dr_prerequisites.h>
+#include "dr_math_prerequisites.h"
 #include "dr_math.h"
 #include "dr_vector4d.h"
 
@@ -16,7 +16,7 @@ class Plane;
 * Sample usage:
 * Matrix4x4 matrixName;
 */
-class DR_API_EXPORT Matrix4x4
+class DR_MATH_EXPORT Matrix4x4
 {
  public:
   /**

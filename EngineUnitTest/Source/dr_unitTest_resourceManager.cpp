@@ -1,11 +1,8 @@
-#include <dr_resourceManager.h>
+#include <dr_resource_manager.h>
 #include <gtest\gtest.h>
 
-driderSDK::ResourceManager rm;
-
 TEST(ResourceManager, resourceMConstructor) {
-  driderSDK::ResourceManager r;
-  EXPECT_TRUE(r.resourceContent.size() == 0);
+  EXPECT_TRUE(false);
 }
 
 TEST(ResourceManager, resourceMDestructor) {
@@ -13,30 +10,18 @@ TEST(ResourceManager, resourceMDestructor) {
 }
 
 TEST(ResourceManager, loadResource) {
-  rm.resourceContent.clear();
-  rm.loadResource("test.png", "resources/images");
-  EXPECT_TRUE(rm.resourceContent.size() > 0);
+  EXPECT_TRUE(false);
 }
 
 TEST(ResourceManager, createResource) { 
-  rm.resourceContent.clear();
-  rm.createResource(driderSDK::ResourceType::PNG, "test");
-  EXPECT_TRUE(rm.resourceContent.size() > 0);
-}
-
-TEST(ResourceManager, isCompatible) {
-  driderSDK::ResourceType::E type;
-  EXPECT_TRUE(rm.isCompatible("resources/test.png", type));
-  EXPECT_TRUE(type == driderSDK::ResourceType::PNG);
+  
+  EXPECT_TRUE(false);
 }
 
 TEST(ResourceManager, existInResourceContent) {
-  EXPECT_TRUE(rm.existInResourceContent("test"));
+  EXPECT_TRUE(false);
 }
 
 TEST(ResourceManager, getReference) {
-  rm.loadResource("test.png", "resources/images");
-  rm.createResource(driderSDK::ResourceType::PNG, "test");
-  EXPECT_TRUE(rm.getReference("test") == nullptr);
-  EXPECT_FALSE(true);
+  EXPECT_TRUE(false);
 }

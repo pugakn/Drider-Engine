@@ -1,6 +1,6 @@
 #pragma once
 
-#include <dr_prerequisites.h>
+#include "dr_math_prerequisites.h"
 #include "dr_vector3d.h"
 
 namespace driderSDK {
@@ -17,7 +17,7 @@ class Ray;
 * Sample usage:
 *	AABB myAabb(5.0, 2.0, 2.0, driderSDK::Vector3D(0,0,0));
 */
-class DR_API_EXPORT AABB
+class DR_MATH_EXPORT AABB
 {
  public:
   
@@ -75,7 +75,7 @@ class DR_API_EXPORT AABB
 	*  AABB's max point
 	*
 	*/
-	const Vector3D&
+	const Vector3D
 	getMaxPoint() const;
 
 	/**
@@ -86,7 +86,7 @@ class DR_API_EXPORT AABB
 	*  AABB's min point
 	*
 	*/
-	const Vector3D&
+	const Vector3D
 	getMinPoint() const;
 
   /**

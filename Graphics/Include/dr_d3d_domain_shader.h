@@ -13,7 +13,7 @@ namespace driderSDK {
 * Sample usage:
 *	DomainShader* = new D3DDomainShader;
 */
-class DR_API_EXPORT D3DDomainShader : public DomainShader
+class DR_GRAPHICS_EXPORT D3DDomainShader : public DomainShader
 {
  public:
   /**

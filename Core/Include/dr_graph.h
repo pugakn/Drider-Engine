@@ -1,13 +1,13 @@
 #pragma once
 
 #include <memory>
-#include <dr_prerequisites.h>
+#include "dr_core_prerequisites.h"
 
 namespace driderSDK {
 
 class Node;
 
-class DR_API_EXPORT SceneGraph
+class DR_CORE_EXPORT SceneGraph
 {
 public:
   using SharedNode = std::shared_ptr<Node>;

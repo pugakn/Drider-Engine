@@ -14,7 +14,7 @@ namespace driderSDK {
 * Sample usage:
 *	texture* = new D3DTexture;
 */
-class DR_API_EXPORT D3DTexture : public Texture
+class DR_GRAPHICS_EXPORT D3DTexture : public Texture
 {
  public:
   /**

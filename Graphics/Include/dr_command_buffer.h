@@ -5,7 +5,7 @@ namespace driderSDK {
 
 class DeviceContext;
 
-class DR_API_EXPORT CommandBuffer : public Buffer
+class DR_GRAPHICS_EXPORT CommandBuffer : public Buffer
 {
  public:
   /**

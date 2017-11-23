@@ -1,6 +1,6 @@
 #pragma once
 
-#include <dr_prerequisites.h>
+#include "dr_math_prerequisites.h"
 #include "dr_vector3d.h"
 
 namespace driderSDK {
@@ -9,7 +9,7 @@ class AABB;
 class Capsule;
 class Frustrum;
 
-class DR_API_EXPORT Sphere
+class DR_MATH_EXPORT Sphere
 {
  public:
   /**

@@ -7,7 +7,7 @@ struct ID3D11SamplerState;
 
 namespace driderSDK {
 
-class DR_API_EXPORT D3D11SamplerState : public SamplerState
+class DR_GRAPHICS_EXPORT D3D11SamplerState : public SamplerState
 {
  public:
   /**

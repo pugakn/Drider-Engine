@@ -13,7 +13,7 @@ namespace driderSDK {
 * Sample usage:
 *	FragmentShader* = new D3DFragmentShader;
 */
-class DR_API_EXPORT D3DFragmentShader : public FragmentShader
+class DR_GRAPHICS_EXPORT D3DFragmentShader : public FragmentShader
 {
  public:
   /**

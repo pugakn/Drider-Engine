@@ -595,12 +595,12 @@ Matrix4x4::operator!=(const Matrix4x4& M)
 }
 
 Matrix4x4
-Matrix4x4::identityMat4x4(1.f, 0.f, 0.f, 0.f,
+Matrix4x4::identityMat4x4 = Matrix4x4(1.f, 0.f, 0.f, 0.f,
                           0.f, 1.f, 0.f, 0.f,
                           0.f, 0.f, 1.f, 0.f,
                           0.f, 0.f, 0.f, 1.f);
 Matrix4x4
-Matrix4x4::zerosMat4x4(0.f, 0.f, 0.f, 0.f,
+Matrix4x4::zerosMat4x4 = Matrix4x4(0.f, 0.f, 0.f, 0.f,
                        0.f, 0.f, 0.f, 0.f,
                        0.f, 0.f, 0.f, 0.f,
                        0.f, 0.f, 0.f, 0.f);

@@ -1,11 +1,11 @@
 #pragma once
-#include <dr_prerequisites.h>
+#include "dr_core_prerequisites.h"
 #define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
+#include <STB\stb_image.h>
 
 namespace driderSDK {
 
-struct DR_API_EXPORT Loader
+struct DR_CORE_EXPORT Loader
 {
  public:
   /**
