@@ -21,7 +21,7 @@ ResourceFactory::CreateResource(CompatibleType::E type) {
   FactoryMap::iterator it = m_FactoryMap.find(type);
   if (it != m_FactoryMap.end())
     return it->second();
-  return NULL;
+  return nullptr;
 }
 
 
