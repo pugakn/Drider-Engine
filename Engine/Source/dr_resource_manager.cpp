@@ -9,21 +9,28 @@ namespace driderSDK {
 
 void 
 ResourceManager::Init() {
-  /*codecs.push_back(std::unique_ptr<CodecTexture>());
-  codecs.push_back(std::unique_ptr<CodecModel>());*/
+  codecs.push_back(std::unique_ptr<CodecTexture>());
+  codecs.push_back(std::unique_ptr<CodecModel>());
   
   factory = std::make_shared<ResourceFactory>();
 }
 
 std::shared_ptr<Resource>
 ResourceManager::loadResource(TString resourceName) {
+  std::shared_ptr<Resource> r;
+  
   for(auto &codec : codecs) {
     TString extension = FileSystem::getFileExtension(resourceName);
     if(codec->isCompatible(extension)) {
-      
+      if(existInResourceContent(resourceName)) {
+        r = getReference(resourceName);
+      } else {
+        createResource(resourceName, codec.get);
+        r = getReference(resourceName);
+      }
     }
   }
-  return nullptr;
+  return r;
 }
 
 void
