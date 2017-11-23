@@ -72,6 +72,35 @@ Intersect::sphereRay(const Vector3D& sphPosition,
 }
 
 bool
+Intersect::sphereRay(const Vector3D& sphPosition,
+                     float sphRadio,
+                     const Vector3D &rayOrigin,
+                     const Vector3D& rayDirection,
+                     Vector3D * intersectionPoint) {
+  
+  if (sphereContainsPoint(rayOrigin, sphPosition, sphRadio)) {
+    return true;
+  }
+  Vector3D vec(rayOrigin - sphPosition);
+
+  float pDirection = vec.dot(rayDirection);
+
+  if (pDirection < 0.0f) {
+    return false;
+  }
+
+  Vector3D vecClosestPoint(rayOrigin + (rayDirection * pDirection));
+
+  if (sphereContainsPoint(vecClosestPoint, sphPosition, sphRadio)) {
+    float vecClosestPointLength = vecClosestPoint.length();
+    float distanceToPerimeter = Math::sqrt(sphRadio*sphRadio - vecClosestPointLength*vecClosestPointLength);
+    (*intersectionPoint) = vecClosestPoint - rayDirection * distanceToPerimeter;
+    return true;
+  } 
+  return false;
+}
+
+bool
 Intersect::rayPlane(const Vector3D& rayOrigin,
                     const Vector3D& rayDirection,
                     const Vector3D& planeNormal,
@@ -203,12 +232,12 @@ Intersect::rayCapsule(const Vector3D& pointSA,
   return true;
 }
 
-/*bool
+bool
 Intersect::rayFrustrum(const Vector3D& rayOrigin,
                        const Vector3D& rayDirection,
                        const std::array<Plane, 6>& frustrumPlanes) {
   return false;
-}*/
+}
 
 bool
 Intersect::frustrumFrustrum(const std::array<Plane, 6>& frustrumAPlanes,

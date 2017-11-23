@@ -90,9 +90,22 @@ class DR_API_EXPORT Ray
 	* @return
 	*	  True if the ray intersects with the sphere
 	*
-	
-	/*bool
+	*/
+	bool
 	intersects(const Sphere& sphere) const;
+
+  /**
+  * Check if the ray intersects with a sphere
+  *
+  *	@param sphere
+  *	 The sphere to check the intersecton.
+  *
+  * @return
+  *	  True if the ray intersects with the sphere
+  *
+  */
+  bool
+  intersects(const Sphere& sphere, Vector3D* pointIntersect) const;
 
 	/**
 	* Check if the ray intersects with a capsule
@@ -104,8 +117,8 @@ class DR_API_EXPORT Ray
 	*	  True if the ray intersects with the capsule
 	*
 	*/
-	/*bool
-	intersects(const Capsule& capsule) const;*/
+	bool
+	intersects(const Capsule& capsule) const;
 
 	/**
 	* Check if the ray intersects with a frustrum

@@ -137,6 +137,33 @@ struct DR_API_EXPORT Intersect
             float sphRadio,
             const Vector3D& rayOrigin,
             const Vector3D& rayDirection);
+
+  /**
+  * TEST::sphereRay
+  * Check if there was an intersection between a sphere and a capsule.
+  *
+  * @param sphPosition
+  *   Center of the sphere to check.
+  *
+  * @param sphRadio
+  *   Radius of the sphere.
+  *
+  * @param rayOrigin
+  *   Origin of the sphere.
+  *
+  * @param rayDirection
+  *   Directions of the ray.
+  *
+  * @return
+  *   True if there is intersection, if not False
+  */
+  static bool
+  sphereRay(const Vector3D& sphPosition,
+            float sphRadio,
+            const Vector3D& rayOrigin,
+            const Vector3D& rayDirection,
+            Vector3D* intersectionPoint);
+
   /**
   * TEST::NoImplemented
   */
@@ -233,10 +260,10 @@ struct DR_API_EXPORT Intersect
              float r,
              float &t);
 
-  /*static bool
+  static bool
   rayFrustrum(const Vector3D& rayOrigin,
               const Vector3D& rayDirection,
-              const std::array<Plane, 6>& frustrumPlanes);*/
+              const std::array<Plane, 6>& frustrumPlanes);
   /**
   * TEST::frustrumFrustrum
   * Check if there was an intersection between a frustrum and other frustrum.
@@ -250,7 +277,6 @@ struct DR_API_EXPORT Intersect
   * @return
   *   True if there is intersection, if not false
   */
- 
   static bool
   frustrumFrustrum(const std::array<Plane, 6>& frustrumAPlanes,
                    const std::array<Plane, 6>& frustrumBPlanes);
@@ -274,8 +300,8 @@ struct DR_API_EXPORT Intersect
                  float sphereRadius);
 
 
-  /*static bool
-  frustrumCapsuleIntersection(const Matrix4x4& frustrumVP);*/
+  static bool
+  frustrumCapsuleIntersection(const Matrix4x4& frustrumVP);
 
   /**
   * TEST::aabbAabb
