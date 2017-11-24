@@ -17,6 +17,11 @@
 #include "dr_d3d_swap_chain.h"
 
 namespace driderSDK {
+struct DeviceContextData {
+  ID3D11DeviceContext * pDeviceContext;
+  void*  getObject() {};
+  void** getObjectReference() {};
+};
 
 void
 D3DDeviceContext::clearDepthStencilView(DepthStencil& depthstencil,
@@ -50,6 +55,7 @@ D3DDeviceContext::clearRenderTargetView(RenderTarget& renderTarget,
                                         const float colorRGBA[4]) const {
     D3D11DeviceContext->
       ClearRenderTargetView(static_cast<D3DRenderTarget*>(&renderTarget)->RTV,colorRGBA);
+
 }
 
 void

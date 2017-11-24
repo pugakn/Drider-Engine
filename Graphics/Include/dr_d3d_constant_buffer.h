@@ -61,7 +61,7 @@ class DR_GRAPHICS_EXPORT D3DConstantBuffer : public ConstantBuffer
   */
   void
   set(const DeviceContext& deviceContext,
-      DR_SHADER_TYPE_FLAG::E typeFlag) const override;
+      Int32 typeFlag = 0) const override;
 
   /**
   * TEST::

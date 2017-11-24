@@ -4,12 +4,14 @@ namespace driderSDK {
 void Application::startApplication()
 {
   m_alive = true;
+  m_running = true;
   onInit();
   while (m_alive) {
     while (m_running)
     {
       onInput();
       onUpdate();
+      onDraw();
     }
     onPause();
   }

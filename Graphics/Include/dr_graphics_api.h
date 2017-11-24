@@ -14,6 +14,8 @@ class DR_GRAPHICS_EXPORT GraphicsAPI {
 public:
   virtual void init(UInt32 w, UInt32 h, void* hwnd) = 0;
   virtual void destroy() = 0;
+  virtual void clear() = 0;
+  virtual void swapBuffers() = 0;
 
   Device* device;
   DeviceContext* deviceContext;

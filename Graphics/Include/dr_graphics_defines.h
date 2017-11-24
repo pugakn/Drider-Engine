@@ -321,6 +321,17 @@ enum E  {
 
 }
 
+namespace DR_BUFFER_TYPE {
+
+  enum E {
+    kVERTEX,
+    kINDEX,
+    kCONSTANT,
+    kCOMMAND
+  };
+
+}
+
 namespace DR_BIND_FLAGS
 {
 enum E {
@@ -384,9 +395,11 @@ struct DR_GRAPHICS_EXPORT DrSampleDesc {
 
 struct DR_GRAPHICS_EXPORT DrBufferDesc {
   DR_BUFFER_USAGE::E usage;
+  DR_BUFFER_TYPE::E type;
   UInt32 stride;
   UInt32 sizeInBytes;
   DrBufferDesc() {
+    type = DR_BUFFER_TYPE::kCONSTANT;
     usage = DR_BUFFER_USAGE::kDefault;
     stride = 0;
     sizeInBytes = 0;
@@ -443,7 +456,7 @@ struct DR_GRAPHICS_EXPORT DrRationalNumber {
   UInt32 numerator;
   UInt32 denominator;
   DrRationalNumber() {
-    numerator = 1;
+    numerator = 0;
     denominator = 1;
   }
 };
@@ -460,11 +473,11 @@ struct DR_GRAPHICS_EXPORT DrSwapChainDesc  {
     width = 0;
     height = 0;
     DrRationalNumber ref;
-    ref.denominator = 60;
-    ref.numerator = 1;
+    ref.denominator = 0;
+    ref.numerator = 0;
     refreshRate = ref;
-    Format = DR_FORMAT::kDrFormat_B4G4R4A4_UNORM;
-    bufferCount = 1;
+    Format = (DR_FORMAT::E)0;
+    bufferCount = 0;
     windowHandler = nullptr;
     windowed = true;
   }

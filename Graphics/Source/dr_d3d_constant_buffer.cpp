@@ -15,7 +15,10 @@ D3DConstantBuffer::create(const Device& device,
                           const byte* initialData) {
   const D3DDevice* apiDevice = reinterpret_cast<const D3DDevice*>(&device);
   descriptor = desc;
-  sysMemCpy.assign(initialData ,initialData + desc.sizeInBytes);
+  if (initialData != nullptr) {
+    sysMemCpy.resize(desc.sizeInBytes);
+    sysMemCpy.assign(initialData, initialData + desc.sizeInBytes);
+  }
   D3D11_BUFFER_DESC bdesc = { 0 };
 
   switch (desc.usage) {
@@ -36,18 +39,28 @@ D3DConstantBuffer::create(const Device& device,
   bdesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
   D3D11_SUBRESOURCE_DATA subData = { &initialData[0], 0, 0 };
 
-  if (apiDevice->
-        D3D11Device->
-          CreateBuffer(&bdesc, &subData, &CB) != S_OK) {
-    return DR_GRAPHICS_ERROR::CREATE_BUFFER_ERROR;
+  if (initialData != nullptr) {
+    D3D11_SUBRESOURCE_DATA subData = { &initialData[0], 0, 0 };
+    reinterpret_cast<const D3DDevice*>(&device)->D3D11Device->
+      CreateBuffer(&bdesc, &subData, &CB);
+  }
+  else
+  {
+    reinterpret_cast<const D3DDevice*>(&device)->D3D11Device->
+      CreateBuffer(&bdesc, nullptr, &CB);
   }
   return DR_GRAPHICS_ERROR::ERROR_NONE;
 }
 
 void
 D3DConstantBuffer::set(const DeviceContext& deviceContext,
-                       DR_SHADER_TYPE_FLAG::E typeFlag) const {
+                       Int32 typeFlag) const {
   const D3DDeviceContext* context = reinterpret_cast<const D3DDeviceContext*>(&deviceContext);
+  if (typeFlag == 0)
+  {
+    typeFlag |= DR_SHADER_TYPE_FLAG::kVertex;
+    typeFlag |= DR_SHADER_TYPE_FLAG::kFragment;
+  }
   if (typeFlag& DR_SHADER_TYPE_FLAG::kVertex) {
     context->D3D11DeviceContext->VSSetConstantBuffers(0, 1, &CB);
   }

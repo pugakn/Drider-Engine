@@ -61,6 +61,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CoreUnitTest", "CoreUnitTes
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GraphicsTestApplication", "GraphicsTestApplication\GraphicsTestApplication.vcxproj", "{5FA5BD82-85B5-48A1-A55F-43995C38DBF1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2C6134FF-9270-4CD2-BD4E-254C5888942A} = {2C6134FF-9270-4CD2-BD4E-254C5888942A}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

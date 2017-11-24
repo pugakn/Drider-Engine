@@ -32,7 +32,7 @@ class DR_GRAPHICS_EXPORT ConstantBuffer : public Buffer
   *
   */
   virtual void
-  set(const DeviceContext& deviceContext, DR_SHADER_TYPE_FLAG::E typeFlag) const = 0;
+  set(const DeviceContext& deviceContext, Int32 typeFlag = 0) const = 0;
 };
 
 }

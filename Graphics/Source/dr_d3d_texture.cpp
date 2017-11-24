@@ -15,19 +15,25 @@ DR_GRAPHICS_ERROR::E D3DTexture::createFromMemory(const Device& device,
   apiDesc.Width = desc.width;
   apiDesc.Height = desc.height;
   apiDesc.ArraySize = 1;
+  apiDesc.MipLevels = desc.mipLevels;
   apiDesc.Format = static_cast<DXGI_FORMAT>(desc.Format);
   apiDesc.SampleDesc.Count = 1;
+  apiDesc.SampleDesc.Quality = 0;
   apiDesc.BindFlags = desc.bindFlags;
-  apiDesc.MiscFlags = D3D11_RESOURCE_MISC_GENERATE_MIPS; //Hardcoded
+  apiDesc.MiscFlags = /*D3D11_RESOURCE_MISC_GENERATE_MIPS*/0; //Hardcoded
+  apiDesc.CPUAccessFlags = 0;
+  apiDesc.Usage = D3D11_USAGE_DEFAULT;
 
   D3D11_SUBRESOURCE_DATA initData{};
   initData.pSysMem = buffer;
   initData.SysMemPitch = desc.pitch;
 
-  D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+  D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+  ZeroMemory(&srvDesc, sizeof(srvDesc));
+  
   srvDesc.Format = apiDesc.Format;
   srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D; //Hardcoded
-  srvDesc.Texture2D.MipLevels = -1;                      //Hardcoded
+  srvDesc.Texture2D.MipLevels = desc.mipLevels;                      //Hardcoded
 
   HRESULT res = apiDevice->
     D3D11Device->

@@ -14,7 +14,10 @@ D3DIndexBuffer::create(const Device& device,
                        const DrBufferDesc& desc,
                        const byte* initialData) {
   descriptor = desc;
-  sysMemCpy.assign(initialData, initialData + desc.sizeInBytes);
+  if (initialData != nullptr) {
+    sysMemCpy.resize(desc.sizeInBytes);
+    sysMemCpy.assign(initialData, initialData + desc.sizeInBytes);
+  }
   D3D11_BUFFER_DESC bdesc = { 0 };
 
   switch (desc.usage) {
@@ -35,10 +38,15 @@ D3DIndexBuffer::create(const Device& device,
   bdesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
   D3D11_SUBRESOURCE_DATA subData = { &initialData[0], 0, 0 };
 
-  if (reinterpret_cast<const D3DDevice*>(&device)->
-        D3D11Device->
-          CreateBuffer(&bdesc, &subData, &IB) != S_OK) {
-    return DR_GRAPHICS_ERROR::CREATE_BUFFER_ERROR;
+  if (initialData != nullptr) {
+    D3D11_SUBRESOURCE_DATA subData = { &initialData[0], 0, 0 };
+    reinterpret_cast<const D3DDevice*>(&device)->D3D11Device->
+      CreateBuffer(&bdesc, &subData, &IB);
+  }
+  else
+  {
+    reinterpret_cast<const D3DDevice*>(&device)->D3D11Device->
+      CreateBuffer(&bdesc, nullptr, &IB);
   }
 
   return DR_GRAPHICS_ERROR::ERROR_NONE;

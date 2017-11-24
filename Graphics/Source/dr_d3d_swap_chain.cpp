@@ -9,31 +9,45 @@ namespace driderSDK {
 
 DR_GRAPHICS_ERROR::E D3DSwapChain::create(const Device& device,
                                           const DrSwapChainDesc& desc) {
+  const D3DDevice* dev = reinterpret_cast<const D3DDevice*>(&device);
   descriptor = desc;
-  DXGI_SWAP_CHAIN_DESC apiDesc{0};
+  DXGI_SWAP_CHAIN_DESC apiDesc;
+  ZeroMemory(&apiDesc, sizeof(DXGI_SWAP_CHAIN_DESC));
   apiDesc.BufferCount = desc.bufferCount;
   apiDesc.Flags = 0;
   apiDesc.OutputWindow = static_cast<HWND>(desc.windowHandler);
-  apiDesc.BufferDesc.Width = desc.width;
-  apiDesc.BufferDesc.Height = desc.height;
   apiDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-  apiDesc.BufferDesc.RefreshRate.Denominator = desc.refreshRate.denominator;
-  apiDesc.BufferDesc.RefreshRate.Numerator = desc.refreshRate.numerator;
-  apiDesc.SampleDesc.Count = 1; 
+  apiDesc.SampleDesc.Count = 1;
   apiDesc.SampleDesc.Quality = 0;
   apiDesc.Windowed = desc.windowed;
 
-  IDXGIFactory *factory;
-  if (CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)(&factory)) != S_OK) {
-    return DR_GRAPHICS_ERROR::CREATE_FACTORY_ERROR;
-  }
-  HRESULT res = factory->CreateSwapChain(reinterpret_cast<const D3DDevice*>(&device)->D3D11Device,
+  apiDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+  apiDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+  apiDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+  apiDesc.BufferDesc.Width = desc.width;
+  apiDesc.BufferDesc.Height = desc.height;
+  apiDesc.BufferDesc.RefreshRate.Denominator = desc.refreshRate.denominator;
+  apiDesc.BufferDesc.RefreshRate.Numerator = desc.refreshRate.numerator;
+
+  IDXGIDevice * dxgiDevice = nullptr;
+  dev->D3D11Device->QueryInterface(__uuidof(IDXGIDevice), (void **)& dxgiDevice);
+
+  IDXGIAdapter * dxgiAdapter = nullptr;
+  dxgiDevice->GetParent(__uuidof(IDXGIAdapter), (void **)& dxgiAdapter);
+
+  IDXGIFactory * dxgiFactory = nullptr;
+  dxgiAdapter->GetParent(__uuidof(IDXGIFactory), (void **)& dxgiFactory);
+
+
+  HRESULT res = dxgiFactory->CreateSwapChain(dev->D3D11Device,
     &apiDesc,
     &APISwapchain);
   if (res != S_OK) {
     return DR_GRAPHICS_ERROR::CREATE_SWAP_CHAIN_ERROR;
   }
-  factory->Release();
+  dxgiFactory->Release();
+  dxgiAdapter->Release();
+  dxgiDevice->Release();
 
   return DR_GRAPHICS_ERROR::ERROR_NONE;
 }

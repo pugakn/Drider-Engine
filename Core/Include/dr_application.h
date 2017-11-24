@@ -10,6 +10,7 @@ public:
   virtual void onInit() = 0;
   virtual void onInput() = 0;
   virtual void onUpdate() = 0;
+  virtual void onDraw() = 0;
   virtual void onDestroy() = 0;
   virtual void onPause() = 0;
   virtual void onResume() = 0;

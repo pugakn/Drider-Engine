@@ -31,20 +31,21 @@ namespace driderSDK {
 
 DR_GRAPHICS_ERROR::E
 D3DDevice::createDeviceAndDeviceContext(DeviceContext& deviceContext) {
+  D3D_FEATURE_LEVEL lvl = D3D_FEATURE_LEVEL_11_0;
+  D3D_FEATURE_LEVEL lvlRet = D3D_FEATURE_LEVEL_11_0;
   if (D3D11CreateDevice(0,
                         D3D_DRIVER_TYPE_HARDWARE,
                         0,
                         0,
-                        0,
-                        0,
+                        &lvl,
+                        1,
                         D3D11_SDK_VERSION,
                         &D3D11Device,
-                        0,
+                        &lvlRet,
                         &reinterpret_cast<D3DDeviceContext*>(&deviceContext)->
                           D3D11DeviceContext) != S_OK) {
     return DR_GRAPHICS_ERROR::CREATE_DEVICE_ERROR;
   }
-
   return DR_GRAPHICS_ERROR::ERROR_NONE;
 }
 
@@ -54,35 +55,32 @@ D3DDevice::release() {
   delete this;
 }
 
-DR_GRAPHICS_ERROR::E
-D3DDevice::createVertexBuffer(const DrBufferDesc& desc,
-                                  byte* initialData, 
-                                  VertexBuffer* vertexBuffer) {
-  vertexBuffer = new D3DVertexBuffer;
-  return vertexBuffer->create(*this,desc,initialData);
+Buffer*
+D3DDevice::createBuffer(const DrBufferDesc& desc,
+                        byte* initialData) {
+  Buffer* buffer = nullptr;
+  switch (desc.type)
+  {
+  case DR_BUFFER_TYPE::kVERTEX:
+    buffer = new D3DVertexBuffer;
+    break;
+  case DR_BUFFER_TYPE::kINDEX:
+    buffer = new D3DIndexBuffer;
+    break;
+  case DR_BUFFER_TYPE::kCONSTANT:
+    buffer = new D3DConstantBuffer;
+    break;
+  }
+
+  buffer->create(*this,desc,initialData);
+  return buffer;
 }
 
-DR_GRAPHICS_ERROR::E
-D3DDevice::createIndexBuffer(const DrBufferDesc& desc,
-                             byte* initialData,
-                             IndexBuffer* indexBuffer) {
-  indexBuffer = new D3DIndexBuffer;
-  return indexBuffer->create(*this, desc, initialData);
-}
-
-DR_GRAPHICS_ERROR::E
-D3DDevice::createConstantBuffer(const DrBufferDesc& desc,
-                                byte* initialData,
-                                ConstantBuffer* constantBuffer) {
-  constantBuffer = new D3DConstantBuffer;
-  return constantBuffer->create(*this, desc, initialData);
-}
-
-DR_GRAPHICS_ERROR::E
+Shader*
 D3DDevice::createShaderFromMemory(const char* shaderBuffer,
                                   size_t bufferSize,
-                                  DR_SHADER_TYPE_FLAG::E shaderType,
-                                  Shader* shader) {
+                                  DR_SHADER_TYPE_FLAG::E shaderType) {
+  Shader* shader = nullptr;
   switch (shaderType)
   {
   case driderSDK::DR_SHADER_TYPE_FLAG::kVertex:
@@ -111,69 +109,73 @@ D3DDevice::createShaderFromMemory(const char* shaderBuffer,
     break;
   }
   shader->compile(*this, shaderBuffer, bufferSize);
-  return shader->create(*this);
+  shader->create(*this);
+  return shader;
 }
 
-DR_GRAPHICS_ERROR::E
+Texture*
 D3DDevice::createTextureFromMemory(const char* buffer,
-                                   const DrTextureDesc& desc,
-                                   Texture* texture) {
-  texture = new D3DTexture;
-  return texture->createFromMemory(*this, desc, buffer);
+                                   const DrTextureDesc& desc) {
+  Texture* texture = new D3DTexture;
+  texture->createFromMemory(*this, desc, buffer);
+  return texture;
 }
 
-DR_GRAPHICS_ERROR::E
-D3DDevice::createEmptyTexture(const DrTextureDesc& desc, Texture* texture) {
-  texture = new D3DTexture;
-  return texture->createEmpty(*this, desc);
+Texture*
+D3DDevice::createEmptyTexture(const DrTextureDesc& desc) {
+  Texture* texture = new D3DTexture;
+  texture->createEmpty(*this, desc);
+  return texture;
 }
 
-DR_GRAPHICS_ERROR::E
-D3DDevice::createRenderTarget(const Texture& texture,
-                              RenderTarget* renderTarget) {
-  renderTarget = new D3DRenderTarget;
-  return renderTarget->create(*this,texture);
+RenderTarget* 
+D3DDevice::createRenderTarget(const Texture& texture) {
+  RenderTarget* renderTarget = new D3DRenderTarget;
+  renderTarget->create(*this,texture);
+  return renderTarget;
 }
 
-DR_GRAPHICS_ERROR::E
-D3DDevice::createDepthStencil(const Texture& texture,
-                              DepthStencil* depthStencil) {
-  depthStencil = new D3DDepthStencil;
-  return depthStencil->create(*this,texture);
+DepthStencil* 
+D3DDevice::createDepthStencil(const Texture& texture) {
+  DepthStencil* depthStencil = new D3DDepthStencil;
+  depthStencil->create(*this,texture);
+  return depthStencil;
 }
 
-DR_GRAPHICS_ERROR::E
-D3DDevice::createSamplerState(const DrSampleDesc& desc, SamplerState* state) {
-  state = new D3D11SamplerState;
-  return state->create(*this, desc);
+SamplerState* 
+D3DDevice::createSamplerState(const DrSampleDesc& desc) {
+  SamplerState* state = new D3D11SamplerState;
+  state->create(*this, desc);
+  return state;
 }
 
-DR_GRAPHICS_ERROR::E
-D3DDevice::createRasteizerState(const DrRasterizerDesc& desc,
-                                RasterizerState* state) {
-  state = new D3DRasterizerState;
-  return state->create(*this, desc);
+RasterizerState* 
+D3DDevice::createRasteizerState(const DrRasterizerDesc& desc) {
+  RasterizerState* state = new D3DRasterizerState;
+  state->create(*this, desc);
+  return state;
 }
 
-DR_GRAPHICS_ERROR::E
-D3DDevice::createDepthStencilState(const DrDepthStencilDesc& desc,
-                                   DepthStencilState* state) {
-  state = new D3DDepthStencilState;
-  return state->create(*this, desc);
+DepthStencilState* 
+D3DDevice::createDepthStencilState(const DrDepthStencilDesc& desc) {
+  DepthStencilState* state = new D3DDepthStencilState;
+  state->create(*this, desc);
+  return state;
 }
 
-DR_GRAPHICS_ERROR::E
+InputLayout*
 D3DDevice::createInputLayout(const std::vector<DrInputElementDesc>& inputDescArray,
-                             const ShaderBytecode& shaderBytecode,
-                             InputLayout* layout) {
-  layout = new D3DInputLayout;
-  return layout->create(*this, inputDescArray, shaderBytecode);
+                             const ShaderBytecode& shaderBytecode) {
+  InputLayout* layout = new D3DInputLayout;
+  layout->create(*this, inputDescArray, shaderBytecode);
+  return layout;
 }
 
-DR_GRAPHICS_ERROR::E
-D3DDevice::createSwapChain(const DrSwapChainDesc& desc, SwapChain* swapChain) {
-  swapChain = new D3DSwapChain;
-  return swapChain->create(*this, desc);
+SwapChain*
+D3DDevice::createSwapChain(const DrSwapChainDesc& desc) {
+  SwapChain* swapChain = new D3DSwapChain;
+  swapChain->create(*this, desc);
+  return swapChain;
 }
 
 }

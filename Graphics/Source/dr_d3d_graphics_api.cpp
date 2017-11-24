@@ -6,12 +6,15 @@
 #include "dr_d3d_render_target.h"
 #include "dr_d3d_texture.h"
 #include "dr_d3d_rasterizer_state.h"
+#include <dxgi.h>
+#include <d3d11.h>
 namespace driderSDK {
 void D3DGraphicsAPI::init(UInt32 w, UInt32 h, void* hwnd)
 {
   device = new D3DDevice;
   deviceContext = new D3DDeviceContext;
   backBufferTexture = new D3DTexture;
+
   DR_GRAPHICS_ERROR::E error;
   error = device->createDeviceAndDeviceContext(*deviceContext);
 
@@ -23,7 +26,7 @@ void D3DGraphicsAPI::init(UInt32 w, UInt32 h, void* hwnd)
   swapDesc.height = h;
   swapDesc.width = w;
 
-  error =  device->createSwapChain(swapDesc, swapChain);
+  swapChain =  device->createSwapChain(swapDesc);
 
   DrTextureDesc depthTextureDesc;
   depthTextureDesc.bindFlags = DR_BIND_FLAGS::DEPTH_STENCIL;
@@ -31,15 +34,25 @@ void D3DGraphicsAPI::init(UInt32 w, UInt32 h, void* hwnd)
   depthTextureDesc.height = h;
   depthTextureDesc.mipLevels = 1;
   depthTextureDesc.Format = DR_FORMAT::kDrFormat_D24_UNORM_S8_UINT;
-  error =  device->createEmptyTexture(depthTextureDesc, depthTexture);
-  error =  device->createDepthStencil(*depthTexture,depthStencilView);
+  depthTexture =  device->createEmptyTexture(depthTextureDesc);
+  depthStencilView =  device->createDepthStencil(*depthTexture);
 
 
   swapChain->getBackBuffer(*backBufferTexture);
-  error =  device->createRenderTarget(*backBufferTexture,backBufferView);
+  backBufferView =  device->createRenderTarget(*backBufferTexture);
   delete backBufferTexture;
-
   backBufferView->set(*deviceContext, *depthStencilView);
+
+  D3D11_VIEWPORT viewport = { 0 };
+  viewport.TopLeftX = 0;
+  viewport.TopLeftY = 0;
+  viewport.Width = static_cast<float>(w);
+  viewport.Height = static_cast<float>(h);
+  viewport.MinDepth = 0;
+  viewport.MaxDepth = 1;
+
+  reinterpret_cast<D3DDeviceContext*>(deviceContext)->D3D11DeviceContext->RSSetViewports(1, &viewport);
+
   DrRasterizerDesc rasterizerStateDesc;
   rasterizerStateDesc.fillMode = DR_FILL_MODE::kSolid;
   rasterizerStateDesc.cullMode = DR_CULL_MODE::kBack;
@@ -51,7 +64,7 @@ void D3DGraphicsAPI::init(UInt32 w, UInt32 h, void* hwnd)
   rasterizerStateDesc.scissorEnable = false;
   rasterizerStateDesc.multisampleEnable = false;
   rasterizerStateDesc.antialiasedLineEnable = false;
-  device->createRasteizerState(rasterizerStateDesc,rasterizeState);
+  rasterizeState = device->createRasteizerState(rasterizerStateDesc);
   rasterizeState->set(*deviceContext);
 }
 void D3DGraphicsAPI::destroy()
@@ -63,5 +76,19 @@ void D3DGraphicsAPI::destroy()
   depthStencilView->release();
   depthTexture->release();
   rasterizeState->release();
+}
+void D3DGraphicsAPI::clear()
+{
+  float rgba[4];
+  rgba[0] = 1.0f;
+  rgba[1] = 0.0f;
+  rgba[2] = 0.0f;
+  rgba[3] = 1.0f;
+  deviceContext->clearRenderTargetView(*backBufferView, rgba);
+  deviceContext->clearDepthStencilView(*depthStencilView, DR_DEPTH_STENCIL_CLEAR_TYPE::kClearDepth, 1.0f, 0);
+}
+void D3DGraphicsAPI::swapBuffers()
+{
+  swapChain->swapBuffers();
 }
 }
