@@ -1,7 +1,5 @@
 #pragma once
 #include "dr_depth_stencil.h"
-#include <wrl.h>
-#include <wrl/client.h>
 
 struct ID3D11DepthStencilView;
 
@@ -16,6 +14,12 @@ namespace driderSDK {
 class DR_GRAPHICS_EXPORT D3DDepthStencil : public DepthStencil
 {
  public:
+   void*
+     getAPIObject() override;
+
+   void**
+     getAPIObjectReference() override;
+
   /**
   * TEST::create
   *
@@ -30,8 +34,8 @@ class DR_GRAPHICS_EXPORT D3DDepthStencil : public DepthStencil
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  DR_GRAPHICS_ERROR::E
-  create(const Device& device, const DrTextureDesc& desc) override;
+  void
+  create(const Device& device, const Texture& texture) override;
 
   //void
   //set(const DeviceContext& deviceContext, const DepthStencil& depthStencil) const = 0;
@@ -44,7 +48,7 @@ class DR_GRAPHICS_EXPORT D3DDepthStencil : public DepthStencil
   void
   release() override;
 
-  Microsoft::WRL::ComPtr<ID3D11DepthStencilView> APIDepthView;
+  ID3D11DepthStencilView* APIDepthView;
 };
 
 }

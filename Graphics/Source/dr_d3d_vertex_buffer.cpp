@@ -5,14 +5,31 @@
 #include "dr_d3d_device_context.h"
 
 namespace driderSDK {
+void * 
+D3DVertexBuffer::getAPIObject()
+{
+  return VB;
+}
+
+void ** 
+D3DVertexBuffer::getAPIObjectReference()
+{
+  return reinterpret_cast<void**>(&VB);
+}
 
 D3DVertexBuffer::D3DVertexBuffer() {
 }
 
-DR_GRAPHICS_ERROR::E
+void
 D3DVertexBuffer::create(const Device& device,
                         const DrBufferDesc& desc,
-                        char* initialData) {
+                        const byte* initialData) {
+  const D3DDevice* apiDevice = reinterpret_cast<const D3DDevice*>(&device);
+  m_descriptor = desc;
+  if (initialData != nullptr) {
+    m_sysMemCpy.resize(desc.sizeInBytes);
+    m_sysMemCpy.assign(initialData, initialData + desc.sizeInBytes);
+  }
   D3D11_BUFFER_DESC bdesc = { 0 };
   switch (desc.usage) {
   case DR_BUFFER_USAGE::kDefault:
@@ -28,43 +45,54 @@ D3DVertexBuffer::create(const Device& device,
 
   bdesc.ByteWidth = desc.sizeInBytes;
   bdesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-  D3D11_SUBRESOURCE_DATA subData = { initialData, 0, 0 };
 
-  if (static_cast<const D3DDevice*>(&device)->
-        D3D11Device->
-          CreateBuffer(&bdesc,
-                       &subData,
-                       &VB) != S_OK) {
-    return DR_GRAPHICS_ERROR::CREATE_BUFFER_ERROR;
+  if (initialData != nullptr) {
+    D3D11_SUBRESOURCE_DATA subData = { &initialData[0], 0, 0 };
+    apiDevice->D3D11Device->
+      CreateBuffer(&bdesc, &subData, &VB);
   }
-  return DR_GRAPHICS_ERROR::ERROR_NONE;
+  else
+  {
+    apiDevice->D3D11Device->
+      CreateBuffer(&bdesc, nullptr, &VB);
+  }
+  
+  
 }
 
 void
-D3DVertexBuffer::set(const DeviceContext& deviceContext, 
-                     UInt32 stride, 
+D3DVertexBuffer::set(const DeviceContext& deviceContext,  
                      UInt32 offset) const {
-  static_cast<const D3DDeviceContext*>(&deviceContext)->
+  reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext->
       IASetVertexBuffers(0, 
                          1, 
-                         VB.GetAddressOf(), 
-                         &stride, 
+                         &VB, 
+                         &m_descriptor.stride, 
                          &offset);
 }
 
 void
-D3DVertexBuffer::updateFromMemory(const DeviceContext& deviceContext,
-                                  const char* dataBuffer,
-                                  size_t bufferSize) {
-  static_cast<const D3DDeviceContext*>(&deviceContext)->
+D3DVertexBuffer::updateFromSysMemCpy(const DeviceContext& deviceContext) {
+  reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext->
-      UpdateSubresource(VB.Get(), 0, 0, dataBuffer, 0, 0);
+    UpdateSubresource(VB, 0, 0, &m_sysMemCpy[0], 0, 0);
+}
+
+void
+D3DVertexBuffer::updateFromBuffer(const DeviceContext& deviceContext,
+                                  const byte* dataBuffer) {
+  m_sysMemCpy.assign(dataBuffer, dataBuffer + m_descriptor.sizeInBytes);
+  reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
+    D3D11DeviceContext->
+      UpdateSubresource(VB, 0, 0, &dataBuffer[0], 0, 0);
 }
 
 void
 D3DVertexBuffer::release() {
-  VB.Reset();
+  VB->Release();
+  m_sysMemCpy.clear();
+  delete this;
 }
 
 }

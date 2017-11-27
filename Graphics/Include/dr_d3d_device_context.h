@@ -1,15 +1,19 @@
 #pragma once
-#include <wrl.h>
-#include <wrl/client.h>
 #include "dr_device_context.h"
 
-class ID3D11DeviceContext;
+struct ID3D11DeviceContext;
 
 namespace driderSDK {
 
 class DR_GRAPHICS_EXPORT D3DDeviceContext : public DeviceContext
 {
  public:
+   void*
+     getAPIObject() override;
+
+   void**
+     getAPIObjectReference() override;
+
    /**
    * TEST::
    *
@@ -67,8 +71,7 @@ class DR_GRAPHICS_EXPORT D3DDeviceContext : public DeviceContext
   */
   void
   updateBufferFromMemory(Buffer& buffer,
-                         const char* dataBuffer,
-                         size_t bufferSize) const override;
+                         const byte* dataBuffer) const override;
 
   /**
   * TEST::
@@ -237,7 +240,7 @@ class DR_GRAPHICS_EXPORT D3DDeviceContext : public DeviceContext
        UInt32 startIndexLocation,
        UInt32 startVertexLocation) const override;
 
-  Microsoft::WRL::ComPtr<ID3D11DeviceContext> D3D11DeviceContext;
+  ID3D11DeviceContext* D3D11DeviceContext;
 };
 
 }

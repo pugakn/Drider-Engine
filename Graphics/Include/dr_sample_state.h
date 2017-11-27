@@ -10,6 +10,12 @@ class DeviceContext;
 class DR_GRAPHICS_EXPORT SamplerState
 {
  public:
+   virtual void*
+     getAPIObject() = 0;
+
+   virtual void**
+     getAPIObjectReference() = 0;
+
   /**
   * Class virutal destructor.
   */
@@ -28,7 +34,7 @@ class DR_GRAPHICS_EXPORT SamplerState
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  virtual DR_GRAPHICS_ERROR::E
+  virtual void
   create(const Device& device, const DrSampleDesc& desc) = 0;
 
   /**
@@ -49,6 +55,8 @@ class DR_GRAPHICS_EXPORT SamplerState
   */
   virtual void
   release() = 0;
+
+  DrSampleDesc m_descriptor;
 };
 
 }

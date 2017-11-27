@@ -4,10 +4,18 @@
 #include "dr_d3d_device_context.h"
 
 namespace driderSDK {
-
-DR_GRAPHICS_ERROR::E
+  void * D3DDepthStencilState::getAPIObject()
+  {
+    return APIState;
+  }
+  void ** D3DDepthStencilState::getAPIObjectReference()
+  {
+    return reinterpret_cast<void**>(&APIState);
+  }
+  void
 D3DDepthStencilState::create(const Device& device,
                              const DrDepthStencilDesc& desc) {
+  m_descriptor = desc;
   D3D11_DEPTH_STENCIL_DESC dsDesc;
   dsDesc.DepthEnable = desc.depthEnable;
   dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
@@ -28,25 +36,22 @@ D3DDepthStencilState::create(const Device& device,
   dsDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
   dsDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
   dsDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-  if (static_cast<const D3DDevice*>(&device)->
-        D3D11Device->
-          CreateDepthStencilState(&dsDesc, APIState.GetAddressOf()) != S_OK) {
-    return DR_GRAPHICS_ERROR::CREATE_DEPTH_STATE_ERROR;
-  }
-  return DR_GRAPHICS_ERROR::ERROR_NONE;
+  reinterpret_cast<const D3DDevice*>(&device)->D3D11Device->
+    CreateDepthStencilState(&dsDesc, &APIState);
 }
 
 void
 D3DDepthStencilState::set(const DeviceContext& deviceContext,
                           UInt32 refValue) const {
-  static_cast<const D3DDeviceContext*>(&deviceContext)->
+  reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext->
-      OMSetDepthStencilState(APIState.Get(), refValue);
+      OMSetDepthStencilState(APIState, refValue);
 }
 
 void
 D3DDepthStencilState::release() {
-  APIState.Reset();
+  APIState->Release();
+  delete this;
 }
 
 }

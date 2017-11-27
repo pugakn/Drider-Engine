@@ -1,7 +1,5 @@
 #pragma once
 #include "dr_input_layout.h"
-#include <wrl.h>
-#include <wrl/client.h>
 
 struct ID3D11InputLayout;
 
@@ -10,6 +8,12 @@ namespace driderSDK {
 class DR_GRAPHICS_EXPORT D3DInputLayout : public InputLayout
 {
  public:
+   void*
+     getAPIObject() override;
+
+   void**
+     getAPIObjectReference() override;
+
   /**
   * TEST::create
   *
@@ -27,10 +31,10 @@ class DR_GRAPHICS_EXPORT D3DInputLayout : public InputLayout
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  DR_GRAPHICS_ERROR::E
+  void
   create(const Device& device,
-         const DrInputElementDesc* inputDescArray,
-         UInt32 arraySize) override;
+         const std::vector<DrInputElementDesc>& inputDescArray,
+         const ShaderBytecode& shader) override;
 
   /**
   * TEST::set
@@ -52,7 +56,7 @@ class DR_GRAPHICS_EXPORT D3DInputLayout : public InputLayout
   void
   release() override;
 
-  Microsoft::WRL::ComPtr<ID3D11InputLayout> APILayout;
+  ID3D11InputLayout* APILayout;
 };
 
 }
