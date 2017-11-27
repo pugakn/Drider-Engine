@@ -36,9 +36,15 @@
     <ClInclude Include="Include\dr_string_utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\dr_compressor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_string_utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\dr_compressor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
