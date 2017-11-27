@@ -1,12 +1,12 @@
 #pragma once
-#include <memory>
-#include <map>
+#include <unordered_map>
 #include <dr_resource.h>
 #include "dr_engine_prerequisites.h"
 #include "dr_codec.h"
+#include <dr_memory.h>
+#include "dr_resource_factory.h"
 
 namespace driderSDK {
-
 /**
 * Load resources.
 *
@@ -15,17 +15,24 @@ namespace driderSDK {
 */
 class DR_ENGINE_EXPORT ResourceManager {
  public:
+
   /**
   * TEST::resourceMConstructor
   *	Default constructor.
   */
-  ResourceManager() {}
+  ResourceManager() { Init(); }
 
   /**
   * TEST::resourceMDestructor
   *	Default destructor.
   */
   ~ResourceManager() {}
+
+  /**
+  * TEST::
+  * Initialize the Resource Manager
+  */
+  void Init();
  
   /**
   * TEST::loadResource
@@ -55,7 +62,8 @@ class DR_ENGINE_EXPORT ResourceManager {
   *   void.
   */
   void
-  createResource(TString resourceKey);
+  createResource(TString resourceName,
+                 Codec* codec);
 
   /**
   * TEST::existInResourceContent
@@ -83,8 +91,12 @@ class DR_ENGINE_EXPORT ResourceManager {
   std::shared_ptr<Resource>
   getReference(TString key);
   
-  std::map<TString, std::shared_ptr<Resource>> resourceContent;
+ public:
+  std::unordered_map<TString, std::shared_ptr<Resource>> resourceContent;
 
+  std::vector<std::shared_ptr<Codec>> codecs;
+
+  std::shared_ptr<ResourceFactory> factory;
 
 };
 

@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Archivos de código fuente\Resources">
+      <UniqueIdentifier>{1e880727-789f-4aa0-afc5-c82a7a1b7b12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\Resources">
+      <UniqueIdentifier>{deb1b48b-3e41-40c4-9424-9951d0236e2d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\dr_codec.h">
@@ -36,8 +42,20 @@
     <ClInclude Include="Include\dr_image_info.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="Include\dr_resource_manager.h">
+    <ClInclude Include="Include\dr_compatible_types.h">
       <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_resource_manager.h">
+      <Filter>Archivos de encabezado\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_model_resource.h">
+      <Filter>Archivos de encabezado\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_resource_factory.h">
+      <Filter>Archivos de encabezado\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_texture_resource.h">
+      <Filter>Archivos de encabezado\Resources</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -57,7 +75,16 @@
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
     <ClCompile Include="Source\dr_resource_manager.cpp">
-      <Filter>Archivos de código fuente</Filter>
+      <Filter>Archivos de código fuente\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_model_resource.cpp">
+      <Filter>Archivos de código fuente\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_texture_resource.cpp">
+      <Filter>Archivos de código fuente\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_resource_factory.cpp">
+      <Filter>Archivos de código fuente\Resources</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

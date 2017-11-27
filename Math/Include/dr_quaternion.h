@@ -112,19 +112,16 @@ class DR_MATH_EXPORT Quaternion
 
   /**
 	* TEST::rotation
-  * Rotates the quaternion given theta and another quaternion.
+  * Rotates a 3D Vector by this quaternion.
   *
-  * @param theta
-  *	  Angle of rotation.
-  *
-  * @param A
-  *   The other quaternion to generate an axis.
+  * @param V
+  *	  Vector to rotate.
   *
   * @return
-  *   A rotated quaternion.
+  *   A rotated vector.
   */
-  Quaternion
-  rotation(float theta, const Quaternion& A);
+  Vector3D
+  rotation(const Vector3D& V);
 
   /**
 	* TEST::matrixFromQuaternion4x4

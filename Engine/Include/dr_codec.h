@@ -2,6 +2,7 @@
 #include <memory>
 #include <functional>
 #include "dr_engine_prerequisites.h"
+#include "dr_compatible_types.h"
 
 /**
 * Structure with Decode and Encode functions.
@@ -67,6 +68,12 @@ class DR_ENGINE_EXPORT Codec
   */
   virtual bool
   isCompatible (TString resourceName) = 0;
+
+  /**
+  *
+  */
+  virtual CompatibleType::E
+  getType () = 0;
 };
  
 

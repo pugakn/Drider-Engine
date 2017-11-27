@@ -8,8 +8,7 @@
 
 namespace driderSDK {
 
-
-class DR_CORE_EXPORT Node  
+class DR_CORE_EXPORT Node : public std::enable_shared_from_this<Node>
 {
  public:
   using SharedNode = std::shared_ptr<Node>;
@@ -32,11 +31,13 @@ class DR_CORE_EXPORT Node
 
   void removeChild(const TString& childName);
 
+  void removeChild(SharedNode child);
+
   TString getName();
 
-  WeakNode getParent();
+  SharedNode getParent();
 
-  WeakNode getChild(const TString& childName);
+  SharedNode getChild(const TString& childName);
 
   const Matrix4x4& getWorldTransform() const;
 

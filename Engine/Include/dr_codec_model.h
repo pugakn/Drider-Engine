@@ -27,7 +27,17 @@ class DR_ENGINE_EXPORT CodecModel : public Codec
   encode(TString pathName) override;
 
   virtual bool 
-  isCompatible(TString resourceName) override;
+  isCompatible(TString extension) override;
+
+  /**
+  * TEST::
+  * Gets the type of the resource
+  *
+  * @return
+  * Returns the type of the resource
+  */
+  CompatibleType::E
+  getType() override;
 
 };
 

@@ -29,7 +29,7 @@ class DR_ENGINE_EXPORT CodecTexture : public Codec
   *   The type of the resource ResourceType::E.
   */
   UniqueVoidPtr
-  decode(TString pathName);
+  decode(TString pathName) override;
 
   /**
   * TEST::encode
@@ -42,7 +42,7 @@ class DR_ENGINE_EXPORT CodecTexture : public Codec
   *   Shared_ptr to a Resource.
   */
   bool
-  encode(TString pathName);
+  encode(TString pathName) override;
 
   /**
   * TEST::isC
@@ -55,6 +55,16 @@ class DR_ENGINE_EXPORT CodecTexture : public Codec
   * Returns true if the resource is compatible, otherwise return false
   */
   bool
-  isCompatible(TString resourceName);
+  isCompatible(TString extension) override;
+  
+  /**
+  * TEST::
+  * Gets the type of the resource 
+  *
+  * @return
+  * Returns the type of the resource
+  */
+  CompatibleType::E
+  getType() override;
 };
 }

@@ -52,13 +52,18 @@ Quaternion::normalize() {
   *this *= 1 / measure();
 }
 
-Quaternion
-Quaternion::rotation(float theta, const Quaternion& A) {
-  Quaternion Axis = A - *this;
-  Axis.normalize();
-  Axis *= sin(theta * 0.5f);
-  Axis.w = cos(theta * 0.5f);
-  return Axis;
+Vector3D
+Quaternion::rotation(const Vector3D& V) {
+
+	Quaternion norm(*this);
+	if (norm.measure() != 1.f) {
+		norm.normalize();
+	}
+
+	Vector3D U(norm.x, norm.y, norm.z);
+	Vector3D Result = U * 2.f * U.dot(V) + V *(norm.w*norm.w - U.dot(U)) + 
+		U.cross(V) * 2.f * norm.w;
+	return Result;
 }
 
 void
@@ -179,10 +184,13 @@ Quaternion::operator*=(float s) {
 Quaternion
 Quaternion::operator/(const Quaternion& Q) const {
 	DR_ASSERT((Q.x + Q.y + Q.z + Q.w) != 0.0f);
-  float div = 1 / (Q.x*Q.x + Q.y*Q.y + Q.z*Q.z + Q.w*Q.w);
-  Quaternion R(-Q.x, -Q.y, -Q.z, Q.w);
-  R *= div;
-  return (*this)*R;
+	float div = 1 / (Q.x*Q.x + Q.y*Q.y + Q.z*Q.z + Q.w*Q.w);
+	Quaternion R(Q.w*x - Q.x*w - Q.y*z + Q.z*y, 
+							 Q.w*y + Q.x*z - Q.y*w - Q.z*x,
+							 Q.w*z - Q.x*y + Q.y*x - Q.z*w,
+							 Q.w*w + Q.x*x + Q.y*y + Q.z*z);
+	R *= div;
+	return R;
 }
 
 Quaternion&
