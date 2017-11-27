@@ -6,6 +6,17 @@
 #include "dr_d3d_device_context.h"
 #include "dr_d3d_shader_bytecode.h"
 namespace driderSDK {
+void * 
+D3DDomainShader::getAPIObject()
+{
+  return APIShader;
+}
+
+void ** 
+D3DDomainShader::getAPIObjectReference()
+{
+  return reinterpret_cast<void**>(&APIShader);
+}
 
 void
 D3DDomainShader::set(const DeviceContext & deviceContext) const {
@@ -14,34 +25,30 @@ D3DDomainShader::set(const DeviceContext & deviceContext) const {
 
 void
 D3DDomainShader::release() {
-  ID3DBlob* apiShaderBytcode = reinterpret_cast<D3DShaderBytecode*>(shaderBytecode)->shader_blob;
+  ID3DBlob* apiShaderBytcode = reinterpret_cast<D3DShaderBytecode*>(m_shaderBytecode)->shader_blob;
   APIShader->Release();
   apiShaderBytcode->Release();
-  delete shaderBytecode;
+  delete m_shaderBytecode;
   delete this;
 }
 
-DR_GRAPHICS_ERROR::E
+void
 D3DDomainShader::create(const Device & device) {
-  ID3DBlob* apiShaderBytcode = reinterpret_cast<D3DShaderBytecode*>(shaderBytecode)->shader_blob;
-  if (reinterpret_cast<const D3DDevice*>(&device)->
-        D3D11Device->
-          CreateDomainShader(apiShaderBytcode->GetBufferPointer(),
-                             apiShaderBytcode->GetBufferSize(),
-                             0,
-                             &APIShader) != S_OK) {
-    return DR_GRAPHICS_ERROR::CREATE_SHADER_ERROR;
-  }
-  return DR_GRAPHICS_ERROR::ERROR_NONE;
+  ID3DBlob* apiShaderBytcode = reinterpret_cast<D3DShaderBytecode*>(m_shaderBytecode)->shader_blob;
+  reinterpret_cast<const D3DDevice*>(&device)->
+    D3D11Device->
+    CreateDomainShader(apiShaderBytcode->GetBufferPointer(),
+      apiShaderBytcode->GetBufferSize(),
+      0,
+      &APIShader);
+  
 }
 
-DR_GRAPHICS_ERROR::E
+void
 D3DDomainShader::compile(const Device& device, const char* buffer, size_t bufferSize)
 {
-  shaderBytecode = new D3DShaderBytecode();
-  ID3DBlob* apiShaderBytcode = reinterpret_cast<D3DShaderBytecode*>(shaderBytecode)->shader_blob;
-  ID3DBlob* errorBlob = nullptr;
-  if (D3DCompile(buffer,
+  m_shaderBytecode = new D3DShaderBytecode();
+  D3DCompile(buffer,
     bufferSize,
     0,
     0,
@@ -50,14 +57,9 @@ D3DDomainShader::compile(const Device& device, const char* buffer, size_t buffer
     "ds_5_0",
     0,
     0,
-    &apiShaderBytcode,
-    &errorBlob) != S_OK) {
-      if (errorBlob) {
-        return DR_GRAPHICS_ERROR::COMPILE_SHADER_ERROR;
-      }
-    }
-  errorBlob->Release();
-  return DR_GRAPHICS_ERROR::ERROR_NONE;
+    &reinterpret_cast<D3DShaderBytecode*>(m_shaderBytecode)->shader_blob,
+    0);
+  
 }
 
 }

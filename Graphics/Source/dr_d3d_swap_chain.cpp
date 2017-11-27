@@ -6,11 +6,18 @@
 #include "dr_d3d_texture.h"
 
 namespace driderSDK {
-
-DR_GRAPHICS_ERROR::E D3DSwapChain::create(const Device& device,
+  void * D3DSwapChain::getAPIObject()
+  {
+    return APISwapchain;
+  }
+  void ** D3DSwapChain::getAPIObjectReference()
+  {
+    return reinterpret_cast<void**>(&APISwapchain);
+  }
+  void D3DSwapChain::create(const Device& device,
                                           const DrSwapChainDesc& desc) {
   const D3DDevice* dev = reinterpret_cast<const D3DDevice*>(&device);
-  descriptor = desc;
+  m_descriptor = desc;
   DXGI_SWAP_CHAIN_DESC apiDesc;
   ZeroMemory(&apiDesc, sizeof(DXGI_SWAP_CHAIN_DESC));
   apiDesc.BufferCount = desc.bufferCount;
@@ -39,25 +46,19 @@ DR_GRAPHICS_ERROR::E D3DSwapChain::create(const Device& device,
   dxgiAdapter->GetParent(__uuidof(IDXGIFactory), (void **)& dxgiFactory);
 
 
-  HRESULT res = dxgiFactory->CreateSwapChain(dev->D3D11Device,
-    &apiDesc,
-    &APISwapchain);
-  if (res != S_OK) {
-    return DR_GRAPHICS_ERROR::CREATE_SWAP_CHAIN_ERROR;
-  }
+  dxgiFactory->CreateSwapChain(dev->D3D11Device,&apiDesc,&APISwapchain);
   dxgiFactory->Release();
   dxgiAdapter->Release();
   dxgiDevice->Release();
 
-  return DR_GRAPHICS_ERROR::ERROR_NONE;
+  
 }
 
-DR_GRAPHICS_ERROR::E
+void
 D3DSwapChain::getBackBuffer(Texture& texture) {
-  if (APISwapchain->GetBuffer(0,
-                              __uuidof(ID3D11Texture2D),
-                               (void**)&reinterpret_cast<D3DTexture*>(&texture)->APITexture) != S_OK)
-  return DR_GRAPHICS_ERROR::ERROR_NONE;
+  APISwapchain->GetBuffer(0,
+    __uuidof(ID3D11Texture2D),
+    (void**)&reinterpret_cast<D3DTexture*>(&texture)->APITexture);
 }
 
 void

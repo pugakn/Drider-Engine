@@ -16,6 +16,12 @@ class DeviceContext;
 class DR_GRAPHICS_EXPORT D3DVertexBuffer : public VertexBuffer
 {
  public:
+   void*
+     getAPIObject() override;
+
+   void**
+     getAPIObjectReference() override;
+
   /**
   * TEST::constructor
   *
@@ -40,7 +46,7 @@ class DR_GRAPHICS_EXPORT D3DVertexBuffer : public VertexBuffer
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  DR_GRAPHICS_ERROR::E
+  void
   create(const Device& device,
          const DrBufferDesc& desc,
          const byte* initialData) override;
@@ -61,7 +67,6 @@ class DR_GRAPHICS_EXPORT D3DVertexBuffer : public VertexBuffer
   */
   void
   set(const DeviceContext& deviceContext,
-      UInt32 stride,
       UInt32 offset) const override;
 
 

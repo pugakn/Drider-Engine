@@ -17,6 +17,12 @@ class DeviceContext;
 class DR_GRAPHICS_EXPORT Buffer
 {
  public:
+   virtual void*
+     getAPIObject() = 0;
+
+   virtual void**
+     getAPIObjectReference() = 0;
+
   /**
   * Virtual destructor.
   */
@@ -38,7 +44,7 @@ class DR_GRAPHICS_EXPORT Buffer
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  virtual DR_GRAPHICS_ERROR::E
+  virtual void
   create(const Device& device, const DrBufferDesc& desc, const byte* initialData) = 0;
 
   /**
@@ -78,8 +84,8 @@ class DR_GRAPHICS_EXPORT Buffer
   virtual void
   release() = 0;
 
-  std::vector<byte> sysMemCpy;
-  DrBufferDesc descriptor;
+  std::vector<byte> m_sysMemCpy;
+  DrBufferDesc m_descriptor;
 };
 
 }

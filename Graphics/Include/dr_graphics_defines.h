@@ -210,28 +210,6 @@ enum E {
 
 }
 
-namespace DR_GRAPHICS_ERROR {
-
-enum E {
-  ERROR_NONE = 0,
-  COMPILE_SHADER_ERROR = -1,
-  CREATE_SHADER_ERROR = -2,
-  CREATE_BUFFER_ERROR = -3,
-  ERROR_NOT_IMPLEMENTED = -4,
-  CREATE_INPUT_LAYOUT_ERROR = -5,
-  CREATE_RASTERIZER_STATE_ERROR = -6,
-  CREATE_SAMPLER_STATE_ERROR = -7,
-  CREATE_FACTORY_ERROR = -8,
-  CREATE_SWAP_CHAIN_ERROR = -9,
-  CREATE_TEXTURE_ERROR = -10,
-  CREATE_RESOURCE_VIEW_ERROR = -11,
-  MAP_RESOURCE_ERROR = -12,
-  CREATE_DEPTH_STATE_ERROR = -13,
-  CREATE_DEVICE_ERROR = -14
-};
-
-}
-
 namespace DR_DEPTH_STENCIL_CLEAR_TYPE {
 
 enum E {
@@ -332,6 +310,26 @@ namespace DR_BUFFER_TYPE {
 
 }
 
+namespace DR_DIMENSION {
+
+  enum E {
+    k1D,
+    k2D,
+    k3D,
+    kCUBE_MAP
+  };
+
+}
+
+namespace DR_IB_TYPE {
+
+  enum E {
+    k16,
+    k32
+  };
+
+}
+
 namespace DR_BIND_FLAGS
 {
 enum E {
@@ -409,12 +407,14 @@ struct DR_GRAPHICS_EXPORT DrBufferDesc {
 struct DR_GRAPHICS_EXPORT DrTextureDesc {
   DR_FORMAT::E Format;
   DR_BUFFER_USAGE::E Usage;
+  DR_DIMENSION::E dimension;
   UInt32 width;
   UInt32 height;
   UInt32 pitch;
   UInt32 mipLevels;
   UInt32 CPUAccessFlags;
   UInt32 bindFlags;
+  bool genMipMaps;
   DrTextureDesc(){
     Format = DR_FORMAT::kDrFormat_B4G4R4A4_UNORM;
     Usage = DR_BUFFER_USAGE::kDefault;
@@ -424,6 +424,8 @@ struct DR_GRAPHICS_EXPORT DrTextureDesc {
     pitch = 0;
     mipLevels = 0;
     CPUAccessFlags = DR_CPU_ACCESS_FLAG::drRead | DR_CPU_ACCESS_FLAG::drWrite;
+    dimension = DR_DIMENSION::k2D;
+    genMipMaps = false;
   }
 };
 

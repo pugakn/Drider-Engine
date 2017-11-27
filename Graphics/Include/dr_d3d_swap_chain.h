@@ -10,6 +10,12 @@ namespace driderSDK {
 class DR_GRAPHICS_EXPORT D3DSwapChain : public SwapChain
 {
  public:
+   void*
+     getAPIObject() override;
+
+   void**
+     getAPIObjectReference() override;
+
   /**
   * TEST::create
   *
@@ -24,7 +30,7 @@ class DR_GRAPHICS_EXPORT D3DSwapChain : public SwapChain
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  DR_GRAPHICS_ERROR::E
+  void
   create(const Device& device, const DrSwapChainDesc& desc) override;
 
   /**
@@ -38,7 +44,7 @@ class DR_GRAPHICS_EXPORT D3DSwapChain : public SwapChain
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  DR_GRAPHICS_ERROR::E
+  void
   getBackBuffer(Texture& texture) override;
 
   /**

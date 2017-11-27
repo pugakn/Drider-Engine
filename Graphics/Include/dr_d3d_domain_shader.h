@@ -13,6 +13,12 @@ namespace driderSDK {
 class DR_GRAPHICS_EXPORT D3DDomainShader : public DomainShader
 {
  public:
+   void*
+     getAPIObject() override;
+
+   void**
+     getAPIObjectReference() override;
+
   /**
   * TEST::set
   * Set the shader to the stage
@@ -49,10 +55,10 @@ class DR_GRAPHICS_EXPORT D3DDomainShader : public DomainShader
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  DR_GRAPHICS_ERROR::E
+  void
   create(const Device& device) override;
 
-  DR_GRAPHICS_ERROR::E
+  void
   compile(const Device& device, const char* buffer, size_t bufferSize) override;
 
   ID3D11DomainShader* APIShader;

@@ -23,30 +23,34 @@
 #include "dr_d3d_compute_shader.h"
 #include "dr_d3d_hull_shader.h"
 #include "dr_d3d_texture.h"
-#include "dr_d3d_teselation_shader.h"
 #include "dr_d3d_geometry_shader.h"
 #include "dr_d3d_domain_shader.h"
 
 namespace driderSDK {
-
-DR_GRAPHICS_ERROR::E
+  void * D3DDevice::getAPIObject()
+  {
+    return D3D11Device;
+  }
+  void ** D3DDevice::getAPIObjectReference()
+  {
+    return reinterpret_cast<void**>(&D3D11Device);
+  }
+  void
 D3DDevice::createDeviceAndDeviceContext(DeviceContext& deviceContext) {
   D3D_FEATURE_LEVEL lvl = D3D_FEATURE_LEVEL_11_0;
   D3D_FEATURE_LEVEL lvlRet = D3D_FEATURE_LEVEL_11_0;
-  if (D3D11CreateDevice(0,
-                        D3D_DRIVER_TYPE_HARDWARE,
-                        0,
-                        0,
-                        &lvl,
-                        1,
-                        D3D11_SDK_VERSION,
-                        &D3D11Device,
-                        &lvlRet,
-                        &reinterpret_cast<D3DDeviceContext*>(&deviceContext)->
-                          D3D11DeviceContext) != S_OK) {
-    return DR_GRAPHICS_ERROR::CREATE_DEVICE_ERROR;
-  }
-  return DR_GRAPHICS_ERROR::ERROR_NONE;
+  D3D11CreateDevice(0,
+    D3D_DRIVER_TYPE_HARDWARE,
+    0,
+    0,
+    &lvl,
+    1,
+    D3D11_SDK_VERSION,
+    &D3D11Device,
+    &lvlRet,
+    &reinterpret_cast<D3DDeviceContext*>(&deviceContext)->
+    D3D11DeviceContext);
+  
 }
 
 void
@@ -96,10 +100,10 @@ D3DDevice::createShaderFromMemory(const char* shaderBuffer,
     shader = new D3DComputeShader;
     break;
   case driderSDK::DR_SHADER_TYPE_FLAG::kTexture:
-    shader = nullptr;
+    return nullptr;
     break;
   case driderSDK::DR_SHADER_TYPE_FLAG::kTeselation:
-    shader = nullptr;
+    return nullptr;
     break;
   case driderSDK::DR_SHADER_TYPE_FLAG::kDomain:
     shader = new D3DDomainShader;

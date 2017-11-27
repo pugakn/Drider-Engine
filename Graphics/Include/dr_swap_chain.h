@@ -11,6 +11,12 @@ class Texture;
 class DR_GRAPHICS_EXPORT SwapChain
 {
  public:
+   virtual void*
+     getAPIObject() = 0;
+
+   virtual void**
+     getAPIObjectReference() = 0;
+
   /**
   * Class virutal destructor.
   */
@@ -29,7 +35,7 @@ class DR_GRAPHICS_EXPORT SwapChain
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  virtual DR_GRAPHICS_ERROR::E
+  virtual void
   create(const Device& device, const DrSwapChainDesc& desc) = 0;
 
   /**
@@ -41,7 +47,7 @@ class DR_GRAPHICS_EXPORT SwapChain
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  virtual DR_GRAPHICS_ERROR::E
+  virtual void
   getBackBuffer(Texture& texture) = 0;
 
   /**
@@ -56,7 +62,7 @@ class DR_GRAPHICS_EXPORT SwapChain
   virtual void
   swapBuffers() = 0;
 
-  DrSwapChainDesc descriptor;
+  DrSwapChainDesc m_descriptor;
 };
 
 }

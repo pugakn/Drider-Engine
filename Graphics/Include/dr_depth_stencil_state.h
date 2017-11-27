@@ -10,6 +10,11 @@ class DeviceContext;
 class DR_GRAPHICS_EXPORT DepthStencilState
 {
  public:
+   virtual void*
+     getAPIObject() = 0;
+
+   virtual void**
+     getAPIObjectReference() = 0;
   /**
   * Create a detph stencil state that describes the behavior
   * of the deth stencil
@@ -23,7 +28,7 @@ class DR_GRAPHICS_EXPORT DepthStencilState
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  virtual DR_GRAPHICS_ERROR::E
+  virtual void
   create(const Device& device, const DrDepthStencilDesc& desc) = 0;
 
   /**
@@ -45,7 +50,7 @@ class DR_GRAPHICS_EXPORT DepthStencilState
   virtual void
   release() = 0;
 
-  DrDepthStencilDesc descriptor;
+  DrDepthStencilDesc m_descriptor;
 };
 
 }

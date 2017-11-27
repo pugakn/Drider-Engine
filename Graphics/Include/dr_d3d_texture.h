@@ -16,6 +16,12 @@ namespace driderSDK {
 class DR_GRAPHICS_EXPORT D3DTexture : public Texture
 {
  public:
+   void*
+     getAPIObject() override;
+
+   void**
+     getAPIObjectReference() override;
+
   /**
   * TEST::
   *
@@ -33,7 +39,7 @@ class DR_GRAPHICS_EXPORT D3DTexture : public Texture
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  DR_GRAPHICS_ERROR::E
+  void
   createFromMemory(const Device& device,
                    const DrTextureDesc& desc,
                    const char* buffer) override;
@@ -52,7 +58,7 @@ class DR_GRAPHICS_EXPORT D3DTexture : public Texture
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  DR_GRAPHICS_ERROR::E
+  void
   createEmpty(const Device& device, const DrTextureDesc& desc) override;
 
   /**
@@ -69,7 +75,7 @@ class DR_GRAPHICS_EXPORT D3DTexture : public Texture
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  DR_GRAPHICS_ERROR::E
+  void
   map(const DeviceContext& deviceContext, char* buffer) override;
 
   /**

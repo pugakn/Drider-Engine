@@ -17,6 +17,12 @@ class ShaderBytecode;
 class DR_GRAPHICS_EXPORT Shader
 {
  public:
+   virtual void*
+     getAPIObject() = 0;
+
+   virtual void**
+     getAPIObjectReference() = 0;
+
   /**
   * Virtual destructor.
   */
@@ -54,13 +60,13 @@ class DR_GRAPHICS_EXPORT Shader
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  virtual DR_GRAPHICS_ERROR::E
+  virtual void
   create(const Device& device) = 0;
 
-  virtual DR_GRAPHICS_ERROR::E
+  virtual void
   compile(const Device& device, const char* buffer, size_t bufferSize) = 0;
 
-  ShaderBytecode* shaderBytecode;
+  ShaderBytecode* m_shaderBytecode;
 };
 
 }

@@ -7,13 +7,20 @@
 #include "dr_d3d_vertex_shader.h"
 #include "dr_d3d_shader_bytecode.h"
 namespace driderSDK {
-
-DR_GRAPHICS_ERROR::E
+  void * D3DInputLayout::getAPIObject()
+  {
+    return APILayout;
+  }
+  void ** D3DInputLayout::getAPIObjectReference()
+  {
+    return reinterpret_cast<void**>(&APILayout);
+  }
+  void
 D3DInputLayout::create(const Device& device,
                        const std::vector<DrInputElementDesc>& inputDescArray,
                        const ShaderBytecode& shaderBytecode ) {
   const D3DShaderBytecode* apiShaderBytecode = reinterpret_cast<const D3DShaderBytecode*>(&shaderBytecode);
-  descriptorVec = inputDescArray;
+  m_descriptorVec = inputDescArray;
   std::vector<D3D11_INPUT_ELEMENT_DESC> desc;
   desc.resize(inputDescArray.size());
 
@@ -22,17 +29,15 @@ D3DInputLayout::create(const Device& device,
     desc[i].AlignedByteOffset = inputDescArray[i].offset;
     desc[i].SemanticIndex = inputDescArray[i].semanticIndex;
     desc[i].SemanticName = inputDescArray[i].semanticName;
-    desc[i].SemanticIndex = inputDescArray[i].inputSlot;
+    desc[i].InputSlot = inputDescArray[i].inputSlot;
   }
 
-  if (reinterpret_cast<const D3DDevice*>(&device)->D3D11Device->
-        CreateInputLayout(&desc[0], inputDescArray.size(),
-          apiShaderBytecode->shader_blob,
-          apiShaderBytecode->shader_blob->GetBufferSize(), &APILayout) != S_OK) {
-    return DR_GRAPHICS_ERROR::CREATE_INPUT_LAYOUT_ERROR;
-  }
+  HRESULT HR = reinterpret_cast<const D3DDevice*>(&device)->D3D11Device->
+    CreateInputLayout(&desc[0], inputDescArray.size(),
+      apiShaderBytecode->shader_blob->GetBufferPointer(),
+      apiShaderBytecode->shader_blob->GetBufferSize(), &APILayout);
 
-  return DR_GRAPHICS_ERROR::ERROR_NONE;
+  
 }
 
 void

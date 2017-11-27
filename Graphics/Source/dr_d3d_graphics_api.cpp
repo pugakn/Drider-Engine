@@ -14,9 +14,7 @@ void D3DGraphicsAPI::init(UInt32 w, UInt32 h, void* hwnd)
   device = new D3DDevice;
   deviceContext = new D3DDeviceContext;
   backBufferTexture = new D3DTexture;
-
-  DR_GRAPHICS_ERROR::E error;
-  error = device->createDeviceAndDeviceContext(*deviceContext);
+  device->createDeviceAndDeviceContext(*deviceContext);
 
   //	Descriptor of the Swap Chain
   DrSwapChainDesc swapDesc;
@@ -80,9 +78,9 @@ void D3DGraphicsAPI::destroy()
 void D3DGraphicsAPI::clear()
 {
   float rgba[4];
-  rgba[0] = 1.0f;
-  rgba[1] = 0.0f;
-  rgba[2] = 0.0f;
+  rgba[0] = 0.25f;
+  rgba[1] = 0.35f;
+  rgba[2] = 0.45f;
   rgba[3] = 1.0f;
   deviceContext->clearRenderTargetView(*backBufferView, rgba);
   deviceContext->clearDepthStencilView(*depthStencilView, DR_DEPTH_STENCIL_CLEAR_TYPE::kClearDepth, 1.0f, 0);

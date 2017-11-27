@@ -16,11 +16,18 @@ class ConstantBuffer;
 class DR_GRAPHICS_EXPORT DeviceContext
 {
  public:
+   virtual void*
+     getAPIObject() = 0;
+
+   virtual void**
+     getAPIObjectReference() = 0;
+
   /**
   * Class virtual destructor.
   */
   virtual
   ~DeviceContext() {}
+
 
   /**
   * Release the allocated memory

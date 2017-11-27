@@ -21,13 +21,19 @@ class ShaderBytecode;
 class DR_GRAPHICS_EXPORT Device
 {
  public:
+   virtual void*
+     getAPIObject() = 0;
+
+   virtual void**
+     getAPIObjectReference() = 0;
+
   /**
   * Class virtual destructor.
   */
   virtual
   ~Device() {}
 
-  virtual DR_GRAPHICS_ERROR::E
+  virtual void
   createDeviceAndDeviceContext(DeviceContext& deviceContext) = 0;
 
   /**

@@ -58,6 +58,16 @@ D3DDeviceContext::clearRenderTargetView(RenderTarget& renderTarget,
 
 }
 
+void * D3DDeviceContext::getAPIObject()
+{
+  return D3D11DeviceContext;
+}
+
+void ** D3DDeviceContext::getAPIObjectReference()
+{
+  return reinterpret_cast<void**>(&D3D11DeviceContext);
+}
+
 void
 D3DDeviceContext::release() {
   D3D11DeviceContext->Release();
@@ -108,7 +118,7 @@ void
 D3DDeviceContext::setVertexBuffer(const VertexBuffer& buffer,
                                   UInt32 stride,
                                   UInt32 offset) const {
-  buffer.set(*this, stride, offset);
+  buffer.set(*this, offset);
 }
 
 void

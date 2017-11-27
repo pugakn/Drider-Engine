@@ -139,7 +139,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Include\dr_compiled_shader_container.h" />
-    <ClInclude Include="Include\dr_d3d_command_buffer.h" />
     <ClInclude Include="Include\dr_d3d_compute_shader.h" />
     <ClInclude Include="Include\dr_d3d_constant_buffer.h" />
     <ClInclude Include="Include\dr_d3d_depth_stencil.h" />
@@ -161,9 +160,7 @@
     <ClInclude Include="Include\dr_d3d_rasterizer_state.h" />
     <ClInclude Include="Include\dr_d3d_sample_state.h" />
     <ClInclude Include="Include\dr_d3d_swap_chain.h" />
-    <ClInclude Include="Include\dr_d3d_teselation_shader.h" />
     <ClInclude Include="Include\dr_d3d_texture.h" />
-    <ClInclude Include="Include\dr_d3d_texture_shader.h" />
     <ClInclude Include="Include\dr_d3d_vertex_buffer.h" />
     <ClInclude Include="Include\dr_d3d_vertex_shader.h" />
     <ClInclude Include="Include\dr_depth_stencil.h" />
@@ -189,7 +186,6 @@
     <ClInclude Include="Include\dr_texture_shader.h" />
     <ClInclude Include="Include\dr_vertex_buffer.h" />
     <ClInclude Include="Include\dr_vertex_shader.h" />
-    <ClInclude Include="Source\dr_d3d_command_buffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_d3d_compute_shader.cpp" />
@@ -209,9 +205,7 @@
     <ClCompile Include="Source\dr_d3d_render_target.cpp" />
     <ClCompile Include="Source\dr_d3d_sample_state.cpp" />
     <ClCompile Include="Source\dr_d3d_swap_chain.cpp" />
-    <ClCompile Include="Source\dr_d3d_teselation_shader.cpp" />
     <ClCompile Include="Source\dr_d3d_texture.cpp" />
-    <ClCompile Include="Source\dr_d3d_texture_shader.cpp" />
     <ClCompile Include="Source\dr_d3d_vertex_buffer.cpp" />
     <ClCompile Include="Source\dr_d3d_vertex_shader.cpp" />
   </ItemGroup>

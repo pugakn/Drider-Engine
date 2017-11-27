@@ -12,6 +12,12 @@ namespace driderSDK {
 class DR_GRAPHICS_EXPORT D3DComputeShader : public ComputeShader
 {
  public:
+   void*
+     getAPIObject() override;
+
+   void**
+     getAPIObjectReference() override;
+
   /**
   * TEST::set
   *
@@ -49,10 +55,10 @@ class DR_GRAPHICS_EXPORT D3DComputeShader : public ComputeShader
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  DR_GRAPHICS_ERROR::E
+  void
   create(const Device& device);
 
-  DR_GRAPHICS_ERROR::E
+  void
   compile(const Device& device, const char* buffer, size_t bufferSize);
 
   ID3D11ComputeShader* APIShader;

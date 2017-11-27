@@ -11,6 +11,12 @@ class ShaderBytecode;
 class DR_GRAPHICS_EXPORT InputLayout
 {
  public:
+   virtual void*
+     getAPIObject() = 0;
+
+   virtual void**
+     getAPIObjectReference() = 0;
+
   /**
   * Class virutal destructor.
   */
@@ -32,7 +38,7 @@ class DR_GRAPHICS_EXPORT InputLayout
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  virtual DR_GRAPHICS_ERROR::E
+  virtual void
   create(const Device & device,
          const std::vector<DrInputElementDesc>& inputDescArray,
          const ShaderBytecode& shaderBytecode) = 0;
@@ -53,7 +59,7 @@ class DR_GRAPHICS_EXPORT InputLayout
   virtual void
   release() = 0;
 
-  std::vector<DrInputElementDesc> descriptorVec;
+  std::vector<DrInputElementDesc> m_descriptorVec;
 };
 
 }

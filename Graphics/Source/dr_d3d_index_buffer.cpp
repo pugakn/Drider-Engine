@@ -5,18 +5,26 @@
 #include "dr_d3d_device_context.h"
 
 namespace driderSDK {
-
-D3DIndexBuffer::D3DIndexBuffer() {
+  void * D3DIndexBuffer::getAPIObject()
+  {
+    return IB;
+  }
+  void ** D3DIndexBuffer::getAPIObjectReference()
+  {
+    return reinterpret_cast<void**>(&IB);
+  }
+  D3DIndexBuffer::D3DIndexBuffer() {
 }
 
-DR_GRAPHICS_ERROR::E
+void
 D3DIndexBuffer::create(const Device& device,
                        const DrBufferDesc& desc,
                        const byte* initialData) {
-  descriptor = desc;
+  const D3DDevice* apiDevice = reinterpret_cast<const D3DDevice*>(&device);
+  m_descriptor = desc;
   if (initialData != nullptr) {
-    sysMemCpy.resize(desc.sizeInBytes);
-    sysMemCpy.assign(initialData, initialData + desc.sizeInBytes);
+    m_sysMemCpy.resize(desc.sizeInBytes);
+    m_sysMemCpy.assign(initialData, initialData + desc.sizeInBytes);
   }
   D3D11_BUFFER_DESC bdesc = { 0 };
 
@@ -40,16 +48,16 @@ D3DIndexBuffer::create(const Device& device,
 
   if (initialData != nullptr) {
     D3D11_SUBRESOURCE_DATA subData = { &initialData[0], 0, 0 };
-    reinterpret_cast<const D3DDevice*>(&device)->D3D11Device->
+    apiDevice->D3D11Device->
       CreateBuffer(&bdesc, &subData, &IB);
   }
   else
   {
-    reinterpret_cast<const D3DDevice*>(&device)->D3D11Device->
+    apiDevice->D3D11Device->
       CreateBuffer(&bdesc, nullptr, &IB);
   }
 
-  return DR_GRAPHICS_ERROR::ERROR_NONE;
+  
 }
 
 void
@@ -63,13 +71,13 @@ void
 D3DIndexBuffer::updateFromSysMemCpy(const DeviceContext& deviceContext) {
   reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext->
-    UpdateSubresource(IB, 0, 0, &sysMemCpy[0], 0, 0);
+    UpdateSubresource(IB, 0, 0, &m_sysMemCpy[0], 0, 0);
 }
 
 void
 D3DIndexBuffer::updateFromBuffer(const DeviceContext& deviceContext,
                                  const byte* dataBuffer) {
-  sysMemCpy.assign(dataBuffer, dataBuffer + descriptor.sizeInBytes);
+  m_sysMemCpy.assign(dataBuffer, dataBuffer + m_descriptor.sizeInBytes);
   reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext->
       UpdateSubresource(IB, 0, 0, &dataBuffer[0], 0, 0);
@@ -78,7 +86,7 @@ D3DIndexBuffer::updateFromBuffer(const DeviceContext& deviceContext,
 void
 D3DIndexBuffer::release() {
   IB->Release();
-  sysMemCpy.clear();
+  m_sysMemCpy.clear();
   delete this;
 }
 

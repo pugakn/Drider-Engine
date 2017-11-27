@@ -5,12 +5,23 @@
 #include "dr_d3d_device_context.h"
 
 namespace driderSDK {
-
-DR_GRAPHICS_ERROR::E D3DTexture::createFromMemory(const Device& device,
+  void * D3DTexture::getAPIObject()
+  {
+    return APIView;
+  }
+  void ** D3DTexture::getAPIObjectReference()
+  {
+    return reinterpret_cast<void**>(&APIView);
+  }
+  void D3DTexture::createFromMemory(const Device& device,
                                                   const DrTextureDesc& desc,
                                                   const char* buffer) {
   const D3DDevice* apiDevice = reinterpret_cast<const D3DDevice*>(&device);
-  descriptor = desc;
+  m_descriptor = desc;
+  UInt32 flags = 0;
+  if (desc.genMipMaps) {
+    flags |= D3D11_RESOURCE_MISC_GENERATE_MIPS;
+  }
   D3D11_TEXTURE2D_DESC apiDesc = { 0 };
   apiDesc.Width = desc.width;
   apiDesc.Height = desc.height;
@@ -20,7 +31,7 @@ DR_GRAPHICS_ERROR::E D3DTexture::createFromMemory(const Device& device,
   apiDesc.SampleDesc.Count = 1;
   apiDesc.SampleDesc.Quality = 0;
   apiDesc.BindFlags = desc.bindFlags;
-  apiDesc.MiscFlags = /*D3D11_RESOURCE_MISC_GENERATE_MIPS*/0; //Hardcoded
+  apiDesc.MiscFlags = flags;
   apiDesc.CPUAccessFlags = 0;
   apiDesc.Usage = D3D11_USAGE_DEFAULT;
 
@@ -30,51 +41,58 @@ DR_GRAPHICS_ERROR::E D3DTexture::createFromMemory(const Device& device,
 
   D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
   ZeroMemory(&srvDesc, sizeof(srvDesc));
-  
+  D3D11_SRV_DIMENSION dim;
   srvDesc.Format = apiDesc.Format;
-  srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D; //Hardcoded
-  srvDesc.Texture2D.MipLevels = desc.mipLevels;                      //Hardcoded
 
-  HRESULT res = apiDevice->
+  switch (desc.dimension)
+  {
+  case DR_DIMENSION::k1D:
+    dim = D3D11_SRV_DIMENSION_TEXTURE1D;
+    break;
+  case DR_DIMENSION::k2D:
+    dim = D3D11_SRV_DIMENSION_TEXTURE2D;
+    break;
+  case DR_DIMENSION::k3D:
+    dim = D3D11_SRV_DIMENSION_TEXTURE3D;
+    break;
+  case DR_DIMENSION::kCUBE_MAP:
+    dim = D3D10_SRV_DIMENSION_TEXTURECUBE;
+    break;
+  }
+  srvDesc.ViewDimension = dim;
+  srvDesc.Texture2D.MipLevels = desc.mipLevels; 
+
+  apiDevice->
     D3D11Device->
     CreateTexture2D(&apiDesc,
       buffer != 0 ? &initData : 0,
       &APITexture);
-  if (res != S_OK) {
-    return DR_GRAPHICS_ERROR::CREATE_TEXTURE_ERROR;
-  }
-  if (apiDevice->
-        D3D11Device->
-          CreateShaderResourceView(APITexture,
-                                   &srvDesc,
-                                   &APIView) != S_OK) {
-    return DR_GRAPHICS_ERROR::CREATE_RESOURCE_VIEW_ERROR;
-  }
-  return DR_GRAPHICS_ERROR::ERROR_NONE;
+  apiDevice->
+    D3D11Device->
+    CreateShaderResourceView(APITexture,
+      &srvDesc,
+      &APIView);
+  
 }
 
-DR_GRAPHICS_ERROR::E
+void
 D3DTexture::createEmpty(const Device& device, const DrTextureDesc& desc){
   return createFromMemory(device, desc, 0);
 }
 
-DR_GRAPHICS_ERROR::E
+void
 D3DTexture::map(const DeviceContext& deviceContext, char* buffer) {
   D3D11_MAPPED_SUBRESOURCE mappedResource;
-
-  //Hardcoded
-  if (reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
-        D3D11DeviceContext->
-          Map(APITexture,
-              0,
-              D3D11_MAP_WRITE_DISCARD,
-              0,
-              &mappedResource) != S_OK) {
-    return DR_GRAPHICS_ERROR::MAP_RESOURCE_ERROR;
-  }
+  reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
+    D3D11DeviceContext->
+    Map(APITexture,
+      0,
+      D3D11_MAP_WRITE_DISCARD,
+      0,
+      &mappedResource);
 
   buffer = static_cast<char*>(mappedResource.pData);
-  return DR_GRAPHICS_ERROR::ERROR_NONE;
+  
 }
 
 void
@@ -104,7 +122,7 @@ D3DTexture::udpateFromMemory(const DeviceContext& deviceContext,
                              size_t bufferSize) {
   D3D11_SUBRESOURCE_DATA initData{};
   initData.pSysMem = buffer;
-  initData.SysMemPitch = descriptor.pitch;
+  initData.SysMemPitch = m_descriptor.pitch;
   reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext->
       UpdateSubresource(APITexture, 0, 0, buffer, initData.SysMemPitch, 0);

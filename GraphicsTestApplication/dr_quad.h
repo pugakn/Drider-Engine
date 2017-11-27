@@ -9,6 +9,7 @@
 //#include <dr_matrix4x4.h>
 #include <dr_d3d_vertex_shader.h>
 #include <dr_d3d_fragment_shader.h>
+#include <dr_d3d_input_layout.h>
 
 struct vertex
 {
@@ -32,6 +33,8 @@ public:
 
   driderSDK::VertexShader* vs;
   driderSDK::FragmentShader* fs;
+
+  driderSDK::InputLayout* IL;
 
   
 };

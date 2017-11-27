@@ -4,11 +4,18 @@
 #include "dr_d3d_device_context.h"
 
 namespace driderSDK {
-
-DR_GRAPHICS_ERROR::E
+  void * D3D11SamplerState::getAPIObject()
+  {
+    return APIState;
+  }
+  void ** D3D11SamplerState::getAPIObjectReference()
+  {
+    return reinterpret_cast<void**>(&APIState);
+  }
+  void
 D3D11SamplerState::create(const Device & device, const DrSampleDesc & desc)
 {
-  descriptor = desc;
+  m_descriptor = desc;
   D3D11_SAMPLER_DESC apiDesc;
   apiDesc.AddressU = static_cast<D3D11_TEXTURE_ADDRESS_MODE>(desc.addressU);
   apiDesc.AddressV = static_cast<D3D11_TEXTURE_ADDRESS_MODE>(desc.addressV);
@@ -24,12 +31,9 @@ D3D11SamplerState::create(const Device & device, const DrSampleDesc & desc)
   apiDesc.MinLOD = desc.minLOD;
   apiDesc.MipLODBias = desc.mipLODBias;
 
-  if (reinterpret_cast<const D3DDevice*>(&device)->
-        D3D11Device->
-          CreateSamplerState(&apiDesc,&APIState) != S_OK) {
-      DR_GRAPHICS_ERROR::CREATE_SAMPLER_STATE_ERROR;
-  }
-  return DR_GRAPHICS_ERROR::ERROR_NONE;
+  reinterpret_cast<const D3DDevice*>(&device)->
+    D3D11Device->
+    CreateSamplerState(&apiDesc, &APIState);
 }
 
 void

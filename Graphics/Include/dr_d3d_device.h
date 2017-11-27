@@ -2,18 +2,24 @@
 #include "dr_graphics_prerequisites.h"
 #include "dr_device.h"
 
-class ID3D11Device;
+struct ID3D11Device;
 
 namespace driderSDK {
 class ShaderBytecode;
 class DR_GRAPHICS_EXPORT D3DDevice : public Device
 {
  public:
+   void*
+     getAPIObject() override;
+
+   void**
+     getAPIObjectReference() override;
+
   /**
   * TEST::
   *
   */
-  DR_GRAPHICS_ERROR::E
+  void
   createDeviceAndDeviceContext(DeviceContext& deviceContext) override;
 
   /**
