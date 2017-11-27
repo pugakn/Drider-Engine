@@ -1,7 +1,5 @@
 #pragma once
 #include "dr_sample_state.h"
-#include <wrl.h>
-#include <wrl/client.h>
 
 struct ID3D11SamplerState;
 
@@ -10,6 +8,12 @@ namespace driderSDK {
 class DR_GRAPHICS_EXPORT D3D11SamplerState : public SamplerState
 {
  public:
+   void*
+     getAPIObject() override;
+
+   void**
+     getAPIObjectReference() override;
+
   /**
   * TEST::create
   *
@@ -24,7 +28,7 @@ class DR_GRAPHICS_EXPORT D3D11SamplerState : public SamplerState
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  DR_GRAPHICS_ERROR::E
+  void
   create(const Device& device, const DrSampleDesc& desc) override;
 
   /**
@@ -50,7 +54,7 @@ class DR_GRAPHICS_EXPORT D3D11SamplerState : public SamplerState
   void
   release() override;
 
-  Microsoft::WRL::ComPtr<ID3D11SamplerState> APIState;
+  ID3D11SamplerState* APIState;
 };
 
 }

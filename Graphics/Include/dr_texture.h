@@ -17,6 +17,12 @@ class DeviceContext;
 class DR_GRAPHICS_EXPORT Texture
 {
  public:
+   virtual void*
+     getAPIObject() = 0;
+
+   virtual void**
+     getAPIObjectReference() = 0;
+
   /**
   * Class virtual destructor.
   */
@@ -38,7 +44,7 @@ class DR_GRAPHICS_EXPORT Texture
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  virtual DR_GRAPHICS_ERROR::E
+  virtual void
   createFromMemory(const Device& device, 
                    const DrTextureDesc& desc, 
                    const char* buffer) = 0;
@@ -55,7 +61,7 @@ class DR_GRAPHICS_EXPORT Texture
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  virtual DR_GRAPHICS_ERROR::E
+  virtual void
   createEmpty(const Device& device, const DrTextureDesc& desc) = 0;
 
   /**
@@ -70,7 +76,7 @@ class DR_GRAPHICS_EXPORT Texture
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  virtual DR_GRAPHICS_ERROR::E
+  virtual void
   map(const DeviceContext& deviceContext,char* buffer) = 0;
 
   /**
@@ -127,8 +133,8 @@ class DR_GRAPHICS_EXPORT Texture
   virtual void
   generateMipMaps(const DeviceContext& deviceContext) const = 0;
 
+   DrTextureDesc m_descriptor;
  protected:
-   DrTextureDesc descriptor;
 };
 
 }

@@ -150,6 +150,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="dr_unitTest_d3d_constant_buffer.cpp" />
     <ClCompile Include="Source\dr_unitTest_command_buffer.cpp" />
     <ClCompile Include="Source\dr_unitTest_compute_shader.cpp" />
     <ClCompile Include="Source\dr_unitTest_constant_buffer.cpp" />
