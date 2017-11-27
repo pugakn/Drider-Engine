@@ -327,11 +327,14 @@ struct DR_MATH_EXPORT Intersect
   * @param aabbCenter
   *   Center of the AABB.
   *
-	* @param aabbMax
-	*   Vector3D containing maximum point of the AABB
+	* @param aabbWidth
+	*   Width of the AABB
 	*
-	* @param aabbMin
-	*   Vector3D containing minimum point of the AABB
+	* @param aabbHeight
+	*   Height of the AABB
+	*
+	* @param aabbDepth
+	*   Depth of the AABB
   *
   * @param sphereOrigin
   *   Origin of the sphere.
@@ -344,8 +347,9 @@ struct DR_MATH_EXPORT Intersect
   */
   static bool
   aabbSphere(const Vector3D& aabbCenter,
-						 const Vector3D& aabbMax,
-						 const Vector3D& aabbMin,
+						 float aabbWidth,
+						 float aabbHeight,
+						 float aabbLength,
              const Vector3D& sphereOrigin,
              float sphereRadius);
 
