@@ -1,5 +1,4 @@
 #pragma once
-#include <dr_graphics_prerequisites.h>
 #include <vector>
 #include <dr_d3d_vertex_buffer.h>
 #include <dr_d3d_index_buffer.h>
@@ -17,7 +16,7 @@ struct vertex
   float nx, ny,nz,nw;
 };
 struct CBuffer {
- // driderSDK::Matrix4x4 World;
+  //driderSDK::Matrix4x4 World;
 };
 class Quad {
 public:
