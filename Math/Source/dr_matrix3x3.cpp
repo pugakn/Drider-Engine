@@ -149,10 +149,10 @@ Vector3D
 Matrix3x3::eulerAngles()
 {
   Vector3D temp;
-  temp.x = Math::aTan2(data[1][2], data[2][2]);
-  float c = Math::sqrt(data[0][0] * data[0][0] + data[0][1] * data[0][1]);
-  temp.y = Math::aTan2(-data[0][2], c);
-  temp.z = Math::aTan2(data[0][1], data[0][0]);
+  temp.x = Math::aTan2(data[2][1], data[2][2]);
+  float c = Math::sqrt(data[2][1] * data[2][1] + data[2][2] * data[2][2]);
+  temp.y = Math::aTan2(-data[2][0], c);
+  temp.z = Math::aTan2(data[1][0], data[0][0]);
   return temp;
 }
 

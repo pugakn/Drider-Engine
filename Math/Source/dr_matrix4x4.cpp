@@ -205,6 +205,12 @@ Matrix4x4::equals(const Matrix4x4& otherMatrix, float errorRange) const
          data[3].equals(otherMatrix.data[3], errorRange);
 }
 
+Vector3D Matrix4x4::eulerAngles()
+{
+  driderSDK::Matrix3x3 tempMatrix(*this);
+  return tempMatrix.eulerAngles();
+}
+
 Matrix4x4&
 Matrix4x4::Translation(const Vector3D & Pos)
 {

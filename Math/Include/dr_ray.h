@@ -131,8 +131,8 @@ class DR_MATH_EXPORT Ray
 	*	  True if the ray intersects with the frustrum
 	*
 	*/
-	/*bool
-	intersects(const Frustrum& frustrum) const;*/
+	bool
+	intersects(const Frustrum& frustrum) const;
 
 	Vector3D origin;
 	Vector3D direction;

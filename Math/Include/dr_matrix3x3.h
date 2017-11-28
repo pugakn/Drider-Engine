@@ -208,9 +208,6 @@ class DR_MATH_EXPORT Matrix3x3
   *
   * Euler angles form quaternion.
   *
-  * @param Quaternion
-  *   Matrix to extract euler angles.
-  *
   * @return
   *   vextor3d to values of angles.
   */

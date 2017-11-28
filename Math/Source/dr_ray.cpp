@@ -31,4 +31,9 @@ Ray::intersects(const Sphere& sphere, Vector3D* pointIntersect) const
                               pointIntersect);
 }
 
+bool Ray::intersects(const Capsule & capsule) const
+{
+  return false;
+}
+
 }

@@ -210,6 +210,17 @@ class DR_MATH_EXPORT Matrix4x4
   equals(const Matrix4x4& otherMatrix, float errorRange = Math::SMALL_NUMBER) const;
 
   /**
+  * TEST::toEulerAngle
+  *
+  * Euler angles form quaternion.
+  *
+  * @return
+  *   vextor3d to values of angles.
+  */
+  Vector3D
+  eulerAngles();
+
+  /**
   * TEST::Translation
   *
   * Translate
