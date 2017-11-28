@@ -1,4 +1,8 @@
 #include "dr_line.h"
+#include "dr_intersections.h"
+#include "dr_ray.h"
+#include "dr_plane.h"
+#include "dr_sphere.h"
 
 namespace driderSDK {
 
@@ -38,24 +42,74 @@ namespace driderSDK {
   bool
   Line::intersects(const Plane & plane) const
   {
+    Vector3D direction = (pointEnd - pointOrigin).normalize();
+    float point;
+    if (Intersect::rayPlane(pointOrigin,
+                            direction,
+                            plane, plane * plane.d,
+                            &point)
+    )
+    {
+      Vector3D pointIntersect = pointOrigin + direction * point;
+      return (*this).pointInline(pointIntersect);
+    }
     return false;
   }
   
   bool
-  Line::intersects(const Sphere & sphere) const
+  Line::intersects(const Sphere& sphere) const
+  {
+    Vector3D pointIntersect;
+    if (Intersect::sphereRay(sphere.center,
+                             sphere.radius,
+                             pointOrigin,
+                             pointEnd - pointOrigin,
+                             &pointIntersect)
+    )
+    {
+      return (*this).pointInline(pointIntersect);
+    }
+    return false;
+  }
+
+  bool
+  Line::intersects(const Capsule& capsule) const
   {
     return false;
   }
 
   bool
-  Line::intersects(const Capsule & capsule) const
+  Line::intersects(const Frustrum& frustrum) const
   {
     return false;
   }
-
+  
   bool
-  Line::intersects(const Frustrum & frustrum) const
+  Line::pointInline(Vector3D& point) const
   {
-    return false;
+    Vector3D vectorDirector = pointEnd - pointOrigin;
+
+    float alfa = (point.x - pointOrigin.x) / vectorDirector.x;
+
+    if (point.y == pointOrigin.y + vectorDirector.y * alfa &&
+        point.z == pointOrigin.z + vectorDirector.z * alfa
+    )
+    {
+      if (pointOrigin.x > pointEnd.x)
+      {
+        if (point.x < pointEnd.x || point.x > pointOrigin.x)
+        {
+          return false;
+        }
+      }
+      else
+      {
+        if (point.x > pointEnd.x || point.x < pointOrigin.x)
+        {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 }

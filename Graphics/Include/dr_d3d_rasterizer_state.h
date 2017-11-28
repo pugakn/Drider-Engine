@@ -1,7 +1,5 @@
 #pragma once
 #include "dr_rasterizer_state.h"
-#include <wrl.h>
-#include <wrl/client.h>
 
 struct ID3D11RasterizerState;
 
@@ -10,6 +8,12 @@ namespace driderSDK {
 class DR_GRAPHICS_EXPORT D3DRasterizerState : public RasterizerState
 {
  public:
+   void*
+     getAPIObject() override;
+
+   void**
+     getAPIObjectReference() override;
+
   /**
   * TEST::create
   *
@@ -24,7 +28,7 @@ class DR_GRAPHICS_EXPORT D3DRasterizerState : public RasterizerState
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  DR_GRAPHICS_ERROR::E
+  void
   create(const Device& device, const DrRasterizerDesc& desc) override;
 
   /**
@@ -49,7 +53,7 @@ class DR_GRAPHICS_EXPORT D3DRasterizerState : public RasterizerState
   void
   release() override;
 
-  Microsoft::WRL::ComPtr<ID3D11RasterizerState> APIState;
+  ID3D11RasterizerState* APIState;
 };
 
 }

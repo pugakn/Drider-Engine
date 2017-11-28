@@ -83,13 +83,14 @@ TEST(Quaternion, normalize) {
 }
 
 TEST(Quaternion, rotation) {
-	float theta = driderSDK::Math::PI / 2;
-	driderSDK::Quaternion OtherQuaternion(0.f, sinf(theta), 0.f, cosf(theta));
-	driderSDK::Quaternion TestQuaternion(0.f, 0.f, 1.f, 0.f);
+	driderSDK::Quaternion TestQuaternion(0.f, 0.7071203316249954f, 0.f, 0.7071203316249954f);
+	driderSDK::Vector3D TestVector(1,0,0);
 
-	TestQuaternion.rotation(theta, OtherQuaternion);
+	driderSDK::Vector3D Result = TestQuaternion.rotation(TestVector);
+	EXPECT_FLOAT_EQ(Result.x, 0);
+	EXPECT_FLOAT_EQ(Result.y, 0);
+	EXPECT_FLOAT_EQ(Result.z, -1.f);
 
-	checkQuaternionValues(TestQuaternion, 1.f, 0.f, 0.f, 0.f);
 	
 }
 
@@ -222,19 +223,19 @@ TEST(Quaternion, operatorMultiplyByScalarEquals) {
 }
 
 TEST(Quaternion, operatorDivide) {
-	driderSDK::Quaternion TestQuaternion(2.f, 3.f, 2.f, 1.f);
-	driderSDK::Quaternion OtherQuaternion(4.f, 2.f, 3.f, 3.f);
-	checkQuaternionValues(OtherQuaternion/ TestQuaternion, 
-												5.f/18.f, -5.f/18.f, -1.f/6.f, 25.f/18.f);
+	driderSDK::Quaternion TestQuaternion(0.f, 1.f, 0.f, 1.f);
+	driderSDK::Quaternion OtherQuaternion(0.5f, 0.5f, 0.75f, 1.f);
+	checkQuaternionValues(TestQuaternion/ OtherQuaternion,
+												0.12121212f, 0.24242425f, -0.60606062f, 0.72727275f);
 }
 
 TEST(Quaternion, operatorDivideEquals) {
-	driderSDK::Quaternion TestQuaternion(3.f, 1.f, 1.f, 2.f);
-	driderSDK::Quaternion OtherQuaternion(1.f, 2.f, 6.f, 1.f);
+	driderSDK::Quaternion TestQuaternion(0.f, 1.f, 0.f, 1.f);
+	driderSDK::Quaternion OtherQuaternion(0.5f, 0.5f, 0.75f, 1.f);
 
 	TestQuaternion /= OtherQuaternion;
-	checkQuaternionValues(OtherQuaternion / TestQuaternion,
-												2.f / 21.f, -5.f / 21.f, -17.f / 42.f, 1.f / 42.f);
+	checkQuaternionValues(TestQuaternion,
+												0.12121212f, 0.24242425f, -0.60606062f, 0.72727275f);
 }
 
 TEST(Quaternion, operatorAssign) {

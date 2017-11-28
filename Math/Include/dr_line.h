@@ -180,6 +180,19 @@ class DR_MATH_EXPORT Line
   */
   bool
   intersects(const Frustrum& frustrum) const;
+
+  /**
+  * Check if the point exist in line
+  *
+  *	@param point
+  *	 point to check
+  *
+  * @return
+  *	  True if the point is in line
+  *
+  */
+  bool pointInline(Vector3D& point) const;
+
  private:
   Vector3D pointOrigin;
   Vector3D pointEnd;

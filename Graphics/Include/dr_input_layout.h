@@ -1,15 +1,22 @@
 #pragma once
 #include "dr_graphics_prerequisites.h"
+#include <vector>
 #include "dr_graphics_defines.h"
-
 namespace driderSDK {
 
 class Device;
-class DeviceContext;
+class DeviceContext; 
+class ShaderBytecode;
 
 class DR_GRAPHICS_EXPORT InputLayout
 {
  public:
+   virtual void*
+     getAPIObject() = 0;
+
+   virtual void**
+     getAPIObjectReference() = 0;
+
   /**
   * Class virutal destructor.
   */
@@ -31,10 +38,10 @@ class DR_GRAPHICS_EXPORT InputLayout
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  virtual DR_GRAPHICS_ERROR::E
+  virtual void
   create(const Device & device,
-         const DrInputElementDesc* inputDescArray,
-         UInt32 arraySize) = 0;
+         const std::vector<DrInputElementDesc>& inputDescArray,
+         const ShaderBytecode& shaderBytecode) = 0;
 
   /**
   * Set the input layout
@@ -51,6 +58,8 @@ class DR_GRAPHICS_EXPORT InputLayout
   */
   virtual void
   release() = 0;
+
+  std::vector<DrInputElementDesc> m_descriptorVec;
 };
 
 }

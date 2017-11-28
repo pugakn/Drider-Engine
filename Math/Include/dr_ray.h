@@ -9,6 +9,7 @@ class Plane;
 class Sphere;
 class Capsule;
 class Frustrum;
+class AABB;
 
 /**
 *  Ray class with origin and direction
@@ -120,6 +121,19 @@ class DR_MATH_EXPORT Ray
 	*/
 	bool
 	intersects(const Capsule& capsule) const;
+
+  /**
+  * Check if the ray intersects with a aabb
+  *
+  *	@param aabb
+  *	 The aabb to check the intersecton.
+  *
+  * @return
+  *	  True if the ray intersects with the frustrum
+  *
+  */
+  bool
+  intersects(AABB& aabb);
 
 	/**
 	* Check if the ray intersects with a frustrum

@@ -165,5 +165,8 @@
     <ClCompile Include="Source\dr_unitTest_d3d_swap_chain.cpp">
       <Filter>Source Files\DirectX11</Filter>
     </ClCompile>
+    <ClCompile Include="dr_unitTest_d3d_constant_buffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -2,6 +2,8 @@
 #include "dr_intersections.h"
 #include "dr_plane.h"
 #include "dr_sphere.h"
+#include "dr_capsule.h"
+#include "dr_aabb.h"
 
 namespace driderSDK {
 
@@ -31,9 +33,25 @@ Ray::intersects(const Sphere& sphere, Vector3D* pointIntersect) const
                               pointIntersect);
 }
 
-bool Ray::intersects(const Capsule & capsule) const
+bool 
+Ray::intersects(const Capsule& capsule) const
 {
-  return false;
+  float point;
+  return Intersect::rayCapsule(capsule.pointA,
+                               capsule.pointB,
+                               origin,
+                               direction,
+                               capsule.radius,
+                               point);
+}
+
+bool
+Ray::intersects(AABB& aabb) {
+  return Intersect::aabbRay(aabb.center,
+    aabb.getMaxPoint(),
+    aabb.getMinPoint(),
+    origin,
+    direction);
 }
 
 }

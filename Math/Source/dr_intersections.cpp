@@ -271,24 +271,43 @@ Intersect::aabbAabb(const Vector3D& aabbCenter,
 
 bool
 Intersect::aabbSphere(const Vector3D& aabbCenter,
-											const Vector3D& aabbMax,
-											const Vector3D& aabbMin,
+											float aabbWidth,
+											float aabbHeight,
+											float aabbLength,
                       const Vector3D& sphereOrigin,
                       float sphereRadius) {
-	float dmin = 0.f;
-	float squareRadius = sphereRadius*sphereRadius;
 
-	for (int i = 0; i < 3; ++i) {
-		if (aabbCenter[i] < aabbMin[i]) {
-			dmin += Math::sqrt(aabbCenter[i] - aabbMin[i]);
-		}
-		else {
-			if (aabbCenter[i] > aabbMax[i]) {
-				dmin += Math::sqrt(aabbCenter[i] - aabbMax[i]);
-			}
-		}
+	Vector3D dist = sphereOrigin - aabbCenter;
+	float trueDist = dist.length();
+
+	if (trueDist != 0.f) {
+		dist.normalize();
 	}
-	return dmin <= squareRadius;
+	else {
+		return true;
+	}
+
+	if (dist.x >= dist.y && dist.x >= dist.z) {
+		DR_ASSERT(dist.x != 0.0f);
+		dist /= dist.x;
+	}
+	else if (dist.y >= dist.x && dist.y >= dist.z) {
+		DR_ASSERT(dist.y != 0.0f);
+		dist /= dist.y;
+	}
+	else {
+		DR_ASSERT(dist.z != 0.0f);
+		dist /= dist.z;
+	}
+
+	dist.x *= aabbWidth / 2.f;
+	dist.y *= aabbHeight / 2.f;
+	dist.z *= aabbLength / 2.f;
+
+	if (trueDist <= (sphereRadius + dist.length())) {
+		return true;
+	}
+	return false;
 }
 
 bool
@@ -297,6 +316,7 @@ Intersect::aabbFrustrum(const Vector3D& aabbCenter,
 												float aabbHeight,
 												float aabbDepth,
                         const std::array<Plane, 6>& frustrumPlanes) {
+
   return false;
 }
 
@@ -306,8 +326,6 @@ Intersect::aabbRay(const Vector3D& aabbCenter,
 									 const Vector3D& aabbMin,
                    const Vector3D& rayOrigin,
                    const Vector3D& rayDirection) {
-  if(rayDirection.x != 0 || rayDirection.y != 0 || rayDirection.z != 0)
-    return false;
   DR_ASSERT(rayDirection.x != 0.0f);
   DR_ASSERT(rayDirection.y != 0.0f);
   DR_ASSERT(rayDirection.z != 0.0f);

@@ -17,6 +17,11 @@
 #include "dr_d3d_swap_chain.h"
 
 namespace driderSDK {
+struct DeviceContextData {
+  ID3D11DeviceContext * pDeviceContext;
+  void*  getObject() {};
+  void** getObjectReference() {};
+};
 
 void
 D3DDeviceContext::clearDepthStencilView(DepthStencil& depthstencil,
@@ -39,7 +44,7 @@ D3DDeviceContext::clearDepthStencilView(DepthStencil& depthstencil,
   }
 
   D3D11DeviceContext->
-    ClearDepthStencilView(static_cast<D3DDepthStencil*>(&depthstencil)->APIDepthView.Get(),
+    ClearDepthStencilView(reinterpret_cast<D3DDepthStencil*>(&depthstencil)->APIDepthView,
                           clearFlags,
                           depthValue,
                           stencilValue);
@@ -48,19 +53,25 @@ D3DDeviceContext::clearDepthStencilView(DepthStencil& depthstencil,
 void
 D3DDeviceContext::clearRenderTargetView(RenderTarget& renderTarget,
                                         const float colorRGBA[4]) const {
-  for (size_t i = 0;
-       i < static_cast<D3DRenderTarget*>(&renderTarget)->APIColorViews.size();
-       i++) {
     D3D11DeviceContext->
-      ClearRenderTargetView(static_cast<D3DRenderTarget*>(&renderTarget)->
-                              APIColorViews[i].Get(),
-                            colorRGBA);
-  }
+      ClearRenderTargetView(static_cast<D3DRenderTarget*>(&renderTarget)->RTV,colorRGBA);
+
+}
+
+void * D3DDeviceContext::getAPIObject()
+{
+  return D3D11DeviceContext;
+}
+
+void ** D3DDeviceContext::getAPIObjectReference()
+{
+  return reinterpret_cast<void**>(&D3D11DeviceContext);
 }
 
 void
 D3DDeviceContext::release() {
-  D3D11DeviceContext.Reset();
+  D3D11DeviceContext->Release();
+  delete this;
 }
 
 void
@@ -77,9 +88,8 @@ D3DDeviceContext::updateTextureFromMemory(Texture& texture,
 
 void
 D3DDeviceContext::updateBufferFromMemory(Buffer& buffer,
-                                         const char* dataBuffer,
-                                         size_t bufferSize) const {
-  buffer.updateFromMemory(*this, dataBuffer, bufferSize);
+                                         const byte* dataBuffer) const {
+  buffer.updateFromBuffer(*this, dataBuffer);
 }
 
 void
@@ -108,7 +118,7 @@ void
 D3DDeviceContext::setVertexBuffer(const VertexBuffer& buffer,
                                   UInt32 stride,
                                   UInt32 offset) const {
-  buffer.set(*this, stride, offset);
+  buffer.set(*this, offset);
 }
 
 void
@@ -119,7 +129,23 @@ D3DDeviceContext::setConstantBuffer(const ConstantBuffer& buffer,
 
 void
 D3DDeviceContext::setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::E topology) const {
-  D3D11DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST); //Hardcoded
+  D3D11_PRIMITIVE_TOPOLOGY topo;
+  switch (topology)
+  {
+  case driderSDK::DR_PRIMITIVE_TOPOLOGY::kLineList:
+    topo = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
+    break;
+  case driderSDK::DR_PRIMITIVE_TOPOLOGY::kTriangleList:
+    topo = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+    break;
+  case driderSDK::DR_PRIMITIVE_TOPOLOGY::kLineStrip:
+    topo = D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP;
+    break;
+  case driderSDK::DR_PRIMITIVE_TOPOLOGY::kTriangleStrip:
+    topo = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP;
+    break;
+  }
+  D3D11DeviceContext->IASetPrimitiveTopology(topo); //Hardcoded
 }
 
 void

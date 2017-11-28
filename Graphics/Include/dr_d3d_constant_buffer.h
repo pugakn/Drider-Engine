@@ -18,6 +18,12 @@ class DeviceContext;
 class DR_GRAPHICS_EXPORT D3DConstantBuffer : public ConstantBuffer
 {
  public:
+   void*
+     getAPIObject() override;
+
+   void**
+     getAPIObjectReference() override;
+
   /**
   * TEST::
   *
@@ -42,10 +48,10 @@ class DR_GRAPHICS_EXPORT D3DConstantBuffer : public ConstantBuffer
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  DR_GRAPHICS_ERROR::E
+  void
   create(const Device& device,
          const DrBufferDesc& desc,
-         char* initialData) override;
+         const byte* initialData) override;
 
   /**
   * TEST::
@@ -61,7 +67,7 @@ class DR_GRAPHICS_EXPORT D3DConstantBuffer : public ConstantBuffer
   */
   void
   set(const DeviceContext& deviceContext,
-      DR_SHADER_TYPE_FLAG::E typeFlag) const override;
+      Int32 typeFlag = 0) const override;
 
   /**
   * TEST::
@@ -78,9 +84,23 @@ class DR_GRAPHICS_EXPORT D3DConstantBuffer : public ConstantBuffer
   *   The new data buffer size
   */
   void
-  updateFromMemory(const DeviceContext& deviceContext,
-                   const char* dataBuffer,
-                   size_t bufferSize) override;
+    updateFromSysMemCpy(const DeviceContext& deviceContext) override;
+
+  /**
+  * Update the buffer with new data
+  *
+  * @param deviceContext
+  *   The device context to get acces to the resource
+  *
+  * @param dataBuffer
+  *   The new data buffer
+  *
+  * @param bufferSize
+  *   The new data buffer size
+  */
+  void
+  updateFromBuffer(const DeviceContext& deviceContext,
+                   const byte* dataBuffer) override;
 
   /**
   * TEST::
@@ -90,7 +110,7 @@ class DR_GRAPHICS_EXPORT D3DConstantBuffer : public ConstantBuffer
   void
   release() override;
 
-  Microsoft::WRL::ComPtr<ID3D11Buffer> CB;
+  ID3D11Buffer* CB;
 };
 
 }

@@ -14,6 +14,12 @@ namespace driderSDK {
 class DR_GRAPHICS_EXPORT DepthStencil
 {
  public:
+   virtual void*
+     getAPIObject() = 0;
+
+   virtual void**
+     getAPIObjectReference() = 0;
+
   /**
   * Class virtual destructor.
   */
@@ -32,8 +38,8 @@ class DR_GRAPHICS_EXPORT DepthStencil
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  virtual DR_GRAPHICS_ERROR::E
-  create(const Device& device, const DrTextureDesc& desc) = 0;
+  virtual void
+  create(const Device& device ,const Texture& texture) = 0;
 
   //virtual void 
   //set(const DeviceContext& deviceContext, const DepthStencil& depthStencil) const = 0;
@@ -43,8 +49,6 @@ class DR_GRAPHICS_EXPORT DepthStencil
   */
   virtual void
   release() = 0;
-
-  std::unique_ptr<Texture> depthTexture;
 };
 
 }

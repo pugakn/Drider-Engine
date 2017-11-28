@@ -16,11 +16,18 @@ class ConstantBuffer;
 class DR_GRAPHICS_EXPORT DeviceContext
 {
  public:
+   virtual void*
+     getAPIObject() = 0;
+
+   virtual void**
+     getAPIObjectReference() = 0;
+
   /**
   * Class virtual destructor.
   */
   virtual
   ~DeviceContext() {}
+
 
   /**
   * Release the allocated memory
@@ -71,8 +78,7 @@ class DR_GRAPHICS_EXPORT DeviceContext
   */
   virtual void
   updateBufferFromMemory(Buffer& buffer,
-                         const char* dataBuffer,
-                         size_t bufferSize) const = 0;
+                         const byte* dataBuffer) const = 0;
 
   /**
   * Set the render target and depth stencil
@@ -222,6 +228,8 @@ class DR_GRAPHICS_EXPORT DeviceContext
        UInt32 startVertexLocation) const = 0;
 
   //TODO: Add get methods
+  struct DeviceContextData;
+  DeviceContextData* m_deviceContext;
 };
 
 }

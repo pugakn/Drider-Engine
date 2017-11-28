@@ -170,6 +170,7 @@
     </BuildLog>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Include\dr_application.h" />
     <ClInclude Include="Include\dr_bone.h" />
     <ClInclude Include="Include\dr_convexHull.h" />
     <ClInclude Include="Include\dr_core_prerequisites.h" />
@@ -189,6 +190,7 @@
     <ClInclude Include="Include\dr_vertex.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\dr_application.cpp" />
     <ClCompile Include="Source\dr_bone.cpp" />
     <ClCompile Include="Source\dr_convexHull.cpp" />
     <ClCompile Include="Source\dr_graph.cpp" />

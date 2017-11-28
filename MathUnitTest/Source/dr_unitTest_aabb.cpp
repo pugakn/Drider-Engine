@@ -106,15 +106,17 @@ TEST(AABB, intersectPlane) {
 }
 
 TEST(AABB, intersectFrustrum) {
-	
+	EXPECT_TRUE(false);
 }
 
 TEST(AABB, intersectSphere)
 {
 	driderSDK::Sphere sphere(driderSDK::Vector3D(0.f, 0.f, 0.f), 0.5f);
-	driderSDK::AABB Aabb(0.6f, 1.f, 0.6f, driderSDK::Vector3D(0.f, 0.f, 0.f));
-
-	EXPECT_TRUE(Aabb.intersect(sphere));
+	driderSDK::Sphere FalseSphere(driderSDK::Vector3D(-10.f, -10.f, -10.f), 0.5f);
+	driderSDK::AABB TrueAabb(0.6f, 1.f, 0.6f, driderSDK::Vector3D(0.f, 0.f, 0.f));
+	driderSDK::AABB FalseAabb(1.f, 1.f, 1.f, driderSDK::Vector3D(0.f, 0.f, 0.f));
+	EXPECT_TRUE(TrueAabb.intersect(sphere));
+	EXPECT_FALSE(FalseAabb.intersect(FalseSphere));
 }
 
 TEST(AABB, intersectRay) {

@@ -103,7 +103,7 @@ TEST(Plane, intersectsSphere) {
   driderSDK::Sphere sphereA({20.f, 15.f, 0.f}, 10.f);
   driderSDK::Sphere sphereB({10.f, 0.f, 10.f}, 4.f);
 
-  float dist = plane.distanceToPoint(sphereB.center);
+  //float dist = plane.distanceToPoint(sphereB.center);
 
   EXPECT_TRUE(plane.intersects(sphereA));
   EXPECT_FALSE(plane.intersects(sphereB));

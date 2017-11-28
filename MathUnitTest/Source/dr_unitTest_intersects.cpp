@@ -91,8 +91,9 @@ TEST(Intersect, aabbSphere) {
   driderSDK::Vector3D c2(1.0, 0.0, 0.0);
 	driderSDK::AABB aabb(5.0, 5.0, 5.0, c1);
 	EXPECT_TRUE(driderSDK::Intersect::aabbSphere(c1, 
-																							 aabb.getMaxPoint(), 
-																							 aabb.getMinPoint(), 
+																							 aabb.width, 
+																							 aabb.height,
+																							 aabb.depth,
 																							 c2, 
 																							 .5f));
 }
