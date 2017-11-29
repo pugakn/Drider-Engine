@@ -46,12 +46,12 @@ Ray::intersects(const Capsule& capsule) const
 }
 
 bool
-Ray::intersects(AABB& aabb) {
-  return Intersect::aabbRay(aabb.center,
-    aabb.getMaxPoint(),
-    aabb.getMinPoint(),
-    origin,
-    direction);
+Ray::intersects(const AABB& aabb, Vector3D* point) {
+  return Intersect::rayAABB(aabb.getMaxPoint(),
+                            aabb.getMinPoint(),
+                            origin,
+                            direction,
+                            point);
 }
 
 }

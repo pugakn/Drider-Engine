@@ -437,6 +437,13 @@ struct DR_MATH_EXPORT Intersect
           const Vector3D& rayOrigin,
           const Vector3D& rayDirection);
 
+  static bool
+  rayAABB(const Vector3D& aabbMax,
+					const Vector3D& aabbMin,
+          const Vector3D& rayOrigin,
+          const Vector3D& rayDirection,
+          Vector3D* point);
+
   /**
   * TEST::aabbPoint
   * Check if a point is inside an AABB.

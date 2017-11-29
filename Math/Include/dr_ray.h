@@ -123,6 +123,7 @@ class DR_MATH_EXPORT Ray
 	intersects(const Capsule& capsule) const;
 
   /**
+  * TEST::intersectAABB
   * Check if the ray intersects with a aabb
   *
   *	@param aabb
@@ -133,7 +134,7 @@ class DR_MATH_EXPORT Ray
   *
   */
   bool
-  intersects(AABB& aabb);
+  intersects(const AABB& aabb, Vector3D* point);
 
 	/**
 	* Check if the ray intersects with a frustrum
