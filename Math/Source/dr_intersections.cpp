@@ -128,7 +128,7 @@ Intersect::rayPlane(const Vector3D& rayOrigin,
                     const Vector3D& planeNormal,
                     const Vector3D& planePoint) {
   float denom = planeNormal.dot(rayDirection);
-  if (denom > Math::SMALL_NUMBER) {
+  if (denom > Math::SMALL_NUMBER || denom < -Math::SMALL_NUMBER) {
     Vector3D planeToRayOrigin = planePoint - rayOrigin;
     float t = planeToRayOrigin.dot(planeNormal) / denom;
     return t >= 0;
@@ -143,7 +143,7 @@ Intersect::rayPlane(const Vector3D& rayOrigin,
                     const Vector3D& planePoint,
                     float* intersectionPoint) {
   float denom = planeNormal.dot(rayDirection);
-  if (denom > Math::SMALL_NUMBER) {
+  if (denom > Math::SMALL_NUMBER || denom < -Math::SMALL_NUMBER) {
     Vector3D planeToRayOrigin = planePoint - rayOrigin;
     *intersectionPoint = planeToRayOrigin.dot(planeNormal) / denom;
     return static_cast<bool>(*intersectionPoint >= 0);
@@ -269,45 +269,34 @@ Intersect::aabbAabb(const Vector3D& aabbCenter,
     ((aabbDepth * 0.5f) + (aabbDepth2 * 0.5f));
 }
 
+float checkPoint(float pn, float bmin, float bmax) {
+  float out = 0;
+  float v = pn;
+  if (v < bmin)
+  {
+    float val = (bmin - v);
+    out += val * val;
+  }
+  if (v > bmax)
+  {
+    float val = (v - bmax);
+    out += val * val;
+  }
+  return out;
+}
+
 bool
-Intersect::aabbSphere(const Vector3D& aabbCenter,
-											float aabbWidth,
-											float aabbHeight,
-											float aabbLength,
-                      const Vector3D& sphereOrigin,
+Intersect::aabbSphere(const Vector3D& min,
+                      const Vector3D& max,
+                      const Vector3D& sphereCenter,
                       float sphereRadius) {
 
-	Vector3D dist = sphereOrigin - aabbCenter;
-	float trueDist = dist.length();
-
-	if (trueDist != 0.f) {
-		dist.normalize();
-	}
-	else {
-		return true;
-	}
-
-	if (dist.x >= dist.y && dist.x >= dist.z) {
-		DR_ASSERT(dist.x != 0.0f);
-		dist /= dist.x;
-	}
-	else if (dist.y >= dist.x && dist.y >= dist.z) {
-		DR_ASSERT(dist.y != 0.0f);
-		dist /= dist.y;
-	}
-	else {
-		DR_ASSERT(dist.z != 0.0f);
-		dist /= dist.z;
-	}
-
-	dist.x *= aabbWidth / 2.f;
-	dist.y *= aabbHeight / 2.f;
-	dist.z *= aabbLength / 2.f;
-
-	if (trueDist <= (sphereRadius + dist.length())) {
-		return true;
-	}
-	return false;
+  float sq = 0.0f;
+  sq += checkPoint(sphereCenter.x, min.x, max.x);
+  sq += checkPoint(sphereCenter.y, min.y, max.y);
+  sq += checkPoint(sphereCenter.z, min.z, max.z);
+  
+  return sq <= (sphereRadius * sphereRadius);
 }
 
 bool

@@ -27,9 +27,13 @@ TEST(Ray, defaultDestructor) {
 
 //intersectPlane
 TEST(Ray, intersectPlane) {
-  driderSDK::Plane p(driderSDK::Vector3D(0,-1,0), 0);
-  driderSDK::Ray r(driderSDK::Vector3D(-2,2,0), driderSDK::Vector3D(-1,-1,0));
+  driderSDK::Plane p(driderSDK::Vector3D(-1, 0,0), 0);
+  driderSDK::Ray r(driderSDK::Vector3D(-2,2,0), driderSDK::Vector3D(1,-1,0));
   EXPECT_TRUE(r.intersects(p));
+  r.direction= driderSDK::Vector3D(-1, 1, 0);
+  EXPECT_FALSE(r.intersects(p));
+  r.direction = driderSDK::Vector3D(0, 1, 1);
+  EXPECT_FALSE(r.intersects(p));
 }
 
 TEST(Ray, intersectPlaneT) {

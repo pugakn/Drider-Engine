@@ -154,10 +154,10 @@ TEST(Matrix3x3, equals) {
   EXPECT_FALSE(testMatrix.equals(testMatrix1, .5f));
 }
 
-TEST(Matrix3x3, eulerAngles) {
+TEST(Matrix3x3, toEulerAngles) {
   driderSDK::Matrix3x3 testMatrix(0.25581f, -0.77351f, 0.57986f,
                                   -0.85333f, -0.46255f, -0.24057f,
-                                  0.45429f, -0.43327f, -0.77839);
+                                  0.45429f, -0.43327f, -0.77839f);
   driderSDK::Vector3D testVector(testMatrix.eulerAngles());
   EXPECT_FLOAT_EQ(-2.6336787f, testVector[0]);
   EXPECT_FLOAT_EQ(-0.47157675f, testVector[1]);

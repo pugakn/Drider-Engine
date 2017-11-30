@@ -57,10 +57,8 @@ AABB::intersect(AABB& aabb) {
 
 bool
 AABB::intersect(Sphere& sphere) {
-  return Intersect::aabbSphere(center, 
-															 width, 
-															 height, 
-															 depth,
+  return Intersect::aabbSphere(getMinPoint(), 
+															 getMaxPoint(), 
                                sphere.center, 
                                sphere.radius);
 }

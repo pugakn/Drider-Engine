@@ -372,11 +372,9 @@ struct DR_MATH_EXPORT Intersect
   *   True if the sphere intersects, else returns false.
   */
   static bool
-  aabbSphere(const Vector3D& aabbCenter,
-						 float aabbWidth,
-						 float aabbHeight,
-						 float aabbLength,
-             const Vector3D& sphereOrigin,
+  aabbSphere(const Vector3D& min,
+             const Vector3D& max,
+             const Vector3D& sphereCenter,
              float sphereRadius);
 
   /**

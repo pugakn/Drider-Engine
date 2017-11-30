@@ -204,7 +204,7 @@ class DR_MATH_EXPORT Matrix3x3
   equals(const Matrix3x3& otherMatrix, float errorRange = Math::SMALL_NUMBER) const;
 
   /**
-  * TEST::toEulerAngle
+  * TEST::toEulerAngles
   *
   * Euler angles form quaternion.
   *
