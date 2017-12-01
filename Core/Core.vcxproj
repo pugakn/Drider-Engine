@@ -170,6 +170,7 @@
     </BuildLog>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="dr_camera.h" />
     <ClInclude Include="Include\dr_convexHull.h" />
     <ClInclude Include="Include\dr_core_prerequisites.h" />
     <ClInclude Include="Include\dr_graph.h" />
@@ -190,6 +191,7 @@
     <ClInclude Include="Include\dr_vertex.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="dr_camera.cpp" />
     <ClCompile Include="Source\dr_convexHull.cpp" />
     <ClCompile Include="Source\dr_graph.cpp" />
     <ClCompile Include="Source\dr_loader.cpp" />
