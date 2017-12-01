@@ -2,6 +2,7 @@
 #include "dr_mesh.h"
 #include "dr_model_info.h"
 #include "dr_mesh_info.h"
+#include "dr_skeleton_info.h"
 
 namespace driderSDK {
 

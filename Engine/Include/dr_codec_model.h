@@ -1,9 +1,17 @@
 #pragma once
 
+#include <unordered_set>
 #include "dr_engine_prerequisites.h"
 #include "dr_codec.h"
 
+struct aiMesh;
+struct aiScene;
+struct aiNode;
+
 namespace driderSDK {
+
+struct MeshInfo;
+struct SkeletonInfo;
 
 class DR_ENGINE_EXPORT CodecModel : public Codec
 {
@@ -38,6 +46,15 @@ class DR_ENGINE_EXPORT CodecModel : public Codec
   */
   CompatibleType::E
   getType() override;
+
+  void 
+  loadVertices(const aiMesh& inMesh, MeshInfo& outMesh);
+
+  void 
+  loadIndices(const aiMesh& inMesh, MeshInfo& outMesh);
+
+  void
+  loadSkeleton(const aiScene& model, SkeletonInfo& outSkeleton);
 
 };
 
