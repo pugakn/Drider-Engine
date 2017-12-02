@@ -72,6 +72,12 @@
     <ClInclude Include="dr_camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="dr_viewport.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dr_camera_manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_parser.cpp">
@@ -108,6 +114,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="dr_camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dr_camera_manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

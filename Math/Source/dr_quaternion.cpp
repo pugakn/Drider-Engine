@@ -52,8 +52,8 @@ Quaternion::normalize() {
   *this *= 1 / measure();
 }
 
-Vector3D
-Quaternion::rotation(const Vector3D& V) {
+const Vector3D
+Quaternion::rotation(const Vector3D& V) const {
 
 	Quaternion norm(*this);
 	if (norm.measure() != 1.f) {

@@ -171,6 +171,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="dr_camera.h" />
+    <ClInclude Include="dr_camera_manager.h" />
+    <ClInclude Include="dr_viewport.h" />
     <ClInclude Include="Include\dr_convexHull.h" />
     <ClInclude Include="Include\dr_core_prerequisites.h" />
     <ClInclude Include="Include\dr_graph.h" />
@@ -192,6 +194,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dr_camera.cpp" />
+    <ClCompile Include="dr_camera_manager.cpp" />
     <ClCompile Include="Source\dr_convexHull.cpp" />
     <ClCompile Include="Source\dr_graph.cpp" />
     <ClCompile Include="Source\dr_loader.cpp" />
