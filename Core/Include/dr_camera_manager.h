@@ -32,7 +32,35 @@ public:
 	*
 	*/
 	void 
-	addCamera();
+	createCamera();
+
+	/**
+	*
+	*
+	*/
+	void
+	createViewport();
+
+	/**
+	*
+	*
+	*/
+	void
+	deleteCamera();
+
+	/**
+	*
+	*
+	*/
+	void
+	deleteViewport();
+
+	/**
+	*
+	*
+	*/
+	void
+	setViewportToCamera();
 
 	/**
 	*

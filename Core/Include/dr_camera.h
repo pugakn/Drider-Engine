@@ -6,6 +6,8 @@
 
 namespace driderSDK {
 
+struct Viewport;
+
 /**
 *  Camera class.
 *
@@ -90,6 +92,15 @@ public:
 	setTarget(const Vector3D& target);
 
 	/**
+	* Set the camera's viewport
+	*
+	* @param _viewport
+	*   Viewport to set.
+	*/
+	void
+	setViewport(const Viewport* _viewport);
+
+	/**
 	* Rotate the camera.
 	*
 	* @param rotation
@@ -112,6 +123,7 @@ private:
 	Matrix4x4 m_vp;
 	Matrix4x4 m_view;
 	Matrix4x4 m_projection;
+	Viewport* m_viewport;
 };
 
 }

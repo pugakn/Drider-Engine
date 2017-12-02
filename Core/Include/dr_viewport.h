@@ -3,7 +3,7 @@
 
 namespace driderSDK {
 
-struct DR_CORE_EXPORT viewport
+struct DR_CORE_EXPORT Viewport
 {
 	float topLeftX;
 	float topLeftY;

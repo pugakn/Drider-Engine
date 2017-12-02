@@ -7,7 +7,7 @@ CameraManager::CameraManager() {}
 CameraManager::~CameraManager() {}
 
 void
-CameraManager::addCamera() {}
+CameraManager::createCamera() {}
 
 
 }

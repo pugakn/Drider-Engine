@@ -1,5 +1,6 @@
 #include <dr_quaternion.h>
 #include "dr_camera.h"
+#include "dr_viewport.h"
 
 namespace driderSDK {
 
@@ -15,7 +16,7 @@ Camera::Camera(const Vector3D& pos,
 	m_up = Vector3D(0.f, 1.f, 0.f);
 
 	m_projection.ProjectionFov(fov * Math::DEGREE_TO_RADIAN,
-														 /*hardcoded*/ 1024.f/720.f,
+														 m_viewport->width / m_viewport->height,
 														 nearPlane,
 														 farPlane);
 	
@@ -43,6 +44,11 @@ Camera::pan() {
 void 
 Camera::setTarget(const Vector3D& target) {
 	m_target = target;
+}
+
+void
+Camera::setViewport(const Viewport* _viewport) {
+
 }
 
 void 
