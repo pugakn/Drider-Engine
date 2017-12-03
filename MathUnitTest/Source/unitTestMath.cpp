@@ -44,6 +44,7 @@ int main(int argc, char* argv[])
   //::testing::GTEST_FLAG(filter) = "Sphere.*";
 
   //::testing::GTEST_FLAG(filter) = "Vector3D.*";
+  ::testing::GTEST_FLAG(filter) = "Vector2DI.*";
 	//::testing::GTEST_FLAG(filter) = "AABB.*";
   //::testing::GTEST_FLAG(filter) = "Math.*";
 

@@ -62,7 +62,6 @@ FileSystem::append(const std::string& filename,
 }
 
 TString FileSystem::getFileExtension(const TString& file) {
-
   SizeT pos = file.find_last_of(_T('.'));
 
   TString extension;

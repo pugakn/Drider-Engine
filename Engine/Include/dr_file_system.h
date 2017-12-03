@@ -54,6 +54,14 @@ class DR_ENGINE_EXPORT FileSystem
   */
   static bool
   load (const std::string& filename, std::string& bufferOut);
+  //TString GetWorkingPath();
+  //bool CreateAndOpen(const TString filename);
+  //void Copy();
+  //void Move();
+  //void Remove();
+  //bool isFile();
+  //bool isDirectory();
+  //bool Exists();
 
   /**
   * TEST::save
