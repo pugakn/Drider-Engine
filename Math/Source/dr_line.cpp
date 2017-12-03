@@ -23,7 +23,7 @@ namespace driderSDK {
   }
 
   Vector3D
-  Line::GetPoint(SizeT point)
+  Line::GetPoint(SizeT point) const
   {
     DR_ASSERT(point < 2);
     if (point)
@@ -34,7 +34,7 @@ namespace driderSDK {
   }
 
   float
-  Line::Length()
+  Line::Length() const
   {
     return length;
   }

@@ -1,6 +1,7 @@
 #include "dr_ray.h"
 #include "dr_plane.h"
 #include "dr_aabb.h"
+#include "dr_sphere.h"
 #include <gtest\gtest.h>
 
 TEST(Ray, defaultConstructor) {
@@ -46,6 +47,30 @@ TEST(Ray, intersectPlaneT) {
   EXPECT_TRUE(pointIntersect.equals(driderSDK::Vector3D(0, 0, 0), 0.000001f));
 }
 
+TEST(Ray, intersectSphere) {
+  driderSDK::Sphere sphere(driderSDK::Vector3D(0, 0, 0), 1);
+  driderSDK::Ray ray(driderSDK::Vector3D(4, 0, 0), driderSDK::Vector3D(-1, 0, 0));
+  driderSDK::Vector3D point;
+
+  EXPECT_TRUE(ray.intersects(sphere, &point));
+  ray.direction = driderSDK::Vector3D(1, 0, 0);
+  EXPECT_FALSE(ray.intersects(sphere, &point));
+
+  driderSDK::Sphere sphere2(driderSDK::Vector3D(1, 1, 1), 1);
+  driderSDK::Ray ray2(driderSDK::Vector3D(0, -2, 1), driderSDK::Vector3D(0, 1, 0));
+  EXPECT_TRUE(ray2.intersects(sphere2, &point));
+  ray2.direction = driderSDK::Vector3D(0, -1, 0);
+  EXPECT_FALSE(ray2.intersects(sphere2, &point));
+
+
+  driderSDK::Sphere sphere3(driderSDK::Vector3D(0, 0, 0), 1);
+  driderSDK::Ray ray3(driderSDK::Vector3D(2, .5f, -1), driderSDK::Vector3D(-2, 0, 1).normalize());
+  EXPECT_TRUE(ray3.intersects(sphere3, &point));
+  ray3.direction = driderSDK::Vector3D(2, 0, -1).normalize();
+  EXPECT_FALSE(ray3.intersects(sphere3, &point));
+
+}
+
 TEST(Ray, intersectAABB) {
   driderSDK::Vector3D point1(0, 0, 0);
   driderSDK::Ray rayo(driderSDK::Vector3D(4, 0, 0), driderSDK::Vector3D(-1, 0, 0));
@@ -65,4 +90,34 @@ TEST(Ray, intersectAABB) {
   EXPECT_FLOAT_EQ(0.5f, pointIntersect[0]);
   EXPECT_FLOAT_EQ(0.5f, pointIntersect[1]);
   EXPECT_FLOAT_EQ(0.5f, pointIntersect[2]);
+}
+
+TEST (Ray, intersectRay) {
+  driderSDK::Ray rayo1(driderSDK::Vector3D(-1, 0, 0), driderSDK::Vector3D(1, 1, 0).normalize());
+  driderSDK::Ray rayo2(driderSDK::Vector3D(1, 0, 0), driderSDK::Vector3D(0, 1, 0).normalize());
+  driderSDK::Vector3D point;
+
+  EXPECT_TRUE(rayo1.intersects(rayo2, &point));
+  EXPECT_TRUE(rayo2.intersects(rayo1, &point));
+
+  rayo1.origin = driderSDK::Vector3D(-10, 5, -2);
+  rayo2.origin = driderSDK::Vector3D(-10, 5, 2);
+  rayo1.direction = driderSDK::Vector3D(0.0f, 0.0f, 1.0f);
+  rayo2.direction = driderSDK::Vector3D(0.0f, 0.0f, -1.0f);
+  EXPECT_TRUE(rayo1.intersects(rayo2, &point));
+  EXPECT_TRUE(rayo2.intersects(rayo1, &point));
+
+  rayo1.origin = driderSDK::Vector3D(-10, 5, -2);
+  rayo2.origin = driderSDK::Vector3D(-10, 5, 2);
+  rayo1.direction = driderSDK::Vector3D(0.0f, 0.0f, 1.0f);
+  rayo2.direction = driderSDK::Vector3D(0.0f, 0.0f, 1.0f);
+  EXPECT_TRUE(rayo1.intersects(rayo2, &point));
+  EXPECT_FALSE(rayo2.intersects(rayo1, &point));
+
+  rayo1.origin = driderSDK::Vector3D(-10, 5, -2);
+  rayo2.origin = driderSDK::Vector3D(-10, 6, 2);
+  rayo1.direction = driderSDK::Vector3D(0.0f, 0.0f, 1.0f);
+  rayo2.direction = driderSDK::Vector3D(0.0f, 0.0f, -1.0f);
+  EXPECT_FALSE(rayo1.intersects(rayo2, &point));
+  EXPECT_FALSE(rayo2.intersects(rayo1, &point));
 }

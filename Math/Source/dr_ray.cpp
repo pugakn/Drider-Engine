@@ -4,7 +4,7 @@
 #include "dr_sphere.h"
 #include "dr_capsule.h"
 #include "dr_aabb.h"
-
+#include "dr_line.h"
 namespace driderSDK {
 
 bool
@@ -52,6 +52,26 @@ Ray::intersects(const AABB& aabb, Vector3D* point) {
                             origin,
                             direction,
                             point);
+}
+
+bool
+Ray::intersects(const Ray& ray, Vector3D* point) const
+{
+  return Intersect::rayRay(origin,
+                           direction,
+                           ray.origin,
+                           ray.direction,
+                           point);
+}
+
+bool
+Ray::intersects(const Line & line, Vector3D* point) const
+{
+  return Intersect::rayLine(origin,
+    direction,
+    line.GetPoint(0),
+    line.GetPoint(1),
+    point);
 }
 
 }

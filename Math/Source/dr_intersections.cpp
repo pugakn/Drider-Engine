@@ -2,7 +2,9 @@
 #include "dr_math.h"
 #include "dr_vector3d.h"
 #include "dr_plane.h"
-
+#include "dr_matrix3x3.h"
+#include "dr_line.h"
+#include "dr_ray.h"
 namespace driderSDK {
 /**********************************************************************
 *						            Intersection functions
@@ -79,18 +81,23 @@ Intersect::sphereRay(const Vector3D& sphPosition,
                      Vector3D * intersectionPoint) {
   
   if (sphereContainsPoint(rayOrigin, sphPosition, sphRadio)) {
+    (*intersectionPoint) = rayOrigin;
     return true;
   }
-  Vector3D vec(rayOrigin - sphPosition);
+  Vector3D vec(sphPosition - rayOrigin);
 
   float pDirection = vec.dot(rayDirection);
 
-  if (pDirection < 0.0f) {
+  if (pDirection <= 0.0f) {
     return false;
   }
 
   Vector3D vecClosestPoint(rayOrigin + (rayDirection * pDirection));
-
+  if ((vecClosestPoint - sphPosition).length() == sphRadio)
+  {
+    (*intersectionPoint) = vecClosestPoint;
+    return true;
+  }
   if (sphereContainsPoint(vecClosestPoint, sphPosition, sphRadio)) {
     float vecClosestPointLength = vecClosestPoint.length();
     float distanceToPerimeter = Math::sqrt(sphRadio*sphRadio - vecClosestPointLength*vecClosestPointLength);
@@ -98,6 +105,97 @@ Intersect::sphereRay(const Vector3D& sphPosition,
     return true;
   } 
   return false;
+}
+
+bool
+Intersect::rayRay(const Vector3D& rayOrigin1,
+                  const Vector3D& rayDirection1,
+                  const Vector3D& rayOrigin2,
+                  const Vector3D& rayDirection2,
+                  Vector3D* Point) {
+
+  if (rayDirection1.cross(rayDirection2).length() == 0)
+  {
+    Vector3D directionTemp ((rayOrigin2 - rayOrigin1).normalize());
+    if (directionTemp.equals(rayDirection1))
+    {
+      return true;
+      (*Point) = rayOrigin2;
+    }
+    return false;
+  }
+
+  driderSDK::Vector3D flags(0, 0, 0);
+  driderSDK::Vector3D R1;
+  driderSDK::Vector3D R2;
+  driderSDK::Vector3D R3;
+
+  if (rayDirection1.x > 0)
+  {
+    R1 = driderSDK::Vector3D(rayDirection1.x, -rayDirection2.x, rayOrigin2.x - rayOrigin1.x);
+    flags.x = 1;
+  }
+  else if (rayDirection1.y > 0)
+  {
+    R1 = driderSDK::Vector3D(rayDirection1.y, -rayDirection2.y, rayOrigin2.y - rayOrigin1.y);
+    flags.y = 1;
+  }
+  else if (rayDirection1.z > 0)
+  {
+    R1 = driderSDK::Vector3D(rayDirection1.z, -rayDirection2.z, rayOrigin2.z - rayOrigin1.z);
+    flags.z = 1;
+  }
+  else
+  {
+    return false;
+  }
+
+  if (rayDirection2.x > 0 && flags.x == 0)
+  {
+    R2 = driderSDK::Vector3D(rayDirection1.x, -rayDirection2.x, rayOrigin2.x - rayOrigin1.x);
+    flags.x = 1;
+  }
+  else if (rayDirection2.y > 0 && flags.y == 0)
+  {
+    R2 = driderSDK::Vector3D (rayDirection1.y, -rayDirection2.y, rayOrigin2.y - rayOrigin1.y);
+  }
+  else if (rayDirection2.z > 0 && flags.z == 0)
+  {
+    R2 = driderSDK::Vector3D(rayDirection1.z, -rayDirection2.z, rayOrigin2.z - rayOrigin1.z);
+  }
+  
+  if (flags.x == 0)
+  {
+    R3 = driderSDK::Vector3D(rayDirection1.x, -rayDirection2.x, rayOrigin2.x - rayOrigin1.x);
+  }
+  else if (flags.y == 0)
+  {
+    R3 = driderSDK::Vector3D(rayDirection1.y, -rayDirection2.y, rayOrigin2.y - rayOrigin1.y);
+  }
+  else if (flags.z == 0)
+  {
+    R3 = driderSDK::Vector3D(rayDirection1.z, -rayDirection2.z, rayOrigin2.z - rayOrigin1.z);
+  }
+
+  R2 = R2 - R1 * (R2.x / R1.x);
+  R3 = R3 - R1 * (R3.x / R1.x);
+  R3 = R3 - R2 * (R3.y / R2.y);
+
+  if (!R3.equals(driderSDK::Vector3D(0, 0, 0))) {
+    return false;
+  }
+  
+  float t = R2.z / R2.y;
+  float s = (R1.z - R1.y * t) / R1.x;
+  if (s < 0)
+  {
+    return false;
+  }
+  (*Point).x = rayOrigin1.x + s * rayDirection1.x;
+  (*Point).y = rayOrigin1.y + s * rayDirection1.y;
+  (*Point).z = rayOrigin1.z + s * rayDirection1.z;
+
+  return true;
 }
 
 bool
@@ -230,6 +328,23 @@ Intersect::rayCapsule(const Vector3D& pointSA,
     return k + dd - 2 * md + t * (2 * (mn - nd) + t * nn) <= 0.0f;
   }
   return true;
+}
+
+bool
+Intersect::rayLine(const Vector3D& rayOrigin,
+                   const Vector3D& rayDirection,
+                   const Vector3D& point1,
+                   const Vector3D& point2,
+                   Vector3D* Point)
+{
+  Line line(point1, point2);
+  Ray temp(point1, (point2 - point1).normalize());
+  Ray ray(rayOrigin, rayDirection);
+  if (ray.intersects(temp, Point))
+  {
+    return line.pointInline((*Point));
+  }
+  return false;
 }
 
 bool
@@ -529,7 +644,7 @@ bool
 Intersect::sphereContainsPoint(const Vector3D& point,
                                const Vector3D& sphPosition,
                                float radius) {
-  return point.distance(sphPosition) < radius;
+  return point.distance(sphPosition) <= radius;
 }
 
 /*bool
