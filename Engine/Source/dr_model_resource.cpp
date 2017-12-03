@@ -3,7 +3,7 @@
 namespace driderSDK {
 
 std::shared_ptr<Resource> __stdcall
-ModelResource::Create() {
+ModelResource::Create(TString resourceName) {
   auto resource = std::make_shared<ModelResource>();
   return resource;
 }

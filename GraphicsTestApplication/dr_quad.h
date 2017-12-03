@@ -14,6 +14,7 @@ struct vertex
 {
   float x, y, z, w;
   float nx, ny,nz,nw;
+  float u, v;
 };
 struct CBuffer {
   //driderSDK::Matrix4x4 World;
@@ -29,6 +30,7 @@ public:
   driderSDK::VertexBuffer* VB;
   driderSDK::IndexBuffer* IB;
   driderSDK::ConstantBuffer* CB;
+  driderSDK::Texture* texture;
 
   driderSDK::VertexShader* vs;
   driderSDK::FragmentShader* fs;

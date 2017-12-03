@@ -1,9 +1,9 @@
 #pragma once
 #include <dr_d3d_hull_shader.h>
-#include <gtest\gtest.h>
-#include <dr_d3d_device.h>
-#include <dr_d3d_device_context.h>
-#include <dxgi.h>
+//#include <gtest\gtest.h>
+//#include <dr_d3d_device.h>
+//#include <dr_d3d_device_context.h>
+//#include <dxgi.h>
 
 //TEST(D3DHullShader, set) {
 //  driderSDK::D3DHullShader obj;

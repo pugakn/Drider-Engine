@@ -4,10 +4,10 @@
 #include <dr_d3d_device_context.h>
 #include <d3d11.h>
 #include <dxgi.h>
-#include <gtest\gtest.h>
-
-TEST(D3DVertexBuffer, constructor) {
-}
+//#include <gtest\gtest.h>
+//
+//TEST(D3DVertexBuffer, constructor) {
+//}
 
 //TEST(D3DVertexBuffer, create) {
 //  driderSDK::D3DVertexBuffer vb;

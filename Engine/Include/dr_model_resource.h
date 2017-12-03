@@ -16,7 +16,7 @@ class DR_ENGINE_EXPORT ModelResource : public Resource {
    * Creates and return reference of a ModelResource
    */
    static std::shared_ptr<Resource> __stdcall
-   Create();
+   Create(TString resourceName);
 
  public:
   float info;

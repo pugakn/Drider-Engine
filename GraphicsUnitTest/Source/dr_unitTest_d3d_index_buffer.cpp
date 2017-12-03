@@ -1,14 +1,14 @@
 #pragma once
 #include <dr_d3d_index_buffer.h>
-#include <gtest\gtest.h>
-#include <dr_d3d_device.h>
-#include <dr_d3d_device_context.h>
-#include <d3d11.h>
-#include <dxgi.h>
-
-TEST(D3DIndexBuffer, constructor) {
-  EXPECT_TRUE(true);
-}
+//#include <gtest\gtest.h>
+//#include <dr_d3d_device.h>
+//#include <dr_d3d_device_context.h>
+//#include <d3d11.h>
+//#include <dxgi.h>
+//
+//TEST(D3DIndexBuffer, constructor) {
+//  EXPECT_TRUE(true);
+//}
 
 //TEST(D3DIndexBuffer, create) {
 //  driderSDK::D3DIndexBuffer vb;

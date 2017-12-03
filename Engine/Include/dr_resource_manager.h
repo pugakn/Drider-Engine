@@ -1,32 +1,38 @@
 #pragma once
 #include <unordered_map>
-#include <dr_resource.h>
 #include "dr_engine_prerequisites.h"
-#include "dr_codec.h"
 #include <dr_memory.h>
-#include "dr_resource_factory.h"
+#include <dr_module.h>
 
 namespace driderSDK {
+
+class Resource;
+class ResourceFactory;
+class Codec;
+
 /**
 * Load resources.
 *
 * Sample usage:
 *	loadResource("name.png", "resorces/");
 */
-class DR_ENGINE_EXPORT ResourceManager {
+class DR_ENGINE_EXPORT ResourceManager  {
  public:
 
   /**
   * TEST::resourceMConstructor
   *	Default constructor.
   */
-  ResourceManager() { Init(); }
+  ResourceManager();
 
+  ResourceManager(const ResourceManager&) = delete;
+
+  ResourceManager& operator=(const ResourceManager&) = delete;
   /**
   * TEST::resourceMDestructor
   *	Default destructor.
   */
-  ~ResourceManager() {}
+  ~ResourceManager();
 
   /**
   * TEST::
@@ -94,7 +100,7 @@ class DR_ENGINE_EXPORT ResourceManager {
  public:
   std::unordered_map<TString, std::shared_ptr<Resource>> resourceContent;
 
-  std::vector<std::shared_ptr<Codec>> codecs;
+  std::vector<std::unique_ptr<Codec>> codecs;
 
   std::shared_ptr<ResourceFactory> factory;
 

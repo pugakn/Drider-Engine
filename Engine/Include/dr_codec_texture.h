@@ -11,12 +11,12 @@ class DR_ENGINE_EXPORT CodecTexture : public Codec
   /**
   *
   */
-  CodecTexture() {};
+  CodecTexture() {}
 
   /**
   *
   */
-  virtual ~CodecTexture() {};
+  ~CodecTexture() {}
 
   /**
   * TEST::decode

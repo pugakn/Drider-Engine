@@ -1,6 +1,6 @@
 #pragma once
 #include <dr_device_context.h>
-#include <gtest\gtest.h>
+//#include <gtest\gtest.h>
 #include <dr_d3d_device.h>
 #include <dr_d3d_device_context.h>
 #include <dr_d3d_texture.h>

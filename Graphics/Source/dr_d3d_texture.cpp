@@ -14,8 +14,8 @@ namespace driderSDK {
     return reinterpret_cast<void**>(&APIView);
   }
   void D3DTexture::createFromMemory(const Device& device,
-                                                  const DrTextureDesc& desc,
-                                                  const char* buffer) {
+                                    const DrTextureDesc& desc,
+                                    const char* buffer) {
   const D3DDevice* apiDevice = reinterpret_cast<const D3DDevice*>(&device);
   m_descriptor = desc;
   UInt32 flags = 0;

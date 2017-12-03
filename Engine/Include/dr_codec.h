@@ -25,10 +25,11 @@ class DR_ENGINE_EXPORT Codec
   */ 
   Codec() {}
 
+  
   /**
   *
   */
-  virtual ~Codec() {}; 
+  virtual ~Codec() {}
 
   /**
   * TEST::codecDecode

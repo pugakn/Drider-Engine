@@ -1,16 +1,24 @@
 #include "dr_resource_manager.h"
-#include "dr_codec.h"
 
 #include "dr_codec_texture.h"
 #include "dr_codec_model.h"
 #include "dr_file_system.h"
+#include "dr_resource_factory.h"
 
 namespace driderSDK {
 
+ResourceManager::ResourceManager() {
+
+}
+
+ResourceManager::~ResourceManager() {
+
+}
+
 void 
 ResourceManager::Init() {
-  codecs.push_back(std::shared_ptr<CodecTexture>());
-  codecs.push_back(std::shared_ptr<CodecModel>());
+  codecs.push_back(dr_make_unique<CodecTexture>());
+  codecs.push_back(dr_make_unique<CodecModel>());
   
   factory = std::make_shared<ResourceFactory>();
 }
@@ -36,8 +44,8 @@ ResourceManager::loadResource(TString resourceName) {
 void
 ResourceManager::createResource(TString resourceName,
                                 Codec* codec) {
-  resourceContent.insert({ resourceName, 
-                           factory->CreateResource(codec->getType()) });
+  std::shared_ptr<Resource> nResource = factory->CreateResource(codec, resourceName);
+  resourceContent.insert({ resourceName, nResource});
 }
 
 bool

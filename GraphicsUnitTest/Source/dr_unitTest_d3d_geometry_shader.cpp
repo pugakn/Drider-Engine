@@ -1,9 +1,9 @@
 #pragma once
 #include <dr_d3d_geometry_shader.h>
-#include <gtest\gtest.h>
-#include <dr_d3d_device.h>
-#include <dr_d3d_device_context.h>
-#include <dxgi.h>
+//#include <gtest\gtest.h>
+//#include <dr_d3d_device.h>
+//#include <dr_d3d_device_context.h>
+//#include <dxgi.h>
 
 //TEST(D3DGeometryShader, set) {
 //  driderSDK::D3DGeometryShader obj;

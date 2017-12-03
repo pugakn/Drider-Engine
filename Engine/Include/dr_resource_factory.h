@@ -6,10 +6,11 @@
 #include <dr_compatible_types.h>
 
 namespace driderSDK {
+class Codec;
 class DR_ENGINE_EXPORT ResourceFactory {
  public:
 
-  typedef std::shared_ptr<Resource>(__stdcall *CreateResourceFn)(void);
+  typedef std::shared_ptr<Resource>(__stdcall *CreateResourceFn)(TString);
 
   /**
   * TEST::resourceFacturyConstructor
@@ -49,7 +50,8 @@ class DR_ENGINE_EXPORT ResourceFactory {
   *   shared_ptr to the Resource creates
   */
   std::shared_ptr<Resource>
-  CreateResource(CompatibleType::E type);
+  CreateResource(Codec *codec,
+                 TString resourceName);
 
  public:
    typedef std::unordered_map<CompatibleType::E, CreateResourceFn> FactoryMap;

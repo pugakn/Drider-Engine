@@ -4,7 +4,7 @@
 #include <dr_d3d_device_context.h>
 #include <d3d11.h>
 #include <dxgi.h>
-#include <gtest\gtest.h>
+//#include <gtest\gtest.h>
 
 //TEST(D3DVertexShader, set) {
 //  driderSDK::D3DVertexShader obj;

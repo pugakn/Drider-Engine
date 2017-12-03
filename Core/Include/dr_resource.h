@@ -19,7 +19,7 @@ class DR_CORE_EXPORT Resource
   * TEST::resourceDestructor
   *	Default destructor.
   */
-  virtual ~Resource() { };
+  virtual ~Resource() { }
 };
 
 }

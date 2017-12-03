@@ -26,7 +26,7 @@ class DR_ENGINE_EXPORT TextureResource : public Resource {
   * Creates and return reference of a ModelResource
   */
   static std::shared_ptr<Resource> __stdcall
-  Create();
+  Create(TString resourceName);
 
 public:
   std::vector<unsigned char> data;

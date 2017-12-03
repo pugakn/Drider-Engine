@@ -1,5 +1,5 @@
 #pragma once
-#include <dr_d3d_command_buffer.h>
+//#include <dr_d3d_command_buffer.h>
 #include <gtest\gtest.h>
 
 class ID3D11Buffer;
