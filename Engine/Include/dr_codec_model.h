@@ -1,6 +1,5 @@
 #pragma once
 
-#include <unordered_set>
 #include "dr_engine_prerequisites.h"
 #include "dr_codec.h"
 

@@ -5,10 +5,30 @@
 
 namespace driderSDK {
 
-  struct Vertex 
+struct Vertex 
+{
+ public:
+
+  Vertex() 
+  : bonesIDs{-1, -1, -1, -1}  
   {
-    Vector3D position;
-    Vector3D normal;
-  };
+  }
+
+  void addBoneData(Int32 boneID, float boneWeight) 
+  {
+    for (Int8 i = 0; i < 4; ++i) {
+      if(bonesIDs[i] == -1){
+        bonesIDs[i] = boneID;
+        bonesWeights[i] = boneWeight;
+        return;
+      }
+    }
+  }
+
+  Vector3D position;
+  Vector3D normal;
+  Int32 bonesIDs[4];
+  Vector4D bonesWeights;
+};
 
 }

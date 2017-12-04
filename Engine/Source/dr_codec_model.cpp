@@ -1,4 +1,5 @@
 #include "dr_codec_model.h"
+#include <unordered_map>
 #include <assimp\Importer.hpp>
 #include <assimp\postprocess.h>
 #include <assimp\scene.h>
@@ -99,7 +100,7 @@ CodecModel::loadIndices(const aiMesh& inMesh, MeshInfo& outMesh) {
 void 
 CodecModel::loadSkeleton(const aiScene& model, SkeletonInfo& outSkeleton) {
  
-  std::unordered_set<String> bonesNames;
+  std::unordered_map<String, Int16> bonesMapping;
 
   for (Int16 meshIndex = 0; 
       meshIndex < static_cast<Int16>(model.mNumMeshes);
@@ -110,6 +111,8 @@ CodecModel::loadSkeleton(const aiScene& model, SkeletonInfo& outSkeleton) {
     for (Int16 boneIndex = 0; 
          boneIndex < static_cast<Int16>(mesh.mNumBones); 
          ++boneIndex) {
+
+
 
     }
   }  
