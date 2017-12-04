@@ -2,13 +2,13 @@ Texture2D shaderTexture;
 SamplerState SampleType;
 
 cbuffer ConstantBuffer{
-    float4x4 World;
+    //float4x4 World;
 }
 
 struct VS_OUTPUT{
     float4 hposition : SV_POSITION;
 	float4 hnormal   : NORMAL;
-	float2 tex 	 : TEXCOORD;
+	float2 tex 	 : TEXCOORD0;
 };
 
 float4 FS( VS_OUTPUT input ) : SV_TARGET  {

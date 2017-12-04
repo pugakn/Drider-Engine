@@ -1,17 +1,17 @@
 cbuffer ConstantBuffer{
-	float4x4 World;  
+	//float4x4 World;  
 }
 
 struct VS_INPUT{
     float4 position : POSITION;
 	float4 normal   : NORMAL;
-	float2 tex 	: TEXCOORD;
+	float2 tex 	: TEXCOORD0;
 };
 
 struct VS_OUTPUT{
     float4 hposition : SV_POSITION;
 	float4 hnormal   : NORMAL;
-	float2 tex 	 : TEXCOORD;
+	float2 tex 	 : TEXCOORD0;
 };
 
 VS_OUTPUT VS( VS_INPUT input ){

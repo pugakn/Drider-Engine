@@ -7,6 +7,8 @@
 #include <dr_texture_resource.h>
 #include <dr_texture.h>
 
+#include <dr_sample_state.h>
+
 using namespace driderSDK;
 
 
@@ -57,7 +59,7 @@ void Quad::init(Device& device)
 
   ie.format = DR_FORMAT::kDrFormat_R32G32_FLOAT;
   ie.offset = 32;
-  ie.semanticName = "TEXCOORD";
+  ie.semanticName = "TEXCOORD0";
   ie.inputSlot = 0;
   ie.semanticIndex = 0;
   idesc.push_back(ie);
@@ -92,20 +94,36 @@ void Quad::init(Device& device)
     resourceManager.loadResource(_T("testImage.png")));
 
   DrTextureDesc tDesc;
-  tDesc.bindFlags = DR_BIND_FLAGS::RENDER_TARGET;
+  tDesc.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE;
   tDesc.CPUAccessFlags = DR_CPU_ACCESS_FLAG::drRead;
   tDesc.dimension = DR_DIMENSION::k2D;
   tDesc.Format = DR_FORMAT::kDrFormat_R32G32B32_FLOAT;
   tDesc.genMipMaps = true;
   tDesc.height = rTexture->height;
   tDesc.mipLevels = 0;
-  tDesc.pitch = 1;
-  tDesc.Usage = DR_BUFFER_USAGE::kImmutable;
+  tDesc.pitch = 0;
+  tDesc.Usage = DR_BUFFER_USAGE::kDefault;
   tDesc.width = rTexture->width;
   texture = reinterpret_cast<Texture*>(device.createTextureFromMemory(
                                        reinterpret_cast<const char*>(
                                        rTexture->data.data()),
                                        tDesc));
+
+  DrSampleDesc sDesc;
+  sDesc.addressU = DR_TEXTURE_ADDRESS::kWrap;
+  sDesc.addressV = DR_TEXTURE_ADDRESS::kWrap;
+  sDesc.borderColor[0] = 1.f;
+  sDesc.borderColor[1] = 1.f;
+  sDesc.borderColor[2] = 0.f;
+  sDesc.borderColor[3] = 1.f;
+  sDesc.comparisonFunc = DR_COMPARISON_FUNC::kNEVER;
+  sDesc.Filter = DR_TEXTURE_FILTER::kMINIMUM_ANISOTROPIC;
+  sDesc.maxAnisotropy = 1;
+  sDesc.maxLOD = 1.f;
+  sDesc.mipLODBias = 0.f;
+
+  ss = reinterpret_cast<SamplerState*>(device.createSamplerState(sDesc));
+  //texture = reinterpret_cast<Texture*>(device.createTextureFromMemory(a, tDesc));
 
   //constBuff.World = Matrix4x4::identityMat4x4;
 }
@@ -116,6 +134,7 @@ void Quad::destroy()
   IB->release();
   VB->release();
   texture->release();
+  ss->release();
 }
 
 void Quad::draw(const DeviceContext& deviceContext)
@@ -125,6 +144,8 @@ void Quad::draw(const DeviceContext& deviceContext)
   IL->set(deviceContext);
   VB->set(deviceContext);
   IB->set(deviceContext);
+  texture->set(deviceContext, 0);
+  ss->set(deviceContext, DR_SHADER_TYPE_FLAG::kFragment);
   //texture->set(deviceContext, 0);
   //CB->updateFromBuffer(deviceContext,reinterpret_cast<byte*>(&constBuff));
   //CB->set(deviceContext);

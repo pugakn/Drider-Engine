@@ -30,10 +30,13 @@ public:
   driderSDK::VertexBuffer* VB;
   driderSDK::IndexBuffer* IB;
   driderSDK::ConstantBuffer* CB;
+  driderSDK::SamplerState* ss;
+
   driderSDK::Texture* texture;
 
   driderSDK::VertexShader* vs;
   driderSDK::FragmentShader* fs;
+
 
   driderSDK::InputLayout* IL;
 
