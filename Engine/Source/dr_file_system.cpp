@@ -10,63 +10,67 @@ FileSystem::~FileSystem() {
 }
 
 bool
-FileSystem::load(const std::string& filename,
-                 std::string& bufferOut) {
-  std::ifstream fileLoaded;
+FileSystem::Remove(const TString& filepath) {
+  SizeT filepathLenght = filepath.length();
+  char* rename = new char[filepathLenght];
+  std::wcstombs(rename, filepath.c_str(), filepathLenght);
 
-  fileLoaded.open(filename);
-  if (fileLoaded.is_open()) {
-    bufferOut = std::string(std::istreambuf_iterator<char>(fileLoaded),
-                            std::istreambuf_iterator<char>());
-    fileLoaded.close();
-    return true;
-  }
-  else {
-    fileLoaded.close();
-    return false;
-  }
+  bool successfullyErased = remove(rename) != 0;
+
+  delete[] rename;
+  return successfullyErased;
 }
 
 bool
-FileSystem::save(const std::string& filename,
-                 const std::string& bufferToSave) {
-  std::ofstream fileLoaded;
+FileSystem::IsFile(const TString& filepath) {
+  SizeT filepathLenght = filepath.length();
+  char* rename = new char[filepathLenght];
+  std::wcstombs(rename, filepath.c_str(), filepathLenght);
 
-  fileLoaded.open(filename, std::ios::out | std::ios::trunc);
-  if (fileLoaded.is_open()) {
-    fileLoaded << bufferToSave;
-    fileLoaded.close();
-    return true;
+  struct stat s;
+
+  if (stat(rename, &s) == 0) {
+    if (s.st_mode & S_IFREG) {
+      delete[] rename;
+      return true;
+    }
   }
-  else {
-    fileLoaded.close();
-    return false;
-  }
+
+  delete[] rename;
+  return false;
 }
 
 bool
-FileSystem::append(const std::string& filename,
-                   const std::string& bufferToAppend) {
-  std::fstream fileLoaded;
+FileSystem::IsDirectory(const TString& filepath) {
+  SizeT filepathLenght = filepath.length();
+  char* rename = new char[filepathLenght];
+  std::wcstombs(rename, filepath.c_str(), filepathLenght);
 
-  fileLoaded.open(filename, std::ios::out | std::ios::app);
-  if (fileLoaded.is_open()) {
-    fileLoaded << bufferToAppend;
-    fileLoaded.close();
-    return true;
+  struct stat s;
+
+  if (stat(rename, &s) == 0) {
+    if (s.st_mode & S_IFDIR) {
+      delete[] rename;
+      return true;
+    }
   }
-  else {
-    fileLoaded.close();
-    return false;
-  }
+
+  delete[] rename;
+  return false;
 }
 
-TString FileSystem::getFileExtension(const TString& file) {
+bool
+FileSystem::Exists(const TString& filepath) {
+  std::ifstream f(filepath.c_str());
+  return f.good();
+}
+
+TString FileSystem::GetFileExtension(const TString& file) {
   SizeT pos = file.find_last_of(_T('.'));
 
   TString extension;
 
-  if(pos != TString::npos) {
+  if (pos != TString::npos) {
     extension = file.substr(pos + 1);
   }
 
