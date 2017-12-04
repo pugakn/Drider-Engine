@@ -163,6 +163,8 @@
     <ClCompile Include="Source\dr_engine_texture.cpp" />
     <ClCompile Include="Source\dr_file.cpp" />
     <ClCompile Include="Source\dr_file_system.cpp" />
+    <ClCompile Include="Source\dr_file_system_linux.cpp" />
+    <ClCompile Include="Source\dr_file_system_win.cpp" />
     <ClCompile Include="Source\dr_model_resource.cpp" />
     <ClCompile Include="Source\dr_resource_factory.cpp" />
     <ClCompile Include="Source\dr_resource_manager.cpp" />
