@@ -55,11 +55,19 @@ File::Size() {
 
 void
 File::Read(const SizeT nBytes, ANSIChar* bytesOut) {
+  assert(TellG() + nBytes > Size());
   m_file.read(bytesOut, nBytes);
+}
+
+void
+File::Write(const SizeT nBytes, ANSIChar * bytesIn) {
+  m_file.write(bytesIn, nBytes);
 }
 
 TString
 File::GetAsString(const SizeT nBytes) {
+  assert(TellG() + nBytes > Size());
+
   ANSIChar* tmpBuff = new ANSIChar[nBytes];
   Read(nBytes, tmpBuff);
 

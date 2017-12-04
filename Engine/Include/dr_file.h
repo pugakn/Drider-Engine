@@ -1,5 +1,4 @@
 #pragma once
-#include <string>
 #include <fstream>
 #include "dr_engine_prerequisites.h"
 
@@ -90,8 +89,8 @@ class DR_ENGINE_EXPORT File
   /**
   * TEST::Read
   *
-  * Writes the number of bytes of file in
-  * a buffer, starting in the current position.
+  * Read the number of bytes in file and writes them in
+  * a buffer. The read starts in the current position.
   *
   * @param nBytes
   *   Number of bytes to read on file.
@@ -101,6 +100,22 @@ class DR_ENGINE_EXPORT File
   */
   void
   Read(const SizeT nBytes, ANSIChar* bytesOut);
+
+  /**
+  * TEST::Write
+  *
+  * Writes the given number of bytes in file.
+  * Bytes to write are taken from the given buffer.
+  * The writing starts in the current position.
+  *
+  * @param nBytes
+  *   Number of bytes to write on file.
+  *
+  * @param bytesIn
+  *   Buffer where the bytes to write are taken.
+  */
+  void
+  Write(const SizeT nBytes, ANSIChar* bytesIn);
 
   /**
   * TEST::GetAsString

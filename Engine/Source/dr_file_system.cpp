@@ -10,6 +10,41 @@ FileSystem::~FileSystem() {
 }
 
 bool
+FileSystem::CreateAndOpen(const TString& filename, File& file) {
+  std::ofstream newFile(filename);
+  newFile.close();
+
+  file.Open(filename);
+
+  return false;
+}
+
+void
+FileSystem::Copy(const TString& filepathSrc, const TString& filepathDst) {
+  File srcFile;
+  srcFile.Open(filepathSrc);
+
+  File dstFile;
+  CreateAndOpen(filepathDst, dstFile);
+
+  SizeT srcSz = srcFile.Size();
+  ANSIChar* srcFileBytes = new ANSIChar[srcSz];
+  srcFile.Read(srcSz, &srcFileBytes[0]);
+  srcFile.Close();
+
+  dstFile.Write(srcSz, &srcFileBytes[0]);
+  dstFile.Close();
+
+  delete[] srcFileBytes;
+}
+
+void
+FileSystem::Move(const TString& filepathSrc, const TString& filepathDst) {
+  Copy(filepathSrc, filepathDst);
+  Remove(filepathSrc);
+}
+
+bool
 FileSystem::Remove(const TString& filepath) {
   SizeT filepathLenght = filepath.length();
   char* rename = new char[filepathLenght];
@@ -65,7 +100,8 @@ FileSystem::Exists(const TString& filepath) {
   return f.good();
 }
 
-TString FileSystem::GetFileExtension(const TString& file) {
+TString
+FileSystem::GetFileExtension(const TString& file) {
   SizeT pos = file.find_last_of(_T('.'));
 
   TString extension;

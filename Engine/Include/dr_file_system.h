@@ -1,7 +1,6 @@
 #pragma once
-#include <string>
-#include <fstream>
 #include "dr_engine_prerequisites.h"
+#include "dr_file.h"
 
 namespace driderSDK {
 
@@ -35,18 +34,11 @@ class DR_ENGINE_EXPORT FileSystem
   /**
   * TEST::GetWorkingPath
   *
-  * The Load operation determines how many bytes are in the file and returns the
-  * amount in riSize.
-  *
-  * @param filename
-  *   The name of the file to load.
-  *
-  * @param bufferOut
-  *   The output where the file will be loaded
+  * Returns the fullpath of the working directory.
+  * OS specific.
   *
   * @return
-  *   Boolean value is true if the load is successful, in which case
-  *   the outputs racBuffer and riSize are valid.
+  *   String containing the fullpath of the working directory.
   */
   TString
   GetWorkingPath();
@@ -61,7 +53,7 @@ class DR_ENGINE_EXPORT FileSystem
   * @return
   */
   bool
-  CreateAndOpen(const TString& filename);
+  CreateAndOpen(const TString& filename, File& file);
 
   /**
   * TEST::Copy
@@ -73,7 +65,7 @@ class DR_ENGINE_EXPORT FileSystem
   * @return
   */
   void
-  Copy(const TString& filepath);
+  Copy(const TString& filepathSrc, const TString& filepathDst);
 
   /**
   * TEST::Move
@@ -85,7 +77,7 @@ class DR_ENGINE_EXPORT FileSystem
   * @return
   */
   void
-  Move(const TString& filepath);
+  Move(const TString& filepathSrc, const TString& filepathDst);
 
   /**
   * TEST::Remove
@@ -146,7 +138,7 @@ class DR_ENGINE_EXPORT FileSystem
   * @return
   */
   static TString 
-  GetFileExtension(const TString& file);
+  GetFileExtension(const TString& filepath);
 
 };
 
