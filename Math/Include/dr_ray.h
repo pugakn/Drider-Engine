@@ -141,6 +141,7 @@ class DR_MATH_EXPORT Ray
   intersects(const AABB& aabb, Vector3D* point);
 
 	/**
+  * TEST::frustrumRay
 	* Check if the ray intersects with a frustrum
 	*
 	*	@param frustrum

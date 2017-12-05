@@ -11,6 +11,7 @@ void checkValuesPlane(driderSDK::Plane& testPlane, float px, float py, float pz,
   EXPECT_FLOAT_EQ(pz, testPlane.z);
   EXPECT_FLOAT_EQ(pw, testPlane.d);
 }
+
 TEST(Frustrum, frustrumConstructor) {
   driderSDK::Frustrum f;
   f.planes.size();

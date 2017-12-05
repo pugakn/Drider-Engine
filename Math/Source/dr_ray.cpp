@@ -5,6 +5,8 @@
 #include "dr_capsule.h"
 #include "dr_aabb.h"
 #include "dr_line.h"
+#include "dr_matrix4x4.h"
+#include "dr_frustrum.h"
 namespace driderSDK {
 
 bool
@@ -52,6 +54,12 @@ Ray::intersects(const AABB& aabb, Vector3D* point) {
                             origin,
                             direction,
                             point);
+}
+
+bool
+Ray::intersects(const Frustrum & frustrum) const
+{
+  return Intersect::rayFrustrum(origin, direction, frustrum.planes);
 }
 
 bool

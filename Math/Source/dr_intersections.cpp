@@ -274,7 +274,7 @@ Intersect::rayPlane(const Vector3D& rayOrigin,
                     float* intersectionPoint) {
   float denom = planeNormal.dot(rayDirection);
   if (denom > Math::SMALL_NUMBER || denom < -Math::SMALL_NUMBER) {
-    Vector3D planeToRayOrigin = rayOrigin - planePoint;
+    Vector3D planeToRayOrigin = planePoint - rayOrigin;
     *intersectionPoint = planeToRayOrigin.dot(planeNormal) / denom;
     return static_cast<bool>(*intersectionPoint >= 0);
   }

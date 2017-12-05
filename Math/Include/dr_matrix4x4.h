@@ -291,31 +291,33 @@ class DR_MATH_EXPORT Matrix4x4
   RotationZ(const float teta);
 
   /**
-  * TEST: LookAt
+  * TEST::LookAt
   */
   Matrix4x4&
   LookAt(const Vector3D &Eye, const Vector3D &At, const Vector3D &Up);
 
   /**
-  * TEST: Projection
+  * TEST::Projection
+  *
+  * MAtrix for look at for camera
   */
   Matrix4x4&
   Projection(float Width, float Height, float ZNear, float ZFar);
 
   /**
-  * TEST: ProjectionFov
+  * TEST::ProjectionFov
   */
   Matrix4x4&
   ProjectionFov(float FOV, float Aspect, float ZNear, float ZFar);
 
   /**
-  * TEST: Orthogonal
+  * TEST::Orthogonal
   */
   Matrix4x4&
   Orthogonal(float Width, float Height, float ZNear, float ZFar);
 
   /**
-  * TEST: Reflection
+  * TEST::Reflection
   */
   Matrix4x4&
   Reflection(Vector3D NormalOfMirror);

@@ -75,7 +75,7 @@ TEST(Plane, distanceToPoint) {
 
   float distance = plane.distanceToPoint(point);
 
-  EXPECT_FLOAT_EQ(distance, 18.f);
+  EXPECT_FLOAT_EQ(distance, -10);
 }
 
 TEST(Plane, intersectsPoint) {
@@ -110,11 +110,17 @@ TEST(Plane, intersectsSphere) {
 }
 
 TEST(Plane, intersectsAABB) {
-  driderSDK::Plane plane({1.f, 0.f, 0.f}, 7.f);
-  driderSDK::AABB aabbA;
-  driderSDK::AABB aabbB;
-  //falta añadir profundidad 
-  EXPECT_FALSE(true);
+  driderSDK::AABB TestAABB(0.5f, 0.5f, 0.5f, driderSDK::Vector3D(0.f, 0.f, 0.f));
+	driderSDK::Plane TruePlane(driderSDK::Vector3D(1.f, 0.f, 1.f), 
+														 driderSDK::Vector3D(1.f, 0.f, 0.f), 
+														 driderSDK::Vector3D(0.f, 0.f, 0.f));
+
+	driderSDK::Plane FalsePlane(driderSDK::Vector3D(1.f, 0.f, 1.f),
+														 driderSDK::Vector3D(1.f, 0.f, 0.f),
+														 driderSDK::Vector3D(0.f, 1.f, 0.f));
+  TruePlane.intersects(TestAABB);
+	EXPECT_TRUE(TruePlane.intersects(TestAABB));
+	EXPECT_FALSE(FalsePlane.intersects(TestAABB));
 }
 
 TEST(Plane, intersectsCapsule) {

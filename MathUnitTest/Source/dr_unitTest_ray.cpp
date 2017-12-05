@@ -1,7 +1,9 @@
-#include "dr_ray.h"
-#include "dr_plane.h"
-#include "dr_aabb.h"
-#include "dr_sphere.h"
+#include <dr_matrix4x4.h>
+#include <dr_frustrum.h>
+#include <dr_ray.h>
+#include <dr_plane.h>
+#include <dr_aabb.h>
+#include <dr_sphere.h>
 #include <gtest\gtest.h>
 
 TEST(Ray, defaultConstructor) {
@@ -29,7 +31,7 @@ TEST(Ray, defaultDestructor) {
 //intersectPlane
 TEST(Ray, intersectPlane) {
   driderSDK::Plane p(driderSDK::Vector3D(-1, 0,0), 0);
-  driderSDK::Ray r(driderSDK::Vector3D(-2,2,0), driderSDK::Vector3D(1,-1,0));
+  driderSDK::Ray r(driderSDK::Vector3D(-2,2,0), driderSDK::Vector3D(1,-1,0).normalize());
   EXPECT_TRUE(r.intersects(p));
   r.direction= driderSDK::Vector3D(-1, 1, 0);
   EXPECT_FALSE(r.intersects(p));
@@ -38,7 +40,7 @@ TEST(Ray, intersectPlane) {
 }
 
 TEST(Ray, intersectPlaneT) {
-  driderSDK::Plane p(driderSDK::Vector3D(0, -1, 0), 0);
+  driderSDK::Plane p(driderSDK::Vector3D(-1, 0, 0), 0);
   driderSDK::Ray r(driderSDK::Vector3D(-2, 2, 0), driderSDK::Vector3D(1, -1, 0).normalize());
   float distance;
   EXPECT_TRUE(r.intersects(p, &distance));
@@ -120,4 +122,14 @@ TEST (Ray, intersectRay) {
   rayo2.direction = driderSDK::Vector3D(0.0f, 0.0f, -1.0f);
   EXPECT_FALSE(rayo1.intersects(rayo2, &point));
   EXPECT_FALSE(rayo2.intersects(rayo1, &point));
+}
+
+TEST(Ray, frustrumRay) {
+  driderSDK::Matrix4x4 mat;
+  mat.Orthogonal(1280, 980, 0.1f, 800);
+  driderSDK::Frustrum f(mat);
+
+  driderSDK::Ray ray(driderSDK::Vector3D(-2000, 0, 0), driderSDK::Vector3D(1, 0, 0));
+
+  ray.intersects(f);
 }
