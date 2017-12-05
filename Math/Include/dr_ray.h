@@ -155,6 +155,7 @@ class DR_MATH_EXPORT Ray
 	intersects(const Frustrum& frustrum) const;
 
   /**
+  * TEST::intersectRay
   * Check if the ray intersects with a ray
   *
   *	@param ray
@@ -171,6 +172,7 @@ class DR_MATH_EXPORT Ray
   intersects(const Ray& ray, Vector3D* point) const;
 
   /**
+  * TEST::intersectLine
   * Check if the ray intersects with a line
   *
   *	@param line
