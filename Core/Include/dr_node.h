@@ -15,14 +15,14 @@ class DR_CORE_EXPORT Node : public std::enable_shared_from_this<Node>
   using WeakNode = std::weak_ptr<Node>;
 
   /**
-  Constructor with a name
+  * Constructor with a name and a parent node.
   */
   Node(const TString& _name, WeakNode _parent = WeakNode());
 
   virtual ~Node(){}
 
   virtual void update(const Matrix4x4& accumulatedTransform);
-
+  
   void addChild(SharedNode child);
 
   void setParent(SharedNode parent);
@@ -43,6 +43,7 @@ class DR_CORE_EXPORT Node : public std::enable_shared_from_this<Node>
 
   Transform transform;
  protected:
+
   Matrix4x4 m_finalTransform;  
   std::vector<SharedNode> m_childs;
   WeakNode m_parent;

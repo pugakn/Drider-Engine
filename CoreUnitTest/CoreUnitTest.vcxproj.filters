@@ -27,5 +27,8 @@
     <ClCompile Include="Source\dr_unitTest_md5.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
+    <ClCompile Include="Source\dr_unitTest_viewport.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
