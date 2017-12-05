@@ -69,7 +69,7 @@ class DR_MATH_EXPORT Plane : public Vector3D
   *
   */
   float 
-  distanceToPoint(const Vector3D& point);
+  distanceToPoint(const Vector3D& point) const;
    
   /**
   * TEST::intersectsPoint

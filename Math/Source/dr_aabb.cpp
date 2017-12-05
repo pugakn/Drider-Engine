@@ -75,10 +75,8 @@ AABB::intersect(Plane& plane) {
 
 bool
 AABB::intersect(Frustrum& frustrum) {
-  return Intersect::aabbFrustrum(center, 
-																 width,
-																 height,
-																 depth,
+  return Intersect::aabbFrustrum(getMaxPoint(),
+                                 getMinPoint(),
 																 frustrum.planes);
 }
 

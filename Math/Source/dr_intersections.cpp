@@ -6,6 +6,38 @@
 #include "dr_line.h"
 #include "dr_ray.h"
 namespace driderSDK {
+
+  driderSDK::Vector3D
+    GetVertexP(const driderSDK::Vector3D& min,
+               const driderSDK::Vector3D& max,
+               const driderSDK::Vector3D& normal) {
+
+    driderSDK::Vector3D p = min;
+    if (normal.x >= 0)
+      p.x = max.x;
+    if (normal.y >= 0)
+      p.y = max.y;
+    if (normal.z >= 0)
+      p.z = max.z;
+
+    return p;
+  }
+
+  driderSDK::Vector3D
+    GetVertexN(const driderSDK::Vector3D& min,
+               const driderSDK::Vector3D& max,
+               const driderSDK::Vector3D& normal) {
+
+    driderSDK::Vector3D p = max;
+    if (normal.x >= 0)
+      p.x = min.x;
+    if (normal.y >= 0)
+      p.y = min.y;
+    if (normal.z >= 0)
+      p.z = min.z;
+
+    return p;
+  }
 /**********************************************************************
 *						            Intersection functions
 **********************************************************************/
@@ -119,8 +151,8 @@ Intersect::rayRay(const Vector3D& rayOrigin1,
     Vector3D directionTemp ((rayOrigin2 - rayOrigin1).normalize());
     if (directionTemp.equals(rayDirection1))
     {
-      return true;
       (*Point) = rayOrigin2;
+      return true;
     }
     return false;
   }
@@ -242,7 +274,7 @@ Intersect::rayPlane(const Vector3D& rayOrigin,
                     float* intersectionPoint) {
   float denom = planeNormal.dot(rayDirection);
   if (denom > Math::SMALL_NUMBER || denom < -Math::SMALL_NUMBER) {
-    Vector3D planeToRayOrigin = planePoint - rayOrigin;
+    Vector3D planeToRayOrigin = rayOrigin - planePoint;
     *intersectionPoint = planeToRayOrigin.dot(planeNormal) / denom;
     return static_cast<bool>(*intersectionPoint >= 0);
   }
@@ -351,7 +383,31 @@ bool
 Intersect::rayFrustrum(const Vector3D& rayOrigin,
                        const Vector3D& rayDirection,
                        const std::array<Plane, 6>& frustrumPlanes) {
-  return false;
+
+  driderSDK::Ray ray(rayOrigin, rayDirection);
+  float distance;
+
+  distance = frustrumPlanes[0].distanceToPoint(driderSDK::Vector3D(640, 0, 0));
+
+  
+  for (size_t i = 0; i < 6; i++)
+  {
+    if (ray.intersects(frustrumPlanes[i], &distance))
+    {
+      driderSDK::Vector3D point = rayOrigin + rayDirection * distance;
+      for (size_t i = 0; i < 6; i++)
+      {
+        distance = frustrumPlanes[i].distanceToPoint(driderSDK::Vector3D(point));
+        if (distance < 0)
+        {
+          return false;
+
+        }
+      }
+    }
+  }
+
+  return true;
 }
 
 bool
@@ -364,7 +420,20 @@ bool
 Intersect::frustrumSphere(const std::array<Plane, 6>& frustrumPlanes,
                           const Vector3D& sphereOrigin,
                           float sphereRadius) {
-  return false;
+
+  float distance;
+  
+  for (const Plane& plane : frustrumPlanes) {
+    distance = plane.distanceToPoint(sphereOrigin);
+    if (distance < -sphereRadius) {
+      return false;
+    }
+    else if (distance < sphereRadius)
+    {
+      return true;
+    }
+  }
+  return true;
 }
 
 bool
@@ -415,13 +484,23 @@ Intersect::aabbSphere(const Vector3D& min,
 }
 
 bool
-Intersect::aabbFrustrum(const Vector3D& aabbCenter,
-												float aabbWidth,
-												float aabbHeight,
-												float aabbDepth,
+Intersect::aabbFrustrum(const Vector3D& pointMax,
+                        const Vector3D& pointMin,
                         const std::array<Plane, 6>& frustrumPlanes) {
 
-  return false;
+  float distance;
+  float distance2;
+  for (const Plane& plane : frustrumPlanes) {
+    if (plane.distanceToPoint(GetVertexP(pointMin, pointMax, plane)) < 0)
+    {
+      return false;
+    }
+    else if (plane.distanceToPoint(GetVertexN(pointMin, pointMax, plane)) < 0)
+    {
+      return true;
+    }
+  }
+  return true;
 }
 
 bool
@@ -647,18 +726,6 @@ Intersect::sphereContainsPoint(const Vector3D& point,
   return point.distance(sphPosition) <= radius;
 }
 
-/*bool
-Intersect::frustrumContainsFrustrum(const std::array<Plane, 6>& frustrumAPlanes,
-                                    const std::array<Plane, 6>& frustrumBPlanes) {
-  return false;
-}
-
-bool
-Intersect::frustrumContainsSphere(const std::array<Plane, 6>& frustrumPlanes,
-                                  const Vector3D& sphereOrigin,
-                                  float sphereRadius) {
-  return false;
-}*/
 
 float Intersect::closestPointSegmentSegment(const Vector3D& p1, 
                                             const Vector3D& q1, 

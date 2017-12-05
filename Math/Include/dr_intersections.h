@@ -439,10 +439,8 @@ struct DR_MATH_EXPORT Intersect
   *   True if the ray intersects, else returns false.
   */
   static bool
-  aabbFrustrum(const Vector3D& aabbCenter,
-							 float aabbWidth,
-							 float aabbHeight,
-							 float aabbDepth,
+  aabbFrustrum(const Vector3D& pointMax,
+               const Vector3D& pointMin,
                const std::array<Plane, 6>& frustrumPlanes);
 
   /**

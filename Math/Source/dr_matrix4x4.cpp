@@ -364,7 +364,7 @@ Matrix4x4::Orthogonal(float Width, float Height, float ZNear, float ZFar)
   (*this)[0][0] = 2.0f / Width;
   (*this)[1][1] = 2.0f / Height;
   (*this)[2][2] = 1.0f / (ZNear - ZFar);
-  (*this)[2][3] = ZNear / (ZNear - ZFar);
+  (*this)[2][3] = -ZNear / (ZNear - ZFar);
   (*this)[3][3] = 1.0f;
   return *this;
 }
