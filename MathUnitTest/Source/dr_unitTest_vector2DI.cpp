@@ -59,7 +59,7 @@ TEST(Vector2DI, dot) {
   driderSDK::Vector2DI testVector2(-2.14f, -7.f);
   driderSDK::Vector2DI testVector3(3.00014f, -100.f);
 
-  EXPECT_FLOAT_EQ(693.5797004f, testVector2.dot(testVector3));
+  EXPECT_FLOAT_EQ(694, testVector2.dot(testVector3));
 
   driderSDK::Vector2DI testVector4(1, 1024);
   driderSDK::Vector2DI testVector5(0.0000001f, 1024.f);
@@ -82,8 +82,8 @@ TEST(Vector2DI, length) {
   driderSDK::Vector2DI testVector1(3, 4);
   EXPECT_FLOAT_EQ(5, testVector1.length());
 
-  driderSDK::Vector2DI testVector2(1.001f, -9.99999f);
-  EXPECT_FLOAT_EQ(10.049965223825405f, testVector2.length());
+  driderSDK::Vector2DI testVector2(1.001f, -10.00009f);
+  EXPECT_FLOAT_EQ(driderSDK::Math::sqrt(101), testVector2.length());
 }
 
 TEST(Vector2DI, lengthSqr) {
@@ -93,22 +93,23 @@ TEST(Vector2DI, lengthSqr) {
   driderSDK::Vector2DI testVector1(3, 4);
   EXPECT_FLOAT_EQ(25, testVector1.lengthSqr());
 
-  driderSDK::Vector2DI testVector2(1.001f, -9.99999f);
-  EXPECT_FLOAT_EQ(101.00180100010002281946192341403f, testVector2.lengthSqr());
+  driderSDK::Vector2DI testVector2(1.001f, -10.00009f);
+  EXPECT_FLOAT_EQ(101, testVector2.lengthSqr());
 }
 
 TEST(Vector2DI, normalize) {
   driderSDK::Vector2DI testVector(1, 1);
   testVector.normalize();
-  checkValuesVector(testVector, 0.70710678118f, 0.70710678118f);
+  checkValuesVector(testVector, 1, 1);
 
   driderSDK::Vector2DI testVector2(100, 0.1);
   testVector2.normalize();
+  checkValuesVector(testVector2, 1, 0);
   EXPECT_FLOAT_EQ(1, testVector2.length());
 
   driderSDK::Vector2DI testVector3(1, 10);
   testVector3.normalize();
-  checkValuesVector(testVector3, 0.09950371902f, 0.99503719021f);
+  checkValuesVector(testVector3, 0, 1);
   EXPECT_FLOAT_EQ(1, testVector3.length());
 }
 
@@ -123,7 +124,7 @@ TEST(Vector2DI, distance) {
 
   driderSDK::Vector2DI testVector4(777, 666);
   driderSDK::Vector2DI testVector5(3.1415f, 0.1f);
-  EXPECT_FLOAT_EQ(1020.92105f, testVector4.distance(testVector5));
+  EXPECT_FLOAT_EQ(driderSDK::Math::sqrt(1042632), testVector4.distance(testVector5));
 }
 
 TEST(Vector2DI, distanceSqr) {
@@ -137,7 +138,7 @@ TEST(Vector2DI, distanceSqr) {
 
   driderSDK::Vector2DI testVector4(777, 666);
   driderSDK::Vector2DI testVector5(3.1415f, 0.1f);
-  EXPECT_FLOAT_EQ(1042279.7903331025f, testVector4.distanceSqr(testVector5));
+  EXPECT_FLOAT_EQ(1042632, testVector4.distanceSqr(testVector5));
 }
 
 TEST(Vector2DI, equals) {
@@ -204,7 +205,7 @@ TEST(Vector2DI, operatorOr) {
   driderSDK::Vector2DI testVector2(-2.14f, -7.f);
   driderSDK::Vector2DI testVector3(3.00014f, -100.f);
 
-  EXPECT_FLOAT_EQ(693.5797004f, testVector2 | testVector3);
+  EXPECT_FLOAT_EQ(694, testVector2 | testVector3);
 
   driderSDK::Vector2DI testVector4(1, 1024);
   driderSDK::Vector2DI testVector5(0.0000001f, 1024.f);
@@ -310,11 +311,10 @@ TEST(Vector2DI, operatorEqualEqual) {
   driderSDK::Vector2DI testVector3(2.1f, 3);
 
   EXPECT_FALSE(testVector == testVector1);
-  EXPECT_FALSE(testVector1 == testVector2);
+  EXPECT_TRUE(testVector1 == testVector2);
   EXPECT_TRUE(testVector2 == testVector3);
 }
 
-//asdasdasd asd asd as
 TEST(Vector2DI, operatorNotEqual) {
   driderSDK::Vector2DI testVector(1, 2);
   driderSDK::Vector2DI testVector1(2.00000001f, 3);
@@ -322,7 +322,7 @@ TEST(Vector2DI, operatorNotEqual) {
   driderSDK::Vector2DI testVector3(2.1f, 3);
 
   EXPECT_TRUE(testVector != testVector1);
-  EXPECT_TRUE(testVector1 != testVector2);
+  EXPECT_FALSE(testVector1 != testVector2);
   EXPECT_FALSE(testVector2 != testVector3);
 }
 

@@ -116,7 +116,7 @@ class DR_MATH_EXPORT Line
   *
   */
   Vector3D
-  GetPoint(SizeT point);
+  GetPoint(const SizeT point) const;
 
   /**
   * TEST::Length
@@ -126,7 +126,7 @@ class DR_MATH_EXPORT Line
   * length for line
   *
   */
-  float Length();
+  float Length() const;
     
   /**
   * TEST::intersectPlane

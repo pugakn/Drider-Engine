@@ -12,6 +12,7 @@ namespace driderSDK {
 class Sphere;
 class Capsule;
 class Ray;
+class AABB;
 
 /**
 * Frustrum class
@@ -36,7 +37,7 @@ class DR_MATH_EXPORT Frustrum
   Frustrum () {}
 
 	/**
-  * TEST::frustrumConstructorVPM
+  * TEST::fromVP
 	* Constructor using a View Projection matrix
 	*
 	* @param VP
@@ -46,7 +47,7 @@ class DR_MATH_EXPORT Frustrum
 	Frustrum(const Matrix4x4& ViewProjection);
 
 	/**
-  * TEST::createFromVP
+  * TEST::fromVP
 	* Create the frustrum planes with the View Projection matrix
 	*
 	* @param VP
@@ -67,8 +68,8 @@ class DR_MATH_EXPORT Frustrum
 	*	  True if the frustrum intersects with the other ray
 	*
 	*/
-	/*bool
-	intersects(const Ray& bRay) const;*/
+	bool
+	intersects(const Ray& bRay) const;
 
 	/*
 	* Check if the frustrum intersects with a plane
@@ -80,8 +81,8 @@ class DR_MATH_EXPORT Frustrum
 	*	  True if the frustrum intersects with the plane
 	*
 	*/
-	/*bool
-	intersects(const Plane& plane) const;*/
+	bool
+	intersects(const Plane& plane) const;
 
 	/**
   * TEST::frustrumSphere
@@ -107,8 +108,8 @@ class DR_MATH_EXPORT Frustrum
 	*	  True if the frustrum intersects with the capsule
 	*
 	*/
-	/*bool
-	intersects(const Capsule& capsule) const;*/
+	bool
+	intersects(const Capsule& capsule) const;
 
 	/**
 	* Check if the frustrum intersects with a frustrum
@@ -120,74 +121,22 @@ class DR_MATH_EXPORT Frustrum
 	*	  True if the frustrum intersects with the frustrum
 	*
 	*/
-	/*bool
-	intersects(const Frustrum& frustrum) const;*/
+	bool
+	intersects(const Frustrum& frustrum) const;
 
-
-	/**
-	* Check if the frustrum intersects contains a point
-	*
-	*	@param point
-	*	 The point to check.
-	*
-	* @return
-	*	  True if the frustrum contains the point
-	*
-	*/
-	/*bool
-	contains(const Vector3D& point) const;*/
-
-	/**
-	* Check if the frustrum intersects contains a plane
-	*
-	*	@param plane
-	*	 The plane to check.
-	*
-	* @return
-	*	  True if the frustrum contains the plane
-	*
-	*/
-	/*bool
-	contains(const Plane& plane) const;*/
-
-	/**
-	* Check if the frustrum intersects contains a sphere
-	*
-	*	@param sphere
-	*	 The sphere to check.
-	*
-	* @return
-	*	  True if the frustrum contains the sphere
-	*
-	*/
-	/*bool
-	contains(const Sphere& sphere) const;*/
-
-	/**
-	* Check if the frustrum intersects contains a capsule
-	*
-	*	@param capsule
-	*	 The capsule to check.
-	*
-	* @return
-	*	  True if the frustrum contains the capsule
-	*
-	*/
-	/*bool
-	contains(const Capsule& capsule) const;*/
-
-	/**
-	* Check if the frustrum intersects contains a frustrum
-	*
-	*	@param frustrum
-	*	 The frustrum to check.
-	*
-	* @return
-	*	  True if the frustrum contains the frustrum
-	*
-	*/
-	/*bool
-	contains(const Frustrum& frustrum) const;*/
+  /**
+  * TEST::AABBFrustrum
+  * Check if the frustrum intersects with a AABB
+  *
+  *	@param AABB
+  *	 The AABB to check the intersecton.
+  *
+  * @return
+  *	  True if the frustrum intersects with the AABB
+  *
+  */
+  bool
+  intersects(const AABB& frustrum) const;
 
   std::array<Plane,6> planes;
 

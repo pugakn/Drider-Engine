@@ -34,6 +34,14 @@ TEST(Vector2D, moveContructor) {
   checkValuesVector(vec2, 0, 1);
 }
 
+TEST(Vector2D, orientation) {
+  EXPECT_FALSE(true);
+}
+
+TEST(Vector2D, compare) {
+  EXPECT_FALSE(true);
+}
+
 TEST(Vector2D, copyConstructor) {
   driderSDK::Vector2D testVector(0, 1);
   driderSDK::Vector2D testVector2(testVector);

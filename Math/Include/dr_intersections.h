@@ -170,6 +170,16 @@ struct DR_MATH_EXPORT Intersect
   * TEST::NoImplemented
   */
   static bool
+  rayRay(const Vector3D& rayOrigin1,
+         const Vector3D& rayDirection1,
+         const Vector3D& rayOrigin2,
+         const Vector3D& rayDirection2,
+         Vector3D* Point);
+  
+  /**
+  * TEST::NoImplemented
+  */
+  static bool
   rayPlane(const Vector3D& rayOrigin,
            const Vector3D& rayDirection,
            const Vector3D& planeNormal,
@@ -261,6 +271,35 @@ struct DR_MATH_EXPORT Intersect
              const Vector3D& pointQ,
              float r,
              float &t);
+
+  /**
+  * TEST::rayLine
+  * Check if there was an intersection between a ray and a line.
+  *
+  * @param rayOrigin
+  *   ray origin.
+  *
+  * @param rayDirection
+  *   Mray direction.
+  *
+  * @param point1
+  *   point one of line.
+  *
+  * @param point2
+  *   point tow of line.
+  *
+  * @return Point
+  *   point intersection.
+  *
+  * @return
+  *   True if there is intersection, if not False
+  */
+  static bool
+  rayLine(const Vector3D& rayOrigin,
+          const Vector3D& rayDirection,
+          const Vector3D& point1,
+          const Vector3D& point2,
+          Vector3D* Point);
 
   static bool
   rayFrustrum(const Vector3D& rayOrigin,
@@ -400,10 +439,8 @@ struct DR_MATH_EXPORT Intersect
   *   True if the ray intersects, else returns false.
   */
   static bool
-  aabbFrustrum(const Vector3D& aabbCenter,
-							 float aabbWidth,
-							 float aabbHeight,
-							 float aabbDepth,
+  aabbFrustrum(const Vector3D& pointMax,
+               const Vector3D& pointMin,
                const std::array<Plane, 6>& frustrumPlanes);
 
   /**

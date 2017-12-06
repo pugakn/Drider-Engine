@@ -26,7 +26,7 @@ TEST(Sphere, intersectsPoint) {
   sphere.radius = 0.5f;
 
   driderSDK::Vector3D point1{ 0.0f,0.0f,0.0f };
-  driderSDK::Vector3D point2{ 0.5f,0.0f,0.0f };
+  driderSDK::Vector3D point2{ 1.5f,0.0f,0.0f };
 
   EXPECT_TRUE(sphere.intersects(point1));
   EXPECT_FALSE(sphere.intersects(point2));
@@ -60,22 +60,12 @@ TEST(Sphere, intersectsSphere) {
 }
 
 TEST(Sphere, intersectsAabb) {
-  driderSDK::Sphere sphere;
-  sphere.center = driderSDK::Vector3D(0.0f, 0.0f, 0.0f);
-  sphere.radius = 0.5f;
-
-  driderSDK::AABB Aabb;
-  Aabb.center = driderSDK::Vector3D(0.5f, 0.0f, 0.0f);
-  Aabb.height = 1.0f;
-  Aabb.width = 0.6f;
-
-  EXPECT_TRUE(sphere.intersects(Aabb));
-
-  Aabb.center = driderSDK::Vector3D(0.5f, 0.0f, 0.0f);
-  Aabb.height = 1.0f;
-  Aabb.width = 0.6f;
-
-  EXPECT_TRUE(sphere.intersects(Aabb));
+  driderSDK::Sphere sphere(driderSDK::Vector3D(0.f, 0.f, 0.f), 0.5f);
+  driderSDK::Sphere FalseSphere(driderSDK::Vector3D(-10.f, -10.f, -10.f), 0.5f);
+  driderSDK::AABB TrueAabb(0.6f, 1.f, 0.6f, driderSDK::Vector3D(0.f, 0.f, 0.f));
+  driderSDK::AABB FalseAabb(1.f, 1.f, 1.f, driderSDK::Vector3D(0.f, 0.f, 0.f));
+  EXPECT_TRUE(sphere.intersects(TrueAabb));
+  EXPECT_FALSE(FalseSphere.intersects(FalseAabb));
 }
 
 TEST(Sphere, intersectsCapsule) {
@@ -98,11 +88,17 @@ TEST(Sphere, intersectsCapsule) {
 }
 
 TEST (Sphere, intersectsFrustrum) {
-  driderSDK::Sphere sphere;
-  sphere.center = driderSDK::Vector3D(0.0f, 0.0f, 0.0f);
-  sphere.radius = 0.5f;
+  driderSDK::Matrix4x4 mat;
+  mat.Orthogonal(1280, 980, 0.1f, 800);
+  driderSDK::Frustrum f(mat);
 
-  //driderSDK::Frustrum frustrum;
-  EXPECT_TRUE (false);
+  driderSDK::Sphere sph(driderSDK::Vector3D(0.0, 0.0, 0.0), 0.5f);
+  EXPECT_TRUE(sph.intersects(f));
+
+  driderSDK::Sphere sph2(driderSDK::Vector3D(0.0, 500, 0.0), 0.5f);
+  EXPECT_FALSE(sph2.intersects(f));
+
+  driderSDK::Sphere sph3(driderSDK::Vector3D(600, 0.0, 0.0), 50);
+  EXPECT_TRUE(sph3.intersects(f));
 }
 
