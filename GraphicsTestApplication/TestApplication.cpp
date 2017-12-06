@@ -9,8 +9,7 @@ namespace driderSDK {
 
 TestApplication::TestApplication() 
   : viewport{0,0,1280, 720},
-    mainCamera(_T("MainCamera")),
-    camera(mainCamera, {0,50,-300}, {0,0,0}, viewport, 45.f, 0.001f, 1000.f )
+    camera(_T("MainCamera"), {0,50,-300}, {0,0,0}, viewport, 45.f, 0.001f, 1000.f )
 {
 }
 

@@ -25,7 +25,6 @@ public:
 
   void initWindow();
 
-  TString mainCamera;
   GraphicsAPI* driver;
   Quad quad;
   std::vector<Model3D> models;
