@@ -307,17 +307,17 @@ Matrix4x4::LookAt(const Vector3D & Eye, const Vector3D & At, const Vector3D & Up
   (*this)[0][0] = XAxis.x;
   (*this)[0][1] = XAxis.y;
   (*this)[0][2] = XAxis.z;
-  (*this)[0][3] = -(XAxis.dot(Eye));
+  (*this)[0][3] = -(Eye.dot(XAxis));
 
   (*this)[1][0] = YAxis.x;
   (*this)[1][1] = YAxis.y;
   (*this)[1][2] = YAxis.z;
-  (*this)[1][3] = -(YAxis.dot(Eye));
+  (*this)[1][3] = -(Eye.dot(YAxis));
 
   (*this)[2][0] = ZAxis.x;
   (*this)[2][1] = ZAxis.y;
   (*this)[2][2] = ZAxis.z;
-  (*this)[2][3] = -(ZAxis.dot(Eye));
+  (*this)[2][3] = -(Eye.dot(ZAxis));
 
   (*this)[3][0] = 0.0f;
   (*this)[3][1] = 0.0f;
@@ -343,15 +343,15 @@ Matrix4x4::Projection(float Width, float Height, float ZNear, float ZFar)
 Matrix4x4&
 Matrix4x4::ProjectionFov(float FOV, float Aspect, float ZNear, float ZFar)
 {
-  *this = zerosMat4x4;
+  *this = identityMat4x4;
   float Width = 1.0f / tanf(FOV * .5f);
   float Height = Aspect / tanf(FOV * .5f);
 
 
   data[0][0] = -Width;
   data[1][1] = Height;
-  data[2][2] = ZFar / (ZNear - ZFar);
-  data[2][3] = -1.0f;
+  data[2][2] = -ZFar / (ZNear - ZFar);
+  data[2][3] = 1.0f;
   data[3][2] = ZFar * ZNear / (ZNear - ZFar);
 
   return *this;
