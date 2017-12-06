@@ -11,7 +11,7 @@ File::~File() {
 
 bool
 File::Open(const TString filename) {
-  m_file.open(filename, std::ios_base::out | std::ios_base::in);
+  m_file.open(filename, std::ios_base::out | std::ios_base::in | std::ios::binary);
 
   if (m_file) {
     m_filename = filename;
@@ -32,7 +32,7 @@ File::Close() {
 
 void
 File::Seek(const SizeT position) {
-  assert(position >= Size());
+  assert(position <= Size());
   m_file.seekg(position, std::ios_base::beg);
 }
 
@@ -43,19 +43,24 @@ File::TellG() {
 
 SizeT
 File::Size() {
+  SizeT actualPtr = TellG();
+
   std::streampos fsize = 0;
-  std::ifstream file(m_filename, std::ios::binary);
-  fsize = file.tellg();
-  file.seekg(0, std::ios::end);
-  fsize = file.tellg() - fsize;
-  file.close();
+  m_file.seekg(0, std::ios::beg);
+  fsize = m_file.tellg();
+  m_file.seekg(0, std::ios::end);
+  fsize = m_file.tellg() - fsize;
+  m_file.seekg(actualPtr, std::ios::beg);
 
   return fsize;
 }
 
 void
 File::Read(const SizeT nBytes, ANSIChar* bytesOut) {
-  assert(TellG() + nBytes > Size());
+  SizeT filePtr = TellG();
+  SizeT fileSz = Size();
+  
+  assert(filePtr + nBytes <= Size());
   m_file.read(bytesOut, nBytes);
 }
 
@@ -66,7 +71,7 @@ File::Write(const SizeT nBytes, ANSIChar * bytesIn) {
 
 TString
 File::GetAsString(const SizeT nBytes) {
-  assert(TellG() + nBytes > Size());
+  assert(TellG() + nBytes <= Size());
 
   ANSIChar* tmpBuff = new ANSIChar[nBytes];
   Read(nBytes, tmpBuff);

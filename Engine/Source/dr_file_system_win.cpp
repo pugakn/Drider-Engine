@@ -17,7 +17,7 @@ FileSystem::GetWorkingPath() {
   cCurrentPath[sizeof(cCurrentPath) - 1] = '\0';
 
   SizeT curChar = 0;
-  while (curChar < sizeof(cCurrentPath)) {
+  while (cCurrentPath[curChar] != '\0') {
     fullpath += cCurrentPath[curChar];
     ++curChar;
   }
