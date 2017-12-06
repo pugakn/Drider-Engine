@@ -3,6 +3,8 @@
 #include <dr_engine_prerequisites.h>
 #include <dr_codec_model.h>
 #include <dr_model_info.h>
+#include <dr_model.h>
+#include <dr_math.h>
 
 using driderSDK::Codec;
 using driderSDK::CodecModel;
@@ -11,7 +13,11 @@ using CodecPtr = std::unique_ptr<Codec>;
 TEST(CodecModel, decode) {
   CodecPtr modelCodec = driderSDK::dr_make_unique<CodecModel>();
 
-  Codec::UniqueVoidPtr pData = modelCodec->decode(_T("Cube.fbx"));
+  Codec::UniqueVoidPtr pData = modelCodec->decode(_T("dwarf.x"));
+
+  auto pModel = driderSDK::dr_make_unique<driderSDK::Model>();
+
+  pModel->init(pData.get());
 
   driderSDK::ModelInfo* pInfo = static_cast<driderSDK::ModelInfo*>(pData.get());
 

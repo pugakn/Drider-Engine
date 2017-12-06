@@ -1,7 +1,6 @@
 #pragma once
-#include <string>
-#include <fstream>
 #include "dr_engine_prerequisites.h"
+#include "dr_file.h"
 
 namespace driderSDK {
 
@@ -10,9 +9,6 @@ namespace driderSDK {
 *
 * Sample usage:
 * FileSystem sampleName;
-* sampleName.load("fileToOpen", bufferToStoreFile);
-* sampleName.save("fileToWrite", bufferToSaveToFile);
-* sampleName.append("fileToAppend", bufferToAddInFile);
 */
 class DR_ENGINE_EXPORT FileSystem
 {
@@ -33,71 +29,113 @@ class DR_ENGINE_EXPORT FileSystem
   ~FileSystem();
   
   /**
-  * TEST::load
+  * TEST::GetWorkingPath
   *
-  * The Load operation determines how many bytes are in the file and returns the
-  * amount in riSize.
+  * Returns the fullpath of the working directory.
+  * OS specific.
   *
-  * Param filename
-  *   The name of the file to load.
-  *
-  * Param bufferOut
-  *   The output where the file will be loaded
-  *
-  * Return
-  *   Boolean value is true if the load is successful, in which case
-  *   the outputs racBuffer and riSize are valid.
-  *
-  * If the returned value is false, one of the following conditions has occurred:
-  *   The file does not exist.
-  *   The file cannot be opened for reading (the file attributes might not allow this).
+  * @return
+  *   String containing the fullpath of the working directory.
   */
-  static bool
-  load (const std::string& filename, std::string& bufferOut);
+  TString
+  GetWorkingPath();
 
   /**
-  * TEST::save
-  * The Save operation writes the input buffer to disk.
+  * TEST::CreateAndOpen
   *
-  * Param filename
-  *   The name of the file to save.
+  * Description
   *
-  * Param bufferToSave
-  *   The info to be saved.
+  * @param filename
   *
-  * Return
-  *   Boolean value is true if the save is successful.
-  *   If the returned value is false, one of the following conditions has occurred:
-  *     The input buffer is null.
-  *     The file cannot be opened for writing (the file might exist and be set to read-only).
+  * @return
   */
-  static bool
-  save (const std::string& filename, const std::string& bufferToSave);
+  bool
+  CreateAndOpen(const TString& filename, File& file);
 
   /**
-  * TEST::append
-  * The Append operation is identical in structure to Save, except that the file
-  * is opened for appending.
-  * The input buffer is written at the end of an already existing file. If the
-  * file does not exist, it is created and the buffer is written.
+  * TEST::Copy
   *
-  * Param filename
-  *   The name of the file to save.
+  * Description
   *
-  * Param bufferToSave
-  *   The info to be saved.
+  * @param filename
   *
-  * Return
-  *   Boolean value is true if the save is successful.
-  *   If the returned value is false, one of the following conditions has occurred:
-  *     The input buffer is null.
-  *     The file cannot be opened for writing (the file might exist and be set to read-only).
+  * @return
   */
-  static bool
-  append (const std::string& filename, const std::string& bufferToAppend);
+  void
+  Copy(const TString& filepathSrc, const TString& filepathDst);
 
+  /**
+  * TEST::Move
+  *
+  * Description
+  *
+  * @param filename
+  *
+  * @return
+  */
+  void
+  Move(const TString& filepathSrc, const TString& filepathDst);
+
+  /**
+  * TEST::Remove
+  *
+  * Description
+  *
+  * @param filename
+  *
+  * @return
+  *   
+  */
+  bool
+  Remove(const TString& filepath);
+
+  /**
+  * TEST::IsFile
+  *
+  * Description
+  *
+  * @param filename
+  *
+  * @return
+  */
+  bool
+  IsFile(const TString& filepath);
+
+  /**
+  * TEST::IsDirectory
+  *
+  * Description
+  *
+  * @param filename
+  *
+  * @return
+  */
+  bool
+  IsDirectory(const TString& filepath);
+
+  /**
+  * TEST::Exists
+  *
+  * Description
+  *
+  * @param filename
+  *
+  * @return
+  */
+  bool
+  Exists(const TString& filepath);
+
+  /**
+  * TEST::GetFileExtension
+  *
+  * Description
+  *
+  * @param filename
+  *
+  * @return
+  */
   static TString 
-  getFileExtension(const TString& file);
+  GetFileExtension(const TString& filepath);
 
 };
 

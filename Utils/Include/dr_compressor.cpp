@@ -1,4 +1,5 @@
 #include "dr_compressor.h"
+/*
 #include <LZ4\lz4.h>
 namespace driderSDK {
 Int32 
@@ -12,4 +13,4 @@ Compressor::decompress(const byte * src, byte * dst, int compressedSize, int dst
 {
   return LZ4_decompress_safe((char*)src, (char*)dst, compressedSize, dstCapacity);
 }
-}
+}*/

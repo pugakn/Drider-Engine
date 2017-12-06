@@ -173,7 +173,7 @@ class DR_MATH_EXPORT Vector2D
   bool
   equals(const Vector2D& otherVector, float errorRange = Math::SMALL_NUMBER) const;
 
-  /*
+  /**
   * TEST::compare
   * Compares the polar angle of 2 points.
   *

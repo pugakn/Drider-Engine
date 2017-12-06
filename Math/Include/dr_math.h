@@ -1,5 +1,8 @@
 #pragma once
 
+#undef max
+#undef min
+
 #include <cmath>
 #include <cstring>
 #include <limits>

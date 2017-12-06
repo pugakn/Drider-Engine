@@ -48,9 +48,9 @@ void Quad::init(Device& device)
 
 
   DrBufferDesc bdesc;
-  /*bdesc.type = DR_BUFFER_TYPE::kCONSTANT;
+  bdesc.type = DR_BUFFER_TYPE::kCONSTANT;
   bdesc.sizeInBytes = sizeof(CBuffer);
-  CB = (ConstantBuffer*)device.createBuffer(bdesc);*/
+  CB = (ConstantBuffer*)device.createBuffer(bdesc);
 
   bdesc.type = DR_BUFFER_TYPE::kVERTEX;
   bdesc.sizeInBytes = sizeof(vertex) * 4;
@@ -67,20 +67,23 @@ void Quad::init(Device& device)
 
 void Quad::destroy()
 {
-  //CB->release();
+  CB->release();
   IB->release();
   VB->release();
 }
 
-void Quad::draw(const DeviceContext& deviceContext)
-{
+void Quad::draw(const DeviceContext& deviceContext,
+                const driderSDK::Matrix4x4& wvp)
+{ 
+  constBuff.WVP = wvp;
+
   fs->set(deviceContext);
   vs->set(deviceContext);
   IL->set(deviceContext);
   VB->set(deviceContext);
   IB->set(deviceContext); 
-  //CB->updateFromBuffer(deviceContext,reinterpret_cast<byte*>(&constBuff));
-  //CB->set(deviceContext);
+  CB->updateFromBuffer(deviceContext,reinterpret_cast<byte*>(&constBuff));
+  CB->set(deviceContext);
   deviceContext.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
   deviceContext.draw(6, 0, 0);
 }

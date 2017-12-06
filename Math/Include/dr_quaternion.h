@@ -120,8 +120,8 @@ class DR_MATH_EXPORT Quaternion
   * @return
   *   A rotated vector.
   */
-  Vector3D
-  rotation(const Vector3D& V);
+  const Vector3D
+  rotation(const Vector3D& V) const;
 
   /**
 	* TEST::matrixFromQuaternion4x4

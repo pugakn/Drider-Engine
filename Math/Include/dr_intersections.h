@@ -139,6 +139,43 @@ struct DR_MATH_EXPORT Intersect
             float sphRadio,
             const Vector3D& rayOrigin,
             const Vector3D& rayDirection);
+
+  /**
+  * TEST::sphereRay
+  * Check if there was an intersection between a sphere and a capsule.
+  *
+  * @param sphPosition
+  *   Center of the sphere to check.
+  *
+  * @param sphRadio
+  *   Radius of the sphere.
+  *
+  * @param rayOrigin
+  *   Origin of the sphere.
+  *
+  * @param rayDirection
+  *   Directions of the ray.
+  *
+  * @return
+  *   True if there is intersection, if not False
+  */
+  static bool
+  sphereRay(const Vector3D& sphPosition,
+            float sphRadio,
+            const Vector3D& rayOrigin,
+            const Vector3D& rayDirection,
+            Vector3D* intersectionPoint);
+
+  /**
+  * TEST::NoImplemented
+  */
+  static bool
+  rayRay(const Vector3D& rayOrigin1,
+         const Vector3D& rayDirection1,
+         const Vector3D& rayOrigin2,
+         const Vector3D& rayDirection2,
+         Vector3D* Point);
+  
   /**
   * TEST::NoImplemented
   */
@@ -235,10 +272,39 @@ struct DR_MATH_EXPORT Intersect
              float r,
              float &t);
 
-  /*static bool
+  /**
+  * TEST::rayLine
+  * Check if there was an intersection between a ray and a line.
+  *
+  * @param rayOrigin
+  *   ray origin.
+  *
+  * @param rayDirection
+  *   Mray direction.
+  *
+  * @param point1
+  *   point one of line.
+  *
+  * @param point2
+  *   point tow of line.
+  *
+  * @return Point
+  *   point intersection.
+  *
+  * @return
+  *   True if there is intersection, if not False
+  */
+  static bool
+  rayLine(const Vector3D& rayOrigin,
+          const Vector3D& rayDirection,
+          const Vector3D& point1,
+          const Vector3D& point2,
+          Vector3D* Point);
+
+  static bool
   rayFrustrum(const Vector3D& rayOrigin,
               const Vector3D& rayDirection,
-              const std::array<Plane, 6>& frustrumPlanes);*/
+              const std::array<Plane, 6>& frustrumPlanes);
   /**
   * TEST::frustrumFrustrum
   * Check if there was an intersection between a frustrum and other frustrum.
@@ -252,7 +318,6 @@ struct DR_MATH_EXPORT Intersect
   * @return
   *   True if there is intersection, if not false
   */
- 
   static bool
   frustrumFrustrum(const std::array<Plane, 6>& frustrumAPlanes,
                    const std::array<Plane, 6>& frustrumBPlanes);
@@ -276,8 +341,8 @@ struct DR_MATH_EXPORT Intersect
                  float sphereRadius);
 
 
-  /*static bool
-  frustrumCapsuleIntersection(const Matrix4x4& frustrumVP);*/
+  static bool
+  frustrumCapsuleIntersection(const Matrix4x4& frustrumVP);
 
   /**
   * TEST::aabbAabb
@@ -346,11 +411,9 @@ struct DR_MATH_EXPORT Intersect
   *   True if the sphere intersects, else returns false.
   */
   static bool
-  aabbSphere(const Vector3D& aabbCenter,
-						 float aabbWidth,
-						 float aabbHeight,
-						 float aabbLength,
-             const Vector3D& sphereOrigin,
+  aabbSphere(const Vector3D& min,
+             const Vector3D& max,
+             const Vector3D& sphereCenter,
              float sphereRadius);
 
   /**
@@ -376,10 +439,8 @@ struct DR_MATH_EXPORT Intersect
   *   True if the ray intersects, else returns false.
   */
   static bool
-  aabbFrustrum(const Vector3D& aabbCenter,
-							 float aabbWidth,
-							 float aabbHeight,
-							 float aabbDepth,
+  aabbFrustrum(const Vector3D& pointMax,
+               const Vector3D& pointMin,
                const std::array<Plane, 6>& frustrumPlanes);
 
   /**
@@ -410,6 +471,13 @@ struct DR_MATH_EXPORT Intersect
 					const Vector3D& aabbMin,
           const Vector3D& rayOrigin,
           const Vector3D& rayDirection);
+
+  static bool
+  rayAABB(const Vector3D& aabbMax,
+					const Vector3D& aabbMin,
+          const Vector3D& rayOrigin,
+          const Vector3D& rayDirection,
+          Vector3D* point);
 
   /**
   * TEST::aabbPoint

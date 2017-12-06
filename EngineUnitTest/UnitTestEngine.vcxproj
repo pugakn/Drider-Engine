@@ -23,8 +23,8 @@
     <ClCompile Include="Source\dr_unitTest_codec.cpp" />
     <ClCompile Include="Source\dr_unitTest_codecModel.cpp" />
     <ClCompile Include="Source\dr_unitTest_codecTexture.cpp" />
+    <ClCompile Include="Source\dr_unitTest_File.cpp" />
     <ClCompile Include="Source\dr_unitTest_FileSystem.cpp" />
-    <ClCompile Include="Source\dr_unitTest_modelResource.cpp" />
     <ClCompile Include="Source\dr_unitTest_resourceFactory.cpp" />
     <ClCompile Include="Source\dr_unitTest_resourceManager.cpp" />
     <ClCompile Include="Source\dr_unitTest_textureResource.cpp" />

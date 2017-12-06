@@ -2,27 +2,30 @@
 #include <SDL\SDL.h>
 #include <iostream>
 #include <Windows.h> //TODO: remove
-
 #include <dr_d3d_swap_chain.h>
+#include <dr_rasterizer_state.h>
 
 namespace driderSDK {
 
-TestApplication::TestApplication()
+TestApplication::TestApplication() 
+  : viewport{0,0,1280, 720},
+    camera({0, 0, -100}, {0,0,0}, 45, 0.01f, 10000.f, &viewport)
 {
 }
-
 
 TestApplication::~TestApplication()
 {
 }
+
 void TestApplication::onInit()
 {
   initWindow();
   driver = new D3DGraphicsAPI;
   HWND win = GetActiveWindow();
-  driver->init(1280, 720,win );
-
+  driver->init(viewport.width, viewport.height, win );
+  
   quad.init(*driver->device);
+  model.init(*driver->device);
   
 }
 void TestApplication::onInput()
@@ -33,11 +36,14 @@ void TestApplication::onInput()
 }
 void TestApplication::onUpdate()
 {
+  model.update();
+  camera.update(0);
 }
 void TestApplication::onDraw()
 {
   driver->clear();
-  quad.draw(*driver->deviceContext);
+  //quad.draw(*driver->deviceContext, camera.getVP());
+  model.draw(*driver->deviceContext, camera);
   driver->swapBuffers();
 }
 void TestApplication::onDestroy()
