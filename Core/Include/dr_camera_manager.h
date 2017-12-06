@@ -58,7 +58,7 @@ public:
 	*   Value of the farthest plane of the proyection.
 	*/
 	void 
-	createCamera(const std::string& cameraName,
+	createCamera(const TString& cameraName,
 							 const Vector3D& pos,
 							 const Vector3D& target,
 							 const Viewport& viewport,
@@ -74,7 +74,7 @@ public:
 	*   The name of the camera to delete.
 	*/
 	void
-	deleteCamera(const std::string& cameraName);
+	deleteCamera(const TString& cameraName);
 
 
 	/**
@@ -88,7 +88,7 @@ public:
 	*   The viewport to set to the camera.   
 	*/
 	void
-	setViewportToCamera(const std::string& cameraName, const Viewport& viewport);
+	setViewportToCamera(const TString& cameraName, const Viewport& viewport);
 
 	/**
 	* TEST::getActiveCamera
@@ -109,7 +109,7 @@ public:
 	*
 	*/
 	void
-	setActiveCamera(const std::string& cameraName);
+	setActiveCamera(const TString& cameraName);
 
 private:
 

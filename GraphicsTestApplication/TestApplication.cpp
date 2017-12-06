@@ -9,7 +9,8 @@ namespace driderSDK {
 
 TestApplication::TestApplication() 
   : viewport{0,0,1280, 720},
-    camera({0, 100, 200}, {0,0,0}, 45, 0.1f, 1000.f, &viewport)
+    mainCamera(_T("MainCamera")),
+    camera(mainCamera, {0,50,-300}, {0,0,0}, viewport, 45.f, 0.001f, 1000.f )
 {
 }
 
@@ -23,6 +24,7 @@ void TestApplication::onInit()
   driver = new D3DGraphicsAPI;
   HWND win = GetActiveWindow();
   driver->init(viewport.width, viewport.height, win );
+
  
   ResourceManager::startUp();
   ResourceManager* pInstance;

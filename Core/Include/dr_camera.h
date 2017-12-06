@@ -52,7 +52,7 @@ public:
 	* @param farPlane
 	*   Value of the farthest plane of the proyection.
 	*/
-	Camera(const std::string& name,
+	Camera(const TString& name,
 				 const Vector3D& pos,
 				 const Vector3D& target,
 				 const Viewport& viewport,
@@ -143,7 +143,7 @@ public:
 	* @return 
 	*   The name of this camera.
 	*/
-	std::string&
+	const TString&
 	getName();
 
 	/**
@@ -169,7 +169,7 @@ public:
   getVP() const;
 
 //private:
-	std::string m_name;
+	TString m_name;
 	Vector3D m_pos;
 	Vector3D m_target;
 	Vector3D m_up;
