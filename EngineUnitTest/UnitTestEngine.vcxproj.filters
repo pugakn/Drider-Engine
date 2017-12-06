@@ -45,8 +45,5 @@
     <ClCompile Include="Source\dr_unitTest_textureResource.cpp">
       <Filter>Source Files\Resources</Filter>
     </ClCompile>
-    <ClCompile Include="Source\dr_unitTest_modelResource.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>

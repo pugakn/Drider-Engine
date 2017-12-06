@@ -2,7 +2,7 @@
 #include "dr_core_prerequisites.h"
 #include <atomic>
 namespace driderSDK {
-class DR_CORE_EXPORT Application 
+class DR_CORE_EXPORT Application
 {
 public:
   virtual ~Application() {}

@@ -1,8 +1,9 @@
 #pragma once
 
 #include <map>
-
+#include <dr_memory.h>
 #include "dr_core_prerequisites.h"
+
 
 namespace driderSDK {
 
@@ -20,6 +21,8 @@ class DR_CORE_EXPORT Resource
   *	Default destructor.
   */
   virtual ~Resource() { };
+
+  virtual void init(void* resourceData) = 0;
 };
 
 }

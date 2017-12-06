@@ -1,7 +1,9 @@
 #pragma once
 #include <dr_util_prerequisites.h>
 #include <dr_d3d_graphics_api.h>
-
+#include "Model3D.h"
+#include <dr_camera.h>
+#include <dr_viewport.h>
 #include "dr_application.h"
 #include "dr_quad.h"
 namespace driderSDK {
@@ -23,6 +25,9 @@ public:
 
   GraphicsAPI* driver;
   Quad quad;
+  Model3D model;
+  Viewport viewport;
+  Camera camera;
 };
 
 }

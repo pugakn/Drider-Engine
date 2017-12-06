@@ -8,6 +8,7 @@
 #include "dr_d3d_rasterizer_state.h"
 #include <dxgi.h>
 #include <d3d11.h>
+#include <DirectXMath.h>
 namespace driderSDK {
 void D3DGraphicsAPI::init(UInt32 w, UInt32 h, void* hwnd)
 {
@@ -54,7 +55,7 @@ void D3DGraphicsAPI::init(UInt32 w, UInt32 h, void* hwnd)
   DrRasterizerDesc rasterizerStateDesc;
   rasterizerStateDesc.fillMode = DR_FILL_MODE::kSolid;
   rasterizerStateDesc.cullMode = DR_CULL_MODE::kBack;
-  rasterizerStateDesc.frontCounterClockwise = true;
+  rasterizerStateDesc.frontCounterClockwise = false;
   rasterizerStateDesc.depthBias = 0;
   rasterizerStateDesc.depthBiasClamp = 0.0f;
   rasterizerStateDesc.slopeScaledDepthBias = 0.0f;

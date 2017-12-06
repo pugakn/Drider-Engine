@@ -46,7 +46,8 @@ public:
 				 const Vector3D& target,
 				 float fov, 
 				 float nearPlane, 
-				 float farPlane);
+				 float farPlane,
+         Viewport* _pViewport);
 
 	/**
 	* Default destructor.
@@ -115,6 +116,9 @@ public:
 	*/
 	void 
 	orbit();
+
+  const Matrix4x4&
+  getVP() const;
 
 private:
 	Vector3D m_pos;

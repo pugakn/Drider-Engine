@@ -170,6 +170,7 @@
     </BuildLog>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Include\dr_application.h" />
     <ClInclude Include="Include\dr_camera.h" />
     <ClInclude Include="Include\dr_camera_manager.h" />
     <ClInclude Include="Include\dr_convexHull.h" />
@@ -193,6 +194,7 @@
     <ClInclude Include="Include\dr_viewport.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\dr_application.cpp" />
     <ClCompile Include="Source\dr_camera.cpp" />
     <ClCompile Include="Source\dr_camera_manager.cpp" />
     <ClCompile Include="Source\dr_convexHull.cpp" />

@@ -1,15 +1,19 @@
 #pragma once
-#include <dr_engine_prerequisites.h>
+
+#include <functional>
 #include <memory>
 #include <unordered_map>
-#include <dr_resource.h>
-#include <dr_compatible_types.h>
+#include "dr_engine_prerequisites.h"
+#include "dr_compatible_types.h"
 
 namespace driderSDK {
+
+class Resource;
+
 class DR_ENGINE_EXPORT ResourceFactory {
  public:
 
-  typedef std::shared_ptr<Resource>(__stdcall *CreateResourceFn)(void);
+  using ResourceCreator = std::function<std::shared_ptr<Resource>()>;
 
   /**
   * TEST::resourceFacturyConstructor
@@ -36,7 +40,7 @@ class DR_ENGINE_EXPORT ResourceFactory {
   */
   void 
   Register(CompatibleType::E type, 
-           CreateResourceFn pfnCreate);
+           ResourceCreator pfnCreate);
 
   /*
   * TEST::createResource
@@ -52,7 +56,7 @@ class DR_ENGINE_EXPORT ResourceFactory {
   CreateResource(CompatibleType::E type);
 
  public:
-   typedef std::unordered_map<CompatibleType::E, CreateResourceFn> FactoryMap;
+   typedef std::unordered_map<CompatibleType::E, ResourceCreator> FactoryMap;
    FactoryMap m_FactoryMap;
 };
 }

@@ -16,7 +16,7 @@ CodecModel::decode(TString pathName) {
 
   ModelInfo* pModelInfo = nullptr;
 
-  UInt32 flags = 0;
+  UInt32 flags = aiPostProcessSteps::aiProcess_Triangulate;
 
   const aiScene* pScene = importer.ReadFile(StringUtils::toString(pathName), 
                                             flags);
@@ -58,18 +58,15 @@ CodecModel::encode(TString pathName) {
 }
 
 bool
-CodecModel::isCompatible(TString resourceName) {
-
-  TString ext = FileSystem::GetFileExtension(resourceName);
-
-  if (!ext.empty()) {
-    return Assimp::Importer().IsExtensionSupported(StringUtils::toString(ext));
-  }
-
-  return false;
+CodecModel::isCompatible(TString extension) {
+  return Assimp::Importer().IsExtensionSupported(StringUtils::toString(extension));
 }
 
-void 
+CompatibleType::E CodecModel::getType() {
+  return CompatibleType::MODEL;
+}
+
+void
 CodecModel::loadVertices(const aiMesh& inMesh, MeshInfo& outMesh) {
 
   outMesh.vertices.resize(inMesh.mNumVertices);
@@ -90,8 +87,9 @@ void
 CodecModel::loadIndices(const aiMesh& inMesh, MeshInfo& outMesh) {
   for(SizeT iFace = 0; iFace < inMesh.mNumFaces; ++iFace) {
     aiFace& face = inMesh.mFaces[iFace];
+    DR_ASSERT(face.mNumIndices == 3);
     for(SizeT indexCount = 0; indexCount < face.mNumIndices; ++indexCount) {
-      outMesh.indices.push_back(static_cast<Int16>(face.mIndices[indexCount]));
+      outMesh.indices.push_back(static_cast<UInt32>(face.mIndices[indexCount]));
     }
   }
 }
@@ -99,7 +97,11 @@ CodecModel::loadIndices(const aiMesh& inMesh, MeshInfo& outMesh) {
 void 
 CodecModel::loadSkeleton(const aiScene& model, SkeletonInfo& outSkeleton) {
  
-  std::unordered_set<String> bonesNames;
+  NodesRefMap nodesRefs;
+  auto pRoot = dr_make_unique<SkeletonInfo::NodeInfo>();
+  pRoot->pParent = nullptr;
+  buildTree(model.mRootNode, pRoot.get(), nodesRefs);
+  outSkeleton.pRootNode = std::move(pRoot);
 
   for (Int16 meshIndex = 0; 
       meshIndex < static_cast<Int16>(model.mNumMeshes);
@@ -111,10 +113,44 @@ CodecModel::loadSkeleton(const aiScene& model, SkeletonInfo& outSkeleton) {
          boneIndex < static_cast<Int16>(mesh.mNumBones); 
          ++boneIndex) {
 
+      aiBone& bone = *mesh.mBones[boneIndex];
+
+      String boneName = bone.mName.data;
+
+      for (Int8 i = 0; i < 4; ++i) {
+        for (Int8 j = 0; j < 4; ++j) {
+          nodesRefs[boneName]->boneOffset[i][j] = bone.mOffsetMatrix[i][j];
+        }
+      }
+
+      outSkeleton.bonesNames.insert(boneName);
     }
   }  
+}
 
-  int x = 0;
+void 
+CodecModel::buildTree(const aiNode* pNodeSrc, 
+                      SkeletonInfo::NodeInfo* pNode, 
+                      NodesRefMap& nodesRefs) {
+  
+  pNode->name = pNodeSrc->mName.data;
+  
+  nodesRefs[pNode->name] = pNode;
+
+  for (Int8 i = 0; i < 4; ++i) {
+    for (Int8 j = 0; j < 4; ++j) {
+      pNode->transform[i][j] = pNodeSrc->mTransformation[i][j];
+    }
+  }
+    
+  for(Int32 childInddex = 0; 
+      childInddex < static_cast<Int32>(pNodeSrc->mNumChildren); 
+      ++childInddex) {
+    auto childNode = dr_make_unique<SkeletonInfo::NodeInfo>();
+    childNode->pParent = pNode;
+    buildTree(pNodeSrc->mChildren[childInddex], childNode.get(), nodesRefs);
+    pNode->childrenPtrs.push_back(std::move(childNode));
+  }
 }
 
 

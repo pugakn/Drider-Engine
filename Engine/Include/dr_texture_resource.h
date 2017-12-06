@@ -21,18 +21,15 @@ class DR_ENGINE_EXPORT TextureResource : public Resource {
   */
   virtual ~TextureResource() {};
 
-  /**
-  * TEST::create
-  * Creates and return reference of a ModelResource
-  */
-  static std::shared_ptr<Resource> __stdcall
-  Create();
-
+  void 
+  init(void * resourceData) override;
+  
 public:
   std::vector<unsigned char> data;
   Int32 width;
   Int32 height;
   Int32 channels;
+
 };
 
 }
