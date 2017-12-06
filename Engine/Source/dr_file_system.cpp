@@ -15,9 +15,7 @@ FileSystem::CreateAndOpen(const TString& filename, File& file) {
   std::ofstream newFile(filename);
   newFile.close();
 
-  file.Open(filename);
-
-  return false;
+  return file.Open(filename);
 }
 
 void
@@ -51,7 +49,7 @@ FileSystem::Remove(const TString& filepath) {
 
   String rename = StringUtils::toString(filepath);
 
-  bool successfullyErased = remove(rename.c_str()) != 0;
+  bool successfullyErased = remove(rename.c_str()) == 0;
 
   return successfullyErased;
 }

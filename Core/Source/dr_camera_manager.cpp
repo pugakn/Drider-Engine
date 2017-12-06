@@ -1,13 +1,68 @@
 #include "dr_camera_manager.h"
+#include "dr_camera.h"
 
 namespace driderSDK {
 
-CameraManager::CameraManager() {}
+CameraManager::CameraManager() {
+	m_activeCamera = nullptr;
+}
 
 CameraManager::~CameraManager() {}
 
 void
-CameraManager::createCamera() {}
+CameraManager::createCamera(const std::string& cameraName,
+														const Vector3D& pos,
+														const Vector3D& target,
+														const Viewport& viewport,
+														float fov,
+														float nearPlane,
+														float farPlane) {
+	m_cameras.push_back(new Camera(cameraName, 
+																 pos, 
+																 target, 
+																 viewport, 
+																 fov, 
+																 nearPlane,
+																 farPlane));
+}
 
+void
+CameraManager::deleteCamera(const std::string& cameraName) {
+	for (auto it = m_cameras.begin(); it != m_cameras.end(); ++it) {
+		if ((*it)->getName() == cameraName) {
+			if (m_activeCamera->getName() == cameraName) {
+				m_activeCamera = nullptr;
+			}
+			delete *it;
+			m_cameras.erase(it);
+			return;
+		}
+	}
+}
+
+void
+CameraManager::setViewportToCamera(const std::string& cameraName, const Viewport& viewport) {
+	for (auto &it : m_cameras) {
+		if (it->getName() == cameraName) {
+			it->setViewport(viewport);
+			return;
+		}
+	}
+}
+
+Camera&
+CameraManager::getActiveCamera() {
+	return *m_activeCamera;
+}
+
+void
+CameraManager::setActiveCamera(const std::string& cameraName) {
+	for (auto &it : m_cameras) {
+		if (it->getName() == cameraName) {
+			m_activeCamera = it;
+			return;
+		}
+	}
+}
 
 }
