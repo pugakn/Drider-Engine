@@ -6,7 +6,7 @@ namespace driderSDK {
 
 Camera::Camera() {}
 
-Camera::Camera(const std::string& name,
+Camera::Camera(const TString& name,
 							 const Vector3D& pos,
 							 const Vector3D& target,
 							 const Viewport& viewport,
@@ -75,7 +75,8 @@ Camera::setViewport(const Viewport& viewport) {
 	m_viewport = viewport;
 }
 
-const std::string&
+
+const TString&
 Camera::getName() const {
 	return m_name;
 }

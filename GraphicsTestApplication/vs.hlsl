@@ -3,8 +3,10 @@ cbuffer ConstantBuffer {
 }
 
 struct VS_INPUT{
-    float3 position : POSITION;
-	float3 normal   : NORMAL;
+    float4 position : POSITION;
+	float4 normal   : NORMAL;	
+	float4 weights  : BONEWEIGHTS;
+	int4 boneids  	: BONEIDS; 
 };
 
 struct VS_OUTPUT{

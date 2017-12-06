@@ -1,9 +1,9 @@
 #pragma once
 
 #include <unordered_map>
+#include <dr_skeleton.h>
 #include "dr_engine_prerequisites.h"
 #include "dr_codec.h"
-#include "dr_skeleton_info.h"
 
 struct aiMesh;
 struct aiScene;
@@ -11,6 +11,7 @@ struct aiNode;
 
 namespace driderSDK {
 
+struct ModelInfo;
 struct MeshInfo;
 
 class DR_ENGINE_EXPORT CodecModel : public Codec
@@ -54,13 +55,15 @@ class DR_ENGINE_EXPORT CodecModel : public Codec
   loadIndices(const aiMesh& inMesh, MeshInfo& outMesh);
 
   void
-  loadSkeleton(const aiScene& model, SkeletonInfo& outSkeleton);
+  loadSkeleton(const aiScene& model, 
+               ModelInfo& outModel,
+               Skeleton& outSkeleton);
 
-  using NodesRefMap = std::unordered_map<String,SkeletonInfo::NodeInfo*>;
+  using NodesRefMap = std::unordered_map<String, Skeleton::NodeData*>;
 
   void 
   buildTree(const aiNode* pNodeSrc, 
-            SkeletonInfo::NodeInfo* pNode,
+            Skeleton::NodeData* pNode,
             NodesRefMap& nodesRefs);
 };
 

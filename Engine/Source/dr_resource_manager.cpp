@@ -8,11 +8,15 @@
 namespace driderSDK {
 
 void 
-ResourceManager::Init() {
+ResourceManager::onStartUp() {
   codecs.push_back(std::shared_ptr<CodecTexture>());
   codecs.push_back(std::shared_ptr<CodecModel>());
   
   factory = std::make_shared<ResourceFactory>();
+}
+
+void 
+ResourceManager::onShutDown() {
 }
 
 std::shared_ptr<Resource>
@@ -38,6 +42,12 @@ ResourceManager::createResource(TString resourceName,
                                 Codec* codec) {
   resourceContent.insert({ resourceName, 
                            factory->CreateResource(codec->getType()) });
+}
+
+void 
+ResourceManager::addResource(TString resourceName, 
+                             std::shared_ptr<Resource> pResource) {
+  resourceContent.insert({resourceName, pResource});
 }
 
 bool

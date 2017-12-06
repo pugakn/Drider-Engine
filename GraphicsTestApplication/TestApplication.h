@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 #include <dr_util_prerequisites.h>
 #include <dr_d3d_graphics_api.h>
 #include "Model3D.h"
@@ -6,6 +7,7 @@
 #include <dr_viewport.h>
 #include "dr_application.h"
 #include "dr_quad.h"
+#include <dr_resource_manager.h>
 namespace driderSDK {
 class TestApplication : public Application
 {
@@ -25,7 +27,7 @@ public:
 
   GraphicsAPI* driver;
   Quad quad;
-  Model3D model;
+  std::vector<Model3D> models;
   Viewport viewport;
   Camera camera;
 };

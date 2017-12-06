@@ -4,6 +4,7 @@
 #include <dr_camera.h>
 #include <dr_quaternion.h>
 
+
 TEST(camera, defaultConstructor)
 {
 	driderSDK::Camera* pCamera;
@@ -14,19 +15,19 @@ TEST(camera, defaultConstructor)
 
 TEST(camera, constructor)
 {
-	driderSDK::Camera Cam("test", 
+	driderSDK::Camera Cam(_T("test"), 
 												driderSDK::Vector3D(0, 0, 0), 
 												driderSDK::Vector3D(0, 0, 1), 
 												driderSDK::Viewport{ 0,0,900,600,0,1 }, 
 												90, 
 												0.1, 
 												1000);
-	EXPECT_TRUE(Cam.getName() == "test");
+	EXPECT_TRUE(Cam.getName() == _T("test"));
 }
 
 TEST(camera, destructor)
 {
-	driderSDK::Camera Cam("test", 
+	driderSDK::Camera Cam(_T("test"),
 												driderSDK::Vector3D(0, 0, 0), 
 												driderSDK::Vector3D(0, 0, 1), 
 												driderSDK::Viewport{ 0,0,900,600,0,1 }, 
@@ -35,12 +36,12 @@ TEST(camera, destructor)
 												1000);
 	driderSDK::Camera* pCam = nullptr;
 	pCam = &Cam;
-	EXPECT_TRUE(pCam->getName() == "test");
+	EXPECT_TRUE(pCam->getName() == _T("test"));
 }
 
 TEST(camera, update)
 {
-	driderSDK::Camera Cam("test", 
+	driderSDK::Camera Cam(_T("test"),
 												driderSDK::Vector3D(-1, 0, 0), 
 												driderSDK::Vector3D(0, 0, 0), 
 												driderSDK::Viewport{ 0,0,900,600,0,1 }, 
@@ -55,7 +56,7 @@ TEST(camera, update)
 
 TEST(camera, move)
 {
-	driderSDK::Camera Cam("test", 
+	driderSDK::Camera Cam(_T("test"),
 												driderSDK::Vector3D(-1, 0, 0), 
 												driderSDK::Vector3D(0, 0, 0), 
 												driderSDK::Viewport{ 0,0,900,600,0,1 }, 
@@ -71,7 +72,7 @@ TEST(camera, move)
 
 TEST(camera, pan)
 {
-	driderSDK::Camera Cam("test", 
+	driderSDK::Camera Cam(_T("test"),
 												driderSDK::Vector3D(-1, 0, 0), 
 												driderSDK::Vector3D(0, 0, 0), 
 												driderSDK::Viewport{ 0,0,900,600,0,1 }, 
@@ -91,7 +92,7 @@ TEST(camera, pan)
 
 TEST(camera, createProyection)
 {
-	driderSDK::Camera Cam("test",
+	driderSDK::Camera Cam(_T("test"),
 												driderSDK::Vector3D(0, 0, 0),
 												driderSDK::Vector3D(0, 0, 1),
 												driderSDK::Viewport{ 0,0,900,600,0,1 },
@@ -119,7 +120,7 @@ TEST(camera, createProyection)
 
 TEST(camera, setViewport)
 {
-	driderSDK::Camera Cam("test", 
+	driderSDK::Camera Cam(_T("test"),
 												driderSDK::Vector3D(0, 0, 0), 
 												driderSDK::Vector3D(0, 0, 1), 
 												driderSDK::Viewport{ 0,0,900,600,0,1 }, 
@@ -133,19 +134,19 @@ TEST(camera, setViewport)
 
 TEST(camera, getName)
 {
-	driderSDK::Camera Cam("test", 
+	driderSDK::Camera Cam(_T("test"),
 												driderSDK::Vector3D(0, 0, 0), 
 												driderSDK::Vector3D(0, 0, 1), 
 												driderSDK::Viewport{ 0,0,900,600,0,1 }, 
 												90, 
 												0.1, 
 												1000);
-	EXPECT_TRUE(Cam.getName() == "test");
+	EXPECT_TRUE(_T("test") == Cam.getName());
 }
 
 TEST(camera, rotate)
 {
-	driderSDK::Camera Cam("test",
+	driderSDK::Camera Cam(_T("test"),
 												driderSDK::Vector3D(0, 0, 0),
 												driderSDK::Vector3D(1, 0, 0),
 												driderSDK::Viewport{ 0,0,900,600,0,1 },
@@ -164,7 +165,8 @@ TEST(camera, rotate)
 
 TEST(camera, orbit)
 {
-	driderSDK::Camera Cam("test",
+
+	driderSDK::Camera Cam(_T("test"),
 												driderSDK::Vector3D(1, 0, 0),
 												driderSDK::Vector3D(0, 0, 0),
 												driderSDK::Viewport{ 0,0,900,600,0,1 },
@@ -181,7 +183,7 @@ TEST(camera, orbit)
 TEST(camera, getVP)
 {
 	driderSDK::Vector3D pos(0, 0, 0);
-	driderSDK::Camera Cam("test",
+	driderSDK::Camera Cam(_T("test"),
 												pos,
 												driderSDK::Vector3D(1, 0, 0),
 												driderSDK::Viewport{ 0,0,1024,720,0,1 },
