@@ -57,7 +57,7 @@ class DR_MATH_EXPORT Frustrum
 	void 
 	createFromVP(const Matrix4x4& ViewProjection);
 
-	/*
+	/**
   * TEST::intersectsRay
 	* Check if the frustrum intersects other ray
 	*
@@ -81,8 +81,8 @@ class DR_MATH_EXPORT Frustrum
 	*	  True if the frustrum intersects with the plane
 	*
 	*/
-	bool
-	intersects(const Plane& plane) const;
+	/*bool
+	intersects(const Plane& plane) const;*/
 
 	/**
   * TEST::frustrumSphere
@@ -98,7 +98,7 @@ class DR_MATH_EXPORT Frustrum
 	bool
 	intersects(const Sphere& sphere) const;
 
-	/**
+	/*
 	* Check if the frustrum intersects with a capsule
 	*
 	*	@param capsule
@@ -108,10 +108,10 @@ class DR_MATH_EXPORT Frustrum
 	*	  True if the frustrum intersects with the capsule
 	*
 	*/
-	bool
-	intersects(const Capsule& capsule) const;
+	/*bool
+	intersects(const Capsule& capsule) const;*/
 
-	/**
+	/*
 	* Check if the frustrum intersects with a frustrum
 	*
 	*	@param frustrum
@@ -120,9 +120,9 @@ class DR_MATH_EXPORT Frustrum
 	* @return
 	*	  True if the frustrum intersects with the frustrum
 	*
-	*/
+	/*
 	bool
-	intersects(const Frustrum& frustrum) const;
+	intersects(const Frustrum& frustrum) const;*/
 
   /**
   * TEST::AABBFrustrum

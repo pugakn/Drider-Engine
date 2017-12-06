@@ -35,7 +35,7 @@ Ray::intersects(const Sphere& sphere, Vector3D* pointIntersect) const
                               pointIntersect);
 }
 
-bool 
+/*bool 
 Ray::intersects(const Capsule& capsule) const
 {
   float point;
@@ -45,7 +45,7 @@ Ray::intersects(const Capsule& capsule) const
                                direction,
                                capsule.radius,
                                point);
-}
+}*/
 
 bool
 Ray::intersects(const AABB& aabb, Vector3D* point) {
