@@ -82,21 +82,26 @@ public:
 	* Moves the camera.
 	*
 	* @param forward
-	*   Value to move the camera forward or backward.
+	*   Value to move the camera, forward or backward.
 	*
 	* @param strafe
-	*   Value to strafe the camera left or right.
+	*   Value to strafe the camera, left or right.
 	*/
 	void 
 	move(float forward, float strafe);
 
 	/**
 	* TEST::pan
+	* Moves the camera and the target
 	*
+	* @param forward
+	*   Value to move the camera and target, forward or backward.
 	*
+	* @param strafe
+	*   Value to strafe the camera and target, left or right.
 	*/
 	void 
-	pan();
+	pan(float forward, float strafe);
 
 	/**
 	* TEST::createProyection
@@ -143,8 +148,8 @@ public:
 	* @return 
 	*   The name of this camera.
 	*/
-	std::string&
-	getName();
+	const std::string&
+	getName() const;
 
 	/**
 	* TEST::rotate
@@ -158,13 +163,24 @@ public:
 
 	/**
 	* TEST::orbit
+	* Rotates de camera around the target
 	*
+	* @param pitch
+	*   Angle in radians to rotate the horizontal coordinate.
 	*
+	* @param yaw
+	*   Angle in radians to rotate the vertical coordinate.
 	*/
 	void 
-	orbit();
+	orbit(float pitch, float yaw);
 
-
+	/**
+	* TEST::getVP
+	* Gets the view proyection matrix
+	*
+	* @return
+	*  The view proyection of the camera.
+	*/
   const Matrix4x4&
   getVP() const;
 
@@ -173,6 +189,7 @@ public:
 	Vector3D m_pos;
 	Vector3D m_target;
 	Vector3D m_up;
+	Vector3D m_look;
 	Matrix4x4 m_vp;
 	Matrix4x4 m_view;
 	Matrix4x4 m_projection;
