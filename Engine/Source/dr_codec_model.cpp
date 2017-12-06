@@ -60,7 +60,7 @@ CodecModel::encode(TString pathName) {
 bool
 CodecModel::isCompatible(TString resourceName) {
 
-  TString ext = FileSystem::getFileExtension(resourceName);
+  TString ext = FileSystem::GetFileExtension(resourceName);
 
   if (!ext.empty()) {
     return Assimp::Importer().IsExtensionSupported(StringUtils::toString(ext));
