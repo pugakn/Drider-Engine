@@ -9,7 +9,7 @@ namespace driderSDK {
 
 TestApplication::TestApplication() 
   : viewport{0,0,1280, 720},
-    camera({0, 0, -100}, {0,0,0}, 45, 0.01f, 10000.f, &viewport)
+    camera({0, 100, 200}, {0,0,0}, 45, 0.1f, 1000.f, &viewport)
 {
 }
 
@@ -23,10 +23,24 @@ void TestApplication::onInit()
   driver = new D3DGraphicsAPI;
   HWND win = GetActiveWindow();
   driver->init(viewport.width, viewport.height, win );
+ 
+  ResourceManager::startUp();
+  ResourceManager* pInstance;
+  if(ResourceManager::isStarted()) {
+     pInstance = &ResourceManager::instance();
+  }
   
+
+  std::vector<TString> modelsFiles{_T("dwarf.x")};
+
+  models.resize(modelsFiles.size());
+
   quad.init(*driver->device);
-  model.init(*driver->device);
-  
+
+  for (SizeT i = 0; i < modelsFiles.size(); ++i) {
+    models[i].init(*driver->device, modelsFiles[i]);
+  }
+
 }
 void TestApplication::onInput()
 {
@@ -36,14 +50,16 @@ void TestApplication::onInput()
 }
 void TestApplication::onUpdate()
 {
-  model.update();
+  for(auto& model : models)
+    model.update();
   camera.update(0);
 }
 void TestApplication::onDraw()
 {
   driver->clear();
   //quad.draw(*driver->deviceContext, camera.getVP());
-  model.draw(*driver->deviceContext, camera);
+  for(auto& model : models)
+    model.draw(*driver->deviceContext, camera);
   driver->swapBuffers();
 }
 void TestApplication::onDestroy()
@@ -56,9 +72,6 @@ void TestApplication::onPause()
 void TestApplication::onResume()
 {
 }
-
-
-
 
 void TestApplication::initWindow()
 {

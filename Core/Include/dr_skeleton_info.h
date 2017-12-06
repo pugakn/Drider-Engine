@@ -25,7 +25,6 @@ struct SkeletonInfo
 
   std::unordered_set<String> bonesNames;
   NodeInfoPtr pRootNode;
-  //String name;
 };
 
 }

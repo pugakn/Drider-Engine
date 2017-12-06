@@ -133,6 +133,7 @@ class DR_ENGINE_EXPORT File
 
  protected:
   std::fstream m_file;
+  SizeT m_size;
   TString m_filename;
 };
 

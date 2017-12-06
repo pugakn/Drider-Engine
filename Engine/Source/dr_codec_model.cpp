@@ -1,17 +1,18 @@
 #include "dr_codec_model.h"
+#include <cstring>
 #include <assimp\Importer.hpp>
 #include <assimp\postprocess.h>
 #include <assimp\scene.h>
 #include <dr_memory.h>
 #include <dr_model_info.h>
 #include <dr_string_utils.h>
-#include "dr_file_system.h"
+#include "dr_resource_manager.h"
 
 namespace driderSDK {
 
 Codec::UniqueVoidPtr 
 CodecModel::decode(TString pathName) {
-  
+ 
   Assimp::Importer importer;
 
   ModelInfo* pModelInfo = nullptr;
@@ -34,16 +35,21 @@ CodecModel::decode(TString pathName) {
       loadIndices(*pMesh, mesh);
     }
 
-    loadSkeleton(*pScene, pModelInfo->skeleton);
-    
-    /*if(pScene->HasAnimations())
+    TString skeletonName;
+
+    if(pScene->HasAnimations())
     {
-      std::unordered_set<String> bodesNames;
+      
+      skeletonName = _T("Skeleton_") + pathName;
 
-      loadNodeChildren(pScene->mRootNode, bodesNames);
+      auto pSkeleton = std::make_shared<Skeleton>();
 
-      std::unordered_map<String, aiNode*> bones;
-    }*/
+      loadSkeleton(*pScene, *pModelInfo, *pSkeleton);
+
+      ResourceManager::instance().addResource(skeletonName, pSkeleton);
+    }
+
+    pModelInfo->skeletonName = skeletonName;
 
   }
 
@@ -71,15 +77,19 @@ CodecModel::loadVertices(const aiMesh& inMesh, MeshInfo& outMesh) {
 
   outMesh.vertices.resize(inMesh.mNumVertices);
 
-  for(SizeT iVertex = 0; iVertex < inMesh.mNumVertices; ++iVertex) {
+  for(Int32 vertexIndex = 0; 
+      vertexIndex < static_cast<Int32>(inMesh.mNumVertices); 
+      ++vertexIndex) {
 
-    outMesh.vertices[iVertex].position = Vector3D(inMesh.mVertices[iVertex].x,
-                                                  inMesh.mVertices[iVertex].y,
-                                                  inMesh.mVertices[iVertex].z);
+    outMesh.vertices[vertexIndex].position = {inMesh.mVertices[vertexIndex].x,
+                                              inMesh.mVertices[vertexIndex].y,
+                                              inMesh.mVertices[vertexIndex].z,
+                                              1.f};
 
-    outMesh.vertices[iVertex].normal = Vector3D(inMesh.mNormals[iVertex].x, 
-                                                inMesh.mNormals[iVertex].y,
-                                                inMesh.mNormals[iVertex].z);
+    outMesh.vertices[vertexIndex].normal = {inMesh.mNormals[vertexIndex].x, 
+                                            inMesh.mNormals[vertexIndex].y,
+                                            inMesh.mNormals[vertexIndex].z,
+                                            0.f};
   }
 }
 
@@ -95,61 +105,75 @@ CodecModel::loadIndices(const aiMesh& inMesh, MeshInfo& outMesh) {
 }
 
 void 
-CodecModel::loadSkeleton(const aiScene& model, SkeletonInfo& outSkeleton) {
+CodecModel::loadSkeleton(const aiScene& model, 
+                         ModelInfo& outModel,
+                         Skeleton& outSkeleton) {
  
   NodesRefMap nodesRefs;
-  auto pRoot = dr_make_unique<SkeletonInfo::NodeInfo>();
+  auto pRoot = dr_make_unique<Skeleton::NodeData>();
   pRoot->pParent = nullptr;
   buildTree(model.mRootNode, pRoot.get(), nodesRefs);
-  outSkeleton.pRootNode = std::move(pRoot);
+  outSkeleton.pRoot = std::move(pRoot);
 
-  for (Int16 meshIndex = 0; 
-      meshIndex < static_cast<Int16>(model.mNumMeshes);
+  auto& bonesMap = outSkeleton.bonesMapping;
+  auto& bones = outSkeleton.bones;
+
+  for (Int32 meshIndex = 0; 
+      meshIndex < static_cast<Int32>(model.mNumMeshes);
       ++meshIndex) {
   
     aiMesh& mesh = *model.mMeshes[meshIndex];
+    MeshInfo& outMesh = outModel.meshes[meshIndex];
 
-    for (Int16 boneIndex = 0; 
-         boneIndex < static_cast<Int16>(mesh.mNumBones); 
+    for (Int32 boneIndex = 0; 
+         boneIndex < static_cast<Int32>(mesh.mNumBones); 
          ++boneIndex) {
 
       aiBone& bone = *mesh.mBones[boneIndex];
 
       String boneName = bone.mName.data;
 
-      for (Int8 i = 0; i < 4; ++i) {
-        for (Int8 j = 0; j < 4; ++j) {
-          nodesRefs[boneName]->boneOffset[i][j] = bone.mOffsetMatrix[i][j];
+      std::memcpy(nodesRefs[boneName]->boneOffset.data, 
+                  &bone.mOffsetMatrix[0][0], 64);
+
+      if (!bonesMap.count(boneName)) {
+        SizeT index = bones.size();
+        bonesMap[boneName] = index;
+        bones.push_back(nodesRefs[boneName]);
+        std::memcpy(bones[index]->boneOffset.data, 
+                    &bone.mOffsetMatrix[0][0], 64);
+
+        for(Int32 vertexIndex = 0; 
+            vertexIndex < static_cast<Int32>(bone.mNumWeights); 
+            ++vertexIndex) {
+          aiVertexWeight& verWeight = bone.mWeights[vertexIndex];
+          
+          outMesh.vertices[verWeight.mVertexId].addBone(boneIndex, 
+                                                        verWeight.mWeight);          
         }
       }
-
-      outSkeleton.bonesNames.insert(boneName);
     }
   }  
 }
 
 void 
 CodecModel::buildTree(const aiNode* pNodeSrc, 
-                      SkeletonInfo::NodeInfo* pNode, 
+                      Skeleton::NodeData* pNode, 
                       NodesRefMap& nodesRefs) {
   
   pNode->name = pNodeSrc->mName.data;
   
   nodesRefs[pNode->name] = pNode;
 
-  for (Int8 i = 0; i < 4; ++i) {
-    for (Int8 j = 0; j < 4; ++j) {
-      pNode->transform[i][j] = pNodeSrc->mTransformation[i][j];
-    }
-  }
-    
+  std::memcpy(pNode->transform.data, &pNodeSrc->mTransformation[0][0], 64);
+      
   for(Int32 childInddex = 0; 
       childInddex < static_cast<Int32>(pNodeSrc->mNumChildren); 
       ++childInddex) {
-    auto childNode = dr_make_unique<SkeletonInfo::NodeInfo>();
+    auto childNode = dr_make_unique<Skeleton::NodeData>();
     childNode->pParent = pNode;
     buildTree(pNodeSrc->mChildren[childInddex], childNode.get(), nodesRefs);
-    pNode->childrenPtrs.push_back(std::move(childNode));
+    pNode->children.push_back(std::move(childNode));
   }
 }
 

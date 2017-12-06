@@ -170,6 +170,7 @@
     </BuildLog>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Include\dr_animation.h" />
     <ClInclude Include="Include\dr_application.h" />
     <ClInclude Include="Include\dr_camera.h" />
     <ClInclude Include="Include\dr_camera_manager.h" />

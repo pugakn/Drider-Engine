@@ -1,6 +1,8 @@
 #pragma once
 
 #include <dr_transform.h>
+#include <vector>
+#include <dr_memory.h>
 #include <dr_model.h>
 #include <dr_d3d_vertex_buffer.h>
 #include <dr_d3d_index_buffer.h>
@@ -30,22 +32,30 @@ public:
 	};
 
   Model3D();
-  void init(driderSDK::Device& device);
+  void init(driderSDK::Device& device, const driderSDK::TString& filename);
   void destroy();
   void update();
   void draw(const driderSDK::DeviceContext& deviceContext, 
             const driderSDK::Camera& wvp);
+
+  driderSDK::Transform transform;
+
 private:
   struct CBuffer {
     driderSDK::Matrix4x4 WVP;
   };
 
-  driderSDK::Model resource;
-  driderSDK::Transform transform;
+  std::shared_ptr<driderSDK::Model> resource;
 
   CBuffer constBuff;
-  driderSDK::VertexBuffer* VB;
-  driderSDK::IndexBuffer* IB;
+
+  struct MeshGFX {
+    driderSDK::VertexBuffer* VB;
+    driderSDK::IndexBuffer* IB;
+  };
+
+  std::vector<MeshGFX> meshesGFX;
+
   driderSDK::ConstantBuffer* CB;
 
   driderSDK::VertexShader* vs;

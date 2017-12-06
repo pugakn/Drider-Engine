@@ -4,23 +4,25 @@
 #include "dr_engine_prerequisites.h"
 #include "dr_codec.h"
 #include <dr_memory.h>
+#include <dr_module.h>
 #include "dr_resource_factory.h"
 
 namespace driderSDK {
+
 /**
 * Load resources.
 *
 * Sample usage:
 *	loadResource("name.png", "resorces/");
 */
-class DR_ENGINE_EXPORT ResourceManager {
+class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager> {
  public:
 
   /**
   * TEST::resourceMConstructor
   *	Default constructor.
   */
-  ResourceManager() { Init(); }
+  ResourceManager() { }
 
   /**
   * TEST::resourceMDestructor
@@ -28,12 +30,10 @@ class DR_ENGINE_EXPORT ResourceManager {
   */
   ~ResourceManager() {}
 
-  /**
-  * TEST::
-  * Initialize the Resource Manager
-  */
-  void Init();
- 
+  virtual void onStartUp();
+
+  virtual void onShutDown();
+
   /**
   * TEST::loadResource
   * Checks if the resource is compatible, then load this
@@ -64,6 +64,10 @@ class DR_ENGINE_EXPORT ResourceManager {
   void
   createResource(TString resourceName,
                  Codec* codec);
+
+  void
+  addResource(TString resourceName, 
+              std::shared_ptr<Resource> pResource);
 
   /**
   * TEST::existInResourceContent
