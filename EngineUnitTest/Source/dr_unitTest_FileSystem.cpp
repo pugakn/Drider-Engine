@@ -2,48 +2,70 @@
 #include <gtest\gtest.h>
 
 TEST(FileSystem, defaultConstructor) {
-  driderSDK::FileSystem* ptrFS = new driderSDK::FileSystem();
+  driderSDK::FileSystem* fileMaganer = new driderSDK::FileSystem;
 
-  EXPECT_FALSE(nullptr == ptrFS);
+  EXPECT_FALSE(nullptr == fileMaganer);
 
-  delete ptrFS;
+  delete fileMaganer;
 }
 
 TEST(FileSystem, defaultDestructor) {
-  driderSDK::FileSystem* fsTest = new driderSDK::FileSystem();
+  driderSDK::FileSystem fileMaganer;
 
-  delete fsTest;
-  fsTest = nullptr;
-
-  EXPECT_FALSE(fsTest);
-}
-
-TEST(FileSystem, load) {
-  driderSDK::FileSystem fsTest;
-
-  std::string bufferOutput;
-  //bool fileOpened = fsTest.open("UnexistingFile1.txt", bufferOutput);
-
-  //EXPECT_FALSE(fileOpened);
-  EXPECT_FALSE(true);
-}
-
-TEST(FileSystem, save) {
-  driderSDK::FileSystem fsTest;
-
-  std::string savedBuffer = "IMPOSIBLETOSAVE";
-  //bool fileOpened = fsTest.save("UnexistingFile2.txt", savedBuffer);
-
-  //EXPECT_TRUE(fileOpened);
   EXPECT_TRUE(true);
 }
 
-TEST(FileSystem, append) {
-  driderSDK::FileSystem fsTest;
+TEST(FileSystem, GetWorkingPath) {
+  driderSDK::FileSystem fileMaganer;
+  driderSDK::TString WorkingPath = fileMaganer.GetWorkingPath();
 
-  std::string addedBuffer;
-  //bool fileOpened = fsTest.append("UnexistingFile3.txt", addedBuffer);
+  EXPECT_FALSE(!WorkingPath.empty());
+}
 
-  //EXPECT_TRUE(fileOpened);
+TEST(FileSystem, CreateAndOpen) {
+  driderSDK::FileSystem fileMaganer;
+
+  EXPECT_TRUE(true);
+}
+
+TEST(FileSystem, Copy) {
+  driderSDK::FileSystem fileMaganer;
+
+  EXPECT_TRUE(true);
+}
+
+TEST(FileSystem, Move) {
+  driderSDK::FileSystem fileMaganer;
+
+  EXPECT_TRUE(true);
+}
+
+TEST(FileSystem, RemoveRemove) {
+  driderSDK::FileSystem fileMaganer;
+
+  EXPECT_TRUE(true);
+}
+
+TEST(FileSystem, IsFile) {
+  driderSDK::FileSystem fileMaganer;
+
+  EXPECT_TRUE(true);
+}
+
+TEST(FileSystem, IsDirectory) {
+  driderSDK::FileSystem fileMaganer;
+
+  EXPECT_TRUE(true);
+}
+
+TEST(FileSystem, Exists) {
+  driderSDK::FileSystem fileMaganer;
+
+  EXPECT_TRUE(true);
+}
+
+TEST(FileSystem, GetFileExtension) {
+  driderSDK::FileSystem fileMaganer;
+
   EXPECT_TRUE(true);
 }

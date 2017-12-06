@@ -9,9 +9,6 @@ namespace driderSDK {
 *
 * Sample usage:
 * FileSystem sampleName;
-* sampleName.load("fileToOpen", bufferToStoreFile);
-* sampleName.save("fileToWrite", bufferToSaveToFile);
-* sampleName.append("fileToAppend", bufferToAddInFile);
 */
 class DR_ENGINE_EXPORT FileSystem
 {

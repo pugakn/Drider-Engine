@@ -11,7 +11,7 @@ File::~File() {
 
 bool
 File::Open(const TString filename) {
-  m_file.open(m_filename, std::ios_base::out | std::ios_base::in);
+  m_file.open(filename, std::ios_base::out | std::ios_base::in);
 
   if (m_file) {
     m_filename = filename;
