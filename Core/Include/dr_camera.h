@@ -164,6 +164,10 @@ public:
 	void 
 	orbit();
 
+
+  const Matrix4x4&
+  getVP() const;
+
 //private:
 	std::string m_name;
 	Vector3D m_pos;

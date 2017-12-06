@@ -1,49 +1,85 @@
 #include <dr_file_system.h>
 #include <gtest\gtest.h>
+#include <dr_string_utils.h>
 
 TEST(FileSystem, defaultConstructor) {
-  driderSDK::FileSystem* ptrFS = new driderSDK::FileSystem();
+  driderSDK::FileSystem* fileMaganer = new driderSDK::FileSystem;
 
-  EXPECT_FALSE(nullptr == ptrFS);
+  EXPECT_FALSE(nullptr == fileMaganer);
 
-  delete ptrFS;
+  delete fileMaganer;
 }
 
 TEST(FileSystem, defaultDestructor) {
-  driderSDK::FileSystem* fsTest = new driderSDK::FileSystem();
+  driderSDK::FileSystem fileMaganer;
 
-  delete fsTest;
-  fsTest = nullptr;
-
-  EXPECT_FALSE(fsTest);
-}
-
-TEST(FileSystem, load) {
-  driderSDK::FileSystem fsTest;
-
-  std::string bufferOutput;
-  //bool fileOpened = fsTest.open("UnexistingFile1.txt", bufferOutput);
-
-  //EXPECT_FALSE(fileOpened);
-  EXPECT_FALSE(true);
-}
-
-TEST(FileSystem, save) {
-  driderSDK::FileSystem fsTest;
-
-  std::string savedBuffer = "IMPOSIBLETOSAVE";
-  //bool fileOpened = fsTest.save("UnexistingFile2.txt", savedBuffer);
-
-  //EXPECT_TRUE(fileOpened);
   EXPECT_TRUE(true);
 }
 
-TEST(FileSystem, append) {
-  driderSDK::FileSystem fsTest;
+TEST(FileSystem, GetWorkingPath) {
+  driderSDK::FileSystem fileMaganer;
+  driderSDK::TString WorkingPath = fileMaganer.GetWorkingPath();
 
-  std::string addedBuffer;
-  //bool fileOpened = fsTest.append("UnexistingFile3.txt", addedBuffer);
+  printf("\n");
+  wprintf(WorkingPath.c_str());
+  printf("\n\n");
 
-  //EXPECT_TRUE(fileOpened);
+  EXPECT_TRUE(!WorkingPath.empty());
+}
+
+TEST(FileSystem, CreateAndOpen) {
+  driderSDK::FileSystem fileMaganer;
+
+  driderSDK::File someRandomFile;
+  
+  bool fOpen = fileMaganer.CreateAndOpen(L"Pato.txt", someRandomFile);
+
+  someRandomFile.Close();
+
+  EXPECT_TRUE(fOpen);
+}
+
+TEST(FileSystem, Copy) {
+  driderSDK::FileSystem fileMaganer;
+  fileMaganer.Copy(L"Pato.txt", L"Pato2.txt");
+
   EXPECT_TRUE(true);
+}
+
+TEST(FileSystem, Move) {
+  driderSDK::FileSystem fileMaganer;
+  fileMaganer.Move(L"Pato2.txt", L"..\\Pato2.txt");
+
+  EXPECT_TRUE(true);
+}
+
+TEST(FileSystem, Remove) {
+  driderSDK::FileSystem fileMaganer;
+
+  EXPECT_TRUE(fileMaganer.Remove(L"..\\Pato2.txt"));
+}
+
+TEST(FileSystem, IsFile) {
+  driderSDK::FileSystem fileMaganer;
+
+  EXPECT_TRUE(fileMaganer.IsFile(L"Pato.txt"));
+}
+
+TEST(FileSystem, IsDirectory) {
+  driderSDK::FileSystem fileMaganer;
+
+  EXPECT_TRUE(fileMaganer.IsDirectory(fileMaganer.GetWorkingPath()));
+}
+
+TEST(FileSystem, Exists) {
+  driderSDK::FileSystem fileMaganer;
+
+  EXPECT_TRUE(fileMaganer.Exists(L"Pato.txt"));
+}
+
+TEST(FileSystem, GetFileExtension) {
+  driderSDK::FileSystem fileMaganer;
+  driderSDK::TString fileExt = fileMaganer.GetFileExtension(L"Pato.txt");
+
+  EXPECT_TRUE(fileExt == L"txt");
 }

@@ -49,7 +49,7 @@ void
 D3DVertexShader::compile(const Device& device, const char* buffer, size_t bufferSize)
 {
   m_shaderBytecode = new D3DShaderBytecode();
-  D3DCompile(buffer,
+  auto pp = D3DCompile(buffer,
     bufferSize,
     0,
     0,

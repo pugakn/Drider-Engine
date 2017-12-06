@@ -3,14 +3,16 @@
 #include <codecvt>
 
 namespace driderSDK {
-String StringUtils::toString(const TString& tstring) {
+String
+StringUtils::toString(const TString& tstring) {
   #ifdef UNICODE
   return std::wstring_convert<std::codecvt_utf8_utf16<WChar>>().to_bytes(tstring);
 #else
   return str;
 #endif
 }
-WString StringUtils::toWString(const TString& tstring) {
+WString
+StringUtils::toWString(const TString& tstring) {
 #ifdef UNICODE
   return tstring;
 #else

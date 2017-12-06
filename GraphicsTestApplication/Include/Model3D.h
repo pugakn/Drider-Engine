@@ -1,32 +1,48 @@
 #pragma once
-#include <vector>
+
+#include <dr_transform.h>
+#include <dr_model.h>
 #include <dr_d3d_vertex_buffer.h>
 #include <dr_d3d_index_buffer.h>
 #include <dr_d3d_constant_buffer.h>
 #include <dr_d3d_device.h>
 #include <dr_d3d_device_context.h>
-#include <dr_matrix4x4.h>
+//#include <dr_matrix4x4.h>
 #include <dr_d3d_vertex_shader.h>
 #include <dr_d3d_fragment_shader.h>
 #include <dr_d3d_input_layout.h>
+#include <dr_matrix4x4.h>
+#include <dr_camera.h>
 
-
-struct vertex
+class Model3D 
 {
-  float x, y, z, w;
-  float nx, ny,nz,nw;
-};
-struct CBuffer {
-  driderSDK::Matrix4x4 WVP;
-};
-class Quad {
 public:
+  enum S 
+	{
+		Left_Bottom_Front,
+		Left_Bottom_Back,
+		Left_Top_Front,
+		Left_Top_Back,
+		Right_Bottom_Front,
+		Right_Bottom_Back,
+		Right_Top_Front,
+		Right_Top_Back
+	};
+
+  Model3D();
   void init(driderSDK::Device& device);
   void destroy();
+  void update();
   void draw(const driderSDK::DeviceContext& deviceContext, 
-            const driderSDK::Matrix4x4& wvp);
-  vertex m_vertex[4];
-  driderSDK::UInt32 m_index[6];
+            const driderSDK::Camera& wvp);
+private:
+  struct CBuffer {
+    driderSDK::Matrix4x4 WVP;
+  };
+
+  driderSDK::Model resource;
+  driderSDK::Transform transform;
+
   CBuffer constBuff;
   driderSDK::VertexBuffer* VB;
   driderSDK::IndexBuffer* IB;
@@ -37,5 +53,6 @@ public:
 
   driderSDK::InputLayout* IL;
 
-  
+  std::vector<driderSDK::Vertex> vertices;
+  std::vector<driderSDK::UInt32> indices;
 };

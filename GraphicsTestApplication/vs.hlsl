@@ -1,10 +1,10 @@
-cbuffer ConstantBuffer{
-	float4x4 World;    
+cbuffer ConstantBuffer {
+	float4x4 WVP;
 }
 
 struct VS_INPUT{
-    float4 position : POSITION;
-	float4 normal   : NORMAL;
+    float3 position : POSITION;
+	float3 normal   : NORMAL;
 };
 
 struct VS_OUTPUT{
@@ -14,8 +14,8 @@ struct VS_OUTPUT{
 
 VS_OUTPUT VS( VS_INPUT input ){
     VS_OUTPUT OUT;
-    //OUT.hposition = mul( World , float4(input.position,1.0) );
-	OUT.hposition = input.position;
-	OUT.hnormal = input.normal;
+    OUT.hposition = mul( WVP, float4(input.position.xyz, 1.0));
+	//OUT.hposition = input.position;
+	OUT.hnormal = float4(input.normal.xyz, 0);
     return OUT;
 }

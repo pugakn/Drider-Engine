@@ -299,25 +299,19 @@ Matrix4x4::RotationZ(const float teta)
 Matrix4x4&
 Matrix4x4::LookAt(const Vector3D & Eye, const Vector3D & At, const Vector3D & Up)
 {
-  Vector3D XAxis, YAxis, ZAxis;
-  ZAxis = (Eye - At).normalize();
-  XAxis = Up.cross(ZAxis).normalize();
-  YAxis = ZAxis.cross(XAxis).normalize();
+  Vector3D Axis[3];
 
-  (*this)[0][0] = XAxis.x;
-  (*this)[0][1] = XAxis.y;
-  (*this)[0][2] = XAxis.z;
-  (*this)[0][3] = -(XAxis.dot(Eye));
+  Axis[2] = (At - Eye).normalize();  //zaxis
+  Axis[0] = Up.cross(Axis[2]).normalize();  //xaxis
+  Axis[1] = Axis[2].cross(Axis[0]); //yaxis
 
-  (*this)[1][0] = YAxis.x;
-  (*this)[1][1] = YAxis.y;
-  (*this)[1][2] = YAxis.z;
-  (*this)[1][3] = -(YAxis.dot(Eye));
-
-  (*this)[2][0] = ZAxis.x;
-  (*this)[2][1] = ZAxis.y;
-  (*this)[2][2] = ZAxis.z;
-  (*this)[2][3] = -(ZAxis.dot(Eye));
+  for (size_t i = 0; i < 3; i++)
+  {
+    (*this)[i][0] = Axis[i].x;
+    (*this)[i][1] = Axis[i].y;
+    (*this)[i][2] = Axis[i].z;
+    (*this)[i][3] = -(Axis[i].dot(Eye));
+  }
 
   (*this)[3][0] = 0.0f;
   (*this)[3][1] = 0.0f;
@@ -333,9 +327,9 @@ Matrix4x4::Projection(float Width, float Height, float ZNear, float ZFar)
 
   data[0][0] = 2.0f * ZNear / Width;
   data[1][1] = 2.0f * ZNear / Height;
-  data[2][2] = ZFar / (ZNear - ZFar);
-  data[2][3] = -1.0f;
-  data[3][2] = ZFar * ZNear / (ZNear - ZFar);
+  data[2][2] = ZFar / (ZFar - ZNear);
+  data[2][3] = 1.0f;
+  data[3][2] = ZNear * ZFar / (ZNear - ZFar);
 
   return *this;
 }

@@ -11,12 +11,3 @@ TEST(TextureResource, constructor) {
 TEST(TextureResource, destructor) {
   EXPECT_TRUE(true);
 }
-
-TEST(TextureResource, create) {
-  driderSDK::TextureResource texture;
-  std::shared_ptr<driderSDK::Resource> ptr;
-  
-  ptr = texture.Create();
-
-  EXPECT_TRUE(ptr != nullptr);
-}

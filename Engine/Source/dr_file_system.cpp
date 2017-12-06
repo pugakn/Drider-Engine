@@ -1,4 +1,5 @@
 #include "dr_file_system.h"
+#include "dr_string_utils.h"
 
 namespace driderSDK
 {
@@ -14,9 +15,7 @@ FileSystem::CreateAndOpen(const TString& filename, File& file) {
   std::ofstream newFile(filename);
   newFile.close();
 
-  file.Open(filename);
-
-  return false;
+  return file.Open(filename);
 }
 
 void
@@ -47,50 +46,43 @@ FileSystem::Move(const TString& filepathSrc, const TString& filepathDst) {
 bool
 FileSystem::Remove(const TString& filepath) {
   SizeT filepathLenght = filepath.length();
-  char* rename = new char[filepathLenght];
-  std::wcstombs(rename, filepath.c_str(), filepathLenght);
 
-  bool successfullyErased = remove(rename) != 0;
+  String rename = StringUtils::toString(filepath);
 
-  delete[] rename;
+  bool successfullyErased = remove(rename.c_str()) == 0;
+
   return successfullyErased;
 }
 
 bool
 FileSystem::IsFile(const TString& filepath) {
   SizeT filepathLenght = filepath.length();
-  char* rename = new char[filepathLenght];
-  std::wcstombs(rename, filepath.c_str(), filepathLenght);
+  String rename = StringUtils::toString(filepath);
 
   struct stat s;
 
-  if (stat(rename, &s) == 0) {
+  if (stat(rename.c_str(), &s) == 0) {
     if (s.st_mode & S_IFREG) {
-      delete[] rename;
       return true;
     }
   }
 
-  delete[] rename;
   return false;
 }
 
 bool
 FileSystem::IsDirectory(const TString& filepath) {
   SizeT filepathLenght = filepath.length();
-  char* rename = new char[filepathLenght];
-  std::wcstombs(rename, filepath.c_str(), filepathLenght);
+  String rename = StringUtils::toString(filepath);
 
   struct stat s;
 
-  if (stat(rename, &s) == 0) {
+  if (stat(rename.c_str(), &s) == 0) {
     if (s.st_mode & S_IFDIR) {
-      delete[] rename;
       return true;
     }
   }
 
-  delete[] rename;
   return false;
 }
 
