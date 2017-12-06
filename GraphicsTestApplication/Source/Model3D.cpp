@@ -1,6 +1,7 @@
 #include "..\Include\Model3D.h"
-#include <dr_file_system.h>
 //
+#include <dr_file.h>
+#include <dr_string_utils.h>
 #include <DirectXMath.h>
 #include <dr_codec_model.h>
 #include <dr_memory.h>
@@ -52,11 +53,15 @@ void Model3D::init(Device & device) {
 
   resource.init(pInfo.get());
 
-  std::string vsSource;
-  std::string fsSource; 
+  driderSDK::File file;
+  
+  file.Open(_T("vs.hlsl"));
+  String vsSource = StringUtils::toString(file.GetAsString(file.Size()));
+  file.Close();
 
-  driderSDK::FileSystem::load("vs.hlsl", vsSource);
-  driderSDK::FileSystem::load("fs.hlsl", fsSource);
+  file.Open(_T("fs.hlsl"));
+  String fsSource = StringUtils::toString(file.GetAsString(file.Size()));
+  file.Close();
 
   vs = reinterpret_cast<VertexShader*>(device.createShaderFromMemory(vsSource.c_str(), 
                                        vsSource.size() + 1,DR_SHADER_TYPE_FLAG::kVertex));

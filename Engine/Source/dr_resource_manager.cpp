@@ -20,7 +20,7 @@ ResourceManager::loadResource(TString resourceName) {
   std::shared_ptr<Resource> r;
   
   for(auto &codec : codecs) {
-    TString extension = FileSystem::getFileExtension(resourceName);
+    TString extension = FileSystem::GetFileExtension(resourceName);
     if(codec->isCompatible(extension)) {
       if(existInResourceContent(resourceName)) {
         r = getReference(resourceName);
