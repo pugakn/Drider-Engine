@@ -9,6 +9,8 @@
 #include <dr_d3d_vertex_shader.h>
 #include <dr_d3d_fragment_shader.h>
 #include <dr_d3d_input_layout.h>
+#include <dr_texture_resource.h>
+#include <memory>
 
 struct vertex
 {
@@ -36,7 +38,7 @@ public:
 
   driderSDK::VertexShader* vs;
   driderSDK::FragmentShader* fs;
-
+  std::shared_ptr<driderSDK::TextureResource> rTexture;
 
   driderSDK::InputLayout* IL;
 

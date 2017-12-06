@@ -19,14 +19,16 @@ namespace driderSDK {
   const D3DDevice* apiDevice = reinterpret_cast<const D3DDevice*>(&device);
   m_descriptor = desc;
   UInt32 flags = 0;
-  if (desc.genMipMaps) {
+  //if (desc.genMipMaps) {
     flags |= D3D11_RESOURCE_MISC_GENERATE_MIPS;
-  }
-  D3D11_TEXTURE2D_DESC apiDesc = { 0 };
+  //}
+  D3D11_TEXTURE2D_DESC apiDesc;
+  ZeroMemory(&apiDesc, sizeof(apiDesc));
   apiDesc.Width = desc.width;
   apiDesc.Height = desc.height;
   apiDesc.ArraySize = 1;
-  apiDesc.MipLevels = desc.mipLevels;
+  //apiDesc.MipLevels = desc.mipLevels;
+  apiDesc.MipLevels = 0;
   apiDesc.Format = static_cast<DXGI_FORMAT>(desc.Format);
   apiDesc.SampleDesc.Count = 1;
   apiDesc.SampleDesc.Quality = 0;
@@ -35,9 +37,11 @@ namespace driderSDK {
   apiDesc.CPUAccessFlags = 0;
   apiDesc.Usage = D3D11_USAGE_DEFAULT;
 
-  D3D11_SUBRESOURCE_DATA initData{};
+  D3D11_SUBRESOURCE_DATA initData;
+  ZeroMemory(&initData, sizeof(initData));
   initData.pSysMem = buffer;
   initData.SysMemPitch = desc.pitch;
+  initData.SysMemSlicePitch = 0;
 
   D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
   ZeroMemory(&srvDesc, sizeof(srvDesc));
@@ -60,14 +64,15 @@ namespace driderSDK {
     break;
   }
   srvDesc.ViewDimension = dim;
-  srvDesc.Texture2D.MipLevels = desc.mipLevels; 
+  srvDesc.Texture2D.MipLevels = -1; 
+  srvDesc.Format = apiDesc.Format;
 
-  apiDevice->
+  HRESULT hr = apiDevice->
     D3D11Device->
     CreateTexture2D(&apiDesc,
       buffer != 0 ? &initData : 0,
       &APITexture);
-  apiDevice->
+  hr = apiDevice->
     D3D11Device->
     CreateShaderResourceView(APITexture,
       &srvDesc,

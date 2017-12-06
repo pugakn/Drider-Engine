@@ -1,4 +1,4 @@
-Texture2D shaderTexture;
+Texture2D shaderTexture : register(t0);
 SamplerState SampleType;
 
 cbuffer ConstantBuffer{
@@ -14,7 +14,7 @@ struct VS_OUTPUT{
 float4 FS( VS_OUTPUT input ) : SV_TARGET  {
 	float4 textureColor;
     //textureColor = float4(input.hnormal.rgb,1.0);
-    textureColor = float4(1,1,0,1);
+    //textureColor = float4(1,1,0,1);
     textureColor = shaderTexture.Sample(SampleType, input.tex);
     return textureColor;
 }

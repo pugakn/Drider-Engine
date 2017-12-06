@@ -4,7 +4,6 @@
 #include <dr_graphics_defines.h>
 
 #include <dr_resource_manager.h>
-#include <dr_texture_resource.h>
 #include <dr_texture.h>
 
 #include <dr_sample_state.h>
@@ -59,7 +58,7 @@ void Quad::init(Device& device)
 
   ie.format = DR_FORMAT::kDrFormat_R32G32_FLOAT;
   ie.offset = 32;
-  ie.semanticName = "TEXCOORD0";
+  ie.semanticName = "TEXCOORD";
   ie.inputSlot = 0;
   ie.semanticIndex = 0;
   idesc.push_back(ie);
@@ -89,24 +88,23 @@ void Quad::init(Device& device)
   ResourceManager resourceManager;
   resourceManager.Init();
 
-  std::shared_ptr<TextureResource> rTexture =
+  rTexture =
     std::dynamic_pointer_cast<TextureResource>(
     resourceManager.loadResource(_T("testImage.png")));
 
   DrTextureDesc tDesc;
-  tDesc.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE;
-  tDesc.CPUAccessFlags = DR_CPU_ACCESS_FLAG::drRead;
+  tDesc.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE | DR_BIND_FLAGS::RENDER_TARGET;
+ // tDesc.CPUAccessFlags = DR_CPU_ACCESS_FLAG::drWrite | DR_CPU_ACCESS_FLAG::drRead;
   tDesc.dimension = DR_DIMENSION::k2D;
-  tDesc.Format = DR_FORMAT::kDrFormat_R32G32B32_FLOAT;
-  tDesc.genMipMaps = true;
+  tDesc.Format = DR_FORMAT::kDrFormat_R8G8B8A8_UNORM;
+  tDesc.genMipMaps = false;
   tDesc.height = rTexture->height;
-  tDesc.mipLevels = 0;
-  tDesc.pitch = 0;
-  tDesc.Usage = DR_BUFFER_USAGE::kDefault;
+  tDesc.mipLevels = 1;
+ // tDesc.Usage = DR_BUFFER_USAGE::kDefault;
   tDesc.width = rTexture->width;
+  tDesc.pitch = sizeof(byte) * tDesc.width * rTexture->channels;
   texture = reinterpret_cast<Texture*>(device.createTextureFromMemory(
-                                       reinterpret_cast<const char*>(
-                                       rTexture->data.data()),
+                                       0,
                                        tDesc));
 
   DrSampleDesc sDesc;
@@ -117,9 +115,9 @@ void Quad::init(Device& device)
   sDesc.borderColor[2] = 0.f;
   sDesc.borderColor[3] = 1.f;
   sDesc.comparisonFunc = DR_COMPARISON_FUNC::kNEVER;
-  sDesc.Filter = DR_TEXTURE_FILTER::kMINIMUM_ANISOTROPIC;
-  sDesc.maxAnisotropy = 1;
-  sDesc.maxLOD = 1.f;
+  sDesc.Filter = DR_TEXTURE_FILTER::kANISOTROPIC;
+  sDesc.maxAnisotropy = 16;
+  sDesc.maxLOD = 3.402823466e+38f;
   sDesc.mipLODBias = 0.f;
 
   ss = reinterpret_cast<SamplerState*>(device.createSamplerState(sDesc));
@@ -139,6 +137,7 @@ void Quad::destroy()
 
 void Quad::draw(const DeviceContext& deviceContext)
 {
+  texture->udpateFromMemory(deviceContext,(const char*)&rTexture->data[0],rTexture->data.size());
   fs->set(deviceContext);
   vs->set(deviceContext);
   IL->set(deviceContext);
