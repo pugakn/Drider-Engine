@@ -113,7 +113,7 @@ class DR_MATH_EXPORT Ray
   bool
   intersects(const Sphere& sphere, Vector3D* pointIntersect) const;
 
-	/**
+	/*
 	* Check if the ray intersects with a capsule
 	*
 	*	@param capsule
@@ -123,8 +123,9 @@ class DR_MATH_EXPORT Ray
 	*	  True if the ray intersects with the capsule
 	*
 	*/
+  /*
 	bool
-	intersects(const Capsule& capsule) const;
+	intersects(const Capsule& capsule) const;*/
 
   /**
   * TEST::intersectAABB
@@ -171,7 +172,7 @@ class DR_MATH_EXPORT Ray
   bool
   intersects(const Ray& ray, Vector3D* point) const;
 
-  /**
+  /*
   * TEST::intersectLine
   * Check if the ray intersects with a line
   *
@@ -185,8 +186,8 @@ class DR_MATH_EXPORT Ray
   *	  Intersection point
   *
   */
-  bool
-  intersects(const Line& line, Vector3D* point) const;
+  /*bool
+  intersects(const Line& line, Vector3D* point) const;*/
 
 	Vector3D origin;
 	Vector3D direction;

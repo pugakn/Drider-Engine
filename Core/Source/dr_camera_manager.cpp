@@ -10,7 +10,7 @@ CameraManager::CameraManager() {
 CameraManager::~CameraManager() {}
 
 void
-CameraManager::createCamera(const std::string& cameraName,
+CameraManager::createCamera(const TString& cameraName,
 														const Vector3D& pos,
 														const Vector3D& target,
 														const Viewport& viewport,
@@ -27,7 +27,7 @@ CameraManager::createCamera(const std::string& cameraName,
 }
 
 void
-CameraManager::deleteCamera(const std::string& cameraName) {
+CameraManager::deleteCamera(const TString& cameraName) {
 	for (auto it = m_cameras.begin(); it != m_cameras.end(); ++it) {
 		if ((*it)->getName() == cameraName) {
 			if (m_activeCamera->getName() == cameraName) {
@@ -41,7 +41,7 @@ CameraManager::deleteCamera(const std::string& cameraName) {
 }
 
 void
-CameraManager::setViewportToCamera(const std::string& cameraName, const Viewport& viewport) {
+CameraManager::setViewportToCamera(const TString& cameraName, const Viewport& viewport) {
 	for (auto &it : m_cameras) {
 		if (it->getName() == cameraName) {
 			it->setViewport(viewport);
@@ -56,7 +56,7 @@ CameraManager::getActiveCamera() {
 }
 
 void
-CameraManager::setActiveCamera(const std::string& cameraName) {
+CameraManager::setActiveCamera(const TString& cameraName) {
 	for (auto &it : m_cameras) {
 		if (it->getName() == cameraName) {
 			m_activeCamera = it;
