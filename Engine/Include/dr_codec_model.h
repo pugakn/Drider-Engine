@@ -59,7 +59,10 @@ class DR_ENGINE_EXPORT CodecModel : public Codec
                ModelInfo& outModel,
                Skeleton& outSkeleton);
 
-  using NodesRefMap = std::unordered_map<String, Skeleton::NodeData*>;
+  void 
+  loadAnimations(const aiScene& model, ModelInfo& outModel);
+
+  using NodesRefMap = std::unordered_map<TString, Skeleton::NodeData*>;
 
   void 
   buildTree(const aiNode* pNodeSrc, 

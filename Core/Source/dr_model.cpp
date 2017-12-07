@@ -22,6 +22,7 @@ Model::init(void* pModelData) {
     meshes.push_back(std::move(mesh));
   }
 
+  animationsNames = pModel->animationsNames;
   skeletonName = pModel->skeletonName;
 }
 

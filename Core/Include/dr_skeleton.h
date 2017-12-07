@@ -16,18 +16,19 @@ class DR_CORE_EXPORT Skeleton : public Resource
   struct NodeData 
   {
     NodeData* pParent = nullptr;
-    String name;
+    TString name;
     Matrix4x4 boneOffset;
     Matrix4x4 transform;
     Matrix4x4 finalTransform;
     std::vector<std::unique_ptr<NodeData>> children;
   };
 
-  void init(void* resourceData);
+  void init(void*)
+  {}
 
   Matrix4x4 gloabalInverseTransform;
   std::vector<NodeData*> bones;
-  std::unordered_map<String, UInt32> bonesMapping;
+  std::unordered_map<TString, UInt32> bonesMapping;
   std::unique_ptr<NodeData> pRoot;
 };
 

@@ -13,6 +13,7 @@ struct DR_CORE_EXPORT ModelInfo
   }
 
   std::vector<MeshInfo> meshes;
+  std::vector<TString> animationsNames;
   TString skeletonName;
 };
 

@@ -3,6 +3,7 @@
 #include <assimp\Importer.hpp>
 #include <assimp\postprocess.h>
 #include <assimp\scene.h>
+#include <dr_animation.h>
 #include <dr_memory.h>
 #include <dr_model_info.h>
 #include <dr_string_utils.h>
@@ -43,10 +44,19 @@ CodecModel::decode(TString pathName) {
       skeletonName = _T("Skeleton_") + pathName;
 
       auto pSkeleton = std::make_shared<Skeleton>();
+     
+      std::memcpy(pSkeleton->gloabalInverseTransform.data, 
+                  &pScene->mRootNode->mTransformation[0][0],
+                  64);
+
+      pSkeleton->gloabalInverseTransform.inverse();
 
       loadSkeleton(*pScene, *pModelInfo, *pSkeleton);
 
       ResourceManager::instance().addResource(skeletonName, pSkeleton);
+
+      loadAnimations(*pScene, *pModelInfo);
+
     }
 
     pModelInfo->skeletonName = skeletonName;
@@ -81,15 +91,15 @@ CodecModel::loadVertices(const aiMesh& inMesh, MeshInfo& outMesh) {
       vertexIndex < static_cast<Int32>(inMesh.mNumVertices); 
       ++vertexIndex) {
 
-    outMesh.vertices[vertexIndex].position = {inMesh.mVertices[vertexIndex].x,
-                                              inMesh.mVertices[vertexIndex].y,
-                                              inMesh.mVertices[vertexIndex].z,
-                                              1.f};
-
-    outMesh.vertices[vertexIndex].normal = {inMesh.mNormals[vertexIndex].x, 
-                                            inMesh.mNormals[vertexIndex].y,
-                                            inMesh.mNormals[vertexIndex].z,
-                                            0.f};
+    outMesh.vertices[vertexIndex].position.x = inMesh.mVertices[vertexIndex].x;
+    outMesh.vertices[vertexIndex].position.y = inMesh.mVertices[vertexIndex].y;
+    outMesh.vertices[vertexIndex].position.z = inMesh.mVertices[vertexIndex].z;
+    outMesh.vertices[vertexIndex].position.w = 1.f;
+         
+    outMesh.vertices[vertexIndex].normal.x = inMesh.mNormals[vertexIndex].x;
+    outMesh.vertices[vertexIndex].normal.y = inMesh.mNormals[vertexIndex].y;
+    outMesh.vertices[vertexIndex].normal.z = inMesh.mNormals[vertexIndex].z;
+    outMesh.vertices[vertexIndex].normal.w = 0.f;
   }
 }
 
@@ -131,17 +141,17 @@ CodecModel::loadSkeleton(const aiScene& model,
 
       aiBone& bone = *mesh.mBones[boneIndex];
 
-      String boneName = bone.mName.data;
+      TString boneName = StringUtils::toTString(bone.mName.data);
 
       std::memcpy(nodesRefs[boneName]->boneOffset.data, 
                   &bone.mOffsetMatrix[0][0], 64);
 
       if (!bonesMap.count(boneName)) {
+
         SizeT index = bones.size();
         bonesMap[boneName] = index;
         bones.push_back(nodesRefs[boneName]);
-        std::memcpy(bones[index]->boneOffset.data, 
-                    &bone.mOffsetMatrix[0][0], 64);
+        std::memcpy(bones[index]->boneOffset.data, &bone.mOffsetMatrix[0][0], 64);
 
         for(Int32 vertexIndex = 0; 
             vertexIndex < static_cast<Int32>(bone.mNumWeights); 
@@ -156,12 +166,71 @@ CodecModel::loadSkeleton(const aiScene& model,
   }  
 }
 
+void
+CodecModel::loadAnimations(const aiScene& model, ModelInfo& outModel) {
+  for(Int32 animationIndex = 0; 
+      animationIndex < static_cast<Int32>(model.mNumAnimations); 
+      ++animationIndex) {
+    aiAnimation& animation = *model.mAnimations[animationIndex];
+
+
+    TString animName = StringUtils::toTString(animation.mName.data);
+
+    outModel.animationsNames.push_back(animName);
+
+    auto pAnimation = std::make_shared<Animation>();
+
+    pAnimation->setDuration(static_cast<float>(animation.mDuration));
+
+    pAnimation->setTicksPerSecond(static_cast<float>(animation.mTicksPerSecond));
+  
+    for(Int32 i = 0; i < animation.mNumChannels; ++i) {
+      aiNodeAnim& channel = *animation.mChannels[i];
+      Animation::BoneAnim boneAnim;
+
+      boneAnim.positions.resize(channel.mNumPositionKeys);
+      boneAnim.rotations.resize(channel.mNumRotationKeys);
+      boneAnim.scales.resize(channel.mNumScalingKeys);
+
+      for(Int32 pos = 0; pos < channel.mNumPositionKeys; ++pos) {
+        aiVectorKey& posKey = channel.mPositionKeys[pos];
+        
+        boneAnim.positions[pos].time = posKey.mTime;
+
+        std::memcpy(boneAnim.positions[pos].value.data, &posKey.mValue[0], 12);
+      }
+
+      for(Int32 rot = 0; rot < channel.mNumRotationKeys; ++rot) {
+        aiQuatKey& rotKey = channel.mRotationKeys[rot];
+        
+        boneAnim.rotations[rot].time = rotKey.mTime;
+
+        boneAnim.rotations[rot].value.x = rotKey.mValue.x;
+        boneAnim.rotations[rot].value.y = rotKey.mValue.y;
+        boneAnim.rotations[rot].value.z = rotKey.mValue.z;
+        boneAnim.rotations[rot].value.w = rotKey.mValue.w;
+      }
+
+      for(Int32 scl = 0; scl < channel.mNumScalingKeys; ++scl) {
+        aiVectorKey& sclKey = channel.mScalingKeys[scl];
+        
+        std::memcpy(boneAnim.scales[scl].value.data, &sclKey.mValue[0], 12);
+      }
+
+      pAnimation->setBoneAnimation(StringUtils::toTString(channel.mNodeName.data),
+                                   std::move(boneAnim));
+    }
+
+    ResourceManager::instance().addResource(animName, pAnimation);
+  }
+}
+
 void 
 CodecModel::buildTree(const aiNode* pNodeSrc, 
                       Skeleton::NodeData* pNode, 
                       NodesRefMap& nodesRefs) {
   
-  pNode->name = pNodeSrc->mName.data;
+  pNode->name = StringUtils::toTString(pNodeSrc->mName.data);
   
   nodesRefs[pNode->name] = pNode;
 

@@ -26,7 +26,7 @@ Camera::Camera(const std::string& name,
 Camera::~Camera() {}
 
 void 
-Camera::update(float delta) {
+Camera::update(float) {
 	m_view.LookAt(m_pos, m_target, m_up);
 	m_vp = m_view * m_projection;
 }

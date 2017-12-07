@@ -2,8 +2,5 @@
 
 namespace driderSDK {
 
-void Skeleton::init(void* resourceData) {
-  static_cast<void>(resourceData);
-}
 
 }

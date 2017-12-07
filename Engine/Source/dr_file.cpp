@@ -41,7 +41,7 @@ File::Close() {
 
 void
 File::Seek(const SizeT position) {
-  assert(position > Size());
+  assert(position <= Size());
   m_file.seekg(static_cast<std::streampos>(position));
 }
 
