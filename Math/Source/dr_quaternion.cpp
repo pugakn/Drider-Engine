@@ -107,7 +107,7 @@ Quaternion Quaternion::slerp(const Quaternion& end, float factor) const {
     float cosom = x * end.x + y * end.y + z * end.z + w * end.w;
 
     Quaternion endMod = end;
-    if( cosom < 0.0f)
+    if ( cosom < 0.0f)
     {
         cosom = -cosom;
         endMod.x = -endMod.x; 
@@ -117,7 +117,7 @@ Quaternion Quaternion::slerp(const Quaternion& end, float factor) const {
     }
 
     float sclp, sclq;
-    if((1.0f - cosom) > Math::EPSILON)
+    if ((1.0f - cosom) > Math::EPSILON)
     {
         float omega, sinom;
         omega = std::acos( cosom);

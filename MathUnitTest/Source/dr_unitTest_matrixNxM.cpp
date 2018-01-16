@@ -7,8 +7,8 @@ using driderSDK::SizeT;
 
 template<SizeT _rows, SizeT _cols> void 
 elementsEqualToValue(const MatrixNxM<_rows, _cols>& matrix, float value) {
-  for(SizeT iRow = 0; iRow < _rows; ++iRow) {
-    for(SizeT iCol = 0; iCol < _cols; ++iCol) {
+  for (SizeT iRow = 0; iRow < _rows; ++iRow) {
+    for (SizeT iCol = 0; iCol < _cols; ++iCol) {
        EXPECT_FLOAT_EQ(matrix[iRow][iCol], value);
     }
   }
@@ -17,8 +17,8 @@ elementsEqualToValue(const MatrixNxM<_rows, _cols>& matrix, float value) {
 template<SizeT _rows, SizeT _cols> void
 rowsEqualToVector(const MatrixNxM<_rows, _cols>& matrix, 
                   const VectorN<_cols>& vector) {
-  for(SizeT iRow = 0; iRow < _rows; iRow++) {
-    for(SizeT iCol = 0; iCol < _cols; ++iCol) {
+  for (SizeT iRow = 0; iRow < _rows; iRow++) {
+    for (SizeT iCol = 0; iCol < _cols; ++iCol) {
        EXPECT_FLOAT_EQ(matrix[iRow][iCol], vector[iCol]);
     }
   }

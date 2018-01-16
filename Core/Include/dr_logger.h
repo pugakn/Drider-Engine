@@ -12,7 +12,7 @@ namespace driderSDK
 *
 * Sample usage:
 * Logger sampleName;
-* if(!sampleName.isStarted()) {
+* if (!sampleName.isStarted()) {
 *   sampleName.startUp();
 *   sampleName.reset();
 * }

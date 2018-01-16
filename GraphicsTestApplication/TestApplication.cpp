@@ -28,7 +28,7 @@ void TestApplication::onInit()
 
   ResourceManager::startUp();
   ResourceManager* pInstance;
-  if(ResourceManager::isStarted()) {
+  if (ResourceManager::isStarted()) {
      pInstance = &ResourceManager::instance();
   }
   
@@ -49,15 +49,15 @@ void TestApplication::onInput()
   while (SDL_PollEvent(&event)) {
     switch (event.type) {
     case SDL_KEYDOWN:
-      if(event.key.keysym.sym == SDLK_UP)
+      if (event.key.keysym.sym == SDLK_UP)
       {
         camera.move(5.f, 0.f);
       }
-      if(event.key.keysym.sym == SDLK_DOWN)
+      if (event.key.keysym.sym == SDLK_DOWN)
       {
         camera.move(-5.f, 0.f);
       }
-      if(event.key.keysym.sym == SDLK_r)
+      if (event.key.keysym.sym == SDLK_r)
       {
         std::vector<TString> modelsFiles{_T("Croc.X")};
 
@@ -70,7 +70,7 @@ void TestApplication::onInput()
 }
 void TestApplication::onUpdate()
 {
-  for(auto& model : models)
+  for (auto& model : models)
   {
     //model.transform.rotate(Radian(0.005f), AXIS::kY);
     model.update();
@@ -82,7 +82,7 @@ void TestApplication::onDraw()
 {
   driver->clear();
   //quad.draw(*driver->deviceContext, camera.getVP());
-  for(auto& model : models)
+  for (auto& model : models)
     model.draw(*driver->deviceContext, camera);
   driver->swapBuffers();
 }

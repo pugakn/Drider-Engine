@@ -67,7 +67,7 @@ class DR_CORE_EXPORT Animator
           frame = std::get<index>(m_lastPositions[m_currentBone]);
         }
 
-        while( frame < static_cast<UInt32>(animTransforms.size() - 1)) {
+        while ( frame < static_cast<UInt32>(animTransforms.size() - 1)) {
 
           if (animationTime < animTransforms[frame + 1].time) {
             break;

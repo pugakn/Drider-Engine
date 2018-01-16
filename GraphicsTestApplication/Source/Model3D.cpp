@@ -124,7 +124,7 @@ void Model3D::draw(const driderSDK::DeviceContext& deviceContext, const Camera& 
   
   auto& boneTransforms = animator.getTransforms();
 
-  for(SizeT i = 0; i < boneTransforms.size(); ++i) {
+  for (SizeT i = 0; i < boneTransforms.size(); ++i) {
     constBuff.Bones[i] = boneTransforms[i];
   }
 

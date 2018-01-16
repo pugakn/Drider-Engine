@@ -13,7 +13,7 @@ void Node::update(const Matrix4x4& accumulatedTransform) {
   m_finalTransform = accumulatedTransform * 
                      transform.getTransformMatrix();
 
-  for(auto& child : m_childs) {
+  for (auto& child : m_childs) {
     child->update(m_finalTransform);
   }
 
@@ -55,8 +55,8 @@ void Node::setName(const TString& name) {
 }
 
 void Node::removeChild(const TString& childName) {
-  for(auto child = m_childs.begin(); child != m_childs.end(); ++child) {
-    if((*child)->getName() == childName) {
+  for (auto child = m_childs.begin(); child != m_childs.end(); ++child) {
+    if ((*child)->getName() == childName) {
       m_childs.erase(child);
       return;
     }
@@ -82,8 +82,8 @@ Node::SharedNode Node::getParent() {
 }
 
 Node::SharedNode Node::getChild(const TString & childName) {
-  for(auto& child : m_childs) {
-    if(childName == child->getName()) {
+  for (auto& child : m_childs) {
+    if (childName == child->getName()) {
       return child;
     }
   }

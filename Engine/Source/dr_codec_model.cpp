@@ -38,7 +38,7 @@ CodecModel::decode(TString pathName) {
     pModelInfo = new ModelInfo;
     pModelInfo->meshes.resize(pScene->mNumMeshes);
 
-    for(SizeT iMesh = 0; iMesh < pScene->mNumMeshes; ++iMesh) {
+    for (SizeT iMesh = 0; iMesh < pScene->mNumMeshes; ++iMesh) {
 
       MeshInfo& mesh = pModelInfo->meshes[iMesh];
       aiMesh* pMesh = pScene->mMeshes[iMesh];
@@ -49,7 +49,7 @@ CodecModel::decode(TString pathName) {
 
     TString skeletonName;
 
-    if(pScene->HasAnimations())
+    if (pScene->HasAnimations())
     {
       
       skeletonName = _T("Skeleton_") + pathName;
@@ -98,7 +98,7 @@ CodecModel::loadVertices(const aiMesh& inMesh, MeshInfo& outMesh) {
 
   outMesh.vertices.resize(inMesh.mNumVertices);
 
-  for(Int32 vertexIndex = 0; 
+  for (Int32 vertexIndex = 0; 
       vertexIndex < static_cast<Int32>(inMesh.mNumVertices); 
       ++vertexIndex) {
 
@@ -116,10 +116,10 @@ CodecModel::loadVertices(const aiMesh& inMesh, MeshInfo& outMesh) {
 
 void 
 CodecModel::loadIndices(const aiMesh& inMesh, MeshInfo& outMesh) {
-  for(SizeT iFace = 0; iFace < inMesh.mNumFaces; ++iFace) {
+  for (SizeT iFace = 0; iFace < inMesh.mNumFaces; ++iFace) {
     aiFace& face = inMesh.mFaces[iFace];
     DR_ASSERT(face.mNumIndices == 3);
-    for(SizeT indexCount = 0; indexCount < face.mNumIndices; ++indexCount) {
+    for (SizeT indexCount = 0; indexCount < face.mNumIndices; ++indexCount) {
       outMesh.indices.push_back(static_cast<UInt32>(face.mIndices[indexCount]));
     }
   }
@@ -170,7 +170,7 @@ CodecModel::loadSkeleton(const aiScene& model,
         index = bonesMap[boneName];
       }
 
-      for(Int32 vertexIndex = 0; 
+      for (Int32 vertexIndex = 0; 
           vertexIndex < static_cast<Int32>(bone.mNumWeights); 
           ++vertexIndex) {
         aiVertexWeight& verWeight = bone.mWeights[vertexIndex];
@@ -184,7 +184,7 @@ CodecModel::loadSkeleton(const aiScene& model,
 
 void
 CodecModel::loadAnimations(const aiScene& model, ModelInfo& outModel) {
-  for(Int32 animationIndex = 0; 
+  for (Int32 animationIndex = 0; 
       animationIndex < static_cast<Int32>(model.mNumAnimations); 
       ++animationIndex) {
     aiAnimation& animation = *model.mAnimations[animationIndex];
@@ -200,7 +200,7 @@ CodecModel::loadAnimations(const aiScene& model, ModelInfo& outModel) {
 
     pAnimation->setTicksPerSecond(static_cast<float>(animation.mTicksPerSecond));
   
-    for(Int32 i = 0; i < static_cast<Int32>(animation.mNumChannels); ++i) {
+    for (Int32 i = 0; i < static_cast<Int32>(animation.mNumChannels); ++i) {
       aiNodeAnim& channel = *animation.mChannels[i];
       Animation::BoneAnim boneAnim;
 
@@ -208,7 +208,7 @@ CodecModel::loadAnimations(const aiScene& model, ModelInfo& outModel) {
       boneAnim.rotations.resize(channel.mNumRotationKeys);
       boneAnim.scales.resize(channel.mNumScalingKeys);
 
-      for(Int32 pos = 0; 
+      for (Int32 pos = 0; 
           pos < static_cast<Int32>(channel.mNumPositionKeys); 
           ++pos) {
         aiVectorKey& posKey = channel.mPositionKeys[pos];
@@ -220,7 +220,7 @@ CodecModel::loadAnimations(const aiScene& model, ModelInfo& outModel) {
         boneAnim.positions[pos].value.z = posKey.mValue.z;
       }
 
-      for(Int32 rot = 0; 
+      for (Int32 rot = 0; 
           rot < static_cast<Int32>(channel.mNumRotationKeys); 
           ++rot) {
         aiQuatKey& rotKey = channel.mRotationKeys[rot];
@@ -233,7 +233,7 @@ CodecModel::loadAnimations(const aiScene& model, ModelInfo& outModel) {
         boneAnim.rotations[rot].value.w = rotKey.mValue.w;
       }
 
-      for(Int32 scl = 0; 
+      for (Int32 scl = 0; 
           scl < static_cast<Int32>(channel.mNumScalingKeys); 
           ++scl) {
         aiVectorKey& sclKey = channel.mScalingKeys[scl];
@@ -264,7 +264,7 @@ CodecModel::buildTree(const aiNode* pNodeSrc,
 
   std::memcpy(pNode->transform.data, &pNodeSrc->mTransformation[0][0], 64);
       
-  for(Int32 childInddex = 0; 
+  for (Int32 childInddex = 0; 
       childInddex < static_cast<Int32>(pNodeSrc->mNumChildren); 
       ++childInddex) {
     auto childNode = dr_make_unique<Skeleton::NodeData>();

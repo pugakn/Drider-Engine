@@ -14,7 +14,7 @@ Model::init(void* pModelData) {
 
   ModelInfo* pModel = static_cast<ModelInfo*>(pModelData);
 
-  for(auto& meshInfo : pModel->meshes){
+  for (auto& meshInfo : pModel->meshes){
     Mesh mesh;
     mesh.vertices = meshInfo.vertices;
     mesh.indices = meshInfo.indices;

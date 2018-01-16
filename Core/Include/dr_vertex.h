@@ -14,8 +14,8 @@ namespace driderSDK {
     Int32 bonesIDs[4]{-1, -1, -1, -1};
 
     void addBone(Int32 id, float weight) { 
-      for(Int32 i = 0; i < 4; ++i){
-        if(bonesIDs[i] == -1){
+      for (Int32 i = 0; i < 4; ++i){
+        if (bonesIDs[i] == -1){
           bonesIDs[i] = id;
           bonesWeights[i] = weight;
           return;

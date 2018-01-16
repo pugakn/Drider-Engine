@@ -40,7 +40,7 @@ Animator::interpolateRotation(const Animation::BoneAnim& boneAnim,
 
     float timeBtwnFrames = nextRot.time - currentRot.time;
     
-    if(nextFrame < frame) {
+    if (nextFrame < frame) {
       timeBtwnFrames += pAnimation->getDurationInTicks();
     } 
 
@@ -75,7 +75,7 @@ Animator::interpolateTranslation(const Animation::BoneAnim& boneAnim,
 
     float timeBtwnFrames = nextTrans.time - currentTrans.time;
     
-    if(nextFrame < frame) {
+    if (nextFrame < frame) {
       timeBtwnFrames += pAnimation->getDurationInTicks();
     } 
 
@@ -112,7 +112,7 @@ Animator::interpolateScale(const Animation::BoneAnim& boneAnim,
 
     float timeBtwnFrames = nextScale.time - currentScale.time;
     
-    if(nextFrame < frame) {
+    if (nextFrame < frame) {
       timeBtwnFrames += pAnimation->getDurationInTicks();
     } 
 
@@ -144,7 +144,7 @@ Animator::evaluate(float time) {
 
   float animTime = std::fmod(timeInTicks, duration);
 
-  if(m_transforms.size() != pSkeleton->bones.size()) {
+  if (m_transforms.size() != pSkeleton->bones.size()) {
     m_transforms.resize(pSkeleton->bones.size());
   }
 
@@ -156,7 +156,7 @@ Animator::evaluate(float time) {
   
   m_lastTime = animTime;
 
-  for(SizeT i = 0; i < pSkeleton->bones.size(); ++i) {
+  for (SizeT i = 0; i < pSkeleton->bones.size(); ++i) {
     m_transforms[i] = pSkeleton->bones[i]->finalTransform;
   }
 }
@@ -205,7 +205,7 @@ Animator::readNodeHeirarchy(float animTime,
 
   auto boneIt = pSkeleton->bonesMapping.find(pNode->name);
 
-  if(boneIt != pSkeleton->bonesMapping.end()) {
+  if (boneIt != pSkeleton->bonesMapping.end()) {
     auto& pBone = pSkeleton->bones[boneIt->second];
 
     pBone->finalTransform = pSkeleton->gloabalInverseTransform * 
@@ -213,7 +213,7 @@ Animator::readNodeHeirarchy(float animTime,
                             pBone->boneOffset;
   }
 
-  for(auto& pChild : pNode->children) {
+  for (auto& pChild : pNode->children) {
     readNodeHeirarchy(animTime, 
                       pChild.get(), 
                       globalTransform, 

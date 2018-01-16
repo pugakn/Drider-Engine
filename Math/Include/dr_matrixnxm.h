@@ -46,7 +46,7 @@ class MatrixNxM
   */
   explicit MatrixNxM(const VectorN<_cols>& _vec)
   {
-    for(auto& row : m_elements){
+    for (auto& row : m_elements){
 	    row = _vec;
     }
   }
@@ -126,8 +126,8 @@ class MatrixNxM
   {
 	  MatrixNxM<_cols, _rows> transposed;
 
-	  for(Int32 iRow = 0; iRow < _rows; ++iRow) {
-	    for(Int32 iCol = 0; iCol < _cols; ++iCol) {
+	  for (Int32 iRow = 0; iRow < _rows; ++iRow) {
+	    for (Int32 iCol = 0; iCol < _cols; ++iCol) {
 		    transposed[iCol][iRow] = m_elements[iRow][iCol];
 	    }
 	  }
@@ -177,7 +177,7 @@ class MatrixNxM
   FORCEINLINE MatrixNxM&
   operator*=(float scalar)
   {	
-	  for(auto& row : m_elements){
+	  for (auto& row : m_elements){
 	    row *= scalar;	
 	  }
 
@@ -278,7 +278,7 @@ operator*(const VectorN<_rows> lhs, const MatrixNxM<_rows, _cols>& rhs)
 {
   VectorN<_cols> temp;
   MatrixNxM<_cols, _rows> rhsTransposed = rhs.transpose();
-  for(Int32 iCol = 0; iCol < _cols; ++iCol){
+  for (Int32 iCol = 0; iCol < _cols; ++iCol){
 	  temp[iCol] = lhs.dot(rhsTransposed[iCol]);
   }
   return temp;
@@ -305,7 +305,7 @@ static FORCEINLINE VectorN<_rows>
 operator*(const MatrixNxM<_rows, _cols>& lhs, const VectorN<_cols> rhs)
 {
     VectorN<_rows> temp;
-	  for(Int32 iRow = 0; iRow < _rows; ++iRow){
+	  for (Int32 iRow = 0; iRow < _rows; ++iRow){
 	    temp[iRow] = rhs.dot(lhs[iRow]);	
 	  }
 

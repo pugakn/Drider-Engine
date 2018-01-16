@@ -23,10 +23,10 @@ std::shared_ptr<Resource>
 ResourceManager::loadResource(TString resourceName) {
   std::shared_ptr<Resource> r;
   
-  for(auto &codec : codecs) {
+  for (auto &codec : codecs) {
     TString extension = FileSystem::GetFileExtension(resourceName);
-    if(codec->isCompatible(extension)) {
-      if(existInResourceContent(resourceName)) {
+    if (codec->isCompatible(extension)) {
+      if (existInResourceContent(resourceName)) {
         r = getReference(resourceName);
       } else {
         createResource(resourceName, codec.get());

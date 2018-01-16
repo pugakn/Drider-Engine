@@ -44,7 +44,7 @@ Animation::getBonesAnimations() {
 
 void 
 Animation::setTicksPerSecond(float tps) {
-  if(tps <= 0) {
+  if (tps <= 0) {
     tps = 10.f;
   }
   
