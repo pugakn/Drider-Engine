@@ -114,7 +114,7 @@ void Model3D::destroy() {
 }
 
 void Model3D::update() {
-  elapsedTime += 0.002f;
+  elapsedTime += 0.008f;
   animator.evaluate(elapsedTime);
 }
 

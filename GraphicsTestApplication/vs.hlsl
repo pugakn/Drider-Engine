@@ -33,7 +33,7 @@ VS_OUTPUT VS( VS_INPUT input ) {
 	}
 
 	float4 OutVertex = mul(input.position, BoneTransform);
-	//float4 OutNormal = mul(float4())
+	float4 OutNormal = mul(float4(input.normal.xyz,1), BoneTransform);
 
     OUT.hposition = mul( WVP, OutVertex);
 	//OUT.hposition = input.position;
