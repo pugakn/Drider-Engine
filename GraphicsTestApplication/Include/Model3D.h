@@ -15,6 +15,8 @@
 #include <dr_d3d_input_layout.h>
 #include <dr_matrix4x4.h>
 #include <dr_camera.h>
+#include <dr_animator.h>
+#include <dr_skeleton.h>
 
 class Model3D 
 {
@@ -43,6 +45,7 @@ public:
 private:
   struct CBuffer {
     driderSDK::Matrix4x4 WVP;
+    driderSDK::Matrix4x4 Bones[200];
   };
 
   std::shared_ptr<driderSDK::Model> resource;
@@ -65,4 +68,8 @@ private:
 
   std::vector<driderSDK::Vertex> vertices;
   std::vector<driderSDK::UInt32> indices;
+
+  float elapsedTime;
+  driderSDK::Animator animator;
+  std::shared_ptr<driderSDK::Skeleton> pSkeleton;
 };

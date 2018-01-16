@@ -1,5 +1,6 @@
 cbuffer ConstantBuffer {
 	float4x4 WVP;
+	float4x4 Bones[200];
 }
 
 struct VS_INPUT{
@@ -14,9 +15,27 @@ struct VS_OUTPUT{
 	float4 hnormal   : NORMAL;
 };
 
-VS_OUTPUT VS( VS_INPUT input ){
+VS_OUTPUT VS( VS_INPUT input ) {
     VS_OUTPUT OUT;
-    OUT.hposition = mul( WVP, float4(input.position.xyz, 1.0));
+
+    float4x4 BoneTransform;
+
+    for(int i = 0; i < 4; ++i)
+	{
+		int index = input.boneids[i];
+
+		if( index == -1 )
+		{
+			break;
+		}
+
+		BoneTransform += Bones[index] * input.weights[i];
+	}
+
+	float4 OutVertex = mul(input.position, BoneTransform);
+	//float4 OutNormal = mul(float4())
+
+    OUT.hposition = mul( WVP, OutVertex);
 	//OUT.hposition = input.position;
 	OUT.hnormal = float4(input.normal.xyz, 0);
     return OUT;

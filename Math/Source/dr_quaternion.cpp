@@ -103,6 +103,44 @@ Quaternion::matrixFromQuaternion(Matrix3x3& MatrixOut) {
 	MatrixOut[2][2] = 1.f - (2.f*Normalized.x*Normalized.x) - (2.f*Normalized.y*Normalized.y);
 }
 
+Quaternion Quaternion::slerp(const Quaternion& end, float factor) const {
+    float cosom = x * end.x + y * end.y + z * end.z + w * end.w;
+
+    Quaternion endMod = end;
+    if( cosom < 0.0f)
+    {
+        cosom = -cosom;
+        endMod.x = -endMod.x; 
+        endMod.y = -endMod.y;
+        endMod.z = -endMod.z;
+        endMod.w = -endMod.w;
+    }
+
+    float sclp, sclq;
+    if((1.0f - cosom) > Math::EPSILON)
+    {
+        float omega, sinom;
+        omega = std::acos( cosom);
+        sinom = std::sin( omega);
+        sclp  = std::sin( (1.0f - factor) * omega) / sinom;
+        sclq  = std::sin( factor * omega) / sinom;
+    } 
+    else
+    {
+        sclp = 1.0f - factor;
+        sclq = factor;
+    }
+
+    Quaternion interpolated;
+
+    interpolated.x = sclp * x + sclq * endMod.x;
+    interpolated.y = sclp * y + sclq * endMod.y;
+    interpolated.z = sclp * z + sclq * endMod.z;
+    interpolated.w = sclp * w + sclq * endMod.w;
+
+    return interpolated;
+}
+
 float*
 Quaternion::ptr() {
 	return &data[0];

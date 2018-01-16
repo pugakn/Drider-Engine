@@ -11,7 +11,7 @@ namespace driderSDK {
 
 class Skeleton;
 
-class Animation : public Resource {
+class DR_CORE_EXPORT Animation : public Resource {
 
 public:
   template<class T>
@@ -37,6 +37,9 @@ public:
   const BoneAnim*
   getBoneAnimation(const TString& bone) const;
 
+  const UInt32
+  getBoneIndex(const TString& bone) const;
+
   const std::unordered_map<TString, BoneAnim>&
   getBonesAnimations();
 
@@ -47,13 +50,13 @@ public:
   setDuration(float durationInTicks);
 
   float 
-  getDurationInSecs();
+  getDurationInSecs() const;
 
   float
-  getDurationInTicks();
+  getDurationInTicks() const;
 
   float
-  getTicksPerSecond();
+  getTicksPerSecond() const;
 
   void init(void*)
   {}
@@ -63,6 +66,7 @@ public:
   float m_ticksPerSecond;
   float m_duration; 
   std::unordered_map<TString, BoneAnim> m_bonesAnimations;
+  std::unordered_map<TString, UInt32> m_bonesIndices;
 };
 
 }

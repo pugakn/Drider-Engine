@@ -9,6 +9,8 @@
 #include <dr_string_utils.h>
 #include "dr_resource_manager.h"
 
+#include <fstream>
+
 namespace driderSDK {
 
 Codec::UniqueVoidPtr 
@@ -18,7 +20,16 @@ CodecModel::decode(TString pathName) {
 
   ModelInfo* pModelInfo = nullptr;
 
-  UInt32 flags = aiPostProcessSteps::aiProcess_Triangulate;
+  UInt32 flags = 0;
+
+  flags |= aiProcess_FlipUVs | aiProcess_CalcTangentSpace;
+	flags |= aiProcess_Triangulate;
+	flags |= aiProcess_OptimizeGraph;
+	flags |= aiProcess_OptimizeMeshes;
+	flags |= aiProcess_JoinIdenticalVertices;
+	flags |= aiProcess_RemoveRedundantMaterials;
+	flags |= aiProcess_FindInvalidData;
+	flags |= aiProcess_GenUVCoords;
 
   const aiScene* pScene = importer.ReadFile(StringUtils::toString(pathName), 
                                             flags);
@@ -143,25 +154,30 @@ CodecModel::loadSkeleton(const aiScene& model,
 
       TString boneName = StringUtils::toTString(bone.mName.data);
 
-      std::memcpy(nodesRefs[boneName]->boneOffset.data, 
+      std::memcpy(nodesRefs[boneName]->boneOffset.ptr(), 
                   &bone.mOffsetMatrix[0][0], 64);
 
-      if (!bonesMap.count(boneName)) {
+      SizeT index = 0;
 
-        SizeT index = bones.size();
+      if (!bonesMap.count(boneName)) {
+        index = bones.size();
         bonesMap[boneName] = index;
         bones.push_back(nodesRefs[boneName]);
-        std::memcpy(bones[index]->boneOffset.data, &bone.mOffsetMatrix[0][0], 64);
-
-        for(Int32 vertexIndex = 0; 
-            vertexIndex < static_cast<Int32>(bone.mNumWeights); 
-            ++vertexIndex) {
-          aiVertexWeight& verWeight = bone.mWeights[vertexIndex];
-          
-          outMesh.vertices[verWeight.mVertexId].addBone(boneIndex, 
-                                                        verWeight.mWeight);          
-        }
+        std::memcpy(bones[index]->boneOffset.ptr(), 
+                    &bone.mOffsetMatrix[0][0], 64);
       }
+      else {
+        index = bonesMap[boneName];
+      }
+
+      for(Int32 vertexIndex = 0; 
+          vertexIndex < static_cast<Int32>(bone.mNumWeights); 
+          ++vertexIndex) {
+        aiVertexWeight& verWeight = bone.mWeights[vertexIndex];
+          
+        outMesh.vertices[verWeight.mVertexId].addBone(index, 
+                                                      verWeight.mWeight);          
+      } 
     }
   }  
 }
@@ -184,7 +200,7 @@ CodecModel::loadAnimations(const aiScene& model, ModelInfo& outModel) {
 
     pAnimation->setTicksPerSecond(static_cast<float>(animation.mTicksPerSecond));
   
-    for(Int32 i = 0; i < animation.mNumChannels; ++i) {
+    for(Int32 i = 0; i < static_cast<Int32>(animation.mNumChannels); ++i) {
       aiNodeAnim& channel = *animation.mChannels[i];
       Animation::BoneAnim boneAnim;
 
@@ -192,18 +208,24 @@ CodecModel::loadAnimations(const aiScene& model, ModelInfo& outModel) {
       boneAnim.rotations.resize(channel.mNumRotationKeys);
       boneAnim.scales.resize(channel.mNumScalingKeys);
 
-      for(Int32 pos = 0; pos < channel.mNumPositionKeys; ++pos) {
+      for(Int32 pos = 0; 
+          pos < static_cast<Int32>(channel.mNumPositionKeys); 
+          ++pos) {
         aiVectorKey& posKey = channel.mPositionKeys[pos];
         
-        boneAnim.positions[pos].time = posKey.mTime;
+        boneAnim.positions[pos].time = static_cast<float>(posKey.mTime);
 
-        std::memcpy(boneAnim.positions[pos].value.data, &posKey.mValue[0], 12);
+        boneAnim.positions[pos].value.x = posKey.mValue.x;
+        boneAnim.positions[pos].value.y = posKey.mValue.y;
+        boneAnim.positions[pos].value.z = posKey.mValue.z;
       }
 
-      for(Int32 rot = 0; rot < channel.mNumRotationKeys; ++rot) {
+      for(Int32 rot = 0; 
+          rot < static_cast<Int32>(channel.mNumRotationKeys); 
+          ++rot) {
         aiQuatKey& rotKey = channel.mRotationKeys[rot];
         
-        boneAnim.rotations[rot].time = rotKey.mTime;
+        boneAnim.rotations[rot].time = static_cast<float>(rotKey.mTime);
 
         boneAnim.rotations[rot].value.x = rotKey.mValue.x;
         boneAnim.rotations[rot].value.y = rotKey.mValue.y;
@@ -211,10 +233,16 @@ CodecModel::loadAnimations(const aiScene& model, ModelInfo& outModel) {
         boneAnim.rotations[rot].value.w = rotKey.mValue.w;
       }
 
-      for(Int32 scl = 0; scl < channel.mNumScalingKeys; ++scl) {
+      for(Int32 scl = 0; 
+          scl < static_cast<Int32>(channel.mNumScalingKeys); 
+          ++scl) {
         aiVectorKey& sclKey = channel.mScalingKeys[scl];
+
+        boneAnim.scales[scl].time = static_cast<float>(sclKey.mTime);
         
-        std::memcpy(boneAnim.scales[scl].value.data, &sclKey.mValue[0], 12);
+        boneAnim.scales[scl].value.x = sclKey.mValue.x;
+        boneAnim.scales[scl].value.y = sclKey.mValue.y;
+        boneAnim.scales[scl].value.z = sclKey.mValue.z;
       }
 
       pAnimation->setBoneAnimation(StringUtils::toTString(channel.mNodeName.data),

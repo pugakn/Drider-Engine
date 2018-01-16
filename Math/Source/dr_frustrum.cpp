@@ -61,25 +61,10 @@ Frustrum::intersects(const Ray& bRay) const
 }
 
 bool
-Frustrum::intersects(const Plane& plane) const
-{
-  return false;
-}
-
-bool
 Frustrum::intersects(const Sphere& sphere) const {
   return Intersect::frustrumSphere(planes, sphere.center, sphere.radius);
 }
 
-bool Frustrum::intersects(const Capsule & capsule) const
-{
-  return false;
-}
-
-bool Frustrum::intersects(const Frustrum & frustrum) const
-{
-  return false;
-}
 
 bool
 Frustrum::intersects(const AABB& aabb) const

@@ -4,12 +4,14 @@
 #include <Windows.h> //TODO: remove
 #include <dr_d3d_swap_chain.h>
 #include <dr_rasterizer_state.h>
+#include <dr_radian.h>
+#include <dr_quaternion.h>
 
 namespace driderSDK {
 
 TestApplication::TestApplication() 
   : viewport{0,0,1280, 720},
-    camera(_T("MainCamera"), {0,50,-300}, {0,0,0}, viewport, 45.f, 0.001f, 1000.f )
+    camera(_T("MainCamera"), {0, 100, 200}, {0,0,0}, viewport, 45.f, 0.1f, 1000.f )
 {
 }
 
@@ -24,15 +26,13 @@ void TestApplication::onInit()
   HWND win = GetActiveWindow();
   driver->init(viewport.width, viewport.height, win );
 
- 
   ResourceManager::startUp();
   ResourceManager* pInstance;
   if(ResourceManager::isStarted()) {
      pInstance = &ResourceManager::instance();
   }
   
-
-  std::vector<TString> modelsFiles{_T("dwarf.x")};
+  std::vector<TString> modelsFiles{_T("Croc.X")};
 
   models.resize(modelsFiles.size());
 
@@ -47,12 +47,35 @@ void TestApplication::onInput()
 {
   SDL_Event event;
   while (SDL_PollEvent(&event)) {
+    switch (event.type) {
+    case SDL_KEYDOWN:
+      if(event.key.keysym.sym == SDLK_UP)
+      {
+        camera.move(5.f, 0.f);
+      }
+      if(event.key.keysym.sym == SDLK_DOWN)
+      {
+        camera.move(-5.f, 0.f);
+      }
+      if(event.key.keysym.sym == SDLK_r)
+      {
+        std::vector<TString> modelsFiles{_T("Croc.X")};
+
+        models[0].destroy();
+        models[0].init(*driver->device, modelsFiles[0]);
+      }
+    break;
+    }
   }
 }
 void TestApplication::onUpdate()
 {
   for(auto& model : models)
+  {
+    //model.transform.rotate(Radian(0.005f), AXIS::kY);
     model.update();
+  }
+    
   camera.update(0);
 }
 void TestApplication::onDraw()

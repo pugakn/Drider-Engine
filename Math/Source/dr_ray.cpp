@@ -72,14 +72,4 @@ Ray::intersects(const Ray& ray, Vector3D* point) const
                            point);
 }
 
-bool
-Ray::intersects(const Line & line, Vector3D* point) const
-{
-  return Intersect::rayLine(origin,
-    direction,
-    line.GetPoint(0),
-    line.GetPoint(1),
-    point);
-}
-
 }

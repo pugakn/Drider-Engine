@@ -28,7 +28,7 @@ Camera::~Camera() {}
 void 
 Camera::update(float delta) {
 	m_view.LookAt(m_pos, m_pos + m_look, m_up);
-	m_vp = m_projection * m_view;
+	m_vp = m_view * m_projection;
 }
 
 void 

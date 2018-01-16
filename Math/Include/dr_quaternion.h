@@ -143,6 +143,15 @@ class DR_MATH_EXPORT Quaternion
 	void
 	matrixFromQuaternion(Matrix3x3& MatrixOut);
 
+  /**
+  * 
+  *
+  *
+  */
+
+  Quaternion 
+  slerp(const Quaternion& end, float factor) const;
+
 	/**
 	* TEST::pointer
 	* Gets a pointer to the first element of the quaternion.

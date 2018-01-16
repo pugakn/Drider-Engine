@@ -395,9 +395,9 @@ Intersect::rayFrustrum(const Vector3D& rayOrigin,
     if (ray.intersects(frustrumPlanes[i], &distance))
     {
       driderSDK::Vector3D point = rayOrigin + rayDirection * distance;
-      for (size_t i = 0; i < 6; i++)
+      for (size_t j = 0; j < 6; j++)
       {
-        distance = frustrumPlanes[i].distanceToPoint(driderSDK::Vector3D(point));
+        distance = frustrumPlanes[j].distanceToPoint(driderSDK::Vector3D(point));
         if (distance < 0)
         {
           return false;

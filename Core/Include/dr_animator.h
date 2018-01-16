@@ -6,11 +6,13 @@
 #include "dr_animation.h"
 #include "dr_skeleton.h"
 
+#include <map>
+
 namespace driderSDK {
 
 class Skeleton;
 
-class Animator 
+class DR_CORE_EXPORT Animator 
 {
  public:
 
@@ -23,26 +25,7 @@ class Animator
 
   void 
   setSkeleton(std::shared_ptr<Skeleton> pSkeleton);
-
- private:
-
-  template<class T> T
-  interpolateTransform(const Animation::AnimTransformations<T>& animTransforms,
-                       float animationTime, 
-                       Int32 transformIndex) 
-  {
-    static_cast<void>(transformIndex);
-  }
-
-  template<class T> UInt32
-  getTransformIndex(const Animation::AnimTransformations<T>& animTransforms,
-                    float animationTime, 
-                    Int32 transformIndex) 
-  {
-    static_cast<void>(transformIndex);
-
-  }
-
+  
   void 
   evaluate(float time);
 
@@ -52,6 +35,52 @@ class Animator
     return m_transforms;
   }
 
+ private:
+
+  Quaternion
+  interpolateRotation(const Animation::BoneAnim& boneAnim,
+                      float animationTime,
+                      const Animation* pAnimation);
+
+  Vector3D
+  interpolateTranslation(const Animation::BoneAnim& boneAnim,
+                         float animationTime,
+                         const Animation* pAnimation);
+
+  Vector3D
+  interpolateScale(const Animation::BoneAnim& boneAnim,
+                   float animationTime,
+                   const Animation* pAnimation);
+
+
+
+  template<UInt32 index, class T> UInt32
+  getTransformIndex(const Animation::AnimTransformations<T>& animTransforms,
+                    float animationTime)
+  {
+      UInt32 frame = 0;
+      
+      DR_ASSERT(!animTransforms.empty());
+
+      if (animTransforms.size() > 1) {
+        if (animationTime >= m_lastTime) {
+          frame = std::get<index>(m_lastPositions[m_currentBone]);
+        }
+
+        while( frame < static_cast<UInt32>(animTransforms.size() - 1)) {
+
+          if (animationTime < animTransforms[frame + 1].time) {
+            break;
+          }
+            
+          ++frame;
+        }
+
+      }
+
+      return frame;                                    
+  }
+
 private:
 
   void
@@ -59,11 +88,13 @@ private:
                     Skeleton::NodeData* pNode, 
                     const Matrix4x4& parentTransform,
                     const Animation* pAnimation,
-                    const Skeleton* pSkeleton);
+                    const Skeleton* pSkeleton, Int32 level);
 
   std::vector<std::tuple<UInt32, UInt32, UInt32>> m_lastPositions;
 
   float m_lastTime;
+
+  UInt32 m_currentBone;
 
   std::weak_ptr<Skeleton> m_pSkeleton;
 
