@@ -1,0 +1,40 @@
+#pragma once
+#include "dr_sound_prerequisites.h"
+
+namespace driderSDK {
+  namespace DR_SOUND_MODE {
+    enum E {
+      kDrMode_DEFAULT = 0x00000000,
+      kDrMode_LOOP_OFF = 0x00000001,
+      kDrMode_LOOP_NORMAL = 0x00000002,
+      kDrMode_LOOP_BIDI = 0x00000004,
+      kDrMode_2D = 0x00000008,
+      kDrMode_3D = 0x00000010,
+      kDrMode_CREATESTREAM = 0x00000080,
+      kDrMode_CREATESAMPLE = 0x00000100,
+      kDrMode_CREATECOMPRESSEDSAMPLE = 0x00000200,
+      kDrMode_OPENUSER = 0x00000400,
+      kDrMode_OPENMEMORY = 0x00000800,
+      kDrMode_OPENMEMORY_POINT = 0x10000000,
+      kDrMode_OPENRAW = 0x00001000,
+      kDrMode_OPENONLY = 0x00002000,
+      kDrMode_ACCURATETIME = 0x00004000,
+      kDrMode_MPEGSEARCH = 0x00008000,
+      kDrMode_NONBLOCKING = 0x00010000,
+      kDrMode_UNIQUE = 0x00020000,
+      kDrMode_3D_HEADRELATIVE = 0x00040000,
+      kDrMode_3D_WORLDRELATIVE = 0x00080000,
+      kDrMode_3D_INVERSEROLLOFF = 0x00100000,
+      kDrMode_3D_LINEARROLLOFF = 0x00200000,
+      kDrMode_3D_LINEARSQUAREROLLOFF = 0x00400000,
+      kDrMode_3D_INVERSETAPEREDROLLOFF = 0x00800000,
+      kDrMode_3D_CUSTOMROLLOFF = 0x04000000,
+      kDrMode_3D_IGNOREGEOMETRY = 0x40000000,
+      kDrMode_IGNORETAGS = 0x02000000,
+      kDrMode_LOWMEM = 0x08000000,
+      kDrMode_LOADSECONDARYRAM = 0x20000000,
+      kDrMode_VIRTUAL_PLAYFROMSTART = 0x80000000
+    };  
+  };
+
+}
