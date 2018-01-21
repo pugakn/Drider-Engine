@@ -2,10 +2,10 @@
 #include "dr_sound_prerequisites.h"
 
 namespace driderSDK {
-  class DR_SOUND_EXPORT APISound {
+  class DR_SOUND_EXPORT FMODSound {
    public:
-    APISound () {}
-    ~APISound () {}
+    FMODSound() {}
+    ~FMODSound() {}
     
     
   };

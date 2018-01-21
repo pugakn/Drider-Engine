@@ -170,15 +170,20 @@
     </BuildLog>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Include\dr_fmod_soundSystem.h" />
+    <ClInclude Include="Include\dr_sound.h" />
+    <ClInclude Include="Include\dr_soundSystem.h" />
     <ClInclude Include="Include\dr_soundSystemManager.h" />
-    <ClInclude Include="Include\dr_api_sound.h" />
+    <ClInclude Include="Include\dr_fmod_sound.h" />
     <ClInclude Include="Include\dr_sound_defines.h" />
     <ClInclude Include="Include\dr_sound_prerequisites.h" />
-    <ClInclude Include="Source\dr_soundSystem.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\dr_fmod_soundSystem.cpp" />
+    <ClCompile Include="Source\dr_sound.cpp" />
     <ClCompile Include="Source\dr_soundSystem.cpp" />
-    <ClCompile Include="Source\dr_api_sound.cpp" />
+    <ClCompile Include="Source\dr_fmod_sound.cpp" />
+    <ClCompile Include="Source\dr_soundSystemManager.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
