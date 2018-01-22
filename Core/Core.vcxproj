@@ -180,6 +180,7 @@
     <ClInclude Include="Include\dr_graph.h" />
     <ClInclude Include="Include\dr_loader.h" />
     <ClInclude Include="Include\dr_logger.h" />
+    <ClInclude Include="Include\dr_material.h" />
     <ClInclude Include="Include\dr_md5.h" />
     <ClInclude Include="Include\dr_mesh.h" />
     <ClInclude Include="Include\dr_mesh_info.h" />
