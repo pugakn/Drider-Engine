@@ -1,9 +1,6 @@
 #pragma once
 #include "dr_geometry_shader.h"
-#include <wrl.h>
-#include <wrl/client.h>
-
-class ID3D11GeometryShader;
+#include <d3d11.h>
 
 namespace driderSDK {
 
@@ -16,6 +13,12 @@ namespace driderSDK {
 class DR_GRAPHICS_EXPORT D3DGeometryShader : public GeometryShader
 {
  public:
+   void*
+     getAPIObject() override;
+
+   void**
+     getAPIObjectReference() override;
+
   /**
   * TEST::set
   *
@@ -53,12 +56,13 @@ class DR_GRAPHICS_EXPORT D3DGeometryShader : public GeometryShader
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  DR_GRAPHICS_ERROR::E
-  createFromMemory(const Device& device,
-                   const char* buffer,
-                   size_t bufferSize) override;
+  void
+  create(const Device& device) override;
 
-  Microsoft::WRL::ComPtr<ID3D11GeometryShader> APIShader;
+  void
+  compile(const Device& device, const char* buffer, size_t bufferSize) override;
+
+  ID3D11GeometryShader* APIShader;
 };
 
 }

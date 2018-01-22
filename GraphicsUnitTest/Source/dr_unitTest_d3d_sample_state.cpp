@@ -29,16 +29,16 @@ TEST(D3D11SamplerState, set) {
   EXPECT_TRUE(!b);
 }
 
-TEST(D3D11SamplerState, release) {
-  driderSDK::D3D11SamplerState obj;
-  driderSDK::D3DDevice device;
-  driderSDK::D3DDeviceContext context;
-  device.createDeviceAndDeviceContext(context);
-
-  driderSDK::DrSampleDesc desc;
-  bool b = obj.create(device, desc);
-  if (b) {
-    obj.release();
-  }
-  EXPECT_TRUE(obj.APIState.Get());
-}
+//TEST(D3D11SamplerState, release) {
+//  driderSDK::D3D11SamplerState obj;
+//  driderSDK::D3DDevice device;
+//  driderSDK::D3DDeviceContext context;
+//  device.createDeviceAndDeviceContext(context);
+//
+//  driderSDK::DrSampleDesc desc;
+//  bool b = obj.create(device, desc);
+//  if (b) {
+//    obj.release();
+//  }
+//  EXPECT_TRUE(obj.APIState.Get());
+//}

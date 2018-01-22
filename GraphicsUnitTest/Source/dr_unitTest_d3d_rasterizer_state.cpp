@@ -65,5 +65,5 @@ TEST(D3DRasterizerState, release) {
   desc.antialiasedLineEnable = FALSE;
   obj.create(device,desc);
   obj.release();
-  EXPECT_TRUE(obj.APIState.Get());
+  EXPECT_TRUE(obj.APIState);
 }

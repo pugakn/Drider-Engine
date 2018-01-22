@@ -1,25 +1,32 @@
 #pragma once
 
 #include <vector>
+#include <unordered_set>
 #include <dr_memory.h>
 #include "dr_core_prerequisites.h"
-#include "dr_resource.h"
 #include "dr_mesh.h"
-#include "dr_skeleton.h"
+#include "dr_resource.h"
 
 namespace driderSDK {
 
 class DR_CORE_EXPORT Model : public Resource 
 {
  public:
+
   Model();
+
   ~Model();
- private:
 
-   virtual void create(void* pResourceInfo);
+  Model(const Model&) = delete;
 
-   std::vector<Mesh> m_meshes;
-   std::unique_ptr<Skeleton> m_pSkeleton;
+  Model& operator=(const Model&) = delete;
+
+  void 
+  init(void* pModelData);
+
+  std::vector<Mesh> meshes;
+  std::vector<TString> animationsNames;
+  TString skeletonName;
 };
 
 }

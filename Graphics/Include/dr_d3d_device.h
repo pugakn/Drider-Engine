@@ -1,21 +1,25 @@
 #pragma once
 #include "dr_graphics_prerequisites.h"
 #include "dr_device.h"
-#include <wrl.h>
-#include <wrl/client.h>
 
-class ID3D11Device;
+struct ID3D11Device;
 
 namespace driderSDK {
-
+class ShaderBytecode;
 class DR_GRAPHICS_EXPORT D3DDevice : public Device
 {
  public:
+   void*
+     getAPIObject() override;
+
+   void**
+     getAPIObjectReference() override;
+
   /**
   * TEST::
   *
   */
-  DR_GRAPHICS_ERROR::E
+  void
   createDeviceAndDeviceContext(DeviceContext& deviceContext) override;
 
   /**
@@ -43,54 +47,9 @@ class DR_GRAPHICS_EXPORT D3DDevice : public Device
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  DR_GRAPHICS_ERROR::E
-  createVertexBuffer(const DrBufferDesc& desc,
-                     char* initialData,
-                     VertexBuffer& vertexBuffer) override;
-
-  /**
-  * TEST::createIndexBuffer
-  *
-  * Create a vertex buffer
-  *
-  * @param DrBufferDesc
-  *   Describes the buffer parameters
-  *
-  * @param initialData
-  *   The initial data of the buffer
-  *
-  * @param out indexBuffer
-  *   The indexbuffer taht will be filled
-  *
-  * @return
-  *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
-  */
-  DR_GRAPHICS_ERROR::E
-  createIndexBuffer(const DrBufferDesc& desc,
-                    char* initialData,
-                    IndexBuffer& indexBuffer) override;
-
-  /**
-  * TEST::createConstantBuffer
-  *
-  * Create a constant buffer
-  *
-  * @param DrBufferDesc
-  *   Describes the buffer parameters
-  *
-  * @param initialData
-  *   The initial data of the buffer
-  *
-  * @param out constantBuffer
-  *   The constantBuffer taht will be filled out
-  *
-  * @return
-  *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
-  */
-  DR_GRAPHICS_ERROR::E
-  createConstantBuffer(const DrBufferDesc& desc,
-                       char* initialData,
-                       ConstantBuffer& constantBuffer) override;
+  Buffer*
+  createBuffer(const DrBufferDesc& desc,
+                     byte* initialData = nullptr) override;
 
   /**
   * TEST::createShaderFromMemory
@@ -109,10 +68,10 @@ class DR_GRAPHICS_EXPORT D3DDevice : public Device
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  DR_GRAPHICS_ERROR::E
+  Shader*
   createShaderFromMemory(const char* shaderBuffer,
                          size_t bufferSize,
-                         Shader& shader) override;
+                         DR_SHADER_TYPE_FLAG::E shaderType) override;
 
   /**
   * TEST::createTextureFromMemory
@@ -131,10 +90,9 @@ class DR_GRAPHICS_EXPORT D3DDevice : public Device
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  DR_GRAPHICS_ERROR::E
+  Texture*
   createTextureFromMemory(const char* buffer,
-                          const DrTextureDesc& desc,
-                          Texture& texture) override;
+                          const DrTextureDesc& desc) override;
 
   /**
   * TEST::createEmptyTexture
@@ -150,9 +108,8 @@ class DR_GRAPHICS_EXPORT D3DDevice : public Device
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  DR_GRAPHICS_ERROR::E
-  createEmptyTexture(const DrTextureDesc& desc,
-                     Texture& texture) override;
+  Texture*
+  createEmptyTexture(const DrTextureDesc& desc) override;
 
   /**
   * TEST::createRenderTarget
@@ -171,10 +128,8 @@ class DR_GRAPHICS_EXPORT D3DDevice : public Device
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  DR_GRAPHICS_ERROR::E
-  createRenderTarget(const DrTextureDesc& desc,
-                     RenderTarget& renderTarget,
-                     UInt32 _numColorTextures) override;
+  RenderTarget*
+  createRenderTarget(const Texture& texture) override;
 
   /**
   * TEST::createDepthStencil
@@ -190,9 +145,8 @@ class DR_GRAPHICS_EXPORT D3DDevice : public Device
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  DR_GRAPHICS_ERROR::E
-  createDepthStencil(const DrTextureDesc& desc,
-                     DepthStencil& depthStencil) override;
+  DepthStencil*
+  createDepthStencil(const Texture& texture) override;
 
   /**
   * TEST::createSamplerState
@@ -208,9 +162,8 @@ class DR_GRAPHICS_EXPORT D3DDevice : public Device
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  DR_GRAPHICS_ERROR::E
-  createSamplerState(const DrSampleDesc& desc,
-                     SamplerState& state) override;
+  SamplerState*
+  createSamplerState(const DrSampleDesc& desc) override;
 
   /**
   * TEST::createRasteizerState
@@ -226,9 +179,8 @@ class DR_GRAPHICS_EXPORT D3DDevice : public Device
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  DR_GRAPHICS_ERROR::E
-  createRasteizerState(const DrRasterizerDesc& desc,
-                       RasterizerState& state) override;
+  RasterizerState*
+  createRasteizerState(const DrRasterizerDesc& desc) override;
 
   /**
   * TEST::createDepthStencilState
@@ -244,9 +196,8 @@ class DR_GRAPHICS_EXPORT D3DDevice : public Device
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  DR_GRAPHICS_ERROR::E
-  createDepthStencilState(const DrDepthStencilDesc& desc,
-                          DepthStencilState& state) override;
+  DepthStencilState*
+  createDepthStencilState(const DrDepthStencilDesc& desc) override;
 
   /**
   * TEST::createInputLayout
@@ -265,10 +216,9 @@ class DR_GRAPHICS_EXPORT D3DDevice : public Device
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  DR_GRAPHICS_ERROR::E
-  createInputLayout(const DrInputElementDesc* inputDescArray,
-                    UInt32 arraySize,
-                    InputLayout& layout) override;
+  InputLayout*
+  createInputLayout(const std::vector<DrInputElementDesc>& inputDescArray,
+                    const ShaderBytecode& shaderBytecode) override;
 
   /**
   * TEST::createSwapChain
@@ -284,11 +234,10 @@ class DR_GRAPHICS_EXPORT D3DDevice : public Device
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  DR_GRAPHICS_ERROR::E
-  createSwapChain(const DrSwapChainDesc& desc,
-                  SwapChain& swapChain) override;
+  SwapChain* 
+  createSwapChain(const DrSwapChainDesc& desc) override;
 
-  Microsoft::WRL::ComPtr<ID3D11Device> D3D11Device;
+  ID3D11Device* D3D11Device;
 };
 
 }

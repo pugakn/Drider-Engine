@@ -34,7 +34,7 @@ class DR_GRAPHICS_EXPORT VertexBuffer : public Buffer
   *
   */
   virtual void
-  set(const DeviceContext& deviceContext, UInt32 stride, UInt32 offset)const = 0;
+  set(const DeviceContext& deviceContext, UInt32 offset = 0)const = 0;
 };
 
 }

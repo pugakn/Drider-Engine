@@ -1,4 +1,4 @@
-#include <dr_prerequisites.h>
+#include <dr_graphics_prerequisites.h>
 #include <gtest\gtest.h>
 
 int main(int argc, char* argv[])

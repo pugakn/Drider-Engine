@@ -1,6 +1,7 @@
 #include <dr_intersections.h>
 #include <dr_vector3d.h>
 #include <dr_aabb.h>
+#include <dr_sphere.h>
 #include <gtest\gtest.h>
 
 TEST (Intersect, sphereSphere) {
@@ -87,14 +88,12 @@ TEST(Intersect, aabbAabb) {
 }
 
 TEST(Intersect, aabbSphere) {
-  driderSDK::Vector3D c1(0.0, 0.0, 0.0);
-  driderSDK::Vector3D c2(1.0, 0.0, 0.0);
-	driderSDK::AABB aabb(5.0, 5.0, 5.0, c1);
-	EXPECT_TRUE(driderSDK::Intersect::aabbSphere(c1, 
-																							 aabb.getMaxPoint(), 
-																							 aabb.getMinPoint(), 
-																							 c2, 
-																							 .5f));
+  driderSDK::Sphere sphe(driderSDK::Vector3D(0.75f, 1.5f, 0), 1);
+  driderSDK::AABB aabb(1, 1, 1, driderSDK::Vector3D(0, 0, 0));
+	EXPECT_TRUE(driderSDK::Intersect::aabbSphere(aabb.getMinPoint(),
+              aabb.getMaxPoint(),
+              sphe.center,
+              sphe.radius));
 }
 
 
@@ -103,11 +102,11 @@ TEST(Intersect, aabbRay) {
   driderSDK::Vector3D origin(0.0,5.0,0.0);  
   driderSDK::Vector3D dir(0.0,-1.0,0.0);
 	driderSDK::AABB aabb(5, 5, 5, c1);
-	EXPECT_TRUE(driderSDK::Intersect::aabbRay(c1, 
-																						aabb.getMaxPoint(), 
+	EXPECT_TRUE(driderSDK::Intersect::rayAABB(aabb.getMaxPoint(), 
 																						aabb.getMinPoint(), 
 																						origin, 
-																						dir));
+																						dir,
+                                            &c1));
 }
 
 TEST(Intersect, aabbPoint) {

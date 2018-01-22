@@ -132,6 +132,13 @@ struct DR_UTIL_EXPORT StringUtils
     return toStringBase<TString::value_type>(value, 0, width, fill, flags);
   }
 
+  static TString 
+  toTString(const String& string);
+
+  static TString 
+  toTString(const WString& wstring);
+
+
   /**
   * Converts a string into an integer number.
   */

@@ -5,7 +5,7 @@ using driderSDK::VectorN;
 
 template<driderSDK::SizeT _elements>
 void elementsEqualToValue(const VectorN<_elements>& vector, float value) {
-  for(int i = 0; i < _elements; ++i) {
+  for (int i = 0; i < _elements; ++i) {
       EXPECT_FLOAT_EQ(vector[i], value); 
   }
 }
@@ -13,7 +13,7 @@ void elementsEqualToValue(const VectorN<_elements>& vector, float value) {
 TEST(VectorN, constructorOneFloat) {
   VectorN<4> vector(20.5f);
 
-  for(int i = 0; i < 4; ++i) {
+  for (int i = 0; i < 4; ++i) {
       EXPECT_FLOAT_EQ(vector[i], 20.5f); 
   }
 }

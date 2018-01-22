@@ -58,8 +58,8 @@ class DR_MATH_EXPORT Plane : public Vector3D
   */
   Plane(const Plane& other);
 
-  /*
-  * TEST:distanceToPoint
+  /**
+  * TEST::distanceToPoint
   * Computes the distance from the plane to a point
   * 
   * @param point
@@ -69,7 +69,7 @@ class DR_MATH_EXPORT Plane : public Vector3D
   *
   */
   float 
-  distanceToPoint(const Vector3D& point);
+  distanceToPoint(const Vector3D& point) const;
    
   /**
   * TEST::intersectsPoint

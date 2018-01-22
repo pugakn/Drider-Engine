@@ -109,8 +109,8 @@ void Transform::invalidate() {
 void Transform::update() {
   m_outdatedTransform = false;
   m_transform.identity();
-  m_transform.Translation(m_position);
   m_transform.Rotation(m_rotation.x, m_rotation.y, m_rotation.z);
+  m_transform.Translation(m_position);
   m_transform.Scale(m_scale);
 }
 

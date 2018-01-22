@@ -1,4 +1,5 @@
 #include "dr_file_system.h"
+#include "dr_string_utils.h"
 
 namespace driderSDK
 {
@@ -10,64 +11,94 @@ FileSystem::~FileSystem() {
 }
 
 bool
-FileSystem::load(const std::string& filename,
-                 std::string& bufferOut) {
-  std::ifstream fileLoaded;
+FileSystem::CreateAndOpen(const TString& filename, File& file) {
+  std::ofstream newFile(filename);
+  newFile.close();
 
-  fileLoaded.open(filename);
-  if (fileLoaded.is_open()) {
-    bufferOut = std::string(std::istreambuf_iterator<char>(fileLoaded),
-                            std::istreambuf_iterator<char>());
-    fileLoaded.close();
-    return true;
-  }
-  else {
-    fileLoaded.close();
-    return false;
-  }
+  return file.Open(filename);
+}
+
+void
+FileSystem::Copy(const TString& filepathSrc, const TString& filepathDst) {
+  File srcFile;
+  srcFile.Open(filepathSrc);
+
+  File dstFile;
+  CreateAndOpen(filepathDst, dstFile);
+
+  SizeT srcSz = srcFile.Size();
+  ANSIChar* srcFileBytes = new ANSIChar[srcSz];
+  srcFile.Read(srcSz, &srcFileBytes[0]);
+  srcFile.Close();
+
+  dstFile.Write(srcSz, &srcFileBytes[0]);
+  dstFile.Close();
+
+  delete[] srcFileBytes;
+}
+
+void
+FileSystem::Move(const TString& filepathSrc, const TString& filepathDst) {
+  Copy(filepathSrc, filepathDst);
+  Remove(filepathSrc);
 }
 
 bool
-FileSystem::save(const std::string& filename,
-                 const std::string& bufferToSave) {
-  std::ofstream fileLoaded;
+FileSystem::Remove(const TString& filepath) {
+  SizeT filepathLenght = filepath.length();
 
-  fileLoaded.open(filename, std::ios::out | std::ios::trunc);
-  if (fileLoaded.is_open()) {
-    fileLoaded << bufferToSave;
-    fileLoaded.close();
-    return true;
-  }
-  else {
-    fileLoaded.close();
-    return false;
-  }
+  String rename = StringUtils::toString(filepath);
+
+  bool successfullyErased = remove(rename.c_str()) == 0;
+
+  return successfullyErased;
 }
 
 bool
-FileSystem::append(const std::string& filename,
-                   const std::string& bufferToAppend) {
-  std::fstream fileLoaded;
+FileSystem::IsFile(const TString& filepath) {
+  SizeT filepathLenght = filepath.length();
+  String rename = StringUtils::toString(filepath);
 
-  fileLoaded.open(filename, std::ios::out | std::ios::app);
-  if (fileLoaded.is_open()) {
-    fileLoaded << bufferToAppend;
-    fileLoaded.close();
-    return true;
+  struct stat s;
+
+  if (stat(rename.c_str(), &s) == 0) {
+    if (s.st_mode & S_IFREG) {
+      return true;
+    }
   }
-  else {
-    fileLoaded.close();
-    return false;
-  }
+
+  return false;
 }
 
-TString FileSystem::getFileExtension(const TString& file) {
+bool
+FileSystem::IsDirectory(const TString& filepath) {
+  SizeT filepathLenght = filepath.length();
+  String rename = StringUtils::toString(filepath);
 
+  struct stat s;
+
+  if (stat(rename.c_str(), &s) == 0) {
+    if (s.st_mode & S_IFDIR) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+bool
+FileSystem::Exists(const TString& filepath) {
+  std::ifstream f(filepath.c_str());
+  return f.good();
+}
+
+TString
+FileSystem::GetFileExtension(const TString& file) {
   SizeT pos = file.find_last_of(_T('.'));
 
   TString extension;
 
-  if(pos != TString::npos) {
+  if (pos != TString::npos) {
     extension = file.substr(pos + 1);
   }
 

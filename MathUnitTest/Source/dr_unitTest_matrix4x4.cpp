@@ -1,6 +1,8 @@
 #include <dr_matrix4x4.h>
 #include <dr_vector4d.h>
 #include <dr_matrix3x3.h>
+#include <dr_quaternion.h>
+#include <dr_degree.h>
 #include <gtest\gtest.h>
 
 void checkValuesMatrix(driderSDK::Matrix4x4& testMatrix,
@@ -43,6 +45,27 @@ TEST(Matrix4x4, forceInit) {
                     0, 1, 0, 0,
                     0, 0, 1, 0,
                     0, 0, 0, 1);
+}
+
+TEST(Matrix4x4, Constructor3x3) {
+  driderSDK::Matrix3x3 testMatrix(1, 2, 3, 4, 5, 6, 7, 8, 9);
+  driderSDK::Matrix4x4 test(testMatrix);
+  checkValuesMatrix(test,
+                    1, 2, 3, 0,
+                    4, 5, 6, 0,
+                    7, 8, 9, 0,
+                    0, 0, 0, 1);
+}
+
+TEST(Matrix4x4, ConstructorQuaternion) {
+  driderSDK::Quaternion testQuaternion(0.7071, 0, 0, 0.7071f);
+  driderSDK::Matrix4x4 checkMatrix(1, 0, 0, 0,
+                                   0, 0, -1, 0,
+                                   0, 1, 0, 0,
+                                   0, 0, 0, 1);
+
+  driderSDK::Matrix4x4 testMatrix(testQuaternion);
+  EXPECT_TRUE(testMatrix.equals(checkMatrix, 0.0001f));
 }
 
 TEST(Matrix4x4, moveConstructor) {
@@ -162,6 +185,175 @@ TEST(Matrix4x4, identity) {
                     0, 1, 0, 0,
                     0, 0, 1, 0,
                     0, 0, 0, 1);
+}
+
+TEST(Matrix4x4, equals) {
+  driderSDK::Matrix4x4 testMatrix(1, 2, 3, 4,
+                                  5, 6, 7, 8,
+                                  9, 10, 11, 12,
+                                  13, 14, 15, 16);
+  driderSDK::Matrix4x4 testMatrix1(2, 3, 4, 5,
+                                   6, 7, 8,  9,
+                                   10, 11, 12, 13,
+                                   14, 15, 16, 17);
+  EXPECT_TRUE(testMatrix.equals(testMatrix1, 2));
+  EXPECT_FALSE(testMatrix.equals(testMatrix1, .5f));
+}
+
+TEST(Matrix4x4, toEulerAngle) {
+  driderSDK::Matrix4x4 testMatrix(0.25581f, -0.77351f, 0.57986f, 0,
+                                 -0.85333f, -0.46255f, -0.24057f, 0,
+                                 0.45429f, -0.43327f, -0.77839f, 0,
+                                 0, 0, 0, 1);
+  driderSDK::Vector3D testVector(testMatrix.eulerAngles());
+  EXPECT_FLOAT_EQ(-2.6336787f, testVector[0]);
+  EXPECT_FLOAT_EQ(-0.47157675f, testVector[1]);
+  EXPECT_FLOAT_EQ(-1.2795428f, testVector[2]);
+
+  driderSDK::Matrix4x4 testMatrix3(0.5f, -0.1464f, 0.8536f, 0,
+                                  0.5f, .8536f, -0.1464f, 0,
+                                  -0.7071f, .5f, .5f, 0,
+                                  0, 0, 0, 1);
+
+  driderSDK::Vector3D testVector2(testMatrix3.eulerAngles());
+  EXPECT_FLOAT_EQ(.78539819f, testVector2[0]);
+  EXPECT_FLOAT_EQ(.78539336f, testVector2[1]);
+  EXPECT_FLOAT_EQ(.78539819f, testVector2[2]);
+
+}
+
+TEST(Matrix4x4, Translation) {
+  driderSDK::Vector4D pos(0, 0, 0, 1);
+  driderSDK::Matrix4x4 translationMatrix(driderSDK::Math::FORCE_INIT::kIdentity);
+  translationMatrix.Translation(driderSDK::Vector3D(1, 2, 3));
+  pos = translationMatrix * pos;
+
+  EXPECT_FLOAT_EQ(1, pos[0]);
+  EXPECT_FLOAT_EQ(2, pos[1]);
+  EXPECT_FLOAT_EQ(3, pos[2]);
+}
+
+TEST(Matrix4x4, Move) {
+  driderSDK::Vector4D pos(2, 3, 4, 1);
+  driderSDK::Matrix4x4 translationMatrix(driderSDK::Math::FORCE_INIT::kIdentity);
+  translationMatrix.Translation(driderSDK::Vector3D(1, 2, 3));
+  pos = translationMatrix * pos;
+
+  EXPECT_FLOAT_EQ(3, pos[0]);
+  EXPECT_FLOAT_EQ(5, pos[1]);
+  EXPECT_FLOAT_EQ(7, pos[2]);
+}
+
+TEST(Matrix4x4, Scale) {
+  driderSDK::Vector4D pos(2, 2, 2, 1);
+  driderSDK::Matrix4x4 translationMatrix(driderSDK::Math::FORCE_INIT::kIdentity);
+  translationMatrix.Scale(driderSDK::Vector3D(1, 2, 3));
+  pos = translationMatrix * pos;
+
+  EXPECT_FLOAT_EQ(2, pos[0]);
+  EXPECT_FLOAT_EQ(4, pos[1]);
+  EXPECT_FLOAT_EQ(6, pos[2]);
+}
+
+TEST(Matrix4x4, Rotation) {
+  driderSDK::Degree grados(90);
+  driderSDK::Vector4D pos(0, 1, 0, 1);
+  driderSDK::Matrix4x4 rotationMatrix(driderSDK::Math::FORCE_INIT::kIdentity);
+  rotationMatrix.Rotation(grados.toRadian(), grados.toRadian(), grados.toRadian());
+  pos = rotationMatrix * pos;
+
+  driderSDK::Vector4D check(0, 1, 0, 1);
+  EXPECT_TRUE(check.equals(pos, 0.00001f));
+}
+
+TEST(Matrix4x4, RotationX) {
+  driderSDK::Degree grados(90);
+  driderSDK::Vector4D pos(0, 1, 0, 1);
+  driderSDK::Matrix4x4 rotationMatrix(driderSDK::Math::FORCE_INIT::kIdentity);
+  rotationMatrix.RotationX(grados.toRadian());
+  pos = rotationMatrix * pos;
+
+  driderSDK::Vector4D check(0, 0, 1, 1);
+  EXPECT_TRUE(check.equals(pos, 0.0000001f));
+}
+
+TEST(Matrix4x4, RotationY) {
+  driderSDK::Degree grados(90);
+  driderSDK::Vector4D pos(1, 0, 0, 1);
+  driderSDK::Matrix4x4 rotationMatrix(driderSDK::Math::FORCE_INIT::kIdentity);
+  rotationMatrix.RotationY(grados.toRadian());
+  pos = rotationMatrix * pos;
+
+  driderSDK::Vector4D check(0, 0, -1, 1);
+  EXPECT_TRUE(check.equals(pos, 0.0000001f));
+}
+
+TEST(Matrix4x4, RotationZ) {
+  driderSDK::Degree grados(90);
+  driderSDK::Vector4D pos(1, 0, 0, 1);
+  driderSDK::Matrix4x4 rotationMatrix(driderSDK::Math::FORCE_INIT::kIdentity);
+  rotationMatrix.RotationZ(grados.toRadian());
+  pos = rotationMatrix * pos;
+
+  driderSDK::Vector4D check(0, 1, 0, 1);
+  EXPECT_TRUE(check.equals(pos, 0.0000001f));
+}
+
+TEST(Matrix4x4, LookAt) {
+  driderSDK::Matrix4x4 temp;
+  driderSDK::Vector3D Eye(0.0f, 3.0f, -5.0f);
+  driderSDK::Vector3D At(0.0f, 0.0f, 0.0f);
+  driderSDK::Vector3D Up(0,1,0);
+
+  temp.LookAt(Eye, At, Up);
+  checkValuesMatrix(temp,
+                    -1, 0, 0, 0,
+                    0, 0.85749298f, 0.51449579f, 0,
+                    0, .51449579f, -0.857492983f, -5.83095264f,
+                    0, 0, 0, 1);
+}
+
+TEST(Matrix4x4, Projection) {
+  driderSDK::Matrix4x4 temp;
+  temp.Projection(1280, 720, 10, 1000);
+  checkValuesMatrix(temp,
+                    0.015625f, 0, 0, 0,
+                    0, 0.027777778f, 0, 0,
+                    0, 0, -1.010101f, -1,
+                    0, 0, -10.10101f, 0);
+}
+
+TEST(Matrix4x4, ProjectionFov) {
+  driderSDK::Matrix4x4 temp;
+  temp.ProjectionFov(60, 1.33f, 10, 1000);
+  checkValuesMatrix(temp,
+                    0.15611996f, 0, 0, 0,
+                    0, -0.20763955f, 0, 0,
+                    0, 0, -1.010101f, -1,
+                    0, 0, -10.10101, 0);
+}
+
+TEST(Matrix4x4, Orthogonal) {
+  driderSDK::Matrix4x4 temp;
+  temp.Orthogonal(1280, 720, 10, 1000);
+  checkValuesMatrix(temp,
+                    0.0015625f, 0, 0, 0,
+                    0, 0.0027777778f, 0, 0,
+                    0, 0, -0.0010101011f, 0.01010101f,
+                    0, 0, 0, 1);
+}
+
+TEST(Matrix4x4, Reflection) {
+  driderSDK::Matrix4x4 temp;
+  temp.Reflection(driderSDK::Vector3D(0,1,1).normalize());
+
+  driderSDK::Vector3D point(1, 1, 1);
+
+  point = temp * point;
+  EXPECT_FLOAT_EQ(1, point[0]);
+  EXPECT_FLOAT_EQ(-1, point[1]);
+  EXPECT_FLOAT_EQ(-1, point[2]);
+
 }
 
 TEST(Matrix4x4, getPointer) {
@@ -361,6 +553,32 @@ TEST(Matrix4x4, operatorMultiplicationEqualFloat) {
                     10, 12, 14, 16,
                     18, 20, 22, 24,
                     26, 28, 30, 32);
+}
+
+TEST(Matrix4x4, operatorDivide) {
+  driderSDK::Matrix4x4 testMatrix(3, 4, 0, 3,
+                                  2, 1, 0, 5,
+                                  6, 7, 2, 1,
+                                  0, 3, 9, 13);
+  driderSDK::Matrix4x4 testMatrix1(testMatrix.inverse());
+  driderSDK::Matrix4x4 testMatrix2;
+
+
+  testMatrix2 = testMatrix / testMatrix1;
+
+  EXPECT_TRUE(testMatrix2.equals(testMatrix2.identityMat4x4, 0.000001f));
+}
+
+TEST(Matrix4x4, operatorDivideEqual) {
+   driderSDK::Matrix4x4 testMatrix(3, 4, 0, 3,
+                                  2, 1, 0, 5,
+                                  6, 7, 2, 1,
+                                  0, 3, 9, 13);
+  driderSDK::Matrix4x4 testMatrix1(testMatrix.inverse());
+
+  testMatrix /= testMatrix1;
+
+  EXPECT_TRUE(testMatrix.equals(testMatrix.identityMat4x4, 0.000001f));
 }
 
 TEST(Matrix4x4, operatorEqualEqual) {
