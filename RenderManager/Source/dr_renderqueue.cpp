@@ -2,9 +2,12 @@
 
 namespace driderSDK {
 
+
+template<typename T, typename... Args>
 void
 renderQueue(RenderTarget* RenderTargetInput,
-            RenderTarget* RenderTargetOutput) {
+            RenderTarget* RenderTargetOutput,
+            Args args) {
 }
 
 }

@@ -4,8 +4,10 @@
 
 namespace driderSDK {
 
-void
+template<typename T, typename... Args>
+DR_RENDERMAN_EXPORT void
 renderQueue(RenderTarget* RenderTargetInput,
-            RenderTarget* RenderTargetOutput);
+            RenderTarget* RenderTargetOutput,
+            Args args);
 
 }

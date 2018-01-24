@@ -3,7 +3,7 @@
 
 namespace driderSDK {
 
-void
-renderManagerApp();
+void 
+DR_RENDERMAN_EXPORT renderManagerApp();
 
 }
