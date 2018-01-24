@@ -7,7 +7,7 @@ template<typename T, typename... Args>
 void
 renderQueue(RenderTarget* RenderTargetInput,
             RenderTarget* RenderTargetOutput,
-            Args args) {
+            Args options) {
 }
 
 }

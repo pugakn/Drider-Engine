@@ -8,6 +8,6 @@ template<typename T, typename... Args>
 DR_RENDERMAN_EXPORT void
 renderQueue(RenderTarget* RenderTargetInput,
             RenderTarget* RenderTargetOutput,
-            Args args);
+            Args options);
 
 }
