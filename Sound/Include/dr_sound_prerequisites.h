@@ -12,9 +12,9 @@
 
 #if DR_PLATFORM == DR_PLATFORM_WINDOWS
 # if defined( DR_STATIC_LIB )
-#   define DR_SOUND_EXPORT
+#   define DR_API_EXPORT
 # else
-#	if defined(DR_SOUND_EXPORT)
+#	if defined(SOUND_EXPORTS)
 #   define DR_SOUND_EXPORT __declspec( dllexport )
 #   else
 #     if defined( __MINGW32__ )

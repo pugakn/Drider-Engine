@@ -3,14 +3,13 @@
 
 namespace driderSDK {
 
-class DR_SOUND_EXPORT DrSound {
+class DR_SOUND_EXPORT DrChannel {
   public:
-    DrSound() {}
-    virtual ~DrSound() {}
+    DrChannel() {}
+    virtual ~DrChannel() {}
 
     virtual void*
     getReference() = 0;
-
 
 };
 
