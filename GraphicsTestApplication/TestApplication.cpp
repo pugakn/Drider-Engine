@@ -72,7 +72,7 @@ void TestApplication::onUpdate()
 {
   for (auto& model : models)
   {
-    model.transform.rotate(Radian(0.005f), AXIS::kY);
+    //model.transform.rotate(Radian(0.005f), AXIS::kY);
     model.update();
   }
     

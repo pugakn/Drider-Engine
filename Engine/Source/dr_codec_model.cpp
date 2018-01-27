@@ -9,8 +9,6 @@
 #include <dr_string_utils.h>
 #include "dr_resource_manager.h"
 
-#include <fstream>
-
 namespace driderSDK {
 
 Codec::UniqueVoidPtr 
@@ -31,42 +29,45 @@ CodecModel::decode(TString pathName) {
 	flags |= aiProcess_FindInvalidData;
 	flags |= aiProcess_GenUVCoords;
 
-  const aiScene* pScene = importer.ReadFile(StringUtils::toString(pathName), 
+  const aiScene* scene = importer.ReadFile(StringUtils::toString(pathName), 
                                             flags);
-  if (pScene) {
+  if (scene) {
 
     pModelInfo = new ModelInfo;
-    pModelInfo->meshes.resize(pScene->mNumMeshes);
+    pModelInfo->meshes.resize(scene->mNumMeshes);
 
-    for (SizeT iMesh = 0; iMesh < pScene->mNumMeshes; ++iMesh) {
+    for (SizeT iMesh = 0; iMesh < scene->mNumMeshes; ++iMesh) {
 
       MeshInfo& mesh = pModelInfo->meshes[iMesh];
-      aiMesh* pMesh = pScene->mMeshes[iMesh];
+      aiMesh* pMesh = scene->mMeshes[iMesh];
       
       loadVertices(*pMesh, mesh);
       loadIndices(*pMesh, mesh);
     }
 
-    TString skeletonName;
+    if(scene->HasMaterials()) {
+      loadMaterials(*scene);
+    }
 
-    if (pScene->HasAnimations())
-    {
+    TString skeletonName;
+    
+    if (scene->HasAnimations()) {
       
       skeletonName = _T("Skeleton_") + pathName;
 
       auto pSkeleton = std::make_shared<Skeleton>();
      
       std::memcpy(pSkeleton->gloabalInverseTransform.data, 
-                  &pScene->mRootNode->mTransformation[0][0],
+                  &scene->mRootNode->mTransformation[0][0],
                   64);
 
       pSkeleton->gloabalInverseTransform.inverse();
 
-      loadSkeleton(*pScene, *pModelInfo, *pSkeleton);
+      loadSkeleton(*scene, *pModelInfo, *pSkeleton);
 
       ResourceManager::instance().addResource(skeletonName, pSkeleton);
 
-      loadAnimations(*pScene, *pModelInfo);
+      loadAnimations(*scene, *pModelInfo);
 
     }
 
@@ -180,6 +181,34 @@ CodecModel::loadSkeleton(const aiScene& model,
       } 
     }
   }  
+}
+
+
+
+void 
+CodecModel::loadMaterials(const aiScene & model) {
+
+  std::map<std::string, std::string> textures;
+
+  for (Int32 meshIndex = 0; 
+       meshIndex < static_cast<Int32>(model.mNumMeshes); 
+       ++meshIndex) {
+    UInt32 materialIndex = model.mMeshes[meshIndex]->mMaterialIndex;
+
+    aiMaterial& material = *model.mMaterials[materialIndex];
+
+    for(Int32 propIndex = 0; 
+        propIndex < static_cast<Int32>(material.mNumProperties); 
+        ++propIndex) {
+
+      aiMaterialProperty& property = *material.mProperties[propIndex];
+
+      String st{property.mData, property.mData + property.mDataLength};
+
+      int x = 0;
+    }
+  }
+
 }
 
 void
