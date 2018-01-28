@@ -14,6 +14,12 @@ class DR_SOUND_EXPORT DrChannel {
     virtual void**
     getObjectReference() = 0;
 
+    virtual void
+    setPaused(bool paused) = 0;
+
+    virtual void
+    getPaused(bool *paused) = 0;
+
 };
 
 }

@@ -5,12 +5,12 @@
 
 auto factory = std::make_shared<driderSDK::ResourceFactory>();
 
-TEST(ResourceFactory, resourceFacturyConstructor) {
+TEST(ResourceFactory, resourceFactoryConstructor) {
   EXPECT_TRUE(factory != nullptr);
   EXPECT_TRUE(factory->m_FactoryMap.size() != 0);
 }
 
-TEST(ResourceFactory, resourceFacturyDestructor) {
+TEST(ResourceFactory, resourceFactoryDestructor) {
   EXPECT_TRUE(true);
 }
 

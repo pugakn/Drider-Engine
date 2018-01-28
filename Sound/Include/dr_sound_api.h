@@ -21,9 +21,9 @@ class DR_SOUND_EXPORT SoundAPI {
 
     virtual void
     destroy() = 0;
- 
+
     SoundSystem *system;
-    DrSound *sound1;
+    DrSound* sounds;
     DrChannel *channel;
 
 };

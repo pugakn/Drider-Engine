@@ -16,6 +16,12 @@ class DR_SOUND_EXPORT FMODChannel : public DrChannel {
 
     void**
     getObjectReference() override;
+
+    void
+    setPaused(bool paused) override;
+
+    void
+    getPaused(bool *paused) override;
     
   private:
     FMOD::Channel *channel;

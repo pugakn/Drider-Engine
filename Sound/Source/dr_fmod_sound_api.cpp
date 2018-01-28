@@ -14,7 +14,7 @@ FMODSoundAPI::init() {
   channel = new FMODChannel;
   
   system->init(32, DR_INITFLAGS::kDrInitFlags_NORMAL, 0);
-  system->createSound("testSound.mp3", DR_SOUND_MODE::kDrMode_DEFAULT, 0, sound1);
+  system->createSound("testSound.mp3", DR_SOUND_MODE::kDrMode_CREATESAMPLE, 0, sound1);
   sound1->setMode(DR_SOUND_MODE::kDrMode_LOOP_OFF);
 
 }
