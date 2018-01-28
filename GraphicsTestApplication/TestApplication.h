@@ -8,6 +8,10 @@
 #include "dr_application.h"
 #include "dr_quad.h"
 #include <dr_resource_manager.h>
+
+//#include <FMOD\fmod.hpp>
+#include <dr_fmod_sound_api.h>
+
 namespace driderSDK {
 class TestApplication : public Application
 {
@@ -30,6 +34,17 @@ public:
   std::vector<Model3D> models;
   Viewport viewport;
   Camera camera;
+
+  SoundAPI* soundDriver;
+  
+  /*FMOD::System     *system;
+  FMOD::Sound      *sound1;
+  FMOD::Channel    *channel = 0;
+  FMOD_RESULT       result;
+  unsigned int      version;*/
+
+  
+
 };
 
 }

@@ -12,10 +12,8 @@ class DR_SOUND_EXPORT SoundSystemManager {
   SoundSystemManager() {};
   ~SoundSystemManager() {};
   
-  static std::shared_ptr<SoundSystem>
-  createSystem(Int32 maxChannels,
-               DR_INITFLAGS::E initFlags,
-               void *extraDriverData);
+  static SoundSystem*
+  createSystem();
   
 };
 }

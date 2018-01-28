@@ -60,6 +60,12 @@
     <ClInclude Include="Include\dr_createSoundExInfo.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
+    <ClInclude Include="Include\dr_sound_api.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_fmod_sound_api.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_soundSystem.cpp">
@@ -82,6 +88,9 @@
     </ClCompile>
     <ClCompile Include="Source\dr_fmod_createSoundExInfo.cpp">
       <Filter>Archivos de origen\API</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_fmod_sound_api.cpp">
+      <Filter>Archivos de origen</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

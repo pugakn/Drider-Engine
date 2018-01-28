@@ -13,6 +13,9 @@ class DR_SOUND_EXPORT FMODChannel : public DrChannel {
     
     void*
     getReference() override;
+
+    void**
+    getObjectReference() override;
     
   private:
     FMOD::Channel *channel;

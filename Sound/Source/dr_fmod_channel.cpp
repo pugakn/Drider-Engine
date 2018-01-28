@@ -7,4 +7,9 @@ FMODChannel::getReference() {
   return channel;
 }
 
+void**
+FMODChannel::getObjectReference() {
+  return reinterpret_cast<void**>(&channel);
+}
+
 }

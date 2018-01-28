@@ -41,7 +41,20 @@ void TestApplication::onInit()
   for (SizeT i = 0; i < modelsFiles.size(); ++i) {
     models[i].init(*driver->device, modelsFiles[i]);
   }
+  
+  soundDriver = new FMODSoundAPI;
+  soundDriver->init();
 
+  /*result = FMOD::System_Create(&system);
+  result = system->getVersion(&version);
+  if (version < FMOD_VERSION)
+  {
+    return;
+  }
+
+  result = system->init(32, FMOD_INIT_NORMAL, 0);
+  result = system->createSound("testSound.mp3", FMOD_DEFAULT, 0, &sound1);
+  result = sound1->setMode(FMOD_LOOP_OFF);*/
 }
 void TestApplication::onInput()
 {
@@ -64,6 +77,10 @@ void TestApplication::onInput()
         models[0].destroy();
         models[0].init(*driver->device, modelsFiles[0]);
       }
+      if(event.key.keysym.sym == SDLK_0)
+      {
+        soundDriver->play();
+      }
     break;
     }
   }
@@ -75,7 +92,7 @@ void TestApplication::onUpdate()
     //model.transform.rotate(Radian(0.005f), AXIS::kY);
     model.update();
   }
-    
+  soundDriver->update();
   camera.update(0);
 }
 void TestApplication::onDraw()
@@ -89,6 +106,9 @@ void TestApplication::onDraw()
 void TestApplication::onDestroy()
 {
   SDL_Quit();
+  /*result = sound1->release();
+  result = system->close();
+  result = system->release();*/
 }
 void TestApplication::onPause()
 {

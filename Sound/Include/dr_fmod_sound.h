@@ -9,15 +9,22 @@
 namespace driderSDK {
 
 class DR_SOUND_EXPORT FMODSound : public DrSound {
- public:
-  FMODSound() {}
-  virtual ~FMODSound() {}
-  
-  void*
-  getReference();
+  public:
+    FMODSound() {}
+    virtual ~FMODSound() {}
+    
+    void*
+    getReference() override;
 
+    virtual void**
+    getObjectReference() override;
+
+    DR_SOUND_RESULT::E
+    setMode(DR_SOUND_MODE::E mode) override;
+    
   private:
-  FMOD::Sound *fmodSound;
+    FMOD::Sound *fmodSound;
+    FMOD_RESULT result;
 };
 
 }
