@@ -10,18 +10,18 @@ void
 FMODSoundAPI::init() {
 
   system = new FMODSoundSystem;
-  sound1 = new FMODSound;
+  sounds = new FMODSound;
   channel = new FMODChannel;
   
   system->init(32, DR_INITFLAGS::kDrInitFlags_NORMAL, 0);
-  system->createSound("testSound.mp3", DR_SOUND_MODE::kDrMode_CREATESAMPLE, 0, sound1);
-  sound1->setMode(DR_SOUND_MODE::kDrMode_LOOP_OFF);
+  system->createSound("testSound.mp3", DR_SOUND_MODE::kDrMode_CREATESAMPLE, 0, sounds);
+  sounds->setMode(DR_SOUND_MODE::kDrMode_LOOP_OFF);
 
 }
 
 void
 FMODSoundAPI::play() {
-  system->playSound(sound1, 0, false, channel);
+  system->playSound(sounds, 0, false, channel);
 }
 
 void
