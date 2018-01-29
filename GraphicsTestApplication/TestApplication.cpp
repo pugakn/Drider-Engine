@@ -47,6 +47,20 @@ void TestApplication::onInit()
   std::cout << "unknown " << m_inputManager.getNumberOfDevices(InputObjectType::kUnknown) << std::endl;
   m_mouseInput = (MouseInput*)m_inputManager.getInputObjectByID(m_inputManager.createInputObject(InputObjectType::kMouse));
   m_mouseInput->setEventCallback(&m_mouseListener);
+  
+  soundDriver = new FMODSoundAPI;
+  soundDriver->init();
+
+  /*result = FMOD::System_Create(&system);
+  result = system->getVersion(&version);
+  if (version < FMOD_VERSION)
+  {
+    return;
+  }
+
+  result = system->init(32, FMOD_INIT_NORMAL, 0);
+  result = system->createSound("testSound.mp3", FMOD_DEFAULT, 0, &sound1);
+  result = sound1->setMode(FMOD_LOOP_OFF);*/
 }
 void TestApplication::onInput()
 {
@@ -59,7 +73,7 @@ void TestApplication::onUpdate()
     //model.transform.rotate(Radian(0.005f), AXIS::kY);
     model.update();
   }
-    
+  soundDriver->update();
   camera.update(0);
 }
 void TestApplication::onDraw()
@@ -72,6 +86,9 @@ void TestApplication::onDraw()
 }
 void TestApplication::onDestroy()
 {
+  /*result = sound1->release();
+  result = system->close();
+  result = system->release();*/
 }
 void TestApplication::onPause()
 {

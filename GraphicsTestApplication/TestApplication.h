@@ -15,6 +15,10 @@
 #include "dr_input_keyboard.h"
 #include "dr_input_mouse.h"
 #include <iostream>
+
+//#include <FMOD\fmod.hpp>
+#include <dr_fmod_sound_api.h>
+
 namespace driderSDK {
   class KeyboardListener : public  driderSDK::IKeyboardListener {
   public:
@@ -71,6 +75,17 @@ public:
   std::vector<Model3D> models;
   Viewport viewport;
   Camera camera;
+
+  SoundAPI* soundDriver;
+  
+  /*FMOD::System     *system;
+  FMOD::Sound      *sound1;
+  FMOD::Channel    *channel = 0;
+  FMOD_RESULT       result;
+  unsigned int      version;*/
+
+  
+
 
 
   InputManager m_inputManager;

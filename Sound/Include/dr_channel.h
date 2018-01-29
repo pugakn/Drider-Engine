@@ -3,10 +3,10 @@
 
 namespace driderSDK {
 
-class DR_SOUND_EXPORT DrSound {
+class DR_SOUND_EXPORT DrChannel {
   public:
-    //DrSound() {}
-    virtual ~DrSound() {}
+    //DrChannel() {}
+    virtual ~DrChannel() {}
 
     virtual void*
     getReference() = 0;
@@ -14,9 +14,11 @@ class DR_SOUND_EXPORT DrSound {
     virtual void**
     getObjectReference() = 0;
 
-    virtual DR_SOUND_RESULT::E
-    setMode(DR_SOUND_MODE::E mode) = 0;
+    virtual void
+    setPaused(bool paused) = 0;
 
+    virtual void
+    getPaused(bool *paused) = 0;
 
 };
 

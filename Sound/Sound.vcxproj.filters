@@ -42,6 +42,30 @@
     <ClInclude Include="Include\dr_sound.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
+    <ClInclude Include="Include\dr_channelGroup.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_fmod_channelGroup.h">
+      <Filter>Archivos de encabezado\API</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_channel.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_fmod_channel.h">
+      <Filter>Archivos de encabezado\API</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_fmod_createSoundExInfo.h">
+      <Filter>Archivos de encabezado\API</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_createSoundExInfo.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_fmod_sound_api.h">
+      <Filter>Archivos de encabezado\API</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_sound_api.h">
+      <Filter>Archivos de encabezado\API</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_soundSystem.cpp">
@@ -56,8 +80,17 @@
     <ClCompile Include="Source\dr_fmod_soundSystem.cpp">
       <Filter>Archivos de origen\API</Filter>
     </ClCompile>
-    <ClCompile Include="Source\dr_sound.cpp">
-      <Filter>Archivos de origen</Filter>
+    <ClCompile Include="Source\dr_fmod_channelGroup.cpp">
+      <Filter>Archivos de origen\API</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_fmod_channel.cpp">
+      <Filter>Archivos de origen\API</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_fmod_createSoundExInfo.cpp">
+      <Filter>Archivos de origen\API</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_fmod_sound_api.cpp">
+      <Filter>Archivos de origen\API</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

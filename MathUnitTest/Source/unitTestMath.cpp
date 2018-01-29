@@ -10,11 +10,8 @@ void yourWaifuIsShit() {
   htmlLogger.addWarning(__FILE__, __LINE__, "your waifu is shit");
 }
 
-
-
-int main(int argc, char* argv[])
-{
-  /*driderSDK::Logger ModuleLogger;
+int main(int argc, char* argv[]) {
+  driderSDK::Logger ModuleLogger;
   if (!ModuleLogger.isStarted()) {
     ModuleLogger.startUp();
   }
@@ -24,7 +21,7 @@ int main(int argc, char* argv[])
 
   yourWaifuIsShit();
 
-  ::testing::GTEST_FLAG(output) = "xml";*/
+  ::testing::GTEST_FLAG(output) = "xml";
 
   ::testing::GTEST_FLAG(output) = "xml";
   ::testing::InitGoogleTest(&argc, argv);

@@ -105,7 +105,7 @@
     </BuildLog>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);$(DRIDER_DEPENDENCIES)Lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Utilsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Utilsd.lib;fmod_vc.lib;fmodL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary>$(SolutionDir)Lib\$(PlatformTarget)\$(Projectname)d.lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
@@ -123,7 +123,7 @@
     </BuildLog>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);$(DRIDER_DEPENDENCIES)Lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Utilsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Utilsd.lib;fmod_vc.lib;fmodL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary>$(SolutionDir)Lib\$(PlatformTarget)\$(Projectname)d.lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
@@ -170,17 +170,28 @@
     </BuildLog>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Include\dr_channel.h" />
+    <ClInclude Include="Include\dr_channelGroup.h" />
+    <ClInclude Include="Include\dr_createSoundExInfo.h" />
+    <ClInclude Include="Include\dr_fmod_createSoundExInfo.h" />
+    <ClInclude Include="Include\dr_fmod_channel.h" />
+    <ClInclude Include="Include\dr_fmod_channelGroup.h" />
     <ClInclude Include="Include\dr_fmod_soundSystem.h" />
+    <ClInclude Include="Include\dr_fmod_sound_api.h" />
     <ClInclude Include="Include\dr_sound.h" />
     <ClInclude Include="Include\dr_soundSystem.h" />
     <ClInclude Include="Include\dr_soundSystemManager.h" />
     <ClInclude Include="Include\dr_fmod_sound.h" />
+    <ClInclude Include="Include\dr_sound_api.h" />
     <ClInclude Include="Include\dr_sound_defines.h" />
     <ClInclude Include="Include\dr_sound_prerequisites.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\dr_fmod_createSoundExInfo.cpp" />
+    <ClCompile Include="Source\dr_fmod_channel.cpp" />
+    <ClCompile Include="Source\dr_fmod_channelGroup.cpp" />
     <ClCompile Include="Source\dr_fmod_soundSystem.cpp" />
-    <ClCompile Include="Source\dr_sound.cpp" />
+    <ClCompile Include="Source\dr_fmod_sound_api.cpp" />
     <ClCompile Include="Source\dr_soundSystem.cpp" />
     <ClCompile Include="Source\dr_fmod_sound.cpp" />
     <ClCompile Include="Source\dr_soundSystemManager.cpp" />

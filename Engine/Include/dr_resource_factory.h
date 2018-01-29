@@ -22,13 +22,13 @@ class DR_ENGINE_EXPORT ResourceFactory {
   ResourceFactory();
 
   /**
-  * TEST::resourceFacturyDestructor
+  * TEST::resourceFactoryDestructor
   * Default constructor
   */
   ~ResourceFactory() { m_FactoryMap.clear(); }
   
   /**
-  * TEST::resourceFacturyConstructor
+  * TEST::resourceFactoryConstructor
   * Record the functions of the resources
   * 
   * @param type
