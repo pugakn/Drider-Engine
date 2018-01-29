@@ -17,8 +17,8 @@ void Quad::init(Device& device)
 {
   std::string vsSource = file2string("vs.hlsl");
   std::string fsSource = file2string("fs.hlsl");
-  vs = reinterpret_cast<VertexShader*>(device.createShaderFromMemory(vsSource.c_str(), vsSource.size(),DR_SHADER_TYPE_FLAG::kVertex));
-  fs = reinterpret_cast<FragmentShader*>(device.createShaderFromMemory(fsSource.c_str(), fsSource.size(), DR_SHADER_TYPE_FLAG::kFragment));
+  vs = reinterpret_cast<Shader*>(device.createShaderFromMemory(vsSource.c_str(), vsSource.size(),DR_SHADER_TYPE_FLAG::kVertex));
+  fs = reinterpret_cast<Shader*>(device.createShaderFromMemory(fsSource.c_str(), fsSource.size(), DR_SHADER_TYPE_FLAG::kFragment));
 
   m_vertex[0] = { -0.5f,  0.5f, 0.9f, 1.0f,    0.5f, 0.5f,0.0f, 1.0f };
   m_vertex[1] = { -0.5f, -0.5f, 0.9f, 1.0f,    0.0f, 0.0f,0.0f, 1.0f };

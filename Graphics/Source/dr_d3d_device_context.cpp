@@ -145,7 +145,7 @@ D3DDeviceContext::setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::E topology) const 
     topo = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP;
     break;
   }
-  D3D11DeviceContext->IASetPrimitiveTopology(topo); //Hardcoded
+  D3D11DeviceContext->IASetPrimitiveTopology(topo);
 }
 
 void

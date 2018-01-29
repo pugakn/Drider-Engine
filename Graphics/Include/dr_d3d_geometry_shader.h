@@ -1,6 +1,6 @@
 #pragma once
-#include "dr_geometry_shader.h"
 #include <d3d11.h>
+#include "dr_d3d_shader.h"
 
 namespace driderSDK {
 
@@ -10,7 +10,7 @@ namespace driderSDK {
 * Sample usage:
 *	Geometryshader* = new D3DGeometryShader;
 */
-class DR_GRAPHICS_EXPORT D3DGeometryShader : public GeometryShader
+class DR_GRAPHICS_EXPORT D3DGeometryShader : public D3DShader
 {
  public:
    void*

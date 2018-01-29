@@ -1,7 +1,7 @@
 #pragma once
 #include "dr_graphics_prerequisites.h"
+#include <vector>
 #include "dr_graphics_defines.h"
-
 namespace driderSDK {
 
 class Device;
@@ -65,6 +65,9 @@ class DR_GRAPHICS_EXPORT Shader
 
   virtual void
   compile(const Device& device, const char* buffer, size_t bufferSize) = 0;
+
+  virtual std::vector<DrInputElementDesc>
+   reflect() = 0;
 
   ShaderBytecode* m_shaderBytecode;
 };
