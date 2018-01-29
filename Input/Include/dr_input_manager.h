@@ -3,8 +3,10 @@
 #include <OIS/OISInputManager.h>
 #include <vector>
 #include "dr_input_object.h"
+class OIS::InputManager;
 namespace driderSDK {
 class DR_INPUT_EXPORT InputManager {
+public:
   void init(std::size_t winHandle);
   void destroy();
 

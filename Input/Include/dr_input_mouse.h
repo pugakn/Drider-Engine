@@ -1,6 +1,6 @@
 #pragma once
 #include "dr_input_prerequisites.h"
-#include <OIS\OISMouse.h>
+#include <OIS/OISMouse.h>
 #include <dr_vector2di.h>
 #include <memory>
 #include <vector>

@@ -3,9 +3,10 @@
 namespace driderSDK {
 namespace InputObjectType {
   enum E {
-    kKeyboard,
-    kMouse,
-    kJoystick
+    kUnknown = 0,
+    kKeyboard = 1,
+    kMouse = 2,
+    kJoystick = 3
   };
 }
 class DR_INPUT_EXPORT InputObject {
