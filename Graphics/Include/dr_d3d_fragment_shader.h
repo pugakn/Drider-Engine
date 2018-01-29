@@ -1,6 +1,6 @@
 #pragma once
-#include "dr_fragment_shader.h"
 #include <d3d11.h>
+#include "dr_d3d_shader.h"
 
 namespace driderSDK {
 
@@ -10,7 +10,7 @@ namespace driderSDK {
 * Sample usage:
 *	FragmentShader* = new D3DFragmentShader;
 */
-class DR_GRAPHICS_EXPORT D3DFragmentShader : public FragmentShader
+class DR_GRAPHICS_EXPORT D3DFragmentShader : public D3DShader
 {
  public:
    void*

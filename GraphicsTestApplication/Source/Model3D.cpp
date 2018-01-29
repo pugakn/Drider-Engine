@@ -46,33 +46,15 @@ void Model3D::init(Device & device, const TString& filename) {
   String fsSource = StringUtils::toString(file.GetAsString(file.Size()));
   file.Close();
 
-  vs = reinterpret_cast<VertexShader*>(device.createShaderFromMemory(vsSource.c_str(), 
+  vs = reinterpret_cast<Shader*>(device.createShaderFromMemory(vsSource.c_str(), 
                                        vsSource.size() + 1,DR_SHADER_TYPE_FLAG::kVertex));
 
-  fs = reinterpret_cast<FragmentShader*>(device.createShaderFromMemory(fsSource.c_str(), 
+  fs = reinterpret_cast<Shader*>(device.createShaderFromMemory(fsSource.c_str(),
                                          fsSource.size() + 1 , DR_SHADER_TYPE_FLAG::kFragment));
 
+
   std::vector<DrInputElementDesc> idesc;
-  DrInputElementDesc ie;
-  ie.format = DR_FORMAT::kDrFormat_R32G32B32A32_FLOAT;
-  ie.offset = 0;
-  ie.semanticName = "POSITION";
-  idesc.push_back(ie);
-
-  ie.format = DR_FORMAT::kDrFormat_R32G32B32A32_FLOAT;
-  ie.offset = 16;
-  ie.semanticName = "NORMAL";
-  idesc.push_back(ie);
-
-  ie.format = DR_FORMAT::kDrFormat_R32G32B32A32_FLOAT;
-  ie.offset = 32;
-  ie.semanticName = "BONEWEIGHTS";
-  idesc.push_back(ie);
-
-  ie.format = DR_FORMAT::kDrFormat_R32G32B32A32_SINT;
-  ie.offset = 48;
-  ie.semanticName = "BONEIDS";
-  idesc.push_back(ie);
+  idesc = vs->reflect();
 
   IL = device.createInputLayout(idesc, *vs->m_shaderBytecode);
 

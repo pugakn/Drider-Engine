@@ -1,6 +1,6 @@
 #pragma once
-#include "dr_compute_shader.h"
 #include <d3d11.h>
+#include "dr_d3d_shader.h"
 namespace driderSDK {
 
 /**
@@ -9,7 +9,7 @@ namespace driderSDK {
 * Sample usage:
 *	ComputeShader* = new D3DComputeShader;
 */
-class DR_GRAPHICS_EXPORT D3DComputeShader : public ComputeShader
+class DR_GRAPHICS_EXPORT D3DComputeShader : public D3DShader
 {
  public:
    void*
