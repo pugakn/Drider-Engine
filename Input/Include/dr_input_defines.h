@@ -14,6 +14,14 @@ enum E
 };
 }
 
+namespace KeyboardModifier {
+enum E
+{
+  KC_Shift = 0x0000001,
+  KC_Ctrl = 0x0000010,
+  KC_Alt = 0x0000100
+};
+}
 namespace KeyboardButtonID {
 enum E
 {

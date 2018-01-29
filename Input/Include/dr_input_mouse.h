@@ -3,15 +3,16 @@
 #include <OIS\OISMouse.h>
 #include <dr_vector2di.h>
 #include <memory>
-#include "dr_input_defines.h"
 #include <vector>
+#include "dr_input_defines.h"
+#include "dr_input_object.h"
 namespace driderSDK {
 class MouseInput;
-class HelperListener : public ::OIS::MouseListener
+class HelperMouseListener : public ::OIS::MouseListener
 {
 public:
-  ~HelperListener() {}
-  explicit HelperListener(MouseInput* pMouse);
+  ~HelperMouseListener() {}
+  explicit HelperMouseListener(MouseInput* pMouse);
   bool mouseMoved(const OIS::MouseEvent &arg) override;
   bool mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id) override;
   bool mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id) override;
@@ -24,7 +25,7 @@ struct DR_INPUT_EXPORT MouseInputState {
 };
 
 //Override this
-class DR_INPUT_EXPORT MouseInputListener
+class DR_INPUT_EXPORT IMouseInputListener
 {
 public:
   virtual bool mouseMoved(const MouseInputState &state) = 0;
@@ -32,18 +33,18 @@ public:
   virtual bool mouseReleased(const MouseInputState &state, MouseButtonID::E pressedId) = 0;
 };
 
-class DR_INPUT_EXPORT MouseInput {
+class DR_INPUT_EXPORT MouseInput : public InputObject{
 public:
   MouseInput(): m_helperListener(this) {}
-  void Init();
-  void capture();
+  void capture() override;
+  void internalInit(OIS::Mouse* mouse);
   bool isButtonDown(MouseButtonID::E button) const;
-  void setEventCallback(MouseInputListener *mouseListener);
+  void setEventCallback(IMouseInputListener *mouseListener);
   MouseInputState getState() const;
-  std::vector<MouseInputListener*> m_listeners;
+  std::vector<IMouseInputListener*> m_listeners;
 private:
   MouseInputState m_state;
-  std::unique_ptr<OIS::Mouse> m_mouse;
-  HelperListener m_helperListener;
+  OIS::Mouse* m_mouse;
+  HelperMouseListener m_helperListener;
 };
 }

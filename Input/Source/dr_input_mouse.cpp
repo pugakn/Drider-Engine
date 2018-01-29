@@ -1,11 +1,11 @@
 #include "dr_input_mouse.h"
 
 namespace driderSDK {
-HelperListener::HelperListener(MouseInput * pMouse)
+  HelperMouseListener::HelperMouseListener(MouseInput * pMouse)
 {
   m_pMouse = pMouse;
 }
-bool HelperListener::mouseMoved(const OIS::MouseEvent & arg)
+bool HelperMouseListener::mouseMoved(const OIS::MouseEvent & arg)
 {
   MouseInputState st;
   st.m_pressedButtons = arg.state.buttons;
@@ -16,7 +16,7 @@ bool HelperListener::mouseMoved(const OIS::MouseEvent & arg)
   }
   return true;
 }
-bool HelperListener::mousePressed(const OIS::MouseEvent & arg, OIS::MouseButtonID id)
+bool HelperMouseListener::mousePressed(const OIS::MouseEvent & arg, OIS::MouseButtonID id)
 {
   MouseInputState st;
   st.m_pressedButtons = arg.state.buttons;
@@ -27,7 +27,7 @@ bool HelperListener::mousePressed(const OIS::MouseEvent & arg, OIS::MouseButtonI
   }
   return true;
 }
-bool HelperListener::mouseReleased(const OIS::MouseEvent & arg, OIS::MouseButtonID id)
+bool HelperMouseListener::mouseReleased(const OIS::MouseEvent & arg, OIS::MouseButtonID id)
 {
   MouseInputState st;
   st.m_pressedButtons = arg.state.buttons;

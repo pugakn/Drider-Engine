@@ -145,6 +145,7 @@
     <ClInclude Include="Include\dr_input_keyboard.h" />
     <ClInclude Include="Include\dr_input_manager.h" />
     <ClInclude Include="Include\dr_input_mouse.h" />
+    <ClInclude Include="Include\dr_input_object.h" />
     <ClInclude Include="Include\dr_input_prerequisites.h" />
   </ItemGroup>
   <ItemGroup>

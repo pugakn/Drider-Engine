@@ -33,6 +33,9 @@
     <ClInclude Include="Include\dr_input_manager.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
+    <ClInclude Include="Include\dr_input_object.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\win\dr_win_mouse.cpp">
