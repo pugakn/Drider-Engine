@@ -12,11 +12,11 @@ namespace driderSDK {
   {
   public:
     ~HelperKeyboardListener() {}
-    explicit HelperKeyboardListener(KeyboardInput* pMouse);
+    explicit HelperKeyboardListener(KeyboardInput* m_pKeyboard);
     bool keyPressed(const OIS::KeyEvent &arg) override;
     bool keyReleased(const OIS::KeyEvent &arg) override;
   private:
-    KeyboardInput* m_pMouse;
+    KeyboardInput* m_pKeyboard;
   };
 
   //Override this
@@ -28,14 +28,17 @@ namespace driderSDK {
   };
 
   class DR_INPUT_EXPORT KeyboardInput : public InputObject {
+  public:
+    KeyboardInput(): m_helperListener(this) {}
     void capture() override;
-    void internalInit();
+    void internalInit(OIS::Object* obj) override;
+
     bool isKeyDown(KeyboardButtonID::E key) const;
-    bool isModifierDown(KeyboardButtonID::E button) const;
+    bool isModifierDown(KeyboardModifier::E mod) const;
     void setEventCallback(IKeyboardListener *listener);
     std::vector<IKeyboardListener*> m_listeners;
   private:
     HelperKeyboardListener m_helperListener;
-    std::unique_ptr<OIS::Keyboard> m_keyboard;
+    OIS::Keyboard* m_keyboard;
   };
 }
