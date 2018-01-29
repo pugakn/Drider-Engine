@@ -6,7 +6,7 @@ class DR_CORE_EXPORT Application
 {
 public:
   virtual ~Application() {}
-
+  void initWindow();
   virtual void onInit() = 0;
   virtual void onInput() = 0;
   virtual void onUpdate() = 0;

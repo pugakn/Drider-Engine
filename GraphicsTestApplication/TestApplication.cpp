@@ -1,7 +1,5 @@
 #include "TestApplication.h"
-#include <SDL\SDL.h>
 #include <iostream>
-#include <Windows.h> //TODO: remove
 #include <dr_d3d_swap_chain.h>
 #include <dr_rasterizer_state.h>
 #include <dr_radian.h>
@@ -41,6 +39,14 @@ void TestApplication::onInit()
   for (SizeT i = 0; i < modelsFiles.size(); ++i) {
     models[i].init(*driver->device, modelsFiles[i]);
   }
+
+  m_inputManager.init((size_t)win);
+  std::cout << "mouse " << m_inputManager.getNumberOfDevices(InputObjectType::kMouse) << std::endl;
+  std::cout << "joystick " << m_inputManager.getNumberOfDevices(InputObjectType::kJoystick) << std::endl;
+  std::cout << "keyboard " << m_inputManager.getNumberOfDevices(InputObjectType::kKeyboard) << std::endl;
+  std::cout << "unknown " << m_inputManager.getNumberOfDevices(InputObjectType::kUnknown) << std::endl;
+  m_mouseInput = (MouseInput*)m_inputManager.getInputObjectByID(m_inputManager.createInputObject(InputObjectType::kMouse));
+  m_mouseInput->setEventCallback(&m_mouseListener);
   
   soundDriver = new FMODSoundAPI;
   soundDriver->init();
@@ -58,37 +64,7 @@ void TestApplication::onInit()
 }
 void TestApplication::onInput()
 {
-  SDL_Event event;
-  while (SDL_PollEvent(&event)) {
-    switch (event.type) {
-    case SDL_KEYDOWN:
-      if (event.key.keysym.sym == SDLK_UP)
-      {
-        camera.move(5.f, 0.f);
-      }
-      if (event.key.keysym.sym == SDLK_DOWN)
-      {
-        camera.move(-5.f, 0.f);
-      }
-      if (event.key.keysym.sym == SDLK_r)
-      {
-        std::vector<TString> modelsFiles{_T("Croc.X")};
-
-        models[0].destroy();
-        models[0].init(*driver->device, modelsFiles[0]);
-      }
-      if(event.key.keysym.sym == SDLK_0)
-      {
-        soundDriver->play();
-      }
-
-      if (event.key.keysym.sym == SDLK_1)
-      {
-        
-      }
-    break;
-    }
-  }
+  m_mouseInput->capture();
 }
 void TestApplication::onUpdate()
 {
@@ -110,7 +86,6 @@ void TestApplication::onDraw()
 }
 void TestApplication::onDestroy()
 {
-  SDL_Quit();
   /*result = sound1->release();
   result = system->close();
   result = system->release();*/
@@ -120,21 +95,5 @@ void TestApplication::onPause()
 }
 void TestApplication::onResume()
 {
-}
-
-void TestApplication::initWindow()
-{
-  if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-    std::cout << "Video initialization failed: " << SDL_GetError()<<std::endl;
-  }
-  SDL_WM_SetCaption("Drider 2017", 0);
-  int flags = SDL_HWSURFACE;
-  //flags |= SDL_FULLSCREEN;
-  //flags |= SDL_RESIZABLE;
-  int width = 1280;
-  int height = 720;
-  if (SDL_SetVideoMode(width, height, 32, flags) == 0) {
-    std::cout << "Video mode set failed: " << SDL_GetError() << std::endl;
-  }
 }
 }
