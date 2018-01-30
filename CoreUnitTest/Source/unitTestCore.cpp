@@ -1,6 +1,5 @@
 #include <gtest\gtest.h>
 #include <dr_md5.h>
-
 int main(int argc, char* argv[])
 {
   ::testing::GTEST_FLAG(output) = "xml";
