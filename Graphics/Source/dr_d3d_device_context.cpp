@@ -50,7 +50,7 @@ D3DDeviceContext::clearDepthStencilView(DepthStencil& depthstencil,
     ClearDepthStencilView(reinterpret_cast<D3DDepthStencil*>(&depthstencil)->APIDepthView,
                           clearFlags,
                           depthValue,
-                          stencilValue);
+                          static_cast<driderSDK::UInt8>(stencilValue));
 }
 
 void

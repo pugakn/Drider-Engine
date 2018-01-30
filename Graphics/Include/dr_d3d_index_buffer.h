@@ -3,7 +3,7 @@
 #include <wrl.h>
 #include <wrl/client.h>
 
-class ID3D11Buffer;
+struct ID3D11Buffer;
 
 namespace driderSDK {
 

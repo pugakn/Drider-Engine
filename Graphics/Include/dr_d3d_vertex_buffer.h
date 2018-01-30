@@ -1,7 +1,7 @@
 #pragma once
 #include "dr_vertex_buffer.h"
 
-class ID3D11Buffer;
+struct ID3D11Buffer;
 
 namespace driderSDK {
 
@@ -16,11 +16,11 @@ class DeviceContext;
 class DR_GRAPHICS_EXPORT D3DVertexBuffer : public VertexBuffer
 {
  public:
-   void*
-   getAPIObject() override;
+  void*
+  getAPIObject() override;
 
-   void**
-   getAPIObjectReference() override;
+  void**
+  getAPIObjectReference() override;
 
   /**
   * TEST::constructor

@@ -160,12 +160,14 @@ TEST(Intersect, planePlane) {
   EXPECT_TRUE(driderSDK::Intersect::planePlane(driderSDK::Vector3D(1, 0, 0),
               driderSDK::Vector3D(0, 1, 0)));
 
+  
+  driderSDK::Vector3D point(0, 0, 0), direction(0, 1, 0);
   EXPECT_TRUE(driderSDK::Intersect::planePlane(driderSDK::Vector3D(1, 0, 0),
                                                0,
                                                driderSDK::Vector3D(0, 1, 0),
                                                0,
-                                               driderSDK::Vector3D(0, 0, 0),
-                                               driderSDK::Vector3D(0, 1, 0)));
+                                               point,
+                                               direction));
 }
 
 TEST(Intersect, sphereContainsPoint) {

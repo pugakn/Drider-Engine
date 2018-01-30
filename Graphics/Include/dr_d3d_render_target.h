@@ -1,7 +1,8 @@
 #pragma once
 #include "dr_render_target.h"
 #include <vector>
-class ID3D11RenderTargetView;
+
+struct ID3D11RenderTargetView;
 
 namespace driderSDK {
 

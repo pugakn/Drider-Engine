@@ -2,7 +2,7 @@
 #include "dr_depth_stencil_state.h"
 #include "dr_graphics_prerequisites.h"
 
-class ID3D11DepthStencilState;
+struct ID3D11DepthStencilState;
 
 namespace driderSDK {
 
