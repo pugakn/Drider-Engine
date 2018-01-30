@@ -76,7 +76,7 @@ TEST(Math, exp) {
 
 TEST(Math, truncate2Int) {
   driderSDK::Int32 test = driderSDK::Math::truncate2Int(38.5f);
-  EXPECT_FLOAT_EQ(test, 38);
+  EXPECT_EQ(test, 38);
 }
 
 TEST(Math, truncate2Float) {
@@ -99,10 +99,10 @@ TEST(Math, floor) {
 }
 
 TEST(Math, round) {
-  float test = driderSDK::Math::round(45.1f);
-  EXPECT_FLOAT_EQ(test, 45);
+  int test = driderSDK::Math::round(45.1f);
+  EXPECT_EQ(test, 45);
   test = driderSDK::Math::round(45.8f);
-  EXPECT_FLOAT_EQ(test, 46);
+  EXPECT_EQ(test, 46);
 }
 
 TEST(Math, logE) {
@@ -116,34 +116,34 @@ TEST(Math, logX) {
 }
 
 TEST(Math, absT) {
-  float test = driderSDK::Math::abs(-45);
+  float test = driderSDK::Math::abs(-45.f);
   EXPECT_FLOAT_EQ(test, 45);
 }
 
 TEST(Math, max) {
-  float test = driderSDK::Math::max(12, 45);
-  EXPECT_FLOAT_EQ(test, 45);
+  int test = driderSDK::Math::max(12, 45);
+  EXPECT_EQ(test, 45);
   test = driderSDK::Math::max(112, 45);
-  EXPECT_FLOAT_EQ(test, 112);
+  EXPECT_EQ(test, 112);
 }
 
 TEST(Math, min) {
-  float test = driderSDK::Math::min(10, 45);
-  EXPECT_FLOAT_EQ(test, 10);
+  int test = driderSDK::Math::min(10, 45);
+  EXPECT_EQ(test, 10);
   test = driderSDK::Math::min(100, 45);
-  EXPECT_FLOAT_EQ(test, 45);
+  EXPECT_EQ(test, 45);
 }
 
 TEST(Math, square) {
-  float test = driderSDK::Math::square(45);
+  float test = driderSDK::Math::square(45.f);
   EXPECT_FLOAT_EQ(test, 2025);
 }
 
 TEST(Math, clamp) {
-  float test = driderSDK::Math::clamp(10, 45, 50);
-  EXPECT_FLOAT_EQ(test, 45);
+  int test = driderSDK::Math::clamp(10, 45, 50);
+  EXPECT_EQ(test, 45);
   test = driderSDK::Math::clamp(100, 45, 50);
-  EXPECT_FLOAT_EQ(test, 50);
+  EXPECT_EQ(test, 50);
 }
 
 TEST(Math, absF) {
@@ -158,7 +158,7 @@ TEST(Math, fast_invSqrt) {
 
 TEST(Math, fast_exp) {
   float test = driderSDK::Math::fast_exp(45);
-  EXPECT_FLOAT_EQ(test, 187105.38);
+  EXPECT_FLOAT_EQ(test, 187105.38f);
 }
 
 TEST(Math, fast_ln) {
@@ -188,7 +188,7 @@ TEST(Math, fast_aCos) {
 
 TEST(Math, fast_tan) {
   float test = driderSDK::Math::fast_tan(.5f);
-  EXPECT_FLOAT_EQ(test, 0.5463025);
+  EXPECT_FLOAT_EQ(test, 0.5463025f);
 }
 
 TEST(Math, fast_aTan) {

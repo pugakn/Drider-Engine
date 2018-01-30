@@ -488,8 +488,6 @@ Intersect::aabbFrustrum(const Vector3D& pointMax,
                         const Vector3D& pointMin,
                         const std::array<Plane, 6>& frustrumPlanes) {
 
-  float distance;
-  float distance2;
   for (const Plane& plane : frustrumPlanes) {
     if (plane.distanceToPoint(GetVertexP(pointMin, pointMax, plane)) < 0)
     {
@@ -504,8 +502,7 @@ Intersect::aabbFrustrum(const Vector3D& pointMax,
 }
 
 bool
-Intersect::aabbRay(const Vector3D& aabbCenter,
-									 const Vector3D& aabbMax,
+Intersect::aabbRay(const Vector3D& aabbMax,
 									 const Vector3D& aabbMin,
                    const Vector3D& rayOrigin,
                    const Vector3D& rayDirection) {
@@ -602,8 +599,7 @@ bool Intersect::rayAABB(const Vector3D& aabbMax,
 }
 
 bool
-Intersect::aabbPoint(const Vector3D& aabbCenter,
-										 const Vector3D& aabbMax,
+Intersect::aabbPoint(const Vector3D& aabbMax,
 										 const Vector3D& aabbMin,
                      const Vector3D& point) {
 
@@ -624,7 +620,6 @@ bool
 Intersect::aabbPlane(const Vector3D& aabbCenter,
 										 float aabbWidth,
 										 float aabbHeight,
-										 float aabbDepth,
                      const Vector3D& planeNormal,
                      float planeGap) {
   Vector3D extents = aabbCenter;
@@ -689,7 +684,8 @@ Intersect::planePlane(const Vector3D& plane1Normal,
                       float plane1Gap, 
                       const Vector3D& plane2Normal, 
                       float plane2Gap, 
-                      Vector3D& point, Vector3D& direction) {
+                      Vector3D& point,
+                      Vector3D& direction) {
   //Warning: This assumes that normal1 and normal2 are normalized.
 
   direction = plane1Normal.cross(plane2Normal);
