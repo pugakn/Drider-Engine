@@ -17,8 +17,9 @@
 #include "dr_d3d_swap_chain.h"
 
 namespace driderSDK {
+
 struct DeviceContextData {
-  ID3D11DeviceContext * pDeviceContext;
+  ID3D11DeviceContext* pDeviceContext;
   void*  getObject() {};
   void** getObjectReference() {};
 };
@@ -41,6 +42,8 @@ D3DDeviceContext::clearDepthStencilView(DepthStencil& depthstencil,
     clearFlags |= D3D11_CLEAR_DEPTH;
     clearFlags |= D3D11_CLEAR_STENCIL;
     break;
+  default:
+    break;
   }
 
   D3D11DeviceContext->
@@ -58,13 +61,12 @@ D3DDeviceContext::clearRenderTargetView(RenderTarget& renderTarget,
 
 }
 
-void * D3DDeviceContext::getAPIObject()
-{
+void* D3DDeviceContext::getAPIObject() {
   return D3D11DeviceContext;
 }
 
-void ** D3DDeviceContext::getAPIObjectReference()
-{
+void**
+D3DDeviceContext::getAPIObjectReference() {
   return reinterpret_cast<void**>(&D3D11DeviceContext);
 }
 
@@ -129,7 +131,8 @@ D3DDeviceContext::setConstantBuffer(const ConstantBuffer& buffer,
 
 void
 D3DDeviceContext::setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::E topology) const {
-  D3D11_PRIMITIVE_TOPOLOGY topo;
+  D3D11_PRIMITIVE_TOPOLOGY topo = D3D11_PRIMITIVE_TOPOLOGY_UNDEFINED;
+
   switch (topology)
   {
   case driderSDK::DR_PRIMITIVE_TOPOLOGY::kLineList:
@@ -144,7 +147,10 @@ D3DDeviceContext::setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::E topology) const 
   case driderSDK::DR_PRIMITIVE_TOPOLOGY::kTriangleStrip:
     topo = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP;
     break;
+  default:
+    break;
   }
+
   D3D11DeviceContext->IASetPrimitiveTopology(topo);
 }
 

@@ -17,10 +17,10 @@ class DR_GRAPHICS_EXPORT D3DVertexBuffer : public VertexBuffer
 {
  public:
    void*
-     getAPIObject() override;
+   getAPIObject() override;
 
    void**
-     getAPIObjectReference() override;
+   getAPIObjectReference() override;
 
   /**
   * TEST::constructor
@@ -85,7 +85,7 @@ class DR_GRAPHICS_EXPORT D3DVertexBuffer : public VertexBuffer
   *   The new data buffer size
   */
   void
-    updateFromSysMemCpy(const DeviceContext& deviceContext) override;
+  updateFromSysMemCpy(const DeviceContext& deviceContext) override;
 
   /**
   * Update the buffer with new data

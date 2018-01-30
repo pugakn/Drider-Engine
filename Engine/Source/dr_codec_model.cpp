@@ -12,8 +12,7 @@
 namespace driderSDK {
 
 Codec::UniqueVoidPtr 
-CodecModel::decode(TString pathName) {
- 
+CodecModel::decode(TString pathName) { 
   Assimp::Importer importer;
 
   ModelInfo* pModelInfo = nullptr;
@@ -32,12 +31,10 @@ CodecModel::decode(TString pathName) {
   const aiScene* scene = importer.ReadFile(StringUtils::toString(pathName), 
                                             flags);
   if (scene) {
-
     pModelInfo = new ModelInfo;
     pModelInfo->meshes.resize(scene->mNumMeshes);
 
     for (SizeT iMesh = 0; iMesh < scene->mNumMeshes; ++iMesh) {
-
       MeshInfo& mesh = pModelInfo->meshes[iMesh];
       aiMesh* pMesh = scene->mMeshes[iMesh];
       
@@ -45,14 +42,13 @@ CodecModel::decode(TString pathName) {
       loadIndices(*pMesh, mesh);
     }
 
-    if(scene->HasMaterials()) {
+    if (scene->HasMaterials()) {
       loadMaterials(*scene);
     }
 
     TString skeletonName;
     
     if (scene->HasAnimations()) {
-      
       skeletonName = _T("Skeleton_") + pathName;
 
       auto pSkeleton = std::make_shared<Skeleton>();
@@ -68,11 +64,9 @@ CodecModel::decode(TString pathName) {
       ResourceManager::instance().addResource(skeletonName, pSkeleton);
 
       loadAnimations(*scene, *pModelInfo);
-
     }
 
     pModelInfo->skeletonName = skeletonName;
-
   }
 
   return UniqueVoidPtr(pModelInfo, &dr_void_deleter<ModelInfo>);
@@ -80,8 +74,6 @@ CodecModel::decode(TString pathName) {
 
 bool
 CodecModel::encode(TString pathName) {
-
-
   return false;
 }
 
@@ -90,18 +82,18 @@ CodecModel::isCompatible(TString extension) {
   return Assimp::Importer().IsExtensionSupported(StringUtils::toString(extension));
 }
 
-CompatibleType::E CodecModel::getType() {
+CompatibleType::E
+CodecModel::getType() {
   return CompatibleType::MODEL;
 }
 
 void
 CodecModel::loadVertices(const aiMesh& inMesh, MeshInfo& outMesh) {
-
   outMesh.vertices.resize(inMesh.mNumVertices);
 
   for (Int32 vertexIndex = 0; 
-      vertexIndex < static_cast<Int32>(inMesh.mNumVertices); 
-      ++vertexIndex) {
+       vertexIndex < static_cast<Int32>(inMesh.mNumVertices); 
+       ++vertexIndex) {
 
     outMesh.vertices[vertexIndex].position.x = inMesh.mVertices[vertexIndex].x;
     outMesh.vertices[vertexIndex].position.y = inMesh.mVertices[vertexIndex].y;
@@ -183,11 +175,8 @@ CodecModel::loadSkeleton(const aiScene& model,
   }  
 }
 
-
-
 void 
-CodecModel::loadMaterials(const aiScene & model) {
-
+CodecModel::loadMaterials(const aiScene& model) {
   std::map<std::string, std::string> textures;
 
   for (Int32 meshIndex = 0; 
@@ -204,18 +193,15 @@ CodecModel::loadMaterials(const aiScene & model) {
       aiMaterialProperty& property = *material.mProperties[propIndex];
 
       String st{property.mData, property.mData + property.mDataLength};
-
-      int x = 0;
     }
   }
-
 }
 
 void
 CodecModel::loadAnimations(const aiScene& model, ModelInfo& outModel) {
-  for (Int32 animationIndex = 0; 
-      animationIndex < static_cast<Int32>(model.mNumAnimations); 
-      ++animationIndex) {
+  for (Int32 animationIndex = 0;
+       animationIndex < static_cast<Int32>(model.mNumAnimations);
+       ++animationIndex) {
     aiAnimation& animation = *model.mAnimations[animationIndex];
 
 
@@ -238,8 +224,8 @@ CodecModel::loadAnimations(const aiScene& model, ModelInfo& outModel) {
       boneAnim.scales.resize(channel.mNumScalingKeys);
 
       for (Int32 pos = 0; 
-          pos < static_cast<Int32>(channel.mNumPositionKeys); 
-          ++pos) {
+           pos < static_cast<Int32>(channel.mNumPositionKeys); 
+           ++pos) {
         aiVectorKey& posKey = channel.mPositionKeys[pos];
         
         boneAnim.positions[pos].time = static_cast<float>(posKey.mTime);
@@ -250,8 +236,8 @@ CodecModel::loadAnimations(const aiScene& model, ModelInfo& outModel) {
       }
 
       for (Int32 rot = 0; 
-          rot < static_cast<Int32>(channel.mNumRotationKeys); 
-          ++rot) {
+           rot < static_cast<Int32>(channel.mNumRotationKeys); 
+           ++rot) {
         aiQuatKey& rotKey = channel.mRotationKeys[rot];
         
         boneAnim.rotations[rot].time = static_cast<float>(rotKey.mTime);
@@ -263,8 +249,8 @@ CodecModel::loadAnimations(const aiScene& model, ModelInfo& outModel) {
       }
 
       for (Int32 scl = 0; 
-          scl < static_cast<Int32>(channel.mNumScalingKeys); 
-          ++scl) {
+           scl < static_cast<Int32>(channel.mNumScalingKeys); 
+           ++scl) {
         aiVectorKey& sclKey = channel.mScalingKeys[scl];
 
         boneAnim.scales[scl].time = static_cast<float>(sclKey.mTime);
@@ -294,14 +280,13 @@ CodecModel::buildTree(const aiNode* pNodeSrc,
   std::memcpy(pNode->transform.data, &pNodeSrc->mTransformation[0][0], 64);
       
   for (Int32 childInddex = 0; 
-      childInddex < static_cast<Int32>(pNodeSrc->mNumChildren); 
-      ++childInddex) {
+       childInddex < static_cast<Int32>(pNodeSrc->mNumChildren); 
+       ++childInddex) {
     auto childNode = dr_make_unique<Skeleton::NodeData>();
     childNode->pParent = pNode;
     buildTree(pNodeSrc->mChildren[childInddex], childNode.get(), nodesRefs);
     pNode->children.push_back(std::move(childNode));
   }
 }
-
 
 }

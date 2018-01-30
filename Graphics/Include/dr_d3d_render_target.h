@@ -17,10 +17,10 @@ class DR_GRAPHICS_EXPORT D3DRenderTarget : public RenderTarget
 {
  public:
    void*
-     getAPIObject() override;
+   getAPIObject() override;
 
    void**
-     getAPIObjectReference() override;
+   getAPIObjectReference() override;
   /**
   * TEST::create
   *

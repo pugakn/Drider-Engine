@@ -10,10 +10,10 @@ class DR_GRAPHICS_EXPORT D3DDepthStencilState : public DepthStencilState
 {
  public:
    void*
-     getAPIObject() override;
+   getAPIObject() override;
 
    void**
-     getAPIObjectReference() override;
+   getAPIObjectReference() override;
 
   /**
   * TEST::

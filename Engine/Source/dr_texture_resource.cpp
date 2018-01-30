@@ -3,7 +3,7 @@
 namespace driderSDK {
 
 void 
-TextureResource::init(void * resourceData) {
-
+TextureResource::init(void* resourceData) {
 }
+
 }
