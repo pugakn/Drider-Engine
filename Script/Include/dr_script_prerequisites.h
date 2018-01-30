@@ -15,7 +15,7 @@
 # if defined( DR_STATIC_LIB )
 #   define DR_SCRIPT_EXPORT
 # else
-#	if defined(DR_SOUND_EXPORT)
+#	if defined(SCRIPT_EXPORTS)
 #   define DR_SCRIPT_EXPORT __declspec( dllexport )
 #   else
 #     if defined( __MINGW32__ )

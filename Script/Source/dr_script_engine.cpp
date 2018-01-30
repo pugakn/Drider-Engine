@@ -10,20 +10,29 @@ ScriptEngine::~ScriptEngine() {}
 int 
 ScriptEngine::createEngine() {
 
-	engine = asCreateScriptEngine();
+	m_scriptEngine = asCreateScriptEngine();
 
-	if(engine == 0) {
+	if(m_scriptEngine == 0) {
+		//failed to create script engine
 		return -1;
 	}
 
-	engine->SetMessageCallback(asFUNCTION(MessageCallback), 0, asCALL_CDECL);
+	m_scriptEngine->SetMessageCallback(asFUNCTION(MessageCallback), 0, asCALL_CDECL);
 	return 0;
 }
 
 void
 ScriptEngine::configureEngine() {
 
-	//register TString
+	int result = m_scriptEngine->RegisterObjectType("TString", 
+																									sizeof(TString), 
+																									asOBJ_VALUE | asOBJ_POD); 
+	DR_ASSERT(result >= 0);
+
+	//create factory
+	asIStringFactory fact;
+
+	//m_scriptEngine->RegisterStringFactory();
 
 }
 
@@ -32,60 +41,60 @@ ScriptEngine::addScript(const TString& fileName) {
 	File scriptFile;
 	if(!scriptFile.Open(fileName)) {
 		//failed to find file
-		engine->Release();
+		m_scriptEngine->Release();
 		return;
 	}
 
-	SizeT fileLenght = scriptFile.Size();
+	SizeT fileLength = scriptFile.Size();
 
 	TString script;
-	script.resize(fileLenght);
-	scriptFile.Write(fileLenght, (ANSIChar*)&script);
+	script.resize(fileLength);
+	scriptFile.Write(fileLength, (ANSIChar*)&script);
 	scriptFile.Close();
 
 	if(script.size() == 0) {
 		//couldn't load scipt
-		engine->Release();
+		m_scriptEngine->Release();
 		return;
 	}
-	mod = engine->GetModule(0, asGM_ALWAYS_CREATE);
-	int result = mod->AddScriptSection((char*) fileName.c_str(),
-																		 (char*) &script[0], 
-																		 fileLenght);
+	m_scriptModule = m_scriptEngine->GetModule(0, asGM_ALWAYS_CREATE);
+	int result = m_scriptModule->AddScriptSection((char*) fileName.c_str(), 
+																								(char*) &script[0], 
+																								fileLength);
 	if(result < 0) {
 		//AddscriptSection failed
-		engine->Release();
+		m_scriptEngine->Release();
 		return;
 	}
 }
 
 void
 ScriptEngine::compileScript() {
-	int result = mod->Build();
+	int result = m_scriptModule->Build();
 	if(result < 0) {
 		//build failed.
-		engine->Release();
+		m_scriptEngine->Release();
 		return;
 	}
 }
 
 void
 ScriptEngine::configureContext() {
-	context = engine->CreateContext();
-	if(context == 0) {
+	m_scriptContext = m_scriptEngine->CreateContext();
+	if(m_scriptContext == 0) {
 		//failed to create context.
-		engine->Release();
+		m_scriptEngine->Release();
 		return;
 	}
 
 	unsigned long timeout;
-	int result = context->SetLineCallback(asFUNCTION(LineCallback), 
+	int result = m_scriptContext->SetLineCallback(asFUNCTION(LineCallback), 
 																				&timeout, 
 																				asCALL_CDECL);
 	if(result < 0) {
 		//failed to set line callback
-		context->Release();
-		engine->Release();
+		m_scriptContext->Release();
+		m_scriptEngine->Release();
 		return;
 	}
 }

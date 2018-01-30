@@ -83,11 +83,11 @@ public:
 	void
 	MessageCallback(const asSMessageInfo *msg, void *param);
 
-
-	asIScriptEngine* engine;
-	asIScriptContext* context;
-	asIScriptFunction* function;
-	asIScriptModule* mod;
+private:
+	asIScriptEngine* m_scriptEngine;
+	asIScriptContext* m_scriptContext;
+	asIScriptFunction* m_scriptFunction;
+	asIScriptModule* m_scriptModule;
 
 };
 
