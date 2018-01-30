@@ -170,6 +170,7 @@
     </BuildLog>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="dr_octree.h" />
     <ClInclude Include="Include\dr_animation.h" />
     <ClInclude Include="Include\dr_animator.h" />
     <ClInclude Include="Include\dr_application.h" />
@@ -196,6 +197,7 @@
     <ClInclude Include="Include\dr_viewport.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="dr_octree.cpp" />
     <ClCompile Include="Include\dr_animation.cpp" />
     <ClCompile Include="Include\dr_animator.cpp" />
     <ClCompile Include="Source\dr_application.cpp" />
