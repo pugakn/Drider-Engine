@@ -17,15 +17,9 @@ class DR_SOUND_EXPORT SoundAPI {
     update() = 0;
 
     virtual void
-    play() = 0;
-
-    virtual void
     destroy() = 0;
 
     SoundSystem *system;
-    DrSound* sounds;
-    DrChannel *channel;
-
 };
 
 }

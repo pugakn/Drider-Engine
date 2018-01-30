@@ -50,6 +50,16 @@ void TestApplication::onInit()
   
   soundDriver = new FMODSoundAPI;
   soundDriver->init();
+  
+  sound1 = new FMODSound;
+
+  soundDriver->system->createSound("testSound.mp3", DR_SOUND_MODE::kDrMode_DEFAULT, 0, sound1);
+  channel = new FMODChannel;
+  
+  sound1->init(reinterpret_cast<SoundSystem*>(soundDriver->system->getReference()),
+               reinterpret_cast<DrChannel*>(channel->getReference()));
+  sound1->setMode(DR_SOUND_MODE::kDrMode_LOOP_OFF);
+  sound1->play();
 
   /*result = FMOD::System_Create(&system);
   result = system->getVersion(&version);
@@ -68,12 +78,14 @@ void TestApplication::onInput()
 }
 void TestApplication::onUpdate()
 {
+  soundDriver->update();
+
   for (auto& model : models)
   {
     //model.transform.rotate(Radian(0.005f), AXIS::kY);
     model.update();
   }
-  soundDriver->update();
+
   camera.update(0);
 }
 void TestApplication::onDraw()
