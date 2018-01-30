@@ -22,6 +22,8 @@ class DR_CORE_EXPORT Resource
   */
   virtual ~Resource() { };
 
+  
+
 };
 
 }

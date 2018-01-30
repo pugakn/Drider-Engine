@@ -10,8 +10,10 @@ namespace driderSDK {
 
 void
 ResourceManager::init() {
-  codecs.push_back(std::shared_ptr<CodecTexture>());
-  codecs.push_back(std::shared_ptr<CodecModel>());
+  auto codecTexture  = std::make_shared<CodecTexture>();
+  codecs.push_back(codecTexture);
+  auto codecModel = std::make_shared<CodecModel>();
+  codecs.push_back(codecModel);
 
   factory = new ResourceFactory;
 }
