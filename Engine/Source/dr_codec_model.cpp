@@ -65,7 +65,7 @@ CodecModel::decode(TString pathName) {
 
       loadSkeleton(*scene, *pModelInfo, *pSkeleton);
 
-      ResourceManager::instance().addResource(skeletonName, pSkeleton);
+      ResourceManager::instance().addResource(skeletonName, pSkeleton); // esto esta mal, no se debe acceder a esta funcion, !!!
 
       loadAnimations(*scene, *pModelInfo);
 
