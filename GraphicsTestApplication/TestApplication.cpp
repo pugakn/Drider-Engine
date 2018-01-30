@@ -1,11 +1,16 @@
 #include "TestApplication.h"
 #include <SDL\SDL.h>
 #include <iostream>
+#include <tuple>
 #include <Windows.h> //TODO: remove
 #include <dr_d3d_swap_chain.h>
 #include <dr_rasterizer_state.h>
 #include <dr_radian.h>
 #include <dr_quaternion.h>
+#include <dr_file.h>
+#include <dr_vertex_shader.h>
+#include <dr_fragment_shader.h>
+#include <dr_string_utils.h>
 
 namespace driderSDK {
 
@@ -32,7 +37,9 @@ void TestApplication::onInit()
      pInstance = &ResourceManager::instance();
   }
   
-  std::vector<TString> modelsFiles{_T("VenomJok.X")};
+  //createShaders();
+
+  std::vector<TString> modelsFiles{_T("dwarf.x")};
 
   models.resize(modelsFiles.size());
 
@@ -112,4 +119,31 @@ void TestApplication::initWindow()
     std::cout << "Video mode set failed: " << SDL_GetError() << std::endl;
   }
 }
+void TestApplication::createShaders() {
+
+  if(!m_shaders.empty()) {
+    //Free shaders
+    m_shaders.clear();
+  }
+
+  static std::vector<std::tuple<String, String, DR_SHADER_TYPE_FLAG::E>> 
+    shadersFiles = {{"vs.hlsl", "AnimMeshVS", DR_SHADER_TYPE_FLAG::kVertex},
+                    {"fs.hlsl", "MeshFS", DR_SHADER_TYPE_FLAG::kFragment},
+                    {"mesh.hlsl", "StaticMeshVS", DR_SHADER_TYPE_FLAG::kVertex}};
+
+  auto shaderFactory = 
+  [&](DR_SHADER_TYPE_FLAG::E shaderType, const String& shaderFile) -> Shader* { 
+
+    File file;
+    file.Open(StringUtils::toTString(shaderFile));
+    auto shaderSrc = StringUtils::toString(file.GetAsString(file.Size()));
+    return driver->device->createShaderFromMemory(shaderSrc.data(), 
+                                                  shaderSrc.size(),
+                                                  shaderType);  
+  };
+
+  for(auto& shaderFile : shadersFiles) {
+    m_shaders[std::get<1>(shaderFile)] = shaderFactory(std::get<2>(shaderFile), 
+                                                       std::get<0>(shaderFile));
+  }
 }

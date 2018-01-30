@@ -21,31 +21,47 @@ class DR_CORE_EXPORT Node : public std::enable_shared_from_this<Node>
 
   virtual ~Node(){}
 
-  virtual void update(const Matrix4x4& accumulatedTransform);
+  void 
+  update();
   
-  void addChild(SharedNode child);
+  void 
+  addChild(SharedNode child);
 
-  void setParent(SharedNode parent);
+  void 
+  setParent(SharedNode parent);
 
-  void setName(const TString& name);
+  void 
+  setName(const TString& name);
 
-  void removeChild(const TString& childName);
+  void
+  removeChild(SharedNode child);
 
-  void removeChild(SharedNode child);
+  void 
+  removeChildren();
 
-  TString getName();
+  const TString& 
+  getName();
 
-  SharedNode getParent();
+  SharedNode 
+  getParent();
 
-  SharedNode getChild(const TString& childName);
+  SharedNode 
+  getChild(const TString& childName);
 
-  const Matrix4x4& getWorldTransform() const;
+  const Matrix4x4& 
+  getWorldTransform() const;
 
   Transform transform;
+
+ protected:
+
+  virtual void 
+  updateImpl();
+
  protected:
 
   Matrix4x4 m_finalTransform;  
-  std::vector<SharedNode> m_childs;
+  std::vector<SharedNode> m_children;
   WeakNode m_parent;
   TString m_name;
  private:
