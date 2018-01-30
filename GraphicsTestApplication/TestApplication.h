@@ -18,6 +18,9 @@
 
 //#include <FMOD\fmod.hpp>
 #include <dr_fmod_sound_api.h>
+#include <dr_fmod_sound.h>
+#include <dr_fmod_channel.h>
+#include <dr_fmod_soundSystem.h>
 
 namespace driderSDK {
   class KeyboardListener : public  driderSDK::IKeyboardListener {
@@ -77,6 +80,10 @@ public:
   Camera camera;
 
   SoundAPI* soundDriver;
+
+  DrSound *sound1;
+  DrSound *sound2;
+  DrChannel *channel;
   
   /*FMOD::System     *system;
   FMOD::Sound      *sound1;
