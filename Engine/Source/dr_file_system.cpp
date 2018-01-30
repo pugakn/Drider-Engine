@@ -45,8 +45,6 @@ FileSystem::Move(const TString& filepathSrc, const TString& filepathDst) {
 
 bool
 FileSystem::Remove(const TString& filepath) {
-  SizeT filepathLenght = filepath.length();
-
   String rename = StringUtils::toString(filepath);
 
   bool successfullyErased = remove(rename.c_str()) == 0;
@@ -56,7 +54,6 @@ FileSystem::Remove(const TString& filepath) {
 
 bool
 FileSystem::IsFile(const TString& filepath) {
-  SizeT filepathLenght = filepath.length();
   String rename = StringUtils::toString(filepath);
 
   struct stat s;
@@ -72,7 +69,6 @@ FileSystem::IsFile(const TString& filepath) {
 
 bool
 FileSystem::IsDirectory(const TString& filepath) {
-  SizeT filepathLenght = filepath.length();
   String rename = StringUtils::toString(filepath);
 
   struct stat s;

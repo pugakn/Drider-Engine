@@ -114,7 +114,7 @@ TEST(Vector4D, cross) {
 
 TEST(Vector4D, length3) {
   driderSDK::Vector4D testVector1(666, 42, 3, 0);
-  EXPECT_FLOAT_EQ(testVector1.length3(), 3*sqrt(49481));
+  EXPECT_FLOAT_EQ(testVector1.length3(), 3.0f*sqrt(49481.f));
 }
 
 TEST(Vector4D, length) {
@@ -124,7 +124,7 @@ TEST(Vector4D, length) {
 
 TEST(Vector4D, lengthSqr3) {
   driderSDK::Vector4D testVector1(666, 42, 3, 0);
-  EXPECT_FLOAT_EQ(testVector1.lengthSqr3(), pow(3 * sqrt(49481), 2));
+  EXPECT_FLOAT_EQ(testVector1.lengthSqr3(), pow(3 * sqrt(49481.f), 2));
 }
 
 TEST(Vector4D, lengthSqr) {
@@ -136,21 +136,21 @@ TEST(Vector4D, normalize3) {
   driderSDK::Vector4D testVector1(1, 2, 3, 4);
   testVector1.normalize3();
 
-  checkValuesVector(testVector1, 0.26726124, 0.53452247, 0.80178368, 4);
+  checkValuesVector(testVector1, 0.26726124f, 0.53452247f, 0.80178368f, 4.0f);
 }
 
 TEST(Vector4D, normalize) {
   driderSDK::Vector4D testVector1(1, 2, 3, 4);
   testVector1.normalize();
 
-  checkValuesVector(testVector1, 0.18257418, 0.36514837, 0.54772258, 0.73029674);
+  checkValuesVector(testVector1, 0.18257418f, 0.36514837f, 0.54772258f, 0.73029674f);
 }
 
 TEST(Vector4D, distance3) {
   driderSDK::Vector4D testVector1(0, 0, 0, 1024.666f);
   driderSDK::Vector4D testVector2(3, 3, 3, 42.0f);
 
-  EXPECT_FLOAT_EQ(testVector1.distance3(testVector2), 5.196152422706632);
+  EXPECT_FLOAT_EQ(testVector1.distance3(testVector2), 5.196152422706632f);
 }
 
 TEST(Vector4D, distance) {
@@ -164,19 +164,19 @@ TEST(Vector4D, distanceSqr3) {
   driderSDK::Vector4D testVector1(0, 0, 0, 1024.666f);
   driderSDK::Vector4D testVector2(3, 3, 3, 42.0f);
 
-  EXPECT_FLOAT_EQ(testVector1.distanceSqr3(testVector2), pow(5.196152422706632, 2));
+  EXPECT_FLOAT_EQ(testVector1.distanceSqr3(testVector2), pow(5.196152422706632f, 2));
 }
 
 TEST(Vector4D, distanceSqr) {
   driderSDK::Vector4D testVector1(5, 6, 7, 8);
   driderSDK::Vector4D testVector2(1, 2, 3, 4);
 
-  EXPECT_FLOAT_EQ(testVector1.distanceSqr(testVector2), pow(8, 2));
+  EXPECT_FLOAT_EQ(testVector1.distanceSqr(testVector2), pow(8.f, 2.f));
 }
 
 TEST(Vector4D, equals) {
-  driderSDK::Vector4D testVector1(1, 2.5f, 5, 10.5);
-  driderSDK::Vector4D testVector2(0.9f, 2.4f, 5.1f, 10.6);
+  driderSDK::Vector4D testVector1(1, 2.5f, 5, 10.5f);
+  driderSDK::Vector4D testVector2(0.9f, 2.4f, 5.1f, 10.6f);
 
   EXPECT_TRUE(testVector1.equals(testVector2, 0.2f));
 }

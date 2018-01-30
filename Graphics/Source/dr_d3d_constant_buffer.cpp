@@ -5,15 +5,17 @@
 #include "dr_d3d_device_context.h"
 
 namespace driderSDK {
-  void * D3DConstantBuffer::getAPIObject()
-  {
-    return CB;
-  }
-  void ** D3DConstantBuffer::getAPIObjectReference()
-  {
-    return reinterpret_cast<void**>(&CB);
-  }
-  D3DConstantBuffer::D3DConstantBuffer() {
+
+void* D3DConstantBuffer::getAPIObject() {
+  return CB;
+}
+
+void**
+D3DConstantBuffer::getAPIObjectReference() {
+  return reinterpret_cast<void**>(&CB);
+}
+
+D3DConstantBuffer::D3DConstantBuffer() {
 }
 
 void
@@ -47,24 +49,21 @@ D3DConstantBuffer::create(const Device& device,
   D3D11_SUBRESOURCE_DATA subData = { &initialData[0], 0, 0 };
 
   if (initialData != nullptr) {
-    D3D11_SUBRESOURCE_DATA subData = { &initialData[0], 0, 0 };
     apiDevice->D3D11Device->
       CreateBuffer(&bdesc, &subData, &CB);
   }
-  else
-  {
+  else {
     apiDevice->D3D11Device->
       CreateBuffer(&bdesc, nullptr, &CB);
   }
-  
 }
 
 void
 D3DConstantBuffer::set(const DeviceContext& deviceContext,
                        Int32 typeFlag) const {
-  const D3DDeviceContext* context = reinterpret_cast<const D3DDeviceContext*>(&deviceContext);
-  if (typeFlag == 0)
-  {
+  const D3DDeviceContext* context = reinterpret_cast<const D3DDeviceContext*>
+                                      (&deviceContext);
+  if (typeFlag == 0) {
     typeFlag |= DR_SHADER_TYPE_FLAG::kVertex;
     typeFlag |= DR_SHADER_TYPE_FLAG::kFragment;
   }
@@ -98,7 +97,7 @@ void
 D3DConstantBuffer::updateFromSysMemCpy(const DeviceContext& deviceContext) {
   reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext->
-    UpdateSubresource(CB, 0, 0, &m_sysMemCpy[0], 0, 0);
+      UpdateSubresource(CB, 0, 0, &m_sysMemCpy[0], 0, 0);
 }
 
 void
@@ -109,7 +108,8 @@ D3DConstantBuffer::updateFromBuffer(const DeviceContext& deviceContext,
     D3D11DeviceContext->
       UpdateSubresource(CB, 0, 0, &dataBuffer[0], 0, 0);
 }
-void D3DConstantBuffer::release() {
+void
+D3DConstantBuffer::release() {
   CB->Release();
   m_sysMemCpy.clear();
   delete this;

@@ -2,7 +2,7 @@
 #include <dr_vector4d.h>
 #include <gtest\gtest.h>
 
-void checkValuesVector(driderSDK::Vector3D& testVector, float vx, float vy, float vz) {
+void checkValuesVector(driderSDK::Vector3D testVector, float vx, float vy, float vz) {
   EXPECT_FLOAT_EQ(vx, testVector[0]);
   EXPECT_FLOAT_EQ(vy, testVector[1]);
   EXPECT_FLOAT_EQ(vz, testVector[2]);
@@ -77,7 +77,7 @@ TEST(Vector3D, dot) {
 TEST(Vector3D, cross) {
   driderSDK::Vector3D testVector(1.2f, 2.3f, 1);
   driderSDK::Vector3D testVector1(2, 3, 4);
-
+  
   checkValuesVector(testVector.cross(testVector1), 6.2f, -2.8f, -1.f);
 
   driderSDK::Vector3D testVector2(-2.14f, -7.f, 1);
@@ -91,7 +91,7 @@ TEST(Vector3D, length) {
   EXPECT_FLOAT_EQ(4.123105626f, testVector.length());
 
   driderSDK::Vector3D testVector1(3, 4, 4);
-  EXPECT_FLOAT_EQ(6.403124237, testVector1.length());
+  EXPECT_FLOAT_EQ(6.403124237f, testVector1.length());
 
   driderSDK::Vector3D testVector2(1.001f, -9.99999f, 0.1f);
   EXPECT_FLOAT_EQ(10.05046273f, testVector2.length());
@@ -357,7 +357,7 @@ TEST(Vector3D, operatorDivisionEqualScalar) {
 TEST(Vector3D, operatorEqualEqual) {
   driderSDK::Vector3D testVector(1, 2, 3);
   driderSDK::Vector3D testVector1(2.00000001f, 3, 3);
-  driderSDK::Vector3D testVector2(2.1, 3, 3);
+  driderSDK::Vector3D testVector2(2.1f, 3, 3);
   driderSDK::Vector3D testVector3(2.1f, 3, 3);
 
   EXPECT_FALSE(testVector == testVector1);
@@ -368,7 +368,7 @@ TEST(Vector3D, operatorEqualEqual) {
 TEST(Vector3D, operatorNotEqual) {
   driderSDK::Vector3D testVector(1, 2, 3);
   driderSDK::Vector3D testVector1(2.00000001f, 3, 3);
-  driderSDK::Vector3D testVector2(2.1, 3, 3);
+  driderSDK::Vector3D testVector2(2.1f, 3, 3);
   driderSDK::Vector3D testVector3(2.1f, 3, 3);
 
   EXPECT_TRUE(testVector != testVector1);

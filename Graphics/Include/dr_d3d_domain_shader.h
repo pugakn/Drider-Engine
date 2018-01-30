@@ -1,6 +1,6 @@
 #pragma once
-#include "dr_domain_shader.h"
 #include <d3d11.h>
+#include "dr_d3d_shader.h"
 
 namespace driderSDK {
 
@@ -10,7 +10,7 @@ namespace driderSDK {
 * Sample usage:
 *	DomainShader* = new D3DDomainShader;
 */
-class DR_GRAPHICS_EXPORT D3DDomainShader : public DomainShader
+class DR_GRAPHICS_EXPORT D3DDomainShader : public D3DShader
 {
  public:
    void*

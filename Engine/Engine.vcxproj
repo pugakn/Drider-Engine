@@ -166,7 +166,7 @@
     <ClCompile Include="Source\dr_file_system_win.cpp" />
     <ClCompile Include="Source\dr_resource_factory.cpp" />
     <ClCompile Include="Source\dr_resource_manager.cpp" />
-    <ClCompile Include="Source\dr_texture_resource.cpp" />
+    <ClCompile Include="Source\dr_texture_resurce.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

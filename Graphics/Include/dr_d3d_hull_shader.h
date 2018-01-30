@@ -1,6 +1,6 @@
 #pragma once
-#include "dr_hull_shader.h"
 #include <d3d11.h>
+#include "dr_d3d_shader.h"
 
 namespace driderSDK {
 
@@ -10,7 +10,7 @@ namespace driderSDK {
 * Sample usage:
 *	HullShader* = new D3DhullShader;
 */
-class DR_GRAPHICS_EXPORT D3DHullShader : public HullShader
+class DR_GRAPHICS_EXPORT D3DHullShader : public D3DShader
 {
  public:
    void*

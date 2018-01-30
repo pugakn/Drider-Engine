@@ -466,8 +466,7 @@ struct DR_MATH_EXPORT Intersect
   *   True if the ray intersects, else returns false.
   */
   static bool
-  aabbRay(const Vector3D& aabbCenter,
-					const Vector3D& aabbMax,
+  aabbRay(const Vector3D& aabbMax,
 					const Vector3D& aabbMin,
           const Vector3D& rayOrigin,
           const Vector3D& rayDirection);
@@ -499,8 +498,7 @@ struct DR_MATH_EXPORT Intersect
   *   True if the point is inside, else returns false.
   */
   static bool
-  aabbPoint(const Vector3D& aabbCenter,
-						const Vector3D& aabbMax,
+  aabbPoint(const Vector3D& aabbMax,
 						const Vector3D& aabbMin,
             const Vector3D& point);
 
@@ -558,7 +556,6 @@ struct DR_MATH_EXPORT Intersect
   aabbPlane(const Vector3D& aabbCenter,
 						float aabbWidth,
 						float aabbHeight,
-						float aabbDepth,
             const Vector3D& planeNormal,
             float planeGap);
 

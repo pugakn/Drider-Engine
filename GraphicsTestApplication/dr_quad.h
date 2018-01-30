@@ -32,8 +32,8 @@ public:
   driderSDK::IndexBuffer* IB;
   driderSDK::ConstantBuffer* CB;
 
-  driderSDK::VertexShader* vs;
-  driderSDK::FragmentShader* fs;
+  driderSDK::Shader* vs;
+  driderSDK::Shader* fs;
 
   driderSDK::InputLayout* IL;
 
