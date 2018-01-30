@@ -73,7 +73,6 @@ Plane::intersects(const AABB& aabb) {
 	return Intersect::aabbPlane(aabb.center, 
 															aabb.width, 
 															aabb.height,
-															aabb.depth, 
 															*this, 
 															d);
 }

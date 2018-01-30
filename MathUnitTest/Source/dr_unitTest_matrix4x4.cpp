@@ -58,7 +58,7 @@ TEST(Matrix4x4, Constructor3x3) {
 }
 
 TEST(Matrix4x4, ConstructorQuaternion) {
-  driderSDK::Quaternion testQuaternion(0.7071, 0, 0, 0.7071f);
+  driderSDK::Quaternion testQuaternion(0.7071f, 0, 0, 0.7071f);
   driderSDK::Matrix4x4 checkMatrix(1, 0, 0, 0,
                                    0, 0, -1, 0,
                                    0, 1, 0, 0,
@@ -330,7 +330,7 @@ TEST(Matrix4x4, ProjectionFov) {
                     0.15611996f, 0, 0, 0,
                     0, -0.20763955f, 0, 0,
                     0, 0, -1.010101f, -1,
-                    0, 0, -10.10101, 0);
+                    0, 0, -10.10101f, 0);
 }
 
 TEST(Matrix4x4, Orthogonal) {

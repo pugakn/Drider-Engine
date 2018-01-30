@@ -70,8 +70,14 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sound", "Sound\Sound.vcxpro
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SoundUnitTest", "SoundUnitTest\SoundUnitTest.vcxproj", "{C1D6ED45-C172-48F7-B7E4-DBC803AAB2CD}"
+	ProjectSection(ProjectDependencies) = postProject
+		{96C93CF8-BB4C-4D60-8C5D-3F439477662D} = {96C93CF8-BB4C-4D60-8C5D-3F439477662D}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Input", "Input\Input.vcxproj", "{FC99DF27-AF8B-40FD-8CFC-5A93A21B9425}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4C420F92-670E-4FFF-8EF6-B8F33B482386} = {4C420F92-670E-4FFF-8EF6-B8F33B482386}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

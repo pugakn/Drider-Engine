@@ -113,8 +113,7 @@ TEST(Intersect, aabbPoint) {
   driderSDK::Vector3D c1(0.0, 0.0, 0.0);
   driderSDK::Vector3D point(0.0, 0.0, 0.0);
 	driderSDK::AABB aabb(5, 5, 5, c1);
-	EXPECT_TRUE(driderSDK::Intersect::aabbPoint(c1, 
-																							aabb.getMaxPoint(), 
+	EXPECT_TRUE(driderSDK::Intersect::aabbPoint(aabb.getMaxPoint(), 
 																							aabb.getMinPoint(), 
 																							point));
 }
@@ -130,7 +129,7 @@ TEST(Intersect, aabbPlane) {
   driderSDK::Vector3D pnormal(0.0, 1.0, 0.0);
   driderSDK::Vector3D c(0.0, 0.0, 0.0);
 
-  EXPECT_TRUE(driderSDK::Intersect::aabbPlane(c, 5,5,5,pnormal,0));
+  EXPECT_TRUE(driderSDK::Intersect::aabbPlane(c,5,5,pnormal,0));
 }
 
 TEST(Intersect, segmentPlane) {
