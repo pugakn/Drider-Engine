@@ -16,7 +16,7 @@ void Model3D::init(Device & device, const TString& filename) {
 
   elapsedTime = 0.0f;
 
-  auto resourceMg = ResourceManager::instance();
+  auto& resourceMg = ResourceManager::instance();
 
   resource = resourceMg.loadResource(filename);
 
