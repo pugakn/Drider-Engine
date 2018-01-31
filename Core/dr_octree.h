@@ -6,27 +6,57 @@
 #include <vector>
 #include <queue>
 
-#define MINSIZE 1
 namespace driderSDK {
-  struct Face
-  {
-    std::vector<Vector3D> vertex;
-  };
-  class DR_CORE_EXPORT Octree
-  {
-   public:
-    Octree(AABB &region, std::queue<Face> faces);
-    Octree(AABB &region);
-    std::queue<Face> faces;
-    Int32 AABBContainsFace(Face &face);
-    void BuildTree();
-    Octree();
-    ~Octree();
-    AABB boundingRegion;
-    Octree* father;
-    std::vector<Octree*> childs;
 
-    
-  };
+struct Face
+{
+  std::vector<Vector3D> vertex;
+};
+
+class DR_CORE_EXPORT Octree
+{
+ public:
+  /**
+  *
+  */
+  Octree();
+
+  /**
+  *
+  */
+  Octree(AABB& region, std::queue<Face> faces, float minAreaSize);
+
+  /**
+  *
+  */
+  Octree(AABB& region, float minAreaSize);
+
+  /**
+  *
+  */
+  ~Octree();
+
+  /**
+  *
+  */
+  Int32
+  AABBContainsFace(Face& face);
+
+  /**
+  *
+  */
+  void
+  BuildTree();
+
+  float minSize;
+
+  std::queue<Face> faces;
+
+  AABB boundingRegion;
+
+  Octree* father;
+
+  std::vector<Octree*> childs;
+};
 
 }

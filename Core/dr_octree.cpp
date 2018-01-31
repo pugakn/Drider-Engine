@@ -1,8 +1,13 @@
 #include "dr_octree.h"
 
+namespace driderSDK {
 
-driderSDK::Octree::Octree(AABB &region, std::queue<Face> _faces)
-{
+Octree::Octree() {
+}
+
+Octree::Octree(AABB& region,
+               std::queue<Face> _faces,
+               float minAreaSize = 1.0f) : minSize(minSize) {
   boundingRegion.width = region.width;
   boundingRegion.height = region.height;
   boundingRegion.depth = region.depth;
@@ -11,57 +16,54 @@ driderSDK::Octree::Octree(AABB &region, std::queue<Face> _faces)
   faces = _faces;
 }
 
-driderSDK::Octree::Octree(AABB & region)
-{
+Octree::Octree(AABB& region,
+               float minAreaSize = 1.0f) : minSize(minSize) {
   boundingRegion.width = region.width;
   boundingRegion.height = region.height;
   boundingRegion.depth = region.depth;
   boundingRegion.center = region.center;
 }
 
-driderSDK::Int32 driderSDK::Octree::AABBContainsFace(Face &face)
-{
+Octree::~Octree() {
+}
+
+Int32
+Octree::AABBContainsFace(Face& face) {
   Int32 numberOfVertexIn = 0;
-  if (boundingRegion.intersect(face.vertex[0]))
-  {
+  if (boundingRegion.intersect(face.vertex[0])) {
     numberOfVertexIn++;
   }
-  if (boundingRegion.intersect(face.vertex[0]))
-  {
+  if (boundingRegion.intersect(face.vertex[0])) {
     numberOfVertexIn++;
   }
-  if (boundingRegion.intersect(face.vertex[0]))
-  {
+  if (boundingRegion.intersect(face.vertex[0])) {
     numberOfVertexIn++;
   }
-  if (numberOfVertexIn > 0)
-  {
+  if (numberOfVertexIn > 0) {
     numberOfVertexIn = numberOfVertexIn == 3 ? 2 : 1;
   }
   return numberOfVertexIn;
 }
 
-void driderSDK::Octree::BuildTree()
-{
-  if (faces.size() < 2)
-  {
+void
+Octree::BuildTree() {
+  if (faces.size() < 2) {
     return;
   }
 
   Vector3D size = boundingRegion.getMaxPoint() - boundingRegion.getMinPoint();
 
-  if (size.x <= MINSIZE || size.y <= MINSIZE || size.z <= MINSIZE)
-  {
+  if (size.x <= minSize || size.y <= minSize || size.z <= minSize) {
     return;
   }
 
   std::vector<AABB> regionsChilds;
-  float width = size.x * .5f;
-  float height = size.y *.5f;
-  float depth = size.z * .5f;
-  Vector3D c1 = boundingRegion.center + Vector3D(-width * .5f,
-                                                 height * .5f,
-                                                 depth * .5f);
+  float width = size.x * 0.5f;
+  float height = size.y * 0.5f;
+  float depth = size.z * 0.5f;
+  Vector3D c1 = boundingRegion.center + Vector3D(-width * 0.5f,
+                                                 height * 0.5f,
+                                                 depth * 0.5f);
   Vector3D c2 = c1;
   c2.x += width;
   Vector3D c3 = c1;
@@ -86,23 +88,20 @@ void driderSDK::Octree::BuildTree()
   regionsChilds.push_back(AABB(width, height, depth, c7));
   regionsChilds.push_back(AABB(width, height, depth, c8));
 
-  for (size_t i = 0; i < regionsChilds.size(); i++)
-  {
+  for (size_t i = 0; i < regionsChilds.size(); ++i) {
     childs.push_back(new Octree(regionsChilds[i]));
     childs.back()->father = this;
   }
-  while (!faces.empty())
-  {
-    for (size_t i = 0; i < regionsChilds.size(); i++)
-    {
+
+  while (!faces.empty()) {
+    for (size_t i = 0; i < regionsChilds.size(); ++i) {
       Int32 info = AABBContainsFace(faces.front());
-      if (info == 2)
-      {
+
+      if (info == 2) {
         childs[i]->faces.push(faces.front());
         break;
       }
-      else if (info == 1)
-      {
+      else if (info == 1) {
         childs[i]->faces.push(faces.front());
       }
     }
@@ -111,11 +110,4 @@ void driderSDK::Octree::BuildTree()
   return;
 }
 
-driderSDK::Octree::Octree()
-{
 }
-
-driderSDK::Octree::~Octree()
-{
-}
-
