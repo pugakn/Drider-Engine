@@ -6,7 +6,7 @@ int main(int argc, char* argv[])
   ::testing::InitGoogleTest(&argc, argv);
   //::testing::GTEST_FLAG(filter) = "ModelResource.*";
   //::testing::GTEST_FLAG(filter) = "FileSystem.*";
-  ::testing::GTEST_FLAG(filter) = "File.*";
+  //::testing::GTEST_FLAG(filter) = "File.*";
   RUN_ALL_TESTS();
 
   return 0;

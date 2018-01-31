@@ -1,14 +1,14 @@
 #pragma once
 #include <unordered_map>
+#include <functional>
 #include "dr_engine_prerequisites.h"
 #include <dr_memory.h>
 #include <dr_module.h>
+#include <dr_codec.h>
 
 namespace driderSDK {
 
 class Resource;
-class ResourceFactory;
-class Codec;
 
 
 /**
@@ -105,9 +105,11 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager> {
   existInResourceContent (TString key);
   
  public:
+  using ResorceSmartPtr = std::shared_ptr<Resource>;
   std::unordered_map<TString, std::shared_ptr<Resource>> resourceContent;
-  std::vector<std::shared_ptr<Codec>> codecs;
-  ResourceFactory* factory;
+  std::unordered_map<Codec*, std::function<ResorceSmartPtr()>> resourceFactory;
+  std::vector<std::unique_ptr<Codec>> codecs;
+  //ResourceFactory* factory;
 
 };
 

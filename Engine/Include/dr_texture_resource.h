@@ -21,13 +21,8 @@ class DR_ENGINE_EXPORT TextureResource : public Resource {
   */
   virtual ~TextureResource() {};
   
-
-  /**
-  * TEST::create
-  * Creates, initialize and return reference of a TextureResource
-  */
-  static std::shared_ptr<Resource> __stdcall
-  Create(TString resourceName);
+  void
+  init(void* pData) override;
 
   
 public:
