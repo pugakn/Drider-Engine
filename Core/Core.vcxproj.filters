@@ -140,13 +140,16 @@
     <ClCompile Include="Source\dr_application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Include\dr_animation.cpp">
+    <ClCompile Include="Source\dr_animation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Include\dr_animator.cpp">
+    <ClCompile Include="Source\dr_animator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Include\dr_root_node.cpp">
+    <ClCompile Include="Source\dr_material.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_root_node.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

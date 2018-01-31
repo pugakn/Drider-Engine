@@ -300,12 +300,26 @@ class DR_CORE_EXPORT Material : public Resource
   *  The name of the material in the properties list.
   * 
   * @return
-  *   The property at the specified index. If the index is greater
-  *   or equal to the count of properties it will return nullptr.
+  *   The property at the specified index. If no property has the specified 
+  *   name it'll retunr nullptr.
   */
   Property*
   getProperty(const TString& name);
 
+  /**
+  * Transforms the type of a property.
+  *
+  * @param name
+  *  Name of the property to transform.
+  * 
+  * @param newType
+  *  The type to transform the property. If the property found with the 
+  *  specifed name has the same type, the function has no effect.
+  *
+  * @return 
+  *   The new property transformed. If the property with the name specifed 
+  *   doesn't exist it will return nullptr.
+  */
   Property*
   transformProperty(const TString& name, PROPERTY_TYPE newType);
  private:
