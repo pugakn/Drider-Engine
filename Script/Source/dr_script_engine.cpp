@@ -1,5 +1,8 @@
 #include "dr_script_engine.h"
+#include "dr_script_string_factory.h"
+
 #include <dr_file.h>
+
 
 namespace driderSDK {
 
@@ -17,7 +20,7 @@ ScriptEngine::createEngine() {
 		return -1;
 	}
 
-	m_scriptEngine->SetMessageCallback(asFUNCTION(MessageCallback), 0, asCALL_CDECL);
+	m_scriptEngine->SetMessageCallback(asFUNCTION(messageCallback), 0, asCALL_CDECL);
 	return 0;
 }
 
@@ -28,11 +31,11 @@ ScriptEngine::configureEngine() {
 																									sizeof(TString), 
 																									asOBJ_VALUE | asOBJ_POD); 
 	DR_ASSERT(result >= 0);
+	m_scriptEngine->RegisterStringFactory("TString", &stringFactory);
 
-	//create factory
-	asIStringFactory fact;
+	// Register the functions that the scripts will be allowed to use.
 
-	//m_scriptEngine->RegisterStringFactory();
+
 
 }
 
@@ -88,7 +91,7 @@ ScriptEngine::configureContext() {
 	}
 
 	unsigned long timeout;
-	int result = m_scriptContext->SetLineCallback(asFUNCTION(LineCallback), 
+	int result = m_scriptContext->SetLineCallback(asFUNCTION(lineCallback), 
 																				&timeout, 
 																				asCALL_CDECL);
 	if(result < 0) {
@@ -100,14 +103,20 @@ ScriptEngine::configureContext() {
 }
 
 void
-ScriptEngine::LineCallback(asIScriptContext *ctx, unsigned long *timeOut) {
+ScriptEngine::release() {
+	m_scriptContext->Release();
+	m_scriptEngine->ShutDownAndRelease();
+}
+
+void
+ScriptEngine::lineCallback(asIScriptContext *scriptContext, unsigned long *timeOut) {
 	if(*timeOut < /*functionToObtainTime()*/ 0) {
-		ctx->Abort(); //we can also use suspend
+		scriptContext->Abort(); //we can also use suspend
 	}
 }
 
 void
-ScriptEngine::MessageCallback(const asSMessageInfo *msg, void *param) {
+ScriptEngine::messageCallback(const asSMessageInfo *scriptMessage, void *param) {
 	//output function...
 }
 

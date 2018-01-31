@@ -1,9 +1,13 @@
 #pragma once
 
-#include <angelscript\angelscript.h>
 #include "dr_script_prerequisites.h"
 
+#include <angelscript\angelscript.h>
+#include <unordered_map>
+
 namespace driderSDK {
+
+typedef std::unordered_map<TString, int> map_t;
 
 /**
 *  String factory class
@@ -22,10 +26,10 @@ public:
 	StringFactory();
 
 	/**
-	* Virtual default destructor.
+	* Destructor.
 	*
 	*/
-	virtual ~StringFactory();
+	~StringFactory();
 
 	/**
 	* Called by the script's engine to instantiate a string constant.
@@ -55,8 +59,11 @@ public:
 	*
 	*/
 	int 
-	GetRawStringData(const void* str, char* data, asUINT* length);
+	GetRawStringData(const void* str, char* data, asUINT* length) const;
 
+	map_t m_stringCache;
 };
+
+static StringFactory stringFactory;
 
 }

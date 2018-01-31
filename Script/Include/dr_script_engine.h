@@ -11,28 +11,28 @@ namespace driderSDK {
 *  Script engine class.
 *
 * Sample usage:
-*	ScriptEngine script;
+*	ScriptEngine scriptMgr;
+* if (!scriptMgr.isStarted()) {
+*   scriptMgr.startUp();
+* }
 */
 class DR_SCRIPT_EXPORT ScriptEngine : public Module<ScriptEngine>
 {
 public:
 
 	/**
-	* TEST::defaultConstructor
 	* Default constructor.
 	*
 	*/
 	ScriptEngine();
 
 	/**
-	* TEST::defaultDestructor
 	* Default destructor.
 	*
 	*/
 	~ScriptEngine();
 
 	/**
-	* TEST::configureEngine
 	* Create the script engine
 	*
 	* @return
@@ -43,7 +43,6 @@ public:
 	createEngine();
 
 	/**
-	* TEST::configureEngine
   * Register the script's string type and the functions it'll be allowed to use.
   *
   */
@@ -51,7 +50,6 @@ public:
 	configureEngine();
 
 	/**
-	* TEST::addScript
 	* Open the script and adds it to the module.
 	*
 	* @param fileName
@@ -62,7 +60,6 @@ public:
 	addScript(const TString& fileName);
 
 	/**
-	* TEST::compileScript
 	* Compiles the script.
 	*
 	*/
@@ -70,18 +67,50 @@ public:
 	compileScript();
 
 	/**
-	* TEST::configureContext
 	* Create the context and sets the LineCallback function.
 	*
 	*/
 	void 
 	configureContext();
 
-	void 
-	LineCallback(asIScriptContext *ctx, unsigned long *timeOut);
+	/**
+	* Create the context and sets the LineCallback function.
+	*
+	*/
+	int
+	executeFunction(TString scriptName);
 
+	/**
+	* Shut down the script's engine.
+	*
+	*/
 	void
-	MessageCallback(const asSMessageInfo *msg, void *param);
+	release();
+
+	/**
+	* Aborts the script if it runs out of time.
+	*
+	* @param scriptContext
+	*   Script context to check.
+	*
+	* @param timeOut
+	*   Time required to abort the script.
+	*
+	*/
+	void 
+	lineCallback(asIScriptContext *scriptContext, unsigned long *timeOut);
+
+	/**
+	* Gets the messages from the script's engine and logs them.
+	*
+	* @param scriptMessage
+	*   Message from the script's engine.
+	*
+	* @param param
+	*   Aditional parameters from the message. 
+	*/
+	void
+	messageCallback(const asSMessageInfo *scriptMessage, void *param);
 
 private:
 	asIScriptEngine* m_scriptEngine;
