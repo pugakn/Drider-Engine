@@ -15,7 +15,7 @@ ResourceManager::init() {
   auto codecModel = dr_make_unique<CodecModel>();
 
   resourceFactory[codecTexture.get()] = std::make_shared<TextureResource>;
-  resourceFactory[codecTexture.get()] = std::make_shared<Model>;
+  resourceFactory[codecModel.get()] = std::make_shared<Model>;
 
   codecs.push_back(std::move(codecModel));
   codecs.push_back(std::move(codecTexture));

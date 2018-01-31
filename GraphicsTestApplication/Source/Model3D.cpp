@@ -1,9 +1,6 @@
 #include "..\Include\Model3D.h"
-//
-#include <dr_file.h>
 #include <dr_string_utils.h>
-#include <DirectXMath.h>
-#include <dr_codec_model.h>
+#include <dr_file.h>
 #include <dr_memory.h>
 #include <dr_degree.h>
 #include <dr_radian.h>
@@ -19,13 +16,9 @@ void Model3D::init(Device & device, const TString& filename) {
 
   elapsedTime = 0.0f;
 
-  std::unique_ptr<Codec> cod = dr_make_unique<CodecModel>();
+  auto resourceMg = ResourceManager::instance();
 
-  auto pInfo = cod->decode(filename);
-
-  resource = std::make_shared<Model>();
-
-  resource->init(pInfo.get());
+  resource = resourceMg.loadResource(filename);
 
   auto pAnimationRes = ResourceManager::instance().getReference(resource->animationsNames[0]);
 
@@ -38,7 +31,12 @@ void Model3D::init(Device & device, const TString& filename) {
 
   driderSDK::File file;
   
-  file.Open(_T("vs.hlsl"));
+  if (!resource->animationsNames.empty()) {
+    file.Open(_T("vs.hlsl"));
+  }
+  else {
+    file.Open(_T("mesh.hlsl"));
+  }
   String vsSource = StringUtils::toString(file.GetAsString(file.Size()));
   file.Close();
 
@@ -46,16 +44,36 @@ void Model3D::init(Device & device, const TString& filename) {
   String fsSource = StringUtils::toString(file.GetAsString(file.Size()));
   file.Close();
 
-  vs = reinterpret_cast<Shader*>(device.createShaderFromMemory(vsSource.c_str(), 
+  vs = reinterpret_cast<VertexShader*>(device.createShaderFromMemory(vsSource.c_str(), 
                                        vsSource.size() + 1,DR_SHADER_TYPE_FLAG::kVertex));
 
-  fs = reinterpret_cast<Shader*>(device.createShaderFromMemory(fsSource.c_str(),
+  fs = reinterpret_cast<FragmentShader*>(device.createShaderFromMemory(fsSource.c_str(), 
                                          fsSource.size() + 1 , DR_SHADER_TYPE_FLAG::kFragment));
 
-
   std::vector<DrInputElementDesc> idesc;
-  idesc = vs->reflect();
+  DrInputElementDesc ie;
+  ie.format = DR_FORMAT::kDrFormat_R32G32B32A32_FLOAT;
+  ie.offset = 0;
+  ie.semanticName = "POSITION";
+  idesc.push_back(ie);
 
+  ie.format = DR_FORMAT::kDrFormat_R32G32B32A32_FLOAT;
+  ie.offset = 16;
+  ie.semanticName = "NORMAL";
+  idesc.push_back(ie);
+
+  if (!resource->animationsNames.empty()) {    
+    ie.format = DR_FORMAT::kDrFormat_R32G32B32A32_FLOAT;
+    ie.offset = 32;
+    ie.semanticName = "BONEWEIGHTS";
+    idesc.push_back(ie);
+
+    ie.format = DR_FORMAT::kDrFormat_R32G32B32A32_SINT;
+    ie.offset = 48;
+    ie.semanticName = "BONEIDS";
+    idesc.push_back(ie);
+  }
+   
   IL = device.createInputLayout(idesc, *vs->m_shaderBytecode);
 
   DrBufferDesc bdesc;
@@ -65,7 +83,6 @@ void Model3D::init(Device & device, const TString& filename) {
   CB = (ConstantBuffer*)device.createBuffer(bdesc);
 
   for (auto& mesh : resource->meshes) {
-
     driderSDK::VertexBuffer* VB;
     driderSDK::IndexBuffer* IB;
 
@@ -98,11 +115,13 @@ void Model3D::destroy() {
 void Model3D::update() {
   elapsedTime += 0.007f;
   animator.evaluate(elapsedTime);
+  //transform.rotate(Degree(1.f), AXIS::kY);
 }
 
 void Model3D::draw(const driderSDK::DeviceContext& deviceContext, const Camera& camera) {
   
-  auto wvp = transform.getTransformMatrix() * camera.getVP();
+  auto world = transform.getTransformMatrix();
+  auto wvp =  world * camera.getVP();
   
   auto& boneTransforms = animator.getTransforms();
 
@@ -110,6 +129,7 @@ void Model3D::draw(const driderSDK::DeviceContext& deviceContext, const Camera& 
     constBuff.Bones[i] = boneTransforms[i];
   }
 
+  constBuff.World = world;
   constBuff.WVP = wvp;
   
   CB->updateFromBuffer(deviceContext,reinterpret_cast<byte*>(&constBuff));

@@ -45,6 +45,7 @@ public:
 private:
   struct CBuffer {
     driderSDK::Matrix4x4 WVP;
+    driderSDK::Matrix4x4 World;
     driderSDK::Matrix4x4 Bones[200];
   };
 

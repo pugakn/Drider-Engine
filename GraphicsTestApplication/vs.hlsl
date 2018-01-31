@@ -1,5 +1,6 @@
 cbuffer ConstantBuffer {
 	float4x4 WVP;
+	float4x4 World;
 	float4x4 Bones[200];
 }
 
@@ -35,8 +36,8 @@ VS_OUTPUT VS( VS_INPUT input ) {
 	float4 OutVertex = mul(input.position, BoneTransform);
 	float4 OutNormal = mul(float4(input.normal.xyz,1), BoneTransform);
 
-    OUT.hposition = mul( WVP, OutVertex);
+    OUT.hposition = mul(WVP, OutVertex);
 	//OUT.hposition = input.position;
-	OUT.hnormal = float4(input.normal.xyz, 0);
+	OUT.hnormal = normalize(float4(mul((float3x3)World, input.normal.xyz), 0.0));
     return OUT;
 }
