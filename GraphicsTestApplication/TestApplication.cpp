@@ -30,11 +30,15 @@ TestApplication::onInit() {
                static_cast<driderSDK::UInt32>(viewport.height),
                win);
 
-  ResourceManager::startUp();
+  /*ResourceManager::startUp();
   ResourceManager* pInstance;
   if (ResourceManager::isStarted()) {
      pInstance = &ResourceManager::instance();
-  }
+  }*/
+
+  ResourceManager* resourceManager = new ResourceManager;
+  resourceManager->init();
+  resourceManager->loadResource(_T("imageTest.png"));
   
   std::vector<TString> modelsFiles{_T("VenomJok.X")};
 
