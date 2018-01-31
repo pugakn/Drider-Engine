@@ -5,11 +5,10 @@
 namespace driderSDK {
 
 class DR_RENDERMAN_EXPORT RenderPass {
-  template<typename T, typename... Args>
   void
   renderQueue(RenderTarget* RenderTargetInput,
-              RenderTarget* RenderTargetOutput,
-              Args options...);
+              RenderTarget* RenderTargetOutput
+              );
 };
 
 }
