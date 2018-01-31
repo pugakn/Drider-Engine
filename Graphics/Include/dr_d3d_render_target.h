@@ -1,7 +1,8 @@
 #pragma once
 #include "dr_render_target.h"
 #include <vector>
-class ID3D11RenderTargetView;
+
+struct ID3D11RenderTargetView;
 
 namespace driderSDK {
 
@@ -17,10 +18,10 @@ class DR_GRAPHICS_EXPORT D3DRenderTarget : public RenderTarget
 {
  public:
    void*
-     getAPIObject() override;
+   getAPIObject() override;
 
    void**
-     getAPIObjectReference() override;
+   getAPIObjectReference() override;
   /**
   * TEST::create
   *

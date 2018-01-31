@@ -10,9 +10,6 @@ class DR_SOUND_EXPORT FMODSoundAPI : public SoundAPI {
     void
     init() override;
 
-    void
-    play() override;
-
     virtual void
     update() override;
 

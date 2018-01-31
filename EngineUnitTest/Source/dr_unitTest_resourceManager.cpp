@@ -2,6 +2,8 @@
 #include <gtest\gtest.h>
 
 TEST(ResourceManager, resourceMConstructor) {
+  driderSDK::ResourceManager* resourceManager = new driderSDK::ResourceManager;
+  resourceManager->loadResource(L"imageTest.png");
   EXPECT_TRUE(false);
 }
 

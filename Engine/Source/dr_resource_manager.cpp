@@ -4,19 +4,18 @@
 #include "dr_codec_texture.h"
 #include "dr_codec_model.h"
 #include "dr_file_system.h"
+#include "dr_resource_factory.h"
 
 namespace driderSDK {
 
-void 
-ResourceManager::onStartUp() {
-  codecs.push_back(std::shared_ptr<CodecTexture>());
-  codecs.push_back(std::shared_ptr<CodecModel>());
-  
-  factory = std::make_shared<ResourceFactory>();
-}
+void
+ResourceManager::init() {
+  auto codecTexture  = std::make_shared<CodecTexture>();
+  codecs.push_back(codecTexture);
+  auto codecModel = std::make_shared<CodecModel>();
+  codecs.push_back(codecModel);
 
-void 
-ResourceManager::onShutDown() {
+  factory = new ResourceFactory;
 }
 
 std::shared_ptr<Resource>
@@ -41,7 +40,8 @@ void
 ResourceManager::createResource(TString resourceName,
                                 Codec* codec) {
   resourceContent.insert({ resourceName, 
-                           factory->CreateResource(codec->getType()) });
+                           factory->CreateResource(codec,
+                                                   resourceName) });
 }
 
 void 
@@ -57,6 +57,8 @@ ResourceManager::existInResourceContent(TString resourceName) {
 
 std::shared_ptr<Resource>
 ResourceManager::getReference(TString resourceName) {
+  if(!existInResourceContent(resourceName))
+    return nullptr;
   return resourceContent.find(resourceName)->second;
 }
 

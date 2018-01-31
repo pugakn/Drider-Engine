@@ -7,24 +7,28 @@
 #include "dr_d3d_vertex_shader.h"
 #include "dr_d3d_shader_bytecode.h"
 namespace driderSDK {
-  void * D3DInputLayout::getAPIObject()
-  {
-    return APILayout;
-  }
-  void ** D3DInputLayout::getAPIObjectReference()
-  {
-    return reinterpret_cast<void**>(&APILayout);
-  }
-  void
+
+void*
+D3DInputLayout::getAPIObject() {
+  return APILayout;
+}
+
+void**
+D3DInputLayout::getAPIObjectReference() {
+  return reinterpret_cast<void**>(&APILayout);
+}
+
+void
 D3DInputLayout::create(const Device& device,
                        const std::vector<DrInputElementDesc>& inputDescArray,
                        const ShaderBytecode& shaderBytecode ) {
-  const D3DShaderBytecode* apiShaderBytecode = reinterpret_cast<const D3DShaderBytecode*>(&shaderBytecode);
+  const D3DShaderBytecode* apiShaderBytecode = reinterpret_cast<const D3DShaderBytecode*>
+                                                 (&shaderBytecode);
   m_descriptorVec = inputDescArray;
   std::vector<D3D11_INPUT_ELEMENT_DESC> desc;
   desc.resize(inputDescArray.size());
 
-  for (size_t i = 0; i < inputDescArray.size(); i++) {
+  for (size_t i = 0; i < inputDescArray.size(); ++i) {
     desc[i].Format = (DXGI_FORMAT)inputDescArray[i].format;
     desc[i].AlignedByteOffset = inputDescArray[i].offset;
     desc[i].SemanticIndex = inputDescArray[i].semanticIndex;
@@ -34,21 +38,18 @@ D3DInputLayout::create(const Device& device,
 
   HRESULT HR = reinterpret_cast<const D3DDevice*>(&device)->D3D11Device->
     CreateInputLayout(&desc[0], inputDescArray.size(),
-      apiShaderBytecode->shader_blob->GetBufferPointer(),
-      apiShaderBytecode->shader_blob->GetBufferSize(), &APILayout);
-
-  
+                      apiShaderBytecode->shader_blob->GetBufferPointer(),
+                      apiShaderBytecode->shader_blob->GetBufferSize(), &APILayout);
 }
 
 void
-D3DInputLayout::set(const DeviceContext & deviceContext) const {
+D3DInputLayout::set(const DeviceContext& deviceContext) const {
   reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext->IASetInputLayout(APILayout);
 }
 
 void
-D3DInputLayout::release()
-{
+D3DInputLayout::release() {
   APILayout->Release();
   delete this;
 }

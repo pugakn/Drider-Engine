@@ -5,23 +5,27 @@
 #include "dr_d3d_device_context.h"
 
 namespace driderSDK {
-  void * D3DTexture::getAPIObject()
-  {
-    return APIView;
-  }
-  void ** D3DTexture::getAPIObjectReference()
-  {
-    return reinterpret_cast<void**>(&APIView);
-  }
-  void D3DTexture::createFromMemory(const Device& device,
-                                                  const DrTextureDesc& desc,
-                                                  const char* buffer) {
+
+void* D3DTexture::getAPIObject() {
+  return APIView;
+}
+
+void** D3DTexture::getAPIObjectReference() {
+  return reinterpret_cast<void**>(&APIView);
+}
+
+void
+D3DTexture::createFromMemory(const Device& device,
+                             const DrTextureDesc& desc,
+                             const char* buffer) {
   const D3DDevice* apiDevice = reinterpret_cast<const D3DDevice*>(&device);
   m_descriptor = desc;
   UInt32 flags = 0;
+
   if (desc.genMipMaps) {
     flags |= D3D11_RESOURCE_MISC_GENERATE_MIPS;
   }
+
   D3D11_TEXTURE2D_DESC apiDesc = { 0 };
   apiDesc.Width = desc.width;
   apiDesc.Height = desc.height;
@@ -41,7 +45,7 @@ namespace driderSDK {
 
   D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
   ZeroMemory(&srvDesc, sizeof(srvDesc));
-  D3D11_SRV_DIMENSION dim;
+  D3D11_SRV_DIMENSION dim = D3D11_SRV_DIMENSION_UNKNOWN;
   srvDesc.Format = apiDesc.Format;
 
   switch (desc.dimension)
@@ -58,21 +62,22 @@ namespace driderSDK {
   case DR_DIMENSION::kCUBE_MAP:
     dim = D3D10_SRV_DIMENSION_TEXTURECUBE;
     break;
+  default:
+    break;
   }
   srvDesc.ViewDimension = dim;
   srvDesc.Texture2D.MipLevels = desc.mipLevels; 
 
   apiDevice->
     D3D11Device->
-    CreateTexture2D(&apiDesc,
-      buffer != 0 ? &initData : 0,
-      &APITexture);
+      CreateTexture2D(&apiDesc,
+                      buffer != 0 ? &initData : 0,
+                      &APITexture);
   apiDevice->
     D3D11Device->
-    CreateShaderResourceView(APITexture,
-      &srvDesc,
-      &APIView);
-  
+      CreateShaderResourceView(APITexture,
+                               &srvDesc,
+                               &APIView);
 }
 
 void
@@ -85,14 +90,13 @@ D3DTexture::map(const DeviceContext& deviceContext, char* buffer) {
   D3D11_MAPPED_SUBRESOURCE mappedResource;
   reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext->
-    Map(APITexture,
-      0,
-      D3D11_MAP_WRITE_DISCARD,
-      0,
-      &mappedResource);
+      Map(APITexture,
+          0,
+          D3D11_MAP_WRITE_DISCARD,
+          0,
+          &mappedResource);
 
   buffer = static_cast<char*>(mappedResource.pData);
-  
 }
 
 void

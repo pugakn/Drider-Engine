@@ -14,14 +14,16 @@ FMODSoundSystem::init(Int32 maxChannels,
   
   result = FMOD::System_Create(&fmodSoundSystem);
   result = fmodSoundSystem->init(maxChannels,
-                        initFlags,
-                        extraDriverData);
+                                 initFlags,
+                                 extraDriverData);
+
   return static_cast<DR_SOUND_RESULT::E>(result);
 }
 
 DR_SOUND_RESULT::E
 FMODSoundSystem::update() {
   result = fmodSoundSystem->update();
+
   return static_cast<DR_SOUND_RESULT::E>(result);
 }
 
@@ -36,29 +38,31 @@ FMODSoundSystem::getObjectReference() {
 }
 
 DR_SOUND_RESULT::E 
-FMODSoundSystem::createSound(const char *name,
+FMODSoundSystem::createSound(const char* name,
                              DR_SOUND_MODE::E mode,
-                             DrCreateSoundExInfo *createInfo,
-                             DrSound * sound) {
-
+                             DrCreateSoundExInfo* createInfo,
+                             DrSound* sound) {
   result = fmodSoundSystem->createSound(name,
                                         mode,
                                         0,
-                                        reinterpret_cast<FMOD::Sound**>(sound->getObjectReference()));
+                                        reinterpret_cast<FMOD::Sound**>
+                                          (sound->getObjectReference()));
 
   return static_cast<DR_SOUND_RESULT::E>(result);
 }
 
 DR_SOUND_RESULT::E
-FMODSoundSystem::playSound(DrSound *sound,
-                           DrChannelGroup *channelgroup,
+FMODSoundSystem::playSound(DrSound* sound,
+                           DrChannelGroup* channelgroup,
                            bool paused,
-                           DrChannel *channel) {
+                           DrChannel* channel) {
 
-  result = fmodSoundSystem->playSound(reinterpret_cast<FMOD::Sound*>(sound->getReference()),
+  result = fmodSoundSystem->playSound(reinterpret_cast<FMOD::Sound*>
+                                        (sound->getReference()),
                                       0,
                                       paused,
-                                      reinterpret_cast<FMOD::Channel**>(channel->getObjectReference()));
+                                      reinterpret_cast<FMOD::Channel**>
+                                        (channel->getObjectReference()));
 
   return static_cast<DR_SOUND_RESULT::E>(result);
 }

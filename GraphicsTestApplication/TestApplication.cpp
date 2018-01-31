@@ -7,28 +7,38 @@
 
 namespace driderSDK {
 
-TestApplication::TestApplication() 
+TestApplication::TestApplication()
   : viewport{0,0,1280, 720},
-    camera(_T("MainCamera"), {0, 100, 200}, {0,0,0}, viewport, 45.f, 0.1f, 1000.f )
-{
+    camera(_T("MainCamera"),
+           {0, 100, 200},
+           {0,0,0},
+           viewport,
+           45.0f,
+           0.1f,
+           1000.f) {
 }
 
-TestApplication::~TestApplication()
-{
+TestApplication::~TestApplication() {
 }
 
-void TestApplication::onInit()
-{
+void
+TestApplication::onInit() {
   initWindow();
   driver = new D3DGraphicsAPI;
   HWND win = GetActiveWindow();
-  driver->init(viewport.width, viewport.height, win );
+  driver->init(static_cast<driderSDK::UInt32>(viewport.width),
+               static_cast<driderSDK::UInt32>(viewport.height),
+               win);
 
-  ResourceManager::startUp();
+  /*ResourceManager::startUp();
   ResourceManager* pInstance;
   if (ResourceManager::isStarted()) {
      pInstance = &ResourceManager::instance();
-  }
+  }*/
+
+  ResourceManager* resourceManager = new ResourceManager;
+  resourceManager->init();
+  resourceManager->loadResource(_T("imageTest.png"));
   
   std::vector<TString> modelsFiles{_T("VenomJok.X")};
 
@@ -41,20 +51,40 @@ void TestApplication::onInit()
   }
 
   m_inputManager.init((size_t)win);
-  std::cout << "mouse " << m_inputManager.getNumberOfDevices(InputObjectType::kMouse) << std::endl;
-  std::cout << "joystick " << m_inputManager.getNumberOfDevices(InputObjectType::kJoystick) << std::endl;
-  std::cout << "keyboard " << m_inputManager.getNumberOfDevices(InputObjectType::kKeyboard) << std::endl;
-  std::cout << "unknown " << m_inputManager.getNumberOfDevices(InputObjectType::kUnknown) << std::endl;
+  std::cout << "mouse "
+            << m_inputManager.getNumberOfDevices(InputObjectType::kMouse)
+            << std::endl;
+  std::cout << "joystick "
+            << m_inputManager.getNumberOfDevices(InputObjectType::kJoystick)
+            << std::endl;
+  std::cout << "keyboard "
+            << m_inputManager.getNumberOfDevices(InputObjectType::kKeyboard)
+            << std::endl;
+  std::cout << "unknown "
+            << m_inputManager.getNumberOfDevices(InputObjectType::kUnknown)
+            << std::endl;
   m_mouseInput = (MouseInput*)m_inputManager.getInputObjectByID(m_inputManager.createInputObject(InputObjectType::kMouse));
   m_mouseInput->setEventCallback(&m_mouseListener);
   
   soundDriver = new FMODSoundAPI;
   soundDriver->init();
+  
+  sound1 = new FMODSound;
+
+  soundDriver->system->createSound("testSound.mp3",
+                                   DR_SOUND_MODE::kDrMode_DEFAULT,
+                                   0,
+                                   sound1);
+  channel = new FMODChannel;
+  
+  sound1->init(reinterpret_cast<SoundSystem*>(soundDriver->system->getReference()),
+               reinterpret_cast<DrChannel*>(channel->getReference()));
+  sound1->setMode(DR_SOUND_MODE::kDrMode_LOOP_OFF);
+  sound1->play();
 
   /*result = FMOD::System_Create(&system);
   result = system->getVersion(&version);
-  if (version < FMOD_VERSION)
-  {
+  if (version < FMOD_VERSION) {
     return;
   }
 
@@ -62,38 +92,46 @@ void TestApplication::onInit()
   result = system->createSound("testSound.mp3", FMOD_DEFAULT, 0, &sound1);
   result = sound1->setMode(FMOD_LOOP_OFF);*/
 }
-void TestApplication::onInput()
-{
+void
+TestApplication::onInput() {
   m_mouseInput->capture();
 }
-void TestApplication::onUpdate()
-{
-  for (auto& model : models)
-  {
+
+void
+TestApplication::onUpdate() {
+  soundDriver->update();
+
+  for (auto& model : models) {
     //model.transform.rotate(Radian(0.005f), AXIS::kY);
     model.update();
   }
-  soundDriver->update();
+
   camera.update(0);
 }
-void TestApplication::onDraw()
-{
+
+void
+TestApplication::onDraw() {
   driver->clear();
   //quad.draw(*driver->deviceContext, camera.getVP());
-  for (auto& model : models)
+  for (auto& model : models) {
     model.draw(*driver->deviceContext, camera);
+  }
   driver->swapBuffers();
 }
-void TestApplication::onDestroy()
-{
+
+void
+TestApplication::onDestroy() {
   /*result = sound1->release();
   result = system->close();
   result = system->release();*/
 }
-void TestApplication::onPause()
-{
+
+void
+TestApplication::onPause() {
 }
-void TestApplication::onResume()
-{
+
+void
+TestApplication::onResume() {
 }
+
 }

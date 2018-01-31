@@ -5,15 +5,18 @@
 #include "dr_d3d_device_context.h"
 
 namespace driderSDK {
-  void * D3DIndexBuffer::getAPIObject()
-  {
-    return IB;
-  }
-  void ** D3DIndexBuffer::getAPIObjectReference()
-  {
-    return reinterpret_cast<void**>(&IB);
-  }
-  D3DIndexBuffer::D3DIndexBuffer() {
+
+void*
+D3DIndexBuffer::getAPIObject() {
+  return IB;
+}
+
+void**
+D3DIndexBuffer::getAPIObjectReference() {
+  return reinterpret_cast<void**>(&IB);
+}
+
+D3DIndexBuffer::D3DIndexBuffer() {
 }
 
 void
@@ -47,17 +50,13 @@ D3DIndexBuffer::create(const Device& device,
   D3D11_SUBRESOURCE_DATA subData = { &initialData[0], 0, 0 };
 
   if (initialData != nullptr) {
-    D3D11_SUBRESOURCE_DATA subData = { &initialData[0], 0, 0 };
     apiDevice->D3D11Device->
       CreateBuffer(&bdesc, &subData, &IB);
   }
-  else
-  {
+  else {
     apiDevice->D3D11Device->
       CreateBuffer(&bdesc, nullptr, &IB);
   }
-
-  
 }
 
 void

@@ -20,9 +20,15 @@ class DR_ENGINE_EXPORT TextureResource : public Resource {
   * Default destructor
   */
   virtual ~TextureResource() {};
+  
 
-  void 
-  init(void * resourceData) override;
+  /**
+  * TEST::create
+  * Creates, initialize and return reference of a TextureResource
+  */
+  static std::shared_ptr<Resource> __stdcall
+  Create(TString resourceName);
+
   
 public:
   std::vector<unsigned char> data;
