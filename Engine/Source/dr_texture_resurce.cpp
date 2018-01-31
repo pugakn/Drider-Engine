@@ -9,18 +9,14 @@ using CodecPtr = std::unique_ptr<Codec>;
 
 namespace driderSDK {
 
-std::shared_ptr<Resource> __stdcall
-TextureResource::Create(TString resourceName) {
 
-  CodecPtr textureCodec = dr_make_unique<CodecTexture>();
-  Codec::UniqueVoidPtr pData = textureCodec->decode(resourceName);
-  sImage* pInfo = static_cast<sImage*>(pData.get());
-  auto resource = std::make_shared<TextureResource>();
-  resource->channels = pInfo->channels;
-  resource->data = pInfo->data;
-  resource->width = pInfo->w;
-  resource->height = pInfo->h;
-  return resource;
+void
+TextureResource::init(void* pData) {
+  sImage* pInfo = static_cast<sImage*>(pData);
+  channels = pInfo->channels;
+  data = pInfo->data;
+  width = pInfo->w;
+  height = pInfo->h;
 }
 
 }

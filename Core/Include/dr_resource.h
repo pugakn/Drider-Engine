@@ -22,7 +22,11 @@ class DR_CORE_EXPORT Resource
   */
   virtual ~Resource() { };
 
-  
+  /**
+  *
+  */
+  virtual void
+  init(void* pData) = 0;
 
 };
 
