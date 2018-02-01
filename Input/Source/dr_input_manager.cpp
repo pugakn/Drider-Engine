@@ -24,7 +24,8 @@ void
 InputManager::captureAll()
 {
   for (auto &it : m_objects) {
-    it->capture();
+    if (it!= nullptr)
+      it->capture();
   }
 }
 

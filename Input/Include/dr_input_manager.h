@@ -16,6 +16,10 @@ public:
   */
   void 
   init(std::size_t winHandle);
+  /**
+  * Destroy the manager
+  *
+  */
   void 
   destroy();
   /**
