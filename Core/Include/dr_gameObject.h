@@ -9,11 +9,17 @@ namespace driderSDK {
 
 class GameComponent;
 
-class GameObject : public Node
+class DR_CORE_EXPORT GameObject : public Node
 { 
  public:
   using ComponentPtr = std::unique_ptr<GameComponent>;
   using ComponentsList = std::vector<ComponentPtr>;
+
+  GameObject(const TString& name = _T(""), WeakNode parent = WeakNode());
+  
+  GameObject(const GameObject&) = delete;
+
+  GameObject& operator=(const GameObject&) = delete;
 
   /**
   * Creates a component of the specified type and adds it to the
@@ -62,7 +68,7 @@ class GameObject : public Node
   
   void
   addComponent(ComponentPtr component);
- private:
+ protected:
    void
    updateImpl();
    /***************/

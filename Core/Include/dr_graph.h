@@ -13,10 +13,17 @@ public:
   using SharedNode = std::shared_ptr<Node>;
   SceneGraph();
   ~SceneGraph();
-  void setRoot(SharedNode root);
+  void init();
+  //void setRoot(SharedNode root);
+  SharedNode getRoot() const;
   void update();
+  /****************/
+  /*     TEMP     */
+  void draw();
+  /****************/
 private:
   SharedNode m_root;
 };
 
 }
+

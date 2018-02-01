@@ -1,5 +1,6 @@
 #include "TestApplication.h"
 #include <iostream>
+#include <dr_gameObject.h>
 #include <dr_d3d_swap_chain.h>
 #include <dr_rasterizer_state.h>
 #include <dr_radian.h>
@@ -30,57 +31,11 @@ TestApplication::onInit() {
                static_cast<driderSDK::UInt32>(viewport.height),
                win);
 
-  /*ResourceManager::startUp();
-  ResourceManager* pInstance;
-  if (ResourceManager::isStarted()) {
-     pInstance = &ResourceManager::instance();
-  }*/
-
-  ResourceManager* resourceManager = new ResourceManager;
-  resourceManager->init();
-  resourceManager->loadResource(_T("imageTest.png"));
   
-  std::vector<TString> modelsFiles{_T("VenomJok.X")};
-
-  models.resize(modelsFiles.size());
-
-  quad.init(*driver->device);
-
-  for (SizeT i = 0; i < modelsFiles.size(); ++i) {
-    models[i].init(*driver->device, modelsFiles[i]);
-  }
-
-  m_inputManager.init((size_t)win);
-  std::cout << "mouse "
-            << m_inputManager.getNumberOfDevices(InputObjectType::kMouse)
-            << std::endl;
-  std::cout << "joystick "
-            << m_inputManager.getNumberOfDevices(InputObjectType::kJoystick)
-            << std::endl;
-  std::cout << "keyboard "
-            << m_inputManager.getNumberOfDevices(InputObjectType::kKeyboard)
-            << std::endl;
-  std::cout << "unknown "
-            << m_inputManager.getNumberOfDevices(InputObjectType::kUnknown)
-            << std::endl;
-  m_mouseInput = (MouseInput*)m_inputManager.getInputObjectByID(m_inputManager.createInputObject(InputObjectType::kMouse));
-  m_mouseInput->setEventCallback(&m_mouseListener);
-  
-  soundDriver = new FMODSoundAPI;
-  soundDriver->init();
-  
-  sound1 = new FMODSound;
-
-  soundDriver->system->createSound("testSound.mp3",
-                                   DR_SOUND_MODE::kDrMode_DEFAULT,
-                                   0,
-                                   sound1);
-  channel = new FMODChannel;
-  
-  sound1->init(reinterpret_cast<SoundSystem*>(soundDriver->system->getReference()),
-               reinterpret_cast<DrChannel*>(channel->getReference()));
-  sound1->setMode(DR_SOUND_MODE::kDrMode_LOOP_OFF);
-  sound1->play();
+  initResources();
+  initInput();
+  initSound();
+  initSceneGraph();
 
   /*result = FMOD::System_Create(&system);
   result = system->getVersion(&version);
@@ -95,17 +50,13 @@ TestApplication::onInit() {
 void
 TestApplication::onInput() {
   m_mouseInput->capture();
+  m_keyboardInput->capture();
 }
 
 void
 TestApplication::onUpdate() {
   soundDriver->update();
-
-  for (auto& model : models) {
-    //model.transform.rotate(Radian(0.005f), AXIS::kY);
-    model.update();
-  }
-
+  m_sceneGraph->update();
   camera.update(0);
 }
 
@@ -113,9 +64,7 @@ void
 TestApplication::onDraw() {
   driver->clear();
   //quad.draw(*driver->deviceContext, camera.getVP());
-  for (auto& model : models) {
-    model.draw(*driver->deviceContext, camera);
-  }
+  m_sceneGraph->draw();
   driver->swapBuffers();
 }
 
@@ -132,6 +81,87 @@ TestApplication::onPause() {
 
 void
 TestApplication::onResume() {
+}
+
+void 
+TestApplication::initInput() {
+
+  HWND win = GetActiveWindow();
+
+  m_inputManager.init((size_t)win);
+  
+  UInt32 mouseObjID = m_inputManager.createInputObject(InputObjectType::kMouse);
+
+  UInt32 keybObjID = m_inputManager.createInputObject(InputObjectType::kKeyboard);
+
+  InputObject* inputObject = m_inputManager.getInputObjectByID(mouseObjID);
+
+  m_mouseInput = dynamic_cast<MouseInput*>(inputObject);
+
+  inputObject = m_inputManager.getInputObjectByID(keybObjID);
+
+  m_keyboardInput = dynamic_cast<KeyboardInput*>(inputObject);
+}
+
+void 
+TestApplication::initResources() {
+  ResourceManager::startUp();
+  ResourceManager* resourceManager = nullptr;
+  if (ResourceManager::isStarted()) {
+     resourceManager = &ResourceManager::instance();
+  }
+    
+  resourceManager->loadResource(_T("axe.jpg"));
+
+  resourceManager->loadResource(_T("VenomJok.X"));
+
+  resourceManager->loadResource(_T("dwarf.x"));
+  
+  std::vector<TString> modelsFiles{_T("VenomJok.X")};
+}
+
+void 
+TestApplication::initSound() {
+  soundDriver = new FMODSoundAPI;
+
+  soundDriver->init();
+  
+  sound1 = new FMODSound;
+
+  soundDriver->system->createSound("testSound.mp3",
+                                   DR_SOUND_MODE::kDrMode_DEFAULT,
+                                   0,
+                                   sound1);
+  channel = new FMODChannel;
+  
+  sound1->init(reinterpret_cast<SoundSystem*>(soundDriver->system->getReference()),
+               reinterpret_cast<DrChannel*>(channel->getReference()));
+  sound1->setMode(DR_SOUND_MODE::kDrMode_LOOP_OFF);
+  sound1->play();
+}
+
+void 
+TestApplication::initSceneGraph() {
+  m_sceneGraph = dr_make_unique<SceneGraph>();
+  m_sceneGraph->init();
+
+  auto root = m_sceneGraph->getRoot();
+
+  auto jokerNode = std::make_shared<GameObject>();
+  jokerNode->setName(_T("Joker"));
+  
+
+  root->addChild(jokerNode);
+}
+
+void 
+TestApplication::initShaders() {
+
+  if (m_shaders.empty()) {
+    
+  }
+
+  driver->device
 }
 
 }

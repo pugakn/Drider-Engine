@@ -18,7 +18,7 @@ void Model3D::init(Device & device, const TString& filename) {
 
   auto& resourceMg = ResourceManager::instance();
 
-  resource = resourceMg.loadResource(filename);
+  resource = std::dynamic_pointer_cast<Model>(resourceMg.loadResource(filename));
 
   auto pAnimationRes = ResourceManager::instance().getReference(resource->animationsNames[0]);
 

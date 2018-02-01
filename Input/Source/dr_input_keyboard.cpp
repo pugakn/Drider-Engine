@@ -1,9 +1,9 @@
 #include "dr_input_keyboard.h"
 
 namespace driderSDK {
-  HelperKeyboardListener::HelperKeyboardListener(KeyboardInput * m_pKeyboard)
+  HelperKeyboardListener::HelperKeyboardListener(KeyboardInput* pKeyboard_)
   {
-    m_pKeyboard = m_pKeyboard;
+    m_pKeyboard = pKeyboard_;
   }
   bool HelperKeyboardListener::keyPressed(const OIS::KeyEvent & arg)
   {

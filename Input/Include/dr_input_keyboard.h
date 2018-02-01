@@ -12,7 +12,7 @@ namespace driderSDK {
   {
   public:
     ~HelperKeyboardListener() {}
-    explicit HelperKeyboardListener(KeyboardInput* m_pKeyboard);
+    explicit HelperKeyboardListener(KeyboardInput* pKeyboard_);
     bool keyPressed(const OIS::KeyEvent &arg) override;
     bool keyReleased(const OIS::KeyEvent &arg) override;
   private:

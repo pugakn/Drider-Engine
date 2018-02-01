@@ -1,18 +1,32 @@
 #include "dr_graph.h"
-#include <dr_matrix4x4.h>
-#include "dr_node.h"
+#include "dr_root_node.h"
 
+namespace driderSDK {
 
-driderSDK::SceneGraph::SceneGraph() {}
+SceneGraph::SceneGraph() {}
 
-driderSDK::SceneGraph::~SceneGraph() {}
+SceneGraph::~SceneGraph() {}
 
-void driderSDK::SceneGraph::setRoot(SharedNode root) {
-  m_root = root;
+void 
+SceneGraph::init() {
+  m_root = std::make_shared<RootNode>();
 }
 
-void driderSDK::SceneGraph::update() {
-  if (m_root) {
-    m_root->update();
-  }
+//void 
+//SceneGraph::setRoot(SharedNode root) {
+//  m_root = root;
+//}
+
+SceneGraph::SharedNode SceneGraph::getRoot() const {
+  return m_root;
+}
+
+void SceneGraph::update() {
+  m_root->update();
+}
+
+void SceneGraph::draw() {
+  m_root->draw();
+}
+
 }

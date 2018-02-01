@@ -24,9 +24,6 @@
     <ClInclude Include="Include\dr_module.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\dr_graph.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Include\dr_node.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -99,15 +96,15 @@
     <ClInclude Include="Include\dr_enableObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\dr_graph.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_parser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\dr_logger.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\dr_graph.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\dr_node.cpp">
@@ -152,9 +149,6 @@
     <ClCompile Include="Source\dr_material.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\dr_root_node.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\dr_gameComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -162,6 +156,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\dr_enableObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_root_node.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_graph.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

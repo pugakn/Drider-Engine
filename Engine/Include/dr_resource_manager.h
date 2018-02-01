@@ -37,7 +37,7 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager> {
   ~ResourceManager() {}
 
   void
-  init();
+  onStartUp();
 
   /**
   * TEST::getReference

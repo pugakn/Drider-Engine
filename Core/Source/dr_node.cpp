@@ -2,7 +2,7 @@
 
 namespace driderSDK {
 
-Node::Node(const TString & _name, WeakNode _parent) 
+Node::Node(const TString& _name, WeakNode _parent) 
   : m_parent(_parent),
     m_finalTransform(Math::kIdentity),
     m_name(_name) {

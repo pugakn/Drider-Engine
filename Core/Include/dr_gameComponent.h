@@ -8,8 +8,8 @@ namespace driderSDK {
 
 class GameObject;
 
-class GameComponent : public std::enable_shared_from_this<GameComponent>,
-                      public EnableObject                  
+class DR_CORE_EXPORT GameComponent : public std::enable_shared_from_this<GameComponent>,
+                                     public EnableObject                  
 {
  public:
   GameComponent(GameObject& gameObject_);
@@ -31,7 +31,7 @@ class GameComponent : public std::enable_shared_from_this<GameComponent>,
 
   virtual void
   onDestroy() = 0;
- private:
+ protected:
   GameObject& m_gameObject;
 };
 
