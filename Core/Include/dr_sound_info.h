@@ -8,6 +8,8 @@ struct DR_CORE_EXPORT SoundInfo
   SoundInfo() {}
 
   TString name;
+  void * soundSystem;
+  void * channel;
 };
 
 }

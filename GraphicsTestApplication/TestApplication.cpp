@@ -5,6 +5,8 @@
 #include <dr_radian.h>
 #include <dr_quaternion.h>
 
+#include <dr_sound_core.h>
+
 namespace driderSDK {
 
 TestApplication::TestApplication()
@@ -31,15 +33,41 @@ TestApplication::onInit() {
                static_cast<driderSDK::UInt32>(viewport.height),
                win);
 
-  /*ResourceManager::startUp();
-  ResourceManager* pInstance;
-  if (ResourceManager::isStarted()) {
-     pInstance = &ResourceManager::instance();
-  }*/
+  soundDriver = new FMODSoundAPI;
+  soundDriver->init();
 
+  /*pInstance->loadResource(_T("testSound.mp3"));
+  sound1 = new FMODSound;
+
+  soundDriver->system->createSound(_T("testSound.mp3"),
+                                   DR_SOUND_MODE::kDrMode_DEFAULT,
+                                   0,
+                                   sound1);
+  channel = new FMODChannel;
+
+  sound1->init(reinterpret_cast<SoundSystem*>(soundDriver->system->getReference()),
+               reinterpret_cast<DrChannel*>(channel->getReference()));
+  sound1->setMode(DR_SOUND_MODE::kDrMode_LOOP_OFF);
+  sound1->play();*/
+
+  ResourceManager::startUp();
   ResourceManager* resourceManager = new ResourceManager;
-  resourceManager->init();
-  resourceManager->loadResource(_T("imageTest.png"));
+  if (ResourceManager::isStarted()) {
+    resourceManager = &ResourceManager::instance();
+  }
+  
+  resourceManager->init(soundDriver->system);
+
+  resourceManager->loadResource(_T("testImage.png"));
+  auto soundResource = resourceManager->loadResource(_T("testSound.mp3"));
+  auto sound = std::dynamic_pointer_cast<SoundCore>(soundResource);
+  
+  channel = new FMODChannel;
+  sound->getReference()->init (reinterpret_cast<SoundSystem*>(soundDriver->system->getReference()),
+                               reinterpret_cast<FMODChannel*>(channel->getReference()));
+  sound->getReference()->setMode(DR_SOUND_MODE::kDrMode_LOOP_OFF);
+  sound->getReference()->play();
+  //resourceManager->loadResource(_T("VenomJok.X"));
   
   std::vector<TString> modelsFiles{_T("VenomJok.X")};
 
@@ -66,32 +94,8 @@ TestApplication::onInit() {
             << std::endl;
   m_mouseInput = (MouseInput*)m_inputManager.getInputObjectByID(m_inputManager.createInputObject(InputObjectType::kMouse));
   m_mouseInput->setEventCallback(&m_mouseListener);
-  
-  soundDriver = new FMODSoundAPI;
-  soundDriver->init();
-  
-  sound1 = new FMODSound;
+ 
 
-  soundDriver->system->createSound("testSound.mp3",
-                                   DR_SOUND_MODE::kDrMode_DEFAULT,
-                                   0,
-                                   sound1);
-  channel = new FMODChannel;
-  
-  sound1->init(reinterpret_cast<SoundSystem*>(soundDriver->system->getReference()),
-               reinterpret_cast<DrChannel*>(channel->getReference()));
-  sound1->setMode(DR_SOUND_MODE::kDrMode_LOOP_OFF);
-  sound1->play();
-
-  /*result = FMOD::System_Create(&system);
-  result = system->getVersion(&version);
-  if (version < FMOD_VERSION) {
-    return;
-  }
-
-  result = system->init(32, FMOD_INIT_NORMAL, 0);
-  result = system->createSound("testSound.mp3", FMOD_DEFAULT, 0, &sound1);
-  result = sound1->setMode(FMOD_LOOP_OFF);*/
 }
 void
 TestApplication::onInput() {

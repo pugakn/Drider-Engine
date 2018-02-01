@@ -1,5 +1,7 @@
 #include "dr_fmod_soundSystem.h"
 
+#include <comdef.h> 
+
 #include "dr_sound.h"
 #include "dr_channel.h"
 #include "dr_channelGroup.h"
@@ -42,7 +44,9 @@ FMODSoundSystem::createSound(TString name,
                              DR_SOUND_MODE::E mode,
                              DrCreateSoundExInfo* createInfo,
                              DrSound* sound) {
-  result = fmodSoundSystem->createSound((const char*)name.c_str(),
+
+  _bstr_t unicode_name(name.c_str());
+  result = fmodSoundSystem->createSound(unicode_name,
                                         mode,
                                         0,
                                         reinterpret_cast<FMOD::Sound**>

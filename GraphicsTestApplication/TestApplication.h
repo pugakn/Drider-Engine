@@ -89,8 +89,8 @@ public:
 
   SoundAPI* soundDriver;
 
-  DrSound* sound1;
-  DrSound* sound2;
+  //DrSound* sound1;
+  //DrSound* sound2;
   DrChannel* channel;
   
   /*FMOD::System     *system;

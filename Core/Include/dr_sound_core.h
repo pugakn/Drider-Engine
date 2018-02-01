@@ -4,6 +4,8 @@
 
 namespace driderSDK {
 
+class DrSound;
+
 class DR_CORE_EXPORT SoundCore : public Resource {
  public:
   /**
@@ -19,8 +21,15 @@ class DR_CORE_EXPORT SoundCore : public Resource {
 
   virtual void
   init(void* pData) override;
+
+  /**
+  * Gets the DrSound object 
+  */
+  DrSound *
+  get();
   
   TString name;
+  DrSound *soundResource;
 
 };
 
