@@ -157,7 +157,6 @@
     <ClCompile Include="Source\dr_input_keyboard.cpp" />
     <ClCompile Include="Source\dr_input_manager.cpp" />
     <ClCompile Include="Source\dr_input_mouse.cpp" />
-    <ClCompile Include="Source\win\dr_win_mouse.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

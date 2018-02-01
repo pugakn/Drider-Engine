@@ -13,9 +13,12 @@ public:
   * @param winHandle
   *   The window handler
   *
+  * @param nonExlusive
+  *   If true, the application will not take controll of input devices
+  *
   */
   void 
-  init(std::size_t winHandle);
+  init(std::size_t winHandle,bool nonExlusive = true);
   /**
   * Destroy the manager
   *

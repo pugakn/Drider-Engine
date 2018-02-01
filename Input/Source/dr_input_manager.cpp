@@ -7,8 +7,27 @@
 namespace driderSDK {
 
 void
-InputManager::init(std::size_t winHandle) {
-  m_mngr = OIS::InputManager::createInputSystem(winHandle);
+InputManager::init(std::size_t winHandle, bool nonExlusive) {
+  if (nonExlusive) {
+    OIS::ParamList pl;
+    pl.insert(std::make_pair(std::string("WINDOW"), std::to_string(winHandle)));
+#if defined OIS_WIN32_PLATFORM
+    pl.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_FOREGROUND")));
+    pl.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_NONEXCLUSIVE")));
+    pl.insert(std::make_pair(std::string("w32_keyboard"), std::string("DISCL_FOREGROUND")));
+    pl.insert(std::make_pair(std::string("w32_keyboard"), std::string("DISCL_NONEXCLUSIVE")));
+#elif defined OIS_LINUX_PLATFORM
+    pl.insert(std::make_pair(std::string("x11_mouse_grab"), std::string("false")));
+    pl.insert(std::make_pair(std::string("x11_mouse_hide"), std::string("false")));
+    pl.insert(std::make_pair(std::string("x11_keyboard_grab"), std::string("false")));
+    pl.insert(std::make_pair(std::string("XAutoRepeatOn"), std::string("true")));
+#endif
+    m_mngr = OIS::InputManager::createInputSystem(pl);
+  }
+  else {
+    m_mngr = OIS::InputManager::createInputSystem(winHandle);
+  }
+ 
 }
 
 void

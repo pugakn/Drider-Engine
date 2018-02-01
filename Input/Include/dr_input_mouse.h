@@ -126,6 +126,7 @@ public:
   getState() const;
   std::vector<IMouseInputListener*> m_listeners;
 private:
+  friend class HelperMouseListener;
   MouseInputState m_state;
   OIS::Mouse* m_mouse;
   HelperMouseListener m_helperListener;
