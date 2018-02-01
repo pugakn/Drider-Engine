@@ -2,12 +2,26 @@
 #include "dr_sound_prerequisites.h"
 
 namespace driderSDK {
-  class DR_SOUND_EXPORT DrChannelGroup {
-    public:
-      DrChannelGroup() {}
-      virtual ~DrChannelGroup() {}
-     
-      virtual void*
-      getReference() = 0;
-  };
+
+/**
+* Channel group class 
+*/
+class DR_SOUND_EXPORT DrChannelGroup {
+  public:
+    /**
+    * Default constructor
+    */
+    DrChannelGroup() {}
+
+    /**
+    * Default constructor
+    */
+    virtual ~DrChannelGroup() {}
+   
+    /**
+    * Return void poiter to api object
+    */
+    virtual void*
+    getReference() = 0;
+};
 }

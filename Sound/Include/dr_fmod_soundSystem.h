@@ -28,16 +28,11 @@ class DR_SOUND_EXPORT FMODSoundSystem : public SoundSystem {
    getObjectReference() override;
 
    DR_SOUND_RESULT::E 
-   createSound(const char *name,
+   createSound(TString name,
                DR_SOUND_MODE::E mode,
                DrCreateSoundExInfo *createInfo,
                DrSound * sound) override;
 
-   DR_SOUND_RESULT::E 
-   playSound(DrSound *sound,
-             DrChannelGroup *channelgroup,
-             bool paused,
-             DrChannel *channel) override;
     
    private:
      FMOD::System* fmodSoundSystem;
