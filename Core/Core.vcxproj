@@ -191,6 +191,7 @@
     <ClInclude Include="Include\dr_parser.h" />
     <ClInclude Include="Include\dr_resource.h" />
     <ClInclude Include="Include\dr_skeleton.h" />
+    <ClInclude Include="Include\dr_spline.h" />
     <ClInclude Include="Include\dr_transform.h" />
     <ClInclude Include="Include\dr_vertex.h" />
     <ClInclude Include="Include\dr_viewport.h" />
@@ -211,6 +212,7 @@
     <ClCompile Include="Source\dr_parser.cpp" />
     <ClCompile Include="Source\dr_resource.cpp" />
     <ClCompile Include="Source\dr_skeleton.cpp" />
+    <ClCompile Include="Source\dr_spline.cpp" />
     <ClCompile Include="Source\dr_transform.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
