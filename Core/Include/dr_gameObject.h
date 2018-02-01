@@ -32,17 +32,19 @@ class DR_CORE_EXPORT GameObject : public Node
   *   A pointer to the created component.
   */
   template<class T, class...Args>
-  GameComponent* 
+  T* 
   createComponent(Args&&...args)
   {
-    ComponentPtr component = dr_make_unique<T>(*this, 
-                                               std::forward<Args>(args)...);
+    auto component = dr_make_unique<T>(*this, 
+                                       std::forward<Args>(args)...);
     
-    component->onCreate();
-
+    T* rawPtr = component.get();
+    
     m_components.push_back(std::move(component));
 
-    return m_components.back().get();
+    m_components.back()->onCreate();
+
+    return rawPtr;
   }
 
   /**

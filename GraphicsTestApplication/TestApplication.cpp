@@ -153,6 +153,10 @@ TestApplication::initSceneGraph() {
   jokerNode->createComponent<DrawableComponent>(*driver->device, 
                                                 *driver->deviceContext);
 
+  auto inputListener = jokerNode->createComponent<InputComponent>();
+
+  m_keyboardInput->setEventCallback(inputListener);
+
   auto drawableComponent = jokerNode->getComponent<DrawableComponent>();
   
   auto resourceMgr = ResourceManager::instancePtr();
