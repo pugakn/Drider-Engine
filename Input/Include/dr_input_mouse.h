@@ -8,6 +8,9 @@
 #include "dr_input_object.h"
 namespace driderSDK {
 class MouseInput;
+/**
+* Helper class to receive events
+*/
 class HelperMouseListener : public ::OIS::MouseListener
 {
 public:
@@ -22,37 +25,105 @@ public:
 private:
   MouseInput* m_pMouse;
 };
+
+/**
+* Structure with the mouse state
+*/
 struct DR_INPUT_EXPORT MouseInputState {
   Int32 m_pressedButtons;
   Vector2DI m_cursorPosition;
   Vector2DI m_relativePosition;
 };
 
-//Override this
+/**
+* Override this to receive events
+*/
 class DR_INPUT_EXPORT IMouseInputListener
 {
 public:
-  virtual 
-  bool mouseMoved(const MouseInputState &state) = 0;
-  virtual 
-  bool mousePressed(const MouseInputState &state, MouseButtonID::E pressedId) = 0;
-  virtual 
-  bool mouseReleased(const MouseInputState &state, MouseButtonID::E pressedId) = 0;
+  /**
+  * Called when the mouse moves
+  *
+  * @param state
+  *   The current state
+  *
+  */
+  virtual bool 
+  mouseMoved(const MouseInputState &state) = 0;
+  /**
+  * Called when a button is pressed
+  *
+  * @param state
+  *   The current state
+  *
+  * @param pressedId
+  *   The pressed button id
+  *
+  */
+  virtual bool 
+  mousePressed(const MouseInputState &state, MouseButtonID::E pressedId) = 0;
+  /**
+  * Called when a button is released
+  *
+  * @param state
+  *   The current state
+  *
+  * @param pressedId
+  *   The released button id
+  *
+  */
+  virtual bool 
+  mouseReleased(const MouseInputState &state, MouseButtonID::E pressedId) = 0;
 };
 
+/**
+* Manager class for input device
+*/
 class DR_INPUT_EXPORT MouseInput : public InputObject{
 public:
   MouseInput(): m_helperListener(this) {}
+  /**
+  * Call it to capture events
+  *
+  */
   void 
   capture() override;
+  /**
+  * Do not call it! you could die
+  *
+  */
   void
   internalInit(OIS::Object* obj) override;
-
+  /**
+  * Check if a button is down
+  *
+  * @param button
+  *   The button to check
+  *
+  * @return
+  *   true if the button is down
+  *
+  */
   bool 
   isButtonDown(MouseButtonID::E button) const;
+  /**
+  * Register a mouseListener
+  *
+  * @param listener
+  *   The listener
+  *
+  */
   void
   setEventCallback(IMouseInputListener *mouseListener);
-  MouseInputState getState() const;
+  /**
+  * Get the current state
+  *
+  * @return
+  *   The current state
+  *
+  */
+  MouseInputState 
+  getState() const;
   std::vector<IMouseInputListener*> m_listeners;
 private:
   MouseInputState m_state;

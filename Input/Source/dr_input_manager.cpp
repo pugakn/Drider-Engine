@@ -20,6 +20,14 @@ InputManager::destroy() {
   OIS::InputManager::destroyInputSystem(m_mngr);
 }
 
+void 
+InputManager::captureAll()
+{
+  for (auto &it : m_objects) {
+    it->capture();
+  }
+}
+
 UInt32
 InputManager::createInputObject(InputObjectType::E type) {
   OIS::Type internalType;
