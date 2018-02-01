@@ -3,7 +3,7 @@
 #include <wrl.h>
 #include <wrl/client.h>
 
-class ID3D11Buffer;
+struct ID3D11Buffer;
 
 namespace driderSDK {
 
@@ -19,10 +19,10 @@ class DR_GRAPHICS_EXPORT D3DConstantBuffer : public ConstantBuffer
 {
  public:
    void*
-     getAPIObject() override;
+   getAPIObject() override;
 
    void**
-     getAPIObjectReference() override;
+   getAPIObjectReference() override;
 
   /**
   * TEST::
@@ -84,7 +84,7 @@ class DR_GRAPHICS_EXPORT D3DConstantBuffer : public ConstantBuffer
   *   The new data buffer size
   */
   void
-    updateFromSysMemCpy(const DeviceContext& deviceContext) override;
+  updateFromSysMemCpy(const DeviceContext& deviceContext) override;
 
   /**
   * Update the buffer with new data

@@ -90,6 +90,21 @@ class DR_MATH_EXPORT AABB
 	getMinPoint() const;
 
   /**
+  * TEST::operatorEqual
+  *
+  * Set the  values of this AABB
+  * with the values of the other AABB.
+  *
+  * @param A
+  *  The AABB with the values to use.
+  *
+  * @return
+  *   A reference to this AABB.
+  */
+  AABB
+  operator=(const AABB& A);
+
+  /**
 	* TEST::intersectAABB
   * Checks for an intersection with another AABB
   *

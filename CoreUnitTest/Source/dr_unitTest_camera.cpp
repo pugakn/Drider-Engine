@@ -19,9 +19,9 @@ TEST(camera, constructor)
 												driderSDK::Vector3D(0, 0, 0), 
 												driderSDK::Vector3D(0, 0, 1), 
 												driderSDK::Viewport{ 0,0,900,600,0,1 }, 
-												90, 
-												0.1, 
-												1000);
+												90.0f, 
+												0.1f, 
+												1000.0f);
 	EXPECT_TRUE(Cam.getName() == _T("test"));
 }
 
@@ -31,11 +31,10 @@ TEST(camera, destructor)
 												driderSDK::Vector3D(0, 0, 0), 
 												driderSDK::Vector3D(0, 0, 1), 
 												driderSDK::Viewport{ 0,0,900,600,0,1 }, 
-												90, 
-												0.1, 
-												1000);
-	driderSDK::Camera* pCam = nullptr;
-	pCam = &Cam;
+												90.0f,
+												0.1f,
+												1000.0f);
+	driderSDK::Camera* pCam = &Cam;
 	EXPECT_TRUE(pCam->getName() == _T("test"));
 }
 
@@ -45,9 +44,9 @@ TEST(camera, update)
 												driderSDK::Vector3D(-1, 0, 0), 
 												driderSDK::Vector3D(0, 0, 0), 
 												driderSDK::Viewport{ 0,0,900,600,0,1 }, 
-												90, 
-												0.1, 
-												1000);
+												90.0f,
+												0.1f, 
+												1000.0f);
 	Cam.move(10,0);
 	driderSDK::Matrix4x4 vp = Cam.m_vp;
 	Cam.update(1);
@@ -60,9 +59,9 @@ TEST(camera, move)
 												driderSDK::Vector3D(-1, 0, 0), 
 												driderSDK::Vector3D(0, 0, 0), 
 												driderSDK::Viewport{ 0,0,900,600,0,1 }, 
-												90, 
-												0.1, 
-												1000);
+												90.0f,
+												0.1f, 
+												1000.0f);
 	Cam.move(-10, 0);
 	Cam.update(1);
 	EXPECT_FLOAT_EQ(Cam.m_pos.x, -11.f);
@@ -76,9 +75,9 @@ TEST(camera, pan)
 												driderSDK::Vector3D(-1, 0, 0), 
 												driderSDK::Vector3D(0, 0, 0), 
 												driderSDK::Viewport{ 0,0,900,600,0,1 }, 
-												90, 
-												0.1, 
-												1000);
+												90.0f,
+												0.1f, 
+												1000.0f);
 	Cam.pan(10, 0);
 	Cam.update(1);
 	EXPECT_FLOAT_EQ(Cam.m_pos.x, 9.f);
@@ -96,9 +95,9 @@ TEST(camera, createProyection)
 												driderSDK::Vector3D(0, 0, 0),
 												driderSDK::Vector3D(0, 0, 1),
 												driderSDK::Viewport{ 0,0,900,600,0,1 },
-												90,
-												0.1,
-												1000);
+												90.0f,
+												0.1f,
+												1000.0f);
 	Cam.setViewport(driderSDK::Viewport{ 0.f,0.f,1.33f, 1.f,0.f,1.f });
 	Cam.createProyection(60*driderSDK::Math::RADIAN_TO_DEGREE,10,1000);
 
@@ -124,9 +123,9 @@ TEST(camera, setViewport)
 												driderSDK::Vector3D(0, 0, 0), 
 												driderSDK::Vector3D(0, 0, 1), 
 												driderSDK::Viewport{ 0,0,900,600,0,1 }, 
-												90, 
-												0.1, 
-												1000);
+												90.0f,
+												0.1f,
+												1000.0f);
 	driderSDK::Viewport Viewport{ 0,0,1024,720,0,1 };
 	Cam.setViewport(Viewport);
 	EXPECT_EQ(Cam.m_viewport.width, 1024);
@@ -138,9 +137,9 @@ TEST(camera, getName)
 												driderSDK::Vector3D(0, 0, 0), 
 												driderSDK::Vector3D(0, 0, 1), 
 												driderSDK::Viewport{ 0,0,900,600,0,1 }, 
-												90, 
-												0.1, 
-												1000);
+												90.0f,
+												0.1f, 
+												1000.0f);
 	EXPECT_TRUE(_T("test") == Cam.getName());
 }
 
@@ -150,9 +149,9 @@ TEST(camera, rotate)
 												driderSDK::Vector3D(0, 0, 0),
 												driderSDK::Vector3D(1, 0, 0),
 												driderSDK::Viewport{ 0,0,900,600,0,1 },
-												90,
-												0.1,
-												1000);
+												90.0f,
+												0.1f,
+												1000.0f);
 	driderSDK::Quaternion rot(0.f, 0.7071203316249954f, 0.f, 0.7071203316249954f);
 	Cam.rotate(rot);
 	Cam.update(1);
@@ -170,9 +169,9 @@ TEST(camera, orbit)
 												driderSDK::Vector3D(1, 0, 0),
 												driderSDK::Vector3D(0, 0, 0),
 												driderSDK::Viewport{ 0,0,900,600,0,1 },
-												90,
-												0.1,
-												1000);
+												90.0f,
+												0.1f,
+												1000.0f);
 	Cam.orbit(0, 45);
 	Cam.update(1);
 	EXPECT_FLOAT_EQ(Cam.m_pos.x, 0);

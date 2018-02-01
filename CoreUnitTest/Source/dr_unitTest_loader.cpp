@@ -8,8 +8,10 @@ TEST(Loader, texture) {
   driderSDK::Int32 w;
   driderSDK::Int32 h;
   driderSDK::Int32 channels;
-  unsigned char* data = nullptr;
-  data = driderSDK::Loader::texture(_T("testImage.png"), &w, &h, &channels);
+  unsigned char* data = driderSDK::Loader::texture(_T("testImage.png"),
+                                                   &w,
+                                                   &h,
+                                                   &channels);
 
   EXPECT_TRUE(data != nullptr);
 

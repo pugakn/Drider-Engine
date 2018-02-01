@@ -45,6 +45,7 @@ public:
 private:
   struct CBuffer {
     driderSDK::Matrix4x4 WVP;
+    driderSDK::Matrix4x4 World;
     driderSDK::Matrix4x4 Bones[200];
   };
 
@@ -61,8 +62,8 @@ private:
 
   driderSDK::ConstantBuffer* CB;
 
-  driderSDK::VertexShader* vs;
-  driderSDK::FragmentShader* fs;
+  driderSDK::Shader* vs;
+  driderSDK::Shader* fs;
 
   driderSDK::InputLayout* IL;
 

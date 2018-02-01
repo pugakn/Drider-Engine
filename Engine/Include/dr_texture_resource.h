@@ -20,9 +20,10 @@ class DR_ENGINE_EXPORT TextureResource : public Resource {
   * Default destructor
   */
   virtual ~TextureResource() {};
+  
+  void
+  init(void* pData) override;
 
-  void 
-  init(void * resourceData) override;
   
 public:
   std::vector<unsigned char> data;

@@ -1,7 +1,5 @@
 #include "TestApplication.h"
-#include <SDL\SDL.h>
 #include <iostream>
-#include <Windows.h> //TODO: remove
 #include <dr_d3d_swap_chain.h>
 #include <dr_rasterizer_state.h>
 #include <dr_radian.h>
@@ -9,28 +7,60 @@
 
 namespace driderSDK {
 
-TestApplication::TestApplication() 
+TestApplication::TestApplication()
   : viewport{0,0,1280, 720},
-    camera(_T("MainCamera"), {0, 100, 200}, {0,0,0}, viewport, 45.f, 0.1f, 1000.f )
-{
+    camera(_T("MainCamera"),
+           {0, 100, 200},
+           {0,0,0},
+           viewport,
+           45.0f,
+           0.1f,
+           1000.f),
+    driver(nullptr) {
 }
 
-TestApplication::~TestApplication()
-{
+TestApplication::~TestApplication() {
 }
 
-void TestApplication::onInit()
-{
+void
+TestApplication::onInit() {
   initWindow();
   driver = new D3DGraphicsAPI;
   HWND win = GetActiveWindow();
-  driver->init(viewport.width, viewport.height, win );
+  driver->init(static_cast<driderSDK::UInt32>(viewport.width),
+               static_cast<driderSDK::UInt32>(viewport.height),
+               win);
+
+  soundDriver = new FMODSoundAPI;
+  soundDriver->init();
 
   ResourceManager::startUp();
-  ResourceManager* pInstance;
+  resourceManager = new ResourceManager;
   if (ResourceManager::isStarted()) {
-     pInstance = &ResourceManager::instance();
+    resourceManager = &ResourceManager::instance();
   }
+  
+  resourceManager->init(soundDriver->system);
+
+  resourceManager->loadResource(_T("testImage.png"));
+  auto soundResource1 = resourceManager->loadResource(_T("testSound1.mp3"));
+  auto sound1 = std::dynamic_pointer_cast<SoundCore>(soundResource1);
+  sound1->get()->init (reinterpret_cast<SoundSystem*>(soundDriver->system->getReference()),
+                      reinterpret_cast<DrChannel**>(soundDriver->channel1->getObjectReference()));
+  sound1->get()->setMode(DR_SOUND_MODE::kDrMode_LOOP_NORMAL);
+  sound1->get()->play();
+
+  auto soundResource2 = resourceManager->loadResource(_T("testSound2.mp3"));
+  auto sound2 = std::dynamic_pointer_cast<SoundCore>(soundResource2);
+  sound2->get()->init(reinterpret_cast<SoundSystem*>(soundDriver->system->getReference()),
+                     reinterpret_cast<DrChannel**>(soundDriver->channel2->getObjectReference()));
+  sound2->get()->setMode(DR_SOUND_MODE::kDrMode_LOOP_OFF);
+
+  auto soundResource3 = resourceManager->loadResource(_T("testSound3.mp3"));
+  auto sound3 = std::dynamic_pointer_cast<SoundCore>(soundResource3);
+  sound3->get()->init(reinterpret_cast<SoundSystem*>(soundDriver->system->getReference()),
+                      reinterpret_cast<DrChannel**>(soundDriver->channel3->getObjectReference()));
+  sound3->get()->setMode(DR_SOUND_MODE::kDrMode_LOOP_OFF);
   
   std::vector<TString> modelsFiles{_T("VenomJok.X")};
 
@@ -42,74 +72,69 @@ void TestApplication::onInit()
     models[i].init(*driver->device, modelsFiles[i]);
   }
 
-}
-void TestApplication::onInput()
-{
-  SDL_Event event;
-  while (SDL_PollEvent(&event)) {
-    switch (event.type) {
-    case SDL_KEYDOWN:
-      if (event.key.keysym.sym == SDLK_UP)
-      {
-        camera.move(5.f, 0.f);
-      }
-      if (event.key.keysym.sym == SDLK_DOWN)
-      {
-        camera.move(-5.f, 0.f);
-      }
-      if (event.key.keysym.sym == SDLK_r)
-      {
-        std::vector<TString> modelsFiles{_T("Croc.X")};
+  m_inputManager.init((size_t)win);
+  std::cout << "mouse "
+            << m_inputManager.getNumberOfDevices(InputObjectType::kMouse)
+            << std::endl;
+  std::cout << "joystick "
+            << m_inputManager.getNumberOfDevices(InputObjectType::kJoystick)
+            << std::endl;
+  std::cout << "keyboard "
+            << m_inputManager.getNumberOfDevices(InputObjectType::kKeyboard)
+            << std::endl;
+  std::cout << "unknown "
+            << m_inputManager.getNumberOfDevices(InputObjectType::kUnknown)
+            << std::endl;
+  m_mouseInput = (MouseInput*)m_inputManager.getMouse();
+  m_mouseInput->setEventCallback(&m_mouseListener);
+  
+  m_keyboardInput = (KeyboardInput*)m_inputManager.getKeyboard();
+  m_keyboardListener.setSoundDriver(soundDriver);
+  m_keyboardListener.setResourceManager(resourceManager);
+  m_keyboardInput->setEventCallback(&m_keyboardListener);
 
-        models[0].destroy();
-        models[0].init(*driver->device, modelsFiles[0]);
-      }
-    break;
-    }
-  }
 }
-void TestApplication::onUpdate()
-{
-  for (auto& model : models)
-  {
+void
+TestApplication::onInput() {
+  m_mouseInput->capture();
+  m_keyboardInput->capture();
+}
+
+void
+TestApplication::onUpdate() {
+  soundDriver->update();
+
+  for (auto& model : models) {
     //model.transform.rotate(Radian(0.005f), AXIS::kY);
     model.update();
   }
-    
+
   camera.update(0);
 }
-void TestApplication::onDraw()
-{
+
+void
+TestApplication::onDraw() {
   driver->clear();
   //quad.draw(*driver->deviceContext, camera.getVP());
-  for (auto& model : models)
+  for (auto& model : models) {
     model.draw(*driver->deviceContext, camera);
+  }
   driver->swapBuffers();
 }
-void TestApplication::onDestroy()
-{
-  SDL_Quit();
-}
-void TestApplication::onPause()
-{
-}
-void TestApplication::onResume()
-{
+
+void
+TestApplication::onDestroy() {
+  /*result = sound1->release();
+  result = system->close();
+  result = system->release();*/
 }
 
-void TestApplication::initWindow()
-{
-  if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-    std::cout << "Video initialization failed: " << SDL_GetError()<<std::endl;
-  }
-  SDL_WM_SetCaption("Drider 2017", 0);
-  int flags = SDL_HWSURFACE;
-  //flags |= SDL_FULLSCREEN;
-  //flags |= SDL_RESIZABLE;
-  int width = 1280;
-  int height = 720;
-  if (SDL_SetVideoMode(width, height, 32, flags) == 0) {
-    std::cout << "Video mode set failed: " << SDL_GetError() << std::endl;
-  }
+void
+TestApplication::onPause() {
 }
+
+void
+TestApplication::onResume() {
+}
+
 }

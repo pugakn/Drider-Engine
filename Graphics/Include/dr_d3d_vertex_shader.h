@@ -1,6 +1,6 @@
 #pragma once
-#include "dr_vertex_shader.h"
 #include <d3d11.h>
+#include "dr_d3d_shader.h"
 
 namespace driderSDK {
 
@@ -10,7 +10,7 @@ namespace driderSDK {
 * Sample usage:
 *	VertexShader* = new D3DVertexShader;
 */
-class DR_GRAPHICS_EXPORT D3DVertexShader : public VertexShader
+class DR_GRAPHICS_EXPORT D3DVertexShader : public D3DShader
 {
  public:
    void*

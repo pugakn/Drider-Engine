@@ -4,7 +4,7 @@
 #include <dr_matrix3x3.h>
 
 
-void checkQuaternionValues(driderSDK::Quaternion& TestQuaternion,
+void checkQuaternionValues(driderSDK::Quaternion TestQuaternion,
 													 float x,
 													 float y,
 													 float z,

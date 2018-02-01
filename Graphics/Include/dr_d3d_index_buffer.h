@@ -3,7 +3,7 @@
 #include <wrl.h>
 #include <wrl/client.h>
 
-class ID3D11Buffer;
+struct ID3D11Buffer;
 
 namespace driderSDK {
 
@@ -19,10 +19,10 @@ class DR_GRAPHICS_EXPORT D3DIndexBuffer : public IndexBuffer
 {
  public:
    void*
-     getAPIObject() override;
+   getAPIObject() override;
 
    void**
-     getAPIObjectReference() override;
+   getAPIObjectReference() override;
 
   /**
   * TEST::constructor
@@ -49,7 +49,9 @@ class DR_GRAPHICS_EXPORT D3DIndexBuffer : public IndexBuffer
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   void
-    create(const Device& device, const DrBufferDesc& desc, const byte* initialData) override;
+  create(const Device& device,
+         const DrBufferDesc& desc,
+         const byte* initialData) override;
 
   /**
   * TEST::set
@@ -64,7 +66,7 @@ class DR_GRAPHICS_EXPORT D3DIndexBuffer : public IndexBuffer
   *
   */
   void
-    set(const DeviceContext& deviceContext, UInt32 offset) const override;
+  set(const DeviceContext& deviceContext, UInt32 offset) const override;
 
   /**
   * TEST::updateFromMemory
@@ -81,7 +83,7 @@ class DR_GRAPHICS_EXPORT D3DIndexBuffer : public IndexBuffer
   *   The new data buffer size
   */
   void
-    updateFromSysMemCpy(const DeviceContext& deviceContext) override;
+  updateFromSysMemCpy(const DeviceContext& deviceContext) override;
 
   /**
   * Update the buffer with new data

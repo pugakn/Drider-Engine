@@ -1,13 +1,15 @@
 #pragma once
 #include <unordered_map>
-#include <dr_resource.h>
+#include <functional>
 #include "dr_engine_prerequisites.h"
-#include "dr_codec.h"
 #include <dr_memory.h>
 #include <dr_module.h>
-#include "dr_resource_factory.h"
+#include <dr_codec.h>
 
 namespace driderSDK {
+
+class Resource;
+class SoundSystem;
 
 /**
 * Load resources.
@@ -24,15 +26,34 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager> {
   */
   ResourceManager() { }
 
+  ResourceManager(const ResourceManager&) = delete;
+
+  ResourceManager& operator=(const ResourceManager&) = delete;
+
   /**
   * TEST::resourceMDestructor
   *	Default destructor.
   */
   ~ResourceManager() {}
 
-  virtual void onStartUp();
+  /**
+  * Initialize the resource manager 
+  */
+  void
+  init(SoundSystem* soundSystem);
 
-  virtual void onShutDown();
+  /**
+  * TEST::getReference
+  * Retraves a reference of a resource with a key.
+  *
+  * @param key
+  *   The key thats reference a resource in the contentResource
+  *
+  * @return
+  *   Return the shared_ptr to a Resource.
+  */
+  std::shared_ptr<Resource>
+  getReference(TString key);
 
   /**
   * TEST::loadResource
@@ -48,6 +69,7 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager> {
   std::shared_ptr<Resource>
   loadResource (TString resourceName);
   
+private:
   /**
   * TEST::createResource
   * Creates a resource, then puts in the contentResource and sets a key
@@ -64,11 +86,14 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager> {
   void
   createResource(TString resourceName,
                  Codec* codec);
-
+public:
+  /**
+  *
+  */
   void
   addResource(TString resourceName, 
               std::shared_ptr<Resource> pResource);
-
+private:
   /**
   * TEST::existInResourceContent
   * Checks if a resource exist.
@@ -81,26 +106,12 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager> {
   */
   bool
   existInResourceContent (TString key);
-
-  /**
-  * TEST::getReference
-  * Retraves a reference of a resource with a key.
-  *
-  * @param key
-  *   The key thats reference a resource in the contentResource
-  *
-  * @return
-  *   Return the shared_ptr to a Resource.
-  */
-  std::shared_ptr<Resource>
-  getReference(TString key);
   
  public:
+  using ResorceSmartPtr = std::shared_ptr<Resource>;
   std::unordered_map<TString, std::shared_ptr<Resource>> resourceContent;
-
-  std::vector<std::shared_ptr<Codec>> codecs;
-
-  std::shared_ptr<ResourceFactory> factory;
+  std::unordered_map<Codec*, std::function<ResorceSmartPtr()>> resourceFactory;
+  std::vector<std::unique_ptr<Codec>> codecs;
 
 };
 
