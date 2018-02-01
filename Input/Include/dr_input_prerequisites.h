@@ -39,8 +39,4 @@
 # else
 #   define DR_INPUT_EXPORT
 # endif
-
-# if DR_COMPILER == DR_COMPILER_INTEL
-#   define DR_THREADLOCAL __thread          //Set the local thread for the Intel compiler
-# endif
 #endif

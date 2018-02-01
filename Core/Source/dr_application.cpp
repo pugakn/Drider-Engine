@@ -46,6 +46,7 @@ void Application::initWindow()
   int flags = SDL_HWSURFACE;
   //flags |= SDL_FULLSCREEN;
   //flags |= SDL_RESIZABLE;
+  SDL_ShowCursor(SDL_ENABLE);
   int width = 1280;
   int height = 720;
   if (SDL_SetVideoMode(width, height, 32, flags) == 0) {
