@@ -36,8 +36,7 @@ public:
 	* Create the script engine and register string type and functions.
 	*
 	* @return
-	*	  Returns 0 if the engine was created succesfully, otherwise returns -1.
-	*
+	*	  Negative value if error.
 	*/
 	int 
 	createEngine();
@@ -47,28 +46,29 @@ public:
 	*
 	* @param fileName
 	*  Name of the file to open.
-	*
 	*/
-	void 
+	int 
 	addScript(const TString& fileName);
 
 	/**
 	* Compiles the script.
 	*
 	*/
-	void
+	int
 	compileScript();
 
 	/**
 	* Create the context and sets the LineCallback function.
 	*
 	*/
-	void 
+	int 
 	configureContext();
 
 	/**
 	* Create the context and sets the LineCallback function.
 	*
+	* @return
+	*	  Negative value if error.
 	*/
 	int
 	prepareFunction(TString function);
@@ -95,7 +95,6 @@ public:
 	*
 	* @param timeOut
 	*   Time required to abort the script.
-	*
 	*/
 	void 
 	lineCallback(asIScriptContext *scriptContext, unsigned long *timeOut);
@@ -117,7 +116,7 @@ private:
 	asIScriptContext* m_scriptContext;
 	asIScriptFunction* m_scriptFunction;
 	asIScriptModule* m_scriptModule;
-
+	unsigned long timeout;
 };
 
 }

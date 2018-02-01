@@ -20,30 +20,31 @@ ScriptEngine::createEngine() {
 		return -1;
 	}
 
-	m_scriptEngine->SetMessageCallback(asFUNCTION(messageCallback), 0, asCALL_CDECL);
+	m_scriptEngine->SetMessageCallback(asMETHOD(ScriptEngine, messageCallback), 
+																		 0, 
+																		 asCALL_CDECL);
 
 	int result = m_scriptEngine->RegisterObjectType("TString",
 																									sizeof(TString),
 																									asOBJ_VALUE | asOBJ_POD);
 	DR_ASSERT(result >= 0);
-	m_scriptEngine->RegisterStringFactory("TString", &stringFactory);
-
+	result = m_scriptEngine->RegisterStringFactory("TString", &stringFactory);
 	// Register the functions that the scripts will be allowed to use.
 
 
 
 	//
 
-	return 0;
+	return result;
 }
 
-void
+int
 ScriptEngine::addScript(const TString& fileName) {
 	File scriptFile;
 	if(!scriptFile.Open(fileName)) {
 		//failed to find file
 		m_scriptEngine->Release();
-		return;
+		return -1;
 	}
 
 	SizeT fileLength = scriptFile.Size();
@@ -56,7 +57,7 @@ ScriptEngine::addScript(const TString& fileName) {
 	if(script.size() == 0) {
 		//couldn't load scipt
 		m_scriptEngine->Release();
-		return;
+		return -2;
 	}
 	m_scriptModule = m_scriptEngine->GetModule(0, asGM_ALWAYS_CREATE);
 	int result = m_scriptModule->AddScriptSection((char*) fileName.c_str(), 
@@ -65,39 +66,41 @@ ScriptEngine::addScript(const TString& fileName) {
 	if(result < 0) {
 		//AddscriptSection failed
 		m_scriptEngine->Release();
-		return;
+		return -3;
 	}
+	return 0;
 }
 
-void
+int
 ScriptEngine::compileScript() {
 	int result = m_scriptModule->Build();
 	if(result < 0) {
 		//build failed.
 		m_scriptEngine->Release();
-		return;
+		return -1;
 	}
+	return 0;
 }
 
-void
+int
 ScriptEngine::configureContext() {
 	m_scriptContext = m_scriptEngine->CreateContext();
 	if(m_scriptContext == 0) {
 		//failed to create context.
 		m_scriptEngine->Release();
-		return;
+		return -1;
 	}
 
-	unsigned long timeout;
-	int result = m_scriptContext->SetLineCallback(asFUNCTION(lineCallback), 
-																				&timeout, 
-																				asCALL_CDECL);
+	int result = m_scriptContext->SetLineCallback(asMETHOD(ScriptEngine, lineCallback), 
+																								&timeout, 
+																								asCALL_CDECL);
 	if(result < 0) {
 		//failed to set line callback
 		m_scriptContext->Release();
 		m_scriptEngine->Release();
-		return;
+		return -2;
 	}
+	return 0;
 }
 
 int
@@ -118,9 +121,10 @@ ScriptEngine::prepareFunction(TString function) {
 		//failed to prepare context
 		m_scriptContext->Release();
 		m_scriptEngine->Release();
-		return -1;
+		return -2;
 	}
 
+	return result;
 }
 
 int

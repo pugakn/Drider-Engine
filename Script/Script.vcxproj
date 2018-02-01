@@ -102,7 +102,7 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);$(DRIDER_DEPENDENCIES)Lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>angelscript64.lib;Cored.lib;Engine.lib;Utilsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>angelscript64d.lib;Cored.lib;Engined.lib;Utilsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -116,7 +116,7 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);$(DRIDER_DEPENDENCIES)Lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>angelscript.lib;Cored.lib;Engine.lib;Utilsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>angelscriptd.lib;Cored.lib;Engined.lib;Utilsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
