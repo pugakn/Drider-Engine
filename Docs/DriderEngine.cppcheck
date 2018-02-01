@@ -6,10 +6,15 @@
         <dir name="C:/Users/Francisco/source/repos/Drider-Engine/Engine"/>
         <dir name="C:/Users/Francisco/source/repos/Drider-Engine/EngineUnitTest"/>
         <dir name="C:/Users/Francisco/source/repos/Drider-Engine/Graphics"/>
-        <dir name="C:/Users/Francisco/source/repos/Drider-Engine/GraphicsUnitTest"/>
+        <dir name="C:/Users/Francisco/source/repos/Drider-Engine/GraphicsTestApplication"/>
+		<dir name="C:/Users/Francisco/source/repos/Drider-Engine/Input"/>
         <dir name="C:/Users/Francisco/source/repos/Drider-Engine/Math"/>
         <dir name="C:/Users/Francisco/source/repos/Drider-Engine/MathUnitTest"/>
+		<dir name="C:/Users/Francisco/source/repos/Drider-Engine/RenderManager"/>
+		<dir name="C:/Users/Francisco/source/repos/Drider-Engine/Sound"/>
+		<dir name="C:/Users/Francisco/source/repos/Drider-Engine/SoundUnitTest"/>
         <dir name="C:/Users/Francisco/source/repos/Drider-Engine/Utils"/>
+		<dir name="C:/Users/Francisco/source/repos/Drider-Engine/UtilsUnitTest"/>
     </paths>
     <exclude>
         <path name="3rdParties/"/>

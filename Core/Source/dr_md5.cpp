@@ -64,13 +64,12 @@ MD5(const std::string& initial_msg) {
 
   //Process the message in successive 512-bit chunks:
   //for each 512-bit chunk of message:
-  UInt32 *w;
   UInt32 a, b, c, d, f, g;
   UInt32 rotX, rotC, temp;
   UInt32 hex[4] = { 0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476 };
   for (Int32 offset = 0; offset < new_len; offset += 64) {
     //Break chunk into sixteen 32-bit words w[j], 0 <= j <= 15
-    w = reinterpret_cast<UInt32 *>(&msg[offset]);
+    UInt32* w = reinterpret_cast<UInt32 *>(&msg[offset]);
 
     //Initialize hash value for this chunk:
     a = hex[0];

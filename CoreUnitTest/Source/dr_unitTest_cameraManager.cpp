@@ -16,8 +16,7 @@ TEST(CameraManager, constructor)
 TEST(CameraManager, destructor)
 {
 	driderSDK::CameraManager Manager;
-	driderSDK::CameraManager* pManager = nullptr;
-	pManager = &Manager;
+	driderSDK::CameraManager* pManager = &Manager;
 	EXPECT_TRUE(&pManager->getActiveCamera() == nullptr);
 }
 

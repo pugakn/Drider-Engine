@@ -12,8 +12,7 @@ namespace driderSDK {
 class Skeleton;
 
 class DR_CORE_EXPORT Animation : public Resource {
-
-public:
+ public:
   template<class T>
   struct AnimationTransform
   {
@@ -29,6 +28,8 @@ public:
     AnimTransformations<Quaternion> rotations;
     AnimTransformations<Vector3D> scales;
   };
+
+  Animation();
 
   void 
   setBoneAnimation(const TString& bone, 
@@ -58,7 +59,8 @@ public:
   float
   getTicksPerSecond() const;
 
-  void init(void*)
+  void
+  init(void*)
   {}
 
  private:
