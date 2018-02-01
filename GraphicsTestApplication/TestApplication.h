@@ -38,6 +38,11 @@ class KeyboardListener : public driderSDK::IKeyboardListener
     this->resourceManager = resourceManager;
   }
 
+  void
+  setCamera(Camera *camera) {
+    this->camera = camera;
+  }
+
   
   bool
   keyPressed(const KeyboardButtonID::E& key) override {
@@ -85,6 +90,7 @@ class KeyboardListener : public driderSDK::IKeyboardListener
       }
       std::cout << "Channel1 volume: " << volume << std::endl;
     }
+
     return true;
   }
 
@@ -97,6 +103,7 @@ class KeyboardListener : public driderSDK::IKeyboardListener
 
   SoundAPI* soundDriver;
   ResourceManager* resourceManager;
+  Camera* camera;
 };
 
 class MouseTest : public driderSDK::IMouseInputListener
@@ -152,7 +159,8 @@ public:
   MouseTest m_mouseListener;
   KeyboardInput *m_keyboardInput;
   KeyboardListener m_keyboardListener;
-  
+
+  float velMove; 
   
 };
 

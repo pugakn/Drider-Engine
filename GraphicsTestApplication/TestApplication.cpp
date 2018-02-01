@@ -33,7 +33,7 @@ TestApplication::onInit() {
 
   soundDriver = new FMODSoundAPI;
   soundDriver->init();
-
+ 
   ResourceManager::startUp();
   resourceManager = new ResourceManager;
   if (ResourceManager::isStarted()) {
@@ -91,20 +91,32 @@ TestApplication::onInit() {
   m_keyboardInput = (KeyboardInput*)m_inputManager.getKeyboard();
   m_keyboardListener.setSoundDriver(soundDriver);
   m_keyboardListener.setResourceManager(resourceManager);
+  m_keyboardListener.setCamera(&camera);
   m_keyboardInput->setEventCallback(&m_keyboardListener);
 
+  velMove = 5.f;
 }
 void
 TestApplication::onInput() {
   m_mouseInput->capture();
   m_keyboardInput->capture();
+  if (m_keyboardInput->isKeyDown(KeyboardButtonID::KC_W)) {
+    camera.move(velMove, 0.f);
+  }
+  else if (m_keyboardInput->isKeyDown(KeyboardButtonID::KC_S)) {
+    camera.move(-velMove, 0.f);
+  }
+  else if (m_keyboardInput->isKeyDown(KeyboardButtonID::KC_A)) {
+    camera.move(0.f, velMove);
+  }
+  else if (m_keyboardInput->isKeyDown(KeyboardButtonID::KC_D)) {
+    camera.move(0.f, -velMove);
+  }
 }
 
 void
 TestApplication::onUpdate() {
-  soundDriver->update();
-
-  for (auto& model : models) {
+   for (auto& model : models) {
     //model.transform.rotate(Radian(0.005f), AXIS::kY);
     model.update();
   }
