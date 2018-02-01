@@ -166,6 +166,8 @@
     <ClInclude Include="Include\DrawableComponent.h" />
     <ClInclude Include="Include\InputComponent.h" />
     <ClInclude Include="Include\Model3D.h" />
+    <ClInclude Include="Include\StaticMeshTechnique.h" />
+    <ClInclude Include="Include\Technique.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TestApplication.h" />
   </ItemGroup>
@@ -175,6 +177,8 @@
     <ClCompile Include="Source\DrawableComponent.cpp" />
     <ClCompile Include="Source\InputComponent.cpp" />
     <ClCompile Include="Source\Model3D.cpp" />
+    <ClCompile Include="Source\StaticMeshTechnique.cpp" />
+    <ClCompile Include="Source\Technique.cpp" />
     <ClCompile Include="TestApplication.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

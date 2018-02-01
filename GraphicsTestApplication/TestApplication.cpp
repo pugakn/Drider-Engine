@@ -5,6 +5,8 @@
 #include <dr_rasterizer_state.h>
 #include <dr_radian.h>
 #include <dr_quaternion.h>
+#include "DrawableComponent.h"
+#include "StaticMeshTechnique.h"
 
 namespace driderSDK {
 
@@ -116,8 +118,6 @@ TestApplication::initResources() {
   resourceManager->loadResource(_T("VenomJok.X"));
 
   resourceManager->loadResource(_T("dwarf.x"));
-  
-  std::vector<TString> modelsFiles{_T("VenomJok.X")};
 }
 
 void 
@@ -142,6 +142,7 @@ TestApplication::initSound() {
 
 void 
 TestApplication::initSceneGraph() {
+
   m_sceneGraph = dr_make_unique<SceneGraph>();
   m_sceneGraph->init();
 
@@ -149,19 +150,25 @@ TestApplication::initSceneGraph() {
 
   auto jokerNode = std::make_shared<GameObject>();
   jokerNode->setName(_T("Joker"));
+  jokerNode->createComponent<DrawableComponent>(*driver->device, 
+                                                *driver->deviceContext);
+
+  auto drawableComponent = jokerNode->getComponent<DrawableComponent>();
   
+  auto resourceMgr = ResourceManager::instancePtr();
+
+  auto resource = resourceMgr->getReference(_T("dwarf.x"));
+
+  auto model = std::dynamic_pointer_cast<Model>(resource);
+  
+  drawableComponent->setModel(model);
+
+  auto technique = new StaticMeshTechnique(&camera, 
+                                           &jokerNode->transform);
+
+  drawableComponent->setShaderTechnique(technique);
 
   root->addChild(jokerNode);
-}
-
-void 
-TestApplication::initShaders() {
-
-  if (m_shaders.empty()) {
-    
-  }
-
-  driver->device
 }
 
 }

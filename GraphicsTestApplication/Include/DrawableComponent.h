@@ -4,14 +4,16 @@
 #include <dr_gameComponent.h>
 #include <dr_memory.h>
 #include <dr_util_prerequisites.h>
+#include <dr_graphics_defines.h>
 
 namespace driderSDK {
 
 class Device;
 class DeviceContext;
-class Camera;
 class Model;
-class Shader;
+class IndexBuffer;
+class VertexBuffer;
+class Technique;
 
 class DrawableComponent : public GameComponent
 {
@@ -23,23 +25,44 @@ class DrawableComponent : public GameComponent
                     DeviceContext& deviceContext_);
 
   void 
-  setModel(Model* model);
+  setModel(std::shared_ptr<Model> model);
+  
+  void
+  setShaderTechnique(Technique* technique);
+
+ private:
+  virtual void 
+  onCreate() override;
+
+  virtual void 
+  onUpdate() override;
+
+  virtual void 
+  onRender() override;
+
+  virtual void 
+  onDestroy() override;
+ private:
+  void
+  createMeshBuffers();
 
   void
-  setCamera(Camera* camera);
+  destroyMeshBuffers();
+ private:
 
-  void addShader();
- private:
-  virtual void onCreate() override;
-  virtual void onUpdate() override;
-  virtual void onRender() override;
-  virtual void onDestroy() override;
- private:
+  struct MeshBuffers 
+  {
+    VertexBuffer* vertexBuffer{nullptr};
+    IndexBuffer* indexBuffer{nullptr};
+    UInt32 indicesCount;
+  };
+
   Device& m_device;
   DeviceContext& m_deviceContext;
-  Model* m_model;
-  Camera* m_camera;
-  std::vector<Shader*> m_shaders;
+  std::weak_ptr<Model> m_model;
+  Technique* m_technique{nullptr};
+  std::vector<MeshBuffers> m_meshes;
 };
 
 }
+

@@ -46,10 +46,7 @@ public:
   void initResources();
   void initSound();
   void initSceneGraph();
-  void initShaders();
-
-  Shader* createShader(const TString& file, DR_SHADER_TYPE_FLAG::E type);
-
+  
   GraphicsAPI* driver;
   Quad quad;
   std::vector<Model3D> models;
@@ -72,7 +69,6 @@ public:
   KeyboardInput* m_keyboardInput;
   MouseInput* m_mouseInput;
   std::unique_ptr<SceneGraph> m_sceneGraph;
-  std::unordered_map<TString, Shader*> m_shaders;
 };
 
 }
