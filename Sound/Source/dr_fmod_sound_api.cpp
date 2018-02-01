@@ -12,6 +12,11 @@ FMODSoundAPI::init() {
   system = new FMODSoundSystem;
   
   system->init(32, DR_INITFLAGS::kDrInitFlags_NORMAL, 0);
+
+  channel1 = new FMODChannel;
+  channel2 = new FMODChannel;
+  channel3 = new FMODChannel;
+  channel4 = new FMODChannel;
 }
 
 void

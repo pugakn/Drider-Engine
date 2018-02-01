@@ -38,9 +38,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\win\dr_win_mouse.cpp">
-      <Filter>Archivos de código fuente</Filter>
-    </ClCompile>
     <ClCompile Include="Source\dr_input_mouse.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>

@@ -1,15 +1,15 @@
 #pragma once
 #include <unordered_map>
+#include <functional>
 #include "dr_engine_prerequisites.h"
 #include <dr_memory.h>
 #include <dr_module.h>
+#include <dr_codec.h>
 
 namespace driderSDK {
 
 class Resource;
-class ResourceFactory;
-class Codec;
-
+class SoundSystem;
 
 /**
 * Load resources.
@@ -36,8 +36,11 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager> {
   */
   ~ResourceManager() {}
 
+  /**
+  * Initialize the resource manager 
+  */
   void
-  init();
+  init(SoundSystem* soundSystem);
 
   /**
   * TEST::getReference
@@ -66,7 +69,7 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager> {
   std::shared_ptr<Resource>
   loadResource (TString resourceName);
   
-//private:
+private:
   /**
   * TEST::createResource
   * Creates a resource, then puts in the contentResource and sets a key
@@ -83,14 +86,14 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager> {
   void
   createResource(TString resourceName,
                  Codec* codec);
-
+public:
   /**
   *
   */
   void
   addResource(TString resourceName, 
               std::shared_ptr<Resource> pResource);
-
+private:
   /**
   * TEST::existInResourceContent
   * Checks if a resource exist.
@@ -105,9 +108,10 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager> {
   existInResourceContent (TString key);
   
  public:
+  using ResorceSmartPtr = std::shared_ptr<Resource>;
   std::unordered_map<TString, std::shared_ptr<Resource>> resourceContent;
-  std::vector<std::shared_ptr<Codec>> codecs;
-  ResourceFactory* factory;
+  std::unordered_map<Codec*, std::function<ResorceSmartPtr()>> resourceFactory;
+  std::vector<std::unique_ptr<Codec>> codecs;
 
 };
 

@@ -12,4 +12,10 @@ struct DR_CORE_EXPORT Mesh
   std::vector<UInt32> indices;
 };
 
+struct DR_CORE_EXPORT SkinnedMesh 
+{
+  Mesh meshInfo;
+
+};
+
 }

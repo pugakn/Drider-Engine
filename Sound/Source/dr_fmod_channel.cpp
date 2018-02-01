@@ -22,4 +22,14 @@ FMODChannel::getPaused(bool *paused) {
   channel->getPaused(paused);
 }
 
+void
+FMODChannel::setVolume(float volume) {
+  channel->setVolume(volume);
+}
+
+void 
+FMODChannel::getVolume(float *volume) {
+  channel->getVolume(volume);
+}
+
 }

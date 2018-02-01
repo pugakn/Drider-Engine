@@ -4,9 +4,14 @@ namespace driderSDK {
 
 void
 FMODSound::init(SoundSystem *system,
-                DrChannel *channel) {
+                DrChannel **channel) {
   m_System = reinterpret_cast<FMOD::System*>(system);
-  m_Channel = reinterpret_cast<FMOD::Channel*>(channel);
+  m_Channel = reinterpret_cast<FMOD::Channel**>(channel);
+}
+
+FMOD::Sound *
+FMODSound::get() {
+  return fmodSound;
 }
 
 void*
@@ -27,7 +32,7 @@ FMODSound::setMode(DR_SOUND_MODE::E mode) {
 
 void
 FMODSound::play() {
-  result = m_System->playSound(fmodSound, 0, false, &m_Channel);
+  result = m_System->playSound(fmodSound, 0, false, m_Channel);
 }
 
 }

@@ -100,7 +100,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)Math\Include;$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)$(ProjectName)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Math\Include;$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)$(ProjectName)\Include;$(SolutionDir)Sound\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>CORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <BuildLog>
@@ -108,7 +108,7 @@
     </BuildLog>
     <Link>
       <ImportLibrary>$(SolutionDir)Lib\$(PlatformTarget)\$(Projectname)d.lib</ImportLibrary>
-      <AdditionalDependencies>Mathd.lib;Utilsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Mathd.lib;Utilsd.lib;%(AdditionalDependencies);Soundd.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);$(DRIDER_DEPENDENCIES)Lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -117,7 +117,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)Math\Include;$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)$(ProjectName)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Math\Include;$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)$(ProjectName)\Include;$(SolutionDir)Sound\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>CORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <BuildLog>
@@ -125,7 +125,7 @@
     </BuildLog>
     <Link>
       <ImportLibrary>$(SolutionDir)Lib\$(PlatformTarget)\$(Projectname)d.lib</ImportLibrary>
-      <AdditionalDependencies>SDL.lib;Mathd.lib;Utilsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL.lib;Mathd.lib;Utilsd.lib;%(AdditionalDependencies);Soundd.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);$(DRIDER_DEPENDENCIES)Lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -136,13 +136,13 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)Math\Include;$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)$(ProjectName)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Math\Include;$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)$(ProjectName)\Include;$(SolutionDir)Sound\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>CORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>SDL.lib;Math.lib;Utils.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL.lib;Math.lib;Utils.lib;%(AdditionalDependencies);Sound.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);$(DRIDER_DEPENDENCIES)Lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <BuildLog>
@@ -156,13 +156,13 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)Math\Include;$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)$(ProjectName)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Math\Include;$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)$(ProjectName)\Include;$(SolutionDir)Sound\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>CORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>Math.lib;Utils.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Math.lib;Utils.lib;%(AdditionalDependencies);Sound.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);$(DRIDER_DEPENDENCIES)Lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <BuildLog>
@@ -177,6 +177,8 @@
     <ClInclude Include="Include\dr_camera_manager.h" />
     <ClInclude Include="Include\dr_convexHull.h" />
     <ClInclude Include="Include\dr_core_prerequisites.h" />
+    <ClInclude Include="Include\dr_gameComponent.h" />
+    <ClInclude Include="Include\dr_gameObject.h" />
     <ClInclude Include="Include\dr_graph.h" />
     <ClInclude Include="Include\dr_loader.h" />
     <ClInclude Include="Include\dr_logger.h" />
@@ -191,7 +193,11 @@
     <ClInclude Include="Include\dr_octree.h" />
     <ClInclude Include="Include\dr_parser.h" />
     <ClInclude Include="Include\dr_resource.h" />
+    <ClInclude Include="Include\dr_root_node.h" />
     <ClInclude Include="Include\dr_skeleton.h" />
+    <ClInclude Include="Include\dr_sound_core.h" />
+    <ClInclude Include="Include\dr_sound_info.h" />
+    <ClInclude Include="Include\dr_spline.h" />
     <ClInclude Include="Include\dr_transform.h" />
     <ClInclude Include="Include\dr_vertex.h" />
     <ClInclude Include="Include\dr_viewport.h" />
@@ -199,6 +205,7 @@
   <ItemGroup>
     <ClCompile Include="Include\dr_animation.cpp" />
     <ClCompile Include="Include\dr_animator.cpp" />
+    <ClCompile Include="Include\dr_root_node.cpp" />
     <ClCompile Include="Source\dr_application.cpp" />
     <ClCompile Include="Source\dr_camera.cpp" />
     <ClCompile Include="Source\dr_camera_manager.cpp" />
@@ -213,6 +220,8 @@
     <ClCompile Include="Source\dr_parser.cpp" />
     <ClCompile Include="Source\dr_resource.cpp" />
     <ClCompile Include="Source\dr_skeleton.cpp" />
+    <ClCompile Include="Source\dr_sound_core.cpp" />
+    <ClCompile Include="Source\dr_spline.cpp" />
     <ClCompile Include="Source\dr_transform.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

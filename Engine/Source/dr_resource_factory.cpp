@@ -6,7 +6,7 @@
 namespace driderSDK {
 
 ResourceFactory::ResourceFactory() {
-  Register(CompatibleType::TEXTURE, TextureResource::Create);
+  //Register(CompatibleType::TEXTURE, TextureResource::Create);
   //Register(CompatibleType::MODEL, ModelResource::Create);
 }
 
