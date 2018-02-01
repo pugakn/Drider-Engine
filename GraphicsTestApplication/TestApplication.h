@@ -23,41 +23,49 @@
 #include <dr_fmod_soundSystem.h>
 
 namespace driderSDK {
-  class KeyboardListener : public  driderSDK::IKeyboardListener {
-  public:
-    bool keyPressed(const KeyboardButtonID::E &key)override {
-      exit(666);
-      std::cout << "World ends here..." << std::endl;
-      return true;
-    }
-    bool keyReleased(const KeyboardButtonID::E &key) override {
-      exit(666);
-      std::cout << "World ends here..." << std::endl;
-      return false;
-    }
-  };
 
-  class MouseTest : public  driderSDK::IMouseInputListener
-  {
-  public:
-    virtual
-      bool mouseMoved(const MouseInputState &state) {
-      std::cout << state.m_cursorPosition.x <<" , "<<state.m_cursorPosition.y << std::endl;
-      return true;
-    }
-    virtual
-      bool mousePressed(const MouseInputState &state, MouseButtonID::E pressedId) {
-      exit(666);
-      std::cout << "World ends here..." << std::endl;
-      return true;
-    }
-    virtual
-      bool mouseReleased(const MouseInputState &state, MouseButtonID::E pressedId) {
-      exit(666);
-      std::cout << "World ends here..." << std::endl;
-      return true;
-    }
-  };
+class KeyboardListener : public driderSDK::IKeyboardListener
+{
+ public:
+  bool
+  keyPressed(const KeyboardButtonID::E& key) override {
+    exit(666);
+    std::cout << "World ends here..." << std::endl;
+    return true;
+  }
+
+  bool
+  keyReleased(const KeyboardButtonID::E& key) override {
+    exit(666);
+    std::cout << "World ends here..." << std::endl;
+    return false;
+  }
+};
+
+class MouseTest : public driderSDK::IMouseInputListener
+{
+ public:
+  virtual bool
+  mouseMoved(const MouseInputState& state) {
+    std::cout << state.m_cursorPosition.x << " , " << state.m_cursorPosition.y << std::endl;
+    return true;
+  }
+
+  virtual bool
+  mousePressed(const MouseInputState& state, MouseButtonID::E pressedId) {
+    exit(666);
+    std::cout << "World ends here..." << std::endl;
+    return true;
+  }
+
+  virtual bool
+  mouseReleased(const MouseInputState& state, MouseButtonID::E pressedId) {
+    exit(666);
+    std::cout << "World ends here..." << std::endl;
+    return true;
+  }
+};
+
 class TestApplication : public Application
 {
 public:
@@ -81,19 +89,15 @@ public:
 
   SoundAPI* soundDriver;
 
-  DrSound *sound1;
-  DrSound *sound2;
-  DrChannel *channel;
+  DrSound* sound1;
+  DrSound* sound2;
+  DrChannel* channel;
   
   /*FMOD::System     *system;
   FMOD::Sound      *sound1;
   FMOD::Channel    *channel = 0;
   FMOD_RESULT       result;
   unsigned int      version;*/
-
-  
-
-
 
   InputManager m_inputManager;
   MouseInput* m_mouseInput;

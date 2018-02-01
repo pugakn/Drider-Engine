@@ -15,7 +15,8 @@ TestApplication::TestApplication()
            viewport,
            45.0f,
            0.1f,
-           1000.f) {
+           1000.f),
+    driver(nullptr) {
 }
 
 TestApplication::~TestApplication() {

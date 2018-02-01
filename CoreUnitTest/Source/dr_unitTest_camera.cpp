@@ -34,8 +34,7 @@ TEST(camera, destructor)
 												90.0f,
 												0.1f,
 												1000.0f);
-	driderSDK::Camera* pCam = nullptr;
-	pCam = &Cam;
+	driderSDK::Camera* pCam = &Cam;
 	EXPECT_TRUE(pCam->getName() == _T("test"));
 }
 
