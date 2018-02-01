@@ -46,6 +46,25 @@ class DR_SOUND_EXPORT DrChannel {
     virtual void
     getPaused(bool *paused) = 0;
 
+    /**
+    * Set volume of channel
+    *
+    * @param volume
+    * Linear volume level, default = 1.0f
+    */
+    virtual void
+    setVolume(float volume) = 0;
+
+
+    /**
+    * Get volume of channel
+    *
+    * @param volume
+    * Address of a variable to receive the linear volume level
+    */
+    virtual void
+    getVolume(float *volume) = 0;
+
 };
 
 }

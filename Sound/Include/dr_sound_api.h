@@ -21,6 +21,11 @@ class DR_SOUND_EXPORT SoundAPI  : public Module<SoundAPI> {
     destroy() = 0;
 
     SoundSystem *system;
+
+    DrChannel* channel1;
+    DrChannel* channel2;
+    DrChannel* channel3;
+    DrChannel* channel4;
 };
 
 }

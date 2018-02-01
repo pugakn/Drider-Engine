@@ -22,6 +22,12 @@ class DR_SOUND_EXPORT FMODChannel : public DrChannel {
 
     void
     getPaused(bool *paused) override;
+
+    void
+    setVolume(float volume) override;
+
+    void
+    getVolume(float *volume) override;
     
   private:
     FMOD::Channel *channel;

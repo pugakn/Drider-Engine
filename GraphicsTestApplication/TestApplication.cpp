@@ -5,8 +5,6 @@
 #include <dr_radian.h>
 #include <dr_quaternion.h>
 
-#include <dr_sound_core.h>
-
 namespace driderSDK {
 
 TestApplication::TestApplication()
@@ -37,7 +35,7 @@ TestApplication::onInit() {
   soundDriver->init();
 
   ResourceManager::startUp();
-  ResourceManager* resourceManager = new ResourceManager;
+  resourceManager = new ResourceManager;
   if (ResourceManager::isStarted()) {
     resourceManager = &ResourceManager::instance();
   }
@@ -45,15 +43,24 @@ TestApplication::onInit() {
   resourceManager->init(soundDriver->system);
 
   resourceManager->loadResource(_T("testImage.png"));
-  auto soundResource = resourceManager->loadResource(_T("testSound.mp3"));
-  auto sound = std::dynamic_pointer_cast<SoundCore>(soundResource);
-  
-  channel = new FMODChannel;
-  sound->get()->init (reinterpret_cast<SoundSystem*>(soundDriver->system->getReference()),
-                      reinterpret_cast<DrChannel*>(channel->getReference()));
-  sound->get()->setMode(DR_SOUND_MODE::kDrMode_LOOP_OFF);
-  sound->get()->play();
-  //resourceManager->loadResource(_T("VenomJok.X"));
+  auto soundResource1 = resourceManager->loadResource(_T("testSound1.mp3"));
+  auto sound1 = std::dynamic_pointer_cast<SoundCore>(soundResource1);
+  sound1->get()->init (reinterpret_cast<SoundSystem*>(soundDriver->system->getReference()),
+                      reinterpret_cast<DrChannel**>(soundDriver->channel1->getObjectReference()));
+  sound1->get()->setMode(DR_SOUND_MODE::kDrMode_LOOP_NORMAL);
+  sound1->get()->play();
+
+  auto soundResource2 = resourceManager->loadResource(_T("testSound2.mp3"));
+  auto sound2 = std::dynamic_pointer_cast<SoundCore>(soundResource2);
+  sound2->get()->init(reinterpret_cast<SoundSystem*>(soundDriver->system->getReference()),
+                     reinterpret_cast<DrChannel**>(soundDriver->channel2->getObjectReference()));
+  sound2->get()->setMode(DR_SOUND_MODE::kDrMode_LOOP_OFF);
+
+  auto soundResource3 = resourceManager->loadResource(_T("testSound3.mp3"));
+  auto sound3 = std::dynamic_pointer_cast<SoundCore>(soundResource3);
+  sound3->get()->init(reinterpret_cast<SoundSystem*>(soundDriver->system->getReference()),
+                      reinterpret_cast<DrChannel**>(soundDriver->channel3->getObjectReference()));
+  sound3->get()->setMode(DR_SOUND_MODE::kDrMode_LOOP_OFF);
   
   std::vector<TString> modelsFiles{_T("VenomJok.X")};
 
@@ -78,14 +85,19 @@ TestApplication::onInit() {
   std::cout << "unknown "
             << m_inputManager.getNumberOfDevices(InputObjectType::kUnknown)
             << std::endl;
-  //m_mouseInput = (MouseInput*)m_inputManager.getInputObjectByID(m_inputManager.createInputObject(InputObjectType::kMouse));
+  m_mouseInput = (MouseInput*)m_inputManager.getMouse();
   m_mouseInput->setEventCallback(&m_mouseListener);
- 
+  
+  m_keyboardInput = (KeyboardInput*)m_inputManager.getKeyboard();
+  m_keyboardListener.setSoundDriver(soundDriver);
+  m_keyboardListener.setResourceManager(resourceManager);
+  m_keyboardInput->setEventCallback(&m_keyboardListener);
 
 }
 void
 TestApplication::onInput() {
   m_mouseInput->capture();
+  m_keyboardInput->capture();
 }
 
 void

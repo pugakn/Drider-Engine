@@ -29,7 +29,7 @@ class DR_SOUND_EXPORT DrSound {
     */
     virtual void
     init(SoundSystem *system,
-         DrChannel *channel) = 0;
+         DrChannel **channel) = 0;
 
     /**
     * Gets void pointer to api sound
