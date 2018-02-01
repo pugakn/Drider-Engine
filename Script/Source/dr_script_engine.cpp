@@ -35,7 +35,7 @@ ScriptEngine::configureEngine() {
 
 	// Register the functions that the scripts will be allowed to use.
 
-
+	//
 
 }
 
@@ -100,6 +100,42 @@ ScriptEngine::configureContext() {
 		m_scriptEngine->Release();
 		return;
 	}
+}
+
+int
+ScriptEngine::prepareFunction(TString function) {
+
+	m_scriptFunction = m_scriptEngine->GetModule(0)->GetFunctionByDecl((const char*)function.c_str());
+	if (m_scriptFunction == 0)
+	{
+		//function not found
+		m_scriptContext->Release();
+		m_scriptEngine->Release();
+		return -1;
+	}
+	int result = m_scriptContext->Prepare(m_scriptFunction);
+
+	if (result < 0)
+	{
+		//failed to prepare context
+		m_scriptContext->Release();
+		m_scriptEngine->Release();
+		return -1;
+	}
+
+}
+
+int
+ScriptEngine::executeCall() {
+	int result = m_scriptContext->Execute();
+	if (result != asEXECUTION_FINISHED) {
+		if (result == asEXECUTION_EXCEPTION) {
+			//there was a exception
+			return result; //will replace with logger entry
+		}
+	}
+
+	return result;
 }
 
 void

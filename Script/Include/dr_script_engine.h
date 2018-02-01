@@ -78,7 +78,14 @@ public:
 	*
 	*/
 	int
-	executeFunction(TString scriptName);
+	prepareFunction(TString scriptName);
+
+	/**
+	* Execute a call in the context.
+	*
+	*/
+	int
+	executeCall();
 
 	/**
 	* Shut down the script's engine.
