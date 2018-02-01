@@ -24,6 +24,9 @@ namespace driderSDK {
       if (key == KeyboardButtonID::KC_A) {
         std::cout << "A" << std::endl;
       }
+      if (key == KeyboardButtonID::KC_1) {
+        std::cout << "1" << std::endl;
+      }
       return true;
     }
 
@@ -39,6 +42,7 @@ namespace driderSDK {
   public:
     virtual bool
       mouseMoved(const MouseInputState& state) {
+      std::cout << "MB" << std::endl;
       return true;
     }
 
@@ -46,6 +50,9 @@ namespace driderSDK {
       mousePressed(const MouseInputState& state, MouseButtonID::E pressedId) {
       if (pressedId == MouseButtonID::MB_Right) {
         std::cout << "RB" << std::endl;
+      }
+      if (pressedId == MouseButtonID::MB_Left) {
+        std::cout << "LB" << std::endl;
       }
       std::cout << "Pressed on " << state.m_cursorPosition.x << " , " << state.m_cursorPosition.y << std::endl;
       return true;

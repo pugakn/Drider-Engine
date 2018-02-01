@@ -36,27 +36,6 @@ public:
   void 
   captureAll();
   /**
-  * Creates an input object from a free device
-  *
-  * @param type
-  *   The type of input object
-  *
-  * @return
-  *   ID on m_objects
-  *
-  */
-  UInt32 
-  createInputObject(InputObjectType::E type);
-  /**
-  * Destroy a input object
-  *
-  * @param objID
-  *   The input object id
-  *
-  */
-  void 
-  destroyInputObject(UInt32 objID);
-  /**
   * Get the number of devices connected
   *
   * @return 
@@ -74,12 +53,6 @@ public:
   */
   InputObject*
   getInputObjectByID(UInt32 id);
-  /**
-  * Register all free devices 
-  *
-  */
-  void
-  registerAllActiveDevices();
 
   MouseInput* 
   getMouse();
@@ -90,6 +63,35 @@ public:
   UInt32 
   getNumOfJoysticks();
 private:
+  /**
+  * Creates an input object from a free device
+  *
+  * @param type
+  *   The type of input object
+  *
+  * @return
+  *   ID on m_objects
+  *
+  */
+  UInt32
+    createInputObject(InputObjectType::E type);
+  /**
+  * Destroy a input object
+  *
+  * @param objID
+  *   The input object id
+  *
+  */
+  void
+    destroyInputObject(UInt32 objID);
+  /**
+  * Register all free devices
+  *
+  */
+  void
+  registerAllActiveDevices();
+
+
   std::vector<MouseInput*> m_mouseDevices;
   std::vector<KeyboardInput*> m_keyboardDevices;
   std::vector<JoystickInput*> m_joystickDevices;

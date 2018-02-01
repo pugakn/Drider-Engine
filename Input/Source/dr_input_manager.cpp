@@ -27,7 +27,7 @@ InputManager::init(std::size_t winHandle, bool nonExlusive) {
   else {
     m_mngr = OIS::InputManager::createInputSystem(winHandle);
   }
- 
+  registerAllActiveDevices();
 }
 
 void
