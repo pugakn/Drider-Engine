@@ -33,7 +33,7 @@ public:
 	~ScriptEngine();
 
 	/**
-	* Create the script engine
+	* Create the script engine and register string type and functions.
 	*
 	* @return
 	*	  Returns 0 if the engine was created succesfully, otherwise returns -1.
@@ -41,13 +41,6 @@ public:
 	*/
 	int 
 	createEngine();
-
-	/**
-  * Register the script's string type and the functions it'll be allowed to use.
-  *
-  */
-	void 
-	configureEngine();
 
 	/**
 	* Open the script and adds it to the module.
@@ -78,7 +71,7 @@ public:
 	*
 	*/
 	int
-	prepareFunction(TString scriptName);
+	prepareFunction(TString function);
 
 	/**
 	* Execute a call in the context.

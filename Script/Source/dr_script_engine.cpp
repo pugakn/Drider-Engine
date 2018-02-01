@@ -21,22 +21,20 @@ ScriptEngine::createEngine() {
 	}
 
 	m_scriptEngine->SetMessageCallback(asFUNCTION(messageCallback), 0, asCALL_CDECL);
-	return 0;
-}
 
-void
-ScriptEngine::configureEngine() {
-
-	int result = m_scriptEngine->RegisterObjectType("TString", 
-																									sizeof(TString), 
-																									asOBJ_VALUE | asOBJ_POD); 
+	int result = m_scriptEngine->RegisterObjectType("TString",
+																									sizeof(TString),
+																									asOBJ_VALUE | asOBJ_POD);
 	DR_ASSERT(result >= 0);
 	m_scriptEngine->RegisterStringFactory("TString", &stringFactory);
 
 	// Register the functions that the scripts will be allowed to use.
 
+
+
 	//
 
+	return 0;
 }
 
 void
