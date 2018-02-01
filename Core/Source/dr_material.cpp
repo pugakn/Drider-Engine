@@ -12,8 +12,9 @@ namespace driderSDK {
 //  }
 //}
 
-Material::Property* Material::addProperty(const TString& name, 
-                                          PROPERTY_TYPE type) {
+Material::Property*
+Material::addProperty(const TString& name, PROPERTY_TYPE type) {
+
   m_properties.push_back(createProperty(name, type));
   
   return m_properties.back().get();

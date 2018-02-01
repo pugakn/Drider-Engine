@@ -1,13 +1,15 @@
 #pragma once
 
 #include <dr_memory.h>
+#include "dr_enableObject.h"
 #include "dr_core_prerequisites.h"
 
 namespace driderSDK {
 
 class GameObject;
 
-class GameComponent : public std::enable_shared_from_this<GameComponent>
+class GameComponent : public std::enable_shared_from_this<GameComponent>,
+                      public EnableObject                  
 {
  public:
   GameComponent(GameObject& gameObject_);

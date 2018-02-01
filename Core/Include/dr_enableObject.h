@@ -1,8 +1,10 @@
 #pragma once
 
+#include "dr_core_prerequisites.h"
+
 namespace driderSDK {
 
-class EnableObject
+class DR_CORE_EXPORT EnableObject
 {
 public:
   /**

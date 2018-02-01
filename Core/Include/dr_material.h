@@ -1,10 +1,10 @@
 
 #include <array>
 #include <vector>
-#include <dr_memory.h>
 #include <dr_vector2d.h>
 #include <dr_vector3d.h>
 #include <dr_vector4d.h>
+#include <dr_memory.h>
 #include "dr_core_prerequisites.h"
 #include "dr_resource.h"
 
@@ -36,6 +36,9 @@ class DR_CORE_EXPORT Material : public Resource
     : name(name_), 
       type(type_)
     {}
+
+    virtual ~Property(){}
+    
     TString name;
     const PROPERTY_TYPE type;
     //Texture* texture;
@@ -44,7 +47,7 @@ class DR_CORE_EXPORT Material : public Resource
   struct FloatProperty : Property
   {
     FloatProperty(const TString& name_, float value_, CHANNEL readChannel_)
-    : Property(name, kFloat),
+    : Property(name_, kFloat),
       value(value_),
       readChannel(readChannel_)
     {}
@@ -102,7 +105,7 @@ class DR_CORE_EXPORT Material : public Resource
       readChannels(readChannels_)
     {
     }
-
+ 
     using ValueType = Vector4D;
     using ChannelType = std::array<CHANNEL, 4>;
 
@@ -112,6 +115,12 @@ class DR_CORE_EXPORT Material : public Resource
 
   using PropertyPtr = std::unique_ptr<Property>;
   using PropertyList = std::vector<PropertyPtr>;
+
+  Material(const Material&) = delete;
+
+  virtual ~Material(){}
+
+  Material& operator=(const Material&) = delete;
 
   /**
   * Adds a new property of PropertyType type to the material properperties.
@@ -133,8 +142,8 @@ class DR_CORE_EXPORT Material : public Resource
   template<class PropertyType>
   PropertyType*
   addProperty(const TString& name, 
-              const PropertyType::ValueType& value,
-              const PropertyType::ChannelType& channel)
+              typename const PropertyType::ValueType& value,
+              typename const PropertyType::ChannelType& channel)
   {
     auto property = dr_make_unique<PropertyType>(name, value, channel);
 
@@ -147,7 +156,7 @@ class DR_CORE_EXPORT Material : public Resource
 
   Property*
   addProperty(const TString& name, PROPERTY_TYPE type);
-
+  
   /**
   * Adds a new property to the material properperties.
   *
@@ -174,9 +183,9 @@ class DR_CORE_EXPORT Material : public Resource
   */
   template<class PropertyType>
   PropertyType* 
-  getProperty(class TString& name)
+  getProperty(const TString& name)
   {
-    PropertyType rawPtr = nullptr;
+    PropertyType* rawPtr = nullptr;
 
     for (auto& property : m_properties) {
       if (property->name == name) {

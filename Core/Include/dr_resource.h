@@ -4,7 +4,6 @@
 #include <dr_memory.h>
 #include "dr_core_prerequisites.h"
 
-
 namespace driderSDK {
 
 class DR_CORE_EXPORT Resource 

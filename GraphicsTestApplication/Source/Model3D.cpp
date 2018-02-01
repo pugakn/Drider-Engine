@@ -44,11 +44,13 @@ void Model3D::init(Device & device, const TString& filename) {
   String fsSource = StringUtils::toString(file.GetAsString(file.Size()));
   file.Close();
 
-  vs = reinterpret_cast<VertexShader*>(device.createShaderFromMemory(vsSource.c_str(), 
-                                       vsSource.size() + 1,DR_SHADER_TYPE_FLAG::kVertex));
+  vs = device.createShaderFromMemory(vsSource.c_str(), 
+                                     vsSource.size() + 1,
+                                     DR_SHADER_TYPE_FLAG::kVertex);
 
-  fs = reinterpret_cast<FragmentShader*>(device.createShaderFromMemory(fsSource.c_str(), 
-                                         fsSource.size() + 1 , DR_SHADER_TYPE_FLAG::kFragment));
+  fs = device.createShaderFromMemory(fsSource.c_str(), 
+                                     fsSource.size() + 1,
+                                     DR_SHADER_TYPE_FLAG::kFragment);
 
   std::vector<DrInputElementDesc> idesc;
   DrInputElementDesc ie;
