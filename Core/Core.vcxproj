@@ -177,6 +177,7 @@
     <ClInclude Include="Include\dr_camera_manager.h" />
     <ClInclude Include="Include\dr_convexHull.h" />
     <ClInclude Include="Include\dr_core_prerequisites.h" />
+    <ClInclude Include="Include\dr_enableObject.h" />
     <ClInclude Include="Include\dr_gameComponent.h" />
     <ClInclude Include="Include\dr_gameObject.h" />
     <ClInclude Include="Include\dr_graph.h" />
@@ -205,6 +206,9 @@
     <ClCompile Include="Source\dr_camera.cpp" />
     <ClCompile Include="Source\dr_camera_manager.cpp" />
     <ClCompile Include="Source\dr_convexHull.cpp" />
+    <ClCompile Include="Source\dr_enableObject.cpp" />
+    <ClCompile Include="Source\dr_gameComponent.cpp" />
+    <ClCompile Include="Source\dr_gameObject.cpp" />
     <ClCompile Include="Source\dr_graph.cpp" />
     <ClCompile Include="Source\dr_loader.cpp" />
     <ClCompile Include="Source\dr_logger.cpp" />

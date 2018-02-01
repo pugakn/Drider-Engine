@@ -95,6 +95,19 @@ Node::getParent() {
   return m_parent.lock();
 }
 
+std::vector<Node::SharedNode> 
+Node::getChildrenWithName(const TString & childrenNames) {
+  std::vector<SharedNode> children;
+  
+  for (auto& child : m_children) {
+    if (child->getName() == childrenNames) {
+      children.push_back(child);
+    }
+  }
+
+  return children;
+}
+
 Node::SharedNode 
 Node::getChild(const TString & childName) {
   for (auto& child : m_children) {
@@ -106,9 +119,31 @@ Node::getChild(const TString & childName) {
   return SharedNode();
 }
 
-const Matrix4x4& 
+Node::SharedNode 
+Node::getChild(SizeT index) {
+  SharedNode child;
+
+  if (index < m_children.size()) {
+    child = m_children[index];
+  }
+
+  return child;
+}
+
+SizeT Node::getChildrenCount() {
+  return m_children.size();
+}
+
+const Matrix4x4&
 Node::getWorldTransform() const{
   return m_finalTransform;
+}
+
+void 
+Node::draw() {
+  for (auto& child : m_children) {
+    child->draw();
+  }
 }
 
 void 

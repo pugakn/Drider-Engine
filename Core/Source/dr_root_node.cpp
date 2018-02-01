@@ -2,8 +2,7 @@
 
 namespace driderSDK {
 
-RootNode::RootNode() : Node(_T("ROOT_NODE")) {
-}
+RootNode::RootNode() : Node(_T("ROOT_NODE")) {}
 
 void
 RootNode::updateImpl() {}
