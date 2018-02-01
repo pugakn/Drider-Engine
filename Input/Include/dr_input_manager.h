@@ -2,10 +2,14 @@
 #include "dr_input_prerequisites.h"
 #include <OIS/OISInputManager.h>
 #include <vector>
+#include "dr_module.h"
 #include "dr_input_object.h"
 class OIS::InputManager;
 namespace driderSDK {
-class DR_INPUT_EXPORT InputManager {
+class MouseInput;
+class KeyboardInput;
+class JoystickInput;
+class DR_INPUT_EXPORT InputManager : public Module<InputManager> {
 public:
   /**
   * Init the manager
@@ -68,9 +72,17 @@ public:
   *   The input object or nullptr
   *
   */
-  InputObject* 
+  InputObject*
   getInputObjectByID(UInt32 id);
-
+  /**
+  * Register all free devices 
+  *
+  */
+  void
+  registerAllActiveDevices();
+  std::vector<MouseInput*> m_mouseDevices;
+  std::vector<KeyboardInput*> m_keyboardDevices;
+  std::vector<JoystickInput*> m_joystickDevices;
 private:
   std::vector<InputObject*> m_objects;
   OIS::InputManager* m_mngr;

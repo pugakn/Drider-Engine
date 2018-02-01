@@ -61,18 +61,21 @@ InputManager::createInputObject(InputObjectType::E type) {
     obj = m_mngr->createInputObject(internalType, true);
     inputObject = new KeyboardInput();
     inputObject->internalInit(obj);
+    m_keyboardDevices.push_back((KeyboardInput*)inputObject);
     break;
   case driderSDK::InputObjectType::kMouse:
     internalType = OIS::Type::OISMouse;
     obj = m_mngr->createInputObject(internalType, true);
     inputObject = new MouseInput();
     inputObject->internalInit(obj);
+    m_mouseDevices.push_back((MouseInput*)inputObject);
     break;
   case driderSDK::InputObjectType::kJoystick:
     internalType = OIS::Type::OISJoyStick;
     obj = m_mngr->createInputObject(internalType, true);
     inputObject = new JoystickInput();
     inputObject->internalInit(obj);
+    m_joystickDevices.push_back((JoystickInput*)inputObject);
     break;
   default:
     break;
@@ -120,6 +123,25 @@ InputManager::getNumberOfDevices(InputObjectType::E type) {
   }
 
   return m_mngr->getNumberOfDevices(internalType);
+}
+
+void InputManager::registerAllActiveDevices()
+{
+  int num = getNumberOfDevices(InputObjectType::kKeyboard);
+  for (int i = 0; i < num; ++i)
+  {
+    createInputObject(InputObjectType::kKeyboard);
+  }
+  num = getNumberOfDevices(InputObjectType::kMouse);
+  for (int i = 0; i < num; ++i)
+  {
+    createInputObject(InputObjectType::kMouse);
+  }
+  num = getNumberOfDevices(InputObjectType::kJoystick);
+  for (int i = 0; i < num; ++i)
+  {
+    createInputObject(InputObjectType::kJoystick);
+  }
 }
 
 InputObject* driderSDK::InputManager::getInputObjectByID(UInt32 id) {
