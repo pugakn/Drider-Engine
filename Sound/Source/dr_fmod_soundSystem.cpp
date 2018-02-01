@@ -38,11 +38,11 @@ FMODSoundSystem::getObjectReference() {
 }
 
 DR_SOUND_RESULT::E 
-FMODSoundSystem::createSound(const char* name,
+FMODSoundSystem::createSound(TString name,
                              DR_SOUND_MODE::E mode,
                              DrCreateSoundExInfo* createInfo,
                              DrSound* sound) {
-  result = fmodSoundSystem->createSound(name,
+  result = fmodSoundSystem->createSound((const char*)name.c_str(),
                                         mode,
                                         0,
                                         reinterpret_cast<FMOD::Sound**>
@@ -51,20 +51,20 @@ FMODSoundSystem::createSound(const char* name,
   return static_cast<DR_SOUND_RESULT::E>(result);
 }
 
-DR_SOUND_RESULT::E
-FMODSoundSystem::playSound(DrSound* sound,
-                           DrChannelGroup* channelgroup,
-                           bool paused,
-                           DrChannel* channel) {
-
-  result = fmodSoundSystem->playSound(reinterpret_cast<FMOD::Sound*>
-                                        (sound->getReference()),
-                                      0,
-                                      paused,
-                                      reinterpret_cast<FMOD::Channel**>
-                                        (channel->getObjectReference()));
-
-  return static_cast<DR_SOUND_RESULT::E>(result);
-}
+//DR_SOUND_RESULT::E
+//FMODSoundSystem::playSound(DrSound* sound,
+//                           DrChannelGroup* channelgroup,
+//                           bool paused,
+//                           DrChannel* channel) {
+//
+//  result = fmodSoundSystem->playSound(reinterpret_cast<FMOD::Sound*>
+//                                        (sound->getReference()),
+//                                      0,
+//                                      paused,
+//                                      reinterpret_cast<FMOD::Channel**>
+//                                        (channel->getObjectReference()));
+//
+//  return static_cast<DR_SOUND_RESULT::E>(result);
+//}
 
 }

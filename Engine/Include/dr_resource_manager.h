@@ -36,6 +36,9 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager> {
   */
   ~ResourceManager() {}
 
+  /**
+  * Initialize the resource manager 
+  */
   void
   init();
 

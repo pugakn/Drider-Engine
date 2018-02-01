@@ -6,6 +6,7 @@
 
 #include "dr_texture_resource.h"
 #include <dr_model.h>
+#include <dr_codec_sound.h>
 
 namespace driderSDK {
 
@@ -13,9 +14,10 @@ void
 ResourceManager::init() {
   auto codecTexture  = dr_make_unique<CodecTexture>();
   auto codecModel = dr_make_unique<CodecModel>();
+  auto codecSound = dr_make_unique<CodecSound>();
 
   resourceFactory[codecTexture.get()] = std::make_shared<TextureResource>;
-  resourceFactory[codecTexture.get()] = std::make_shared<Model>;
+  resourceFactory[codecModel.get()] = std::make_shared<Model>;
 
   codecs.push_back(std::move(codecModel));
   codecs.push_back(std::move(codecTexture));
