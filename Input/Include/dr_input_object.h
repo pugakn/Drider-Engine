@@ -9,6 +9,9 @@ namespace InputObjectType {
     kJoystick = 3
   };
 }
+/**
+* Base class for input device object
+*/
 class DR_INPUT_EXPORT InputObject {
 public:
   virtual void capture() = 0;
