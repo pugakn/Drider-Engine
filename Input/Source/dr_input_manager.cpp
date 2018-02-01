@@ -144,6 +144,26 @@ void InputManager::registerAllActiveDevices()
   }
 }
 
+MouseInput * InputManager::getMouse()
+{
+  return m_mouseDevices[0];
+}
+
+KeyboardInput * InputManager::getKeyboard()
+{
+  return m_keyboardDevices[0];
+}
+
+UInt32 InputManager::getNumOfJoysticks()
+{
+  return m_joystickDevices.size();
+}
+
+JoystickInput * InputManager::getJoystick(UInt32 id)
+{
+  return m_joystickDevices[id];
+}
+
 InputObject* driderSDK::InputManager::getInputObjectByID(UInt32 id) {
   if (id >= m_objects.size()) {
     return nullptr;

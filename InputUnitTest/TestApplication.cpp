@@ -31,9 +31,9 @@ TestApplication::onInit() {
     << m_inputManager.instance().getNumberOfDevices(InputObjectType::kUnknown)
     << std::endl;
   m_inputManager.instance().registerAllActiveDevices();
-  m_mouseInput = m_inputManager.instance().m_mouseDevices[0];
+  m_mouseInput = m_inputManager.instance().getMouse();
   m_mouseInput->setEventCallback(&m_mouseListener);
-  m_keyboardInput = m_inputManager.instance().m_keyboardDevices[0];
+  m_keyboardInput = m_inputManager.instance().getKeyboard();
   m_keyboardInput->setEventCallback(&m_keyboardListener);
 }
 void

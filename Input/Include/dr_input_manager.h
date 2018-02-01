@@ -80,10 +80,19 @@ public:
   */
   void
   registerAllActiveDevices();
+
+  MouseInput* 
+  getMouse();
+  KeyboardInput* 
+  getKeyboard();
+  JoystickInput* 
+  getJoystick(UInt32 id);
+  UInt32 
+  getNumOfJoysticks();
+private:
   std::vector<MouseInput*> m_mouseDevices;
   std::vector<KeyboardInput*> m_keyboardDevices;
   std::vector<JoystickInput*> m_joystickDevices;
-private:
   std::vector<InputObject*> m_objects;
   OIS::InputManager* m_mngr;
 };
