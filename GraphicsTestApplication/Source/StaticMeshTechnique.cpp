@@ -4,16 +4,16 @@
 #include <dr_file.h>
 #include <dr_graphics_defines.h>
 #include <dr_input_layout.h>
-#include <dr_transform.h>
+#include <dr_gameObject.h>
 #include <dr_shader.h>
 #include <dr_string_utils.h>
 
 namespace driderSDK {
 
 StaticMeshTechnique::StaticMeshTechnique(Camera* camera_, 
-                                         Transform* transform_) 
+                                         GameObject* gameObject_) 
   : m_camera(camera_),
-    m_transform(transform_) 
+    m_gameObject(gameObject_) 
 {}
 
 void
@@ -68,7 +68,7 @@ StaticMeshTechnique::compile(Device& device) {
 UInt8*
 StaticMeshTechnique::getConstBufferData() {
   
-  auto& world = m_transform->getTransformMatrix();
+  auto& world = m_gameObject->getWorldTransform();
   m_constBufferObj.WVP = world * m_camera->getVP();
   m_constBufferObj.World = world;
 

@@ -168,7 +168,7 @@ TestApplication::initSceneGraph() {
   drawableComponent->setModel(model);
 
   auto technique = new StaticMeshTechnique(&camera, 
-                                           &jokerNode->transform);
+                                           &(*jokerNode));
 
   drawableComponent->setShaderTechnique(technique);
 

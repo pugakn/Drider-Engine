@@ -7,7 +7,7 @@
 namespace driderSDK {
 
 class Camera;
-class Transform;
+class GameObject;
 
 class StaticMeshTechnique : public Technique 
 {
@@ -18,7 +18,7 @@ class StaticMeshTechnique : public Technique
     Matrix4x4 World;
   };
 
-  StaticMeshTechnique(Camera* camera_, Transform* transform_);
+  StaticMeshTechnique(Camera* camera_, GameObject* gameObject_);
 
   virtual void 
   compile(Device & device) override;
@@ -28,7 +28,7 @@ class StaticMeshTechnique : public Technique
  private:
   CBuffer m_constBufferObj;
   Camera* m_camera;
-  Transform* m_transform;
+  GameObject* m_gameObject;
 };
 
 }
