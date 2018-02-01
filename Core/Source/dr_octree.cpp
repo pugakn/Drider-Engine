@@ -102,8 +102,12 @@ Octree::BuildTree() {
     if (!flagContainsInChild)
     {
       containedObjects.push_back(objectsToReview.front());
-      objectsToReview.pop();
     }
+    objectsToReview.pop();
+  }
+
+  for (size_t i = 0; i < regionsChilds.size(); ++i) {
+    childs[i]->BuildTree();
   }
 }
 }

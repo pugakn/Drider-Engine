@@ -11,7 +11,7 @@ namespace driderSDK {
 
 struct Face
 {
-  std::vector<Vector3D> vertex;
+  Vector3D vertex[3];
 };
 
 class DR_CORE_EXPORT Octree
@@ -58,7 +58,7 @@ class DR_CORE_EXPORT Octree
 
   std::queue<Face> objectsToReview;
 
-  std::list<Face> containedObjects;
+  std::vector<Face> containedObjects;
 
   AABB boundingRegion;
 
