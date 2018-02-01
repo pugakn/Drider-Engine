@@ -1,59 +1,54 @@
 #include "dr_octree.h"
 
+
 namespace driderSDK {
+
+bool
+AABBContainsObject(Face& face, AABB &boundingArea) {
+  Int32 numberOfVertexIn = 0;
+  if (boundingArea.intersect(face.vertex[0])) {
+    numberOfVertexIn++;
+  }
+  if (boundingArea.intersect(face.vertex[0])) {
+    numberOfVertexIn++;
+  }
+  if (boundingArea.intersect(face.vertex[0])) {
+    numberOfVertexIn++;
+  }
+
+  return numberOfVertexIn == 3;
+}
 
 Octree::Octree() {
 }
 
 Octree::Octree(AABB& region,
-               std::queue<Face> _faces,
-               float minAreaSize = 1.0f) : minSize(minSize) {
-  boundingRegion.width = region.width;
-  boundingRegion.height = region.height;
-  boundingRegion.depth = region.depth;
-  boundingRegion.center = region.center;
-
-  faces = _faces;
+               std::queue<Face> objects,
+               float minAreaSize = 1.0f) : minSize(minAreaSize) {
+  
+  boundingRegion = region;
+  objectsToReview = objects;
 }
 
 Octree::Octree(AABB& region,
-               float minAreaSize = 1.0f) : minSize(minSize) {
-  boundingRegion.width = region.width;
-  boundingRegion.height = region.height;
-  boundingRegion.depth = region.depth;
-  boundingRegion.center = region.center;
+               float minAreaSize = 1.0f) : minSize(minAreaSize) {
+  boundingRegion = region;
 }
 
 Octree::~Octree() {
 }
 
-Int32
-Octree::AABBContainsFace(Face& face) {
-  Int32 numberOfVertexIn = 0;
-  if (boundingRegion.intersect(face.vertex[0])) {
-    numberOfVertexIn++;
-  }
-  if (boundingRegion.intersect(face.vertex[0])) {
-    numberOfVertexIn++;
-  }
-  if (boundingRegion.intersect(face.vertex[0])) {
-    numberOfVertexIn++;
-  }
-  if (numberOfVertexIn > 0) {
-    numberOfVertexIn = numberOfVertexIn == 3 ? 2 : 1;
-  }
-  return numberOfVertexIn;
-}
-
 void
 Octree::BuildTree() {
-  if (faces.size() < 2) {
-    return;
-  }
 
   Vector3D size = boundingRegion.getMaxPoint() - boundingRegion.getMinPoint();
 
-  if (size.x <= minSize || size.y <= minSize || size.z <= minSize) {
+  if (size.x <= minSize || size.y <= minSize || size.z <= minSize  || objectsToReview.size() < 2) {
+    while (!objectsToReview.empty())
+    {
+      containedObjects.push_back(objectsToReview.front());
+      objectsToReview.pop();
+    }
     return;
   }
 
@@ -93,21 +88,22 @@ Octree::BuildTree() {
     childs.back()->father = this;
   }
 
-  while (!faces.empty()) {
+  bool flagContainsInChild;
+  while (!objectsToReview.empty()) {
+    flagContainsInChild = false;
     for (size_t i = 0; i < regionsChilds.size(); ++i) {
-      Int32 info = AABBContainsFace(faces.front());
-
-      if (info == 2) {
-        childs[i]->faces.push(faces.front());
-        break;
-      }
-      else if (info == 1) {
-        childs[i]->faces.push(faces.front());
+      if (AABBContainsObject(objectsToReview.front(), childs[i]->boundingRegion))
+      {
+        flagContainsInChild = true;
+        childs[i]->objectsToReview.push(objectsToReview.front());
+        i = regionsChilds.size();
       }
     }
-    faces.pop();
+    if (!flagContainsInChild)
+    {
+      containedObjects.push_back(objectsToReview.front());
+      objectsToReview.pop();
+    }
   }
-  return;
 }
-
 }

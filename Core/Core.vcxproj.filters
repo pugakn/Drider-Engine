@@ -87,7 +87,7 @@
     <ClInclude Include="Include\dr_material.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="dr_octree.h">
+    <ClInclude Include="Include\dr_octree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -140,7 +140,7 @@
     <ClCompile Include="Include\dr_animator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="dr_octree.cpp">
+    <ClCompile Include="Source\dr_octree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

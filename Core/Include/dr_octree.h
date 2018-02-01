@@ -5,6 +5,7 @@
 #include <dr_vector3d.h>
 #include <vector>
 #include <queue>
+#include <list>
 
 namespace driderSDK {
 
@@ -17,40 +18,47 @@ class DR_CORE_EXPORT Octree
 {
  public:
   /**
-  *
+  * Default constructor
   */
   Octree();
 
   /**
+  * Constructor
+  * @param region
+  *   Region to initialize octree 
+  *
+  * @param objects
+  *   list object in region
+  *
+  * @param minAreaSize
+  *   minimum size of the octree
   *
   */
-  Octree(AABB& region, std::queue<Face> faces, float minAreaSize);
+  Octree(AABB& region, std::queue<Face> objects, float minAreaSize);
 
   /**
-  *
+  * Constructor
+  * @param region
+  *   Region to initialize octree 
   */
   Octree(AABB& region, float minAreaSize);
 
   /**
-  *
+  * Default detructor
   */
   ~Octree();
 
   /**
-  *
-  */
-  Int32
-  AABBContainsFace(Face& face);
-
-  /**
-  *
+  * Octree construction
   */
   void
   BuildTree();
 
   float minSize;
 
-  std::queue<Face> faces;
+  std::queue<Face> objectsToReview;
+
+  std::list<Face> containedObjects;
 
   AABB boundingRegion;
 
