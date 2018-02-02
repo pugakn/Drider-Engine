@@ -62,7 +62,7 @@ TestApplication::onInit() {
                       reinterpret_cast<DrChannel**>(soundDriver->channel3->getObjectReference()));
   sound3->get()->setMode(DR_SOUND_MODE::kDrMode_LOOP_OFF);
   
-  std::vector<TString> modelsFiles{_T("VenomJok.X")};
+  std::vector<TString> modelsFiles{_T("VenomJok.X"), _T("dwarf.X") };
 
   models.resize(modelsFiles.size());
 
@@ -71,6 +71,8 @@ TestApplication::onInit() {
   for (SizeT i = 0; i < modelsFiles.size(); ++i) {
     models[i].init(*driver->device, modelsFiles[i]);
   }
+
+  models[1].transform.setPosition(Vector3D(100.f,0,0));
 
   m_inputManager.init((size_t)win);
   std::cout << "mouse "
