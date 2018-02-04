@@ -22,7 +22,7 @@ public:
   *
   */
   void 
-  init(std::size_t winHandle,bool nonExlusive = true);
+  init(SizeT winHandle, bool nonExlusive = true);
   /**
   * Destroy the manager
   *
@@ -42,7 +42,7 @@ public:
   *   The total devices connected
   *
   */
-  int 
+  Int32
   getNumberOfDevices(InputObjectType::E type);
   /**
   * Get a input object by id

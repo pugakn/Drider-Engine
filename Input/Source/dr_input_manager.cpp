@@ -7,20 +7,20 @@
 namespace driderSDK {
 
 void
-InputManager::init(std::size_t winHandle, bool nonExlusive) {
+InputManager::init(SizeT winHandle, bool nonExlusive) {
   if (nonExlusive) {
     OIS::ParamList pl;
-    pl.insert(std::make_pair(std::string("WINDOW"), std::to_string(winHandle)));
+    pl.insert(std::make_pair(String("WINDOW"), std::to_string(winHandle)));
 #if defined OIS_WIN32_PLATFORM
-    pl.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_FOREGROUND")));
-    pl.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_NONEXCLUSIVE")));
-    pl.insert(std::make_pair(std::string("w32_keyboard"), std::string("DISCL_FOREGROUND")));
-    pl.insert(std::make_pair(std::string("w32_keyboard"), std::string("DISCL_NONEXCLUSIVE")));
+    pl.insert(std::make_pair(String("w32_mouse"), String("DISCL_FOREGROUND")));
+    pl.insert(std::make_pair(String("w32_mouse"), String("DISCL_NONEXCLUSIVE")));
+    pl.insert(std::make_pair(String("w32_keyboard"), String("DISCL_FOREGROUND")));
+    pl.insert(std::make_pair(String("w32_keyboard"), String("DISCL_NONEXCLUSIVE")));
 #elif defined OIS_LINUX_PLATFORM
-    pl.insert(std::make_pair(std::string("x11_mouse_grab"), std::string("false")));
-    pl.insert(std::make_pair(std::string("x11_mouse_hide"), std::string("false")));
-    pl.insert(std::make_pair(std::string("x11_keyboard_grab"), std::string("false")));
-    pl.insert(std::make_pair(std::string("XAutoRepeatOn"), std::string("true")));
+    pl.insert(std::make_pair(String("x11_mouse_grab"), String("false")));
+    pl.insert(std::make_pair(String("x11_mouse_hide"), String("false")));
+    pl.insert(std::make_pair(String("x11_keyboard_grab"), String("false")));
+    pl.insert(std::make_pair(String("XAutoRepeatOn"), String("true")));
 #endif
     m_mngr = OIS::InputManager::createInputSystem(pl);
   }
@@ -32,7 +32,7 @@ InputManager::init(std::size_t winHandle, bool nonExlusive) {
 
 void
 InputManager::destroy() {
-  for (size_t i = 0; i < m_objects.size(); ++i) {
+  for (SizeT i = 0; i < m_objects.size(); ++i) {
     destroyInputObject(i);
   }
 
@@ -104,52 +104,29 @@ InputManager::destroyInputObject(UInt32 objID) {
 
 int
 InputManager::getNumberOfDevices(InputObjectType::E type) {
-  OIS::Type internalType;
-
-  switch (type)
-  {
-  case driderSDK::InputObjectType::kKeyboard:
-    internalType = OIS::Type::OISKeyboard;
-    break;
-  case driderSDK::InputObjectType::kMouse:
-    internalType = OIS::Type::OISMouse;
-    break;
-  case driderSDK::InputObjectType::kJoystick:
-    internalType = OIS::Type::OISJoyStick;
-    break;
-  default:
-    internalType = OIS::Type::OISUnknown;
-    break;
-  }
-
-  return m_mngr->getNumberOfDevices(internalType);
+    return m_mngr->getNumberOfDevices(static_cast<OIS::Type>(type));
 }
 
 void InputManager::registerAllActiveDevices()
 {
-  int num = getNumberOfDevices(InputObjectType::kKeyboard);
-  for (int i = 0; i < num; ++i)
-  {
-    createInputObject(InputObjectType::kKeyboard);
-  }
-  num = getNumberOfDevices(InputObjectType::kMouse);
-  for (int i = 0; i < num; ++i)
-  {
-    createInputObject(InputObjectType::kMouse);
-  }
-  num = getNumberOfDevices(InputObjectType::kJoystick);
-  for (int i = 0; i < num; ++i)
-  {
-    createInputObject(InputObjectType::kJoystick);
+  for (auto deviceType = InputObjectType::kKeyboard; 
+      deviceType < InputObjectType::kCount; 
+      deviceType = static_cast<InputObjectType::E>(deviceType + 1)) {
+
+    Int32 devicesCount = getNumberOfDevices(deviceType);
+
+    for (Int32 device = 0; device < devicesCount; ++device) {
+      createInputObject(deviceType); 
+    }
   }
 }
 
-MouseInput * InputManager::getMouse()
+MouseInput* InputManager::getMouse()
 {
   return m_mouseDevices[0];
 }
 
-KeyboardInput * InputManager::getKeyboard()
+KeyboardInput* InputManager::getKeyboard()
 {
   return m_keyboardDevices[0];
 }
@@ -159,7 +136,7 @@ UInt32 InputManager::getNumOfJoysticks()
   return m_joystickDevices.size();
 }
 
-JoystickInput * InputManager::getJoystick(UInt32 id)
+JoystickInput* InputManager::getJoystick(UInt32 id)
 {
   return m_joystickDevices[id];
 }

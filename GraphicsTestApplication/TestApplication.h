@@ -53,11 +53,11 @@ public:
   Viewport viewport;
   Camera camera;
 
-  SoundAPI* soundDriver;
+  //SoundAPI* soundDriver;
 
-  DrSound *sound1;
-  DrSound *sound2;
-  DrChannel *channel;
+  //DrSound *sound1;
+  //DrSound *sound2;
+  //DrChannel *channel;
   
   /*FMOD::System     *system;
   FMOD::Sound      *sound1;
@@ -65,9 +65,6 @@ public:
   FMOD_RESULT       result;
   unsigned int      version;*/
   
-  InputManager m_inputManager;
-  KeyboardInput* m_keyboardInput;
-  MouseInput* m_mouseInput;
   std::unique_ptr<SceneGraph> m_sceneGraph;
 };
 

@@ -51,13 +51,12 @@ TestApplication::onInit() {
 }
 void
 TestApplication::onInput() {
-  m_mouseInput->capture();
-  m_keyboardInput->capture();
+  InputManager::instance().captureAll();
 }
 
 void
 TestApplication::onUpdate() {
-  soundDriver->update();
+  //soundDriver->update();
   m_sceneGraph->update();
   camera.update(0);
 }
@@ -90,19 +89,15 @@ TestApplication::initInput() {
 
   HWND win = GetActiveWindow();
 
-  m_inputManager.init((size_t)win);
-  
-  UInt32 mouseObjID = m_inputManager.createInputObject(InputObjectType::kMouse);
+  InputManager::startUp();
 
-  UInt32 keybObjID = m_inputManager.createInputObject(InputObjectType::kKeyboard);
+  InputManager* inputMngr = nullptr;
 
-  InputObject* inputObject = m_inputManager.getInputObjectByID(mouseObjID);
+  if(InputManager::isStarted()){
+    inputMngr = InputManager::instancePtr();
+  }
 
-  m_mouseInput = dynamic_cast<MouseInput*>(inputObject);
-
-  inputObject = m_inputManager.getInputObjectByID(keybObjID);
-
-  m_keyboardInput = dynamic_cast<KeyboardInput*>(inputObject);
+  inputMngr->init((size_t)win);
 }
 
 void 
@@ -122,22 +117,22 @@ TestApplication::initResources() {
 
 void 
 TestApplication::initSound() {
-  soundDriver = new FMODSoundAPI;
+  //soundDriver = new FMODSoundAPI;
 
-  soundDriver->init();
-  
-  sound1 = new FMODSound;
+  //soundDriver->init();
+  //
+  //sound1 = new FMODSound;
 
-  soundDriver->system->createSound("testSound.mp3",
-                                   DR_SOUND_MODE::kDrMode_DEFAULT,
-                                   0,
-                                   sound1);
-  channel = new FMODChannel;
-  
-  sound1->init(reinterpret_cast<SoundSystem*>(soundDriver->system->getReference()),
-               reinterpret_cast<DrChannel*>(channel->getReference()));
-  sound1->setMode(DR_SOUND_MODE::kDrMode_LOOP_OFF);
-  sound1->play();
+  //soundDriver->system->createSound(_T("testSound.mp3"),
+  //                                 DR_SOUND_MODE::kDrMode_DEFAULT,
+  //                                 0,
+  //                                 sound1);
+  //channel = new FMODChannel;
+  //
+  //sound1->init(reinterpret_cast<SoundSystem*>(soundDriver->system->getReference()),
+  //             reinterpret_cast<DrChannel*>(channel->getReference()));
+  //sound1->setMode(DR_SOUND_MODE::kDrMode_LOOP_OFF);
+  //sound1->play();
 }
 
 void 
@@ -155,7 +150,8 @@ TestApplication::initSceneGraph() {
 
   auto inputListener = jokerNode->createComponent<InputComponent>();
 
-  m_keyboardInput->setEventCallback(inputListener);
+  auto keyboardInput = InputManager::instancePtr()->getKeyboard();
+  keyboardInput->setEventCallback(inputListener);
 
   auto drawableComponent = jokerNode->getComponent<DrawableComponent>();
   

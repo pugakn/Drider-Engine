@@ -6,7 +6,8 @@ namespace InputObjectType {
     kUnknown = 0,
     kKeyboard = 1,
     kMouse = 2,
-    kJoystick = 3
+    kJoystick = 3,
+    kCount
   };
 }
 /**
