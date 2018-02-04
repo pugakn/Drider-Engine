@@ -4,11 +4,8 @@
 #include <gtest\gtest.h>
 
 TEST(MD5, md5Encrypting) {
-  std::string message = "";
-  std::string md5Message = "";
-
-  message = "Triangle";
-  md5Message = driderSDK::MD5(message);
+  std::string message = "Triangle";
+  std::string md5Message = driderSDK::MD5(message);
   EXPECT_EQ(md5Message, "5e5500cb2b82eb72d550de644bd1b64b");
 
   message = "Eye";

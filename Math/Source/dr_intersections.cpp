@@ -420,20 +420,15 @@ bool
 Intersect::frustrumSphere(const std::array<Plane, 6>& frustrumPlanes,
                           const Vector3D& sphereOrigin,
                           float sphereRadius) {
+  sphereRadius = Math::abs(sphereRadius);
 
-  float distance;
-  
   for (const Plane& plane : frustrumPlanes) {
-    distance = plane.distanceToPoint(sphereOrigin);
-    if (distance < -sphereRadius) {
-      return false;
-    }
-    else if (distance < sphereRadius)
-    {
+    if (plane.distanceToPoint(sphereOrigin) < sphereRadius) {
       return true;
     }
   }
-  return true;
+
+  return false;
 }
 
 bool

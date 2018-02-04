@@ -7,40 +7,37 @@ namespace driderSDK {
 }
 bool HelperMouseListener::mouseMoved(const OIS::MouseEvent & arg)
 {
-  MouseInputState st;
-  st.m_pressedButtons = arg.state.buttons;
-  st.m_cursorPosition.x = arg.state.X.abs;
-  st.m_cursorPosition.y = arg.state.Y.abs;
-  st.m_relativePosition.x = arg.state.X.rel;
-  st.m_relativePosition.y = arg.state.Y.rel;
+  m_pMouse->m_state.m_pressedButtons = arg.state.buttons;
+  m_pMouse->m_state.m_cursorPosition.x = arg.state.X.abs;
+  m_pMouse->m_state.m_cursorPosition.y = arg.state.Y.abs;
+  m_pMouse->m_state.m_relativePosition.x = arg.state.X.rel;
+  m_pMouse->m_state.m_relativePosition.y = arg.state.Y.rel;
   for (auto &it : m_pMouse->m_listeners) {
-    it->mouseMoved(st);
+    it->mouseMoved(m_pMouse->m_state);
   }
   return true;
 }
 bool HelperMouseListener::mousePressed(const OIS::MouseEvent & arg, OIS::MouseButtonID id)
 {
-  MouseInputState st;
-  st.m_pressedButtons = arg.state.buttons;
-  st.m_cursorPosition.x = arg.state.X.abs;
-  st.m_cursorPosition.y = arg.state.Y.abs;
-  st.m_relativePosition.x = arg.state.X.rel;
-  st.m_relativePosition.y = arg.state.Y.rel;
+  m_pMouse->m_state.m_pressedButtons = arg.state.buttons;
+  m_pMouse->m_state.m_cursorPosition.x = arg.state.X.abs;
+  m_pMouse->m_state.m_cursorPosition.y = arg.state.Y.abs;
+  m_pMouse->m_state.m_relativePosition.x = arg.state.X.rel;
+  m_pMouse->m_state.m_relativePosition.y = arg.state.Y.rel;
   for (auto &it : m_pMouse->m_listeners) {
-    it->mousePressed(st, (driderSDK::MouseButtonID::E)id);
+    it->mousePressed(m_pMouse->m_state, (driderSDK::MouseButtonID::E)id);
   }
   return true;
 }
 bool HelperMouseListener::mouseReleased(const OIS::MouseEvent & arg, OIS::MouseButtonID id)
 {
-  MouseInputState st;
-  st.m_pressedButtons = arg.state.buttons;
-  st.m_cursorPosition.x = arg.state.X.abs;
-  st.m_cursorPosition.y = arg.state.Y.abs;
-  st.m_relativePosition.x = arg.state.X.rel;
-  st.m_relativePosition.y = arg.state.Y.rel;
+  m_pMouse->m_state.m_pressedButtons = arg.state.buttons;
+  m_pMouse->m_state.m_cursorPosition.x = arg.state.X.abs;
+  m_pMouse->m_state.m_cursorPosition.y = arg.state.Y.abs;
+  m_pMouse->m_state.m_relativePosition.x = arg.state.X.rel;
+  m_pMouse->m_state.m_relativePosition.y = arg.state.Y.rel;
   for (auto &it : m_pMouse->m_listeners) {
-    it->mouseReleased(st, (driderSDK::MouseButtonID::E)id);
+    it->mouseReleased(m_pMouse->m_state, (driderSDK::MouseButtonID::E)id);
   }
   return true;
 }
@@ -50,6 +47,9 @@ MouseInput::internalInit(OIS::Object* mouse)
   m_obj = mouse;
   m_mouse = reinterpret_cast<OIS::Mouse*>(m_obj);
   m_mouse->setEventCallback(&m_helperListener);
+  const OIS::MouseState &ms = m_mouse->getMouseState();
+  ms.width = 4096;   //Hardcoder max 4k
+  ms.height = 4096;  //Hardcoder max 4k
 }
 
 void MouseInput::capture()

@@ -43,6 +43,16 @@ AABB::getMinPoint() const {
 									center.z - (depth * 0.5f));
 }
 
+AABB
+AABB::operator=(const AABB & A)
+{
+  width = A.width;
+  height = A.height;
+  depth = A.depth;
+  center = A.center;
+  return *this;
+}
+
 bool
 AABB::intersect(AABB& aabb) {
   return Intersect::aabbAabb(center, 

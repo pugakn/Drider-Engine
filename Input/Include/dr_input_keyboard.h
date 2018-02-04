@@ -8,6 +8,9 @@
 #include "dr_input_object.h"
 namespace driderSDK {
   class KeyboardInput;
+  /**
+  * Helper class to receive events
+  */
   class HelperKeyboardListener : public ::OIS::KeyListener
   {
   public:
@@ -19,23 +22,83 @@ namespace driderSDK {
     KeyboardInput* m_pKeyboard;
   };
 
-  //Override this
+  /**
+  * Override this to receive events
+  */
   class DR_INPUT_EXPORT IKeyboardListener
   {
   public:
-    virtual bool keyPressed(const KeyboardButtonID::E &key) = 0;
-    virtual bool keyReleased(const KeyboardButtonID::E &key) = 0;
+    /**
+    * Called when a button is pressed
+    *
+    * @param key
+    *   The pressed key
+    *
+    */
+    virtual bool 
+    keyPressed(const KeyboardButtonID::E &key) = 0;
+    /**
+    * Called when a button is pressed
+    *
+    * @param key
+    *   The released key
+    *
+    */
+    virtual bool 
+    keyReleased(const KeyboardButtonID::E &key) = 0;
   };
 
+  /**
+  * Manager class for input device
+  */
   class DR_INPUT_EXPORT KeyboardInput : public InputObject {
   public:
     KeyboardInput(): m_helperListener(this) {}
-    void capture() override;
-    void internalInit(OIS::Object* obj) override;
-
-    bool isKeyDown(KeyboardButtonID::E key) const;
-    bool isModifierDown(KeyboardModifier::E mod) const;
-    void setEventCallback(IKeyboardListener *listener);
+    /**
+    * Call it to capture events
+    *
+    */
+    void 
+    capture() override;
+    /**
+    * Do not call it! you could die
+    *
+    */
+    void 
+    internalInit(OIS::Object* obj) override;
+    /**
+    * Check if a key is down
+    *
+    * @param key
+    *   The key to check
+    *
+    * @return 
+    *   true if the key is down
+    *
+    */
+    bool 
+    isKeyDown(KeyboardButtonID::E key) const;
+    /**
+    * Check if a modifier
+    *
+    * @param mod
+    *   The modifier to check
+    *
+    * @return
+    *   true if the modifdier is down
+    *
+    */
+    bool 
+    isModifierDown(KeyboardModifier::E mod) const;
+    /**
+    * Register a listener
+    *
+    * @param listener
+    *   The listener
+    *
+    */
+    void 
+    setEventCallback(IKeyboardListener *listener);
     std::vector<IKeyboardListener*> m_listeners;
   private:
     HelperKeyboardListener m_helperListener;

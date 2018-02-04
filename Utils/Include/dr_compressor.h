@@ -1,5 +1,6 @@
 #pragma once
 #include "dr_util_prerequisites.h"
+
 namespace driderSDK {
 struct DR_UTIL_EXPORT Compressor {
   /**

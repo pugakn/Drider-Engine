@@ -3,7 +3,10 @@
 
 namespace driderSDK {
 
-void 
+Animation::Animation() {
+}
+
+void
 Animation::setBoneAnimation(const TString& bone, 
                             BoneAnim&& boneAnimation) {
   SizeT newIndex = m_bonesAnimations.size();

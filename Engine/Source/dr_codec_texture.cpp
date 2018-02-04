@@ -22,9 +22,11 @@ CodecTexture::decode(TString pathName) {
   const char* a = c;
   unsigned char* data = stbi_load(a, &image->w, &image->h, &image->channels, 0);
 
-  size_t sizeData = image->w * image->h * image->channels;
-  image->data.resize(sizeData);
-  std::memcpy(&image->data[0], data,sizeData);
+  if(data != nullptr) {
+    size_t sizeData = image->w * image->h * image->channels;
+    image->data.resize(sizeData);
+    std::memcpy(&image->data[0], data,sizeData);
+  }
 
   stbi_image_free(data);
   return UniqueVoidPtr(image, &dr_void_deleter<sImage>);
