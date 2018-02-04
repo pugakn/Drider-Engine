@@ -9,15 +9,26 @@ namespace driderSDK {
 
 void
 SoundCore::init(void* pData) {
+  
+}
+
+void
+SoundCore::init(void* pData,
+                void* extraData) {
   SoundInfo *info = static_cast<SoundInfo*>(pData);
   name = info->name;
-  auto system = reinterpret_cast<SoundSystem*>(info->soundSystem);  
+  //auto system = reinterpret_cast<SoundSystem*>(info->soundSystem); 
+
+  SoundExtraInfo *extraInfo = static_cast<SoundExtraInfo*>(extraData);
 
   soundResource = new FMODSound;
-  system->createSound(name,
-                      DR_SOUND_MODE::kDrMode_DEFAULT,
-                      0,
-                      soundResource);
+  soundResource->init(reinterpret_cast<SoundSystem*>(extraInfo->m_soundSystem->getReference()),
+                      reinterpret_cast<DrChannel**>(extraInfo->m_channel->getObjectReference()));
+
+  extraInfo->m_soundSystem->createSound(name,
+                                        DR_SOUND_MODE::kDrMode_DEFAULT,
+                                        0,
+                                        soundResource);
 }
 
 DrSound *

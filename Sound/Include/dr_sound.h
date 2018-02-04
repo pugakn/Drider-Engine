@@ -32,6 +32,12 @@ class DR_SOUND_EXPORT DrSound {
     init(SoundSystem *system,
          DrChannel **channel) = 0;
 
+    virtual void
+    setSystem (SoundSystem *system) = 0;
+
+    virtual void
+    setChannel(DrChannel** channel) = 0;
+
     /**
     * Gets void pointer to api sound
     */

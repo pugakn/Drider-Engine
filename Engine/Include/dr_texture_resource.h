@@ -24,6 +24,11 @@ class DR_ENGINE_EXPORT TextureResource : public Resource {
   void
   init(void* pData) override;
 
+  void
+  init(void *pData,
+       void *extraData) 
+  {}
+
   
 public:
   std::vector<unsigned char> data;

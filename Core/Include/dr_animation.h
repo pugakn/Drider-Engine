@@ -63,6 +63,11 @@ class DR_CORE_EXPORT Animation : public Resource {
   init(void*)
   {}
 
+  void
+  init(void* pData,
+       void* extraData)
+  {}
+
  private:
 
   float m_ticksPerSecond;

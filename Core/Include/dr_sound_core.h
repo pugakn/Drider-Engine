@@ -22,6 +22,10 @@ class DR_CORE_EXPORT SoundCore : public Resource {
   virtual void
   init(void* pData) override;
 
+  virtual void
+  init(void* pData,
+       void* extraData) override;
+
   /**
   * Gets the DrSound object 
   */

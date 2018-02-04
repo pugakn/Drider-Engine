@@ -40,34 +40,31 @@ TestApplication::onInit() {
     resourceManager = &ResourceManager::instance();
   }
   
-  resourceManager->init(soundDriver->system);
+  resourceManager->init();
 
   resourceManager->loadResource(_T("testImage.png"));
 
   SoundExtraInfo *extraInfo = new SoundExtraInfo(
-                              reinterpret_cast<SoundSystem*>(
-                              soundDriver->system->getReference()),
-                              reinterpret_cast<DrChannel*>(
-                              soundDriver->channel1->getReference()));
+                              soundDriver->system,
+                              soundDriver->channel1);
 
-  auto soundResource1 = resourceManager->loadResource(_T("testSound1.mp3"));
+  auto soundResource1 = resourceManager->loadResource(_T("testSound1.mp3"), extraInfo);
+  auto soundResource2 = resourceManager->loadResource(_T("testSound2.mp3"), extraInfo);
+  auto soundResource3 = resourceManager->loadResource(_T("testSound3.mp3"), extraInfo);
+
   auto sound1 = std::dynamic_pointer_cast<SoundCore>(soundResource1);
-  sound1->get()->init (reinterpret_cast<SoundSystem*>(soundDriver->system->getReference()),
-                      reinterpret_cast<DrChannel**>(soundDriver->channel1->getObjectReference()));
   sound1->get()->setMode(DR_SOUND_MODE::kDrMode_LOOP_NORMAL);
   sound1->get()->play();
 
-  auto soundResource2 = resourceManager->loadResource(_T("testSound2.mp3"));
   auto sound2 = std::dynamic_pointer_cast<SoundCore>(soundResource2);
-  sound2->get()->init(reinterpret_cast<SoundSystem*>(soundDriver->system->getReference()),
-                     reinterpret_cast<DrChannel**>(soundDriver->channel2->getObjectReference()));
+  sound2->get()->setChannel(reinterpret_cast<DrChannel**>(soundDriver->channel2->getObjectReference()));
   sound2->get()->setMode(DR_SOUND_MODE::kDrMode_LOOP_OFF);
+  //sound2->get()->play();
 
-  auto soundResource3 = resourceManager->loadResource(_T("testSound3.mp3"));
   auto sound3 = std::dynamic_pointer_cast<SoundCore>(soundResource3);
-  sound3->get()->init(reinterpret_cast<SoundSystem*>(soundDriver->system->getReference()),
-                      reinterpret_cast<DrChannel**>(soundDriver->channel3->getObjectReference()));
+  sound3->get()->setChannel(reinterpret_cast<DrChannel**>(soundDriver->channel3->getObjectReference()));
   sound3->get()->setMode(DR_SOUND_MODE::kDrMode_LOOP_OFF);
+  //sound3->get()->play();
   
   std::vector<TString> modelsFiles{_T("VenomJok.X"), _T("dwarf.X") };
 

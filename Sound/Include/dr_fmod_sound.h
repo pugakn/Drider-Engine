@@ -17,6 +17,12 @@ class DR_SOUND_EXPORT FMODSound : public DrSound {
     init(SoundSystem *system,
          DrChannel **channel) override;
 
+    void
+    setSystem(SoundSystem* system) override;
+    
+    void
+    setChannel(DrChannel **channel) override;
+
     FMOD::Sound *
     get();
 

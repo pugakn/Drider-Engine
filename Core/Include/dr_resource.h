@@ -28,6 +28,10 @@ class DR_CORE_EXPORT Resource
   virtual void
   init(void* pData) = 0;
 
+  virtual void
+  init(void* pData,
+       void* extraData) = 0;
+
   
 
 };
