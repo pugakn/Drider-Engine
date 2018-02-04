@@ -18,7 +18,7 @@ class DR_SOUND_EXPORT FMODSoundSystem : public SoundSystem {
         DR_INITFLAGS::E initFlags,
         void *extraDriverData) override;
 
-   DR_SOUND_RESULT::E
+   void
    update() override;
 
    void*
@@ -27,7 +27,7 @@ class DR_SOUND_EXPORT FMODSoundSystem : public SoundSystem {
    void**
    getObjectReference() override;
 
-   DR_SOUND_RESULT::E 
+   void 
    createSound(TString name,
                DR_SOUND_MODE::E mode,
                DrCreateSoundExInfo *createInfo,

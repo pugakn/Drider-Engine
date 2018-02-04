@@ -22,11 +22,9 @@ FMODSoundSystem::init(Int32 maxChannels,
   return static_cast<DR_SOUND_RESULT::E>(result);
 }
 
-DR_SOUND_RESULT::E
+void
 FMODSoundSystem::update() {
   result = fmodSoundSystem->update();
-
-  return static_cast<DR_SOUND_RESULT::E>(result);
 }
 
 void*
@@ -39,7 +37,7 @@ FMODSoundSystem::getObjectReference() {
   return reinterpret_cast<void**>(&fmodSoundSystem);
 }
 
-DR_SOUND_RESULT::E 
+void
 FMODSoundSystem::createSound(TString name,
                              DR_SOUND_MODE::E mode,
                              DrCreateSoundExInfo* createInfo,
@@ -51,24 +49,6 @@ FMODSoundSystem::createSound(TString name,
                                         0,
                                         reinterpret_cast<FMOD::Sound**>
                                           (sound->getObjectReference()));
-
-  return static_cast<DR_SOUND_RESULT::E>(result);
 }
-
-//DR_SOUND_RESULT::E
-//FMODSoundSystem::playSound(DrSound* sound,
-//                           DrChannelGroup* channelgroup,
-//                           bool paused,
-//                           DrChannel* channel) {
-//
-//  result = fmodSoundSystem->playSound(reinterpret_cast<FMOD::Sound*>
-//                                        (sound->getReference()),
-//                                      0,
-//                                      paused,
-//                                      reinterpret_cast<FMOD::Channel**>
-//                                        (channel->getObjectReference()));
-//
-//  return static_cast<DR_SOUND_RESULT::E>(result);
-//}
 
 }

@@ -179,6 +179,7 @@
     <ClInclude Include="Include\dr_fmod_soundSystem.h" />
     <ClInclude Include="Include\dr_fmod_sound_api.h" />
     <ClInclude Include="Include\dr_sound.h" />
+    <ClInclude Include="Include\dr_soundExtraInfo.h" />
     <ClInclude Include="Include\dr_soundSystem.h" />
     <ClInclude Include="Include\dr_fmod_sound.h" />
     <ClInclude Include="Include\dr_sound_api.h" />

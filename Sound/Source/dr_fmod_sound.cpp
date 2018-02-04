@@ -24,10 +24,9 @@ FMODSound::getObjectReference() {
   return reinterpret_cast<void**>(&fmodSound);
 }
 
-DR_SOUND_RESULT::E
+void
 FMODSound::setMode(DR_SOUND_MODE::E mode) {
   result = fmodSound->setMode(static_cast<FMOD_MODE>(mode));
-  return static_cast<DR_SOUND_RESULT::E>(result);
 }
 
 void

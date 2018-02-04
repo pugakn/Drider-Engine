@@ -63,6 +63,9 @@
     <ClInclude Include="Include\dr_sound_api.h">
       <Filter>Archivos de encabezado\API</Filter>
     </ClInclude>
+    <ClInclude Include="Include\dr_soundExtraInfo.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_soundSystem.cpp">

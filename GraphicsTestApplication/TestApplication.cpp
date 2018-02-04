@@ -43,6 +43,13 @@ TestApplication::onInit() {
   resourceManager->init(soundDriver->system);
 
   resourceManager->loadResource(_T("testImage.png"));
+
+  SoundExtraInfo *extraInfo = new SoundExtraInfo(
+                              reinterpret_cast<SoundSystem*>(
+                              soundDriver->system->getReference()),
+                              reinterpret_cast<DrChannel*>(
+                              soundDriver->channel1->getReference()));
+
   auto soundResource1 = resourceManager->loadResource(_T("testSound1.mp3"));
   auto sound1 = std::dynamic_pointer_cast<SoundCore>(soundResource1);
   sound1->get()->init (reinterpret_cast<SoundSystem*>(soundDriver->system->getReference()),

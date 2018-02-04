@@ -26,7 +26,7 @@ class DR_SOUND_EXPORT FMODSound : public DrSound {
     virtual void**
     getObjectReference() override;
 
-    DR_SOUND_RESULT::E
+    void
     setMode(DR_SOUND_MODE::E mode) override;
 
     void

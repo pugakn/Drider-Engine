@@ -1,5 +1,6 @@
 #pragma once
 #include "dr_sound_prerequisites.h"
+#include <dr_soundExtraInfo.h>
 
 namespace driderSDK {
 
@@ -56,7 +57,7 @@ class DR_SOUND_EXPORT DrSound {
     * @param mode
     * Mode sound
     */
-    virtual DR_SOUND_RESULT::E
+    virtual void
     setMode(DR_SOUND_MODE::E mode) = 0;
 
 
