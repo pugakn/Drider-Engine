@@ -39,7 +39,7 @@ class DR_ENGINE_EXPORT ResourceManager {
   *   void.
   */
   std::shared_ptr<Resource>
-  loadResource (TString resourceName);
+  loadResource (const TString& resourceName);
   
   /**
   * TEST::createResource
@@ -55,7 +55,7 @@ class DR_ENGINE_EXPORT ResourceManager {
   *   void.
   */
   void
-  createResource(TString resourceKey);
+  createResource(const TString& resourceKey);
 
   /**
   * TEST::existInResourceContent
@@ -68,7 +68,7 @@ class DR_ENGINE_EXPORT ResourceManager {
   *   Return true if the resource exist, else return false.
   */
   bool
-  existInResourceContent (TString key);
+  existInResourceContent (const TString& key);
 
   /**
   * TEST::getReference
@@ -81,7 +81,7 @@ class DR_ENGINE_EXPORT ResourceManager {
   *   Return the shared_ptr to a Resource.
   */
   std::shared_ptr<Resource>
-  getReference(TString key);
+  getReference(const TString& key);
   
   std::map<TString, std::shared_ptr<Resource>> resourceContent;
 
