@@ -1,5 +1,6 @@
 #pragma once
 #include "dr_sound_prerequisites.h"
+#include <dr_soundExtraInfo.h>
 
 namespace driderSDK {
 
@@ -31,6 +32,12 @@ class DR_SOUND_EXPORT DrSound {
     init(SoundSystem *system,
          DrChannel **channel) = 0;
 
+    virtual void
+    setSystem (SoundSystem *system) = 0;
+
+    virtual void
+    setChannel(DrChannel** channel) = 0;
+
     /**
     * Gets void pointer to api sound
     */
@@ -56,7 +63,7 @@ class DR_SOUND_EXPORT DrSound {
     * @param mode
     * Mode sound
     */
-    virtual DR_SOUND_RESULT::E
+    virtual void
     setMode(DR_SOUND_MODE::E mode) = 0;
 
 

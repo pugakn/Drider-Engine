@@ -9,7 +9,6 @@ class SoundSystem;
 class DR_ENGINE_EXPORT CodecSound : public Codec {
 
  public:
-  CodecSound(SoundSystem *system) : soundSystem(system) {}
   CodecSound() {}
   virtual ~CodecSound() {}
 
@@ -24,8 +23,6 @@ class DR_ENGINE_EXPORT CodecSound : public Codec {
 
   CompatibleType::E
   getType() override;
-
-  SoundSystem* soundSystem;
 
 };
 

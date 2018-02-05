@@ -38,7 +38,7 @@ public:
   /**
   * Update the sound system
   */
-  virtual DR_SOUND_RESULT::E
+  virtual void
   update() = 0;
 
   /**
@@ -67,7 +67,7 @@ public:
   * @param sound
   * Pointer to resource api sound
   */
-  virtual DR_SOUND_RESULT::E 
+  virtual void 
   createSound(TString name,
               DR_SOUND_MODE::E mode,
               DrCreateSoundExInfo *createInfo,

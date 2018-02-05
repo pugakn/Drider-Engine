@@ -17,6 +17,12 @@ class DR_SOUND_EXPORT FMODSound : public DrSound {
     init(SoundSystem *system,
          DrChannel **channel) override;
 
+    void
+    setSystem(SoundSystem* system) override;
+    
+    void
+    setChannel(DrChannel **channel) override;
+
     FMOD::Sound *
     get();
 
@@ -26,7 +32,7 @@ class DR_SOUND_EXPORT FMODSound : public DrSound {
     virtual void**
     getObjectReference() override;
 
-    DR_SOUND_RESULT::E
+    void
     setMode(DR_SOUND_MODE::E mode) override;
 
     void

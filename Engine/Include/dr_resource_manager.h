@@ -65,17 +65,35 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager> {
   */
   std::shared_ptr<Resource>
   loadResource (TString resourceName);
+
+  /**
+  * TEST::loadResource
+  * Checks if the resource is compatible, then load this
+  * resource in the resourceContent.
+  *
+  * @param resourceName
+  *   Resource's name.
+  *
+  * @param extraInfo
+  *   Extra data to initialize the resource
+  *
+  * @return
+  *   void.
+  */
+  std::shared_ptr<Resource>
+  loadResource(TString resourceName,
+               void* extraData);
   
-//private:
+private:
   /**
   * TEST::createResource
   * Creates a resource, then puts in the contentResource and sets a key
   *
-  * @param resourceType
-  *   Type of the resource.
-  *
   * @param resourceName
-  *   The name of the resource.
+  *   Resource's name.
+  *
+  * @param codec
+  *   Pointer to codec.
   *
   * @return
   *   void.
@@ -85,7 +103,29 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager> {
                  Codec* codec);
 
   /**
+  * TEST::createResource
+  * Creates a resource, then puts in the contentResource and sets a key
   *
+  * @param resourceName
+  *   Type of the resource.
+  *
+  * @param codec
+  *   Pointer to codec.
+  *
+  * @param extraInfo
+  *   Extra info to inicialize the resource.
+  *
+  * @return
+  *   void.
+  */
+  void
+  createResource(TString resourceName,
+                 Codec* codec,
+                 void* extraInfo);
+  
+public:
+  /**
+  * Add a resource to the ResourceContent of the ResourceManager
   */
   void
   addResource(TString resourceName, 
