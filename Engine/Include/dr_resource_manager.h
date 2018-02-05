@@ -53,7 +53,7 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager> {
   *   Return the shared_ptr to a Resource.
   */
   std::shared_ptr<Resource>
-  getReference(TString key);
+  getReference(const TString& key);
 
   /**
   * TEST::loadResource
@@ -67,7 +67,7 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager> {
   *   void.
   */
   std::shared_ptr<Resource>
-  loadResource (TString resourceName);
+  loadResource (const TString& resourceName);
 
   /**
   * TEST::loadResource
@@ -84,7 +84,7 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager> {
   *   void.
   */
   std::shared_ptr<Resource>
-  loadResource(TString resourceName,
+  loadResource(const TString& resourceName,
                void* extraData);
   
 private:
@@ -102,7 +102,7 @@ private:
   *   void.
   */
   void
-  createResource(TString resourceName,
+  createResource(const TString& resourceName,
                  Codec* codec);
 
   /**
@@ -122,7 +122,7 @@ private:
   *   void.
   */
   void
-  createResource(TString resourceName,
+  createResource(const TString& resourceName,
                  Codec* codec,
                  void* extraInfo);
   
@@ -131,7 +131,7 @@ public:
   * Add a resource to the ResourceContent of the ResourceManager
   */
   void
-  addResource(TString resourceName, 
+  addResource(const TString& resourceName, 
               std::shared_ptr<Resource> pResource);
 private:
   /**
@@ -145,7 +145,7 @@ private:
   *   Return true if the resource exist, else return false.
   */
   bool
-  existInResourceContent (TString key);
+  existInResourceContent (const TString& key);
   
  public:
   using ResorceSmartPtr = std::shared_ptr<Resource>;
