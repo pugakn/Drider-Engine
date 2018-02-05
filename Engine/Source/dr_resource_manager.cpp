@@ -28,7 +28,7 @@ ResourceManager::onStartUp() {
 }
 
 std::shared_ptr<Resource>
-ResourceManager::loadResource(TString resourceName) {
+ResourceManager::loadResource(const TString& resourceName) {
   std::shared_ptr<Resource> r;
   
   for (auto &codec : codecs) {
@@ -47,7 +47,7 @@ ResourceManager::loadResource(TString resourceName) {
 }
 
 std::shared_ptr<Resource>
-ResourceManager::loadResource(TString resourceName,
+ResourceManager::loadResource(const TString& resourceName,
                               void* extraData) {
   std::shared_ptr<Resource> r;
 
@@ -70,7 +70,7 @@ ResourceManager::loadResource(TString resourceName,
 }
 
 void
-ResourceManager::createResource(TString resourceName,
+ResourceManager::createResource(const TString& resourceName,
                                 Codec* codec) {
   auto resource = resourceFactory[codec]();
   auto info = codec->decode(resourceName);
@@ -85,7 +85,7 @@ ResourceManager::createResource(TString resourceName,
 }
 
 void
-ResourceManager::createResource(TString resourceName,
+ResourceManager::createResource(const TString& resourceName,
                                 Codec* codec,
                                 void* extraInfo) {
   auto resource = resourceFactory[codec]();
@@ -103,18 +103,18 @@ ResourceManager::createResource(TString resourceName,
 }
 
 void 
-ResourceManager::addResource(TString resourceName, 
+ResourceManager::addResource(const TString& resourceName, 
                              std::shared_ptr<Resource> pResource) {
   resourceContent.insert({resourceName, pResource});
 }
 
 bool
-ResourceManager::existInResourceContent(TString resourceName) {
+ResourceManager::existInResourceContent(const TString& resourceName) {
   return resourceContent.find(resourceName) != resourceContent.end();
 }
 
 std::shared_ptr<Resource>
-ResourceManager::getReference(TString resourceName) {
+ResourceManager::getReference(const TString& resourceName) {
   if(!existInResourceContent(resourceName))
     return nullptr;
   return resourceContent.find(resourceName)->second;
