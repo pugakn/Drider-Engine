@@ -1,11 +1,12 @@
 #pragma once
 #include "dr_graphics_prerequisites.h"
+#include <vector>
 #include "dr_graphics_defines.h"
-
 namespace driderSDK {
 
 class Device;
 class DeviceContext;
+class ShaderBytecode;
 
 /**
 * Base class for shaders
@@ -16,6 +17,12 @@ class DeviceContext;
 class DR_GRAPHICS_EXPORT Shader
 {
  public:
+   virtual void*
+     getAPIObject() = 0;
+
+   virtual void**
+     getAPIObjectReference() = 0;
+
   /**
   * Virtual destructor.
   */
@@ -53,8 +60,16 @@ class DR_GRAPHICS_EXPORT Shader
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  virtual DR_GRAPHICS_ERROR::E
-  createFromMemory(const Device& device, const char* buffer, size_t bufferSize) = 0;
+  virtual void
+  create(const Device& device) = 0;
+
+  virtual void
+  compile(const Device& device, const char* buffer, size_t bufferSize) = 0;
+
+  virtual std::vector<DrInputElementDesc>
+   reflect() = 0;
+
+  ShaderBytecode* m_shaderBytecode;
 };
 
 }

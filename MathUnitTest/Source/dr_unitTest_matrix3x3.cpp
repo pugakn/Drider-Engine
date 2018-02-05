@@ -1,6 +1,7 @@
 #include <dr_matrix3x3.h>
 #include <dr_vector3d.h>
 #include <dr_matrix4x4.h>
+#include <dr_quaternion.h>
 #include <gtest\gtest.h>
 #include <utility>
 
@@ -33,6 +34,28 @@ TEST(Matrix3x3, forceInit) {
                     1, 0, 0,
                     0, 1, 0,
                     0, 0, 1);
+}
+
+TEST(Matrix3x3, Constructor4X4) {
+  driderSDK::Matrix4x4 testMatrix(0, 1, 2, 3,
+                                  4, 5, 6, 7,
+                                  8, 9, 10, 11,
+                                  12, 13, 14, 15);
+  driderSDK::Matrix3x3 testMatrix1(testMatrix);
+  checkValuesMatrix(testMatrix1,
+                    0, 1, 2,
+                    4, 5, 6,
+                    8, 9, 10);
+}
+
+TEST(Matrix3x3, ConstructorQuaternion) {
+  driderSDK::Quaternion testQuaternion( 0.7071f, 0, 0, 0.7071f);
+  driderSDK::Matrix3x3 checkMatrix(1, 0, 0,
+                                   0, 0, -1,
+                                   0, 1, 0);
+
+  driderSDK::Matrix3x3 testMatrix(testQuaternion);
+  EXPECT_TRUE(testMatrix.equals(checkMatrix, 0.0001f));
 }
 
 TEST(Matrix3x3, moveConstructor) {
@@ -122,6 +145,33 @@ TEST(Matrix3x3, identity) {
                     1, 0, 0,
                     0, 1, 0,
                     0, 0, 1);
+}
+
+TEST(Matrix3x3, equals) {
+  driderSDK::Matrix3x3 testMatrix(1, 2, 3, 4, 5, 6, 7, 8, 9);
+  driderSDK::Matrix3x3 testMatrix1(2, 3, 4, 5, 6, 7, 8, 9, 10);
+  EXPECT_TRUE(testMatrix.equals(testMatrix1, 2));
+  EXPECT_FALSE(testMatrix.equals(testMatrix1, .5f));
+}
+
+TEST(Matrix3x3, toEulerAngles) {
+  driderSDK::Matrix3x3 testMatrix(0.25581f, -0.77351f, 0.57986f,
+                                  -0.85333f, -0.46255f, -0.24057f,
+                                  0.45429f, -0.43327f, -0.77839f);
+  driderSDK::Vector3D testVector(testMatrix.eulerAngles());
+  EXPECT_FLOAT_EQ(-2.6336787f, testVector[0]);
+  EXPECT_FLOAT_EQ(-0.47157675f, testVector[1]);
+  EXPECT_FLOAT_EQ(-1.2795428f, testVector[2]);
+
+  driderSDK::Matrix3x3 testMatrix3(0.5f, -0.1464f, 0.8536f,
+    0.5f, .8536f, -0.1464f,
+    -0.7071f, .5f, .5f);
+  
+  driderSDK::Vector3D testVector2(testMatrix3.eulerAngles());
+  EXPECT_FLOAT_EQ(.78539819f, testVector2[0]);
+  EXPECT_FLOAT_EQ(.78539336f, testVector2[1]);
+  EXPECT_FLOAT_EQ(.78539819f, testVector2[2]);
+
 }
 
 TEST(Matrix3x3, getPointer) {
@@ -258,6 +308,26 @@ TEST(Matrix3x3, operatorMultiplicationEqualFloat) {
                     16, 4, 0,
                     6, 4, 2,
                     0, 10, 12);
+}
+
+TEST(Matrix3x3, operatorDivide) {
+  driderSDK::Matrix3x3 testMatrix(3, 4, 0, 3, 2, 1, 0, 5, 6);
+  driderSDK::Matrix3x3 testMatrix1(testMatrix.inverse());
+  driderSDK::Matrix3x3 testMatrix2;
+
+
+  testMatrix2 = testMatrix / testMatrix1;
+
+  EXPECT_TRUE(testMatrix2.equals(testMatrix2.identityMat3x3, 0.0000001f));
+}
+
+TEST(Matrix3x3, operatorDivideEqual) {
+  driderSDK::Matrix3x3 testMatrix(3, 4, 0, 3, 2, 1, 0, 5, 6);
+  driderSDK::Matrix3x3 testMatrix1(testMatrix.inverse());
+
+  testMatrix /= testMatrix1;
+
+  EXPECT_TRUE(testMatrix.equals(testMatrix.identityMat3x3, 0.0000001f));
 }
 
 TEST(Matrix3x3, operatorEqualEqual) {

@@ -3,7 +3,7 @@
 #include <wrl.h>
 #include <wrl/client.h>
 
-class ID3D11Buffer;
+struct ID3D11Buffer;
 
 namespace driderSDK {
 
@@ -18,6 +18,12 @@ class DeviceContext;
 class DR_GRAPHICS_EXPORT D3DIndexBuffer : public IndexBuffer
 {
  public:
+   void*
+   getAPIObject() override;
+
+   void**
+   getAPIObjectReference() override;
+
   /**
   * TEST::constructor
   *
@@ -42,8 +48,10 @@ class DR_GRAPHICS_EXPORT D3DIndexBuffer : public IndexBuffer
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  DR_GRAPHICS_ERROR::E
-  create(const Device& device, const DrBufferDesc& desc, char* initialData) override;
+  void
+  create(const Device& device,
+         const DrBufferDesc& desc,
+         const byte* initialData) override;
 
   /**
   * TEST::set
@@ -75,9 +83,23 @@ class DR_GRAPHICS_EXPORT D3DIndexBuffer : public IndexBuffer
   *   The new data buffer size
   */
   void
-  updateFromMemory(const DeviceContext& deviceContext,
-                   const char* dataBuffer,
-                   size_t bufferSize) override;
+  updateFromSysMemCpy(const DeviceContext& deviceContext) override;
+
+  /**
+  * Update the buffer with new data
+  *
+  * @param deviceContext
+  *   The device context to get acces to the resource
+  *
+  * @param dataBuffer
+  *   The new data buffer
+  *
+  * @param bufferSize
+  *   The new data buffer size
+  */
+  void
+  updateFromBuffer(const DeviceContext& deviceContext,
+                   const byte* dataBuffer) override;
 
   /**
   * TEST::release
@@ -87,7 +109,7 @@ class DR_GRAPHICS_EXPORT D3DIndexBuffer : public IndexBuffer
   void
   release() override;
 
-  Microsoft::WRL::ComPtr<ID3D11Buffer> IB;
+  ID3D11Buffer* IB;
 };
 
 }

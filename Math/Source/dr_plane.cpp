@@ -34,9 +34,9 @@ Plane::~Plane() {
 }
 
 float
-Plane::distanceToPoint(const Vector3D& point) {
+Plane::distanceToPoint(const Vector3D& point) const {
   //Warning: Assumes the normal is normalized
-  return Math::abs(dot(point) - d);
+  return dot(point) + d;
 }
 
 PLANE_INTERSECT::E
@@ -73,7 +73,6 @@ Plane::intersects(const AABB& aabb) {
 	return Intersect::aabbPlane(aabb.center, 
 															aabb.width, 
 															aabb.height,
-															aabb.depth, 
 															*this, 
 															d);
 }

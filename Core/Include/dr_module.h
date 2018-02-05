@@ -76,7 +76,9 @@ protected:
   }
 
   virtual void onStartUp() {}
+
   virtual void onShutDown() {}
+
   static T*& _instance() {
     static T* inst = nullptr;
     return inst;

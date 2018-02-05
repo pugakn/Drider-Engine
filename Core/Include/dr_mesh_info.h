@@ -8,7 +8,7 @@ namespace driderSDK {
 
 struct DR_CORE_EXPORT MeshInfo {
   std::vector<Vertex> vertices;
-  std::vector<Int16> indices;
+  std::vector<UInt32> indices;
 };
 
 }

@@ -2,8 +2,42 @@
 #include "dr_math.h"
 #include "dr_vector3d.h"
 #include "dr_plane.h"
-
+#include "dr_matrix3x3.h"
+#include "dr_line.h"
+#include "dr_ray.h"
 namespace driderSDK {
+
+  driderSDK::Vector3D
+    GetVertexP(const driderSDK::Vector3D& min,
+               const driderSDK::Vector3D& max,
+               const driderSDK::Vector3D& normal) {
+
+    driderSDK::Vector3D p = min;
+    if (normal.x >= 0)
+      p.x = max.x;
+    if (normal.y >= 0)
+      p.y = max.y;
+    if (normal.z >= 0)
+      p.z = max.z;
+
+    return p;
+  }
+
+  driderSDK::Vector3D
+    GetVertexN(const driderSDK::Vector3D& min,
+               const driderSDK::Vector3D& max,
+               const driderSDK::Vector3D& normal) {
+
+    driderSDK::Vector3D p = max;
+    if (normal.x >= 0)
+      p.x = min.x;
+    if (normal.y >= 0)
+      p.y = min.y;
+    if (normal.z >= 0)
+      p.z = min.z;
+
+    return p;
+  }
 /**********************************************************************
 *						            Intersection functions
 **********************************************************************/
@@ -72,6 +106,131 @@ Intersect::sphereRay(const Vector3D& sphPosition,
 }
 
 bool
+Intersect::sphereRay(const Vector3D& sphPosition,
+                     float sphRadio,
+                     const Vector3D &rayOrigin,
+                     const Vector3D& rayDirection,
+                     Vector3D * intersectionPoint) {
+  
+  if (sphereContainsPoint(rayOrigin, sphPosition, sphRadio)) {
+    (*intersectionPoint) = rayOrigin;
+    return true;
+  }
+  Vector3D vec(sphPosition - rayOrigin);
+
+  float pDirection = vec.dot(rayDirection);
+
+  if (pDirection <= 0.0f) {
+    return false;
+  }
+
+  Vector3D vecClosestPoint(rayOrigin + (rayDirection * pDirection));
+  if ((vecClosestPoint - sphPosition).length() == sphRadio)
+  {
+    (*intersectionPoint) = vecClosestPoint;
+    return true;
+  }
+  if (sphereContainsPoint(vecClosestPoint, sphPosition, sphRadio)) {
+    float vecClosestPointLength = vecClosestPoint.length();
+    float distanceToPerimeter = Math::sqrt(sphRadio*sphRadio - vecClosestPointLength*vecClosestPointLength);
+    (*intersectionPoint) = vecClosestPoint - rayDirection * distanceToPerimeter;
+    return true;
+  } 
+  return false;
+}
+
+bool
+Intersect::rayRay(const Vector3D& rayOrigin1,
+                  const Vector3D& rayDirection1,
+                  const Vector3D& rayOrigin2,
+                  const Vector3D& rayDirection2,
+                  Vector3D* Point) {
+
+  if (rayDirection1.cross(rayDirection2).length() == 0)
+  {
+    Vector3D directionTemp ((rayOrigin2 - rayOrigin1).normalize());
+    if (directionTemp.equals(rayDirection1))
+    {
+      (*Point) = rayOrigin2;
+      return true;
+    }
+    return false;
+  }
+
+  driderSDK::Vector3D flags(0, 0, 0);
+  driderSDK::Vector3D R1;
+  driderSDK::Vector3D R2;
+  driderSDK::Vector3D R3;
+
+  if (rayDirection1.x > 0)
+  {
+    R1 = driderSDK::Vector3D(rayDirection1.x, -rayDirection2.x, rayOrigin2.x - rayOrigin1.x);
+    flags.x = 1;
+  }
+  else if (rayDirection1.y > 0)
+  {
+    R1 = driderSDK::Vector3D(rayDirection1.y, -rayDirection2.y, rayOrigin2.y - rayOrigin1.y);
+    flags.y = 1;
+  }
+  else if (rayDirection1.z > 0)
+  {
+    R1 = driderSDK::Vector3D(rayDirection1.z, -rayDirection2.z, rayOrigin2.z - rayOrigin1.z);
+    flags.z = 1;
+  }
+  else
+  {
+    return false;
+  }
+
+  if (rayDirection2.x > 0 && flags.x == 0)
+  {
+    R2 = driderSDK::Vector3D(rayDirection1.x, -rayDirection2.x, rayOrigin2.x - rayOrigin1.x);
+    flags.x = 1;
+  }
+  else if (rayDirection2.y > 0 && flags.y == 0)
+  {
+    R2 = driderSDK::Vector3D (rayDirection1.y, -rayDirection2.y, rayOrigin2.y - rayOrigin1.y);
+  }
+  else if (rayDirection2.z > 0 && flags.z == 0)
+  {
+    R2 = driderSDK::Vector3D(rayDirection1.z, -rayDirection2.z, rayOrigin2.z - rayOrigin1.z);
+  }
+  
+  if (flags.x == 0)
+  {
+    R3 = driderSDK::Vector3D(rayDirection1.x, -rayDirection2.x, rayOrigin2.x - rayOrigin1.x);
+  }
+  else if (flags.y == 0)
+  {
+    R3 = driderSDK::Vector3D(rayDirection1.y, -rayDirection2.y, rayOrigin2.y - rayOrigin1.y);
+  }
+  else if (flags.z == 0)
+  {
+    R3 = driderSDK::Vector3D(rayDirection1.z, -rayDirection2.z, rayOrigin2.z - rayOrigin1.z);
+  }
+
+  R2 = R2 - R1 * (R2.x / R1.x);
+  R3 = R3 - R1 * (R3.x / R1.x);
+  R3 = R3 - R2 * (R3.y / R2.y);
+
+  if (!R3.equals(driderSDK::Vector3D(0, 0, 0))) {
+    return false;
+  }
+  
+  float t = R2.z / R2.y;
+  float s = (R1.z - R1.y * t) / R1.x;
+  if (s < 0)
+  {
+    return false;
+  }
+  (*Point).x = rayOrigin1.x + s * rayDirection1.x;
+  (*Point).y = rayOrigin1.y + s * rayDirection1.y;
+  (*Point).z = rayOrigin1.z + s * rayDirection1.z;
+
+  return true;
+}
+
+bool
 Intersect::rayPlane(const Vector3D& rayOrigin,
                     const Vector3D& rayDirection,
                     const Vector3D& planeNormal,
@@ -99,7 +258,7 @@ Intersect::rayPlane(const Vector3D& rayOrigin,
                     const Vector3D& planeNormal,
                     const Vector3D& planePoint) {
   float denom = planeNormal.dot(rayDirection);
-  if (denom > Math::SMALL_NUMBER) {
+  if (denom > Math::SMALL_NUMBER || denom < -Math::SMALL_NUMBER) {
     Vector3D planeToRayOrigin = planePoint - rayOrigin;
     float t = planeToRayOrigin.dot(planeNormal) / denom;
     return t >= 0;
@@ -114,7 +273,7 @@ Intersect::rayPlane(const Vector3D& rayOrigin,
                     const Vector3D& planePoint,
                     float* intersectionPoint) {
   float denom = planeNormal.dot(rayDirection);
-  if (denom > Math::SMALL_NUMBER) {
+  if (denom > Math::SMALL_NUMBER || denom < -Math::SMALL_NUMBER) {
     Vector3D planeToRayOrigin = planePoint - rayOrigin;
     *intersectionPoint = planeToRayOrigin.dot(planeNormal) / denom;
     return static_cast<bool>(*intersectionPoint >= 0);
@@ -203,12 +362,53 @@ Intersect::rayCapsule(const Vector3D& pointSA,
   return true;
 }
 
-/*bool
+bool
+Intersect::rayLine(const Vector3D& rayOrigin,
+                   const Vector3D& rayDirection,
+                   const Vector3D& point1,
+                   const Vector3D& point2,
+                   Vector3D* Point)
+{
+  Line line(point1, point2);
+  Ray temp(point1, (point2 - point1).normalize());
+  Ray ray(rayOrigin, rayDirection);
+  if (ray.intersects(temp, Point))
+  {
+    return line.pointInline((*Point));
+  }
+  return false;
+}
+
+bool
 Intersect::rayFrustrum(const Vector3D& rayOrigin,
                        const Vector3D& rayDirection,
                        const std::array<Plane, 6>& frustrumPlanes) {
-  return false;
-}*/
+
+  driderSDK::Ray ray(rayOrigin, rayDirection);
+  float distance;
+
+  distance = frustrumPlanes[0].distanceToPoint(driderSDK::Vector3D(640, 0, 0));
+
+  
+  for (size_t i = 0; i < 6; i++)
+  {
+    if (ray.intersects(frustrumPlanes[i], &distance))
+    {
+      driderSDK::Vector3D point = rayOrigin + rayDirection * distance;
+      for (size_t j = 0; j < 6; j++)
+      {
+        distance = frustrumPlanes[j].distanceToPoint(driderSDK::Vector3D(point));
+        if (distance < 0)
+        {
+          return false;
+
+        }
+      }
+    }
+  }
+
+  return true;
+}
 
 bool
 Intersect::frustrumFrustrum(const std::array<Plane, 6>& frustrumAPlanes,
@@ -220,6 +420,14 @@ bool
 Intersect::frustrumSphere(const std::array<Plane, 6>& frustrumPlanes,
                           const Vector3D& sphereOrigin,
                           float sphereRadius) {
+  sphereRadius = Math::abs(sphereRadius);
+
+  for (const Plane& plane : frustrumPlanes) {
+    if (plane.distanceToPoint(sphereOrigin) < sphereRadius) {
+      return true;
+    }
+  }
+
   return false;
 }
 
@@ -240,45 +448,59 @@ Intersect::aabbAabb(const Vector3D& aabbCenter,
     ((aabbDepth * 0.5f) + (aabbDepth2 * 0.5f));
 }
 
+float checkPoint(float pn, float bmin, float bmax) {
+  float out = 0;
+  float v = pn;
+  if (v < bmin)
+  {
+    float val = (bmin - v);
+    out += val * val;
+  }
+  if (v > bmax)
+  {
+    float val = (v - bmax);
+    out += val * val;
+  }
+  return out;
+}
+
 bool
-Intersect::aabbSphere(const Vector3D& aabbCenter,
-											const Vector3D& aabbMax,
-											const Vector3D& aabbMin,
-                      const Vector3D& sphereOrigin,
+Intersect::aabbSphere(const Vector3D& min,
+                      const Vector3D& max,
+                      const Vector3D& sphereCenter,
                       float sphereRadius) {
-	float dmin = 0.f;
-	float squareRadius = sphereRadius*sphereRadius;
 
-	for (int i = 0; i < 3; ++i) {
-		if (aabbCenter[i] < aabbMin[i]) {
-			dmin += Math::sqrt(aabbCenter[i] - aabbMin[i]);
-		}
-		else {
-			if (aabbCenter[i] > aabbMax[i]) {
-				dmin += Math::sqrt(aabbCenter[i] - aabbMax[i]);
-			}
-		}
-	}
-	return dmin <= squareRadius;
+  float sq = 0.0f;
+  sq += checkPoint(sphereCenter.x, min.x, max.x);
+  sq += checkPoint(sphereCenter.y, min.y, max.y);
+  sq += checkPoint(sphereCenter.z, min.z, max.z);
+  
+  return sq <= (sphereRadius * sphereRadius);
 }
 
 bool
-Intersect::aabbFrustrum(const Vector3D& aabbCenter,
-												float aabbWidth,
-												float aabbHeight,
-												float aabbDepth,
+Intersect::aabbFrustrum(const Vector3D& pointMax,
+                        const Vector3D& pointMin,
                         const std::array<Plane, 6>& frustrumPlanes) {
-  return false;
+
+  for (const Plane& plane : frustrumPlanes) {
+    if (plane.distanceToPoint(GetVertexP(pointMin, pointMax, plane)) < 0)
+    {
+      return false;
+    }
+    else if (plane.distanceToPoint(GetVertexN(pointMin, pointMax, plane)) < 0)
+    {
+      return true;
+    }
+  }
+  return true;
 }
 
 bool
-Intersect::aabbRay(const Vector3D& aabbCenter,
-									 const Vector3D& aabbMax,
+Intersect::aabbRay(const Vector3D& aabbMax,
 									 const Vector3D& aabbMin,
                    const Vector3D& rayOrigin,
                    const Vector3D& rayDirection) {
-  if(rayDirection.x != 0 || rayDirection.y != 0 || rayDirection.z != 0)
-    return false;
   DR_ASSERT(rayDirection.x != 0.0f);
   DR_ASSERT(rayDirection.y != 0.0f);
   DR_ASSERT(rayDirection.z != 0.0f);
@@ -301,9 +523,78 @@ Intersect::aabbRay(const Vector3D& aabbCenter,
   return tmax > Math::max(tmin, 0.0f);
 }
 
+bool Intersect::rayAABB(const Vector3D& aabbMax,
+                        const Vector3D& aabbMin,
+                        const Vector3D& rayOrigin,
+                        const Vector3D& rayDirection,
+                        Vector3D * point)
+{
+  enum Side
+  {
+    RIGHT = 0,
+    LEFT,
+    MIDDLE
+  };
+  Vector3D quadrant;
+  int i;
+  int whichPlane;
+  Vector3D maxT;
+  Vector3D candidatePlane;
+  bool inside = true;
+
+  for (i = 0; i < 3; i++) {
+    if (rayOrigin[i] < aabbMin[i]) {
+      quadrant[i] = Side::LEFT;
+      candidatePlane[i] = aabbMin[i];
+      inside = false;
+    }
+    else if (rayOrigin[i] > aabbMax[i]) {
+      quadrant[i] = Side::RIGHT;
+      candidatePlane[i] = aabbMax[i];
+      inside = false;
+    }
+    else {
+      quadrant[i] = Side::MIDDLE;
+    }
+  }
+
+  if (inside) {
+    (*point) = rayOrigin;
+    return true;
+  }
+  for (i = 0; i < 3; i++) {
+    if (quadrant[i] != MIDDLE && rayDirection[i] != 0.)
+      maxT[i] = (candidatePlane[i] - rayOrigin[i]) / rayDirection[i];
+    else
+      maxT[i] = -1.;
+  }
+
+  /* Get largest of the maxT's for final choice of intersection */
+  whichPlane = 0;
+  for (i = 1; i < 3; i++) {
+    if (maxT[whichPlane] < maxT[i])
+      whichPlane = i;
+  }
+
+  /* Check final candidate actually inside box */
+  if (maxT[whichPlane] < 0.) {
+    return false;
+  }
+  for (i = 0; i < 3; i++) {
+    if (whichPlane != i) {
+      (*point)[i] = rayOrigin[i] + maxT[whichPlane] * rayDirection[i];
+      if ((*point)[i] < aabbMin[i] || (*point)[i] > aabbMax[i])
+        return false;
+    }
+    else {
+      (*point)[i] = candidatePlane[i];
+    }
+  }
+  return true;
+}
+
 bool
-Intersect::aabbPoint(const Vector3D& aabbCenter,
-										 const Vector3D& aabbMax,
+Intersect::aabbPoint(const Vector3D& aabbMax,
 										 const Vector3D& aabbMin,
                      const Vector3D& point) {
 
@@ -324,7 +615,6 @@ bool
 Intersect::aabbPlane(const Vector3D& aabbCenter,
 										 float aabbWidth,
 										 float aabbHeight,
-										 float aabbDepth,
                      const Vector3D& planeNormal,
                      float planeGap) {
   Vector3D extents = aabbCenter;
@@ -389,7 +679,8 @@ Intersect::planePlane(const Vector3D& plane1Normal,
                       float plane1Gap, 
                       const Vector3D& plane2Normal, 
                       float plane2Gap, 
-                      Vector3D& point, Vector3D& direction) {
+                      Vector3D& point,
+                      Vector3D& direction) {
   //Warning: This assumes that normal1 and normal2 are normalized.
 
   direction = plane1Normal.cross(plane2Normal);
@@ -423,21 +714,9 @@ bool
 Intersect::sphereContainsPoint(const Vector3D& point,
                                const Vector3D& sphPosition,
                                float radius) {
-  return point.distance(sphPosition) < radius;
+  return point.distance(sphPosition) <= radius;
 }
 
-/*bool
-Intersect::frustrumContainsFrustrum(const std::array<Plane, 6>& frustrumAPlanes,
-                                    const std::array<Plane, 6>& frustrumBPlanes) {
-  return false;
-}
-
-bool
-Intersect::frustrumContainsSphere(const std::array<Plane, 6>& frustrumPlanes,
-                                  const Vector3D& sphereOrigin,
-                                  float sphereRadius) {
-  return false;
-}*/
 
 float Intersect::closestPointSegmentSegment(const Vector3D& p1, 
                                             const Vector3D& q1, 

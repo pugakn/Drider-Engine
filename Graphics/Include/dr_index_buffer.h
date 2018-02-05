@@ -31,7 +31,7 @@ class DR_GRAPHICS_EXPORT IndexBuffer : public Buffer
   *
   */
   virtual void
-  set(const DeviceContext& deviceContext, UInt32 offset) const = 0;
+  set(const DeviceContext& deviceContext,UInt32 offset = 0) const = 0;
 };
 
 }

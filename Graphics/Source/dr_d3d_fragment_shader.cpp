@@ -4,52 +4,67 @@
 #include <dxgi.h>
 #include "dr_d3d_device.h"
 #include "dr_d3d_device_context.h"
+#include "dr_d3d_shader_bytecode.h"
 
 namespace driderSDK {
 
+void*
+D3DFragmentShader::getAPIObject() {
+  return APIShader;
+}
+
+void**
+D3DFragmentShader::getAPIObjectReference() {
+  return reinterpret_cast<void**>(&APIShader);
+}
+
 void
 D3DFragmentShader::set(const DeviceContext& deviceContext) const {
-  static_cast<const D3DDeviceContext*>(&deviceContext)->
+  reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext->
-      PSSetShader(APIShader.Get(), 0, 0);
+      PSSetShader(APIShader, 0, 0);
 }
 
 void
 D3DFragmentShader::release() {
-  APIShader.Reset();
+  ID3DBlob* apiShaderBytcode = reinterpret_cast<D3DShaderBytecode*>
+                                 (m_shaderBytecode)->shader_blob;
+  APIShader->Release();
+  apiShaderBytcode->Release();
+  delete m_shaderBytecode;
+  delete this;
 }
 
-DR_GRAPHICS_ERROR::E
-D3DFragmentShader::createFromMemory(const Device& device,
-                                    const char* buffer,
-                                    size_t bufferSize) {
-  Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
-  Microsoft::WRL::ComPtr<ID3DBlob> shader_blob;
+void
+D3DFragmentShader::create(const Device& device) {
+  ID3DBlob* apiShaderBytcode = reinterpret_cast<D3DShaderBytecode*>
+                                 (m_shaderBytecode)->shader_blob;
+  HRESULT hr = reinterpret_cast<const D3DDevice*>(&device)->
+    D3D11Device->
+    CreatePixelShader(apiShaderBytcode->GetBufferPointer(),
+                      apiShaderBytcode->GetBufferSize(),
+                      0,
+                      &APIShader);
+}
 
-  if (D3DCompile(buffer,
-                 bufferSize,
-                 0,
-                 0,
-                 0,
-                 "FS",
-                 "ps_5_0",
-                 0,
-                 0,
-                 &shader_blob,
-                 &errorBlob) != S_OK) {
-    if (errorBlob) {
-      return DR_GRAPHICS_ERROR::COMPILE_SHADER_ERROR;
-    }
-  }
-  if (static_cast<const D3DDevice*>(&device)->
-        D3D11Device->
-          CreatePixelShader(shader_blob->GetBufferPointer(),
-                            shader_blob->GetBufferSize(),
-                            0,
-                            &APIShader) != S_OK) {
-    return DR_GRAPHICS_ERROR::CREATE_SHADER_ERROR;
-  }
-  return DR_GRAPHICS_ERROR::ERROR_NONE;
+
+void
+D3DFragmentShader::compile(const Device& device,
+                           const char* buffer,
+                           size_t bufferSize) {
+  m_shaderBytecode = new D3DShaderBytecode();
+  HRESULT hr = D3DCompile(buffer,
+                          bufferSize,
+                          0,
+                          0,
+                          0,
+                          "FS",
+                          "ps_5_0",
+                          0,
+                          0,
+                          &reinterpret_cast<D3DShaderBytecode*>
+                            (m_shaderBytecode)->shader_blob,
+                          0);
 }
 
 }

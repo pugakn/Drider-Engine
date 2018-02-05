@@ -1,7 +1,7 @@
 #include <dr_vector2d.h>
 #include <gtest\gtest.h>
 
-void checkValuesVector(driderSDK::Vector2D& testVector, float vx, float vy) {
+void checkValuesVector(driderSDK::Vector2D testVector, float vx, float vy) {
   EXPECT_FLOAT_EQ(vx, testVector[0]);
   EXPECT_FLOAT_EQ(vy, testVector[1]);
 }
@@ -32,6 +32,14 @@ TEST(Vector2D, moveContructor) {
   driderSDK::Vector2D vec2(std::move(vec1));
 
   checkValuesVector(vec2, 0, 1);
+}
+
+TEST(Vector2D, orientation) {
+  EXPECT_FALSE(true);
+}
+
+TEST(Vector2D, compare) {
+  EXPECT_FALSE(true);
 }
 
 TEST(Vector2D, copyConstructor) {
@@ -105,7 +113,7 @@ TEST(Vector2D, normalize) {
   testVector.normalize();
   checkValuesVector(testVector, 0.70710678118f, 0.70710678118f);
 
-  driderSDK::Vector2D testVector2(100, 0.1);
+  driderSDK::Vector2D testVector2(100, 0.1f);
   testVector2.normalize();
   EXPECT_FLOAT_EQ(1, testVector2.length());
 
@@ -309,7 +317,7 @@ TEST(Vector2D, constOpPtr) {
  TEST(Vector2D, operatorEqualEqual) {
    driderSDK::Vector2D testVector(1, 2);
    driderSDK::Vector2D testVector1(2.00000001f, 3);
-   driderSDK::Vector2D testVector2(2.1, 3);
+   driderSDK::Vector2D testVector2(2.1f, 3);
    driderSDK::Vector2D testVector3(2.1f, 3);
  
    EXPECT_FALSE(testVector == testVector1);
@@ -321,7 +329,7 @@ TEST(Vector2D, constOpPtr) {
  TEST(Vector2D, operatorNotEqual) {
    driderSDK::Vector2D testVector(1, 2);
    driderSDK::Vector2D testVector1(2.00000001f, 3);
-   driderSDK::Vector2D testVector2(2.1, 3);
+   driderSDK::Vector2D testVector2(2.1f, 3);
    driderSDK::Vector2D testVector3(2.1f, 3);
  
    EXPECT_TRUE(testVector != testVector1);

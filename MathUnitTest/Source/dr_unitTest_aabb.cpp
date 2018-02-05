@@ -2,6 +2,8 @@
 #include <dr_ray.h>
 #include <dr_plane.h>
 #include <dr_sphere.h>
+#include <dr_frustrum.h>
+#include <dr_matrix4x4.h>
 #include <gtest\gtest.h>
 
 void checkForAABBValues(driderSDK::AABB& aabb, 
@@ -106,15 +108,29 @@ TEST(AABB, intersectPlane) {
 }
 
 TEST(AABB, intersectFrustrum) {
-	
+  driderSDK::Matrix4x4 mat;
+  mat.Orthogonal(1280, 980, 0.1f, 800);
+  driderSDK::Frustrum f(mat);
+
+  driderSDK::AABB aabb(10, 10, 10, driderSDK::Vector3D(0, 0, 0));
+  aabb.intersect(f);
+  EXPECT_TRUE(aabb.intersect(f));
+
+  driderSDK::AABB aabb2(10, 10, 10, driderSDK::Vector3D(0, 490, 0));
+  EXPECT_TRUE(aabb2.intersect(f));
+
+  driderSDK::AABB aabb3(10, 10, 10, driderSDK::Vector3D(0, 510, 0));
+  EXPECT_FALSE(aabb3.intersect(f));
 }
 
 TEST(AABB, intersectSphere)
 {
 	driderSDK::Sphere sphere(driderSDK::Vector3D(0.f, 0.f, 0.f), 0.5f);
-	driderSDK::AABB Aabb(0.6f, 1.f, 0.6f, driderSDK::Vector3D(0.f, 0.f, 0.f));
-
-	EXPECT_TRUE(Aabb.intersect(sphere));
+	driderSDK::Sphere FalseSphere(driderSDK::Vector3D(-10.f, -10.f, -10.f), 0.5f);
+	driderSDK::AABB TrueAabb(0.6f, 1.f, 0.6f, driderSDK::Vector3D(0.f, 0.f, 0.f));
+	driderSDK::AABB FalseAabb(1.f, 1.f, 1.f, driderSDK::Vector3D(0.f, 0.f, 0.f));
+	EXPECT_TRUE(TrueAabb.intersect(sphere));
+	EXPECT_FALSE(FalseAabb.intersect(FalseSphere));
 }
 
 TEST(AABB, intersectRay) {

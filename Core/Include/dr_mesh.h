@@ -9,7 +9,13 @@ namespace driderSDK {
 struct DR_CORE_EXPORT Mesh
 {
   std::vector<Vertex> vertices;
-  std::vector<Int16> indices;
+  std::vector<UInt32> indices;
+};
+
+struct DR_CORE_EXPORT SkinnedMesh 
+{
+  Mesh meshInfo;
+
 };
 
 }

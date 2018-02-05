@@ -84,7 +84,7 @@ Vector3D::sqrDistSegment(const Vector3D& pointA, const Vector3D& pointB) const {
 
   float f = AB.dot(AB);
   
-  if(e >= f) {
+  if (e >= f) {
    return BC.dot(BC);
   }
   

@@ -43,6 +43,16 @@ AABB::getMinPoint() const {
 									center.z - (depth * 0.5f));
 }
 
+AABB
+AABB::operator=(const AABB & A)
+{
+  width = A.width;
+  height = A.height;
+  depth = A.depth;
+  center = A.center;
+  return *this;
+}
+
 bool
 AABB::intersect(AABB& aabb) {
   return Intersect::aabbAabb(center, 
@@ -57,9 +67,8 @@ AABB::intersect(AABB& aabb) {
 
 bool
 AABB::intersect(Sphere& sphere) {
-  return Intersect::aabbSphere(center, 
-															 getMaxPoint(),
-															 getMinPoint(),
+  return Intersect::aabbSphere(getMinPoint(), 
+															 getMaxPoint(), 
                                sphere.center, 
                                sphere.radius);
 }
@@ -69,24 +78,20 @@ AABB::intersect(Plane& plane) {
   return Intersect::aabbPlane(center, 
 															width,
 															height,
-															depth,
 	                            static_cast<Vector3D&>(plane), 
 	                            plane.d);
 }
 
 bool
 AABB::intersect(Frustrum& frustrum) {
-  return Intersect::aabbFrustrum(center, 
-																 width,
-																 height,
-																 depth,
+  return Intersect::aabbFrustrum(getMaxPoint(),
+                                 getMinPoint(),
 																 frustrum.planes);
 }
 
 bool
 AABB::intersect(Ray& ray) {
-	return Intersect::aabbRay(center, 
-														getMaxPoint(), 
+	return Intersect::aabbRay(getMaxPoint(), 
 														getMinPoint(), 
 														ray.origin, 
 														ray.direction);
@@ -94,7 +99,7 @@ AABB::intersect(Ray& ray) {
 
 bool
 AABB::intersect(Vector3D& point) {
-  return Intersect::aabbPoint(center, getMaxPoint(), getMinPoint(), point);
+  return Intersect::aabbPoint(getMaxPoint(), getMinPoint(), point);
 }
 
 } 

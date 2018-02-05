@@ -1,9 +1,8 @@
 #pragma once
 #include "dr_render_target.h"
-#include <wrl.h>
-#include <wrl/client.h>
 #include <vector>
-class ID3D11RenderTargetView;
+
+struct ID3D11RenderTargetView;
 
 namespace driderSDK {
 
@@ -18,6 +17,11 @@ class DepthStencil;
 class DR_GRAPHICS_EXPORT D3DRenderTarget : public RenderTarget
 {
  public:
+   void*
+   getAPIObject() override;
+
+   void**
+   getAPIObjectReference() override;
   /**
   * TEST::create
   *
@@ -35,10 +39,8 @@ class DR_GRAPHICS_EXPORT D3DRenderTarget : public RenderTarget
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  DR_GRAPHICS_ERROR::E
-  create(const Device& device,
-         const DrTextureDesc& colorDesc,
-         UInt32 numRT) override;
+  void
+  create(const Device& device, const Texture& texture) override;
 
   /**
   * TEST::set
@@ -64,7 +66,7 @@ class DR_GRAPHICS_EXPORT D3DRenderTarget : public RenderTarget
   void
   release() override;
 
-  std::vector<Microsoft::WRL::ComPtr<ID3D11RenderTargetView>> APIColorViews; 
+  ID3D11RenderTargetView* RTV;
 };
 
 }

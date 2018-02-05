@@ -205,21 +205,23 @@ Matrix4x4::equals(const Matrix4x4& otherMatrix, float errorRange) const
          data[3].equals(otherMatrix.data[3], errorRange);
 }
 
+Vector3D Matrix4x4::eulerAngles()
+{
+  driderSDK::Matrix3x3 tempMatrix(*this);
+  return tempMatrix.eulerAngles();
+}
+
 Matrix4x4&
 Matrix4x4::Translation(const Vector3D & Pos)
 {
-  vector0.w = Pos.x;
-  vector1.w = Pos.y;
-  vector2.w = Pos.z;
+  vector3 = Vector4D(Pos, 1.0f);
   return *this;
 }
 
 Matrix4x4&
-Matrix4x4::Move(const Vector3D & Move)
+Matrix4x4::Move(const Vector3D& Move)
 {
-  vector0.w += Move.x;
-  vector1.w += Move.y;
-  vector2.w += Move.z;
+  vector3 += Vector4D(Move, 0.f);
   return *this;
 }
 
@@ -238,7 +240,9 @@ Matrix4x4::Scale(const Vector3D &Scale)
 Matrix4x4&
 Matrix4x4::Rotation(const float tetax, const float tetay, const float tetaz)
 {
-  *this *= RotationY(tetay) * RotationX(tetax) * RotationZ(tetaz);
+  RotationY(tetay);
+  RotationX(tetax);
+  RotationZ(tetaz);
   return *this;
 }
 
@@ -293,29 +297,23 @@ Matrix4x4::RotationZ(const float teta)
 Matrix4x4&
 Matrix4x4::LookAt(const Vector3D & Eye, const Vector3D & At, const Vector3D & Up)
 {
-  Vector3D XAxis, YAxis, ZAxis;
-  ZAxis = (Eye - At).normalize();
-  XAxis = Up.cross(ZAxis).normalize();
-  YAxis = ZAxis.cross(XAxis).normalize();
+  Vector3D Axis[3];
 
-  (*this)[0][0] = XAxis.x;
-  (*this)[0][1] = XAxis.y;
-  (*this)[0][2] = XAxis.z;
-  (*this)[0][3] = -(XAxis.dot(Eye));
+  Axis[2] = (At - Eye).normalize();  //zaxis
+  Axis[0] = Up.cross(Axis[2]).normalize();  //xaxis
+  Axis[1] = Axis[2].cross(Axis[0]); //yaxis
 
-  (*this)[1][0] = YAxis.x;
-  (*this)[1][1] = YAxis.y;
-  (*this)[1][2] = YAxis.z;
-  (*this)[1][3] = -(YAxis.dot(Eye));
+  for (size_t i = 0; i < 3; i++)
+  {
+    (*this)[0][i] = Axis[i].x;
+    (*this)[1][i] = Axis[i].y;
+    (*this)[2][i] = Axis[i].z;
+    (*this)[3][i] = (Axis[i].dot(-Eye));
+  }
 
-  (*this)[2][0] = ZAxis.x;
-  (*this)[2][1] = ZAxis.y;
-  (*this)[2][2] = ZAxis.z;
-  (*this)[2][3] = -(ZAxis.dot(Eye));
-
-  (*this)[3][0] = 0.0f;
-  (*this)[3][1] = 0.0f;
-  (*this)[3][2] = 0.0f;
+  (*this)[0][3] = 0.0f;
+  (*this)[1][3] = 0.0f;
+  (*this)[2][3] = 0.0f;
   (*this)[3][3] = 1.0f;
   return *this;
 }
@@ -327,9 +325,9 @@ Matrix4x4::Projection(float Width, float Height, float ZNear, float ZFar)
 
   data[0][0] = 2.0f * ZNear / Width;
   data[1][1] = 2.0f * ZNear / Height;
-  data[2][2] = ZFar / (ZNear - ZFar);
-  data[2][3] = -1.0f;
-  data[3][2] = ZFar * ZNear / (ZNear - ZFar);
+  data[2][2] = ZFar / (ZFar - ZNear);
+  data[2][3] = 1.0f;
+  data[3][2] = ZNear * ZFar / (ZNear - ZFar);
 
   return *this;
 }
@@ -337,16 +335,20 @@ Matrix4x4::Projection(float Width, float Height, float ZNear, float ZFar)
 Matrix4x4&
 Matrix4x4::ProjectionFov(float FOV, float Aspect, float ZNear, float ZFar)
 {
+  float    SinFov = Math::sin(0.5f * FOV);
+  float    CosFov = Math::cos(0.5f * FOV);
+
+  float Height = CosFov / SinFov;
+  float Width = Height / Aspect;
+  float fRange = ZFar / (ZFar-ZNear);
+
   *this = zerosMat4x4;
-  float Width = 1.0f / tanf(FOV * .5f);
-  float Height = Aspect / tanf(FOV * .5f);
 
-
-  data[0][0] = -Width;
+  data[0][0] = Width;
   data[1][1] = Height;
-  data[2][2] = ZFar / (ZNear - ZFar);
-  data[2][3] = -1.0f;
-  data[3][2] = ZFar * ZNear / (ZNear - ZFar);
+  data[2][2] = fRange;
+  data[2][3] = 1.0f;
+  data[3][2] = -fRange * ZNear;
 
   return *this;
 }
@@ -358,7 +360,7 @@ Matrix4x4::Orthogonal(float Width, float Height, float ZNear, float ZFar)
   (*this)[0][0] = 2.0f / Width;
   (*this)[1][1] = 2.0f / Height;
   (*this)[2][2] = 1.0f / (ZNear - ZFar);
-  (*this)[2][3] = ZNear / (ZNear - ZFar);
+  (*this)[2][3] = -ZNear / (ZNear - ZFar);
   (*this)[3][3] = 1.0f;
   return *this;
 }

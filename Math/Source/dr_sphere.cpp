@@ -29,9 +29,8 @@ Sphere::intersects(const Sphere& sphere) {
 }
 bool
 Sphere::intersects(const AABB& aabb) {
-  return Intersect::aabbSphere(aabb.center, 
+  return Intersect::aabbSphere(aabb.getMinPoint(), 
 															 aabb.getMaxPoint(), 
-															 aabb.getMinPoint(), 
 															 center, 
 															 radius);
 }

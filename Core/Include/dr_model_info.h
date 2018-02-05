@@ -8,7 +8,13 @@ namespace driderSDK {
 
 struct DR_CORE_EXPORT ModelInfo 
 {
+  ModelInfo()
+  {
+  }
+
   std::vector<MeshInfo> meshes;
+  std::vector<TString> animationsNames;
+  TString skeletonName;
 };
 
 }

@@ -1,10 +1,6 @@
 #pragma once
-#include "dr_compute_shader.h"
-#include <wrl.h>
-#include <wrl/client.h>
-
-class ID3D11ComputeShader;
-
+#include <d3d11.h>
+#include "dr_d3d_shader.h"
 namespace driderSDK {
 
 /**
@@ -13,9 +9,15 @@ namespace driderSDK {
 * Sample usage:
 *	ComputeShader* = new D3DComputeShader;
 */
-class DR_GRAPHICS_EXPORT D3DComputeShader : public ComputeShader
+class DR_GRAPHICS_EXPORT D3DComputeShader : public D3DShader
 {
  public:
+   void*
+     getAPIObject() override;
+
+   void**
+     getAPIObjectReference() override;
+
   /**
   * TEST::set
   *
@@ -53,12 +55,13 @@ class DR_GRAPHICS_EXPORT D3DComputeShader : public ComputeShader
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  DR_GRAPHICS_ERROR::E
-  createFromMemory(const Device& device,
-                   const char* buffer,
-                   size_t bufferSize) override;
+  void
+  create(const Device& device);
 
-  Microsoft::WRL::ComPtr<ID3D11ComputeShader> APIShader;
+  void
+  compile(const Device& device, const char* buffer, size_t bufferSize);
+
+  ID3D11ComputeShader* APIShader;
 };
 
 }

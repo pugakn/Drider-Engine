@@ -1,17 +1,20 @@
 #pragma once
 #include "dr_depth_stencil_state.h"
 #include "dr_graphics_prerequisites.h"
-#include <wrl.h>
-#include <wrl/client.h>
 
-class Shader; 
-class ID3D11DepthStencilState;
+struct ID3D11DepthStencilState;
 
 namespace driderSDK {
 
 class DR_GRAPHICS_EXPORT D3DDepthStencilState : public DepthStencilState
 {
  public:
+   void*
+   getAPIObject() override;
+
+   void**
+   getAPIObjectReference() override;
+
   /**
   * TEST::
   *
@@ -27,7 +30,7 @@ class DR_GRAPHICS_EXPORT D3DDepthStencilState : public DepthStencilState
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  DR_GRAPHICS_ERROR::E
+  void
   create(const Device& device, const DrDepthStencilDesc& desc) override;
 
   /**
@@ -53,7 +56,7 @@ class DR_GRAPHICS_EXPORT D3DDepthStencilState : public DepthStencilState
   void
   release() override;
 
-  Microsoft::WRL::ComPtr<ID3D11DepthStencilState> APIState;
+  ID3D11DepthStencilState* APIState;
 };
 
 }

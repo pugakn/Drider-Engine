@@ -52,13 +52,18 @@ Quaternion::normalize() {
   *this *= 1 / measure();
 }
 
-Quaternion
-Quaternion::rotation(float theta, const Quaternion& A) {
-  Quaternion Axis = A - *this;
-  Axis.normalize();
-  Axis *= sin(theta * 0.5f);
-  Axis.w = cos(theta * 0.5f);
-  return Axis;
+const Vector3D
+Quaternion::rotation(const Vector3D& V) const {
+
+	Quaternion norm(*this);
+	if (norm.measure() != 1.f) {
+		norm.normalize();
+	}
+
+	Vector3D U(norm.x, norm.y, norm.z);
+	Vector3D Result = U * 2.f * U.dot(V) + V *(norm.w*norm.w - U.dot(U)) + 
+		U.cross(V) * 2.f * norm.w;
+	return Result;
 }
 
 void
@@ -96,6 +101,44 @@ Quaternion::matrixFromQuaternion(Matrix3x3& MatrixOut) {
 	MatrixOut[2][0] = (2.f*Normalized.x*Normalized.z) - (2.f*Normalized.y*Normalized.w);
 	MatrixOut[2][1] = (2.f*Normalized.y*Normalized.z) + (2.f*Normalized.x*Normalized.w);
 	MatrixOut[2][2] = 1.f - (2.f*Normalized.x*Normalized.x) - (2.f*Normalized.y*Normalized.y);
+}
+
+Quaternion Quaternion::slerp(const Quaternion& end, float factor) const {
+    float cosom = x * end.x + y * end.y + z * end.z + w * end.w;
+
+    Quaternion endMod = end;
+    if ( cosom < 0.0f)
+    {
+        cosom = -cosom;
+        endMod.x = -endMod.x; 
+        endMod.y = -endMod.y;
+        endMod.z = -endMod.z;
+        endMod.w = -endMod.w;
+    }
+
+    float sclp, sclq;
+    if ((1.0f - cosom) > Math::EPSILON)
+    {
+        float omega, sinom;
+        omega = std::acos( cosom);
+        sinom = std::sin( omega);
+        sclp  = std::sin( (1.0f - factor) * omega) / sinom;
+        sclq  = std::sin( factor * omega) / sinom;
+    } 
+    else
+    {
+        sclp = 1.0f - factor;
+        sclq = factor;
+    }
+
+    Quaternion interpolated;
+
+    interpolated.x = sclp * x + sclq * endMod.x;
+    interpolated.y = sclp * y + sclq * endMod.y;
+    interpolated.z = sclp * z + sclq * endMod.z;
+    interpolated.w = sclp * w + sclq * endMod.w;
+
+    return interpolated;
 }
 
 float*
@@ -179,10 +222,13 @@ Quaternion::operator*=(float s) {
 Quaternion
 Quaternion::operator/(const Quaternion& Q) const {
 	DR_ASSERT((Q.x + Q.y + Q.z + Q.w) != 0.0f);
-  float div = 1 / (Q.x*Q.x + Q.y*Q.y + Q.z*Q.z + Q.w*Q.w);
-  Quaternion R(-Q.x, -Q.y, -Q.z, Q.w);
-  R *= div;
-  return (*this)*R;
+	float div = 1 / (Q.x*Q.x + Q.y*Q.y + Q.z*Q.z + Q.w*Q.w);
+	Quaternion R(Q.w*x - Q.x*w - Q.y*z + Q.z*y, 
+							 Q.w*y + Q.x*z - Q.y*w - Q.z*x,
+							 Q.w*z - Q.x*y + Q.y*x - Q.z*w,
+							 Q.w*w + Q.x*x + Q.y*y + Q.z*z);
+	R *= div;
+	return R;
 }
 
 Quaternion&
