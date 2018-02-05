@@ -25,8 +25,8 @@ class DR_ENGINE_EXPORT TextureResource : public Resource {
   init(void* pData) override;
 
   void
-  init(void *pData,
-       void *extraData) 
+  init(void *,
+       void *) 
   {}
 
   

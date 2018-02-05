@@ -25,8 +25,8 @@ class DR_CORE_EXPORT Model : public Resource
   init(void* pModelData);
 
   void
-  init(void* pData,
-       void* extraData)
+  init(void*,
+       void*)
   {}
 
   std::vector<Mesh> meshes;

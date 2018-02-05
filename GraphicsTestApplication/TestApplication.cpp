@@ -44,6 +44,22 @@ TestApplication::onInit() {
 
   resourceManager->loadResource(_T("testImage.png"));
 
+ /* soundDriver->system->createReverb3D(soundDriver->reverb3D1);
+  DrReverb3DProperties prop1 = { 3900,   20,  29, 5000,  70, 100, 100, 250, 0,  5650,  80,  -9.8f };
+  soundDriver->reverb3D1->setProperties(&prop1);
+  Vector3D reverbPos(0.f, 0.f, 0.f);
+  float minDistance = 50.f;
+  float maxDistance = 100.f;
+  soundDriver->reverb3D1->set3DAttributes(&reverbPos,
+                                          minDistance,
+                                          maxDistance);
+
+  soundDriver->system->set3DListenerAttributes(0,
+                                               &camera.m_pos,
+                                               0,
+                                               0,
+                                               0);*/
+
   SoundExtraInfo *extraInfo = new SoundExtraInfo(
                               soundDriver->system,
                               soundDriver->channel1);
@@ -55,16 +71,18 @@ TestApplication::onInit() {
   auto sound1 = std::dynamic_pointer_cast<SoundCore>(soundResource1);
   sound1->get()->setMode(DR_SOUND_MODE::kDrMode_LOOP_NORMAL);
   sound1->get()->play();
+  sound1->get()->set3DMinMaxDistance(.5f, 1000.f);
+
 
   auto sound2 = std::dynamic_pointer_cast<SoundCore>(soundResource2);
   sound2->get()->setChannel(reinterpret_cast<DrChannel**>(soundDriver->channel2->getObjectReference()));
   sound2->get()->setMode(DR_SOUND_MODE::kDrMode_LOOP_OFF);
-  //sound2->get()->play();
 
   auto sound3 = std::dynamic_pointer_cast<SoundCore>(soundResource3);
   sound3->get()->setChannel(reinterpret_cast<DrChannel**>(soundDriver->channel3->getObjectReference()));
   sound3->get()->setMode(DR_SOUND_MODE::kDrMode_LOOP_OFF);
-  //sound3->get()->play();
+
+
   
   std::vector<TString> modelsFiles{_T("VenomJok.X"), _T("dwarf.X") };
 
@@ -126,7 +144,15 @@ TestApplication::onUpdate() {
     //model.transform.rotate(Radian(0.005f), AXIS::kY);
     model.update();
   }
-
+  Vector3D vel(1,0,0);
+  Vector3D forward(0, 1, 0);
+  Vector3D up(0, 0, 1);
+  soundDriver->system->set3DListenerAttributes(0,
+                                               &camera.m_pos,
+                                               &vel,
+                                               &forward,
+                                               &up);
+  soundDriver->update();
   camera.update(0);
 }
 

@@ -26,7 +26,7 @@ SoundCore::init(void* pData,
                       reinterpret_cast<DrChannel**>(extraInfo->m_channel->getObjectReference()));
 
   extraInfo->m_soundSystem->createSound(name,
-                                        DR_SOUND_MODE::kDrMode_DEFAULT,
+                                        DR_SOUND_MODE::kDrMode_3D,
                                         0,
                                         soundResource);
 }

@@ -238,4 +238,19 @@ namespace driderSDK {
     };
   };
 
+  struct DrReverb3DProperties {
+    float DecayTime;
+    float EarlyDelay;
+    float LateDelay;
+    float HFReference;
+    float HFDecayRatio;
+    float Diffusion;
+    float Density;
+    float LowShelfFrequency;
+    float LowShelfGain;
+    float HighCut;
+    float EarlyLateMix;
+    float WetLevel;
+  };
+
 }

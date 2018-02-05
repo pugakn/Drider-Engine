@@ -37,6 +37,10 @@ class DR_SOUND_EXPORT FMODSound : public DrSound {
 
     void
     play() override;
+
+    void
+    set3DMinMaxDistance(float min,
+                      float max) override;
     
   private:
     FMOD::Sound *fmodSound;

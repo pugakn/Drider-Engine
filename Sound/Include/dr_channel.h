@@ -1,5 +1,6 @@
 #pragma once
 #include "dr_sound_prerequisites.h"
+#include <dr_vector3d.h>
 
 namespace driderSDK {
 
@@ -64,6 +65,20 @@ class DR_SOUND_EXPORT DrChannel {
     */
     virtual void
     getVolume(float *volume) = 0;
+
+    /**
+    * Sets the wet level (or send level) of a particular reverb instance.
+    */
+    virtual void
+    setReverbProperties (Int32 instance,
+                         float wet) = 0;
+
+    /**
+    *
+    */
+    virtual void
+    set3DAttributes(const Vector3D* pos,
+                    const Vector3D* vel) = 0;
 
 };
 

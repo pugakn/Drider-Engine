@@ -60,12 +60,12 @@ class DR_CORE_EXPORT Animation : public Resource {
   getTicksPerSecond() const;
 
   void
-  init(void*)
+  init(void*) 
   {}
 
   void
-  init(void* pData,
-       void* extraData)
+  init(void*,
+       void*) 
   {}
 
  private:

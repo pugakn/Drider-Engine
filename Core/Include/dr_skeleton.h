@@ -27,8 +27,8 @@ class DR_CORE_EXPORT Skeleton : public Resource
   {}
 
   void
-  init(void* pData,
-       void* extraData)
+  init(void*,
+       void*)
   {}
 
   Matrix4x4 gloabalInverseTransform;

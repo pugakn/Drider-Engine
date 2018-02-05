@@ -6,6 +6,7 @@
 #include "dr_channel.h"
 #include "dr_channelGroup.h"
 #include "dr_createSoundExInfo.h"
+#include "dr_reverb3d.h"
 
 namespace driderSDK {
 
@@ -46,9 +47,40 @@ FMODSoundSystem::createSound(TString name,
   _bstr_t unicode_name(name.c_str());
   result = fmodSoundSystem->createSound(unicode_name,
                                         mode,
-                                        0,
+                                        reinterpret_cast<FMOD_CREATESOUNDEXINFO*>
+                                        (createInfo),
                                         reinterpret_cast<FMOD::Sound**>
-                                          (sound->getObjectReference()));
+                                        (sound->getObjectReference()));
+}
+
+void
+FMODSoundSystem::createReverb3D(DrReverb3D * reverb3d) {
+  result = fmodSoundSystem->createReverb3D(reinterpret_cast<FMOD::Reverb3D**>
+           (reverb3d->getObjectReference()));
+}
+
+void
+FMODSoundSystem::set3DSettings(float dopplerscale,
+                               float distancefactor,
+                               float rolloffscale) {
+  result = fmodSoundSystem->set3DSettings(dopplerscale,
+                                          distancefactor,
+                                          rolloffscale);
+
+}
+
+void
+FMODSoundSystem::set3DListenerAttributes(Int32 listener,
+                                         const Vector3D* pos,
+                                         const Vector3D* vel,
+                                         const Vector3D* forward,
+                                         const Vector3D* up) {
+  result = fmodSoundSystem->
+  set3DListenerAttributes(listener,
+                          reinterpret_cast<const FMOD_VECTOR*>(pos),
+                          reinterpret_cast<const FMOD_VECTOR*>(vel),
+                          reinterpret_cast<const FMOD_VECTOR*>(forward),
+                          reinterpret_cast<const FMOD_VECTOR*>(up));
 }
 
 }

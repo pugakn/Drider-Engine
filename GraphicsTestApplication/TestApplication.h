@@ -16,12 +16,14 @@
 #include "dr_input_mouse.h"
 #include <iostream>
 
-//#include <FMOD\fmod.hpp>
 #include <dr_fmod_sound_api.h>
 #include <dr_fmod_sound.h>
 #include <dr_fmod_channel.h>
 #include <dr_fmod_soundSystem.h>
+#include <dr_fmod_reverb3d.h>
+
 #include <dr_sound_core.h>
+
 
 namespace driderSDK {
 
