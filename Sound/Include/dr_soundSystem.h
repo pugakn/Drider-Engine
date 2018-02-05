@@ -10,7 +10,7 @@ class DrSound;
 class DrChannelGroup;
 class DrChannel;
 class DrCreateSoundExInfo;
-class DrReverb3D;
+class DrDSP;
 
 class DR_SOUND_EXPORT SoundSystem {
 public:
@@ -75,8 +75,14 @@ public:
               DrCreateSoundExInfo *createInfo,
               DrSound * sound) = 0;
 
+  /**
+  *
+  */
   virtual void
-  createReverb3D(DrReverb3D* reverb3d) = 0;
+  playSound(DrSound* sound,
+            DrChannelGroup* channelGroup,
+            bool paused,
+            DrChannel **channel) = 0;
 
   /**
   *
@@ -95,6 +101,20 @@ public:
                           const Vector3D* vel,
                           const Vector3D* forward,
                           const Vector3D* up) = 0;
+
+  /**
+  *
+  */
+  virtual void
+  getMasterChannelGroup(DrChannelGroup** channelGroup) = 0;
+
+  /**
+  * 
+  */
+  virtual void
+  createDSPByType(DR_DSP_TYPE::E bspType,
+                  DrDSP **dsp) = 0;
+ 
 
 };
 

@@ -72,6 +72,12 @@
     <ClInclude Include="Include\dr_fmod_reverb3d.h">
       <Filter>Archivos de encabezado\API</Filter>
     </ClInclude>
+    <ClInclude Include="Include\dr_fmod_dsp.h">
+      <Filter>Archivos de encabezado\API</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_dsp.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_soundSystem.cpp">
@@ -96,6 +102,9 @@
       <Filter>Archivos de origen\API</Filter>
     </ClCompile>
     <ClCompile Include="Source\dr_fmod_reverb3d.cpp">
+      <Filter>Archivos de origen\API</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_fmod_dsp.cpp">
       <Filter>Archivos de origen\API</Filter>
     </ClCompile>
   </ItemGroup>

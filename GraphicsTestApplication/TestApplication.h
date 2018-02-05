@@ -21,6 +21,8 @@
 #include <dr_fmod_channel.h>
 #include <dr_fmod_soundSystem.h>
 #include <dr_fmod_reverb3d.h>
+#include <dr_fmod_channelGroup.h>
+#include <dr_fmod_dsp.h>
 
 #include <dr_sound_core.h>
 
@@ -51,10 +53,13 @@ class KeyboardListener : public driderSDK::IKeyboardListener
     /*exit(666);
     std::cout << "World ends here..." << std::endl;*/
     if(key == KeyboardButtonID::KC_1) {
-      bool paused;
+      /*bool paused;
       soundDriver->channel1->getPaused(&paused);
       std::cout << "Channel 1: "<< "paused: " << paused << std::endl;
-      soundDriver->channel1->setPaused(paused == false ? true : false);
+      soundDriver->channel1->setPaused(paused == false ? true : false);*/
+      bool bypass;
+      soundDriver->dspLowPass->getBypass(&bypass);
+      soundDriver->dspLowPass->setBypass(!bypass);
     } 
     else if (key == KeyboardButtonID::KC_2) {
       auto soundResource = resourceManager->getReference(_T("testSound2.mp3"));

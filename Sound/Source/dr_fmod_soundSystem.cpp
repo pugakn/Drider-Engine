@@ -6,7 +6,6 @@
 #include "dr_channel.h"
 #include "dr_channelGroup.h"
 #include "dr_createSoundExInfo.h"
-#include "dr_reverb3d.h"
 
 namespace driderSDK {
 
@@ -54,9 +53,15 @@ FMODSoundSystem::createSound(TString name,
 }
 
 void
-FMODSoundSystem::createReverb3D(DrReverb3D * reverb3d) {
-  result = fmodSoundSystem->createReverb3D(reinterpret_cast<FMOD::Reverb3D**>
-           (reverb3d->getObjectReference()));
+FMODSoundSystem::playSound(DrSound* sound,
+                           DrChannelGroup* channelGroup,
+                           bool paused,
+                           DrChannel **channel) {
+  result = fmodSoundSystem->playSound(
+  reinterpret_cast<FMOD::Sound*>(sound),
+  reinterpret_cast<FMOD::ChannelGroup*>(channelGroup),
+  paused,
+  reinterpret_cast<FMOD::Channel**>(channel));
 }
 
 void
@@ -81,6 +86,20 @@ FMODSoundSystem::set3DListenerAttributes(Int32 listener,
                           reinterpret_cast<const FMOD_VECTOR*>(vel),
                           reinterpret_cast<const FMOD_VECTOR*>(forward),
                           reinterpret_cast<const FMOD_VECTOR*>(up));
+}
+
+void
+FMODSoundSystem::getMasterChannelGroup(DrChannelGroup** channelGroup) {
+  result = fmodSoundSystem->getMasterChannelGroup(
+  reinterpret_cast<FMOD::ChannelGroup**>(channelGroup));
+}
+
+void
+FMODSoundSystem::createDSPByType(DR_DSP_TYPE::E bspType,
+                                 DrDSP **dsp) {
+  result = fmodSoundSystem->createDSPByType(
+  static_cast<FMOD_DSP_TYPE>(bspType),
+  reinterpret_cast<FMOD::DSP **>(dsp));
 }
 
 }

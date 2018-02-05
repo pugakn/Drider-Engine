@@ -173,9 +173,11 @@
     <ClInclude Include="Include\dr_channel.h" />
     <ClInclude Include="Include\dr_channelGroup.h" />
     <ClInclude Include="Include\dr_createSoundExInfo.h" />
+    <ClInclude Include="Include\dr_dsp.h" />
     <ClInclude Include="Include\dr_fmod_createSoundExInfo.h" />
     <ClInclude Include="Include\dr_fmod_channel.h" />
     <ClInclude Include="Include\dr_fmod_channelGroup.h" />
+    <ClInclude Include="Include\dr_fmod_dsp.h" />
     <ClInclude Include="Include\dr_fmod_reverb3d.h" />
     <ClInclude Include="Include\dr_fmod_soundSystem.h" />
     <ClInclude Include="Include\dr_fmod_sound_api.h" />
@@ -192,6 +194,7 @@
     <ClCompile Include="Source\dr_fmod_createSoundExInfo.cpp" />
     <ClCompile Include="Source\dr_fmod_channel.cpp" />
     <ClCompile Include="Source\dr_fmod_channelGroup.cpp" />
+    <ClCompile Include="Source\dr_fmod_dsp.cpp" />
     <ClCompile Include="Source\dr_fmod_reverb3d.cpp" />
     <ClCompile Include="Source\dr_fmod_soundSystem.cpp" />
     <ClCompile Include="Source\dr_fmod_sound_api.cpp" />

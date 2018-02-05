@@ -44,22 +44,6 @@ TestApplication::onInit() {
 
   resourceManager->loadResource(_T("testImage.png"));
 
- /* soundDriver->system->createReverb3D(soundDriver->reverb3D1);
-  DrReverb3DProperties prop1 = { 3900,   20,  29, 5000,  70, 100, 100, 250, 0,  5650,  80,  -9.8f };
-  soundDriver->reverb3D1->setProperties(&prop1);
-  Vector3D reverbPos(0.f, 0.f, 0.f);
-  float minDistance = 50.f;
-  float maxDistance = 100.f;
-  soundDriver->reverb3D1->set3DAttributes(&reverbPos,
-                                          minDistance,
-                                          maxDistance);
-
-  soundDriver->system->set3DListenerAttributes(0,
-                                               &camera.m_pos,
-                                               0,
-                                               0,
-                                               0);*/
-
   SoundExtraInfo *extraInfo = new SoundExtraInfo(
                               soundDriver->system,
                               soundDriver->channel1);
@@ -69,7 +53,7 @@ TestApplication::onInit() {
   auto soundResource3 = resourceManager->loadResource(_T("testSound3.mp3"), extraInfo);
 
   auto sound1 = std::dynamic_pointer_cast<SoundCore>(soundResource1);
-  sound1->get()->setMode(DR_SOUND_MODE::kDrMode_LOOP_NORMAL);
+  sound1->get()->setMode(DR_SOUND_MODE::kDrMode_3D);
   sound1->get()->play();
   sound1->get()->set3DMinMaxDistance(.5f, 1000.f);
 

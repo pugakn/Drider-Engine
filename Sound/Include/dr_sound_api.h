@@ -6,8 +6,9 @@ namespace driderSDK {
 
 class DrSound;
 class DrChannel;
+class DrChannelGroup;
 class SoundSystem;
-class DrReverb3D;
+class DrDSP;
   
 class DR_SOUND_EXPORT SoundAPI  : public Module<SoundAPI> {
 
@@ -28,7 +29,8 @@ class DR_SOUND_EXPORT SoundAPI  : public Module<SoundAPI> {
     DrChannel* channel3;
     DrChannel* channel4;
 
-    DrReverb3D* reverb3D1;
+    DrChannelGroup* masterGroup;
+    DrDSP *dspLowPass;
 };
 
 }

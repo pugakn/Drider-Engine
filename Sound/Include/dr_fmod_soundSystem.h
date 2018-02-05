@@ -33,25 +33,35 @@ class DR_SOUND_EXPORT FMODSoundSystem : public SoundSystem {
                DrCreateSoundExInfo *createInfo,
                DrSound * sound) override;
 
-    void 
-    createReverb3D(DrReverb3D * reverb3d) override;
+   void
+   playSound(DrSound* sound,
+             DrChannelGroup* channelGroup,
+             bool paused,
+             DrChannel **channel) override;
     
-    void
-    set3DSettings(float dopplerscale,
-                  float distancefactor,
-                  float rolloffscale) override;
+   void
+   set3DSettings(float dopplerscale,
+                 float distancefactor,
+                 float rolloffscale) override;
 
-    void
-    set3DListenerAttributes(Int32 listener,
-                            const Vector3D* pos,
-                            const Vector3D* vel,
-                            const Vector3D* forward,
-                            const Vector3D* up) override;
+   void
+   set3DListenerAttributes(Int32 listener,
+                           const Vector3D* pos,
+                           const Vector3D* vel,
+                           const Vector3D* forward,
+                           const Vector3D* up) override;
 
-    
-   private:
-     FMOD::System* fmodSoundSystem;
-     FMOD_RESULT result;
+   void
+   getMasterChannelGroup(DrChannelGroup** channelGroup) override;
+
+   void
+   createDSPByType(DR_DSP_TYPE::E bspType,
+                   DrDSP **dsp) override;
+
+   
+  private:
+    FMOD::System* fmodSoundSystem;
+    FMOD_RESULT result;
 };
 
 }

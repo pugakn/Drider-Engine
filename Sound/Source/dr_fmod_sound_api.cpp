@@ -4,6 +4,8 @@
 #include "dr_fmod_sound.h"
 #include "dr_fmod_soundSystem.h"
 #include "dr_fmod_reverb3d.h"
+#include "dr_fmod_dsp.h"
+#include "dr_fmod_channelGroup.h"
 
 namespace driderSDK {
 
@@ -14,6 +16,15 @@ FMODSoundAPI::init() {
   system->init(32, DR_INITFLAGS::kDrInitFlags_NORMAL, 0);
   system->set3DSettings(1.0f, 100.0f, 1.0f);
 
+  masterGroup = new FMODChannelGroup;
+  system->getMasterChannelGroup(reinterpret_cast<DrChannelGroup**>(masterGroup->getObjectReference()));
+  dspLowPass = new FMODDSP;
+  system->createDSPByType(DR_DSP_TYPE::FMOD_DSP_TYPE_FLANGE,
+                          reinterpret_cast<DrDSP**>(dspLowPass->getObjectReference()));
+  masterGroup->addDSP(0,
+                      reinterpret_cast<DrDSP*>(dspLowPass->getReference()));
+  dspLowPass->setBypass(true);
+
   channel1 = new FMODChannel;
   Vector3D pos(-100.f, 0.f, 0.f);
   Vector3D vel(0.f,0.f,0.f);
@@ -22,8 +33,6 @@ FMODSoundAPI::init() {
   channel2 = new FMODChannel;
   channel3 = new FMODChannel;
   channel4 = new FMODChannel;
-
-  reverb3D1 = new FMODReverb3D;
  
 }
 

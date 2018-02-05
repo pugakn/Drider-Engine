@@ -8,7 +8,7 @@
 namespace driderSDK {
 
 void
-SoundCore::init(void* pData) {
+SoundCore::init(void*) {
   
 }
 
@@ -26,7 +26,7 @@ SoundCore::init(void* pData,
                       reinterpret_cast<DrChannel**>(extraInfo->m_channel->getObjectReference()));
 
   extraInfo->m_soundSystem->createSound(name,
-                                        DR_SOUND_MODE::kDrMode_3D,
+                                        DR_SOUND_MODE::kDrMode_DEFAULT,
                                         0,
                                         soundResource);
 }
