@@ -58,18 +58,8 @@ class DR_CORE_EXPORT Animation : public Resource {
 
   float
   getTicksPerSecond() const;
-
-  void
-  init(void*)
-  {}
-
-  void
-  init(void* pData,
-       void* extraData)
-  {}
-
+  
  private:
-
   float m_ticksPerSecond;
   float m_duration; 
   std::unordered_map<TString, BoneAnim> m_bonesAnimations;

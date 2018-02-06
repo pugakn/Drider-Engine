@@ -19,20 +19,19 @@ class DR_CORE_EXPORT Resource
   * TEST::resourceDestructor
   *	Default destructor.
   */
-  virtual ~Resource() { };
+  virtual ~Resource() { }
 
   /**
   * Initialize the resource
   */
   virtual void
-  init(void* pData) = 0;
+  init(void* /*pData*/)
+  {}
 
   virtual void
-  init(void* pData,
-       void* extraData) = 0;
-
-  
-
+  init(void* /*pData*/,
+       void* /*extraData*/)
+  {}
 };
 
 }

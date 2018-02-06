@@ -22,13 +22,8 @@ class DR_CORE_EXPORT Model : public Resource
   Model& operator=(const Model&) = delete;
 
   void 
-  init(void* pModelData);
-
-  void
-  init(void* pData,
-       void* extraData)
-  {}
-
+  init(void* modelData);
+  
   std::vector<Mesh> meshes;
   std::vector<TString> animationsNames;
   TString skeletonName;

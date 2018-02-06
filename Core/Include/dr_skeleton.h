@@ -23,14 +23,6 @@ class DR_CORE_EXPORT Skeleton : public Resource
     std::vector<std::unique_ptr<NodeData>> children;
   };
 
-  void init(void*)
-  {}
-
-  void
-  init(void* pData,
-       void* extraData)
-  {}
-
   Matrix4x4 gloabalInverseTransform;
   std::vector<NodeData*> bones;
   std::unordered_map<TString, UInt32> bonesMapping;

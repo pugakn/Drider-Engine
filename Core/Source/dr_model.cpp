@@ -10,19 +10,19 @@ Model::Model() {}
 Model::~Model() {}
 
 void 
-Model::init(void* pModelData) {
+Model::init(void* modelData) {
 
-  ModelInfo* pModel = static_cast<ModelInfo*>(pModelData);
+  ModelInfo* model = static_cast<ModelInfo*>(modelData);
 
-  for (auto& meshInfo : pModel->meshes){
+  for (auto& meshInfo : model->meshes){
     Mesh mesh;
     mesh.vertices = meshInfo.vertices;
     mesh.indices = meshInfo.indices;
     meshes.push_back(std::move(mesh));
   }
 
-  animationsNames = pModel->animationsNames;
-  skeletonName = pModel->skeletonName;
+  animationsNames = model->animationsNames;
+  skeletonName = model->skeletonName;
 }
 
 }
