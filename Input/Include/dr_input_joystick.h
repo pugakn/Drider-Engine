@@ -17,11 +17,11 @@ public:
   ~HelperJoystickListener() {}
   explicit HelperJoystickListener(JoystickInput* pJoystick);
   bool
-    buttonPressed(const OIS::JoyStickEvent &arg, int button) override;
+    buttonPressed(const OIS::JoyStickEvent &arg, Int32 button) override;
   bool
-    buttonReleased(const OIS::JoyStickEvent &arg, int button) override;
+    buttonReleased(const OIS::JoyStickEvent &arg, Int32 button) override;
   bool
-    axisMoved(const OIS::JoyStickEvent &arg, int axis) override;
+    axisMoved(const OIS::JoyStickEvent &arg, Int32 axis) override;
 private:
   JoystickInput* m_pJoystick;
 };
@@ -31,8 +31,7 @@ private:
 */
 struct DR_INPUT_EXPORT JoystickInputState {
   std::vector<bool> m_buttons;
-  std::vector<int> m_axes;
-  std::vector<int> m_axesRelative;
+  std::vector<Int32> m_axes;
 };
 
 /**
@@ -52,7 +51,7 @@ public:
   *
   */
   virtual bool
-    buttonPressed(const JoystickInputState &state, int button) = 0;
+    buttonPressed(const JoystickInputState &state, Int32 button) = 0;
   /**
   * Called when a button is released
   *
@@ -64,7 +63,7 @@ public:
   *
   */
   virtual bool
-    buttonReleased(const JoystickInputState &state, int button) =  0;
+    buttonReleased(const JoystickInputState &state, Int32 button) =  0;
   /**
   * Called when an axis is moved
   *
@@ -76,7 +75,7 @@ public:
   *
   */
   virtual bool
-    axisMoved(const JoystickInputState &state, int axis) = 0;
+    axisMoved(const JoystickInputState &state, Int32 axis) = 0;
 };
 
 /**

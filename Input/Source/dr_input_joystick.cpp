@@ -4,39 +4,36 @@ namespace driderSDK {
   {
     m_pJoystick = pJoystick;
   }
-  bool HelperJoystickListener::buttonPressed(const OIS::JoyStickEvent & arg, int button)
+  bool HelperJoystickListener::buttonPressed(const OIS::JoyStickEvent & arg, Int32 button)
   {
     JoystickInputState st;
     st.m_buttons = arg.state.mButtons;
     for (auto &it : arg.state.mAxes) {
       st.m_axes.push_back(it.abs);
-      st.m_axesRelative.push_back(it.rel);
     }
     for (auto &it : m_pJoystick->m_listeners) {
       it->buttonPressed(st,button);
     }
     return true;
   }
-  bool HelperJoystickListener::buttonReleased(const OIS::JoyStickEvent & arg, int button)
+  bool HelperJoystickListener::buttonReleased(const OIS::JoyStickEvent & arg, Int32 button)
   {
     JoystickInputState st;
     st.m_buttons = arg.state.mButtons;
     for (auto &it : arg.state.mAxes) {
       st.m_axes.push_back(it.abs);
-      st.m_axesRelative.push_back(it.rel);
     }
     for (auto &it : m_pJoystick->m_listeners) {
       it->buttonReleased(st, button);
     }
     return true;
   }
-  bool HelperJoystickListener::axisMoved(const OIS::JoyStickEvent & arg, int axis)
+  bool HelperJoystickListener::axisMoved(const OIS::JoyStickEvent & arg, Int32 axis)
   {
     JoystickInputState st;
     st.m_buttons = arg.state.mButtons;
     for (auto &it : arg.state.mAxes) {
       st.m_axes.push_back(it.abs);
-      st.m_axesRelative.push_back(it.rel);
     }
     for (auto &it : m_pJoystick->m_listeners) {
       it->axisMoved(st, axis);
@@ -52,7 +49,6 @@ namespace driderSDK {
     m_state.m_buttons = st.mButtons;
     for (auto &it : st.mAxes) {
       m_state.m_axes.push_back(it.abs);
-      m_state.m_axesRelative.push_back(it.rel);
     }
   }
   void JoystickInput::internalInit(OIS::Object * obj)

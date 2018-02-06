@@ -7,7 +7,7 @@
 namespace driderSDK {
 
 void
-InputManager::init(std::size_t winHandle, bool nonExlusive) {
+InputManager::init(SizeT winHandle, bool nonExlusive) {
   if (nonExlusive) {
     OIS::ParamList pl;
     pl.insert(std::make_pair(std::string("WINDOW"), std::to_string(winHandle)));
@@ -102,7 +102,7 @@ InputManager::destroyInputObject(UInt32 objID) {
   m_objects[objID] = nullptr;
 }
 
-int
+Int32
 InputManager::getNumberOfDevices(InputObjectType::E type) {
   OIS::Type internalType;
 
@@ -127,18 +127,18 @@ InputManager::getNumberOfDevices(InputObjectType::E type) {
 
 void InputManager::registerAllActiveDevices()
 {
-  int num = getNumberOfDevices(InputObjectType::kKeyboard);
-  for (int i = 0; i < num; ++i)
+  Int32 num = getNumberOfDevices(InputObjectType::kKeyboard);
+  for (Int32 i = 0; i < num; ++i)
   {
     createInputObject(InputObjectType::kKeyboard);
   }
   num = getNumberOfDevices(InputObjectType::kMouse);
-  for (int i = 0; i < num; ++i)
+  for (Int32 i = 0; i < num; ++i)
   {
     createInputObject(InputObjectType::kMouse);
   }
   num = getNumberOfDevices(InputObjectType::kJoystick);
-  for (int i = 0; i < num; ++i)
+  for (Int32 i = 0; i < num; ++i)
   {
     createInputObject(InputObjectType::kJoystick);
   }
