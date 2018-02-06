@@ -50,5 +50,8 @@
     <ClCompile Include="Source\dr_input_joystick.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
+    <ClCompile Include="Source\dr_input_object.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

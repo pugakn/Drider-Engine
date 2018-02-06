@@ -81,7 +81,6 @@ InputManager::createInputObject(InputObjectType::E type) {
     break;
   }
 
-  inputObject->m_type = type;
   m_objects.push_back(inputObject);
 
   return m_objects.size() - 1;
@@ -96,52 +95,76 @@ InputManager::destroyInputObject(UInt32 objID) {
     return;
   }
 
-  m_mngr->destroyInputObject(m_objects[objID]->m_obj);
+  m_mngr->destroyInputObject(m_objects[objID]->obj);
   delete m_objects[objID];
 
   m_objects[objID] = nullptr;
 }
 
-int
+Int32
 InputManager::getNumberOfDevices(InputObjectType::E type) {
-    return m_mngr->getNumberOfDevices(static_cast<OIS::Type>(type));
+  OIS::Type internalType;
+
+  switch (type)
+  {
+  case driderSDK::InputObjectType::kKeyboard:
+    internalType = OIS::Type::OISKeyboard;
+    break;
+  case driderSDK::InputObjectType::kMouse:
+    internalType = OIS::Type::OISMouse;
+    break;
+  case driderSDK::InputObjectType::kJoystick:
+    internalType = OIS::Type::OISJoyStick;
+    break;
+  default:
+    internalType = OIS::Type::OISUnknown;
+    break;
+  }
+
+  return m_mngr->getNumberOfDevices(internalType);
 }
 
-void InputManager::registerAllActiveDevices()
-{
-  for (auto deviceType = InputObjectType::kKeyboard; 
-      deviceType < InputObjectType::kCount; 
-      deviceType = static_cast<InputObjectType::E>(deviceType + 1)) {
-
-    Int32 devicesCount = getNumberOfDevices(deviceType);
-
-    for (Int32 device = 0; device < devicesCount; ++device) {
-      createInputObject(deviceType); 
-    }
+void 
+InputManager::registerAllActiveDevices() {
+  Int32 num = getNumberOfDevices(InputObjectType::kKeyboard);
+  for (Int32 i = 0; i < num; ++i)
+  {
+    createInputObject(InputObjectType::kKeyboard);
+  }
+  num = getNumberOfDevices(InputObjectType::kMouse);
+  for (Int32 i = 0; i < num; ++i)
+  {
+    createInputObject(InputObjectType::kMouse);
+  }
+  num = getNumberOfDevices(InputObjectType::kJoystick);
+  for (Int32 i = 0; i < num; ++i)
+  {
+    createInputObject(InputObjectType::kJoystick);
   }
 }
 
-MouseInput* InputManager::getMouse()
-{
+MouseInput* 
+InputManager::getMouse() {
   return m_mouseDevices[0];
 }
 
-KeyboardInput* InputManager::getKeyboard()
-{
+KeyboardInput* 
+InputManager::getKeyboard() {
   return m_keyboardDevices[0];
 }
 
-UInt32 InputManager::getNumOfJoysticks()
-{
+UInt32 
+InputManager::getNumOfJoysticks() {
   return m_joystickDevices.size();
 }
 
-JoystickInput* InputManager::getJoystick(UInt32 id)
-{
+JoystickInput* 
+InputManager::getJoystick(UInt32 id) {
   return m_joystickDevices[id];
 }
 
-InputObject* driderSDK::InputManager::getInputObjectByID(UInt32 id) {
+InputObject* 
+InputManager::getInputObjectByID(UInt32 id) {
   if (id >= m_objects.size()) {
     return nullptr;
   }
