@@ -150,8 +150,10 @@ TestApplication::initSceneGraph() {
 
   auto inputListener = jokerNode->createComponent<InputComponent>();
 
-  auto keyboardInput = InputManager::instancePtr()->getKeyboard();
-  keyboardInput->setEventCallback(inputListener);
+  if(InputManager::instancePtr()->getNumOfJoysticks()) {
+    auto joystickInput = InputManager::instancePtr()->getJoystick(0);
+    joystickInput->setEventCallback(inputListener);
+  }
 
   auto drawableComponent = jokerNode->getComponent<DrawableComponent>();
   

@@ -2,11 +2,11 @@
 
 #include <unordered_set>
 #include <dr_gameComponent.h>
-#include <dr_input_keyboard.h>
+#include <dr_input_joystick.h>
 
 namespace driderSDK {
 
-class InputComponent : public GameComponent, public IKeyboardListener
+class InputComponent : public GameComponent, public IJoystickInputListener
 {
  public:
   using GameComponent::GameComponent;
@@ -20,12 +20,16 @@ class InputComponent : public GameComponent, public IKeyboardListener
 
   virtual void onDestroy() override;
   
-  // Inherited via IKeyboardListener
-  virtual bool keyPressed(const KeyboardButtonID::E& key) override;
+  
+  // Inherited via IJoystickInputListener
+  virtual bool buttonPressed(const JoystickInputState& state, 
+                             int button) override;
 
-  virtual bool keyReleased(const KeyboardButtonID::E& key) override;
+  virtual bool buttonReleased(const JoystickInputState& state, 
+                              int button) override;
 
-  std::unordered_set<KeyboardButtonID::E> m_keysDown;
+  virtual bool axisMoved(const JoystickInputState& state, 
+                         int axis) override;
 };
 
 }

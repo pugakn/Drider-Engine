@@ -1,30 +1,38 @@
 #include "InputComponent.h"
 #include <dr_gameObject.h>
+#include <iostream>
 
 namespace driderSDK {
 
 void InputComponent::onCreate() {}
 
-void InputComponent::onUpdate() {
-  if (m_keysDown.count(KeyboardButtonID::KC_UP)) {
-    m_gameObject.transform.move({1.0f,0.0f, 0.0f});
-  }
-  if (m_keysDown.count(KeyboardButtonID::KC_DOWN)) {
-    m_gameObject.transform.move({-1.0f,0.0f, 0.0f});
-  }
-}
+void InputComponent::onUpdate() {}
 
 void InputComponent::onRender() {}
 
 void InputComponent::onDestroy() {}
 
-bool InputComponent::keyPressed(const KeyboardButtonID::E& key) {
-  m_keysDown.insert(key);
+bool InputComponent::buttonPressed(const JoystickInputState& state, 
+                                   int button) {
+  
+  std::cout << "Button " << button << " pressed" << std::endl;
+  
   return true;
 }
 
-bool InputComponent::keyReleased(const KeyboardButtonID::E& key) {
-  m_keysDown.erase(key);
+bool InputComponent::buttonReleased(const JoystickInputState& state, 
+                                    int button) {
+
+  std::cout << "Button " << button << " released" << std::endl;
+
+  return true;
+}
+
+bool InputComponent::axisMoved(const JoystickInputState& state, 
+                               int axis) {
+
+  std::cout << "Joystick " << axis << " moved" << std::endl;
+
   return true;
 }
 
