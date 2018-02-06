@@ -30,7 +30,8 @@ public:
 	* Default destructor.
 	*
 	*/
-	~ScriptEngine();
+	virtual
+	~ScriptEngine() {}
 
 	/**
 	* Create the script engine and register string type and functions.

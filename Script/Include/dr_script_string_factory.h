@@ -1,9 +1,8 @@
 #pragma once
 
-#include "dr_script_prerequisites.h"
-
 #include <angelscript\angelscript.h>
 #include <unordered_map>
+#include "dr_script_prerequisites.h"
 
 namespace driderSDK {
 
@@ -15,7 +14,7 @@ typedef std::unordered_map<TString, int> map_t;
 * Sample usage:
 *	Required by the script's engine, therefore it should not be used.
 */
-class StringFactory : public asIStringFactory
+class DR_SCRIPT_EXPORT StringFactory : public asIStringFactory
 {
 public:
 

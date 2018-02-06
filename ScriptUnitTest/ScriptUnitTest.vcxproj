@@ -81,6 +81,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Utils\Include;$(SolutionDir)Core\Include;$(SolutionDir)Script\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);$(DRIDER_DEPENDENCIES)Lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -94,6 +95,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Utils\Include;$(SolutionDir)Core\Include;$(SolutionDir)Script\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);$(DRIDER_DEPENDENCIES)Lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -109,6 +111,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Utils\Include;$(SolutionDir)Core\Include;$(SolutionDir)Script\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -126,6 +129,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Utils\Include;$(SolutionDir)Core\Include;$(SolutionDir)Script\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

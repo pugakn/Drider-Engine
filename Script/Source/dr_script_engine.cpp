@@ -8,7 +8,7 @@ namespace driderSDK {
 
 ScriptEngine::ScriptEngine() {}
 
-ScriptEngine::~ScriptEngine() {}
+//ScriptEngine::~ScriptEngine() {}
 
 int 
 ScriptEngine::createEngine() {
@@ -51,7 +51,7 @@ ScriptEngine::addScript(const TString& fileName) {
 
 	TString script;
 	script.resize(fileLength);
-	scriptFile.Write(fileLength, (ANSIChar*)&script);
+	scriptFile.Write(fileLength, (char*)&script);
 	scriptFile.Close();
 
 	if(script.size() == 0) {
