@@ -23,13 +23,13 @@ class InputComponent : public GameComponent, public IJoystickInputListener
   
   // Inherited via IJoystickInputListener
   virtual bool buttonPressed(const JoystickInputState& state, 
-                             int button) override;
+                             Int32 button) override;
 
   virtual bool buttonReleased(const JoystickInputState& state, 
-                              int button) override;
+                              Int32 button) override;
 
   virtual bool axisMoved(const JoystickInputState& state, 
-                         int axis) override;
+                         Int32 axis) override;
 };
 
 }

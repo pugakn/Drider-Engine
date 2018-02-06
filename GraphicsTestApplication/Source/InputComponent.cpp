@@ -13,7 +13,7 @@ void InputComponent::onRender() {}
 void InputComponent::onDestroy() {}
 
 bool InputComponent::buttonPressed(const JoystickInputState& state, 
-                                   int button) {
+                                   Int32 button) {
   
   std::cout << "Button " << button << " pressed" << std::endl;
   
@@ -21,7 +21,7 @@ bool InputComponent::buttonPressed(const JoystickInputState& state,
 }
 
 bool InputComponent::buttonReleased(const JoystickInputState& state, 
-                                    int button) {
+                                    Int32 button) {
 
   std::cout << "Button " << button << " released" << std::endl;
 
@@ -29,9 +29,12 @@ bool InputComponent::buttonReleased(const JoystickInputState& state,
 }
 
 bool InputComponent::axisMoved(const JoystickInputState& state, 
-                               int axis) {
+                               Int32 axis) {
 
-  std::cout << "Joystick " << axis << " moved" << std::endl;
+  constexpr Int32 maxAxes = 32767;
+  constexpr Int32 minAxes = -32768;
+
+
 
   return true;
 }
