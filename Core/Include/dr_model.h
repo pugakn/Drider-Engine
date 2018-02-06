@@ -24,6 +24,11 @@ class DR_CORE_EXPORT Model : public Resource
   void 
   init(void* pModelData);
 
+  void
+  init(void*,
+       void*)
+  {}
+
   std::vector<Mesh> meshes;
   std::vector<TString> animationsNames;
   TString skeletonName;

@@ -22,11 +22,9 @@ FMODSoundSystem::init(Int32 maxChannels,
   return static_cast<DR_SOUND_RESULT::E>(result);
 }
 
-DR_SOUND_RESULT::E
+void
 FMODSoundSystem::update() {
   result = fmodSoundSystem->update();
-
-  return static_cast<DR_SOUND_RESULT::E>(result);
 }
 
 void*
@@ -39,7 +37,7 @@ FMODSoundSystem::getObjectReference() {
   return reinterpret_cast<void**>(&fmodSoundSystem);
 }
 
-DR_SOUND_RESULT::E 
+void
 FMODSoundSystem::createSound(TString name,
                              DR_SOUND_MODE::E mode,
                              DrCreateSoundExInfo* createInfo,
@@ -48,27 +46,60 @@ FMODSoundSystem::createSound(TString name,
   _bstr_t unicode_name(name.c_str());
   result = fmodSoundSystem->createSound(unicode_name,
                                         mode,
-                                        0,
+                                        reinterpret_cast<FMOD_CREATESOUNDEXINFO*>
+                                        (createInfo),
                                         reinterpret_cast<FMOD::Sound**>
-                                          (sound->getObjectReference()));
-
-  return static_cast<DR_SOUND_RESULT::E>(result);
+                                        (sound->getObjectReference()));
 }
 
-//DR_SOUND_RESULT::E
-//FMODSoundSystem::playSound(DrSound* sound,
-//                           DrChannelGroup* channelgroup,
-//                           bool paused,
-//                           DrChannel* channel) {
-//
-//  result = fmodSoundSystem->playSound(reinterpret_cast<FMOD::Sound*>
-//                                        (sound->getReference()),
-//                                      0,
-//                                      paused,
-//                                      reinterpret_cast<FMOD::Channel**>
-//                                        (channel->getObjectReference()));
-//
-//  return static_cast<DR_SOUND_RESULT::E>(result);
-//}
+void
+FMODSoundSystem::playSound(DrSound* sound,
+                           DrChannelGroup* channelGroup,
+                           bool paused,
+                           DrChannel **channel) {
+  result = fmodSoundSystem->playSound(
+  reinterpret_cast<FMOD::Sound*>(sound),
+  reinterpret_cast<FMOD::ChannelGroup*>(channelGroup),
+  paused,
+  reinterpret_cast<FMOD::Channel**>(channel));
+}
+
+void
+FMODSoundSystem::set3DSettings(float dopplerscale,
+                               float distancefactor,
+                               float rolloffscale) {
+  result = fmodSoundSystem->set3DSettings(dopplerscale,
+                                          distancefactor,
+                                          rolloffscale);
+
+}
+
+void
+FMODSoundSystem::set3DListenerAttributes(Int32 listener,
+                                         const Vector3D* pos,
+                                         const Vector3D* vel,
+                                         const Vector3D* forward,
+                                         const Vector3D* up) {
+  result = fmodSoundSystem->
+  set3DListenerAttributes(listener,
+                          reinterpret_cast<const FMOD_VECTOR*>(pos),
+                          reinterpret_cast<const FMOD_VECTOR*>(vel),
+                          reinterpret_cast<const FMOD_VECTOR*>(forward),
+                          reinterpret_cast<const FMOD_VECTOR*>(up));
+}
+
+void
+FMODSoundSystem::getMasterChannelGroup(DrChannelGroup** channelGroup) {
+  result = fmodSoundSystem->getMasterChannelGroup(
+  reinterpret_cast<FMOD::ChannelGroup**>(channelGroup));
+}
+
+void
+FMODSoundSystem::createDSPByType(DR_DSP_TYPE::E bspType,
+                                 DrDSP **dsp) {
+  result = fmodSoundSystem->createDSPByType(
+  static_cast<FMOD_DSP_TYPE>(bspType),
+  reinterpret_cast<FMOD::DSP **>(dsp));
+}
 
 }

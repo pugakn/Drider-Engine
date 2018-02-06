@@ -13,10 +13,10 @@
 namespace driderSDK {
 
 void
-ResourceManager::init(SoundSystem* soundSystem) {
+ResourceManager::init() {
   auto codecTexture  = dr_make_unique<CodecTexture>();
   auto codecModel = dr_make_unique<CodecModel>();
-  auto codecSound = dr_make_unique<CodecSound>(soundSystem);
+  auto codecSound = dr_make_unique<CodecSound>();
 
   resourceFactory[codecTexture.get()] = std::make_shared<TextureResource>;
   resourceFactory[codecModel.get()] = std::make_shared<Model>;
@@ -28,7 +28,7 @@ ResourceManager::init(SoundSystem* soundSystem) {
 }
 
 std::shared_ptr<Resource>
-ResourceManager::loadResource(TString resourceName) {
+ResourceManager::loadResource(const TString& resourceName) {
   std::shared_ptr<Resource> r;
   
   for (auto &codec : codecs) {
@@ -46,8 +46,31 @@ ResourceManager::loadResource(TString resourceName) {
   return r;
 }
 
+std::shared_ptr<Resource>
+ResourceManager::loadResource(const TString& resourceName,
+                              void* extraData) {
+  std::shared_ptr<Resource> r;
+
+  for (auto &codec : codecs) {
+    TString extension = FileSystem::GetFileExtension(resourceName);
+    if (codec->isCompatible(extension)) {
+      if (existInResourceContent(resourceName)) {
+        r = getReference(resourceName);
+      }
+      else {
+        createResource(resourceName, 
+                       codec.get(),
+                       extraData);
+        r = getReference(resourceName);
+        break;
+      }
+    }
+  }
+  return r;
+}
+
 void
-ResourceManager::createResource(TString resourceName,
+ResourceManager::createResource(const TString& resourceName,
                                 Codec* codec) {
   auto resource = resourceFactory[codec]();
   auto info = codec->decode(resourceName);
@@ -61,19 +84,37 @@ ResourceManager::createResource(TString resourceName,
   }
 }
 
+void
+ResourceManager::createResource(const TString& resourceName,
+                                Codec* codec,
+                                void* extraInfo) {
+  auto resource = resourceFactory[codec]();
+  auto info = codec->decode(resourceName);
+  resource->init(info.get(), 
+                 extraInfo);
+
+  if (resource != nullptr) {
+    resourceContent.insert({ resourceName,
+                           resource });
+  }
+  else {
+    // Error al cargar recurso
+  }
+}
+
 void 
-ResourceManager::addResource(TString resourceName, 
+ResourceManager::addResource(const TString& resourceName, 
                              std::shared_ptr<Resource> pResource) {
   resourceContent.insert({resourceName, pResource});
 }
 
 bool
-ResourceManager::existInResourceContent(TString resourceName) {
+ResourceManager::existInResourceContent(const TString& resourceName) {
   return resourceContent.find(resourceName) != resourceContent.end();
 }
 
 std::shared_ptr<Resource>
-ResourceManager::getReference(TString resourceName) {
+ResourceManager::getReference(const TString& resourceName) {
   if(!existInResourceContent(resourceName))
     return nullptr;
   return resourceContent.find(resourceName)->second;

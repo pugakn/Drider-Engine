@@ -9,6 +9,16 @@ FMODSound::init(SoundSystem *system,
   m_Channel = reinterpret_cast<FMOD::Channel**>(channel);
 }
 
+void
+FMODSound::setSystem(SoundSystem* system) {
+  m_System = reinterpret_cast<FMOD::System*>(system);
+}
+
+void
+FMODSound::setChannel(DrChannel **channel){
+  m_Channel = reinterpret_cast<FMOD::Channel**>(channel);
+}
+
 FMOD::Sound *
 FMODSound::get() {
   return fmodSound;
@@ -24,15 +34,21 @@ FMODSound::getObjectReference() {
   return reinterpret_cast<void**>(&fmodSound);
 }
 
-DR_SOUND_RESULT::E
+void
 FMODSound::setMode(DR_SOUND_MODE::E mode) {
   result = fmodSound->setMode(static_cast<FMOD_MODE>(mode));
-  return static_cast<DR_SOUND_RESULT::E>(result);
 }
 
 void
 FMODSound::play() {
   result = m_System->playSound(fmodSound, 0, false, m_Channel);
+}
+
+void
+FMODSound::set3DMinMaxDistance(float min,
+                               float max) {
+  result = fmodSound->set3DMinMaxDistance(min,
+                                          max);
 }
 
 }

@@ -40,7 +40,7 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager> {
   * Initialize the resource manager 
   */
   void
-  init(SoundSystem* soundSystem);
+  init();
 
   /**
   * TEST::getReference
@@ -53,7 +53,7 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager> {
   *   Return the shared_ptr to a Resource.
   */
   std::shared_ptr<Resource>
-  getReference(TString key);
+  getReference(const TString& key);
 
   /**
   * TEST::loadResource
@@ -67,31 +67,71 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager> {
   *   void.
   */
   std::shared_ptr<Resource>
-  loadResource (TString resourceName);
+  loadResource (const TString& resourceName);
+
+  /**
+  * TEST::loadResource
+  * Checks if the resource is compatible, then load this
+  * resource in the resourceContent.
+  *
+  * @param resourceName
+  *   Resource's name.
+  *
+  * @param extraInfo
+  *   Extra data to initialize the resource
+  *
+  * @return
+  *   void.
+  */
+  std::shared_ptr<Resource>
+  loadResource(const TString& resourceName,
+               void* extraData);
   
 private:
   /**
   * TEST::createResource
   * Creates a resource, then puts in the contentResource and sets a key
   *
-  * @param resourceType
-  *   Type of the resource.
-  *
   * @param resourceName
-  *   The name of the resource.
+  *   Resource's name.
+  *
+  * @param codec
+  *   Pointer to codec.
   *
   * @return
   *   void.
   */
   void
-  createResource(TString resourceName,
+  createResource(const TString& resourceName,
                  Codec* codec);
-public:
+
   /**
+  * TEST::createResource
+  * Creates a resource, then puts in the contentResource and sets a key
   *
+  * @param resourceName
+  *   Type of the resource.
+  *
+  * @param codec
+  *   Pointer to codec.
+  *
+  * @param extraInfo
+  *   Extra info to inicialize the resource.
+  *
+  * @return
+  *   void.
   */
   void
-  addResource(TString resourceName, 
+  createResource(const TString& resourceName,
+                 Codec* codec,
+                 void* extraInfo);
+  
+public:
+  /**
+  * Add a resource to the ResourceContent of the ResourceManager
+  */
+  void
+  addResource(const TString& resourceName, 
               std::shared_ptr<Resource> pResource);
 private:
   /**
@@ -105,7 +145,7 @@ private:
   *   Return true if the resource exist, else return false.
   */
   bool
-  existInResourceContent (TString key);
+  existInResourceContent (const TString& key);
   
  public:
   using ResorceSmartPtr = std::shared_ptr<Resource>;

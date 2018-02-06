@@ -1,38 +1,39 @@
 #pragma once
-#include "dr_input_prerequisites.h"
-#include <OIS\OISJoystick.h>
+
+#include <vector>
 #include <dr_vector2di.h>
 #include <dr_vector3d.h>
-#include <vector>
+#include <OIS\OISJoystick.h>
 #include "dr_input_defines.h"
 #include "dr_input_object.h"
+#include "dr_input_prerequisites.h"
+
 namespace driderSDK {
 class JoystickInput;
 /**
 * Helper class to receive events
 */
-class HelperJoystickListener : public ::OIS::JoyStickListener
+class HelperJoystickListener : public OIS::JoyStickListener
 {
-public:
+ public:
   ~HelperJoystickListener() {}
-  explicit HelperJoystickListener(JoystickInput* pJoystick);
+  explicit HelperJoystickListener(JoystickInput* _joystick);
   bool
-    buttonPressed(const OIS::JoyStickEvent &arg, int button) override;
+  buttonPressed(const OIS::JoyStickEvent &arg, Int32 button) override;
   bool
-    buttonReleased(const OIS::JoyStickEvent &arg, int button) override;
+  buttonReleased(const OIS::JoyStickEvent &arg, Int32 button) override;
   bool
-    axisMoved(const OIS::JoyStickEvent &arg, int axis) override;
-private:
-  JoystickInput* m_pJoystick;
+  axisMoved(const OIS::JoyStickEvent &arg, Int32 axis) override;
+ private:
+  JoystickInput* m_joystick;
 };
 
 /**
 * Structure with the joystick state
 */
 struct DR_INPUT_EXPORT JoystickInputState {
-  std::vector<bool> m_buttons;
-  std::vector<int> m_axes;
-  std::vector<int> m_axesRelative;
+  std::vector<bool> buttons;
+  std::vector<Int32> axes;
 };
 
 /**
@@ -40,7 +41,7 @@ struct DR_INPUT_EXPORT JoystickInputState {
 */
 class DR_INPUT_EXPORT IJoystickInputListener
 {
-public:
+ public:
   /**
   * Called when a button is pressed
   *
@@ -52,7 +53,7 @@ public:
   *
   */
   virtual bool
-    buttonPressed(const JoystickInputState &state, int button) = 0;
+  buttonPressed(const JoystickInputState &state, Int32 button) = 0;
   /**
   * Called when a button is released
   *
@@ -64,7 +65,7 @@ public:
   *
   */
   virtual bool
-    buttonReleased(const JoystickInputState &state, int button) =  0;
+  buttonReleased(const JoystickInputState &state, Int32 button) =  0;
   /**
   * Called when an axis is moved
   *
@@ -76,15 +77,18 @@ public:
   *
   */
   virtual bool
-    axisMoved(const JoystickInputState &state, int axis) = 0;
+  axisMoved(const JoystickInputState &state, Int32 axis) = 0;
 };
 
 /**
 * Manager class for input device
 */
 class DR_INPUT_EXPORT JoystickInput : public InputObject {
-public:
-  JoystickInput() : m_helperListener(this) {}
+ public:
+  JoystickInput() 
+    : InputObject(InputObjectType::kJoystick), 
+      m_helperListener(this) 
+  {}
   /**
   * Call it to capture events
   *
@@ -118,11 +122,11 @@ public:
   JoystickInputState 
   getState() const;
 
-
-  std::vector<IJoystickInputListener*> m_listeners;
-private:
+ private:
+  friend HelperJoystickListener;
   JoystickInputState m_state;
   OIS::JoyStick* m_joystick;
+  std::vector<IJoystickInputListener*> m_listeners;
   HelperJoystickListener m_helperListener;
 };
 }

@@ -26,6 +26,11 @@ class DR_CORE_EXPORT Skeleton : public Resource
   void init(void*)
   {}
 
+  void
+  init(void*,
+       void*)
+  {}
+
   Matrix4x4 gloabalInverseTransform;
   std::vector<NodeData*> bones;
   std::unordered_map<TString, UInt32> bonesMapping;

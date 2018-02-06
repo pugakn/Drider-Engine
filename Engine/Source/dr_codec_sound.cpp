@@ -9,7 +9,6 @@ Codec::UniqueVoidPtr
 CodecSound::decode(TString pathName) {
   SoundInfo *info = new SoundInfo();
   info->name = pathName;
-  info->soundSystem = soundSystem;
 
   return UniqueVoidPtr(info, &dr_void_deleter<SoundInfo>);
 }

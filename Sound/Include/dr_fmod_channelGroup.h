@@ -14,7 +14,15 @@ namespace driderSDK {
       void * 
       getReference() override;
 
+      void **
+      getObjectReference() override;
+
+      void
+      addDSP(Int32 index,
+             DrDSP * dsp) override;
+
       private:
       FMOD::ChannelGroup *channelGroup;
+      FMOD_RESULT result;
   };
 }
