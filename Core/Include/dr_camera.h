@@ -3,12 +3,11 @@
 #include <dr_vector3d.h>
 #include <string>
 #include "dr_core_prerequisites.h"
+#include "dr_gameObject.h"
 #include "dr_viewport.h"
 
 
 namespace driderSDK {
-
-struct Viewport;
 
 /**
 *  Camera class.
@@ -16,7 +15,7 @@ struct Viewport;
 * Sample usage:
 *	Camera cam("myCamera",Vector3D(0,0,0), Vector3D(1,0,0), myViewport, 90, 0.1, 1000);
 */
-class DR_CORE_EXPORT Camera
+class DR_CORE_EXPORT Camera : public GameObject
 {
 public:
 
@@ -53,8 +52,6 @@ public:
 	*   Value of the farthest plane of the proyection.
 	*/
 	Camera(const TString& name,
-				 const Vector3D& pos,
-				 const Vector3D& target,
 				 const Viewport& viewport,
 				 float fov, 
 				 float nearPlane, 
@@ -74,8 +71,11 @@ public:
 	* @param delta
 	*   Time value to update the camera.
 	*/
-	void 
-	update(float delta);
+	virtual void 
+	updateImpl() override;
+
+  void
+  virtual draw(){}
 
 	/**
 	* TEST::move
@@ -142,16 +142,6 @@ public:
 	setViewport(const Viewport& viewport);
 
 	/**
-	* TEST::getName
-	* Get the camera's name
-	*
-	* @return 
-	*   The name of this camera.
-	*/
-	const TString&
-	getName() const;
-
-	/**
 	* TEST::rotate
 	* Rotate the camera.
 	*
@@ -184,9 +174,7 @@ public:
   const Matrix4x4&
   getVP() const;
 
-//private:
-	TString m_name;
-	Vector3D m_pos;
+ private:
 	Vector3D m_target;
 	Vector3D m_up;
 	Vector3D m_look;

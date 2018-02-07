@@ -16,6 +16,8 @@ class DR_CORE_EXPORT GameObject : public Node
   using ComponentsList = std::vector<ComponentPtr>;
 
   GameObject(const TString& name = _T(""), WeakNode parent = WeakNode());
+
+  ~GameObject();
   
   GameObject(const GameObject&) = delete;
 

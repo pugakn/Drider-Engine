@@ -3,13 +3,16 @@
 #include <unordered_set>
 #include <dr_gameComponent.h>
 #include <dr_input_joystick.h>
+#include <dr_vector2d.h>
 
 namespace driderSDK {
 
 class InputComponent : public GameComponent, public IJoystickInputListener
 {
  public:
-  using GameComponent::GameComponent;
+  
+  InputComponent(GameObject& _gameObject, JoystickInput* _joystick);
+  
  private:
   // Inherited via GameComponent
   virtual void onCreate() override;
@@ -30,6 +33,11 @@ class InputComponent : public GameComponent, public IJoystickInputListener
 
   virtual bool axisMoved(const JoystickInputState& state, 
                          Int32 axis) override;
+
+ private:
+  JoystickInput* m_joystick;
+
+  Vector2D m_dir;
 };
 
 }

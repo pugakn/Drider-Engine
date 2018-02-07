@@ -11,14 +11,7 @@
 namespace driderSDK {
 
 TestApplication::TestApplication()
-  : viewport{0,0,1280, 720},
-    camera(_T("MainCamera"),
-           {0, 100, 200},
-           {0,0,0},
-           viewport,
-           45.0f,
-           0.1f,
-           1000.f) {
+  : viewport{0,0,1280, 720} {
 }
 
 TestApplication::~TestApplication() {
@@ -33,7 +26,15 @@ TestApplication::onInit() {
                static_cast<driderSDK::UInt32>(viewport.height),
                win);
 
-  
+  m_camera = std::make_shared<Camera>(_T("MAIN_CAM"), 
+                                      viewport, 
+                                      45.f, 
+                                      0.1f, 
+                                      1000.f);
+
+  m_camera->transform.setPosition({0.f, 100.f, 200.f});
+  m_camera->setTarget({0,0,0});
+
   initResources();
   initInput();
   initSound();
@@ -58,7 +59,6 @@ void
 TestApplication::onUpdate() {
   //soundDriver->update();
   m_sceneGraph->update();
-  camera.update(0);
 }
 
 void
@@ -143,17 +143,24 @@ TestApplication::initSceneGraph() {
 
   auto root = m_sceneGraph->getRoot();
 
+  root->addChild(m_camera);
+
   auto jokerNode = std::make_shared<GameObject>();
   jokerNode->setName(_T("Joker"));
   jokerNode->createComponent<DrawableComponent>(*driver->device, 
                                                 *driver->deviceContext);
 
-  auto inputListener = jokerNode->createComponent<InputComponent>();
+  JoystickInput* joystickInput = nullptr;
 
   if(InputManager::instancePtr()->getNumOfJoysticks()) {
-    auto joystickInput = InputManager::instancePtr()->getJoystick(0);
+    joystickInput = InputManager::instancePtr()->getJoystick(0); 
+  }
+
+  if (joystickInput) {
+    auto inputListener = m_camera->createComponent<InputComponent>(joystickInput);
     joystickInput->setEventCallback(inputListener);
   }
+
 
   auto drawableComponent = jokerNode->getComponent<DrawableComponent>();
   
@@ -165,7 +172,7 @@ TestApplication::initSceneGraph() {
   
   drawableComponent->setModel(model);
 
-  auto technique = new StaticMeshTechnique(&camera, 
+  auto technique = new StaticMeshTechnique(&(*m_camera), 
                                            &(*jokerNode));
 
   drawableComponent->setShaderTechnique(technique);

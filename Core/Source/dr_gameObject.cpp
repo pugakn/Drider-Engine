@@ -8,6 +8,9 @@ GameObject::GameObject(const TString& name,
   : Node(name, parent) 
 {}
 
+GameObject::~GameObject() 
+{}
+
 void 
 GameObject::addComponent(ComponentPtr component) {
   m_components.push_back(std::move(component));

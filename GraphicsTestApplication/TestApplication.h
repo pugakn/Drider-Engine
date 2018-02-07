@@ -51,7 +51,7 @@ public:
   Quad quad;
   std::vector<Model3D> models;
   Viewport viewport;
-  Camera camera;
+  std::shared_ptr<Camera> m_camera;
 
   //SoundAPI* soundDriver;
 
