@@ -1,30 +1,24 @@
+#include <dr_file.h>
+#include <dr_string_utils.h>
 #include "dr_script_engine.h"
 #include "dr_script_string_factory.h"
-
-#include <dr_file.h>
-
 
 namespace driderSDK {
 
 ScriptEngine::ScriptEngine() {}
 
-//ScriptEngine::~ScriptEngine() {}
-
-int 
+Int8
 ScriptEngine::createEngine() {
 
 	m_scriptEngine = asCreateScriptEngine();
-
 	if(m_scriptEngine == 0) {
 		//failed to create script engine
 		return -1;
 	}
-
 	m_scriptEngine->SetMessageCallback(asMETHOD(ScriptEngine, messageCallback), 
 																		 0, 
 																		 asCALL_CDECL);
-
-	int result = m_scriptEngine->RegisterObjectType("TString",
+	Int8 result = m_scriptEngine->RegisterObjectType("TString",
 																									sizeof(TString),
 																									asOBJ_VALUE | asOBJ_POD);
 	DR_ASSERT(result >= 0);
@@ -34,11 +28,10 @@ ScriptEngine::createEngine() {
 
 
 	//
-
 	return result;
 }
 
-int
+Int8
 ScriptEngine::addScript(const TString& fileName) {
 	File scriptFile;
 	if(!scriptFile.Open(fileName)) {
@@ -60,8 +53,8 @@ ScriptEngine::addScript(const TString& fileName) {
 		return -2;
 	}
 	m_scriptModule = m_scriptEngine->GetModule(0, asGM_ALWAYS_CREATE);
-	int result = m_scriptModule->AddScriptSection((char*) fileName.c_str(), 
-																								(char*) &script[0], 
+	Int8 result = m_scriptModule->AddScriptSection(StringUtils::toString(fileName).c_str(),
+																								StringUtils::toString(script).c_str(),
 																								fileLength);
 	if(result < 0) {
 		//AddscriptSection failed
@@ -71,9 +64,9 @@ ScriptEngine::addScript(const TString& fileName) {
 	return 0;
 }
 
-int
+Int8
 ScriptEngine::compileScript() {
-	int result = m_scriptModule->Build();
+	Int8 result = m_scriptModule->Build();
 	if(result < 0) {
 		//build failed.
 		m_scriptEngine->Release();
@@ -82,7 +75,7 @@ ScriptEngine::compileScript() {
 	return 0;
 }
 
-int
+Int8
 ScriptEngine::configureContext() {
 	m_scriptContext = m_scriptEngine->CreateContext();
 	if(m_scriptContext == 0) {
@@ -90,8 +83,7 @@ ScriptEngine::configureContext() {
 		m_scriptEngine->Release();
 		return -1;
 	}
-
-	int result = m_scriptContext->SetLineCallback(asMETHOD(ScriptEngine, lineCallback), 
+	Int8 result = m_scriptContext->SetLineCallback(asMETHOD(ScriptEngine, lineCallback),
 																								&timeout, 
 																								asCALL_CDECL);
 	if(result < 0) {
@@ -103,10 +95,11 @@ ScriptEngine::configureContext() {
 	return 0;
 }
 
-int
+Int8
 ScriptEngine::prepareFunction(TString function) {
 
-	m_scriptFunction = m_scriptEngine->GetModule(0)->GetFunctionByDecl((const char*)function.c_str());
+	m_scriptFunction = m_scriptEngine->GetModule(0)->GetFunctionByDecl((const char*)
+																																		 function.c_str());
 	if (m_scriptFunction == 0)
 	{
 		//function not found
@@ -114,7 +107,7 @@ ScriptEngine::prepareFunction(TString function) {
 		m_scriptEngine->Release();
 		return -1;
 	}
-	int result = m_scriptContext->Prepare(m_scriptFunction);
+	Int8 result = m_scriptContext->Prepare(m_scriptFunction);
 
 	if (result < 0)
 	{
@@ -127,16 +120,15 @@ ScriptEngine::prepareFunction(TString function) {
 	return result;
 }
 
-int
+Int8
 ScriptEngine::executeCall() {
-	int result = m_scriptContext->Execute();
+	Int8 result = m_scriptContext->Execute();
 	if (result != asEXECUTION_FINISHED) {
 		if (result == asEXECUTION_EXCEPTION) {
-			//there was a exception
+			//there was an exception
 			return result; //will replace with logger entry
 		}
 	}
-
 	return result;
 }
 
@@ -153,7 +145,7 @@ ScriptEngine::lineCallback(asIScriptContext *scriptContext, unsigned long *timeO
 	}
 }
 
-void
+void 
 ScriptEngine::messageCallback(const asSMessageInfo *scriptMessage, void *param) {
 	//output function...
 }

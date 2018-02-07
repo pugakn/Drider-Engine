@@ -39,7 +39,7 @@ public:
 	* @return
 	*	  Negative value if error.
 	*/
-	int 
+	Int8 
 	createEngine();
 
 	/**
@@ -48,21 +48,21 @@ public:
 	* @param fileName
 	*  Name of the file to open.
 	*/
-	int 
+	Int8
 	addScript(const TString& fileName);
 
 	/**
 	* Compiles the script.
 	*
 	*/
-	int
+	Int8
 	compileScript();
 
 	/**
 	* Create the context and sets the LineCallback function.
 	*
 	*/
-	int 
+	Int8
 	configureContext();
 
 	/**
@@ -71,14 +71,14 @@ public:
 	* @return
 	*	  Negative value if error.
 	*/
-	int
+	Int8
 	prepareFunction(TString function);
 
 	/**
 	* Execute a call in the context.
 	*
 	*/
-	int
+	Int8
 	executeCall();
 
 	/**
