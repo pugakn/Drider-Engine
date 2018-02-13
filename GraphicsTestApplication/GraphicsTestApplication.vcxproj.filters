@@ -42,6 +42,12 @@
     <ClInclude Include="Include\StaticMeshTechnique.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
+    <ClInclude Include="Include\NPCMovement.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DrawableAnimated.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GraphicsTestApplication.cpp">
@@ -66,6 +72,12 @@
       <Filter>Archivos de origen</Filter>
     </ClCompile>
     <ClCompile Include="Source\StaticMeshTechnique.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\NPCMovement.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DrawableAnimated.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
   </ItemGroup>

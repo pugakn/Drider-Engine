@@ -1,6 +1,9 @@
 #include "InputComponent.h"
 #include <dr_camera.h>
 #include <dr_gameObject.h>
+#include <dr_quaternion.h>
+#include <dr_matrix4x4.h>
+#include <dr_matrix3x3.h>
 #include <iostream>
 
 namespace driderSDK {
@@ -18,17 +21,54 @@ void InputComponent::onUpdate() {
   
   constexpr Int32 maxAxes = 32767;
   constexpr Int32 minAxes = -32768;
-  
+    
+  JoystickInputState* state = nullptr;
+  JoystickInputState st;
   if(m_joystick) {
-    auto state = m_joystick->getState();
+    st = m_joystick->getState();
 
-    m_dir.x = static_cast<float>(state.axes[1]) / maxAxes;
-    m_dir.y = static_cast<float>(state.axes[0]) / maxAxes;
+    float rowX = static_cast<float>(st.axes[1]) / maxAxes;
+    float rowY = static_cast<float>(st.axes[0]) / maxAxes;
+
+    if (Math::abs(rowX) > 0.1f) {
+      m_dir.x = rowX;
+    }
+    else { 
+      m_dir.x = 0;
+    }
+
+    if (Math::abs(rowY) > 0.1f) {
+      m_dir.y = rowY;
+    } 
+    else {
+      m_dir.y = 0;
+    }
+
+
+    float horizontal = static_cast<float>(st.axes[3]) / maxAxes;
+    float vertical = static_cast<float>(st.axes[2]) / maxAxes;
+
+    state = &st;
 
   }
 
   if (auto cam = dynamic_cast<Camera*>(&m_gameObject)) {
-    cam->move(m_dir.y, m_dir.x);
+    cam->pan(-m_dir.y, -m_dir.x);
+
+
+    if (state) {
+
+      //Down
+      if(state->buttons[4]) {
+        
+      }
+      //Up
+      else if (state->buttons[5]) {
+
+      }
+    }
+    
+    
   }
 
 }
@@ -40,7 +80,7 @@ void InputComponent::onDestroy() {}
 bool InputComponent::buttonPressed(const JoystickInputState& state, 
                                    Int32 button) {
   
-  std::cout << "Button " << button << " pressed" << std::endl;
+  
   
   return true;
 }
@@ -48,7 +88,7 @@ bool InputComponent::buttonPressed(const JoystickInputState& state,
 bool InputComponent::buttonReleased(const JoystickInputState& state, 
                                     Int32 button) {
 
-  std::cout << "Button " << button << " released" << std::endl;
+  
 
   return true;
 }

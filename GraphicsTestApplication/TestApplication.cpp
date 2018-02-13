@@ -6,6 +6,7 @@
 #include <dr_radian.h>
 #include <dr_quaternion.h>
 #include "DrawableComponent.h"
+#include "NPCMovement.h"
 #include "StaticMeshTechnique.h"
 
 namespace driderSDK {
@@ -32,7 +33,7 @@ TestApplication::onInit() {
                                       0.1f, 
                                       1000.f);
 
-  m_camera->transform.setPosition({0.f, 100.f, 200.f});
+  m_camera->transform.setPosition({0.f, 0.0f, 200.f});
   m_camera->setTarget({0,0,0});
 
   initResources();
@@ -112,6 +113,8 @@ TestApplication::initResources() {
 
   resourceManager->loadResource(_T("VenomJok.X"));
 
+  resourceManager->loadResource(_T("Croc.X"));
+
   resourceManager->loadResource(_T("dwarf.x"));
 }
 
@@ -145,11 +148,6 @@ TestApplication::initSceneGraph() {
 
   root->addChild(m_camera);
 
-  auto jokerNode = std::make_shared<GameObject>();
-  jokerNode->setName(_T("Joker"));
-  jokerNode->createComponent<DrawableComponent>(*driver->device, 
-                                                *driver->deviceContext);
-
   JoystickInput* joystickInput = nullptr;
 
   if(InputManager::instancePtr()->getNumOfJoysticks()) {
@@ -161,23 +159,48 @@ TestApplication::initSceneGraph() {
     joystickInput->setEventCallback(inputListener);
   }
 
-
-  auto drawableComponent = jokerNode->getComponent<DrawableComponent>();
-  
   auto resourceMgr = ResourceManager::instancePtr();
 
-  auto resource = resourceMgr->getReference(_T("dwarf.x"));
+  auto createNode = [&](std::shared_ptr<Node> parent, 
+                        const TString& name, 
+                        const TString& resName,
+                        const Vector3D& pos) {
 
-  auto model = std::dynamic_pointer_cast<Model>(resource);
+    auto node = std::make_shared<GameObject>();
+
+    node->setName(name);
+
+    node->transform.setPosition(pos);
+
+    node->createComponent<DrawableComponent>(*driver->device, 
+                                             *driver->deviceContext);
+
+    auto drawableComponent = node->getComponent<DrawableComponent>();
+    
+    auto resource = resourceMgr->getReference(resName);
+
+    auto model = std::dynamic_pointer_cast<Model>(resource);
+    
+    drawableComponent->setModel(model);
+
+    auto technique = new StaticMeshTechnique(&(*m_camera), 
+                                             &(*node));
+
+    drawableComponent->setShaderTechnique(technique);
+
+    parent->addChild(node);
+
+    return node;
+  };
+
+  auto n = createNode(root, _T("Joker"), _T("VenomJok.X"), {0.0f, 0.0f, 0.0f});
+  auto npcM = n->createComponent<NPCMovement>();
+
+  InputManager::instancePtr()->getKeyboard()->setEventCallback(npcM);
+
+  n = createNode(n, _T("Croc"), _T("Croc.X"), {0.0f, 100.0f, 0.0f});
+  n = createNode(root, _T("Dwarf"), _T("dwarf.x"), {-100.0f, 0.0f, 0.0f});
   
-  drawableComponent->setModel(model);
-
-  auto technique = new StaticMeshTechnique(&(*m_camera), 
-                                           &(*jokerNode));
-
-  drawableComponent->setShaderTechnique(technique);
-
-  root->addChild(jokerNode);
 }
 
 }
