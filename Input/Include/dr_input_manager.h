@@ -1,16 +1,19 @@
 #pragma once
-#include "dr_input_prerequisites.h"
-#include <OIS/OISInputManager.h>
+
 #include <vector>
-#include "dr_module.h"
+#include <dr_module.h>
+#include <OIS/OISInputManager.h>
 #include "dr_input_object.h"
+#include "dr_input_prerequisites.h"
+
 class OIS::InputManager;
 namespace driderSDK {
 class MouseInput;
 class KeyboardInput;
 class JoystickInput;
-class DR_INPUT_EXPORT InputManager : public Module<InputManager> {
-public:
+class DR_INPUT_EXPORT InputManager : public Module<InputManager> 
+{
+ public:
   /**
   * Init the manager
   *
@@ -22,7 +25,7 @@ public:
   *
   */
   void 
-  init(std::size_t winHandle,bool nonExlusive = true);
+  init(SizeT winHandle, bool nonExlusive = true);
   /**
   * Destroy the manager
   *
@@ -42,7 +45,7 @@ public:
   *   The total devices connected
   *
   */
-  int 
+  Int32
   getNumberOfDevices(InputObjectType::E type);
   /**
   * Get a input object by id
@@ -62,7 +65,7 @@ public:
   getJoystick(UInt32 id);
   UInt32 
   getNumOfJoysticks();
-private:
+ private:
   /**
   * Creates an input object from a free device
   *
@@ -74,7 +77,7 @@ private:
   *
   */
   UInt32
-    createInputObject(InputObjectType::E type);
+  createInputObject(InputObjectType::E type);
   /**
   * Destroy a input object
   *
@@ -83,7 +86,7 @@ private:
   *
   */
   void
-    destroyInputObject(UInt32 objID);
+  destroyInputObject(UInt32 objID);
   /**
   * Register all free devices
   *

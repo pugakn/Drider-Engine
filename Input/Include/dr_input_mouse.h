@@ -1,38 +1,41 @@
 #pragma once
-#include "dr_input_prerequisites.h"
-#include <OIS/OISMouse.h>
-#include <dr_vector2di.h>
+
 #include <memory>
 #include <vector>
+#include <dr_vector2di.h>
+#include <OIS/OISMouse.h>
 #include "dr_input_defines.h"
 #include "dr_input_object.h"
+#include "dr_input_prerequisites.h"
+
 namespace driderSDK {
 class MouseInput;
 /**
 * Helper class to receive events
 */
-class HelperMouseListener : public ::OIS::MouseListener
+class HelperMouseListener : public OIS::MouseListener
 {
-public:
+ public:
   ~HelperMouseListener() {}
-  explicit HelperMouseListener(MouseInput* pMouse);
+  explicit HelperMouseListener(MouseInput* _mouse);
   bool 
   mouseMoved(const OIS::MouseEvent &arg) override;
   bool 
   mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id) override;
   bool 
   mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id) override;
-private:
-  MouseInput* m_pMouse;
+ private:
+  MouseInput* m_mouse;
 };
 
 /**
 * Structure with the mouse state
 */
-struct DR_INPUT_EXPORT MouseInputState {
-  Int32 m_pressedButtons;
-  Vector2DI m_cursorPosition;
-  Vector2DI m_relativePosition;
+struct DR_INPUT_EXPORT MouseInputState 
+{
+  Int32 pressedButtons;
+  Vector2DI cursorPosition;
+  Vector2DI relativePosition;
 };
 
 /**
@@ -40,7 +43,7 @@ struct DR_INPUT_EXPORT MouseInputState {
 */
 class DR_INPUT_EXPORT IMouseInputListener
 {
-public:
+ public:
   /**
   * Called when the mouse moves
   *
@@ -80,8 +83,11 @@ public:
 * Manager class for input device
 */
 class DR_INPUT_EXPORT MouseInput : public InputObject{
-public:
-  MouseInput(): m_helperListener(this) {}
+ public:
+  MouseInput() 
+    : InputObject(InputObjectType::kMouse),
+      m_helperListener(this) 
+  {}
   /**
   * Call it to capture events
   *
@@ -124,10 +130,11 @@ public:
   */
   MouseInputState 
   getState() const;
-  std::vector<IMouseInputListener*> m_listeners;
-private:
-  friend class HelperMouseListener;
+
+ private:
+  friend HelperMouseListener;
   MouseInputState m_state;
+  std::vector<IMouseInputListener*> m_listeners;
   OIS::Mouse* m_mouse;
   HelperMouseListener m_helperListener;
 };
