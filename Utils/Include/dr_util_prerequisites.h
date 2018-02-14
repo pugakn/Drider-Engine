@@ -12,16 +12,16 @@
 **********************************************************************/
 
 #if DR_PLATFORM == DR_PLATFORM_WINDOWS
-# if defined( DR_STATIC_LIB )
+# if defined(DR_STATIC_LIB)
 #   define DR_API_EXPORT
 # else
 #	if defined(UTIL_EXPORTS)
-#   define DR_UTIL_EXPORT __declspec( dllexport )
+#   define DR_UTIL_EXPORT __declspec(dllexport)
 #   else
-#     if defined( __MINGW32__ )
+#     if defined(__MINGW32__)
 #       define DR_UTIL_EXPORT              //Linux systems don't need this
 #     else
-#       define DR_UTIL_EXPORT __declspec( dllimport )
+#       define DR_UTIL_EXPORT __declspec(dllimport)
 #     endif
 #   endif
 # endif
@@ -35,7 +35,7 @@
 
 #if DR_PLATFORM == DR_PLATFORM_LINUX || DR_PLATFORM == DR_PLATFORM_OSX
 //Enable GCC symbol visibility
-# if defined( DR_GCC_VISIBILITY )
+# if defined(DR_GCC_VISIBILITY)
 #   define DR_UTIL_EXPORT  __attribute__ ((visibility("default")))
 # else
 #   define DR_UTIL_EXPORT
