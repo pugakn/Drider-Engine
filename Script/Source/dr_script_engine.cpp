@@ -39,12 +39,12 @@ ScriptEngine::addScript(const TString& fileName) {
 		m_scriptEngine->Release();
 		return -1;
 	}
-
+  
 	SizeT fileLength = scriptFile.Size();
 
 	TString script;
-	script.resize(fileLength);
-	scriptFile.Write(fileLength, (char*)&script);
+	//script.resize(fileLength);
+	script = scriptFile.GetAsString(fileLength);
 	scriptFile.Close();
 
 	if(script.size() == 0) {
@@ -84,8 +84,8 @@ ScriptEngine::configureContext() {
 		return -1;
 	}
 	Int8 result = m_scriptContext->SetLineCallback(asMETHOD(ScriptEngine, lineCallback),
-																								&timeout, 
-																								asCALL_CDECL);
+																								reinterpret_cast<void*>(&timeout), 
+																								asCALL_STDCALL);
 	if(result < 0) {
 		//failed to set line callback
 		m_scriptContext->Release();
@@ -98,8 +98,8 @@ ScriptEngine::configureContext() {
 Int8
 ScriptEngine::prepareFunction(TString function) {
 
-	m_scriptFunction = m_scriptEngine->GetModule(0)->GetFunctionByDecl((const char*)
-																																		 function.c_str());
+	auto modul = m_scriptEngine->GetModule(0);
+  m_scriptFunction = modul->GetFunctionByIndex(0);
 	if (m_scriptFunction == 0)
 	{
 		//function not found
@@ -139,10 +139,10 @@ ScriptEngine::release() {
 }
 
 void
-ScriptEngine::lineCallback(asIScriptContext *scriptContext, unsigned long *timeOut) {
-	if(*timeOut < /*functionToObtainTime()*/ 0) {
-		scriptContext->Abort(); //we can also use suspend
-	}
+ScriptEngine::lineCallback() {
+	//if(*timeOut < /*functionToObtainTime()*/ 0) {
+	//	scriptContext->Abort(); //we can also use suspend
+	//}
 }
 
 void 
