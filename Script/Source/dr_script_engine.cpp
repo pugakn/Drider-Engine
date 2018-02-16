@@ -27,7 +27,7 @@ ScriptEngine::createEngine() {
 	result = m_scriptEngine->RegisterStringFactory("TString", &stringFactory);
 	// Register the functions that the scripts will be allowed to use.
 
-
+  result = m_scriptEngine->RegisterGlobalFunction("void print(TString)", asFUNCTIONPR(print, (TString), void),  asCALL_CDECL);
 
 	//
 	return result;
@@ -102,7 +102,7 @@ Int8
 ScriptEngine::prepareFunction(TString function) {
 
 	auto modul = m_scriptEngine->GetModule(0);
-  m_scriptFunction = modul->GetFunctionByIndex(0);
+  m_scriptFunction = modul->GetFunctionByName(StringUtils::toString(function).c_str());
 	if (m_scriptFunction == 0)
 	{
 		//function not found
