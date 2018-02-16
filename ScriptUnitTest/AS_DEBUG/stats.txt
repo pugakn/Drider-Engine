@@ -1,5 +1,10 @@
 
 Total count
+RET        : 1
+SUSPEND    : 4
+SetV4      : 2
+CpyVtoR4   : 1
+SUBIi      : 1
 
 Never executed
 PopPtr    
@@ -12,7 +17,6 @@ NOT
 PshG4     
 LdGRdR4   
 CALL      
-RET       
 JMP       
 JZ        
 JNZ       
@@ -65,7 +69,6 @@ PshRPtr
 STR       
 CALLSYS   
 CALLBND   
-SUSPEND   
 ALLOC     
 FREE      
 LOADOBJ   
@@ -79,12 +82,10 @@ PshNull
 ClrVPtr   
 OBJTYPE   
 TYPEID    
-SetV4     
 SetV8     
 ADDSi     
 CpyVtoV4  
 CpyVtoV8  
-CpyVtoR4  
 CpyVtoR8  
 CpyVtoG4  
 CpyRtoV4  
@@ -133,7 +134,6 @@ MULd
 DIVd      
 MODd      
 ADDIi     
-SUBIi     
 MULIi     
 ADDIf     
 SUBIf     
@@ -205,3 +205,11 @@ POWu64
 Thiscall1 
 
 Sequences
+SUSPEND   , SUSPEND    : 1
+SUSPEND   , SetV4      : 2
+SUSPEND   , SUBIi      : 1
+SetV4     , SUSPEND    : 1
+SetV4     , CpyVtoR4   : 1
+CpyVtoR4  , RET        : 1
+SUBIi     , SUSPEND    : 1
+LABEL     , SUSPEND    : 1

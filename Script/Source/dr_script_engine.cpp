@@ -18,6 +18,8 @@ ScriptEngine::createEngine() {
 	m_scriptEngine->SetMessageCallback(asMETHOD(ScriptEngine, messageCallback), 
 																		 0, 
 																		 asCALL_CDECL);
+  
+
 	Int8 result = m_scriptEngine->RegisterObjectType("TString",
 																									sizeof(TString),
 																									asOBJ_VALUE | asOBJ_POD);
@@ -83,7 +85,8 @@ ScriptEngine::configureContext() {
 		m_scriptEngine->Release();
 		return -1;
 	}
-	Int8 result = m_scriptContext->SetLineCallback(asMETHOD(ScriptEngine, lineCallback),
+
+	/*Int8 result = m_scriptContext->SetLineCallback(asMETHOD(ScriptEngine, lineCallback),
 																								reinterpret_cast<void*>(&timeout), 
 																								asCALL_STDCALL);
 	if(result < 0) {
@@ -91,7 +94,7 @@ ScriptEngine::configureContext() {
 		m_scriptContext->Release();
 		m_scriptEngine->Release();
 		return -2;
-	}
+	}*/
 	return 0;
 }
 

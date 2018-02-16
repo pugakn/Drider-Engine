@@ -19,9 +19,8 @@ Variables:
     5   3 *    SUBIi    v2, v1, 2
 - 6,2 -
     8   3 *    SUSPEND
-    9   3 *    SetV4    v3, 0x0          (i:0, f:0)
             {
             }
-   11   3 *    CpyVtoR4 v3
+    9   3 *    CpyVtoR4 v2
             0:
-   12   3 *    RET      0
+   10   3 *    RET      0
