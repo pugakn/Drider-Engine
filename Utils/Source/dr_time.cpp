@@ -4,27 +4,27 @@ namespace driderSDK {
 
 float
 Time::getElapsed() {
-  return instance().m_timer.getSeconds();
+  return m_timer.getSeconds();
 }
 
 float
 Time::getElapsedMilli() {
-  return instance().m_timer.getMilliseconds();
+  return m_timer.getMilliseconds();
 }
 
 float
 Time::getElapsedMicro() {
-  return instance().m_timer.getMicroseconds();
+  return m_timer.getMicroseconds();
 }
 
 float 
 Time::getDelta() {
-  return instance().m_elapsed;
+  return m_elapsed;
 }
 
 float 
 Time::getDeltaMilli() {
-  return instance().m_elapsed * 1000;
+  return m_elapsed * 1000;
 }
 
 float 
@@ -38,7 +38,6 @@ Time::onStartUp() {
   m_lastUpdate = 0;
   m_elapsed = 0;
 }
-
 
 void
 Time::update() {

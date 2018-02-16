@@ -2,21 +2,19 @@
 #include "dr_timer.h"
 #include "dr_util_prerequisites.h"
 
-#define STATIC_MODULE static
-
 namespace driderSDK {
 
 class DR_UTIL_EXPORT Time : public Module<Time>
 {
+  friend class Application;
  public:
-
   /**
   * Gets the elapsed time since the begin of the app.
   * 
   * @return
   *   Total time in seconds.
   */
-  STATIC_MODULE float
+  float
   getElapsed();
 
   /**
@@ -25,7 +23,7 @@ class DR_UTIL_EXPORT Time : public Module<Time>
   * @return
   *   Total time in milliseconds.
   */
-  STATIC_MODULE float
+  float
   getElapsedMilli();
 
   /**
@@ -34,7 +32,7 @@ class DR_UTIL_EXPORT Time : public Module<Time>
   * @return
   *   Total time in microseconds.
   */
-  STATIC_MODULE float
+  float
   getElapsedMicro();
 
   /**
@@ -43,7 +41,7 @@ class DR_UTIL_EXPORT Time : public Module<Time>
   * @return 
   *   Elapsed time on seconds.
   */
-  STATIC_MODULE float
+  float
   getDelta();
 
   /**
@@ -52,7 +50,7 @@ class DR_UTIL_EXPORT Time : public Module<Time>
   * @return 
   *   Elapsed time on milliseconds.
   */
-  STATIC_MODULE float
+  float
   getDeltaMilli();
 
   /**
@@ -61,9 +59,9 @@ class DR_UTIL_EXPORT Time : public Module<Time>
   * @return 
   *   Elapsed time on microseconds.
   */
-  STATIC_MODULE float
+  float
   getDeltaMicro();
- //private:
+ private:
   
   void 
   update();
