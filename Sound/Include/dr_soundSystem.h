@@ -2,6 +2,7 @@
 #include "dr_sound_prerequisites.h"
 #include <memory>
 #include "dr_sound_defines.h"
+#include <dr_vector3d.h>
 
 namespace driderSDK {
 
@@ -9,6 +10,7 @@ class DrSound;
 class DrChannelGroup;
 class DrChannel;
 class DrCreateSoundExInfo;
+class DrDSP;
 
 class DR_SOUND_EXPORT SoundSystem {
 public:
@@ -72,6 +74,47 @@ public:
               DR_SOUND_MODE::E mode,
               DrCreateSoundExInfo *createInfo,
               DrSound * sound) = 0;
+
+  /**
+  *
+  */
+  virtual void
+  playSound(DrSound* sound,
+            DrChannelGroup* channelGroup,
+            bool paused,
+            DrChannel **channel) = 0;
+
+  /**
+  *
+  */
+  virtual void
+  set3DSettings(float dopplerscale,
+                float distancefactor,
+                float rolloffscale) = 0;
+
+  /**
+  * This updates the position, velocity and orientation of the specified 3D sound listener.
+  */
+  virtual void
+  set3DListenerAttributes(Int32 listener,
+                          const Vector3D* pos,
+                          const Vector3D* vel,
+                          const Vector3D* forward,
+                          const Vector3D* up) = 0;
+
+  /**
+  *
+  */
+  virtual void
+  getMasterChannelGroup(DrChannelGroup** channelGroup) = 0;
+
+  /**
+  * 
+  */
+  virtual void
+  createDSPByType(DR_DSP_TYPE::E bspType,
+                  DrDSP **dsp) = 0;
+ 
 
 };
 

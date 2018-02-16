@@ -8,7 +8,7 @@
 namespace driderSDK {
 
 void
-SoundCore::init(void* pData) {
+SoundCore::init(void*) {
   
 }
 

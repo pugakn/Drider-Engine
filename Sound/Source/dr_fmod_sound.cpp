@@ -44,4 +44,11 @@ FMODSound::play() {
   result = m_System->playSound(fmodSound, 0, false, m_Channel);
 }
 
+void
+FMODSound::set3DMinMaxDistance(float min,
+                               float max) {
+  result = fmodSound->set3DMinMaxDistance(min,
+                                          max);
+}
+
 }

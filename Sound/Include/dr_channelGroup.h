@@ -3,6 +3,8 @@
 
 namespace driderSDK {
 
+class DrDSP;
+
 /**
 * Channel group class 
 */
@@ -23,5 +25,18 @@ class DR_SOUND_EXPORT DrChannelGroup {
     */
     virtual void*
     getReference() = 0;
+
+    /**
+    *
+    */
+    virtual void **
+    getObjectReference() = 0;
+
+    /**
+    *
+    */
+    virtual void
+    addDSP(Int32 index,
+           DrDSP * dsp) = 0;
 };
 }

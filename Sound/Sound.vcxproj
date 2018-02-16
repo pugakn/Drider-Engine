@@ -97,7 +97,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include;$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Core\Include;$(SolutionDir)$(ProjectName)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Utils\Include;$(SolutionDir)Core\Include;$(SolutionDir)Math\Include;$(SolutionDir)$(ProjectName)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>SOUND_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <BuildLog>
@@ -105,8 +105,8 @@
     </BuildLog>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);$(DRIDER_DEPENDENCIES)Lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Utilsd.lib;fmod_vc.lib;fmodL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <ImportLibrary>$(SolutionDir)Lib\$(PlatformTarget)\$(Projectname)d.lib</ImportLibrary>
+      <AdditionalDependencies>Utilsd.lib;fmod_vc.lib;fmodL_vc.lib;Mathd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ImportLibrary>$(SolutionDir)Lib\$(PlatformTarget)\$(Projectname).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -115,7 +115,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include;$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Core\Include;$(SolutionDir)$(ProjectName)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Utils\Include;$(SolutionDir)Core\Include;$(SolutionDir)Math\Include;$(SolutionDir)$(ProjectName)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>SOUND_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <BuildLog>
@@ -123,8 +123,8 @@
     </BuildLog>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);$(DRIDER_DEPENDENCIES)Lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Utilsd.lib;fmod_vc.lib;fmodL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <ImportLibrary>$(SolutionDir)Lib\$(PlatformTarget)\$(Projectname)d.lib</ImportLibrary>
+      <AdditionalDependencies>Utilsd.lib;fmod64_vc.lib;fmodL64_vc.lib;Mathd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ImportLibrary>$(SolutionDir)Lib\$(PlatformTarget)\$(Projectname).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -136,13 +136,14 @@
       <SDLCheck>false</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>SOUND_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include;$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Core\Include;$(SolutionDir)$(ProjectName)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Utils\Include;$(SolutionDir)Core\Include;$(SolutionDir)Math\Include;$(SolutionDir)$(ProjectName)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);$(DRIDER_DEPENDENCIES)Lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Utils.lib;Core.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Utilsd.lib;fmod_vc.lib;fmodL_vc.lib;Math.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ImportLibrary>$(SolutionDir)Lib\$(PlatformTarget)\$(Projectname).lib</ImportLibrary>
     </Link>
     <BuildLog>
       <Path>$(IntDir).log</Path>
@@ -157,13 +158,14 @@
       <SDLCheck>false</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>SOUND_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include;$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Core\Include;$(SolutionDir)$(ProjectName)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Utils\Include;$(SolutionDir)Core\Include;$(SolutionDir)Math\Include;$(SolutionDir)$(ProjectName)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);$(DRIDER_DEPENDENCIES)Lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Utils.lib;Core.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Utilsd.lib;fmod64_vc.lib;fmodL64_vc.lib;Math.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ImportLibrary>$(SolutionDir)Lib\$(PlatformTarget)\$(Projectname).lib</ImportLibrary>
     </Link>
     <BuildLog>
       <Path>$(IntDir).log</Path>
@@ -173,11 +175,15 @@
     <ClInclude Include="Include\dr_channel.h" />
     <ClInclude Include="Include\dr_channelGroup.h" />
     <ClInclude Include="Include\dr_createSoundExInfo.h" />
+    <ClInclude Include="Include\dr_dsp.h" />
     <ClInclude Include="Include\dr_fmod_createSoundExInfo.h" />
     <ClInclude Include="Include\dr_fmod_channel.h" />
     <ClInclude Include="Include\dr_fmod_channelGroup.h" />
+    <ClInclude Include="Include\dr_fmod_dsp.h" />
+    <ClInclude Include="Include\dr_fmod_reverb3d.h" />
     <ClInclude Include="Include\dr_fmod_soundSystem.h" />
     <ClInclude Include="Include\dr_fmod_sound_api.h" />
+    <ClInclude Include="Include\dr_reverb3d.h" />
     <ClInclude Include="Include\dr_sound.h" />
     <ClInclude Include="Include\dr_soundExtraInfo.h" />
     <ClInclude Include="Include\dr_soundSystem.h" />
@@ -190,6 +196,8 @@
     <ClCompile Include="Source\dr_fmod_createSoundExInfo.cpp" />
     <ClCompile Include="Source\dr_fmod_channel.cpp" />
     <ClCompile Include="Source\dr_fmod_channelGroup.cpp" />
+    <ClCompile Include="Source\dr_fmod_dsp.cpp" />
+    <ClCompile Include="Source\dr_fmod_reverb3d.cpp" />
     <ClCompile Include="Source\dr_fmod_soundSystem.cpp" />
     <ClCompile Include="Source\dr_fmod_sound_api.cpp" />
     <ClCompile Include="Source\dr_soundSystem.cpp" />

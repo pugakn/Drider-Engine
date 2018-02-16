@@ -66,6 +66,13 @@ class DR_SOUND_EXPORT DrSound {
     virtual void
     setMode(DR_SOUND_MODE::E mode) = 0;
 
+    /**
+    *
+    */
+    virtual void
+    set3DMinMaxDistance(float min,
+                        float max) = 0;
+
 
 };
 

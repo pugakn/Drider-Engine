@@ -28,9 +28,18 @@ class DR_SOUND_EXPORT FMODChannel : public DrChannel {
 
     void
     getVolume(float *volume) override;
+
+    void
+    setReverbProperties(Int32 instance,
+                        float wet) override;
+
+    void
+    set3DAttributes(const Vector3D* pos,
+                    const Vector3D* vel) override;
     
   private:
     FMOD::Channel *channel;
+    FMOD_RESULT result;
 };
 
 }
