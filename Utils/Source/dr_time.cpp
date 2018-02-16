@@ -63,6 +63,16 @@ Time::operator>(const Time & rhs) {
 }
 
 bool 
+Time::operator>=(const Time & rhs) {
+  return !(*this < rhs);
+}
+
+bool 
+Time::operator<=(const Time & rhs) {
+  return !(*this > rhs);
+}
+
+bool 
 Time::operator==(const Time& rhs) {
   return m_duration == rhs.m_duration;
 }

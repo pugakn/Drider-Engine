@@ -14,10 +14,7 @@ namespace driderSDK {
 class DR_CORE_EXPORT Material : public Resource
 {
  public:
-  using PropertyPtr = std::unique_ptr<struct Property>;
-  using PropertyList = std::vector<TString>;
-
-
+  
   enum CHANNEL
   {
     kR,
@@ -44,6 +41,9 @@ class DR_CORE_EXPORT Material : public Resource
     const PROPERTY_TYPE type;
     //Texture* texture;
   };
+
+  using PropertyPtr = std::shared_ptr<Property>;
+  using PropertyList = std::vector<PropertyPtr>;
 
   struct FloatProperty : Property
   {
@@ -98,6 +98,15 @@ class DR_CORE_EXPORT Material : public Resource
     Vector4D value;
     std::array<CHANNEL, 4> readChannels;
   };
+
+  /**
+  * Gets the default properties for a material 
+  * 
+  * @return
+  *   A list with all the default properties.
+  */
+  static PropertyList 
+  defaultProperties();
 
   /**
   * Adds a new property of float type to the material properperties.

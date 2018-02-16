@@ -5,12 +5,13 @@
 
 namespace driderSDK {
 
+using Seconds = float;
+using Milliseconds = Int32;
+using Microseconds = Int64;
+
 class DR_UTIL_EXPORT Time 
 {
  public:
-  using Seconds = float;
-  using Milliseconds = Int32;
-  using Microseconds = Int64;
   using Duration = std::chrono::microseconds;
 
   explicit Time(Seconds microseconds);
@@ -42,6 +43,12 @@ class DR_UTIL_EXPORT Time
 
   bool
   operator>(const Time& rhs);
+
+  bool 
+  operator>=(const Time& rhs);
+
+  bool 
+  operator<=(const Time& rhs);
 
   bool 
   operator==(const Time& rhs);
