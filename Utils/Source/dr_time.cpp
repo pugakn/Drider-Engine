@@ -2,114 +2,51 @@
 
 namespace driderSDK {
 
-Time::Time(Microseconds microseconds) 
-  : m_duration(microseconds)
-{}
-
-Time::Time(Milliseconds milliseconds) {
-  fromMilliseconds(milliseconds);
+float
+Time::getElapsed() {
+  return instance().m_timer.getSeconds();
 }
 
-Time::Time(Seconds seconds) {
-  fromSeconds(seconds);
+float
+Time::getElapsedMilli() {
+  return instance().m_timer.getMilliseconds();
 }
 
-Time::Time() : m_duration(0)
-{}
+float
+Time::getElapsedMicro() {
+  return instance().m_timer.getMicroseconds();
+}
 
 float 
-Time::asSeconds() const {
-  using namespace std::chrono;
-  return duration_cast<duration<Seconds>>(m_duration).count();
+Time::getDelta() {
+  return instance().m_elapsed;
 }
 
-Int32 
-Time::asMilliseconds() const {
-  using namespace std::chrono;
-  Int32 v = static_cast<Int32>(duration_cast<milliseconds>(m_duration).count());
-  return v;
+float 
+Time::getDeltaMilli() {
+  return instance().m_elapsed * 1000;
 }
 
-Int64 
-Time::asMicroseconds() const {
-  return m_duration.count();
+float 
+Time::getDeltaMicro() {
+  return instance().m_elapsed * 1000000;
 }
 
 void 
-Time::fromSeconds(float seconds) {
-  constexpr Int32 secsToMicro = 1000000;
-  m_duration = Duration(static_cast<Int64>(seconds * secsToMicro));
+Time::onStartUp() {
+  m_timer.init();
+  m_lastUpdate = 0;
+  m_elapsed = 0;
 }
 
-void 
-Time::fromMilliseconds(Int32 milliseconds) {
-  constexpr Int32 milliToMicro = 1000;
-  m_duration = Duration(milliseconds * milliToMicro);
-}
 
-void 
-Time::fromMicroseconds(Int64 microseconds) {
-  m_duration = Duration(microseconds);
-}
+void
+Time::update() {
+  float now = m_timer.getSeconds();
 
-bool 
-Time::operator<(const Time & rhs) {
-  return m_duration < rhs.m_duration;
-}
+  m_elapsed = now - m_lastUpdate;
 
-bool 
-Time::operator>(const Time & rhs) {
-  return m_duration > rhs.m_duration;
-}
-
-bool 
-Time::operator>=(const Time & rhs) {
-  return !(*this < rhs);
-}
-
-bool 
-Time::operator<=(const Time & rhs) {
-  return !(*this > rhs);
-}
-
-bool 
-Time::operator==(const Time& rhs) {
-  return m_duration == rhs.m_duration;
-}
-
-bool Time::operator!=(const Time& rhs) {
-  return !operator==(rhs);
-}
-
-Time& 
-Time::operator%=(const Time& rhs) {
-  m_duration %= rhs.m_duration;
-  return *this;
-}
-
-Time& Time::operator+=(const Time& rhs) {
-  m_duration += rhs.m_duration;
-  return *this;
-}
-
-Time& Time::operator-=(const Time& rhs) {
-  m_duration -= rhs.m_duration;
-  return *this;
-}
-
-Time 
-Time::operator%(Time rhs) {
-  return Time(Microseconds(m_duration.count())) %= rhs;
-}
-
-Time 
-Time::operator+(Time rhs) {
-  return Time(Microseconds(m_duration.count())) += rhs;
-}
-
-Time 
-Time::operator-(Time rhs) {
-  return Time(Microseconds(m_duration.count())) -= rhs;
+  m_lastUpdate = now;
 }
 
 }

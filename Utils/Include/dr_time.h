@@ -1,81 +1,79 @@
-#pragma once
-
-#include <chrono>
+#include <dr_module.h>
+#include "dr_timer.h"
 #include "dr_util_prerequisites.h"
+
+#define STATIC_MODULE static
 
 namespace driderSDK {
 
-using Seconds = float;
-using Milliseconds = Int32;
-using Microseconds = Int64;
-
-class DR_UTIL_EXPORT Time 
+class DR_UTIL_EXPORT Time : public Module<Time>
 {
  public:
-  using Duration = std::chrono::microseconds;
 
-  explicit Time(Seconds microseconds);
-  explicit Time(Milliseconds milliseconds);
-  explicit Time(Microseconds seconds);
+  /**
+  * Gets the elapsed time since the begin of the app.
+  * 
+  * @return
+  *   Total time in seconds.
+  */
+  STATIC_MODULE float
+  getElapsed();
 
-  Time();
+  /**
+  * Gets the elapsed time since the begin of the app.
+  * 
+  * @return
+  *   Total time in milliseconds.
+  */
+  STATIC_MODULE float
+  getElapsedMilli();
 
-  float 
-  asSeconds() const;
+  /**
+  * Gets the elapsed time since the begin of the app.
+  * 
+  * @return
+  *   Total time in microseconds.
+  */
+  STATIC_MODULE float
+  getElapsedMicro();
 
-  Int32 
-  asMilliseconds() const;
+  /**
+  * Gets the duration of the frame (delta time).
+  *  
+  * @return 
+  *   Elapsed time on seconds.
+  */
+  STATIC_MODULE float
+  getDelta();
 
-  Int64 
-  asMicroseconds() const;
+  /**
+  * Gets the duration of the frame (delta time).
+  *  
+  * @return 
+  *   Elapsed time on milliseconds.
+  */
+  STATIC_MODULE float
+  getDeltaMilli();
 
+  /**
+  * Gets the duration of the frame (delta time).
+  *  
+  * @return 
+  *   Elapsed time on microseconds.
+  */
+  STATIC_MODULE float
+  getDeltaMicro();
+ //private:
+  
   void 
-  fromSeconds(float seconds);
+  update();
 
-  void 
-  fromMilliseconds(Int32 milliseconds);
-
-  void 
-  fromMicroseconds(Int64 microseconds);
-
-  bool
-  operator<(const Time& rhs);
-
-  bool
-  operator>(const Time& rhs);
-
-  bool 
-  operator>=(const Time& rhs);
-
-  bool 
-  operator<=(const Time& rhs);
-
-  bool 
-  operator==(const Time& rhs);
-
-	bool
-  operator!=(const Time& rhs);
-
-	Time& 
-  operator%=(const Time& rhs);
-
-	Time& 
-  operator+=(const Time& rhs);
-
-	Time& 
-  operator-=(const Time& rhs);
-
-	Time  
-  operator%(Time rhs);
-
-	Time  
-  operator+(Time rhs);
-
-	Time  
-  operator-(Time rhs);
-
+  void
+  onStartUp();
  private:
-  Duration m_duration;
+  Timer m_timer;
+  float m_elapsed;
+  float m_lastUpdate;
 };
 
 }

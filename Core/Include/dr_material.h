@@ -338,8 +338,8 @@ class DR_CORE_EXPORT Material : public Resource
   //Property*
   //transformProperty(Property* property, PROPERTY_TYPE newType);
  private:
-   PropertyPtr
-   createProperty(const TString& name, PROPERTY_TYPE type);
+  PropertyPtr
+  createProperty(const TString& name, PROPERTY_TYPE type);
  private:
   TString m_name;
   PropertyList m_properties;
