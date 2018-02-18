@@ -29,15 +29,21 @@ class DR_CORE_EXPORT Transform
   * @return 
   *   The transformation matrix.
   */
-  const Matrix4x4& getTransformMatrix();
-  const Vector3D& getPosition() const;
+  const Matrix4x4& 
+  getTransformMatrix();
+
+  const Vector3D& 
+  getPosition() const;
 
   /**
   * Gets the rotation vector containing the X, Y & Z angles in
   * radians.
   */
-  const Vector3D& getRotation() const;
-  const Vector3D& getScale() const;
+  const Vector3D& 
+  getRotation() const;
+
+  const Vector3D& 
+  getScale() const;
 
   /**
   * Sets the value of the specified position component.
@@ -48,12 +54,16 @@ class DR_CORE_EXPORT Transform
   * @param axis
   *  The position component (x|y|z) to be modified
   */  
-  void setPosition(float pos, AXIS::E axis);
-  void setPosition(const Vector3D& position);
+  void 
+  setPosition(float pos, AXIS::E axis);
+  void 
+  setPosition(const Vector3D& position);
 
 
-  void move(float dist, AXIS::E axis);
-  void move(const Vector3D& distance);
+  void 
+  move(float dist, AXIS::E axis);
+  void 
+  move(const Vector3D& distance);
 
   /**
   * Sets the value of the specified rotation component.
@@ -64,7 +74,8 @@ class DR_CORE_EXPORT Transform
   * @param axis
   *  The rotation component (x|y|z) to be modified
   */  
-  void setRotation(Radian angle, AXIS::E axis);
+  void 
+  setRotation(Radian angle, AXIS::E axis);
 
   /**
   * Sets the value of the specified rotation component.
@@ -75,7 +86,8 @@ class DR_CORE_EXPORT Transform
   * @param axis
   *  The rotation component (x|y|z) to be modified
   */  
-  void setRotation(Degree angle, AXIS::E axis);
+  void 
+  setRotation(Degree angle, AXIS::E axis);
 
    /**
   * Sets the rotation vector of the transform.
@@ -83,10 +95,13 @@ class DR_CORE_EXPORT Transform
   * @param orientation
   *  Vector with the rotation angles in radians.
   */ 
-  void setRotation(const Vector3D& orientation);
+  void 
+  setRotation(const Vector3D& orientation);
 
-  void rotate(Radian Radian, AXIS::E axis);
-  void rotate(Degree Radian, AXIS::E axis);
+  void 
+  rotate(Radian Radian, AXIS::E axis);
+  void 
+  rotate(Degree Radian, AXIS::E axis);
 
   /**
   * Rotates the transform using a rotation vector.
@@ -94,7 +109,8 @@ class DR_CORE_EXPORT Transform
   * @param rotation
   *  Vector with the rotation angles in radians.
   */ 
-  void rotate(const Vector3D& rotation); 
+  void 
+  rotate(const Vector3D& rotation); 
 
   /**
   * Sets the value of the specified scale component.
@@ -105,8 +121,10 @@ class DR_CORE_EXPORT Transform
   * @param axis
   *  The scale component (x|y|z) to be setted.
   */  
-  void setScale(float scale, AXIS::E axis);
-  void setScale(const Vector3D& scale);
+  void 
+  setScale(float scale, AXIS::E axis);
+  void 
+  setScale(const Vector3D& scale);
 
   /**
   * Scales the value of the specified scale component.
@@ -117,8 +135,10 @@ class DR_CORE_EXPORT Transform
   * @param axis
   *  The scale component (x|y|z) to be scaled.
   */  
-  void scale(float scale, AXIS::E axis);
-  void scale(const Vector3D& scale);
+  void 
+  scale(float scale, AXIS::E axis);
+  void 
+  scale(const Vector3D& scale);
 
  private:
   /**
@@ -127,13 +147,15 @@ class DR_CORE_EXPORT Transform
   * Used to specify whether the position, rotation or scale were modified 
   * and the transformation matrix needs to be updated.
   */
-  void invalidate();
+  void 
+  invalidate();
 
   /**
   * Computes the transformation matrix according to the position, 
   * rotation and scale established.
   */
-  void update();
+  void 
+  update();
 
   bool m_outdatedTransform;
   Vector3D m_position;

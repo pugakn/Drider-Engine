@@ -14,6 +14,9 @@ class Device;
 class Technique 
 {
  public:
+  
+  virtual ~Technique(){}
+
   virtual void 
   compile(Device& device) = 0;
   

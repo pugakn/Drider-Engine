@@ -6,6 +6,7 @@
 #include "dr_core_prerequisites.h"
 #include "dr_mesh.h"
 #include "dr_resource.h"
+#include "dr_aabb.h"
 
 namespace driderSDK {
 

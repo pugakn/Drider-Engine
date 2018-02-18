@@ -15,7 +15,10 @@ InputComponent::InputComponent(GameObject& _gameObject,
     m_direction(0,0,1.0f)
 {}
 
-void InputComponent::onCreate() {}
+void InputComponent::onCreate() {
+  m_running = false;
+  m_velocity = walkSpeed;
+}
 
 void InputComponent::onUpdate() {
   
@@ -32,8 +35,8 @@ void InputComponent::onUpdate() {
     float rotY = static_cast<float>(state.axes[2]) / maxAxes;
     float rotX = static_cast<float>(state.axes[3]) / maxAxes;
     
-    float velocity = 150.f * Time::instance().getDelta();
-    float angVelocity = 90.0f * Time::instance().getDelta();
+    float velocity = m_velocity * Time::instance().getDelta();
+    float angVelocity = 180.f * Time::instance().getDelta();
 
     if (Math::abs(dirY) < 0.1f)
       dirY = 0.0f;
@@ -77,8 +80,12 @@ void InputComponent::onDestroy() {}
 bool InputComponent::buttonPressed(const JoystickInputState& state, 
                                    Int32 button) {
   
-  std::cout << button << std::endl;
+  if (button == 8) {
+    toggleSprint();
+  }
   
+  std::cout << button << std::endl;
+
   return true;
 }
 
@@ -102,6 +109,12 @@ bool InputComponent::axisMoved(const JoystickInputState& state,
   }*/
 
   return true;
+}
+
+void InputComponent::toggleSprint() {
+  m_running = !m_running;
+  
+  m_velocity = m_running ? runSpeed : walkSpeed;
 }
 
 }

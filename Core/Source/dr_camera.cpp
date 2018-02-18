@@ -20,23 +20,9 @@ Camera::~Camera() {}
 void Camera::updateImpl() {
   GameObject::updateImpl();
 
-  /*auto pos = Vector3D{m_finalTransform[3][0],
-                      m_finalTransform[3][1],
-                      m_finalTransform[3][2]};
-
-  auto p = getParent()->getWorldTransform();
-    
-  transform.setRotation(getParent()->transform.getRotation());
-
-  m_target = pos + getDirection()* 5;
-
-  auto target = m_target + Vector3D(p[3][0], p[3][1], p[3][2]); 
-                */
-
   auto cpy = getParent()->transform.getTransformMatrix();
-  cpy.transpose();
-  auto pos =  cpy * Vector4D(transform.getPosition(),1);
-  auto target = cpy * Vector4D(m_target, 1);
+  auto pos = Vector4D(transform.getPosition(),1) * cpy;
+  auto target = Vector4D(m_target, 1) * cpy;
 	m_view.LookAt(Vector3D(pos), Vector3D(target), m_up);
 	m_vp = m_view * m_projection;
 }
@@ -49,9 +35,9 @@ Camera::move(float forward, float strafe, float upVelocity, bool lockY) {
 
   if (lockY) {
     dir.y = 0;
-    //dir.normalize();
+    dir.normalize();
     right.y = 0; 
-    //right.normalize();
+    right.normalize();
   }
 
   transform.move(dir * forward);
@@ -150,8 +136,18 @@ Camera::getVP() const {
   return m_vp;
 }
 
+const Matrix4x4& 
+Camera::getView() const {
+  return m_view;
+}
+
+const Matrix4x4&
+Camera::getProjection() {
+  return m_projection;
+}
+
 Vector3D Camera::getDirection() const {
-  auto angle = transform.getRotation();
+  auto& angle = transform.getRotation();
   return Vector3D{Math::cos(angle.y) * Math::sin(angle.x),
                   Math::sin(angle.y),
                   Math::cos(angle.y) * Math::cos(angle.x)}.normalize();

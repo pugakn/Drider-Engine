@@ -35,8 +35,8 @@ CodecModel::decode(TString pathName) {
     pModelInfo = new ModelInfo;
     pModelInfo->meshes.resize(scene->mNumMeshes);
 
-    Vector3D min;
-    Vector3D max;
+    Vector3D min{Math::MAX_FLOAT, Math::MAX_FLOAT, Math::MAX_FLOAT};
+    Vector3D max{Math::MIN_FLOAT, Math::MIN_FLOAT, Math::MIN_FLOAT};
 
     for (SizeT iMesh = 0; iMesh < scene->mNumMeshes; ++iMesh) {
       MeshInfo& mesh = pModelInfo->meshes[iMesh];
@@ -108,12 +108,19 @@ CodecModel::loadVertices(const aiMesh& inMesh,
   for (Int32 vertexIndex = 0; 
        vertexIndex < static_cast<Int32>(inMesh.mNumVertices); 
        ++vertexIndex) {
-
+    
     outMesh.vertices[vertexIndex].position.x = inMesh.mVertices[vertexIndex].x;
     outMesh.vertices[vertexIndex].position.y = inMesh.mVertices[vertexIndex].y;
     outMesh.vertices[vertexIndex].position.z = inMesh.mVertices[vertexIndex].z;
     outMesh.vertices[vertexIndex].position.w = 1.f;
-         
+    
+    Vector3D pos(outMesh.vertices[vertexIndex].position);
+
+    for (Int32 e = 0; e < 3; ++e) {
+      minPos[e] = Math::min(minPos[e], pos[e]);
+      maxPos[e] = Math::max(maxPos[e], pos[e]);
+    }
+
     outMesh.vertices[vertexIndex].normal.x = inMesh.mNormals[vertexIndex].x;
     outMesh.vertices[vertexIndex].normal.y = inMesh.mNormals[vertexIndex].y;
     outMesh.vertices[vertexIndex].normal.z = inMesh.mNormals[vertexIndex].z;

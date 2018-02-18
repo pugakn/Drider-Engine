@@ -14,6 +14,8 @@ class DR_CORE_EXPORT GameComponent : public std::enable_shared_from_this<GameCom
  public:
   GameComponent(GameObject& gameObject_);
 
+  virtual ~GameComponent(){}
+
   GameObject& 
   getGameObject();
 

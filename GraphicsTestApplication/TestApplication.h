@@ -27,6 +27,8 @@
 #include <dr_fmod_soundSystem.h>
 
 namespace driderSDK {
+
+class Technique;
   
 class TestApplication : public Application
 {
@@ -64,7 +66,7 @@ public:
   FMOD::Channel    *channel = 0;
   FMOD_RESULT       result;
   unsigned int      version;*/
-  
+  std::vector<std::unique_ptr<Technique>> m_techniques;
   std::unique_ptr<SceneGraph> m_sceneGraph;
 };
 

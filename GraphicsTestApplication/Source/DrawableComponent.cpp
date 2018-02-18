@@ -5,7 +5,8 @@
 #include <dr_model.h>
 #include <dr_vertex_buffer.h>
 #include "Technique.h"
-
+#include <dr_model.h>
+#include <dr_gameObject.h>
 
 namespace driderSDK {
 DrawableComponent::DrawableComponent(GameObject& gameObject,
@@ -20,8 +21,8 @@ void
 DrawableComponent::setModel(std::shared_ptr<Model> model) {
   m_model = model;
 
-  if(!m_model.expired()) {
-    createMeshBuffers();
+  if(auto model = m_model.lock()) {
+    create(model);
   }
 }
 
@@ -33,10 +34,23 @@ DrawableComponent::setShaderTechnique(Technique* technique) {
   }  
 }
 
+std::shared_ptr<Model>
+DrawableComponent::getModel() const {
+  return m_model.lock();
+}
+
+void
+DrawableComponent::onCreate() {
+  m_created = false;
+}
+
 void 
-DrawableComponent::onCreate() {}
-void 
-DrawableComponent::onUpdate() {}
+DrawableComponent::onUpdate() {
+  if (auto model = getModel()) {
+    create(model);
+  }
+}
+
 void 
 DrawableComponent::onRender() {
   if (!m_model.expired() && m_technique) {
@@ -64,14 +78,20 @@ DrawableComponent::onDestroy() {
 }
 
 void 
-DrawableComponent::createMeshBuffers() {
+DrawableComponent::create(std::shared_ptr<Model> model) {
+  if (!m_created) {
+    m_created = true;
+    createMeshBuffers(model->meshes);
+  }
+}
+
+void 
+DrawableComponent::createMeshBuffers(std::vector<Mesh>& meshes) {
   if (!m_meshes.empty()) {
     destroyMeshBuffers();
   } 
 
-  auto model = m_model.lock();
-
-  for(auto& mesh : model->meshes)
+  for(auto& mesh : meshes)
   {
     MeshBuffers meshBuffer;
     DrBufferDesc buffDesc;
@@ -79,7 +99,7 @@ DrawableComponent::createMeshBuffers() {
     buffDesc.type = DR_BUFFER_TYPE::kVERTEX;
     buffDesc.sizeInBytes = mesh.vertices.size() * sizeof(Vertex);
     buffDesc.stride = sizeof(Vertex);
-    byte* buffData = reinterpret_cast<byte*>(mesh.vertices.data());
+    auto buffData = reinterpret_cast<byte*>(mesh.vertices.data());
     Buffer* buffer = m_device.createBuffer(buffDesc, buffData);
     meshBuffer.vertexBuffer = dynamic_cast<VertexBuffer*>(buffer);
   

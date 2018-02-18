@@ -24,13 +24,27 @@ class DrawableComponent : public GameComponent
                     Device& device_,
                     DeviceContext& deviceContext_);
 
+  virtual ~DrawableComponent(){}
+
   void 
   setModel(std::shared_ptr<Model> model);
   
   void
   setShaderTechnique(Technique* technique);
 
- private:
+ protected:
+
+  struct MeshBuffers 
+  {
+    VertexBuffer* vertexBuffer{nullptr};
+    IndexBuffer* indexBuffer{nullptr};
+    UInt32 indicesCount;
+  };
+
+  std::shared_ptr<Model>
+  getModel() const;
+
+ protected:
   virtual void 
   onCreate() override;
 
@@ -42,26 +56,24 @@ class DrawableComponent : public GameComponent
 
   virtual void 
   onDestroy() override;
- private:
+
+  virtual void
+  create(std::shared_ptr<Model> model);
+
   void
-  createMeshBuffers();
+  createMeshBuffers(std::vector<struct Mesh>& meshes);
 
   void
   destroyMeshBuffers();
- private:
 
-  struct MeshBuffers 
-  {
-    VertexBuffer* vertexBuffer{nullptr};
-    IndexBuffer* indexBuffer{nullptr};
-    UInt32 indicesCount;
-  };
-
+ protected:
   Device& m_device;
   DeviceContext& m_deviceContext;
-  std::weak_ptr<Model> m_model;
   Technique* m_technique{nullptr};
   std::vector<MeshBuffers> m_meshes;
+ private:  
+  std::weak_ptr<Model> m_model;
+  bool m_created;
 };
 
 }

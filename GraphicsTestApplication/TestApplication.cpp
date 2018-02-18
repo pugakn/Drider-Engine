@@ -6,8 +6,10 @@
 #include <dr_radian.h>
 #include <dr_quaternion.h>
 #include "DrawableComponent.h"
+#include "ModelDebbug.h"
 #include "NPCMovement.h"
 #include "StaticMeshTechnique.h"
+#include "LinesTechnique.h"
 #include "dr_degree.h"
 #include <dr_time.h>
 
@@ -39,6 +41,8 @@ TestApplication::onInit() {
   m_camera->setTarget({0.0f, 50.0f, 10.0f});
   //m_camera->transform.setRotation(Degree(180), AXIS::kX);
 
+  ResourceManager::startUp();
+  InputManager::startUp();
   Time::startUp();
 
   initResources();
@@ -59,6 +63,29 @@ TestApplication::onInit() {
 void
 TestApplication::onInput() {
   InputManager::instance().captureAll();
+  
+  auto keyBoard = InputManager::instance().getKeyboard();
+
+  Node::SharedNode croc;
+
+  if (croc = m_sceneGraph->getRoot()->getChild(_T("Croc"))) {
+    croc->transform.rotate(Degree(90 * Time::instance().getDelta()), AXIS::kY);
+  }
+
+  if (auto node = m_sceneGraph->getRoot()->getChild(_T("Dwarf"))) {
+
+    if (croc) {
+      float scale = Math::cos(croc->transform.getRotation().y) * 0.5f + 1.f;
+      croc->transform.setScale({scale,scale,scale}); 
+    }
+
+    node->transform.rotate(Degree(90 * Time::instance().getDelta()), AXIS::kY);
+  }
+
+  if (auto croc = m_sceneGraph->getRoot()->getChild(_T("Croc"))) {
+    croc->transform.rotate(Degree(60 * Time::instance().getDelta()), AXIS::kY);
+  }
+
 }
 
 void
@@ -96,9 +123,7 @@ void
 TestApplication::initInput() {
 
   HWND win = GetActiveWindow();
-
-  InputManager::startUp();
-
+  
   InputManager* inputMngr = nullptr;
 
   if(InputManager::isStarted()){
@@ -110,7 +135,6 @@ TestApplication::initInput() {
 
 void 
 TestApplication::initResources() {
-  ResourceManager::startUp();
   ResourceManager* resourceManager = nullptr;
   if (ResourceManager::isStarted()) {
      resourceManager = &ResourceManager::instance();
@@ -182,20 +206,35 @@ TestApplication::initSceneGraph() {
     node->createComponent<DrawableComponent>(*driver->device, 
                                              *driver->deviceContext);
 
+    node->createComponent<ModelDebbug>(*driver->device, 
+                                       *driver->deviceContext);
+
     auto drawableComponent = node->getComponent<DrawableComponent>();
     
     auto resource = resourceMgr->getReference(resName);
 
     auto model = std::dynamic_pointer_cast<Model>(resource);
     
+    auto technique = dr_make_unique<StaticMeshTechnique>(&(*m_camera), 
+                                                         &(*node));
+
     drawableComponent->setModel(model);
 
-    auto technique = new StaticMeshTechnique(&(*m_camera), 
-                                             &(*node));
+    drawableComponent->setShaderTechnique(technique.get());
 
-    drawableComponent->setShaderTechnique(technique);
+    auto debbugComponent = node->getComponent<ModelDebbug>();
 
+    auto technique2 = dr_make_unique<LinesTechnique>(&(*m_camera), 
+                                                     &(*node));
+
+    debbugComponent->setModel(model);
+
+    debbugComponent->setShaderTechnique(technique2.get());
+    
     parent->addChild(node);
+
+    m_techniques.push_back(std::move(technique));
+    m_techniques.push_back(std::move(technique2));
 
     return node;
   };

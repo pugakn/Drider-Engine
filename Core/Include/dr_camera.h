@@ -193,6 +193,30 @@ public:
   const Matrix4x4&
   getVP() const;
 
+  /**
+  * Gets the view matrix.
+  *
+  * @return
+  *   View matrix.
+  */
+  const Matrix4x4&
+  getView() const;
+
+  /**
+  * Gets the projection matrix.
+  *
+  * @return
+  *   Projection matrix.
+  */
+  const Matrix4x4&
+  getProjection();
+
+  /**
+  * Gets the current facing direction.
+  *
+  * @return
+  *   Vector with the direction of the camera.
+  */
   Vector3D
   getDirection() const;
 
