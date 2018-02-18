@@ -21,6 +21,8 @@ Model::init(void* modelData) {
     meshes.push_back(std::move(mesh));
   }
 
+  aabb = model->aabb;
+
   animationsNames = model->animationsNames;
   skeletonName = model->skeletonName;
 }

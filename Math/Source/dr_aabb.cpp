@@ -155,6 +155,7 @@ AABB::recalculate(const Matrix4x4& transform) {
   width = size.x;
   height = size.y;
   depth = size.z;
+  center = (max + min) * 0.5f;
 }
 
 } 

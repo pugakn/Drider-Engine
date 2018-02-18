@@ -31,16 +31,27 @@ CodecModel::decode(TString pathName) {
   const aiScene* scene = importer.ReadFile(StringUtils::toString(pathName), 
                                             flags);
   if (scene) {
+
     pModelInfo = new ModelInfo;
     pModelInfo->meshes.resize(scene->mNumMeshes);
+
+    Vector3D min;
+    Vector3D max;
 
     for (SizeT iMesh = 0; iMesh < scene->mNumMeshes; ++iMesh) {
       MeshInfo& mesh = pModelInfo->meshes[iMesh];
       aiMesh* pMesh = scene->mMeshes[iMesh];
       
-      loadVertices(*pMesh, mesh);
+      loadVertices(*pMesh, mesh, min, max);
       loadIndices(*pMesh, mesh);
     }
+
+    Vector3D size = max - min;
+
+    pModelInfo->aabb.width = size.x;
+    pModelInfo->aabb.height = size.y;
+    pModelInfo->aabb.depth = size.z;
+    pModelInfo->aabb.center = (max + min) * 0.5f;
 
     if (scene->HasMaterials()) {
       loadMaterials(*scene);
@@ -88,7 +99,10 @@ CodecModel::getType() {
 }
 
 void
-CodecModel::loadVertices(const aiMesh& inMesh, MeshInfo& outMesh) {
+CodecModel::loadVertices(const aiMesh& inMesh, 
+                         MeshInfo& outMesh, 
+                         Vector3D& minPos,
+                         Vector3D& maxPos) {
   outMesh.vertices.resize(inMesh.mNumVertices);
 
   for (Int32 vertexIndex = 0; 
