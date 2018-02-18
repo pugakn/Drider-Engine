@@ -1,15 +1,33 @@
 #pragma once
 
+#include <array>
 #include "dr_math_prerequisites.h"
 #include "dr_vector3d.h"
 
 namespace driderSDK {
 
+class Matrix4x4;
 class Plane;
 class Sphere;
 class Capsule;
 class Frustrum;
 class Ray;
+
+namespace AABB_POINT {
+
+enum E 
+{
+  kXMinYMinZMin,
+  kXMaxYMinZMin,
+  kXMinYMinZMax,
+  kXMaxYMinZMax,
+  kXMinYMaxZMin,
+  kXMaxYMaxZMin,
+  kXMinYMaxZMax,
+  kXMaxYMaxZMax
+};
+
+}
 
 /**
 *  Axis aligned bounding box class with center, width, height and depth
@@ -101,7 +119,27 @@ class DR_MATH_EXPORT AABB
   * @return
   *   A reference to this AABB.
   */
-  AABB
+
+  void
+  setWidth(float width);
+
+  void
+  setHeight(float height);
+
+  void
+  setDepth(float depth);
+
+  float
+  getWidth() const;
+
+  float
+  getHeight() const;
+
+  float
+  getDepth() const;
+
+
+  AABB&
   operator=(const AABB& A);
 
   /**
@@ -181,6 +219,13 @@ class DR_MATH_EXPORT AABB
   */
   bool
   intersect(Vector3D& point);
+    
+  std::array<Vector3D, 8>
+  getBounds() const;
+
+  void
+  recalculate(const Matrix4x4& transform);
+
   
 	float width, height, depth;
 

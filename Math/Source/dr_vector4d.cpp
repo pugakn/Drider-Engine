@@ -1,6 +1,7 @@
 #include "dr_vector4d.h"
 #include "dr_vector3d.h"
-
+#include "dr_matrix4x4.h"
+  
 namespace driderSDK
 {
 
@@ -185,6 +186,11 @@ Vector4D::operator-=(const Vector4D& A) {
 Vector4D
 Vector4D::operator*(const Vector4D& A) const {
   return Vector4D(x*A.x, y*A.y, z*A.z, w * A.w);
+}
+
+Vector4D 
+Vector4D::operator*(Matrix4x4 matrix) const {
+    return matrix.transpose() * *this;
 }
 
 Vector4D&

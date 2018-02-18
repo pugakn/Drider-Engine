@@ -8,6 +8,8 @@
 #include "DrawableComponent.h"
 #include "NPCMovement.h"
 #include "StaticMeshTechnique.h"
+#include "dr_degree.h"
+#include <dr_time.h>
 
 namespace driderSDK {
 
@@ -28,13 +30,16 @@ TestApplication::onInit() {
                win);
 
   m_camera = std::make_shared<Camera>(_T("MAIN_CAM"), 
-                                      viewport, 
-                                      45.f, 
-                                      0.1f, 
-                                      1000.f);
+                                      viewport);
 
-  m_camera->transform.setPosition({0.f, 0.0f, 200.f});
-  m_camera->setTarget({0,0,0});
+  m_camera->createProyection(45.f, 0.1f, 10000.f);
+
+
+  m_camera->transform.setPosition({0.f, 100.0f, -100.0f});
+  m_camera->setTarget({0.0f, 50.0f, 10.0f});
+  //m_camera->transform.setRotation(Degree(180), AXIS::kX);
+
+  Time::startUp();
 
   initResources();
   initInput();
@@ -59,6 +64,8 @@ TestApplication::onInput() {
 void
 TestApplication::onUpdate() {
   //soundDriver->update();
+  
+  Time::instance().update();
   m_sceneGraph->update();
 }
 
@@ -146,7 +153,7 @@ TestApplication::initSceneGraph() {
 
   auto root = m_sceneGraph->getRoot();
 
-  root->addChild(m_camera);
+  //root->addChild(m_camera);
 
   JoystickInput* joystickInput = nullptr;
 
@@ -154,10 +161,10 @@ TestApplication::initSceneGraph() {
     joystickInput = InputManager::instancePtr()->getJoystick(0); 
   }
 
-  if (joystickInput) {
+  /*if (joystickInput) {
     auto inputListener = m_camera->createComponent<InputComponent>(joystickInput);
     joystickInput->setEventCallback(inputListener);
-  }
+  }*/
 
   auto resourceMgr = ResourceManager::instancePtr();
 
@@ -194,11 +201,15 @@ TestApplication::initSceneGraph() {
   };
 
   auto n = createNode(root, _T("Joker"), _T("VenomJok.X"), {0.0f, 0.0f, 0.0f});
-  auto npcM = n->createComponent<NPCMovement>();
+  
+  n->addChild(m_camera);
+  
+  auto component = n->createComponent<InputComponent>(joystickInput);
 
-  InputManager::instancePtr()->getKeyboard()->setEventCallback(npcM);
-
-  n = createNode(n, _T("Croc"), _T("Croc.X"), {0.0f, 100.0f, 0.0f});
+  joystickInput->setEventCallback(component);
+  
+  n = createNode(root, _T("Croc"), _T("Croc.X"), {150.0f, 0.0f, 0.0f});
+  
   n = createNode(root, _T("Dwarf"), _T("dwarf.x"), {-100.0f, 0.0f, 0.0f});
   
 }

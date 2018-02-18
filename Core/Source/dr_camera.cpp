@@ -1,21 +1,18 @@
 #include <dr_quaternion.h>
 #include "dr_camera.h"
-
+#include "dr_time.h"
+#include <iostream>
 
 namespace driderSDK {
 
 Camera::Camera() {}
 
 Camera::Camera(const TString& name,
-							 const Viewport& viewport,
-							 float fov,
-							 float nearPlane,
-							 float farPlane) : GameObject(name) {
-
+							 const Viewport& viewport) 
+  : GameObject(name), 
+    m_up(0.0f, 1.0f, 0.0f) {
 	m_viewport = viewport;
 	m_up = Vector3D(0.f, 1.f, 0.f);
-
-	createProyection(fov, nearPlane, farPlane);
 }
 
 Camera::~Camera() {}
@@ -23,31 +20,78 @@ Camera::~Camera() {}
 void Camera::updateImpl() {
   GameObject::updateImpl();
 
-  auto& pos = transform.getPosition();
-	m_view.LookAt(pos, pos + m_look, m_up);
+  /*auto pos = Vector3D{m_finalTransform[3][0],
+                      m_finalTransform[3][1],
+                      m_finalTransform[3][2]};
+
+  auto p = getParent()->getWorldTransform();
+    
+  transform.setRotation(getParent()->transform.getRotation());
+
+  m_target = pos + getDirection()* 5;
+
+  auto target = m_target + Vector3D(p[3][0], p[3][1], p[3][2]); 
+                */
+
+  auto cpy = getParent()->transform.getTransformMatrix();
+  cpy.transpose();
+  auto pos =  cpy * Vector4D(transform.getPosition(),1);
+  auto target = cpy * Vector4D(m_target, 1);
+	m_view.LookAt(Vector3D(pos), Vector3D(target), m_up);
 	m_vp = m_view * m_projection;
 }
 
 void 
-Camera::move(float forward, float strafe) {
+Camera::move(float forward, float strafe, float upVelocity, bool lockY) {
 	
-  transform.move(m_look * forward);
+  Vector3D dir = getDirection();
+  Vector3D right = dir.cross(m_up);
+
+  if (lockY) {
+    dir.y = 0;
+    //dir.normalize();
+    right.y = 0; 
+    //right.normalize();
+  }
+
+  transform.move(dir * forward);
   
 	if (strafe != 0.f) {
-		transform.move(m_look.cross(m_up).normalize() * strafe);
+		transform.move(right * strafe);
 	}
 
-	m_look = m_target - transform.getPosition();
-	m_look.normalize();
+  transform.move(upVelocity, AXIS::kY);
 }
 
 void 
-Camera::pan(float forward, float strafe) {
-	
-	m_target += m_look*forward;
-  m_target += m_look.cross(m_up).normalize() * strafe;
+Camera::move(const Vector3D& direction) {
+  transform.move(direction);
+}
 
-  move(forward, strafe);
+void 
+Camera::pan(float forward, float strafe, float upVelocity, bool lockY) {
+	
+  Vector3D dir = getDirection();
+  Vector3D right = dir.cross(m_up);
+
+  if (lockY) {
+    dir.y = 0;
+    dir.normalize();
+    right.y = 0;
+    right.normalize();
+  }
+  dir *= forward;
+  dir += right * strafe + m_up * upVelocity;
+  
+	m_target += dir;
+
+  move(dir);
+}
+
+void 
+Camera::pan(const Vector3D & direction) {
+  move(direction);
+  m_target += direction;
 }
 
 void
@@ -63,11 +107,13 @@ Camera::createProyection(float fov,
 }
 
 void 
+Camera::setUp(const Vector3D& up) {
+  m_up = up;
+}
+
+void 
 Camera::setTarget(const Vector3D& target) {
 	m_target = target;
-
-  m_look = m_target - transform.getPosition();
-	m_look.normalize();
 }
 
 void
@@ -77,7 +123,14 @@ Camera::setViewport(const Viewport& viewport) {
 
 void 
 Camera::rotate(const Quaternion& rotation) {
-	m_look = rotation.rotation(m_look);
+	m_target = transform.getPosition() + rotation.rotation(getDirection());
+}
+
+void 
+Camera::rotate(float yawDegree, float pitchDegree) {
+  transform.rotate({yawDegree * Math::DEGREE_TO_RADIAN,
+                   pitchDegree * Math::DEGREE_TO_RADIAN, 0});
+  m_target = transform.getPosition() + getDirection() * 10.f;
 }
 
 void 
@@ -95,6 +148,13 @@ Camera::orbit(float pitch, float yaw) {
 const Matrix4x4& 
 Camera::getVP() const {
   return m_vp;
+}
+
+Vector3D Camera::getDirection() const {
+  auto angle = transform.getRotation();
+  return Vector3D{Math::cos(angle.y) * Math::sin(angle.x),
+                  Math::sin(angle.y),
+                  Math::cos(angle.y) * Math::cos(angle.x)}.normalize();
 }
 
 }

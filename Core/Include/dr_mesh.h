@@ -16,10 +16,4 @@ struct DR_CORE_EXPORT Mesh
   //Material
 };
 
-struct DR_CORE_EXPORT SkinnedMesh 
-{
-  Mesh meshInfo;
-
-};
-
 }

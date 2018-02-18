@@ -37,7 +37,7 @@ class InputComponent : public GameComponent, public IJoystickInputListener
  private:
   JoystickInput* m_joystick;
 
-  Vector2D m_dir;
+  Vector3D m_direction;
 };
 
 }

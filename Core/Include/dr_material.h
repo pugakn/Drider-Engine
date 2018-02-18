@@ -116,12 +116,13 @@ class DR_CORE_EXPORT Material : public Resource
   using PropertyPtr = std::unique_ptr<Property>;
   using PropertyList = std::vector<PropertyPtr>;
 
+  Material(){}
+
   Material(const Material&) = delete;
 
-  virtual ~Material(){}
-
   Material& operator=(const Material&) = delete;
-
+  
+  virtual ~Material(){}
   /**
   * Adds a new property of PropertyType type to the material properperties.
   * 

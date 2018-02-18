@@ -18,10 +18,9 @@ CameraManager::createCamera(const TString& cameraName,
 														float nearPlane,
 														float farPlane) {
 	m_cameras.push_back(new Camera(cameraName, 
-																 viewport, 
-																 fov, 
-																 nearPlane,
-																 farPlane));
+																 viewport));
+
+  m_cameras.back()->createProyection(fov, nearPlane, farPlane);
 }
 
 void

@@ -61,7 +61,7 @@ class DR_UTIL_EXPORT Time : public Module<Time>
   */
   float
   getDeltaMicro();
- private:
+ //private:
   
   void 
   update();

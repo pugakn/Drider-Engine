@@ -52,10 +52,7 @@ public:
 	*   Value of the farthest plane of the proyection.
 	*/
 	Camera(const TString& name,
-				 const Viewport& viewport,
-				 float fov, 
-				 float nearPlane, 
-				 float farPlane);
+				 const Viewport& viewport);
 
 	/**
 	* TEST::destructor
@@ -86,9 +83,19 @@ public:
 	*
 	* @param strafe
 	*   Value to strafe the camera, left or right.
+  *
+  * @param lockY
+  *  Tells if the movement will be locked on the Y axis when 
+  *  strafing or forwarding (it can't move upwards or downwards).
 	*/
 	void 
-	move(float forward, float strafe);
+	move(float forwardVelocity, 
+       float strafeVelocity, 
+       float upVelocity, 
+       bool lockY = false);
+
+  void
+  move(const Vector3D& direction);
 
 	/**
 	* TEST::pan
@@ -99,9 +106,16 @@ public:
 	*
 	* @param strafe
 	*   Value to strafe the camera and target, left or right.
+  * 
+  * @param lockY
+  *  Tells if the movement will be locked on the Y axis when 
+  *  strafing or forwarding (it can't move upwards or downwards).
 	*/
 	void 
-	pan(float forward, float strafe);
+	pan(float forward, float strafe, float upVelocity, bool lockY = false);
+
+  void 
+  pan(const Vector3D& direction);
 
 	/**
 	* TEST::createProyection
@@ -120,6 +134,9 @@ public:
 	createProyection(float fov,
 									 float nearPlane,
 									 float farPlane);
+
+  void
+  setUp(const Vector3D& up);
 
 	/**
 	* TEST::setTarget
@@ -151,6 +168,8 @@ public:
 	void 
 	rotate(const Quaternion& rotation);
 
+  void
+  rotate(float yaw, float pitch);
 	/**
 	* TEST::orbit
 	* Rotates de camera around the target
@@ -174,10 +193,12 @@ public:
   const Matrix4x4&
   getVP() const;
 
+  Vector3D
+  getDirection() const;
+
  private:
 	Vector3D m_target;
 	Vector3D m_up;
-	Vector3D m_look;
 	Matrix4x4 m_vp;
 	Matrix4x4 m_view;
 	Matrix4x4 m_projection;
