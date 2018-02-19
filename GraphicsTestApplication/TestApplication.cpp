@@ -12,6 +12,8 @@
 #include "LinesTechnique.h"
 #include "dr_degree.h"
 #include <dr_time.h>
+#include <dr_input_manager.h>
+#include <dr_keyboard.h>
 
 namespace driderSDK {
 
@@ -42,7 +44,7 @@ TestApplication::onInit() {
   //m_camera->transform.setRotation(Degree(180), AXIS::kX);
 
   ResourceManager::startUp();
-  InputManager::startUp();
+  InputManager::startUp(win);
   Time::startUp();
 
   initResources();
@@ -62,10 +64,9 @@ TestApplication::onInit() {
 }
 void
 TestApplication::onInput() {
-  InputManager::instance().captureAll();
   
-  auto keyBoard = InputManager::instance().getKeyboard();
-
+  //InputManager::instance().captureAll();
+  
   Node::SharedNode croc;
 
   if (croc = m_sceneGraph->getRoot()->getChild(_T("Croc"))) {
@@ -123,14 +124,7 @@ void
 TestApplication::initInput() {
 
   HWND win = GetActiveWindow();
-  
-  InputManager* inputMngr = nullptr;
 
-  if(InputManager::isStarted()){
-    inputMngr = InputManager::instancePtr();
-  }
-
-  inputMngr->init((size_t)win);
 }
 
 void 
@@ -181,9 +175,7 @@ TestApplication::initSceneGraph() {
 
   JoystickInput* joystickInput = nullptr;
 
-  if(InputManager::instancePtr()->getNumOfJoysticks()) {
-    joystickInput = InputManager::instancePtr()->getJoystick(0); 
-  }
+  
 
   /*if (joystickInput) {
     auto inputListener = m_camera->createComponent<InputComponent>(joystickInput);

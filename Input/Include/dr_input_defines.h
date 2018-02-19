@@ -32,14 +32,31 @@ namespace JOYSTICK_AXIS
 namespace MOUSE_BUTTON {
 enum E
 {
-  MB_Left = 0, 
-  MB_Right, 
-  MB_Middle,
-  MB_Button3, 
-  MB_Button4, 
-  MB_Button5,
-  MB_Button6, 
-  MB_Button7
+  kLeft = 0, 
+  kRight, 
+  kMiddle,
+  kButton3, 
+  kButton4, 
+  kButton5,
+  kButton6, 
+  kButton7,
+};
+}
+
+namespace MOUSE_EVENT {
+enum E
+{
+  kButtonPressed = 0,
+  kButtonReleased = 1,
+  kMouseMoved = 2
+};
+}
+
+namespace KEYBOARD_EVENT {
+enum E
+{
+  kKeyPressed,
+  kKeyReleased
 };
 }
 

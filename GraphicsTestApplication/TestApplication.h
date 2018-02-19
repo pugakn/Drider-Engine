@@ -15,9 +15,6 @@
 #include <dr_shader.h>
 
 #include <Windows.h>
-#include"dr_input_manager.h"
-#include "dr_input_keyboard.h"
-#include "dr_input_mouse.h"
 #include <iostream>
 
 //#include <FMOD\fmod.hpp>
