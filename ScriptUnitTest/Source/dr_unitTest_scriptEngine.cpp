@@ -17,14 +17,13 @@ TEST(ScriptEngine, exposeFunction)
 	EXPECT_EQ(result, 0);
 
   result = testScript->configureContext();
-  EXPECT_TRUE(result == 0);
+	EXPECT_EQ(result, 0);
 
 	result = testScript->addScript(_T("test.as"));
 	EXPECT_EQ(result, 0);
 
   result = testScript->compileScript();
-  EXPECT_TRUE(result == 0);
-
+	EXPECT_EQ(result, 0);
   
   result = testScript->prepareFunction(_T("main"));
   EXPECT_TRUE(result == 0);
