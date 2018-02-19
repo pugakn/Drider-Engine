@@ -12,14 +12,14 @@ namespace driderSDK {
 
 class Mouse : private OIS::MouseListener
 {  struct Pass{};public:
-  struct EventArgs 
+  /*struct EventArgs 
   {
     Int32 pressedButtons;
     Vector2DI absolutePos;
     Vector2DI relativePos;
-  };
+  };*/
 
-  using Callback = std::function<void(const EventArgs&)>;
+  using Callback = std::function<void()>;
   using CallbackList = std::vector<Callback>;
   using CallbackMap = std::unordered_map<Int32, CallbackList>;
   using Callbacks = std::vector<CallbackMap>;

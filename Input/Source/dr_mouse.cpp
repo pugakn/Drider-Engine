@@ -82,18 +82,18 @@ Mouse::mouseReleased(const OIS::MouseEvent& arg, OIS::MouseButtonID id) {
 void 
 Mouse::callCallbacks(MOUSE_EVENT::E trigger, Int32 key) {
 
-  EventArgs args;
+  /*EventArgs args;
 
   args.pressedButtons = m_state->buttons;
   args.absolutePos.x = m_state->X.abs;
   args.absolutePos.y = m_state->Y.abs;
   args.relativePos.x = m_state->X.rel;
-  args.relativePos.y = m_state->Y.rel;
+  args.relativePos.y = m_state->Y.rel;*/
 
   auto& callbacks = m_callbacks[trigger][key];
   
   for(auto& callback : callbacks) {
-    callback(args);
+    callback();
   }
 
 }
