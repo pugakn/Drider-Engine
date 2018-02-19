@@ -153,11 +153,11 @@
     <ClInclude Include="Include\dr_input_prerequisites.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\dr_input_joystick.cpp" />
-    <ClCompile Include="Source\dr_input_keyboard.cpp" />
-    <ClCompile Include="Source\dr_input_manager.cpp" />
-    <ClCompile Include="Source\dr_input_mouse.cpp" />
-    <ClCompile Include="Source\dr_input_object.cpp" />
+    <None Include="Source\dr_input_joystick.cpp" />
+    <None Include="Source\dr_input_keyboard.cpp" />
+    <None Include="Source\dr_input_manager.cpp" />
+    <None Include="Source\dr_input_mouse.cpp" />
+    <None Include="Source\dr_input_object.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
