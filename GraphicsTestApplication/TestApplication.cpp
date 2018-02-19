@@ -14,6 +14,7 @@
 #include <dr_time.h>
 #include <dr_input_manager.h>
 #include <dr_keyboard.h>
+#include <dr_mouse.h>
 
 namespace driderSDK {
 
@@ -44,7 +45,7 @@ TestApplication::onInit() {
   //m_camera->transform.setRotation(Degree(180), AXIS::kX);
 
   ResourceManager::startUp();
-  InputManager::startUp(win);
+  InputManager::startUp((SizeT)(win));
   Time::startUp();
 
   initResources();
@@ -65,7 +66,7 @@ TestApplication::onInit() {
 void
 TestApplication::onInput() {
   
-  //InputManager::instance().captureAll();
+  InputManager::capture();
   
   Node::SharedNode croc;
 
@@ -125,6 +126,9 @@ TestApplication::initInput() {
 
   HWND win = GetActiveWindow();
 
+  auto callback = std::bind(&TestApplication::TestKeyBoard, this);
+
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed, KEY_CODE::kA, callback);
 }
 
 void 
@@ -173,7 +177,7 @@ TestApplication::initSceneGraph() {
 
   //root->addChild(m_camera);
 
-  JoystickInput* joystickInput = nullptr;
+  //JoystickInput* joystickInput = nullptr;
 
   
 
@@ -235,14 +239,18 @@ TestApplication::initSceneGraph() {
   
   n->addChild(m_camera);
   
-  auto component = n->createComponent<InputComponent>(joystickInput);
-
-  joystickInput->setEventCallback(component);
+  /*if (joystickInput) {
+    auto component = n->createComponent<InputComponent>(joystickInput);
+  }*/
   
   n = createNode(root, _T("Croc"), _T("Croc.X"), {150.0f, 0.0f, 0.0f});
   
   n = createNode(root, _T("Dwarf"), _T("dwarf.x"), {-100.0f, 0.0f, 0.0f});
   
+}
+
+void TestApplication::TestKeyBoard() {
+  std::cout << "A key pressed" << std::endl;
 }
 
 }

@@ -4,7 +4,7 @@
 
 namespace driderSDK {
 
-class Joystick
+class DR_INPUT_EXPORT Joystick
 {
 public:
 

@@ -3,7 +3,10 @@
 
 namespace driderSDK {
 
-Keyboard::Keyboard(Pass) : m_callbacks(2), m_keyboardOIS(nullptr)
+Keyboard::Keyboard(Pass) 
+  : m_callbacks(2), 
+    m_keyboardOIS(nullptr), 
+    m_helper(*this)
 {}
 
 Keyboard::~Keyboard() 
@@ -28,24 +31,6 @@ Keyboard::addCallback(KEYBOARD_EVENT::E trigger,
   keyboard->m_callbacks[trigger][key].push_back(callback);
 }
 
-bool 
-Keyboard::keyPressed(const OIS::KeyEvent& arg) {
-  
-  callCallbacks(KEYBOARD_EVENT::kKeyPressed, 
-                static_cast<KEY_CODE::E>(arg.key));
-
-  return true;
-}
-
-bool 
-Keyboard::keyReleased(const OIS::KeyEvent& arg) {
-
-  callCallbacks(KEYBOARD_EVENT::kKeyReleased, 
-                static_cast<KEY_CODE::E>(arg.key));
-
-  return true;
-}
-
 void Keyboard::callCallbacks(KEYBOARD_EVENT::E trigger, 
                              KEY_CODE::E key) {
 
@@ -54,6 +39,25 @@ void Keyboard::callCallbacks(KEYBOARD_EVENT::E trigger,
   for (auto& callback : callbacks) {
     callback();
   }
+}
+
+Keyboard::Helper::Helper(Keyboard& keyboard) : m_parent(keyboard) 
+{}
+
+bool Keyboard::Helper::keyPressed(const OIS::KeyEvent& arg) {
+
+  m_parent.callCallbacks(KEYBOARD_EVENT::kKeyPressed, 
+                         static_cast<KEY_CODE::E>(arg.key));
+
+  return true;
+}
+
+bool Keyboard::Helper::keyReleased(const OIS::KeyEvent& arg) {
+
+  m_parent.callCallbacks(KEYBOARD_EVENT::kKeyReleased, 
+                         static_cast<KEY_CODE::E>(arg.key));
+
+  return true;
 }
 
 }

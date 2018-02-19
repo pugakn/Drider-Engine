@@ -40,7 +40,7 @@ class DR_INPUT_EXPORT IKeyboardListener
   *
   */
   virtual bool 
-  keyPressed(const KeyboardButtonID::E &key) = 0;
+  keyPressed(const KEY_CODE::E &key) = 0;
   /**
   * Called when a button is pressed
   *
@@ -49,7 +49,7 @@ class DR_INPUT_EXPORT IKeyboardListener
   *
   */
   virtual bool 
-  keyReleased(const KeyboardButtonID::E &key) = 0;
+  keyReleased(const KEY_CODE::E &key) = 0;
 };
 
 /**
@@ -84,7 +84,7 @@ class DR_INPUT_EXPORT KeyboardInput : public InputObject {
   *
   */
   bool 
-  isKeyDown(KeyboardButtonID::E key) const;
+  isKeyDown(KEY_CODE::E key) const;
   /**
   * Check if a modifier
   *
@@ -96,7 +96,7 @@ class DR_INPUT_EXPORT KeyboardInput : public InputObject {
   *
   */
   bool 
-  isModifierDown(KeyboardModifier::E mod) const;
+  isModifierDown(KEYBOARD_MOD::E mod) const;
   /**
   * Register a listener
   *

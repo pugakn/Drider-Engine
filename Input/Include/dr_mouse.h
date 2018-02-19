@@ -10,7 +10,7 @@
 namespace driderSDK {
 
 
-class Mouse : private OIS::MouseListener
+class DR_INPUT_EXPORT Mouse
 {  struct Pass{};public:
   /*struct EventArgs 
   {
@@ -71,7 +71,7 @@ class Mouse : private OIS::MouseListener
   *  The button that will validate the trigger.
   */
   static void
-  addCallback(MOUSE_EVENT::E trigger, 
+  addCallback(MOUSE_INPUT_EVENT::E trigger, 
               MOUSE_BUTTON::E button, 
               Callback callback);
 
@@ -83,18 +83,24 @@ private:
 
   friend class InputManager; 
   
-  // Inherited via MouseListener
-  virtual bool 
-  mouseMoved(const OIS::MouseEvent& arg) override;
+  class Helper : public OIS::MouseListener
+  {
+  public:
+    Helper(Mouse& mouse);
+  private:
+    // Inherited via MouseListener
+    virtual bool 
+    mouseMoved(const OIS::MouseEvent& arg) override;
 
-  // Inherited via MouseListener
-  virtual bool 
-  mousePressed(const OIS::MouseEvent& arg, OIS::MouseButtonID id) override;
+    virtual bool 
+    mousePressed(const OIS::MouseEvent& arg, OIS::MouseButtonID id) override;
 
-  // Inherited via MouseListener
-  virtual bool 
-  mouseReleased(const OIS::MouseEvent& arg, OIS::MouseButtonID id) override;
+    virtual bool 
+    mouseReleased(const OIS::MouseEvent& arg, OIS::MouseButtonID id) override;
 
+    Mouse& m_parent;
+  };
+  
   /**
   * Internaly calls all the callbacks of an specific type 
   * and key.
@@ -106,9 +112,10 @@ private:
   *  The key that validates the callback.
   */
   void
-  callCallbacks(MOUSE_EVENT::E trigger, Int32 key);
+  callCallbacks(MOUSE_INPUT_EVENT::E trigger, Int32 key);
 
-  const OIS::MouseState* m_state;
+  Helper m_helper;
+  const OIS::Mouse* m_mouseOIS;
   Callbacks m_callbacks;
 };
 

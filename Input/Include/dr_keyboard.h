@@ -8,7 +8,7 @@
 
 namespace driderSDK {
 
-class Keyboard : private OIS::KeyListener
+class DR_INPUT_EXPORT Keyboard
 {
   struct Pass{};
 
@@ -62,16 +62,24 @@ public:
   Keyboard& operator=(Keyboard&&) = delete;
 
 private:
+
   friend class InputManager;
   
-  // Inherited via KeyListener
-  virtual bool 
-  keyPressed(const OIS::KeyEvent& arg) override;
+  class Helper : public OIS::KeyListener
+  {
+   public:
+    Helper(Keyboard& keyboard);
+   private:
+    // Inherited via KeyListener
+    virtual bool 
+    keyPressed(const OIS::KeyEvent & arg) override;
 
-  // Inherited via KeyListener
-  virtual bool 
-  keyReleased(const OIS::KeyEvent& arg) override;
+    virtual bool 
+    keyReleased(const OIS::KeyEvent & arg) override;
 
+    Keyboard& m_parent;
+  };
+  
   /**
   * Internaly calls all the callbacks of an specific type 
   * and key.
@@ -85,8 +93,8 @@ private:
   void
   callCallbacks(KEYBOARD_EVENT::E trigger, KEY_CODE::E key);
 
+  Helper m_helper;
   const OIS::Keyboard* m_keyboardOIS;
-
   Callbacks m_callbacks;
 };
 

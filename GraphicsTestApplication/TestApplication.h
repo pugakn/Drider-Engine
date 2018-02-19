@@ -45,6 +45,8 @@ public:
   void initResources();
   void initSound();
   void initSceneGraph();
+
+  void TestKeyBoard();
   
   GraphicsAPI* driver;
   Quad quad;

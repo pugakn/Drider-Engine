@@ -39,11 +39,11 @@ enum E
   kButton4, 
   kButton5,
   kButton6, 
-  kButton7,
+  kButton7
 };
 }
 
-namespace MOUSE_EVENT {
+namespace MOUSE_INPUT_EVENT {
 enum E
 {
   kButtonPressed = 0,

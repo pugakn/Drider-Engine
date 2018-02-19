@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include <OIS/OISInputManager.h>
 #include <OIS/OISMouse.h>
 #include <OIS/OISKeyboard.h>
@@ -13,12 +14,14 @@ namespace driderSDK {
 class Mouse;
 class Keyboard;
 
-class InputManager : public Module<InputManager>
+class DR_INPUT_EXPORT InputManager : public Module<InputManager>
 {
  //Public Methods
 public:
 
   InputManager(SizeT _windowHandle);
+
+  ~InputManager();
   /**
   * Gets the mouse.
   */
@@ -30,6 +33,12 @@ public:
   */
   static Keyboard*
   getKeyboard();
+
+  /**
+  * Captures all the devices input.
+  */
+  static void
+  capture();
  //Private Methods
 private:
   void
@@ -48,8 +57,7 @@ private:
   SizeT m_windowHandle;
   std::unique_ptr<Mouse> m_mouse;
   std::unique_ptr<Keyboard> m_keyboard;
-  OIS::Mouse* m_mouseOIS;
-  OIS::Keyboard* m_keyboardOIS;
+  std::vector<OIS::Object*> m_objects;
   OIS::InputManager* m_manager;  
 };
 
