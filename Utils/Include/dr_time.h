@@ -14,7 +14,7 @@ class DR_UTIL_EXPORT Time : public Module<Time>
   * @return
   *   Total time in seconds.
   */
-  float
+  static float
   getElapsed();
 
   /**
@@ -23,7 +23,7 @@ class DR_UTIL_EXPORT Time : public Module<Time>
   * @return
   *   Total time in milliseconds.
   */
-  float
+  static float
   getElapsedMilli();
 
   /**
@@ -32,7 +32,7 @@ class DR_UTIL_EXPORT Time : public Module<Time>
   * @return
   *   Total time in microseconds.
   */
-  float
+  static float
   getElapsedMicro();
 
   /**
@@ -41,7 +41,7 @@ class DR_UTIL_EXPORT Time : public Module<Time>
   * @return 
   *   Elapsed time on seconds.
   */
-  float
+  static float
   getDelta();
 
   /**
@@ -50,7 +50,7 @@ class DR_UTIL_EXPORT Time : public Module<Time>
   * @return 
   *   Elapsed time on milliseconds.
   */
-  float
+  static float
   getDeltaMilli();
 
   /**
@@ -59,7 +59,7 @@ class DR_UTIL_EXPORT Time : public Module<Time>
   * @return 
   *   Elapsed time on microseconds.
   */
-  float
+  static float
   getDeltaMicro();
  //private:
   
