@@ -7,6 +7,10 @@
 
 namespace driderSDK {
 
+void stringPrint(TString smg) {
+ // printf("s", smg);
+	return;
+}
 /**
 *  Script engine class.
 *
@@ -98,7 +102,7 @@ public:
 	*   Time required to abort the script.
 	*/
 	void 
-	lineCallback(asIScriptContext *scriptContext, unsigned long *timeOut);
+	lineCallback();
 
 	/**
 	* Gets the messages from the script's engine and logs them.
@@ -117,7 +121,7 @@ private:
 	asIScriptContext* m_scriptContext;
 	asIScriptFunction* m_scriptFunction;
 	asIScriptModule* m_scriptModule;
-	unsigned long timeout;
+	unsigned long timeout = 4000;
 };
 
 }

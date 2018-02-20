@@ -1,4 +1,5 @@
-void main()
-{
-	return 1;
-}
+void main() {
+
+	return;
+}	 
+
