@@ -1,8 +1,5 @@
-int main() {
+void main() {
 
-	int a,b;
-	a = 10;
-	b = a - 2;
-	return 0;
+	return;
 }	 
 

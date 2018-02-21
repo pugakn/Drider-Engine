@@ -27,7 +27,8 @@ ScriptEngine::createEngine() {
 	result = m_scriptEngine->RegisterStringFactory("TString", &stringFactory);
 	// Register the functions that the scripts will be allowed to use.
 
-  result = m_scriptEngine->RegisterGlobalFunction("void print(TString)", asFUNCTIONPR(print, (TString), void),  asCALL_CDECL);
+ // result = m_scriptEngine->RegisterGlobalFunction("void print(TString)", asFUNCTIONPR(print, (TString), void),  asCALL_CDECL);
+	result = m_scriptEngine->RegisterGlobalFunction("void stringPrint(TString smg)", asFUNCTION(stringPrint), asCALL_CDECL);
 
 	//
 	return result;
@@ -54,7 +55,8 @@ ScriptEngine::addScript(const TString& fileName) {
 		m_scriptEngine->Release();
 		return -2;
 	}
-	m_scriptModule = m_scriptEngine->GetModule(0, asGM_ALWAYS_CREATE);
+	m_scriptModule = m_scriptEngine->GetModule("module", asGM_CREATE_IF_NOT_EXISTS);
+
 	Int8 result = m_scriptModule->AddScriptSection(StringUtils::toString(fileName).c_str(),
 																								StringUtils::toString(script).c_str(),
 																								fileLength);
@@ -101,7 +103,7 @@ ScriptEngine::configureContext() {
 Int8
 ScriptEngine::prepareFunction(TString function) {
 
-	auto modul = m_scriptEngine->GetModule(0);
+	auto modul = m_scriptEngine->GetModule("module");
   m_scriptFunction = modul->GetFunctionByName(StringUtils::toString(function).c_str());
 	if (m_scriptFunction == 0)
 	{

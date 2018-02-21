@@ -7,8 +7,9 @@
 
 namespace driderSDK {
 
-void print(TString smg) {
-  printf("s", smg);
+void stringPrint(TString smg) {
+ // printf("s", smg);
+	return;
 }
 /**
 *  Script engine class.
