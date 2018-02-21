@@ -170,6 +170,7 @@
     <ClInclude Include="Include\dr_node.h" />
     <ClInclude Include="Include\dr_octree.h" />
     <ClInclude Include="Include\dr_parser.h" />
+    <ClInclude Include="Include\dr_render_component.h" />
     <ClInclude Include="Include\dr_resource.h" />
     <ClInclude Include="Include\dr_root_node.h" />
     <ClInclude Include="Include\dr_skeleton.h" />
@@ -198,6 +199,7 @@
     <ClCompile Include="Source\dr_node.cpp" />
     <ClCompile Include="Source\dr_octree.cpp" />
     <ClCompile Include="Source\dr_parser.cpp" />
+    <ClCompile Include="Source\dr_render_component.cpp" />
     <ClCompile Include="Source\dr_resource.cpp" />
     <ClCompile Include="Source\dr_root_node.cpp" />
     <ClCompile Include="Source\dr_skeleton.cpp" />
