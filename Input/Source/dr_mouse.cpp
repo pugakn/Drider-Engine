@@ -12,7 +12,7 @@ Mouse::Mouse(Pass)
 Mouse::~Mouse() {}
 
 Vector2DI 
-Mouse::getPosition(bool absolute) {
+Mouse::getPosition() {
  
   auto mouse = InputManager::getMouse()->m_mouseOIS;
   
@@ -20,16 +20,25 @@ Mouse::getPosition(bool absolute) {
 
   Vector2DI pos;
 
-  if (absolute) {
-    pos.x = state.X.abs;
-    pos.y = state.Y.abs;
-  }
-  else {
-    pos.x = state.X.rel;
-    pos.y = state.Y.rel;
-  }
+  pos.x = state.X.abs;
+  pos.y = state.Y.abs;
 
   return pos;
+}
+
+Vector2DI Mouse::getDisplacement() {
+  
+  auto mouse = InputManager::getMouse()->m_mouseOIS;
+  
+  auto& state = mouse->getMouseState();
+
+  Vector2DI pos;
+
+  pos.x = state.X.rel;
+  pos.y = state.Y.rel;
+
+  return pos;
+
 }
 
 bool

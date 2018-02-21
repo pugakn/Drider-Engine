@@ -128,7 +128,21 @@ TestApplication::initInput() {
 
   auto callback = std::bind(&TestApplication::TestKeyBoard, this);
 
-  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed, KEY_CODE::kA, callback);
+  auto mouseCallback = []()
+  { 
+    auto pos = Mouse::getPosition();
+    auto delta = Mouse::getDisplacement();
+    std::cout << "Mouse moved x:" << pos.x << " y:" << pos.y;
+    std::cout << " movedX:" << delta.x << " movedY:" << delta.y << std::endl;
+  };
+
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed, 
+                        KEY_CODE::kA, 
+                        callback);
+
+  Mouse::addCallback(MOUSE_INPUT_EVENT::kMouseMoved, 
+                     MOUSE_BUTTON::kMiddle,
+                     mouseCallback);
 }
 
 void 

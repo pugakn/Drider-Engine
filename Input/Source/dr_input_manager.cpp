@@ -1,6 +1,10 @@
 #include "dr_input_manager.h"
 #include "dr_mouse.h"
 #include "dr_keyboard.h"
+#include "dr_joystick.h"
+#include <OIS/OISMouse.h>
+#include <OIS/OISKeyboard.h>
+#include <OIS/OISJoyStick.h>
 
 namespace driderSDK {
 
@@ -48,7 +52,8 @@ InputManager::onStartUp() {
   m_manager = OIS::InputManager::createInputSystem(pl);
 
   registerMouse();
-  registerKeyboard();    
+  registerKeyboard(); 
+  registerJoysticks();
 }
 
 void 
@@ -72,16 +77,16 @@ InputManager::registerMouse() {
   
   OIS::Object* object = m_manager->createInputObject(OIS::OISMouse, true);
   
-  auto m_mouseOIS = reinterpret_cast<OIS::Mouse*>(object);
+  auto mouseOIS = reinterpret_cast<OIS::Mouse*>(object);
 
-  m_mouseOIS->getMouseState().width = 4096;
-  m_mouseOIS->getMouseState().height = 4096;
+  mouseOIS->getMouseState().width = 4096;
+  mouseOIS->getMouseState().height = 4096;
 
   m_mouse = dr_make_unique<Mouse>(Mouse::Pass{});
 
-  m_mouse->m_mouseOIS = m_mouseOIS;
+  m_mouse->m_mouseOIS = mouseOIS;
 
-  m_mouseOIS->setEventCallback(&m_mouse->m_helper);
+  mouseOIS->setEventCallback(&m_mouse->m_helper);
 
   m_objects.push_back(object);
 }
@@ -91,16 +96,29 @@ InputManager::registerKeyboard() {
 
   OIS::Object* object = m_manager->createInputObject(OIS::OISKeyboard, true);
 
-  auto m_keyboardOIS = reinterpret_cast<OIS::Keyboard*>(object);
+  auto keyboardOIS = reinterpret_cast<OIS::Keyboard*>(object);
 
   m_keyboard = dr_make_unique<Keyboard>(Keyboard::Pass{});
 
-  m_keyboard->m_keyboardOIS = m_keyboardOIS;
+  m_keyboard->m_keyboardOIS = keyboardOIS;
 
-  m_keyboardOIS->setEventCallback(&m_keyboard->m_helper);
+  keyboardOIS ->setEventCallback(&m_keyboard->m_helper);
 
   m_objects.push_back(object);
 }
 
+void InputManager::registerJoysticks() {
+
+  Int32 joysticksCount = m_manager->getNumberOfDevices(OIS::Type::OISJoyStick);
+
+  if (joysticksCount) {
+
+    OIS::Object* object = m_manager->createInputObject(OIS::OISJoyStick, true);
+
+    auto joystickOIS = reinterpret_cast<OIS::JoyStick*>(object);
+
+
+  }
+}
 
 }

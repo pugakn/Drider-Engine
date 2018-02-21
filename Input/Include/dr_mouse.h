@@ -11,7 +11,10 @@ namespace driderSDK {
 
 
 class DR_INPUT_EXPORT Mouse
-{  struct Pass{};public:
+{
+  struct Pass{};
+
+public:
   /*struct EventArgs 
   {
     Int32 pressedButtons;
@@ -38,16 +41,21 @@ class DR_INPUT_EXPORT Mouse
 
   /**
   * Gets the position of the mouse.
-  *
-  * @param absolute
-  *  If true the position will be in screen coordinates,
-  *  if false the position will be relative to the window.
   * 
   * @return 
   *   The position of the mouse.
   */
   static Vector2DI 
-  getPosition(bool absolute = false);
+  getPosition();
+
+  /**
+  * Gets the delta of the movement from the last position.
+  *
+  * @return
+  *   Delta of the movement.
+  */
+  static Vector2DI
+  getDisplacement();
 
   /**
   * Gets the status (down/up) of a button.
