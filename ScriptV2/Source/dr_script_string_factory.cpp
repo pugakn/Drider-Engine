@@ -1,5 +1,5 @@
 #include "dr_script_string_factory.h"
-#include <dr_string_utils.h>
+
 
 namespace driderSDK {
 
@@ -12,7 +12,7 @@ StringFactory::~StringFactory() {
 const void* 
 StringFactory::GetStringConstant(const char* data, asUINT length) {
 
-	TString string(StringUtils::toTString(data)); //?
+	TString string((const wchar_t*)data); //?
 
 	map_t::iterator it = m_stringCache.find(string);
 
@@ -22,8 +22,7 @@ StringFactory::GetStringConstant(const char* data, asUINT length) {
 	else {
 		it = m_stringCache.insert(map_t::value_type(string, 1)).first;
 	}
-
-	return static_cast<const void*>(&it->first);
+	return reinterpret_cast<const void*>(&it->first);
 }
 
 int 

@@ -10,7 +10,7 @@ ScriptEngine::ScriptEngine() {}
 Int8
 ScriptEngine::createEngine() {
 
-	m_scriptEngine = asCreateScriptEngine();
+	m_scriptEngine = asCreateScriptEngine();  
 	if(m_scriptEngine == 0) {
 		//failed to create script engine
 		return -1;
