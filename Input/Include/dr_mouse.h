@@ -79,9 +79,12 @@ public:
   *  The button that will validate the trigger.
   */
   static void
-  addCallback(MOUSE_INPUT_EVENT::E trigger, 
-              MOUSE_BUTTON::E button, 
-              Callback callback);
+  addButtonCallback(MOUSE_INPUT_EVENT::E trigger, 
+                    MOUSE_BUTTON::E button, 
+                    Callback callback);
+
+  static void
+  addMovedCallback(Callback callback);
 
   Mouse& operator=(const Mouse&) = delete;
 
@@ -101,10 +104,12 @@ private:
     mouseMoved(const OIS::MouseEvent& arg) override;
 
     virtual bool 
-    mousePressed(const OIS::MouseEvent& arg, OIS::MouseButtonID id) override;
+    mousePressed(const OIS::MouseEvent& arg, 
+                 OIS::MouseButtonID id) override;
 
     virtual bool 
-    mouseReleased(const OIS::MouseEvent& arg, OIS::MouseButtonID id) override;
+    mouseReleased(const OIS::MouseEvent& arg, 
+                  OIS::MouseButtonID id) override;
 
     Mouse& m_parent;
   };
@@ -120,11 +125,15 @@ private:
   *  The key that validates the callback.
   */
   void
-  callCallbacks(MOUSE_INPUT_EVENT::E trigger, Int32 key);
+  callButtonCallbacks(MOUSE_INPUT_EVENT::E trigger, Int32 key);
+
+  void
+  callMoveCallbacks();
 
   Helper m_helper;
   const OIS::Mouse* m_mouseOIS;
-  Callbacks m_callbacks;
+  Callbacks m_buttonCallbacks;
+  CallbackList m_movedCallbacks;
 };
 
 }

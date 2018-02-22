@@ -44,7 +44,8 @@ void Keyboard::callCallbacks(KEYBOARD_EVENT::E trigger,
 Keyboard::Helper::Helper(Keyboard& keyboard) : m_parent(keyboard) 
 {}
 
-bool Keyboard::Helper::keyPressed(const OIS::KeyEvent& arg) {
+bool 
+Keyboard::Helper::keyPressed(const OIS::KeyEvent& arg) {
 
   m_parent.callCallbacks(KEYBOARD_EVENT::kKeyPressed, 
                          static_cast<KEY_CODE::E>(arg.key));
@@ -52,7 +53,8 @@ bool Keyboard::Helper::keyPressed(const OIS::KeyEvent& arg) {
   return true;
 }
 
-bool Keyboard::Helper::keyReleased(const OIS::KeyEvent& arg) {
+bool 
+Keyboard::Helper::keyReleased(const OIS::KeyEvent& arg) {
 
   m_parent.callCallbacks(KEYBOARD_EVENT::kKeyReleased, 
                          static_cast<KEY_CODE::E>(arg.key));

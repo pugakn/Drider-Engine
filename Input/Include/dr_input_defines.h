@@ -22,10 +22,18 @@ namespace JOYSTICK_AXIS
 {
   enum E
   {
-    kLT,
+    //Left Trigger
+    kLT = JOYSTICK_BUTTON::kStart + 1,
+    //Right Trigger
     kRT,
-    kLS, //Left Stick
-    kRS  //Right Stick
+    //Left Stick Vertical
+    kLSVer, 
+    //Right Stick Vertical
+    kRSVer, 
+    //Left Stick Horizontal
+    kLSHor,  
+    //Right Stick Horizontal
+    kRSHor   
   };
 }
 
@@ -43,12 +51,19 @@ enum E
 };
 }
 
+namespace JOYSTICK_EVENT {
+enum E
+{
+  kButtonPressed,
+  kButtonnReleased
+};
+}
+
 namespace MOUSE_INPUT_EVENT {
 enum E
 {
   kButtonPressed = 0,
-  kButtonReleased = 1,
-  kMouseMoved = 2
+  kButtonReleased = 1
 };
 }
 

@@ -26,11 +26,31 @@ InputManager::getKeyboard() {
   return instance().m_keyboard.get();
 }
 
+Joystick* InputManager::getJoystick(Int32 index) {
+
+  Joystick* joystick = nullptr;
+
+  if (index < getJoystickCount()) {
+    auto& joysticks = instance().m_joysticks;
+    joystick =  joysticks[index].get();
+  }
+
+  return joystick;
+}
+
+Int32 InputManager::getJoystickCount() {
+  return static_cast<Int32>(instance().m_joysticks.size());
+}
+
 void 
 InputManager::capture() {
   for (auto& object : instance().m_objects) {
     object->capture();
   }
+
+  auto i = instance().m_objects.back()->getID();
+
+  int x = 0;
 }
 
 void 
@@ -111,13 +131,21 @@ void InputManager::registerJoysticks() {
 
   Int32 joysticksCount = m_manager->getNumberOfDevices(OIS::Type::OISJoyStick);
 
-  if (joysticksCount) {
+  for (Int32 i = 0; i <joysticksCount; ++i) {
 
     OIS::Object* object = m_manager->createInputObject(OIS::OISJoyStick, true);
 
     auto joystickOIS = reinterpret_cast<OIS::JoyStick*>(object);
 
+    m_objects.push_back(object);
 
+    auto joystick = dr_make_unique<Joystick>(Joystick::Pass{});
+
+    joystick->m_joystickOIS = joystickOIS;
+
+    joystickOIS->setEventCallback(&joystick->m_helper);
+
+    m_joysticks.push_back(std::move(joystick));
   }
 }
 

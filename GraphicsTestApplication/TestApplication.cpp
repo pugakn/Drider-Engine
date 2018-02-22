@@ -15,6 +15,7 @@
 #include <dr_input_manager.h>
 #include <dr_keyboard.h>
 #include <dr_mouse.h>
+#include <dr_joystick.h>
 
 namespace driderSDK {
 
@@ -136,13 +137,27 @@ TestApplication::initInput() {
     std::cout << " movedX:" << delta.x << " movedY:" << delta.y << std::endl;
   };
 
+  auto joystickCallback = [](Joystick& joystick)
+  {
+    static int i = 0;
+    std::cout << "Joystick cb " << i++ << std::endl;
+  };
+
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed, 
                         KEY_CODE::kA, 
                         callback);
 
-  Mouse::addCallback(MOUSE_INPUT_EVENT::kMouseMoved, 
-                     MOUSE_BUTTON::kMiddle,
-                     mouseCallback);
+  Mouse::addButtonCallback(MOUSE_INPUT_EVENT::kButtonPressed,
+                           MOUSE_BUTTON::kMiddle,
+                           mouseCallback);
+
+  if (Joystick* joystick = Joystick::get(0)) {
+    joystick->addButtonCallback(JOYSTICK_EVENT::kButtonPressed, 
+                                JOYSTICK_BUTTON::kStart,
+                                joystickCallback);
+  }
+
+
 }
 
 void 

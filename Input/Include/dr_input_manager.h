@@ -34,6 +34,15 @@ public:
   getKeyboard();
 
   /**
+  * Gets the specified keyboard
+  */
+  static Joystick*
+  getJoystick(Int32 index);
+
+  static Int32
+  getJoystickCount();
+
+  /**
   * Captures all the devices input.
   */
   static void
@@ -60,7 +69,7 @@ private:
   SizeT m_windowHandle;
   std::unique_ptr<Mouse> m_mouse;
   std::unique_ptr<Keyboard> m_keyboard;
-
+  std::vector<std::unique_ptr<Joystick>> m_joysticks;
   std::vector<OIS::Object*> m_objects;
   OIS::InputManager* m_manager;  
 };
