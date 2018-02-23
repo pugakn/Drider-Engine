@@ -126,7 +126,12 @@ class DR_CORE_EXPORT Node : public std::enable_shared_from_this<Node>,
   draw();
   /***************/
 
-  
+  template<class T>
+  std::shared_ptr<T>  
+  getAs()
+  {
+    return std::dynamic_pointer_cast<T>(shared_from_this());
+  }  
 
   Transform transform;
  protected:
