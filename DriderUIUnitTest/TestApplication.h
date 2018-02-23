@@ -14,6 +14,10 @@
 #include <iostream>
 #include <dr_web_renderer.h>
 #include <dr_quad.h>
+
+#include"dr_input_manager.h"
+#include "dr_input_keyboard.h"
+#include "dr_input_mouse.h"
 namespace driderSDK {
 
 class Technique;

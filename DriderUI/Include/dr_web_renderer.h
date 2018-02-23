@@ -11,6 +11,10 @@
 #include <dr_quad.h>
 #include <memory>
 #include <iostream>
+
+#include"dr_input_manager.h"
+#include "dr_input_keyboard.h"
+#include "dr_input_mouse.h"
 namespace driderSDK {
   
 

@@ -39,5 +39,7 @@ public:
 
   driderSDK::InputLayout* IL;
   driderSDK::SamplerState* SS;
+  int width = 512;
+  int height = 512;
   
 };

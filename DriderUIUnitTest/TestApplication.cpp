@@ -20,6 +20,8 @@ TestApplication::onInit() {
   driver->init(static_cast<driderSDK::UInt32>(viewport.width),
                static_cast<driderSDK::UInt32>(viewport.height),
                win);
+  quad.width = viewport.width;
+  quad.height = viewport.height;
   quad.init(*driver->device);
 
 

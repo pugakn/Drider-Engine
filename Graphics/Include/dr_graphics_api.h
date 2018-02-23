@@ -25,6 +25,6 @@ public:
   Texture* depthTexture;	
   Texture* backBufferTexture;
   RasterizerState* rasterizeState;
-  size_t m_hwnd;
+  void* m_hwnd;
 };
 }

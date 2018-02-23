@@ -20,10 +20,10 @@ void Quad::init(Device& device)
   vs = reinterpret_cast<Shader*>(device.createShaderFromMemory(vsSource.c_str(), vsSource.size(),DR_SHADER_TYPE_FLAG::kVertex));
   fs = reinterpret_cast<Shader*>(device.createShaderFromMemory(fsSource.c_str(), fsSource.size(), DR_SHADER_TYPE_FLAG::kFragment));
 
-  m_vertex[0] = { -0.5f,  0.5f, 0.9f, 1.0f,    0.5f, 0.5f,0.0f, 1.0f  ,0.0,0.0 };
-  m_vertex[1] = { -0.5f, -0.5f, 0.9f, 1.0f,    0.0f, 0.0f,0.0f, 1.0f  ,0.0,1.0 };
-  m_vertex[2] = { 0.5f, -0.5f, 0.9f,  1.0f,    0.0f, 0.0f,1.0f, 1.0f  ,1.0,1.0 };
-  m_vertex[3] = { 0.5f,  0.5f, 0.9f,  1.0f,    0.0f, 1.0f,1.0f, 1.0f  ,1.0,0.0 };
+  m_vertex[0] = { -1.f,  1.f, 0.9f, 1.0f,    0.5f, 0.5f,0.0f, 1.0f  ,0.0,0.0 };
+  m_vertex[1] = { -1.f, -1.f, 0.9f, 1.0f,    0.0f, 0.0f,0.0f, 1.0f  ,0.0,1.0 };
+  m_vertex[2] = { 1.f, -1.f, 0.9f,  1.0f,    0.0f, 0.0f,1.0f, 1.0f  ,1.0,1.0 };
+  m_vertex[3] = { 1.f,  1.f, 0.9f,  1.0f,    0.0f, 1.0f,1.0f, 1.0f  ,1.0,0.0 };
 
   m_index[0] = 2;
   m_index[1] = 1;
@@ -54,10 +54,10 @@ void Quad::init(Device& device)
   //constBuff.WVP = Matrix4x4::identityMat4x4;
 
   driderSDK::DrTextureDesc tDesc;
-  tDesc.width = 512;
-  tDesc.height = 512;
-  tDesc.pitch = 512 * 4;
-  tDesc.Format = DR_FORMAT::kDrFormat_R8G8B8A8_UNORM;
+  tDesc.width = width;
+  tDesc.height = height;
+  tDesc.pitch = width * 4;
+  tDesc.Format = DR_FORMAT::kDrFormat_B8G8R8A8_UNORM;
   tDesc.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE | DR_BIND_FLAGS::RENDER_TARGET;
   tDesc.mipLevels = 0;
   tDesc.dimension = DR_DIMENSION::k2D;

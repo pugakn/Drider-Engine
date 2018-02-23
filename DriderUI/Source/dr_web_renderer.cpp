@@ -11,15 +11,21 @@ namespace driderSDK {
      CefWindowInfo window_info;
      CefBrowserSettings browserSettings;
      browserSettings.windowless_frame_rate = 30;
-     size_t windowHandle = 0;
-     window_info.SetAsWindowless(nullptr);
-     renderHandler = new RenderHandler(512,512);
+     
+     window_info.SetAsWindowless((HWND)m_api->m_hwnd);
+     window_info.x = 0;
+     window_info.y = 0;
+     window_info.width = quad->width;
+     window_info.height = quad->height;
+     renderHandler = new RenderHandler(quad->width, quad->height);
      renderHandler->init(m_api,m_quad);
      browserClient = new BrowserClient(renderHandler);
 
-     browser = CefBrowserHost::CreateBrowserSync(window_info, browserClient.get(), "http://deanm.github.io/pre3d/monster.html", browserSettings, nullptr);
-
+     browser = CefBrowserHost::CreateBrowserSync(window_info, browserClient.get(), "http://www.google.com", browserSettings, nullptr);
      startRendering();
+
+     CefRefPtr<CefFrame> frame = browser->GetMainFrame();
+     frame->ExecuteJavaScript("alert('Drider Browser xdXDxDxDxDX');", frame->GetURL(), 0);
 
   }
   void WebRenderer::Destroy()
@@ -31,8 +37,11 @@ namespace driderSDK {
   }
   void WebRenderer::captureInput()
   {
-    CefMouseEvent event;
-    // browser->GetHost()->SendKeyEvent(...);
+    CefMouseEvent mouseEvent;
+    mouseEvent.x = 20;
+    mouseEvent.y = 20;
+    browser->GetHost()->SendMouseMoveEvent(mouseEvent, false);
+    //browser->GetHost()->SendKeyEvent(...);
     // browser->GetHost()->SendMouseMoveEvent(...);
     // browser->GetHost()->SendMouseClickEvent(...);
     // browser->GetHost()->SendMouseWheelEvent(...);
@@ -51,9 +60,6 @@ namespace driderSDK {
   }
   void WebRenderer::update()
   {
-
-    //CefRefPtr<CefFrame> frame = browser->GetMainFrame();
-    //frame->ExecuteJavaScript("alert('ExecuteJavaScript works!');", frame->GetURL(), 0);
     CefDoMessageLoopWork();
   }
   void WebRenderer::loadURL(std::string path)
