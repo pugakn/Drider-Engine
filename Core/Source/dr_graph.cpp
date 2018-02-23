@@ -30,10 +30,12 @@ SceneGraph::draw() {
   m_root->draw();
 }
 
-SceneGraph::SharedGameObject
-SceneGraph::createNode(SharedGameObject parent, SharedModel model) {
+SceneGraph::SharedGO
+SceneGraph::createNode(SharedNode parent, SharedModel model) {
 
-  SharedGameObject node = std::make_shared<GameObject>();
+  auto node = std::make_shared<GameObject>();
+
+  parent->addChild(node);
 
   RenderComponent::IndexBuffer ib;
   RenderComponent::VertexBuffer vb;
@@ -51,9 +53,9 @@ SceneGraph::createNode(SharedGameObject parent, SharedModel model) {
     
     info.vertexStart = vertexStart;
     info.vertexSize = static_cast<Int32>(mesh.vertices.size());
-    vb.insert(vb.begin(), mesh.vertices.begin(), mesh.vertices.end());
+    vb.insert(vb.end(), mesh.vertices.begin(), mesh.vertices.end());
     
-    vertexStart += info.vertexStart;
+    vertexStart += info.vertexSize;
     indexStart += info.indexSize;
 
     info.material = mesh.material;

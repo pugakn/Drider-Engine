@@ -86,7 +86,7 @@ DrawableComponent::onUpdate() {
 
 void 
 DrawableComponent::onRender() {
-  if (!m_model.expired() && m_technique) {
+  if (m_technique) {
     if (m_technique->prepareForDraw(m_deviceContext)) {
 
       m_deviceContext.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);

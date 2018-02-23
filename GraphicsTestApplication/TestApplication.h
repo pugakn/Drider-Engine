@@ -67,6 +67,7 @@ public:
   unsigned int      version;*/
   std::vector<std::unique_ptr<Technique>> m_techniques;
   std::unique_ptr<SceneGraph> m_sceneGraph;
+  std::shared_ptr<GameObject> m_joker;
 };
 
 }

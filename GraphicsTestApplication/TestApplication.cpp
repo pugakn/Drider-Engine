@@ -88,7 +88,14 @@ TestApplication::onInput() {
   if (auto croc = m_sceneGraph->getRoot()->getChild(_T("Croc"))) {
     croc->transform.rotate(Degree(60 * Time::instance().getDelta()), AXIS::kY);
   }
-
+  if (Joystick::get(0)) {
+    
+    float vel = 150.f * Time::getDelta();
+    float ll = Joystick::get(0)->getAxis(JOYSTICK_AXIS::kLSVer);
+    m_joker->transform.move(vel * ll, 
+                            AXIS::kZ);
+  }
+  
 }
 
 void
@@ -137,10 +144,9 @@ TestApplication::initInput() {
     std::cout << " movedX:" << delta.x << " movedY:" << delta.y << std::endl;
   };
 
-  auto joystickCallback = [](Joystick& joystick)
+  auto joystickCallback = [&](Joystick& joystick)
   {
-    static int i = 0;
-    std::cout << "Joystick cb " << i++ << std::endl;
+    
   };
 
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed, 
@@ -152,9 +158,7 @@ TestApplication::initInput() {
                            mouseCallback);
 
   if (Joystick* joystick = Joystick::get(0)) {
-    joystick->addButtonCallback(JOYSTICK_EVENT::kButtonPressed, 
-                                JOYSTICK_BUTTON::kStart,
-                                joystickCallback);
+    joystick->addAxisCallback(JOYSTICK_AXIS::kLSVer, joystickCallback);
   }
 
 
@@ -221,8 +225,12 @@ TestApplication::initSceneGraph() {
                         const TString& name, 
                         const TString& resName,
                         const Vector3D& pos) {
+  
+    auto resource = resourceMgr->getReference(resName);
 
-    auto node = std::make_shared<GameObject>();
+    auto model = std::dynamic_pointer_cast<Model>(resource);
+    
+    auto node = m_sceneGraph->createNode(parent, model);
 
     node->setName(name);
 
@@ -236,9 +244,6 @@ TestApplication::initSceneGraph() {
 
     auto drawableComponent = node->getComponent<DrawableComponent>();
     
-    auto resource = resourceMgr->getReference(resName);
-
-    auto model = std::dynamic_pointer_cast<Model>(resource);
     
     auto technique = dr_make_unique<StaticMeshTechnique>(&(*m_camera), 
                                                          &(*node));
@@ -266,6 +271,8 @@ TestApplication::initSceneGraph() {
 
   auto n = createNode(root, _T("Joker"), _T("VenomJok.X"), {0.0f, 0.0f, 0.0f});
   
+  m_joker = n;
+
   n->addChild(m_camera);
     
   n = createNode(root, _T("Croc"), _T("Croc.X"), {150.0f, 0.0f, 0.0f});

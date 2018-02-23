@@ -14,7 +14,7 @@ class DR_CORE_EXPORT SceneGraph
 public:
   using SharedModel = std::shared_ptr<Model>;
   using SharedNode = std::shared_ptr<Node>;
-  using SharedGameObject = std::shared_ptr<GameObject>;
+  using SharedGO = std::shared_ptr<GameObject>;
   
   SceneGraph();
 
@@ -33,8 +33,8 @@ public:
   void 
   draw();
   /****************/
-  SharedGameObject 
-  createNode(SharedGameObject parent, SharedModel model);
+  SharedGO
+  createNode(SharedNode parent, SharedModel model);
 private:
   SharedNode m_root;
 };
