@@ -243,7 +243,7 @@ TestApplication::initSceneGraph() {
     auto technique = dr_make_unique<StaticMeshTechnique>(&(*m_camera), 
                                                          &(*node));
 
-    drawableComponent->setModel(model);
+    //drawableComponent->setModel(model);
 
     drawableComponent->setShaderTechnique(technique.get());
 
@@ -267,11 +267,7 @@ TestApplication::initSceneGraph() {
   auto n = createNode(root, _T("Joker"), _T("VenomJok.X"), {0.0f, 0.0f, 0.0f});
   
   n->addChild(m_camera);
-  
-  /*if (joystickInput) {
-    auto component = n->createComponent<InputComponent>(joystickInput);
-  }*/
-  
+    
   n = createNode(root, _T("Croc"), _T("Croc.X"), {150.0f, 0.0f, 0.0f});
   
   n = createNode(root, _T("Dwarf"), _T("dwarf.x"), {-100.0f, 0.0f, 0.0f});

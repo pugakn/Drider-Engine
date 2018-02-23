@@ -14,4 +14,16 @@ RenderComponent::RenderComponent(GameObject& _gameObject,
     m_vertexBuffer(std::move(_vertexBuffer)) {
 }
 
+void 
+RenderComponent::onCreate() {}
+
+void 
+RenderComponent::onUpdate() {}
+
+void 
+RenderComponent::onRender() {}
+
+void 
+RenderComponent::onDestroy() {}
+
 }

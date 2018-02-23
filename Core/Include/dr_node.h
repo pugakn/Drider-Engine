@@ -9,6 +9,7 @@
 
 namespace driderSDK {
 
+
 class DR_CORE_EXPORT Node : public std::enable_shared_from_this<Node>, 
                             public EnableObject
 {
@@ -125,8 +126,9 @@ class DR_CORE_EXPORT Node : public std::enable_shared_from_this<Node>,
   draw();
   /***************/
 
-  Transform transform;
+  
 
+  Transform transform;
  protected:
   virtual void 
   updateImpl();
