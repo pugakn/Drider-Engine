@@ -15,8 +15,16 @@ TestApplication::~TestApplication() {
 
 void
 TestApplication::onInit() {
-  driver = new D3DGraphicsAPI;
+  InputManager::startUp();
   HWND win = GetActiveWindow();
+  InputManager* inputMngr = nullptr;
+  if (InputManager::isStarted()) {
+    inputMngr = InputManager::instancePtr();
+  }
+  inputMngr->init((size_t)win);
+
+
+  driver = new D3DGraphicsAPI;
   driver->init(static_cast<driderSDK::UInt32>(viewport.width),
                static_cast<driderSDK::UInt32>(viewport.height),
                win);
@@ -31,7 +39,7 @@ TestApplication::onInit() {
 }
 void
 TestApplication::onInput() {
-
+  InputManager::instance().captureAll();
 }
 
 void

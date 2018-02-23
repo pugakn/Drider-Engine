@@ -16,8 +16,9 @@
 #include "dr_input_keyboard.h"
 #include "dr_input_mouse.h"
 namespace driderSDK {
-  
-
+typedef std::map<std::pair<std::string, int>,
+  std::pair<CefRefPtr<CefV8Context>, CefRefPtr<CefV8Value> > >
+  CallbackMap;
 class RenderHandler: public CefRenderHandler
 {
 public:
@@ -25,9 +26,7 @@ public:
   {
     width = w;
     height = h;
-
   }
-
   void init(GraphicsAPI* api, Quad* quad) {
     m_renderQuad = quad;
     m_graphicsApi = api;
@@ -41,7 +40,13 @@ public:
   void OnPaint(CefRefPtr<CefBrowser> browser, PaintElementType type, const RectList &dirtyRects, const void *buffer, int width, int height) override
   {
     m_renderQuad->texture->udpateFromMemory(*m_graphicsApi->deviceContext,(char*)buffer, width *height*4);
-    //std::cout << "paint" << std::endl;
+  }
+  void 
+  OnScrollOffsetChanged(CefRefPtr<CefBrowser> browser,
+    double x,
+    double y) override{
+    //CefMouseEvent event;
+    //browser->GetHost()->SendMouseWheelEvent(event, x, y);
   }
 
   IMPLEMENT_REFCOUNTING(RenderHandler);
@@ -63,17 +68,19 @@ public:
   IMPLEMENT_REFCOUNTING(BrowserClient);
 };
 
-class DR_UI_EXPORT WebRenderer {
+class DR_UI_EXPORT WebRenderer : public driderSDK::IKeyboardListener,  driderSDK::IMouseInputListener {
 public:
   static void start() {
     CefMainArgs args;
     int result = CefExecuteProcess(args, nullptr, nullptr);
+    std::cout << "res: " << result << std::endl;
     if (result >= 0)
-      throw "CEF_INITIALIZATION FAILED: CefExecuteProcess";
+      exit(0);
     CefSettings settings;
     settings.multi_threaded_message_loop = false;
     settings.windowless_rendering_enabled = true;
-    //settings.no_sandbox = true;
+    settings.single_process = true;
+    settings.no_sandbox = true;
     result = CefInitialize(args, settings, nullptr, nullptr);
     if (!result)
       throw "CEF_INITIALIZATION FAILED: CefInitialize";
@@ -81,12 +88,91 @@ public:
   WebRenderer(){}
   void Init(GraphicsAPI* api,Quad* quad );
   void Destroy();
-  void captureInput();
   void startRendering();
   void stoptRendering();
   void update();
   void loadURL(std::string path);
+
+
+  //Input
+  bool
+  keyPressed(const KeyboardButtonID::E& key) override {
+    CefKeyEvent keyEvent;
+    if (key == KeyboardButtonID::KC_Q) {
+    }
+    if (key == KeyboardButtonID::KC_A) {
+    }
+    if (key == KeyboardButtonID::KC_1) {
+    }
+
+    //keyEvent.modifiers =  0; // InputManager::instance().getKeyboard().;
+    keyEvent.windows_key_code =  key;
+    //keyEvent.
+    keyEvent.type = KEYEVENT_RAWKEYDOWN;
+    browser->GetHost()->SendKeyEvent(keyEvent);
+
+    keyEvent.type = KEYEVENT_CHAR;
+    browser->GetHost()->SendKeyEvent(keyEvent);
+    return true;
+  }
+
+  bool
+  keyReleased(const KeyboardButtonID::E& key) override {
+    return false;
+  }
+
+
+  //Mouse
+  bool
+  mouseMoved(const MouseInputState& state) override {
+  CefMouseEvent mouseEvent;
+  mouseEvent.x = state.cursorPosition.x;
+  mouseEvent.y = state.cursorPosition.y;
+  browser->GetHost()->SendMouseMoveEvent(mouseEvent, false);
+  return true;
+  }
+
+  bool
+  mousePressed(const MouseInputState& state, MouseButtonID::E pressedId) override {
+  CefMouseEvent mouseEvent;
+  mouseEvent.x = state.cursorPosition.x;
+  mouseEvent.y = state.cursorPosition.y;
+  cef_mouse_button_type_t button;
+  if (pressedId == MouseButtonID::MB_Right) {
+    button = MBT_RIGHT;
+  }
+  if (pressedId == MouseButtonID::MB_Left) {
+    button = MBT_LEFT;
+  }
+  if (pressedId == MouseButtonID::MB_Middle) {
+    button = MBT_MIDDLE;
+  }
+  browser->GetHost()->SendMouseClickEvent(mouseEvent, button ,false,1);
+  return true;
+  }
+
+  bool
+  mouseReleased(const MouseInputState& state, MouseButtonID::E pressedId) override {
+  CefMouseEvent mouseEvent;
+  mouseEvent.x = state.cursorPosition.x;
+  mouseEvent.y = state.cursorPosition.y;
+  cef_mouse_button_type_t button;
+  if (pressedId == MouseButtonID::MB_Right) {
+    button = MBT_RIGHT;
+  }
+  if (pressedId == MouseButtonID::MB_Left) {
+    button = MBT_LEFT;
+  }
+  if (pressedId == MouseButtonID::MB_Middle) {
+    button = MBT_MIDDLE;
+  }
+  browser->GetHost()->SendMouseClickEvent(mouseEvent, button, true, 1);
+  return true;
+  }
+
 private:
+
+  CallbackMap callback_map_;
   CefRefPtr<CefBrowser> browser;
   CefRefPtr<BrowserClient> browserClient;
   CefRefPtr<RenderHandler> renderHandler;
