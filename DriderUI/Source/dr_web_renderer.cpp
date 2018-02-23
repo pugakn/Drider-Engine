@@ -33,11 +33,7 @@ namespace driderSDK {
 
      browser = CefBrowserHost::CreateBrowserSync(window_info, browserClient.get(), "http://www.google.com", browserSettings, nullptr);//http://ich.deanmcnamee.com/pre3d/monster.html
      startRendering();
-
-     CefRefPtr<CefFrame> frame = browser->GetMainFrame();
-     frame->ExecuteJavaScript("alert('Drider Browser xdXDxDxDxDX');", frame->GetURL(), 0);
-
-
+     executeJSCode("alert('Drider Browser xdXDxDxDxDX');");
      //Register input
      InputManager::instance().getMouse()->setEventCallback(this);
      InputManager::instance().getKeyboard()->setEventCallback(this);
@@ -69,5 +65,27 @@ namespace driderSDK {
   void WebRenderer::loadURL(std::string path)
   {
     browser->GetMainFrame()->LoadURL(path);
+  }
+  void WebRenderer::reloadPage()
+  {
+    browser->Reload();
+  }
+  void WebRenderer::executeJSCode(std::string code)
+  {
+    browser->GetMainFrame()->ExecuteJavaScript(code, 
+      browser->GetMainFrame()->GetURL(), 0);
+  }
+  void WebRenderer::setFocus(bool focus)
+  {
+    browser->GetHost()->SetFocus(focus);
+  }
+  void WebRenderer::setVisibility(bool visible)
+  {
+    browser->GetHost()->WasHidden(!visible);
+  }
+  void WebRenderer::resize(int w, int h)
+  {
+    renderHandler->resize(w,h);
+    browser->GetHost()->WasResized();
   }
 }

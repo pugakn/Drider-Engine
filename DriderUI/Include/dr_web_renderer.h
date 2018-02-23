@@ -19,6 +19,27 @@ namespace driderSDK {
 typedef std::map<std::pair<std::string, int>,
   std::pair<CefRefPtr<CefV8Context>, CefRefPtr<CefV8Value> > >
   CallbackMap;
+
+class DriderV8Handler : public CefV8Handler {
+public:
+  DriderV8Handler() {}
+
+  virtual bool Execute(const CefString& name,
+    CefRefPtr<CefV8Value> object,
+    const CefV8ValueList& arguments,
+    CefRefPtr<CefV8Value>& retval,
+    CefString& exception) override {
+    if (name == "myfunc") {
+      // Return my string value.
+      retval = CefV8Value::CreateString("My Value!");
+      return true;
+    }
+
+    // Function does not exist.
+    return false;
+  }
+  IMPLEMENT_REFCOUNTING(DriderV8Handler);
+};
 class RenderHandler: public CefRenderHandler
 {
 public:
@@ -37,6 +58,11 @@ public:
     rect = CefRect(0, 0, width, height);
     return true;
   }
+  void resize(int  w, int h) {
+    width = w;
+    height = h;
+    //m_renderQuad->texture.resize(w,h);
+  }
   void OnPaint(CefRefPtr<CefBrowser> browser, PaintElementType type, const RectList &dirtyRects, const void *buffer, int width, int height) override
   {
     m_renderQuad->texture->udpateFromMemory(*m_graphicsApi->deviceContext,(char*)buffer, width *height*4);
@@ -48,6 +74,22 @@ public:
     //CefMouseEvent event;
     //browser->GetHost()->SendMouseWheelEvent(event, x, y);
   }
+  /*void OnContextCreated(
+    CefRefPtr<CefBrowser> browser,
+    CefRefPtr<CefFrame> frame,
+    CefRefPtr<CefV8Context> context)override {
+
+    CefRefPtr<CefV8Value> object = context->GetGlobal();
+
+    // Create an instance of my CefV8Handler object.
+    CefRefPtr<CefV8Handler> handler = new DriderV8Handler();
+
+    // Create the "myfunc" function.
+    CefRefPtr<CefV8Value> func = CefV8Value::CreateFunction("myfunc", handler);
+
+    // Add the "myfunc" function to the "window" object.
+    object->SetValue("myfunc", func, V8_PROPERTY_ATTRIBUTE_NONE);
+  }*/
 
   IMPLEMENT_REFCOUNTING(RenderHandler);
 private:
@@ -86,12 +128,20 @@ public:
       throw "CEF_INITIALIZATION FAILED: CefInitialize";
   }
   WebRenderer(){}
-  void Init(GraphicsAPI* api,Quad* quad );
+  void Init(GraphicsAPI* api,Quad* quad );//TODO: add mode (headless, pop up, child)
   void Destroy();
   void startRendering();
   void stoptRendering();
   void update();
+
   void loadURL(std::string path);
+  void reloadPage();
+  void executeJSCode(std::string code);
+
+  void setFocus(bool focus);
+  void setVisibility(bool visible);
+
+  void resize(int w, int h);
 
 
   //Input
