@@ -12,6 +12,7 @@
 namespace driderSDK {
 void D3DGraphicsAPI::init(UInt32 w, UInt32 h, void* hwnd)
 {
+  m_hwnd = (size_t)hwnd;
   device = new D3DDevice;
   deviceContext = new D3DDeviceContext;
   backBufferTexture = new D3DTexture;

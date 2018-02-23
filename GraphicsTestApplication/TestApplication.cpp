@@ -24,7 +24,7 @@ TestApplication::~TestApplication() {
 
 void
 TestApplication::onInit() {
-  initWindow();
+  //initWindow();
   driver = new D3DGraphicsAPI;
   HWND win = GetActiveWindow();
   driver->init(static_cast<driderSDK::UInt32>(viewport.width),

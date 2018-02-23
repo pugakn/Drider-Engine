@@ -8,7 +8,6 @@
 #include <dr_camera.h>
 #include <dr_viewport.h>
 #include "dr_application.h"
-#include "dr_quad.h"
 #include <dr_resource_manager.h>
 #include <dr_graph.h>
 #include <dr_memory.h>
@@ -50,7 +49,6 @@ public:
   void initSceneGraph();
   
   GraphicsAPI* driver;
-  Quad quad;
   std::vector<Model3D> models;
   Viewport viewport;
   std::shared_ptr<Camera> m_camera;

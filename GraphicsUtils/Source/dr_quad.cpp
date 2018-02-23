@@ -20,30 +20,19 @@ void Quad::init(Device& device)
   vs = reinterpret_cast<Shader*>(device.createShaderFromMemory(vsSource.c_str(), vsSource.size(),DR_SHADER_TYPE_FLAG::kVertex));
   fs = reinterpret_cast<Shader*>(device.createShaderFromMemory(fsSource.c_str(), fsSource.size(), DR_SHADER_TYPE_FLAG::kFragment));
 
-  m_vertex[0] = { -0.5f,  0.5f, 0.9f, 1.0f,    0.5f, 0.5f,0.0f, 1.0f };
-  m_vertex[1] = { -0.5f, -0.5f, 0.9f, 1.0f,    0.0f, 0.0f,0.0f, 1.0f };
-  m_vertex[2] = { 0.5f, -0.5f, 0.9f,  1.0f,    0.0f, 0.0f,1.0f, 1.0f };
-  m_vertex[3] = { 0.5f,  0.5f, 0.9f,  1.0f,    0.0f, 1.0f,1.0f, 1.0f };
+  m_vertex[0] = { -0.5f,  0.5f, 0.9f, 1.0f,    0.5f, 0.5f,0.0f, 1.0f  ,0.0,0.0 };
+  m_vertex[1] = { -0.5f, -0.5f, 0.9f, 1.0f,    0.0f, 0.0f,0.0f, 1.0f  ,0.0,1.0 };
+  m_vertex[2] = { 0.5f, -0.5f, 0.9f,  1.0f,    0.0f, 0.0f,1.0f, 1.0f  ,1.0,1.0 };
+  m_vertex[3] = { 0.5f,  0.5f, 0.9f,  1.0f,    0.0f, 1.0f,1.0f, 1.0f  ,1.0,0.0 };
 
-  m_index[0] = 0;
+  m_index[0] = 2;
   m_index[1] = 1;
-  m_index[2] = 2;
-  m_index[3] = 2;
+  m_index[2] = 0;
+  m_index[3] = 0;
   m_index[4] = 3;
-  m_index[5] = 0;
+  m_index[5] = 2;
 
-  std::vector<DrInputElementDesc> idesc;
-  DrInputElementDesc ie;
-  ie.format = DR_FORMAT::kDrFormat_R32G32B32A32_FLOAT;
-  ie.offset = 0;
-  ie.semanticName = "POSITION";
-  idesc.push_back(ie);
-
-  ie.format = DR_FORMAT::kDrFormat_R32G32B32A32_FLOAT;
-  ie.offset = 16;
-  ie.semanticName = "NORMAL";
-  idesc.push_back(ie);
-
+  std::vector<DrInputElementDesc> idesc = vs->reflect();
   IL = device.createInputLayout(idesc, *vs->m_shaderBytecode);
 
 
@@ -62,7 +51,23 @@ void Quad::init(Device& device)
   bdesc.stride = 0;
   IB = reinterpret_cast<IndexBuffer*>(device.createBuffer(bdesc, reinterpret_cast<byte*>(&m_index[0])));
 
-  //constBuff.World = Matrix4x4::identityMat4x4;
+  //constBuff.WVP = Matrix4x4::identityMat4x4;
+
+  driderSDK::DrTextureDesc tDesc;
+  tDesc.width = 512;
+  tDesc.height = 512;
+  tDesc.pitch = 512 * 4;
+  tDesc.Format = DR_FORMAT::kDrFormat_R8G8B8A8_UNORM;
+  tDesc.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE | DR_BIND_FLAGS::RENDER_TARGET;
+  tDesc.mipLevels = 0;
+  tDesc.dimension = DR_DIMENSION::k2D;
+  tDesc.genMipMaps = true;
+  texture = device.createEmptyTexture(tDesc);
+
+  driderSDK::DrSampleDesc SSdesc;
+  SSdesc.Filter = DR_TEXTURE_FILTER::kANISOTROPIC;
+  SSdesc.maxAnisotropy = 16;
+  SS = device.createSamplerState(SSdesc);
 }
 
 void Quad::destroy()
@@ -72,10 +77,9 @@ void Quad::destroy()
   VB->release();
 }
 
-void Quad::draw(const DeviceContext& deviceContext,
-                const driderSDK::Matrix4x4& wvp)
+void Quad::draw(const DeviceContext& deviceContext)
 { 
-  constBuff.WVP = wvp;
+  //constBuff.WVP = wvp;
 
   fs->set(deviceContext);
   vs->set(deviceContext);
@@ -84,6 +88,8 @@ void Quad::draw(const DeviceContext& deviceContext,
   IB->set(deviceContext); 
   CB->updateFromBuffer(deviceContext,reinterpret_cast<byte*>(&constBuff));
   CB->set(deviceContext);
+  texture->set(deviceContext, 0);
+  SS->set(deviceContext,DR_SHADER_TYPE_FLAG::kFragment);
   deviceContext.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
   deviceContext.draw(6, 0, 0);
 }

@@ -45,9 +45,6 @@
     <ClInclude Include="targetver.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="dr_quad.h">
-      <Filter>Archivos de encabezado\Geometry</Filter>
-    </ClInclude>
     <ClInclude Include="Include\Model3D.h">
       <Filter>Archivos de encabezado\Geometry</Filter>
     </ClInclude>
@@ -102,9 +99,6 @@
       <Filter>Archivos de origen\Components</Filter>
     </ClCompile>
     <ClCompile Include="Source\Model3D.cpp">
-      <Filter>Archivos de origen\Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="dr_quad.cpp">
       <Filter>Archivos de origen\Geometry</Filter>
     </ClCompile>
     <ClCompile Include="TestApplication.cpp">

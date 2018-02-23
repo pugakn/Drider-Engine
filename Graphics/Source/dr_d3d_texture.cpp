@@ -66,7 +66,7 @@ D3DTexture::createFromMemory(const Device& device,
     break;
   }
   srvDesc.ViewDimension = dim;
-  srvDesc.Texture2D.MipLevels = desc.mipLevels; 
+  srvDesc.Texture2D.MipLevels = -1;//desc.mipLevels; 
 
   apiDevice->
     D3D11Device->
