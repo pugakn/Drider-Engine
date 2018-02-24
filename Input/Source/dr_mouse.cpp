@@ -5,6 +5,7 @@ namespace driderSDK {
 
 Mouse::Mouse(Pass) 
   : m_buttonCallbacks(2), 
+    m_anyButtonCallbacks(2),
     m_mouseOIS(nullptr),
     m_helper(*this)
 {}
@@ -26,7 +27,8 @@ Mouse::getPosition() {
   return pos;
 }
 
-Vector2DI Mouse::getDisplacement() {
+Vector2DI 
+Mouse::getDisplacement() {
   
   auto mouse = InputManager::getMouse()->m_mouseOIS;
   
@@ -67,21 +69,37 @@ Mouse::addMovedCallback(Callback callback) {
   mouse->m_movedCallbacks.push_back(callback);
 }
 
-void Mouse::callButtonCallbacks(MOUSE_INPUT_EVENT::E trigger, Int32 key) {
+void 
+Mouse::addAnyButtonCallback(MOUSE_INPUT_EVENT::E trigger,
+                            AnyButtonCallback callback) {
+  
+  Mouse* mouse = InputManager::getMouse();
+
+  mouse->m_anyButtonCallbacks[trigger].push_back(callback);
+}
+
+void 
+Mouse::callButtonCallbacks(MOUSE_INPUT_EVENT::E trigger, Int32 key) {
   
   auto& callbacks = m_buttonCallbacks[trigger][key];
 
   for (auto& callback : callbacks) {
     callback();    
   }
+
+  auto& anyButtonCallbacks = m_anyButtonCallbacks[trigger];
+
+  for (auto& callback : anyButtonCallbacks) {
+    callback(static_cast<MOUSE_BUTTON::E>(key));
+  }
 }
 
-void Mouse::callMoveCallbacks() {
+void 
+Mouse::callMoveCallbacks() {
   
   for(auto& callback : m_movedCallbacks) {
     callback();
   }
-
 }
 
 Mouse::Helper::Helper(Mouse& mouse) : m_parent(mouse) {}

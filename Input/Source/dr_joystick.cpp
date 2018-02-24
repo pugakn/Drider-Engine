@@ -54,6 +54,17 @@ void Joystick::addAxisCallback(JOYSTICK_AXIS::E axis,
   m_axisCallbacks[id].push_back(callback);
 }
 
+void 
+Joystick::addAnyButtonCallback(JOYSTICK_EVENT::E trigger, 
+                               AnyButtonCallback callback) {
+  m_anyButtonCallbacks[trigger].push_back(callback);
+}
+
+void 
+Joystick::addAnyAxisCallback(AnyAxisCallback callback) {
+  m_anyAxisCallbacks.push_back(callback);
+}
+
 Int32 
 Joystick::getButtonID(JOYSTICK_BUTTON::E button) {
   
@@ -95,6 +106,48 @@ Int32 Joystick::getAxisID(JOYSTICK_AXIS::E axis) {
   return controlMapping["XBOX"][axis];
 }
 
+JOYSTICK_BUTTON::E 
+Joystick::getButtonFromID(Int32 id) {
+
+  using ButtonMap = std::unordered_map<Int32, JOYSTICK_BUTTON::E>;
+  using ControlMap = std::unordered_map<String, ButtonMap>; 
+  static ControlMap controlMapping = 
+  { {"XBOX", {{0, JOYSTICK_BUTTON::kA},
+              {1, JOYSTICK_BUTTON::kB},
+              {2, JOYSTICK_BUTTON::kX},
+              {3, JOYSTICK_BUTTON::kY},
+              {5, JOYSTICK_BUTTON::kRB},
+              {4, JOYSTICK_BUTTON::kLB},
+              {8, JOYSTICK_BUTTON::kLS},
+              {9, JOYSTICK_BUTTON::kRS},
+              {6, JOYSTICK_BUTTON::kBack},
+              {7, JOYSTICK_BUTTON::kStart},
+             }
+    }
+  };
+
+  return controlMapping["XBOX"][id];
+}
+
+JOYSTICK_AXIS::E 
+Joystick::getAxisFromID(Int32 id) {
+  
+  using AxisMap = std::unordered_map<Int32, JOYSTICK_AXIS::E>;
+  using ControlMap = std::unordered_map<String, AxisMap>; 
+  static ControlMap controlMapping = 
+  { {"XBOX", {{4, JOYSTICK_AXIS::kLT},
+              {5, JOYSTICK_AXIS::kRT},
+              {1, JOYSTICK_AXIS::kLSHor},
+              {0, JOYSTICK_AXIS::kLSVer},
+              {3, JOYSTICK_AXIS::kRSHor},
+              {2, JOYSTICK_AXIS::kRSVer}
+             }
+    }
+  };
+
+  return controlMapping["XBOX"][id];
+}
+
 void 
 Joystick::callButtonCallbacks(JOYSTICK_EVENT::E trigger, Int32 key) {
   
@@ -103,16 +156,34 @@ Joystick::callButtonCallbacks(JOYSTICK_EVENT::E trigger, Int32 key) {
   for (auto& callback : callbacks) {
     callback(*this);
   }
+
+  auto& anyButtonCallbacks = m_anyButtonCallbacks[trigger];
+
+  auto button = getButtonFromID(key);
+
+  for (auto& callback : anyButtonCallbacks) 
+  {
+    callback(*this, button);
+  }
+  
 }
 
 void 
 Joystick::callAxisCallbacks(Int32 key) {
 
-  for (auto& callback : m_axisCallbacks[key]) {
+  auto& callbacks = m_axisCallbacks[key];
+
+  for (auto& callback : callbacks) {
     callback(*this);
   }
-}
+  
+  auto axis = getAxisFromID(key);
 
+  for (auto& callback : m_anyAxisCallbacks) 
+  {
+    callback(*this, axis);
+  }
+}
 
 Joystick::Helper::Helper(Joystick& _parent) : m_parent(_parent) 
 {}

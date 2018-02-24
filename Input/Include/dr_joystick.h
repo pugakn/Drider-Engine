@@ -15,7 +15,11 @@ class DR_INPUT_EXPORT Joystick
   struct Pass{};
 
 public:
-
+  using AnyAxisCallback = std::function<void(Joystick&, JOYSTICK_AXIS::E)>;
+  using AnyAxisCallbacks = std::vector<AnyAxisCallback>;
+  using AnyButtonCallback = std::function<void(Joystick&, JOYSTICK_BUTTON::E)>;
+  using AnyButtonCallbackList = std::vector<AnyButtonCallback>;
+  using AnyButtonCallbacks = std::vector<AnyButtonCallbackList>;
   using Callback = std::function<void(Joystick&)>;
   using CallbackList = std::vector<Callback>;
   using CallbackMap = std::unordered_map<Int32, CallbackList>;
@@ -76,6 +80,13 @@ public:
   addAxisCallback(JOYSTICK_AXIS::E axis, 
                   Callback callback);
 
+  void
+  addAnyButtonCallback(JOYSTICK_EVENT::E trigger,
+                       AnyButtonCallback callback);
+
+  void
+  addAnyAxisCallback(AnyAxisCallback callback);
+
   Joystick& operator=(const Joystick&) = delete;
 
   Joystick& operator=(Joystick&&) = delete;
@@ -111,6 +122,12 @@ private:
   Int32
   getAxisID(JOYSTICK_AXIS::E axis);
 
+  JOYSTICK_BUTTON::E
+  getButtonFromID(Int32 id);
+
+  JOYSTICK_AXIS::E
+  getAxisFromID(Int32 id);
+
   void
   callButtonCallbacks(JOYSTICK_EVENT::E trigger, Int32 key);
 
@@ -120,6 +137,8 @@ private:
 
   Helper m_helper;
   const OIS::JoyStick* m_joystickOIS;
+  AnyButtonCallbacks m_anyButtonCallbacks;
+  AnyAxisCallbacks m_anyAxisCallbacks;
   CallbackMap m_axisCallbacks;
   Callbacks m_buttonsCallbacks;
 };

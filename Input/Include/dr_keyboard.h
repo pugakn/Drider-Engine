@@ -14,11 +14,14 @@ class DR_INPUT_EXPORT Keyboard
 
 public:
  
+  using AnyKeyCallback = std::function<void(KEY_CODE::E key)>;
+  using AnyKeyCallbackList = std::vector<AnyKeyCallback>;
+  using AnyKeyCallbacks = std::vector<AnyKeyCallbackList>;
   using Callback = std::function<void()>;
   using CallbackList = std::vector<Callback>;
   using CallbackMap = std::unordered_map<KEY_CODE::E, CallbackList>;
   using Callbacks = std::vector<CallbackMap>;
-
+  
   /**
   * Default constructor using a private object
   * so it can only be created by friend classes.
@@ -56,6 +59,16 @@ public:
   addCallback(KEYBOARD_EVENT::E trigger, 
               KEY_CODE::E key, 
               Callback callback);
+
+  /**
+  * Adds a callback triggered with any key pressed/released.
+  */
+  static void
+  addAnyKeyCallback(KEYBOARD_EVENT::E trigger,
+                    AnyKeyCallback callback);
+
+  /*static const TString&
+  getAsString(KEY_CODE::E key);*/
 
   Keyboard& operator=(const Keyboard&) = delete;
 
@@ -96,6 +109,7 @@ private:
   Helper m_helper;
   const OIS::Keyboard* m_keyboardOIS;
   Callbacks m_callbacks;
+  AnyKeyCallbacks m_anyKeyCallbacks;
 };
 
 }

@@ -15,13 +15,10 @@ class DR_INPUT_EXPORT Mouse
   struct Pass{};
 
 public:
-  /*struct EventArgs 
-  {
-    Int32 pressedButtons;
-    Vector2DI absolutePos;
-    Vector2DI relativePos;
-  };*/
-
+  
+  using AnyButtonCallback = std::function<void(MOUSE_BUTTON::E)>;
+  using AnyButtonCallbackList = std::vector<AnyButtonCallback>;
+  using AnyButtonCallbacks = std::vector<AnyButtonCallbackList>;
   using Callback = std::function<void()>;
   using CallbackList = std::vector<Callback>;
   using CallbackMap = std::unordered_map<Int32, CallbackList>;
@@ -86,6 +83,10 @@ public:
   static void
   addMovedCallback(Callback callback);
 
+  static void
+  addAnyButtonCallback(MOUSE_INPUT_EVENT::E trigger,
+                       AnyButtonCallback callback);
+
   Mouse& operator=(const Mouse&) = delete;
 
   Mouse& operator=(Mouse&&) = delete;
@@ -134,6 +135,7 @@ private:
   const OIS::Mouse* m_mouseOIS;
   Callbacks m_buttonCallbacks;
   CallbackList m_movedCallbacks;
+  AnyButtonCallbacks m_anyButtonCallbacks;
 };
 
 }
