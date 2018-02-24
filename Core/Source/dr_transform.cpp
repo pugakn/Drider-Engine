@@ -12,7 +12,7 @@ Transform::Transform()
 }
 
 const Matrix4x4& 
-Transform::getTransformMatrix() {  
+Transform::getMatrix() const {  
 
   if (m_outdatedTransform) {
     update();
@@ -126,19 +126,29 @@ Transform::scale(const Vector3D & scale) {
   invalidate();
 }
 
+Transform Transform::operator*(const Transform& other) const {
+  
+  Transform r;
+  r.m_position = m_position + other.m_position;
+  r.m_rotation = m_rotation + other.m_rotation;
+  r.m_scale = m_scale * other.m_scale;
+  r.update();
+
+  return r;
+}
+
 void
 Transform::invalidate() {
   m_outdatedTransform = true;
 }
 
 void
-Transform::update() {
+Transform::update() const {
   m_outdatedTransform = false;
   m_transform.identity();
   m_transform.Rotation(m_rotation.x, m_rotation.y, m_rotation.z);
   m_transform.Scale(m_scale);
   m_transform.Translation(m_position);
-
 }
 
 }

@@ -117,7 +117,7 @@ class DR_CORE_EXPORT Node : public std::enable_shared_from_this<Node>,
   SizeT
   getChildrenCount();
 
-  const Matrix4x4& 
+  const Transform& 
   getWorldTransform() const;
 
   /***************/
@@ -140,7 +140,7 @@ class DR_CORE_EXPORT Node : public std::enable_shared_from_this<Node>,
 
  protected:
   std::vector<SharedNode> m_children;
-  Matrix4x4 m_finalTransform;
+  Transform m_finalTransform;
   WeakNode m_parent;
   TString m_name;
  private:

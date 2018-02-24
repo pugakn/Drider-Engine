@@ -68,7 +68,7 @@ StaticMeshTechnique::compile(Device& device) {
 UInt8*
 StaticMeshTechnique::getConstBufferData() {
   
-  auto& world = m_gameObject->getWorldTransform();
+  auto& world = m_gameObject->getWorldTransform().getMatrix();
   m_constBufferObj.WVP = world * m_camera->getVP();
   m_constBufferObj.World = world;
 

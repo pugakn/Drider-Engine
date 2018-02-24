@@ -92,8 +92,20 @@ TestApplication::onInput() {
     
     float vel = 150.f * Time::getDelta();
     float ll = Joystick::get(0)->getAxis(JOYSTICK_AXIS::kLSVer);
-    m_joker->transform.move(vel * ll, 
-                            AXIS::kZ);
+    if (Math::abs(ll) < 0.1f) {
+      ll = 0.0f;
+    }
+
+    float rr = Joystick::get(0)->getAxis(JOYSTICK_AXIS::kLSHor);
+    if (Math::abs(rr) < 0.1f) {
+      rr = 0.0f;
+    }
+    
+    auto dir = m_joker->transform.getDirection();
+    auto right = dir.cross(Vector3D(0,1,0)) * -rr;
+    dir *= -ll;
+    dir += right;
+    m_joker->transform.move(dir * vel);
   }
   
 }
@@ -101,7 +113,11 @@ TestApplication::onInput() {
 void
 TestApplication::onUpdate() {
   //soundDriver->update();
-  
+
+  std::cout << m_joker->transform.getPosition().x << ",";
+  std::cout << m_joker->transform.getPosition().y << ",";
+  std::cout << m_joker->transform.getPosition().z << std::endl;
+
   Time::instance().update();
   m_sceneGraph->update();
 }

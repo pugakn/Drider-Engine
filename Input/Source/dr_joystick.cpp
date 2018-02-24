@@ -7,7 +7,8 @@ namespace driderSDK {
 Joystick::Joystick(Pass) 
   : m_helper(*this),
     m_joystickOIS(nullptr),
-    m_buttonsCallbacks(2)
+    m_buttonsCallbacks(2),
+    m_anyButtonCallbacks(2)
 {}
 
 Joystick::~Joystick() {}
