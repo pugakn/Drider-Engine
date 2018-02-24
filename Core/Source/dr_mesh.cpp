@@ -4,8 +4,13 @@
 
 namespace driderSDK {
 
-void BufferDeleter::operator()(Buffer* buffer) {
-   buffer->release();
+void 
+BufferDeleter::operator()(IndexBuffer* buffer) {
+  buffer->release();
+}
+
+void BufferDeleter::operator()(VertexBuffer* buffer) {
+  buffer->release();
 }
 
 Mesh::Mesh() 

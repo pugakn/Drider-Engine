@@ -15,15 +15,18 @@ class VertexBuffer;
 struct DR_CORE_EXPORT BufferDeleter
 {
   void 
-  operator()(Buffer*);
+  operator()(IndexBuffer* buffer);
+  
+  void 
+  operator()(VertexBuffer* buffer);
 };
 
 struct DR_CORE_EXPORT Mesh
 {
-  using BufferPtrDeleter = std::function<void(Buffer*)>;
-  //using VertexPtrDeleter = std::function<void(VertexBuffer*)>;
-  using IndexSmartPtr = std::unique_ptr<IndexBuffer, BufferPtrDeleter>;
-  using VertexSmartPtro = std::unique_ptr<VertexBuffer, BufferPtrDeleter>;
+  using IndexPtrDeleter = std::function<void(IndexBuffer*)>;
+  using VertexPtrDeleter = std::function<void(VertexBuffer*)>;
+  using IndexSmartPtr = std::unique_ptr<IndexBuffer, IndexPtrDeleter>;
+  using VertexSmartPtro = std::unique_ptr<VertexBuffer, VertexPtrDeleter>;
 
   Mesh();
 
