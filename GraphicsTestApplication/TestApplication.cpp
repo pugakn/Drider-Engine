@@ -149,6 +149,22 @@ TestApplication::initInput() {
     
   };
 
+  auto anyKeyCallback = [](KEY_CODE::E key) 
+  {
+    std::cout << "Key pressed" << std::endl;
+  };
+
+  auto anyKeyCallbackR = [](KEY_CODE::E key) 
+  {
+    std::cout << "Key released" << std::endl;
+  };
+
+  Keyboard::addAnyKeyCallback(KEYBOARD_EVENT::kKeyPressed,
+                              anyKeyCallback);
+
+  Keyboard::addAnyKeyCallback(KEYBOARD_EVENT::kKeyReleased,
+                              anyKeyCallbackR);
+
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed, 
                         KEY_CODE::kA, 
                         callback);

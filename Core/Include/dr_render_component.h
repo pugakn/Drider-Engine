@@ -1,71 +1,62 @@
 #pragma once
 
 #include <vector>
+#include <dr_memory.h>
 #include "dr_core_prerequisites.h"
 #include "dr_gameComponent.h"
-#include "dr_vertex.h"
 
 namespace driderSDK {
 
+class Model;
 class Material;
+class IndexBuffer;
+class VertexBuffer;
 
-struct MaterialRenderInfo
+struct DR_CORE_EXPORT RenderMesh
 {
-  Int32 indexStart;
-  Int32 indexSize;
-  Int32 vertexStart;
-  Int32 vertexSize;
+  RenderMesh() : indexBuffer(nullptr), vertexBuffer(nullptr) {}
+
+  IndexBuffer* indexBuffer;
+  VertexBuffer* vertexBuffer;
   std::weak_ptr<Material> material;
 };
 
-class RenderComponent : public GameComponent
+class DR_CORE_EXPORT RenderComponent : public GameComponent
 {
 public:
+  using MeshList = std::vector<RenderMesh>;
+  using SharedModel = std::shared_ptr<Model>;
+  using WeakModelRef = std::weak_ptr<Model>;
 
-  using IndexBuffer = std::vector<UInt32>;
-  using VertexBuffer = std::vector<Vertex>;
-  using MaterialList = std::vector<MaterialRenderInfo>;
+  RenderComponent(GameObject& _gameObject, 
+                  SharedModel model);
 
-  RenderComponent(GameObject& _gameObject,
-                  IndexBuffer&& _indexBuffer, 
-                  VertexBuffer&& _vertexBuffer,
-                  MaterialList&& _materials);
+  RenderComponent(GameObject& _gameObject, 
+                  MeshList&& _materials);
 
-  const IndexBuffer&
-  getIndexBuffer()
+  const MeshList&
+  getMeshes()
   {
-    return m_indexBuffer;
-  }
-
-  const VertexBuffer&
-  getVertexBuffer()
-  {
-    return m_vertexBuffer;
-  }
-
-  const MaterialList&
-  getMaterials()
-  {
-    return m_materials;
+    return m_meshes;
   }
 
 private:
   // Inherited via GameComponent
-  virtual 
-  void onCreate() override;
+  virtual void 
+  onCreate() override;
 
-  virtual 
-  void onUpdate() override;
+  virtual void 
+  onUpdate() override;
 
-  virtual 
-  void onRender() override;
+  virtual void
+  onRender() override;
 
-  virtual 
-  void onDestroy() override;
+  virtual void 
+  onDestroy() override;
 
-  IndexBuffer m_indexBuffer;
-  VertexBuffer m_vertexBuffer;
-  MaterialList m_materials;
+  bool m_isModel;
+  WeakModelRef m_model;
+  MeshList m_meshes;
 };
 
 }

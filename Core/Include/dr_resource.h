@@ -34,6 +34,10 @@ class DR_CORE_EXPORT Resource
   init(void* /*pData*/,
        void* /*extraData*/)
   {}
+
+  virtual void
+  destroy(void* /**/)
+  {}
 };
 
 }

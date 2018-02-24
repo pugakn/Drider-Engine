@@ -37,7 +37,7 @@ SceneGraph::createNode(SharedNode parent, SharedModel model) {
 
   parent->addChild(node);
 
-  RenderComponent::IndexBuffer ib;
+  /*RenderComponent::IndexBuffer ib;
   RenderComponent::VertexBuffer vb;
   RenderComponent::MaterialList ml;
   
@@ -65,7 +65,7 @@ SceneGraph::createNode(SharedNode parent, SharedModel model) {
   
   node->createComponent<RenderComponent>(std::move(ib), 
                                          std::move(vb), 
-                                         std::move(ml));
+                                         std::move(ml));*/
 
   return node;
 }
