@@ -42,39 +42,7 @@ DrawableComponent::getModel() const {
 
 void
 DrawableComponent::onCreate() {
-  m_created = false;
-
-  auto comp = m_gameObject.getComponent<RenderComponent>();
-
-  if (comp) {
-
-    auto& ib = comp->getIndexBuffer();
-    auto& vb = comp->getVertexBuffer();
-
-    for(auto& m : comp->getMaterials())
-    {
-      MeshBuffers meshBuffer;
-      DrBufferDesc buffDesc;
-      
-      buffDesc.type = DR_BUFFER_TYPE::kVERTEX;
-      buffDesc.sizeInBytes = m.vertexSize * sizeof(Vertex);
-      buffDesc.stride = sizeof(Vertex);
-      auto buffData = reinterpret_cast<const byte*>(vb.data() + m.vertexStart);
-      Buffer* buffer = m_device.createBuffer(buffDesc, buffData);
-      meshBuffer.vertexBuffer = dynamic_cast<VertexBuffer*>(buffer);
-  
-      buffDesc.type = DR_BUFFER_TYPE::kINDEX;
-      buffDesc.sizeInBytes = m.indexSize * sizeof(UInt32);
-      buffDesc.stride = 0;
-      buffData = reinterpret_cast<const byte*>(ib.data() + m.indexStart);
-      buffer = m_device.createBuffer(buffDesc, buffData);
-      meshBuffer.indexBuffer = dynamic_cast<IndexBuffer*>(buffer);
-
-      meshBuffer.indicesCount = m.indexSize;
-
-      m_meshes.push_back(meshBuffer);
-    }
-  }
+  m_created = false;  
 }
 
 void 
@@ -91,11 +59,14 @@ DrawableComponent::onRender() {
 
       m_deviceContext.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
       
-      for (auto& meshBuff : m_meshes) {
-        meshBuff.vertexBuffer->set(m_deviceContext);
-        meshBuff.indexBuffer->set(m_deviceContext);
+      if (auto comp = m_gameObject.getComponent<RenderComponent>()) {
+        auto& meshes = comp->getMeshes(); 
+        for (auto& mesh : meshes) {
+           mesh.vertexBuffer->set(m_deviceContext);
+           mesh.indexBuffer->set(m_deviceContext);
 
-        m_deviceContext.draw(meshBuff.indicesCount, 0, 0);
+           m_deviceContext.draw(mesh.indicesCount, 0, 0);
+        }
       }
     }
   } 

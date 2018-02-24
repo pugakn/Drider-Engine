@@ -16,6 +16,7 @@ struct DR_CORE_EXPORT RenderMesh
 {
   RenderMesh() : indexBuffer(nullptr), vertexBuffer(nullptr) {}
 
+  UInt32 indicesCount;
   IndexBuffer* indexBuffer;
   VertexBuffer* vertexBuffer;
   std::weak_ptr<Material> material;

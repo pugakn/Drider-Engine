@@ -30,7 +30,7 @@ RenderComponent::onCreate() {
         RenderMesh renderMesh;
 
         renderMesh.material = mesh.material;
-        
+        renderMesh.indicesCount = mesh.indices.size();
         renderMesh.indexBuffer = mesh.indexBuffer.get();
         renderMesh.vertexBuffer = mesh.vertexBuffer.get();
 

@@ -36,6 +36,12 @@ Transform::getScale() const {
   return m_scale;
 }
 
+Vector3D Transform::getDirection() const {
+  return Vector3D{Math::cos(m_rotation.y) * Math::sin(m_rotation.x),
+                  Math::sin(m_rotation.y),
+                  Math::cos(m_rotation.y) * Math::cos(m_rotation.x)}.normalize();
+}
+
 void
 Transform::setPosition(float pos, AXIS::E axis) {
   m_position[axis] = pos;

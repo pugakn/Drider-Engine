@@ -46,6 +46,15 @@ class DR_CORE_EXPORT Transform
   getScale() const;
 
   /**
+  * Gets the current facing direction.
+  *
+  * @return
+  *   Vector with the direction of the camera.
+  */
+  Vector3D
+  getDirection() const;
+
+  /**
   * Sets the value of the specified position component.
   * 
   * @param pos

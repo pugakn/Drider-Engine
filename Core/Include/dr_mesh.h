@@ -12,7 +12,7 @@ namespace driderSDK {
 class IndexBuffer;
 class VertexBuffer;
 
-struct DR_CORE_EXPORT BufferDeleter
+struct BufferDeleter
 {
   void 
   operator()(IndexBuffer* buffer);

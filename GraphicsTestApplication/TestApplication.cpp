@@ -187,13 +187,13 @@ TestApplication::initResources() {
      resourceManager = &ResourceManager::instance();
   }
     
-  resourceManager->loadResource(_T("axe.jpg"));
+  resourceManager->loadResource(_T("axe.jpg"), driver->device);
 
-  resourceManager->loadResource(_T("VenomJok.X"));
+  resourceManager->loadResource(_T("VenomJok.X"), driver->device);
 
-  resourceManager->loadResource(_T("Croc.X"));
+  resourceManager->loadResource(_T("Croc.X"), driver->device);
 
-  resourceManager->loadResource(_T("dwarf.x"));
+  resourceManager->loadResource(_T("dwarf.x"), driver->device);
 }
 
 void 
@@ -293,8 +293,8 @@ TestApplication::initSceneGraph() {
     
   n = createNode(root, _T("Croc"), _T("Croc.X"), {150.0f, 0.0f, 0.0f});
   
-  n = createNode(root, _T("Dwarf"), _T("dwarf.x"), {-100.0f, 0.0f, 0.0f});
-  
+  n = createNode(root, _T("Dwarf"), _T("dwarf.x"), {-100.0f, 0.0f, 0.0f});   
+
 }
 
 void TestApplication::TestKeyBoard() {
