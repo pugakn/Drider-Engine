@@ -85,7 +85,8 @@ Camera::createProyection(float fov,
 												 float farPlane) {
 	DR_ASSERT(m_viewport.height != 0.0f);
 	m_projection.ProjectionFov(fov * Math::DEGREE_TO_RADIAN,
-														m_viewport.width / m_viewport.height, 
+														static_cast<float>(m_viewport.width) / 
+                                               m_viewport.height, 
 														nearPlane,
 														farPlane);
 	//m_projection.Orthogonal(m_viewport.width, m_viewport.height, nearPlane, farPlane);

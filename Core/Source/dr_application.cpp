@@ -54,7 +54,10 @@ Application::createWindow() {
 
   SDL_ShowCursor(SDL_ENABLE);
   
-  if (SDL_SetVideoMode(m_viewport.width, m_viewport.height, 32, flags) == 0) {
+  int width = 1280;
+  int height = 720;
+
+  if (SDL_SetVideoMode(width, height, 32, flags) == 0) {
     std::cout << "Video mode set failed: " << SDL_GetError() << std::endl;
   }
 }
