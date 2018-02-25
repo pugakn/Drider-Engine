@@ -33,25 +33,26 @@ public:
   TestApplication();
   ~TestApplication();
 
-  void onInit() override;
-  void onInput() override;
-  void onUpdate() override;
-  void onDraw() override;
-  void onDestroy() override;
-  void onPause() override;
-  void onResume() override;
+  void 
+  postInit() override;
+  /*void onInput() override;*/
+  void
+  postUpdate() override;
 
+  void 
+  postRender() override;
+  //void onDraw() override;
+  void
+  postDestroy() override;
+  
+  void input();
   void initInput();
   void initResources();
   void initSound();
   void initSceneGraph();
 
   void TestKeyBoard();
-  
-  GraphicsAPI* driver;
-  Quad quad;
-  std::vector<Model3D> models;
-  Viewport viewport;
+
   std::shared_ptr<Camera> m_camera;
 
   //SoundAPI* soundDriver;

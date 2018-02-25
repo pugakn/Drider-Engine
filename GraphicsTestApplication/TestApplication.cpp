@@ -19,24 +19,15 @@
 
 namespace driderSDK {
 
-TestApplication::TestApplication()
-  : viewport{0,0,1280, 720} {
-}
+TestApplication::TestApplication() {}
 
-TestApplication::~TestApplication() {
-}
+TestApplication::~TestApplication() {}
 
 void
-TestApplication::onInit() {
-  initWindow();
-  driver = new D3DGraphicsAPI;
-  HWND win = GetActiveWindow();
-  driver->init(static_cast<driderSDK::UInt32>(viewport.width),
-               static_cast<driderSDK::UInt32>(viewport.height),
-               win);
-
+TestApplication::postInit() {
+  
   m_camera = std::make_shared<Camera>(_T("MAIN_CAM"), 
-                                      viewport);
+                                      m_viewport);
 
   m_camera->createProyection(45.f, 0.1f, 10000.f);
 
@@ -46,7 +37,7 @@ TestApplication::onInit() {
   //m_camera->transform.setRotation(Degree(180), AXIS::kX);
 
   ResourceManager::startUp();
-  InputManager::startUp((SizeT)(win));
+  InputManager::startUp((SizeT)GetActiveWindow());
   Time::startUp();
 
   initResources();
@@ -65,7 +56,7 @@ TestApplication::onInit() {
   result = sound1->setMode(FMOD_LOOP_OFF);*/
 }
 void
-TestApplication::onInput() {
+TestApplication::input() {
   
   InputManager::capture();
   
@@ -111,8 +102,9 @@ TestApplication::onInput() {
 }
 
 void
-TestApplication::onUpdate() {
+TestApplication::postUpdate() {
   //soundDriver->update();
+  input();
 
   std::cout << m_joker->transform.getPosition().x << ",";
   std::cout << m_joker->transform.getPosition().y << ",";
@@ -122,28 +114,11 @@ TestApplication::onUpdate() {
   m_sceneGraph->update();
 }
 
-void
-TestApplication::onDraw() {
-  driver->clear();
-  //quad.draw(*driver->deviceContext, camera.getVP());
+void TestApplication::postRender() {
   m_sceneGraph->draw();
-  driver->swapBuffers();
 }
 
-void
-TestApplication::onDestroy() {
-  /*result = sound1->release();
-  result = system->close();
-  result = system->release();*/
-}
-
-void
-TestApplication::onPause() {
-}
-
-void
-TestApplication::onResume() {
-}
+void TestApplication::postDestroy() {}
 
 void 
 TestApplication::initInput() {
@@ -159,12 +134,7 @@ TestApplication::initInput() {
     std::cout << "Mouse moved x:" << pos.x << " y:" << pos.y;
     std::cout << " movedX:" << delta.x << " movedY:" << delta.y << std::endl;
   };
-
-  auto joystickCallback = [&](Joystick& joystick)
-  {
-    
-  };
-
+  
   auto anyKeyCallback = [](KEY_CODE::E key) 
   {
     std::cout << "Key pressed" << std::endl;
@@ -180,20 +150,11 @@ TestApplication::initInput() {
 
   Keyboard::addAnyKeyCallback(KEYBOARD_EVENT::kKeyReleased,
                               anyKeyCallbackR);
-
-  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed, 
-                        KEY_CODE::kA, 
-                        callback);
-
+  
   Mouse::addButtonCallback(MOUSE_INPUT_EVENT::kButtonPressed,
                            MOUSE_BUTTON::kMiddle,
                            mouseCallback);
-
-  if (Joystick* joystick = Joystick::get(0)) {
-    joystick->addAxisCallback(JOYSTICK_AXIS::kLSVer, joystickCallback);
-  }
-
-
+  
 }
 
 void 
@@ -203,13 +164,13 @@ TestApplication::initResources() {
      resourceManager = &ResourceManager::instance();
   }
     
-  resourceManager->loadResource(_T("axe.jpg"), driver->device);
+  resourceManager->loadResource(_T("axe.jpg"), m_graphicsAPI->device);
 
-  resourceManager->loadResource(_T("VenomJok.X"), driver->device);
+  resourceManager->loadResource(_T("VenomJok.X"), m_graphicsAPI->device);
 
-  resourceManager->loadResource(_T("Croc.X"), driver->device);
+  resourceManager->loadResource(_T("Croc.X"), m_graphicsAPI->device);
 
-  resourceManager->loadResource(_T("dwarf.x"), driver->device);
+  resourceManager->loadResource(_T("dwarf.x"), m_graphicsAPI->device);
 }
 
 void 
@@ -268,11 +229,11 @@ TestApplication::initSceneGraph() {
 
     node->transform.setPosition(pos);
 
-    node->createComponent<DrawableComponent>(*driver->device, 
-                                             *driver->deviceContext);
+    node->createComponent<DrawableComponent>(*m_graphicsAPI->device, 
+                                             *m_graphicsAPI->deviceContext);
 
-    node->createComponent<ModelDebbug>(*driver->device, 
-                                       *driver->deviceContext);
+    node->createComponent<ModelDebbug>(*m_graphicsAPI->device, 
+                                       *m_graphicsAPI->deviceContext);
 
     auto drawableComponent = node->getComponent<DrawableComponent>();
     

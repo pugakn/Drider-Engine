@@ -1,26 +1,34 @@
 #pragma once
-#include "dr_core_prerequisites.h"
+
 #include <atomic>
+#include <dr_graphics_api.h>
+#include <dr_memory.h>
+#include "dr_core_prerequisites.h"
+#include "dr_viewport.h"
+
 namespace driderSDK {
 class DR_CORE_EXPORT Application
 {
 public:
   virtual ~Application() {}
-  void initWindow();
-  virtual void onInit() = 0;
-  virtual void onInput() = 0;
-  virtual void onUpdate() = 0;
-  virtual void onDraw() = 0;
-  virtual void onDestroy() = 0;
-  virtual void onPause() = 0;
-  virtual void onResume() = 0;
+  
+  int run();
 
-  void startApplication();
-  void stopApplication();
-  void pauseApplication();
-  void resumeApplication();
+protected:
+  virtual void postInit() = 0;
+  virtual void postUpdate() = 0;
+  virtual void postRender() = 0;
+  virtual void postDestroy() = 0;
 private:
-  std::atomic<bool> m_alive;
+  void init();
+  void createWindow();
+  void update();
+  void render();
+  void destroy();
+ protected:
+  std::unique_ptr<GraphicsAPI> m_graphicsAPI;
+  Viewport m_viewport;
+private:
   std::atomic<bool> m_running;
 };
 }

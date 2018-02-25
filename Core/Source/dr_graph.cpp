@@ -30,7 +30,7 @@ SceneGraph::draw() {
   m_root->draw();
 }
 
-SceneGraph::SharedGO
+SceneGraph::SharedGameObject
 SceneGraph::createNode(SharedNode parent, SharedModel model) {
 
   auto node = std::make_shared<GameObject>();

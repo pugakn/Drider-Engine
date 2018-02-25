@@ -10,9 +10,8 @@ Camera::Camera() {}
 Camera::Camera(const TString& name,
 							 const Viewport& viewport) 
   : GameObject(name), 
-    m_up(0.0f, 1.0f, 0.0f) {
-	m_viewport = viewport;
-	m_up = Vector3D(0.f, 1.f, 0.f);
+    m_up(0.0f, 1.0f, 0.0f),
+    m_viewport(viewport) {
 }
 
 Camera::~Camera() {}
@@ -20,10 +19,9 @@ Camera::~Camera() {}
 void Camera::updateImpl() {
   GameObject::updateImpl();
 
-  auto& tr = getWorldTransform();
-  auto cpy = tr.getMatrix();
-  auto pos = tr.getPosition();
-  auto target = Vector4D(m_target, 1) * cpy;
+  auto& tr = getParent()->transform;
+  auto pos = getWorldTransform().getPosition();
+  auto target = Vector4D(m_target, 1) * tr.getMatrix();
 	m_view.LookAt(Vector3D(pos), Vector3D(target), m_up);
 	m_vp = m_view * m_projection;
 }
