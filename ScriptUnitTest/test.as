@@ -1,5 +1,4 @@
 void main() {
-
-	return;
+	stringPrint("Im ready depression");
 }	 
 
