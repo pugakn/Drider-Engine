@@ -122,7 +122,7 @@ void Model3D::update() {
 
 void Model3D::draw(const driderSDK::DeviceContext& deviceContext, const Camera& camera) {
   
-  auto world = transform.getTransformMatrix();
+  auto world = transform.getMatrix();
   auto wvp =  world * camera.getVP();
   
   auto& boneTransforms = animator.getTransforms();

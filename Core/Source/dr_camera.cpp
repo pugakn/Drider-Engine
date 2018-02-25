@@ -20,8 +20,8 @@ Camera::~Camera() {}
 void Camera::updateImpl() {
   GameObject::updateImpl();
 
-  auto cpy = getParent()->transform.getTransformMatrix();
-  auto pos = Vector4D(transform.getPosition(),1) * cpy;
+  auto cpy = getParent()->transform.getMatrix();
+  auto pos = getWorldTransform().getPosition();
   auto target = Vector4D(m_target, 1) * cpy;
 	m_view.LookAt(Vector3D(pos), Vector3D(target), m_up);
 	m_vp = m_view * m_projection;
@@ -30,7 +30,7 @@ void Camera::updateImpl() {
 void 
 Camera::move(float forward, float strafe, float upVelocity, bool lockY) {
 	
-  Vector3D dir = getDirection();
+  Vector3D dir = transform.getDirection();
   Vector3D right = dir.cross(m_up);
 
   if (lockY) {
@@ -57,7 +57,7 @@ Camera::move(const Vector3D& direction) {
 void 
 Camera::pan(float forward, float strafe, float upVelocity, bool lockY) {
 	
-  Vector3D dir = getDirection();
+  Vector3D dir = transform.getDirection();
   Vector3D right = dir.cross(m_up);
 
   if (lockY) {
@@ -109,14 +109,15 @@ Camera::setViewport(const Viewport& viewport) {
 
 void 
 Camera::rotate(const Quaternion& rotation) {
-	m_target = transform.getPosition() + rotation.rotation(getDirection());
+	m_target = transform.getPosition() + 
+             rotation.rotation(transform.getDirection());
 }
 
 void 
 Camera::rotate(float yawDegree, float pitchDegree) {
   transform.rotate({yawDegree * Math::DEGREE_TO_RADIAN,
                    pitchDegree * Math::DEGREE_TO_RADIAN, 0});
-  m_target = transform.getPosition() + getDirection() * 10.f;
+  m_target = transform.getPosition() + transform.getDirection() * 10.f;
 }
 
 void 
@@ -144,13 +145,6 @@ Camera::getView() const {
 const Matrix4x4&
 Camera::getProjection() {
   return m_projection;
-}
-
-Vector3D Camera::getDirection() const {
-  auto& angle = transform.getRotation();
-  return Vector3D{Math::cos(angle.y) * Math::sin(angle.x),
-                  Math::sin(angle.y),
-                  Math::cos(angle.y) * Math::cos(angle.x)}.normalize();
 }
 
 }

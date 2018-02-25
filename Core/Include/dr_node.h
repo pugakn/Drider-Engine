@@ -9,6 +9,7 @@
 
 namespace driderSDK {
 
+
 class DR_CORE_EXPORT Node : public std::enable_shared_from_this<Node>, 
                             public EnableObject
 {
@@ -116,7 +117,7 @@ class DR_CORE_EXPORT Node : public std::enable_shared_from_this<Node>,
   SizeT
   getChildrenCount();
 
-  const Matrix4x4& 
+  const Transform& 
   getWorldTransform() const;
 
   /***************/
@@ -125,15 +126,21 @@ class DR_CORE_EXPORT Node : public std::enable_shared_from_this<Node>,
   draw();
   /***************/
 
-  Transform transform;
+  template<class T>
+  std::shared_ptr<T>  
+  getAs()
+  {
+    return std::dynamic_pointer_cast<T>(shared_from_this());
+  }  
 
+  Transform transform;
  protected:
   virtual void 
   updateImpl();
 
  protected:
   std::vector<SharedNode> m_children;
-  Matrix4x4 m_finalTransform;
+  Transform m_finalTransform;
   WeakNode m_parent;
   TString m_name;
  private:

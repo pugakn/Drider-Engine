@@ -2,6 +2,7 @@
 #include <fstream>
 #include <dr_d3d_shader_bytecode.h>
 #include <dr_graphics_defines.h>
+#include <dr_graphics_driver.h>
 using namespace driderSDK;
 
 
@@ -13,8 +14,9 @@ std::string file2string(const char *path) {
   return content;
 }
 
-void Quad::init(Device& device)
+void Quad::init()
 {
+  Device& device = *GraphicsDriver::getApiReference().device;
   std::string vsSource = file2string("vs.hlsl");
   std::string fsSource = file2string("fs.hlsl");
   vs = reinterpret_cast<Shader*>(device.createShaderFromMemory(vsSource.c_str(), vsSource.size(),DR_SHADER_TYPE_FLAG::kVertex));
@@ -77,10 +79,10 @@ void Quad::destroy()
   VB->release();
 }
 
-void Quad::draw(const DeviceContext& deviceContext)
+void Quad::draw()
 { 
   //constBuff.WVP = wvp;
-
+  DeviceContext& deviceContext = *GraphicsDriver::getApiReference().deviceContext;
   fs->set(deviceContext);
   vs->set(deviceContext);
   IL->set(deviceContext);

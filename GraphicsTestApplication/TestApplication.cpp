@@ -12,6 +12,10 @@
 #include "LinesTechnique.h"
 #include "dr_degree.h"
 #include <dr_time.h>
+#include <dr_input_manager.h>
+#include <dr_keyboard.h>
+#include <dr_mouse.h>
+#include <dr_joystick.h>
 
 namespace driderSDK {
 
@@ -42,7 +46,7 @@ TestApplication::onInit() {
   //m_camera->transform.setRotation(Degree(180), AXIS::kX);
 
   ResourceManager::startUp();
-  InputManager::startUp();
+  InputManager::startUp((SizeT)(win));
   Time::startUp();
 
   initResources();
@@ -62,10 +66,9 @@ TestApplication::onInit() {
 }
 void
 TestApplication::onInput() {
-  InputManager::instance().captureAll();
   
-  auto keyBoard = InputManager::instance().getKeyboard();
-
+  InputManager::capture();
+  
   Node::SharedNode croc;
 
   if (croc = m_sceneGraph->getRoot()->getChild(_T("Croc"))) {
@@ -85,13 +88,36 @@ TestApplication::onInput() {
   if (auto croc = m_sceneGraph->getRoot()->getChild(_T("Croc"))) {
     croc->transform.rotate(Degree(60 * Time::instance().getDelta()), AXIS::kY);
   }
+  if (Joystick::get(0)) {
+    
+    float vel = 150.f * Time::getDelta();
+    float ll = Joystick::get(0)->getAxis(JOYSTICK_AXIS::kLSVer);
+    if (Math::abs(ll) < 0.1f) {
+      ll = 0.0f;
+    }
 
+    float rr = Joystick::get(0)->getAxis(JOYSTICK_AXIS::kLSHor);
+    if (Math::abs(rr) < 0.1f) {
+      rr = 0.0f;
+    }
+    
+    auto dir = m_joker->transform.getDirection();
+    auto right = dir.cross(Vector3D(0,1,0)) * -rr;
+    dir *= -ll;
+    dir += right;
+    m_joker->transform.move(dir * vel);
+  }
+  
 }
 
 void
 TestApplication::onUpdate() {
   //soundDriver->update();
-  
+
+  std::cout << m_joker->transform.getPosition().x << ",";
+  std::cout << m_joker->transform.getPosition().y << ",";
+  std::cout << m_joker->transform.getPosition().z << std::endl;
+
   Time::instance().update();
   m_sceneGraph->update();
 }
@@ -123,14 +149,51 @@ void
 TestApplication::initInput() {
 
   HWND win = GetActiveWindow();
-  
-  InputManager* inputMngr = nullptr;
 
-  if(InputManager::isStarted()){
-    inputMngr = InputManager::instancePtr();
+  auto callback = std::bind(&TestApplication::TestKeyBoard, this);
+
+  auto mouseCallback = []()
+  { 
+    auto pos = Mouse::getPosition();
+    auto delta = Mouse::getDisplacement();
+    std::cout << "Mouse moved x:" << pos.x << " y:" << pos.y;
+    std::cout << " movedX:" << delta.x << " movedY:" << delta.y << std::endl;
+  };
+
+  auto joystickCallback = [&](Joystick& joystick)
+  {
+    
+  };
+
+  auto anyKeyCallback = [](KEY_CODE::E key) 
+  {
+    std::cout << "Key pressed" << std::endl;
+  };
+
+  auto anyKeyCallbackR = [](KEY_CODE::E key) 
+  {
+    std::cout << "Key released" << std::endl;
+  };
+
+  Keyboard::addAnyKeyCallback(KEYBOARD_EVENT::kKeyPressed,
+                              anyKeyCallback);
+
+  Keyboard::addAnyKeyCallback(KEYBOARD_EVENT::kKeyReleased,
+                              anyKeyCallbackR);
+
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed, 
+                        KEY_CODE::kA, 
+                        callback);
+
+  Mouse::addButtonCallback(MOUSE_INPUT_EVENT::kButtonPressed,
+                           MOUSE_BUTTON::kMiddle,
+                           mouseCallback);
+
+  if (Joystick* joystick = Joystick::get(0)) {
+    joystick->addAxisCallback(JOYSTICK_AXIS::kLSVer, joystickCallback);
   }
 
-  inputMngr->init((size_t)win);
+
 }
 
 void 
@@ -140,13 +203,13 @@ TestApplication::initResources() {
      resourceManager = &ResourceManager::instance();
   }
     
-  resourceManager->loadResource(_T("axe.jpg"));
+  resourceManager->loadResource(_T("axe.jpg"), driver->device);
 
-  resourceManager->loadResource(_T("VenomJok.X"));
+  resourceManager->loadResource(_T("VenomJok.X"), driver->device);
 
-  resourceManager->loadResource(_T("Croc.X"));
+  resourceManager->loadResource(_T("Croc.X"), driver->device);
 
-  resourceManager->loadResource(_T("dwarf.x"));
+  resourceManager->loadResource(_T("dwarf.x"), driver->device);
 }
 
 void 
@@ -179,11 +242,9 @@ TestApplication::initSceneGraph() {
 
   //root->addChild(m_camera);
 
-  JoystickInput* joystickInput = nullptr;
+  //JoystickInput* joystickInput = nullptr;
 
-  if(InputManager::instancePtr()->getNumOfJoysticks()) {
-    joystickInput = InputManager::instancePtr()->getJoystick(0); 
-  }
+  
 
   /*if (joystickInput) {
     auto inputListener = m_camera->createComponent<InputComponent>(joystickInput);
@@ -196,8 +257,12 @@ TestApplication::initSceneGraph() {
                         const TString& name, 
                         const TString& resName,
                         const Vector3D& pos) {
+  
+    auto resource = resourceMgr->getReference(resName);
 
-    auto node = std::make_shared<GameObject>();
+    auto model = std::dynamic_pointer_cast<Model>(resource);
+    
+    auto node = m_sceneGraph->createNode(parent, model);
 
     node->setName(name);
 
@@ -211,14 +276,11 @@ TestApplication::initSceneGraph() {
 
     auto drawableComponent = node->getComponent<DrawableComponent>();
     
-    auto resource = resourceMgr->getReference(resName);
-
-    auto model = std::dynamic_pointer_cast<Model>(resource);
     
     auto technique = dr_make_unique<StaticMeshTechnique>(&(*m_camera), 
                                                          &(*node));
 
-    drawableComponent->setModel(model);
+    //drawableComponent->setModel(model);
 
     drawableComponent->setShaderTechnique(technique.get());
 
@@ -241,16 +303,18 @@ TestApplication::initSceneGraph() {
 
   auto n = createNode(root, _T("Joker"), _T("VenomJok.X"), {0.0f, 0.0f, 0.0f});
   
-  n->addChild(m_camera);
-  
-  auto component = n->createComponent<InputComponent>(joystickInput);
+  m_joker = n;
 
-  joystickInput->setEventCallback(component);
-  
+  n->addChild(m_camera);
+    
   n = createNode(root, _T("Croc"), _T("Croc.X"), {150.0f, 0.0f, 0.0f});
   
-  n = createNode(root, _T("Dwarf"), _T("dwarf.x"), {-100.0f, 0.0f, 0.0f});
-  
+  n = createNode(root, _T("Dwarf"), _T("dwarf.x"), {-100.0f, 0.0f, 0.0f});   
+
+}
+
+void TestApplication::TestKeyBoard() {
+  std::cout << "A key pressed" << std::endl;
 }
 
 }

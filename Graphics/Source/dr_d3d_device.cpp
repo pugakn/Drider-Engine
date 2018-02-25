@@ -64,7 +64,7 @@ D3DDevice::release() {
 
 Buffer*
 D3DDevice::createBuffer(const DrBufferDesc& desc,
-                        byte* initialData) {
+                        const byte* initialData) {
   Buffer* buffer = nullptr;
   switch (desc.type)
   {

@@ -4,6 +4,8 @@
 #include <dr_d3d_swap_chain.h>
 #include <dr_rasterizer_state.h>
 #include <dr_time.h>
+#include <dr_input_manager.h>
+#include <dr_graphics_driver.h>
 namespace driderSDK {
 
 TestApplication::TestApplication()
@@ -15,31 +17,28 @@ TestApplication::~TestApplication() {
 
 void
 TestApplication::onInit() {
-  InputManager::startUp();
   HWND win = GetActiveWindow();
+  InputManager::startUp((size_t)win);
+  GraphicsDriver::startUp(DR_GRAPHICS_API::D3D11, 
+    static_cast<driderSDK::UInt32>(viewport.width),
+    static_cast<driderSDK::UInt32>(viewport.height),
+    win);
   InputManager* inputMngr = nullptr;
   if (InputManager::isStarted()) {
     inputMngr = InputManager::instancePtr();
   }
-  inputMngr->init((size_t)win);
-
-
-  driver = new D3DGraphicsAPI;
-  driver->init(static_cast<driderSDK::UInt32>(viewport.width),
-               static_cast<driderSDK::UInt32>(viewport.height),
-               win);
   quad.width = viewport.width;
   quad.height = viewport.height;
-  quad.init(*driver->device);
+  quad.init();
 
 
 
-  webRenderer.Init(driver,&quad);
+  webRenderer.Init(&quad);
   Time::startUp();
 }
 void
 TestApplication::onInput() {
-  InputManager::instance().captureAll();
+  InputManager::capture();
 }
 
 void
@@ -52,9 +51,9 @@ TestApplication::onUpdate() {
 
 void
 TestApplication::onDraw() {
-  driver->clear();
-  quad.draw(*driver->deviceContext);
-  driver->swapBuffers();
+  GraphicsDriver::getApiReference().clear();
+  quad.draw();
+  GraphicsDriver::getApiReference().swapBuffers();
 }
 
 void

@@ -7,6 +7,7 @@
 #include "Technique.h"
 #include <dr_model.h>
 #include <dr_gameObject.h>
+#include <dr_render_component.h>
 
 namespace driderSDK {
 DrawableComponent::DrawableComponent(GameObject& gameObject,
@@ -41,7 +42,7 @@ DrawableComponent::getModel() const {
 
 void
 DrawableComponent::onCreate() {
-  m_created = false;
+  m_created = false;  
 }
 
 void 
@@ -53,16 +54,19 @@ DrawableComponent::onUpdate() {
 
 void 
 DrawableComponent::onRender() {
-  if (!m_model.expired() && m_technique) {
+  if (m_technique) {
     if (m_technique->prepareForDraw(m_deviceContext)) {
 
       m_deviceContext.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
       
-      for (auto& meshBuff : m_meshes) {
-        meshBuff.vertexBuffer->set(m_deviceContext);
-        meshBuff.indexBuffer->set(m_deviceContext);
+      if (auto comp = m_gameObject.getComponent<RenderComponent>()) {
+        auto& meshes = comp->getMeshes(); 
+        for (auto& mesh : meshes) {
+           mesh.vertexBuffer->set(m_deviceContext);
+           mesh.indexBuffer->set(m_deviceContext);
 
-        m_deviceContext.draw(meshBuff.indicesCount, 0, 0);
+           m_deviceContext.draw(mesh.indicesCount, 0, 0);
+        }
       }
     }
   } 

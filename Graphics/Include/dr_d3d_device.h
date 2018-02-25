@@ -49,7 +49,7 @@ class DR_GRAPHICS_EXPORT D3DDevice : public Device
   */
   Buffer*
   createBuffer(const DrBufferDesc& desc,
-                     byte* initialData = nullptr) override;
+               const byte* initialData = nullptr) override;
 
   /**
   * TEST::createShaderFromMemory

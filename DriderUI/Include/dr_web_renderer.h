@@ -9,15 +9,16 @@
 
 #include <dr_graphics_api.h>
 #include <dr_quad.h>
-#include <memory>
-#include <iostream>
-
-#include"dr_input_manager.h"
-#include "dr_input_keyboard.h"
-#include "dr_input_mouse.h"
 namespace driderSDK {
+namespace BROWSER_MODE {
+  enum E {
+    kHeadless,
+    kPopUp,
+    kChild
+  };
+}
 typedef std::map<std::pair<std::string, int>,
-  std::pair<CefRefPtr<CefV8Context>, CefRefPtr<CefV8Value> > >
+  std::pair<CefRefPtr<CefV8Context>, CefRefPtr<CefV8Value>>>
   CallbackMap;
 
 class DriderV8Handler : public CefV8Handler {
@@ -43,58 +44,21 @@ public:
 class RenderHandler: public CefRenderHandler
 {
 public:
-  RenderHandler(int w,int h)
-  {
-    width = w;
-    height = h;
-  }
-  void init(GraphicsAPI* api, Quad* quad) {
-    m_renderQuad = quad;
-    m_graphicsApi = api;
-  }
-  // CefRenderHandler interface
-  bool GetViewRect(CefRefPtr<CefBrowser> browser, CefRect &rect) override
-  {
-    rect = CefRect(0, 0, width, height);
-    return true;
-  }
-  void resize(int  w, int h) {
-    width = w;
-    height = h;
-    //m_renderQuad->texture.resize(w,h);
-  }
-  void OnPaint(CefRefPtr<CefBrowser> browser, PaintElementType type, const RectList &dirtyRects, const void *buffer, int width, int height) override
-  {
-    m_renderQuad->texture->udpateFromMemory(*m_graphicsApi->deviceContext,(char*)buffer, width *height*4);
-  }
-  void 
-  OnScrollOffsetChanged(CefRefPtr<CefBrowser> browser,
-    double x,
-    double y) override{
-    //CefMouseEvent event;
-    //browser->GetHost()->SendMouseWheelEvent(event, x, y);
-  }
-  /*void OnContextCreated(
-    CefRefPtr<CefBrowser> browser,
-    CefRefPtr<CefFrame> frame,
-    CefRefPtr<CefV8Context> context)override {
-
-    CefRefPtr<CefV8Value> object = context->GetGlobal();
-
-    // Create an instance of my CefV8Handler object.
-    CefRefPtr<CefV8Handler> handler = new DriderV8Handler();
-
-    // Create the "myfunc" function.
-    CefRefPtr<CefV8Value> func = CefV8Value::CreateFunction("myfunc", handler);
-
-    // Add the "myfunc" function to the "window" object.
-    object->SetValue("myfunc", func, V8_PROPERTY_ATTRIBUTE_NONE);
-  }*/
+  RenderHandler( Quad* quad,int w,int h): 
+    m_width(w), m_height(h), m_renderQuad(quad){}
+  bool GetViewRect(CefRefPtr<CefBrowser> browser, CefRect &rect) override;
+  void OnPaint(CefRefPtr<CefBrowser> browser, 
+               PaintElementType type, 
+               const RectList &dirtyRects, 
+               const void *buffer, 
+               int width, 
+               int height) override;
+  void resize(int  w, int h);
 
   IMPLEMENT_REFCOUNTING(RenderHandler);
 private:
-  int width;
-  int height;
+  int m_width;
+  int m_height;
   size_t m_hwnd;
   Quad* m_renderQuad;
   GraphicsAPI* m_graphicsApi;
@@ -110,25 +74,13 @@ public:
   IMPLEMENT_REFCOUNTING(BrowserClient);
 };
 
-class DR_UI_EXPORT WebRenderer : public driderSDK::IKeyboardListener,  driderSDK::IMouseInputListener {
+
+
+class DR_UI_EXPORT WebRenderer {
 public:
-  static void start() {
-    CefMainArgs args;
-    int result = CefExecuteProcess(args, nullptr, nullptr);
-    std::cout << "res: " << result << std::endl;
-    if (result >= 0)
-      exit(0);
-    CefSettings settings;
-    settings.multi_threaded_message_loop = false;
-    settings.windowless_rendering_enabled = true;
-    settings.single_process = true;
-    settings.no_sandbox = true;
-    result = CefInitialize(args, settings, nullptr, nullptr);
-    if (!result)
-      throw "CEF_INITIALIZATION FAILED: CefInitialize";
-  }
+  static void start();
   WebRenderer(){}
-  void Init(GraphicsAPI* api,Quad* quad );//TODO: add mode (headless, pop up, child)
+  void Init(Quad* quad, BROWSER_MODE::E mode = BROWSER_MODE::kHeadless);
   void Destroy();
   void startRendering();
   void stoptRendering();
@@ -144,90 +96,14 @@ public:
   void resize(int w, int h);
 
 
-  //Input
-  bool
-  keyPressed(const KeyboardButtonID::E& key) override {
-    CefKeyEvent keyEvent;
-    if (key == KeyboardButtonID::KC_Q) {
-    }
-    if (key == KeyboardButtonID::KC_A) {
-    }
-    if (key == KeyboardButtonID::KC_1) {
-    }
-
-    //keyEvent.modifiers =  0; // InputManager::instance().getKeyboard().;
-    keyEvent.windows_key_code =  key;
-    //keyEvent.
-    keyEvent.type = KEYEVENT_RAWKEYDOWN;
-    browser->GetHost()->SendKeyEvent(keyEvent);
-
-    keyEvent.type = KEYEVENT_CHAR;
-    browser->GetHost()->SendKeyEvent(keyEvent);
-    return true;
-  }
-
-  bool
-  keyReleased(const KeyboardButtonID::E& key) override {
-    return false;
-  }
-
-
-  //Mouse
-  bool
-  mouseMoved(const MouseInputState& state) override {
-  CefMouseEvent mouseEvent;
-  mouseEvent.x = state.cursorPosition.x;
-  mouseEvent.y = state.cursorPosition.y;
-  browser->GetHost()->SendMouseMoveEvent(mouseEvent, false);
-  return true;
-  }
-
-  bool
-  mousePressed(const MouseInputState& state, MouseButtonID::E pressedId) override {
-  CefMouseEvent mouseEvent;
-  mouseEvent.x = state.cursorPosition.x;
-  mouseEvent.y = state.cursorPosition.y;
-  cef_mouse_button_type_t button;
-  if (pressedId == MouseButtonID::MB_Right) {
-    button = MBT_RIGHT;
-  }
-  if (pressedId == MouseButtonID::MB_Left) {
-    button = MBT_LEFT;
-  }
-  if (pressedId == MouseButtonID::MB_Middle) {
-    button = MBT_MIDDLE;
-  }
-  browser->GetHost()->SendMouseClickEvent(mouseEvent, button ,false,1);
-  return true;
-  }
-
-  bool
-  mouseReleased(const MouseInputState& state, MouseButtonID::E pressedId) override {
-  CefMouseEvent mouseEvent;
-  mouseEvent.x = state.cursorPosition.x;
-  mouseEvent.y = state.cursorPosition.y;
-  cef_mouse_button_type_t button;
-  if (pressedId == MouseButtonID::MB_Right) {
-    button = MBT_RIGHT;
-  }
-  if (pressedId == MouseButtonID::MB_Left) {
-    button = MBT_LEFT;
-  }
-  if (pressedId == MouseButtonID::MB_Middle) {
-    button = MBT_MIDDLE;
-  }
-  browser->GetHost()->SendMouseClickEvent(mouseEvent, button, true, 1);
-  return true;
-  }
-
 private:
-
+  void initInput();
   CallbackMap callback_map_;
   CefRefPtr<CefBrowser> browser;
   CefRefPtr<BrowserClient> browserClient;
   CefRefPtr<RenderHandler> renderHandler;
   bool m_running;
   Quad* m_quad;
-  GraphicsAPI* m_api;
+  BROWSER_MODE::E m_mode;
 };
 }

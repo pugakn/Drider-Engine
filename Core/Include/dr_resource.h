@@ -21,6 +21,8 @@ class DR_CORE_EXPORT Resource
   */
   virtual ~Resource() { }
 
+  //virtual Int32 getType() = 0;
+
   /**
   * Initialize the resource
   */
@@ -31,6 +33,10 @@ class DR_CORE_EXPORT Resource
   virtual void
   init(void* /*pData*/,
        void* /*extraData*/)
+  {}
+
+  virtual void
+  destroy(void* /**/)
   {}
 };
 

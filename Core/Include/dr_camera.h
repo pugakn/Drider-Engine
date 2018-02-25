@@ -211,15 +211,6 @@ public:
   const Matrix4x4&
   getProjection();
 
-  /**
-  * Gets the current facing direction.
-  *
-  * @return
-  *   Vector with the direction of the camera.
-  */
-  Vector3D
-  getDirection() const;
-
  private:
 	Vector3D m_target;
 	Vector3D m_up;

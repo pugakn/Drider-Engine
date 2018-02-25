@@ -22,9 +22,9 @@ struct CBuffer {
 };
 class Quad {
 public:
-  void init(driderSDK::Device& device);
+  void init();
   void destroy();
-  void draw(const driderSDK::DeviceContext& deviceContext);
+  void draw();
   vertex m_vertex[4];
   driderSDK::UInt32 m_index[6];
   CBuffer constBuff;

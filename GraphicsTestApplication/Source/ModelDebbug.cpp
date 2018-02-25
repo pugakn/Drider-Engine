@@ -16,7 +16,7 @@ ModelDebbug::create(std::shared_ptr<Model> model) {
 
   m_aabbTrans = model->aabb;
 
-  m_aabbTrans.recalculate(m_gameObject.getWorldTransform());
+  m_aabbTrans.recalculate(m_gameObject.getWorldTransform().getMatrix());
 
   //Create index buffer & vertex buffer 4 lines
   std::vector<Mesh> meshes{1};

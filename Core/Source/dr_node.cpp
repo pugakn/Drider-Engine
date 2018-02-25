@@ -4,7 +4,6 @@ namespace driderSDK {
 
 Node::Node(const TString& _name, WeakNode _parent) 
   : m_parent(_parent),
-    m_finalTransform(Math::kIdentity),
     m_name(_name) {
 }
 
@@ -134,7 +133,7 @@ SizeT Node::getChildrenCount() {
   return m_children.size();
 }
 
-const Matrix4x4&
+const Transform&
 Node::getWorldTransform() const{
   return m_finalTransform;
 }
@@ -148,8 +147,7 @@ Node::draw() {
 
 void 
 Node::updateImpl() {
-  m_finalTransform = getParent()->m_finalTransform * 
-                     transform.getTransformMatrix();
+  m_finalTransform = getParent()->m_finalTransform * transform;
 }
 
 }

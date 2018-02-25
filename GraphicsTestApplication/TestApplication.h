@@ -14,9 +14,6 @@
 #include <dr_shader.h>
 
 #include <Windows.h>
-#include"dr_input_manager.h"
-#include "dr_input_keyboard.h"
-#include "dr_input_mouse.h"
 #include <iostream>
 
 //#include <FMOD\fmod.hpp>
@@ -47,6 +44,8 @@ public:
   void initResources();
   void initSound();
   void initSceneGraph();
+
+  void TestKeyBoard();
   
   GraphicsAPI* driver;
   std::vector<Model3D> models;
@@ -66,6 +65,7 @@ public:
   unsigned int      version;*/
   std::vector<std::unique_ptr<Technique>> m_techniques;
   std::unique_ptr<SceneGraph> m_sceneGraph;
+  std::shared_ptr<GameObject> m_joker;
 };
 
 }
