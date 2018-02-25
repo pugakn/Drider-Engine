@@ -107,7 +107,7 @@ ScriptEngine::configureContext() {
 		return -1;
 	}
 
-	Int8 result = m_scriptContext->SetLineCallback(asMETHOD(ScriptEngine, lineCallback),
+	/*Int8 result = m_scriptContext->SetLineCallback(asMETHOD(ScriptEngine, lineCallback),
 																								 &timeout,
 																								 asCALL_THISCALL);
 	if(result < 0) {
@@ -115,7 +115,7 @@ ScriptEngine::configureContext() {
 		m_scriptContext->Release();
 		m_scriptEngine->Release();
 		return -2;
-	}
+	}*/
 	return 0;
 }
 
@@ -175,9 +175,9 @@ ScriptEngine::messageCallback(const asSMessageInfo* scriptMessage, void* param) 
 
 	//Expect something like "mySection (5, 1) : Example message here"
 	TString message = StringUtils::toTString(scriptMessage->section) + 
-																					 _T(" (") + StringUtils::toTString(std::to_string(row)) +
-																					 _T(", ") + StringUtils::toTString(std::to_string(col)) +
-																					 _T(") : ") + 
+																					 //_T(" (") + StringUtils::toTString(std::to_string(row)) +
+																					 //_T(", ") + StringUtils::toTString(std::to_string(col)) +
+																					 //_T(") : ") + 
 																					 StringUtils::toTString(scriptMessage->message);
 
 	addScriptLog(message, scriptMessage->type);

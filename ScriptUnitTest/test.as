@@ -1,4 +1,4 @@
 void main() {
-	stringPrint("Im ready depression");
+	stringPrint("Anuma sicierto");
 }	 
 
