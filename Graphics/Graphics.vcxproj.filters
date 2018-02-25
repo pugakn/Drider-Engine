@@ -245,5 +245,8 @@
     <ClCompile Include="Source\dr_graphics_driver.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
+    <ClCompile Include="Source\dr_graphics_api.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

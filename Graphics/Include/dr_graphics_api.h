@@ -18,6 +18,32 @@ public:
   virtual void clear() = 0;
   virtual void swapBuffers() = 0;
 
+  Device& getDeviceReference();
+  Device* getDevicePointer();
+
+  DeviceContext& getDeviceContextReference();
+  DeviceContext* getDeviceContextPointer();
+
+  SwapChain& getSwapChainReference();
+  SwapChain* getSwapChainPointer();
+
+  RenderTarget& getBackBufferRTReference();
+  RenderTarget* getBackBufferRTPointer();
+
+  DepthStencil& getDepthStencilRTReference();
+  DepthStencil* getDepthStencilRTPointer();
+
+  Texture& getBackBufferTextureReference();
+  Texture* getBackBufferTexturePointer();
+
+  Texture& getDepthTextureReference();
+  Texture* getDepthTexturePointer();
+
+  RasterizerState& getRasterizerStateReference();
+  RasterizerState* getRasterizerStatePointer();
+
+  void* getWindowHandler();
+protected:
   Device* device;
   DeviceContext* deviceContext;
   SwapChain* swapChain;

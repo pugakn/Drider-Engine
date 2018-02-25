@@ -19,7 +19,7 @@ void RenderHandler::OnPaint(CefRefPtr<CefBrowser> browser,
                             int width, 
                             int height)
 {
-  m_renderQuad->texture->udpateFromMemory(*m_graphicsApi->deviceContext, 
+  m_renderQuad->texture->udpateFromMemory(GraphicsDriver::getApiReference().getDeviceContextReference(),
     static_cast<const char*>(buffer), width *height * 4);
 }
 void RenderHandler::resize(int w, int h)
@@ -86,10 +86,10 @@ object->SetValue("myfunc", func, V8_PROPERTY_ATTRIBUTE_NONE);
      switch (mode)
      {
      case driderSDK::BROWSER_MODE::kHeadless:
-       window_info.SetAsWindowless((HWND)GraphicsDriver::getApiReference().m_hwnd);
+       window_info.SetAsWindowless((HWND)GraphicsDriver::getApiReference().getWindowHandler());
        break;
      case driderSDK::BROWSER_MODE::kPopUp:
-       window_info.SetAsPopup((HWND)GraphicsDriver::getApiReference().m_hwnd, "NAMAE");
+       window_info.SetAsPopup((HWND)GraphicsDriver::getApiReference().getWindowHandler(), "NAMAE");
        break;
      case driderSDK::BROWSER_MODE::kChild:
        throw "Not implemented exeption";

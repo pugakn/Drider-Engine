@@ -208,6 +208,7 @@
     <ClCompile Include="Source\dr_d3d_texture.cpp" />
     <ClCompile Include="Source\dr_d3d_vertex_buffer.cpp" />
     <ClCompile Include="Source\dr_d3d_vertex_shader.cpp" />
+    <ClCompile Include="Source\dr_graphics_api.cpp" />
     <ClCompile Include="Source\dr_graphics_driver.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

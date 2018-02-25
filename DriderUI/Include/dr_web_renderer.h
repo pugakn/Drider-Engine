@@ -61,7 +61,6 @@ private:
   int m_height;
   size_t m_hwnd;
   Quad* m_renderQuad;
-  GraphicsAPI* m_graphicsApi;
 };
 class BrowserClient : public CefClient
 {
