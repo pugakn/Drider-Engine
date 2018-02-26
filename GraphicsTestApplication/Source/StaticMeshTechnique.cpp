@@ -10,12 +10,6 @@
 
 namespace driderSDK {
 
-StaticMeshTechnique::StaticMeshTechnique(Camera* camera_, 
-                                         GameObject* gameObject_) 
-  : m_camera(camera_),
-    m_gameObject(gameObject_) 
-{}
-
 void
 StaticMeshTechnique::compile(Device& device) {
   
@@ -68,8 +62,19 @@ StaticMeshTechnique::compile(Device& device) {
 UInt8*
 StaticMeshTechnique::getConstBufferData() {
   
-  auto& world = m_gameObject->getWorldTransform().getMatrix();
-  m_constBufferObj.WVP = world * m_camera->getVP();
+  Matrix4x4 world(Math::FORCE_INIT::kIdentity);
+
+  if (m_gameObject) {
+    world = m_gameObject->getWorldTransform().getMatrix();
+  }
+
+  Matrix4x4 vp(Math::FORCE_INIT::kIdentity);
+
+  if (m_camera) {
+    vp = m_camera->getVP();
+  }
+
+  m_constBufferObj.WVP = world * vp;
   m_constBufferObj.World = world;
 
   return reinterpret_cast<UInt8*>(&m_constBufferObj);

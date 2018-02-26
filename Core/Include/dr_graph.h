@@ -49,7 +49,7 @@ public:
   /**
   * Query meshes from the scene graph
   */
-  std::vector<RenderMesh>
+  std::vector<SharedGameObject>
   query(Camera& camera, QUERY_ORDER::E order, UInt32 props);
      
   void 

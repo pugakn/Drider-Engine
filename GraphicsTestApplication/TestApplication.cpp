@@ -29,12 +29,22 @@ TestApplication::postInit() {
   m_camera = std::make_shared<Camera>(_T("MAIN_CAM"), 
                                       m_viewport);
 
-  m_camera->createProyection(45.f, 0.1f, 1000.f);
-
-
+  m_camera->createProyection(45.f, 0.1f, 10000.f);
   m_camera->transform.setPosition({0.f, 100.0f, -100.0f});
   m_camera->setTarget({0.0f, 50.0f, 10.0f});
-  //m_camera->transform.setRotation(Degree(180), AXIS::kX);
+
+  m_worldCam = std::make_shared<Camera>(_T("WORLD_CAM"), 
+                                        m_viewport);
+  
+  
+  m_worldCam ->createProyection(45.f, 0.1f, 10000.f);
+  m_worldCam->transform.setPosition({300.f, 500.f, -400.f});
+  m_worldCam->setTarget({0.f, 1.f, 0.f});
+
+  m_activeCam = m_worldCam;
+
+  m_technique = dr_make_unique<StaticMeshTechnique>();
+  m_technique->compile(*m_graphicsAPI->device);
 
   ResourceManager::startUp();
   InputManager::startUp((SizeT)GetActiveWindow());
@@ -44,10 +54,10 @@ TestApplication::postInit() {
   initInput();
   initSound();
   initSceneGraph();
-    
-  m_camera->update();
+  
+  m_sceneGraph->getRoot()->addChild(m_worldCam);
 
-  m_sceneGraph->query(*m_camera, QUERY_ORDER::kBackToFront, 0);
+  //m_sceneGraph->query(*m_camera, QUERY_ORDER::kBackToFront, 0);
   
   /*result = FMOD::System_Create(&system);
   result = system->getVersion(&version);
@@ -126,11 +136,44 @@ TestApplication::postUpdate() {
   m_sceneGraph->update();
 }
 
-void TestApplication::postRender() {
+void 
+TestApplication::postRender() {
+  
+  for (auto tech : m_techs) {
+    tech->setCamera(&(*m_activeCam));  
+  }
+
   m_sceneGraph->draw();
+
+  m_technique->setCamera(&(*m_activeCam));
+
+  auto dc = m_graphicsAPI->deviceContext;
+
+  dc->setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
+
+  auto objects = m_sceneGraph->query(*m_camera, QUERY_ORDER::kFrontToBack, 0);
+
+  for (auto& object : objects) {
+
+    m_technique->setGameObject(&(*object));
+    
+    if (m_technique->prepareForDraw(*m_graphicsAPI->deviceContext)) {
+
+      auto& meshes = object->getComponent<RenderComponent>()->getMeshes();
+
+      for (auto& mesh : meshes) {
+        mesh.vertexBuffer->set(*dc);
+        mesh.indexBuffer->set(*dc);
+
+        dc->draw(mesh.indicesCount, 0, 0);
+      }
+    }
+  }
+
 }
 
-void TestApplication::postDestroy() {}
+void 
+TestApplication::postDestroy() {}
 
 void 
 TestApplication::initInput() {
@@ -144,6 +187,20 @@ TestApplication::initInput() {
   {
     m_joker->transform.rotate(Degree(-45.f), AXIS::kY);
   };
+
+  auto toggleCam = [&]()
+  {
+    if (m_activeCam == m_worldCam) {
+      m_activeCam = m_camera;
+    }
+    else {
+      m_activeCam = m_worldCam;
+    }
+  };
+
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kT,
+                        toggleCam);
 
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kLEFT,
@@ -222,39 +279,23 @@ TestApplication::initSceneGraph() {
     
     auto node = m_sceneGraph->createNode(parent, model);
 
+    auto p = node->createComponent<ModelDebbug>(*m_graphicsAPI->device,
+                                                *m_graphicsAPI->deviceContext);
+
+    auto tech = new LinesTechnique(&(*m_activeCam), 
+                                   &(*node));
+
+    p->setShaderTechnique(tech);
+
+    p->setModel(model);
+
+    m_techs.push_back(tech);
+  
     node->setName(name);
 
     node->transform.setPosition(pos);
-
-    node->createComponent<DrawableComponent>(*m_graphicsAPI->device, 
-                                             *m_graphicsAPI->deviceContext);
-
-    node->createComponent<ModelDebbug>(*m_graphicsAPI->device, 
-                                       *m_graphicsAPI->deviceContext);
-
-    auto drawableComponent = node->getComponent<DrawableComponent>();
-    
-    
-    auto technique = dr_make_unique<StaticMeshTechnique>(&(*m_camera), 
-                                                         &(*node));
-
-    //drawableComponent->setModel(model);
-
-    drawableComponent->setShaderTechnique(technique.get());
-
-    auto debbugComponent = node->getComponent<ModelDebbug>();
-
-    auto technique2 = dr_make_unique<LinesTechnique>(&(*m_camera), 
-                                                     &(*node));
-
-    debbugComponent->setModel(model);
-
-    debbugComponent->setShaderTechnique(technique2.get());
     
     parent->addChild(node);
-
-    m_techniques.push_back(std::move(technique));
-    m_techniques.push_back(std::move(technique2));
 
     return node;
   };

@@ -7,6 +7,11 @@
 
 namespace driderSDK {
 
+Technique::Technique(Camera* _camera, GameObject* _gameObject) 
+  : m_camera(_camera),
+    m_gameObject(_gameObject)
+{}
+
 bool
 Technique::prepareForDraw(DeviceContext& deviceContext) {
 

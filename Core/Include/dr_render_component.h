@@ -3,6 +3,7 @@
 #include <vector>
 #include <dr_memory.h>
 #include <dr_vector3d.h>
+#include <dr_aabb.h>
 #include "dr_core_prerequisites.h"
 #include "dr_gameComponent.h"
 
@@ -42,7 +43,11 @@ public:
     return m_meshes;
   }
 
-  Vector3D center;
+  const Vector3D&
+  getCenter();
+
+  const AABB&
+  getAABB();  
 private:
   // Inherited via GameComponent
   virtual void 
@@ -60,6 +65,8 @@ private:
   bool m_isModel;
   WeakModelRef m_model;
   MeshList m_meshes;
+  AABB m_aabb;
+  Vector3D m_center;
 };
 
 }

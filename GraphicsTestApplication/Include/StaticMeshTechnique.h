@@ -18,7 +18,7 @@ class StaticMeshTechnique : public Technique
     Matrix4x4 World;
   };
 
-  StaticMeshTechnique(Camera* camera_, GameObject* gameObject_);
+  using Technique::Technique;
 
   virtual void 
   compile(Device & device) override;
@@ -27,8 +27,6 @@ class StaticMeshTechnique : public Technique
   getConstBufferData() override;
  private:
   CBuffer m_constBufferObj;
-  Camera* m_camera;
-  GameObject* m_gameObject;
 };
 
 }

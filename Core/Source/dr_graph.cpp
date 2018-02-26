@@ -2,6 +2,7 @@
 #include <functional>
 #include <queue>
 #include <dr_vector3d.h>
+#include <dr_frustrum.h>
 #include "dr_camera.h"
 #include "dr_gameObject.h"
 #include "dr_model.h"
@@ -23,7 +24,7 @@ SceneGraph::getRoot() const {
   return m_root;
 }
 
-std::vector<RenderMesh>
+std::vector<SceneGraph::SharedGameObject>
 SceneGraph::query(Camera& camera, QUERY_ORDER::E order, UInt32 props) {
 
   using ObjectComp = std::function<bool(SharedGameObject, SharedGameObject)>;
@@ -35,13 +36,13 @@ SceneGraph::query(Camera& camera, QUERY_ORDER::E order, UInt32 props) {
   {
     auto renderA = a->getComponent<RenderComponent>();
  
-    Vector4D posA(renderA->center, 1.f);
+    Vector4D posA(renderA->getCenter(), 1.f);
 
     auto WVPA = a->getWorldTransform().getMatrix() * camera.getVP();
 
     auto renderB = b->getComponent<RenderComponent>();
 
-    Vector4D posB(renderB->center, 1.f);
+    Vector4D posB(renderB->getCenter(), 1.f);
 
     auto WVPB = b->getWorldTransform().getMatrix() * camera.getVP();
 
@@ -59,10 +60,15 @@ SceneGraph::query(Camera& camera, QUERY_ORDER::E order, UInt32 props) {
   
   GameObjectQueue objects(objectComp);
 
+  Frustrum frustrum(camera.getVP());
+
   std::function<void(SharedGameObject)> addObject = [&](SharedGameObject obj)
   {
-    if (obj->getComponent<RenderComponent>()) {
-      objects.push(obj);
+    if (auto rc = obj->getComponent<RenderComponent>()) {
+      
+      //if (rc->getAABB().intersect(frustrum)) {
+        objects.push(obj);
+      //}      
     }
 
     for (SizeT i = 0; i < obj->getChildrenCount(); ++i) {
@@ -72,20 +78,16 @@ SceneGraph::query(Camera& camera, QUERY_ORDER::E order, UInt32 props) {
 
   addObject(m_root);
 
-  std::vector<RenderMesh> meshes;
+  std::vector<SharedGameObject> gameobjects;
    
   while (!objects.empty()) {
 
-    auto renderCmp = objects.top()->getComponent<RenderComponent>();
-
-    auto& meshesObj = renderCmp->getMeshes();
-
-    meshes.insert(meshes.begin(), meshesObj.begin(), meshesObj.end());
-
+    gameobjects.push_back(objects.top());
+    
     objects.pop();    
   }
 
-  return meshes;  
+  return gameobjects;  
 }
 
 void

@@ -26,6 +26,7 @@
 namespace driderSDK {
 
 class Technique;
+class StaticMeshTechnique;
   
 class TestApplication : public Application
 {
@@ -50,11 +51,10 @@ public:
   void initResources();
   void initSound();
   void initSceneGraph();
-
-  void TestKeyBoard();
-
+  
   std::shared_ptr<Camera> m_camera;
-
+  std::shared_ptr<Camera> m_worldCam;
+  std::shared_ptr<Camera> m_activeCam;
   //SoundAPI* soundDriver;
 
   //DrSound *sound1;
@@ -66,7 +66,8 @@ public:
   FMOD::Channel    *channel = 0;
   FMOD_RESULT       result;
   unsigned int      version;*/
-  std::vector<std::unique_ptr<Technique>> m_techniques;
+  std::vector<Technique*> m_techs;
+  std::unique_ptr<StaticMeshTechnique> m_technique;
   std::unique_ptr<SceneGraph> m_sceneGraph;
   std::shared_ptr<GameObject> m_joker;
 };

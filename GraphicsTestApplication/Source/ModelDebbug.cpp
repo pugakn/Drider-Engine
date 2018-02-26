@@ -4,6 +4,7 @@
 #include <dr_mesh.h>
 #include <dr_aabb.h>
 #include <dr_model.h>
+#include <dr_render_component.h>
 #include "Technique.h"
 #include <dr_vertex_buffer.h>
 #include <dr_index_buffer.h>
@@ -14,16 +15,12 @@ namespace driderSDK {
 void 
 ModelDebbug::create(std::shared_ptr<Model> model) {
 
-  m_aabbTrans = model->aabb;
-
-  m_aabbTrans.recalculate(m_gameObject.getWorldTransform().getMatrix());
-
   //Create index buffer & vertex buffer 4 lines
   std::vector<Mesh> meshes{1};
 
   auto& mesh = meshes[0];
 
-  auto points = m_aabbTrans.getBounds();
+  auto points = m_gameObject.getComponent<RenderComponent>()->getAABB().getBounds();
 
   mesh.vertices.resize(8);
 
