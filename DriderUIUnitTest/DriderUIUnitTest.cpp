@@ -7,7 +7,6 @@ int main()
 {
   WebRenderer::start();
 
-
   TestApplication app;
   app.startApplication();
   return 0;

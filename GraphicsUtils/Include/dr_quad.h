@@ -8,8 +8,6 @@
 #include <dr_d3d_vertex_shader.h>
 #include <dr_d3d_fragment_shader.h>
 #include <dr_d3d_input_layout.h>
-#include <dr_d3d_texture.h>
-#include <dr_d3d_sample_state.h>
 
 struct vertex
 {
@@ -35,11 +33,6 @@ public:
   driderSDK::Shader* vs;
   driderSDK::Shader* fs;
 
-  driderSDK::Texture* texture = nullptr;
-
   driderSDK::InputLayout* IL;
-  driderSDK::SamplerState* SS;
-  int width = 512;
-  int height = 512;
   
 };

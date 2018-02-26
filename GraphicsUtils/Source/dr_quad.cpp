@@ -54,22 +54,6 @@ void Quad::init()
   IB = reinterpret_cast<IndexBuffer*>(device.createBuffer(bdesc, reinterpret_cast<byte*>(&m_index[0])));
 
   //constBuff.WVP = Matrix4x4::identityMat4x4;
-
-  driderSDK::DrTextureDesc tDesc;
-  tDesc.width = width;
-  tDesc.height = height;
-  tDesc.pitch = width * 4;
-  tDesc.Format = DR_FORMAT::kDrFormat_B8G8R8A8_UNORM;
-  tDesc.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE | DR_BIND_FLAGS::RENDER_TARGET;
-  tDesc.mipLevels = 0;
-  tDesc.dimension = DR_DIMENSION::k2D;
-  tDesc.genMipMaps = true;
-  texture = device.createEmptyTexture(tDesc);
-
-  driderSDK::DrSampleDesc SSdesc;
-  SSdesc.Filter = DR_TEXTURE_FILTER::kANISOTROPIC;
-  SSdesc.maxAnisotropy = 16;
-  SS = device.createSamplerState(SSdesc);
 }
 
 void Quad::destroy()
@@ -90,8 +74,8 @@ void Quad::draw()
   IB->set(deviceContext); 
   CB->updateFromBuffer(deviceContext,reinterpret_cast<byte*>(&constBuff));
   CB->set(deviceContext);
-  texture->set(deviceContext, 0);
-  SS->set(deviceContext,DR_SHADER_TYPE_FLAG::kFragment);
+  //texture->set(deviceContext, 0);
+  //SS->set(deviceContext,DR_SHADER_TYPE_FLAG::kFragment);
   deviceContext.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
   deviceContext.draw(6, 0, 0);
 }

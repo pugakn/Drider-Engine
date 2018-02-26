@@ -6,6 +6,10 @@
 #include <dr_time.h>
 #include <dr_input_manager.h>
 #include <dr_graphics_driver.h>
+
+#ifdef DR_PLATFORM_WINDOWS
+#include <dr_d3d_texture.h>
+#endif
 namespace driderSDK {
 
 TestApplication::TestApplication()
@@ -27,13 +31,11 @@ TestApplication::onInit() {
   if (InputManager::isStarted()) {
     inputMngr = InputManager::instancePtr();
   }
-  quad.width = viewport.width;
-  quad.height = viewport.height;
   quad.init();
 
 
 
-  webRenderer.Init(&quad);
+  webRenderer.Init(1280,720);
   Time::startUp();
 }
 void
@@ -43,8 +45,6 @@ TestApplication::onInput() {
 
 void
 TestApplication::onUpdate() {
-  //soundDriver->update();
-
   Time::instance().update();
   webRenderer.update();
 }
@@ -52,15 +52,13 @@ TestApplication::onUpdate() {
 void
 TestApplication::onDraw() {
   GraphicsDriver::getApiReference().clear();
+  webRenderer.setTexture();
   quad.draw();
   GraphicsDriver::getApiReference().swapBuffers();
 }
 
 void
 TestApplication::onDestroy() {
-  /*result = sound1->release();
-  result = system->close();
-  result = system->release();*/
 }
 
 void
