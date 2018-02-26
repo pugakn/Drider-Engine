@@ -51,9 +51,13 @@ void RenderHandler::init()
 void 
 RenderHandler::resize(int w, int h)
 {
+  auto tDesc = m_texture->getDescriptor();
   m_width = w;
   m_height = h;
-  //texture.resize(w,h);
+  tDesc.width = m_width;
+  tDesc.height = m_height;
+  tDesc.pitch = m_width * 4;
+  m_texture->modifyTextureParams(GraphicsDriver::getApiReference().getDeviceReference(), tDesc);
 }
 
 Texture * RenderHandler::getTexturePointer()

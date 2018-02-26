@@ -139,4 +139,10 @@ D3DTexture::generateMipMaps(const DeviceContext& deviceContext) const {
       GenerateMips(APIView);
 }
 
+void 
+D3DTexture::modifyTextureParams(const Device & device, const DrTextureDesc & desc) {
+  APITexture->Release();
+  APIView->Release();
+  createFromMemory(device, desc, 0);
+}
 }

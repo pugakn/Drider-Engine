@@ -39,6 +39,9 @@ public:
   IMPLEMENT_REFCOUNTING(DriderV8Handler);
 };
 
+/**
+* Internal render handler
+*/
 class RenderHandler: public CefRenderHandler
 {
 public:
@@ -75,7 +78,9 @@ private:
   SamplerState* m_samplerState;
 };
 
-
+/**
+* Internal browser client
+*/
 class BrowserClient : public CefClient
 {
 public:
@@ -139,8 +144,8 @@ public:
   /* Only on Headless context */
   Texture* getTexturePointer();
   Texture& getTextureReference();
-
   void setTexture();
+
 private:
   void 
   initInput();
