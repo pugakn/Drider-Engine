@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <dr_memory.h>
+#include <dr_vector3d.h>
 #include "dr_core_prerequisites.h"
 #include "dr_gameComponent.h"
 
@@ -41,6 +42,7 @@ public:
     return m_meshes;
   }
 
+  Vector3D center;
 private:
   // Inherited via GameComponent
   virtual void 

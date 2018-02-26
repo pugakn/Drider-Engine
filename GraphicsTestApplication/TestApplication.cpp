@@ -29,7 +29,7 @@ TestApplication::postInit() {
   m_camera = std::make_shared<Camera>(_T("MAIN_CAM"), 
                                       m_viewport);
 
-  m_camera->createProyection(45.f, 0.1f, 10000.f);
+  m_camera->createProyection(45.f, 0.1f, 1000.f);
 
 
   m_camera->transform.setPosition({0.f, 100.0f, -100.0f});
@@ -44,7 +44,11 @@ TestApplication::postInit() {
   initInput();
   initSound();
   initSceneGraph();
+    
+  m_camera->update();
 
+  m_sceneGraph->query(*m_camera, QUERY_ORDER::kBackToFront, 0);
+  
   /*result = FMOD::System_Create(&system);
   result = system->getVersion(&version);
   if (version < FMOD_VERSION) {
@@ -63,41 +67,53 @@ TestApplication::input() {
   Node::SharedNode croc;
 
   if (croc = m_sceneGraph->getRoot()->getChild(_T("Croc"))) {
+    
     croc->transform.rotate(Degree(90 * Time::instance().getDelta()), AXIS::kY);
+    float scale = Math::cos(croc->transform.getRotation().y) * 0.5f + 1.f;
+    croc->transform.setScale({scale,scale,scale}); 
   }
 
   if (auto node = m_sceneGraph->getRoot()->getChild(_T("Dwarf"))) {
-
-    if (croc) {
-      float scale = Math::cos(croc->transform.getRotation().y) * 0.5f + 1.f;
-      croc->transform.setScale({scale,scale,scale}); 
-    }
-
+    
     node->transform.rotate(Degree(90 * Time::instance().getDelta()), AXIS::kY);
   }
+  
+  Vector3D dir = m_joker->transform.getDirection();
+  Vector3D right = dir.cross(Vector3D(0,1,0));
+  float f = 0;
+  float s = 0;
 
-  if (auto croc = m_sceneGraph->getRoot()->getChild(_T("Croc"))) {
-    croc->transform.rotate(Degree(60 * Time::instance().getDelta()), AXIS::kY);
-  }
-  if (Joystick::get(0)) {
+  if (Joystick::get(0)) {   
     
-    float vel = 150.f * Time::getDelta();
-    float ll = Joystick::get(0)->getAxis(JOYSTICK_AXIS::kLSVer);
-    if (Math::abs(ll) < 0.1f) {
-      ll = 0.0f;
+    f = -Joystick::get(0)->getAxis(JOYSTICK_AXIS::kLSVer);
+    if (Math::abs(f) < 0.1f) {
+      f = 0.0f;
     }
 
-    float rr = Joystick::get(0)->getAxis(JOYSTICK_AXIS::kLSHor);
-    if (Math::abs(rr) < 0.1f) {
-      rr = 0.0f;
+    s = -Joystick::get(0)->getAxis(JOYSTICK_AXIS::kLSHor);
+    if (Math::abs(s) < 0.1f) {
+      s = 0.0f;
     }
-    
-    auto dir = m_joker->transform.getDirection();
-    auto right = dir.cross(Vector3D(0,1,0)) * -rr;
-    dir *= -ll;
-    dir += right;
-    m_joker->transform.move(dir * vel);
+
   }
+
+  if (Keyboard::isKeyDown(KEY_CODE::kW)) {
+    f = 1;
+  }
+  else if (Keyboard::isKeyDown(KEY_CODE::kS)) {
+    f = -1;
+  }
+
+  if (Keyboard::isKeyDown(KEY_CODE::kA)) {
+    s = 1;
+  }
+  else if (Keyboard::isKeyDown(KEY_CODE::kD)) {
+    s = -1;
+  }
+
+  float vel = 150.f * Time::getDelta();
+  
+  m_joker->transform.move((dir * f + right * s) * vel);
   
 }
 
@@ -105,10 +121,6 @@ void
 TestApplication::postUpdate() {
   //soundDriver->update();
   input();
-
-  std::cout << m_joker->transform.getPosition().x << ",";
-  std::cout << m_joker->transform.getPosition().y << ",";
-  std::cout << m_joker->transform.getPosition().z << std::endl;
 
   Time::instance().update();
   m_sceneGraph->update();
@@ -122,39 +134,24 @@ void TestApplication::postDestroy() {}
 
 void 
 TestApplication::initInput() {
-
-  HWND win = GetActiveWindow();
-
-  auto callback = std::bind(&TestApplication::TestKeyBoard, this);
-
-  auto mouseCallback = []()
-  { 
-    auto pos = Mouse::getPosition();
-    auto delta = Mouse::getDisplacement();
-    std::cout << "Mouse moved x:" << pos.x << " y:" << pos.y;
-    std::cout << " movedX:" << delta.x << " movedY:" << delta.y << std::endl;
-  };
   
-  auto anyKeyCallback = [](KEY_CODE::E key) 
+  auto rotateLeft = [&]() 
   {
-    std::cout << "Key pressed" << std::endl;
+    m_joker->transform.rotate(Degree(45.f), AXIS::kY);
   };
 
-  auto anyKeyCallbackR = [](KEY_CODE::E key) 
+  auto rotateRight = [&]() 
   {
-    std::cout << "Key released" << std::endl;
+    m_joker->transform.rotate(Degree(-45.f), AXIS::kY);
   };
 
-  Keyboard::addAnyKeyCallback(KEYBOARD_EVENT::kKeyPressed,
-                              anyKeyCallback);
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kLEFT,
+                        rotateLeft);
 
-  Keyboard::addAnyKeyCallback(KEYBOARD_EVENT::kKeyReleased,
-                              anyKeyCallbackR);
-  
-  Mouse::addButtonCallback(MOUSE_INPUT_EVENT::kButtonPressed,
-                           MOUSE_BUTTON::kMiddle,
-                           mouseCallback);
-  
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kRIGHT,
+                        rotateRight);
 }
 
 void 
@@ -214,7 +211,7 @@ TestApplication::initSceneGraph() {
 
   auto resourceMgr = ResourceManager::instancePtr();
 
-  auto createNode = [&](std::shared_ptr<Node> parent, 
+  auto createNode = [&](std::shared_ptr<GameObject> parent, 
                         const TString& name, 
                         const TString& resName,
                         const Vector3D& pos) {
@@ -268,14 +265,9 @@ TestApplication::initSceneGraph() {
 
   n->addChild(m_camera);
     
-  n = createNode(root, _T("Croc"), _T("Croc.X"), {150.0f, 0.0f, 0.0f});
+  n = createNode(root, _T("Croc"), _T("Croc.X"), {150.0f, 0.0f, 200.0f});
   
-  n = createNode(root, _T("Dwarf"), _T("dwarf.x"), {-100.0f, 0.0f, 0.0f});   
+  n = createNode(root, _T("Dwarf"), _T("dwarf.x"), {-100.0f, 0.0f, 300.0f});   
 
 }
-
-void TestApplication::TestKeyBoard() {
-  std::cout << "A key pressed" << std::endl;
-}
-
 }

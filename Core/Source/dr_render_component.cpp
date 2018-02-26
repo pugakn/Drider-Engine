@@ -25,6 +25,8 @@ RenderComponent::onCreate() {
   if (m_isModel) {
     if (auto model = m_model.lock()) {
 
+      center = model->aabb.center;
+
       for (auto& mesh : model->meshes) {
 
         RenderMesh renderMesh;

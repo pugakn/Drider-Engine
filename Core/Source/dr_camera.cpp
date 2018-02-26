@@ -20,7 +20,7 @@ void Camera::updateImpl() {
   GameObject::updateImpl();
 
   auto& tr = getParent()->transform;
-  auto pos = getWorldTransform().getPosition();
+  auto pos = Vector4D(transform.getPosition(), 1.0f) * tr.getMatrix();
   auto target = Vector4D(m_target, 1) * tr.getMatrix();
 	m_view.LookAt(Vector3D(pos), Vector3D(target), m_up);
 	m_vp = m_view * m_projection;
@@ -83,6 +83,9 @@ void
 Camera::createProyection(float fov,
 												 float nearPlane,
 												 float farPlane) {
+  m_farPlane = farPlane;
+  m_nearPlane = nearPlane;
+  m_fov = fov;
 	DR_ASSERT(m_viewport.height != 0.0f);
 	m_projection.ProjectionFov(fov * Math::DEGREE_TO_RADIAN,
 														static_cast<float>(m_viewport.width) / 
@@ -142,8 +145,20 @@ Camera::getView() const {
   return m_view;
 }
 
+float Camera::getFarPlane() const {
+  return m_farPlane;
+}
+
+float Camera::getNearPlane() const {
+  return m_nearPlane;
+}
+
+float Camera::getFOV() const {
+  return m_fov;
+}
+
 const Matrix4x4&
-Camera::getProjection() {
+Camera::getProjection() const {
   return m_projection;
 }
 

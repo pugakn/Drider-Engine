@@ -37,8 +37,8 @@ Transform::getScale() const {
 }
 
 Vector3D Transform::getDirection() const {
-  return Vector3D{Math::cos(m_rotation.y) * Math::sin(m_rotation.x),
-                  Math::sin(m_rotation.y),
+  return Vector3D{Math::sin(-m_rotation.y),
+                  Math::cos(m_rotation.y) * Math::sin(m_rotation.x),
                   Math::cos(m_rotation.y) * Math::cos(m_rotation.x)}.normalize();
 }
 

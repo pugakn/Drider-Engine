@@ -72,14 +72,15 @@ class DR_CORE_EXPORT GameObject : public Node
   
   void
   addComponent(ComponentPtr component);
+
+  /***************/
+  /*     TEMP    */ 
+  void
+  draw();
+  /***************/
  protected:
    void
-   updateImpl();
-   /***************/
-   /*     TEMP    */ 
-   void
-   draw();
-   /***************/
+   updateImpl();   
  private:
    ComponentsList m_components;
 };
