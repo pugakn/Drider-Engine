@@ -55,7 +55,7 @@ AABB::operator=(const AABB & A)
 }
 
 bool
-AABB::intersect(AABB& aabb) {
+AABB::intersect(AABB& aabb) const {
   return Intersect::aabbAabb(center, 
 														 width,
 														 height,
@@ -67,7 +67,7 @@ AABB::intersect(AABB& aabb) {
 }
 
 bool
-AABB::intersect(Sphere& sphere) {
+AABB::intersect(Sphere& sphere) const {
   return Intersect::aabbSphere(getMinPoint(), 
 															 getMaxPoint(), 
                                sphere.center, 
@@ -75,7 +75,7 @@ AABB::intersect(Sphere& sphere) {
 }
 
 bool
-AABB::intersect(Plane& plane) {
+AABB::intersect(Plane& plane) const {
   return Intersect::aabbPlane(center, 
 															width,
 															height,
@@ -84,14 +84,14 @@ AABB::intersect(Plane& plane) {
 }
 
 bool
-AABB::intersect(Frustrum& frustrum) {
+AABB::intersect(Frustrum& frustrum) const {
   return Intersect::aabbFrustrum(getMaxPoint(),
                                  getMinPoint(),
 																 frustrum.planes);
 }
 
 bool
-AABB::intersect(Ray& ray) {
+AABB::intersect(Ray& ray) const {
 	return Intersect::aabbRay(getMaxPoint(), 
 														getMinPoint(), 
 														ray.origin, 
@@ -99,7 +99,7 @@ AABB::intersect(Ray& ray) {
 }
 
 bool
-AABB::intersect(Vector3D& point) {
+AABB::intersect(Vector3D& point) const {
   return Intersect::aabbPoint(getMaxPoint(), getMinPoint(), point);
 }
 
