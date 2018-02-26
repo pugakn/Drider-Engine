@@ -3,9 +3,11 @@
 #include <queue>
 #include <dr_vector3d.h>
 #include <dr_frustrum.h>
+#include "dr_aabb_collider.h"
 #include "dr_camera.h"
 #include "dr_gameObject.h"
 #include "dr_model.h"
+#include "dr_render_component.h"
 #include "dr_root_node.h"
 
 namespace driderSDK {
@@ -34,15 +36,15 @@ SceneGraph::query(Camera& camera, QUERY_ORDER::E order, UInt32 props) {
 
   auto objectComp = [&](SharedGameObject a, SharedGameObject b) -> bool
   {
-    auto renderA = a->getComponent<RenderComponent>();
+    auto renderA = a->getComponent<AABBCollider>();
  
-    Vector4D posA(renderA->getCenter(), 1.f);
+    Vector4D posA(renderA->getAABB().center, 1.f);
 
     auto WVPA = a->getWorldTransform().getMatrix() * camera.getVP();
 
-    auto renderB = b->getComponent<RenderComponent>();
+    auto renderB = b->getComponent<AABBCollider>();
 
-    Vector4D posB(renderB->getCenter(), 1.f);
+    Vector4D posB(renderB->getAABB().center, 1.f);
 
     auto WVPB = b->getWorldTransform().getMatrix() * camera.getVP();
 
@@ -64,8 +66,10 @@ SceneGraph::query(Camera& camera, QUERY_ORDER::E order, UInt32 props) {
 
   std::function<void(SharedGameObject)> addObject = [&](SharedGameObject obj)
   {
-    if (auto rc = obj->getComponent<RenderComponent>()) {
+    if (obj->getComponent<RenderComponent>() && 
+        obj->getComponent<AABBCollider>()) {
       
+
       //if (rc->getAABB().intersect(frustrum)) {
         objects.push(obj);
       //}      
@@ -106,8 +110,10 @@ SceneGraph::createNode(SharedGameObject parent, SharedModel model) {
   auto node = std::make_shared<GameObject>();
 
   parent->addChild(node);
-  
+    
   node->createComponent<RenderComponent>(model);
+
+  node->createComponent<AABBCollider>(model->aabb);
 
   return node;
 }

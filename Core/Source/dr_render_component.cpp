@@ -20,23 +20,11 @@ RenderComponent::RenderComponent(GameObject& _gameObject,
     m_isModel(false)
 {}
 
-const Vector3D& 
-RenderComponent::getCenter() {
-  return m_center;
-}
-
-const AABB&
-RenderComponent::getAABB() {
-  return m_aabb;
-}
-
 void
 RenderComponent::onCreate() {
   
   if (m_isModel) {
     if (auto model = m_model.lock()) {
-
-      m_center = model->aabb.center;
       
       for (auto& mesh : model->meshes) {
 
@@ -61,11 +49,6 @@ RenderComponent::onUpdate() {
   if (!model) {
     setEnabled(false);
   }
-  else {
-    m_aabb = model->aabb;
-    m_aabb.recalculate(m_gameObject.getWorldTransform().getMatrix());
-  }
-
 }
 
 void 

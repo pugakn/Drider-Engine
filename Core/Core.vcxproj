@@ -148,11 +148,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Include\dr_aabb_collider.h" />
     <ClInclude Include="Include\dr_animation.h" />
     <ClInclude Include="Include\dr_animator.h" />
     <ClInclude Include="Include\dr_application.h" />
     <ClInclude Include="Include\dr_camera.h" />
     <ClInclude Include="Include\dr_camera_manager.h" />
+    <ClInclude Include="Include\dr_collider_component.h" />
     <ClInclude Include="Include\dr_convexHull.h" />
     <ClInclude Include="Include\dr_core_prerequisites.h" />
     <ClInclude Include="Include\dr_enableObject.h" />
@@ -182,11 +184,13 @@
     <ClInclude Include="Include\dr_viewport.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\dr_aabb_collider.cpp" />
     <ClCompile Include="Source\dr_animation.cpp" />
     <ClCompile Include="Source\dr_animator.cpp" />
     <ClCompile Include="Source\dr_application.cpp" />
     <ClCompile Include="Source\dr_camera.cpp" />
     <ClCompile Include="Source\dr_camera_manager.cpp" />
+    <ClCompile Include="Source\dr_collider_component.cpp" />
     <ClCompile Include="Source\dr_convexHull.cpp" />
     <ClCompile Include="Source\dr_enableObject.cpp" />
     <ClCompile Include="Source\dr_gameComponent.cpp" />

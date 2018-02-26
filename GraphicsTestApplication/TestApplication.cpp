@@ -1,21 +1,22 @@
 #include "TestApplication.h"
 #include <iostream>
-#include <dr_gameObject.h>
 #include <dr_d3d_swap_chain.h>
-#include <dr_rasterizer_state.h>
-#include <dr_radian.h>
+#include <dr_degree.h>
+#include <dr_gameObject.h>
+#include <dr_input_manager.h>
+#include <dr_joystick.h>
+#include <dr_keyboard.h>
+#include <dr_mouse.h>
 #include <dr_quaternion.h>
+#include <dr_radian.h>
+#include <dr_rasterizer_state.h>
+#include <dr_render_component.h>
+#include <dr_time.h>
 #include "DrawableComponent.h"
 #include "ModelDebbug.h"
 #include "NPCMovement.h"
 #include "StaticMeshTechnique.h"
 #include "LinesTechnique.h"
-#include "dr_degree.h"
-#include <dr_time.h>
-#include <dr_input_manager.h>
-#include <dr_keyboard.h>
-#include <dr_mouse.h>
-#include <dr_joystick.h>
 
 namespace driderSDK {
 
@@ -38,7 +39,7 @@ TestApplication::postInit() {
   
   
   m_worldCam ->createProyection(45.f, 0.1f, 10000.f);
-  m_worldCam->transform.setPosition({300.f, 500.f, -400.f});
+  m_worldCam->transform.setPosition({1000.f, 1000.f, -900.f});
   m_worldCam->setTarget({0.f, 1.f, 0.f});
 
   m_activeCam = m_worldCam;
@@ -56,6 +57,7 @@ TestApplication::postInit() {
   initSceneGraph();
   
   m_sceneGraph->getRoot()->addChild(m_worldCam);
+  m_joker->addChild(m_camera);
 
   //m_sceneGraph->query(*m_camera, QUERY_ORDER::kBackToFront, 0);
   
@@ -76,12 +78,12 @@ TestApplication::input() {
   
   Node::SharedNode croc;
 
-  if (croc = m_sceneGraph->getRoot()->getChild(_T("Croc"))) {
+  /*if (croc = m_sceneGraph->getRoot()->getChild(_T("Croc"))) {
     
     croc->transform.rotate(Degree(90 * Time::instance().getDelta()), AXIS::kY);
     float scale = Math::cos(croc->transform.getRotation().y) * 0.5f + 1.f;
     croc->transform.setScale({scale,scale,scale}); 
-  }
+  }*/
 
   if (auto node = m_sceneGraph->getRoot()->getChild(_T("Dwarf"))) {
     
@@ -123,8 +125,11 @@ TestApplication::input() {
 
   float vel = 150.f * Time::getDelta();
   
+  auto p = m_joker->transform.getPosition();
+
   m_joker->transform.move((dir * f + right * s) * vel);
   
+
 }
 
 void
@@ -294,21 +299,23 @@ TestApplication::initSceneGraph() {
     node->setName(name);
 
     node->transform.setPosition(pos);
-    
-    parent->addChild(node);
 
     return node;
   };
 
   auto n = createNode(root, _T("Joker"), _T("VenomJok.X"), {0.0f, 0.0f, 0.0f});
-  
-  m_joker = n;
-
-  n->addChild(m_camera);
-    
+      
   n = createNode(root, _T("Croc"), _T("Croc.X"), {150.0f, 0.0f, 200.0f});
+
+  m_joker = n;
   
-  n = createNode(root, _T("Dwarf"), _T("dwarf.x"), {-100.0f, 0.0f, 300.0f});   
+  n = createNode(n, _T("Dwarf"), _T("dwarf.x"), {-100.0f, 0.0f, 300.0f}); 
+
+  n = createNode(root, _T("Croc"), _T("Croc.X"), {400.0f, 0.0f, 300.0f}); 
+
+  n = createNode(root, _T("Dwarf"), _T("dwarf.x"), {200.0f, 0.0f, 600.0f}); 
+
+  n = createNode(root, _T("Dwarf"), _T("dwarf.x"), {500.0f, 0.0f, 250.0f}); 
 
 }
 }

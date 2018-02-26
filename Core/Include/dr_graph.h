@@ -3,7 +3,6 @@
 #include <memory>
 #include <vector>
 #include "dr_core_prerequisites.h"
-#include "dr_render_component.h"
 
 namespace driderSDK {
 
@@ -11,6 +10,7 @@ class Camera;
 class GameObject;
 class Model;
 class Node;
+class RenderComponent;
 
 namespace QUERY_ORDER {
  enum E
@@ -24,8 +24,10 @@ namespace QUERY_PROPERTYS
 {
 enum E : UInt32
 {
-  kTransparent = 0xFF000000,
-  kOpaque = 0x00FF00000
+  kTransparent = 0x80000000,
+  kOpaque = kTransparent >> 1,
+  kTriangles = 0x1,
+  kLines = 0x2
 };
 }
 

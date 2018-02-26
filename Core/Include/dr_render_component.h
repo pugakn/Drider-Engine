@@ -42,12 +42,6 @@ public:
   {
     return m_meshes;
   }
-
-  const Vector3D&
-  getCenter();
-
-  const AABB&
-  getAABB();  
 private:
   // Inherited via GameComponent
   virtual void 
@@ -65,8 +59,6 @@ private:
   bool m_isModel;
   WeakModelRef m_model;
   MeshList m_meshes;
-  AABB m_aabb;
-  Vector3D m_center;
 };
 
 }

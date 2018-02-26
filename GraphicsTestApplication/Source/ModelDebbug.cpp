@@ -1,10 +1,10 @@
 #include "ModelDebbug.h"
 #include <vector>
+#include <dr_aabb_collider.h>
 #include <dr_device_context.h>
 #include <dr_mesh.h>
 #include <dr_aabb.h>
 #include <dr_model.h>
-#include <dr_render_component.h>
 #include "Technique.h"
 #include <dr_vertex_buffer.h>
 #include <dr_index_buffer.h>
@@ -20,7 +20,9 @@ ModelDebbug::create(std::shared_ptr<Model> model) {
 
   auto& mesh = meshes[0];
 
-  auto points = m_gameObject.getComponent<RenderComponent>()->getAABB().getBounds();
+  auto aabbCollider = m_gameObject.getComponent<AABBCollider>();
+
+  auto points = aabbCollider->getTransformedAABB().getBounds();
 
   mesh.vertices.resize(8);
 
