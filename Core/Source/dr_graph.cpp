@@ -75,8 +75,10 @@ SceneGraph::query(Camera& camera, QUERY_ORDER::E order, UInt32 props) {
       //}      
     }
 
-    for (SizeT i = 0; i < obj->getChildrenCount(); ++i) {
-      addObject(std::dynamic_pointer_cast<GameObject>(obj->getChild(i)));
+    auto& children = obj->getChildren();
+
+    for (auto& child : children) {
+      addObject(child);
     }
   };
 
@@ -101,7 +103,7 @@ SceneGraph::update() {
 
 void 
 SceneGraph::draw() {
-  m_root->draw();
+  m_root->render();
 }
 
 SceneGraph::SharedGameObject

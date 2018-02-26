@@ -31,7 +31,7 @@ TestApplication::postInit() {
                                       m_viewport);
 
   m_camera->createProyection(45.f, 0.1f, 10000.f);
-  m_camera->transform.setPosition({0.f, 100.0f, -100.0f});
+  m_camera->getTransform().setPosition({0.f, 100.0f, -100.0f});
   m_camera->setTarget({0.0f, 50.0f, 10.0f});
 
   m_worldCam = std::make_shared<Camera>(_T("WORLD_CAM"), 
@@ -39,7 +39,7 @@ TestApplication::postInit() {
   
   
   m_worldCam ->createProyection(45.f, 0.1f, 10000.f);
-  m_worldCam->transform.setPosition({1000.f, 1000.f, -900.f});
+  m_worldCam->getTransform().setPosition({1000.f, 1000.f, -900.f});
   m_worldCam->setTarget({0.f, 1.f, 0.f});
 
   m_activeCam = m_worldCam;
@@ -76,7 +76,7 @@ TestApplication::input() {
   
   InputManager::capture();
   
-  Node::SharedNode croc;
+  GameObject::SharedGameObj croc;
 
   /*if (croc = m_sceneGraph->getRoot()->getChild(_T("Croc"))) {
     
@@ -87,10 +87,10 @@ TestApplication::input() {
 
   if (auto node = m_sceneGraph->getRoot()->getChild(_T("Dwarf"))) {
     
-    node->transform.rotate(Degree(90 * Time::instance().getDelta()), AXIS::kY);
+    node->getTransform().rotate(Degree(90 * Time::instance().getDelta()), AXIS::kY);
   }
   
-  Vector3D dir = m_joker->transform.getDirection();
+  Vector3D dir = m_joker->getTransform().getDirection();
   Vector3D right = dir.cross(Vector3D(0,1,0));
   float f = 0;
   float s = 0;
@@ -125,9 +125,9 @@ TestApplication::input() {
 
   float vel = 150.f * Time::getDelta();
   
-  auto p = m_joker->transform.getPosition();
+  auto p = m_joker->getTransform().getPosition();
 
-  m_joker->transform.move((dir * f + right * s) * vel);
+  m_joker->getTransform().move((dir * f + right * s) * vel);
   
 
 }
@@ -185,12 +185,12 @@ TestApplication::initInput() {
   
   auto rotateLeft = [&]() 
   {
-    m_joker->transform.rotate(Degree(45.f), AXIS::kY);
+    m_joker->getTransform().rotate(Degree(45.f), AXIS::kY);
   };
 
   auto rotateRight = [&]() 
   {
-    m_joker->transform.rotate(Degree(-45.f), AXIS::kY);
+    m_joker->getTransform().rotate(Degree(-45.f), AXIS::kY);
   };
 
   auto toggleCam = [&]()
@@ -298,7 +298,7 @@ TestApplication::initSceneGraph() {
   
     node->setName(name);
 
-    node->transform.setPosition(pos);
+    node->getTransform().setPosition(pos);
 
     return node;
   };

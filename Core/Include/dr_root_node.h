@@ -10,7 +10,7 @@ class DR_CORE_EXPORT RootNode : public GameObject
 public:
   RootNode();
 private:
-  void 
+  virtual void 
   updateImpl();
 };
 

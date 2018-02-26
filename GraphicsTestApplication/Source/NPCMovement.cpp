@@ -8,16 +8,16 @@ void driderSDK::NPCMovement::onUpdate() {
   auto end = m_buttonsDown.end();
 
   if(m_buttonsDown.find(KEY_CODE::kUP) != end) {
-    m_gameObject.transform.move({0.0f, 0.0f, -1.f});
+    m_gameObject.getTransform().move({0.0f, 0.0f, -1.f});
   }
   else if(m_buttonsDown.find(KEY_CODE::kDOWN) != end) {
-    m_gameObject.transform.move({0.0f, 0.0f, 1.f});
+    m_gameObject.getTransform().move({0.0f, 0.0f, 1.f});
   }
   else if(m_buttonsDown.find(KEY_CODE::kLEFT) != end) {
-    m_gameObject.transform.move({1.0f, 0.f, 0.f});
+    m_gameObject.getTransform().move({1.0f, 0.f, 0.f});
   }
   else if(m_buttonsDown.find(KEY_CODE::kRIGHT) != end) {
-    m_gameObject.transform.move({-1.0f, 0.f, 0.f});
+    m_gameObject.getTransform().move({-1.0f, 0.f, 0.f});
   }
 
 }

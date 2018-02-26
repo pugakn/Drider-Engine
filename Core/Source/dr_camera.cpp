@@ -17,11 +17,13 @@ Camera::Camera(const TString& name,
 Camera::~Camera() {}
 
 void Camera::updateImpl() {
+
   GameObject::updateImpl();
 
-  auto& tr = getParent()->transform;
-  auto pos = Vector4D(transform.getPosition(), 1.0f) * tr.getMatrix();
-  auto target = Vector4D(m_target, 1) * tr.getMatrix();
+  auto& parentT = getParent()->getTransform();
+  auto& localT = getTransform();
+  auto pos = Vector4D(localT.getPosition(), 1.0f) * parentT.getMatrix();
+  auto target = Vector4D(m_target, 1) * parentT.getMatrix();
 	m_view.LookAt(Vector3D(pos), Vector3D(target), m_up);
 	m_vp = m_view * m_projection;
 }
@@ -29,7 +31,7 @@ void Camera::updateImpl() {
 void 
 Camera::move(float forward, float strafe, float upVelocity, bool lockY) {
 	
-  Vector3D dir = transform.getDirection();
+  Vector3D dir = m_localTransform.getDirection();
   Vector3D right = dir.cross(m_up);
 
   if (lockY) {
@@ -39,24 +41,24 @@ Camera::move(float forward, float strafe, float upVelocity, bool lockY) {
     right.normalize();
   }
 
-  transform.move(dir * forward);
+  m_localTransform.move(dir * forward);
   
 	if (strafe != 0.f) {
-		transform.move(right * strafe);
+		m_localTransform.move(right * strafe);
 	}
 
-  transform.move(upVelocity, AXIS::kY);
+  m_localTransform.move(upVelocity, AXIS::kY);
 }
 
 void 
 Camera::move(const Vector3D& direction) {
-  transform.move(direction);
+  m_localTransform.move(direction);
 }
 
 void 
 Camera::pan(float forward, float strafe, float upVelocity, bool lockY) {
 	
-  Vector3D dir = transform.getDirection();
+  Vector3D dir = m_localTransform.getDirection();
   Vector3D right = dir.cross(m_up);
 
   if (lockY) {
@@ -112,15 +114,16 @@ Camera::setViewport(const Viewport& viewport) {
 
 void 
 Camera::rotate(const Quaternion& rotation) {
-	m_target = transform.getPosition() + 
-             rotation.rotation(transform.getDirection());
+	m_target = m_localTransform.getPosition() + 
+             rotation.rotation(m_localTransform.getDirection());
 }
 
 void 
 Camera::rotate(float yawDegree, float pitchDegree) {
-  transform.rotate({yawDegree * Math::DEGREE_TO_RADIAN,
+  m_localTransform.rotate({yawDegree * Math::DEGREE_TO_RADIAN,
                    pitchDegree * Math::DEGREE_TO_RADIAN, 0});
-  m_target = transform.getPosition() + transform.getDirection() * 10.f;
+  m_target = m_localTransform.getPosition() + 
+             m_localTransform.getDirection() * 10.f;
 }
 
 void 

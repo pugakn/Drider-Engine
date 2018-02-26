@@ -69,11 +69,8 @@ public:
 	*   Time value to update the camera.
 	*/
 	virtual void 
-	updateImpl() override;
-
-  void
-  virtual draw(){}
-
+	updateImpl();
+  
 	/**
 	* TEST::move
 	* Moves the camera.
