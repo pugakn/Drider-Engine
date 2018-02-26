@@ -10,6 +10,8 @@
 #include <dr_d3d_sample_state.h>
 #endif
 namespace driderSDK {
+CefRefPtr<DriderRenderProcessHandler> WebRenderer::m_renderProcess = new DriderRenderProcessHandler();
+CefRefPtr<DriderCefApp> WebRenderer::m_app = new DriderCefApp(m_renderProcess);
 /*******************************************************
 *                    RENDER HANDLER
 ********************************************************/
@@ -74,35 +76,19 @@ void
 WebRenderer::start()
 {
   CefMainArgs args;
-  int result = CefExecuteProcess(args, nullptr, nullptr);
+  int result = CefExecuteProcess(args, m_app.get(), nullptr);
   if (result >= 0)
     exit(0);
   CefSettings settings;
   settings.multi_threaded_message_loop = false;
   settings.windowless_rendering_enabled = true;
-  settings.single_process = true;
+  settings.single_process = false;
   settings.no_sandbox = true;
   result = CefInitialize(args, settings, nullptr, nullptr);
   if (!result)
     throw "CefInitialize failed";
 }
 
-/*void OnContextCreated(
-CefRefPtr<CefBrowser> browser,
-CefRefPtr<CefFrame> frame,
-CefRefPtr<CefV8Context> context)override {
-
-CefRefPtr<CefV8Value> object = context->GetGlobal();
-
-// Create an instance of my CefV8Handler object.
-CefRefPtr<CefV8Handler> handler = new DriderV8Handler();
-
-// Create the "myfunc" function.
-CefRefPtr<CefV8Value> func = CefV8Value::CreateFunction("myfunc", handler);
-
-// Add the "myfunc" function to the "window" object.
-object->SetValue("myfunc", func, V8_PROPERTY_ATTRIBUTE_NONE);
-}*/
 /*******************************************************
 *                    WEB RENDERER
 ********************************************************/
@@ -145,7 +131,7 @@ WebRenderer::Init(int width, int height, BROWSER_MODE::E mode)
   renderHandler->init();
   browserClient = new BrowserClient(renderHandler);
 
-  browser = CefBrowserHost::CreateBrowserSync(window_info, browserClient.get(), "http://www.google.com", browserSettings, nullptr);//http://ich.deanmcnamee.com/pre3d/monster.html
+  browser = CefBrowserHost::CreateBrowserSync(window_info, browserClient.get(), "file:///C:/Users/Ulises/Documents/GitHub/Drider-Engine/DriderUIUnitTest/ExampleHTML/example.html", browserSettings, nullptr);//http://ich.deanmcnamee.com/pre3d/monster.html
   startRendering();
   initInput();
 }
@@ -201,6 +187,19 @@ WebRenderer::setVisibility(bool visible)
 {
   browser->GetHost()->WasHidden(!visible);
 }
+
+void WebRenderer::registerJS2CPPFunction(std::string name)
+{
+  browserClient->m_callbacks.push_back(std::make_pair(name, [](CefRefPtr<CefV8Value>& retval) {
+    //exit(666);
+  }));
+
+  CefRefPtr<CefProcessMessage> msg = CefProcessMessage::Create(IPC_REGISTER_JS2CPP_FUNC);
+  CefRefPtr<CefListValue> cefargs = msg->GetArgumentList();
+  cefargs->SetString(0, name);
+  browser->SendProcessMessage(PID_RENDERER, msg);
+}
+
 void 
 WebRenderer::resize(int w, int h)
 {
@@ -282,4 +281,50 @@ WebRenderer::initInput()
     browser->GetHost()->SendKeyEvent(keyEvent);
   });
 }
+
+bool BrowserClient::OnProcessMessageReceived(CefRefPtr<CefBrowser> browser, CefProcessId source_process, CefRefPtr<CefProcessMessage> message)
+{
+  const std::string& message_name = message->GetName();
+  if (message_name == IPC_CALL_JS2CPP_FUNC) {
+    std::string funcName = message->GetArgumentList()->GetString(0);
+    for (auto &it : m_callbacks)
+    {
+      if (funcName == it.first) {
+        CefRefPtr<CefV8Value> retval;
+        it.second(retval);
+        return true;
+      }
+    }
+    return true;
+  }
+  return false;
+}
+
+// CALLED ON RENDER PROCEESS!
+void DriderRenderProcessHandler::OnContextCreated(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefRefPtr<CefV8Context> context)
+{
+  for (auto &it : m_v8Handler->m_callList) {
+    CefRefPtr<CefV8Value> object = context->GetGlobal();
+    CefRefPtr<CefV8Value> func = CefV8Value::CreateFunction(it, m_v8Handler);
+    object->SetValue(it, func, V8_PROPERTY_ATTRIBUTE_NONE);
+  }
+}
+
+bool DriderRenderProcessHandler::OnProcessMessageReceived(CefRefPtr<CefBrowser> browser, CefProcessId source_process, CefRefPtr<CefProcessMessage> message)
+{
+  const std::string& message_name = message->GetName();
+  if (message_name == IPC_REGISTER_JS2CPP_FUNC) {
+    CefRefPtr<CefV8Context> context = browser->GetMainFrame()->GetV8Context();
+    context->Enter();
+    std::string funcName = message->GetArgumentList()->GetString(0);
+    m_v8Handler->m_callList.push_back(funcName);
+    CefRefPtr<CefV8Value> object = browser->GetMainFrame()->GetV8Context()->GetGlobal();
+    CefRefPtr<CefV8Value> func = CefV8Value::CreateFunction(funcName, m_v8Handler);
+    object->SetValue(funcName, func, V8_PROPERTY_ATTRIBUTE_NONE);
+    context->Exit();
+    return true;
+  }
+  return false;
+}
+
 }

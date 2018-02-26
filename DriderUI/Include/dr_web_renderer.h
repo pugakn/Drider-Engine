@@ -7,13 +7,14 @@
 #include <include/cef_load_handler.h>
 #include <include/wrapper/cef_helpers.h>
 
-
+#include <vector>
+#include <functional>
+#include <iostream>
 namespace driderSDK {
 class Texture;
 class SamplerState;
-using CallbackMap = std::map<std::pair<std::string, int>,
-  std::pair<CefRefPtr<CefV8Context>, CefRefPtr<CefV8Value>>>;
-
+static const std::string IPC_REGISTER_JS2CPP_FUNC = "ipc01";
+static const std::string IPC_CALL_JS2CPP_FUNC     = "ipc00";
 namespace BROWSER_MODE {
 enum E {
   kHeadless,
@@ -21,6 +22,9 @@ enum E {
   kChild
 };
 }
+/*RENDER PROCESS OBJECTS*/
+using JSCallback = std::pair<std::string, std::function<void(CefRefPtr<CefV8Value>&)>>;
+using JSCalls = std::vector<JSCallback>;
 
 class DriderV8Handler : public CefV8Handler {
 public:
@@ -30,13 +34,64 @@ public:
     const CefV8ValueList& arguments,
     CefRefPtr<CefV8Value>& retval,
     CefString& exception) override {
-    if (name == "myfunc") {
-      retval = CefV8Value::CreateString("My Value!");
-      return true;
+    for (auto &it : m_callList)
+    {
+      if (name == it) {
+        //retval = CefV8Value::CreateString("Waaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+        CefRefPtr<CefBrowser> browser = CefV8Context::GetCurrentContext()->GetBrowser();
+        CefRefPtr<CefProcessMessage> msg = CefProcessMessage::Create(IPC_CALL_JS2CPP_FUNC);
+        CefRefPtr<CefListValue> cefargs = msg->GetArgumentList();
+        cefargs->SetString(0, name);
+        browser->SendProcessMessage(PID_BROWSER, msg);
+
+
+        //context->Enter();
+        //auto window = context->GetGlobal();
+        //auto bnfront = window->GetValue("bnfront");
+        //bnfront->ExecuteFunction();
+        //context->Exit();
+        CefRefPtr<CefV8Context> context = browser->GetMainFrame()->GetV8Context();
+        context->Enter();
+        auto window = context->GetGlobal();
+        auto bnfront = window->GetValue("testVal01");
+        std::cout << " VALsadsdsd: " << bnfront->GetIntValue() << std::endl;
+        CefRefPtr<CefV8Value> newVal= CefV8Value::CreateInt(52);
+        bnfront->SetValue("testVal01",newVal, V8_PROPERTY_ATTRIBUTE_NONE);
+        bnfront = window->GetValue("testVal01");
+        std::cout << " XX: " << bnfront->GetIntValue() << std::endl;
+        context->Exit();
+        return true;
+      }
     }
     return false;
   }
+  std::vector<std::string> m_callList;
   IMPLEMENT_REFCOUNTING(DriderV8Handler);
+};
+class DriderRenderProcessHandler : public  CefRenderProcessHandler {
+private:
+  friend class WebRenderer;
+  explicit DriderRenderProcessHandler() { m_v8Handler = new DriderV8Handler(); }
+  void OnContextCreated(CefRefPtr<CefBrowser> browser,
+    CefRefPtr<CefFrame> frame,
+    CefRefPtr<CefV8Context> context) override;
+
+  bool OnProcessMessageReceived(CefRefPtr<CefBrowser> browser,
+    CefProcessId source_process,
+    CefRefPtr<CefProcessMessage> message) override;
+
+  CefRefPtr<DriderV8Handler> m_v8Handler;
+  IMPLEMENT_REFCOUNTING(DriderRenderProcessHandler);
+};
+class DriderCefApp : public CefApp {
+private:
+  friend class WebRenderer;
+  explicit DriderCefApp(DriderRenderProcessHandler* renderProcess) : m_processHandler(renderProcess){}
+  virtual CefRefPtr<CefRenderProcessHandler> GetRenderProcessHandler() {
+    return m_processHandler;
+  }
+  CefRefPtr<DriderRenderProcessHandler> m_processHandler;
+  IMPLEMENT_REFCOUNTING(DriderCefApp);
 };
 
 /**
@@ -78,6 +133,9 @@ private:
   SamplerState* m_samplerState;
 };
 
+
+
+/*BROWSER PROCESS OBJECTS*/
 /**
 * Internal browser client
 */
@@ -89,14 +147,20 @@ public:
   IMPLEMENT_REFCOUNTING(BrowserClient);
 private:
   friend class WebRenderer;
-  BrowserClient(RenderHandler *renderHandler) : 
+  explicit BrowserClient(RenderHandler *renderHandler) : 
     m_renderHandler(renderHandler) {}
 
   virtual CefRefPtr<CefRenderHandler> 
   GetRenderHandler() {
     return m_renderHandler;
   }
+
+  virtual bool OnProcessMessageReceived(CefRefPtr<CefBrowser> browser,
+    CefProcessId source_process,
+    CefRefPtr<CefProcessMessage> message);
   CefRefPtr<CefRenderHandler> m_renderHandler;
+
+  JSCalls m_callbacks;
 };
 
 
@@ -128,6 +192,10 @@ public:
   void 
   setVisibility(bool visible);
 
+  void registerJS2CPPFunction(std::string name);
+
+  /* Only on Headless context */
+
   /**
   * Resize the render area
   *
@@ -138,18 +206,17 @@ public:
   *  Height
   *
   */
-  void
-  resize(int  w, int h);
-
-  /* Only on Headless context */
+    void
+    resize(int  w, int h);
   Texture* getTexturePointer();
   Texture& getTextureReference();
   void setTexture();
 
 private:
+  static CefRefPtr<DriderCefApp> m_app;
+  static CefRefPtr<DriderRenderProcessHandler> m_renderProcess;
   void 
   initInput();
-  CallbackMap callback_map_;
   CefRefPtr<CefBrowser> browser;
   CefRefPtr<BrowserClient> browserClient;
   CefRefPtr<RenderHandler> renderHandler;
