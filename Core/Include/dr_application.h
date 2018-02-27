@@ -26,7 +26,6 @@ private:
   void render();
   void destroy();
  protected:
-  std::unique_ptr<GraphicsAPI> m_graphicsAPI;
   Viewport m_viewport;
 private:
   std::atomic<bool> m_running;

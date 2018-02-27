@@ -69,8 +69,6 @@ TestApplication::postInit() {
   m_technique->compile();
 
   ResourceManager::startUp();
-  InputManager::startUp((SizeT)GetActiveWindow());
-  Time::startUp();
 
   initResources();
   initInput();
