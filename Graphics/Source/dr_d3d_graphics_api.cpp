@@ -20,8 +20,8 @@ void D3DGraphicsAPI::init(UInt32 w, UInt32 h, void* hwnd) {
   m_deviceContext = dr_unique_custom(new D3DDeviceContext, 
                                      &dr_gfx_deleter<DeviceContext>);
 
-  auto backBufferTexture = dr_unique_custom(new D3DTexture, 
-                                            &dr_gfx_deleter<Texture>);
+  /* WHUT */
+  auto backBufferTexture = dr_make_unique<D3DTexture>();
 
   m_device->createDeviceAndDeviceContext(*m_deviceContext);
 
