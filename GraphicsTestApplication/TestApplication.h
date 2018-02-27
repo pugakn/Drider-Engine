@@ -56,8 +56,9 @@ public:
   std::shared_ptr<Camera> m_leftCam;
   std::shared_ptr<Camera> m_upCam;
   std::shared_ptr<Camera> m_activeCam;
+  bool m_debugList;
   //SoundAPI* soundDriver;
-
+  QUERY_ORDER::E m_queryOrder;
   //DrSound *sound1;
   //DrSound *sound2;
   //DrChannel *channel;

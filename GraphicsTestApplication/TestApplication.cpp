@@ -12,6 +12,7 @@
 #include <dr_radian.h>
 #include <dr_rasterizer_state.h>
 #include <dr_render_component.h>
+#include <dr_string_utils.h>
 #include <dr_time.h>
 #include "DrawableComponent.h"
 #include "ModelDebbug.h"
@@ -92,6 +93,9 @@ TestApplication::postInit() {
   result = system->init(32, FMOD_INIT_NORMAL, 0);
   result = system->createSound("testSound.mp3", FMOD_DEFAULT, 0, &sound1);
   result = sound1->setMode(FMOD_LOOP_OFF);*/
+
+  m_debugList = false;
+
 }
 
 void
@@ -218,7 +222,25 @@ TestApplication::postRender() {
 
   dc->setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
 
-  auto objects = m_sceneGraph->query(*m_camera, QUERY_ORDER::kFrontToBack, 0);
+  auto objects = m_sceneGraph->query(*m_camera, m_queryOrder, 0);
+
+  if (m_debugList) {
+
+    std::cout << "\nQuery Order: ";
+
+    if (m_queryOrder == QUERY_ORDER::kBackToFront) {
+      std::cout << "Back to Front" << std::endl;
+    } 
+    else {
+      std::cout << "Front to Back" << std::endl;
+    }
+
+    for (auto& obj : objects) {
+      std::cout << StringUtils::toString(obj->getName()) << std::endl;
+    }
+
+    m_debugList = false;
+  }
 
   for (auto& object : objects) {
 
@@ -268,13 +290,25 @@ TestApplication::initInput() {
     }
   };
 
+  auto debugList = [&](){
+    m_debugList = true;
+  };
+
+  auto toggleQueryOrder = [&]() {
+    m_queryOrder = static_cast<QUERY_ORDER::E>(!m_queryOrder);
+  };
+
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kQ,
+                        toggleQueryOrder);
+
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kT,
                         toggleCam);
-/*
+
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
-                        KEY_CODE::kT,
-                        toggleCam);*/
+                        KEY_CODE::kL,
+                        debugList);
 
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kLEFT,
@@ -384,13 +418,13 @@ TestApplication::initSceneGraph() {
   
   n = createNode(root, _T("Dwarf0"), _T("dwarf.x"), {0.0f, 0.0f, 200.0f}); 
 
-  n = createNode(root, _T("Cube"), _T("Cube.fbx"), {0.0f, 0.0f, 0.0f}); 
+  n = createNode(root, _T("Cube0"), _T("Cube.fbx"), {178.0f, 0.0f, 125.0f}); 
 
   n->getTransform().scale({30, 30, 30});
 
-  n = createNode(root, _T("Croc1"), _T("Croc.X"), {-100, 0.0f, 200.0f}); 
+  n = createNode(root, _T("Duck0"), _T("DuckyQuacky_.fbx"), {-100, 0.0f, 250.0f}); 
 
-  n = createNode(root, _T("Joker0"), _T("VenomJok.X"), {100.0f, 0.0f, 1000.0f});
+  n = createNode(root, _T("Joker0"), _T("VenomJok.X"), {100.0f, 0.0f, 800.0f});
 
   /*n = createNode(root, _T("Duck0"), _T("DuckyQuacky_.fbx"), {200.f, 0.0f, 10.0f}); 
 
