@@ -20,7 +20,7 @@ void Camera::updateImpl() {
 
   GameObject::updateImpl();
 
-  auto& parentT = getParent()->getTransform();
+  auto& parentT = getParent()->getWorldTransform();
   auto& localT = getTransform();
   auto pos = Vector4D(localT.getPosition(), 1.0f) * parentT.getMatrix();
   auto target = Vector4D(m_target, 1) * parentT.getMatrix();

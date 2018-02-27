@@ -1,5 +1,6 @@
 #include "TestApplication.h"
 #include <iostream>
+#include <dr_aabb_collider.h>
 #include <dr_d3d_swap_chain.h>
 #include <dr_degree.h>
 #include <dr_gameObject.h>
@@ -32,14 +33,14 @@ TestApplication::postInit() {
 
   m_camera->createProyection(45.f, 0.1f, 10000.f);
   m_camera->getTransform().setPosition({0.f, 100.0f, -100.0f});
-  m_camera->setTarget({0.0f, 50.0f, 10.0f});
+  m_camera->setTarget({0.0f, 100.0f, 10.0f});
 
   m_worldCam = std::make_shared<Camera>(_T("WORLD_CAM"), 
                                         m_viewport);
   
   
   m_worldCam ->createProyection(45.f, 0.1f, 10000.f);
-  m_worldCam->getTransform().setPosition({1000.f, 1000.f, -900.f});
+  m_worldCam->getTransform().setPosition({3000.f, 3000.f, -1500.f});
   m_worldCam->setTarget({0.f, 1.f, 0.f});
 
   m_activeCam = m_worldCam;
@@ -86,8 +87,11 @@ TestApplication::input() {
   }*/
 
   if (auto node = m_sceneGraph->getRoot()->getChild(_T("Dwarf"))) {
-    
+   
+    auto nodeB = m_sceneGraph->getRoot()->findNode(_T("Joker"));
+
     node->getTransform().rotate(Degree(90 * Time::instance().getDelta()), AXIS::kY);
+    nodeB->getTransform().rotate(Degree(90 * Time::instance().getDelta()), AXIS::kY);
   }
   
   Vector3D dir = m_joker->getTransform().getDirection();
@@ -125,20 +129,58 @@ TestApplication::input() {
 
   float vel = 150.f * Time::getDelta();
   
-  auto p = m_joker->getTransform().getPosition();
-
   m_joker->getTransform().move((dir * f + right * s) * vel);
-  
 
 }
 
 void
 TestApplication::postUpdate() {
   //soundDriver->update();
+  
+  Vector3D p = m_joker->getTransform().getPosition();
+
   input();
 
   Time::instance().update();
+
   m_sceneGraph->update();
+
+  using SharedNode = std::shared_ptr<GameObject>;
+
+  std::function<bool(SharedNode, SharedNode)> checkColl =
+    [&](SharedNode a, SharedNode b) {
+
+    if (a != b) {
+      if (auto col = a->getComponent<AABBCollider>()) {
+        auto colB = b->getComponent<AABBCollider>();
+
+        if (col->getTransformedAABB().intersect(colB->getTransformedAABB())) {
+          return true;
+        }
+      }
+
+      for (auto& child : a->getChildren()) {
+        if (checkColl(child, b)) {
+          return true;
+        }
+      }  
+
+    }
+
+    return false;
+  };
+  
+  /*if (checkColl(m_sceneGraph->getRoot(), m_joker) ||
+      checkColl(m_sceneGraph->getRoot(), m_joker->getChild(0))) {
+    m_joker->getTransform().setPosition(p);
+    auto& pos = m_joker->getTransform().getPosition();
+    std::cout << "Coll frame: " << pos.x << "," << pos.y << "," << pos.z << std::endl;
+    m_joker->getTransform().setPosition(p);
+  }  
+  else 
+  {    
+    p = m_joker->getTransform().getPosition();  
+  }*/
 }
 
 void 
@@ -230,6 +272,10 @@ TestApplication::initResources() {
   resourceManager->loadResource(_T("Croc.X"), m_graphicsAPI->device);
 
   resourceManager->loadResource(_T("dwarf.x"), m_graphicsAPI->device);
+
+  resourceManager->loadResource(_T("Cube.fbx"), m_graphicsAPI->device);
+
+  resourceManager->loadResource(_T("DuckyQuacky_.fbx"), m_graphicsAPI->device);
 }
 
 void 
@@ -303,19 +349,23 @@ TestApplication::initSceneGraph() {
     return node;
   };
 
-  auto n = createNode(root, _T("Joker"), _T("VenomJok.X"), {0.0f, 0.0f, 0.0f});
+  
       
-  n = createNode(root, _T("Croc"), _T("Croc.X"), {150.0f, 0.0f, 200.0f});
-
+  auto n = createNode(root, _T("Croc"), _T("Croc.X"), {-200.f, 0.0f, 0.0f});
+  
   m_joker = n;
   
-  n = createNode(n, _T("Dwarf"), _T("dwarf.x"), {-100.0f, 0.0f, 300.0f}); 
-
-  n = createNode(root, _T("Croc"), _T("Croc.X"), {400.0f, 0.0f, 300.0f}); 
+  n = createNode(n, _T("Dwarf"), _T("dwarf.x"), {0.0f, 0.0f, 200.0f}); 
 
   n = createNode(root, _T("Dwarf"), _T("dwarf.x"), {200.0f, 0.0f, 600.0f}); 
 
-  n = createNode(root, _T("Dwarf"), _T("dwarf.x"), {500.0f, 0.0f, 250.0f}); 
 
+  n = createNode(n, _T("Croc"), _T("Croc.X"), {0, 0.0f, 200.0f}); 
+
+  n = createNode(n, _T("Joker"), _T("VenomJok.X"), {0.0f, 0.0f, 200.0f});
+
+  n = createNode(root, _T("Sphere"), _T("DuckyQuacky_.fbx"), {100.f, 0.0f, 10.0f}); 
+
+  n->getTransform().scale({50.f, 50.f, 50.f});
 }
 }

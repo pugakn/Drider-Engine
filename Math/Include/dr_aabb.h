@@ -133,7 +133,7 @@ class DR_MATH_EXPORT AABB
   *  True if it intersects
   */
   bool
-  intersect(AABB& aabb) const;
+  intersect(const AABB& aabb) const;
 
   /**
 	* TEST::intersectSphere
@@ -146,7 +146,7 @@ class DR_MATH_EXPORT AABB
   *  True if it intersects
   */
   bool
-  intersect(Sphere& sphere) const;
+  intersect(const Sphere& sphere) const;
 
   /**
 	* TEST::intersectPlane
@@ -159,7 +159,7 @@ class DR_MATH_EXPORT AABB
   *  True if it intersects
   */
   bool
-  intersect(Plane& plane) const;
+  intersect(const Plane& plane) const;
 
   /**
 	* TEST::intersectFrustrum
@@ -172,7 +172,7 @@ class DR_MATH_EXPORT AABB
   *  True if it intersects
   */
   bool
-  intersect(Frustrum& frustrum) const;
+  intersect(const Frustrum& frustrum) const;
 
   /**
 	* TEST::intersectRay
@@ -185,7 +185,7 @@ class DR_MATH_EXPORT AABB
   *  True if the ray intersects with the AABB
   */
   bool
-  intersect(Ray& ray) const;
+  intersect(const Ray& ray) const;
 
   /**
 	* TEST::intersectPoint
@@ -198,7 +198,7 @@ class DR_MATH_EXPORT AABB
   *  True if the point is inside
   */
   bool
-  intersect(Vector3D& point) const;
+  intersect(const Vector3D& point) const;
     
   std::array<Vector3D, 8>
   getBounds() const;

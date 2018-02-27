@@ -114,6 +114,9 @@
     <ClInclude Include="Include\dr_collider_component.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Transf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_animation.cpp">
@@ -192,6 +195,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\dr_collider_component.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Transf.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

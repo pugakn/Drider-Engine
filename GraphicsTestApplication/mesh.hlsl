@@ -10,13 +10,13 @@ struct VS_INPUT{
 
 struct VS_OUTPUT{
     float4 hposition : SV_POSITION;
-	float4 hnormal   : NORMAL;
+    float4 hnormal   : NORMAL;
 };
 
 VS_OUTPUT VS( VS_INPUT input ) {
     VS_OUTPUT OUT;
 
 	OUT.hposition = mul(WVP, input.position);
-	OUT.hnormal = normalize(float4(mul((float3x3)World, input.normal.xyz), 0.0));
+	OUT.hnormal = input.normal;//normalize(float4(mul((float3x3)World, input.normal.xyz), 0.0));
     return OUT;
 }

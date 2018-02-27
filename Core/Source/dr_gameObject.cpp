@@ -6,6 +6,7 @@ namespace driderSDK {
 
 GameObject::GameObject(const TString& name)
   : m_name(name)
+    //m_finalTransform(Math::FORCE_INIT::kIdentity)
 {
 }
 
@@ -192,7 +193,7 @@ GameObject::getChildrenCount() {
 }
 
 void GameObject::updateImpl() {
-  m_finalTransform = getParent()->m_finalTransform * m_localTransform;
+  m_finalTransform = m_localTransform*getParent()->m_finalTransform;
 }
 
 }

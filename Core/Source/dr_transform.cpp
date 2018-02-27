@@ -1,6 +1,7 @@
 #include "dr_transform.h"
 #include <dr_degree.h>
 #include <dr_radian.h>
+#include <dr_vector4d.h>
 
 namespace driderSDK {
 
@@ -129,7 +130,15 @@ Transform::scale(const Vector3D & scale) {
 Transform Transform::operator*(const Transform& other) const {
   
   Transform r;
-  r.m_position = m_position + other.m_position;
+  Vector3D x = other.m_scale;
+  x.x *= m_position.x;
+  x.y *= m_position.y;
+  x.z *= m_position.z;
+
+  Matrix4x4 mat(Math::FORCE_INIT::kIdentity);
+  mat.Rotation(other.m_rotation.x, other.m_rotation.y, other.m_rotation.z);
+
+  r.m_position = Vector4D(x,1) * mat + other.m_position;
   r.m_rotation = m_rotation + other.m_rotation;
   r.m_scale = m_scale * other.m_scale;
   r.update();
