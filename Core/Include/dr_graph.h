@@ -6,8 +6,12 @@
 #include <vector>
 #include "dr_core_prerequisites.h"
 
+/*********************/
+#include <dr_plane.h>
+
 namespace driderSDK {
 
+class Frustrum;
 class Camera;
 class GameObject;
 class Model;
@@ -65,6 +69,7 @@ public:
   /****************/
   SharedGameObject
   createNode(SharedGameObject parent, SharedModel model);
+
 private:
   using ObjectComp = std::function<bool(SharedGameObject, SharedGameObject)>;
   using GameObjectQueue = std::priority_queue<SharedGameObject,
@@ -83,9 +88,10 @@ private:
     Camera& m_camera;
     QUERY_ORDER::E m_order;
   };
-
+  
   void 
   testObject(SharedGameObject object, 
+             Frustrum& frustrum,
              UInt32 props, 
              GameObjectQueue& objects);
 private:

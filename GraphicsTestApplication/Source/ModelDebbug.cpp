@@ -2,6 +2,7 @@
 #include <vector>
 #include <dr_aabb_collider.h>
 #include <dr_device_context.h>
+#include <dr_graphics_api.h>
 #include <dr_mesh.h>
 #include <dr_aabb.h>
 #include <dr_model.h>
@@ -73,15 +74,18 @@ void
 ModelDebbug::onRender() {
 
   if (getModel() && m_technique) {
-    if (m_technique->prepareForDraw(m_deviceContext)) {
 
-      m_deviceContext.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kLineList);
+    if (m_technique->prepareForDraw()) {
+
+      auto& deviceContext = GraphicsAPI::getDeviceContext();
+
+      deviceContext.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kLineList);
       
       for (auto& meshBuff : m_meshes) {
-        meshBuff.vertexBuffer->set(m_deviceContext);
-        meshBuff.indexBuffer->set(m_deviceContext);
+        meshBuff.vertexBuffer->set(deviceContext);
+        meshBuff.indexBuffer->set(deviceContext);
 
-        m_deviceContext.draw(meshBuff.indicesCount, 0, 0);
+        deviceContext.draw(meshBuff.indicesCount, 0, 0);
       }
     }
   } 

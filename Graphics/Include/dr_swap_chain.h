@@ -62,6 +62,8 @@ class DR_GRAPHICS_EXPORT SwapChain
   virtual void
   swapBuffers() = 0;
 
+  const DrSwapChainDesc& getDescriptor() const { return m_descriptor; }
+protected:
   DrSwapChainDesc m_descriptor;
 };
 

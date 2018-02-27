@@ -2,13 +2,17 @@
 #include <dr_camera.h>
 #include <dr_device.h>
 #include <dr_file.h>
-#include <dr_string_utils.h>
+#include <dr_graphics_api.h>
 #include <dr_shader.h>
+#include <dr_string_utils.h>
 
 namespace driderSDK {
 
 void
-LinesTechnique::compile(Device& device) {
+LinesTechnique::compile() {
+  
+  auto& device = GraphicsAPI::getDevice();
+
   File file;
 
   file.Open(_T("lines_vs.hlsl"));

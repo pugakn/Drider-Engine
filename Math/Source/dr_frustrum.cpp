@@ -3,54 +3,62 @@
 #include "dr_aabb.h"
 #include "dr_ray.h"
 namespace driderSDK {
-Frustrum::Frustrum(const Matrix4x4& ViewProjection) {
-	createFromVP(ViewProjection);
+Frustrum::Frustrum(const Matrix4x4& view, const Matrix4x4& projection) {
+	createFromVP(view, projection);
 }
 
 void
-driderSDK::Frustrum::createFromVP(const Matrix4x4& ViewProjection) {
-	// Left clipping plane   
-	planes[kLeft].x = ViewProjection.vector3[0] + ViewProjection.vector0[0];
-	planes[kLeft].y = ViewProjection.vector3[1] + ViewProjection.vector0[1];
-	planes[kLeft].z = ViewProjection.vector3[2] + ViewProjection.vector0[2];
-	planes[kLeft].d = ViewProjection.vector3[3] + ViewProjection.vector0[3];
-  planes[kLeft].normalize();
+driderSDK::Frustrum::createFromVP(Matrix4x4 view, 
+                                  Matrix4x4 projection) {
 
-	// Right clipping plane    
-  planes[kRight].x = ViewProjection.vector3[0] - ViewProjection.vector0[0];
-  planes[kRight].y = ViewProjection.vector3[1] - ViewProjection.vector0[1];
-  planes[kRight].z = ViewProjection.vector3[2] - ViewProjection.vector0[2];
-  planes[kRight].d = ViewProjection.vector3[3] - ViewProjection.vector0[3];
-  planes[kRight].normalize();
+  float size = 1;
 
-	// Top clipping plane    
-	planes[kTop].x = ViewProjection.vector3[0] + ViewProjection.vector1[0];
-	planes[kTop].y = ViewProjection.vector3[1] + ViewProjection.vector1[1];
-	planes[kTop].z = ViewProjection.vector3[2] + ViewProjection.vector1[2];
-	planes[kTop].d = ViewProjection.vector3[3] + ViewProjection.vector1[3];
-  planes[kTop].normalize();
+  std::array<Vector3D, 8> vertices = {
+    Vector3D{-size, size, size}, Vector3D{size, size, size},
+    Vector3D{-size, size, 0},    Vector3D{size, size, 0},
+    Vector3D{-size, -size, size},Vector3D{size, -size, size},
+    Vector3D{-size, -size, 0},   Vector3D{size, -size, 0}
+  };
 
-	// Bottom clipping plane    
-  planes[kBottom].x = ViewProjection.vector3[0] - ViewProjection.vector1[0];
-  planes[kBottom].y = ViewProjection.vector3[1] - ViewProjection.vector1[1];
-  planes[kBottom].z = ViewProjection.vector3[2] - ViewProjection.vector1[2];
-  planes[kBottom].d = ViewProjection.vector3[3] - ViewProjection.vector1[3];
-  planes[kBottom].normalize();
+  view.inverse();
+  projection.inverse();
+
+  for (auto& vertex : vertices) {    
+    Vector4D A = Vector4D(vertex,1) * projection;
+    A = A * view;
+    vertex = A;
+    vertex /= A.w;
+  }  
+ 
+  /*Far Plane*/
+  planes[0] = Plane(Vector3D(vertices[4]), 
+                    Vector3D(vertices[5]),
+                    Vector3D(vertices[0]));
+
+  /*Near plane*/
+  planes[5] = Plane(Vector3D(vertices[7]), 
+                    Vector3D(vertices[6]),
+                    Vector3D(vertices[3]));
+
+  /*Left*/
+  planes[1] = Plane(Vector3D(vertices[4]), 
+                    Vector3D(vertices[0]),
+                    Vector3D(vertices[6]));
+
+  /*Right*/
+  planes[2] = Plane(Vector3D(vertices[7]), 
+                    Vector3D(vertices[3]),
+                    Vector3D(vertices[5]));
+
+  /*Top*/
+  planes[3] = Plane(Vector3D(vertices[2]), 
+                    Vector3D(vertices[0]),
+                    Vector3D(vertices[3]));
   
-  // Near clipping plane    
-	planes[kNear].x = ViewProjection.vector2[0];
-	planes[kNear].y = ViewProjection.vector2[1];
-	planes[kNear].z = ViewProjection.vector2[2];
-	planes[kNear].d = ViewProjection.vector2[3];
-	planes[kNear].normalize();
-
-	// Far clipping plane    
-	planes[kFar].x = ViewProjection.vector3[0] - ViewProjection.vector2[0];
-	planes[kFar].y = ViewProjection.vector3[1] - ViewProjection.vector2[1];
-	planes[kFar].z = ViewProjection.vector3[2] - ViewProjection.vector2[2];
-	planes[kFar].d = ViewProjection.vector3[3] - ViewProjection.vector2[3];
-	planes[kFar].normalize();
-
+  /*Down*/
+  planes[4] = Plane(Vector3D(vertices[7]), 
+                    Vector3D(vertices[5]),
+                    Vector3D(vertices[6]));
 }
 
 bool

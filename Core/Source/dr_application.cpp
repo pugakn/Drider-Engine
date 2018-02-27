@@ -2,7 +2,9 @@
 #include <iostream>
 #include <Windows.h>
 #include <SDL\SDL.h>
-#include <dr_d3d_graphics_api.h>
+#include <dr_graphics_driver.h>
+#include <dr_input_manager.h>
+#include <dr_time.h>
 
 namespace driderSDK {
 
@@ -28,13 +30,17 @@ Application::init() {
     
   createWindow();
 
-  m_graphicsAPI = dr_make_unique<D3DGraphicsAPI>();
 
   HWND win = GetActiveWindow();
+  
+  GraphicsDriver::startUp(DR_GRAPHICS_API::D3D11, 
+                          m_viewport.width, 
+                          m_viewport.height,
+                          win);
 
-  m_graphicsAPI->init(m_viewport.width, 
-                      m_viewport.height, 
-                      win);
+  InputManager::startUp((SizeT)win);
+
+  Time::startUp();
 
   postInit();
 }
@@ -53,11 +59,8 @@ Application::createWindow() {
   //flags |= SDL_RESIZABLE;
 
   SDL_ShowCursor(SDL_ENABLE);
-  
-  int width = 1280;
-  int height = 720;
 
-  if (SDL_SetVideoMode(width, height, 32, flags) == 0) {
+  if (SDL_SetVideoMode(m_viewport.width, m_viewport.height, 32, flags) == 0) {
     std::cout << "Video mode set failed: " << SDL_GetError() << std::endl;
   }
 }
@@ -74,17 +77,16 @@ Application::update() {
 void 
 Application::render() {
 
-  m_graphicsAPI->clear();
+  GraphicsDriver::API().clear();
 
   postRender();
   
-  m_graphicsAPI->swapBuffers();
+  GraphicsDriver::API().swapBuffers();
 }
 
 void 
 Application::destroy() {
   SDL_Quit();
-  m_graphicsAPI->destroy();
   postDestroy();
 }
 

@@ -12,6 +12,7 @@
 #include <dr_radian.h>
 #include <dr_rasterizer_state.h>
 #include <dr_render_component.h>
+#include <dr_string_utils.h>
 #include <dr_time.h>
 #include "DrawableComponent.h"
 #include "ModelDebbug.h"
@@ -33,11 +34,10 @@ TestApplication::postInit() {
                                       m_viewport);
 
   m_camera->createProyection(45.f, 20.f, 1000.f);
-  m_camera->getTransform().setPosition({0.f, 100.0f, -100.0f});
-  m_camera->setTarget({0.0f, 100.0f, 10.0f});
+  m_camera->getTransform().setPosition({0.f, 100.0f, -100});
+  m_camera->setTarget({0.0f, 100.0f, 1.0f});
 
-  auto p = m_camera->createComponent<CameraDebbug>(*m_graphicsAPI->device,
-                                                   *m_graphicsAPI->deviceContext);
+  auto p = m_camera->createComponent<CameraDebbug>();
 
   auto tech = new LinesTechnique(&(*m_activeCam), 
                                  &(*m_camera));
@@ -46,29 +46,37 @@ TestApplication::postInit() {
 
   m_techs.push_back(tech);
   
-  m_worldCam = std::make_shared<Camera>(_T("WORLD_CAM"), 
+  m_leftCam = std::make_shared<Camera>(_T("LEFT_CAM"), 
                                         m_viewport);
   
   
-  m_worldCam ->createProyection(45.f, 0.1f, 10000.f);
-  m_worldCam->getTransform().setPosition({1000.f, 1000.f, -1000.f});
-  m_worldCam->setTarget({0.f, 1.f, 0.f});
+  m_leftCam ->createProyection(45.f, 0.1f, 10000.f);
+  m_leftCam->getTransform().setPosition({-4000.f, 0000.f, 1000.f});
+  m_leftCam->setTarget({0.f, 0.f, 1000.f});
 
-  m_activeCam = m_worldCam;
+  m_upCam = std::make_shared<Camera>(_T("UP_CAM"), 
+                                        m_viewport);
+  
+  
+  m_upCam ->createProyection(45.f, 0.1f, 10000.f);
+  m_upCam->getTransform().setPosition({0.f, 3000.f, 1000.f});
+  m_upCam->setTarget({1.f, 1.f, 1000.f});
+
+  m_activeCam = m_leftCam;
 
   m_technique = dr_make_unique<StaticMeshTechnique>();
-  m_technique->compile(*m_graphicsAPI->device);
+
+  m_technique->compile();
 
   ResourceManager::startUp();
-  InputManager::startUp((SizeT)GetActiveWindow());
-  Time::startUp();
 
   initResources();
   initInput();
   initSound();
   initSceneGraph();
   
-  m_sceneGraph->getRoot()->addChild(m_worldCam);
+  m_sceneGraph->getRoot()->addChild(m_leftCam);
+  m_sceneGraph->getRoot()->addChild(m_upCam);
   m_joker->addChild(m_camera);
 
   //m_sceneGraph->query(*m_camera, QUERY_ORDER::kBackToFront, 0);
@@ -82,6 +90,9 @@ TestApplication::postInit() {
   result = system->init(32, FMOD_INIT_NORMAL, 0);
   result = system->createSound("testSound.mp3", FMOD_DEFAULT, 0, &sound1);
   result = sound1->setMode(FMOD_LOOP_OFF);*/
+
+  m_debugList = false;
+
 }
 
 void
@@ -148,7 +159,7 @@ TestApplication::postUpdate() {
   //soundDriver->update();
   
   Vector3D p = m_joker->getTransform().getPosition();
-
+  
   input();
 
   Time::instance().update();
@@ -204,17 +215,35 @@ TestApplication::postRender() {
 
   m_technique->setCamera(&(*m_activeCam));
 
-  auto dc = m_graphicsAPI->deviceContext;
+  auto dc = &GraphicsAPI::getDeviceContext();
 
   dc->setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
 
-  auto objects = m_sceneGraph->query(*m_camera, QUERY_ORDER::kFrontToBack, 0);
+  auto objects = m_sceneGraph->query(*m_camera, m_queryOrder, 0);
+
+  if (m_debugList) {
+
+    std::cout << "\nQuery Order: ";
+
+    if (m_queryOrder == QUERY_ORDER::kBackToFront) {
+      std::cout << "Back to Front" << std::endl;
+    } 
+    else {
+      std::cout << "Front to Back" << std::endl;
+    }
+
+    for (auto& obj : objects) {
+      std::cout << StringUtils::toString(obj->getName()) << std::endl;
+    }
+
+    m_debugList = false;
+  }
 
   for (auto& object : objects) {
 
     m_technique->setGameObject(&(*object));
     
-    if (m_technique->prepareForDraw(*m_graphicsAPI->deviceContext)) {
+    if (m_technique->prepareForDraw()) {
 
       auto& meshes = object->getComponent<RenderComponent>()->getMeshes();
 
@@ -247,17 +276,36 @@ TestApplication::initInput() {
 
   auto toggleCam = [&]()
   {
-    if (m_activeCam == m_worldCam) {
+    if (m_activeCam == m_leftCam) {
+      m_activeCam = m_upCam;
+    }
+    else if(m_activeCam == m_upCam) {
       m_activeCam = m_camera;
     }
     else {
-      m_activeCam = m_worldCam;
+      m_activeCam = m_leftCam;
     }
   };
+
+  auto debugList = [&](){
+    m_debugList = true;
+  };
+
+  auto toggleQueryOrder = [&]() {
+    m_queryOrder = static_cast<QUERY_ORDER::E>(!m_queryOrder);
+  };
+
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kQ,
+                        toggleQueryOrder);
 
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kT,
                         toggleCam);
+
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kL,
+                        debugList);
 
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kLEFT,
@@ -275,17 +323,17 @@ TestApplication::initResources() {
      resourceManager = &ResourceManager::instance();
   }
     
-  resourceManager->loadResource(_T("axe.jpg"), m_graphicsAPI->device);
+  resourceManager->loadResource(_T("axe.jpg"));
 
-  resourceManager->loadResource(_T("VenomJok.X"), m_graphicsAPI->device);
+  resourceManager->loadResource(_T("VenomJok.X"));
 
-  resourceManager->loadResource(_T("Croc.X"), m_graphicsAPI->device);
+  resourceManager->loadResource(_T("Croc.X"));
 
-  resourceManager->loadResource(_T("dwarf.x"), m_graphicsAPI->device);
+  resourceManager->loadResource(_T("dwarf.x"));
 
-  resourceManager->loadResource(_T("Cube.fbx"), m_graphicsAPI->device);
+  resourceManager->loadResource(_T("Cube.fbx"));
 
-  resourceManager->loadResource(_T("DuckyQuacky_.fbx"), m_graphicsAPI->device);
+  resourceManager->loadResource(_T("DuckyQuacky_.fbx"));
 }
 
 void 
@@ -340,8 +388,7 @@ TestApplication::initSceneGraph() {
     
     auto node = m_sceneGraph->createNode(parent, model);
 
-    auto p = node->createComponent<ModelDebbug>(*m_graphicsAPI->device,
-                                                *m_graphicsAPI->deviceContext);
+    auto p = node->createComponent<ModelDebbug>();
 
     auto tech = new LinesTechnique(&(*m_activeCam), 
                                    &(*node));
@@ -367,13 +414,13 @@ TestApplication::initSceneGraph() {
   
   n = createNode(root, _T("Dwarf0"), _T("dwarf.x"), {0.0f, 0.0f, 200.0f}); 
 
-  n = createNode(root, _T("Cube"), _T("Cube.fbx"), {0.0f, 0.0f, 0.0f}); 
+  n = createNode(root, _T("Cube0"), _T("Cube.fbx"), {178.0f, 0.0f, 125.0f}); 
 
   n->getTransform().scale({30, 30, 30});
 
-  n = createNode(root, _T("Croc1"), _T("Croc.X"), {-100, 0.0f, 200.0f}); 
+  n = createNode(root, _T("Duck0"), _T("DuckyQuacky_.fbx"), {-100, 0.0f, 250.0f}); 
 
-  n = createNode(root, _T("Joker0"), _T("VenomJok.X"), {100.0f, 0.0f, 200.0f});
+  n = createNode(root, _T("Joker0"), _T("VenomJok.X"), {100.0f, 0.0f, 800.0f});
 
   /*n = createNode(root, _T("Duck0"), _T("DuckyQuacky_.fbx"), {200.f, 0.0f, 10.0f}); 
 

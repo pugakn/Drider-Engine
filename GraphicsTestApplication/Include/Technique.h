@@ -22,10 +22,10 @@ class Technique
   virtual ~Technique(){}
 
   virtual void 
-  compile(Device& device) = 0;
+  compile() = 0;
   
   bool
-  prepareForDraw(DeviceContext& deviceContext);
+  prepareForDraw();
 
   void
   setGameObject(GameObject* gameObject) 

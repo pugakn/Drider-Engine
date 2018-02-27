@@ -8,7 +8,6 @@
 #include <dr_camera.h>
 #include <dr_viewport.h>
 #include "dr_application.h"
-#include "dr_quad.h"
 #include <dr_resource_manager.h>
 #include <dr_graph.h>
 #include <dr_memory.h>
@@ -51,12 +50,14 @@ public:
   void initResources();
   void initSound();
   void initSceneGraph();
-  
-  std::shared_ptr<Camera> m_camera;
-  std::shared_ptr<Camera> m_worldCam;
-  std::shared_ptr<Camera> m_activeCam;
-  //SoundAPI* soundDriver;
 
+  std::shared_ptr<Camera> m_camera;
+  std::shared_ptr<Camera> m_leftCam;
+  std::shared_ptr<Camera> m_upCam;
+  std::shared_ptr<Camera> m_activeCam;
+  bool m_debugList;
+  //SoundAPI* soundDriver;
+  QUERY_ORDER::E m_queryOrder;
   //DrSound *sound1;
   //DrSound *sound2;
   //DrChannel *channel;

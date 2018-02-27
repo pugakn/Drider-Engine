@@ -24,7 +24,7 @@ class LinesTechnique : public Technique
   };
   
   virtual 
-  void compile(Device& device) override;
+  void compile() override;
 
   virtual UInt8* 
   getConstBufferData() override;
