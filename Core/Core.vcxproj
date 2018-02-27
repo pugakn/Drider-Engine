@@ -181,7 +181,6 @@
     <ClInclude Include="Include\dr_transform.h" />
     <ClInclude Include="Include\dr_vertex.h" />
     <ClInclude Include="Include\dr_viewport.h" />
-    <ClInclude Include="Include\Transf.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_aabb_collider.cpp" />
@@ -210,7 +209,6 @@
     <ClCompile Include="Source\dr_sound_core.cpp" />
     <ClCompile Include="Source\dr_spline.cpp" />
     <ClCompile Include="Source\dr_transform.cpp" />
-    <ClCompile Include="Source\Transf.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

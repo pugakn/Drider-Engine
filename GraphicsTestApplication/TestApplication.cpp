@@ -18,6 +18,7 @@
 #include "NPCMovement.h"
 #include "StaticMeshTechnique.h"
 #include "LinesTechnique.h"
+#include "CameraDebbug.h"
 
 namespace driderSDK {
 
@@ -31,16 +32,26 @@ TestApplication::postInit() {
   m_camera = std::make_shared<Camera>(_T("MAIN_CAM"), 
                                       m_viewport);
 
-  m_camera->createProyection(45.f, 0.1f, 10000.f);
+  m_camera->createProyection(45.f, 20.f, 1000.f);
   m_camera->getTransform().setPosition({0.f, 100.0f, -100.0f});
   m_camera->setTarget({0.0f, 100.0f, 10.0f});
 
+  auto p = m_camera->createComponent<CameraDebbug>(*m_graphicsAPI->device,
+                                                   *m_graphicsAPI->deviceContext);
+
+  auto tech = new LinesTechnique(&(*m_activeCam), 
+                                 &(*m_camera));
+
+  p->setShaderTechnique(tech);
+
+  m_techs.push_back(tech);
+  
   m_worldCam = std::make_shared<Camera>(_T("WORLD_CAM"), 
                                         m_viewport);
   
   
   m_worldCam ->createProyection(45.f, 0.1f, 10000.f);
-  m_worldCam->getTransform().setPosition({3000.f, 3000.f, -1500.f});
+  m_worldCam->getTransform().setPosition({1000.f, 1000.f, -1000.f});
   m_worldCam->setTarget({0.f, 1.f, 0.f});
 
   m_activeCam = m_worldCam;
@@ -72,6 +83,7 @@ TestApplication::postInit() {
   result = system->createSound("testSound.mp3", FMOD_DEFAULT, 0, &sound1);
   result = sound1->setMode(FMOD_LOOP_OFF);*/
 }
+
 void
 TestApplication::input() {
   
@@ -86,12 +98,10 @@ TestApplication::input() {
     croc->transform.setScale({scale,scale,scale}); 
   }*/
 
-  if (auto node = m_sceneGraph->getRoot()->getChild(_T("Dwarf"))) {
+  if (auto node = m_sceneGraph->getRoot()->getChild(_T("Dwarf0"))) {
    
-    auto nodeB = m_sceneGraph->getRoot()->findNode(_T("Joker"));
-
-    node->getTransform().rotate(Degree(90 * Time::instance().getDelta()), AXIS::kY);
-    nodeB->getTransform().rotate(Degree(90 * Time::instance().getDelta()), AXIS::kY);
+    node->getTransform().rotate(Degree(90 * Time::instance().getDelta()), 
+                                AXIS::kY);
   }
   
   Vector3D dir = m_joker->getTransform().getDirection();
@@ -351,21 +361,22 @@ TestApplication::initSceneGraph() {
 
   
       
-  auto n = createNode(root, _T("Croc"), _T("Croc.X"), {-200.f, 0.0f, 0.0f});
+  auto n = createNode(root, _T("Croc0"), _T("Croc.X"), {-200.f, 0.0f, 0.0f});
   
   m_joker = n;
   
-  n = createNode(n, _T("Dwarf"), _T("dwarf.x"), {0.0f, 0.0f, 200.0f}); 
+  n = createNode(root, _T("Dwarf0"), _T("dwarf.x"), {0.0f, 0.0f, 200.0f}); 
 
-  n = createNode(root, _T("Dwarf"), _T("dwarf.x"), {200.0f, 0.0f, 600.0f}); 
+  n = createNode(root, _T("Cube"), _T("Cube.fbx"), {0.0f, 0.0f, 0.0f}); 
 
+  n->getTransform().scale({30, 30, 30});
 
-  n = createNode(n, _T("Croc"), _T("Croc.X"), {0, 0.0f, 200.0f}); 
+  n = createNode(root, _T("Croc1"), _T("Croc.X"), {-100, 0.0f, 200.0f}); 
 
-  n = createNode(n, _T("Joker"), _T("VenomJok.X"), {0.0f, 0.0f, 200.0f});
+  n = createNode(root, _T("Joker0"), _T("VenomJok.X"), {100.0f, 0.0f, 200.0f});
 
-  n = createNode(root, _T("Sphere"), _T("DuckyQuacky_.fbx"), {100.f, 0.0f, 10.0f}); 
+  /*n = createNode(root, _T("Duck0"), _T("DuckyQuacky_.fbx"), {200.f, 0.0f, 10.0f}); 
 
-  n->getTransform().scale({50.f, 50.f, 50.f});
+  n->getTransform().scale({10.f, 10.f, 10.f});*/
 }
 }

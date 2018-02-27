@@ -1,6 +1,8 @@
 #pragma once
 
+#include <functional>
 #include <memory>
+#include <queue>
 #include <vector>
 #include "dr_core_prerequisites.h"
 
@@ -34,9 +36,9 @@ enum E : UInt32
 class DR_CORE_EXPORT SceneGraph
 {
 public:
-  
   using SharedModel = std::shared_ptr<Model>;
   using SharedGameObject = std::shared_ptr<GameObject>;
+  using GameObjectList = std::vector<SharedGameObject>;
    
   SceneGraph();
 
@@ -51,7 +53,7 @@ public:
   /**
   * Query meshes from the scene graph
   */
-  std::vector<SharedGameObject>
+  GameObjectList
   query(Camera& camera, QUERY_ORDER::E order, UInt32 props);
      
   void 
@@ -63,6 +65,29 @@ public:
   /****************/
   SharedGameObject
   createNode(SharedGameObject parent, SharedModel model);
+private:
+  using ObjectComp = std::function<bool(SharedGameObject, SharedGameObject)>;
+  using GameObjectQueue = std::priority_queue<SharedGameObject,
+                                              GameObjectList,
+                                              ObjectComp>;
+
+  class DepthComparer
+  {
+  public:
+    DepthComparer(Camera& _camera, QUERY_ORDER::E _order);
+
+    bool 
+    operator()(SharedGameObject objA, 
+               SharedGameObject objB) const;
+  private:
+    Camera& m_camera;
+    QUERY_ORDER::E m_order;
+  };
+
+  void 
+  testObject(SharedGameObject object, 
+             UInt32 props, 
+             GameObjectQueue& objects);
 private:
   SharedGameObject m_root;
 };

@@ -1,6 +1,4 @@
 #include "dr_graph.h"
-#include <functional>
-#include <queue>
 #include <dr_vector3d.h>
 #include <dr_frustrum.h>
 #include "dr_aabb_collider.h"
@@ -28,61 +26,12 @@ SceneGraph::getRoot() const {
 
 std::vector<SceneGraph::SharedGameObject>
 SceneGraph::query(Camera& camera, QUERY_ORDER::E order, UInt32 props) {
-
-  using ObjectComp = std::function<bool(SharedGameObject, SharedGameObject)>;
-  using GameObjectQueue = std::priority_queue<SharedGameObject,
-                                              std::vector<SharedGameObject>,
-                                              ObjectComp>;
-
-  auto objectComp = [&](SharedGameObject a, SharedGameObject b) -> bool
-  {
-    auto renderA = a->getComponent<AABBCollider>();
- 
-    Vector4D posA(renderA->getAABB().center, 1.f);
-
-    auto WVPA = a->getWorldTransform().getMatrix() * camera.getVP();
-
-    auto renderB = b->getComponent<AABBCollider>();
-
-    Vector4D posB(renderB->getAABB().center, 1.f);
-
-    auto WVPB = b->getWorldTransform().getMatrix() * camera.getVP();
-
-    auto aW = (posA * WVPA).w;
-
-    auto bW = (posB * WVPB).w;
-
-    if (order == QUERY_ORDER::kFrontToBack) {
-      return aW > bW;
-    }
-    else {
-      return aW < bW;
-    }
-  };
   
-  GameObjectQueue objects(objectComp);
+  GameObjectQueue objects(DepthComparer{camera, order});
 
   Frustrum frustrum(camera.getVP());
-
-  std::function<void(SharedGameObject)> addObject = [&](SharedGameObject obj)
-  {
-    if (obj->getComponent<RenderComponent>() && 
-        obj->getComponent<AABBCollider>()) {
-      
-
-      //if (rc->getAABB().intersect(frustrum)) {
-        objects.push(obj);
-      //}      
-    }
-
-    auto& children = obj->getChildren();
-
-    for (auto& child : children) {
-      addObject(child);
-    }
-  };
-
-  addObject(m_root);
+  
+  testObject(m_root, props, objects);
 
   std::vector<SharedGameObject> gameobjects;
    
@@ -118,6 +67,59 @@ SceneGraph::createNode(SharedGameObject parent, SharedModel model) {
   node->createComponent<AABBCollider>(model->aabb);
 
   return node;
+}
+
+void 
+SceneGraph::testObject(SharedGameObject object, 
+                       UInt32 props, 
+                       GameObjectQueue& objects) {
+
+  if (object->getComponent<RenderComponent>() && 
+      object->getComponent<AABBCollider>()) {      
+
+      //if (rc->getAABB().intersect(frustrum)) {
+      objects.push(object);
+      //}      
+    }
+
+    auto& children = object->getChildren();
+
+    for (auto& child : children) {
+      testObject(child, props, objects);
+    }  
+}
+
+SceneGraph::DepthComparer::DepthComparer(Camera& _camera, QUERY_ORDER::E _order) 
+  : m_camera(_camera),
+    m_order(_order)
+{}
+
+bool
+SceneGraph::DepthComparer::operator()(SharedGameObject objA, 
+                                      SharedGameObject objB) const {
+
+  auto renderA = objA->getComponent<AABBCollider>();
+ 
+  Vector4D posA(renderA->getAABB().center, 1.f);
+
+  auto WVPA = objA->getWorldTransform().getMatrix() * m_camera.getVP();
+
+  auto renderB = objB->getComponent<AABBCollider>();
+
+  Vector4D posB(renderB->getAABB().center, 1.f);
+
+  auto WVPB = objB->getWorldTransform().getMatrix() * m_camera.getVP();
+
+  auto aW = (posA * WVPA).w;
+
+  auto bW = (posB * WVPB).w;
+
+  if (m_order == QUERY_ORDER::kFrontToBack) {
+    return aW > bW;
+  }
+  else {
+    return aW < bW;
+  }
 }
 
 }
