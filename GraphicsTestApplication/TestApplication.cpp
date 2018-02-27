@@ -221,7 +221,9 @@ TestApplication::postRender() {
 
   auto meshes = m_sceneGraph->query(*m_camera, 
                                     m_queryOrder, 
-                                    QUERY_PROPERTYS::kOpaque);
+                                    QUERY_PROPERTYS::kOpaque | 
+                                    QUERY_PROPERTYS::kDynamic | 
+                                    QUERY_PROPERTYS::kStatic);
 
   for (auto& mesh : meshes) {
 
@@ -401,6 +403,8 @@ TestApplication::initSceneGraph() {
   n = createNode(root, _T("Duck0"), _T("DuckyQuacky_.fbx"), {-100, 0.0f, 250.0f}); 
 
   n = createNode(root, _T("Joker0"), _T("VenomJok.X"), {100.0f, 0.0f, 800.0f});
+
+  n->setStatic(true);
 
   /*n = createNode(root, _T("Duck0"), _T("DuckyQuacky_.fbx"), {200.f, 0.0f, 10.0f}); 
 
