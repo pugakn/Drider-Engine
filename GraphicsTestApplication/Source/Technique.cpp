@@ -1,6 +1,7 @@
 #include "Technique.h"
 #include <dr_constant_buffer.h>
 #include <dr_device_context.h>
+#include <dr_graphics_api.h>
 #include <dr_input_layout.h>
 #include <dr_shader.h>
 
@@ -13,7 +14,9 @@ Technique::Technique(Camera* _camera, GameObject* _gameObject)
 {}
 
 bool
-Technique::prepareForDraw(DeviceContext& deviceContext) {
+Technique::prepareForDraw() {
+
+  auto& deviceContext = GraphicsAPI::getDeviceContext();
 
   bool prepared = false;  
 

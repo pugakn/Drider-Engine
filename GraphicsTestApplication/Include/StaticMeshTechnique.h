@@ -21,7 +21,7 @@ class StaticMeshTechnique : public Technique
   using Technique::Technique;
 
   virtual void 
-  compile(Device & device) override;
+  compile() override;
 
   virtual UInt8* 
   getConstBufferData() override;

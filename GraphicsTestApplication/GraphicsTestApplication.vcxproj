@@ -162,7 +162,6 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="dr_quad.h" />
     <ClInclude Include="Include\CameraDebbug.h" />
     <ClInclude Include="Include\DrawableAnimated.h" />
     <ClInclude Include="Include\DrawableComponent.h" />
@@ -177,7 +176,6 @@
     <ClInclude Include="TestApplication.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="dr_quad.cpp" />
     <ClCompile Include="GraphicsTestApplication.cpp" />
     <ClCompile Include="Source\CameraDebbug.cpp" />
     <ClCompile Include="Source\DrawableAnimated.cpp" />

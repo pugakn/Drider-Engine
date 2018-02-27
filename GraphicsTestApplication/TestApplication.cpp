@@ -37,8 +37,7 @@ TestApplication::postInit() {
   m_camera->getTransform().setPosition({0.f, 100.0f, -100});
   m_camera->setTarget({0.0f, 100.0f, 1.0f});
 
-  auto p = m_camera->createComponent<CameraDebbug>(*m_graphicsAPI->device,
-                                                   *m_graphicsAPI->deviceContext);
+  auto p = m_camera->createComponent<CameraDebbug>();
 
   auto tech = new LinesTechnique(&(*m_activeCam), 
                                  &(*m_camera));
@@ -67,7 +66,7 @@ TestApplication::postInit() {
 
   m_technique = dr_make_unique<StaticMeshTechnique>();
 
-  m_technique->compile(*m_graphicsAPI->device);
+  m_technique->compile();
 
   ResourceManager::startUp();
   InputManager::startUp((SizeT)GetActiveWindow());
@@ -218,7 +217,7 @@ TestApplication::postRender() {
 
   m_technique->setCamera(&(*m_activeCam));
 
-  auto dc = m_graphicsAPI->deviceContext;
+  auto dc = &GraphicsAPI::getDeviceContext();
 
   dc->setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
 
@@ -246,7 +245,7 @@ TestApplication::postRender() {
 
     m_technique->setGameObject(&(*object));
     
-    if (m_technique->prepareForDraw(*m_graphicsAPI->deviceContext)) {
+    if (m_technique->prepareForDraw()) {
 
       auto& meshes = object->getComponent<RenderComponent>()->getMeshes();
 
@@ -326,17 +325,17 @@ TestApplication::initResources() {
      resourceManager = &ResourceManager::instance();
   }
     
-  resourceManager->loadResource(_T("axe.jpg"), m_graphicsAPI->device);
+  resourceManager->loadResource(_T("axe.jpg"));
 
-  resourceManager->loadResource(_T("VenomJok.X"), m_graphicsAPI->device);
+  resourceManager->loadResource(_T("VenomJok.X"));
 
-  resourceManager->loadResource(_T("Croc.X"), m_graphicsAPI->device);
+  resourceManager->loadResource(_T("Croc.X"));
 
-  resourceManager->loadResource(_T("dwarf.x"), m_graphicsAPI->device);
+  resourceManager->loadResource(_T("dwarf.x"));
 
-  resourceManager->loadResource(_T("Cube.fbx"), m_graphicsAPI->device);
+  resourceManager->loadResource(_T("Cube.fbx"));
 
-  resourceManager->loadResource(_T("DuckyQuacky_.fbx"), m_graphicsAPI->device);
+  resourceManager->loadResource(_T("DuckyQuacky_.fbx"));
 }
 
 void 
@@ -391,8 +390,7 @@ TestApplication::initSceneGraph() {
     
     auto node = m_sceneGraph->createNode(parent, model);
 
-    auto p = node->createComponent<ModelDebbug>(*m_graphicsAPI->device,
-                                                *m_graphicsAPI->deviceContext);
+    auto p = node->createComponent<ModelDebbug>();
 
     auto tech = new LinesTechnique(&(*m_activeCam), 
                                    &(*node));

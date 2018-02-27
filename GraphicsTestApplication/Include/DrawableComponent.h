@@ -20,9 +20,7 @@ class DrawableComponent : public GameComponent
  public:
   //using SharedModel = std::shared_ptr<Model>;
 
-  DrawableComponent(GameObject& gameObject, 
-                    Device& device_,
-                    DeviceContext& deviceContext_);
+  DrawableComponent(GameObject& gameObject);
 
   virtual ~DrawableComponent(){}
 
@@ -67,8 +65,6 @@ class DrawableComponent : public GameComponent
   destroyMeshBuffers();
 
  protected:
-  Device& m_device;
-  DeviceContext& m_deviceContext;
   Technique* m_technique{nullptr};
   std::vector<MeshBuffers> m_meshes;
  private:  

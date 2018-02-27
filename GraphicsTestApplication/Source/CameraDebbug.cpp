@@ -1,6 +1,7 @@
 #include "CameraDebbug.h"
 #include <dr_camera.h>
 #include <dr_device_context.h>
+#include <dr_graphics_api.h>
 #include <dr_index_buffer.h>
 #include <dr_vertex_buffer.h>
 #include "Technique.h"
@@ -100,15 +101,17 @@ void CameraDebbug::onUpdate() {
 void 
 CameraDebbug::onRender() {
   if (m_technique) {
-    if (m_technique->prepareForDraw(m_deviceContext)) {
+    if (m_technique->prepareForDraw()) {
+      
+      auto& deviceContext = GraphicsAPI::getDeviceContext();
 
-      m_deviceContext.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kLineList);
+      deviceContext.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kLineList);
       
       for (auto& meshBuff : m_meshes) {
-        meshBuff.vertexBuffer->set(m_deviceContext);
-        meshBuff.indexBuffer->set(m_deviceContext);
+        meshBuff.vertexBuffer->set(deviceContext);
+        meshBuff.indexBuffer->set(deviceContext);
 
-        m_deviceContext.draw(meshBuff.indicesCount, 0, 0);
+        deviceContext.draw(meshBuff.indicesCount, 0, 0);
       }
     }
   } 
