@@ -198,12 +198,18 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   SizeT
   getChildrenCount();
 
+  void 
+  setStatic(bool _static);
+
+  bool 
+  isStatic() const;
+
  protected:
 
   virtual void
   updateImpl();
 
-
+  bool m_isStatic;
   ChildrenList m_children;
   ComponentsList m_components;
   Transform m_finalTransform;

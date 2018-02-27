@@ -5,6 +5,7 @@
 
 namespace driderSDK {
 
+class Matrix4x4;
 class Shader;
 class InputLayout;
 class ConstantBuffer;
@@ -17,7 +18,7 @@ class Technique
 {
  public:
   
-  Technique(Camera* _camera = nullptr, GameObject* _gameObject = nullptr);
+  Technique(Camera* _camera = nullptr, const Matrix4x4* _world = nullptr);
 
   virtual ~Technique(){}
 
@@ -28,9 +29,9 @@ class Technique
   prepareForDraw();
 
   void
-  setGameObject(GameObject* gameObject) 
+  setWorld(const Matrix4x4* matrix) 
   {
-    m_gameObject = gameObject;
+    m_world = matrix;
   }
 
   void
@@ -49,7 +50,7 @@ class Technique
   InputLayout* m_inputLayout{nullptr};
   std::vector<Shader*> m_shaders;
   Camera* m_camera;
-  GameObject* m_gameObject;
+  const Matrix4x4* m_world;
 };
 
 }

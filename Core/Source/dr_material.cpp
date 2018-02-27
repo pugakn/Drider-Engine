@@ -12,8 +12,8 @@ namespace driderSDK {
 //  }
 //}
 
-Material::Property*
-Material::addProperty(const TString& name, PROPERTY_TYPE type) {
+Property*
+Material::addProperty(const TString& name, PROPERTY_TYPE::E type) {
 
   m_properties.push_back(createProperty(name, type));
   
@@ -41,7 +41,7 @@ SizeT Material::getPropertiesCount() {
   return m_properties.size();
 }
 
-Material::Property* 
+Property* 
 Material::getProperty(SizeT index) {
   Property* property = nullptr;
 
@@ -52,7 +52,7 @@ Material::getProperty(SizeT index) {
   return property;
 }
 
-Material::Property* 
+Property* 
 Material::getProperty(const TString& name) {
   Property* prop = nullptr;
 
@@ -66,8 +66,8 @@ Material::getProperty(const TString& name) {
   return prop;
 }
 
-Material::Property* 
-Material::transformProperty(const TString& name, PROPERTY_TYPE newType) {
+Property* 
+Material::transformProperty(const TString& name, PROPERTY_TYPE::E newType) {
   
   Property* transformed = nullptr;
 
@@ -84,8 +84,8 @@ Material::transformProperty(const TString& name, PROPERTY_TYPE newType) {
   return transformed;
 }
 
-Material::Property*
-Material::transformProperty(SizeT index, PROPERTY_TYPE newType) {
+Property*
+Material::transformProperty(SizeT index, PROPERTY_TYPE::E newType) {
   
   Property* transformed = nullptr;
 
@@ -100,28 +100,36 @@ Material::transformProperty(SizeT index, PROPERTY_TYPE newType) {
 }
 
 Material::PropertyPtr 
-Material::createProperty(const TString& name, PROPERTY_TYPE type) {
+Material::createProperty(const TString& name, PROPERTY_TYPE::E type) {
 
   PropertyPtr property;
   
   switch (type) {
-  case driderSDK::Material::kFloat:
-    property = dr_make_unique<FloatProperty>(name, 0.0f, kA);
+  case PROPERTY_TYPE::kFloat:
+    property = dr_make_unique<FloatProperty>(name, 0.0f, CHANNEL::kA);
   break;
-  case driderSDK::Material::kVec2:
+  case PROPERTY_TYPE::kVec2:
     property = dr_make_unique<Vec2Property>(name, 
                                             Vector2D{0.0f, 0.0f}, 
-                                            std::array<CHANNEL,2>{kR,kG});
+                                            std::array<CHANNEL::E,2>{CHANNEL::kR,
+                                                                     CHANNEL::kG
+                                                                    }
+                                           );
   break;
-  case driderSDK::Material::kVec3:
+  case PROPERTY_TYPE::kVec3:
     property = dr_make_unique<Vec3Property>(name, 
                                             Vector3D{0.0f, 0.0f, 0.0f}, 
-                                            std::array<CHANNEL,3>{kR,kG, kB});
+                                            std::array<CHANNEL::E,3>{CHANNEL::kR,
+                                                                     CHANNEL::kG, 
+                                                                     CHANNEL::kB});
   break;
-  case driderSDK::Material::kVec4:
+  case PROPERTY_TYPE::kVec4:
     property = dr_make_unique<Vec4Property>(name, 
                                             Vector4D{0.0f, 0.0f, 0.0f, 0.0f}, 
-                                            std::array<CHANNEL,4>{kR,kG, kB, kA});
+                                            std::array<CHANNEL::E,4>{CHANNEL::kR,
+                                                                     CHANNEL::kG, 
+                                                                     CHANNEL::kB, 
+                                                                     CHANNEL::kA});
   break;
   default:
   break;

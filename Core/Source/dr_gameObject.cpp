@@ -5,7 +5,8 @@
 namespace driderSDK {
 
 GameObject::GameObject(const TString& name)
-  : m_name(name)
+  : m_name(name),
+    m_isStatic(false)
     //m_finalTransform(Math::FORCE_INIT::kIdentity)
 {
 }
@@ -190,6 +191,15 @@ GameObject::findNode(const TString & nodeName) {
 SizeT 
 GameObject::getChildrenCount() {
   return m_children.size();
+}
+
+void 
+GameObject::setStatic(bool _static) {
+  m_isStatic = _static;
+}
+
+bool GameObject::isStatic() const {
+  return m_isStatic;
 }
 
 void GameObject::updateImpl() {

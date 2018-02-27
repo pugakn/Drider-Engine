@@ -19,6 +19,9 @@ void Model::init(void* modelData) {
 
   for (auto& meshInfo : model->meshes) {
     Mesh mesh;
+
+    mesh.material = meshInfo.material;
+
     mesh.vertices = std::move(meshInfo.vertices);
     mesh.indices = std::move(meshInfo.indices);
 

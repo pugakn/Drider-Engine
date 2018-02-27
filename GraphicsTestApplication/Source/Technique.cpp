@@ -8,9 +8,9 @@
 
 namespace driderSDK {
 
-Technique::Technique(Camera* _camera, GameObject* _gameObject) 
+Technique::Technique(Camera* _camera, const Matrix4x4* _world) 
   : m_camera(_camera),
-    m_gameObject(_gameObject)
+    m_world(_world)
 {}
 
 bool

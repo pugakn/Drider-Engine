@@ -66,8 +66,8 @@ StaticMeshTechnique::getConstBufferData() {
   
   Matrix4x4 world(Math::FORCE_INIT::kIdentity);
 
-  if (m_gameObject) {
-    world = m_gameObject->getWorldTransform().getMatrix();
+  if (m_world) {
+    world = *m_world;
   }
 
   Matrix4x4 vp(Math::FORCE_INIT::kIdentity);

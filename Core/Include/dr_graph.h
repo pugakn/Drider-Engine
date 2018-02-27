@@ -11,12 +11,13 @@
 
 namespace driderSDK {
 
-class Frustrum;
+struct RenderMesh;
+class Matrix4x4;
 class Camera;
+class Frustrum;
 class GameObject;
 class Model;
 class Node;
-class RenderComponent;
 
 namespace QUERY_ORDER {
  enum E
@@ -32,8 +33,10 @@ enum E : UInt32
 {
   kTransparent = 0x80000000,
   kOpaque = kTransparent >> 1,
-  kTriangles = 0x1,
-  kLines = 0x2
+  kStatic = kOpaque >> 1,
+  kDynamic = kStatic >> 1
+  /*kTriangles = 0x1,
+  kLines = 0x2*/
 };
 }
 
@@ -43,7 +46,8 @@ public:
   using SharedModel = std::shared_ptr<Model>;
   using SharedGameObject = std::shared_ptr<GameObject>;
   using GameObjectList = std::vector<SharedGameObject>;
-   
+  using QueryResult = std::vector<std::pair<Matrix4x4,RenderMesh>>;   
+
   SceneGraph();
 
   ~SceneGraph();
@@ -57,7 +61,7 @@ public:
   /**
   * Query meshes from the scene graph
   */
-  GameObjectList
+  QueryResult
   query(Camera& camera, QUERY_ORDER::E order, UInt32 props);
      
   void 
@@ -92,8 +96,12 @@ private:
   void 
   testObject(SharedGameObject object, 
              Frustrum& frustrum,
-             UInt32 props, 
              GameObjectQueue& objects);
+
+  void
+  filterObjects(GameObjectQueue& objects, 
+                QueryResult& result, 
+                UInt32 props);
 private:
   SharedGameObject m_root;
 };

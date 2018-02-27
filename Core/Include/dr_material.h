@@ -10,109 +10,112 @@
 
 namespace driderSDK {
 
+namespace PROPERTY_TYPE {
+enum E
+{
+  kFloat,
+  kVec2,
+  kVec3,
+  kVec4
+};
+}
+
+namespace CHANNEL {
+enum E
+{
+  kR,
+  kG,
+  kB,
+  kA
+};
+}
+struct Property
+{
+  public:
+  Property(const TString& name_, PROPERTY_TYPE::E type_) 
+  : name(name_), 
+    type(type_)
+  {}
+
+  virtual ~Property(){}
+    
+  TString name;
+  const PROPERTY_TYPE::E type;
+  //Texture* texture;
+};
+
+struct FloatProperty : Property
+{
+  FloatProperty(const TString& name_, float value_, CHANNEL::E readChannel_)
+  : Property(name_, PROPERTY_TYPE::kFloat),
+    value(value_),
+    readChannel(readChannel_)
+  {}
+
+  using ValueType = float;
+  using ChannelType = CHANNEL::E;
+
+  ValueType value;
+  ChannelType readChannel;
+};
+
+struct Vec2Property : Property
+{
+  Vec2Property(const TString& name_, 
+                const Vector2D& value_, 
+                const std::array<CHANNEL::E, 2>& readChannels_) 
+  : Property(name_, PROPERTY_TYPE::kVec2),
+    value(value_),
+    readChannels(readChannels_)
+  {
+  }
+
+  using ValueType = Vector2D;
+  using ChannelType = std::array<CHANNEL::E, 2>;
+
+  ValueType value;
+  ChannelType readChannels;
+};
+
+struct Vec3Property : Property
+{
+  Vec3Property(const TString& name_,
+                const Vector3D& value_, 
+                const std::array<CHANNEL::E, 3>& readChannels_) 
+  : Property(name_, PROPERTY_TYPE::kVec3),
+    value(value_),
+    readChannels(readChannels_)
+  {
+  }
+
+  using ValueType = Vector3D;
+  using ChannelType = std::array<CHANNEL::E, 3>;
+
+  ValueType value;
+  ChannelType readChannels;  
+};
+
+struct Vec4Property : Property
+{
+  Vec4Property(const TString& name_, 
+                const Vector4D& value_, 
+                const std::array<CHANNEL::E, 4>& readChannels_) 
+  : Property(name_, PROPERTY_TYPE::kVec4),
+    value(value_),
+    readChannels(readChannels_)
+  {
+  }
+ 
+  using ValueType = Vector4D;
+  using ChannelType = std::array<CHANNEL::E, 4>;
+
+  ValueType value;
+  ChannelType readChannels;
+};
+
 class DR_CORE_EXPORT Material : public Resource
 {
  public:
-  enum CHANNEL
-  {
-    kR,
-    kG,
-    kB,
-    kA
-  };
-
-  enum PROPERTY_TYPE
-  {
-    kFloat,
-    kVec2,
-    kVec3,
-    kVec4
-  };
-
-  struct Property
-  {
-   public:
-    Property(const TString& name_, PROPERTY_TYPE type_) 
-    : name(name_), 
-      type(type_)
-    {}
-
-    virtual ~Property(){}
-    
-    TString name;
-    const PROPERTY_TYPE type;
-    //Texture* texture;
-  };
-
-  struct FloatProperty : Property
-  {
-    FloatProperty(const TString& name_, float value_, CHANNEL readChannel_)
-    : Property(name_, kFloat),
-      value(value_),
-      readChannel(readChannel_)
-    {}
-
-    using ValueType = float;
-    using ChannelType = CHANNEL;
-
-    ValueType value;
-    ChannelType readChannel;
-  };
-
-  struct Vec2Property : Property
-  {
-    Vec2Property(const TString& name_, 
-                 const Vector2D& value_, 
-                 const std::array<CHANNEL, 2>& readChannels_) 
-    : Property(name_, kVec2),
-      value(value_),
-      readChannels(readChannels_)
-    {
-    }
-
-    using ValueType = Vector2D;
-    using ChannelType = std::array<CHANNEL, 2>;
-
-    ValueType value;
-    ChannelType readChannels;
-  };
-
-  struct Vec3Property : Property
-  {
-    Vec3Property(const TString& name_,
-                 const Vector3D& value_, 
-                 const std::array<CHANNEL, 3>& readChannels_) 
-    : Property(name_, kVec3),
-      value(value_),
-      readChannels(readChannels_)
-    {
-    }
-
-    using ValueType = Vector3D;
-    using ChannelType = std::array<CHANNEL, 3>;
-
-    ValueType value;
-    ChannelType readChannels;  
-  };
-
-  struct Vec4Property : Property
-  {
-    Vec4Property(const TString& name_, 
-                 const Vector4D& value_, 
-                 const std::array<CHANNEL, 4>& readChannels_) 
-    : Property(name_, kVec3),
-      value(value_),
-      readChannels(readChannels_)
-    {
-    }
- 
-    using ValueType = Vector4D;
-    using ChannelType = std::array<CHANNEL, 4>;
-
-    ValueType value;
-    ChannelType readChannels;
-  };
-
   using PropertyPtr = std::unique_ptr<Property>;
   using PropertyList = std::vector<PropertyPtr>;
 
@@ -123,6 +126,7 @@ class DR_CORE_EXPORT Material : public Resource
   Material& operator=(const Material&) = delete;
   
   virtual ~Material(){}
+  
   /**
   * Adds a new property of PropertyType type to the material properperties.
   * 
@@ -156,7 +160,7 @@ class DR_CORE_EXPORT Material : public Resource
   }
 
   Property*
-  addProperty(const TString& name, PROPERTY_TYPE type);
+  addProperty(const TString& name, PROPERTY_TYPE::E type);
   
   /**
   * Adds a new property to the material properperties.
@@ -190,7 +194,10 @@ class DR_CORE_EXPORT Material : public Resource
 
     for (auto& property : m_properties) {
       if (property->name == name) {
-        if (rawPtr = dynamic_cast<PropertyType*>(property.get())) {
+
+        rawPtr = dynamic_cast<PropertyType*>(property.get());
+
+        if (rawPtr) {
           break;
         }
       }
@@ -303,7 +310,7 @@ class DR_CORE_EXPORT Material : public Resource
   *   will return nullptr.
   */
   Property*
-  transformProperty(const TString& name, PROPERTY_TYPE newType);
+  transformProperty(const TString& name, PROPERTY_TYPE::E newType);
 
   /**
   * Transforms the type of a property.
@@ -321,7 +328,7 @@ class DR_CORE_EXPORT Material : public Resource
   *   count, nullptr.
   */
   Property*
-  transformProperty(SizeT index, PROPERTY_TYPE newType);
+  transformProperty(SizeT index, PROPERTY_TYPE::E newType);
 
   ///**
   //* Transforms the type of a property.
@@ -340,7 +347,7 @@ class DR_CORE_EXPORT Material : public Resource
   //transformProperty(Property* property, PROPERTY_TYPE newType);
  private:
   PropertyPtr
-  createProperty(const TString& name, PROPERTY_TYPE type);
+  createProperty(const TString& name, PROPERTY_TYPE::E type);
  private:
   TString m_name;
   PropertyList m_properties;
