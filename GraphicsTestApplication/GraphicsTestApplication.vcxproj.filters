@@ -75,6 +75,9 @@
     <ClInclude Include="Include\LinesTechnique.h">
       <Filter>Archivos de encabezado\Techniques</Filter>
     </ClInclude>
+    <ClInclude Include="Include\CameraDebbug.h">
+      <Filter>Archivos de encabezado\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\DrawableAnimated.cpp">
@@ -109,6 +112,9 @@
     </ClCompile>
     <ClCompile Include="Source\LinesTechnique.cpp">
       <Filter>Archivos de origen\Technique</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\CameraDebbug.cpp">
+      <Filter>Archivos de origen\Components</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

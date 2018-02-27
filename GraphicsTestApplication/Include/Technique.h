@@ -10,11 +10,15 @@ class InputLayout;
 class ConstantBuffer;
 class DeviceContext;
 class Device;
+class Camera;
+class GameObject;
 
 class Technique 
 {
  public:
   
+  Technique(Camera* _camera = nullptr, GameObject* _gameObject = nullptr);
+
   virtual ~Technique(){}
 
   virtual void 
@@ -22,6 +26,18 @@ class Technique
   
   bool
   prepareForDraw(DeviceContext& deviceContext);
+
+  void
+  setGameObject(GameObject* gameObject) 
+  {
+    m_gameObject = gameObject;
+  }
+
+  void
+  setCamera(Camera* camera)
+  {
+    m_camera = camera;
+  }
 
   void 
   destroy();
@@ -32,6 +48,8 @@ class Technique
   ConstantBuffer* m_constBuffer{nullptr};
   InputLayout* m_inputLayout{nullptr};
   std::vector<Shader*> m_shaders;
+  Camera* m_camera;
+  GameObject* m_gameObject;
 };
 
 }

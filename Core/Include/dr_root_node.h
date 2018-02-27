@@ -1,16 +1,16 @@
 #pragma once
 
 #include "dr_core_prerequisites.h"
-#include "dr_node.h"
+#include "dr_gameObject.h"
 
 namespace driderSDK {
 
-class DR_CORE_EXPORT RootNode : public Node
+class DR_CORE_EXPORT RootNode : public GameObject
 {
 public:
   RootNode();
 private:
-  void 
+  virtual void 
   updateImpl();
 };
 

@@ -7,11 +7,6 @@
 
 namespace driderSDK {
 
-LinesTechnique::LinesTechnique(Camera* _camera, GameObject* _gameObject) 
-  : m_camera(_camera),
-    m_gameObject(_gameObject)
-{}
-
 void
 LinesTechnique::compile(Device& device) {
   File file;
@@ -57,9 +52,18 @@ LinesTechnique::compile(Device& device) {
 
 UInt8* 
 LinesTechnique::getConstBufferData() {
-  auto world = Matrix4x4(Math::FORCE_INIT::kIdentity);
+  
+  Matrix4x4 world(Math::FORCE_INIT::kIdentity);
+
+  Matrix4x4 vp(Math::FORCE_INIT::kIdentity);
+
+  if (m_camera) {
+    vp = m_camera->getVP();
+  }
+
   m_cBuffer.World = world;
-  m_cBuffer.WVP = world * m_camera->getVP();
+  m_cBuffer.WVP = world * vp;
+
   return reinterpret_cast<UInt8*>(&m_cBuffer);
 }
 }
