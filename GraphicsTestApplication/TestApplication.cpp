@@ -33,8 +33,8 @@ TestApplication::postInit() {
                                       m_viewport);
 
   m_camera->createProyection(45.f, 20.f, 1000.f);
-  m_camera->getTransform().setPosition({0.f, 100.0f, -100.0f});
-  m_camera->setTarget({0.0f, 100.0f, 10.0f});
+  m_camera->getTransform().setPosition({0.f, 100.0f, -100});
+  m_camera->setTarget({0.0f, 100.0f, 1.0f});
 
   auto p = m_camera->createComponent<CameraDebbug>(*m_graphicsAPI->device,
                                                    *m_graphicsAPI->deviceContext);
@@ -46,17 +46,26 @@ TestApplication::postInit() {
 
   m_techs.push_back(tech);
   
-  m_worldCam = std::make_shared<Camera>(_T("WORLD_CAM"), 
+  m_leftCam = std::make_shared<Camera>(_T("LEFT_CAM"), 
                                         m_viewport);
   
   
-  m_worldCam ->createProyection(45.f, 0.1f, 10000.f);
-  m_worldCam->getTransform().setPosition({1000.f, 1000.f, -1000.f});
-  m_worldCam->setTarget({0.f, 1.f, 0.f});
+  m_leftCam ->createProyection(45.f, 0.1f, 10000.f);
+  m_leftCam->getTransform().setPosition({-4000.f, 0000.f, 1000.f});
+  m_leftCam->setTarget({0.f, 0.f, 1000.f});
 
-  m_activeCam = m_worldCam;
+  m_upCam = std::make_shared<Camera>(_T("UP_CAM"), 
+                                        m_viewport);
+  
+  
+  m_upCam ->createProyection(45.f, 0.1f, 10000.f);
+  m_upCam->getTransform().setPosition({0.f, 3000.f, 1000.f});
+  m_upCam->setTarget({1.f, 1.f, 1000.f});
+
+  m_activeCam = m_leftCam;
 
   m_technique = dr_make_unique<StaticMeshTechnique>();
+
   m_technique->compile(*m_graphicsAPI->device);
 
   ResourceManager::startUp();
@@ -68,7 +77,8 @@ TestApplication::postInit() {
   initSound();
   initSceneGraph();
   
-  m_sceneGraph->getRoot()->addChild(m_worldCam);
+  m_sceneGraph->getRoot()->addChild(m_leftCam);
+  m_sceneGraph->getRoot()->addChild(m_upCam);
   m_joker->addChild(m_camera);
 
   //m_sceneGraph->query(*m_camera, QUERY_ORDER::kBackToFront, 0);
@@ -148,7 +158,7 @@ TestApplication::postUpdate() {
   //soundDriver->update();
   
   Vector3D p = m_joker->getTransform().getPosition();
-
+  
   input();
 
   Time::instance().update();
@@ -247,17 +257,24 @@ TestApplication::initInput() {
 
   auto toggleCam = [&]()
   {
-    if (m_activeCam == m_worldCam) {
+    if (m_activeCam == m_leftCam) {
+      m_activeCam = m_upCam;
+    }
+    else if(m_activeCam == m_upCam) {
       m_activeCam = m_camera;
     }
     else {
-      m_activeCam = m_worldCam;
+      m_activeCam = m_leftCam;
     }
   };
 
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kT,
                         toggleCam);
+/*
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kT,
+                        toggleCam);*/
 
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kLEFT,
@@ -373,7 +390,7 @@ TestApplication::initSceneGraph() {
 
   n = createNode(root, _T("Croc1"), _T("Croc.X"), {-100, 0.0f, 200.0f}); 
 
-  n = createNode(root, _T("Joker0"), _T("VenomJok.X"), {100.0f, 0.0f, 200.0f});
+  n = createNode(root, _T("Joker0"), _T("VenomJok.X"), {100.0f, 0.0f, 1000.0f});
 
   /*n = createNode(root, _T("Duck0"), _T("DuckyQuacky_.fbx"), {200.f, 0.0f, 10.0f}); 
 

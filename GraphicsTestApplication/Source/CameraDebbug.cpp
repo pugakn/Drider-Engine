@@ -37,6 +37,10 @@ CameraDebbug::create(std::shared_ptr<Model> model) {
   for (auto& vertex : mesh.vertices) {
     vertex.position = vertex.position * pro;
     vertex.position = vertex.position * view;
+    vertex.position.x /= vertex.position.w;
+    vertex.position.y /= vertex.position.w;
+    vertex.position.z /= vertex.position.w;
+    vertex.position.w = 1.0f;
   }
   
   /**

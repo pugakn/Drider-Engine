@@ -1,5 +1,7 @@
 #include "dr_graph.h"
 #include <dr_vector3d.h>
+#include <dr_vector4d.h>
+#include <dr_matrix4x4.h>
 #include <dr_frustrum.h>
 #include "dr_aabb_collider.h"
 #include "dr_camera.h"
@@ -29,9 +31,9 @@ SceneGraph::query(Camera& camera, QUERY_ORDER::E order, UInt32 props) {
   
   GameObjectQueue objects(DepthComparer{camera, order});
 
-  Frustrum frustrum(camera.getVP());
-  
-  testObject(m_root, props, objects);
+  Frustrum frustrum(camera.getView(), camera.getProjection());
+      
+  testObject(m_root, frustrum, props, objects);
 
   std::vector<SharedGameObject> gameobjects;
    
@@ -71,22 +73,25 @@ SceneGraph::createNode(SharedGameObject parent, SharedModel model) {
 
 void 
 SceneGraph::testObject(SharedGameObject object, 
+                       Frustrum& frustrum,
                        UInt32 props, 
                        GameObjectQueue& objects) {
 
+  auto aabbCollider = object->getComponent<AABBCollider>();
+
   if (object->getComponent<RenderComponent>() && 
-      object->getComponent<AABBCollider>()) {      
+      aabbCollider) {      
 
-      //if (rc->getAABB().intersect(frustrum)) {
+    if (frustrum.intersects(aabbCollider->getTransformedAABB())) {
       objects.push(object);
-      //}      
-    }
+    }      
+  }
 
-    auto& children = object->getChildren();
+  auto& children = object->getChildren();
 
-    for (auto& child : children) {
-      testObject(child, props, objects);
-    }  
+  for (auto& child : children) {
+    testObject(child, frustrum, props, objects);
+  }  
 }
 
 SceneGraph::DepthComparer::DepthComparer(Camera& _camera, QUERY_ORDER::E _order) 

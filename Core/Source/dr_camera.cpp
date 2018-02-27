@@ -94,7 +94,6 @@ Camera::createProyection(float fov,
                                                m_viewport.height, 
 														nearPlane,
 														farPlane);
-	//m_projection.Orthogonal(m_viewport.width, m_viewport.height, nearPlane, farPlane);
 }
 
 void 

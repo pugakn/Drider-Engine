@@ -481,19 +481,54 @@ Intersect::aabbSphere(const Vector3D& min,
 bool
 Intersect::aabbFrustrum(const Vector3D& pointMax,
                         const Vector3D& pointMin,
-                        const std::array<Plane, 6>& frustrumPlanes) {
+                        const std::array<Plane, 6>& planes) {
 
-  for (const Plane& plane : frustrumPlanes) {
-    if (plane.distanceToPoint(GetVertexP(pointMin, pointMax, plane)) < 0)
-    {
-      return false;
+  bool ret = true; 
+  
+  Vector3D mins = pointMin;
+  Vector3D maxs = pointMax;
+
+  Vector3D vmin, vmax; 
+
+  for (Int32 i = 0; i < 6; ++i) { 
+    // X axis 
+    if (planes[i].x > 0) { 
+        vmin.x = mins.x; 
+        vmax.x = maxs.x; 
+    } 
+    else { 
+        vmin.x = maxs.x; 
+        vmax.x = mins.x; 
+    } 
+    // Y axis 
+    if (planes[i].y > 0) { 
+        vmin.y = mins.y; 
+        vmax.y = maxs.y; 
+    } 
+    else { 
+        vmin.y = maxs.y; 
+        vmax.y = mins.y; 
+    } 
+    // Z axis 
+    if (planes[i].z > 0) { 
+        vmin.z = mins.z; 
+        vmax.z = maxs.z; 
+    } 
+    else { 
+        vmin.z = maxs.z; 
+        vmax.z = mins.z; 
+    } 
+
+    if (planes[i].dot(vmin) - planes[i].d > 0) {
+        return false; 
     }
-    else if (plane.distanceToPoint(GetVertexN(pointMin, pointMax, plane)) < 0)
-    {
-      return true;
+
+    if (planes[i].dot(vmax) - planes[i].d >= 0) {
+        ret = true; 
     }
-  }
-  return true;
+  } 
+
+  return ret;
 }
 
 bool

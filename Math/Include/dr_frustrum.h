@@ -44,7 +44,7 @@ class DR_MATH_EXPORT Frustrum
 	*	 The View Projection matrix.
 	*
 	*/
-	Frustrum(const Matrix4x4& ViewProjection);
+	Frustrum(const Matrix4x4& view, const Matrix4x4& projection);
 
 	/**
   * TEST::fromVP
@@ -55,7 +55,7 @@ class DR_MATH_EXPORT Frustrum
 	*
 	*/
 	void 
-	createFromVP(const Matrix4x4& ViewProjection);
+	createFromVP(Matrix4x4 view, Matrix4x4 projection);
 
 	/**
   * TEST::intersectsRay

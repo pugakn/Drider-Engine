@@ -51,9 +51,10 @@ public:
   void initResources();
   void initSound();
   void initSceneGraph();
-  
+
   std::shared_ptr<Camera> m_camera;
-  std::shared_ptr<Camera> m_worldCam;
+  std::shared_ptr<Camera> m_leftCam;
+  std::shared_ptr<Camera> m_upCam;
   std::shared_ptr<Camera> m_activeCam;
   //SoundAPI* soundDriver;
 
