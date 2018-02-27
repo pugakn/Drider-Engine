@@ -36,8 +36,10 @@ TestApplication::onInit() {
 
 
   webRenderer.Init(1280,720);
-  //webRenderer.loadURL("file:///C:/Users/Ulises/Documents/GitHub/Drider-Engine/DriderUIUnitTest/ExampleHTML/example.html");
-  webRenderer.registerJS2CPPFunction("myfunc");
+  webRenderer.loadURL("file:///C:/Users/Ulises/Documents/GitHub/Drider-Engine/DriderUIUnitTest/ExampleHTML/example.html");
+  webRenderer.registerJS2CPPFunction(std::make_pair("myfunc", [](CefRefPtr<CefV8Value>& retval)  {
+    //exit(666);
+  }));
   webRenderer.executeJSCode("alert(myfunc())");
   Time::startUp();
 }
@@ -49,7 +51,6 @@ TestApplication::onInput() {
 void
 TestApplication::onUpdate() {
   Time::instance().update();
-  //if (Time::getDelta() > 10)
   webRenderer.executeJSCode("window.myfunc()");
   webRenderer.update();
 }

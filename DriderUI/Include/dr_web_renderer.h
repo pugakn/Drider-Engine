@@ -42,6 +42,21 @@ public:
         CefRefPtr<CefProcessMessage> msg = CefProcessMessage::Create(IPC_CALL_JS2CPP_FUNC);
         CefRefPtr<CefListValue> cefargs = msg->GetArgumentList();
         cefargs->SetString(0, name);
+        int idNum = 1;
+        for (auto&it : arguments) {
+          if (it->IsInt() || it->IsUInt()) {
+            cefargs->SetInt(idNum++,it->GetIntValue());
+          }else
+          if (it->IsBool()) {
+            cefargs->SetBool(idNum++, it->GetBoolValue());
+          }else
+          if (it->IsDouble()) {
+            cefargs->SetDouble(idNum++, it->GetDoubleValue());
+          }else
+          if (it->IsString()) {
+            cefargs->SetString(idNum++, it->GetStringValue());
+          }
+        }
         browser->SendProcessMessage(PID_BROWSER, msg);
 
 
@@ -50,16 +65,16 @@ public:
         //auto bnfront = window->GetValue("bnfront");
         //bnfront->ExecuteFunction();
         //context->Exit();
-        CefRefPtr<CefV8Context> context = browser->GetMainFrame()->GetV8Context();
-        context->Enter();
-        auto window = context->GetGlobal();
-        auto bnfront = window->GetValue("testVal01");
-        std::cout << " VALsadsdsd: " << bnfront->GetIntValue() << std::endl;
-        CefRefPtr<CefV8Value> newVal= CefV8Value::CreateInt(52);
-        bnfront->SetValue("testVal01",newVal, V8_PROPERTY_ATTRIBUTE_NONE);
-        bnfront = window->GetValue("testVal01");
-        std::cout << " XX: " << bnfront->GetIntValue() << std::endl;
-        context->Exit();
+        //CefRefPtr<CefV8Context> context = browser->GetMainFrame()->GetV8Context();
+        //context->Enter();
+        //auto window = context->GetGlobal();
+        //auto bnfront = window->GetValue("testVal01");
+        //std::cout << " VALsadsdsd: " << bnfront->GetIntValue() << std::endl;
+        //CefRefPtr<CefV8Value> newVal= CefV8Value::CreateInt(52);
+        //bnfront->SetValue("testVal01",newVal, V8_PROPERTY_ATTRIBUTE_NONE);
+        //bnfront = window->GetValue("testVal01");
+        //std::cout << " XX: " << bnfront->GetIntValue() << std::endl;
+        //context->Exit();
         return true;
       }
     }
@@ -123,9 +138,19 @@ private:
           const void *buffer,
           int width,
           int height) override;
+
+  bool StartDragging(CefRefPtr<CefBrowser> browser,
+    CefRefPtr<CefDragData> drag_data,
+    DragOperationsMask allowed_ops,
+    int x,
+    int y) {
+    m_dragging = true;
+    return true;
+  }
   void 
   init();
 
+  bool m_dragging = false;
   int m_width;
   int m_height;
   size_t m_hwnd;
@@ -192,7 +217,7 @@ public:
   void 
   setVisibility(bool visible);
 
-  void registerJS2CPPFunction(std::string name);
+  void registerJS2CPPFunction(JSCallback callback);
 
   /* Only on Headless context */
 
@@ -211,6 +236,11 @@ public:
   Texture* getTexturePointer();
   Texture& getTextureReference();
   void setTexture();
+
+  template<class T>
+  T getGlobalVar(std::string name) {
+    
+  }
 
 private:
   static CefRefPtr<DriderCefApp> m_app;

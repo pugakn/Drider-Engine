@@ -131,7 +131,7 @@ WebRenderer::Init(int width, int height, BROWSER_MODE::E mode)
   renderHandler->init();
   browserClient = new BrowserClient(renderHandler);
 
-  browser = CefBrowserHost::CreateBrowserSync(window_info, browserClient.get(), "file:///C:/Users/Ulises/Documents/GitHub/Drider-Engine/DriderUIUnitTest/ExampleHTML/example.html", browserSettings, nullptr);//http://ich.deanmcnamee.com/pre3d/monster.html
+  browser = CefBrowserHost::CreateBrowserSync(window_info, browserClient.get(), "http://www.google.com", browserSettings, nullptr);
   startRendering();
   initInput();
 }
@@ -188,15 +188,12 @@ WebRenderer::setVisibility(bool visible)
   browser->GetHost()->WasHidden(!visible);
 }
 
-void WebRenderer::registerJS2CPPFunction(std::string name)
+void WebRenderer::registerJS2CPPFunction(JSCallback callback)
 {
-  browserClient->m_callbacks.push_back(std::make_pair(name, [](CefRefPtr<CefV8Value>& retval) {
-    //exit(666);
-  }));
-
+  browserClient->m_callbacks.push_back(callback);
   CefRefPtr<CefProcessMessage> msg = CefProcessMessage::Create(IPC_REGISTER_JS2CPP_FUNC);
   CefRefPtr<CefListValue> cefargs = msg->GetArgumentList();
-  cefargs->SetString(0, name);
+  cefargs->SetString(0, callback.first);
   browser->SendProcessMessage(PID_RENDERER, msg);
 }
 
@@ -267,6 +264,9 @@ WebRenderer::initInput()
       button = MBT_MIDDLE;
     }
     browser->GetHost()->SendMouseClickEvent(mouseEvent, button, true, 1);
+    CefBrowserHost::DragOperationsMask opmask = DRAG_OPERATION_EVERY;
+    browser->GetHost()->DragSourceEndedAt(mouseEvent.x, mouseEvent.y, opmask);
+    browser->GetHost()->DragSourceSystemDragEnded();
   });
   InputManager::getKeyboard()->addAnyKeyCallback(KEYBOARD_EVENT::kKeyPressed,
     [this](KEY_CODE::E key)
@@ -291,6 +291,25 @@ bool BrowserClient::OnProcessMessageReceived(CefRefPtr<CefBrowser> browser, CefP
     {
       if (funcName == it.first) {
         CefRefPtr<CefV8Value> retval;
+        for (size_t i = 1; i < message->GetArgumentList()->GetSize(); i++)
+        {
+          if (message->GetArgumentList()->GetType(i) == CefValueType::VTYPE_INT ) {
+
+          }
+          else if (message->GetArgumentList()->GetType(i) == CefValueType::VTYPE_BOOL)
+          {
+
+          }
+          else if (message->GetArgumentList()->GetType(i) == CefValueType::VTYPE_DOUBLE)
+          {
+
+          }
+          else if (message->GetArgumentList()->GetType(i) == CefValueType::VTYPE_STRING)
+          {
+
+          }
+        }
+        
         it.second(retval);
         return true;
       }
