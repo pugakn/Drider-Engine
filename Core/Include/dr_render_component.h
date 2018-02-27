@@ -42,6 +42,12 @@ public:
   {
     return m_meshes;
   }
+
+  const WeakModelRef&
+  getModel()
+  {
+    return m_model;
+  }
 private:
   // Inherited via GameComponent
   virtual void 
