@@ -1,5 +1,5 @@
 #include "dr_octree.h"
-
+#include <dr_model.h>
 
 namespace driderSDK {
 
@@ -24,15 +24,35 @@ Octree::Octree() {
 
 Octree::Octree(AABB& region,
                std::queue<Face> objects,
-               float minAreaSize = 1.0f) : minSize(minAreaSize) {
+               driderSDK::Int32 minFacesArea) {
   
   boundingRegion = region;
   objectsToReview = objects;
+  minFaces = minFacesArea;
+}
+
+Octree::Octree(AABB & region,
+               std::vector<std::shared_ptr<GameObject>>* gameObjects,
+               driderSDK::Int32 minFacesArea) {
+
+  minFaces = minFacesArea;
+  boundingRegion = region;
+
+  for (auto& gameObject : (*gameObjects)) {
+    auto renderComponent = gameObject->getComponent<RenderComponent>();
+    auto model = renderComponent->getModel().lock();
+  
+    for (auto& mesh : model->meshes)
+    {
+      mesh.indices;
+    }
+  }
 }
 
 Octree::Octree(AABB& region,
-               float minAreaSize = 1.0f) : minSize(minAreaSize) {
+               driderSDK::Int32 minFacesArea) {
   boundingRegion = region;
+  minFaces = minFacesArea;
 }
 
 Octree::~Octree() {
@@ -43,7 +63,7 @@ Octree::BuildTree() {
 
   Vector3D size = boundingRegion.getMaxPoint() - boundingRegion.getMinPoint();
 
-  if (size.x <= minSize || size.y <= minSize || size.z <= minSize  || objectsToReview.size() < 2) {
+  if (driderSDK::Int32(objectsToReview.size()) < minFaces) {
     while (!objectsToReview.empty())
     {
       containedObjects.push_back(objectsToReview.front());
@@ -84,7 +104,7 @@ Octree::BuildTree() {
   regionsChilds.push_back(AABB(width, height, depth, c8));
 
   for (size_t i = 0; i < regionsChilds.size(); ++i) {
-    childs.push_back(new Octree(regionsChilds[i]));
+    childs.push_back(new Octree(regionsChilds[i], minFaces));
     childs.back()->father = this;
   }
 
