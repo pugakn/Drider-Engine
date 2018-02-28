@@ -10,9 +10,7 @@ namespace driderSDK {
 
 Model::Model() {}
 
-Model::~Model() {
-  int x = 0;
-}
+Model::~Model() {}
 
 void Model::init(void* modelData) {
     

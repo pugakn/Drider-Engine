@@ -38,13 +38,13 @@ DrawableComponent::getModel() const {
 
 void
 DrawableComponent::onCreate() {
-  m_created = false;  
+  m_created = false;
 }
 
 void 
 DrawableComponent::onUpdate() {
-  if (auto model = getModel()) {
-    create(model);
+  if (getModel() && m_meshes.empty()) {
+    create(getModel());
   }
 }
 
