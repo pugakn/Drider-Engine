@@ -40,7 +40,7 @@ TestApplication::postInit() {
   auto p = m_camera->createComponent<CameraDebbug>();
 
   auto tech = new LinesTechnique(&(*m_activeCam), 
-                                 &(*m_camera));
+                                 &m_camera->getWorldTransform().getMatrix());
 
   p->setShaderTechnique(tech);
 
@@ -219,40 +219,22 @@ TestApplication::postRender() {
 
   dc->setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
 
-  auto objects = m_sceneGraph->query(*m_camera, m_queryOrder, 0);
+  auto meshes = m_sceneGraph->query(*m_camera, 
+                                    m_queryOrder, 
+                                    QUERY_PROPERTYS::kOpaque | 
+                                    QUERY_PROPERTYS::kDynamic | 
+                                    QUERY_PROPERTYS::kStatic);
 
-  if (m_debugList) {
+  for (auto& mesh : meshes) {
 
-    std::cout << "\nQuery Order: ";
-
-    if (m_queryOrder == QUERY_ORDER::kBackToFront) {
-      std::cout << "Back to Front" << std::endl;
-    } 
-    else {
-      std::cout << "Front to Back" << std::endl;
-    }
-
-    for (auto& obj : objects) {
-      std::cout << StringUtils::toString(obj->getName()) << std::endl;
-    }
-
-    m_debugList = false;
-  }
-
-  for (auto& object : objects) {
-
-    m_technique->setGameObject(&(*object));
+    m_technique->setWorld(&mesh.first);
     
     if (m_technique->prepareForDraw()) {
 
-      auto& meshes = object->getComponent<RenderComponent>()->getMeshes();
+      mesh.second.vertexBuffer->set(*dc);
+      mesh.second.indexBuffer->set(*dc);
 
-      for (auto& mesh : meshes) {
-        mesh.vertexBuffer->set(*dc);
-        mesh.indexBuffer->set(*dc);
-
-        dc->draw(mesh.indicesCount, 0, 0);
-      }
+      dc->draw(mesh.second.indicesCount, 0, 0);
     }
   }
 
@@ -391,7 +373,7 @@ TestApplication::initSceneGraph() {
     auto p = node->createComponent<ModelDebbug>();
 
     auto tech = new LinesTechnique(&(*m_activeCam), 
-                                   &(*node));
+                                   &node->getWorldTransform().getMatrix());
 
     p->setShaderTechnique(tech);
 
@@ -421,6 +403,8 @@ TestApplication::initSceneGraph() {
   n = createNode(root, _T("Duck0"), _T("DuckyQuacky_.fbx"), {-100, 0.0f, 250.0f}); 
 
   n = createNode(root, _T("Joker0"), _T("VenomJok.X"), {100.0f, 0.0f, 800.0f});
+
+  n->setStatic(true);
 
   /*n = createNode(root, _T("Duck0"), _T("DuckyQuacky_.fbx"), {200.f, 0.0f, 10.0f}); 
 

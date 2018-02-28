@@ -26,25 +26,20 @@ SceneGraph::getRoot() const {
   return m_root;
 }
 
-std::vector<SceneGraph::SharedGameObject>
+SceneGraph::QueryResult
 SceneGraph::query(Camera& camera, QUERY_ORDER::E order, UInt32 props) {
   
   GameObjectQueue objects(DepthComparer{camera, order});
 
   Frustrum frustrum(camera.getView(), camera.getProjection());
       
-  testObject(m_root, frustrum, props, objects);
+  testObject(m_root, frustrum, objects);
 
-  std::vector<SharedGameObject> gameobjects;
+  QueryResult queryRes;
    
-  while (!objects.empty()) {
+  filterObjects(objects, queryRes, props);
 
-    gameobjects.push_back(objects.top());
-    
-    objects.pop();    
-  }
-
-  return gameobjects;  
+  return queryRes;  
 }
 
 void
@@ -74,7 +69,6 @@ SceneGraph::createNode(SharedGameObject parent, SharedModel model) {
 void 
 SceneGraph::testObject(SharedGameObject object, 
                        Frustrum& frustrum,
-                       UInt32 props, 
                        GameObjectQueue& objects) {
 
   auto aabbCollider = object->getComponent<AABBCollider>();
@@ -90,8 +84,57 @@ SceneGraph::testObject(SharedGameObject object,
   auto& children = object->getChildren();
 
   for (auto& child : children) {
-    testObject(child, frustrum, props, objects);
+    testObject(child, frustrum, objects);
   }  
+}
+
+void 
+SceneGraph::filterObjects(GameObjectQueue& objects,
+                          QueryResult& result,
+                          UInt32 props) {
+
+  while (!objects.empty()) {
+
+    auto obj = objects.top();
+
+    auto& meshes = obj->getComponent<RenderComponent>()->getMeshes();
+
+    for (auto& mesh : meshes) {
+      
+      UInt32 meshProps = 0;
+
+      if (obj->isStatic()) {
+        meshProps |= QUERY_PROPERTYS::kStatic;
+      }
+      else {
+        meshProps |= QUERY_PROPERTYS::kDynamic;
+      }
+
+      auto material = mesh.material.lock();
+            
+      if (material) {
+
+        auto t = material->getProperty<FloatProperty>(_T("Transparency"));
+        
+        if (t && t->value < 1.f) {
+          meshProps |= QUERY_PROPERTYS::kTransparent;
+        } 
+        else {
+          meshProps |= QUERY_PROPERTYS::kOpaque;
+        }
+      }
+      else {
+        meshProps |= QUERY_PROPERTYS::kOpaque;
+      }
+
+      if (meshProps == (meshProps & props)) {
+        result.push_back({obj->getWorldTransform().getMatrix(), mesh});
+      }
+    }
+
+    objects.pop();
+  }
+
 }
 
 SceneGraph::DepthComparer::DepthComparer(Camera& _camera, QUERY_ORDER::E _order) 
