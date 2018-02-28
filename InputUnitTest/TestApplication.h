@@ -54,13 +54,13 @@ namespace driderSDK {
       if (pressedId == MouseButtonID::MB_Left) {
         std::cout << "LB" << std::endl;
       }
-      std::cout << "Pressed on " << state.m_cursorPosition.x << " , " << state.m_cursorPosition.y << std::endl;
+      std::cout << "Pressed on " << state.cursorPosition.x << " , " << state.cursorPosition.y << std::endl;
       return true;
     }
 
     virtual bool
       mouseReleased(const MouseInputState& state, MouseButtonID::E pressedId) {
-      std::cout << "Released on " << state.m_cursorPosition.x << " , " << state.m_cursorPosition.y << std::endl;
+      std::cout << "Released on " << state.cursorPosition.x << " , " << state.cursorPosition.y << std::endl;
       return true;
     }
   };

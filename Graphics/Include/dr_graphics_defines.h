@@ -332,23 +332,29 @@ namespace DR_IB_TYPE {
 
 namespace DR_BIND_FLAGS
 {
-enum E {
-  VERTEX_BUFFER = 0x1L,
-  INDEX_BUFFER = 0x2L,
-  CONSTANT_BUFFER = 0x4L,
-  SHADER_RESOURCE = 0x8L,
-  STREAM_OUTPUT = 0x10L,
-  RENDER_TARGET = 0x20L,
-  DEPTH_STENCIL = 0x40L,
-  UNORDERED_ACCESS = 0x80L,
-  DECODER = 0x200L,
-  VIDEO_ENCODER = 0x400L
-};
+  enum E {
+    VERTEX_BUFFER = 0x1L,
+    INDEX_BUFFER = 0x2L,
+    CONSTANT_BUFFER = 0x4L,
+    SHADER_RESOURCE = 0x8L,
+    STREAM_OUTPUT = 0x10L,
+    RENDER_TARGET = 0x20L,
+    DEPTH_STENCIL = 0x40L,
+    UNORDERED_ACCESS = 0x80L,
+    DECODER = 0x200L,
+    VIDEO_ENCODER = 0x400L
+  };
+}
 
+namespace DR_GRAPHICS_API
+{
+  enum E {
+    D3D11
+  };
 }
 
 struct DR_GRAPHICS_EXPORT DrInputElementDesc {
-  char* semanticName;
+  String semanticName;
   UInt32 semanticIndex;
   DR_FORMAT::E format;
   UInt32 inputSlot;

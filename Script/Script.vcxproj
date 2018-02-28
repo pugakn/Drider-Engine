@@ -158,11 +158,13 @@
   <ItemGroup>
     <ClCompile Include="Source\dr_script_engine.cpp" />
     <ClCompile Include="Source\dr_script_string_factory.cpp" />
+    <ClCompile Include="Source\scriptstdstring.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\dr_script_engine.h" />
     <ClInclude Include="Include\dr_script_prerequisites.h" />
     <ClInclude Include="Include\dr_script_string_factory.h" />
+    <ClInclude Include="Include\scriptstdstring.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

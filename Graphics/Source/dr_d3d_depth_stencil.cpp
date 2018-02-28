@@ -18,7 +18,7 @@ namespace driderSDK {
                              const Texture& texture) {
   D3D11_DEPTH_STENCIL_VIEW_DESC dDesc;
   ZeroMemory(&dDesc, sizeof(D3D11_DEPTH_STENCIL_VIEW_DESC));
-  dDesc.Format = static_cast<DXGI_FORMAT>(texture.m_descriptor.Format);
+  dDesc.Format = static_cast<DXGI_FORMAT>(texture.getDescriptor().Format);
   dDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
 
   reinterpret_cast<const D3DDevice*>(&device)->

@@ -63,6 +63,4 @@ public:
 	map_t m_stringCache;
 };
 
-static StringFactory stringFactory;
-
 }

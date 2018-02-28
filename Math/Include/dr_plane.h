@@ -1,13 +1,10 @@
 #pragma once
 
 #include "dr_math_prerequisites.h"
+#include "dr_intersections.h"
 #include "dr_vector3d.h"
 
 namespace driderSDK {
-
-namespace PLANE_INTERSECT {
-enum E;
-}
 
 class Ray;
 class Sphere;

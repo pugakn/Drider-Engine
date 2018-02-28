@@ -21,6 +21,9 @@
     <ClCompile Include="Source\dr_script_string_factory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\scriptstdstring.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\dr_script_engine.h">
@@ -30,6 +33,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\dr_script_string_factory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\scriptstdstring.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

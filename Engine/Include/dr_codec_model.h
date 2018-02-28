@@ -49,7 +49,10 @@ class DR_ENGINE_EXPORT CodecModel : public Codec
   getType() override;
 
   void 
-  loadVertices(const aiMesh& inMesh, MeshInfo& outMesh);
+  loadVertices(const aiMesh& inMesh, 
+               MeshInfo& outMesh, 
+               Vector3D& minPos, 
+               Vector3D& maxPos);
 
   void 
   loadIndices(const aiMesh& inMesh, MeshInfo& outMesh);

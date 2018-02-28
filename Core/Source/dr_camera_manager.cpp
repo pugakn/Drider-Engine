@@ -18,17 +18,14 @@ CameraManager::createCamera(const TString& cameraName,
 														float nearPlane,
 														float farPlane) {
 	m_cameras.push_back(new Camera(cameraName, 
-																 pos, 
-																 target, 
-																 viewport, 
-																 fov, 
-																 nearPlane,
-																 farPlane));
+																 viewport));
+
+  m_cameras.back()->createProyection(fov, nearPlane, farPlane);
 }
 
 void
 CameraManager::deleteCamera(const TString& cameraName) {
-	for (auto it = m_cameras.begin(); it != m_cameras.end(); ++it) {
+	/*for (auto it = m_cameras.begin(); it != m_cameras.end(); ++it) {
 		if ((*it)->getName() == cameraName) {
 			if (m_activeCamera->getName() == cameraName) {
 				m_activeCamera = nullptr;
@@ -37,7 +34,7 @@ CameraManager::deleteCamera(const TString& cameraName) {
 			m_cameras.erase(it);
 			return;
 		}
-	}
+	}*/
 }
 
 void

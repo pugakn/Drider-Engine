@@ -133,8 +133,13 @@ class DR_GRAPHICS_EXPORT Texture
   virtual void
   generateMipMaps(const DeviceContext& deviceContext) const = 0;
 
-   DrTextureDesc m_descriptor;
+  virtual void 
+  modifyTextureParams(const Device& device,
+                      const DrTextureDesc& desc) = 0;
+
+  const DrTextureDesc& getDescriptor() const { return m_descriptor; }
  protected:
+   DrTextureDesc m_descriptor;
 };
 
 }
