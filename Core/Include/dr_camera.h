@@ -69,11 +69,8 @@ public:
 	*   Time value to update the camera.
 	*/
 	virtual void 
-	updateImpl() override;
-
-  void
-  virtual draw(){}
-
+	updateImpl();
+  
 	/**
 	* TEST::move
 	* Moves the camera.
@@ -209,7 +206,16 @@ public:
   *   Projection matrix.
   */
   const Matrix4x4&
-  getProjection();
+  getProjection() const;
+
+  float
+  getFarPlane() const;
+
+  float
+  getNearPlane() const;
+
+  float
+  getFOV() const;
 
  private:
 	Vector3D m_target;
@@ -218,6 +224,9 @@ public:
 	Matrix4x4 m_view;
 	Matrix4x4 m_projection;
 	Viewport m_viewport;
+  float m_nearPlane;
+  float m_farPlane;
+  float m_fov;
 };
 
 }

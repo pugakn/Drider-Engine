@@ -3,6 +3,6 @@
 using namespace driderSDK;
 int main(int argc, char* argv[]) {
   TestApplication app;
-  app.startApplication();
-  return 0;
+
+  return app.run();
 }

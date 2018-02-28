@@ -1,6 +1,8 @@
 #include "ModelDebbug.h"
 #include <vector>
+#include <dr_aabb_collider.h>
 #include <dr_device_context.h>
+#include <dr_graphics_api.h>
 #include <dr_mesh.h>
 #include <dr_aabb.h>
 #include <dr_model.h>
@@ -14,16 +16,14 @@ namespace driderSDK {
 void 
 ModelDebbug::create(std::shared_ptr<Model> model) {
 
-  m_aabbTrans = model->aabb;
-
-  m_aabbTrans.recalculate(m_gameObject.getWorldTransform().getMatrix());
-
   //Create index buffer & vertex buffer 4 lines
   std::vector<Mesh> meshes{1};
 
   auto& mesh = meshes[0];
 
-  auto points = m_aabbTrans.getBounds();
+  auto aabbCollider = m_gameObject.getComponent<AABBCollider>();
+
+  auto points = aabbCollider->getTransformedAABB().getBounds();
 
   mesh.vertices.resize(8);
 
@@ -74,15 +74,18 @@ void
 ModelDebbug::onRender() {
 
   if (getModel() && m_technique) {
-    if (m_technique->prepareForDraw(m_deviceContext)) {
 
-      m_deviceContext.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kLineList);
+    if (m_technique->prepareForDraw()) {
+
+      auto& deviceContext = GraphicsAPI::getDeviceContext();
+
+      deviceContext.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kLineList);
       
       for (auto& meshBuff : m_meshes) {
-        meshBuff.vertexBuffer->set(m_deviceContext);
-        meshBuff.indexBuffer->set(m_deviceContext);
+        meshBuff.vertexBuffer->set(deviceContext);
+        meshBuff.indexBuffer->set(deviceContext);
 
-        m_deviceContext.draw(meshBuff.indicesCount, 0, 0);
+        deviceContext.draw(meshBuff.indicesCount, 0, 0);
       }
     }
   } 

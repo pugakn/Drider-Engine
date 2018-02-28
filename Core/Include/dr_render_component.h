@@ -2,6 +2,8 @@
 
 #include <vector>
 #include <dr_memory.h>
+#include <dr_vector3d.h>
+#include <dr_aabb.h>
 #include "dr_core_prerequisites.h"
 #include "dr_gameComponent.h"
 
@@ -41,6 +43,11 @@ public:
     return m_meshes;
   }
 
+  const WeakModelRef&
+  getModel()
+  {
+    return m_model;
+  }
 private:
   // Inherited via GameComponent
   virtual void 

@@ -2,18 +2,17 @@
 #include <dr_camera.h>
 #include <dr_device.h>
 #include <dr_file.h>
-#include <dr_string_utils.h>
+#include <dr_graphics_api.h>
 #include <dr_shader.h>
+#include <dr_string_utils.h>
 
 namespace driderSDK {
 
-LinesTechnique::LinesTechnique(Camera* _camera, GameObject* _gameObject) 
-  : m_camera(_camera),
-    m_gameObject(_gameObject)
-{}
-
 void
-LinesTechnique::compile(Device& device) {
+LinesTechnique::compile() {
+  
+  auto& device = GraphicsAPI::getDevice();
+
   File file;
 
   file.Open(_T("lines_vs.hlsl"));
@@ -57,9 +56,18 @@ LinesTechnique::compile(Device& device) {
 
 UInt8* 
 LinesTechnique::getConstBufferData() {
-  auto world = Matrix4x4(Math::FORCE_INIT::kIdentity);
+  
+  Matrix4x4 world(Math::FORCE_INIT::kIdentity);
+
+  Matrix4x4 vp(Math::FORCE_INIT::kIdentity);
+
+  if (m_camera) {
+    vp = m_camera->getVP();
+  }
+
   m_cBuffer.World = world;
-  m_cBuffer.WVP = world * m_camera->getVP();
+  m_cBuffer.WVP = world * vp;
+
   return reinterpret_cast<UInt8*>(&m_cBuffer);
 }
 }

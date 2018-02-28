@@ -10,12 +10,20 @@
 #include <d3d11.h>
 #include <DirectXMath.h>
 namespace driderSDK {
-void D3DGraphicsAPI::init(UInt32 w, UInt32 h, void* hwnd)
-{
-  device = new D3DDevice;
-  deviceContext = new D3DDeviceContext;
-  backBufferTexture = new D3DTexture;
-  device->createDeviceAndDeviceContext(*deviceContext);
+
+void D3DGraphicsAPI::init(UInt32 w, UInt32 h, void* hwnd) {
+
+  m_hwnd = hwnd;
+
+  m_device = dr_unique_custom(new D3DDevice, &dr_gfx_deleter<Device>);
+
+  m_deviceContext = dr_unique_custom(new D3DDeviceContext, 
+                                     &dr_gfx_deleter<DeviceContext>);
+
+  /* WHUT */
+  auto backBufferTexture = dr_make_unique<D3DTexture>();
+
+  m_device->createDeviceAndDeviceContext(*m_deviceContext);
 
   //	Descriptor of the Swap Chain
   DrSwapChainDesc swapDesc;
@@ -25,7 +33,8 @@ void D3DGraphicsAPI::init(UInt32 w, UInt32 h, void* hwnd)
   swapDesc.height = h;
   swapDesc.width = w;
 
-  swapChain =  device->createSwapChain(swapDesc);
+  m_swapChain = dr_unique_custom(m_device->createSwapChain(swapDesc),
+                                 &dr_gfx_deleter<SwapChain>);
 
   DrTextureDesc depthTextureDesc;
   depthTextureDesc.bindFlags = DR_BIND_FLAGS::DEPTH_STENCIL;
@@ -33,14 +42,27 @@ void D3DGraphicsAPI::init(UInt32 w, UInt32 h, void* hwnd)
   depthTextureDesc.height = h;
   depthTextureDesc.mipLevels = 1;
   depthTextureDesc.Format = DR_FORMAT::kDrFormat_D24_UNORM_S8_UINT;
-  depthTexture =  device->createEmptyTexture(depthTextureDesc);
-  depthStencilView =  device->createDepthStencil(*depthTexture);
 
+  {
+    auto dt = m_device->createEmptyTexture(depthTextureDesc);
+    m_depthTexture = dr_unique_custom(dt, &dr_gfx_deleter<Texture>);
+  }  
 
-  swapChain->getBackBuffer(*backBufferTexture);
-  backBufferView =  device->createRenderTarget(*backBufferTexture);
-  delete backBufferTexture;
-  backBufferView->set(*deviceContext, *depthStencilView);
+  {
+    auto ds = m_device->createDepthStencil(*m_depthTexture);
+    m_depthStencilView = dr_unique_custom(ds, &dr_gfx_deleter<DepthStencil>);
+  }  
+
+  m_swapChain->getBackBuffer(*backBufferTexture);
+
+  {
+    auto bbRT = m_device->createRenderTarget(*backBufferTexture);
+
+    m_backBufferView = dr_unique_custom(bbRT, &dr_gfx_deleter<RenderTarget>);
+  }
+  
+  
+  m_backBufferView->set(*m_deviceContext, *m_depthStencilView);
 
   D3D11_VIEWPORT viewport = { 0 };
   viewport.TopLeftX = 0;
@@ -50,7 +72,9 @@ void D3DGraphicsAPI::init(UInt32 w, UInt32 h, void* hwnd)
   viewport.MinDepth = 0;
   viewport.MaxDepth = 1;
 
-  reinterpret_cast<D3DDeviceContext*>(deviceContext)->D3D11DeviceContext->RSSetViewports(1, &viewport);
+  auto d3dDC = reinterpret_cast<D3DDeviceContext*>(m_deviceContext.get());
+
+  d3dDC->D3D11DeviceContext->RSSetViewports(1, &viewport);
 
   DrRasterizerDesc rasterizerStateDesc;
   rasterizerStateDesc.fillMode = DR_FILL_MODE::kSolid;
@@ -63,31 +87,31 @@ void D3DGraphicsAPI::init(UInt32 w, UInt32 h, void* hwnd)
   rasterizerStateDesc.scissorEnable = false;
   rasterizerStateDesc.multisampleEnable = false;
   rasterizerStateDesc.antialiasedLineEnable = false;
-  rasterizeState = device->createRasteizerState(rasterizerStateDesc);
-  rasterizeState->set(*deviceContext);
+  {
+    auto rs = m_device->createRasteizerState(rasterizerStateDesc);
+
+    m_rasterizerState = dr_unique_custom(rs, &dr_gfx_deleter<RasterizerState>);
+  }
+
+  m_rasterizerState->set(*m_deviceContext);
 }
-void D3DGraphicsAPI::destroy()
-{
-  device->release();
-  deviceContext->release();
-  swapChain->release();
-  backBufferView->release();
-  depthStencilView->release();
-  depthTexture->release();
-  rasterizeState->release();
-}
-void D3DGraphicsAPI::clear()
-{
+
+void D3DGraphicsAPI::destroy() {}
+
+void D3DGraphicsAPI::clear() {
   float rgba[4];
   rgba[0] = 0.25f;
   rgba[1] = 0.35f;
   rgba[2] = 0.45f;
   rgba[3] = 1.0f;
-  deviceContext->clearRenderTargetView(*backBufferView, rgba);
-  deviceContext->clearDepthStencilView(*depthStencilView, DR_DEPTH_STENCIL_CLEAR_TYPE::kClearDepth, 1.0f, 0);
+  m_deviceContext->clearRenderTargetView(*m_backBufferView, rgba);
+  m_deviceContext->clearDepthStencilView(*m_depthStencilView, 
+                                         DR_DEPTH_STENCIL_CLEAR_TYPE::kClearDepth, 
+                                         1.0f, 0);
 }
-void D3DGraphicsAPI::swapBuffers()
-{
-  swapChain->swapBuffers();
+
+void D3DGraphicsAPI::swapBuffers() {
+  m_swapChain->swapBuffers();
 }
+
 }

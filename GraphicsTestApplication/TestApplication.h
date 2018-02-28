@@ -8,7 +8,6 @@
 #include <dr_camera.h>
 #include <dr_viewport.h>
 #include "dr_application.h"
-#include "dr_quad.h"
 #include <dr_resource_manager.h>
 #include <dr_graph.h>
 #include <dr_memory.h>
@@ -26,6 +25,7 @@
 namespace driderSDK {
 
 class Technique;
+class StaticMeshTechnique;
   
 class TestApplication : public Application
 {
@@ -33,29 +33,31 @@ public:
   TestApplication();
   ~TestApplication();
 
-  void onInit() override;
-  void onInput() override;
-  void onUpdate() override;
-  void onDraw() override;
-  void onDestroy() override;
-  void onPause() override;
-  void onResume() override;
+  void 
+  postInit() override;
+  /*void onInput() override;*/
+  void
+  postUpdate() override;
 
+  void 
+  postRender() override;
+  //void onDraw() override;
+  void
+  postDestroy() override;
+  
+  void input();
   void initInput();
   void initResources();
   void initSound();
   void initSceneGraph();
 
-  void TestKeyBoard();
-  
-  GraphicsAPI* driver;
-  Quad quad;
-  std::vector<Model3D> models;
-  Viewport viewport;
   std::shared_ptr<Camera> m_camera;
-
+  std::shared_ptr<Camera> m_leftCam;
+  std::shared_ptr<Camera> m_upCam;
+  std::shared_ptr<Camera> m_activeCam;
+  bool m_debugList;
   //SoundAPI* soundDriver;
-
+  QUERY_ORDER::E m_queryOrder;
   //DrSound *sound1;
   //DrSound *sound2;
   //DrChannel *channel;
@@ -65,7 +67,8 @@ public:
   FMOD::Channel    *channel = 0;
   FMOD_RESULT       result;
   unsigned int      version;*/
-  std::vector<std::unique_ptr<Technique>> m_techniques;
+  std::vector<Technique*> m_techs;
+  std::unique_ptr<StaticMeshTechnique> m_technique;
   std::unique_ptr<SceneGraph> m_sceneGraph;
   std::shared_ptr<GameObject> m_joker;
 };

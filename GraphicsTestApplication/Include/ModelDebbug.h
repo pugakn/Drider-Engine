@@ -17,9 +17,6 @@ class ModelDebbug : public DrawableComponent
 
   virtual void 
   onRender() override;
-
-  std::unique_ptr<Technique> m_debugTechnique;
-  AABB m_aabbTrans;
 };
 
 }

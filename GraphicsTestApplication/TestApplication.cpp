@@ -1,59 +1,86 @@
 #include "TestApplication.h"
 #include <iostream>
-#include <dr_gameObject.h>
+#include <dr_aabb_collider.h>
 #include <dr_d3d_swap_chain.h>
-#include <dr_rasterizer_state.h>
-#include <dr_radian.h>
+#include <dr_degree.h>
+#include <dr_gameObject.h>
+#include <dr_input_manager.h>
+#include <dr_joystick.h>
+#include <dr_keyboard.h>
+#include <dr_mouse.h>
 #include <dr_quaternion.h>
+#include <dr_radian.h>
+#include <dr_rasterizer_state.h>
+#include <dr_render_component.h>
+#include <dr_string_utils.h>
+#include <dr_time.h>
 #include "DrawableComponent.h"
 #include "ModelDebbug.h"
 #include "NPCMovement.h"
 #include "StaticMeshTechnique.h"
 #include "LinesTechnique.h"
-#include "dr_degree.h"
-#include <dr_time.h>
-#include <dr_input_manager.h>
-#include <dr_keyboard.h>
-#include <dr_mouse.h>
-#include <dr_joystick.h>
+#include "CameraDebbug.h"
 
 namespace driderSDK {
 
-TestApplication::TestApplication()
-  : viewport{0,0,1280, 720} {
-}
+TestApplication::TestApplication() {}
 
-TestApplication::~TestApplication() {
-}
+TestApplication::~TestApplication() {}
 
 void
-TestApplication::onInit() {
-  initWindow();
-  driver = new D3DGraphicsAPI;
-  HWND win = GetActiveWindow();
-  driver->init(static_cast<driderSDK::UInt32>(viewport.width),
-               static_cast<driderSDK::UInt32>(viewport.height),
-               win);
-
+TestApplication::postInit() {
+  
   m_camera = std::make_shared<Camera>(_T("MAIN_CAM"), 
-                                      viewport);
+                                      m_viewport);
 
-  m_camera->createProyection(45.f, 0.1f, 10000.f);
+  m_camera->createProyection(45.f, 20.f, 1000.f);
+  m_camera->getTransform().setPosition({0.f, 100.0f, -100});
+  m_camera->setTarget({0.0f, 100.0f, 1.0f});
 
+  auto p = m_camera->createComponent<CameraDebbug>();
 
-  m_camera->transform.setPosition({0.f, 100.0f, -100.0f});
-  m_camera->setTarget({0.0f, 50.0f, 10.0f});
-  //m_camera->transform.setRotation(Degree(180), AXIS::kX);
+  auto tech = new LinesTechnique(&(*m_activeCam), 
+                                 &m_camera->getWorldTransform().getMatrix());
+
+  p->setShaderTechnique(tech);
+
+  m_techs.push_back(tech);
+  
+  m_leftCam = std::make_shared<Camera>(_T("LEFT_CAM"), 
+                                        m_viewport);
+  
+  
+  m_leftCam ->createProyection(45.f, 0.1f, 10000.f);
+  m_leftCam->getTransform().setPosition({-4000.f, 0000.f, 1000.f});
+  m_leftCam->setTarget({0.f, 0.f, 1000.f});
+
+  m_upCam = std::make_shared<Camera>(_T("UP_CAM"), 
+                                        m_viewport);
+  
+  
+  m_upCam ->createProyection(45.f, 0.1f, 10000.f);
+  m_upCam->getTransform().setPosition({0.f, 3000.f, 1000.f});
+  m_upCam->setTarget({1.f, 1.f, 1000.f});
+
+  m_activeCam = m_leftCam;
+
+  m_technique = dr_make_unique<StaticMeshTechnique>();
+
+  m_technique->compile();
 
   ResourceManager::startUp();
-  InputManager::startUp((SizeT)(win));
-  Time::startUp();
 
   initResources();
   initInput();
   initSound();
   initSceneGraph();
+  
+  m_sceneGraph->getRoot()->addChild(m_leftCam);
+  m_sceneGraph->getRoot()->addChild(m_upCam);
+  m_joker->addChild(m_camera);
 
+  //m_sceneGraph->query(*m_camera, QUERY_ORDER::kBackToFront, 0);
+  
   /*result = FMOD::System_Create(&system);
   result = system->getVersion(&version);
   if (version < FMOD_VERSION) {
@@ -63,137 +90,212 @@ TestApplication::onInit() {
   result = system->init(32, FMOD_INIT_NORMAL, 0);
   result = system->createSound("testSound.mp3", FMOD_DEFAULT, 0, &sound1);
   result = sound1->setMode(FMOD_LOOP_OFF);*/
+
+  m_debugList = false;
+
 }
+
 void
-TestApplication::onInput() {
+TestApplication::input() {
   
   InputManager::capture();
   
-  Node::SharedNode croc;
+  GameObject::SharedGameObj croc;
 
-  if (croc = m_sceneGraph->getRoot()->getChild(_T("Croc"))) {
+  /*if (croc = m_sceneGraph->getRoot()->getChild(_T("Croc"))) {
+    
     croc->transform.rotate(Degree(90 * Time::instance().getDelta()), AXIS::kY);
-  }
+    float scale = Math::cos(croc->transform.getRotation().y) * 0.5f + 1.f;
+    croc->transform.setScale({scale,scale,scale}); 
+  }*/
 
-  if (auto node = m_sceneGraph->getRoot()->getChild(_T("Dwarf"))) {
-
-    if (croc) {
-      float scale = Math::cos(croc->transform.getRotation().y) * 0.5f + 1.f;
-      croc->transform.setScale({scale,scale,scale}); 
-    }
-
-    node->transform.rotate(Degree(90 * Time::instance().getDelta()), AXIS::kY);
-  }
-
-  if (auto croc = m_sceneGraph->getRoot()->getChild(_T("Croc"))) {
-    croc->transform.rotate(Degree(60 * Time::instance().getDelta()), AXIS::kY);
-  }
-  if (Joystick::get(0)) {
-    
-    float vel = 150.f * Time::getDelta();
-    float ll = Joystick::get(0)->getAxis(JOYSTICK_AXIS::kLSVer);
-    if (Math::abs(ll) < 0.1f) {
-      ll = 0.0f;
-    }
-
-    float rr = Joystick::get(0)->getAxis(JOYSTICK_AXIS::kLSHor);
-    if (Math::abs(rr) < 0.1f) {
-      rr = 0.0f;
-    }
-    
-    auto dir = m_joker->transform.getDirection();
-    auto right = dir.cross(Vector3D(0,1,0)) * -rr;
-    dir *= -ll;
-    dir += right;
-    m_joker->transform.move(dir * vel);
+  if (auto node = m_sceneGraph->getRoot()->getChild(_T("Dwarf0"))) {
+   
+    node->getTransform().rotate(Degree(90 * Time::instance().getDelta()), 
+                                AXIS::kY);
   }
   
+  Vector3D dir = m_joker->getTransform().getDirection();
+  Vector3D right = dir.cross(Vector3D(0,1,0));
+  float f = 0;
+  float s = 0;
+
+  if (Joystick::get(0)) {   
+    
+    f = -Joystick::get(0)->getAxis(JOYSTICK_AXIS::kLSVer);
+    if (Math::abs(f) < 0.1f) {
+      f = 0.0f;
+    }
+
+    s = -Joystick::get(0)->getAxis(JOYSTICK_AXIS::kLSHor);
+    if (Math::abs(s) < 0.1f) {
+      s = 0.0f;
+    }
+
+  }
+
+  if (Keyboard::isKeyDown(KEY_CODE::kW)) {
+    f = 1;
+  }
+  else if (Keyboard::isKeyDown(KEY_CODE::kS)) {
+    f = -1;
+  }
+
+  if (Keyboard::isKeyDown(KEY_CODE::kA)) {
+    s = 1;
+  }
+  else if (Keyboard::isKeyDown(KEY_CODE::kD)) {
+    s = -1;
+  }
+
+  float vel = 150.f * Time::getDelta();
+  
+  m_joker->getTransform().move((dir * f + right * s) * vel);
+
 }
 
 void
-TestApplication::onUpdate() {
+TestApplication::postUpdate() {
   //soundDriver->update();
-
-  std::cout << m_joker->transform.getPosition().x << ",";
-  std::cout << m_joker->transform.getPosition().y << ",";
-  std::cout << m_joker->transform.getPosition().z << std::endl;
+  
+  Vector3D p = m_joker->getTransform().getPosition();
+  
+  input();
 
   Time::instance().update();
+
   m_sceneGraph->update();
-}
 
-void
-TestApplication::onDraw() {
-  driver->clear();
-  //quad.draw(*driver->deviceContext, camera.getVP());
-  m_sceneGraph->draw();
-  driver->swapBuffers();
-}
+  using SharedNode = std::shared_ptr<GameObject>;
 
-void
-TestApplication::onDestroy() {
-  /*result = sound1->release();
-  result = system->close();
-  result = system->release();*/
-}
+  std::function<bool(SharedNode, SharedNode)> checkColl =
+    [&](SharedNode a, SharedNode b) {
 
-void
-TestApplication::onPause() {
-}
+    if (a != b) {
+      if (auto col = a->getComponent<AABBCollider>()) {
+        auto colB = b->getComponent<AABBCollider>();
 
-void
-TestApplication::onResume() {
+        if (col->getTransformedAABB().intersect(colB->getTransformedAABB())) {
+          return true;
+        }
+      }
+
+      for (auto& child : a->getChildren()) {
+        if (checkColl(child, b)) {
+          return true;
+        }
+      }  
+
+    }
+
+    return false;
+  };
+  
+  /*if (checkColl(m_sceneGraph->getRoot(), m_joker) ||
+      checkColl(m_sceneGraph->getRoot(), m_joker->getChild(0))) {
+    m_joker->getTransform().setPosition(p);
+    auto& pos = m_joker->getTransform().getPosition();
+    std::cout << "Coll frame: " << pos.x << "," << pos.y << "," << pos.z << std::endl;
+    m_joker->getTransform().setPosition(p);
+  }  
+  else 
+  {    
+    p = m_joker->getTransform().getPosition();  
+  }*/
 }
 
 void 
-TestApplication::initInput() {
-
-  HWND win = GetActiveWindow();
-
-  auto callback = std::bind(&TestApplication::TestKeyBoard, this);
-
-  auto mouseCallback = []()
-  { 
-    auto pos = Mouse::getPosition();
-    auto delta = Mouse::getDisplacement();
-    std::cout << "Mouse moved x:" << pos.x << " y:" << pos.y;
-    std::cout << " movedX:" << delta.x << " movedY:" << delta.y << std::endl;
-  };
-
-  auto joystickCallback = [&](Joystick& joystick)
-  {
-    
-  };
-
-  auto anyKeyCallback = [](KEY_CODE::E key) 
-  {
-    std::cout << "Key pressed" << std::endl;
-  };
-
-  auto anyKeyCallbackR = [](KEY_CODE::E key) 
-  {
-    std::cout << "Key released" << std::endl;
-  };
-
-  Keyboard::addAnyKeyCallback(KEYBOARD_EVENT::kKeyPressed,
-                              anyKeyCallback);
-
-  Keyboard::addAnyKeyCallback(KEYBOARD_EVENT::kKeyReleased,
-                              anyKeyCallbackR);
-
-  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed, 
-                        KEY_CODE::kA, 
-                        callback);
-
-  Mouse::addButtonCallback(MOUSE_INPUT_EVENT::kButtonPressed,
-                           MOUSE_BUTTON::kMiddle,
-                           mouseCallback);
-
-  if (Joystick* joystick = Joystick::get(0)) {
-    joystick->addAxisCallback(JOYSTICK_AXIS::kLSVer, joystickCallback);
+TestApplication::postRender() {
+  
+  for (auto tech : m_techs) {
+    tech->setCamera(&(*m_activeCam));  
   }
 
+  m_sceneGraph->draw();
 
+  m_technique->setCamera(&(*m_activeCam));
+
+  auto dc = &GraphicsAPI::getDeviceContext();
+
+  dc->setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
+
+  auto meshes = m_sceneGraph->query(*m_camera, 
+                                    m_queryOrder, 
+                                    QUERY_PROPERTYS::kOpaque | 
+                                    QUERY_PROPERTYS::kDynamic | 
+                                    QUERY_PROPERTYS::kStatic);
+
+  for (auto& mesh : meshes) {
+
+    m_technique->setWorld(&mesh.first);
+    
+    if (m_technique->prepareForDraw()) {
+
+      mesh.second.vertexBuffer->set(*dc);
+      mesh.second.indexBuffer->set(*dc);
+
+      dc->draw(mesh.second.indicesCount, 0, 0);
+    }
+  }
+
+}
+
+void 
+TestApplication::postDestroy() {}
+
+void 
+TestApplication::initInput() {
+  
+  auto rotateLeft = [&]() 
+  {
+    m_joker->getTransform().rotate(Degree(45.f), AXIS::kY);
+  };
+
+  auto rotateRight = [&]() 
+  {
+    m_joker->getTransform().rotate(Degree(-45.f), AXIS::kY);
+  };
+
+  auto toggleCam = [&]()
+  {
+    if (m_activeCam == m_leftCam) {
+      m_activeCam = m_upCam;
+    }
+    else if(m_activeCam == m_upCam) {
+      m_activeCam = m_camera;
+    }
+    else {
+      m_activeCam = m_leftCam;
+    }
+  };
+
+  auto debugList = [&](){
+    m_debugList = true;
+  };
+
+  auto toggleQueryOrder = [&]() {
+    m_queryOrder = static_cast<QUERY_ORDER::E>(!m_queryOrder);
+  };
+
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kQ,
+                        toggleQueryOrder);
+
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kT,
+                        toggleCam);
+
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kL,
+                        debugList);
+
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kLEFT,
+                        rotateLeft);
+
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kRIGHT,
+                        rotateRight);
 }
 
 void 
@@ -203,13 +305,17 @@ TestApplication::initResources() {
      resourceManager = &ResourceManager::instance();
   }
     
-  resourceManager->loadResource(_T("axe.jpg"), driver->device);
+  resourceManager->loadResource(_T("axe.jpg"));
 
-  resourceManager->loadResource(_T("VenomJok.X"), driver->device);
+  resourceManager->loadResource(_T("VenomJok.X"));
 
-  resourceManager->loadResource(_T("Croc.X"), driver->device);
+  resourceManager->loadResource(_T("Croc.X"));
 
-  resourceManager->loadResource(_T("dwarf.x"), driver->device);
+  resourceManager->loadResource(_T("dwarf.x"));
+
+  resourceManager->loadResource(_T("Cube.fbx"));
+
+  resourceManager->loadResource(_T("DuckyQuacky_.fbx"));
 }
 
 void 
@@ -253,7 +359,7 @@ TestApplication::initSceneGraph() {
 
   auto resourceMgr = ResourceManager::instancePtr();
 
-  auto createNode = [&](std::shared_ptr<Node> parent, 
+  auto createNode = [&](std::shared_ptr<GameObject> parent, 
                         const TString& name, 
                         const TString& resName,
                         const Vector3D& pos) {
@@ -264,57 +370,44 @@ TestApplication::initSceneGraph() {
     
     auto node = m_sceneGraph->createNode(parent, model);
 
+    auto p = node->createComponent<ModelDebbug>();
+
+    auto tech = new LinesTechnique(&(*m_activeCam), 
+                                   &node->getWorldTransform().getMatrix());
+
+    p->setShaderTechnique(tech);
+
+    p->setModel(model);
+
+    m_techs.push_back(tech);
+  
     node->setName(name);
 
-    node->transform.setPosition(pos);
-
-    node->createComponent<DrawableComponent>(*driver->device, 
-                                             *driver->deviceContext);
-
-    node->createComponent<ModelDebbug>(*driver->device, 
-                                       *driver->deviceContext);
-
-    auto drawableComponent = node->getComponent<DrawableComponent>();
-    
-    
-    auto technique = dr_make_unique<StaticMeshTechnique>(&(*m_camera), 
-                                                         &(*node));
-
-    //drawableComponent->setModel(model);
-
-    drawableComponent->setShaderTechnique(technique.get());
-
-    auto debbugComponent = node->getComponent<ModelDebbug>();
-
-    auto technique2 = dr_make_unique<LinesTechnique>(&(*m_camera), 
-                                                     &(*node));
-
-    debbugComponent->setModel(model);
-
-    debbugComponent->setShaderTechnique(technique2.get());
-    
-    parent->addChild(node);
-
-    m_techniques.push_back(std::move(technique));
-    m_techniques.push_back(std::move(technique2));
+    node->getTransform().setPosition(pos);
 
     return node;
   };
 
-  auto n = createNode(root, _T("Joker"), _T("VenomJok.X"), {0.0f, 0.0f, 0.0f});
+  
+      
+  auto n = createNode(root, _T("Croc0"), _T("Croc.X"), {-200.f, 0.0f, 0.0f});
   
   m_joker = n;
-
-  n->addChild(m_camera);
-    
-  n = createNode(root, _T("Croc"), _T("Croc.X"), {150.0f, 0.0f, 0.0f});
   
-  n = createNode(root, _T("Dwarf"), _T("dwarf.x"), {-100.0f, 0.0f, 0.0f});   
+  n = createNode(root, _T("Dwarf0"), _T("dwarf.x"), {0.0f, 0.0f, 200.0f}); 
 
+  n = createNode(root, _T("Cube0"), _T("Cube.fbx"), {178.0f, 0.0f, 125.0f}); 
+
+  n->getTransform().scale({30, 30, 30});
+
+  n = createNode(root, _T("Duck0"), _T("DuckyQuacky_.fbx"), {-100, 0.0f, 250.0f}); 
+
+  n = createNode(root, _T("Joker0"), _T("VenomJok.X"), {100.0f, 0.0f, 800.0f});
+
+  n->setStatic(true);
+
+  /*n = createNode(root, _T("Duck0"), _T("DuckyQuacky_.fbx"), {200.f, 0.0f, 10.0f}); 
+
+  n->getTransform().scale({10.f, 10.f, 10.f});*/
 }
-
-void TestApplication::TestKeyBoard() {
-  std::cout << "A key pressed" << std::endl;
-}
-
 }

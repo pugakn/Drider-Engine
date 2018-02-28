@@ -1,9 +1,10 @@
 #include "dr_model.h"
 #include <dr_device.h>
+#include <dr_graphics_api.h>
 #include <dr_index_buffer.h>
 #include <dr_vertex_buffer.h>
-#include "dr_model_info.h"
 #include "dr_mesh_info.h"
+#include "dr_model_info.h"
 
 namespace driderSDK {
 
@@ -11,13 +12,16 @@ Model::Model() {}
 
 Model::~Model() {}
 
-void Model::init(void* modelData, void* extraData) {
+void Model::init(void* modelData) {
     
   ModelInfo* model = static_cast<ModelInfo*>(modelData);
-  Device* device = static_cast<Device*>(extraData);
+  Device* device = &GraphicsAPI::getDevice();
 
   for (auto& meshInfo : model->meshes) {
     Mesh mesh;
+
+    mesh.material = meshInfo.material;
+
     mesh.vertices = std::move(meshInfo.vertices);
     mesh.indices = std::move(meshInfo.indices);
 

@@ -13,8 +13,9 @@ class GameObject;
 class LinesTechnique : public Technique
 {
  public:
-  LinesTechnique(Camera* _camera, GameObject* _gameObject);
- 
+
+  using Technique::Technique;
+
  private:
   struct CBuffer 
   {
@@ -23,14 +24,12 @@ class LinesTechnique : public Technique
   };
   
   virtual 
-  void compile(Device& device) override;
+  void compile() override;
 
   virtual UInt8* 
   getConstBufferData() override;
 
   CBuffer m_cBuffer;
-  Camera* m_camera;
-  GameObject* m_gameObject;
 };
 
 }

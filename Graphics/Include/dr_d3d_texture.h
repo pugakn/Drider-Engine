@@ -142,6 +142,10 @@ class DR_GRAPHICS_EXPORT D3DTexture : public Texture
   void
   generateMipMaps(const DeviceContext& deviceContext) const override;
 
+  void
+  modifyTextureParams(const Device& device,
+                       const DrTextureDesc& desc);
+
   ID3D11Texture2D* APITexture;
   ID3D11ShaderResourceView* APIView;
 };
