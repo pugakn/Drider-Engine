@@ -7,10 +7,11 @@
 
 namespace driderSDK {
 
-	void stringPrint_g(asIScriptGeneric* gen) {
-		WString *str = (WString*)gen->GetArgAddress(0);
-		std::wcout << StringUtils::toTString(*str);
-	}
+
+void stringPrint_g(asIScriptGeneric* gen) {
+	WString *str = (WString*)gen->GetArgAddress(0);
+	std::wcout << StringUtils::toTString(*str);
+}
 
 ScriptEngine::ScriptEngine() {
 
@@ -45,10 +46,14 @@ ScriptEngine::createEngine() {
 	//
 
 	// Register the functions that the scripts will be allowed to use.
-	result = m_scriptEngine->RegisterGlobalFunction("void stringPrint(string &in)",
+	result = m_scriptEngine->RegisterGlobalFunction("void Print(string &in)",
 																									asFUNCTION(stringPrint_g), 
 																									asCALL_GENERIC);
-	//
+
+  /*
+  * Seccion para registrar metodos
+  */
+
 	return result;
 }
 

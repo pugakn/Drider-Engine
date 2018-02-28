@@ -62,6 +62,10 @@ void PrintString_Generic(asIScriptGeneric *gen);
 void timeGetTime_Generic(asIScriptGeneric *gen);
 void LineCallback(asIScriptContext *ctx, DWORD *timeOut);
 
+Int32 Sumar(Int32 a, Int32 b) {
+  return a + b;
+}
+
 int main(int argc, char **argv)
 {
   RunApplication();
@@ -230,6 +234,10 @@ void ConfigureEngine(asIScriptEngine *engine)
     // be caught when a script is being built, so it is not necessary
     // to do the verification here as well.
     r = engine->RegisterGlobalFunction("void Print(string &in)", asFUNCTION(PrintString), asCALL_CDECL); assert(r >= 0);
+    
+    r = engine->RegisterGlobalFunction("int Sumar(int a, int b)",
+                                       asFUNCTIONPR(Sumar, (Int32, Int32), Int32),
+                                       asCALL_CDECL);
     //r = engine->RegisterGlobalFunction("uint GetSystemTime()", asFUNCTION(timeGetTime), asCALL_STDCALL); assert(r >= 0);
   }
   else
@@ -292,6 +300,7 @@ int CompileScript(asIScriptEngine *engine)
     wcout << "AddScriptSection() failed" << endl;
     return -1;
   }
+  
 
   // Compile the script. If there are any compiler messages they will
   // be written to the message stream that we set right after creating the 

@@ -21,6 +21,7 @@ void stringPrint_g(asIScriptGeneric* gen);
 *   scriptMgr.startUp();
 * }
 */
+
 class DR_SCRIPT_EXPORT ScriptEngine : public Module<ScriptEngine>
 {
 public:

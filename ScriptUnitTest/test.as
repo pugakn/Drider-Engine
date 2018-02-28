@@ -1,4 +1,7 @@
 void main() {
-	stringPrint("Anuma sicierto");
+
+	Print("Hola como estas");
+	Add(25);
+	Sumar(10,6);
 }	 
 
