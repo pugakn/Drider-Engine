@@ -53,7 +53,7 @@ class DR_CORE_EXPORT Logger : public Module<Logger>
   void
   addError(const std::string Filename,
            int lineNumber,
-           const std::string message);
+           const TString message);
 
   /**
   * TEST::addWarning
@@ -65,10 +65,10 @@ class DR_CORE_EXPORT Logger : public Module<Logger>
   void
   addWarning(const std::string Filename,
              int lineNumber,
-             const std::string message);
+             const TString message);
 
  private:
-  std::string m_filePath;
+	 TString m_filePath;
 };
 
 }

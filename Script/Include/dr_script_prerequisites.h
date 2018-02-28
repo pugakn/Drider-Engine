@@ -3,7 +3,6 @@
 #include <cassert>
 #include "dr_defines.h"
 #include "dr_types.h"
-#include "dr_export_script.h"
 
 
 /**********************************************************************
@@ -13,16 +12,16 @@
 **********************************************************************/
 
 #if DR_PLATFORM == DR_PLATFORM_WINDOWS
-# if defined(DR_STATIC_LIB)
-#   define DR_API_EXPORT
+# if defined( DR_STATIC_LIB )
+#   define DR_SCRIPT_EXPORT
 # else
-#	if defined(UTIL_EXPORTS)
-#   define DR_UTIL_EXPORT __declspec(dllexport)
+#	if defined(SCRIPT_EXPORTS)
+#   define DR_SCRIPT_EXPORT __declspec( dllexport )
 #   else
-#     if defined(__MINGW32__)
-#       define DR_UTIL_EXPORT              //Linux systems don't need this
+#     if defined( __MINGW32__ )
+#       define DR_SCRIPT_EXPORT              //Linux systems don't need this
 #     else
-#       define DR_UTIL_EXPORT __declspec(dllimport)
+#       define DR_SCRIPT_EXPORT __declspec( dllimport )
 #     endif
 #   endif
 # endif
@@ -36,10 +35,10 @@
 
 #if DR_PLATFORM == DR_PLATFORM_LINUX || DR_PLATFORM == DR_PLATFORM_OSX
 //Enable GCC symbol visibility
-# if defined(DR_GCC_VISIBILITY)
-#   define DR_UTIL_EXPORT  __attribute__ ((visibility("default")))
+# if defined( DR_GCC_VISIBILITY )
+#   define DR_SCRIPT_EXPORT  __attribute__ ((visibility("default")))
 # else
-#   define DR_UTIL_EXPORT
+#   define DR_SCRIPT_EXPORT
 # endif
 
 # if DR_COMPILER == DR_COMPILER_INTEL
