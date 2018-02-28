@@ -1,18 +1,19 @@
 #include "dr_octree.h"
 #include <dr_model.h>
+#include <dr_matrix4x4.h>
 
 namespace driderSDK {
 
 bool
 AABBContainsObject(Face& face, AABB &boundingArea) {
   Int32 numberOfVertexIn = 0;
-  if (boundingArea.intersect(face.vertex[0])) {
+  if (boundingArea.intersect(Vector3D(face.vertices[0].position))) {
     numberOfVertexIn++;
   }
-  if (boundingArea.intersect(face.vertex[0])) {
+  if (boundingArea.intersect(Vector3D(face.vertices[1].position))) {
     numberOfVertexIn++;
   }
-  if (boundingArea.intersect(face.vertex[0])) {
+  if (boundingArea.intersect(Vector3D(face.vertices[2].position))) {
     numberOfVertexIn++;
   }
 
@@ -37,15 +38,40 @@ Octree::Octree(AABB & region,
 
   minFaces = minFacesArea;
   boundingRegion = region;
-
+  Int32 counterGameObject = 0;
   for (auto& gameObject : (*gameObjects)) {
+    
     auto renderComponent = gameObject->getComponent<RenderComponent>();
     auto model = renderComponent->getModel().lock();
-  
+    Matrix4x4 transform = gameObject->getWorldTransform().getMatrix();
+    
+    Int32 counterMesh = 0;
     for (auto& mesh : model->meshes)
     {
-      mesh.indices;
+      for (size_t i = 0; i < mesh.indices.size(); i = i + 3)
+      {
+        Face temp;
+        temp.vertices.push_back(mesh.vertices[mesh.indices[i]]);
+        temp.vertices.back().position = transform * temp.vertices.back().position;
+        temp.indices.push_back(mesh.indices[i]);
+
+        temp.vertices.push_back(mesh.vertices[mesh.indices[i + 1]]);
+        temp.vertices.back().position = transform * temp.vertices.back().position;
+        temp.indices.push_back(mesh.indices[i + 1]);
+
+        temp.vertices.push_back(mesh.vertices[mesh.indices[i + 2]]);
+        temp.vertices.back().position = transform * temp.vertices.back().position;
+        temp.indices.push_back(mesh.indices[i + 2]);
+
+        temp.material = mesh.material;
+        temp.gameObject = counterGameObject;
+        temp.mesh = counterMesh;
+        objectsToReview.push(temp);
+      }
+      counterMesh++;
     }
+
+    counterGameObject++;
   }
 }
 

@@ -5,15 +5,21 @@
 #include <dr_vector3d.h>
 #include <dr_gameObject.h>
 #include <dr_render_component.h>
+#include <dr_vertex.h>
 #include <vector>
 #include <queue>
 #include <list>
+#include <dr_memory.h>
 
 namespace driderSDK {
 
 struct Face
 {
-  Vector3D vertex[3];
+  std::vector<Vertex> vertices;
+  std::vector<UInt32> indices;
+  std::weak_ptr<Material> material;
+  UInt32 gameObject;
+  UInt32 mesh;
 };
 
 class DR_CORE_EXPORT Octree
