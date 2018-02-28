@@ -5,9 +5,19 @@
 
 namespace driderSDK {
 
+struct PassInitData
+{
+  
+};
+
+struct PassDrawData
+{
+
+};
+
 /*
 */
-class DR_RENDERMAN_EXPORT RenderPass {
+class RenderPass {
  public:
   /*
   TEST::testName
@@ -21,14 +31,14 @@ class DR_RENDERMAN_EXPORT RenderPass {
   ~RenderPass();
 
   /*
-  //template<typename T, typename... Args>
-  virtual void init(T t, Args... args) = 0;
   */
+  virtual void
+  init(PassInitData* initData) = 0;
 
   /*
-  //template<typename T, typename... Args>
-  virtual void draw(T t, Args... args) = 0;
   */
+  virtual void
+  draw(PassDrawData* drawData) = 0;
 
  protected:
   Shader* m_vertexShader;

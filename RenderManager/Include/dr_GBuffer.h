@@ -1,18 +1,31 @@
 #pragma once
 #include "dr_renderman_prerequisites.h"
 #include "dr_renderpass.h"
+#include <dr_render_component.h>
+#include <dr_camera.h>
 #include <dr_matrix4x4.h>
 #include <dr_input_layout.h>
 #include <dr_constant_buffer.h>
 
 namespace driderSDK {
 
+struct GBufferInitData : PassInitData
+{
+  
+};
+
+struct GBufferDrawData : PassDrawData
+{
+  Camera* activeCam;
+  std::vector<std::pair<Matrix4x4, RenderMesh>>* models;
+};
+
 /*
 data infoStructure.
 {
 }
 */
-class DR_RENDERMAN_EXPORT GBufferPass : RenderPass {
+class GBufferPass : RenderPass {
  public:
   /*
   TEST::testName
@@ -33,13 +46,13 @@ class DR_RENDERMAN_EXPORT GBufferPass : RenderPass {
 
   Description.
   */
-  template<typename T, typename... Args>
-  void init(T t, Args... args);
+  void
+  init(PassInitData* initData);
 
   /*
   */
-  template<typename T, typename... Args>
-  void draw(T t, Args... args);
+  void
+  draw(PassDrawData* drawData);
 
  private:
   struct CBuffer {

@@ -2,14 +2,17 @@
 
 namespace driderSDK {
 
-RenderMan::RenderMan() {
+RenderMan::RenderMan() : m_sceneGraph(nullptr){
+}
+
+RenderMan::RenderMan(SceneGraph* sceneGraph) : m_sceneGraph(sceneGraph) {
 }
 
 RenderMan::~RenderMan() {
 }
 
-template<typename T, typename... Args> void
-RenderMan::init(T t, Args... args) {
+void
+RenderMan::init() {
   DrTextureDesc PositionDesc;
   PositionDesc.width = 1920;
   PositionDesc.height = 1080;
@@ -30,26 +33,27 @@ RenderMan::init(T t, Args... args) {
   vp.maxDepth = 1000.0f;
   vp.width = 1280;
   vp.width = 720;
-  Camera Sauron(L"MainCam", vp);
+  Sauron.setName(L"MainCam");
+  Sauron.setViewport(vp);
 
-  m_GBufferPass.init(0);
+  m_GBufferPass.init(&m_GBufferInitData);
 }
 
-
-template<typename T, typename... Args> void
-RenderMan::draw(T t, Args... args) {
+void
+RenderMan::draw() {
   queryRequest = m_sceneGraph->query(Sauron,
                                      QUERY_ORDER::kFrontToBack,
                                      QUERY_PROPERTYS::kOpaque |
                                      QUERY_PROPERTYS::kStatic);
 
-  std::weak_ptr<Material> meshMat = queryRequest.back().second.material;
+  m_GBufferDrawData.activeCam = &Sauron;
+  m_GBufferDrawData.models = &queryRequest;
+  m_GBufferPass.draw(&m_GBufferDrawData);
 
-  //GBP.draw( { &Sauron, &meshMat } );
   /*
   Render order:
 
-  GBuffer;
+  GBuffer
   Depth Pre-Pass
   Shadow Maps
   Screen Space Ambient Occlusion
@@ -65,26 +69,8 @@ RenderMan::draw(T t, Args... args) {
   */
 }
 
-template<typename T, typename... Args>
 void
-RenderMan::exit(T t, Args... args) {
-}
-
-template<typename T>
-void
-driderSDK::RenderMan::extractParam(int index, void * out, T t) {
-  *static_cast<T*>(out) = t;
-}
-
-template<typename T, typename ...Args>
-void
-driderSDK::RenderMan::extractParam(int index, void * out, T t, Args ...args) {
-  if (index != 0) {
-    extractParam(index - 1, out, args...);
-    return;
-  }
-
-  *static_cast<T*>(out) = t;
+RenderMan::exit() {
 }
 
 }

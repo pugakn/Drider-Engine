@@ -8,13 +8,13 @@ void
 renderManagerApp(SceneGraph* sceneGraph) {
   RenderMan Manager;
 
-  Manager.init(0);
+  Manager.init();
 
   while (1) {
-    Manager.draw(0);
+    Manager.draw();
   }
 
-  Manager.exit(0);
+  Manager.exit();
 }
 
 }

@@ -1,14 +1,18 @@
 #pragma once
 #include "dr_renderman_prerequisites.h"
-#include "dr_GBuffer.h"
-#include <dr_render_component.h>
+#include <dr_graphics_api.h>
+#include <dr_device.h>
+#include <dr_viewport.h>
+#include <dr_camera.h>
 #include <dr_graph.h>
+#include <dr_render_component.h>
+#include "dr_GBuffer.h"
 
 namespace driderSDK {
 
 /*
 */
-class DR_RENDERMAN_EXPORT RenderMan {
+class RenderMan {
  public:
   /*
   TEST::testName
@@ -17,46 +21,41 @@ class DR_RENDERMAN_EXPORT RenderMan {
   */
    RenderMan();
 
+   /*
+   TEST::testName
+
+   Description.
+   */
+   RenderMan(SceneGraph* sceneGraph);
+
   /*
   */
   ~RenderMan();
 
   /*
   */
-  template<typename T, typename... Args>
   void
-  init(T t, Args... args);
+  init();
 
   /*
   */
-  template<typename T, typename... Args>
   void
-  draw(T t, Args... args);
+  draw();
 
   /*
   */
-  template<typename T, typename... Args>
   void
-  exit(T t, Args... args);
+  exit();
 
  protected:
-  /*
-  */
-  template <typename T>
-  void 
-  extractParam(int index, void* out, T t);
-  
-  /*
-  */
-  template<typename T, typename... Args>
-  void
-  extractParam(int index, void* out, T t, Args... args);
-
   SceneGraph* m_sceneGraph;
   std::vector<std::pair<Matrix4x4, RenderMesh>> queryRequest;
+  Camera Sauron;
 
 
   GBufferPass m_GBufferPass;
+  GBufferInitData m_GBufferInitData;
+  GBufferDrawData m_GBufferDrawData;
 };
 
 }

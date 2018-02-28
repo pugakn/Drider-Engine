@@ -19,8 +19,8 @@ GBufferPass::GBufferPass() {
 GBufferPass::~GBufferPass() {
 }
 
-template<typename T, typename... Args>
-void GBufferPass::init(T t, Args... args) {
+void
+GBufferPass::init(PassInitData* initData) {
   driderSDK::File file;
 
   file.Open(_T("GBuffer_vs.hlsl"));
@@ -52,8 +52,9 @@ void GBufferPass::init(T t, Args... args) {
   m_constantBuffer = (ConstantBuffer*)device.createBuffer(bdesc);
 }
 
-template<typename T, typename... Args>
-void GBufferPass::draw(T t, Args... args) {
+void
+GBufferPass::draw(PassDrawData* drawData) {
+  GBufferDrawData* data = static_cast<GBufferDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
   m_constantBuffer->set(dc);
@@ -63,12 +64,11 @@ void GBufferPass::draw(T t, Args... args) {
 
   m_inputLayout->set(dc);
 
-  Matrix4x4 VP = static_cast<Camera*>(data)->getVP();
+  Matrix4x4 VP = (*data->activeCam).getVP();
 
-  std::vector<std::pair<Matrix4x4, RenderMesh>>* models =
-    static_cast<std::vector<std::pair<Matrix4x4, RenderMesh>>*>(data);
+  std::vector<std::pair<Matrix4x4, RenderMesh>>* models;
 
-  for (auto& pAlgo : *models) {
+  for (auto& pAlgo : *data->models) {
     //m_constantBuffer->WVP = VP * pAlgo.first;
     //m_constantBuffer->World = pAlgo.first;
 
