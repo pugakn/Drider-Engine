@@ -20,7 +20,7 @@
 #include "StaticMeshTechnique.h"
 #include "LinesTechnique.h"
 #include "CameraDebbug.h"
-
+#include <dr_octree.h>
 namespace driderSDK {
 
 TestApplication::TestApplication() {}
@@ -407,9 +407,9 @@ TestApplication::initSceneGraph() {
   };
 
   
-      
+  std::vector<std::shared_ptr<GameObject>> staticModels;
   auto n = createNode(root, _T("Croc0"), _T("Croc.X"), {-200.f, 0.0f, 0.0f});
-  
+  staticModels.push_back(n);
   m_joker = n;
   
   n = createNode(root, _T("Dwarf0"), _T("dwarf.x"), {0.0f, 0.0f, 200.0f}); 
@@ -425,5 +425,9 @@ TestApplication::initSceneGraph() {
   /*n = createNode(root, _T("Duck0"), _T("DuckyQuacky_.fbx"), {200.f, 0.0f, 10.0f}); 
 
   n->getTransform().scale({10.f, 10.f, 10.f});*/
+
+  AABB regionOctree(512, 512, 512, Vector3D(0, 0, 0));
+  Octree octree(regionOctree, &staticModels, 100);
+  octree.BuildTree();
 }
 }
