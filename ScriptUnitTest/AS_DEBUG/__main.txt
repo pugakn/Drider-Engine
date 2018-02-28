@@ -1,32 +1,23 @@
 void main()
 
-Temps: 7, 8, 9, 11, 13
+Temps: 7
 
 Variables: 
  007: string {noname}
 
 
 - 3,2 -
-    0  13 *    SUSPEND
-    1  13 *    PGA      50801792
-    3  14 *    PSF      v7
-    4  15 *    CALLSYS  20           (string::string(const string&in))
+    0   7 *    SUSPEND
+    1   7 *    PGA      42236328
+    3   8 *    PSF      v7
+    4   9 *    CALLSYS  20           (string::string(const string&in))
                ObjInfo  v7, 1
-    6  13 *    PSF      v7
-    7  14 *    CALLSYS  69           (void Print(string&in))
-    9  13 *    PSF      v7
-   10  14 *    CALLSYS  21           (string::~string())
+    6   7 *    PSF      v7
+    7   8 *    CALLSYS  69           (void Print(string&in))
+    9   7 *    PSF      v7
+   10   8 *    CALLSYS  21           (string::~string())
 - 4,2 -
                ObjInfo  v7, 0
-   12  13 *    SUSPEND
-   13  13 *    PshC4    0x41c80000          (i:1103626240, f:25)
-   15  14 *    CALLSYS  70           (float Add(float))
-- 5,2 -
-   17  13 *    SUSPEND
-   18  13 *    PshC4    0x6          (i:6, f:8.40779e-45)
-   20  14 *    PshC8    0x4024000000000000          (i:4621819117588971520, f:10)
-   23  16 *    CALLSYS  71           (double Sumar(double, int))
-- 6,2 -
-   25  13 *    SUSPEND
+   12   7 *    SUSPEND
             0:
-   26  13 *    RET      0
+   13   7 *    RET      0
