@@ -1,6 +1,6 @@
 #pragma once
 #include <fstream>
-#include "dr_engine_prerequisites.h"
+#include "dr_core_prerequisites.h"
 
 namespace driderSDK {
 
@@ -13,7 +13,7 @@ namespace driderSDK {
 * sampleName.Write("fileToWrite");
 * sampleName.Close("fileToAppend", bufferToAddInFile);
 */
-class DR_ENGINE_EXPORT File
+class DR_CORE_EXPORT File
 {
  public:
   
