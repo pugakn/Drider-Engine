@@ -21,14 +21,14 @@ class DR_RENDERMAN_EXPORT RenderPass {
   ~RenderPass();
 
   /*
+  //template<typename T, typename... Args>
+  virtual void init(T t, Args... args) = 0;
   */
-  virtual void
-  init() = 0;
 
   /*
+  //template<typename T, typename... Args>
+  virtual void draw(T t, Args... args) = 0;
   */
-  virtual void
-  draw(void* data) = 0;
 
  protected:
   Shader* m_vertexShader;

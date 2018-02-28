@@ -4,6 +4,7 @@
 #include <dr_memory.h>
 #include "dr_graphics_defines.h"
 #include "dr_d3d_graphics_api.h"
+
 namespace driderSDK
 {
 class DR_GRAPHICS_EXPORT GraphicsDriver : public Module<GraphicsDriver> {

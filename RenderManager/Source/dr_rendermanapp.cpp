@@ -1,31 +1,20 @@
 #include "dr_rendermanapp.h"
+
 #include "dr_renderman.h"
 
 namespace driderSDK {
 
 void
-renderManagerApp() {
-  RenderManager renderAdmin;
+renderManagerApp(SceneGraph* sceneGraph) {
+  RenderMan Manager;
 
-  do {
-  /*
-  Render order:
+  Manager.init(0);
 
-  GBuffer;
-  Normal + Depth Pre-Pass
-  Shadow Maps
-  Screen Space Ambient Occlusion
-  Light Pre-Pass
-  Forward-Rendering of Opaque Objects
-  Transparent Objects
-  Light Bloom
-  Anti-Aliasing
-  Color Correction
-  User Interface
+  while (1) {
+    Manager.draw(0);
+  }
 
-  Depth of Field
-  */
-  } while(true);
+  Manager.exit(0);
 }
 
 }

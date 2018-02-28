@@ -1,43 +1,62 @@
 #pragma once
 #include "dr_renderman_prerequisites.h"
-#include <dr_render_target.h>
-#include <dr_camera.h>
+#include "dr_GBuffer.h"
+#include <dr_render_component.h>
+#include <dr_graph.h>
 
 namespace driderSDK {
 
 /*
 */
-class DR_RENDERMAN_EXPORT RenderManager {
+class DR_RENDERMAN_EXPORT RenderMan {
  public:
   /*
+  TEST::testName
+  
+  Description.
   */
-   RenderManager();
+   RenderMan();
 
   /*
   */
-  ~RenderManager();
+  ~RenderMan();
 
   /*
   */
-  Int32
-  createRenderTarget(Int32 width,
-                     Int32 height,
-                     Int32 channels);
-
-  /*
-  */
+  template<typename T, typename... Args>
   void
-  setRenderEye(Camera* actualCamera);
+  init(T t, Args... args);
 
   /*
   */
+  template<typename T, typename... Args>
   void
-  renderPass(std::vector<Texture*> TextureInput,
-             std::vector<RenderTarget*> RenderTargetOutput,
-             void* args);
+  draw(T t, Args... args);
 
- private:
-  std::vector<RenderTarget> allRenderTargets;
+  /*
+  */
+  template<typename T, typename... Args>
+  void
+  exit(T t, Args... args);
+
+ protected:
+  /*
+  */
+  template <typename T>
+  void 
+  extractParam(int index, void* out, T t);
+  
+  /*
+  */
+  template<typename T, typename... Args>
+  void
+  extractParam(int index, void* out, T t, Args... args);
+
+  SceneGraph* m_sceneGraph;
+  std::vector<std::pair<Matrix4x4, RenderMesh>> queryRequest;
+
+
+  GBufferPass m_GBufferPass;
 };
 
 }
