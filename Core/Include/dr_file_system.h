@@ -1,5 +1,5 @@
 #pragma once
-#include "dr_engine_prerequisites.h"
+#include "dr_core_prerequisites.h"
 #include "dr_file.h"
 
 namespace driderSDK {
@@ -10,7 +10,7 @@ namespace driderSDK {
 * Sample usage:
 * FileSystem sampleName;
 */
-class DR_ENGINE_EXPORT FileSystem
+class DR_CORE_EXPORT FileSystem
 {
  public:
   

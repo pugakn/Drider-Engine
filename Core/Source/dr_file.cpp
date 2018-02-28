@@ -3,8 +3,7 @@
 namespace driderSDK
 {
 
-File::File() 
-  : m_size(0)
+File::File() : m_size(0)
 {
 }
 
