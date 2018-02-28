@@ -1,56 +1,83 @@
 #include <dr_quaternion.h>
 #include "dr_camera.h"
-
+#include "dr_time.h"
+#include <iostream>
 
 namespace driderSDK {
 
 Camera::Camera() {}
 
 Camera::Camera(const TString& name,
-							 const Vector3D& pos,
-							 const Vector3D& target,
-							 const Viewport& viewport,
-							 float fov,
-							 float nearPlane,
-							 float farPlane) {
-	m_name = name;
-	m_pos = pos;
-	m_target = target;
-	m_look = Vector3D(m_target - m_pos).normalize();
+							 const Viewport& viewport) 
+  : GameObject(name), 
+    m_up(0.0f, 1.0f, 0.0f) {
 	m_viewport = viewport;
 	m_up = Vector3D(0.f, 1.f, 0.f);
-
-	createProyection(fov, nearPlane, farPlane);
 }
 
 Camera::~Camera() {}
 
-void 
-Camera::update(float delta) {
-	m_view.LookAt(m_pos, m_pos + m_look, m_up);
+void Camera::updateImpl() {
+  GameObject::updateImpl();
+
+  auto cpy = getParent()->transform.getMatrix();
+  auto pos = getWorldTransform().getPosition();
+  auto target = Vector4D(m_target, 1) * cpy;
+	m_view.LookAt(Vector3D(pos), Vector3D(target), m_up);
 	m_vp = m_view * m_projection;
 }
 
 void 
-Camera::move(float forward, float strafe) {
-	m_pos += m_look*forward;
+Camera::move(float forward, float strafe, float upVelocity, bool lockY) {
+	
+  Vector3D dir = transform.getDirection();
+  Vector3D right = dir.cross(m_up);
+
+  if (lockY) {
+    dir.y = 0;
+    dir.normalize();
+    right.y = 0; 
+    right.normalize();
+  }
+
+  transform.move(dir * forward);
+  
 	if (strafe != 0.f) {
-		m_pos += Vector3D(m_look.cross(m_up)*strafe).normalize();
+		transform.move(right * strafe);
 	}
-	m_look = m_target - m_pos;
-	m_look.normalize();
+
+  transform.move(upVelocity, AXIS::kY);
 }
 
 void 
-Camera::pan(float forward, float strafe) {
-	m_pos += m_look*forward;
-	m_target += m_look*forward;
+Camera::move(const Vector3D& direction) {
+  transform.move(direction);
+}
 
-	if (strafe != 0.f) {
-		m_pos += Vector3D(m_look.cross(m_up)*strafe).normalize();
-		m_target += Vector3D(m_look.cross(m_up)*strafe).normalize();
-	}
+void 
+Camera::pan(float forward, float strafe, float upVelocity, bool lockY) {
+	
+  Vector3D dir = transform.getDirection();
+  Vector3D right = dir.cross(m_up);
 
+  if (lockY) {
+    dir.y = 0;
+    dir.normalize();
+    right.y = 0;
+    right.normalize();
+  }
+  dir *= forward;
+  dir += right * strafe + m_up * upVelocity;
+  
+	m_target += dir;
+
+  move(dir);
+}
+
+void 
+Camera::pan(const Vector3D & direction) {
+  move(direction);
+  m_target += direction;
 }
 
 void
@@ -66,6 +93,11 @@ Camera::createProyection(float fov,
 }
 
 void 
+Camera::setUp(const Vector3D& up) {
+  m_up = up;
+}
+
+void 
 Camera::setTarget(const Vector3D& target) {
 	m_target = target;
 }
@@ -75,32 +107,44 @@ Camera::setViewport(const Viewport& viewport) {
 	m_viewport = viewport;
 }
 
-
-const TString&
-Camera::getName() const {
-	return m_name;
+void 
+Camera::rotate(const Quaternion& rotation) {
+	m_target = transform.getPosition() + 
+             rotation.rotation(transform.getDirection());
 }
 
 void 
-Camera::rotate(const Quaternion& rotation) {
-	m_look = rotation.rotation(m_look);
+Camera::rotate(float yawDegree, float pitchDegree) {
+  transform.rotate({yawDegree * Math::DEGREE_TO_RADIAN,
+                   pitchDegree * Math::DEGREE_TO_RADIAN, 0});
+  m_target = transform.getPosition() + transform.getDirection() * 10.f;
 }
 
 void 
 Camera::orbit(float pitch, float yaw) {
-	float distance =  Vector3D(m_pos - m_target).length(); 
-	//placeholder xd
-	m_pos.x = distance * -sinf(pitch*(Math::PI / 180)) * cosf((yaw)*(Math::PI / 180));
-	m_pos.y = distance * -sinf((yaw)*(Math::PI / 180));
-	m_pos.z = -distance * cosf((pitch)*(Math::PI / 180)) * cosf((yaw)*(Math::PI / 180));
+	//float distance =  Vector3D(m_pos - m_target).length(); 
+	////placeholder xd
+	//m_pos.x = distance * -sinf(pitch*(Math::PI / 180)) * cosf((yaw)*(Math::PI / 180));
+	//m_pos.y = distance * -sinf((yaw)*(Math::PI / 180));
+	//m_pos.z = -distance * cosf((pitch)*(Math::PI / 180)) * cosf((yaw)*(Math::PI / 180));
 
-	m_look = m_target - m_pos;
-	m_look.normalize();
+	//m_look = m_target - m_pos;
+	//m_look.normalize();
 }
 
 const Matrix4x4& 
 Camera::getVP() const {
   return m_vp;
+}
+
+const Matrix4x4& 
+Camera::getView() const {
+  return m_view;
+}
+
+const Matrix4x4&
+Camera::getProjection() {
+  return m_projection;
 }
 
 }

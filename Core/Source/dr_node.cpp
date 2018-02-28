@@ -2,9 +2,8 @@
 
 namespace driderSDK {
 
-Node::Node(const TString & _name, WeakNode _parent) 
+Node::Node(const TString& _name, WeakNode _parent) 
   : m_parent(_parent),
-    m_finalTransform(Math::kIdentity),
     m_name(_name) {
 }
 
@@ -95,6 +94,19 @@ Node::getParent() {
   return m_parent.lock();
 }
 
+std::vector<Node::SharedNode> 
+Node::getChildrenWithName(const TString & childrenNames) {
+  std::vector<SharedNode> children;
+  
+  for (auto& child : m_children) {
+    if (child->getName() == childrenNames) {
+      children.push_back(child);
+    }
+  }
+
+  return children;
+}
+
 Node::SharedNode 
 Node::getChild(const TString & childName) {
   for (auto& child : m_children) {
@@ -106,15 +118,36 @@ Node::getChild(const TString & childName) {
   return SharedNode();
 }
 
-const Matrix4x4& 
+Node::SharedNode 
+Node::getChild(SizeT index) {
+  SharedNode child;
+
+  if (index < m_children.size()) {
+    child = m_children[index];
+  }
+
+  return child;
+}
+
+SizeT Node::getChildrenCount() {
+  return m_children.size();
+}
+
+const Transform&
 Node::getWorldTransform() const{
   return m_finalTransform;
 }
 
 void 
+Node::draw() {
+  for (auto& child : m_children) {
+    child->draw();
+  }
+}
+
+void 
 Node::updateImpl() {
-  m_finalTransform = getParent()->m_finalTransform * 
-                     transform.getTransformMatrix();
+  m_finalTransform = getParent()->m_finalTransform * transform;
 }
 
 }

@@ -348,7 +348,7 @@ enum E {
 }
 
 struct DR_GRAPHICS_EXPORT DrInputElementDesc {
-  char* semanticName;
+  String semanticName;
   UInt32 semanticIndex;
   DR_FORMAT::E format;
   UInt32 inputSlot;

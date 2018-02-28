@@ -19,12 +19,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\dr_GBuffer.h" />
     <ClInclude Include="Include\dr_rendermanapp.h" />
     <ClInclude Include="Include\dr_renderman_prerequisites.h" />
+    <ClInclude Include="Include\dr_renderman.h" />
     <ClInclude Include="Include\dr_renderpass.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\dr_GBuffer.cpp" />
     <ClCompile Include="Source\dr_rendermanapp.cpp" />
+    <ClCompile Include="Source\dr_renderman.cpp" />
     <ClCompile Include="Source\dr_renderpass.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

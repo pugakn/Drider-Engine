@@ -4,7 +4,6 @@
 #include <dr_memory.h>
 #include "dr_core_prerequisites.h"
 
-
 namespace driderSDK {
 
 class DR_CORE_EXPORT Resource 
@@ -20,20 +19,25 @@ class DR_CORE_EXPORT Resource
   * TEST::resourceDestructor
   *	Default destructor.
   */
-  virtual ~Resource() { };
+  virtual ~Resource() { }
+
+  //virtual Int32 getType() = 0;
 
   /**
   * Initialize the resource
   */
   virtual void
-  init(void* pData) = 0;
+  init(void* /*pData*/)
+  {}
 
   virtual void
-  init(void* pData,
-       void* extraData) = 0;
+  init(void* /*pData*/,
+       void* /*extraData*/)
+  {}
 
-  
-
+  virtual void
+  destroy(void* /**/)
+  {}
 };
 
 }

@@ -20,12 +20,22 @@ class DR_CORE_EXPORT Animator
   : m_lastTime(0.f)
   {}
 
+  /**
+  * Sets current animation
+  */
   void 
   setAnimation(std::shared_ptr<Animation> pAnimation);
 
+  /**
+  * Sets current skeleton
+  */
   void 
   setSkeleton(std::shared_ptr<Skeleton> pSkeleton);
   
+  /**
+  * Update the bones transforms according to its animation 
+  * at current time.
+  */
   void 
   evaluate(float time);
 

@@ -13,7 +13,7 @@
 namespace driderSDK {
 
 void
-ResourceManager::init() {
+ResourceManager::onStartUp() {
   auto codecTexture  = dr_make_unique<CodecTexture>();
   auto codecModel = dr_make_unique<CodecModel>();
   auto codecSound = dr_make_unique<CodecSound>();

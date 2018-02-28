@@ -1,22 +1,26 @@
 #include "TestApplication.h"
 #include <iostream>
+#include <dr_gameObject.h>
 #include <dr_d3d_swap_chain.h>
 #include <dr_rasterizer_state.h>
 #include <dr_radian.h>
 #include <dr_quaternion.h>
+#include "DrawableComponent.h"
+#include "ModelDebbug.h"
+#include "NPCMovement.h"
+#include "StaticMeshTechnique.h"
+#include "LinesTechnique.h"
+#include "dr_degree.h"
+#include <dr_time.h>
+#include <dr_input_manager.h>
+#include <dr_keyboard.h>
+#include <dr_mouse.h>
+#include <dr_joystick.h>
 
 namespace driderSDK {
 
 TestApplication::TestApplication()
-  : viewport{0,0,1280, 720},
-    camera(_T("MainCamera"),
-           {0, 100, 200},
-           {0,0,0},
-           viewport,
-           45.0f,
-           0.1f,
-           1000.f),
-    driver(nullptr) {
+  : viewport{0,0,1280, 720} {
 }
 
 TestApplication::~TestApplication() {
@@ -31,122 +35,98 @@ TestApplication::onInit() {
                static_cast<driderSDK::UInt32>(viewport.height),
                win);
 
-  soundDriver = new FMODSoundAPI;
-  soundDriver->init();
- 
+  m_camera = std::make_shared<Camera>(_T("MAIN_CAM"), 
+                                      viewport);
+
+  m_camera->createProyection(45.f, 0.1f, 10000.f);
+
+
+  m_camera->transform.setPosition({0.f, 100.0f, -100.0f});
+  m_camera->setTarget({0.0f, 50.0f, 10.0f});
+  //m_camera->transform.setRotation(Degree(180), AXIS::kX);
+
   ResourceManager::startUp();
-  resourceManager = new ResourceManager;
-  if (ResourceManager::isStarted()) {
-    resourceManager = &ResourceManager::instance();
-  }
-  
-  resourceManager->init();
+  InputManager::startUp((SizeT)(win));
+  Time::startUp();
 
-  resourceManager->loadResource(_T("testImage.png"));
+  initResources();
+  initInput();
+  initSound();
+  initSceneGraph();
 
-  SoundExtraInfo *extraInfo = new SoundExtraInfo(
-                              soundDriver->system,
-                              soundDriver->channel1);
-
-  auto soundResource1 = resourceManager->loadResource(_T("testSound1.mp3"), extraInfo);
-  auto soundResource2 = resourceManager->loadResource(_T("testSound2.mp3"), extraInfo);
-  auto soundResource3 = resourceManager->loadResource(_T("testSound3.mp3"), extraInfo);
-
-  auto sound1 = std::dynamic_pointer_cast<SoundCore>(soundResource1);
-  sound1->get()->setMode(DR_SOUND_MODE::kDrMode_3D);
-  sound1->get()->play();
-  sound1->get()->set3DMinMaxDistance(.5f, 1000.f);
-
-
-  auto sound2 = std::dynamic_pointer_cast<SoundCore>(soundResource2);
-  sound2->get()->setChannel(reinterpret_cast<DrChannel**>(soundDriver->channel2->getObjectReference()));
-  sound2->get()->setMode(DR_SOUND_MODE::kDrMode_LOOP_OFF);
-
-  auto sound3 = std::dynamic_pointer_cast<SoundCore>(soundResource3);
-  sound3->get()->setChannel(reinterpret_cast<DrChannel**>(soundDriver->channel3->getObjectReference()));
-  sound3->get()->setMode(DR_SOUND_MODE::kDrMode_LOOP_OFF);
-
-
-  
-  std::vector<TString> modelsFiles{_T("VenomJok.X"), _T("dwarf.X") };
-
-  models.resize(modelsFiles.size());
-
-  quad.init(*driver->device);
-
-  for (SizeT i = 0; i < modelsFiles.size(); ++i) {
-    models[i].init(*driver->device, modelsFiles[i]);
+  /*result = FMOD::System_Create(&system);
+  result = system->getVersion(&version);
+  if (version < FMOD_VERSION) {
+    return;
   }
 
-  models[1].transform.setPosition(Vector3D(100.f,0,0));
-
-  m_inputManager.init((size_t)win);
-  std::cout << "mouse "
-            << m_inputManager.getNumberOfDevices(InputObjectType::kMouse)
-            << std::endl;
-  std::cout << "joystick "
-            << m_inputManager.getNumberOfDevices(InputObjectType::kJoystick)
-            << std::endl;
-  std::cout << "keyboard "
-            << m_inputManager.getNumberOfDevices(InputObjectType::kKeyboard)
-            << std::endl;
-  std::cout << "unknown "
-            << m_inputManager.getNumberOfDevices(InputObjectType::kUnknown)
-            << std::endl;
-  m_mouseInput = (MouseInput*)m_inputManager.getMouse();
-  m_mouseInput->setEventCallback(&m_mouseListener);
-  
-  m_keyboardInput = (KeyboardInput*)m_inputManager.getKeyboard();
-  m_keyboardListener.setSoundDriver(soundDriver);
-  m_keyboardListener.setResourceManager(resourceManager);
-  m_keyboardListener.setCamera(&camera);
-  m_keyboardInput->setEventCallback(&m_keyboardListener);
-
-  velMove = 5.f;
+  result = system->init(32, FMOD_INIT_NORMAL, 0);
+  result = system->createSound("testSound.mp3", FMOD_DEFAULT, 0, &sound1);
+  result = sound1->setMode(FMOD_LOOP_OFF);*/
 }
 void
 TestApplication::onInput() {
-  m_mouseInput->capture();
-  m_keyboardInput->capture();
-  if (m_keyboardInput->isKeyDown(KeyboardButtonID::KC_W)) {
-    camera.move(velMove, 0.f);
+  
+  InputManager::capture();
+  
+  Node::SharedNode croc;
+
+  if (croc = m_sceneGraph->getRoot()->getChild(_T("Croc"))) {
+    croc->transform.rotate(Degree(90 * Time::instance().getDelta()), AXIS::kY);
   }
-  else if (m_keyboardInput->isKeyDown(KeyboardButtonID::KC_S)) {
-    camera.move(-velMove, 0.f);
+
+  if (auto node = m_sceneGraph->getRoot()->getChild(_T("Dwarf"))) {
+
+    if (croc) {
+      float scale = Math::cos(croc->transform.getRotation().y) * 0.5f + 1.f;
+      croc->transform.setScale({scale,scale,scale}); 
+    }
+
+    node->transform.rotate(Degree(90 * Time::instance().getDelta()), AXIS::kY);
   }
-  else if (m_keyboardInput->isKeyDown(KeyboardButtonID::KC_A)) {
-    camera.move(0.f, velMove);
+
+  if (auto croc = m_sceneGraph->getRoot()->getChild(_T("Croc"))) {
+    croc->transform.rotate(Degree(60 * Time::instance().getDelta()), AXIS::kY);
   }
-  else if (m_keyboardInput->isKeyDown(KeyboardButtonID::KC_D)) {
-    camera.move(0.f, -velMove);
+  if (Joystick::get(0)) {
+    
+    float vel = 150.f * Time::getDelta();
+    float ll = Joystick::get(0)->getAxis(JOYSTICK_AXIS::kLSVer);
+    if (Math::abs(ll) < 0.1f) {
+      ll = 0.0f;
+    }
+
+    float rr = Joystick::get(0)->getAxis(JOYSTICK_AXIS::kLSHor);
+    if (Math::abs(rr) < 0.1f) {
+      rr = 0.0f;
+    }
+    
+    auto dir = m_joker->transform.getDirection();
+    auto right = dir.cross(Vector3D(0,1,0)) * -rr;
+    dir *= -ll;
+    dir += right;
+    m_joker->transform.move(dir * vel);
   }
+  
 }
 
 void
 TestApplication::onUpdate() {
-   for (auto& model : models) {
-    //model.transform.rotate(Radian(0.005f), AXIS::kY);
-    model.update();
-  }
-  Vector3D vel(1,0,0);
-  Vector3D forward(0, 1, 0);
-  Vector3D up(0, 0, 1);
-  soundDriver->system->set3DListenerAttributes(0,
-                                               &camera.m_pos,
-                                               &vel,
-                                               &forward,
-                                               &up);
-  soundDriver->update();
-  camera.update(0);
+  //soundDriver->update();
+
+  std::cout << m_joker->transform.getPosition().x << ",";
+  std::cout << m_joker->transform.getPosition().y << ",";
+  std::cout << m_joker->transform.getPosition().z << std::endl;
+
+  Time::instance().update();
+  m_sceneGraph->update();
 }
 
 void
 TestApplication::onDraw() {
   driver->clear();
   //quad.draw(*driver->deviceContext, camera.getVP());
-  for (auto& model : models) {
-    model.draw(*driver->deviceContext, camera);
-  }
+  m_sceneGraph->draw();
   driver->swapBuffers();
 }
 
@@ -163,6 +143,178 @@ TestApplication::onPause() {
 
 void
 TestApplication::onResume() {
+}
+
+void 
+TestApplication::initInput() {
+
+  HWND win = GetActiveWindow();
+
+  auto callback = std::bind(&TestApplication::TestKeyBoard, this);
+
+  auto mouseCallback = []()
+  { 
+    auto pos = Mouse::getPosition();
+    auto delta = Mouse::getDisplacement();
+    std::cout << "Mouse moved x:" << pos.x << " y:" << pos.y;
+    std::cout << " movedX:" << delta.x << " movedY:" << delta.y << std::endl;
+  };
+
+  auto joystickCallback = [&](Joystick& joystick)
+  {
+    
+  };
+
+  auto anyKeyCallback = [](KEY_CODE::E key) 
+  {
+    std::cout << "Key pressed" << std::endl;
+  };
+
+  auto anyKeyCallbackR = [](KEY_CODE::E key) 
+  {
+    std::cout << "Key released" << std::endl;
+  };
+
+  Keyboard::addAnyKeyCallback(KEYBOARD_EVENT::kKeyPressed,
+                              anyKeyCallback);
+
+  Keyboard::addAnyKeyCallback(KEYBOARD_EVENT::kKeyReleased,
+                              anyKeyCallbackR);
+
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed, 
+                        KEY_CODE::kA, 
+                        callback);
+
+  Mouse::addButtonCallback(MOUSE_INPUT_EVENT::kButtonPressed,
+                           MOUSE_BUTTON::kMiddle,
+                           mouseCallback);
+
+  if (Joystick* joystick = Joystick::get(0)) {
+    joystick->addAxisCallback(JOYSTICK_AXIS::kLSVer, joystickCallback);
+  }
+
+
+}
+
+void 
+TestApplication::initResources() {
+  ResourceManager* resourceManager = nullptr;
+  if (ResourceManager::isStarted()) {
+     resourceManager = &ResourceManager::instance();
+  }
+    
+  resourceManager->loadResource(_T("axe.jpg"), driver->device);
+
+  resourceManager->loadResource(_T("VenomJok.X"), driver->device);
+
+  resourceManager->loadResource(_T("Croc.X"), driver->device);
+
+  resourceManager->loadResource(_T("dwarf.x"), driver->device);
+}
+
+void 
+TestApplication::initSound() {
+  //soundDriver = new FMODSoundAPI;
+
+  //soundDriver->init();
+  //
+  //sound1 = new FMODSound;
+
+  //soundDriver->system->createSound(_T("testSound.mp3"),
+  //                                 DR_SOUND_MODE::kDrMode_DEFAULT,
+  //                                 0,
+  //                                 sound1);
+  //channel = new FMODChannel;
+  //
+  //sound1->init(reinterpret_cast<SoundSystem*>(soundDriver->system->getReference()),
+  //             reinterpret_cast<DrChannel*>(channel->getReference()));
+  //sound1->setMode(DR_SOUND_MODE::kDrMode_LOOP_OFF);
+  //sound1->play();
+}
+
+void 
+TestApplication::initSceneGraph() {
+
+  m_sceneGraph = dr_make_unique<SceneGraph>();
+  m_sceneGraph->init();
+
+  auto root = m_sceneGraph->getRoot();
+
+  //root->addChild(m_camera);
+
+  //JoystickInput* joystickInput = nullptr;
+
+  
+
+  /*if (joystickInput) {
+    auto inputListener = m_camera->createComponent<InputComponent>(joystickInput);
+    joystickInput->setEventCallback(inputListener);
+  }*/
+
+  auto resourceMgr = ResourceManager::instancePtr();
+
+  auto createNode = [&](std::shared_ptr<Node> parent, 
+                        const TString& name, 
+                        const TString& resName,
+                        const Vector3D& pos) {
+  
+    auto resource = resourceMgr->getReference(resName);
+
+    auto model = std::dynamic_pointer_cast<Model>(resource);
+    
+    auto node = m_sceneGraph->createNode(parent, model);
+
+    node->setName(name);
+
+    node->transform.setPosition(pos);
+
+    node->createComponent<DrawableComponent>(*driver->device, 
+                                             *driver->deviceContext);
+
+    node->createComponent<ModelDebbug>(*driver->device, 
+                                       *driver->deviceContext);
+
+    auto drawableComponent = node->getComponent<DrawableComponent>();
+    
+    
+    auto technique = dr_make_unique<StaticMeshTechnique>(&(*m_camera), 
+                                                         &(*node));
+
+    //drawableComponent->setModel(model);
+
+    drawableComponent->setShaderTechnique(technique.get());
+
+    auto debbugComponent = node->getComponent<ModelDebbug>();
+
+    auto technique2 = dr_make_unique<LinesTechnique>(&(*m_camera), 
+                                                     &(*node));
+
+    debbugComponent->setModel(model);
+
+    debbugComponent->setShaderTechnique(technique2.get());
+    
+    parent->addChild(node);
+
+    m_techniques.push_back(std::move(technique));
+    m_techniques.push_back(std::move(technique2));
+
+    return node;
+  };
+
+  auto n = createNode(root, _T("Joker"), _T("VenomJok.X"), {0.0f, 0.0f, 0.0f});
+  
+  m_joker = n;
+
+  n->addChild(m_camera);
+    
+  n = createNode(root, _T("Croc"), _T("Croc.X"), {150.0f, 0.0f, 0.0f});
+  
+  n = createNode(root, _T("Dwarf"), _T("dwarf.x"), {-100.0f, 0.0f, 0.0f});   
+
+}
+
+void TestApplication::TestKeyBoard() {
+  std::cout << "A key pressed" << std::endl;
 }
 
 }

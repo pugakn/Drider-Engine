@@ -13,6 +13,30 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Archivos de origen\Components">
+      <UniqueIdentifier>{9c1637e5-ef82-4664-8c34-f621fb8f8cf2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de origen\Technique">
+      <UniqueIdentifier>{6ee345fa-5eae-4a6e-906d-0d1fc49730b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de origen\Geometry">
+      <UniqueIdentifier>{643d255f-48fa-4296-9fbc-a008cd051f48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\Components">
+      <UniqueIdentifier>{7531c95e-d4fb-4879-b8b4-eee8e11d6470}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\Techniques">
+      <UniqueIdentifier>{e41fad87-3e26-4b5a-9b32-23c815cdb502}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\Application">
+      <UniqueIdentifier>{413ab108-5eb0-4347-9cc1-3543dfadefab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\Geometry">
+      <UniqueIdentifier>{89bd6d12-2f2e-42e5-82cd-14795aed5713}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de origen\Application">
+      <UniqueIdentifier>{53014640-ac27-433d-a210-4f92435ee197}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -21,28 +45,76 @@
     <ClInclude Include="targetver.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="TestApplication.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
     <ClInclude Include="dr_quad.h">
-      <Filter>Archivos de encabezado</Filter>
+      <Filter>Archivos de encabezado\Geometry</Filter>
     </ClInclude>
     <ClInclude Include="Include\Model3D.h">
-      <Filter>Archivos de encabezado</Filter>
+      <Filter>Archivos de encabezado\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DrawableAnimated.h">
+      <Filter>Archivos de encabezado\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DrawableComponent.h">
+      <Filter>Archivos de encabezado\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\InputComponent.h">
+      <Filter>Archivos de encabezado\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ModelDebbug.h">
+      <Filter>Archivos de encabezado\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\NPCMovement.h">
+      <Filter>Archivos de encabezado\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Technique.h">
+      <Filter>Archivos de encabezado\Techniques</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\StaticMeshTechnique.h">
+      <Filter>Archivos de encabezado\Techniques</Filter>
+    </ClInclude>
+    <ClInclude Include="TestApplication.h">
+      <Filter>Archivos de encabezado\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\LinesTechnique.h">
+      <Filter>Archivos de encabezado\Techniques</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\DrawableAnimated.cpp">
+      <Filter>Archivos de origen\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DrawableComponent.cpp">
+      <Filter>Archivos de origen\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\NPCMovement.cpp">
+      <Filter>Archivos de origen\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ModelDebbug.cpp">
+      <Filter>Archivos de origen\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Technique.cpp">
+      <Filter>Archivos de origen\Technique</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\StaticMeshTechnique.cpp">
+      <Filter>Archivos de origen\Technique</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\InputComponent.cpp">
+      <Filter>Archivos de origen\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Model3D.cpp">
+      <Filter>Archivos de origen\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="dr_quad.cpp">
+      <Filter>Archivos de origen\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="TestApplication.cpp">
+      <Filter>Archivos de origen\Application</Filter>
+    </ClCompile>
     <ClCompile Include="GraphicsTestApplication.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="TestApplication.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
-    <ClCompile Include="dr_quad.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Model3D.cpp">
-      <Filter>Archivos de origen</Filter>
+    <ClCompile Include="Source\LinesTechnique.cpp">
+      <Filter>Archivos de origen\Technique</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -49,23 +49,23 @@
 *																	                                    *
 **********************************************************************/
 
-#if defined( _MSC_VER )                       //Visual Studio
+#if defined(_MSC_VER)                       //Visual Studio
 # define DR_COMPILER DR_COMPILER_MSV          //Set as Actual Compiler
 # define DR_COMP_VER _MSC_VER                 //Compiler version
 # define DR_THREADLOCAL __declspec(thread)    //Local Thread type
-#elif defined( __GNUC__ )                     //GCC Compiler
+#elif defined(__GNUC__)                     //GCC Compiler
 # define DR_COMPILER DR_COMPILER_GNU		  //Set as Actual Compiler
 //Compiler version (computed from integrated defines)
 # define DR_COMP_VER (((__GNUC__)*100) + (__GNUC_MINOR__*10) + __GNUC_PATCHLEVEL__)
 # define DR_THREADLOCAL __thread              //Local Thread type
-#elif defined ( __INTEL_COMPILER )            //Intel compiler
+#elif defined (__INTEL_COMPILER)            //Intel compiler
 # define DR_COMPILER DR_COMPILER_INTEL        //Set as Actual Compiler
 # define DR_COMP_VER __INTEL_COMPILER         //Compiler version
 /** 
  * DR_THREADLOCAL define is down below because Intel compiler defines it
  * differently based on platform
  */
-#elif defined ( __clang__ )                   //Clang compiler
+#elif defined (__clang__)                   //Clang compiler
 # define DR_COMPILER DR_COMPILER_CLANG        //Set as Actual Compiler
 # define DR_COMP_VER __clang_version__        //Compiler version
 # define DR_THREADLOCAL __thread              //Local Thread type

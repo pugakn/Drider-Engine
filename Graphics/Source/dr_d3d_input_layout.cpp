@@ -32,7 +32,7 @@ D3DInputLayout::create(const Device& device,
     desc[i].Format = (DXGI_FORMAT)inputDescArray[i].format;
     desc[i].AlignedByteOffset = inputDescArray[i].offset;
     desc[i].SemanticIndex = inputDescArray[i].semanticIndex;
-    desc[i].SemanticName = inputDescArray[i].semanticName;
+    desc[i].SemanticName = inputDescArray[i].semanticName.c_str();
     desc[i].InputSlot = inputDescArray[i].inputSlot;
   }
 

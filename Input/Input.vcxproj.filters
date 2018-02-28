@@ -13,45 +13,65 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Archivos de código fuente\v1">
+      <UniqueIdentifier>{2a556686-530f-48cc-9b2c-1741a8264def}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de código fuente\v2">
+      <UniqueIdentifier>{9f7a1128-1eb3-4748-8c5d-27732e2f945e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\v1">
+      <UniqueIdentifier>{01f7fae9-8480-4119-ab8a-021db32caa77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\v2">
+      <UniqueIdentifier>{79b7dead-23cc-4714-8db4-0371bf1935e2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Include\dr_input_mouse.h">
+    <ClInclude Include="Include\dr_input_defines.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="Include\dr_input_prerequisites.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="Include\dr_input_defines.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\dr_input_keyboard.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\dr_input_joystick.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
     <ClInclude Include="Include\dr_input_manager.h">
-      <Filter>Archivos de encabezado</Filter>
+      <Filter>Archivos de encabezado\v2</Filter>
     </ClInclude>
-    <ClInclude Include="Include\dr_input_object.h">
-      <Filter>Archivos de encabezado</Filter>
+    <ClInclude Include="Include\dr_keyboard.h">
+      <Filter>Archivos de encabezado\v2</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_mouse.h">
+      <Filter>Archivos de encabezado\v2</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_joystick.h">
+      <Filter>Archivos de encabezado\v2</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\dr_input_mouse.cpp">
+    <None Include="Source\dr_input_joystick.cpp">
       <Filter>Archivos de código fuente</Filter>
-    </ClCompile>
+    </None>
+    <None Include="Source\dr_input_keyboard.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </None>
+    <None Include="Source\dr_input_manager.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </None>
+    <None Include="Source\dr_input_mouse.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="Source\dr_input_manager.cpp">
-      <Filter>Archivos de código fuente</Filter>
+      <Filter>Archivos de código fuente\v2</Filter>
     </ClCompile>
-    <ClCompile Include="Source\dr_input_keyboard.cpp">
-      <Filter>Archivos de código fuente</Filter>
+    <ClCompile Include="Source\dr_keyboard.cpp">
+      <Filter>Archivos de código fuente\v2</Filter>
     </ClCompile>
-    <ClCompile Include="Source\dr_input_joystick.cpp">
-      <Filter>Archivos de código fuente</Filter>
+    <ClCompile Include="Source\dr_joystick.cpp">
+      <Filter>Archivos de código fuente\v2</Filter>
     </ClCompile>
-    <ClCompile Include="Source\dr_input_object.cpp">
-      <Filter>Archivos de código fuente</Filter>
+    <ClCompile Include="Source\dr_mouse.cpp">
+      <Filter>Archivos de código fuente\v2</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

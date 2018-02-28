@@ -6,6 +6,7 @@
 namespace driderSDK {
 
 class Vector3D;
+class Matrix4x4;
 
 /**
 * Vector with 4 elements (x, y, z, w)
@@ -473,6 +474,10 @@ class DR_MATH_EXPORT Vector4D
   */
   Vector4D
   operator*(const Vector4D& A) const;
+
+  //TMP
+  Vector4D
+  operator*(Matrix4x4 matrix) const;
 
   /**
   * TEST::mulEqual
