@@ -10,7 +10,9 @@ namespace driderSDK {
 
 Model::Model() {}
 
-Model::~Model() {}
+Model::~Model() {
+  int x = 0;
+}
 
 void Model::init(void* modelData) {
     
@@ -32,14 +34,16 @@ void Model::init(void* modelData) {
     buffDesc.stride = sizeof(Vertex);
     auto buffData = reinterpret_cast<const byte*>(mesh.vertices.data());
     Buffer* buffer = device->createBuffer(buffDesc, buffData);
-    mesh.vertexBuffer.reset(dynamic_cast<VertexBuffer*>(buffer));
+    mesh.vertexBuffer = Mesh::VertexSmartPtro(dynamic_cast<VertexBuffer*>(buffer),
+                                              BufferDeleter{});
   
     buffDesc.type = DR_BUFFER_TYPE::kINDEX;
     buffDesc.sizeInBytes = mesh.indices.size() * sizeof(UInt32);
     buffDesc.stride = 0;
     buffData = reinterpret_cast<const byte*>(mesh.indices.data());
     buffer = device->createBuffer(buffDesc, buffData);
-    mesh.indexBuffer.reset(dynamic_cast<IndexBuffer*>(buffer));
+    mesh.indexBuffer = Mesh::IndexSmartPtr(dynamic_cast<IndexBuffer*>(buffer),
+                                           BufferDeleter{});
 
     meshes.push_back(std::move(mesh));
   }

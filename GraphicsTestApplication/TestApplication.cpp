@@ -1,4 +1,6 @@
 #include "TestApplication.h"
+#include <unordered_map>
+#include <random>
 #include <iostream>
 #include <dr_aabb_collider.h>
 #include <dr_d3d_swap_chain.h>
@@ -33,7 +35,7 @@ TestApplication::postInit() {
   m_camera = std::make_shared<Camera>(_T("MAIN_CAM"), 
                                       m_viewport);
 
-  m_camera->createProyection(45.f, 20.f, 1000.f);
+  m_camera->createProyection(45.f, 20.f, 4000.f);
   m_camera->getTransform().setPosition({0.f, 100.0f, -100});
   m_camera->setTarget({0.0f, 100.0f, 1.0f});
 
@@ -75,8 +77,8 @@ TestApplication::postInit() {
   initSound();
   initSceneGraph();
   
-  m_sceneGraph->getRoot()->addChild(m_leftCam);
-  m_sceneGraph->getRoot()->addChild(m_upCam);
+  SceneGraph::addObject(m_leftCam);
+  SceneGraph::addObject(m_upCam);
   m_joker->addChild(m_camera);
 
   //m_sceneGraph->query(*m_camera, QUERY_ORDER::kBackToFront, 0);
@@ -97,9 +99,7 @@ TestApplication::postInit() {
 
 void
 TestApplication::input() {
-  
-  InputManager::capture();
-  
+    
   GameObject::SharedGameObj croc;
 
   /*if (croc = m_sceneGraph->getRoot()->getChild(_T("Croc"))) {
@@ -109,7 +109,7 @@ TestApplication::input() {
     croc->transform.setScale({scale,scale,scale}); 
   }*/
 
-  if (auto node = m_sceneGraph->getRoot()->getChild(_T("Dwarf0"))) {
+  if (auto node = SceneGraph::getRoot()->getChild(_T("Dwarf0"))) {
    
     node->getTransform().rotate(Degree(90 * Time::instance().getDelta()), 
                                 AXIS::kY);
@@ -159,49 +159,14 @@ TestApplication::postUpdate() {
   //soundDriver->update();
   
   Vector3D p = m_joker->getTransform().getPosition();
-  
+ 
+  m_upCam->getTransform().setPosition(m_joker->getTransform().getPosition());
+  m_upCam->getTransform().move(3000.f, AXIS::kY);
+  m_upCam->setTarget(m_joker->getTransform().getPosition() + Vector3D{0, 1, 1});
+  m_upCam->update();
+
   input();
 
-  Time::instance().update();
-
-  m_sceneGraph->update();
-
-  using SharedNode = std::shared_ptr<GameObject>;
-
-  std::function<bool(SharedNode, SharedNode)> checkColl =
-    [&](SharedNode a, SharedNode b) {
-
-    if (a != b) {
-      if (auto col = a->getComponent<AABBCollider>()) {
-        auto colB = b->getComponent<AABBCollider>();
-
-        if (col->getTransformedAABB().intersect(colB->getTransformedAABB())) {
-          return true;
-        }
-      }
-
-      for (auto& child : a->getChildren()) {
-        if (checkColl(child, b)) {
-          return true;
-        }
-      }  
-
-    }
-
-    return false;
-  };
-  
-  /*if (checkColl(m_sceneGraph->getRoot(), m_joker) ||
-      checkColl(m_sceneGraph->getRoot(), m_joker->getChild(0))) {
-    m_joker->getTransform().setPosition(p);
-    auto& pos = m_joker->getTransform().getPosition();
-    std::cout << "Coll frame: " << pos.x << "," << pos.y << "," << pos.z << std::endl;
-    m_joker->getTransform().setPosition(p);
-  }  
-  else 
-  {    
-    p = m_joker->getTransform().getPosition();  
-  }*/
 }
 
 void 
@@ -210,20 +175,22 @@ TestApplication::postRender() {
   for (auto tech : m_techs) {
     tech->setCamera(&(*m_activeCam));  
   }
+  
+  SceneGraph::draw();
 
-  m_sceneGraph->draw();
-
+  //m_sceneGraph->draw();
+  
   m_technique->setCamera(&(*m_activeCam));
 
   auto dc = &GraphicsAPI::getDeviceContext();
 
   dc->setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
 
-  auto meshes = m_sceneGraph->query(*m_camera, 
-                                    m_queryOrder, 
-                                    QUERY_PROPERTYS::kOpaque | 
-                                    QUERY_PROPERTYS::kDynamic | 
-                                    QUERY_PROPERTYS::kStatic);
+  auto meshes = SceneGraph::query(*m_camera, 
+                                  m_queryOrder, 
+                                  QUERY_PROPERTYS::kOpaque | 
+                                  QUERY_PROPERTYS::kDynamic | 
+                                  QUERY_PROPERTYS::kStatic);
 
   for (auto& mesh : meshes) {
 
@@ -340,12 +307,7 @@ TestApplication::initSound() {
 
 void 
 TestApplication::initSceneGraph() {
-
-  m_sceneGraph = dr_make_unique<SceneGraph>();
-  m_sceneGraph->init();
-
-  auto root = m_sceneGraph->getRoot();
-
+  
   //root->addChild(m_camera);
 
   //JoystickInput* joystickInput = nullptr;
@@ -368,9 +330,9 @@ TestApplication::initSceneGraph() {
 
     auto model = std::dynamic_pointer_cast<Model>(resource);
     
-    auto node = m_sceneGraph->createNode(parent, model);
+    auto node = SceneGraph::createNode(parent, model);
 
-    auto p = node->createComponent<ModelDebbug>();
+    /*auto p = node->createComponent<ModelDebbug>();
 
     auto tech = new LinesTechnique(&(*m_activeCam), 
                                    &node->getWorldTransform().getMatrix());
@@ -380,7 +342,7 @@ TestApplication::initSceneGraph() {
     p->setModel(model);
 
     m_techs.push_back(tech);
-  
+  */
     node->setName(name);
 
     node->getTransform().setPosition(pos);
@@ -388,26 +350,35 @@ TestApplication::initSceneGraph() {
     return node;
   };
 
-  
+  auto root = SceneGraph::getRoot();
       
   auto n = createNode(root, _T("Croc0"), _T("Croc.X"), {-200.f, 0.0f, 0.0f});
   
   m_joker = n;
   
-  n = createNode(root, _T("Dwarf0"), _T("dwarf.x"), {0.0f, 0.0f, 200.0f}); 
+  std::unordered_map<Int32, TString> names
+  {
+    {0, _T("VenomJok.X")},
+    {1, _T("Croc.X")},
+    {2, _T("dwarf.x")},
+    {3, _T("Cube.fbx")},
+    {4, _T("DuckyQuacky_.fbx")}
+  };
+ 
+  std::mt19937 mt(std::random_device{}());
+  
+  std::uniform_int_distribution<> dt(0, 4);
+  std::uniform_int_distribution<> scl(1, 10);
+  std::uniform_real_distribution<float> space(-3500.f, 3500.f);
 
-  n = createNode(root, _T("Cube0"), _T("Cube.fbx"), {178.0f, 0.0f, 125.0f}); 
-
-  n->getTransform().scale({30, 30, 30});
-
-  n = createNode(root, _T("Duck0"), _T("DuckyQuacky_.fbx"), {-100, 0.0f, 250.0f}); 
-
-  n = createNode(root, _T("Joker0"), _T("VenomJok.X"), {100.0f, 0.0f, 800.0f});
-
-  n->setStatic(true);
-
-  /*n = createNode(root, _T("Duck0"), _T("DuckyQuacky_.fbx"), {200.f, 0.0f, 10.0f}); 
-
-  n->getTransform().scale({10.f, 10.f, 10.f});*/
+  for (Int32 i = 0; i < 256; ++i) {
+    Vector3D pos(space(mt), 0, space(mt));
+    TString aaa =StringUtils::toTString(i);
+    auto n = createNode(root, names[i] + aaa, 
+                        names[dt(mt)], 
+                        pos);    
+    float sc = static_cast<float>(scl(mt));
+    n->getTransform().scale({sc,sc,sc});
+  }
 }
 }

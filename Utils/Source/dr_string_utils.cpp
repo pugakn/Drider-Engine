@@ -3,34 +3,50 @@
 #include <codecvt>
 
 namespace driderSDK {
+
 String
 StringUtils::toString(const TString& tstring) {
   #ifdef UNICODE
-  return std::wstring_convert<std::codecvt_utf8_utf16<WChar>>().to_bytes(tstring);
+  return toString(tstring);
 #else
   return str;
 #endif
 }
+
+String 
+StringUtils::toString(const WString& wstring) {
+  return std::wstring_convert<std::codecvt_utf8_utf16<WChar>>().to_bytes(wstring);
+}
+
 WString
 StringUtils::toWString(const TString& tstring) {
 #ifdef UNICODE
   return tstring;
 #else
-  return std::wstring_convert<std::codecvt_utf8_utf16<WChar>>().from_bytes(tstring);
+  return toWString(string);
 #endif
 }
-TString StringUtils::toTString(const String& string) {
-#ifdef UNICODE
+
+WString 
+StringUtils::toWString(const String& string) {
   return std::wstring_convert<std::codecvt_utf8_utf16<WChar>>().from_bytes(string);
+}
+
+TString 
+StringUtils::toTString(const String& string) {
+#ifdef UNICODE
+  return toWString(string);
 #else
   return string;
 #endif
 }
-TString StringUtils::toTString(const WString& wstring) {
+
+TString 
+StringUtils::toTString(const WString& wstring) {
 #ifdef UNICODE
   return wstring;
 #else
-  return std::wstring_convert<std::codecvt_utf8_utf16<WChar>>().to_bytes(wstring);
+  return toString(wstring);
 #endif
 }
 }

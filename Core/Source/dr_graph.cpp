@@ -17,13 +17,13 @@ SceneGraph::SceneGraph() {}
 SceneGraph::~SceneGraph() {}
 
 void 
-SceneGraph::init() {
-  m_root = std::make_shared<RootNode>();
+SceneGraph::addObject(SharedGameObject gameObject) {
+  instance().m_root->addChild(gameObject);
 }
 
 SceneGraph::SharedGameObject 
-SceneGraph::getRoot() const {
-  return m_root;
+SceneGraph::getRoot() {
+  return instance().m_root;
 }
 
 SceneGraph::QueryResult
@@ -32,24 +32,37 @@ SceneGraph::query(Camera& camera, QUERY_ORDER::E order, UInt32 props) {
   GameObjectQueue objects(DepthComparer{camera, order});
 
   Frustrum frustrum(camera.getView(), camera.getProjection());
-      
-  testObject(m_root, frustrum, objects);
+
+  //instance().m_mutex.lock();
+
+  testObject(instance().m_root, frustrum, objects);
 
   QueryResult queryRes;
    
   filterObjects(objects, queryRes, props);
+
+  //instance().m_mutex.unlock();
 
   return queryRes;  
 }
 
 void
 SceneGraph::update() {
-  m_root->update();
+
+  //instance().m_mutex.lock();
+
+  instance().m_root->update();
+
+  //instance().m_mutex.unlock();
 }
 
 void 
 SceneGraph::draw() {
-  m_root->render();
+  //instance().m_mutex.lock();
+
+  instance().m_root->render();
+
+  //instance().m_mutex.unlock();
 }
 
 SceneGraph::SharedGameObject
@@ -66,7 +79,11 @@ SceneGraph::createNode(SharedGameObject parent, SharedModel model) {
   return node;
 }
 
-void 
+void SceneGraph::onStartUp() {
+  m_root = std::make_shared<RootNode>();
+}
+
+void
 SceneGraph::testObject(SharedGameObject object, 
                        Frustrum& frustrum,
                        GameObjectQueue& objects) {

@@ -9,12 +9,13 @@
 #include <dr_viewport.h>
 #include "dr_application.h"
 #include <dr_resource_manager.h>
-#include <dr_graph.h>
 #include <dr_memory.h>
 #include <dr_shader.h>
 
 #include <Windows.h>
 #include <iostream>
+#include <dr_graph.h>
+#include <thread>
 
 //#include <FMOD\fmod.hpp>
 #include <dr_fmod_sound_api.h>
@@ -51,10 +52,6 @@ public:
   void initSound();
   void initSceneGraph();
 
-  std::shared_ptr<Camera> m_camera;
-  std::shared_ptr<Camera> m_leftCam;
-  std::shared_ptr<Camera> m_upCam;
-  std::shared_ptr<Camera> m_activeCam;
   bool m_debugList;
   //SoundAPI* soundDriver;
   QUERY_ORDER::E m_queryOrder;
@@ -67,9 +64,12 @@ public:
   FMOD::Channel    *channel = 0;
   FMOD_RESULT       result;
   unsigned int      version;*/
+  std::shared_ptr<Camera> m_camera;
+  std::shared_ptr<Camera> m_leftCam;
+  std::shared_ptr<Camera> m_upCam;
+  std::shared_ptr<Camera> m_activeCam;
+  std::unique_ptr<Technique> m_technique;
   std::vector<Technique*> m_techs;
-  std::unique_ptr<StaticMeshTechnique> m_technique;
-  std::unique_ptr<SceneGraph> m_sceneGraph;
   std::shared_ptr<GameObject> m_joker;
 };
 
