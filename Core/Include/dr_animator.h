@@ -88,6 +88,8 @@ class DR_CORE_EXPORT Animator
 
       }
 
+      std::get<index>(m_lastPositions[m_currentBone]) = frame;
+    
       return frame;                                    
   }
 
