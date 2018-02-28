@@ -13,6 +13,8 @@ TEST(ScriptEngine, exposeFunction)
 		testScript = ScriptEngine::instancePtr();
 	}
 
+	testScript->addScriptLog(_T("hola"), 0);
+
 	result = testScript->createEngine();
 	EXPECT_TRUE(result >= 0);
 
