@@ -42,7 +42,7 @@ Logger::addError(const std::string Filename,
   fullMessage += StringUtils::toTString(Filename);
   fullMessage += _T("</a>\n");
   fullMessage += _T("<a class = \"line\"> Line: ");
-  fullMessage +=  StringUtils::toTString(lineNumber);
+  //fullMessage +=  StringUtils::toTString(lineNumber);
   fullMessage += _T("</a>\n");
   fullMessage += _T("<a class = \"text\"> Description: ");
   fullMessage += message;
@@ -69,7 +69,7 @@ Logger::addWarning(const std::string Filename,
   fullMessage += StringUtils::toTString(Filename);
   fullMessage += _T("</a>\n");
   fullMessage += _T("<a class = \"line\"> Line: ");
-  fullMessage += StringUtils::toTString(lineNumber);
+  //fullMessage += StringUtils::toTString(lineNumber);
   fullMessage += _T("</a>\n");
   fullMessage += _T("<a class = \"text\"> Description: ");
   fullMessage += message;
