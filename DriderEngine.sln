@@ -111,8 +111,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ScriptV2", "ScriptV2\Script
 		{96C93CF8-BB4C-4D60-8C5D-3F439477662D} = {96C93CF8-BB4C-4D60-8C5D-3F439477662D}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestScriptApp", "TestScriptApp\TestScriptApp.vcxproj", "{FEA15E56-70FE-402F-84DB-69DEC17B12CD}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -266,14 +264,6 @@ Global
 		{113DA057-1F8C-4EF7-B83C-E8F14A4D0EEA}.Release|x64.Build.0 = Release|x64
 		{113DA057-1F8C-4EF7-B83C-E8F14A4D0EEA}.Release|x86.ActiveCfg = Release|Win32
 		{113DA057-1F8C-4EF7-B83C-E8F14A4D0EEA}.Release|x86.Build.0 = Release|Win32
-		{FEA15E56-70FE-402F-84DB-69DEC17B12CD}.Debug|x64.ActiveCfg = Debug|x64
-		{FEA15E56-70FE-402F-84DB-69DEC17B12CD}.Debug|x64.Build.0 = Debug|x64
-		{FEA15E56-70FE-402F-84DB-69DEC17B12CD}.Debug|x86.ActiveCfg = Debug|Win32
-		{FEA15E56-70FE-402F-84DB-69DEC17B12CD}.Debug|x86.Build.0 = Debug|Win32
-		{FEA15E56-70FE-402F-84DB-69DEC17B12CD}.Release|x64.ActiveCfg = Release|x64
-		{FEA15E56-70FE-402F-84DB-69DEC17B12CD}.Release|x64.Build.0 = Release|x64
-		{FEA15E56-70FE-402F-84DB-69DEC17B12CD}.Release|x86.ActiveCfg = Release|Win32
-		{FEA15E56-70FE-402F-84DB-69DEC17B12CD}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
