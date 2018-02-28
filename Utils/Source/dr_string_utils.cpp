@@ -4,27 +4,9 @@
 
 namespace driderSDK {
 
-String
-StringUtils::toString(const TString& tstring) {
-  #ifdef UNICODE
-  return toString(tstring);
-#else
-  return str;
-#endif
-}
-
 String 
 StringUtils::toString(const WString& wstring) {
   return std::wstring_convert<std::codecvt_utf8_utf16<WChar>>().to_bytes(wstring);
-}
-
-WString
-StringUtils::toWString(const TString& tstring) {
-#ifdef UNICODE
-  return tstring;
-#else
-  return toWString(string);
-#endif
 }
 
 WString 

@@ -72,7 +72,11 @@ Application::update() {
  
   SDL_Event event;
 
-  while (SDL_PollEvent(&event)){}
+  while (SDL_PollEvent(&event)){
+    if (event.type == SDL_QUIT) {
+      m_running = false;
+    }
+  }
 
   InputManager::capture();
   Time::update();
@@ -94,6 +98,12 @@ Application::render() {
 void 
 Application::destroy() {
   SDL_Quit();
+
+  GraphicsDriver::shutDown();
+  InputManager::shutDown();
+  Time::shutDown();
+  SceneGraph::shutDown();
+
   postDestroy();
 }
 

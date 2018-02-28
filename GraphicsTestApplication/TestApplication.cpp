@@ -208,7 +208,9 @@ TestApplication::postRender() {
 }
 
 void 
-TestApplication::postDestroy() {}
+TestApplication::postDestroy() {
+  ResourceManager::shutDown();
+}
 
 void 
 TestApplication::initInput() {

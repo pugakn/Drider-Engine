@@ -18,8 +18,14 @@ struct DR_UTIL_EXPORT StringUtils
   * @return
   *   The utf-8 string.
   */
+ 
+  /*static String
+  toString(const TString& tstring);*/
+
   static String
-  toString(const TString& tstring);
+  toString(const String& string) {
+    return string;
+  }
   
   static String
   toString(const WString& wstring);
@@ -33,8 +39,14 @@ struct DR_UTIL_EXPORT StringUtils
   * @return 
   *   The utf-16 string.
   */
+
+  /*static WString
+  toWString(const TString& tstring);*/
   static WString
-  toWString(const TString& tstring);
+  toWString(const WString& wstring)
+  {
+    return wstring;
+  }
 
   static WString
   toWString(const String& string);
