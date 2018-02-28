@@ -9,7 +9,7 @@
 namespace driderSDK {
 
 class Resource;
-class SoundSystem;
+
 
 /**
 * Load resources.
@@ -36,11 +36,8 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager> {
   */
   ~ResourceManager() {}
 
-  /**
-  * Initialize the resource manager 
-  */
   void
-  init();
+  onStartUp();
 
   /**
   * TEST::getReference
@@ -133,7 +130,7 @@ public:
   void
   addResource(const TString& resourceName, 
               std::shared_ptr<Resource> pResource);
-private:
+
   /**
   * TEST::existInResourceContent
   * Checks if a resource exist.
@@ -152,6 +149,7 @@ private:
   std::unordered_map<TString, std::shared_ptr<Resource>> resourceContent;
   std::unordered_map<Codec*, std::function<ResorceSmartPtr()>> resourceFactory;
   std::vector<std::unique_ptr<Codec>> codecs;
+  //ResourceFactory* factory;
 
 };
 

@@ -3,15 +3,23 @@
 #include <dr_aabb.h>
 #include <dr_math_prerequisites.h>
 #include <dr_vector3d.h>
+#include <dr_gameObject.h>
+#include <dr_render_component.h>
+#include <dr_vertex.h>
 #include <vector>
 #include <queue>
 #include <list>
+#include <dr_memory.h>
 
 namespace driderSDK {
 
 struct Face
 {
-  Vector3D vertex[3];
+  std::vector<Vertex> vertices;
+  std::vector<UInt32> indices;
+  std::weak_ptr<Material> material;
+  UInt32 gameObject;
+  UInt32 mesh;
 };
 
 class DR_CORE_EXPORT Octree
@@ -30,18 +38,20 @@ class DR_CORE_EXPORT Octree
   * @param objects
   *   list object in region
   *
-  * @param minAreaSize
-  *   minimum size of the octree
+  * @param minFacesArea
+  *   minimum faces in area
   *
   */
-  Octree(AABB& region, std::queue<Face> objects, float minAreaSize);
+  Octree(AABB& region, std::queue<Face> objects, driderSDK::Int32 minFacesArea);
+
+  Octree(AABB& region, std::vector<std::shared_ptr<GameObject>>* gameObjects, driderSDK::Int32 minFacesArea);
 
   /**
   * Constructor
   * @param region
   *   Region to initialize octree 
   */
-  Octree(AABB& region, float minAreaSize);
+  Octree(AABB& region, driderSDK::Int32 minFacesArea);
 
   /**
   * Default detructor
@@ -54,7 +64,7 @@ class DR_CORE_EXPORT Octree
   void
   BuildTree();
 
-  float minSize;
+  driderSDK::Int32 minFaces;
 
   std::queue<Face> objectsToReview;
 

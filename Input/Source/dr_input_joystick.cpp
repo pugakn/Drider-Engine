@@ -48,6 +48,10 @@ void
 JoystickInput::capture() {
   m_joystick->capture();
   OIS::JoyStickState st = m_joystick->getJoyStickState();
+
+  m_state.axes.clear();
+  m_state.buttons.clear();
+
   m_state.buttons = st.mButtons;
   for (auto &it : st.mAxes) {
     m_state.axes.push_back(it.abs);

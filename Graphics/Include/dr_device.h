@@ -59,7 +59,7 @@ class DR_GRAPHICS_EXPORT Device
   */
   virtual Buffer*
   createBuffer(const DrBufferDesc& desc,
-                     byte* initialData = nullptr) = 0;
+               const byte* initialData = nullptr) = 0;
 
 
 

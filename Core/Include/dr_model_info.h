@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <dr_aabb.h>
 #include "dr_core_prerequisites.h"
 #include "dr_mesh_info.h"
 
@@ -12,6 +13,7 @@ struct DR_CORE_EXPORT ModelInfo
   {
   }
 
+  AABB aabb;
   std::vector<MeshInfo> meshes;
   std::vector<TString> animationsNames;
   TString skeletonName;

@@ -2,6 +2,7 @@
 #include <fstream>
 #include <dr_d3d_shader_bytecode.h>
 #include <dr_graphics_defines.h>
+#include <dr_graphics_driver.h>
 using namespace driderSDK;
 
 
@@ -13,37 +14,27 @@ std::string file2string(const char *path) {
   return content;
 }
 
-void Quad::init(Device& device)
+void Quad::init()
 {
+  Device& device = GraphicsDriver::getApiReference().getDeviceReference();
   std::string vsSource = file2string("vs.hlsl");
   std::string fsSource = file2string("fs.hlsl");
   vs = reinterpret_cast<Shader*>(device.createShaderFromMemory(vsSource.c_str(), vsSource.size(),DR_SHADER_TYPE_FLAG::kVertex));
   fs = reinterpret_cast<Shader*>(device.createShaderFromMemory(fsSource.c_str(), fsSource.size(), DR_SHADER_TYPE_FLAG::kFragment));
 
-  m_vertex[0] = { -0.5f,  0.5f, 0.9f, 1.0f,    0.5f, 0.5f,0.0f, 1.0f };
-  m_vertex[1] = { -0.5f, -0.5f, 0.9f, 1.0f,    0.0f, 0.0f,0.0f, 1.0f };
-  m_vertex[2] = { 0.5f, -0.5f, 0.9f,  1.0f,    0.0f, 0.0f,1.0f, 1.0f };
-  m_vertex[3] = { 0.5f,  0.5f, 0.9f,  1.0f,    0.0f, 1.0f,1.0f, 1.0f };
+  m_vertex[0] = { -1.f,  1.f, 0.9f, 1.0f,    0.5f, 0.5f,0.0f, 1.0f  ,0.0,0.0 };
+  m_vertex[1] = { -1.f, -1.f, 0.9f, 1.0f,    0.0f, 0.0f,0.0f, 1.0f  ,0.0,1.0 };
+  m_vertex[2] = { 1.f, -1.f, 0.9f,  1.0f,    0.0f, 0.0f,1.0f, 1.0f  ,1.0,1.0 };
+  m_vertex[3] = { 1.f,  1.f, 0.9f,  1.0f,    0.0f, 1.0f,1.0f, 1.0f  ,1.0,0.0 };
 
-  m_index[0] = 0;
+  m_index[0] = 2;
   m_index[1] = 1;
-  m_index[2] = 2;
-  m_index[3] = 2;
+  m_index[2] = 0;
+  m_index[3] = 0;
   m_index[4] = 3;
-  m_index[5] = 0;
+  m_index[5] = 2;
 
-  std::vector<DrInputElementDesc> idesc;
-  DrInputElementDesc ie;
-  ie.format = DR_FORMAT::kDrFormat_R32G32B32A32_FLOAT;
-  ie.offset = 0;
-  ie.semanticName = "POSITION";
-  idesc.push_back(ie);
-
-  ie.format = DR_FORMAT::kDrFormat_R32G32B32A32_FLOAT;
-  ie.offset = 16;
-  ie.semanticName = "NORMAL";
-  idesc.push_back(ie);
-
+  std::vector<DrInputElementDesc> idesc = vs->reflect();
   IL = device.createInputLayout(idesc, *vs->m_shaderBytecode);
 
 
@@ -62,7 +53,7 @@ void Quad::init(Device& device)
   bdesc.stride = 0;
   IB = reinterpret_cast<IndexBuffer*>(device.createBuffer(bdesc, reinterpret_cast<byte*>(&m_index[0])));
 
-  //constBuff.World = Matrix4x4::identityMat4x4;
+  //constBuff.WVP = Matrix4x4::identityMat4x4;
 }
 
 void Quad::destroy()
@@ -72,11 +63,10 @@ void Quad::destroy()
   VB->release();
 }
 
-void Quad::draw(const DeviceContext& deviceContext,
-                const driderSDK::Matrix4x4& wvp)
+void Quad::draw()
 { 
-  constBuff.WVP = wvp;
-
+  //constBuff.WVP = wvp;
+  DeviceContext& deviceContext = GraphicsDriver::getApiReference().getDeviceContextReference();
   fs->set(deviceContext);
   vs->set(deviceContext);
   IL->set(deviceContext);
@@ -84,6 +74,8 @@ void Quad::draw(const DeviceContext& deviceContext,
   IB->set(deviceContext); 
   CB->updateFromBuffer(deviceContext,reinterpret_cast<byte*>(&constBuff));
   CB->set(deviceContext);
+  //texture->set(deviceContext, 0);
+  //SS->set(deviceContext,DR_SHADER_TYPE_FLAG::kFragment);
   deviceContext.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
   deviceContext.draw(6, 0, 0);
 }
