@@ -45,7 +45,7 @@ void D3DGraphicsAPI::init(UInt32 w, UInt32 h, void* hwnd) {
 
   {
     auto dt = m_device->createEmptyTexture(depthTextureDesc);
-    m_depthTexture = dr_unique_custom(dt, &dr_gfx_deleter<Texture>);
+    m_depthTexture.reset(dt);
   }  
 
   {

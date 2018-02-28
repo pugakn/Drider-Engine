@@ -15,7 +15,7 @@ namespace driderSDK {
 
 void 
 ModelDebbug::create(std::shared_ptr<Model> model) {
-
+  
   //Create index buffer & vertex buffer 4 lines
   std::vector<Mesh> meshes{1};
 
@@ -72,7 +72,7 @@ ModelDebbug::create(std::shared_ptr<Model> model) {
 
 void 
 ModelDebbug::onRender() {
-
+  
   if (getModel() && m_technique) {
 
     if (m_technique->prepareForDraw()) {
