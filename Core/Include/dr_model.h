@@ -6,6 +6,7 @@
 #include "dr_core_prerequisites.h"
 #include "dr_mesh.h"
 #include "dr_resource.h"
+#include "dr_aabb.h"
 
 namespace driderSDK {
 
@@ -22,13 +23,9 @@ class DR_CORE_EXPORT Model : public Resource
   Model& operator=(const Model&) = delete;
 
   void 
-  init(void* pModelData);
-
-  void
-  init(void*,
-       void*)
-  {}
-
+  init(void* modelData);
+  
+  AABB aabb;
   std::vector<Mesh> meshes;
   std::vector<TString> animationsNames;
   TString skeletonName;

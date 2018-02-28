@@ -55,7 +55,8 @@ class DR_GRAPHICS_EXPORT SamplerState
   */
   virtual void
   release() = 0;
-
+  const DrSampleDesc& getDescriptor() const { return m_descriptor; }
+protected:
   DrSampleDesc m_descriptor;
 };
 

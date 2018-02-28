@@ -66,7 +66,7 @@ D3DTexture::createFromMemory(const Device& device,
     break;
   }
   srvDesc.ViewDimension = dim;
-  srvDesc.Texture2D.MipLevels = desc.mipLevels; 
+  srvDesc.Texture2D.MipLevels = -1;//desc.mipLevels; 
 
   apiDevice->
     D3D11Device->
@@ -139,4 +139,10 @@ D3DTexture::generateMipMaps(const DeviceContext& deviceContext) const {
       GenerateMips(APIView);
 }
 
+void 
+D3DTexture::modifyTextureParams(const Device & device, const DrTextureDesc & desc) {
+  APITexture->Release();
+  APIView->Release();
+  createFromMemory(device, desc, 0);
+}
 }

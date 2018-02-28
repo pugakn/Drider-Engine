@@ -36,7 +36,7 @@ Plane::~Plane() {
 float
 Plane::distanceToPoint(const Vector3D& point) const {
   //Warning: Assumes the normal is normalized
-  return dot(point) + d;
+  return dot(point) - d;
 }
 
 PLANE_INTERSECT::E
@@ -45,7 +45,7 @@ Plane::intersects(const Vector3D& point) {
   //Ax + By + Cz - D = 0 If this is true the point is in the plane
 
   DR_ASSERT(length() != 0.0f);
-  float signedDistance = (dot(point) + d) / length();
+  float signedDistance = (dot(point) - d) / length();
   
   if (signedDistance > Math::EPSILON) {
     return PLANE_INTERSECT::kFront;

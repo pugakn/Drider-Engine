@@ -227,9 +227,9 @@ class DR_GRAPHICS_EXPORT DeviceContext
        UInt32 startIndexLocation,
        UInt32 startVertexLocation) const = 0;
 
-  //TODO: Add get methods
+  /*//TODO: Add get methods
   struct DeviceContextData;
-  DeviceContextData* m_deviceContext;
+  DeviceContextData* m_deviceContext;*/
 };
 
 }

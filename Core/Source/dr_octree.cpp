@@ -1,18 +1,19 @@
 #include "dr_octree.h"
-
+#include <dr_model.h>
+#include <dr_matrix4x4.h>
 
 namespace driderSDK {
 
 bool
 AABBContainsObject(Face& face, AABB &boundingArea) {
   Int32 numberOfVertexIn = 0;
-  if (boundingArea.intersect(face.vertex[0])) {
+  if (boundingArea.intersect(Vector3D(face.vertices[0].position))) {
     numberOfVertexIn++;
   }
-  if (boundingArea.intersect(face.vertex[0])) {
+  if (boundingArea.intersect(Vector3D(face.vertices[1].position))) {
     numberOfVertexIn++;
   }
-  if (boundingArea.intersect(face.vertex[0])) {
+  if (boundingArea.intersect(Vector3D(face.vertices[2].position))) {
     numberOfVertexIn++;
   }
 
@@ -24,15 +25,60 @@ Octree::Octree() {
 
 Octree::Octree(AABB& region,
                std::queue<Face> objects,
-               float minAreaSize = 1.0f) : minSize(minAreaSize) {
+               driderSDK::Int32 minFacesArea) {
   
   boundingRegion = region;
   objectsToReview = objects;
+  minFaces = minFacesArea;
+}
+
+Octree::Octree(AABB & region,
+               std::vector<std::shared_ptr<GameObject>>* gameObjects,
+               driderSDK::Int32 minFacesArea) {
+
+  minFaces = minFacesArea;
+  boundingRegion = region;
+  Int32 counterGameObject = 0;
+  for (auto& gameObject : (*gameObjects)) {
+    
+    auto renderComponent = gameObject->getComponent<RenderComponent>();
+    auto model = renderComponent->getModel().lock();
+    Matrix4x4 transform = gameObject->getWorldTransform().getMatrix();
+    
+    Int32 counterMesh = 0;
+    for (auto& mesh : model->meshes)
+    {
+      for (size_t i = 0; i < mesh.indices.size(); i = i + 3)
+      {
+        Face temp;
+        temp.vertices.push_back(mesh.vertices[mesh.indices[i]]);
+        temp.vertices.back().position = transform * temp.vertices.back().position;
+        temp.indices.push_back(mesh.indices[i]);
+
+        temp.vertices.push_back(mesh.vertices[mesh.indices[i + 1]]);
+        temp.vertices.back().position = transform * temp.vertices.back().position;
+        temp.indices.push_back(mesh.indices[i + 1]);
+
+        temp.vertices.push_back(mesh.vertices[mesh.indices[i + 2]]);
+        temp.vertices.back().position = transform * temp.vertices.back().position;
+        temp.indices.push_back(mesh.indices[i + 2]);
+
+        temp.material = mesh.material;
+        temp.gameObject = counterGameObject;
+        temp.mesh = counterMesh;
+        objectsToReview.push(temp);
+      }
+      counterMesh++;
+    }
+
+    counterGameObject++;
+  }
 }
 
 Octree::Octree(AABB& region,
-               float minAreaSize = 1.0f) : minSize(minAreaSize) {
+               driderSDK::Int32 minFacesArea) {
   boundingRegion = region;
+  minFaces = minFacesArea;
 }
 
 Octree::~Octree() {
@@ -43,7 +89,7 @@ Octree::BuildTree() {
 
   Vector3D size = boundingRegion.getMaxPoint() - boundingRegion.getMinPoint();
 
-  if (size.x <= minSize || size.y <= minSize || size.z <= minSize  || objectsToReview.size() < 2) {
+  if (driderSDK::Int32(objectsToReview.size()) < minFaces) {
     while (!objectsToReview.empty())
     {
       containedObjects.push_back(objectsToReview.front());
@@ -84,7 +130,7 @@ Octree::BuildTree() {
   regionsChilds.push_back(AABB(width, height, depth, c8));
 
   for (size_t i = 0; i < regionsChilds.size(); ++i) {
-    childs.push_back(new Octree(regionsChilds[i]));
+    childs.push_back(new Octree(regionsChilds[i], minFaces));
     childs.back()->father = this;
   }
 

@@ -39,7 +39,7 @@ namespace driderSDK {
 D3DDevice::createDeviceAndDeviceContext(DeviceContext& deviceContext) {
   D3D_FEATURE_LEVEL lvl = D3D_FEATURE_LEVEL_11_0;
   D3D_FEATURE_LEVEL lvlRet = D3D_FEATURE_LEVEL_11_0;
-  D3D11CreateDevice(0,
+  if (D3D11CreateDevice(0,
     D3D_DRIVER_TYPE_HARDWARE,
     0,
     0,
@@ -49,7 +49,10 @@ D3DDevice::createDeviceAndDeviceContext(DeviceContext& deviceContext) {
     &D3D11Device,
     &lvlRet,
     &reinterpret_cast<D3DDeviceContext*>(&deviceContext)->
-    D3D11DeviceContext);
+    D3D11DeviceContext) != S_OK) {
+
+      throw "Error: createDeviceAndDeviceContext";
+  }
   
 }
 
@@ -61,7 +64,7 @@ D3DDevice::release() {
 
 Buffer*
 D3DDevice::createBuffer(const DrBufferDesc& desc,
-                        byte* initialData) {
+                        const byte* initialData) {
   Buffer* buffer = nullptr;
   switch (desc.type)
   {

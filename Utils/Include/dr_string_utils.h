@@ -18,9 +18,18 @@ struct DR_UTIL_EXPORT StringUtils
   * @return
   *   The utf-8 string.
   */
+ 
+  /*static String
+  toString(const TString& tstring);*/
+
   static String
-  toString(const TString& tstring);
+  toString(const String& string) {
+    return string;
+  }
   
+  static String
+  toString(const WString& wstring);
+
   /**
   * Converts tstring into a utf-16 string.
   * 
@@ -30,8 +39,17 @@ struct DR_UTIL_EXPORT StringUtils
   * @return 
   *   The utf-16 string.
   */
+
+  /*static WString
+  toWString(const TString& tstring);*/
   static WString
-  toWString(const TString& tstring);
+  toWString(const WString& wstring)
+  {
+    return wstring;
+  }
+
+  static WString
+  toWString(const String& string);
 
   /**
   * Converts a real number into a string.
@@ -129,7 +147,14 @@ struct DR_UTIL_EXPORT StringUtils
             TString::value_type fill = 0, 
             std::ios::fmtflags flags = 0) 
   {
-    return toStringBase<TString::value_type>(value, 0, width, fill, flags);
+    std::basic_ostringstream<TString::value_type> stream;
+    stream.width(width);
+    stream.fill(fill);
+    stream.flags(flags);
+    stream << value;
+    return stream.str();
+    //return toStringBase<TString::value_type>(value, 0, width, fill, flags);
+
   }
 
   static TString 

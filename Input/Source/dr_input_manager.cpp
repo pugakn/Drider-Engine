@@ -1,175 +1,152 @@
 #include "dr_input_manager.h"
-#include <OIS/OISInputManager.h>
-#include "dr_input_mouse.h"
-#include "dr_input_keyboard.h"
-#include "dr_input_joystick.h"
+#include "dr_mouse.h"
+#include "dr_keyboard.h"
+#include "dr_joystick.h"
+#include <OIS/OISMouse.h>
+#include <OIS/OISKeyboard.h>
+#include <OIS/OISJoyStick.h>
 
 namespace driderSDK {
 
-void
-InputManager::init(SizeT winHandle, bool nonExlusive) {
-  if (nonExlusive) {
-    OIS::ParamList pl;
-    pl.insert(std::make_pair(String("WINDOW"), std::to_string(winHandle)));
-#if defined OIS_WIN32_PLATFORM
-    pl.insert(std::make_pair(String("w32_mouse"), String("DISCL_FOREGROUND")));
-    pl.insert(std::make_pair(String("w32_mouse"), String("DISCL_NONEXCLUSIVE")));
-    pl.insert(std::make_pair(String("w32_keyboard"), String("DISCL_FOREGROUND")));
-    pl.insert(std::make_pair(String("w32_keyboard"), String("DISCL_NONEXCLUSIVE")));
-#elif defined OIS_LINUX_PLATFORM
-    pl.insert(std::make_pair(String("x11_mouse_grab"), String("false")));
-    pl.insert(std::make_pair(String("x11_mouse_hide"), String("false")));
-    pl.insert(std::make_pair(String("x11_keyboard_grab"), String("false")));
-    pl.insert(std::make_pair(String("XAutoRepeatOn"), String("true")));
-#endif
-    m_mngr = OIS::InputManager::createInputSystem(pl);
-  }
-  else {
-    m_mngr = OIS::InputManager::createInputSystem(winHandle);
-  }
-  registerAllActiveDevices();
-}
+InputManager::InputManager(SizeT _windowHandle) 
+  : m_windowHandle(_windowHandle),
+    m_manager(nullptr)
+{}
 
-void
-InputManager::destroy() {
-  for (SizeT i = 0; i < m_objects.size(); ++i) {
-    destroyInputObject(i);
-  }
+InputManager::~InputManager() 
+{}
 
-  OIS::InputManager::destroyInputSystem(m_mngr);
-}
-
-void 
-InputManager::captureAll()
-{
-  for (auto &it : m_objects) {
-    if (it!= nullptr)
-      it->capture();
-  }
-}
-
-UInt32
-InputManager::createInputObject(InputObjectType::E type) {
-  OIS::Type internalType;
-  OIS::Object* obj;
-  InputObject* inputObject = nullptr;
-
-  switch (type)
-  {
-  case driderSDK::InputObjectType::kKeyboard:
-    internalType = OIS::Type::OISKeyboard;
-    obj = m_mngr->createInputObject(internalType, true);
-    inputObject = new KeyboardInput();
-    inputObject->internalInit(obj);
-    m_keyboardDevices.push_back((KeyboardInput*)inputObject);
-    break;
-  case driderSDK::InputObjectType::kMouse:
-    internalType = OIS::Type::OISMouse;
-    obj = m_mngr->createInputObject(internalType, true);
-    inputObject = new MouseInput();
-    inputObject->internalInit(obj);
-    m_mouseDevices.push_back((MouseInput*)inputObject);
-    break;
-  case driderSDK::InputObjectType::kJoystick:
-    internalType = OIS::Type::OISJoyStick;
-    obj = m_mngr->createInputObject(internalType, true);
-    inputObject = new JoystickInput();
-    inputObject->internalInit(obj);
-    m_joystickDevices.push_back((JoystickInput*)inputObject);
-    break;
-  default:
-    break;
-  }
-
-  m_objects.push_back(inputObject);
-
-  return m_objects.size() - 1;
-}
-
-void
-InputManager::destroyInputObject(UInt32 objID) {
-  if (objID >= m_objects.size()) {
-    return;
-  }
-  if (m_objects[objID] == nullptr) {
-    return;
-  }
-
-  m_mngr->destroyInputObject(m_objects[objID]->obj);
-  delete m_objects[objID];
-
-  m_objects[objID] = nullptr;
-}
-
-Int32
-InputManager::getNumberOfDevices(InputObjectType::E type) {
-  OIS::Type internalType;
-
-  switch (type)
-  {
-  case driderSDK::InputObjectType::kKeyboard:
-    internalType = OIS::Type::OISKeyboard;
-    break;
-  case driderSDK::InputObjectType::kMouse:
-    internalType = OIS::Type::OISMouse;
-    break;
-  case driderSDK::InputObjectType::kJoystick:
-    internalType = OIS::Type::OISJoyStick;
-    break;
-  default:
-    internalType = OIS::Type::OISUnknown;
-    break;
-  }
-
-  return m_mngr->getNumberOfDevices(internalType);
-}
-
-void 
-InputManager::registerAllActiveDevices() {
-  Int32 num = getNumberOfDevices(InputObjectType::kKeyboard);
-  for (Int32 i = 0; i < num; ++i)
-  {
-    createInputObject(InputObjectType::kKeyboard);
-  }
-  num = getNumberOfDevices(InputObjectType::kMouse);
-  for (Int32 i = 0; i < num; ++i)
-  {
-    createInputObject(InputObjectType::kMouse);
-  }
-  num = getNumberOfDevices(InputObjectType::kJoystick);
-  for (Int32 i = 0; i < num; ++i)
-  {
-    createInputObject(InputObjectType::kJoystick);
-  }
-}
-
-MouseInput* 
+Mouse*
 InputManager::getMouse() {
-  return m_mouseDevices[0];
+  return instance().m_mouse.get();
 }
 
-KeyboardInput* 
+Keyboard*
 InputManager::getKeyboard() {
-  return m_keyboardDevices[0];
+  return instance().m_keyboard.get();
 }
 
-UInt32 
-InputManager::getNumOfJoysticks() {
-  return m_joystickDevices.size();
-}
+Joystick* InputManager::getJoystick(Int32 index) {
 
-JoystickInput* 
-InputManager::getJoystick(UInt32 id) {
-  return m_joystickDevices[id];
-}
+  Joystick* joystick = nullptr;
 
-InputObject* 
-InputManager::getInputObjectByID(UInt32 id) {
-  if (id >= m_objects.size()) {
-    return nullptr;
+  if (index < getJoystickCount()) {
+    auto& joysticks = instance().m_joysticks;
+    joystick =  joysticks[index].get();
   }
 
-  return m_objects[id];
+  return joystick;
+}
+
+Int32 InputManager::getJoystickCount() {
+  return static_cast<Int32>(instance().m_joysticks.size());
+}
+
+void 
+InputManager::capture() {
+  for (auto& object : instance().m_objects) {
+    object->capture();
+  }
+
+  auto i = instance().m_objects.back()->getID();
+
+  int x = 0;
+}
+
+void 
+InputManager::onStartUp() {
+    
+  OIS::ParamList pl;
+  pl.insert(std::make_pair(String("WINDOW"), std::to_string(m_windowHandle)));
+#if defined OIS_WIN32_PLATFORM
+  pl.insert(std::make_pair(String("w32_mouse"), String("DISCL_FOREGROUND")));
+  pl.insert(std::make_pair(String("w32_mouse"), String("DISCL_NONEXCLUSIVE")));
+  pl.insert(std::make_pair(String("w32_keyboard"), String("DISCL_FOREGROUND")));
+  pl.insert(std::make_pair(String("w32_keyboard"), String("DISCL_NONEXCLUSIVE")));
+#elif defined OIS_LINUX_PLATFORM
+  pl.insert(std::make_pair(String("x11_mouse_grab"), String("false")));
+  pl.insert(std::make_pair(String("x11_mouse_hide"), String("false")));
+  pl.insert(std::make_pair(String("x11_keyboard_grab"), String("false")));
+  pl.insert(std::make_pair(String("XAutoRepeatOn"), String("true")));
+#endif
+  m_manager = OIS::InputManager::createInputSystem(pl);
+
+  registerMouse();
+  registerKeyboard(); 
+  registerJoysticks();
+}
+
+void 
+InputManager::onShutDown() {
+  
+  for (auto& objec : m_objects) {
+    m_manager->destroyInputObject(objec);
+  }
+  
+  m_objects.clear();
+
+  m_manager->destroyInputSystem(m_manager);
+
+  m_mouse.reset();
+  m_keyboard.reset();
+  m_manager = nullptr;
+}
+
+void 
+InputManager::registerMouse() {
+  
+  OIS::Object* object = m_manager->createInputObject(OIS::OISMouse, true);
+  
+  auto mouseOIS = reinterpret_cast<OIS::Mouse*>(object);
+
+  mouseOIS->getMouseState().width = 4096;
+  mouseOIS->getMouseState().height = 4096;
+
+  m_mouse = dr_make_unique<Mouse>(Mouse::Pass{});
+
+  m_mouse->m_mouseOIS = mouseOIS;
+
+  mouseOIS->setEventCallback(&m_mouse->m_helper);
+
+  m_objects.push_back(object);
+}
+
+void 
+InputManager::registerKeyboard() {
+
+  OIS::Object* object = m_manager->createInputObject(OIS::OISKeyboard, true);
+
+  auto keyboardOIS = reinterpret_cast<OIS::Keyboard*>(object);
+
+  m_keyboard = dr_make_unique<Keyboard>(Keyboard::Pass{});
+
+  m_keyboard->m_keyboardOIS = keyboardOIS;
+
+  keyboardOIS ->setEventCallback(&m_keyboard->m_helper);
+
+  m_objects.push_back(object);
+}
+
+void InputManager::registerJoysticks() {
+
+  Int32 joysticksCount = m_manager->getNumberOfDevices(OIS::Type::OISJoyStick);
+
+  for (Int32 i = 0; i <joysticksCount; ++i) {
+
+    OIS::Object* object = m_manager->createInputObject(OIS::OISJoyStick, true);
+
+    auto joystickOIS = reinterpret_cast<OIS::JoyStick*>(object);
+
+    m_objects.push_back(object);
+
+    auto joystick = dr_make_unique<Joystick>(Joystick::Pass{});
+
+    joystick->m_joystickOIS = joystickOIS;
+
+    joystickOIS->setEventCallback(&joystick->m_helper);
+
+    m_joysticks.push_back(std::move(joystick));
+  }
 }
 
 }
