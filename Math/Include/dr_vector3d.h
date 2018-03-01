@@ -486,7 +486,7 @@ class DR_MATH_EXPORT Vector3D
   *   Flag if vectors are equal.
   */
   bool
-  operator==(const Vector3D& otherVector);
+  operator==(const Vector3D& otherVector) const;
 
   /**
   * TEST::operatorNotEqual
@@ -497,7 +497,7 @@ class DR_MATH_EXPORT Vector3D
   *   Flag if vectors aren't equal.
   */
   bool
-  operator!=(const Vector3D& otherVector);
+  operator!=(const Vector3D& otherVector) const;
 
   /**
   * TEST::operatorNegate

@@ -36,7 +36,7 @@ TestApplication::postInit() {
   m_camera = std::make_shared<Camera>(_T("MAIN_CAM"), 
                                       m_viewport);
 
-  m_camera->createProyection(45.f, 20.f, 4000.f);
+  m_camera->createProyection(45.f, 20.f, 3000.f);
   m_camera->getTransform().setPosition({0.f, 100.0f, -100});
   m_camera->setTarget({0.0f, 100.0f, 1.0f});
 
@@ -62,8 +62,8 @@ TestApplication::postInit() {
   
   
   m_upCam ->createProyection(45.f, 0.1f, 10000.f);
-  m_upCam->getTransform().setPosition({0.f, 3000.f, 1000.f});
-  m_upCam->setTarget({1.f, 1.f, 1000.f});
+  m_upCam->getTransform().setPosition({0.f, 4000.f, 0.f});
+  m_upCam->setTarget({1.f, 1.f, 200.f});
 
   m_activeCam = m_leftCam;
 
@@ -78,8 +78,10 @@ TestApplication::postInit() {
   initSound();
   initSceneGraph();
   
-  SceneGraph::addObject(m_leftCam);
-  SceneGraph::addObject(m_upCam);
+  /*SceneGraph::addObject(m_leftCam);
+  SceneGraph::addObject(m_upCam);*/
+  m_leftCam->setParent(m_joker);
+  m_upCam->setParent(m_joker);
   m_joker->addChild(m_camera);
 
   //m_sceneGraph->query(*m_camera, QUERY_ORDER::kBackToFront, 0);
@@ -168,22 +170,16 @@ TestApplication::input() {
   }
 
   float vel = 150.f * Time::getDelta();
-  
-  m_joker->getTransform().move((dir * f + right * s) * vel);
-
+ 
+  if (Math::abs(f) > 0.0f || Math::abs(s) > 0.0f) {
+    m_joker->getTransform().move((dir * f + right * s) * vel);
+  }
 }
 
 void
 TestApplication::postUpdate() {
   //soundDriver->update();
-  
-  Vector3D p = m_joker->getTransform().getPosition();
  
-  m_upCam->getTransform().setPosition(m_joker->getTransform().getPosition());
-  m_upCam->getTransform().move(3000.f, AXIS::kY);
-  m_upCam->setTarget(m_joker->getTransform().getPosition() + Vector3D{0, 1, 1});
-  m_upCam->update();
-
   input();
 
 }
@@ -195,21 +191,23 @@ TestApplication::postRender() {
     tech->setCamera(&(*m_activeCam));  
   }
   
-  SceneGraph::draw();
+  //SceneGraph::draw();
 
   //m_sceneGraph->draw();
   
+  m_camera->render();
+
   m_technique->setCamera(&(*m_activeCam));
 
   auto dc = &GraphicsAPI::getDeviceContext();
-
-  dc->setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
 
   auto meshes = SceneGraph::query(*m_camera, 
                                   m_queryOrder, 
                                   QUERY_PROPERTYS::kOpaque | 
                                   QUERY_PROPERTYS::kDynamic | 
                                   QUERY_PROPERTYS::kStatic);
+
+  dc->setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
 
   for (auto& mesh : meshes) {
 
@@ -309,8 +307,11 @@ TestApplication::initResources() {
   resourceManager->loadResource(_T("dwarf.x"));
 
   //resourceManager->loadResource(_T("Cube.fbx"));
+<<<<<<< HEAD
   resourceManager->loadResource(_T("DuckyQuacky_.fbx"));
 
+=======
+>>>>>>> b08c46cf8577ce3144e62cf09e950278a244dcd1
   
   resourceManager->loadResource(_T("Checker.obj"));
   resourceManager->loadResource(_T("Metro.obj"));
@@ -400,7 +401,7 @@ TestApplication::initSceneGraph() {
   std::mt19937 mt(std::random_device{}());
   
   std::uniform_int_distribution<> dt(0, static_cast<Int32>(names.size() - 1));
-  std::uniform_int_distribution<> scl(1, 10);
+  std::uniform_int_distribution<> scl(1, 5);
   std::uniform_real_distribution<float> space(-2000.f, 2000.f);
 
   for (Int32 i = 0; i < 2; ++i) {

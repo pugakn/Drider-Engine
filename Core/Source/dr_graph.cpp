@@ -158,6 +158,9 @@ SceneGraph::testObject(SharedGameObject object,
     auto inter = frustrum.intersects(aabbCollider->getTransformedAABB());
 
     if (inter != FRUSTRUM_INTERSECT::kOutside) {
+      /******************************************/
+      object->render();
+      /******************************************/
       objects.push(object);
     }      
   }

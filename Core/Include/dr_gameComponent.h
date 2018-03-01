@@ -18,6 +18,9 @@ class DR_CORE_EXPORT GameComponent : public std::enable_shared_from_this<GameCom
 
   GameObject& 
   getGameObject();
+  
+  virtual void
+  onWorldTransformChange(){}
 
   virtual void
   onCreate() = 0;

@@ -13,9 +13,7 @@
 
 namespace driderSDK {
 
-void 
-ModelDebbug::create(std::shared_ptr<Model> model) {
-  
+void ModelDebbug::onWorldTransformChange() {
   //Create index buffer & vertex buffer 4 lines
   std::vector<Mesh> meshes{1};
 
@@ -68,6 +66,11 @@ ModelDebbug::create(std::shared_ptr<Model> model) {
   mesh.indices.push_back(AABB_POINT::kXMinYMaxZMax);
 
   createMeshBuffers(meshes);
+}
+
+void
+ModelDebbug::create(std::shared_ptr<Model> model) {
+  
 }
 
 void 
