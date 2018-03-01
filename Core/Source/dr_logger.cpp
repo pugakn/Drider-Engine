@@ -6,9 +6,13 @@ namespace driderSDK
 
 void
 Logger::reset() {
-  File file;
   m_filePath = "../Docs/Logger/logger.html";
-  file.Open(m_filePath);
+
+  FileSystem fSys;
+  fSys.Remove(m_filePath);
+
+  File file;
+  bool htmlCreated = fSys.CreateAndOpen(m_filePath, file);
 
   String html =
   "<!DOCTYPE html>\n\
@@ -30,9 +34,10 @@ Logger::reset() {
     </body>\n\
   </html> ";
 
-  file.Write(html.size(), html.c_str());
-
-  file.Close();
+  if (htmlCreated) {
+    file.Write(html.size(), html.c_str());
+    file.Close();
+  }
 }
 
 void
@@ -44,7 +49,7 @@ Logger::addError(const std::string Filename,
   fullMessage += StringUtils::toString(Filename);
   fullMessage += "</a>\n";
   fullMessage += "<a class = \"line\"> Line: ";
-  fullMessage += lineNumber;
+  fullMessage += StringUtils::toString(lineNumber);
   fullMessage += "</a>\n";
   fullMessage += "<a class = \"text\"> Description: ";
   fullMessage += message;
@@ -72,7 +77,7 @@ Logger::addWarning(const String Filename,
   fullMessage += StringUtils::toString(Filename);
   fullMessage += "</a>\n";
   fullMessage += "<a class = \"line\"> Line: ";
-  fullMessage += lineNumber;
+  fullMessage += StringUtils::toString(lineNumber);
   fullMessage += "</a>\n";
   fullMessage += "<a class = \"text\"> Description: ";
   fullMessage += message;

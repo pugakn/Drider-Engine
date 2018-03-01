@@ -208,7 +208,7 @@ void rutaObject(std::string ruta, driderSDK::Octree &octree, std::queue<std::str
 
 int main(int argc, char* argv[])
 {
-  driderSDK::Logger& log = driderSDK::Logger::instance();
+  driderSDK::Logger log;
   if (!log.isStarted()) {
     log.startUp();
     log.reset();
