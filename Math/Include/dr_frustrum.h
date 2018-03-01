@@ -135,7 +135,7 @@ class DR_MATH_EXPORT Frustrum
   *	  True if the frustrum intersects with the AABB
   *
   */
-  bool
+  FRUSTRUM_INTERSECT::E
   intersects(const AABB& frustrum) const;
 
   std::array<Plane,6> planes;

@@ -55,6 +55,9 @@ public:
   ~SceneGraph();
  
   static void
+  buildOctree();
+
+  static void
   addObject(SharedGameObject gameObject); 
 
   static SharedGameObject 
@@ -101,6 +104,12 @@ private:
   void
   onStartUp();
 
+  static void
+  testObjectOct(SharedGameObject object,
+                Frustrum& frustrum, 
+                GameObjectQueue& objects,
+                bool test);
+
   static void 
   testObject(SharedGameObject object, 
              Frustrum& frustrum,
@@ -112,6 +121,7 @@ private:
                 UInt32 props);
 private:
   SharedGameObject m_root;
+  SharedGameObject m_octree;
   std::mutex m_mutex;
 };
 

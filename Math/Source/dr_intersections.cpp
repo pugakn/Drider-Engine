@@ -478,12 +478,12 @@ Intersect::aabbSphere(const Vector3D& min,
   return sq <= (sphereRadius * sphereRadius);
 }
 
-bool
+FRUSTRUM_INTERSECT::E
 Intersect::aabbFrustrum(const Vector3D& pointMax,
                         const Vector3D& pointMin,
                         const std::array<Plane, 6>& planes) {
 
-  bool ret = true; 
+  FRUSTRUM_INTERSECT::E ret = FRUSTRUM_INTERSECT::kInside; 
   
   Vector3D mins = pointMin;
   Vector3D maxs = pointMax;
@@ -520,11 +520,11 @@ Intersect::aabbFrustrum(const Vector3D& pointMax,
     } 
 
     if (planes[i].dot(vmin) - planes[i].d > 0) {
-        return false; 
+        return FRUSTRUM_INTERSECT::kOutside; 
     }
 
     if (planes[i].dot(vmax) - planes[i].d >= 0) {
-        ret = true; 
+        ret = FRUSTRUM_INTERSECT::kIntersect; 
     }
   } 
 

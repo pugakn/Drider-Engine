@@ -102,6 +102,16 @@ TestApplication::input() {
     
   GameObject::SharedGameObj croc;
 
+  auto rotateLeft = [&]() 
+  {
+    m_joker->getTransform().rotate(Degree(90.f * Time::getDelta()), AXIS::kY);
+  };
+
+  auto rotateRight = [&]() 
+  {
+    m_joker->getTransform().rotate(Degree(-90.f * Time::getDelta()), AXIS::kY);
+  };
+
   /*if (croc = m_sceneGraph->getRoot()->getChild(_T("Croc"))) {
     
     croc->transform.rotate(Degree(90 * Time::instance().getDelta()), AXIS::kY);
@@ -146,6 +156,14 @@ TestApplication::input() {
   }
   else if (Keyboard::isKeyDown(KEY_CODE::kD)) {
     s = -1;
+  }
+
+  if (Keyboard::isKeyDown(KEY_CODE::kLEFT)) {
+    rotateLeft();
+  }
+
+  else if (Keyboard::isKeyDown(KEY_CODE::kRIGHT)) {
+    rotateRight();
   }
 
   float vel = 150.f * Time::getDelta();
@@ -214,17 +232,7 @@ TestApplication::postDestroy() {
 
 void 
 TestApplication::initInput() {
-  
-  auto rotateLeft = [&]() 
-  {
-    m_joker->getTransform().rotate(Degree(45.f), AXIS::kY);
-  };
-
-  auto rotateRight = [&]() 
-  {
-    m_joker->getTransform().rotate(Degree(-45.f), AXIS::kY);
-  };
-
+ 
   auto toggleCam = [&]()
   {
     if (m_activeCam == m_leftCam) {
@@ -257,14 +265,6 @@ TestApplication::initInput() {
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kL,
                         debugList);
-
-  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
-                        KEY_CODE::kLEFT,
-                        rotateLeft);
-
-  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
-                        KEY_CODE::kRIGHT,
-                        rotateRight);
 }
 
 void 
@@ -273,6 +273,8 @@ TestApplication::initResources() {
   if (ResourceManager::isStarted()) {
      resourceManager = &ResourceManager::instance();
   }
+
+  //resourceManager->loadResource(_T("Rifle Punch.dae"));
     
   resourceManager->loadResource(_T("axe.jpg"));
 
@@ -282,8 +284,10 @@ TestApplication::initResources() {
 
   resourceManager->loadResource(_T("dwarf.x"));
 
-  resourceManager->loadResource(_T("Cube.fbx"));
+  //resourceManager->loadResource(_T("Cube.fbx"));
 
+  resourceManager->loadResource(_T("China.dae"));
+  
   resourceManager->loadResource(_T("DuckyQuacky_.fbx"));
 }
 
@@ -309,17 +313,6 @@ TestApplication::initSound() {
 
 void 
 TestApplication::initSceneGraph() {
-  
-  //root->addChild(m_camera);
-
-  //JoystickInput* joystickInput = nullptr;
-
-  
-
-  /*if (joystickInput) {
-    auto inputListener = m_camera->createComponent<InputComponent>(joystickInput);
-    joystickInput->setEventCallback(inputListener);
-  }*/
 
   auto resourceMgr = ResourceManager::instancePtr();
 
@@ -334,7 +327,7 @@ TestApplication::initSceneGraph() {
     
     auto node = SceneGraph::createNode(parent, model);
 
-    /*auto p = node->createComponent<ModelDebbug>();
+    auto p = node->createComponent<ModelDebbug>();
 
     auto tech = new LinesTechnique(&(*m_activeCam), 
                                    &node->getWorldTransform().getMatrix());
@@ -344,7 +337,7 @@ TestApplication::initSceneGraph() {
     p->setModel(model);
 
     m_techs.push_back(tech);
-  */
+  
     node->setName(name);
 
     node->getTransform().setPosition(pos);
@@ -363,15 +356,14 @@ TestApplication::initSceneGraph() {
     {0, _T("VenomJok.X")},
     {1, _T("Croc.X")},
     {2, _T("dwarf.x")},
-    {3, _T("Cube.fbx")},
-    {4, _T("DuckyQuacky_.fbx")}
+    {3, _T("DuckyQuacky_.fbx")}
   };
  
   std::mt19937 mt(std::random_device{}());
   
-  std::uniform_int_distribution<> dt(0, 4);
+  std::uniform_int_distribution<> dt(0, static_cast<Int32>(names.size() - 1));
   std::uniform_int_distribution<> scl(1, 10);
-  std::uniform_real_distribution<float> space(-3500.f, 3500.f);
+  std::uniform_real_distribution<float> space(-2000.f, 2000.f);
 
   for (Int32 i = 0; i < 256; ++i) {
     Vector3D pos(space(mt), 0, space(mt));
