@@ -7,7 +7,7 @@ namespace driderSDK
 
 TString
 FileSystem::GetWorkingPath() {
-  TString fullpath;
+  String fullpath;
   ANSIChar cCurrentPath[FILENAME_MAX];
 
   if (!getcwd(cCurrentPath, sizeof(cCurrentPath))) {

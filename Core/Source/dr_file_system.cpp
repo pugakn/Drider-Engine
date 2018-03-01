@@ -11,7 +11,7 @@ FileSystem::~FileSystem() {
 }
 
 bool
-FileSystem::CreateAndOpen(const TString& filename, File& file) {
+FileSystem::CreateAndOpen(const String& filename, File& file) {
   std::ofstream newFile(filename);
   newFile.close();
 
@@ -19,7 +19,7 @@ FileSystem::CreateAndOpen(const TString& filename, File& file) {
 }
 
 void
-FileSystem::Copy(const TString& filepathSrc, const TString& filepathDst) {
+FileSystem::Copy(const String& filepathSrc, const String& filepathDst) {
   File srcFile;
   srcFile.Open(filepathSrc);
 
@@ -38,13 +38,13 @@ FileSystem::Copy(const TString& filepathSrc, const TString& filepathDst) {
 }
 
 void
-FileSystem::Move(const TString& filepathSrc, const TString& filepathDst) {
+FileSystem::Move(const String& filepathSrc, const String& filepathDst) {
   Copy(filepathSrc, filepathDst);
   Remove(filepathSrc);
 }
 
 bool
-FileSystem::Remove(const TString& filepath) {
+FileSystem::Remove(const String& filepath) {
   String rename = StringUtils::toString(filepath);
 
   bool successfullyErased = remove(rename.c_str()) == 0;
@@ -53,7 +53,7 @@ FileSystem::Remove(const TString& filepath) {
 }
 
 bool
-FileSystem::IsFile(const TString& filepath) {
+FileSystem::IsFile(const String& filepath) {
   String rename = StringUtils::toString(filepath);
 
   struct stat s;
@@ -68,7 +68,7 @@ FileSystem::IsFile(const TString& filepath) {
 }
 
 bool
-FileSystem::IsDirectory(const TString& filepath) {
+FileSystem::IsDirectory(const String& filepath) {
   String rename = StringUtils::toString(filepath);
 
   struct stat s;
@@ -83,18 +83,18 @@ FileSystem::IsDirectory(const TString& filepath) {
 }
 
 bool
-FileSystem::Exists(const TString& filepath) {
+FileSystem::Exists(const String& filepath) {
   std::ifstream f(filepath.c_str());
   return f.good();
 }
 
-TString
-FileSystem::GetFileExtension(const TString& file) {
+String
+FileSystem::GetFileExtension(const String& file) {
   SizeT pos = file.find_last_of(_T('.'));
 
-  TString extension;
+  String extension;
 
-  if (pos != TString::npos) {
+  if (pos != String::npos) {
     extension = file.substr(pos + 1);
   }
 
