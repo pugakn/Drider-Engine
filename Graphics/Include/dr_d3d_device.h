@@ -237,6 +237,20 @@ class DR_GRAPHICS_EXPORT D3DDevice : public Device
   SwapChain* 
   createSwapChain(const DrSwapChainDesc& desc) override;
 
+
+  /**
+  * Create a blend rasterizer state
+  *
+  * @param desc
+  *   Describes the state parameters
+  *
+  * @param out state
+  *   The BlendState object taht will be filled out
+  *
+  */
+  BlendState*
+  createBlendState(const DrBlendStateDesc& desc) override;
+
   ID3D11Device* D3D11Device;
 };
 

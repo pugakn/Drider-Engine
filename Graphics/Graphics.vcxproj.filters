@@ -177,6 +177,12 @@
     <ClInclude Include="Include\dr_graphics_driver.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
+    <ClInclude Include="Include\dr_blend_state.h">
+      <Filter>Archivos de encabezado\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_d3d_blend_state.h">
+      <Filter>Archivos de encabezado\DirectX11</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_d3d_constant_buffer.cpp">
@@ -246,6 +252,9 @@
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
     <ClCompile Include="Source\dr_graphics_api.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_d3d_blend_state.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
   </ItemGroup>

@@ -6,7 +6,7 @@
 #include <dr_time.h>
 #include <dr_input_manager.h>
 #include <dr_graphics_driver.h>
-
+#include <dr_blend_state.h>
 #include <dr_texture.h>
 namespace driderSDK {
 
@@ -47,7 +47,9 @@ void
 TestApplication::postRender() {
   GraphicsDriver::API().clear();
   webRenderer.setTexture();
+  GraphicsAPI::getBlendStateAlphaB().set(GraphicsAPI::getDeviceContext());
   quad.draw();
+  GraphicsAPI::getBlendStateOpaque().set(GraphicsAPI::getDeviceContext());
   GraphicsDriver::API().swapBuffers();
 }
 void

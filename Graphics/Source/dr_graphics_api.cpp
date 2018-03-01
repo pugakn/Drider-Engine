@@ -43,4 +43,19 @@ GraphicsAPI::getWindowHandle() {
   return GraphicsDriver::API().m_hwnd;
 }
 
+BlendState & GraphicsAPI::getBlendStateOpaque()
+{
+  return *GraphicsDriver::API().m_blendSTOpaque;
+}
+
+BlendState & GraphicsAPI::getBlendStateAlphaB()
+{
+  return *GraphicsDriver::API().m_blendSTAlphaBlend;
+}
+
+BlendState & GraphicsAPI::getBlendStateAdditive()
+{
+  return *GraphicsDriver::API().m_blendSTAdditive;
+}
+
 }

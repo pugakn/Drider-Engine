@@ -17,6 +17,7 @@ class RenderTarget;
 class DepthStencil;
 class DeviceContext;
 class ShaderBytecode;
+class BlendState;
 
 class DR_GRAPHICS_EXPORT Device
 {
@@ -228,6 +229,19 @@ class DR_GRAPHICS_EXPORT Device
   */
   virtual SwapChain*
   createSwapChain(const DrSwapChainDesc& desc) = 0;
+
+  /**
+  * Create a blend rasterizer state
+  *
+  * @param desc
+  *   Describes the state parameters
+  *
+  * @param out state
+  *   The BlendState object taht will be filled out
+  *
+  */
+  virtual BlendState*
+    createBlendState(const DrBlendStateDesc& desc) = 0;
 };
 
 }

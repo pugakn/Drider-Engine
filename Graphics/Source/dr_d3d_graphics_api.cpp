@@ -6,6 +6,7 @@
 #include "dr_d3d_render_target.h"
 #include "dr_d3d_texture.h"
 #include "dr_d3d_rasterizer_state.h"
+#include "dr_d3d_blend_state.h"
 #include <dxgi.h>
 #include <d3d11.h>
 #include <DirectXMath.h>
@@ -41,7 +42,7 @@ void D3DGraphicsAPI::init(UInt32 w, UInt32 h, void* hwnd) {
   depthTextureDesc.width = w;
   depthTextureDesc.height = h;
   depthTextureDesc.mipLevels = 1;
-  depthTextureDesc.Format = DR_FORMAT::kDrFormat_D24_UNORM_S8_UINT;
+  depthTextureDesc.Format = DR_FORMAT::kD24_UNORM_S8_UINT;
 
   {
     auto dt = m_device->createEmptyTexture(depthTextureDesc);
@@ -96,6 +97,38 @@ void D3DGraphicsAPI::init(UInt32 w, UInt32 h, void* hwnd) {
   }
 
   m_rasterizerState->set(*m_deviceContext);
+
+  /*BLEND STATES*/
+  ////Opaque
+  DrBlendStateDesc blendDesc;
+  {
+    auto rs = m_device->createBlendState(blendDesc);
+    m_blendSTOpaque = dr_unique_custom(rs, &dr_gfx_deleter<BlendState>);
+  }
+  ////Additive
+  blendDesc.blendEnable = true;;
+  blendDesc.srcBlend =
+  blendDesc.srcBlendAlpha = DR_BLEND::kBLEND_SRC_ALPHA;
+  blendDesc.destBlend =
+  blendDesc.destBlendAlpha = DR_BLEND::kBLEND_ONE;
+  {
+    auto rs = m_device->createBlendState(blendDesc);
+    m_blendSTAdditive = dr_unique_custom(rs, &dr_gfx_deleter<BlendState>);
+  }
+  ////AlphaBlend
+  blendDesc.blendEnable = true;;
+  blendDesc.srcBlend = DR_BLEND::kBLEND_SRC_ALPHA;
+  blendDesc.srcBlendAlpha = DR_BLEND::kBLEND_ONE;
+  blendDesc.destBlend = DR_BLEND::kBLEND_INV_SRC_ALPHA;
+  blendDesc.destBlendAlpha = DR_BLEND::kBLEND_ZERO;
+  blendDesc.blendOp = DR_BLEND_OP::kBLEND_OP_ADD;
+  blendDesc.blendOpAlpha = DR_BLEND_OP::kBLEND_OP_ADD;
+  {
+    auto rs = m_device->createBlendState(blendDesc);
+    m_blendSTAlphaBlend = dr_unique_custom(rs, &dr_gfx_deleter<BlendState>);
+  }
+
+
 }
 
 void D3DGraphicsAPI::destroy() {}

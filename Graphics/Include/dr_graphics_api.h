@@ -12,7 +12,7 @@ class SwapChain;
 class Texture;
 class DepthStencil;
 class RasterizerState;
-
+class BlendState;
 class DR_GRAPHICS_EXPORT GraphicsAPI {
 public:
   
@@ -53,6 +53,15 @@ public:
   
   static void* 
   getWindowHandle();
+
+  static BlendState&
+    getBlendStateOpaque();
+
+  static BlendState&
+    getBlendStateAlphaB();
+
+  static BlendState&
+    getBlendStateAdditive();
 protected:
   template<class T>
   using CustomDeleter = std::function<void(T*)>;
@@ -67,6 +76,10 @@ protected:
   SmartPtr<DepthStencil> m_depthStencilView; 
   SmartPtr<Texture> m_depthTexture;	
   SmartPtr<RasterizerState> m_rasterizerState;
+
+  SmartPtr<BlendState> m_blendSTAlphaBlend;
+  SmartPtr<BlendState> m_blendSTOpaque;
+  SmartPtr<BlendState> m_blendSTAdditive;
   void* m_hwnd;
 };
 }

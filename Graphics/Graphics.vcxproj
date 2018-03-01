@@ -143,7 +143,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Include\dr_blend_state.h" />
     <ClInclude Include="Include\dr_compiled_shader_container.h" />
+    <ClInclude Include="Include\dr_d3d_blend_state.h" />
     <ClInclude Include="Include\dr_d3d_compute_shader.h" />
     <ClInclude Include="Include\dr_d3d_constant_buffer.h" />
     <ClInclude Include="Include\dr_d3d_depth_stencil.h" />
@@ -187,6 +189,7 @@
     <ClInclude Include="Include\dr_vertex_buffer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\dr_d3d_blend_state.cpp" />
     <ClCompile Include="Source\dr_d3d_compute_shader.cpp" />
     <ClCompile Include="Source\dr_d3d_constant_buffer.cpp" />
     <ClCompile Include="Source\dr_d3d_depth_stencil.cpp" />

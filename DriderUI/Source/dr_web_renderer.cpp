@@ -40,7 +40,7 @@ void RenderHandler::init()
   tDesc.width = m_width;
   tDesc.height = m_height;
   tDesc.pitch = m_width * 4;
-  tDesc.Format = DR_FORMAT::kDrFormat_B8G8R8A8_UNORM;
+  tDesc.Format = DR_FORMAT::kB8G8R8A8_UNORM;
   tDesc.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE | DR_BIND_FLAGS::RENDER_TARGET;
   tDesc.mipLevels = 0;
   tDesc.dimension = DR_DIMENSION::k2D;
@@ -102,17 +102,17 @@ WebRenderer::Init(UInt32  width, UInt32  height, BROWSER_MODE::E mode)
 
   CefWindowInfo window_info;
   CefBrowserSettings browserSettings;
-  browserSettings.webgl = STATE_DISABLED;
-  browserSettings.plugins = STATE_DISABLED;
-  browserSettings.javascript_close_windows = STATE_DISABLED;
-  browserSettings.javascript_access_clipboard = STATE_DISABLED;
-  browserSettings.javascript_dom_paste = STATE_DISABLED;
-  browserSettings.local_storage = STATE_DISABLED;
-  browserSettings.databases = STATE_DISABLED;
-  browserSettings.universal_access_from_file_urls = STATE_DISABLED;
-  browserSettings.web_security = STATE_ENABLED;
+  //browserSettings.webgl = STATE_DISABLED;
+  //browserSettings.plugins = STATE_DISABLED;
+  //browserSettings.javascript_close_windows = STATE_DISABLED;
+  //browserSettings.javascript_access_clipboard = STATE_DISABLED;
+  //browserSettings.javascript_dom_paste = STATE_DISABLED;
+  //browserSettings.local_storage = STATE_DISABLED;
+  //browserSettings.databases = STATE_DISABLED;
+  //browserSettings.universal_access_from_file_urls = STATE_DISABLED;
+  //browserSettings.web_security = STATE_ENABLED;
   browserSettings.windowless_frame_rate = 60;
-     
+  browserSettings.background_color = 0;
   switch (mode)
   {
   case driderSDK::BROWSER_MODE::kHeadless:
