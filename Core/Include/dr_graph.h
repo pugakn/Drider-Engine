@@ -63,6 +63,9 @@ public:
   static SharedGameObject 
   getRoot();
 
+  static SharedGameObject 
+  getOctree();
+
   /**
   * Query meshes from the scene graph
   */

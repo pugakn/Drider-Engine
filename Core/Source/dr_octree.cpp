@@ -50,15 +50,15 @@ Octree::Octree(GameObject* nodeSceneGraph,
       {
         Face temp;
         temp.vertices.push_back(mesh.vertices[mesh.indices[i]]);
-        temp.vertices.back().position = transform * temp.vertices.back().position;
+        temp.vertices.back().position = temp.vertices.back().position * transform;
         temp.indices.push_back(mesh.indices[i]);
 
         temp.vertices.push_back(mesh.vertices[mesh.indices[i + 1]]);
-        temp.vertices.back().position = transform * temp.vertices.back().position;
+        temp.vertices.back().position = temp.vertices.back().position * transform;
         temp.indices.push_back(mesh.indices[i + 1]);
 
         temp.vertices.push_back(mesh.vertices[mesh.indices[i + 2]]);
-        temp.vertices.back().position = transform * temp.vertices.back().position;
+        temp.vertices.back().position = temp.vertices.back().position * transform;
         temp.indices.push_back(mesh.indices[i + 2]);
 
         temp.material = mesh.material;
@@ -127,10 +127,10 @@ createList(std::vector<Face>* faces) {
 			    break;
 		    }
 	    }
-	    if (indexVertex == Int32(ptrIdsRenderMesh->idsVertices.size())) {
+	    if (indexIdVertex == Int32(ptrIdsRenderMesh->idsVertices.size())) {
 		    ptrIdsRenderMesh->indices.push_back(ptrIdsRenderMesh->vertices.size());
 		    ptrIdsRenderMesh->vertices.push_back(face.vertices[indexVertex]);
-		    ptrIdsRenderMesh->idsVertices.push_back(face.indices[indexIdVertex]);
+		    ptrIdsRenderMesh->idsVertices.push_back(face.indices[indexVertex]);
 	    }
 	    else {
 		    ptrIdsRenderMesh->indices.push_back(indexIdVertex);
@@ -204,14 +204,14 @@ Octree::buildTree() {
   Vector3D c8 = c4;
   c8.y -= width;
 
-  regionsChilds.push_back(AABB(width, height, depth, c1));
-  regionsChilds.push_back(AABB(width, height, depth, c2));
-  regionsChilds.push_back(AABB(width, height, depth, c3));
-  regionsChilds.push_back(AABB(width, height, depth, c4));
-  regionsChilds.push_back(AABB(width, height, depth, c5));
-  regionsChilds.push_back(AABB(width, height, depth, c6));
-  regionsChilds.push_back(AABB(width, height, depth, c7));
-  regionsChilds.push_back(AABB(width, height, depth, c8));
+  regionsChilds.push_back(AABB(width, height, depth, c1));//-++
+  regionsChilds.push_back(AABB(width, height, depth, c2));//+++
+  regionsChilds.push_back(AABB(width, height, depth, c3));//-+-
+  regionsChilds.push_back(AABB(width, height, depth, c4));//++-
+  regionsChilds.push_back(AABB(width, height, depth, c5));//--+
+  regionsChilds.push_back(AABB(width, height, depth, c6));//+-+
+  regionsChilds.push_back(AABB(width, height, depth, c7));//---
+  regionsChilds.push_back(AABB(width, height, depth, c8));//+--
 
   for (size_t i = 0; i < regionsChilds.size(); ++i) {
     childs.push_back(new Octree(regionsChilds[i], minFaces));
@@ -250,7 +250,7 @@ void Octree::configNode(GameObject *nodeRoot, Octree* octreeNode)
 {
   nodeRoot->setStatic(true);
   nodeRoot->createComponent<AABBCollider>(boundingRegion);
-  std::vector<RenderMesh> list = createList(&containedObjects);
+  std::vector<RenderMesh> list = createList(&octreeNode->containedObjects);
   nodeRoot->createComponent<RenderComponent>(std::move(list));
   
   for (auto& child : (*octreeNode).childs) {
@@ -258,5 +258,6 @@ void Octree::configNode(GameObject *nodeRoot, Octree* octreeNode)
 	  nodeRoot->addChild(node);
 	  configNode(&(*node), child);
   }
+  octreeNode->~Octree();
 }
 }

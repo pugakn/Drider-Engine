@@ -24,7 +24,7 @@ SceneGraph::buildOctree() {
 
   addGameObjectsStatics(*instance().m_root, &staticGameObjects);
 
-  AABB aa(2048, 2048, 2048, Vector3D(0, 0, 0));
+  AABB aa(4096, 4096, 4096, Vector3D(0, 100, 0));
 
   Octree octree(&(*instance().m_octree), aa, &staticGameObjects);
   octree.buildTree();
@@ -41,13 +41,18 @@ SceneGraph::getRoot() {
   return instance().m_root;
 }
 
+SceneGraph::SharedGameObject
+SceneGraph::getOctree()
+{
+  return instance().m_octree;
+}
+
 void
 SceneGraph::update() {
 
   //instance().m_mutex.lock();
 
   instance().m_root->update();
-
   //instance().m_mutex.unlock();
 }
 
@@ -56,7 +61,10 @@ SceneGraph::draw() {
   //instance().m_mutex.lock();
 
   instance().m_root->render();
-
+  if (instance().m_octree)
+  {
+    instance().m_octree->render();
+  }
   //instance().m_mutex.unlock();
 }
 

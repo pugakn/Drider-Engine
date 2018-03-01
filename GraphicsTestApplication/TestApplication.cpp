@@ -16,6 +16,7 @@
 #include <dr_render_component.h>
 #include <dr_string_utils.h>
 #include <dr_time.h>
+#include <dr_gameObject.h>
 #include "DrawableComponent.h"
 #include "ModelDebbug.h"
 #include "NPCMovement.h"
@@ -230,6 +231,16 @@ TestApplication::postDestroy() {
   ResourceManager::shutDown();
 }
 
+void addDrawableComponent(std::shared_ptr<driderSDK::GameObject>* go) {
+  if ((*go)->getComponent<RenderComponent>()) {
+    (*go)->createComponent<DrawableComponent>();
+  }
+  for (auto child : (*go)->getChildren())
+  {
+    addDrawableComponent(&child);
+  }
+}
+
 void 
 TestApplication::initInput() {
  
@@ -254,6 +265,11 @@ TestApplication::initInput() {
     m_queryOrder = static_cast<QUERY_ORDER::E>(!m_queryOrder);
   };
 
+  auto debugOctree = [&]() {
+    auto octree = SceneGraph::getOctree();
+    addDrawableComponent(&octree);
+  };
+
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kQ,
                         toggleQueryOrder);
@@ -269,6 +285,10 @@ TestApplication::initInput() {
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kO,
                         SceneGraph::buildOctree);
+
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kP,
+                        debugOctree);
 }
 
 void 
@@ -290,6 +310,11 @@ TestApplication::initResources() {
 
   //resourceManager->loadResource(_T("Cube.fbx"));
   resourceManager->loadResource(_T("DuckyQuacky_.fbx"));
+
+  
+  resourceManager->loadResource(_T("Checker.obj"));
+  resourceManager->loadResource(_T("Metro.obj"));
+
 }
 
 void 
@@ -349,8 +374,20 @@ TestApplication::initSceneGraph() {
   auto root = SceneGraph::getRoot();
       
   auto n = createNode(root, _T("Croc0"), _T("Croc.X"), {-200.f, 0.0f, 0.0f});
-  
+  n->getTransform().scale({ 1,1,1 });
   m_joker = n;
+  
+  n = createNode(root, _T("checker"), _T("Checker.obj"), {-200.f, 0.0f, 500.0f });
+  n->setStatic(true);
+  /*n = createNode(root, _T("checker"), _T("Checker.obj"), { -210.f, 200.0f, 0.0f });
+  n->setStatic(true);
+
+  n = createNode(root, _T("metro"), _T("Metro.obj"), { -100.f, 0.0f, 0.0f });
+  n->setStatic(true);
+
+  n = createNode(root, _T("metro"), _T("Metro.obj"), { -200.f, 0.0f, 0.0f });
+  n->setStatic(true);*/
+
   
   std::unordered_map<Int32, TString> names
   {
@@ -366,7 +403,7 @@ TestApplication::initSceneGraph() {
   std::uniform_int_distribution<> scl(1, 10);
   std::uniform_real_distribution<float> space(-2000.f, 2000.f);
 
-  for (Int32 i = 0; i < 5; ++i) {
+  for (Int32 i = 0; i < 2; ++i) {
     Vector3D pos(space(mt), 0, space(mt));
     TString aaa =StringUtils::toTString(i);
     auto n = createNode(root, names[i] + aaa, 
