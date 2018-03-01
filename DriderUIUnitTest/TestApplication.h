@@ -24,13 +24,10 @@ public:
   TestApplication();
   ~TestApplication();
 
-  void onInit() override;
-  void onInput() override;
-  void onUpdate() override;
-  void onDraw() override;
-  void onDestroy() override;
-  void onPause() override;
-  void onResume() override;
+  void postInit() override;
+  void postUpdate() override;
+  void postRender() override;
+  void postDestroy() override;
 
   
   Viewport viewport;

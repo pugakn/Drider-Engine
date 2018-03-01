@@ -20,6 +20,13 @@ dr_gfx_deleter(T* obj)
 }
 
 template<class T, class Deleter>
+std::shared_ptr<T>
+dr_shared_custom(T* ptr, Deleter deleter)
+{
+  return std::shared_ptr<T>(ptr, deleter);
+}
+
+template<class T, class Deleter>
 std::unique_ptr<T, Deleter>
 dr_unique_custom(T* ptr, Deleter deleter)
 {

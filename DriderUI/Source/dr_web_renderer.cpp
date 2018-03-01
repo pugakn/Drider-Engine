@@ -30,12 +30,12 @@ RenderHandler::OnPaint(CefRefPtr<CefBrowser> browser,
                             int width, 
                             int height)
 {
-  m_texture->udpateFromMemory(GraphicsDriver::getApiReference().getDeviceContextReference(),
+  m_texture->udpateFromMemory(GraphicsAPI::getDeviceContext(),
     static_cast<const char*>(buffer), width *height * 4);
 }
 void RenderHandler::init()
 {
-  Device& device = GraphicsDriver::getApiReference().getDeviceReference();
+  Device& device = GraphicsAPI::getDevice();
   driderSDK::DrTextureDesc tDesc;
   tDesc.width = m_width;
   tDesc.height = m_height;
@@ -60,7 +60,7 @@ RenderHandler::resize(int w, int h)
   tDesc.width = m_width;
   tDesc.height = m_height;
   tDesc.pitch = m_width * 4;
-  m_texture->modifyTextureParams(GraphicsDriver::getApiReference().getDeviceReference(), tDesc);
+  m_texture->modifyTextureParams(GraphicsAPI::getDevice(), tDesc);
 }
 
 Texture * RenderHandler::getTexturePointer()
@@ -115,10 +115,10 @@ WebRenderer::Init(int width, int height, BROWSER_MODE::E mode)
   switch (mode)
   {
   case driderSDK::BROWSER_MODE::kHeadless:
-    window_info.SetAsWindowless((HWND)GraphicsDriver::getApiReference().getWindowHandler());
+    window_info.SetAsWindowless((HWND)GraphicsAPI::getWindowHandle());
     break;
   case driderSDK::BROWSER_MODE::kPopUp:
-    window_info.SetAsPopup((HWND)GraphicsDriver::getApiReference().getWindowHandler(), "NAMAE");
+    window_info.SetAsPopup((HWND)GraphicsAPI::getWindowHandle(), "NAMAE");
     break;
   case driderSDK::BROWSER_MODE::kChild:
     throw "Not implemented exeption";
@@ -214,8 +214,8 @@ Texture & WebRenderer::getTextureReference()
 }
 void WebRenderer::setTexture()
 {
-  renderHandler->getTexturePointer()->set(GraphicsDriver::getApiReference().getDeviceContextReference(), 0);
-  renderHandler->getSamplerStatePointer()->set(GraphicsDriver::getApiReference().getDeviceContextReference(), DR_SHADER_TYPE_FLAG::kFragment);
+  renderHandler->getTexturePointer()->set(GraphicsAPI::getDeviceContext(), 0);
+  renderHandler->getSamplerStatePointer()->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kFragment);
 }
 void 
 WebRenderer::initInput()

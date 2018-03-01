@@ -7,9 +7,7 @@
 #include <dr_input_manager.h>
 #include <dr_graphics_driver.h>
 
-#ifdef DR_PLATFORM_WINDOWS
-#include <dr_d3d_texture.h>
-#endif
+#include <dr_texture.h>
 namespace driderSDK {
 
 TestApplication::TestApplication()
@@ -19,21 +17,8 @@ TestApplication::TestApplication()
 TestApplication::~TestApplication() {
 }
 void
-TestApplication::onInit() {
-  HWND win = GetActiveWindow();
-  InputManager::startUp((size_t)win);
-  GraphicsDriver::startUp(DR_GRAPHICS_API::D3D11, 
-    static_cast<driderSDK::UInt32>(viewport.width),
-    static_cast<driderSDK::UInt32>(viewport.height),
-    win);
-  InputManager* inputMngr = nullptr;
-  if (InputManager::isStarted()) {
-    inputMngr = InputManager::instancePtr();
-  }
+TestApplication::postInit() {
   quad.init();
-
-
-
   webRenderer.Init(1280,720);
   webRenderer.loadURL("file:///C:/Users/Ulises/Documents/GitHub/Drider-Engine/DriderUIUnitTest/ExampleHTML/example.html");
   JSCallLambda func = [](CefRefPtr<CefV8Value>& retval, const CefV8ValueList& arguments) {
@@ -50,42 +35,26 @@ TestApplication::onInit() {
   }));
   webRenderer.executeJSCode("alert(setNum(55))");
   //auto ddd = webRenderer.getJSGlobalVar("testVal01");
-  Time::startUp();
-}
-void
-TestApplication::onInput() {
-  InputManager::capture();
 }
 
 void
-TestApplication::onUpdate() {
-  Time::instance().update();
-  /*if (Time::instance().getElapsed() > 10) {
-
-  }*/
+TestApplication::postUpdate() {
   webRenderer.executeJSCode("window.myfunc()");
   webRenderer.update();
 }
 
 void
-TestApplication::onDraw() {
-  GraphicsDriver::getApiReference().clear();
+TestApplication::postRender() {
+  GraphicsDriver::API().clear();
   webRenderer.setTexture();
   quad.draw();
-  GraphicsDriver::getApiReference().swapBuffers();
+  GraphicsDriver::API().swapBuffers();
+}
+void
+TestApplication::postDestroy() {
+
 }
 
-void
-TestApplication::onDestroy() {
-}
-
-void
-TestApplication::onPause() {
-}
-
-void
-TestApplication::onResume() {
-}
 
 
 }
