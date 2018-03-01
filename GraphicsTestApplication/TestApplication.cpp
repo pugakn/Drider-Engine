@@ -306,6 +306,7 @@ TestApplication::initResources() {
 
   resourceManager->loadResource(_T("dwarf.x"));
 
+  resourceManager->loadResource(_T("China.dae"));
   //resourceManager->loadResource(_T("Cube.fbx"));
 
   resourceManager->loadResource(_T("DuckyQuacky_.fbx"));
@@ -391,7 +392,8 @@ TestApplication::initSceneGraph() {
     {0, _T("VenomJok.X")},
     {1, _T("Croc.X")},
     {2, _T("dwarf.x")},
-    {3, _T("DuckyQuacky_.fbx")}
+    {3, _T("DuckyQuacky_.fbx")},
+    {4, _T("China.dae")}
   };
  
   std::mt19937 mt(std::random_device{}());
