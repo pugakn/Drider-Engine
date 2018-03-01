@@ -23,70 +23,78 @@ enum E {
 };
 }
 /*RENDER PROCESS OBJECTS*/
-using JSCallback = std::pair<std::string, std::function<void(CefRefPtr<CefV8Value>&)>>;
-using JSCalls = std::vector<JSCallback>;
+using JSCallLambda = void(*)(CefRefPtr<CefV8Value>& retval, const CefV8ValueList&);
+using JSCallback = std::pair<std::string, JSCallLambda>; //Verctor de maps std::function<void(CefRefPtr<CefV8Value>&)>
+using JSCalls = std::vector<JSCallback>; //vector<JSCalls<Args...>>
 
 class DriderV8Handler : public CefV8Handler {
 public:
+  JSCalls m_callbacks;
   DriderV8Handler() {}
   virtual bool Execute(const CefString& name,
     CefRefPtr<CefV8Value> object,
     const CefV8ValueList& arguments,
     CefRefPtr<CefV8Value>& retval,
     CefString& exception) override {
-    for (auto &it : m_callList)
+    for (auto &it : m_callbacks)
     {
-      if (name == it) {
-        //retval = CefV8Value::CreateString("Waaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-        CefRefPtr<CefBrowser> browser = CefV8Context::GetCurrentContext()->GetBrowser();
-        CefRefPtr<CefProcessMessage> msg = CefProcessMessage::Create(IPC_CALL_JS2CPP_FUNC);
-        CefRefPtr<CefListValue> cefargs = msg->GetArgumentList();
-        cefargs->SetString(0, name);
-        int idNum = 1;
-        for (auto&it : arguments) {
-          if (it->IsInt() || it->IsUInt()) {
-            cefargs->SetInt(idNum++,it->GetIntValue());
-          }else
-          if (it->IsBool()) {
-            cefargs->SetBool(idNum++, it->GetBoolValue());
-          }else
-          if (it->IsDouble()) {
-            cefargs->SetDouble(idNum++, it->GetDoubleValue());
-          }else
-          if (it->IsString()) {
-            cefargs->SetString(idNum++, it->GetStringValue());
-          }
-        }
-        browser->SendProcessMessage(PID_BROWSER, msg);
-
-
-        //context->Enter();
-        //auto window = context->GetGlobal();
-        //auto bnfront = window->GetValue("bnfront");
-        //bnfront->ExecuteFunction();
-        //context->Exit();
-        //CefRefPtr<CefV8Context> context = browser->GetMainFrame()->GetV8Context();
-        //context->Enter();
-        //auto window = context->GetGlobal();
-        //auto bnfront = window->GetValue("testVal01");
-        //std::cout << " VALsadsdsd: " << bnfront->GetIntValue() << std::endl;
-        //CefRefPtr<CefV8Value> newVal= CefV8Value::CreateInt(52);
-        //bnfront->SetValue("testVal01",newVal, V8_PROPERTY_ATTRIBUTE_NONE);
-        //bnfront = window->GetValue("testVal01");
-        //std::cout << " XX: " << bnfront->GetIntValue() << std::endl;
-        //context->Exit();
-        return true;
+    if (name == it.first) {
+        it.second(retval,arguments);
       }
     }
+    //for (auto &it : m_callList)
+    //{
+    //  if (name == it) {
+    //    //retval = CefV8Value::CreateString("Waaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    //    CefRefPtr<CefBrowser> browser = CefV8Context::GetCurrentContext()->GetBrowser();
+    //    CefRefPtr<CefProcessMessage> msg = CefProcessMessage::Create(IPC_CALL_JS2CPP_FUNC);
+    //    CefRefPtr<CefListValue> cefargs = msg->GetArgumentList();
+    //    cefargs->SetString(0, name);
+    //    int idNum = 1;
+    //    for (auto&it : arguments) {
+    //      if (it->IsInt() || it->IsUInt()) {
+    //        cefargs->SetInt(idNum++,it->GetIntValue());
+    //      }else
+    //      if (it->IsBool()) {
+    //        cefargs->SetBool(idNum++, it->GetBoolValue());
+    //      }else
+    //      if (it->IsDouble()) {
+    //        cefargs->SetDouble(idNum++, it->GetDoubleValue());
+    //      }else
+    //      if (it->IsString()) {
+    //        cefargs->SetString(idNum++, it->GetStringValue());
+    //      }
+    //    }
+    //    //browser->SendProcessMessage(PID_BROWSER, msg);
+
+
+    //    //context->Enter();
+    //    //auto window = context->GetGlobal();
+    //    //auto bnfront = window->GetValue("bnfront");
+    //    //bnfront->ExecuteFunction();
+    //    //context->Exit();
+    //    //CefRefPtr<CefV8Context> context = browser->GetMainFrame()->GetV8Context();
+    //    //context->Enter();
+    //    //auto window = context->GetGlobal();
+    //    //auto bnfront = window->GetValue("testVal01");
+    //    //std::cout << " VALsadsdsd: " << bnfront->GetIntValue() << std::endl;
+    //    //CefRefPtr<CefV8Value> newVal= CefV8Value::CreateInt(52);
+    //    //bnfront->SetValue("testVal01",newVal, V8_PROPERTY_ATTRIBUTE_NONE);
+    //    //bnfront = window->GetValue("testVal01");
+    //    //std::cout << " XX: " << bnfront->GetIntValue() << std::endl;
+    //    //context->Exit();
+    //    return true;
+    //  }
+    //}
     return false;
   }
-  std::vector<std::string> m_callList;
+  //std::vector<std::string> m_callList;
   IMPLEMENT_REFCOUNTING(DriderV8Handler);
 };
 class DriderRenderProcessHandler : public  CefRenderProcessHandler {
 private:
   friend class WebRenderer;
-  explicit DriderRenderProcessHandler() { m_v8Handler = new DriderV8Handler(); }
+  explicit DriderRenderProcessHandler(DriderV8Handler* handler) { m_v8Handler = handler; }
   void OnContextCreated(CefRefPtr<CefBrowser> browser,
     CefRefPtr<CefFrame> frame,
     CefRefPtr<CefV8Context> context) override;
@@ -173,7 +181,8 @@ public:
 private:
   friend class WebRenderer;
   explicit BrowserClient(RenderHandler *renderHandler) : 
-    m_renderHandler(renderHandler) {}
+    m_renderHandler(renderHandler) {
+  }
 
   virtual CefRefPtr<CefRenderHandler> 
   GetRenderHandler() {
@@ -184,8 +193,6 @@ private:
     CefProcessId source_process,
     CefRefPtr<CefProcessMessage> message);
   CefRefPtr<CefRenderHandler> m_renderHandler;
-
-  JSCalls m_callbacks;
 };
 
 
@@ -245,6 +252,7 @@ public:
 private:
   static CefRefPtr<DriderCefApp> m_app;
   static CefRefPtr<DriderRenderProcessHandler> m_renderProcess;
+  static CefRefPtr<DriderV8Handler> m_v8Handler;
   void 
   initInput();
   CefRefPtr<CefBrowser> browser;

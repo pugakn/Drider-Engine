@@ -10,7 +10,8 @@
 #include <dr_d3d_sample_state.h>
 #endif
 namespace driderSDK {
-CefRefPtr<DriderRenderProcessHandler> WebRenderer::m_renderProcess = new DriderRenderProcessHandler();
+CefRefPtr<DriderV8Handler> WebRenderer::m_v8Handler = new DriderV8Handler();
+CefRefPtr<DriderRenderProcessHandler> WebRenderer::m_renderProcess = new DriderRenderProcessHandler(WebRenderer::m_v8Handler);
 CefRefPtr<DriderCefApp> WebRenderer::m_app = new DriderCefApp(m_renderProcess);
 /*******************************************************
 *                    RENDER HANDLER
@@ -82,9 +83,9 @@ WebRenderer::start()
   CefSettings settings;
   settings.multi_threaded_message_loop = false;
   settings.windowless_rendering_enabled = true;
-  settings.single_process = false;
+  settings.single_process = true;
   settings.no_sandbox = true;
-  result = CefInitialize(args, settings, nullptr, nullptr);
+  result = CefInitialize(args, settings, m_app.get(), nullptr);
   if (!result)
     throw "CefInitialize failed";
 }
@@ -190,7 +191,7 @@ WebRenderer::setVisibility(bool visible)
 
 void WebRenderer::registerJS2CPPFunction(JSCallback callback)
 {
-  browserClient->m_callbacks.push_back(callback);
+  WebRenderer::m_v8Handler->m_callbacks.push_back(callback);
   CefRefPtr<CefProcessMessage> msg = CefProcessMessage::Create(IPC_REGISTER_JS2CPP_FUNC);
   CefRefPtr<CefListValue> cefargs = msg->GetArgumentList();
   cefargs->SetString(0, callback.first);
@@ -284,7 +285,7 @@ WebRenderer::initInput()
 
 bool BrowserClient::OnProcessMessageReceived(CefRefPtr<CefBrowser> browser, CefProcessId source_process, CefRefPtr<CefProcessMessage> message)
 {
-  const std::string& message_name = message->GetName();
+  /*const std::string& message_name = message->GetName();
   if (message_name == IPC_CALL_JS2CPP_FUNC) {
     std::string funcName = message->GetArgumentList()->GetString(0);
     for (auto &it : m_callbacks)
@@ -315,17 +316,17 @@ bool BrowserClient::OnProcessMessageReceived(CefRefPtr<CefBrowser> browser, CefP
       }
     }
     return true;
-  }
+  }*/
   return false;
 }
 
 // CALLED ON RENDER PROCEESS!
 void DriderRenderProcessHandler::OnContextCreated(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefRefPtr<CefV8Context> context)
 {
-  for (auto &it : m_v8Handler->m_callList) {
+  for (auto &it : m_v8Handler->m_callbacks) {
     CefRefPtr<CefV8Value> object = context->GetGlobal();
-    CefRefPtr<CefV8Value> func = CefV8Value::CreateFunction(it, m_v8Handler);
-    object->SetValue(it, func, V8_PROPERTY_ATTRIBUTE_NONE);
+    CefRefPtr<CefV8Value> func = CefV8Value::CreateFunction(it.first, m_v8Handler);
+    object->SetValue(it.first, func, V8_PROPERTY_ATTRIBUTE_NONE);
   }
 }
 
@@ -336,7 +337,6 @@ bool DriderRenderProcessHandler::OnProcessMessageReceived(CefRefPtr<CefBrowser> 
     CefRefPtr<CefV8Context> context = browser->GetMainFrame()->GetV8Context();
     context->Enter();
     std::string funcName = message->GetArgumentList()->GetString(0);
-    m_v8Handler->m_callList.push_back(funcName);
     CefRefPtr<CefV8Value> object = browser->GetMainFrame()->GetV8Context()->GetGlobal();
     CefRefPtr<CefV8Value> func = CefV8Value::CreateFunction(funcName, m_v8Handler);
     object->SetValue(funcName, func, V8_PROPERTY_ATTRIBUTE_NONE);

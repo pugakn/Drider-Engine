@@ -37,9 +37,12 @@ TestApplication::onInit() {
 
   webRenderer.Init(1280,720);
   webRenderer.loadURL("file:///C:/Users/Ulises/Documents/GitHub/Drider-Engine/DriderUIUnitTest/ExampleHTML/example.html");
-  webRenderer.registerJS2CPPFunction(std::make_pair("myfunc", [](CefRefPtr<CefV8Value>& retval)  {
-    //exit(666);
-  }));
+  JSCallLambda func = [](CefRefPtr<CefV8Value>& retval, const CefV8ValueList& arguments) {
+    //retval = CefV8Value::CreateString("MyRetVal");
+    //return "Hola";
+    exit(666);
+  };
+  webRenderer.registerJS2CPPFunction(std::make_pair("myfunc", func));
   webRenderer.executeJSCode("alert(myfunc())");
   Time::startUp();
 }
