@@ -133,7 +133,7 @@ class DR_GRAPHICS_EXPORT Device
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   virtual RenderTarget*
-  createRenderTarget(const Texture& texture) = 0;
+  createRenderTarget(const std::vector<Texture*>& textures) = 0;
 
   /**
   * Create a depth stencil

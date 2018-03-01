@@ -17,11 +17,11 @@ class DepthStencil;
 class DR_GRAPHICS_EXPORT D3DRenderTarget : public RenderTarget
 {
  public:
-   void*
-   getAPIObject() override;
+   //void*
+   //getAPIObject() override;
 
-   void**
-   getAPIObjectReference() override;
+   //void**
+   //getAPIObjectReference() override;
   /**
   * TEST::create
   *
@@ -40,7 +40,7 @@ class DR_GRAPHICS_EXPORT D3DRenderTarget : public RenderTarget
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   void
-  create(const Device& device, const Texture& texture) override;
+  create(const Device& device, const std::vector<Texture*>& textures) override;
 
   /**
   * TEST::set
@@ -66,7 +66,7 @@ class DR_GRAPHICS_EXPORT D3DRenderTarget : public RenderTarget
   void
   release() override;
 
-  ID3D11RenderTargetView* RTV;
+  std::vector<ID3D11RenderTargetView*> RTVs;
 };
 
 }

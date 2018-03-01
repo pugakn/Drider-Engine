@@ -19,11 +19,11 @@ class DepthStencil;
 class DR_GRAPHICS_EXPORT RenderTarget
 {
  public:
-   virtual void*
-     getAPIObject() = 0;
+   //virtual void*
+   //  getAPIObject() = 0;
 
-   virtual void**
-     getAPIObjectReference() = 0;
+   //virtual void**
+   //  getAPIObjectReference() = 0;
 
   /**
   * Class virtual destructor.
@@ -47,7 +47,7 @@ class DR_GRAPHICS_EXPORT RenderTarget
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   virtual void
-  create(const Device& device,const Texture& texture) = 0;
+  create(const Device& device, const std::vector<Texture*>& textures) = 0;
 
   /**
   * Set the render target and depth stencil
@@ -67,6 +67,8 @@ class DR_GRAPHICS_EXPORT RenderTarget
   */
   virtual void
   release() = 0;
+protected:
+  UInt32 m_numRTs;
 };
 
 }

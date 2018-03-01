@@ -56,7 +56,9 @@ void D3DGraphicsAPI::init(UInt32 w, UInt32 h, void* hwnd) {
   m_swapChain->getBackBuffer(*backBufferTexture);
 
   {
-    auto bbRT = m_device->createRenderTarget(*backBufferTexture);
+    std::vector<Texture*> texturesVec;
+    texturesVec.push_back(backBufferTexture.get());
+    auto bbRT = m_device->createRenderTarget(texturesVec);
 
     m_backBufferView = dr_unique_custom(bbRT, &dr_gfx_deleter<RenderTarget>);
   }

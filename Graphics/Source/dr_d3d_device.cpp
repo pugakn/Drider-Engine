@@ -136,9 +136,9 @@ D3DDevice::createEmptyTexture(const DrTextureDesc& desc) {
 }
 
 RenderTarget* 
-D3DDevice::createRenderTarget(const Texture& texture) {
+D3DDevice::createRenderTarget(const std::vector<Texture*>& textures) {
   RenderTarget* renderTarget = new D3DRenderTarget;
-  renderTarget->create(*this,texture);
+  renderTarget->create(*this,textures);
   return renderTarget;
 }
 
