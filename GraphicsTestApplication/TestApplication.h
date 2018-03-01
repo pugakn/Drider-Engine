@@ -71,6 +71,7 @@ public:
   std::unique_ptr<Technique> m_technique;
   std::vector<Technique*> m_techs;
   std::shared_ptr<GameObject> m_joker;
+  ::Model3D* m_animated;
 };
 
 }

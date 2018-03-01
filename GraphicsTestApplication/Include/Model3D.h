@@ -34,11 +34,10 @@ public:
 	};
 
   Model3D();
-  void init(driderSDK::Device& device, const driderSDK::TString& filename);
+  void init(const driderSDK::TString& filename);
   void destroy();
   void update();
-  void draw(const driderSDK::DeviceContext& deviceContext, 
-            const driderSDK::Camera& wvp);
+  void draw(const driderSDK::Camera& wvp);
 
   driderSDK::Transform transform;
 
@@ -58,7 +57,7 @@ private:
     driderSDK::IndexBuffer* IB;
   };
 
-  std::vector<MeshGFX> meshesGFX;
+  //std::vector<MeshGFX> meshesGFX;
 
   driderSDK::ConstantBuffer* CB;
 

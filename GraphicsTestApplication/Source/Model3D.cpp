@@ -6,13 +6,17 @@
 #include <dr_radian.h>
 #include <dr_resource_manager.h>
 #include <dr_animation.h>
+#include <dr_graphics_api.h>
+#include <dr_time.h>
 
 using namespace driderSDK;
 
 Model3D::Model3D()
 {}
 
-void Model3D::init(Device & device, const TString& filename) {
+void Model3D::init(const TString& filename) {
+
+  auto& device = GraphicsAPI::getDevice();
 
   elapsedTime = 0.0f;
 
@@ -83,48 +87,34 @@ void Model3D::init(Device & device, const TString& filename) {
   bdesc.type = DR_BUFFER_TYPE::kCONSTANT;
   bdesc.sizeInBytes = sizeof(CBuffer);
   CB = (ConstantBuffer*)device.createBuffer(bdesc);
-
-  for (auto& mesh : resource->meshes) {
-    driderSDK::VertexBuffer* VB;
-    driderSDK::IndexBuffer* IB;
-
-    bdesc.type = DR_BUFFER_TYPE::kVERTEX;
-    bdesc.sizeInBytes = mesh.vertices.size() * sizeof(Vertex);
-    bdesc.stride = sizeof(Vertex);
-    VB = reinterpret_cast<VertexBuffer*>(device.createBuffer(bdesc, reinterpret_cast<driderSDK::byte*>(mesh.vertices.data())));
-  
-    bdesc.type = DR_BUFFER_TYPE::kINDEX;
-    bdesc.sizeInBytes = mesh.indices.size() * sizeof(UInt32);
-    bdesc.stride = 0;
-    IB = reinterpret_cast<IndexBuffer*>(device.createBuffer(bdesc, reinterpret_cast<driderSDK::byte*>(mesh.indices.data())));
-
-    meshesGFX.push_back({VB, IB});
-  }
 }
 
 void Model3D::destroy() {
   CB->release();
 
-  for (auto& mesh : meshesGFX) {
+  /*for (auto& mesh : meshesGFX) {
     mesh.IB->release();
     mesh.VB->release();
-  }
+  }*/
 
   fs->release();
   vs->release();
 }
 
 void Model3D::update() {
-  elapsedTime += 0.007f;
-  animator.evaluate(elapsedTime);
+  animator.evaluate(elapsedTime += Time::getDelta());
   //transform.rotate(Degree(1.f), AXIS::kY);
 }
 
-void Model3D::draw(const driderSDK::DeviceContext& deviceContext, const Camera& camera) {
+void Model3D::draw(const Camera& camera) {
+
+  auto& deviceContext = GraphicsAPI::getDeviceContext();
   
   auto world = transform.getMatrix();
   auto wvp =  world * camera.getVP();
   
+  auto iden = Matrix4x4(Math::FORCE_INIT::kIdentity);
+
   auto& boneTransforms = animator.getTransforms();
 
   for (SizeT i = 0; i < boneTransforms.size(); ++i) {
@@ -143,12 +133,11 @@ void Model3D::draw(const driderSDK::DeviceContext& deviceContext, const Camera& 
 
   deviceContext.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
 
-  for (Int32 i = 0; 
-       i < static_cast<Int32>(resource->meshes.size());
-       ++i) {
-    meshesGFX[i].VB->set(deviceContext);
-    meshesGFX[i].IB->set(deviceContext); 
-    deviceContext.draw(resource->meshes[i].indices.size(), 0, 0);
+  for (auto& mesh : resource->meshes) {
+    mesh.indexBuffer->set(deviceContext);
+    mesh.vertexBuffer->set(deviceContext);
+
+    deviceContext.draw(mesh.indices.size(), 0, 0);
   }
 
 }

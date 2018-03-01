@@ -33,6 +33,8 @@ TestApplication::~TestApplication() {}
 void
 TestApplication::postInit() {
   
+  m_animated = new Model3D();
+  
   m_camera = std::make_shared<Camera>(_T("MAIN_CAM"), 
                                       m_viewport);
 
@@ -78,6 +80,8 @@ TestApplication::postInit() {
   initSound();
   initSceneGraph();
   
+  m_animated->init(_T("HipHopDancing.dae"));
+
   /*SceneGraph::addObject(m_leftCam);
   SceneGraph::addObject(m_upCam);*/
   m_leftCam->setParent(m_joker);
@@ -179,9 +183,8 @@ TestApplication::input() {
 void
 TestApplication::postUpdate() {
   //soundDriver->update();
- 
   input();
-
+  m_animated->update();
 }
 
 void 
@@ -192,9 +195,9 @@ TestApplication::postRender() {
   }
   
   //SceneGraph::draw();
-
-  //m_sceneGraph->draw();
   
+  m_animated->draw(*m_activeCam);
+
   m_camera->render();
 
   m_technique->setCamera(&(*m_activeCam));
@@ -227,6 +230,9 @@ TestApplication::postRender() {
 void 
 TestApplication::postDestroy() {
   ResourceManager::shutDown();
+
+  m_animated->destroy();
+  delete m_animated;
 }
 
 void addDrawableComponent(std::shared_ptr<driderSDK::GameObject>* go) {
@@ -298,19 +304,20 @@ TestApplication::initResources() {
 
   //resourceManager->loadResource(_T("Rifle Punch.dae"));
     
-  resourceManager->loadResource(_T("axe.jpg"));
+  //resourceManager->loadResource(_T("axe.jpg"));
 
-  resourceManager->loadResource(_T("VenomJok.X"));
+  //resourceManager->loadResource(_T("VenomJok.X"));
 
   resourceManager->loadResource(_T("Croc.X"));
 
-  resourceManager->loadResource(_T("dwarf.x"));
+ // resourceManager->loadResource(_T("dwarf.x"));
 
-  resourceManager->loadResource(_T("China.dae"));
-  //resourceManager->loadResource(_T("Cube.fbx"));
+  //resourceManager->loadResource(_T("China.dae"));
+  
+  resourceManager->loadResource(_T("HipHopDancing.dae"));
 
-  resourceManager->loadResource(_T("DuckyQuacky_.fbx"));
-  resourceManager->loadResource(_T("Checker.fbx"));
+ // resourceManager->loadResource(_T("DuckyQuacky_.fbx"));
+  //resourceManager->loadResource(_T("Checker.fbx"));
   //resourceManager->loadResource(_T("Metro.obj"));
 
 }
@@ -374,9 +381,6 @@ TestApplication::initSceneGraph() {
   auto n = createNode(root, _T("Croc0"), _T("Croc.X"), {-200.f, 0.0f, 0.0f});
   n->getTransform().scale({ 1,1,1 });
   m_joker = n;
-  
-  n = createNode(root, _T("checker"), _T("Checker.fbx"), {-200.f, 0.0f, 500.0f });
-  n->setStatic(true);
   /*n = createNode(root, _T("checker"), _T("Checker.obj"), { -210.f, 200.0f, 0.0f });
   n->setStatic(true);
 
@@ -402,7 +406,7 @@ TestApplication::initSceneGraph() {
   std::uniform_int_distribution<> scl(1, 5);
   std::uniform_real_distribution<float> space(-2000.f, 2000.f);
 
-  for (Int32 i = 0; i < 100; ++i) {
+  /*for (Int32 i = 0; i < 100; ++i) {
     Vector3D pos(space(mt), 0, space(mt));
     TString aaa =StringUtils::toTString(i);
     auto n = createNode(root, names[i] + aaa, 
@@ -411,6 +415,6 @@ TestApplication::initSceneGraph() {
     n->setStatic(true);
     float sc = static_cast<float>(scl(mt));
     n->getTransform().scale({sc,sc,sc});
-  }
+  }*/
 }
 }
