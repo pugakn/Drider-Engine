@@ -40,6 +40,9 @@ public:
 private:
   friend class WebRenderer;
   friend class DriderRenderProcessHandler;
+  /**
+  * Not commented
+  */
   virtual bool 
   Execute(const CefString& name,
           CefRefPtr<CefV8Value> object,
@@ -64,12 +67,16 @@ public:
   IMPLEMENT_REFCOUNTING(DriderRenderProcessHandler);
 private:
   friend class WebRenderer;
-
+  /**
+  * Not commented
+  */
   void 
   OnContextCreated(CefRefPtr<CefBrowser> browser,
                    CefRefPtr<CefFrame> frame,
                    CefRefPtr<CefV8Context> context) override;
-
+  /**
+  * Not commented
+  */
   bool 
   OnProcessMessageReceived(CefRefPtr<CefBrowser> browser,
                            CefProcessId source_process,
@@ -88,6 +95,9 @@ public:
   IMPLEMENT_REFCOUNTING(DriderCefApp);
 private:
   friend class WebRenderer;
+  /**
+  * Not commented
+  */
   virtual CefRefPtr<CefRenderProcessHandler> 
   GetRenderProcessHandler();
 };
@@ -106,22 +116,38 @@ public:
   IMPLEMENT_REFCOUNTING(RenderHandler);
 private:
   friend class WebRenderer;
+  /**
+  * Not commented
+  */
   RenderHandler(UInt32  w, UInt32  h) :
                 m_width(w),
                 m_height(h) {}
-
+  /**
+  * Not commented
+  */
   void init();
-
+  /**
+  * Not commented
+  */
   bool 
   GetViewRect(CefRefPtr<CefBrowser> browser, 
               CefRect &rect) override;
+  /**
+  * Not commented
+  */
   void 
   resize(UInt32  w, UInt32 h);
-
+  /**
+  * Not commented
+  */
   Texture* getTexturePointer();
+  /**
+  * Not commented
+  */
   SamplerState* getSamplerStatePointer();
-
-
+  /**
+  * Not commented
+  */
   void
   OnPaint(CefRefPtr<CefBrowser> browser,
           PaintElementType type,
@@ -129,7 +155,9 @@ private:
           const void *buffer,
           int width,
           int height) override;
-
+  /**
+  * Not commented
+  */
   bool StartDragging(CefRefPtr<CefBrowser> browser,
                      CefRefPtr<CefDragData> drag_data,
                      DragOperationsMask allowed_ops,
@@ -166,9 +194,14 @@ private:
   friend class WebRenderer;
   explicit BrowserClient(RenderHandler *renderHandler) : 
                          m_renderHandler(renderHandler) {}
+  /**
+  * Not commented
+  */
   virtual CefRefPtr<CefRenderHandler>
   GetRenderHandler();
-
+  /**
+  * Not commented
+  */
   virtual bool 
   OnProcessMessageReceived(CefRefPtr<CefBrowser> browser,
                            CefProcessId source_process,
@@ -188,32 +221,64 @@ private:
 */
 class DR_UI_EXPORT WebRenderer {
 public:
+  /**
+  * Call it once before everything on the main function
+  * It initializes the necesary process to run chromium
+  */
   static void start();
   WebRenderer(){}
   void 
   Init(UInt32 width, UInt32 height, BROWSER_MODE::E mode = BROWSER_MODE::kHeadless);
+  /**
+  * Free the allocated memory
+  */
   void 
   Destroy();
+  /**
+  * Set m_running to true
+  */
   void 
   startRendering();
+  /**
+  * Set m_running to false
+  */
   void 
   stoptRendering();
+  /**
+  * Do a render loop work
+  */
   void 
   update();
-
+  /**
+  * Not commented
+  */
   void 
   loadURL(std::string path);
+  /**
+  * Not commented
+  */
   void 
   reloadPage();
+  /**
+  * Not commented
+  */
   void 
   executeJSCode(std::string code);
-
+  /**
+  * Not commented
+  */
   void 
   setFocus(bool focus);
+  /**
+  * Not commented
+  */
   void 
   setVisibility(bool visible);
-
-  void registerJS2CPPFunction(JSCallback callback);
+  /**
+  * Not commented
+  */
+  void 
+  registerJS2CPPFunction(JSCallback callback);
 
   /* Only on Headless context */
 
@@ -227,10 +292,19 @@ public:
   *  Height
   *
   */
-    void
-    resize(UInt32  w, UInt32 h);
+  void
+  resize(UInt32  w, UInt32 h);
+  /**
+  * Not commented
+  */
   Texture* getTexturePointer();
+  /**
+  * Not commented
+  */
   Texture& getTextureReference();
+  /**
+  * Not commented
+  */
   void setTexture();
 
   //CefRefPtr<CefV8Value> getJSGlobalVar(std::string name) {
