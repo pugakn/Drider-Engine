@@ -3,6 +3,7 @@
 #include <dr_octree.h>
 #include <dr_aabb.h>
 #include <queue>
+#include <dr_logger.h>
 
 void chargePoints(std::queue<driderSDK::Face>* objects) {
   driderSDK::Face temp;
@@ -207,6 +208,14 @@ void rutaObject(std::string ruta, driderSDK::Octree &octree, std::queue<std::str
 
 int main(int argc, char* argv[])
 {
+  driderSDK::Logger& log = driderSDK::Logger::instance();
+  if (!log.isStarted()) {
+    log.startUp();
+    log.reset();
+  }
+
+  log.addWarning(__FILE__, __LINE__, "Test Warning");
+
 /*
   std::queue<driderSDK::Face> objects;
   chargePoints(&objects);

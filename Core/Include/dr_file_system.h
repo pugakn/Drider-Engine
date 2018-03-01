@@ -37,7 +37,7 @@ class DR_CORE_EXPORT FileSystem
   * @return
   *   String containing the fullpath of the working directory.
   */
-  TString
+  String
   GetWorkingPath();
 
   /**

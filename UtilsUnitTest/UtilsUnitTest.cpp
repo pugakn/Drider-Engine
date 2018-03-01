@@ -1,12 +1,12 @@
 #include <gtest\gtest.h>
 #include "dr_time.h"
+#include <dr_string_utils.h>
 
 
 using namespace driderSDK;
 
 int main(int argc, char* argv[])
 {
-
   ::testing::GTEST_FLAG(output) = "xml";
   ::testing::InitGoogleTest(&argc, argv);
   //::testing::GTEST_FLAG(filter) = "ModelResource.*";

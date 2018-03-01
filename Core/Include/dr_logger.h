@@ -10,7 +10,7 @@ namespace driderSDK
 {
 
 /**
-* Vector with 2 elements (x, y)
+* Outs information to file.
 *
 * Sample usage:
 * Logger sampleName;
