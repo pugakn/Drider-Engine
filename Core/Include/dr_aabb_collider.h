@@ -21,6 +21,9 @@ public:
 private:
   virtual void 
   onCreate() override;
+    
+  virtual void
+  onWorldTransformChange();
 
   virtual void 
   onUpdate() override;

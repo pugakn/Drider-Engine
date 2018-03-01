@@ -6,7 +6,8 @@ namespace driderSDK {
 
 GameObject::GameObject(const TString& name)
   : m_name(name),
-    m_isStatic(false)
+    m_isStatic(false),
+    m_change(false)
     //m_finalTransform(Math::FORCE_INIT::kIdentity)
 {
 }
@@ -38,9 +39,9 @@ GameObject::render() {
     component->onRender();
   }
 
-  for (auto& child : m_children) {
+  /*for (auto& child : m_children) {
     child->render();
-  }
+  }*/
 }
 
 //void 
@@ -202,8 +203,47 @@ bool GameObject::isStatic() const {
   return m_isStatic;
 }
 
+void
+GameObject::propagateChange() {
+  
+  m_change = true;
+
+  for (auto& child : m_children) {
+    child->propagateChange();
+  }
+}
+
 void GameObject::updateImpl() {
-  m_finalTransform = m_localTransform*getParent()->m_finalTransform;
+  
+  bool localChange = m_localTransform.changed();
+
+  if (localChange) { //This node changed
+    propagateChange();
+   
+    /*for (auto& c : m_components) {
+      c->onLocalTransformChange();
+    }*/
+  }
+
+  //if (m_change && !localChange) { //Parent changed
+  //  
+  //  for (auto& c : m_components) {
+  //    c->onParentTransformChange();
+  //  }
+  //}
+
+  if (m_change) {
+
+    m_finalTransform = m_localTransform*getParent()->m_finalTransform;  
+
+    for (auto& c : m_components) {
+      c->onWorldTransformChange();
+    }
+  } 
+
+  m_change = false;
+
+  m_localTransform.newFrame();
 }
 
 }

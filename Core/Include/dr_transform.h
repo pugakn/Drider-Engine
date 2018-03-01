@@ -20,6 +20,8 @@ namespace AXIS {
 class DR_CORE_EXPORT Transform 
 {
  public:
+  friend class GameObject;
+
   Transform();
 
   /**
@@ -152,6 +154,12 @@ class DR_CORE_EXPORT Transform
   Transform
   operator*(const Transform& other) const;
 
+  bool
+  operator==(const Transform& other) const;
+
+  bool 
+  operator!=(const Transform& other) const;
+
  private:
   /**
   * Invalidates the transform matrix.
@@ -169,11 +177,18 @@ class DR_CORE_EXPORT Transform
   void 
   update() const;
 
-  mutable bool m_outdatedTransform;
-  mutable Vector3D m_position;
-  mutable Vector3D m_rotation;
-  mutable Vector3D m_scale;
+  void
+  newFrame();
+
+  bool
+  changed() const;
+
   mutable Matrix4x4 m_transform;
+  mutable bool m_outdatedTransform;
+  bool m_changed;
+  Vector3D m_position;
+  Vector3D m_rotation;
+  Vector3D m_scale;
 };
 
 }
