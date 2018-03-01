@@ -1,5 +1,4 @@
 #include "dr_codec_model.h"
-#include <cstring>
 #include <assimp\Importer.hpp>
 #include <assimp\postprocess.h>
 #include <assimp\scene.h>
@@ -8,6 +7,8 @@
 #include <dr_model_info.h>
 #include <dr_string_utils.h>
 #include "dr_resource_manager.h"
+
+#include <iostream>
 
 namespace driderSDK {
 
@@ -20,17 +21,20 @@ CodecModel::decode(TString pathName) {
   UInt32 flags = 0;
 
   flags |= aiProcess_FlipUVs | aiProcess_CalcTangentSpace;
+  flags |= aiProcess_RemoveRedundantMaterials;
+  flags |= aiProcess_LimitBoneWeights;
 	flags |= aiProcess_Triangulate;
 	flags |= aiProcess_OptimizeGraph;
 	flags |= aiProcess_OptimizeMeshes;
 	flags |= aiProcess_JoinIdenticalVertices;
-	flags |= aiProcess_RemoveRedundantMaterials;
 	flags |= aiProcess_FindInvalidData;
 	flags |= aiProcess_GenUVCoords;
 
   const aiScene* scene = importer.ReadFile(StringUtils::toString(pathName), 
                                             flags);
   if (scene) {
+
+
 
     pModelInfo = new ModelInfo;
     pModelInfo->meshes.resize(scene->mNumMeshes);
@@ -44,6 +48,9 @@ CodecModel::decode(TString pathName) {
       
       loadVertices(*pMesh, mesh, min, max);
       loadIndices(*pMesh, mesh);
+      if (scene->HasMaterials()) {
+        loadMaterial(*scene, *pMesh, mesh);
+      }
     }
 
     Vector3D size = max - min;
@@ -52,11 +59,7 @@ CodecModel::decode(TString pathName) {
     pModelInfo->aabb.height = size.y;
     pModelInfo->aabb.depth = size.z;
     pModelInfo->aabb.center = (max + min) * 0.5f;
-
-    if (scene->HasMaterials()) {
-      loadMaterials(*scene);
-    }
-
+    
     TString skeletonName;
     
     if (scene->HasAnimations()) {
@@ -196,28 +199,6 @@ CodecModel::loadSkeleton(const aiScene& model,
   }  
 }
 
-void 
-CodecModel::loadMaterials(const aiScene& model) {
-  std::map<std::string, std::string> textures;
-
-  for (Int32 meshIndex = 0; 
-       meshIndex < static_cast<Int32>(model.mNumMeshes); 
-       ++meshIndex) {
-    UInt32 materialIndex = model.mMeshes[meshIndex]->mMaterialIndex;
-
-    aiMaterial& material = *model.mMaterials[materialIndex];
-
-    for(Int32 propIndex = 0; 
-        propIndex < static_cast<Int32>(material.mNumProperties); 
-        ++propIndex) {
-
-      aiMaterialProperty& property = *material.mProperties[propIndex];
-
-      String st{property.mData, property.mData + property.mDataLength};
-    }
-  }
-}
-
 void
 CodecModel::loadAnimations(const aiScene& model, ModelInfo& outModel) {
   for (Int32 animationIndex = 0;
@@ -287,6 +268,31 @@ CodecModel::loadAnimations(const aiScene& model, ModelInfo& outModel) {
 
     ResourceManager::instance().addResource(animName, pAnimation);
   }
+}
+
+void 
+CodecModel::loadMaterial(const aiScene& model, 
+                         const aiMesh& aMesh,
+                         MeshInfo& mesh) {
+  
+  auto material = model.mMaterials[aMesh.mMaterialIndex];
+    
+  for (Int32 i = aiTextureType_DIFFUSE; i < aiTextureType_UNKNOWN; ++i) 
+  {
+    auto textureType = static_cast<aiTextureType>(i);
+
+    auto r = material->GetTextureCount(textureType);
+
+    if (r) {
+
+      aiString path;
+
+      material->GetTexture(textureType, 0, &path);
+
+      std::cout << "Texture " << path.C_Str() << std::endl;
+    }
+  }
+    
 }
 
 void 

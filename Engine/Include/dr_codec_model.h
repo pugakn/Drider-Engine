@@ -63,10 +63,10 @@ class DR_ENGINE_EXPORT CodecModel : public Codec
                Skeleton& outSkeleton);
 
   void 
-  loadMaterials(const aiScene& model);
-
-  void 
   loadAnimations(const aiScene& model, ModelInfo& outModel);
+
+  void
+  loadMaterial(const aiScene& model, const aiMesh& aMesh,  MeshInfo& mesh);
 
   using NodesRefMap = std::unordered_map<TString, Skeleton::NodeData*>;
 
