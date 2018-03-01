@@ -3,6 +3,8 @@
 #include <fstream>
 #include "dr_core_prerequisites.h"
 #include "dr_module.h"
+#include "dr_file_system.h"
+#include <dr_string_utils.h>
 
 namespace driderSDK
 {
@@ -51,9 +53,9 @@ class DR_CORE_EXPORT Logger : public Module<Logger>
   * Use __LINE__ in the Filename parameter.
   */
   void
-  addError(const std::string Filename,
+  addError(const String Filename,
            int lineNumber,
-           const TString message);
+           const String message);
 
   /**
   * TEST::addWarning
@@ -63,12 +65,12 @@ class DR_CORE_EXPORT Logger : public Module<Logger>
   * Use __LINE__ in the Filename parameter.
   */
   void
-  addWarning(const std::string Filename,
+  addWarning(const String Filename,
              int lineNumber,
-             const TString message);
+             const String message);
 
  private:
-	 TString m_filePath;
+	 String m_filePath;
 };
 
 }

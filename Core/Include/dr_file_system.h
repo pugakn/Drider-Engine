@@ -50,7 +50,7 @@ class DR_CORE_EXPORT FileSystem
   * @return
   */
   bool
-  CreateAndOpen(const TString& filename, File& file);
+  CreateAndOpen(const String& filename, File& file);
 
   /**
   * TEST::Copy
@@ -62,7 +62,7 @@ class DR_CORE_EXPORT FileSystem
   * @return
   */
   void
-  Copy(const TString& filepathSrc, const TString& filepathDst);
+  Copy(const String& filepathSrc, const String& filepathDst);
 
   /**
   * TEST::Move
@@ -74,7 +74,7 @@ class DR_CORE_EXPORT FileSystem
   * @return
   */
   void
-  Move(const TString& filepathSrc, const TString& filepathDst);
+  Move(const String& filepathSrc, const String& filepathDst);
 
   /**
   * TEST::Remove
@@ -87,7 +87,7 @@ class DR_CORE_EXPORT FileSystem
   *   
   */
   bool
-  Remove(const TString& filepath);
+  Remove(const String& filepath);
 
   /**
   * TEST::IsFile
@@ -99,7 +99,7 @@ class DR_CORE_EXPORT FileSystem
   * @return
   */
   bool
-  IsFile(const TString& filepath);
+  IsFile(const String& filepath);
 
   /**
   * TEST::IsDirectory
@@ -111,7 +111,7 @@ class DR_CORE_EXPORT FileSystem
   * @return
   */
   bool
-  IsDirectory(const TString& filepath);
+  IsDirectory(const String& filepath);
 
   /**
   * TEST::Exists
@@ -123,7 +123,7 @@ class DR_CORE_EXPORT FileSystem
   * @return
   */
   bool
-  Exists(const TString& filepath);
+  Exists(const String& filepath);
 
   /**
   * TEST::GetFileExtension
@@ -134,8 +134,8 @@ class DR_CORE_EXPORT FileSystem
   *
   * @return
   */
-  static TString 
-  GetFileExtension(const TString& filepath);
+  static String 
+  GetFileExtension(const String& filepath);
 
 };
 

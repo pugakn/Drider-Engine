@@ -43,7 +43,7 @@ class DR_CORE_EXPORT File
   *   If file was successfuly open or not.
   */
   bool
-  Open(const TString filename);
+  Open(const String filename);
 
   /**
   * TEST::Close
@@ -115,7 +115,7 @@ class DR_CORE_EXPORT File
   *   Buffer where the bytes to write are taken.
   */
   void
-  Write(const SizeT nBytes, ANSIChar* bytesIn);
+  Write(const SizeT nBytes, const ANSIChar* bytesIn);
 
   /**
   * TEST::GetAsString
@@ -134,7 +134,7 @@ class DR_CORE_EXPORT File
  protected:
   std::fstream m_file;
   SizeT m_size;
-  TString m_filename;
+  String m_filename;
 };
 
 }

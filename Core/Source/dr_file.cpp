@@ -11,7 +11,7 @@ File::~File() {
 }
 
 bool
-File::Open(const TString filename) {
+File::Open(const String filename) {
   m_file.open(filename, std::ios::out | std::ios::in | std::ios::binary);
 
   if (m_file) {
@@ -35,7 +35,7 @@ File::Open(const TString filename) {
 void
 File::Close() {
   m_file.close();
-  m_filename = TString();
+  m_filename = String();
 }
 
 void
@@ -61,7 +61,7 @@ File::Read(const SizeT nBytes, ANSIChar* bytesOut) {
 }
 
 void
-File::Write(const SizeT nBytes, ANSIChar * bytesIn) {
+File::Write(const SizeT nBytes, const ANSIChar* bytesIn) {
   m_file.write(bytesIn, nBytes);
 }
 
