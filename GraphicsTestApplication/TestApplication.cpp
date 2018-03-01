@@ -310,8 +310,8 @@ TestApplication::initResources() {
   //resourceManager->loadResource(_T("Cube.fbx"));
 
   resourceManager->loadResource(_T("DuckyQuacky_.fbx"));
-  resourceManager->loadResource(_T("Checker.obj"));
-  resourceManager->loadResource(_T("Metro.obj"));
+  resourceManager->loadResource(_T("Checker.fbx"));
+  //resourceManager->loadResource(_T("Metro.obj"));
 
 }
 
@@ -375,7 +375,7 @@ TestApplication::initSceneGraph() {
   n->getTransform().scale({ 1,1,1 });
   m_joker = n;
   
-  n = createNode(root, _T("checker"), _T("Checker.obj"), {-200.f, 0.0f, 500.0f });
+  n = createNode(root, _T("checker"), _T("Checker.fbx"), {-200.f, 0.0f, 500.0f });
   n->setStatic(true);
   /*n = createNode(root, _T("checker"), _T("Checker.obj"), { -210.f, 200.0f, 0.0f });
   n->setStatic(true);
@@ -402,7 +402,7 @@ TestApplication::initSceneGraph() {
   std::uniform_int_distribution<> scl(1, 5);
   std::uniform_real_distribution<float> space(-2000.f, 2000.f);
 
-  for (Int32 i = 0; i < 2; ++i) {
+  for (Int32 i = 0; i < 100; ++i) {
     Vector3D pos(space(mt), 0, space(mt));
     TString aaa =StringUtils::toTString(i);
     auto n = createNode(root, names[i] + aaa, 
