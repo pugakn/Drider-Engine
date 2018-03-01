@@ -307,12 +307,8 @@ TestApplication::initResources() {
   resourceManager->loadResource(_T("dwarf.x"));
 
   //resourceManager->loadResource(_T("Cube.fbx"));
-<<<<<<< HEAD
-  resourceManager->loadResource(_T("DuckyQuacky_.fbx"));
 
-=======
->>>>>>> b08c46cf8577ce3144e62cf09e950278a244dcd1
-  
+  resourceManager->loadResource(_T("DuckyQuacky_.fbx"));
   resourceManager->loadResource(_T("Checker.obj"));
   resourceManager->loadResource(_T("Metro.obj"));
 
