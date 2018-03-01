@@ -265,6 +265,10 @@ TestApplication::initInput() {
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kL,
                         debugList);
+
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kO,
+                        SceneGraph::buildOctree);
 }
 
 void 
@@ -285,9 +289,6 @@ TestApplication::initResources() {
   resourceManager->loadResource(_T("dwarf.x"));
 
   //resourceManager->loadResource(_T("Cube.fbx"));
-
-  resourceManager->loadResource(_T("China.dae"));
-  
   resourceManager->loadResource(_T("DuckyQuacky_.fbx"));
 }
 
@@ -365,12 +366,13 @@ TestApplication::initSceneGraph() {
   std::uniform_int_distribution<> scl(1, 10);
   std::uniform_real_distribution<float> space(-2000.f, 2000.f);
 
-  for (Int32 i = 0; i < 256; ++i) {
+  for (Int32 i = 0; i < 5; ++i) {
     Vector3D pos(space(mt), 0, space(mt));
     TString aaa =StringUtils::toTString(i);
     auto n = createNode(root, names[i] + aaa, 
                         names[dt(mt)], 
-                        pos);    
+                        pos);   
+    n->setStatic(true);
     float sc = static_cast<float>(scl(mt));
     n->getTransform().scale({sc,sc,sc});
   }
