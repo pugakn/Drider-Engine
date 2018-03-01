@@ -26,6 +26,11 @@ using JSCallLambda = std::function<void(CefRefPtr<CefV8Value>&, const CefV8Value
 using JSCallback = std::pair<std::string, JSCallLambda>;
 using JSCalls = std::vector<JSCallback>; 
 
+/**
+* Internal V8 handler
+*
+* This class manages the JS <-> C++ communication
+*/
 class DriderV8Handler : public CefV8Handler {
 public:
   DriderV8Handler() = default;
@@ -35,14 +40,22 @@ public:
 private:
   friend class WebRenderer;
   friend class DriderRenderProcessHandler;
-  virtual bool Execute(const CefString& name,
-                       CefRefPtr<CefV8Value> object,
-                       const CefV8ValueList& arguments,
-                       CefRefPtr<CefV8Value>& retval,
-                       CefString& exception) override;
+  virtual bool 
+  Execute(const CefString& name,
+          CefRefPtr<CefV8Value> object,
+          const CefV8ValueList& arguments,
+          CefRefPtr<CefV8Value>& retval,
+          CefString& exception) override;
 
   JSCalls m_callbacks;
 };
+
+/**
+* Internal render process handler
+*
+* This class manages all the communication with the 
+* render process from the browser process
+*/
 class DriderRenderProcessHandler : public  CefRenderProcessHandler {
 public:
   DriderRenderProcessHandler() = default;
@@ -52,15 +65,21 @@ public:
 private:
   friend class WebRenderer;
 
-  void OnContextCreated(CefRefPtr<CefBrowser> browser,
-    CefRefPtr<CefFrame> frame,
-    CefRefPtr<CefV8Context> context) override;
+  void 
+  OnContextCreated(CefRefPtr<CefBrowser> browser,
+                   CefRefPtr<CefFrame> frame,
+                   CefRefPtr<CefV8Context> context) override;
 
-  bool OnProcessMessageReceived(CefRefPtr<CefBrowser> browser,
-    CefProcessId source_process,
-    CefRefPtr<CefProcessMessage> message) override;
+  bool 
+  OnProcessMessageReceived(CefRefPtr<CefBrowser> browser,
+                           CefProcessId source_process,
+                           CefRefPtr<CefProcessMessage> message) override;
 
 };
+
+/**
+* Internal application event handler
+*/
 class DriderCefApp : public CefApp {
 public:
   DriderCefApp() = default;
@@ -71,11 +90,13 @@ private:
   friend class WebRenderer;
   virtual CefRefPtr<CefRenderProcessHandler> 
   GetRenderProcessHandler();
-
 };
 
 /**
 * Internal render handler
+*
+* This class manages all the headless rendering
+* and events related with the render area.
 */
 class RenderHandler: public CefRenderHandler
 {
@@ -85,17 +106,21 @@ public:
   IMPLEMENT_REFCOUNTING(RenderHandler);
 private:
   friend class WebRenderer;
+  RenderHandler(UInt32  w, UInt32  h) :
+                m_width(w),
+                m_height(h) {}
+
+  void init();
 
   bool 
-  GetViewRect(CefRefPtr<CefBrowser> browser, CefRect &rect) override;
+  GetViewRect(CefRefPtr<CefBrowser> browser, 
+              CefRect &rect) override;
   void 
   resize(UInt32  w, UInt32 h);
+
   Texture* getTexturePointer();
   SamplerState* getSamplerStatePointer();
 
-  RenderHandler(UInt32  w, UInt32  h) :
-    m_width(w),
-    m_height(h) {}
 
   void
   OnPaint(CefRefPtr<CefBrowser> browser,
@@ -106,15 +131,13 @@ private:
           int height) override;
 
   bool StartDragging(CefRefPtr<CefBrowser> browser,
-    CefRefPtr<CefDragData> drag_data,
-    DragOperationsMask allowed_ops,
-    UInt32  x,
-    UInt32  y) {
-    m_dragging = true;
-    return true;
-  }
-  void 
-  init();
+                     CefRefPtr<CefDragData> drag_data,
+                     DragOperationsMask allowed_ops,
+                     UInt32  x,
+                     UInt32  y) {
+                      m_dragging = true;
+                      return true;
+                     }
 
 
   bool m_dragging = false;
@@ -128,6 +151,10 @@ private:
 
 /**
 * Internal browser client
+*
+* This class is used to provide the render hanler
+* to the process, and catch the IPC messages for
+* the browser process.
 */
 class BrowserClient : public CefClient
 {
@@ -138,19 +165,27 @@ public:
 private:
   friend class WebRenderer;
   explicit BrowserClient(RenderHandler *renderHandler) : 
-    m_renderHandler(renderHandler) {}
+                         m_renderHandler(renderHandler) {}
   virtual CefRefPtr<CefRenderHandler>
   GetRenderHandler();
 
-  virtual bool OnProcessMessageReceived(CefRefPtr<CefBrowser> browser,
-                                        CefProcessId source_process,
-                                        CefRefPtr<CefProcessMessage> message);
+  virtual bool 
+  OnProcessMessageReceived(CefRefPtr<CefBrowser> browser,
+                           CefProcessId source_process,
+                           CefRefPtr<CefProcessMessage> message);
 
   CefRefPtr<CefRenderHandler> m_renderHandler;
 };
 
 
-
+/**
+* Web render manager
+*
+* This class is used to manage all the web render,
+* events, and settings for the browser.
+* 
+* You must create one WebRenderer for each render area you want.
+*/
 class DR_UI_EXPORT WebRenderer {
 public:
   static void start();

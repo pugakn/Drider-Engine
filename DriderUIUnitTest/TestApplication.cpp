@@ -19,7 +19,7 @@ TestApplication::~TestApplication() {
 void
 TestApplication::postInit() {
   quad.init();
-  webRenderer.Init(1280,720);
+  webRenderer.Init(1280,720,BROWSER_MODE::kHeadless);
   webRenderer.loadURL("file:///C:/Users/Ulises/Documents/GitHub/Drider-Engine/DriderUIUnitTest/ExampleHTML/example.html");
   JSCallLambda func = [](CefRefPtr<CefV8Value>& retval, const CefV8ValueList& arguments) {
     retval = CefV8Value::CreateString("MyRetVal");
