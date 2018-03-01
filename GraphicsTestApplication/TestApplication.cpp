@@ -35,7 +35,7 @@ TestApplication::postInit() {
   m_camera = std::make_shared<Camera>(_T("MAIN_CAM"), 
                                       m_viewport);
 
-  m_camera->createProyection(45.f, 20.f, 1900.f);
+  m_camera->createProyection(45.f, 20.f, 3000.f);
   m_camera->getTransform().setPosition({0.f, 100.0f, -100});
   m_camera->setTarget({0.0f, 100.0f, 1.0f});
 
