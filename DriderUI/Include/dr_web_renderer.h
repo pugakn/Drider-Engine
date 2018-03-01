@@ -23,9 +23,9 @@ enum E {
 };
 }
 /*RENDER PROCESS OBJECTS*/
-using JSCallLambda = void(*)(CefRefPtr<CefV8Value>& retval, const CefV8ValueList&);
-using JSCallback = std::pair<std::string, JSCallLambda>; //Verctor de maps std::function<void(CefRefPtr<CefV8Value>&)>
-using JSCalls = std::vector<JSCallback>; //vector<JSCalls<Args...>>
+using JSCallLambda = std::function<void(CefRefPtr<CefV8Value>&, const CefV8ValueList&)>;
+using JSCallback = std::pair<std::string, JSCallLambda>;
+using JSCalls = std::vector<JSCallback>; 
 
 class DriderV8Handler : public CefV8Handler {
 public:
@@ -40,6 +40,7 @@ public:
     {
     if (name == it.first) {
         it.second(retval,arguments);
+        return true;
       }
     }
     //for (auto &it : m_callList)
@@ -244,10 +245,25 @@ public:
   Texture& getTextureReference();
   void setTexture();
 
-  template<class T>
-  T getGlobalVar(std::string name) {
-    
-  }
+  //CefRefPtr<CefV8Value> getJSGlobalVar(std::string name) {
+  //  //CefRefPtr<CefBrowser> browser = CefV8Context::GetCurrentContext()->GetBrowser();
+  //  CefRefPtr<CefV8Context> context = browser->GetMainFrame()->GetV8Context();
+  //  context->Enter();
+  //  auto window = context->GetGlobal();
+  //  CefRefPtr<CefV8Value> retVal  = window->GetValue(name);
+  //  context->Exit();
+  //  return retVal;
+  //}
+
+  //CefRefPtr<CefV8Value> executeJSFunction(std::string name, const CefV8ValueList& args) {
+  //  CefRefPtr<CefV8Context> context = browser->GetMainFrame()->GetV8Context();
+  //  context->Enter();
+  //  auto window = context->GetGlobal();
+  //  auto func = window->GetValue(name);
+  //  CefRefPtr<CefV8Value> retVal = func->ExecuteFunction(window, args);
+  //  context->Exit();
+  //  return retVal;
+  //}
 
 private:
   static CefRefPtr<DriderCefApp> m_app;

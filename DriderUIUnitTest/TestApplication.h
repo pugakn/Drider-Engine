@@ -36,6 +36,8 @@ public:
   Viewport viewport;
   WebRenderer webRenderer;
   Quad quad;
+private:
+
 
 };
 
