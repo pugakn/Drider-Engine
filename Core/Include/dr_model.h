@@ -23,7 +23,7 @@ class DR_CORE_EXPORT Model : public Resource
   Model& operator=(const Model&) = delete;
 
   void 
-  init(void* modelData, void* extraData);
+  init(void* modelData);
   
   AABB aabb;
   std::vector<Mesh> meshes;

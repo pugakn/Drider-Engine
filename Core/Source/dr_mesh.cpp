@@ -14,8 +14,6 @@ void BufferDeleter::operator()(VertexBuffer* buffer) {
 }
 
 Mesh::Mesh() 
-  : indexBuffer(nullptr, BufferDeleter{}),
-    vertexBuffer(nullptr, BufferDeleter{})
 {}
 
 Mesh::~Mesh() {}

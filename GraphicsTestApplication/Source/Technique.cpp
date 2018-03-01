@@ -1,14 +1,22 @@
 #include "Technique.h"
 #include <dr_constant_buffer.h>
 #include <dr_device_context.h>
+#include <dr_graphics_api.h>
 #include <dr_input_layout.h>
 #include <dr_shader.h>
 
 
 namespace driderSDK {
 
+Technique::Technique(Camera* _camera, const Matrix4x4* _world) 
+  : m_camera(_camera),
+    m_world(_world)
+{}
+
 bool
-Technique::prepareForDraw(DeviceContext& deviceContext) {
+Technique::prepareForDraw() {
+
+  auto& deviceContext = GraphicsAPI::getDeviceContext();
 
   bool prepared = false;  
 

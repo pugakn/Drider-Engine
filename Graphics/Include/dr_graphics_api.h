@@ -1,6 +1,8 @@
 #pragma once
+#include <functional>
 #include <dr_graphics_prerequisites.h>
-#include <memory>
+#include <dr_memory.h>
+
 namespace driderSDK {
 
 class Device;
@@ -10,48 +12,61 @@ class SwapChain;
 class Texture;
 class DepthStencil;
 class RasterizerState;
+
 class DR_GRAPHICS_EXPORT GraphicsAPI {
 public:
+  
   virtual ~GraphicsAPI() {};
-  virtual void init(UInt32 w, UInt32 h, void* hwnd) = 0;
-  virtual void destroy() = 0;
-  virtual void clear() = 0;
-  virtual void swapBuffers() = 0;
 
-  Device& getDeviceReference();
-  Device* getDevicePointer();
+  virtual 
+  void init(UInt32 w, UInt32 h, void* hwnd) = 0;
 
-  DeviceContext& getDeviceContextReference();
-  DeviceContext* getDeviceContextPointer();
+  virtual 
+  void destroy() = 0;
 
-  SwapChain& getSwapChainReference();
-  SwapChain* getSwapChainPointer();
+  virtual
+  void clear() = 0;
 
-  RenderTarget& getBackBufferRTReference();
-  RenderTarget* getBackBufferRTPointer();
+  virtual
+  void swapBuffers() = 0;
 
-  DepthStencil& getDepthStencilRTReference();
-  DepthStencil* getDepthStencilRTPointer();
+  static Device& 
+  getDevice();
 
-  Texture& getBackBufferTextureReference();
-  Texture* getBackBufferTexturePointer();
+  static DeviceContext&
+  getDeviceContext();
 
-  Texture& getDepthTextureReference();
-  Texture* getDepthTexturePointer();
+  static SwapChain&
+  getSwapChain();
 
-  RasterizerState& getRasterizerStateReference();
-  RasterizerState* getRasterizerStatePointer();
+  static RenderTarget&
+  getBackBufferRT();
 
-  void* getWindowHandler();
+  static DepthStencil&
+  getDepthStencil();
+
+  static Texture&
+  getDepthTexture();
+  
+  static RasterizerState&
+  getRasterizerState();
+  
+  static void* 
+  getWindowHandle();
 protected:
-  Device* device;
-  DeviceContext* deviceContext;
-  SwapChain* swapChain;
-  RenderTarget* backBufferView; 
-  DepthStencil* depthStencilView; 
-  Texture* depthTexture;	
-  Texture* backBufferTexture;
-  RasterizerState* rasterizeState;
+  template<class T>
+  using CustomDeleter = std::function<void(T*)>;
+  
+  template<class T>
+  using SmartPtr = std::unique_ptr<T, CustomDeleter<T>>;
+
+  SmartPtr<Device> m_device;
+  SmartPtr<DeviceContext> m_deviceContext;
+  SmartPtr<SwapChain> m_swapChain;
+  SmartPtr<RenderTarget> m_backBufferView; 
+  SmartPtr<DepthStencil> m_depthStencilView; 
+  SmartPtr<Texture> m_depthTexture;	
+  SmartPtr<RasterizerState> m_rasterizerState;
   void* m_hwnd;
 };
 }

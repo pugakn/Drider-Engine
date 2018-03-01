@@ -41,11 +41,11 @@ Time::onStartUp() {
 
 void
 Time::update() {
-  float now = m_timer.getSeconds();
+  float now = instance().m_timer.getSeconds();
 
-  m_elapsed = now - m_lastUpdate;
+  instance().m_elapsed = now - instance().m_lastUpdate;
 
-  m_lastUpdate = now;
+  instance().m_lastUpdate = now;
 }
 
 }

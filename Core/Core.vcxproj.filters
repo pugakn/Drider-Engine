@@ -72,9 +72,6 @@
     <ClInclude Include="Include\dr_module.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\dr_node.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Include\dr_octree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -109,6 +106,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\dr_render_component.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_aabb_collider.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_collider_component.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -155,9 +158,6 @@
     <ClCompile Include="Source\dr_model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\dr_node.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\dr_octree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -186,6 +186,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\dr_mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_aabb_collider.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_collider_component.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
