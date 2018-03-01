@@ -44,7 +44,6 @@ public:
 private:
   struct CBuffer {
     driderSDK::Matrix4x4 WVP;
-    driderSDK::Matrix4x4 World;
     driderSDK::Matrix4x4 Bones[200];
   };
 
@@ -57,7 +56,7 @@ private:
     driderSDK::IndexBuffer* IB;
   };
 
-  //std::vector<MeshGFX> meshesGFX;
+  std::vector<MeshGFX> meshesGFX;
 
   driderSDK::ConstantBuffer* CB;
 

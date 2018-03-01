@@ -38,7 +38,7 @@ VS_OUTPUT VS( VS_INPUT input ) {
 
     OUT.hposition = mul(WVP, OutVertex);
 	//OUT.hposition = input.position;
-	OUT.hnormal = mul( WVP,input.normal);
-	//OUT.hnormal = float4(input.normal.xyz, 0);
+	//OUT.hnormal = mul( WVP,input.normal);
+	OUT.hnormal = float4(input.normal.xyz, 0);
     return OUT;
 }
