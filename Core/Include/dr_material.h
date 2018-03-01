@@ -10,6 +10,8 @@
 
 namespace driderSDK {
 
+class Texture;
+
 namespace PROPERTY_TYPE {
 enum E
 {
@@ -41,7 +43,7 @@ struct Property
     
   TString name;
   const PROPERTY_TYPE::E type;
-  //Texture* texture;
+  std::weak_ptr<Texture> texture;
 };
 
 struct FloatProperty : Property
@@ -127,6 +129,8 @@ class DR_CORE_EXPORT Material : public Resource
   
   virtual ~Material(){}
   
+  void 
+  set();
   /**
   * Adds a new property of PropertyType type to the material properperties.
   * 

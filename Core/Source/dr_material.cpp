@@ -1,4 +1,8 @@
 #include "dr_material.h"
+#include <dr_device_context.h>
+#include <dr_graphics_api.h>
+#include <dr_texture.h>
+
 
 namespace driderSDK {
 
@@ -11,6 +15,15 @@ namespace driderSDK {
 //    }
 //  }
 //}
+
+void 
+Material::set() {
+  for (SizeT i = 0; i < m_properties.size(); ++i) {
+    if (auto t = m_properties[i]->texture.lock()) {
+      t->set(GraphicsAPI::getDeviceContext(), i);
+    }
+  }
+}
 
 Property*
 Material::addProperty(const TString& name, PROPERTY_TYPE::E type) {
