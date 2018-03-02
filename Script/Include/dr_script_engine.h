@@ -5,14 +5,11 @@
 #include <dr_logger.h>
 #include <string>
 #include "dr_script_prerequisites.h"
+#include <dr_export_script.h>
 
 #include <iostream>
 
 namespace driderSDK {
-
-class ObjectAS;
-
-ObjectAS *Ref_Factory();
 
 void stringPrint_g(asIScriptGeneric* gen);
 

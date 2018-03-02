@@ -5,8 +5,6 @@
 
 namespace driderSDK {
 
-Camera::Camera() {}
-
 Camera::Camera(const TString& name,
 							 const Viewport& viewport) 
   : GameObject(name), 
@@ -164,5 +162,7 @@ const Matrix4x4&
 Camera::getProjection() const {
   return m_projection;
 }
+
+CREATE_REF_FACTORY_FUNC(Camera)
 
 }

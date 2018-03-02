@@ -1,11 +1,9 @@
 void main() {
 
-	//Print("Hola como estas");
-
-	Object obj;
-	float a = obj.Add(10.0f);
-	if(a == 10.0f)
-		Print("No sirve ppppppppppppppp");
+	Camera cam;
+	cam.set_variable(10.2f);
+		if(cam.get_variable() == 10.2f)
+			Print("Cam variable = 10.f");
 
 }	 
 
