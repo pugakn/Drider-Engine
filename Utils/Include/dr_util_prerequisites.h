@@ -3,7 +3,6 @@
 #include <cassert>
 #include "dr_defines.h"
 #include "dr_types.h"
-#include "dr_export_script.h"
 
 
 /**********************************************************************
