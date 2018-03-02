@@ -97,7 +97,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Core\Include;$(SolutionDir)Engine\Include;$(SolutionDir)Utils\Include;$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)$(ProjectName)\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include;$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)$(ProjectName)\Include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>SCRIPT_EXPORTS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -112,7 +112,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Core\Include;$(SolutionDir)Engine\Include;$(SolutionDir)Utils\Include;$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)$(ProjectName)\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include;$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)$(ProjectName)\Include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>SCRIPT_EXPORTS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -129,7 +129,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Core\Include;$(SolutionDir)Engine\Include;$(SolutionDir)Utils\Include;$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)$(ProjectName)\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include;$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)$(ProjectName)\Include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>SCRIPT_EXPORTS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -146,7 +146,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Core\Include;$(SolutionDir)Engine\Include;$(SolutionDir)Utils\Include;$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)$(ProjectName)\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include;$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)$(ProjectName)\Include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>SCRIPT_EXPORTS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
