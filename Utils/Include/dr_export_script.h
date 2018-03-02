@@ -12,11 +12,42 @@ namespace driderSDK {
   void set_##varName(pType param1) {\
     m_##varName = param1; } 
 
+#define DEFAULT_CONSTRUCTOR(className)\
+  private:\
+    Int32 refCount;\
+  public:\
+    className() {\
+      refCount = 1;\
+    }\
+    void AddRef() {\
+      refCount++;\
+    }\
+    void Release() {\
+      if (--refCount == 0)\
+        delete this;\
+    }
+
 #define BEGINING_REGISTER(className)\
   Int32 registerFunctions(ScriptEngine* scriptEngine) {\
     Int32 result;\
     result = scriptEngine->m_scriptEngine->RegisterObjectType(#className, 0, asOBJ_REF);\
-    if(result < 0) return result;
+    if(result < 0) return result;\
+    result = m_scriptEngine->RegisterObjectBehaviour(#className,\
+    asBEHAVE_FACTORY,\
+    #className"@ f()",\
+    asFUNCTION(Ref_Factory_##className),\
+    asCALL_CDECL);\
+    result = m_scriptEngine->RegisterObjectBehaviour(#className,\
+                                                     asBEHAVE_ADDREF,\
+                                                     "void f()",\
+                                                     asMETHOD(className, AddRef),\
+                                                     asCALL_THISCALL);\
+    result = m_scriptEngine->RegisterObjectBehaviour(#className,\
+                                                     asBEHAVE_RELEASE,\
+                                                     "void f()",\
+                                                     asMETHOD(className, Release),\
+                                                     asCALL_THISCALL);
+
 
 #define REGISTER_FOO_0P(className, fooName, rType)\
   result = scriptEngine->m_scriptEngine->RegisterObjectMethod(#className,\
@@ -36,6 +67,11 @@ namespace driderSDK {
   return result;\
   }
 
+
+#define CREATE_REF_FACTORY(className)\
+  className *Ref_Factory_##className() {\
+    return new ObjectAS();\
+  }
 
 /*
 asSUCCESS                              =  0,
