@@ -55,7 +55,8 @@ public:
 	*  Name of the file to open.
 	*/
 	Int8
-	addScript(const TString& fileName);
+	addScript(const TString& scriptName,
+            const TString& script);
 
 	/**
 	* Compiles the script.

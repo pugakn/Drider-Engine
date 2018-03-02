@@ -1,5 +1,8 @@
 #include "TestScriptApp.h"
 
+//ResourceManager
+#include <dr_script_core.h>
+
 namespace driderSDK {
 
 TestScriptApp::TestScriptApp() {
@@ -57,6 +60,7 @@ TestScriptApp::initResources() {
   }
 
   resourceManager->loadResource(_T("Croc.X"));
+  resourceManager->loadResource(_T("test.as"));
 
 }
 void
@@ -72,16 +76,25 @@ void
 TestScriptApp::initScriptEngine() {
   int result;
 
+  ResourceManager* resourceManager = nullptr;
+  if (ResourceManager::isStarted()) {
+    resourceManager = &ResourceManager::instance();
+  }
+
   if (!ScriptEngine::isStarted()) {
     ScriptEngine::startUp();
     scriptEngine = ScriptEngine::instancePtr();
   }
 
-  scriptEngine->addScriptLog(_T("hola"), 0);
+  //scriptEngine->addScriptLog(_T("hola"), 0);
   
   result = scriptEngine->createEngine();
 
-  result = scriptEngine->addScript(_T("test.as"));
+  auto script = std::dynamic_pointer_cast<ScriptCore>
+                        (resourceManager->getReference(_T("test.as")));
+
+  result = scriptEngine->addScript(_T("test.as"),
+                                   script->getScript());
 
   result = scriptEngine->compileScript();
 
