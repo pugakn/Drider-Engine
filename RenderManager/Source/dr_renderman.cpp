@@ -27,7 +27,6 @@ RenderMan::init() {
   PositionTex = GraphicsAPI::getDevice().createEmptyTexture(PositionDesc);
   PositionRT  = GraphicsAPI::getDevice().createRenderTarget({PositionTex});
 
-
   Viewport vp;
   vp.minDepth = 0.1f;
   vp.maxDepth = 1000.0f;
