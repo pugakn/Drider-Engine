@@ -1,5 +1,6 @@
-#include <dr_file.h>
 #include <dr_string_utils.h>
+#include <dr_resource_manager.h>
+
 #include "dr_script_engine.h"
 #include "dr_script_string_factory.h"
 #include "scriptstdstring.h"
@@ -59,34 +60,34 @@ ScriptEngine::createEngine() {
 
 Int8
 ScriptEngine::addScript(const TString& fileName) {
-	File scriptFile;
-	if(!scriptFile.Open(fileName)) {
-		addScriptLog(_T("Script file doesn't exist : ") + fileName, asMSGTYPE_ERROR);
-		m_scriptEngine->Release();
-		return -1;
-	}
-  
-	SizeT fileLength = scriptFile.Size();
+	//File scriptFile;
+	//if(!scriptFile.Open(fileName)) {
+	//	addScriptLog(_T("Script file doesn't exist : ") + fileName, asMSGTYPE_ERROR);
+	//	m_scriptEngine->Release();
+	//	return -1;
+	//}
+ // 
+	//SizeT fileLength = scriptFile.Size();
 
-	TString script;
-	script = scriptFile.GetAsString(fileLength);
-	scriptFile.Close();
+	//TString script;
+	//script = scriptFile.GetAsString(fileLength);
+	//scriptFile.Close();
 
-	if(script.size() == 0) {
-		addScriptLog(_T("Script file : ") + fileName + _T(" couldn't be loaded."), asMSGTYPE_ERROR);
-		m_scriptEngine->Release();
-		return -2;
-	}
-	m_scriptModule = m_scriptEngine->GetModule("module", asGM_CREATE_IF_NOT_EXISTS);
+	//if(script.size() == 0) {
+	//	addScriptLog(_T("Script file : ") + fileName + _T(" couldn't be loaded."), asMSGTYPE_ERROR);
+	//	m_scriptEngine->Release();
+	//	return -2;
+	//}
+	//m_scriptModule = m_scriptEngine->GetModule("module", asGM_CREATE_IF_NOT_EXISTS);
 
-	Int8 result = m_scriptModule->AddScriptSection(StringUtils::toString(fileName).c_str(),
-																								&StringUtils::toString(script)[0],
-																								fileLength);
-	if(result < 0) {
-		addScriptLog(_T("AddScriptSection failed on file ") + fileName, asMSGTYPE_ERROR);
-		m_scriptEngine->Release();
-		return -3;
-	}
+	//Int8 result = m_scriptModule->AddScriptSection(StringUtils::toString(fileName).c_str(),
+	//																							&StringUtils::toString(script)[0],
+	//																							fileLength);
+	//if(result < 0) {
+	//	addScriptLog(_T("AddScriptSection failed on file ") + fileName, asMSGTYPE_ERROR);
+	//	m_scriptEngine->Release();
+	//	return -3;
+	//}
 	return 0;
 }
 

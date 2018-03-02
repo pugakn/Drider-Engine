@@ -176,6 +176,8 @@
     <ClInclude Include="Include\dr_render_component.h" />
     <ClInclude Include="Include\dr_resource.h" />
     <ClInclude Include="Include\dr_root_node.h" />
+    <ClInclude Include="Include\dr_script_core.h" />
+    <ClInclude Include="Include\dr_script_info.h" />
     <ClInclude Include="Include\dr_skeleton.h" />
     <ClInclude Include="Include\dr_sound_core.h" />
     <ClInclude Include="Include\dr_sound_info.h" />
@@ -211,6 +213,7 @@
     <ClCompile Include="Source\dr_render_component.cpp" />
     <ClCompile Include="Source\dr_resource.cpp" />
     <ClCompile Include="Source\dr_root_node.cpp" />
+    <ClCompile Include="Source\dr_script_core.cpp" />
     <ClCompile Include="Source\dr_skeleton.cpp" />
     <ClCompile Include="Source\dr_sound_core.cpp" />
     <ClCompile Include="Source\dr_spline.cpp" />
