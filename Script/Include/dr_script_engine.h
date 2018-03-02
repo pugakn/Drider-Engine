@@ -129,9 +129,9 @@ public:
 	*/
 	void 
 	addScriptLog(const TString& log, const int type);
-
+  asIScriptEngine* m_scriptEngine;
 private:
-	asIScriptEngine* m_scriptEngine;
+	//asIScriptEngine* m_scriptEngine;
 	asIScriptContext* m_scriptContext;
 	asIScriptFunction* m_scriptFunction;
 	asIScriptModule* m_scriptModule;
