@@ -17,39 +17,37 @@ SceneGraph::SceneGraph() {}
 SceneGraph::~SceneGraph() {}
 
 void 
-SceneGraph::init() {
-  m_root = std::make_shared<RootNode>();
+SceneGraph::buildOctree() {
+  //m_octree
+}
+
+void 
+SceneGraph::addObject(SharedGameObject gameObject) {
+  instance().m_root->addChild(gameObject);
 }
 
 SceneGraph::SharedGameObject 
-SceneGraph::getRoot() const {
-  return m_root;
-}
-
-SceneGraph::QueryResult
-SceneGraph::query(Camera& camera, QUERY_ORDER::E order, UInt32 props) {
-  
-  GameObjectQueue objects(DepthComparer{camera, order});
-
-  Frustrum frustrum(camera.getView(), camera.getProjection());
-      
-  testObject(m_root, frustrum, objects);
-
-  QueryResult queryRes;
-   
-  filterObjects(objects, queryRes, props);
-
-  return queryRes;  
+SceneGraph::getRoot() {
+  return instance().m_root;
 }
 
 void
 SceneGraph::update() {
-  m_root->update();
+
+  //instance().m_mutex.lock();
+
+  instance().m_root->update();
+
+  //instance().m_mutex.unlock();
 }
 
 void 
 SceneGraph::draw() {
-  m_root->render();
+  //instance().m_mutex.lock();
+
+  instance().m_root->render();
+
+  //instance().m_mutex.unlock();
 }
 
 SceneGraph::SharedGameObject
@@ -66,7 +64,70 @@ SceneGraph::createNode(SharedGameObject parent, SharedModel model) {
   return node;
 }
 
+void SceneGraph::onStartUp() {
+  m_root = std::make_shared<RootNode>();
+}
+
+SceneGraph::QueryResult
+SceneGraph::query(Camera& camera, QUERY_ORDER::E order, UInt32 props) {
+  
+  GameObjectQueue objects(DepthComparer{camera, order});
+
+  Frustrum frustrum(camera.getView(), camera.getProjection());
+
+  testObject(instance().m_root, frustrum, objects);
+
+  QueryResult queryRes;
+   
+  if (instance().m_octree) {
+    testObjectOct(instance().m_octree, frustrum, objects, true);
+  }
+
+  filterObjects(objects, queryRes, props);
+
+  return queryRes;  
+}
+
 void 
+SceneGraph::testObjectOct(SharedGameObject object, 
+                          Frustrum& frustrum, 
+                          GameObjectQueue& objects, 
+                          bool test) {
+
+  bool ins = !test;
+
+  if (test) {
+    auto aabbCollider = object->getComponent<AABBCollider>();
+
+    DR_ASSERT(aabbCollider);
+
+    auto inter = frustrum.intersects(aabbCollider->getTransformedAABB());
+
+    if (inter != FRUSTRUM_INTERSECT::kOutside) {
+      
+      ins = true;
+
+      if (inter == FRUSTRUM_INTERSECT::kInside) {
+        test = false;
+      }
+    }
+  }  
+  
+  if (ins) {
+    if (object->getComponent<RenderComponent>()) {
+        objects.push(object);
+    }
+  }
+
+
+  auto& children = object->getChildren();
+
+  for (auto& child : children) {
+    testObjectOct(child, frustrum, objects, test);
+  }  
+}
+
+void
 SceneGraph::testObject(SharedGameObject object, 
                        Frustrum& frustrum,
                        GameObjectQueue& objects) {
@@ -76,7 +137,9 @@ SceneGraph::testObject(SharedGameObject object,
   if (object->getComponent<RenderComponent>() && 
       aabbCollider) {      
 
-    if (frustrum.intersects(aabbCollider->getTransformedAABB())) {
+    auto inter = frustrum.intersects(aabbCollider->getTransformedAABB());
+
+    if (inter != FRUSTRUM_INTERSECT::kOutside) {
       objects.push(object);
     }      
   }

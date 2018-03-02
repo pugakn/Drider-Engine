@@ -2,15 +2,16 @@
 
 #include <angelscript\angelscript.h>
 #include <dr_module.h>
+#include <dr_logger.h>
+#include <string>
 #include "dr_script_prerequisites.h"
 
+#include <iostream>
 
 namespace driderSDK {
 
-void stringPrint(TString smg) {
- // printf("s", smg);
-	return;
-}
+void stringPrint_g(asIScriptGeneric* gen);
+
 /**
 *  Script engine class.
 *
@@ -20,6 +21,7 @@ void stringPrint(TString smg) {
 *   scriptMgr.startUp();
 * }
 */
+
 class DR_SCRIPT_EXPORT ScriptEngine : public Module<ScriptEngine>
 {
 public:
@@ -102,7 +104,7 @@ public:
 	*   Time required to abort the script.
 	*/
 	void 
-	lineCallback();
+	lineCallback(asIScriptContext *scriptContext, unsigned long *timeOut);
 
 	/**
 	* Gets the messages from the script's engine and logs them.
@@ -116,11 +118,24 @@ public:
 	void
 	messageCallback(const asSMessageInfo *scriptMessage, void *param);
 
+	/**
+	* Adds a custom script log into the logger.
+	*
+	* @param log
+	*   Message to insert.
+	*
+	* @param type
+	*   Type of the message.
+	*/
+	void 
+	addScriptLog(const TString& log, const int type);
+  asIScriptEngine* m_scriptEngine;
 private:
-	asIScriptEngine* m_scriptEngine;
+	//asIScriptEngine* m_scriptEngine;
 	asIScriptContext* m_scriptContext;
 	asIScriptFunction* m_scriptFunction;
 	asIScriptModule* m_scriptModule;
+	Logger m_scriptLogger;
 	unsigned long timeout = 4000;
 };
 

@@ -2,6 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26730.16
+VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Utils", "Utils\Utils.vcxproj", "{96C93CF8-BB4C-4D60-8C5D-3F439477662D}"
 EndProject
@@ -88,6 +89,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "InputUnitTest", "InputUnitT
 		{FC99DF27-AF8B-40FD-8CFC-5A93A21B9425} = {FC99DF27-AF8B-40FD-8CFC-5A93A21B9425}
 	EndProjectSection
 EndProject
+<<<<<<< HEAD
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Script", "Script\Script.vcxproj", "{029D6857-C353-4AAC-B466-3AFAA591CA81}"
 	ProjectSection(ProjectDependencies) = postProject
 		{AB89A20F-171B-40CD-A7E8-84F4C35BECDC} = {AB89A20F-171B-40CD-A7E8-84F4C35BECDC}
@@ -96,6 +98,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Script", "Script\Script.vcx
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ScriptUnitTest", "ScriptUnitTest\ScriptUnitTest.vcxproj", "{E831247F-FD59-44EC-911A-1F64C0937FE8}"
 EndProject
+=======
+>>>>>>> Script
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Core", "Core\Core.vcxproj", "{31C98D18-B491-49A8-A35B-60AC016FDB71}"
 	ProjectSection(ProjectDependencies) = postProject
 		{FC99DF27-AF8B-40FD-8CFC-5A93A21B9425} = {FC99DF27-AF8B-40FD-8CFC-5A93A21B9425}
@@ -122,6 +126,29 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DriderUIUnitTest", "DriderU
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GraphicsUtils", "GraphicsUtils\GraphicsUtils.vcxproj", "{6F664792-3F1D-4D35-A088-CEBD1D01213C}"
 EndProject
+<<<<<<< HEAD
+=======
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Script", "Script\Script.vcxproj", "{029D6857-C353-4AAC-B466-3AFAA591CA81}"
+	ProjectSection(ProjectDependencies) = postProject
+		{AB89A20F-171B-40CD-A7E8-84F4C35BECDC} = {AB89A20F-171B-40CD-A7E8-84F4C35BECDC}
+		{96C93CF8-BB4C-4D60-8C5D-3F439477662D} = {96C93CF8-BB4C-4D60-8C5D-3F439477662D}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ScriptUnitTest", "ScriptUnitTest\ScriptUnitTest.vcxproj", "{E831247F-FD59-44EC-911A-1F64C0937FE8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{029D6857-C353-4AAC-B466-3AFAA591CA81} = {029D6857-C353-4AAC-B466-3AFAA591CA81}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestScriptApp", "TestScriptApp\TestScriptApp.vcxproj", "{E48F3E62-CA33-4794-A329-BAB262BC992E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{AB89A20F-171B-40CD-A7E8-84F4C35BECDC} = {AB89A20F-171B-40CD-A7E8-84F4C35BECDC}
+		{31C98D18-B491-49A8-A35B-60AC016FDB71} = {31C98D18-B491-49A8-A35B-60AC016FDB71}
+		{029D6857-C353-4AAC-B466-3AFAA591CA81} = {029D6857-C353-4AAC-B466-3AFAA591CA81}
+		{4C420F92-670E-4FFF-8EF6-B8F33B482386} = {4C420F92-670E-4FFF-8EF6-B8F33B482386}
+		{96C93CF8-BB4C-4D60-8C5D-3F439477662D} = {96C93CF8-BB4C-4D60-8C5D-3F439477662D}
+	EndProjectSection
+EndProject
+>>>>>>> Script
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -217,7 +244,6 @@ Global
 		{C1D6ED45-C172-48F7-B7E4-DBC803AAB2CD}.Release|x64.ActiveCfg = Release|x64
 		{C1D6ED45-C172-48F7-B7E4-DBC803AAB2CD}.Release|x64.Build.0 = Release|x64
 		{C1D6ED45-C172-48F7-B7E4-DBC803AAB2CD}.Release|x86.ActiveCfg = Release|Win32
-		{C1D6ED45-C172-48F7-B7E4-DBC803AAB2CD}.Release|x86.Build.0 = Release|Win32
 		{FC99DF27-AF8B-40FD-8CFC-5A93A21B9425}.Debug|x64.ActiveCfg = Debug|x64
 		{FC99DF27-AF8B-40FD-8CFC-5A93A21B9425}.Debug|x64.Build.0 = Debug|x64
 		{FC99DF27-AF8B-40FD-8CFC-5A93A21B9425}.Debug|x64.Deploy.0 = Debug|x64
@@ -243,6 +269,7 @@ Global
 		{710BA809-55E5-4D1E-BD57-5543E36C236D}.Release|x64.Build.0 = Release|x64
 		{710BA809-55E5-4D1E-BD57-5543E36C236D}.Release|x86.ActiveCfg = Release|Win32
 		{710BA809-55E5-4D1E-BD57-5543E36C236D}.Release|x86.Build.0 = Release|Win32
+<<<<<<< HEAD
 		{029D6857-C353-4AAC-B466-3AFAA591CA81}.Debug|x64.ActiveCfg = Debug|x64
 		{029D6857-C353-4AAC-B466-3AFAA591CA81}.Debug|x64.Build.0 = Debug|x64
 		{029D6857-C353-4AAC-B466-3AFAA591CA81}.Debug|x86.ActiveCfg = Debug|Win32
@@ -259,6 +286,8 @@ Global
 		{E831247F-FD59-44EC-911A-1F64C0937FE8}.Release|x64.Build.0 = Release|x64
 		{E831247F-FD59-44EC-911A-1F64C0937FE8}.Release|x86.ActiveCfg = Release|Win32
 		{E831247F-FD59-44EC-911A-1F64C0937FE8}.Release|x86.Build.0 = Release|Win32
+=======
+>>>>>>> Script
 		{31C98D18-B491-49A8-A35B-60AC016FDB71}.Debug|x64.ActiveCfg = Debug|x64
 		{31C98D18-B491-49A8-A35B-60AC016FDB71}.Debug|x64.Build.0 = Debug|x64
 		{31C98D18-B491-49A8-A35B-60AC016FDB71}.Debug|x86.ActiveCfg = Debug|Win32
@@ -291,6 +320,33 @@ Global
 		{6F664792-3F1D-4D35-A088-CEBD1D01213C}.Release|x64.Build.0 = Release|x64
 		{6F664792-3F1D-4D35-A088-CEBD1D01213C}.Release|x86.ActiveCfg = Release|Win32
 		{6F664792-3F1D-4D35-A088-CEBD1D01213C}.Release|x86.Build.0 = Release|Win32
+<<<<<<< HEAD
+=======
+		{029D6857-C353-4AAC-B466-3AFAA591CA81}.Debug|x64.ActiveCfg = Debug|x64
+		{029D6857-C353-4AAC-B466-3AFAA591CA81}.Debug|x64.Build.0 = Debug|x64
+		{029D6857-C353-4AAC-B466-3AFAA591CA81}.Debug|x86.ActiveCfg = Debug|Win32
+		{029D6857-C353-4AAC-B466-3AFAA591CA81}.Debug|x86.Build.0 = Debug|Win32
+		{029D6857-C353-4AAC-B466-3AFAA591CA81}.Release|x64.ActiveCfg = Release|x64
+		{029D6857-C353-4AAC-B466-3AFAA591CA81}.Release|x64.Build.0 = Release|x64
+		{029D6857-C353-4AAC-B466-3AFAA591CA81}.Release|x86.ActiveCfg = Release|Win32
+		{029D6857-C353-4AAC-B466-3AFAA591CA81}.Release|x86.Build.0 = Release|Win32
+		{E831247F-FD59-44EC-911A-1F64C0937FE8}.Debug|x64.ActiveCfg = Debug|x64
+		{E831247F-FD59-44EC-911A-1F64C0937FE8}.Debug|x64.Build.0 = Debug|x64
+		{E831247F-FD59-44EC-911A-1F64C0937FE8}.Debug|x86.ActiveCfg = Debug|Win32
+		{E831247F-FD59-44EC-911A-1F64C0937FE8}.Debug|x86.Build.0 = Debug|Win32
+		{E831247F-FD59-44EC-911A-1F64C0937FE8}.Release|x64.ActiveCfg = Release|x64
+		{E831247F-FD59-44EC-911A-1F64C0937FE8}.Release|x64.Build.0 = Release|x64
+		{E831247F-FD59-44EC-911A-1F64C0937FE8}.Release|x86.ActiveCfg = Release|Win32
+		{E831247F-FD59-44EC-911A-1F64C0937FE8}.Release|x86.Build.0 = Release|Win32
+		{E48F3E62-CA33-4794-A329-BAB262BC992E}.Debug|x64.ActiveCfg = Debug|x64
+		{E48F3E62-CA33-4794-A329-BAB262BC992E}.Debug|x64.Build.0 = Debug|x64
+		{E48F3E62-CA33-4794-A329-BAB262BC992E}.Debug|x86.ActiveCfg = Debug|Win32
+		{E48F3E62-CA33-4794-A329-BAB262BC992E}.Debug|x86.Build.0 = Debug|Win32
+		{E48F3E62-CA33-4794-A329-BAB262BC992E}.Release|x64.ActiveCfg = Release|x64
+		{E48F3E62-CA33-4794-A329-BAB262BC992E}.Release|x64.Build.0 = Release|x64
+		{E48F3E62-CA33-4794-A329-BAB262BC992E}.Release|x86.ActiveCfg = Release|Win32
+		{E48F3E62-CA33-4794-A329-BAB262BC992E}.Release|x86.Build.0 = Release|Win32
+>>>>>>> Script
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

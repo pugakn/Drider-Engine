@@ -5,15 +5,22 @@
 #include <dr_vector3d.h>
 #include <dr_gameObject.h>
 #include <dr_render_component.h>
+#include <dr_vertex.h>
+#include <dr_graph.h>
 #include <vector>
 #include <queue>
 #include <list>
+#include <dr_memory.h>
 
 namespace driderSDK {
 
 struct Face
 {
-  Vector3D vertex[3];
+  std::vector<Vertex> vertices;
+  std::vector<UInt32> indices;
+  std::weak_ptr<Material> material;
+  UInt32 gameObject;
+  UInt32 mesh;
 };
 
 class DR_CORE_EXPORT Octree
@@ -29,23 +36,25 @@ class DR_CORE_EXPORT Octree
   * @param region
   *   Region to initialize octree 
   *
-  * @param objects
-  *   list object in region
+  * @param std::vector<std::shared_ptr<GameObject>>& gameObjects
+  *   reference to models to convert in octree
   *
   * @param minFacesArea
   *   minimum faces in area
   *
   */
-  Octree(AABB& region, std::queue<Face> objects, driderSDK::Int32 minFacesArea);
-
-  Octree(AABB& region, std::vector<std::shared_ptr<GameObject>>* gameObjects, driderSDK::Int32 minFacesArea);
+  Octree(GameObject* nodeSceneGraph,
+		 AABB& region,
+	     std::vector<std::shared_ptr<GameObject>>* gameObjects,
+	     Int32 minFacesArea = 2000);
 
   /**
   * Constructor
   * @param region
   *   Region to initialize octree 
   */
-  Octree(AABB& region, driderSDK::Int32 minFacesArea);
+  Octree(AABB& region,
+	     Int32 minFacesArea = 2000);
 
   /**
   * Default detructor
@@ -56,9 +65,17 @@ class DR_CORE_EXPORT Octree
   * Octree construction
   */
   void
-  BuildTree();
+  buildTree();
 
-  driderSDK::Int32 minFaces;
+  void
+  createNodes();
+
+  void
+  configNode(GameObject *node, Octree *octreeNode);
+
+  Int32 minFaces;
+
+  GameObject* root;
 
   std::queue<Face> objectsToReview;
 

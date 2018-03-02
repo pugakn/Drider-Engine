@@ -2,8 +2,10 @@
 
 #include <functional>
 #include <memory>
+#include <mutex>
 #include <queue>
 #include <vector>
+#include "dr_module.h"
 #include "dr_core_prerequisites.h"
 
 /*********************/
@@ -40,7 +42,7 @@ enum E : UInt32
 };
 }
 
-class DR_CORE_EXPORT SceneGraph
+class DR_CORE_EXPORT SceneGraph : public Module<SceneGraph>
 {
 public:
   using SharedModel = std::shared_ptr<Model>;
@@ -51,27 +53,30 @@ public:
   SceneGraph();
 
   ~SceneGraph();
+ 
+  static void
+  buildOctree();
 
-  void 
-  init();
+  static void
+  addObject(SharedGameObject gameObject); 
 
-  SharedGameObject 
-  getRoot() const;
+  static SharedGameObject 
+  getRoot();
 
   /**
   * Query meshes from the scene graph
   */
-  QueryResult
+  static QueryResult
   query(Camera& camera, QUERY_ORDER::E order, UInt32 props);
      
-  void 
+  static void 
   update();
   /****************/
   /*     TEMP     */
-  void 
+  static void 
   draw();
   /****************/
-  SharedGameObject
+  static SharedGameObject
   createNode(SharedGameObject parent, SharedModel model);
 
 private:
@@ -80,6 +85,9 @@ private:
                                               GameObjectList,
                                               ObjectComp>;
 
+  /**
+  * Class used for ordering gameObjects by depth
+  */
   class DepthComparer
   {
   public:
@@ -93,17 +101,28 @@ private:
     QUERY_ORDER::E m_order;
   };
   
-  void 
+  void
+  onStartUp();
+
+  static void
+  testObjectOct(SharedGameObject object,
+                Frustrum& frustrum, 
+                GameObjectQueue& objects,
+                bool test);
+
+  static void 
   testObject(SharedGameObject object, 
              Frustrum& frustrum,
              GameObjectQueue& objects);
 
-  void
+  static void
   filterObjects(GameObjectQueue& objects, 
                 QueryResult& result, 
                 UInt32 props);
 private:
   SharedGameObject m_root;
+  SharedGameObject m_octree;
+  std::mutex m_mutex;
 };
 
 }

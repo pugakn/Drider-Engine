@@ -5,6 +5,7 @@
 #include <dr_graphics_driver.h>
 #include <dr_input_manager.h>
 #include <dr_time.h>
+#include "dr_graph.h"
 
 namespace driderSDK {
 
@@ -40,6 +41,8 @@ Application::init() {
 
   InputManager::startUp((SizeT)win);
 
+  SceneGraph::startUp();
+
   Time::startUp();
 
   postInit();
@@ -69,7 +72,15 @@ Application::update() {
  
   SDL_Event event;
 
-  while (SDL_PollEvent(&event)){}
+  while (SDL_PollEvent(&event)){
+    if (event.type == SDL_QUIT) {
+      m_running = false;
+    }
+  }
+
+  InputManager::capture();
+  Time::update();
+  SceneGraph::update();
 
   postUpdate();
 }
@@ -80,13 +91,19 @@ Application::render() {
   GraphicsDriver::API().clear();
 
   postRender();
-  
+
   GraphicsDriver::API().swapBuffers();
 }
 
 void 
 Application::destroy() {
   SDL_Quit();
+
+  GraphicsDriver::shutDown();
+  InputManager::shutDown();
+  Time::shutDown();
+  SceneGraph::shutDown();
+
   postDestroy();
 }
 

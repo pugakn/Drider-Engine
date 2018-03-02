@@ -146,6 +146,7 @@
   <ItemGroup>
     <ClInclude Include="Include\dr_compressor.h" />
     <ClInclude Include="Include\dr_defines.h" />
+    <ClInclude Include="Include\dr_export_script.h" />
     <ClInclude Include="Include\dr_memory.h" />
     <ClInclude Include="Include\dr_pool.h" />
     <ClInclude Include="Include\dr_string_utils.h" />

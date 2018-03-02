@@ -1,15 +1,20 @@
 #include "dr_logger.h"
+#include <dr_string_utils.h>
 
 namespace driderSDK
 {
 
 void
 Logger::reset() {
-  std::ofstream loggerHtmlFile;
   m_filePath = "../Docs/Logger/logger.html";
-  loggerHtmlFile.open(m_filePath, std::ios::out | std::ios::trunc);
 
-  loggerHtmlFile <<
+  FileSystem fSys;
+  fSys.Remove(m_filePath);
+
+  File file;
+  bool htmlCreated = fSys.CreateAndOpen(m_filePath, file);
+
+  String html =
   "<!DOCTYPE html>\n\
   <html>\n\
     <head>\n\
@@ -29,62 +34,65 @@ Logger::reset() {
     </body>\n\
   </html> ";
 
-  loggerHtmlFile.close();
+  if (htmlCreated) {
+    file.Write(html.size(), html.c_str());
+    file.Close();
+  }
 }
 
 void
 Logger::addError(const std::string Filename,
                  int lineNumber,
-                 const std::string message) {
-  std::string fullMessage("");
+                 const String message) {
+	String fullMessage("");
   fullMessage += "<a class = \"file\"> File: ";
-  fullMessage += Filename;
+  fullMessage += StringUtils::toString(Filename);
   fullMessage += "</a>\n";
   fullMessage += "<a class = \"line\"> Line: ";
-  fullMessage += std::to_string(lineNumber);
+  fullMessage += StringUtils::toString(lineNumber);
   fullMessage += "</a>\n";
   fullMessage += "<a class = \"text\"> Description: ";
   fullMessage += message;
   fullMessage += "</a>\n";
 
+  File file;
   std::ifstream loggerHtmlFile(m_filePath);
-  std::string fileInString = std::string(std::istreambuf_iterator<char>(loggerHtmlFile),
-                                         std::istreambuf_iterator<char>());
+	String fileInString = String(std::istreambuf_iterator<char>(loggerHtmlFile),
+                               std::istreambuf_iterator<char>());
   loggerHtmlFile.close();
-
   size_t lastErrorIndex = fileInString.find("</section>");
   fileInString.insert(lastErrorIndex, fullMessage);
 
   std::ofstream finalFile(m_filePath, std::ofstream::out | std::ofstream::trunc);
-  finalFile << fileInString;
+  finalFile << StringUtils::toString(fileInString);
   finalFile.close();
 }
 
 void
-Logger::addWarning(const std::string Filename,
+Logger::addWarning(const String Filename,
                    int lineNumber,
-                   const std::string message) {
-  std::string fullMessage("");
+                   const String message) {
+  String fullMessage("");
   fullMessage += "<a class = \"file\"> File: ";
-  fullMessage += Filename;
+  fullMessage += StringUtils::toString(Filename);
   fullMessage += "</a>\n";
   fullMessage += "<a class = \"line\"> Line: ";
-  fullMessage += std::to_string(lineNumber);
+  fullMessage += StringUtils::toString(lineNumber);
   fullMessage += "</a>\n";
   fullMessage += "<a class = \"text\"> Description: ";
   fullMessage += message;
   fullMessage += "</a>\n";
 
   std::ifstream loggerHtmlFile(m_filePath);
-  std::string fileInString = std::string(std::istreambuf_iterator<char>(loggerHtmlFile),
-                                         std::istreambuf_iterator<char>());
+	String fileInString = String(std::istreambuf_iterator<char>(loggerHtmlFile),
+                               std::istreambuf_iterator<char>());
   loggerHtmlFile.close();
 
   size_t lastErrorIndex = fileInString.find("</article>");
   fileInString.insert(lastErrorIndex, fullMessage);
 
   std::ofstream finalFile(m_filePath, std::ofstream::out | std::ofstream::trunc);
-  finalFile << fileInString;
+  finalFile << StringUtils::toString(fileInString);
   finalFile.close();
 }
 
