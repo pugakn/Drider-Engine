@@ -5,9 +5,13 @@
 #include "dr_script_string_factory.h"
 #include "scriptstdstring.h"
 
+#include "dr_object.h"
 
 namespace driderSDK {
 
+ObjectAS *Ref_Factory() {
+  return new ObjectAS();
+}
 
 void stringPrint_g(asIScriptGeneric* gen) {
 	WString *str = (WString*)gen->GetArgAddress(0);
@@ -51,6 +55,33 @@ ScriptEngine::createEngine() {
 																									asFUNCTION(stringPrint_g), 
 																									asCALL_GENERIC);
 
+  result = m_scriptEngine->RegisterObjectType("Object",
+                                              0,
+                                              asOBJ_REF);
+
+  result = m_scriptEngine->RegisterObjectBehaviour("Object", 
+                                                   asBEHAVE_FACTORY,
+                                                   "Object@ f()", 
+                                                   asFUNCTION(Ref_Factory),
+                                                   asCALL_CDECL);
+
+  result = m_scriptEngine->RegisterObjectBehaviour("Object",
+                                      asBEHAVE_ADDREF,
+                                      "void f()", 
+                                      asMETHOD(ObjectAS, AddRef),
+                                      asCALL_THISCALL);
+
+  result = m_scriptEngine->RegisterObjectBehaviour("Object", 
+                                                   asBEHAVE_RELEASE, 
+                                                   "void f()", 
+                                                   asMETHOD(ObjectAS, Release), 
+                                                   asCALL_THISCALL);
+
+  result = m_scriptEngine->RegisterObjectMethod("Object",
+                                                "float Add(float param1)",
+                                                asMETHODPR(ObjectAS, Add, (float), float),
+                                                asCALL_THISCALL);
+
   /*
   * Seccion para registrar metodos //eso dice arriba pero en ingles...(asi es comente un comentario)
   */
@@ -80,7 +111,7 @@ ScriptEngine::addScript(const TString& scriptName,
 	//	return -2;
 	//}
   
-	m_scriptModule = m_scriptEngine->GetModule("module", asGM_ALWAYS_CREATE);
+	m_scriptModule = m_scriptEngine->GetModule("module", asGM_CREATE_IF_NOT_EXISTS);
 
 	Int8 result = m_scriptModule->AddScriptSection(StringUtils::toString(scriptName).c_str(),
                                                  StringUtils::toString(script).c_str());
@@ -191,12 +222,12 @@ ScriptEngine::messageCallback(const asSMessageInfo* scriptMessage, void* param) 
 void
 ScriptEngine::addScriptLog(const TString& log, int type) {
 
-	driderSDK::Logger ModuleLogger; //testing logger, this will be removed
+	/*driderSDK::Logger ModuleLogger; //testing logger, this will be removed
 	if (!ModuleLogger.isStarted()) {
 		ModuleLogger.startUp();
 	}
 	driderSDK::Logger& htmlLogger = ModuleLogger.instance();
-	htmlLogger.addWarning(__FILE__, __LINE__, log);
+	htmlLogger.addWarning(__FILE__, __LINE__, log);*/
 
 	//if (type == asMSGTYPE_WARNING) {
 	//	m_scriptLogger.addWarning(__FILE__, 

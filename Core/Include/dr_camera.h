@@ -220,14 +220,14 @@ public:
   float
   getFOV() const;
 
-  GETSET(variable, float)
+  /*GETSET(variable, float)
 
   BEGINING_REGISTER(Camera)
   
   REGISTER_FOO_0P(Camera, get_variable, float)
   REGISTER_FOO_1P(Camera, set_variable, float, void)
 
-  END_REGISTER
+  END_REGISTER*/
 
  private:
 	Vector3D m_target;

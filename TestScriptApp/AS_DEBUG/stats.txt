@@ -1,12 +1,16 @@
 
 Total count
+PshC4      : 1
+PSF        : 3
+PshVPtr    : 1
+CALLSYS    : 4
+SUSPEND    : 2
+PGA        : 1
 
 Never executed
 PopPtr    
 PshGPtr   
-PshC4     
 PshV4     
-PSF       
 SwapPtr   
 NOT       
 PshG4     
@@ -50,7 +54,6 @@ BSRL
 BSRA      
 COPY      
 PshC8     
-PshVPtr   
 RDSPtr    
 CMPd      
 CMPu      
@@ -63,9 +66,7 @@ JMPP
 PopRPtr   
 PshRPtr   
 STR       
-CALLSYS   
 CALLBND   
-SUSPEND   
 ALLOC     
 FREE      
 LOADOBJ   
@@ -100,7 +101,6 @@ RDR4
 RDR8      
 LDG       
 LDV       
-PGA       
 CmpPtr    
 VAR       
 iTOf      
@@ -205,3 +205,12 @@ POWu64
 Thiscall1 
 
 Sequences
+PshC4     , PshVPtr    : 1
+PSF       , CALLSYS    : 3
+PshVPtr   , CALLSYS    : 1
+CALLSYS   , PSF        : 2
+CALLSYS   , SUSPEND    : 1
+SUSPEND   , PshC4      : 1
+SUSPEND   , PGA        : 1
+PGA       , PSF        : 1
+LABEL     , SUSPEND    : 1

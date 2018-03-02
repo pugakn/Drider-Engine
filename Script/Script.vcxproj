@@ -161,6 +161,7 @@
     <ClCompile Include="Source\scriptstdstring.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\dr_object.h" />
     <ClInclude Include="Include\dr_script_engine.h" />
     <ClInclude Include="Include\dr_script_prerequisites.h" />
     <ClInclude Include="Include\dr_script_string_factory.h" />

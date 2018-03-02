@@ -10,6 +10,10 @@
 
 namespace driderSDK {
 
+class ObjectAS;
+
+ObjectAS *Ref_Factory();
+
 void stringPrint_g(asIScriptGeneric* gen);
 
 /**

@@ -38,5 +38,8 @@
     <ClInclude Include="Include\scriptstdstring.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\dr_object.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
