@@ -1,4 +1,6 @@
 #include "dr_renderman.h"
+#include <dr_swap_chain.h>
+#include <dr_graphics_driver.h>
 
 namespace driderSDK {
 
@@ -18,14 +20,12 @@ RenderMan::init() {
   PositionDesc.height = 1080;
   PositionDesc.pitch = 1920 * 4;
   PositionDesc.dimension = DR_DIMENSION::k2D;
-  PositionDesc.Format = DR_FORMAT::kDrFormat_R8G8B8A8_UNORM;
+  PositionDesc.Format = DR_FORMAT::kR8G8B8A8_UNORM;
   PositionDesc.mipLevels = 0;
   PositionDesc.genMipMaps = true;
 
-  RenderTarget* PositionRT;
-
-  Texture* PositionTex = GraphicsAPI::getDevice().createEmptyTexture(PositionDesc);
-  GraphicsAPI::getDevice().createRenderTarget(*PositionTex);
+  PositionTex = GraphicsAPI::getDevice().createEmptyTexture(PositionDesc);
+  PositionRT  = GraphicsAPI::getDevice().createRenderTarget({PositionTex});
 
 
   Viewport vp;
@@ -67,6 +67,8 @@ RenderMan::draw() {
 
   Depth of Field
   */
+
+  GraphicsDriver::API().swapBuffers();
 }
 
 void

@@ -52,10 +52,30 @@ class RenderMan {
   std::vector<std::pair<Matrix4x4, RenderMesh>> queryRequest;
   Camera Sauron;
 
-
   GBufferPass m_GBufferPass;
   GBufferInitData m_GBufferInitData;
   GBufferDrawData m_GBufferDrawData;
+
+  RenderTarget* ColorRT;
+  Texture*      ColorTex;
+  RenderTarget* PositionRT;
+  Texture*      PositionTex;
+  RenderTarget* NormalRT;
+  Texture*      NormalTex;
+  RenderTarget* RoughnessRT;
+  Texture*      RoughnessTex;
+  RenderTarget* EmissivityRT;
+  Texture*      EmissivityTex;
+  RenderTarget* TransparencyRT;
+  Texture*      TransparencyTex;
+  RenderTarget* ShadowRT;
+  Texture*      ShadowTex;
+  RenderTarget* SSSRT;
+  Texture*      SSSTex;
+  RenderTarget* SSAORT;
+  Texture*      SSAOTex;
+  RenderTarget* SSAOBlurRT;
+  Texture*      SSAOBlurTex;
 };
 
 }

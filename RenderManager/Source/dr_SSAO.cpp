@@ -1,4 +1,4 @@
-#include "dr_GBuffer.h"
+#include "dr_SSAO.h"
 #include <dr_string_utils.h>
 #include <dr_file.h>
 #include <dr_graphics_api.h>
@@ -13,21 +13,21 @@
 
 namespace driderSDK {
 
-GBufferPass::GBufferPass() {
+SSAOPass::SSAOPass() {
 }
 
-GBufferPass::~GBufferPass() {
+SSAOPass::~SSAOPass() {
 }
 
 void
-GBufferPass::init(PassInitData* initData) {
+SSAOPass::init(PassInitData* initData) {
   driderSDK::File file;
 
-  file.Open("GBuffer_vs.hlsl");
+  file.Open("SSAO_vs.hlsl");
   String vsSource = StringUtils::toString(file.GetAsString(file.Size()));
   file.Close();
 
-  file.Open("GBuffer_ps.hlsl");
+  file.Open("SSAO_ps.hlsl");
   String fsSource = StringUtils::toString(file.GetAsString(file.Size()));
   file.Close();
 
@@ -53,32 +53,16 @@ GBufferPass::init(PassInitData* initData) {
 }
 
 void
-GBufferPass::draw(PassDrawData* drawData) {
-  GBufferDrawData* data = static_cast<GBufferDrawData*>(drawData);
+SSAOPass::draw(PassDrawData* drawData) {
+  SSAODrawData* data = static_cast<SSAODrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
+  m_constantBuffer->set(dc);
 
   m_vertexShader->set(dc);
   m_fragmentShader->set(dc);
 
   m_inputLayout->set(dc);
-
-  Matrix4x4 VP = (*data->activeCam).getVP();
-
-  std::vector<std::pair<Matrix4x4, RenderMesh>>* models;
-
-  dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
-
-  m_constantBuffer->set(dc);
-  for (auto& modelPair : *data->models) {
-    //m_constantBuffer->WVP = VP * modelPair.first;
-    //m_constantBuffer->World = modelPair.first;
-
-    modelPair.second.vertexBuffer->set(dc);
-    modelPair.second.indexBuffer->set(dc);
-
-    dc.draw(modelPair.second.indicesCount, 0, 0);
-  }
 }
 
 }
