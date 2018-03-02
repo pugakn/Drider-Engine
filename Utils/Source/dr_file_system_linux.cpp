@@ -5,7 +5,7 @@
 namespace driderSDK
 {
 
-TString
+String
 FileSystem::GetWorkingPath() {
   String fullpath;
   ANSIChar cCurrentPath[FILENAME_MAX];
