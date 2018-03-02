@@ -16,7 +16,7 @@ std::string file2string(const char *path) {
 
 void Quad::init()
 {
-  Device& device = GraphicsDriver::getApiReference().getDeviceReference();
+  Device& device = GraphicsAPI::getDevice();
   std::string vsSource = file2string("vs.hlsl");
   std::string fsSource = file2string("fs.hlsl");
   vs = reinterpret_cast<Shader*>(device.createShaderFromMemory(vsSource.c_str(), vsSource.size(),DR_SHADER_TYPE_FLAG::kVertex));
@@ -66,7 +66,7 @@ void Quad::destroy()
 void Quad::draw()
 { 
   //constBuff.WVP = wvp;
-  DeviceContext& deviceContext = GraphicsDriver::getApiReference().getDeviceContextReference();
+  DeviceContext& deviceContext = GraphicsAPI::getDeviceContext();
   fs->set(deviceContext);
   vs->set(deviceContext);
   IL->set(deviceContext);

@@ -1,5 +1,4 @@
 #pragma once
-#include <string>
 #include <fstream>
 #include "dr_util_prerequisites.h"
 #include "dr_module.h"
@@ -55,7 +54,7 @@ class DR_UTIL_EXPORT Logger : public Module<Logger>
   void
   addError(const String Filename,
            int lineNumber,
-           const String message);
+           const TString message);
 
   /**
   * TEST::addWarning
@@ -67,10 +66,10 @@ class DR_UTIL_EXPORT Logger : public Module<Logger>
   void
   addWarning(const String Filename,
              int lineNumber,
-             const String message);
+             const TString message);
 
  private:
-	 String m_filePath;
+	 TString m_filePath;
 };
 
 }

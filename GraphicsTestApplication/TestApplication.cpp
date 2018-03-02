@@ -222,7 +222,6 @@ TestApplication::postRender() {
       dc->draw(mesh.second.indicesCount, 0, 0);
     }
   }
-
 }
 
 void 

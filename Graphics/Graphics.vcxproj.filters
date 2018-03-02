@@ -165,9 +165,6 @@
     <ClInclude Include="Include\dr_graphics_api.h">
       <Filter>Archivos de encabezado\Base</Filter>
     </ClInclude>
-    <ClInclude Include="Include\dr_d3d_graphics_api.h">
-      <Filter>Archivos de encabezado\DirectX11</Filter>
-    </ClInclude>
     <ClInclude Include="Include\dr_graphics_prerequisites.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
@@ -176,6 +173,12 @@
     </ClInclude>
     <ClInclude Include="Include\dr_graphics_driver.h">
       <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_blend_state.h">
+      <Filter>Archivos de encabezado\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_d3d_blend_state.h">
+      <Filter>Archivos de encabezado\DirectX11</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -236,9 +239,6 @@
     <ClCompile Include="Source\dr_d3d_depth_stencil_state.cpp">
       <Filter>Archivos de código fuente\DirectX11</Filter>
     </ClCompile>
-    <ClCompile Include="Source\dr_d3d_graphics_api.cpp">
-      <Filter>Archivos de código fuente\DirectX11</Filter>
-    </ClCompile>
     <ClCompile Include="Source\dr_d3d_shader.cpp">
       <Filter>Archivos de código fuente\DirectX11\Shaders</Filter>
     </ClCompile>
@@ -246,6 +246,9 @@
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
     <ClCompile Include="Source\dr_graphics_api.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_d3d_blend_state.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
   </ItemGroup>

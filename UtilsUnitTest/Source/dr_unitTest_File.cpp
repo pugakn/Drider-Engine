@@ -19,7 +19,7 @@ TEST(File, defaultDestructor) {
 TEST(File, Open) {
   driderSDK::File someFile;
 
-  bool fileOpened = someFile.Open("PatoSrc.txt");
+  bool fileOpened = someFile.Open(_T("PatoSrc.txt"));
   if (fileOpened) {
     someFile.Close();
 
@@ -34,7 +34,7 @@ TEST(File, Open) {
 TEST(File, Close) {
   driderSDK::File someFile;
 
-  bool fileOpened = someFile.Open("PatoSrc.txt");
+  bool fileOpened = someFile.Open(_T("PatoSrc.txt"));
   if (fileOpened) {
     someFile.Close();
 
@@ -49,7 +49,7 @@ TEST(File, Close) {
 TEST(File, Seek) {
   driderSDK::File someFile;
 
-  bool fileOpened = someFile.Open("PatoSrc.txt");
+  bool fileOpened = someFile.Open(_T("PatoSrc.txt"));
   if (fileOpened) {
     someFile.Seek(1);
     someFile.Close();
@@ -65,7 +65,7 @@ TEST(File, Seek) {
 TEST(File, TellG) {
   driderSDK::File someFile;
 
-  bool fileOpened = someFile.Open("PatoSrc.txt");
+  bool fileOpened = someFile.Open(_T("PatoSrc.txt"));
   if (fileOpened) {
     someFile.Seek(1);
     driderSDK::SizeT filePtr = someFile.TellG();
@@ -82,7 +82,7 @@ TEST(File, TellG) {
 TEST(File, Size) {
   driderSDK::File someFile;
 
-  bool fileOpened = someFile.Open("PatoSrc.txt");
+  bool fileOpened = someFile.Open(_T("PatoSrc.txt"));
   if (fileOpened) {
     driderSDK::SizeT fileSz = someFile.Size();
     someFile.Close();
@@ -98,7 +98,7 @@ TEST(File, Size) {
 TEST(File, Read) {
   driderSDK::File someFile;
 
-  bool fileOpened = someFile.Open("PatoSrc.txt");
+  bool fileOpened = someFile.Open(_T("PatoSrc.txt"));
   if (fileOpened) {
     driderSDK::ANSIChar* heartContainer = new driderSDK::ANSIChar[2];
     someFile.Seek(19);
@@ -121,7 +121,7 @@ TEST(File, Read) {
 TEST(File, Write) {
   driderSDK::File someFile;
 
-  bool fileOpened = someFile.Open("PatoDst.txt");
+  bool fileOpened = someFile.Open(_T("PatoDst.txt"));
   if (fileOpened) {
     driderSDK::ANSIChar c[] = "Cmamo Cmamut Cmarnat Cva a ir a otro pais sin mi";
     someFile.Write(48, c);
@@ -139,7 +139,7 @@ TEST(File, Write) {
 TEST(File, GetAsString) {
   driderSDK::File someFile;
 
-  bool fileOpened = someFile.Open("PatoDst.txt");
+  bool fileOpened = someFile.Open(_T("PatoDst.txt"));
   if (fileOpened) {
     driderSDK::TString miDrepesionPuntoTXT = someFile.GetAsString(someFile.Size());
     someFile.Close();

@@ -52,29 +52,7 @@ void Model3D::init(Device & device, const TString& filename) {
                                      fsSource.size() + 1,
                                      DR_SHADER_TYPE_FLAG::kFragment);
 
-  std::vector<DrInputElementDesc> idesc;
-  DrInputElementDesc ie;
-  ie.format = DR_FORMAT::kDrFormat_R32G32B32A32_FLOAT;
-  ie.offset = 0;
-  ie.semanticName = "POSITION";
-  idesc.push_back(ie);
-
-  ie.format = DR_FORMAT::kDrFormat_R32G32B32A32_FLOAT;
-  ie.offset = 16;
-  ie.semanticName = "NORMAL";
-  idesc.push_back(ie);
-
-  if (!resource->animationsNames.empty()) {    
-    ie.format = DR_FORMAT::kDrFormat_R32G32B32A32_FLOAT;
-    ie.offset = 32;
-    ie.semanticName = "BONEWEIGHTS";
-    idesc.push_back(ie);
-
-    ie.format = DR_FORMAT::kDrFormat_R32G32B32A32_SINT;
-    ie.offset = 48;
-    ie.semanticName = "BONEIDS";
-    idesc.push_back(ie);
-  }
+  std::vector<DrInputElementDesc> idesc = vs->reflect();
    
   IL = device.createInputLayout(idesc, *vs->m_shaderBytecode);
 

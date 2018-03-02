@@ -28,30 +28,30 @@ namespace driderSDK {
       ie.inputSlot = D3D11_INPUT_PER_VERTEX_DATA;
       if (desc.Mask == 1)
       {
-        if (desc.ComponentType == D3D_REGISTER_COMPONENT_UINT32) ie.format = DR_FORMAT::kDrFormat_R32_UINT;
-        else if (desc.ComponentType == D3D_REGISTER_COMPONENT_SINT32) ie.format = DR_FORMAT::kDrFormat_R32_SINT;
-        else if (desc.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32) ie.format = DR_FORMAT::kDrFormat_R32_FLOAT;
+        if (desc.ComponentType == D3D_REGISTER_COMPONENT_UINT32) ie.format = DR_FORMAT::kR32_UINT;
+        else if (desc.ComponentType == D3D_REGISTER_COMPONENT_SINT32) ie.format = DR_FORMAT::kR32_SINT;
+        else if (desc.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32) ie.format = DR_FORMAT::kR32_FLOAT;
         offset += 4;
       }
       else if (desc.Mask <= 3)
       {
-        if (desc.ComponentType == D3D_REGISTER_COMPONENT_UINT32) ie.format = DR_FORMAT::kDrFormat_R32G32_UINT;
-        else if (desc.ComponentType == D3D_REGISTER_COMPONENT_SINT32) ie.format = DR_FORMAT::kDrFormat_R32G32_SINT;
-        else if (desc.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32) ie.format = DR_FORMAT::kDrFormat_R32G32_FLOAT;
+        if (desc.ComponentType == D3D_REGISTER_COMPONENT_UINT32) ie.format = DR_FORMAT::kR32G32_UINT;
+        else if (desc.ComponentType == D3D_REGISTER_COMPONENT_SINT32) ie.format = DR_FORMAT::kR32G32_SINT;
+        else if (desc.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32) ie.format = DR_FORMAT::kR32G32_FLOAT;
         offset += 8;
       }
       else if (desc.Mask <= 7)
       {
-        if (desc.ComponentType == D3D_REGISTER_COMPONENT_UINT32) ie.format = DR_FORMAT::kDrFormat_R32G32B32_UINT;
-        else if (desc.ComponentType == D3D_REGISTER_COMPONENT_SINT32) ie.format = DR_FORMAT::kDrFormat_R32G32B32_SINT;
-        else if (desc.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32) ie.format = DR_FORMAT::kDrFormat_R32G32B32_FLOAT;
+        if (desc.ComponentType == D3D_REGISTER_COMPONENT_UINT32) ie.format = DR_FORMAT::kR32G32B32_UINT;
+        else if (desc.ComponentType == D3D_REGISTER_COMPONENT_SINT32) ie.format = DR_FORMAT::kR32G32B32_SINT;
+        else if (desc.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32) ie.format = DR_FORMAT::kR32G32B32_FLOAT;
         offset += 12;
       }
       else if (desc.Mask <= 15)
       {
-        if (desc.ComponentType == D3D_REGISTER_COMPONENT_UINT32) ie.format = DR_FORMAT::kDrFormat_R32G32B32A32_UINT;
-        else if (desc.ComponentType == D3D_REGISTER_COMPONENT_SINT32) ie.format = DR_FORMAT::kDrFormat_R32G32B32A32_SINT;
-        else if (desc.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32) ie.format = DR_FORMAT::kDrFormat_R32G32B32A32_FLOAT;
+        if (desc.ComponentType == D3D_REGISTER_COMPONENT_UINT32) ie.format = DR_FORMAT::kR32G32B32A32_UINT;
+        else if (desc.ComponentType == D3D_REGISTER_COMPONENT_SINT32) ie.format = DR_FORMAT::kR32G32B32A32_SINT;
+        else if (desc.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32) ie.format = DR_FORMAT::kR32G32B32A32_FLOAT;
         offset += 16;
       }
 
