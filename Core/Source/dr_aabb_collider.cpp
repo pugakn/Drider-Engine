@@ -22,14 +22,12 @@ void
 AABBCollider::onCreate() {
 }
 
-void AABBCollider::onWorldTransformChange() {
-  m_transformedAABB = m_originalAABB;
-  m_transformedAABB.recalculate(m_gameObject.getWorldTransform().getMatrix());
-}
-
 void 
 AABBCollider::onUpdate() {
-  
+  if (m_gameObject.changed()) {
+    m_transformedAABB = m_originalAABB;
+    m_transformedAABB.recalculate(m_gameObject.getWorldTransform().getMatrix());
+  }  
 }
 
 void 

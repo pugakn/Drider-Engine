@@ -69,7 +69,7 @@ public:
   std::shared_ptr<Camera> m_upCam;
   std::shared_ptr<Camera> m_activeCam;
   std::unique_ptr<Technique> m_technique;
-  std::vector<Technique*> m_techs;
+  std::unique_ptr<Technique> m_linesTech;
   std::shared_ptr<GameObject> m_joker;
   ::Model3D* m_animated;
 };

@@ -2,6 +2,7 @@
 #include "dr_camera.h"
 #include "dr_time.h"
 #include <iostream>
+#include <dr_gameComponent.h>
 
 namespace driderSDK {
 
@@ -17,15 +18,14 @@ Camera::Camera(const TString& name,
 Camera::~Camera() {}
 
 void Camera::updateImpl() {
-
-  GameObject::updateImpl();
-
-  auto& parentT = getParent()->getWorldTransform();
-  auto& localT = getTransform();
-  auto pos = Vector4D(localT.getPosition(), 1.0f) * parentT.getMatrix();
-  auto target = Vector4D(m_target, 1) * parentT.getMatrix();
-	m_view.LookAt(Vector3D(pos), Vector3D(target), m_up);
-	m_vp = m_view * m_projection;
+  if (m_change) {
+    auto& parentT = getParent()->getWorldTransform();
+    auto& localT = getTransform();
+    auto pos = Vector4D(localT.getPosition(), 1.0f) * parentT.getMatrix();
+    auto target = Vector4D(m_target, 1) * parentT.getMatrix();
+	  m_view.LookAt(Vector3D(pos), Vector3D(target), m_up);
+	  m_vp = m_view * m_projection;
+  }
 }
 
 void 

@@ -12,6 +12,9 @@ private:
   virtual void
   create(std::shared_ptr<Model> model);
 
+  virtual void
+  onCreate();
+  
   virtual void 
   onUpdate() override;
 

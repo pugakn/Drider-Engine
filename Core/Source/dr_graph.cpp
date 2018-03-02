@@ -24,9 +24,9 @@ SceneGraph::buildOctree() {
 
   addGameObjectsStatics(*instance().m_root, &staticGameObjects);
 
-  AABB aa(4096, 4096, 4096, Vector3D(0, 100, 0));
+  AABB aa(5000, 5000, 5000, Vector3D(0, 0, 0));
 
-  Octree octree(&(*instance().m_octree), aa, &staticGameObjects);
+  Octree octree(&(*instance().m_octree), aa, &staticGameObjects, 10000);
   octree.buildTree();
   octree.createNodes();
 }
@@ -133,6 +133,7 @@ SceneGraph::testObjectOct(SharedGameObject object,
   
   if (ins) {
     if (object->getComponent<RenderComponent>()) {
+        object->render();
         objects.push(object);
     }
   }

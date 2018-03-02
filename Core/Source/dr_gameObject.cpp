@@ -21,6 +21,27 @@ GameObject::init() {}
 void
 GameObject::update() {
 
+  bool localChange = m_localTransform.changed();
+
+  if (localChange) { //This node changed
+    propagateChange();
+   
+    /*for (auto& c : m_components) {
+      c->onLocalTransformChange();
+    }*/
+  }
+
+  //if (m_change && !localChange) { //Parent changed
+  //  
+  //  for (auto& c : m_components) {
+  //    c->onParentTransformChange();
+  //  }
+  //}
+
+  if (m_change) {
+    m_finalTransform = m_localTransform*getParent()->m_finalTransform;  
+  } 
+
   updateImpl();
 
   for (auto& component : m_components) {
@@ -30,6 +51,10 @@ GameObject::update() {
   for (auto& child : m_children) {
     child->update();
   }
+  
+  m_change = false;
+
+  m_localTransform.newFrame();
 }
 
 void 
@@ -199,8 +224,14 @@ GameObject::setStatic(bool _static) {
   m_isStatic = _static;
 }
 
-bool GameObject::isStatic() const {
+bool 
+GameObject::isStatic() const {
   return m_isStatic;
+}
+
+bool 
+GameObject::changed() const {
+  return m_change;
 }
 
 void
@@ -213,37 +244,6 @@ GameObject::propagateChange() {
   }
 }
 
-void GameObject::updateImpl() {
-  
-  bool localChange = m_localTransform.changed();
-
-  if (localChange) { //This node changed
-    propagateChange();
-   
-    /*for (auto& c : m_components) {
-      c->onLocalTransformChange();
-    }*/
-  }
-
-  //if (m_change && !localChange) { //Parent changed
-  //  
-  //  for (auto& c : m_components) {
-  //    c->onParentTransformChange();
-  //  }
-  //}
-
-  if (m_change) {
-
-    m_finalTransform = m_localTransform*getParent()->m_finalTransform;  
-
-    for (auto& c : m_components) {
-      c->onWorldTransformChange();
-    }
-  } 
-
-  m_change = false;
-
-  m_localTransform.newFrame();
-}
+void GameObject::updateImpl() {}
 
 }

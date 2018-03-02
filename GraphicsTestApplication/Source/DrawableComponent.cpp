@@ -26,9 +26,9 @@ DrawableComponent::setModel(std::shared_ptr<Model> model) {
 void 
 DrawableComponent::setShaderTechnique(Technique* technique) {
   m_technique = technique;
-  if (m_technique) {
+  /*if (m_technique) {
     m_technique->compile();
-  }  
+  }  */
 }
 
 std::shared_ptr<Model>

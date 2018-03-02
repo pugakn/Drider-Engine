@@ -204,6 +204,8 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   bool 
   isStatic() const;
 
+  bool
+  changed() const;
  private:
 
   void

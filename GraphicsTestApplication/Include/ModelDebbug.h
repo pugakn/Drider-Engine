@@ -14,11 +14,17 @@ class ModelDebbug : public DrawableComponent
 
  private:
   
-  virtual void
-  onWorldTransformChange();
+  void
+  create();
+
+  /*virtual void
+  create(std::shared_ptr<Model> model);*/
 
   virtual void
-  create(std::shared_ptr<Model> model);
+  onCreate() override;
+
+  virtual void
+  onUpdate() override;
 
   virtual void 
   onRender() override;

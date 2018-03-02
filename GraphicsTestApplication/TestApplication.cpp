@@ -1,4 +1,5 @@
 #include "TestApplication.h"
+#include <dr_graphics_driver.h>
 #include <unordered_map>
 #include <random>
 #include <iostream>
@@ -32,7 +33,7 @@ TestApplication::~TestApplication() {}
 
 void
 TestApplication::postInit() {
-  
+
   m_animated = new Model3D();
   
   m_camera = std::make_shared<Camera>(_T("MAIN_CAM"), 
@@ -44,13 +45,13 @@ TestApplication::postInit() {
 
   auto p = m_camera->createComponent<CameraDebbug>();
 
-  auto tech = new LinesTechnique(&(*m_activeCam), 
+  m_linesTech = dr_make_unique<LinesTechnique>(&(*m_activeCam), 
                                  &m_camera->getWorldTransform().getMatrix());
 
-  p->setShaderTechnique(tech);
+  m_linesTech->compile();
 
-  m_techs.push_back(tech);
-  
+  p->setShaderTechnique(m_linesTech.get());
+
   m_leftCam = std::make_shared<Camera>(_T("LEFT_CAM"), 
                                         m_viewport);
   
@@ -83,9 +84,9 @@ TestApplication::postInit() {
   m_animated->init(_T("HipHopDancing.dae"));
 
   /*SceneGraph::addObject(m_leftCam);
-  SceneGraph::addObject(m_upCam);*/
+  */SceneGraph::addObject(m_upCam);
   m_leftCam->setParent(m_joker);
-  m_upCam->setParent(m_joker);
+  //m_upCam->setParent(m_joker);
   m_joker->addChild(m_camera);
 
   //m_sceneGraph->query(*m_camera, QUERY_ORDER::kBackToFront, 0);
@@ -137,6 +138,9 @@ TestApplication::input() {
   float f = 0;
   float s = 0;
 
+  float fc = 0;
+  float sc = 0;
+
   if (Joystick::get(0)) {   
     
     f = -Joystick::get(0)->getAxis(JOYSTICK_AXIS::kLSVer);
@@ -174,9 +178,18 @@ TestApplication::input() {
   }
 
   float vel = 150.f * Time::getDelta();
+  float camVel = 500.f * Time::getDelta();
  
   if (Math::abs(f) > 0.0f || Math::abs(s) > 0.0f) {
-    m_joker->getTransform().move((dir * f + right * s) * vel);
+
+    if (m_upCam != m_activeCam) {
+      m_joker->getTransform().move((dir * f + right * s) * vel);
+    }
+    else {
+      m_upCam->getTransform().move((Vector3D{0,0,1} * f + Vector3D{-1,0,0} * s) * camVel);
+      auto target = m_upCam->getTransform().getPosition();
+      m_upCam->setTarget({target.x + 0.5f, 0.f, target.z + 0.5f});
+    }
   }
 }
 
@@ -190,9 +203,7 @@ TestApplication::postUpdate() {
 void 
 TestApplication::postRender() {
   
-  for (auto tech : m_techs) {
-    tech->setCamera(&(*m_activeCam));  
-  }
+  m_linesTech->setCamera(&(*m_activeCam));
   
   //SceneGraph::draw();
   
@@ -235,13 +246,15 @@ TestApplication::postDestroy() {
   delete m_animated;
 }
 
-void addDrawableComponent(std::shared_ptr<driderSDK::GameObject>* go) {
-  if ((*go)->getComponent<RenderComponent>()) {
-    (*go)->createComponent<DrawableComponent>();
+void addDrawableComponent(std::shared_ptr<driderSDK::GameObject> go,
+                          Technique* tech) {
+  if (go->getComponent<RenderComponent>()) {
+    auto p = go->createComponent<ModelDebbug>();
+    p->setShaderTechnique(tech);
   }
-  for (auto child : (*go)->getChildren())
+  for (auto child : go->getChildren())
   {
-    addDrawableComponent(&child);
+    addDrawableComponent(child, tech);
   }
 }
 
@@ -261,6 +274,28 @@ TestApplication::initInput() {
     }
   };
 
+  auto toggleWireframe = [&]()
+  {
+    static bool wire = false;
+
+    static RasterizerState* rs = nullptr;
+
+    if (rs) {
+      rs->release();
+      std::cout << "RS released" << std::endl;
+    }
+
+    auto desc = GraphicsAPI::getRasterizerState().getDescriptor();
+
+    desc.fillMode = wire ? DR_FILL_MODE::kSolid : DR_FILL_MODE::kWireframe;
+
+    rs = GraphicsAPI::getDevice().createRasteizerState(desc);
+
+    rs->set(GraphicsAPI::getDeviceContext());
+
+    wire = !wire;
+  };
+
   auto debugList = [&](){
     m_debugList = true;
   };
@@ -271,7 +306,7 @@ TestApplication::initInput() {
 
   auto debugOctree = [&]() {
     auto octree = SceneGraph::getOctree();
-    addDrawableComponent(&octree);
+    addDrawableComponent(octree, m_linesTech.get());
   };
 
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
@@ -293,6 +328,9 @@ TestApplication::initInput() {
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kP,
                         debugOctree);
+
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                         KEY_CODE::kJ, toggleWireframe);
 }
 
 void 
@@ -310,13 +348,16 @@ TestApplication::initResources() {
 
   resourceManager->loadResource(_T("Croc.X"));
 
- // resourceManager->loadResource(_T("dwarf.x"));
+  //resourceManager->loadResource(_T("dwarf.x"));
 
   //resourceManager->loadResource(_T("China.dae"));
+
+  //resourceManager->loadResource(_T("MountainTerrain.obj"))  ;
   
   resourceManager->loadResource(_T("HipHopDancing.dae"));
 
- // resourceManager->loadResource(_T("DuckyQuacky_.fbx"));
+  //resourceManager->loadResource(_T("DuckyQuacky_.fbx"));
+
   //resourceManager->loadResource(_T("Checker.fbx"));
   //resourceManager->loadResource(_T("Metro.obj"));
 
@@ -360,14 +401,7 @@ TestApplication::initSceneGraph() {
 
     auto p = node->createComponent<ModelDebbug>();
 
-    auto tech = new LinesTechnique(&(*m_activeCam), 
-                                   &node->getWorldTransform().getMatrix());
-
-    p->setShaderTechnique(tech);
-
-    p->setModel(model);
-
-    m_techs.push_back(tech);
+    p->setShaderTechnique(m_linesTech.get());
   
     node->setName(name);
 
@@ -403,18 +437,31 @@ TestApplication::initSceneGraph() {
   std::mt19937 mt(std::random_device{}());
   
   std::uniform_int_distribution<> dt(0, static_cast<Int32>(names.size() - 1));
-  std::uniform_int_distribution<> scl(1, 5);
-  std::uniform_real_distribution<float> space(-2000.f, 2000.f);
+  std::uniform_int_distribution<> scl(1, 3);
+  std::uniform_real_distribution<float> space(-1500, 1500);
 
-  /*for (Int32 i = 0; i < 100; ++i) {
+  for (Int32 i = 0; i < 0; ++i) {
     Vector3D pos(space(mt), 0, space(mt));
     TString aaa =StringUtils::toTString(i);
-    auto n = createNode(root, names[i] + aaa, 
-                        names[dt(mt)], 
+
+    auto mod = dt(mt);
+
+    auto n = createNode(root, names[mod] + aaa, 
+                        names[mod], 
                         pos);   
     n->setStatic(true);
     float sc = static_cast<float>(scl(mt));
     n->getTransform().scale({sc,sc,sc});
-  }*/
+  }
+
+  /*n = createNode(root, 
+                 _T("MountainTerrain"), 
+                 _T("MountainTerrain.obj"), 
+                 {0,-750,0});   
+
+  n->setStatic(true);
+
+  n->getTransform().scale({3, 3, 3});*/
+
 }
 }

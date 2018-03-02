@@ -7,6 +7,8 @@
 #include <dr_index_buffer.h>
 #include <dr_vertex_buffer.h>
 
+#include <iostream>
+
 namespace driderSDK {
 
 bool
@@ -249,7 +251,7 @@ Octree::createNodes() {
 void Octree::configNode(GameObject *nodeRoot, Octree* octreeNode)
 {
   nodeRoot->setStatic(true);
-  nodeRoot->createComponent<AABBCollider>(boundingRegion);
+  nodeRoot->createComponent<AABBCollider>(octreeNode->boundingRegion);
   std::vector<RenderMesh> list = createList(&octreeNode->containedObjects);
   nodeRoot->createComponent<RenderComponent>(std::move(list));
   
