@@ -7,6 +7,7 @@
 #include "dr_d3d_texture.h"
 #include "dr_d3d_rasterizer_state.h"
 #include "dr_d3d_blend_state.h"
+#include "dr_d3d_depth_stencil_state.h"
 #include <dxgi.h>
 #include <d3d11.h>
 #include <DirectXMath.h>
@@ -98,12 +99,15 @@ void D3DGraphicsAPI::init(UInt32 w, UInt32 h, void* hwnd) {
 
   m_rasterizerState->set(*m_deviceContext);
 
+
+  m_blendSStates.resize(DR_BLEND_STATES::kCount);
+  m_depthStencilStates.resize(DR_DEPTH_STENCIL_STATES::kCount);
   /*BLEND STATES*/
   ////Opaque
   DrBlendStateDesc blendDesc;
   {
     auto rs = m_device->createBlendState(blendDesc);
-    m_blendSTOpaque = dr_unique_custom(rs, &dr_gfx_deleter<BlendState>);
+    m_blendSStates[DR_BLEND_STATES::kOpaque] = dr_unique_custom(rs, &dr_gfx_deleter<BlendState>);
   }
   ////Additive
   blendDesc.blendEnable = true;;
@@ -113,7 +117,7 @@ void D3DGraphicsAPI::init(UInt32 w, UInt32 h, void* hwnd) {
   blendDesc.destBlendAlpha = DR_BLEND::kBLEND_ONE;
   {
     auto rs = m_device->createBlendState(blendDesc);
-    m_blendSTAdditive = dr_unique_custom(rs, &dr_gfx_deleter<BlendState>);
+    m_blendSStates[DR_BLEND_STATES::kAdditive] = dr_unique_custom(rs, &dr_gfx_deleter<BlendState>);
   }
   ////AlphaBlend
   blendDesc.blendEnable = true;;
@@ -125,7 +129,33 @@ void D3DGraphicsAPI::init(UInt32 w, UInt32 h, void* hwnd) {
   blendDesc.blendOpAlpha = DR_BLEND_OP::kBLEND_OP_ADD;
   {
     auto rs = m_device->createBlendState(blendDesc);
-    m_blendSTAlphaBlend = dr_unique_custom(rs, &dr_gfx_deleter<BlendState>);
+    m_blendSStates[DR_BLEND_STATES::kAlphaBlend] = dr_unique_custom(rs, &dr_gfx_deleter<BlendState>);
+  }
+
+  /*DEPTH STATES*/
+  DrDepthStencilDesc BlendDesc0;
+  DrDepthStencilDesc BlendDesc1;
+  DrDepthStencilDesc BlendDesc2;
+  ////Read-Write
+  BlendDesc0.depthFunc = DR_COMPARISON_FUNC::kLESS_EQUAL;
+  {
+    auto bd = m_device->createDepthStencilState(BlendDesc0);
+    m_depthStencilStates[DR_DEPTH_STENCIL_STATES::kDepthRW] = dr_unique_custom(bd, &dr_gfx_deleter<DepthStencilState>);
+  }
+  //// DepthNone
+  BlendDesc1.depthEnable = false;
+  BlendDesc1.depthWriteMask = DR_DEPTH_WRITE_MASK::kMASK_ZERO;
+  BlendDesc1.depthFunc = DR_COMPARISON_FUNC::kEQUAL;
+  {
+    auto bd = m_device->createDepthStencilState(BlendDesc1);
+    m_depthStencilStates[DR_DEPTH_STENCIL_STATES::kNone] = dr_unique_custom(bd, &dr_gfx_deleter<DepthStencilState>);
+  }
+  //// DepthRead
+  BlendDesc2.depthWriteMask = DR_DEPTH_WRITE_MASK::kMASK_ZERO;
+  BlendDesc2.depthFunc = DR_COMPARISON_FUNC::kLESS_EQUAL;
+  {
+    auto bd = m_device->createDepthStencilState(BlendDesc2);
+    m_depthStencilStates[DR_DEPTH_STENCIL_STATES::kDepthR] = dr_unique_custom(bd, &dr_gfx_deleter<DepthStencilState>);
   }
 
 

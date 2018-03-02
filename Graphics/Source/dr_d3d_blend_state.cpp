@@ -21,7 +21,6 @@ namespace driderSDK {
     BlendStatedesc.RenderTarget[0].BlendOpAlpha = (D3D11_BLEND_OP)desc.blendOpAlpha;
     BlendStatedesc.RenderTarget[0].DestBlend = (D3D11_BLEND)desc.destBlend;
     BlendStatedesc.RenderTarget[0].DestBlendAlpha = (D3D11_BLEND)desc.destBlendAlpha;
-    //BlendStatedesc.RenderTarget[0].RenderTargetWriteMask = desc.;
     BlendStatedesc.RenderTarget[0].SrcBlend = (D3D11_BLEND)desc.srcBlend;
     BlendStatedesc.RenderTarget[0].SrcBlendAlpha = (D3D11_BLEND)desc.srcBlendAlpha;
     ID3D11Device* apidevice = reinterpret_cast<ID3D11Device*>(const_cast<Device*>(&device)->getAPIObject());

@@ -387,6 +387,13 @@ namespace DR_GRAPHICS_API
     D3D11
   };
 }
+namespace DR_DEPTH_WRITE_MASK {
+  enum E
+  {
+    kMASK_ZERO = 0,
+    kMASK_ALL = 1
+  };
+}
 
 struct DR_GRAPHICS_EXPORT DrInputElementDesc {
   String semanticName;
@@ -544,6 +551,7 @@ struct DR_GRAPHICS_EXPORT DrDepthStencilDesc {
   bool stencilEnable;
   UInt8 stencilReadMask;
   UInt8 stencilWriteMask;
+  DR_DEPTH_WRITE_MASK::E depthWriteMask;
   DrDepthStencilDesc() {
     depthEnable = true;
     depthFunc = DR_COMPARISON_FUNC::kLESS_EQUAL;

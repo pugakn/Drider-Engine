@@ -14,6 +14,69 @@ CefRefPtr<DriderV8Handler> WebRenderer::m_v8Handler = new DriderV8Handler();
 CefRefPtr<DriderRenderProcessHandler> WebRenderer::m_renderProcess = new DriderRenderProcessHandler();
 CefRefPtr<DriderCefApp> WebRenderer::m_app = new DriderCefApp();
 /*******************************************************
+*                       V8
+********************************************************/
+bool 
+DriderV8Handler::Execute(const CefString & name, 
+                         CefRefPtr<CefV8Value> object, 
+                         const CefV8ValueList & arguments, 
+                         CefRefPtr<CefV8Value>& retval, 
+                         CefString & exception)
+{
+  for (auto &it : m_callbacks)
+  {
+    if (name == it.first) {
+      it.second(retval, arguments);
+      return true;
+    }
+  }
+  return false;
+}
+
+/*******************************************************
+*                    RENDER PROCESS
+********************************************************/
+// CALLED ON RENDER PROCEESS!
+void 
+DriderRenderProcessHandler::OnContextCreated(CefRefPtr<CefBrowser> browser, 
+                                             CefRefPtr<CefFrame> frame, 
+                                             CefRefPtr<CefV8Context> context)
+{
+  for (auto &it : WebRenderer::m_v8Handler->m_callbacks) {
+    CefRefPtr<CefV8Value> object = context->GetGlobal();
+    CefRefPtr<CefV8Value> func = CefV8Value::CreateFunction(it.first, WebRenderer::m_v8Handler);
+    object->SetValue(it.first, func, V8_PROPERTY_ATTRIBUTE_NONE);
+  }
+}
+
+bool 
+DriderRenderProcessHandler::OnProcessMessageReceived(CefRefPtr<CefBrowser> browser, 
+                                                     CefProcessId source_process, 
+                                                     CefRefPtr<CefProcessMessage> message)
+{
+  const std::string& message_name = message->GetName();
+  if (message_name == IPC_REGISTER_JS2CPP_FUNC) {
+    CefRefPtr<CefV8Context> context = browser->GetMainFrame()->GetV8Context();
+    context->Enter();
+    std::string funcName = message->GetArgumentList()->GetString(0);
+    CefRefPtr<CefV8Value> object = browser->GetMainFrame()->GetV8Context()->GetGlobal();
+    CefRefPtr<CefV8Value> func = CefV8Value::CreateFunction(funcName, WebRenderer::m_v8Handler);
+    object->SetValue(funcName, func, V8_PROPERTY_ATTRIBUTE_NONE);
+    context->Exit();
+    return true;
+  }
+  return false;
+}
+
+/*******************************************************
+*                        APP
+********************************************************/
+CefRefPtr<CefRenderProcessHandler> 
+DriderCefApp::GetRenderProcessHandler()
+{
+  return WebRenderer::m_renderProcess;
+}
+/*******************************************************
 *                    RENDER HANDLER
 ********************************************************/
 bool 
@@ -33,7 +96,8 @@ RenderHandler::OnPaint(CefRefPtr<CefBrowser> browser,
   m_texture->udpateFromMemory(GraphicsAPI::getDeviceContext(),
     static_cast<const char*>(buffer), width *height * 4);
 }
-void RenderHandler::init()
+void 
+RenderHandler::init()
 {
   Device& device = GraphicsAPI::getDevice();
   driderSDK::DrTextureDesc tDesc;
@@ -63,17 +127,37 @@ RenderHandler::resize(UInt32  w, UInt32  h)
   m_texture->modifyTextureParams(GraphicsAPI::getDevice(), tDesc);
 }
 
-Texture * RenderHandler::getTexturePointer()
+Texture* 
+RenderHandler::getTexturePointer()
 {
   return m_texture;
 }
 
-SamplerState * RenderHandler::getSamplerStatePointer()
+SamplerState* 
+RenderHandler::getSamplerStatePointer()
 {
   return m_samplerState;
 }
+/*******************************************************
+*                   BROWSER CLIENT
+********************************************************/
+CefRefPtr<CefRenderHandler> 
+BrowserClient::GetRenderHandler()
+{
+  return m_renderHandler;
+}
 
-void 
+bool 
+BrowserClient::OnProcessMessageReceived(CefRefPtr<CefBrowser> browser, 
+                                        CefProcessId source_process, 
+                                        CefRefPtr<CefProcessMessage> message)
+{
+  return false;
+}
+/*******************************************************
+*                    WEB RENDERER
+********************************************************/
+void
 WebRenderer::start()
 {
   CefMainArgs args;
@@ -91,9 +175,6 @@ WebRenderer::start()
     throw "CefInitialize failed";
 }
 
-/*******************************************************
-*                    WEB RENDERER
-********************************************************/
 void 
 WebRenderer::Init(UInt32  width, UInt32  height, BROWSER_MODE::E mode)
 {
@@ -283,58 +364,4 @@ WebRenderer::initInput()
     browser->GetHost()->SendKeyEvent(keyEvent);
   });
 }
-
-CefRefPtr<CefRenderHandler> BrowserClient::GetRenderHandler()
-{
-  return m_renderHandler;
-}
-
-bool BrowserClient::OnProcessMessageReceived(CefRefPtr<CefBrowser> browser, CefProcessId source_process, CefRefPtr<CefProcessMessage> message)
-{
-  return false;
-}
-
-// CALLED ON RENDER PROCEESS!
-void DriderRenderProcessHandler::OnContextCreated(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefRefPtr<CefV8Context> context)
-{
-  for (auto &it : WebRenderer::m_v8Handler->m_callbacks) {
-    CefRefPtr<CefV8Value> object = context->GetGlobal();
-    CefRefPtr<CefV8Value> func = CefV8Value::CreateFunction(it.first, WebRenderer::m_v8Handler);
-    object->SetValue(it.first, func, V8_PROPERTY_ATTRIBUTE_NONE);
-  }
-}
-
-bool DriderRenderProcessHandler::OnProcessMessageReceived(CefRefPtr<CefBrowser> browser, CefProcessId source_process, CefRefPtr<CefProcessMessage> message)
-{
-  const std::string& message_name = message->GetName();
-  if (message_name == IPC_REGISTER_JS2CPP_FUNC) {
-    CefRefPtr<CefV8Context> context = browser->GetMainFrame()->GetV8Context();
-    context->Enter();
-    std::string funcName = message->GetArgumentList()->GetString(0);
-    CefRefPtr<CefV8Value> object = browser->GetMainFrame()->GetV8Context()->GetGlobal();
-    CefRefPtr<CefV8Value> func = CefV8Value::CreateFunction(funcName, WebRenderer::m_v8Handler);
-    object->SetValue(funcName, func, V8_PROPERTY_ATTRIBUTE_NONE);
-    context->Exit();
-    return true;
-  }
-  return false;
-}
-
-bool DriderV8Handler::Execute(const CefString & name, CefRefPtr<CefV8Value> object, const CefV8ValueList & arguments, CefRefPtr<CefV8Value>& retval, CefString & exception)
-{
-  for (auto &it : m_callbacks)
-  {
-    if (name == it.first) {
-      it.second(retval, arguments);
-      return true;
-    }
-  }
-  return false;
-}
-
-CefRefPtr<CefRenderProcessHandler> DriderCefApp::GetRenderProcessHandler()
-{
-   return WebRenderer::m_renderProcess; 
-}
-
 }

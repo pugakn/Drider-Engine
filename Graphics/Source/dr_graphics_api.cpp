@@ -43,19 +43,16 @@ GraphicsAPI::getWindowHandle() {
   return GraphicsDriver::API().m_hwnd;
 }
 
-BlendState & GraphicsAPI::getBlendStateOpaque()
+BlendState & GraphicsAPI::getBlendState(DR_BLEND_STATES::E state)
 {
-  return *GraphicsDriver::API().m_blendSTOpaque;
+  return *GraphicsDriver::API().m_blendSStates[state];
 }
 
-BlendState & GraphicsAPI::getBlendStateAlphaB()
+DepthStencilState & GraphicsAPI::getDepthStencilState(DR_DEPTH_STENCIL_STATES::E state)
 {
-  return *GraphicsDriver::API().m_blendSTAlphaBlend;
+  return *GraphicsDriver::API().m_depthStencilStates[state];
 }
 
-BlendState & GraphicsAPI::getBlendStateAdditive()
-{
-  return *GraphicsDriver::API().m_blendSTAdditive;
-}
+
 
 }

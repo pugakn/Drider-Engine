@@ -2,7 +2,7 @@
 #include <functional>
 #include <dr_graphics_prerequisites.h>
 #include <dr_memory.h>
-
+#include <vector>
 namespace driderSDK {
 
 class Device;
@@ -13,9 +13,27 @@ class Texture;
 class DepthStencil;
 class RasterizerState;
 class BlendState;
+class DepthStencilState;
+namespace DR_BLEND_STATES {
+  enum E {
+    kAlphaBlend,
+    kAdditive,
+    kOpaque,
+    kCount
+  };
+}
+namespace DR_DEPTH_STENCIL_STATES {
+  enum E{
+    kNone,
+    kDepthRW,
+    kDepthR,
+    kCount
+  };
+}
+
 class DR_GRAPHICS_EXPORT GraphicsAPI {
 public:
-  
+
   virtual ~GraphicsAPI() {};
 
   virtual 
@@ -55,13 +73,10 @@ public:
   getWindowHandle();
 
   static BlendState&
-    getBlendStateOpaque();
+  getBlendState(DR_BLEND_STATES::E state);
 
-  static BlendState&
-    getBlendStateAlphaB();
-
-  static BlendState&
-    getBlendStateAdditive();
+  static DepthStencilState&
+  getDepthStencilState(DR_DEPTH_STENCIL_STATES::E state);
 protected:
   template<class T>
   using CustomDeleter = std::function<void(T*)>;
@@ -77,9 +92,9 @@ protected:
   SmartPtr<Texture> m_depthTexture;	
   SmartPtr<RasterizerState> m_rasterizerState;
 
-  SmartPtr<BlendState> m_blendSTAlphaBlend;
-  SmartPtr<BlendState> m_blendSTOpaque;
-  SmartPtr<BlendState> m_blendSTAdditive;
+  std::vector<SmartPtr<BlendState>> m_blendSStates;
+  std::vector<SmartPtr<DepthStencilState>> m_depthStencilStates;;
+
   void* m_hwnd;
 };
 }

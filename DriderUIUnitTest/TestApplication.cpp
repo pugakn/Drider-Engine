@@ -47,9 +47,9 @@ void
 TestApplication::postRender() {
   GraphicsDriver::API().clear();
   webRenderer.setTexture();
-  GraphicsAPI::getBlendStateAlphaB().set(GraphicsAPI::getDeviceContext());
+  GraphicsAPI::getBlendState(DR_BLEND_STATES::kAlphaBlend).set(GraphicsAPI::getDeviceContext());
   quad.draw();
-  GraphicsAPI::getBlendStateOpaque().set(GraphicsAPI::getDeviceContext());
+  GraphicsAPI::getBlendState(DR_BLEND_STATES::kOpaque).set(GraphicsAPI::getDeviceContext());
   GraphicsDriver::API().swapBuffers();
 }
 void
