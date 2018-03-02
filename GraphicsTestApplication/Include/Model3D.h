@@ -41,6 +41,7 @@ public:
 
   driderSDK::Transform transform;
 
+  float elapsedTime;
 private:
   struct CBuffer {
     driderSDK::Matrix4x4 WVP;
@@ -68,7 +69,6 @@ private:
   std::vector<driderSDK::Vertex> vertices;
   std::vector<driderSDK::UInt32> indices;
 
-  float elapsedTime;
   driderSDK::Animator animator;
   std::shared_ptr<driderSDK::Skeleton> pSkeleton;
 };

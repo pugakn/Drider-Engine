@@ -33,15 +33,13 @@ TestApplication::~TestApplication() {}
 
 void
 TestApplication::postInit() {
-
-  m_animated = new Model3D();
   
   m_camera = std::make_shared<Camera>(_T("MAIN_CAM"), 
                                       m_viewport);
 
   m_camera->createProyection(45.f, 20.f, 3000.f);
-  m_camera->getTransform().setPosition({0.f, 100.0f, -100});
-  m_camera->setTarget({0.0f, 100.0f, 1.0f});
+  m_camera->getTransform().setPosition({0.f, 300.0f, -400});
+  m_camera->setTarget({0.0f, 200.f, 1.0f});
 
   auto p = m_camera->createComponent<CameraDebbug>();
 
@@ -81,7 +79,18 @@ TestApplication::postInit() {
   initSound();
   initSceneGraph();
   
-  m_animated->init(_T("HipHopDancing.fbx"));
+  m_animated.push_back(new Model3D());
+  m_animated[0]->init(_T("HipHopDancing.fbx"));
+
+  m_animated.push_back(new Model3D());
+  m_animated[1]->init(_T("HipHopDancing.fbx"));
+  m_animated[1]->transform.move({200, 0, 0});
+  m_animated[1]->elapsedTime = 150.f;
+
+  m_animated.push_back(new Model3D());
+  m_animated[2]->init(_T("HipHopDancing.fbx"));
+  m_animated[2]->transform.move({-200, 0, 0});
+  m_animated[2]->elapsedTime = 33.f;
 
   /*SceneGraph::addObject(m_leftCam);
   */SceneGraph::addObject(m_upCam);
@@ -197,7 +206,10 @@ void
 TestApplication::postUpdate() {
   //soundDriver->update();
   input();
-  m_animated->update();
+  for (auto& anim : m_animated) {
+    anim->update();
+  }
+  
 }
 
 void 
@@ -207,7 +219,9 @@ TestApplication::postRender() {
   
   //SceneGraph::draw();
   
-  m_animated->draw(*m_activeCam);
+  for (auto& anim : m_animated) {
+    anim->draw(*m_activeCam);
+  }
 
   m_camera->render();
 
@@ -242,8 +256,12 @@ void
 TestApplication::postDestroy() {
   ResourceManager::shutDown();
 
-  m_animated->destroy();
-  delete m_animated;
+  for (auto& anim : m_animated) {
+    anim->destroy();
+    delete anim;
+  }
+
+  m_animated.clear();
 }
 
 void addDrawableComponent(std::shared_ptr<driderSDK::GameObject> go,
@@ -412,7 +430,7 @@ TestApplication::initSceneGraph() {
 
   auto root = SceneGraph::getRoot();
       
-  auto n = createNode(root, _T("Croc0"), _T("Croc.X"), {-200.f, 0.0f, 0.0f});
+  auto n = createNode(root, _T("Chinita"), _T("HipHopDancing.fbx"), {-200.f, 0.0f, 0.0f});
   n->getTransform().scale({ 1,1,1 });
   m_joker = n;
   /*n = createNode(root, _T("checker"), _T("Checker.obj"), { -210.f, 200.0f, 0.0f });

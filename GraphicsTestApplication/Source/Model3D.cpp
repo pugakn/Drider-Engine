@@ -24,13 +24,9 @@ void Model3D::init(const TString& filename) {
 
   elapsedTime = 0.0f;
 
-  std::unique_ptr<Codec> cod = dr_make_unique<CodecModel>();
+  auto res = ResourceManager::instance().getReference(filename);
 
-  auto pInfo = cod->decode(filename);
-
-  resource = std::make_shared<Model>();
-
-  resource->init(pInfo.get());
+  resource = std::dynamic_pointer_cast<Model>(res);
 
   auto pAnimationRes = ResourceManager::instance().getReference(resource->animationsNames[0]);
 
@@ -129,7 +125,7 @@ void Model3D::draw(const Camera& camera) {
   
   auto& deviceContext = GraphicsAPI::getDeviceContext();
 
-  auto wvp = camera.getVP();
+  auto wvp = transform.getMatrix() * camera.getVP();
   
   auto& boneTransforms = animator.getTransforms();
 
