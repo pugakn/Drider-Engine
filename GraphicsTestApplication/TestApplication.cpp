@@ -81,7 +81,7 @@ TestApplication::postInit() {
   initSound();
   initSceneGraph();
   
-  m_animated->init(_T("HipHopDancing.dae"));
+  m_animated->init(_T("HipHopDancing.fbx"));
 
   /*SceneGraph::addObject(m_leftCam);
   */SceneGraph::addObject(m_upCam);
@@ -354,7 +354,7 @@ TestApplication::initResources() {
 
   //resourceManager->loadResource(_T("MountainTerrain.obj"))  ;
   
-  resourceManager->loadResource(_T("HipHopDancing.dae"));
+  resourceManager->loadResource(_T("HipHopDancing.fbx"));
 
   //resourceManager->loadResource(_T("DuckyQuacky_.fbx"));
 

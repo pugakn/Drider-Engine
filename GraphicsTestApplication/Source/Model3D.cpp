@@ -121,7 +121,7 @@ void Model3D::destroy() {
 }
 
 void Model3D::update() {
-  //elapsedTime += 0.001f;
+  elapsedTime += Time::getDelta();
   animator.evaluate(elapsedTime);
 }
 
