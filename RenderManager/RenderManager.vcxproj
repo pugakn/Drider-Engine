@@ -24,12 +24,14 @@
     <ClInclude Include="Include\dr_rendermanapp.h" />
     <ClInclude Include="Include\dr_renderman_prerequisites.h" />
     <ClInclude Include="Include\dr_renderpass.h" />
+    <ClInclude Include="Include\dr_SSAO.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_GBuffer.cpp" />
     <ClCompile Include="Source\dr_renderman.cpp" />
     <ClCompile Include="Source\dr_rendermanapp.cpp" />
     <ClCompile Include="Source\dr_renderpass.cpp" />
+    <ClCompile Include="Source\dr_SSAO.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
