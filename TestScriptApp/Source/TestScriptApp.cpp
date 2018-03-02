@@ -96,6 +96,8 @@ TestScriptApp::initScriptEngine() {
   result = scriptEngine->addScript(_T("test.as"),
                                    script->getScript());
 
+  //result = m_camera->registerFunctions(scriptEngine);
+
   result = scriptEngine->compileScript();
 
   result = scriptEngine->configureContext();

@@ -60,7 +60,7 @@ ScriptEngine::createEngine() {
 
 Int8
 ScriptEngine::addScript(const TString& scriptName,
-          const TString& script) {
+                        const TString& script) {
 	//File scriptFile;
 	//if(!scriptFile.Open(fileName)) {
 	//	addScriptLog(_T("Script file doesn't exist : ") + fileName, asMSGTYPE_ERROR);
@@ -80,11 +80,10 @@ ScriptEngine::addScript(const TString& scriptName,
 	//	return -2;
 	//}
   
-	m_scriptModule = m_scriptEngine->GetModule("module", asGM_CREATE_IF_NOT_EXISTS);
+	m_scriptModule = m_scriptEngine->GetModule("module", asGM_ALWAYS_CREATE);
 
 	Int8 result = m_scriptModule->AddScriptSection(StringUtils::toString(scriptName).c_str(),
-                                                 StringUtils::toString(script).c_str(),
-                                                 script.length());
+                                                 StringUtils::toString(script).c_str());
 	//if(result < 0) {
 	//	addScriptLog(_T("AddScriptSection failed on file ") + fileName, asMSGTYPE_ERROR);
 	//	m_scriptEngine->Release();
