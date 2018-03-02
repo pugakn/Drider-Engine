@@ -13,7 +13,7 @@ namespace driderSDK {
 		ScriptInfo *script = new ScriptInfo;
 		File scriptFile;
 
-		if (scriptFile.Open(StringUtils::toString(pathName))) {
+		if (scriptFile.Open(pathName)) {
 			SizeT fileLength = scriptFile.Size();
 			script->data = scriptFile.GetAsString(fileLength);
 			script->name = pathName;

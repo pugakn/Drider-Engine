@@ -11,7 +11,7 @@ File::~File() {
 }
 
 bool
-File::Open(const String filename) {
+File::Open(const TString filename) {
   m_file.open(filename, std::ios::out | std::ios::in | std::ios::binary);
 
   if (m_file) {
@@ -35,7 +35,7 @@ File::Open(const String filename) {
 void
 File::Close() {
   m_file.close();
-  m_filename = String();
+  m_filename = TString();
 }
 
 void

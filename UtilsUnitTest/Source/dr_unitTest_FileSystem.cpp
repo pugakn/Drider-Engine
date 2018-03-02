@@ -1,6 +1,7 @@
 #include <dr_file_system.h>
 #include <gtest\gtest.h>
 #include <dr_string_utils.h>
+#include <dr_string_utils.h>
 
 TEST(FileSystem, defaultConstructor) {
   driderSDK::FileSystem* fileMaganer = new driderSDK::FileSystem;
@@ -18,10 +19,10 @@ TEST(FileSystem, defaultDestructor) {
 
 TEST(FileSystem, GetWorkingPath) {
   driderSDK::FileSystem fileMaganer;
-  driderSDK::String WorkingPath = fileMaganer.GetWorkingPath();
+  driderSDK::TString WorkingPath = fileMaganer.GetWorkingPath();
 
   printf("\n");
-  printf(WorkingPath.c_str());
+  printf(driderSDK::StringUtils::toString(WorkingPath).c_str());
   printf("\n\n");
 
   EXPECT_TRUE(!WorkingPath.empty());
@@ -32,7 +33,7 @@ TEST(FileSystem, CreateAndOpen) {
 
   driderSDK::File someRandomFile;
   
-  bool fOpen = fileMaganer.CreateAndOpen("Pato.txt", someRandomFile);
+  bool fOpen = fileMaganer.CreateAndOpen(_T("Pato.txt"), someRandomFile);
 
   someRandomFile.Close();
 
@@ -41,14 +42,14 @@ TEST(FileSystem, CreateAndOpen) {
 
 TEST(FileSystem, Copy) {
   driderSDK::FileSystem fileMaganer;
-  fileMaganer.Copy("Pato.txt", "Pato2.txt");
+  fileMaganer.Copy(_T("Pato.txt"), _T("Pato2.txt"));
 
   EXPECT_TRUE(true);
 }
 
 TEST(FileSystem, Move) {
   driderSDK::FileSystem fileMaganer;
-  fileMaganer.Move("Pato2.txt", "..\\Pato2.txt");
+  fileMaganer.Move(_T("Pato2.txt"), _T("..\\Pato2.txt"));
 
   EXPECT_TRUE(true);
 }
@@ -56,13 +57,13 @@ TEST(FileSystem, Move) {
 TEST(FileSystem, Remove) {
   driderSDK::FileSystem fileMaganer;
 
-  EXPECT_TRUE(fileMaganer.Remove("..\\Pato2.txt"));
+  EXPECT_TRUE(fileMaganer.Remove(_T("..\\Pato2.txt")));
 }
 
 TEST(FileSystem, IsFile) {
   driderSDK::FileSystem fileMaganer;
 
-  EXPECT_TRUE(fileMaganer.IsFile("Pato.txt"));
+  EXPECT_TRUE(fileMaganer.IsFile(_T("Pato.txt")));
 }
 
 TEST(FileSystem, IsDirectory) {
@@ -74,12 +75,12 @@ TEST(FileSystem, IsDirectory) {
 TEST(FileSystem, Exists) {
   driderSDK::FileSystem fileMaganer;
 
-  EXPECT_TRUE(fileMaganer.Exists("Pato.txt"));
+  EXPECT_TRUE(fileMaganer.Exists(_T("Pato.txt")));
 }
 
 TEST(FileSystem, GetFileExtension) {
   driderSDK::FileSystem fileMaganer;
-  driderSDK::String fileExt = fileMaganer.GetFileExtension("Pato.txt");
+  driderSDK::TString fileExt = fileMaganer.GetFileExtension(_T("Pato.txt"));
 
-  EXPECT_TRUE(fileExt == "txt");
+  EXPECT_TRUE(fileExt == _T("txt"));
 }

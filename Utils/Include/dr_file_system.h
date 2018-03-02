@@ -35,9 +35,9 @@ class DR_UTIL_EXPORT FileSystem
   * OS specific.
   *
   * @return
-  *   String containing the fullpath of the working directory.
+  *   TString containing the fullpath of the working directory.
   */
-  String
+  TString
   GetWorkingPath();
 
   /**
@@ -50,7 +50,7 @@ class DR_UTIL_EXPORT FileSystem
   * @return
   */
   bool
-  CreateAndOpen(const String& filename, File& file);
+  CreateAndOpen(const TString& filename, File& file);
 
   /**
   * TEST::Copy
@@ -62,7 +62,7 @@ class DR_UTIL_EXPORT FileSystem
   * @return
   */
   void
-  Copy(const String& filepathSrc, const String& filepathDst);
+  Copy(const TString& filepathSrc, const TString& filepathDst);
 
   /**
   * TEST::Move
@@ -74,7 +74,7 @@ class DR_UTIL_EXPORT FileSystem
   * @return
   */
   void
-  Move(const String& filepathSrc, const String& filepathDst);
+  Move(const TString& filepathSrc, const TString& filepathDst);
 
   /**
   * TEST::Remove
@@ -87,7 +87,7 @@ class DR_UTIL_EXPORT FileSystem
   *   
   */
   bool
-  Remove(const String& filepath);
+  Remove(const TString& filepath);
 
   /**
   * TEST::IsFile
@@ -99,7 +99,7 @@ class DR_UTIL_EXPORT FileSystem
   * @return
   */
   bool
-  IsFile(const String& filepath);
+  IsFile(const TString& filepath);
 
   /**
   * TEST::IsDirectory
@@ -111,7 +111,7 @@ class DR_UTIL_EXPORT FileSystem
   * @return
   */
   bool
-  IsDirectory(const String& filepath);
+  IsDirectory(const TString& filepath);
 
   /**
   * TEST::Exists
@@ -123,7 +123,7 @@ class DR_UTIL_EXPORT FileSystem
   * @return
   */
   bool
-  Exists(const String& filepath);
+  Exists(const TString& filepath);
 
   /**
   * TEST::GetFileExtension
@@ -134,8 +134,8 @@ class DR_UTIL_EXPORT FileSystem
   *
   * @return
   */
-  static String 
-  GetFileExtension(const String& filepath);
+  static TString 
+  GetFileExtension(const TString& filepath);
 
 };
 
