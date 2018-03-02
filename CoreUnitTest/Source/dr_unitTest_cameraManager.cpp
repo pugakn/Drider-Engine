@@ -40,11 +40,12 @@ TEST(CameraManager, deleteCamera)
 TEST(CameraManager, setViewportToCamera)
 {
 	driderSDK::CameraManager Manager;
-	driderSDK::Viewport viewport{0,0,1024,720,0,1};
+	driderSDK::Viewport viewport{0, 0, 1024, 720, 0, 1};
 	Manager.createCamera(_T("test"), driderSDK::Vector3D(0, 0, 0), driderSDK::Vector3D(0, 0, 1), driderSDK::Viewport{ 0,0,900,600,0,1 }, 90, 0.1f, 1000);
 	Manager.setActiveCamera(_T("test"));
 	Manager.setViewportToCamera(_T("test"), viewport);
-	EXPECT_EQ(Manager.getActiveCamera().m_viewport.width, 1024);
+  
+	EXPECT_TRUE(false);
 }
 
 TEST(CameraManager, getActiveCamera)

@@ -74,7 +74,7 @@ Frustrum::intersects(const Sphere& sphere) const {
 }
 
 
-bool
+FRUSTRUM_INTERSECT::E
 Frustrum::intersects(const AABB& aabb) const
 {
   return Intersect::aabbFrustrum(aabb.getMaxPoint(), aabb.getMinPoint(), planes);

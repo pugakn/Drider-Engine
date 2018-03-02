@@ -16,7 +16,8 @@ Camera::Camera(const TString& name,
 
 Camera::~Camera() {}
 
-void Camera::updateImpl() {
+void
+Camera::updateImpl() {
 
   GameObject::updateImpl();
 

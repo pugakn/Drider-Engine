@@ -51,7 +51,7 @@ ScriptEngine::createEngine() {
 																									asCALL_GENERIC);
 
   /*
-  * Seccion para registrar metodos
+  * Seccion para registrar metodos //eso dice arriba pero en ingles...(asi es comente un comentario)
   */
 
 	return result;
@@ -78,8 +78,6 @@ ScriptEngine::addScript(const TString& fileName) {
 		return -2;
 	}
 	m_scriptModule = m_scriptEngine->GetModule("module", asGM_CREATE_IF_NOT_EXISTS);
-
-	String tmpScript;
 
 	Int8 result = m_scriptModule->AddScriptSection(StringUtils::toString(fileName).c_str(),
 																								&StringUtils::toString(script)[0],
@@ -191,14 +189,12 @@ ScriptEngine::messageCallback(const asSMessageInfo* scriptMessage, void* param) 
 void
 ScriptEngine::addScriptLog(const TString& log, int type) {
 
-	//Logger* logger = nullptr;
-	//int result;
-
-	//if (!Logger::isStarted()) {
-	//	Logger::startUp();
-	//	logger = Logger::instancePtr();
-	//}
-	//logger->addWarning(__FILE__, __LINE__, StringUtils::toString(log));
+	driderSDK::Logger ModuleLogger; //testing logger, this will be removed
+	if (!ModuleLogger.isStarted()) {
+		ModuleLogger.startUp();
+	}
+	driderSDK::Logger& htmlLogger = ModuleLogger.instance();
+	htmlLogger.addWarning(__FILE__, __LINE__, log);
 
 	//if (type == asMSGTYPE_WARNING) {
 	//	m_scriptLogger.addWarning(__FILE__, 

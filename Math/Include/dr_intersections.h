@@ -27,6 +27,16 @@ enum E
 };
 }
 
+namespace FRUSTRUM_INTERSECT
+{
+enum E
+{
+  kOutside,
+  kInside,
+  kIntersect
+};
+}
+
 struct DR_MATH_EXPORT Intersect
 {
   /**
@@ -438,7 +448,7 @@ struct DR_MATH_EXPORT Intersect
   * @return
   *   True if the ray intersects, else returns false.
   */
-  static bool
+  static FRUSTRUM_INTERSECT::E
   aabbFrustrum(const Vector3D& pointMax,
                const Vector3D& pointMin,
                const std::array<Plane, 6>& frustrumPlanes);

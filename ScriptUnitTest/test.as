@@ -1,5 +1,5 @@
 void main() {
+	Print("Im ready depression");
 
-	Print("Hola como estas");
 }	 
 

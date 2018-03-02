@@ -24,8 +24,10 @@ AABBCollider::onCreate() {
 
 void 
 AABBCollider::onUpdate() {
-  m_transformedAABB = m_originalAABB;
-  m_transformedAABB.recalculate(m_gameObject.getWorldTransform().getMatrix());
+  if (!m_gameObject.isStatic()) {
+    m_transformedAABB = m_originalAABB;
+    m_transformedAABB.recalculate(m_gameObject.getWorldTransform().getMatrix());
+  }
 }
 
 void 
