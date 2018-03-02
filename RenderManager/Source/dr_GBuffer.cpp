@@ -23,11 +23,11 @@ void
 GBufferPass::init(PassInitData* initData) {
   driderSDK::File file;
 
-  file.Open(_T("GBuffer_vs.hlsl"));
+  file.Open("GBuffer_vs.hlsl");
   String vsSource = StringUtils::toString(file.GetAsString(file.Size()));
   file.Close();
 
-  file.Open(_T("GBuffer_ps.hlsl"));
+  file.Open("GBuffer_ps.hlsl");
   String fsSource = StringUtils::toString(file.GetAsString(file.Size()));
   file.Close();
 

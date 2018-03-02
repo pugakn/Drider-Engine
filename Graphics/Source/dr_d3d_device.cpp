@@ -25,6 +25,7 @@
 #include "dr_d3d_texture.h"
 #include "dr_d3d_geometry_shader.h"
 #include "dr_d3d_domain_shader.h"
+#include "dr_d3d_blend_state.h"
 
 namespace driderSDK {
   void * D3DDevice::getAPIObject()
@@ -136,9 +137,9 @@ D3DDevice::createEmptyTexture(const DrTextureDesc& desc) {
 }
 
 RenderTarget* 
-D3DDevice::createRenderTarget(const Texture& texture) {
+D3DDevice::createRenderTarget(const std::vector<Texture*>& textures) {
   RenderTarget* renderTarget = new D3DRenderTarget;
-  renderTarget->create(*this,texture);
+  renderTarget->create(*this,textures);
   return renderTarget;
 }
 
@@ -183,6 +184,13 @@ D3DDevice::createSwapChain(const DrSwapChainDesc& desc) {
   SwapChain* swapChain = new D3DSwapChain;
   swapChain->create(*this, desc);
   return swapChain;
+}
+
+BlendState * D3DDevice::createBlendState(const DrBlendStateDesc & desc)
+{
+  BlendState* bst = new D3DBlendState;
+  bst->create(*this,desc);
+  return bst;
 }
 
 }

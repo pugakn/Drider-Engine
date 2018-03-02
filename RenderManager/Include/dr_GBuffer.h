@@ -20,11 +20,6 @@ struct GBufferDrawData : PassDrawData
   std::vector<std::pair<Matrix4x4, RenderMesh>>* models;
 };
 
-/*
-data infoStructure.
-{
-}
-*/
 class GBufferPass : RenderPass {
  public:
   /*

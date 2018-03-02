@@ -5,15 +5,9 @@
 
 namespace driderSDK {
 
-struct PassInitData
-{
-  
-};
+struct PassInitData {};
 
-struct PassDrawData
-{
-
-};
+struct PassDrawData {};
 
 /*
 */

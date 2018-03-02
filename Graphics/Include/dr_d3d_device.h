@@ -129,7 +129,7 @@ class DR_GRAPHICS_EXPORT D3DDevice : public Device
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   RenderTarget*
-  createRenderTarget(const Texture& texture) override;
+  createRenderTarget(const std::vector<Texture*>& textures) override;
 
   /**
   * TEST::createDepthStencil
@@ -236,6 +236,20 @@ class DR_GRAPHICS_EXPORT D3DDevice : public Device
   */
   SwapChain* 
   createSwapChain(const DrSwapChainDesc& desc) override;
+
+
+  /**
+  * Create a blend rasterizer state
+  *
+  * @param desc
+  *   Describes the state parameters
+  *
+  * @param out state
+  *   The BlendState object taht will be filled out
+  *
+  */
+  BlendState*
+  createBlendState(const DrBlendStateDesc& desc) override;
 
   ID3D11Device* D3D11Device;
 };

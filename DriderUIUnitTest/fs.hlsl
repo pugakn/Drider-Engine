@@ -11,5 +11,8 @@ struct VS_OUTPUT {
 };
 float4 FS( VS_OUTPUT input ) : SV_TARGET  {
     float4 color =  t.Sample(SS, input.htexcoord);
+    //const float t = 0.7;
+    //if (color.r > t && color.g < 0.3 && color.b >  t)
+    //  discard;
     return color;
 }

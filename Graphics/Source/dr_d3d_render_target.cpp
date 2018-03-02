@@ -8,23 +8,30 @@
 
 namespace driderSDK {
 
-void* D3DRenderTarget::getAPIObject() {
-  return RTV;
-}
-
-void** D3DRenderTarget::getAPIObjectReference() {
-  return reinterpret_cast<void**>(&RTV);
-}
+//void * D3DRenderTarget::getAPIObject()
+//{
+//  return RTV;
+//}
+//void ** D3DRenderTarget::getAPIObjectReference()
+//{
+//  return reinterpret_cast<void**>(&RTV);
+//}
 
 void
 D3DRenderTarget::create(const Device& device,
-                        const Texture& texture) {
-  reinterpret_cast<const D3DDevice*>(&device)->
-    D3D11Device->
-    CreateRenderTargetView(reinterpret_cast<const D3DTexture*>(&texture)->
-      APITexture,
-      NULL,
-      &RTV);
+                        const std::vector<Texture*>& textures) {
+  m_numRTs = textures.size();
+  for (auto &it : textures) {
+    ID3D11RenderTargetView* view;
+    reinterpret_cast<const D3DDevice*>(&device)->
+      D3D11Device->
+      CreateRenderTargetView(reinterpret_cast<const D3DTexture*>(it)->
+        APITexture,
+        NULL,
+        &view);
+    RTVs.push_back(view);
+  }
+
 }
 
 void
@@ -32,16 +39,18 @@ D3DRenderTarget::set(const DeviceContext& deviceContext,
                      const DepthStencil& depthStencil) const {
   reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext->
-      OMSetRenderTargets(1,
-                         &RTV,
+      OMSetRenderTargets(m_numRTs,
+                         &RTVs[0],
                          reinterpret_cast<const D3DDepthStencil*>(&depthStencil)->
                            APIDepthView);
 }
 
 void
 D3DRenderTarget::release() {
-    RTV->Release();
-    delete this;
+  for (auto &it : RTVs) {
+    it->Release();
+  }
+  delete this;
 }
 
 }
