@@ -3,6 +3,7 @@
 #include <dr_graphics_prerequisites.h>
 #include <dr_memory.h>
 #include <vector>
+#include "dr_graphics_defines.h"
 namespace driderSDK {
 
 class Device;
@@ -37,16 +38,16 @@ public:
   virtual ~GraphicsAPI() {};
 
   virtual 
-  void init(UInt32 w, UInt32 h, void* hwnd) = 0;
+  void init(UInt32 w, UInt32 h, void* hwnd, DR_GRAPHICS_API::E api = DR_GRAPHICS_API::D3D11);
 
   virtual 
-  void destroy() = 0;
+  void destroy();
 
   virtual
-  void clear() = 0;
+  void clear();
 
   virtual
-  void swapBuffers() = 0;
+  void swapBuffers();
 
   static Device& 
   getDevice();

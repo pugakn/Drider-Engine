@@ -2,7 +2,7 @@
 #include <unordered_map>
 #include <vector>
 #include <dr_util_prerequisites.h>
-#include <dr_d3d_graphics_api.h>
+#include <dr_graphics_api.h>
 #include <dr_camera.h>
 #include <dr_viewport.h>
 #include "dr_application.h"

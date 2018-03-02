@@ -165,9 +165,6 @@
     <ClInclude Include="Include\dr_graphics_api.h">
       <Filter>Archivos de encabezado\Base</Filter>
     </ClInclude>
-    <ClInclude Include="Include\dr_d3d_graphics_api.h">
-      <Filter>Archivos de encabezado\DirectX11</Filter>
-    </ClInclude>
     <ClInclude Include="Include\dr_graphics_prerequisites.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
@@ -240,9 +237,6 @@
       <Filter>Archivos de código fuente\DirectX11</Filter>
     </ClCompile>
     <ClCompile Include="Source\dr_d3d_depth_stencil_state.cpp">
-      <Filter>Archivos de código fuente\DirectX11</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\dr_d3d_graphics_api.cpp">
       <Filter>Archivos de código fuente\DirectX11</Filter>
     </ClCompile>
     <ClCompile Include="Source\dr_d3d_shader.cpp">

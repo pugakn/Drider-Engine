@@ -4,11 +4,9 @@
 #include <dr_mouse.h>
 #include <dr_graphics_driver.h>
 #include <dr_texture.h>
+#include <dr_device.h>
+#include <dr_sample_state.h>
 
-#ifdef DR_PLATFORM_WINDOWS
-#include <dr_d3d_device.h>
-#include <dr_d3d_sample_state.h>
-#endif
 namespace driderSDK {
 CefRefPtr<DriderV8Handler> WebRenderer::m_v8Handler = new DriderV8Handler();
 CefRefPtr<DriderRenderProcessHandler> WebRenderer::m_renderProcess = new DriderRenderProcessHandler();
