@@ -12,6 +12,8 @@ namespace driderSDK {
 
 class ObjectAS;
 
+class Time;
+
 ObjectAS *Ref_Factory();
 
 void stringPrint_g(asIScriptGeneric* gen);
@@ -104,12 +106,9 @@ public:
 	*
 	* @param scriptContext
 	*   Script context to check.
-	*
-	* @param timeOut
-	*   Time required to abort the script.
 	*/
 	void 
-	lineCallback(asIScriptContext *scriptContext, unsigned long *timeOut);
+	lineCallback(asIScriptContext *scriptContext);
 
 	/**
 	* Gets the messages from the script's engine and logs them.
@@ -134,14 +133,18 @@ public:
 	*/
 	void 
 	addScriptLog(const TString& log, const int type);
+
   asIScriptEngine* m_scriptEngine;
+	unsigned long timeout = 666;
+	Time* m_scriptTime;
+
 private:
 	//asIScriptEngine* m_scriptEngine;
 	asIScriptContext* m_scriptContext;
 	asIScriptFunction* m_scriptFunction;
 	asIScriptModule* m_scriptModule;
 	Logger m_scriptLogger;
-	unsigned long timeout = 4000;
+
 };
 
 }

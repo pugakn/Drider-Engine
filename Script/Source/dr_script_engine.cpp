@@ -1,5 +1,6 @@
 #include <dr_string_utils.h>
 #include <dr_resource_manager.h>
+#include <dr_time.h>
 
 #include "dr_script_engine.h"
 #include "dr_script_string_factory.h"
@@ -7,7 +8,10 @@
 
 #include "dr_object.h"
 
+
 namespace driderSDK {
+
+	unsigned long g_timeout;
 
 ObjectAS *Ref_Factory() {
   return new ObjectAS();
@@ -22,6 +26,11 @@ ScriptEngine::ScriptEngine() {
 
 	if (!m_scriptLogger.isStarted()) {
 		m_scriptLogger.startUp();
+	}
+
+	m_scriptTime = nullptr;
+	if (Time::isStarted()) {
+		m_scriptTime = &Time::instance();
 	}
 
 }
@@ -92,34 +101,16 @@ ScriptEngine::createEngine() {
 Int8
 ScriptEngine::addScript(const TString& scriptName,
                         const TString& script) {
-	//File scriptFile;
-	//if(!scriptFile.Open(fileName)) {
-	//	addScriptLog(_T("Script file doesn't exist : ") + fileName, asMSGTYPE_ERROR);
-	//	m_scriptEngine->Release();
-	//	return -1;
-	//}
- // 
-	//SizeT fileLength = scriptFile.Size();
 
-	//TString script;
-	//script = scriptFile.GetAsString(fileLength);
-	//scriptFile.Close();
-
-	//if(script.size() == 0) {
-	//	addScriptLog(_T("Script file : ") + fileName + _T(" couldn't be loaded."), asMSGTYPE_ERROR);
-	//	m_scriptEngine->Release();
-	//	return -2;
-	//}
-  
 	m_scriptModule = m_scriptEngine->GetModule("module", asGM_CREATE_IF_NOT_EXISTS);
 
 	Int8 result = m_scriptModule->AddScriptSection(StringUtils::toString(scriptName).c_str(),
                                                  StringUtils::toString(script).c_str());
-	//if(result < 0) {
-	//	addScriptLog(_T("AddScriptSection failed on file ") + fileName, asMSGTYPE_ERROR);
-	//	m_scriptEngine->Release();
-	//	return -3;
-	//}
+	if(result < 0) {
+		addScriptLog(_T("AddScriptSection failed on file ") + scriptName, asMSGTYPE_ERROR);
+		m_scriptEngine->Release();
+		return -1;
+	}
 	return 0;
 }
 
@@ -143,15 +134,16 @@ ScriptEngine::configureContext() {
 		return -1;
 	}
 
-	/*Int8 result = m_scriptContext->SetLineCallback(asMETHOD(ScriptEngine, lineCallback),
-																								 &timeout,
+	Int8 result = m_scriptContext->SetLineCallback(asMETHOD(ScriptEngine, lineCallback),
+																								 &g_timeout,
 																								 asCALL_THISCALL);
 	if(result < 0) {
 		addScriptLog(_T("Failed to set the line callback."), asMSGTYPE_ERROR);
 		m_scriptContext->Release();
 		m_scriptEngine->Release();
 		return -2;
-	}*/
+	}
+
 	return 0;
 }
 
@@ -182,6 +174,7 @@ ScriptEngine::prepareFunction(TString function) {
 
 Int8
 ScriptEngine::executeCall() {
+	g_timeout = m_scriptTime->getElapsedMilli() + 5000;
 	Int8 result = m_scriptContext->Execute();
 	if (result != asEXECUTION_FINISHED) {
 		if (result == asEXECUTION_EXCEPTION) {
@@ -198,9 +191,10 @@ ScriptEngine::release() {
 }
 
 void
-ScriptEngine::lineCallback(asIScriptContext *scriptContext, unsigned long *timeOut) {
-	if(timeout != /*functionToObtainTime()*/ 0) {
-		m_scriptContext->Abort(); //we can also use suspend
+ScriptEngine::lineCallback(asIScriptContext* scriptContext) {
+	if(g_timeout < m_scriptTime->getElapsedMilli()) {
+		scriptContext->Abort(); 
+		//scriptContext->Suspend(); //we can also use suspend
 	}
 }
 
@@ -211,9 +205,9 @@ ScriptEngine::messageCallback(const asSMessageInfo* scriptMessage, void* param) 
 
 	//Expect something like "mySection (5, 1) : Example message here"
 	TString message = StringUtils::toTString(scriptMessage->section) + 
-																					 //_T(" (") + StringUtils::toTString(std::to_string(row)) +
-																					 //_T(", ") + StringUtils::toTString(std::to_string(col)) +
-																					 //_T(") : ") + 
+																					 _T(" (") + StringUtils::toTString(row) +
+																					 _T(", ") + StringUtils::toTString(col) +
+																					 _T(") : ") + 
 																					 StringUtils::toTString(scriptMessage->message);
 
 	addScriptLog(message, scriptMessage->type);

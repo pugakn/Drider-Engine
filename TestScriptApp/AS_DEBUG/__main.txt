@@ -27,7 +27,7 @@ Variables:
    16  11 *    JNZ      +12              (d:30)
 - 8,3 -
    18  11 *    SUSPEND
-   19  11 *    PGA      174036776
+   19  11 *    PGA      211170640
    21  12 *    PSF      v11
    22  13 *    CALLSYS  20           (string::string(const string&in))
                ObjInfo  v11, 1
@@ -39,6 +39,6 @@ Variables:
                ObjInfo  v11, 0
             1:
    30  11 *    SUSPEND
-   31  11 *    FREE     v1, 185735832
+   31  11 *    FREE     v1, 211414512
             0:
    33  11 *    RET      0
