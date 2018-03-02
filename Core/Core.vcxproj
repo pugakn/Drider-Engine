@@ -209,6 +209,7 @@
     <ClCompile Include="Source\dr_sound_core.cpp" />
     <ClCompile Include="Source\dr_spline.cpp" />
     <ClCompile Include="Source\dr_transform.cpp" />
+    <ClCompile Include="Source\dr_vertex.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
