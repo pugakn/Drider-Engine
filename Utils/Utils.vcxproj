@@ -162,6 +162,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Include\dr_compressor.cpp" />
+    <ClCompile Include="Source\dr_file.cpp" />
+    <ClCompile Include="Source\dr_file_system.cpp" />
+    <ClCompile Include="Source\dr_file_system_linux.cpp" />
+    <ClCompile Include="Source\dr_file_system_win.cpp" />
+    <ClCompile Include="Source\dr_logger.cpp" />
     <ClCompile Include="Source\dr_string_utils.cpp" />
     <ClCompile Include="Source\dr_time.cpp" />
     <ClCompile Include="Source\dr_timer.cpp" />
