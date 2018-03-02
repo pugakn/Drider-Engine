@@ -146,23 +146,23 @@
   <ItemGroup>
     <ClInclude Include="Include\dr_codec.h" />
     <ClInclude Include="Include\dr_codec_model.h" />
+    <ClInclude Include="Include\dr_codec_script.h" />
     <ClInclude Include="Include\dr_codec_sound.h" />
     <ClInclude Include="Include\dr_codec_texture.h" />
     <ClInclude Include="Include\dr_compatible_types.h" />
     <ClInclude Include="Include\dr_engine_texture.h" />
     <ClInclude Include="Include\dr_engine_prerequisites.h" />
     <ClInclude Include="Include\dr_image_info.h" />
-    <ClInclude Include="Include\dr_resource_factory.h" />
     <ClInclude Include="Include\dr_resource_manager.h" />
     <ClInclude Include="Include\dr_texture_resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_codec.cpp" />
     <ClCompile Include="Source\dr_codec_model.cpp" />
+    <ClCompile Include="Source\dr_codec_script.cpp" />
     <ClCompile Include="Source\dr_codec_sound.cpp" />
     <ClCompile Include="Source\dr_codec_texture.cpp" />
     <ClCompile Include="Source\dr_engine_texture.cpp" />
-    <ClCompile Include="Source\dr_resource_factory.cpp" />
     <ClCompile Include="Source\dr_resource_manager.cpp" />
     <ClCompile Include="Source\dr_texture_resurce.cpp" />
   </ItemGroup>
