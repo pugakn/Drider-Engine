@@ -1,6 +1,7 @@
 #include "dr_renderman.h"
 #include <dr_swap_chain.h>
 #include <dr_graphics_driver.h>
+#include <dr_d3d_depth_stencil.h>
 
 namespace driderSDK {
 
@@ -15,6 +16,8 @@ RenderMan::~RenderMan() {
 
 void
 RenderMan::init() {
+  Device& dc = GraphicsAPI::getDevice();
+
   DrTextureDesc PositionDesc;
   PositionDesc.width = 1920;
   PositionDesc.height = 1080;
@@ -24,8 +27,11 @@ RenderMan::init() {
   PositionDesc.mipLevels = 0;
   PositionDesc.genMipMaps = true;
 
-  PositionTex = GraphicsAPI::getDevice().createEmptyTexture(PositionDesc);
-  PositionRT  = GraphicsAPI::getDevice().createRenderTarget({PositionTex});
+  ColorTex        = dc.createEmptyTexture(PositionDesc);
+  PositionTex     = dc.createEmptyTexture(PositionDesc);
+  NormalTex       = dc.createEmptyTexture(PositionDesc);
+
+  m_RTs = GraphicsAPI::getDevice().createRenderTarget( { ColorTex, PositionTex, NormalTex } );
 
   Viewport vp;
   vp.minDepth = 0.1f;

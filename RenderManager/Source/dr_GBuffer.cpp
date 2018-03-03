@@ -70,7 +70,7 @@ GBufferPass::draw(PassDrawData* drawData) {
 
   m_constantBuffer->set(dc);
 
-  dc.setRenderTarget(*data->OutRt, *data->dsOptions);
+  //dc.setRenderTarget(*data->OutRt, *data->dsOptions);
   
   for (auto& modelPair : *data->models) {
     //m_constantBuffer->WVP = VP * modelPair.first;

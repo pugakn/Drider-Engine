@@ -23,11 +23,11 @@ void
 SSAOPass::init(PassInitData* initData) {
   driderSDK::File file;
 
-  file.Open("SSAO_vs.hlsl");
+  file.Open(_T("SSAO_vs.hlsl"));
   String vsSource = StringUtils::toString(file.GetAsString(file.Size()));
   file.Close();
 
-  file.Open("SSAO_ps.hlsl");
+  file.Open(_T("SSAO_ps.hlsl"));
   String fsSource = StringUtils::toString(file.GetAsString(file.Size()));
   file.Close();
 

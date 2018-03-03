@@ -9,14 +9,9 @@
 
 namespace driderSDK {
 
-struct SSAOInitData : PassInitData
-{
-  
-};
+struct SSAOInitData : PassInitData {};
 
-struct SSAODrawData : PassDrawData
-{
-};
+struct SSAODrawData : PassDrawData {};
 
 class SSAOPass : RenderPass {
  public:
