@@ -23,12 +23,15 @@ void stringPrint_g(asIScriptGeneric* gen) {
 }
 
 ScriptEngine::ScriptEngine() {
+	m_scriptLogger = nullptr;
+	m_scriptTime = nullptr;
 
-	if (!m_scriptLogger.isStarted()) {
-		m_scriptLogger.startUp();
+	Logger::startUp();
+
+	if (Logger::isStarted()) {
+		m_scriptLogger = &Logger::instance();
 	}
 
-	m_scriptTime = nullptr;
 	if (Time::isStarted()) {
 		m_scriptTime = &Time::instance();
 	}
@@ -48,16 +51,7 @@ ScriptEngine::createEngine() {
 	m_scriptEngine->SetMessageCallback(asMETHOD(ScriptEngine, messageCallback), 
 																		 0, 
 																		 asCALL_CDECL);
-
-
-	//Register custom string type
-	/*result = m_scriptEngine->RegisterObjectType("TString", 
-																							sizeof(TString), 
-																							asOBJ_VALUE | asOBJ_POD);
-	DR_ASSERT(result >= 0);*/
-	//result = m_scriptEngine->RegisterStringFactory("TString", &stringFactory);
 	RegisterStdString(m_scriptEngine);
-	//
 
 	// Register the functions that the scripts will be allowed to use.
 	result = m_scriptEngine->RegisterGlobalFunction("void Print(string &in)",
@@ -175,10 +169,20 @@ ScriptEngine::prepareFunction(TString function) {
 Int8
 ScriptEngine::executeCall() {
 	g_timeout = m_scriptTime->getElapsedMilli() + 5000;
-	Int8 result = m_scriptContext->Execute();
+	Int8 result = m_scriptContext->Execute();			
+	TString NewLine(_T("<br>"));
+	addScriptLog(_T("There was an exception within a script call."), asMSGTYPE_ERROR);
+
 	if (result != asEXECUTION_FINISHED) {
 		if (result == asEXECUTION_EXCEPTION) {
-			addScriptLog(_T("There was an exception with a script call."), asMSGTYPE_ERROR);
+			TString details = _T("Exception details:") + NewLine + _T("Function: ") + 
+												StringUtils::toTString(m_scriptFunction->GetDeclaration()) + 
+												NewLine + _T("Line: ") + 
+												StringUtils::toTString(m_scriptContext->GetExceptionLineNumber()) + 
+												NewLine + _T("Description: ") + 
+												StringUtils::toTString(m_scriptContext->GetExceptionString());
+
+			addScriptLog(details, asMSGTYPE_INFORMATION);
 		}
 	}
 	return result;
@@ -193,6 +197,7 @@ ScriptEngine::release() {
 void
 ScriptEngine::lineCallback(asIScriptContext* scriptContext) {
 	if(g_timeout < m_scriptTime->getElapsedMilli()) {
+		addScriptLog(_T("The script timed out, stoping now..."), asMSGTYPE_ERROR);
 		scriptContext->Abort(); 
 		//scriptContext->Suspend(); //we can also use suspend
 	}
@@ -216,28 +221,19 @@ ScriptEngine::messageCallback(const asSMessageInfo* scriptMessage, void* param) 
 void
 ScriptEngine::addScriptLog(const TString& log, int type) {
 
-	/*driderSDK::Logger ModuleLogger; //testing logger, this will be removed
-	if (!ModuleLogger.isStarted()) {
-		ModuleLogger.startUp();
+	if (type == asMSGTYPE_WARNING) {
+		m_scriptLogger->addWarning(__FILE__, 
+															__LINE__, 
+															_T("[ScriptEngine] ") + log);
 	}
-	driderSDK::Logger& htmlLogger = ModuleLogger.instance();
-	htmlLogger.addWarning(__FILE__, __LINE__, log);*/
-
-	//if (type == asMSGTYPE_WARNING) {
-	//	m_scriptLogger.addWarning(__FILE__, 
-	//														__LINE__, 
-	//														"[ScriptEngine] " + StringUtils::toString(log));
-	//}
-	//else if (type == asMSGTYPE_INFORMATION) {
-	//	m_scriptLogger.addWarning(__FILE__,
-	//														__LINE__, 
-	//														"[ScriptEngine] (INFO) " + StringUtils::toString(log));
-	//}
-	//else if (type == asMSGTYPE_ERROR) {
-	//	m_scriptLogger.addError(__FILE__,
-	//													__LINE__, 
-	//													"[ScriptEngine] " + StringUtils::toString(log));
-	//}
+	else if (type == asMSGTYPE_INFORMATION) {
+		m_scriptLogger->addLog(_T("[ScriptEngine] ") + log);
+	}
+	else if (type == asMSGTYPE_ERROR) {
+		m_scriptLogger->addError(__FILE__,
+														__LINE__, 
+														_T("[ScriptEngine] ") + log);
+	}
 }
 
 }

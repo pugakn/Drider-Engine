@@ -134,14 +134,12 @@ public:
   asIScriptEngine* m_scriptEngine;
 	unsigned long timeout = 666;
 	Time* m_scriptTime;
-
+	Logger* m_scriptLogger;
 private:
 	//asIScriptEngine* m_scriptEngine;
 	asIScriptContext* m_scriptContext;
 	asIScriptFunction* m_scriptFunction;
 	asIScriptModule* m_scriptModule;
-	Logger m_scriptLogger;
-
 };
 
 }
