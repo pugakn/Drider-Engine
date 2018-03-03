@@ -267,3 +267,4 @@ __pycache__/
 *.pyc
 /DriderUIUnitTest/GPUCache
 /DriderUIUnitTest/VideoDecodeStats
+TestScriptApp/AS_DEBUG/__main.txt
