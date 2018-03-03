@@ -11,7 +11,7 @@ FileSystem::~FileSystem() {
 }
 
 bool
-FileSystem::CreateAndOpen(const String& filename, File& file) {
+FileSystem::CreateAndOpen(const TString& filename, File& file) {
   std::ofstream newFile(filename);
   newFile.close();
 
@@ -19,7 +19,7 @@ FileSystem::CreateAndOpen(const String& filename, File& file) {
 }
 
 void
-FileSystem::Copy(const String& filepathSrc, const String& filepathDst) {
+FileSystem::Copy(const TString& filepathSrc, const TString& filepathDst) {
   File srcFile;
   srcFile.Open(filepathSrc);
 
@@ -38,27 +38,23 @@ FileSystem::Copy(const String& filepathSrc, const String& filepathDst) {
 }
 
 void
-FileSystem::Move(const String& filepathSrc, const String& filepathDst) {
+FileSystem::Move(const TString& filepathSrc, const TString& filepathDst) {
   Copy(filepathSrc, filepathDst);
   Remove(filepathSrc);
 }
 
 bool
-FileSystem::Remove(const String& filepath) {
-  String rename = StringUtils::toString(filepath);
-
-  bool successfullyErased = remove(rename.c_str()) == 0;
+FileSystem::Remove(const TString& filepath) {
+  bool successfullyErased = remove(StringUtils::toString(filepath).c_str()) == 0;
 
   return successfullyErased;
 }
 
 bool
-FileSystem::IsFile(const String& filepath) {
-  String rename = StringUtils::toString(filepath);
-
+FileSystem::IsFile(const TString& filepath) {
   struct stat s;
 
-  if (stat(rename.c_str(), &s) == 0) {
+  if (stat(StringUtils::toString(filepath).c_str(), &s) == 0) {
     if (s.st_mode & S_IFREG) {
       return true;
     }
@@ -68,12 +64,12 @@ FileSystem::IsFile(const String& filepath) {
 }
 
 bool
-FileSystem::IsDirectory(const String& filepath) {
-  String rename = StringUtils::toString(filepath);
+FileSystem::IsDirectory(const TString& filepath) {
+  TString rename = filepath;
 
   struct stat s;
 
-  if (stat(rename.c_str(), &s) == 0) {
+  if (stat(StringUtils::toString(rename).c_str(), &s) == 0) {
     if (s.st_mode & S_IFDIR) {
       return true;
     }
@@ -83,18 +79,18 @@ FileSystem::IsDirectory(const String& filepath) {
 }
 
 bool
-FileSystem::Exists(const String& filepath) {
+FileSystem::Exists(const TString& filepath) {
   std::ifstream f(filepath.c_str());
   return f.good();
 }
 
-String
-FileSystem::GetFileExtension(const String& file) {
+TString
+FileSystem::GetFileExtension(const TString& file) {
   SizeT pos = file.find_last_of(_T('.'));
 
-  String extension;
+  TString extension;
 
-  if (pos != String::npos) {
+  if (pos != TString::npos) {
     extension = file.substr(pos + 1);
   }
 

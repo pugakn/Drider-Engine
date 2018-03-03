@@ -5,10 +5,13 @@
 #include <dr_logger.h>
 #include <string>
 #include "dr_script_prerequisites.h"
+#include <dr_export_script.h>
 
 #include <iostream>
 
 namespace driderSDK {
+
+class Time;
 
 void stringPrint_g(asIScriptGeneric* gen);
 
@@ -55,7 +58,8 @@ public:
 	*  Name of the file to open.
 	*/
 	Int8
-	addScript(const TString& fileName);
+	addScript(const TString& scriptName,
+            const TString& script);
 
 	/**
 	* Compiles the script.
@@ -99,12 +103,9 @@ public:
 	*
 	* @param scriptContext
 	*   Script context to check.
-	*
-	* @param timeOut
-	*   Time required to abort the script.
 	*/
 	void 
-	lineCallback(asIScriptContext *scriptContext, unsigned long *timeOut);
+	lineCallback(asIScriptContext *scriptContext);
 
 	/**
 	* Gets the messages from the script's engine and logs them.
@@ -129,14 +130,18 @@ public:
 	*/
 	void 
 	addScriptLog(const TString& log, const int type);
+
   asIScriptEngine* m_scriptEngine;
+	unsigned long timeout = 666;
+	Time* m_scriptTime;
+
 private:
 	//asIScriptEngine* m_scriptEngine;
 	asIScriptContext* m_scriptContext;
 	asIScriptFunction* m_scriptFunction;
 	asIScriptModule* m_scriptModule;
 	Logger m_scriptLogger;
-	unsigned long timeout = 4000;
+
 };
 
 }

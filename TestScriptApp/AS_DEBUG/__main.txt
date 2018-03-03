@@ -1,23 +1,44 @@
 void main()
 
-Temps: 7
+Temps: 3, 4, 11
 
 Variables: 
- 007: string {noname}
+ 001: (heap) Object obj
+ 002: float a
+ 011: string {noname}
 
 
-- 3,2 -
-    0   7 *    SUSPEND
-    1   7 *    PGA      182383992
-    3   8 *    PSF      v7
-    4   9 *    CALLSYS  20           (string::string(const string&in))
-               ObjInfo  v7, 1
-    6   7 *    PSF      v7
-    7   8 *    CALLSYS  69           (void Print(string&in))
-    9   7 *    PSF      v7
-   10   8 *    CALLSYS  21           (string::~string())
-- 4,2 -
-               ObjInfo  v7, 0
-   12   7 *    SUSPEND
+- 5,2 -
+    0  11 *    SUSPEND
+               VarDecl  0
+    1  11 *    CALLSYS  70           (Object@ Object())
+    3  11 *    STOREOBJ v1
+- 6,2 -
+    4  11 *    SUSPEND
+               VarDecl  1
+    5  11 *    PshC4    0x41200000          (i:1092616192, f:10)
+    7  12 *    PshVPtr  v1
+    8  13 *    CALLSYS  73           (float Object::Add(float))
+   10  11 *    CpyRtoV4 v4
+   11  11 *    CpyVtoV4 v2, v4
+- 7,2 -
+   13  11 *    SUSPEND
+   14  11 *    CMPIf    v2, 10.000000
+   16  11 *    JNZ      +12              (d:30)
+- 8,3 -
+   18  11 *    SUSPEND
+   19  11 *    PGA      211170640
+   21  12 *    PSF      v11
+   22  13 *    CALLSYS  20           (string::string(const string&in))
+               ObjInfo  v11, 1
+   24  11 *    PSF      v11
+   25  12 *    CALLSYS  69           (void Print(string&in))
+   27  11 *    PSF      v11
+   28  12 *    CALLSYS  21           (string::~string())
+- 10,2 -
+               ObjInfo  v11, 0
+            1:
+   30  11 *    SUSPEND
+   31  11 *    FREE     v1, 211414512
             0:
-   13   7 *    RET      0
+   33  11 *    RET      0

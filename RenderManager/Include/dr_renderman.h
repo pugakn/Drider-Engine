@@ -57,25 +57,37 @@ class RenderMan {
   GBufferDrawData m_GBufferDrawData;
 
   RenderTarget* ColorRT;
-  Texture*      ColorTex;
   RenderTarget* PositionRT;
-  Texture*      PositionTex;
   RenderTarget* NormalRT;
-  Texture*      NormalTex;
   RenderTarget* RoughnessRT;
-  Texture*      RoughnessTex;
   RenderTarget* EmissivityRT;
-  Texture*      EmissivityTex;
   RenderTarget* TransparencyRT;
-  Texture*      TransparencyTex;
   RenderTarget* ShadowRT;
-  Texture*      ShadowTex;
   RenderTarget* SSSRT;
-  Texture*      SSSTex;
   RenderTarget* SSAORT;
-  Texture*      SSAOTex;
   RenderTarget* SSAOBlurRT;
+
+  Texture*      ColorTex;
+  Texture*      PositionTex;
+  Texture*      NormalTex;
+  Texture*      RoughnessTex;
+  Texture*      EmissivityTex;
+  Texture*      TransparencyTex;
+  Texture*      ShadowTex;
+  Texture*      SSSTex;
+  Texture*      SSAOTex;
   Texture*      SSAOBlurTex;
+
+  DrTextureDesc ColorTexDesc;
+  DrTextureDesc PositionTexDesc;
+  DrTextureDesc NormalTexDesc;
+  DrTextureDesc RoughnessTexDesc;
+  DrTextureDesc EmissivityTexDesc;
+  DrTextureDesc TransparencyTexDesc;
+  DrTextureDesc ShadowTexDesc;
+  DrTextureDesc SSSTexDesc;
+  DrTextureDesc SSAOTexDesc;
+  DrTextureDesc SSAOBlurTexDesc;
 };
 
 }

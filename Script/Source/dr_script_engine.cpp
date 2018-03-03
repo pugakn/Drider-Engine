@@ -1,12 +1,21 @@
-#include <dr_file.h>
 #include <dr_string_utils.h>
+#include <dr_resource_manager.h>
+#include <dr_time.h>
+
 #include "dr_script_engine.h"
 #include "dr_script_string_factory.h"
 #include "scriptstdstring.h"
 
+#include "dr_object.h"
+
 
 namespace driderSDK {
 
+	unsigned long g_timeout;
+
+ObjectAS *Ref_Factory() {
+  return new ObjectAS();
+}
 
 void stringPrint_g(asIScriptGeneric* gen) {
 	WString *str = (WString*)gen->GetArgAddress(0);
@@ -17,6 +26,11 @@ ScriptEngine::ScriptEngine() {
 
 	if (!m_scriptLogger.isStarted()) {
 		m_scriptLogger.startUp();
+	}
+
+	m_scriptTime = nullptr;
+	if (Time::isStarted()) {
+		m_scriptTime = &Time::instance();
 	}
 
 }
@@ -50,6 +64,33 @@ ScriptEngine::createEngine() {
 																									asFUNCTION(stringPrint_g), 
 																									asCALL_GENERIC);
 
+  /*result = m_scriptEngine->RegisterObjectType("Object",
+                                              0,
+                                              asOBJ_REF);
+
+  result = m_scriptEngine->RegisterObjectBehaviour("Object", 
+                                                   asBEHAVE_FACTORY,
+                                                   "Object@ f()", 
+                                                   asFUNCTION(Ref_Factory),
+                                                   asCALL_CDECL);
+
+  result = m_scriptEngine->RegisterObjectBehaviour("Object",
+                                      asBEHAVE_ADDREF,
+                                      "void f()", 
+                                      asMETHOD(ObjectAS, AddRef),
+                                      asCALL_THISCALL);
+
+  result = m_scriptEngine->RegisterObjectBehaviour("Object", 
+                                                   asBEHAVE_RELEASE, 
+                                                   "void f()", 
+                                                   asMETHOD(ObjectAS, Release), 
+                                                   asCALL_THISCALL);
+
+  result = m_scriptEngine->RegisterObjectMethod("Object",
+                                                "float Add(float param1)",
+                                                asMETHODPR(ObjectAS, Add, (float), float),
+                                                asCALL_THISCALL);*/
+
   /*
   * Seccion para registrar metodos //eso dice arriba pero en ingles...(asi es comente un comentario)
   */
@@ -58,34 +99,17 @@ ScriptEngine::createEngine() {
 }
 
 Int8
-ScriptEngine::addScript(const TString& fileName) {
-	File scriptFile;
-	if(!scriptFile.Open(fileName)) {
-		addScriptLog(_T("Script file doesn't exist : ") + fileName, asMSGTYPE_ERROR);
-		m_scriptEngine->Release();
-		return -1;
-	}
-  
-	SizeT fileLength = scriptFile.Size();
+ScriptEngine::addScript(const TString& scriptName,
+                        const TString& script) {
 
-	TString script;
-	script = scriptFile.GetAsString(fileLength);
-	scriptFile.Close();
-
-	if(script.size() == 0) {
-		addScriptLog(_T("Script file : ") + fileName + _T(" couldn't be loaded."), asMSGTYPE_ERROR);
-		m_scriptEngine->Release();
-		return -2;
-	}
 	m_scriptModule = m_scriptEngine->GetModule("module", asGM_CREATE_IF_NOT_EXISTS);
 
-	Int8 result = m_scriptModule->AddScriptSection(StringUtils::toString(fileName).c_str(),
-																								&StringUtils::toString(script)[0],
-																								fileLength);
+	Int8 result = m_scriptModule->AddScriptSection(StringUtils::toString(scriptName).c_str(),
+                                                 StringUtils::toString(script).c_str());
 	if(result < 0) {
-		addScriptLog(_T("AddScriptSection failed on file ") + fileName, asMSGTYPE_ERROR);
+		addScriptLog(_T("AddScriptSection failed on file ") + scriptName, asMSGTYPE_ERROR);
 		m_scriptEngine->Release();
-		return -3;
+		return -1;
 	}
 	return 0;
 }
@@ -110,15 +134,16 @@ ScriptEngine::configureContext() {
 		return -1;
 	}
 
-	/*Int8 result = m_scriptContext->SetLineCallback(asMETHOD(ScriptEngine, lineCallback),
-																								 &timeout,
+	Int8 result = m_scriptContext->SetLineCallback(asMETHOD(ScriptEngine, lineCallback),
+																								 &g_timeout,
 																								 asCALL_THISCALL);
 	if(result < 0) {
 		addScriptLog(_T("Failed to set the line callback."), asMSGTYPE_ERROR);
 		m_scriptContext->Release();
 		m_scriptEngine->Release();
 		return -2;
-	}*/
+	}
+
 	return 0;
 }
 
@@ -149,6 +174,7 @@ ScriptEngine::prepareFunction(TString function) {
 
 Int8
 ScriptEngine::executeCall() {
+	g_timeout = m_scriptTime->getElapsedMilli() + 5000;
 	Int8 result = m_scriptContext->Execute();
 	if (result != asEXECUTION_FINISHED) {
 		if (result == asEXECUTION_EXCEPTION) {
@@ -165,9 +191,10 @@ ScriptEngine::release() {
 }
 
 void
-ScriptEngine::lineCallback(asIScriptContext *scriptContext, unsigned long *timeOut) {
-	if(timeout != /*functionToObtainTime()*/ 0) {
-		m_scriptContext->Abort(); //we can also use suspend
+ScriptEngine::lineCallback(asIScriptContext* scriptContext) {
+	if(g_timeout < m_scriptTime->getElapsedMilli()) {
+		scriptContext->Abort(); 
+		//scriptContext->Suspend(); //we can also use suspend
 	}
 }
 
@@ -178,9 +205,9 @@ ScriptEngine::messageCallback(const asSMessageInfo* scriptMessage, void* param) 
 
 	//Expect something like "mySection (5, 1) : Example message here"
 	TString message = StringUtils::toTString(scriptMessage->section) + 
-																					 //_T(" (") + StringUtils::toTString(std::to_string(row)) +
-																					 //_T(", ") + StringUtils::toTString(std::to_string(col)) +
-																					 //_T(") : ") + 
+																					 _T(" (") + StringUtils::toTString(row) +
+																					 _T(", ") + StringUtils::toTString(col) +
+																					 _T(") : ") + 
 																					 StringUtils::toTString(scriptMessage->message);
 
 	addScriptLog(message, scriptMessage->type);
@@ -189,12 +216,12 @@ ScriptEngine::messageCallback(const asSMessageInfo* scriptMessage, void* param) 
 void
 ScriptEngine::addScriptLog(const TString& log, int type) {
 
-	driderSDK::Logger ModuleLogger; //testing logger, this will be removed
+	/*driderSDK::Logger ModuleLogger; //testing logger, this will be removed
 	if (!ModuleLogger.isStarted()) {
 		ModuleLogger.startUp();
 	}
 	driderSDK::Logger& htmlLogger = ModuleLogger.instance();
-	htmlLogger.addWarning(__FILE__, __LINE__, log);
+	htmlLogger.addWarning(__FILE__, __LINE__, log);*/
 
 	//if (type == asMSGTYPE_WARNING) {
 	//	m_scriptLogger.addWarning(__FILE__, 

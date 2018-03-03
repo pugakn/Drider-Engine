@@ -1,5 +1,4 @@
 #pragma once
-#include <string>
 #include <fstream>
 #include "dr_util_prerequisites.h"
 #include "dr_module.h"
@@ -13,10 +12,9 @@ namespace driderSDK
 * Outs information to file.
 *
 * Sample usage:
-* Logger sampleName;
+* Logger& sampleName = Logger::instance();
 * if (!sampleName.isStarted()) {
 *   sampleName.startUp();
-*   sampleName.reset();
 * }
 */
 class DR_UTIL_EXPORT Logger : public Module<Logger>
@@ -55,7 +53,7 @@ class DR_UTIL_EXPORT Logger : public Module<Logger>
   void
   addError(const String Filename,
            int lineNumber,
-           const String message);
+           const TString message);
 
   /**
   * TEST::addWarning
@@ -67,10 +65,17 @@ class DR_UTIL_EXPORT Logger : public Module<Logger>
   void
   addWarning(const String Filename,
              int lineNumber,
-             const String message);
+             const TString message);
+
+  void
+  log(const TString message);
+
+ protected:
+  void
+  onStartUp();
 
  private:
-	 String m_filePath;
+	 TString m_filePath;
 };
 
 }

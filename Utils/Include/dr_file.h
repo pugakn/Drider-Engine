@@ -43,7 +43,7 @@ class DR_UTIL_EXPORT File
   *   If file was successfuly open or not.
   */
   bool
-  Open(const String filename);
+  Open(const TString filename);
 
   /**
   * TEST::Close
@@ -120,13 +120,13 @@ class DR_UTIL_EXPORT File
   /**
   * TEST::GetAsString
   *
-  * Return a string of the current position + nBytes
+  * Return a TString of the current position + nBytes
   *
   * @param nBytes
-  *   Number of bytes to read as string.
+  *   Number of bytes to read as TString.
   *
   * @return
-  *   Resulting string.
+  *   Resulting TString.
   */
   TString
   GetAsString(const SizeT nBytes);
@@ -134,7 +134,7 @@ class DR_UTIL_EXPORT File
  protected:
   std::fstream m_file;
   SizeT m_size;
-  String m_filename;
+  TString m_filename;
 };
 
 }
