@@ -37,7 +37,7 @@ LinesTechnique::compile() {
 
   std::vector<DrInputElementDesc> inputDesc;
   DrInputElementDesc ie;
-  ie.format = DR_FORMAT::kDrFormat_R32G32B32A32_FLOAT;
+  ie.format = DR_FORMAT::kR32G32B32A32_FLOAT;
   ie.offset = 0;
   ie.semanticName = "POSITION";
   inputDesc.push_back(ie);
