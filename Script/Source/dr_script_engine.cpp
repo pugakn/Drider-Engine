@@ -64,7 +64,7 @@ ScriptEngine::createEngine() {
 																									asFUNCTION(stringPrint_g), 
 																									asCALL_GENERIC);
 
-  result = m_scriptEngine->RegisterObjectType("Object",
+  /*result = m_scriptEngine->RegisterObjectType("Object",
                                               0,
                                               asOBJ_REF);
 
@@ -89,7 +89,7 @@ ScriptEngine::createEngine() {
   result = m_scriptEngine->RegisterObjectMethod("Object",
                                                 "float Add(float param1)",
                                                 asMETHODPR(ObjectAS, Add, (float), float),
-                                                asCALL_THISCALL);
+                                                asCALL_THISCALL);*/
 
   /*
   * Seccion para registrar metodos //eso dice arriba pero en ingles...(asi es comente un comentario)

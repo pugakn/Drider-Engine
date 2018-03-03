@@ -1,25 +1,28 @@
 
 Total count
 PshC4      : 1
-PSF        : 3
-PshVPtr    : 1
-CALLSYS    : 4
-SUSPEND    : 2
-PGA        : 1
+RET        : 1
+JNZ        : 1
+PshVPtr    : 2
+CMPIf      : 1
+CALLSYS    : 3
+SUSPEND    : 4
+FREE       : 1
+STOREOBJ   : 1
+CpyRtoV4   : 1
 
 Never executed
 PopPtr    
 PshGPtr   
 PshV4     
+PSF       
 SwapPtr   
 NOT       
 PshG4     
 LdGRdR4   
 CALL      
-RET       
 JMP       
 JZ        
-JNZ       
 JS        
 JNS       
 JP        
@@ -60,7 +63,6 @@ CMPu
 CMPf      
 CMPi      
 CMPIi     
-CMPIf     
 CMPIu     
 JMPP      
 PopRPtr   
@@ -68,9 +70,7 @@ PshRPtr
 STR       
 CALLBND   
 ALLOC     
-FREE      
 LOADOBJ   
-STOREOBJ  
 GETOBJ    
 REFCPY    
 CHKREF    
@@ -88,7 +88,6 @@ CpyVtoV8
 CpyVtoR4  
 CpyVtoR8  
 CpyVtoG4  
-CpyRtoV4  
 CpyRtoV8  
 CpyGtoV4  
 WRTV1     
@@ -101,6 +100,7 @@ RDR4
 RDR8      
 LDG       
 LDV       
+PGA       
 CmpPtr    
 VAR       
 iTOf      
@@ -206,11 +206,17 @@ Thiscall1
 
 Sequences
 PshC4     , PshVPtr    : 1
-PSF       , CALLSYS    : 3
-PshVPtr   , CALLSYS    : 1
-CALLSYS   , PSF        : 2
+JNZ       , SUSPEND    : 1
+PshVPtr   , CALLSYS    : 2
+CMPIf     , JNZ        : 1
 CALLSYS   , SUSPEND    : 1
+CALLSYS   , STOREOBJ   : 1
+CALLSYS   , CpyRtoV4   : 1
 SUSPEND   , PshC4      : 1
-SUSPEND   , PGA        : 1
-PGA       , PSF        : 1
+SUSPEND   , PshVPtr    : 1
+SUSPEND   , CALLSYS    : 1
+SUSPEND   , FREE       : 1
+FREE      , RET        : 1
+STOREOBJ  , SUSPEND    : 1
+CpyRtoV4  , CMPIf      : 1
 LABEL     , SUSPEND    : 1
