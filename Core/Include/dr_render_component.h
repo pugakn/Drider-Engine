@@ -37,7 +37,7 @@ public:
   RenderComponent(GameObject& _gameObject, 
                   MeshList&& _materials);
 
-  const MeshList&
+  /*const */MeshList&
   getMeshes()
   {
     return m_meshes;

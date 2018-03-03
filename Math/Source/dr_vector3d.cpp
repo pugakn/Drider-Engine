@@ -205,12 +205,12 @@ Vector3D::operator/=(const float scalar) {
 }
 
 bool
-Vector3D::operator==(const Vector3D& otherVector) {
+Vector3D::operator==(const Vector3D& otherVector) const {
   return ((x == otherVector.x) && (y == otherVector.y) && (z == otherVector.z));
 }
 
 bool
-Vector3D::operator!=(const Vector3D& otherVector) {
+Vector3D::operator!=(const Vector3D& otherVector) const {
   return !((*this) == otherVector);
 }
 

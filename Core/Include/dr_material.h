@@ -1,4 +1,4 @@
-
+#pragma once
 #include <array>
 #include <vector>
 #include <dr_vector2d.h>
@@ -9,6 +9,8 @@
 #include "dr_resource.h"
 
 namespace driderSDK {
+
+class TextureCore;
 
 namespace PROPERTY_TYPE {
 enum E
@@ -41,7 +43,7 @@ struct Property
     
   TString name;
   const PROPERTY_TYPE::E type;
-  //Texture* texture;
+  std::weak_ptr<TextureCore> texture;
 };
 
 struct FloatProperty : Property
@@ -121,12 +123,16 @@ class DR_CORE_EXPORT Material : public Resource
 
   Material(){}
 
-  Material(const Material&) = delete;
+  Material(const TString& name);
 
-  Material& operator=(const Material&) = delete;
+  Material(const Material& other);
+
+  Material& operator=(const Material& other);
   
   virtual ~Material(){}
   
+  void 
+  set();
   /**
   * Adds a new property of PropertyType type to the material properperties.
   * 
@@ -152,7 +158,7 @@ class DR_CORE_EXPORT Material : public Resource
   {
     auto property = dr_make_unique<PropertyType>(name, value, channel);
 
-    auto rawPtr = prop.get();
+    auto rawPtr = property.get();
     
     m_properties.push_back(std::move(property));
     
@@ -206,6 +212,12 @@ class DR_CORE_EXPORT Material : public Resource
     return rawPtr;
   }
 
+  /**
+  * Sets the texture of a property.
+  */
+  void
+  setTexture(std::shared_ptr<TextureCore> texture, 
+             const TString& propertyName);
   ///**
   //* Gets a property of type PropertyType.
   //* 
@@ -345,12 +357,25 @@ class DR_CORE_EXPORT Material : public Resource
   //*/
   //Property*
   //transformProperty(Property* property, PROPERTY_TYPE newType);
+
+  bool
+  projectShadow() const;
+
+
  private:
   PropertyPtr
   createProperty(const TString& name, PROPERTY_TYPE::E type);
+
+  template<class T>
+  PropertyPtr 
+  copyProperty(const PropertyPtr& prop) 
+  {
+    return dr_make_unique<T>(dynamic_cast<T&>(*prop));    
+  }
  private:
   TString m_name;
   PropertyList m_properties;
+  bool m_proyectShadow;
 };
 
 }

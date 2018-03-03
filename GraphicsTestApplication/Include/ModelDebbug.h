@@ -10,10 +10,21 @@ class ModelDebbug : public DrawableComponent
  public:
   using DrawableComponent::DrawableComponent;
 
+
+
  private:
-   
+  
+  void
+  create();
+
+  /*virtual void
+  create(std::shared_ptr<Model> model);*/
+
   virtual void
-  create(std::shared_ptr<Model> model);
+  onCreate() override;
+
+  virtual void
+  onUpdate() override;
 
   virtual void 
   onRender() override;

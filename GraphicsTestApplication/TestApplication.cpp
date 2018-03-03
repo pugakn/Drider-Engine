@@ -1,4 +1,5 @@
 #include "TestApplication.h"
+#include <dr_graphics_driver.h>
 #include <unordered_map>
 #include <random>
 #include <iostream>
@@ -16,12 +17,15 @@
 #include <dr_render_component.h>
 #include <dr_string_utils.h>
 #include <dr_time.h>
+#include <dr_gameObject.h>
+#include <dr_material.h>
 #include "DrawableComponent.h"
 #include "ModelDebbug.h"
 #include "NPCMovement.h"
 #include "StaticMeshTechnique.h"
 #include "LinesTechnique.h"
 #include "CameraDebbug.h"
+#include <dr_texture_core.h>
 
 namespace driderSDK {
 
@@ -32,22 +36,31 @@ TestApplication::~TestApplication() {}
 void
 TestApplication::postInit() {
   
+  GraphicsDriver::startUp(DR_GRAPHICS_API::D3D11, 
+                          m_viewport.width, 
+                          m_viewport.height,
+                          m_hwnd);
+  InputManager::startUp((SizeT)m_hwnd);
+  SceneGraph::startUp();
+  Time::startUp();
+  ResourceManager::startUp();
+  
   m_camera = std::make_shared<Camera>(_T("MAIN_CAM"), 
                                       m_viewport);
 
-  m_camera->createProyection(45.f, 20.f, 4000.f);
-  m_camera->getTransform().setPosition({0.f, 100.0f, -100});
-  m_camera->setTarget({0.0f, 100.0f, 1.0f});
+  m_camera->createProyection(45.f, 20.f, 3000.f);
+  m_camera->getTransform().setPosition({0.f, 300.0f, -400});
+  m_camera->setTarget({0.0f, 200.f, 1.0f});
 
   auto p = m_camera->createComponent<CameraDebbug>();
 
-  auto tech = new LinesTechnique(&(*m_activeCam), 
+  m_linesTech = dr_make_unique<LinesTechnique>(&(*m_activeCam), 
                                  &m_camera->getWorldTransform().getMatrix());
 
-  p->setShaderTechnique(tech);
+  m_linesTech->compile();
 
-  m_techs.push_back(tech);
-  
+  p->setShaderTechnique(m_linesTech.get());
+
   m_leftCam = std::make_shared<Camera>(_T("LEFT_CAM"), 
                                         m_viewport);
   
@@ -61,8 +74,8 @@ TestApplication::postInit() {
   
   
   m_upCam ->createProyection(45.f, 0.1f, 10000.f);
-  m_upCam->getTransform().setPosition({0.f, 3000.f, 1000.f});
-  m_upCam->setTarget({1.f, 1.f, 1000.f});
+  m_upCam->getTransform().setPosition({0.f, 4000.f, 0.f});
+  m_upCam->setTarget({1.f, 1.f, 200.f});
 
   m_activeCam = m_leftCam;
 
@@ -70,15 +83,27 @@ TestApplication::postInit() {
 
   m_technique->compile();
 
-  ResourceManager::startUp();
-
   initResources();
   initInput();
-  initSound();
   initSceneGraph();
   
-  SceneGraph::addObject(m_leftCam);
-  SceneGraph::addObject(m_upCam);
+  m_animated.push_back(new Model3D());
+  m_animated[0]->init(_T("HipHopDancing.fbx"));
+
+  m_animated.push_back(new Model3D());
+  m_animated[1]->init(_T("HipHopDancing.fbx"));
+  m_animated[1]->transform.move({200, 0, 0});
+  m_animated[1]->elapsedTime = 150.f;
+
+  m_animated.push_back(new Model3D());
+  m_animated[2]->init(_T("HipHopDancing.fbx"));
+  m_animated[2]->transform.move({-200, 0, 0});
+  m_animated[2]->elapsedTime = 33.f;
+  
+  /*SceneGraph::addObject(m_leftCam);
+  */SceneGraph::addObject(m_upCam);
+  m_leftCam->setParent(m_joker);
+  //m_upCam->setParent(m_joker);
   m_joker->addChild(m_camera);
 
   //m_sceneGraph->query(*m_camera, QUERY_ORDER::kBackToFront, 0);
@@ -130,6 +155,9 @@ TestApplication::input() {
   float f = 0;
   float s = 0;
 
+  float fc = 0;
+  float sc = 0;
+
   if (Joystick::get(0)) {   
     
     f = -Joystick::get(0)->getAxis(JOYSTICK_AXIS::kLSVer);
@@ -167,42 +195,53 @@ TestApplication::input() {
   }
 
   float vel = 150.f * Time::getDelta();
-  
-  m_joker->getTransform().move((dir * f + right * s) * vel);
+  float camVel = 500.f * Time::getDelta();
+ 
+  if (Math::abs(f) > 0.0f || Math::abs(s) > 0.0f) {
 
+    if (m_upCam != m_activeCam) {
+      m_joker->getTransform().move((dir * f + right * s) * vel);
+    }
+    else {
+      m_upCam->getTransform().move((Vector3D{0,0,1} * f + Vector3D{-1,0,0} * s) * camVel);
+      auto target = m_upCam->getTransform().getPosition();
+      m_upCam->setTarget({target.x + 0.5f, 0.f, target.z + 0.5f});
+    }
+  }
 }
 
 void
 TestApplication::postUpdate() {
-  //soundDriver->update();
   
-  Vector3D p = m_joker->getTransform().getPosition();
- 
-  m_upCam->getTransform().setPosition(m_joker->getTransform().getPosition());
-  m_upCam->getTransform().move(3000.f, AXIS::kY);
-  m_upCam->setTarget(m_joker->getTransform().getPosition() + Vector3D{0, 1, 1});
-  m_upCam->update();
+  InputManager::capture();
+  Time::update();
+  SceneGraph::update();
 
   input();
-
+  for (auto& anim : m_animated) {
+    anim->update();
+  }
+  
 }
 
 void 
 TestApplication::postRender() {
   
-  for (auto tech : m_techs) {
-    tech->setCamera(&(*m_activeCam));  
-  }
-  
-  SceneGraph::draw();
+  GraphicsDriver::API().clear();
 
-  //m_sceneGraph->draw();
+  m_linesTech->setCamera(&(*m_activeCam));
   
+  //SceneGraph::draw();
+  
+  for (auto& anim : m_animated) {
+    anim->draw(*m_activeCam);
+  }
+
+  m_camera->render();
+
   m_technique->setCamera(&(*m_activeCam));
 
   auto dc = &GraphicsAPI::getDeviceContext();
-
-  dc->setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
 
   auto meshes = SceneGraph::query(*m_camera, 
                                   m_queryOrder, 
@@ -210,23 +249,53 @@ TestApplication::postRender() {
                                   QUERY_PROPERTYS::kDynamic | 
                                   QUERY_PROPERTYS::kStatic);
 
+  dc->setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
+
   for (auto& mesh : meshes) {
 
     m_technique->setWorld(&mesh.first);
     
     if (m_technique->prepareForDraw()) {
-
+      if (auto material = mesh.second.material.lock()) {
+        material->set();
+      }
       mesh.second.vertexBuffer->set(*dc);
       mesh.second.indexBuffer->set(*dc);
 
       dc->draw(mesh.second.indicesCount, 0, 0);
     }
   }
+
+  GraphicsDriver::API().swapBuffers();
 }
 
 void 
 TestApplication::postDestroy() {
+
+  for (auto& anim : m_animated) {
+    anim->destroy();
+    delete anim;
+  }
+
+  m_animated.clear();
+
   ResourceManager::shutDown();
+  InputManager::shutDown();
+  Time::shutDown();
+  SceneGraph::shutDown();
+  GraphicsDriver::shutDown();
+}
+
+void addDrawableComponent(std::shared_ptr<driderSDK::GameObject> go,
+                          Technique* tech) {
+  if (go->getComponent<RenderComponent>()) {
+    auto p = go->createComponent<ModelDebbug>();
+    p->setShaderTechnique(tech);
+  }
+  for (auto child : go->getChildren())
+  {
+    addDrawableComponent(child, tech);
+  }
 }
 
 void 
@@ -245,12 +314,39 @@ TestApplication::initInput() {
     }
   };
 
+  auto toggleWireframe = [&]()
+  {
+    static bool wire = false;
+
+    static RasterizerState* rs = nullptr;
+
+    if (rs) {
+      rs->release();
+      std::cout << "RS released" << std::endl;
+    }
+
+    auto desc = GraphicsAPI::getRasterizerState().getDescriptor();
+
+    desc.fillMode = wire ? DR_FILL_MODE::kSolid : DR_FILL_MODE::kWireframe;
+
+    rs = GraphicsAPI::getDevice().createRasteizerState(desc);
+
+    rs->set(GraphicsAPI::getDeviceContext());
+
+    wire = !wire;
+  };
+
   auto debugList = [&](){
     m_debugList = true;
   };
 
   auto toggleQueryOrder = [&]() {
     m_queryOrder = static_cast<QUERY_ORDER::E>(!m_queryOrder);
+  };
+
+  auto debugOctree = [&]() {
+    auto octree = SceneGraph::getOctree();
+    addDrawableComponent(octree, m_linesTech.get());
   };
 
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
@@ -264,63 +360,42 @@ TestApplication::initInput() {
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kL,
                         debugList);
+
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kO,
+                        SceneGraph::buildOctree);
+
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kP,
+                        debugOctree);
+
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                         KEY_CODE::kJ, toggleWireframe);
 }
 
 void 
 TestApplication::initResources() {
-  ResourceManager* resourceManager = nullptr;
-  if (ResourceManager::isStarted()) {
-     resourceManager = &ResourceManager::instance();
-  }
-
-  //resourceManager->loadResource(_T("Rifle Punch.dae"));
-    
-  resourceManager->loadResource(_T("axe.jpg"));
-
-  resourceManager->loadResource(_T("VenomJok.X"));
-
-  resourceManager->loadResource(_T("Croc.X"));
-
-  resourceManager->loadResource(_T("dwarf.x"));
-
-  //resourceManager->loadResource(_T("Cube.fbx"));
-
-  resourceManager->loadResource(_T("China.dae"));
   
-  resourceManager->loadResource(_T("DuckyQuacky_.fbx"));
-}
+  //ResourceManager::loadResource(_T("Walking.fbx"));
 
-void 
-TestApplication::initSound() {
-  //soundDriver = new FMODSoundAPI;
+  ResourceManager::loadResource(_T("Kachujin_diffuse.png"));
 
-  //soundDriver->init();
-  //
-  //sound1 = new FMODSound;
+  ResourceManager::loadResource(_T("Croc.X"));
 
-  //soundDriver->system->createSound(_T("testSound.mp3"),
-  //                                 DR_SOUND_MODE::kDrMode_DEFAULT,
-  //                                 0,
-  //                                 sound1);
-  //channel = new FMODChannel;
-  //
-  //sound1->init(reinterpret_cast<SoundSystem*>(soundDriver->system->getReference()),
-  //             reinterpret_cast<DrChannel*>(channel->getReference()));
-  //sound1->setMode(DR_SOUND_MODE::kDrMode_LOOP_OFF);
-  //sound1->play();
+  ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
+
+  ResourceManager::loadResource(_T("HipHopDancing.fbx"));
 }
 
 void 
 TestApplication::initSceneGraph() {
-
-  auto resourceMgr = ResourceManager::instancePtr();
-
+  
   auto createNode = [&](std::shared_ptr<GameObject> parent, 
                         const TString& name, 
                         const TString& resName,
                         const Vector3D& pos) {
   
-    auto resource = resourceMgr->getReference(resName);
+    auto resource = ResourceManager::getReference(resName);
 
     auto model = std::dynamic_pointer_cast<Model>(resource);
     
@@ -328,14 +403,7 @@ TestApplication::initSceneGraph() {
 
     auto p = node->createComponent<ModelDebbug>();
 
-    auto tech = new LinesTechnique(&(*m_activeCam), 
-                                   &node->getWorldTransform().getMatrix());
-
-    p->setShaderTechnique(tech);
-
-    p->setModel(model);
-
-    m_techs.push_back(tech);
+    p->setShaderTechnique(m_linesTech.get());
   
     node->setName(name);
 
@@ -345,33 +413,49 @@ TestApplication::initSceneGraph() {
   };
 
   auto root = SceneGraph::getRoot();
-      
-  auto n = createNode(root, _T("Croc0"), _T("Croc.X"), {-200.f, 0.0f, 0.0f});
-  
-  m_joker = n;
-  
+     
+  createNode(root, 
+             _T("Quad"), 
+             _T("ScreenAlignedQuad.3ds"), 
+             {50, 300, 200})->getTransform().scale({40, 40, 40});
+
   std::unordered_map<Int32, TString> names
   {
     {0, _T("VenomJok.X")},
     {1, _T("Croc.X")},
     {2, _T("dwarf.x")},
-    {3, _T("DuckyQuacky_.fbx")}
+    {3, _T("DuckyQuacky_.fbx")},
+    {4, _T("China.dae")}
   };
  
   std::mt19937 mt(std::random_device{}());
   
   std::uniform_int_distribution<> dt(0, static_cast<Int32>(names.size() - 1));
-  std::uniform_int_distribution<> scl(1, 10);
-  std::uniform_real_distribution<float> space(-2000.f, 2000.f);
+  std::uniform_int_distribution<> scl(1, 3);
+  std::uniform_real_distribution<float> space(-1500, 1500);
 
-  for (Int32 i = 0; i < 256; ++i) {
+  for (Int32 i = 0; i < 0; ++i) {
     Vector3D pos(space(mt), 0, space(mt));
     TString aaa =StringUtils::toTString(i);
-    auto n = createNode(root, names[i] + aaa, 
-                        names[dt(mt)], 
-                        pos);    
+
+    auto mod = dt(mt);
+
+    auto n = createNode(root, names[mod] + aaa, 
+                        names[mod], 
+                        pos);   
+    n->setStatic(true);
     float sc = static_cast<float>(scl(mt));
     n->getTransform().scale({sc,sc,sc});
   }
+  
+  auto n = createNode(root, _T("Chinita"), _T("HipHopDancing.fbx"), {-200.f, 0.0f, 0.0f});
+  n->getTransform().scale({ 1,1,1 });
+  m_joker = n;
+  
+  auto chinitaMat = ResourceManager::createMaterial(_T("Mat_Chinita"));
+  auto chinitaTex = ResourceManager::getReferenceT<TextureCore>(_T("Kachujin_diffuse.png"));
+
+  chinitaMat->getProperty(_T("Albedo"))->texture = chinitaTex;
 }
+
 }

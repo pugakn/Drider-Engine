@@ -13,6 +13,8 @@
 
 namespace driderSDK {
 
+class Resource;
+
 class DR_ENGINE_EXPORT Codec
 {
  public:
@@ -74,6 +76,11 @@ class DR_ENGINE_EXPORT Codec
   */
   virtual CompatibleType::E
   getType () = 0;
+
+protected:
+
+  void 
+  addResource(std::shared_ptr<Resource> resource, const TString& resourceName);
 };
  
 

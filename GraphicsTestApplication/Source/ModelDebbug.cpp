@@ -10,13 +10,13 @@
 #include <dr_vertex_buffer.h>
 #include <dr_index_buffer.h>
 #include <dr_gameObject.h>
+#include <dr_string_utils.h>
+#include <iostream>
 
 namespace driderSDK {
 
 void 
-ModelDebbug::create(std::shared_ptr<Model> model) {
-  
-  //Create index buffer & vertex buffer 4 lines
+ModelDebbug::create() {
   std::vector<Mesh> meshes{1};
 
   auto& mesh = meshes[0];
@@ -70,10 +70,26 @@ ModelDebbug::create(std::shared_ptr<Model> model) {
   createMeshBuffers(meshes);
 }
 
-void 
+void
+ModelDebbug::onCreate() {
+  create();
+}
+
+void
+ModelDebbug::onUpdate() {
+  if (m_gameObject.changed()) {
+    create();
+  }
+}
+
+void
 ModelDebbug::onRender() {
   
-  if (getModel() && m_technique) {
+  if (m_technique) {
+
+    //std::cout << "Debuggin " << m_meshes[0].indicesCount << std::endl;
+
+    m_technique->setWorld(&m_gameObject.getWorldTransform().getMatrix());
 
     if (m_technique->prepareForDraw()) {
 
@@ -89,7 +105,5 @@ ModelDebbug::onRender() {
       }
     }
   } 
-
 }
-
 }

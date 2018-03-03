@@ -94,13 +94,24 @@ CameraDebbug::create(std::shared_ptr<Model> model) {
   createMeshBuffers(meshes);
 }
 
-void CameraDebbug::onUpdate() {
+void 
+CameraDebbug::onCreate() {
   create(nullptr);
+}
+
+void 
+CameraDebbug::onUpdate() {
+  if (m_gameObject.changed()) {
+    create(nullptr);
+  }
 }
 
 void 
 CameraDebbug::onRender() {
   if (m_technique) {
+
+    m_technique->setWorld(&m_gameObject.getWorldTransform().getMatrix());
+
     if (m_technique->prepareForDraw()) {
       
       auto& deviceContext = GraphicsAPI::getDeviceContext();

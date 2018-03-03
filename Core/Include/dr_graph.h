@@ -63,6 +63,9 @@ public:
   static SharedGameObject 
   getRoot();
 
+  static SharedGameObject 
+  getOctree();
+
   /**
   * Query meshes from the scene graph
   */
@@ -119,6 +122,14 @@ private:
   filterObjects(GameObjectQueue& objects, 
                 QueryResult& result, 
                 UInt32 props);
+
+  static void
+  addGameObjectsStatics(GameObject& node,
+                        std::vector<std::shared_ptr<GameObject>>* list);
+
+  static void
+  addAllChilds(GameObject& node,
+               std::vector<std::shared_ptr<GameObject>>* list);
 private:
   SharedGameObject m_root;
   SharedGameObject m_octree;
