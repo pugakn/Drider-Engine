@@ -1,4 +1,4 @@
-
+#pragma once
 #include <array>
 #include <vector>
 #include <dr_vector2d.h>
@@ -123,9 +123,11 @@ class DR_CORE_EXPORT Material : public Resource
 
   Material(){}
 
-  Material(const Material&) = delete;
+  Material(const TString& name);
 
-  Material& operator=(const Material&) = delete;
+  Material(const Material& other);
+
+  Material& operator=(const Material& other);
   
   virtual ~Material(){}
   
@@ -210,6 +212,12 @@ class DR_CORE_EXPORT Material : public Resource
     return rawPtr;
   }
 
+  /**
+  * Sets the texture of a property.
+  */
+  void
+  setTexture(std::shared_ptr<TextureCore> texture, 
+             const TString& propertyName);
   ///**
   //* Gets a property of type PropertyType.
   //* 
@@ -353,9 +361,17 @@ class DR_CORE_EXPORT Material : public Resource
   bool
   projectShadow() const;
 
+
  private:
   PropertyPtr
   createProperty(const TString& name, PROPERTY_TYPE::E type);
+
+  template<class T>
+  PropertyPtr 
+  copyProperty(const PropertyPtr& prop) 
+  {
+    return dr_make_unique<T>(dynamic_cast<T&>(*prop));    
+  }
  private:
   TString m_name;
   PropertyList m_properties;

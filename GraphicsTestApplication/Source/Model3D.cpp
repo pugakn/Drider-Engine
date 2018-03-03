@@ -4,6 +4,7 @@
 #include <dr_string_utils.h>
 #include <DirectXMath.h>
 #include <dr_codec_model.h>
+#include <dr_material.h>
 #include <dr_memory.h>
 #include <dr_degree.h>
 #include <dr_radian.h>
@@ -104,6 +105,8 @@ void Model3D::update() {
 
 void Model3D::draw(const Camera& camera) {
   
+  auto& dummyM = ResourceManager::getReferenceT<Material>(_T("Mat_Chinita"));
+
   auto& deviceContext = GraphicsAPI::getDeviceContext();
 
   auto wvp = transform.getMatrix() * camera.getVP();
@@ -123,6 +126,8 @@ void Model3D::draw(const Camera& camera) {
   fs->set(deviceContext);
   vs->set(deviceContext);
   IL->set(deviceContext);
+
+  dummyM->set();
 
   deviceContext.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
 

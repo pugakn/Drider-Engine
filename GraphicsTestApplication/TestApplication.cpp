@@ -18,12 +18,14 @@
 #include <dr_string_utils.h>
 #include <dr_time.h>
 #include <dr_gameObject.h>
+#include <dr_material.h>
 #include "DrawableComponent.h"
 #include "ModelDebbug.h"
 #include "NPCMovement.h"
 #include "StaticMeshTechnique.h"
 #include "LinesTechnique.h"
 #include "CameraDebbug.h"
+#include <dr_texture_core.h>
 
 namespace driderSDK {
 
@@ -83,7 +85,6 @@ TestApplication::postInit() {
 
   initResources();
   initInput();
-  initSound();
   initSceneGraph();
   
   m_animated.push_back(new Model3D());
@@ -98,7 +99,7 @@ TestApplication::postInit() {
   m_animated[2]->init(_T("HipHopDancing.fbx"));
   m_animated[2]->transform.move({-200, 0, 0});
   m_animated[2]->elapsedTime = 33.f;
-
+  
   /*SceneGraph::addObject(m_leftCam);
   */SceneGraph::addObject(m_upCam);
   m_leftCam->setParent(m_joker);
@@ -375,47 +376,15 @@ TestApplication::initInput() {
 void 
 TestApplication::initResources() {
   
-  //resourceManager->loadResource(_T("Rifle Punch.dae"));
-    
-  //resourceManager->loadResource(_T("axe.jpg"));
+  //ResourceManager::loadResource(_T("Walking.fbx"));
 
-  //resourceManager->loadResource(_T("VenomJok.X"));
+  ResourceManager::loadResource(_T("Kachujin_diffuse.png"));
 
   ResourceManager::loadResource(_T("Croc.X"));
 
-  //resourceManager->loadResource(_T("dwarf.x"));
-
   ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
 
-  //resourceManager->loadResource(_T("MountainTerrain.obj"))  ;
-  
   ResourceManager::loadResource(_T("HipHopDancing.fbx"));
-
-  //resourceManager->loadResource(_T("DuckyQuacky_.fbx"));
-
-  //resourceManager->loadResource(_T("Checker.fbx"));
-  //resourceManager->loadResource(_T("Metro.obj"));
-
-}
-
-void 
-TestApplication::initSound() {
-  //soundDriver = new FMODSoundAPI;
-
-  //soundDriver->init();
-  //
-  //sound1 = new FMODSound;
-
-  //soundDriver->system->createSound(_T("testSound.mp3"),
-  //                                 DR_SOUND_MODE::kDrMode_DEFAULT,
-  //                                 0,
-  //                                 sound1);
-  //channel = new FMODChannel;
-  //
-  //sound1->init(reinterpret_cast<SoundSystem*>(soundDriver->system->getReference()),
-  //             reinterpret_cast<DrChannel*>(channel->getReference()));
-  //sound1->setMode(DR_SOUND_MODE::kDrMode_LOOP_OFF);
-  //sound1->play();
 }
 
 void 
@@ -445,21 +414,11 @@ TestApplication::initSceneGraph() {
 
   auto root = SceneGraph::getRoot();
      
-  createNode(root, _T("Cube"), _T("ScreenAlignedQuad.3ds"), {50, 300, 200})->getTransform().scale({40, 40, 40});
+  createNode(root, 
+             _T("Quad"), 
+             _T("ScreenAlignedQuad.3ds"), 
+             {50, 300, 200})->getTransform().scale({40, 40, 40});
 
-  auto n = createNode(root, _T("Chinita"), _T("HipHopDancing.fbx"), {-200.f, 0.0f, 0.0f});
-  n->getTransform().scale({ 1,1,1 });
-  m_joker = n;
-  /*n = createNode(root, _T("checker"), _T("Checker.obj"), { -210.f, 200.0f, 0.0f });
-  n->setStatic(true);
-
-  n = createNode(root, _T("metro"), _T("Metro.obj"), { -100.f, 0.0f, 0.0f });
-  n->setStatic(true);
-
-  n = createNode(root, _T("metro"), _T("Metro.obj"), { -200.f, 0.0f, 0.0f });
-  n->setStatic(true);*/
-
-  
   std::unordered_map<Int32, TString> names
   {
     {0, _T("VenomJok.X")},
@@ -488,15 +447,15 @@ TestApplication::initSceneGraph() {
     float sc = static_cast<float>(scl(mt));
     n->getTransform().scale({sc,sc,sc});
   }
+  
+  auto n = createNode(root, _T("Chinita"), _T("HipHopDancing.fbx"), {-200.f, 0.0f, 0.0f});
+  n->getTransform().scale({ 1,1,1 });
+  m_joker = n;
+  
+  auto chinitaMat = ResourceManager::createMaterial(_T("Mat_Chinita"));
+  auto chinitaTex = ResourceManager::getReferenceT<TextureCore>(_T("Kachujin_diffuse.png"));
 
-  /*n = createNode(root, 
-                 _T("MountainTerrain"), 
-                 _T("MountainTerrain.obj"), 
-                 {0,-750,0});   
-
-  n->setStatic(true);
-
-  n->getTransform().scale({3, 3, 3});*/
-
+  chinitaMat->getProperty(_T("Albedo"))->texture = chinitaTex;
 }
+
 }

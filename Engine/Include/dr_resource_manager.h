@@ -12,7 +12,7 @@ namespace driderSDK {
 
 class Resource;
 class Codec;
-
+class Material;
 /**
 * Load resources.
 *
@@ -101,7 +101,26 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager>
   */
   static bool
   isResourceLoaded(const TString& key);
+
+  /**
+  * Creates a material using default properties or empty.
+  * 
+  * @param empty
+  *  Specifies if the material should be empty.
+  * 
+  * @return 
+  *   The dummy material if empty is false, an empty material otherwise.
+  */
+  static std::shared_ptr<Material>
+  createMaterial(const TString& materialName, bool empty = false);
   
+  template<class T>
+  static std::shared_ptr<T>
+  getReferenceT(const TString& resourceName)
+  {
+    return std::dynamic_pointer_cast<T>(getReference(resourceName));
+  }
+
 private:
   void
   onStartUp();

@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include <dr_file_system.h>
+#include <dr_material.h>
 #include <dr_model.h>
 #include <dr_sound_core.h>
 #include <dr_string_utils.h>
@@ -13,10 +14,7 @@
 #include "dr_codec_sound.h"
 #include "dr_codec_texture.h"
 
-
-
 namespace driderSDK {
-
 
 ResourceManager::ResourceManager() {}
 
@@ -132,7 +130,7 @@ ResourceManager::getReference(const TString& resourceName) {
 void
 ResourceManager::createDummyTexture() {
   
-  auto texture = std::make_shared<Resource>();
+  auto texture = std::make_shared<TextureCore>();
 
   constexpr Int32 size = 256;
   constexpr Int32 channels = 4;
@@ -179,6 +177,25 @@ ResourceManager::createDummyTexture() {
   addResource(texture, _T("DUMMY_TEXTURE"));
 }
 
+std::shared_ptr<Material>
+ResourceManager::createMaterial(const TString& materialName, bool empty) {
+  
+  std::shared_ptr<Material> material;
+
+  if (!isResourceLoaded(materialName)) { //This or override another resource
+    material = std::make_shared<Material>(materialName);
+
+    if (!empty) {
+      auto dummyMaterial = getReferenceT<Material>(_T("DUMMY_MATERIAL"));  
+      *material = *dummyMaterial;
+    }
+  
+    addResource(material, materialName);
+  }
+
+  return material;
+}
+
 void 
 ResourceManager::createDummyMaterial() {
 
@@ -188,7 +205,7 @@ ResourceManager::createDummyMaterial() {
 
   DR_ASSERT(dummyTextue);
 
-  auto dummyMat = std::make_shared<Material>();
+  auto dummyMat = std::make_shared<Material>(_T("DUMMY_MATERIAL"));
 
   dummyMat->addProperty<Vec3Property>(_T("Albedo"), 
                                       {0,0,0}, 

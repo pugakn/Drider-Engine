@@ -49,7 +49,6 @@ public:
   void input();
   void initInput();
   void initResources();
-  void initSound();
   void initSceneGraph();
 
   bool m_debugList;

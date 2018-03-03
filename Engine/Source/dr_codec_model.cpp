@@ -45,7 +45,7 @@ CodecModel::decode(TString pathName) {
     Vector3D min{Math::MAX_FLOAT, Math::MAX_FLOAT, Math::MAX_FLOAT};
     Vector3D max{Math::MIN_FLOAT, Math::MIN_FLOAT, Math::MIN_FLOAT};
 
-    auto defMatRes = ResourceManager::getReference(_T("DEFAULT_MATERIAL"));
+    auto defMatRes = ResourceManager::getReference(_T("DUMMY_MATERIAL"));
     auto defMaterial = std::dynamic_pointer_cast<Material>(defMatRes);
 
     for (SizeT iMesh = 0; iMesh < scene->mNumMeshes; ++iMesh) {
