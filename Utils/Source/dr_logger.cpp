@@ -103,7 +103,7 @@ Logger::addWarning(const String Filename,
 }
 
 void
-Logger::log(const TString message) {
+Logger::addLog(const TString message) {
   printf("%s\n", StringUtils::toString(message).c_str());
 
   TString fullMessage(_T(""));

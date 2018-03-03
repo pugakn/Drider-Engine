@@ -1,44 +1,43 @@
 void main()
 
-Temps: 3, 4, 11
+Temps: 2, 3, 10
 
 Variables: 
- 001: (heap) Object obj
- 002: float a
- 011: string {noname}
+ 001: (heap) Camera cam
+ 010: string {noname}
 
 
-- 5,2 -
-    0  11 *    SUSPEND
+- 3,2 -
+    0  10 *    SUSPEND
                VarDecl  0
-    1  11 *    CALLSYS  70           (Object@ Object())
-    3  11 *    STOREOBJ v1
-- 6,2 -
-    4  11 *    SUSPEND
-               VarDecl  1
-    5  11 *    PshC4    0x41200000          (i:1092616192, f:10)
-    7  12 *    PshVPtr  v1
-    8  13 *    CALLSYS  73           (float Object::Add(float))
-   10  11 *    CpyRtoV4 v4
-   11  11 *    CpyVtoV4 v2, v4
-- 7,2 -
-   13  11 *    SUSPEND
-   14  11 *    CMPIf    v2, 10.000000
-   16  11 *    JNZ      +12              (d:30)
-- 8,3 -
-   18  11 *    SUSPEND
-   19  11 *    PGA      211170640
-   21  12 *    PSF      v11
-   22  13 *    CALLSYS  20           (string::string(const string&in))
-               ObjInfo  v11, 1
-   24  11 *    PSF      v11
-   25  12 *    CALLSYS  69           (void Print(string&in))
-   27  11 *    PSF      v11
-   28  12 *    CALLSYS  21           (string::~string())
-- 10,2 -
-               ObjInfo  v11, 0
+    1  10 *    CALLSYS  70           (Camera@ Camera())
+    3  10 *    STOREOBJ v1
+- 4,2 -
+    4  10 *    SUSPEND
+    5  10 *    PshC4    0x41233333          (i:1092825907, f:10.2)
+    7  11 *    PshVPtr  v1
+    8  12 *    CALLSYS  74           (void Camera::set_variable(float))
+- 5,3 -
+   10  10 *    SUSPEND
+   11  10 *    PshVPtr  v1
+   12  11 *    CALLSYS  73           (float Camera::get_variable())
+   14  10 *    CpyRtoV4 v2
+   15  10 *    CMPIf    v2, 10.200000
+   17  10 *    JNZ      +12              (d:31)
+- 6,4 -
+   19  10 *    SUSPEND
+   20  10 *    PGA      52572904
+   22  11 *    PSF      v10
+   23  12 *    CALLSYS  20           (string::string(const string&in))
+               ObjInfo  v10, 1
+   25  10 *    PSF      v10
+   26  11 *    CALLSYS  69           (void Print(string&in))
+   28  10 *    PSF      v10
+   29  11 *    CALLSYS  21           (string::~string())
+- 8,2 -
+               ObjInfo  v10, 0
             1:
-   30  11 *    SUSPEND
-   31  11 *    FREE     v1, 211414512
+   31  10 *    SUSPEND
+   32  10 *    FREE     v1, 210872504
             0:
-   33  11 *    RET      0
+   34  10 *    RET      0

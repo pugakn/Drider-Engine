@@ -86,7 +86,7 @@ TestScriptApp::initScriptEngine() {
     scriptEngine = ScriptEngine::instancePtr();
   }
 
-  //scriptEngine->addScriptLog(_T("hola"), 0);
+  scriptEngine->addScriptLog(_T("hola"), 0);
   
   result = scriptEngine->createEngine();
 

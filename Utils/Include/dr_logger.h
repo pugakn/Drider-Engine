@@ -68,7 +68,7 @@ class DR_UTIL_EXPORT Logger : public Module<Logger>
              const TString message);
 
   void
-  log(const TString message);
+  addLog(const TString message);
 
  protected:
   void
