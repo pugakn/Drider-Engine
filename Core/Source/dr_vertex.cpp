@@ -46,6 +46,12 @@ Vertex::getInputDesc() {
     ie.offset = 80;
     ie.semanticName = "BONEIDS";
     inputDesc.push_back(ie);
+
+    ie.format = DR_FORMAT::kDrFormat_R32G32_FLOAT;
+    ie.offset = 96;
+    ie.semanticName = "TEXCOORD";
+    inputDesc.push_back(ie);
+
   }
 
   return inputDesc;

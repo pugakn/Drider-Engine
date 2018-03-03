@@ -161,6 +161,7 @@
     <ClInclude Include="Include\dr_gameComponent.h" />
     <ClInclude Include="Include\dr_gameObject.h" />
     <ClInclude Include="Include\dr_graph.h" />
+    <ClInclude Include="Include\dr_image_info.h" />
     <ClInclude Include="Include\dr_logger.h" />
     <ClInclude Include="Include\dr_material.h" />
     <ClInclude Include="Include\dr_md5.h" />
@@ -178,6 +179,7 @@
     <ClInclude Include="Include\dr_sound_core.h" />
     <ClInclude Include="Include\dr_sound_info.h" />
     <ClInclude Include="Include\dr_spline.h" />
+    <ClInclude Include="Include\dr_texture_core.h" />
     <ClInclude Include="Include\dr_transform.h" />
     <ClInclude Include="Include\dr_vertex.h" />
     <ClInclude Include="Include\dr_viewport.h" />
@@ -208,6 +210,7 @@
     <ClCompile Include="Source\dr_skeleton.cpp" />
     <ClCompile Include="Source\dr_sound_core.cpp" />
     <ClCompile Include="Source\dr_spline.cpp" />
+    <ClCompile Include="Source\dr_texture_core.cpp" />
     <ClCompile Include="Source\dr_transform.cpp" />
     <ClCompile Include="Source\dr_vertex.cpp" />
   </ItemGroup>

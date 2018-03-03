@@ -11,15 +11,19 @@ struct VS_INPUT{
 	float4 tangent  : TANGENT;
 	float4 weights  : BONEWEIGHTS;
 	int4 boneids  	: BONEIDS; 
+	float2 uvs		: TEXCOORD;
 };
 
 struct VS_OUTPUT{
     float4 hposition : SV_POSITION;
 	float4 hnormal   : NORMAL;
+	float2 uvs		 : TEXCOOR0;
 };
 
 VS_OUTPUT VS( VS_INPUT input ) {
     VS_OUTPUT OUT;
+
+    OUT.uvs = input.uvs;
 
     float4x4 BoneTransform;
 

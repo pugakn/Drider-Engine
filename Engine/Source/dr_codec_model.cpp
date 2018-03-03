@@ -1,14 +1,19 @@
 #include "dr_codec_model.h"
+
+#include <iostream>
+
 #include <assimp\Importer.hpp>
 #include <assimp\postprocess.h>
 #include <assimp\scene.h>
+
 #include <dr_animation.h>
+#include <dr_material.h>
 #include <dr_memory.h>
 #include <dr_model_info.h>
 #include <dr_string_utils.h>
+
 #include "dr_resource_manager.h"
 
-#include <iostream>
 
 namespace driderSDK {
 
@@ -34,13 +39,14 @@ CodecModel::decode(TString pathName) {
                                             flags);
   if (scene) {
 
-
-
     pModelInfo = new ModelInfo;
     pModelInfo->meshes.resize(scene->mNumMeshes);
 
     Vector3D min{Math::MAX_FLOAT, Math::MAX_FLOAT, Math::MAX_FLOAT};
     Vector3D max{Math::MIN_FLOAT, Math::MIN_FLOAT, Math::MIN_FLOAT};
+
+    auto defMatRes = ResourceManager::getReference(_T("DEFAULT_MATERIAL"));
+    auto defMaterial = std::dynamic_pointer_cast<Material>(defMatRes);
 
     for (SizeT iMesh = 0; iMesh < scene->mNumMeshes; ++iMesh) {
       MeshInfo& mesh = pModelInfo->meshes[iMesh];
@@ -48,10 +54,10 @@ CodecModel::decode(TString pathName) {
       
       loadVertices(*pMesh, mesh, min, max);
       loadIndices(*pMesh, mesh);
-      if (scene->HasMaterials()) {
-        loadMaterial(*scene, *pMesh, mesh);
-      }
+      mesh.material = defMaterial;
     }
+
+    //loadMaterials(*scene, *pModelInfo);
 
     Vector3D size = max - min;
 
@@ -75,7 +81,7 @@ CodecModel::decode(TString pathName) {
 
       loadSkeleton(*scene, *pModelInfo, *pSkeleton);
 
-      ResourceManager::instance().addResource(skeletonName, pSkeleton); // esto esta mal, no se debe acceder a esta funcion, !!!
+      addResource(pSkeleton, skeletonName);
 
       loadAnimations(*scene, *pModelInfo);
     }
@@ -128,6 +134,19 @@ CodecModel::loadVertices(const aiMesh& inMesh,
     outMesh.vertices[vertexIndex].normal.y = inMesh.mNormals[vertexIndex].y;
     outMesh.vertices[vertexIndex].normal.z = inMesh.mNormals[vertexIndex].z;
     outMesh.vertices[vertexIndex].normal.w = 0.f;
+
+    outMesh.vertices[vertexIndex].binormal.x = inMesh.mBitangents[vertexIndex].x;
+    outMesh.vertices[vertexIndex].binormal.y = inMesh.mBitangents[vertexIndex].y;
+    outMesh.vertices[vertexIndex].binormal.z = inMesh.mBitangents[vertexIndex].z;
+    outMesh.vertices[vertexIndex].binormal.w = 0.f;
+
+    outMesh.vertices[vertexIndex].tangent.x = inMesh.mTangents[vertexIndex].x;
+    outMesh.vertices[vertexIndex].tangent.y = inMesh.mTangents[vertexIndex].y;
+    outMesh.vertices[vertexIndex].tangent.z = inMesh.mTangents[vertexIndex].z;
+    outMesh.vertices[vertexIndex].tangent.w = 0.f;
+
+    outMesh.vertices[vertexIndex].uv.x = inMesh.mTextureCoords[0][vertexIndex].x;
+    outMesh.vertices[vertexIndex].uv.y = inMesh.mTextureCoords[0][vertexIndex].y;
   }
 }
 
@@ -207,7 +226,8 @@ CodecModel::loadAnimations(const aiScene& model, ModelInfo& outModel) {
     aiAnimation& animation = *model.mAnimations[animationIndex];
 
 
-    TString animName = StringUtils::toTString(animation.mName.data);
+    TString animName = _T("Animation_") +
+                       StringUtils::toTString(animation.mName.data);
 
     outModel.animationsNames.push_back(animName);
 
@@ -266,34 +286,80 @@ CodecModel::loadAnimations(const aiScene& model, ModelInfo& outModel) {
                                    std::move(boneAnim));
     }
 
-    ResourceManager::instance().addResource(animName, pAnimation);
+    addResource(pAnimation, animName);
   }
 }
 
-void 
-CodecModel::loadMaterial(const aiScene& model, 
-                         const aiMesh& aMesh,
-                         MeshInfo& mesh) {
-  
-  auto material = model.mMaterials[aMesh.mMaterialIndex];
-    
-  for (Int32 i = aiTextureType_DIFFUSE; i < aiTextureType_UNKNOWN; ++i) 
-  {
-    auto textureType = static_cast<aiTextureType>(i);
-
-    auto r = material->GetTextureCount(textureType);
-
-    if (r) {
-
-      aiString path;
-
-      material->GetTexture(textureType, 0, &path);
-
-      std::cout << "Texture " << path.C_Str() << std::endl;
-    }
-  }
-    
-}
+//void 
+//CodecModel::loadMaterials(const aiScene& model, 
+//                         ModelInfo& outModel) {
+//
+//  if (!model.HasMaterials()) {
+//    return;
+//  }
+//
+//  for (UInt32 i = 0; i < model.mNumMeshes; ++i) {
+//    
+//    auto mesh = model.mMeshes[i];
+//    
+//    auto material = model.mMaterials[mesh->mMaterialIndex];
+//
+//    for (Int32 j = 1; j < AI_TEXTURE_TYPE_MAX; ++j) {
+//      
+//      aiString path;
+//
+//      aiTextureType tt = static_cast<aiTextureType>(j);
+//
+//      auto nt = material->GetTextureCount(tt);
+//
+//      aiReturn ret = material->GetTexture(tt, 0, &path);
+//
+//      int ddd = 0;
+//    }
+//
+//  }
+//
+//  if (model.mNumTextures > 0) {
+//
+//    /*for (UInt32 i = 0; i < model.mNumTextures; ++i) {
+//
+//      auto texture = model.mTextures[i];
+//
+//      if (texture->mHeight == 0) {
+//        UInt8* buffer = reinterpret_cast<UInt8*>(texture->pcData);
+//        SizeT size = texture->mWidth;
+//
+//        Int32 width = 0;
+//        Int32 height = 0;
+//        Int32 channels = 0;
+//        auto data = stbi_load_from_memory(buffer, 
+//                                          size, 
+//                                          &width, 
+//                                          &height, 
+//                                          &channels, 
+//                                          0);
+//        
+//        stbi_image_free(data);
+//      }*/
+//
+//  }
+//
+//  /*auto material = model.mMaterials[aMesh.mMaterialIndex]; 
+//
+//  for (Int32 i = aiTextureType_DIFFUSE; i < aiTextureType_UNKNOWN; ++i) 
+//  {
+//    auto textureType = static_cast<aiTextureType>(i);
+//
+//    auto r = material->GetTextureCount(textureType);
+//
+//    if (r) {
+//
+//      aiString path;
+//
+//      material->GetTexture(textureType, 0, &path);
+//    }
+//  }   */
+//}
 
 void 
 CodecModel::buildTree(const aiNode* pNodeSrc, 

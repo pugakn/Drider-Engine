@@ -27,6 +27,7 @@ private:
   void destroy();
  protected:
   Viewport m_viewport;
+  void* m_hwnd;
 private:
   std::atomic<bool> m_running;
 };

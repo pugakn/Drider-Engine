@@ -34,6 +34,15 @@ TestApplication::~TestApplication() {}
 void
 TestApplication::postInit() {
   
+  GraphicsDriver::startUp(DR_GRAPHICS_API::D3D11, 
+                          m_viewport.width, 
+                          m_viewport.height,
+                          m_hwnd);
+  InputManager::startUp((SizeT)m_hwnd);
+  SceneGraph::startUp();
+  Time::startUp();
+  ResourceManager::startUp();
+  
   m_camera = std::make_shared<Camera>(_T("MAIN_CAM"), 
                                       m_viewport);
 
@@ -71,8 +80,6 @@ TestApplication::postInit() {
   m_technique = dr_make_unique<StaticMeshTechnique>();
 
   m_technique->compile();
-
-  ResourceManager::startUp();
 
   initResources();
   initInput();
@@ -204,7 +211,11 @@ TestApplication::input() {
 
 void
 TestApplication::postUpdate() {
-  //soundDriver->update();
+  
+  InputManager::capture();
+  Time::update();
+  SceneGraph::update();
+
   input();
   for (auto& anim : m_animated) {
     anim->update();
@@ -215,6 +226,8 @@ TestApplication::postUpdate() {
 void 
 TestApplication::postRender() {
   
+  GraphicsDriver::API().clear();
+
   m_linesTech->setCamera(&(*m_activeCam));
   
   //SceneGraph::draw();
@@ -242,7 +255,9 @@ TestApplication::postRender() {
     m_technique->setWorld(&mesh.first);
     
     if (m_technique->prepareForDraw()) {
-
+      if (auto material = mesh.second.material.lock()) {
+        material->set();
+      }
       mesh.second.vertexBuffer->set(*dc);
       mesh.second.indexBuffer->set(*dc);
 
@@ -250,11 +265,11 @@ TestApplication::postRender() {
     }
   }
 
+  GraphicsDriver::API().swapBuffers();
 }
 
 void 
 TestApplication::postDestroy() {
-  ResourceManager::shutDown();
 
   for (auto& anim : m_animated) {
     anim->destroy();
@@ -262,6 +277,12 @@ TestApplication::postDestroy() {
   }
 
   m_animated.clear();
+
+  ResourceManager::shutDown();
+  InputManager::shutDown();
+  Time::shutDown();
+  SceneGraph::shutDown();
+  GraphicsDriver::shutDown();
 }
 
 void addDrawableComponent(std::shared_ptr<driderSDK::GameObject> go,
@@ -353,26 +374,22 @@ TestApplication::initInput() {
 
 void 
 TestApplication::initResources() {
-  ResourceManager* resourceManager = nullptr;
-  if (ResourceManager::isStarted()) {
-     resourceManager = &ResourceManager::instance();
-  }
-
+  
   //resourceManager->loadResource(_T("Rifle Punch.dae"));
     
   //resourceManager->loadResource(_T("axe.jpg"));
 
   //resourceManager->loadResource(_T("VenomJok.X"));
 
-  resourceManager->loadResource(_T("Croc.X"));
+  ResourceManager::loadResource(_T("Croc.X"));
 
   //resourceManager->loadResource(_T("dwarf.x"));
 
-  //resourceManager->loadResource(_T("China.dae"));
+  ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
 
   //resourceManager->loadResource(_T("MountainTerrain.obj"))  ;
   
-  resourceManager->loadResource(_T("HipHopDancing.fbx"));
+  ResourceManager::loadResource(_T("HipHopDancing.fbx"));
 
   //resourceManager->loadResource(_T("DuckyQuacky_.fbx"));
 
@@ -403,15 +420,13 @@ TestApplication::initSound() {
 
 void 
 TestApplication::initSceneGraph() {
-
-  auto resourceMgr = ResourceManager::instancePtr();
-
+  
   auto createNode = [&](std::shared_ptr<GameObject> parent, 
                         const TString& name, 
                         const TString& resName,
                         const Vector3D& pos) {
   
-    auto resource = resourceMgr->getReference(resName);
+    auto resource = ResourceManager::getReference(resName);
 
     auto model = std::dynamic_pointer_cast<Model>(resource);
     
@@ -429,7 +444,9 @@ TestApplication::initSceneGraph() {
   };
 
   auto root = SceneGraph::getRoot();
-      
+     
+  createNode(root, _T("Cube"), _T("ScreenAlignedQuad.3ds"), {50, 300, 200})->getTransform().scale({40, 40, 40});
+
   auto n = createNode(root, _T("Chinita"), _T("HipHopDancing.fbx"), {-200.f, 0.0f, 0.0f});
   n->getTransform().scale({ 1,1,1 });
   m_joker = n;

@@ -10,7 +10,7 @@
 
 namespace driderSDK {
 
-class Texture;
+class TextureCore;
 
 namespace PROPERTY_TYPE {
 enum E
@@ -43,7 +43,7 @@ struct Property
     
   TString name;
   const PROPERTY_TYPE::E type;
-  std::weak_ptr<Texture> texture;
+  std::weak_ptr<TextureCore> texture;
 };
 
 struct FloatProperty : Property
@@ -156,7 +156,7 @@ class DR_CORE_EXPORT Material : public Resource
   {
     auto property = dr_make_unique<PropertyType>(name, value, channel);
 
-    auto rawPtr = prop.get();
+    auto rawPtr = property.get();
     
     m_properties.push_back(std::move(property));
     
@@ -349,12 +349,17 @@ class DR_CORE_EXPORT Material : public Resource
   //*/
   //Property*
   //transformProperty(Property* property, PROPERTY_TYPE newType);
+
+  bool
+  projectShadow() const;
+
  private:
   PropertyPtr
   createProperty(const TString& name, PROPERTY_TYPE::E type);
  private:
   TString m_name;
   PropertyList m_properties;
+  bool m_proyectShadow;
 };
 
 }

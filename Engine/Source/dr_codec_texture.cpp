@@ -1,35 +1,46 @@
 #include "dr_codec_texture.h"
-#include <comdef.h>
 #define STB_IMAGE_IMPLEMENTATION
 #include <STB\stb_image.h>
 #include <dr_image_info.h>
 #include <dr_memory.h>
-#include <dr_parser.h>
-#include <algorithm>
-#include <vector>
-#include <iterator>
-
-#include <dr_file_system.h>
+#include <dr_string_utils.h>
 
 
 namespace driderSDK {
 
 CodecTexture::UniqueVoidPtr
 CodecTexture::decode(TString pathName) {
-  sImage *image = new sImage();  
+  
+  ImageInfo* image = nullptr;  
+      
+  Int32 width = 0;
+  Int32 height = 0;
+  Int32 channels = 0;
 
-  _bstr_t c(pathName.c_str());
-  const char* a = c;
-  unsigned char* data = stbi_load(a, &image->w, &image->h, &image->channels, 0);
+  auto data = stbi_load(StringUtils::toString(pathName).c_str(), 
+                        &width, 
+                        &height, 
+                        &channels, 
+                        0);
 
-  if(data != nullptr) {
-    size_t sizeData = image->w * image->h * image->channels;
-    image->data.resize(sizeData);
-    std::memcpy(&image->data[0], data,sizeData);
+  if (data) {
+ 
+    image = new ImageInfo();
+
+    image->width = width;
+    image->height = height;
+    image->channels = channels;
+    
+    SizeT imageSize = width * height * channels;
+
+    image->data.resize(imageSize);
+
+    std::memcpy(image->data.data(), data, imageSize);    
   }
 
   stbi_image_free(data);
-  return UniqueVoidPtr(image, &dr_void_deleter<sImage>);
+
+  return UniqueVoidPtr(image, &dr_void_deleter<ImageInfo>);
 }
 
 bool
