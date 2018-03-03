@@ -25,6 +25,8 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager>
   friend Codec;
 
  public:
+  
+   using SharedResource = std::shared_ptr<Resource>;
 
   /**
   * TEST::resourceMConstructor
@@ -52,7 +54,7 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager>
   * @return
   *   Return the shared_ptr to a Resource.
   */
-  static std::shared_ptr<Resource>
+  static SharedResource
   getReference(const TString& key);
 
   /**
@@ -66,7 +68,7 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager>
   * @return
   *   void.
   */
-  static std::shared_ptr<Resource>
+  static SharedResource
   loadResource(const TString& resourceName);
 
   /**
@@ -83,7 +85,7 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager>
   * @return
   *   void.
   */
-  static std::shared_ptr<Resource>
+  static SharedResource
   loadResource(const TString& resourceName,
                void* extraData);
 
@@ -106,6 +108,13 @@ private:
 
   void
   createDefaultResources();
+
+  void
+  createDummyTexture();
+
+  void
+  createDummyMaterial();
+
   /**
   * TEST::createResource
   * Creates a resource, then puts in the contentResource and sets a key
@@ -130,12 +139,11 @@ private:
   * Add a resource to the ResourceContent of the ResourceManager
   */
   static void
-  addResource(std::shared_ptr<Resource> pResource,
+  addResource(SharedResource pResource,
               const TString& resourceName);
 
   
  private:
-  using SharedResource = std::shared_ptr<Resource>;
   using ResourceFactory = std::function<SharedResource()>;
 
   std::unordered_map<TString, SharedResource> m_resources;
