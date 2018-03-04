@@ -7,6 +7,8 @@
 #include "dr_core_prerequisites.h"
 #include "dr_resource.h"
 
+#include <dr_aabb.h>
+
 namespace driderSDK {
 
 class DR_CORE_EXPORT Skeleton : public Resource
@@ -25,6 +27,7 @@ class DR_CORE_EXPORT Skeleton : public Resource
 
   Matrix4x4 gloabalInverseTransform;
   std::vector<NodeData*> bones;
+  std::vector<AABB> bonesAABBs;
   std::unordered_map<TString, UInt32> bonesMapping;
   std::unique_ptr<NodeData> pRoot;
 };

@@ -37,6 +37,7 @@ D3DIndexBuffer::create(const Device& device,
     break;
   case DR_BUFFER_USAGE::kDynamic:
     bdesc.Usage = D3D11_USAGE_DYNAMIC;
+    bdesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
     break;
   case DR_BUFFER_USAGE::kImmutable:
     bdesc.Usage = D3D11_USAGE_IMMUTABLE;
@@ -77,9 +78,20 @@ void
 D3DIndexBuffer::updateFromBuffer(const DeviceContext& deviceContext,
                                  const byte* dataBuffer) {
   m_sysMemCpy.assign(dataBuffer, dataBuffer + m_descriptor.sizeInBytes);
-  reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
+
+  /*reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext->
-      UpdateSubresource(IB, 0, 0, &dataBuffer[0], 0, 0);
+      UpdateSubresource(IB, 0, 0, &dataBuffer[0], 0, 0);*/
+
+  D3D11_MAPPED_SUBRESOURCE mappedResource{};
+	
+  auto d3d = reinterpret_cast<const D3DDeviceContext*>(&deviceContext);
+	//	Disable GPU access to the vertex buffer data.
+	d3d->D3D11DeviceContext->Map(IB, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	//	Update the index buffer here.
+	memcpy(mappedResource.pData, dataBuffer, m_sysMemCpy.size());
+	//	Reenable GPU access to the vertex buffer data.
+	d3d->D3D11DeviceContext->Unmap(IB, 0);
 }
 
 void

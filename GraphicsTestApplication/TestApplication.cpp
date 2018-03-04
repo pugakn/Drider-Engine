@@ -16,16 +16,18 @@
 #include <dr_rasterizer_state.h>
 #include <dr_render_component.h>
 #include <dr_string_utils.h>
+#include <dr_skeleton.h>
+#include <dr_texture_core.h>
 #include <dr_time.h>
 #include <dr_gameObject.h>
 #include <dr_material.h>
 #include "DrawableComponent.h"
-#include "ModelDebbug.h"
+#include "AABBDebug.h"
+#include "FrustumDebug.h"
+#include "SkeletonDebug.h"
 #include "NPCMovement.h"
 #include "StaticMeshTechnique.h"
 #include "LinesTechnique.h"
-#include "CameraDebbug.h"
-#include <dr_texture_core.h>
 
 namespace driderSDK {
 
@@ -52,7 +54,7 @@ TestApplication::postInit() {
   m_camera->getTransform().setPosition({0.f, 300.0f, -400});
   m_camera->setTarget({0.0f, 200.f, 1.0f});
 
-  auto p = m_camera->createComponent<CameraDebbug>();
+  auto p = m_camera->createComponent<FrustumDebug>();
 
   m_linesTech = dr_make_unique<LinesTechnique>(&(*m_activeCam), 
                                  &m_camera->getWorldTransform().getMatrix());
@@ -84,8 +86,6 @@ TestApplication::postInit() {
   m_technique->compile();
 
   initResources();
-  initInput();
-  initSceneGraph();
   
   m_animated.push_back(new Model3D());
   m_animated[0]->init(_T("HipHopDancing.fbx"));
@@ -99,6 +99,10 @@ TestApplication::postInit() {
   m_animated[2]->init(_T("HipHopDancing.fbx"));
   m_animated[2]->transform.move({-200, 0, 0});
   m_animated[2]->elapsedTime = 33.f;
+
+  initInput();
+  initSceneGraph();
+  
   
   /*SceneGraph::addObject(m_leftCam);
   */SceneGraph::addObject(m_upCam);
@@ -213,14 +217,15 @@ TestApplication::input() {
 void
 TestApplication::postUpdate() {
   
+  for (auto& anim : m_animated) {
+    anim->update();
+  }
+
   InputManager::capture();
   Time::update();
   SceneGraph::update();
 
   input();
-  for (auto& anim : m_animated) {
-    anim->update();
-  }
   
 }
 
@@ -271,11 +276,9 @@ TestApplication::postRender() {
 
 void 
 TestApplication::postDestroy() {
-
-  for (auto& anim : m_animated) {
-    anim->destroy();
-    delete anim;
-  }
+  
+  m_technique->destroy();
+  m_linesTech->destroy();
 
   m_animated.clear();
 
@@ -284,12 +287,19 @@ TestApplication::postDestroy() {
   Time::shutDown();
   SceneGraph::shutDown();
   GraphicsDriver::shutDown();
+
+  for (auto& anim : m_animated) {
+    anim->destroy();
+    delete anim;
+  }
 }
 
 void addDrawableComponent(std::shared_ptr<driderSDK::GameObject> go,
                           Technique* tech) {
-  if (go->getComponent<RenderComponent>()) {
-    auto p = go->createComponent<ModelDebbug>();
+  if (auto collider = go->getComponent<AABBCollider>()) {
+
+    auto p = go->createComponent<AABBDebug>(true);
+
     p->setShaderTechnique(tech);
   }
   for (auto child : go->getChildren())
@@ -401,7 +411,9 @@ TestApplication::initSceneGraph() {
     
     auto node = SceneGraph::createNode(parent, model);
 
-    auto p = node->createComponent<ModelDebbug>();
+    auto collider = node->getComponent<AABBCollider>();
+
+    auto p = node->createComponent<AABBDebug>(true);
 
     p->setShaderTechnique(m_linesTech.get());
   
@@ -421,11 +433,8 @@ TestApplication::initSceneGraph() {
 
   std::unordered_map<Int32, TString> names
   {
-    {0, _T("VenomJok.X")},
+    {0, _T("HipHopDancing.fbx")},
     {1, _T("Croc.X")},
-    {2, _T("dwarf.x")},
-    {3, _T("DuckyQuacky_.fbx")},
-    {4, _T("China.dae")}
   };
  
   std::mt19937 mt(std::random_device{}());
@@ -448,9 +457,20 @@ TestApplication::initSceneGraph() {
     n->getTransform().scale({sc,sc,sc});
   }
   
+  auto chinaMod = ResourceManager::getReferenceT<Model>(_T("HipHopDancing.fbx"));
+
+  auto chinaSkel = ResourceManager::getReferenceT<Skeleton>(chinaMod->skeletonName);
+
   auto n = createNode(root, _T("Chinita"), _T("HipHopDancing.fbx"), {-200.f, 0.0f, 0.0f});
   n->getTransform().scale({ 1,1,1 });
   m_joker = n;
+
+  if (chinaSkel) {
+    auto comp = n->createComponent<SkeletonDebug>(*chinaSkel, 
+                                                  m_animated[1]->animator,
+                                                  m_animated[1]->transform);
+    comp->setShaderTechnique(m_linesTech.get());
+  }
   
   auto chinitaMat = ResourceManager::createMaterial(_T("Mat_Chinita"));
   auto chinitaTex = ResourceManager::getReferenceT<TextureCore>(_T("Kachujin_diffuse.png"));

@@ -57,9 +57,6 @@
     <ClInclude Include="Include\InputComponent.h">
       <Filter>Archivos de encabezado\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Include\ModelDebbug.h">
-      <Filter>Archivos de encabezado\Components</Filter>
-    </ClInclude>
     <ClInclude Include="Include\NPCMovement.h">
       <Filter>Archivos de encabezado\Components</Filter>
     </ClInclude>
@@ -75,7 +72,13 @@
     <ClInclude Include="Include\LinesTechnique.h">
       <Filter>Archivos de encabezado\Techniques</Filter>
     </ClInclude>
-    <ClInclude Include="Include\CameraDebbug.h">
+    <ClInclude Include="Include\AABBDebug.h">
+      <Filter>Archivos de encabezado\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\SkeletonDebug.h">
+      <Filter>Archivos de encabezado\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\FrustumDebug.h">
       <Filter>Archivos de encabezado\Components</Filter>
     </ClInclude>
   </ItemGroup>
@@ -87,9 +90,6 @@
       <Filter>Archivos de origen\Components</Filter>
     </ClCompile>
     <ClCompile Include="Source\NPCMovement.cpp">
-      <Filter>Archivos de origen\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\ModelDebbug.cpp">
       <Filter>Archivos de origen\Components</Filter>
     </ClCompile>
     <ClCompile Include="Source\Technique.cpp">
@@ -113,7 +113,13 @@
     <ClCompile Include="Source\LinesTechnique.cpp">
       <Filter>Archivos de origen\Technique</Filter>
     </ClCompile>
-    <ClCompile Include="Source\CameraDebbug.cpp">
+    <ClCompile Include="Source\SkeletonDebug.cpp">
+      <Filter>Archivos de origen\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\AABBDebug.cpp">
+      <Filter>Archivos de origen\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\FrustumDebug.cpp">
       <Filter>Archivos de origen\Components</Filter>
     </ClCompile>
   </ItemGroup>
