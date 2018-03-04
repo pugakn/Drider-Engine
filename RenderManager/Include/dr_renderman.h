@@ -21,13 +21,6 @@ class RenderMan {
   */
    RenderMan();
 
-   /*
-   TEST::testName
-
-   Description.
-   */
-   RenderMan(SceneGraph* sceneGraph);
-
   /*
   */
   ~RenderMan();
@@ -48,8 +41,8 @@ class RenderMan {
   exit();
 
  protected:
-  SceneGraph* m_sceneGraph;
   std::vector<std::pair<Matrix4x4, RenderMesh>> queryRequest;
+
   Camera Sauron;
 
   GBufferPass m_GBufferPass;

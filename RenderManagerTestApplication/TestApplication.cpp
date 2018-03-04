@@ -23,7 +23,6 @@
 #include "ModelDebbug.h"
 #include "NPCMovement.h"
 #include "StaticMeshTechnique.h"
-#include "LinesTechnique.h"
 #include "CameraDebbug.h"
 #include <dr_texture_core.h>
 
@@ -54,16 +53,8 @@ TestApplication::postInit() {
 
   auto p = m_camera->createComponent<CameraDebbug>();
 
-  m_linesTech = dr_make_unique<LinesTechnique>(&(*m_activeCam), 
-                                 &m_camera->getWorldTransform().getMatrix());
-
-  m_linesTech->compile();
-
-  p->setShaderTechnique(m_linesTech.get());
-
   m_leftCam = std::make_shared<Camera>(_T("LEFT_CAM"), 
                                         m_viewport);
-  
   
   m_leftCam ->createProyection(45.f, 0.1f, 10000.f);
   m_leftCam->getTransform().setPosition({-4000.f, 0000.f, 1000.f});
@@ -79,13 +70,11 @@ TestApplication::postInit() {
 
   m_activeCam = m_leftCam;
 
-  m_technique = dr_make_unique<StaticMeshTechnique>();
-
-  m_technique->compile();
-
   initResources();
   initInput();
   initSceneGraph();
+
+  rendeManager.init();
   
   m_animated.push_back(new Model3D());
   m_animated[0]->init(_T("HipHopDancing.fbx"));
@@ -119,7 +108,6 @@ TestApplication::postInit() {
   result = sound1->setMode(FMOD_LOOP_OFF);*/
 
   m_debugList = false;
-
 }
 
 void
@@ -228,8 +216,6 @@ void
 TestApplication::postRender() {
   
   GraphicsDriver::API().clear();
-
-  m_linesTech->setCamera(&(*m_activeCam));
   
   //SceneGraph::draw();
   
@@ -239,34 +225,7 @@ TestApplication::postRender() {
 
   m_camera->render();
 
-  m_technique->setCamera(&(*m_activeCam));
-
-  auto dc = &GraphicsAPI::getDeviceContext();
-
-  auto meshes = SceneGraph::query(*m_camera, 
-                                  m_queryOrder, 
-                                  QUERY_PROPERTYS::kOpaque | 
-                                  QUERY_PROPERTYS::kDynamic | 
-                                  QUERY_PROPERTYS::kStatic);
-
-  dc->setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
-
-  for (auto& mesh : meshes) {
-
-    m_technique->setWorld(&mesh.first);
-    
-    if (m_technique->prepareForDraw()) {
-      if (auto material = mesh.second.material.lock()) {
-        material->set();
-      }
-      mesh.second.vertexBuffer->set(*dc);
-      mesh.second.indexBuffer->set(*dc);
-
-      dc->draw(mesh.second.indicesCount, 0, 0);
-    }
-  }
-
-  GraphicsDriver::API().swapBuffers();
+  rendeManager.draw();
 }
 
 void 
@@ -300,7 +259,6 @@ void addDrawableComponent(std::shared_ptr<driderSDK::GameObject> go,
 
 void 
 TestApplication::initInput() {
- 
   auto toggleCam = [&]()
   {
     if (m_activeCam == m_leftCam) {
@@ -344,11 +302,6 @@ TestApplication::initInput() {
     m_queryOrder = static_cast<QUERY_ORDER::E>(!m_queryOrder);
   };
 
-  auto debugOctree = [&]() {
-    auto octree = SceneGraph::getOctree();
-    addDrawableComponent(octree, m_linesTech.get());
-  };
-
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kQ,
                         toggleQueryOrder);
@@ -366,10 +319,6 @@ TestApplication::initInput() {
                         SceneGraph::buildOctree);
 
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
-                        KEY_CODE::kP,
-                        debugOctree);
-
-  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                          KEY_CODE::kJ, toggleWireframe);
 }
 
@@ -380,9 +329,9 @@ TestApplication::initResources() {
 
   ResourceManager::loadResource(_T("Kachujin_diffuse.png"));
 
-  ResourceManager::loadResource(_T("Croc.X"));
+  //ResourceManager::loadResource(_T("Croc.X"));
 
-  ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
+  //ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
 
   ResourceManager::loadResource(_T("HipHopDancing.fbx"));
 }
@@ -402,8 +351,6 @@ TestApplication::initSceneGraph() {
     auto node = SceneGraph::createNode(parent, model);
 
     auto p = node->createComponent<ModelDebbug>();
-
-    p->setShaderTechnique(m_linesTech.get());
   
     node->setName(name);
 

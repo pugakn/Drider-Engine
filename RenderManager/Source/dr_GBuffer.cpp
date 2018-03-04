@@ -10,6 +10,7 @@
 #include <dr_render_component.h>
 #include <dr_device_context.h>
 #include <dr_camera.h>
+#include <dr_material.h>
 
 namespace driderSDK {
 
@@ -23,7 +24,7 @@ void
 GBufferPass::init(PassInitData* initData) {
   driderSDK::File file;
 
-  file.Open(_T("GBuffer_vs.hlsl"));
+  file.Open(_T("mesh.hlsl"));
   String vsSource = StringUtils::toString(file.GetAsString(file.Size()));
   file.Close();
 
@@ -33,12 +34,12 @@ GBufferPass::init(PassInitData* initData) {
 
   Device& device = GraphicsAPI::getDevice();
 
-  m_vertexShader = device.createShaderFromMemory(vsSource.c_str(),
-                                                 vsSource.size() + 1,
+  m_vertexShader = device.createShaderFromMemory(vsSource.data(),
+                                                 vsSource.size(),
                                                  DR_SHADER_TYPE_FLAG::kVertex);
 
-  m_fragmentShader = device.createShaderFromMemory(fsSource.c_str(),
-                                                   fsSource.size() + 1,
+  m_fragmentShader = device.createShaderFromMemory(fsSource.data,
+                                                   fsSource.size(),
                                                    DR_SHADER_TYPE_FLAG::kFragment);
 
   std::vector<DrInputElementDesc> idesc = m_vertexShader->reflect();
@@ -73,6 +74,10 @@ GBufferPass::draw(PassDrawData* drawData) {
   //dc.setRenderTarget(*data->OutRt, *data->dsOptions);
   
   for (auto& modelPair : *data->models) {
+    if (auto material = modelPair.second.material.lock()) {
+      material->set();
+    }
+
     //m_constantBuffer->WVP = VP * modelPair.first;
     //m_constantBuffer->World = modelPair.first;
 

@@ -1,4 +1,6 @@
 #pragma once
+#include <dr_renderman.h>
+
 #include <unordered_map>
 #include <vector>
 #include <dr_util_prerequisites.h>
@@ -50,6 +52,8 @@ public:
   void initResources();
   void initSceneGraph();
 
+  RenderMan rendeManager;
+
   bool m_debugList;
   //SoundAPI* soundDriver;
   QUERY_ORDER::E m_queryOrder;
@@ -66,11 +70,8 @@ public:
   std::shared_ptr<Camera> m_leftCam;
   std::shared_ptr<Camera> m_upCam;
   std::shared_ptr<Camera> m_activeCam;
-  std::unique_ptr<Technique> m_technique;
-  std::unique_ptr<Technique> m_linesTech;
   std::shared_ptr<GameObject> m_joker;
   std::vector<Model3D*> m_animated;
 };
 
 }
-
