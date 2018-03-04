@@ -6,10 +6,8 @@
 
 namespace driderSDK {
 
-Camera::Camera() {}
-
 Camera::Camera(const TString& name,
-							 const Viewport& viewport) 
+               const Viewport& viewport) 
   : GameObject(name), 
     m_up(0.0f, 1.0f, 0.0f),
     m_viewport(viewport) {
@@ -17,14 +15,16 @@ Camera::Camera(const TString& name,
 
 Camera::~Camera() {}
 
-void Camera::updateImpl() {
+void
+Camera::updateImpl() {
+	
   if (m_change) {
     auto& parentT = getParent()->getWorldTransform();
     auto& localT = getTransform();
     auto pos = Vector4D(localT.getPosition(), 1.0f) * parentT.getMatrix();
     auto target = Vector4D(m_target, 1) * parentT.getMatrix();
-	  m_view.LookAt(Vector3D(pos), Vector3D(target), m_up);
-	  m_vp = m_view * m_projection;
+	m_view.LookAt(Vector3D(pos), Vector3D(target), m_up);
+	m_vp = m_view * m_projection;
   }
 }
 
@@ -83,8 +83,8 @@ Camera::pan(const Vector3D & direction) {
 
 void
 Camera::createProyection(float fov,
-												 float nearPlane,
-												 float farPlane) {
+                         float nearPlane,
+						 float farPlane) {
   m_farPlane = farPlane;
   m_nearPlane = nearPlane;
   m_fov = fov;
@@ -163,5 +163,7 @@ const Matrix4x4&
 Camera::getProjection() const {
   return m_projection;
 }
+
+CREATE_REF_FACTORY_FUNC(Camera)
 
 }

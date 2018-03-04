@@ -24,23 +24,20 @@
     <ClInclude Include="Include\dr_codec_texture.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="Include\dr_file_system.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
     <ClInclude Include="Include\dr_compatible_types.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="Include\dr_codec_model.h">
-      <Filter>Archivos de encabezado</Filter>
+    <ClInclude Include="Include\dr_resource_manager.h">
+      <Filter>Archivos de encabezado\Resources</Filter>
     </ClInclude>
-    <ClInclude Include="Include\dr_file.h">
+    <ClInclude Include="Include\dr_codec_model.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="Include\dr_codec_sound.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="Include\dr_resource_manager.h">
-      <Filter>Archivos de encabezado</Filter>
+    <ClInclude Include="Include\dr_codec_script.h">
+		<Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -53,22 +50,19 @@
     <ClCompile Include="Source\dr_codec_texture.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
-    <ClCompile Include="Source\dr_file_system.cpp">
+    <ClCompile Include="Source\dr_engine_texture.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
-    <ClCompile Include="Source\dr_file_system_linux.cpp">
-      <Filter>Archivos de código fuente</Filter>
+    <ClCompile Include="Source\dr_resource_manager.cpp">
+      <Filter>Archivos de código fuente\Resources</Filter>
     </ClCompile>
-    <ClCompile Include="Source\dr_file_system_win.cpp">
-      <Filter>Archivos de código fuente</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\dr_file.cpp">
-      <Filter>Archivos de código fuente</Filter>
+    <ClCompile Include="Source\dr_texture_resource.cpp">
+      <Filter>Archivos de código fuente\Resources</Filter>
     </ClCompile>
     <ClCompile Include="Source\dr_codec_sound.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
-    <ClCompile Include="Source\dr_resource_manager.cpp">
+    <ClCompile Include="Source\dr_codec_script.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
   </ItemGroup>

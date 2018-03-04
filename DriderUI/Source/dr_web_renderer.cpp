@@ -4,14 +4,76 @@
 #include <dr_mouse.h>
 #include <dr_graphics_driver.h>
 #include <dr_texture.h>
+#include <dr_device.h>
+#include <dr_sample_state.h>
 
-#ifdef DR_PLATFORM_WINDOWS
-#include <dr_d3d_device.h>
-#include <dr_d3d_sample_state.h>
-#endif
 namespace driderSDK {
+CefRefPtr<DriderV8Handler> WebRenderer::m_v8Handler = new DriderV8Handler();
 CefRefPtr<DriderRenderProcessHandler> WebRenderer::m_renderProcess = new DriderRenderProcessHandler();
-CefRefPtr<DriderCefApp> WebRenderer::m_app = new DriderCefApp(m_renderProcess);
+CefRefPtr<DriderCefApp> WebRenderer::m_app = new DriderCefApp();
+/*******************************************************
+*                       V8
+********************************************************/
+bool 
+DriderV8Handler::Execute(const CefString & name, 
+                         CefRefPtr<CefV8Value> object, 
+                         const CefV8ValueList & arguments, 
+                         CefRefPtr<CefV8Value>& retval, 
+                         CefString & exception)
+{
+  for (auto &it : m_callbacks)
+  {
+    if (name == it.first) {
+      it.second(retval, arguments);
+      return true;
+    }
+  }
+  return false;
+}
+
+/*******************************************************
+*                    RENDER PROCESS
+********************************************************/
+// CALLED ON RENDER PROCEESS!
+void 
+DriderRenderProcessHandler::OnContextCreated(CefRefPtr<CefBrowser> browser, 
+                                             CefRefPtr<CefFrame> frame, 
+                                             CefRefPtr<CefV8Context> context)
+{
+  for (auto &it : WebRenderer::m_v8Handler->m_callbacks) {
+    CefRefPtr<CefV8Value> object = context->GetGlobal();
+    CefRefPtr<CefV8Value> func = CefV8Value::CreateFunction(it.first, WebRenderer::m_v8Handler);
+    object->SetValue(it.first, func, V8_PROPERTY_ATTRIBUTE_NONE);
+  }
+}
+
+bool 
+DriderRenderProcessHandler::OnProcessMessageReceived(CefRefPtr<CefBrowser> browser, 
+                                                     CefProcessId source_process, 
+                                                     CefRefPtr<CefProcessMessage> message)
+{
+  const std::string& message_name = message->GetName();
+  if (message_name == IPC_REGISTER_JS2CPP_FUNC) {
+    CefRefPtr<CefV8Context> context = browser->GetMainFrame()->GetV8Context();
+    context->Enter();
+    std::string funcName = message->GetArgumentList()->GetString(0);
+    CefRefPtr<CefV8Value> object = browser->GetMainFrame()->GetV8Context()->GetGlobal();
+    CefRefPtr<CefV8Value> func = CefV8Value::CreateFunction(funcName, WebRenderer::m_v8Handler);
+    object->SetValue(funcName, func, V8_PROPERTY_ATTRIBUTE_NONE);
+    context->Exit();
+    return true;
+  }
+  return false;
+}
+
+/*******************************************************
+*                        APP
+********************************************************/
+CefRefPtr<CefRenderProcessHandler> 
+DriderCefApp::GetRenderProcessHandler()
+{
+  return WebRenderer::m_renderProcess;
+}
 /*******************************************************
 *                    RENDER HANDLER
 ********************************************************/
@@ -29,17 +91,18 @@ RenderHandler::OnPaint(CefRefPtr<CefBrowser> browser,
                             int width, 
                             int height)
 {
-  m_texture->udpateFromMemory(GraphicsDriver::getApiReference().getDeviceContextReference(),
+  m_texture->udpateFromMemory(GraphicsAPI::getDeviceContext(),
     static_cast<const char*>(buffer), width *height * 4);
 }
-void RenderHandler::init()
+void 
+RenderHandler::init()
 {
-  Device& device = GraphicsDriver::getApiReference().getDeviceReference();
+  Device& device = GraphicsAPI::getDevice();
   driderSDK::DrTextureDesc tDesc;
   tDesc.width = m_width;
   tDesc.height = m_height;
   tDesc.pitch = m_width * 4;
-  tDesc.Format = DR_FORMAT::kDrFormat_B8G8R8A8_UNORM;
+  tDesc.Format = DR_FORMAT::kB8G8R8A8_UNORM;
   tDesc.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE | DR_BIND_FLAGS::RENDER_TARGET;
   tDesc.mipLevels = 0;
   tDesc.dimension = DR_DIMENSION::k2D;
@@ -51,7 +114,7 @@ void RenderHandler::init()
   m_samplerState = device.createSamplerState(SSdesc);
 }
 void 
-RenderHandler::resize(int w, int h)
+RenderHandler::resize(UInt32  w, UInt32  h)
 {
   auto tDesc = m_texture->getDescriptor();
   m_width = w;
@@ -59,65 +122,83 @@ RenderHandler::resize(int w, int h)
   tDesc.width = m_width;
   tDesc.height = m_height;
   tDesc.pitch = m_width * 4;
-  m_texture->modifyTextureParams(GraphicsDriver::getApiReference().getDeviceReference(), tDesc);
+  m_texture->modifyTextureParams(GraphicsAPI::getDevice(), tDesc);
 }
 
-Texture * RenderHandler::getTexturePointer()
+Texture* 
+RenderHandler::getTexturePointer()
 {
   return m_texture;
 }
 
-SamplerState * RenderHandler::getSamplerStatePointer()
+SamplerState* 
+RenderHandler::getSamplerStatePointer()
 {
   return m_samplerState;
 }
+/*******************************************************
+*                   BROWSER CLIENT
+********************************************************/
+CefRefPtr<CefRenderHandler> 
+BrowserClient::GetRenderHandler()
+{
+  return m_renderHandler;
+}
 
-void 
+bool 
+BrowserClient::OnProcessMessageReceived(CefRefPtr<CefBrowser> browser, 
+                                        CefProcessId source_process, 
+                                        CefRefPtr<CefProcessMessage> message)
+{
+  return false;
+}
+/*******************************************************
+*                    WEB RENDERER
+********************************************************/
+void
 WebRenderer::start()
 {
   CefMainArgs args;
-  int result = CefExecuteProcess(args, m_app.get(), nullptr);
-  if (result >= 0)
-    exit(0);
+  UInt32  result;
+  //result = CefExecuteProcess(args, m_app.get(), nullptr);
+  //if (result >= 0)
+  //  exit(0);
   CefSettings settings;
   settings.multi_threaded_message_loop = false;
   settings.windowless_rendering_enabled = true;
-  settings.single_process = false;
+  settings.single_process = true;
   settings.no_sandbox = true;
-  result = CefInitialize(args, settings, nullptr, nullptr);
+  result = CefInitialize(args, settings, m_app.get(), nullptr);
   if (!result)
     throw "CefInitialize failed";
 }
 
-/*******************************************************
-*                    WEB RENDERER
-********************************************************/
 void 
-WebRenderer::Init(int width, int height, BROWSER_MODE::E mode)
+WebRenderer::Init(UInt32  width, UInt32  height, BROWSER_MODE::E mode)
 {
   m_running = false;
   m_mode = mode;
 
   CefWindowInfo window_info;
   CefBrowserSettings browserSettings;
-  browserSettings.webgl = STATE_DISABLED;
-  browserSettings.plugins = STATE_DISABLED;
-  browserSettings.javascript_close_windows = STATE_DISABLED;
-  browserSettings.javascript_access_clipboard = STATE_DISABLED;
-  browserSettings.javascript_dom_paste = STATE_DISABLED;
-  browserSettings.local_storage = STATE_DISABLED;
-  browserSettings.databases = STATE_DISABLED;
-  browserSettings.universal_access_from_file_urls = STATE_DISABLED;
-  browserSettings.web_security = STATE_ENABLED;
+  //browserSettings.webgl = STATE_DISABLED;
+  //browserSettings.plugins = STATE_DISABLED;
+  //browserSettings.javascript_close_windows = STATE_DISABLED;
+  //browserSettings.javascript_access_clipboard = STATE_DISABLED;
+  //browserSettings.javascript_dom_paste = STATE_DISABLED;
+  //browserSettings.local_storage = STATE_DISABLED;
+  //browserSettings.databases = STATE_DISABLED;
+  //browserSettings.universal_access_from_file_urls = STATE_DISABLED;
+  //browserSettings.web_security = STATE_ENABLED;
   browserSettings.windowless_frame_rate = 60;
-     
+  browserSettings.background_color = 0;
   switch (mode)
   {
   case driderSDK::BROWSER_MODE::kHeadless:
-    window_info.SetAsWindowless((HWND)GraphicsDriver::getApiReference().getWindowHandler());
+    window_info.SetAsWindowless((HWND)GraphicsAPI::getWindowHandle());
     break;
   case driderSDK::BROWSER_MODE::kPopUp:
-    window_info.SetAsPopup((HWND)GraphicsDriver::getApiReference().getWindowHandler(), "NAMAE");
+    window_info.SetAsPopup((HWND)GraphicsAPI::getWindowHandle(), "NAMAE");
     break;
   case driderSDK::BROWSER_MODE::kChild:
     throw "Not implemented exeption";
@@ -190,7 +271,7 @@ WebRenderer::setVisibility(bool visible)
 
 void WebRenderer::registerJS2CPPFunction(JSCallback callback)
 {
-  browserClient->m_callbacks.push_back(callback);
+  WebRenderer::m_v8Handler->m_callbacks.push_back(callback);
   CefRefPtr<CefProcessMessage> msg = CefProcessMessage::Create(IPC_REGISTER_JS2CPP_FUNC);
   CefRefPtr<CefListValue> cefargs = msg->GetArgumentList();
   cefargs->SetString(0, callback.first);
@@ -198,7 +279,7 @@ void WebRenderer::registerJS2CPPFunction(JSCallback callback)
 }
 
 void 
-WebRenderer::resize(int w, int h)
+WebRenderer::resize(UInt32  w, UInt32  h)
 {
   renderHandler->resize(w,h);
   browser->GetHost()->WasResized();
@@ -213,8 +294,8 @@ Texture & WebRenderer::getTextureReference()
 }
 void WebRenderer::setTexture()
 {
-  renderHandler->getTexturePointer()->set(GraphicsDriver::getApiReference().getDeviceContextReference(), 0);
-  renderHandler->getSamplerStatePointer()->set(GraphicsDriver::getApiReference().getDeviceContextReference(), DR_SHADER_TYPE_FLAG::kFragment);
+  renderHandler->getTexturePointer()->set(GraphicsAPI::getDeviceContext(), 0);
+  renderHandler->getSamplerStatePointer()->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kFragment);
 }
 void 
 WebRenderer::initInput()
@@ -273,7 +354,7 @@ WebRenderer::initInput()
   {
     CefKeyEvent keyEvent;
     //keyEvent.modifiers =  0; // InputManager::instance().getKeyboard().;
-    keyEvent.windows_key_code = key;
+    //keyEvent.windows_key_code = (int) Keyboard::getAsString( key).c_str();
     keyEvent.type = KEYEVENT_RAWKEYDOWN;
     browser->GetHost()->SendKeyEvent(keyEvent);
 
@@ -281,69 +362,4 @@ WebRenderer::initInput()
     browser->GetHost()->SendKeyEvent(keyEvent);
   });
 }
-
-bool BrowserClient::OnProcessMessageReceived(CefRefPtr<CefBrowser> browser, CefProcessId source_process, CefRefPtr<CefProcessMessage> message)
-{
-  const std::string& message_name = message->GetName();
-  if (message_name == IPC_CALL_JS2CPP_FUNC) {
-    std::string funcName = message->GetArgumentList()->GetString(0);
-    for (auto &it : m_callbacks)
-    {
-      if (funcName == it.first) {
-        CefRefPtr<CefV8Value> retval;
-        for (size_t i = 1; i < message->GetArgumentList()->GetSize(); i++)
-        {
-          if (message->GetArgumentList()->GetType(i) == CefValueType::VTYPE_INT ) {
-
-          }
-          else if (message->GetArgumentList()->GetType(i) == CefValueType::VTYPE_BOOL)
-          {
-
-          }
-          else if (message->GetArgumentList()->GetType(i) == CefValueType::VTYPE_DOUBLE)
-          {
-
-          }
-          else if (message->GetArgumentList()->GetType(i) == CefValueType::VTYPE_STRING)
-          {
-
-          }
-        }
-        
-        it.second(retval);
-        return true;
-      }
-    }
-    return true;
-  }
-  return false;
-}
-
-// CALLED ON RENDER PROCEESS!
-void DriderRenderProcessHandler::OnContextCreated(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefRefPtr<CefV8Context> context)
-{
-  for (auto &it : m_v8Handler->m_callList) {
-    CefRefPtr<CefV8Value> object = context->GetGlobal();
-    CefRefPtr<CefV8Value> func = CefV8Value::CreateFunction(it, m_v8Handler);
-    object->SetValue(it, func, V8_PROPERTY_ATTRIBUTE_NONE);
-  }
-}
-
-bool DriderRenderProcessHandler::OnProcessMessageReceived(CefRefPtr<CefBrowser> browser, CefProcessId source_process, CefRefPtr<CefProcessMessage> message)
-{
-  const std::string& message_name = message->GetName();
-  if (message_name == IPC_REGISTER_JS2CPP_FUNC) {
-    CefRefPtr<CefV8Context> context = browser->GetMainFrame()->GetV8Context();
-    context->Enter();
-    std::string funcName = message->GetArgumentList()->GetString(0);
-    m_v8Handler->m_callList.push_back(funcName);
-    CefRefPtr<CefV8Value> object = browser->GetMainFrame()->GetV8Context()->GetGlobal();
-    CefRefPtr<CefV8Value> func = CefV8Value::CreateFunction(funcName, m_v8Handler);
-    object->SetValue(funcName, func, V8_PROPERTY_ATTRIBUTE_NONE);
-    context->Exit();
-    return true;
-  }
-  return false;
-}
-
 }

@@ -24,7 +24,7 @@ TextureCore::init(void * data) {
   desc.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE;
   desc.genMipMaps = true;
   desc.mipLevels = 1;
-  desc.Format = DR_FORMAT::kDrFormat_R8G8B8A8_UNORM;
+  desc.Format = DR_FORMAT::kR8G8B8A8_UNORM;
 
  /* switch (image->channels) {
   case 1:

@@ -6,10 +6,8 @@
 #include <dr_time.h>
 #include <dr_input_manager.h>
 #include <dr_graphics_driver.h>
-
-#ifdef DR_PLATFORM_WINDOWS
-#include <dr_d3d_texture.h>
-#endif
+#include <dr_blend_state.h>
+#include <dr_texture.h>
 namespace driderSDK {
 
 TestApplication::TestApplication()
@@ -18,62 +16,47 @@ TestApplication::TestApplication()
 
 TestApplication::~TestApplication() {
 }
-
 void
-TestApplication::onInit() {
-  HWND win = GetActiveWindow();
-  InputManager::startUp((size_t)win);
-  GraphicsDriver::startUp(DR_GRAPHICS_API::D3D11, 
-    static_cast<driderSDK::UInt32>(viewport.width),
-    static_cast<driderSDK::UInt32>(viewport.height),
-    win);
-  InputManager* inputMngr = nullptr;
-  if (InputManager::isStarted()) {
-    inputMngr = InputManager::instancePtr();
-  }
+TestApplication::postInit() {
   quad.init();
-
-
-
-  webRenderer.Init(1280,720);
+  webRenderer.Init(1280,720,BROWSER_MODE::kHeadless);
   webRenderer.loadURL("file:///C:/Users/Ulises/Documents/GitHub/Drider-Engine/DriderUIUnitTest/ExampleHTML/example.html");
-  webRenderer.registerJS2CPPFunction(std::make_pair("myfunc", [](CefRefPtr<CefV8Value>& retval)  {
+  JSCallLambda func = [](CefRefPtr<CefV8Value>& retval, const CefV8ValueList& arguments) {
+    retval = CefV8Value::CreateString("MyRetVal");
     //exit(666);
-  }));
+  };
+  webRenderer.registerJS2CPPFunction(std::make_pair("myfunc", func));
   webRenderer.executeJSCode("alert(myfunc())");
-  Time::startUp();
-}
-void
-TestApplication::onInput() {
-  InputManager::capture();
+
+  int num = 10;
+  webRenderer.registerJS2CPPFunction(std::make_pair("setNum",  [&num](CefRefPtr<CefV8Value>& retval, const CefV8ValueList& arguments) {
+    num = arguments[0]->GetIntValue();
+    retval = CefV8Value::CreateInt(num);
+  }));
+  webRenderer.executeJSCode("alert(setNum(55))");
+  //auto ddd = webRenderer.getJSGlobalVar("testVal01");
 }
 
 void
-TestApplication::onUpdate() {
-  Time::instance().update();
+TestApplication::postUpdate() {
   webRenderer.executeJSCode("window.myfunc()");
   webRenderer.update();
 }
 
 void
-TestApplication::onDraw() {
-  GraphicsDriver::getApiReference().clear();
+TestApplication::postRender() {
+  GraphicsDriver::API().clear();
   webRenderer.setTexture();
+  GraphicsAPI::getBlendState(DR_BLEND_STATES::kAlphaBlend).set(GraphicsAPI::getDeviceContext());
   quad.draw();
-  GraphicsDriver::getApiReference().swapBuffers();
+  GraphicsAPI::getBlendState(DR_BLEND_STATES::kOpaque).set(GraphicsAPI::getDeviceContext());
+  GraphicsDriver::API().swapBuffers();
+}
+void
+TestApplication::postDestroy() {
+
 }
 
-void
-TestApplication::onDestroy() {
-}
-
-void
-TestApplication::onPause() {
-}
-
-void
-TestApplication::onResume() {
-}
 
 
 }

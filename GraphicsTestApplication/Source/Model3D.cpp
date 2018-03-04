@@ -56,8 +56,6 @@ void Model3D::init(const TString& filename) {
                                      fsSource.size() + 1, 
                                      DR_SHADER_TYPE_FLAG::kFragment);
 
-  
-
   IL = device.createInputLayout(Vertex::getInputDesc(), 
                                 *vs->m_shaderBytecode);
 

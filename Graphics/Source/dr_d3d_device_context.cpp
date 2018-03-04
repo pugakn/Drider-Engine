@@ -56,9 +56,10 @@ D3DDeviceContext::clearDepthStencilView(DepthStencil& depthstencil,
 void
 D3DDeviceContext::clearRenderTargetView(RenderTarget& renderTarget,
                                         const float colorRGBA[4]) const {
+  for (auto&it : static_cast<D3DRenderTarget*>(&renderTarget)->RTVs) {
     D3D11DeviceContext->
-      ClearRenderTargetView(static_cast<D3DRenderTarget*>(&renderTarget)->RTV,colorRGBA);
-
+      ClearRenderTargetView(it, colorRGBA);
+  }
 }
 
 void* D3DDeviceContext::getAPIObject() {

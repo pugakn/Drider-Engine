@@ -1,6 +1,11 @@
 #include "dr_resource_manager.h"
 
-#include <iostream>
+#include "dr_codec_texture.h"
+#include "dr_codec_model.h"
+#include <dr_codec_sound.h>
+#include "dr_codec_script.h"
+
+#include "dr_file_system.h"
 
 #include <dr_file_system.h>
 #include <dr_material.h>
@@ -25,7 +30,8 @@ ResourceManager::onStartUp() {
   auto codecTexture  = dr_make_unique<CodecTexture>();
   auto codecModel = dr_make_unique<CodecModel>();
   auto codecSound = dr_make_unique<CodecSound>();
-
+  auto codecScript = dr_make_unique<CodecScript>();
+  
   m_resourceFactories[codecTexture.get()] = std::make_shared<TextureCore>;
   m_resourceFactories[codecModel.get()] = std::make_shared<Model>;
   m_resourceFactories[codecSound.get()] = std::make_shared<SoundCore>;
