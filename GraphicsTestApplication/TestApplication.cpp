@@ -119,11 +119,6 @@ TestApplication::postInit() {
   //m_upCam->setParent(m_joker);
   m_joker->addChild(m_camera);
 
-  auto c = m_joker->clone();
-  c->setName(_T("C2"));
-
-  SceneGraph::addObject(c);
-
   //m_sceneGraph->query(*m_camera, QUERY_ORDER::kBackToFront, 0);
   
   /*result = FMOD::System_Create(&system);
@@ -253,8 +248,10 @@ TestApplication::postRender() {
     anim->draw(*m_activeCam);
   }
 
+  //Show Frustum
   m_camera->render();
-
+  
+  m_animTech->setCamera(&(*m_activeCam));
   m_technique->setCamera(&(*m_activeCam));
 
   auto dc = &GraphicsAPI::getDeviceContext();
@@ -269,9 +266,16 @@ TestApplication::postRender() {
 
   for (auto& queryObj : queryRes) {
 
-    m_technique->setWorld(&queryObj.world);
+    auto tech = m_technique.get();
+
+    if (queryObj.bones) {
+      tech = m_animTech.get();
+      m_animTech->setBones(*queryObj.bones);
+    }
+
+    tech->setWorld(&queryObj.world);
     
-    if (m_technique->prepareForDraw()) {
+    if (tech->prepareForDraw()) {
       if (auto material = queryObj.mesh.material.lock()) {
         material->set();
       }
@@ -450,27 +454,7 @@ TestApplication::initSceneGraph() {
     {0, _T("HipHopDancing.fbx")},
     {1, _T("Croc.X")},
   };
- 
-  std::mt19937 mt(std::random_device{}());
-  
-  std::uniform_int_distribution<> dt(0, static_cast<Int32>(names.size() - 1));
-  std::uniform_int_distribution<> scl(1, 3);
-  std::uniform_real_distribution<float> space(-1500, 1500);
-
-  for (Int32 i = 0; i < 0; ++i) {
-    Vector3D pos(space(mt), 0, space(mt));
-    TString aaa =StringUtils::toTString(i);
-
-    auto mod = dt(mt);
-
-    auto n = createNode(root, names[mod] + aaa, 
-                        names[mod], 
-                        pos);   
-    n->setStatic(true);
-    float sc = static_cast<float>(scl(mt));
-    n->getTransform().scale({sc,sc,sc});
-  }
-  
+   
   auto chinaMod = ResourceManager::getReferenceT<Model>(_T("HipHopDancing.fbx"));
 
   auto animName = chinaMod->animationsNames[0];
@@ -500,11 +484,34 @@ TestApplication::initSceneGraph() {
   n->getComponent<RenderComponent>()->getMeshes()[0].material = chinitaMat;
 
   m_joker = n;
+  
+  
+  std::mt19937 mt(std::random_device{}());
+  
+  std::uniform_int_distribution<> dt(0, static_cast<Int32>(names.size() - 1));
+  std::uniform_int_distribution<> scl(1, 3);
+  std::uniform_real_distribution<float> space(-1500, 1500);
+  std::uniform_real_distribution<float> time(0, 1000);
 
-  if (chinaSkel) {
-    auto comp = n->createComponent<SkeletonDebug>();
-    comp->setShaderTechnique(m_linesTech.get());
+  for (Int32 i = 0; i < 50; ++i) {
+    Vector3D pos(space(mt), 0, space(mt));
+    auto pp = n->clone();
+    pp->getTransform().setPosition(pos);
+    auto an = pp->getComponent<AnimatorComponent>();
+    an->setTime(time(mt));
+
+    /*TString aaa =StringUtils::toTString(i);
+
+    auto mod = dt(mt);
+
+    auto n = createNode(root, names[mod] + aaa, 
+                        names[mod], 
+                        pos);   
+    n->setStatic(true);
+    float sc = static_cast<float>(scl(mt));
+    n->getTransform().scale({sc,sc,sc});*/
   }
+
 }
 
 }

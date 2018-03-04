@@ -74,9 +74,15 @@ GameObject::clone() {
   
   SharedGameObj dup = createInstance();
 
+  copyData(dup);
+
   dup->m_name = m_name;
 
   dup->m_parent = m_parent;
+
+  if (auto p = m_parent.lock()) {
+    p->addChild(dup);
+  }
 
   dup->m_change = m_change;
 

@@ -43,7 +43,6 @@ private:
   using AABBDebugList = std::vector<AABBDebugPtr>;
   Technique* m_technique{nullptr};
   AABBDebugList m_aabbs;
-  AABBDebugPtr m_globalAABB;
 };
 
 }

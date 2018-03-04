@@ -19,7 +19,6 @@ void SkeletonDebug::setShaderTechnique(Technique* technique) {
   for (auto& aabb : m_aabbs) {
     aabb->setShaderTechnique(technique);
   }
-  m_globalAABB->setShaderTechnique(technique);
 
   m_technique = technique;
 }
@@ -33,8 +32,6 @@ SkeletonDebug::onCreate() {
     m_aabbs.push_back(dr_make_unique<AABBDebug>(m_gameObject));
   }
 
-  m_globalAABB = dr_make_unique<AABBDebug>(m_gameObject);
-  m_globalAABB->onCreate();
 
   for (auto& aabb : m_aabbs) {
     aabb->onCreate();
@@ -76,9 +73,6 @@ SkeletonDebug::onUpdate() {
   Vector3D diff = max - min;
 
   AABB a{diff.x, diff.y, diff.z, (max + min) * 0.5f};
-  //a.recalculate();
-
-  m_globalAABB->setAABB(a);
 }
 
 void 
@@ -86,7 +80,6 @@ SkeletonDebug::onRender() {
   for (auto& aabb : m_aabbs) {    
     aabb->onRender();
   }
-  m_globalAABB->onRender();
 }
 
 void 
@@ -94,7 +87,6 @@ SkeletonDebug::onDestroy() {
   for (auto& aabb : m_aabbs) {
     aabb->onDestroy();
   }
-  m_globalAABB->onDestroy();
 }
 
 void 

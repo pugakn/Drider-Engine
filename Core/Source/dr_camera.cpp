@@ -15,10 +15,10 @@ Camera::Camera(const TString& name,
 
 Camera::~Camera() {}
 
-GameObject::SharedGameObj 
-Camera::clone() {
+void
+Camera::copyData(SharedGameObj other) {
 
-  auto dup = std::dynamic_pointer_cast<Camera>(GameObject::clone());
+  auto dup = std::dynamic_pointer_cast<Camera>(other);
 
   dup->m_target     = m_target;
 	dup->m_up         = m_up;
@@ -29,8 +29,6 @@ Camera::clone() {
   dup->m_nearPlane  = m_nearPlane;
   dup->m_farPlane   = m_farPlane;
   dup->m_fov        = m_fov;
-
-  return dup;
 }
 
 GameObject::SharedGameObj 

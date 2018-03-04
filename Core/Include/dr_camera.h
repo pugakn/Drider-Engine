@@ -65,13 +65,13 @@ public:
 	*
 	*/
 	~Camera();
-
-  virtual SharedGameObj
-  clone();
-
   
   virtual SharedGameObj
   createInstance();
+
+  virtual void
+  copyData(SharedGameObj);
+
 	/**
 	* TEST::update
 	* Updates the camera.

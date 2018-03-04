@@ -44,6 +44,11 @@ AnimatorComponent::setSkeleton(SharedSkeleton skeleton) {
   }  
 }
 
+void
+AnimatorComponent::setTime(float time) {
+  m_elapsed = time;
+}
+
 AnimatorComponent::SharedSkeleton 
 AnimatorComponent::getSkeleton() const {
   return m_skeleton.lock();
@@ -61,20 +66,23 @@ AnimatorComponent::getBonesTransforms() const {
 
 void 
 AnimatorComponent::onCreate() {
-
+  m_elapsed = 0;
 }
 
 void 
 AnimatorComponent::onUpdate() {
+
 
   auto skeleton = getSkeleton();
   auto animation = getCurrentAnimation();
 
   if (skeleton && animation) {
 
+    m_elapsed += Time::getDelta();
+
     float tps = animation->getTicksPerSecond();
     float duration = animation->getDurationInTicks();
-    float timeInTicks = Time::getElapsed() * tps;
+    float timeInTicks = m_elapsed * tps;
 
     DR_ASSERT(duration);
 
@@ -116,6 +124,7 @@ AnimatorComponent::cloneIn(GameObject& _go) {
   dup->m_skeleton       = m_skeleton;
   dup->m_currentAnim    = m_currentAnim;
   dup->m_animations     = m_animations; 
+  dup->m_elapsed        = m_elapsed;
 }
 
 Quaternion 

@@ -36,6 +36,9 @@ public:
   void
   setSkeleton(SharedSkeleton skeleton);
 
+  void
+  setTime(float time);
+
   SharedSkeleton
   getSkeleton() const;
 
@@ -124,6 +127,7 @@ private:
   FrameCache m_lastPositions;
   UInt32 m_currentBone;
   float m_lastTime;
+  float m_elapsed;
   TransformsList m_transforms;
   WeakSkeleton m_skeleton;
   WeakAnimation m_currentAnim;
