@@ -62,6 +62,9 @@ private:
   virtual void 
   onDestroy() override;
 
+  virtual void
+  cloneIn(GameObject& _go);
+
   bool m_isModel;
   WeakModelRef m_model;
   MeshList m_meshes;

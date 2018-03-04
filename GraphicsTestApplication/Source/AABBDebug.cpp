@@ -100,4 +100,11 @@ void AABBDebug::onUpdate() {
   }
 }
 
+void 
+AABBDebug::cloneIn(GameObject& _go) {
+
+  auto dup = _go.createComponent<AABBDebug>(m_updateFromGO);
+  dup->m_technique = m_technique;
+}
+
 }

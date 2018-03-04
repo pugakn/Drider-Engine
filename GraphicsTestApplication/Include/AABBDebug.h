@@ -25,6 +25,9 @@ public:
   virtual void
   onUpdate() override;
 
+  virtual void
+  cloneIn(GameObject& _go);
+
 private:
   std::vector<Mesh> m_meshesCore;
   bool m_updateFromGO;

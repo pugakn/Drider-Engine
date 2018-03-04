@@ -37,6 +37,11 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   void
   render();
 
+  virtual SharedGameObj
+  clone();
+
+  virtual SharedGameObj
+  createInstance();
   /*virtual void
   destroy();*/
 
@@ -227,7 +232,9 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   void
   propagateChange();
 
+
  protected:
+
 
   virtual void
   updateImpl();

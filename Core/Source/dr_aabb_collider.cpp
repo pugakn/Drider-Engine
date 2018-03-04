@@ -20,6 +20,7 @@ AABBCollider::getAABB() {
 
 void
 AABBCollider::onCreate() {
+
 }
 
 void 
@@ -32,6 +33,12 @@ AABBCollider::onUpdate() {
 
 void 
 AABBCollider::onDestroy() {
+}
+
+void
+AABBCollider::cloneIn(GameObject& _go) {
+  auto dup = _go.createComponent<AABBCollider>(m_originalAABB);
+  dup->m_transformedAABB = m_transformedAABB;
 }
 
 COLLIDER_TYPE::E 

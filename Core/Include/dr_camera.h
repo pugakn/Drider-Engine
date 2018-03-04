@@ -66,6 +66,12 @@ public:
 	*/
 	~Camera();
 
+  virtual SharedGameObj
+  clone();
+
+  
+  virtual SharedGameObj
+  createInstance();
 	/**
 	* TEST::update
 	* Updates the camera.
@@ -232,6 +238,8 @@ public:
   END_REGISTER
 
  private:
+
+
 	Vector3D m_target;
 	Vector3D m_up;
 	Matrix4x4 m_vp;

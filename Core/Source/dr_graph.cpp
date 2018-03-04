@@ -185,21 +185,18 @@ SceneGraph::filterObjects(GameObjectQueue& objects,
 
     auto obj = objects.top();
 
-    bool animated = obj->getComponent<AnimatorComponent>() != nullptr;
+    const std::vector<Matrix4x4>* bones = nullptr;
+
+    if (auto animComp = obj->getComponent<AnimatorComponent>()) {
+      bones = &animComp->getBonesTransforms();
+    }
 
     auto& meshes = obj->getComponent<RenderComponent>()->getMeshes();
 
     for (auto& mesh : meshes) {
       
       UInt32 meshProps = 0;
-
-      if (animated) {
-        meshProps |= QUERY_PROPERTY::kAnimated;
-      }
-      else {
-        meshProps |= QUERY_PROPERTY::kUnAnimated;
-      }
-
+      
       if (obj->isStatic()) {
         meshProps |= QUERY_PROPERTY::kStatic;
       }
@@ -225,7 +222,7 @@ SceneGraph::filterObjects(GameObjectQueue& objects,
       }
 
       if (meshProps == (meshProps & props)) {
-        result.push_back({obj->getWorldTransform().getMatrix(), mesh});
+        result.push_back({obj->getWorldTransform().getMatrix(), mesh, bones});
       }
     }
 

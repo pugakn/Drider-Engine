@@ -1,5 +1,6 @@
 #include "dr_animator_component.h"
 
+#include <dr_gameObject.h>
 #include <dr_logger.h>
 #include <dr_matrix4x4.h>
 #include <dr_time.h>
@@ -101,6 +102,20 @@ AnimatorComponent::onRender() {
 void 
 AnimatorComponent::onDestroy() {
 
+}
+
+void
+AnimatorComponent::cloneIn(GameObject& _go) {
+  
+  auto dup = _go.createComponent<AnimatorComponent>();
+
+  dup->m_lastPositions  = m_lastPositions;
+  dup->m_currentBone    = m_currentBone;
+  dup->m_lastTime       = m_lastTime;
+  dup->m_transforms     = m_transforms;
+  dup->m_skeleton       = m_skeleton;
+  dup->m_currentAnim    = m_currentAnim;
+  dup->m_animations     = m_animations; 
 }
 
 Quaternion 

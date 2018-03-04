@@ -1,20 +1,14 @@
 #include "SkeletonDebug.h"
 #include <dr_aabb.h>
-#include <dr_animator.h>
+#include <dr_animator_component.h>
+#include <dr_gameObject.h>
 #include <dr_skeleton.h>
 #include <dr_transform.h>
 
 namespace driderSDK {
 
-SkeletonDebug::SkeletonDebug(GameObject& _go, 
-                             const Skeleton& skeleton, 
-                             Animator& anim,
-                             Transform& _transform)
-  : GameComponent(_go),
-    m_transform(_transform),
-    m_skeleton(skeleton),
-    m_anim(anim)
-
+SkeletonDebug::SkeletonDebug(GameObject& _go)
+  : GameComponent(_go)
 {}
 
 void 
@@ -26,12 +20,16 @@ void SkeletonDebug::setShaderTechnique(Technique* technique) {
     aabb->setShaderTechnique(technique);
   }
   m_globalAABB->setShaderTechnique(technique);
+
+  m_technique = technique;
 }
 
 void
 SkeletonDebug::onCreate() {
   
-  for (auto& aabb : m_skeleton.bonesAABBs) {
+  auto anim = m_gameObject.getComponent<AnimatorComponent>();
+
+  for (auto& aabb : anim->getSkeleton()->bonesAABBs) {
     m_aabbs.push_back(dr_make_unique<AABBDebug>(m_gameObject));
   }
 
@@ -48,15 +46,17 @@ SkeletonDebug::onUpdate() {
   
   Int32 index = 0;
 
-  auto transf = m_anim.getTransforms();
+  auto anim = m_gameObject.getComponent<AnimatorComponent>();
 
-  auto aabbs = m_skeleton.bonesAABBs;
+  auto transf = anim->getBonesTransforms();
+
+  auto aabbs = anim->getSkeleton()->bonesAABBs;
   
   index = 0;
 
   for (auto& aabb : aabbs) {
     aabb.recalculate(transf[index].transpose());
-    aabb.recalculate(m_transform.getMatrix());
+    aabb.recalculate(m_gameObject.getWorldTransform().getMatrix());
     m_aabbs[index]->setAABB(aabb);
     ++index;
   }
@@ -95,6 +95,13 @@ SkeletonDebug::onDestroy() {
     aabb->onDestroy();
   }
   m_globalAABB->onDestroy();
+}
+
+void 
+SkeletonDebug::cloneIn(GameObject& _go) {
+
+  auto dup = _go.createComponent<SkeletonDebug>();
+  dup->setShaderTechnique(m_technique);
 }
 
 

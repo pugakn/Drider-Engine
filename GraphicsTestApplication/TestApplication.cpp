@@ -21,13 +21,15 @@
 #include <dr_time.h>
 #include <dr_gameObject.h>
 #include <dr_material.h>
+#include <dr_animator_component.h>
+
 #include "DrawableComponent.h"
 #include "AABBDebug.h"
 #include "FrustumDebug.h"
 #include "SkeletonDebug.h"
-#include "NPCMovement.h"
 #include "StaticMeshTechnique.h"
 #include "LinesTechnique.h"
+#include "AnimationTechnique.h"
 
 namespace driderSDK {
 
@@ -88,9 +90,13 @@ TestApplication::postInit() {
 
   m_technique->compile();
 
+  m_animTech = dr_make_unique<AnimationTechnique>();
+
+  m_animTech->compile();
+
   initResources();
   
-  m_animated.push_back(new Model3D());
+  /*m_animated.push_back(new Model3D());
   m_animated[0]->init(_T("HipHopDancing.fbx"));
 
   m_animated.push_back(new Model3D());
@@ -101,7 +107,7 @@ TestApplication::postInit() {
   m_animated.push_back(new Model3D());
   m_animated[2]->init(_T("HipHopDancing.fbx"));
   m_animated[2]->transform.move({-200, 0, 0});
-  m_animated[2]->elapsedTime = 33.f;
+  m_animated[2]->elapsedTime = 33.f;*/
 
   initInput();
   initSceneGraph();
@@ -112,6 +118,11 @@ TestApplication::postInit() {
   m_leftCam->setParent(m_joker);
   //m_upCam->setParent(m_joker);
   m_joker->addChild(m_camera);
+
+  auto c = m_joker->clone();
+  c->setName(_T("C2"));
+
+  SceneGraph::addObject(c);
 
   //m_sceneGraph->query(*m_camera, QUERY_ORDER::kBackToFront, 0);
   
@@ -152,8 +163,7 @@ TestApplication::input() {
   }*/
 
   //m_animated[1]->transform.rotate(Degree(90 * Time::getDelta()), AXIS::kY);
-  float scale = Math::cos(Time::getElapsed()) * 0.5f + 1.f;
-  m_animated[1]->transform.setScale({scale, scale, scale});
+  
   
   Vector3D dir = m_joker->getTransform().getDirection();
   Vector3D right = dir.cross(Vector3D(0,1,0));
@@ -249,27 +259,26 @@ TestApplication::postRender() {
 
   auto dc = &GraphicsAPI::getDeviceContext();
 
-  auto meshes = SceneGraph::query(*m_camera, 
+  auto queryRes = SceneGraph::query(*m_camera, 
                                   m_queryOrder, 
                                   QUERY_PROPERTY::kOpaque | 
                                   QUERY_PROPERTY::kDynamic | 
-                                  QUERY_PROPERTY::kStatic | 
-                                  QUERY_PROPERTY::kUnAnimated);
+                                  QUERY_PROPERTY::kStatic);
 
   dc->setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
 
-  for (auto& mesh : meshes) {
+  for (auto& queryObj : queryRes) {
 
-    m_technique->setWorld(&mesh.first);
+    m_technique->setWorld(&queryObj.world);
     
     if (m_technique->prepareForDraw()) {
-      if (auto material = mesh.second.material.lock()) {
+      if (auto material = queryObj.mesh.material.lock()) {
         material->set();
       }
-      mesh.second.vertexBuffer->set(*dc);
-      mesh.second.indexBuffer->set(*dc);
+      queryObj.mesh.vertexBuffer->set(*dc);
+      queryObj.mesh.indexBuffer->set(*dc);
 
-      dc->draw(mesh.second.indicesCount, 0, 0);
+      dc->draw(queryObj.mesh.indicesCount, 0, 0);
     }
   }
 
@@ -281,6 +290,7 @@ TestApplication::postDestroy() {
   
   m_technique->destroy();
   m_linesTech->destroy();
+  m_animTech->destroy();
 
   m_animated.clear();
 
@@ -362,24 +372,7 @@ TestApplication::initInput() {
     addDrawableComponent(octree, m_linesTech.get());
   };
 
-  using SharedObj = std::shared_ptr<GameObject>;
-
-  std::function<void(SharedObj)> remAdd = [&remAdd](SharedObj p)
-  {
-    if (p->getComponent<AABBDebug>()) {
-      p->removeComponent<AABBDebug>();
-    }
-    else {
-      if (p->getComponent<RenderComponent>()) {
-        p->createComponent<AABBDebug>(true);
-      }      
-    }
-
-    for (auto child : p->getChildren()) {
-      remAdd(child);
-    }
-  };
-  
+    
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kQ,
                         toggleQueryOrder);
@@ -399,9 +392,6 @@ TestApplication::initInput() {
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kP,
                         debugOctree);
-
-  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
-                         KEY_CODE::kR, std::bind(remAdd, SceneGraph::getRoot()));
 
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                          KEY_CODE::kJ, toggleWireframe);
@@ -483,23 +473,38 @@ TestApplication::initSceneGraph() {
   
   auto chinaMod = ResourceManager::getReferenceT<Model>(_T("HipHopDancing.fbx"));
 
+  auto animName = chinaMod->animationsNames[0];
+
+  auto chinaAnim = ResourceManager::getReferenceT<Animation>(animName);
+
   auto chinaSkel = ResourceManager::getReferenceT<Skeleton>(chinaMod->skeletonName);
 
-  auto n = createNode(root, _T("Chinita"), _T("HipHopDancing.fbx"), {-200.f, 0.0f, 0.0f});
-  n->getTransform().scale({ 1,1,1 });
-  m_joker = n;
-
-  if (chinaSkel) {
-    auto comp = n->createComponent<SkeletonDebug>(*chinaSkel, 
-                                                  m_animated[1]->animator,
-                                                  m_animated[1]->transform);
-    comp->setShaderTechnique(m_linesTech.get());
-  }
-  
   auto chinitaMat = ResourceManager::createMaterial(_T("Mat_Chinita"));
+
   auto chinitaTex = ResourceManager::getReferenceT<TextureCore>(_T("Kachujin_diffuse.png"));
 
   chinitaMat->getProperty(_T("Albedo"))->texture = chinitaTex;
+
+  auto n = createNode(root, _T("Chinita"), _T("HipHopDancing.fbx"), {-200.f, 0.0f, 0.0f});
+  
+  auto animComp = n->createComponent<AnimatorComponent>();
+
+  animComp->setSkeleton(chinaSkel);
+
+  animComp->addAnimation(chinaAnim, animName);
+
+  animComp->setCurrentAnimation(animName);
+
+  n->getTransform().scale({ 1,1,1 });
+  
+  n->getComponent<RenderComponent>()->getMeshes()[0].material = chinitaMat;
+
+  m_joker = n;
+
+  if (chinaSkel) {
+    auto comp = n->createComponent<SkeletonDebug>();
+    comp->setShaderTechnique(m_linesTech.get());
+  }
 }
 
 }

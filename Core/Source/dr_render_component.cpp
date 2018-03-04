@@ -67,4 +67,15 @@ RenderComponent::onDestroy() {
   m_meshes.clear();
 }
 
+void
+RenderComponent::cloneIn(GameObject& _go) {
+
+  auto dup = _go.createComponent<RenderComponent>(MeshList{});
+
+  /*Make it model so it wont release ib & vb*/
+  dup->m_isModel = true;
+  dup->m_model = m_model;
+  dup->m_meshes = m_meshes;
+}
+
 }

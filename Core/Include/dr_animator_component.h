@@ -15,7 +15,7 @@ namespace driderSDK {
 
 class Matrix4x4;
 
-class AnimatorComponent : public GameComponent
+class DR_CORE_EXPORT AnimatorComponent : public GameComponent
 {
 
 public:
@@ -57,6 +57,9 @@ private:
 
   virtual void 
   onDestroy() override;
+
+  virtual void
+  cloneIn(GameObject& _go) override;
 
   Quaternion
   interpolateRotation(const Animation::BoneAnim& boneAnim,

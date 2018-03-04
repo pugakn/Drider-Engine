@@ -48,16 +48,7 @@
     <ClInclude Include="Include\Model3D.h">
       <Filter>Archivos de encabezado\Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="Include\DrawableAnimated.h">
-      <Filter>Archivos de encabezado\Components</Filter>
-    </ClInclude>
     <ClInclude Include="Include\DrawableComponent.h">
-      <Filter>Archivos de encabezado\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\InputComponent.h">
-      <Filter>Archivos de encabezado\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\NPCMovement.h">
       <Filter>Archivos de encabezado\Components</Filter>
     </ClInclude>
     <ClInclude Include="Include\Technique.h">
@@ -81,15 +72,12 @@
     <ClInclude Include="Include\FrustumDebug.h">
       <Filter>Archivos de encabezado\Components</Filter>
     </ClInclude>
+    <ClInclude Include="Include\AnimationTechnique.h">
+      <Filter>Archivos de encabezado\Techniques</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\DrawableAnimated.cpp">
-      <Filter>Archivos de origen\Components</Filter>
-    </ClCompile>
     <ClCompile Include="Source\DrawableComponent.cpp">
-      <Filter>Archivos de origen\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\NPCMovement.cpp">
       <Filter>Archivos de origen\Components</Filter>
     </ClCompile>
     <ClCompile Include="Source\Technique.cpp">
@@ -97,9 +85,6 @@
     </ClCompile>
     <ClCompile Include="Source\StaticMeshTechnique.cpp">
       <Filter>Archivos de origen\Technique</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\InputComponent.cpp">
-      <Filter>Archivos de origen\Components</Filter>
     </ClCompile>
     <ClCompile Include="Source\Model3D.cpp">
       <Filter>Archivos de origen\Geometry</Filter>
@@ -121,6 +106,9 @@
     </ClCompile>
     <ClCompile Include="Source\FrustumDebug.cpp">
       <Filter>Archivos de origen\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\AnimationTechnique.cpp">
+      <Filter>Archivos de origen\Technique</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -15,6 +15,29 @@ Camera::Camera(const TString& name,
 
 Camera::~Camera() {}
 
+GameObject::SharedGameObj 
+Camera::clone() {
+
+  auto dup = std::dynamic_pointer_cast<Camera>(GameObject::clone());
+
+  dup->m_target     = m_target;
+	dup->m_up         = m_up;
+	dup->m_vp         = m_vp;
+	dup->m_view       = m_view;
+	dup->m_projection = m_projection;
+	dup->m_viewport   = m_viewport;
+  dup->m_nearPlane  = m_nearPlane;
+  dup->m_farPlane   = m_farPlane;
+  dup->m_fov        = m_fov;
+
+  return dup;
+}
+
+GameObject::SharedGameObj 
+Camera::createInstance() {
+  return std::make_shared<Camera>();
+}
+
 void
 Camera::updateImpl() {
 	
@@ -163,6 +186,7 @@ const Matrix4x4&
 Camera::getProjection() const {
   return m_projection;
 }
+
 
 CREATE_REF_FACTORY_FUNC(Camera)
 
