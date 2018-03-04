@@ -55,7 +55,10 @@ class GBufferPass : RenderPass {
   struct CBuffer {
     Matrix4x4 WVP;
     Matrix4x4 World;
+    Matrix4x4 Bones[200];
   };
+
+  CBuffer CB;
   
   ConstantBuffer* m_constantBuffer;
   InputLayout* m_inputLayout;

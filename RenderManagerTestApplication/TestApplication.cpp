@@ -215,14 +215,13 @@ void
 TestApplication::postRender() {
   
   GraphicsDriver::API().clear();
-  
-  //SceneGraph::draw();
-  
+/*
   for (auto& anim : m_animated) {
     anim->draw(*m_activeCam);
   }
+*/
 
-  m_camera->render();
+  //m_camera->render();
 
   renderManager.draw();
 }

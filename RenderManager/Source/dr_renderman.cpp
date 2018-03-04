@@ -47,7 +47,8 @@ void
 RenderMan::draw() {
   queryRequest = SceneGraph::query(*Sauron,
                                    QUERY_ORDER::kFrontToBack,
-                                   QUERY_PROPERTYS::kOpaque |
+                                   QUERY_PROPERTYS::kOpaque | 
+                                   QUERY_PROPERTYS::kDynamic | 
                                    QUERY_PROPERTYS::kStatic);
 
   m_GBufferDrawData.activeCam = Sauron;
