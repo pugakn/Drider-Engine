@@ -633,9 +633,9 @@ Intersect::aabbPoint(const Vector3D& aabbMax,
 										 const Vector3D& aabbMin,
                      const Vector3D& point) {
 
-	return (point.x > aabbMin.x && point.x < aabbMax.x &&
-					point.y > aabbMin.y && point.y < aabbMax.y &&
-					point.z > aabbMin.z && point.z < aabbMax.z);
+	return (point.x >= aabbMin.x && point.x <= aabbMax.x &&
+					point.y >= aabbMin.y && point.y <= aabbMax.y &&
+					point.z >= aabbMin.z && point.z <= aabbMax.z);
 }
 
 bool

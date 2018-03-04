@@ -24,11 +24,8 @@ SceneGraph::buildOctree() {
 
   addGameObjectsStatics(*instance().m_root, &staticGameObjects);
 
-  AABB aa(5000, 5000, 5000, Vector3D(0, 0, 0));
-
-  Octree octree(&(*instance().m_octree), aa, &staticGameObjects, 10000);
+  Octree octree(&(*instance().m_octree), &staticGameObjects);
   octree.buildTree();
-  octree.createNodes();
 }
 
 void 

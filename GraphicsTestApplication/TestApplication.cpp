@@ -385,6 +385,13 @@ TestApplication::initResources() {
   ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
 
   ResourceManager::loadResource(_T("HipHopDancing.fbx"));
+
+  ResourceManager::loadResource(_T("VenomJok.X"));
+
+  ResourceManager::loadResource(_T("dwarf.x"));
+
+  ResourceManager::loadResource(_T("DuckyQuacky_.fbx"));
+
 }
 
 void 
@@ -424,8 +431,7 @@ TestApplication::initSceneGraph() {
     {0, _T("VenomJok.X")},
     {1, _T("Croc.X")},
     {2, _T("dwarf.x")},
-    {3, _T("DuckyQuacky_.fbx")},
-    {4, _T("China.dae")}
+    {3, _T("DuckyQuacky_.fbx")}
   };
  
   std::mt19937 mt(std::random_device{}());
@@ -434,7 +440,7 @@ TestApplication::initSceneGraph() {
   std::uniform_int_distribution<> scl(1, 3);
   std::uniform_real_distribution<float> space(-1500, 1500);
 
-  for (Int32 i = 0; i < 0; ++i) {
+  for (Int32 i = 0; i < 50; ++i) {
     Vector3D pos(space(mt), 0, space(mt));
     TString aaa =StringUtils::toTString(i);
 

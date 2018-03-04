@@ -171,6 +171,7 @@
     <ClInclude Include="Include\dr_model_info.h" />
     <ClInclude Include="Include\dr_module.h" />
     <ClInclude Include="Include\dr_octree.h" />
+    <ClInclude Include="Include\dr_octreeNode.h" />
     <ClInclude Include="Include\dr_parser.h" />
     <ClInclude Include="Include\dr_render_component.h" />
     <ClInclude Include="Include\dr_resource.h" />
@@ -203,6 +204,7 @@
     <ClCompile Include="Source\dr_mesh.cpp" />
     <ClCompile Include="Source\dr_model.cpp" />
     <ClCompile Include="Source\dr_octree.cpp" />
+    <ClCompile Include="Source\dr_octreeNode.cpp" />
     <ClCompile Include="Source\dr_parser.cpp" />
     <ClCompile Include="Source\dr_render_component.cpp" />
     <ClCompile Include="Source\dr_resource.cpp" />
