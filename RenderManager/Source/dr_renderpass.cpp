@@ -2,11 +2,10 @@
 
 namespace driderSDK {
 
-template<typename T, typename ...Args>
-void
-RenderPass::renderQueue(RenderTarget* RenderTargetInput,
-                        RenderTarget* RenderTargetOutput
-                       ) {
+RenderPass::RenderPass() : m_vertexShader(nullptr), m_fragmentShader(nullptr) {
+}
+
+RenderPass::~RenderPass() {
 }
 
 }

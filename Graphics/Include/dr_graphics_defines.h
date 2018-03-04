@@ -15,131 +15,166 @@ enum E {
 
 }
 
+namespace DR_BLEND
+{
+enum E
+{
+  kBLEND_ZERO = 1,
+  kBLEND_ONE = 2,
+  kBLEND_SRC_COLOR = 3,
+  kBLEND_INV_SRC_COLOR = 4,
+  kBLEND_SRC_ALPHA = 5,
+  kBLEND_INV_SRC_ALPHA = 6,
+  kBLEND_DEST_ALPHA = 7,
+  kBLEND_INV_DEST_ALPHA = 8,
+  kBLEND_DEST_COLOR = 9,
+  kBLEND_INV_DEST_COLOR = 10,
+  kBLEND_SRC_ALPHA_SAT = 11,
+  kBLEND_BLEND_FACTOR = 14,
+  kBLEND_INV_BLEND_FACTOR = 15,
+  kBLEND_SRC1_COLOR = 16,
+  kBLEND_INV_SRC1_COLOR = 17,
+  kBLEND_SRC1_ALPHA = 18,
+  kBLEND_INV_SRC1_ALPHA = 19
+};
+}
+
+namespace DR_BLEND_OP {
+  enum E
+  {
+    kBLEND_OP_ADD = 1,
+    kBLEND_OP_SUBTRACT = 2,
+    kBLEND_OP_REV_SUBTRACT = 3,
+    kBLEND_OP_MIN = 4,
+    kBLEND_OP_MAX = 5
+  };
+}
+
 namespace DR_FORMAT {
 
 enum E {
-  kDrFormat_UNKNOWN = 0,
-  kDrFormat_R32G32B32A32_TYPELESS = 1,
-  kDrFormat_R32G32B32A32_FLOAT = 2,
-  kDrFormat_R32G32B32A32_UINT = 3,
-  kDrFormat_R32G32B32A32_SINT = 4,
-  kDrFormat_R32G32B32_TYPELESS = 5,
-  kDrFormat_R32G32B32_FLOAT = 6,
-  kDrFormat_R32G32B32_UINT = 7,
-  kDrFormat_R32G32B32_SINT = 8,
-  kDrFormat_R16G16B16A16_TYPELESS = 9,
-  kDrFormat_R16G16B16A16_FLOAT = 10,
-  kDrFormat_R16G16B16A16_UNORM = 11,
-  kDrFormat_R16G16B16A16_UINT = 12,
-  kDrFormat_R16G16B16A16_SNORM = 13,
-  kDrFormat_R16G16B16A16_SINT = 14,
-  kDrFormat_R32G32_TYPELESS = 15,
-  kDrFormat_R32G32_FLOAT = 16,
-  kDrFormat_R32G32_UINT = 17,
-  kDrFormat_R32G32_SINT = 18,
-  kDrFormat_R32G8X24_TYPELESS = 19,
-  kDrFormat_D32_FLOAT_S8X24_UINT = 20,
-  kDrFormat_R32_FLOAT_X8X24_TYPELESS = 21,
-  kDrFormat_X32_TYPELESS_G8X24_UINT = 22,
-  kDrFormat_R10G10B10A2_TYPELESS = 23,
-  kDrFormat_R10G10B10A2_UNORM = 24,
-  kDrFormat_R10G10B10A2_UINT = 25,
-  kDrFormat_R11G11B10_FLOAT = 26,
-  kDrFormat_R8G8B8A8_TYPELESS = 27,
-  kDrFormat_R8G8B8A8_UNORM = 28,
-  kDrFormat_R8G8B8A8_UNORM_SRGB = 29,
-  kDrFormat_R8G8B8A8_UINT = 30,
-  kDrFormat_R8G8B8A8_SNORM = 31,
-  kDrFormat_R8G8B8A8_SINT = 32,
-  kDrFormat_R16G16_TYPELESS = 33,
-  kDrFormat_R16G16_FLOAT = 34,
-  kDrFormat_R16G16_UNORM = 35,
-  kDrFormat_R16G16_UINT = 36,
-  kDrFormat_R16G16_SNORM = 37,
-  kDrFormat_R16G16_SINT = 38,
-  kDrFormat_R32_TYPELESS = 39,
-  kDrFormat_D32_FLOAT = 40,
-  kDrFormat_R32_FLOAT = 41,
-  kDrFormat_R32_UINT = 42,
-  kDrFormat_R32_SINT = 43,
-  kDrFormat_R24G8_TYPELESS = 44,
-  kDrFormat_D24_UNORM_S8_UINT = 45,
-  kDrFormat_R24_UNORM_X8_TYPELESS = 46,
-  kDrFormat_X24_TYPELESS_G8_UINT = 47,
-  kDrFormat_R8G8_TYPELESS = 48,
-  kDrFormat_R8G8_UNORM = 49,
-  kDrFormat_R8G8_UINT = 50,
-  kDrFormat_R8G8_SNORM = 51,
-  kDrFormat_R8G8_SINT = 52,
-  kDrFormat_R16_TYPELESS = 53,
-  kDrFormat_R16_FLOAT = 54,
-  kDrFormat_D16_UNORM = 55,
-  kDrFormat_R16_UNORM = 56,
-  kDrFormat_R16_UINT = 57,
-  kDrFormat_R16_SNORM = 58,
-  kDrFormat_R16_SINT = 59,
-  kDrFormat_R8_TYPELESS = 60,
-  kDrFormat_R8_UNORM = 61,
-  kDrFormat_R8_UINT = 62,
-  kDrFormat_R8_SNORM = 63,
-  kDrFormat_R8_SINT = 64,
-  kDrFormat_A8_UNORM = 65,
-  kDrFormat_R1_UNORM = 66,
-  kDrFormat_R9G9B9E5_SHAREDEXP = 67,
-  kDrFormat_R8G8_B8G8_UNORM = 68,
-  kDrFormat_G8R8_G8B8_UNORM = 69,
-  kDrFormat_BC1_TYPELESS = 70,
-  kDrFormat_BC1_UNORM = 71,
-  kDrFormat_BC1_UNORM_SRGB = 72,
-  kDrFormat_BC2_TYPELESS = 73,
-  kDrFormat_BC2_UNORM = 74,
-  kDrFormat_BC2_UNORM_SRGB = 75,
-  kDrFormat_BC3_TYPELESS = 76,
-  kDrFormat_BC3_UNORM = 77,
-  kDrFormat_BC3_UNORM_SRGB = 78,
-  kDrFormat_BC4_TYPELESS = 79,
-  kDrFormat_BC4_UNORM = 80,
-  kDrFormat_BC4_SNORM = 81,
-  kDrFormat_BC5_TYPELESS = 82,
-  kDrFormat_BC5_UNORM = 83,
-  kDrFormat_BC5_SNORM = 84,
-  kDrFormat_B5G6R5_UNORM = 85,
-  kDrFormat_B5G5R5A1_UNORM = 86,
-  kDrFormat_B8G8R8A8_UNORM = 87,
-  kDrFormat_B8G8R8X8_UNORM = 88,
-  kDrFormat_R10G10B10_XR_BIAS_A2_UNORM = 89,
-  kDrFormat_B8G8R8A8_TYPELESS = 90,
-  kDrFormat_B8G8R8A8_UNORM_SRGB = 91,
-  kDrFormat_B8G8R8X8_TYPELESS = 92,
-  kDrFormat_B8G8R8X8_UNORM_SRGB = 93,
-  kDrFormat_BC6H_TYPELESS = 94,
-  kDrFormat_BC6H_UF16 = 95,
-  kDrFormat_BC6H_SF16 = 96,
-  kDrFormat_BC7_TYPELESS = 97,
-  kDrFormat_BC7_UNORM = 98,
-  kDrFormat_BC7_UNORM_SRGB = 99,
-  kDrFormat_AYUV = 100,
-  kDrFormat_Y410 = 101,
-  kDrFormat_Y416 = 102,
-  kDrFormat_NV12 = 103,
-  kDrFormat_P010 = 104,
-  kDrFormat_P016 = 105,
-  kDrFormat_420_OPAQUE = 106,
-  kDrFormat_YUY2 = 107,
-  kDrFormat_Y210 = 108,
-  kDrFormat_Y216 = 109,
-  kDrFormat_NV11 = 110,
-  kDrFormat_AI44 = 111,
-  kDrFormat_IA44 = 112,
-  kDrFormat_P8 = 113,
-  kDrFormat_A8P8 = 114,
-  kDrFormat_B4G4R4A4_UNORM = 115,
+  kUNKNOWN = 0,
+  kR32G32B32A32_TYPELESS = 1,
+  kR32G32B32A32_FLOAT = 2,
+  kR32G32B32A32_UINT = 3,
+  kR32G32B32A32_SINT = 4,
+  kR32G32B32_TYPELESS = 5,
+  kR32G32B32_FLOAT = 6,
+  kR32G32B32_UINT = 7,
+  kR32G32B32_SINT = 8,
+  kR16G16B16A16_TYPELESS = 9,
+  kR16G16B16A16_FLOAT = 10,
+  kR16G16B16A16_UNORM = 11,
+  kR16G16B16A16_UINT = 12,
+  kR16G16B16A16_SNORM = 13,
+  kR16G16B16A16_SINT = 14,
+  kR32G32_TYPELESS = 15,
+  kR32G32_FLOAT = 16,
+  kR32G32_UINT = 17,
+  kR32G32_SINT = 18,
+  kR32G8X24_TYPELESS = 19,
+  kD32_FLOAT_S8X24_UINT = 20,
+  kR32_FLOAT_X8X24_TYPELESS = 21,
+  kX32_TYPELESS_G8X24_UINT = 22,
+  kR10G10B10A2_TYPELESS = 23,
+  kR10G10B10A2_UNORM = 24,
+  kR10G10B10A2_UINT = 25,
+  kR11G11B10_FLOAT = 26,
+  kR8G8B8A8_TYPELESS = 27,
+  kR8G8B8A8_UNORM = 28,
+  kR8G8B8A8_UNORM_SRGB = 29,
+  kR8G8B8A8_UINT = 30,
+  kR8G8B8A8_SNORM = 31,
+  kR8G8B8A8_SINT = 32,
+  kR16G16_TYPELESS = 33,
+  kR16G16_FLOAT = 34,
+  kR16G16_UNORM = 35,
+  kR16G16_UINT = 36,
+  kR16G16_SNORM = 37,
+  kR16G16_SINT = 38,
+  kR32_TYPELESS = 39,
+  kD32_FLOAT = 40,
+  kR32_FLOAT = 41,
+  kR32_UINT = 42,
+  kR32_SINT = 43,
+  kR24G8_TYPELESS = 44,
+  kD24_UNORM_S8_UINT = 45,
+  kR24_UNORM_X8_TYPELESS = 46,
+  kX24_TYPELESS_G8_UINT = 47,
+  kR8G8_TYPELESS = 48,
+  kR8G8_UNORM = 49,
+  kR8G8_UINT = 50,
+  kR8G8_SNORM = 51,
+  kR8G8_SINT = 52,
+  kR16_TYPELESS = 53,
+  kR16_FLOAT = 54,
+  kD16_UNORM = 55,
+  kR16_UNORM = 56,
+  kR16_UINT = 57,
+  kR16_SNORM = 58,
+  kR16_SINT = 59,
+  kR8_TYPELESS = 60,
+  kR8_UNORM = 61,
+  kR8_UINT = 62,
+  kR8_SNORM = 63,
+  kR8_SINT = 64,
+  kA8_UNORM = 65,
+  kR1_UNORM = 66,
+  kR9G9B9E5_SHAREDEXP = 67,
+  kR8G8_B8G8_UNORM = 68,
+  kG8R8_G8B8_UNORM = 69,
+  kBC1_TYPELESS = 70,
+  kBC1_UNORM = 71,
+  kBC1_UNORM_SRGB = 72,
+  kBC2_TYPELESS = 73,
+  kBC2_UNORM = 74,
+  kBC2_UNORM_SRGB = 75,
+  kBC3_TYPELESS = 76,
+  kBC3_UNORM = 77,
+  kBC3_UNORM_SRGB = 78,
+  kBC4_TYPELESS = 79,
+  kBC4_UNORM = 80,
+  kBC4_SNORM = 81,
+  kBC5_TYPELESS = 82,
+  kBC5_UNORM = 83,
+  kBC5_SNORM = 84,
+  kB5G6R5_UNORM = 85,
+  kB5G5R5A1_UNORM = 86,
+  kB8G8R8A8_UNORM = 87,
+  kB8G8R8X8_UNORM = 88,
+  kR10G10B10_XR_BIAS_A2_UNORM = 89,
+  kB8G8R8A8_TYPELESS = 90,
+  kB8G8R8A8_UNORM_SRGB = 91,
+  kB8G8R8X8_TYPELESS = 92,
+  kB8G8R8X8_UNORM_SRGB = 93,
+  kBC6H_TYPELESS = 94,
+  kBC6H_UF16 = 95,
+  kBC6H_SF16 = 96,
+  kBC7_TYPELESS = 97,
+  kBC7_UNORM = 98,
+  kBC7_UNORM_SRGB = 99,
+  kAYUV = 100,
+  kY410 = 101,
+  kY416 = 102,
+  kNV12 = 103,
+  kP010 = 104,
+  kP016 = 105,
+  k420_OPAQUE = 106,
+  kYUY2 = 107,
+  kY210 = 108,
+  kY216 = 109,
+  kNV11 = 110,
+  kAI44 = 111,
+  kIA44 = 112,
+  kP8 = 113,
+  kA8P8 = 114,
+  kB4G4R4A4_UNORM = 115,
 
-  kDrFormat_P208 = 130,
-  kDrFormat_V208 = 131,
-  kDrFormat_V408 = 132,
+  kP208 = 130,
+  kV208 = 131,
+  kV408 = 132,
 
-  kDrFormat_FORCE_UINT = 0xffffffff
+  kFORCE_UINT = 0xffffffff
 };
 
 }
@@ -352,6 +387,13 @@ namespace DR_GRAPHICS_API
     D3D11
   };
 }
+namespace DR_DEPTH_WRITE_MASK {
+  enum E
+  {
+    kMASK_ZERO = 0,
+    kMASK_ALL = 1
+  };
+}
 
 struct DR_GRAPHICS_EXPORT DrInputElementDesc {
   String semanticName;
@@ -361,7 +403,7 @@ struct DR_GRAPHICS_EXPORT DrInputElementDesc {
   UInt32 offset;
   DrInputElementDesc()
   {
-    format = DR_FORMAT::kDrFormat_B4G4R4A4_UNORM;
+    format = DR_FORMAT::kB4G4R4A4_UNORM;
     inputSlot = 0;
     offset = 0;
     semanticIndex = 0;
@@ -422,7 +464,7 @@ struct DR_GRAPHICS_EXPORT DrTextureDesc {
   UInt32 bindFlags;
   bool genMipMaps;
   DrTextureDesc(){
-    Format = DR_FORMAT::kDrFormat_B4G4R4A4_UNORM;
+    Format = DR_FORMAT::kB4G4R4A4_UNORM;
     Usage = DR_BUFFER_USAGE::kDefault;
     width = 0;
     bindFlags = 0;
@@ -457,6 +499,18 @@ struct DR_GRAPHICS_EXPORT DrRasterizerDesc {
     scissorEnable = true;
     multisampleEnable = true;
     antialiasedLineEnable = true;
+  }
+};
+
+struct DR_GRAPHICS_EXPORT DrBlendStateDesc {
+  bool blendEnable = true;
+  DR_BLEND::E srcBlend;
+  DR_BLEND::E destBlend;
+  DR_BLEND::E srcBlendAlpha;
+  DR_BLEND::E destBlendAlpha;
+  DR_BLEND_OP::E blendOp;
+  DR_BLEND_OP::E blendOpAlpha;
+  DrBlendStateDesc() {
   }
 };
 
@@ -497,6 +551,7 @@ struct DR_GRAPHICS_EXPORT DrDepthStencilDesc {
   bool stencilEnable;
   UInt8 stencilReadMask;
   UInt8 stencilWriteMask;
+  DR_DEPTH_WRITE_MASK::E depthWriteMask;
   DrDepthStencilDesc() {
     depthEnable = true;
     depthFunc = DR_COMPARISON_FUNC::kLESS_EQUAL;

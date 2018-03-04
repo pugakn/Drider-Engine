@@ -5,7 +5,8 @@ namespace driderSDK {
     enum E {
       MODEL,
       TEXTURE,
-      SOUND
+      SOUND,
+			SCRIPT
     };    
   } 
 }

@@ -143,7 +143,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Include\dr_blend_state.h" />
     <ClInclude Include="Include\dr_compiled_shader_container.h" />
+    <ClInclude Include="Include\dr_d3d_blend_state.h" />
     <ClInclude Include="Include\dr_d3d_compute_shader.h" />
     <ClInclude Include="Include\dr_d3d_constant_buffer.h" />
     <ClInclude Include="Include\dr_d3d_depth_stencil.h" />
@@ -156,7 +158,6 @@
     <ClInclude Include="Include\dr_d3d_domain_shader.h" />
     <ClInclude Include="Include\dr_d3d_fragment_shader.h" />
     <ClInclude Include="Include\dr_d3d_geometry_shader.h" />
-    <ClInclude Include="Include\dr_d3d_graphics_api.h" />
     <ClInclude Include="Include\dr_d3d_hull_shader.h" />
     <ClInclude Include="Include\dr_d3d_index_buffer.h" />
     <ClInclude Include="Include\dr_d3d_input_layout.h" />
@@ -187,6 +188,7 @@
     <ClInclude Include="Include\dr_vertex_buffer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\dr_d3d_blend_state.cpp" />
     <ClCompile Include="Source\dr_d3d_compute_shader.cpp" />
     <ClCompile Include="Source\dr_d3d_constant_buffer.cpp" />
     <ClCompile Include="Source\dr_d3d_depth_stencil.cpp" />
@@ -196,7 +198,6 @@
     <ClCompile Include="Source\dr_d3d_domain_shader.cpp" />
     <ClCompile Include="Source\dr_d3d_fragment_shader.cpp" />
     <ClCompile Include="Source\dr_d3d_geometry_shader.cpp" />
-    <ClCompile Include="Source\dr_d3d_graphics_api.cpp" />
     <ClCompile Include="Source\dr_d3d_hull_shader.cpp" />
     <ClCompile Include="Source\dr_d3d_index_buffer.cpp" />
     <ClCompile Include="Source\dr_d3d_input_layout.cpp" />

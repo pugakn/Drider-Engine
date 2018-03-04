@@ -146,23 +146,19 @@
   <ItemGroup>
     <ClInclude Include="Include\dr_codec.h" />
     <ClInclude Include="Include\dr_codec_model.h" />
+    <ClInclude Include="Include\dr_codec_script.h" />
     <ClInclude Include="Include\dr_codec_sound.h" />
     <ClInclude Include="Include\dr_codec_texture.h" />
     <ClInclude Include="Include\dr_compatible_types.h" />
     <ClInclude Include="Include\dr_engine_prerequisites.h" />
-    <ClInclude Include="Include\dr_file.h" />
-    <ClInclude Include="Include\dr_file_system.h" />
     <ClInclude Include="Include\dr_resource_manager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_codec.cpp" />
     <ClCompile Include="Source\dr_codec_model.cpp" />
+    <ClCompile Include="Source\dr_codec_script.cpp" />
     <ClCompile Include="Source\dr_codec_sound.cpp" />
     <ClCompile Include="Source\dr_codec_texture.cpp" />
-    <ClCompile Include="Source\dr_file.cpp" />
-    <ClCompile Include="Source\dr_file_system.cpp" />
-    <ClCompile Include="Source\dr_file_system_linux.cpp" />
-    <ClCompile Include="Source\dr_file_system_win.cpp" />
     <ClCompile Include="Source\dr_resource_manager.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

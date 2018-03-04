@@ -14,21 +14,25 @@ class Model;
 class IndexBuffer;
 class VertexBuffer;
 class Technique;
+class GameObject;
 
 class DrawableComponent : public GameComponent
 {
  public:
   //using SharedModel = std::shared_ptr<Model>;
 
-  DrawableComponent(GameObject& gameObject);
+  using GameComponent::GameComponent;
 
   virtual ~DrawableComponent(){}
-
-  void 
-  setModel(std::shared_ptr<Model> model);
-  
+    
   void
   setShaderTechnique(Technique* technique);
+
+  virtual void 
+  onRender() override;
+
+  virtual void 
+  onDestroy() override;
 
  protected:
 
@@ -38,38 +42,24 @@ class DrawableComponent : public GameComponent
     IndexBuffer* indexBuffer{nullptr};
     UInt32 indicesCount;
   };
-
-  std::shared_ptr<Model>
-  getModel() const;
-
- protected:
-  virtual void 
-  onCreate() override;
-
-  virtual void 
-  onUpdate() override;
-
-  virtual void 
-  onRender() override;
-
-  virtual void 
-  onDestroy() override;
-
-  virtual void
-  create(std::shared_ptr<Model> model);
-
+  
+ protected:  
+  
   void
   createMeshBuffers(std::vector<struct Mesh>& meshes);
 
   void
+  updateVertexBuffer(std::vector<struct Mesh>& meshes);
+
+  void
   destroyMeshBuffers();
+
+  virtual void setWorld()  {}
 
  protected:
   Technique* m_technique{nullptr};
   std::vector<MeshBuffers> m_meshes;
- private:  
-  std::weak_ptr<Model> m_model;
-  bool m_created;
+  DR_PRIMITIVE_TOPOLOGY::E m_primitive;
 };
 
 }
