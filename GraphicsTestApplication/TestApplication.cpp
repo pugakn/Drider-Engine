@@ -148,11 +148,9 @@ TestApplication::input() {
     croc->transform.setScale({scale,scale,scale}); 
   }*/
 
-  if (auto node = SceneGraph::getRoot()->getChild(_T("Dwarf0"))) {
-   
-    node->getTransform().rotate(Degree(90 * Time::instance().getDelta()), 
-                                AXIS::kY);
-  }
+  //m_animated[1]->transform.rotate(Degree(90 * Time::getDelta()), AXIS::kY);
+  float scale = Math::cos(Time::getElapsed()) * 0.5f + 1.f;
+  m_animated[1]->transform.setScale({scale, scale, scale});
   
   Vector3D dir = m_joker->getTransform().getDirection();
   Vector3D right = dir.cross(Vector3D(0,1,0));
@@ -359,6 +357,24 @@ TestApplication::initInput() {
     addDrawableComponent(octree, m_linesTech.get());
   };
 
+  using SharedObj = std::shared_ptr<GameObject>;
+
+  std::function<void(SharedObj)> remAdd = [&remAdd](SharedObj p)
+  {
+    if (p->getComponent<AABBDebug>()) {
+      p->removeComponent<AABBDebug>();
+    }
+    else {
+      if (p->getComponent<RenderComponent>()) {
+        p->createComponent<AABBDebug>(true);
+      }      
+    }
+
+    for (auto child : p->getChildren()) {
+      remAdd(child);
+    }
+  };
+  
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kQ,
                         toggleQueryOrder);
@@ -378,6 +394,9 @@ TestApplication::initInput() {
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kP,
                         debugOctree);
+
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                         KEY_CODE::kR, std::bind(remAdd, SceneGraph::getRoot()));
 
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                          KEY_CODE::kJ, toggleWireframe);
