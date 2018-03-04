@@ -12,7 +12,7 @@ namespace driderSDK {
 
 /*
 */
-class RenderMan {
+class DR_RENDERMAN_EXPORT RenderMan {
  public:
   /*
   TEST::testName
@@ -43,7 +43,8 @@ class RenderMan {
  protected:
   std::vector<std::pair<Matrix4x4, RenderMesh>> queryRequest;
 
-  Camera Sauron;
+  Viewport m_viewport;
+  std::shared_ptr<Camera> Sauron;
 
   GBufferPass m_GBufferPass;
   GBufferInitData m_GBufferInitData;

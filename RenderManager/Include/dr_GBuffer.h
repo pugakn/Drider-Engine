@@ -16,7 +16,7 @@ struct GBufferInitData : PassInitData
 
 struct GBufferDrawData : PassDrawData
 {
-  Camera* activeCam;
+  std::shared_ptr<Camera> activeCam;
   std::vector<std::pair<Matrix4x4, RenderMesh>>* models;
   RenderTarget* OutRt;
   DepthStencil* dsOptions;

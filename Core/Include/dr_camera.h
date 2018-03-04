@@ -7,12 +7,12 @@
 #include "dr_viewport.h"
 
 #include <dr_export_script.h>
-#include <..\..\Script\Include\dr_script_engine.h>
+//#include <..\..\Script\Include\dr_script_engine.h>
 
 
 namespace driderSDK {
 
-CREATE_REF_FACTORY_DECL(Camera);
+//CREATE_REF_FACTORY_DECL(Camera);
 
 /**
 *  Camera class.
@@ -29,7 +29,8 @@ public:
 	* Default constructor.
 	*
 	*/
-	DEFAULT_CONSTRUCTOR(Camera)
+  //DEFAULT_CONSTRUCTOR(Camera)
+  Camera();
 
 	/**
 	* TEST::constructor
@@ -221,7 +222,7 @@ public:
 
   float
   getFOV() const;
-
+/*
   GETSET(variable, float)
 
   BEGINING_REGISTER(Camera)
@@ -230,6 +231,7 @@ public:
   REGISTER_FOO_1P(Camera, set_variable, float, void)
 
   END_REGISTER
+*/
 
  private:
 	Vector3D m_target;

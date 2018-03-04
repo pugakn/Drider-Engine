@@ -28,7 +28,7 @@ GBufferPass::init(PassInitData* initData) {
   String vsSource = StringUtils::toString(file.GetAsString(file.Size()));
   file.Close();
 
-  file.Open(_T("GBuffer_ps.hlsl"));
+  file.Open(_T("fs.hlsl"));
   String fsSource = StringUtils::toString(file.GetAsString(file.Size()));
   file.Close();
 
@@ -38,7 +38,7 @@ GBufferPass::init(PassInitData* initData) {
                                                  vsSource.size(),
                                                  DR_SHADER_TYPE_FLAG::kVertex);
 
-  m_fragmentShader = device.createShaderFromMemory(fsSource.data,
+  m_fragmentShader = device.createShaderFromMemory(fsSource.data(),
                                                    fsSource.size(),
                                                    DR_SHADER_TYPE_FLAG::kFragment);
 

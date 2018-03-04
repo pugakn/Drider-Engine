@@ -6,6 +6,9 @@
 
 namespace driderSDK {
 
+Camera::Camera() {
+}
+
 Camera::Camera(const TString& name,
                const Viewport& viewport) 
   : GameObject(name), 

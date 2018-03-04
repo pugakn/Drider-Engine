@@ -30,21 +30,27 @@ RenderMan::init() {
 
   m_RTs = GraphicsAPI::getDevice().createRenderTarget( { ColorTex, PositionTex, NormalTex } );
 
-  Sauron.createProyection(45.f, 20.f, 3000.f);
-  Sauron.getTransform().setPosition({ 0.f, 300.0f, -400 });
-  Sauron.setTarget({ 0.0f, 200.f, 1.0f });
+  m_viewport.width = 1920;
+  m_viewport.height = 1080;
+  Sauron = std::make_shared<Camera>(_T("PATO_CAM"), m_viewport);
+
+  Sauron->createProyection(45.f, 20.f, 3000.f);
+  Sauron->getTransform().setPosition({ 0.f, 300.0f, -400 });
+  Sauron->setTarget({ 0.0f, 200.f, 1.0f });
+
+  SceneGraph::addObject(Sauron);
 
   m_GBufferPass.init(&m_GBufferInitData);
 }
 
 void
 RenderMan::draw() {
-  queryRequest = SceneGraph::query(Sauron,
+  queryRequest = SceneGraph::query(*Sauron,
                                    QUERY_ORDER::kFrontToBack,
                                    QUERY_PROPERTYS::kOpaque |
                                    QUERY_PROPERTYS::kStatic);
 
-  m_GBufferDrawData.activeCam = &Sauron;
+  m_GBufferDrawData.activeCam = Sauron;
   m_GBufferDrawData.models = &queryRequest;
   m_GBufferPass.draw(&m_GBufferDrawData);
 
