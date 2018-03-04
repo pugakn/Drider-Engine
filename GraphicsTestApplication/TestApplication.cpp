@@ -38,6 +38,7 @@ TestApplication::~TestApplication() {}
 void
 TestApplication::postInit() {
   
+  Logger::startUp();
   GraphicsDriver::startUp(DR_GRAPHICS_API::D3D11, 
                           m_viewport.width, 
                           m_viewport.height,
@@ -47,6 +48,8 @@ TestApplication::postInit() {
   Time::startUp();
   ResourceManager::startUp();
   
+  m_queryOrder = QUERY_ORDER::kFrontToBack;
+
   m_camera = std::make_shared<Camera>(_T("MAIN_CAM"), 
                                       m_viewport);
 
@@ -248,9 +251,10 @@ TestApplication::postRender() {
 
   auto meshes = SceneGraph::query(*m_camera, 
                                   m_queryOrder, 
-                                  QUERY_PROPERTYS::kOpaque | 
-                                  QUERY_PROPERTYS::kDynamic | 
-                                  QUERY_PROPERTYS::kStatic);
+                                  QUERY_PROPERTY::kOpaque | 
+                                  QUERY_PROPERTY::kDynamic | 
+                                  QUERY_PROPERTY::kStatic | 
+                                  QUERY_PROPERTY::kUnAnimated);
 
   dc->setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
 
@@ -285,6 +289,7 @@ TestApplication::postDestroy() {
   Time::shutDown();
   SceneGraph::shutDown();
   GraphicsDriver::shutDown();
+  Logger::startUp();
 
   for (auto& anim : m_animated) {
     anim->destroy();

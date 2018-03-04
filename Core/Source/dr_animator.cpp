@@ -149,7 +149,7 @@ Animator::evaluate(float time) {
   }
 
   readNodeHeirarchy(animTime, 
-                    pSkeleton->pRoot.get(), 
+                    pSkeleton->root.get(), 
                     Matrix4x4::identityMat4x4, 
                     pAnimation.get(),
                     pSkeleton.get(), 0);

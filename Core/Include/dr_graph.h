@@ -29,14 +29,17 @@ namespace QUERY_ORDER {
  };
 }
 
-namespace QUERY_PROPERTYS
+namespace QUERY_PROPERTY
 {
 enum E : UInt32
 {
-  kTransparent = 0x80000000,
+  kTransparent = 1U << 31,
   kOpaque = kTransparent >> 1,
   kStatic = kOpaque >> 1,
-  kDynamic = kStatic >> 1
+  kDynamic = kStatic >> 1,
+  kAnimated = kDynamic >> 1,
+  kUnAnimated = kAnimated >> 1,
+  kAny = kTransparent | kOpaque | kStatic | kDynamic | kAnimated | kUnAnimated
   /*kTriangles = 0x1,
   kLines = 0x2*/
 };

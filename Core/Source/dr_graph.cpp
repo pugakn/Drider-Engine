@@ -1,9 +1,12 @@
 #include "dr_graph.h"
+
+#include <dr_frustrum.h>
+#include <dr_matrix4x4.h>
 #include <dr_vector3d.h>
 #include <dr_vector4d.h>
-#include <dr_matrix4x4.h>
-#include <dr_frustrum.h>
+
 #include "dr_aabb_collider.h"
+#include "dr_animator_component.h"
 #include "dr_camera.h"
 #include "dr_gameObject.h"
 #include "dr_model.h"
@@ -182,17 +185,26 @@ SceneGraph::filterObjects(GameObjectQueue& objects,
 
     auto obj = objects.top();
 
+    bool animated = obj->getComponent<AnimatorComponent>() != nullptr;
+
     auto& meshes = obj->getComponent<RenderComponent>()->getMeshes();
 
     for (auto& mesh : meshes) {
       
       UInt32 meshProps = 0;
 
-      if (obj->isStatic()) {
-        meshProps |= QUERY_PROPERTYS::kStatic;
+      if (animated) {
+        meshProps |= QUERY_PROPERTY::kAnimated;
       }
       else {
-        meshProps |= QUERY_PROPERTYS::kDynamic;
+        meshProps |= QUERY_PROPERTY::kUnAnimated;
+      }
+
+      if (obj->isStatic()) {
+        meshProps |= QUERY_PROPERTY::kStatic;
+      }
+      else {
+        meshProps |= QUERY_PROPERTY::kDynamic;
       }
 
       auto material = mesh.material.lock();
@@ -202,14 +214,14 @@ SceneGraph::filterObjects(GameObjectQueue& objects,
         auto t = material->getProperty<FloatProperty>(_T("Transparency"));
         
         if (t && t->value < 1.f) {
-          meshProps |= QUERY_PROPERTYS::kTransparent;
+          meshProps |= QUERY_PROPERTY::kTransparent;
         } 
         else {
-          meshProps |= QUERY_PROPERTYS::kOpaque;
+          meshProps |= QUERY_PROPERTY::kOpaque;
         }
       }
       else {
-        meshProps |= QUERY_PROPERTYS::kOpaque;
+        meshProps |= QUERY_PROPERTY::kOpaque;
       }
 
       if (meshProps == (meshProps & props)) {
@@ -219,7 +231,6 @@ SceneGraph::filterObjects(GameObjectQueue& objects,
 
     objects.pop();
   }
-
 }
 
 void

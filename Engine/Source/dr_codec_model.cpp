@@ -167,10 +167,10 @@ CodecModel::loadSkeleton(const aiScene& model,
                          Skeleton& outSkeleton) {
  
   NodesRefMap nodesRefs;
-  auto pRoot = dr_make_unique<Skeleton::NodeData>();
-  pRoot->pParent = nullptr;
-  buildTree(model.mRootNode, pRoot.get(), nodesRefs);
-  outSkeleton.pRoot = std::move(pRoot);
+  auto root = dr_make_unique<Skeleton::NodeData>();
+  root->parent = nullptr;
+  buildTree(model.mRootNode, root.get(), nodesRefs);
+  outSkeleton.root = std::move(root);
 
   auto& bonesMap = outSkeleton.bonesMapping;
   auto& bones = outSkeleton.bones;
@@ -380,23 +380,23 @@ CodecModel::loadAnimations(const aiScene& model, ModelInfo& outModel) {
 //}
 
 void 
-CodecModel::buildTree(const aiNode* pNodeSrc, 
-                      Skeleton::NodeData* pNode, 
+CodecModel::buildTree(const aiNode* nodeSrc, 
+                      Skeleton::NodeData* node, 
                       NodesRefMap& nodesRefs) {
   
-  pNode->name = StringUtils::toTString(pNodeSrc->mName.data);
+  node->name = StringUtils::toTString(nodeSrc->mName.data);
   
-  nodesRefs[pNode->name] = pNode;
+  nodesRefs[node->name] = node;
 
-  std::memcpy(pNode->transform.data, &pNodeSrc->mTransformation[0][0], 64);
+  std::memcpy(node->transform.data, &nodeSrc->mTransformation[0][0], 64);
       
   for (Int32 childInddex = 0; 
-       childInddex < static_cast<Int32>(pNodeSrc->mNumChildren); 
+       childInddex < static_cast<Int32>(nodeSrc->mNumChildren); 
        ++childInddex) {
     auto childNode = dr_make_unique<Skeleton::NodeData>();
-    childNode->pParent = pNode;
-    buildTree(pNodeSrc->mChildren[childInddex], childNode.get(), nodesRefs);
-    pNode->children.push_back(std::move(childNode));
+    childNode->parent = node;
+    buildTree(nodeSrc->mChildren[childInddex], childNode.get(), nodesRefs);
+    node->children.push_back(std::move(childNode));
   }
 }
 

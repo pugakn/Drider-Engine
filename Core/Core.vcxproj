@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -151,6 +151,7 @@
     <ClInclude Include="Include\dr_aabb_collider.h" />
     <ClInclude Include="Include\dr_animation.h" />
     <ClInclude Include="Include\dr_animator.h" />
+    <ClInclude Include="Include\dr_animator_component.h" />
     <ClInclude Include="Include\dr_application.h" />
     <ClInclude Include="Include\dr_camera.h" />
     <ClInclude Include="Include\dr_camera_manager.h" />
@@ -188,6 +189,7 @@
     <ClCompile Include="Source\dr_aabb_collider.cpp" />
     <ClCompile Include="Source\dr_animation.cpp" />
     <ClCompile Include="Source\dr_animator.cpp" />
+    <ClCompile Include="Source\dr_animator_component.cpp" />
     <ClCompile Include="Source\dr_application.cpp" />
     <ClCompile Include="Source\dr_camera.cpp" />
     <ClCompile Include="Source\dr_camera_manager.cpp" />

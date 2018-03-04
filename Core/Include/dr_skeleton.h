@@ -17,7 +17,7 @@ class DR_CORE_EXPORT Skeleton : public Resource
 
   struct NodeData 
   {
-    NodeData* pParent = nullptr;
+    NodeData* parent = nullptr;
     TString name;
     Matrix4x4 boneOffset;
     Matrix4x4 transform;
@@ -29,7 +29,7 @@ class DR_CORE_EXPORT Skeleton : public Resource
   std::vector<NodeData*> bones;
   std::vector<AABB> bonesAABBs;
   std::unordered_map<TString, UInt32> bonesMapping;
-  std::unique_ptr<NodeData> pRoot;
+  std::unique_ptr<NodeData> root;
 };
 
 }

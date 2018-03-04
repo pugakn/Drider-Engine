@@ -112,12 +112,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\dr_script_info.h">
-		<Filter>Header Files</Filter>
-	</ClInclude>
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Include\dr_image_info.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\dr_texture_core.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_animator_component.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -204,6 +207,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\dr_texture_core.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_animator_component.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
