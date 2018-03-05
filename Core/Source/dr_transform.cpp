@@ -142,7 +142,8 @@ Transform Transform::operator*(const Transform& other) const {
   r.m_position = Vector4D(x,1) * mat + other.m_position;
   r.m_rotation = m_rotation + other.m_rotation;
   r.m_scale = m_scale * other.m_scale;
-  r.update();
+  r.invalidate();
+  //r.update();
 
   return r;
 }

@@ -103,4 +103,10 @@ void FrustumDebug::onUpdate() {
   }
 }
 
+void 
+FrustumDebug::cloneIn(GameObject& _go) {
+  auto p = _go.createComponent<FrustumDebug>(); 
+  p->m_technique = m_technique;
+}
+
 }

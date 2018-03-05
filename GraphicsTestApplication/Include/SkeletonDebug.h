@@ -7,16 +7,12 @@ namespace driderSDK {
 
 class Skeleton;
 class Technique;
-class Animator;
 class Transform;
 
 class SkeletonDebug : public GameComponent {
 
 public:
-  SkeletonDebug(GameObject& _go, 
-                const Skeleton& skeleton,
-                Animator& anim,
-                Transform& transform);
+  SkeletonDebug(GameObject& _go);
 
   SkeletonDebug(const SkeletonDebug&) = delete;
 
@@ -26,21 +22,27 @@ public:
   setShaderTechnique(Technique* technique);
 
 
-  virtual void onCreate() override;
-  virtual void onUpdate() override;
-  virtual void onRender() override;
-  virtual void onDestroy() override;
+  virtual void 
+  onCreate() override;
+
+  virtual void 
+  onUpdate() override;
+  
+  virtual void 
+  onRender() override;
+
+  virtual void 
+  onDestroy() override;
+
+  virtual void 
+  cloneIn(GameObject& _go);
 private:
   void
   create();
   using AABBDebugPtr = std::unique_ptr<AABBDebug>;
   using AABBDebugList = std::vector<AABBDebugPtr>;
-
+  Technique* m_technique{nullptr};
   AABBDebugList m_aabbs;
-  AABBDebugPtr m_globalAABB;
-  Animator& m_anim;
-  Transform& m_transform;
-  const Skeleton& m_skeleton;
 };
 
 }

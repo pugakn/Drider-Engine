@@ -3,7 +3,6 @@
 #include <vector>
 #include <dr_util_prerequisites.h>
 #include "Model3D.h"
-#include "InputComponent.h"
 #include <dr_camera.h>
 #include <dr_viewport.h>
 #include "dr_application.h"
@@ -26,6 +25,7 @@ namespace driderSDK {
 
 class Technique;
 class StaticMeshTechnique;
+class AnimationTechnique;
   
 class TestApplication : public Application
 {
@@ -67,6 +67,7 @@ public:
   std::shared_ptr<Camera> m_upCam;
   std::shared_ptr<Camera> m_activeCam;
   std::unique_ptr<Technique> m_technique;
+  std::unique_ptr<AnimationTechnique> m_animTech;
   std::unique_ptr<Technique> m_linesTech;
   std::shared_ptr<GameObject> m_joker;
   std::vector<Model3D*> m_animated;

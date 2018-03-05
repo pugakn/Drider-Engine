@@ -1,21 +1,16 @@
 #include "dr_resource_manager.h"
 
-#include "dr_codec_texture.h"
-#include "dr_codec_model.h"
-#include <dr_codec_sound.h>
-#include "dr_codec_script.h"
-
-#include "dr_file_system.h"
-
 #include <dr_file_system.h>
+#include <dr_image_info.h>
+#include <dr_logger.h>
 #include <dr_material.h>
 #include <dr_model.h>
 #include <dr_sound_core.h>
 #include <dr_string_utils.h>
 #include <dr_texture_core.h>
-#include <dr_image_info.h>
 
 #include "dr_codec_model.h"
+#include "dr_codec_script.h"
 #include "dr_codec_sound.h"
 #include "dr_codec_texture.h"
 
@@ -102,8 +97,7 @@ ResourceManager::createResource(const TString& resourceName,
   }
   else {
     //ERROR
-    std::cout << "Error loading resource: ";
-    std::cout << StringUtils::toString(resourceName) << std::endl;
+    Logger::addLog(_T("Error loading resource: ") + resourceName);
   }
 }
 
@@ -111,8 +105,7 @@ void
 ResourceManager::addResource(SharedResource pResource,
                              const TString& resourceName) {
 
-  std::cout << "Added resource: ";
-  std::cout << StringUtils::toString(resourceName) << std::endl;
+  Logger::addLog(_T("Added resource: ") + resourceName);
 
   instance().m_resources[resourceName] =  pResource;
 }

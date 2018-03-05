@@ -15,31 +15,14 @@ GameObject::GameObject(const TString& name)
 GameObject::~GameObject() 
 {}
 
-void 
-GameObject::init() {}
-
 void
 GameObject::update() {
 
-  bool localChange = m_localTransform.changed();
-
-  if (localChange) { //This node changed
-    propagateChange();
-   
-    /*for (auto& c : m_components) {
-      c->onLocalTransformChange();
-    }*/
-  }
-
-  //if (m_change && !localChange) { //Parent changed
-  //  
-  //  for (auto& c : m_components) {
-  //    c->onParentTransformChange();
-  //  }
-  //}
+  m_change = m_localTransform.changed() ||
+                  getParent()->m_finalTransform.changed();
 
   if (m_change) {
-    m_finalTransform = m_localTransform*getParent()->m_finalTransform;  
+    m_finalTransform = m_localTransform * getParent()->m_finalTransform;  
   } 
 
   updateImpl();
@@ -55,6 +38,7 @@ GameObject::update() {
   m_change = false;
 
   m_localTransform.newFrame();
+  m_finalTransform.newFrame();
 }
 
 void 
@@ -67,6 +51,46 @@ GameObject::render() {
   /*for (auto& child : m_children) {
     child->render();
   }*/
+}
+
+GameObject::SharedGameObj 
+GameObject::clone() {
+  
+  SharedGameObj dup = createInstance();
+
+  copyData(dup);
+
+  dup->m_name = m_name;
+
+  dup->m_parent = m_parent;
+
+  if (auto p = m_parent.lock()) {
+    p->addChild(dup);
+  }
+
+  dup->m_change = m_change;
+
+  dup->m_localTransform = m_localTransform;
+
+  dup->m_localTransform.invalidate();
+
+  dup->m_isStatic = m_isStatic;
+
+  static_cast<EnableObject>(*dup) = *this; 
+
+  /**
+  dup->m_finalTransform = m_finalTransform;
+   dup->m_finalTransform.invalidate();
+  **/
+  for (auto& component : m_components) {
+    component->cloneIn(*dup);
+  }
+
+  for (auto& child : m_children) {
+    dup->addChild(child->clone());
+  }
+
+  return dup;
 }
 
 //void 
@@ -234,14 +258,9 @@ GameObject::changed() const {
   return m_change;
 }
 
-void
-GameObject::propagateChange() {
-  
-  m_change = true;
-
-  for (auto& child : m_children) {
-    child->propagateChange();
-  }
+GameObject::SharedGameObj 
+GameObject::createInstance() {
+  return std::make_shared<GameObject>();
 }
 
 void GameObject::updateImpl() {}

@@ -21,13 +21,15 @@
 #include <dr_time.h>
 #include <dr_gameObject.h>
 #include <dr_material.h>
+#include <dr_animator_component.h>
+
 #include "DrawableComponent.h"
 #include "AABBDebug.h"
 #include "FrustumDebug.h"
 #include "SkeletonDebug.h"
-#include "NPCMovement.h"
 #include "StaticMeshTechnique.h"
 #include "LinesTechnique.h"
+#include "AnimationTechnique.h"
 
 namespace driderSDK {
 
@@ -38,6 +40,7 @@ TestApplication::~TestApplication() {}
 void
 TestApplication::postInit() {
   
+  Logger::startUp();
   GraphicsDriver::startUp(DR_GRAPHICS_API::D3D11, 
                           m_viewport.width, 
                           m_viewport.height,
@@ -47,6 +50,8 @@ TestApplication::postInit() {
   Time::startUp();
   ResourceManager::startUp();
   
+  m_queryOrder = QUERY_ORDER::kFrontToBack;
+
   m_camera = std::make_shared<Camera>(_T("MAIN_CAM"), 
                                       m_viewport);
 
@@ -85,9 +90,13 @@ TestApplication::postInit() {
 
   m_technique->compile();
 
+  m_animTech = dr_make_unique<AnimationTechnique>();
+
+  m_animTech->compile();
+
   initResources();
   
-  m_animated.push_back(new Model3D());
+  /*m_animated.push_back(new Model3D());
   m_animated[0]->init(_T("HipHopDancing.fbx"));
 
   m_animated.push_back(new Model3D());
@@ -98,7 +107,7 @@ TestApplication::postInit() {
   m_animated.push_back(new Model3D());
   m_animated[2]->init(_T("HipHopDancing.fbx"));
   m_animated[2]->transform.move({-200, 0, 0});
-  m_animated[2]->elapsedTime = 33.f;
+  m_animated[2]->elapsedTime = 33.f;*/
 
   initInput();
   initSceneGraph();
@@ -149,8 +158,7 @@ TestApplication::input() {
   }*/
 
   //m_animated[1]->transform.rotate(Degree(90 * Time::getDelta()), AXIS::kY);
-  float scale = Math::cos(Time::getElapsed()) * 0.5f + 1.f;
-  m_animated[1]->transform.setScale({scale, scale, scale});
+  
   
   Vector3D dir = m_joker->getTransform().getDirection();
   Vector3D right = dir.cross(Vector3D(0,1,0));
@@ -240,32 +248,41 @@ TestApplication::postRender() {
     anim->draw(*m_activeCam);
   }
 
+  //Show Frustum
   m_camera->render();
-
+  
+  m_animTech->setCamera(&(*m_activeCam));
   m_technique->setCamera(&(*m_activeCam));
 
   auto dc = &GraphicsAPI::getDeviceContext();
 
-  auto meshes = SceneGraph::query(*m_camera, 
+  auto queryRes = SceneGraph::query(*m_camera, 
                                   m_queryOrder, 
-                                  QUERY_PROPERTYS::kOpaque | 
-                                  QUERY_PROPERTYS::kDynamic | 
-                                  QUERY_PROPERTYS::kStatic);
+                                  QUERY_PROPERTY::kOpaque | 
+                                  QUERY_PROPERTY::kDynamic | 
+                                  QUERY_PROPERTY::kStatic);
 
   dc->setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
 
-  for (auto& mesh : meshes) {
+  for (auto& queryObj : queryRes) {
 
-    m_technique->setWorld(&mesh.first);
+    auto tech = m_technique.get();
+
+    if (queryObj.bones) {
+      tech = m_animTech.get();
+      m_animTech->setBones(*queryObj.bones);
+    }
+
+    tech->setWorld(&queryObj.world);
     
-    if (m_technique->prepareForDraw()) {
-      if (auto material = mesh.second.material.lock()) {
+    if (tech->prepareForDraw()) {
+      if (auto material = queryObj.mesh.material.lock()) {
         material->set();
       }
-      mesh.second.vertexBuffer->set(*dc);
-      mesh.second.indexBuffer->set(*dc);
+      queryObj.mesh.vertexBuffer->set(*dc);
+      queryObj.mesh.indexBuffer->set(*dc);
 
-      dc->draw(mesh.second.indicesCount, 0, 0);
+      dc->draw(queryObj.mesh.indicesCount, 0, 0);
     }
   }
 
@@ -277,6 +294,7 @@ TestApplication::postDestroy() {
   
   m_technique->destroy();
   m_linesTech->destroy();
+  m_animTech->destroy();
 
   m_animated.clear();
 
@@ -285,6 +303,7 @@ TestApplication::postDestroy() {
   Time::shutDown();
   SceneGraph::shutDown();
   GraphicsDriver::shutDown();
+  Logger::startUp();
 
   for (auto& anim : m_animated) {
     anim->destroy();
@@ -357,24 +376,7 @@ TestApplication::initInput() {
     addDrawableComponent(octree, m_linesTech.get());
   };
 
-  using SharedObj = std::shared_ptr<GameObject>;
-
-  std::function<void(SharedObj)> remAdd = [&remAdd](SharedObj p)
-  {
-    if (p->getComponent<AABBDebug>()) {
-      p->removeComponent<AABBDebug>();
-    }
-    else {
-      if (p->getComponent<RenderComponent>()) {
-        p->createComponent<AABBDebug>(true);
-      }      
-    }
-
-    for (auto child : p->getChildren()) {
-      remAdd(child);
-    }
-  };
-  
+    
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kQ,
                         toggleQueryOrder);
@@ -394,9 +396,6 @@ TestApplication::initInput() {
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kP,
                         debugOctree);
-
-  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
-                         KEY_CODE::kR, std::bind(remAdd, SceneGraph::getRoot()));
 
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                          KEY_CODE::kJ, toggleWireframe);
@@ -473,37 +472,68 @@ TestApplication::initSceneGraph() {
 
   for (Int32 i = 0; i < 50; ++i) {
     Vector3D pos(space(mt), 0, space(mt));
-    TString aaa =StringUtils::toTString(i);
-
-    auto mod = dt(mt);
-
-    auto n = createNode(root, names[mod] + aaa, 
-                        names[mod], 
-                        pos);   
-    n->setStatic(true);
-    float sc = static_cast<float>(scl(mt));
-    n->getTransform().scale({sc,sc,sc});
+    TString aaa = StringUtils::toTString(i);
   }
-  
   auto chinaMod = ResourceManager::getReferenceT<Model>(_T("HipHopDancing.fbx"));
+
+  auto animName = chinaMod->animationsNames[0];
+
+  auto chinaAnim = ResourceManager::getReferenceT<Animation>(animName);
 
   auto chinaSkel = ResourceManager::getReferenceT<Skeleton>(chinaMod->skeletonName);
 
-  auto n = createNode(root, _T("Chinita"), _T("HipHopDancing.fbx"), {-200.f, 0.0f, 0.0f});
-  n->getTransform().scale({ 1,1,1 });
-  m_joker = n;
-
-  if (chinaSkel) {
-    auto comp = n->createComponent<SkeletonDebug>(*chinaSkel, 
-                                                  m_animated[1]->animator,
-                                                  m_animated[1]->transform);
-    comp->setShaderTechnique(m_linesTech.get());
-  }
-  
   auto chinitaMat = ResourceManager::createMaterial(_T("Mat_Chinita"));
+
   auto chinitaTex = ResourceManager::getReferenceT<TextureCore>(_T("Kachujin_diffuse.png"));
 
   chinitaMat->getProperty(_T("Albedo"))->texture = chinitaTex;
+
+  auto n = createNode(root, _T("Chinita"), _T("HipHopDancing.fbx"), {-200.f, 0.0f, 0.0f});
+  
+  auto animComp = n->createComponent<AnimatorComponent>();
+
+  animComp->setSkeleton(chinaSkel);
+
+  animComp->addAnimation(chinaAnim, animName);
+
+  animComp->setCurrentAnimation(animName);
+
+  n->getTransform().scale({ 1,1,1 });
+  
+  n->getComponent<RenderComponent>()->getMeshes()[0].material = chinitaMat;
+
+  m_joker = n;
+  
+  
+  std::uniform_real_distribution<float> time(0, 1000);
+
+  auto l = n->createInstance();
+  l->setName(_T("Empty Node"));
+
+  for (Int32 i = 0; i < 2; ++i) {
+    
+    auto pp = n->clone();
+    pp->setParent(n);
+    pp->setName(n->getName() + _T("_Son"));
+    pp->getTransform().setPosition({space(mt), 0, space(mt)});
+    
+    auto an = pp->getComponent<AnimatorComponent>();
+    an->setTime(time(mt));
+
+    n = pp;
+  }
+  n->getParent()->addChild(l);
+  n->setParent(l);
+  for (Int32 i = 0; i < 200; ++i) {
+    Vector3D pos(space(mt), 0, space(mt));
+    TString aaa = StringUtils::toTString(i);
+    auto n = createNode(root, names[i] + aaa,
+      names[dt(mt)],
+      pos);
+    n->setStatic(true);
+    float sc = static_cast<float>(scl(mt));
+    n->getTransform().scale({ sc,sc,sc });
+  }
 }
 
 }

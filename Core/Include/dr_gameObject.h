@@ -27,16 +27,18 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   GameObject(const GameObject&) = delete;
 
   GameObject& operator=(const GameObject&) = delete;
-
-  void
-  init();
-
+  
   void 
   update();
   
   void
   render();
 
+  SharedGameObj
+  clone();
+  
+  virtual SharedGameObj
+  createInstance();
   /*virtual void
   destroy();*/
 
@@ -224,10 +226,10 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   changed() const;
  private:
 
-  void
-  propagateChange();
-
  protected:
+  
+  virtual void
+  copyData(SharedGameObj other){}
 
   virtual void
   updateImpl();

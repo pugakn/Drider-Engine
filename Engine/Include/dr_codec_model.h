@@ -71,8 +71,8 @@ class DR_ENGINE_EXPORT CodecModel : public Codec
   using NodesRefMap = std::unordered_map<TString, Skeleton::NodeData*>;
 
   void 
-  buildTree(const aiNode* pNodeSrc, 
-            Skeleton::NodeData* pNode,
+  buildTree(const aiNode* nodeSrc, 
+            Skeleton::NodeData* node,
             NodesRefMap& nodesRefs);
 };
 
