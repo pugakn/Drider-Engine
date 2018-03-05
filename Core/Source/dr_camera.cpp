@@ -6,9 +6,11 @@
 
 namespace driderSDK {
 
+CONSTRUCT_DESTRUCT_DEF(Camera)
+
 Camera::Camera(const TString& name,
-               const Viewport& viewport) 
-  : GameObject(name), 
+               const Viewport& viewport)
+  : GameObject(name),
     m_up(0.0f, 1.0f, 0.0f),
     m_viewport(viewport) {
 }
@@ -31,14 +33,14 @@ Camera::copyData(SharedGameObj other) {
   dup->m_fov        = m_fov;
 }
 
-GameObject::SharedGameObj 
+GameObject::SharedGameObj
 Camera::createInstance() {
   return std::make_shared<Camera>();
 }
 
 void
 Camera::updateImpl() {
-	
+
   if (m_change) {
     auto& parentT = getParent()->getWorldTransform();
     auto& localT = getTransform();
@@ -49,21 +51,21 @@ Camera::updateImpl() {
   }
 }
 
-void 
+void
 Camera::move(float forward, float strafe, float upVelocity, bool lockY) {
-	
+
   Vector3D dir = m_localTransform.getDirection();
   Vector3D right = dir.cross(m_up);
 
   if (lockY) {
     dir.y = 0;
     dir.normalize();
-    right.y = 0; 
+    right.y = 0;
     right.normalize();
   }
 
   m_localTransform.move(dir * forward);
-  
+
 	if (strafe != 0.f) {
 		m_localTransform.move(right * strafe);
 	}
@@ -71,14 +73,14 @@ Camera::move(float forward, float strafe, float upVelocity, bool lockY) {
   m_localTransform.move(upVelocity, AXIS::kY);
 }
 
-void 
+void
 Camera::move(const Vector3D& direction) {
   m_localTransform.move(direction);
 }
 
-void 
+void
 Camera::pan(float forward, float strafe, float upVelocity, bool lockY) {
-	
+
   Vector3D dir = m_localTransform.getDirection();
   Vector3D right = dir.cross(m_up);
 
@@ -90,13 +92,13 @@ Camera::pan(float forward, float strafe, float upVelocity, bool lockY) {
   }
   dir *= forward;
   dir += right * strafe + m_up * upVelocity;
-  
+
 	m_target += dir;
 
   move(dir);
 }
 
-void 
+void
 Camera::pan(const Vector3D & direction) {
   move(direction);
   m_target += direction;
@@ -111,18 +113,18 @@ Camera::createProyection(float fov,
   m_fov = fov;
 	DR_ASSERT(m_viewport.height != 0.0f);
 	m_projection.ProjectionFov(fov * Math::DEGREE_TO_RADIAN,
-														static_cast<float>(m_viewport.width) / 
-                                               m_viewport.height, 
+														static_cast<float>(m_viewport.width) /
+                                               m_viewport.height,
 														nearPlane,
 														farPlane);
 }
 
-void 
+void
 Camera::setUp(const Vector3D& up) {
   m_up = up;
 }
 
-void 
+void
 Camera::setTarget(const Vector3D& target) {
 	m_target = target;
 }
@@ -132,23 +134,23 @@ Camera::setViewport(const Viewport& viewport) {
 	m_viewport = viewport;
 }
 
-void 
+void
 Camera::rotate(const Quaternion& rotation) {
-	m_target = m_localTransform.getPosition() + 
+	m_target = m_localTransform.getPosition() +
              rotation.rotation(m_localTransform.getDirection());
 }
 
-void 
+void
 Camera::rotate(float yawDegree, float pitchDegree) {
   m_localTransform.rotate({yawDegree * Math::DEGREE_TO_RADIAN,
                    pitchDegree * Math::DEGREE_TO_RADIAN, 0});
-  m_target = m_localTransform.getPosition() + 
+  m_target = m_localTransform.getPosition() +
              m_localTransform.getDirection() * 10.f;
 }
 
-void 
+void
 Camera::orbit(float pitch, float yaw) {
-	//float distance =  Vector3D(m_pos - m_target).length(); 
+	//float distance =  Vector3D(m_pos - m_target).length();
 	////placeholder xd
 	//m_pos.x = distance * -sinf(pitch*(Math::PI / 180)) * cosf((yaw)*(Math::PI / 180));
 	//m_pos.y = distance * -sinf((yaw)*(Math::PI / 180));
@@ -158,33 +160,32 @@ Camera::orbit(float pitch, float yaw) {
 	//m_look.normalize();
 }
 
-const Matrix4x4& 
-Camera::getVP() const {
+const Matrix4x4&
+Camera::getVP() {
   return m_vp;
 }
 
-const Matrix4x4& 
-Camera::getView() const {
+const Matrix4x4&
+Camera::getView() {
   return m_view;
 }
 
-float Camera::getFarPlane() const {
+float Camera::getFarPlane() {
   return m_farPlane;
 }
 
-float Camera::getNearPlane() const {
+float Camera::getNearPlane() {
   return m_nearPlane;
 }
 
-float Camera::getFOV() const {
+float Camera::getFOV() {
   return m_fov;
 }
 
 const Matrix4x4&
-Camera::getProjection() const {
+Camera::getProjection() {
   return m_projection;
 }
-
 
 CREATE_REF_FACTORY_FUNC(Camera)
 

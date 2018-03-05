@@ -1,14 +1,13 @@
 
 Total count
-PshC4      : 1
-RET        : 1
-JNZ        : 1
-PshVPtr    : 2
-CMPIf      : 1
-CALLSYS    : 3
-SUSPEND    : 4
-FREE       : 1
-STOREOBJ   : 1
+PshC4      : 6
+RET        : 2
+PshVPtr    : 10
+CALLSYS    : 11
+SUSPEND    : 13
+FREE       : 4
+STOREOBJ   : 4
+CpyVtoV4   : 1
 CpyRtoV4   : 1
 
 Never executed
@@ -23,6 +22,7 @@ LdGRdR4
 CALL      
 JMP       
 JZ        
+JNZ       
 JS        
 JNS       
 JP        
@@ -63,6 +63,7 @@ CMPu
 CMPf      
 CMPi      
 CMPIi     
+CMPIf     
 CMPIu     
 JMPP      
 PopRPtr   
@@ -83,7 +84,6 @@ TYPEID
 SetV4     
 SetV8     
 ADDSi     
-CpyVtoV4  
 CpyVtoV8  
 CpyVtoR4  
 CpyVtoR8  
@@ -205,18 +205,21 @@ POWu64
 Thiscall1 
 
 Sequences
-PshC4     , PshVPtr    : 1
-JNZ       , SUSPEND    : 1
-PshVPtr   , CALLSYS    : 2
-CMPIf     , JNZ        : 1
-CALLSYS   , SUSPEND    : 1
-CALLSYS   , STOREOBJ   : 1
+PshC4     , PshC4      : 4
+PshC4     , CALLSYS    : 2
+RET       , SUSPEND    : 1
+PshVPtr   , PshVPtr    : 3
+PshVPtr   , CALLSYS    : 7
+CALLSYS   , SUSPEND    : 6
+CALLSYS   , STOREOBJ   : 4
 CALLSYS   , CpyRtoV4   : 1
-SUSPEND   , PshC4      : 1
-SUSPEND   , PshVPtr    : 1
-SUSPEND   , CALLSYS    : 1
-SUSPEND   , FREE       : 1
-FREE      , RET        : 1
-STOREOBJ  , SUSPEND    : 1
-CpyRtoV4  , CMPIf      : 1
+SUSPEND   , PshC4      : 2
+SUSPEND   , PshVPtr    : 7
+SUSPEND   , CALLSYS    : 2
+SUSPEND   , FREE       : 2
+FREE      , RET        : 2
+FREE      , FREE       : 2
+STOREOBJ  , SUSPEND    : 4
+CpyVtoV4  , SUSPEND    : 1
+CpyRtoV4  , CpyVtoV4   : 1
 LABEL     , SUSPEND    : 1
