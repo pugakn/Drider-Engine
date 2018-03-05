@@ -94,7 +94,7 @@ protected:
   SmartPtr<RasterizerState> m_rasterizerState;
 
   std::vector<SmartPtr<BlendState>> m_blendSStates;
-  std::vector<SmartPtr<DepthStencilState>> m_depthStencilStates;;
+  std::vector<SmartPtr<DepthStencilState>> m_depthStencilStates;
 
   void* m_hwnd;
 };

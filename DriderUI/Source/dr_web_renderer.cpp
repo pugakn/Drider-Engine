@@ -213,6 +213,7 @@ WebRenderer::Init(UInt32  width, UInt32  height, BROWSER_MODE::E mode)
   browserClient = new BrowserClient(renderHandler);
 
   browser = CefBrowserHost::CreateBrowserSync(window_info, browserClient.get(), "http://www.google.com", browserSettings, nullptr);
+  //browser->GetMainFrame()->VisitDOM();
   startRendering();
   initInput();
 }
@@ -353,8 +354,9 @@ WebRenderer::initInput()
     [this](KEY_CODE::E key)
   {
     CefKeyEvent keyEvent;
-    //keyEvent.modifiers =  0; // InputManager::instance().getKeyboard().;
-    //keyEvent.windows_key_code = (int) Keyboard::getAsString( key).c_str();
+    keyEvent.modifiers =  0; // InputManager::instance().getKeyboard().;
+    char c = Keyboard::getAsChar(key);
+    keyEvent.windows_key_code = (int) c;
     keyEvent.type = KEYEVENT_RAWKEYDOWN;
     browser->GetHost()->SendKeyEvent(keyEvent);
 

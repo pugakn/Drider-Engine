@@ -20,7 +20,7 @@ void
 TestApplication::postInit() {
   quad.init();
   webRenderer.Init(1280,720,BROWSER_MODE::kHeadless);
-  webRenderer.loadURL("file:///C:/Users/Ulises/Documents/GitHub/Drider-Engine/DriderUIUnitTest/ExampleHTML/example.html");
+  webRenderer.loadURL("file:///C:/Users/Ulises/Documents/GitHub/Drider-Engine/DriderUIUnitTest/bulma/ss.html");//
   JSCallLambda func = [](CefRefPtr<CefV8Value>& retval, const CefV8ValueList& arguments) {
     retval = CefV8Value::CreateString("MyRetVal");
     //exit(666);
@@ -34,12 +34,15 @@ TestApplication::postInit() {
     retval = CefV8Value::CreateInt(num);
   }));
   webRenderer.executeJSCode("alert(setNum(55))");
-  //auto ddd = webRenderer.getJSGlobalVar("testVal01");
+
+  webRenderer.registerJS2CPPFunction(std::make_pair("onload", [&](CefRefPtr<CefV8Value>& retval, const CefV8ValueList& arguments) {
+    webRenderer.executeJSCode("changeTitle('hola')");
+    webRenderer.executeJSCode("alert(setNum(55))");
+  }));
 }
 
 void
 TestApplication::postUpdate() {
-  webRenderer.executeJSCode("window.myfunc()");
   webRenderer.update();
 }
 
