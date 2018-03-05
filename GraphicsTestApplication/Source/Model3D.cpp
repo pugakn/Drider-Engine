@@ -1,24 +1,33 @@
 #include "..\Include\Model3D.h"
-#include <dr_string_utils.h>
+//
 #include <dr_file.h>
+#include <dr_string_utils.h>
+#include <DirectXMath.h>
+#include <dr_codec_model.h>
+#include <dr_material.h>
 #include <dr_memory.h>
 #include <dr_degree.h>
 #include <dr_radian.h>
 #include <dr_resource_manager.h>
 #include <dr_animation.h>
 
+#include <dr_graphics_api.h>
+#include <dr_time.h>
+
 using namespace driderSDK;
 
 Model3D::Model3D()
 {}
 
-void Model3D::init(Device & device, const TString& filename) {
+void Model3D::init(const TString& filename) {
+
+  auto& device = GraphicsAPI::getDevice();
 
   elapsedTime = 0.0f;
 
-  auto& resourceMg = ResourceManager::instance();
+  auto res = ResourceManager::instance().getReference(filename);
 
-  resource = std::dynamic_pointer_cast<Model>(resourceMg.loadResource(filename));
+  resource = std::dynamic_pointer_cast<Model>(res);
 
   auto pAnimationRes = ResourceManager::instance().getReference(resource->animationsNames[0]);
 
@@ -31,12 +40,7 @@ void Model3D::init(Device & device, const TString& filename) {
 
   driderSDK::File file;
   
-  if (!resource->animationsNames.empty()) {
-    file.Open(_T("vs.hlsl"));
-  }
-  else {
-    file.Open(_T("mesh.hlsl"));
-  }
+  file.Open(_T("vs.hlsl"));
   String vsSource = StringUtils::toString(file.GetAsString(file.Size()));
   file.Close();
 
@@ -49,34 +53,11 @@ void Model3D::init(Device & device, const TString& filename) {
                                      DR_SHADER_TYPE_FLAG::kVertex);
 
   fs = device.createShaderFromMemory(fsSource.c_str(), 
-                                     fsSource.size() + 1,
+                                     fsSource.size() + 1, 
                                      DR_SHADER_TYPE_FLAG::kFragment);
 
-  std::vector<DrInputElementDesc> idesc;
-  DrInputElementDesc ie;
-  ie.format = DR_FORMAT::kDrFormat_R32G32B32A32_FLOAT;
-  ie.offset = 0;
-  ie.semanticName = "POSITION";
-  idesc.push_back(ie);
-
-  ie.format = DR_FORMAT::kDrFormat_R32G32B32A32_FLOAT;
-  ie.offset = 16;
-  ie.semanticName = "NORMAL";
-  idesc.push_back(ie);
-
-  if (!resource->animationsNames.empty()) {    
-    ie.format = DR_FORMAT::kDrFormat_R32G32B32A32_FLOAT;
-    ie.offset = 32;
-    ie.semanticName = "BONEWEIGHTS";
-    idesc.push_back(ie);
-
-    ie.format = DR_FORMAT::kDrFormat_R32G32B32A32_SINT;
-    ie.offset = 48;
-    ie.semanticName = "BONEIDS";
-    idesc.push_back(ie);
-  }
-   
-  IL = device.createInputLayout(idesc, *vs->m_shaderBytecode);
+  IL = device.createInputLayout(Vertex::getInputDesc(), 
+                                *vs->m_shaderBytecode);
 
   DrBufferDesc bdesc;
 
@@ -85,6 +66,7 @@ void Model3D::init(Device & device, const TString& filename) {
   CB = (ConstantBuffer*)device.createBuffer(bdesc);
 
   for (auto& mesh : resource->meshes) {
+
     driderSDK::VertexBuffer* VB;
     driderSDK::IndexBuffer* IB;
 
@@ -115,23 +97,25 @@ void Model3D::destroy() {
 }
 
 void Model3D::update() {
-  elapsedTime += 0.007f;
+  elapsedTime += Time::getDelta();
   animator.evaluate(elapsedTime);
-  //transform.rotate(Degree(1.f), AXIS::kY);
 }
 
-void Model3D::draw(const driderSDK::DeviceContext& deviceContext, const Camera& camera) {
+void Model3D::draw(const Camera& camera) {
   
-  auto world = transform.getMatrix();
-  auto wvp =  world * camera.getVP();
+  auto& dummyM = ResourceManager::getReferenceT<Material>(_T("Mat_Chinita"));
+
+  auto& deviceContext = GraphicsAPI::getDeviceContext();
+
+  auto wvp = transform.getMatrix() * camera.getVP();
   
   auto& boneTransforms = animator.getTransforms();
 
   for (SizeT i = 0; i < boneTransforms.size(); ++i) {
     constBuff.Bones[i] = boneTransforms[i];
   }
-
-  constBuff.World = world;
+  
+  constBuff.World = transform.getMatrix();
   constBuff.WVP = wvp;
   
   CB->updateFromBuffer(deviceContext,reinterpret_cast<byte*>(&constBuff));
@@ -140,6 +124,8 @@ void Model3D::draw(const driderSDK::DeviceContext& deviceContext, const Camera& 
   fs->set(deviceContext);
   vs->set(deviceContext);
   IL->set(deviceContext);
+
+  dummyM->set();
 
   deviceContext.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
 

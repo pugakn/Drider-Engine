@@ -37,6 +37,7 @@ D3DVertexBuffer::create(const Device& device,
     break;
   case DR_BUFFER_USAGE::kDynamic:
     bdesc.Usage = D3D11_USAGE_DYNAMIC;
+    bdesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
     break;
   case DR_BUFFER_USAGE::kImmutable:
     bdesc.Usage = D3D11_USAGE_IMMUTABLE;
@@ -48,13 +49,11 @@ D3DVertexBuffer::create(const Device& device,
 
   if (initialData != nullptr) {
     D3D11_SUBRESOURCE_DATA subData = { &initialData[0], 0, 0 };
-    apiDevice->D3D11Device->
-      CreateBuffer(&bdesc, &subData, &VB);
+    apiDevice->D3D11Device->CreateBuffer(&bdesc, &subData, &VB);
   }
   else
   {
-    apiDevice->D3D11Device->
-      CreateBuffer(&bdesc, nullptr, &VB);
+    apiDevice->D3D11Device->CreateBuffer(&bdesc, nullptr, &VB);
   }
   
   
@@ -83,9 +82,21 @@ void
 D3DVertexBuffer::updateFromBuffer(const DeviceContext& deviceContext,
                                   const byte* dataBuffer) {
   m_sysMemCpy.assign(dataBuffer, dataBuffer + m_descriptor.sizeInBytes);
-  reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
+  /*reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext->
-      UpdateSubresource(VB, 0, 0, &dataBuffer[0], 0, 0);
+      UpdateSubresource(VB, 0, 0, &dataBuffer[0], 0, 0);*/
+
+  D3D11_MAPPED_SUBRESOURCE mappedResource;
+	ZeroMemory(&mappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
+
+  auto d3d = reinterpret_cast<const D3DDeviceContext*>(&deviceContext);
+	//	Disable GPU access to the vertex buffer data.
+	d3d->D3D11DeviceContext->Map(VB, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	//	Update the vertex buffer here.
+	memcpy(mappedResource.pData, dataBuffer, m_sysMemCpy.size());
+	//	Reenable GPU access to the vertex buffer data.
+	d3d->D3D11DeviceContext->Unmap(VB, 0);
+
 }
 
 void

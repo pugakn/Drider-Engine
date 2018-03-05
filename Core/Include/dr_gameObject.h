@@ -37,6 +37,11 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   void
   render();
 
+  SharedGameObj
+  clone();
+  
+  virtual SharedGameObj
+  createInstance();
   /*virtual void
   destroy();*/
 
@@ -74,11 +79,12 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   *  a pointer to the component, nullptr otherwise.
   */
   template<class T> 
-  T* getComponent()
+  T* 
+  getComponent()
   {
     T* componentCasted = nullptr;
     for (auto& componet : m_components) {
-      if(auto casted = dynamic_cast<T*>(componet.get())){
+      if (auto casted = dynamic_cast<T*>(componet.get())) {
         componentCasted = casted;
         break;
       }
@@ -87,6 +93,21 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
     return componentCasted;
   }
   
+  template<class T>
+  void
+  removeComponent()
+  {
+    for (auto it = m_components.begin(); it != m_components.end(); ++it) {
+      if (dynamic_cast<T*>(it->get())) {
+        m_components.erase(it);
+        return;
+      }
+    }
+
+    DR_ASSERT(false && "Trying to remove unexisting component");
+  }
+
+
   void
   addComponent(ComponentPtr component);
 
@@ -204,11 +225,24 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   bool 
   isStatic() const;
 
+  bool
+  changed() const;
+ private:
+
+  void
+  propagateChange();
+
+
  protected:
+  
+  virtual void
+  copyData(SharedGameObj other){}
 
   virtual void
   updateImpl();
 
+
+  bool m_change;
   bool m_isStatic;
   ChildrenList m_children;
   ComponentsList m_components;

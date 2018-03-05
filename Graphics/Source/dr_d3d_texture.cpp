@@ -22,9 +22,6 @@ D3DTexture::createFromMemory(const Device& device,
   m_descriptor = desc;
   UInt32 flags = 0;
 
-  if (desc.genMipMaps) {
-    flags |= D3D11_RESOURCE_MISC_GENERATE_MIPS;
-  }
 
   D3D11_TEXTURE2D_DESC apiDesc = { 0 };
   apiDesc.Width = desc.width;
@@ -39,6 +36,10 @@ D3DTexture::createFromMemory(const Device& device,
   apiDesc.CPUAccessFlags = 0;
   apiDesc.Usage = D3D11_USAGE_DEFAULT;
 
+  if (desc.genMipMaps) {
+    flags |= D3D11_RESOURCE_MISC_GENERATE_MIPS;
+    apiDesc.BindFlags |= DR_BIND_FLAGS::RENDER_TARGET;
+  }
   D3D11_SUBRESOURCE_DATA initData{};
   initData.pSysMem = buffer;
   initData.SysMemPitch = desc.pitch;

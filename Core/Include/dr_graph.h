@@ -29,18 +29,26 @@ namespace QUERY_ORDER {
  };
 }
 
-namespace QUERY_PROPERTYS
+namespace QUERY_PROPERTY
 {
 enum E : UInt32
 {
-  kTransparent = 0x80000000,
+  kTransparent = 1U << 31,
   kOpaque = kTransparent >> 1,
   kStatic = kOpaque >> 1,
-  kDynamic = kStatic >> 1
+  kDynamic = kStatic >> 1,
+  kAny = kTransparent | kOpaque | kStatic | kDynamic
   /*kTriangles = 0x1,
   kLines = 0x2*/
 };
 }
+
+struct DR_CORE_EXPORT QueryObjectInfo 
+{
+  const Matrix4x4& world;
+  const RenderMesh& mesh;
+  const std::vector<Matrix4x4>* bones;
+};
 
 class DR_CORE_EXPORT SceneGraph : public Module<SceneGraph>
 {
@@ -48,17 +56,27 @@ public:
   using SharedModel = std::shared_ptr<Model>;
   using SharedGameObject = std::shared_ptr<GameObject>;
   using GameObjectList = std::vector<SharedGameObject>;
-  using QueryResult = std::vector<std::pair<Matrix4x4,RenderMesh>>;   
+  using QueryResult = std::vector<QueryObjectInfo>;   
 
   SceneGraph();
 
   ~SceneGraph();
  
   static void
+  buildOctree();
+
+  static void
   addObject(SharedGameObject gameObject); 
 
   static SharedGameObject 
   getRoot();
+
+  static SharedGameObject 
+  getOctree();
+
+  /**
+  * Es posible tener objetos 
+  */
 
   /**
   * Query meshes from the scene graph
@@ -101,6 +119,12 @@ private:
   void
   onStartUp();
 
+  static void
+  testObjectOct(SharedGameObject object,
+                Frustrum& frustrum, 
+                GameObjectQueue& objects,
+                bool test);
+
   static void 
   testObject(SharedGameObject object, 
              Frustrum& frustrum,
@@ -110,8 +134,17 @@ private:
   filterObjects(GameObjectQueue& objects, 
                 QueryResult& result, 
                 UInt32 props);
+
+  static void
+  addGameObjectsStatics(GameObject& node,
+                        std::vector<std::shared_ptr<GameObject>>* list);
+
+  static void
+  addAllChilds(GameObject& node,
+               std::vector<std::shared_ptr<GameObject>>* list);
 private:
   SharedGameObject m_root;
+  SharedGameObject m_octree;
   std::mutex m_mutex;
 };
 

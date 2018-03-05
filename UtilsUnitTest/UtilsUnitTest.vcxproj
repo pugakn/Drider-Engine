@@ -164,6 +164,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_unitTest_compressor.cpp" />
+    <ClCompile Include="Source\dr_unitTest_File.cpp" />
+    <ClCompile Include="Source\dr_unitTest_FileSystem.cpp" />
     <ClCompile Include="UtilsUnitTest.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

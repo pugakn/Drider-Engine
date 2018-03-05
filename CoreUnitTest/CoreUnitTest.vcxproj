@@ -22,7 +22,6 @@
     <ClCompile Include="Source\dr_parser_unitTest.cpp" />
     <ClCompile Include="Source\dr_unitTest_camera.cpp" />
     <ClCompile Include="Source\dr_unitTest_cameraManager.cpp" />
-    <ClCompile Include="Source\dr_unitTest_loader.cpp" />
     <ClCompile Include="Source\dr_unitTest_md5.cpp" />
     <ClCompile Include="Source\unitTestCore.cpp" />
   </ItemGroup>

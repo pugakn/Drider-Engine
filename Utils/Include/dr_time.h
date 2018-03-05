@@ -61,13 +61,15 @@ class DR_UTIL_EXPORT Time : public Module<Time>
   */
   static float
   getDeltaMicro();
- private:
   
   static void 
   update();
 
+ private:  
+  
   void
   onStartUp();
+
  private:
   Timer m_timer;
   float m_elapsed;

@@ -90,7 +90,7 @@ protected:
   SmartPtr<SwapChain> m_swapChain;
   SmartPtr<RenderTarget> m_backBufferView; 
   SmartPtr<DepthStencil> m_depthStencilView; 
-  SmartPtr<Texture> m_depthTexture;	
+  std::shared_ptr<Texture> m_depthTexture;	
   SmartPtr<RasterizerState> m_rasterizerState;
 
   std::vector<SmartPtr<BlendState>> m_blendSStates;

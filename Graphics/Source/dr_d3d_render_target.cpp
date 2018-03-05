@@ -7,15 +7,17 @@
 #include "dr_d3d_depth_stencil.h"
 
 namespace driderSDK {
-  //void * D3DRenderTarget::getAPIObject()
-  //{
-  //  return RTV;
-  //}
-  //void ** D3DRenderTarget::getAPIObjectReference()
-  //{
-  //  return reinterpret_cast<void**>(&RTV);
-  //}
-  void
+
+//void * D3DRenderTarget::getAPIObject()
+//{
+//  return RTV;
+//}
+//void ** D3DRenderTarget::getAPIObjectReference()
+//{
+//  return reinterpret_cast<void**>(&RTV);
+//}
+
+void
 D3DRenderTarget::create(const Device& device,
                         const std::vector<Texture*>& textures) {
   m_numRTs = textures.size();

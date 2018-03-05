@@ -19,7 +19,6 @@ public:
 
   virtual COLLIDER_TYPE::E
   getType() = 0;
-
 protected:
 
 };

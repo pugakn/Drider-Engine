@@ -6,8 +6,13 @@
 #include "dr_gameObject.h"
 #include "dr_viewport.h"
 
+#include <dr_export_script.h>
+#include <..\..\Script\Include\dr_script_engine.h>
+
 
 namespace driderSDK {
+
+CREATE_REF_FACTORY_DECL(Camera);
 
 /**
 *  Camera class.
@@ -24,7 +29,7 @@ public:
 	* Default constructor.
 	*
 	*/
-	Camera();
+	DEFAULT_CONSTRUCTOR(Camera)
 
 	/**
 	* TEST::constructor
@@ -60,6 +65,12 @@ public:
 	*
 	*/
 	~Camera();
+  
+  virtual SharedGameObj
+  createInstance();
+
+  virtual void
+  copyData(SharedGameObj);
 
 	/**
 	* TEST::update
@@ -217,7 +228,18 @@ public:
   float
   getFOV() const;
 
+  GETSET(variable, float)
+
+  BEGINING_REGISTER(Camera)
+  
+  REGISTER_FOO_0P(Camera, get_variable, float)
+  REGISTER_FOO_1P(Camera, set_variable, float, void)
+
+  END_REGISTER
+
  private:
+
+
 	Vector3D m_target;
 	Vector3D m_up;
 	Matrix4x4 m_vp;
