@@ -527,10 +527,10 @@ class DR_MATH_EXPORT Vector3D
   REGISTER_FACTORY_3P(Vector3D, float, float, float)
 
   REGISTER_FOO_1P_CONST(Vector3D, dot, const Vector3D&, float, " ")
-  REGISTER_FOO_1P_CONST(Vector3D, cross, const Vector3D&, Vector3D, " @")
+  //REGISTER_FOO_1P_CONST(Vector3D, cross, const Vector3D&, Vector3D, " @")
   REGISTER_FOO_0P_CONST(Vector3D, length, float)
   REGISTER_FOO_0P_CONST(Vector3D, lengthSqr, float)
-  REGISTER_FOO_0P(Vector3D, normalize, Vector3D&)
+  //REGISTER_FOO_0P(Vector3D, normalize, Vector3D&)
   REGISTER_FOO_1P_CONST(Vector3D, distance, const Vector3D&, float, " ")
   REGISTER_FOO_1P_CONST(Vector3D, distanceSqr, const Vector3D&, float, " ")
 

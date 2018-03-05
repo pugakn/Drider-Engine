@@ -1,5 +1,5 @@
 void Start() {
-	Print("Start !!!!!!!!!!!!!!!!!!!\n" + 10.0);
+	//Print("Start\n");
 	Camera cam;
 	cam.getFarPlane();
 
@@ -12,14 +12,14 @@ void Start() {
 	//vec.cross(vec2);
 	vec.length();
 	vec.lengthSqr();
-	vec.normalize();
+	//vec.normalize();
 	vec.distance(vec2);
 	vec.distanceSqr(vec2);
 
 }
 
 void Update() {
-	Print("Ojo, si no hay mas de ocho caracteres esto no sirve\nUpdate");
+	//Print("Update\n");
 	Camera cam;
 	cam.getNearPlane();
 }	 
