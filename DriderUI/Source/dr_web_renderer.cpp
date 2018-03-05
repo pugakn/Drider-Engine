@@ -107,11 +107,11 @@ RenderHandler::init()
   tDesc.mipLevels = 0;
   tDesc.dimension = DR_DIMENSION::k2D;
   tDesc.genMipMaps = true;
-  m_texture = device.createEmptyTexture(tDesc);
+  m_texture = dr_gfx_unique(device.createEmptyTexture(tDesc));
 
   driderSDK::DrSampleDesc SSdesc;
   SSdesc.Filter = DR_TEXTURE_FILTER::kMIN_MAG_MIP_POINT;
-  m_samplerState = device.createSamplerState(SSdesc);
+  m_samplerState = dr_gfx_unique(device.createSamplerState(SSdesc));
 }
 void 
 RenderHandler::resize(UInt32  w, UInt32  h)
@@ -125,16 +125,16 @@ RenderHandler::resize(UInt32  w, UInt32  h)
   m_texture->modifyTextureParams(GraphicsAPI::getDevice(), tDesc);
 }
 
-Texture* 
-RenderHandler::getTexturePointer()
+const Texture& 
+RenderHandler::getTexture()
 {
-  return m_texture;
+  return *m_texture;
 }
 
-SamplerState* 
-RenderHandler::getSamplerStatePointer()
+const SamplerState& 
+RenderHandler::getSamplerState()
 {
-  return m_samplerState;
+  return *m_samplerState;
 }
 /*******************************************************
 *                   BROWSER CLIENT
@@ -213,6 +213,7 @@ WebRenderer::Init(UInt32  width, UInt32  height, BROWSER_MODE::E mode)
   browserClient = new BrowserClient(renderHandler);
 
   browser = CefBrowserHost::CreateBrowserSync(window_info, browserClient.get(), "http://www.google.com", browserSettings, nullptr);
+  //browser->GetMainFrame()->VisitDOM();
   startRendering();
   initInput();
 }
@@ -284,18 +285,14 @@ WebRenderer::resize(UInt32  w, UInt32  h)
   renderHandler->resize(w,h);
   browser->GetHost()->WasResized();
 }
-Texture * WebRenderer::getTexturePointer()
+const Texture& WebRenderer::getTexture()
 {
-  return renderHandler->getTexturePointer();
-}
-Texture & WebRenderer::getTextureReference()
-{
-  return *renderHandler->getTexturePointer();
+  return renderHandler->getTexture();
 }
 void WebRenderer::setTexture()
 {
-  renderHandler->getTexturePointer()->set(GraphicsAPI::getDeviceContext(), 0);
-  renderHandler->getSamplerStatePointer()->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kFragment);
+  renderHandler->getTexture().set(GraphicsAPI::getDeviceContext(), 0);
+  renderHandler->getSamplerState().set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kFragment);
 }
 void 
 WebRenderer::initInput()
@@ -353,8 +350,9 @@ WebRenderer::initInput()
     [this](KEY_CODE::E key)
   {
     CefKeyEvent keyEvent;
-    //keyEvent.modifiers =  0; // InputManager::instance().getKeyboard().;
-    //keyEvent.windows_key_code = (int) Keyboard::getAsString( key).c_str();
+    keyEvent.modifiers =  0; // InputManager::instance().getKeyboard().;
+    char c = Keyboard::getAsChar(key);
+    keyEvent.windows_key_code = (int) c;
     keyEvent.type = KEYEVENT_RAWKEYDOWN;
     browser->GetHost()->SendKeyEvent(keyEvent);
 

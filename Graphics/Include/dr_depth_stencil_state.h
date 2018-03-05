@@ -29,7 +29,7 @@ class DR_GRAPHICS_EXPORT DepthStencilState
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   virtual void
-  create(const Device& device, const DrDepthStencilDesc& desc) = 0;
+  create(const Device& device, const DrDepthStencilStateDesc& desc) = 0;
 
   /**
   * Set the depth stencil state
@@ -50,9 +50,9 @@ class DR_GRAPHICS_EXPORT DepthStencilState
   virtual void
   release() = 0;
 
-  const DrDepthStencilDesc& getDescriptor() const { return m_descriptor; }
+  const DrDepthStencilStateDesc& getDescriptor() const { return m_descriptor; }
 protected:
-  DrDepthStencilDesc m_descriptor;
+  DrDepthStencilStateDesc m_descriptor;
 };
 
 }

@@ -40,6 +40,9 @@ class DR_GRAPHICS_EXPORT D3DRenderTarget : public RenderTarget
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   void
+  create(const Device& device, const DrTextureDesc& desc, UInt32 numRTs) override;
+
+  void
   create(const Device& device, const std::vector<Texture*>& textures) override;
 
   /**
