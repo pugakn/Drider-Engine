@@ -37,10 +37,9 @@ void
 AnimatorComponent::setSkeleton(SharedSkeleton skeleton) {
   m_skeleton = skeleton;
 
-  Matrix4x4 identity(Math::FORCE_INIT::kIdentity);
-
   if (skeleton) {
-    m_transforms = std::vector<Matrix4x4>(skeleton->bones.size(), identity);
+    m_transforms = std::vector<Matrix4x4>(skeleton->bones.size(), 
+                                          Matrix4x4::identityMat4x4);
   }  
 }
 
