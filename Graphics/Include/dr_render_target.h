@@ -47,7 +47,12 @@ class DR_GRAPHICS_EXPORT RenderTarget
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   virtual void
+  create(const Device& device, const DrTextureDesc& desc, UInt32 numRTs) = 0;
+
+  virtual void
   create(const Device& device, const std::vector<Texture*>& textures) = 0;
+
+
 
   /**
   * Set the render target and depth stencil
@@ -67,8 +72,17 @@ class DR_GRAPHICS_EXPORT RenderTarget
   */
   virtual void
   release() = 0;
+
+  const DrTextureDesc& getDescriptor() const { return m_descriptor; }
+  const Texture& getTexture(UInt32 id) const 
+  { 
+    DR_ASSERT(id < m_texturesVec.size());
+    return *m_texturesVec[id]; 
+  }
 protected:
-  UInt32 m_numRTs;
+  DrTextureDesc m_descriptor;
+  std::vector<Texture*> m_texturesVec;
+  bool _textureOwner = false;
 };
 
 }

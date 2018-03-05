@@ -4,7 +4,7 @@
 namespace driderSDK
 {
 
-Vector3D::Vector3D() : x(0.0f), y(0.0f), z(0.0f) {}
+CONSTRUCT_DESTRUCT_DEF(Vector3D)
 
 Vector3D::Vector3D(Math::FORCE_INIT k) {
   if (Math::FORCE_INIT::kZero == k) {

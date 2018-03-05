@@ -67,8 +67,8 @@ public:
   addAnyKeyCallback(KEYBOARD_EVENT::E trigger,
                     AnyKeyCallback callback);
 
-  static const TString&
-  getAsString(KEY_CODE::E key);
+  static const char
+  getAsChar(KEY_CODE::E key);
 
   Keyboard& operator=(const Keyboard&) = delete;
 

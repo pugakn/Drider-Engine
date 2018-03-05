@@ -1,5 +1,6 @@
 #pragma once
 #include "dr_ui_prerequisites.h"
+#include <dr_gfx_memory.h>
 #include <include/cef_app.h>
 #include <include/cef_client.h>
 #include <include/cef_render_handler.h>
@@ -140,11 +141,11 @@ private:
   /**
   * Not commented
   */
-  Texture* getTexturePointer();
+  const Texture& getTexture();
   /**
   * Not commented
   */
-  SamplerState* getSamplerStatePointer();
+  const SamplerState& getSamplerState();
   /**
   * Not commented
   */
@@ -172,8 +173,8 @@ private:
   UInt32  m_width;
   UInt32  m_height;
   size_t m_hwnd;
-  Texture* m_texture;
-  SamplerState* m_samplerState;
+  GFXUnique<Texture> m_texture;
+  GFXUnique<SamplerState>  m_samplerState;
 };
 
 
@@ -294,14 +295,11 @@ public:
   */
   void
   resize(UInt32  w, UInt32 h);
+
   /**
   * Not commented
   */
-  Texture* getTexturePointer();
-  /**
-  * Not commented
-  */
-  Texture& getTextureReference();
+  const Texture& getTexture();
   /**
   * Not commented
   */
