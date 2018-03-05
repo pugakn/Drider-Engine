@@ -28,7 +28,7 @@ OctreeNode::OctreeNode(Octree *octree) {
 OctreeNode::OctreeNode(Octree *octree, 
                        AABB& region) {
   m_octree = octree;
-  boundingRegion = region;
+  boundingRegion = std::move(region);
 
 }
 

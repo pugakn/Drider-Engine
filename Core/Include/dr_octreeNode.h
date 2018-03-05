@@ -14,19 +14,29 @@ class DR_CORE_EXPORT OctreeNode
   */
   OctreeNode();
 
+  /**
+  * @param refrence to octree
+  * Constructor
+  */
   OctreeNode(Octree *octree);
 
   /**
-  * Default constructor
+  * @param refrence to octree
+  *
+  * @param aabb region for node
+  * Constructor
   */
   OctreeNode(Octree *octree, AABB& region);
 
   /**
-  * Default detructor
+  * Default destructor
   */
   ~OctreeNode();
   
-
+  /**
+  * Octree construction
+  * It generates the octree 
+  */
   void
   buildTree();
 

@@ -37,35 +37,48 @@ class DR_CORE_EXPORT Octree
   ~Octree();
 
   /**
+  * Constructor
+  * @param nodeSceneGraph
+  *   node where the octree will be created 
+  *
+  * @param std::vector<std::shared_ptr<GameObject>>& gameObjects
+  *   reference to the models that are going to 
+  *   decompose into faces and then form the octree
+  *
+  * @param minFacesArea
+  *   minimum faces in area
+  *
+  *  decomposes the models into faces and determines the abb that contains them
+  */
+  Octree(GameObject* nodeSceneGraph,
+	       std::vector<std::shared_ptr<GameObject>>* gameObjects,
+	       Int32 minFacesArea = 10000);
+  
+  /**
   * Octree construction
+  * It generates the octree according to the models 
+  * that were sent to it in the construction
   */
   void
   buildTree();
 
   /**
-  * Constructor
-  * @param region
-  *   Region to initialize octree 
-  *
-  * @param std::vector<std::shared_ptr<GameObject>>& gameObjects
-  *   reference to models to convert in octree
-  *
-  * @param minFacesArea
-  *   minimum faces in area
-  *
+  * @return returns the minimum number of faces in an octreeNode
   */
-  Octree(GameObject* nodeSceneGraph,
-	       std::vector<std::shared_ptr<GameObject>>* gameObjects,
-	       Int32 minFacesArea = 10000);
-
   Int32
   getMinFaces();
 
  private:
 
+  /**
+  * configure the node for the scenegraph
+  */
   void
   configNode(GameObject *node, OctreeNode *octreeNode);
 
+  /**
+  * check and assign the minimum and maximum vertices for the aabb
+  */
   void
   compareMinMax(Vector4D &position);
 
