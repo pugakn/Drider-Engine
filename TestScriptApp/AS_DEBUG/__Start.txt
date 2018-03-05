@@ -1,0 +1,94 @@
+void Start()
+
+Temps: 7, 9, 16, 18, 20, 21
+
+Variables: 
+ 017: (heap) Camera cam
+ 019: (heap) Vector3D vec
+ 022: (heap) Vector3D vec2
+ 023: float a
+ 007: string {noname}
+ 016: string {noname}
+
+
+- 2,2 -
+    0  23 *    SUSPEND
+    1  23 *    PGA      199495088
+    3  24 *    PSF      v7
+    4  25 *    CALLSYS  20           (string::string(const string&in))
+               ObjInfo  v7, 1
+    6  23 *    PshC8    0x4024000000000000          (i:4621819117588971520, f:10)
+    9  25 *    PSF      v16
+   10  26 *    PSF      v7
+   11  27 *    CALLSYS  36           (string string::opAdd(double) const)
+               ObjInfo  v16, 1
+   13  23 *    PSF      v7
+   14  24 *    CALLSYS  21           (string::~string())
+               ObjInfo  v7, 0
+   16  23 *    PSF      v16
+   17  24 *    CALLSYS  69           (void Print(string&in))
+   19  23 *    PSF      v16
+   20  24 *    CALLSYS  21           (string::~string())
+- 3,2 -
+               ObjInfo  v16, 0
+   22  23 *    SUSPEND
+               VarDecl  0
+   23  23 *    CALLSYS  70           (Camera@ Camera())
+   25  23 *    STOREOBJ v17
+- 4,2 -
+   26  23 *    SUSPEND
+   27  23 *    PshVPtr  v17
+   28  24 *    CALLSYS  74           (float Camera::getFarPlane())
+- 8,2 -
+   30  23 *    SUSPEND
+               VarDecl  1
+   31  23 *    PshC4    0x41200000          (i:1092616192, f:10)
+   33  24 *    PshC4    0x41200000          (i:1092616192, f:10)
+   35  25 *    PshC4    0x41200000          (i:1092616192, f:10)
+   37  26 *    CALLSYS  80           (Vector3D@ Vector3D(float, float, float))
+   39  23 *    STOREOBJ v19
+- 9,2 -
+   40  23 *    SUSPEND
+               VarDecl  2
+   41  23 *    PshC4    0x40a00000          (i:1084227584, f:5)
+   43  24 *    PshC4    0x40000000          (i:1073741824, f:2)
+   45  25 *    PshC4    0x3f800000          (i:1065353216, f:1)
+   47  26 *    CALLSYS  80           (Vector3D@ Vector3D(float, float, float))
+   49  23 *    STOREOBJ v22
+- 11,2 -
+   50  23 *    SUSPEND
+               VarDecl  3
+   51  23 *    PshVPtr  v22
+   52  24 *    PshVPtr  v19
+   53  25 *    CALLSYS  81           (float Vector3D::dot(const Vector3D&inout))
+   55  23 *    CpyRtoV4 v18
+   56  23 *    CpyVtoV4 v23, v18
+- 13,2 -
+   58  23 *    SUSPEND
+   59  23 *    PshVPtr  v19
+   60  24 *    CALLSYS  83           (float Vector3D::length())
+- 14,2 -
+   62  23 *    SUSPEND
+   63  23 *    PshVPtr  v19
+   64  24 *    CALLSYS  84           (float Vector3D::lengthSqr())
+- 15,2 -
+   66  23 *    SUSPEND
+   67  23 *    PshVPtr  v19
+   68  24 *    CALLSYS  85           (Vector3D& Vector3D::normalize())
+- 16,2 -
+   70  23 *    SUSPEND
+   71  23 *    PshVPtr  v22
+   72  24 *    PshVPtr  v19
+   73  25 *    CALLSYS  86           (float Vector3D::distance(const Vector3D&inout))
+- 17,2 -
+   75  23 *    SUSPEND
+   76  23 *    PshVPtr  v22
+   77  24 *    PshVPtr  v19
+   78  25 *    CALLSYS  87           (float Vector3D::distanceSqr(const Vector3D&inout))
+- 19,2 -
+   80  23 *    SUSPEND
+   81  23 *    FREE     v22, 196006648
+   83  23 *    FREE     v19, 196006648
+   85  23 *    FREE     v17, 195799160
+            0:
+   87  23 *    RET      0

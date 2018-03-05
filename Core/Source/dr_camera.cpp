@@ -5,6 +5,8 @@
 
 namespace driderSDK {
 
+CREATE_REF_FACTORY_FUNC(Camera)
+
 Camera::Camera(const TString& name,
 							 const Viewport& viewport) 
   : GameObject(name), 
@@ -137,32 +139,30 @@ Camera::orbit(float pitch, float yaw) {
 }
 
 const Matrix4x4& 
-Camera::getVP() const {
+Camera::getVP() {
   return m_vp;
 }
 
 const Matrix4x4& 
-Camera::getView() const {
+Camera::getView() {
   return m_view;
 }
 
-float Camera::getFarPlane() const {
+float Camera::getFarPlane() {
   return m_farPlane;
 }
 
-float Camera::getNearPlane() const {
+float Camera::getNearPlane() {
   return m_nearPlane;
 }
 
-float Camera::getFOV() const {
+float Camera::getFOV() {
   return m_fov;
 }
 
 const Matrix4x4&
-Camera::getProjection() const {
+Camera::getProjection() {
   return m_projection;
 }
-
-CREATE_REF_FACTORY_FUNC(Camera)
 
 }

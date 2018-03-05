@@ -1,0 +1,34 @@
+void Update()
+
+Temps: 7, 9
+
+Variables: 
+ 008: (heap) Camera cam
+ 007: string {noname}
+
+
+- 22,2 -
+    0   9 *    SUSPEND
+    1   9 *    PGA      199495616
+    3  10 *    PSF      v7
+    4  11 *    CALLSYS  20           (string::string(const string&in))
+               ObjInfo  v7, 1
+    6   9 *    PSF      v7
+    7  10 *    CALLSYS  69           (void Print(string&in))
+    9   9 *    PSF      v7
+   10  10 *    CALLSYS  21           (string::~string())
+- 23,2 -
+               ObjInfo  v7, 0
+   12   9 *    SUSPEND
+               VarDecl  0
+   13   9 *    CALLSYS  70           (Camera@ Camera())
+   15   9 *    STOREOBJ v8
+- 24,2 -
+   16   9 *    SUSPEND
+   17   9 *    PshVPtr  v8
+   18  10 *    CALLSYS  75           (float Camera::getNearPlane())
+- 25,2 -
+   20   9 *    SUSPEND
+   21   9 *    FREE     v8, 195799160
+            0:
+   23   9 *    RET      0

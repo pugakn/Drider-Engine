@@ -11,16 +11,17 @@
 
 namespace driderSDK {
 
-	unsigned long g_timeout;
+unsigned long g_timeout;
 
-ObjectAS *Ref_Factory() {
-  return new ObjectAS();
+void Print(asIScriptGeneric* gen) {
+  WString *str = (WString*)gen->GetArgAddress(0);
+  std::wcout << StringUtils::toTString(*str);
 }
 
-void stringPrint_g(asIScriptGeneric* gen) {
-	WString *str = (WString*)gen->GetArgAddress(0);
-	std::wcout << StringUtils::toTString(*str);
-}
+//void Print(WString &string) {
+//  WString a = string;
+//  printf("%s", string);
+//}
 
 ScriptEngine::ScriptEngine() {
 
@@ -44,56 +45,22 @@ ScriptEngine::createEngine() {
 		return -1;
 	}
 
+  //m_scriptEngine->SetEngineProperty(asEP_SCRIPT_SCANNER, 1);
 	m_scriptEngine->SetEngineProperty(asEP_STRING_ENCODING, 1);
 	m_scriptEngine->SetMessageCallback(asMETHOD(ScriptEngine, messageCallback), 
 																		 0, 
 																		 asCALL_CDECL);
 
-
-	//Register custom string type
-	/*result = m_scriptEngine->RegisterObjectType("TString", 
-																							sizeof(TString), 
-																							asOBJ_VALUE | asOBJ_POD);
-	DR_ASSERT(result >= 0);*/
-	//result = m_scriptEngine->RegisterStringFactory("TString", &stringFactory);
 	RegisterStdString(m_scriptEngine);
-	//
 
 	// Register the functions that the scripts will be allowed to use.
 	result = m_scriptEngine->RegisterGlobalFunction("void Print(string &in)",
-																									asFUNCTION(stringPrint_g), 
-																									asCALL_GENERIC);
+																									asFUNCTION(Print), 
+                                                  asCALL_GENERIC);
+  //result = m_scriptEngine->RegisterGlobalFunction("void Print(string &in)",
+  //                                                asFUNCTIONPR(Print, (WString&), void),
+  //                                                asCALL_CDECL);
 
-  /*result = m_scriptEngine->RegisterObjectType("Object",
-                                              0,
-                                              asOBJ_REF);
-
-  result = m_scriptEngine->RegisterObjectBehaviour("Object", 
-                                                   asBEHAVE_FACTORY,
-                                                   "Object@ f()", 
-                                                   asFUNCTION(Ref_Factory),
-                                                   asCALL_CDECL);
-
-  result = m_scriptEngine->RegisterObjectBehaviour("Object",
-                                      asBEHAVE_ADDREF,
-                                      "void f()", 
-                                      asMETHOD(ObjectAS, AddRef),
-                                      asCALL_THISCALL);
-
-  result = m_scriptEngine->RegisterObjectBehaviour("Object", 
-                                                   asBEHAVE_RELEASE, 
-                                                   "void f()", 
-                                                   asMETHOD(ObjectAS, Release), 
-                                                   asCALL_THISCALL);
-
-  result = m_scriptEngine->RegisterObjectMethod("Object",
-                                                "float Add(float param1)",
-                                                asMETHODPR(ObjectAS, Add, (float), float),
-                                                asCALL_THISCALL);*/
-
-  /*
-  * Seccion para registrar metodos //eso dice arriba pero en ingles...(asi es comente un comentario)
-  */
 
 	return result;
 }

@@ -8,6 +8,34 @@
 
 namespace driderSDK {
 
+class Object {
+  public:
+    Int32 refCount;
+    Object(){}
+
+    void addRef () {
+      
+    }
+
+    void release() {
+      if(--refCount == 0)
+        delete this; 
+    }
+
+    Object
+    add(const Object& param1) const {
+      Object o;
+      o.a += param1.a;
+      o.b += param1.b;
+      return o;
+    }
+
+  public:
+    float a;
+    float b;
+   
+};
+
 class TestScriptApp : public Application {
 public:
   TestScriptApp();
@@ -43,6 +71,8 @@ private:
   std::shared_ptr<Camera> m_camera;
   std::shared_ptr<GameObject> m_joker;
   ScriptEngine* scriptEngine;
+
+  QUERY_ORDER::E m_queryOrder;
 
   
 };
