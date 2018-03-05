@@ -370,6 +370,10 @@ TestApplication::initInput() {
                            this, 
                            SceneGraph::getRoot());
 
+  auto bindTSD = std::bind(&TestApplication::toggleSkeletonDebug,
+                           this, 
+                           SceneGraph::getRoot());
+
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kH,
                         bindPH);
@@ -393,6 +397,10 @@ TestApplication::initInput() {
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kP,
                         bindTAB);
+
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kK,
+                        bindTSD);
 
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                          KEY_CODE::kJ, toggleWireframe);
@@ -543,6 +551,27 @@ TestApplication::toggleAABBDebug(std::shared_ptr<GameObject> go) {
   for (auto child : go->getChildren())
   {
     toggleAABBDebug(child);
+  }
+}
+
+void 
+TestApplication::toggleSkeletonDebug(std::shared_ptr<GameObject> go) {
+  if (auto re = go->getComponent<AnimatorComponent>()) {
+
+    if (go->getComponent<SkeletonDebug>()) {
+      
+      go->removeComponent<SkeletonDebug>();
+
+    }
+    else {
+      auto p = go->createComponent<SkeletonDebug>();
+      p->setShaderTechnique(m_linesTech.get());
+    }
+  }
+
+  for (auto child : go->getChildren())
+  {
+    toggleSkeletonDebug(child);
   }
 }
 

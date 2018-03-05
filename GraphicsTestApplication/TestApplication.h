@@ -54,6 +54,8 @@ public:
 
   void toggleAABBDebug(std::shared_ptr<GameObject> obj);
 
+  void toggleSkeletonDebug(std::shared_ptr<GameObject> obj);
+
   bool m_debugList;
   //SoundAPI* soundDriver;
   QUERY_ORDER::E m_queryOrder;
