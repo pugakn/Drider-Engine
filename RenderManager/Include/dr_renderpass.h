@@ -37,6 +37,7 @@ class RenderPass {
  protected:
   Shader* m_vertexShader;
   Shader* m_fragmentShader;
+  Shader* m_gShader;
 };
 
 }

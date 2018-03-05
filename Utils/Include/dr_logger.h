@@ -12,10 +12,9 @@ namespace driderSDK
 * Outs information to file.
 *
 * Sample usage:
-* Logger sampleName;
+* Logger& sampleName = Logger::instance();
 * if (!sampleName.isStarted()) {
 *   sampleName.startUp();
-*   sampleName.reset();
 * }
 */
 class DR_UTIL_EXPORT Logger : public Module<Logger>
@@ -67,6 +66,13 @@ class DR_UTIL_EXPORT Logger : public Module<Logger>
   addWarning(const String Filename,
              int lineNumber,
              const TString message);
+
+  void
+  addLog(const TString message);
+
+ protected:
+  void
+  onStartUp();
 
  private:
 	 TString m_filePath;

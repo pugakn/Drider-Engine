@@ -11,25 +11,27 @@
 
 namespace driderSDK {
 
-unsigned long g_timeout;
+	unsigned long g_timeout;
 
-void Print(asIScriptGeneric* gen) {
-  WString *str = (WString*)gen->GetArgAddress(0);
-  std::wcout << StringUtils::toTString(*str);
+ObjectAS *Ref_Factory() {
+  return new ObjectAS();
 }
 
-//void Print(WString &string) {
-//  WString a = string;
-//  printf("%s", string);
-//}
+void stringPrint_g(asIScriptGeneric* gen) {
+	WString *str = (WString*)gen->GetArgAddress(0);
+	std::wcout << StringUtils::toTString(*str);
+}
 
 ScriptEngine::ScriptEngine() {
+	m_scriptLogger = nullptr;
+	m_scriptTime = nullptr;
 
-	if (!m_scriptLogger.isStarted()) {
-		m_scriptLogger.startUp();
+	Logger::startUp();
+
+	if (Logger::isStarted()) {
+		m_scriptLogger = &Logger::instance();
 	}
 
-	m_scriptTime = nullptr;
 	if (Time::isStarted()) {
 		m_scriptTime = &Time::instance();
 	}
@@ -45,22 +47,47 @@ ScriptEngine::createEngine() {
 		return -1;
 	}
 
-  //m_scriptEngine->SetEngineProperty(asEP_SCRIPT_SCANNER, 1);
 	m_scriptEngine->SetEngineProperty(asEP_STRING_ENCODING, 1);
 	m_scriptEngine->SetMessageCallback(asMETHOD(ScriptEngine, messageCallback), 
 																		 0, 
 																		 asCALL_CDECL);
-
 	RegisterStdString(m_scriptEngine);
 
 	// Register the functions that the scripts will be allowed to use.
 	result = m_scriptEngine->RegisterGlobalFunction("void Print(string &in)",
-																									asFUNCTION(Print), 
-                                                  asCALL_GENERIC);
-  //result = m_scriptEngine->RegisterGlobalFunction("void Print(string &in)",
-  //                                                asFUNCTIONPR(Print, (WString&), void),
-  //                                                asCALL_CDECL);
+																									asFUNCTION(stringPrint_g), 
+																									asCALL_GENERIC);
 
+  /*result = m_scriptEngine->RegisterObjectType("Object",
+                                              0,
+                                              asOBJ_REF);
+
+  result = m_scriptEngine->RegisterObjectBehaviour("Object", 
+                                                   asBEHAVE_FACTORY,
+                                                   "Object@ f()", 
+                                                   asFUNCTION(Ref_Factory),
+                                                   asCALL_CDECL);
+
+  result = m_scriptEngine->RegisterObjectBehaviour("Object",
+                                      asBEHAVE_ADDREF,
+                                      "void f()", 
+                                      asMETHOD(ObjectAS, AddRef),
+                                      asCALL_THISCALL);
+
+  result = m_scriptEngine->RegisterObjectBehaviour("Object", 
+                                                   asBEHAVE_RELEASE, 
+                                                   "void f()", 
+                                                   asMETHOD(ObjectAS, Release), 
+                                                   asCALL_THISCALL);
+
+  result = m_scriptEngine->RegisterObjectMethod("Object",
+                                                "float Add(float param1)",
+                                                asMETHODPR(ObjectAS, Add, (float), float),
+                                                asCALL_THISCALL);*/
+
+  /*
+  * Seccion para registrar metodos //eso dice arriba pero en ingles...(asi es comente un comentario)
+  */
 
 	return result;
 }
@@ -142,10 +169,20 @@ ScriptEngine::prepareFunction(TString function) {
 Int8
 ScriptEngine::executeCall() {
 	g_timeout = m_scriptTime->getElapsedMilli() + 5000;
-	Int8 result = m_scriptContext->Execute();
+	Int8 result = m_scriptContext->Execute();			
+	TString NewLine(_T("<br>"));
+	addScriptLog(_T("There was an exception within a script call."), asMSGTYPE_ERROR);
+
 	if (result != asEXECUTION_FINISHED) {
 		if (result == asEXECUTION_EXCEPTION) {
-			addScriptLog(_T("There was an exception with a script call."), asMSGTYPE_ERROR);
+			TString details = _T("Exception details:") + NewLine + _T("Function: ") + 
+												StringUtils::toTString(m_scriptFunction->GetDeclaration()) + 
+												NewLine + _T("Line: ") + 
+												StringUtils::toTString(m_scriptContext->GetExceptionLineNumber()) + 
+												NewLine + _T("Description: ") + 
+												StringUtils::toTString(m_scriptContext->GetExceptionString());
+
+			addScriptLog(details, asMSGTYPE_INFORMATION);
 		}
 	}
 	return result;
@@ -160,6 +197,7 @@ ScriptEngine::release() {
 void
 ScriptEngine::lineCallback(asIScriptContext* scriptContext) {
 	if(g_timeout < m_scriptTime->getElapsedMilli()) {
+		addScriptLog(_T("The script timed out, stoping now..."), asMSGTYPE_ERROR);
 		scriptContext->Abort(); 
 		//scriptContext->Suspend(); //we can also use suspend
 	}
@@ -183,28 +221,19 @@ ScriptEngine::messageCallback(const asSMessageInfo* scriptMessage, void* param) 
 void
 ScriptEngine::addScriptLog(const TString& log, int type) {
 
-	/*driderSDK::Logger ModuleLogger; //testing logger, this will be removed
-	if (!ModuleLogger.isStarted()) {
-		ModuleLogger.startUp();
+	if (type == asMSGTYPE_WARNING) {
+		m_scriptLogger->addWarning(__FILE__, 
+															__LINE__, 
+															_T("[ScriptEngine] ") + log);
 	}
-	driderSDK::Logger& htmlLogger = ModuleLogger.instance();
-	htmlLogger.addWarning(__FILE__, __LINE__, log);*/
-
-	//if (type == asMSGTYPE_WARNING) {
-	//	m_scriptLogger.addWarning(__FILE__, 
-	//														__LINE__, 
-	//														"[ScriptEngine] " + StringUtils::toString(log));
-	//}
-	//else if (type == asMSGTYPE_INFORMATION) {
-	//	m_scriptLogger.addWarning(__FILE__,
-	//														__LINE__, 
-	//														"[ScriptEngine] (INFO) " + StringUtils::toString(log));
-	//}
-	//else if (type == asMSGTYPE_ERROR) {
-	//	m_scriptLogger.addError(__FILE__,
-	//													__LINE__, 
-	//													"[ScriptEngine] " + StringUtils::toString(log));
-	//}
+	else if (type == asMSGTYPE_INFORMATION) {
+		m_scriptLogger->addLog(_T("[ScriptEngine] ") + log);
+	}
+	else if (type == asMSGTYPE_ERROR) {
+		m_scriptLogger->addError(__FILE__,
+														__LINE__, 
+														_T("[ScriptEngine] ") + log);
+	}
 }
 
 }
