@@ -477,6 +477,20 @@ struct DR_GRAPHICS_EXPORT DrTextureDesc {
   }
 };
 
+struct DR_GRAPHICS_EXPORT DrDepthStencilDesc {
+  DR_FORMAT::E Format;
+  UInt32 width;
+  UInt32 height;
+  UInt32 bindFlags;
+
+  DrDepthStencilDesc() {
+    Format = DR_FORMAT::kD24_UNORM_S8_UINT;
+    bindFlags = DR_BIND_FLAGS::DEPTH_STENCIL;
+    width = 0;
+    height = 0;
+  }
+};
+
 struct DR_GRAPHICS_EXPORT DrRasterizerDesc {
   DR_FILL_MODE::E fillMode;
   DR_CULL_MODE::E cullMode;
@@ -545,14 +559,14 @@ struct DR_GRAPHICS_EXPORT DrSwapChainDesc  {
   }
 };
 
-struct DR_GRAPHICS_EXPORT DrDepthStencilDesc {
+struct DR_GRAPHICS_EXPORT DrDepthStencilStateDesc {
   bool depthEnable;
   DR_COMPARISON_FUNC::E depthFunc; 
   bool stencilEnable;
   UInt8 stencilReadMask;
   UInt8 stencilWriteMask;
   DR_DEPTH_WRITE_MASK::E depthWriteMask;
-  DrDepthStencilDesc() {
+  DrDepthStencilStateDesc() {
     depthEnable = true;
     depthFunc = DR_COMPARISON_FUNC::kLESS_EQUAL;
     stencilEnable = false;

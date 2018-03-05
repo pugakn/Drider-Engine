@@ -79,22 +79,17 @@ public:
   static DepthStencilState&
   getDepthStencilState(DR_DEPTH_STENCIL_STATES::E state);
 protected:
-  template<class T>
-  using CustomDeleter = std::function<void(T*)>;
-  
-  template<class T>
-  using SmartPtr = std::unique_ptr<T, CustomDeleter<T>>;
 
-  SmartPtr<Device> m_device;
-  SmartPtr<DeviceContext> m_deviceContext;
-  SmartPtr<SwapChain> m_swapChain;
-  SmartPtr<RenderTarget> m_backBufferView; 
-  SmartPtr<DepthStencil> m_depthStencilView; 
+  GFXUnique<Device> m_device;
+  GFXUnique<DeviceContext> m_deviceContext;
+  GFXUnique<SwapChain> m_swapChain;
+  GFXUnique<RenderTarget> m_backBufferView;
+  GFXUnique<DepthStencil> m_depthStencilView;
   std::shared_ptr<Texture> m_depthTexture;	
-  SmartPtr<RasterizerState> m_rasterizerState;
+  GFXUnique<RasterizerState> m_rasterizerState;
 
-  std::vector<SmartPtr<BlendState>> m_blendSStates;
-  std::vector<SmartPtr<DepthStencilState>> m_depthStencilStates;
+  std::vector<GFXUnique<BlendState>> m_blendSStates;
+  std::vector<GFXUnique<DepthStencilState>> m_depthStencilStates;
 
   void* m_hwnd;
 };

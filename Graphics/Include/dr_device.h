@@ -194,7 +194,7 @@ class DR_GRAPHICS_EXPORT Device
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   virtual DepthStencilState*
-  createDepthStencilState(const DrDepthStencilDesc& desc) = 0;
+  createDepthStencilState(const DrDepthStencilStateDesc& desc) = 0;
 
   /**
   * Create a input layout

@@ -18,6 +18,14 @@ TestApplication::~TestApplication() {
 }
 void
 TestApplication::postInit() {
+  Logger::startUp();
+  GraphicsDriver::startUp(DR_GRAPHICS_API::D3D11,
+    m_viewport.width,
+    m_viewport.height,
+    m_hwnd);
+  InputManager::startUp((SizeT)m_hwnd);
+  Time::startUp();
+
   quad.init();
   webRenderer.Init(1280,720,BROWSER_MODE::kHeadless);
   webRenderer.loadURL("file:///C:/Users/Ulises/Documents/GitHub/Drider-Engine/DriderUIUnitTest/bulma/ss.html");//
@@ -43,6 +51,7 @@ TestApplication::postInit() {
 
 void
 TestApplication::postUpdate() {
+  InputManager::capture();
   webRenderer.update();
 }
 

@@ -3,7 +3,7 @@
 #include <cassert>
 #include <dr_defines.h>
 #include <dr_types.h>
-
+#include "dr_gfx_memory.h"
 /**********************************************************************
 *															                                  		  *
 *					                  Windows Specifics							            *

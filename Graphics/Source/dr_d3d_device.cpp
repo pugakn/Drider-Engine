@@ -146,7 +146,7 @@ D3DDevice::createRenderTarget(const std::vector<Texture*>& textures) {
 DepthStencil* 
 D3DDevice::createDepthStencil(const Texture& texture) {
   DepthStencil* depthStencil = new D3DDepthStencil;
-  depthStencil->create(*this,texture);
+  depthStencil->create(*this, texture);
   return depthStencil;
 }
 
@@ -165,7 +165,7 @@ D3DDevice::createRasteizerState(const DrRasterizerDesc& desc) {
 }
 
 DepthStencilState* 
-D3DDevice::createDepthStencilState(const DrDepthStencilDesc& desc) {
+D3DDevice::createDepthStencilState(const DrDepthStencilStateDesc& desc) {
   DepthStencilState* state = new D3DDepthStencilState;
   state->create(*this, desc);
   return state;

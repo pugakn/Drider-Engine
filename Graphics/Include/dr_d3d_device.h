@@ -197,7 +197,7 @@ class DR_GRAPHICS_EXPORT D3DDevice : public Device
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   DepthStencilState*
-  createDepthStencilState(const DrDepthStencilDesc& desc) override;
+  createDepthStencilState(const DrDepthStencilStateDesc& desc) override;
 
   /**
   * TEST::createInputLayout
