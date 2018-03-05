@@ -13,14 +13,21 @@ void Constructor(void *memory)
   // object constructor with the placement-new operator
   new(memory) Object();
 }
+
+void CopyConstruct(const Object &other, Object *thisPointer)
+{
+  new(thisPointer) Object(other);
+}
+
+void ConstructFromTwoFloats(float a, float b, Object *thisPointer)
+{
+  new(thisPointer) Object(a, b);
+}
+
 void Destructor(void *memory)
 {
   // Uninitialize the memory by calling the object destructor
   ((Object*)memory)->~Object();
-}
-
-Object* RefFactory() {
-  return new Object();
 }
 
 TestScriptApp::TestScriptApp() {
@@ -133,7 +140,7 @@ TestScriptApp::initScriptEngine() {
     scriptEngine = ScriptEngine::instancePtr();
   }
 
-  scriptEngine->addScriptLog(_T("hola"), 0);
+  //scriptEngine->addScriptLog(_T("hola"), 0);
   
   result = scriptEngine->createEngine();
 
@@ -143,42 +150,59 @@ TestScriptApp::initScriptEngine() {
   result = scriptEngine->addScript(_T("test.as"),
                                    script->getScript());
 
-  /*Object obj;
+  Object obj;
   result = scriptEngine->m_scriptEngine->RegisterObjectType("Object", 
                                                             sizeof(Object), 
-                                                            asOBJ_REF);*/
+                                                            asOBJ_VALUE | asOBJ_APP_CLASS |
+                                                            asOBJ_APP_CLASS_CONSTRUCTOR | asOBJ_APP_CLASS_COPY_CONSTRUCTOR |
+                                                            asOBJ_APP_CLASS_DESTRUCTOR);
 
-  //result = scriptEngine->m_scriptEngine->RegisterObjectBehaviour("Object", 
-  //                                                               asBEHAVE_CONSTRUCT, 
-  //                                                               "void f()", 
-  //                                                               asFUNCTION(Constructor), 
-  //                                                               asCALL_CDECL_OBJLAST);
-  //result = scriptEngine->m_scriptEngine->RegisterObjectBehaviour("Object", 
-  //                                                               asBEHAVE_DESTRUCT,
-  //                                                               "void f()", 
-  //                                                               asFUNCTION(Destructor), 
-  //                                                               asCALL_CDECL_OBJLAST);
-  /*result = scriptEngine->m_scriptEngine->RegisterObjectBehaviour("Object",
-                                                                 asBEHAVE_FACTORY,
-                                                                 "Object @f()",
-                                                                 asFUNCTION(RefFactory),
-                                                                 asCALL_CDECL);
   result = scriptEngine->m_scriptEngine->RegisterObjectBehaviour("Object", 
-                                                                 asBEHAVE_ADDREF, 
+                                                                 asBEHAVE_CONSTRUCT, 
                                                                  "void f()", 
-                                                                 asMETHOD(Object, addRef),
-                                                                 asCALL_THISCALL); \
+                                                                 asFUNCTION(Constructor), 
+                                                                 asCALL_CDECL_OBJLAST);
+  result = scriptEngine->m_scriptEngine->RegisterObjectBehaviour("Object",
+                                                                 asBEHAVE_CONSTRUCT,
+                                                                 "void f(const Object& in)",
+                                                                 asFUNCTION(CopyConstruct),
+                                                                 asCALL_CDECL_OBJLAST);
+  result = scriptEngine->m_scriptEngine->RegisterObjectBehaviour("Object",
+                                                                 asBEHAVE_CONSTRUCT,
+                                                                 "void f(float, float)",
+                                                                 asFUNCTION(ConstructFromTwoFloats),
+                                                                 asCALL_CDECL_OBJLAST);
+
   result = scriptEngine->m_scriptEngine->RegisterObjectBehaviour("Object", 
-                                                                 asBEHAVE_RELEASE, 
+                                                                 asBEHAVE_DESTRUCT,
                                                                  "void f()", 
-                                                                 asMETHOD(Object, release), 
-                                                                 asCALL_THISCALL);
+                                                                 asFUNCTION(Destructor), 
+                                                                 asCALL_CDECL_OBJLAST);
 
   result = scriptEngine->m_scriptEngine->RegisterObjectMethod("Object",
-                                                              "Object @add(const Object& param1)",
-                                                              asMETHODPR(Object, add, (const Object&) const, Object),
-                                                              asCALL_THISCALL);*/
-  
+                                                              "Object& opAssign(const Object& in)",
+                                                              asMETHODPR(Object, operator=, (const Object&), Object&),
+                                                              asCALL_THISCALL);
+
+  result = scriptEngine->m_scriptEngine->RegisterObjectMethod("Object",
+                                                              "Object opAdd(const Object& in) const", 
+                                                              asMETHODPR(Object, operator+, (const Object&) const, Object),
+                                                              asCALL_THISCALL);
+
+  result = scriptEngine->m_scriptEngine->RegisterObjectMethod("Object",
+                                                              "Object& opAddAssign(const Object& in)",
+                                                              asMETHODPR(Object, operator+=, (const Object&), Object&),
+                                                              asCALL_THISCALL);
+
+  result = scriptEngine->m_scriptEngine->RegisterObjectMethod("Object",
+                                                              "Object& add(const Object& in)",
+                                                              asMETHODPR(Object, add, (const Object&), Object&),
+                                                              asCALL_THISCALL);
+
+  result = scriptEngine->m_scriptEngine->RegisterObjectMethod("Object",
+                                                              "Object& si()",
+                                                              asMETHOD(Object, si, Object&),
+                                                              asCALL_THISCALL);
   result = m_camera->registerFunctions(scriptEngine);
   
   Vector3D vector;

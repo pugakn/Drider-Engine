@@ -4,9 +4,7 @@
 namespace driderSDK
 {
 
-CREATE_REF_FACTORY_FUNC(Vector3D)
-
-CREATE_REF_FACTORY_FUNC_3P(Vector3D, float, float, float)
+CONSTRUCT_DESTRUCT_DEF(Vector3D)
 
 Vector3D::Vector3D(Math::FORCE_INIT k) {
   if (Math::FORCE_INIT::kZero == k) {

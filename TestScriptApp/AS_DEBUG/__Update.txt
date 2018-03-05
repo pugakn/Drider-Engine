@@ -1,22 +1,21 @@
 void Update()
 
-Temps: 2
+Temps: 
 
 Variables: 
- 001: (heap) Camera cam
+ 137: Camera cam
 
 
-- 23,2 -
-    0   2 *    SUSPEND
+- 39,2 -
+    0 137 *    SUSPEND
                VarDecl  0
-    1   2 *    CALLSYS  70           (Camera@ Camera())
-    3   2 *    STOREOBJ v1
-- 24,2 -
-    4   2 *    SUSPEND
-    5   2 *    PshVPtr  v1
-    6   3 *    CALLSYS  75           (float Camera::getNearPlane())
-- 25,2 -
-    8   2 *    SUSPEND
-    9   2 *    FREE     v1, 192379368
+    1 137 *    PSF      v137
+    2 138 *    CALLSYS  79           (Camera::Camera())
+- 41,2 -
+               ObjInfo  v137, 1
+    4 137 *    SUSPEND
+    5 137 *    PSF      v137
+    6 138 *    CALLSYS  80           (Camera::~Camera())
+               ObjInfo  v137, 0
             0:
-   11   2 *    RET      0
+    8 137 *    RET      0

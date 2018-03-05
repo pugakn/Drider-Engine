@@ -8,10 +8,9 @@
 
 namespace driderSDK {
 
-CREATE_REF_FACTORY_DECL(Vector3D);
-CREATE_REF_FACTORY_DECL_3P(Vector3D, float, float, float)
-
 class Vector4D;
+
+CONSTRUCT_DESTRUCT_DECL(Vector3D)
 
 /**
 * Vector with 3 elements (x, y, z)
@@ -28,7 +27,7 @@ class DR_MATH_EXPORT Vector3D
   * Default constructor
   *
   */
-   DEFAULT_CONSTRUCTOR(Vector3D)
+  Vector3D() {}
 
   /**
   * TEST::forceInit
@@ -523,16 +522,14 @@ class DR_MATH_EXPORT Vector3D
   };
 
   BEGINING_REGISTER(Vector3D)
- 
-  REGISTER_FACTORY_3P(Vector3D, float, float, float)
 
-  REGISTER_FOO_1P_CONST(Vector3D, dot, const Vector3D&, float, " ")
-  //REGISTER_FOO_1P_CONST(Vector3D, cross, const Vector3D&, Vector3D, " @")
-  REGISTER_FOO_0P_CONST(Vector3D, length, float)
-  REGISTER_FOO_0P_CONST(Vector3D, lengthSqr, float)
-  //REGISTER_FOO_0P(Vector3D, normalize, Vector3D&)
-  REGISTER_FOO_1P_CONST(Vector3D, distance, const Vector3D&, float, " ")
-  REGISTER_FOO_1P_CONST(Vector3D, distanceSqr, const Vector3D&, float, " ")
+  REGISTER_FOO_1P_CONST(Vector3D, dot, const Vector3D&, float, "float", in)
+  REGISTER_FOO_1P_CONST(Vector3D, cross, const Vector3D&, Vector3D, "float", in)
+  //REGISTER_FOO_0P_CONST(Vector3D, length, float)
+  //REGISTER_FOO_0P_CONST(Vector3D, lengthSqr, float)
+  REGISTER_FOO_0P(Vector3D, normalize, Vector3D&, "Vector3D&")
+ // REGISTER_FOO_1P_CONST(Vector3D, distance, const Vector3D&, float, " ")
+  //REGISTER_FOO_1P_CONST(Vector3D, distanceSqr, const Vector3D&, float, " ")
 
   END_REGISTER
 

@@ -1,69 +1,72 @@
 void Start()
 
-Temps: 2, 4, 5
+Temps: 140, 141, 147
 
 Variables: 
- 001: (heap) Camera cam
- 003: (heap) Vector3D vec
- 006: (heap) Vector3D vec2
- 007: float a
+ 137: Camera cam
+ 139: Object obj
+ 143: Object obj2
+ 145: Object obj3
+ 147: Object {noname}
 
 
 - 3,2 -
-    0   7 *    SUSPEND
+    0 147 *    SUSPEND
                VarDecl  0
-    1   7 *    CALLSYS  70           (Camera@ Camera())
-    3   7 *    STOREOBJ v1
-- 4,2 -
-    4   7 *    SUSPEND
-    5   7 *    PshVPtr  v1
-    6   8 *    CALLSYS  74           (float Camera::getFarPlane())
-- 8,2 -
-    8   7 *    SUSPEND
+    1 147 *    PSF      v137
+    2 148 *    CALLSYS  79           (Camera::Camera())
+- 27,2 -
+               ObjInfo  v137, 1
+    4 147 *    SUSPEND
                VarDecl  1
-    9   7 *    PshC4    0x41200000          (i:1092616192, f:10)
-   11   8 *    PshC4    0x41200000          (i:1092616192, f:10)
-   13   9 *    PshC4    0x41200000          (i:1092616192, f:10)
-   15  10 *    CALLSYS  80           (Vector3D@ Vector3D(float, float, float))
-   17   7 *    STOREOBJ v3
-- 9,2 -
-   18   7 *    SUSPEND
+    5 147 *    PshC4    0x41f26666          (i:1106404966, f:30.3)
+    7 148 *    PshC4    0x40000000          (i:1073741824, f:2)
+    9 149 *    PSF      v139
+   10 150 *    CALLSYS  72           (Object::Object(float, float))
+- 28,2 -
+               ObjInfo  v139, 1
+   12 147 *    SUSPEND
                VarDecl  2
-   19   7 *    PshC4    0x40a00000          (i:1084227584, f:5)
-   21   8 *    PshC4    0x40000000          (i:1073741824, f:2)
-   23   9 *    PshC4    0x3f800000          (i:1065353216, f:1)
-   25  10 *    CALLSYS  80           (Vector3D@ Vector3D(float, float, float))
-   27   7 *    STOREOBJ v6
-- 11,2 -
-   28   7 *    SUSPEND
+   13 147 *    PshC4    0x3f800000          (i:1065353216, f:1)
+   15 148 *    PshC4    0x3f800000          (i:1065353216, f:1)
+   17 149 *    PSF      v143
+   18 150 *    CALLSYS  72           (Object::Object(float, float))
+- 30,2 -
+               ObjInfo  v143, 1
+   20 147 *    SUSPEND
                VarDecl  3
-   29   7 *    PshVPtr  v6
-   30   8 *    PshVPtr  v3
-   31   9 *    CALLSYS  81           (float Vector3D::dot(const Vector3D&inout))
-   33   7 *    CpyRtoV4 v2
-   34   7 *    CpyVtoV4 v7, v2
-- 13,2 -
-   36   7 *    SUSPEND
-   37   7 *    PshVPtr  v3
-   38   8 *    CALLSYS  82           (float Vector3D::length())
-- 14,2 -
-   40   7 *    SUSPEND
-   41   7 *    PshVPtr  v3
-   42   8 *    CALLSYS  83           (float Vector3D::lengthSqr())
-- 16,2 -
-   44   7 *    SUSPEND
-   45   7 *    PshVPtr  v6
-   46   8 *    PshVPtr  v3
-   47   9 *    CALLSYS  84           (float Vector3D::distance(const Vector3D&inout))
-- 17,2 -
-   49   7 *    SUSPEND
-   50   7 *    PshVPtr  v6
-   51   8 *    PshVPtr  v3
-   52   9 *    CALLSYS  85           (float Vector3D::distanceSqr(const Vector3D&inout))
-- 19,2 -
-   54   7 *    SUSPEND
-   55   7 *    FREE     v6, 192379752
-   57   7 *    FREE     v3, 192379752
-   59   7 *    FREE     v1, 192379368
+   21 147 *    PshC4    0x0          (i:0, f:0)
+   23 148 *    PshC4    0x0          (i:0, f:0)
+   25 149 *    PSF      v145
+   26 150 *    CALLSYS  72           (Object::Object(float, float))
+- 31,2 -
+               ObjInfo  v145, 1
+   28 147 *    SUSPEND
+   29 147 *    VAR      v143
+   30 148 *    PSF      v147
+   31 149 *    PSF      v139
+   32 150 *    GETREF   2
+   33 150 *    CALLSYS  75           (Object Object::opAdd(const Object&in) const)
+               ObjInfo  v147, 1
+   35 147 *    PSF      v147
+   36 148 *    PSF      v145
+   37 149 *    CALLSYS  74           (Object& Object::opAssign(const Object&in))
+   39 147 *    PSF      v147
+   40 148 *    CALLSYS  73           (Object::~Object())
+- 35,2 -
+               ObjInfo  v147, 0
+   42 147 *    SUSPEND
+   43 147 *    PSF      v145
+   44 148 *    CALLSYS  73           (Object::~Object())
+               ObjInfo  v145, 0
+   46 147 *    PSF      v143
+   47 148 *    CALLSYS  73           (Object::~Object())
+               ObjInfo  v143, 0
+   49 147 *    PSF      v139
+   50 148 *    CALLSYS  73           (Object::~Object())
+               ObjInfo  v139, 0
+   52 147 *    PSF      v137
+   53 148 *    CALLSYS  80           (Camera::~Camera())
+               ObjInfo  v137, 0
             0:
-   61   7 *    RET      0
+   55 147 *    RET      0

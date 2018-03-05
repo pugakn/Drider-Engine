@@ -12,7 +12,7 @@
 
 namespace driderSDK {
 
-CREATE_REF_FACTORY_DECL(Camera);
+CONSTRUCT_DESTRUCT_DECL(Camera)
 
 /**
 *  Camera class.
@@ -29,8 +29,7 @@ public:
 	* Default constructor.
 	*
 	*/
-	DEFAULT_CONSTRUCTOR(Camera)
-
+  Camera() {}
 	/**
 	* TEST::constructor
 	* Initialize the camera with the given values.
@@ -224,11 +223,11 @@ public:
 
   BEGINING_REGISTER(Camera)
   
-  REGISTER_FOO_4P(Camera, move, float, float, float, bool, void)
+  //REGISTER_FOO_4P(Camera, move, float, float, float, bool, void)
 
-  REGISTER_FOO_0P(Camera, getFarPlane, float)
+  /*REGISTER_FOO_0P(Camera, getFarPlane, float)
   REGISTER_FOO_0P(Camera, getNearPlane, float)
-  REGISTER_FOO_0P(Camera, getFOV, float)
+  REGISTER_FOO_0P(Camera, getFOV, float)*/
 
   END_REGISTER
 

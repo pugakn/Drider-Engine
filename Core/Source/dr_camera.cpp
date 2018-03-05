@@ -5,7 +5,7 @@
 
 namespace driderSDK {
 
-CREATE_REF_FACTORY_FUNC(Camera)
+CONSTRUCT_DESTRUCT_DEF(Camera)
 
 Camera::Camera(const TString& name,
 							 const Viewport& viewport) 

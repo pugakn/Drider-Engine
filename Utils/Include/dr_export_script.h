@@ -2,124 +2,105 @@
 
 namespace driderSDK {
 
-#define DETECT_TYPE(type) (#type == "Int32") ? "int" : #type
-#define REF(r) (#r == "ref") ? "ref" : " "
+#define CONSTRUCT_DESTRUCT_DECL(className)\
+  void Construct##className(void *memory);\
+  void Destruct##className(void *memory);
 
-#define CREATE_REF_FACTORY_DECL(className)\
-  class className;\
-  className *Ref_Factory_##className();
-
-#define CREATE_REF_FACTORY_FUNC(className)\
-  className *Ref_Factory_##className() {\
-    return new className();\
-  }
-
-#define CREATE_REF_FACTORY_DECL_3P(className, pType1, pType2, pType3)\
-  className *Ref_Factory_Param_##className(pType1 param1, pType2 param2, pType3 param3);
-
-#define CREATE_REF_FACTORY_FUNC_3P(className, pType1, pType2, pType3)\
-  className *Ref_Factory_Param_##className(pType1 param1, pType2 param2, pType3 param3) {\
-    return new className(param1, param2, param3);\
-  }
-
-#define GETSET(varName, pType)\
-  pType m_##varName;\
-  pType get_##varName() {\
-    return m_##varName; }\
-  void set_##varName(pType param1) {\
-    m_##varName = param1; } 
-
-#define DEFAULT_CONSTRUCTOR(className)\
-  private:\
-    Int32 refCount;\
-  public:\
-    className() : refCount(1) {}\
-    void AddRef() {\
-      refCount++;\
-    }\
-    void Release() {\
-      if (--refCount == 0)\
-        delete this;\
-    }
+#define CONSTRUCT_DESTRUCT_DEF(className)\
+  void Construct##className (void *memory) {\
+    new(memory) className(); }\
+  void Destruct##className (void *memory) {\
+    ((className*)memory)->~className(); }
 
 #define BEGINING_REGISTER(className)\
   Int32 registerFunctions(ScriptEngine* scriptEngine) {\
     Int32 result;\
-    result = scriptEngine->m_scriptEngine->RegisterObjectType(#className, sizeof(className), asOBJ_REF);\
+    result = scriptEngine->m_scriptEngine->RegisterObjectType(#className, sizeof(className), (asOBJ_VALUE | asOBJ_APP_CLASS |\
+                                                                                             asOBJ_APP_CLASS_CONSTRUCTOR | asOBJ_APP_CLASS_COPY_CONSTRUCTOR |\
+                                                                                             asOBJ_APP_CLASS_DESTRUCTOR));\
     if(result < 0) {return result;}\
     result = scriptEngine->m_scriptEngine->RegisterObjectBehaviour(#className,\
-                                                                   asBEHAVE_FACTORY,\
-                                                                   #className"@ f()",\
-                                                                   asFUNCTION(Ref_Factory_##className),\
-                                                                   asCALL_CDECL);\
-    result = scriptEngine->m_scriptEngine->RegisterObjectBehaviour(#className,\
-                                                                   asBEHAVE_ADDREF,\
+                                                                   asBEHAVE_CONSTRUCT,\
                                                                    "void f()",\
-                                                                   asMETHOD(className, AddRef),\
-                                                                   asCALL_THISCALL);\
+                                                                   asFUNCTION(Construct##className),\
+                                                                   asCALL_CDECL_OBJLAST);\
     result = scriptEngine->m_scriptEngine->RegisterObjectBehaviour(#className,\
-                                                                   asBEHAVE_RELEASE,\
+                                                                   asBEHAVE_DESTRUCT,\
                                                                    "void f()",\
-                                                                   asMETHOD(className, Release),\
-                                                                   asCALL_THISCALL);
+                                                                   asFUNCTION(Destruct##className),\
+                                                                   asCALL_CDECL_OBJLAST);
 
-#define REGISTER_FACTORY_3P(className, pType1, pType2, pType3)\
+#define REGISTER_COPY_CONSTRUCT(className)\
     result = scriptEngine->m_scriptEngine->RegisterObjectBehaviour(#className,\
-                                                                   asBEHAVE_FACTORY,\
-                                                                   #className"@ f("#pType1" param1,"#pType2" param2,"#pType3" param3)",\
-                                                                   asFUNCTIONPR(Ref_Factory_Param_##className, (pType1, pType2, pType3), className*),\
-                                                                   asCALL_CDECL);
+                                                                  asBEHAVE_CONSTRUCT,\
+                                                                  "void f(const "#className " & in)",\
+                                                                  asFUNCTION(CopyConstruct##className),\
+                                                                  asCALL_CDECL_OBJLAST);
 
-#define REGISTER_FOO_0P(className, fooName, rType)\
+#define REGISTER_FOO_0P(className, fooName, rType, rTypeStr)\
     result = scriptEngine->m_scriptEngine->RegisterObjectMethod(#className,\
-                                                                DETECT_TYPE(rType)" " #fooName "()",\
-                                                                asMETHODPR(className, fooName, (void), rType),\
+                                                                rTypeStr" " #fooName "()",\
+                                                                asMETHOD(className, fooName, rType),\
                                                                 asCALL_THISCALL);\
     if(result < 0) return result;
 
-#define REGISTER_FOO_0P_CONST(className, fooName, rType)\
+#define REGISTER_FOO_0P_CONST(className, fooName, rType, rTypeStr)\
     result = scriptEngine->m_scriptEngine->RegisterObjectMethod(#className,\
-                                                                DETECT_TYPE(rType)" " #fooName "()",\
+                                                                rTypeStr" " #fooName "()",\
                                                                 asMETHODPR(className, fooName, (void) const, rType),\
                                                                 asCALL_THISCALL);\
     if(result < 0) return result;
 
 
-#define REGISTER_FOO_1P(className, fooName, pType, rType)\
+#define REGISTER_FOO_1P(className, fooName, pType, rType, rTypeStr, paramName)\
     result = scriptEngine->m_scriptEngine->RegisterObjectMethod(#className,\
-                                                                DETECT_TYPE(rType)" "#fooName"(" #pType " param1)",\
+                                                                rTypeStr" "#fooName "(" #pType " "#paramName ")",\
                                                                 asMETHODPR(className, fooName, (pType), rType),\
                                                                 asCALL_THISCALL);\
     if (result < 0) return result;
 
-#define REGISTER_FOO_1P_CONST(className, fooName, pType, rType, r)\
+#define REGISTER_FOO_1P_CONST(className, fooName, pType, rType, rTypeStr, paramName)\
     result = scriptEngine->m_scriptEngine->RegisterObjectMethod(#className,\
-                                                                DETECT_TYPE(rType)r#fooName"(" #pType " param1)",\
+                                                                rTypeStr" "#fooName "(" #pType " "#paramName ")",\
                                                                 asMETHODPR(className, fooName, (pType) const, rType),\
                                                                 asCALL_THISCALL);\
     if (result < 0) return result;
 
-#define REGISTER_FOO_2P(className, fooName, pType1, pType2, rType)\
+#define REGISTER_FOO_2P(className, fooName, pType1, pType2, rType, rTypeStr, paramName1, paramName2)\
     result = scriptEngine->m_scriptEngine->RegisterObjectMethod(#className,\
-                                                                DETECT_TYPE(rType)" "#fooName"("#pType1 " param1,"#pType2 " param2)",\
+                                                                rTypeStr" "#fooName "("#pType1 " "#paramName1 ","#pType2 " "#paramName2 ")",\
                                                                 asMETHODPR(className, fooName, (pType1, pType2), rType),\
                                                                 asCALL_THISCALL);\
     if (result < 0) return result;
 
 
-#define REGISTER_FOO_3P(className, fooName, pType1, pType2, pType3, pType4, rType)\
+#define REGISTER_FOO_3P(className, fooName, pType1, pType2, pType3, pType4, rType, rTypeStr, paramName1, paramName2, paramName3)\
     result = scriptEngine->m_scriptEngine->RegisterObjectMethod(#className,\
-                                                                DETECT_TYPE(rType)" "#fooName"("#pType1 " param1, "#pType2 " param2,"#pType3 " param3)",\
+                                                                rTypeStr" "#fooName "("#pType1 " "#paramName1 ", "#pType2 " "#paramName2 ","#pType3 " "#paramName3 ")",\
                                                                 asMETHODPR(className, fooName, (pType1, pType2, pType3), rType),\
                                                                 asCALL_THISCALL);\
     if (result < 0) return result;
 
-#define REGISTER_FOO_4P(className, fooName, pType1, pType2, pType3, pType4, rType)\
+#define REGISTER_FOO_4P(className, fooName, pType1, pType2, pType3, pType4, rType, rTypeStr,  paramName1, paramName2, paramName3, paramName4)\
     result = scriptEngine->m_scriptEngine->RegisterObjectMethod(#className,\
-                                                                DETECT_TYPE(rType)" "#fooName"("#pType1 " param1, "#pType2 " param2,"#pType3 " param3, "#pType4 " param4)",\
+                                                                rTypeStr" "#fooName "("#pType1 " "#paramName1 ", "#pType2 " "#paramName2 ","#pType3 " "#paramName3 ", "#pType4 " "#paramName4 ")",\
                                                                 asMETHODPR(className, fooName, (pType1, pType2, pType3, pType4), rType),\
                                                                 asCALL_THISCALL);\
     if (result < 0) return result;
+
+#define REGISTER_OP(className, sybol, opFoo, pType, rType, rTypeStr)\
+    result = scriptEngine->m_scriptEngine->RegisterObjectMethod(#className,\
+                                                                rTypeStr" "#opFoo "("#pType ")",\
+                                                                asMETHODPR(className, sybol, (pType), rType),\
+                                                                asCALL_THISCALL);\
+    if(result < 0) return result;
+
+#define REGISTER_OP_CONST(className, sybol, opFoo, pType, rType, rTypeStr)\
+    result = scriptEngine->m_scriptEngine->RegisterObjectMethod(#className,\
+                                                                rTypeStr" "#opFoo "("#pType ")",\
+                                                                asMETHODPR(className, sybol, (pType) const, rType),\
+                                                                asCALL_THISCALL);\
+    if(result < 0) return result;
 
 #define END_REGISTER\
     return result;\

@@ -10,24 +10,49 @@ namespace driderSDK {
 
 class Object {
   public:
-    Int32 refCount;
     Object(){}
 
-    void addRef () {
-      
+    Object(float p1, float p2) {
+      a = p1;
+      b = p2;
     }
 
-    void release() {
-      if(--refCount == 0)
-        delete this; 
+    Object(const Object& other) {
+      a = other.a;
+      b = other.b;
+    }
+    
+    Object&
+    add(const Object& param1) {
+      this->a += param1.a;
+      this->b += param1.b;
+      return *this;
     }
 
     Object
-    add(const Object& param1) const {
-      Object o;
-      o.a += param1.a;
-      o.b += param1.b;
-      return o;
+    operator+(const Object& param1) const{
+      return Object(a + param1.a, b + param1.b);
+    }
+
+    Object&
+    operator=(const Object& param1) {
+      a = param1.a;
+      b = param1.b;
+      return *this;
+    }
+
+    Object&
+      operator+=(const Object& param1) {
+      a += param1.a;
+      b += param1.b;
+      return *this;
+    }
+
+    Object&
+    si() {
+      a = 10;
+      b = 11;
+      return *this;
     }
 
   public:
