@@ -48,25 +48,17 @@ GraphicsAPI::init(UInt32 w, UInt32 h, void * hwnd, DR_GRAPHICS_API::E api)
 
   m_swapChain = dr_gfx_unique(m_device->createSwapChain(swapDesc));
 
-  DrTextureDesc depthTextureDesc;
+  DrDepthStencilDesc depthTextureDesc;
   depthTextureDesc.bindFlags = DR_BIND_FLAGS::DEPTH_STENCIL | DR_BIND_FLAGS::SHADER_RESOURCE;
   depthTextureDesc.width = w;
   depthTextureDesc.height = h;
-  depthTextureDesc.mipLevels = 1;
-  depthTextureDesc.Format = DR_FORMAT::kR24G8_TYPELESS;
+  depthTextureDesc.Format = DR_FORMAT::kD24_UNORM_S8_UINT;
 
   {
-    auto dt = m_device->createEmptyTexture(depthTextureDesc);
-    m_depthTexture = dr_gfx_unique(dt);
-  }
-
-  {
-    auto ds = m_device->createDepthStencil(*m_depthTexture);
+    auto ds = m_device->createDepthStencil(depthTextureDesc);
     m_depthStencilView = dr_gfx_unique(ds);
   }
-
   m_swapChain->getBackBuffer(*backBufferTexture);
-
   {
     std::vector<Texture*> texturesVec;
     texturesVec.push_back(backBufferTexture.get());
@@ -219,10 +211,6 @@ GraphicsAPI::getDepthStencil() {
   return *GraphicsDriver::API().m_depthStencilView;
 }
 
-Texture&
-GraphicsAPI::getDepthTexture() {
-  return *GraphicsDriver::API().m_depthTexture;
-}
 
 RasterizerState&
 GraphicsAPI::getRasterizerState() {

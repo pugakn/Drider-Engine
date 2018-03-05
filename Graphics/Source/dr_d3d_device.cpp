@@ -65,7 +65,7 @@ D3DDevice::release() {
 
 Buffer*
 D3DDevice::createBuffer(const DrBufferDesc& desc,
-                        const byte* initialData) {
+                        const byte* initialData) const {
   Buffer* buffer = nullptr;
   switch (desc.type)
   {
@@ -87,7 +87,7 @@ D3DDevice::createBuffer(const DrBufferDesc& desc,
 Shader*
 D3DDevice::createShaderFromMemory(const char* shaderBuffer,
                                   size_t bufferSize,
-                                  DR_SHADER_TYPE_FLAG::E shaderType) {
+                                  DR_SHADER_TYPE_FLAG::E shaderType) const {
   Shader* shader = nullptr;
   switch (shaderType)
   {
@@ -123,49 +123,63 @@ D3DDevice::createShaderFromMemory(const char* shaderBuffer,
 
 Texture*
 D3DDevice::createTextureFromMemory(const char* buffer,
-                                   const DrTextureDesc& desc) {
+                                   const DrTextureDesc& desc)const {
   Texture* texture = new D3DTexture;
   texture->createFromMemory(*this, desc, buffer);
   return texture;
 }
 
 Texture*
-D3DDevice::createEmptyTexture(const DrTextureDesc& desc) {
+D3DDevice::createEmptyTexture(const DrTextureDesc& desc)const {
   Texture* texture = new D3DTexture;
   texture->createEmpty(*this, desc);
   return texture;
 }
 
 RenderTarget* 
-D3DDevice::createRenderTarget(const std::vector<Texture*>& textures) {
+D3DDevice::createRenderTarget(const DrTextureDesc& desc, UInt32 numRTs)const {
   RenderTarget* renderTarget = new D3DRenderTarget;
-  renderTarget->create(*this,textures);
+  renderTarget->create(*this,desc,numRTs);
+  return renderTarget;
+}
+
+RenderTarget * D3DDevice::createRenderTarget(const std::vector<Texture*>& textures) const
+{
+  RenderTarget* renderTarget = new D3DRenderTarget;
+  renderTarget->create(*this, textures);
   return renderTarget;
 }
 
 DepthStencil* 
-D3DDevice::createDepthStencil(const Texture& texture) {
+D3DDevice::createDepthStencil(const DrDepthStencilDesc& desc) const {
+  DepthStencil* depthStencil = new D3DDepthStencil;
+  depthStencil->create(*this, desc);
+  return depthStencil;
+}
+
+DepthStencil * D3DDevice::createDepthStencil(const Texture & texture) const
+{
   DepthStencil* depthStencil = new D3DDepthStencil;
   depthStencil->create(*this, texture);
   return depthStencil;
 }
 
 SamplerState* 
-D3DDevice::createSamplerState(const DrSampleDesc& desc) {
+D3DDevice::createSamplerState(const DrSampleDesc& desc) const {
   SamplerState* state = new D3D11SamplerState;
   state->create(*this, desc);
   return state;
 }
 
 RasterizerState* 
-D3DDevice::createRasteizerState(const DrRasterizerDesc& desc) {
+D3DDevice::createRasteizerState(const DrRasterizerDesc& desc)const {
   RasterizerState* state = new D3DRasterizerState;
   state->create(*this, desc);
   return state;
 }
 
 DepthStencilState* 
-D3DDevice::createDepthStencilState(const DrDepthStencilStateDesc& desc) {
+D3DDevice::createDepthStencilState(const DrDepthStencilStateDesc& desc)const {
   DepthStencilState* state = new D3DDepthStencilState;
   state->create(*this, desc);
   return state;
@@ -173,20 +187,20 @@ D3DDevice::createDepthStencilState(const DrDepthStencilStateDesc& desc) {
 
 InputLayout*
 D3DDevice::createInputLayout(const std::vector<DrInputElementDesc>& inputDescArray,
-                             const ShaderBytecode& shaderBytecode) {
+                             const ShaderBytecode& shaderBytecode)const {
   InputLayout* layout = new D3DInputLayout;
   layout->create(*this, inputDescArray, shaderBytecode);
   return layout;
 }
 
 SwapChain*
-D3DDevice::createSwapChain(const DrSwapChainDesc& desc) {
+D3DDevice::createSwapChain(const DrSwapChainDesc& desc) const {
   SwapChain* swapChain = new D3DSwapChain;
   swapChain->create(*this, desc);
   return swapChain;
 }
 
-BlendState * D3DDevice::createBlendState(const DrBlendStateDesc & desc)
+BlendState * D3DDevice::createBlendState(const DrBlendStateDesc & desc)const
 {
   BlendState* bst = new D3DBlendState;
   bst->create(*this,desc);

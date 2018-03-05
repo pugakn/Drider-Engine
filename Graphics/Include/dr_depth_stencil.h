@@ -35,11 +35,12 @@ class DR_GRAPHICS_EXPORT DepthStencil
   * @param desc
   *   The descriptor of the depth stencil
   *
-  * @return
-  *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   virtual void
-  create(const Device& device ,const Texture& texture) = 0;
+  create(const Device& device ,const DrDepthStencilDesc& desc) = 0;
+
+  virtual void
+  create(const Device& device, const Texture& texture) = 0;
 
   //virtual void 
   //set(const DeviceContext& deviceContext, const DepthStencil& depthStencil) const = 0;
@@ -49,6 +50,13 @@ class DR_GRAPHICS_EXPORT DepthStencil
   */
   virtual void
   release() = 0;
+
+  const DrDepthStencilDesc& getDescriptor() const { return m_descriptor; }
+  const Texture& getTexture() const { return *m_texture; }
+protected:
+  bool _textureOwner = false;
+  Texture* m_texture;
+  DrDepthStencilDesc m_descriptor;
 };
 
 }

@@ -64,8 +64,6 @@ public:
   static DepthStencil&
   getDepthStencil();
 
-  static Texture&
-  getDepthTexture();
   
   static RasterizerState&
   getRasterizerState();
@@ -85,7 +83,6 @@ protected:
   GFXUnique<SwapChain> m_swapChain;
   GFXUnique<RenderTarget> m_backBufferView;
   GFXUnique<DepthStencil> m_depthStencilView;
-  std::shared_ptr<Texture> m_depthTexture;	
   GFXUnique<RasterizerState> m_rasterizerState;
 
   std::vector<GFXUnique<BlendState>> m_blendSStates;
