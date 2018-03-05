@@ -15,31 +15,14 @@ GameObject::GameObject(const TString& name)
 GameObject::~GameObject() 
 {}
 
-void 
-GameObject::init() {}
-
 void
 GameObject::update() {
 
-  bool localChange = m_localTransform.changed();
-
-  if (localChange) { //This node changed
-    propagateChange();
-   
-    /*for (auto& c : m_components) {
-      c->onLocalTransformChange();
-    }*/
-  }
-
-  //if (m_change && !localChange) { //Parent changed
-  //  
-  //  for (auto& c : m_components) {
-  //    c->onParentTransformChange();
-  //  }
-  //}
+  m_change = m_localTransform.changed() ||
+                  getParent()->m_finalTransform.changed();
 
   if (m_change) {
-    m_finalTransform = m_localTransform*getParent()->m_finalTransform;  
+    m_finalTransform = m_localTransform * getParent()->m_finalTransform;  
   } 
 
   updateImpl();
@@ -55,6 +38,7 @@ GameObject::update() {
   m_change = false;
 
   m_localTransform.newFrame();
+  m_finalTransform.newFrame();
 }
 
 void 
@@ -272,16 +256,6 @@ GameObject::isStatic() const {
 bool 
 GameObject::changed() const {
   return m_change;
-}
-
-void
-GameObject::propagateChange() {
-  
-  m_change = true;
-
-  for (auto& child : m_children) {
-    child->propagateChange();
-  }
 }
 
 GameObject::SharedGameObj 

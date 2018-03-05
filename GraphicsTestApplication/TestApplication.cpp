@@ -493,24 +493,23 @@ TestApplication::initSceneGraph() {
   std::uniform_real_distribution<float> space(-1500, 1500);
   std::uniform_real_distribution<float> time(0, 1000);
 
-  for (Int32 i = 0; i < 50; ++i) {
-    Vector3D pos(space(mt), 0, space(mt));
+  auto l = n->createInstance();
+  l->setName(_T("Empty Node"));
+
+  for (Int32 i = 0; i < 2; ++i) {
+    
     auto pp = n->clone();
-    pp->getTransform().setPosition(pos);
+    pp->setParent(n);
+    pp->setName(n->getName() + _T("_Son"));
+    pp->getTransform().setPosition({space(mt), 0, space(mt)});
+    
     auto an = pp->getComponent<AnimatorComponent>();
     an->setTime(time(mt));
 
-    /*TString aaa =StringUtils::toTString(i);
-
-    auto mod = dt(mt);
-
-    auto n = createNode(root, names[mod] + aaa, 
-                        names[mod], 
-                        pos);   
-    n->setStatic(true);
-    float sc = static_cast<float>(scl(mt));
-    n->getTransform().scale({sc,sc,sc});*/
+    n = pp;
   }
+  n->getParent()->addChild(l);
+  n->setParent(l);
 
 }
 
