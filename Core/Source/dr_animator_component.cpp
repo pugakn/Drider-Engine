@@ -249,9 +249,6 @@ AnimatorComponent::readNodeHeirarchy(float animTime,
         
     m_currentBone = animation.getBoneIndex(node->name);
 
-    Matrix4x4 rotatMatrix(Math::kIdentity);
-    Matrix4x4 transMatrix(Math::kIdentity);
-    Matrix4x4 scaleMatrix(Math::kIdentity);
 
     Vector3D translation = interpolateTranslation(*pBoneAnim, 
                                                   animTime, 
@@ -265,25 +262,23 @@ AnimatorComponent::readNodeHeirarchy(float animTime,
                                          animTime, 
                                          animation);
     
-    transMatrix.Translation(translation);
-    rotation.matrixFromQuaternion(rotatMatrix);
-    scaleMatrix.Scale(scaling);
-    nodeTransform = rotatMatrix * scaleMatrix;    
-    nodeTransform[0][3] =  translation.x;    
-    nodeTransform[1][3] = translation.y;     
-    nodeTransform[2][3] = translation.z;
+    rotation.matrixFromQuaternion(nodeTransform);
+    nodeTransform.Scale(scaling);
+    nodeTransform.Translation(translation);
+  }
+  else {
+    nodeTransform.transpose();
   }
 
-  Matrix4x4 globalTransform = parentTransform * nodeTransform;
+  Matrix4x4 globalTransform = nodeTransform * parentTransform;
 
   auto boneIt = skeleton.bonesMapping.find(node->name);
 
   if (boneIt != skeleton.bonesMapping.end()) {
     auto& pBone = skeleton.bones[boneIt->second];
 
-    pBone->finalTransform = skeleton.gloabalInverseTransform * 
-                            globalTransform * 
-                            pBone->boneOffset;
+    pBone->finalTransform = //skeleton.gloabalInverseTransform * 
+                            pBone->boneOffset * globalTransform;
   }
 
   for (auto& pChild : node->children) {

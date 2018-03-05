@@ -39,8 +39,8 @@ VS_OUTPUT VS( VS_INPUT input ) {
 		BoneTransform += Bones[index] * input.weights[i];
 	}
 
-	float4 OutVertex = mul(input.position, BoneTransform);
-	float4 OutNormal = float4(mul(input.normal.xyz, (float3x3)BoneTransform), 0);
+	float4 OutVertex = mul(BoneTransform, input.position);
+	float4 OutNormal = float4(mul((float3x3)BoneTransform, input.normal.xyz),0);
 
     OUT.hposition = mul(WVP, OutVertex);
 	//OUT.hposition = input.position;

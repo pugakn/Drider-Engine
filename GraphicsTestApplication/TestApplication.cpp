@@ -485,8 +485,6 @@ TestApplication::initSceneGraph() {
   
   auto animComp = n->getComponent<AnimatorComponent>();
 
-  
-
   n->getTransform().scale({ 1,1,1 });
   
   n->getComponent<RenderComponent>()->getMeshes()[0].material = chinitaMat;
@@ -498,15 +496,15 @@ TestApplication::initSceneGraph() {
   
   std::uniform_int_distribution<> dt(0, static_cast<Int32>(names.size() - 1));
   std::uniform_int_distribution<> scl(1, 3);
-  std::uniform_real_distribution<float> space(-1500, 1500);
+  std::uniform_real_distribution<float> space(200, 250);
   std::uniform_real_distribution<float> time(0, 1000);
 
-  for (Int32 i = 0; i < 2; ++i) {
+  for (Int32 i = 0; i < 1; ++i) {
     
     auto pp = n->clone();
     pp->setParent(n);
     pp->setName(n->getName() + _T("(clone)"));
-    pp->getTransform().setPosition({space(mt), 0, space(mt)});
+    pp->getTransform().setPosition({0, 0, space(mt)});
     
     auto an = pp->getComponent<AnimatorComponent>();
     an->setTime(time(mt));

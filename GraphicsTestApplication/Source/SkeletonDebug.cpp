@@ -44,14 +44,14 @@ SkeletonDebug::onUpdate() {
 
   auto anim = m_gameObject.getComponent<AnimatorComponent>();
 
-  auto transf = anim->getBonesTransforms();
+  auto& transf = anim->getBonesTransforms();
 
   auto aabbs = anim->getSkeleton()->bonesAABBs;
   
   index = 0;
 
   for (auto& aabb : aabbs) {
-    aabb.recalculate(transf[index].transpose());
+    aabb.recalculate(transf[index]);
     aabb.recalculate(m_gameObject.getWorldTransform().getMatrix());
     m_aabbs[index]->setAABB(aabb);
     ++index;

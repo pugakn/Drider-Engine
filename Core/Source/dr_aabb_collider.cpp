@@ -30,14 +30,14 @@ AABBCollider::onUpdate() {
   //Calculate AABB using animation
   if (auto anim = m_gameObject.getComponent<AnimatorComponent>()) {
     
-    auto transf = anim->getBonesTransforms();
+    auto& transf = anim->getBonesTransforms();
 
     auto aabbs = anim->getSkeleton()->bonesAABBs;
   
     Int32 index = 0;
 
     for (auto& aabb : aabbs) {
-      aabb.recalculate(transf[index].transpose());
+      aabb.recalculate(transf[index]);
       ++index;
     }
 
