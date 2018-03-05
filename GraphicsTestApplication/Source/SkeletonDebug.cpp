@@ -31,8 +31,7 @@ SkeletonDebug::onCreate() {
   for (auto& aabb : anim->getSkeleton()->bonesAABBs) {
     m_aabbs.push_back(dr_make_unique<AABBDebug>(m_gameObject));
   }
-
-
+  
   for (auto& aabb : m_aabbs) {
     aabb->onCreate();
   }

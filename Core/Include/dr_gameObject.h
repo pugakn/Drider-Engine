@@ -1,8 +1,10 @@
 #pragma once
 
 #include <vector>
+
 #include <dr_memory.h>
 #include <dr_transform.h>
+
 #include "dr_core_prerequisites.h"
 #include "dr_enableObject.h"
 
@@ -33,6 +35,9 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   
   void
   render();
+
+  void
+  destroy();
 
   SharedGameObj
   clone();
@@ -96,6 +101,7 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   {
     for (auto it = m_components.begin(); it != m_components.end(); ++it) {
       if (dynamic_cast<T*>(it->get())) {
+        (*it)->onDestroy();
         m_components.erase(it);
         return;
       }
@@ -234,7 +240,7 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   virtual void
   updateImpl();
 
-
+  bool m_destroyed;
   bool m_change;
   bool m_isStatic;
   ChildrenList m_children;

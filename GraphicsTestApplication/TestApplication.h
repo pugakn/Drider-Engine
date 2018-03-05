@@ -50,6 +50,10 @@ public:
   void initResources();
   void initSceneGraph();
 
+  void printHerarchy(std::shared_ptr<GameObject> obj, const TString& off);
+
+  void toggleAABBDebug(std::shared_ptr<GameObject> obj);
+
   bool m_debugList;
   //SoundAPI* soundDriver;
   QUERY_ORDER::E m_queryOrder;

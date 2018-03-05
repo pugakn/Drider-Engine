@@ -20,10 +20,16 @@ SceneGraph::SceneGraph() {}
 
 SceneGraph::~SceneGraph() {}
 
-void SceneGraph::onStartUp() {
+void 
+SceneGraph::onStartUp() {
   auto r = std::make_shared<RootNode>();
   r->init();
   m_root = r;
+}
+
+void
+SceneGraph::onShutDown() {
+  m_root->destroy();
 }
 
 void 
@@ -77,21 +83,6 @@ SceneGraph::draw() {
   }
   //instance().m_mutex.unlock();
 }
-
-SceneGraph::SharedGameObject
-SceneGraph::createNode(SharedGameObject parent, SharedModel model) {
-
-  auto node = std::make_shared<GameObject>();
-
-  parent->addChild(node);
-    
-  node->createComponent<RenderComponent>(model);
-
-  node->createComponent<AABBCollider>(model->aabb);
-
-  return node;
-}
-
 
 SceneGraph::QueryResult
 SceneGraph::query(Camera& camera, QUERY_ORDER::E order, UInt32 props) {

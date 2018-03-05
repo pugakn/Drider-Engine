@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <random>
 #include <iostream>
+#include <functional>
 #include <dr_aabb_collider.h>
 #include <dr_d3d_swap_chain.h>
 #include <dr_degree.h>
@@ -303,25 +304,11 @@ TestApplication::postDestroy() {
   Time::shutDown();
   SceneGraph::shutDown();
   GraphicsDriver::shutDown();
-  Logger::startUp();
+  Logger::shutDown();
 
   for (auto& anim : m_animated) {
     anim->destroy();
     delete anim;
-  }
-}
-
-void addDrawableComponent(std::shared_ptr<driderSDK::GameObject> go,
-                          Technique* tech) {
-  if (auto collider = go->getComponent<AABBCollider>()) {
-
-    auto p = go->createComponent<AABBDebug>(true);
-
-    p->setShaderTechnique(tech);
-  }
-  for (auto child : go->getChildren())
-  {
-    addDrawableComponent(child, tech);
   }
 }
 
@@ -341,6 +328,8 @@ TestApplication::initInput() {
     }
   };
 
+  auto root = SceneGraph::getRoot();
+  
   auto toggleWireframe = [&]()
   {
     static bool wire = false;
@@ -370,12 +359,20 @@ TestApplication::initInput() {
   auto toggleQueryOrder = [&]() {
     m_queryOrder = static_cast<QUERY_ORDER::E>(!m_queryOrder);
   };
+  
 
-  auto debugOctree = [&]() {
-    auto octree = SceneGraph::getOctree();
-    addDrawableComponent(octree, m_linesTech.get());
-  };
+  auto bindPH = std::bind(&TestApplication::printHerarchy, 
+                          this, 
+                          SceneGraph::getRoot(), 
+                          _T(""));
 
+  auto bindTAB = std::bind(&TestApplication::toggleAABBDebug,
+                           this, 
+                           SceneGraph::getRoot());
+
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kH,
+                        bindPH);
     
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kQ,
@@ -395,7 +392,7 @@ TestApplication::initInput() {
 
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kP,
-                        debugOctree);
+                        bindTAB);
 
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                          KEY_CODE::kJ, toggleWireframe);
@@ -427,16 +424,37 @@ TestApplication::initSceneGraph() {
 
     auto model = std::dynamic_pointer_cast<Model>(resource);
     
-    auto node = SceneGraph::createNode(parent, model);
+    auto node = SceneGraph::createObject(name);
 
-    auto collider = node->getComponent<AABBCollider>();
+    node->createComponent<RenderComponent>(model);
 
+    node->createComponent<AABBCollider>(model->aabb);
+
+    if (!model->animationsNames.empty()) {
+      
+      auto animName = model->animationsNames[0];
+      
+      auto animation = ResourceManager::getReferenceT<Animation>(animName);
+
+      auto skel = ResourceManager::getReferenceT<Skeleton>(model->skeletonName);
+
+      auto anim = node->createComponent<AnimatorComponent>();
+
+      anim->setSkeleton(skel);
+
+      anim->addAnimation(animation, animName);
+
+      anim->setCurrentAnimation(animName);
+
+      auto skd = node->createComponent<SkeletonDebug>();
+
+      skd->setShaderTechnique(m_linesTech.get());
+    }
+    
     auto p = node->createComponent<AABBDebug>(true);
-
+    
     p->setShaderTechnique(m_linesTech.get());
   
-    node->setName(name);
-
     node->getTransform().setPosition(pos);
 
     return node;
@@ -456,13 +474,7 @@ TestApplication::initSceneGraph() {
   };
    
   auto chinaMod = ResourceManager::getReferenceT<Model>(_T("HipHopDancing.fbx"));
-
-  auto animName = chinaMod->animationsNames[0];
-
-  auto chinaAnim = ResourceManager::getReferenceT<Animation>(animName);
-
-  auto chinaSkel = ResourceManager::getReferenceT<Skeleton>(chinaMod->skeletonName);
-
+  
   auto chinitaMat = ResourceManager::createMaterial(_T("Mat_Chinita"));
 
   auto chinitaTex = ResourceManager::getReferenceT<TextureCore>(_T("Kachujin_diffuse.png"));
@@ -471,13 +483,9 @@ TestApplication::initSceneGraph() {
 
   auto n = createNode(root, _T("Chinita"), _T("HipHopDancing.fbx"), {-200.f, 0.0f, 0.0f});
   
-  auto animComp = n->createComponent<AnimatorComponent>();
+  auto animComp = n->getComponent<AnimatorComponent>();
 
-  animComp->setSkeleton(chinaSkel);
-
-  animComp->addAnimation(chinaAnim, animName);
-
-  animComp->setCurrentAnimation(animName);
+  
 
   n->getTransform().scale({ 1,1,1 });
   
@@ -493,14 +501,11 @@ TestApplication::initSceneGraph() {
   std::uniform_real_distribution<float> space(-1500, 1500);
   std::uniform_real_distribution<float> time(0, 1000);
 
-  auto l = n->createInstance();
-  l->setName(_T("Empty Node"));
-
   for (Int32 i = 0; i < 2; ++i) {
     
     auto pp = n->clone();
     pp->setParent(n);
-    pp->setName(n->getName() + _T("_Son"));
+    pp->setName(n->getName() + _T("(clone)"));
     pp->getTransform().setPosition({space(mt), 0, space(mt)});
     
     auto an = pp->getComponent<AnimatorComponent>();
@@ -508,9 +513,39 @@ TestApplication::initSceneGraph() {
 
     n = pp;
   }
-  n->getParent()->addChild(l);
-  n->setParent(l);
+}
 
+void 
+TestApplication::printHerarchy(std::shared_ptr<GameObject> obj, 
+                                    const TString & off) {
+    Logger::addLog(off + obj->getName());
+
+    for (auto& child : obj->getChildren()) {
+      printHerarchy(child, off + _T("\t"));
+    }
+}
+
+void 
+TestApplication::toggleAABBDebug(std::shared_ptr<GameObject> go) {
+  if (auto collider = go->getComponent<AABBCollider>()) {
+
+    if (go->getComponent<AABBDebug>()) {
+      
+      go->removeComponent<AABBDebug>();
+
+    }
+
+    else {
+
+      auto p = go->createComponent<AABBDebug>(true);
+      p->setShaderTechnique(m_linesTech.get());
+
+    }
+  }
+  for (auto child : go->getChildren())
+  {
+    toggleAABBDebug(child);
+  }
 }
 
 }

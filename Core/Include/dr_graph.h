@@ -65,18 +65,34 @@ public:
   static void
   buildOctree();
 
+  /**
+  * Adds an object to the graph (root child).
+  */
   static void
   addObject(SharedGameObject gameObject); 
+
+  /**
+  * Creates a node of Type T and adds it to the graph (root child).
+  * 
+  * @param name
+  *   Name of the node. 
+  */
+  template<class T = GameObject>
+  static SharedGameObject
+  createObject(const TString& name)
+  {
+    SharedGameObject obj = std::make_shared<T>(name);
+
+    addObject(obj);
+
+    return obj;
+  }
 
   static SharedGameObject 
   getRoot();
 
   static SharedGameObject 
   getOctree();
-
-  /**
-  * Es posible tener objetos 
-  */
 
   /**
   * Query meshes from the scene graph
@@ -91,9 +107,6 @@ public:
   static void 
   draw();
   /****************/
-  static SharedGameObject
-  createNode(SharedGameObject parent, SharedModel model);
-
 private:
   using ObjectComp = std::function<bool(SharedGameObject, SharedGameObject)>;
   using GameObjectQueue = std::priority_queue<SharedGameObject,
@@ -118,6 +131,9 @@ private:
   
   void
   onStartUp();
+
+  void
+  onShutDown();
 
   static void
   testObjectOct(SharedGameObject object,

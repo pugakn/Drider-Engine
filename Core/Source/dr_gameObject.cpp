@@ -1,5 +1,9 @@
 #include "dr_gameObject.h"
+
 #include <algorithm>
+
+#include <dr_logger.h>
+
 #include "dr_gameComponent.h"
 
 namespace driderSDK {
@@ -7,13 +11,16 @@ namespace driderSDK {
 GameObject::GameObject(const TString& name)
   : m_name(name),
     m_isStatic(false),
-    m_change(false)
+    m_change(false),
+    m_destroyed(false)
     //m_finalTransform(Math::FORCE_INIT::kIdentity)
-{
-}
-
-GameObject::~GameObject() 
 {}
+
+GameObject::~GameObject() {
+  if (!m_destroyed) {
+    Logger::addLog(_T("Object called destructor without begin destoyed() first"));
+  }
+}
 
 void
 GameObject::update() {
@@ -51,6 +58,20 @@ GameObject::render() {
   /*for (auto& child : m_children) {
     child->render();
   }*/
+}
+
+void
+GameObject::destroy() {
+  
+  m_destroyed = true;
+
+  for (auto& c : m_components) {
+    c->onDestroy();
+  }
+
+  for (auto& child : m_children) {
+    child->destroy();
+  }
 }
 
 GameObject::SharedGameObj 
