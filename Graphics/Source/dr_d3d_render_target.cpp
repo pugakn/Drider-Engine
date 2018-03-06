@@ -87,6 +87,21 @@ D3DRenderTarget::set(const DeviceContext& deviceContext,
 
   reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext->RSSetViewports(1, &viewport_RT);
+
+  float rgba[4];
+  rgba[0] = 0.5f;
+  rgba[1] = 0.5f;
+  rgba[2] = 0.5f;
+  rgba[3] = 1.0f;
+
+  for (int i = 0; i < RTVs.size(); i++) {
+    reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
+      D3D11DeviceContext->ClearRenderTargetView(RTVs[i], rgba);
+  }
+
+  reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
+    D3D11DeviceContext->ClearDepthStencilView(reinterpret_cast<const D3DDepthStencil*>(&depthStencil)->
+      APIDepthView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 }
 
 void
