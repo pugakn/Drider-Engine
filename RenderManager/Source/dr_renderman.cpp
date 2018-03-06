@@ -41,6 +41,8 @@ RenderMan::init() {
   SceneGraph::addObject(Sauron);
 
   m_GBufferPass.init(&m_GBufferInitData);
+
+  m_SSAOPass.init(&m_SSAOInitData);
 }
 
 void

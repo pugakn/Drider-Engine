@@ -33,17 +33,16 @@ SSAOPass::init(PassInitData* initData) {
 
   Device& device = GraphicsAPI::getDevice();
 
-  m_vertexShader = device.createShaderFromMemory(vsSource.c_str(),
-                                                 vsSource.size() + 1,
-                                                 DR_SHADER_TYPE_FLAG::kVertex);
+  m_vertexShader = device.createShaderFromMemory(vsSource.data(),
+    vsSource.size(),
+    DR_SHADER_TYPE_FLAG::kVertex);
 
-  m_fragmentShader = device.createShaderFromMemory(fsSource.c_str(),
-                                                   fsSource.size() + 1,
-                                                   DR_SHADER_TYPE_FLAG::kFragment);
+  m_fragmentShader = device.createShaderFromMemory(fsSource.data(),
+    fsSource.size(),
+    DR_SHADER_TYPE_FLAG::kFragment);
 
-  std::vector<DrInputElementDesc> idesc = m_vertexShader->reflect();
-
-  m_inputLayout = device.createInputLayout(idesc, *m_vertexShader->m_shaderBytecode);
+  m_inputLayout = device.createInputLayout(Vertex::getInputDesc(),
+    *m_vertexShader->m_shaderBytecode);
 
   DrBufferDesc bdesc;
 
@@ -54,15 +53,34 @@ SSAOPass::init(PassInitData* initData) {
 
 void
 SSAOPass::draw(PassDrawData* drawData) {
-  SSAODrawData* data = static_cast<SSAODrawData*>(drawData);
+  PassDrawData* data = static_cast<PassDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
-
-  m_constantBuffer->set(dc);
 
   m_vertexShader->set(dc);
   m_fragmentShader->set(dc);
 
   m_inputLayout->set(dc);
+
+  m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
+
+  m_constantBuffer->set(dc);
+
+  dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
+
+  for (auto& modelPair : *data->models) {
+    if (auto material = modelPair.second.material.lock()) {
+      material->set();
+    }
+
+    m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
+
+    m_constantBuffer->set(dc);
+
+    modelPair.second.vertexBuffer->set(dc);
+    modelPair.second.indexBuffer->set(dc);
+
+    dc.draw(modelPair.second.indicesCount, 0, 0);
+  }
 }
 
 }

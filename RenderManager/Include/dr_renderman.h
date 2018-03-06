@@ -7,6 +7,7 @@
 #include <dr_graph.h>
 #include <dr_render_component.h>
 #include "dr_GBuffer.h"
+#include "dr_SSAO.h"
 
 namespace driderSDK {
 
@@ -49,6 +50,10 @@ class DR_RENDERMAN_EXPORT RenderMan {
   GBufferPass m_GBufferPass;
   GBufferInitData m_GBufferInitData;
   GBufferDrawData m_GBufferDrawData;
+
+  SSAOPass m_SSAOPass;
+  SSAOInitData m_SSAOInitData;
+  SSAODrawData m_SSAODrawData;
 
   RenderTarget* m_RTs;
 

@@ -24,11 +24,11 @@ void
 GBufferPass::init(PassInitData* initData) {
   driderSDK::File file;
 
-  file.Open(_T("vs.hlsl"));
+  file.Open(_T("GBuffer_vs.hlsl"));
   String vsSource = StringUtils::toString(file.GetAsString(file.Size()));
   file.Close();
 
-  file.Open(_T("fs.hlsl"));
+  file.Open(_T("GBuffer_ps.hlsl"));
   String fsSource = StringUtils::toString(file.GetAsString(file.Size()));
   file.Close();
 
@@ -43,7 +43,7 @@ GBufferPass::init(PassInitData* initData) {
                                                    DR_SHADER_TYPE_FLAG::kFragment);
 
   m_inputLayout = device.createInputLayout(Vertex::getInputDesc(), 
-                                           *m_fragmentShader->m_shaderBytecode);
+                                           *m_vertexShader->m_shaderBytecode);
 
   DrBufferDesc bdesc;
 
@@ -69,14 +69,14 @@ GBufferPass::draw(PassDrawData* drawData) {
   CB.WVP = wvp;
   */
   
-  m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&m_constantBuffer));
-  
-  m_constantBuffer->set(dc);
+  m_vertexShader->set(dc);
+  m_fragmentShader->set(dc);
   
   m_inputLayout->set(dc);
   
-  m_vertexShader->set(dc);
-  m_fragmentShader->set(dc);
+  m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
+  
+  m_constantBuffer->set(dc);
   
   dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
 
@@ -92,7 +92,7 @@ GBufferPass::draw(PassDrawData* drawData) {
     CB.World = modelPair.first;
     CB.WVP = modelPair.first * data->activeCam->getVP();
   
-    m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&m_constantBuffer));
+    m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
   
     m_constantBuffer->set(dc);
 
