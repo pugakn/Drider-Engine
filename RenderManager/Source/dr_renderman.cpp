@@ -60,7 +60,6 @@ RenderMan::draw() {
                                  QUERY_PROPERTY::kOpaque | 
                                  QUERY_PROPERTY::kDynamic | 
                                  QUERY_PROPERTY::kStatic);
-
   m_GBufferDrawData.activeCam = Sauron;
   m_GBufferDrawData.models = &queryRequest;
   m_GBufferDrawData.OutRt = m_RTs;

@@ -84,9 +84,9 @@ D3DRenderTarget::set(const DeviceContext& deviceContext,
     D3D11DeviceContext->RSSetViewports(1, &viewport_RT);
 
   float rgba[4]; // Cambiar después xD
-  rgba[0] = 0.5f;
-  rgba[1] = 0.5f;
-  rgba[2] = 0.5f;
+  rgba[0] = 0.0f;
+  rgba[1] = 0.0f;
+  rgba[2] = 1.0f;
   rgba[3] = 1.0f;
 
   for (int i = 0; i < RTVs.size(); i++) {

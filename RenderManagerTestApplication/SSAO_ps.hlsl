@@ -9,12 +9,12 @@ struct PS_INPUT {
   float2 Texcoord : TEXCOORD0;
 };
 
-float4 FS(PS_INPUT input) : SV_TARGET  {
+float4 FS(PS_INPUT input) : SV_TARGET {
   float2 uv = input.Texcoord;
 
 	float4 color = ColorTex.Sample(SS, uv);
 
-  return color;
   return float4(uv.xy, 0, 1);
-  return NormalTex.Sample(SS, uv);
+  //return color;
+  //return NormalTex.Sample(SS, uv);
 }

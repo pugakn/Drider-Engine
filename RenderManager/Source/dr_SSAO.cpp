@@ -74,7 +74,7 @@ SSAOPass::draw(PassDrawData* drawData) {
 
   m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kFragment);
 
-  dc.setRenderTarget(GraphicsAPI::getBackBufferRT(), GraphicsAPI::getDepthStencil());
+  GraphicsAPI::getBackBufferRT().set(dc, GraphicsAPI::getDepthStencil());
 
   auto screenQuadModel = ResourceManager::getReferenceT<Model>(_T("ScreenAlignedQuad.3ds"));
   if (screenQuadModel) {
