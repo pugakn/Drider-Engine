@@ -20,6 +20,9 @@ private:
 
   virtual void 
   onRender() override;
+
+  virtual void
+  cloneIn(GameObject& _go) {};
 };
 
 }

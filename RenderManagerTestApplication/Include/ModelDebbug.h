@@ -28,6 +28,10 @@ class ModelDebbug : public DrawableComponent
 
   virtual void 
   onRender() override;
+
+
+  virtual void
+  cloneIn(GameObject& _go) {};
 };
 
 }
