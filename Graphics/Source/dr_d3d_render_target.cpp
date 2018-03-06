@@ -96,10 +96,6 @@ void D3DRenderTarget::clear(const DeviceContext & deviceContext, const float col
     reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
       D3D11DeviceContext->ClearRenderTargetView(RTVs[i], rgba);
   }
-
-  //reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
-  //  D3D11DeviceContext->ClearDepthStencilView(reinterpret_cast<const D3DDepthStencil*>(&depthStencil)->
-  //    APIDepthView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 }
 
 void
