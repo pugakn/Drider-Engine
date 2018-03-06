@@ -6,6 +6,8 @@
 #include <dr_camera.h>
 #include <dr_graph.h>
 #include <dr_render_component.h>
+#include <dr_depth_stencil.h>
+#include <dr_depth_stencil_state.h>
 #include "dr_GBuffer.h"
 #include "dr_SSAO.h"
 
@@ -49,6 +51,7 @@ class DR_RENDERMAN_EXPORT RenderMan {
   GBufferPass m_GBufferPass;
   GBufferInitData m_GBufferInitData;
   GBufferDrawData m_GBufferDrawData;
+  DepthStencil* m_GBufferDSoptions;
 
   SSAOPass m_SSAOPass;
   SSAOInitData m_SSAOInitData;

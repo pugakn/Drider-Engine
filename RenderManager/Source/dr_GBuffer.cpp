@@ -11,6 +11,8 @@
 #include <dr_device_context.h>
 #include <dr_camera.h>
 #include <dr_material.h>
+#include <dr_resource_manager.h>
+#include <dr_model.h>
 
 namespace driderSDK {
 
@@ -67,6 +69,8 @@ GBufferPass::draw(PassDrawData* drawData) {
   m_constantBuffer->set(dc);
   
   dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
+
+  dc.setRenderTarget(*data->OutRt, *data->dsOptions);
   
   for (auto& modelPair : *data->models) {
     if (auto material = modelPair.mesh.material.lock()) {

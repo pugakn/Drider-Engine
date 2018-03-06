@@ -16,7 +16,6 @@
 namespace driderSDK {
 
 void RenderManApp::postInit() {
-  //Modules init
   Logger::startUp();
   GraphicsDriver::startUp(DR_GRAPHICS_API::D3D11, 
                           m_viewport.width, 
@@ -31,15 +30,11 @@ void RenderManApp::postInit() {
   loadResources();
 
   auto croc = SceneGraph::createObject(_T("Croc"));
-
   auto crocModel = ResourceManager::getReferenceT<Model>(_T("Croc.X"));
-
   if (crocModel) {
     croc->createComponent<RenderComponent>(crocModel);
     croc->createComponent<AABBCollider>(crocModel->aabb);
   }
-
-
 }
 
 void RenderManApp::postUpdate() {
@@ -54,7 +49,6 @@ void RenderManApp::postRender() {
 }
 
 void RenderManApp::postDestroy() {
-  
   m_renderMan.exit();
   GraphicsDriver::shutDown();
   ResourceManager::shutDown();
@@ -65,9 +59,7 @@ void RenderManApp::postDestroy() {
 }
 
 void RenderManApp::loadResources() {
-
   ResourceManager::loadResource(_T("Croc.X"));
-
 }
 
 }

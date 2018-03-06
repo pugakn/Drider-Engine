@@ -10,6 +10,8 @@
 #include <dr_render_component.h>
 #include <dr_device_context.h>
 #include <dr_camera.h>
+#include <dr_resource_manager.h>
+#include <dr_model.h>
 
 namespace driderSDK {
 
@@ -34,15 +36,15 @@ SSAOPass::init(PassInitData* initData) {
   Device& device = GraphicsAPI::getDevice();
 
   m_vertexShader = device.createShaderFromMemory(vsSource.data(),
-    vsSource.size(),
-    DR_SHADER_TYPE_FLAG::kVertex);
+                                                 vsSource.size(),
+                                                 DR_SHADER_TYPE_FLAG::kVertex);
 
   m_fragmentShader = device.createShaderFromMemory(fsSource.data(),
-    fsSource.size(),
-    DR_SHADER_TYPE_FLAG::kFragment);
+                                                   fsSource.size(),
+                                                   DR_SHADER_TYPE_FLAG::kFragment);
 
   m_inputLayout = device.createInputLayout(Vertex::getInputDesc(),
-    *m_vertexShader->m_shaderBytecode);
+                                           *m_vertexShader->m_shaderBytecode);
 
   DrBufferDesc bdesc;
 
@@ -53,7 +55,7 @@ SSAOPass::init(PassInitData* initData) {
 
 void
 SSAOPass::draw(PassDrawData* drawData) {
-  PassDrawData* data = static_cast<PassDrawData*>(drawData);
+  SSAODrawData* data = static_cast<SSAODrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
   m_vertexShader->set(dc);
@@ -61,27 +63,27 @@ SSAOPass::draw(PassDrawData* drawData) {
 
   m_inputLayout->set(dc);
 
-  m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
+  //m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
 
-  m_constantBuffer->set(dc);
+  //m_constantBuffer->set(dc);
 
   dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
-/*
-  for (auto& modelPair : *data->models) {
-    if (auto material = modelPair.second.material.lock()) {
-      material->set();
+
+  dc.setTexture(data->GbufferRT->getTexture(0), 0);
+  dc.setTexture(data->GbufferRT->getTexture(1), 1);
+  dc.setTexture(data->GbufferRT->getTexture(2), 2);
+
+  dc.setRenderTarget(GraphicsAPI::getBackBufferRT(), GraphicsAPI::getDepthStencil());
+
+  auto screenQuadModel = ResourceManager::getReferenceT<Model>(_T("ScreenAlignedQuad.3ds"));
+  if (screenQuadModel) {
+    for (auto& SAQ : screenQuadModel->meshes) {
+      SAQ.vertexBuffer->set(dc);
+      SAQ.indexBuffer->set(dc);
+
+      dc.draw(SAQ.indices.size(), 0, 0);
     }
-
-    m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
-
-    m_constantBuffer->set(dc);
-
-    modelPair.second.vertexBuffer->set(dc);
-    modelPair.second.indexBuffer->set(dc);
-
-    dc.draw(modelPair.second.indicesCount, 0, 0);
   }
-*/
 }
 
 }

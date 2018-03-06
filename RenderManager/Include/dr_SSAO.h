@@ -12,7 +12,7 @@ namespace driderSDK {
 struct SSAOInitData : PassInitData {};
 
 struct SSAODrawData : PassDrawData {
-  Texture* ColorTex;
+  RenderTarget* GbufferRT;
 };
 
 class SSAOPass : RenderPass {

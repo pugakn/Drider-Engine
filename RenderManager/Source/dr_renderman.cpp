@@ -2,6 +2,8 @@
 #include <dr_swap_chain.h>
 #include <dr_graphics_driver.h>
 #include <dr_d3d_depth_stencil.h>
+#include <dr_resource_manager.h>
+#include <dr_model.h>
 
 namespace driderSDK {
 
@@ -28,6 +30,8 @@ RenderMan::init() {
   PositionTex     = dc.createEmptyTexture(PositionDesc);
   NormalTex       = dc.createEmptyTexture(PositionDesc);
 
+  m_GBufferDSoptions = dc.createDepthStencil(*ColorTex);
+
   m_RTs = GraphicsAPI::getDevice().createRenderTarget( { ColorTex, PositionTex, NormalTex } );
 
   m_viewport.width = 1920;
@@ -35,10 +39,11 @@ RenderMan::init() {
   Sauron = std::make_shared<Camera>(_T("PATO_CAM"), m_viewport);
 
   Sauron->createProyection(45.f, 20.f, 3000.f);
-  Sauron->getTransform().setPosition({ 0.f, 300.0f, -400 });
-  Sauron->setTarget({ 0.0f, 200.f, 1.0f });
-
+  Sauron->getTransform().setPosition({ 0.0f, 100.0f, -200.0f });
+  Sauron->setTarget({ 0.0f, 50.f, 0.0f });
   SceneGraph::addObject(Sauron);
+
+  ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
 
   m_GBufferPass.init(&m_GBufferInitData);
   m_SSAOPass.init(&m_SSAOInitData);
@@ -54,7 +59,12 @@ RenderMan::draw() {
 
   m_GBufferDrawData.activeCam = Sauron;
   m_GBufferDrawData.models = &queryRequest;
+  m_GBufferDrawData.OutRt = m_RTs;
+  m_GBufferDrawData.dsOptions = m_GBufferDSoptions;
   m_GBufferPass.draw(&m_GBufferDrawData);
+
+  m_SSAODrawData.GbufferRT = m_RTs;
+  m_SSAOPass.draw(&m_SSAODrawData);
 
   /*
   Render order:

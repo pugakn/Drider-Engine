@@ -17,25 +17,23 @@ struct PS_INPUT {
 };
 
 struct PS_OUTPUT {
-  float4 Diffuse;
-	float4 Normal;
-  float4 Metallic;
-	float4 Roughness;
-	float4 Emisivity;
-	float4 Transparency;
-	float4 ProjectShadow;
-	float4 SSS;
-	float4 Displacement;
-	float4 SpecularColor;
-	float4 Opacity;
-	float4 Detail;
+  float4 Color			: COLOR0;
+	float4 Position		: COLOR1;
+	float4 Normal			: COLOR2;
 };
 
-float4 FS(PS_INPUT input) : SV_TARGET  {
+PS_OUTPUT FS(PS_INPUT input) : SV_TARGET  {
+	PS_OUTPUT outRT;
   
+	float4 pos = input.Position;
   float2 uv = input.Texcoord;
 	float3 n = input.Normal.xyz;
 	float4 color = Texture0.Sample(SS, uv);
 
-  return color;
+	outRT.Color = color;
+	outRT.Position = float4(pos.xyz, 1.0f);
+	outRT.Normal = float4(n, 1.0f);
+
+	return outRT;
+  //return float4(n, 1);
 }
