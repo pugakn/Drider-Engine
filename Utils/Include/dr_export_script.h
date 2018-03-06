@@ -19,6 +19,13 @@ namespace driderSDK {
   void CopyConstruct##className(const className &other, className *thisPointer) {\
     new(thisPointer) className(other); }
 
+#define CONSTRUCT_3P_DECL(className, pType1, pType2, pType3)\
+  void ConstructFromTwoFloats##className(pType1 a, pType2 b, pType3 c, className *thisPointer);
+
+#define CONSTRUCT_3P_DEF(className, pType1, pType2, pType3)\
+  void ConstructFromTwoFloats##className(pType1 a, pType2 b, pType3 c, className *thisPointer) {\
+  new(thisPointer) className(a, b, c); }
+
 #define BEGINING_REGISTER(className)\
   Int32 registerFunctions(ScriptEngine* scriptEngine) {\
     Int32 result;\
@@ -42,6 +49,13 @@ namespace driderSDK {
                                                                   asBEHAVE_CONSTRUCT,\
                                                                   "void f(const "#className " & in)",\
                                                                   asFUNCTION(CopyConstruct##className),\
+                                                                  asCALL_CDECL_OBJLAST);
+
+#define REGISTER_CONSTRUCT_3P(className, pType1, pType2, pType3)\
+    result = scriptEngine->m_scriptEngine->RegisterObjectBehaviour(#className,\
+                                                                  asBEHAVE_CONSTRUCT,\
+                                                                  "void f("#pType1 ", "#pType2 ", "#pType3 ")",\
+                                                                  asFUNCTION(ConstructFromTwoFloats##className),\
                                                                   asCALL_CDECL_OBJLAST);
 
 #define REGISTER_FOO_0P(className, fooName, rType, rTypeStr)\
@@ -102,16 +116,16 @@ namespace driderSDK {
                                                                 asCALL_THISCALL);\
     if (result < 0) return result;
 
-#define REGISTER_OP(className, sybol, opFoo, pType, rType, rTypeStr)\
+#define REGISTER_OP(className, sybol, opFoo, pType, rType, rTypeStr, paramName)\
     result = scriptEngine->m_scriptEngine->RegisterObjectMethod(#className,\
-                                                                rTypeStr" "#opFoo "("#pType ")",\
+                                                                rTypeStr" "#opFoo "("#pType " "#paramName ")",\
                                                                 asMETHODPR(className, sybol, (pType), rType),\
                                                                 asCALL_THISCALL);\
     if(result < 0) return result;
 
-#define REGISTER_OP_CONST(className, sybol, opFoo, pType, rType, rTypeStr)\
+#define REGISTER_OP_CONST(className, sybol, opFoo, pType, rType, rTypeStr, paramName)\
     result = scriptEngine->m_scriptEngine->RegisterObjectMethod(#className,\
-                                                                rTypeStr" "#opFoo "("#pType ")",\
+                                                                rTypeStr" "#opFoo "("#pType " "#paramName ")",\
                                                                 asMETHODPR(className, sybol, (pType) const, rType),\
                                                                 asCALL_THISCALL);\
     if(result < 0) return result;

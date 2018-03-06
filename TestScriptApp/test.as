@@ -4,6 +4,11 @@ void Start() {
 
 	Vector3D r(0.0,0.0,0.0);
 	r = vec1 + vec2;
+
+	Vector3D test(3.0,3.0,3.0);
+
+	if(r == test)
+		Print("Vectors are equals");
 }
 
 void Update() {

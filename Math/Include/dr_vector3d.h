@@ -12,6 +12,7 @@ class Vector4D;
 class Vector3D;
 CONSTRUCT_DESTRUCT_DECL(Vector3D)
 COPY_CONSTRUCT_DECL(Vector3D)
+CONSTRUCT_3P_DECL(Vector3D, float, float, float)
 
 /**
 * Vector with 3 elements (x, y, z)
@@ -524,7 +525,8 @@ class DR_MATH_EXPORT Vector3D
 
   BEGINING_REGISTER(Vector3D)
   
-  result = REGISTER_COPY_CONSTRUCT(Vector3D)
+  REGISTER_COPY_CONSTRUCT(Vector3D)
+  result = REGISTER_CONSTRUCT_3P(Vector3D, float, float, float)
 
   result = REGISTER_FOO_1P_CONST(Vector3D, dot, const Vector3D&, float, "float", in)
   result = REGISTER_FOO_1P_CONST(Vector3D, cross, const Vector3D&, Vector3D, "float", in)
@@ -535,16 +537,19 @@ class DR_MATH_EXPORT Vector3D
   result = REGISTER_FOO_1P_CONST(Vector3D, distanceSqr, const Vector3D&, float, "float", in)
   result = REGISTER_FOO_2P_CONST(Vector3D, sqrDistSegment, const Vector3D&, const Vector3D&, float, "float", in, in)
 
-  //REGISTER_OP_CONST(Vector3D, operator^, opXor, const Vector3D&, Vector3D, "Vector3D")
-  //REGISTER_OP(Vector3D, operator=, opAssign, const Vector3D&, Vector3D&, "Vector3D&")
-  //REGISTER_OP_CONST(Vector3D, operator-, opSub, const Vector3D&, Vector3D, "Vector3D")
-  //REGISTER_OP_CONST(Vector3D, operator+, opAdd, const Vector3D&, Vector3D, "Vector3D")
-  //REGISTER_OP(Vector3D, operator-=, opSubAssign, const Vector3D&, Vector3D&, "Vector3D&")
-  //REGISTER_OP(Vector3D, operator+=, opAddAssign, const Vector3D&, Vector3D&, "Vector3D&")
-  //REGISTER_OP_CONST(Vector3D, operator*, opMul, const Vector3D&, Vector3D, "Vector3D")
-  //REGISTER_OP(Vector3D, operator*=, opMulAssign, const Vector3D&, Vector3D&, "Vector3D&")
-  //REGISTER_OP_CONST(Vector3D, operator/, opDiv, float, Vector3D, "Vector3D")
-  //REGISTER_OP(Vector3D, operator*=, opDivAssign, float, Vector3D&, "Vector3D&")
+  result = REGISTER_OP_CONST(Vector3D, operator^, opXor, const Vector3D&, Vector3D, "Vector3D", out)
+  result = REGISTER_OP(Vector3D, operator=, opAssign, const Vector3D&, Vector3D&, "Vector3D&", in)
+  result = REGISTER_OP_CONST(Vector3D, operator-, opSub, const Vector3D&, Vector3D, "Vector3D", out)
+  result = REGISTER_OP_CONST(Vector3D, operator+, opAdd, const Vector3D&, Vector3D, "Vector3D", out)
+  result = REGISTER_OP(Vector3D, operator-=, opSubAssign, const Vector3D&, Vector3D&, "Vector3D&", in)
+  result = REGISTER_OP(Vector3D, operator+=, opAddAssign, const Vector3D&, Vector3D&, "Vector3D&", in)
+  result = REGISTER_OP_CONST(Vector3D, operator*, opMul, const Vector3D&, Vector3D, "Vector3D", out)
+  result = REGISTER_OP(Vector3D, operator*=, opMulAssign, const Vector3D&, Vector3D&, "Vector3D&", in)
+  //result = REGISTER_OP_CONST(Vector3D, operator/, opDiv, const float, Vector3D, "Vector3D", out)
+  //result = REGISTER_OP(Vector3D, operator*=, opMulAssign, const float, Vector3D&, "Vector3D&", in)  
+
+  result = REGISTER_OP(Vector3D, operator==, opEquals, const Vector3D&, bool, "bool", out)
+  //result = REGISTER_OP(Vector3D, operator!=, opEquals, const Vector3D&, bool, "bool", out)
     
   
 
