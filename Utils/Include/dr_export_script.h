@@ -12,6 +12,13 @@ namespace driderSDK {
   void Destruct##className (void *memory) {\
     ((className*)memory)->~className(); }
 
+#define COPY_CONSTRUCT_DECL(className)\
+  void CopyConstruct##className(const className &other, className *thisPointer);
+
+#define COPY_CONSTRUCT_DEF(className)\
+  void CopyConstruct##className(const className &other, className *thisPointer) {\
+    new(thisPointer) className(other); }
+
 #define BEGINING_REGISTER(className)\
   Int32 registerFunctions(ScriptEngine* scriptEngine) {\
     Int32 result;\
@@ -40,7 +47,7 @@ namespace driderSDK {
 #define REGISTER_FOO_0P(className, fooName, rType, rTypeStr)\
     result = scriptEngine->m_scriptEngine->RegisterObjectMethod(#className,\
                                                                 rTypeStr" " #fooName "()",\
-                                                                asMETHOD(className, fooName, rType),\
+                                                                asMETHOD(className, fooName),\
                                                                 asCALL_THISCALL);\
     if(result < 0) return result;
 
@@ -70,6 +77,13 @@ namespace driderSDK {
     result = scriptEngine->m_scriptEngine->RegisterObjectMethod(#className,\
                                                                 rTypeStr" "#fooName "("#pType1 " "#paramName1 ","#pType2 " "#paramName2 ")",\
                                                                 asMETHODPR(className, fooName, (pType1, pType2), rType),\
+                                                                asCALL_THISCALL);\
+    if (result < 0) return result;
+
+#define REGISTER_FOO_2P_CONST(className, fooName, pType1, pType2, rType, rTypeStr, paramName1, paramName2)\
+    result = scriptEngine->m_scriptEngine->RegisterObjectMethod(#className,\
+                                                                rTypeStr" "#fooName "("#pType1 " "#paramName1 ","#pType2 " "#paramName2 ")",\
+                                                                asMETHODPR(className, fooName, (pType1, pType2) const, rType),\
                                                                 asCALL_THISCALL);\
     if (result < 0) return result;
 

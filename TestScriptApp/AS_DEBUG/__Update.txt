@@ -3,19 +3,9 @@ void Update()
 Temps: 
 
 Variables: 
- 137: Camera cam
 
 
-- 39,2 -
-    0 137 *    SUSPEND
-               VarDecl  0
-    1 137 *    PSF      v137
-    2 138 *    CALLSYS  79           (Camera::Camera())
-- 41,2 -
-               ObjInfo  v137, 1
-    4 137 *    SUSPEND
-    5 137 *    PSF      v137
-    6 138 *    CALLSYS  80           (Camera::~Camera())
-               ObjInfo  v137, 0
+- 11,2 -
+    0   0 *    SUSPEND
             0:
-    8 137 *    RET      0
+    1   0 *    RET      0

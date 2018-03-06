@@ -68,12 +68,12 @@ Line::intersects(const Sphere& sphere) const {
 }
 
 bool
-Line::intersects(const Capsule& capsule) const {
+Line::intersects(const Capsule&) const {
   return false;
 }
 
 bool
-Line::intersects(const Frustrum& frustrum) const {
+Line::intersects(const Frustrum&) const {
   return false;
 }
   

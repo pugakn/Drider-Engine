@@ -150,7 +150,7 @@ TestScriptApp::initScriptEngine() {
   result = scriptEngine->addScript(_T("test.as"),
                                    script->getScript());
 
-  Object obj;
+  /*Object obj;
   result = scriptEngine->m_scriptEngine->RegisterObjectType("Object", 
                                                             sizeof(Object), 
                                                             asOBJ_VALUE | asOBJ_APP_CLASS |
@@ -202,7 +202,7 @@ TestScriptApp::initScriptEngine() {
   result = scriptEngine->m_scriptEngine->RegisterObjectMethod("Object",
                                                               "Object& si()",
                                                               asMETHOD(Object, si, Object&),
-                                                              asCALL_THISCALL);
+                                                              asCALL_THISCALL);*/
   result = m_camera->registerFunctions(scriptEngine);
   
   Vector3D vector;
