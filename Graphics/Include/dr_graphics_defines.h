@@ -525,6 +525,7 @@ struct DR_GRAPHICS_EXPORT DrBlendStateDesc {
   DR_BLEND_OP::E blendOp;
   DR_BLEND_OP::E blendOpAlpha;
   DrBlendStateDesc() {
+
   }
 };
 

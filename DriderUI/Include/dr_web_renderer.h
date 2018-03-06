@@ -11,6 +11,8 @@
 #include <vector>
 #include <functional>
 #include <iostream>
+
+#define DR_WEB_SINGLE_PROCESS 0
 namespace driderSDK {
 class Texture;
 class SamplerState;
@@ -23,7 +25,11 @@ enum E {
   kChild
 };
 }
-using JSCallLambda = std::function<void(CefRefPtr<CefV8Value>&, const CefV8ValueList&)>;
+#if DR_WEB_SINGLE_PROCESS 
+using JSCallLambda = std::function<void(CefRefPtr<CefV8Value>&, const CefV8ValueList&)>; 
+#else
+using JSCallLambda = std::function<void(const CefRefPtr<CefListValue>&)>;
+#endif
 using JSCallback = std::pair<std::string, JSCallLambda>;
 using JSCalls = std::vector<JSCallback>; 
 
@@ -50,8 +56,10 @@ private:
           const CefV8ValueList& arguments,
           CefRefPtr<CefV8Value>& retval,
           CefString& exception) override;
-
+#if DR_WEB_SINGLE_PROCESS 
   JSCalls m_callbacks;
+#endif
+  std::vector<std::string> m_calls;
 };
 
 /**
@@ -62,7 +70,7 @@ private:
 */
 class DriderRenderProcessHandler : public  CefRenderProcessHandler {
 public:
-  DriderRenderProcessHandler() = default;
+  DriderRenderProcessHandler() { m_v8Handler = new DriderV8Handler(); };
   DriderRenderProcessHandler(const DriderRenderProcessHandler&) = delete;
   DriderRenderProcessHandler(DriderRenderProcessHandler&&) = delete;
   IMPLEMENT_REFCOUNTING(DriderRenderProcessHandler);
@@ -83,6 +91,7 @@ private:
                            CefProcessId source_process,
                            CefRefPtr<CefProcessMessage> message) override;
 
+  CefRefPtr<DriderV8Handler> m_v8Handler;
 };
 
 /**
@@ -90,7 +99,7 @@ private:
 */
 class DriderCefApp : public CefApp {
 public:
-  DriderCefApp() = default;
+  DriderCefApp() { m_renderProcess = new DriderRenderProcessHandler(); };
   DriderCefApp(const DriderCefApp&) = delete;
   DriderCefApp(DriderCefApp&&) = delete;
   IMPLEMENT_REFCOUNTING(DriderCefApp);
@@ -101,6 +110,13 @@ private:
   */
   virtual CefRefPtr<CefRenderProcessHandler> 
   GetRenderProcessHandler();
+  //virtual void OnBeforeCommandLineProcessing(
+  //  const CefString& process_type,
+  //  CefRefPtr<CefCommandLine> command_line) override{
+  //    command_line->AppendSwitch("allow-file-access-from-files");
+  //}
+
+  CefRefPtr<DriderRenderProcessHandler> m_renderProcess;
 };
 
 /**
@@ -209,6 +225,9 @@ private:
                            CefRefPtr<CefProcessMessage> message);
 
   CefRefPtr<CefRenderHandler> m_renderHandler;
+#if ! DR_WEB_SINGLE_PROCESS 
+  JSCalls m_callbacks;
+#endif
 };
 
 
@@ -329,8 +348,8 @@ private:
   friend class DriderCefApp;
   friend class DriderRenderProcessHandler;
   static CefRefPtr<DriderCefApp> m_app;
-  static CefRefPtr<DriderRenderProcessHandler> m_renderProcess;
-  static CefRefPtr<DriderV8Handler> m_v8Handler;
+  //static CefRefPtr<DriderRenderProcessHandler> m_renderProcess;
+  //static CefRefPtr<DriderV8Handler> m_v8Handler;
   void 
   initInput();
   CefRefPtr<CefBrowser> browser;
