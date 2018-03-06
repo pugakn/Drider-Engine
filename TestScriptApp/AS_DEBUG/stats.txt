@@ -1,20 +1,17 @@
 
 Total count
 PshC4      : 6
+PSF        : 15
 RET        : 2
-PshVPtr    : 10
-CALLSYS    : 11
-SUSPEND    : 13
-FREE       : 4
-STOREOBJ   : 4
-CpyVtoV4   : 1
-CpyRtoV4   : 1
+CALLSYS    : 13
+SUSPEND    : 8
+GETREF     : 1
+VAR        : 1
 
 Never executed
 PopPtr    
 PshGPtr   
 PshV4     
-PSF       
 SwapPtr   
 NOT       
 PshG4     
@@ -57,6 +54,7 @@ BSRL
 BSRA      
 COPY      
 PshC8     
+PshVPtr   
 RDSPtr    
 CMPd      
 CMPu      
@@ -71,12 +69,13 @@ PshRPtr
 STR       
 CALLBND   
 ALLOC     
+FREE      
 LOADOBJ   
+STOREOBJ  
 GETOBJ    
 REFCPY    
 CHKREF    
 GETOBJREF 
-GETREF    
 PshNull   
 ClrVPtr   
 OBJTYPE   
@@ -84,10 +83,12 @@ TYPEID
 SetV4     
 SetV8     
 ADDSi     
+CpyVtoV4  
 CpyVtoV8  
 CpyVtoR4  
 CpyVtoR8  
 CpyVtoG4  
+CpyRtoV4  
 CpyRtoV8  
 CpyGtoV4  
 WRTV1     
@@ -102,7 +103,6 @@ LDG
 LDV       
 PGA       
 CmpPtr    
-VAR       
 iTOf      
 fTOi      
 uTOf      
@@ -205,21 +205,18 @@ POWu64
 Thiscall1 
 
 Sequences
-PshC4     , PshC4      : 4
-PshC4     , CALLSYS    : 2
+PshC4     , PshC4      : 3
+PshC4     , PSF        : 3
+PSF       , PSF        : 2
+PSF       , CALLSYS    : 12
+PSF       , GETREF     : 1
 RET       , SUSPEND    : 1
-PshVPtr   , PshVPtr    : 3
-PshVPtr   , CALLSYS    : 7
+CALLSYS   , PSF        : 5
+CALLSYS   , RET        : 2
 CALLSYS   , SUSPEND    : 6
-CALLSYS   , STOREOBJ   : 4
-CALLSYS   , CpyRtoV4   : 1
-SUSPEND   , PshC4      : 2
-SUSPEND   , PshVPtr    : 7
-SUSPEND   , CALLSYS    : 2
-SUSPEND   , FREE       : 2
-FREE      , RET        : 2
-FREE      , FREE       : 2
-STOREOBJ  , SUSPEND    : 4
-CpyVtoV4  , SUSPEND    : 1
-CpyRtoV4  , CpyVtoV4   : 1
+SUSPEND   , PshC4      : 3
+SUSPEND   , PSF        : 4
+SUSPEND   , VAR        : 1
+GETREF    , CALLSYS    : 1
+VAR       , PSF        : 1
 LABEL     , SUSPEND    : 1

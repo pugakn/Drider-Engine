@@ -170,11 +170,11 @@ Int8
 ScriptEngine::executeCall() {
 	g_timeout = m_scriptTime->getElapsedMilli() + 5000;
 	Int8 result = m_scriptContext->Execute();			
-	TString NewLine(_T("<br>"));
-	addScriptLog(_T("There was an exception within a script call."), asMSGTYPE_ERROR);
 
 	if (result != asEXECUTION_FINISHED) {
 		if (result == asEXECUTION_EXCEPTION) {
+	    TString NewLine(_T("<br>"));
+	    addScriptLog(_T("There was an exception within a script call."), asMSGTYPE_ERROR);
 			TString details = _T("Exception details:") + NewLine + _T("Function: ") + 
 												StringUtils::toTString(m_scriptFunction->GetDeclaration()) + 
 												NewLine + _T("Line: ") + 
