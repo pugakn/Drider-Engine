@@ -454,15 +454,8 @@ TestApplication::initSceneGraph() {
 
       anim->setCurrentAnimation(animName);
 
-      auto skd = node->createComponent<SkeletonDebug>();
-
-      skd->setShaderTechnique(m_linesTech.get());
     }
-    
-    auto p = node->createComponent<AABBDebug>(true);
-    
-    p->setShaderTechnique(m_linesTech.get());
-  
+      
     node->getTransform().setPosition(pos);
 
     return node;
@@ -470,10 +463,12 @@ TestApplication::initSceneGraph() {
 
   auto root = SceneGraph::getRoot();
      
-  createNode(root, 
+  auto quad = createNode(root, 
              _T("Quad"), 
              _T("ScreenAlignedQuad.3ds"), 
-             {50, 300, 200})->getTransform().scale({40, 40, 40});
+             {50, 300, 200});
+
+  quad->getTransform().scale({30.f, 30.f, 30.f});
 
   std::unordered_map<Int32, TString> names
   {

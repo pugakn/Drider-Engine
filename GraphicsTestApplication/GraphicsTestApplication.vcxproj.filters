@@ -75,6 +75,9 @@
     <ClInclude Include="Include\AnimationTechnique.h">
       <Filter>Archivos de encabezado\Techniques</Filter>
     </ClInclude>
+    <ClInclude Include="Include\BoneAttachComponent.h">
+      <Filter>Archivos de encabezado\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\DrawableComponent.cpp">
