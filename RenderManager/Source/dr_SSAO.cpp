@@ -66,7 +66,7 @@ SSAOPass::draw(PassDrawData* drawData) {
   m_constantBuffer->set(dc);
 
   dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
-
+/*
   for (auto& modelPair : *data->models) {
     if (auto material = modelPair.second.material.lock()) {
       material->set();
@@ -81,6 +81,7 @@ SSAOPass::draw(PassDrawData* drawData) {
 
     dc.draw(modelPair.second.indicesCount, 0, 0);
   }
+*/
 }
 
 }

@@ -57,18 +57,6 @@ GBufferPass::draw(PassDrawData* drawData) {
   GBufferDrawData* data = static_cast<GBufferDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
   
-  Matrix4x4 wvp;
-  
-  /*
-  auto& boneTransforms = animator.getTransforms();
-
-  for (SizeT i = 0; i < boneTransforms.size(); ++i) {
-    constBuff.Bones[i] = boneTransforms[i];
-  }
-  CB.World = transform.getMatrix();
-  CB.WVP = wvp;
-  */
-  
   m_vertexShader->set(dc);
   m_fragmentShader->set(dc);
   
@@ -79,27 +67,23 @@ GBufferPass::draw(PassDrawData* drawData) {
   m_constantBuffer->set(dc);
   
   dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
-
-  //dc.setRenderTarget(*data->OutRt, *data->dsOptions);
-
-  std::vector<std::pair<Matrix4x4, RenderMesh>>* models;
   
   for (auto& modelPair : *data->models) {
-    if (auto material = modelPair.second.material.lock()) {
+    if (auto material = modelPair.mesh.material.lock()) {
       material->set();
     }
 
-    CB.World = modelPair.first;
-    CB.WVP = modelPair.first * data->activeCam->getVP();
+    CB.World = modelPair.world;
+    CB.WVP = modelPair.world * data->activeCam->getVP();
   
     m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
   
     m_constantBuffer->set(dc);
 
-    modelPair.second.vertexBuffer->set(dc);
-    modelPair.second.indexBuffer->set(dc);
+    modelPair.mesh.vertexBuffer->set(dc);
+    modelPair.mesh.indexBuffer->set(dc);
 
-    dc.draw(modelPair.second.indicesCount, 0, 0);
+    dc.draw(modelPair.mesh.indicesCount, 0, 0);
   }
 }
 
