@@ -59,10 +59,6 @@ class DR_RENDERMAN_EXPORT RenderMan {
 
   RenderTarget* m_RTs;
 
-  Texture*      ColorTex;
-  Texture*      PositionTex;
-  Texture*      NormalTex;
-
   DrTextureDesc ColorTexDesc;
   DrTextureDesc PositionTexDesc;
   DrTextureDesc NormalTexDesc;

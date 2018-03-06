@@ -1,6 +1,6 @@
-Texture2D ColorTex : register(t0);
+Texture2D ColorTex    : register(t0);
 Texture2D PositionTex : register(t1);
-Texture2D NormalTex : register(t2);
+Texture2D NormalTex   : register(t2);
 
 SamplerState SS;
 
@@ -15,4 +15,6 @@ float4 FS(PS_INPUT input) : SV_TARGET  {
 	float4 color = ColorTex.Sample(SS, uv);
 
   return color;
+  return float4(uv.xy, 0, 1);
+  return NormalTex.Sample(SS, uv);
 }

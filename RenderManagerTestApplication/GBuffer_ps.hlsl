@@ -1,5 +1,4 @@
 Texture2D Texture0 : register(t0);
-
 SamplerState SS;
 
 cbuffer ConstantBuffer {
@@ -17,12 +16,12 @@ struct PS_INPUT {
 };
 
 struct PS_OUTPUT {
-  float4 Color			: COLOR0;
-	float4 Position		: COLOR1;
-	float4 Normal			: COLOR2;
+  float4 Color			: SV_TARGET0;
+	float4 Position		: SV_TARGET1;
+	float4 Normal			: SV_TARGET2;
 };
 
-PS_OUTPUT FS(PS_INPUT input) : SV_TARGET  {
+PS_OUTPUT FS(PS_INPUT input) {
 	PS_OUTPUT outRT;
   
 	float4 pos = input.Position;
@@ -30,10 +29,9 @@ PS_OUTPUT FS(PS_INPUT input) : SV_TARGET  {
 	float3 n = input.Normal.xyz;
 	float4 color = Texture0.Sample(SS, uv);
 
-	outRT.Color = color;
-	outRT.Position = float4(pos.xyz, 1.0f);
-	outRT.Normal = float4(n, 1.0f);
+	outRT.Color = float4(1, 0, 0, 1);
+	outRT.Position = float4(0, 1, 0, 1);
+	outRT.Normal = float4(0, 0, 1, 1);
 
 	return outRT;
-  //return float4(n, 1);
 }

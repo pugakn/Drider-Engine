@@ -22,17 +22,23 @@ RenderMan::init() {
   PositionDesc.height = 1080;
   PositionDesc.pitch = 1920 * 4;
   PositionDesc.dimension = DR_DIMENSION::k2D;
-  PositionDesc.Format = DR_FORMAT::kR8G8B8A8_UNORM;
+  PositionDesc.Format = DR_FORMAT::kB8G8R8A8_UNORM;
   PositionDesc.mipLevels = 0;
   PositionDesc.genMipMaps = true;
+  PositionDesc.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE |
+                           DR_BIND_FLAGS::RENDER_TARGET;
 
-  ColorTex        = dc.createEmptyTexture(PositionDesc);
-  PositionTex     = dc.createEmptyTexture(PositionDesc);
-  NormalTex       = dc.createEmptyTexture(PositionDesc);
+  m_RTs = dc.createRenderTarget(PositionDesc, 3);
 
-  m_GBufferDSoptions = dc.createDepthStencil(*ColorTex);
+//
+  DrDepthStencilDesc depthTextureDesc;
+  depthTextureDesc.bindFlags = DR_BIND_FLAGS::DEPTH_STENCIL | DR_BIND_FLAGS::SHADER_RESOURCE;
+  depthTextureDesc.width = 1920;
+  depthTextureDesc.height = 1080;
+  depthTextureDesc.Format = DR_FORMAT::kD32_FLOAT;
 
-  m_RTs = GraphicsAPI::getDevice().createRenderTarget( { ColorTex, PositionTex, NormalTex } );
+  m_GBufferDSoptions = dc.createDepthStencil(depthTextureDesc);
+//
 
   m_viewport.width = 1920;
   m_viewport.height = 1080;

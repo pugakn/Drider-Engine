@@ -6,6 +6,7 @@
 #include <dr_matrix4x4.h>
 #include <dr_input_layout.h>
 #include <dr_constant_buffer.h>
+#include <dr_sample_state.h>
 
 namespace driderSDK {
 
@@ -52,6 +53,8 @@ class SSAOPass : RenderPass {
   
   ConstantBuffer* m_constantBuffer;
   InputLayout* m_inputLayout;
+
+  SamplerState* m_samplerState;
 };
 
 }

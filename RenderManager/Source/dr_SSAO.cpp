@@ -46,11 +46,14 @@ SSAOPass::init(PassInitData* initData) {
   m_inputLayout = device.createInputLayout(Vertex::getInputDesc(),
                                            *m_vertexShader->m_shaderBytecode);
 
-  DrBufferDesc bdesc;
+  DrSampleDesc SSdesc;
+  SSdesc.Filter = DR_TEXTURE_FILTER::kMIN_MAG_MIP_POINT;
+  m_samplerState = device.createSamplerState(SSdesc);
 
-  bdesc.type = DR_BUFFER_TYPE::kCONSTANT;
-  bdesc.sizeInBytes = sizeof(CBuffer);
-  m_constantBuffer = (ConstantBuffer*)device.createBuffer(bdesc);
+  DrBufferDesc bDesc;
+  bDesc.type = DR_BUFFER_TYPE::kCONSTANT;
+  bDesc.sizeInBytes = sizeof(CBuffer);
+  m_constantBuffer = (ConstantBuffer*)device.createBuffer(bDesc);
 }
 
 void
@@ -63,15 +66,13 @@ SSAOPass::draw(PassDrawData* drawData) {
 
   m_inputLayout->set(dc);
 
-  //m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
-
-  //m_constantBuffer->set(dc);
-
   dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
 
-  dc.setTexture(data->GbufferRT->getTexture(0), 0);
-  dc.setTexture(data->GbufferRT->getTexture(1), 1);
-  dc.setTexture(data->GbufferRT->getTexture(2), 2);
+  data->GbufferRT->getTexture(0).set(dc, 0);
+  data->GbufferRT->getTexture(1).set(dc, 1);
+  data->GbufferRT->getTexture(2).set(dc, 2);
+
+  m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kFragment);
 
   dc.setRenderTarget(GraphicsAPI::getBackBufferRT(), GraphicsAPI::getDepthStencil());
 
