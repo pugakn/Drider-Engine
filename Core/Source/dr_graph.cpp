@@ -21,23 +21,33 @@ SceneGraph::SceneGraph() {}
 SceneGraph::~SceneGraph() {}
 
 void 
-SceneGraph::buildOctree() {
-  instance().m_octree = std::make_shared<GameObject>();
-  std::vector<std::shared_ptr<GameObject>> staticGameObjects;
+SceneGraph::onStartUp() {
+  auto r = std::make_shared<RootNode>();
+  r->init();
+  m_root = r;
+}
 
-  addGameObjectsStatics(*instance().m_root, &staticGameObjects);
-
-  AABB aa(5000, 5000, 5000, Vector3D(0, 0, 0));
-
-  Octree octree(&(*instance().m_octree), aa, &staticGameObjects, 10000);
-  octree.buildTree();
-  octree.createNodes();
+void
+SceneGraph::onShutDown() {
+  m_root->destroy();
 }
 
 void 
 SceneGraph::addObject(SharedGameObject gameObject) {
   instance().m_root->addChild(gameObject);
 }
+
+void 
+SceneGraph::buildOctree() {
+  instance().m_octree = std::make_shared<GameObject>();
+  std::vector<std::shared_ptr<GameObject>> staticGameObjects;
+
+  addGameObjectsStatics(*instance().m_root, &staticGameObjects);
+
+  Octree octree(&(*instance().m_octree), &staticGameObjects);
+  octree.buildTree();
+}
+
 
 SceneGraph::SharedGameObject 
 SceneGraph::getRoot() {
@@ -69,24 +79,6 @@ SceneGraph::draw() {
     instance().m_octree->render();
   }
   //instance().m_mutex.unlock();
-}
-
-SceneGraph::SharedGameObject
-SceneGraph::createNode(SharedGameObject parent, SharedModel model) {
-
-  auto node = std::make_shared<GameObject>();
-
-  parent->addChild(node);
-    
-  node->createComponent<RenderComponent>(model);
-
-  node->createComponent<AABBCollider>(model->aabb);
-
-  return node;
-}
-
-void SceneGraph::onStartUp() {
-  m_root = std::make_shared<RootNode>();
 }
 
 SceneGraph::QueryResult
