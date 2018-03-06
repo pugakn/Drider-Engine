@@ -159,7 +159,7 @@ ResourceManager::createDummyTexture() {
         for (Int32 x = 0; x < areaSize; ++x) {
           Pixel& pixel = matrix[i * areaSize + y][j * areaSize + x];
           pixel.d[0] = value;
-          pixel.d[1] = value;
+          pixel.d[1] = 0;
           pixel.d[2] = value;
           pixel.d[3] = 255;
         }
