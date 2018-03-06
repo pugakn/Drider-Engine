@@ -14,7 +14,7 @@ namespace driderSDK {
   }
   void
 D3DDepthStencilState::create(const Device& device,
-                             const DrDepthStencilDesc& desc) {
+                             const DrDepthStencilStateDesc& desc) {
   m_descriptor = desc;
   CD3D11_DEFAULT def;
   CD3D11_DEPTH_STENCIL_DESC dsDesc (def);

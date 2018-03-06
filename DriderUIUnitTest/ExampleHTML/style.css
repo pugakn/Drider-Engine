@@ -28,7 +28,7 @@ header h1{
 header h2{
   font-size:15px;
   line-height:21px;
-  color:gray;
+  color:white;
   margin:0;
   font-weight:300
 }
@@ -36,7 +36,7 @@ header .attribution{
   font-size:15px;
   line-height:21px;
   font-weight:200;
-  color:gray;
+  color:white;
   margin:21px 0
 }
 header .attribution a{
@@ -73,7 +73,7 @@ code,pre{
   display:block;
   min-width:320px;
   font-family: -apple-system, '.SFNSText-Regular', 'Helvetica Neue', Roboto, 'Segoe UI', sans-serif;
-  color: gray;
+  color: white;
   line-height:21px;
   margin:0
 }
@@ -123,7 +123,7 @@ code,pre{
     font-size:15px;
     font-weight:200;
     font-family: -apple-system, '.SFNSText-Regular', 'Helvetica Neue', Roboto, 'Segoe UI', sans-serif;
-    color: gray;
+    color: white;
     line-height:21px
   }
 }

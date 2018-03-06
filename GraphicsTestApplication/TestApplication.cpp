@@ -16,16 +16,20 @@
 #include <dr_rasterizer_state.h>
 #include <dr_render_component.h>
 #include <dr_string_utils.h>
+#include <dr_skeleton.h>
+#include <dr_texture_core.h>
 #include <dr_time.h>
 #include <dr_gameObject.h>
 #include <dr_material.h>
+#include <dr_animator_component.h>
+
 #include "DrawableComponent.h"
-#include "ModelDebbug.h"
-#include "NPCMovement.h"
+#include "AABBDebug.h"
+#include "FrustumDebug.h"
+#include "SkeletonDebug.h"
 #include "StaticMeshTechnique.h"
 #include "LinesTechnique.h"
-#include "CameraDebbug.h"
-#include <dr_texture_core.h>
+#include "AnimationTechnique.h"
 
 namespace driderSDK {
 
@@ -36,6 +40,7 @@ TestApplication::~TestApplication() {}
 void
 TestApplication::postInit() {
   
+  Logger::startUp();
   GraphicsDriver::startUp(DR_GRAPHICS_API::D3D11, 
                           m_viewport.width, 
                           m_viewport.height,
@@ -45,6 +50,8 @@ TestApplication::postInit() {
   Time::startUp();
   ResourceManager::startUp();
   
+  m_queryOrder = QUERY_ORDER::kFrontToBack;
+
   m_camera = std::make_shared<Camera>(_T("MAIN_CAM"), 
                                       m_viewport);
 
@@ -52,7 +59,7 @@ TestApplication::postInit() {
   m_camera->getTransform().setPosition({0.f, 300.0f, -400});
   m_camera->setTarget({0.0f, 200.f, 1.0f});
 
-  auto p = m_camera->createComponent<CameraDebbug>();
+  auto p = m_camera->createComponent<FrustumDebug>();
 
   m_linesTech = dr_make_unique<LinesTechnique>(&(*m_activeCam), 
                                  &m_camera->getWorldTransform().getMatrix());
@@ -83,11 +90,13 @@ TestApplication::postInit() {
 
   m_technique->compile();
 
+  m_animTech = dr_make_unique<AnimationTechnique>();
+
+  m_animTech->compile();
+
   initResources();
-  initInput();
-  initSceneGraph();
   
-  m_animated.push_back(new Model3D());
+  /*m_animated.push_back(new Model3D());
   m_animated[0]->init(_T("HipHopDancing.fbx"));
 
   m_animated.push_back(new Model3D());
@@ -98,7 +107,11 @@ TestApplication::postInit() {
   m_animated.push_back(new Model3D());
   m_animated[2]->init(_T("HipHopDancing.fbx"));
   m_animated[2]->transform.move({-200, 0, 0});
-  m_animated[2]->elapsedTime = 33.f;
+  m_animated[2]->elapsedTime = 33.f;*/
+
+  initInput();
+  initSceneGraph();
+  
   
   /*SceneGraph::addObject(m_leftCam);
   */SceneGraph::addObject(m_upCam);
@@ -144,11 +157,8 @@ TestApplication::input() {
     croc->transform.setScale({scale,scale,scale}); 
   }*/
 
-  if (auto node = SceneGraph::getRoot()->getChild(_T("Dwarf0"))) {
-   
-    node->getTransform().rotate(Degree(90 * Time::instance().getDelta()), 
-                                AXIS::kY);
-  }
+  //m_animated[1]->transform.rotate(Degree(90 * Time::getDelta()), AXIS::kY);
+  
   
   Vector3D dir = m_joker->getTransform().getDirection();
   Vector3D right = dir.cross(Vector3D(0,1,0));
@@ -213,14 +223,15 @@ TestApplication::input() {
 void
 TestApplication::postUpdate() {
   
+  for (auto& anim : m_animated) {
+    anim->update();
+  }
+
   InputManager::capture();
   Time::update();
   SceneGraph::update();
 
   input();
-  for (auto& anim : m_animated) {
-    anim->update();
-  }
   
 }
 
@@ -237,32 +248,41 @@ TestApplication::postRender() {
     anim->draw(*m_activeCam);
   }
 
+  //Show Frustum
   m_camera->render();
-
+  
+  m_animTech->setCamera(&(*m_activeCam));
   m_technique->setCamera(&(*m_activeCam));
 
   auto dc = &GraphicsAPI::getDeviceContext();
 
-  auto meshes = SceneGraph::query(*m_camera, 
+  auto queryRes = SceneGraph::query(*m_camera, 
                                   m_queryOrder, 
-                                  QUERY_PROPERTYS::kOpaque | 
-                                  QUERY_PROPERTYS::kDynamic | 
-                                  QUERY_PROPERTYS::kStatic);
+                                  QUERY_PROPERTY::kOpaque | 
+                                  QUERY_PROPERTY::kDynamic | 
+                                  QUERY_PROPERTY::kStatic);
 
   dc->setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
 
-  for (auto& mesh : meshes) {
+  for (auto& queryObj : queryRes) {
 
-    m_technique->setWorld(&mesh.first);
+    auto tech = m_technique.get();
+
+    if (queryObj.bones) {
+      tech = m_animTech.get();
+      m_animTech->setBones(*queryObj.bones);
+    }
+
+    tech->setWorld(&queryObj.world);
     
-    if (m_technique->prepareForDraw()) {
-      if (auto material = mesh.second.material.lock()) {
+    if (tech->prepareForDraw()) {
+      if (auto material = queryObj.mesh.material.lock()) {
         material->set();
       }
-      mesh.second.vertexBuffer->set(*dc);
-      mesh.second.indexBuffer->set(*dc);
+      queryObj.mesh.vertexBuffer->set(*dc);
+      queryObj.mesh.indexBuffer->set(*dc);
 
-      dc->draw(mesh.second.indicesCount, 0, 0);
+      dc->draw(queryObj.mesh.indicesCount, 0, 0);
     }
   }
 
@@ -271,11 +291,10 @@ TestApplication::postRender() {
 
 void 
 TestApplication::postDestroy() {
-
-  for (auto& anim : m_animated) {
-    anim->destroy();
-    delete anim;
-  }
+  
+  m_technique->destroy();
+  m_linesTech->destroy();
+  m_animTech->destroy();
 
   m_animated.clear();
 
@@ -284,12 +303,20 @@ TestApplication::postDestroy() {
   Time::shutDown();
   SceneGraph::shutDown();
   GraphicsDriver::shutDown();
+  Logger::startUp();
+
+  for (auto& anim : m_animated) {
+    anim->destroy();
+    delete anim;
+  }
 }
 
 void addDrawableComponent(std::shared_ptr<driderSDK::GameObject> go,
                           Technique* tech) {
-  if (go->getComponent<RenderComponent>()) {
-    auto p = go->createComponent<ModelDebbug>();
+  if (auto collider = go->getComponent<AABBCollider>()) {
+
+    auto p = go->createComponent<AABBDebug>(true);
+
     p->setShaderTechnique(tech);
   }
   for (auto child : go->getChildren())
@@ -349,6 +376,7 @@ TestApplication::initInput() {
     addDrawableComponent(octree, m_linesTech.get());
   };
 
+    
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kQ,
                         toggleQueryOrder);
@@ -401,7 +429,9 @@ TestApplication::initSceneGraph() {
     
     auto node = SceneGraph::createNode(parent, model);
 
-    auto p = node->createComponent<ModelDebbug>();
+    auto collider = node->getComponent<AABBCollider>();
+
+    auto p = node->createComponent<AABBDebug>(true);
 
     p->setShaderTechnique(m_linesTech.get());
   
@@ -421,22 +451,56 @@ TestApplication::initSceneGraph() {
 
   std::unordered_map<Int32, TString> names
   {
-    {0, _T("VenomJok.X")},
+    {0, _T("HipHopDancing.fbx")},
     {1, _T("Croc.X")},
-    {2, _T("dwarf.x")},
-    {3, _T("DuckyQuacky_.fbx")},
-    {4, _T("China.dae")}
   };
- 
+   
+  auto chinaMod = ResourceManager::getReferenceT<Model>(_T("HipHopDancing.fbx"));
+
+  auto animName = chinaMod->animationsNames[0];
+
+  auto chinaAnim = ResourceManager::getReferenceT<Animation>(animName);
+
+  auto chinaSkel = ResourceManager::getReferenceT<Skeleton>(chinaMod->skeletonName);
+
+  auto chinitaMat = ResourceManager::createMaterial(_T("Mat_Chinita"));
+
+  auto chinitaTex = ResourceManager::getReferenceT<TextureCore>(_T("Kachujin_diffuse.png"));
+
+  chinitaMat->getProperty(_T("Albedo"))->texture = chinitaTex;
+
+  auto n = createNode(root, _T("Chinita"), _T("HipHopDancing.fbx"), {-200.f, 0.0f, 0.0f});
+  
+  auto animComp = n->createComponent<AnimatorComponent>();
+
+  animComp->setSkeleton(chinaSkel);
+
+  animComp->addAnimation(chinaAnim, animName);
+
+  animComp->setCurrentAnimation(animName);
+
+  n->getTransform().scale({ 1,1,1 });
+  
+  n->getComponent<RenderComponent>()->getMeshes()[0].material = chinitaMat;
+
+  m_joker = n;
+  
+  
   std::mt19937 mt(std::random_device{}());
   
   std::uniform_int_distribution<> dt(0, static_cast<Int32>(names.size() - 1));
   std::uniform_int_distribution<> scl(1, 3);
   std::uniform_real_distribution<float> space(-1500, 1500);
+  std::uniform_real_distribution<float> time(0, 1000);
 
-  for (Int32 i = 0; i < 0; ++i) {
+  for (Int32 i = 0; i < 50; ++i) {
     Vector3D pos(space(mt), 0, space(mt));
-    TString aaa =StringUtils::toTString(i);
+    auto pp = n->clone();
+    pp->getTransform().setPosition(pos);
+    auto an = pp->getComponent<AnimatorComponent>();
+    an->setTime(time(mt));
+
+    /*TString aaa =StringUtils::toTString(i);
 
     auto mod = dt(mt);
 
@@ -445,17 +509,9 @@ TestApplication::initSceneGraph() {
                         pos);   
     n->setStatic(true);
     float sc = static_cast<float>(scl(mt));
-    n->getTransform().scale({sc,sc,sc});
+    n->getTransform().scale({sc,sc,sc});*/
   }
-  
-  auto n = createNode(root, _T("Chinita"), _T("HipHopDancing.fbx"), {-200.f, 0.0f, 0.0f});
-  n->getTransform().scale({ 1,1,1 });
-  m_joker = n;
-  
-  auto chinitaMat = ResourceManager::createMaterial(_T("Mat_Chinita"));
-  auto chinitaTex = ResourceManager::getReferenceT<TextureCore>(_T("Kachujin_diffuse.png"));
 
-  chinitaMat->getProperty(_T("Albedo"))->texture = chinitaTex;
 }
 
 }

@@ -1,17 +1,14 @@
-#include "CameraDebbug.h"
+#include "FrustumDebug.h"
 #include <dr_camera.h>
-#include <dr_device_context.h>
-#include <dr_graphics_api.h>
-#include <dr_index_buffer.h>
-#include <dr_vertex_buffer.h>
-#include "Technique.h"
-#include "dr_mesh.h"
-#include "dr_aabb.h"
+#include <dr_mesh.h>
+#include <dr_aabb.h>
 
 namespace driderSDK {
 
+FrustumDebug::FrustumDebug(GameObject& _go) : DrawableComponent(_go){}
+
 void 
-CameraDebbug::create(std::shared_ptr<Model> model) {
+FrustumDebug::create() {
 
   //Create index buffer & vertex buffer 4 lines
   std::vector<Mesh> meshes{1};
@@ -92,40 +89,24 @@ CameraDebbug::create(std::shared_ptr<Model> model) {
   mesh.indices.push_back(AABB_POINT::kXMinYMaxZMax);
 
   createMeshBuffers(meshes);
+
 }
 
-void 
-CameraDebbug::onCreate() {
-  create(nullptr);
+void FrustumDebug::onCreate() {
+  create();
+  m_primitive = DR_PRIMITIVE_TOPOLOGY::kLineList;
 }
 
-void 
-CameraDebbug::onUpdate() {
+void FrustumDebug::onUpdate() {
   if (m_gameObject.changed()) {
-    create(nullptr);
+    create();
   }
 }
 
 void 
-CameraDebbug::onRender() {
-  if (m_technique) {
-
-    m_technique->setWorld(&m_gameObject.getWorldTransform().getMatrix());
-
-    if (m_technique->prepareForDraw()) {
-      
-      auto& deviceContext = GraphicsAPI::getDeviceContext();
-
-      deviceContext.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kLineList);
-      
-      for (auto& meshBuff : m_meshes) {
-        meshBuff.vertexBuffer->set(deviceContext);
-        meshBuff.indexBuffer->set(deviceContext);
-
-        deviceContext.draw(meshBuff.indicesCount, 0, 0);
-      }
-    }
-  } 
+FrustumDebug::cloneIn(GameObject& _go) {
+  auto p = _go.createComponent<FrustumDebug>(); 
+  p->m_technique = m_technique;
 }
 
 }

@@ -167,13 +167,14 @@ CodecModel::loadSkeleton(const aiScene& model,
                          Skeleton& outSkeleton) {
  
   NodesRefMap nodesRefs;
-  auto pRoot = dr_make_unique<Skeleton::NodeData>();
-  pRoot->pParent = nullptr;
-  buildTree(model.mRootNode, pRoot.get(), nodesRefs);
-  outSkeleton.pRoot = std::move(pRoot);
+  auto root = dr_make_unique<Skeleton::NodeData>();
+  root->parent = nullptr;
+  buildTree(model.mRootNode, root.get(), nodesRefs);
+  outSkeleton.root = std::move(root);
 
   auto& bonesMap = outSkeleton.bonesMapping;
   auto& bones = outSkeleton.bones;
+  auto& bonesAABBs = outSkeleton.bonesAABBs;
 
   for (Int32 meshIndex = 0; 
       meshIndex < static_cast<Int32>(model.mNumMeshes);
@@ -193,27 +194,44 @@ CodecModel::loadSkeleton(const aiScene& model,
       std::memcpy(nodesRefs[boneName]->boneOffset.ptr(), 
                   &bone.mOffsetMatrix[0][0], 64);
 
+      Vector3D min = {Math::MAX_FLOAT, Math::MAX_FLOAT, Math::MAX_FLOAT};
+      Vector3D max = {Math::MIN_FLOAT, Math::MIN_FLOAT, Math::MIN_FLOAT};
+
       SizeT index = 0;
 
       if (!bonesMap.count(boneName)) {
         index = bones.size();
         bonesMap[boneName] = index;
         bones.push_back(nodesRefs[boneName]);
+        bonesAABBs.push_back({});
         std::memcpy(bones[index]->boneOffset.ptr(), 
                     &bone.mOffsetMatrix[0][0], 64);
       }
       else {
         index = bonesMap[boneName];
-      }
+        min = bonesAABBs[index].getMinPoint();
+        max = bonesAABBs[index].getMaxPoint();
+      }      
 
       for (Int32 vertexIndex = 0; 
           vertexIndex < static_cast<Int32>(bone.mNumWeights); 
           ++vertexIndex) {
+        
         aiVertexWeight& verWeight = bone.mWeights[vertexIndex];
-          
-        outMesh.vertices[verWeight.mVertexId].addBone(index, 
-                                                      verWeight.mWeight);          
-      } 
+        
+        auto& vertex = outMesh.vertices[verWeight.mVertexId];  
+
+        for (Int32 e = 0; e < 3; ++e) {
+          min[e] = Math::min(vertex.position[e], min[e]);
+          max[e] = Math::max(vertex.position[e], max[e]);
+        }
+                        
+        vertex.addBone(index, verWeight.mWeight);          
+      }
+
+      Vector3D diff = max - min;
+      
+      bonesAABBs[index] = AABB(diff.x, diff.y, diff.z, (max + min) * 0.5f);
     }
   }  
 }
@@ -362,23 +380,23 @@ CodecModel::loadAnimations(const aiScene& model, ModelInfo& outModel) {
 //}
 
 void 
-CodecModel::buildTree(const aiNode* pNodeSrc, 
-                      Skeleton::NodeData* pNode, 
+CodecModel::buildTree(const aiNode* nodeSrc, 
+                      Skeleton::NodeData* node, 
                       NodesRefMap& nodesRefs) {
   
-  pNode->name = StringUtils::toTString(pNodeSrc->mName.data);
+  node->name = StringUtils::toTString(nodeSrc->mName.data);
   
-  nodesRefs[pNode->name] = pNode;
+  nodesRefs[node->name] = node;
 
-  std::memcpy(pNode->transform.data, &pNodeSrc->mTransformation[0][0], 64);
+  std::memcpy(node->transform.data, &nodeSrc->mTransformation[0][0], 64);
       
   for (Int32 childInddex = 0; 
-       childInddex < static_cast<Int32>(pNodeSrc->mNumChildren); 
+       childInddex < static_cast<Int32>(nodeSrc->mNumChildren); 
        ++childInddex) {
     auto childNode = dr_make_unique<Skeleton::NodeData>();
-    childNode->pParent = pNode;
-    buildTree(pNodeSrc->mChildren[childInddex], childNode.get(), nodesRefs);
-    pNode->children.push_back(std::move(childNode));
+    childNode->parent = node;
+    buildTree(nodeSrc->mChildren[childInddex], childNode.get(), nodesRefs);
+    node->children.push_back(std::move(childNode));
   }
 }
 

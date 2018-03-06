@@ -69,6 +69,46 @@ GameObject::render() {
   }*/
 }
 
+GameObject::SharedGameObj 
+GameObject::clone() {
+  
+  SharedGameObj dup = createInstance();
+
+  copyData(dup);
+
+  dup->m_name = m_name;
+
+  dup->m_parent = m_parent;
+
+  if (auto p = m_parent.lock()) {
+    p->addChild(dup);
+  }
+
+  dup->m_change = m_change;
+
+  dup->m_localTransform = m_localTransform;
+
+  dup->m_localTransform.invalidate();
+
+  dup->m_isStatic = m_isStatic;
+
+  static_cast<EnableObject>(*dup) = *this; 
+
+  /**
+  dup->m_finalTransform = m_finalTransform;
+   dup->m_finalTransform.invalidate();
+  **/
+  for (auto& component : m_components) {
+    component->cloneIn(*dup);
+  }
+
+  for (auto& child : m_children) {
+    dup->addChild(child->clone());
+  }
+
+  return dup;
+}
+
 //void 
 //GameObject::destroy() {}
 
@@ -242,6 +282,11 @@ GameObject::propagateChange() {
   for (auto& child : m_children) {
     child->propagateChange();
   }
+}
+
+GameObject::SharedGameObj 
+GameObject::createInstance() {
+  return std::make_shared<GameObject>();
 }
 
 void GameObject::updateImpl() {}

@@ -66,6 +66,12 @@ public:
 	*
 	*/
 	~Camera();
+  
+  virtual SharedGameObj
+  createInstance();
+
+  virtual void
+  copyData(SharedGameObj);
 
 	/**
 	* TEST::update
@@ -234,6 +240,8 @@ public:
 */
 
  private:
+
+
 	Vector3D m_target;
 	Vector3D m_up;
 	Matrix4x4 m_vp;
