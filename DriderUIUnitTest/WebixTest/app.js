@@ -51,6 +51,23 @@ webix.ready(function(){
 	webix.markup.init();
 	webixReady();
 	
+	webix.ui({
+	container:"toolbarView",
+	id:"toolbar",
+	view:"toolbar", padding:0,width:1611,margin:0,
+	cols: [
+		{ view:"button", type:"imageTop", label:"File", 
+			image:"../common/imgs/18/save.gif", width:60},
+		{ view:"button", type:"imageTop", label:"Project", 
+			image:"../common/imgs/18/paste.gif", width:60},
+		{ view:"button", type:"imageTop", label:"Help DX",
+			image:"../common/imgs/18/copy.gif", width:60}
+	]
+	});
+	
+	
+	
+	
 	var propertysheet_1 = {
 	view:"property",  id:"sets", width:300,
 	elements:[
