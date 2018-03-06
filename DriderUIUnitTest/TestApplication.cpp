@@ -88,28 +88,28 @@ TestApplication::postInit() {
   webRenderer.Init(m_viewport.width, m_viewport.height,BROWSER_MODE::kHeadless);
   webRenderer.loadURL("file:///C:/Users/Ulises/Documents/GitHub/Drider-Engine/DriderUIUnitTest/WebixTest/ss.html");
 
-  webRenderer.registerJS2CPPFunction(std::make_pair("webixReady", [&](CefRefPtr<CefV8Value>& retval, const CefV8ValueList& arguments) {
+  webRenderer.registerJS2CPPFunction(std::make_pair("webixReady", [&](const CefRefPtr<CefListValue>& arguments) {
     updateFolders(webRenderer);
   }));
-  //Manage
-  webRenderer.registerJS2CPPFunction(std::make_pair("createFolder", [&](CefRefPtr<CefV8Value>& retval, const CefV8ValueList& arguments) {
-  }));
-  webRenderer.registerJS2CPPFunction(std::make_pair("renameFile", [&](CefRefPtr<CefV8Value>& retval, const CefV8ValueList& arguments) {
-  }));
-  webRenderer.registerJS2CPPFunction(std::make_pair("deleteFile", [&](CefRefPtr<CefV8Value>& retval, const CefV8ValueList& arguments) {
-  }));
-  webRenderer.registerJS2CPPFunction(std::make_pair("moveFile", [&](CefRefPtr<CefV8Value>& retval, const CefV8ValueList& arguments) {
-  }));
-  webRenderer.registerJS2CPPFunction(std::make_pair("updateFolders", [&](CefRefPtr<CefV8Value>& retval, const CefV8ValueList& arguments) {
-    updateFolders(webRenderer);
-  }));
-  //Open
-  webRenderer.registerJS2CPPFunction(std::make_pair("openImage", [&](CefRefPtr<CefV8Value>& retval, const CefV8ValueList& arguments) {
-  }));
-  webRenderer.registerJS2CPPFunction(std::make_pair("openScript", [&](CefRefPtr<CefV8Value>& retval, const CefV8ValueList& arguments) {
-  }));
-  webRenderer.registerJS2CPPFunction(std::make_pair("openSound", [&](CefRefPtr<CefV8Value>& retval, const CefV8ValueList& arguments) {
-  }));
+  ////Manage
+  //webRenderer.registerJS2CPPFunction(std::make_pair("createFolder", [&](CefRefPtr<CefV8Value>& retval, const CefV8ValueList& arguments) {
+  //}));
+  //webRenderer.registerJS2CPPFunction(std::make_pair("renameFile", [&](CefRefPtr<CefV8Value>& retval, const CefV8ValueList& arguments) {
+  //}));
+  //webRenderer.registerJS2CPPFunction(std::make_pair("deleteFile", [&](CefRefPtr<CefV8Value>& retval, const CefV8ValueList& arguments) {
+  //}));
+  //webRenderer.registerJS2CPPFunction(std::make_pair("moveFile", [&](CefRefPtr<CefV8Value>& retval, const CefV8ValueList& arguments) {
+  //}));
+  //webRenderer.registerJS2CPPFunction(std::make_pair("updateFolders", [&](CefRefPtr<CefV8Value>& retval, const CefV8ValueList& arguments) {
+  //  updateFolders(webRenderer);
+  //}));
+  ////Open
+  //webRenderer.registerJS2CPPFunction(std::make_pair("openImage", [&](CefRefPtr<CefV8Value>& retval, const CefV8ValueList& arguments) {
+  //}));
+  //webRenderer.registerJS2CPPFunction(std::make_pair("openScript", [&](CefRefPtr<CefV8Value>& retval, const CefV8ValueList& arguments) {
+  //}));
+  //webRenderer.registerJS2CPPFunction(std::make_pair("openSound", [&](CefRefPtr<CefV8Value>& retval, const CefV8ValueList& arguments) {
+  //}));
 
 
 

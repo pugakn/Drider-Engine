@@ -11,6 +11,8 @@
 #include <vector>
 #include <functional>
 #include <iostream>
+
+#define DR_WEB_SINGLE_PROCESS 0
 namespace driderSDK {
 class Texture;
 class SamplerState;
@@ -23,7 +25,11 @@ enum E {
   kChild
 };
 }
-using JSCallLambda = std::function<void(CefRefPtr<CefV8Value>&, const CefV8ValueList&)>;
+#if DR_WEB_SINGLE_PROCESS 
+using JSCallLambda = std::function<void(CefRefPtr<CefV8Value>&, const CefV8ValueList&)>; 
+#else
+using JSCallLambda = std::function<void(const CefRefPtr<CefListValue>&)>;
+#endif
 using JSCallback = std::pair<std::string, JSCallLambda>;
 using JSCalls = std::vector<JSCallback>; 
 
@@ -50,8 +56,10 @@ private:
           const CefV8ValueList& arguments,
           CefRefPtr<CefV8Value>& retval,
           CefString& exception) override;
-
+#if DR_WEB_SINGLE_PROCESS 
   JSCalls m_callbacks;
+#endif
+  std::vector<std::string> m_calls;
 };
 
 /**
@@ -84,7 +92,6 @@ private:
                            CefRefPtr<CefProcessMessage> message) override;
 
   CefRefPtr<DriderV8Handler> m_v8Handler;
-
 };
 
 /**
@@ -218,6 +225,9 @@ private:
                            CefRefPtr<CefProcessMessage> message);
 
   CefRefPtr<CefRenderHandler> m_renderHandler;
+#if ! DR_WEB_SINGLE_PROCESS 
+  JSCalls m_callbacks;
+#endif
 };
 
 

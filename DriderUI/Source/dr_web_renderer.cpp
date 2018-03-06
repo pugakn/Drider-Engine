@@ -7,6 +7,7 @@
 #include <dr_device.h>
 #include <dr_sample_state.h>
 
+
 namespace driderSDK {
 //CefRefPtr<DriderV8Handler> WebRenderer::m_v8Handler = new DriderV8Handler();
 //CefRefPtr<DriderRenderProcessHandler> WebRenderer::m_renderProcess = new DriderRenderProcessHandler();
@@ -21,6 +22,7 @@ DriderV8Handler::Execute(const CefString & name,
                          CefRefPtr<CefV8Value>& retval, 
                          CefString & exception)
 {
+#if DR_WEB_SINGLE_PROCESS
   for (auto &it : m_callbacks)
   {
     if (name == it.first) {
@@ -29,6 +31,32 @@ DriderV8Handler::Execute(const CefString & name,
     }
   }
   return false;
+#else
+  CefRefPtr<CefBrowser> browser = CefV8Context::GetCurrentContext()->GetBrowser();
+  CefRefPtr<CefProcessMessage> msg = CefProcessMessage::Create(IPC_CALL_JS2CPP_FUNC);
+  CefRefPtr<CefListValue> cefargs = msg->GetArgumentList();
+  cefargs->SetString(0, name);
+  int idNum = 1;
+  for (auto&it : arguments) {
+    if (it->IsInt() || it->IsUInt()) {
+      cefargs->SetInt(idNum++, it->GetIntValue());
+    }
+    else
+      if (it->IsBool()) {
+      cefargs->SetBool(idNum++, it->GetBoolValue());
+    }
+      else
+         if (it->IsDouble()) {
+      cefargs->SetDouble(idNum++, it->GetDoubleValue());
+    }
+        else
+           if (it->IsString()) {
+      cefargs->SetString(idNum++, it->GetStringValue());
+    }
+  }
+  browser->SendProcessMessage(PID_BROWSER, msg);
+  return true;
+#endif
 }
 
 /*******************************************************
@@ -40,10 +68,10 @@ DriderRenderProcessHandler::OnContextCreated(CefRefPtr<CefBrowser> browser,
                                              CefRefPtr<CefFrame> frame, 
                                              CefRefPtr<CefV8Context> context)
 {
-  for (auto &it : m_v8Handler->m_callbacks) {
+  for (auto &it : m_v8Handler->m_calls) {
     CefRefPtr<CefV8Value> object = context->GetGlobal();
-    CefRefPtr<CefV8Value> func = CefV8Value::CreateFunction(it.first, m_v8Handler);
-    object->SetValue(it.first, func, V8_PROPERTY_ATTRIBUTE_NONE);
+    CefRefPtr<CefV8Value> func = CefV8Value::CreateFunction(it, m_v8Handler);
+    object->SetValue(it, func, V8_PROPERTY_ATTRIBUTE_NONE);
   }
 }
 
@@ -57,6 +85,7 @@ DriderRenderProcessHandler::OnProcessMessageReceived(CefRefPtr<CefBrowser> brows
     CefRefPtr<CefV8Context> context = browser->GetMainFrame()->GetV8Context();
     context->Enter();
     std::string funcName = message->GetArgumentList()->GetString(0);
+    m_v8Handler->m_calls.push_back(funcName);
     CefRefPtr<CefV8Value> object = browser->GetMainFrame()->GetV8Context()->GetGlobal();
     CefRefPtr<CefV8Value> func = CefV8Value::CreateFunction(funcName, m_v8Handler);
     object->SetValue(funcName, func, V8_PROPERTY_ATTRIBUTE_NONE);
@@ -150,6 +179,19 @@ BrowserClient::OnProcessMessageReceived(CefRefPtr<CefBrowser> browser,
                                         CefProcessId source_process, 
                                         CefRefPtr<CefProcessMessage> message)
 {
+  const std::string& message_name = message->GetName();
+  if (message_name == IPC_CALL_JS2CPP_FUNC) {
+    std::string funcName = message->GetArgumentList()->GetString(0);
+    auto args = message->GetArgumentList();
+    for (auto &it : m_callbacks)
+    {
+      if (funcName == it.first) {
+        it.second(args);
+        return true;
+      }
+    }
+    return true;
+  }
   return false;
 }
 /*******************************************************
@@ -169,7 +211,11 @@ WebRenderer::start()
 
   settings.multi_threaded_message_loop = false;
   settings.windowless_rendering_enabled = true;
+#if DR_WEB_SINGLE_PROCESS
   settings.single_process = true;
+#else
+  settings.single_process = false;
+#endif
   settings.no_sandbox = true;
   result = CefInitialize(args, settings, WebRenderer::m_app.get(), nullptr);
   if (!result)
@@ -278,7 +324,8 @@ WebRenderer::setVisibility(bool visible)
 
 void WebRenderer::registerJS2CPPFunction(JSCallback callback)
 {
-  WebRenderer::m_app->m_renderProcess->m_v8Handler->m_callbacks.push_back(callback);
+  //WebRenderer::m_app->m_renderProcess->m_v8Handler->m_calls.push_back(callback.first);
+  browserClient->m_callbacks.push_back(callback);
   CefRefPtr<CefProcessMessage> msg = CefProcessMessage::Create(IPC_REGISTER_JS2CPP_FUNC);
   CefRefPtr<CefListValue> cefargs = msg->GetArgumentList();
   cefargs->SetString(0, callback.first);

@@ -82,7 +82,7 @@ webix.ready(function(){
 
 	});
 	
-	$$("file").attachEvent("onBeforeCreateFolder",function(id){
+	$$("files").attachEvent("onBeforeCreateFolder",function(id){
 		// your code
 		return true;
 	});
