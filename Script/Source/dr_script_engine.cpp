@@ -32,9 +32,11 @@ ScriptEngine::ScriptEngine() {
 		m_scriptLogger = &Logger::instance();
 	}
 
-	if (Time::isStarted()) {
-		m_scriptTime = &Time::instance();
+	if (!Time::isStarted()) {
+		Time::startUp();
 	}
+	m_scriptTime = &Time::instance();
+
 
 }
 
@@ -168,10 +170,16 @@ ScriptEngine::prepareFunction(TString function) {
 
 Int8
 ScriptEngine::executeCall() {
-	g_timeout = m_scriptTime->getElapsedMilli() + 5000;
+	g_timeout = m_scriptTime->getElapsedMilli() + timeout;
 	Int8 result = m_scriptContext->Execute();			
 
 	if (result != asEXECUTION_FINISHED) {
+		if (result == asEXECUTION_ABORTED) {
+			addScriptLog(_T("The script was aborted, possibly timed out."), asMSGTYPE_ERROR);
+		}
+		if (result == asEXECUTION_SUSPENDED) {
+			addScriptLog(_T("The script was suspended."), asMSGTYPE_ERROR);
+		}
 		if (result == asEXECUTION_EXCEPTION) {
 	    TString NewLine(_T("<br>"));
 	    addScriptLog(_T("There was an exception within a script call."), asMSGTYPE_ERROR);
@@ -197,7 +205,6 @@ ScriptEngine::release() {
 void
 ScriptEngine::lineCallback(asIScriptContext* scriptContext) {
 	if(g_timeout < m_scriptTime->getElapsedMilli()) {
-		addScriptLog(_T("The script timed out, stoping now..."), asMSGTYPE_ERROR);
 		scriptContext->Abort(); 
 		//scriptContext->Suspend(); //we can also use suspend
 	}
