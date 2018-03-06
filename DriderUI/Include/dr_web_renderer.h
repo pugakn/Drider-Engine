@@ -62,7 +62,7 @@ private:
 */
 class DriderRenderProcessHandler : public  CefRenderProcessHandler {
 public:
-  DriderRenderProcessHandler() = default;
+  DriderRenderProcessHandler() { m_v8Handler = new DriderV8Handler(); };
   DriderRenderProcessHandler(const DriderRenderProcessHandler&) = delete;
   DriderRenderProcessHandler(DriderRenderProcessHandler&&) = delete;
   IMPLEMENT_REFCOUNTING(DriderRenderProcessHandler);
@@ -83,6 +83,8 @@ private:
                            CefProcessId source_process,
                            CefRefPtr<CefProcessMessage> message) override;
 
+  CefRefPtr<DriderV8Handler> m_v8Handler;
+
 };
 
 /**
@@ -90,7 +92,7 @@ private:
 */
 class DriderCefApp : public CefApp {
 public:
-  DriderCefApp() = default;
+  DriderCefApp() { m_renderProcess = new DriderRenderProcessHandler(); };
   DriderCefApp(const DriderCefApp&) = delete;
   DriderCefApp(DriderCefApp&&) = delete;
   IMPLEMENT_REFCOUNTING(DriderCefApp);
@@ -101,6 +103,13 @@ private:
   */
   virtual CefRefPtr<CefRenderProcessHandler> 
   GetRenderProcessHandler();
+  //virtual void OnBeforeCommandLineProcessing(
+  //  const CefString& process_type,
+  //  CefRefPtr<CefCommandLine> command_line) override{
+  //    command_line->AppendSwitch("allow-file-access-from-files");
+  //}
+
+  CefRefPtr<DriderRenderProcessHandler> m_renderProcess;
 };
 
 /**
@@ -329,8 +338,8 @@ private:
   friend class DriderCefApp;
   friend class DriderRenderProcessHandler;
   static CefRefPtr<DriderCefApp> m_app;
-  static CefRefPtr<DriderRenderProcessHandler> m_renderProcess;
-  static CefRefPtr<DriderV8Handler> m_v8Handler;
+  //static CefRefPtr<DriderRenderProcessHandler> m_renderProcess;
+  //static CefRefPtr<DriderV8Handler> m_v8Handler;
   void 
   initInput();
   CefRefPtr<CefBrowser> browser;
