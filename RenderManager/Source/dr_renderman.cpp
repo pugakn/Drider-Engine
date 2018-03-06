@@ -30,7 +30,6 @@ RenderMan::init() {
 
   m_RTs = dc.createRenderTarget(PositionDesc, 3);
 
-//
   DrDepthStencilDesc depthTextureDesc;
   depthTextureDesc.bindFlags = DR_BIND_FLAGS::DEPTH_STENCIL | DR_BIND_FLAGS::SHADER_RESOURCE;
   depthTextureDesc.width = 1920;
@@ -38,7 +37,6 @@ RenderMan::init() {
   depthTextureDesc.Format = DR_FORMAT::kD32_FLOAT;
 
   m_GBufferDSoptions = dc.createDepthStencil(depthTextureDesc);
-//
 
   m_viewport.width = 1920;
   m_viewport.height = 1080;
