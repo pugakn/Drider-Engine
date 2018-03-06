@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2036
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Utils", "Utils\Utils.vcxproj", "{96C93CF8-BB4C-4D60-8C5D-3F439477662D}"
 EndProject
@@ -95,6 +95,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Script", "Script\Script.vcx
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ScriptUnitTest", "ScriptUnitTest\ScriptUnitTest.vcxproj", "{E831247F-FD59-44EC-911A-1F64C0937FE8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{AB89A20F-171B-40CD-A7E8-84F4C35BECDC} = {AB89A20F-171B-40CD-A7E8-84F4C35BECDC}
+		{31C98D18-B491-49A8-A35B-60AC016FDB71} = {31C98D18-B491-49A8-A35B-60AC016FDB71}
+		{029D6857-C353-4AAC-B466-3AFAA591CA81} = {029D6857-C353-4AAC-B466-3AFAA591CA81}
+		{96C93CF8-BB4C-4D60-8C5D-3F439477662D} = {96C93CF8-BB4C-4D60-8C5D-3F439477662D}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Core", "Core\Core.vcxproj", "{31C98D18-B491-49A8-A35B-60AC016FDB71}"
 	ProjectSection(ProjectDependencies) = postProject

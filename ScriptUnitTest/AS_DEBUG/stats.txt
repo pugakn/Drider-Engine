@@ -2,8 +2,12 @@
 Total count
 PSF        : 3
 RET        : 1
+JMP        : 2977494
+JNZ        : 2977495
+CMPIi      : 2977495
 CALLSYS    : 3
-SUSPEND    : 2
+SUSPEND    : 5954994
+SetV4      : 2977496
 PGA        : 1
 
 Never executed
@@ -16,9 +20,7 @@ NOT
 PshG4     
 LdGRdR4   
 CALL      
-JMP       
 JZ        
-JNZ       
 JS        
 JNS       
 JP        
@@ -59,7 +61,6 @@ CMPd
 CMPu      
 CMPf      
 CMPi      
-CMPIi     
 CMPIf     
 CMPIu     
 JMPP      
@@ -80,7 +81,6 @@ PshNull
 ClrVPtr   
 OBJTYPE   
 TYPEID    
-SetV4     
 SetV8     
 ADDSi     
 CpyVtoV4  
@@ -206,9 +206,18 @@ Thiscall1
 
 Sequences
 PSF       , CALLSYS    : 3
+RET       , SUSPEND    : 1
+JMP       , CMPIi      : 2977494
+JNZ       , SUSPEND    : 2977495
+CMPIi     , JNZ        : 2977495
 CALLSYS   , PSF        : 2
 CALLSYS   , SUSPEND    : 1
 SUSPEND   , RET        : 1
+SUSPEND   , CMPIi      : 1
+SUSPEND   , SUSPEND    : 2977494
+SUSPEND   , SetV4      : 2977496
 SUSPEND   , PGA        : 1
+SetV4     , JMP        : 2977494
+SetV4     , SUSPEND    : 2
 PGA       , PSF        : 1
 LABEL     , SUSPEND    : 1

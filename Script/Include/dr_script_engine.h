@@ -132,7 +132,7 @@ public:
 	addScriptLog(const TString& log, const int type);
 
   asIScriptEngine* m_scriptEngine;
-	unsigned long timeout = 666;
+	unsigned long timeout = 5000;
 	Time* m_scriptTime;
 	Logger* m_scriptLogger;
 private:
