@@ -22,8 +22,8 @@ void
 Application::init() {
   m_running = true;
 
-  m_viewport.width = 1280;
-  m_viewport.height = 720;
+  m_viewport.width = 1920;
+  m_viewport.height = 1024;
     
   createWindow();
 

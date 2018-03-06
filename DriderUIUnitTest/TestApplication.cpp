@@ -69,7 +69,7 @@ void updateFolders(WebRenderer& webRenderer) {
 }
 
 TestApplication::TestApplication()
-  : viewport{0,0,1024, 768}, webRenderer(){
+  : viewport{0,0,1920, 1024}, webRenderer(){
 }
 
 TestApplication::~TestApplication() {

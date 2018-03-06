@@ -11,15 +11,20 @@
     <script src="app.js"></script>
 
 </head>
-<body style = "margin:0; padding:0; width:100%; height: 100%;">
-<div style = "width:100%; height:100%;margin:0; padding:0;">
-	<div style = "width:80%; height:70%; background-color:red;vertical-align:top; display:inline-block; position:fixed; top:0;right:0;margin:0; padding:0;">
-		
-	</div>
-
-	<div id ="fman" style = "width:80%; height:30%;margin:0; padding:0;vertical-align:bottom;display:inline-block;position:fixed; bottom:0; right:0;">
+<body onload="start()", style = "margin:0; padding:0; width:100%; height: 100%;">
+<div style = "width:100%; height:70%;margin:0; padding:0;">
+	<div id ="treeView" style = "width:20%; height:70%;margin:0; padding:0;vertical-align:bottom;display:inline-block;position:fixed; top:0; left:0;">
 
 	</div>
+	<div style = "width:64%; height:70%;vertical-align:top; display:inline-block; position:fixed; top:0;left:20%;margin:0; padding:0;">
+		<canvas id="glcanvas" style = " width: 100%; height:100%;">Tu navegador parece no soportar el elemento HTML5 <code>&lt;canvas&gt;</code>.</canvas>
+	</div>
+	<div id ="propView" style = "width:16%; height:100%;margin:0; padding:0;vertical-align:bottom;display:inline-block;position:fixed; top:0; right:0;">
+
+	</div>
+</div>
+<div id ="fman" style = "width:100%; height:30%;margin:0; padding:0;vertical-align:bottom;display:inline-block;position:fixed; bottom:0; right:0;">
+
 </div>
 </body>
 </html>
