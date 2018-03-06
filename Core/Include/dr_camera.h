@@ -198,7 +198,7 @@ public:
 	*  The view proyection of the camera.
 	*/
   const Matrix4x4&
-  getVP();
+  getVP() const;
 
   /**
   * Gets the view matrix.
@@ -207,7 +207,7 @@ public:
   *   View matrix.
   */
   const Matrix4x4&
-  getView();
+  getView() const;
 
   /**
   * Gets the projection matrix.
@@ -216,16 +216,16 @@ public:
   *   Projection matrix.
   */
   const Matrix4x4&
-  getProjection();
+  getProjection() const;
 
   float
-  getFarPlane();
+  getFarPlane() const;
 
   float
-  getNearPlane();
+  getNearPlane() const;
 
   float
-  getFOV();
+  getFOV() const;
 
   BEGINING_REGISTER(Camera)
   

@@ -161,32 +161,30 @@ Camera::orbit(float pitch, float yaw) {
 }
 
 const Matrix4x4&
-Camera::getVP() {
+Camera::getVP() const{
   return m_vp;
 }
 
 const Matrix4x4&
-Camera::getView() {
+Camera::getView() const {
   return m_view;
 }
 
-float Camera::getFarPlane() {
+float Camera::getFarPlane() const {
   return m_farPlane;
 }
 
-float Camera::getNearPlane() {
+float Camera::getNearPlane() const {
   return m_nearPlane;
 }
 
-float Camera::getFOV() {
+float Camera::getFOV() const {
   return m_fov;
 }
 
 const Matrix4x4&
-Camera::getProjection() {
+Camera::getProjection() const {
   return m_projection;
 }
-
-CREATE_REF_FACTORY_FUNC(Camera)
 
 }
