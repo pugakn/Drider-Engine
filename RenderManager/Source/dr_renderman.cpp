@@ -46,14 +46,14 @@ RenderMan::init() {
 
 void
 RenderMan::draw() {
-  queryRequest = &SceneGraph::query(*Sauron,
-                                    QUERY_ORDER::kFrontToBack,
-                                    QUERY_PROPERTY::kOpaque | 
-                                    QUERY_PROPERTY::kDynamic | 
-                                    QUERY_PROPERTY::kStatic);
+  auto queryRequest = SceneGraph::query(*Sauron,
+                                 QUERY_ORDER::kFrontToBack,
+                                 QUERY_PROPERTY::kOpaque | 
+                                 QUERY_PROPERTY::kDynamic | 
+                                 QUERY_PROPERTY::kStatic);
 
   m_GBufferDrawData.activeCam = Sauron;
-  m_GBufferDrawData.models = queryRequest;
+  m_GBufferDrawData.models = &queryRequest;
   m_GBufferPass.draw(&m_GBufferDrawData);
 
   /*

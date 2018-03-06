@@ -42,7 +42,6 @@ class DR_RENDERMAN_EXPORT RenderMan {
   exit();
 
  protected:
-  SceneGraph::QueryResult* queryRequest;
 
   Viewport m_viewport;
   std::shared_ptr<Camera> Sauron;

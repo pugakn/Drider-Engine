@@ -1,73 +1,35 @@
 #pragma once
+
+#include <dr_application.h>
 #include <dr_renderman.h>
-#include <unordered_map>
-#include <vector>
-#include <dr_util_prerequisites.h>
-#include "Model3D.h"
-#include "InputComponent.h"
-#include <dr_camera.h>
-#include <dr_viewport.h>
-#include "dr_application.h"
-#include <dr_resource_manager.h>
-#include <dr_memory.h>
-#include <dr_shader.h>
-
-#include <Windows.h>
-#include <iostream>
-#include <dr_graph.h>
-#include <thread>
-
-//#include <FMOD\fmod.hpp>
-#include <dr_fmod_sound_api.h>
-#include <dr_fmod_sound.h>
-#include <dr_fmod_channel.h>
-#include <dr_fmod_soundSystem.h>
 
 namespace driderSDK {
-  
-class TestApplication : public Application
+
+class RenderManApp : public Application
 {
 public:
-  TestApplication();
-  ~TestApplication();
 
-  void 
+
+private:
+
+  virtual void 
   postInit() override;
-  /*void onInput() override;*/
-  void
+
+  virtual void 
   postUpdate() override;
 
-  void 
+  virtual void 
   postRender() override;
-  //void onDraw() override;
-  void
+
+  virtual void 
   postDestroy() override;
-  
-  void input();
-  void initInput();
-  void initResources();
-  void initSceneGraph();
 
-  RenderMan renderManager;
+  void 
+  loadResources();
 
-  bool m_debugList;
-  //SoundAPI* soundDriver;
-  QUERY_ORDER::E m_queryOrder;
-  //DrSound *sound1;
-  //DrSound *sound2;
-  //DrChannel *channel;
-  
-  /*FMOD::System     *system;
-  FMOD::Sound      *sound1;
-  FMOD::Channel    *channel = 0;
-  FMOD_RESULT       result;
-  unsigned int      version;*/
-  std::shared_ptr<Camera> m_camera;
-  std::shared_ptr<Camera> m_leftCam;
-  std::shared_ptr<Camera> m_upCam;
-  std::shared_ptr<Camera> m_activeCam;
-  std::shared_ptr<GameObject> m_joker;
-  std::vector<Model3D*> m_animated;
+  // Inherited via Application
+
+  RenderMan m_renderMan;
 };
 
 }

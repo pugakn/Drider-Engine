@@ -2,7 +2,7 @@
 
 using namespace driderSDK;
 int main(int argc, char* argv[]) {
-  TestApplication app;
+  RenderManApp app;
 
   return app.run();
 }
