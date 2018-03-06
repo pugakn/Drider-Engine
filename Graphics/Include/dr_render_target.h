@@ -73,6 +73,11 @@ class DR_GRAPHICS_EXPORT RenderTarget
   virtual void
   release() = 0;
 
+
+  virtual void
+  clear(const DeviceContext& deviceContext, const float color[4]) = 0;
+
+
   const DrTextureDesc& getDescriptor() const { return m_descriptor; }
   const Texture& getTexture(UInt32 id) const 
   { 
