@@ -65,15 +65,10 @@ D3DRenderTarget::set(const DeviceContext& deviceContext,
                      const DepthStencil& depthStencil) const {
 
 
-  std::vector<ID3D11RenderTargetView**> RTVA;
-  for (int i = 0; i < RTVs.size(); i++) {
-    RTVA.push_back(&const_cast<ID3D11RenderTargetView*>(RTVs[i]));
-  }
-
   reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext->
       OMSetRenderTargets(RTVs.size(),
-                         &RTVA[0][0],
+                         &RTVs[0],
                          reinterpret_cast<const D3DDepthStencil*>(&depthStencil)->
                            APIDepthView);
 
@@ -88,7 +83,7 @@ D3DRenderTarget::set(const DeviceContext& deviceContext,
   reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext->RSSetViewports(1, &viewport_RT);
 
-  float rgba[4];
+  float rgba[4]; // Cambiar después xD
   rgba[0] = 0.5f;
   rgba[1] = 0.5f;
   rgba[2] = 0.5f;
