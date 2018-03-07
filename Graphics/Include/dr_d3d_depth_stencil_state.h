@@ -31,7 +31,7 @@ class DR_GRAPHICS_EXPORT D3DDepthStencilState : public DepthStencilState
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   void
-  create(const Device& device, const DrDepthStencilDesc& desc) override;
+  create(const Device& device, const DrDepthStencilStateDesc& desc) override;
 
   /**
   * TEST::

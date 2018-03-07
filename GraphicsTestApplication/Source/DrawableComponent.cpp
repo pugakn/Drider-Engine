@@ -10,62 +10,29 @@
 #include "Technique.h"
 
 namespace driderSDK {
-DrawableComponent::DrawableComponent(GameObject& gameObject)
-  : GameComponent(gameObject)
-{}
-
-void
-DrawableComponent::setModel(std::shared_ptr<Model> model) {
-  m_model = model;
-
-  if(auto model = m_model.lock()) {
-    create(model);
-  }
-}
 
 void 
 DrawableComponent::setShaderTechnique(Technique* technique) {
   m_technique = technique;
-  if (m_technique) {
-    m_technique->compile();
-  }  
-}
-
-std::shared_ptr<Model>
-DrawableComponent::getModel() const {
-  return m_model.lock();
-}
-
-void
-DrawableComponent::onCreate() {
-  m_created = false;
-}
-
-void 
-DrawableComponent::onUpdate() {
-  if (getModel() && m_meshes.empty()) {
-    create(getModel());
-  }
 }
 
 void 
 DrawableComponent::onRender() {
   if (m_technique) {
-
-    auto& deviceContext = GraphicsAPI::getDeviceContext();
-
+    
     if (m_technique->prepareForDraw()) {
 
-      deviceContext.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
-      
-      if (auto comp = m_gameObject.getComponent<RenderComponent>()) {
-        auto& meshes = comp->getMeshes(); 
-        for (auto& mesh : meshes) {
+      auto& deviceContext = GraphicsAPI::getDeviceContext();
+
+      deviceContext.setPrimitiveTopology(m_primitive);
+
+      setWorld();
+
+      for (auto& mesh : m_meshes) {
            mesh.vertexBuffer->set(deviceContext);
            mesh.indexBuffer->set(deviceContext);
 
            deviceContext.draw(mesh.indicesCount, 0, 0);
-        }
       }
     }
   } 
@@ -73,19 +40,7 @@ DrawableComponent::onRender() {
 
 void 
 DrawableComponent::onDestroy() {
-  m_technique->destroy();
-
   destroyMeshBuffers();
-  
-  m_model = std::weak_ptr<Model>();
-}
-
-void 
-DrawableComponent::create(std::shared_ptr<Model> model) {
-  if (!m_created) {
-    m_created = true;
-    createMeshBuffers(model->meshes);
-  }
 }
 
 void 
@@ -95,6 +50,7 @@ DrawableComponent::createMeshBuffers(std::vector<Mesh>& meshes) {
   } 
 
   auto& device = GraphicsAPI::getDevice();
+  auto& dc = GraphicsAPI::getDeviceContext();
 
   for(auto& mesh : meshes)
   {
@@ -102,13 +58,16 @@ DrawableComponent::createMeshBuffers(std::vector<Mesh>& meshes) {
     DrBufferDesc buffDesc;
     
     buffDesc.type = DR_BUFFER_TYPE::kVERTEX;
+    buffDesc.usage = DR_BUFFER_USAGE::kDynamic;
     buffDesc.sizeInBytes = mesh.vertices.size() * sizeof(Vertex);
     buffDesc.stride = sizeof(Vertex);
     auto buffData = reinterpret_cast<byte*>(mesh.vertices.data());
     Buffer* buffer = device.createBuffer(buffDesc, buffData);
+    buffer->updateFromBuffer(dc, buffData);
     meshBuffer.vertexBuffer = dynamic_cast<VertexBuffer*>(buffer);
   
     buffDesc.type = DR_BUFFER_TYPE::kINDEX;
+    buffDesc.usage = DR_BUFFER_USAGE::kDefault;
     buffDesc.sizeInBytes = mesh.indices.size() * sizeof(UInt32);
     buffDesc.stride = 0;
     buffData = reinterpret_cast<byte*>(mesh.indices.data());
@@ -119,6 +78,25 @@ DrawableComponent::createMeshBuffers(std::vector<Mesh>& meshes) {
 
     m_meshes.push_back(meshBuffer);
   }
+}
+
+void
+DrawableComponent::updateVertexBuffer(std::vector<Mesh>& meshes) {
+
+  Int32 i = 0;
+
+  auto& dc = GraphicsAPI::getDeviceContext();
+
+  for(auto& mesh : meshes)
+  {
+
+    auto newData = reinterpret_cast<byte*>(mesh.vertices.data());
+
+    m_meshes[i].vertexBuffer->updateFromBuffer(dc, newData);
+
+    ++i;
+  }
+
 }
 
 void 

@@ -37,7 +37,7 @@ public:
   RenderComponent(GameObject& _gameObject, 
                   MeshList&& _materials);
 
-  const MeshList&
+  /*const */MeshList&
   getMeshes()
   {
     return m_meshes;
@@ -61,6 +61,9 @@ private:
 
   virtual void 
   onDestroy() override;
+
+  virtual void
+  cloneIn(GameObject& _go);
 
   bool m_isModel;
   WeakModelRef m_model;

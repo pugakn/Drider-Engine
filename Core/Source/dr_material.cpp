@@ -1,4 +1,9 @@
 #include "dr_material.h"
+#include <dr_device_context.h>
+#include <dr_graphics_api.h>
+#include <dr_texture_core.h>
+#include <dr_texture.h>
+
 
 namespace driderSDK {
 
@@ -11,6 +16,63 @@ namespace driderSDK {
 //    }
 //  }
 //}
+
+Material::Material(const TString& name) : m_name(name) {
+}
+
+Material::Material(const Material& other) {
+  *this = other;
+}
+
+Material& 
+Material::operator=(const Material& other) {
+  
+  for (auto& prop : other.m_properties) {
+   
+    PropertyPtr newProp;
+
+    switch (prop->type) {
+   
+    case PROPERTY_TYPE::kFloat:
+    newProp = copyProperty<FloatProperty>(prop);
+    break;
+    case PROPERTY_TYPE::kVec2:
+    newProp = copyProperty<Vec2Property>(prop);
+    break;
+    case PROPERTY_TYPE::kVec3:
+    newProp = copyProperty<Vec3Property>(prop);
+    break;
+    case PROPERTY_TYPE::kVec4:
+    newProp = copyProperty<Vec4Property>(prop);
+    break;
+    default:
+    break;
+    }
+
+    DR_ASSERT(newProp);
+
+    m_properties.push_back(std::move(newProp));
+  }
+    
+  return *this;
+}
+
+void 
+Material::set() {
+  for (SizeT i = 0; i < m_properties.size(); ++i) {
+    if (auto t = m_properties[i]->texture.lock()) {
+      t->textureGFX->set(GraphicsAPI::getDeviceContext(), i);
+    }
+  }
+}
+
+void
+Material::setTexture(std::shared_ptr<TextureCore> texture, 
+                     const TString& propertyName) {
+  if (auto prop = getProperty(propertyName)) {
+    prop->texture = texture;
+  }
+}
 
 Property*
 Material::addProperty(const TString& name, PROPERTY_TYPE::E type) {
@@ -97,6 +159,11 @@ Material::transformProperty(SizeT index, PROPERTY_TYPE::E newType) {
   }
   
   return transformed;
+}
+
+bool
+Material::projectShadow() const {
+  return m_proyectShadow;
 }
 
 Material::PropertyPtr 

@@ -1,5 +1,6 @@
 #include "StaticMeshTechnique.h"
 #include <dr_camera.h>
+#include <dr_vertex.h>
 #include <dr_device.h>
 #include <dr_file.h>
 #include <dr_gameObject.h>
@@ -37,19 +38,7 @@ StaticMeshTechnique::compile() {
                                                       fragmentSrc.size(), 
                                                       DR_SHADER_TYPE_FLAG::kFragment);
 
-  std::vector<DrInputElementDesc> inputDesc;
-  DrInputElementDesc ie;
-  ie.format = DR_FORMAT::kDrFormat_R32G32B32A32_FLOAT;
-  ie.offset = 0;
-  ie.semanticName = "POSITION";
-  inputDesc.push_back(ie);
-
-  ie.format = DR_FORMAT::kDrFormat_R32G32B32A32_FLOAT;
-  ie.offset = 16;
-  ie.semanticName = "NORMAL";
-  inputDesc.push_back(ie);
-
-  m_inputLayout = device.createInputLayout(inputDesc, 
+  m_inputLayout = device.createInputLayout(Vertex::getInputDesc(), 
                                            *vertexShader->m_shaderBytecode);
 
   DrBufferDesc bdesc;

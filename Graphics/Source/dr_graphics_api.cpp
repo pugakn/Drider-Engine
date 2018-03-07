@@ -21,12 +21,11 @@ namespace driderSDK {
 void 
 GraphicsAPI::init(UInt32 w, UInt32 h, void * hwnd, DR_GRAPHICS_API::E api)
 {
-  SmartPtr<D3DTexture> backBufferTexture;
+  GFXUnique<D3DTexture> backBufferTexture;
   if (api == DR_GRAPHICS_API::D3D11) {
 #if DR_PLATFORM  == DR_PLATFORM_WINDOWS
-    m_device = dr_unique_custom(new D3DDevice, &dr_gfx_deleter<Device>);
-    m_deviceContext = dr_unique_custom(new D3DDeviceContext,
-      &dr_gfx_deleter<DeviceContext>);
+    m_device = dr_gfx_unique<Device>(new D3DDevice);
+    m_deviceContext = dr_gfx_unique<DeviceContext>(new D3DDeviceContext);
     /* WHUT */
     backBufferTexture = dr_make_unique<D3DTexture>();
 #else
@@ -47,34 +46,25 @@ GraphicsAPI::init(UInt32 w, UInt32 h, void * hwnd, DR_GRAPHICS_API::E api)
   swapDesc.height = h;
   swapDesc.width = w;
 
-  m_swapChain = dr_unique_custom(m_device->createSwapChain(swapDesc),
-    &dr_gfx_deleter<SwapChain>);
+  m_swapChain = dr_gfx_unique(m_device->createSwapChain(swapDesc));
 
-  DrTextureDesc depthTextureDesc;
-  depthTextureDesc.bindFlags = DR_BIND_FLAGS::DEPTH_STENCIL;
+  DrDepthStencilDesc depthTextureDesc;
+  depthTextureDesc.bindFlags = DR_BIND_FLAGS::DEPTH_STENCIL | DR_BIND_FLAGS::SHADER_RESOURCE;
   depthTextureDesc.width = w;
   depthTextureDesc.height = h;
-  depthTextureDesc.mipLevels = 1;
   depthTextureDesc.Format = DR_FORMAT::kD24_UNORM_S8_UINT;
 
   {
-    auto dt = m_device->createEmptyTexture(depthTextureDesc);
-    m_depthTexture = dr_unique_custom(dt, &dr_gfx_deleter<Texture>);
+    auto ds = m_device->createDepthStencil(depthTextureDesc);
+    m_depthStencilView = dr_gfx_unique(ds);
   }
-
-  {
-    auto ds = m_device->createDepthStencil(*m_depthTexture);
-    m_depthStencilView = dr_unique_custom(ds, &dr_gfx_deleter<DepthStencil>);
-  }
-
   m_swapChain->getBackBuffer(*backBufferTexture);
-
   {
     std::vector<Texture*> texturesVec;
     texturesVec.push_back(backBufferTexture.get());
     auto bbRT = m_device->createRenderTarget(texturesVec);
 
-    m_backBufferView = dr_unique_custom(bbRT, &dr_gfx_deleter<RenderTarget>);
+    m_backBufferView = dr_gfx_unique(bbRT);
   }
 
 
@@ -111,7 +101,7 @@ GraphicsAPI::init(UInt32 w, UInt32 h, void * hwnd, DR_GRAPHICS_API::E api)
   {
     auto rs = m_device->createRasteizerState(rasterizerStateDesc);
 
-    m_rasterizerState = dr_unique_custom(rs, &dr_gfx_deleter<RasterizerState>);
+    m_rasterizerState = dr_gfx_unique(rs);
   }
 
   m_rasterizerState->set(*m_deviceContext);
@@ -122,9 +112,10 @@ GraphicsAPI::init(UInt32 w, UInt32 h, void * hwnd, DR_GRAPHICS_API::E api)
   /*BLEND STATES*/
   ////Opaque
   DrBlendStateDesc blendDesc;
+  blendDesc.blendEnable = false;
   {
     auto rs = m_device->createBlendState(blendDesc);
-    m_blendSStates[DR_BLEND_STATES::kOpaque] = dr_unique_custom(rs, &dr_gfx_deleter<BlendState>);
+    m_blendSStates[DR_BLEND_STATES::kOpaque] = dr_gfx_unique(rs);
   }
   ////Additive
   blendDesc.blendEnable = true;;
@@ -132,9 +123,11 @@ GraphicsAPI::init(UInt32 w, UInt32 h, void * hwnd, DR_GRAPHICS_API::E api)
     blendDesc.srcBlendAlpha = DR_BLEND::kBLEND_SRC_ALPHA;
   blendDesc.destBlend =
     blendDesc.destBlendAlpha = DR_BLEND::kBLEND_ONE;
+  blendDesc.blendOp = DR_BLEND_OP::kBLEND_OP_ADD;
+  blendDesc.blendOpAlpha = DR_BLEND_OP::kBLEND_OP_ADD;
   {
     auto rs = m_device->createBlendState(blendDesc);
-    m_blendSStates[DR_BLEND_STATES::kAdditive] = dr_unique_custom(rs, &dr_gfx_deleter<BlendState>);
+    m_blendSStates[DR_BLEND_STATES::kAdditive] = dr_gfx_unique(rs);
   }
   ////AlphaBlend
   blendDesc.blendEnable = true;;
@@ -146,18 +139,18 @@ GraphicsAPI::init(UInt32 w, UInt32 h, void * hwnd, DR_GRAPHICS_API::E api)
   blendDesc.blendOpAlpha = DR_BLEND_OP::kBLEND_OP_ADD;
   {
     auto rs = m_device->createBlendState(blendDesc);
-    m_blendSStates[DR_BLEND_STATES::kAlphaBlend] = dr_unique_custom(rs, &dr_gfx_deleter<BlendState>);
+    m_blendSStates[DR_BLEND_STATES::kAlphaBlend] = dr_gfx_unique(rs);
   }
 
   /*DEPTH STATES*/
-  DrDepthStencilDesc BlendDesc0;
-  DrDepthStencilDesc BlendDesc1;
-  DrDepthStencilDesc BlendDesc2;
+  DrDepthStencilStateDesc BlendDesc0;
+  DrDepthStencilStateDesc BlendDesc1;
+  DrDepthStencilStateDesc BlendDesc2;
   ////Read-Write
   BlendDesc0.depthFunc = DR_COMPARISON_FUNC::kLESS_EQUAL;
   {
     auto bd = m_device->createDepthStencilState(BlendDesc0);
-    m_depthStencilStates[DR_DEPTH_STENCIL_STATES::kDepthRW] = dr_unique_custom(bd, &dr_gfx_deleter<DepthStencilState>);
+    m_depthStencilStates[DR_DEPTH_STENCIL_STATES::kDepthRW] = dr_gfx_unique(bd);
   }
   //// DepthNone
   BlendDesc1.depthEnable = false;
@@ -165,14 +158,14 @@ GraphicsAPI::init(UInt32 w, UInt32 h, void * hwnd, DR_GRAPHICS_API::E api)
   BlendDesc1.depthFunc = DR_COMPARISON_FUNC::kEQUAL;
   {
     auto bd = m_device->createDepthStencilState(BlendDesc1);
-    m_depthStencilStates[DR_DEPTH_STENCIL_STATES::kNone] = dr_unique_custom(bd, &dr_gfx_deleter<DepthStencilState>);
+    m_depthStencilStates[DR_DEPTH_STENCIL_STATES::kNone] = dr_gfx_unique(bd);
   }
   //// DepthRead
   BlendDesc2.depthWriteMask = DR_DEPTH_WRITE_MASK::kMASK_ZERO;
   BlendDesc2.depthFunc = DR_COMPARISON_FUNC::kLESS_EQUAL;
   {
     auto bd = m_device->createDepthStencilState(BlendDesc2);
-    m_depthStencilStates[DR_DEPTH_STENCIL_STATES::kDepthR] = dr_unique_custom(bd, &dr_gfx_deleter<DepthStencilState>);
+    m_depthStencilStates[DR_DEPTH_STENCIL_STATES::kDepthR] = dr_gfx_unique(bd);
   }
 }
 void 
@@ -221,10 +214,6 @@ GraphicsAPI::getDepthStencil() {
   return *GraphicsDriver::API().m_depthStencilView;
 }
 
-Texture&
-GraphicsAPI::getDepthTexture() {
-  return *GraphicsDriver::API().m_depthTexture;
-}
 
 RasterizerState&
 GraphicsAPI::getRasterizerState() {

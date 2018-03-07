@@ -1,30 +1,38 @@
 #pragma once
-#include <unordered_map>
+
 #include <functional>
-#include "dr_engine_prerequisites.h"
+#include <unordered_map>
+
 #include <dr_memory.h>
 #include <dr_module.h>
-#include <dr_codec.h>
+
+#include "dr_engine_prerequisites.h"
 
 namespace driderSDK {
 
 class Resource;
-
-
+class Codec;
+class Material;
 /**
 * Load resources.
 *
 * Sample usage:
 *	loadResource("name.png", "resorces/");
 */
-class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager> {
+class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager> 
+{
+
+  friend Codec;
+
  public:
+  
+   using SharedResource = std::shared_ptr<Resource>;
 
   /**
   * TEST::resourceMConstructor
   *	Default constructor.
   */
-  ResourceManager() { }
+  ResourceManager();
 
   ResourceManager(const ResourceManager&) = delete;
 
@@ -34,10 +42,7 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager> {
   * TEST::resourceMDestructor
   *	Default destructor.
   */
-  ~ResourceManager() {}
-
-  void
-  onStartUp();
+  ~ResourceManager();
 
   /**
   * TEST::getReference
@@ -49,7 +54,7 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager> {
   * @return
   *   Return the shared_ptr to a Resource.
   */
-  std::shared_ptr<Resource>
+  static SharedResource
   getReference(const TString& key);
 
   /**
@@ -63,8 +68,8 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager> {
   * @return
   *   void.
   */
-  std::shared_ptr<Resource>
-  loadResource (const TString& resourceName);
+  static SharedResource
+  loadResource(const TString& resourceName);
 
   /**
   * TEST::loadResource
@@ -80,27 +85,54 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager> {
   * @return
   *   void.
   */
-  std::shared_ptr<Resource>
+  static SharedResource
   loadResource(const TString& resourceName,
                void* extraData);
-  
-private:
+
   /**
-  * TEST::createResource
-  * Creates a resource, then puts in the contentResource and sets a key
+  * TEST::existInResourceContent
+  * Checks if a resource exist.
   *
-  * @param resourceName
-  *   Resource's name.
-  *
-  * @param codec
-  *   Pointer to codec.
+  * @param key
+  *   The key thats reference a resource in the contentResource
   *
   * @return
-  *   void.
+  *   Return true if the resource exist, else return false.
   */
+  static bool
+  isResourceLoaded(const TString& key);
+
+  /**
+  * Creates a material using default properties or empty.
+  * 
+  * @param empty
+  *  Specifies if the material should be empty.
+  * 
+  * @return 
+  *   The dummy material if empty is false, an empty material otherwise.
+  */
+  static std::shared_ptr<Material>
+  createMaterial(const TString& materialName, bool empty = false);
+  
+  template<class T>
+  static std::shared_ptr<T>
+  getReferenceT(const TString& resourceName)
+  {
+    return std::dynamic_pointer_cast<T>(getReference(resourceName));
+  }
+
+private:
   void
-  createResource(const TString& resourceName,
-                 Codec* codec);
+  onStartUp();
+
+  void
+  createDefaultResources();
+
+  void
+  createDummyTexture();
+
+  void
+  createDummyMaterial();
 
   /**
   * TEST::createResource
@@ -122,35 +154,20 @@ private:
   createResource(const TString& resourceName,
                  Codec* codec,
                  void* extraInfo);
-  
-public:
   /**
   * Add a resource to the ResourceContent of the ResourceManager
   */
-  void
-  addResource(const TString& resourceName, 
-              std::shared_ptr<Resource> pResource);
+  static void
+  addResource(SharedResource pResource,
+              const TString& resourceName);
 
-  /**
-  * TEST::existInResourceContent
-  * Checks if a resource exist.
-  *
-  * @param key
-  *   The key thats reference a resource in the contentResource
-  *
-  * @return
-  *   Return true if the resource exist, else return false.
-  */
-  bool
-  existInResourceContent (const TString& key);
   
- public:
-  using ResorceSmartPtr = std::shared_ptr<Resource>;
-  std::unordered_map<TString, std::shared_ptr<Resource>> resourceContent;
-  std::unordered_map<Codec*, std::function<ResorceSmartPtr()>> resourceFactory;
-  std::vector<std::unique_ptr<Codec>> codecs;
-  //ResourceFactory* factory;
+ private:
+  using ResourceFactory = std::function<SharedResource()>;
 
+  std::unordered_map<TString, SharedResource> m_resources;
+  std::unordered_map<Codec*, ResourceFactory> m_resourceFactories;
+  std::vector<std::unique_ptr<Codec>> m_codecs;
 };
 
 }

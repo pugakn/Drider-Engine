@@ -2,10 +2,6 @@
 #include <iostream>
 #include <Windows.h>
 #include <SDL\SDL.h>
-#include <dr_graphics_driver.h>
-#include <dr_input_manager.h>
-#include <dr_time.h>
-#include "dr_graph.h"
 
 namespace driderSDK {
 
@@ -31,19 +27,7 @@ Application::init() {
     
   createWindow();
 
-
-  HWND win = GetActiveWindow();
-  
-  GraphicsDriver::startUp(DR_GRAPHICS_API::D3D11, 
-                          m_viewport.width, 
-                          m_viewport.height,
-                          win);
-
-  InputManager::startUp((SizeT)win);
-
-  SceneGraph::startUp();
-
-  Time::startUp();
+  m_hwnd = GetActiveWindow();
 
   postInit();
 }
@@ -78,32 +62,18 @@ Application::update() {
     }
   }
 
-  InputManager::capture();
-  Time::update();
-  SceneGraph::update();
-
   postUpdate();
 }
 
 void 
 Application::render() {
-
-  GraphicsDriver::API().clear();
-
   postRender();
-
-  GraphicsDriver::API().swapBuffers();
 }
 
 void 
 Application::destroy() {
   SDL_Quit();
-
-  GraphicsDriver::shutDown();
-  InputManager::shutDown();
-  Time::shutDown();
-  SceneGraph::shutDown();
-
+  
   postDestroy();
 }
 

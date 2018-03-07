@@ -9,7 +9,8 @@ Transform::Transform()
   : m_outdatedTransform(true),
     m_position(0,0,0),
     m_scale(1,1,1),
-    m_rotation(0,0,0) {
+    m_rotation(0,0,0),
+    m_changed(false) {
 }
 
 const Matrix4x4& 
@@ -141,13 +142,26 @@ Transform Transform::operator*(const Transform& other) const {
   r.m_position = Vector4D(x,1) * mat + other.m_position;
   r.m_rotation = m_rotation + other.m_rotation;
   r.m_scale = m_scale * other.m_scale;
-  r.update();
+  r.invalidate();
+  //r.update();
 
   return r;
 }
 
+bool 
+Transform::operator==(const Transform& other) const {
+  return m_position == other.m_position && 
+         m_rotation == other.m_rotation &&
+         m_scale == other.m_scale;
+}
+
+bool Transform::operator!=(const Transform & other) const {
+  return !(*this == other);
+}
+
 void
 Transform::invalidate() {
+  m_changed = true;
   m_outdatedTransform = true;
 }
 
@@ -158,6 +172,15 @@ Transform::update() const {
   m_transform.Rotation(m_rotation.x, m_rotation.y, m_rotation.z);
   m_transform.Scale(m_scale);
   m_transform.Translation(m_position);
+}
+
+void 
+Transform::newFrame() {
+  m_changed = false;
+}
+
+bool Transform::changed() const {
+  return m_changed;
 }
 
 }

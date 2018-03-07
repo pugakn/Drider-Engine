@@ -18,6 +18,8 @@ struct GBufferDrawData : PassDrawData
 {
   Camera* activeCam;
   std::vector<std::pair<Matrix4x4, RenderMesh>>* models;
+  RenderTarget* OutRt;
+  DepthStencil* dsOptions;
 };
 
 class GBufferPass : RenderPass {

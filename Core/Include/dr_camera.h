@@ -64,6 +64,12 @@ public:
 	*
 	*/
 	~Camera();
+  
+  virtual SharedGameObj
+  createInstance();
+
+  virtual void
+  copyData(SharedGameObj);
 
 	/**
 	* TEST::update
@@ -192,7 +198,7 @@ public:
 	*  The view proyection of the camera.
 	*/
   const Matrix4x4&
-  getVP();
+  getVP() const;
 
   /**
   * Gets the view matrix.
@@ -201,7 +207,7 @@ public:
   *   View matrix.
   */
   const Matrix4x4&
-  getView();
+  getView() const;
 
   /**
   * Gets the projection matrix.
@@ -210,16 +216,16 @@ public:
   *   Projection matrix.
   */
   const Matrix4x4&
-  getProjection();
+  getProjection() const;
 
   float
-  getFarPlane();
+  getFarPlane() const;
 
   float
-  getNearPlane();
+  getNearPlane() const;
 
   float
-  getFOV();
+  getFOV() const;
 
   BEGINING_REGISTER(Camera)
   
@@ -232,6 +238,8 @@ public:
   END_REGISTER
 
  private:
+
+
 	Vector3D m_target;
 	Vector3D m_up;
 	Matrix4x4 m_vp;

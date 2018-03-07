@@ -11,6 +11,7 @@ void* D3DTexture::getAPIObject() {
 }
 
 void** D3DTexture::getAPIObjectReference() {
+  DR_ASSERT(m_descriptor.bindFlags != DR_BIND_FLAGS::DEPTH_STENCIL);
   return reinterpret_cast<void**>(&APIView);
 }
 
@@ -22,9 +23,6 @@ D3DTexture::createFromMemory(const Device& device,
   m_descriptor = desc;
   UInt32 flags = 0;
 
-  if (desc.genMipMaps) {
-    flags |= D3D11_RESOURCE_MISC_GENERATE_MIPS;
-  }
 
   D3D11_TEXTURE2D_DESC apiDesc = { 0 };
   apiDesc.Width = desc.width;
@@ -39,15 +37,18 @@ D3DTexture::createFromMemory(const Device& device,
   apiDesc.CPUAccessFlags = 0;
   apiDesc.Usage = D3D11_USAGE_DEFAULT;
 
+  if (desc.genMipMaps) {
+    flags |= D3D11_RESOURCE_MISC_GENERATE_MIPS;
+    apiDesc.BindFlags |= DR_BIND_FLAGS::RENDER_TARGET;
+  }
   D3D11_SUBRESOURCE_DATA initData{};
   initData.pSysMem = buffer;
   initData.SysMemPitch = desc.pitch;
-
   D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
   ZeroMemory(&srvDesc, sizeof(srvDesc));
-  D3D11_SRV_DIMENSION dim = D3D11_SRV_DIMENSION_UNKNOWN;
   srvDesc.Format = apiDesc.Format;
-
+  D3D11_SRV_DIMENSION dim;
+  dim = D3D11_SRV_DIMENSION_UNKNOWN;
   switch (desc.dimension)
   {
   case DR_DIMENSION::k1D:
@@ -66,18 +67,33 @@ D3DTexture::createFromMemory(const Device& device,
     break;
   }
   srvDesc.ViewDimension = dim;
-  srvDesc.Texture2D.MipLevels = -1;//desc.mipLevels; 
+  if (desc.bindFlags & DR_BIND_FLAGS::DEPTH_STENCIL) {
+    srvDesc.Texture2D.MipLevels = 1;
+    if (apiDesc.Format == DXGI_FORMAT_R32_TYPELESS) {
+      srvDesc.Format = DXGI_FORMAT_R32_FLOAT;
+    }
+    else if (apiDesc.Format == DXGI_FORMAT_R16_TYPELESS) {
+      srvDesc.Format = DXGI_FORMAT_R16_FLOAT;
+    }
+    else if (apiDesc.Format == DXGI_FORMAT_R24G8_TYPELESS) {
+      srvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+    }
+  }
+  else {
+    srvDesc.Texture2D.MipLevels = -1;
+  }
 
-  apiDevice->
+
+  HRESULT hr = apiDevice->
     D3D11Device->
       CreateTexture2D(&apiDesc,
                       buffer != 0 ? &initData : 0,
                       &APITexture);
   apiDevice->
     D3D11Device->
-      CreateShaderResourceView(APITexture,
-                               &srvDesc,
-                               &APIView);
+    CreateShaderResourceView(APITexture,
+      &srvDesc,
+      &APIView);
 }
 
 void
@@ -101,15 +117,16 @@ D3DTexture::map(const DeviceContext& deviceContext, char* buffer) {
 
 void
 D3DTexture::set(const DeviceContext& deviceContext, UInt32 slot) const {
-  reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
-    D3D11DeviceContext->
+    reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
+      D3D11DeviceContext->
       PSSetShaderResources(slot, 1, &APIView);
 }
 
 void
 D3DTexture::release() {
   APITexture->Release();
-  APIView->Release();
+  if (APIView)
+    APIView->Release();
   delete this;
 }
 
@@ -134,15 +151,18 @@ D3DTexture::udpateFromMemory(const DeviceContext& deviceContext,
 
 void
 D3DTexture::generateMipMaps(const DeviceContext& deviceContext) const {
+  DR_ASSERT(m_descriptor.bindFlags != DR_BIND_FLAGS::DEPTH_STENCIL);
   reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext->
-      GenerateMips(APIView);
+    GenerateMips(APIView);
+  
 }
 
 void 
 D3DTexture::modifyTextureParams(const Device & device, const DrTextureDesc & desc) {
   APITexture->Release();
-  APIView->Release();
+  if (APIView)
+    APIView->Release();
   createFromMemory(device, desc, 0);
 }
 }

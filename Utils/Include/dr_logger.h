@@ -50,7 +50,7 @@ class DR_UTIL_EXPORT Logger : public Module<Logger>
   * Use __FILE__ in the Filename parameter.
   * Use __LINE__ in the Filename parameter.
   */
-  void
+  static void
   addError(const String Filename,
            int lineNumber,
            const TString message);
@@ -62,12 +62,12 @@ class DR_UTIL_EXPORT Logger : public Module<Logger>
   * Use __FILE__ in the Filename parameter.
   * Use __LINE__ in the Filename parameter.
   */
-  void
+  static void
   addWarning(const String Filename,
              int lineNumber,
              const TString message);
 
-  void
+  static void
   addLog(const TString message);
 
  protected:

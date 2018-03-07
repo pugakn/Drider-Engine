@@ -2,9 +2,7 @@
 #include <unordered_map>
 #include <vector>
 #include <dr_util_prerequisites.h>
-#include <dr_d3d_graphics_api.h>
 #include "Model3D.h"
-#include "InputComponent.h"
 #include <dr_camera.h>
 #include <dr_viewport.h>
 #include "dr_application.h"
@@ -27,6 +25,7 @@ namespace driderSDK {
 
 class Technique;
 class StaticMeshTechnique;
+class AnimationTechnique;
   
 class TestApplication : public Application
 {
@@ -49,8 +48,13 @@ public:
   void input();
   void initInput();
   void initResources();
-  void initSound();
   void initSceneGraph();
+
+  void printHerarchy(std::shared_ptr<GameObject> obj, const TString& off);
+
+  void toggleAABBDebug(std::shared_ptr<GameObject> obj);
+
+  void toggleSkeletonDebug(std::shared_ptr<GameObject> obj);
 
   bool m_debugList;
   //SoundAPI* soundDriver;
@@ -69,8 +73,10 @@ public:
   std::shared_ptr<Camera> m_upCam;
   std::shared_ptr<Camera> m_activeCam;
   std::unique_ptr<Technique> m_technique;
-  std::vector<Technique*> m_techs;
+  std::unique_ptr<AnimationTechnique> m_animTech;
+  std::unique_ptr<Technique> m_linesTech;
   std::shared_ptr<GameObject> m_joker;
+  std::vector<Model3D*> m_animated;
 };
 
 }

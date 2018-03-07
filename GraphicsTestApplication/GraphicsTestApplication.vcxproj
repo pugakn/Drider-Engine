@@ -166,14 +166,13 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Include\CameraDebbug.h" />
-    <ClInclude Include="Include\DrawableAnimated.h" />
+    <ClInclude Include="Include\AABBDebug.h" />
+    <ClInclude Include="Include\AnimationTechnique.h" />
     <ClInclude Include="Include\DrawableComponent.h" />
-    <ClInclude Include="Include\InputComponent.h" />
+    <ClInclude Include="Include\FrustumDebug.h" />
     <ClInclude Include="Include\LinesTechnique.h" />
     <ClInclude Include="Include\Model3D.h" />
-    <ClInclude Include="Include\ModelDebbug.h" />
-    <ClInclude Include="Include\NPCMovement.h" />
+    <ClInclude Include="Include\SkeletonDebug.h" />
     <ClInclude Include="Include\StaticMeshTechnique.h" />
     <ClInclude Include="Include\Technique.h" />
     <ClInclude Include="targetver.h" />
@@ -181,14 +180,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GraphicsTestApplication.cpp" />
-    <ClCompile Include="Source\CameraDebbug.cpp" />
-    <ClCompile Include="Source\DrawableAnimated.cpp" />
+    <ClCompile Include="Source\AABBDebug.cpp" />
+    <ClCompile Include="Source\AnimationTechnique.cpp" />
     <ClCompile Include="Source\DrawableComponent.cpp" />
-    <ClCompile Include="Source\InputComponent.cpp" />
+    <ClCompile Include="Source\FrustumDebug.cpp" />
     <ClCompile Include="Source\LinesTechnique.cpp" />
     <ClCompile Include="Source\Model3D.cpp" />
-    <ClCompile Include="Source\ModelDebbug.cpp" />
-    <ClCompile Include="Source\NPCMovement.cpp" />
+    <ClCompile Include="Source\SkeletonDebug.cpp" />
     <ClCompile Include="Source\StaticMeshTechnique.cpp" />
     <ClCompile Include="Source\Technique.cpp" />
     <ClCompile Include="TestApplication.cpp" />

@@ -29,18 +29,26 @@ namespace QUERY_ORDER {
  };
 }
 
-namespace QUERY_PROPERTYS
+namespace QUERY_PROPERTY
 {
 enum E : UInt32
 {
-  kTransparent = 0x80000000,
+  kTransparent = 1U << 31,
   kOpaque = kTransparent >> 1,
   kStatic = kOpaque >> 1,
-  kDynamic = kStatic >> 1
+  kDynamic = kStatic >> 1,
+  kAny = kTransparent | kOpaque | kStatic | kDynamic
   /*kTriangles = 0x1,
   kLines = 0x2*/
 };
 }
+
+struct DR_CORE_EXPORT QueryObjectInfo 
+{
+  const Matrix4x4& world;
+  const RenderMesh& mesh;
+  const std::vector<Matrix4x4>* bones;
+};
 
 class DR_CORE_EXPORT SceneGraph : public Module<SceneGraph>
 {
@@ -48,7 +56,7 @@ public:
   using SharedModel = std::shared_ptr<Model>;
   using SharedGameObject = std::shared_ptr<GameObject>;
   using GameObjectList = std::vector<SharedGameObject>;
-  using QueryResult = std::vector<std::pair<Matrix4x4,RenderMesh>>;   
+  using QueryResult = std::vector<QueryObjectInfo>;   
 
   SceneGraph();
 
@@ -57,11 +65,34 @@ public:
   static void
   buildOctree();
 
+  /**
+  * Adds an object to the graph (root child).
+  */
   static void
   addObject(SharedGameObject gameObject); 
 
+  /**
+  * Creates a node of Type T and adds it to the graph (root child).
+  * 
+  * @param name
+  *   Name of the node. 
+  */
+  template<class T = GameObject>
+  static SharedGameObject
+  createObject(const TString& name)
+  {
+    SharedGameObject obj = std::make_shared<T>(name);
+
+    addObject(obj);
+
+    return obj;
+  }
+
   static SharedGameObject 
   getRoot();
+
+  static SharedGameObject 
+  getOctree();
 
   /**
   * Query meshes from the scene graph
@@ -76,9 +107,6 @@ public:
   static void 
   draw();
   /****************/
-  static SharedGameObject
-  createNode(SharedGameObject parent, SharedModel model);
-
 private:
   using ObjectComp = std::function<bool(SharedGameObject, SharedGameObject)>;
   using GameObjectQueue = std::priority_queue<SharedGameObject,
@@ -104,6 +132,9 @@ private:
   void
   onStartUp();
 
+  void
+  onShutDown();
+
   static void
   testObjectOct(SharedGameObject object,
                 Frustrum& frustrum, 
@@ -119,6 +150,14 @@ private:
   filterObjects(GameObjectQueue& objects, 
                 QueryResult& result, 
                 UInt32 props);
+
+  static void
+  addGameObjectsStatics(GameObject& node,
+                        std::vector<std::shared_ptr<GameObject>>* list);
+
+  static void
+  addAllChilds(GameObject& node,
+               std::vector<std::shared_ptr<GameObject>>* list);
 private:
   SharedGameObject m_root;
   SharedGameObject m_octree;

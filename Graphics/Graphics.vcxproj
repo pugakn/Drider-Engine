@@ -171,6 +171,7 @@
     <ClInclude Include="Include\dr_d3d_vertex_shader.h" />
     <ClInclude Include="Include\dr_depth_stencil.h" />
     <ClInclude Include="Include\dr_depth_stencil_state.h" />
+    <ClInclude Include="Include\dr_gfx_memory.h" />
     <ClInclude Include="Include\dr_graphics_api.h" />
     <ClInclude Include="Include\dr_graphics_defines.h" />
     <ClInclude Include="Include\dr_device.h" />

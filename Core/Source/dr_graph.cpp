@@ -1,14 +1,18 @@
 #include "dr_graph.h"
+
+#include <dr_frustrum.h>
+#include <dr_matrix4x4.h>
 #include <dr_vector3d.h>
 #include <dr_vector4d.h>
-#include <dr_matrix4x4.h>
-#include <dr_frustrum.h>
+
 #include "dr_aabb_collider.h"
+#include "dr_animator_component.h"
 #include "dr_camera.h"
 #include "dr_gameObject.h"
 #include "dr_model.h"
 #include "dr_render_component.h"
 #include "dr_root_node.h"
+#include "dr_octree.h"
 
 namespace driderSDK {
 
@@ -17,8 +21,15 @@ SceneGraph::SceneGraph() {}
 SceneGraph::~SceneGraph() {}
 
 void 
-SceneGraph::buildOctree() {
-  //m_octree
+SceneGraph::onStartUp() {
+  auto r = std::make_shared<RootNode>();
+  r->init();
+  m_root = r;
+}
+
+void
+SceneGraph::onShutDown() {
+  m_root->destroy();
 }
 
 void 
@@ -26,9 +37,27 @@ SceneGraph::addObject(SharedGameObject gameObject) {
   instance().m_root->addChild(gameObject);
 }
 
+void 
+SceneGraph::buildOctree() {
+  instance().m_octree = std::make_shared<GameObject>();
+  std::vector<std::shared_ptr<GameObject>> staticGameObjects;
+
+  addGameObjectsStatics(*instance().m_root, &staticGameObjects);
+
+  Octree octree(&(*instance().m_octree), &staticGameObjects);
+  octree.buildTree();
+}
+
+
 SceneGraph::SharedGameObject 
 SceneGraph::getRoot() {
   return instance().m_root;
+}
+
+SceneGraph::SharedGameObject
+SceneGraph::getOctree()
+{
+  return instance().m_octree;
 }
 
 void
@@ -37,7 +66,6 @@ SceneGraph::update() {
   //instance().m_mutex.lock();
 
   instance().m_root->update();
-
   //instance().m_mutex.unlock();
 }
 
@@ -46,26 +74,11 @@ SceneGraph::draw() {
   //instance().m_mutex.lock();
 
   instance().m_root->render();
-
+  if (instance().m_octree)
+  {
+    instance().m_octree->render();
+  }
   //instance().m_mutex.unlock();
-}
-
-SceneGraph::SharedGameObject
-SceneGraph::createNode(SharedGameObject parent, SharedModel model) {
-
-  auto node = std::make_shared<GameObject>();
-
-  parent->addChild(node);
-    
-  node->createComponent<RenderComponent>(model);
-
-  node->createComponent<AABBCollider>(model->aabb);
-
-  return node;
-}
-
-void SceneGraph::onStartUp() {
-  m_root = std::make_shared<RootNode>();
 }
 
 SceneGraph::QueryResult
@@ -115,6 +128,7 @@ SceneGraph::testObjectOct(SharedGameObject object,
   
   if (ins) {
     if (object->getComponent<RenderComponent>()) {
+        object->render();
         objects.push(object);
     }
   }
@@ -140,6 +154,9 @@ SceneGraph::testObject(SharedGameObject object,
     auto inter = frustrum.intersects(aabbCollider->getTransformedAABB());
 
     if (inter != FRUSTRUM_INTERSECT::kOutside) {
+      /******************************************/
+      object->render();
+      /******************************************/
       objects.push(object);
     }      
   }
@@ -160,17 +177,23 @@ SceneGraph::filterObjects(GameObjectQueue& objects,
 
     auto obj = objects.top();
 
+    const std::vector<Matrix4x4>* bones = nullptr;
+
+    if (auto animComp = obj->getComponent<AnimatorComponent>()) {
+      bones = &animComp->getBonesTransforms();
+    }
+
     auto& meshes = obj->getComponent<RenderComponent>()->getMeshes();
 
     for (auto& mesh : meshes) {
       
       UInt32 meshProps = 0;
-
+      
       if (obj->isStatic()) {
-        meshProps |= QUERY_PROPERTYS::kStatic;
+        meshProps |= QUERY_PROPERTY::kStatic;
       }
       else {
-        meshProps |= QUERY_PROPERTYS::kDynamic;
+        meshProps |= QUERY_PROPERTY::kDynamic;
       }
 
       auto material = mesh.material.lock();
@@ -180,24 +203,59 @@ SceneGraph::filterObjects(GameObjectQueue& objects,
         auto t = material->getProperty<FloatProperty>(_T("Transparency"));
         
         if (t && t->value < 1.f) {
-          meshProps |= QUERY_PROPERTYS::kTransparent;
+          meshProps |= QUERY_PROPERTY::kTransparent;
         } 
         else {
-          meshProps |= QUERY_PROPERTYS::kOpaque;
+          meshProps |= QUERY_PROPERTY::kOpaque;
         }
       }
       else {
-        meshProps |= QUERY_PROPERTYS::kOpaque;
+        meshProps |= QUERY_PROPERTY::kOpaque;
       }
 
       if (meshProps == (meshProps & props)) {
-        result.push_back({obj->getWorldTransform().getMatrix(), mesh});
+        result.push_back({obj->getWorldTransform().getMatrix(), mesh, bones});
       }
     }
 
     objects.pop();
   }
+}
 
+void
+SceneGraph::addGameObjectsStatics(GameObject & node,
+                                  std::vector<std::shared_ptr<GameObject>>* list)
+{
+  std::vector<std::shared_ptr<GameObject>> aux;
+  for (auto& child : node.getChildren()) {
+    if (child->isStatic()) {
+      if (child->getComponent<RenderComponent>())
+      {
+        list->push_back(child);
+      }
+      addAllChilds(*child, list);
+      aux.push_back(child);
+    }
+    else {
+      addGameObjectsStatics(*child, list);
+    }
+  }
+
+  for (auto child : aux) {
+    node.removeChild(child);
+  }
+}
+
+void
+SceneGraph::addAllChilds(GameObject & node,
+                         std::vector<std::shared_ptr<GameObject>>* list)
+{
+  for (auto& child : node.getChildren()) {
+    if (child->getComponent<RenderComponent>()) {
+      list->push_back(child);
+    }
+    addAllChilds(*child, list);
+  }
 }
 
 SceneGraph::DepthComparer::DepthComparer(Camera& _camera, QUERY_ORDER::E _order) 

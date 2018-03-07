@@ -57,7 +57,6 @@ GBufferPass::draw(PassDrawData* drawData) {
   GBufferDrawData* data = static_cast<GBufferDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
-
   m_vertexShader->set(dc);
   m_fragmentShader->set(dc);
 
@@ -70,6 +69,9 @@ GBufferPass::draw(PassDrawData* drawData) {
   dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
 
   m_constantBuffer->set(dc);
+
+  //dc.setRenderTarget(*data->OutRt, *data->dsOptions);
+  
   for (auto& modelPair : *data->models) {
     //m_constantBuffer->WVP = VP * modelPair.first;
     //m_constantBuffer->World = modelPair.first;
