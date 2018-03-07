@@ -28,7 +28,7 @@ RenderMan::init() {
   PositionDesc.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE |
                            DR_BIND_FLAGS::RENDER_TARGET;
 
-  m_RTs = dc.createRenderTarget(PositionDesc, 3);
+  m_RTs = dc.createRenderTarget(PositionDesc, 1);
 
   DrDepthStencilDesc depthTextureDesc;
   depthTextureDesc.bindFlags = DR_BIND_FLAGS::DEPTH_STENCIL | DR_BIND_FLAGS::SHADER_RESOURCE;
@@ -55,6 +55,8 @@ RenderMan::init() {
 
 void
 RenderMan::draw() {
+  GraphicsDriver::API().clear();
+
   auto queryRequest = SceneGraph::query(*Sauron,
                                  QUERY_ORDER::kFrontToBack,
                                  QUERY_PROPERTY::kOpaque | 

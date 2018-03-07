@@ -60,9 +60,12 @@ GBufferPass::draw(PassDrawData* drawData) {
   GBufferDrawData* data = static_cast<GBufferDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
   
+  dc.setRenderTarget(*data->OutRt, *data->dsOptions);
+  //dc.setRenderTarget(*data->OutRt, GraphicsAPI::getDepthStencil());
+  
   m_vertexShader->set(dc);
   m_fragmentShader->set(dc);
-  
+
   m_inputLayout->set(dc);
   
   m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
@@ -70,12 +73,8 @@ GBufferPass::draw(PassDrawData* drawData) {
   m_constantBuffer->set(dc);
   
   dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
-
-  //dc.setRenderTarget(*data->OutRt, *data->dsOptions);
-  dc.setRenderTarget(*data->OutRt, GraphicsAPI::getDepthStencil());
-
+  
   const float clearColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-
   data->OutRt->clear(dc, clearColor);
 
   //(data->dsOptions)->clear(dc, 1, 0);

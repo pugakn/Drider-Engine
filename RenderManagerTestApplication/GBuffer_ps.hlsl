@@ -17,21 +17,22 @@ struct PS_INPUT {
 
 struct PS_OUTPUT {
   float4 Color			: SV_TARGET0;
-	float4 Position		: SV_TARGET1;
-	float4 Normal			: SV_TARGET2;
+	//float4 Position		: SV_TARGET1;
+	//float4 Normal			: SV_TARGET2;
 };
 
 PS_OUTPUT FS(PS_INPUT input) {
 	PS_OUTPUT outRT;
   
-	float4 pos = input.Position;
-  float2 uv = input.Texcoord;
-	float3 n = input.Normal.xyz;
-	float4 color = Texture0.Sample(SS, uv);
+	float2 uv = input.Texcoord;
 
-	outRT.Color 	 = float4(1, 1, 0, 1);
-	outRT.Position = float4(1, 0, 1, 1);
-	outRT.Normal   = float4(0, 1, 1, 1);
+	float4 color = Texture0.Sample(SS, uv);
+	float4 pos = input.Position;
+	float3 n = input.Normal.xyz;
+
+	outRT.Color 	 = float4(1, 1, 1, 1);
+	//outRT.Position = float4(1, 0, 1, 1);
+	//outRT.Normal   = float4(0, 1, 1, 1);
 
 	return outRT;
 }

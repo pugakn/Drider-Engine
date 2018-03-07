@@ -43,23 +43,20 @@ SSAOPass::init(PassInitData* initData) {
                                                    fsSource.size(),
                                                    DR_SHADER_TYPE_FLAG::kFragment);
 
-  m_inputLayout = device.createInputLayout(Vertex::getInputDesc(),
+  m_inputLayout = device.createInputLayout(m_vertexShader->reflect(),
                                            *m_vertexShader->m_shaderBytecode);
 
   DrSampleDesc SSdesc;
   SSdesc.Filter = DR_TEXTURE_FILTER::kMIN_MAG_MIP_POINT;
   m_samplerState = device.createSamplerState(SSdesc);
-
-  DrBufferDesc bDesc;
-  bDesc.type = DR_BUFFER_TYPE::kCONSTANT;
-  bDesc.sizeInBytes = sizeof(CBuffer);
-  m_constantBuffer = (ConstantBuffer*)device.createBuffer(bDesc);
 }
 
 void
 SSAOPass::draw(PassDrawData* drawData) {
   SSAODrawData* data = static_cast<SSAODrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
+
+  GraphicsAPI::getBackBufferRT().set(dc, GraphicsAPI::getDepthStencil());
 
   m_vertexShader->set(dc);
   m_fragmentShader->set(dc);
@@ -68,13 +65,11 @@ SSAOPass::draw(PassDrawData* drawData) {
 
   dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
 
-  data->GbufferRT->getTexture(0).set(dc, 0);
-  data->GbufferRT->getTexture(1).set(dc, 1);
-  data->GbufferRT->getTexture(2).set(dc, 2);
-
   m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kFragment);
 
-  GraphicsAPI::getBackBufferRT().set(dc, GraphicsAPI::getDepthStencil());
+  data->GbufferRT->getTexture(0).set(dc, 0);
+  //data->GbufferRT->getTexture(1).set(dc, 1);
+  //data->GbufferRT->getTexture(2).set(dc, 2);
 
   auto screenQuadModel = ResourceManager::getReferenceT<Model>(_T("ScreenAlignedQuad.3ds"));
   if (screenQuadModel) {

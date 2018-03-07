@@ -14,7 +14,6 @@ PS_OUTPUT VS(PS_INPUT input){
   psOut.Position  = input.Position;
   psOut.Position.x = -psOut.Position.x;
   psOut.Texcoord  = input.Texcoord;
-  psOut.Texcoord.x = 1.0f - psOut.Texcoord.x;
   
   return psOut;
 }

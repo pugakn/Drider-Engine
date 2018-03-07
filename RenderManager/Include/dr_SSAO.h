@@ -46,12 +46,6 @@ class SSAOPass : RenderPass {
   draw(PassDrawData* drawData);
 
  private:
-  struct CBuffer {
-  };
-
-  CBuffer CB;
-  
-  ConstantBuffer* m_constantBuffer;
   InputLayout* m_inputLayout;
 
   SamplerState* m_samplerState;
