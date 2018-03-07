@@ -51,7 +51,7 @@ class DR_GRAPHICS_EXPORT DepthStencilState
   release() = 0;
 
   const DrDepthStencilStateDesc& getDescriptor() const { return m_descriptor; }
-protected:
+ protected:
   DrDepthStencilStateDesc m_descriptor;
 };
 

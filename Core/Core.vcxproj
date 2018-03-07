@@ -153,6 +153,7 @@
     <ClInclude Include="Include\dr_animator.h" />
     <ClInclude Include="Include\dr_animator_component.h" />
     <ClInclude Include="Include\dr_application.h" />
+    <ClInclude Include="Include\dr_bone_attach_object.h" />
     <ClInclude Include="Include\dr_camera.h" />
     <ClInclude Include="Include\dr_camera_manager.h" />
     <ClInclude Include="Include\dr_collider_component.h" />
@@ -192,6 +193,7 @@
     <ClCompile Include="Source\dr_animator.cpp" />
     <ClCompile Include="Source\dr_animator_component.cpp" />
     <ClCompile Include="Source\dr_application.cpp" />
+    <ClCompile Include="Source\dr_bone_attach_object.cpp" />
     <ClCompile Include="Source\dr_camera.cpp" />
     <ClCompile Include="Source\dr_camera_manager.cpp" />
     <ClCompile Include="Source\dr_collider_component.cpp" />

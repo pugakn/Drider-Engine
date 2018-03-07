@@ -21,7 +21,7 @@ class DR_CORE_EXPORT Transform
 {
  public:
   friend class GameObject;
-  friend class BoneAttach;
+  friend class BoneAttachObject;
 
   Transform();
 
@@ -187,9 +187,7 @@ class DR_CORE_EXPORT Transform
   mutable bool m_outdatedTransform;
   mutable bool m_outdatedRotation;
   bool m_change;
-  //bool m_changed;
   Vector3D m_position;
-  //Vector3D m_rotation;
   Matrix4x4 m_rotX;
   Matrix4x4 m_rotY;
   Matrix4x4 m_rotZ;

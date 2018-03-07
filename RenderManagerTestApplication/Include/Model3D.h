@@ -20,7 +20,7 @@
 
 class Model3D 
 {
-public:
+ public:
   enum S 
 	{
 		Left_Bottom_Front,
@@ -42,7 +42,7 @@ public:
   driderSDK::Transform transform;
 
   float elapsedTime;
-private:
+ private:
   struct CBuffer {
     driderSDK::Matrix4x4 WVP;
     driderSDK::Matrix4x4 World;

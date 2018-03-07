@@ -6,9 +6,9 @@ namespace driderSDK {
 
 class CameraDebbug : public DrawableComponent
 {
-public:
+ public:
   using DrawableComponent::DrawableComponent;
-private:
+ private:
   virtual void
   create(std::shared_ptr<Model> model);
 

@@ -99,6 +99,19 @@ AnimatorComponent::onUpdate() {
       m_transforms[i] = skeleton->bones[i]->finalTransform;
     }
   }
+  else {
+
+    if (!animation) {
+      Logger::addLog(_T("Animator: animation not assigned to ") + 
+                     m_gameObject.getName());
+    }
+
+    if (!skeleton) {
+      Logger::addLog(_T("Animator: skeleton not assigned to ") + 
+                     m_gameObject.getName());
+    }
+
+  }
 }
 
 void  

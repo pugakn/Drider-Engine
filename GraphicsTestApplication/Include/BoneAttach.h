@@ -10,7 +10,7 @@ namespace driderSDK {
 
 class BoneAttach : public GameObject
 {
-public:
+ public:
   using GameObject::GameObject;
 
   void
@@ -87,7 +87,7 @@ public:
     m_localTransform.m_change = false;
   }
 
-private:
+ private:
   const Skeleton::NodeData* m_bone;
 };
 

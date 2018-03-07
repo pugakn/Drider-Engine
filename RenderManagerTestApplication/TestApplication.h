@@ -7,10 +7,10 @@ namespace driderSDK {
 
 class RenderManApp : public Application
 {
-public:
+ public:
 
 
-private:
+ private:
 
   virtual void 
   postInit() override;

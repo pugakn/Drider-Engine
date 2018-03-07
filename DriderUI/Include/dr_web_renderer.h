@@ -33,12 +33,12 @@ using JSCalls = std::vector<JSCallback>;
 * This class manages the JS <-> C++ communication
 */
 class DriderV8Handler : public CefV8Handler {
-public:
+ public:
   DriderV8Handler() = default;
   DriderV8Handler(const DriderV8Handler&) = delete;
   DriderV8Handler(DriderV8Handler&&) = delete;
   IMPLEMENT_REFCOUNTING(DriderV8Handler);
-private:
+ private:
   friend class WebRenderer;
   friend class DriderRenderProcessHandler;
   /**
@@ -61,12 +61,12 @@ private:
 * render process from the browser process
 */
 class DriderRenderProcessHandler : public  CefRenderProcessHandler {
-public:
+ public:
   DriderRenderProcessHandler() = default;
   DriderRenderProcessHandler(const DriderRenderProcessHandler&) = delete;
   DriderRenderProcessHandler(DriderRenderProcessHandler&&) = delete;
   IMPLEMENT_REFCOUNTING(DriderRenderProcessHandler);
-private:
+ private:
   friend class WebRenderer;
   /**
   * Not commented
@@ -89,12 +89,12 @@ private:
 * Internal application event handler
 */
 class DriderCefApp : public CefApp {
-public:
+ public:
   DriderCefApp() = default;
   DriderCefApp(const DriderCefApp&) = delete;
   DriderCefApp(DriderCefApp&&) = delete;
   IMPLEMENT_REFCOUNTING(DriderCefApp);
-private:
+ private:
   friend class WebRenderer;
   /**
   * Not commented
@@ -111,11 +111,11 @@ private:
 */
 class RenderHandler: public CefRenderHandler
 {
-public:
+ public:
   RenderHandler(const RenderHandler&) = delete;
   RenderHandler(RenderHandler&&) = delete;
   IMPLEMENT_REFCOUNTING(RenderHandler);
-private:
+ private:
   friend class WebRenderer;
   /**
   * Not commented
@@ -187,11 +187,11 @@ private:
 */
 class BrowserClient : public CefClient
 {
-public:
+ public:
   BrowserClient(const BrowserClient&) = delete;
   BrowserClient(BrowserClient&&) = delete;
   IMPLEMENT_REFCOUNTING(BrowserClient);
-private:
+ private:
   friend class WebRenderer;
   explicit BrowserClient(RenderHandler *renderHandler) : 
                          m_renderHandler(renderHandler) {}
@@ -221,7 +221,7 @@ private:
 * You must create one WebRenderer for each render area you want.
 */
 class DR_UI_EXPORT WebRenderer {
-public:
+ public:
   /**
   * Call it once before everything on the main function
   * It initializes the necesary process to run chromium
@@ -325,7 +325,7 @@ public:
   //  return retVal;
   //}
 
-private:
+ private:
   friend class DriderCefApp;
   friend class DriderRenderProcessHandler;
   static CefRefPtr<DriderCefApp> m_app;

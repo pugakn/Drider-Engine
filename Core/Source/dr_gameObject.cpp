@@ -280,6 +280,4 @@ GameObject::createInstance() {
   return std::make_shared<GameObject>();
 }
 
-void GameObject::updateImpl() {}
-
 }

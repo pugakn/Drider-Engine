@@ -16,7 +16,7 @@ struct Viewport;
 */
 class DR_CORE_EXPORT CameraManager 
 {
-public:
+ public:
 
 	/**
 	* TEST::constructor
@@ -111,7 +111,7 @@ public:
 	void
 	setActiveCamera(const TString& cameraName);
 
-private:
+ private:
 
 	std::list<Camera*> m_cameras;
 	Camera* m_activeCamera;

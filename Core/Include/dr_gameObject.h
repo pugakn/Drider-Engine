@@ -241,7 +241,7 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   copyData(SharedGameObj other){}
 
   virtual void
-  updateImpl();
+  updateImpl(){}
 
   bool m_change;
   bool m_destroyed;

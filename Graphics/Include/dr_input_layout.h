@@ -60,7 +60,7 @@ class DR_GRAPHICS_EXPORT InputLayout
   release() = 0;
 
   const std::vector<DrInputElementDesc>& getDescriptor() const { return m_descriptorVec; }
-protected:
+ protected:
   std::vector<DrInputElementDesc> m_descriptorVec;
 };
 

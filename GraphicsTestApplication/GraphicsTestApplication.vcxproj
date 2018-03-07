@@ -168,7 +168,6 @@
   <ItemGroup>
     <ClInclude Include="Include\AABBDebug.h" />
     <ClInclude Include="Include\AnimationTechnique.h" />
-    <ClInclude Include="Include\BoneAttach.h" />
     <ClInclude Include="Include\DrawableComponent.h" />
     <ClInclude Include="Include\FrustumDebug.h" />
     <ClInclude Include="Include\LinesTechnique.h" />

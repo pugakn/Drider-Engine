@@ -77,7 +77,7 @@ class DR_ENGINE_EXPORT Codec
   virtual CompatibleType::E
   getType () = 0;
 
-protected:
+ protected:
 
   void 
   addResource(std::shared_ptr<Resource> resource, const TString& resourceName);

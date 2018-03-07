@@ -28,7 +28,7 @@ class AnimationTechnique;
   
 class TestApplication : public Application
 {
-public:
+ public:
   TestApplication();
   ~TestApplication();
 

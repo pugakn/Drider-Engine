@@ -7,7 +7,7 @@ namespace driderSDK {
 template<class T, UInt32 poolSize>
 class Pool
 {
-public:
+ public:
   Pool()
   {
     m_pool.reserve(poolSize);
@@ -23,7 +23,7 @@ public:
     return &m_pool[tempIndex];
   }
   void free(void* object) { }
-private:
+ private:
   std::vector<T> m_pool;
   UInt32 m_nextObjectIndex;
 };

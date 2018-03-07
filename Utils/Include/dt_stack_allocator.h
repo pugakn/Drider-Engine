@@ -7,7 +7,7 @@ namespace driderSDK {
 template<class T, SizeT N = 1024>
 class StackAllocator 
 {
-public:
+ public:
 
   StackAllocator() : m_ptr(m_buffer)
   {}
@@ -43,7 +43,7 @@ public:
     return N;
   }
 
-private:
+ private:
 
   bool
   pointerInBuffer(int8* p)

@@ -23,6 +23,7 @@
 #include <dr_gameObject.h>
 #include <dr_material.h>
 #include <dr_animator_component.h>
+#include <dr_bone_attach_object.h>
 #include <dr_device_context.h>
 #include <dr_device.h>
 #include <dr_model.h>
@@ -36,7 +37,6 @@
 #include "StaticMeshTechnique.h"
 #include "LinesTechnique.h"
 #include "AnimationTechnique.h"
-#include "BoneAttach.h"
 
 namespace driderSDK {
 
@@ -498,7 +498,7 @@ TestApplication::initSceneGraph() {
 
   m_joker = n;
   
-  auto cube = SceneGraph::createObject<BoneAttach>(_T("Cube"));
+  auto cube = SceneGraph::createObject<BoneAttachObject>(_T("Cube"));
   
   auto cubeMod = ResourceManager::getReferenceT<Model>(_T("Weapons-of-survival.fbx"));
   
