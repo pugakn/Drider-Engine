@@ -51,6 +51,10 @@ class DR_GRAPHICS_EXPORT DepthStencil
   virtual void
   release() = 0;
 
+
+  virtual void 
+  clear(const DeviceContext & deviceContext, const float valueDepth, const float valueStencil) = 0;
+
   const DrDepthStencilDesc& getDescriptor() const { return m_descriptor; }
   const Texture& getTexture() const { return *m_texture; }
 protected:

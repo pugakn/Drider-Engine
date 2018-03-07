@@ -138,6 +138,7 @@ class DR_GRAPHICS_EXPORT Texture
                       const DrTextureDesc& desc) = 0;
 
   const DrTextureDesc& getDescriptor() const { return m_descriptor; }
+  void setDescriptor(const DrTextureDesc&desc) { m_descriptor = desc; };
  protected:
    DrTextureDesc m_descriptor;
 };

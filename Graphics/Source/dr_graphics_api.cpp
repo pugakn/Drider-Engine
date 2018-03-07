@@ -35,6 +35,12 @@ GraphicsAPI::init(UInt32 w, UInt32 h, void * hwnd, DR_GRAPHICS_API::E api)
   else {
     exit(666);
   }
+  DrTextureDesc backDesc;
+  backDesc.width = w;
+  backDesc.height = h;
+  backDesc.pitch = w * 4;
+  backDesc.Format = DR_FORMAT::kR8G8B8A8_UNORM;
+  backBufferTexture->setDescriptor(backDesc);
   m_hwnd = hwnd;
   m_device->createDeviceAndDeviceContext(*m_deviceContext);
 
