@@ -2,7 +2,6 @@
 #include <unordered_map>
 #include <vector>
 #include <dr_util_prerequisites.h>
-#include "Model3D.h"
 #include <dr_camera.h>
 #include <dr_viewport.h>
 #include "dr_application.h"
@@ -76,7 +75,7 @@ public:
   std::unique_ptr<AnimationTechnique> m_animTech;
   std::unique_ptr<Technique> m_linesTech;
   std::shared_ptr<GameObject> m_joker;
-  std::vector<Model3D*> m_animated;
+  std::shared_ptr<GameObject> m_wep;
 };
 
 }

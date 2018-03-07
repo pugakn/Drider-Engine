@@ -78,10 +78,10 @@ public:
   *   Name of the node. 
   */
   template<class T = GameObject>
-  static SharedGameObject
+  static std::shared_ptr<T>
   createObject(const TString& name)
   {
-    SharedGameObject obj = std::make_shared<T>(name);
+    auto obj = std::make_shared<T>(name);
 
     addObject(obj);
 

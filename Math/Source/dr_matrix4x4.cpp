@@ -1,3 +1,5 @@
+#pragma once
+
 #include "dr_matrix4x4.h"
 #include "dr_matrix3x3.h"
 #include "dr_quaternion.h"
@@ -205,11 +207,11 @@ Matrix4x4::equals(const Matrix4x4& otherMatrix, float errorRange) const
          data[3].equals(otherMatrix.data[3], errorRange);
 }
 
-Vector3D Matrix4x4::eulerAngles()
-{
-  driderSDK::Matrix3x3 tempMatrix(*this);
-  return tempMatrix.eulerAngles();
-}
+//Vector3D Matrix4x4::eulerAngles()
+//{
+//  driderSDK::Matrix3x3 tempMatrix(*this);
+//  return tempMatrix.eulerAngles();
+//}
 
 Matrix4x4&
 Matrix4x4::Translation(const Vector3D & Pos)
@@ -396,6 +398,32 @@ Matrix4x4::Reflection(Vector3D NormalOfMirror)
   data[3][3] = 1.f;
 
   return *this;
+}
+
+Vector3D
+Matrix4x4::eulerAngles() {
+
+  float sy = Math::sqrt(data[0][0] * data[0][0] +  data[1][0] * data[1][0]);
+ 
+  bool singular = sy < 1e-6; // If
+ 
+  Vector3D angles;
+
+  if (!singular)
+  {
+      angles.x = Math::aTan2(data[2][1] , data[2][2]);
+      angles.y = Math::aTan2(-data[2][0], sy);
+      angles.z = Math::aTan2(data[1][0], data[0][0]);
+  }
+  else
+  {
+      angles.x = Math::aTan2(-data[1][2], data[1][1]);
+      angles.y = Math::aTan2(-data[2][0], sy);
+      angles.z = 0;
+  }
+
+  return angles;
+
 }
 
 float*
