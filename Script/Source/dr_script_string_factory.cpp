@@ -12,7 +12,7 @@ StringFactory::~StringFactory() {
 const void* 
 StringFactory::GetStringConstant(const char* data, asUINT length) {
 
-	TString string(StringUtils::toTString(data));
+	TString string(StringUtils::toTString(data), length);
 
 	map_t::iterator it = m_stringCache.find(string);
 

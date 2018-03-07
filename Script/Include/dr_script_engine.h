@@ -112,12 +112,9 @@ public:
 	*
 	* @param scriptMessage
 	*   Message from the script's engine.
-	*
-	* @param param
-	*   Aditional parameters from the message. 
 	*/
 	void
-	messageCallback(const asSMessageInfo *scriptMessage, void *param);
+	messageCallback(const asSMessageInfo *scriptMessage);
 
 	/**
 	* Adds a custom script log into the logger.

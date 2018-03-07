@@ -156,12 +156,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\dr_script_custom_string.cpp" />
     <ClCompile Include="Source\dr_script_engine.cpp" />
     <ClCompile Include="Source\dr_script_string_factory.cpp" />
     <ClCompile Include="Source\scriptstdstring.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\dr_object.h" />
+    <ClInclude Include="Include\dr_script_custom_string.h" />
     <ClInclude Include="Include\dr_script_engine.h" />
     <ClInclude Include="Include\dr_script_prerequisites.h" />
     <ClInclude Include="Include\dr_script_string_factory.h" />
