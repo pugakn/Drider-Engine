@@ -6,6 +6,7 @@
 #include <dr_constant_buffer.h>
 #include <dr_vertex_buffer.h>
 #include <dr_index_buffer.h>
+#include <dr_depth_stencil.h>
 #include <dr_vertex.h>
 #include <dr_render_component.h>
 #include <dr_device_context.h>
@@ -70,7 +71,14 @@ GBufferPass::draw(PassDrawData* drawData) {
   
   dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
 
-  dc.setRenderTarget(*data->OutRt, *data->dsOptions);
+  //dc.setRenderTarget(*data->OutRt, *data->dsOptions);
+  dc.setRenderTarget(*data->OutRt, GraphicsAPI::getDepthStencil());
+
+  const float clearColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+  data->OutRt->clear(dc, clearColor);
+
+  //(data->dsOptions)->clear(dc, 1, 0);
   
   for (auto& modelPair : *data->models) {
     if (auto material = modelPair.mesh.material.lock()) {

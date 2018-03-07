@@ -34,7 +34,7 @@ RenderMan::init() {
   depthTextureDesc.bindFlags = DR_BIND_FLAGS::DEPTH_STENCIL | DR_BIND_FLAGS::SHADER_RESOURCE;
   depthTextureDesc.width = 1920;
   depthTextureDesc.height = 1080;
-  depthTextureDesc.Format = DR_FORMAT::kD32_FLOAT;
+  depthTextureDesc.Format = DR_FORMAT::kD24_UNORM_S8_UINT;
 
   m_GBufferDSoptions = dc.createDepthStencil(depthTextureDesc);
 
@@ -60,13 +60,11 @@ RenderMan::draw() {
                                  QUERY_PROPERTY::kOpaque | 
                                  QUERY_PROPERTY::kDynamic | 
                                  QUERY_PROPERTY::kStatic);
-/*
   m_GBufferDrawData.activeCam = Sauron;
   m_GBufferDrawData.models = &queryRequest;
   m_GBufferDrawData.OutRt = m_RTs;
   m_GBufferDrawData.dsOptions = m_GBufferDSoptions;
   m_GBufferPass.draw(&m_GBufferDrawData);
-*/
 
   m_SSAODrawData.GbufferRT = m_RTs;
   m_SSAOPass.draw(&m_SSAODrawData);

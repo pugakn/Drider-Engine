@@ -29,9 +29,9 @@ PS_OUTPUT FS(PS_INPUT input) {
 	float3 n = input.Normal.xyz;
 	float4 color = Texture0.Sample(SS, uv);
 
-	outRT.Color = float4(1, 0, 0, 1);
-	outRT.Position = float4(0, 1, 0, 1);
-	outRT.Normal = float4(0, 0, 1, 1);
+	outRT.Color 	 = float4(1, 1, 0, 1);
+	outRT.Position = float4(1, 0, 1, 1);
+	outRT.Normal   = float4(0, 1, 1, 1);
 
 	return outRT;
 }

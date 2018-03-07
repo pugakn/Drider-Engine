@@ -13,8 +13,6 @@ float4 FS(PS_INPUT input) : SV_TARGET {
   float2 uv = input.Texcoord;
 
 	float4 color = ColorTex.Sample(SS, uv);
-
-  return float4(uv.xy, 0, 1);
-  //return color;
-  //return NormalTex.Sample(SS, uv);
+  
+  return color;
 }
