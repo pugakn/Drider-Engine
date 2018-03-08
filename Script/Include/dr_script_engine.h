@@ -35,11 +35,14 @@ class DR_SCRIPT_EXPORT ScriptEngine : public Module<ScriptEngine>
 	*/
 	ScriptEngine();
 
+  ScriptEngine(const ScriptEngine&) = delete;
+
+  ScriptEngine& operator=(const ScriptEngine&) = delete;
+
 	/**
 	* Default destructor.
 	*
 	*/
-	virtual
 	~ScriptEngine() {}
 
 	/**
@@ -125,13 +128,19 @@ class DR_SCRIPT_EXPORT ScriptEngine : public Module<ScriptEngine>
 	* @param type
 	*   Type of the message.
 	*/
-	void 
+	static void 
 	addScriptLog(const TString& log, const int type);
 
   asIScriptEngine* m_scriptEngine;
 	unsigned long timeout = 5000;
-	Time* m_scriptTime;
-	Logger* m_scriptLogger;
+
+ protected:
+  void
+  onStartUp() override { }
+
+  void
+  onShutDown() override {}
+
  private:
 	//asIScriptEngine* m_scriptEngine;
 	asIScriptContext* m_scriptContext;

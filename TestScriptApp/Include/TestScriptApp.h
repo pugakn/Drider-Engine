@@ -115,7 +115,6 @@ class TestScriptApp : public Application {
   ScriptEngine* scriptEngine;
 
   QUERY_ORDER::E m_queryOrder;
-  std::shared_ptr<Camera> m_camera;
 
   
 };

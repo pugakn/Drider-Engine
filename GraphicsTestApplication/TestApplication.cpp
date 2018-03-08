@@ -38,6 +38,10 @@
 #include "LinesTechnique.h"
 #include "AnimationTechnique.h"
 
+#include <dr_script_core.h>
+#include "OneRefObj.h"
+#include "ScriptComponent.h"
+
 namespace driderSDK {
 
 TestApplication::TestApplication() {}
@@ -56,6 +60,7 @@ TestApplication::postInit() {
   SceneGraph::startUp();
   Time::startUp();
   ResourceManager::startUp();
+  ScriptEngine::startUp();
   
   m_queryOrder = QUERY_ORDER::kFrontToBack;
 
@@ -118,8 +123,8 @@ TestApplication::postInit() {
 
   initInput();
   initSceneGraph();
-  
-  
+  initScriptEngine();
+
   /*SceneGraph::addObject(m_leftCam);
   */SceneGraph::addObject(m_upCam);
   m_leftCam->setParent(m_joker);
@@ -434,6 +439,8 @@ TestApplication::initResources() {
   ResourceManager::loadResource(_T("Walking.fbx"));
 
   ResourceManager::loadResource(_T("Weapons-of-survival.fbx"));
+
+  ResourceManager::loadResource(_T("test.as"));
 }
 
 void 
@@ -541,6 +548,113 @@ TestApplication::initSceneGraph() {
   }
 }
 
+void TestApplication::initScriptEngine() {
+  int result;
+
+  //scriptEngine->addScriptLog(_T("hola"), 0);
+  ScriptEngine* scriptEngine = nullptr;
+
+  if (!ScriptEngine::isStarted()) {
+    ScriptEngine::startUp();
+  }
+
+  scriptEngine = ScriptEngine::instancePtr();
+
+  result = scriptEngine->createEngine();
+
+  /*auto script = std::dynamic_pointer_cast<ScriptCore>
+    (ResourceManager::getReference(_T("test.as")));
+
+  result = scriptEngine->addScript(_T("test.as"),
+                                   script->getScript());*/
+
+  /*result = scriptEngine->m_scriptEngine->RegisterObjectType("OneRefObj",
+                                                            0,
+                                                            asOBJ_REF | asOBJ_NOHANDLE);
+
+  result = scriptEngine->m_scriptEngine->RegisterGlobalFunction("bool cmpInts(int, int)",
+                                                                asFUNCTIONPR(&OneRefObj::cmpInts, (int, int), bool),
+                                                                asCALL_CDECL);*/
+
+  /*Object obj;
+  result = scriptEngine->m_scriptEngine->RegisterObjectType("Object",
+  sizeof(Object),
+  asOBJ_VALUE | asOBJ_APP_CLASS |
+  asOBJ_APP_CLASS_CONSTRUCTOR | asOBJ_APP_CLASS_COPY_CONSTRUCTOR |
+  asOBJ_APP_CLASS_DESTRUCTOR);
+
+  result = scriptEngine->m_scriptEngine->RegisterObjectBehaviour("Object",
+  asBEHAVE_CONSTRUCT,
+  "void f()",
+  asFUNCTION(Constructor),
+  asCALL_CDECL_OBJLAST);
+  result = scriptEngine->m_scriptEngine->RegisterObjectBehaviour("Object",
+  asBEHAVE_CONSTRUCT,
+  "void f(const Object& in)",
+  asFUNCTION(CopyConstruct),
+  asCALL_CDECL_OBJLAST);
+  result = scriptEngine->m_scriptEngine->RegisterObjectBehaviour("Object",
+  asBEHAVE_CONSTRUCT,
+  "void f(float, float)",
+  asFUNCTION(ConstructFromTwoFloats),
+  asCALL_CDECL_OBJLAST);
+
+  result = scriptEngine->m_scriptEngine->RegisterObjectBehaviour("Object",
+  asBEHAVE_DESTRUCT,
+  "void f()",
+  asFUNCTION(Destructor),
+  asCALL_CDECL_OBJLAST);
+
+  result = scriptEngine->m_scriptEngine->RegisterObjectMethod("Object",
+  "Object& opAssign(const Object& in)",
+  asMETHODPR(Object, operator=, (const Object&), Object&),
+  asCALL_THISCALL);
+
+  result = scriptEngine->m_scriptEngine->RegisterObjectMethod("Object",
+  "Object opAdd(const Object& in) const",
+  asMETHODPR(Object, operator+, (const Object&) const, Object),
+  asCALL_THISCALL);
+
+  result = scriptEngine->m_scriptEngine->RegisterObjectMethod("Object",
+  "Object& opAddAssign(const Object& in)",
+  asMETHODPR(Object, operator+=, (const Object&), Object&),
+  asCALL_THISCALL);
+
+  result = scriptEngine->m_scriptEngine->RegisterObjectMethod("Object",
+  "Object& add(const Object& in)",
+  asMETHODPR(Object, add, (const Object&), Object&),
+  asCALL_THISCALL);
+
+  result = scriptEngine->m_scriptEngine->RegisterObjectMethod("Object",
+  "Object& si()",
+  asMETHOD(Object, si, Object&),
+  asCALL_THISCALL);*/
+  //result = m_camera->registerFunctions(scriptEngine);
+
+  Vector3D vector;
+  result = vector.registerFunctions(scriptEngine);
+
+  //result = scriptEngine->compileScript();
+
+  result = scriptEngine->configureContext();
+
+  /*result = scriptEngine->prepareFunction(_T("Start"));
+  result = scriptEngine->executeCall();
+    
+  result = scriptEngine->prepareFunction(_T("Update"));
+  result = scriptEngine->executeCall();*/
+
+  //scriptEngine->release();
+
+  auto camScript = m_camera->createComponent<ScriptComponent>();
+  auto script = std::dynamic_pointer_cast<ScriptCore>
+                (ResourceManager::getReference(_T("test.as")));
+  camScript->addScript(_T("test.as"), script->getScript());
+
+  result = scriptEngine->compileScript();
+  camScript->start();
+}
+
 void 
 TestApplication::printHerarchy(std::shared_ptr<GameObject> obj, 
                                     const TString & off) {
@@ -593,6 +707,15 @@ TestApplication::toggleSkeletonDebug(std::shared_ptr<GameObject> go) {
   {
     toggleSkeletonDebug(child);
   }
+}
+
+void
+TestApplication::addScript(TString name) {
+  auto script = std::dynamic_pointer_cast<ScriptCore>
+    (ResourceManager::getReference(name));
+
+  Int32 result = ScriptEngine::instance().addScript(name,
+                                                    script->getScript());
 }
 
 }

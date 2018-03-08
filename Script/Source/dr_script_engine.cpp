@@ -23,20 +23,14 @@ void stringPrint_g(asIScriptGeneric* gen) {
 }
 
 ScriptEngine::ScriptEngine() {
-	m_scriptLogger = nullptr;
-	m_scriptTime = nullptr;
 
-	Logger::startUp();
-
-	if (Logger::isStarted()) {
-		m_scriptLogger = &Logger::instance();
+	if (!Logger::isStarted()) {
+    Logger::startUp();
 	}
 
 	if (!Time::isStarted()) {
 		Time::startUp();
 	}
-	m_scriptTime = &Time::instance();
-
 
 }
 
@@ -174,7 +168,7 @@ ScriptEngine::prepareFunction(TString function) {
 
 Int8
 ScriptEngine::executeCall() {
-	g_timeout = (unsigned long)(m_scriptTime->getElapsedMilli() + timeout);
+	g_timeout = (unsigned long)(Time::instancePtr()->getElapsedMilli() + timeout);
 	Int8 result = m_scriptContext->Execute();			
 
 	if (result != asEXECUTION_FINISHED) {
@@ -208,7 +202,7 @@ ScriptEngine::release() {
 
 void
 ScriptEngine::lineCallback(asIScriptContext* scriptContext) {
-	if(g_timeout < m_scriptTime->getElapsedMilli()) {
+	if(g_timeout < Time::instancePtr()->getElapsedMilli()) {
 		scriptContext->Abort(); 
 		//scriptContext->Suspend(); //we can also use suspend
 	}
@@ -233,15 +227,15 @@ void
 ScriptEngine::addScriptLog(const TString& log, int type) {
 
 	if (type == asMSGTYPE_WARNING) {
-		m_scriptLogger->addWarning(__FILE__, 
+    Logger::instancePtr()->addWarning(__FILE__,
 															__LINE__, 
 															_T("[ScriptEngine] ") + log);
 	}
 	else if (type == asMSGTYPE_INFORMATION) {
-		m_scriptLogger->addLog(_T("[ScriptEngine] ") + log);
+    Logger::instancePtr()->addLog(_T("[ScriptEngine] ") + log);
 	}
 	else if (type == asMSGTYPE_ERROR) {
-		m_scriptLogger->addError(__FILE__,
+    Logger::instancePtr()->addError(__FILE__,
 														__LINE__, 
 														_T("[ScriptEngine] ") + log);
 	}

@@ -1,0 +1,16 @@
+void Update()
+
+Temps: 2
+
+Variables: 
+ 001: float a
+
+
+- 17,2 -
+    0   2 *    SUSPEND
+               VarDecl  0
+    1   2 *    SetV4    v1, 0x41200000          (i:1092616192, f:10)
+- 18,2 -
+    3   2 *    SUSPEND
+            0:
+    4   2 *    RET      0

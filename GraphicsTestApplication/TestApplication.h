@@ -20,6 +20,8 @@
 #include <dr_fmod_channel.h>
 #include <dr_fmod_soundSystem.h>
 
+#include <dr_script_engine.h>
+
 namespace driderSDK {
 
 class Technique;
@@ -48,12 +50,16 @@ class TestApplication : public Application
   void initInput();
   void initResources();
   void initSceneGraph();
+  void initScriptEngine();
 
   void printHerarchy(std::shared_ptr<GameObject> obj, const TString& off);
 
   void toggleAABBDebug(std::shared_ptr<GameObject> obj);
 
   void toggleSkeletonDebug(std::shared_ptr<GameObject> obj);
+
+  void 
+  addScript(TString name);
 
   bool m_debugList;
   //SoundAPI* soundDriver;
