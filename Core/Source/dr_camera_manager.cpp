@@ -4,10 +4,16 @@
 namespace driderSDK {
 
 CameraManager::CameraManager() {
-	m_activeCamera = nullptr;
 }
 
 CameraManager::~CameraManager() {}
+
+void CameraManager::onStartUp() {
+  m_dummyCam = std::make_shared<Camera>();
+  m_dummyCam->createProyection(60, 0.1f, 4000.f);
+  m_activeCam = m_dummyCam;
+}
+
 
 void
 CameraManager::createCamera(const TString& cameraName,
@@ -17,49 +23,63 @@ CameraManager::createCamera(const TString& cameraName,
 														float fov,
 														float nearPlane,
 														float farPlane) {
-	m_cameras.push_back(new Camera(cameraName, 
-																 viewport));
+	
+  auto cam = std::make_shared<Camera>(pos, target);
+  
+  cam->setViewport(viewport);
+  
+  cam->createProyection(fov, nearPlane, farPlane);
 
-  m_cameras.back()->createProyection(fov, nearPlane, farPlane);
+  instance().m_cameras[cameraName] = cam;
 }
 
 void
 CameraManager::deleteCamera(const TString& cameraName) {
-	/*for (auto it = m_cameras.begin(); it != m_cameras.end(); ++it) {
-		if ((*it)->getName() == cameraName) {
-			if (m_activeCamera->getName() == cameraName) {
-				m_activeCamera = nullptr;
-			}
-			delete *it;
-			m_cameras.erase(it);
-			return;
-		}
-	}*/
+	
+  auto& cm = instance();
+
+  auto& cameras = cm.m_cameras;
+
+  auto it = cameras.find(cameraName);
+  
+  if (it != cameras.end()) {
+    if (it->second == cm.m_activeCam) {
+      cm.m_activeCam = cm.m_dummyCam;
+    }
+  }
 }
 
-void
-CameraManager::setViewportToCamera(const TString& cameraName, const Viewport& viewport) {
-	for (auto &it : m_cameras) {
-		if (it->getName() == cameraName) {
-			it->setViewport(viewport);
-			return;
-		}
-	}
+CameraManager::SharedCamera 
+CameraManager::getCamera(const TString& cameraName) {
+  
+  SharedCamera cam;
+
+  auto& cm = instance();
+
+  auto it = cm.m_cameras.find(cameraName);
+
+  if (it != cm.m_cameras.end()) {
+    cam = it->second;
+  }
+
+  return cam;
 }
 
-Camera&
+CameraManager::SharedCamera
 CameraManager::getActiveCamera() {
-	return *m_activeCamera;
+	return instance().m_activeCam;
 }
 
 void
 CameraManager::setActiveCamera(const TString& cameraName) {
-	for (auto &it : m_cameras) {
-		if (it->getName() == cameraName) {
-			m_activeCamera = it;
-			return;
-		}
-	}
+
+  auto& cm = instance();
+
+	auto it = cm.m_cameras.find(cameraName);
+
+  if (it != cm.m_cameras.end()) {
+    cm.m_activeCam = it->second;
+  }
 }
 
 }

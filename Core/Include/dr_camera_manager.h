@@ -1,7 +1,11 @@
 #pragma once
+
+#include <unordered_map>
+
+#include <dr_memory.h>
+#include <dr_module.h>
+
 #include "dr_core_prerequisites.h"
-#include <list>
-#include <string>
 
 namespace driderSDK {
 
@@ -14,9 +18,12 @@ struct Viewport;
 * Sample usage:
 *	CameraManager manager;
 */
-class DR_CORE_EXPORT CameraManager 
+class DR_CORE_EXPORT CameraManager : public Module<CameraManager>
 {
  public:
+
+   using SharedCamera = std::shared_ptr<Camera>;
+   using CamerasMap = std::unordered_map<TString, SharedCamera>;
 
 	/**
 	* TEST::constructor
@@ -57,7 +64,7 @@ class DR_CORE_EXPORT CameraManager
 	* @param farPlane
 	*   Value of the farthest plane of the proyection.
 	*/
-	void 
+	static void 
 	createCamera(const TString& cameraName,
 							 const Vector3D& pos,
 							 const Vector3D& target,
@@ -73,22 +80,20 @@ class DR_CORE_EXPORT CameraManager
 	* @param cameraName
 	*   The name of the camera to delete.
 	*/
-	void
+	static void
 	deleteCamera(const TString& cameraName);
 
-
-	/**
-	* TEST::setViewportToCamera
-	* Set a camera's viewport
-	*
-	* @param cameraName
-	*   The name of the camera to set.
-	*
-	* @param viewport
-	*   The viewport to set to the camera.   
-	*/
-	void
-	setViewportToCamera(const TString& cameraName, const Viewport& viewport);
+  /**
+  * Gets a camera from the cameras list.
+  * 
+  * @param cameraName
+  *  Name of the camera to search.
+  * 
+  * @return
+  *   The camera if it's found on the cameras list, nullptr otherwise.
+  */
+  static SharedCamera
+  getCamera(const TString& cameraName);
 
 	/**
 	* TEST::getActiveCamera
@@ -97,7 +102,7 @@ class DR_CORE_EXPORT CameraManager
 	* @return;
 	*   The name of the camera to delete.
 	*/
-	Camera& 
+	static SharedCamera
 	getActiveCamera();
 
 	/**
@@ -108,13 +113,17 @@ class DR_CORE_EXPORT CameraManager
 	*   The name of the camera.
 	*
 	*/
-	void
+	static void
 	setActiveCamera(const TString& cameraName);
 
  private:
 
-	std::list<Camera*> m_cameras;
-	Camera* m_activeCamera;
+   void
+   onStartUp();
+   
+   SharedCamera m_activeCam;
+   SharedCamera m_dummyCam;
+   CamerasMap m_cameras;
 };
 
 }

@@ -1,0 +1,55 @@
+
+#include <dr_application.h>
+#include <dr_memory.h>
+#include <dr_util_prerequisites.h>
+
+namespace driderSDK {
+
+class GameObject;
+class Model;
+class Technique;
+
+class GraphicsApplication : public Application
+{
+public:
+
+  GraphicsApplication();
+
+  ~GraphicsApplication();
+
+private:
+  // Inherited via Application
+  virtual void 
+  postInit() override;
+
+  virtual void 
+  postUpdate() override;
+
+  virtual void 
+  postRender() override;
+
+  virtual void 
+  postDestroy() override;
+
+  void
+  initModules();
+
+  void 
+  loadResources();
+
+  void
+  createScene();
+
+  std::shared_ptr<GameObject>
+  addObjectFromModel(std::shared_ptr<Model> model,
+                     const TString& name);
+
+  void
+  destroyModules();
+
+
+  std::unique_ptr<Technique> m_animTech;
+  std::unique_ptr<Technique> m_staticTech;
+};
+
+}
