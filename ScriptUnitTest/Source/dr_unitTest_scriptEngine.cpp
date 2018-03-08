@@ -39,14 +39,17 @@ TEST(ScriptEngine, exposePrintFunction)
   result = testScript->compileScript();
 	EXPECT_TRUE(result >= 0);
 
-	result = testScript->configureContext();
-	EXPECT_TRUE(result >= 0);
-  
-  result = testScript->prepareFunction(_T("main"));
-	EXPECT_TRUE(result >= 0);
-  
-  result = testScript->executeCall();
-	EXPECT_TRUE(result >= 0);
+	if (result == 0) {
+		result = testScript->configureContext();
+		EXPECT_TRUE(result >= 0);
+
+		result = testScript->prepareFunction(_T("main"));
+		EXPECT_TRUE(result >= 0);
+
+		result = testScript->executeCall();
+		EXPECT_TRUE(result >= 0);
+	}
+
 
 }
 
@@ -56,7 +59,6 @@ TEST(ScriptEngine, scriptLogs)
 	using driderSDK::ScriptEngine;
 
 	ScriptEngine* testScript = nullptr;
-	int result;
 
 	if (ScriptEngine::isStarted()) {
 		testScript = ScriptEngine::instancePtr();
@@ -65,7 +67,6 @@ TEST(ScriptEngine, scriptLogs)
 	testScript->addScriptLog(_T("Esto es un error del script"), 0);
 	testScript->addScriptLog(_T("Esto es un warning del script"), 1);
 	testScript->addScriptLog(_T("Esto es informacion adicional del script"), 2);
-
 
 }
 
@@ -96,12 +97,38 @@ TEST(ScriptEngine, lineCallBack)
 
 	result = testScript->compileScript();
 
-	result = testScript->configureContext();
+	if (result == 0) {
+		result = testScript->configureContext();
 
-	result = testScript->prepareFunction(_T("main"));
+		result = testScript->prepareFunction(_T("main"));
 
-	result = testScript->executeCall();
-	EXPECT_TRUE(result == 2);
+		result = testScript->executeCall();
+		EXPECT_TRUE(result == 2);
+	}
+
+}
+
+TEST(ScriptEngine, messageCallBack)
+{
+
+	using driderSDK::ScriptEngine;
+
+	ScriptEngine* testScript = nullptr;
+	int result;
+
+	if (ScriptEngine::isStarted()) {
+		testScript = ScriptEngine::instancePtr();
+	}
+
+	driderSDK::ResourceManager* resourceManager = nullptr;
+
+	if (driderSDK::ResourceManager::isStarted()) {
+		resourceManager = &driderSDK::ResourceManager::instance();
+	}
+
+	result = testScript->createEngine();
+
+	EXPECT_TRUE(result >= 0);
 
 	testScript->release();
 }

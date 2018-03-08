@@ -3,8 +3,8 @@
 #include <dr_time.h>
 
 #include "dr_script_engine.h"
-#include "dr_script_string_factory.h"
 #include "scriptstdstring.h"
+//#include "dr_script_custom_string.h"
 
 #include "dr_object.h"
 
@@ -18,7 +18,7 @@ ObjectAS *Ref_Factory() {
 }
 
 void stringPrint_g(asIScriptGeneric* gen) {
-	WString *str = (WString*)gen->GetArgAddress(0);
+	String *str = (String*)gen->GetArgAddress(0);
 	std::wcout << StringUtils::toTString(*str);
 }
 
@@ -50,10 +50,15 @@ ScriptEngine::createEngine() {
 	}
 
 	m_scriptEngine->SetEngineProperty(asEP_STRING_ENCODING, 1);
-	m_scriptEngine->SetMessageCallback(asMETHOD(ScriptEngine, messageCallback), 
-																		 0, 
-																		 asCALL_CDECL);
+	m_scriptEngine->SetMessageCallback(asMETHOD(ScriptEngine, messageCallback),
+																		 this, 
+																		 asCALL_THISCALL);
+
+
+	// Register string type
+
 	RegisterStdString(m_scriptEngine);
+	//RegisterTString(m_scriptEngine);
 
 	// Register the functions that the scripts will be allowed to use.
 	result = m_scriptEngine->RegisterGlobalFunction("void Print(string &in)",
@@ -115,7 +120,6 @@ ScriptEngine::compileScript() {
 	Int8 result = m_scriptModule->Build();
 	if(result < 0) {
 		addScriptLog(_T("Failed to compile script."), asMSGTYPE_ERROR);
-		m_scriptEngine->Release();
 		return -1;
 	}
 	return 0;
@@ -170,7 +174,7 @@ ScriptEngine::prepareFunction(TString function) {
 
 Int8
 ScriptEngine::executeCall() {
-	g_timeout = m_scriptTime->getElapsedMilli() + timeout;
+	g_timeout = (unsigned long)(m_scriptTime->getElapsedMilli() + timeout);
 	Int8 result = m_scriptContext->Execute();			
 
 	if (result != asEXECUTION_FINISHED) {
@@ -211,11 +215,11 @@ ScriptEngine::lineCallback(asIScriptContext* scriptContext) {
 }
 
 void 
-ScriptEngine::messageCallback(const asSMessageInfo* scriptMessage, void* param) {
+ScriptEngine::messageCallback(const asSMessageInfo* scriptMessage) {
 
 	Int8 row = scriptMessage->row, col = scriptMessage->col;
 
-	//Expect something like "mySection (5, 1) : Example message here"
+	//Expect something like "myScript.as (5, 1) : Example message here"
 	TString message = StringUtils::toTString(scriptMessage->section) + 
 																					 _T(" (") + StringUtils::toTString(row) +
 																					 _T(", ") + StringUtils::toTString(col) +
