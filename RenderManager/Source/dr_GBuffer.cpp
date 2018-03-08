@@ -60,7 +60,7 @@ GBufferPass::draw(PassDrawData* drawData) {
   GBufferDrawData* data = static_cast<GBufferDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
   
-  dc.setRenderTarget(*data->OutRt, *data->dsOptions);
+  data->OutRt->set(dc, *data->dsOptions);
   //dc.setRenderTarget(*data->OutRt, GraphicsAPI::getDepthStencil());
   
   m_vertexShader->set(dc);

@@ -46,6 +46,7 @@ void RenderManApp::postUpdate() {
 void RenderManApp::postRender() {
   GraphicsDriver::API().clear();
   m_renderMan.draw();
+  GraphicsDriver::API().swapBuffers();
 }
 
 void RenderManApp::postDestroy() {
