@@ -2,6 +2,10 @@
 
 namespace driderSDK {
 
+#define VALUE_FLAGS (asOBJ_VALUE | asOBJ_APP_CLASS |\
+                     asOBJ_APP_CLASS_CONSTRUCTOR | asOBJ_APP_CLASS_COPY_CONSTRUCTOR |\
+                     asOBJ_APP_CLASS_DESTRUCTOR)
+
 #define CONSTRUCT_DESTRUCT_DECL(className)\
   void Construct##className(void *memory);\
   void Destruct##className(void *memory);
@@ -26,13 +30,13 @@ namespace driderSDK {
   void ConstructFromTwoFloats##className(pType1 a, pType2 b, pType3 c, className *thisPointer) {\
   new(thisPointer) className(a, b, c); }
 
-#define BEGINING_REGISTER(className)\
+#define BEGINING_REGISTER(className, size, flags)\
   Int32 registerFunctions(ScriptEngine* scriptEngine) {\
     Int32 result;\
-    result = scriptEngine->m_scriptEngine->RegisterObjectType(#className, sizeof(className), (asOBJ_VALUE | asOBJ_APP_CLASS |\
-                                                                                             asOBJ_APP_CLASS_CONSTRUCTOR | asOBJ_APP_CLASS_COPY_CONSTRUCTOR |\
-                                                                                             asOBJ_APP_CLASS_DESTRUCTOR));\
-    if(result < 0) {return result;}\
+    result = scriptEngine->m_scriptEngine->RegisterObjectType(#className, size, flags);\
+    if(result < 0) {return result;}
+
+#define REGISTER_CONSTRUC_DESTRUCT(className)\
     result = scriptEngine->m_scriptEngine->RegisterObjectBehaviour(#className,\
                                                                    asBEHAVE_CONSTRUCT,\
                                                                    "void f()",\

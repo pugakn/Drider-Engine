@@ -523,11 +523,12 @@ class DR_MATH_EXPORT Vector3D
     float data[3];
   };
 
-  BEGINING_REGISTER(Vector3D)
+  BEGINING_REGISTER(Vector3D, sizeof(Vector3D), VALUE_FLAGS)
   
+  REGISTER_CONSTRUC_DESTRUCT(Vector3D)
   REGISTER_COPY_CONSTRUCT(Vector3D)
   result = REGISTER_CONSTRUCT_3P(Vector3D, float, float, float)
-
+  
   result = REGISTER_FOO_1P_CONST(Vector3D, dot, const Vector3D&, float, "float", in)
   result = REGISTER_FOO_1P_CONST(Vector3D, cross, const Vector3D&, Vector3D, "float", in)
   result = REGISTER_FOO_0P_CONST(Vector3D, length, float, "float")
@@ -536,7 +537,7 @@ class DR_MATH_EXPORT Vector3D
   result = REGISTER_FOO_1P_CONST(Vector3D, distance, const Vector3D&, float, "float", in)
   result = REGISTER_FOO_1P_CONST(Vector3D, distanceSqr, const Vector3D&, float, "float", in)
   result = REGISTER_FOO_2P_CONST(Vector3D, sqrDistSegment, const Vector3D&, const Vector3D&, float, "float", in, in)
-
+  
   result = REGISTER_OP_CONST(Vector3D, operator^, opXor, const Vector3D&, Vector3D, "Vector3D", out)
   result = REGISTER_OP(Vector3D, operator=, opAssign, const Vector3D&, Vector3D&, "Vector3D&", in)
   result = REGISTER_OP_CONST(Vector3D, operator-, opSub, const Vector3D&, Vector3D, "Vector3D", out)
@@ -547,8 +548,8 @@ class DR_MATH_EXPORT Vector3D
   result = REGISTER_OP(Vector3D, operator*=, opMulAssign, const Vector3D&, Vector3D&, "Vector3D&", in)
   //result = REGISTER_OP_CONST(Vector3D, operator/, opDiv, const float, Vector3D, "Vector3D", out)
   //result = REGISTER_OP(Vector3D, operator*=, opMulAssign, const float, Vector3D&, "Vector3D&", in)  
-
-  result = REGISTER_OP(Vector3D, operator==, opEquals, const Vector3D&, bool, "bool", out)
+  
+  result = REGISTER_OP_CONST(Vector3D, operator==, opEquals, const Vector3D&, bool, "bool", out)
   //result = REGISTER_OP(Vector3D, operator!=, opEquals, const Vector3D&, bool, "bool", out)
     
   

@@ -227,7 +227,9 @@ public:
   float
   getFOV() const;
 
-  BEGINING_REGISTER(Camera)
+  BEGINING_REGISTER(Camera, sizeof(Camera), VALUE_FLAGS)
+  
+  REGISTER_CONSTRUC_DESTRUCT(Camera)
   
   //REGISTER_FOO_4P(Camera, move, float, float, float, bool, void)
 
