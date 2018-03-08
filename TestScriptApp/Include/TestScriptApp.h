@@ -79,7 +79,7 @@ class oneRefObj {
 //};
 
 class TestScriptApp : public Application {
-public:
+ public:
   TestScriptApp();
   ~TestScriptApp();
 
@@ -109,6 +109,9 @@ public:
   void 
   initScriptEngine();
 
+ private:
+  std::shared_ptr<Camera> m_camera;
+  std::shared_ptr<GameObject> m_joker;
   ScriptEngine* scriptEngine;
 
   QUERY_ORDER::E m_queryOrder;

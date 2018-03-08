@@ -33,7 +33,7 @@ namespace DR_DEPTH_STENCIL_STATES {
 }
 
 class DR_GRAPHICS_EXPORT GraphicsAPI {
-public:
+ public:
 
   virtual ~GraphicsAPI() {};
 
@@ -76,7 +76,7 @@ public:
 
   static DepthStencilState&
   getDepthStencilState(DR_DEPTH_STENCIL_STATES::E state);
-protected:
+ protected:
 
   GFXUnique<Device> m_device;
   GFXUnique<DeviceContext> m_deviceContext;

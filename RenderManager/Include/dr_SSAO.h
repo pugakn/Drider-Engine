@@ -11,7 +11,9 @@ namespace driderSDK {
 
 struct SSAOInitData : PassInitData {};
 
-struct SSAODrawData : PassDrawData {};
+struct SSAODrawData : PassDrawData {
+  Texture* ColorTex;
+};
 
 class SSAOPass : RenderPass {
  public:
@@ -45,6 +47,8 @@ class SSAOPass : RenderPass {
  private:
   struct CBuffer {
   };
+
+  CBuffer CB;
   
   ConstantBuffer* m_constantBuffer;
   InputLayout* m_inputLayout;

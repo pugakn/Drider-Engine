@@ -4,7 +4,7 @@
 namespace driderSDK {
 
 class DR_SCRIPT_EXPORT ObjectAS {
-public:
+ public:
   Int32 refCount = 0;
 
   ObjectAS() {

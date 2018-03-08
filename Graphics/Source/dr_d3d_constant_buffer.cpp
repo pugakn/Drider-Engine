@@ -24,8 +24,8 @@ D3DConstantBuffer::create(const Device& device,
                           const byte* initialData) {
   const D3DDevice* apiDevice = reinterpret_cast<const D3DDevice*>(&device);
   m_descriptor = desc;
+  m_sysMemCpy.resize(desc.sizeInBytes);
   if (initialData != nullptr) {
-    m_sysMemCpy.resize(desc.sizeInBytes);
     m_sysMemCpy.assign(initialData, initialData + desc.sizeInBytes);
   }
   D3D11_BUFFER_DESC bdesc = { 0 };

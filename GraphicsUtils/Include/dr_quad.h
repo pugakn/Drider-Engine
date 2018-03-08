@@ -19,7 +19,7 @@ struct CBuffer {
   float xd[16];
 };
 class Quad {
-public:
+ public:
   void init();
   void destroy();
   void draw();

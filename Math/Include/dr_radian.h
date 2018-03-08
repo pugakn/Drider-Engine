@@ -138,7 +138,7 @@ class DR_MATH_EXPORT Radian
   */
   Radian&
   operator/=(float V);
-private:
+ private:
   float m_value;
 };
 

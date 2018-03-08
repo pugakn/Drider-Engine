@@ -22,7 +22,7 @@ CONSTRUCT_DESTRUCT_DECL(Camera)
 */
 class DR_CORE_EXPORT Camera : public GameObject
 {
-public:
+ public:
 
 	/**
 	* TEST::defaultConstructor

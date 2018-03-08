@@ -6,7 +6,7 @@ namespace driderSDK {
 template<class T>
 class Module
 {
-public:
+ public:
   static T& instance() {
     if (isShutDown()) {
       throw "Trying to access a module but it hasn't been started.";
@@ -63,7 +63,7 @@ public:
   static bool isStarted() {
     return !isShutDown() && !isDestroyed();
   }
-protected:
+ protected:
   Module() {}
   virtual ~Module() {
     _instance() = nullptr;

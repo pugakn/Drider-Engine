@@ -18,7 +18,7 @@ class Matrix4x4;
 class DR_CORE_EXPORT AnimatorComponent : public GameComponent
 {
 
-public:
+ public:
 
   using SharedAnimation = std::shared_ptr<Animation>;
   using SharedSkeleton = std::shared_ptr<Skeleton>;
@@ -47,7 +47,7 @@ public:
 
   const TransformsList&
   getBonesTransforms() const;
-private:
+ private:
   // Inherited via GameComponent
   virtual void 
   onCreate() override;
@@ -115,7 +115,7 @@ private:
                     const Animation& animation,
                     const Skeleton& skeleton);
 
-private:
+ private:
 
   using WeakAnimation = std::weak_ptr<Animation>;
   using AnimationsMap = std::unordered_map<TString, WeakAnimation>;

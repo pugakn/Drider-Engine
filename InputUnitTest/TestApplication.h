@@ -66,7 +66,7 @@ namespace driderSDK {
   };
 class TestApplication : public Application
 {
-public:
+ public:
   TestApplication();
   ~TestApplication();
 

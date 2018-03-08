@@ -27,7 +27,7 @@ void stringPrint_g(asIScriptGeneric* gen);
 
 class DR_SCRIPT_EXPORT ScriptEngine : public Module<ScriptEngine>
 {
-public:
+ public:
 
 	/**
 	* Default constructor.
@@ -135,7 +135,7 @@ public:
 	unsigned long timeout = 5000;
 	Time* m_scriptTime;
 	Logger* m_scriptLogger;
-private:
+ private:
 	//asIScriptEngine* m_scriptEngine;
 	asIScriptContext* m_scriptContext;
 	asIScriptFunction* m_scriptFunction;

@@ -6,7 +6,7 @@ struct ID3D11BlendState;
 namespace driderSDK {
 class DR_GRAPHICS_EXPORT D3DBlendState : public BlendState
 {
-public:
+ public:
   virtual void*
     getAPIObject() override;
 
@@ -42,7 +42,7 @@ public:
   */
   void
   release() override;
-private:
+ private:
   ID3D11BlendState* m_state;
 };
 
