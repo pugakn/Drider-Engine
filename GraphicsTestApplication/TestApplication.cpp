@@ -629,7 +629,7 @@ void TestApplication::initScriptEngine() {
   "Object& si()",
   asMETHOD(Object, si, Object&),
   asCALL_THISCALL);*/
-  //result = m_camera->registerFunctions(scriptEngine);
+  result = m_camera->registerFunctions(scriptEngine);
 
   Vector3D vector;
   result = vector.registerFunctions(scriptEngine);

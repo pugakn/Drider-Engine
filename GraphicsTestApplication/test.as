@@ -1,5 +1,5 @@
 void Start() {
-	/*Vector3D vec1(1.0,1.0,1.0);
+	Vector3D vec1(1.0,1.0,1.0);
 	Vector3D vec2(2.0,2.0,2.0);
 
 	Vector3D r(0.0,0.0,0.0);
@@ -8,7 +8,7 @@ void Start() {
 	Vector3D test(3.0,3.0,3.0);
 
 	if(r == test)
-		Print("Vectors are equals");*/
+		Print("Vectors are equals");
 
 	Print("Start ..............");
 }
