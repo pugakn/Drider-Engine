@@ -110,6 +110,7 @@ class TestScriptApp : public Application {
   initScriptEngine();
 
  private:
+  std::shared_ptr<Camera> m_camera;
   std::shared_ptr<GameObject> m_joker;
   ScriptEngine* scriptEngine;
 
