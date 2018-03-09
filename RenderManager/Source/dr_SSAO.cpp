@@ -68,8 +68,8 @@ SSAOPass::draw(PassDrawData* drawData) {
   m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kFragment);
 
   data->GbufferRT->getTexture(0).set(dc, 0);
-  //data->GbufferRT->getTexture(1).set(dc, 1);
-  //data->GbufferRT->getTexture(2).set(dc, 2);
+  data->GbufferRT->getTexture(1).set(dc, 1);
+  data->GbufferRT->getTexture(2).set(dc, 2);
 
   auto screenQuadModel = ResourceManager::getReferenceT<Model>(_T("ScreenAlignedQuad.3ds"));
   if (screenQuadModel) {

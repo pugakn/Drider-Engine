@@ -29,7 +29,7 @@ RenderMan::init() {
   PositionDesc.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE |
                            DR_BIND_FLAGS::RENDER_TARGET;
 
-  m_RTs = dc.createRenderTarget(PositionDesc, 1);
+  m_RTs1 = dc.createRenderTarget(PositionDesc, 4);
 
   DrDepthStencilDesc depthTextureDesc;
   depthTextureDesc.bindFlags = DR_BIND_FLAGS::DEPTH_STENCIL | DR_BIND_FLAGS::SHADER_RESOURCE;
@@ -65,11 +65,11 @@ RenderMan::draw() {
                                  QUERY_PROPERTY::kStatic);
   m_GBufferDrawData.activeCam = Sauron;
   m_GBufferDrawData.models = &queryRequest;
-  m_GBufferDrawData.OutRt = m_RTs;
+  m_GBufferDrawData.OutRt = m_RTs1;
   m_GBufferDrawData.dsOptions = m_GBufferDSoptions;
   m_GBufferPass.draw(&m_GBufferDrawData);
 
-  m_SSAODrawData.GbufferRT = m_RTs;
+  m_SSAODrawData.GbufferRT = m_RTs1;
   m_SSAOPass.draw(&m_SSAODrawData);
 
   /*

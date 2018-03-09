@@ -57,7 +57,8 @@ class DR_RENDERMAN_EXPORT RenderMan {
   SSAOInitData m_SSAOInitData;
   SSAODrawData m_SSAODrawData;
 
-  RenderTarget* m_RTs;
+  RenderTarget* m_RTs1; //GBuffer 1: Albedo, Normal, Depth/Position, Emissive
+  RenderTarget* m_RTs2; //GBuffer 2: Metallic, Roughness, SSAO
 
   DrTextureDesc ColorTexDesc;
   DrTextureDesc PositionTexDesc;
