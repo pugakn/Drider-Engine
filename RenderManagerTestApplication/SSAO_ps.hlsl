@@ -11,8 +11,8 @@ struct PS_INPUT {
 
 float4 FS(PS_INPUT input) : SV_TARGET {
   float2 uv = input.Texcoord;
-
 	float4 color = ColorTex.Sample(SS, uv);
+  //color = float4(uv.x,0,uv.y,1);
   
   return color;
 }

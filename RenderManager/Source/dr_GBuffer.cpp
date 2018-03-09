@@ -59,9 +59,8 @@ void
 GBufferPass::draw(PassDrawData* drawData) {
   GBufferDrawData* data = static_cast<GBufferDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
-  
+
   data->OutRt->set(dc, *data->dsOptions);
-  //dc.setRenderTarget(*data->OutRt, GraphicsAPI::getDepthStencil());
   
   m_vertexShader->set(dc);
   m_fragmentShader->set(dc);
@@ -76,9 +75,8 @@ GBufferPass::draw(PassDrawData* drawData) {
   
   const float clearColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
   data->OutRt->clear(dc, clearColor);
+  (data->dsOptions)->clear(dc, 1, 0);
 
-  //(data->dsOptions)->clear(dc, 1, 0);
-  
   for (auto& modelPair : *data->models) {
     if (auto material = modelPair.mesh.material.lock()) {
       material->set();

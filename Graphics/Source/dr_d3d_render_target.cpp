@@ -63,8 +63,6 @@ D3DRenderTarget::create(const Device & device,
 void
 D3DRenderTarget::set(const DeviceContext& deviceContext,
                      const DepthStencil& depthStencil) const {
-
-
   reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext->
       OMSetRenderTargets(RTVs.size(),

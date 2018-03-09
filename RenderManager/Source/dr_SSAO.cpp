@@ -80,6 +80,7 @@ SSAOPass::draw(PassDrawData* drawData) {
       dc.draw(SAQ.indices.size(), 0, 0);
     }
   }
+
 }
 
 }
