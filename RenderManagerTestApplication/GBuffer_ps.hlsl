@@ -16,9 +16,10 @@ struct PS_INPUT {
 };
 
 struct PS_OUTPUT {
-  float4 Color			: SV_TARGET0;
-	float4 Position		: SV_TARGET1;
-	float4 Normal			: SV_TARGET2;
+  float4 Albedo		: SV_TARGET0;
+	float4 Normal	 	: SV_TARGET1;
+	float4 Position	: SV_TARGET2;
+	float4 Emissive	: SV_TARGET3;
 };
 
 PS_OUTPUT FS(PS_INPUT input) {
@@ -26,13 +27,15 @@ PS_OUTPUT FS(PS_INPUT input) {
   
 	float2 uv = input.Texcoord;
 
-	float4 color = Texture0.Sample(SS, uv);
-	float4 pos = input.Position;
-	float3 n = input.Normal.xyz;
+	float4 albedo		= Texture0.Sample(SS, uv);
+	float4 position	= input.Position;
+	float3 normal		= input.Normal.xyz;
+	float4 emissive	= float4(1, 1, 0, 1);
 
-	outRT.Color = color;
-	outRT.Position = pos;
-	outRT.Normal = float4(n, 1);
+	outRT.Albedo = albedo;
+	outRT.Normal = float4(normal, 1);
+	outRT.Position = position;
+	outRT.Emissive = emissive;
 
 	return outRT;
 }

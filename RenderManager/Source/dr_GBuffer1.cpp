@@ -1,4 +1,4 @@
-#include "dr_GBuffer.h"
+#include "dr_GBuffer1.h"
 #include <dr_string_utils.h>
 #include <dr_file.h>
 #include <dr_graphics_api.h>
@@ -17,14 +17,14 @@
 
 namespace driderSDK {
 
-GBufferPass::GBufferPass() {
+GBufferPass1::GBufferPass1() {
 }
 
-GBufferPass::~GBufferPass() {
+GBufferPass1::~GBufferPass1() {
 }
 
 void
-GBufferPass::init(PassInitData* initData) {
+GBufferPass1::init(PassInitData* initData) {
   driderSDK::File file;
 
   file.Open(_T("GBuffer_vs.hlsl"));
@@ -56,8 +56,8 @@ GBufferPass::init(PassInitData* initData) {
 }
 
 void
-GBufferPass::draw(PassDrawData* drawData) {
-  GBufferDrawData* data = static_cast<GBufferDrawData*>(drawData);
+GBufferPass1::draw(PassDrawData* drawData) {
+  GBufferDrawData1* data = static_cast<GBufferDrawData1*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
   data->OutRt->set(dc, *data->dsOptions);

@@ -10,34 +10,31 @@
 
 namespace driderSDK {
 
-struct GBufferInitData : PassInitData
-{
-  
+struct GBufferInitData1 : PassInitData {
 };
 
-struct GBufferDrawData : PassDrawData
-{
+struct GBufferDrawData1 : PassDrawData {
   std::shared_ptr<Camera> activeCam;
   SceneGraph::QueryResult* models;
   RenderTarget* OutRt;
   DepthStencil* dsOptions;
 };
 
-class GBufferPass : RenderPass {
+class GBufferPass1 : RenderPass {
  public:
   /*
   TEST::testName
   
   Description.
   */
-  GBufferPass();
+   GBufferPass1();
 
   /*
   TEST::testName
   
   Description.
   */
-  ~GBufferPass();
+  ~GBufferPass1();
 
   /*
   TEST::testName

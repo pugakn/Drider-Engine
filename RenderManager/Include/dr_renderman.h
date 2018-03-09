@@ -8,7 +8,7 @@
 #include <dr_render_component.h>
 #include <dr_depth_stencil.h>
 #include <dr_depth_stencil_state.h>
-#include "dr_GBuffer.h"
+#include "dr_GBuffer1.h"
 #include "dr_SSAO.h"
 
 namespace driderSDK {
@@ -48,9 +48,9 @@ class DR_RENDERMAN_EXPORT RenderMan {
   Viewport m_viewport;
   std::shared_ptr<Camera> Sauron;
 
-  GBufferPass m_GBufferPass;
-  GBufferInitData m_GBufferInitData;
-  GBufferDrawData m_GBufferDrawData;
+  GBufferPass1 m_GBufferPass;
+  GBufferInitData1 m_GBufferInitData;
+  GBufferDrawData1 m_GBufferDrawData;
   DepthStencil* m_GBufferDSoptions;
 
   SSAOPass m_SSAOPass;
