@@ -15,6 +15,7 @@ class IndexBuffer;
 class VertexBuffer;
 class Technique;
 class GameObject;
+struct Mesh;
 
 class DrawableComponent : public GameComponent
 {
@@ -46,10 +47,10 @@ class DrawableComponent : public GameComponent
  protected:  
   
   void
-  createMeshBuffers(std::vector<struct Mesh>& meshes);
+  createMeshBuffers(std::vector<Mesh>& meshes);
 
   void
-  updateVertexBuffer(std::vector<struct Mesh>& meshes);
+  updateVertexBuffer(std::vector<Mesh>& meshes);
 
   void
   destroyMeshBuffers();
