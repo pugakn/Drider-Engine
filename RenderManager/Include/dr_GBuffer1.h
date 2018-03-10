@@ -49,6 +49,11 @@ class GBuffer1Pass : RenderPass {
   void
   draw(PassDrawData* drawData);
 
+  /*
+  void
+  exit();
+  */
+
  private:
   struct CBuffer {
     Matrix4x4 WVP;
@@ -57,9 +62,6 @@ class GBuffer1Pass : RenderPass {
   };
 
   CBuffer CB;
-  
-  ConstantBuffer* m_constantBuffer;
-  InputLayout* m_inputLayout;
 };
 
 }

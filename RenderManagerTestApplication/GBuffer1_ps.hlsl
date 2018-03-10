@@ -40,5 +40,10 @@ PS_OUTPUT FS(PS_INPUT input) {
 	outRT.Normal	 = float4(normal, 1);
 	outRT.Emissive = emissive;
 
+	outRT.Albedo	 = float4(1, 0 ,0 , 1);
+	outRT.Position = float4(0, 1 ,0 , 1);
+	outRT.Normal	 = float4(0, 0 ,1 , 1);
+	outRT.Emissive = float4(1, 1 ,0 , 1);
+
 	return outRT;
 }

@@ -30,6 +30,10 @@ PS_OUTPUT FS(PS_INPUT input) {
 	outRT.Metallic  = float4(0.5f, 0.5f, 0.5f, 1.0f);
 	outRT.Roughness = float4(0.0f, 0.0f, 0.0f, 1.0f);
 	outRT.SSAO      = float4(1.0f, 1.0f, 1.0f, 1.0f);
+
+	outRT.Metallic  = float4(1, 0, 1, 1);
+	outRT.Roughness = float4(0, 1, 1, 1);
+	outRT.SSAO      = float4(1, 1, 1, 1);
 	
 	return outRT;
 }

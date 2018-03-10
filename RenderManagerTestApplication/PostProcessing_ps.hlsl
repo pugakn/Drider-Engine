@@ -16,7 +16,7 @@ struct PS_INPUT {
 float4 FS(PS_INPUT input) : SV_TARGET {
   float2 uv = input.Texcoord;
 
-	float4 color = SSAOTex.Sample(SS, uv);
+	float4 color = AlbedoTex.Sample(SS, uv);
   
   return color;
 }

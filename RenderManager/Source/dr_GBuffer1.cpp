@@ -1,4 +1,5 @@
 #include "dr_GBuffer1.h"
+#include <dr_device.h>
 #include <dr_string_utils.h>
 #include <dr_file.h>
 #include <dr_graphics_api.h>
@@ -26,28 +27,12 @@ GBuffer1Pass::~GBuffer1Pass() {
 
 void
 GBuffer1Pass::init(PassInitData* initData) {
-  driderSDK::File file;
-
-  file.Open(_T("GBuffer1_vs.hlsl"));
-  String vsSource = StringUtils::toString(file.GetAsString(file.Size()));
-  file.Close();
-
-  file.Open(_T("GBuffer1_ps.hlsl"));
-  String fsSource = StringUtils::toString(file.GetAsString(file.Size()));
-  file.Close();
-
   Device& device = GraphicsAPI::getDevice();
 
-  m_vertexShader = device.createShaderFromMemory(vsSource.data(),
-                                                 vsSource.size(),
-                                                 DR_SHADER_TYPE_FLAG::kVertex);
+  m_vsFilename = _T("GBuffer1_vs.hlsl");
+  m_fsFilename = _T("GBuffer1_ps.hlsl");
 
-  m_fragmentShader = device.createShaderFromMemory(fsSource.data(),
-                                                   fsSource.size(),
-                                                   DR_SHADER_TYPE_FLAG::kFragment);
-
-  m_inputLayout = device.createInputLayout(m_vertexShader->reflect(),
-                                           *m_vertexShader->m_shaderBytecode);
+  recompileShader();
 
   DrBufferDesc bdesc;
 
@@ -113,11 +98,15 @@ GBuffer1Pass::draw(PassDrawData* drawData) {
     dc.draw(modelPair.mesh.indicesCount, 0, 0);
   }
 }
-
 /*
+void
+GBuffer1Pass::exit() {
+  m_inputLayout->release();
   m_constantBuffer->release();
+
   m_vertexShader->release();
   m_fragmentShader->release();
-*/
+}
+s*/
 
 }

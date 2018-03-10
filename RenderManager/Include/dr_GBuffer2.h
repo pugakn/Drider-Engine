@@ -57,9 +57,6 @@ class GBuffer2Pass : RenderPass {
   };
 
   CBuffer CB;
-
-  InputLayout* m_inputLayout;
-  ConstantBuffer* m_constantBuffer;
 };
 
 }

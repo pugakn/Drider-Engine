@@ -23,28 +23,12 @@ PostProcessingPass::~PostProcessingPass() {
 
 void
 PostProcessingPass::init(PassInitData* initData) {
-  driderSDK::File file;
-
-  file.Open(_T("PostProcessing_vs.hlsl"));
-  String vsSource = StringUtils::toString(file.GetAsString(file.Size()));
-  file.Close();
-
-  file.Open(_T("PostProcessing_ps.hlsl"));
-  String fsSource = StringUtils::toString(file.GetAsString(file.Size()));
-  file.Close();
-
   Device& device = GraphicsAPI::getDevice();
 
-  m_vertexShader = device.createShaderFromMemory(vsSource.data(),
-                                                 vsSource.size(),
-                                                 DR_SHADER_TYPE_FLAG::kVertex);
+  m_vsFilename = _T("PostProcessing_vs.hlsl");
+  m_fsFilename = _T("PostProcessing_ps.hlsl");
 
-  m_fragmentShader = device.createShaderFromMemory(fsSource.data(),
-                                                   fsSource.size(),
-                                                   DR_SHADER_TYPE_FLAG::kFragment);
-
-  m_inputLayout = device.createInputLayout(m_vertexShader->reflect(),
-                                           *m_vertexShader->m_shaderBytecode);
+  recompileShader();
 
   DrSampleDesc SSdesc;
   SSdesc.Filter = DR_TEXTURE_FILTER::kMIN_MAG_MIP_POINT;

@@ -46,8 +46,6 @@ class PostProcessingPass : RenderPass {
   draw(PassDrawData* drawData);
 
  private:
-  InputLayout* m_inputLayout;
-
   SamplerState* m_samplerState;
 };
 
