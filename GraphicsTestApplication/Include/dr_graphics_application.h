@@ -1,5 +1,6 @@
 
 #include <dr_application.h>
+#include <dr_keyboard.h>
 #include <dr_memory.h>
 #include <dr_util_prerequisites.h>
 #include <dr_timer.h>
@@ -66,13 +67,16 @@ private:
   void
   toggleWireframe();
 
+  void
+  playerMovement();
+
   std::unique_ptr<Technique> m_animTech;
   std::unique_ptr<Technique> m_staticTech;
   std::unique_ptr<Technique> m_linesTech;
 
   bool m_drawMeshes;
-  GameObject* m_left;
   GameObject* m_right;
+  GameObject* m_player;
   Timer m_timer;
 };
 

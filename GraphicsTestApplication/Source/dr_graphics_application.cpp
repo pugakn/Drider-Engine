@@ -16,7 +16,6 @@
 #include <dr_graphics_driver.h>
 #include <dr_index_buffer.h>
 #include <dr_input_manager.h>
-#include <dr_keyboard.h>
 #include <dr_joystick.h>
 #include <dr_model.h>
 #include <dr_logger.h>
@@ -57,18 +56,16 @@ GraphicsApplication::postUpdate() {
 
   static Vector3D dir{0,0,200.f};
 
-  m_left->getTransform().move(dir * Time::getDelta());
-
   m_right->getTransform().move(dir * Time::getDelta());
-
+  
   if (m_timer.getSeconds() > 4.f) {
     dir *= -1;
-    m_left->getTransform().rotate({0,Math::PI,0});
     m_right->getTransform().rotate({0,Math::PI,0});
     m_timer.init();
   }
-}
 
+  playerMovement();
+}
 
 void 
 GraphicsApplication::postRender() {
@@ -258,15 +255,15 @@ GraphicsApplication::createScene() {
   animator->setCurrentAnimation(walkerAnimName);
 
   walkerObj->getTransform().setPosition({300, 0, 200});
-
+  
   m_right = walkerObj.get();
 
   auto copy = walkerObj->clone();
 
-  copy->getTransform().move({-600}, AXIS::kX);
-  
-  m_left = copy.get();
+  copy->getTransform().move(-600, AXIS::kX);
 
+  m_player = copy.get();
+  
   auto camHolder = SceneGraph::createObject(_T("Camera"));
   
   camHolder->createComponent<CameraComponent>(activeCam);
@@ -413,6 +410,42 @@ GraphicsApplication::toggleWireframe() {
   rs->set(GraphicsAPI::getDeviceContext());
 
   wire = !wire;
+}
+
+void 
+GraphicsApplication::playerMovement() {
+
+  if (!m_player) {
+    return;
+  }
+  
+  float forward = 0;
+  float strafe = 0;
+
+  const float velocity = 200.f;
+
+  auto& direction = m_player->getTransform().getDirection();
+  auto left = direction.cross({0,1,0});
+
+  if (Keyboard::isKeyDown(KEY_CODE::kLEFT)) {
+    strafe += velocity;
+  }
+
+  if (Keyboard::isKeyDown(KEY_CODE::kRIGHT)) {
+    strafe -= velocity;
+  }
+
+  if (Keyboard::isKeyDown(KEY_CODE::kUP)) {
+    forward += velocity;
+  }
+
+  if (Keyboard::isKeyDown(KEY_CODE::kDOWN)) {
+    forward -= velocity;
+  }  
+  
+  auto movement = (direction * forward + left * strafe) * Time::getDelta();
+
+  m_player->getTransform().move(movement);
 }
 
 }
