@@ -29,8 +29,8 @@ void RenderManApp::postInit() {
 
   loadResources();
 
-  auto croc = SceneGraph::createObject(_T("Croc"));
-  auto crocModel = ResourceManager::getReferenceT<Model>(_T("Croc.X"));
+  auto croc = SceneGraph::createObject(_T("Checker"));
+  auto crocModel = ResourceManager::getReferenceT<Model>(_T("Checker.obj"));
   if (crocModel) {
     croc->createComponent<RenderComponent>(crocModel);
     croc->createComponent<AABBCollider>(crocModel->aabb);
@@ -60,7 +60,17 @@ void RenderManApp::postDestroy() {
 }
 
 void RenderManApp::loadResources() {
-  ResourceManager::loadResource(_T("Croc.X"));
+  ResourceManager::loadResource(_T("Checker.obj"));
+  ResourceManager::loadResource(_T("256_Checker_Diffuse.png"));
+  ResourceManager::loadResource(_T("256_Checker_Displacement.png"));
+  ResourceManager::loadResource(_T("256_Checker_Emissive.png"));
+  ResourceManager::loadResource(_T("256_Checker_Metallic.png"));
+  ResourceManager::loadResource(_T("256_Checker_Normal.png"));
+  ResourceManager::loadResource(_T("256_Checker_Opacity.png"));
+  ResourceManager::loadResource(_T("256_Checker_Roughness.png"));
+  ResourceManager::loadResource(_T("256_Checker_Specular.png"));
+  ResourceManager::loadResource(_T("256_Checker_SSColor.png"));
+  ResourceManager::loadResource(_T("256_Checker_Thickness.png"));
 }
 
 }

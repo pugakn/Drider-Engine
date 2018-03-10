@@ -16,6 +16,7 @@
 #include <dr_resource_manager.h>
 #include <dr_model.h>
 #include <dr_texture_core.h>
+#include <dr_texture.h>
 
 namespace driderSDK {
 
@@ -65,24 +66,15 @@ GBuffer1Pass::draw(PassDrawData* drawData) {
 
   for (auto& modelPair : *data->models) {
     if (auto material = modelPair.mesh.material.lock()) {
-      auto AlbedoTex = material->getProperty(_T("Albedo"));
-      if (AlbedoTex != nullptr) {
-        if (auto GA_Tex = AlbedoTex->texture.lock()) {
-          GA_Tex->textureGFX->set(dc, 0);
-        }
+      auto albedoTex = std::dynamic_pointer_cast<Texture>(ResourceManager::getReference(_T("256_Checker_Diffuse.png")));
+      if (albedoTex) {
+        albedoTex->set(dc, 0);
       }
-      auto NormalTex = material->getProperty(_T("Normal"));
-      if (NormalTex != nullptr) {
-        if (auto GA_Tex = NormalTex->texture.lock()) {
-          GA_Tex->textureGFX->set(dc, 1);
-        }
-      }
-      auto EmissiveTex = material->getProperty(_T("Emisivity"));
-      if (EmissiveTex != nullptr) {
-        if (auto GA_Tex = EmissiveTex->texture.lock()) {
-          GA_Tex->textureGFX->set(dc, 2);
-        }
-      }
+
+      auto NormalTex = ResourceManager::getReferenceT<Texture>(_T("256_Checker_Normal.png"));
+
+      auto EmissiveTex = ResourceManager::getReferenceT<Texture>(_T("256_Checker_Emissive.png"));
+      EmissiveTex->set(dc, 2);
     }
 
     CB.World = modelPair.world;
