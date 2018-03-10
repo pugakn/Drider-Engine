@@ -1,3 +1,4 @@
+#pragma once
 #include <chrono>
 #include "dr_util_prerequisites.h"
 

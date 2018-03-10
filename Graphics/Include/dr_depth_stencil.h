@@ -57,7 +57,7 @@ class DR_GRAPHICS_EXPORT DepthStencil
 
   const DrDepthStencilDesc& getDescriptor() const { return m_descriptor; }
   const Texture& getTexture() const { return *m_texture; }
-protected:
+ protected:
   bool _textureOwner = false;
   Texture* m_texture;
   DrDepthStencilDesc m_descriptor;

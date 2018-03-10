@@ -26,7 +26,7 @@ struct DR_CORE_EXPORT RenderMesh
 
 class DR_CORE_EXPORT RenderComponent : public GameComponent
 {
-public:
+ public:
   using MeshList = std::vector<RenderMesh>;
   using SharedModel = std::shared_ptr<Model>;
   using WeakModelRef = std::weak_ptr<Model>;
@@ -48,7 +48,7 @@ public:
   {
     return m_model;
   }
-private:
+ private:
   // Inherited via GameComponent
   virtual void 
   onCreate() override;

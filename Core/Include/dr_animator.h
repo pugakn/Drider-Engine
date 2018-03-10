@@ -93,7 +93,7 @@ class DR_CORE_EXPORT Animator
       return frame;                                    
   }
 
-private:
+ private:
 
   void
   readNodeHeirarchy(float animTime,

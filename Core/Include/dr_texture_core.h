@@ -10,7 +10,7 @@ class Texture;
 
 class DR_CORE_EXPORT TextureCore : public Resource
 {
-public:
+ public:
 
   TextureCore();
 

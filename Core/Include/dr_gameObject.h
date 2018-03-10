@@ -30,7 +30,10 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
 
   GameObject& operator=(const GameObject&) = delete;
   
-  void 
+  /*void
+  init();*/
+
+  virtual void 
   update();
   
   void
@@ -40,7 +43,7 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   destroy();
 
   SharedGameObj
-  clone();
+  clone(bool addToParent = true);
   
   virtual SharedGameObj
   createInstance();
@@ -129,7 +132,7 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   setParent(SharedGameObj parent);
 
   SharedGameObj 
-  getParent();
+  getParent() const;
 
   /**
   * Removes a child from its childredn.
@@ -238,10 +241,10 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   copyData(SharedGameObj other){}
 
   virtual void
-  updateImpl();
+  updateImpl(){}
 
-  bool m_destroyed;
   bool m_change;
+  bool m_destroyed;
   bool m_isStatic;
   ChildrenList m_children;
   ComponentsList m_components;

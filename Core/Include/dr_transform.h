@@ -21,8 +21,14 @@ class DR_CORE_EXPORT Transform
 {
  public:
   friend class GameObject;
+  friend class BoneAttachObject;
 
   Transform();
+
+  /**
+  * Copy constructor
+  */
+  Transform(const Transform& other);
 
   /**
   * Computes the matrix containing the translation, orientation and
@@ -37,11 +43,15 @@ class DR_CORE_EXPORT Transform
   const Vector3D& 
   getPosition() const;
 
+  const Vector3D&
+  getEulerAngles() const;
+
+  const Vector3D&
+  getDirection() const;
   /**
-  * Gets the rotation vector containing the X, Y & Z angles in
-  * radians.
+  * Gets the rotation matrix.
   */
-  const Vector3D& 
+  const Matrix4x4& 
   getRotation() const;
 
   const Vector3D& 
@@ -53,8 +63,8 @@ class DR_CORE_EXPORT Transform
   * @return
   *   Vector with the direction of the camera.
   */
-  Vector3D
-  getDirection() const;
+  /*Vector3D
+  getDirection() const;*/
 
   /**
   * Sets the value of the specified position component.
@@ -109,11 +119,6 @@ class DR_CORE_EXPORT Transform
   void 
   setRotation(const Vector3D& orientation);
 
-  void 
-  rotate(Radian Radian, AXIS::E axis);
-  void 
-  rotate(Degree Radian, AXIS::E axis);
-
   /**
   * Rotates the transform using a rotation vector.
   * 
@@ -154,12 +159,12 @@ class DR_CORE_EXPORT Transform
   Transform
   operator*(const Transform& other) const;
 
-  bool
-  operator==(const Transform& other) const;
+  Transform
+  operator*(const Matrix4x4& mat) const;
 
-  bool 
-  operator!=(const Transform& other) const;
-
+  Transform&
+  operator=(const Transform& other);
+  
  private:
   /**
   * Invalidates the transform matrix.
@@ -170,24 +175,29 @@ class DR_CORE_EXPORT Transform
   void 
   invalidate();
 
+  void 
+  invalidateRotation();
   /**
   * Computes the transformation matrix according to the position, 
   * rotation and scale established.
   */
   void 
   update() const;
-
-  void
-  newFrame();
-
+  
   bool
   changed() const;
 
   mutable Matrix4x4 m_transform;
+  mutable Matrix4x4 m_rotation;
+  mutable Vector3D m_direction;
+  mutable Vector3D m_eulerAngles;
   mutable bool m_outdatedTransform;
-  bool m_changed;
+  mutable bool m_outdatedRotation;
+  bool m_change;
   Vector3D m_position;
-  Vector3D m_rotation;
+  Matrix4x4 m_rotX;
+  Matrix4x4 m_rotY;
+  Matrix4x4 m_rotZ;
   Vector3D m_scale;
 };
 

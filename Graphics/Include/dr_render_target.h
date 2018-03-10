@@ -84,7 +84,7 @@ class DR_GRAPHICS_EXPORT RenderTarget
     DR_ASSERT(id < m_texturesVec.size());
     return *m_texturesVec[id]; 
   }
-protected:
+ protected:
   DrTextureDesc m_descriptor;
   std::vector<Texture*> m_texturesVec;
   bool _textureOwner = false;

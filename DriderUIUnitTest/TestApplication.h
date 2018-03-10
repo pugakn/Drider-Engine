@@ -20,7 +20,7 @@ class Technique;
   
 class TestApplication : public Application
 {
-public:
+ public:
   TestApplication();
   ~TestApplication();
 
@@ -33,7 +33,7 @@ public:
   Viewport viewport;
   WebRenderer webRenderer;
   Quad quad;
-private:
+ private:
 
 
 };

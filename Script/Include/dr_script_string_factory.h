@@ -16,7 +16,7 @@ typedef std::unordered_map<TString, int> map_t;
 */
 class DR_SCRIPT_EXPORT StringFactory : public asIStringFactory
 {
-public:
+ public:
 
 	/**
 	* Default constructor.

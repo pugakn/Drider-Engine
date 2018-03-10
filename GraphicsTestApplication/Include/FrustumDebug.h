@@ -8,7 +8,7 @@ class GameObject;
 
 class FrustumDebug : public DrawableComponent 
 {
-public:
+ public:
   
   FrustumDebug(GameObject& _go);
 
@@ -21,7 +21,7 @@ public:
 
   virtual void 
   cloneIn(GameObject& _go) override;
-private:
+ private:
   void
   create();
 };

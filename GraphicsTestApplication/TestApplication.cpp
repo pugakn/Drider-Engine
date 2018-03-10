@@ -23,7 +23,13 @@
 #include <dr_gameObject.h>
 #include <dr_material.h>
 #include <dr_animator_component.h>
-
+#include <dr_bone_attach_object.h>
+#include <dr_device_context.h>
+#include <dr_device.h>
+#include <dr_model.h>
+#include <dr_graph.h>
+#include <dr_vertex_buffer.h>
+#include <dr_index_buffer.h>
 #include "DrawableComponent.h"
 #include "AABBDebug.h"
 #include "FrustumDebug.h"
@@ -143,25 +149,20 @@ TestApplication::input() {
 
   auto rotateLeft = [&]() 
   {
-    m_joker->getTransform().rotate(Degree(90.f * Time::getDelta()), AXIS::kY);
+    m_joker->getTransform().rotate(Vector3D{0, Math::PI * Time::getDelta(),0});
   };
 
   auto rotateRight = [&]() 
   {
-    m_joker->getTransform().rotate(Degree(-90.f * Time::getDelta()), AXIS::kY);
+    m_joker->getTransform().rotate(Vector3D{0, -Math::PI * Time::getDelta(),0});
   };
 
-  /*if (croc = m_sceneGraph->getRoot()->getChild(_T("Croc"))) {
+  auto rot = [&](const Vector3D& angl)
+  {
+    m_wep->getTransform().rotate(angl);
+  };
     
-    croc->transform.rotate(Degree(90 * Time::instance().getDelta()), AXIS::kY);
-    float scale = Math::cos(croc->transform.getRotation().y) * 0.5f + 1.f;
-    croc->transform.setScale({scale,scale,scale}); 
-  }*/
-
-  //m_animated[1]->transform.rotate(Degree(90 * Time::getDelta()), AXIS::kY);
-  
-  
-  Vector3D dir = m_joker->getTransform().getDirection();
+  /*Vector3D dir = m_joker->getTransform().getDirection();
   Vector3D right = dir.cross(Vector3D(0,1,0));
   float f = 0;
   float s = 0;
@@ -195,7 +196,7 @@ TestApplication::input() {
   }
   else if (Keyboard::isKeyDown(KEY_CODE::kD)) {
     s = -1;
-  }
+  }*/
 
   if (Keyboard::isKeyDown(KEY_CODE::kLEFT)) {
     rotateLeft();
@@ -205,7 +206,18 @@ TestApplication::input() {
     rotateRight();
   }
 
-  float vel = 150.f * Time::getDelta();
+  if (Keyboard::isKeyDown(KEY_CODE::kY)) {
+    rot({0,Math::PI * Time::getDelta(),0});
+  }
+  else if (Keyboard::isKeyDown(KEY_CODE::kZ)) {
+    rot({0,0,Math::PI * Time::getDelta()});
+  }
+  else if (Keyboard::isKeyDown(KEY_CODE::kX)) {
+    rot({Math::PI * Time::getDelta(),0, 0});
+  }
+
+
+  /*float vel = 150.f * Time::getDelta();
   float camVel = 500.f * Time::getDelta();
  
   if (Math::abs(f) > 0.0f || Math::abs(s) > 0.0f) {
@@ -218,16 +230,12 @@ TestApplication::input() {
       auto target = m_upCam->getTransform().getPosition();
       m_upCam->setTarget({target.x + 0.5f, 0.f, target.z + 0.5f});
     }
-  }
+  }*/
 }
 
 void
 TestApplication::postUpdate() {
   
-  for (auto& anim : m_animated) {
-    anim->update();
-  }
-
   InputManager::capture();
   Time::update();
   SceneGraph::update();
@@ -244,10 +252,6 @@ TestApplication::postRender() {
   m_linesTech->setCamera(&(*m_activeCam));
   
   //SceneGraph::draw();
-  
-  for (auto& anim : m_animated) {
-    anim->draw(*m_activeCam);
-  }
 
   //Show Frustum
   m_camera->render();
@@ -297,19 +301,12 @@ TestApplication::postDestroy() {
   m_linesTech->destroy();
   m_animTech->destroy();
 
-  m_animated.clear();
-
   ResourceManager::shutDown();
   InputManager::shutDown();
   Time::shutDown();
   SceneGraph::shutDown();
   GraphicsDriver::shutDown();
   Logger::shutDown();
-
-  for (auto& anim : m_animated) {
-    anim->destroy();
-    delete anim;
-  }
 }
 
 void 
@@ -374,6 +371,21 @@ TestApplication::initInput() {
                            this, 
                            SceneGraph::getRoot());
 
+  auto clone = [&]()
+  {
+    std::mt19937 mt(std::random_device{}());
+  
+    std::uniform_real_distribution<float> space(-300, 300);
+
+    auto c = m_joker->clone();
+    SceneGraph::addObject(c);
+    c->getTransform().move({space(mt), 0, space(mt)});
+  };
+
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kC,
+                        clone);
+
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kH,
                         bindPH);
@@ -415,16 +427,19 @@ TestApplication::initResources() {
 
   ResourceManager::loadResource(_T("Croc.X"));
 
+  ResourceManager::loadResource(_T("Cube.fbx"));
+
   ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
 
-  ResourceManager::loadResource(_T("HipHopDancing.fbx"));
+  ResourceManager::loadResource(_T("Walking.fbx"));
+
+  ResourceManager::loadResource(_T("Weapons-of-survival.fbx"));
 }
 
 void 
 TestApplication::initSceneGraph() {
   
-  auto createNode = [&](std::shared_ptr<GameObject> parent, 
-                        const TString& name, 
+  auto createNode = [&](const TString& name, 
                         const TString& resName,
                         const Vector3D& pos) {
   
@@ -454,15 +469,8 @@ TestApplication::initSceneGraph() {
 
       anim->setCurrentAnimation(animName);
 
-      auto skd = node->createComponent<SkeletonDebug>();
-
-      skd->setShaderTechnique(m_linesTech.get());
     }
-    
-    auto p = node->createComponent<AABBDebug>(true);
-    
-    p->setShaderTechnique(m_linesTech.get());
-  
+      
     node->getTransform().setPosition(pos);
 
     return node;
@@ -470,18 +478,11 @@ TestApplication::initSceneGraph() {
 
   auto root = SceneGraph::getRoot();
      
-  createNode(root, 
-             _T("Quad"), 
-             _T("ScreenAlignedQuad.3ds"), 
-             {50, 300, 200})->getTransform().scale({40, 40, 40});
-
   std::unordered_map<Int32, TString> names
   {
-    {0, _T("HipHopDancing.fbx")},
+    {0, _T("Walking.fbx")},
     {1, _T("Croc.X")},
   };
-   
-  auto chinaMod = ResourceManager::getReferenceT<Model>(_T("HipHopDancing.fbx"));
   
   auto chinitaMat = ResourceManager::createMaterial(_T("Mat_Chinita"));
 
@@ -489,15 +490,36 @@ TestApplication::initSceneGraph() {
 
   chinitaMat->getProperty(_T("Albedo"))->texture = chinitaTex;
 
-  auto n = createNode(root, _T("Chinita"), _T("HipHopDancing.fbx"), {-200.f, 0.0f, 0.0f});
+  auto n = createNode(_T("Chinita"), _T("Walking.fbx"), {-200.f, 0.0f, 0.0f});
   
-  auto animComp = n->getComponent<AnimatorComponent>();
-
   n->getTransform().scale({ 1,1,1 });
   
   n->getComponent<RenderComponent>()->getMeshes()[0].material = chinitaMat;
 
   m_joker = n;
+  
+  auto cube = SceneGraph::createObject<BoneAttachObject>(_T("Cube"));
+  
+  auto cubeMod = ResourceManager::getReferenceT<Model>(_T("Weapons-of-survival.fbx"));
+  
+  cube->createComponent<RenderComponent>(cubeMod);
+
+  cube->createComponent<AABBCollider>(cubeMod->aabb);
+
+  cube->setParent(n);
+
+  cube->setBoneAttachment(_T("RightHand"));
+
+  cube->getTransform().scale({0.1f, 0.1f, 0.1f});
+
+  m_wep = cube;
+  
+  auto ss = createNode(_T("Mother"), _T("Walking.fbx"), {200.f, 0.0f, 400.0f});
+
+  ss->getTransform().rotate({Math::PI,0,0});
+
+  n->addChild(ss);
+
   
   
   std::mt19937 mt(std::random_device{}());
@@ -507,7 +529,7 @@ TestApplication::initSceneGraph() {
   std::uniform_real_distribution<float> space(-1500, 1500);
   std::uniform_real_distribution<float> time(0, 1000);
 
-  for (Int32 i = 0; i < 200; ++i) {
+  for (Int32 i = 0; i < 0; ++i) {
     
     auto pp = n->clone();
     

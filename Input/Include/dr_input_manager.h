@@ -16,7 +16,7 @@ class Joystick;
 class DR_INPUT_EXPORT InputManager : public Module<InputManager>
 {
  //Public Methods
-public:
+ public:
 
   InputManager(SizeT _windowHandle);
 
@@ -46,10 +46,10 @@ public:
   * Captures all the devices input.
   */
   static void
-  capture();
+  update();
 
  //Private Methods
-private:
+ private:
   void
   onStartUp();
 
@@ -65,7 +65,7 @@ private:
   void
   registerJoysticks();
  //Private Members
-private:
+ private:
   SizeT m_windowHandle;
   std::unique_ptr<Mouse> m_mouse;
   std::unique_ptr<Keyboard> m_keyboard;

@@ -6,7 +6,7 @@ namespace driderSDK {
 
 class DR_CORE_EXPORT EnableObject
 {
-public:
+ public:
   /**
   * Default constructor.
   * Sets the object as enabled by default without calling onEnabled.
@@ -31,7 +31,7 @@ public:
   */
   bool 
   isEnabled();
-protected:
+ protected:
   /**
   * Function called when the object is enabled.
   */
@@ -43,7 +43,7 @@ protected:
   */
   virtual void 
   onDisabled(){}
-private:
+ private:
   bool m_enabled;
 };
 

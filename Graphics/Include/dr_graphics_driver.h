@@ -8,7 +8,7 @@
 namespace driderSDK
 {
 class DR_GRAPHICS_EXPORT GraphicsDriver : public Module<GraphicsDriver> {
-public:
+ public:
   GraphicsDriver(DR_GRAPHICS_API::E apiType, 
                  UInt32 w, 
                  UInt32 h, 
@@ -25,7 +25,7 @@ public:
   static void 
   changeApi(DR_GRAPHICS_API::E apiType);
 
-private:
+ private:
   
   void
   onStartUp();
@@ -33,7 +33,7 @@ private:
   void
   onShutDown();
 
-private:
+ private:
   GraphicsAPI m_api;
   DR_GRAPHICS_API::E m_apiType;
 

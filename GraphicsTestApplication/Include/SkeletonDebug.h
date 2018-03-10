@@ -1,7 +1,9 @@
 #pragma once
 
 #include <vector>
-#include <AABBDebug.h>
+#include <dr_vertex.h>
+//#include <dr_gameComponent.h>
+#include "DrawableComponent.h"
 
 namespace driderSDK {
 
@@ -9,18 +11,15 @@ class Skeleton;
 class Technique;
 class Transform;
 
-class SkeletonDebug : public GameComponent {
+class SkeletonDebug : public DrawableComponent {
 
-public:
+ public:
+
   SkeletonDebug(GameObject& _go);
 
   SkeletonDebug(const SkeletonDebug&) = delete;
 
   SkeletonDebug& operator=(const SkeletonDebug&) = delete;
-
-  void
-  setShaderTechnique(Technique* technique);
-
 
   virtual void 
   onCreate() override;
@@ -29,20 +28,18 @@ public:
   onUpdate() override;
   
   virtual void 
-  onRender() override;
-
-  virtual void 
-  onDestroy() override;
-
-  virtual void 
   cloneIn(GameObject& _go);
-private:
+ private:
+  
   void
   create();
-  using AABBDebugPtr = std::unique_ptr<AABBDebug>;
-  using AABBDebugList = std::vector<AABBDebugPtr>;
-  Technique* m_technique{nullptr};
-  AABBDebugList m_aabbs;
+
+  void 
+  buildSkeleton(void* bone, 
+                Skeleton& skeleton,
+                Mesh& mesh);
+
+  //std::vector<Vertex> m_points;
 };
 
 }

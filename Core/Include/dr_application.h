@@ -9,17 +9,17 @@
 namespace driderSDK {
 class DR_CORE_EXPORT Application
 {
-public:
+ public:
   virtual ~Application() {}
   
   int run();
 
-protected:
+ protected:
   virtual void postInit() = 0;
   virtual void postUpdate() = 0;
   virtual void postRender() = 0;
   virtual void postDestroy() = 0;
-private:
+ private:
   void init();
   void createWindow();
   void update();
@@ -28,7 +28,7 @@ private:
  protected:
   Viewport m_viewport;
   void* m_hwnd;
-private:
+ private:
   std::atomic<bool> m_running;
 };
 }

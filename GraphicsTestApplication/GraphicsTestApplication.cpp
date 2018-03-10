@@ -1,8 +1,9 @@
-#include "TestApplication.h"
+#include "dr_graphics_application.h"
 
 using namespace driderSDK;
 int main(int argc, char* argv[]) {
-  TestApplication app;
 
-  return app.run();
+  GraphicsApplication gfxApp;
+
+  return gfxApp.run();
 }

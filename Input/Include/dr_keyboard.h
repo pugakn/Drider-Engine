@@ -12,7 +12,7 @@ class DR_INPUT_EXPORT Keyboard
 {
   struct Pass{};
 
-public:
+ public:
  
   using AnyKeyCallback = std::function<void(KEY_CODE::E key)>;
   using AnyKeyCallbackList = std::vector<AnyKeyCallback>;
@@ -74,7 +74,7 @@ public:
 
   Keyboard& operator=(Keyboard&&) = delete;
 
-private:
+ private:
 
   friend class InputManager;
   

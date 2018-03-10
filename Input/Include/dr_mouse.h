@@ -14,7 +14,7 @@ class DR_INPUT_EXPORT Mouse
 {
   struct Pass{};
 
-public:
+ public:
   
   using AnyButtonCallback = std::function<void(MOUSE_BUTTON::E)>;
   using AnyButtonCallbackList = std::vector<AnyButtonCallback>;
@@ -91,7 +91,7 @@ public:
 
   Mouse& operator=(Mouse&&) = delete;
 
-private:  
+ private:  
 
   friend class InputManager; 
   
