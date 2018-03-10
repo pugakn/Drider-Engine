@@ -7,7 +7,7 @@
 #include <dr_logger.h>
 #include <dr_resource_manager.h>
 #include <dr_time.h>
-
+#include <dr_radian.h>
 #include <dr_model.h>
 
 #include <dr_render_component.h>
@@ -29,11 +29,12 @@ void RenderManApp::postInit() {
 
   loadResources();
 
-  auto croc = SceneGraph::createObject(_T("Checker"));
+  auto model = SceneGraph::createObject(_T("Checker"));
   auto crocModel = ResourceManager::getReferenceT<Model>(_T("Checker.obj"));
   if (crocModel) {
-    croc->createComponent<RenderComponent>(crocModel);
-    croc->createComponent<AABBCollider>(crocModel->aabb);
+    model->createComponent<RenderComponent>(crocModel);
+    model->createComponent<AABBCollider>(crocModel->aabb);
+    model->getTransform().setPosition(Vector3D(0.0f, 0.0f, 0.0f));
   }
 }
 

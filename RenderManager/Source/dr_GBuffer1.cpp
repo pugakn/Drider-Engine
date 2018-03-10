@@ -66,19 +66,24 @@ GBuffer1Pass::draw(PassDrawData* drawData) {
 
   for (auto& modelPair : *data->models) {
     if (auto material = modelPair.mesh.material.lock()) {
-      auto albedoTex = std::dynamic_pointer_cast<Texture>(ResourceManager::getReference(_T("256_Checker_Diffuse.png")));
+      auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Diffuse.png"));
       if (albedoTex) {
-        albedoTex->set(dc, 0);
+        albedoTex->textureGFX->set(dc, 0);
       }
 
-      auto NormalTex = ResourceManager::getReferenceT<Texture>(_T("256_Checker_Normal.png"));
+      auto NormalTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Normal.png"));
+      if (NormalTex) {
+        NormalTex->textureGFX->set(dc, 1);
+      }
 
-      auto EmissiveTex = ResourceManager::getReferenceT<Texture>(_T("256_Checker_Emissive.png"));
-      EmissiveTex->set(dc, 2);
+      auto EmissiveTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Emissive.png"));
+      if (EmissiveTex) {
+        EmissiveTex->textureGFX->set(dc, 2);
+      }
     }
 
     CB.World = modelPair.world;
-    CB.WVP = modelPair.world * data->activeCam->getVP();
+    CB.WVP = data->activeCam->getVP() * modelPair.world;
   
     m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
   

@@ -30,6 +30,7 @@ private:
   // Inherited via Application
 
   RenderMan m_renderMan;
+  SceneGraph::SharedGameObject model;
 };
 
 }

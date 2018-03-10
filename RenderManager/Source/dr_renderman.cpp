@@ -17,10 +17,13 @@ void
 RenderMan::init() {
   Device& dc = GraphicsAPI::getDevice();
 
+  UInt32 screenWidth = 1280;
+  UInt32 screenHeight = 720;
+
   DrTextureDesc PositionDesc;
-  PositionDesc.width = 1920;
-  PositionDesc.height = 1080;
-  PositionDesc.pitch = 1920 * 4;
+  PositionDesc.width = screenWidth;
+  PositionDesc.height = screenHeight;
+  PositionDesc.pitch = screenWidth * 4;
   PositionDesc.dimension = DR_DIMENSION::k2D;
   PositionDesc.Format = DR_FORMAT::kR8G8B8A8_UNORM;
   PositionDesc.mipLevels = 0;
@@ -34,15 +37,15 @@ RenderMan::init() {
 
   DrDepthStencilDesc depthTextureDesc;
   depthTextureDesc.bindFlags = DR_BIND_FLAGS::DEPTH_STENCIL | DR_BIND_FLAGS::SHADER_RESOURCE;
-  depthTextureDesc.width = 1920;
-  depthTextureDesc.height = 1080;
+  depthTextureDesc.width = screenWidth;
+  depthTextureDesc.height = screenHeight;
   depthTextureDesc.Format = DR_FORMAT::kD24_UNORM_S8_UINT;
 
   m_GBuffer1DSoptions = dc.createDepthStencil(depthTextureDesc);
   m_GBuffer2DSoptions = dc.createDepthStencil(depthTextureDesc);
 
-  m_viewport.width = 1920;
-  m_viewport.height = 1080;
+  m_viewport.width = screenWidth;
+  m_viewport.height = screenHeight;
   Sauron = std::make_shared<Camera>(_T("PATO_CAM"), m_viewport);
 
   Sauron->createProyection(45.f, 20.f, 3000.f);
