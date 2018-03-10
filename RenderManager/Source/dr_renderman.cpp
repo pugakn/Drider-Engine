@@ -44,15 +44,6 @@ RenderMan::init() {
   m_GBuffer1DSoptions = dc.createDepthStencil(depthTextureDesc);
   m_GBuffer2DSoptions = dc.createDepthStencil(depthTextureDesc);
 
-  m_viewport.width = screenWidth;
-  m_viewport.height = screenHeight;
-  Sauron = std::make_shared<Camera>(_T("PATO_CAM"), m_viewport);
-
-  Sauron->createProyection(45.f, 20.f, 3000.f);
-  Sauron->getTransform().setPosition({ 0.0f, 100.0f, -200.0f });
-  Sauron->setTarget({ 0.0f, 50.f, 0.0f });
-  SceneGraph::addObject(Sauron);
-
   ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
 
   m_GBuffer1Pass.init(&m_GBuffer1InitData);
@@ -64,18 +55,20 @@ void
 RenderMan::draw() {
   GraphicsDriver::API().clear();
 
-  auto queryRequest = SceneGraph::query(*Sauron,
+  auto mainCam = CameraManager::getActiveCamera();
+  auto queryRequest = SceneGraph::query(*mainCam,
                                  QUERY_ORDER::kFrontToBack,
                                  QUERY_PROPERTY::kOpaque | 
                                  QUERY_PROPERTY::kDynamic | 
                                  QUERY_PROPERTY::kStatic);
-  m_GBuffer1DrawData.activeCam = Sauron;
+
+  m_GBuffer1DrawData.activeCam = mainCam;
   m_GBuffer1DrawData.models = &queryRequest;
   m_GBuffer1DrawData.OutRt = m_RTGBuffer1;
   m_GBuffer1DrawData.dsOptions = m_GBuffer1DSoptions;
   m_GBuffer1Pass.draw(&m_GBuffer1DrawData);
 
-  m_GBuffer2DrawData.activeCam = Sauron;
+  m_GBuffer2DrawData.activeCam = mainCam;
   m_GBuffer2DrawData.models = &queryRequest;
   m_GBuffer2DrawData.InRt = m_RTGBuffer1;
   m_GBuffer2DrawData.OutRt = m_RTGBuffer2;

@@ -30,8 +30,8 @@ VS_OUTPUT VS(VS_INPUT input){
   psOut.Binormal  = float4(normalize(mul((float3x3)World, input.Binormal.xyz)), 0);
   psOut.Tangent   = float4(normalize(mul((float3x3)World, input.Tangent.xyz)), 0);
   psOut.Texcoord  = input.Texcoord;
-  psOut.Texcoord.x  = 1.0f - psOut.Texcoord.x;
-  psOut.Texcoord.y  = 1.0f - psOut.Texcoord.y;
+  //psOut.Texcoord.x  = 1.0f - psOut.Texcoord.x;
+  //psOut.Texcoord.y  = 1.0f - psOut.Texcoord.y;
   
   return psOut;
 }

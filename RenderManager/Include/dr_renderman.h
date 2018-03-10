@@ -2,8 +2,7 @@
 #include "dr_renderman_prerequisites.h"
 #include <dr_graphics_api.h>
 #include <dr_device.h>
-#include <dr_viewport.h>
-#include <dr_camera.h>
+#include <dr_camera_manager.h>
 #include <dr_graph.h>
 #include <dr_render_component.h>
 #include <dr_depth_stencil.h>
@@ -45,10 +44,6 @@ class DR_RENDERMAN_EXPORT RenderMan {
   exit();
 
  protected:
-
-  Viewport m_viewport;
-  std::shared_ptr<Camera> Sauron;
-
   GBuffer1Pass m_GBuffer1Pass;
   GBuffer1InitData m_GBuffer1InitData;
   GBuffer1DrawData m_GBuffer1DrawData;

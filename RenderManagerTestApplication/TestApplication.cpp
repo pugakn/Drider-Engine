@@ -25,12 +25,23 @@ void RenderManApp::postInit() {
   ResourceManager::startUp();
   SceneGraph::startUp();
   Time::startUp();
+  CameraManager::startUp();
   m_renderMan.init();
+
+  CameraManager::createCamera(_T("PATO_CAM"),
+                              { 0.0f, 100.0f, -200.0f },
+                              { 0.0f, 50.f, 0.0f },
+                              m_viewport,
+                              45.f,
+                              20.f,
+                              3000.f
+                             );
+  CameraManager::setActiveCamera(_T("PATO_CAM"));
 
   loadResources();
 
-  auto model = SceneGraph::createObject(_T("Checker"));
-  auto crocModel = ResourceManager::getReferenceT<Model>(_T("Checker.obj"));
+  auto model = SceneGraph::createObject(_T("Croc"));
+  auto crocModel = ResourceManager::getReferenceT<Model>(_T("Croc.X"));
   if (crocModel) {
     model->createComponent<RenderComponent>(crocModel);
     model->createComponent<AABBCollider>(crocModel->aabb);
@@ -41,7 +52,7 @@ void RenderManApp::postInit() {
 void RenderManApp::postUpdate() {
   Time::update();
   SceneGraph::update();
-  InputManager::capture();
+  InputManager::update();
 }
 
 void RenderManApp::postRender() {
@@ -61,17 +72,7 @@ void RenderManApp::postDestroy() {
 }
 
 void RenderManApp::loadResources() {
-  ResourceManager::loadResource(_T("Checker.obj"));
-  ResourceManager::loadResource(_T("256_Checker_Diffuse.png"));
-  ResourceManager::loadResource(_T("256_Checker_Displacement.png"));
-  ResourceManager::loadResource(_T("256_Checker_Emissive.png"));
-  ResourceManager::loadResource(_T("256_Checker_Metallic.png"));
-  ResourceManager::loadResource(_T("256_Checker_Normal.png"));
-  ResourceManager::loadResource(_T("256_Checker_Opacity.png"));
-  ResourceManager::loadResource(_T("256_Checker_Roughness.png"));
-  ResourceManager::loadResource(_T("256_Checker_Specular.png"));
-  ResourceManager::loadResource(_T("256_Checker_SSColor.png"));
-  ResourceManager::loadResource(_T("256_Checker_Thickness.png"));
+  ResourceManager::loadResource(_T("Croc.X"));
 }
 
 }

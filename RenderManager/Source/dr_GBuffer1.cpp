@@ -66,19 +66,23 @@ GBuffer1Pass::draw(PassDrawData* drawData) {
 
   for (auto& modelPair : *data->models) {
     if (auto material = modelPair.mesh.material.lock()) {
-      auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Diffuse.png"));
-      if (albedoTex) {
-        albedoTex->textureGFX->set(dc, 0);
+      auto AlbedoTex = material->getProperty(_T("Albedo"));
+      if (AlbedoTex != nullptr) {
+        if (auto GA_Tex = AlbedoTex->texture.lock()) {
+          GA_Tex->textureGFX->set(dc, 0);
+        }
       }
-
-      auto NormalTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Normal.png"));
-      if (NormalTex) {
-        NormalTex->textureGFX->set(dc, 1);
+      auto NormalTex = material->getProperty(_T("Normal"));
+      if (NormalTex != nullptr) {
+        if (auto GA_Tex = NormalTex->texture.lock()) {
+          GA_Tex->textureGFX->set(dc, 1);
+        }
       }
-
-      auto EmissiveTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Emissive.png"));
-      if (EmissiveTex) {
-        EmissiveTex->textureGFX->set(dc, 2);
+      auto EmisivityTex = material->getProperty(_T("Emisivity"));
+      if (EmisivityTex != nullptr) {
+        if (auto GA_Tex = EmisivityTex->texture.lock()) {
+          GA_Tex->textureGFX->set(dc, 2);
+        }
       }
     }
 
