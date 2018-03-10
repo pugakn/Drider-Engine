@@ -24,6 +24,12 @@ class RenderManApp : public Application
   virtual void 
   postDestroy() override;
 
+  void
+  initInputCallbacks();
+
+  void
+  RotateModelRight();
+
   void 
   loadResources();
 

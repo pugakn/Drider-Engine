@@ -9,6 +9,7 @@
 #include <dr_time.h>
 #include <dr_radian.h>
 #include <dr_model.h>
+#include <dr_keyboard.h>
 
 #include <dr_render_component.h>
 #include <dr_aabb_collider.h>
@@ -21,7 +22,7 @@ void RenderManApp::postInit() {
                           m_viewport.width, 
                           m_viewport.height,
                           m_hwnd);
-  InputManager::startUp((SizeT)m_hwnd);
+  InputManager::startUp(reinterpret_cast<SizeT>(m_hwnd));
   ResourceManager::startUp();
   SceneGraph::startUp();
   Time::startUp();
@@ -49,19 +50,27 @@ void RenderManApp::postInit() {
   }
 }
 
-void RenderManApp::postUpdate() {
+void
+RenderManApp::postUpdate() {
   Time::update();
-  SceneGraph::update();
   InputManager::update();
+  SceneGraph::update();
+
+
+  static Vector3D dir{0, 0, 200.f};
+
+  model->getTransform().move(dir * Time::getDelta());
 }
 
-void RenderManApp::postRender() {
+void
+RenderManApp::postRender() {
   GraphicsDriver::API().clear();
   m_renderMan.draw();
   GraphicsDriver::API().swapBuffers();
 }
 
-void RenderManApp::postDestroy() {
+void
+RenderManApp::postDestroy() {
   m_renderMan.exit();
   GraphicsDriver::shutDown();
   ResourceManager::shutDown();
@@ -69,6 +78,43 @@ void RenderManApp::postDestroy() {
   InputManager::shutDown();
   Time::shutDown();
   Logger::shutDown();
+}
+
+void
+RenderManApp::initInputCallbacks() {
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kQ,
+                        std::bind(&RenderManApp::RotateModelRight, this)); 
+/*
+
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kW,
+                        std::bind(&GraphicsApplication::toggleWireframe,
+                                  this)); 
+
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kA,
+                        std::bind(&GraphicsApplication::toggleAABBDebug,
+                                  this, 
+                                  SceneGraph::getRoot().get())); 
+
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kM,
+                        [&](){ m_drawMeshes = !m_drawMeshes; });
+
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kL,
+                        std::bind(&GraphicsApplication::printSceneHierachy,
+                                  this,
+                                  SceneGraph::getRoot().get(),
+                                  _T(""))); 
+*/
+}
+
+void
+RenderManApp::RotateModelRight() {
+  model->getTransform().setPosition({0.0f, 5.0f, 0.0f});
+  model->update();
 }
 
 void RenderManApp::loadResources() {
