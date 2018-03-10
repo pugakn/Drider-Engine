@@ -82,4 +82,16 @@ CameraManager::setActiveCamera(const TString& cameraName) {
   }
 }
 
+void 
+CameraManager::setActiveCamera(SharedCamera camera) {
+  auto& cm = instance();
+
+  for (auto& cam : cm.m_cameras) {
+    if (cam.second == camera) {
+      cm.m_activeCam = camera;
+      break;
+    }
+  }
+}
+
 }

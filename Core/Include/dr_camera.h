@@ -50,6 +50,8 @@ class DR_CORE_EXPORT Camera
 	*/
 	~Camera();
   
+  void
+  setPosition(const Vector3D& position);
 	  
 	/**
 	* TEST::move
@@ -211,7 +213,6 @@ class DR_CORE_EXPORT Camera
    
   void 
   invalidateView();
-
 
 	mutable Matrix4x4 m_vp;
 	mutable Matrix4x4 m_view;

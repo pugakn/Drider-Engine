@@ -43,6 +43,11 @@ class DR_CORE_EXPORT Transform
   const Vector3D& 
   getPosition() const;
 
+  const Vector3D&
+  getEulerAngles() const;
+
+  const Vector3D&
+  getDirection() const;
   /**
   * Gets the rotation matrix.
   */
@@ -184,6 +189,8 @@ class DR_CORE_EXPORT Transform
 
   mutable Matrix4x4 m_transform;
   mutable Matrix4x4 m_rotation;
+  mutable Vector3D m_direction;
+  mutable Vector3D m_eulerAngles;
   mutable bool m_outdatedTransform;
   mutable bool m_outdatedRotation;
   bool m_change;

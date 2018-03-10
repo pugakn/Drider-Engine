@@ -116,6 +116,9 @@ class DR_CORE_EXPORT CameraManager : public Module<CameraManager>
 	static void
 	setActiveCamera(const TString& cameraName);
 
+  static void
+  setActiveCamera(SharedCamera camera);
+
  private:
 
    void

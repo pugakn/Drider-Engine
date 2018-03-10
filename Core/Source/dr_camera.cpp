@@ -27,6 +27,12 @@ Camera::Camera(const Vector3D& _position,
 
 Camera::~Camera() {}
 
+void 
+Camera::setPosition(const Vector3D& position) {
+  m_position = position;
+  invalidateView();
+}
+
 void
 Camera::move(float forward, float strafe, float upVelocity, bool lockY) {
     
@@ -35,17 +41,19 @@ Camera::move(float forward, float strafe, float upVelocity, bool lockY) {
 void
 Camera::move(const Vector3D& direction) {
   m_position += direction;
+  invalidateView();
 }
 
 void
 Camera::pan(float forward, float strafe, float upVelocity, bool lockY) {
-
+  invalidateView();
 }
 
 void
 Camera::pan(const Vector3D & direction) {
   move(direction);
   m_target += direction;
+  invalidateView();
 }
 
 void

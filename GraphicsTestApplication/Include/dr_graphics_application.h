@@ -55,6 +55,9 @@ private:
   destroyModules();
 
   void
+  printSceneHierachy(GameObject* obj, const TString& msg);
+
+  void
   toggleSkeletonView(GameObject* obj);
 
   void

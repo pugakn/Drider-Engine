@@ -6,6 +6,7 @@
 #include <dr_animation.h>
 #include <dr_animator_component.h>
 #include <dr_bone_attach_object.h>
+#include <dr_camera_component.h>
 #include <dr_camera_manager.h> 
 #include <dr_device.h>
 #include <dr_device_context.h>
@@ -168,6 +169,13 @@ GraphicsApplication::initInputCallbacks() {
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kM,
                         [&](){ m_drawMeshes = !m_drawMeshes; });
+
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kL,
+                        std::bind(&GraphicsApplication::printSceneHierachy,
+                                  this,
+                                  SceneGraph::getRoot().get(),
+                                  _T(""))); 
 }
 
 void 
@@ -209,6 +217,7 @@ GraphicsApplication::createTechniques() {
 void 
 GraphicsApplication::createScene() {
   
+  auto activeCam = CameraManager::getActiveCamera();
   
   auto crocModel = ResourceManager::getReferenceT<Model>(_T("Croc.X"));
 
@@ -250,45 +259,55 @@ GraphicsApplication::createScene() {
 
   walkerObj->getTransform().setPosition({300, 0, 200});
 
-  m_right = &(*walkerObj);
+  m_right = walkerObj.get();
 
   auto copy = walkerObj->clone();
 
   copy->getTransform().move({-600}, AXIS::kX);
   
-  m_left = &(*copy);
+  m_left = copy.get();
+
+  auto camHolder = SceneGraph::createObject(_T("Camera"));
+  
+  camHolder->createComponent<CameraComponent>(activeCam);
+
+  camHolder->getTransform().setPosition({0, 200, -200});
+
+  camHolder->setParent(copy);
 
   auto mazoMod = ResourceManager::getReferenceT<Model>(_T("Weapons-of-survival.fbx"));
 
-  auto mazo = SceneGraph::createObject<BoneAttachObject>(_T("Mazo 0"));
+  if (mazoMod) {
+    auto mazo = SceneGraph::createObject<BoneAttachObject>(_T("Mazo 0"));
 
-  mazo->createComponent<RenderComponent>(mazoMod);
+    mazo->createComponent<RenderComponent>(mazoMod);
 
-  mazo->createComponent<AABBCollider>(mazoMod->aabb);
+    mazo->createComponent<AABBCollider>(mazoMod->aabb);
 
-  mazo->setParent(walkerObj);
+    mazo->setParent(walkerObj);
 
-  mazo->setBoneAttachment(_T("RightHand"));
+    mazo->setBoneAttachment(_T("RightHand"));
 
-  mazo->getTransform().setScale({0.1f, 0.1f, 0.1f});
+    mazo->getTransform().setScale({0.1f, 0.1f, 0.1f});
 
-  auto mazo2 = std::dynamic_pointer_cast<BoneAttachObject>(mazo->clone());
+    auto mazo2 = std::dynamic_pointer_cast<BoneAttachObject>(mazo->clone());
 
-  mazo2 ->setParent(copy);
+    mazo2 ->setParent(copy);
 
-  mazo2->setBoneAttachment(_T("LeftHand"));
+    mazo2->setBoneAttachment(_T("LeftHand"));
 
-  auto mazo3 = SceneGraph::createObject<BoneAttachObject>(_T("Mazo 3"));
+    auto mazo3 = SceneGraph::createObject<BoneAttachObject>(_T("Mazo 3"));
 
-  mazo3->createComponent<RenderComponent>(mazoMod);
+    mazo3->createComponent<RenderComponent>(mazoMod);
 
-  mazo3->createComponent<AABBCollider>(mazoMod->aabb);
+    mazo3->createComponent<AABBCollider>(mazoMod->aabb);
 
-  mazo3->setParent(crocObj);
+    mazo3->setParent(crocObj);
 
-  mazo3->getTransform().setScale({0.05f, 0.05f, 0.05f});
+    mazo3->getTransform().setScale({0.05f, 0.05f, 0.05f});
 
-  mazo3->setBoneAttachment(_T("Bip01_R_Finger1"));
+    mazo3->setBoneAttachment(_T("Bip01_R_Finger1"));
+  }
 
   auto quadMod = ResourceManager::getReferenceT<Model>(_T("ScreenAlignedQuad.3ds"));
 
@@ -329,6 +348,16 @@ GraphicsApplication::destroyModules() {
   Time::shutDown();
   GraphicsDriver::shutDown();
   Logger::shutDown();
+}
+
+void 
+GraphicsApplication::printSceneHierachy(GameObject* obj, const TString& msg) {
+
+  Logger::addLog(msg + obj->getName());
+
+  for (auto& child : obj->getChildren()) {
+    printSceneHierachy(child.get(), msg + _T("\t"));
+  }
 }
 
 void 

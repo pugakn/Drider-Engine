@@ -14,7 +14,8 @@ Transform::Transform()
     m_scale(1,1,1),
     m_rotX(Math::FORCE_INIT::kIdentity),
     m_rotY(Math::FORCE_INIT::kIdentity),
-    m_rotZ(Math::FORCE_INIT::kIdentity)
+    m_rotZ(Math::FORCE_INIT::kIdentity),
+    m_eulerAngles(0,0,0)
 {}
 
 Transform::Transform(const Transform& other)
@@ -37,10 +38,39 @@ Transform::getPosition() const {
   return m_position;
 }
 
+const Vector3D& 
+Transform::getEulerAngles() const {
+  
+  getMatrix(); //Update if needed.
+
+  return m_eulerAngles;
+}
+
+const Vector3D& 
+Transform::getDirection() const {
+
+  getMatrix();
+
+  return m_direction;
+}
+
 const Matrix4x4& 
 Transform::getRotation() const {
   if (m_outdatedRotation) {
+    
     m_rotation = m_rotZ * m_rotX * m_rotY;
+
+    //Update euler angles
+    m_eulerAngles = m_rotation.eulerAngles();
+
+    //Update local direction
+
+    m_direction = {Math::cos(m_eulerAngles.y) * Math::sin(m_eulerAngles.x),
+                   Math::sin(m_eulerAngles.y),
+                   Math::cos(m_eulerAngles.y) * Math::cos(m_eulerAngles.x)};
+
+    m_direction.normalize();
+
     m_outdatedRotation = false;
   }
 
@@ -51,12 +81,6 @@ const Vector3D&
 Transform::getScale() const {
   return m_scale;
 }
-
-//Vector3D Transform::getDirection() const {
-//  return Vector3D{Math::sin(-m_rotation.y),
-//                  Math::cos(m_rotation.y) * Math::sin(m_rotation.x),
-//                  Math::cos(m_rotation.y) * Math::cos(m_rotation.x)}.normalize();
-//}
 
 void
 Transform::setPosition(float pos, AXIS::E axis) {

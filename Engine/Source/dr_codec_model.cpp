@@ -1,16 +1,20 @@
 #include "dr_codec_model.h"
 
-#include <iostream>
+#include <unordered_map>
+#include <vector>
 
+#include <assimp\Exporter.hpp>
 #include <assimp\Importer.hpp>
 #include <assimp\postprocess.h>
 #include <assimp\scene.h>
 
 #include <dr_animation.h>
+#include <dr_logger.h>
 #include <dr_material.h>
 #include <dr_memory.h>
 #include <dr_model_info.h>
 #include <dr_string_utils.h>
+#include <dr_texture_core.h>
 
 #include "dr_resource_manager.h"
 
@@ -37,6 +41,7 @@ CodecModel::decode(TString pathName) {
 
   const aiScene* scene = importer.ReadFile(StringUtils::toString(pathName), 
                                             flags);
+
   if (scene) {
 
     pModelInfo = new ModelInfo;
@@ -45,9 +50,9 @@ CodecModel::decode(TString pathName) {
     Vector3D min{Math::MAX_FLOAT, Math::MAX_FLOAT, Math::MAX_FLOAT};
     Vector3D max{Math::MIN_FLOAT, Math::MIN_FLOAT, Math::MIN_FLOAT};
 
-    auto defMatRes = ResourceManager::getReference(_T("DUMMY_MATERIAL"));
-    auto defMaterial = std::dynamic_pointer_cast<Material>(defMatRes);
-
+    auto defMatName = _T("DUMMY_MATERIAL");
+    auto defMaterial = ResourceManager::getReferenceT<Material>(defMatName);
+    
     for (SizeT iMesh = 0; iMesh < scene->mNumMeshes; ++iMesh) {
       MeshInfo& mesh = pModelInfo->meshes[iMesh];
       aiMesh* pMesh = scene->mMeshes[iMesh];
@@ -57,7 +62,7 @@ CodecModel::decode(TString pathName) {
       mesh.material = defMaterial;
     }
 
-    //loadMaterials(*scene, *pModelInfo);
+    loadMaterials(*scene, *pModelInfo, pathName);
 
     Vector3D size = max - min;
 
@@ -87,6 +92,9 @@ CodecModel::decode(TString pathName) {
     }
 
     pModelInfo->skeletonName = skeletonName;
+  }
+  else {
+    Logger::addLog(StringUtils::toTString(importer.GetErrorString()));
   }
 
   return UniqueVoidPtr(pModelInfo, &dr_void_deleter<ModelInfo>);
@@ -310,76 +318,110 @@ CodecModel::loadAnimations(const aiScene& model, ModelInfo& outModel) {
   }
 }
 
-//void 
-//CodecModel::loadMaterials(const aiScene& model, 
-//                         ModelInfo& outModel) {
-//
-//  if (!model.HasMaterials()) {
-//    return;
-//  }
-//
-//  for (UInt32 i = 0; i < model.mNumMeshes; ++i) {
-//    
-//    auto mesh = model.mMeshes[i];
-//    
-//    auto material = model.mMaterials[mesh->mMaterialIndex];
-//
-//    for (Int32 j = 1; j < AI_TEXTURE_TYPE_MAX; ++j) {
-//      
-//      aiString path;
-//
-//      aiTextureType tt = static_cast<aiTextureType>(j);
-//
-//      auto nt = material->GetTextureCount(tt);
-//
-//      aiReturn ret = material->GetTexture(tt, 0, &path);
-//
-//      int ddd = 0;
-//    }
-//
-//  }
-//
-//  if (model.mNumTextures > 0) {
-//
-//    /*for (UInt32 i = 0; i < model.mNumTextures; ++i) {
-//
-//      auto texture = model.mTextures[i];
-//
-//      if (texture->mHeight == 0) {
-//        UInt8* buffer = reinterpret_cast<UInt8*>(texture->pcData);
-//        SizeT size = texture->mWidth;
-//
-//        Int32 width = 0;
-//        Int32 height = 0;
-//        Int32 channels = 0;
-//        auto data = stbi_load_from_memory(buffer, 
-//                                          size, 
-//                                          &width, 
-//                                          &height, 
-//                                          &channels, 
-//                                          0);
-//        
-//        stbi_image_free(data);
-//      }*/
-//
-//  }
-//
-//  /*auto material = model.mMaterials[aMesh.mMaterialIndex]; 
-//
-//  for (Int32 i = aiTextureType_DIFFUSE; i < aiTextureType_UNKNOWN; ++i) 
-//  {
-//    auto textureType = static_cast<aiTextureType>(i);
-//
-//    auto r = material->GetTextureCount(textureType);
-//
-//    if (r) {
-//
-//      aiString path;
-//
-//      material->GetTexture(textureType, 0, &path);
-//    }
-//  }   */
-//}
+void 
+CodecModel::loadMaterials(const aiScene& model, 
+                          ModelInfo& outModel,
+                          const TString& name) {
+
+  if (!model.HasMaterials()) {
+    return;
+  }
+
+  using TexturesMapAI = std::unordered_map<aiTextureType, TString>;
+
+  static TexturesMapAI supportedMaps
+  {
+    {aiTextureType_DIFFUSE, _T("Albedo")},
+    {aiTextureType_NORMALS, _T("Normal")},
+    {aiTextureType_SHININESS, _T("Metallic")},
+    {aiTextureType_SPECULAR, _T("Roughness")},
+    {aiTextureType_EMISSIVE, _T("Emisivity")},
+    {aiTextureType_OPACITY, _T("Transparency")},
+  };
+
+  using SharedTexture = std::shared_ptr<TextureCore>;
+  using TexturesNames = TexturesMapAI;
+  using MaterialsMap = std::unordered_map<TString, TexturesNames>;
+
+  MaterialsMap usedMaterials;
+
+  for (UInt32 meshIndex = 0; meshIndex < model.mNumMeshes; ++meshIndex) {
+    
+    auto& meshCore = outModel.meshes[meshIndex];
+
+    TexturesMapAI usedMapsAI;
+
+    auto material = model.mMaterials[model.mMeshes[meshIndex]->mMaterialIndex];
+
+    for (Int32 k = 1; k < AI_TEXTURE_TYPE_MAX; ++k) {
+      
+      aiString path;
+
+      aiTextureType textureType = static_cast<aiTextureType>(k);
+
+      auto mapNameIt = supportedMaps.find(textureType);
+
+      if (mapNameIt != supportedMaps.end()) {
+
+        auto nt = material->GetTextureCount(textureType);
+
+        aiReturn ret = material->GetTexture(textureType, 0, &path);
+
+        if (ret != aiReturn_FAILURE) {
+
+          TString fullName = StringUtils::toTString(path.C_Str());
+        
+          auto pos = fullName.find_last_of(_T("/\\"));
+
+          if (pos != fullName.npos) {
+            fullName = fullName.substr(pos + 1);
+          }
+                                        
+          usedMapsAI[textureType] = fullName;
+        }
+      }
+    }
+
+    if (!usedMapsAI.empty()) {
+      
+      std::shared_ptr<Material> materialCore;
+
+      bool repeatedMat = false;
+
+
+      for (auto& mat : usedMaterials) {
+        if (usedMapsAI == mat.second) { //Material repeated
+          repeatedMat = true;
+          materialCore = ResourceManager::getReferenceT<Material>(mat.first);
+          break;
+        }
+      }
+
+      if (!repeatedMat) { //Material new
+        TString matName = _T("Material_") + 
+                          name + 
+                          StringUtils::toTString(meshIndex);
+
+        materialCore = ResourceManager::createMaterial(matName);
+
+        for (auto& map : usedMapsAI) {
+
+          if (ResourceManager::loadResource(map.second)) {
+
+            auto p = materialCore->getProperty(supportedMaps[map.first]);
+            
+            p->texture = ResourceManager::getReferenceT<TextureCore>(map.second);
+          }          
+        }
+
+        usedMaterials[matName] = usedMapsAI;
+      }
+
+      meshCore.material = materialCore;
+    }
+
+  }
+}
 
 void 
 CodecModel::buildTree(const aiNode* nodeSrc, 
