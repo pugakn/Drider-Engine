@@ -29,7 +29,8 @@ RenderMan::init() {
   PositionDesc.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE |
                            DR_BIND_FLAGS::RENDER_TARGET;
 
-  m_RTs1 = dc.createRenderTarget(PositionDesc, 4);
+  m_RTGBuffer1 = dc.createRenderTarget(PositionDesc, 4);
+  m_RTGBuffer2 = dc.createRenderTarget(PositionDesc, 3);
 
   DrDepthStencilDesc depthTextureDesc;
   depthTextureDesc.bindFlags = DR_BIND_FLAGS::DEPTH_STENCIL | DR_BIND_FLAGS::SHADER_RESOURCE;
@@ -37,7 +38,8 @@ RenderMan::init() {
   depthTextureDesc.height = 1080;
   depthTextureDesc.Format = DR_FORMAT::kD24_UNORM_S8_UINT;
 
-  m_GBufferDSoptions = dc.createDepthStencil(depthTextureDesc);
+  m_GBuffer1DSoptions = dc.createDepthStencil(depthTextureDesc);
+  m_GBuffer2DSoptions = dc.createDepthStencil(depthTextureDesc);
 
   m_viewport.width = 1920;
   m_viewport.height = 1080;
@@ -50,8 +52,9 @@ RenderMan::init() {
 
   ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
 
-  m_GBufferPass.init(&m_GBufferInitData);
-  m_SSAOPass.init(&m_SSAOInitData);
+  m_GBuffer1Pass.init(&m_GBuffer1InitData);
+  m_GBuffer2Pass.init(&m_GBuffer2InitData);
+  m_PostProcessingPass.init(&m_PostProcessingInitData);
 }
 
 void
@@ -63,14 +66,22 @@ RenderMan::draw() {
                                  QUERY_PROPERTY::kOpaque | 
                                  QUERY_PROPERTY::kDynamic | 
                                  QUERY_PROPERTY::kStatic);
-  m_GBufferDrawData.activeCam = Sauron;
-  m_GBufferDrawData.models = &queryRequest;
-  m_GBufferDrawData.OutRt = m_RTs1;
-  m_GBufferDrawData.dsOptions = m_GBufferDSoptions;
-  m_GBufferPass.draw(&m_GBufferDrawData);
+  m_GBuffer1DrawData.activeCam = Sauron;
+  m_GBuffer1DrawData.models = &queryRequest;
+  m_GBuffer1DrawData.OutRt = m_RTGBuffer1;
+  m_GBuffer1DrawData.dsOptions = m_GBuffer1DSoptions;
+  m_GBuffer1Pass.draw(&m_GBuffer1DrawData);
 
-  m_SSAODrawData.GbufferRT = m_RTs1;
-  m_SSAOPass.draw(&m_SSAODrawData);
+  m_GBuffer2DrawData.activeCam = Sauron;
+  m_GBuffer2DrawData.models = &queryRequest;
+  m_GBuffer2DrawData.InRt = m_RTGBuffer1;
+  m_GBuffer2DrawData.OutRt = m_RTGBuffer2;
+  m_GBuffer2DrawData.dsOptions = m_GBuffer2DSoptions;
+  m_GBuffer2Pass.draw(&m_GBuffer2DrawData);
+
+  m_PostProcessingDrawData.Gbuffer1RT = m_RTGBuffer1;
+  m_PostProcessingDrawData.Gbuffer2RT = m_RTGBuffer2;
+  m_PostProcessingPass.draw(&m_PostProcessingDrawData);
 
   /*
   Render order:

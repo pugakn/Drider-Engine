@@ -1,36 +1,40 @@
 #pragma once
 #include "dr_renderman_prerequisites.h"
 #include "dr_renderpass.h"
+#include <dr_graph.h>
 #include <dr_render_component.h>
 #include <dr_camera.h>
 #include <dr_matrix4x4.h>
 #include <dr_input_layout.h>
 #include <dr_constant_buffer.h>
-#include <dr_sample_state.h>
 
 namespace driderSDK {
 
-struct SSAOInitData : PassInitData {};
+struct GBuffer2InitData : PassInitData {};
 
-struct SSAODrawData : PassDrawData {
-  RenderTarget* GbufferRT;
+struct GBuffer2DrawData : PassDrawData {
+  std::shared_ptr<Camera> activeCam;
+  SceneGraph::QueryResult* models;
+  RenderTarget* InRt;
+  RenderTarget* OutRt;
+  DepthStencil* dsOptions;
 };
 
-class SSAOPass : RenderPass {
+class GBuffer2Pass : RenderPass {
  public:
   /*
   TEST::testName
   
   Description.
   */
-  SSAOPass();
+  GBuffer2Pass();
 
   /*
   TEST::testName
   
   Description.
   */
-  ~SSAOPass();
+  ~GBuffer2Pass();
 
   /*
   TEST::testName
@@ -46,9 +50,16 @@ class SSAOPass : RenderPass {
   draw(PassDrawData* drawData);
 
  private:
-  InputLayout* m_inputLayout;
+  struct CBuffer {
+    Matrix4x4 WVP;
+    Matrix4x4 World;
+    Matrix4x4 Bones[200];
+  };
 
-  SamplerState* m_samplerState;
+  CBuffer CB;
+
+  InputLayout* m_inputLayout;
+  ConstantBuffer* m_constantBuffer;
 };
 
 }

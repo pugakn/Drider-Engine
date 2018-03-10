@@ -1,4 +1,4 @@
-#include "dr_SSAO.h"
+#include "dr_PostProcessing.h"
 #include <dr_string_utils.h>
 #include <dr_file.h>
 #include <dr_graphics_api.h>
@@ -15,21 +15,21 @@
 
 namespace driderSDK {
 
-SSAOPass::SSAOPass() {
+PostProcessingPass::PostProcessingPass() {
 }
 
-SSAOPass::~SSAOPass() {
+PostProcessingPass::~PostProcessingPass() {
 }
 
 void
-SSAOPass::init(PassInitData* initData) {
+PostProcessingPass::init(PassInitData* initData) {
   driderSDK::File file;
 
-  file.Open(_T("SSAO_vs.hlsl"));
+  file.Open(_T("PostProcessing_vs.hlsl"));
   String vsSource = StringUtils::toString(file.GetAsString(file.Size()));
   file.Close();
 
-  file.Open(_T("SSAO_ps.hlsl"));
+  file.Open(_T("PostProcessing_ps.hlsl"));
   String fsSource = StringUtils::toString(file.GetAsString(file.Size()));
   file.Close();
 
@@ -52,8 +52,8 @@ SSAOPass::init(PassInitData* initData) {
 }
 
 void
-SSAOPass::draw(PassDrawData* drawData) {
-  SSAODrawData* data = static_cast<SSAODrawData*>(drawData);
+PostProcessingPass::draw(PassDrawData* drawData) {
+  PostProcessingDrawData* data = static_cast<PostProcessingDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
   GraphicsAPI::getBackBufferRT().set(dc, GraphicsAPI::getDepthStencil());
@@ -67,9 +67,13 @@ SSAOPass::draw(PassDrawData* drawData) {
 
   m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kFragment);
 
-  data->GbufferRT->getTexture(0).set(dc, 0);
-  data->GbufferRT->getTexture(1).set(dc, 1);
-  data->GbufferRT->getTexture(2).set(dc, 2);
+  data->Gbuffer1RT->getTexture(0).set(dc, 0); //Albedo
+  data->Gbuffer1RT->getTexture(1).set(dc, 1); //Position
+  data->Gbuffer1RT->getTexture(2).set(dc, 2); //Normal
+  data->Gbuffer1RT->getTexture(3).set(dc, 3); //Emissivve
+  data->Gbuffer2RT->getTexture(0).set(dc, 4); //Metallic
+  data->Gbuffer2RT->getTexture(1).set(dc, 5); //Roughness
+  data->Gbuffer2RT->getTexture(2).set(dc, 6); //SSAO
 
   auto screenQuadModel = ResourceManager::getReferenceT<Model>(_T("ScreenAlignedQuad.3ds"));
   if (screenQuadModel) {
@@ -80,7 +84,6 @@ SSAOPass::draw(PassDrawData* drawData) {
       dc.draw(SAQ.indices.size(), 0, 0);
     }
   }
-
 }
 
 }

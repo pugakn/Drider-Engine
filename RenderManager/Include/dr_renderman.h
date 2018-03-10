@@ -9,7 +9,8 @@
 #include <dr_depth_stencil.h>
 #include <dr_depth_stencil_state.h>
 #include "dr_GBuffer1.h"
-#include "dr_SSAO.h"
+#include "dr_GBuffer2.h"
+#include "dr_PostProcessing.h"
 
 namespace driderSDK {
 
@@ -48,17 +49,23 @@ class DR_RENDERMAN_EXPORT RenderMan {
   Viewport m_viewport;
   std::shared_ptr<Camera> Sauron;
 
-  GBufferPass1 m_GBufferPass;
-  GBufferInitData1 m_GBufferInitData;
-  GBufferDrawData1 m_GBufferDrawData;
-  DepthStencil* m_GBufferDSoptions;
+  GBuffer1Pass m_GBuffer1Pass;
+  GBuffer1InitData m_GBuffer1InitData;
+  GBuffer1DrawData m_GBuffer1DrawData;
+  DepthStencil* m_GBuffer1DSoptions;
 
-  SSAOPass m_SSAOPass;
-  SSAOInitData m_SSAOInitData;
-  SSAODrawData m_SSAODrawData;
+  GBuffer2Pass m_GBuffer2Pass;
+  GBuffer2InitData m_GBuffer2InitData;
+  GBuffer2DrawData m_GBuffer2DrawData;
+  DepthStencil* m_GBuffer2DSoptions;
 
-  RenderTarget* m_RTs1; //GBuffer 1: Albedo, Normal, Depth/Position, Emissive
-  RenderTarget* m_RTs2; //GBuffer 2: Metallic, Roughness, SSAO
+  PostProcessingPass m_PostProcessingPass;
+  PostProcessingInitData m_PostProcessingInitData;
+  PostProcessingDrawData m_PostProcessingDrawData;
+  DepthStencil* m_PostProcessingDSoptions;
+
+  RenderTarget* m_RTGBuffer1; //GBuffer 1: Albedo, Depth/Position, Normal, Emissive
+  RenderTarget* m_RTGBuffer2; //GBuffer 2: Metallic, Roughness, SSAO
 
   DrTextureDesc ColorTexDesc;
   DrTextureDesc PositionTexDesc;
