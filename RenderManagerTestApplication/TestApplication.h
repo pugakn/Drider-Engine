@@ -28,7 +28,10 @@ class RenderManApp : public Application
   initInputCallbacks();
 
   void
-  RotateModelRight();
+  RotateModel();
+
+  void
+  MoveModel(Vector3D direction);
 
   void 
   loadResources();
@@ -37,6 +40,8 @@ class RenderManApp : public Application
 
   RenderMan m_renderMan;
   SceneGraph::SharedGameObject model;
+
+  Vector3D modelMovement;
 };
 
 }

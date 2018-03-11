@@ -85,9 +85,10 @@ GBuffer1Pass::draw(PassDrawData* drawData) {
         }
       }
     }
-
-    CB.World = modelPair.world;
-    CB.WVP = data->activeCam->getVP() * modelPair.world;
+    Matrix4x4 worldTranspose = modelPair.world;
+    CB.World = worldTranspose.transpose();
+    Matrix4x4 newViewProjection = data->activeCam->getVP();
+    CB.WVP = modelPair.world * (data->activeCam->getVP());
   
     m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
   

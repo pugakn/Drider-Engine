@@ -80,21 +80,14 @@ RenderMan::draw() {
   m_PostProcessingPass.draw(&m_PostProcessingDrawData);
 
   /*
-  Render order:
-
-  GBuffer
-  Depth Pre-Pass
-  Shadow Maps
-  Screen Space Ambient Occlusion
-  Light Pre-Pass
-  Forward-Rendering of Opaque Objects
-  Transparent Objects
-  Light Bloom
-  Anti-Aliasing
-  Color Correction
-  User Interface
-
-  Depth of Field
+  GBuffer1: 
+  GBuffer2: 
+  ShadowCascades: 
+  Diffuse Acumulation: Fog
+  Specular Acumulation: SS Reflection
+  Lights y ZSkips: 
+  Opacity: Blends
+  
   */
 
   GraphicsDriver::API().swapBuffers();

@@ -11,11 +11,9 @@ cbuffer ConstantBuffer {
 };
 
 struct PS_INPUT {
-  float4 Position : SV_POSITION;
-  float3 Normal   : NORMAL0;
-  float3 Binormal : BINORMAL0;
-  float3 Tangent  : TANGENT0;
-  float2 Texcoord : TEXCOORD0;
+  float4   Position : SV_POSITION;
+  float2   Texcoord : TEXCOORD0;
+  float3x3 TBN      : TEXCOORD1;
 };
 
 struct PS_OUTPUT {
@@ -32,7 +30,11 @@ PS_OUTPUT FS(PS_INPUT input) {
 
 	float4 albedo		= AlbedoTex.Sample(SS, uv);
 	float4 position	= input.Position;
-	float3 normal		= NormalTex.Sample(SS, uv);
+
+	float3 TexNormal = float3(0.0f, 0.0f, 1.0f);
+	//TexNormal = normalize(2.0f * NormalTex.Sample(SS, uv).xyz - 1.0f).xyz;
+  float3 normal     = normalize(mul(TexNormal, input.TBN));
+
 	float4 emissive	= EmissiveTex.Sample(SS, uv); 
 
 	outRT.Albedo	 = albedo;

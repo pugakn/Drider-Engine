@@ -10,6 +10,7 @@
 #include <dr_radian.h>
 #include <dr_model.h>
 #include <dr_keyboard.h>
+#include <dr_mouse.h>
 
 #include <dr_render_component.h>
 #include <dr_aabb_collider.h>
@@ -39,15 +40,19 @@ void RenderManApp::postInit() {
                              );
   CameraManager::setActiveCamera(_T("PATO_CAM"));
 
+  modelMovement = Vector3D(0.0f, 0.0f, 0.0f);
+
   loadResources();
 
-  auto model = SceneGraph::createObject(_T("Croc"));
+  model = SceneGraph::createObject(_T("Checker"));
   auto crocModel = ResourceManager::getReferenceT<Model>(_T("Croc.X"));
   if (crocModel) {
     model->createComponent<RenderComponent>(crocModel);
     model->createComponent<AABBCollider>(crocModel->aabb);
     model->getTransform().setPosition(Vector3D(0.0f, 0.0f, 0.0f));
   }
+
+  initInputCallbacks();
 }
 
 void
@@ -56,10 +61,26 @@ RenderManApp::postUpdate() {
   InputManager::update();
   SceneGraph::update();
 
+  const float fMovementSpeed = 50.0f;
+  if (Keyboard::isKeyDown(KEY_CODE::kA)) {
+    model->getTransform().move(Vector3D(1.0f, 0.0f, 0.0f) * Time::getDelta() * fMovementSpeed);
+  }
+  if (Keyboard::isKeyDown(KEY_CODE::kD)) {
+    model->getTransform().move(Vector3D(-1.0f, 0.0f, 0.0f) * Time::getDelta()* fMovementSpeed);
+  }
+  if (Keyboard::isKeyDown(KEY_CODE::kW)) {
+    model->getTransform().move(Vector3D(0.0f, 0.0f, 1.0f) * Time::getDelta() * fMovementSpeed);
+  }
+  if (Keyboard::isKeyDown(KEY_CODE::kS)) {
+    model->getTransform().move(Vector3D(0.0f, 0.0f, -1.0f) * Time::getDelta() * fMovementSpeed);
+  }
+  if (Keyboard::isKeyDown(KEY_CODE::kQ)) {
+    model->getTransform().move(Vector3D(0.0f, 1.0f, 0.0f) * Time::getDelta() * fMovementSpeed);
+  }
+  if (Keyboard::isKeyDown(KEY_CODE::kE)) {
+    model->getTransform().move(Vector3D(0.0f, -1.0f, 0.0f) * Time::getDelta() * fMovementSpeed);
+  }
 
-  static Vector3D dir{0, 0, 200.f};
-
-  model->getTransform().move(dir * Time::getDelta());
 }
 
 void
@@ -82,42 +103,36 @@ RenderManApp::postDestroy() {
 
 void
 RenderManApp::initInputCallbacks() {
-  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
-                        KEY_CODE::kQ,
-                        std::bind(&RenderManApp::RotateModelRight, this)); 
-/*
-
-  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
-                        KEY_CODE::kW,
-                        std::bind(&GraphicsApplication::toggleWireframe,
-                                  this)); 
-
-  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
-                        KEY_CODE::kA,
-                        std::bind(&GraphicsApplication::toggleAABBDebug,
-                                  this, 
-                                  SceneGraph::getRoot().get())); 
-
-  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
-                        KEY_CODE::kM,
-                        [&](){ m_drawMeshes = !m_drawMeshes; });
-
-  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
-                        KEY_CODE::kL,
-                        std::bind(&GraphicsApplication::printSceneHierachy,
-                                  this,
-                                  SceneGraph::getRoot().get(),
-                                  _T(""))); 
-*/
+  Mouse::addMovedCallback(std::bind(&RenderManApp::RotateModel, this));
 }
 
 void
-RenderManApp::RotateModelRight() {
-  model->getTransform().setPosition({0.0f, 5.0f, 0.0f});
-  model->update();
+RenderManApp::RotateModel() {
+  Vector2DI mouseDelta = Mouse::getDisplacement();
+  Vector3D rotation{0.0f, 0.0f, 0.0f};
+
+  if (Mouse::isButtonDown(MOUSE_BUTTON::kLeft)) {
+    if (Math::abs(mouseDelta.x) < 3.0f) {
+      mouseDelta.x = 0.0f;
+    }
+    if (Math::abs(mouseDelta.y) < 3.0f) {
+      mouseDelta.y = 0.0f;
+    }
+
+    rotation.y = -mouseDelta.x;
+    rotation.x = -mouseDelta.y;
+
+    model->getTransform().rotate(rotation * Time::getDelta());
+  }
 }
 
-void RenderManApp::loadResources() {
+void
+RenderManApp::MoveModel(Vector3D direction) {
+  modelMovement += direction;
+}
+
+void
+RenderManApp::loadResources() {
   ResourceManager::loadResource(_T("Croc.X"));
 }
 
