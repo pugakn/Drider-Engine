@@ -6,6 +6,9 @@
 #include <OIS\OISKeyboard.h>
 #include "dr_input_prerequisites.h"
 
+#include <dr_export_script.h>
+#include <..\..\Script\Include\dr_script_engine.h>
+
 namespace driderSDK {
 
 class DR_INPUT_EXPORT Keyboard
@@ -44,7 +47,10 @@ class DR_INPUT_EXPORT Keyboard
   *   True if the key is pressed, false otherwise.
   */
   static bool
-  isKeyDown(KEY_CODE::E key);
+  isKeyDown(KEY_CODE::E key); 
+
+  static bool
+  keyDown(KEY_CODE::E key);
 
   /**
   * Adds a callback
@@ -73,6 +79,22 @@ class DR_INPUT_EXPORT Keyboard
   Keyboard& operator=(const Keyboard&) = delete;
 
   Keyboard& operator=(Keyboard&&) = delete;
+
+
+  static BEGINING_DEFAULT_REGISTER
+  
+  result = REGISTER_ENUM(KeyCode)
+  result = REGISTER_ENUM_VALUE(KeyCode, KEY_CODE, kESCAPE)
+  result = REGISTER_ENUM_VALUE(KeyCode, KEY_CODE, k0)
+  result = REGISTER_ENUM_VALUE(KeyCode, KEY_CODE, k1)
+  result = REGISTER_ENUM_VALUE(KeyCode, KEY_CODE, k2)
+  result = REGISTER_ENUM_VALUE(KeyCode, KEY_CODE, k3)
+  result = REGISTER_ENUM_VALUE(KeyCode, KEY_CODE, k4)
+
+  result = REGISTER_GLO_FOO_1P(&Keyboard::isKeyDown, isKeyDown, KEY_CODE::E, KeyCode, bool, "bool")
+  result = REGISTER_GLO_FOO_1P(&Keyboard::keyDown, keyDown, KEY_CODE::E, KeyCode, bool, "bool")
+
+  END_REGISTER
 
  private:
 

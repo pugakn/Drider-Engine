@@ -44,6 +44,14 @@
 
 namespace driderSDK {
 
+namespace KeyCode {
+  enum E {
+    ONE,
+    TWO,
+    THREE
+  };
+}
+
 TestApplication::TestApplication() {}
 
 TestApplication::~TestApplication() {}
@@ -421,6 +429,13 @@ TestApplication::initInput() {
 
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                          KEY_CODE::kJ, toggleWireframe);
+    
+  auto keyPressed = [&]() {
+    return true;
+  };
+  
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::k0, keyPressed);
 }
 
 void 
@@ -566,15 +581,9 @@ void TestApplication::initScriptEngine() {
     (ResourceManager::getReference(_T("test.as")));
 
   result = scriptEngine->addScript(_T("test.as"),
-                                   script->getScript());*/
+                                   script->getScript());*/    
 
-  /*result = scriptEngine->m_scriptEngine->RegisterObjectType("OneRefObj",
-                                                            0,
-                                                            asOBJ_REF | asOBJ_NOHANDLE);
-
-  result = scriptEngine->m_scriptEngine->RegisterGlobalFunction("bool cmpInts(int, int)",
-                                                                asFUNCTIONPR(&OneRefObj::cmpInts, (int, int), bool),
-                                                                asCALL_CDECL);*/
+  result = Keyboard::registerFunctions(scriptEngine);
 
   /*Object obj;
   result = scriptEngine->m_scriptEngine->RegisterObjectType("Object",
@@ -634,17 +643,7 @@ void TestApplication::initScriptEngine() {
   Vector3D vector;
   result = vector.registerFunctions(scriptEngine);
 
-  //result = scriptEngine->compileScript();
-
   result = scriptEngine->configureContext();
-
-  /*result = scriptEngine->prepareFunction(_T("Start"));
-  result = scriptEngine->executeCall();
-    
-  result = scriptEngine->prepareFunction(_T("Update"));
-  result = scriptEngine->executeCall();*/
-
-  //scriptEngine->release();
 
   auto camScript = m_camera->createComponent<ScriptComponent>();
   auto script = std::dynamic_pointer_cast<ScriptCore>

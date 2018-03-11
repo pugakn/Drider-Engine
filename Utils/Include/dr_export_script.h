@@ -30,6 +30,10 @@ namespace driderSDK {
   void ConstructFromTwoFloats##className(pType1 a, pType2 b, pType3 c, className *thisPointer) {\
   new(thisPointer) className(a, b, c); }
 
+#define BEGINING_DEFAULT_REGISTER\
+  Int32 registerFunctions(ScriptEngine* scriptEngine) {\
+    Int32 result;
+
 #define BEGINING_REGISTER(className, size, flags)\
   Int32 registerFunctions(ScriptEngine* scriptEngine) {\
     Int32 result;\
@@ -62,6 +66,8 @@ namespace driderSDK {
                                                                   asFUNCTION(ConstructFromTwoFloats##className),\
                                                                   asCALL_CDECL_OBJLAST);
 
+
+// METHODS FUNCTIONS
 #define REGISTER_FOO_0P(className, fooName, rType, rTypeStr)\
     result = scriptEngine->m_scriptEngine->RegisterObjectMethod(#className,\
                                                                 rTypeStr" " #fooName "()",\
@@ -133,6 +139,25 @@ namespace driderSDK {
                                                                 asMETHODPR(className, sybol, (pType) const, rType),\
                                                                 asCALL_THISCALL);\
     if(result < 0) return result;
+
+// ENUMS
+#define REGISTER_ENUM(nameEnum)\
+    result = scriptEngine->m_scriptEngine->RegisterEnum(#nameEnum);
+#define REGISTER_ENUM_VALUE(nameEnum, enumC, valueName)\
+    result = scriptEngine->m_scriptEngine->RegisterEnumValue(#nameEnum,\
+                                                             #valueName,\
+                                                             (Int32)enumC::valueName);
+
+//GLOBAL FUNCTIONS
+
+#define REGISTER_GLO_FOO_0P(foo, fooName, rType, strRType)\
+    result = scriptEngine->m_scriptEngine->RegisterGlobalFunction (strRType " "#fooName "()",\
+                                                                   asFUNCTIONPR(foo, (void), rType),\
+                                                                   asCALL_CDECL);
+#define REGISTER_GLO_FOO_1P(foo, fooName, pType, asPType, rType, strRType)\
+    result = scriptEngine->m_scriptEngine->RegisterGlobalFunction (strRType " "#fooName "("#asPType ")",\
+                                                                   asFUNCTIONPR(foo, (pType), rType),\
+                                                                   asCALL_CDECL);
 
 #define END_REGISTER\
     return result;\

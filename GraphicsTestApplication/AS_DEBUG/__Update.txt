@@ -1,16 +1,34 @@
 void Update()
 
-Temps: 2
+Temps: 2, 3, 10
 
 Variables: 
  001: float a
+ 010: string {noname}
 
 
-- 17,2 -
-    0   2 *    SUSPEND
+- 15,2 -
+    0  10 *    SUSPEND
                VarDecl  0
-    1   2 *    SetV4    v1, 0x41200000          (i:1092616192, f:10)
-- 18,2 -
-    3   2 *    SUSPEND
+    1  10 *    SetV4    v1, 0x41200000          (i:1092616192, f:10)
+- 17,2 -
+    3  10 *    SUSPEND
+    4  10 *    PshC4    0xb          (i:11, f:1.54143e-44)
+    6  11 *    CALLSYS  70           (bool isKeyDown(KeyCode))
+    8  10 *    JLowZ    +12              (d:22)
+- 18,3 -
+   10  10 *    SUSPEND
+   11  10 *    PGA      188157136
+   13  11 *    PSF      v10
+   14  12 *    CALLSYS  20           (string::string(const string&in))
+               ObjInfo  v10, 1
+   16  10 *    PSF      v10
+   17  11 *    CALLSYS  69           (void Print(string&in))
+   19  10 *    PSF      v10
+   20  11 *    CALLSYS  21           (string::~string())
+- 19,2 -
+               ObjInfo  v10, 0
+            1:
+   22  10 *    SUSPEND
             0:
-    4   2 *    RET      0
+   23  10 *    RET      0

@@ -9,10 +9,11 @@ void Start() {
 
 	if(r == test)
 		Print("Vectors are equals");
-
-	Print("Start ..............");
 }
 
 void Update() {
 	float a = 10.0f;
+
+	if(isKeyDown(k0))
+		Print("Escape down\n");
 }	 
