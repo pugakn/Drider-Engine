@@ -166,6 +166,7 @@ class DR_CORE_EXPORT Transform
   BEGINING_REGISTER(Transform, 0, asOBJ_REF | asOBJ_NOHANDLE)
   
   result = REGISTER_FOO_1P(Transform, move, const Vector3D&, void, "void", in)
+  result = REGISTER_FOO_1P(Transform, rotate, const Vector3D&, void, "void", in)
 
   END_REGISTER
   

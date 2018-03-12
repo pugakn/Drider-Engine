@@ -11,28 +11,32 @@ void Start() {
 		Print("Vectors are equals");
 }
 
-Vector3D front(10.0,0.0,0.0);
-Vector3D back(-10.0,0.0,0.0);
-Vector3D right(0,0.0,10.0);
-Vector3D left(0.0,0.0,-10.0);
-
 void Update() {
-	float a = 10.0f;
+	
+	float time = time + getDelta();
+	float moveVel = 500.0 * getDelta();
 
 	if(isKeyDown(kW)) {
 		//Print("W\n");
-		transform.move(front);
+		transform.move(Vector3D(moveVel,0.0,0.0));
 	}
 	if(isKeyDown(kS)) {
 		//Print("S\n");
-		transform.move(back);
+		transform.move(Vector3D(moveVel * -1.0,0.0,0.0));
 	}
 	if(isKeyDown(kA)) {
 		//Print("S\n");
-		transform.move(right);
+		transform.move(Vector3D(0,0.0,moveVel));
 	}
 	if(isKeyDown(kD)) {
 		//Print("S\n");
-		transform.move(left);
+		transform.move(Vector3D(0.0,0.0,moveVel * -1.0));
+	}
+
+	Print(time + "\n");
+
+	if(isKeyDown(kR)) {
+		Print("R\n");
+		transform.rotate(Vector3D(0.0,0.0,3.1416));
 	}
 }	 

@@ -641,6 +641,9 @@ void TestApplication::initScriptEngine() {
   result = scriptEngine->m_scriptEngine->RegisterGlobalProperty("Transform transform",
                                                                 &m_activeCam->getTransform());
 
+  
+  result = Time::registerFunctions(scriptEngine);
+
 
   result = scriptEngine->configureContext();
 

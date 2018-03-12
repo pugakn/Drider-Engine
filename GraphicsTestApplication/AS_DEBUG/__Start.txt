@@ -90,7 +90,7 @@ Variables:
    81  28 *    JLowZ    +12              (d:95)
 - 11,3 -
    83  28 *    SUSPEND
-   84  28 *    PGA      194146776
+   84  28 *    PGA      207214104
    86  29 *    PSF      v28
    87  30 *    CALLSYS  20           (string::string(const string&in))
                ObjInfo  v28, 1
