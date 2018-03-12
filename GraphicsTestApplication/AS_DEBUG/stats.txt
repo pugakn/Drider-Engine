@@ -1,22 +1,24 @@
 
 Total count
-PshC4      : 1575
-PshV4      : 130
-PSF        : 806
-RET        : 1564
-CALLSYS    : 2234
-SUSPEND    : 4827
-GETREF     : 1
-SetV4      : 1563
+PshGPtr    : 16752
+PshC4      : 37760
+PSF        : 16778
+RET        : 9439
+CALLSYS    : 62885
+SUSPEND    : 64992
+ALLOC      : 4
+CHKREF     : 8376
+GETREF     : 8377
+SetV4      : 9434
 CpyVtoR4   : 1
 CpyRtoV4   : 1
-PGA        : 131
-VAR        : 1
-JLowZ      : 1564
+PGA        : 5
+VAR        : 8377
+JLowZ      : 37737
 
 Never executed
 PopPtr    
-PshGPtr   
+PshV4     
 SwapPtr   
 NOT       
 PshG4     
@@ -73,13 +75,11 @@ PopRPtr
 PshRPtr   
 STR       
 CALLBND   
-ALLOC     
 FREE      
 LOADOBJ   
 STOREOBJ  
 GETOBJ    
 REFCPY    
-CHKREF    
 GETOBJREF 
 PshNull   
 ClrVPtr   
@@ -205,32 +205,38 @@ POWu64
 Thiscall1 
 
 Sequences
-PshC4     , PshC4      : 8
+PshGPtr   , CHKREF     : 8376
+PshGPtr   , GETREF     : 8376
+PshC4     , PshC4      : 16
 PshC4     , PSF        : 4
-PshC4     , CALLSYS    : 1563
-PshV4     , PSF        : 130
-PSF       , PSF        : 135
-PSF       , CALLSYS    : 670
+PshC4     , CALLSYS    : 37736
+PshC4     , ALLOC      : 4
+PSF       , PSF        : 5
+PSF       , CALLSYS    : 16772
 PSF       , GETREF     : 1
-RET       , SUSPEND    : 1563
-CALLSYS   , PshV4      : 130
-CALLSYS   , PSF        : 401
+RET       , SUSPEND    : 9438
+CALLSYS   , PSF        : 8387
 CALLSYS   , RET        : 1
-CALLSYS   , SUSPEND    : 136
+CALLSYS   , SUSPEND    : 8382
 CALLSYS   , CpyVtoR4   : 1
 CALLSYS   , CpyRtoV4   : 1
-CALLSYS   , VAR        : 1
-CALLSYS   , JLowZ      : 1563
-SUSPEND   , PshC4      : 1567
+CALLSYS   , VAR        : 8377
+CALLSYS   , JLowZ      : 37736
+SUSPEND   , PshGPtr    : 8376
+SUSPEND   , PshC4      : 37740
 SUSPEND   , PSF        : 3
-SUSPEND   , RET        : 1563
-SUSPEND   , SetV4      : 1563
-SUSPEND   , PGA        : 131
-GETREF    , CALLSYS    : 1
-SetV4     , SUSPEND    : 1563
+SUSPEND   , RET        : 9434
+SUSPEND   , SetV4      : 9434
+SUSPEND   , PGA        : 5
+ALLOC     , RET        : 4
+CHKREF    , PSF        : 8376
+GETREF    , CALLSYS    : 8377
+SetV4     , SUSPEND    : 9434
 CpyVtoR4  , JLowZ      : 1
 CpyRtoV4  , PSF        : 1
-PGA       , PSF        : 131
+PGA       , PshC4      : 4
+PGA       , PSF        : 1
+VAR       , PshGPtr    : 8376
 VAR       , PSF        : 1
-JLowZ     , SUSPEND    : 1564
+JLowZ     , SUSPEND    : 37737
 LABEL     , SUSPEND    : 1

@@ -21,13 +21,14 @@
 #include <dr_fmod_soundSystem.h>
 
 #include <dr_script_engine.h>
+#include "OneRef.h"
 
 namespace driderSDK {
 
 class Technique;
 class StaticMeshTechnique;
 class AnimationTechnique;
-  
+
 class TestApplication : public Application
 {
  public:
@@ -82,6 +83,8 @@ class TestApplication : public Application
   std::unique_ptr<Technique> m_linesTech;
   std::shared_ptr<GameObject> m_joker;
   std::shared_ptr<GameObject> m_wep;
+
+  OneRef myRef;
 };
 
 }

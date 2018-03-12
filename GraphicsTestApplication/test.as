@@ -11,9 +11,28 @@ void Start() {
 		Print("Vectors are equals");
 }
 
+Vector3D front(10.0,0.0,0.0);
+Vector3D back(-10.0,0.0,0.0);
+Vector3D right(0,0.0,10.0);
+Vector3D left(0.0,0.0,-10.0);
+
 void Update() {
 	float a = 10.0f;
 
-	if(isKeyDown(k0))
-		Print("Escape down\n");
+	if(isKeyDown(kW)) {
+		//Print("W\n");
+		transform.move(front);
+	}
+	if(isKeyDown(kS)) {
+		//Print("S\n");
+		transform.move(back);
+	}
+	if(isKeyDown(kA)) {
+		//Print("S\n");
+		transform.move(right);
+	}
+	if(isKeyDown(kD)) {
+		//Print("S\n");
+		transform.move(left);
+	}
 }	 

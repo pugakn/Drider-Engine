@@ -1,34 +1,105 @@
 void Update()
 
-Temps: 2, 3, 10
+Temps: 2, 3, 6
 
 Variables: 
  001: float a
- 010: string {noname}
+ 006: Vector3D {noname}
 
 
-- 15,2 -
-    0  10 *    SUSPEND
+- 20,2 -
+    0   6 *    SUSPEND
                VarDecl  0
-    1  10 *    SetV4    v1, 0x41200000          (i:1092616192, f:10)
-- 17,2 -
-    3  10 *    SUSPEND
-    4  10 *    PshC4    0xb          (i:11, f:1.54143e-44)
-    6  11 *    CALLSYS  70           (bool isKeyDown(KeyCode))
-    8  10 *    JLowZ    +12              (d:22)
-- 18,3 -
-   10  10 *    SUSPEND
-   11  10 *    PGA      188157136
-   13  11 *    PSF      v10
-   14  12 *    CALLSYS  20           (string::string(const string&in))
-               ObjInfo  v10, 1
-   16  10 *    PSF      v10
-   17  11 *    CALLSYS  69           (void Print(string&in))
-   19  10 *    PSF      v10
-   20  11 *    CALLSYS  21           (string::~string())
-- 19,2 -
-               ObjInfo  v10, 0
+    1   6 *    SetV4    v1, 0x41200000          (i:1092616192, f:10)
+- 22,2 -
+    3   6 *    SUSPEND
+    4   6 *    PshC4    0x11          (i:17, f:2.38221e-44)
+    6   7 *    CALLSYS  70           (bool isKeyDown(KeyCode))
+    8   6 *    JLowZ    +16              (d:26)
+- 24,3 -
+            {
+   10   6 *    SUSPEND
+   11   6 *    PshGPtr  54457504
+   13   7 *    CHKREF
+   14   7 *    PSF      v6
+   15   8 *    CALLSYS  74           (Vector3D::Vector3D(const Vector3D&in))
+               ObjInfo  v6, 1
+   17   6 *    VAR      v6
+   18   7 *    PshGPtr  54460852
+   20   8 *    GETREF   1
+   21   8 *    CALLSYS  93           (void Transform::move(const Vector3D&in))
+   23   6 *    PSF      v6
+   24   7 *    CALLSYS  73           (Vector3D::~Vector3D())
+- 26,2 -
+               ObjInfo  v6, 0
+            }
             1:
-   22  10 *    SUSPEND
+   26   6 *    SUSPEND
+   27   6 *    PshC4    0x1f          (i:31, f:4.34403e-44)
+   29   7 *    CALLSYS  70           (bool isKeyDown(KeyCode))
+   31   6 *    JLowZ    +16              (d:49)
+- 28,3 -
+            {
+   33   6 *    SUSPEND
+   34   6 *    PshGPtr  54457624
+   36   7 *    CHKREF
+   37   7 *    PSF      v6
+   38   8 *    CALLSYS  74           (Vector3D::Vector3D(const Vector3D&in))
+               ObjInfo  v6, 1
+   40   6 *    VAR      v6
+   41   7 *    PshGPtr  54460852
+   43   8 *    GETREF   1
+   44   8 *    CALLSYS  93           (void Transform::move(const Vector3D&in))
+   46   6 *    PSF      v6
+   47   7 *    CALLSYS  73           (Vector3D::~Vector3D())
+- 30,2 -
+               ObjInfo  v6, 0
+            }
+            2:
+   49   6 *    SUSPEND
+   50   6 *    PshC4    0x1e          (i:30, f:4.2039e-44)
+   52   7 *    CALLSYS  70           (bool isKeyDown(KeyCode))
+   54   6 *    JLowZ    +16              (d:72)
+- 32,3 -
+            {
+   56   6 *    SUSPEND
+   57   6 *    PshGPtr  54457744
+   59   7 *    CHKREF
+   60   7 *    PSF      v6
+   61   8 *    CALLSYS  74           (Vector3D::Vector3D(const Vector3D&in))
+               ObjInfo  v6, 1
+   63   6 *    VAR      v6
+   64   7 *    PshGPtr  54460852
+   66   8 *    GETREF   1
+   67   8 *    CALLSYS  93           (void Transform::move(const Vector3D&in))
+   69   6 *    PSF      v6
+   70   7 *    CALLSYS  73           (Vector3D::~Vector3D())
+- 34,2 -
+               ObjInfo  v6, 0
+            }
+            3:
+   72   6 *    SUSPEND
+   73   6 *    PshC4    0x20          (i:32, f:4.48416e-44)
+   75   7 *    CALLSYS  70           (bool isKeyDown(KeyCode))
+   77   6 *    JLowZ    +16              (d:95)
+- 36,3 -
+            {
+   79   6 *    SUSPEND
+   80   6 *    PshGPtr  54461224
+   82   7 *    CHKREF
+   83   7 *    PSF      v6
+   84   8 *    CALLSYS  74           (Vector3D::Vector3D(const Vector3D&in))
+               ObjInfo  v6, 1
+   86   6 *    VAR      v6
+   87   7 *    PshGPtr  54460852
+   89   8 *    GETREF   1
+   90   8 *    CALLSYS  93           (void Transform::move(const Vector3D&in))
+   92   6 *    PSF      v6
+   93   7 *    CALLSYS  73           (Vector3D::~Vector3D())
+- 38,2 -
+               ObjInfo  v6, 0
+            }
+            4:
+   95   6 *    SUSPEND
             0:
-   23  10 *    RET      0
+   96   6 *    RET      0

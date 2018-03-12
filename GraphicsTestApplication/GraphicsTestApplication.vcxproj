@@ -171,7 +171,7 @@
     <ClInclude Include="Include\DrawableComponent.h" />
     <ClInclude Include="Include\FrustumDebug.h" />
     <ClInclude Include="Include\LinesTechnique.h" />
-    <ClInclude Include="Include\OneRefObj.h" />
+    <ClInclude Include="Include\OneRef.h" />
     <ClInclude Include="Include\ScriptComponent.h" />
     <ClInclude Include="Include\SkeletonDebug.h" />
     <ClInclude Include="Include\StaticMeshTechnique.h" />
@@ -186,7 +186,7 @@
     <ClCompile Include="Source\DrawableComponent.cpp" />
     <ClCompile Include="Source\FrustumDebug.cpp" />
     <ClCompile Include="Source\LinesTechnique.cpp" />
-    <ClCompile Include="Source\OneRefObj.cpp" />
+    <ClCompile Include="Source\OneRef.cpp" />
     <ClCompile Include="Source\ScriptComponent.cpp" />
     <ClCompile Include="Source\SkeletonDebug.cpp" />
     <ClCompile Include="Source\StaticMeshTechnique.cpp" />

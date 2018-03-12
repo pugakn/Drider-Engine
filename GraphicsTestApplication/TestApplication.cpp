@@ -39,8 +39,8 @@
 #include "AnimationTechnique.h"
 
 #include <dr_script_core.h>
-#include "OneRefObj.h"
 #include "ScriptComponent.h"
+#include "OneRef.h"
 
 namespace driderSDK {
 
@@ -575,15 +575,12 @@ void TestApplication::initScriptEngine() {
 
   scriptEngine = ScriptEngine::instancePtr();
 
-  result = scriptEngine->createEngine();
-
-  /*auto script = std::dynamic_pointer_cast<ScriptCore>
-    (ResourceManager::getReference(_T("test.as")));
-
-  result = scriptEngine->addScript(_T("test.as"),
-                                   script->getScript());*/    
+  result = scriptEngine->createEngine(); 
 
   result = Keyboard::registerFunctions(scriptEngine);
+
+  Vector3D vector;
+  result = vector.registerFunctions(scriptEngine);
 
   /*Object obj;
   result = scriptEngine->m_scriptEngine->RegisterObjectType("Object",
@@ -638,16 +635,17 @@ void TestApplication::initScriptEngine() {
   "Object& si()",
   asMETHOD(Object, si, Object&),
   asCALL_THISCALL);*/
-  result = m_camera->registerFunctions(scriptEngine);
+  //result = m_camera->registerFunctions(scriptEngine);
+  
+  result = m_activeCam->getTransform().registerFunctions(scriptEngine);
+  result = scriptEngine->m_scriptEngine->RegisterGlobalProperty("Transform transform",
+                                                                &m_activeCam->getTransform());
 
-  Vector3D vector;
-  result = vector.registerFunctions(scriptEngine);
 
   result = scriptEngine->configureContext();
 
   auto camScript = m_camera->createComponent<ScriptComponent>();
-  auto script = std::dynamic_pointer_cast<ScriptCore>
-                (ResourceManager::getReference(_T("test.as")));
+  auto script = std::dynamic_pointer_cast<ScriptCore>(ResourceManager::getReference(_T("test.as")));
   camScript->addScript(_T("test.as"), script->getScript());
 
   result = scriptEngine->compileScript();

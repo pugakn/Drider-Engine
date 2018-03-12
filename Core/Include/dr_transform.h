@@ -4,6 +4,9 @@
 #include <dr_matrix4x4.h>
 #include "dr_core_prerequisites.h"
 
+#include <dr_export_script.h>
+#include <..\..\Script\Include\dr_script_engine.h>
+
 namespace driderSDK {
 
 class Radian;
@@ -159,6 +162,12 @@ class DR_CORE_EXPORT Transform
 
   Transform&
   operator=(const Transform& other);
+
+  BEGINING_REGISTER(Transform, 0, asOBJ_REF | asOBJ_NOHANDLE)
+  
+  result = REGISTER_FOO_1P(Transform, move, const Vector3D&, void, "void", in)
+
+  END_REGISTER
   
  private:
   /**

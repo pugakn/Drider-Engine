@@ -231,7 +231,7 @@ class DR_CORE_EXPORT Camera : public GameObject
   
   REGISTER_CONSTRUC_DESTRUCT(Camera)
   
-  //REGISTER_FOO_4P(Camera, move, float, float, float, bool, void)
+  result = REGISTER_FOO_1P(Camera, move, const Vector3D&, void, "void", in)
 
   /*REGISTER_FOO_0P(Camera, getFarPlane, float)
   REGISTER_FOO_0P(Camera, getNearPlane, float)

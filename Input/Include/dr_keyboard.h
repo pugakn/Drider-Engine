@@ -83,16 +83,25 @@ class DR_INPUT_EXPORT Keyboard
 
   static BEGINING_DEFAULT_REGISTER
   
-  result = REGISTER_ENUM(KeyCode)
-  result = REGISTER_ENUM_VALUE(KeyCode, KEY_CODE, kESCAPE)
-  result = REGISTER_ENUM_VALUE(KeyCode, KEY_CODE, k0)
-  result = REGISTER_ENUM_VALUE(KeyCode, KEY_CODE, k1)
-  result = REGISTER_ENUM_VALUE(KeyCode, KEY_CODE, k2)
-  result = REGISTER_ENUM_VALUE(KeyCode, KEY_CODE, k3)
-  result = REGISTER_ENUM_VALUE(KeyCode, KEY_CODE, k4)
+  REGISTER_ENUM(KeyCode)
+  REGISTER_ENUM_VALUE(KeyCode, KEY_CODE, kESCAPE)
+  REGISTER_ENUM_VALUE(KeyCode, KEY_CODE, k0)
+  REGISTER_ENUM_VALUE(KeyCode, KEY_CODE, k1)
+  REGISTER_ENUM_VALUE(KeyCode, KEY_CODE, k2)
+  REGISTER_ENUM_VALUE(KeyCode, KEY_CODE, k3)
+  REGISTER_ENUM_VALUE(KeyCode, KEY_CODE, k4)
+  REGISTER_ENUM_VALUE(KeyCode, KEY_CODE, k5)
+  REGISTER_ENUM_VALUE(KeyCode, KEY_CODE, k6)
+  REGISTER_ENUM_VALUE(KeyCode, KEY_CODE, k7)
+  REGISTER_ENUM_VALUE(KeyCode, KEY_CODE, k8)
+  REGISTER_ENUM_VALUE(KeyCode, KEY_CODE, k9)
+  REGISTER_ENUM_VALUE(KeyCode, KEY_CODE, kA)
+  REGISTER_ENUM_VALUE(KeyCode, KEY_CODE, kS)
+  REGISTER_ENUM_VALUE(KeyCode, KEY_CODE, kD)
+  REGISTER_ENUM_VALUE(KeyCode, KEY_CODE, kW)
 
-  result = REGISTER_GLO_FOO_1P(&Keyboard::isKeyDown, isKeyDown, KEY_CODE::E, KeyCode, bool, "bool")
-  result = REGISTER_GLO_FOO_1P(&Keyboard::keyDown, keyDown, KEY_CODE::E, KeyCode, bool, "bool")
+  REGISTER_GLO_FOO_1P(&Keyboard::isKeyDown, isKeyDown, KEY_CODE::E, KeyCode, bool, "bool")
+  REGISTER_GLO_FOO_1P(&Keyboard::keyDown, keyDown, KEY_CODE::E, KeyCode, bool, "bool")
 
   END_REGISTER
 

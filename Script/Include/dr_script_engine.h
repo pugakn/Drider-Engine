@@ -133,6 +133,8 @@ class DR_SCRIPT_EXPORT ScriptEngine : public Module<ScriptEngine>
 
   asIScriptEngine* m_scriptEngine;
 	unsigned long timeout = 5000;
+	
+  asIScriptContext* m_scriptContext;
 
  protected:
   void
@@ -143,7 +145,6 @@ class DR_SCRIPT_EXPORT ScriptEngine : public Module<ScriptEngine>
 
  private:
 	//asIScriptEngine* m_scriptEngine;
-	asIScriptContext* m_scriptContext;
 	asIScriptFunction* m_scriptFunction;
 	asIScriptModule* m_scriptModule;
 };
