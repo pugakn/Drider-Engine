@@ -1,4 +1,5 @@
 #include "ScriptComponent.h"
+#include <dr_context_manager.h>
 
 namespace driderSDK {
 
@@ -8,15 +9,23 @@ ScriptComponent::~ScriptComponent() {
 
 void
 ScriptComponent::onCreate() {
+  
+  scriptEngine = ScriptEngine::instancePtr();
 
+  if (!ContextManager::isStarted()) {
+    ContextManager::startUp();
+  }
+  ctxMag = ContextManager::instancePtr();
 }
 
 void
 ScriptComponent::onUpdate() {
-  ScriptEngine* scriptEngine = ScriptEngine::instancePtr();
-  
-  Int32 result = scriptEngine->prepareFunction(_T("Update"));
-  result = scriptEngine->executeCall();
+  ctxMag->addContext(scriptEngine->m_scriptEngine,
+                     scriptEngine->m_scriptEngine->GetModule(
+                     StringUtils::toString(m_module).c_str())->GetFunctionByDecl(
+                     "void Update()"));
+
+  Int8 result = ctxMag->executeScripts();
 }
 
 /*********
@@ -34,10 +43,17 @@ ScriptComponent::onDestroy() {
 
 void
 ScriptComponent::addScript(TString name,
-                           TString script) {
+                           TString script,
+                           TString module) {
 
   Int32 result = ScriptEngine::instance().addScript(name,
-                                                    script);
+                                                    script,
+                                                    module);
+  
+  m_scriptName = name;
+  m_script = script;
+  m_module = module;
+
 }
 
 /**
@@ -50,10 +66,20 @@ ScriptComponent::cloneIn(GameObject& _go) {
 
 void
 ScriptComponent::start() {
-  ScriptEngine *scriptEngine = ScriptEngine::instancePtr();
+  //Add context
+  ctxMag->addContext(scriptEngine->m_scriptEngine,
+                     scriptEngine->m_scriptEngine->GetModule(
+                     StringUtils::toString(m_module).c_str())->GetFunctionByDecl(
+                     "void Start()"));
 
-  Int32 result = scriptEngine->prepareFunction(_T("Start"));
-  result = scriptEngine->executeCall();
+  Int8 result = ctxMag->executeScripts();
+}
+
+void
+ScriptComponent::setScriptLocalProperties() {
+  Int8 result;
+
+  
 }
 
 }

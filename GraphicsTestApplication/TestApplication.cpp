@@ -456,6 +456,9 @@ TestApplication::initResources() {
   ResourceManager::loadResource(_T("Weapons-of-survival.fbx"));
 
   ResourceManager::loadResource(_T("test.as"));
+
+  ResourceManager::loadResource(_T("script1.as"));
+  ResourceManager::loadResource(_T("script2.as"));
 }
 
 void 
@@ -563,10 +566,11 @@ TestApplication::initSceneGraph() {
   }
 }
 
-void TestApplication::initScriptEngine() {
-  int result;
+void 
+TestApplication::initScriptEngine() {
+  Int32 result;
 
-  //scriptEngine->addScriptLog(_T("hola"), 0);
+  /*//scriptEngine->addScriptLog(_T("hola"), 0);
   ScriptEngine* scriptEngine = nullptr;
 
   if (!ScriptEngine::isStarted()) {
@@ -581,69 +585,12 @@ void TestApplication::initScriptEngine() {
 
   Vector3D vector;
   result = vector.registerFunctions(scriptEngine);
-
-  /*Object obj;
-  result = scriptEngine->m_scriptEngine->RegisterObjectType("Object",
-  sizeof(Object),
-  asOBJ_VALUE | asOBJ_APP_CLASS |
-  asOBJ_APP_CLASS_CONSTRUCTOR | asOBJ_APP_CLASS_COPY_CONSTRUCTOR |
-  asOBJ_APP_CLASS_DESTRUCTOR);
-
-  result = scriptEngine->m_scriptEngine->RegisterObjectBehaviour("Object",
-  asBEHAVE_CONSTRUCT,
-  "void f()",
-  asFUNCTION(Constructor),
-  asCALL_CDECL_OBJLAST);
-  result = scriptEngine->m_scriptEngine->RegisterObjectBehaviour("Object",
-  asBEHAVE_CONSTRUCT,
-  "void f(const Object& in)",
-  asFUNCTION(CopyConstruct),
-  asCALL_CDECL_OBJLAST);
-  result = scriptEngine->m_scriptEngine->RegisterObjectBehaviour("Object",
-  asBEHAVE_CONSTRUCT,
-  "void f(float, float)",
-  asFUNCTION(ConstructFromTwoFloats),
-  asCALL_CDECL_OBJLAST);
-
-  result = scriptEngine->m_scriptEngine->RegisterObjectBehaviour("Object",
-  asBEHAVE_DESTRUCT,
-  "void f()",
-  asFUNCTION(Destructor),
-  asCALL_CDECL_OBJLAST);
-
-  result = scriptEngine->m_scriptEngine->RegisterObjectMethod("Object",
-  "Object& opAssign(const Object& in)",
-  asMETHODPR(Object, operator=, (const Object&), Object&),
-  asCALL_THISCALL);
-
-  result = scriptEngine->m_scriptEngine->RegisterObjectMethod("Object",
-  "Object opAdd(const Object& in) const",
-  asMETHODPR(Object, operator+, (const Object&) const, Object),
-  asCALL_THISCALL);
-
-  result = scriptEngine->m_scriptEngine->RegisterObjectMethod("Object",
-  "Object& opAddAssign(const Object& in)",
-  asMETHODPR(Object, operator+=, (const Object&), Object&),
-  asCALL_THISCALL);
-
-  result = scriptEngine->m_scriptEngine->RegisterObjectMethod("Object",
-  "Object& add(const Object& in)",
-  asMETHODPR(Object, add, (const Object&), Object&),
-  asCALL_THISCALL);
-
-  result = scriptEngine->m_scriptEngine->RegisterObjectMethod("Object",
-  "Object& si()",
-  asMETHOD(Object, si, Object&),
-  asCALL_THISCALL);*/
-  //result = m_camera->registerFunctions(scriptEngine);
   
   result = m_activeCam->getTransform().registerFunctions(scriptEngine);
   result = scriptEngine->m_scriptEngine->RegisterGlobalProperty("Transform transform",
                                                                 &m_activeCam->getTransform());
 
-  
   result = Time::registerFunctions(scriptEngine);
-
 
   result = scriptEngine->configureContext();
 
@@ -653,6 +600,71 @@ void TestApplication::initScriptEngine() {
 
   result = scriptEngine->compileScript();
   camScript->start();
+
+  result = scriptEngine->configureContext();
+
+  auto camScript = m_camera->createComponent<ScriptComponent>();
+  auto script = std::dynamic_pointer_cast<ScriptCore>(ResourceManager::getReference(_T("test.as")));
+  camScript->addScript(_T("test.as"), script->getScript());
+
+  result = scriptEngine->compileScript();
+  camScript->start();*/
+  //Create context manager and set time
+  ContextManager* ctxMag = nullptr;
+  if(!ContextManager::isStarted())  {
+    ContextManager::startUp();
+  }
+  ctxMag = ContextManager::instancePtr();
+
+  //Create the ScriptEngine
+  ScriptEngine* scriptEngine = nullptr;
+  if (!ScriptEngine::isStarted()) {
+    ScriptEngine::startUp();
+  }
+  scriptEngine = ScriptEngine::instancePtr();
+  result = scriptEngine->createEngine();
+
+  //Configurate engine
+  result = scriptEngine->configurateEngine(ctxMag);
+
+  //Register all functions
+  result = Keyboard::registerFunctions(scriptEngine);
+  Vector3D vector;
+  result = vector.registerFunctions(scriptEngine);
+  result = m_activeCam->getTransform().registerFunctions(scriptEngine);
+  
+  result = Time::registerFunctions(scriptEngine);
+
+  //Add, register global properties and compile scripts
+  auto camScript = m_camera->createComponent<ScriptComponent>();
+  auto rScript1 = ResourceManager::getReference(_T("script1.as"));
+  auto Script1 = std::dynamic_pointer_cast<ScriptCore>(rScript1);
+  /*result = scriptEngine->m_scriptEngine->RegisterGlobalProperty("Transform transform",
+                                                                &m_activeCam->getTransform());*/
+  result = scriptEngine->m_scriptEngine->SetDefaultNamespace("script1");
+
+  result = scriptEngine->m_scriptEngine->RegisterGlobalProperty("int globalVar",
+                                                                &int1);
+  camScript->addScript(Script1->getName(),
+                       Script1->getScript(),
+                       Script1->getName());
+                                                           
+  camScript->start();
+  
+  //Add, register global properties and compile scripts
+  auto jokerScript = m_joker->createComponent<ScriptComponent>();
+  auto rScript2 = ResourceManager::getReference(_T("script2.as"));
+  auto Script2 = std::dynamic_pointer_cast<ScriptCore>(rScript2);
+  result = scriptEngine->m_scriptEngine->SetDefaultNamespace("script2");
+
+  result = scriptEngine->m_scriptEngine->RegisterGlobalProperty("int globalVar",
+                                                                &int2);
+  jokerScript->addScript(Script2->getName(),
+                         Script2->getScript(),
+                         Script2->getName());
+
+  jokerScript->start();
+
 }
 
 void 
@@ -715,7 +727,8 @@ TestApplication::addScript(TString name) {
     (ResourceManager::getReference(name));
 
   Int32 result = ScriptEngine::instance().addScript(name,
-                                                    script->getScript());
+                                                    script->getScript(),
+                                                    _T("module"));
 }
 
 }

@@ -7,6 +7,7 @@
 //#include "dr_script_custom_string.h"
 
 #include "dr_object.h"
+#include "dr_context_manager.h"
 
 
 namespace driderSDK {
@@ -24,13 +25,13 @@ void stringPrint_g(asIScriptGeneric* gen) {
 
 ScriptEngine::ScriptEngine() {
 
-	if (!Logger::isStarted()) {
+	/*if (!Logger::isStarted()) {
     Logger::startUp();
 	}
 
 	if (!Time::isStarted()) {
 		Time::startUp();
-	}
+	}*/
 
 }
 
@@ -59,33 +60,6 @@ ScriptEngine::createEngine() {
 																									asFUNCTION(stringPrint_g), 
 																									asCALL_GENERIC);
 
-  /*result = m_scriptEngine->RegisterObjectType("Object",
-                                              0,
-                                              asOBJ_REF);
-
-  result = m_scriptEngine->RegisterObjectBehaviour("Object", 
-                                                   asBEHAVE_FACTORY,
-                                                   "Object@ f()", 
-                                                   asFUNCTION(Ref_Factory),
-                                                   asCALL_CDECL);
-
-  result = m_scriptEngine->RegisterObjectBehaviour("Object",
-                                      asBEHAVE_ADDREF,
-                                      "void f()", 
-                                      asMETHOD(ObjectAS, AddRef),
-                                      asCALL_THISCALL);
-
-  result = m_scriptEngine->RegisterObjectBehaviour("Object", 
-                                                   asBEHAVE_RELEASE, 
-                                                   "void f()", 
-                                                   asMETHOD(ObjectAS, Release), 
-                                                   asCALL_THISCALL);
-
-  result = m_scriptEngine->RegisterObjectMethod("Object",
-                                                "float Add(float param1)",
-                                                asMETHODPR(ObjectAS, Add, (float), float),
-                                                asCALL_THISCALL);*/
-
   /*
   * Seccion para registrar metodos //eso dice arriba pero en ingles...(asi es comente un comentario)
   */
@@ -94,22 +68,44 @@ ScriptEngine::createEngine() {
 }
 
 Int8
+ScriptEngine::configurateEngine(ContextManager *ctx) {
+  Int8 result = 0;
+
+  // Register the functions for controlling the script threads, e.g. sleep
+  ctx->registerThreadSupport(m_scriptEngine);
+
+  return result;
+}
+
+Int8
 ScriptEngine::addScript(const TString& scriptName,
-                        const TString& script) {
+                        const TString& script,
+                        const TString& module) {
 
-	m_scriptModule = m_scriptEngine->GetModule("module", asGM_CREATE_IF_NOT_EXISTS);
+  asIScriptModule *mod = m_scriptEngine->GetModule(StringUtils::toString(module).c_str(),
+                                                   asGM_ALWAYS_CREATE);
+  m_scriptModules.push_back(mod);
 
-	Int8 result = m_scriptModule->AddScriptSection(StringUtils::toString(scriptName).c_str(),
-                                                 StringUtils::toString(script).c_str());
+	Int8 result = m_scriptModules.back()->AddScriptSection(StringUtils::toString(scriptName).c_str(),
+                                                         StringUtils::toString(script).c_str(),
+                                                         script.length());
+
 	if(result < 0) {
 		addScriptLog(_T("AddScriptSection failed on file ") + scriptName, asMSGTYPE_ERROR);
 		m_scriptEngine->Release();
 		return -1;
 	}
-	return 0;
+
+  result = m_scriptModules.back()->Build();
+  if (result < 0) {
+    addScriptLog(_T("Build module failed") + module, asMSGTYPE_ERROR);
+    return -1;
+  }
+
+	return result;
 }
 
-Int8
+/*Int8
 ScriptEngine::compileScript() {
 	Int8 result = m_scriptModule->Build();
 	if(result < 0) {
@@ -117,7 +113,7 @@ ScriptEngine::compileScript() {
 		return -1;
 	}
 	return 0;
-}
+}*/
 
 Int8
 ScriptEngine::configureContext() {
@@ -168,7 +164,7 @@ ScriptEngine::prepareFunction(TString function) {
 
 Int8
 ScriptEngine::executeCall() {
-	g_timeout = (unsigned long)(Time::instancePtr()->getElapsedMilli() + timeout);
+	/*g_timeout = (unsigned long)(Time::instancePtr()->getElapsedMilli() + timeout);
 	Int8 result = m_scriptContext->Execute();			
 
 	if (result != asEXECUTION_FINISHED) {
@@ -190,8 +186,8 @@ ScriptEngine::executeCall() {
 
 			addScriptLog(details, asMSGTYPE_INFORMATION);
 		}
-	}
-	return result;
+	}*/
+	return -1;
 }
 
 void
@@ -202,10 +198,10 @@ ScriptEngine::release() {
 
 void
 ScriptEngine::lineCallback(asIScriptContext* scriptContext) {
-	if(g_timeout < Time::instancePtr()->getElapsedMilli()) {
+	/*if(g_timeout < Time::instancePtr()->getElapsedMilli()) {
 		scriptContext->Abort(); 
 		//scriptContext->Suspend(); //we can also use suspend
-	}
+	}*/
 }
 
 void 

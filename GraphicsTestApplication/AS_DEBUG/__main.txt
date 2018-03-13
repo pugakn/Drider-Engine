@@ -1,4 +1,4 @@
-void Update()
+void main()
 
 Temps: 7
 
@@ -6,9 +6,9 @@ Variables:
  007: string {noname}
 
 
-- 7,2 -
+- 2,2 -
     0   7 *    SUSPEND
-    1   7 *    PGA      214985808
+    1   7 *    PGA      208167872
     3   8 *    PSF      v7
     4   9 *    CALLSYS  20           (string::string(const string&in))
                ObjInfo  v7, 1
@@ -16,7 +16,7 @@ Variables:
     7   8 *    CALLSYS  69           (void Print(string&in))
     9   7 *    PSF      v7
    10   8 *    CALLSYS  21           (string::~string())
-- 8,2 -
+- 3,2 -
                ObjInfo  v7, 0
    12   7 *    SUSPEND
             0:

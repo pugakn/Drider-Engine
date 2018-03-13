@@ -1,3 +1,4 @@
+#pragma once
 #include <dr_module.h>
 #include "dr_timer.h"
 #include "dr_util_prerequisites.h"

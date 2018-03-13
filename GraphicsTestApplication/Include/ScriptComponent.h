@@ -5,6 +5,8 @@
 
 namespace driderSDK {
 
+class ContextManager;
+
 class ScriptComponent : public GameComponent {
   public:
     using GameComponent::GameComponent;
@@ -35,12 +37,22 @@ class ScriptComponent : public GameComponent {
 
     void
     addScript(TString name,
-              TString script);
+              TString script,
+              TString module);
 
     void
     start();
 
+    void 
+    setScriptLocalProperties();
+
   private:
+    TString m_scriptName;
+    TString m_script;
+    TString m_module;
+
+    ContextManager* ctxMag = nullptr;
+    ScriptEngine *scriptEngine = nullptr;
 };
 
 }

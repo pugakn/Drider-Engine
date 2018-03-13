@@ -101,7 +101,7 @@
       <PreprocessorDefinitions>SCRIPT_EXPORTS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);$(DRIDER_DEPENDENCIES)Lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);$(DRIDER_DEPENDENCIES)Lib\$(PlatformTarget);</AdditionalLibraryDirectories>
       <AdditionalDependencies>angelscript64d.lib;Cored.lib;Engined.lib;Utilsd.lib;%(AdditionalDependencies);Engined.lib</AdditionalDependencies>
       <ImportLibrary>$(SolutionDir)Lib\$(PlatformTarget)\$(Projectname)d.lib</ImportLibrary>
     </Link>
@@ -116,7 +116,7 @@
       <PreprocessorDefinitions>SCRIPT_EXPORTS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);$(DRIDER_DEPENDENCIES)Lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);$(DRIDER_DEPENDENCIES)Lib\$(PlatformTarget);</AdditionalLibraryDirectories>
       <AdditionalDependencies>angelscriptd.lib;Cored.lib;Utilsd.lib;Engined.lib;%(AdditionalDependencies);Engined.lib</AdditionalDependencies>
       <ImportLibrary>$(SolutionDir)Lib\$(PlatformTarget)\$(Projectname)d.lib</ImportLibrary>
     </Link>
@@ -136,6 +136,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>angelscript.lib;Core.lib;Engine.lib;Utils.lib;%(AdditionalDependencies);Engine.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);$(DRIDER_DEPENDENCIES)Lib\$(PlatformTarget);</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -153,20 +154,28 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>angelscript64.lib;Core.lib;Engine.lib;Utils.lib;%(AdditionalDependencies);Engine.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);$(DRIDER_DEPENDENCIES)Lib\$(PlatformTarget);</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\dr_context_manager.cpp" />
     <ClCompile Include="Source\dr_script_custom_string.cpp" />
     <ClCompile Include="Source\dr_script_engine.cpp" />
     <ClCompile Include="Source\dr_script_string_factory.cpp" />
+    <ClCompile Include="Source\scriptarray.cpp" />
+    <ClCompile Include="Source\scriptdictionary.cpp" />
     <ClCompile Include="Source\scriptstdstring.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\dr_context_manager.h" />
     <ClInclude Include="Include\dr_object.h" />
+    <ClInclude Include="Include\dr_script_api.h" />
     <ClInclude Include="Include\dr_script_custom_string.h" />
     <ClInclude Include="Include\dr_script_engine.h" />
     <ClInclude Include="Include\dr_script_prerequisites.h" />
     <ClInclude Include="Include\dr_script_string_factory.h" />
+    <ClInclude Include="Include\scriptarray.h" />
+    <ClInclude Include="Include\scriptdictionary.h" />
     <ClInclude Include="Include\scriptstdstring.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

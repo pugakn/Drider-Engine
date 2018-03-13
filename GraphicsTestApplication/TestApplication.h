@@ -20,8 +20,8 @@
 #include <dr_fmod_channel.h>
 #include <dr_fmod_soundSystem.h>
 
+#include <dr_context_manager.h>
 #include <dr_script_engine.h>
-#include "OneRef.h"
 
 namespace driderSDK {
 
@@ -84,7 +84,9 @@ class TestApplication : public Application
   std::shared_ptr<GameObject> m_joker;
   std::shared_ptr<GameObject> m_wep;
 
-  OneRef myRef;
+  //OneRef myRef;
+  Int32 int1 = 1;
+  Int32 int2 = 2;
 };
 
 }

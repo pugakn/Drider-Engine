@@ -8,6 +8,7 @@
 #include <dr_export_script.h>
 
 #include <iostream>
+#include <vector>
 
 namespace driderSDK {
 
@@ -15,6 +16,7 @@ class Time;
 
 void stringPrint_g(asIScriptGeneric* gen);
 
+class ContextManager;
 /**
 *  Script engine class.
 *
@@ -53,7 +55,13 @@ class DR_SCRIPT_EXPORT ScriptEngine : public Module<ScriptEngine>
 	*/
 	Int8 
 	createEngine();
-
+  
+  /**
+  * Configurate Engine
+  */
+  Int8
+  configurateEngine(ContextManager *ctx);
+  
 	/**
 	* Open the script and adds it to the module.
 	*
@@ -62,14 +70,15 @@ class DR_SCRIPT_EXPORT ScriptEngine : public Module<ScriptEngine>
 	*/
 	Int8
 	addScript(const TString& scriptName,
-            const TString& script);
+            const TString& script,
+            const TString& module);
 
 	/**
 	* Compiles the script.
 	*
 	*/
-	Int8
-	compileScript();
+	/*Int8
+	compileScript();*/
 
 	/**
 	* Create the context and sets the LineCallback function.
@@ -135,6 +144,7 @@ class DR_SCRIPT_EXPORT ScriptEngine : public Module<ScriptEngine>
 	unsigned long timeout = 5000;
 	
   asIScriptContext* m_scriptContext;
+  std::vector<asIScriptModule*> m_scriptModules;
 
  protected:
   void
@@ -142,11 +152,10 @@ class DR_SCRIPT_EXPORT ScriptEngine : public Module<ScriptEngine>
 
   void
   onShutDown() override {}
-
+	
  private:
 	//asIScriptEngine* m_scriptEngine;
 	asIScriptFunction* m_scriptFunction;
-	asIScriptModule* m_scriptModule;
 };
 
 }
