@@ -130,8 +130,13 @@ void
 OctreeNode::decomposeFace(OctreeNode& node, 
                           Face & face, 
                           std::vector<Plane>& planes) {
+
   Face temp = face;
-  
+  if (face.vertices[0].position.x == 11.4938421f
+    && face.vertices[0].position.y == 2.29529929f
+    && face.vertices[0].position.z == 3.08928323f) {
+    temp = face;
+  }
   temp.vertices.push_back(temp.vertices[0]);
   temp.vertices.push_back(temp.vertices[1]);
   temp.indices.push_back(temp.indices[0]);
@@ -175,8 +180,8 @@ OctreeNode::decomposeFace(OctreeNode& node,
                 flag[j - 1] = true;
                 final.vertices[j] = newVertex;
                 std::vector<UInt32>* meshes = &m_octree->verticesInGameObjects[face.gameObject];
-                final.indices[j] = (*meshes)[face.mesh];
-                (*meshes)[face.mesh]++;
+                //final.indices[j] = (*meshes)[face.mesh];
+                //(*meshes)[face.mesh]++;
               }
               else {
                 break;
@@ -187,8 +192,9 @@ OctreeNode::decomposeFace(OctreeNode& node,
           if (counter == 2) {
             child->objectsToReview.push(final);
 
+            Face newFace = face;
+            newFace.mesh = 1234;
             if (flag[0] && flag[1]) {
-              Face newFace = face;
               newFace.vertices[0] = final.vertices[1];
               newFace.indices[0] = final.indices[1];
               newFace.vertices[1] = temp.vertices[i+1];
@@ -203,7 +209,6 @@ OctreeNode::decomposeFace(OctreeNode& node,
               }
               else
               {
-
                 node.objectsToReview.push(newFace);
               }
               //push
@@ -224,7 +229,6 @@ OctreeNode::decomposeFace(OctreeNode& node,
               }
             }
             else if (flag[0]) {
-              Face newFace = face;
               newFace.vertices[0] = final.vertices[1];
               newFace.indices[0] = final.indices[1];
               newFace.vertices[1] = temp.vertices[i + 1];
@@ -245,7 +249,6 @@ OctreeNode::decomposeFace(OctreeNode& node,
             }
             else if (flag[1]) 
             {
-              Face newFace = face;
               newFace.vertices[0] = final.vertices[1];
               newFace.indices[0] = final.indices[1];
               newFace.vertices[1] = temp.vertices[i + 2];
@@ -263,6 +266,10 @@ OctreeNode::decomposeFace(OctreeNode& node,
 
                 node.objectsToReview.push(newFace);
               }
+            }
+            if (newFace.vertices[1].position.y == 194.871567f)
+            {
+              newFace.mesh = 1234;
             }
             break;
           }
@@ -291,10 +298,11 @@ OctreeNode::findIntersectVertex(Vertex *origin,
   float distance;
   float minDistance;
   bool flag = false;
+  
   for (Int32 i = 0; i < planes.size(); i++) {
     if (ray.intersects(planes[i], &distance)) {
       if (!flag) {
-        if (distance > 0) {
+        if (distance > Math::EPSILON) {
           flag = true;
           minDistance = distance;
         }

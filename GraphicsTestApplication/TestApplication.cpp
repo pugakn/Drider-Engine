@@ -526,7 +526,7 @@ TestApplication::initSceneGraph() {
   }
 
   for (Int32 i = 0; i < 1; ++i) {
-    Vector3D pos(0,0,0);
+    Vector3D pos(0,50,0);
     TString aaa = StringUtils::toTString(i);
 
     auto mod = dt(mt);
@@ -535,7 +535,7 @@ TestApplication::initSceneGraph() {
       _T("Croc.X"),
       pos);
     n->setStatic(true);
-    float sc = static_cast<float>(1);
+    float sc = static_cast<float>(2);
     n->getTransform().scale({ sc,sc,sc });
   }
 }
