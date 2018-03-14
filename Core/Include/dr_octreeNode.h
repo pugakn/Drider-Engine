@@ -1,6 +1,6 @@
 #pragma once
 #include "dr_octree.h"
-
+#include <dr_plane.h>
 
 namespace driderSDK {
 
@@ -9,6 +9,11 @@ class Octree;
 class DR_CORE_EXPORT OctreeNode
 {
  public:
+  enum FACESTATES {
+    IN,
+    OUT,
+    INTERSECTS
+  };
   /**
   * Default constructor
   */
@@ -38,7 +43,26 @@ class DR_CORE_EXPORT OctreeNode
   * It generates the octree 
   */
   void
-  buildTree();
+  buildTree(OctreeNode& node);
+
+  void
+  createChilds(OctreeNode& node);
+
+  /**
+  *
+  */
+  FACESTATES
+  checkFaceAgainstAABB(Face& face, AABB &boundingArea);
+
+  void
+  decomposeFace(OctreeNode& node, Face &face, std::vector<Plane>& planes);
+
+  bool
+  findIntersectVertex(Vertex *origin,
+                      Vertex *end,
+                      std::vector<Plane>& planes,
+                      Vertex &newVertex,
+                      AABB &aabb);
 
   std::queue<Face> objectsToReview;
 

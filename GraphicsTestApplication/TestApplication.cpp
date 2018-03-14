@@ -428,6 +428,8 @@ TestApplication::initResources() {
   ResourceManager::loadResource(_T("Croc.X"));
 
   ResourceManager::loadResource(_T("Cube.fbx"));
+  ResourceManager::loadResource(_T("Unidad_1m.fbx"));
+
 
   ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
 
@@ -453,23 +455,6 @@ TestApplication::initSceneGraph() {
 
     node->createComponent<AABBCollider>(model->aabb);
 
-    if (!model->animationsNames.empty()) {
-      
-      auto animName = model->animationsNames[0];
-      
-      auto animation = ResourceManager::getReferenceT<Animation>(animName);
-
-      auto skel = ResourceManager::getReferenceT<Skeleton>(model->skeletonName);
-
-      auto anim = node->createComponent<AnimatorComponent>();
-
-      anim->setSkeleton(skel);
-
-      anim->addAnimation(animation, animName);
-
-      anim->setCurrentAnimation(animName);
-
-    }
       
     node->getTransform().setPosition(pos);
 
@@ -539,6 +524,20 @@ TestApplication::initSceneGraph() {
     auto an = pp->getComponent<AnimatorComponent>();
     an->setTime(time(mt));
   }
+
+  for (Int32 i = 0; i < 1; ++i) {
+    Vector3D pos(0,0,0);
+    TString aaa = StringUtils::toTString(i);
+
+    auto mod = dt(mt);
+
+    auto n = createNode(_T("lu") + aaa,
+      _T("Croc.X"),
+      pos);
+    n->setStatic(true);
+    float sc = static_cast<float>(1);
+    n->getTransform().scale({ sc,sc,sc });
+  }
 }
 
 void 
@@ -594,5 +593,4 @@ TestApplication::toggleSkeletonDebug(std::shared_ptr<GameObject> go) {
     toggleSkeletonDebug(child);
   }
 }
-
 }

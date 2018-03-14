@@ -19,16 +19,17 @@ Octree::Octree(GameObject* nodeSceneGraph,
                std::vector<std::shared_ptr<GameObject>>* gameObjects,
                Int32 minFacesArea) {
 
-  m_minFaces = minFacesArea;
+  m_minFaces = 1000;
   m_rootSceneGraph = nodeSceneGraph;
   Int32 counterGameObject = 0;
-  
   m_rootOctree = new OctreeNode(this);
   
   m_maxVertex = Vector3D(0, 0, 0);
   m_minVertex = Vector3D(0, 0, 0);
   for (auto& gameObject : (*gameObjects)) {
-    
+
+    std::vector<UInt32> verticesInMeshes;
+
     auto renderComponent = gameObject->getComponent<RenderComponent>();
     auto model = renderComponent->getModel().lock();
     Matrix4x4 transform = gameObject->getWorldTransform().getMatrix();
@@ -36,6 +37,7 @@ Octree::Octree(GameObject* nodeSceneGraph,
     Int32 counterMesh = 0;
     for (auto& mesh : model->meshes)
     {
+      verticesInMeshes.push_back(mesh.indices.size());
       for (size_t i = 0; i < mesh.indices.size(); i = i + 3)
       {
         Face temp;
@@ -57,6 +59,9 @@ Octree::Octree(GameObject* nodeSceneGraph,
     }
 
     counterGameObject++;
+
+    verticesInGameObjects.push_back(verticesInMeshes);
+
   }
 
   Vector3D size = m_maxVertex - m_minVertex;
@@ -153,7 +158,7 @@ createList(std::vector<Face>* faces) {
 
 void
 Octree::buildTree() {
-  m_rootOctree->buildTree();
+  m_rootOctree->buildTree(*m_rootOctree);
   configNode(m_rootSceneGraph, m_rootOctree);
 }
 

@@ -48,6 +48,7 @@ class TestApplication : public Application
   void initInput();
   void initResources();
   void initSceneGraph();
+  void initOctree();
 
   void printHerarchy(std::shared_ptr<GameObject> obj, const TString& off);
 
