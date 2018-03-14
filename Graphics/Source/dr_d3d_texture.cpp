@@ -23,7 +23,6 @@ D3DTexture::createFromMemory(const Device& device,
   m_descriptor = desc;
   UInt32 flags = 0;
 
-
   D3D11_TEXTURE2D_DESC apiDesc = { 0 };
   apiDesc.Width = desc.width;
   apiDesc.Height = desc.height;
@@ -61,7 +60,7 @@ D3DTexture::createFromMemory(const Device& device,
     dim = D3D11_SRV_DIMENSION_TEXTURE3D;
     break;
   case DR_DIMENSION::kCUBE_MAP:
-    dim = D3D10_SRV_DIMENSION_TEXTURECUBE;
+    dim = D3D11_SRV_DIMENSION_TEXTURECUBE;
     break;
   default:
     break;
@@ -89,7 +88,7 @@ D3DTexture::createFromMemory(const Device& device,
       CreateTexture2D(&apiDesc,
                       buffer != 0 ? &initData : 0,
                       &APITexture);
-  apiDevice->
+  hr = apiDevice->
     D3D11Device->
     CreateShaderResourceView(APITexture,
       &srvDesc,
