@@ -1,6 +1,5 @@
 void main() {
-	hulk maniaaaa brothaaaaaa
-	Print("Im ready depression");
-
+	//Print("Im ready depression");
+	TString a;
 }	 
 
