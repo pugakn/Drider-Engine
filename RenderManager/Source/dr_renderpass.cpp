@@ -29,9 +29,9 @@ RenderPass::recompileShader() {
   shaderSource = StringUtils::toString(file.GetAsString(file.Size()));
   file.Close();
 
-  m_vertexShader = device.createShaderFromMemory(shaderSource.data(),
-                                                 shaderSource.size(),
-                                                 DR_SHADER_TYPE_FLAG::kVertex);
+  m_vertexShader = dr_gfx_unique(device.createShaderFromMemory(shaderSource.data(),
+                                                               shaderSource.size(),
+                                                               DR_SHADER_TYPE_FLAG::kVertex));
 
   shaderSource.clear();
 
@@ -39,14 +39,14 @@ RenderPass::recompileShader() {
   shaderSource = StringUtils::toString(file.GetAsString(file.Size()));
   file.Close();
 
-  m_fragmentShader = device.createShaderFromMemory(shaderSource.data(),
-                                                   shaderSource.size(),
-                                                   DR_SHADER_TYPE_FLAG::kFragment);
+  m_fragmentShader = dr_gfx_unique(device.createShaderFromMemory(shaderSource.data(),
+                                                                 shaderSource.size(),
+                                                                 DR_SHADER_TYPE_FLAG::kFragment));
 
   shaderSource.clear();
 
-  m_inputLayout = device.createInputLayout(m_vertexShader->reflect(),
-                                           *m_vertexShader->m_shaderBytecode);
+  m_inputLayout = dr_gfx_unique(device.createInputLayout(m_vertexShader->reflect(),
+                                                         *m_vertexShader->m_shaderBytecode));
 }
 
 }

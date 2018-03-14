@@ -7,6 +7,7 @@
 #include <dr_render_component.h>
 #include <dr_depth_stencil.h>
 #include <dr_depth_stencil_state.h>
+#include <dr_gfx_memory.h>
 #include "dr_GBuffer1.h"
 #include "dr_GBuffer2.h"
 #include "dr_PostProcessing.h"
@@ -47,24 +48,22 @@ class DR_RENDERMAN_EXPORT RenderMan {
   GBuffer1Pass m_GBuffer1Pass;
   GBuffer1InitData m_GBuffer1InitData;
   GBuffer1DrawData m_GBuffer1DrawData;
-  DepthStencil* m_GBuffer1DSoptions;
+  GFXShared<DepthStencil> m_GBuffer1DSoptions;
 
   GBuffer2Pass m_GBuffer2Pass;
   GBuffer2InitData m_GBuffer2InitData;
   GBuffer2DrawData m_GBuffer2DrawData;
-  DepthStencil* m_GBuffer2DSoptions;
+  GFXShared<DepthStencil> m_GBuffer2DSoptions;
 
   PostProcessingPass m_PostProcessingPass;
   PostProcessingInitData m_PostProcessingInitData;
   PostProcessingDrawData m_PostProcessingDrawData;
-  DepthStencil* m_PostProcessingDSoptions;
+  GFXShared<DepthStencil> m_PostProcessingDSoptions;
 
-  RenderTarget* m_RTGBuffer1; //GBuffer 1: Albedo, Depth/Position, Normal, Emissive
-  RenderTarget* m_RTGBuffer2; //GBuffer 2: Metallic, Roughness, SSAO
+  GFXShared<RenderTarget> m_RTGBuffer1; //GBuffer 1: Albedo, Depth/Position, Normal, Emissive
+  GFXShared<RenderTarget> m_RTGBuffer2; //GBuffer 2: Metallic, Roughness, SSAO
 
-  DrTextureDesc ColorTexDesc;
-  DrTextureDesc PositionTexDesc;
-  DrTextureDesc NormalTexDesc;
+  DrTextureDesc GBufferTexDesc;
 };
 
 }

@@ -92,7 +92,7 @@ void D3DRenderTarget::clear(const DeviceContext & deviceContext, const float col
 
   for (int i = 0; i < RTVs.size(); i++) {
     reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
-      D3D11DeviceContext->ClearRenderTargetView(RTVs[i], rgba);
+      D3D11DeviceContext->ClearRenderTargetView(RTVs[i], color);
   }
 }
 

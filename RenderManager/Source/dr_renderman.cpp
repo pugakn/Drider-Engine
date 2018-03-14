@@ -1,4 +1,5 @@
 #include "dr_renderman.h"
+#include <dr_image_info.h>
 #include <dr_swap_chain.h>
 #include <dr_graphics_driver.h>
 #include <dr_d3d_depth_stencil.h>
@@ -17,23 +18,22 @@ void
 RenderMan::init() {
   Device& dc = GraphicsAPI::getDevice();
 
-  UInt32 screenWidth = 1280;
+  UInt32 screenWidth = 1080;
   UInt32 screenHeight = 720;
 
-  DrTextureDesc PositionDesc;
-  PositionDesc.width = screenWidth;
-  PositionDesc.height = screenHeight;
-  PositionDesc.pitch = screenWidth * 4;
-  PositionDesc.dimension = DR_DIMENSION::k2D;
-  PositionDesc.Format = DR_FORMAT::kR8G8B8A8_UNORM;
-  PositionDesc.mipLevels = 0;
-  PositionDesc.CPUAccessFlags = DR_CPU_ACCESS_FLAG::drRead | DR_CPU_ACCESS_FLAG::drWrite;
-  PositionDesc.genMipMaps = true;
-  PositionDesc.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE |
-                           DR_BIND_FLAGS::RENDER_TARGET;
+  GBufferTexDesc.width = screenWidth;
+  GBufferTexDesc.height = screenHeight;
+  GBufferTexDesc.pitch = screenWidth * 4;
+  GBufferTexDesc.dimension = DR_DIMENSION::k2D;
+  GBufferTexDesc.Format = DR_FORMAT::kR8G8B8A8_UNORM;
+  GBufferTexDesc.mipLevels = 0;
+  GBufferTexDesc.CPUAccessFlags = DR_CPU_ACCESS_FLAG::drRead | DR_CPU_ACCESS_FLAG::drWrite;
+  GBufferTexDesc.genMipMaps = true;
+  GBufferTexDesc.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE |
+                             DR_BIND_FLAGS::RENDER_TARGET;
 
-  m_RTGBuffer1 = dc.createRenderTarget(PositionDesc, 4);
-  m_RTGBuffer2 = dc.createRenderTarget(PositionDesc, 3);
+  m_RTGBuffer1 = dr_gfx_shared(dc.createRenderTarget(GBufferTexDesc, 4));
+  m_RTGBuffer2 = dr_gfx_shared(dc.createRenderTarget(GBufferTexDesc, 3));
 
   DrDepthStencilDesc depthTextureDesc;
   depthTextureDesc.bindFlags = DR_BIND_FLAGS::DEPTH_STENCIL | DR_BIND_FLAGS::SHADER_RESOURCE;
@@ -41,10 +41,13 @@ RenderMan::init() {
   depthTextureDesc.height = screenHeight;
   depthTextureDesc.Format = DR_FORMAT::kD24_UNORM_S8_UINT;
 
-  m_GBuffer1DSoptions = dc.createDepthStencil(depthTextureDesc);
-  m_GBuffer2DSoptions = dc.createDepthStencil(depthTextureDesc);
+  m_GBuffer1DSoptions = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
+  m_GBuffer2DSoptions = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
 
   ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
+  ImageInfo cubeMap;
+  cubeMap.textureDimension = DR_DIMENSION::kCUBE_MAP; 
+  ResourceManager::loadResource(_T("grace-new.hdr"), &cubeMap);
 
   m_GBuffer1Pass.init(&m_GBuffer1InitData);
   m_GBuffer2Pass.init(&m_GBuffer2InitData);
@@ -75,6 +78,8 @@ RenderMan::draw() {
   m_GBuffer2DrawData.dsOptions = m_GBuffer2DSoptions;
   m_GBuffer2Pass.draw(&m_GBuffer2DrawData);
 
+  m_PostProcessingDrawData.CameraPosition = mainCam->getPosition();
+  m_PostProcessingDrawData.CameraPosition.w = 1.0f;
   m_PostProcessingDrawData.Gbuffer1RT = m_RTGBuffer1;
   m_PostProcessingDrawData.Gbuffer2RT = m_RTGBuffer2;
   m_PostProcessingPass.draw(&m_PostProcessingDrawData);

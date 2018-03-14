@@ -39,7 +39,7 @@ GBuffer1Pass::init(PassInitData* initData) {
 
   bdesc.type = DR_BUFFER_TYPE::kCONSTANT;
   bdesc.sizeInBytes = sizeof(CBuffer);
-  m_constantBuffer = (ConstantBuffer*)device.createBuffer(bdesc);
+  m_constantBuffer = dr_gfx_unique((ConstantBuffer*)device.createBuffer(bdesc));
 }
 
 void
@@ -85,6 +85,7 @@ GBuffer1Pass::draw(PassDrawData* drawData) {
         }
       }
     }
+
     Matrix4x4 worldTranspose = modelPair.world;
     CB.World = worldTranspose.transpose();
     Matrix4x4 newViewProjection = data->activeCam->getVP();

@@ -199,6 +199,9 @@ class DR_CORE_EXPORT Camera
   float
   getFOV() const;
 
+  Vector3D
+  getPosition() const;
+
   BEGINING_REGISTER(Camera)
   
   //REGISTER_FOO_4P(Camera, move, float, float, float, bool, void)

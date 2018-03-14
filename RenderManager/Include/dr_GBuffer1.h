@@ -16,8 +16,8 @@ struct GBuffer1InitData : PassInitData {
 struct GBuffer1DrawData : PassDrawData {
   std::shared_ptr<Camera> activeCam;
   SceneGraph::QueryResult* models;
-  RenderTarget* OutRt;
-  DepthStencil* dsOptions;
+  GFXShared<RenderTarget> OutRt;
+  GFXShared<DepthStencil> dsOptions;
 };
 
 class GBuffer1Pass : RenderPass {
@@ -62,6 +62,8 @@ class GBuffer1Pass : RenderPass {
   };
 
   CBuffer CB;
+
+  GFXUnique<Texture> cubeMapTex;
 };
 
 }

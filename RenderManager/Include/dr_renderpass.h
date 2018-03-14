@@ -5,6 +5,7 @@
 #include <dr_input_layout.h>
 #include <dr_shader.h>
 #include <dr_render_target.h>
+#include <dr_gfx_memory.h>
 
 namespace driderSDK {
 
@@ -51,11 +52,11 @@ class RenderPass {
   TString m_vsFilename;
   TString m_fsFilename;
 
-  Shader* m_vertexShader;
-  Shader* m_fragmentShader;
+  GFXUnique<Shader> m_vertexShader;
+  GFXUnique<Shader>  m_fragmentShader;
 
-  ConstantBuffer* m_constantBuffer;
-  InputLayout* m_inputLayout;
+  GFXUnique<ConstantBuffer> m_constantBuffer;
+  GFXUnique<InputLayout> m_inputLayout;
 };
 
 }

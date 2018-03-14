@@ -13,8 +13,9 @@ namespace driderSDK {
 struct PostProcessingInitData : PassInitData {};
 
 struct PostProcessingDrawData : PassDrawData {
-  RenderTarget* Gbuffer1RT;
-  RenderTarget* Gbuffer2RT;
+  Vector4D CameraPosition;
+  GFXShared<RenderTarget> Gbuffer1RT;
+  GFXShared<RenderTarget> Gbuffer2RT;
 };
 
 class PostProcessingPass : RenderPass {
@@ -46,7 +47,13 @@ class PostProcessingPass : RenderPass {
   draw(PassDrawData* drawData);
 
  private:
-  SamplerState* m_samplerState;
+  struct CBuffer {
+    Vector4D EyePosition;
+  };
+
+  CBuffer CB;
+
+  GFXUnique<SamplerState> m_samplerState;
 };
 
 }
