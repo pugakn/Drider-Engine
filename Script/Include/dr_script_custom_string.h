@@ -5,7 +5,6 @@ class asIScriptEngine;
 
 namespace driderSDK
 {
-
-	void RegisterTString(asIScriptEngine *engine);
-	void RegisterTStringMethodsNative(asIScriptEngine *engine);
+	void registerTString(asIScriptEngine *engine);
+	void registerTStringMethodsNative(asIScriptEngine *engine);
 }
