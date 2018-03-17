@@ -4,5 +4,5 @@ void Start() {
 }
 
 void Update() {
-	Print("Update script2: \n");
+	//Print("Update script2: \n");
 }

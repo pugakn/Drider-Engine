@@ -8,7 +8,7 @@ Variables:
 
 - 2,2 -
     0  10 *    SUSPEND
-    1  10 *    PGA      214985192
+    1  10 *    PGA      211825376
     3  11 *    PSF      v7
     4  12 *    CALLSYS  20           (string::string(const string&in))
                ObjInfo  v7, 1
@@ -19,11 +19,11 @@ Variables:
 - 3,2 -
                ObjInfo  v7, 0
    12  10 *    SUSPEND
-   13  10 *    CpyGtoV4 v8, 16906900
+   13  10 *    CpyGtoV4 v8, 7337868
    15  10 *    iTOi64   v10, v8
    17  10 *    PshV8    v10
    18  12 *    PSF      v7
-   19  13 *    PGA      214984752
+   19  13 *    PGA      211826344
    21  14 *    CALLSYS  45           (string string::opAdd_r(int64) const)
                ObjInfo  v7, 1
    23  10 *    PSF      v7

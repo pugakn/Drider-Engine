@@ -1,13 +1,14 @@
 #pragma once
-#include <dr_util_prerequisites.h>
-#include <dr_gameComponent.h>
-#include <dr_script_engine.h>
+#include "dr_core_prerequisites.h"
+#include "dr_gameComponent.h"
+#include <dr_keyboard.h>
 
 namespace driderSDK {
 
+class ScriptEnine;
 class ContextManager;
 
-class ScriptComponent : public GameComponent {
+class DR_CORE_EXPORT ScriptComponent : public GameComponent {
   public:
     using GameComponent::GameComponent;
     
@@ -45,6 +46,12 @@ class ScriptComponent : public GameComponent {
 
     void 
     setScriptLocalProperties();
+
+    void
+    onKeyDown(KEY_CODE::E key);
+
+    void
+    compileScript();
 
   private:
     TString m_scriptName;

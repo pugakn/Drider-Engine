@@ -5,18 +5,14 @@
 #include "dr_script_engine.h"
 #include "scriptstdstring.h"
 //#include "dr_script_custom_string.h"
-
-#include "dr_object.h"
-#include "dr_context_manager.h"
+#include <vector>
+#include <dr_context_manager.h>
 
 
 namespace driderSDK {
 
-	unsigned long g_timeout;
+unsigned long g_timeout;
 
-ObjectAS *Ref_Factory() {
-  return new ObjectAS();
-}
 
 void stringPrint_g(asIScriptGeneric* gen) {
 	String *str = (String*)gen->GetArgAddress(0);
@@ -83,10 +79,9 @@ ScriptEngine::addScript(const TString& scriptName,
                         const TString& module) {
 
   asIScriptModule *mod = m_scriptEngine->GetModule(StringUtils::toString(module).c_str(),
-                                                   asGM_ALWAYS_CREATE);
-  m_scriptModules.push_back(mod);
+                                                   asGM_CREATE_IF_NOT_EXISTS);
 
-	Int8 result = m_scriptModules.back()->AddScriptSection(StringUtils::toString(scriptName).c_str(),
+	Int8 result = mod->AddScriptSection(StringUtils::toString(scriptName).c_str(),
                                                          StringUtils::toString(script).c_str(),
                                                          script.length());
 
@@ -96,13 +91,27 @@ ScriptEngine::addScript(const TString& scriptName,
 		return -1;
 	}
 
-  result = m_scriptModules.back()->Build();
+  result = mod->Build();
   if (result < 0) {
     addScriptLog(_T("Build module failed") + module, asMSGTYPE_ERROR);
     return -1;
   }
 
 	return result;
+}
+
+Int8
+ScriptEngine::compile(TString module) {
+  asIScriptModule *mod = m_scriptEngine->GetModule(StringUtils::toString(module).c_str(),
+                                                   asGM_CREATE_IF_NOT_EXISTS);
+
+  Int8 result = mod->Build();
+
+  /*FileSystem fileSystem;
+  File file;
+  fileSystem.CreateAndOpen(module, 
+                           file);*/
+  return result;
 }
 
 /*Int8

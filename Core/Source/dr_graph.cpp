@@ -14,6 +14,8 @@
 #include "dr_root_node.h"
 #include "dr_octree.h"
 
+#include "dr_script_component.h"
+
 namespace driderSDK {
 
 SceneGraph::SceneGraph() {}
@@ -79,6 +81,13 @@ SceneGraph::draw() {
     instance().m_octree->render();
   }
   //instance().m_mutex.unlock();
+}
+
+void
+SceneGraph::compileScripts(SharedGameObject go) {
+  if(auto component = go->getComponent<ScriptComponent>()) {
+    go->getComponent<ScriptComponent>()->compileScript();
+  }
 }
 
 SceneGraph::QueryResult

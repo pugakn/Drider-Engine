@@ -39,18 +39,9 @@
 #include "AnimationTechnique.h"
 
 #include <dr_script_core.h>
-#include "ScriptComponent.h"
-#include "OneRef.h"
+#include <dr_script_component.h>
 
 namespace driderSDK {
-
-namespace KeyCode {
-  enum E {
-    ONE,
-    TWO,
-    THREE
-  };
-}
 
 TestApplication::TestApplication() {}
 
@@ -428,7 +419,9 @@ TestApplication::initInput() {
                         bindTSD);
 
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
-                         KEY_CODE::kJ, toggleWireframe);
+                        KEY_CODE::kJ, toggleWireframe);
+                    
+                        
     
   auto keyPressed = [&]() {
     return true;
@@ -436,6 +429,7 @@ TestApplication::initInput() {
   
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::k0, keyPressed);
+
 }
 
 void 

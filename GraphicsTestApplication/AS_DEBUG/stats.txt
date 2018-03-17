@@ -1,23 +1,19 @@
 
 Total count
-PshGPtr    : 4069
-PshC4      : 28810
-PshV4      : 8201
-PSF        : 20560
-RET        : 4133
-CALLSYS    : 53548
-SUSPEND    : 41265
-GETREF     : 4070
-CpyVtoR4   : 1
-CpyRtoV4   : 8265
-PGA        : 4133
-VAR        : 4070
-ADDf       : 4132
-MULIf      : 6048
-JLowZ      : 20661
+PSF        : 12
+RET        : 811
+CALLSYS    : 12
+SUSPEND    : 815
+CpyGtoV4   : 2
+PGA        : 4
+iTOi64     : 2
+PshV8      : 2
 
 Never executed
 PopPtr    
+PshGPtr   
+PshC4     
+PshV4     
 SwapPtr   
 NOT       
 PshG4     
@@ -82,6 +78,7 @@ GETOBJ
 REFCPY    
 CHKREF    
 GETOBJREF 
+GETREF    
 PshNull   
 ClrVPtr   
 OBJTYPE   
@@ -91,10 +88,11 @@ SetV8
 ADDSi     
 CpyVtoV4  
 CpyVtoV8  
+CpyVtoR4  
 CpyVtoR8  
 CpyVtoG4  
+CpyRtoV4  
 CpyRtoV8  
-CpyGtoV4  
 WRTV1     
 WRTV2     
 WRTV4     
@@ -106,6 +104,7 @@ RDR8
 LDG       
 LDV       
 CmpPtr    
+VAR       
 iTOf      
 fTOi      
 uTOf      
@@ -125,6 +124,7 @@ SUBi
 MULi      
 DIVi      
 MODi      
+ADDf      
 SUBf      
 MULf      
 DIVf      
@@ -139,6 +139,7 @@ SUBIi
 MULIi     
 ADDIf     
 SUBIf     
+MULIf     
 SetG4     
 ChkRefS   
 ChkNullV  
@@ -150,7 +151,6 @@ SetV2
 Cast      
 i64TOi    
 uTOi64    
-iTOi64    
 fTOi64    
 dTOi64    
 fTOu64    
@@ -182,7 +182,6 @@ JitEntry
 CallPtr   
 FuncPtr   
 LoadThisR 
-PshV8     
 DIVu      
 MODu      
 DIVu64    
@@ -190,6 +189,7 @@ MODu64
 LoadRObjR 
 LoadVObjR 
 RefCpyV   
+JLowZ     
 JLowNZ    
 AllocMem  
 SetListSiz
@@ -205,44 +205,17 @@ POWu64
 Thiscall1 
 
 Sequences
-PshGPtr   , GETREF     : 4069
-PshC4     , PshC4      : 4077
-PshC4     , PshV4      : 1489
-PshC4     , PSF        : 1521
-PshC4     , CALLSYS    : 20660
-PshC4     , MULIf      : 1063
-PshV4     , PshC4      : 1517
-PshV4     , PSF        : 6684
-PSF       , PSF        : 5
-PSF       , CALLSYS    : 16422
-PSF       , GETREF     : 1
-PSF       , PGA        : 4132
-RET       , SUSPEND    : 4132
-CALLSYS   , PSF        : 12344
-CALLSYS   , RET        : 1
-CALLSYS   , SUSPEND    : 8207
-CALLSYS   , CpyVtoR4   : 1
-CALLSYS   , CpyRtoV4   : 8265
-CALLSYS   , VAR        : 4070
-CALLSYS   , JLowZ      : 20660
-SUSPEND   , PshC4      : 23216
-SUSPEND   , PshV4      : 4796
-SUSPEND   , PSF        : 3
-SUSPEND   , RET        : 4132
-SUSPEND   , CALLSYS    : 8264
-SUSPEND   , PGA        : 1
-SUSPEND   , MULIf      : 853
-GETREF    , CALLSYS    : 4070
-CpyVtoR4  , JLowZ      : 1
-CpyRtoV4  , PSF        : 1
-CpyRtoV4  , ADDf       : 4132
-CpyRtoV4  , MULIf      : 4132
-PGA       , PSF        : 1
-PGA       , CALLSYS    : 4132
-VAR       , PshGPtr    : 4069
-VAR       , PSF        : 1
-ADDf      , SUSPEND    : 4132
-MULIf     , PshV4      : 1916
-MULIf     , SUSPEND    : 4132
-JLowZ     , SUSPEND    : 20661
+PSF       , CALLSYS    : 10
+PSF       , PGA        : 2
+RET       , SUSPEND    : 810
+CALLSYS   , PSF        : 8
+CALLSYS   , SUSPEND    : 4
+SUSPEND   , RET        : 811
+SUSPEND   , CpyGtoV4   : 2
+SUSPEND   , PGA        : 2
+CpyGtoV4  , iTOi64     : 2
+PGA       , PSF        : 2
+PGA       , CALLSYS    : 2
+iTOi64    , PshV8      : 2
+PshV8     , PSF        : 2
 LABEL     , SUSPEND    : 1

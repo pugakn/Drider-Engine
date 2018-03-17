@@ -1,5 +1,8 @@
-#include "ScriptComponent.h"
-#include <dr_context_manager.h>
+#include "dr_script_component.h"
+#include <functional>
+
+#include <..\..\Script\Include\dr_context_manager.h>
+#include <..\..\Script\Include\dr_script_engine.h>
 
 namespace driderSDK {
 
@@ -16,6 +19,9 @@ ScriptComponent::onCreate() {
     ContextManager::startUp();
   }
   ctxMag = ContextManager::instancePtr();
+
+  Keyboard::addAnyKeyCallback(KEYBOARD_EVENT::kKeyPressed,
+                              std::bind(&ScriptComponent::onKeyDown, this, std::placeholders::_1));
 }
 
 void
@@ -73,6 +79,25 @@ ScriptComponent::start() {
                      "void Start()"));
 
   Int8 result = ctxMag->executeScripts();
+}
+
+void
+ScriptComponent::onKeyDown(KEY_CODE::E key) {
+  asIScriptContext *ctx = ctxMag->addContext(scriptEngine->m_scriptEngine,
+                                             scriptEngine->m_scriptEngine->GetModule(
+                                             StringUtils::toString(m_module).c_str())->GetFunctionByDecl(
+                                               "void onKeyDown(KeyCode)"));
+  if(ctx != 0) {
+    Int8 result;
+    result = ctx->SetArgDWord(0, (Int32)key);
+    result = ctxMag->executeScripts();
+  }
+}
+
+
+void
+ScriptComponent::compileScript() {
+  scriptEngine->compile(m_module);
 }
 
 void

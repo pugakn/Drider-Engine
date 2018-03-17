@@ -78,9 +78,6 @@
     <ClInclude Include="Include\AnimationTechnique.h">
       <Filter>Archivos de encabezado\Techniques</Filter>
     </ClInclude>
-    <ClInclude Include="Include\ScriptComponent.h">
-      <Filter>Archivos de encabezado\Components</Filter>
-    </ClInclude>
     <ClInclude Include="Include\OneRef.h">
       <Filter>Archivos de encabezado\Script</Filter>
     </ClInclude>
@@ -115,9 +112,6 @@
     </ClCompile>
     <ClCompile Include="Source\AnimationTechnique.cpp">
       <Filter>Archivos de origen\Technique</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\ScriptComponent.cpp">
-      <Filter>Archivos de origen\Components</Filter>
     </ClCompile>
     <ClCompile Include="Source\OneRef.cpp">
       <Filter>Archivos de origen\Script</Filter>

@@ -13,10 +13,10 @@
 namespace driderSDK {
 
 class Time;
+class ContextManager;
 
 void stringPrint_g(asIScriptGeneric* gen);
 
-class ContextManager;
 /**
 *  Script engine class.
 *
@@ -72,6 +72,9 @@ class DR_SCRIPT_EXPORT ScriptEngine : public Module<ScriptEngine>
 	addScript(const TString& scriptName,
             const TString& script,
             const TString& module);
+  
+  Int8
+  compile(TString module);
 
 	/**
 	* Compiles the script.

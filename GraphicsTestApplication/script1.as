@@ -4,5 +4,13 @@ void Start() {
 }
 
 void Update() {
-	Print("Update script1: \n");
+	//Print("Update script1: \n");
+	/*if(isKeyDown(k0)) {
+		Print("Update script1: \n");
+	}*/
+}
+
+void onKeyDown(KeyCode key) {
+	if(key == k0)
+		Print("onKeyDown\n");
 }
