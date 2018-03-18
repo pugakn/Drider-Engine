@@ -2,6 +2,7 @@
 #include <dr_application.h>
 #include <dr_renderman.h>
 #include <dr_light.h>
+#include <dr_material.h>
 
 namespace driderSDK {
 
@@ -40,6 +41,9 @@ class RenderManApp : public Application
 
   RenderMan m_renderMan;
   SceneGraph::SharedGameObject model;
+  std::weak_ptr<Material> modelMat;
+  SceneGraph::SharedGameObject floor;
+  std::weak_ptr<Material> floorMat;
 
   Vector3D modelMovement;
   std::array<Light, 128> Lights;

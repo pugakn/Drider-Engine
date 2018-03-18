@@ -21,7 +21,7 @@ struct PostProcessingDrawData : PassDrawData {
   std::array<Light, 128> *Lights;
 };
 
-class PostProcessingPass : RenderPass {
+class PostProcessingPass : public RenderPass {
  public:
   /*
   TEST::testName

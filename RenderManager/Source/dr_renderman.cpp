@@ -103,4 +103,11 @@ void
 RenderMan::exit() {
 }
 
+void
+RenderMan::recompile() {
+  m_GBuffer1Pass.recompileShader();
+  m_GBuffer2Pass.recompileShader();
+  m_PostProcessingPass.recompileShader();
+}
+
 }

@@ -15,6 +15,7 @@
 #include <dr_render_component.h>
 #include <dr_aabb_collider.h>
 #include <dr_degree.h>
+#include <dr_texture_core.h>
 
 namespace driderSDK {
 
@@ -82,7 +83,7 @@ RenderManApp::postInit() {
   m_renderMan.init();
 
   Degree grados(2.8125);
-  Vector4D LightPosition(0, 50, -50, 1);
+  Vector4D LightPosition(0, 50, -100, 1);
   Matrix4x4 rotationMatrix(driderSDK::Math::FORCE_INIT::kIdentity);
   rotationMatrix.RotationY(grados.toRadian());
 
@@ -115,11 +116,73 @@ RenderManApp::postInit() {
   loadResources();
 
   model = SceneGraph::createObject(_T("Checker"));
-  auto crocModel = ResourceManager::getReferenceT<Model>(_T("Croc.X"));
-  if (crocModel) {
-    model->createComponent<RenderComponent>(crocModel);
-    model->createComponent<AABBCollider>(crocModel->aabb);
+  auto ptrModel = ResourceManager::getReferenceT<Model>(_T("model.dae"));
+  if (ptrModel) {
+    model->createComponent<RenderComponent>(ptrModel);
+    model->createComponent<AABBCollider>(ptrModel->aabb);
     model->getTransform().setPosition(Vector3D(0.0f, 0.0f, 0.0f));
+    model->getTransform().setScale(Vector3D(100.0f, 100.0f, 100.0f));
+
+    auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("default_albedo.tga"));
+    auto emissiveTex = ResourceManager::getReferenceT<TextureCore>(_T("default_emissive.tga"));
+    auto metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("default_metallic.tga"));
+    auto normalTex = ResourceManager::getReferenceT<TextureCore>(_T("default_normal.tga"));
+    auto roughnessTex = ResourceManager::getReferenceT<TextureCore>(_T("default_roughness.tga"));
+
+    auto rComp = model->getComponent<RenderComponent>();
+    auto mMat = rComp->getMeshes().front().material.lock();
+    mMat->setTexture(albedoTex, _T("Albedo"));
+    mMat->setTexture(normalTex, _T("Normal"));
+    mMat->setTexture(emissiveTex, _T("Emisivity"));
+    mMat->setTexture(metallicTex, _T("Metallic"));
+    mMat->setTexture(roughnessTex, _T("Roughness"));
+  }
+
+
+  floor = SceneGraph::createObject(_T("Floor"));
+  auto ptrFloor = ResourceManager::getReferenceT<Model>(_T("plane.fbx"));
+  if (ptrFloor) {
+    floor->createComponent<RenderComponent>(ptrFloor);
+    floor->createComponent<AABBCollider>(ptrFloor->aabb);
+    floor->getTransform().setPosition(Vector3D(0.0f, 0.0f, 0.0f));
+    floor->getTransform().setScale(Vector3D(2.0f, 2.0f, 2.0f));
+
+    auto renderComp = floor->getComponent<RenderComponent>();
+    //floorMat
+    renderComp->getMeshes().front().material = floorMat;
+    auto mMat = renderComp->getMeshes().front().material.lock();
+
+    auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Diffuse.tga"));
+    auto normalTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Normal.tga"));
+    auto emissiveTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Emissive.tga"));
+    auto metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Metallic.tga"));
+    auto roughnessTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Roughness.tga"));
+    mMat->addProperty(_T("Albedo"), PROPERTY_TYPE::kVec4);
+    mMat->addProperty(_T("Albedo"), PROPERTY_TYPE::kVec4);
+    mMat->addProperty(_T("Emisivity"), PROPERTY_TYPE::kVec4);
+    mMat->addProperty(_T("Metallic"), PROPERTY_TYPE::kVec4);
+    mMat->addProperty(_T("Roughness"), PROPERTY_TYPE::kVec4);
+    mMat->setTexture(albedoTex, _T("Albedo"));
+    mMat->setTexture(normalTex, _T("Normal"));
+    mMat->setTexture(emissiveTex, _T("Emisivity"));
+    mMat->setTexture(metallicTex, _T("Metallic"));
+    mMat->setTexture(roughnessTex, _T("Roughness"));
+
+    auto displacementTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Displacement.tga"));
+    auto opacityTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Opacity.tga"));
+    auto specularTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Specular.tga"));
+    auto sscolorTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_SSColor.tga"));
+    auto thicknessTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Thickness.tga"));
+    mMat->addProperty(_T("Displacement"), PROPERTY_TYPE::kVec4);
+    mMat->addProperty(_T("Opacity"), PROPERTY_TYPE::kVec4);
+    mMat->addProperty(_T("Specular"), PROPERTY_TYPE::kVec4);
+    mMat->addProperty(_T("SSColor"), PROPERTY_TYPE::kVec4);
+    mMat->addProperty(_T("Thickness"), PROPERTY_TYPE::kVec4);
+    mMat->setTexture(displacementTex, _T("Displacement"));
+    mMat->setTexture(opacityTex, _T("Opacity"));
+    mMat->setTexture(specularTex, _T("Specular"));
+    mMat->setTexture(sscolorTex, _T("SSColor"));
+    mMat->setTexture(thicknessTex, _T("Thickness"));
   }
 
   initInputCallbacks();
@@ -130,6 +193,10 @@ RenderManApp::postUpdate() {
   Time::update();
   InputManager::update();
   SceneGraph::update();
+
+  if (Keyboard::isKeyDown(KEY_CODE::kP)) {
+    m_renderMan.recompile();
+  }
 
   const float fMovementSpeed = 50.0f;
   if (Keyboard::isKeyDown(KEY_CODE::kA)) {
@@ -203,7 +270,28 @@ RenderManApp::MoveModel(Vector3D direction) {
 
 void
 RenderManApp::loadResources() {
-  ResourceManager::loadResource(_T("Croc.X"));
+  //ResourceManager::loadResource(_T("Checker.fbx"));
+  //ResourceManager::loadResource(_T("Sphere.fbx"));
+  ResourceManager::loadResource(_T("plane.fbx"));
+  //ResourceManager::loadResource(_T("Croc.X"));
+  ResourceManager::loadResource(_T("model.dae"));
+
+  ResourceManager::loadResource(_T("default_albedo.tga"));
+  ResourceManager::loadResource(_T("default_emissive.tga"));
+  ResourceManager::loadResource(_T("default_metallic.tga"));
+  ResourceManager::loadResource(_T("default_normal.tga"));
+  ResourceManager::loadResource(_T("default_roughness.tga"));
+
+  ResourceManager::loadResource(_T("256_Checker_Diffuse.tga"));
+  ResourceManager::loadResource(_T("256_Checker_Displacement.tga"));
+  ResourceManager::loadResource(_T("256_Checker_Emissive.tga"));
+  ResourceManager::loadResource(_T("256_Checker_Metallic.tga"));
+  ResourceManager::loadResource(_T("256_Checker_Normal.tga"));
+  ResourceManager::loadResource(_T("256_Checker_Opacity.tga"));
+  ResourceManager::loadResource(_T("256_Checker_Roughness.tga"));
+  ResourceManager::loadResource(_T("256_Checker_Specular.tga"));
+  ResourceManager::loadResource(_T("256_Checker_SSColor.tga"));
+  ResourceManager::loadResource(_T("256_Checker_Thickness.tga"));
 }
 
 }

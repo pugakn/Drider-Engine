@@ -42,7 +42,11 @@ PostProcessingPass::init(PassInitData* initData) {
   m_constantBuffer = dr_gfx_unique((ConstantBuffer*)device.createBuffer(bdesc));
 
   DrSampleDesc SSdesc;
-  SSdesc.Filter = DR_TEXTURE_FILTER::kMIN_MAG_MIP_POINT;
+  SSdesc.Filter = DR_TEXTURE_FILTER::kMAXIMUM_ANISOTROPIC;
+  SSdesc.maxAnisotropy = 17;
+  SSdesc.addressU = DR_TEXTURE_ADDRESS::kWrap;
+  SSdesc.addressV = DR_TEXTURE_ADDRESS::kWrap;
+  SSdesc.addressW = DR_TEXTURE_ADDRESS::kWrap;
   m_samplerState = dr_gfx_unique(device.createSamplerState(SSdesc));
 }
 

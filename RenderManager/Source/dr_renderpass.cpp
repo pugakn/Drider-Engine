@@ -15,9 +15,11 @@ void
 RenderPass::recompileShader() {
   if (m_vertexShader != nullptr) {
     m_vertexShader->release();
+    m_vertexShader.release();
   }
   if (m_fragmentShader != nullptr) {
     m_fragmentShader->release();
+    m_fragmentShader.release();
   }
 
   Device& device = GraphicsAPI::getDevice();

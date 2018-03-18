@@ -54,6 +54,7 @@ CodecTexture::isCompatible(TString extension) {
   //TString extension = FileSystem::getFileExtension(resourceName);
   if (extension == _T("png") || 
       extension == _T("jpg") || 
+      extension == _T("jpeg") || 
       extension == _T("tga") ||
       extension == _T("hdr")) {
     return true;

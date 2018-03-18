@@ -104,9 +104,6 @@ float4 FS(PS_INPUT input) : SV_TARGET {
   
   float3 albedo    = AlbedoTex.Sample(SS, uv).xyz;
   float3 position  = PositionTex.Sample(SS, uv).xyz;
-  if (PositionTex.Sample(SS, uv).w == 0.0f){
-    discard;
-  }
   float3 normal    = NormalTex.Sample(SS, uv).xyz;
   float3 emissive  = EmissiveTex.Sample(SS, uv).xyz;
   float  metallic  = MetallicTex.Sample(SS, uv).x;
@@ -131,7 +128,6 @@ float4 FS(PS_INPUT input) : SV_TARGET {
   float  LdotH;
 
   ///////////////////////////////////////
-  roughness = 1.0f;
   float alpha = max(0.01f, roughness * roughness);
   
   //Diffuse light acumulation
@@ -139,11 +135,10 @@ float4 FS(PS_INPUT input) : SV_TARGET {
   float3 SpecAcc;;
   
   SSAO = 1.0f;
-  emissive = float3(0.0f, 0.0f, 0.0f);
   ///////////////////////////////////////
 
   int maxLights = min(activeLights, 128);
-  for (int i = 0; i < 128; i++) {
+  for (int i = 0; i < 1; i++) {
     LightPosition = LightPositions[i].xyz;
 
     LightDir = normalize(LightPosition - position);

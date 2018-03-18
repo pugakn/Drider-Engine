@@ -45,6 +45,11 @@ class DR_RENDERMAN_EXPORT RenderMan {
   void
   exit();
 
+  /*
+  */
+  void
+  recompile();
+
   std::array<Light, 128> *lights;
  protected:
 

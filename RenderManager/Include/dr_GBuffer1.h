@@ -20,7 +20,7 @@ struct GBuffer1DrawData : PassDrawData {
   GFXShared<DepthStencil> dsOptions;
 };
 
-class GBuffer1Pass : RenderPass {
+class GBuffer1Pass : public RenderPass {
  public:
   /*
   TEST::testName

@@ -33,7 +33,7 @@ PS_OUTPUT FS(PS_INPUT input) {
 	float4 position	= input.RealPos;
 
 	float3 TexNormal = float3(0.0f, 0.0f, 1.0f);
-	//TexNormal = normalize(2.0f * NormalTex.Sample(SS, uv).xyz - 1.0f).xyz;
+	TexNormal = normalize(2.0f * NormalTex.Sample(SS, uv).xyz - 1.0f).xyz;
   float3 normal     = normalize(mul(TexNormal, input.TBN));
 
 	float4 emissive	= EmissiveTex.Sample(SS, uv); 
