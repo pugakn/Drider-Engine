@@ -152,6 +152,19 @@ class DR_MATH_EXPORT Quaternion
   Quaternion 
   slerp(const Quaternion& end, float factor) const;
 
+  /**
+  *
+  */
+  Vector3D
+  getDirection();
+
+  /**
+  *
+  */
+
+  Vector3D
+  getEulerAngles();
+
 	/**
 	* TEST::pointer
 	* Gets a pointer to the first element of the quaternion.

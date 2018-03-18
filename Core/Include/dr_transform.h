@@ -43,11 +43,10 @@ class DR_CORE_EXPORT Transform
   const Vector3D& 
   getPosition() const;
 
-  const Vector3D&
-  getEulerAngles() const;
+  /*const Vector3D&
+  getEulerAngles() const;*/
 
-  const Vector3D&
-  getDirection() const;
+  
   /**
   * Gets the rotation matrix.
   */
@@ -61,10 +60,10 @@ class DR_CORE_EXPORT Transform
   * Gets the current facing direction.
   *
   * @return
-  *   Vector with the direction of the camera.
+  *   Vector with the direction of the transform.
   */
-  /*Vector3D
-  getDirection() const;*/
+  const Vector3D&
+  getDirection() const;
 
   /**
   * Sets the value of the specified position component.

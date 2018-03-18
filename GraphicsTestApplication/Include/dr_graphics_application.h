@@ -1,6 +1,5 @@
 
 #include <dr_application.h>
-#include <dr_keyboard.h>
 #include <dr_memory.h>
 #include <dr_util_prerequisites.h>
 #include <dr_timer.h>
@@ -32,6 +31,9 @@ private:
 
   virtual void 
   postDestroy() override;
+
+  void
+  recompileShaders();
 
   void
   initModules();
@@ -67,16 +69,27 @@ private:
   void
   toggleWireframe();
 
+  void 
+  toggleCamera();
+
   void
   playerMovement();
+
+  void
+  playerRotation();
 
   std::unique_ptr<Technique> m_animTech;
   std::unique_ptr<Technique> m_staticTech;
   std::unique_ptr<Technique> m_linesTech;
 
+  Int32 m_currCam;
+
+  TString m_camNames[2];
+
   bool m_drawMeshes;
   GameObject* m_right;
   GameObject* m_player;
+  GameObject* m_cameraHolder;
   Timer m_timer;
 };
 

@@ -1,13 +1,16 @@
 #include "dr_graphics_application.h"
 
 #include <functional>
+#include <random>
 
 #include <dr_aabb_collider.h>
 #include <dr_animation.h>
 #include <dr_animator_component.h>
 #include <dr_bone_attach_object.h>
+#include <dr_camera.h>
 #include <dr_camera_component.h>
 #include <dr_camera_manager.h> 
+#include <dr_degree.h>
 #include <dr_device.h>
 #include <dr_device_context.h>
 #include <dr_gameObject.h>
@@ -17,8 +20,11 @@
 #include <dr_index_buffer.h>
 #include <dr_input_manager.h>
 #include <dr_joystick.h>
+#include <dr_keyboard.h>
 #include <dr_model.h>
+#include <dr_mouse.h>
 #include <dr_logger.h>
+#include <dr_radian.h>
 #include <dr_rasterizer_state.h>
 #include <dr_render_component.h>
 #include <dr_resource_manager.h>
@@ -33,10 +39,19 @@
 #include "StaticMeshTechnique.h"
 
 namespace driderSDK {
+
 GraphicsApplication::GraphicsApplication() : m_drawMeshes(true) {}
+
 GraphicsApplication::~GraphicsApplication() {}
+
 void
 GraphicsApplication::postInit() {
+      
+  Transform x;
+  x.setRotation({Degree(0).toRadian(), 
+                 Degree(45).toRadian(), 0});
+  auto f = x.getDirection();
+
   initModules();   
   initInputCallbacks();
   loadResources();
@@ -52,19 +67,21 @@ void
 GraphicsApplication::postUpdate() {
   Time::update();
   InputManager::update();
-  SceneGraph::update();
 
   static Vector3D dir{0,0,200.f};
 
-  m_right->getTransform().move(dir * Time::getDelta());
+  //m_right->getTransform().move(dir * Time::getDelta());
   
   if (m_timer.getSeconds() > 4.f) {
     dir *= -1;
-    m_right->getTransform().rotate({0,Math::PI,0});
+    //m_right->getTransform().rotate({0,Math::PI,0});
     m_timer.init();
   }
 
   playerMovement();
+  playerRotation();
+
+  SceneGraph::update();
 }
 
 void 
@@ -80,7 +97,9 @@ GraphicsApplication::postRender() {
   m_staticTech->setCamera(&camera);
   m_linesTech->setCamera(&camera);
 
-  auto queryRes = SceneGraph::query(camera, 
+  auto& mainC = CameraManager::getCamera(m_camNames[0]);
+
+  auto queryRes = SceneGraph::query(*mainC, 
                                     QUERY_ORDER::kBackToFront, 
                                     queryFlags);
 
@@ -129,6 +148,23 @@ GraphicsApplication::postDestroy() {
   destroyModules();
 }
 
+void GraphicsApplication::recompileShaders() {
+  
+  if (m_animTech) {
+    m_animTech->destroy();
+  }
+
+  if (m_staticTech) {
+    m_staticTech->destroy();
+  }
+  
+  if (m_linesTech) {
+    m_linesTech->destroy();
+  }
+
+  createTechniques();
+}
+
 void 
 GraphicsApplication::initModules() {
   Logger::startUp();
@@ -158,6 +194,11 @@ GraphicsApplication::initInputCallbacks() {
                                   this)); 
 
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kC,
+                        std::bind(&GraphicsApplication::toggleCamera,
+                                  this)); 
+
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kA,
                         std::bind(&GraphicsApplication::toggleAABBDebug,
                                   this, 
@@ -173,26 +214,45 @@ GraphicsApplication::initInputCallbacks() {
                                   this,
                                   SceneGraph::getRoot().get(),
                                   _T(""))); 
+
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kR, 
+                        std::bind(&GraphicsApplication::recompileShaders,
+                                  this));
 }
 
 void 
 GraphicsApplication::loadResources() {
   
-  CameraManager::createCamera(_T("MAIN_CAM"), 
+  m_currCam = 0;
+  m_camNames[0] = _T("MAIN_CAM");
+  m_camNames[1] = _T("UP_CAM");
+
+  CameraManager::createCamera(m_camNames[0], 
                               {0, 200, -400}, 
                               {0, 150, 10}, 
                               m_viewport,
                               45, 0.1f, 4000.f);
 
+  CameraManager::createCamera(m_camNames[1], 
+                              {0, 5000, 0}, 
+                              {1, 0, 1}, 
+                              m_viewport,
+                              45, 0.1f, 10000.f);
+  
   CameraManager::setActiveCamera(_T("MAIN_CAM"));
 
   ResourceManager::loadResource(_T("Croc.X"));
+
+  ResourceManager::loadResource(_T("HipHopDancing.fbx"));
 
   ResourceManager::loadResource(_T("Walking.fbx"));
 
   ResourceManager::loadResource(_T("Weapons-of-survival.fbx"));
 
   ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
+
+  ResourceManager::loadResource(_T("Sphere.fbx"));
 }
 
 void 
@@ -216,26 +276,6 @@ GraphicsApplication::createScene() {
   
   auto activeCam = CameraManager::getActiveCamera();
   
-  auto crocModel = ResourceManager::getReferenceT<Model>(_T("Croc.X"));
-
-  auto& crocAnimName = crocModel->animationsNames[0];
-
-  auto ca = ResourceManager::getReferenceT<Animation>(crocAnimName);
-
-  auto cs = ResourceManager::getReferenceT<Skeleton>(crocModel->skeletonName);
-
-  auto crocObj = addObjectFromModel(crocModel, _T("LE CROC"));
-
-  auto crocAnimator = crocObj->createComponent<AnimatorComponent>();
-
-  crocAnimator->addAnimation(ca, crocAnimName);
-
-  crocAnimator->setCurrentAnimation(crocAnimName);
-
-  crocAnimator->setSkeleton(cs);
-
-  //crocObj->getTransform().setPosition({0, 100, 20});
-
   auto walkerModel = ResourceManager::getReferenceT<Model>(_T("Walking.fbx"));
 
   auto& walkerAnimName = walkerModel->animationsNames[0];
@@ -258,60 +298,46 @@ GraphicsApplication::createScene() {
   
   m_right = walkerObj.get();
 
+  Int32 copies = 200;
+
+  std::mt19937 mt(std::random_device{}());
+  std::uniform_real_distribution<float> dt(-2000, 2000);
+  std::uniform_real_distribution<float> dt_A(10, 50);
+
+  for (Int32 i = 0; i < copies; ++i) {
+    auto c = walkerObj->clone();
+    c->getTransform().setPosition({dt(mt), 0, dt(mt)});
+    c->getComponent<AnimatorComponent>()->setTime(dt_A(mt));
+  }
+
   auto copy = walkerObj->clone();
 
-  copy->getTransform().move(-600, AXIS::kX);
+  copy->getTransform().move(-300, AXIS::kX);
 
+  auto sphereMod = ResourceManager::getReferenceT<Model>(_T("Sphere.fbx"));
+
+  auto sphereCenter = SceneGraph::createObject(_T("Spherin"));
+
+  sphereCenter->getTransform().scale({20, 20, 20});
+  
+  m_cameraHolder = sphereCenter.get();
+  
   m_player = copy.get();
   
-  auto camHolder = SceneGraph::createObject(_T("Camera"));
+  auto camNode = SceneGraph::createObject(_T("Camera"));
   
-  camHolder->createComponent<CameraComponent>(activeCam);
+  camNode->createComponent<CameraComponent>(activeCam);
 
-  camHolder->getTransform().setPosition({0, 200, -200});
+  camNode->getTransform().setPosition({0, 0, -20});
 
-  camHolder->setParent(copy);
-
-  auto mazoMod = ResourceManager::getReferenceT<Model>(_T("Weapons-of-survival.fbx"));
-
-  if (mazoMod) {
-    auto mazo = SceneGraph::createObject<BoneAttachObject>(_T("Mazo 0"));
-
-    mazo->createComponent<RenderComponent>(mazoMod);
-
-    mazo->createComponent<AABBCollider>(mazoMod->aabb);
-
-    mazo->setParent(walkerObj);
-
-    mazo->setBoneAttachment(_T("RightHand"));
-
-    mazo->getTransform().setScale({0.1f, 0.1f, 0.1f});
-
-    auto mazo2 = std::dynamic_pointer_cast<BoneAttachObject>(mazo->clone());
-
-    mazo2 ->setParent(copy);
-
-    mazo2->setBoneAttachment(_T("LeftHand"));
-
-    auto mazo3 = SceneGraph::createObject<BoneAttachObject>(_T("Mazo 3"));
-
-    mazo3->createComponent<RenderComponent>(mazoMod);
-
-    mazo3->createComponent<AABBCollider>(mazoMod->aabb);
-
-    mazo3->setParent(crocObj);
-
-    mazo3->getTransform().setScale({0.05f, 0.05f, 0.05f});
-
-    mazo3->setBoneAttachment(_T("Bip01_R_Finger1"));
-  }
+  camNode->setParent(sphereCenter);
 
   auto quadMod = ResourceManager::getReferenceT<Model>(_T("ScreenAlignedQuad.3ds"));
 
   auto quad = addObjectFromModel(quadMod, _T("Floor"));
 
-  quad->getTransform().rotate({Math::HALF_PI, 0, 0});
-  quad->getTransform().setScale({1000, 1000, 1000});
+  quad->getTransform().rotate({-Math::HALF_PI, 0, 0});
+  quad->getTransform().setScale({10000, 10000, 10000});
 }
 
 std::shared_ptr<GameObject>
@@ -413,6 +439,14 @@ GraphicsApplication::toggleWireframe() {
 }
 
 void 
+GraphicsApplication::toggleCamera() {
+  
+  m_currCam = !m_currCam;
+
+  CameraManager::setActiveCamera(m_camNames[m_currCam]);
+}
+
+void 
 GraphicsApplication::playerMovement() {
 
   if (!m_player) {
@@ -424,8 +458,14 @@ GraphicsApplication::playerMovement() {
 
   const float velocity = 200.f;
 
-  auto& direction = m_player->getTransform().getDirection();
+  auto direction = m_player->getTransform().getDirection();
   auto left = direction.cross({0,1,0});
+
+  direction.y = 0;
+  left.y = 0;
+
+  direction.normalize();
+  left.normalize();
 
   if (Keyboard::isKeyDown(KEY_CODE::kLEFT)) {
     strafe += velocity;
@@ -446,6 +486,35 @@ GraphicsApplication::playerMovement() {
   auto movement = (direction * forward + left * strafe) * Time::getDelta();
 
   m_player->getTransform().move(movement);
+
+  auto& playerPos = m_player->getTransform().getPosition();
+
+  m_cameraHolder->getTransform().setPosition(playerPos);
+  m_cameraHolder->getTransform().move(150, AXIS::kY);
+}
+
+void
+GraphicsApplication::playerRotation() {
+
+  static float rx = 0;
+  static float ry = 0;
+
+  const float cy = Degree(360).toRadian();
+  const float cx = Degree(60).toRadian();
+
+  auto delta = Mouse::getDisplacement();
+
+  float sensitivity = 0.08f;
+  float dx = delta.x * 0.09f * Time::getDelta();
+  float dy = delta.y * 0.09f * Time::getDelta();
+
+  //auto angles = m_cameraHolder->getTransform().getEulerAngles();
+  
+  ry = Math::clamp(ry + dx, -cy, cy);
+  rx = Math::clamp(rx + dy, -cx, cx);
+ 
+  m_cameraHolder->getTransform().setRotation({rx, ry, 0});
+  m_player->getTransform().setRotation({0, ry, 0});
 }
 
 }
