@@ -102,7 +102,7 @@ RenderManApp::postInit() {
   m_renderMan.lights = &Lights;
 
   CameraManager::createCamera(_T("PATO_CAM"),
-                              { 0.0f, 100.0f, -200.0f },
+                              { 0.0f, 150.0f, -400.0f },
                               { 0.0f, 50.f, 0.0f },
                               m_viewport,
                               45.f,
@@ -115,27 +115,35 @@ RenderManApp::postInit() {
 
   loadResources();
 
-  model = SceneGraph::createObject(_T("Checker"));
+  model = SceneGraph::createObject(_T("Model"));
   auto ptrModel = ResourceManager::getReferenceT<Model>(_T("model.dae"));
   if (ptrModel) {
     model->createComponent<RenderComponent>(ptrModel);
     model->createComponent<AABBCollider>(ptrModel->aabb);
-    model->getTransform().setPosition(Vector3D(0.0f, 0.0f, 0.0f));
+    model->getTransform().setPosition(Vector3D(0.0f, 50.0f, 0.0f));
     model->getTransform().setScale(Vector3D(100.0f, 100.0f, 100.0f));
+    model->getTransform().setRotation(Vector3D(0.0f, Math::QUARTER_PI*0.5f, 0.0f));
+
+    modelMat = std::make_shared<Material>(_T("ModelMaterial"));
 
     auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("default_albedo.tga"));
     auto emissiveTex = ResourceManager::getReferenceT<TextureCore>(_T("default_emissive.tga"));
     auto metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("default_metallic.tga"));
     auto normalTex = ResourceManager::getReferenceT<TextureCore>(_T("default_normal.tga"));
     auto roughnessTex = ResourceManager::getReferenceT<TextureCore>(_T("default_roughness.tga"));
+    modelMat->addProperty(_T("Albedo"), PROPERTY_TYPE::kVec3);
+    modelMat->addProperty(_T("Normal"), PROPERTY_TYPE::kVec3);
+    modelMat->addProperty(_T("Emisivity"), PROPERTY_TYPE::kVec3);
+    modelMat->addProperty(_T("Metallic"), PROPERTY_TYPE::kVec3);
+    modelMat->addProperty(_T("Roughness"), PROPERTY_TYPE::kVec3);
+    modelMat->setTexture(albedoTex, _T("Albedo"));
+    modelMat->setTexture(normalTex, _T("Normal"));
+    modelMat->setTexture(emissiveTex, _T("Emisivity"));
+    modelMat->setTexture(metallicTex, _T("Metallic"));
+    modelMat->setTexture(roughnessTex, _T("Roughness"));
 
     auto rComp = model->getComponent<RenderComponent>();
-    auto mMat = rComp->getMeshes().front().material.lock();
-    mMat->setTexture(albedoTex, _T("Albedo"));
-    mMat->setTexture(normalTex, _T("Normal"));
-    mMat->setTexture(emissiveTex, _T("Emisivity"));
-    mMat->setTexture(metallicTex, _T("Metallic"));
-    mMat->setTexture(roughnessTex, _T("Roughness"));
+    rComp->getMeshes().front().material = modelMat;
   }
 
 
@@ -144,45 +152,45 @@ RenderManApp::postInit() {
   if (ptrFloor) {
     floor->createComponent<RenderComponent>(ptrFloor);
     floor->createComponent<AABBCollider>(ptrFloor->aabb);
-    floor->getTransform().setPosition(Vector3D(0.0f, 0.0f, 0.0f));
+    floor->getTransform().setPosition(Vector3D(0.0f, -50.0f, 0.0f));
     floor->getTransform().setScale(Vector3D(2.0f, 2.0f, 2.0f));
 
-    auto renderComp = floor->getComponent<RenderComponent>();
-    //floorMat
-    renderComp->getMeshes().front().material = floorMat;
-    auto mMat = renderComp->getMeshes().front().material.lock();
+    floorMat = std::make_shared<Material>(_T("FloorMaterial"));
 
     auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Diffuse.tga"));
     auto normalTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Normal.tga"));
     auto emissiveTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Emissive.tga"));
     auto metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Metallic.tga"));
     auto roughnessTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Roughness.tga"));
-    mMat->addProperty(_T("Albedo"), PROPERTY_TYPE::kVec4);
-    mMat->addProperty(_T("Albedo"), PROPERTY_TYPE::kVec4);
-    mMat->addProperty(_T("Emisivity"), PROPERTY_TYPE::kVec4);
-    mMat->addProperty(_T("Metallic"), PROPERTY_TYPE::kVec4);
-    mMat->addProperty(_T("Roughness"), PROPERTY_TYPE::kVec4);
-    mMat->setTexture(albedoTex, _T("Albedo"));
-    mMat->setTexture(normalTex, _T("Normal"));
-    mMat->setTexture(emissiveTex, _T("Emisivity"));
-    mMat->setTexture(metallicTex, _T("Metallic"));
-    mMat->setTexture(roughnessTex, _T("Roughness"));
+    floorMat->addProperty(_T("Albedo"), PROPERTY_TYPE::kVec3);
+    floorMat->addProperty(_T("Normal"), PROPERTY_TYPE::kVec3);
+    floorMat->addProperty(_T("Emisivity"), PROPERTY_TYPE::kVec3);
+    floorMat->addProperty(_T("Metallic"), PROPERTY_TYPE::kVec3);
+    floorMat->addProperty(_T("Roughness"), PROPERTY_TYPE::kVec3);
+    floorMat->setTexture(albedoTex, _T("Albedo"));
+    floorMat->setTexture(normalTex, _T("Normal"));
+    floorMat->setTexture(emissiveTex, _T("Emisivity"));
+    floorMat->setTexture(metallicTex, _T("Metallic"));
+    floorMat->setTexture(roughnessTex, _T("Roughness"));
 
     auto displacementTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Displacement.tga"));
     auto opacityTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Opacity.tga"));
     auto specularTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Specular.tga"));
     auto sscolorTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_SSColor.tga"));
     auto thicknessTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Thickness.tga"));
-    mMat->addProperty(_T("Displacement"), PROPERTY_TYPE::kVec4);
-    mMat->addProperty(_T("Opacity"), PROPERTY_TYPE::kVec4);
-    mMat->addProperty(_T("Specular"), PROPERTY_TYPE::kVec4);
-    mMat->addProperty(_T("SSColor"), PROPERTY_TYPE::kVec4);
-    mMat->addProperty(_T("Thickness"), PROPERTY_TYPE::kVec4);
-    mMat->setTexture(displacementTex, _T("Displacement"));
-    mMat->setTexture(opacityTex, _T("Opacity"));
-    mMat->setTexture(specularTex, _T("Specular"));
-    mMat->setTexture(sscolorTex, _T("SSColor"));
-    mMat->setTexture(thicknessTex, _T("Thickness"));
+    floorMat->addProperty(_T("Displacement"), PROPERTY_TYPE::kVec3);
+    floorMat->addProperty(_T("Opacity"), PROPERTY_TYPE::kVec3);
+    floorMat->addProperty(_T("Specular"), PROPERTY_TYPE::kVec3);
+    floorMat->addProperty(_T("SSColor"), PROPERTY_TYPE::kVec3);
+    floorMat->addProperty(_T("Thickness"), PROPERTY_TYPE::kVec3);
+    floorMat->setTexture(displacementTex, _T("Displacement"));
+    floorMat->setTexture(opacityTex, _T("Opacity"));
+    floorMat->setTexture(specularTex, _T("Specular"));
+    floorMat->setTexture(sscolorTex, _T("SSColor"));
+    floorMat->setTexture(thicknessTex, _T("Thickness"));
+
+    auto renderComp = floor->getComponent<RenderComponent>();
+    renderComp->getMeshes().front().material = floorMat;
   }
 
   initInputCallbacks();
