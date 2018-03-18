@@ -60,7 +60,7 @@ GBuffer1Pass::draw(PassDrawData* drawData) {
   
   dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
   
-  const float clearColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+  const float clearColor[4] = { 1.0f, 1.0f, 1.0f, 0.0f };
   data->OutRt->clear(dc, clearColor);
   (data->dsOptions)->clear(dc, 1, 0);
 
@@ -88,6 +88,7 @@ GBuffer1Pass::draw(PassDrawData* drawData) {
 
     Matrix4x4 worldTranspose = modelPair.world;
     CB.World = worldTranspose.transpose();
+    CB.World = modelPair.world;
     Matrix4x4 newViewProjection = data->activeCam->getVP();
     CB.WVP = modelPair.world * (data->activeCam->getVP());
   

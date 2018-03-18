@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="Include\dr_GBuffer1.h" />
     <ClInclude Include="Include\dr_GBuffer2.h" />
+    <ClInclude Include="Include\dr_light.h" />
     <ClInclude Include="Include\dr_PostProcessing.h" />
     <ClInclude Include="Include\dr_renderman.h" />
     <ClInclude Include="Include\dr_rendermanapp.h" />

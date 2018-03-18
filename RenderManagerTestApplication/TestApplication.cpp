@@ -14,10 +14,61 @@
 
 #include <dr_render_component.h>
 #include <dr_aabb_collider.h>
+#include <dr_degree.h>
 
 namespace driderSDK {
 
-void RenderManApp::postInit() {
+void
+HSVtoRGB(float fH, float fS, float fV,
+         float& fR, float& fG, float& fB) {
+  float fC = fV * fS;
+  float fX = fC * (1.0f - abs(fmod((fH / 60.0f), 2) - 1.0f));
+  float fM = fV - fC;
+
+  fR = fM;
+  fG = fM;
+  fB = fM;
+
+  if (fH < 60.0f) {
+    fR += fC;
+    fG += fX;
+    //fB += 0.0f;
+    return;
+  }
+  else if (fH < 120.0f) {
+    fR += fX;
+    fG += fC;
+    //fB += 0.0f;
+    return;
+  }
+  else if (fH < 180.0f) {
+    //fR += 0.0f;
+    fG += fC;
+    fB += fX;
+    return;
+  }
+  else if (fH < 240.0f) {
+    //fR += 0.0f;
+    fG += fX;
+    fB += fC;
+    return;
+  }
+  else if (fH < 300.0f) {
+    fR += fX;
+    //fG += 0.0f;
+    fB += fC;
+    return;
+  }
+  else if (fH <= 360.0f) {
+    fR = fC;
+    //fG = 0.0f;
+    fB = fX;
+    return;
+  }
+}
+
+void
+RenderManApp::postInit() {
   Logger::startUp();
   GraphicsDriver::startUp(DR_GRAPHICS_API::D3D11, 
                           m_viewport.width, 
@@ -29,6 +80,25 @@ void RenderManApp::postInit() {
   Time::startUp();
   CameraManager::startUp();
   m_renderMan.init();
+
+  Degree grados(2.8125);
+  Vector4D LightPosition(0, 50, -50, 1);
+  Matrix4x4 rotationMatrix(driderSDK::Math::FORCE_INIT::kIdentity);
+  rotationMatrix.RotationY(grados.toRadian());
+
+  float lighIndex = 0.0f;
+  for (int i = 0; i < 128; ++i) {
+    Lights[i].m_vec4Position = LightPosition;
+    LightPosition = rotationMatrix * LightPosition;
+
+    Lights[i].m_fIntensity = 1.0f;
+    HSVtoRGB(lighIndex*256, 1.0f, 1.0f,
+             Lights[i].m_vec4Color.x, Lights[i].m_vec4Color.y, Lights[i].m_vec4Color.z);
+    Lights[i].m_vec4Color.w = 1.0f;
+    lighIndex += 1.0f/128.0f;
+  }
+
+  m_renderMan.lights = &Lights;
 
   CameraManager::createCamera(_T("PATO_CAM"),
                               { 0.0f, 100.0f, -200.0f },

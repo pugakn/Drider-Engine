@@ -11,6 +11,7 @@
 #include "dr_GBuffer1.h"
 #include "dr_GBuffer2.h"
 #include "dr_PostProcessing.h"
+#include "dr_light.h"
 
 namespace driderSDK {
 
@@ -44,7 +45,9 @@ class DR_RENDERMAN_EXPORT RenderMan {
   void
   exit();
 
+  std::array<Light, 128> *lights;
  protected:
+
   GBuffer1Pass m_GBuffer1Pass;
   GBuffer1InitData m_GBuffer1InitData;
   GBuffer1DrawData m_GBuffer1DrawData;

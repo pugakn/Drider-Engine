@@ -1,4 +1,5 @@
 #include "dr_PostProcessing.h"
+#include <dr_device.h>
 #include <dr_string_utils.h>
 #include <dr_file.h>
 #include <dr_graphics_api.h>
@@ -6,13 +7,16 @@
 #include <dr_constant_buffer.h>
 #include <dr_vertex_buffer.h>
 #include <dr_index_buffer.h>
+#include <dr_depth_stencil.h>
 #include <dr_vertex.h>
 #include <dr_render_component.h>
 #include <dr_device_context.h>
 #include <dr_camera.h>
+#include <dr_material.h>
 #include <dr_resource_manager.h>
 #include <dr_model.h>
 #include <dr_texture_core.h>
+#include <dr_texture.h>
 
 namespace driderSDK {
 
@@ -55,6 +59,12 @@ PostProcessingPass::draw(PassDrawData* drawData) {
   m_inputLayout->set(dc);
 
   CB.EyePosition = data->CameraPosition;
+  for (int i = 0; i < 128; ++i) {
+    CB.Position[i] = (*data->Lights)[i].m_vec4Position;
+    CB.Intensity[i] = 1.0f;
+    CB.Color[i] = (*data->Lights)[i].m_vec4Color;
+  }
+  CB.activeLights = 1;
   m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
 
   m_constantBuffer->set(dc);
@@ -70,9 +80,9 @@ PostProcessingPass::draw(PassDrawData* drawData) {
   data->Gbuffer2RT->getTexture(0).set(dc, 4); //Metallic
   data->Gbuffer2RT->getTexture(1).set(dc, 5); //Roughness
   data->Gbuffer2RT->getTexture(2).set(dc, 6); //SSAO
-  auto cubeMap = ResourceManager::getReferenceT<TextureCore>(_T("grace-new.hdr"));
-  cubeMap->textureGFX->set(dc, 7);
-  
+
+  //auto cubeMap = ResourceManager::getReferenceT<TextureCore>(_T("grace-new.hdr"));
+  //cubeMap->textureGFX->set(dc, 7);  
 
   auto screenQuadModel = ResourceManager::getReferenceT<Model>(_T("ScreenAlignedQuad.3ds"));
   if (screenQuadModel) {

@@ -1,7 +1,7 @@
 #pragma once
-
 #include <dr_application.h>
 #include <dr_renderman.h>
+#include <dr_light.h>
 
 namespace driderSDK {
 
@@ -42,6 +42,7 @@ class RenderManApp : public Application
   SceneGraph::SharedGameObject model;
 
   Vector3D modelMovement;
+  std::array<Light, 128> Lights;
 };
 
 }

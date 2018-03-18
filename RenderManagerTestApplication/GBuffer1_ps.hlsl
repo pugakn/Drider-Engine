@@ -12,6 +12,7 @@ cbuffer ConstantBuffer {
 
 struct PS_INPUT {
   float4   Position : SV_POSITION;
+  float4   RealPos  : POSITION;
   float2   Texcoord : TEXCOORD0;
   float3x3 TBN      : TEXCOORD1;
 };
@@ -29,7 +30,7 @@ PS_OUTPUT FS(PS_INPUT input) {
 	float2 uv = input.Texcoord;
 
 	float4 albedo		= AlbedoTex.Sample(SS, uv);
-	float4 position	= input.Position;
+	float4 position	= input.RealPos;
 
 	float3 TexNormal = float3(0.0f, 0.0f, 1.0f);
 	//TexNormal = normalize(2.0f * NormalTex.Sample(SS, uv).xyz - 1.0f).xyz;

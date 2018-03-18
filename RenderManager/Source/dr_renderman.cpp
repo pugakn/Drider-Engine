@@ -25,7 +25,7 @@ RenderMan::init() {
   GBufferTexDesc.height = screenHeight;
   GBufferTexDesc.pitch = screenWidth * 4;
   GBufferTexDesc.dimension = DR_DIMENSION::k2D;
-  GBufferTexDesc.Format = DR_FORMAT::kR8G8B8A8_UNORM;
+  GBufferTexDesc.Format = DR_FORMAT::kR16G16B16A16_FLOAT;
   GBufferTexDesc.mipLevels = 0;
   GBufferTexDesc.CPUAccessFlags = DR_CPU_ACCESS_FLAG::drRead | DR_CPU_ACCESS_FLAG::drWrite;
   GBufferTexDesc.genMipMaps = true;
@@ -82,6 +82,7 @@ RenderMan::draw() {
   m_PostProcessingDrawData.CameraPosition.w = 1.0f;
   m_PostProcessingDrawData.Gbuffer1RT = m_RTGBuffer1;
   m_PostProcessingDrawData.Gbuffer2RT = m_RTGBuffer2;
+  m_PostProcessingDrawData.Lights = lights;
   m_PostProcessingPass.draw(&m_PostProcessingDrawData);
 
   /*
