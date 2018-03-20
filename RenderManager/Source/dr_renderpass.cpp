@@ -1,7 +1,8 @@
 #include "dr_renderpass.h"
 #include <dr_graphics_api.h>
-#include <dr_file.h>
 #include <dr_device.h>
+#include <dr_file.h>
+#include <dr_string_utils.h>
 
 namespace driderSDK {
 

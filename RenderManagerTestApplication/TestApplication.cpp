@@ -82,21 +82,29 @@ RenderManApp::postInit() {
   CameraManager::startUp();
   m_renderMan.init();
 
-  Degree grados(2.8125);
-  Vector4D LightPosition(0, 50, -100, 1);
+  Degree grados(2.8125f);
+  Vector4D LightPosition(0.0f, 50.0f, -100.0f, 1);
   Matrix4x4 rotationMatrix(driderSDK::Math::FORCE_INIT::kIdentity);
-  rotationMatrix.RotationY(grados.toRadian());
+  rotationMatrix = rotationMatrix.RotationY(grados.toRadian());
 
-  float lighIndex = 0.0f;
-  for (int i = 0; i < 128; ++i) {
-    Lights[i].m_vec4Position = LightPosition;
-    LightPosition = rotationMatrix * LightPosition;
+  float proportion = 0.0f;
+  for (int lighIndex = 0; lighIndex < 128; ++lighIndex) {
+    //Posicion
+    Lights[lighIndex].m_vec4Position = LightPosition;
+    LightPosition = LightPosition * rotationMatrix;
 
-    Lights[i].m_fIntensity = 1.0f;
-    HSVtoRGB(lighIndex*256, 1.0f, 1.0f,
-             Lights[i].m_vec4Color.x, Lights[i].m_vec4Color.y, Lights[i].m_vec4Color.z);
-    Lights[i].m_vec4Color.w = 1.0f;
-    lighIndex += 1.0f/128.0f;
+    //Color
+    HSVtoRGB(proportion * 256,
+             1.0f,
+             1.0f,
+             Lights[lighIndex].m_vec4Color.x,
+             Lights[lighIndex].m_vec4Color.y,
+             Lights[lighIndex].m_vec4Color.z);
+
+    //Intensidad
+    Lights[lighIndex].m_vec4Color.w = (lighIndex / 128.0f) * 100.0f;
+
+    proportion += (1.0f/128.0f);
   }
 
   m_renderMan.lights = &Lights;
@@ -225,7 +233,6 @@ RenderManApp::postUpdate() {
   if (Keyboard::isKeyDown(KEY_CODE::kE)) {
     model->getTransform().move(Vector3D(0.0f, -1.0f, 0.0f) * Time::getDelta() * fMovementSpeed);
   }
-
 }
 
 void

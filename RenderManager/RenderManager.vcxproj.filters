@@ -36,14 +36,14 @@
     <ClInclude Include="Include\dr_GBuffer1.h">
       <Filter>Archivos de encabezado\Passes</Filter>
     </ClInclude>
-    <ClInclude Include="Include\dr_GBuffer2.h">
-      <Filter>Archivos de encabezado\Passes</Filter>
-    </ClInclude>
     <ClInclude Include="Include\dr_PostProcessing.h">
       <Filter>Archivos de encabezado\Passes</Filter>
     </ClInclude>
     <ClInclude Include="Include\dr_light.h">
       <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_SSAO.h">
+      <Filter>Archivos de encabezado\Passes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -59,10 +59,10 @@
     <ClCompile Include="Source\dr_GBuffer1.cpp">
       <Filter>Archivos de código fuente\Passes</Filter>
     </ClCompile>
-    <ClCompile Include="Source\dr_GBuffer2.cpp">
+    <ClCompile Include="Source\dr_PostProcessing.cpp">
       <Filter>Archivos de código fuente\Passes</Filter>
     </ClCompile>
-    <ClCompile Include="Source\dr_PostProcessing.cpp">
+    <ClCompile Include="Source\dr_SSAO.cpp">
       <Filter>Archivos de código fuente\Passes</Filter>
     </ClCompile>
   </ItemGroup>

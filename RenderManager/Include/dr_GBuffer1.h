@@ -4,9 +4,6 @@
 #include <dr_graph.h>
 #include <dr_render_component.h>
 #include <dr_camera.h>
-#include <dr_matrix4x4.h>
-#include <dr_input_layout.h>
-#include <dr_constant_buffer.h>
 
 namespace driderSDK {
 

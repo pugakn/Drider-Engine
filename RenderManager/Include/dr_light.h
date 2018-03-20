@@ -20,7 +20,6 @@ class DR_RENDERMAN_EXPORT Light
   */
   Light()
    : m_vec4Position({ 0.0f, 0.0f, 0.0f, 1.0f }),
-     m_fIntensity(1.0f),
      m_vec4Color({1.0f, 1.0f, 1.0f, 1.0f}) {}
 
   /**
@@ -33,8 +32,6 @@ class DR_RENDERMAN_EXPORT Light
   virtual ~Light() {};
 
   Vector4D m_vec4Position;
-
-  float m_fIntensity;
 
   Vector4D m_vec4Color;
 };

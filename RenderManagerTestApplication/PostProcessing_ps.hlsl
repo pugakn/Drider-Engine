@@ -10,14 +10,9 @@ TextureCube Enviroment : register(t7);
 SamplerState SS;
 
 cbuffer ConstantBuffer {
-	float4 EyePosition;
-  float4 LightPositions[128];
-  float LightIntensities[128];
-  float4 LightColors[128];
-  int activeLights;
-  int shit1;
-  int shit2;
-  int shit3;
+  float4 kEyePosition;
+  float4 kLightPosition[128];
+  float4 kLightColor[128];
 };
 
 struct PS_INPUT {
@@ -107,19 +102,21 @@ float4 FS(PS_INPUT input) : SV_TARGET {
   float3 normal    = NormalTex.Sample(SS, uv).xyz;
   float3 emissive  = EmissiveTex.Sample(SS, uv).xyz;
   float  metallic  = MetallicTex.Sample(SS, uv).x;
+  float3 specular  = lerp(float3(0.03f, 0.03f, 0.03f), albedo, metallic);
   float  roughness = RoughnessTex.Sample(SS, uv).x;
   float  SSAO      = SSAOTex.Sample(SS, uv).x;
 
   float3 finalColor = float3(0.0f, 0.0f, 0.0f);
-	
 
-  float3 LightPosition = float3(0.0f, 50.0f, -100.0f);
+  float3 lightPosition  = float3(0.0f, 0.0f, 0.0f);
+  float3 lightColor     = float3(0.0f, 0.0f, 0.0f);
+  float  lightIntensity = 0.0f;
+  float  LightPower = 0.0f;
 
-  float3 ViewDir = normalize(EyePosition.xyz - position);
-  //float3 LightDir = normalize(LightPosition - position);
-  float3 LightDir = normalize(LightPosition - position);
-
+  float3 ViewDir = normalize(kEyePosition.xyz - position);
   float  NdotV = saturate(dot(normal, ViewDir));
+
+  float3 LightDir = normalize(lightPosition - position);
   float3 H;
   float  NdotL;
   float  LdotV;
@@ -127,21 +124,20 @@ float4 FS(PS_INPUT input) : SV_TARGET {
   float  VdotH;
   float  LdotH;
 
-  ///////////////////////////////////////
-  float alpha = max(0.01f, roughness * roughness);
+  float  alpha = max(0.01f, roughness * roughness);
   
-  //Diffuse light acumulation
-  float3 DiffAcc;
-  float3 SpecAcc;;
+  float3 DiffAcc = float3(0.0f, 0.0f, 0.0f);
+  float3 SpecAcc = float3(0.0f, 0.0f, 0.0f);
   
-  SSAO = 1.0f;
-  ///////////////////////////////////////
+  const int activeLights = kEyePosition.w;
+  for (int index = 0; index < activeLights; index += 4) {
+    lightPosition  = kLightPosition[index].xyz;
+    lightColor     = kLightColor[index].xyz;
+    lightIntensity = kLightColor[index].w;
+    
+    LightPower = saturate( 1.0f - (length(lightPosition - position) / 150.0f) );
 
-  int maxLights = min(activeLights, 128);
-  for (int i = 0; i < 1; i++) {
-    LightPosition = LightPositions[i].xyz;
-
-    LightDir = normalize(LightPosition - position);
+    LightDir = normalize(lightPosition - position);
 
     H     = normalize(LightDir + ViewDir);
 
@@ -154,12 +150,21 @@ float4 FS(PS_INPUT input) : SV_TARGET {
 
     DiffAcc = Diffuse_Burley(NdotL, NdotV, LdotH, roughness) * albedo;
     SpecAcc = Specular_D(alpha, NdotH) *
-              Specular_F(LightColors[i].xyz, LdotH) *
+              Specular_F(specular * lightColor, LdotH) *
               Specular_G(alpha, LdotH);
     SpecAcc /= (4.0f * cos(NdotL) * cos(NdotV));
-
-    finalColor += ((DiffAcc + SpecAcc) * SSAO * NdotL);
+    
+    finalColor += (DiffAcc + SpecAcc) * SSAO * NdotL * LightPower;
   };
+
   
-  return float4(finalColor, 1.0f);
+  //return AlbedoTex.Sample(SS, uv);
+  //return PositionTex.Sample(SS, uv);
+  //return NormalTex.Sample(SS, uv);
+  //return EmissiveTex.Sample(SS, uv);
+  //return MetallicTex.Sample(SS, uv);
+  //return RoughnessTex.Sample(SS, uv);
+  //return SSAOTex.Sample(SS, uv);
+  
+  return float4(finalColor + emissive, 1.0f);
 }

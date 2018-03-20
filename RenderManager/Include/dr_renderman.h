@@ -9,7 +9,7 @@
 #include <dr_depth_stencil_state.h>
 #include <dr_gfx_memory.h>
 #include "dr_GBuffer1.h"
-#include "dr_GBuffer2.h"
+#include "dr_SSAO.h"
 #include "dr_PostProcessing.h"
 #include "dr_light.h"
 
@@ -50,7 +50,7 @@ class DR_RENDERMAN_EXPORT RenderMan {
   void
   recompile();
 
-  std::array<Light, 128> *lights;
+  std::array<Light, 128>* lights;
  protected:
 
   GBuffer1Pass m_GBuffer1Pass;
@@ -58,18 +58,20 @@ class DR_RENDERMAN_EXPORT RenderMan {
   GBuffer1DrawData m_GBuffer1DrawData;
   GFXShared<DepthStencil> m_GBuffer1DSoptions;
 
-  GBuffer2Pass m_GBuffer2Pass;
-  GBuffer2InitData m_GBuffer2InitData;
-  GBuffer2DrawData m_GBuffer2DrawData;
-  GFXShared<DepthStencil> m_GBuffer2DSoptions;
+  SSAOPass m_SSAOPass;
+  SSAOInitData m_SSAOInitData;
+  SSAODrawData m_SSAODrawData;
+  GFXShared<DepthStencil> m_SSAODSoptions;
 
   PostProcessingPass m_PostProcessingPass;
   PostProcessingInitData m_PostProcessingInitData;
   PostProcessingDrawData m_PostProcessingDrawData;
   GFXShared<DepthStencil> m_PostProcessingDSoptions;
 
-  GFXShared<RenderTarget> m_RTGBuffer1; //GBuffer 1: Albedo, Depth/Position, Normal, Emissive
-  GFXShared<RenderTarget> m_RTGBuffer2; //GBuffer 2: Metallic, Roughness, SSAO
+  //0: Albedo; 1: Position; 2: Normal; 3: Emissive; 4: Metallic; 5: Roughness;
+  GFXShared<RenderTarget> m_RTGBuffer1;
+  //0: SSAO
+  GFXShared<RenderTarget> m_RTGBuffer2;
 
   DrTextureDesc GBufferTexDesc;
 };
