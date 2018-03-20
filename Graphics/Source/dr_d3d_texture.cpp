@@ -159,10 +159,13 @@ D3DTexture::udpateFromMemory(const DeviceContext& deviceContext,
   Int32 buffSize = m_descriptor.pitch * m_descriptor.height;
   char *pHead = const_cast<char*>(buffer);
 
+  D3D11_TEXTURE2D_DESC pDesc;
+  APITexture->GetDesc(&pDesc);
+
   for (Int32 i = 0; i < m_arraySize; ++i) {
     reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
       D3D11DeviceContext->
-      UpdateSubresource(APITexture, 0, 0, pHead, m_descriptor.pitch, 0);
+      UpdateSubresource(APITexture, D3D11CalcSubresource(0, i, pDesc.MipLevels), 0, pHead, m_descriptor.pitch, 0);
       pHead += buffSize;
   }
   
