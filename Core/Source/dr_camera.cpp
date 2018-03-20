@@ -187,6 +187,6 @@ Camera::getProjection() {
   return m_projection;
 }
 
-CREATE_REF_FACTORY_FUNC(Camera)
+//CREATE_REF_FACTORY_FUNC(Camera)
 
 }

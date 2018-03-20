@@ -148,6 +148,8 @@ class DR_GRAPHICS_EXPORT D3DTexture : public Texture
 
   ID3D11Texture2D* APITexture;
   ID3D11ShaderResourceView* APIView;
+ private:
+    UInt32 m_arraySize;
 };
 
 }
