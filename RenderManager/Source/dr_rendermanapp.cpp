@@ -1,5 +1,4 @@
 #include "dr_rendermanapp.h"
-
 #include "dr_renderman.h"
 
 namespace driderSDK {

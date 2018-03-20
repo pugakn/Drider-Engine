@@ -1,6 +1,7 @@
 #include "TestApplication.h"
 
 //Modules
+#include <dr_camera_manager.h>
 #include <dr_graphics_driver.h>
 #include <dr_graph.h>
 #include <dr_input_manager.h>

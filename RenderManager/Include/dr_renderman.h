@@ -1,13 +1,5 @@
 #pragma once
 #include "dr_renderman_prerequisites.h"
-#include <dr_graphics_api.h>
-#include <dr_device.h>
-#include <dr_camera_manager.h>
-#include <dr_graph.h>
-#include <dr_render_component.h>
-#include <dr_depth_stencil.h>
-#include <dr_depth_stencil_state.h>
-#include <dr_gfx_memory.h>
 #include "dr_GBuffer1.h"
 #include "dr_SSAO.h"
 #include "dr_PostProcessing.h"
