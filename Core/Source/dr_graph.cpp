@@ -20,6 +20,17 @@ SceneGraph::SceneGraph() {}
 
 SceneGraph::~SceneGraph() {}
 
+void SceneGraph::onStartUp() {
+  auto r = std::make_shared<RootNode>();
+  r->init();
+  m_root = r;
+}
+
+void 
+SceneGraph::addObject(SharedGameObject gameObject) {
+  instance().m_root->addChild(gameObject);
+}
+
 void 
 SceneGraph::buildOctree() {
   instance().m_octree = std::make_shared<GameObject>();
@@ -27,17 +38,10 @@ SceneGraph::buildOctree() {
 
   addGameObjectsStatics(*instance().m_root, &staticGameObjects);
 
-  AABB aa(5000, 5000, 5000, Vector3D(0, 0, 0));
-
-  Octree octree(&(*instance().m_octree), aa, &staticGameObjects, 10000);
+  Octree octree(&(*instance().m_octree), &staticGameObjects);
   octree.buildTree();
-  octree.createNodes();
 }
 
-void 
-SceneGraph::addObject(SharedGameObject gameObject) {
-  instance().m_root->addChild(gameObject);
-}
 
 SceneGraph::SharedGameObject 
 SceneGraph::getRoot() {
@@ -85,9 +89,6 @@ SceneGraph::createNode(SharedGameObject parent, SharedModel model) {
   return node;
 }
 
-void SceneGraph::onStartUp() {
-  m_root = std::make_shared<RootNode>();
-}
 
 SceneGraph::QueryResult
 SceneGraph::query(Camera& camera, QUERY_ORDER::E order, UInt32 props) {

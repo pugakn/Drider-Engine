@@ -27,10 +27,7 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   GameObject(const GameObject&) = delete;
 
   GameObject& operator=(const GameObject&) = delete;
-
-  void
-  init();
-
+  
   void 
   update();
   
@@ -228,10 +225,6 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   bool
   changed() const;
  private:
-
-  void
-  propagateChange();
-
 
  protected:
   

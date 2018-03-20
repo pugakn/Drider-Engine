@@ -413,6 +413,13 @@ TestApplication::initResources() {
   ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
 
   ResourceManager::loadResource(_T("HipHopDancing.fbx"));
+
+  ResourceManager::loadResource(_T("VenomJok.X"));
+
+  ResourceManager::loadResource(_T("dwarf.x"));
+
+  ResourceManager::loadResource(_T("DuckyQuacky_.fbx"));
+
 }
 
 void 
@@ -453,8 +460,20 @@ TestApplication::initSceneGraph() {
   {
     {0, _T("HipHopDancing.fbx")},
     {1, _T("Croc.X")},
+    {2, _T("dwarf.x")},
+    {3, _T("DuckyQuacky_.fbx")}
   };
-   
+ 
+  std::mt19937 mt(std::random_device{}());
+  
+  std::uniform_int_distribution<> dt(0, static_cast<Int32>(names.size() - 1));
+  std::uniform_int_distribution<> scl(1, 3);
+  std::uniform_real_distribution<float> space(-1500, 1500);
+
+  for (Int32 i = 0; i < 50; ++i) {
+    Vector3D pos(space(mt), 0, space(mt));
+    TString aaa = StringUtils::toTString(i);
+  }
   auto chinaMod = ResourceManager::getReferenceT<Model>(_T("HipHopDancing.fbx"));
 
   auto animName = chinaMod->animationsNames[0];
@@ -486,32 +505,35 @@ TestApplication::initSceneGraph() {
   m_joker = n;
   
   
-  std::mt19937 mt(std::random_device{}());
-  
-  std::uniform_int_distribution<> dt(0, static_cast<Int32>(names.size() - 1));
-  std::uniform_int_distribution<> scl(1, 3);
-  std::uniform_real_distribution<float> space(-1500, 1500);
   std::uniform_real_distribution<float> time(0, 1000);
 
-  for (Int32 i = 0; i < 50; ++i) {
-    Vector3D pos(space(mt), 0, space(mt));
+  auto l = n->createInstance();
+  l->setName(_T("Empty Node"));
+
+  for (Int32 i = 0; i < 2; ++i) {
+    
     auto pp = n->clone();
-    pp->getTransform().setPosition(pos);
+    pp->setParent(n);
+    pp->setName(n->getName() + _T("_Son"));
+    pp->getTransform().setPosition({space(mt), 0, space(mt)});
+    
     auto an = pp->getComponent<AnimatorComponent>();
     an->setTime(time(mt));
 
-    /*TString aaa =StringUtils::toTString(i);
-
-    auto mod = dt(mt);
-
-    auto n = createNode(root, names[mod] + aaa, 
-                        names[mod], 
-                        pos);   
+    n = pp;
+  }
+  n->getParent()->addChild(l);
+  n->setParent(l);
+  for (Int32 i = 0; i < 200; ++i) {
+    Vector3D pos(space(mt), 0, space(mt));
+    TString aaa = StringUtils::toTString(i);
+    auto n = createNode(root, names[i] + aaa,
+      names[dt(mt)],
+      pos);
     n->setStatic(true);
     float sc = static_cast<float>(scl(mt));
-    n->getTransform().scale({sc,sc,sc});*/
+    n->getTransform().scale({ sc,sc,sc });
   }
-
 }
 
 }

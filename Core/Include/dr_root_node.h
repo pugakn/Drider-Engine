@@ -9,9 +9,14 @@ class DR_CORE_EXPORT RootNode : public GameObject
 {
 public:
   RootNode();
+
+  void
+  init();
 private:
   virtual void 
   updateImpl();
+
+  GameObject::SharedGameObj m_nullparent;
 };
 
 }
