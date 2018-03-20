@@ -20,7 +20,7 @@ CodecTexture::decode(TString pathName) {
   auto data = stbi_load(StringUtils::toString(pathName).c_str(), 
                         &width, 
                         &height, 
-                        &channels, 
+                        &channels,
                         0);
 
   if (data) {

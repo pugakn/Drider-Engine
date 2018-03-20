@@ -73,8 +73,8 @@ PostProcessingPass::draw(PassDrawData* drawData) {
   data->Gbuffer1RT->getTexture(5).set(dc, 5); //Roughness
   data->Gbuffer2RT->getTexture(0).set(dc, 6); //SSAO
 
-  //auto cubeMap = ResourceManager::getReferenceT<TextureCore>(_T("grace-new.hdr"));
-  //cubeMap->textureGFX->set(dc, 7);  
+  //auto cubeMap = ResourceManager::getReferenceT<TextureCore>(_T(""));
+  //cubeMap->textureGFX->set(dc, 7);
 
   auto screenQuadModel = ResourceManager::getReferenceT<Model>(_T("ScreenAlignedQuad.3ds"));
   if (screenQuadModel) {

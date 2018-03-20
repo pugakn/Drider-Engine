@@ -45,9 +45,6 @@ RenderMan::init() {
   m_SSAODSoptions = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
 
   ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
-  ImageInfo cubeMap;
-  cubeMap.textureDimension = DR_DIMENSION::kCUBE_MAP; 
-  ResourceManager::loadResource(_T("grace-new.hdr"), &cubeMap);
 
   m_GBuffer1Pass.init(&m_GBuffer1InitData);
   m_SSAOPass.init(&m_SSAOInitData);
