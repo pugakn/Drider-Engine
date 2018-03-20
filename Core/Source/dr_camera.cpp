@@ -162,5 +162,6 @@ Camera::invalidateView() {
   m_outdateView = true;
 }
 
+//CREATE_REF_FACTORY_FUNC(Camera)
 
 }
