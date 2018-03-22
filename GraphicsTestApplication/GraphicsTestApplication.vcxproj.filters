@@ -37,6 +37,12 @@
     <Filter Include="Archivos de origen\Application">
       <UniqueIdentifier>{53014640-ac27-433d-a210-4f92435ee197}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Archivos de encabezado\Script">
+      <UniqueIdentifier>{5b2ef3a7-daa2-40f8-9b67-7c761ca100aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de origen\Script">
+      <UniqueIdentifier>{b84d47cd-b20a-4f33-b82e-048d6ccd2786}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -69,6 +75,9 @@
     <ClInclude Include="Include\AnimationTechnique.h">
       <Filter>Archivos de encabezado\Techniques</Filter>
     </ClInclude>
+    <ClInclude Include="Include\OneRef.h">
+      <Filter>Archivos de encabezado\Script</Filter>
+    </ClInclude>
     <ClInclude Include="Include\dr_graphics_application.h">
       <Filter>Archivos de encabezado\Application</Filter>
     </ClInclude>
@@ -100,6 +109,9 @@
     </ClCompile>
     <ClCompile Include="Source\AnimationTechnique.cpp">
       <Filter>Archivos de origen\Technique</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\OneRef.cpp">
+      <Filter>Archivos de origen\Script</Filter>
     </ClCompile>
     <ClCompile Include="Source\dr_graphics_application.cpp">
       <Filter>Archivos de origen\Application</Filter>

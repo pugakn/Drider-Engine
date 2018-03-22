@@ -22,6 +22,12 @@ bool Keyboard::isKeyDown(KEY_CODE::E key) {
   return keyboard->m_keyboardOIS->isKeyDown(keyOIS);
 }
 
+bool
+Keyboard::keyDown(KEY_CODE::E key) {
+  // Implementar funcion
+  return false;
+}
+
 void 
 Keyboard::addCallback(KEYBOARD_EVENT::E trigger, 
                       KEY_CODE::E key, 

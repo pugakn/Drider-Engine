@@ -8,10 +8,12 @@
 #include <dr_export_script.h>
 
 #include <iostream>
+#include <vector>
 
 namespace driderSDK {
 
 class Time;
+class ContextManager;
 
 void stringPrint_g(asIScriptGeneric* gen);
 
@@ -35,11 +37,14 @@ class DR_SCRIPT_EXPORT ScriptEngine : public Module<ScriptEngine>
 	*/
 	ScriptEngine();
 
+  ScriptEngine(const ScriptEngine&) = delete;
+
+  ScriptEngine& operator=(const ScriptEngine&) = delete;
+
 	/**
 	* Default destructor.
 	*
 	*/
-	virtual
 	~ScriptEngine() {}
 
 	/**
@@ -50,7 +55,13 @@ class DR_SCRIPT_EXPORT ScriptEngine : public Module<ScriptEngine>
 	*/
 	Int8 
 	createEngine();
-
+  
+  /**
+  * Configurate Engine
+  */
+  Int8
+  configurateEngine(ContextManager *ctx);
+  
 	/**
 	* Open the script and adds it to the module.
 	*
@@ -59,14 +70,18 @@ class DR_SCRIPT_EXPORT ScriptEngine : public Module<ScriptEngine>
 	*/
 	Int8
 	addScript(const TString& scriptName,
-            const TString& script);
+            const TString& script,
+            const TString& module);
+  
+  Int8
+  compile(TString module);
 
 	/**
 	* Compiles the script.
 	*
 	*/
-	Int8
-	compileScript();
+	/*Int8
+	compileScript();*/
 
 	/**
 	* Create the context and sets the LineCallback function.
@@ -112,12 +127,9 @@ class DR_SCRIPT_EXPORT ScriptEngine : public Module<ScriptEngine>
 	*
 	* @param scriptMessage
 	*   Message from the script's engine.
-	*
-	* @param param
-	*   Aditional parameters from the message. 
 	*/
 	void
-	messageCallback(const asSMessageInfo *scriptMessage, void *param);
+	messageCallback(const asSMessageInfo *scriptMessage);
 
 	/**
 	* Adds a custom script log into the logger.
@@ -128,18 +140,25 @@ class DR_SCRIPT_EXPORT ScriptEngine : public Module<ScriptEngine>
 	* @param type
 	*   Type of the message.
 	*/
-	void 
+	static void 
 	addScriptLog(const TString& log, const int type);
 
   asIScriptEngine* m_scriptEngine;
-	unsigned long timeout = 666;
-	Time* m_scriptTime;
-	Logger* m_scriptLogger;
+	unsigned long timeout = 5000;
+	
+  asIScriptContext* m_scriptContext;
+  std::vector<asIScriptModule*> m_scriptModules;
+
+ protected:
+  void
+  onStartUp() override { }
+
+  void
+  onShutDown() override {}
+	
  private:
 	//asIScriptEngine* m_scriptEngine;
-	asIScriptContext* m_scriptContext;
 	asIScriptFunction* m_scriptFunction;
-	asIScriptModule* m_scriptModule;
 };
 
 }

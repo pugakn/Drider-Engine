@@ -13,7 +13,7 @@ namespace driderSDK {
 	}
 
   void
-	ScriptCore::init(void* pData, void* extraData) {
+	ScriptCore::init(void*, void*) {
 
 	}
 

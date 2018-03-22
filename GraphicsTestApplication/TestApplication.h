@@ -20,12 +20,15 @@
 #include <dr_fmod_channel.h>
 #include <dr_fmod_soundSystem.h>
 
+#include <dr_context_manager.h>
+#include <dr_script_engine.h>
+
 namespace driderSDK {
 
 class Technique;
 class StaticMeshTechnique;
 class AnimationTechnique;
-  
+
 class TestApplication : public Application
 {
  public:
@@ -48,12 +51,16 @@ class TestApplication : public Application
   void initInput();
   void initResources();
   void initSceneGraph();
+  void initScriptEngine();
 
   void printHerarchy(std::shared_ptr<GameObject> obj, const TString& off);
 
   void toggleAABBDebug(std::shared_ptr<GameObject> obj);
 
   void toggleSkeletonDebug(std::shared_ptr<GameObject> obj);
+
+  void 
+  addScript(TString name);
 
   bool m_debugList;
   //SoundAPI* soundDriver;
@@ -76,6 +83,10 @@ class TestApplication : public Application
   std::unique_ptr<Technique> m_linesTech;
   std::shared_ptr<GameObject> m_joker;
   std::shared_ptr<GameObject> m_wep;
+
+  //OneRef myRef;
+  Int32 int1 = 1;
+  Int32 int2 = 2;
 };
 
 }

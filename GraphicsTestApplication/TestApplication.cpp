@@ -38,6 +38,9 @@
 #include "LinesTechnique.h"
 #include "AnimationTechnique.h"
 
+#include <dr_script_core.h>
+#include <dr_script_component.h>
+
 namespace driderSDK {
 
 TestApplication::TestApplication() {}
@@ -56,6 +59,7 @@ TestApplication::postInit() {
   SceneGraph::startUp();
   Time::startUp();
   ResourceManager::startUp();
+  ScriptEngine::startUp();
   
   m_queryOrder = QUERY_ORDER::kFrontToBack;
 
@@ -118,8 +122,8 @@ TestApplication::postInit() {
 
   initInput();
   initSceneGraph();
-  
-  
+  initScriptEngine();
+
   /*SceneGraph::addObject(m_leftCam);
   */SceneGraph::addObject(m_upCam);
   m_leftCam->setParent(m_joker);
@@ -415,7 +419,17 @@ TestApplication::initInput() {
                         bindTSD);
 
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
-                         KEY_CODE::kJ, toggleWireframe);
+                        KEY_CODE::kJ, toggleWireframe);
+                    
+                        
+    
+  auto keyPressed = [&]() {
+    return true;
+  };
+  
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::k0, keyPressed);
+
 }
 
 void 
@@ -434,6 +448,11 @@ TestApplication::initResources() {
   ResourceManager::loadResource(_T("Walking.fbx"));
 
   ResourceManager::loadResource(_T("Weapons-of-survival.fbx"));
+
+  ResourceManager::loadResource(_T("test.as"));
+
+  ResourceManager::loadResource(_T("script1.as"));
+  ResourceManager::loadResource(_T("script2.as"));
 }
 
 void 
@@ -542,6 +561,107 @@ TestApplication::initSceneGraph() {
 }
 
 void 
+TestApplication::initScriptEngine() {
+  Int32 result;
+
+  /*//scriptEngine->addScriptLog(_T("hola"), 0);
+  ScriptEngine* scriptEngine = nullptr;
+
+  if (!ScriptEngine::isStarted()) {
+    ScriptEngine::startUp();
+  }
+
+  scriptEngine = ScriptEngine::instancePtr();
+
+  result = scriptEngine->createEngine(); 
+
+  result = Keyboard::registerFunctions(scriptEngine);
+
+  Vector3D vector;
+  result = vector.registerFunctions(scriptEngine);
+  
+  result = m_activeCam->getTransform().registerFunctions(scriptEngine);
+  result = scriptEngine->m_scriptEngine->RegisterGlobalProperty("Transform transform",
+                                                                &m_activeCam->getTransform());
+
+  result = Time::registerFunctions(scriptEngine);
+
+  result = scriptEngine->configureContext();
+
+  auto camScript = m_camera->createComponent<ScriptComponent>();
+  auto script = std::dynamic_pointer_cast<ScriptCore>(ResourceManager::getReference(_T("test.as")));
+  camScript->addScript(_T("test.as"), script->getScript());
+
+  result = scriptEngine->compileScript();
+  camScript->start();
+
+  result = scriptEngine->configureContext();
+
+  auto camScript = m_camera->createComponent<ScriptComponent>();
+  auto script = std::dynamic_pointer_cast<ScriptCore>(ResourceManager::getReference(_T("test.as")));
+  camScript->addScript(_T("test.as"), script->getScript());
+
+  result = scriptEngine->compileScript();
+  camScript->start();*/
+  //Create context manager and set time
+  ContextManager* ctxMag = nullptr;
+  if(!ContextManager::isStarted())  {
+    ContextManager::startUp();
+  }
+  ctxMag = ContextManager::instancePtr();
+
+  //Create the ScriptEngine
+  ScriptEngine* scriptEngine = nullptr;
+  if (!ScriptEngine::isStarted()) {
+    ScriptEngine::startUp();
+  }
+  scriptEngine = ScriptEngine::instancePtr();
+  result = scriptEngine->createEngine();
+
+  //Configurate engine
+  result = scriptEngine->configurateEngine(ctxMag);
+
+  //Register all functions
+  result = Keyboard::registerFunctions(scriptEngine);
+  Vector3D vector;
+  result = vector.registerFunctions(scriptEngine);
+  result = m_activeCam->getTransform().registerFunctions(scriptEngine);
+  
+  result = Time::registerFunctions(scriptEngine);
+
+  //Add, register global properties and compile scripts
+  auto camScript = m_camera->createComponent<ScriptComponent>();
+  auto rScript1 = ResourceManager::getReference(_T("script1.as"));
+  auto Script1 = std::dynamic_pointer_cast<ScriptCore>(rScript1);
+  /*result = scriptEngine->m_scriptEngine->RegisterGlobalProperty("Transform transform",
+                                                                &m_activeCam->getTransform());*/
+  result = scriptEngine->m_scriptEngine->SetDefaultNamespace("script1");
+
+  result = scriptEngine->m_scriptEngine->RegisterGlobalProperty("int globalVar",
+                                                                &int1);
+  camScript->addScript(Script1->getName(),
+                       Script1->getScript(),
+                       Script1->getName());
+                                                           
+  camScript->start();
+  
+  //Add, register global properties and compile scripts
+  auto jokerScript = m_joker->createComponent<ScriptComponent>();
+  auto rScript2 = ResourceManager::getReference(_T("script2.as"));
+  auto Script2 = std::dynamic_pointer_cast<ScriptCore>(rScript2);
+  result = scriptEngine->m_scriptEngine->SetDefaultNamespace("script2");
+
+  result = scriptEngine->m_scriptEngine->RegisterGlobalProperty("int globalVar",
+                                                                &int2);
+  jokerScript->addScript(Script2->getName(),
+                         Script2->getScript(),
+                         Script2->getName());
+
+  jokerScript->start();
+
+}
+
+void 
 TestApplication::printHerarchy(std::shared_ptr<GameObject> obj, 
                                     const TString & off) {
     Logger::addLog(off + obj->getName());
@@ -593,6 +713,16 @@ TestApplication::toggleSkeletonDebug(std::shared_ptr<GameObject> go) {
   {
     toggleSkeletonDebug(child);
   }
+}
+
+void
+TestApplication::addScript(TString name) {
+  auto script = std::dynamic_pointer_cast<ScriptCore>
+    (ResourceManager::getReference(name));
+
+  Int32 result = ScriptEngine::instance().addScript(name,
+                                                    script->getScript(),
+                                                    _T("module"));
 }
 
 }
