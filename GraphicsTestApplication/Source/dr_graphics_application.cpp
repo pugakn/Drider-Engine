@@ -40,7 +40,10 @@
 
 namespace driderSDK {
 
-GraphicsApplication::GraphicsApplication() : m_drawMeshes(true) {}
+GraphicsApplication::GraphicsApplication() 
+  : m_drawMeshes(true), 
+    m_lockView(true) 
+{}
 
 GraphicsApplication::~GraphicsApplication() {}
 
@@ -79,7 +82,10 @@ GraphicsApplication::postUpdate() {
   }
 
   playerMovement();
-  playerRotation();
+
+  if (!m_lockView) {
+    playerRotation();
+  }
 
   SceneGraph::update();
 }
@@ -183,13 +189,13 @@ void
 GraphicsApplication::initInputCallbacks() {
 
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
-                        KEY_CODE::kS,
+                        KEY_CODE::k2,
                         std::bind(&GraphicsApplication::toggleSkeletonView,
                                   this,
                                   SceneGraph::getRoot().get())); 
 
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
-                        KEY_CODE::kW,
+                        KEY_CODE::k3,
                         std::bind(&GraphicsApplication::toggleWireframe,
                                   this)); 
 
@@ -199,13 +205,13 @@ GraphicsApplication::initInputCallbacks() {
                                   this)); 
 
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
-                        KEY_CODE::kA,
+                        KEY_CODE::k1,
                         std::bind(&GraphicsApplication::toggleAABBDebug,
                                   this, 
                                   SceneGraph::getRoot().get())); 
 
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
-                        KEY_CODE::kM,
+                        KEY_CODE::k4,
                         [&](){ m_drawMeshes = !m_drawMeshes; });
 
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
@@ -219,6 +225,11 @@ GraphicsApplication::initInputCallbacks() {
                         KEY_CODE::kR, 
                         std::bind(&GraphicsApplication::recompileShaders,
                                   this));
+  
+
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kV,
+                        [&](){ m_lockView = !m_lockView; });
 }
 
 void 
@@ -298,7 +309,7 @@ GraphicsApplication::createScene() {
   
   m_right = walkerObj.get();
 
-  Int32 copies = 200;
+  Int32 copies = 1;
 
   std::mt19937 mt(std::random_device{}());
   std::uniform_real_distribution<float> dt(-2000, 2000);
@@ -467,19 +478,19 @@ GraphicsApplication::playerMovement() {
   direction.normalize();
   left.normalize();
 
-  if (Keyboard::isKeyDown(KEY_CODE::kLEFT)) {
+  if (Keyboard::isKeyDown(KEY_CODE::kA)) {
     strafe += velocity;
   }
 
-  if (Keyboard::isKeyDown(KEY_CODE::kRIGHT)) {
+  if (Keyboard::isKeyDown(KEY_CODE::kD)) {
     strafe -= velocity;
   }
 
-  if (Keyboard::isKeyDown(KEY_CODE::kUP)) {
+  if (Keyboard::isKeyDown(KEY_CODE::kW)) {
     forward += velocity;
   }
 
-  if (Keyboard::isKeyDown(KEY_CODE::kDOWN)) {
+  if (Keyboard::isKeyDown(KEY_CODE::kS)) {
     forward -= velocity;
   }  
   
@@ -510,7 +521,8 @@ GraphicsApplication::playerRotation() {
 
   //auto angles = m_cameraHolder->getTransform().getEulerAngles();
   
-  ry = Math::clamp(ry + dx, -cy, cy);
+  //ry = Math::clamp(ry + dx, -cy, cy);
+  ry += dx;
   rx = Math::clamp(rx + dy, -cx, cx);
  
   m_cameraHolder->getTransform().setRotation({rx, ry, 0});

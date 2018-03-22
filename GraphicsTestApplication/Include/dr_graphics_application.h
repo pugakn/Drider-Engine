@@ -86,6 +86,7 @@ private:
 
   TString m_camNames[2];
 
+  bool m_lockView;
   bool m_drawMeshes;
   GameObject* m_right;
   GameObject* m_player;

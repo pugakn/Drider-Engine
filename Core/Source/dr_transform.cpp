@@ -266,9 +266,9 @@ Transform::invalidateRotation() {
 void
 Transform::update() const {
   m_outdatedTransform = false;
-  //m_transform.identity();
-  m_transform = getRotation();
+  m_transform.identity();
   m_transform.Scale(m_scale);
+  m_transform *= getRotation();
   m_transform.Translation(m_position);
 }
 
