@@ -1,24 +1,18 @@
 
 Total count
-PSF        : 12
-RET        : 811
-CALLSYS    : 12
-SUSPEND    : 815
-CpyGtoV4   : 2
-PGA        : 4
-iTOi64     : 2
-PshV8      : 2
 
 Never executed
 PopPtr    
 PshGPtr   
 PshC4     
 PshV4     
+PSF       
 SwapPtr   
 NOT       
 PshG4     
 LdGRdR4   
 CALL      
+RET       
 JMP       
 JZ        
 JNZ       
@@ -69,7 +63,9 @@ JMPP
 PopRPtr   
 PshRPtr   
 STR       
+CALLSYS   
 CALLBND   
+SUSPEND   
 ALLOC     
 FREE      
 LOADOBJ   
@@ -93,6 +89,7 @@ CpyVtoR8
 CpyVtoG4  
 CpyRtoV4  
 CpyRtoV8  
+CpyGtoV4  
 WRTV1     
 WRTV2     
 WRTV4     
@@ -103,6 +100,7 @@ RDR4
 RDR8      
 LDG       
 LDV       
+PGA       
 CmpPtr    
 VAR       
 iTOf      
@@ -151,6 +149,7 @@ SetV2
 Cast      
 i64TOi    
 uTOi64    
+iTOi64    
 fTOi64    
 dTOi64    
 fTOu64    
@@ -182,6 +181,7 @@ JitEntry
 CallPtr   
 FuncPtr   
 LoadThisR 
+PshV8     
 DIVu      
 MODu      
 DIVu64    
@@ -205,17 +205,3 @@ POWu64
 Thiscall1 
 
 Sequences
-PSF       , CALLSYS    : 10
-PSF       , PGA        : 2
-RET       , SUSPEND    : 810
-CALLSYS   , PSF        : 8
-CALLSYS   , SUSPEND    : 4
-SUSPEND   , RET        : 811
-SUSPEND   , CpyGtoV4   : 2
-SUSPEND   , PGA        : 2
-CpyGtoV4  , iTOi64     : 2
-PGA       , PSF        : 2
-PGA       , CALLSYS    : 2
-iTOi64    , PshV8      : 2
-PshV8     , PSF        : 2
-LABEL     , SUSPEND    : 1
