@@ -223,7 +223,10 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   *   The number of children
   */
   SizeT
-  getChildrenCount();
+  getChildrenCount() const;
+
+  UInt32
+  getID() const;
 
   void 
   setStatic(bool _static);
@@ -252,6 +255,7 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   Transform m_localTransform;
   TString m_name;
   WeakGameObj m_parent;
+  UInt32 m_id;
 };
 
 }
