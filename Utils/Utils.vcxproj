@@ -144,7 +144,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Include\dr_class_id.h" />
+    <ClInclude Include="Include\dr_id_object.h" />
     <ClInclude Include="Include\dr_compressor.h" />
     <ClInclude Include="Include\dr_defines.h" />
     <ClInclude Include="Include\dr_export_script.h" />

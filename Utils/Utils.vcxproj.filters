@@ -60,7 +60,7 @@
     <ClInclude Include="Include\dr_module.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\dr_class_id.h">
+    <ClInclude Include="Include\dr_id_object.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

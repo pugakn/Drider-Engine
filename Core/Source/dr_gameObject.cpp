@@ -2,7 +2,6 @@
 
 #include <algorithm>
 
-#include <dr_class_id.h>
 #include <dr_logger.h>
 
 #include "dr_gameComponent.h"
@@ -13,8 +12,7 @@ GameObject::GameObject(const TString& name)
   : m_name(name),
     m_isStatic(false),
     m_destroyed(false),
-    m_change(false),
-    m_id(UniqueID<>::get())
+    m_change(false)
 {}
 
 GameObject::~GameObject() {
@@ -259,10 +257,6 @@ GameObject::findNode(const TString & nodeName) {
 SizeT 
 GameObject::getChildrenCount() const {
   return m_children.size();
-}
-
-UInt32 GameObject::getID() const {
-  return m_id;
 }
 
 void 

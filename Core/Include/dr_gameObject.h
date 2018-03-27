@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include <dr_id_object.h>
 #include <dr_memory.h>
 #include <dr_transform.h>
 
@@ -13,7 +14,8 @@ namespace driderSDK {
 class GameComponent;
 
 class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject>,  
-                                  public EnableObject                  
+                                  public EnableObject,
+                                  public IDObject
 { 
  public:
   using SharedGameObj = std::shared_ptr<GameObject>;
@@ -225,9 +227,6 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   SizeT
   getChildrenCount() const;
 
-  UInt32
-  getID() const;
-
   void 
   setStatic(bool _static);
 
@@ -255,7 +254,6 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   Transform m_localTransform;
   TString m_name;
   WeakGameObj m_parent;
-  UInt32 m_id;
 };
 
 }
