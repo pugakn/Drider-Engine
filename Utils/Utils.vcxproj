@@ -167,6 +167,7 @@
     <ClCompile Include="Source\dr_file_system.cpp" />
     <ClCompile Include="Source\dr_file_system_linux.cpp" />
     <ClCompile Include="Source\dr_file_system_win.cpp" />
+    <ClCompile Include="Source\dr_id_object.cpp" />
     <ClCompile Include="Source\dr_logger.cpp" />
     <ClCompile Include="Source\dr_string_utils.cpp" />
     <ClCompile Include="Source\dr_time.cpp" />

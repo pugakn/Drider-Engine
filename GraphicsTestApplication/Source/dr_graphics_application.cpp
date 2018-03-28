@@ -105,16 +105,18 @@ GraphicsApplication::postRender() {
 
   auto& mainC = CameraManager::getCamera(m_camNames[0]);
 
-  auto queryRes = SceneGraph::query(*mainC, 
-                                    QUERY_ORDER::kBackToFront, 
-                                    queryFlags);
 
 
   auto& dc = GraphicsAPI::getDeviceContext();
 
-  dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
 
   if (m_drawMeshes) {
+
+    auto queryRes = SceneGraph::query(*mainC, 
+                                      QUERY_ORDER::kBackToFront, 
+                                      queryFlags);
+    
+    dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
 
     for (auto& queryObj : queryRes) {
     
@@ -309,7 +311,7 @@ GraphicsApplication::createScene() {
   
   m_right = walkerObj.get();
 
-  Int32 copies = 1;
+  Int32 copies = 250;
 
   std::mt19937 mt(std::random_device{}());
   std::uniform_real_distribution<float> dt(-2000, 2000);

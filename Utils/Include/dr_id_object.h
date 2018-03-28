@@ -18,11 +18,11 @@ public:
   }
 };
 
-class IDObject
+class DR_UTIL_EXPORT IDObject
 {
 public:
-  IDObject() : m_id(IDDispatcher<UInt32>::get())
-  {}
+
+  IDObject();
 
   FORCEINLINE UInt32 getID() const
   {
