@@ -551,7 +551,15 @@ class DR_MATH_EXPORT Vector3D
   
   result = REGISTER_OP_CONST(Vector3D, operator==, opEquals, const Vector3D&, bool, "bool", out)
   //result = REGISTER_OP(Vector3D, operator!=, opEquals, const Vector3D&, bool, "bool", out)
-    
+  result = scriptEngine->m_scriptEngine->RegisterObjectProperty("Vector3D",
+                                                                "float x",
+                                                                asOFFSET(Vector3D, x));
+  result = scriptEngine->m_scriptEngine->RegisterObjectProperty("Vector3D",
+                                                                "float y",
+                                                                asOFFSET(Vector3D, y));
+  result = scriptEngine->m_scriptEngine->RegisterObjectProperty("Vector3D",
+                                                                "float z",
+                                                                asOFFSET(Vector3D, x));
   
 
   END_REGISTER

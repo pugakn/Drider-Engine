@@ -148,10 +148,10 @@ namespace driderSDK
 																					asFUNCTION(tStringIndex),
 																					asCALL_CDECL_OBJLAST);
 		//Conversions
-		result = engine->RegisterObjectMethod("TString",
+		/*result = engine->RegisterObjectMethod("TString",
 																					"",
 																					asFUNCTION(),
-																					asCALL_CDECL_OBJLAST);
+																					asCALL_CDECL_OBJLAST);*/
 
 		/*
 			TO DO...

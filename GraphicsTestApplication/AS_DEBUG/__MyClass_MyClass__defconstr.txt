@@ -1,0 +1,9 @@
+MyClass::MyClass()
+
+Temps: 
+
+Variables: 
+ 000: MyClass this
+
+
+    0   0 *    RET      1

@@ -70,9 +70,25 @@ class DR_SCRIPT_EXPORT ContextManager : public Module<ContextManager> {
     * information from the context after it the script has finished. 
     */
     asIScriptContext *
-    addContext(asIScriptEngine *engine, 
-               asIScriptFunction *func, 
-               bool keepCtxAfterExecution = false);
+    addContext(asIScriptEngine *engine,
+               TString moduleName);
+    
+    /**
+    * Add script seccion
+    */
+    void
+    addScript(asIScriptEngine *engine,
+              TString moduleName,
+              TString scriptName,
+              TString script);
+
+    /**
+    * Build a module
+    */
+    void
+    buildModule(asIScriptEngine *engine,
+                TString moduleName);
+
     /**
     * If the context was kept after the execution, this method must be 
     * called when the application is done with the context so it can be

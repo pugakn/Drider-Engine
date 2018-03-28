@@ -1,13 +1,13 @@
 
 Total count
-PSF        : 12
-RET        : 811
-CALLSYS    : 12
-SUSPEND    : 815
-CpyGtoV4   : 2
-PGA        : 4
-iTOi64     : 2
-PshV8      : 2
+PSF        : 6
+RET        : 225
+CALLSYS    : 6
+SUSPEND    : 227
+CpyGtoV4   : 1
+PGA        : 2
+iTOi64     : 1
+PshV8      : 1
 
 Never executed
 PopPtr    
@@ -205,17 +205,17 @@ POWu64
 Thiscall1 
 
 Sequences
-PSF       , CALLSYS    : 10
-PSF       , PGA        : 2
-RET       , SUSPEND    : 810
-CALLSYS   , PSF        : 8
-CALLSYS   , SUSPEND    : 4
-SUSPEND   , RET        : 811
-SUSPEND   , CpyGtoV4   : 2
-SUSPEND   , PGA        : 2
-CpyGtoV4  , iTOi64     : 2
-PGA       , PSF        : 2
-PGA       , CALLSYS    : 2
-iTOi64    , PshV8      : 2
-PshV8     , PSF        : 2
+PSF       , CALLSYS    : 5
+PSF       , PGA        : 1
+RET       , SUSPEND    : 224
+CALLSYS   , PSF        : 4
+CALLSYS   , SUSPEND    : 2
+SUSPEND   , RET        : 225
+SUSPEND   , CpyGtoV4   : 1
+SUSPEND   , PGA        : 1
+CpyGtoV4  , iTOi64     : 1
+PGA       , PSF        : 1
+PGA       , CALLSYS    : 1
+iTOi64    , PshV8      : 1
+PshV8     , PSF        : 1
 LABEL     , SUSPEND    : 1

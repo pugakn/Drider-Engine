@@ -26,12 +26,12 @@ ScriptComponent::onCreate() {
 
 void
 ScriptComponent::onUpdate() {
-  ctxMag->addContext(scriptEngine->m_scriptEngine,
+  /*ctxMag->addContext(scriptEngine->m_scriptEngine,
                      scriptEngine->m_scriptEngine->GetModule(
                      StringUtils::toString(m_module).c_str())->GetFunctionByDecl(
                      "void Update()"));
 
-  Int8 result = ctxMag->executeScripts();
+  Int8 result = ctxMag->executeScripts();*/
 }
 
 /*********
@@ -73,17 +73,17 @@ ScriptComponent::cloneIn(GameObject& _go) {
 void
 ScriptComponent::start() {
   //Add context
-  ctxMag->addContext(scriptEngine->m_scriptEngine,
+  /*ctxMag->addContext(scriptEngine->m_scriptEngine,
                      scriptEngine->m_scriptEngine->GetModule(
                      StringUtils::toString(m_module).c_str())->GetFunctionByDecl(
                      "void Start()"));
 
-  Int8 result = ctxMag->executeScripts();
+  Int8 result = ctxMag->executeScripts();*/
 }
 
 void
 ScriptComponent::onKeyDown(KEY_CODE::E key) {
-  asIScriptContext *ctx = ctxMag->addContext(scriptEngine->m_scriptEngine,
+  /*asIScriptContext *ctx = ctxMag->addContext(scriptEngine->m_scriptEngine,
                                              scriptEngine->m_scriptEngine->GetModule(
                                              StringUtils::toString(m_module).c_str())->GetFunctionByDecl(
                                                "void onKeyDown(KeyCode)"));
@@ -91,7 +91,7 @@ ScriptComponent::onKeyDown(KEY_CODE::E key) {
     Int8 result;
     result = ctx->SetArgDWord(0, (Int32)key);
     result = ctxMag->executeScripts();
-  }
+  }*/
 }
 
 

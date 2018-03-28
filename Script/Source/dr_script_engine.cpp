@@ -82,8 +82,8 @@ ScriptEngine::addScript(const TString& scriptName,
                                                    asGM_CREATE_IF_NOT_EXISTS);
 
 	Int8 result = mod->AddScriptSection(StringUtils::toString(scriptName).c_str(),
-                                                         StringUtils::toString(script).c_str(),
-                                                         script.length());
+                                      StringUtils::toString(script).c_str(),
+                                      script.length());
 
 	if(result < 0) {
 		addScriptLog(_T("AddScriptSection failed on file ") + scriptName, asMSGTYPE_ERROR);
@@ -149,7 +149,7 @@ ScriptEngine::configureContext() {
 Int8
 ScriptEngine::prepareFunction(TString function) {
 
-	auto modul = m_scriptEngine->GetModule("module");
+	/*auto modul = m_scriptEngine->GetModule("module");
   m_scriptFunction = modul->GetFunctionByName(StringUtils::toString(function).c_str());
 	if (m_scriptFunction == 0)
 	{
@@ -168,7 +168,8 @@ ScriptEngine::prepareFunction(TString function) {
 		return -2;
 	}
 
-	return result;
+	return result;*/
+  return 0;
 }
 
 Int8

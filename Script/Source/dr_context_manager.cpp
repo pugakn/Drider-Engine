@@ -61,8 +61,7 @@ ContextManager::nextCoRoutine() {
 
 asIScriptContext *
 ContextManager::addContext(asIScriptEngine *engine,
-                           asIScriptFunction *func,
-                           bool keepCtxAfterExecution) {
+                           TString moduleName) {
 
   // Use RequestContext instead of CreateContext so we can take 
   // advantage of possible context pooling configured with the engine
@@ -70,14 +69,10 @@ ContextManager::addContext(asIScriptEngine *engine,
   if (ctx == 0)
     return 0;
 
-  // Prepare it to execute the function
-  int r = ctx->Prepare(func);
-  if (r < 0)
-  {
-    engine->ReturnContext(ctx);
-    return 0;
-  }
-
+  // Get the object type
+  asIScriptModule *module = engine->GetModule(StringUtils::toString(moduleName).c_str(),
+                                              asGM_CREATE_IF_NOT_EXISTS);
+  
   // Set the context manager as user data with the context so it
   // can be retrieved by the functions registered with the engine
   ctx->SetUserData(this, CONTEXT_MGR);
@@ -97,11 +92,34 @@ ContextManager::addContext(asIScriptEngine *engine,
   info->coRoutines.push_back(ctx);
   info->currentCoRoutine = 0;
   info->sleepUntil = 0;
-  info->keepCtxAfterExecution = keepCtxAfterExecution ? ctx : 0;
+  info->keepCtxAfterExecution = 0;
   m_threads.push_back(info);
 
   return ctx;
 
+}
+
+void
+ContextManager::addScript(asIScriptEngine *engine,
+                          TString moduleName,
+                          TString scriptName,
+                          TString script) {
+
+  asIScriptModule *mod = engine->GetModule(StringUtils::toString(
+                                           moduleName).c_str());
+
+  Int32 r = mod->AddScriptSection(StringUtils::toString(moduleName).c_str(),
+                                  StringUtils::toString(scriptName).c_str(),
+                                  script.length());
+}
+
+void
+ContextManager::buildModule(asIScriptEngine *engine,
+                            TString moduleName) {
+  asIScriptModule *mod = engine->GetModule(StringUtils::toString(
+                                           moduleName).c_str());
+
+  Int8 r = mod->Build();
 }
 
 void

@@ -158,7 +158,7 @@ class DR_SCRIPT_EXPORT ScriptEngine : public Module<ScriptEngine>
 	
  private:
 	//asIScriptEngine* m_scriptEngine;
-	asIScriptFunction* m_scriptFunction;
+	//asIScriptFunction* m_scriptFunction;
 };
 
 }

@@ -1,0 +1,51 @@
+void script1::Start()
+
+Temps: 1, 2, 9, 16
+
+Variables: 
+ 000: script1 this
+ 009: string {noname}
+ 016: string {noname}
+
+
+- 26,3 -
+    0  16 *    SUSPEND
+    1  16 *    PshVPtr  v0
+    2  17 *    ADDSi    v20, 134217745
+    4  17 *    RDSPtr
+    5  17 *    ADDSi    v136, 67108879
+    7  17 *    ADDSi    v0, 67108878
+    9  17 *    PopRPtr
+   10  16 *    RDR4     v1
+   11  16 *    SUBIf    v1, v1, 10.000000
+   14  16 *    WRTV4    v1
+- 27,3 -
+   15  16 *    SUSPEND
+   16  16 *    PGA      231317240
+   18  17 *    PSF      v9
+   19  18 *    CALLSYS  20           (string::string(const string&in))
+               ObjInfo  v9, 1
+   21  16 *    PshVPtr  v0
+   22  17 *    ADDSi    v20, 134217745
+   24  17 *    RDSPtr
+   25  17 *    ADDSi    v136, 67108879
+   27  17 *    ADDSi    v0, 67108878
+   29  17 *    PopRPtr
+   30  16 *    RDR4     v2
+   31  16 *    PshV4    v2
+   32  17 *    PSF      v16
+   33  18 *    PSF      v9
+   34  19 *    CALLSYS  40           (string string::opAdd(float) const)
+               ObjInfo  v16, 1
+   36  16 *    PSF      v9
+   37  17 *    CALLSYS  21           (string::~string())
+               ObjInfo  v9, 0
+   39  16 *    PSF      v16
+   40  17 *    CALLSYS  69           (void Print(string&in))
+   42  16 *    PSF      v16
+   43  17 *    CALLSYS  21           (string::~string())
+- 28,3 -
+               ObjInfo  v16, 0
+   45  16 *    SUSPEND
+            0:
+   46  16 *    RET      1

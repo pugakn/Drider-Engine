@@ -1,16 +1,42 @@
-void Start() {
-	Print("Start script1: ");
-	Print(script1::globalVar + "\n");
+class MontiBehavior {
+
+	void Start() {
+		Print("Start base\n");
+	}
+
+	void Update() {
+		Print("Update base\n");
+	}
+
+	void onKeyDown(KeyCode key) {
+		Print("onKeyDown base\n");
+	}
+
+	private void SetTransform(Transform@ trans) {
+		@transform = trans;
+	}
+
+	Transform@ transform;
+
 }
 
-void Update() {
-	//Print("Update script1: \n");
-	/*if(isKeyDown(k0)) {
-		Print("Update script1: \n");
-	}*/
+class script1 : MontiBehavior {
+
+	void Start() override {
+		this.transform.m_position.x -= 10;
+		Print("Start derived, x = " + this.transform.m_position.x);
+	}
+
+	void Update() override {
+		Print("Update derived\n");
+	}
+
+	void onKeyDown(KeyCode key) override {
+		if(key == kD) {
+			Vector3D vec(1.0,0.0,0.0);
+			this.transform.move(vec);
+		}
+	}
 }
 
-void onKeyDown(KeyCode key) {
-	if(key == k0)
-		Print("onKeyDown\n");
-}
+

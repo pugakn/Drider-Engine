@@ -1,0 +1,23 @@
+void MontiBehavior::SetTransform(Transform@)
+
+Temps: 
+
+Variables: 
+ -001: Transform@ trans
+ 000: MontiBehavior this
+
+
+- 16,3 -
+               VarDecl  0
+    0   0 *    SUSPEND
+    1   0 *    VAR      v-1
+    2   1 *    PshVPtr  v0
+    3   2 *    ADDSi    v20, 134217744
+    5   2 *    GETOBJREF 1
+    6   2 *    REFCPY   0x73cdaa0
+    8   1 *    PopPtr
+- 17,3 -
+    9   0 *    SUSPEND
+            0:
+   10   0 *    FREE     v-1, 121428640
+   12   0 *    RET      2
