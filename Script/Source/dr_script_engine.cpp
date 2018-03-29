@@ -8,7 +8,6 @@
 #include <vector>
 #include <dr_context_manager.h>
 
-
 namespace driderSDK {
 
 unsigned long g_timeout;
@@ -100,104 +99,65 @@ ScriptEngine::addScript(const TString& scriptName,
 	return result;
 }
 
-Int8
-ScriptEngine::compile(TString module) {
-  asIScriptModule *mod = m_scriptEngine->GetModule(StringUtils::toString(module).c_str(),
-                                                   asGM_CREATE_IF_NOT_EXISTS);
+void
+ScriptEngine::getScriptObject(TString scriptName,
+                              asIScriptModule *mod,
+                              asIScriptObject **objectRef,
+                              asITypeInfo **typeRef) {
+  //Get type of the script object
+  asITypeInfo* type = mod->GetTypeInfoByDecl(StringUtils::toString(
+                                             scriptName).c_str());
 
-  Int8 result = mod->Build();
+  // Get the factory function from the object type
+  String path = StringUtils::toString(scriptName) + " @" 
+                + StringUtils::toString(scriptName) + "()";
+  asIScriptFunction *factory = type->GetFactoryByDecl(path.c_str());
 
-  /*FileSystem fileSystem;
-  File file;
-  fileSystem.CreateAndOpen(module, 
-                           file);*/
-  return result;
+  // Prepare the context to call the factory function
+  m_scriptContext->Prepare(factory);
+  // Execute the call
+  m_scriptContext->Execute();
+  // Get the object that was created
+  asIScriptObject *obj = *(asIScriptObject**)m_scriptContext->GetAddressOfReturnValue();
+  // If you're going to store the object you must increase the reference,
+  // otherwise it will be destroyed when the context is reused or destroyed.
+  obj->AddRef();
+  
+  *objectRef = obj;
+  *typeRef = type;
 }
 
-/*Int8
-ScriptEngine::compileScript() {
-	Int8 result = m_scriptModule->Build();
-	if(result < 0) {
-		addScriptLog(_T("Failed to compile script."), asMSGTYPE_ERROR);
-		return -1;
-	}
-	return 0;
-}*/
-
-Int8
-ScriptEngine::configureContext() {
-	m_scriptContext = m_scriptEngine->CreateContext();
-	if(m_scriptContext == 0) {
-		addScriptLog(_T("Failed to create script context."), asMSGTYPE_ERROR);
-		m_scriptEngine->Release();
-		return -1;
-	}
-
-	Int8 result = m_scriptContext->SetLineCallback(asMETHOD(ScriptEngine, lineCallback),
-																								 &g_timeout,
-																								 asCALL_THISCALL);
-	if(result < 0) {
-		addScriptLog(_T("Failed to set the line callback."), asMSGTYPE_ERROR);
-		m_scriptContext->Release();
-		m_scriptEngine->Release();
-		return -2;
-	}
-
-	return 0;
+void
+ScriptEngine::setObjectToScript(asITypeInfo *type,
+                                TString methodDecl,
+                                UInt32 arg,
+                                void* appObj,
+                                asIScriptObject* scriptObj) {
+  // Obtain the function object that represents the class method
+  asIScriptFunction *func = type->GetMethodByDecl(StringUtils::toString
+                                                  (methodDecl).c_str());
+  // Prepare the context for calling the method
+  Int8 result = m_scriptContext->Prepare(func);
+  result = m_scriptContext->SetArgObject(arg, appObj);
+  // Set the object pointer
+  m_scriptContext->SetObject(scriptObj);
+  // Execute the call
+  m_scriptContext->Execute();
 }
 
-Int8
-ScriptEngine::prepareFunction(TString function) {
-
-	/*auto modul = m_scriptEngine->GetModule("module");
-  m_scriptFunction = modul->GetFunctionByName(StringUtils::toString(function).c_str());
-	if (m_scriptFunction == 0)
-	{
-		addScriptLog(_T("Function : ") + function + _T(" not found."), asMSGTYPE_ERROR);
-		m_scriptContext->Release();
-		m_scriptEngine->Release();
-		return -1;
-	}
-	Int8 result = m_scriptContext->Prepare(m_scriptFunction);
-
-	if (result < 0)
-	{
-		addScriptLog(_T("Failed to prepare script context."), asMSGTYPE_ERROR);
-		m_scriptContext->Release();
-		m_scriptEngine->Release();
-		return -2;
-	}
-
-	return result;*/
-  return 0;
-}
-
-Int8
-ScriptEngine::executeCall() {
-	/*g_timeout = (unsigned long)(Time::instancePtr()->getElapsedMilli() + timeout);
-	Int8 result = m_scriptContext->Execute();			
-
-	if (result != asEXECUTION_FINISHED) {
-		if (result == asEXECUTION_ABORTED) {
-			addScriptLog(_T("The script was aborted, possibly timed out."), asMSGTYPE_ERROR);
-		}
-		if (result == asEXECUTION_SUSPENDED) {
-			addScriptLog(_T("The script was suspended."), asMSGTYPE_ERROR);
-		}
-		if (result == asEXECUTION_EXCEPTION) {
-	    TString NewLine(_T("<br>"));
-	    addScriptLog(_T("There was an exception within a script call."), asMSGTYPE_ERROR);
-			TString details = _T("Exception details:") + NewLine + _T("Function: ") + 
-												StringUtils::toTString(m_scriptFunction->GetDeclaration()) + 
-												NewLine + _T("Line: ") + 
-												StringUtils::toTString(m_scriptContext->GetExceptionLineNumber()) + 
-												NewLine + _T("Description: ") + 
-												StringUtils::toTString(m_scriptContext->GetExceptionString());
-
-			addScriptLog(details, asMSGTYPE_INFORMATION);
-		}
-	}*/
-	return -1;
+void
+ScriptEngine::executeFunction(TString function,
+                              asITypeInfo *type,
+                              asIScriptObject* scriptObj) {
+  // Obtain the function object that represents the class method
+  asIScriptFunction *func = type->GetMethodByDecl(StringUtils::toString(
+                                                  function).c_str());
+  // Prepare the context for calling the method
+  m_scriptContext->Prepare(func);
+  // Set the object pointer
+  m_scriptContext->SetObject(scriptObj);
+  // Execute the call
+  m_scriptContext->Execute();
 }
 
 void

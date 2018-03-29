@@ -73,38 +73,32 @@ class DR_SCRIPT_EXPORT ScriptEngine : public Module<ScriptEngine>
             const TString& script,
             const TString& module);
   
-  Int8
-  compile(TString module);
+  /**
+  * Gets script object
+  */
+  void
+  getScriptObject(TString scriptName,
+                  asIScriptModule *mod,
+                  asIScriptObject **objectRef,
+                  asITypeInfo **typeRef);
 
-	/**
-	* Compiles the script.
-	*
-	*/
-	/*Int8
-	compileScript();*/
-
-	/**
-	* Create the context and sets the LineCallback function.
-	*
-	*/
-	Int8
-	configureContext();
-
-	/**
-	* Create the context and sets the LineCallback function.
-	*
-	* @return
-	*	  Negative value if error.
-	*/
-	Int8
-	prepareFunction(TString function);
-
-	/**
-	* Execute a call in the context.
-	*
-	*/
-	Int8
-	executeCall();
+  /**
+  * Sets componet to a script
+  */
+  void 
+  setObjectToScript(asITypeInfo *type,
+                    TString methodDecl,
+                    UInt32 arg,
+                    void* appObj,
+                    asIScriptObject* scriptObj);
+  
+  /**
+  * Execute a script function
+  */
+  void
+  executeFunction(TString function,
+                  asITypeInfo *type,
+                  asIScriptObject* scriptObj);
 
 	/**
 	* Shut down the script's engine.
@@ -155,10 +149,6 @@ class DR_SCRIPT_EXPORT ScriptEngine : public Module<ScriptEngine>
 
   void
   onShutDown() override {}
-	
- private:
-	//asIScriptEngine* m_scriptEngine;
-	//asIScriptFunction* m_scriptFunction;
 };
 
 }

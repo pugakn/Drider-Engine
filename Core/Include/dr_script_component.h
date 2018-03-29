@@ -6,10 +6,12 @@
 namespace driderSDK {
 
 class ScriptEnine;
-class ContextManager;
+class ScriptCore;
 
 class DR_CORE_EXPORT ScriptComponent : public GameComponent {
   public:
+    using ScriptShared = std::shared_ptr<ScriptCore>;
+    
     using GameComponent::GameComponent;
     
     virtual
@@ -50,16 +52,10 @@ class DR_CORE_EXPORT ScriptComponent : public GameComponent {
     void
     onKeyDown(KEY_CODE::E key);
 
-    void
-    compileScript();
-
   private:
-    TString m_scriptName;
-    TString m_script;
-    TString m_module;
-
-    ContextManager* ctxMag = nullptr;
     ScriptEngine *scriptEngine = nullptr;
+
+    ScriptShared script;
 };
 
 }

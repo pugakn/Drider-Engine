@@ -72,22 +72,6 @@ class DR_SCRIPT_EXPORT ContextManager : public Module<ContextManager> {
     asIScriptContext *
     addContext(asIScriptEngine *engine,
                TString moduleName);
-    
-    /**
-    * Add script seccion
-    */
-    void
-    addScript(asIScriptEngine *engine,
-              TString moduleName,
-              TString scriptName,
-              TString script);
-
-    /**
-    * Build a module
-    */
-    void
-    buildModule(asIScriptEngine *engine,
-                TString moduleName);
 
     /**
     * If the context was kept after the execution, this method must be 

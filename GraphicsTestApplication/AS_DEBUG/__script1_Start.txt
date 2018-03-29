@@ -21,7 +21,7 @@ Variables:
    14  16 *    WRTV4    v1
 - 27,3 -
    15  16 *    SUSPEND
-   16  16 *    PGA      231317240
+   16  16 *    PGA      229052104
    18  17 *    PSF      v9
    19  18 *    CALLSYS  20           (string::string(const string&in))
                ObjInfo  v9, 1

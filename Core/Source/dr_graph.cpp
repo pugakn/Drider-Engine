@@ -83,13 +83,6 @@ SceneGraph::draw() {
   //instance().m_mutex.unlock();
 }
 
-void
-SceneGraph::compileScripts(SharedGameObject go) {
-  if(auto component = go->getComponent<ScriptComponent>()) {
-    go->getComponent<ScriptComponent>()->compileScript();
-  }
-}
-
 SceneGraph::QueryResult
 SceneGraph::query(Camera& camera, QUERY_ORDER::E order, UInt32 props) {
   

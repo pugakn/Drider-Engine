@@ -21,7 +21,7 @@ Variables:
     8   7 *    PshC4    0x0          (i:0, f:0)
    10   8 *    PshC4    0x3f800000          (i:1065353216, f:1)
    12   9 *    PSF      v4
-   13  10 *    CALLSYS  75           (Vector3D::Vector3D(float, float, float))
+   13  10 *    CALLSYS  76           (Vector3D::Vector3D(float, float, float))
 - 37,4 -
                ObjInfo  v4, 1
    15   6 *    SUSPEND
@@ -30,9 +30,9 @@ Variables:
    18   8 *    ADDSi    v20, 134217745
    20   8 *    RDSPtr
    21   8 *    GETREF   1
-   22   8 *    CALLSYS  96           (void Transform::move(const Vector3D&in))
+   22   8 *    CALLSYS  97           (void Transform::move(const Vector3D&in))
    24   6 *    PSF      v4
-   25   7 *    CALLSYS  73           (Vector3D::~Vector3D())
+   25   7 *    CALLSYS  74           (Vector3D::~Vector3D())
 - 39,3 -
                ObjInfo  v4, 0
             }

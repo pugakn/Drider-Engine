@@ -108,8 +108,6 @@ class DR_CORE_EXPORT SceneGraph : public Module<SceneGraph>
   draw();
   /****************/
 
-  static void
-  compileScripts(SharedGameObject go = getRoot());
  private:
   using ObjectComp = std::function<bool(SharedGameObject, SharedGameObject)>;
   using GameObjectQueue = std::priority_queue<SharedGameObject,

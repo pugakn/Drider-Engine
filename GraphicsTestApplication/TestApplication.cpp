@@ -579,10 +579,12 @@ TestApplication::initScriptEngine() {
     ScriptEngine::startUp();
   }
   scriptEngine = ScriptEngine::instancePtr();
+
+  //Create engine
   result = scriptEngine->createEngine();
 
   //Configurate engine
-  //result = scriptEngine->configurateEngine(ctxMag);
+  result = scriptEngine->configurateEngine(ctxMag);
 
   //Register all functions
   result = Keyboard::registerFunctions(scriptEngine);
@@ -591,75 +593,42 @@ TestApplication::initScriptEngine() {
   Transform transform;
   result = transform.registerFunctions(scriptEngine);
   result = Time::registerFunctions(scriptEngine);
-  //ScriptObject m;
-  //m.Register(scriptEngine);
-  //result = scriptEngine->m_scriptEngine->RegisterInterface("MontiBehavior");
 
   //Add, register global properties and compile scripts
   auto camScript = m_camera->createComponent<ScriptComponent>();
   auto rScript1 = ResourceManager::getReference(_T("script1.as"));
   auto Script1 = std::dynamic_pointer_cast<ScriptCore>(rScript1);
 
-  scriptEngine->m_scriptContext =  ctxMag->addContext(scriptEngine->m_scriptEngine,
-                                                      _T("MyModule"));
   
-  asIScriptModule *mod = scriptEngine->m_scriptEngine->GetModule("MyModule",
-                                                                 asGM_CREATE_IF_NOT_EXISTS);    
+  //Create a context
+  scriptEngine->m_scriptContext = ctxMag->addContext(scriptEngine->m_scriptEngine,
+                                                     _T("GameModule"));
+  //Section to add scripts
+  scriptEngine->addScript(Script1->getName(),
+                          Script1->getScript(),
+                          _T("GameModule"));
 
-  Int8 r = mod->AddScriptSection(StringUtils::toString(Script1->getName()).c_str(),
-                                 StringUtils::toString(Script1->getScript()).c_str(),
-                                 Script1->getScript().length());
+  asIScriptModule *mod = scriptEngine->m_scriptEngine->GetModule("GameModule");
+  
+  //Get the script object and the type object
+  asIScriptObject *obj = 0;
+  asITypeInfo *type = 0;
+  scriptEngine->getScriptObject(_T("script1"),
+                                mod,
+                                &obj,
+                                &type);
+  
+  //Add transform to script
+  scriptEngine->setObjectToScript(type,
+                                  _T("void SetTransform(Transform@ trans)"),
+                                  0,
+                                  &m_activeCam->getTransform(),
+                                  obj);
 
-  r = mod->Build();
-                        
-  asITypeInfo *type = mod->GetTypeInfoByDecl("script1");
-  // Get the factory function from the object type
-  asIScriptFunction *factory = type->GetFactoryByDecl("script1 @script1()");
-  // Prepare the context to call the factory function
-  scriptEngine->m_scriptContext->Prepare(factory);
-  // Execute the call
-  scriptEngine->m_scriptContext->Execute();
-  // Get the object that was created
-  asIScriptObject *obj = *(asIScriptObject**)scriptEngine->m_scriptContext->GetAddressOfReturnValue();
-  // If you're going to store the object you must increase the reference,
-  // otherwise it will be destroyed when the context is reused or destroyed.
-  obj->AddRef();
-
-  // Obtain the function object that represents the class method
-  asIScriptFunction *func = type->GetMethodByDecl("void SetTransform(Transform@ trans)");
-  // Prepare the context for calling the method
-  r = scriptEngine->m_scriptContext->Prepare(func);
-  r = scriptEngine->m_scriptContext->SetArgObject(0, &m_activeCam->getTransform());
-  // Set the object pointer
-  scriptEngine->m_scriptContext->SetObject(obj);
-  // Execute the call
-  scriptEngine->m_scriptContext->Execute();
-
-  // Obtain the function object that represents the class method
-  func = type->GetMethodByDecl("void Start()");
-  // Prepare the context for calling the method
-  scriptEngine->m_scriptContext->Prepare(func);
-  // Set the object pointer
-  scriptEngine->m_scriptContext->SetObject(obj);
-  // Execute the call
-  scriptEngine->m_scriptContext->Execute();
+  scriptEngine->executeFunction(_T("void Start()"),
+                                type,
+                                obj);
                                                            
-  /*camScript->start();*/
-  
-  //Add, register global properties and compile scripts
-  /*auto jokerScript = m_joker->createComponent<ScriptComponent>();
-  auto rScript2 = ResourceManager::getReference(_T("script2.as"));
-  auto Script2 = std::dynamic_pointer_cast<ScriptCore>(rScript2);
-  result = scriptEngine->m_scriptEngine->SetDefaultNamespace("script2");
-
-  result = scriptEngine->m_scriptEngine->RegisterGlobalProperty("int globalVar",
-                                                                &int2);
-  jokerScript->addScript(Script2->getName(),
-                         Script2->getScript(),
-                         Script2->getName());
-
-  jokerScript->start();*/
-
 }
 
 void 

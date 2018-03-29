@@ -99,28 +99,6 @@ ContextManager::addContext(asIScriptEngine *engine,
 
 }
 
-void
-ContextManager::addScript(asIScriptEngine *engine,
-                          TString moduleName,
-                          TString scriptName,
-                          TString script) {
-
-  asIScriptModule *mod = engine->GetModule(StringUtils::toString(
-                                           moduleName).c_str());
-
-  Int32 r = mod->AddScriptSection(StringUtils::toString(moduleName).c_str(),
-                                  StringUtils::toString(scriptName).c_str(),
-                                  script.length());
-}
-
-void
-ContextManager::buildModule(asIScriptEngine *engine,
-                            TString moduleName) {
-  asIScriptModule *mod = engine->GetModule(StringUtils::toString(
-                                           moduleName).c_str());
-
-  Int8 r = mod->Build();
-}
 
 void
 ContextManager::doneWithContext(asIScriptContext *ctx) {
