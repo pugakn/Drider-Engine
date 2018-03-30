@@ -1,51 +1,78 @@
 void script1::Start()
 
-Temps: 1, 2, 9, 16
+Temps: 4, 5, 6, 13, 20, 27
 
 Variables: 
+ 003: Vector3D vec
  000: script1 this
- 009: string {noname}
- 016: string {noname}
+ 013: string {noname}
+ 020: string {noname}
+ 027: string {noname}
 
 
-- 26,3 -
-    0  16 *    SUSPEND
-    1  16 *    PshVPtr  v0
-    2  17 *    ADDSi    v20, 134217745
-    4  17 *    RDSPtr
-    5  17 *    ADDSi    v136, 67108879
-    7  17 *    ADDSi    v0, 67108878
-    9  17 *    PopRPtr
-   10  16 *    RDR4     v1
-   11  16 *    SUBIf    v1, v1, 10.000000
-   14  16 *    WRTV4    v1
-- 27,3 -
-   15  16 *    SUSPEND
-   16  16 *    PGA      229052104
-   18  17 *    PSF      v9
-   19  18 *    CALLSYS  20           (string::string(const string&in))
-               ObjInfo  v9, 1
-   21  16 *    PshVPtr  v0
-   22  17 *    ADDSi    v20, 134217745
-   24  17 *    RDSPtr
-   25  17 *    ADDSi    v136, 67108879
-   27  17 *    ADDSi    v0, 67108878
-   29  17 *    PopRPtr
-   30  16 *    RDR4     v2
-   31  16 *    PshV4    v2
-   32  17 *    PSF      v16
-   33  18 *    PSF      v9
-   34  19 *    CALLSYS  40           (string string::opAdd(float) const)
-               ObjInfo  v16, 1
-   36  16 *    PSF      v9
-   37  17 *    CALLSYS  21           (string::~string())
-               ObjInfo  v9, 0
-   39  16 *    PSF      v16
-   40  17 *    CALLSYS  69           (void Print(string&in))
-   42  16 *    PSF      v16
-   43  17 *    CALLSYS  21           (string::~string())
-- 28,3 -
-               ObjInfo  v16, 0
-   45  16 *    SUSPEND
+- 14,3 -
+    0  27 *    SUSPEND
+               VarDecl  0
+    1  27 *    PshC4    0x0          (i:0, f:0)
+    3  28 *    PshC4    0x0          (i:0, f:0)
+    5  29 *    PshC4    0x41200000          (i:1092616192, f:10)
+    7  30 *    PSF      v3
+    8  31 *    CALLSYS  76           (Vector3D::Vector3D(float, float, float))
+- 15,3 -
+               ObjInfo  v3, 1
+   10  27 *    SUSPEND
+   11  27 *    VAR      v3
+   12  28 *    PshVPtr  v0
+   13  29 *    ADDSi    v20, 134217745
+   15  29 *    RDSPtr
+   16  29 *    GETREF   1
+   17  29 *    CALLSYS  97           (void Transform::move(const Vector3D&in))
+- 16,3 -
+   19  27 *    SUSPEND
+   20  27 *    PGA      241416904
+   22  28 *    PSF      v13
+   23  29 *    CALLSYS  20           (string::string(const string&in))
+               ObjInfo  v13, 1
+   25  27 *    PshVPtr  v0
+   26  28 *    ADDSi    v20, 134217745
+   28  28 *    RDSPtr
+   29  28 *    ADDSi    v136, 67108879
+   31  28 *    ADDSi    v0, 67108878
+   33  28 *    PopRPtr
+   34  27 *    RDR4     v4
+   35  27 *    PshV4    v4
+   36  28 *    PSF      v20
+   37  29 *    PSF      v13
+   38  30 *    CALLSYS  40           (string string::opAdd(float) const)
+               ObjInfo  v20, 1
+   40  27 *    PSF      v13
+   41  28 *    CALLSYS  21           (string::~string())
+               ObjInfo  v13, 0
+   43  27 *    PGA      241417432
+   45  28 *    PSF      v13
+   46  29 *    CALLSYS  20           (string::string(const string&in))
+               ObjInfo  v13, 1
+   48  27 *    VAR      v13
+   49  28 *    PSF      v27
+   50  29 *    PSF      v20
+   51  30 *    GETREF   2
+   52  30 *    CALLSYS  26           (string string::opAdd(const string&in) const)
+               ObjInfo  v27, 1
+   54  27 *    PSF      v20
+   55  28 *    CALLSYS  21           (string::~string())
+               ObjInfo  v20, 0
+   57  27 *    PSF      v13
+   58  28 *    CALLSYS  21           (string::~string())
+               ObjInfo  v13, 0
+   60  27 *    PSF      v27
+   61  28 *    CALLSYS  69           (void Print(string&in))
+   63  27 *    PSF      v27
+   64  28 *    CALLSYS  21           (string::~string())
+- 17,3 -
+               ObjInfo  v27, 0
+   66  27 *    SUSPEND
+   67  27 *    PSF      v3
+   68  28 *    CALLSYS  74           (Vector3D::~Vector3D())
+               ObjInfo  v3, 0
             0:
-   46  16 *    RET      1
+   70  27 *    RET      1

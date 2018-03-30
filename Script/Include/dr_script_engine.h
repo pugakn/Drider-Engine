@@ -10,6 +10,8 @@
 #include <iostream>
 #include <vector>
 
+#include <../../Input/Include/dr_input_defines.h>
+
 namespace driderSDK {
 
 class Time;
@@ -99,6 +101,15 @@ class DR_SCRIPT_EXPORT ScriptEngine : public Module<ScriptEngine>
   executeFunction(TString function,
                   asITypeInfo *type,
                   asIScriptObject* scriptObj);
+
+  /**
+  * Execute a script function with param
+  */
+  void
+  executeFunctionParam(TString function,
+                       asITypeInfo *type,
+                       asIScriptObject* scriptObj,
+                       KEY_CODE::E param);
 
 	/**
 	* Shut down the script's engine.

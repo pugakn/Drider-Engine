@@ -1,17 +1,5 @@
 class MontiBehavior {
 
-	void Start() {
-		Print("Start base\n");
-	}
-
-	void Update() {
-		Print("Update base\n");
-	}
-
-	void onKeyDown(KeyCode key) {
-		Print("onKeyDown base\n");
-	}
-
 	private void SetTransform(Transform@ trans) {
 		@transform = trans;
 	}
@@ -22,19 +10,31 @@ class MontiBehavior {
 
 class script1 : MontiBehavior {
 
-	void Start() override {
-		this.transform.m_position.x -= 10;
-		Print("Start derived, x = " + this.transform.m_position.x);
+	void Start() {
+		Vector3D vec(10.0,0.0,0.0);
+		this.transform.move(vec);
+		Print("move, x = " + this.transform.m_position.x + "\n");
 	}
 
-	void Update() override {
-		Print("Update derived\n");
+	void Update() {
+		//Print("Update derived\n");
 	}
 
-	void onKeyDown(KeyCode key) override {
+	/*void onKeyDown(KeyCode key) {
 		if(key == kD) {
+			Print("D key pressed!\n");
 			Vector3D vec(1.0,0.0,0.0);
 			this.transform.move(vec);
+		}
+
+		Print("onKeyDown\n");
+	}*/
+
+	void onKeyUp(KeyCode key) {
+		if(key == kD) {
+			Vector3D vec(10.0,0.0,0.0);
+			this.transform.move(vec);
+			Print("move, x = " + this.transform.m_position.x + "\n");
 		}
 	}
 }

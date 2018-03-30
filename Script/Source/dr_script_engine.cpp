@@ -152,12 +152,35 @@ ScriptEngine::executeFunction(TString function,
   // Obtain the function object that represents the class method
   asIScriptFunction *func = type->GetMethodByDecl(StringUtils::toString(
                                                   function).c_str());
+  if(func == nullptr) {
+    return;
+  }
   // Prepare the context for calling the method
   m_scriptContext->Prepare(func);
   // Set the object pointer
   m_scriptContext->SetObject(scriptObj);
   // Execute the call
   m_scriptContext->Execute();
+}
+
+void
+ScriptEngine::executeFunctionParam(TString function,
+                                   asITypeInfo *type,
+                                   asIScriptObject* scriptObj,
+                                   KEY_CODE::E param) {
+  // Obtain the function object that represents the class method
+  asIScriptFunction *func = type->GetMethodByDecl(StringUtils::toString(
+                                                  function).c_str());
+  if (func == nullptr) {
+    return;
+  }
+  Int8 r;
+  // Prepare the context for calling the method
+  r = m_scriptContext->Prepare(func);
+  // Set the object pointer
+  r = m_scriptContext->SetObject(scriptObj);
+  r = m_scriptContext->SetArgDWord(0, (Int32)param);
+  r = m_scriptContext->Execute();
 }
 
 void

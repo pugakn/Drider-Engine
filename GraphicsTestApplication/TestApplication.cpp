@@ -595,10 +595,8 @@ TestApplication::initScriptEngine() {
   result = Time::registerFunctions(scriptEngine);
 
   //Add, register global properties and compile scripts
-  auto camScript = m_camera->createComponent<ScriptComponent>();
   auto rScript1 = ResourceManager::getReference(_T("script1.as"));
   auto Script1 = std::dynamic_pointer_cast<ScriptCore>(rScript1);
-
   
   //Create a context
   scriptEngine->m_scriptContext = ctxMag->addContext(scriptEngine->m_scriptEngine,
@@ -608,6 +606,7 @@ TestApplication::initScriptEngine() {
                           Script1->getScript(),
                           _T("GameModule"));
 
+  // Get module
   asIScriptModule *mod = scriptEngine->m_scriptEngine->GetModule("GameModule");
   
   //Get the script object and the type object
@@ -618,17 +617,7 @@ TestApplication::initScriptEngine() {
                                 &obj,
                                 &type);
   
-  //Add transform to script
-  scriptEngine->setObjectToScript(type,
-                                  _T("void SetTransform(Transform@ trans)"),
-                                  0,
-                                  &m_activeCam->getTransform(),
-                                  obj);
-
-  scriptEngine->executeFunction(_T("void Start()"),
-                                type,
-                                obj);
-                                                           
+  auto camScript = m_camera->createComponent<ScriptComponent>();                                                           
 }
 
 void 

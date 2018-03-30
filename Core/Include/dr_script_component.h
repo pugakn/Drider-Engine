@@ -52,10 +52,17 @@ class DR_CORE_EXPORT ScriptComponent : public GameComponent {
     void
     onKeyDown(KEY_CODE::E key);
 
+    void
+    onKeyUp(KEY_CODE::E key);
+
   private:
     ScriptEngine *scriptEngine = nullptr;
 
     ScriptShared script;
+
+    asIScriptModule *mod = 0;
+    asIScriptObject *obj = 0;
+    asITypeInfo *type = 0;
 };
 
 }
