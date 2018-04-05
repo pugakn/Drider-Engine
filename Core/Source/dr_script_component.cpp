@@ -9,13 +9,11 @@
 
 namespace driderSDK {
 
-ScriptComponent::~ScriptComponent() {
 
-}
-
-void
-ScriptComponent::onCreate() {
-  
+ScriptComponent::ScriptComponent(GameObject &gameObject,
+                                 std::shared_ptr<ScriptCore> _script) : 
+                                              GameComponent(gameObject),
+                                              m_script(_script) {
   scriptEngine = ScriptEngine::instancePtr();
 
   Keyboard::addAnyKeyCallback(KEYBOARD_EVENT::kKeyPressed,
@@ -23,15 +21,32 @@ ScriptComponent::onCreate() {
 
   Keyboard::addAnyKeyCallback(KEYBOARD_EVENT::kKeyReleased,
                               std::bind(&ScriptComponent::onKeyUp, this, std::placeholders::_1));
-  
+
+  //Add script section
+  scriptEngine->addScript(m_script->getName(),
+                          m_script->getScript(),
+                          _T("GameModule"));
+
   //Get module
   mod = scriptEngine->m_scriptEngine->GetModule("GameModule");
+
+  //Compile the module after adding a new script
+  Int8 result = mod->Build();
+}
+
+ScriptComponent::~ScriptComponent() {
+
+}
+
+void
+ScriptComponent::onCreate() {
+  
   //Get script object
-  scriptEngine->getScriptObject(_T("script1"),
+  scriptEngine->getScriptObject(m_script->getName(),
                                 mod,
                                 &obj,
                                 &type);
-  
+
   start();
 }
 
@@ -58,17 +73,6 @@ ScriptComponent::onRender() {
 
 void
 ScriptComponent::onDestroy() {
-
-}
-
-void
-ScriptComponent::addScript(TString name,
-                           TString script,
-                           TString module) {
-
-  Int32 result = ScriptEngine::instance().addScript(name,
-                                                    script,
-                                                    module);
 
 }
 

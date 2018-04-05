@@ -1,4 +1,6 @@
-class MyClass {
-	int a;
-	int b;
+class script2 {
+	
+	void Start() {
+		Print("Script2 start\n");
+	}
 }

@@ -422,15 +422,6 @@ TestApplication::initInput() {
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kJ, toggleWireframe);
                     
-                        
-    
-  auto keyPressed = [&]() {
-    return true;
-  };
-  
-  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
-                        KEY_CODE::k0, keyPressed);
-
 }
 
 void 
@@ -450,10 +441,7 @@ TestApplication::initResources() {
 
   ResourceManager::loadResource(_T("Weapons-of-survival.fbx"));
 
-  ResourceManager::loadResource(_T("test.as"));
-
   ResourceManager::loadResource(_T("script1.as"));
-  ResourceManager::loadResource(_T("DriderEngine.as"));
   ResourceManager::loadResource(_T("script2.as"));
 }
 
@@ -594,30 +582,18 @@ TestApplication::initScriptEngine() {
   result = transform.registerFunctions(scriptEngine);
   result = Time::registerFunctions(scriptEngine);
 
-  //Add, register global properties and compile scripts
+  //Get script references of the ResourceManager
   auto rScript1 = ResourceManager::getReference(_T("script1.as"));
   auto Script1 = std::dynamic_pointer_cast<ScriptCore>(rScript1);
+
+  auto rScript2 = ResourceManager::getReference(_T("script2.as"));
+  auto Script2 = std::dynamic_pointer_cast<ScriptCore>(rScript2);
   
   //Create a context
   scriptEngine->m_scriptContext = ctxMag->addContext(scriptEngine->m_scriptEngine,
                                                      _T("GameModule"));
-  //Section to add scripts
-  scriptEngine->addScript(Script1->getName(),
-                          Script1->getScript(),
-                          _T("GameModule"));
-
-  // Get module
-  asIScriptModule *mod = scriptEngine->m_scriptEngine->GetModule("GameModule");
-  
-  //Get the script object and the type object
-  asIScriptObject *obj = 0;
-  asITypeInfo *type = 0;
-  scriptEngine->getScriptObject(_T("script1"),
-                                mod,
-                                &obj,
-                                &type);
-  
-  auto camScript = m_camera->createComponent<ScriptComponent>();                                                           
+  //Add script component to the objects
+  auto camScript = m_camera->createComponent<ScriptComponent>(Script1);
 }
 
 void 

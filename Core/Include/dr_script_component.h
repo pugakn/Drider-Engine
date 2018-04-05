@@ -10,9 +10,11 @@ class ScriptCore;
 
 class DR_CORE_EXPORT ScriptComponent : public GameComponent {
   public:
-    using ScriptShared = std::shared_ptr<ScriptCore>;
-    
     using GameComponent::GameComponent;
+    
+    ScriptComponent(GameObject &gameObject,
+                    std::shared_ptr<ScriptCore> _script);
+
     
     virtual
     ~ScriptComponent();
@@ -39,11 +41,6 @@ class DR_CORE_EXPORT ScriptComponent : public GameComponent {
     cloneIn(GameObject& _go) override;
 
     void
-    addScript(TString name,
-              TString script,
-              TString module);
-
-    void
     start();
 
     void 
@@ -57,12 +54,11 @@ class DR_CORE_EXPORT ScriptComponent : public GameComponent {
 
   private:
     ScriptEngine *scriptEngine = nullptr;
-
-    ScriptShared script;
-
     asIScriptModule *mod = 0;
     asIScriptObject *obj = 0;
-    asITypeInfo *type = 0;
+    asITypeInfo *type = 0;    
+
+    std::shared_ptr<ScriptCore> m_script;
 };
 
 }

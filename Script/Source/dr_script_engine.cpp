@@ -90,7 +90,7 @@ ScriptEngine::addScript(const TString& scriptName,
 		return -1;
 	}
 
-  result = mod->Build();
+  //result = mod->Build();
   if (result < 0) {
     addScriptLog(_T("Build module failed") + module, asMSGTYPE_ERROR);
     return -1;
