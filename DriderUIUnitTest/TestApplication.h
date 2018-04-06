@@ -10,10 +10,12 @@
 #include <dr_memory.h>
 #include <dr_shader.h>
 
-#include <Windows.h>
 #include <iostream>
-#include <dr_web_renderer.h>
-#include <dr_quad.h>
+
+
+#include "Include/dr_scene_editor.h"
+
+
 namespace driderSDK {
 
 class Technique;
@@ -31,10 +33,10 @@ public:
 
   
   Viewport viewport;
-  WebRenderer webRenderer;
-  Quad quad;
-private:
 
+
+private:
+  SceneEditor m_editor;
 
 };
 
