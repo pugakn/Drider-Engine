@@ -31,7 +31,7 @@ ScriptComponent::ScriptComponent(GameObject &gameObject,
   mod = scriptEngine->m_scriptEngine->GetModule("GameModule");
 
   //Compile the module after adding a new script
-  Int8 result = mod->Build();
+  //Int8 result = mod->Build();
 }
 
 ScriptComponent::~ScriptComponent() {
@@ -41,13 +41,6 @@ ScriptComponent::~ScriptComponent() {
 void
 ScriptComponent::onCreate() {
   
-  //Get script object
-  scriptEngine->getScriptObject(m_script->getName(),
-                                mod,
-                                &obj,
-                                &type);
-
-  start();
 }
 
 void
@@ -82,6 +75,15 @@ ScriptComponent::onDestroy() {
 void
 ScriptComponent::cloneIn(GameObject& _go) {
 
+}
+
+void
+ScriptComponent::initScript() {
+  //Get script object
+  scriptEngine->getScriptObject(m_script->getName(),
+                                mod,
+                                &obj,
+                                &type);
 }
 
 void

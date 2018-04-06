@@ -41,6 +41,9 @@ class DR_CORE_EXPORT ScriptComponent : public GameComponent {
     cloneIn(GameObject& _go) override;
 
     void
+    initScript();
+
+    void
     start();
 
     void 

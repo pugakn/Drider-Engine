@@ -1,13 +1,3 @@
-class MontiBehavior {
-
-	private void SetTransform(Transform@ trans) {
-		@transform = trans;
-	}
-
-	Transform@ transform;
-
-}
-
 class script1 : MontiBehavior {
 
 	void Start() {
@@ -17,7 +7,7 @@ class script1 : MontiBehavior {
 	}
 
 	void Update() {
-		//Print("Update derived\n");
+		Print("Update script1\n");
 	}
 
 	/*void onKeyDown(KeyCode key) {

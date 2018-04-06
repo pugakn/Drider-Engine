@@ -9,6 +9,7 @@
 
 #include <iostream>
 #include <vector>
+#include <set>
 
 #include <../../Input/Include/dr_input_defines.h>
 
@@ -63,6 +64,7 @@ class DR_SCRIPT_EXPORT ScriptEngine : public Module<ScriptEngine>
   */
   Int8
   configurateEngine(ContextManager *ctx);
+ 
   
 	/**
 	* Open the script and adds it to the module.
@@ -160,6 +162,8 @@ class DR_SCRIPT_EXPORT ScriptEngine : public Module<ScriptEngine>
 
   void
   onShutDown() override {}
+
+ private:
 };
 
 }

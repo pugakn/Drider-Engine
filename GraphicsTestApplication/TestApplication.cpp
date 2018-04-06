@@ -441,6 +441,7 @@ TestApplication::initResources() {
 
   ResourceManager::loadResource(_T("Weapons-of-survival.fbx"));
 
+  ResourceManager::loadResource(_T("MontiBehavior.as"));
   ResourceManager::loadResource(_T("script1.as"));
   ResourceManager::loadResource(_T("script2.as"));
 }
@@ -583,6 +584,9 @@ TestApplication::initScriptEngine() {
   result = Time::registerFunctions(scriptEngine);
 
   //Get script references of the ResourceManager
+  auto rBehaviorScript = ResourceManager::getReference(_T("MontiBehavior.as"));
+  auto BehaviorScript = std::dynamic_pointer_cast<ScriptCore>(rBehaviorScript);
+
   auto rScript1 = ResourceManager::getReference(_T("script1.as"));
   auto Script1 = std::dynamic_pointer_cast<ScriptCore>(rScript1);
 
@@ -592,8 +596,26 @@ TestApplication::initScriptEngine() {
   //Create a context
   scriptEngine->m_scriptContext = ctxMag->addContext(scriptEngine->m_scriptEngine,
                                                      _T("GameModule"));
-  //Add script component to the objects
-  auto camScript = m_camera->createComponent<ScriptComponent>(Script1);
+
+  //Add script section of behavior
+  scriptEngine->addScript(BehaviorScript->getName(),
+                          BehaviorScript->getScript(),
+                          _T("GameModule"));
+
+  //Add script component to the objects and add script sections of the scripts
+  auto camScript1 = m_camera->createComponent<ScriptComponent>(Script1);
+  auto camScript2 = m_camera->createComponent<ScriptComponent>(Script2);
+
+  auto currentModule = scriptEngine->m_scriptEngine->GetModule("GameModule");
+  result = currentModule->Build();
+
+  camScript1->initScript();
+  camScript2->initScript();
+
+  camScript1->start();
+  camScript2->start();
+
+
 }
 
 void 

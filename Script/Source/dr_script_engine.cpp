@@ -72,6 +72,8 @@ ScriptEngine::configurateEngine(ContextManager *ctx) {
   return result;
 }
 
+
+
 Int8
 ScriptEngine::addScript(const TString& scriptName,
                         const TString& script,
@@ -79,20 +81,14 @@ ScriptEngine::addScript(const TString& scriptName,
 
   asIScriptModule *mod = m_scriptEngine->GetModule(StringUtils::toString(module).c_str(),
                                                    asGM_CREATE_IF_NOT_EXISTS);
-
-	Int8 result = mod->AddScriptSection(StringUtils::toString(scriptName).c_str(),
+  
+  Int8 result = mod->AddScriptSection(StringUtils::toString(scriptName).c_str(),
                                       StringUtils::toString(script).c_str(),
                                       script.length());
 
-	if(result < 0) {
-		addScriptLog(_T("AddScriptSection failed on file ") + scriptName, asMSGTYPE_ERROR);
-		m_scriptEngine->Release();
-		return -1;
-	}
-
-  //result = mod->Build();
   if (result < 0) {
-    addScriptLog(_T("Build module failed") + module, asMSGTYPE_ERROR);
+    addScriptLog(_T("AddScriptSection failed on file ") + scriptName, asMSGTYPE_ERROR);
+    m_scriptEngine->Release();
     return -1;
   }
 
