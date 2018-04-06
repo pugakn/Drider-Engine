@@ -136,6 +136,7 @@ RenderHandler::init()
   tDesc.mipLevels = 0;
   tDesc.dimension = DR_DIMENSION::k2D;
   tDesc.genMipMaps = true;
+
   m_texture = dr_gfx_unique(device.createEmptyTexture(tDesc));
 
   driderSDK::DrSampleDesc SSdesc;
@@ -309,6 +310,11 @@ void
 WebRenderer::executeJSCode(std::string code)
 {
   browser->GetMainFrame()->ExecuteJavaScript(code, 
+    browser->GetMainFrame()->GetURL(), 0);
+}
+void WebRenderer::executeJSCode(WString code)
+{
+  browser->GetMainFrame()->ExecuteJavaScript(code,
     browser->GetMainFrame()->GetURL(), 0);
 }
 void 

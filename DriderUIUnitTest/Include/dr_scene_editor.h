@@ -26,10 +26,14 @@ public:
 
 
 private:
+  Int32 m_sceneWidth;
+  Int32 m_sceneHeight;
   void initInputs();
   void initCameras();
   void initAssets();
   void initUI();
+
+  void sceneResized();
 
   //QUERY_ORDER::E m_queryOrder;
 

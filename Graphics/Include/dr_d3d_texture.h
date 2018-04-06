@@ -76,7 +76,11 @@ class DR_GRAPHICS_EXPORT D3DTexture : public Texture
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   void
-  map(const DeviceContext& deviceContext, char* buffer) override;
+  map(const DeviceContext& deviceContext, char** buffer) override;
+
+
+  void
+  getMemoryBuffer(const DeviceContext& deviceContext, std::vector<byte>& buff) override;
 
   /**
   * TEST::
@@ -149,6 +153,7 @@ class DR_GRAPHICS_EXPORT D3DTexture : public Texture
   ID3D11Texture2D* APITexture;
   ID3D11ShaderResourceView* APIView;
  private:
+  ID3D11Texture2D* m_stagingTexture;
     UInt32 m_arraySize;
 };
 

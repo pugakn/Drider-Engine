@@ -4,6 +4,14 @@ function C_UpdateEditor(buffer,w,h){
 	updateTexture(g_EditorTexture,buffer,w,h);
 }
 
+//Get the canvas size on C app
+function C_GetSceneViewSize() {
+	var canvas = document.getElementById('glcanvas');
+	var width = canvas.width;
+	var height = canvas.height;
+	JS_GetSceneViewSize(width,height);
+}
+
 function createTexture(w,h) {
   var texture = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -14,20 +22,25 @@ function createTexture(w,h) {
   
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, w, h, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-  gl.bindTexture(gl.TEXTURE_2D, null);
+  //gl.bindTexture(gl.TEXTURE_2D, null);
   return texture;
 }
 
 function updateTexture(texture,buffer,w,h) {
-  var enc = new TextEncoder();
-  arr = enc.encode(buffer);
-  uarr = new Uint8Array(arr);
-  //console.log(uarr[128*128 - 1]);
-  gl.bindTexture(gl.TEXTURE_2D, texture);
-  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+	var result = [];
+	for(var i = 0; i < buffer.length; i+=1)
+	{
+		result.push(buffer.charCodeAt(i));
+	}
+	result = Uint8Array.from(result)
+  //var enc = new TextEncoder();
+  //arr = enc.encode(buffer);
+  //console.log(result[0]);
+  //gl.bindTexture(gl.TEXTURE_2D, texture);
+  ///gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
   //gl.pixelStorei(gl.UNPACK_ALIGNMENT, 4);
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, w, h, 0, gl.RGBA, gl.UNSIGNED_BYTE, uarr);
-  gl.bindTexture(gl.TEXTURE_2D, null);
+  ///gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, w, h, 0, gl.RGBA, gl.UNSIGNED_BYTE, result);
+  //gl.bindTexture(gl.TEXTURE_2D, null);
 }
 
 function initShaderProgram(gl, vsSource, fsSource) {

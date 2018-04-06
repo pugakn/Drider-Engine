@@ -57,6 +57,7 @@ void SceneEditor::init(Viewport v)
   backDesc.height = 1024;
   backDesc.pitch = backDesc.width * 4;
   backDesc.Format = DR_FORMAT::kR8G8B8A8_UNORM;
+  backDesc.CPUAccessFlags = DR_CPU_ACCESS_FLAG::drRead;
   m_RT = dr_gfx_unique(GraphicsAPI::getDevice().createRenderTarget(backDesc,1));
 
 
@@ -69,10 +70,29 @@ void SceneEditor::update()
 }
 void SceneEditor::draw()
 {
-  m_RT->set(GraphicsAPI::getDeviceContext(), GraphicsAPI::getDepthStencil());
-  const float clearColor[4]{ 255,0,255,255 };
+  const float clearColor[4]{ 1,0,1,1 };
   m_RT->clear(GraphicsAPI::getDeviceContext(), clearColor);
+  //m_RT->set(GraphicsAPI::getDeviceContext(), GraphicsAPI::getDepthStencil());
   //Draw Scene
+
+  WString buff;
+  std::vector<byte> bBuff;
+  buff.resize(m_sceneWidth * m_sceneHeight * 4);
+  m_RT->getTexture(0).getMemoryBuffer(GraphicsAPI::getDeviceContext(),bBuff);
+  for (size_t i = 0; i < buff.size(); i++)
+  {
+    buff[i] = bBuff[i];
+  }
+
+  ////std::cout << std::string("C_UpdateEditor('") + buff + std::string("',") + std::to_string(m_sceneWidth) + std::string(",") + std::to_string(m_sceneHeight) + std::string(");") << std::endl;
+
+  webRenderer.executeJSCode(WString(_T("C_UpdateEditor('")) +
+    buff + WString(_T("',")) +
+    std::to_wstring(m_sceneWidth) +
+    WString(_T(",")) +
+    std::to_wstring(m_sceneHeight) +
+    WString(_T(");")));
+
 
 
   GraphicsAPI::getBackBufferRT().set(GraphicsAPI::getDeviceContext(), GraphicsAPI::getDepthStencil());
@@ -82,6 +102,10 @@ void SceneEditor::draw()
   quad.draw();
   GraphicsAPI::getBlendState(DR_BLEND_STATES::kOpaque).set(GraphicsAPI::getDeviceContext());
   //GraphicsDriver::API().swapBuffers();
+
+
+
+
 }
 void SceneEditor::initCameras()
 {
@@ -118,15 +142,43 @@ void SceneEditor::initUI()
     updateFolders(webRenderer);
   }));
   webRenderer.registerJS2CPPFunction(std::make_pair("canvasReady", [&](const CefRefPtr<CefListValue>& arguments) {
-    char cBuff[128 * 128 * 4];
-    for (size_t i = 0; i < 128 * 128 * 4; i++)
-    {
-      cBuff[i] = (char)255;
-    }
-    std::string buff(cBuff);
-    //std::cout << std::string("C_UpdateEditor('") + buff + std::string("',64,64);") << std::endl;
-    webRenderer.executeJSCode(std::string("C_UpdateEditor('") + buff + std::string("',128,128);"));
+    webRenderer.executeJSCode(std::string("C_GetSceneViewSize();"));
   }));
+
+
+  webRenderer.registerJS2CPPFunction(std::make_pair("JS_GetSceneViewSize", [&](const CefRefPtr<CefListValue>& arguments) {
+    m_sceneWidth = arguments->GetInt(1);
+    m_sceneHeight = arguments->GetInt(2);
+    std::cout << m_sceneWidth << " , " << m_sceneHeight << std::endl;
+    sceneResized();
+  }));
+  
+}
+void SceneEditor::sceneResized()
+{
+  m_RT.release();
+  DrTextureDesc backDesc;
+  backDesc.width = m_sceneWidth;
+  backDesc.height = m_sceneHeight;
+  backDesc.pitch = backDesc.width * 4;
+  backDesc.Format = DR_FORMAT::kR8G8B8A8_UNORM;
+  backDesc.CPUAccessFlags = DR_CPU_ACCESS_FLAG::drRead;
+  m_RT = dr_gfx_unique(GraphicsAPI::getDevice().createRenderTarget(backDesc, 1));
+
+  WString buff;
+  buff.resize(m_sceneWidth * m_sceneHeight * 4);
+  UInt8 val = 255;
+  for (size_t i = 0; i < buff.size(); i++)
+  {
+    buff[i] = 255;
+  }
+  //std::cout << std::string("C_UpdateEditor('") + buff + std::string("',") + std::to_string(m_sceneWidth) + std::string(",") + std::to_string(m_sceneHeight) + std::string(");") << std::endl;
+  webRenderer.executeJSCode(WString(_T("C_UpdateEditor('")) +
+                            buff + WString(_T("',")) +
+                            std::to_wstring(m_sceneWidth) + 
+                            WString(_T(",")) +
+                            std::to_wstring(m_sceneHeight) +
+                            WString(_T(");")));
 }
 }
 

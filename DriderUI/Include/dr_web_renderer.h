@@ -287,6 +287,11 @@ public:
   /**
   * Not commented
   */
+  void
+  executeJSCode(WString code);
+  /**
+  * Not commented
+  */
   void 
   setFocus(bool focus);
   /**
