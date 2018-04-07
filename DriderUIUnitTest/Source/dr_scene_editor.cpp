@@ -182,15 +182,18 @@ void SceneEditor::initUI()
   }));
   webRenderer.registerJS2CPPFunction(std::make_pair("C_DeleteSceneGraphNode", [&](const CefRefPtr<CefListValue>& arguments) {
     TString name = arguments->GetString(1);
-    SceneGraph::getRoot()->findNode(name)->destroy();
+    auto n = SceneGraph::getRoot()->findNode(name);
+    n->getParent()->removeChild(n);
+    n->destroy();
     webRenderer.executeJSCode("JS_ClearSceneGraphTree();");
     UI_UpdateSceneGraph();
   }));
-  webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeSceneGraphNodeParent", [&](const CefRefPtr<CefListValue>& arguments) {
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeNodeParent", [&](const CefRefPtr<CefListValue>& arguments) {
     TString name = arguments->GetString(1);
     TString newParent = arguments->GetString(2);
     //TODO: Search name 
     //TODO: Search parent name 
+    //std::cout << newParent.c_str() <<std::endl;
     SceneGraph::getRoot()->findNode(name)->setParent(SceneGraph::getRoot()->findNode(newParent));
     webRenderer.executeJSCode("JS_ClearSceneGraphTree();");
     UI_UpdateSceneGraph();

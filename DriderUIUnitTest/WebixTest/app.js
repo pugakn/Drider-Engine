@@ -96,17 +96,25 @@ webix.ready(function(){
 		editable:true,
 		editor:"text",
 		editValue:"value",
+		editaction:"custom",
 		onContext:{},
 		on:{
 			onBeforeDrop:function(context){
 				//drop as the first child
-				context.parent = context.target;
-				context.index = 0;
+				//context.parent = context.target;
+				//context.index = 0;
+				//TODO: for all selected items
+				var src = context.source[0];
+				C_ChangeNodeParent(src,context.target);
 			}
 			
 			
 		},
 	});	
+	webix.UIManager.addHotKey("enter", function(view){
+		var pos = treeb.getSelectedId();
+		treeb.edit(pos);
+    }, $$("tree"));
 	treeb.attachEvent("onAfterEditStart", function(id){
 		console.log(id);
 	});
@@ -148,7 +156,9 @@ webix.ready(function(){
 			var listId = context.id;
 			webix.message(this.getItem(id).value);
 			if (this.getItem(id).value == "Delete"){
-				C_DeleteSceneGraphNode(list.getItem(listId).title);
+				C_DeleteSceneGraphNode(list.getItem(listId).id);
+			}else if (this.getItem(id).value == "Rename"){
+				treeb.edit(list.getItem(listId).id);
 			}
 		}
 	}
