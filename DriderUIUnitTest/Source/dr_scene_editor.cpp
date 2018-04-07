@@ -191,10 +191,16 @@ void SceneEditor::initUI()
   webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeNodeParent", [&](const CefRefPtr<CefListValue>& arguments) {
     TString name = arguments->GetString(1);
     TString newParent = arguments->GetString(2);
-    //TODO: Search name 
-    //TODO: Search parent name 
-    //std::cout << newParent.c_str() <<std::endl;
-    SceneGraph::getRoot()->findNode(name)->setParent(SceneGraph::getRoot()->findNode(newParent));
+    if (!(name == _T("") || newParent == _T(""))) {
+      if (newParent == _T("ROOT_NODE_X"))
+      {
+        SceneGraph::getRoot()->findNode(name)->setParent(SceneGraph::getRoot());
+      }
+      else {
+        SceneGraph::getRoot()->findNode(name)->setParent(SceneGraph::getRoot()->findNode(newParent));
+      }
+    }
+
     webRenderer.executeJSCode("JS_ClearSceneGraphTree();");
     UI_UpdateSceneGraph();
   }));

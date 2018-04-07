@@ -99,7 +99,12 @@ webix.ready(function(){
 		editaction:"custom",
 		onContext:{},
 		on:{
+			onBeforeDrag:function(context,native_event){
+				if("ROOT_NODE_X" == context.source[0]) return false;
+				return true;
+			},
 			onBeforeDrop:function(context){
+
 				//drop as the first child
 				//context.parent = context.target;
 				//context.index = 0;
@@ -115,8 +120,8 @@ webix.ready(function(){
 		var pos = treeb.getSelectedId();
 		treeb.edit(pos);
     }, $$("tree"));
-	treeb.attachEvent("onAfterEditStart", function(id){
-		console.log(id);
+	treeb.attachEvent("onBeforeEditStart", function(id){
+		if("ROOT_NODE_X" == id) return false;
 	});
 	treeb.attachEvent("onAfterEditStop", function(state, editor, ignoreUpdate){
 		C_ChangeSceneGraphNodeName(state.old,state.value);
@@ -156,6 +161,7 @@ webix.ready(function(){
 			var listId = context.id;
 			webix.message(this.getItem(id).value);
 			if (this.getItem(id).value == "Delete"){
+				if("ROOT_NODE_X" == list.getItem(listId).id) return;
 				C_DeleteSceneGraphNode(list.getItem(listId).id);
 			}else if (this.getItem(id).value == "Rename"){
 				treeb.edit(list.getItem(listId).id);
