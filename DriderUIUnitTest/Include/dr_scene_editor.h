@@ -2,6 +2,7 @@
 #include <dr_camera.h>
 #include <dr_viewport.h>
 //#include <dr_resource_manager.h>
+#include <memory>
 #include <dr_memory.h>
 #include <dr_shader.h>
 
@@ -9,7 +10,7 @@
 
 #include <dr_gfx_memory.h>
 #include <dr_render_target.h>
-
+#include <dr_gameObject.h>
 
 #include <dr_web_renderer.h>
 #include <dr_quad.h>
@@ -21,7 +22,11 @@ public:
   void draw();
   void destroy();
 
-  void addGameObject();
+  std::shared_ptr<GameObject> 
+    addGameObject(
+    std::shared_ptr<GameObject> parent,
+    const TString& name,
+    const Vector3D& pos);
   //void removeGameObject();
 
 
@@ -32,8 +37,11 @@ private:
   void initCameras();
   void initAssets();
   void initUI();
+  void initSceneGraph();
 
   void sceneResized();
+
+  void UI_UpdateSceneGraph();
 
   //QUERY_ORDER::E m_queryOrder;
 

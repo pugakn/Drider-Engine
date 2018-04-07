@@ -4,7 +4,8 @@
 #include <dr_graphics_driver.h>
 #include <dr_blend_state.h>
 #include <dr_texture.h>
-
+#include <dr_resource_manager.h>
+#include <dr_aabb_collider.h>
 #include <windows.h>
 
 #include<Shlwapi.h>
@@ -25,13 +26,13 @@ void read_directory(const TString& name, std::vector<TString>& v)
       if (data.cFileName[0] == '.') continue;
       if (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
       {
-        v.push_back(_T("webix.callEvent('addFile',['") + TString(data.cFileName) + _T("','") + parent + _T("','") + _T(".folder") + _T("']);"));
+        v.push_back(_T("webix.callEvent('WEBIX_AddFile',['") + TString(data.cFileName) + _T("','") + parent + _T("','") + _T(".folder") + _T("']);"));
         read_directory(name + _T("\\") + data.cFileName, v);
       }
       else
       {
         auto ext = PathFindExtension(data.cFileName);
-        v.push_back(_T("webix.callEvent('addFile',['") + TString(data.cFileName) + _T("','") + parent + _T("','") + ext + _T("']);"));
+        v.push_back(_T("webix.callEvent('WEBIX_AddFile',['") + TString(data.cFileName) + _T("','") + parent + _T("','") + ext + _T("']);"));
       }
     } while (FindNextFile(hFind, &data) != 0);
     FindClose(hFind);
@@ -40,7 +41,7 @@ void read_directory(const TString& name, std::vector<TString>& v)
 void updateFolders(WebRenderer& webRenderer) {
   TString root(_T("Assets"));
   std::vector<TString> folders;
-  folders.push_back(_T("webix.callEvent('addFile',['") + root + _T("','") + root + _T("','") + _T(".folder") + _T("']);"));
+  folders.push_back(_T("webix.callEvent('WEBIX_AddFile',['") + root + _T("','") + root + _T("','") + _T(".folder") + _T("']);"));
   read_directory(root, folders);
   for (auto &it : folders) {
     std::string str(it.begin(), it.end());
@@ -63,6 +64,7 @@ void SceneEditor::init(Viewport v)
 
   initCameras();
   initUI();
+  initSceneGraph();
 }
 void SceneEditor::update()
 {
@@ -75,23 +77,23 @@ void SceneEditor::draw()
   //m_RT->set(GraphicsAPI::getDeviceContext(), GraphicsAPI::getDepthStencil());
   //Draw Scene
 
-  WString buff;
-  std::vector<byte> bBuff;
-  buff.resize(m_sceneWidth * m_sceneHeight * 4);
-  m_RT->getTexture(0).getMemoryBuffer(GraphicsAPI::getDeviceContext(),bBuff);
-  for (size_t i = 0; i < buff.size(); i++)
-  {
-    buff[i] = bBuff[i];
-  }
+  //WString buff;
+  //std::vector<byte> bBuff;
+  //buff.resize(m_sceneWidth * m_sceneHeight * 4);
+  //m_RT->getTexture(0).getMemoryBuffer(GraphicsAPI::getDeviceContext(),bBuff);
+  //for (size_t i = 0; i < buff.size(); i++)
+  //{
+  //  buff[i] = bBuff[i];
+  //}
 
-  ////std::cout << std::string("C_UpdateEditor('") + buff + std::string("',") + std::to_string(m_sceneWidth) + std::string(",") + std::to_string(m_sceneHeight) + std::string(");") << std::endl;
+  //////std::cout << std::string("C_UpdateEditor('") + buff + std::string("',") + std::to_string(m_sceneWidth) + std::string(",") + std::to_string(m_sceneHeight) + std::string(");") << std::endl;
 
-  webRenderer.executeJSCode(WString(_T("C_UpdateEditor('")) +
-    buff + WString(_T("',")) +
-    std::to_wstring(m_sceneWidth) +
-    WString(_T(",")) +
-    std::to_wstring(m_sceneHeight) +
-    WString(_T(");")));
+  //webRenderer.executeJSCode(WString(_T("C_UpdateEditor('")) +
+  //  buff + WString(_T("',")) +
+  //  std::to_wstring(m_sceneWidth) +
+  //  WString(_T(",")) +
+  //  std::to_wstring(m_sceneHeight) +
+  //  WString(_T(");")));
 
 
 
@@ -106,6 +108,20 @@ void SceneEditor::draw()
 
 
 
+}
+std::shared_ptr<GameObject> 
+SceneEditor::addGameObject(std::shared_ptr<GameObject> parent, 
+                           const TString & name, 
+                           const Vector3D & pos)
+{
+  auto node = std::make_shared<GameObject>();
+  parent->addChild(node);
+  SceneGraph::addObject(node);
+  node->setName(name);
+  node->getTransform().setPosition(pos);
+  node->setParent(parent);
+
+  return node;
 }
 void SceneEditor::initCameras()
 {
@@ -140,6 +156,7 @@ void SceneEditor::initUI()
 
   webRenderer.registerJS2CPPFunction(std::make_pair("webixReady", [&](const CefRefPtr<CefListValue>& arguments) {
     updateFolders(webRenderer);
+    UI_UpdateSceneGraph();
   }));
   webRenderer.registerJS2CPPFunction(std::make_pair("canvasReady", [&](const CefRefPtr<CefListValue>& arguments) {
     webRenderer.executeJSCode(std::string("C_GetSceneViewSize();"));
@@ -153,6 +170,31 @@ void SceneEditor::initUI()
     sceneResized();
   }));
   
+}
+void SceneEditor::initSceneGraph()
+{
+  //n->getParent()->addChild(l);
+  auto root = SceneGraph::getRoot();
+
+  addGameObject(root,
+    _T("Quad"),
+    { 50, 300, 200 })->getTransform().scale({ 40, 40, 40 });
+
+  addGameObject(root,
+    _T("Quad2"),
+    { 50, 300, 200 })->getTransform().scale({ 40, 40, 40 });
+
+  addGameObject(root,
+    _T("Quad3"),
+    { 50, 300, 200 })->getTransform().scale({ 40, 40, 40 });
+
+  addGameObject(SceneGraph::getRoot()->getChild(_T("Quad")),
+    _T("Quad4_child"),
+    { 50, 300, 200 })->getTransform().scale({ 40, 40, 40 });
+
+  addGameObject(SceneGraph::getRoot()->getChild(_T("Quad"))->getChild(_T("Quad4_child")),
+    _T("Quad5_child"),
+    { 50, 300, 200 })->getTransform().scale({ 40, 40, 40 });
 }
 void SceneEditor::sceneResized()
 {
@@ -179,6 +221,29 @@ void SceneEditor::sceneResized()
                             WString(_T(",")) +
                             std::to_wstring(m_sceneHeight) +
                             WString(_T(");")));
+}
+
+void SceneEditor::UI_UpdateSceneGraph()
+{
+  std::function<void(const std::vector<std::shared_ptr<GameObject>>&)> search = 
+    [&](const std::vector<std::shared_ptr<GameObject>>& children) {
+    for (auto &it : children) {
+      auto name = it->getName();
+      auto pName = it->getParent()->getName();
+
+      webRenderer.executeJSCode(WString(_T("JS_AddSceneGraphNode('")) +
+        name + TString(_T("','")) + pName + 
+        WString(_T("');")));
+
+      auto children2 = it->getChildren();
+      search(children2);
+    }
+  };
+
+
+  SceneGraph::getRoot()->getName();
+  auto children = SceneGraph::getRoot()->getChildren();
+  search(children);
 }
 }
 

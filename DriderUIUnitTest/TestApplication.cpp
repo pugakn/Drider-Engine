@@ -7,7 +7,7 @@
 #include <dr_input_manager.h>
 #include <dr_graphics_driver.h>
 #include <dr_blend_state.h>
-
+#include <dr_resource_manager.h>
 
 namespace driderSDK {
 TestApplication::TestApplication()
@@ -24,7 +24,9 @@ TestApplication::postInit() {
     m_viewport.height,
     m_hwnd);
   InputManager::startUp((SizeT)m_hwnd);
+  SceneGraph::startUp();
   Time::startUp();
+  ResourceManager::startUp();
 
   m_editor.init(m_viewport);
 

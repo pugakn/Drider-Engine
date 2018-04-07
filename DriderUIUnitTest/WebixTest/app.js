@@ -1,12 +1,14 @@
-function myFunction() {
-  console.log("hola");
-  lol("caradechango");
-}
-function addFile(filename) {
-  console.log(filename);
-  //$$("files").data.add({id:filename, value:  filename, type:   "folder",  date:   666, size: 0}, 0);
-}
 
+// ==================================================================================================================
+//                                                  C app
+// ==================================================================================================================
+function JS_AddSceneGraphNode(name,pname) {
+	console.log(name);
+	webix.callEvent('WEBIX_AddSceneGraphNode',[name,pname]);
+}
+//===================================================================================================================
+//                                                  WEBIX
+// ==================================================================================================================
 //webix.ready() function ensures that the code will be executed when the page is loaded
 webix.ready(function(){
 	webix.markup.init();
@@ -68,25 +70,16 @@ webix.ready(function(){
 	
 	
 	
-	
-	var bigtreedata = [
-    {id:"root", value:"Films data", open:true, data:[
-		{ id:"1", open:true, value:"The Shawshank Redemption", data:[
-				"page1","page2","page3","page4","page5","page6","page7","page8","page9","page10",
-				"page11","page12","page13","page14","page15","page16","page17","page18","page19","page20",
-				"page21","page22","page23","page24","page25","page26","page27","page28","page29","page30",
-				"page31","page32","page33","page34","page35","page36","page37","page38","page39","page40",
-				"page41","page42","page43","page44","page45","page46","page47","page48","page49","page50"
-		]},
-		{ id:"2", open:true, value:"The Godfather", data:[
-			{ id:"2.1", value:"Part 1" },
-			{ id:"2.2", value:"Part 2" }
-		]}
-	]}
-	];
+	//=======================================================================================================
+	//                                           Scene Graph
+	//=======================================================================================================
+	webix.protoUI({
+		name:"edittree"
+	}, webix.EditAbility, webix.ui.tree);
 	treeb = webix.ui({
 		container:"treeView",
-		view:"tree",
+		clipboard: "insert",
+		view:"edittree",
 		type:"lineTree",
 		id:"tree",
 		select:'multiselect',
@@ -94,37 +87,29 @@ webix.ready(function(){
 		editable:true,
 		editor:"text",
 		editValue:"value",
-		data:bigtreedata
+		on:{
+			onBeforeDrop:function(context){
+				//drop as the first child
+				context.parent = context.target;
+				context.index = 0;
+			}
+		},
+
 	});	
-	//$$("tree").data.add({id: "GameObject", value:  "GameObject"}, 0);
-	
-	
-    //object constructor
+	$$("tree").data.add({id: "ROOT_NODE_X", value:  "ROOT_NODE_X", icon:"home"}, 0);
+	webix.attachEvent("WEBIX_AddSceneGraphNode", function(name,parentName){
+		$$("tree").data.add({id: name, value:  name}, 0, parentName);
+	});
+	//=======================================================================================================
+	//                                           File Manager
+	//=======================================================================================================
     webix.ui({
         view:"filemanager",
         id:"files",
 		container: "fman"
-		
 		//save: "cache->mydata",
 		//url: "cache->mydata"
     });
-    // loading data source
-	/*$$("files").parse([
-			{id: "assets", value: "Assets", open: true,  type: "folder", date:  666, data:[
-				{ id: "scripts", value: "Scripts", date:  666,  type: "folder", open: true, data:[
-	
-				]},
-				{ id: "textures", value: "Textures", type: "folder", date:  666, open: true, data:[
-
-				]},
-				{ id: "sounds", value: "Sounds", type: "folder", date:  666, data:[
-					{id: "video1", value: "New Year 2013.avi", icon: "file-video-o", type:"video", date:  666, size: "25030000", pId: "video" },
-					{id: "video2", value: "Presentation.avi", icon: "file-video-o",type:"video", date: 666, size: "11072000" , pId: "video"},
-					{id: "timg", value: "timg.png", icon: "file-image-o", type:"image", date:  666, size: "31256000", pId: "image" }
-				]}
-			]}
-		]);
-	console.log($$("files").data.serialize());*/
 	
 	$$("files").attachEvent("onBeforeRun",function(id){
 			webix.confirm({
@@ -139,8 +124,7 @@ webix.ready(function(){
 			return false;
 		});
 		
-	webix.attachEvent("addFile", function(filename,parent,extension){
-		console.log(parent);
+	webix.attachEvent("WEBIX_AddFile", function(filename,parent,extension){
 		var ftype;
 		var fico;
 		if (extension == ".html"){
@@ -163,7 +147,6 @@ webix.ready(function(){
 		}
 
 	});
-	
 	$$("files").attachEvent("onBeforeCreateFolder",function(id){
 		// your code
 		return true;

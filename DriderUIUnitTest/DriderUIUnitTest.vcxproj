@@ -97,7 +97,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Input\Include;$(SolutionDir)GraphicsUtils\Include;$(SolutionDir)Math\Include;$(SolutionDir)GraphicsUtils\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)DriderUI\Include;$(SolutionDir)Utils\Include;$(SolutionDir)Core\Include;$(DRIDER_DEPENDENCIES)Include\CEF;$(DRIDER_DEPENDENCIES)Include\CEF\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Core\Include;$(SolutionDir)Engine\Include;$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Input\Include;$(SolutionDir)GraphicsUtils\Include;$(SolutionDir)Math\Include;$(SolutionDir)GraphicsUtils\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)DriderUI\Include;$(SolutionDir)Utils\Include;$(SolutionDir)Core\Include;$(DRIDER_DEPENDENCIES)Include\CEF;$(DRIDER_DEPENDENCIES)Include\CEF\include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -113,7 +113,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Input\Include;$(SolutionDir)GraphicsUtils\Include;$(SolutionDir)Math\Include;$(SolutionDir)GraphicsUtils\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)DriderUI\Include;$(SolutionDir)Utils\Include;$(SolutionDir)Core\Include;$(DRIDER_DEPENDENCIES)Include\CEF;$(DRIDER_DEPENDENCIES)Include\CEF\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Core\Include;$(SolutionDir)Engine\Include;$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Input\Include;$(SolutionDir)GraphicsUtils\Include;$(SolutionDir)Math\Include;$(SolutionDir)GraphicsUtils\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)DriderUI\Include;$(SolutionDir)Utils\Include;$(SolutionDir)Core\Include;$(DRIDER_DEPENDENCIES)Include\CEF;$(DRIDER_DEPENDENCIES)Include\CEF\include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -131,7 +131,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Input\Include;$(SolutionDir)GraphicsUtils\Include;$(SolutionDir)Math\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)DriderUI\Include;$(SolutionDir)Utils\Include;$(SolutionDir)Core\Include;$(DRIDER_DEPENDENCIES)Include\CEF;$(DRIDER_DEPENDENCIES)Include\CEF\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Core\Include;$(SolutionDir)Engine\Include;$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Input\Include;$(SolutionDir)GraphicsUtils\Include;$(SolutionDir)Math\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)DriderUI\Include;$(SolutionDir)Utils\Include;$(SolutionDir)Core\Include;$(DRIDER_DEPENDENCIES)Include\CEF;$(DRIDER_DEPENDENCIES)Include\CEF\include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -151,7 +151,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Input\Include;$(SolutionDir)GraphicsUtils\Include;$(SolutionDir)Math\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)DriderUI\Include;$(SolutionDir)Utils\Include;$(SolutionDir)Core\Include;$(DRIDER_DEPENDENCIES)Include\CEF;$(DRIDER_DEPENDENCIES)Include\CEF\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Core\Include;$(SolutionDir)Engine\Include;$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Input\Include;$(SolutionDir)GraphicsUtils\Include;$(SolutionDir)Math\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)DriderUI\Include;$(SolutionDir)Utils\Include;$(SolutionDir)Core\Include;$(DRIDER_DEPENDENCIES)Include\CEF;$(DRIDER_DEPENDENCIES)Include\CEF\include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
