@@ -169,7 +169,36 @@ void SceneEditor::initUI()
     std::cout << m_sceneWidth << " , " << m_sceneHeight << std::endl;
     sceneResized();
   }));
-  
+
+
+  //Scene Graph UI
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeSceneGraphNodeName", [&](const CefRefPtr<CefListValue>& arguments) {
+    std::string prevName = arguments->GetString(1);
+    std::string newName = arguments->GetString(2);
+    //TODO: Search name 
+  }));
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeSceneGraphNodeParent", [&](const CefRefPtr<CefListValue>& arguments) {
+    std::string name = arguments->GetString(1);
+    std::string newParent = arguments->GetString(2);
+    //TODO: Search name 
+    //TODO: Search parent name 
+  }));
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_AddSceneGraphNode", [&](const CefRefPtr<CefListValue>& arguments) {
+    TString name = arguments->GetString(1);
+    TString parent = arguments->GetString(2);
+    //TODO: Search parent name 
+    addGameObject(SceneGraph::getRoot(),
+      name,
+      { 0, 0, 0 })->getTransform().scale({ 1, 1, 1 });
+
+    webRenderer.executeJSCode("JS_ClearSceneGraphTree();");
+    UI_UpdateSceneGraph();
+  }));
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeSceneGraphNodeSelection", [&](const CefRefPtr<CefListValue>& arguments) {
+    std::string name = arguments->GetString(1);
+    //TODO: Search name 
+
+  }));
 }
 void SceneEditor::initSceneGraph()
 {
@@ -225,6 +254,10 @@ void SceneEditor::sceneResized()
 
 void SceneEditor::UI_UpdateSceneGraph()
 {
+  
+    webRenderer.executeJSCode(WString(_T("JS_AddSceneGraphNode('")) +
+      _T("ROOT_NODE_X") + TString(_T("','")) + _T("ROOT_NODE_X") +
+      WString(_T("');")));
   std::function<void(const std::vector<std::shared_ptr<GameObject>>&)> search = 
     [&](const std::vector<std::shared_ptr<GameObject>>& children) {
     for (auto &it : children) {

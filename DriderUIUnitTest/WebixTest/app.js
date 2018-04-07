@@ -6,6 +6,9 @@ function JS_AddSceneGraphNode(name,pname) {
 	console.log(name);
 	webix.callEvent('WEBIX_AddSceneGraphNode',[name,pname]);
 }
+function JS_ClearSceneGraphTree() {
+	webix.callEvent('WEBIX_ClearSceneGraphTree');
+}
 //===================================================================================================================
 //                                                  WEBIX
 // ==================================================================================================================
@@ -14,6 +17,10 @@ webix.ready(function(){
 	webix.markup.init();
 	webixReady();
 	
+	
+    //=======================================================================================================
+	//                                             Toobar
+	//=======================================================================================================
 	webix.ui({
 	container:"toolbarView",
 	id:"toolbar",
@@ -30,7 +37,9 @@ webix.ready(function(){
 	
 	
 	
-	
+	//=======================================================================================================
+	//                                          Propertysheet
+	//=======================================================================================================
 	var propertysheet_1 = {
 	view:"property",  id:"sets", width:300,
 	elements:[
@@ -74,7 +83,7 @@ webix.ready(function(){
 	//                                           Scene Graph
 	//=======================================================================================================
 	webix.protoUI({
-		name:"edittree"
+		name:"edittree",
 	}, webix.EditAbility, webix.ui.tree);
 	treeb = webix.ui({
 		container:"treeView",
@@ -87,19 +96,71 @@ webix.ready(function(){
 		editable:true,
 		editor:"text",
 		editValue:"value",
+		onContext:{},
 		on:{
 			onBeforeDrop:function(context){
 				//drop as the first child
 				context.parent = context.target;
 				context.index = 0;
 			}
+			
 		},
-
 	});	
-	$$("tree").data.add({id: "ROOT_NODE_X", value:  "ROOT_NODE_X", icon:"home"}, 0);
+	
+	
+	
+	
+    webix.ui({
+        view:"contextmenu",
+	    id:"general_tree_ctx_menu",
+        data:["Add GameObject",{ $template:"Separator" },"Start WW3"],
+		master:"treeView",
+        on:{
+            onItemClick:function(id){
+				if (this.getItem(id).value == "Add GameObject"){
+					var name = "GameObject";
+					var count = 0;
+					while ($$("tree").exists(name + "_" +count)) { count++;}
+					C_AddSceneGraphNode(name + "_" + count, "ROOT_NODE_X");
+					//$$("tree").data.add({id: "GameObject", value:  "GameObject", icon:"home"}, 0, "ROOT_NODE_X");
+				}
+
+            }
+        }
+    });
+	
+	
+	webix.ui({
+	view:"contextmenu",
+	id:"item_tree_ctx_menu",
+	data:["Rename",{ $template:"Separator" },"Delete"],
+	master:$$("tree"),
+	on:{
+		onItemClick:function(id){
+			var context = this.getContext();
+			var list = context.obj;
+			var listId = context.id;
+			webix.message(this.getItem(id).value);
+			//id: list.getItem(listId).title
+		}
+	}
+    });
+
+	
+	//$$("tree").data.add({id: "ROOT_NODE_X", value:  "ROOT_NODE_X", icon:"home"}, 0);
 	webix.attachEvent("WEBIX_AddSceneGraphNode", function(name,parentName){
-		$$("tree").data.add({id: name, value:  name}, 0, parentName);
+		if (name == "ROOT_NODE_X"){
+			$$("tree").data.add({id: name, value:  name, open: true}, 0);
+		}else {
+			$$("tree").data.add({id: name, value:  name, open: true}, 0, parentName);
+		}
 	});
+	
+	
+	webix.attachEvent("WEBIX_ClearSceneGraphTree", function(){
+		$$("tree").clearAll();
+	});
+
 	//=======================================================================================================
 	//                                           File Manager
 	//=======================================================================================================
