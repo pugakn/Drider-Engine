@@ -3,7 +3,7 @@
 //                                                  C app
 // ==================================================================================================================
 function JS_AddSceneGraphNode(name,pname) {
-	console.log(name);
+	//console.log(name);
 	webix.callEvent('WEBIX_AddSceneGraphNode',[name,pname]);
 }
 function JS_ClearSceneGraphTree() {
@@ -104,11 +104,17 @@ webix.ready(function(){
 				context.index = 0;
 			}
 			
+			
 		},
 	});	
-	
-	
-	
+	treeb.attachEvent("onAfterEditStart", function(id){
+		console.log(id);
+	});
+	treeb.attachEvent("onAfterEditStop", function(state, editor, ignoreUpdate){
+		C_ChangeSceneGraphNodeName(state.old,state.value);
+		console.log(state.value);
+	});
+
 	
     webix.ui({
         view:"contextmenu",
@@ -141,7 +147,9 @@ webix.ready(function(){
 			var list = context.obj;
 			var listId = context.id;
 			webix.message(this.getItem(id).value);
-			//id: list.getItem(listId).title
+			if (this.getItem(id).value == "Delete"){
+				C_DeleteSceneGraphNode(list.getItem(listId).title);
+			}
 		}
 	}
     });

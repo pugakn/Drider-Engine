@@ -135,7 +135,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>angelscript.lib;Core.lib;Engine.lib;Utils.lib;%(AdditionalDependencies);Engine.lib</AdditionalDependencies>
+      <AdditionalDependencies>angelscript.lib;Engine.lib;Utils.lib;%(AdditionalDependencies);Engine.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);$(DRIDER_DEPENDENCIES)Lib\$(PlatformTarget);</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
