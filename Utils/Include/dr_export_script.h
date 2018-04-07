@@ -2,6 +2,10 @@
 
 namespace driderSDK {
 
+#define VALUE_FLAGS (asOBJ_VALUE | asOBJ_APP_CLASS |\
+                     asOBJ_APP_CLASS_CONSTRUCTOR | asOBJ_APP_CLASS_COPY_CONSTRUCTOR |\
+                     asOBJ_APP_CLASS_DESTRUCTOR)
+
 #define CONSTRUCT_DESTRUCT_DECL(className)\
   void Construct##className(void *memory);\
   void Destruct##className(void *memory);
@@ -12,13 +16,31 @@ namespace driderSDK {
   void Destruct##className (void *memory) {\
     ((className*)memory)->~className(); }
 
-#define BEGINING_REGISTER(className)\
+#define COPY_CONSTRUCT_DECL(className)\
+  void CopyConstruct##className(const className &other, className *thisPointer);
+
+#define COPY_CONSTRUCT_DEF(className)\
+  void CopyConstruct##className(const className &other, className *thisPointer) {\
+    new(thisPointer) className(other); }
+
+#define CONSTRUCT_3P_DECL(className, pType1, pType2, pType3)\
+  void ConstructFromTwoFloats##className(pType1 a, pType2 b, pType3 c, className *thisPointer);
+
+#define CONSTRUCT_3P_DEF(className, pType1, pType2, pType3)\
+  void ConstructFromTwoFloats##className(pType1 a, pType2 b, pType3 c, className *thisPointer) {\
+  new(thisPointer) className(a, b, c); }
+
+#define BEGINING_DEFAULT_REGISTER\
+  Int32 registerFunctions(ScriptEngine* scriptEngine) {\
+    Int32 result;
+
+#define BEGINING_REGISTER(className, size, flags)\
   Int32 registerFunctions(ScriptEngine* scriptEngine) {\
     Int32 result;\
-    result = scriptEngine->m_scriptEngine->RegisterObjectType(#className, sizeof(className), (asOBJ_VALUE | asOBJ_APP_CLASS |\
-                                                                                             asOBJ_APP_CLASS_CONSTRUCTOR | asOBJ_APP_CLASS_COPY_CONSTRUCTOR |\
-                                                                                             asOBJ_APP_CLASS_DESTRUCTOR));\
-    if(result < 0) {return result;}\
+    result = scriptEngine->m_scriptEngine->RegisterObjectType(#className, size, flags);\
+    if(result < 0) {return result;}
+
+#define REGISTER_CONSTRUC_DESTRUCT(className)\
     result = scriptEngine->m_scriptEngine->RegisterObjectBehaviour(#className,\
                                                                    asBEHAVE_CONSTRUCT,\
                                                                    "void f()",\
@@ -37,10 +59,19 @@ namespace driderSDK {
                                                                   asFUNCTION(CopyConstruct##className),\
                                                                   asCALL_CDECL_OBJLAST);
 
+#define REGISTER_CONSTRUCT_3P(className, pType1, pType2, pType3)\
+    result = scriptEngine->m_scriptEngine->RegisterObjectBehaviour(#className,\
+                                                                  asBEHAVE_CONSTRUCT,\
+                                                                  "void f("#pType1 ", "#pType2 ", "#pType3 ")",\
+                                                                  asFUNCTION(ConstructFromTwoFloats##className),\
+                                                                  asCALL_CDECL_OBJLAST);
+
+
+// METHODS FUNCTIONS
 #define REGISTER_FOO_0P(className, fooName, rType, rTypeStr)\
     result = scriptEngine->m_scriptEngine->RegisterObjectMethod(#className,\
                                                                 rTypeStr" " #fooName "()",\
-                                                                asMETHOD(className, fooName, rType),\
+                                                                asMETHOD(className, fooName),\
                                                                 asCALL_THISCALL);\
     if(result < 0) return result;
 
@@ -73,6 +104,13 @@ namespace driderSDK {
                                                                 asCALL_THISCALL);\
     if (result < 0) return result;
 
+#define REGISTER_FOO_2P_CONST(className, fooName, pType1, pType2, rType, rTypeStr, paramName1, paramName2)\
+    result = scriptEngine->m_scriptEngine->RegisterObjectMethod(#className,\
+                                                                rTypeStr" "#fooName "("#pType1 " "#paramName1 ","#pType2 " "#paramName2 ")",\
+                                                                asMETHODPR(className, fooName, (pType1, pType2) const, rType),\
+                                                                asCALL_THISCALL);\
+    if (result < 0) return result;
+
 
 #define REGISTER_FOO_3P(className, fooName, pType1, pType2, pType3, pType4, rType, rTypeStr, paramName1, paramName2, paramName3)\
     result = scriptEngine->m_scriptEngine->RegisterObjectMethod(#className,\
@@ -88,19 +126,38 @@ namespace driderSDK {
                                                                 asCALL_THISCALL);\
     if (result < 0) return result;
 
-#define REGISTER_OP(className, sybol, opFoo, pType, rType, rTypeStr)\
+#define REGISTER_OP(className, sybol, opFoo, pType, rType, rTypeStr, paramName)\
     result = scriptEngine->m_scriptEngine->RegisterObjectMethod(#className,\
-                                                                rTypeStr" "#opFoo "("#pType ")",\
+                                                                rTypeStr" "#opFoo "("#pType " "#paramName ")",\
                                                                 asMETHODPR(className, sybol, (pType), rType),\
                                                                 asCALL_THISCALL);\
     if(result < 0) return result;
 
-#define REGISTER_OP_CONST(className, sybol, opFoo, pType, rType, rTypeStr)\
+#define REGISTER_OP_CONST(className, sybol, opFoo, pType, rType, rTypeStr, paramName)\
     result = scriptEngine->m_scriptEngine->RegisterObjectMethod(#className,\
-                                                                rTypeStr" "#opFoo "("#pType ")",\
+                                                                rTypeStr" "#opFoo "("#pType " "#paramName ")",\
                                                                 asMETHODPR(className, sybol, (pType) const, rType),\
                                                                 asCALL_THISCALL);\
     if(result < 0) return result;
+
+// ENUMS
+#define REGISTER_ENUM(nameEnum)\
+    result = scriptEngine->m_scriptEngine->RegisterEnum(#nameEnum);
+#define REGISTER_ENUM_VALUE(nameEnum, enumC, valueName)\
+    result = scriptEngine->m_scriptEngine->RegisterEnumValue(#nameEnum,\
+                                                             #valueName,\
+                                                             (Int32)enumC::valueName);
+
+//GLOBAL FUNCTIONS
+
+#define REGISTER_GLO_FOO_0P(foo, fooName, rType, strRType)\
+    result = scriptEngine->m_scriptEngine->RegisterGlobalFunction (strRType " "#fooName "()",\
+                                                                   asFUNCTIONPR(foo, (void), rType),\
+                                                                   asCALL_CDECL);
+#define REGISTER_GLO_FOO_1P(foo, fooName, pType, asPType, rType, strRType)\
+    result = scriptEngine->m_scriptEngine->RegisterGlobalFunction (strRType " "#fooName "("#asPType ")",\
+                                                                   asFUNCTIONPR(foo, (pType), rType),\
+                                                                   asCALL_CDECL);
 
 #define END_REGISTER\
     return result;\

@@ -86,7 +86,7 @@ class DR_GRAPHICS_EXPORT Buffer
 
   std::vector<byte>& getSysMemCopy() { return m_sysMemCpy; }
   const DrBufferDesc& getDescriptor() const { return m_descriptor; }
-protected:
+ protected:
   std::vector<byte> m_sysMemCpy;
   DrBufferDesc m_descriptor;
 };

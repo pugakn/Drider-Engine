@@ -22,7 +22,7 @@ CONSTRUCT_DESTRUCT_DECL(Camera)
 */
 class DR_CORE_EXPORT Camera : public GameObject
 {
-public:
+ public:
 
 	/**
 	* TEST::defaultConstructor
@@ -198,7 +198,7 @@ public:
 	*  The view proyection of the camera.
 	*/
   const Matrix4x4&
-  getVP();
+  getVP() const;
 
   /**
   * Gets the view matrix.
@@ -207,7 +207,7 @@ public:
   *   View matrix.
   */
   const Matrix4x4&
-  getView();
+  getView() const;
 
   /**
   * Gets the projection matrix.
@@ -216,20 +216,22 @@ public:
   *   Projection matrix.
   */
   const Matrix4x4&
-  getProjection();
+  getProjection() const;
 
   float
-  getFarPlane();
+  getFarPlane() const;
 
   float
-  getNearPlane();
+  getNearPlane() const;
 
   float
-  getFOV();
+  getFOV() const;
 
-  BEGINING_REGISTER(Camera)
+  BEGINING_REGISTER(Camera, sizeof(Camera), VALUE_FLAGS)
   
-  //REGISTER_FOO_4P(Camera, move, float, float, float, bool, void)
+  REGISTER_CONSTRUC_DESTRUCT(Camera)
+  
+  result = REGISTER_FOO_1P(Camera, move, const Vector3D&, void, "void", in)
 
   /*REGISTER_FOO_0P(Camera, getFarPlane, float)
   REGISTER_FOO_0P(Camera, getNearPlane, float)

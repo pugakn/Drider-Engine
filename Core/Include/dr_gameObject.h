@@ -1,8 +1,10 @@
 #pragma once
 
 #include <vector>
+
 #include <dr_memory.h>
 #include <dr_transform.h>
+
 #include "dr_core_prerequisites.h"
 #include "dr_enableObject.h"
 
@@ -28,14 +30,20 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
 
   GameObject& operator=(const GameObject&) = delete;
   
-  void 
+  /*void
+  init();*/
+
+  virtual void 
   update();
   
   void
   render();
 
+  void
+  destroy();
+
   SharedGameObj
-  clone();
+  clone(bool addToParent = true);
   
   virtual SharedGameObj
   createInstance();
@@ -96,6 +104,7 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   {
     for (auto it = m_components.begin(); it != m_components.end(); ++it) {
       if (dynamic_cast<T*>(it->get())) {
+        (*it)->onDestroy();
         m_components.erase(it);
         return;
       }
@@ -123,7 +132,7 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   setParent(SharedGameObj parent);
 
   SharedGameObj 
-  getParent();
+  getParent() const;
 
   /**
   * Removes a child from its childredn.
@@ -232,10 +241,10 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   copyData(SharedGameObj other){}
 
   virtual void
-  updateImpl();
-
+  updateImpl(){}
 
   bool m_change;
+  bool m_destroyed;
   bool m_isStatic;
   ChildrenList m_children;
   ComponentsList m_components;

@@ -2,7 +2,7 @@
 
 namespace driderSDK {
 
-GameComponent::GameComponent(GameObject& gameObject_) 
+GameComponent::GameComponent(GameObject& gameObject_)
   : m_gameObject(gameObject_) 
 {}
 

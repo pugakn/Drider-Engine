@@ -13,6 +13,7 @@
 #include "dr_codec_script.h"
 #include "dr_codec_sound.h"
 #include "dr_codec_texture.h"
+#include "dr_script_core.h"
 
 namespace driderSDK {
 
@@ -30,10 +31,12 @@ ResourceManager::onStartUp() {
   m_resourceFactories[codecTexture.get()] = std::make_shared<TextureCore>;
   m_resourceFactories[codecModel.get()] = std::make_shared<Model>;
   m_resourceFactories[codecSound.get()] = std::make_shared<SoundCore>;
+  m_resourceFactories[codecScript.get()] = std::make_shared<ScriptCore>;
 
   m_codecs.push_back(std::move(codecModel));
   m_codecs.push_back(std::move(codecTexture));
   m_codecs.push_back(std::move(codecSound));
+  m_codecs.push_back(std::move(codecScript));
 
   createDefaultResources();
 }
@@ -159,7 +162,7 @@ ResourceManager::createDummyTexture() {
         for (Int32 x = 0; x < areaSize; ++x) {
           Pixel& pixel = matrix[i * areaSize + y][j * areaSize + x];
           pixel.d[0] = value;
-          pixel.d[1] = value;
+          pixel.d[1] = 0;
           pixel.d[2] = value;
           pixel.d[3] = 255;
         }

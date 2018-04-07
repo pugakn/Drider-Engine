@@ -11,7 +11,7 @@ class Transform;
 
 class SkeletonDebug : public GameComponent {
 
-public:
+ public:
   SkeletonDebug(GameObject& _go);
 
   SkeletonDebug(const SkeletonDebug&) = delete;
@@ -36,7 +36,7 @@ public:
 
   virtual void 
   cloneIn(GameObject& _go);
-private:
+ private:
   void
   create();
   using AABBDebugPtr = std::unique_ptr<AABBDebug>;

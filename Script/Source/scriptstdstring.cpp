@@ -30,7 +30,7 @@ END_AS_NAMESPACE
 
 class CStdStringFactory : public asIStringFactory
 {
-public:
+ public:
   CStdStringFactory() {}
   ~CStdStringFactory()
   {

@@ -52,7 +52,7 @@ struct DR_CORE_EXPORT QueryObjectInfo
 
 class DR_CORE_EXPORT SceneGraph : public Module<SceneGraph>
 {
-public:
+ public:
   using SharedModel = std::shared_ptr<Model>;
   using SharedGameObject = std::shared_ptr<GameObject>;
   using GameObjectList = std::vector<SharedGameObject>;
@@ -65,18 +65,34 @@ public:
   static void
   buildOctree();
 
+  /**
+  * Adds an object to the graph (root child).
+  */
   static void
   addObject(SharedGameObject gameObject); 
+
+  /**
+  * Creates a node of Type T and adds it to the graph (root child).
+  * 
+  * @param name
+  *   Name of the node. 
+  */
+  template<class T = GameObject>
+  static std::shared_ptr<T>
+  createObject(const TString& name)
+  {
+    auto obj = std::make_shared<T>(name);
+
+    addObject(obj);
+
+    return obj;
+  }
 
   static SharedGameObject 
   getRoot();
 
   static SharedGameObject 
   getOctree();
-
-  /**
-  * Es posible tener objetos 
-  */
 
   /**
   * Query meshes from the scene graph
@@ -91,10 +107,8 @@ public:
   static void 
   draw();
   /****************/
-  static SharedGameObject
-  createNode(SharedGameObject parent, SharedModel model);
 
-private:
+ private:
   using ObjectComp = std::function<bool(SharedGameObject, SharedGameObject)>;
   using GameObjectQueue = std::priority_queue<SharedGameObject,
                                               GameObjectList,
@@ -119,6 +133,9 @@ private:
   void
   onStartUp();
 
+  void
+  onShutDown();
+
   static void
   testObjectOct(SharedGameObject object,
                 Frustrum& frustrum, 
@@ -142,7 +159,7 @@ private:
   static void
   addAllChilds(GameObject& node,
                std::vector<std::shared_ptr<GameObject>>* list);
-private:
+ private:
   SharedGameObject m_root;
   SharedGameObject m_octree;
   std::mutex m_mutex;

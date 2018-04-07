@@ -6,7 +6,7 @@
 namespace driderSDK {
 
 class AnimationTechnique : public Technique {
-public:
+ public:
 
   struct CBuffer 
   {

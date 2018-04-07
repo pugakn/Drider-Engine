@@ -41,20 +41,20 @@ Camera::createInstance() {
 void
 Camera::updateImpl() {
 
-  if (m_change) {
+  if (changed()) {
     auto& parentT = getParent()->getWorldTransform();
     auto& localT = getTransform();
     auto pos = Vector4D(localT.getPosition(), 1.0f) * parentT.getMatrix();
     auto target = Vector4D(m_target, 1) * parentT.getMatrix();
-	m_view.LookAt(Vector3D(pos), Vector3D(target), m_up);
-	m_vp = m_view * m_projection;
+	  m_view.LookAt(Vector3D(pos), Vector3D(target), m_up);
+	  m_vp = m_view * m_projection;
   }
 }
 
 void
 Camera::move(float forward, float strafe, float upVelocity, bool lockY) {
 
-  Vector3D dir = m_localTransform.getDirection();
+  /*Vector3D dir = m_localTransform.getDirection();
   Vector3D right = dir.cross(m_up);
 
   if (lockY) {
@@ -70,7 +70,7 @@ Camera::move(float forward, float strafe, float upVelocity, bool lockY) {
 		m_localTransform.move(right * strafe);
 	}
 
-  m_localTransform.move(upVelocity, AXIS::kY);
+  m_localTransform.move(upVelocity, AXIS::kY);*/
 }
 
 void
@@ -81,7 +81,7 @@ Camera::move(const Vector3D& direction) {
 void
 Camera::pan(float forward, float strafe, float upVelocity, bool lockY) {
 
-  Vector3D dir = m_localTransform.getDirection();
+ /* Vector3D dir = m_localTransform.getDirection();
   Vector3D right = dir.cross(m_up);
 
   if (lockY) {
@@ -95,7 +95,7 @@ Camera::pan(float forward, float strafe, float upVelocity, bool lockY) {
 
 	m_target += dir;
 
-  move(dir);
+  move(dir);*/
 }
 
 void
@@ -136,16 +136,16 @@ Camera::setViewport(const Viewport& viewport) {
 
 void
 Camera::rotate(const Quaternion& rotation) {
-	m_target = m_localTransform.getPosition() +
-             rotation.rotation(m_localTransform.getDirection());
+	/*m_target = m_localTransform.getPosition() +
+             rotation.rotation(m_localTransform.getDirection());*/
 }
 
 void
 Camera::rotate(float yawDegree, float pitchDegree) {
-  m_localTransform.rotate({yawDegree * Math::DEGREE_TO_RADIAN,
+  /*m_localTransform.rotate({yawDegree * Math::DEGREE_TO_RADIAN,
                    pitchDegree * Math::DEGREE_TO_RADIAN, 0});
   m_target = m_localTransform.getPosition() +
-             m_localTransform.getDirection() * 10.f;
+             m_localTransform.getDirection() * 10.f;*/
 }
 
 void
@@ -161,32 +161,30 @@ Camera::orbit(float pitch, float yaw) {
 }
 
 const Matrix4x4&
-Camera::getVP() {
+Camera::getVP() const{
   return m_vp;
 }
 
 const Matrix4x4&
-Camera::getView() {
+Camera::getView() const {
   return m_view;
 }
 
-float Camera::getFarPlane() {
+float Camera::getFarPlane() const {
   return m_farPlane;
 }
 
-float Camera::getNearPlane() {
+float Camera::getNearPlane() const {
   return m_nearPlane;
 }
 
-float Camera::getFOV() {
+float Camera::getFOV() const {
   return m_fov;
 }
 
 const Matrix4x4&
-Camera::getProjection() {
+Camera::getProjection() const {
   return m_projection;
 }
-
-//CREATE_REF_FACTORY_FUNC(Camera)
 
 }

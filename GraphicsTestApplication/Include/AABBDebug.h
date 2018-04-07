@@ -10,7 +10,7 @@ class Matrix4x4;
 struct Mesh;
 
 class AABBDebug : public DrawableComponent {
-public: 
+ public: 
   AABBDebug(GameObject& _gameObject, bool updateFromGO = false);
 
   void
@@ -28,7 +28,7 @@ public:
   virtual void
   cloneIn(GameObject& _go);
 
-private:
+ private:
   std::vector<Mesh> m_meshesCore;
   bool m_updateFromGO;
   AABB m_aabbD;

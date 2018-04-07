@@ -54,7 +54,7 @@ class DR_GRAPHICS_EXPORT RasterizerState
   virtual void
   release() = 0;
   const DrRasterizerDesc& getDescriptor() const { return m_descriptor; }
-protected:
+ protected:
   DrRasterizerDesc m_descriptor;
 };
 

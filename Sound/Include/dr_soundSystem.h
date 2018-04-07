@@ -13,7 +13,7 @@ class DrCreateSoundExInfo;
 class DrDSP;
 
 class DR_SOUND_EXPORT SoundSystem {
-public:
+ public:
   //SoundSystem() {}
   /**
   * Default destructor

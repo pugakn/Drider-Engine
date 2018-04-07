@@ -118,6 +118,7 @@ GraphicsAPI::init(UInt32 w, UInt32 h, void * hwnd, DR_GRAPHICS_API::E api)
   /*BLEND STATES*/
   ////Opaque
   DrBlendStateDesc blendDesc;
+  blendDesc.blendEnable = false;
   {
     auto rs = m_device->createBlendState(blendDesc);
     m_blendSStates[DR_BLEND_STATES::kOpaque] = dr_gfx_unique(rs);
@@ -128,6 +129,8 @@ GraphicsAPI::init(UInt32 w, UInt32 h, void * hwnd, DR_GRAPHICS_API::E api)
     blendDesc.srcBlendAlpha = DR_BLEND::kBLEND_SRC_ALPHA;
   blendDesc.destBlend =
     blendDesc.destBlendAlpha = DR_BLEND::kBLEND_ONE;
+  blendDesc.blendOp = DR_BLEND_OP::kBLEND_OP_ADD;
+  blendDesc.blendOpAlpha = DR_BLEND_OP::kBLEND_OP_ADD;
   {
     auto rs = m_device->createBlendState(blendDesc);
     m_blendSStates[DR_BLEND_STATES::kAdditive] = dr_gfx_unique(rs);

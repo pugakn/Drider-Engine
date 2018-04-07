@@ -569,6 +569,7 @@ struct DR_GRAPHICS_EXPORT DrDepthStencilStateDesc {
   DR_DEPTH_WRITE_MASK::E depthWriteMask;
   DrDepthStencilStateDesc() {
     depthEnable = true;
+    depthWriteMask = DR_DEPTH_WRITE_MASK::kMASK_ALL;
     depthFunc = DR_COMPARISON_FUNC::kLESS_EQUAL;
     stencilEnable = false;
     stencilReadMask = 0;

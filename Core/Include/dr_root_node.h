@@ -7,12 +7,12 @@ namespace driderSDK {
 
 class DR_CORE_EXPORT RootNode : public GameObject
 {
-public:
+ public:
   RootNode();
 
   void
   init();
-private:
+ private:
   virtual void 
   updateImpl();
 

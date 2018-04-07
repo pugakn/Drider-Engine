@@ -1,0 +1,87 @@
+void script1::onKeyUp(KeyCode)
+
+Temps: 1, 5, 6, 13, 20, 27
+
+Variables: 
+ -001: KeyCode key
+ 004: Vector3D vec
+ 000: script1 this
+ 013: string {noname}
+ 020: string {noname}
+ 027: string {noname}
+
+
+- 24,3 -
+               VarDecl  0
+    0  27 *    SUSPEND
+    1  27 *    CMPIi    v-1, 32
+    3  27 *    JNZ      +69              (d:74)
+- 25,4 -
+            {
+    5  27 *    SUSPEND
+               VarDecl  1
+    6  27 *    PshC4    0x0          (i:0, f:0)
+    8  28 *    PshC4    0x0          (i:0, f:0)
+   10  29 *    PshC4    0x41200000          (i:1092616192, f:10)
+   12  30 *    PSF      v4
+   13  31 *    CALLSYS  76           (Vector3D::Vector3D(float, float, float))
+- 26,4 -
+               ObjInfo  v4, 1
+   15  27 *    SUSPEND
+   16  27 *    VAR      v4
+   17  28 *    PshVPtr  v0
+   18  29 *    ADDSi    v20, 134217745
+   20  29 *    RDSPtr
+   21  29 *    GETREF   1
+   22  29 *    CALLSYS  97           (void Transform::move(const Vector3D&in))
+- 27,4 -
+   24  27 *    SUSPEND
+   25  27 *    PGA      237057520
+   27  28 *    PSF      v13
+   28  29 *    CALLSYS  20           (string::string(const string&in))
+               ObjInfo  v13, 1
+   30  27 *    PshVPtr  v0
+   31  28 *    ADDSi    v20, 134217745
+   33  28 *    RDSPtr
+   34  28 *    ADDSi    v136, 67108879
+   36  28 *    ADDSi    v0, 67108878
+   38  28 *    PopRPtr
+   39  27 *    RDR4     v1
+   40  27 *    PshV4    v1
+   41  28 *    PSF      v20
+   42  29 *    PSF      v13
+   43  30 *    CALLSYS  40           (string string::opAdd(float) const)
+               ObjInfo  v20, 1
+   45  27 *    PSF      v13
+   46  28 *    CALLSYS  21           (string::~string())
+               ObjInfo  v13, 0
+   48  27 *    PGA      237058312
+   50  28 *    PSF      v13
+   51  29 *    CALLSYS  20           (string::string(const string&in))
+               ObjInfo  v13, 1
+   53  27 *    VAR      v13
+   54  28 *    PSF      v27
+   55  29 *    PSF      v20
+   56  30 *    GETREF   2
+   57  30 *    CALLSYS  26           (string string::opAdd(const string&in) const)
+               ObjInfo  v27, 1
+   59  27 *    PSF      v20
+   60  28 *    CALLSYS  21           (string::~string())
+               ObjInfo  v20, 0
+   62  27 *    PSF      v13
+   63  28 *    CALLSYS  21           (string::~string())
+               ObjInfo  v13, 0
+   65  27 *    PSF      v27
+   66  28 *    CALLSYS  69           (void Print(string&in))
+   68  27 *    PSF      v27
+   69  28 *    CALLSYS  21           (string::~string())
+               ObjInfo  v27, 0
+   71  27 *    PSF      v4
+   72  28 *    CALLSYS  74           (Vector3D::~Vector3D())
+- 29,3 -
+               ObjInfo  v4, 0
+            }
+            1:
+   74  27 *    SUSPEND
+            0:
+   75  27 *    RET      2

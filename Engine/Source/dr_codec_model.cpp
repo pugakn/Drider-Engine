@@ -191,9 +191,9 @@ CodecModel::loadSkeleton(const aiScene& model,
 
       TString boneName = StringUtils::toTString(bone.mName.data);
 
-      std::memcpy(nodesRefs[boneName]->boneOffset.ptr(), 
-                  &bone.mOffsetMatrix[0][0], 64);
-
+      /*std::memcpy(nodesRefs[boneName]->boneOffset.ptr(), 
+                  &bone.mOffsetMatrix[0][0], 64);*/
+      
       Vector3D min = {Math::MAX_FLOAT, Math::MAX_FLOAT, Math::MAX_FLOAT};
       Vector3D max = {Math::MIN_FLOAT, Math::MIN_FLOAT, Math::MIN_FLOAT};
 
@@ -206,6 +206,8 @@ CodecModel::loadSkeleton(const aiScene& model,
         bonesAABBs.push_back({});
         std::memcpy(bones[index]->boneOffset.ptr(), 
                     &bone.mOffsetMatrix[0][0], 64);
+        
+        nodesRefs[boneName]->boneOffset.transpose();
       }
       else {
         index = bonesMap[boneName];

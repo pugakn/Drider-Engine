@@ -1,0 +1,255 @@
+
+Total count
+PopPtr     : 8591
+PshC4      : 243
+PshV4      : 81
+PSF        : 1055
+CALL       : 2
+RET        : 17086
+JNZ        : 102
+PshVPtr    : 8755
+RDSPtr     : 162
+CMPIi      : 102
+PopRPtr    : 81
+CALLSYS    : 972
+SUSPEND    : 26018
+ALLOC      : 2
+FREE       : 8591
+LOADOBJ    : 2
+REFCPY     : 8591
+GETOBJREF  : 8591
+GETREF     : 162
+ADDSi      : 8915
+RDR4       : 81
+PGA        : 162
+VAR        : 8753
+
+Never executed
+PshGPtr   
+SwapPtr   
+NOT       
+PshG4     
+LdGRdR4   
+JMP       
+JZ        
+JS        
+JNS       
+JP        
+JNP       
+TZ        
+TNZ       
+TS        
+TNS       
+TP        
+TNP       
+NEGi      
+NEGf      
+NEGd      
+INCi16    
+INCi8     
+DECi16    
+DECi8     
+INCi      
+DECi      
+INCf      
+DECf      
+INCd      
+DECd      
+IncVi     
+DecVi     
+BNOT      
+BAND      
+BOR       
+BXOR      
+BSLL      
+BSRL      
+BSRA      
+COPY      
+PshC8     
+CMPd      
+CMPu      
+CMPf      
+CMPi      
+CMPIf     
+CMPIu     
+JMPP      
+PshRPtr   
+STR       
+CALLBND   
+STOREOBJ  
+GETOBJ    
+CHKREF    
+PshNull   
+ClrVPtr   
+OBJTYPE   
+TYPEID    
+SetV4     
+SetV8     
+CpyVtoV4  
+CpyVtoV8  
+CpyVtoR4  
+CpyVtoR8  
+CpyVtoG4  
+CpyRtoV4  
+CpyRtoV8  
+CpyGtoV4  
+WRTV1     
+WRTV2     
+WRTV4     
+WRTV8     
+RDR1      
+RDR2      
+RDR8      
+LDG       
+LDV       
+CmpPtr    
+iTOf      
+fTOi      
+uTOf      
+fTOu      
+sbTOi     
+swTOi     
+ubTOi     
+uwTOi     
+dTOi      
+dTOu      
+dTOf      
+iTOd      
+uTOd      
+fTOd      
+ADDi      
+SUBi      
+MULi      
+DIVi      
+MODi      
+ADDf      
+SUBf      
+MULf      
+DIVf      
+MODf      
+ADDd      
+SUBd      
+MULd      
+DIVd      
+MODd      
+ADDIi     
+SUBIi     
+MULIi     
+ADDIf     
+SUBIf     
+MULIf     
+SetG4     
+ChkRefS   
+ChkNullV  
+CALLINTF  
+iTOb      
+iTOw      
+SetV1     
+SetV2     
+Cast      
+i64TOi    
+uTOi64    
+iTOi64    
+fTOi64    
+dTOi64    
+fTOu64    
+dTOu64    
+i64TOf    
+u64TOf    
+i64TOd    
+u64TOd    
+NEGi64    
+INCi64    
+DECi64    
+BNOT64    
+ADDi64    
+SUBi64    
+MULi64    
+DIVi64    
+MODi64    
+BAND64    
+BOR64     
+BXOR64    
+BSLL64    
+BSRL64    
+BSRA64    
+CMPi64    
+CMPu64    
+ChkNullS  
+ClrHi     
+JitEntry  
+CallPtr   
+FuncPtr   
+LoadThisR 
+PshV8     
+DIVu      
+MODu      
+DIVu64    
+MODu64    
+LoadRObjR 
+LoadVObjR 
+RefCpyV   
+JLowZ     
+JLowNZ    
+AllocMem  
+SetListSiz
+PshListElm
+SetListTyp
+POWi      
+POWu      
+POWf      
+POWd      
+POWdi     
+POWi64    
+POWu64    
+Thiscall1 
+
+Sequences
+PopPtr    , SUSPEND    : 8591
+PshC4     , PshC4      : 162
+PshC4     , PSF        : 81
+PshV4     , PSF        : 81
+PSF       , PSF        : 162
+PSF       , CALLSYS    : 810
+PSF       , ALLOC      : 2
+PSF       , GETREF     : 81
+CALL      , SUSPEND    : 2
+RET       , PSF        : 1
+RET       , RET        : 2
+RET       , SUSPEND    : 17080
+RET       , LOADOBJ    : 2
+JNZ       , SUSPEND    : 102
+PshVPtr   , CALL       : 2
+PshVPtr   , ADDSi      : 8753
+RDSPtr    , GETREF     : 81
+RDSPtr    , ADDSi      : 81
+CMPIi     , JNZ        : 102
+PopRPtr   , RDR4       : 81
+CALLSYS   , PSF        : 485
+CALLSYS   , RET        : 1
+CALLSYS   , PshVPtr    : 81
+CALLSYS   , SUSPEND    : 243
+CALLSYS   , PGA        : 81
+CALLSYS   , VAR        : 81
+SUSPEND   , PshC4      : 81
+SUSPEND   , PSF        : 1
+SUSPEND   , RET        : 8490
+SUSPEND   , CMPIi      : 102
+SUSPEND   , FREE       : 8591
+SUSPEND   , PGA        : 81
+SUSPEND   , VAR        : 8672
+ALLOC     , PshVPtr    : 2
+FREE      , RET        : 8591
+LOADOBJ   , RET        : 2
+REFCPY    , PopPtr     : 8591
+GETOBJREF , REFCPY     : 8591
+GETREF    , CALLSYS    : 162
+ADDSi     , RDSPtr     : 162
+ADDSi     , PopRPtr    : 81
+ADDSi     , GETOBJREF  : 8591
+ADDSi     , ADDSi      : 81
+RDR4      , PshV4      : 81
+PGA       , PSF        : 162
+VAR       , PSF        : 81
+VAR       , PshVPtr    : 8672
+LABEL     , PSF        : 1

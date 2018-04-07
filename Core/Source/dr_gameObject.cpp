@@ -1,5 +1,9 @@
 #include "dr_gameObject.h"
+
 #include <algorithm>
+
+#include <dr_logger.h>
+
 #include "dr_gameComponent.h"
 
 namespace driderSDK {
@@ -7,19 +11,22 @@ namespace driderSDK {
 GameObject::GameObject(const TString& name)
   : m_name(name),
     m_isStatic(false),
+    m_destroyed(false),
     m_change(false)
     //m_finalTransform(Math::FORCE_INIT::kIdentity)
-{
-}
-
-GameObject::~GameObject() 
 {}
+
+GameObject::~GameObject() {
+  if (!m_destroyed) {
+    Logger::addLog(_T("Object called destructor without begin destoyed() first"));
+  }
+}
 
 void
 GameObject::update() {
 
   m_change = m_localTransform.changed() ||
-                  getParent()->m_finalTransform.changed();
+             getParent()->changed();
 
   if (m_change) {
     m_finalTransform = m_localTransform * getParent()->m_finalTransform;  
@@ -34,11 +41,9 @@ GameObject::update() {
   for (auto& child : m_children) {
     child->update();
   }
-  
-  m_change = false;
 
-  m_localTransform.newFrame();
-  m_finalTransform.newFrame();
+  m_finalTransform.m_change = false;
+  m_localTransform.m_change = false;
 }
 
 void 
@@ -53,22 +58,33 @@ GameObject::render() {
   }*/
 }
 
+void
+GameObject::destroy() {
+  
+  m_destroyed = true;
+
+  for (auto& c : m_components) {
+    c->onDestroy();
+  }
+
+  for (auto& child : m_children) {
+    child->destroy();
+  }
+}
+
 GameObject::SharedGameObj 
-GameObject::clone() {
+GameObject::clone(bool addToParent) {
   
   SharedGameObj dup = createInstance();
 
   copyData(dup);
 
   dup->m_name = m_name;
-
-  dup->m_parent = m_parent;
-
-  if (auto p = m_parent.lock()) {
-    p->addChild(dup);
+  
+  if (addToParent && getParent()) {
+    dup->m_parent = m_parent;
+    getParent()->addChild(dup);
   }
-
-  dup->m_change = m_change;
 
   dup->m_localTransform = m_localTransform;
 
@@ -86,8 +102,9 @@ GameObject::clone() {
     component->cloneIn(*dup);
   }
 
+  /*********************************/
   for (auto& child : m_children) {
-    dup->addChild(child->clone());
+    dup->addChild(child->clone(false));
   }
 
   return dup;
@@ -140,7 +157,7 @@ GameObject::setParent(SharedGameObj parent) {
 }
 
 GameObject::SharedGameObj 
-GameObject::getParent() {
+GameObject::getParent() const {
   return m_parent.lock();
 }
 
@@ -262,7 +279,5 @@ GameObject::SharedGameObj
 GameObject::createInstance() {
   return std::make_shared<GameObject>();
 }
-
-void GameObject::updateImpl() {}
 
 }

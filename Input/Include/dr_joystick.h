@@ -14,7 +14,7 @@ class DR_INPUT_EXPORT Joystick
 
   struct Pass{};
 
-public:
+ public:
   using AnyAxisCallback = std::function<void(Joystick&, JOYSTICK_AXIS::E)>;
   using AnyAxisCallbacks = std::vector<AnyAxisCallback>;
   using AnyButtonCallback = std::function<void(Joystick&, JOYSTICK_BUTTON::E)>;
@@ -91,7 +91,7 @@ public:
 
   Joystick& operator=(Joystick&&) = delete;
 
-private:
+ private:
 
   friend class InputManager;
 

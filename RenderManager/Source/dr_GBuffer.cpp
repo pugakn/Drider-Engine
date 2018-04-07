@@ -10,6 +10,7 @@
 #include <dr_render_component.h>
 #include <dr_device_context.h>
 #include <dr_camera.h>
+#include <dr_material.h>
 
 namespace driderSDK {
 
@@ -33,17 +34,16 @@ GBufferPass::init(PassInitData* initData) {
 
   Device& device = GraphicsAPI::getDevice();
 
-  m_vertexShader = device.createShaderFromMemory(vsSource.c_str(),
-                                                 vsSource.size() + 1,
+  m_vertexShader = device.createShaderFromMemory(vsSource.data(),
+                                                 vsSource.size(),
                                                  DR_SHADER_TYPE_FLAG::kVertex);
 
-  m_fragmentShader = device.createShaderFromMemory(fsSource.c_str(),
-                                                   fsSource.size() + 1,
+  m_fragmentShader = device.createShaderFromMemory(fsSource.data(),
+                                                   fsSource.size(),
                                                    DR_SHADER_TYPE_FLAG::kFragment);
 
-  std::vector<DrInputElementDesc> idesc = m_vertexShader->reflect();
-
-  m_inputLayout = device.createInputLayout(idesc, *m_vertexShader->m_shaderBytecode);
+  m_inputLayout = device.createInputLayout(Vertex::getInputDesc(), 
+                                           *m_vertexShader->m_shaderBytecode);
 
   DrBufferDesc bdesc;
 
@@ -56,31 +56,41 @@ void
 GBufferPass::draw(PassDrawData* drawData) {
   GBufferDrawData* data = static_cast<GBufferDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
-
+  
   m_vertexShader->set(dc);
   m_fragmentShader->set(dc);
-
+  
   m_inputLayout->set(dc);
-
-  Matrix4x4 VP = (*data->activeCam).getVP();
-
-  std::vector<std::pair<Matrix4x4, RenderMesh>>* models;
-
-  dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
-
+  
+  m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
+  
   m_constantBuffer->set(dc);
-
-  //dc.setRenderTarget(*data->OutRt, *data->dsOptions);
+  
+  dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
   
   for (auto& modelPair : *data->models) {
-    //m_constantBuffer->WVP = VP * modelPair.first;
-    //m_constantBuffer->World = modelPair.first;
+    if (auto material = modelPair.mesh.material.lock()) {
+      material->set();
+    }
 
-    modelPair.second.vertexBuffer->set(dc);
-    modelPair.second.indexBuffer->set(dc);
+    CB.World = modelPair.world;
+    CB.WVP = modelPair.world * data->activeCam->getVP();
+  
+    m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
+  
+    m_constantBuffer->set(dc);
 
-    dc.draw(modelPair.second.indicesCount, 0, 0);
+    modelPair.mesh.vertexBuffer->set(dc);
+    modelPair.mesh.indexBuffer->set(dc);
+
+    dc.draw(modelPair.mesh.indicesCount, 0, 0);
   }
 }
+
+/*
+  m_constantBuffer->release();
+  m_vertexShader->release();
+  m_fragmentShader->release();
+*/
 
 }

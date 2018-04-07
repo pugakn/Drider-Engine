@@ -14,12 +14,12 @@ enum E
 
 class DR_CORE_EXPORT ColliderComponent : public GameComponent
 {
-public:
+ public:
   using GameComponent::GameComponent;
 
   virtual COLLIDER_TYPE::E
   getType() = 0;
-protected:
+ protected:
 
 };
 

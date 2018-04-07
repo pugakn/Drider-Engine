@@ -2,6 +2,7 @@
 
 #include "dr_math_prerequisites.h"
 #include "dr_math.h"
+#include "dr_vector3d.h"
 #include "dr_vector4d.h"
 
 namespace driderSDK {
@@ -321,6 +322,9 @@ class DR_MATH_EXPORT Matrix4x4
   */
   Matrix4x4&
   Reflection(Vector3D NormalOfMirror);
+
+  /*Vector3D
+  eulerAngles();*/
   
   /**
   * TEST::getPointer

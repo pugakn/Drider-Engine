@@ -5,10 +5,7 @@
 
 namespace driderSDK {
 
-RenderMan::RenderMan() : m_sceneGraph(nullptr){
-}
-
-RenderMan::RenderMan(SceneGraph* sceneGraph) : m_sceneGraph(sceneGraph) {
+RenderMan::RenderMan() {
 }
 
 RenderMan::~RenderMan() {
@@ -33,25 +30,29 @@ RenderMan::init() {
 
   m_RTs = GraphicsAPI::getDevice().createRenderTarget( { ColorTex, PositionTex, NormalTex } );
 
-  Viewport vp;
-  vp.minDepth = 0.1f;
-  vp.maxDepth = 1000.0f;
-  vp.width = 1280;
-  vp.width = 720;
-  Sauron.setName(L"MainCam");
-  Sauron.setViewport(vp);
+  m_viewport.width = 1920;
+  m_viewport.height = 1080;
+  Sauron = std::make_shared<Camera>(_T("PATO_CAM"), m_viewport);
+
+  Sauron->createProyection(45.f, 20.f, 3000.f);
+  Sauron->getTransform().setPosition({ 0.f, 300.0f, -400 });
+  Sauron->setTarget({ 0.0f, 200.f, 1.0f });
+
+  SceneGraph::addObject(Sauron);
 
   m_GBufferPass.init(&m_GBufferInitData);
+  m_SSAOPass.init(&m_SSAOInitData);
 }
 
 void
 RenderMan::draw() {
-  queryRequest = m_sceneGraph->query(Sauron,
-                                     QUERY_ORDER::kFrontToBack,
-                                     QUERY_PROPERTYS::kOpaque |
-                                     QUERY_PROPERTYS::kStatic);
+  auto queryRequest = SceneGraph::query(*Sauron,
+                                 QUERY_ORDER::kFrontToBack,
+                                 QUERY_PROPERTY::kOpaque | 
+                                 QUERY_PROPERTY::kDynamic | 
+                                 QUERY_PROPERTY::kStatic);
 
-  m_GBufferDrawData.activeCam = &Sauron;
+  m_GBufferDrawData.activeCam = Sauron;
   m_GBufferDrawData.models = &queryRequest;
   m_GBufferPass.draw(&m_GBufferDrawData);
 

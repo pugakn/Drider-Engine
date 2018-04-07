@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <random>
 #include <iostream>
+#include <functional>
 #include <dr_aabb_collider.h>
 #include <dr_d3d_swap_chain.h>
 #include <dr_degree.h>
@@ -22,7 +23,13 @@
 #include <dr_gameObject.h>
 #include <dr_material.h>
 #include <dr_animator_component.h>
-
+#include <dr_bone_attach_object.h>
+#include <dr_device_context.h>
+#include <dr_device.h>
+#include <dr_model.h>
+#include <dr_graph.h>
+#include <dr_vertex_buffer.h>
+#include <dr_index_buffer.h>
 #include "DrawableComponent.h"
 #include "AABBDebug.h"
 #include "FrustumDebug.h"
@@ -30,6 +37,10 @@
 #include "StaticMeshTechnique.h"
 #include "LinesTechnique.h"
 #include "AnimationTechnique.h"
+
+#include <dr_script_core.h>
+#include <dr_script_component.h>
+#include <dr_script_object.h>
 
 namespace driderSDK {
 
@@ -49,6 +60,7 @@ TestApplication::postInit() {
   SceneGraph::startUp();
   Time::startUp();
   ResourceManager::startUp();
+  ScriptEngine::startUp();
   
   m_queryOrder = QUERY_ORDER::kFrontToBack;
 
@@ -111,8 +123,8 @@ TestApplication::postInit() {
 
   initInput();
   initSceneGraph();
-  
-  
+  initScriptEngine();
+
   /*SceneGraph::addObject(m_leftCam);
   */SceneGraph::addObject(m_upCam);
   m_leftCam->setParent(m_joker);
@@ -142,25 +154,20 @@ TestApplication::input() {
 
   auto rotateLeft = [&]() 
   {
-    m_joker->getTransform().rotate(Degree(90.f * Time::getDelta()), AXIS::kY);
+    m_joker->getTransform().rotate(Vector3D{0, Math::PI * Time::getDelta(),0});
   };
 
   auto rotateRight = [&]() 
   {
-    m_joker->getTransform().rotate(Degree(-90.f * Time::getDelta()), AXIS::kY);
+    m_joker->getTransform().rotate(Vector3D{0, -Math::PI * Time::getDelta(),0});
   };
 
-  /*if (croc = m_sceneGraph->getRoot()->getChild(_T("Croc"))) {
+  auto rot = [&](const Vector3D& angl)
+  {
+    m_wep->getTransform().rotate(angl);
+  };
     
-    croc->transform.rotate(Degree(90 * Time::instance().getDelta()), AXIS::kY);
-    float scale = Math::cos(croc->transform.getRotation().y) * 0.5f + 1.f;
-    croc->transform.setScale({scale,scale,scale}); 
-  }*/
-
-  //m_animated[1]->transform.rotate(Degree(90 * Time::getDelta()), AXIS::kY);
-  
-  
-  Vector3D dir = m_joker->getTransform().getDirection();
+  /*Vector3D dir = m_joker->getTransform().getDirection();
   Vector3D right = dir.cross(Vector3D(0,1,0));
   float f = 0;
   float s = 0;
@@ -194,7 +201,7 @@ TestApplication::input() {
   }
   else if (Keyboard::isKeyDown(KEY_CODE::kD)) {
     s = -1;
-  }
+  }*/
 
   if (Keyboard::isKeyDown(KEY_CODE::kLEFT)) {
     rotateLeft();
@@ -204,7 +211,18 @@ TestApplication::input() {
     rotateRight();
   }
 
-  float vel = 150.f * Time::getDelta();
+  if (Keyboard::isKeyDown(KEY_CODE::kY)) {
+    rot({0,Math::PI * Time::getDelta(),0});
+  }
+  else if (Keyboard::isKeyDown(KEY_CODE::kZ)) {
+    rot({0,0,Math::PI * Time::getDelta()});
+  }
+  else if (Keyboard::isKeyDown(KEY_CODE::kX)) {
+    rot({Math::PI * Time::getDelta(),0, 0});
+  }
+
+
+  /*float vel = 150.f * Time::getDelta();
   float camVel = 500.f * Time::getDelta();
  
   if (Math::abs(f) > 0.0f || Math::abs(s) > 0.0f) {
@@ -217,16 +235,12 @@ TestApplication::input() {
       auto target = m_upCam->getTransform().getPosition();
       m_upCam->setTarget({target.x + 0.5f, 0.f, target.z + 0.5f});
     }
-  }
+  }*/
 }
 
 void
 TestApplication::postUpdate() {
   
-  for (auto& anim : m_animated) {
-    anim->update();
-  }
-
   InputManager::capture();
   Time::update();
   SceneGraph::update();
@@ -243,10 +257,6 @@ TestApplication::postRender() {
   m_linesTech->setCamera(&(*m_activeCam));
   
   //SceneGraph::draw();
-  
-  for (auto& anim : m_animated) {
-    anim->draw(*m_activeCam);
-  }
 
   //Show Frustum
   m_camera->render();
@@ -296,33 +306,12 @@ TestApplication::postDestroy() {
   m_linesTech->destroy();
   m_animTech->destroy();
 
-  m_animated.clear();
-
   ResourceManager::shutDown();
   InputManager::shutDown();
   Time::shutDown();
   SceneGraph::shutDown();
   GraphicsDriver::shutDown();
-  Logger::startUp();
-
-  for (auto& anim : m_animated) {
-    anim->destroy();
-    delete anim;
-  }
-}
-
-void addDrawableComponent(std::shared_ptr<driderSDK::GameObject> go,
-                          Technique* tech) {
-  if (auto collider = go->getComponent<AABBCollider>()) {
-
-    auto p = go->createComponent<AABBDebug>(true);
-
-    p->setShaderTechnique(tech);
-  }
-  for (auto child : go->getChildren())
-  {
-    addDrawableComponent(child, tech);
-  }
+  Logger::shutDown();
 }
 
 void 
@@ -341,6 +330,8 @@ TestApplication::initInput() {
     }
   };
 
+  auto root = SceneGraph::getRoot();
+  
   auto toggleWireframe = [&]()
   {
     static bool wire = false;
@@ -370,12 +361,39 @@ TestApplication::initInput() {
   auto toggleQueryOrder = [&]() {
     m_queryOrder = static_cast<QUERY_ORDER::E>(!m_queryOrder);
   };
+  
 
-  auto debugOctree = [&]() {
-    auto octree = SceneGraph::getOctree();
-    addDrawableComponent(octree, m_linesTech.get());
+  auto bindPH = std::bind(&TestApplication::printHerarchy, 
+                          this, 
+                          SceneGraph::getRoot(), 
+                          _T(""));
+
+  auto bindTAB = std::bind(&TestApplication::toggleAABBDebug,
+                           this, 
+                           SceneGraph::getRoot());
+
+  auto bindTSD = std::bind(&TestApplication::toggleSkeletonDebug,
+                           this, 
+                           SceneGraph::getRoot());
+
+  auto clone = [&]()
+  {
+    std::mt19937 mt(std::random_device{}());
+  
+    std::uniform_real_distribution<float> space(-300, 300);
+
+    auto c = m_joker->clone();
+    SceneGraph::addObject(c);
+    c->getTransform().move({space(mt), 0, space(mt)});
   };
 
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kC,
+                        clone);
+
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kH,
+                        bindPH);
     
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kQ,
@@ -395,10 +413,15 @@ TestApplication::initInput() {
 
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kP,
-                        debugOctree);
+                        bindTAB);
 
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
-                         KEY_CODE::kJ, toggleWireframe);
+                        KEY_CODE::kK,
+                        bindTSD);
+
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kJ, toggleWireframe);
+                    
 }
 
 void 
@@ -410,23 +433,23 @@ TestApplication::initResources() {
 
   ResourceManager::loadResource(_T("Croc.X"));
 
+  ResourceManager::loadResource(_T("Cube.fbx"));
+
   ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
 
-  ResourceManager::loadResource(_T("HipHopDancing.fbx"));
+  ResourceManager::loadResource(_T("Walking.fbx"));
 
-  ResourceManager::loadResource(_T("VenomJok.X"));
+  ResourceManager::loadResource(_T("Weapons-of-survival.fbx"));
 
-  ResourceManager::loadResource(_T("dwarf.x"));
-
-  ResourceManager::loadResource(_T("DuckyQuacky_.fbx"));
-
+  ResourceManager::loadResource(_T("MontiBehavior.as"));
+  ResourceManager::loadResource(_T("script1.as"));
+  ResourceManager::loadResource(_T("script2.as"));
 }
 
 void 
 TestApplication::initSceneGraph() {
   
-  auto createNode = [&](std::shared_ptr<GameObject> parent, 
-                        const TString& name, 
+  auto createNode = [&](const TString& name, 
                         const TString& resName,
                         const Vector3D& pos) {
   
@@ -434,16 +457,30 @@ TestApplication::initSceneGraph() {
 
     auto model = std::dynamic_pointer_cast<Model>(resource);
     
-    auto node = SceneGraph::createNode(parent, model);
+    auto node = SceneGraph::createObject(name);
 
-    auto collider = node->getComponent<AABBCollider>();
+    node->createComponent<RenderComponent>(model);
 
-    auto p = node->createComponent<AABBDebug>(true);
+    node->createComponent<AABBCollider>(model->aabb);
 
-    p->setShaderTechnique(m_linesTech.get());
-  
-    node->setName(name);
+    if (!model->animationsNames.empty()) {
+      
+      auto animName = model->animationsNames[0];
+      
+      auto animation = ResourceManager::getReferenceT<Animation>(animName);
 
+      auto skel = ResourceManager::getReferenceT<Skeleton>(model->skeletonName);
+
+      auto anim = node->createComponent<AnimatorComponent>();
+
+      anim->setSkeleton(skel);
+
+      anim->addAnimation(animation, animName);
+
+      anim->setCurrentAnimation(animName);
+
+    }
+      
     node->getTransform().setPosition(pos);
 
     return node;
@@ -451,89 +488,198 @@ TestApplication::initSceneGraph() {
 
   auto root = SceneGraph::getRoot();
      
-  createNode(root, 
-             _T("Quad"), 
-             _T("ScreenAlignedQuad.3ds"), 
-             {50, 300, 200})->getTransform().scale({40, 40, 40});
-
   std::unordered_map<Int32, TString> names
   {
-    {0, _T("HipHopDancing.fbx")},
+    {0, _T("Walking.fbx")},
     {1, _T("Croc.X")},
-    {2, _T("dwarf.x")},
-    {3, _T("DuckyQuacky_.fbx")}
   };
- 
-  std::mt19937 mt(std::random_device{}());
   
-  std::uniform_int_distribution<> dt(0, static_cast<Int32>(names.size() - 1));
-  std::uniform_int_distribution<> scl(1, 3);
-  std::uniform_real_distribution<float> space(-1500, 1500);
-
-  for (Int32 i = 0; i < 50; ++i) {
-    Vector3D pos(space(mt), 0, space(mt));
-    TString aaa = StringUtils::toTString(i);
-  }
-  auto chinaMod = ResourceManager::getReferenceT<Model>(_T("HipHopDancing.fbx"));
-
-  auto animName = chinaMod->animationsNames[0];
-
-  auto chinaAnim = ResourceManager::getReferenceT<Animation>(animName);
-
-  auto chinaSkel = ResourceManager::getReferenceT<Skeleton>(chinaMod->skeletonName);
-
   auto chinitaMat = ResourceManager::createMaterial(_T("Mat_Chinita"));
 
   auto chinitaTex = ResourceManager::getReferenceT<TextureCore>(_T("Kachujin_diffuse.png"));
 
   chinitaMat->getProperty(_T("Albedo"))->texture = chinitaTex;
 
-  auto n = createNode(root, _T("Chinita"), _T("HipHopDancing.fbx"), {-200.f, 0.0f, 0.0f});
+  auto n = createNode(_T("Chinita"), _T("Walking.fbx"), {-200.f, 0.0f, 0.0f});
   
-  auto animComp = n->createComponent<AnimatorComponent>();
-
-  animComp->setSkeleton(chinaSkel);
-
-  animComp->addAnimation(chinaAnim, animName);
-
-  animComp->setCurrentAnimation(animName);
-
   n->getTransform().scale({ 1,1,1 });
   
   n->getComponent<RenderComponent>()->getMeshes()[0].material = chinitaMat;
 
   m_joker = n;
   
+  auto cube = SceneGraph::createObject<BoneAttachObject>(_T("Cube"));
   
+  auto cubeMod = ResourceManager::getReferenceT<Model>(_T("Weapons-of-survival.fbx"));
+  
+  cube->createComponent<RenderComponent>(cubeMod);
+
+  cube->createComponent<AABBCollider>(cubeMod->aabb);
+
+  cube->setParent(n);
+
+  cube->setBoneAttachment(_T("RightHand"));
+
+  cube->getTransform().scale({0.1f, 0.1f, 0.1f});
+
+  m_wep = cube;
+  
+  auto ss = createNode(_T("Mother"), _T("Walking.fbx"), {200.f, 0.0f, 400.0f});
+
+  ss->getTransform().rotate({Math::PI,0,0});
+
+  n->addChild(ss);
+
+  
+  
+  std::mt19937 mt(std::random_device{}());
+  
+  std::uniform_int_distribution<> dt(0, static_cast<Int32>(names.size() - 1));
+  std::uniform_int_distribution<> scl(1, 3);
+  std::uniform_real_distribution<float> space(-1500, 1500);
   std::uniform_real_distribution<float> time(0, 1000);
 
-  auto l = n->createInstance();
-  l->setName(_T("Empty Node"));
-
-  for (Int32 i = 0; i < 2; ++i) {
+  for (Int32 i = 0; i < 0; ++i) {
     
     auto pp = n->clone();
-    pp->setParent(n);
-    pp->setName(n->getName() + _T("_Son"));
+    
+    pp->setName(n->getName() + _T("(clone)"));
     pp->getTransform().setPosition({space(mt), 0, space(mt)});
     
     auto an = pp->getComponent<AnimatorComponent>();
     an->setTime(time(mt));
+  }
+}
 
-    n = pp;
+void 
+TestApplication::initScriptEngine() {
+  Int32 result;
+
+  //Create context manager and set time
+  ContextManager* ctxMag = nullptr;
+  if(!ContextManager::isStarted())  {
+    ContextManager::startUp();
   }
-  n->getParent()->addChild(l);
-  n->setParent(l);
-  for (Int32 i = 0; i < 200; ++i) {
-    Vector3D pos(space(mt), 0, space(mt));
-    TString aaa = StringUtils::toTString(i);
-    auto n = createNode(root, names[i] + aaa,
-      names[dt(mt)],
-      pos);
-    n->setStatic(true);
-    float sc = static_cast<float>(scl(mt));
-    n->getTransform().scale({ sc,sc,sc });
+  ctxMag = ContextManager::instancePtr();
+
+  //Create the ScriptEngine
+  ScriptEngine* scriptEngine = nullptr;
+  if (!ScriptEngine::isStarted()) {
+    ScriptEngine::startUp();
   }
+  scriptEngine = ScriptEngine::instancePtr();
+
+  //Create engine
+  result = scriptEngine->createEngine();
+
+  //Configurate engine
+  result = scriptEngine->configurateEngine(ctxMag);
+
+  //Register all functions
+  result = Keyboard::registerFunctions(scriptEngine);
+  Vector3D vector;
+  result = vector.registerFunctions(scriptEngine);
+  Transform transform;
+  result = transform.registerFunctions(scriptEngine);
+  result = Time::registerFunctions(scriptEngine);
+
+  //Get script references of the ResourceManager
+  auto rBehaviorScript = ResourceManager::getReference(_T("MontiBehavior.as"));
+  auto BehaviorScript = std::dynamic_pointer_cast<ScriptCore>(rBehaviorScript);
+
+  auto rScript1 = ResourceManager::getReference(_T("script1.as"));
+  auto Script1 = std::dynamic_pointer_cast<ScriptCore>(rScript1);
+
+  auto rScript2 = ResourceManager::getReference(_T("script2.as"));
+  auto Script2 = std::dynamic_pointer_cast<ScriptCore>(rScript2);
+  
+  //Create a context
+  scriptEngine->m_scriptContext = ctxMag->addContext(scriptEngine->m_scriptEngine,
+                                                     _T("GameModule"));
+
+  //Add script section of behavior
+  scriptEngine->addScript(BehaviorScript->getName(),
+                          BehaviorScript->getScript(),
+                          _T("GameModule"));
+
+  //Add script component to the objects and add script sections of the scripts
+  auto camScript1 = m_camera->createComponent<ScriptComponent>(Script1);
+  auto camScript2 = m_camera->createComponent<ScriptComponent>(Script2);
+
+  auto currentModule = scriptEngine->m_scriptEngine->GetModule("GameModule");
+  result = currentModule->Build();
+
+  camScript1->initScript();
+  camScript2->initScript();
+
+  camScript1->start();
+  camScript2->start();
+
+
+}
+
+void 
+TestApplication::printHerarchy(std::shared_ptr<GameObject> obj, 
+                                    const TString & off) {
+    Logger::addLog(off + obj->getName());
+
+    for (auto& child : obj->getChildren()) {
+      printHerarchy(child, off + _T("\t"));
+    }
+}
+
+void 
+TestApplication::toggleAABBDebug(std::shared_ptr<GameObject> go) {
+  if (auto collider = go->getComponent<AABBCollider>()) {
+
+    if (go->getComponent<AABBDebug>()) {
+      
+      go->removeComponent<AABBDebug>();
+
+    }
+
+    else {
+
+      auto p = go->createComponent<AABBDebug>(true);
+      p->setShaderTechnique(m_linesTech.get());
+
+    }
+  }
+  for (auto child : go->getChildren())
+  {
+    toggleAABBDebug(child);
+  }
+}
+
+void 
+TestApplication::toggleSkeletonDebug(std::shared_ptr<GameObject> go) {
+  if (auto re = go->getComponent<AnimatorComponent>()) {
+
+    if (go->getComponent<SkeletonDebug>()) {
+      
+      go->removeComponent<SkeletonDebug>();
+
+    }
+    else {
+      auto p = go->createComponent<SkeletonDebug>();
+      p->setShaderTechnique(m_linesTech.get());
+    }
+  }
+
+  for (auto child : go->getChildren())
+  {
+    toggleSkeletonDebug(child);
+  }
+}
+
+void
+TestApplication::addScript(TString name) {
+  auto script = std::dynamic_pointer_cast<ScriptCore>
+    (ResourceManager::getReference(name));
+
+  Int32 result = ScriptEngine::instance().addScript(name,
+                                                    script->getScript(),
+                                                    _T("module"));
 }
 
 }

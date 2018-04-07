@@ -9,7 +9,7 @@ namespace driderSDK {
 class DR_CORE_EXPORT AABBCollider : public ColliderComponent
 {
 
-public:
+ public:
   AABBCollider(GameObject& _gameObject, const AABB& aabb);
   
   const AABB& 
@@ -18,7 +18,7 @@ public:
   const AABB& 
   getAABB();
 
-private:
+ private:
   virtual void 
   onCreate() override;
     
@@ -37,7 +37,7 @@ private:
   virtual COLLIDER_TYPE::E 
   getType() override;
 
-private:
+ private:
   AABB m_originalAABB;
   AABB m_transformedAABB;
 

@@ -49,7 +49,7 @@ D3DVertexShader::create(const Device& device) {
 
 
 void
-D3DVertexShader::compile(const Device& device,
+D3DVertexShader::compile(const Device&,
                          const char* buffer,
                          size_t bufferSize) {
   m_shaderBytecode = new D3DShaderBytecode();

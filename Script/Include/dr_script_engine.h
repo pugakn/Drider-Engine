@@ -8,10 +8,15 @@
 #include <dr_export_script.h>
 
 #include <iostream>
+#include <vector>
+#include <set>
+
+#include <../../Input/Include/dr_input_defines.h>
 
 namespace driderSDK {
 
 class Time;
+class ContextManager;
 
 void stringPrint_g(asIScriptGeneric* gen);
 
@@ -27,7 +32,7 @@ void stringPrint_g(asIScriptGeneric* gen);
 
 class DR_SCRIPT_EXPORT ScriptEngine : public Module<ScriptEngine>
 {
-public:
+ public:
 
 	/**
 	* Default constructor.
@@ -35,11 +40,14 @@ public:
 	*/
 	ScriptEngine();
 
+  ScriptEngine(const ScriptEngine&) = delete;
+
+  ScriptEngine& operator=(const ScriptEngine&) = delete;
+
 	/**
 	* Default destructor.
 	*
 	*/
-	virtual
 	~ScriptEngine() {}
 
 	/**
@@ -50,7 +58,14 @@ public:
 	*/
 	Int8 
 	createEngine();
-
+  
+  /**
+  * Configurate Engine
+  */
+  Int8
+  configurateEngine(ContextManager *ctx);
+ 
+  
 	/**
 	* Open the script and adds it to the module.
 	*
@@ -59,37 +74,44 @@ public:
 	*/
 	Int8
 	addScript(const TString& scriptName,
-            const TString& script);
+            const TString& script,
+            const TString& module);
+  
+  /**
+  * Gets script object
+  */
+  void
+  getScriptObject(TString scriptName,
+                  asIScriptModule *mod,
+                  asIScriptObject **objectRef,
+                  asITypeInfo **typeRef);
 
-	/**
-	* Compiles the script.
-	*
-	*/
-	Int8
-	compileScript();
+  /**
+  * Sets componet to a script
+  */
+  void 
+  setObjectToScript(asITypeInfo *type,
+                    TString methodDecl,
+                    UInt32 arg,
+                    void* appObj,
+                    asIScriptObject* scriptObj);
+  
+  /**
+  * Execute a script function
+  */
+  void
+  executeFunction(TString function,
+                  asITypeInfo *type,
+                  asIScriptObject* scriptObj);
 
-	/**
-	* Create the context and sets the LineCallback function.
-	*
-	*/
-	Int8
-	configureContext();
-
-	/**
-	* Create the context and sets the LineCallback function.
-	*
-	* @return
-	*	  Negative value if error.
-	*/
-	Int8
-	prepareFunction(TString function);
-
-	/**
-	* Execute a call in the context.
-	*
-	*/
-	Int8
-	executeCall();
+  /**
+  * Execute a script function with param
+  */
+  void
+  executeFunctionParam(TString function,
+                       asITypeInfo *type,
+                       asIScriptObject* scriptObj,
+                       KEY_CODE::E param);
 
 	/**
 	* Shut down the script's engine.
@@ -112,12 +134,9 @@ public:
 	*
 	* @param scriptMessage
 	*   Message from the script's engine.
-	*
-	* @param param
-	*   Aditional parameters from the message. 
 	*/
 	void
-	messageCallback(const asSMessageInfo *scriptMessage, void *param);
+	messageCallback(const asSMessageInfo *scriptMessage);
 
 	/**
 	* Adds a custom script log into the logger.
@@ -128,18 +147,23 @@ public:
 	* @param type
 	*   Type of the message.
 	*/
-	void 
+	static void 
 	addScriptLog(const TString& log, const int type);
 
   asIScriptEngine* m_scriptEngine;
-	unsigned long timeout = 666;
-	Time* m_scriptTime;
-	Logger* m_scriptLogger;
-private:
-	//asIScriptEngine* m_scriptEngine;
-	asIScriptContext* m_scriptContext;
-	asIScriptFunction* m_scriptFunction;
-	asIScriptModule* m_scriptModule;
+	unsigned long timeout = 5000;
+	
+  asIScriptContext* m_scriptContext;
+  std::vector<asIScriptModule*> m_scriptModules;
+
+ protected:
+  void
+  onStartUp() override { }
+
+  void
+  onShutDown() override {}
+
+ private:
 };
 
 }

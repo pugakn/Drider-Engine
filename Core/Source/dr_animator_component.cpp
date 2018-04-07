@@ -37,10 +37,9 @@ void
 AnimatorComponent::setSkeleton(SharedSkeleton skeleton) {
   m_skeleton = skeleton;
 
-  Matrix4x4 identity(Math::FORCE_INIT::kIdentity);
-
   if (skeleton) {
-    m_transforms = std::vector<Matrix4x4>(skeleton->bones.size(), identity);
+    m_transforms = std::vector<Matrix4x4>(skeleton->bones.size(), 
+                                          Matrix4x4::identityMat4x4);
   }  
 }
 
@@ -99,6 +98,19 @@ AnimatorComponent::onUpdate() {
     for (SizeT i = 0; i < skeleton->bones.size(); ++i) {
       m_transforms[i] = skeleton->bones[i]->finalTransform;
     }
+  }
+  else {
+
+    if (!animation) {
+      Logger::addLog(_T("Animator: animation not assigned to ") + 
+                     m_gameObject.getName());
+    }
+
+    if (!skeleton) {
+      Logger::addLog(_T("Animator: skeleton not assigned to ") + 
+                     m_gameObject.getName());
+    }
+
   }
 }
 
@@ -249,9 +261,6 @@ AnimatorComponent::readNodeHeirarchy(float animTime,
         
     m_currentBone = animation.getBoneIndex(node->name);
 
-    Matrix4x4 rotatMatrix(Math::kIdentity);
-    Matrix4x4 transMatrix(Math::kIdentity);
-    Matrix4x4 scaleMatrix(Math::kIdentity);
 
     Vector3D translation = interpolateTranslation(*pBoneAnim, 
                                                   animTime, 
@@ -265,25 +274,23 @@ AnimatorComponent::readNodeHeirarchy(float animTime,
                                          animTime, 
                                          animation);
     
-    transMatrix.Translation(translation);
-    rotation.matrixFromQuaternion(rotatMatrix);
-    scaleMatrix.Scale(scaling);
-    nodeTransform = rotatMatrix * scaleMatrix;    
-    nodeTransform[0][3] =  translation.x;    
-    nodeTransform[1][3] = translation.y;     
-    nodeTransform[2][3] = translation.z;
+    rotation.matrixFromQuaternion(nodeTransform);
+    nodeTransform.Scale(scaling);
+    nodeTransform.Translation(translation);
+  }
+  else {
+    nodeTransform.transpose();
   }
 
-  Matrix4x4 globalTransform = parentTransform * nodeTransform;
+  Matrix4x4 globalTransform = nodeTransform * parentTransform;
 
   auto boneIt = skeleton.bonesMapping.find(node->name);
 
   if (boneIt != skeleton.bonesMapping.end()) {
     auto& pBone = skeleton.bones[boneIt->second];
 
-    pBone->finalTransform = skeleton.gloabalInverseTransform * 
-                            globalTransform * 
-                            pBone->boneOffset;
+    pBone->finalTransform = //skeleton.gloabalInverseTransform * 
+                            pBone->boneOffset * globalTransform;
   }
 
   for (auto& pChild : node->children) {

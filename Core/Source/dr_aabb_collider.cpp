@@ -28,16 +28,18 @@ void
 AABBCollider::onUpdate() {
 
   //Calculate AABB using animation
-  if (auto anim = m_gameObject.getComponent<AnimatorComponent>()) {
-    
-    auto transf = anim->getBonesTransforms();
+  auto animator = m_gameObject.getComponent<AnimatorComponent>();
 
-    auto aabbs = anim->getSkeleton()->bonesAABBs;
-  
+  if (animator && animator->getSkeleton()) {
+    
+    auto& transf = animator->getBonesTransforms();
+
+    auto aabbs = animator->getSkeleton()->bonesAABBs;
+
     Int32 index = 0;
 
     for (auto& aabb : aabbs) {
-      aabb.recalculate(transf[index].transpose());
+      aabb.recalculate(transf[index]);
       ++index;
     }
 
@@ -56,16 +58,12 @@ AABBCollider::onUpdate() {
     Vector3D diff = max - min;
 
     m_transformedAABB = AABB{diff.x, diff.y, diff.z, (max + min) * 0.5f};
-    m_transformedAABB.recalculate(m_gameObject.getWorldTransform().getMatrix());
+    m_transformedAABB.recalculate(m_gameObject.getWorldTransform().getMatrix());      
   }
-  else {
-    if (m_gameObject.changed()) {
+  else if (m_gameObject.changed()) {
       m_transformedAABB = m_originalAABB;
       m_transformedAABB.recalculate(m_gameObject.getWorldTransform().getMatrix());
-    }  
-  }
-
-  
+  } 
 }
 
 void 
