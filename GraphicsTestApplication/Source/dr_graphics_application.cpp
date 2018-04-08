@@ -311,7 +311,7 @@ GraphicsApplication::createScene() {
   
   m_right = walkerObj.get();
 
-  Int32 copies = 250;
+  Int32 copies = 0;
 
   std::mt19937 mt(std::random_device{}());
   std::uniform_real_distribution<float> dt(-2000, 2000);

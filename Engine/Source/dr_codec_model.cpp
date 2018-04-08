@@ -25,7 +25,7 @@ Codec::UniqueVoidPtr
 CodecModel::decode(TString pathName) { 
   Assimp::Importer importer;
 
-  ModelInfo* pModelInfo = nullptr;
+  ModelInfo* modelInfo = nullptr;
 
   UInt32 flags = 0;
 
@@ -44,8 +44,8 @@ CodecModel::decode(TString pathName) {
 
   if (scene) {
 
-    pModelInfo = new ModelInfo;
-    pModelInfo->meshes.resize(scene->mNumMeshes);
+    modelInfo = new ModelInfo;
+    modelInfo->meshes.resize(scene->mNumMeshes);
 
     Vector3D min{Math::MAX_FLOAT, Math::MAX_FLOAT, Math::MAX_FLOAT};
     Vector3D max{Math::MIN_FLOAT, Math::MIN_FLOAT, Math::MIN_FLOAT};
@@ -54,50 +54,50 @@ CodecModel::decode(TString pathName) {
     auto defMaterial = ResourceManager::getReferenceT<Material>(defMatName);
     
     for (SizeT iMesh = 0; iMesh < scene->mNumMeshes; ++iMesh) {
-      MeshInfo& mesh = pModelInfo->meshes[iMesh];
-      aiMesh* pMesh = scene->mMeshes[iMesh];
+      MeshInfo& drMesh = modelInfo->meshes[iMesh];
+      aiMesh* mesh = scene->mMeshes[iMesh];
       
-      loadVertices(*pMesh, mesh, min, max);
-      loadIndices(*pMesh, mesh);
-      mesh.material = defMaterial;
+      loadVertices(*mesh, drMesh, min, max);
+      loadIndices(*mesh, drMesh);
+      drMesh.material = defMaterial;
     }
 
-    loadMaterials(*scene, *pModelInfo, pathName);
+    loadMaterials(*scene, *modelInfo, pathName);
 
     Vector3D size = max - min;
 
-    pModelInfo->aabb.width = size.x;
-    pModelInfo->aabb.height = size.y;
-    pModelInfo->aabb.depth = size.z;
-    pModelInfo->aabb.center = (max + min) * 0.5f;
+    modelInfo->aabb.width = size.x;
+    modelInfo->aabb.height = size.y;
+    modelInfo->aabb.depth = size.z;
+    modelInfo->aabb.center = (max + min) * 0.5f;
     
     TString skeletonName;
     
     if (scene->HasAnimations()) {
       skeletonName = _T("Skeleton_") + pathName;
 
-      auto pSkeleton = std::make_shared<Skeleton>();
+      auto skeleton = std::make_shared<Skeleton>();
      
-      std::memcpy(pSkeleton->gloabalInverseTransform.data, 
+      std::memcpy(skeleton->gloabalInverseTransform.data, 
                   &scene->mRootNode->mTransformation[0][0],
                   64);
 
-      pSkeleton->gloabalInverseTransform.inverse();
+      skeleton->gloabalInverseTransform.inverse();
 
-      loadSkeleton(*scene, *pModelInfo, *pSkeleton);
+      loadSkeleton(*scene, *modelInfo, *skeleton);
 
-      addResource(pSkeleton, skeletonName);
+      addResource(skeleton, skeletonName);
 
-      loadAnimations(*scene, *pModelInfo);
+      loadAnimations(*scene, *modelInfo);
     }
 
-    pModelInfo->skeletonName = skeletonName;
+    modelInfo->skeletonName = skeletonName;
   }
   else {
     Logger::addLog(StringUtils::toTString(importer.GetErrorString()));
   }
 
-  return UniqueVoidPtr(pModelInfo, &dr_void_deleter<ModelInfo>);
+  return UniqueVoidPtr(modelInfo, &dr_void_deleter<ModelInfo>);
 }
 
 bool
@@ -259,11 +259,11 @@ CodecModel::loadAnimations(const aiScene& model, ModelInfo& outModel) {
 
     outModel.animationsNames.push_back(animName);
 
-    auto pAnimation = std::make_shared<Animation>();
+    auto drAnimation = std::make_shared<Animation>();
 
-    pAnimation->setDuration(static_cast<float>(animation.mDuration));
+    drAnimation->setDuration(static_cast<float>(animation.mDuration));
 
-    pAnimation->setTicksPerSecond(static_cast<float>(animation.mTicksPerSecond));
+    drAnimation->setTicksPerSecond(static_cast<float>(animation.mTicksPerSecond));
   
     for (Int32 i = 0; i < static_cast<Int32>(animation.mNumChannels); ++i) {
       aiNodeAnim& channel = *animation.mChannels[i];
@@ -310,11 +310,11 @@ CodecModel::loadAnimations(const aiScene& model, ModelInfo& outModel) {
         boneAnim.scales[scl].value.z = sclKey.mValue.z;
       }
 
-      pAnimation->setBoneAnimation(StringUtils::toTString(channel.mNodeName.data),
+      drAnimation->setBoneAnimation(StringUtils::toTString(channel.mNodeName.data),
                                    std::move(boneAnim));
     }
 
-    addResource(pAnimation, animName);
+    addResource(drAnimation, animName);
   }
 }
 
