@@ -49,6 +49,10 @@ Vector3D::lengthSqr() const {
 
 Vector3D&
 Vector3D::normalize() {
+  if (length() == 0.0f)
+  {
+    return *this;
+  }
   DR_ASSERT(length() != 0.0f); // No funciona xd, para el test
   *this /= length();
   return *this;

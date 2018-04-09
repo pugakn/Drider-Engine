@@ -10,6 +10,8 @@
 
 /*********************/
 #include <dr_plane.h>
+#include "dr_octree.h"
+
 
 namespace driderSDK {
 
@@ -94,6 +96,8 @@ class DR_CORE_EXPORT SceneGraph : public Module<SceneGraph>
   static SharedGameObject 
   getOctree();
 
+  static Octree*
+  getOctreeTest();
   /**
   * Query meshes from the scene graph
   */
@@ -158,7 +162,9 @@ class DR_CORE_EXPORT SceneGraph : public Module<SceneGraph>
   static void
   addAllChilds(GameObject& node,
                std::vector<std::shared_ptr<GameObject>>* list);
+
  private:
+  Octree* octreeTest;
   SharedGameObject m_root;
   SharedGameObject m_octree;
   std::mutex m_mutex;

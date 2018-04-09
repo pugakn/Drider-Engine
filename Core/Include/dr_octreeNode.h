@@ -57,12 +57,16 @@ class DR_CORE_EXPORT OctreeNode
   void
   decomposeFace(OctreeNode& node, Face &face, std::vector<Plane>& planes);
 
+  void
+  createNewFaces(OctreeNode& node, Face &face, std::vector<Plane>& planes);
+
   bool
-  findIntersectVertex(Vertex *origin,
-                      Vertex *end,
-                      std::vector<Plane>& planes,
-                      Vertex &newVertex,
-                      AABB &aabb);
+  findIntersectVertex(Vertex &origin,
+                      Vertex &end,
+                      std::vector<Plane> &planes,
+                      Vertex &newVertex);
+
+  void nextFace(OctreeNode* node);
 
   std::queue<Face> objectsToReview;
 
@@ -72,8 +76,10 @@ class DR_CORE_EXPORT OctreeNode
 
   std::vector<OctreeNode*> childs;
 
+  std::vector<Plane> planes;
  private:
   Octree* m_octree;
+  Int32 m_nextChild = -1;
 };
 
 }

@@ -21,6 +21,7 @@ struct Face
   std::weak_ptr<Material> material;
   UInt32 gameObject;
   UInt32 mesh;
+  bool mia = false;
 };
 
 class DR_CORE_EXPORT Octree
@@ -68,6 +69,12 @@ class DR_CORE_EXPORT Octree
   Int32
   getMinFaces();
 
+  void
+  nextFace();
+
+  void
+  createGO();
+
  private:
 
   /**
@@ -81,7 +88,9 @@ class DR_CORE_EXPORT Octree
   */
   void
   compareMinMax(Vector4D &position);
+
  public:
+  OctreeNode* m_activeNode;
   std::vector<std::vector<UInt32>> verticesInGameObjects;
  private:
   Int32 m_minFaces;

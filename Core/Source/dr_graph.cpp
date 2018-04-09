@@ -12,7 +12,6 @@
 #include "dr_model.h"
 #include "dr_render_component.h"
 #include "dr_root_node.h"
-#include "dr_octree.h"
 
 namespace driderSDK {
 
@@ -43,9 +42,8 @@ SceneGraph::buildOctree() {
   std::vector<std::shared_ptr<GameObject>> staticGameObjects;
 
   addGameObjectsStatics(*instance().m_root, &staticGameObjects);
-
-  Octree octree(&(*instance().m_octree), &staticGameObjects);
-  octree.buildTree();
+  instance().octreeTest = new Octree(&(*instance().m_octree), &staticGameObjects);
+  instance().octreeTest->buildTree();
 }
 
 
@@ -256,6 +254,11 @@ SceneGraph::addAllChilds(GameObject & node,
     }
     addAllChilds(*child, list);
   }
+}
+
+Octree*
+SceneGraph::getOctreeTest(){
+  return instance().octreeTest;
 }
 
 SceneGraph::DepthComparer::DepthComparer(Camera& _camera, QUERY_ORDER::E _order) 

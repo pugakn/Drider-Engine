@@ -23,6 +23,9 @@ Plane::Plane(const Vector3D& point0,
 			       const Vector3D& point2) 
   : Vector3D((point1 - point0).cross(point2 - point0)) {
     Vector3D::normalize();
+    Vector3D lo = point1 - point0;
+    Vector3D lu = point2 - point0;
+    Vector3D pol = lo.cross(lu);
     d = dot(point0);
 }
 

@@ -19,11 +19,13 @@ Octree::Octree(GameObject* nodeSceneGraph,
                std::vector<std::shared_ptr<GameObject>>* gameObjects,
                Int32 minFacesArea) {
 
-  m_minFaces = 1000;
+  m_minFaces = minFacesArea;
+  m_minFaces = 5;
+
   m_rootSceneGraph = nodeSceneGraph;
   Int32 counterGameObject = 0;
   m_rootOctree = new OctreeNode(this);
-  
+  bool flagMinMax = true;
   m_maxVertex = Vector3D(0, 0, 0);
   m_minVertex = Vector3D(0, 0, 0);
   for (auto& gameObject : (*gameObjects)) {
@@ -47,6 +49,12 @@ Octree::Octree(GameObject* nodeSceneGraph,
           temp.vertices.push_back(mesh.vertices[mesh.indices[i + y]]);
           temp.vertices.back().position = temp.vertices.back().position * transform;
           temp.indices.push_back(mesh.indices[i + y]);
+          if (flagMinMax)
+          {
+            flagMinMax = false;
+            m_maxVertex = temp.vertices.back().position;
+            m_minVertex = temp.vertices.back().position;
+          }
           compareMinMax(temp.vertices.back().position);
         }
 
@@ -159,7 +167,12 @@ createList(std::vector<Face>* faces) {
 void
 Octree::buildTree() {
   m_rootOctree->buildTree(*m_rootOctree);
-  configNode(m_rootSceneGraph, m_rootOctree);
+  m_activeNode = m_rootOctree;
+
+  m_rootSceneGraph->setStatic(true);
+  m_rootSceneGraph->createComponent<AABBCollider>(m_rootOctree->boundingRegion);
+  std::vector<RenderMesh> list = createList(&m_rootOctree->containedObjects);
+  m_rootSceneGraph->createComponent<RenderComponent>(std::move(list));
 }
 
 void Octree::configNode(GameObject *nodeRoot, OctreeNode* octreeNode)
@@ -174,7 +187,7 @@ void Octree::configNode(GameObject *nodeRoot, OctreeNode* octreeNode)
 	  nodeRoot->addChild(node);
 	  configNode(&(*node), child);
   }
-  octreeNode->~OctreeNode();
+  //octreeNode->~OctreeNode();
 }
 
 void
@@ -188,6 +201,23 @@ Octree::compareMinMax(Vector4D &position)
   m_maxVertex.y = Math::max(position.y, m_maxVertex.y);
   m_maxVertex.z = Math::max(position.z, m_maxVertex.z);
 }
+void Octree::nextFace()
+{
+  m_activeNode->nextFace(m_activeNode);
+}
+
+void Octree::createGO()
+{
+  m_rootSceneGraph->removeChildren();
+  for (auto& child : (*m_rootOctree).childs) {
+    if (child->containedObjects.size()) {
+      std::shared_ptr<GameObject> node = std::make_shared<GameObject>();
+      m_rootSceneGraph->addChild(node);
+      configNode(&(*node), child);
+    }
+  }
+}
+
 Int32 Octree::getMinFaces()
 {
   return m_minFaces;

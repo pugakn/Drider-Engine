@@ -30,6 +30,7 @@
 #include <dr_graph.h>
 #include <dr_vertex_buffer.h>
 #include <dr_index_buffer.h>
+#include <dr_octree.h>
 #include "DrawableComponent.h"
 #include "AABBDebug.h"
 #include "FrustumDebug.h"
@@ -63,8 +64,8 @@ TestApplication::postInit() {
                                       m_viewport);
 
   m_camera->createProyection(45.f, 20.f, 3000.f);
-  m_camera->getTransform().setPosition({0.f, 300.0f, -400});
-  m_camera->setTarget({0.0f, 200.f, 1.0f});
+  m_camera->getTransform().setPosition({0.f, 0.f, 2000});
+  m_camera->setTarget({0.0f, 0, 0});
 
   auto p = m_camera->createComponent<FrustumDebug>();
 
@@ -365,11 +366,16 @@ TestApplication::initInput() {
 
   auto bindTAB = std::bind(&TestApplication::toggleAABBDebug,
                            this, 
-                           SceneGraph::getRoot());
+                           SceneGraph::getRoot(),
+                           true);
 
   auto bindTSD = std::bind(&TestApplication::toggleSkeletonDebug,
                            this, 
                            SceneGraph::getRoot());
+
+  auto bindTABOctree = std::bind(&TestApplication::debugOctree,
+                           this, 
+                           SceneGraph::getOctree());
 
   auto clone = [&]()
   {
@@ -411,6 +417,11 @@ TestApplication::initInput() {
                         bindTAB);
 
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kM,
+                        bindTABOctree);
+  
+
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kK,
                         bindTSD);
 
@@ -436,6 +447,12 @@ TestApplication::initResources() {
   ResourceManager::loadResource(_T("Walking.fbx"));
 
   ResourceManager::loadResource(_T("Weapons-of-survival.fbx"));
+
+  ResourceManager::loadResource(_T("esfera.fbx"));
+
+  ResourceManager::loadResource(_T("tepasas.fbx"));
+
+
 }
 
 void 
@@ -526,17 +543,27 @@ TestApplication::initSceneGraph() {
   }
 
   for (Int32 i = 0; i < 1; ++i) {
-    Vector3D pos(0,0,0);
+    Vector3D pos(0,-200,0);
     TString aaa = StringUtils::toTString(i);
 
     auto mod = dt(mt);
 
     auto n = createNode(_T("lu") + aaa,
-      _T("Croc.X"),
+      _T("esfera.fbx"),
       pos);
     n->setStatic(true);
-    float sc = static_cast<float>(1);
+    float sc = static_cast<float>(20);
     n->getTransform().scale({ sc,sc,sc });
+    n->getTransform().rotate(Vector3D(Degree(45).toRadian(), 0, 0));
+
+   /* auto lol = createNode(_T("lus") + aaa,
+      _T("Unidad_1m.fbx"),
+      pos);
+    lol->setStatic(true);
+    float sec = static_cast<float>(1);
+    lol->getTransform().scale({ sec,sec,sec });*/
+    //lol->getTransform().rotate(Vector3D(Degree(45).toRadian(), 0, 0));*/
+
   }
 }
 
@@ -550,8 +577,18 @@ TestApplication::printHerarchy(std::shared_ptr<GameObject> obj,
     }
 }
 
+void
+TestApplication::debugOctree(std::shared_ptr<GameObject> gso) {
+  Octree* octree = SceneGraph::getOctreeTest();
+  for (size_t i = 0; i < 100; i++)
+  {
+    octree->nextFace();
+  }
+  octree->createGO();
+}
+
 void 
-TestApplication::toggleAABBDebug(std::shared_ptr<GameObject> go) {
+TestApplication::toggleAABBDebug(std::shared_ptr<GameObject> go, bool update) {
   if (auto collider = go->getComponent<AABBCollider>()) {
 
     if (go->getComponent<AABBDebug>()) {
@@ -562,14 +599,14 @@ TestApplication::toggleAABBDebug(std::shared_ptr<GameObject> go) {
 
     else {
 
-      auto p = go->createComponent<AABBDebug>(true);
+      auto p = go->createComponent<AABBDebug>(update);
       p->setShaderTechnique(m_linesTech.get());
 
     }
   }
   for (auto child : go->getChildren())
   {
-    toggleAABBDebug(child);
+    toggleAABBDebug(child, update);
   }
 }
 
