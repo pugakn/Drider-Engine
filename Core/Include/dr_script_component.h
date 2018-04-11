@@ -10,7 +10,8 @@ class ContextManager;
 
 class DR_CORE_EXPORT ScriptComponent : public GameComponent {
   public:
-    using GameComponent::GameComponent;
+    
+    ScriptComponent(GameObject& _gameObj);
     
     virtual
     ~ScriptComponent();

@@ -10,6 +10,10 @@
 
 namespace driderSDK {
 
+AnimatorComponent::AnimatorComponent(GameObject& _gameObject) 
+ :  GameComponent(_gameObject, _T("AnimatorComponent")) 
+{}
+
 void
 AnimatorComponent::addAnimation(SharedAnimation animation, 
                                 const TString& animName) {

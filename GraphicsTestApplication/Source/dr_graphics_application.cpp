@@ -257,9 +257,11 @@ GraphicsApplication::loadResources() {
 
   ResourceManager::loadResource(_T("Croc.X"));
 
-  ResourceManager::loadResource(_T("HipHopDancing.fbx"));
+  //ResourceManager::loadResource(_T("HipHopDancing.fbx"));
 
-  ResourceManager::loadResource(_T("Walking.fbx"));
+  ResourceManager::loadResource(_T("Shoot Rifle.fbx"));
+
+  ResourceManager::loadResource(_T("Strafe_Left.fbx"));
 
   ResourceManager::loadResource(_T("Weapons-of-survival.fbx"));
 
@@ -289,7 +291,7 @@ GraphicsApplication::createScene() {
   
   auto activeCam = CameraManager::getActiveCamera();
   
-  auto walkerModel = ResourceManager::getReferenceT<Model>(_T("Walking.fbx"));
+  auto walkerModel = ResourceManager::getReferenceT<Model>(_T("Strafe_Left.fbx"));
 
   auto& walkerAnimName = walkerModel->animationsNames[0];
 

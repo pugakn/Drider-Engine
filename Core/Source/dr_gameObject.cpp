@@ -2,23 +2,25 @@
 
 #include <algorithm>
 
-#include <dr_logger.h>
+#include <dr_string_utils.h>
 
 #include "dr_gameComponent.h"
 
 namespace driderSDK {
 
 GameObject::GameObject(const TString& name)
-  : m_name(name),
+  : NameObject(name), 
+    m_tag(_T("UNTAGGED")),
     m_isStatic(false),
-    m_destroyed(false),
     m_change(false)
+    DR_DEBUG_ONLY_PARAM(m_destroyed(false))
 {}
 
 GameObject::~GameObject() {
+  DR_DEBUG_ONLY(
   if (!m_destroyed) {
     Logger::addLog(_T("Object called destructor without begin destoyed() first"));
-  }
+  });
 }
 
 void
@@ -60,15 +62,19 @@ GameObject::render() {
 void
 GameObject::destroy() {
   
-  m_destroyed = true;
+  DR_DEBUG_ONLY(m_destroyed = true);
 
   for (auto& c : m_components) {
     c->onDestroy();
   }
 
+  m_components.clear();
+
   for (auto& child : m_children) {
     child->destroy();
   }
+
+  m_children.clear();
 }
 
 GameObject::SharedGameObj 
@@ -78,7 +84,7 @@ GameObject::clone(bool addToParent) {
 
   copyData(dup);
 
-  dup->m_name = m_name;
+  dup->m_tag = m_tag;
   
   if (addToParent && getParent()) {
     dup->m_parent = m_parent;
@@ -92,7 +98,7 @@ GameObject::clone(bool addToParent) {
   dup->m_isStatic = m_isStatic;
 
   static_cast<EnableObject>(*dup) = *this; 
-
+  static_cast<NameObject>(*dup) = *this;
   /**
   dup->m_finalTransform = m_finalTransform;
    dup->m_finalTransform.invalidate();
@@ -112,7 +118,22 @@ GameObject::clone(bool addToParent) {
 //void 
 //GameObject::destroy() {}
 
-void 
+void
+GameObject::removeComponent(const TString& compName) {
+
+  for (auto it = m_components.begin(); it != m_components.end(); ++it) {
+    if ((*it)->getName() == compName) {
+      (*it)->onDestroy();
+      m_components.erase(it);
+      return;
+    }
+  }
+
+  DR_DEBUG_ONLY(Logger::addLog(_T("Trying to remove unexisting component")));
+
+}
+
+void
 GameObject::addComponent(ComponentPtr component) {
   m_components.push_back(std::move(component));
 }
@@ -178,15 +199,6 @@ void GameObject::removeChildren() {
   m_children.clear();
 }
 
-void GameObject::setName(const TString& name) {
-  m_name = name;
-}
-
-const TString& 
-GameObject::getName() {
-  return m_name;
-}
-
 const Transform&
 GameObject::getWorldTransform() const {
   return m_finalTransform;
@@ -195,6 +207,16 @@ GameObject::getWorldTransform() const {
 Transform& 
 GameObject::getTransform() {
   return m_localTransform;
+}
+
+const TString& 
+GameObject::getTag() const {
+  return m_tag.getName();
+}
+
+void 
+GameObject::setTag(const TString& _tag) {
+  m_tag.setName(_tag);
 }
 
 GameObject::ChildrenList 
@@ -272,6 +294,18 @@ GameObject::isStatic() const {
 bool 
 GameObject::changed() const {
   return m_change;
+}
+
+TString 
+GameObject::getValidName(TString name) {
+
+  Int32 index = m_componentNames[name]++;
+
+  if (index) {
+    name += StringUtils::toTString(index);
+  }
+
+  return std::move(name);
 }
 
 GameObject::SharedGameObj 

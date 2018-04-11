@@ -35,7 +35,13 @@ class DR_CORE_EXPORT RenderComponent : public GameComponent
                   SharedModel model);
 
   RenderComponent(GameObject& _gameObject, 
-                  MeshList&& _materials);
+                  MeshList&& _meshes);
+  
+  void
+  setModel(SharedModel model);
+
+  void
+  setMeshes(MeshList&& _meshes);
 
   /*const */MeshList&
   getMeshes()

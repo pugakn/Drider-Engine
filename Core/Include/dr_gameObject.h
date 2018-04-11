@@ -1,13 +1,17 @@
 #pragma once
 
 #include <vector>
+#include <type_traits>
+#include <unordered_map>
 
 #include <dr_id_object.h>
+#include <dr_logger.h>
 #include <dr_memory.h>
 #include <dr_transform.h>
 
 #include "dr_core_prerequisites.h"
 #include "dr_enableObject.h"
+#include "dr_name_object.h"
 
 namespace driderSDK {
 
@@ -15,6 +19,7 @@ class GameComponent;
 
 class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject>,  
                                   public EnableObject,
+                                  public NameObject,
                                   public IDObject
 { 
  public:
@@ -79,7 +84,7 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   }
 
   /**
-  * Gets the component of the specified type in the template parameter.
+  * Gets the frist component of the specified type in the template parameter.
   *
   * @return
   *  If any of the components matches the specified type it'll return 
@@ -100,31 +105,52 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
     return componentCasted;
   }
   
+  template<class T = GameComponent>
+  T*
+  getComponent(const TString& componentName)
+  {
+    T* comp = nullptr;
+
+    for (auto& cmp : m_components) {
+      if (cmp->getName() == componentName) {
+        comp = cmp.get();
+      }
+    }
+
+    if (!std::is_same<T, GameComponent>::value) {
+      return dynamic_cast<T*>(comp);
+    }
+
+    return comp;
+  }
+
   template<class T>
   void
   removeComponent()
   {
     for (auto it = m_components.begin(); it != m_components.end(); ++it) {
-      if (dynamic_cast<T*>(it->get())) {
-        (*it)->onDestroy();
+      if (T* comp = dynamic_cast<T*>(it->get())) {
+        comp->onDestroy();
         m_components.erase(it);
         return;
       }
     }
 
-    DR_ASSERT(false && "Trying to remove unexisting component");
+    DR_DEBUG_ONLY(Logger::addLog(_T("Trying to remove unexisting component")));
   }
 
-
+  void
+  removeComponent(const TString& compName);
+  
   void
   addComponent(ComponentPtr component);
-
   
   void 
   addChild(SharedGameObj child);
 
   /**
-  * Sets the parent of the node.
+  * Sets 
+  the parent of the node.
   *
   * @param parent
   * The new parent. If the new parent doesn't has this node as a child, it will be added
@@ -151,23 +177,17 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   void 
   removeChildren();
 
-  /**
-  * Sets the name of the node
-  *
-  * @param name
-  *  The new name.
-  */
-  void 
-  setName(const TString& name);
-
-  const TString& 
-  getName();
-
   const Transform& 
   getWorldTransform() const;
 
   Transform&
   getTransform();
+
+  const TString&
+  getTag() const;
+
+  void 
+  setTag(const TString& _tag);
 
   /**
   * Gets a list of children.
@@ -237,6 +257,15 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   changed() const;
  private:
 
+   friend GameComponent;
+
+   using NamesMap = std::unordered_map<TString, Int32>;
+
+   /**
+   * Gets a validated name (not repeaded) for the proposed name.
+   */
+   TString
+   getValidName(TString name);
  protected:
   
   virtual void
@@ -246,14 +275,15 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   updateImpl(){}
 
   bool m_change;
-  bool m_destroyed;
   bool m_isStatic;
   ChildrenList m_children;
   ComponentsList m_components;
   Transform m_finalTransform;
   Transform m_localTransform;
-  TString m_name;
   WeakGameObj m_parent;
+  NameObject m_tag;
+  NamesMap m_componentNames;
+  DR_DEBUG_ONLY(bool m_destroyed);
 };
 
 }

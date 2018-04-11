@@ -4,7 +4,7 @@
 
 namespace driderSDK {
 AABBCollider::AABBCollider(GameObject& _gameObject, const AABB& aabb)
-: ColliderComponent(_gameObject),
+: ColliderComponent(_gameObject, _T("AABBCollider")),
   m_originalAABB(aabb),
   m_transformedAABB(aabb)
 {}

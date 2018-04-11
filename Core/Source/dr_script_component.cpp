@@ -6,6 +6,10 @@
 
 namespace driderSDK {
 
+ScriptComponent::ScriptComponent(GameObject& _gameObj) 
+  : GameComponent(_gameObj, _T("ScriptComponent")) {
+}
+
 ScriptComponent::~ScriptComponent() {
 
 }

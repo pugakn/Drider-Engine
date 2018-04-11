@@ -8,7 +8,7 @@ namespace driderSDK {
 
 CameraComponent::CameraComponent(GameObject& _gameObject,
                                  SharedCamera _camera) 
-  : GameComponent(_gameObject)
+  : GameComponent(_gameObject, _T("CameraComponent"))
 {
   setCamera(_camera);
 }

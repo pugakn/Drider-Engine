@@ -363,7 +363,7 @@ CodecModel::loadMaterials(const aiScene& model,
 
       if (mapNameIt != supportedMaps.end()) {
 
-        auto nt = material->GetTextureCount(textureType);
+        //auto nt = material->GetTextureCount(textureType);
 
         aiReturn ret = material->GetTexture(textureType, 0, &path);
 
