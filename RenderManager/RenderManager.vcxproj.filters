@@ -30,13 +30,16 @@
     <ClInclude Include="Include\dr_renderpass.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="Include\dr_GBuffer.h">
-      <Filter>Archivos de encabezado\Passes</Filter>
-    </ClInclude>
     <ClInclude Include="Include\dr_renderman.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="Include\dr_SSAO.h">
+    <ClInclude Include="Include\dr_GBuffer1.h">
+      <Filter>Archivos de encabezado\Passes</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_GBuffer2.h">
+      <Filter>Archivos de encabezado\Passes</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_PostProcessing.h">
       <Filter>Archivos de encabezado\Passes</Filter>
     </ClInclude>
   </ItemGroup>
@@ -47,13 +50,16 @@
     <ClCompile Include="Source\dr_renderpass.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
-    <ClCompile Include="Source\dr_GBuffer.cpp">
-      <Filter>Archivos de código fuente\Passes</Filter>
-    </ClCompile>
     <ClCompile Include="Source\dr_renderman.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
-    <ClCompile Include="Source\dr_SSAO.cpp">
+    <ClCompile Include="Source\dr_GBuffer1.cpp">
+      <Filter>Archivos de código fuente\Passes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_GBuffer2.cpp">
+      <Filter>Archivos de código fuente\Passes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_PostProcessing.cpp">
       <Filter>Archivos de código fuente\Passes</Filter>
     </ClCompile>
   </ItemGroup>

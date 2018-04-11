@@ -152,6 +152,11 @@ Camera::getFOV() const {
   return m_fov;
 }
 
+Vector3D
+Camera::getPosition() const {
+  return m_position;
+}
+
 void 
 Camera::invalidateView() {
   m_outdateView = true;
