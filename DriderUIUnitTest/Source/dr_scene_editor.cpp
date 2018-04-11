@@ -8,6 +8,11 @@
 #include <dr_aabb_collider.h>
 #include <windows.h>
 
+#include <dr_render_component.h>
+#include <dr_script_component.h>
+#include <dr_animator_component.h>
+#include <dr_collider_component.h>
+
 #include<Shlwapi.h>
 #pragma comment(lib, "Shlwapi.lib")
 namespace driderSDK {
@@ -216,9 +221,35 @@ void SceneEditor::initUI()
     UI_UpdateSceneGraph();
   }));
   webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeSceneGraphNodeSelection", [&](const CefRefPtr<CefListValue>& arguments) {
-    std::string name = arguments->GetString(1);
-    //TODO: Search name 
+    TString name = arguments->GetString(1);
+    if (name == _T("ROOT_NODE_X")) return;
+    auto n = SceneGraph::getRoot()->findNode(name);
+    auto pos = n->getTransform().getPosition();
+    auto scale = n->getTransform().getScale();
+    auto rot = const_cast<Matrix4x4&>(n->getTransform().getRotation()).eulerAngles();
 
+    webRenderer.executeJSCode(_T("JS_ChangeGMOFocus('") + name + _T("',") + 
+      std::to_wstring(pos.x) + _T(",") +
+      std::to_wstring(pos.y) + _T(",") +
+      std::to_wstring(pos.z) + _T(",") +
+      std::to_wstring(scale.x) + _T(",") +
+      std::to_wstring(scale.y) + _T(",") +
+      std::to_wstring(scale.z) + _T(",") +
+      std::to_wstring(rot.x) + _T(",") +
+      std::to_wstring(rot.y) + _T(",") +
+      std::to_wstring(rot.z) +
+      +_T(");"));
+
+  }));
+
+  //Property Sheet UI
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_OnTransformChange", [&](const CefRefPtr<CefListValue>& arguments) {
+    TString name = arguments->GetString(1);
+    TString parent = arguments->GetString(2);
+    //TODO: Search parent name 
+    addGameObject(SceneGraph::getRoot(),
+      name,
+      { 0, 0, 0 })->getTransform().scale({ 1, 1, 1 });
   }));
 }
 void SceneEditor::initSceneGraph()
@@ -299,5 +330,28 @@ void SceneEditor::UI_UpdateSceneGraph()
   auto children = SceneGraph::getRoot()->getChildren();
   search(children);
 }
+
+void SceneEditor::UI_UpdatePropertySheet()
+{
+  std::function<void(const std::vector<std::shared_ptr<GameObject>>&)> search =
+    [&](const std::vector<std::shared_ptr<GameObject>>& children) {
+    for (auto &it : children) {
+      auto name = it->getName();
+      auto component = it->getComponent<RenderComponent>();
+      webRenderer.executeJSCode(WString(_T("c('")) +
+        name + TString(_T("','")) + _T("Render") +
+        WString(_T("');")));
+
+      auto children2 = it->getChildren();
+      search(children2);
+    }
+  };
+
+
+  SceneGraph::getRoot()->getName();
+  auto children = SceneGraph::getRoot()->getChildren();
+  search(children);
+}
+
 }
 

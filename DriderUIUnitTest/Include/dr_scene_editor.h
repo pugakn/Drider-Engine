@@ -29,19 +29,22 @@ public:
     const Vector3D& pos);
   //void removeGameObject();
 
+  void createComponentOnGMO(const TString& gmoID, const Int32 type);// Uno por uno asd gdsagfdsf dsf< ?
+  void removeComponentOnGMO(const TString& gmoID, const TString& componentID);
+
 
 private:
   Int32 m_sceneWidth;
   Int32 m_sceneHeight;
   void initInputs();
   void initCameras();
-  void initAssets();
   void initUI();
   void initSceneGraph();
 
   void sceneResized();
 
   void UI_UpdateSceneGraph();
+  void UI_UpdatePropertySheet();
 
   //QUERY_ORDER::E m_queryOrder;
 

@@ -9,6 +9,15 @@ function JS_AddSceneGraphNode(name,pname) {
 function JS_ClearSceneGraphTree() {
 	webix.callEvent('WEBIX_ClearSceneGraphTree');
 }
+function JS_ChangeGMOFocus(name,posX,posY,posZ,scX,scY,scZ,rtX,rtY,rtZ) {
+	webix.callEvent('WEBIX_ChangeGMOPropFocus',[name,posX,posY,posZ,scX,scY,scZ,rtX,rtY,rtZ]);
+}
+function JS_UpdatePropertySheetUI() {
+	webix.callEvent('WEBIX_UpdatePropertySheetUI'); //TODO: ADLASD
+}
+function JS_Component-Render() {
+	
+}
 //===================================================================================================================
 //                                                  WEBIX
 // ==================================================================================================================
@@ -40,17 +49,82 @@ webix.ready(function(){
 	//=======================================================================================================
 	//                                          Propertysheet
 	//=======================================================================================================
+	
+	var transform_UI = webix.ui({
+	cols:[
+		{
+			view:"fieldset", id:"myform1", label:"Propiedades", body:{
+			rows:[
+				{rows:[
+				    { template:"Name", type:"header", id: "prop_title" },
+					{ type:"section", template:" Scale" },
+					{ height: 30, margin:0,padding:0, cols:[
+						{ view:"text",   label:"x", inputWidth:80 , labelWidth:20, inputHeight:24,autowidth:false ,id:"scX"},
+						{ view:"text",   label:"y", inputWidth:80 , labelWidth:20, inputHeight:24,autowidth:false ,id:"scY"},
+						{ view:"text",   label:"z", inputWidth:80 , labelWidth:20, inputHeight:24,autowidth:false ,id:"scZ"},
+					]},
+					{ type:"section", template:" Rotation" },
+					{ height: 30, margin:0,padding:0, cols:[
+						{ view:"text",   label:"x", inputWidth:80 , labelWidth:20, inputHeight:24,autowidth:false ,id:"rtX"},
+						{ view:"text",   label:"y", inputWidth:80 , labelWidth:20, inputHeight:24,autowidth:false ,id:"rtY"},
+						{ view:"text",   label:"z", inputWidth:80 , labelWidth:20, inputHeight:24,autowidth:false ,id:"rtZ"},
+					]},
+					{ type:"section", template:" Position" },
+					{ height: 30, margin:0,padding:0, cols:[
+						{ view:"text",   label:"x", inputWidth:80 , labelWidth:20, inputHeight:24,autowidth:false ,id:"posX"},
+						{ view:"text",   label:"y", inputWidth:80 , labelWidth:20, inputHeight:24,autowidth:false ,id:"posY"},
+						{ view:"text",   label:"z", inputWidth:80 , labelWidth:20, inputHeight:24,autowidth:false ,id:"posZ"},
+					]},
+				]}
+			]
+		}
+		}
+	],
+	container:"propView",
+	margin:0,
+	padding:0,
+	id:"propTransform"
+	});
+	
+	
+	webix.attachEvent("WEBIX_ChangeGMOPropFocus", function(name,posX,posY,posZ,scX,scY,scZ,rtX,rtY,rtZ){
+		$$("prop_title").define("template",name);
+		$$("prop_title").refresh();
+		
+	    $$("scX").define("value",scX);
+		$$("scX").refresh();
+		$$("scY").define("value",scY);
+		$$("scY").refresh();
+		$$("scZ").define("value",scZ);
+		$$("scZ").refresh();
+
+		$$("posX").define("value",posX);
+		$$("posX").refresh();
+	    $$("posY").define("value",posY);
+		$$("posY").refresh();
+		$$("posZ").define("value",posZ);
+		$$("posZ").refresh();
+		
+		$$("rtX").define("value",rtX);
+		$$("rtX").refresh();
+		$$("rtY").define("value",rtY);
+		$$("rtY").refresh();
+		$$("rtZ").define("value",rtZ);
+		$$("rtZ").refresh();
+	});
+	
 	var propertysheet_1 = {
 	view:"property",  id:"sets", width:300,
 	elements:[
-		{ label:"GameObject", type:"label" },
-		{ label:"Width", type:"text", id:"width"},
+		{ label:"Transform", type:"label" },
+		{ label:"Scale", type:"text", id:"scale"},
 		{ label:"Height", type:"text", id:"height"},
 		{ label:"Material", type:"label" },
 		{ label:"Color" },
 		{ label:"Background", 	type:"color", id:"col", cols:20, rows:20},
 		{ label:"BorderColor", 	type:"color", id:"col2"},
-		{ label:"FontColor", 	type:"color", id:"col3", cols:5, rows:5}
+		{ label:"FontColor", 	type:"color", id:"col3", cols:5, rows:5},
+		{ label:"asd", 	type:"textg"}
 	]
 	};
 	
@@ -78,7 +152,21 @@ webix.ready(function(){
 	
 	
 	
-	
+	webix.ui({
+	view:"contextmenu",
+	id:"general_prop_ctx_menu",
+	data:[{value:"Add Component" ,submenu:[ 
+		  "Render", "Animator", "Script", "Collider"]}],
+	master:"propView",
+	on:{
+		onItemClick:function(id){
+			if (this.getItem(id).value == "Render"){
+
+			}
+		}
+	},
+	openAction:"click",
+	});
 	//=======================================================================================================
 	//                                           Scene Graph
 	//=======================================================================================================
@@ -111,6 +199,10 @@ webix.ready(function(){
 				//TODO: for all selected items
 				var src = context.source[0];
 				C_ChangeNodeParent(src,context.target);
+			},
+			onSelectChange:function () {
+				//this.getItem(this.getSelectedId(true)[0]).value
+				C_ChangeSceneGraphNodeSelection(this.getSelectedId(true)[0]);
 			}
 			
 			
