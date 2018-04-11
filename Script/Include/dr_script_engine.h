@@ -9,6 +9,9 @@
 
 #include <iostream>
 #include <vector>
+#include <set>
+
+#include <../../Input/Include/dr_input_defines.h>
 
 namespace driderSDK {
 
@@ -61,6 +64,7 @@ class DR_SCRIPT_EXPORT ScriptEngine : public Module<ScriptEngine>
   */
   Int8
   configurateEngine(ContextManager *ctx);
+ 
   
 	/**
 	* Open the script and adds it to the module.
@@ -73,38 +77,41 @@ class DR_SCRIPT_EXPORT ScriptEngine : public Module<ScriptEngine>
             const TString& script,
             const TString& module);
   
-  Int8
-  compile(TString module);
+  /**
+  * Gets script object
+  */
+  void
+  getScriptObject(TString scriptName,
+                  asIScriptModule *mod,
+                  asIScriptObject **objectRef,
+                  asITypeInfo **typeRef);
 
-	/**
-	* Compiles the script.
-	*
-	*/
-	/*Int8
-	compileScript();*/
+  /**
+  * Sets componet to a script
+  */
+  void 
+  setObjectToScript(asITypeInfo *type,
+                    TString methodDecl,
+                    UInt32 arg,
+                    void* appObj,
+                    asIScriptObject* scriptObj);
+  
+  /**
+  * Execute a script function
+  */
+  void
+  executeFunction(TString function,
+                  asITypeInfo *type,
+                  asIScriptObject* scriptObj);
 
-	/**
-	* Create the context and sets the LineCallback function.
-	*
-	*/
-	Int8
-	configureContext();
-
-	/**
-	* Create the context and sets the LineCallback function.
-	*
-	* @return
-	*	  Negative value if error.
-	*/
-	Int8
-	prepareFunction(TString function);
-
-	/**
-	* Execute a call in the context.
-	*
-	*/
-	Int8
-	executeCall();
+  /**
+  * Execute a script function with param
+  */
+  void
+  executeFunctionParam(TString function,
+                       asITypeInfo *type,
+                       asIScriptObject* scriptObj,
+                       KEY_CODE::E param);
 
 	/**
 	* Shut down the script's engine.
@@ -155,10 +162,8 @@ class DR_SCRIPT_EXPORT ScriptEngine : public Module<ScriptEngine>
 
   void
   onShutDown() override {}
-	
+
  private:
-	//asIScriptEngine* m_scriptEngine;
-	asIScriptFunction* m_scriptFunction;
 };
 
 }

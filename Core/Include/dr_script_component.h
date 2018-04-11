@@ -6,12 +6,16 @@
 namespace driderSDK {
 
 class ScriptEnine;
-class ContextManager;
+class ScriptCore;
 
 class DR_CORE_EXPORT ScriptComponent : public GameComponent {
   public:
     
     ScriptComponent(GameObject& _gameObj);
+    
+    ScriptComponent(GameObject &gameObject,
+                    std::shared_ptr<ScriptCore> _script);
+
     
     virtual
     ~ScriptComponent();
@@ -38,9 +42,7 @@ class DR_CORE_EXPORT ScriptComponent : public GameComponent {
     cloneIn(GameObject& _go) override;
 
     void
-    addScript(TString name,
-              TString script,
-              TString module);
+    initScript();
 
     void
     start();
@@ -52,15 +54,15 @@ class DR_CORE_EXPORT ScriptComponent : public GameComponent {
     onKeyDown(KEY_CODE::E key);
 
     void
-    compileScript();
+    onKeyUp(KEY_CODE::E key);
 
   private:
-    TString m_scriptName;
-    TString m_script;
-    TString m_module;
-
-    ContextManager* ctxMag = nullptr;
     ScriptEngine *scriptEngine = nullptr;
+    asIScriptModule *mod = 0;
+    asIScriptObject *obj = 0;
+    asITypeInfo *type = 0;    
+
+    std::shared_ptr<ScriptCore> m_script;
 };
 
 }

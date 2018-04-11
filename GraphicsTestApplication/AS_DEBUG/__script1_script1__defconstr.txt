@@ -1,0 +1,11 @@
+script1::script1()
+
+Temps: 
+
+Variables: 
+ 000: script1 this
+
+
+    0   0 *    PshVPtr  v0
+    1   1 *    CALL     101           (MontiBehavior::MontiBehavior())
+    3   0 *    RET      1

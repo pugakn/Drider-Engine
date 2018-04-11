@@ -20,12 +20,17 @@ namespace AXIS {
   };
 }
 
+class Transform;
+Transform* Ref_Transform();
+
 class DR_CORE_EXPORT Transform 
 {
  public:
   friend class GameObject;
   friend class BoneAttachObject;
-
+  
+  Int32 refCount;
+  
   Transform();
 
   /**
@@ -166,11 +171,40 @@ class DR_CORE_EXPORT Transform
 
   Transform&
   operator=(const Transform& other);
+  
+  void addRef() {
+    refCount++;
+  }
 
-  BEGINING_REGISTER(Transform, 0, asOBJ_REF | asOBJ_NOHANDLE)
+  void release() {
+    if (--refCount == 0)
+      delete this;
+  }
+
+  BEGINING_REGISTER(Transform, 0, asOBJ_REF)
+
+  result = scriptEngine->m_scriptEngine->RegisterObjectBehaviour("Transform",
+                                                                 asBEHAVE_FACTORY,
+                                                                 "Transform @f()",
+                                                                 asFUNCTION(Ref_Transform),
+                                                                 asCALL_CDECL);
+
+  result = scriptEngine->m_scriptEngine->RegisterObjectBehaviour("Transform", 
+                                                                 asBEHAVE_ADDREF, 
+                                                                 "void f()", 
+                                                                 asMETHOD(Transform, addRef), 
+                                                                 asCALL_THISCALL);
+  result = scriptEngine->m_scriptEngine->RegisterObjectBehaviour("Transform", 
+                                                                 asBEHAVE_RELEASE, 
+                                                                 "void f()", 
+                                                                 asMETHOD(Transform, release), 
+                                                                 asCALL_THISCALL);
   
   result = REGISTER_FOO_1P(Transform, move, const Vector3D&, void, "void", in)
   result = REGISTER_FOO_1P(Transform, rotate, const Vector3D&, void, "void", in)
+  result = scriptEngine->m_scriptEngine->RegisterObjectProperty("Transform",
+                                                                "Vector3D m_position",
+                                                                asOFFSET(Transform, m_position));
 
   END_REGISTER
   

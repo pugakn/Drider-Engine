@@ -7,6 +7,8 @@ namespace driderSDK {
 	ScriptCore::init(void* pData) {
 
 		ScriptInfo* script = static_cast<ScriptInfo*>(pData);
+    script->name.erase(script->name.length() - 3,
+                       script->name.length());
 		m_name = script->name;
 		m_script = script->data;
 

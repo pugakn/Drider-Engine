@@ -135,7 +135,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>angelscript.lib;Core.lib;Engine.lib;Utils.lib;%(AdditionalDependencies);Engine.lib</AdditionalDependencies>
+      <AdditionalDependencies>angelscript.lib;Engine.lib;Utils.lib;%(AdditionalDependencies);Engine.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);$(DRIDER_DEPENDENCIES)Lib\$(PlatformTarget);</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -161,6 +161,7 @@
     <ClCompile Include="Source\dr_context_manager.cpp" />
     <ClCompile Include="Source\dr_script_custom_string.cpp" />
     <ClCompile Include="Source\dr_script_engine.cpp" />
+    <ClCompile Include="Source\dr_script_object.cpp" />
     <ClCompile Include="Source\dr_script_string_factory.cpp" />
     <ClCompile Include="Source\scriptarray.cpp" />
     <ClCompile Include="Source\scriptdictionary.cpp" />
@@ -172,6 +173,7 @@
     <ClInclude Include="Include\dr_script_api.h" />
     <ClInclude Include="Include\dr_script_custom_string.h" />
     <ClInclude Include="Include\dr_script_engine.h" />
+    <ClInclude Include="Include\dr_script_object.h" />
     <ClInclude Include="Include\dr_script_prerequisites.h" />
     <ClInclude Include="Include\dr_script_string_factory.h" />
     <ClInclude Include="Include\scriptarray.h" />

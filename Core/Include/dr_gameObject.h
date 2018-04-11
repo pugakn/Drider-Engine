@@ -83,6 +83,21 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
     return rawPtr;
   }
 
+  template<class T>
+  std::vector<T*>
+  getComponents()
+  {
+    std::vector<T*> componentCastedList;
+    for (auto& componet : m_components) {
+      if (auto casted = dynamic_cast<T*>(componet.get())) {
+        componentCastedList.push_back(casted);
+        continue;
+      }
+    }
+    return componentCastedList;
+  }
+
+
   /**
   * Gets the frist component of the specified type in the template parameter.
   *

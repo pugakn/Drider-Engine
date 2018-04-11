@@ -7,11 +7,11 @@
 #include <dr_input_manager.h>
 #include <dr_graphics_driver.h>
 #include <dr_blend_state.h>
-#include <dr_texture.h>
-namespace driderSDK {
+#include <dr_resource_manager.h>
 
+namespace driderSDK {
 TestApplication::TestApplication()
-  : viewport{0,0,1280, 720}, webRenderer(){
+  : viewport{0,0,1920, 1024}{
 }
 
 TestApplication::~TestApplication() {
@@ -24,44 +24,46 @@ TestApplication::postInit() {
     m_viewport.height,
     m_hwnd);
   InputManager::startUp((SizeT)m_hwnd);
+  SceneGraph::startUp();
   Time::startUp();
+  ResourceManager::startUp();
 
-  quad.init();
-  webRenderer.Init(1280,720,BROWSER_MODE::kHeadless);
-  webRenderer.loadURL("file:///C:/Users/Ulises/Documents/GitHub/Drider-Engine/DriderUIUnitTest/bulma/ss.html");//
-  JSCallLambda func = [](CefRefPtr<CefV8Value>& retval, const CefV8ValueList& arguments) {
-    retval = CefV8Value::CreateString("MyRetVal");
-    //exit(666);
-  };
-  webRenderer.registerJS2CPPFunction(std::make_pair("myfunc", func));
-  webRenderer.executeJSCode("alert(myfunc())");
+  m_editor.init(m_viewport);
 
-  int num = 10;
-  webRenderer.registerJS2CPPFunction(std::make_pair("setNum",  [&num](CefRefPtr<CefV8Value>& retval, const CefV8ValueList& arguments) {
-    num = arguments[0]->GetIntValue();
-    retval = CefV8Value::CreateInt(num);
-  }));
-  webRenderer.executeJSCode("alert(setNum(55))");
+  ////Manage
+  //webRenderer.registerJS2CPPFunction(std::make_pair("createFolder", [&](CefRefPtr<CefV8Value>& retval, const CefV8ValueList& arguments) {
+  //}));
+  //webRenderer.registerJS2CPPFunction(std::make_pair("renameFile", [&](CefRefPtr<CefV8Value>& retval, const CefV8ValueList& arguments) {
+  //}));
+  //webRenderer.registerJS2CPPFunction(std::make_pair("deleteFile", [&](CefRefPtr<CefV8Value>& retval, const CefV8ValueList& arguments) {
+  //}));
+  //webRenderer.registerJS2CPPFunction(std::make_pair("moveFile", [&](CefRefPtr<CefV8Value>& retval, const CefV8ValueList& arguments) {
+  //}));
+  //webRenderer.registerJS2CPPFunction(std::make_pair("updateFolders", [&](CefRefPtr<CefV8Value>& retval, const CefV8ValueList& arguments) {
+  //  updateFolders(webRenderer);
+  //}));
+  ////Open
+  //webRenderer.registerJS2CPPFunction(std::make_pair("openImage", [&](CefRefPtr<CefV8Value>& retval, const CefV8ValueList& arguments) {
+  //}));
+  //webRenderer.registerJS2CPPFunction(std::make_pair("openScript", [&](CefRefPtr<CefV8Value>& retval, const CefV8ValueList& arguments) {
+  //}));
+  //webRenderer.registerJS2CPPFunction(std::make_pair("openSound", [&](CefRefPtr<CefV8Value>& retval, const CefV8ValueList& arguments) {
+  //}));
 
-  webRenderer.registerJS2CPPFunction(std::make_pair("onload", [&](CefRefPtr<CefV8Value>& retval, const CefV8ValueList& arguments) {
-    webRenderer.executeJSCode("changeTitle('hola')");
-    webRenderer.executeJSCode("alert(setNum(55))");
-  }));
+
+
 }
 
 void
 TestApplication::postUpdate() {
-  InputManager::capture();
-  webRenderer.update();
+  InputManager::update();
+  m_editor.update();
 }
 
 void
 TestApplication::postRender() {
   GraphicsDriver::API().clear();
-  webRenderer.setTexture();
-  GraphicsAPI::getBlendState(DR_BLEND_STATES::kAlphaBlend).set(GraphicsAPI::getDeviceContext());
-  quad.draw();
-  GraphicsAPI::getBlendState(DR_BLEND_STATES::kOpaque).set(GraphicsAPI::getDeviceContext());
+  m_editor.draw();
   GraphicsDriver::API().swapBuffers();
 }
 void

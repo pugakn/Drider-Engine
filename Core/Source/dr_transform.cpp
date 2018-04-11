@@ -7,6 +7,10 @@
 
 namespace driderSDK {
 
+Transform* Ref_Transform(){
+  return new Transform();
+}
+
 Transform::Transform() 
   : m_outdatedTransform(true),
     m_outdatedRotation(true),
@@ -15,9 +19,9 @@ Transform::Transform()
     m_scale(1,1,1),
     m_rotX(Math::FORCE_INIT::kIdentity),
     m_rotY(Math::FORCE_INIT::kIdentity),
-    m_rotZ(Math::FORCE_INIT::kIdentity)
-    //m_eulerAngles(0,0,0)
-{}
+    m_rotZ(Math::FORCE_INIT::kIdentity) {
+  refCount = 1;
+}
 
 Transform::Transform(const Transform& other)
 {

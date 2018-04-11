@@ -63,12 +63,39 @@ D3DRenderTarget::create(const Device & device,
 void
 D3DRenderTarget::set(const DeviceContext& deviceContext,
                      const DepthStencil& depthStencil) const {
+
+
   reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext->
       OMSetRenderTargets(RTVs.size(),
                          &RTVs[0],
                          reinterpret_cast<const D3DDepthStencil*>(&depthStencil)->
                            APIDepthView);
+
+  D3D11_VIEWPORT viewport_RT;
+  viewport_RT.TopLeftX = 0;
+  viewport_RT.TopLeftY = 0;
+  viewport_RT.Width = static_cast<float>(m_descriptor.width);
+  viewport_RT.Height = static_cast<float>(m_descriptor.height);
+  viewport_RT.MinDepth = 0;
+  viewport_RT.MaxDepth = 1;
+
+  reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
+    D3D11DeviceContext->RSSetViewports(1, &viewport_RT);
+}
+
+void D3DRenderTarget::clear(const DeviceContext & deviceContext, const float color[4])
+{
+  float rgba[4]; // Cambiar después xD
+  rgba[0] = 0.5f;
+  rgba[1] = 0.5f;
+  rgba[2] = 0.5f;
+  rgba[3] = 1.0f;
+
+  for (int i = 0; i < RTVs.size(); i++) {
+    reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
+      D3D11DeviceContext->ClearRenderTargetView(RTVs[i], rgba);
+  }
 }
 
 void

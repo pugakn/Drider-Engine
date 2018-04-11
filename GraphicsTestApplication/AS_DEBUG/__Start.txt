@@ -1,37 +1,23 @@
 void Start()
 
-Temps: 7, 8, 10
+Temps: 7
 
 Variables: 
  007: string {noname}
 
 
 - 2,2 -
-    0  10 *    SUSPEND
-    1  10 *    PGA      211825376
-    3  11 *    PSF      v7
-    4  12 *    CALLSYS  20           (string::string(const string&in))
+    0   7 *    SUSPEND
+    1   7 *    PGA      245615144
+    3   8 *    PSF      v7
+    4   9 *    CALLSYS  20           (string::string(const string&in))
                ObjInfo  v7, 1
-    6  10 *    PSF      v7
-    7  11 *    CALLSYS  69           (void Print(string&in))
-    9  10 *    PSF      v7
-   10  11 *    CALLSYS  21           (string::~string())
+    6   7 *    PSF      v7
+    7   8 *    CALLSYS  69           (void Print(string&in))
+    9   7 *    PSF      v7
+   10   8 *    CALLSYS  21           (string::~string())
 - 3,2 -
                ObjInfo  v7, 0
-   12  10 *    SUSPEND
-   13  10 *    CpyGtoV4 v8, 7337868
-   15  10 *    iTOi64   v10, v8
-   17  10 *    PshV8    v10
-   18  12 *    PSF      v7
-   19  13 *    PGA      211826344
-   21  14 *    CALLSYS  45           (string string::opAdd_r(int64) const)
-               ObjInfo  v7, 1
-   23  10 *    PSF      v7
-   24  11 *    CALLSYS  69           (void Print(string&in))
-   26  10 *    PSF      v7
-   27  11 *    CALLSYS  21           (string::~string())
-- 4,2 -
-               ObjInfo  v7, 0
-   29  10 *    SUSPEND
+   12   7 *    SUSPEND
             0:
-   30  10 *    RET      0
+   13   7 *    RET      0

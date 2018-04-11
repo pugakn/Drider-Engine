@@ -1,8 +1,10 @@
-void Start() {
-	Print("Start script2: ");
-	Print(script2::globalVar + "\n");
-}
+class script2 : MontiBehavior {
+	
+	void Start() {
+		Print("Script2 start\n");
+	}
 
-void Update() {
-	//Print("Update script2: \n");
+	void Update() {
+		Print("Update script2\n");
+	}
 }

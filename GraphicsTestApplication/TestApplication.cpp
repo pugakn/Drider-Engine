@@ -40,6 +40,7 @@
 
 #include <dr_script_core.h>
 #include <dr_script_component.h>
+#include <dr_script_object.h>
 
 namespace driderSDK {
 
@@ -421,15 +422,6 @@ TestApplication::initInput() {
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kJ, toggleWireframe);
                     
-                        
-    
-  auto keyPressed = [&]() {
-    return true;
-  };
-  
-  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
-                        KEY_CODE::k0, keyPressed);
-
 }
 
 void 
@@ -449,8 +441,7 @@ TestApplication::initResources() {
 
   ResourceManager::loadResource(_T("Weapons-of-survival.fbx"));
 
-  ResourceManager::loadResource(_T("test.as"));
-
+  ResourceManager::loadResource(_T("MontiBehavior.as"));
   ResourceManager::loadResource(_T("script1.as"));
   ResourceManager::loadResource(_T("script2.as"));
 }
@@ -564,45 +555,6 @@ void
 TestApplication::initScriptEngine() {
   Int32 result;
 
-  /*//scriptEngine->addScriptLog(_T("hola"), 0);
-  ScriptEngine* scriptEngine = nullptr;
-
-  if (!ScriptEngine::isStarted()) {
-    ScriptEngine::startUp();
-  }
-
-  scriptEngine = ScriptEngine::instancePtr();
-
-  result = scriptEngine->createEngine(); 
-
-  result = Keyboard::registerFunctions(scriptEngine);
-
-  Vector3D vector;
-  result = vector.registerFunctions(scriptEngine);
-  
-  result = m_activeCam->getTransform().registerFunctions(scriptEngine);
-  result = scriptEngine->m_scriptEngine->RegisterGlobalProperty("Transform transform",
-                                                                &m_activeCam->getTransform());
-
-  result = Time::registerFunctions(scriptEngine);
-
-  result = scriptEngine->configureContext();
-
-  auto camScript = m_camera->createComponent<ScriptComponent>();
-  auto script = std::dynamic_pointer_cast<ScriptCore>(ResourceManager::getReference(_T("test.as")));
-  camScript->addScript(_T("test.as"), script->getScript());
-
-  result = scriptEngine->compileScript();
-  camScript->start();
-
-  result = scriptEngine->configureContext();
-
-  auto camScript = m_camera->createComponent<ScriptComponent>();
-  auto script = std::dynamic_pointer_cast<ScriptCore>(ResourceManager::getReference(_T("test.as")));
-  camScript->addScript(_T("test.as"), script->getScript());
-
-  result = scriptEngine->compileScript();
-  camScript->start();*/
   //Create context manager and set time
   ContextManager* ctxMag = nullptr;
   if(!ContextManager::isStarted())  {
@@ -616,6 +568,8 @@ TestApplication::initScriptEngine() {
     ScriptEngine::startUp();
   }
   scriptEngine = ScriptEngine::instancePtr();
+
+  //Create engine
   result = scriptEngine->createEngine();
 
   //Configurate engine
@@ -625,39 +579,42 @@ TestApplication::initScriptEngine() {
   result = Keyboard::registerFunctions(scriptEngine);
   Vector3D vector;
   result = vector.registerFunctions(scriptEngine);
-  result = m_activeCam->getTransform().registerFunctions(scriptEngine);
-  
+  Transform transform;
+  result = transform.registerFunctions(scriptEngine);
   result = Time::registerFunctions(scriptEngine);
 
-  //Add, register global properties and compile scripts
-  auto camScript = m_camera->createComponent<ScriptComponent>();
+  //Get script references of the ResourceManager
+  auto rBehaviorScript = ResourceManager::getReference(_T("MontiBehavior.as"));
+  auto BehaviorScript = std::dynamic_pointer_cast<ScriptCore>(rBehaviorScript);
+
   auto rScript1 = ResourceManager::getReference(_T("script1.as"));
   auto Script1 = std::dynamic_pointer_cast<ScriptCore>(rScript1);
-  /*result = scriptEngine->m_scriptEngine->RegisterGlobalProperty("Transform transform",
-                                                                &m_activeCam->getTransform());*/
-  result = scriptEngine->m_scriptEngine->SetDefaultNamespace("script1");
 
-  result = scriptEngine->m_scriptEngine->RegisterGlobalProperty("int globalVar",
-                                                                &int1);
-  camScript->addScript(Script1->getName(),
-                       Script1->getScript(),
-                       Script1->getName());
-                                                           
-  camScript->start();
-  
-  //Add, register global properties and compile scripts
-  auto jokerScript = m_joker->createComponent<ScriptComponent>();
   auto rScript2 = ResourceManager::getReference(_T("script2.as"));
   auto Script2 = std::dynamic_pointer_cast<ScriptCore>(rScript2);
-  result = scriptEngine->m_scriptEngine->SetDefaultNamespace("script2");
+  
+  //Create a context
+  scriptEngine->m_scriptContext = ctxMag->addContext(scriptEngine->m_scriptEngine,
+                                                     _T("GameModule"));
 
-  result = scriptEngine->m_scriptEngine->RegisterGlobalProperty("int globalVar",
-                                                                &int2);
-  jokerScript->addScript(Script2->getName(),
-                         Script2->getScript(),
-                         Script2->getName());
+  //Add script section of behavior
+  scriptEngine->addScript(BehaviorScript->getName(),
+                          BehaviorScript->getScript(),
+                          _T("GameModule"));
 
-  jokerScript->start();
+  //Add script component to the objects and add script sections of the scripts
+  auto camScript1 = m_camera->createComponent<ScriptComponent>(Script1);
+  auto camScript2 = m_camera->createComponent<ScriptComponent>(Script2);
+
+  auto currentModule = scriptEngine->m_scriptEngine->GetModule("GameModule");
+  result = currentModule->Build();
+
+  camScript1->initScript();
+  camScript2->initScript();
+
+  camScript1->start();
+  camScript2->start();
+
 
 }
 

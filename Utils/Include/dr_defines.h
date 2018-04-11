@@ -42,6 +42,7 @@
 #else
 # define DR_ASSERT(x) 
 # define DR_DEBUG_ONLY(x)
+# define DR_DEBUG_ONLY_PARAM(x)
 #endif
 
 /**********************************************************************

@@ -4,10 +4,34 @@
 #include <..\..\Script\Include\dr_context_manager.h>
 #include <..\..\Script\Include\dr_script_engine.h>
 
+#include "dr_script_core.h"
+#include <dr_gameObject.h>
+
 namespace driderSDK {
 
-ScriptComponent::ScriptComponent(GameObject& _gameObj) 
-  : GameComponent(_gameObj, _T("ScriptComponent")) {
+
+ScriptComponent::ScriptComponent(GameObject &gameObject,
+                                 std::shared_ptr<ScriptCore> _script) : 
+                                              GameComponent(gameObject, _T("ScriptComponent")),
+                                              m_script(_script) {
+  scriptEngine = ScriptEngine::instancePtr();
+
+  Keyboard::addAnyKeyCallback(KEYBOARD_EVENT::kKeyPressed,
+                              std::bind(&ScriptComponent::onKeyDown, this, std::placeholders::_1));
+
+  Keyboard::addAnyKeyCallback(KEYBOARD_EVENT::kKeyReleased,
+                              std::bind(&ScriptComponent::onKeyUp, this, std::placeholders::_1));
+
+  //Add script section
+  scriptEngine->addScript(m_script->getName(),
+                          m_script->getScript(),
+                          _T("GameModule"));
+
+  //Get module
+  mod = scriptEngine->m_scriptEngine->GetModule("GameModule");
+
+  //Compile the module after adding a new script
+  //Int8 result = mod->Build();
 }
 
 ScriptComponent::~ScriptComponent() {
@@ -17,25 +41,19 @@ ScriptComponent::~ScriptComponent() {
 void
 ScriptComponent::onCreate() {
   
-  scriptEngine = ScriptEngine::instancePtr();
-
-  if (!ContextManager::isStarted()) {
-    ContextManager::startUp();
-  }
-  ctxMag = ContextManager::instancePtr();
-
-  Keyboard::addAnyKeyCallback(KEYBOARD_EVENT::kKeyPressed,
-                              std::bind(&ScriptComponent::onKeyDown, this, std::placeholders::_1));
 }
 
 void
 ScriptComponent::onUpdate() {
-  ctxMag->addContext(scriptEngine->m_scriptEngine,
-                     scriptEngine->m_scriptEngine->GetModule(
-                     StringUtils::toString(m_module).c_str())->GetFunctionByDecl(
-                     "void Update()"));
+  scriptEngine->setObjectToScript(type,
+                                  _T("void SetTransform(Transform@ trans)"),
+                                  0,
+                                  &m_gameObject.getTransform(),
+                                  obj);
 
-  Int8 result = ctxMag->executeScripts();
+  scriptEngine->executeFunction(_T("void Update()"),
+                                type,
+                                obj);
 }
 
 /*********
@@ -51,21 +69,6 @@ ScriptComponent::onDestroy() {
 
 }
 
-void
-ScriptComponent::addScript(TString name,
-                           TString script,
-                           TString module) {
-
-  Int32 result = ScriptEngine::instance().addScript(name,
-                                                    script,
-                                                    module);
-  
-  m_scriptName = name;
-  m_script = script;
-  m_module = module;
-
-}
-
 /**
 * Clones the component inside the given gameObject
 */
@@ -75,33 +78,53 @@ ScriptComponent::cloneIn(GameObject& _go) {
 }
 
 void
-ScriptComponent::start() {
-  //Add context
-  ctxMag->addContext(scriptEngine->m_scriptEngine,
-                     scriptEngine->m_scriptEngine->GetModule(
-                     StringUtils::toString(m_module).c_str())->GetFunctionByDecl(
-                     "void Start()"));
+ScriptComponent::initScript() {
+  //Get script object
+  scriptEngine->getScriptObject(m_script->getName(),
+                                mod,
+                                &obj,
+                                &type);
+}
 
-  Int8 result = ctxMag->executeScripts();
+void
+ScriptComponent::start() {
+  scriptEngine->setObjectToScript(type,
+                                  _T("void SetTransform(Transform@ trans)"),
+                                  0,
+                                  &m_gameObject.getTransform(),
+                                  obj);
+
+  scriptEngine->executeFunction(_T("void Start()"),
+                                type,
+                                obj);
 }
 
 void
 ScriptComponent::onKeyDown(KEY_CODE::E key) {
-  asIScriptContext *ctx = ctxMag->addContext(scriptEngine->m_scriptEngine,
-                                             scriptEngine->m_scriptEngine->GetModule(
-                                             StringUtils::toString(m_module).c_str())->GetFunctionByDecl(
-                                               "void onKeyDown(KeyCode)"));
-  if(ctx != 0) {
-    Int8 result;
-    result = ctx->SetArgDWord(0, (Int32)key);
-    result = ctxMag->executeScripts();
-  }
+  scriptEngine->setObjectToScript(type,
+                                  _T("void SetTransform(Transform@ trans)"),
+                                  0,
+                                  &m_gameObject.getTransform(),
+                                  obj);
+
+  scriptEngine->executeFunctionParam(_T("void onKeyDown(KeyCode)"),
+                                     type,
+                                     obj,
+                                     key);
 }
 
-
 void
-ScriptComponent::compileScript() {
-  scriptEngine->compile(m_module);
+ScriptComponent::onKeyUp(KEY_CODE::E key) {
+  scriptEngine->setObjectToScript(type,
+                                _T("void SetTransform(Transform@ trans)"),
+                                0,
+                                &m_gameObject.getTransform(),
+                                obj);
+                                
+  scriptEngine->executeFunctionParam(_T("void onKeyUp(KeyCode)"),
+                                     type,
+                                     obj,
+                                     key);
 }
 
 void
