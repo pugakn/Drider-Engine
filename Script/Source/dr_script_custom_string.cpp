@@ -7,6 +7,8 @@ namespace driderSDK
 {
 	static StringFactory g_stringFactory;
 
+	const char* gStringName = "TString";
+
 	void tStringConstructor(TString* pString) {
 		new(pString) TString();
 	}
@@ -17,17 +19,6 @@ namespace driderSDK
 
 	void tStringDestructor(TString* pString) {
 		pString->~basic_string();
-	}
-
-	static int tStringCmp(const TString& a, const TString& b) {
-		int cmp = 0;
-		if (a < b) {
-			cmp = -1;
-		}
-		else if ( a > b) {
-			cmp = 1;
-		}
-		return cmp;
 	}
 
 	static bool tStringEquals(const TString& a, const TString& b) {
@@ -69,6 +60,54 @@ namespace driderSDK
 		return &a[index];
 	}
 
+	static void tStringClear(TString& a) {
+		a.clear();
+	}
+
+	static asUINT tStringSize(const TString& a) {
+		return (asUINT)a.size();
+	}
+
+	static void tStringPushBack(const TString::value_type& character, TString& a) {
+		a.push_back(character);
+	}
+
+	static int tStringCompare(const TString& a, const TString& b) {
+		return a.compare(b);
+	}
+
+	static void tStringPopBack(TString& a) {
+		if (!a.empty()) {
+			a.pop_back();
+		}
+	}
+
+	static TString tStringSubstr(Int8 position, Int8 length, const TString& string) {
+		return string.substr(position, length);
+	}
+
+	static int tStringCopy(TString& a, TString::value_type* destiny, int count, int pos) {
+		if (count >= a.size() || pos > a.max_size()) {
+			asIScriptContext* context = asGetActiveContext();
+			context->SetException("Out of range");
+			return -1;
+		}
+		return a.copy(destiny, count, pos);
+	}
+
+	static int tStringFind(TString& a, TString& in, int pos) {
+		return a.find(in, pos);
+	}
+	
+	static TString& tStringInsert(TString& a, int pos, const TString& in) {
+		//add exceptions
+		return a.insert(pos, in);
+	}
+
+	static int tStringRFind(TString& a, TString& in, int pos) {
+		return a.rfind(in, pos);
+	}
+
 	void registerTString(asIScriptEngine* engine) {
 		if (true) {
 			registerTStringMethodsNative(engine);
@@ -81,6 +120,7 @@ namespace driderSDK
 	void registerTStringMethodsNative(asIScriptEngine* engine) {
 
 		Int8 result;
+		//Main class and factory
 		result = engine->RegisterObjectType("TString",
 																				sizeof(TString),
 																				asOBJ_VALUE | asGetTypeTraits<TString>());
@@ -95,7 +135,7 @@ namespace driderSDK
 																						 asCALL_CDECL_OBJLAST);
 		result = engine->RegisterObjectBehaviour("TString",
 																						 asBEHAVE_CONSTRUCT,
-																						 "void f(const TString &in)",
+																						 "void f(const TString& in)",
 																						 asFUNCTION(tStringCopyConstructor),
 																						 asCALL_CDECL_OBJLAST);
 		result = engine->RegisterObjectBehaviour("TString", 
@@ -105,25 +145,21 @@ namespace driderSDK
 																						 asCALL_CDECL_OBJLAST);
 		//Operators
 		result = engine->RegisterObjectMethod("TString", 
-																					"bool opEquals(const TString &in) const", 
+																					"bool opEquals(const TString& in) const", 
 																					asFUNCTIONPR(tStringEquals, 
 																					(const TString&, const TString&), bool), 
 																					asCALL_CDECL_OBJFIRST);
 		result = engine->RegisterObjectMethod("TString", 
-																					"int opCmp(const TString &in) const", 
-																					asFUNCTION(tStringCmp), 
-																					asCALL_CDECL_OBJFIRST);
-		result = engine->RegisterObjectMethod("TString", 
-																					"TString opAdd(const TString &in) const", 
+																					"TString opAdd(const TString& in) const", 
 																					asFUNCTIONPR(tStringAdd, 
 																					(const TString&, const TString&), TString),
 																					asCALL_CDECL_OBJFIRST);
 		result = engine->RegisterObjectMethod("TString", 
-																					"string &opAssign(const TString &in)", 
+																					"TString& opAssign(const TString& in)", 
 																					asFUNCTION(tStringAssign),
 																					asCALL_CDECL_OBJLAST);
 		result = engine->RegisterObjectMethod("TString", 
-																					"string &opAddAssign(const TString &in)", 
+																					"TString& opAddAssign(const TString& in)", 
 																					asFUNCTION(tStringAddAssign), 
 																					asCALL_CDECL_OBJLAST);
 		//String methods
@@ -136,7 +172,7 @@ namespace driderSDK
 																					asFUNCTION(tStringResize), 
 																					asCALL_CDECL_OBJLAST); 
 		result = engine->RegisterObjectMethod("TString",
-																					"bool isEmpty() const",
+																					"bool empty() const",
 																					asFUNCTION(tStringIsEmpty),
 																					asCALL_CDECL_OBJLAST);
 		result = engine->RegisterObjectMethod("TString",
@@ -147,14 +183,67 @@ namespace driderSDK
 																					"const uint8 opIndex(uint) const",
 																					asFUNCTION(tStringIndex),
 																					asCALL_CDECL_OBJLAST);
+		result = engine->RegisterObjectMethod("TString",
+																					"void clear()",
+																					asFUNCTION(tStringClear),
+																					asCALL_CDECL_OBJLAST);
+		result = engine->RegisterObjectMethod("TString",
+																					"uint size() const",
+																					asFUNCTION(tStringSize),
+																					asCALL_CDECL_OBJLAST);
+		result = engine->RegisterObjectMethod("TString",
+																					"void push_back(char& a)",
+																					asFUNCTION(tStringPushBack),
+																					asCALL_CDECL_OBJLAST);
+		result = engine->RegisterObjectMethod("TString",
+																					"int compare(const TString& in) const",
+																					asFUNCTION(tStringCompare),
+																					asCALL_CDECL_OBJFIRST); 
+		//right now string compare only works with strings
+		result = engine->RegisterObjectMethod("TString",
+																					"void pop_back()",
+																					asFUNCTION(tStringPopBack),
+																					asCALL_CDECL_OBJLAST);
+		result = engine->RegisterObjectMethod("TString",
+																					"TString substr(uint pos, uint len)",
+																					asFUNCTION(tStringSubstr),
+																					asCALL_CDECL_OBJLAST);
+		result = engine->RegisterObjectMethod("TString", 
+																					"uint copy(char* dest, int count, int pos)",
+																					asFUNCTION(tStringCopy),
+																				  asCALL_CDECL_OBJFIRST);
+		result = engine->RegisterObjectMethod("TString",
+																					"int find(TString& in, int pos)",
+																					asFUNCTION(tStringFind),
+																					asCALL_THISCALL_OBJFIRST);
+		result = engine->RegisterObjectMethod("TString",
+																					"TString& insert(int pos, const TString& in)",
+																					asFUNCTION(tStringInsert),
+																					asCALL_CDECL_OBJFIRST);
+		result = engine->RegisterObjectMethod("TString",
+																					"int rfind(TString& in, int pos)",
+																					asFUNCTION(tStringRFind),
+																					asCALL_THISCALL_OBJFIRST);
+		//...
+
 		//Conversions
-		/*result = engine->RegisterObjectMethod("TString",
-																					"",
-																					asFUNCTION(),
-																					asCALL_CDECL_OBJLAST);*/
+		//result = engine->RegisterObjectMethod("TString",
+		//																			"",
+		//																			asFUNCTION(),
+		//																			asCALL_CDECL_OBJLAST);
 
 		/*
 			TO DO...
+
+			/////METHODS://///
+
+			findFirstOf
+			findLastOf
+			findFirstNotOf
+			findLastNotOF
+
+
+			////CONVERSIONS:////
 			Assign
 			AddAssign
 			Add
@@ -163,6 +252,9 @@ namespace driderSDK
 			TYPES:
 			float
 			bool
+			double
+			int8
+
 
 
 		*/
