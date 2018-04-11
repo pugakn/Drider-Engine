@@ -1,15 +1,12 @@
 #pragma once
 
+#include <vector>
+
 #include <angelscript\angelscript.h>
 #include <dr_module.h>
 #include <dr_logger.h>
-#include <string>
 #include "dr_script_prerequisites.h"
 #include <dr_export_script.h>
-
-#include <iostream>
-#include <vector>
-#include <set>
 
 #include <../../Input/Include/dr_input_defines.h>
 

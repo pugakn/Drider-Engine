@@ -259,7 +259,7 @@ GraphicsApplication::loadResources() {
 
   //ResourceManager::loadResource(_T("HipHopDancing.fbx"));
 
-  ResourceManager::loadResource(_T("Shoot Rifle.fbx"));
+  //ResourceManager::loadResource(_T("Shoot Rifle.fbx"));
 
   ResourceManager::loadResource(_T("Strafe_Left.fbx"));
 

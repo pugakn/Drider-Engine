@@ -11,11 +11,10 @@ class ScriptCore;
 class DR_CORE_EXPORT ScriptComponent : public GameComponent {
   public:
     
-    ScriptComponent(GameObject& _gameObj);
+    //ScriptComponent(GameObject& _gameObj);
     
     ScriptComponent(GameObject &gameObject,
                     std::shared_ptr<ScriptCore> _script);
-
     
     virtual
     ~ScriptComponent();
