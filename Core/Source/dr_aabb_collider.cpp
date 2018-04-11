@@ -4,7 +4,7 @@
 
 namespace driderSDK {
 AABBCollider::AABBCollider(GameObject& _gameObject, const AABB& aabb)
-: ColliderComponent(_gameObject),
+: ColliderComponent(_gameObject, _T("AABBCollider")),
   m_originalAABB(aabb),
   m_transformedAABB(aabb)
 {}
@@ -36,23 +36,24 @@ AABBCollider::onUpdate() {
 
     auto aabbs = animator->getSkeleton()->bonesAABBs;
 
-    Int32 index = 0;
-
-    for (auto& aabb : aabbs) {
-      aabb.recalculate(transf[index]);
-      ++index;
-    }
-
     Vector3D min{Math::MAX_FLOAT, Math::MAX_FLOAT, Math::MAX_FLOAT};
     Vector3D max{Math::MIN_FLOAT, Math::MIN_FLOAT, Math::MIN_FLOAT};
 
+    Int32 index = 0;
+
     for (auto& aabb : aabbs) {
+
+      aabb.recalculate(transf[index]);
+
       Vector3D lmin = aabb.getMinPoint();
       Vector3D lmax = aabb.getMaxPoint();
+
       for (Int32 i = 0; i < 3; ++i) {
         min[i] = Math::min(lmin[i], min[i]);
         max[i] = Math::max(lmax[i], max[i]);
       }
+
+      ++index;
     }
 
     Vector3D diff = max - min;

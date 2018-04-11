@@ -5,11 +5,12 @@
 
 namespace driderSDK {
 
-FrustumDebug::FrustumDebug(GameObject& _go) : DrawableComponent(_go){}
+FrustumDebug::FrustumDebug(GameObject& _go) 
+  : DrawableComponent(_go, _T("FrustrumDebug")){}
 
 void 
 FrustumDebug::create() {
-
+  
   //Create index buffer & vertex buffer 4 lines
   std::vector<Mesh> meshes{1};
 

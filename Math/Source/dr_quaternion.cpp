@@ -141,6 +141,22 @@ Quaternion Quaternion::slerp(const Quaternion& end, float factor) const {
     return interpolated;
 }
 
+Vector3D 
+Quaternion::getDirection() {
+  
+  return {-2.f * (x * z - w * y), 
+          2.f * (y * z + w * x), 
+          1.f - 2.f * (x * x + y * y)};  
+}
+
+Vector3D 
+Quaternion::getEulerAngles() {
+  
+  Matrix4x4 x(*this);
+
+  return x.eulerAngles();  
+}
+
 float*
 Quaternion::ptr() {
 	return &data[0];

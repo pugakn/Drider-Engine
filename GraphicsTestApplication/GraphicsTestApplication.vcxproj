@@ -169,6 +169,7 @@
     <ClInclude Include="Include\AABBDebug.h" />
     <ClInclude Include="Include\AnimationTechnique.h" />
     <ClInclude Include="Include\DrawableComponent.h" />
+    <ClInclude Include="Include\dr_graphics_application.h" />
     <ClInclude Include="Include\FrustumDebug.h" />
     <ClInclude Include="Include\LinesTechnique.h" />
     <ClInclude Include="Include\OneRef.h" />
@@ -176,20 +177,19 @@
     <ClInclude Include="Include\StaticMeshTechnique.h" />
     <ClInclude Include="Include\Technique.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="TestApplication.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GraphicsTestApplication.cpp" />
     <ClCompile Include="Source\AABBDebug.cpp" />
     <ClCompile Include="Source\AnimationTechnique.cpp" />
     <ClCompile Include="Source\DrawableComponent.cpp" />
+    <ClCompile Include="Source\dr_graphics_application.cpp" />
     <ClCompile Include="Source\FrustumDebug.cpp" />
     <ClCompile Include="Source\LinesTechnique.cpp" />
     <ClCompile Include="Source\OneRef.cpp" />
     <ClCompile Include="Source\SkeletonDebug.cpp" />
     <ClCompile Include="Source\StaticMeshTechnique.cpp" />
     <ClCompile Include="Source\Technique.cpp" />
-    <ClCompile Include="TestApplication.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

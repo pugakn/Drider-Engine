@@ -144,6 +144,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Include\dr_id_object.h" />
     <ClInclude Include="Include\dr_compressor.h" />
     <ClInclude Include="Include\dr_defines.h" />
     <ClInclude Include="Include\dr_export_script.h" />
@@ -166,6 +167,7 @@
     <ClCompile Include="Source\dr_file_system.cpp" />
     <ClCompile Include="Source\dr_file_system_linux.cpp" />
     <ClCompile Include="Source\dr_file_system_win.cpp" />
+    <ClCompile Include="Source\dr_id_object.cpp" />
     <ClCompile Include="Source\dr_logger.cpp" />
     <ClCompile Include="Source\dr_string_utils.cpp" />
     <ClCompile Include="Source\dr_time.cpp" />

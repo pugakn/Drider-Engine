@@ -255,9 +255,13 @@ Matrix4x4::RotationX(const float teta)
   float tempSin = Math::sin(teta);
 
   Matrix4x4 temp(Math::FORCE_INIT::kIdentity);
-  temp[1][1] = tempCos;
+  /*temp[1][1] = tempCos;
   temp[1][2] = -tempSin;
   temp[2][1] = tempSin;
+  temp[2][2] = tempCos;*/
+  temp[1][1] = tempCos;
+  temp[1][2] = tempSin;
+  temp[2][1] = -tempSin;
   temp[2][2] = tempCos;
 
   *this *= temp;
@@ -271,9 +275,13 @@ Matrix4x4::RotationY(const float teta)
   float tempSin = Math::sin(teta);
 
   Matrix4x4 temp(Math::FORCE_INIT::kIdentity);
-  temp[0][0] = tempCos;
+  /*temp[0][0] = tempCos;
   temp[0][2] = tempSin;
   temp[2][0] = -tempSin;
+  temp[2][2] = tempCos;*/
+  temp[0][0] = tempCos;
+  temp[0][2] = -tempSin;
+  temp[2][0] = tempSin;
   temp[2][2] = tempCos;
 
   *this *= temp; 
@@ -287,9 +295,13 @@ Matrix4x4::RotationZ(const float teta)
   float tempSin = Math::sin(teta);
 
   Matrix4x4 temp(Math::FORCE_INIT::kIdentity);
-  temp[0][0] = tempCos;
+  /*temp[0][0] = tempCos;
   temp[0][1] = -tempSin;
   temp[1][0] = tempSin;
+  temp[1][1] = tempCos;*/
+  temp[0][0] = tempCos;
+  temp[0][1] = tempSin;
+  temp[1][0] = -tempSin;
   temp[1][1] = tempCos;
 
   *this *= temp;
@@ -401,29 +413,111 @@ Matrix4x4::Reflection(Vector3D NormalOfMirror)
 }
 
 Vector3D
-Matrix4x4::eulerAngles() {
+Matrix4x4::eulerAngles() const {
 
-  float sy = Math::sqrt(data[0][0] * data[0][0] +  data[1][0] * data[1][0]);
- 
-  bool singular = sy < 1e-6; // If
- 
+  //YXZ
   Vector3D angles;
 
-  if (!singular)
-  {
-      angles.x = Math::aTan2(data[2][1] , data[2][2]);
-      angles.y = Math::aTan2(-data[2][0], sy);
-      angles.z = Math::aTan2(data[1][0], data[0][0]);
+  angles.x = Math::aSin( -Math::clamp( data[1][2], -1.f, 1.f ) );
+
+	if ( Math::abs( data[1][2]) < 0.99999f ) {
+
+		angles.y = Math::aTan2( data[0][2], data[2][2] );
+		angles.z = Math::aTan2( data[1][0], data[1][1] );
+
+	} else {
+
+		angles.y = Math::aTan2( -data[2][0], data[0][0] );
+		angles.z = 0;
   }
-  else
-  {
-      angles.x = Math::aTan2(-data[1][2], data[1][1]);
-      angles.y = Math::aTan2(-data[2][0], sy);
-      angles.z = 0;
-  }
+
+  /*angles.x = Math::aSin( Math::clamp( data[2][1], -1.f, 1.f ) );
+
+	if ( Math::abs( data[2][1] ) < 0.99999f ) {
+
+		angles.y = Math::aTan2( -data[2][0], data[2][2] );
+		angles.z = Math::aTan2( -data[0][1], data[1][1] );
+
+	}
+  else {
+		angles.y = 0;
+		angles.z = Math::aTan2( data[1][0], data[0][0] );
+  }*/
+
+  /*angles.y = Math::aSin( -Math::clamp( data[2][0], - 1.f, 1.f ) );
+
+	if ( Math::abs( data[2][0] ) < 0.99999f ) {
+
+		angles.x = Math::aTan2( data[2][1], data[2][2] );
+		angles.z = Math::aTan2( data[1][0], data[0][0] );
+
+	} 
+  else {
+
+		angles.x = 0;
+		angles.z = Math::aTan2( - data[0][1], data[1][1] );
+
+  }*/
 
   return angles;
+}
 
+Quaternion 
+Matrix4x4::toQuaternion() {
+  
+  float r22 = data[2][2];
+
+  Quaternion q;
+
+  // x^2 + y^2 >= z^2 + w^2
+  if (r22 <= 0.0f) {
+    float dif10 = data[1][1] - data[0][0];
+    float omr22 = 1.0f - r22;
+    if (dif10 <= 0.0f)  // x^2 >= y^2
+    {
+      float fourXSqr = omr22 - dif10;
+      float inv4x = 0.5f / Math::sqrt(fourXSqr);
+      q[0] = fourXSqr*inv4x;
+      q[1] = (data[0][1] + data[1][0]) * inv4x;
+      q[2] = (data[0][2] + data[2][0]) * inv4x;
+      q[3] = (data[1][2] - data[2][1]) * inv4x;
+    }
+    else  // y^2 >= x^2
+    {
+      float fourYSqr = omr22 + dif10;
+      float inv4y = 0.5f / sqrt(fourYSqr);
+      q[0] = (data[0][1] + data[1][0]) * inv4y;
+      q[1] = fourYSqr * inv4y;
+      q[2] = (data[1][2] + data[2][1]) * inv4y;
+      q[3] = (data[2][0] - data[0][2]) * inv4y;
+    }
+  }
+  else  // z^2 + w^2 >= x^2 + y^2
+  {
+    float sum10 = data[1][1] + data[0][0];
+    float opr22 = 1.f + r22;
+    if (sum10 <= 0.0f)  // z^2 >= w^2
+    {
+      float fourZSqr = opr22 - sum10;
+      float inv4z = 0.5f / sqrt(fourZSqr);
+      q[0] = (data[0][2] + data[2][0]) * inv4z;
+      q[1] = (data[1][2] + data[2][1]) * inv4z;
+      q[2] = fourZSqr * inv4z;
+      q[3] = (data[0][1] - data[1][0]) * inv4z;
+    }
+    else  // w^2 >= z^2
+    {
+      float fourWSqr = opr22 + sum10;
+      float inv4w = 0.5f / sqrt(fourWSqr);
+
+      q[0] = (data[1][2] - data[2][1]) * inv4w;
+      q[1] = (data[2][0] - data[0][2]) * inv4w;
+      q[2] = (data[0][1] - data[1][0]) * inv4w;
+      q[3] = fourWSqr * inv4w;
+    }
+  }
+
+  return q;
 }
 
 float*

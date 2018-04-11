@@ -43,7 +43,7 @@ Int32 InputManager::getJoystickCount() {
 }
 
 void 
-InputManager::capture() {
+InputManager::update() {
   for (auto& object : instance().m_objects) {
     object->capture();
   }

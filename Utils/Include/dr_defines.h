@@ -38,6 +38,7 @@
 #if DR_DEBUG_MODE
 # define DR_ASSERT(x) assert(x)		  
 # define DR_DEBUG_ONLY(x) x
+# define DR_DEBUG_ONLY_PARAM(x) ,x
 #else
 # define DR_ASSERT(x) 
 # define DR_DEBUG_ONLY(x)

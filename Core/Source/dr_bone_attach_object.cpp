@@ -9,7 +9,7 @@ namespace driderSDK {
 
 BoneAttachObject::BoneAttachObject(const TString& name) 
   : GameObject(name),
-    m_boneTransform(nullptr) {
+    m_boneTransform(&Matrix4x4::identityMat4x4) {
 }
 
 bool
@@ -43,6 +43,11 @@ BoneAttachObject::update() {
     Logger::addLog(_T("BoneAttach: unassigned parent skeleton"));
 
     m_boneTransform = &Matrix4x4::identityMat4x4;  
+  }
+  else if (m_boneTransform == &Matrix4x4::identityMat4x4) {
+    
+    Logger::addLog(_T("BoneAttach: unassigned bone"));
+
   }
 
   m_change = true;

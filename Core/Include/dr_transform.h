@@ -51,6 +51,10 @@ class DR_CORE_EXPORT Transform
   const Vector3D& 
   getPosition() const;
 
+  /*const Vector3D&
+  getEulerAngles() const;*/
+
+  
   /**
   * Gets the rotation matrix.
   */
@@ -64,10 +68,10 @@ class DR_CORE_EXPORT Transform
   * Gets the current facing direction.
   *
   * @return
-  *   Vector with the direction of the camera.
+  *   Vector with the direction of the transform.
   */
-  /*Vector3D
-  getDirection() const;*/
+  const Vector3D&
+  getDirection() const;
 
   /**
   * Sets the value of the specified position component.
@@ -228,6 +232,8 @@ class DR_CORE_EXPORT Transform
 
   mutable Matrix4x4 m_transform;
   mutable Matrix4x4 m_rotation;
+  mutable Vector3D m_direction;
+  mutable Vector3D m_eulerAngles;
   mutable bool m_outdatedTransform;
   mutable bool m_outdatedRotation;
   bool m_change;
