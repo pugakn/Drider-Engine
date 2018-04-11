@@ -12,7 +12,7 @@ namespace driderSDK {
 
 ScriptComponent::ScriptComponent(GameObject &gameObject,
                                  std::shared_ptr<ScriptCore> _script) : 
-                                              GameComponent(gameObject),
+                                              GameComponent(gameObject, _T("ScriptComponent")),
                                               m_script(_script) {
   scriptEngine = ScriptEngine::instancePtr();
 

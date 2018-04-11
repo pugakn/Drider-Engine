@@ -56,7 +56,7 @@ TestApplication::postInit() {
 
 void
 TestApplication::postUpdate() {
-  InputManager::capture();
+  InputManager::update();
   m_editor.update();
 }
 

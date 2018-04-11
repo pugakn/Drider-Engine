@@ -15,8 +15,8 @@ function JS_ChangeGMOFocus(name,posX,posY,posZ,scX,scY,scZ,rtX,rtY,rtZ) {
 function JS_UpdatePropertySheetUI() {
 	webix.callEvent('WEBIX_UpdatePropertySheetUI'); //TODO: ADLASD
 }
-function JS_Component-Render() {
-	
+function JS_AddComponent_Render(objName,componentName) {
+	webix.callEvent('WEBIX_AddComponent_Render',[objName,componentName]); 
 }
 //===================================================================================================================
 //                                                  WEBIX
@@ -86,6 +86,11 @@ webix.ready(function(){
 	id:"propTransform"
 	});
 	
+	
+	
+	webix.attachEvent("WEBIX_AddComponent_Render", function(objName,compName){
+		console.log(compName);
+	});
 	
 	webix.attachEvent("WEBIX_ChangeGMOPropFocus", function(name,posX,posY,posZ,scX,scY,scZ,rtX,rtY,rtZ){
 		$$("prop_title").define("template",name);

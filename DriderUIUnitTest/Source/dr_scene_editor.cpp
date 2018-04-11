@@ -130,28 +130,28 @@ SceneEditor::addGameObject(std::shared_ptr<GameObject> parent,
 }
 void SceneEditor::initCameras()
 {
-  m_camera = std::make_shared<Camera>(_T("MAIN_CAM"),
-    m_viewport);
+  //m_camera = std::make_shared<Camera>(_T("MAIN_CAM"),
+  //  m_viewport);
 
-  m_camera->createProyection(45.f, 20.f, 3000.f);
-  m_camera->getTransform().setPosition({ 0.f, 300.0f, -400 });
-  m_camera->setTarget({ 0.0f, 200.f, 1.0f });
+  //m_camera->createProyection(45.f, 20.f, 3000.f);
+  //m_camera->getTransform().setPosition({ 0.f, 300.0f, -400 });
+  //m_camera->setTarget({ 0.0f, 200.f, 1.0f });
 
-  m_leftCam = std::make_shared<Camera>(_T("LEFT_CAM"),
-    m_viewport);
+  //m_leftCam = std::make_shared<Camera>(_T("LEFT_CAM"),
+  //  m_viewport);
 
-  m_leftCam->createProyection(45.f, 0.1f, 10000.f);
-  m_leftCam->getTransform().setPosition({ -4000.f, 0000.f, 1000.f });
-  m_leftCam->setTarget({ 0.f, 0.f, 1000.f });
+  //m_leftCam->createProyection(45.f, 0.1f, 10000.f);
+  //m_leftCam->getTransform().setPosition({ -4000.f, 0000.f, 1000.f });
+  //m_leftCam->setTarget({ 0.f, 0.f, 1000.f });
 
-  m_upCam = std::make_shared<Camera>(_T("UP_CAM"),
-    m_viewport);
+  //m_upCam = std::make_shared<Camera>(_T("UP_CAM"),
+  //  m_viewport);
 
-  m_upCam->createProyection(45.f, 0.1f, 10000.f);
-  m_upCam->getTransform().setPosition({ 0.f, 4000.f, 0.f });
-  m_upCam->setTarget({ 1.f, 1.f, 200.f });
+  //m_upCam->createProyection(45.f, 0.1f, 10000.f);
+  //m_upCam->getTransform().setPosition({ 0.f, 4000.f, 0.f });
+  //m_upCam->setTarget({ 1.f, 1.f, 200.f });
 
-  m_activeCam = m_leftCam;
+  //m_activeCam = m_leftCam;
 }
 void SceneEditor::initUI()
 {
@@ -162,6 +162,7 @@ void SceneEditor::initUI()
   webRenderer.registerJS2CPPFunction(std::make_pair("webixReady", [&](const CefRefPtr<CefListValue>& arguments) {
     updateFolders(webRenderer);
     UI_UpdateSceneGraph();
+    UI_UpdatePropertySheet();
   }));
   webRenderer.registerJS2CPPFunction(std::make_pair("canvasReady", [&](const CefRefPtr<CefListValue>& arguments) {
     webRenderer.executeJSCode(std::string("C_GetSceneViewSize();"));
@@ -337,10 +338,12 @@ void SceneEditor::UI_UpdatePropertySheet()
     [&](const std::vector<std::shared_ptr<GameObject>>& children) {
     for (auto &it : children) {
       auto name = it->getName();
-      auto component = it->getComponent<RenderComponent>();
-      webRenderer.executeJSCode(WString(_T("c('")) +
-        name + TString(_T("','")) + _T("Render") +
-        WString(_T("');")));
+      auto components = it->getComponents<RenderComponent>();
+      for (auto &it : components) {
+        webRenderer.executeJSCode(WString(_T("JS_AddComponent_Render('")) +
+          name + TString(_T("','")) + it->getName() +
+          WString(_T("');")));
+      }
 
       auto children2 = it->getChildren();
       search(children2);
