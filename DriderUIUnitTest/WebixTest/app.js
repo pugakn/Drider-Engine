@@ -12,12 +12,16 @@ function JS_ClearSceneGraphTree() {
 function JS_ChangeGMOFocus(name,posX,posY,posZ,scX,scY,scZ,rtX,rtY,rtZ) {
 	webix.callEvent('WEBIX_ChangeGMOPropFocus',[name,posX,posY,posZ,scX,scY,scZ,rtX,rtY,rtZ]);
 }
-function JS_UpdatePropertySheetUI() {
-	webix.callEvent('WEBIX_UpdatePropertySheetUI'); //TODO: ADLASD
-}
 function JS_AddComponent_Render(objName,componentName) {
 	webix.callEvent('WEBIX_AddComponent_Render',[objName,componentName]); 
 }
+function JS_AddComponent_Script(componentName, modelName) {
+	webix.callEvent('WEBIX_AddComponent_Script',[componentName,modelName]); 
+}
+function JS_ClearPropertySheetUI() {
+	webix.callEvent('WEBIX_ClearPropertySheetUI');
+}
+
 //===================================================================================================================
 //                                                  WEBIX
 // ==================================================================================================================
@@ -86,10 +90,39 @@ webix.ready(function(){
 	id:"propTransform"
 	});
 	
+
+	
+	var prop_UI = webix.ui({
+		container:"propView",
+		margin:0,
+		padding:0,
+		id:"prop",
+		rows:[]
+	});
+	
+	/*var model_options = [
+	  {id:1, value:"Sphere"},
+	];*/
 	
 	
-	webix.attachEvent("WEBIX_AddComponent_Render", function(objName,compName){
+	webix.attachEvent("WEBIX_ClearPropertySheetUI", function(){
+		$$("prop").reconstruct();
+	});
+	webix.attachEvent("WEBIX_AddComponent_Render", function(compName,modelName){
+	    $$("prop").addView(
+		{
+		rows:[{
+			view:"fieldset", label:"Render Component", body:{
+				rows:[
+				    { value: compName, view:"text", id: "prop_comp_" + compName},
+					{ view:"text",   label:"Model", inputWidth:0 , labelWidth:60, inputHeight:24,autowidth:false ,id:"aaaaaaa"},
+				]}
+		}
+	]}, 0);
+	});
+	webix.attachEvent("WEBIX_AddComponent_Script", function(objName,compName){
 		console.log(compName);
+		//{ label: "Model", type:"combo", options:model_options, id:"model_prop"+ "modelName"},
 	});
 	
 	webix.attachEvent("WEBIX_ChangeGMOPropFocus", function(name,posX,posY,posZ,scX,scY,scZ,rtX,rtY,rtZ){
@@ -133,7 +166,7 @@ webix.ready(function(){
 	]
 	};
 	
-	webix.ui({
+	/*webix.ui({
 		id: "prop",
 		container:"propView",
 		cols:[
@@ -142,9 +175,9 @@ webix.ready(function(){
 				propertysheet_1
 			]}
 		]
-	});
+	});*/
 
-	$$("sets").setValues({
+	/*$$("sets").setValues({
 		width:250,
 		height:480,
 		url:"https://webix.com/data",
@@ -152,7 +185,7 @@ webix.ready(function(){
 		col1 : "#46C200",
 		col2 :"#07FF2A",
 		col3 :"#000000"
-	});
+	});*/
 	
 	
 	

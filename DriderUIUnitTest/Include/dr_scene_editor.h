@@ -44,7 +44,7 @@ private:
   void sceneResized();
 
   void UI_UpdateSceneGraph();
-  void UI_UpdatePropertySheet();
+  void UI_UpdatePropertySheet(const GameObject& obj);
 
   //QUERY_ORDER::E m_queryOrder;
 

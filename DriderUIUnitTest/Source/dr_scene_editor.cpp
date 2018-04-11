@@ -12,6 +12,8 @@
 #include <dr_script_component.h>
 #include <dr_animator_component.h>
 #include <dr_collider_component.h>
+#include <dr_model.h>
+#include <dr_script_core.h>
 
 #include<Shlwapi.h>
 #pragma comment(lib, "Shlwapi.lib")
@@ -162,7 +164,7 @@ void SceneEditor::initUI()
   webRenderer.registerJS2CPPFunction(std::make_pair("webixReady", [&](const CefRefPtr<CefListValue>& arguments) {
     updateFolders(webRenderer);
     UI_UpdateSceneGraph();
-    UI_UpdatePropertySheet();
+    UI_UpdatePropertySheet(*SceneGraph::getRoot().get());
   }));
   webRenderer.registerJS2CPPFunction(std::make_pair("canvasReady", [&](const CefRefPtr<CefListValue>& arguments) {
     webRenderer.executeJSCode(std::string("C_GetSceneViewSize();"));
@@ -241,6 +243,10 @@ void SceneEditor::initUI()
       std::to_wstring(rot.z) +
       +_T(");"));
 
+    webRenderer.executeJSCode("JS_ClearPropertySheetUI();");
+    auto node = SceneGraph::getRoot()->findNode(name);
+    DR_ASSERT (node)
+    UI_UpdatePropertySheet(*node);
   }));
 
   //Property Sheet UI
@@ -258,7 +264,7 @@ void SceneEditor::initSceneGraph()
   //n->getParent()->addChild(l);
   auto root = SceneGraph::getRoot();
 
-  addGameObject(root,
+   addGameObject(root,
     _T("Quad"),
     { 50, 300, 200 })->getTransform().scale({ 40, 40, 40 });
 
@@ -277,6 +283,15 @@ void SceneEditor::initSceneGraph()
   addGameObject(SceneGraph::getRoot()->getChild(_T("Quad"))->getChild(_T("Quad4_child")),
     _T("Quad5_child"),
     { 50, 300, 200 })->getTransform().scale({ 40, 40, 40 });
+
+  ResourceManager::loadResource(_T("Sphere.fbx"));
+  ResourceManager::loadResource(_T("montiBehavior.as"));
+  auto sphereMod = ResourceManager::getReferenceT<Model>(_T("Sphere.fbx"));
+  auto script = ResourceManager::getReferenceT<ScriptCore>(_T("montiBehavior.as"));
+
+  root->findNode(_T("Quad"))->createComponent<RenderComponent>(sphereMod);
+  root->findNode(_T("Quad"))->createComponent<RenderComponent>(sphereMod);
+ // root->findNode(_T("Quad"))->createComponent<ScriptComponent>(script);
 }
 void SceneEditor::sceneResized()
 {
@@ -332,28 +347,22 @@ void SceneEditor::UI_UpdateSceneGraph()
   search(children);
 }
 
-void SceneEditor::UI_UpdatePropertySheet()
+void SceneEditor::UI_UpdatePropertySheet(const GameObject& obj)
 {
-  std::function<void(const std::vector<std::shared_ptr<GameObject>>&)> search =
-    [&](const std::vector<std::shared_ptr<GameObject>>& children) {
-    for (auto &it : children) {
-      auto name = it->getName();
-      auto components = it->getComponents<RenderComponent>();
-      for (auto &it : components) {
-        webRenderer.executeJSCode(WString(_T("JS_AddComponent_Render('")) +
-          name + TString(_T("','")) + it->getName() +
-          WString(_T("');")));
-      }
+  GameObject& ncnst = const_cast<GameObject&>(obj);
+  auto components = ncnst.getComponents<RenderComponent>();
+  for (auto &it : components) {
+    webRenderer.executeJSCode(WString(_T("JS_AddComponent_Render('")) +
+      it->getName() + TString(_T("','")) + _T("ModelName")+
+      WString(_T("');")));
+  }
 
-      auto children2 = it->getChildren();
-      search(children2);
-    }
-  };
-
-
-  SceneGraph::getRoot()->getName();
-  auto children = SceneGraph::getRoot()->getChildren();
-  search(children);
+  auto scriptComponents = ncnst.getComponents<ScriptComponent>();
+  for (auto &it : scriptComponents) {
+    webRenderer.executeJSCode(WString(_T("JS_AddComponent_Script('")) +
+      it->getName() + TString(_T("','")) + _T("ScripthPath")+
+      WString(_T("');")));
+  }
 }
 
 }
