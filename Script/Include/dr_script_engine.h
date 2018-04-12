@@ -17,6 +17,7 @@ namespace driderSDK {
 
 class Time;
 class ContextManager;
+class ScriptDebug;
 
 void stringPrint_g(asIScriptGeneric* gen);
 
@@ -155,6 +156,7 @@ class DR_SCRIPT_EXPORT ScriptEngine : public Module<ScriptEngine>
 	
   asIScriptContext* m_scriptContext;
   std::vector<asIScriptModule*> m_scriptModules;
+	ScriptDebug* Debug;
 
  protected:
   void

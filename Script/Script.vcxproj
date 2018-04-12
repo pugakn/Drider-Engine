@@ -160,6 +160,7 @@
   <ItemGroup>
     <ClCompile Include="Source\dr_context_manager.cpp" />
     <ClCompile Include="Source\dr_script_custom_string.cpp" />
+    <ClCompile Include="Source\dr_script_debug.cpp" />
     <ClCompile Include="Source\dr_script_engine.cpp" />
     <ClCompile Include="Source\dr_script_object.cpp" />
     <ClCompile Include="Source\dr_script_string_factory.cpp" />
@@ -172,6 +173,7 @@
     <ClInclude Include="Include\dr_object.h" />
     <ClInclude Include="Include\dr_script_api.h" />
     <ClInclude Include="Include\dr_script_custom_string.h" />
+    <ClInclude Include="Include\dr_script_debug.h" />
     <ClInclude Include="Include\dr_script_engine.h" />
     <ClInclude Include="Include\dr_script_object.h" />
     <ClInclude Include="Include\dr_script_prerequisites.h" />

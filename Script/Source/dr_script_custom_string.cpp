@@ -72,7 +72,7 @@ namespace driderSDK
 		a.push_back(character);
 	}
 
-	static int tStringCompare(const TString& a, const TString& b) {
+	static Int32 tStringCompare(const TString& a, const TString& b) {
 		return a.compare(b);
 	}
 
@@ -86,7 +86,7 @@ namespace driderSDK
 		return string.substr(position, length);
 	}
 
-	static int tStringCopy(TString& a, TString::value_type* destiny, int count, int pos) {
+	static Int32 tStringCopy(TString& a, TString::value_type* destiny, Int32 count, Int32 pos) {
 		if (count >= a.size() || pos > a.max_size()) {
 			asIScriptContext* context = asGetActiveContext();
 			context->SetException("Out of range");
@@ -94,17 +94,17 @@ namespace driderSDK
 		}
 		return a.copy(destiny, count, pos);
 	}
-
-	static int tStringFind(TString& a, TString& in, int pos) {
+	
+	static Int32 tStringFind(TString& a, TString& in, Int32 pos) {
 		return a.find(in, pos);
 	}
 	
-	static TString& tStringInsert(TString& a, int pos, const TString& in) {
+	static TString& tStringInsert(TString& a, Int32 pos, const TString& in) {
 		//add exceptions
 		return a.insert(pos, in);
 	}
 
-	static int tStringRFind(TString& a, TString& in, int pos) {
+	static Int32 tStringRFind(TString& a, TString& in, Int32 pos) {
 		return a.rfind(in, pos);
 	}
 
