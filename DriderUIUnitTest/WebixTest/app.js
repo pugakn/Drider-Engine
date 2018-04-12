@@ -28,14 +28,12 @@ function JS_ClearPropertySheetUI() {
 //webix.ready() function ensures that the code will be executed when the page is loaded
 webix.ready(function(){
 	webix.markup.init();
-	webixReady();
 	
 	
     //=======================================================================================================
 	//                                             Toobar
 	//=======================================================================================================
-	webix.ui({
-	container:"toolbarView",
+	var toolbar_UI = {
 	id:"toolbar",
 	view:"toolbar", padding:0,width:1611,margin:0,
 	cols: [
@@ -43,18 +41,24 @@ webix.ready(function(){
 			image:"../common/imgs/18/save.gif", width:60},
 		{ view:"button", type:"imageTop", label:"Project", 
 			image:"../common/imgs/18/paste.gif", width:60},
-		{ view:"button", type:"imageTop", label:"Help DX",
-			image:"../common/imgs/18/copy.gif", width:60}
+		{ view:"button", type:"imageTop", label:"Help",
+			image:"../common/imgs/18/copy.gif", width:60},
+		{ view:"button", type:"imageTop", label:"View",
+			image:"../common/imgs/18/copy.gif", width:60},
+		{ view:"button", type:"imageTop", label:"Play",
+			image:"../common/imgs/18/copy.gif", width:60,margin:200}
 	]
-	});
+	};
 	
 	
+	
+
 	
 	//=======================================================================================================
 	//                                          Propertysheet
 	//=======================================================================================================
 	
-	var transform_UI = webix.ui({
+	var transform_UI = {
 	cols:[
 		{
 			view:"fieldset", id:"myform1", label:"Propiedades", body:{
@@ -84,22 +88,19 @@ webix.ready(function(){
 		}
 		}
 	],
-	container:"propView",
 	margin:0,
 	padding:0,
 	id:"propTransform"
-	});
-	
+	};
 
-	
-	var prop_UI = webix.ui({
-		container:"propView",
+		
+	var prop_UI = {
+		//container:"propView",
 		margin:0,
 		padding:0,
 		id:"prop",
 		rows:[]
-	});
-	
+	};
 	/*var model_options = [
 	  {id:1, value:"Sphere"},
 	];*/
@@ -115,7 +116,8 @@ webix.ready(function(){
 			view:"fieldset", label:"Render Component", body:{
 				rows:[
 				    { value: compName, view:"text", id: "prop_comp_" + compName},
-					{ view:"text",   label:"Model", inputWidth:0 , labelWidth:60, inputHeight:24,autowidth:false ,id:"aaaaaaa"},
+					{ view:"text",   label:"Model", inputWidth:0 , labelWidth:80, inputHeight:24,autowidth:false ,id:"aaaaaaa" + compName},
+					{ view:"text",   label:"Material", inputWidth:0 , labelWidth:80, inputHeight:24,autowidth:false ,id:"bbbbbbb" + compName},
 				]}
 		}
 	]}, 0);
@@ -166,53 +168,14 @@ webix.ready(function(){
 	]
 	};
 	
-	/*webix.ui({
-		id: "prop",
-		container:"propView",
-		cols:[
-			{ template:"left" },
-			{rows:[
-				propertysheet_1
-			]}
-		]
-	});*/
-
-	/*$$("sets").setValues({
-		width:250,
-		height:480,
-		url:"https://webix.com/data",
-		type:"json",
-		col1 : "#46C200",
-		col2 :"#07FF2A",
-		col3 :"#000000"
-	});*/
-	
-	
-	
-	
-	webix.ui({
-	view:"contextmenu",
-	id:"general_prop_ctx_menu",
-	data:[{value:"Add Component" ,submenu:[ 
-		  "Render", "Animator", "Script", "Collider"]}],
-	master:"propView",
-	on:{
-		onItemClick:function(id){
-			if (this.getItem(id).value == "Render"){
-
-			}
-		}
-	},
-	openAction:"click",
-	});
 	//=======================================================================================================
 	//                                           Scene Graph
 	//=======================================================================================================
 	webix.protoUI({
 		name:"edittree",
 	}, webix.EditAbility, webix.ui.tree);
-	treeb = webix.ui({
-		container:"treeView",
+	var treeb_UI = {
+		//container:"treeView",
 		clipboard: "insert",
 		view:"edittree",
 		type:"lineTree",
@@ -245,21 +208,10 @@ webix.ready(function(){
 			
 			
 		},
-	});	
-	webix.UIManager.addHotKey("enter", function(view){
-		var pos = treeb.getSelectedId();
-		treeb.edit(pos);
-    }, $$("tree"));
-	treeb.attachEvent("onBeforeEditStart", function(id){
-		if("ROOT_NODE_X" == id) return false;
-	});
-	treeb.attachEvent("onAfterEditStop", function(state, editor, ignoreUpdate){
-		C_ChangeSceneGraphNodeName(state.old,state.value);
-		console.log(state.value);
-	});
+	};	
 
 	
-    webix.ui({
+    /*webix.ui({
         view:"contextmenu",
 	    id:"general_tree_ctx_menu",
         data:["Add GameObject",{ $template:"Separator" },"Start WW3"],
@@ -276,10 +228,10 @@ webix.ready(function(){
 
             }
         }
-    });
+    });*/
 	
 	
-	webix.ui({
+	/*webix.ui({
 	view:"contextmenu",
 	id:"item_tree_ctx_menu",
 	data:["Rename",{ $template:"Separator" },"Delete"],
@@ -298,7 +250,7 @@ webix.ready(function(){
 			}
 		}
 	}
-    });
+    });*/
 
 	
 	//$$("tree").data.add({id: "ROOT_NODE_X", value:  "ROOT_NODE_X", icon:"home"}, 0);
@@ -318,26 +270,15 @@ webix.ready(function(){
 	//=======================================================================================================
 	//                                           File Manager
 	//=======================================================================================================
-    webix.ui({
+    var fman_UI = {
         view:"filemanager",
         id:"files",
-		container: "fman"
+		//container: "fman"
 		//save: "cache->mydata",
 		//url: "cache->mydata"
-    });
+    };
 	
-	$$("files").attachEvent("onBeforeRun",function(id){
-			webix.confirm({
-				text:"Do you want to download this file?",
-				ok:"Yes",
-				cancel:"No",
-				callback:function(result){
-					if(result)
-						$$("files").download(id);
-				}
-			});
-			return false;
-		});
+
 		
 	webix.attachEvent("WEBIX_AddFile", function(filename,parent,extension){
 		var ftype;
@@ -362,11 +303,117 @@ webix.ready(function(){
 		}
 
 	});
-	$$("files").attachEvent("onBeforeCreateFolder",function(id){
-		// your code
-		return true;
+
+	
+	
+	
+	var editorCells =[
+		{
+			header:"Scene",
+			body:{ template:"Scene" }
+		},
+		{
+			header:"Game",
+			body:{ template:"Game" }
+		}
+	];
+
+	var editor_UI = {
+		view:"tabview",
+		animate:false,
+		tabbar:{
+			close:true
+		},
+		cells:editorCells
+	};
+	
+	var propCells =[
+	{
+		header:"Object Editor",
+		body:{ rows: [transform_UI,prop_UI] }
+	},
+	{
+		header:"Material Editor",
+		body:{ template:"Material Editor" }
+	},
+	{
+		header:"Texture Editor",
+		body:{ template:"Texture Editor" }
+	}
+	];
+
+	var propCells_UI = {
+		view:"tabview",
+		animate:false,
+		tabbar:{
+			close:false
+		},
+		cells:propCells
+	};
+	
+	var grid = {
+	view:"dashboard", id:"grid",
+	gridColumns:4, gridRows:4,
+	cellHeight: 240, cellWidth: 450,
+	padding:6, margin:6,
+	 cells:[
+		{ view:"panel", x:3, y:0, dx:1, dy:4,resize:true, body:{view:"scrollview",body:propCells_UI}},
+		{ view:"panel", x:0, y:0, dx:1, dy:3,resize:true, header:"Scene Graph", body:{view:"scrollview",body:treeb_UI}},
+		{ view:"panel", x:0, y:3, dx:3, dy:1,resize:true, body:fman_UI},
+		{ view:"panel", x:1, y:0, dx:2, dy:3,resize:true,  body: editor_UI},
+	],
+	};
+	
+	webix.ui({view:"scrollview", body: {rows:[toolbar_UI,grid]}});
+	
+	//Property sheet
+	/*webix.ui({
+		view:"contextmenu",
+		id:"general_prop_ctx_menu",
+		data:[{value:"Add Component" ,submenu:[ 
+			  "Render", "Animator", "Script", "Collider"]}],
+		master:"prop",
+		on:{
+			onItemClick:function(id){
+				if (this.getItem(id).value == "Render"){
+
+				}
+			}
+		},
+		openAction:"click",
+	});*/
+	//Tree View
+	webix.UIManager.addHotKey("enter", function(view){
+	var pos = $$("tree").getSelectedId();
+	$$("tree").edit(pos);
+    }, $$("tree"));
+	$$("tree").attachEvent("onBeforeEditStart", function(id){
+		if("ROOT_NODE_X" == id) return false;
+	});
+	$$("tree").attachEvent("onAfterEditStop", function(state, editor, ignoreUpdate){
+		C_ChangeSceneGraphNodeName(state.old,state.value);
+		console.log(state.value);
 	});
 	
+	//Fman
+	$$("files").attachEvent("onBeforeRun",function(id){
+		webix.confirm({
+			text:"Do you want to download this file?",
+			ok:"Yes",
+			cancel:"No",
+			callback:function(result){
+				if(result)
+					$$("files").download(id);
+			}
+		});
+		return false;
+	});
+	
+	$$("files").attachEvent("onBeforeCreateFolder",function(id){
+	// your code
+	return true;
+	});
+	webixReady();
 });
 
 
