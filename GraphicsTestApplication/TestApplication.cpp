@@ -615,6 +615,8 @@ TestApplication::initScriptEngine() {
   camScript1->start();
   camScript2->start();
 
+  camScript1->onUpdate();
+
 
 }
 

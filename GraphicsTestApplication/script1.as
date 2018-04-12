@@ -5,9 +5,17 @@ class script1 : MontiBehavior {
 		this.transform.move(vec);
 		Print("move, x = " + this.transform.m_position.x + "\n");
 	}
+		
+	Vector3D vec(10.0,0.0,0.0);
 
 	void Update() {
-		Print("Update script1\n");
+		Print("move, x = " + this.transform.m_position.x + "\n");
+		//Print("Update script1\n");
+
+		/*if(isKeyDown(kD)) {
+			this.transform.move(vec);
+			Print("move, x = " + this.transform.m_position.x + "\n");
+		}*/
 	}
 
 	/*void onKeyDown(KeyCode key) {
