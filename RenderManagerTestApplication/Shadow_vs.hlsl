@@ -2,7 +2,7 @@ cbuffer ConstantBuffer {
 	float4x4 WVP;
 	float4x4 World;
   float4x4 Bones[200];
-  float4   DirectionalLight;
+  int4      ShadowIndex;
 };
 
 struct VS_INPUT {

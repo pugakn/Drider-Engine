@@ -4,6 +4,7 @@
 #include <dr_graph.h>
 #include <dr_render_component.h>
 #include <dr_camera.h>
+#include <dr_sample_state.h>
 
 namespace driderSDK {
 
@@ -12,7 +13,7 @@ struct ShadowInitData : PassInitData {
 
 struct ShadowDrawData : PassDrawData {
   std::shared_ptr<Camera>  activeCam;
-  Int32                    subFrustra;
+  Int32                    shadowIndex;
   SceneGraph::QueryResult* models;
   GFXShared<RenderTarget>  OutRt;
   GFXShared<DepthStencil>  dsOptions;
@@ -53,10 +54,12 @@ class ShadowPass : public RenderPass {
     Matrix4x4 WVP;
     Matrix4x4 World;
     Matrix4x4 Bones[200];
-    Vector4D  DirectionalLight;
+    Int32     ShadowIndex[4];
   };
 
   CBuffer CB;
+
+  GFXUnique<SamplerState> m_samplerState;
 };
 
 }

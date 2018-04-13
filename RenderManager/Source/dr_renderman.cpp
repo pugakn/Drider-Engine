@@ -25,8 +25,9 @@ RenderMan::init() {
     m_vecShadowCamera[i] = std::make_shared<Camera>();
   }
   m_szActiveShadowCameras = 4;
-  m_vec3DirectionalLight = Vector3D(0.0f, -2.0f, 1.0f).normalize();
-  m_fDepth = 10000.0f;
+  //m_vec3DirectionalLight = Vector3D(0.0f, -1.0f, 0.0f).normalize();
+  m_vec3DirectionalLight = Vector3D(0.0f, -1000.0f, 1.0f).normalize();
+  m_fDepth = 5000.0f;
   m_bFitToFrustrum = true;
 
   GBufferTexDesc.width = screenWidth;
@@ -42,8 +43,9 @@ RenderMan::init() {
 
   m_RTGBuffer1  = dr_gfx_shared(dc.createRenderTarget(GBufferTexDesc, 6));
   m_RTSSAO      = dr_gfx_shared(dc.createRenderTarget(GBufferTexDesc, 1));
-  GBufferTexDesc.width  = static_cast<Int32>(1024);
-  GBufferTexDesc.height = static_cast<Int32>(1024);
+  //GBufferTexDesc.width  = static_cast<Int32>(1024);
+  //GBufferTexDesc.height = static_cast<Int32>(1024);
+  //GBufferTexDesc.pitch = static_cast<Int32>(1024) * 4;
   m_RTShadow    = dr_gfx_shared(dc.createRenderTarget(GBufferTexDesc, 1));
 
   DrDepthStencilDesc depthTextureDesc;
@@ -54,6 +56,8 @@ RenderMan::init() {
 
   m_GBuffer1DSoptions = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
   m_SSAODSoptions     = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
+  //depthTextureDesc.width = static_cast<Int32>(1024);
+  //depthTextureDesc.height = static_cast<Int32>(1024);
   m_ShadowDSoptions   = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
 
   ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
@@ -91,16 +95,15 @@ RenderMan::draw() {
   m_GBuffer1DrawData.OutRt = m_RTGBuffer1;
   m_GBuffer1DrawData.dsOptions = m_GBuffer1DSoptions;
   m_GBuffer1Pass.draw(&m_GBuffer1DrawData);
-  /*
-  */
-  for (size_t camIndex = 0; camIndex < 4; ++camIndex) {
+
+  for (size_t camIndex = 0; camIndex < m_szActiveShadowCameras; ++camIndex) {
     queryRequest = SceneGraph::query(*m_vecShadowCamera[camIndex],
                                      QUERY_ORDER::kFrontToBack,          
                                      QUERY_PROPERTY::kOpaque |
                                      QUERY_PROPERTY::kDynamic |
                                      QUERY_PROPERTY::kStatic);
     m_ShadowDrawData.activeCam = m_vecShadowCamera[camIndex];
-    m_ShadowDrawData.subFrustra = camIndex;
+    m_ShadowDrawData.shadowIndex = camIndex;
     m_ShadowDrawData.models = &queryRequest;
     m_ShadowDrawData.OutRt = m_RTShadow;
     m_ShadowDrawData.dsOptions = m_ShadowDSoptions;
@@ -176,19 +179,15 @@ RenderMan::updateShadowCameras() {
                                       fFov);
 
     TrueCenter = mainCam->getPosition() + (mainCam->getDirection() * subFrustraSphere.first.z);
-    TrueCenter += m_vec3DirectionalLight * subFrustraSphere.second;
-    m_vecShadowCamera[i]->setPosition(TrueCenter - (m_vec3DirectionalLight * m_fDepth));
+    m_vecShadowCamera[i]->setPosition(TrueCenter +
+                                      (m_vec3DirectionalLight * subFrustraSphere.second)  -
+                                      (m_vec3DirectionalLight * m_fDepth));
     m_vecShadowCamera[i]->setTarget(TrueCenter);
 
     m_vecShadowCamera[i]->createProyection(subFrustraSphere.second * 2.0f,
                                            subFrustraSphere.second * 2.0f,
-                                           0.00001f,
-                                           m_fDepth);
-    /*
-    m_vecShadowCamera[i]->createProyection(60,
                                            0.001f,
                                            m_fDepth);
-    */
   }
 }
 

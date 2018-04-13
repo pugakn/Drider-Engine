@@ -1,10 +1,10 @@
 #include "dr_Shadow.h"
-#include <dr_graphics_api.h>
 #include <dr_device.h>
+#include <dr_graphics_api.h>
 #include <dr_vertex_buffer.h>
 #include <dr_index_buffer.h>
-#include <dr_depth_stencil.h>
 #include <dr_device_context.h>
+#include <dr_depth_stencil.h>
 #include <dr_model.h>
 
 namespace driderSDK {
@@ -29,6 +29,14 @@ ShadowPass::init(PassInitData* initData) {
   bdesc.type = DR_BUFFER_TYPE::kCONSTANT;
   bdesc.sizeInBytes = sizeof(CBuffer);
   m_constantBuffer = dr_gfx_unique((ConstantBuffer*)device.createBuffer(bdesc));
+
+  DrSampleDesc SSdesc;
+  SSdesc.Filter = DR_TEXTURE_FILTER::kMAXIMUM_ANISOTROPIC;
+  SSdesc.maxAnisotropy = 17;
+  SSdesc.addressU = DR_TEXTURE_ADDRESS::kWrap;
+  SSdesc.addressV = DR_TEXTURE_ADDRESS::kWrap;
+  SSdesc.addressW = DR_TEXTURE_ADDRESS::kWrap;
+  m_samplerState = dr_gfx_unique(device.createSamplerState(SSdesc));
 }
 
 void
@@ -49,13 +57,23 @@ ShadowPass::draw(PassDrawData* drawData) {
 
   dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
 
+  m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kFragment);
+
+  data->OutRt->getTexture(0).set(dc, 0);
+
   const float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-  if (data->subFrustra < 1) {
+
+  if (data->shadowIndex < 1) {
     data->OutRt->clear(dc, clearColor);
     data->dsOptions->clear(dc, 1, 0);
   }
 
-  CB.DirectionalLight = Vector4D(data->DirectionalLight, data->subFrustra);
+  CB.ShadowIndex[0] = -1;
+  CB.ShadowIndex[1] = -1;
+  CB.ShadowIndex[2] = -1;
+  CB.ShadowIndex[3] = -1;
+
+  CB.ShadowIndex[data->shadowIndex] = 1;
 
   for (auto& modelPair : *data->models) {
     Matrix4x4 worldTranspose = modelPair.world;

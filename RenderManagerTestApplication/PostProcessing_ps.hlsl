@@ -1,12 +1,11 @@
-Texture2D AlbedoTex    : register(t0); //1, 0, 0
-Texture2D PositionTex  : register(t1); //0, 1, 0
-Texture2D NormalTex    : register(t2); //0, 0, 1
-Texture2D EmissiveTex  : register(t3); //1, 1, 0
-Texture2D MetallicTex  : register(t4); //1, 0, 1
-Texture2D RoughnessTex : register(t5); //0, 1, 1
-Texture2D SSAOTex      : register(t6); //1, 0, 1
+Texture2D AlbedoTex    : register(t0);
+Texture2D PositionTex  : register(t1);
+Texture2D NormalTex    : register(t2);
+Texture2D EmissiveTex  : register(t3);
+Texture2D MetallicTex  : register(t4);
+Texture2D RoughnessTex : register(t5);
+Texture2D SSAOTex      : register(t6);
 Texture2D ShadowTex    : register(t7);
-//TextureCube Enviroment : register(t7);
 
 SamplerState SS;
 
@@ -132,7 +131,7 @@ float4 FS(PS_INPUT input) : SV_TARGET {
   float3 SpecAcc = float3(0.0f, 0.0f, 0.0f);
   
   const int activeLights = kEyePosition.w;
-  for (int index = 0; index < activeLights; index += 2) {
+  for (int index = 0; index < activeLights; index += 8) {
     lightPosition  = kLightPosition[index].xyz;
     lightColor     = kLightColor[index].xyz;
     lightIntensity = kLightColor[index].w;
@@ -167,7 +166,11 @@ float4 FS(PS_INPUT input) : SV_TARGET {
   //return MetallicTex.Sample(SS, uv);
   //return RoughnessTex.Sample(SS, uv);
   //return SSAOTex.Sample(SS, uv);
-  //return ShadowTex.Sample(SS, uv);
+  return float4(ShadowTex.Sample(SS, uv).xyz, 1);
+  //return float4(ShadowTex.Sample(SS, uv).xxx, 1);
+  //return float4(ShadowTex.Sample(SS, uv).yyy, 1);
+  //return float4(ShadowTex.Sample(SS, uv).zzz, 1);
+  //return float4(ShadowTex.Sample(SS, uv).www, 1);
   
   return float4(finalColor + emissive, 1.0f);
 }

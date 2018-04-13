@@ -1,8 +1,10 @@
+Texture2D ShadowTex    : register(t0);
+
 cbuffer ConstantBuffer {
 	float4x4 WVP;
 	float4x4 World;
   float4x4 Bones[200];
-  float4   DirectionalLight;
+  int4      ShadowIndex;
 };
 
 struct PS_INPUT {
@@ -11,16 +13,16 @@ struct PS_INPUT {
 };
 
 struct PS_OUTPUT {
-  float4 Shadow	  	: SV_TARGET0;
+  float4 Shadow1	: SV_TARGET0;
 };
 
 PS_OUTPUT FS(PS_INPUT input) {
 	PS_OUTPUT outRT;
-
-	float4 position	= input.RealPos;
-
-	//outRT.Shadow	 = position;
-	outRT.Shadow	 = float4(1.0f, 1.0f, 1.0f, 1.0f);
+	
+	outRT.Shadow1	 = float4(1.0f * ShadowIndex[0],
+													1.0f * ShadowIndex[1],
+													1.0f * ShadowIndex[2],
+													1.0f * ShadowIndex[3]);
 
 	return outRT;
 }
