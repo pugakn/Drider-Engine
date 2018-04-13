@@ -115,9 +115,8 @@ RenderManApp::postInit() {
                               { 0.0f, 50.f, 0.0f },
                               m_viewport,
                               45.f,
-                              20.f,
-                              3000.f
-                             );
+                              0.1f,
+                              10000.f);
   CameraManager::setActiveCamera(_T("PATO_CAM"));
 
   modelMovement = Vector3D(0.0f, 0.0f, 0.0f);
@@ -202,6 +201,10 @@ RenderManApp::postInit() {
     renderComp->getMeshes().front().material = floorMat;
   }
 
+  auto tmpComp = SceneGraph::createObject(_T("X"))->createComponent<FrustumDebug>(m_renderMan.m_vecShadowCamera[0].get());
+  tmpComp->setShaderTechnique(&tecnico);
+  tecnico.compile();
+
   initInputCallbacks();
 }
 
@@ -240,6 +243,9 @@ void
 RenderManApp::postRender() {
   GraphicsDriver::API().clear();
   m_renderMan.draw();
+  tecnico.setCamera(CameraManager::getActiveCamera().get());
+  //tecnico.prepareForDraw();
+  SceneGraph::getRoot()->getChild(_T("X"))->render();
   GraphicsDriver::API().swapBuffers();
 }
 

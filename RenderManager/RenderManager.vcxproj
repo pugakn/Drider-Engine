@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\dr_GBuffer1.h" />
+    <ClInclude Include="Include\dr_Shadow.h" />
     <ClInclude Include="Include\dr_SSAO.h" />
     <ClInclude Include="Include\dr_light.h" />
     <ClInclude Include="Include\dr_PostProcessing.h" />
@@ -30,6 +31,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_GBuffer1.cpp" />
+    <ClCompile Include="Source\dr_Shadow.cpp" />
     <ClCompile Include="Source\dr_SSAO.cpp" />
     <ClCompile Include="Source\dr_PostProcessing.cpp" />
     <ClCompile Include="Source\dr_renderman.cpp" />

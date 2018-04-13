@@ -4,7 +4,7 @@
 namespace driderSDK {
 
 void
-renderManagerApp(SceneGraph* sceneGraph) {
+renderManagerApp(const SceneGraph* sceneGraph) {
   RenderMan Manager;
 
   Manager.init();

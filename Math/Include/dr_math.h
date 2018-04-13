@@ -9,6 +9,7 @@
 #include "dr_math_prerequisites.h"
 
 namespace driderSDK {
+
 /**
 * Functions basics Math
 *
@@ -57,6 +58,7 @@ struct DR_MATH_EXPORT Math
   /**********************************************************************
   *               Multiply and divide with bit shifts                   *
   **********************************************************************/
+
   /**
   * TEST::divX2
   */
@@ -64,6 +66,7 @@ struct DR_MATH_EXPORT Math
   Int32 divX2(Int32 value) { 
 	  return value >> 1; 
   }
+
   /**
   * TEST::mulX2
   */
@@ -71,6 +74,7 @@ struct DR_MATH_EXPORT Math
   Int32 mulX2(Int32 value) { 
 	  return value << 1; 
   }
+
   /**
   * TEST::divX4
   */
@@ -78,6 +82,7 @@ struct DR_MATH_EXPORT Math
   Int32 divX4(Int32 value) { 
 	  return value >> 2; 
   }
+
   /**
   * TEST::mulX4
   */
@@ -89,6 +94,7 @@ struct DR_MATH_EXPORT Math
   /**********************************************************************
   *                        Basic Math functions                         *
   **********************************************************************/
+
   /**
   * TEST::cos
   */
@@ -96,6 +102,7 @@ struct DR_MATH_EXPORT Math
   cos(float value){
 	  return std::cosf(value);
   }
+
   /**
   * TEST::aCos
   */
@@ -103,6 +110,7 @@ struct DR_MATH_EXPORT Math
   aCos(float value) {
 	  return std::acosf(value);
   }
+
   /**
   * TEST::sin
   */
@@ -110,6 +118,7 @@ struct DR_MATH_EXPORT Math
   sin(float value) {
 	  return std::sinf(value);
   }
+
   /**
   * TEST::aSin
   */
@@ -117,6 +126,7 @@ struct DR_MATH_EXPORT Math
   aSin(float value) {
 	  return std::asinf(value);
   }
+
   /**
   * TEST::tan
   */
@@ -124,6 +134,7 @@ struct DR_MATH_EXPORT Math
   tan(float value) {
 	  return std::tanf(value);
   }
+
   /**
   * TEST::aTan
   */
@@ -131,6 +142,7 @@ struct DR_MATH_EXPORT Math
   aTan(float value) {
 	  return std::atanf(value);
   }
+
   /**
   * TEST::aTan2
   */
@@ -138,6 +150,7 @@ struct DR_MATH_EXPORT Math
   aTan2(float y, float x) {
 	  return std::atan2f(y,x);
   }
+
   /**
   * TEST::sqrt
   */
@@ -145,6 +158,7 @@ struct DR_MATH_EXPORT Math
   sqrt(float value) {
 	  return std::sqrtf(value);
   }
+
   /**
   * TEST::pow
   */
@@ -152,6 +166,7 @@ struct DR_MATH_EXPORT Math
   pow(float a, float b) {
 	  return std::powf(a,b);
   }
+
   /**
   * TEST::exp
   */
@@ -159,6 +174,7 @@ struct DR_MATH_EXPORT Math
   exp(float value) {
 	  return std::expf(value);
   }
+
   /**
   * TEST::truncate2Int
   */
@@ -166,6 +182,7 @@ struct DR_MATH_EXPORT Math
   truncate2Int(float value) {
 	  return static_cast<Int32>(value);
   }
+
   /**
   * TEST::truncate2Float
   */
@@ -173,14 +190,15 @@ struct DR_MATH_EXPORT Math
   truncate2Float(float value) {
 	  return static_cast<float>(truncate2Int(value));
   }
+
   /**
   * TEST::ceil
   */
   static FORCEINLINE float
-  ceil(float value)
-  {
+  ceil(float value) {
     return std::ceilf(value);
   }
+
   /**
   * TEST::floor
   */
@@ -188,6 +206,7 @@ struct DR_MATH_EXPORT Math
   floor(float value) {
 	  return std::floorf(value);
   }
+
   /**
   * TEST::round
   */
@@ -195,6 +214,7 @@ struct DR_MATH_EXPORT Math
   round(float value) {
 	  return truncate2Int(floor(value + 0.5f));
   }
+
   /**
   * TEST::logE
   */
@@ -202,6 +222,7 @@ struct DR_MATH_EXPORT Math
   logE(float value) {
 	  return std::logf(value);
   }
+
   /**
   * TEST::logX
   */
@@ -213,6 +234,7 @@ struct DR_MATH_EXPORT Math
   /**********************************************************************
   *                    Math function templates                          *
   **********************************************************************/
+
   /**
   * TEST::absT
   */
@@ -220,37 +242,45 @@ struct DR_MATH_EXPORT Math
   static FORCEINLINE T abs(const T A) {
 	  return (A >= static_cast<T>(0)) ? A : -A;
   }
+
   /**
   * TEST::max
   */
-  template< class T >
-  static FORCEINLINE T max(const T A, const T B)
-  {
+  template<class T>
+  static FORCEINLINE T max(const T A, const T B) {
 	  return (A >= B) ? A : B;
   }
+
   /**
   * TEST::min
   */
-  template< class T >
-  static FORCEINLINE T min(const T A, const T B)
-  {
+  template<class T>
+  static FORCEINLINE T min(const T A, const T B) {
 	  return (A <= B) ? A : B;
   }
+
   /**
   * TEST::square
   */
-  template< class T >
-  static FORCEINLINE T square(const T A)
-  {
+  template<class T>
+  static FORCEINLINE T square(const T A) {
 	  return A*A;
   }
+
   /**
   * TEST::clamp
   */
-  template< class T >
-  static FORCEINLINE T clamp(const T X, const T Min, const T Max)
-  {
+  template<class T>
+  static FORCEINLINE T clamp(const T X, const T Min, const T Max) {
 	  return X<Min ? Min : X<Max ? X : Max;
+  }
+  
+  /**
+  * TEST::lerp
+  */
+  template<class T>
+  static FORCEINLINE T lerp(const T a, const T b, const float proportion) {
+    return ((1.0f - proportion) * a) + (proportion * b);
   }
 
   /**********************************************************************
@@ -278,7 +308,7 @@ struct DR_MATH_EXPORT Math
   };
 
   /**********************************************************************
-  *                      Fast AF math functions                         *
+  *                        Fast math functions                          *
   **********************************************************************/
 
   // John Carmack Fast Inv Sqrt

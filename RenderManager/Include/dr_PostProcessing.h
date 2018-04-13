@@ -11,7 +11,8 @@ struct PostProcessingInitData : PassInitData {};
 struct PostProcessingDrawData : PassDrawData {
   Vector4D CameraPosition;
   GFXShared<RenderTarget> Gbuffer1RT;
-  GFXShared<RenderTarget> Gbuffer2RT;
+  GFXShared<RenderTarget> SSAORT;
+  GFXShared<RenderTarget> ShadowRT;
   float ActiveLights;
   std::array<Light, 128>* Lights;
 };

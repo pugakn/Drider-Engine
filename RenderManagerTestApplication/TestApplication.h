@@ -3,6 +3,8 @@
 #include <dr_renderman.h>
 #include <dr_light.h>
 #include <dr_material.h>
+#include "LinesTechnique.h"
+#include "FrustumDebug.h"
 
 namespace driderSDK {
 
@@ -38,6 +40,8 @@ class RenderManApp : public Application
   loadResources();
 
   // Inherited via Application
+
+  LinesTechnique tecnico;
 
   RenderMan m_renderMan;
   SceneGraph::SharedGameObject model;

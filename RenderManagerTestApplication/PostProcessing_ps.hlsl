@@ -5,7 +5,8 @@ Texture2D EmissiveTex  : register(t3); //1, 1, 0
 Texture2D MetallicTex  : register(t4); //1, 0, 1
 Texture2D RoughnessTex : register(t5); //0, 1, 1
 Texture2D SSAOTex      : register(t6); //1, 0, 1
-TextureCube Enviroment : register(t7);
+Texture2D ShadowTex    : register(t7);
+//TextureCube Enviroment : register(t7);
 
 SamplerState SS;
 
@@ -105,6 +106,7 @@ float4 FS(PS_INPUT input) : SV_TARGET {
   float3 specular  = lerp(float3(0.03f, 0.03f, 0.03f), albedo, metallic);
   float  roughness = RoughnessTex.Sample(SS, uv).x;
   float  SSAO      = SSAOTex.Sample(SS, uv).x;
+  float3 shadow    = ShadowTex.Sample(SS, uv).xyz;
 
   float3 finalColor = float3(0.0f, 0.0f, 0.0f);
 
@@ -130,7 +132,7 @@ float4 FS(PS_INPUT input) : SV_TARGET {
   float3 SpecAcc = float3(0.0f, 0.0f, 0.0f);
   
   const int activeLights = kEyePosition.w;
-  for (int index = 0; index < activeLights; index += 4) {
+  for (int index = 0; index < activeLights; index += 2) {
     lightPosition  = kLightPosition[index].xyz;
     lightColor     = kLightColor[index].xyz;
     lightIntensity = kLightColor[index].w;
@@ -165,6 +167,7 @@ float4 FS(PS_INPUT input) : SV_TARGET {
   //return MetallicTex.Sample(SS, uv);
   //return RoughnessTex.Sample(SS, uv);
   //return SSAOTex.Sample(SS, uv);
+  //return ShadowTex.Sample(SS, uv);
   
   return float4(finalColor + emissive, 1.0f);
 }

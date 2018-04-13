@@ -71,7 +71,8 @@ PostProcessingPass::draw(PassDrawData* drawData) {
   data->Gbuffer1RT->getTexture(3).set(dc, 3); //Emissivve
   data->Gbuffer1RT->getTexture(4).set(dc, 4); //Metallic
   data->Gbuffer1RT->getTexture(5).set(dc, 5); //Roughness
-  data->Gbuffer2RT->getTexture(0).set(dc, 6); //SSAO
+  data->SSAORT->getTexture(0).set(dc, 6); //SSAO
+  data->ShadowRT->getTexture(0).set(dc, 7); //Shadow
 
   //auto cubeMap = ResourceManager::getReferenceT<TextureCore>(_T(""));
   //cubeMap->textureGFX->set(dc, 7);
