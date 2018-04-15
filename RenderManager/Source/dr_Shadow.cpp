@@ -68,12 +68,15 @@ ShadowPass::draw(PassDrawData* drawData) {
     data->dsOptions->clear(dc, 1, 0);
   }
 
-  CB.ShadowIndex[0] = -1;
-  CB.ShadowIndex[1] = -1;
-  CB.ShadowIndex[2] = -1;
-  CB.ShadowIndex[3] = -1;
+  CB.ShadowIndex[0] = 0;
+  CB.ShadowIndex[1] = 0;
+  CB.ShadowIndex[2] = 0;
+  CB.ShadowIndex[3] = 0;
 
   CB.ShadowIndex[data->shadowIndex] = 1;
+
+  CB.extraInfo.x = data->activeCam->getNearPlane();
+  CB.extraInfo.y = data->activeCam->getFarPlane();
 
   for (auto& modelPair : *data->models) {
     Matrix4x4 worldTranspose = modelPair.world;

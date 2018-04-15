@@ -26,8 +26,9 @@ RenderMan::init() {
   }
   m_szActiveShadowCameras = 4;
   //m_vec3DirectionalLight = Vector3D(0.0f, -1.0f, 0.0f).normalize();
-  m_vec3DirectionalLight = Vector3D(0.0f, -1000.0f, 1.0f).normalize();
-  m_fDepth = 5000.0f;
+  //m_vec3DirectionalLight = Vector3D(0.0f, -1000.0f, 1.0f).normalize();
+  m_vec3DirectionalLight = Vector3D(-1.0f, -1.0f, 1.0f).normalize();
+  m_fDepth = 10000.0f; 
   m_bFitToFrustrum = true;
 
   GBufferTexDesc.width = screenWidth;
@@ -46,6 +47,7 @@ RenderMan::init() {
   //GBufferTexDesc.width  = static_cast<Int32>(1024);
   //GBufferTexDesc.height = static_cast<Int32>(1024);
   //GBufferTexDesc.pitch = static_cast<Int32>(1024) * 4;
+  //GBufferTexDesc.Format = DR_FORMAT::kR32G32B32A32_FLOAT;
   m_RTShadow    = dr_gfx_shared(dc.createRenderTarget(GBufferTexDesc, 1));
 
   DrDepthStencilDesc depthTextureDesc;
@@ -96,7 +98,7 @@ RenderMan::draw() {
   m_GBuffer1DrawData.dsOptions = m_GBuffer1DSoptions;
   m_GBuffer1Pass.draw(&m_GBuffer1DrawData);
 
-  for (size_t camIndex = 0; camIndex < m_szActiveShadowCameras; ++camIndex) {
+  for (size_t camIndex = 0; camIndex < 1; ++camIndex) {
     queryRequest = SceneGraph::query(*m_vecShadowCamera[camIndex],
                                      QUERY_ORDER::kFrontToBack,          
                                      QUERY_PROPERTY::kOpaque |
@@ -115,12 +117,14 @@ RenderMan::draw() {
   m_SSAODrawData.dsOptions = m_SSAODSoptions;
   m_SSAOPass.draw(&m_SSAODrawData);
 
-  m_PostProcessingDrawData.CameraPosition = mainCam->getPosition();
+  m_PostProcessingDrawData.activeCam = mainCam;
+  m_PostProcessingDrawData.DirLight = Vector4D(m_vec3DirectionalLight, 1.0f);
   m_PostProcessingDrawData.Gbuffer1RT = m_RTGBuffer1;
   m_PostProcessingDrawData.SSAORT = m_RTSSAO;
   m_PostProcessingDrawData.ShadowRT = m_RTShadow;
   m_PostProcessingDrawData.Lights = &lights[0];
   m_PostProcessingDrawData.ActiveLights = 128;
+  m_PostProcessingDrawData.ShadowCam = &m_vecShadowCamera;
   m_PostProcessingPass.draw(&m_PostProcessingDrawData);
 
   /*
@@ -178,12 +182,13 @@ RenderMan::updateShadowCameras() {
                                                  partitions[i + 1]),
                                       fFov);
 
-    TrueCenter = mainCam->getPosition() + (mainCam->getDirection() * subFrustraSphere.first.z);
-    m_vecShadowCamera[i]->setPosition(TrueCenter +
-                                      (m_vec3DirectionalLight * subFrustraSphere.second)  -
+    TrueCenter = mainCam->getPosition() +
+                 (mainCam->getDirection() * subFrustraSphere.first.z) +
+                 (m_vec3DirectionalLight * subFrustraSphere.second);
+
+    m_vecShadowCamera[i]->setPosition(TrueCenter -
                                       (m_vec3DirectionalLight * m_fDepth));
     m_vecShadowCamera[i]->setTarget(TrueCenter);
-
     m_vecShadowCamera[i]->createProyection(subFrustraSphere.second * 2.0f,
                                            subFrustraSphere.second * 2.0f,
                                            0.001f,
@@ -201,7 +206,8 @@ RenderMan::calculatePartitions(size_t cuts) {
 
   for (size_t i = 0; i < cuts + 1; ++i) {
     fLinearValue = (float)i / cuts;
-    fLnValue = log(1.0f + ((float)i / cuts));
+    //fLnValue = log(1.0f + ((float)i / cuts));
+    fLnValue = Math::pow((float)i / cuts, 2.0f);
     fRealValue = Math::lerp(fLnValue, fLinearValue, fLinearValue);
 
     realValues.push_back(fRealValue);

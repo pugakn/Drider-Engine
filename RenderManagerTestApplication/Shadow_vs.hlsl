@@ -2,7 +2,8 @@ cbuffer ConstantBuffer {
 	float4x4 WVP;
 	float4x4 World;
   float4x4 Bones[200];
-  int4      ShadowIndex;
+  int4     ShadowIndex;
+	float4   extraInfo;
 };
 
 struct VS_INPUT {
@@ -17,14 +18,12 @@ struct VS_INPUT {
 
 struct VS_OUTPUT {
   float4   Position : SV_POSITION;
-  float4   RealPos  : POSITION;
 };
 
 VS_OUTPUT VS(VS_INPUT input){
   VS_OUTPUT psOut;
   
   psOut.Position  = mul(WVP, float4(input.Position.xyz, 1.0f));
-  psOut.RealPos   = mul(World, float4(input.Position.xyz, 1.0f));
   
   return psOut;
 }

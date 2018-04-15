@@ -162,7 +162,7 @@ RenderManApp::postInit() {
     floor->createComponent<RenderComponent>(ptrFloor);
     floor->createComponent<AABBCollider>(ptrFloor->aabb);
     floor->getTransform().setPosition(Vector3D(0.0f, -50.0f, 0.0f));
-    floor->getTransform().setScale(Vector3D(2.0f, 2.0f, 2.0f));
+    floor->getTransform().setScale(Vector3D(5.0f, 5.0f, 5.0f));
 
     floorMat = std::make_shared<Material>(_T("FloorMaterial"));
 

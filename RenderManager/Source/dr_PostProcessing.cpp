@@ -51,12 +51,22 @@ PostProcessingPass::draw(PassDrawData* drawData) {
 
   m_inputLayout->set(dc);
 
-  CB.EyePosition = data->CameraPosition;
+  CB.EyePosition = data->activeCam->getPosition();
   CB.EyePosition.w = data->ActiveLights;
+  CB.DirLight = data->DirLight;
   for (int lighIndex = 0; lighIndex < 128; ++lighIndex) {
     CB.LightPosition[lighIndex] = (*data->Lights)[lighIndex].m_vec4Position;
     CB.LightColor[lighIndex] = (*data->Lights)[lighIndex].m_vec4Color;
   }
+  Matrix4x4 CamVP = data->activeCam->getVP();
+  CB.VP = CamVP;
+  CB.VPInv = CamVP.inverse();
+  for (SizeT i = 0; i < 4; ++i) {
+    CamVP = (*data->ShadowCam)[i]->getVP();
+    CB.ShadowCam[i] = CamVP;
+    CB.ShadowCamInv[i] = CamVP.inverse();
+  }
+
   m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
 
   m_constantBuffer->set(dc);
@@ -73,9 +83,6 @@ PostProcessingPass::draw(PassDrawData* drawData) {
   data->Gbuffer1RT->getTexture(5).set(dc, 5); //Roughness
   data->SSAORT->getTexture(0).set(dc, 6); //SSAO
   data->ShadowRT->getTexture(0).set(dc, 7); //Shadow
-
-  //auto cubeMap = ResourceManager::getReferenceT<TextureCore>(_T(""));
-  //cubeMap->textureGFX->set(dc, 7);
 
   auto screenQuadModel = ResourceManager::getReferenceT<Model>(_T("ScreenAlignedQuad.3ds"));
   if (screenQuadModel) {

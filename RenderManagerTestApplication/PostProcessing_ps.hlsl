@@ -5,14 +5,19 @@ Texture2D EmissiveTex  : register(t3);
 Texture2D MetallicTex  : register(t4);
 Texture2D RoughnessTex : register(t5);
 Texture2D SSAOTex      : register(t6);
-Texture2D ShadowTex    : register(t7);
+Texture2D ShadowTex1   : register(t7);
 
 SamplerState SS;
 
 cbuffer ConstantBuffer {
   float4 kEyePosition;
+  float4 kDirLight;
   float4 kLightPosition[128];
   float4 kLightColor[128];
+  float4x4 VP;
+  float4x4 VPInv;
+  float4x4 kShadowCam[4];
+  float4x4 kShadowCamInv[4];
 };
 
 struct PS_INPUT {
@@ -22,6 +27,36 @@ struct PS_INPUT {
 
 static const float M_PI = 3.14159265f;
 static const float EPSILON = 1e-6f;
+
+float4
+PositionFromDepthCam(const int camIndex, float2 vTexCoord) {
+    // Get the depth value for this pixel
+    float z = ShadowTex1.Sample(SS, vTexCoord).x;
+    // Get x/w and y/w from the viewport position
+    float x = (vTexCoord.x * 2.0f) - 1.0f;
+    float y = ((1.0f - vTexCoord.y) * 2.0f) - 1.0f;
+    float4 vProjectedPos = float4(x, y, z, 1.0f);
+    // Transform by the inverse projection matrix
+    float4 vPositionVS = mul(kShadowCamInv[0], vProjectedPos);
+    // Divide by w to get the view-space position
+    return float4(vPositionVS.xyz / vPositionVS.w, 1.0f);
+}
+
+float
+LinearDepth(const int camIndex, float4 pos) {
+  float4 newPos = mul(VP, pos);
+  float depth = (newPos.z /newPos.w);
+
+  return depth;
+}
+
+float2
+UVCoordFromCam(const int camIndex, float3 Coord) {
+  float2 uv = mul(kShadowCam[0], float4(Coord, 1.0f)).xy;
+  uv.y = 1.0f - uv.y;
+  uv.x = 1.0f + uv.x;
+  return saturate(uv * 0.5f);
+}
 
 float3
 BiasX2(float3 x) {
@@ -105,7 +140,7 @@ float4 FS(PS_INPUT input) : SV_TARGET {
   float3 specular  = lerp(float3(0.03f, 0.03f, 0.03f), albedo, metallic);
   float  roughness = RoughnessTex.Sample(SS, uv).x;
   float  SSAO      = SSAOTex.Sample(SS, uv).x;
-  float3 shadow    = ShadowTex.Sample(SS, uv).xyz;
+  //float3 shadow    = ShadowTex.Sample(SS, uv).xyz;
 
   float3 finalColor = float3(0.0f, 0.0f, 0.0f);
 
@@ -166,11 +201,30 @@ float4 FS(PS_INPUT input) : SV_TARGET {
   //return MetallicTex.Sample(SS, uv);
   //return RoughnessTex.Sample(SS, uv);
   //return SSAOTex.Sample(SS, uv);
-  return float4(ShadowTex.Sample(SS, uv).xyz, 1);
-  //return float4(ShadowTex.Sample(SS, uv).xxx, 1);
-  //return float4(ShadowTex.Sample(SS, uv).yyy, 1);
-  //return float4(ShadowTex.Sample(SS, uv).zzz, 1);
-  //return float4(ShadowTex.Sample(SS, uv).www, 1);
+  //return float4(ShadowTex1.Sample(SS, uv).xyz, 1);
+  //return float4(ShadowTex1.Sample(SS, uv).xxx, 1); 
+  //return float4(ShadowTex1.Sample(SS, uv).yyy, 1);
+  //return float4(ShadowTex1.Sample(SS, uv).zzz, 1);
+  //return float4(ShadowTex1.Sample(SS, uv).www, 1);
+  
+  //UV Coords in shadowCam space
+  float2 shadowUVCoord = UVCoordFromCam(0, position.xyz);
+  //return float4(shadowUVCoord, 0.0f, 1.0f);
+
+  //Shadow Position
+  float4 ShadowCamPxPos;
+  ShadowCamPxPos = PositionFromDepthCam(0, shadowUVCoord); //seen from mainCam
+  //ShadowCamPxPos = PositionFromDepthCam(0, uv); // seen from shadowCam
+  //return ShadowCamPxPos;
+
+  //uv test
+  //return float4(uv, 0, 1);
+  //return float4(UVCoordFromCam(0, PositionFromDepthCam(0, uv).xyz), 0, 1);
+  
+  float3 sDir = normalize(ShadowCamPxPos.xyz - position);
+  float incidento = saturate(dot(sDir, kDirLight.xyz) + 0.5f);
+  
+  return float4(albedo * incidento, 1);
   
   return float4(finalColor + emissive, 1.0f);
 }
