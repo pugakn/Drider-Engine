@@ -56,6 +56,7 @@ class ShadowPass : public RenderPass {
     Matrix4x4 Bones[200];
     Int32     ShadowIndex[4];
     Vector4D  extraInfo;
+    Matrix4x4 WV;
   };
 
   CBuffer CB;

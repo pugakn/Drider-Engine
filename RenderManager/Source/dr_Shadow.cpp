@@ -62,11 +62,8 @@ ShadowPass::draw(PassDrawData* drawData) {
   data->OutRt->getTexture(0).set(dc, 0);
 
   const float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-
-  if (data->shadowIndex < 1) {
-    data->OutRt->clear(dc, clearColor);
-    data->dsOptions->clear(dc, 1, 0);
-  }
+  data->OutRt->clear(dc, clearColor);
+  data->dsOptions->clear(dc, 1, 0);
 
   CB.ShadowIndex[0] = 0;
   CB.ShadowIndex[1] = 0;
@@ -79,11 +76,10 @@ ShadowPass::draw(PassDrawData* drawData) {
   CB.extraInfo.y = data->activeCam->getFarPlane();
 
   for (auto& modelPair : *data->models) {
-    Matrix4x4 worldTranspose = modelPair.world;
-    CB.World = worldTranspose.transpose();
     CB.World = modelPair.world;
-    Matrix4x4 newViewProjection = data->activeCam->getVP();
+    CB.World.inverse();
     CB.WVP = modelPair.world * (data->activeCam->getVP());
+    CB.WV = CB.World * (data->activeCam->getView());
 
     m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
 

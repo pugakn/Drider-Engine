@@ -221,22 +221,22 @@ RenderManApp::postUpdate() {
 
   const float fMovementSpeed = 500.0f;
   if (Keyboard::isKeyDown(KEY_CODE::kA)) {
-    model->getTransform().move(Vector3D(1.0f, 0.0f, 0.0f) * Time::getDelta() * fMovementSpeed);
+    floor->getTransform().move(Vector3D(1.0f, 0.0f, 0.0f) * Time::getDelta() * fMovementSpeed);
   }
   if (Keyboard::isKeyDown(KEY_CODE::kD)) {
-    model->getTransform().move(Vector3D(-1.0f, 0.0f, 0.0f) * Time::getDelta()* fMovementSpeed);
+    floor->getTransform().move(Vector3D(-1.0f, 0.0f, 0.0f) * Time::getDelta()* fMovementSpeed);
   }
   if (Keyboard::isKeyDown(KEY_CODE::kW)) {
-    model->getTransform().move(Vector3D(0.0f, 0.0f, 1.0f) * Time::getDelta() * fMovementSpeed);
+    floor->getTransform().move(Vector3D(0.0f, 0.0f, 1.0f) * Time::getDelta() * fMovementSpeed);
   }
   if (Keyboard::isKeyDown(KEY_CODE::kS)) {
-    model->getTransform().move(Vector3D(0.0f, 0.0f, -1.0f) * Time::getDelta() * fMovementSpeed);
+    floor->getTransform().move(Vector3D(0.0f, 0.0f, -1.0f) * Time::getDelta() * fMovementSpeed);
   }
   if (Keyboard::isKeyDown(KEY_CODE::kQ)) {
-    model->getTransform().move(Vector3D(0.0f, 1.0f, 0.0f) * Time::getDelta() * fMovementSpeed);
+    floor->getTransform().move(Vector3D(0.0f, 1.0f, 0.0f) * Time::getDelta() * fMovementSpeed);
   }
   if (Keyboard::isKeyDown(KEY_CODE::kE)) {
-    model->getTransform().move(Vector3D(0.0f, -1.0f, 0.0f) * Time::getDelta() * fMovementSpeed);
+    floor->getTransform().move(Vector3D(0.0f, -1.0f, 0.0f) * Time::getDelta() * fMovementSpeed);
   }
 }
 

@@ -56,8 +56,14 @@ class PostProcessingPass : public RenderPass {
     Vector4D  LightColor[128];     // [XYZ = LightColor, W = LightIntensity]
     Matrix4x4 VP;
     Matrix4x4 VPInv;
-    Matrix4x4 ShadowCam[4];
-    Matrix4x4 ShadowCamInv[4];
+    Matrix4x4 ShadowVP[4];
+    Matrix4x4 ShadowVPInv[4];
+    Matrix4x4 ShadowW[4];
+    Matrix4x4 ShadowWInv[4];
+    Matrix4x4 ShadowV[4];
+    Matrix4x4 ShadowVInv[4];
+    Matrix4x4 ShadowP[4];
+    Matrix4x4 ShadowPInv[4];
   };
 
   CBuffer CB;

@@ -192,7 +192,7 @@ RenderMan::updateShadowCameras() {
     m_vecShadowCamera[i]->createProyection(subFrustraSphere.second * 2.0f,
                                            subFrustraSphere.second * 2.0f,
                                            0.001f,
-                                           m_fDepth);
+                                           2.0f*m_fDepth);
   }
 }
 
