@@ -22,7 +22,7 @@ PS_OUTPUT FS(PS_INPUT input) {
 	PS_OUTPUT outRT;
 	
 	//float depth = (input.RealPos.z / (extraInfo.y - extraInfo.x)); //Lineal
-	float depth = (input.RealPos.z); //No Lineal
+	float depth = (input.RealPos.z / input.RealPos.w); //Lineal
 	
 	outRT.Shadow1[0] = depth;
 	outRT.Shadow1[1] = depth;

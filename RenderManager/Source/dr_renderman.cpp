@@ -47,7 +47,7 @@ RenderMan::init() {
   //GBufferTexDesc.width  = static_cast<Int32>(1024);
   //GBufferTexDesc.height = static_cast<Int32>(1024);
   //GBufferTexDesc.pitch = static_cast<Int32>(1024) * 4;
-  //GBufferTexDesc.Format = DR_FORMAT::kR32G32B32A32_FLOAT;
+  GBufferTexDesc.Format = DR_FORMAT::kR32G32B32A32_FLOAT;
   m_RTShadow    = dr_gfx_shared(dc.createRenderTarget(GBufferTexDesc, 1));
 
   DrDepthStencilDesc depthTextureDesc;

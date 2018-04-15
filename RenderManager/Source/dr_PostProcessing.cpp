@@ -58,20 +58,26 @@ PostProcessingPass::draw(PassDrawData* drawData) {
     CB.LightPosition[lighIndex] = (*data->Lights)[lighIndex].m_vec4Position;
     CB.LightColor[lighIndex] = (*data->Lights)[lighIndex].m_vec4Color;
   }
+  Matrix4x4 CamVP = data->activeCam->getVP();
   Matrix4x4 CamW = Matrix4x4().Translation(data->activeCam->getPosition());
   Matrix4x4 CamV = data->activeCam->getView();
   Matrix4x4 CamP = data->activeCam->getProjection();
 
-  Matrix4x4 CamVP = data->activeCam->getVP();
-
   CB.VP = CamVP;
   CB.VPInv = CamVP.inverse();
+  CB.W = CamW.transpose();
+  CB.WInv = CamW.inverse();
+  CB.V = CamV;
+  CB.VInv = CamV.inverse();
+  CB.P = CamP;
+  CB.PInv = CamP.inverse();
+
   for (SizeT i = 0; i < 4; ++i) {
+    CamVP = (*data->ShadowCam)[i]->getVP();
     CamW = Matrix4x4().identityMat4x4;
     CamW.Translation((*data->ShadowCam)[i]->getPosition());
     CamV  = (*data->ShadowCam)[i]->getView();
     CamP  = (*data->ShadowCam)[i]->getProjection();
-    CamVP = (*data->ShadowCam)[i]->getVP();
 
     CB.ShadowVP[i] = CamVP;
     CB.ShadowVPInv[i] = CamVP.inverse();

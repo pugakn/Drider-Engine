@@ -16,6 +16,12 @@ cbuffer ConstantBuffer {
   float4 kLightColor[128];
   float4x4 VP;
   float4x4 VPInv;
+  float4x4 W;
+  float4x4 WInv;
+  float4x4 V;
+  float4x4 VInv;
+  float4x4 P;
+  float4x4 PInv;
   float4x4 kShadowVP[4];
   float4x4 kShadowVPInv[4];
   float4x4 kShadowW[4];
@@ -34,22 +40,6 @@ struct PS_INPUT {
 static const float M_PI = 3.14159265f;
 static const float EPSILON = 1e-6f;
 
-float4
-PositionFromDepthCam(const int camIndex, float2 vTexCoord) {
-    // Get x/w and y/w from the viewport position
-    float x = (vTexCoord.x * 2.0f) - 1.0f;
-    float y = ((1.0f - vTexCoord.y) * 2.0f) - 1.0f;
-    // Get the depth value for this pixel
-    float z = ShadowTex1.Sample(SS, vTexCoord).x;
-
-    float4 vProjectedPos = float4(x, y, z, 1.0f);
-
-    // Transform by the inverse projection matrix
-    float4 vPositionVS = mul(kShadowVPInv[0], vProjectedPos);
-    
-    return float4(vPositionVS.xyz, 1.0f);
-}
-
 float
 LinearShadowDepth(const int camIndex, float4 pos) {
   float4 newPos = mul(kShadowVP[0], pos);
@@ -60,7 +50,8 @@ LinearShadowDepth(const int camIndex, float4 pos) {
 
 float2
 UVCoordFromCam(const int camIndex, float3 Pos) {
-  float2 uv = mul(kShadowVP[0], float4(Pos, 1.0f)).xy;
+  float4 detransformedPos = float4(Pos, 1.0f);
+  float2 uv = mul(kShadowVP[0], detransformedPos).xy;
   uv *= 0.5f;
   uv += 0.5f;
   uv.y = 1.0f - uv.y;
@@ -228,8 +219,14 @@ float4 FS(PS_INPUT input) : SV_TARGET {
   //return float4(ShadowTex1.Sample(SS, uv).zzz, 1); //ShadowCam3
   //return float4(ShadowTex1.Sample(SS, uv).www, 1); //ShadowCam4
   
+  //return float4(uv, 0.0f, 1); //ShadowCam1
+
   //Projects the uv's from the shadowCam to what mainCam sees
   float2 shadowUVCoord = UVCoordFromCam(0, position);
+  if (shadowUVCoord.x < 0.0f) discard;
+  if (shadowUVCoord.x > 1.0f) discard;
+  if (shadowUVCoord.y < 0.0f) discard;
+  if (shadowUVCoord.y > 1.0f) discard;
   //return float4(shadowUVCoord, 0.0f, 1.0f);
   
   //Pixel Depth seen from shadowCam
@@ -237,23 +234,11 @@ float4 FS(PS_INPUT input) : SV_TARGET {
   //return float4(sD, sD, sD, 1.0f);
 
   //Projected depth
-  //return float4(ShadowTex1.Sample(SS, shadowUVCoord).xxx, 1); //ShadowCam1
-  //reconstructed position
-  return PositionFromDepthCam(0, shadowUVCoord);
+  return float4(ShadowTex1.Sample(SS, shadowUVCoord).xxx, 1); //ShadowCam1
 
   //depth seen from shadow cam
   float depthValueFromShadowCam = ShadowTex1.Sample(SS, uv).x;
   return float4(depthValueFromShadowCam, depthValueFromShadowCam, depthValueFromShadowCam, 1.0f);
-  //position seen from shadow cam
-  float4 PositionFromShadowCam = PositionFromDepthCam(0, uv);
-  //return PositionFromShadowCam;
-  
-  //Gets the position value
-  float4 ShadowCamPxPos;
-  ShadowCamPxPos = PositionFromDepthCam(0, shadowUVCoord); //seen from mainCam
-  ShadowCamPxPos = PositionFromDepthCam(0, uv); // seen from shadowCam
-  return ShadowCamPxPos;
-  return float4(UVCoordFromCam(0, ShadowCamPxPos), 0.0f, 1.0f);
   
   return float4(finalColor + emissive, 1.0f);
 }
