@@ -15,6 +15,7 @@
 #include <dr_model.h>
 #include <dr_script_core.h>
 #include <dr_depth_stencil_state.h>
+#include <dr_math.h>
 #include<Shlwapi.h>
 #pragma comment(lib, "Shlwapi.lib")
 namespace driderSDK {
@@ -247,15 +248,16 @@ void SceneEditor::initUI()
 
   //Editor
   webRenderer.registerJS2CPPFunction(std::make_pair("C_SetSceneAreaViewport", [&](const CefRefPtr<CefListValue>& arguments) {
-    float top = ((float)arguments->GetInt(1)) / (float)m_viewport.height;
+    float top = ((float)arguments->GetDouble(1)) / (float)m_viewport.height;
     top = top * 2.0 - 1.0;
     top *= -1;
-    float left = (float)arguments->GetInt(2) / (float)m_viewport.width;
+    float left = (float)arguments->GetDouble(2) / (float)m_viewport.width;
     left = left * 2.0 - 1.0;
-    float width = (float)arguments->GetInt(3) /  (float)m_viewport.width;
-    width = width * 2.0 ;
-    float height = (float)arguments->GetInt(4) / (float)m_viewport.height;
-    height = height * 2.0 ;
+    float width = (float)arguments->GetDouble(3) /  (float)m_viewport.width;
+    width = Math::abs(width * 2.0 );
+    float height = (float)arguments->GetDouble(4) / (float)m_viewport.height;
+    height = Math::abs(height * 2.0 );
+
     //TODO: Search parent name 
     vertex vertex[4];
     vertex[0] = { left,  top, 1.f, 1.0f,    0.5f, 0.5f,0.0f, 1.0f  ,0.0,0.0 };
