@@ -31,9 +31,6 @@ public:
   void postRender() override;
   void postDestroy() override;
 
-  
-  Viewport viewport;
-
 
 private:
   SceneEditor m_editor;

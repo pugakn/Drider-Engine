@@ -61,8 +61,8 @@ void SceneEditor::init(Viewport v)
 {
   m_viewport = v;
   DrTextureDesc backDesc;
-  backDesc.width = 1024;
-  backDesc.height = 1024;
+  backDesc.width = m_viewport.width;
+  backDesc.height = m_viewport.height;
   backDesc.pitch = backDesc.width * 4;
   backDesc.Format = DR_FORMAT::kR8G8B8A8_UNORM;
   backDesc.CPUAccessFlags = DR_CPU_ACCESS_FLAG::drRead;
@@ -258,6 +258,17 @@ void SceneEditor::initUI()
       name,
       { 0, 0, 0 })->getTransform().scale({ 1, 1, 1 });
   }));
+
+  //Editor
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_SetSceneAreaViewport", [&](const CefRefPtr<CefListValue>& arguments) {
+    Int32 top = arguments->GetInt(1);
+    Int32 left = arguments->GetInt(2);
+    Int32 width = arguments->GetInt(1);
+    Int32 height = arguments->GetInt(2);
+    //TODO: Search parent name 
+
+  }));
+  
 }
 void SceneEditor::initSceneGraph()
 {

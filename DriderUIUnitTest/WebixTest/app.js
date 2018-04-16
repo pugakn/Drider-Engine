@@ -21,7 +21,21 @@ function JS_AddComponent_Script(componentName, modelName) {
 function JS_ClearPropertySheetUI() {
 	webix.callEvent('WEBIX_ClearPropertySheetUI');
 }
+function JS_GetSceneAreaViewport() {
+	webix.callEvent('WEBIX_GetSceneAreaViewport');
+}
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function getViewport(el) {
+  var viewport = el.getBoundingClientRect();
+  return {
+	top: viewport.top,
+    left: viewport.left,
+	width: viewport.width,
+	height: viewport.height,
+  };
+}
 
 document.addEventListener('contextmenu', event => event.preventDefault());
 //===================================================================================================================
@@ -316,13 +330,13 @@ webix.ready(function(){
 	var grid = {
 	view:"dashboard", id:"grid",
 	gridColumns:4, gridRows:4,
-	cellHeight: 240, cellWidth: 450,
+	cellHeight: 650/4, cellWidth: 1220/4,
 	padding:6, margin:6,
 	 cells:[
-		{ view:"panel", x:3, y:0, dx:1, dy:4,resize:true, body:{view:"scrollview",body:propCells_UI},id:"prop_grid"},
+		{ view:"panel", x:3, y:0, dx:1, dy:4,resize:true, body:{view:"scrollview",body:propCells_UI},onContext:{},id:"prop_grid"},
 		{ view:"panel", x:2, y:0, dx:1, dy:3,resize:true, header:"Scene Graph", body:{view:"scrollview",body:treeb_UI, onContext:{},id:"tree_grid"} },
 		{ view:"panel", x:0, y:3, dx:3, dy:1,resize:true, body:fman_UI},
-		{ view:"panel", x:0, y:0, dx:2, dy:3,resize:true,  body: editor_UI},
+		{ view:"panel", x:0, y:0, dx:2, dy:3,resize:true,  body: editor_UI,id:"editor_grid"},
 	],
 	onContext:{},
 	};
@@ -335,7 +349,7 @@ webix.ready(function(){
 		id:"general_prop_ctx_menu",
 		data:[{value:"Add Component" ,submenu:[ 
 			  "Render", "Animator", "Script", "Collider"]}],
-		//master:$$("prop"),
+		master:$$("prop_grid").$view,
 		on:{
 			onItemClick:function(id){
 				if (this.getItem(id).value == "Render"){
@@ -345,7 +359,6 @@ webix.ready(function(){
 		},
 		openAction:"click",
 	});
-	$$("general_prop_ctx_menu").attachTo($$("tree_grid"));
 	//Tree View
 	webix.ui({
 	view:"contextmenu",
@@ -372,7 +385,7 @@ webix.ready(function(){
         view:"contextmenu",
 	    id:"general_tree_ctx_menu",
         data:["Add GameObject",{ $template:"Separator" },"Start WW3"],
-		master:$$("tree_grid"),
+		master:$$("tree_grid").$view,
         on:{
             onItemClick:function(id){
 				if (this.getItem(id).value == "Add GameObject"){
@@ -419,6 +432,12 @@ webix.ready(function(){
 	return true;
 	});
 	webixReady();
+	var pos = getViewport($$("editor_grid").$view);
+	console.log(pos.top);
+	console.log(pos.left);
+	console.log(pos.width);
+	console.log(pos.height);
+	C_SetSceneAreaViewport(pos.top,pos.left,pos.width,pos.height);
 });
 
 

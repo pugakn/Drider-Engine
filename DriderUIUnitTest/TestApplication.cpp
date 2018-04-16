@@ -11,7 +11,7 @@
 
 namespace driderSDK {
 TestApplication::TestApplication()
-  : viewport{0,0,1920, 1024}{
+{
 }
 
 TestApplication::~TestApplication() {
