@@ -43,7 +43,7 @@ Application::createWindow() {
   Int32 flags = SDL_HWSURFACE;
   
   //flags |= SDL_FULLSCREEN;
-  //flags |= SDL_RESIZABLE;
+  flags |= SDL_RESIZABLE;
 
   SDL_ShowCursor(SDL_ENABLE);
 

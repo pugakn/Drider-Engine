@@ -22,6 +22,8 @@ function JS_ClearPropertySheetUI() {
 	webix.callEvent('WEBIX_ClearPropertySheetUI');
 }
 
+
+document.addEventListener('contextmenu', event => event.preventDefault());
 //===================================================================================================================
 //                                                  WEBIX
 // ==================================================================================================================
@@ -210,49 +212,6 @@ webix.ready(function(){
 		},
 	};	
 
-	
-    /*webix.ui({
-        view:"contextmenu",
-	    id:"general_tree_ctx_menu",
-        data:["Add GameObject",{ $template:"Separator" },"Start WW3"],
-		master:"treeView",
-        on:{
-            onItemClick:function(id){
-				if (this.getItem(id).value == "Add GameObject"){
-					var name = "GameObject";
-					var count = 0;
-					while ($$("tree").exists(name + "_" +count)) { count++;}
-					C_AddSceneGraphNode(name + "_" + count, "ROOT_NODE_X");
-					//$$("tree").data.add({id: "GameObject", value:  "GameObject", icon:"home"}, 0, "ROOT_NODE_X");
-				}
-
-            }
-        }
-    });*/
-	
-	
-	/*webix.ui({
-	view:"contextmenu",
-	id:"item_tree_ctx_menu",
-	data:["Rename",{ $template:"Separator" },"Delete"],
-	master:$$("tree"),
-	on:{
-		onItemClick:function(id){
-			var context = this.getContext();
-			var list = context.obj;
-			var listId = context.id;
-			webix.message(this.getItem(id).value);
-			if (this.getItem(id).value == "Delete"){
-				if("ROOT_NODE_X" == list.getItem(listId).id) return;
-				C_DeleteSceneGraphNode(list.getItem(listId).id);
-			}else if (this.getItem(id).value == "Rename"){
-				treeb.edit(list.getItem(listId).id);
-			}
-		}
-	}
-    });*/
-
-	
 	//$$("tree").data.add({id: "ROOT_NODE_X", value:  "ROOT_NODE_X", icon:"home"}, 0);
 	webix.attachEvent("WEBIX_AddSceneGraphNode", function(name,parentName){
 		if (name == "ROOT_NODE_X"){
@@ -307,9 +266,12 @@ webix.ready(function(){
 	
 	
 	
-	var editorCells =[
+	var editorCells = [
 		{
 			header:"Scene",
+			id:"editor_scene",
+			rows:[],
+			onContext:{},
 			body:{ template:"Scene" }
 		},
 		{
@@ -357,22 +319,23 @@ webix.ready(function(){
 	cellHeight: 240, cellWidth: 450,
 	padding:6, margin:6,
 	 cells:[
-		{ view:"panel", x:3, y:0, dx:1, dy:4,resize:true, body:{view:"scrollview",body:propCells_UI}},
-		{ view:"panel", x:0, y:0, dx:1, dy:3,resize:true, header:"Scene Graph", body:{view:"scrollview",body:treeb_UI}},
+		{ view:"panel", x:3, y:0, dx:1, dy:4,resize:true, body:{view:"scrollview",body:propCells_UI},id:"prop_grid"},
+		{ view:"panel", x:2, y:0, dx:1, dy:3,resize:true, header:"Scene Graph", body:{view:"scrollview",body:treeb_UI, onContext:{},id:"tree_grid"} },
 		{ view:"panel", x:0, y:3, dx:3, dy:1,resize:true, body:fman_UI},
-		{ view:"panel", x:1, y:0, dx:2, dy:3,resize:true,  body: editor_UI},
+		{ view:"panel", x:0, y:0, dx:2, dy:3,resize:true,  body: editor_UI},
 	],
+	onContext:{},
 	};
 	
 	webix.ui({view:"scrollview", body: {rows:[toolbar_UI,grid]}});
 	
 	//Property sheet
-	/*webix.ui({
+	webix.ui({
 		view:"contextmenu",
 		id:"general_prop_ctx_menu",
 		data:[{value:"Add Component" ,submenu:[ 
 			  "Render", "Animator", "Script", "Collider"]}],
-		master:"prop",
+		//master:$$("prop"),
 		on:{
 			onItemClick:function(id){
 				if (this.getItem(id).value == "Render"){
@@ -381,8 +344,50 @@ webix.ready(function(){
 			}
 		},
 		openAction:"click",
-	});*/
+	});
+	$$("general_prop_ctx_menu").attachTo($$("tree_grid"));
 	//Tree View
+	webix.ui({
+	view:"contextmenu",
+	id:"item_tree_ctx_menu",
+	data:["Rename",{ $template:"Separator" },"Delete"],
+	master:$$("tree"),
+	on:{
+		onItemClick:function(id){
+			var context = this.getContext();
+			var list = context.obj;
+			var listId = context.id;
+			webix.message(this.getItem(id).value);
+			if (this.getItem(id).value == "Delete"){
+				if("ROOT_NODE_X" == list.getItem(listId).id) return;
+				C_DeleteSceneGraphNode(list.getItem(listId).id);
+			}else if (this.getItem(id).value == "Rename"){
+				$$("tree").edit(list.getItem(listId).id);
+			}
+		}
+	}
+    });
+		
+    webix.ui({
+        view:"contextmenu",
+	    id:"general_tree_ctx_menu",
+        data:["Add GameObject",{ $template:"Separator" },"Start WW3"],
+		master:$$("tree_grid"),
+        on:{
+            onItemClick:function(id){
+				if (this.getItem(id).value == "Add GameObject"){
+					var name = "GameObject";
+					var count = 0;
+					while ($$("tree").exists(name + "_" +count)) { count++;}
+					C_AddSceneGraphNode(name + "_" + count, "ROOT_NODE_X");
+					//$$("tree").data.add({id: "GameObject", value:  "GameObject", icon:"home"}, 0, "ROOT_NODE_X");
+				}
+
+            }
+        }
+    });
+	
+	
 	webix.UIManager.addHotKey("enter", function(view){
 	var pos = $$("tree").getSelectedId();
 	$$("tree").edit(pos);
