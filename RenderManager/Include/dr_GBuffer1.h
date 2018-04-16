@@ -4,10 +4,7 @@
 #include <dr_graph.h>
 #include <dr_render_component.h>
 #include <dr_camera.h>
-#include <dr_matrix4x4.h>
-#include <dr_input_layout.h>
-#include <dr_constant_buffer.h>
-
+#include <dr_sample_state.h>
 namespace driderSDK {
 
 struct GBuffer1InitData : PassInitData {
@@ -20,7 +17,7 @@ struct GBuffer1DrawData : PassDrawData {
   GFXShared<DepthStencil> dsOptions;
 };
 
-class GBuffer1Pass : RenderPass {
+class GBuffer1Pass : public RenderPass {
  public:
   /*
   TEST::testName
@@ -64,6 +61,7 @@ class GBuffer1Pass : RenderPass {
   CBuffer CB;
 
   GFXUnique<Texture> cubeMapTex;
+  GFXUnique<SamplerState> m_samplerState;
 };
 
 }

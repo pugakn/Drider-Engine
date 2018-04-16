@@ -20,7 +20,7 @@ Matrix4x4::Matrix4x4(Math::FORCE_INIT k) {
   }
 }
 
-Matrix4x4::Matrix4x4(const Matrix3x3 & M)
+Matrix4x4::Matrix4x4(const Matrix3x3& M)
   : vector0(M.vector0),
     vector1(M.vector1),
     vector2(M.vector2),
@@ -31,8 +31,7 @@ Matrix4x4::Matrix4x4(const Matrix3x3 & M)
   vector3.w = 1.f;
 }
 
-Matrix4x4::Matrix4x4(const Quaternion & Q)
-{
+Matrix4x4::Matrix4x4(const Quaternion& Q) {
   Matrix3x3 temp(Q);
   Matrix4x4 result(temp);
   (*this) = result;
@@ -199,8 +198,7 @@ Matrix4x4::identity() {
 }
 
 bool
-Matrix4x4::equals(const Matrix4x4& otherMatrix, float errorRange) const
-{
+Matrix4x4::equals(const Matrix4x4& otherMatrix, float errorRange) const {
   return data[0].equals(otherMatrix.data[0], errorRange) &&
          data[1].equals(otherMatrix.data[1], errorRange) &&
          data[2].equals(otherMatrix.data[2], errorRange) &&
@@ -214,22 +212,19 @@ Matrix4x4::equals(const Matrix4x4& otherMatrix, float errorRange) const
 //}
 
 Matrix4x4&
-Matrix4x4::Translation(const Vector3D & Pos)
-{
+Matrix4x4::Translation(const Vector3D& Pos) {
   vector3 = Vector4D(Pos, 1.0f);
   return *this;
 }
 
 Matrix4x4&
-Matrix4x4::Move(const Vector3D& Move)
-{
+Matrix4x4::Move(const Vector3D& Move) {
   vector3 += Vector4D(Move, 0.f);
   return *this;
 }
 
 Matrix4x4&
-Matrix4x4::Scale(const Vector3D &Scale)
-{
+Matrix4x4::Scale(const Vector3D &Scale) {
   Matrix4x4 temp(Math::FORCE_INIT::kIdentity);
   temp.vector0.x = Scale.x;
   temp.vector1.y = Scale.y;
@@ -240,8 +235,7 @@ Matrix4x4::Scale(const Vector3D &Scale)
 }
 
 Matrix4x4&
-Matrix4x4::Rotation(const float tetax, const float tetay, const float tetaz)
-{
+Matrix4x4::Rotation(const float tetax, const float tetay, const float tetaz) {
   RotationY(tetay);
   RotationX(tetax);
   RotationZ(tetaz);
@@ -249,8 +243,7 @@ Matrix4x4::Rotation(const float tetax, const float tetay, const float tetaz)
 }
 
 Matrix4x4&
-Matrix4x4::RotationX(const float teta)
-{
+Matrix4x4::RotationX(const float teta) {
   float tempCos = Math::cos(teta);
   float tempSin = Math::sin(teta);
 
@@ -269,8 +262,7 @@ Matrix4x4::RotationX(const float teta)
 }
 
 Matrix4x4&
-Matrix4x4::RotationY(const float teta)
-{
+Matrix4x4::RotationY(const float teta) {
   float tempCos = Math::cos(teta);
   float tempSin = Math::sin(teta);
 
@@ -289,8 +281,7 @@ Matrix4x4::RotationY(const float teta)
 }
 
 Matrix4x4&
-Matrix4x4::RotationZ(const float teta)
-{
+Matrix4x4::RotationZ(const float teta) {
   float tempCos = Math::cos(teta);
   float tempSin = Math::sin(teta);
 
@@ -309,16 +300,14 @@ Matrix4x4::RotationZ(const float teta)
 }
 
 Matrix4x4&
-Matrix4x4::LookAt(const Vector3D & Eye, const Vector3D & At, const Vector3D & Up)
-{
+Matrix4x4::LookAt(const Vector3D& Eye, const Vector3D& At, const Vector3D& Up) {
   Vector3D Axis[3];
 
   Axis[2] = (At - Eye).normalize();  //zaxis
   Axis[0] = Up.cross(Axis[2]).normalize();  //xaxis
   Axis[1] = Axis[2].cross(Axis[0]); //yaxis
 
-  for (size_t i = 0; i < 3; i++)
-  {
+  for (size_t i = 0; i < 3; ++i) {
     (*this)[0][i] = Axis[i].x;
     (*this)[1][i] = Axis[i].y;
     (*this)[2][i] = Axis[i].z;
@@ -333,8 +322,7 @@ Matrix4x4::LookAt(const Vector3D & Eye, const Vector3D & At, const Vector3D & Up
 }
 
 Matrix4x4&
-Matrix4x4::Projection(float Width, float Height, float ZNear, float ZFar)
-{
+Matrix4x4::Projection(float Width, float Height, float ZNear, float ZFar) {
   *this = zerosMat4x4;
 
   data[0][0] = 2.0f * ZNear / Width;
@@ -347,8 +335,7 @@ Matrix4x4::Projection(float Width, float Height, float ZNear, float ZFar)
 }
 
 Matrix4x4&
-Matrix4x4::ProjectionFov(float FOV, float Aspect, float ZNear, float ZFar)
-{
+Matrix4x4::ProjectionFov(float FOV, float Aspect, float ZNear, float ZFar) {
   float    SinFov = Math::sin(0.5f * FOV);
   float    CosFov = Math::cos(0.5f * FOV);
 
@@ -368,20 +355,20 @@ Matrix4x4::ProjectionFov(float FOV, float Aspect, float ZNear, float ZFar)
 }
 
 Matrix4x4&
-Matrix4x4::Orthogonal(float Width, float Height, float ZNear, float ZFar)
-{
+Matrix4x4::Orthogonal(float Width, float Height, float ZNear, float ZFar) {
   (*this) = zerosMat4x4;
+  
   (*this)[0][0] = 2.0f / Width;
   (*this)[1][1] = 2.0f / Height;
-  (*this)[2][2] = 1.0f / (ZNear - ZFar);
-  (*this)[2][3] = -ZNear / (ZNear - ZFar);
+  (*this)[2][2] = 1.0f / (ZFar - ZNear);
+  (*this)[2][3] = ZNear / (ZNear - ZFar);
   (*this)[3][3] = 1.0f;
+
   return *this;
 }
 
 Matrix4x4&
-Matrix4x4::Reflection(Vector3D NormalOfMirror)
-{
+Matrix4x4::Reflection(Vector3D NormalOfMirror) {
   float xPow2 = NormalOfMirror.x * NormalOfMirror.x;
   float yPow2 = NormalOfMirror.y * NormalOfMirror.y;
   float zPow2 = NormalOfMirror.z * NormalOfMirror.z;
@@ -720,12 +707,12 @@ Matrix4x4::operator!=(const Matrix4x4& M)
 
 Matrix4x4
 Matrix4x4::identityMat4x4 = Matrix4x4(1.f, 0.f, 0.f, 0.f,
-                          0.f, 1.f, 0.f, 0.f,
-                          0.f, 0.f, 1.f, 0.f,
-                          0.f, 0.f, 0.f, 1.f);
+                                      0.f, 1.f, 0.f, 0.f,
+                                      0.f, 0.f, 1.f, 0.f,
+                                      0.f, 0.f, 0.f, 1.f);
 Matrix4x4
 Matrix4x4::zerosMat4x4 = Matrix4x4(0.f, 0.f, 0.f, 0.f,
-                       0.f, 0.f, 0.f, 0.f,
-                       0.f, 0.f, 0.f, 0.f,
-                       0.f, 0.f, 0.f, 0.f);
+                                   0.f, 0.f, 0.f, 0.f,
+                                   0.f, 0.f, 0.f, 0.f,
+                                   0.f, 0.f, 0.f, 0.f);
 }

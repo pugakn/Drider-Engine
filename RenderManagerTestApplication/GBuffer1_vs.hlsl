@@ -16,6 +16,7 @@ struct VS_INPUT {
 
 struct VS_OUTPUT {
   float4   Position : SV_POSITION;
+  float4   RealPos  : POSITION;
   float2   Texcoord : TEXCOORD0;
   float3x3 TBN      : TEXCOORD1;
 };
@@ -24,9 +25,10 @@ VS_OUTPUT VS(VS_INPUT input){
   VS_OUTPUT psOut;
   
   psOut.Position  = mul(WVP, float4(input.Position.xyz, 1.0f));
-  psOut.TBN[0]    = normalize(mul(input.Tangent, World)).xyz;
-  psOut.TBN[1]    = normalize(mul(input.Binormal, World)).xyz;
-  psOut.TBN[2]    = normalize(mul(input.Normal, World)).xyz;
+  psOut.RealPos   = mul(World, float4(input.Position.xyz, 1.0f));
+  psOut.TBN[0]    = normalize(mul(World, input.Tangent)).xyz;
+  psOut.TBN[1]    = normalize(mul(World, input.Binormal)).xyz;
+  psOut.TBN[2]    = normalize(mul(World, input.Normal)).xyz;
   psOut.Texcoord  = input.Texcoord;
   
   return psOut;

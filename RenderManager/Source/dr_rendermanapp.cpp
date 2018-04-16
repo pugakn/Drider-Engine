@@ -1,11 +1,10 @@
 #include "dr_rendermanapp.h"
-
 #include "dr_renderman.h"
 
 namespace driderSDK {
 
 void
-renderManagerApp(SceneGraph* sceneGraph) {
+renderManagerApp(const SceneGraph* sceneGraph) {
   RenderMan Manager;
 
   Manager.init();
