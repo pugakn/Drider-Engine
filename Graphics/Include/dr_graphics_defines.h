@@ -471,7 +471,7 @@ struct DR_GRAPHICS_EXPORT DrTextureDesc {
     height = 0;
     pitch = 0;
     mipLevels = 0;
-    CPUAccessFlags = DR_CPU_ACCESS_FLAG::drRead | DR_CPU_ACCESS_FLAG::drWrite;
+    CPUAccessFlags = 0;
     dimension = DR_DIMENSION::k2D;
     genMipMaps = false;
   }
@@ -525,6 +525,7 @@ struct DR_GRAPHICS_EXPORT DrBlendStateDesc {
   DR_BLEND_OP::E blendOp;
   DR_BLEND_OP::E blendOpAlpha;
   DrBlendStateDesc() {
+
   }
 };
 

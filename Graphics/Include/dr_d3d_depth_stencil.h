@@ -40,6 +40,9 @@ class DR_GRAPHICS_EXPORT D3DDepthStencil : public DepthStencil
   void
   create(const Device& device, const Texture& texture) override;
 
+  void
+  clear(const DeviceContext & deviceContext, const float valueDepth, const float valueStencil) override;
+
   //void
   //set(const DeviceContext& deviceContext, const DepthStencil& depthStencil) const = 0;
 

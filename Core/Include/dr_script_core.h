@@ -31,17 +31,8 @@ namespace driderSDK {
 		const TString&
 		getScript();
 
-		/**
-		* Gets the script's name
-		*
-		* @return
-		*	  The name of the script
-		*/
-		const TString&
-		getName();
-
 	private:
-		TString m_name, m_script;
+		TString m_script;
 
 	};
 

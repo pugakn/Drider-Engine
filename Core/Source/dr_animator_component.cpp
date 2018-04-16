@@ -10,6 +10,10 @@
 
 namespace driderSDK {
 
+AnimatorComponent::AnimatorComponent(GameObject& _gameObject) 
+ :  GameComponent(_gameObject, _T("AnimatorComponent")) 
+{}
+
 void
 AnimatorComponent::addAnimation(SharedAnimation animation, 
                                 const TString& animName) {
@@ -287,10 +291,14 @@ AnimatorComponent::readNodeHeirarchy(float animTime,
   auto boneIt = skeleton.bonesMapping.find(node->name);
 
   if (boneIt != skeleton.bonesMapping.end()) {
+    
     auto& pBone = skeleton.bones[boneIt->second];
 
     pBone->finalTransform = //skeleton.gloabalInverseTransform * 
                             pBone->boneOffset * globalTransform;
+
+    /*m_transforms[boneIt->second] = skeleton.bones[boneIt->second]->boneOffset * 
+                                   globalTransform;*/
   }
 
   for (auto& pChild : node->children) {

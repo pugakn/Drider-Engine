@@ -24,7 +24,7 @@ class DR_CORE_EXPORT AnimatorComponent : public GameComponent
   using SharedSkeleton = std::shared_ptr<Skeleton>;
   using TransformsList = std::vector<Matrix4x4>;
 
-  using GameComponent::GameComponent;
+  AnimatorComponent(GameObject& _gameObject);
 
   void
   addAnimation(SharedAnimation animation,  

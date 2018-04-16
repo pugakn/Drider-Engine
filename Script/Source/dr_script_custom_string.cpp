@@ -92,7 +92,12 @@ namespace driderSDK
 			context->SetException("Out of range");
 			return -1;
 		}
-		return a.copy(destiny, count, pos);
+
+    for (Int32 i = pos; i < count; ++i) {
+      destiny[i] = a[i];
+    }
+
+		return count - pos;
 	}
 
 	static int tStringFind(TString& a, TString& in, int pos) {

@@ -66,13 +66,28 @@ ResourceManager::loadResource(const TString& resourceName,
     r = getReference(resourceName);
   } 
   else {
+
+    bool codecRead = false;
+
     for (auto &codec : rm.m_codecs) {
+
       TString extension = FileSystem::GetFileExtension(resourceName);
+
       if (codec->isCompatible(extension)) {
         rm.createResource(resourceName, codec.get(), extraData);
         r = getReference(resourceName);
+
+        if (r) {
+          r->setName(resourceName);
+        }
+
+        codecRead = true;
       }
-    }    
+    }
+
+    if (!codecRead) {
+      Logger::addLog(_T("No codec avalible for resource: ") + resourceName); 
+    }
   }
 
   return r;

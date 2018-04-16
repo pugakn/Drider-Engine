@@ -23,6 +23,9 @@ class DR_CORE_EXPORT TextureCore : public Resource
   virtual void
   init(void* data);
 
+  virtual void
+  init(void* data, void* extraData);
+
   using GFXDeleter = std::function<void(Texture*)>;
   using TexturePtr = std::unique_ptr<Texture, GFXDeleter>;
 
