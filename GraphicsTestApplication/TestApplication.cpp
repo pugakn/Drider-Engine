@@ -63,8 +63,8 @@ void
 TestApplication::postUpdate() {
   Time::update();
   InputManager::update();
-  SceneGraph::update();
-  
+  playerScript->onUpdate();
+  SceneGraph::update();  
 }
 
 void 
@@ -301,7 +301,7 @@ TestApplication::initScriptEngine() {
                           _T("GameModule"));
 
   //Add script component to the objects and add script sections of the scripts
-  auto playerScript = m_player->createComponent<ScriptComponent>(Script1);
+  playerScript = m_player->createComponent<ScriptComponent>(Script1);
 
   //Build module
   auto currentModule = scriptEngine->m_scriptEngine->GetModule("GameModule");

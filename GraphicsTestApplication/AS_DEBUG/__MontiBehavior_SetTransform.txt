@@ -14,10 +14,10 @@ Variables:
     2   1 *    PshVPtr  v0
     3   2 *    ADDSi    v20, 134217744
     5   2 *    GETOBJREF 1
-    6   2 *    REFCPY   0xd469f40
+    6   2 *    REFCPY   0xd283148
     8   1 *    PopPtr
 - 5,3 -
     9   0 *    SUSPEND
             0:
-   10   0 *    FREE     v-1, 222732096
+   10   0 *    FREE     v-1, 220737864
    12   0 *    RET      2

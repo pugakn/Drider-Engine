@@ -1,19 +1,22 @@
 class script1 : MontiBehavior {
 
 	void Start() {
-		Vector3D vec(100.0,0.0,0.0);
-		this.transform.move(vec);
-		Print("move, x = " + this.transform.m_position.x + "\n");
+		Print("Start\n");
 	}
 		
 	float timer;
 
 	void Update() {
-		Vector3D vec(10.0 * getDelta(),0.0,0.0);
+		Vector3D vec(100.0 * getDelta(),0.0,0.0);
 
 		if(isKeyDown(kD)) {
 			this.transform.move(vec);
-			Print("move, x = " + this.transform.m_position.x + "\n");
+			//Print("move, x = " + this.transform.m_position.x + "\n");
+		}
+
+		if(isKeyDown(kA)) {
+			this.transform.move(vec * -1.0);
+			//Print("move, x = " + this.transform.m_position.x + "\n");
 		}
 	}
 
@@ -25,7 +28,7 @@ class script1 : MontiBehavior {
 		}
 
 		Print("onKeyDown\n");
-	}*/
+	}
 
 	void onKeyUp(KeyCode key) {
 		if(key == kD) {
@@ -37,7 +40,7 @@ class script1 : MontiBehavior {
 			Vector3D vec(-10.0,0.0,0.0);
 			this.transform.move(vec);
 		}
-	}
+	}*/
 }
 
 

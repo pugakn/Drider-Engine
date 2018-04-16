@@ -6,8 +6,8 @@ Variables:
  000: script1 this
 
 
-- 9,8 -
+- 7,8 -
     0   0 *    SUSPEND
     1   0 *    PshVPtr  v0
-    2   1 *    CALL     100           (MontiBehavior::MontiBehavior())
+    2   1 *    CALL     101           (MontiBehavior::MontiBehavior())
     4   0 *    RET      1

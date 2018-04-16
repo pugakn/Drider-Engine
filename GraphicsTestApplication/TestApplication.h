@@ -10,6 +10,7 @@ namespace driderSDK {
 class GameObject;
 class Model;
 class Technique;
+class ScriptComponent;
 
 class TestApplication : public Application
 {
@@ -61,6 +62,8 @@ class TestApplication : public Application
 
   std::unique_ptr<Technique> m_staticTech;
   std::unique_ptr<Technique> m_animTech;
+
+  ScriptComponent *playerScript;
 
   //DrSound *sound1;
   //DrSound *sound2;
