@@ -40,6 +40,8 @@
 #include <dr_script_object.h>
 #include <dr_context_manager.h>
 
+#include <dr_sound_api.h>
+
 namespace driderSDK {
 
 TestApplication::TestApplication() {}
@@ -64,6 +66,8 @@ TestApplication::postUpdate() {
   Time::update();
   InputManager::update();
   playerScript->onUpdate();
+  
+  //SoundAPI::update();
   SceneGraph::update();  
 }
 
@@ -143,6 +147,9 @@ TestApplication::initModules() {
   CameraManager::startUp();
   ContextManager::startUp();
   ScriptEngine::startUp();
+  SoundAPI::startUp(1,
+                    DR_INITFLAGS::kDrInitFlags_NORMAL,
+                    nullptr);
   SceneGraph::startUp();
 }
 
@@ -328,6 +335,7 @@ TestApplication::destroyModules() {
   GraphicsDriver::shutDown();
   ContextManager::shutDown();
   ScriptEngine::shutDown();
+  SoundAPI::shutDown();
   Logger::shutDown();
 }
 

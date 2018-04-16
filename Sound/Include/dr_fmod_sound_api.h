@@ -8,13 +8,13 @@ class DR_SOUND_EXPORT FMODSoundAPI : public SoundAPI {
 
   public:
     void
-    init() override;
+    init();
 
     virtual void
-    update() override;
+    update();
 
     void
-    destroy() override;
+    destroy();
 
 
 };

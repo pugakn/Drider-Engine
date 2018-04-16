@@ -106,7 +106,7 @@
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);$(DRIDER_DEPENDENCIES)Lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>Utilsd.lib;fmod_vc.lib;fmodL_vc.lib;Mathd.lib;%(AdditionalDependencies)</AdditionalDependencies>
-	  <ImportLibrary>$(SolutionDir)Lib\$(PlatformTarget)\$(TargetName).lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)Lib\$(PlatformTarget)\$(TargetName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -193,6 +193,7 @@
     <ClInclude Include="Include\dr_sound_prerequisites.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="dr_sound_api.cpp" />
     <ClCompile Include="Source\dr_fmod_createSoundExInfo.cpp" />
     <ClCompile Include="Source\dr_fmod_channel.cpp" />
     <ClCompile Include="Source\dr_fmod_channelGroup.cpp" />
