@@ -1,75 +1,12 @@
 void script1::Update()
 
-Temps: 3, 10, 11, 18, 25
+Temps: 
 
 Variables: 
  000: script1 this
- 003: Vector3D {noname}
- 010: string {noname}
- 018: string {noname}
- 025: string {noname}
 
 
-- 12,3 -
-    0  25 *    SUSPEND
-    1  25 *    PshVPtr  v0
-    2  26 *    ADDSi    v24, 134217745
-    4  26 *    RDSPtr
-    5  26 *    PSF      v3
-    6  27 *    CALLSYS  74           (Vector3D::Vector3D(const Vector3D&in))
-               ObjInfo  v3, 1
-    8  25 *    VAR      v3
-    9  26 *    PshVPtr  v0
-   10  27 *    ADDSi    v20, 134217745
-   12  27 *    RDSPtr
-   13  27 *    GETREF   1
-   14  27 *    CALLSYS  96           (void Transform::move(const Vector3D&in))
-   16  25 *    PSF      v3
-   17  26 *    CALLSYS  73           (Vector3D::~Vector3D())
-- 13,3 -
-               ObjInfo  v3, 0
-   19  25 *    SUSPEND
-   20  25 *    PGA      242806160
-   22  26 *    PSF      v10
-   23  27 *    CALLSYS  20           (string::string(const string&in))
-               ObjInfo  v10, 1
-   25  25 *    PshVPtr  v0
-   26  26 *    ADDSi    v20, 134217745
-   28  26 *    RDSPtr
-   29  26 *    ADDSi    v136, 67108879
-   31  26 *    ADDSi    v0, 67108878
-   33  26 *    PopRPtr
-   34  25 *    RDR4     v11
-   35  25 *    PshV4    v11
-   36  26 *    PSF      v18
-   37  27 *    PSF      v10
-   38  28 *    CALLSYS  40           (string string::opAdd(float) const)
-               ObjInfo  v18, 1
-   40  25 *    PSF      v10
-   41  26 *    CALLSYS  21           (string::~string())
-               ObjInfo  v10, 0
-   43  25 *    PGA      242806600
-   45  26 *    PSF      v10
-   46  27 *    CALLSYS  20           (string::string(const string&in))
-               ObjInfo  v10, 1
-   48  25 *    VAR      v10
-   49  26 *    PSF      v25
-   50  27 *    PSF      v18
-   51  28 *    GETREF   2
-   52  28 *    CALLSYS  26           (string string::opAdd(const string&in) const)
-               ObjInfo  v25, 1
-   54  25 *    PSF      v18
-   55  26 *    CALLSYS  21           (string::~string())
-               ObjInfo  v18, 0
-   57  25 *    PSF      v10
-   58  26 *    CALLSYS  21           (string::~string())
-               ObjInfo  v10, 0
-   60  25 *    PSF      v25
-   61  26 *    CALLSYS  69           (void Print(string&in))
-   63  25 *    PSF      v25
-   64  26 *    CALLSYS  21           (string::~string())
 - 20,3 -
-               ObjInfo  v25, 0
-   66  25 *    SUSPEND
+    0   0 *    SUSPEND
             0:
-   67  25 *    RET      1
+    1   0 *    RET      1

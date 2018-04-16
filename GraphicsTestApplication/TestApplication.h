@@ -1,33 +1,15 @@
 #pragma once
-#include <unordered_map>
-#include <vector>
-#include <dr_util_prerequisites.h>
-#include <dr_camera.h>
-#include <dr_viewport.h>
-#include "dr_application.h"
-#include <dr_resource_manager.h>
+
+#include <dr_application.h>
 #include <dr_memory.h>
-#include <dr_shader.h>
-
-#include <Windows.h>
-#include <iostream>
-#include <dr_graph.h>
-#include <thread>
-
-//#include <FMOD\fmod.hpp>
-#include <dr_fmod_sound_api.h>
-#include <dr_fmod_sound.h>
-#include <dr_fmod_channel.h>
-#include <dr_fmod_soundSystem.h>
-
-#include <dr_context_manager.h>
-#include <dr_script_engine.h>
+#include <dr_util_prerequisites.h>
+#include <dr_timer.h>
 
 namespace driderSDK {
 
+class GameObject;
+class Model;
 class Technique;
-class StaticMeshTechnique;
-class AnimationTechnique;
 
 class TestApplication : public Application
 {
@@ -37,34 +19,49 @@ class TestApplication : public Application
 
   void 
   postInit() override;
-  /*void onInput() override;*/
+
   void
   postUpdate() override;
 
   void 
   postRender() override;
-  //void onDraw() override;
+
   void
   postDestroy() override;
-  
-  void input();
-  void initInput();
-  void initResources();
-  void initSceneGraph();
-  void initScriptEngine();
 
-  void printHerarchy(std::shared_ptr<GameObject> obj, const TString& off);
+  void
+  initModules();
 
-  void toggleAABBDebug(std::shared_ptr<GameObject> obj);
-
-  void toggleSkeletonDebug(std::shared_ptr<GameObject> obj);
+  void
+  initInputCallbacks();
 
   void 
-  addScript(TString name);
+  createTechniques();
 
-  bool m_debugList;
-  //SoundAPI* soundDriver;
-  QUERY_ORDER::E m_queryOrder;
+  void
+  loadResources();
+
+  void
+  createScene();
+
+  std::shared_ptr<GameObject>
+  addObjectFromModel(std::shared_ptr<Model> model,
+                     const TString& name);
+
+  void
+  initScriptEngine();
+
+  void
+  destroyModules();
+
+  Int32 m_currCam;
+  TString m_camNames[2];
+
+  std::shared_ptr<GameObject> crocObj;
+
+  std::unique_ptr<Technique> m_staticTech;
+  std::unique_ptr<Technique> m_animTech;
+
   //DrSound *sound1;
   //DrSound *sound2;
   //DrChannel *channel;
@@ -74,19 +71,7 @@ class TestApplication : public Application
   FMOD::Channel    *channel = 0;
   FMOD_RESULT       result;
   unsigned int      version;*/
-  std::shared_ptr<Camera> m_camera;
-  std::shared_ptr<Camera> m_leftCam;
-  std::shared_ptr<Camera> m_upCam;
-  std::shared_ptr<Camera> m_activeCam;
-  std::unique_ptr<Technique> m_technique;
-  std::unique_ptr<AnimationTechnique> m_animTech;
-  std::unique_ptr<Technique> m_linesTech;
-  std::shared_ptr<GameObject> m_joker;
-  std::shared_ptr<GameObject> m_wep;
 
-  //OneRef myRef;
-  Int32 int1 = 1;
-  Int32 int2 = 2;
 };
 
 }

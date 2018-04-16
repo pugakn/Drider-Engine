@@ -15,7 +15,7 @@ Variables:
                VarDecl  0
     1  27 *    PshC4    0x0          (i:0, f:0)
     3  28 *    PshC4    0x0          (i:0, f:0)
-    5  29 *    PshC4    0x41200000          (i:1092616192, f:10)
+    5  29 *    PshC4    0x42c80000          (i:1120403456, f:100)
     7  30 *    PSF      v3
     8  31 *    CALLSYS  75           (Vector3D::Vector3D(float, float, float))
 - 5,3 -
@@ -29,14 +29,14 @@ Variables:
    17  29 *    CALLSYS  96           (void Transform::move(const Vector3D&in))
 - 6,3 -
    19  27 *    SUSPEND
-   20  27 *    PGA      242806160
+   20  27 *    PGA      122365944
    22  28 *    PSF      v13
    23  29 *    CALLSYS  20           (string::string(const string&in))
                ObjInfo  v13, 1
    25  27 *    PshVPtr  v0
    26  28 *    ADDSi    v20, 134217745
    28  28 *    RDSPtr
-   29  28 *    ADDSi    v136, 67108879
+   29  28 *    ADDSi    v160, 67108879
    31  28 *    ADDSi    v0, 67108878
    33  28 *    PopRPtr
    34  27 *    RDR4     v4
@@ -48,7 +48,7 @@ Variables:
    40  27 *    PSF      v13
    41  28 *    CALLSYS  21           (string::~string())
                ObjInfo  v13, 0
-   43  27 *    PGA      242806600
+   43  27 *    PGA      122364888
    45  28 *    PSF      v13
    46  29 *    CALLSYS  20           (string::string(const string&in))
                ObjInfo  v13, 1
