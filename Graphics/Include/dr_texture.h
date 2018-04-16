@@ -2,7 +2,7 @@
 #include "dr_graphics_prerequisites.h"
 #include "dr_graphics_defines.h"
 #include <string>
-
+#include <vector>
 namespace driderSDK {
 
 class Device;
@@ -72,12 +72,9 @@ class DR_GRAPHICS_EXPORT Texture
   *
   * @param buffer
   *   The buffer with initial data
-  *
-  * @return
-  *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   virtual void
-  map(const DeviceContext& deviceContext,char* buffer) = 0;
+  map(const DeviceContext& deviceContext,char** buffer) = 0;
 
   /**
   * Set the texture to the shader
@@ -91,6 +88,9 @@ class DR_GRAPHICS_EXPORT Texture
   */
   virtual void
   set(const DeviceContext& deviceContext, UInt32 slot) const = 0;
+
+  virtual void
+  getMemoryBuffer(const DeviceContext& deviceContext, std::vector<byte>& buff) = 0;
 
   /**
   * Release the allocated memory
@@ -138,6 +138,7 @@ class DR_GRAPHICS_EXPORT Texture
                       const DrTextureDesc& desc) = 0;
 
   const DrTextureDesc& getDescriptor() const { return m_descriptor; }
+  void setDescriptor(const DrTextureDesc&desc) { m_descriptor = desc; };
  protected:
    DrTextureDesc m_descriptor;
 };

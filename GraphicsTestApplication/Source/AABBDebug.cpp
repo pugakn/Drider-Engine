@@ -8,7 +8,7 @@
 namespace driderSDK {
 
 AABBDebug::AABBDebug(GameObject& _gameObject, bool _updateFromGO) 
-  : DrawableComponent(_gameObject),
+  : DrawableComponent(_gameObject, _T("AABBDebug")),
     m_updateFromGO(_updateFromGO)
 {
   m_primitive = DR_PRIMITIVE_TOPOLOGY::kLineList;

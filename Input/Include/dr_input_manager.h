@@ -46,7 +46,7 @@ class DR_INPUT_EXPORT InputManager : public Module<InputManager>
   * Captures all the devices input.
   */
   static void
-  capture();
+  update();
 
  //Private Methods
  private:

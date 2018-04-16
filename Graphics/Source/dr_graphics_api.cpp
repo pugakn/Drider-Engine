@@ -35,6 +35,12 @@ GraphicsAPI::init(UInt32 w, UInt32 h, void * hwnd, DR_GRAPHICS_API::E api)
   else {
     exit(666);
   }
+  DrTextureDesc backDesc;
+  backDesc.width = w;
+  backDesc.height = h;
+  backDesc.pitch = w * 4;
+  backDesc.Format = DR_FORMAT::kR8G8B8A8_UNORM;
+  backBufferTexture->setDescriptor(backDesc);
   m_hwnd = hwnd;
   m_device->createDeviceAndDeviceContext(*m_deviceContext);
 
@@ -69,23 +75,6 @@ GraphicsAPI::init(UInt32 w, UInt32 h, void * hwnd, DR_GRAPHICS_API::E api)
 
 
   m_backBufferView->set(*m_deviceContext, *m_depthStencilView);
-
-  if (api == DR_GRAPHICS_API::D3D11) {
-#if DR_PLATFORM  == DR_PLATFORM_WINDOWS
-    D3D11_VIEWPORT viewport = { 0 };
-    viewport.TopLeftX = 0;
-    viewport.TopLeftY = 0;
-    viewport.Width = static_cast<float>(w);
-    viewport.Height = static_cast<float>(h);
-    viewport.MinDepth = 0;
-    viewport.MaxDepth = 1;
-
-    auto d3dDC = reinterpret_cast<D3DDeviceContext*>(m_deviceContext.get());
-    d3dDC->D3D11DeviceContext->RSSetViewports(1, &viewport);
-#else
-    exit(666);
-#endif
-  }
 
   DrRasterizerDesc rasterizerStateDesc;
   rasterizerStateDesc.fillMode = DR_FILL_MODE::kSolid;

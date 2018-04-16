@@ -90,13 +90,17 @@ ScriptEngine::getScriptObject(TString scriptName,
                               asIScriptModule *mod,
                               asIScriptObject **objectRef,
                               asITypeInfo **typeRef) {
+  //Get script's real name
+  String realName = StringUtils::toString(scriptName);
+  realName.erase(realName.length() - 3,
+                 realName.length());
+
   //Get type of the script object
-  asITypeInfo* type = mod->GetTypeInfoByDecl(StringUtils::toString(
-                                             scriptName).c_str());
+  asITypeInfo* type = mod->GetTypeInfoByDecl(realName.c_str());
 
   // Get the factory function from the object type
-  String path = StringUtils::toString(scriptName) + " @" 
-                + StringUtils::toString(scriptName) + "()";
+  String path = realName + " @"
+                + realName + "()";
   asIScriptFunction *factory = type->GetFactoryByDecl(path.c_str());
 
   // Prepare the context to call the factory function

@@ -155,6 +155,7 @@
     <ClInclude Include="Include\dr_application.h" />
     <ClInclude Include="Include\dr_bone_attach_object.h" />
     <ClInclude Include="Include\dr_camera.h" />
+    <ClInclude Include="Include\dr_camera_component.h" />
     <ClInclude Include="Include\dr_camera_manager.h" />
     <ClInclude Include="Include\dr_collider_component.h" />
     <ClInclude Include="Include\dr_convexHull.h" />
@@ -170,6 +171,7 @@
     <ClInclude Include="Include\dr_mesh_info.h" />
     <ClInclude Include="Include\dr_model.h" />
     <ClInclude Include="Include\dr_model_info.h" />
+    <ClInclude Include="Include\dr_name_object.h" />
     <ClInclude Include="Include\dr_octree.h" />
     <ClInclude Include="Include\dr_octreeNode.h" />
     <ClInclude Include="Include\dr_parser.h" />
@@ -196,6 +198,7 @@
     <ClCompile Include="Source\dr_application.cpp" />
     <ClCompile Include="Source\dr_bone_attach_object.cpp" />
     <ClCompile Include="Source\dr_camera.cpp" />
+    <ClCompile Include="Source\dr_camera_component.cpp" />
     <ClCompile Include="Source\dr_camera_manager.cpp" />
     <ClCompile Include="Source\dr_collider_component.cpp" />
     <ClCompile Include="Source\dr_convexHull.cpp" />
@@ -207,6 +210,7 @@
     <ClCompile Include="Source\dr_md5.cpp" />
     <ClCompile Include="Source\dr_mesh.cpp" />
     <ClCompile Include="Source\dr_model.cpp" />
+    <ClCompile Include="Source\dr_name_object.cpp" />
     <ClCompile Include="Source\dr_octree.cpp" />
     <ClCompile Include="Source\dr_octreeNode.cpp" />
     <ClCompile Include="Source\dr_parser.cpp" />

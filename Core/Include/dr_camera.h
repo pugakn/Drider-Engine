@@ -18,9 +18,9 @@ CONSTRUCT_DESTRUCT_DECL(Camera)
 *  Camera class.
 *
 * Sample usage:
-*	Camera cam("myCamera",Vector3D(0,0,0), Vector3D(1,0,0), myViewport, 90, 0.1, 1000);
+*	Camera cam(Vector3D(0,0,0), Vector3D(1,0,0), myViewport, 90, 0.1, 1000);
 */
-class DR_CORE_EXPORT Camera : public GameObject
+class DR_CORE_EXPORT Camera
 {
  public:
 
@@ -29,34 +29,19 @@ class DR_CORE_EXPORT Camera : public GameObject
 	* Default constructor.
 	*
 	*/
-  Camera() {}
+  Camera();
+
 	/**
 	* TEST::constructor
 	* Initialize the camera with the given values.
-	*
-	* @param name
-	*   Name of the camera.
-	*
-	* @param pos
+  * @param _position
 	*   Position to initialize the camera.
 	*
-	* @param target
+	* @param _target
 	*   Point to look at.
-	*
-	* @param viewport
-	*   Viewport of the camera.
-	*
-	* @param fov
-	*   Vision angle in degrees.
-	*
-	* @param nearPlane
-	*   Value of the closest plane of the proyection.
-	*
-	* @param farPlane
-	*   Value of the farthest plane of the proyection.
 	*/
-	Camera(const TString& name,
-				 const Viewport& viewport);
+	Camera(const Vector3D& _position, 
+         const Vector3D& _target);
 
 	/**
 	* TEST::destructor
@@ -65,22 +50,12 @@ class DR_CORE_EXPORT Camera : public GameObject
 	*/
 	~Camera();
   
-  virtual SharedGameObj
-  createInstance();
+  void
+  setPosition(const Vector3D& position);
 
-  virtual void
-  copyData(SharedGameObj);
-
-	/**
-	* TEST::update
-	* Updates the camera.
-	*
-	* @param delta
-	*   Time value to update the camera.
-	*/
-	virtual void 
-	updateImpl();
-  
+  Vector3D
+  getPosition() const;
+	  
 	/**
 	* TEST::move
 	* Moves the camera.
@@ -240,12 +215,16 @@ class DR_CORE_EXPORT Camera : public GameObject
   END_REGISTER
 
  private:
+   
+  void 
+  invalidateView();
 
-
+	mutable Matrix4x4 m_vp;
+	mutable Matrix4x4 m_view;
+  mutable bool m_outdateView;
+  Vector3D m_position;
 	Vector3D m_target;
 	Vector3D m_up;
-	Matrix4x4 m_vp;
-	Matrix4x4 m_view;
 	Matrix4x4 m_projection;
 	Viewport m_viewport;
   float m_nearPlane;

@@ -1,19 +1,13 @@
 script1::script1()
 
-Temps: 1, 2, 3
+Temps: 
 
 Variables: 
  000: script1 this
 
 
-    0   3 *    PshVPtr  v0
-    1   4 *    CALL     100           (MontiBehavior::MontiBehavior())
-- 9,11 -
-    3   3 *    SUSPEND
-    4   3 *    PshVPtr  v0
-    5   4 *    ADDSi    v24, 134217745
-    7   4 *    PshC4    0x0          (i:0, f:0)
-    9   5 *    PshC4    0x0          (i:0, f:0)
-   11   6 *    PshC4    0x41200000          (i:1092616192, f:10)
-   13   7 *    ALLOC    0x7a58298, 75             (type:Vector3D, {no func})
-   16   3 *    RET      1
+- 7,8 -
+    0   0 *    SUSPEND
+    1   0 *    PshVPtr  v0
+    2   1 *    CALL     101           (MontiBehavior::MontiBehavior())
+    4   0 *    RET      1

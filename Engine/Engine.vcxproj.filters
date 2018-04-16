@@ -27,9 +27,6 @@
     <ClInclude Include="Include\dr_compatible_types.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="Include\dr_resource_manager.h">
-      <Filter>Archivos de encabezado\Resources</Filter>
-    </ClInclude>
     <ClInclude Include="Include\dr_codec_model.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
@@ -37,7 +34,10 @@
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="Include\dr_codec_script.h">
-		<Filter>Archivos de encabezado</Filter>
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_resource_manager.h">
+      <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -50,19 +50,13 @@
     <ClCompile Include="Source\dr_codec_texture.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
-    <ClCompile Include="Source\dr_engine_texture.cpp">
-      <Filter>Archivos de código fuente</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\dr_resource_manager.cpp">
-      <Filter>Archivos de código fuente\Resources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\dr_texture_resource.cpp">
-      <Filter>Archivos de código fuente\Resources</Filter>
-    </ClCompile>
     <ClCompile Include="Source\dr_codec_sound.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
     <ClCompile Include="Source\dr_codec_script.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_resource_manager.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
   </ItemGroup>

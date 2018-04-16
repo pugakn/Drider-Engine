@@ -93,7 +93,7 @@ class DR_MATH_EXPORT AABB
 	*  AABB's max point
 	*
 	*/
-	const Vector3D
+	Vector3D
 	getMaxPoint() const;
 
 	/**
@@ -104,7 +104,7 @@ class DR_MATH_EXPORT AABB
 	*  AABB's min point
 	*
 	*/
-	const Vector3D
+	Vector3D
 	getMinPoint() const;
 
   /**

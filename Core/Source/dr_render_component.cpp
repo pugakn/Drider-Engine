@@ -3,22 +3,36 @@
 #include <dr_vertex_buffer.h>
 #include "dr_gameObject.h"
 #include "dr_model.h"
+#include "dr_logger.h"
 
 namespace driderSDK {
 
 RenderComponent::RenderComponent(GameObject& _gameObject, 
-                                 SharedModel resource) 
-  : GameComponent(_gameObject),
+                                 SharedModel resource)
+  : GameComponent(_gameObject, _T("RenderComponent")),
     m_model(resource),
     m_isModel(true) 
 {}
 
 RenderComponent::RenderComponent(GameObject& _gameObject, 
                                  MeshList&& _materials) 
-  : GameComponent(_gameObject),
-    m_meshes(_materials),
+  : GameComponent(_gameObject, _T("RenderComponent")),
+    m_meshes(std::move(_materials)),
     m_isModel(false)
 {}
+
+void 
+RenderComponent::setModel(SharedModel model) {
+  m_isModel = true;
+  m_model = model;
+  onCreate();
+}
+
+void 
+RenderComponent::setMeshes(MeshList&& _meshes) {
+  m_isModel = false;
+  m_meshes = std::move(_meshes);
+}
 
 void
 RenderComponent::onCreate() {
@@ -46,8 +60,9 @@ RenderComponent::onUpdate() {
 
   auto model = m_model.lock();
 
-  if (!model) {
-    setEnabled(false);
+  if (!model && m_isModel) {
+    //setEnabled(false);
+    Logger::addLog(_T("Render Component model resource no logger available"));
   }
 }
 

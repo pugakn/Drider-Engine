@@ -81,6 +81,12 @@ void D3DDepthStencil::create(const Device & device, const Texture & texture)
       &dDesc, &APIDepthView);
 }
 
+void D3DDepthStencil::clear(const DeviceContext & deviceContext, const float valueDepth, const float valueStencil)
+{
+  reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
+    D3D11DeviceContext->ClearDepthStencilView(APIDepthView, D3D11_CLEAR_DEPTH, valueDepth, valueStencil);
+}
+
 void
 D3DDepthStencil::release() {
   APIDepthView->Release();

@@ -6,7 +6,7 @@ namespace driderSDK {
 
 const float Math::PI = std::acosf(-1.f);		     
 const float Math::HALF_PI = std::acosf(-1.f) * 0.5f;	   
-const float Math::QUARTER_PI = std::acosf(-1.f) * 0.5f ; 
+const float Math::QUARTER_PI = std::acosf(-1.f) * 0.25f ; 
 const float Math::TWO_PI = 2.f * std::acosf(-1.f);  	 
 const float Math::ONE_OVER_PI = 1.f / std::acosf(-1.f);
 const float Math::EULER = std::expf(1.0f);		   
