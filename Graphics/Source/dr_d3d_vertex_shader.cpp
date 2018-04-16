@@ -5,7 +5,7 @@
 #include "dr_d3d_device.h"
 #include "dr_d3d_device_context.h"
 #include "dr_d3d_shader_bytecode.h"
-
+#include <iostream>
 namespace driderSDK {
 
 void*
@@ -53,6 +53,7 @@ D3DVertexShader::compile(const Device& device,
                          const char* buffer,
                          size_t bufferSize) {
   m_shaderBytecode = new D3DShaderBytecode();
+  ID3DBlob* errorBlob = nullptr;
   auto pp = D3DCompile(buffer,
                        bufferSize,
                        0,
@@ -65,6 +66,10 @@ D3DVertexShader::compile(const Device& device,
                        &reinterpret_cast<D3DShaderBytecode*>
                          (m_shaderBytecode)->shader_blob,
                        0);
+  if (errorBlob) {
+    std::cout << (char*)errorBlob->GetBufferPointer() << std::endl;
+    errorBlob->Release();
+  }
 }
 
 }

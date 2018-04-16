@@ -31,8 +31,8 @@ PostProcessingPass::init(PassInitData* initData) {
   m_constantBuffer = dr_gfx_unique((ConstantBuffer*)device.createBuffer(bdesc));
 
   DrSampleDesc SSdesc;
-  SSdesc.Filter = DR_TEXTURE_FILTER::kMAXIMUM_ANISOTROPIC;
-  SSdesc.maxAnisotropy = 17;
+  SSdesc.Filter = DR_TEXTURE_FILTER::kMIN_MAG_MIP_LINEAR;
+  SSdesc.maxAnisotropy = 16;
   SSdesc.addressU = DR_TEXTURE_ADDRESS::kWrap;
   SSdesc.addressV = DR_TEXTURE_ADDRESS::kWrap;
   SSdesc.addressW = DR_TEXTURE_ADDRESS::kWrap;
@@ -48,6 +48,8 @@ PostProcessingPass::draw(PassDrawData* drawData) {
 
   m_vertexShader->set(dc);
   m_fragmentShader->set(dc);
+
+  m_samplerState->set(dc,DR_SHADER_TYPE_FLAG::kFragment);
 
   m_inputLayout->set(dc);
 

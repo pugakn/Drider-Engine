@@ -37,16 +37,16 @@ RenderMan::init() {
   GBufferTexDesc.dimension = DR_DIMENSION::k2D;
   GBufferTexDesc.Format = DR_FORMAT::kR16G16B16A16_FLOAT;
   GBufferTexDesc.mipLevels = 0;
-  GBufferTexDesc.CPUAccessFlags = DR_CPU_ACCESS_FLAG::drRead | DR_CPU_ACCESS_FLAG::drWrite;
+  GBufferTexDesc.CPUAccessFlags = 0;
   GBufferTexDesc.genMipMaps = true;
   GBufferTexDesc.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE |
                              DR_BIND_FLAGS::RENDER_TARGET;
 
   m_RTGBuffer1  = dr_gfx_shared(dc.createRenderTarget(GBufferTexDesc, 6));
   m_RTSSAO      = dr_gfx_shared(dc.createRenderTarget(GBufferTexDesc, 1));
-  //GBufferTexDesc.width  = static_cast<Int32>(1024);
-  //GBufferTexDesc.height = static_cast<Int32>(1024);
-  //GBufferTexDesc.pitch = static_cast<Int32>(1024) * 4;
+  //GBufferTexDesc.width  = static_cast<Int32>(2048);
+  //GBufferTexDesc.height = static_cast<Int32>(2048);
+  //GBufferTexDesc.pitch =  GBufferTexDesc.width * 4;
   GBufferTexDesc.Format = DR_FORMAT::kR32G32B32A32_FLOAT;
   m_RTShadow    = dr_gfx_shared(dc.createRenderTarget(GBufferTexDesc, 1));
 
@@ -58,8 +58,8 @@ RenderMan::init() {
 
   m_GBuffer1DSoptions = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
   m_SSAODSoptions     = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
-  //depthTextureDesc.width = static_cast<Int32>(1024);
-  //depthTextureDesc.height = static_cast<Int32>(1024);
+  //depthTextureDesc.width = static_cast<Int32>(2048);
+  //depthTextureDesc.height = static_cast<Int32>(2048);
   m_ShadowDSoptions   = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
 
   ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));

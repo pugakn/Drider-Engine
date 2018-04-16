@@ -26,7 +26,7 @@ VS_OUTPUT VS(VS_INPUT input){
   VS_OUTPUT psOut;
   
   psOut.Position  = mul(WVP, float4(input.Position.xyz, 1.0f));
-  psOut.RealPos   = mul(WVP, float4(input.Position.xyz, 1.0f));
+  psOut.RealPos   = psOut.Position;
   
   return psOut;
 }
