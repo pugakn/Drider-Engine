@@ -15,6 +15,10 @@ namespace driderSDK {
 
 class Matrix4x4;
 
+/**
+* Component used to manage a gameObject animations
+*/
+
 class DR_CORE_EXPORT AnimatorComponent : public GameComponent
 {
 

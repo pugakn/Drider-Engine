@@ -104,12 +104,9 @@ GraphicsApplication::postRender() {
   m_linesTech->setCamera(&camera);
 
   auto& mainC = CameraManager::getCamera(m_camNames[0]);
-
-
-
+  
   auto& dc = GraphicsAPI::getDeviceContext();
-
-
+  
   if (m_drawMeshes) {
 
     auto queryRes = SceneGraph::query(*mainC, 
@@ -189,7 +186,7 @@ GraphicsApplication::initModules() {
 
 void 
 GraphicsApplication::initInputCallbacks() {
-
+  
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::k2,
                         std::bind(&GraphicsApplication::toggleSkeletonView,
@@ -228,6 +225,10 @@ GraphicsApplication::initInputCallbacks() {
                         std::bind(&GraphicsApplication::recompileShaders,
                                   this));
   
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kJ, 
+                        std::bind(&GraphicsApplication::toggleAnimation,
+                                  this));
 
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kV,
@@ -238,8 +239,16 @@ void
 GraphicsApplication::loadResources() {
   
   m_currCam = 0;
+  m_currAnim = 0;
+
   m_camNames[0] = _T("MAIN_CAM");
   m_camNames[1] = _T("UP_CAM");
+
+  //m_animationsNames[0] = _T("Animation_mixamo.com");
+  m_animationsNames[0] = _T("Animation_0");
+  m_animationsNames[1] = _T("Animation_1");
+  m_animationsNames[2] = _T("Animation_2");
+  m_animationsNames[3] = _T("Animation_3");
 
   CameraManager::createCamera(m_camNames[0], 
                               {0, 200, -400}, 
@@ -257,14 +266,28 @@ GraphicsApplication::loadResources() {
 
   ResourceManager::loadResource(_T("Croc.X"));
 
-  //ResourceManager::loadResource(_T("HipHopDancing.fbx"));
+  ResourceManager::loadResource(_T("Shoot Rifle.fbx"));
 
-  //ResourceManager::loadResource(_T("Shoot Rifle.fbx"));
+  ResourceManager::renameResource(_T("Animation_mixamo.com"), 
+                                  m_animationsNames[0]);
 
   ResourceManager::loadResource(_T("Strafe_Left.fbx"));
 
-  ResourceManager::loadResource(_T("Weapons-of-survival.fbx"));
+  ResourceManager::renameResource(_T("Animation_mixamo.com"), 
+                                  m_animationsNames[1]);
 
+  ResourceManager::loadResource(_T("Gunplay.fbx"));
+
+  ResourceManager::renameResource(_T("Animation_mixamo.com"),
+                                  m_animationsNames[2]);
+
+  ResourceManager::loadResource(_T("Hit_Reaction_shoot.fbx"));
+
+  ResourceManager::renameResource(_T("Animation_mixamo.com"), 
+                                  m_animationsNames[3]);
+
+  ResourceManager::loadResource(_T("Run.fbx"));
+  
   ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
 
   ResourceManager::loadResource(_T("Sphere.fbx"));
@@ -291,11 +314,27 @@ GraphicsApplication::createScene() {
   
   auto activeCam = CameraManager::getActiveCamera();
   
+  auto woman = ResourceManager::getReferenceT<Model>(_T("Run.fbx"));
+
+  auto woms = ResourceManager::getReferenceT<Skeleton>(woman->skeletonName);
+
+  auto womanNode = addObjectFromModel(woman, _T("LE Morrita"));
+
+  auto animatorW = womanNode->createComponent<AnimatorComponent>();
+
+  animatorW->setSkeleton(woms);
+
+  auto womAni = ResourceManager::getReferenceT<Animation>(woman->animationsNames[0]);
+
+  animatorW->addAnimation(womAni, woman->animationsNames[0]);
+
+  animatorW->setCurrentAnimation(woman->animationsNames[0]);
+
+  womanNode->getTransform().setPosition({-200.f, 0, 200.f});
+
+  womanNode->getTransform().setScale({10.f, 10.f, 10.f});
+
   auto walkerModel = ResourceManager::getReferenceT<Model>(_T("Strafe_Left.fbx"));
-
-  auto& walkerAnimName = walkerModel->animationsNames[0];
-
-  auto wa = ResourceManager::getReferenceT<Animation>(walkerAnimName);
 
   auto ws = ResourceManager::getReferenceT<Skeleton>(walkerModel->skeletonName);
   
@@ -305,12 +344,21 @@ GraphicsApplication::createScene() {
 
   animator->setSkeleton(ws);
 
-  animator->addAnimation(wa, walkerAnimName);
+  for (Int32 i = 0; i < (sizeof(m_animationsNames) / sizeof(TString)); ++i)
+  {
+    auto wa = ResourceManager::getReferenceT<Animation>(m_animationsNames[i]);
+    
+    animator->addAnimation(wa, m_animationsNames[i]);
+  }
 
-  animator->setCurrentAnimation(walkerAnimName);
+  animator->setCurrentAnimation(m_animationsNames[m_currAnim]);
+  
+  //walkerObj->removeComponent<AnimatorComponent>();
 
   walkerObj->getTransform().setPosition({300, 0, 200});
-  
+
+  //walkerObj->getTransform().setScale({10.f, 10.f, 10.f});
+    
   m_right = walkerObj.get();
 
   Int32 copies = 0;
@@ -451,6 +499,20 @@ GraphicsApplication::toggleWireframe() {
   rs->set(GraphicsAPI::getDeviceContext());
 
   wire = !wire;
+}
+
+void 
+GraphicsApplication::toggleAnimation() {
+
+  m_currAnim = (m_currAnim + 1) % (sizeof(m_animationsNames) / sizeof(TString));
+
+  if (auto obj = SceneGraph::getRoot()->findNode(_T("LE Walker"))) {
+
+    if (auto animCmp = obj->getComponent<AnimatorComponent>()) {
+      animCmp->setCurrentAnimation(m_animationsNames[m_currAnim]);
+      animCmp->setTime(0);
+    }
+  }
 }
 
 void 

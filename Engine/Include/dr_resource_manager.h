@@ -103,6 +103,13 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager>
   isResourceLoaded(const TString& key);
 
   /**
+  * Renames an existing resource.
+  */
+  static void
+  renameResource(const TString& lastName, 
+                 const TString& newName);
+
+  /**
   * Creates a material using default properties or empty.
   * 
   * @param empty

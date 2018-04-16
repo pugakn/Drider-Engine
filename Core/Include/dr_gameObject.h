@@ -145,7 +145,7 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   {
     for (auto it = m_components.begin(); it != m_components.end(); ++it) {
       if (T* comp = dynamic_cast<T*>(it->get())) {
-        comp->onDestroy();
+        (*it)->onDestroy();
         m_components.erase(it);
         return;
       }

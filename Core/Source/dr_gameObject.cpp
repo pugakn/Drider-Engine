@@ -97,8 +97,11 @@ GameObject::clone(bool addToParent) {
 
   dup->m_isStatic = m_isStatic;
 
-  static_cast<EnableObject>(*dup) = *this; 
-  static_cast<NameObject>(*dup) = *this;
+  static_cast<EnableObject&>(*dup) = *this; 
+
+  static_cast<NameObject&>(*dup) = *this;
+
+  dup->setName(dup->getName() + _T(" clone"));
   /**
   dup->m_finalTransform = m_finalTransform;
    dup->m_finalTransform.invalidate();
