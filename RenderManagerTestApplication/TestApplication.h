@@ -43,7 +43,14 @@ class RenderManApp : public Application
 
   //LinesTechnique tecnico;
 
-cc
+  RenderMan m_renderMan;
+  SceneGraph::SharedGameObject model;
+  std::shared_ptr<Material> modelMat;
+  SceneGraph::SharedGameObject floor;
+  std::shared_ptr<Material> floorMat;
+
+  Vector3D modelMovement;
+  std::array<Light, 128> Lights;
 };
 
 }

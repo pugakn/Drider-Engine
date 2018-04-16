@@ -21,9 +21,6 @@ function JS_AddComponent_Script(componentName, modelName) {
 function JS_ClearPropertySheetUI() {
 	webix.callEvent('WEBIX_ClearPropertySheetUI');
 }
-function JS_GetSceneAreaViewport() {
-	webix.callEvent('WEBIX_GetSceneAreaViewport');
-}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -348,10 +345,6 @@ webix.ready(function(){
 	
 	$$("grid").attachEvent("onChange",function(){
 		var pos = getViewport($$("editor_grid").$view);
-		console.log(pos.top);
-		console.log(pos.left);
-		console.log(pos.width);
-		console.log(pos.height);
 		C_SetSceneAreaViewport(pos.top,pos.left,pos.width,pos.height);
 	});
 	
@@ -445,10 +438,6 @@ webix.ready(function(){
 	});
 	webixReady();
 	var pos = getViewport($$("editor_grid").$view);
-	console.log(pos.top);
-	console.log(pos.left);
-	console.log(pos.width);
-	console.log(pos.height);
 	C_SetSceneAreaViewport(pos.top,pos.left,pos.width,pos.height);
 });
 
