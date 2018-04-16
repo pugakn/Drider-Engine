@@ -35,6 +35,7 @@ public:
 private:
   SceneEditor m_editor;
 
+
 };
 
 }

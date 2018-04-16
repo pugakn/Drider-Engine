@@ -71,6 +71,7 @@ void Quad::draw()
   vs->set(deviceContext);
   IL->set(deviceContext);
   VB->set(deviceContext);
+
   IB->set(deviceContext); 
   CB->updateFromBuffer(deviceContext,reinterpret_cast<byte*>(&constBuff));
   CB->set(deviceContext);

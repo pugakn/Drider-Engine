@@ -5,7 +5,7 @@
 
 namespace driderSDK {
 
-FrustumDebug::FrustumDebug(GameObject& _go, Camera* cam) : DrawableComponent(_go) {
+FrustumDebug::FrustumDebug(GameObject& _go, Camera* cam) : DrawableComponent(_go,_T("asdfg2")) {
   debugCam = cam;
 }
 

@@ -1,9 +1,9 @@
 cbuffer ConstantBuffer {
-	float4x4 WVP;
+	float4 config;
 }
 
 struct VS_INPUT{
-  float4 position : POSITION;
+    float4 position : POSITION;
 	float4 normal   : NORMAL;	
 	float2 uv  	: TEXCOORD; 
 };
@@ -18,6 +18,6 @@ VS_OUTPUT VS( VS_INPUT input ) {
     VS_OUTPUT OUT;
 	OUT.hposition = input.position;
 	OUT.hnormal = input.normal;
-  OUT.htexcoord = input.uv;
+    OUT.htexcoord = input.uv;
     return OUT;
 }

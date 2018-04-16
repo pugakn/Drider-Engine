@@ -3,7 +3,7 @@
 namespace driderSDK {
 
 DrawableAnimated::DrawableAnimated(Model* _model, GameObject& _gameObj)  
-  : GameComponent(_gameObj),
+  : GameComponent(_gameObj,_T("asdfg")),
     m_model(_model)
 {}
 

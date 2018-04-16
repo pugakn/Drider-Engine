@@ -286,7 +286,10 @@ webix.ready(function(){
 			id:"editor_scene",
 			rows:[],
 			onContext:{},
-			body:{ template:"Scene" }
+			body:{ view:"edittree",id:"editor_grid",
+					drag:true,
+			}
+			
 		},
 		{
 			header:"Game",
@@ -300,7 +303,7 @@ webix.ready(function(){
 		tabbar:{
 			close:true
 		},
-		cells:editorCells
+		cells:editorCells,
 	};
 	
 	var propCells =[
@@ -336,12 +339,21 @@ webix.ready(function(){
 		{ view:"panel", x:3, y:0, dx:1, dy:4,resize:true, body:{view:"scrollview",body:propCells_UI},onContext:{},id:"prop_grid"},
 		{ view:"panel", x:2, y:0, dx:1, dy:3,resize:true, header:"Scene Graph", body:{view:"scrollview",body:treeb_UI, onContext:{},id:"tree_grid"} },
 		{ view:"panel", x:0, y:3, dx:3, dy:1,resize:true, body:fman_UI},
-		{ view:"panel", x:0, y:0, dx:2, dy:3,resize:true,  body: editor_UI,id:"editor_grid"},
+		{ view:"panel", x:0, y:0, dx:2, dy:3,resize:true,  body: editor_UI},
 	],
 	onContext:{},
 	};
 	
 	webix.ui({view:"scrollview", body: {rows:[toolbar_UI,grid]}});
+	
+	$$("grid").attachEvent("onChange",function(){
+		var pos = getViewport($$("editor_grid").$view);
+		console.log(pos.top);
+		console.log(pos.left);
+		console.log(pos.width);
+		console.log(pos.height);
+		C_SetSceneAreaViewport(pos.top,pos.left,pos.width,pos.height);
+	});
 	
 	//Property sheet
 	webix.ui({

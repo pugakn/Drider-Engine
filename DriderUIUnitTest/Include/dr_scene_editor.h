@@ -60,5 +60,6 @@ private:
   GFXUnique<RenderTarget> m_RT;
   WebRenderer webRenderer;
   Quad quad;
+  Quad m_editorQuad;
 };
 }

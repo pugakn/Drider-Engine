@@ -14,7 +14,7 @@
 #include <dr_collider_component.h>
 #include <dr_model.h>
 #include <dr_script_core.h>
-
+#include <dr_depth_stencil_state.h>
 #include<Shlwapi.h>
 #pragma comment(lib, "Shlwapi.lib")
 namespace driderSDK {
@@ -79,42 +79,26 @@ void SceneEditor::update()
 }
 void SceneEditor::draw()
 {
-  const float clearColor[4]{ 1,0,1,1 };
+  GraphicsAPI::getDepthStencilState(DR_DEPTH_STENCIL_STATES::kDepthRW).set(GraphicsAPI::getDeviceContext(),1.0);
+  const float clearColor[4]{ 1,1,1,1 };
   m_RT->clear(GraphicsAPI::getDeviceContext(), clearColor);
+
   //m_RT->set(GraphicsAPI::getDeviceContext(), GraphicsAPI::getDepthStencil());
   //Draw Scene
 
-  //WString buff;
-  //std::vector<byte> bBuff;
-  //buff.resize(m_sceneWidth * m_sceneHeight * 4);
-  //m_RT->getTexture(0).getMemoryBuffer(GraphicsAPI::getDeviceContext(),bBuff);
-  //for (size_t i = 0; i < buff.size(); i++)
-  //{
-  //  buff[i] = bBuff[i];
-  //}
-
-  //////std::cout << std::string("C_UpdateEditor('") + buff + std::string("',") + std::to_string(m_sceneWidth) + std::string(",") + std::to_string(m_sceneHeight) + std::string(");") << std::endl;
-
-  //webRenderer.executeJSCode(WString(_T("C_UpdateEditor('")) +
-  //  buff + WString(_T("',")) +
-  //  std::to_wstring(m_sceneWidth) +
-  //  WString(_T(",")) +
-  //  std::to_wstring(m_sceneHeight) +
-  //  WString(_T(");")));
-
-
-
+  GraphicsAPI::getDepthStencilState(DR_DEPTH_STENCIL_STATES::kDepthR).set(GraphicsAPI::getDeviceContext(), 1.0);
   GraphicsAPI::getBackBufferRT().set(GraphicsAPI::getDeviceContext(), GraphicsAPI::getDepthStencil());
   //GraphicsDriver::API().clear();
   webRenderer.setTexture();
-  GraphicsAPI::getBlendState(DR_BLEND_STATES::kAlphaBlend).set(GraphicsAPI::getDeviceContext());
+  
+  //GraphicsAPI::getBlendState(DR_BLEND_STATES::kAlphaBlend).set(GraphicsAPI::getDeviceContext());
   quad.draw();
-  GraphicsAPI::getBlendState(DR_BLEND_STATES::kOpaque).set(GraphicsAPI::getDeviceContext());
+  //GraphicsAPI::getBlendState(DR_BLEND_STATES::kOpaque).set(GraphicsAPI::getDeviceContext());
+
   //GraphicsDriver::API().swapBuffers();
 
-
-
-
+  m_RT->getTexture(0).set(GraphicsAPI::getDeviceContext(), 0);
+  m_editorQuad.draw();
 }
 std::shared_ptr<GameObject> 
 SceneEditor::addGameObject(std::shared_ptr<GameObject> parent, 
@@ -158,6 +142,8 @@ void SceneEditor::initCameras()
 void SceneEditor::initUI()
 {
   quad.init();
+  m_editorQuad.init();
+
   webRenderer.Init(m_viewport.width, m_viewport.height, BROWSER_MODE::kHeadless);
   webRenderer.loadURL("file:///C:/Users/Ulises/Documents/GitHub/Drider-Engine/DriderUIUnitTest/WebixTest/ss.html");
 
@@ -261,12 +247,22 @@ void SceneEditor::initUI()
 
   //Editor
   webRenderer.registerJS2CPPFunction(std::make_pair("C_SetSceneAreaViewport", [&](const CefRefPtr<CefListValue>& arguments) {
-    Int32 top = arguments->GetInt(1);
-    Int32 left = arguments->GetInt(2);
-    Int32 width = arguments->GetInt(1);
-    Int32 height = arguments->GetInt(2);
+    float top = ((float)arguments->GetInt(1)) / (float)m_viewport.height;
+    top = top * 2.0 - 1.0;
+    top *= -1;
+    float left = (float)arguments->GetInt(2) / (float)m_viewport.width;
+    left = left * 2.0 - 1.0;
+    float width = (float)arguments->GetInt(3) /  (float)m_viewport.width;
+    width = width * 2.0 ;
+    float height = (float)arguments->GetInt(4) / (float)m_viewport.height;
+    height = height * 2.0 ;
     //TODO: Search parent name 
-
+    vertex vertex[4];
+    vertex[0] = { left,  top, 1.f, 1.0f,    0.5f, 0.5f,0.0f, 1.0f  ,0.0,0.0 };
+    vertex[1] = { left,  top - height, 1.f, 1.0f,    0.0f, 0.0f,0.0f, 1.0f  ,0.0,1.0 };
+    vertex[2] = { left + width,   top - height,  1.f,  1.0f,    0.0f, 0.0f,1.0f, 1.0f  ,1.0,1.0 };
+    vertex[3] = { left + width,   top,  1.f,  1.0f,    0.0f, 1.0f,1.0f, 1.0f  ,1.0,0.0 };
+    m_editorQuad.VB->updateFromBuffer(GraphicsAPI::getDeviceContext(), (byte*)vertex);
   }));
   
 }
