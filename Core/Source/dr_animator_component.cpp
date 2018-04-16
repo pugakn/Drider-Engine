@@ -11,7 +11,8 @@
 namespace driderSDK {
 
 AnimatorComponent::AnimatorComponent(GameObject& _gameObject) 
- :  GameComponent(_gameObject, _T("AnimatorComponent")) 
+ :  GameComponent(_gameObject, _T("AnimatorComponent")),
+    m_blending(false)
 {}
 
 void

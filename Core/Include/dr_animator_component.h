@@ -132,6 +132,7 @@ class DR_CORE_EXPORT AnimatorComponent : public GameComponent
   UInt32 m_currentBone;
   float m_lastTime;
   float m_elapsed;
+  bool m_blending;
   TransformsList m_transforms;
   WeakSkeleton m_skeleton;
   WeakAnimation m_currentAnim;
