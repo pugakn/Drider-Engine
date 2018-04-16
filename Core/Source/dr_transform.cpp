@@ -105,7 +105,7 @@ Transform::setPosition(const Vector3D & position) {
 
 void
 Transform::move(float dist, AXIS::E axis) {
-  m_position[axis] += dist;
+  m_position.data[axis] += dist;
   invalidate();
 }
 

@@ -63,8 +63,6 @@ D3DRenderTarget::create(const Device & device,
 void
 D3DRenderTarget::set(const DeviceContext& deviceContext,
                      const DepthStencil& depthStencil) const {
-
-
   reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext->
       OMSetRenderTargets(RTVs.size(),
@@ -87,14 +85,14 @@ D3DRenderTarget::set(const DeviceContext& deviceContext,
 void D3DRenderTarget::clear(const DeviceContext & deviceContext, const float color[4])
 {
   float rgba[4]; // Cambiar después xD
-  rgba[0] = 0.5f;
-  rgba[1] = 0.5f;
-  rgba[2] = 0.5f;
+  rgba[0] = 0.0f;
+  rgba[1] = 0.0f;
+  rgba[2] = 1.0f;
   rgba[3] = 1.0f;
 
   for (int i = 0; i < RTVs.size(); i++) {
     reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
-      D3D11DeviceContext->ClearRenderTargetView(RTVs[i], rgba);
+      D3D11DeviceContext->ClearRenderTargetView(RTVs[i], color);
   }
 }
 

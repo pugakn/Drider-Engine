@@ -39,7 +39,8 @@ D3DTexture::createFromMemory(const Device& device,
   apiDesc.SampleDesc.Quality = 0;
   apiDesc.BindFlags = desc.bindFlags;
   apiDesc.MiscFlags = flags;
-  apiDesc.CPUAccessFlags = desc.CPUAccessFlags ^ DR_CPU_ACCESS_FLAG::drRead;
+  if (desc.CPUAccessFlags & DR_CPU_ACCESS_FLAG::drRead)
+    apiDesc.CPUAccessFlags = desc.CPUAccessFlags ^ DR_CPU_ACCESS_FLAG::drRead;
   apiDesc.Usage = static_cast<D3D11_USAGE>(desc.Usage);//D3D11_USAGE_STAGING;//D3D11_USAGE_DEFAULT;
 
   if (desc.genMipMaps) {

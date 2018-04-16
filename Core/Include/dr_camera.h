@@ -52,6 +52,9 @@ class DR_CORE_EXPORT Camera
   
   void
   setPosition(const Vector3D& position);
+
+  Vector3D
+  getPosition() const;
 	  
 	/**
 	* TEST::move

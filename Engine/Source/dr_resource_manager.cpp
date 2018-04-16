@@ -76,6 +76,11 @@ ResourceManager::loadResource(const TString& resourceName,
       if (codec->isCompatible(extension)) {
         rm.createResource(resourceName, codec.get(), extraData);
         r = getReference(resourceName);
+
+        if (r) {
+          r->setName(resourceName);
+        }
+
         codecRead = true;
       }
     }

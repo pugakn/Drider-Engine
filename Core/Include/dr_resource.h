@@ -1,12 +1,15 @@
 #pragma once
 
 #include <map>
+
 #include <dr_memory.h>
+
 #include "dr_core_prerequisites.h"
+#include "dr_name_object.h"
 
 namespace driderSDK {
 
-class DR_CORE_EXPORT Resource 
+class DR_CORE_EXPORT Resource : public NameObject
 {
  public:
   /**

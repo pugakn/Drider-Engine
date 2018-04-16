@@ -24,12 +24,24 @@ class RenderManApp : public Application
   virtual void 
   postDestroy() override;
 
+  void
+  initInputCallbacks();
+
+  void
+  RotateModel();
+
+  void
+  MoveModel(Vector3D direction);
+
   void 
   loadResources();
 
   // Inherited via Application
 
   RenderMan m_renderMan;
+  SceneGraph::SharedGameObject model;
+
+  Vector3D modelMovement;
 };
 
 }

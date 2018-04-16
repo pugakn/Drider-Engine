@@ -129,9 +129,7 @@ ScriptComponent::onKeyUp(KEY_CODE::E key) {
 
 void
 ScriptComponent::setScriptLocalProperties() {
-  Int8 result;
-
-  
+  Int8 result;  
 }
 
 }
