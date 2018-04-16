@@ -9,14 +9,12 @@ class script1 : MontiBehavior {
 	float timer;
 
 	void Update() {
-		/*timer += getDelta();
-		Print("Time: " + timer + "\n");*/
-		//Print("Update script1\n");
+		Vector3D vec(10.0 * getDelta(),0.0,0.0);
 
-		/*if(isKeyDown(kD)) {
+		if(isKeyDown(kD)) {
 			this.transform.move(vec);
 			Print("move, x = " + this.transform.m_position.x + "\n");
-		}*/
+		}
 	}
 
 	/*void onKeyDown(KeyCode key) {
@@ -33,7 +31,11 @@ class script1 : MontiBehavior {
 		if(key == kD) {
 			Vector3D vec(10.0,0.0,0.0);
 			this.transform.move(vec);
-			Print("move, x = " + this.transform.m_position.x + "\n");
+		}
+
+		if(key == kA) {
+			Vector3D vec(-10.0,0.0,0.0);
+			this.transform.move(vec);
 		}
 	}
 }

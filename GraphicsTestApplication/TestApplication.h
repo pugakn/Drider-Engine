@@ -57,7 +57,7 @@ class TestApplication : public Application
   Int32 m_currCam;
   TString m_camNames[2];
 
-  std::shared_ptr<GameObject> crocObj;
+  std::shared_ptr<GameObject> m_player;
 
   std::unique_ptr<Technique> m_staticTech;
   std::unique_ptr<Technique> m_animTech;

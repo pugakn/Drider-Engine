@@ -185,7 +185,10 @@ TestApplication::loadResources() {
 
   //Models
   ResourceManager::loadResource(_T("Croc.X"));
+  ResourceManager::loadResource(_T("Strafe_Left.fbx"));
+  ResourceManager::loadResource(_T("Weapons-of-survival.fbx"));
   ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
+  ResourceManager::loadResource(_T("Sphere.fbx"));
 
   //Scripts
   ResourceManager::loadResource(_T("MontiBehavior.as"));
@@ -198,18 +201,31 @@ TestApplication::createScene() {
 
   auto activeCam = CameraManager::getActiveCamera();
 
-  auto crocModel = ResourceManager::getReferenceT<Model>(_T("Croc.X"));
-  crocObj = addObjectFromModel(crocModel, _T("Croc"));
-  crocObj->getTransform().setPosition( { 0, 0, 0 } );
+  auto walkerModel = ResourceManager::getReferenceT<Model>(_T("Strafe_Left.fbx"));
+  auto& walkerAnimName = walkerModel->animationsNames[0];
+  auto wa = ResourceManager::getReferenceT<Animation>(walkerAnimName);
+  auto ws = ResourceManager::getReferenceT<Skeleton>(walkerModel->skeletonName);
+
+  m_player = addObjectFromModel(walkerModel, _T("Player"));
+  auto animator = m_player->createComponent<AnimatorComponent>();
+  animator->setSkeleton(ws);
+  animator->addAnimation(wa, walkerAnimName);
+  animator->setCurrentAnimation(walkerAnimName);
+  m_player->getTransform().setPosition({ 0, 0, 300 });
+
+
+  auto sphereMod = ResourceManager::getReferenceT<Model>(_T("Sphere.fbx"));
+  auto sphereCenter = SceneGraph::createObject(_T("Spherin"));
+  sphereCenter->getTransform().scale({ 20, 20, 20 });
+
 
   auto camNode = SceneGraph::createObject(_T("Camera"));
   camNode->createComponent<CameraComponent>(activeCam);
   camNode->getTransform().setPosition({ 0, 0, -20 });
-  camNode->setParent(crocObj);
+  camNode->setParent(sphereCenter);
 
   auto quadMod = ResourceManager::getReferenceT<Model>(_T("ScreenAlignedQuad.3ds"));
   auto quad = addObjectFromModel(quadMod, _T("Floor"));
-
   quad->getTransform().rotate({ -Math::HALF_PI, 0, 0 });
   quad->getTransform().setScale({ 10000, 10000, 10000 });
 }
@@ -285,13 +301,17 @@ TestApplication::initScriptEngine() {
                           _T("GameModule"));
 
   //Add script component to the objects and add script sections of the scripts
-  auto crocScript = crocObj->createComponent<ScriptComponent>(Script1);
+  auto playerScript = m_player->createComponent<ScriptComponent>(Script1);
 
+  //Build module
   auto currentModule = scriptEngine->m_scriptEngine->GetModule("GameModule");
   result = currentModule->Build();
 
-  crocScript->initScript();
-  crocScript->start();
+  //Initialize scripts
+  playerScript->initScript();
+
+  //Start the script
+  playerScript->start();
 
 }
 
