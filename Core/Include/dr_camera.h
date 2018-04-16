@@ -230,8 +230,6 @@ class DR_CORE_EXPORT Camera
   UInt32
   getViewportHeight() const;
 
-  Vector3D
-  getPosition() const;
 
   Vector3D
   getDirection() const;
