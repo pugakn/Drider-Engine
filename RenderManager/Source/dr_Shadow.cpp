@@ -29,14 +29,6 @@ ShadowPass::init(PassInitData* initData) {
   bdesc.type = DR_BUFFER_TYPE::kCONSTANT;
   bdesc.sizeInBytes = sizeof(CBuffer);
   m_constantBuffer = dr_gfx_unique((ConstantBuffer*)device.createBuffer(bdesc));
-
-  DrSampleDesc SSdesc;
-  SSdesc.Filter = DR_TEXTURE_FILTER::kMAXIMUM_ANISOTROPIC;
-  SSdesc.maxAnisotropy = 17;
-  SSdesc.addressU = DR_TEXTURE_ADDRESS::kWrap;
-  SSdesc.addressV = DR_TEXTURE_ADDRESS::kWrap;
-  SSdesc.addressW = DR_TEXTURE_ADDRESS::kWrap;
-  m_samplerState = dr_gfx_unique(device.createSamplerState(SSdesc));
 }
 
 void
@@ -57,7 +49,6 @@ ShadowPass::draw(PassDrawData* drawData) {
 
   dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
 
-  m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kFragment);
 
   data->OutRt->getTexture(0).set(dc, 0);
 

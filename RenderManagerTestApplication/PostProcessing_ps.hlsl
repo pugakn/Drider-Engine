@@ -69,6 +69,52 @@ UVCoordFromMainCam(const int camIndex, float3 Pos) {
   return uv;
 }
 
+#define DR_SH_PCF_ENABLED
+float GetShadowValue(float4 fromLightPos, const int camIndex ) {
+  const float shadowBias = 0.0005;
+  float2 fromLightCoords = fromLightPos.xy * 0.5 + 0.5;
+  float shadowValue = 1.0;
+  if(fromLightCoords.x < 1.0 && 
+     fromLightCoords.y < 1.0 && 
+     fromLightCoords.x  > 0.0 && 
+	 fromLightCoords.y > 0.0 && 
+	 fromLightPos.w > 0.0 && 
+	 fromLightPos.z < 1.0 )
+  {
+  fromLightCoords.y = 1.0 - fromLightCoords.y;
+  //Pixel Depth seen from shadowCam
+  float depthPos = fromLightPos.z;
+  #ifdef DR_SH_PCF_ENABLED
+
+  uint width, height;   //TODO: Pass This in CBUFFER xdXDxDxDXDXD
+  ShadowTex1.GetDimensions(width, height);  //TODO: Pass This in CBUFFER xdXDxDxDXDXD
+  float2 texelSize = float2(1.0 ,1.0) / float2(width,height);
+  const float sampleRadius = 3.0;
+  const float modifier = 0.25 / (sampleRadius*sampleRadius*2.0);
+  [unroll]
+  for (float y = -sampleRadius; y <= sampleRadius; y += 1.0){
+    [unroll]
+	for (float x = -sampleRadius; x <= sampleRadius; x += 1.0){
+	      //Projected depth	
+	      float depthSample = ShadowTex1.Sample( SS, fromLightCoords.xy + texelSize * float2(x,y) )[camIndex];
+	   
+	      if( depthPos > (depthSample + shadowBias))
+	      	shadowValue -= modifier;	  
+	}
+  }
+  
+  #else //DR_SH_PCF_ENABLED
+  //Projected depth	
+  float depthSample = ShadowTex1.Sample( SS, fromLightCoords.xy )[camIndex];
+  
+  if( depthPos > (depthSample + shadowBias))
+  	shadowValue = 0.25;	  
+  #endif //DR_SH_PCF_ENABLED
+  }
+  
+  return shadowValue;
+}
+
 float3
 BiasX2(float3 x) {
     return 2.0f * x - 1.0f;
@@ -144,7 +190,7 @@ float4 FS(PS_INPUT input) : SV_TARGET {
   float2 uv = input.Texcoord;
   
   float3 albedo    = AlbedoTex.Sample(SS, uv).xyz;
-  float3 position  = PositionTex.Sample(SS, uv).xyz;
+  float4 position  = PositionTex.Sample(SS, uv).xyzw;
   //if (PositionTex.Sample(SS, uv).w == 0.0f) discard;
   float3 normal    = NormalTex.Sample(SS, uv).xyz;
   float3 emissive  = EmissiveTex.Sample(SS, uv).xyz;
@@ -161,10 +207,10 @@ float4 FS(PS_INPUT input) : SV_TARGET {
   float  lightIntensity = 0.0f;
   float  LightPower = 0.0f;
 
-  float3 ViewDir = normalize(kEyePosition.xyz - position);
+  float3 ViewDir = normalize(kEyePosition.xyz - position.xyz);
   float  NdotV = saturate(dot(normal, ViewDir));
 
-  float3 LightDir = normalize(lightPosition - position);
+  float3 LightDir = normalize(lightPosition - position.xyz);
   float3 H;
   float  NdotL;
   float  LdotV;
@@ -183,9 +229,9 @@ float4 FS(PS_INPUT input) : SV_TARGET {
     lightColor     = kLightColor[index].xyz;
     lightIntensity = kLightColor[index].w;
     
-    LightPower = saturate( 1.0f - (length(lightPosition - position) / 150.0f) );
+    LightPower = saturate( 1.0f - (length(lightPosition - position.xyz) / 150.0f) );
 
-    LightDir = normalize(lightPosition - position);
+    LightDir = normalize(lightPosition - position.xyz);
 
     H     = normalize(LightDir + ViewDir);
 
@@ -221,24 +267,11 @@ float4 FS(PS_INPUT input) : SV_TARGET {
   
   //return float4(uv, 0.0f, 1); //ShadowCam1
 
-  //Projects the uv's from the shadowCam to what mainCam sees
-  float2 shadowUVCoord = UVCoordFromCam(0, position);
-  if (shadowUVCoord.x < 0.0f) discard;
-  if (shadowUVCoord.x > 1.0f) discard;
-  if (shadowUVCoord.y < 0.0f) discard;
-  if (shadowUVCoord.y > 1.0f) discard;
-  //return float4(shadowUVCoord, 0.0f, 1.0f);
-  
-  //Pixel Depth seen from shadowCam
-  float sD = LinearShadowDepth(0, PositionTex.Sample(SS, uv));
-  //return float4(sD, sD, sD, 1.0f);
+  //Projects the position from the mainCam to what shadowCam sees
+  float4 fromLightPos = mul(kShadowVP[0],position);
+  fromLightPos.xyz /= fromLightPos.w;
 
-  //Projected depth
-  return float4(ShadowTex1.Sample(SS, shadowUVCoord).xxx, 1); //ShadowCam1
-
-  //depth seen from shadow cam
-  float depthValueFromShadowCam = ShadowTex1.Sample(SS, uv).x;
-  return float4(depthValueFromShadowCam, depthValueFromShadowCam, depthValueFromShadowCam, 1.0f);
-  
-  return float4(finalColor + emissive, 1.0f);
+  float4 ShadowValue = GetShadowValue(fromLightPos,0).xxxx;
+  //return ShadowValue;
+  return float4(finalColor * ShadowValue  + emissive, 1.0f);
 }

@@ -61,7 +61,7 @@ class ShadowPass : public RenderPass {
 
   CBuffer CB;
 
-  GFXUnique<SamplerState> m_samplerState;
+  
 };
 
 }

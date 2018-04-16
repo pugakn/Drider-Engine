@@ -4,7 +4,7 @@
 #include <dr_graph.h>
 #include <dr_render_component.h>
 #include <dr_camera.h>
-
+#include <dr_sample_state.h>
 namespace driderSDK {
 
 struct GBuffer1InitData : PassInitData {
@@ -61,6 +61,7 @@ class GBuffer1Pass : public RenderPass {
   CBuffer CB;
 
   GFXUnique<Texture> cubeMapTex;
+  GFXUnique<SamplerState> m_samplerState;
 };
 
 }

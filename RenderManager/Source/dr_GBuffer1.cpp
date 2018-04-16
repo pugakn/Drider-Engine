@@ -30,6 +30,14 @@ GBuffer1Pass::init(PassInitData* initData) {
   bdesc.type = DR_BUFFER_TYPE::kCONSTANT;
   bdesc.sizeInBytes = sizeof(CBuffer);
   m_constantBuffer = dr_gfx_unique((ConstantBuffer*)device.createBuffer(bdesc));
+
+  DrSampleDesc SSdesc;
+  SSdesc.Filter = DR_TEXTURE_FILTER::kMIN_MAG_LINEAR_MIP_POINT;
+  SSdesc.maxAnisotropy = 16;
+  SSdesc.addressU = DR_TEXTURE_ADDRESS::kWrap;
+  SSdesc.addressV = DR_TEXTURE_ADDRESS::kWrap;
+  SSdesc.addressW = DR_TEXTURE_ADDRESS::kWrap;
+  m_samplerState = dr_gfx_unique(device.createSamplerState(SSdesc));
 }
 
 void
@@ -41,7 +49,7 @@ GBuffer1Pass::draw(PassDrawData* drawData) {
   
   m_vertexShader->set(dc);
   m_fragmentShader->set(dc);
-
+  m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kFragment);
   m_inputLayout->set(dc);
   
   m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
