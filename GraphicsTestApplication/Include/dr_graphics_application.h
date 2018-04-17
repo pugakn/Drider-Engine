@@ -76,6 +76,9 @@ private:
   toggleCamera();
 
   void
+  initScriptEngine();
+
+  void
   playerMovement();
 
   void

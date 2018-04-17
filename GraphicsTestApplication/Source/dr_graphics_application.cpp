@@ -10,6 +10,7 @@
 #include <dr_camera.h>
 #include <dr_camera_component.h>
 #include <dr_camera_manager.h> 
+#include <dr_context_manager.h>
 #include <dr_degree.h>
 #include <dr_device.h>
 #include <dr_device_context.h>
@@ -29,6 +30,9 @@
 #include <dr_render_component.h>
 #include <dr_resource_manager.h>
 #include <dr_skeleton.h>
+#include <dr_script_component.h>
+#include <dr_script_core.h>
+#include <dr_script_engine.h>
 #include <dr_vertex_buffer.h>
 #include <dr_time.h>
 
@@ -58,6 +62,7 @@ GraphicsApplication::postInit() {
   initModules();   
   initInputCallbacks();
   loadResources();
+  initScriptEngine();
   createScene();
   createTechniques();
 
@@ -181,6 +186,8 @@ GraphicsApplication::initModules() {
   InputManager::startUp(reinterpret_cast<SizeT>(m_hwnd));
   ResourceManager::startUp();
   CameraManager::startUp();
+  ScriptEngine::startUp();
+  ContextManager::startUp();
   SceneGraph::startUp();
 }
 
@@ -291,6 +298,10 @@ GraphicsApplication::loadResources() {
   ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
 
   ResourceManager::loadResource(_T("Sphere.fbx"));
+  
+  ResourceManager::loadResource(_T("script1.as"));
+
+  ResourceManager::loadResource(_T("montiBehavior.as"));
 }
 
 void 
@@ -329,6 +340,29 @@ GraphicsApplication::createScene() {
   animatorW->addAnimation(womAni, woman->animationsNames[0]);
 
   animatorW->setCurrentAnimation(woman->animationsNames[0]);
+  
+  auto printComponents = [](GameObject* go) 
+  {
+    auto cmps = go->getComponents<GameComponent>();
+    Logger::addLog(_T("----------------"));
+    for (auto& cmp : cmps) {
+      Logger::addLog(cmp->getName());
+    }
+    Logger::addLog(_T("----------------"));
+  };
+
+  printComponents(womanNode.get());
+
+  //Get script references of the ResourceManager
+  auto script1 = ResourceManager::getReferenceT<ScriptCore>(_T("script1.as"));
+    
+  auto scriptComp = womanNode->createComponent<ScriptComponent>(script1);
+
+  printComponents(womanNode.get());
+
+  scriptComp->initScript();
+
+  scriptComp->start();
 
   womanNode->getTransform().setPosition({-200.f, 0, 200.f});
 
@@ -521,6 +555,44 @@ GraphicsApplication::toggleCamera() {
   m_currCam = !m_currCam;
 
   CameraManager::setActiveCamera(m_camNames[m_currCam]);
+}
+
+void 
+GraphicsApplication::initScriptEngine() {
+  Int32 result;
+
+  auto ctxMag = ContextManager::instancePtr();
+
+  auto scriptEngine = ScriptEngine::instancePtr();
+
+  //Create engine
+  result = scriptEngine->createEngine();
+
+  //Configurate engine
+  result = scriptEngine->configurateEngine(ctxMag);
+
+  //Register all functions
+  result = Keyboard::registerFunctions(scriptEngine);
+  Vector3D vector;
+  result = vector.registerFunctions(scriptEngine);
+  Transform transform;
+  result = transform.registerFunctions(scriptEngine);
+  result = Time::registerFunctions(scriptEngine);
+  
+  //Create a context
+  scriptEngine->m_scriptContext = ctxMag->addContext(scriptEngine->m_scriptEngine,
+                                                     _T("GameModule"));
+
+  //Get script references of the ResourceManager
+  auto bs = ResourceManager::getReferenceT<ScriptCore>(_T("montiBehavior.as"));
+
+  //Add script section of behavior
+  scriptEngine->addScript(bs->getName(),
+                          bs->getScript(),
+                          _T("GameModule"));
+
+  auto currentModule = scriptEngine->m_scriptEngine->GetModule("GameModule");
+  result = currentModule->Build(); 
 }
 
 void 
