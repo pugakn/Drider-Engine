@@ -133,6 +133,24 @@ ResourceManager::isResourceLoaded(const TString& resourceName) {
   return instance().m_resources.count(resourceName);
 }
 
+void 
+ResourceManager::renameResource(const TString& lastName, 
+                                const TString& newName) {
+  auto& resources = instance().m_resources;
+  auto it = resources.find(lastName);
+  if (it != resources.end()) {
+    auto res = it->second;
+    resources.erase(it);
+
+    DR_DEBUG_ONLY(
+    if (resources.count(newName)) {
+      Logger::addLog(_T("About to replace existing resource named: ") + newName);
+    })
+
+    resources[newName] = res;
+  }
+}
+
 ResourceManager::SharedResource
 ResourceManager::getReference(const TString& resourceName) {
   std::shared_ptr<Resource> res;

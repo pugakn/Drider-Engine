@@ -28,7 +28,7 @@ public:
   virtual void 
   setName(const TString& name);
 
-  const TString& 
+  virtual const TString& 
   getName() const;
 private:
   TString m_name;

@@ -10,6 +10,7 @@
 #include <dr_camera.h>
 #include <dr_camera_component.h>
 #include <dr_camera_manager.h> 
+#include <dr_context_manager.h>
 #include <dr_degree.h>
 #include <dr_device.h>
 #include <dr_device_context.h>
@@ -29,6 +30,9 @@
 #include <dr_render_component.h>
 #include <dr_resource_manager.h>
 #include <dr_skeleton.h>
+#include <dr_script_component.h>
+#include <dr_script_core.h>
+#include <dr_script_engine.h>
 #include <dr_vertex_buffer.h>
 #include <dr_time.h>
 
@@ -58,6 +62,7 @@ GraphicsApplication::postInit() {
   initModules();   
   initInputCallbacks();
   loadResources();
+  initScriptEngine();
   createScene();
   createTechniques();
 
@@ -104,12 +109,9 @@ GraphicsApplication::postRender() {
   m_linesTech->setCamera(&camera);
 
   auto& mainC = CameraManager::getCamera(m_camNames[0]);
-
-
-
+  
   auto& dc = GraphicsAPI::getDeviceContext();
-
-
+  
   if (m_drawMeshes) {
 
     auto queryRes = SceneGraph::query(*mainC, 
@@ -184,12 +186,14 @@ GraphicsApplication::initModules() {
   InputManager::startUp(reinterpret_cast<SizeT>(m_hwnd));
   ResourceManager::startUp();
   CameraManager::startUp();
+  ScriptEngine::startUp();
+  ContextManager::startUp();
   SceneGraph::startUp();
 }
 
 void 
 GraphicsApplication::initInputCallbacks() {
-
+  
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::k2,
                         std::bind(&GraphicsApplication::toggleSkeletonView,
@@ -228,6 +232,10 @@ GraphicsApplication::initInputCallbacks() {
                         std::bind(&GraphicsApplication::recompileShaders,
                                   this));
   
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kJ, 
+                        std::bind(&GraphicsApplication::toggleAnimation,
+                                  this));
 
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kV,
@@ -238,8 +246,16 @@ void
 GraphicsApplication::loadResources() {
   
   m_currCam = 0;
+  m_currAnim = 0;
+
   m_camNames[0] = _T("MAIN_CAM");
   m_camNames[1] = _T("UP_CAM");
+
+  //m_animationsNames[0] = _T("Animation_mixamo.com");
+  m_animationsNames[0] = _T("Animation_0");
+  m_animationsNames[1] = _T("Animation_1");
+  m_animationsNames[2] = _T("Animation_2");
+  m_animationsNames[3] = _T("Animation_3");
 
   CameraManager::createCamera(m_camNames[0], 
                               {0, 200, -400}, 
@@ -257,17 +273,35 @@ GraphicsApplication::loadResources() {
 
   ResourceManager::loadResource(_T("Croc.X"));
 
-  //ResourceManager::loadResource(_T("HipHopDancing.fbx"));
+  ResourceManager::loadResource(_T("Shoot Rifle.fbx"));
 
-  //ResourceManager::loadResource(_T("Shoot Rifle.fbx"));
+  ResourceManager::renameResource(_T("Animation_mixamo.com"), 
+                                  m_animationsNames[0]);
 
   ResourceManager::loadResource(_T("Strafe_Left.fbx"));
 
-  ResourceManager::loadResource(_T("Weapons-of-survival.fbx"));
+  ResourceManager::renameResource(_T("Animation_mixamo.com"), 
+                                  m_animationsNames[1]);
 
+  ResourceManager::loadResource(_T("Gunplay.fbx"));
+
+  ResourceManager::renameResource(_T("Animation_mixamo.com"),
+                                  m_animationsNames[2]);
+
+  ResourceManager::loadResource(_T("Hit_Reaction_shoot.fbx"));
+
+  ResourceManager::renameResource(_T("Animation_mixamo.com"), 
+                                  m_animationsNames[3]);
+
+  ResourceManager::loadResource(_T("Run.fbx"));
+  
   ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
 
   ResourceManager::loadResource(_T("Sphere.fbx"));
+  
+  ResourceManager::loadResource(_T("script1.as"));
+
+  ResourceManager::loadResource(_T("montiBehavior.as"));
 }
 
 void 
@@ -291,11 +325,50 @@ GraphicsApplication::createScene() {
   
   auto activeCam = CameraManager::getActiveCamera();
   
+  auto woman = ResourceManager::getReferenceT<Model>(_T("Run.fbx"));
+
+  auto woms = ResourceManager::getReferenceT<Skeleton>(woman->skeletonName);
+
+  auto womanNode = addObjectFromModel(woman, _T("LE Morrita"));
+
+  auto animatorW = womanNode->createComponent<AnimatorComponent>();
+
+  animatorW->setSkeleton(woms);
+
+  auto womAni = ResourceManager::getReferenceT<Animation>(woman->animationsNames[0]);
+
+  animatorW->addAnimation(womAni, woman->animationsNames[0]);
+
+  animatorW->setCurrentAnimation(woman->animationsNames[0]);
+  
+  auto printComponents = [](GameObject* go) 
+  {
+    auto cmps = go->getComponents<GameComponent>();
+    Logger::addLog(_T("----------------"));
+    for (auto& cmp : cmps) {
+      Logger::addLog(cmp->getName());
+    }
+    Logger::addLog(_T("----------------"));
+  };
+
+  printComponents(womanNode.get());
+
+  //Get script references of the ResourceManager
+  auto script1 = ResourceManager::getReferenceT<ScriptCore>(_T("script1.as"));
+    
+  auto scriptComp = womanNode->createComponent<ScriptComponent>(script1);
+
+  printComponents(womanNode.get());
+
+  scriptComp->initScript();
+
+  scriptComp->start();
+
+  womanNode->getTransform().setPosition({-200.f, 0, 200.f});
+
+  womanNode->getTransform().setScale({10.f, 10.f, 10.f});
+
   auto walkerModel = ResourceManager::getReferenceT<Model>(_T("Strafe_Left.fbx"));
-
-  auto& walkerAnimName = walkerModel->animationsNames[0];
-
-  auto wa = ResourceManager::getReferenceT<Animation>(walkerAnimName);
 
   auto ws = ResourceManager::getReferenceT<Skeleton>(walkerModel->skeletonName);
   
@@ -305,12 +378,21 @@ GraphicsApplication::createScene() {
 
   animator->setSkeleton(ws);
 
-  animator->addAnimation(wa, walkerAnimName);
+  for (Int32 i = 0; i < (sizeof(m_animationsNames) / sizeof(TString)); ++i)
+  {
+    auto wa = ResourceManager::getReferenceT<Animation>(m_animationsNames[i]);
+    
+    animator->addAnimation(wa, m_animationsNames[i]);
+  }
 
-  animator->setCurrentAnimation(walkerAnimName);
+  animator->setCurrentAnimation(m_animationsNames[m_currAnim]);
+  
+  //walkerObj->removeComponent<AnimatorComponent>();
 
   walkerObj->getTransform().setPosition({300, 0, 200});
-  
+
+  //walkerObj->getTransform().setScale({10.f, 10.f, 10.f});
+    
   m_right = walkerObj.get();
 
   Int32 copies = 0;
@@ -454,11 +536,63 @@ GraphicsApplication::toggleWireframe() {
 }
 
 void 
+GraphicsApplication::toggleAnimation() {
+
+  m_currAnim = (m_currAnim + 1) % (sizeof(m_animationsNames) / sizeof(TString));
+
+  if (auto obj = SceneGraph::getRoot()->findNode(_T("LE Walker"))) {
+
+    if (auto animCmp = obj->getComponent<AnimatorComponent>()) {
+      animCmp->setCurrentAnimation(m_animationsNames[m_currAnim]);
+      animCmp->setTime(0);
+    }
+  }
+}
+
+void 
 GraphicsApplication::toggleCamera() {
   
   m_currCam = !m_currCam;
 
   CameraManager::setActiveCamera(m_camNames[m_currCam]);
+}
+
+void 
+GraphicsApplication::initScriptEngine() {
+  Int32 result;
+
+  auto ctxMag = ContextManager::instancePtr();
+
+  auto scriptEngine = ScriptEngine::instancePtr();
+
+  //Create engine
+  result = scriptEngine->createEngine();
+
+  //Configurate engine
+  result = scriptEngine->configurateEngine(ctxMag);
+
+  //Register all functions
+  result = Keyboard::registerFunctions(scriptEngine);
+  Vector3D vector;
+  result = vector.registerFunctions(scriptEngine);
+  Transform transform;
+  result = transform.registerFunctions(scriptEngine);
+  result = Time::registerFunctions(scriptEngine);
+  
+  //Create a context
+  scriptEngine->m_scriptContext = ctxMag->addContext(scriptEngine->m_scriptEngine,
+                                                     _T("GameModule"));
+
+  //Get script references of the ResourceManager
+  auto bs = ResourceManager::getReferenceT<ScriptCore>(_T("montiBehavior.as"));
+
+  //Add script section of behavior
+  scriptEngine->addScript(bs->getName(),
+                          bs->getScript(),
+                          _T("GameModule"));
+
+  auto currentModule = scriptEngine->m_scriptEngine->GetModule("GameModule");
+  result = currentModule->Build(); 
 }
 
 void 

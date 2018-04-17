@@ -1,8 +1,9 @@
 #pragma once
 
-#include <vector>
 #include <type_traits>
 #include <unordered_map>
+#include <unordered_set>
+#include <vector>
 
 #include <dr_id_object.h>
 #include <dr_logger.h>
@@ -16,6 +17,12 @@
 namespace driderSDK {
 
 class GameComponent;
+
+class DR_CORE_EXPORT ComponentPartition
+{
+ public:
+  bool operator()(const std::unique_ptr<GameComponent>& l) const;
+};
 
 class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject>,  
                                   public EnableObject,
@@ -76,7 +83,7 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
     
     T* rawPtr = component.get();
     
-    m_components.push_back(std::move(component));
+    addComponent(std::move(component));
 
     m_components.back()->onCreate();
 
@@ -145,7 +152,7 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   {
     for (auto it = m_components.begin(); it != m_components.end(); ++it) {
       if (T* comp = dynamic_cast<T*>(it->get())) {
-        comp->onDestroy();
+        (*it)->onDestroy();
         m_components.erase(it);
         return;
       }
@@ -153,10 +160,10 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
 
     DR_DEBUG_ONLY(Logger::addLog(_T("Trying to remove unexisting component")));
   }
-
+  
   void
   removeComponent(const TString& compName);
-  
+
   void
   addComponent(ComponentPtr component);
   
@@ -272,17 +279,21 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   changed() const;
  private:
 
-   friend GameComponent;
-
-   using NamesMap = std::unordered_map<TString, Int32>;
-
-   /**
-   * Gets a validated name (not repeaded) for the proposed name.
-   */
-   TString
-   getValidName(TString name);
- protected:
+  friend GameComponent;
   
+  using NamesMap = std::unordered_map<TString, Int32>;
+  
+  using NamesSet = std::unordered_set<TString>;
+  /**
+  * Gets a validated name (not repeaded) for the proposed name.
+  */
+  TString
+  getValidName(TString name);
+  
+ protected:
+  void
+  removeComponentP(const TString& compName);
+
   virtual void
   copyData(SharedGameObj other){}
 
@@ -298,6 +309,7 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   WeakGameObj m_parent;
   NameObject m_tag;
   NamesMap m_componentNames;
+  NamesSet m_componentsToRemove;
   DR_DEBUG_ONLY(bool m_destroyed);
 };
 
