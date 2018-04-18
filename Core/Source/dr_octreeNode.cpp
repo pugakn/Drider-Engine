@@ -217,6 +217,10 @@ OctreeNode::divideFacesForPlanes(OctreeNode &node,
         newface.indices[2] = frontIndices[3];
         node.objectsToReview.push(newface);
       }
+      else
+      {
+        face.indices = face.indices;
+      }
       if (backVertex.size() == 3) {
         Face newface;
         newface = face;
@@ -257,31 +261,32 @@ OctreeNode::findIntersectVertexWhithPlane(Vertex &origin,
   Vertex &newVertex) {
 
   Vector3D direction(end.position - origin.position);
+  float distanceBetween = direction.length();
   direction.normalize();
   Ray ray(Vector3D(origin.position), direction);
 
   float distance;
   ray.intersects(plane, &distance);
   newVertex.position = origin.position + (direction * distance);
+  newVertex.position.w = 1;
   Vector3D delta;
-  /*delta.x = end.uv.x - origin.uv.x;
+  delta.x = end.uv.x - origin.uv.x;
   delta.y = end.uv.y - origin.uv.y;
-  newVertex.uv.x = origin.uv.x + (delta.x * distance);
-  newVertex.uv.y = origin.uv.y + (delta.y * distance);
-  newVertex.uv = origin.uv;*/
+  newVertex.uv.x = origin.uv.x + (delta.x * (distance / distanceBetween));
+  newVertex.uv.y = origin.uv.y + (delta.y * (distance / distanceBetween));
 
 
   delta = end.normal - origin.normal;
   newVertex.normal = origin.normal + (delta * distance);
-  newVertex.normal.normalize();
+  newVertex.normal.normalize3();
 
   delta = end.binormal - origin.binormal;
   newVertex.binormal = origin.binormal + (delta * distance);
-  newVertex.binormal.normalize();
+  newVertex.binormal.normalize3();
 
   delta = end.tangent - origin.tangent;
   newVertex.tangent = origin.tangent + (delta * distance);
-  newVertex.tangent.normalize();
+  newVertex.tangent.normalize3();
 }
 OctreeNode::FACESTATES
 OctreeNode::checkFaceAgainstAABB(Face& face, AABB &boundingArea) {

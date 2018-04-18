@@ -19,7 +19,7 @@ Octree::Octree(GameObject* nodeSceneGraph,
                std::vector<std::shared_ptr<GameObject>>* gameObjects,
                Int32 minFacesArea) {
 
-  m_minFaces = 10;
+  m_minFaces = 1000;
   m_rootSceneGraph = nodeSceneGraph;
   Int32 counterGameObject = 0;
   m_rootOctree = new OctreeNode(this);

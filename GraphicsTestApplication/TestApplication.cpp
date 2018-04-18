@@ -63,8 +63,8 @@ TestApplication::postInit() {
                                       m_viewport);
 
   m_camera->createProyection(45.f, 20.f, 3000.f);
-  m_camera->getTransform().setPosition({0.f, 300.0f, -400});
-  m_camera->setTarget({0.0f, 200.f, 1.0f});
+  m_camera->getTransform().setPosition({0.f, 100, -600});
+  m_camera->setTarget({0.0f, 0, 1.0f});
 
   auto p = m_camera->createComponent<FrustumDebug>();
 
@@ -534,7 +534,7 @@ TestApplication::initSceneGraph() {
     auto mod = dt(mt);
 
     auto n = createNode(_T("lu") + aaa,
-      _T("Unidad_1m.fbx"),
+      _T("Croc.X"),
       pos);
     n->setStatic(true);
     float sc = static_cast<float>(1);
