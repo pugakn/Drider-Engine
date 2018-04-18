@@ -273,12 +273,12 @@ GraphicsApplication::loadResources() {
 
   ResourceManager::loadResource(_T("Croc.X"));
 
-  ResourceManager::loadResource(_T("Shoot Rifle.fbx"));
-
+  ResourceManager::loadResource(_T("Jump In Place.fbx"));
+  
   ResourceManager::renameResource(_T("Animation_mixamo.com"), 
                                   m_animationsNames[0]);
 
-  ResourceManager::loadResource(_T("Strafe_Left.fbx"));
+  ResourceManager::loadResource(_T("Shoot Rifle.fbx"));
 
   ResourceManager::renameResource(_T("Animation_mixamo.com"), 
                                   m_animationsNames[1]);
@@ -339,7 +339,7 @@ GraphicsApplication::createScene() {
 
   animatorW->addAnimation(womAni, woman->animationsNames[0]);
 
-  animatorW->setCurrentAnimation(woman->animationsNames[0]);
+  animatorW->setCurrentAnimation(woman->animationsNames[0], false, false);
   
   auto printComponents = [](GameObject* go) 
   {
@@ -353,22 +353,11 @@ GraphicsApplication::createScene() {
 
   printComponents(womanNode.get());
 
-  //Get script references of the ResourceManager
-  auto script1 = ResourceManager::getReferenceT<ScriptCore>(_T("script1.as"));
-    
-  auto scriptComp = womanNode->createComponent<ScriptComponent>(script1);
-
-  printComponents(womanNode.get());
-
-  scriptComp->initScript();
-
-  scriptComp->start();
-
   womanNode->getTransform().setPosition({-200.f, 0, 200.f});
 
   womanNode->getTransform().setScale({10.f, 10.f, 10.f});
 
-  auto walkerModel = ResourceManager::getReferenceT<Model>(_T("Strafe_Left.fbx"));
+  auto walkerModel = ResourceManager::getReferenceT<Model>(_T("Gunplay.fbx"));
 
   auto ws = ResourceManager::getReferenceT<Skeleton>(walkerModel->skeletonName);
   
@@ -385,12 +374,23 @@ GraphicsApplication::createScene() {
     animator->addAnimation(wa, m_animationsNames[i]);
   }
 
-  animator->setCurrentAnimation(m_animationsNames[m_currAnim]);
+  animator->setCurrentAnimation(m_animationsNames[m_currAnim], false, false);
   
   //walkerObj->removeComponent<AnimatorComponent>();
 
   walkerObj->getTransform().setPosition({300, 0, 200});
 
+  auto clone1 = walkerObj->clone();
+
+  clone1->getTransform().setPosition({150, 0, 200});
+
+  clone1->setName(_T("LE Walker 2"));
+
+  clone1 = walkerObj->clone();
+
+  clone1->getTransform().setPosition({450, 0, 200});
+
+  clone1->setName(_T("LE Walker 3"));
   //walkerObj->getTransform().setScale({10.f, 10.f, 10.f});
     
   m_right = walkerObj.get();
@@ -543,8 +543,24 @@ GraphicsApplication::toggleAnimation() {
   if (auto obj = SceneGraph::getRoot()->findNode(_T("LE Walker"))) {
 
     if (auto animCmp = obj->getComponent<AnimatorComponent>()) {
-      animCmp->setCurrentAnimation(m_animationsNames[m_currAnim]);
-      animCmp->setTime(0);
+      animCmp->setCurrentAnimation(m_animationsNames[m_currAnim], true, true);
+      //animCmp->setTime(0);
+    }
+  }
+
+  if (auto obj = SceneGraph::getRoot()->findNode(_T("LE Walker 2"))) {
+
+    if (auto animCmp = obj->getComponent<AnimatorComponent>()) {
+      animCmp->setCurrentAnimation(m_animationsNames[m_currAnim], true, false);
+      //animCmp->setTime(0);
+    }
+  }
+
+  if (auto obj = SceneGraph::getRoot()->findNode(_T("LE Walker 3"))) {
+
+    if (auto animCmp = obj->getComponent<AnimatorComponent>()) {
+      animCmp->setCurrentAnimation(m_animationsNames[m_currAnim], false, false);
+      //animCmp->setTime(0);
     }
   }
 }
