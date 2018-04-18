@@ -41,6 +41,13 @@
 #include <dr_context_manager.h>
 
 #include <dr_sound_api.h>
+#include <dr_fmod_sound_api.h>
+#include <dr_soundSystem.h>
+#include <dr_sound_core.h>
+#include <dr_channel.h>
+#include <dr_channelGroup.h>
+#include <dr_soundExtraInfo.h>
+#include <dr_sound.h>
 
 namespace driderSDK {
 
@@ -57,6 +64,7 @@ TestApplication::postInit() {
   createScene();
   createTechniques();
   initScriptEngine();
+  playSoundTest();
 
   Time::update();
 }
@@ -65,9 +73,8 @@ void
 TestApplication::postUpdate() {
   Time::update();
   InputManager::update();
-  playerScript->onUpdate();
   
-  //SoundAPI::update();
+  SoundAPI::instance().API->update();
   SceneGraph::update();  
 }
 
@@ -143,13 +150,11 @@ TestApplication::initModules() {
                           m_hwnd);
   Time::startUp();
   InputManager::startUp(reinterpret_cast<SizeT>(m_hwnd));
+  SoundAPI::startUp();
   ResourceManager::startUp();
   CameraManager::startUp();
   ContextManager::startUp();
   ScriptEngine::startUp();
-  SoundAPI::startUp(1,
-                    DR_INITFLAGS::kDrInitFlags_NORMAL,
-                    nullptr);
   SceneGraph::startUp();
 }
 
@@ -201,6 +206,13 @@ TestApplication::loadResources() {
   ResourceManager::loadResource(_T("MontiBehavior.as"));
   ResourceManager::loadResource(_T("script1.as"));
   ResourceManager::loadResource(_T("script2.as"));
+
+  //Sounds
+  auto system = SoundAPI::instance().API->system;
+  auto channel = SoundAPI::instance().API->channel1;
+  extraInfo = new SoundExtraInfo(reinterpret_cast<SoundSystem*>(system),
+                                 reinterpret_cast<DrChannel*>(channel));
+  ResourceManager::loadResource(_T("testSound1.mp3"), extraInfo);
 }
 
 void
@@ -323,20 +335,45 @@ TestApplication::initScriptEngine() {
 }
 
 void
+TestApplication::playSoundTest() {
+
+  auto sound1Resource = ResourceManager::instance().getReferenceT<
+                        SoundCore>(_T("testSound1.mp3"));
+
+  auto sound1Ref = sound1Resource.get()->soundResource->getReference();
+  auto sound1 = reinterpret_cast<DrSound*>(sound1Ref);
+  
+
+  auto channel1Ref = SoundAPI::instance().API->channel1->getReference();
+  auto channel1 = reinterpret_cast<DrChannel*>(channel1Ref);
+
+  auto channelGroupRef = SoundAPI::instance().API->masterGroup->getReference();
+  auto channelGroup = reinterpret_cast<DrChannelGroup*>(channelGroupRef);
+
+  SoundAPI::instance().API->system->playSound(sound1,
+                                              channelGroup,
+                                              false,
+                                              &channel1);
+}
+
+void
 TestApplication::destroyModules() {
 
-  m_staticTech->destroy();
+  delete extraInfo;
 
+  m_staticTech->destroy();
+  m_animTech->destroy();
+
+  ContextManager::shutDown();
+  ScriptEngine::shutDown();
   SceneGraph::shutDown();
-  ResourceManager::shutDown();
   CameraManager::shutDown();
+  SoundAPI::shutDown();
   InputManager::shutDown();
   Time::shutDown();
   GraphicsDriver::shutDown();
-  ContextManager::shutDown();
-  ScriptEngine::shutDown();
-  SoundAPI::shutDown();
   Logger::shutDown();
+
 }
 
 }

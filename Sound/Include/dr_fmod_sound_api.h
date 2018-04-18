@@ -10,12 +10,21 @@ class DR_SOUND_EXPORT FMODSoundAPI : public SoundAPI {
     void
     init();
 
-    virtual void
+    void
     update();
 
     void
     destroy();
 
+    SoundSystem *system;
+
+    DrChannel* channel1;
+    DrChannel* channel2;
+    DrChannel* channel3;
+    DrChannel* channel4;
+
+    DrChannelGroup* masterGroup;
+    DrDSP *dspLowPass;
 
 };
 
