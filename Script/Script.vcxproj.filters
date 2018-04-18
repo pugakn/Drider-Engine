@@ -39,6 +39,9 @@
     <ClCompile Include="Source\dr_script_object.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\dr_script_debug.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\dr_script_engine.h">
@@ -72,6 +75,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\dr_script_object.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_script_debug.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

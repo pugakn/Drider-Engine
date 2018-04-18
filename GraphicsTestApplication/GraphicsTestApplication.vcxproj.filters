@@ -81,6 +81,9 @@
     <ClInclude Include="Include\dr_graphics_application.h">
       <Filter>Archivos de encabezado\Application</Filter>
     </ClInclude>
+    <ClInclude Include="TestApplication.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\DrawableComponent.cpp">
@@ -115,6 +118,9 @@
     </ClCompile>
     <ClCompile Include="Source\dr_graphics_application.cpp">
       <Filter>Archivos de origen\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="TestApplication.cpp">
+      <Filter>Archivos de origen</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
