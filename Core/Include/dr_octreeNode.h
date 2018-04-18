@@ -58,13 +58,13 @@ class DR_CORE_EXPORT OctreeNode
   decomposeFace(OctreeNode& node, Face &face, std::vector<Plane>& planes);
 
   void
-  createNewFaces(OctreeNode& node, Face &face, std::vector<Plane>& planes);
+  divideFacesForPlanes(OctreeNode& node, Face &face);
 
-  bool
-  findIntersectVertex(Vertex &origin,
-                      Vertex &end,
-                      std::vector<Plane> &planes,
-                      Vertex &newVertex);
+  void
+  findIntersectVertexWhithPlane(Vertex &origin,
+                                Vertex &end,
+                                Plane &plane,
+                                Vertex &newVertex);
 
   void nextFace(OctreeNode* node);
 

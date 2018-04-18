@@ -171,22 +171,28 @@ Octree::buildTree() {
 
   m_rootSceneGraph->setStatic(true);
   m_rootSceneGraph->createComponent<AABBCollider>(m_rootOctree->boundingRegion);
-  std::vector<RenderMesh> list = createList(&m_rootOctree->containedObjects);
-  m_rootSceneGraph->createComponent<RenderComponent>(std::move(list));
+
 }
 
 void Octree::configNode(GameObject *nodeRoot, OctreeNode* octreeNode)
 {
   nodeRoot->setStatic(true);
   nodeRoot->createComponent<AABBCollider>(octreeNode->boundingRegion);
+  std::queue<Face> temp;
+  temp = octreeNode->objectsToReview;
+  while (!temp.empty())
+  {
+    octreeNode->containedObjects.push_back(octreeNode->objectsToReview.front());
+    temp.pop();
+  }
   std::vector<RenderMesh> list = createList(&octreeNode->containedObjects);
   nodeRoot->createComponent<RenderComponent>(std::move(list));
   
-  for (auto& child : (*octreeNode).childs) {
+  /*for (auto& child : (*octreeNode).childs) {
 	  std::shared_ptr<GameObject> node = std::make_shared<GameObject>();
 	  nodeRoot->addChild(node);
 	  configNode(&(*node), child);
-  }
+  }*/
   //octreeNode->~OctreeNode();
 }
 
@@ -209,13 +215,17 @@ void Octree::nextFace()
 void Octree::createGO()
 {
   m_rootSceneGraph->removeChildren();
-  for (auto& child : (*m_rootOctree).childs) {
+  std::shared_ptr<GameObject> node = std::make_shared<GameObject>();
+  m_rootSceneGraph->addChild(node);
+
+  configNode(&(*node), m_rootOctree);
+  /*for (auto& child : (*m_rootOctree).childs) {
     if (child->containedObjects.size()) {
       std::shared_ptr<GameObject> node = std::make_shared<GameObject>();
       m_rootSceneGraph->addChild(node);
       configNode(&(*node), child);
     }
-  }
+  }*/
 }
 
 Int32 Octree::getMinFaces()

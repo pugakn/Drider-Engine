@@ -543,18 +543,18 @@ TestApplication::initSceneGraph() {
   }
 
   for (Int32 i = 0; i < 1; ++i) {
-    Vector3D pos(0,-200,0);
+    Vector3D pos(0,0,0);
     TString aaa = StringUtils::toTString(i);
 
     auto mod = dt(mt);
 
     auto n = createNode(_T("lu") + aaa,
-      _T("esfera.fbx"),
+      _T("Unidad_1m.fbx"),
       pos);
     n->setStatic(true);
-    float sc = static_cast<float>(20);
+    float sc = static_cast<float>(1);
     n->getTransform().scale({ sc,sc,sc });
-    n->getTransform().rotate(Vector3D(Degree(45).toRadian(), 0, 0));
+    //n->getTransform().rotate(Vector3D(Degree(45).toRadian(), 0, 0));
 
    /* auto lol = createNode(_T("lus") + aaa,
       _T("Unidad_1m.fbx"),
@@ -580,7 +580,7 @@ TestApplication::printHerarchy(std::shared_ptr<GameObject> obj,
 void
 TestApplication::debugOctree(std::shared_ptr<GameObject> gso) {
   Octree* octree = SceneGraph::getOctreeTest();
-  for (size_t i = 0; i < 100; i++)
+  for (size_t i = 0; i < 1; i++)
   {
     octree->nextFace();
   }
