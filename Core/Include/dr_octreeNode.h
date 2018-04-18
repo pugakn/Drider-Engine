@@ -48,21 +48,19 @@ class DR_CORE_EXPORT OctreeNode
   void
   createChilds(OctreeNode& node);
 
+  void
+  divideFacesForPlanes(OctreeNode& node, Face &face);
+
+  void
+  findIntersectVertexWhithPlane(Vertex &origin,
+                                Vertex &end,
+                                Plane &plane,
+                                Vertex &newVertex);
   /**
   *
   */
   FACESTATES
   checkFaceAgainstAABB(Face& face, AABB &boundingArea);
-
-  void
-  decomposeFace(OctreeNode& node, Face &face, std::vector<Plane>& planes);
-
-  bool
-  findIntersectVertex(Vertex *origin,
-                      Vertex *end,
-                      std::vector<Plane>& planes,
-                      Vertex &newVertex,
-                      AABB &aabb);
 
   std::queue<Face> objectsToReview;
 
@@ -72,6 +70,7 @@ class DR_CORE_EXPORT OctreeNode
 
   std::vector<OctreeNode*> childs;
 
+  std::vector<Plane> planes;
  private:
   Octree* m_octree;
 };

@@ -19,13 +19,13 @@ Octree::Octree(GameObject* nodeSceneGraph,
                std::vector<std::shared_ptr<GameObject>>* gameObjects,
                Int32 minFacesArea) {
 
-  m_minFaces = 1000;
+  m_minFaces = 10;
   m_rootSceneGraph = nodeSceneGraph;
   Int32 counterGameObject = 0;
   m_rootOctree = new OctreeNode(this);
-  
-  m_maxVertex = Vector3D(0, 0, 0);
-  m_minVertex = Vector3D(0, 0, 0);
+  bool flagMinMax = true;
+  m_maxVertex;
+  m_minVertex;
   for (auto& gameObject : (*gameObjects)) {
 
     std::vector<UInt32> verticesInMeshes;
@@ -47,6 +47,12 @@ Octree::Octree(GameObject* nodeSceneGraph,
           temp.vertices.push_back(mesh.vertices[mesh.indices[i + y]]);
           temp.vertices.back().position = temp.vertices.back().position * transform;
           temp.indices.push_back(mesh.indices[i + y]);
+          if (flagMinMax)
+          {
+            flagMinMax = false;
+            m_maxVertex = temp.vertices.back().position;
+            m_minVertex = temp.vertices.back().position;
+          }
           compareMinMax(temp.vertices.back().position);
         }
 
@@ -188,7 +194,9 @@ Octree::compareMinMax(Vector4D &position)
   m_maxVertex.y = Math::max(position.y, m_maxVertex.y);
   m_maxVertex.z = Math::max(position.z, m_maxVertex.z);
 }
-Int32 Octree::getMinFaces()
+
+Int32
+Octree::getMinFaces()
 {
   return m_minFaces;
 }

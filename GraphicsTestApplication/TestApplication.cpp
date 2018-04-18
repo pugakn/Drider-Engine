@@ -434,6 +434,8 @@ TestApplication::initResources() {
   ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
 
   ResourceManager::loadResource(_T("Walking.fbx"));
+  ResourceManager::loadResource(_T("esfera.fbx"));
+
 
   ResourceManager::loadResource(_T("Weapons-of-survival.fbx"));
 }
@@ -532,7 +534,7 @@ TestApplication::initSceneGraph() {
     auto mod = dt(mt);
 
     auto n = createNode(_T("lu") + aaa,
-      _T("Croc.X"),
+      _T("Unidad_1m.fbx"),
       pos);
     n->setStatic(true);
     float sc = static_cast<float>(1);

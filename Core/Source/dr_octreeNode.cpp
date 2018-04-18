@@ -32,7 +32,6 @@ OctreeNode::buildTree(OctreeNode& node) {
 
   createChilds(node);
   
-  std::vector<Plane> planes;
   Vector3D center = node.boundingRegion.center;
   Vector3D pointLeft = node.boundingRegion.center;
   pointLeft.x += 1;
@@ -42,23 +41,35 @@ OctreeNode::buildTree(OctreeNode& node) {
   pointUp.y += 1;
 
 
-  planes.push_back(Plane(node.boundingRegion.center, pointLeft, pointBack));
-  planes.push_back(Plane(node.boundingRegion.center, pointUp, pointBack));
-  planes.push_back(Plane(node.boundingRegion.center, pointLeft, pointUp));
+  node.planes.push_back(Plane(node.boundingRegion.center, pointLeft, pointBack));
+  node.planes.push_back(Plane(node.boundingRegion.center, pointUp, pointBack));
+  node.planes.push_back(Plane(node.boundingRegion.center, pointLeft, pointUp));
 
   Int32 counter = 0;
   while (!node.objectsToReview.empty()) {
-    counter++;
     Face temp = node.objectsToReview.front();
     node.objectsToReview.pop();
-    if (temp.vertices[0].position == temp.vertices[1].position ||
-      temp.vertices[0].position == temp.vertices[2].position ||
-      temp.vertices[2].position == temp.vertices[1].position)
+
+    bool flag = true;
+    Int32 counterChilds = 0;
+    while (counterChilds < node.childs.size())
     {
-      counter++;
+      OctreeNode* child = node.childs[counterChilds];
+
+      FACESTATES state = checkFaceAgainstAABB(temp, child->boundingRegion);
+      if (state == FACESTATES::IN) {
+        flag = false;
+        child->objectsToReview.push(temp);
+      }
+      else if (state == FACESTATES::INTERSECTS) {
+        flag = false;
+        divideFacesForPlanes(node, temp);
+        counterChilds = node.childs.size();
+      }
+      counterChilds++;
     }
-    else {
-      decomposeFace(node, temp, planes);
+    if (flag) {
+      divideFacesForPlanes(node, temp);
     }
   }
 
@@ -107,213 +118,202 @@ OctreeNode::createChilds(OctreeNode &node) {
   }
 }
 
-OctreeNode::FACESTATES
-OctreeNode::checkFaceAgainstAABB(Face& face, AABB &boundingArea) {
-  Int32 numberOfVertexIn = 0;
-  for (size_t i = 0; i < 3; i++) {
-    if (boundingArea.intersect(Vector3D(face.vertices[i].position))) {
-      numberOfVertexIn++;
+void
+OctreeNode::divideFacesForPlanes(OctreeNode &node,
+  Face &face) {
+
+  Int32 front = 0;
+  Int32 behind = 0;
+  Int32 sizeVertex = face.vertices.size();
+  PLANE_INTERSECT::E pointLocation[3];
+
+  bool flagDivide = false; //solo control quitar despues
+
+  for (auto plane : node.planes)
+  {
+    if (flagDivide) {
+      break;
+    }
+    front = 0;
+    behind = 0;
+    for (Int32 i = 0; i < sizeVertex; i++) {
+      pointLocation[i] = plane.intersects(Vector3D(face.vertices[i].position));
+
+      if (pointLocation[i] == PLANE_INTERSECT::kFront) {
+        ++front;
+      }
+      else if (pointLocation[i] == PLANE_INTERSECT::kBehind) {
+        ++behind;
+      }
+    }
+
+    if (front && behind) {
+
+      flagDivide = true;
+
+      std::vector<Vertex> frontVertex;
+      std::vector<UInt32>  frontIndices;
+      std::vector<Vertex> backVertex;
+      std::vector<UInt32> backIndices;
+
+
+      for (Int32 i = 0; i < sizeVertex; i++) {
+        if (pointLocation[i] == PLANE_INTERSECT::kIn) {
+          frontVertex.push_back(face.vertices[i]);
+          frontIndices.push_back(face.indices[i]);
+          backVertex.push_back(face.vertices[i]);
+          backIndices.push_back(face.indices[i]);
+        }
+        else {
+          if (pointLocation[i] == PLANE_INTERSECT::kFront) {
+            frontVertex.push_back(face.vertices[i]);
+            frontIndices.push_back(face.indices[i]);
+          }
+          else {
+            backVertex.push_back(face.vertices[i]);
+            backIndices.push_back(face.indices[i]);
+          }
+          Int32 currentVertex = (i + 1) % sizeVertex;
+          if (!(pointLocation[currentVertex] == PLANE_INTERSECT::kIn || pointLocation[currentVertex] == pointLocation[i])) {
+            Vertex newVertex;
+            findIntersectVertexWhithPlane(face.vertices[i], face.vertices[currentVertex], plane, newVertex);
+            std::vector<UInt32>* meshes = &m_octree->verticesInGameObjects[face.gameObject];
+            Int32 index = (*meshes)[face.mesh];
+            (*meshes)[face.mesh]++;
+
+            frontVertex.push_back(newVertex);
+            frontIndices.push_back(index);
+            backVertex.push_back(newVertex);
+            backIndices.push_back(index);
+          }
+        }
+      }
+      if (frontVertex.size() == 3) {
+        Face newface;
+        newface = face;
+        newface.vertices = frontVertex;
+        newface.indices = frontIndices;
+        node.objectsToReview.push(newface);
+      }
+      else if (frontVertex.size() == 4)
+      {
+        Face newface;
+        newface = face;
+        newface.vertices[0] = frontVertex[0];
+        newface.vertices[1] = frontVertex[1];
+        newface.vertices[2] = frontVertex[2];
+
+        newface.indices[0] = frontIndices[0];
+        newface.indices[1] = frontIndices[1];
+        newface.indices[2] = frontIndices[2];
+        node.objectsToReview.push(newface);
+
+        newface.vertices[0] = frontVertex[0];
+        newface.vertices[1] = frontVertex[2];
+        newface.vertices[2] = frontVertex[3];
+
+        newface.indices[0] = frontIndices[0];
+        newface.indices[1] = frontIndices[2];
+        newface.indices[2] = frontIndices[3];
+        node.objectsToReview.push(newface);
+      }
+      if (backVertex.size() == 3) {
+        Face newface;
+        newface = face;
+        newface.vertices = backVertex;
+        newface.indices = backIndices;
+        node.objectsToReview.push(newface);
+      }
+      else if (backVertex.size() == 4)
+      {
+        Face newface;
+        newface = face;
+        newface.vertices[0] = backVertex[0];
+        newface.vertices[1] = backVertex[1];
+        newface.vertices[2] = backVertex[2];
+
+        newface.indices[0] = backIndices[0];
+        newface.indices[1] = backIndices[1];
+        newface.indices[2] = backIndices[2];
+        node.objectsToReview.push(newface);
+
+        newface.vertices[0] = backVertex[0];
+        newface.vertices[1] = backVertex[2];
+        newface.vertices[2] = backVertex[3];
+
+        newface.indices[0] = backIndices[0];
+        newface.indices[1] = backIndices[2];
+        newface.indices[2] = backIndices[3];
+        node.objectsToReview.push(newface);
+      }
     }
   }
-
-  if (numberOfVertexIn == 0) {
-    return FACESTATES::OUT;
-  }
-  if (numberOfVertexIn == 3) {
-    return FACESTATES::IN;
-  }
-  
-  return FACESTATES::INTERSECTS;
 }
 
 void
-OctreeNode::decomposeFace(OctreeNode& node, 
-                          Face & face, 
-                          std::vector<Plane>& planes) {
-  Face temp = face;
-  
-  temp.vertices.push_back(temp.vertices[0]);
-  temp.vertices.push_back(temp.vertices[1]);
-  temp.indices.push_back(temp.indices[0]);
-  temp.indices.push_back(temp.indices[1]);
+OctreeNode::findIntersectVertexWhithPlane(Vertex &origin,
+  Vertex &end,
+  Plane &plane,
+  Vertex &newVertex) {
 
-  bool flag[2];
-  UInt32 counter = 0;
-  Face final = face;
-  for (auto& child : node.childs) {
-    if (counter == 2) {
-      if (FACESTATES::IN == checkFaceAgainstAABB(final, child->boundingRegion)) {
-        child->objectsToReview.push(final);
-      }
-    }
-    else {
-      for (Int32 i = 0; i < 3; i++) {
-        flag[0] = false;
-        flag[1] = false;
-
-        if (child->boundingRegion.intersect(Vector3D(temp.vertices[i].position))) {
-        
-          final.vertices[0] = temp.vertices[i];
-          final.indices[0] = temp.indices[i];
-
-          Vertex newVertex;
-          counter = 0;
-          for (UInt32 j = 1; j < 3; j++)
-          {
-            if (child->boundingRegion.intersect(Vector3D(temp.vertices[i+j].position))) {
-              counter++;
-              final.vertices[j] = temp.vertices[i + j];
-              final.indices[j] = temp.indices[i + j];
-            }
-            else {
-              if (findIntersectVertex(&temp.vertices[i],
-                                      &temp.vertices[i+j],
-                                      planes,
-                                      newVertex,
-                                      child->boundingRegion)) {
-                counter++;
-                flag[j - 1] = true;
-                final.vertices[j] = newVertex;
-                std::vector<UInt32>* meshes = &m_octree->verticesInGameObjects[face.gameObject];
-                final.indices[j] = (*meshes)[face.mesh];
-                (*meshes)[face.mesh]++;
-              }
-              else {
-                break;
-              }
-            }
-          }
-
-          if (counter == 2) {
-            child->objectsToReview.push(final);
-
-            if (flag[0] && flag[1]) {
-              Face newFace = face;
-              newFace.vertices[0] = final.vertices[1];
-              newFace.indices[0] = final.indices[1];
-              newFace.vertices[1] = temp.vertices[i+1];
-              newFace.indices[1] = temp.indices[i+1];
-              newFace.vertices[2] = temp.vertices[i+2];
-              newFace.indices[2] = temp.indices[i+2];
-              if (newFace.vertices[0].position == newFace.vertices[1].position ||
-                newFace.vertices[0].position == newFace.vertices[2].position ||
-                newFace.vertices[2].position == newFace.vertices[1].position)
-              {
-                node.objectsToReview.push(newFace);
-              }
-              else
-              {
-
-                node.objectsToReview.push(newFace);
-              }
-              //push
-              newFace.vertices[1] = temp.vertices[i + 2];
-              newFace.indices[1] = temp.indices[i + 2];
-              newFace.vertices[2] = final.vertices[2];
-              newFace.indices[2] = final.indices[2];
-              if (newFace.vertices[0].position == newFace.vertices[1].position ||
-                newFace.vertices[0].position == newFace.vertices[2].position ||
-                newFace.vertices[2].position == newFace.vertices[1].position)
-              {
-                node.objectsToReview.push(newFace);
-              }
-              else
-              {
-
-                node.objectsToReview.push(newFace);
-              }
-            }
-            else if (flag[0]) {
-              Face newFace = face;
-              newFace.vertices[0] = final.vertices[1];
-              newFace.indices[0] = final.indices[1];
-              newFace.vertices[1] = temp.vertices[i + 1];
-              newFace.indices[1] = temp.indices[i + 1];
-              newFace.vertices[2] = temp.vertices[i + 2];
-              newFace.indices[2] = temp.indices[i + 2];
-              if (newFace.vertices[0].position == newFace.vertices[1].position ||
-                newFace.vertices[0].position == newFace.vertices[2].position ||
-                newFace.vertices[2].position == newFace.vertices[1].position)
-              {
-                node.objectsToReview.push(newFace);
-              }
-              else
-              {
-
-                node.objectsToReview.push(newFace);
-              }
-            }
-            else if (flag[1]) 
-            {
-              Face newFace = face;
-              newFace.vertices[0] = final.vertices[1];
-              newFace.indices[0] = final.indices[1];
-              newFace.vertices[1] = temp.vertices[i + 2];
-              newFace.indices[1] = temp.indices[i + 2];
-              newFace.vertices[2] = final.vertices[2];
-              newFace.indices[2] = final.indices[2];
-              if (newFace.vertices[0].position == newFace.vertices[1].position ||
-                newFace.vertices[0].position == newFace.vertices[2].position ||
-                newFace.vertices[2].position == newFace.vertices[1].position)
-              {
-                node.objectsToReview.push(newFace);
-              }
-              else
-              {
-
-                node.objectsToReview.push(newFace);
-              }
-            }
-            break;
-          }
-        }
-
-      }
-    }
-  }
-
-}
-
-Vector4D lerp(Vector4D& start, Vector4D& end,float proportion) {
-  return start + ((end - start) * proportion);
-}
-bool
-OctreeNode::findIntersectVertex(Vertex *origin,
-                                Vertex *end,
-                                std::vector<Plane>& planes,
-                                Vertex &newVertex,
-                                AABB &aabb) {
-
-  Vector3D direction(end->position - origin->position);
+  Vector3D direction(end.position - origin.position);
   direction.normalize();
-  Ray ray(Vector3D(origin->position), direction);
+  Ray ray(Vector3D(origin.position), direction);
 
   float distance;
-  float minDistance;
-  bool flag = false;
-  for (Int32 i = 0; i < planes.size(); i++) {
-    if (ray.intersects(planes[i], &distance)) {
-      if (!flag) {
-        if (distance > 0) {
-          flag = true;
-          minDistance = distance;
-        }
+  ray.intersects(plane, &distance);
+  newVertex.position = origin.position + (direction * distance);
+  Vector3D delta;
+  /*delta.x = end.uv.x - origin.uv.x;
+  delta.y = end.uv.y - origin.uv.y;
+  newVertex.uv.x = origin.uv.x + (delta.x * distance);
+  newVertex.uv.y = origin.uv.y + (delta.y * distance);
+  newVertex.uv = origin.uv;*/
+
+
+  delta = end.normal - origin.normal;
+  newVertex.normal = origin.normal + (delta * distance);
+  newVertex.normal.normalize();
+
+  delta = end.binormal - origin.binormal;
+  newVertex.binormal = origin.binormal + (delta * distance);
+  newVertex.binormal.normalize();
+
+  delta = end.tangent - origin.tangent;
+  newVertex.tangent = origin.tangent + (delta * distance);
+  newVertex.tangent.normalize();
+}
+OctreeNode::FACESTATES
+OctreeNode::checkFaceAgainstAABB(Face& face, AABB &boundingArea) {
+  Int32 numberOfVertexIn = 0;
+  Int32 numberOfVertexIntersects = 0;
+
+  Vector3D aabbMin = boundingArea.getMinPoint();
+  Vector3D aabbMax = boundingArea.getMaxPoint();
+  for (size_t i = 0; i < 3; i++) {
+    Vector4D point = face.vertices[i].position;
+
+    if (point.x >= aabbMin.x && point.x <= aabbMax.x &&
+      point.y >= aabbMin.y && point.y <= aabbMax.y &&
+      point.z >= aabbMin.z && point.z <= aabbMax.z) {
+      if (point.x == aabbMin.x || point.x == aabbMax.x ||
+        point.y == aabbMin.y || point.y == aabbMax.y ||
+        point.z == aabbMin.z || point.z == aabbMax.z) {
+        ++numberOfVertexIntersects;
       }
       else {
-        if (distance > 0 && distance < minDistance) {
-          minDistance = distance;
-        }
+        ++numberOfVertexIn;
       }
     }
   }
-  if (flag && aabb.intersect(ray.origin + ray.direction * minDistance)) {
-    float proportion = minDistance / (origin->position - end->position).length();
-    newVertex.position = lerp(origin->position, end->position, proportion);
-    newVertex.normal = lerp(origin->normal, end->normal, proportion);
-    newVertex.binormal = lerp(origin->binormal, end->binormal, proportion);
-    newVertex.tangent = lerp(origin->tangent, end->tangent, proportion);
-    return true;
+
+  if (numberOfVertexIn + numberOfVertexIntersects == 3) {
+    return FACESTATES::IN;
   }
-  return false;
+  if (numberOfVertexIn != 0) {
+    return FACESTATES::INTERSECTS;
+  }
+  return FACESTATES::OUT;
 }
+
 }
