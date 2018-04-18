@@ -29,14 +29,14 @@ Variables:
    17  29 *    CALLSYS  97           (void Transform::move(const Vector3D&in))
 - 6,3 -
    19  27 *    SUSPEND
-   20  27 *    PGA      237057520
+   20  27 *    PGA      221721248
    22  28 *    PSF      v13
    23  29 *    CALLSYS  20           (string::string(const string&in))
                ObjInfo  v13, 1
    25  27 *    PshVPtr  v0
    26  28 *    ADDSi    v20, 134217745
    28  28 *    RDSPtr
-   29  28 *    ADDSi    v136, 67108879
+   29  28 *    ADDSi    v160, 67108879
    31  28 *    ADDSi    v0, 67108878
    33  28 *    PopRPtr
    34  27 *    RDR4     v4
@@ -48,7 +48,7 @@ Variables:
    40  27 *    PSF      v13
    41  28 *    CALLSYS  21           (string::~string())
                ObjInfo  v13, 0
-   43  27 *    PGA      237058312
+   43  27 *    PGA      221720984
    45  28 *    PSF      v13
    46  29 *    CALLSYS  20           (string::string(const string&in))
                ObjInfo  v13, 1

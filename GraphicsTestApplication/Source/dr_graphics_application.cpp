@@ -38,6 +38,7 @@
 
 #include "AABBDebug.h"
 #include "AnimationTechnique.h"
+#include "FrustumDebug.h"
 #include "LinesTechnique.h"
 #include "SkeletonDebug.h"
 #include "StaticMeshTechnique.h"
@@ -63,8 +64,8 @@ GraphicsApplication::postInit() {
   initInputCallbacks();
   loadResources();
   initScriptEngine();
-  createScene();
   createTechniques();
+  createScene();
 
   Time::update();
 
@@ -301,7 +302,7 @@ GraphicsApplication::loadResources() {
   
   ResourceManager::loadResource(_T("script1.as"));
 
-  ResourceManager::loadResource(_T("montiBehavior.as"));
+  ResourceManager::loadResource(_T("MontiBehavior.as"));
 }
 
 void 
@@ -322,9 +323,7 @@ GraphicsApplication::createTechniques() {
 
 void 
 GraphicsApplication::createScene() {
-  
-  auto activeCam = CameraManager::getActiveCamera();
-  
+    
   auto woman = ResourceManager::getReferenceT<Model>(_T("Run.fbx"));
 
   auto woms = ResourceManager::getReferenceT<Skeleton>(woman->skeletonName);
@@ -352,6 +351,18 @@ GraphicsApplication::createScene() {
   };
 
   printComponents(womanNode.get());
+
+  auto sc = ResourceManager::getReferenceT<ScriptCore>(_T("script1.as"));
+
+  auto scomp = womanNode->createComponent<ScriptComponent>(sc);
+
+  auto currentModule = ScriptEngine::instancePtr()->m_scriptEngine->GetModule("GameModule");
+  
+  auto result = currentModule->Build(); 
+
+  scomp->initScript();
+
+  scomp->start();
 
   womanNode->getTransform().setPosition({-200.f, 0, 200.f});
 
@@ -423,11 +434,17 @@ GraphicsApplication::createScene() {
   
   auto camNode = SceneGraph::createObject(_T("Camera"));
   
+  auto activeCam = CameraManager::getActiveCamera();
+
   camNode->createComponent<CameraComponent>(activeCam);
 
   camNode->getTransform().setPosition({0, 0, -20});
 
   camNode->setParent(sphereCenter);
+
+  auto fd = copy->createComponent<FrustumDebug>(activeCam.get());
+
+  fd->setShaderTechnique(m_linesTech.get());
 
   auto quadMod = ResourceManager::getReferenceT<Model>(_T("ScreenAlignedQuad.3ds"));
 
@@ -600,15 +617,14 @@ GraphicsApplication::initScriptEngine() {
                                                      _T("GameModule"));
 
   //Get script references of the ResourceManager
-  auto bs = ResourceManager::getReferenceT<ScriptCore>(_T("montiBehavior.as"));
+  auto bs = ResourceManager::getReferenceT<ScriptCore>(_T("MontiBehavior.as"));
 
   //Add script section of behavior
   scriptEngine->addScript(bs->getName(),
                           bs->getScript(),
                           _T("GameModule"));
 
-  auto currentModule = scriptEngine->m_scriptEngine->GetModule("GameModule");
-  result = currentModule->Build(); 
+  
 }
 
 void 
