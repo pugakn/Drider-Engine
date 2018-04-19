@@ -50,6 +50,12 @@ class DR_SOUND_EXPORT DrSound {
     virtual void**
     getObjectReference() = 0;
 
+    /**
+    * Return the sounds api
+    */
+    virtual DrSound*
+    get() = 0;
+
 
     /**
     * Plays the sound
@@ -72,7 +78,6 @@ class DR_SOUND_EXPORT DrSound {
     virtual void
     set3DMinMaxDistance(float min,
                         float max) = 0;
-
 
 };
 

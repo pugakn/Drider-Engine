@@ -28,6 +28,11 @@ class DR_SOUND_EXPORT DrChannel {
     virtual void**
     getObjectReference() = 0;
 
+    /**
+    * Gets api channel
+    */
+    virtual DrChannel*
+    get() = 0;
 
     /**
     * Pause and realease the channel

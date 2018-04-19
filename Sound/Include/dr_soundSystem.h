@@ -4,6 +4,8 @@
 #include "dr_sound_defines.h"
 #include <dr_vector3d.h>
 
+//#include <dr_script_engine.h>
+
 namespace driderSDK {
 
 class DrSound;
@@ -54,6 +56,12 @@ class DR_SOUND_EXPORT SoundSystem {
   */
   virtual void**
   getObjectReference() = 0;
+
+  /**
+  * Gets the API's SoundSystem
+  */
+  virtual SoundSystem*
+  get() = 0;
 
   /**
   * Creates a sound

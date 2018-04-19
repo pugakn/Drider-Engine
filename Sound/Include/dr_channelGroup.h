@@ -32,6 +32,13 @@ class DR_SOUND_EXPORT DrChannelGroup {
     virtual void **
     getObjectReference() = 0;
 
+
+    /**
+    * Gets the API's channelGroup
+    */
+    virtual DrChannelGroup*
+    get() = 0;
+
     /**
     *
     */

@@ -13,6 +13,11 @@ FMODChannelGroup::getObjectReference() {
   return reinterpret_cast<void**>(&channelGroup);
 }
 
+DrChannelGroup*
+FMODChannelGroup::get() {
+  return reinterpret_cast<DrChannelGroup*>(channelGroup);
+}
+
 void
 FMODChannelGroup::addDSP(Int32 index,
                          DrDSP * dsp) {

@@ -91,13 +91,10 @@ TestApplication::postRender() {
   m_animTech->setCamera(&camera);
   m_staticTech->setCamera(&camera);
 
-  auto& mainC = CameraManager::getCamera(m_camNames[0]);
-
-
 
   auto& dc = GraphicsAPI::getDeviceContext();
 
-  auto queryRes = SceneGraph::query(*mainC,
+  auto queryRes = SceneGraph::query(camera,
                                     QUERY_ORDER::kBackToFront,
                                     queryFlags);
 
@@ -182,8 +179,8 @@ TestApplication::loadResources() {
   m_camNames[1] = _T("UP_CAM");
 
   CameraManager::createCamera(m_camNames[0],
-                              { 0, 200, -400 },
-                              { 0, 150, 10 },
+                              { 0, 500, -400 },
+                              { 0, 0, 1 },
                               m_viewport,
                               45, 0.1f, 4000.f);
 
@@ -203,11 +200,11 @@ TestApplication::loadResources() {
   ResourceManager::loadResource(_T("Sphere.fbx"));
 
   //Scripts
-  ResourceManager::loadResource(_T("MontiBehavior.as"));
+  ResourceManager::loadResource(_T("montiBehavior.as"));
   ResourceManager::loadResource(_T("script1.as"));
   ResourceManager::loadResource(_T("script2.as"));
 
-  //Sounds
+  //Sounds (All sunds requiere extraInfo data)
   auto system = SoundAPI::instance().API->system;
   auto channel = SoundAPI::instance().API->channel1;
   extraInfo = new SoundExtraInfo(reinterpret_cast<SoundSystem*>(system),
@@ -231,17 +228,6 @@ TestApplication::createScene() {
   animator->addAnimation(wa, walkerAnimName);
   animator->setCurrentAnimation(walkerAnimName);
   m_player->getTransform().setPosition({ 0, 0, 300 });
-
-
-  auto sphereMod = ResourceManager::getReferenceT<Model>(_T("Sphere.fbx"));
-  auto sphereCenter = SceneGraph::createObject(_T("Spherin"));
-  sphereCenter->getTransform().scale({ 20, 20, 20 });
-
-
-  auto camNode = SceneGraph::createObject(_T("Camera"));
-  camNode->createComponent<CameraComponent>(activeCam);
-  camNode->getTransform().setPosition({ 0, 0, -20 });
-  camNode->setParent(sphereCenter);
 
   auto quadMod = ResourceManager::getReferenceT<Model>(_T("ScreenAlignedQuad.3ds"));
   auto quad = addObjectFromModel(quadMod, _T("Floor"));
@@ -301,7 +287,7 @@ TestApplication::initScriptEngine() {
   result = Time::registerFunctions(scriptEngine);
 
   //Get script references of the ResourceManager
-  auto rBehaviorScript = ResourceManager::getReference(_T("MontiBehavior.as"));
+  auto rBehaviorScript = ResourceManager::getReference(_T("montiBehavior.as"));
   auto BehaviorScript = std::dynamic_pointer_cast<ScriptCore>(rBehaviorScript);
 
   auto rScript1 = ResourceManager::getReference(_T("script1.as"));
@@ -340,15 +326,9 @@ TestApplication::playSoundTest() {
   auto sound1Resource = ResourceManager::instance().getReferenceT<
                         SoundCore>(_T("testSound1.mp3"));
 
-  auto sound1Ref = sound1Resource.get()->soundResource->getReference();
-  auto sound1 = reinterpret_cast<DrSound*>(sound1Ref);
-  
-
-  auto channel1Ref = SoundAPI::instance().API->channel1->getReference();
-  auto channel1 = reinterpret_cast<DrChannel*>(channel1Ref);
-
-  auto channelGroupRef = SoundAPI::instance().API->masterGroup->getReference();
-  auto channelGroup = reinterpret_cast<DrChannelGroup*>(channelGroupRef);
+  auto sound1 = sound1Resource.get()->soundResource->get();
+  auto channel1 = SoundAPI::instance().API->channel1->get();
+  auto channelGroup = SoundAPI::instance().API->masterGroup->get();
 
   SoundAPI::instance().API->system->playSound(sound1,
                                               channelGroup,
