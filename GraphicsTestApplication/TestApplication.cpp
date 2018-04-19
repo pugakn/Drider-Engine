@@ -229,7 +229,7 @@ TestApplication::createScene() {
   auto animator = m_player->createComponent<AnimatorComponent>();
   animator->setSkeleton(ws);
   animator->addAnimation(wa, walkerAnimName);
-  animator->setCurrentAnimation(walkerAnimName);
+  animator->setCurrentAnimation(walkerAnimName, true, true);
   m_player->getTransform().setPosition({ 0, 0, 300 });
 
 
