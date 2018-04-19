@@ -65,6 +65,9 @@ OctreeNode::buildTree(OctreeNode& node) {
         flag = false;
         divideFacesForPlanes(node, temp);
         counterChilds = node.childs.size();
+        //FACESTATES state = checkFaceAgainstAABB(temp, child->boundingRegion);
+        //divideFacesForPlanes(node, temp);
+
       }
       counterChilds++;
     }
@@ -83,13 +86,36 @@ OctreeNode::createChilds(OctreeNode &node) {
   Vector3D size = node.boundingRegion.getMaxPoint() - node.boundingRegion.getMinPoint();
 
   std::vector<AABB> regionsChilds;
-  float width = size.x * 0.5f;
+  float width = size.x * 0.5f ;
   float height = size.y * 0.5f;
   float depth = size.z * 0.5f;
-  Vector3D c1 = node.boundingRegion.center + Vector3D(-width * 0.5f,
-                                                      height * 0.5f,
-                                                      depth * 0.5f);
-  Vector3D c2 = c1;
+  Vector3D c1 = node.boundingRegion.center + Vector3D(-(width * 0.5f + Math::EPSILON),
+                                                      (height * 0.5f + Math::EPSILON),
+                                                      (depth * 0.5f + Math::EPSILON));
+  
+  Vector3D c2 = node.boundingRegion.center + Vector3D((width * 0.5f + Math::EPSILON),
+                                                      (height * 0.5f + Math::EPSILON),
+                                                      (depth * 0.5f + Math::EPSILON));;
+  Vector3D c3 = node.boundingRegion.center + Vector3D(-(width * 0.5f + Math::EPSILON),
+                                                      (height * 0.5f + Math::EPSILON),
+                                                      -(depth * 0.5f + Math::EPSILON));;
+  Vector3D c4 = node.boundingRegion.center + Vector3D((width * 0.5f + Math::EPSILON),
+                                                      (height * 0.5f + Math::EPSILON),
+                                                      -(depth * 0.5f + Math::EPSILON));;
+  Vector3D c5 = node.boundingRegion.center + Vector3D(-(width * 0.5f + Math::EPSILON),
+                                                      -(height * 0.5f + Math::EPSILON),
+                                                      (depth * 0.5f + Math::EPSILON));;
+  Vector3D c6 = node.boundingRegion.center + Vector3D((width * 0.5f + Math::EPSILON),
+                                                      -(height * 0.5f + Math::EPSILON),
+                                                      (depth * 0.5f + Math::EPSILON));;
+  Vector3D c7 = node.boundingRegion.center + Vector3D(-(width * 0.5f + Math::EPSILON),
+                                                      -(height * 0.5f + Math::EPSILON),
+                                                      -(depth * 0.5f + Math::EPSILON));;
+  Vector3D c8 = node.boundingRegion.center + Vector3D((width * 0.5f + Math::EPSILON),
+                                                      -(height * 0.5f + Math::EPSILON),
+                                                      -(depth * 0.5f + Math::EPSILON));;
+
+  /*Vector3D c2 = c1;
   c2.x += width;
   Vector3D c3 = c1;
   c3.z -= depth;
@@ -102,15 +128,42 @@ OctreeNode::createChilds(OctreeNode &node) {
   Vector3D c7 = c3;
   c7.y -= height;
   Vector3D c8 = c4;
-  c8.y -= height;
+  c8.y -= height;*/
 
+  //width += Math::EPSILON * 3;
+  //height += Math::EPSILON * 3;
+  //depth += Math::EPSILON * 3;
+  width = Math::abs(node.boundingRegion.center.x - c1.x) * 2.0f;
+  height = Math::abs(node.boundingRegion.center.y - c1.y) * 2.0f;
+  depth = Math::abs(node.boundingRegion.center.z - c1.z) * 2.0f;
   regionsChilds.push_back(AABB(width, height, depth, c1));//-++
+  width = Math::abs(node.boundingRegion.center.x - c2.x) * 2.0f;
+  height = Math::abs(node.boundingRegion.center.y - c2.y) * 2.0f;
+  depth = Math::abs(node.boundingRegion.center.z - c2.z) * 2.0f;
   regionsChilds.push_back(AABB(width, height, depth, c2));//+++
+  width = Math::abs(node.boundingRegion.center.x - c3.x) * 2.0f;
+  height = Math::abs(node.boundingRegion.center.y - c3.y) * 2.0f;
+  depth = Math::abs(node.boundingRegion.center.z - c3.z) * 2.0f;
   regionsChilds.push_back(AABB(width, height, depth, c3));//-+-
+  width = Math::abs(node.boundingRegion.center.x - c4.x) * 2.0f;
+  height = Math::abs(node.boundingRegion.center.y - c4.y) * 2.0f;
+  depth = Math::abs(node.boundingRegion.center.z - c4.z) * 2.0f;
   regionsChilds.push_back(AABB(width, height, depth, c4));//++-
+  width = Math::abs(node.boundingRegion.center.x - c5.x) * 2.0f;
+  height = Math::abs(node.boundingRegion.center.y - c5.y) * 2.0f;
+  depth = Math::abs(node.boundingRegion.center.z - c5.z) * 2.0f;
   regionsChilds.push_back(AABB(width, height, depth, c5));//--+
+  width = Math::abs(node.boundingRegion.center.x - c6.x) * 2.0f;
+  height = Math::abs(node.boundingRegion.center.y - c6.y) * 2.0f;
+  depth = Math::abs(node.boundingRegion.center.z - c6.z) * 2.0f;
   regionsChilds.push_back(AABB(width, height, depth, c6));//+-+
+  width = Math::abs(node.boundingRegion.center.x - c7.x) * 2.0f;
+  height = Math::abs(node.boundingRegion.center.y - c7.y) * 2.0f;
+  depth = Math::abs(node.boundingRegion.center.z - c7.z) * 2.0f;
   regionsChilds.push_back(AABB(width, height, depth, c7));//---
+  width = Math::abs(node.boundingRegion.center.x - c8.x) * 2.0f;
+  height = Math::abs(node.boundingRegion.center.y - c8.y) * 2.0f;
+  depth = Math::abs(node.boundingRegion.center.z - c8.z) * 2.0f;
   regionsChilds.push_back(AABB(width, height, depth, c8));//+--
 
   for (size_t i = 0; i < regionsChilds.size(); ++i) {
@@ -252,6 +305,10 @@ OctreeNode::divideFacesForPlanes(OctreeNode &node,
       }
     }
   }
+  if (!flagDivide)
+  {
+    flagDivide = true;
+  }
 }
 
 void
@@ -294,10 +351,23 @@ OctreeNode::checkFaceAgainstAABB(Face& face, AABB &boundingArea) {
   Int32 numberOfVertexIntersects = 0;
 
   Vector3D aabbMin = boundingArea.getMinPoint();
+
   Vector3D aabbMax = boundingArea.getMaxPoint();
+
   for (size_t i = 0; i < 3; i++) {
     Vector4D point = face.vertices[i].position;
-
+    if (point.x < Math::EPSILON && point.x > -Math::EPSILON)
+    {
+      point.x = 0;
+    }
+    if (point.y < Math::EPSILON && point.y > -Math::EPSILON)
+    {
+      point.y = 0;
+    }
+    if (point.z < Math::EPSILON && point.z > -Math::EPSILON)
+    {
+      point.z = 0;
+    }
     if (point.x >= aabbMin.x && point.x <= aabbMax.x &&
       point.y >= aabbMin.y && point.y <= aabbMax.y &&
       point.z >= aabbMin.z && point.z <= aabbMax.z) {
