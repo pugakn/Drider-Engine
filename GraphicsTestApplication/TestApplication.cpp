@@ -40,7 +40,6 @@
 #include <dr_script_object.h>
 #include <dr_context_manager.h>
 
-#include <dr_sound_api.h>
 #include <dr_fmod_sound_api.h>
 #include <dr_soundSystem.h>
 #include <dr_sound_core.h>
@@ -48,6 +47,7 @@
 #include <dr_channelGroup.h>
 #include <dr_soundExtraInfo.h>
 #include <dr_sound.h>
+#include <dr_sound_component.h>
 
 namespace driderSDK {
 
@@ -326,14 +326,15 @@ TestApplication::playSoundTest() {
   auto sound1Resource = ResourceManager::instance().getReferenceT<
                         SoundCore>(_T("testSound1.mp3"));
 
-  auto sound1 = sound1Resource.get()->soundResource->get();
-  auto channel1 = SoundAPI::instance().API->channel1->get();
-  auto channelGroup = SoundAPI::instance().API->masterGroup->get();
+  auto sound1 = sound1Resource.get()->soundResource;
+  auto soundComponent = m_player->createComponent<SoundComponent>();
 
-  SoundAPI::instance().API->system->playSound(sound1,
-                                              channelGroup,
-                                              false,
-                                              &channel1);
+  //Add all sounds to SoundComponent
+  soundComponent->addSound(_T("testSound1"),
+                           sound1);
+
+  soundComponent->play(_T("testSound1"));
+  
 }
 
 void

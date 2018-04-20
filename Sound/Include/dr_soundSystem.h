@@ -4,7 +4,8 @@
 #include "dr_sound_defines.h"
 #include <dr_vector3d.h>
 
-//#include <dr_script_engine.h>
+#include <dr_export_script.h>
+#include <..\..\Script\Include\dr_script_engine.h>
 
 namespace driderSDK {
 

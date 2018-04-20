@@ -1,6 +1,7 @@
 #pragma once
 #include "dr_sound_prerequisites.h"
 #include <dr_soundExtraInfo.h>
+#include "dr_sound_defines.h"
 
 namespace driderSDK {
 
