@@ -196,6 +196,10 @@ void
 GraphicsApplication::initInputCallbacks() {
   
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::k9,
+                        &SceneGraph::buildOctree); 
+
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::k2,
                         std::bind(&GraphicsApplication::toggleSkeletonView,
                                   this,
@@ -215,7 +219,13 @@ GraphicsApplication::initInputCallbacks() {
                         KEY_CODE::k1,
                         std::bind(&GraphicsApplication::toggleAABBDebug,
                                   this, 
-                                  SceneGraph::getRoot().get())); 
+                                  SceneGraph::getRoot())); 
+
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::k1,
+                        std::bind(&GraphicsApplication::toggleAABBDebug,
+                                  this, 
+                                  SceneGraph::getOctree())); 
 
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::k4,
@@ -303,6 +313,8 @@ GraphicsApplication::loadResources() {
   ResourceManager::loadResource(_T("script1.as"));
 
   ResourceManager::loadResource(_T("MontiBehavior.as"));
+
+  ResourceManager::loadResource(_T("nanosuit.obj"));
 }
 
 void 
@@ -324,6 +336,14 @@ GraphicsApplication::createTechniques() {
 void 
 GraphicsApplication::createScene() {
     
+  auto terr = ResourceManager::getReferenceT<Model>(_T("nanosuit.obj"));
+
+  auto terrainObj = addObjectFromModel(terr, _T("Terrain"));
+
+  terrainObj->getTransform().scale({100.f, 100.f, 100.f});
+
+  terrainObj->setStatic(true);
+
   auto woman = ResourceManager::getReferenceT<Model>(_T("Run.fbx"));
 
   auto woms = ResourceManager::getReferenceT<Skeleton>(woman->skeletonName);
@@ -350,8 +370,6 @@ GraphicsApplication::createScene() {
     Logger::addLog(_T("----------------"));
   };
 
-  printComponents(womanNode.get());
-
   auto sc = ResourceManager::getReferenceT<ScriptCore>(_T("script1.as"));
 
   auto scomp = womanNode->createComponent<ScriptComponent>(sc);
@@ -363,6 +381,8 @@ GraphicsApplication::createScene() {
   scomp->initScript();
 
   scomp->start();
+
+  printComponents(womanNode.get());
 
   womanNode->getTransform().setPosition({-200.f, 0, 200.f});
 
@@ -446,12 +466,12 @@ GraphicsApplication::createScene() {
 
   fd->setShaderTechnique(m_linesTech.get());
 
-  auto quadMod = ResourceManager::getReferenceT<Model>(_T("ScreenAlignedQuad.3ds"));
+  /*auto quadMod = ResourceManager::getReferenceT<Model>(_T("ScreenAlignedQuad.3ds"));
 
   auto quad = addObjectFromModel(quadMod, _T("Floor"));
 
   quad->getTransform().rotate({-Math::HALF_PI, 0, 0});
-  quad->getTransform().setScale({10000, 10000, 10000});
+  quad->getTransform().setScale({10000, 10000, 10000});*/
 }
 
 std::shared_ptr<GameObject>
@@ -514,7 +534,11 @@ GraphicsApplication::toggleSkeletonView(GameObject* obj) {
 }
 
 void 
-GraphicsApplication::toggleAABBDebug(GameObject* obj) {
+GraphicsApplication::toggleAABBDebug(std::shared_ptr<GameObject> obj) {
+
+  if (!obj) {
+    return;
+  }
 
   if (obj->getComponent<AABBDebug>()) {
     obj->removeComponent<AABBDebug>();
@@ -525,7 +549,7 @@ GraphicsApplication::toggleAABBDebug(GameObject* obj) {
   }
 
   for (auto& child : obj->getChildren()) {
-    toggleAABBDebug(child.get());
+    toggleAABBDebug(child);
   }
 
 }
