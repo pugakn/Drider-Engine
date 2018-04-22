@@ -324,8 +324,8 @@ Matrix4x4::Projection(float Width, float Height, float ZNear, float ZFar) {
 
 Matrix4x4&
 Matrix4x4::ProjectionFov(float FOV, float Aspect, float ZNear, float ZFar) {
-  float    SinFov = Math::sin(0.5f * FOV);
-  float    CosFov = Math::cos(0.5f * FOV);
+  float SinFov = Math::sin(0.5f * FOV);
+  float CosFov = Math::cos(0.5f * FOV);
 
   float Height = CosFov / SinFov;
   float Width = Height / Aspect;

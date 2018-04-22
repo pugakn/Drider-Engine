@@ -44,9 +44,13 @@ class RenderManApp : public Application
   //LinesTechnique tecnico;
 
   RenderMan m_renderMan;
+
+  SceneGraph::SharedGameObject* selectedGO;
+  std::vector<std::pair<SceneGraph::SharedGameObject,
+                        std::shared_ptr<Material>>> m_vecGoMat;
   SceneGraph::SharedGameObject model;
-  std::shared_ptr<Material> modelMat;
   SceneGraph::SharedGameObject floor;
+  std::shared_ptr<Material> modelMat;
   std::shared_ptr<Material> floorMat;
 
   Vector3D modelMovement;

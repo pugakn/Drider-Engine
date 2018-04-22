@@ -9,8 +9,8 @@ struct PS_INPUT {
 };
 
 struct PS_OUTPUT {
-  float4 Position  : SV_POSITION;
-  float2 Texcoord  : TEXCOORD0;
+  float4 Position : SV_POSITION;
+  float2 Texcoord : TEXCOORD0;
 };
 
 PS_OUTPUT
@@ -20,8 +20,7 @@ VS(PS_INPUT input) {
   psOut.Position  = input.Position;
   psOut.Position.x = -psOut.Position.x;
 
-  psOut.Texcoord  = input.Texcoord;
-  psOut.Texcoord.y = 1.0f - input.Texcoord.y;
+  psOut.Texcoord  = 1.0f - input.Texcoord;
   
   return psOut;
 }

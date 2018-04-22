@@ -12,12 +12,11 @@ struct ShadowInitData : PassInitData {
 };
 
 struct ShadowDrawData : PassDrawData {
-  std::shared_ptr<Camera>  activeCam;
+  std::shared_ptr<Camera>  shadowCam;
   Int32                    shadowIndex;
   SceneGraph::QueryResult* models;
   GFXShared<RenderTarget>  OutRt;
   GFXShared<DepthStencil>  dsOptions;
-  Vector3D DirectionalLight;
 };
 
 class ShadowPass : public RenderPass {
@@ -49,19 +48,26 @@ class ShadowPass : public RenderPass {
   void
   draw(PassDrawData* drawData);
 
+  /*
+  */
+  void
+  merge(std::array<GFXShared<RenderTarget>, 4> m_RTShadowDummy,
+        GFXShared<DepthStencil> dsOptions,
+        GFXShared<RenderTarget> OutRt);
+
  private:
   struct CBuffer {
     Matrix4x4 WVP;
-    Matrix4x4 World;
     Matrix4x4 Bones[200];
-    Int32     ShadowIndex[4];
-    Vector4D  extraInfo;
-    Matrix4x4 WV;
   };
 
   CBuffer CB;
 
-  
+  GFXUnique<SamplerState> m_samplerState;
+
+  /////////////////////////////////////////////////////////////////////////////
+  GFXUnique<Shader> m_ShaderVMerge;
+  GFXUnique<Shader> m_ShaderFMerge;
 };
 
 }

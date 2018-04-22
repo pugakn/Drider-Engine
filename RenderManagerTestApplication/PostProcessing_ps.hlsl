@@ -10,26 +10,15 @@ Texture2D ShadowTex1   : register(t7);
 SamplerState SS;
 
 cbuffer ConstantBuffer {
-  float4 kEyePosition;
-  float4 kDirLight;
-  float4 kLightPosition[128];
-  float4 kLightColor[128];
-  float4x4 VP;
-  float4x4 VPInv;
-  float4x4 W;
-  float4x4 WInv;
-  float4x4 V;
-  float4x4 VInv;
-  float4x4 P;
-  float4x4 PInv;
+  float4   kEyePosition;
+  float4   kDirLight;
+  float4   kLightPosition[128];
+  float4   kLightColor[128];
+  float4x4 kView;
+  float4x4 kProjection;
+  float4x4 kVP;
   float4x4 kShadowVP[4];
-  float4x4 kShadowVPInv[4];
-  float4x4 kShadowW[4];
-  float4x4 kShadowWInv[4];
-  float4x4 kShadowV[4];
-  float4x4 kShadowVInv[4];
-  float4x4 kShadowP[4];
-  float4x4 kShadowPInv[4];
+  float    ShadowSliptDepth[4];
 };
 
 struct PS_INPUT {
@@ -41,75 +30,68 @@ static const float M_PI = 3.14159265f;
 static const float EPSILON = 1e-6f;
 
 float
-LinearShadowDepth(const int camIndex, float4 pos) {
-  float4 newPos = mul(kShadowVP[0], pos);
+LinearShadowDepth(float4 pos) {
+  float4 newPos = mul(kVP, pos);
   float depth = (newPos.z / newPos.w);
 
   return depth;
 }
 
-float2
-UVCoordFromCam(const int camIndex, float3 Pos) {
-  float4 detransformedPos = float4(Pos, 1.0f);
-  float2 uv = mul(kShadowVP[0], detransformedPos).xy;
-  uv *= 0.5f;
-  uv += 0.5f;
-  uv.y = 1.0f - uv.y;
-  //return saturate(uv * 0.5f);
-  return uv;
-}
-
-float2
-UVCoordFromMainCam(const int camIndex, float3 Pos) {
-  float2 uv = mul(VP, float4(Pos, 1.0f)).xy;
-  uv *= 0.5f;
-  uv += 0.5f;
-  uv.y = 1.0f - uv.y;
-  //return saturate(uv * 0.5f);
-  return uv;
+bool
+insideBounds(float4 fromLightPos) {
+  float2 fromLightCoords = (fromLightPos.xy * 0.5f) + 0.5f;
+  return (fromLightCoords.x < 1.0f &&
+          fromLightCoords.y < 1.0f &&
+          fromLightCoords.x > 0.0f &&
+          fromLightCoords.y > 0.0f &&
+          fromLightPos.w > 0.0f &&
+          fromLightPos.z < 1.0f);
 }
 
 #define DR_SH_PCF_ENABLED
-float GetShadowValue(float4 fromLightPos, const int camIndex ) {
-  const float shadowBias = 0.0005;
-  float2 fromLightCoords = fromLightPos.xy * 0.5 + 0.5;
+float GetShadowValue(float4 fromLightPos, const int camIndex) {
+  const float shadowBias = 0.0005f;
+  float2 fromLightCoords = (fromLightPos.xy * 0.5f) + 0.5f;
   float shadowValue = 1.0;
-  if(fromLightCoords.x < 1.0 && 
-     fromLightCoords.y < 1.0 && 
-     fromLightCoords.x  > 0.0 && 
-	 fromLightCoords.y > 0.0 && 
-	 fromLightPos.w > 0.0 && 
-	 fromLightPos.z < 1.0 )
-  {
-  fromLightCoords.y = 1.0 - fromLightCoords.y;
-  //Pixel Depth seen from shadowCam
-  float depthPos = fromLightPos.z;
-  #ifdef DR_SH_PCF_ENABLED
 
-  uint width, height;   //TODO: Pass This in CBUFFER xdXDxDxDXDXD
-  ShadowTex1.GetDimensions(width, height);  //TODO: Pass This in CBUFFER xdXDxDxDXDXD
-  float2 texelSize = float2(1.0 ,1.0) / float2(width,height);
-  const float sampleRadius = 3.0;
-  const float modifier = 0.25 / (sampleRadius*sampleRadius*2.0);
-  [unroll]
-  for (float y = -sampleRadius; y <= sampleRadius; y += 1.0){
+  if (fromLightCoords.x < 1.0 && 
+      fromLightCoords.y < 1.0 && 
+      fromLightCoords.x  > 0.0 && 
+	    fromLightCoords.y > 0.0 && 
+	    fromLightPos.w > 0.0 && 
+	    fromLightPos.z < 1.0 ) {
+    fromLightCoords.y = 1.0 - fromLightCoords.y;
+    //Pixel Depth seen from shadowCam
+    float depthPos = fromLightPos.z;
+
+    #ifdef DR_SH_PCF_ENABLED
+    
+    uint width, height;//TODO: Pass This in CBUFFER xdXDxDxDXDXD
+    ShadowTex1.GetDimensions(width, height);  //TODO: Pass This in CBUFFER xdXDxDxDXDXD
+    float2 texelSize = float2(1.0, 1.0) / float2(width, height);
+    const float sampleRadius = 3.0;
+    const float modifier = 0.25 / (sampleRadius * sampleRadius * 2.0);
     [unroll]
-	for (float x = -sampleRadius; x <= sampleRadius; x += 1.0){
-	      //Projected depth	
-	      float depthSample = ShadowTex1.Sample( SS, fromLightCoords.xy + texelSize * float2(x,y) )[camIndex];
-	   
-	      if( depthPos > (depthSample + shadowBias))
-	      	shadowValue -= modifier;	  
-	}
-  }
-  
-  #else //DR_SH_PCF_ENABLED
-  //Projected depth	
-  float depthSample = ShadowTex1.Sample( SS, fromLightCoords.xy )[camIndex];
-  
-  if( depthPos > (depthSample + shadowBias))
-  	shadowValue = 0.25;	  
-  #endif //DR_SH_PCF_ENABLED
+    for (float y = -sampleRadius; y <= sampleRadius; y += 1.0) {
+      [unroll]
+      for (float x = -sampleRadius; x <= sampleRadius; x += 1.0) {
+        //Projected depth	
+        float depthSample = ShadowTex1.Sample(SS, fromLightCoords.xy + texelSize * float2(x,y) )[camIndex];
+        
+        if (depthPos > (depthSample + shadowBias)) {
+          shadowValue -= modifier;
+        }
+      }
+    }
+
+    #else //DR_SH_PCF_ENABLED
+    //Projected depth	
+    float depthSample = ShadowTex1.Sample(SS, fromLightCoords.xy)[camIndex];
+    
+    if (depthPos > (depthSample + shadowBias)) {
+      shadowValue = 0.25;
+    }
+    #endif //DR_SH_PCF_ENABLED
   }
   
   return shadowValue;
@@ -224,7 +206,8 @@ float4 FS(PS_INPUT input) : SV_TARGET {
   float3 SpecAcc = float3(0.0f, 0.0f, 0.0f);
   
   const int activeLights = kEyePosition.w;
-  for (int index = 0; index < activeLights; index += 8) {
+  [unroll]
+  for (int index = 0; index < activeLights; index += 16  ) {
     lightPosition  = kLightPosition[index].xyz;
     lightColor     = kLightColor[index].xyz;
     lightIntensity = kLightColor[index].w;
@@ -250,7 +233,6 @@ float4 FS(PS_INPUT input) : SV_TARGET {
     
     finalColor += (DiffAcc + SpecAcc) * SSAO * NdotL * LightPower;
   };
-
   
   //return AlbedoTex.Sample(SS, uv);
   //return PositionTex.Sample(SS, uv);
@@ -259,19 +241,26 @@ float4 FS(PS_INPUT input) : SV_TARGET {
   //return MetallicTex.Sample(SS, uv);
   //return RoughnessTex.Sample(SS, uv);
   //return SSAOTex.Sample(SS, uv);
-  //return float4(ShadowTex1.Sample(SS, uv).xyz, 1);
-  //return float4(ShadowTex1.Sample(SS, uv).xxx, 1); //ShadowCam1
-  //return float4(ShadowTex1.Sample(SS, uv).yyy, 1); //ShadowCam2
-  //return float4(ShadowTex1.Sample(SS, uv).zzz, 1); //ShadowCam3
-  //return float4(ShadowTex1.Sample(SS, uv).www, 1); //ShadowCam4
+  //return float4(ShadowTex1.Sample(SS, uv).xyz, 1.0f);
+  //return float4(ShadowTex1.Sample(SS, uv).xxx, 1.0f); //ShadowCam1
+  //return float4(ShadowTex1.Sample(SS, uv).yyy, 1.0f); //ShadowCam2
+  //return float4(ShadowTex1.Sample(SS, uv).zzz, 1.0f); //ShadowCam3
+  //return float4(ShadowTex1.Sample(SS, uv).www, 1.0f); //ShadowCam4
   
   //return float4(uv, 0.0f, 1); //ShadowCam1
 
   //Projects the position from the mainCam to what shadowCam sees
-  float4 fromLightPos = mul(kShadowVP[0],position);
+  float4 fromLightPos = mul(kShadowVP[0], position);
   fromLightPos.xyz /= fromLightPos.w;
 
-  float4 ShadowValue = GetShadowValue(fromLightPos,0).xxxx;
-  //return ShadowValue;
+  float4 ShadowValue = GetShadowValue(fromLightPos, 0).xxxx;;
+
+  bool Interval_Based_Selection = true;
+  bool Map_Based_Selection = false;
+
+
+  //return float4(albedo * ShadowValue, 1.0f);
+  //return float4(finalColor + emissive, 1.0f);
+  //return float4(albedo * ShadowValue  + emissive, 1.0f);
   return float4(finalColor * ShadowValue  + emissive, 1.0f);
 }

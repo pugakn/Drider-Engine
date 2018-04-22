@@ -48,6 +48,12 @@
     <ClInclude Include="Include\dr_Shadow.h">
       <Filter>Archivos de encabezado\Passes</Filter>
     </ClInclude>
+    <ClInclude Include="Include\dr_HorBlur.h">
+      <Filter>Archivos de encabezado\Passes</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_VerBlur.h">
+      <Filter>Archivos de encabezado\Passes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_rendermanapp.cpp">
@@ -69,6 +75,12 @@
       <Filter>Archivos de código fuente\Passes</Filter>
     </ClCompile>
     <ClCompile Include="Source\dr_Shadow.cpp">
+      <Filter>Archivos de código fuente\Passes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\m_HorBlur.cpp">
+      <Filter>Archivos de código fuente\Passes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\m_VerBlur.cpp">
       <Filter>Archivos de código fuente\Passes</Filter>
     </ClCompile>
   </ItemGroup>
