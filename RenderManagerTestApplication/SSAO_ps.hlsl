@@ -12,13 +12,9 @@ cbuffer ConstantBuffer {
 };
 
 static const float SampleRadio = 0.08f;
-static const float Intensity = 1.0f;
+static const float Intensity = 5.0f;
 static const float Scale = 1.0f;
-static const float Bias = 0.002f;
-//static const float SampleRadio = 3.00000;
-//static const float Intensity = 3.00000;
-//static const float Scale = 1.00000;
-//static const float Bias = 0.00200;
+static const float Bias = 0.0002f;
 
 float3
 getPosition(in float2 uv) {
@@ -26,7 +22,7 @@ getPosition(in float2 uv) {
   float y = (2.0f * (1.0f - uv.y)) - 1.0;
   float z = PositionNormal.Sample(SS, uv).w;
 
-  float4 posView = mul(ProjectionInv, float4(x, y, z, 1.0f));
+  float4 posView = mul(VPInv, float4(x, y, z, 1.0f));
 	posView /= posView.w;
 
   return posView.xyz;
@@ -37,7 +33,7 @@ getPosition(in float2 uv, in float z) {
   float x = (2.0f * uv.x) - 1.0f;
   float y = (2.0f * (1.0f - uv.y)) - 1.0f;
 
-  float4 posView = mul(ProjectionInv, float4(x, y, z, 1.0f));
+  float4 posView = mul(VPInv, float4(x, y, z, 1.0f));
   posView /= posView.w;
   
   return posView.xyz;
@@ -93,7 +89,8 @@ PS_OUTPUT FS(PS_INPUT input) {
 	float ao = 0.0f;
 	
 	//float rad = SampleRadio / p.z;
-	float rad = SampleRadio / abs(max(100, p.z));
+  float rad = SampleRadio;
+	//float rad = SampleRadio / abs(max(100, p.z));
 
 	static const int iterations = 4;
 	[unroll]

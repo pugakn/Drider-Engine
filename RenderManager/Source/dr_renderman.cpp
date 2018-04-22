@@ -35,7 +35,8 @@ RenderMan::init() {
   GBufferTexDesc.height = screenHeight;
   GBufferTexDesc.pitch = screenWidth * 4;
   GBufferTexDesc.dimension = DR_DIMENSION::k2D;
-  GBufferTexDesc.Format = DR_FORMAT::kR16G16B16A16_FLOAT;
+  //GBufferTexDesc.Format = DR_FORMAT::kR16G16B16A16_FLOAT;
+  GBufferTexDesc.Format = DR_FORMAT::kR32G32B32A32_FLOAT;
   GBufferTexDesc.mipLevels = 0;
   GBufferTexDesc.CPUAccessFlags = 0;
   GBufferTexDesc.genMipMaps = true;
@@ -145,8 +146,7 @@ RenderMan::draw() {
   m_PostProcessingDrawData.activeCam = mainCam;
   m_PostProcessingDrawData.DirLight = Vector4D(m_vec3DirectionalLight, 1.0f);
   m_PostProcessingDrawData.Gbuffer1RT = m_RTGBuffer1;
-  //m_PostProcessingDrawData.SSAORT = m_RTSSAOFinalBlur;
-  m_PostProcessingDrawData.SSAORT = m_RTSSAO;
+  m_PostProcessingDrawData.SSAORT = m_RTSSAOFinalBlur;
   m_PostProcessingDrawData.ShadowRT = m_RTShadow;
   m_PostProcessingDrawData.Lights = &lights[0];
   m_PostProcessingDrawData.ActiveLights = 128;
@@ -204,24 +204,23 @@ RenderMan::updateShadowCameras() {
                                       fViewportHeight,
                                       Math::lerp(fNearPlane,
                                                  fFarPlane,
-                                                 //(m_bFitToFrustrum || true) ? partitions[i + 0] : partitions[0]),
-                                                 partitions[i + 0]),
+                                                 partitions[0]),
                                       Math::lerp(fNearPlane,
                                                  fFarPlane,
                                                  partitions[i + 1]),
                                       fFov);
 
     TrueCenter = mainCam->getPosition() +
-                 (mainCam->getDirection() * subFrustraSphere.first.z) +
-                 (m_vec3DirectionalLight * subFrustraSphere.second);
+                 (mainCam->getDirection() * subFrustraSphere.first.z);
 
-    m_vecShadowCamera[i]->setPosition(TrueCenter -
+    m_vecShadowCamera[i]->setPosition(TrueCenter +
+                                      (m_vec3DirectionalLight * subFrustraSphere.second) -
                                       (m_vec3DirectionalLight * m_fDepth));
     m_vecShadowCamera[i]->setTarget(TrueCenter);
     m_vecShadowCamera[i]->createProyection(subFrustraSphere.second * 2.0f,
                                            subFrustraSphere.second * 2.0f,
                                            0.001f,
-                                           2.0f*m_fDepth);
+                                           m_fDepth + subFrustraSphere.second);
   }
 }
 
@@ -235,8 +234,8 @@ RenderMan::calculatePartitions(size_t cuts) {
 
   for (size_t i = 0; i < cuts + 1; ++i) {
     fLinearValue = (float)i / cuts;
-    //fLnValue = log(1.0f + ((float)i / cuts));
-    fLnValue = Math::pow((float)i / cuts, 2.0f);
+    fLnValue = log(1.0f + ((float)i / cuts));
+    //fLnValue = Math::pow((float)i / cuts, 2.0f);
     fRealValue = Math::lerp(fLnValue, fLinearValue, fLinearValue);
 
     realValues.push_back(fRealValue);

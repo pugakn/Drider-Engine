@@ -75,11 +75,10 @@ PostProcessingPass::draw(PassDrawData* drawData) {
 
   for (SizeT i = 0; i < 4; ++i) {
     CB.ShadowVP[i] = (*data->ShadowCam)[i]->getVP();
-    CB.ShadowSliptDepth[i] = data->shadowDepths[i];
+    CB.ShadowSliptDepth.data[i] = data->shadowDepths[i + 1];
   }
 
   m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
-
   m_constantBuffer->set(dc);
 
   dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);

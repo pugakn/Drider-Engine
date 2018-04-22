@@ -62,7 +62,7 @@ class PostProcessingPass : public RenderPass {
     Matrix4x4 VP;
     Matrix4x4 VPInverse;
     Matrix4x4 ShadowVP[4];
-    float     ShadowSliptDepth[4];
+    Vector4D  ShadowSliptDepth;
   };
 
   CBuffer CB;

@@ -155,14 +155,13 @@ RenderManApp::postInit() {
     rComp->getMeshes().front().material = modelMat;
   }
 
-
   floor = SceneGraph::createObject(_T("Floor"));
   auto ptrFloor = ResourceManager::getReferenceT<Model>(_T("plane.fbx"));
   if (ptrFloor) {
     floor->createComponent<RenderComponent>(ptrFloor);
     floor->createComponent<AABBCollider>(ptrFloor->aabb);
     floor->getTransform().setPosition(Vector3D(0.0f, -50.0f, 0.0f));
-    floor->getTransform().setScale(Vector3D(5.0f, 5.0f, 5.0f));
+    floor->getTransform().setScale(Vector3D(10.0f, 1.0f, 1000.0f));
 
     floorMat = std::make_shared<Material>(_T("FloorMaterial"));
 
