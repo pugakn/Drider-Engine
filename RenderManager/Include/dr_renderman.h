@@ -5,6 +5,8 @@
 #include "dr_Shadow.h"
 #include "dr_PostProcessing.h"
 #include "dr_light.h"
+#include "dr_HorBlur.h"
+#include "dr_VerBlur.h"
 
 namespace driderSDK {
 
@@ -48,6 +50,9 @@ class DR_RENDERMAN_EXPORT RenderMan {
 
   std::array<Light, 128>* lights;
   std::array<std::shared_ptr<Camera>, 4> m_vecShadowCamera;
+  std::vector<float> partitions;
+   UInt32 screenWidth;
+   UInt32 screenHeight;
  protected:
 
   GBuffer1Pass m_GBuffer1Pass;
@@ -59,6 +64,21 @@ class DR_RENDERMAN_EXPORT RenderMan {
   SSAOInitData m_SSAOInitData;
   SSAODrawData m_SSAODrawData;
   GFXShared<DepthStencil> m_SSAODSoptions;
+
+  HorBlurPass m_HorBlurPass;
+  HorBlurInitData m_HorBlurInitData;
+  HorBlurDrawData m_HorBlurDrawData;
+  GFXShared<DepthStencil> m_HorBlurDSoptions;
+
+  VerBlurPass m_VerBlurPass;
+  VerBlurInitData m_VerBlurInitData;
+  VerBlurDrawData m_VerBlurDrawData;
+  GFXShared<DepthStencil> m_VerBlurDSoptions;
+
+  //VerBlurPass m_VerBlurPass;
+  //VerBlurInitData m_VerBlurInitData;
+  //VerBlurDrawData m_VerBlurDrawData;
+  //GFXShared<DepthStencil> m_VerBlurDSoptions;
 
   ShadowPass m_ShadowPass;
   ShadowInitData m_ShadowInitData;
@@ -72,9 +92,10 @@ class DR_RENDERMAN_EXPORT RenderMan {
 
   //0: Albedo; 1: Position; 2: Normal; 3: Emissive; 4: Metallic; 5: Roughness;
   GFXShared<RenderTarget> m_RTGBuffer1;
-  //0: SSAO
   GFXShared<RenderTarget> m_RTSSAO;
-  //0: Shadow0; 1: Shadow1; 2: Shadow2; 3: Shadow3;
+  GFXShared<RenderTarget> m_RTSSAOInitBlur;
+  GFXShared<RenderTarget> m_RTSSAOFinalBlur;
+  std::array<GFXShared<RenderTarget>, 4> m_RTShadowDummy; //Used for render separated shadowCams
   GFXShared<RenderTarget> m_RTShadow;
 
   DrTextureDesc GBufferTexDesc;

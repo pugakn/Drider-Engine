@@ -18,8 +18,8 @@ void
 RenderMan::init() {
   Device& dc = GraphicsAPI::getDevice();
 
-  UInt32 screenWidth = 1280;
-  UInt32 screenHeight = 720;
+  screenWidth = 1280;
+  screenHeight = 720;
 
   for (SizeT i = 0; i < 4; ++i) {
     m_vecShadowCamera[i] = std::make_shared<Camera>();
@@ -42,11 +42,18 @@ RenderMan::init() {
   GBufferTexDesc.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE |
                              DR_BIND_FLAGS::RENDER_TARGET;
 
-  m_RTGBuffer1  = dr_gfx_shared(dc.createRenderTarget(GBufferTexDesc, 6));
-  m_RTSSAO      = dr_gfx_shared(dc.createRenderTarget(GBufferTexDesc, 1));
+  m_RTGBuffer1      = dr_gfx_shared(dc.createRenderTarget(GBufferTexDesc, 6));
+  m_RTSSAO          = dr_gfx_shared(dc.createRenderTarget(GBufferTexDesc, 1));
+  m_RTSSAOInitBlur  = dr_gfx_shared(dc.createRenderTarget(GBufferTexDesc, 1));
+  m_RTSSAOFinalBlur = dr_gfx_shared(dc.createRenderTarget(GBufferTexDesc, 1));
   //GBufferTexDesc.width  = static_cast<Int32>(2048);
   //GBufferTexDesc.height = static_cast<Int32>(2048);
   //GBufferTexDesc.pitch =  GBufferTexDesc.width * 4;
+  GBufferTexDesc.Format = DR_FORMAT::kR32_FLOAT;
+  m_RTShadowDummy[0] = dr_gfx_shared(dc.createRenderTarget(GBufferTexDesc, 1));
+  m_RTShadowDummy[1] = dr_gfx_shared(dc.createRenderTarget(GBufferTexDesc, 1));
+  m_RTShadowDummy[2] = dr_gfx_shared(dc.createRenderTarget(GBufferTexDesc, 1));
+  m_RTShadowDummy[3] = dr_gfx_shared(dc.createRenderTarget(GBufferTexDesc, 1));
   GBufferTexDesc.Format = DR_FORMAT::kR32G32B32A32_FLOAT;
   m_RTShadow    = dr_gfx_shared(dc.createRenderTarget(GBufferTexDesc, 1));
 
@@ -58,6 +65,8 @@ RenderMan::init() {
 
   m_GBuffer1DSoptions = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
   m_SSAODSoptions     = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
+  m_HorBlurDSoptions  = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
+  m_VerBlurDSoptions  = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
   //depthTextureDesc.width = static_cast<Int32>(2048);
   //depthTextureDesc.height = static_cast<Int32>(2048);
   m_ShadowDSoptions   = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
@@ -77,6 +86,8 @@ RenderMan::init() {
   m_GBuffer1Pass.init(&m_GBuffer1InitData);
   m_ShadowPass.init(&m_ShadowInitData);
   m_SSAOPass.init(&m_SSAOInitData);
+  m_HorBlurPass.init(&m_HorBlurInitData);
+  m_VerBlurPass.init(&m_HorBlurInitData);
   m_PostProcessingPass.init(&m_PostProcessingInitData);
 }
 
@@ -98,33 +109,49 @@ RenderMan::draw() {
   m_GBuffer1DrawData.dsOptions = m_GBuffer1DSoptions;
   m_GBuffer1Pass.draw(&m_GBuffer1DrawData);
 
-  for (size_t camIndex = 0; camIndex < 1; ++camIndex) {
+  for (size_t camIndex = 0; camIndex < m_szActiveShadowCameras; ++camIndex) {
     queryRequest = SceneGraph::query(*m_vecShadowCamera[camIndex],
                                      QUERY_ORDER::kFrontToBack,          
                                      QUERY_PROPERTY::kOpaque |
                                      QUERY_PROPERTY::kDynamic |
                                      QUERY_PROPERTY::kStatic);
-    m_ShadowDrawData.activeCam = m_vecShadowCamera[camIndex];
+    m_ShadowDrawData.shadowCam   = m_vecShadowCamera[camIndex];
     m_ShadowDrawData.shadowIndex = camIndex;
-    m_ShadowDrawData.models = &queryRequest;
-    m_ShadowDrawData.OutRt = m_RTShadow;
-    m_ShadowDrawData.dsOptions = m_ShadowDSoptions;
+    m_ShadowDrawData.models      = &queryRequest;
+    m_ShadowDrawData.OutRt       = m_RTShadowDummy[camIndex];
+    m_ShadowDrawData.dsOptions   = m_ShadowDSoptions;
     m_ShadowPass.draw(&m_ShadowDrawData);
   }
+  m_ShadowPass.merge(m_RTShadowDummy, m_ShadowDSoptions, m_RTShadow);
 
   m_SSAODrawData.InRt = m_RTGBuffer1;
   m_SSAODrawData.OutRt = m_RTSSAO;
   m_SSAODrawData.dsOptions = m_SSAODSoptions;
   m_SSAOPass.draw(&m_SSAODrawData);
 
+  m_HorBlurDrawData.viewportDimensionX = screenWidth;
+  m_HorBlurDrawData.viewportDimensionY = screenHeight;
+  m_HorBlurDrawData.dsOptions = m_HorBlurDSoptions;
+  m_HorBlurDrawData.InRt = m_RTSSAO;
+  m_HorBlurDrawData.OutRt = m_RTSSAOInitBlur;
+  m_HorBlurPass.draw(&m_HorBlurDrawData);
+
+  m_VerBlurDrawData.viewportDimensionX = screenWidth;
+  m_VerBlurDrawData.viewportDimensionY = screenHeight;
+  m_VerBlurDrawData.dsOptions = m_VerBlurDSoptions;
+  m_VerBlurDrawData.InRt = m_RTSSAOInitBlur;
+  m_VerBlurDrawData.OutRt = m_RTSSAOFinalBlur;
+  m_VerBlurPass.draw(&m_VerBlurDrawData);
+
   m_PostProcessingDrawData.activeCam = mainCam;
   m_PostProcessingDrawData.DirLight = Vector4D(m_vec3DirectionalLight, 1.0f);
   m_PostProcessingDrawData.Gbuffer1RT = m_RTGBuffer1;
-  m_PostProcessingDrawData.SSAORT = m_RTSSAO;
+  m_PostProcessingDrawData.SSAORT = m_RTSSAOFinalBlur;
   m_PostProcessingDrawData.ShadowRT = m_RTShadow;
   m_PostProcessingDrawData.Lights = &lights[0];
   m_PostProcessingDrawData.ActiveLights = 128;
   m_PostProcessingDrawData.ShadowCam = &m_vecShadowCamera;
+  m_PostProcessingDrawData.shadowDepths = partitions;
   m_PostProcessingPass.draw(&m_PostProcessingDrawData);
 
   /*
@@ -149,6 +176,8 @@ RenderMan::recompile() {
   m_GBuffer1Pass.recompileShader();
   m_ShadowPass.recompileShader();
   m_SSAOPass.recompileShader();
+  m_HorBlurPass.recompileShader();
+  m_VerBlurPass.recompileShader();
   m_PostProcessingPass.recompileShader();
 }
 
@@ -157,7 +186,7 @@ RenderMan::updateShadowCameras() {
   m_szActiveShadowCameras = Math::clamp(m_szActiveShadowCameras,
                                         static_cast<size_t>(1),
                                         static_cast<size_t>(4));
-  std::vector<float> partitions = calculatePartitions(m_szActiveShadowCameras);
+  partitions = calculatePartitions(m_szActiveShadowCameras);
 
   std::shared_ptr<Camera> mainCam = CameraManager::getActiveCamera();
   float fViewportWidth = mainCam->getViewportWidth();
@@ -222,7 +251,7 @@ RenderMan::frustrumSphere(float fVW,
                           float fFP,
                           float fF) {
   float fK = Math::sqrt(1.0f + ((fVH * fVH) / (fVW * fVW))) *
-    Math::tan(Math::DEGREE_TO_RADIAN * fF * 0.5f);
+             Math::tan(Math::DEGREE_TO_RADIAN * fF * 0.5f);
 
   Vector3D fCenter = Vector3D(0.0f, 0.0f, 0.0f);
   float fRadius = 0.0f;
@@ -230,8 +259,8 @@ RenderMan::frustrumSphere(float fVW,
   if ((fK * fK) < ((fFP - fNP) / (fFP + fNP))) {
     fCenter = Vector3D(0.0f, 0.0f, 0.5f * (fFP + fNP) * (1.0f + (fK * fK)));
     fRadius = 0.5f * Math::sqrt((Math::pow((fFP - fNP), 2.0f)) +
-      (2.0f * ((fFP * fFP) + (fNP * fNP)) * (fK * fK)) +
-      (Math::pow(fFP + fNP, 2.0f) * Math::pow(fK, 4.0f)));
+                                (2.0f * ((fFP * fFP) + (fNP * fNP)) * (fK * fK)) +
+                                (Math::pow(fFP + fNP, 2.0f) * Math::pow(fK, 4.0f)));
   }
   else {
     fCenter = Vector3D(0.0f, 0.0f, fFP);
