@@ -56,8 +56,11 @@ class PostProcessingPass : public RenderPass {
     Vector4D  LightPosition[128];  // [XYZ = LightPosition]
     Vector4D  LightColor[128];     // [XYZ = LightColor, W = LightIntensity]
     Matrix4x4 View;
+    Matrix4x4 ViewInverse;
     Matrix4x4 Projection;
+    Matrix4x4 ProjectionInverse;
     Matrix4x4 VP;
+    Matrix4x4 VPInverse;
     Matrix4x4 ShadowVP[4];
     float     ShadowSliptDepth[4];
   };

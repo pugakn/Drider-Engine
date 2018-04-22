@@ -90,7 +90,9 @@ class DR_RENDERMAN_EXPORT RenderMan {
   PostProcessingDrawData m_PostProcessingDrawData;
   GFXShared<DepthStencil> m_PostProcessingDSoptions;
 
-  //0: Albedo; 1: Position; 2: Normal; 3: Emissive; 4: Metallic; 5: Roughness;
+  //0: { xyz: normal,   w: position };
+  //1: { xyz: albedo,   w: metallic };
+  //2: { xyz: emissive, w: roughness }
   GFXShared<RenderTarget> m_RTGBuffer1;
   GFXShared<RenderTarget> m_RTSSAO;
   GFXShared<RenderTarget> m_RTSSAOInitBlur;

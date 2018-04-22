@@ -13,7 +13,8 @@ struct PS_OUTPUT {
   float2 Texcoord : TEXCOORD0;
 };
 
-PS_OUTPUT VS(PS_INPUT input){
+PS_OUTPUT
+VS(PS_INPUT input) {
   PS_OUTPUT psOut;
   
   psOut.Position  = input.Position;

@@ -62,11 +62,17 @@ PostProcessingPass::draw(PassDrawData* drawData) {
   }
 
   CB.View = data->activeCam->getView();
-  CB.View.inverse();
+  CB.ViewInverse = CB.View;
+  CB.ViewInverse.inverse();
+
   CB.Projection = data->activeCam->getProjection();
-  CB.Projection.inverse();
+  CB.ProjectionInverse = CB.Projection;
+  CB.ProjectionInverse.inverse();
+
   CB.VP = data->activeCam->getVP();
-  CB.VP.inverse();
+  CB.VPInverse = CB.VP;
+  CB.VPInverse.inverse();
+
   for (SizeT i = 0; i < 4; ++i) {
     CB.ShadowVP[i] = (*data->ShadowCam)[i]->getVP();
     CB.ShadowSliptDepth[i] = data->shadowDepths[i];
@@ -80,14 +86,11 @@ PostProcessingPass::draw(PassDrawData* drawData) {
 
   m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kFragment);
 
-  data->Gbuffer1RT->getTexture(0).set(dc, 0); //Albedo
-  data->Gbuffer1RT->getTexture(1).set(dc, 1); //Position
-  data->Gbuffer1RT->getTexture(2).set(dc, 2); //Normal
-  data->Gbuffer1RT->getTexture(3).set(dc, 3); //Emissivve
-  data->Gbuffer1RT->getTexture(4).set(dc, 4); //Metallic
-  data->Gbuffer1RT->getTexture(5).set(dc, 5); //Roughness
-  data->SSAORT->getTexture(0).set(dc, 6); //SSAO
-  data->ShadowRT->getTexture(0).set(dc, 7); //Shadow
+  data->Gbuffer1RT->getTexture(0).set(dc, 0); //Normal, Position
+  data->Gbuffer1RT->getTexture(1).set(dc, 1); //Albedo, Metallic
+  data->Gbuffer1RT->getTexture(2).set(dc, 2); //Emissivve, Roughness
+  data->SSAORT->getTexture(0).set(dc, 3);     //SSAO
+  data->ShadowRT->getTexture(0).set(dc, 4);   //Shadow
 
   auto screenQuadModel = ResourceManager::getReferenceT<Model>(_T("ScreenAlignedQuad.3ds"));
   if (screenQuadModel) {

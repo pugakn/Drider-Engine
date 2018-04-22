@@ -54,7 +54,8 @@ class GBuffer1Pass : public RenderPass {
  private:
   struct CBuffer {
     Matrix4x4 WVP;
-    Matrix4x4 World;
+    Matrix4x4 WVPTrans;
+    Matrix4x4 WorldView;
     Matrix4x4 Bones[200];
   };
 
