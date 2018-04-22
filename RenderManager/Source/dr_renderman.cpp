@@ -42,7 +42,7 @@ RenderMan::init() {
   GBufferTexDesc.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE |
                              DR_BIND_FLAGS::RENDER_TARGET;
 
-  m_RTGBuffer1      = dr_gfx_shared(dc.createRenderTarget(GBufferTexDesc, 6));
+  m_RTGBuffer1      = dr_gfx_shared(dc.createRenderTarget(GBufferTexDesc, 3));
   m_RTSSAO          = dr_gfx_shared(dc.createRenderTarget(GBufferTexDesc, 1));
   m_RTSSAOInitBlur  = dr_gfx_shared(dc.createRenderTarget(GBufferTexDesc, 1));
   m_RTSSAOFinalBlur = dr_gfx_shared(dc.createRenderTarget(GBufferTexDesc, 1));
@@ -67,8 +67,6 @@ RenderMan::init() {
   m_SSAODSoptions     = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
   m_HorBlurDSoptions  = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
   m_VerBlurDSoptions  = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
-  //depthTextureDesc.width = static_cast<Int32>(2048);
-  //depthTextureDesc.height = static_cast<Int32>(2048);
   m_ShadowDSoptions   = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
 
   ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
@@ -109,21 +107,7 @@ RenderMan::draw() {
   m_GBuffer1DrawData.dsOptions = m_GBuffer1DSoptions;
   m_GBuffer1Pass.draw(&m_GBuffer1DrawData);
 
-  for (size_t camIndex = 0; camIndex < m_szActiveShadowCameras; ++camIndex) {
-    queryRequest = SceneGraph::query(*m_vecShadowCamera[camIndex],
-                                     QUERY_ORDER::kFrontToBack,          
-                                     QUERY_PROPERTY::kOpaque |
-                                     QUERY_PROPERTY::kDynamic |
-                                     QUERY_PROPERTY::kStatic);
-    m_ShadowDrawData.shadowCam   = m_vecShadowCamera[camIndex];
-    m_ShadowDrawData.shadowIndex = camIndex;
-    m_ShadowDrawData.models      = &queryRequest;
-    m_ShadowDrawData.OutRt       = m_RTShadowDummy[camIndex];
-    m_ShadowDrawData.dsOptions   = m_ShadowDSoptions;
-    m_ShadowPass.draw(&m_ShadowDrawData);
-  }
-  m_ShadowPass.merge(m_RTShadowDummy, m_ShadowDSoptions, m_RTShadow);
-
+  m_SSAODrawData.activeCam = mainCam;
   m_SSAODrawData.InRt = m_RTGBuffer1;
   m_SSAODrawData.OutRt = m_RTSSAO;
   m_SSAODrawData.dsOptions = m_SSAODSoptions;
@@ -143,10 +127,26 @@ RenderMan::draw() {
   m_VerBlurDrawData.OutRt = m_RTSSAOFinalBlur;
   m_VerBlurPass.draw(&m_VerBlurDrawData);
 
+  for (size_t camIndex = 0; camIndex < m_szActiveShadowCameras; ++camIndex) {
+    queryRequest = SceneGraph::query(*m_vecShadowCamera[camIndex],
+                                     QUERY_ORDER::kFrontToBack,          
+                                     QUERY_PROPERTY::kOpaque |
+                                     QUERY_PROPERTY::kDynamic |
+                                     QUERY_PROPERTY::kStatic);
+    m_ShadowDrawData.shadowCam   = m_vecShadowCamera[camIndex];
+    m_ShadowDrawData.shadowIndex = camIndex;
+    m_ShadowDrawData.models      = &queryRequest;
+    m_ShadowDrawData.OutRt       = m_RTShadowDummy[camIndex];
+    m_ShadowDrawData.dsOptions   = m_ShadowDSoptions;
+    m_ShadowPass.draw(&m_ShadowDrawData);
+  }
+  m_ShadowPass.merge(m_RTShadowDummy, m_ShadowDSoptions, m_RTShadow);
+
   m_PostProcessingDrawData.activeCam = mainCam;
   m_PostProcessingDrawData.DirLight = Vector4D(m_vec3DirectionalLight, 1.0f);
   m_PostProcessingDrawData.Gbuffer1RT = m_RTGBuffer1;
-  m_PostProcessingDrawData.SSAORT = m_RTSSAOFinalBlur;
+  //m_PostProcessingDrawData.SSAORT = m_RTSSAOFinalBlur;
+  m_PostProcessingDrawData.SSAORT = m_RTSSAO;
   m_PostProcessingDrawData.ShadowRT = m_RTShadow;
   m_PostProcessingDrawData.Lights = &lights[0];
   m_PostProcessingDrawData.ActiveLights = 128;
@@ -155,13 +155,13 @@ RenderMan::draw() {
   m_PostProcessingPass.draw(&m_PostProcessingDrawData);
 
   /*
-  GBuffer1:
-  SSAO:
-  ShadowCascades: 
-  Diffuse Acumulation: Fog
-  Specular Acumulation: SS Reflection
-  Lights y ZSkips: 
-  Opacity: Blends
+  ./ GBuffer1:
+  ./ SSAO:
+  ./ ShadowCascades: 
+   X Diffuse Acumulation: Fog
+   X Specular Acumulation: SS Reflection
+   X Lights y ZSkips: 
+   X Opacity: Blends
   */
 
   GraphicsDriver::API().swapBuffers();

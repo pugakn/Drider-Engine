@@ -49,18 +49,19 @@ GBuffer1Pass::draw(PassDrawData* drawData) {
   
   m_vertexShader->set(dc);
   m_fragmentShader->set(dc);
+
   m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kFragment);
+
   m_inputLayout->set(dc);
   
   m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
-  
   m_constantBuffer->set(dc);
   
   dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
   
   const float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
   data->OutRt->clear(dc, clearColor);
-  (data->dsOptions)->clear(dc, 1, 0);
+  data->dsOptions->clear(dc, 1, 0);
 
   for (auto& modelPair : *data->models) {
     if (auto material = modelPair.mesh.material.lock()) {
@@ -96,11 +97,12 @@ GBuffer1Pass::draw(PassDrawData* drawData) {
       }
     }
 
-    CB.World = modelPair.world;
+    CB.WorldView = modelPair.world * data->activeCam->getView();
     CB.WVP = modelPair.world * (data->activeCam->getVP());
+    CB.WVPTrans = CB.WVP;
+    CB.WVPTrans.transpose();
   
     m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
-  
     m_constantBuffer->set(dc);
 
     modelPair.mesh.vertexBuffer->set(dc);

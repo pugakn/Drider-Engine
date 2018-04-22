@@ -18,7 +18,7 @@ ShadowPass::~ShadowPass() {
 
 void
 ShadowPass::init(PassInitData* initData) {
-  Device& device = GraphicsAPI::getDevice();
+  Device& dv = GraphicsAPI::getDevice();
 
   m_vsFilename = _T("Shadow_vs.hlsl");
   m_fsFilename = _T("Shadow_ps.hlsl");
@@ -29,7 +29,7 @@ ShadowPass::init(PassInitData* initData) {
 
   bdesc.type = DR_BUFFER_TYPE::kCONSTANT;
   bdesc.sizeInBytes = sizeof(CBuffer);
-  m_constantBuffer = dr_gfx_unique((ConstantBuffer*)device.createBuffer(bdesc));
+  m_constantBuffer = dr_gfx_unique((ConstantBuffer*)dv.createBuffer(bdesc));
 
   DrSampleDesc SSdesc;
   SSdesc.Filter = DR_TEXTURE_FILTER::kMIN_MAG_MIP_LINEAR;
@@ -37,7 +37,7 @@ ShadowPass::init(PassInitData* initData) {
   SSdesc.addressU = DR_TEXTURE_ADDRESS::kWrap;
   SSdesc.addressV = DR_TEXTURE_ADDRESS::kWrap;
   SSdesc.addressW = DR_TEXTURE_ADDRESS::kWrap;
-  m_samplerState = dr_gfx_unique(device.createSamplerState(SSdesc));
+  m_samplerState = dr_gfx_unique(dv.createSamplerState(SSdesc));
 
   /////////////////////////////////////////////////////////////////////////////
   driderSDK::File file;
@@ -47,9 +47,9 @@ ShadowPass::init(PassInitData* initData) {
   shaderSource = StringUtils::toString(file.GetAsString(file.Size()));
   file.Close();
 
-  m_ShaderVMerge = dr_gfx_unique(device.createShaderFromMemory(shaderSource.data(),
-                                                               shaderSource.size(),
-                                                               DR_SHADER_TYPE_FLAG::kVertex));
+  m_ShaderVMerge = dr_gfx_unique(dv.createShaderFromMemory(shaderSource.data(),
+                                                           shaderSource.size(),
+                                                           DR_SHADER_TYPE_FLAG::kVertex));
 
   shaderSource.clear();
 
@@ -57,9 +57,9 @@ ShadowPass::init(PassInitData* initData) {
   shaderSource = StringUtils::toString(file.GetAsString(file.Size()));
   file.Close();
 
-  m_ShaderFMerge = dr_gfx_unique(device.createShaderFromMemory(shaderSource.data(),
-                                                               shaderSource.size(),
-                                                               DR_SHADER_TYPE_FLAG::kFragment));
+  m_ShaderFMerge = dr_gfx_unique(dv.createShaderFromMemory(shaderSource.data(),
+                                                           shaderSource.size(),
+                                                           DR_SHADER_TYPE_FLAG::kFragment));
 
   shaderSource.clear();
 }
@@ -79,12 +79,9 @@ ShadowPass::draw(PassDrawData* drawData) {
   m_inputLayout->set(dc);
 
   m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
-
   m_constantBuffer->set(dc);
 
   dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
-
-  data->OutRt->getTexture(0).set(dc, 0);
 
   const float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
   data->OutRt->clear(dc, clearColor);
@@ -94,7 +91,6 @@ ShadowPass::draw(PassDrawData* drawData) {
     CB.WVP = modelPair.world * (data->shadowCam->getVP());
 
     m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
-
     m_constantBuffer->set(dc);
 
     modelPair.mesh.vertexBuffer->set(dc);
@@ -110,21 +106,21 @@ ShadowPass::merge(std::array<GFXShared<RenderTarget>, 4> m_RTShadowDummy,
                   GFXShared<RenderTarget> OutRt) {
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
-  OutRt->set(dc, *dsOptions);
-
   m_ShaderVMerge->set(dc);
   m_ShaderFMerge->set(dc);
-
-  m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kFragment);
-
-  m_inputLayout->set(dc);
-
-  dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
 
   m_RTShadowDummy[0]->getTexture(0).set(dc, 0);
   m_RTShadowDummy[1]->getTexture(0).set(dc, 1);
   m_RTShadowDummy[2]->getTexture(0).set(dc, 2);
   m_RTShadowDummy[3]->getTexture(0).set(dc, 3);
+
+  m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kFragment);
+
+  m_inputLayout->set(dc);
+
+  OutRt->set(dc, *dsOptions);
+
+  dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
 
   const float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
   OutRt->clear(dc, clearColor);

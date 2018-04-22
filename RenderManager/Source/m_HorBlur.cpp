@@ -56,7 +56,6 @@ HorBlurPass::draw(PassDrawData* drawData) {
   CB.fViewportDimensions.y = data->viewportDimensionY;
 
   m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
-
   m_constantBuffer->set(dc);
 
   dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
