@@ -90,8 +90,8 @@ RenderMan::init() {
 }
 
 void
-RenderMan::draw() {
-  GraphicsDriver::API().clear();
+RenderMan::draw(const RenderTarget & _out, const DepthStencil & _outds) {
+  //GraphicsDriver::API().clear();
   updateShadowCameras();
 
   auto mainCam = CameraManager::getActiveCamera();
@@ -152,6 +152,8 @@ RenderMan::draw() {
   m_PostProcessingDrawData.ActiveLights = 128;
   m_PostProcessingDrawData.ShadowCam = &m_vecShadowCamera;
   m_PostProcessingDrawData.shadowDepths = partitions;
+
+  _out.set(GraphicsAPI::getDeviceContext(), _outds);
   m_PostProcessingPass.draw(&m_PostProcessingDrawData);
 
   /*
@@ -164,7 +166,7 @@ RenderMan::draw() {
    X Opacity: Blends
   */
 
-  GraphicsDriver::API().swapBuffers();
+  //GraphicsDriver::API().swapBuffers();
 }
 
 void

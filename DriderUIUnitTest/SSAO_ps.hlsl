@@ -1,21 +1,51 @@
-Texture2D Position  : register(t0);
-Texture2D Normal    : register(t1);
+Texture2D PositionNormal : register(t0);
 
 SamplerState SS;
 
+cbuffer ConstantBuffer {
+	float4x4 View;
+  float4x4 ViewInv;
+  float4x4 Projection;
+  float4x4 ProjectionInv;
+  float4x4 VP;
+  float4x4 VPInv;
+};
+
 static const float SampleRadio = 0.08f;
-static const float Intensity = 2.0f;
+static const float Intensity = 1.0f;
 static const float Scale = 1.0f;
 static const float Bias = 0.002f;
+//static const float SampleRadio = 3.00000;
+//static const float Intensity = 3.00000;
+//static const float Scale = 1.00000;
+//static const float Bias = 0.00200;
 
-float4
-getPosition(float2 uv) {
-  return Position.Sample(SS, uv);
+float3
+getPosition(in float2 uv) {
+  float x = (2.0f * uv.x) - 1.0f;
+  float y = (2.0f * (1.0f - uv.y)) - 1.0;
+  float z = PositionNormal.Sample(SS, uv).w;
+
+  float4 posView = mul(ProjectionInv, float4(x, y, z, 1.0f));
+	posView /= posView.w;
+
+  return posView.xyz;
 };
 
 float3
+getPosition(in float2 uv, in float z) {
+  float x = (2.0f * uv.x) - 1.0f;
+  float y = (2.0f * (1.0f - uv.y)) - 1.0f;
+
+  float4 posView = mul(ProjectionInv, float4(x, y, z, 1.0f));
+  posView /= posView.w;
+  
+  return posView.xyz;
+}
+
+float3
 getNormal(float2 uv) {
-  return Normal.Sample(SS, uv).xyz;
+  return PositionNormal.Sample(SS, uv).xyz;
 };
 
 float3
@@ -29,7 +59,7 @@ getRandom(float2 uv) {
 
 float
 doOclussion(float2 texCoord, float2 uv, float3 p, float3 cnorm) {
-  float3 diff = getPosition(texCoord + uv).xyz - p;
+  float3 diff = getPosition(texCoord + uv) - p;
   float3 v = normalize(diff);
   float  d = length(diff) * Scale;
   
@@ -49,7 +79,7 @@ struct PS_INPUT {
 };
 
 struct PS_OUTPUT {
-	float4 SSAO      : SV_TARGET0;
+	float4 SSAO : SV_TARGET0;
 };
 
 PS_OUTPUT FS(PS_INPUT input) {
@@ -57,34 +87,31 @@ PS_OUTPUT FS(PS_INPUT input) {
 	
 	float2 uv = input.Texcoord;
 
-  float4 p = getPosition(uv);
+  float3 p = getPosition(uv);
   float3 n = getNormal(uv);
   float2 r = getRandom(uv).xy;
 	float ao = 0.0f;
-  
-	float rad = SampleRadio / max(100.0f, abs(p.z));
+	
+	//float rad = SampleRadio / p.z;
+	float rad = SampleRadio / abs(max(100, p.z));
 
 	static const int iterations = 4;
+	[unroll]
 	for (int i = 0; i < iterations; ++i) {
-		//float2 coord1 = reflect(vec[i], r) * rad;
-		float2 coord1 = vec[i] * rad;
+		float2 coord1 = reflect(vec[i], r) * rad;
 		float2 coord2 = float2(coord1.x * 0.707 - coord1.y * 0.707,
 													 coord1.x * 0.707 + coord1.y * 0.707);
 													 
-		ao += doOclussion(uv, coord1 * 0.25f, p.xyz, n);
-		ao += doOclussion(uv, coord2 * 0.50f, p.xyz, n);
-		ao += doOclussion(uv, coord1 * 0.75f, p.xyz, n);
-		ao += doOclussion(uv, coord2 * 1.00f, p.xyz, n);
+		ao += doOclussion(uv, coord1 * 0.25f, p, n);
+		ao += doOclussion(uv, coord2 * 0.50f, p, n);
+		ao += doOclussion(uv, coord1 * 0.75f, p, n);
+		ao += doOclussion(uv, coord2 * 1.00f, p, n);
 	}
 	
-	ao /= 16.0f;
+	ao *= 0.0625f;
 	ao = 1.0f - ao;
 	
-	outRT.SSAO = float4(ao, ao, ao, 1.0f);
-	//outRT.SSAO = getPosition(uv);
-	//outRT.SSAO = getPosition(uv);
-	//outRT.SSAO = float4(getNormal(uv).xyz, 1.0f);
-	//outRT.SSAO = float4(getRandom(uv), 1.0f);
+	outRT.SSAO = float4(ao.rrr, 1.0f);
 	
 	return outRT;
 }

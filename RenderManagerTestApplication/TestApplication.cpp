@@ -243,7 +243,7 @@ RenderManApp::postUpdate() {
 void
 RenderManApp::postRender() {
   GraphicsDriver::API().clear();
-  m_renderMan.draw();
+  m_renderMan.draw(GraphicsAPI::getBackBufferRT(),GraphicsAPI::getDepthStencil());
   //tecnico.setCamera(CameraManager::getActiveCamera().get());
   //tecnico.prepareForDraw();
   //SceneGraph::getRoot()->getChild(_T("X"))->render();

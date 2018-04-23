@@ -60,6 +60,8 @@ TestApplication::postInit() {
 
 void
 TestApplication::postUpdate() {
+  Time::update();
+  SceneGraph::update();
   InputManager::update();
   m_editor.update();
 }

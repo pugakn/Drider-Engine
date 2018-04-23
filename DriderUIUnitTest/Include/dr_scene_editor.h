@@ -16,6 +16,7 @@
 #include <dr_quad.h>
 
 #include <dr_renderman.h>
+#include <dr_depth_stencil.h>
 namespace driderSDK {
 class SceneEditor {
 public:
@@ -60,7 +61,9 @@ private:
   std::shared_ptr<GameObject> m_joker;
 
 
-  GFXUnique<RenderTarget> m_RT;
+  GFXShared<RenderTarget> m_RT;
+  GFXShared<DepthStencil> m_RTDPTH;
+
   WebRenderer webRenderer;
   Quad quad;
   Quad m_editorQuad;

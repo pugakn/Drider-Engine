@@ -44,7 +44,7 @@ PostProcessingPass::draw(PassDrawData* drawData) {
   PostProcessingDrawData* data = static_cast<PostProcessingDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
-  GraphicsAPI::getBackBufferRT().set(dc, GraphicsAPI::getDepthStencil());
+  //GraphicsAPI::getBackBufferRT().set(dc, GraphicsAPI::getDepthStencil());
 
   m_vertexShader->set(dc);
   m_fragmentShader->set(dc);
@@ -101,6 +101,7 @@ PostProcessingPass::draw(PassDrawData* drawData) {
       dc.draw(SAQ.indices.size(), 0, 0);
     }
   }
+  GraphicsAPI::getBackBufferRT().set(dc, GraphicsAPI::getDepthStencil());
 }
 
 }

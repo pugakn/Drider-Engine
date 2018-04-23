@@ -36,7 +36,7 @@ class DR_RENDERMAN_EXPORT RenderMan {
   /*
   */
   void
-  draw();
+  draw(const RenderTarget& _out, const DepthStencil& _outds);
 
   /*
   */
