@@ -42,11 +42,12 @@ private:
   void initCameras();
   void initUI();
   void initSceneGraph();
-
+  void loadResources();
   void sceneResized();
 
   void UI_UpdateSceneGraph();
   void UI_UpdatePropertySheet(const GameObject& obj);
+
 
   //QUERY_ORDER::E m_queryOrder;
 

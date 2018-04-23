@@ -8,6 +8,10 @@
 #include <dr_aabb_collider.h>
 #include <windows.h>
 
+#include <dr_texture_core.h>
+#include <dr_degree.h>
+#include <dr_camera_manager.h>
+
 #include <dr_render_component.h>
 #include <dr_script_component.h>
 #include <dr_animator_component.h>
@@ -19,6 +23,56 @@
 #include<Shlwapi.h>
 #pragma comment(lib, "Shlwapi.lib")
 namespace driderSDK {
+
+  void
+    HSVtoRGB(float fH, float fS, float fV,
+      float& fR, float& fG, float& fB) {
+    float fC = fV * fS;
+    float fX = fC * (1.0f - abs(fmod((fH / 60.0f), 2) - 1.0f));
+    float fM = fV - fC;
+
+    fR = fM;
+    fG = fM;
+    fB = fM;
+
+    if (fH < 60.0f) {
+      fR += fC;
+      fG += fX;
+      //fB += 0.0f;
+      return;
+    }
+    else if (fH < 120.0f) {
+      fR += fX;
+      fG += fC;
+      //fB += 0.0f;
+      return;
+    }
+    else if (fH < 180.0f) {
+      //fR += 0.0f;
+      fG += fC;
+      fB += fX;
+      return;
+    }
+    else if (fH < 240.0f) {
+      //fR += 0.0f;
+      fG += fX;
+      fB += fC;
+      return;
+    }
+    else if (fH < 300.0f) {
+      fR += fX;
+      //fG += 0.0f;
+      fB += fC;
+      return;
+    }
+    else if (fH <= 360.0f) {
+      fR = fC;
+      //fG = 0.0f;
+      fB = fX;
+      return;
+    }
+  }
+
 
 void read_directory(const TString& name, std::vector<TString>& v)
 {
@@ -73,7 +127,110 @@ void SceneEditor::init(Viewport v)
   initCameras();
   initUI();
   initSceneGraph();
+
+  //Renderman stuff
+  m_renderMan.init();
+
+  Degree grados(2.8125f);
+  Vector4D LightPosition(0.0f, 50.0f, -100.0f, 1);
+  Matrix4x4 rotationMatrix(driderSDK::Math::FORCE_INIT::kIdentity);
+  rotationMatrix = rotationMatrix.RotationY(grados.toRadian());
+
+  float proportion = 0.0f;
+  for (int lighIndex = 0; lighIndex < 128; ++lighIndex) {
+    //Posicion
+    Lights[lighIndex].m_vec4Position = LightPosition;
+    LightPosition = LightPosition * rotationMatrix;
+
+    //Color
+    HSVtoRGB(proportion * 256,
+      1.0f,
+      1.0f,
+      Lights[lighIndex].m_vec4Color.x,
+      Lights[lighIndex].m_vec4Color.y,
+      Lights[lighIndex].m_vec4Color.z);
+
+    //Intensidad
+    Lights[lighIndex].m_vec4Color.w = (lighIndex / 128.0f) * 100.0f;
+
+    proportion += (1.0f / 128.0f);
+  }
+  m_renderMan.lights = &Lights;
+
+  CameraManager::createCamera(_T("PATO_CAM"),
+  { 0.0f, 150.0f, -400.0f },
+  { 0.0f, 50.f, 0.0f },
+    m_viewport,
+    45.f,
+    //1024, 1024,
+    0.1f,
+    10000.f);
+  CameraManager::setActiveCamera(_T("PATO_CAM"));
+
+  modelMovement = Vector3D(0.0f, 0.0f, 0.0f);
+
+  loadResources();
+
+  model = SceneGraph::createObject(_T("Model"));
+  auto ptrModel = ResourceManager::getReferenceT<Model>(_T("model.dae"));
+  if (ptrModel) {
+    model->createComponent<RenderComponent>(ptrModel);
+    model->createComponent<AABBCollider>(ptrModel->aabb);
+    model->getTransform().setPosition(Vector3D(0.0f, 50.0f, 0.0f));
+    model->getTransform().setScale(Vector3D(100.0f, 100.0f, 100.0f));
+    model->getTransform().setRotation(Vector3D(0.0f, Math::QUARTER_PI*0.5f, 0.0f));
+
+    modelMat = std::make_shared<Material>(_T("ModelMaterial"));
+
+    auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("default_albedo.tga"));
+    auto emissiveTex = ResourceManager::getReferenceT<TextureCore>(_T("default_emissive.tga"));
+    auto metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("default_metallic.tga"));
+    auto normalTex = ResourceManager::getReferenceT<TextureCore>(_T("default_normal.tga"));
+    auto roughnessTex = ResourceManager::getReferenceT<TextureCore>(_T("default_roughness.tga"));
+    modelMat->addProperty(_T("Albedo"), PROPERTY_TYPE::kVec3);
+    modelMat->addProperty(_T("Normal"), PROPERTY_TYPE::kVec3);
+    modelMat->addProperty(_T("Emisivity"), PROPERTY_TYPE::kVec3);
+    modelMat->addProperty(_T("Metallic"), PROPERTY_TYPE::kVec3);
+    modelMat->addProperty(_T("Roughness"), PROPERTY_TYPE::kVec3);
+    modelMat->setTexture(albedoTex, _T("Albedo"));
+    modelMat->setTexture(normalTex, _T("Normal"));
+    modelMat->setTexture(emissiveTex, _T("Emisivity"));
+    modelMat->setTexture(metallicTex, _T("Metallic"));
+    modelMat->setTexture(roughnessTex, _T("Roughness"));
+
+    auto rComp = model->getComponent<RenderComponent>();
+    rComp->getMeshes().front().material = modelMat;
+  }
+
+
 }
+
+void
+SceneEditor::loadResources() {
+  //ResourceManager::loadResource(_T("Checker.fbx"));
+  //ResourceManager::loadResource(_T("Sphere.fbx"));
+  ResourceManager::loadResource(_T("plane.fbx"));
+  //ResourceManager::loadResource(_T("Croc.X"));
+  ResourceManager::loadResource(_T("model.dae"));
+
+  ResourceManager::loadResource(_T("default_albedo.tga"));
+  ResourceManager::loadResource(_T("default_emissive.tga"));
+  ResourceManager::loadResource(_T("default_metallic.tga"));
+  ResourceManager::loadResource(_T("default_normal.tga"));
+  ResourceManager::loadResource(_T("default_roughness.tga"));
+
+  ResourceManager::loadResource(_T("256_Checker_Diffuse.tga"));
+  ResourceManager::loadResource(_T("256_Checker_Displacement.tga"));
+  ResourceManager::loadResource(_T("256_Checker_Emissive.tga"));
+  ResourceManager::loadResource(_T("256_Checker_Metallic.tga"));
+  ResourceManager::loadResource(_T("256_Checker_Normal.tga"));
+  ResourceManager::loadResource(_T("256_Checker_Opacity.tga"));
+  ResourceManager::loadResource(_T("256_Checker_Roughness.tga"));
+  ResourceManager::loadResource(_T("256_Checker_Specular.tga"));
+  ResourceManager::loadResource(_T("256_Checker_SSColor.tga"));
+  ResourceManager::loadResource(_T("256_Checker_Thickness.tga"));
+}
+
 void SceneEditor::update()
 {
   webRenderer.update();
@@ -83,20 +240,18 @@ void SceneEditor::draw()
   GraphicsAPI::getDepthStencilState(DR_DEPTH_STENCIL_STATES::kDepthRW).set(GraphicsAPI::getDeviceContext(),1.0);
   const float clearColor[4]{ 1,1,1,1 };
   m_RT->clear(GraphicsAPI::getDeviceContext(), clearColor);
-
-  //m_RT->set(GraphicsAPI::getDeviceContext(), GraphicsAPI::getDepthStencil());
+  m_RT->set(GraphicsAPI::getDeviceContext(), GraphicsAPI::getDepthStencil());
   //Draw Scene
+  m_renderMan.draw();
 
+  //Draw End
   GraphicsAPI::getDepthStencilState(DR_DEPTH_STENCIL_STATES::kDepthR).set(GraphicsAPI::getDeviceContext(), 1.0);
   GraphicsAPI::getBackBufferRT().set(GraphicsAPI::getDeviceContext(), GraphicsAPI::getDepthStencil());
-  //GraphicsDriver::API().clear();
   webRenderer.setTexture();
   
   //GraphicsAPI::getBlendState(DR_BLEND_STATES::kAlphaBlend).set(GraphicsAPI::getDeviceContext());
   quad.draw();
   //GraphicsAPI::getBlendState(DR_BLEND_STATES::kOpaque).set(GraphicsAPI::getDeviceContext());
-
-  //GraphicsDriver::API().swapBuffers();
 
   m_RT->getTexture(0).set(GraphicsAPI::getDeviceContext(), 0);
   m_editorQuad.draw();
@@ -266,7 +421,7 @@ void SceneEditor::initUI()
     vertex[3] = { left + width,   top,  1.f,  1.0f,    0.0f, 1.0f,1.0f, 1.0f  ,1.0,0.0 };
     m_editorQuad.VB->updateFromBuffer(GraphicsAPI::getDeviceContext(), (byte*)vertex);
   }));
-  
+
 }
 void SceneEditor::initSceneGraph()
 {
@@ -372,6 +527,11 @@ void SceneEditor::UI_UpdatePropertySheet(const GameObject& obj)
       it->getName() + TString(_T("','")) + _T("ScripthPath")+
       WString(_T("');")));
   }
+}
+
+void driderSDK::SceneEditor::destroy()
+{
+  m_renderMan.exit();
 }
 
 }

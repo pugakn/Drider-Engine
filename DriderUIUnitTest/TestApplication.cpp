@@ -8,7 +8,8 @@
 #include <dr_graphics_driver.h>
 #include <dr_blend_state.h>
 #include <dr_resource_manager.h>
-
+#include <dr_camera_manager.h>
+#include <dr_renderman.h>
 namespace driderSDK {
 TestApplication::TestApplication()
 {
@@ -27,6 +28,9 @@ TestApplication::postInit() {
   SceneGraph::startUp();
   Time::startUp();
   ResourceManager::startUp();
+
+  CameraManager::startUp();
+
 
   m_editor.init(m_viewport);
 
@@ -68,7 +72,12 @@ TestApplication::postRender() {
 }
 void
 TestApplication::postDestroy() {
-
+  GraphicsDriver::shutDown();
+  ResourceManager::shutDown();
+  SceneGraph::shutDown();
+  InputManager::shutDown();
+  Time::shutDown();
+  Logger::shutDown();
 }
 
 
