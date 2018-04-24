@@ -12,7 +12,7 @@ class DR_CORE_EXPORT Application
  public:
   virtual ~Application() {}
   
-  int run();
+  Int32 run();
 
  protected:
   virtual void postInit() = 0;

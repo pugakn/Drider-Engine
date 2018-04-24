@@ -170,7 +170,9 @@ SceneGraph::testObject(SharedGameObject object,
   auto& children = object->getChildren();
 
   for (auto& child : children) {
-    testObject(child, frustrum, objects);
+    if (child->isEnabled()) {
+      testObject(child, frustrum, objects);
+    }
   }  
 }
 

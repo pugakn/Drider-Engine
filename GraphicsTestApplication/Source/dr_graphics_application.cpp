@@ -43,6 +43,7 @@
 #include "SkeletonDebug.h"
 #include "StaticMeshTechnique.h"
 
+
 namespace driderSDK {
 
 GraphicsApplication::GraphicsApplication() 
@@ -54,12 +55,7 @@ GraphicsApplication::~GraphicsApplication() {}
 
 void
 GraphicsApplication::postInit() {
-      
-  Transform x;
-  x.setRotation({Degree(0).toRadian(), 
-                 Degree(45).toRadian(), 0});
-  auto f = x.getDirection();
-
+  
   initModules();   
   initInputCallbacks();
   loadResources();
