@@ -301,6 +301,8 @@ GraphicsApplication::loadResources() {
                                   m_animationsNames[3]);
 
   ResourceManager::loadResource(_T("Run.fbx"));
+
+  ResourceManager::loadResource(_T("Unidad_1m.fbx"));
   
   ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
 
@@ -332,13 +334,21 @@ GraphicsApplication::createTechniques() {
 void 
 GraphicsApplication::createScene() {
     
+  auto cubo = ResourceManager::getReferenceT<Model>(_T("Unidad_1m.fbx"));
+
+  auto cuboObj = addObjectFromModel(cubo, _T("CUBIN"));
+
+  cuboObj->setStatic(true);
+
   auto terr = ResourceManager::getReferenceT<Model>(_T("nanosuit.obj"));
 
   auto terrainObj = addObjectFromModel(terr, _T("Terrain"));
 
-  terrainObj->getTransform().scale({100.f, 100.f, 100.f});
+  
 
   terrainObj->setStatic(true);
+
+  terrainObj->clone()->getTransform().setPosition({0, 0, 550});
 
   auto woman = ResourceManager::getReferenceT<Model>(_T("Run.fbx"));
 

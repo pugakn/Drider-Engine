@@ -54,7 +54,7 @@ SceneGraph::buildOctree() {
 
   addGameObjectsStatics(*sc.m_root, &staticGameObjects);
 
-  Octree octree(&(*sc.m_octree), &staticGameObjects);
+  Octree octree(&(*sc.m_octree), &staticGameObjects, 10000);
   octree.buildTree();
 }
 
