@@ -113,6 +113,16 @@ GetShadowValue(float4 fromLightPos, const int camIndex) {
   return shadowValue;
 }
 
+float
+luminescence(float3 Color) {
+  float delta = 0.0f;
+  static const float3 LuminanceFactor = float3(0.3f, 0.59f, 0.03f);
+  //Case LDR
+  return (dot(Color, LuminanceFactor) + delta);
+  //Case HDR
+  return log(dot(Color, LuminanceFactor) + delta);
+}
+
 float3
 BiasX2(float3 x) {
     return 2.0f * x - 1.0f;
@@ -221,12 +231,12 @@ float4 FS(PS_INPUT input) : SV_TARGET {
   
   const int activeLights = kEyePosition.w;
   [unroll]
-  for (int index = 0; index < activeLights; index += 8) {
+  for (int index = 0; index < activeLights; index += 4) {
     lightPosition  = kLightPosition[index].xyz;
     lightColor     = kLightColor[index].xyz;
     lightIntensity = kLightColor[index].w;
     
-    LightPower = saturate( 1.0f - (length(lightPosition - position.xyz) / 150.0f) );
+    LightPower = saturate( 1.0f - (length(lightPosition - position.xyz) / 130.0f) );
 
     LightDir = normalize(lightPosition - position.xyz);
 
@@ -256,59 +266,61 @@ float4 FS(PS_INPUT input) : SV_TARGET {
   //return float4(roughness.rrr, 1.0f);
   //return float4(specular, 1.0f);
   //return float4(SSAO.rrr, 1.0f);
-  return float4(ShadowTex1.Sample(SS, uv).xxx, 1.0f);
+  //return float4(ShadowTex1.Sample(SS, uv).xxx, 1.0f);
   //return float4(ShadowTex1.Sample(SS, uv).yyy, 1.0f);
-  return float4(ShadowTex1.Sample(SS, uv).zzz, 1.0f);
-  return float4(ShadowTex1.Sample(SS, uv).www, 1.0f);
+  //return float4(ShadowTex1.Sample(SS, uv).zzz, 1.0f);
+  //return float4(ShadowTex1.Sample(SS, uv).www, 1.0f);
 
-  bool Interval_Based_Selection = false;
-  bool Map_Based_Selection = false;
-  
-  float vCurrentPixelDepth = mul(VP, float4(position, 1.0f)).w / 10000.0f;
+  float4 VPPos = mul(VP, float4(position, 1.0f));
+  float vCurrentPixelDepth = VPPos.z / 10000.0f;
   int iCurrentCascadeIndex = 0;
 
-  if (Interval_Based_Selection) {
-    float4 fComparison;
-    fComparison[0] = (vCurrentPixelDepth > ShadowSliptDepth[0]);
-    fComparison[1] = (vCurrentPixelDepth > ShadowSliptDepth[1]);
-    fComparison[2] = (vCurrentPixelDepth > ShadowSliptDepth[2]);
-    fComparison[3] = (vCurrentPixelDepth > ShadowSliptDepth[3]);
-    float fIndex = dot(float4(4 > 0, 4 > 1, 4 > 2, 4 > 3), fComparison);
-    
-    fIndex = min(fIndex, 4);
-    iCurrentCascadeIndex = (int)fIndex;
-    if (iCurrentCascadeIndex == 0)
-      return float4(1, 0, 0, 1);
-    if (iCurrentCascadeIndex == 1)
-      return float4(0, 1, 0, 1);
-    if (iCurrentCascadeIndex == 2)
-      return float4(0, 0, 1, 1);
-    if (iCurrentCascadeIndex == 3)
-      return float4(1, 1, 1, 1);
-  }
-  else {
-    iCurrentCascadeIndex = 0;
-    iCurrentCascadeIndex = insideBounds(mul(kShadowVP[3], float4(position, 1.0f))) ? 3 : iCurrentCascadeIndex;
-    iCurrentCascadeIndex = insideBounds(mul(kShadowVP[2], float4(position, 1.0f))) ? 2 : iCurrentCascadeIndex;
-    iCurrentCascadeIndex = insideBounds(mul(kShadowVP[1], float4(position, 1.0f))) ? 1 : iCurrentCascadeIndex;
-    iCurrentCascadeIndex = insideBounds(mul(kShadowVP[0], float4(position, 1.0f))) ? 0 : iCurrentCascadeIndex;
-    
-    if (iCurrentCascadeIndex == 0)
-      return float4(1, 0, 0, 1);
-    if (iCurrentCascadeIndex == 1)
-      return float4(0, 1, 0, 1);
-    if (iCurrentCascadeIndex == 2)
-      return float4(0, 0, 1, 1);
-    if (iCurrentCascadeIndex == 3)
-      return float4(1, 1, 1, 1);
-  }
+//#define INTERVAL_BASED_SELECTION
+//#define MAP_BASED_SELECTION
+
+#ifdef INTERVAL_BASED_SELECTION
+  float4 fComparison;
+  fComparison[0] = (vCurrentPixelDepth > ShadowSliptDepth[0]);
+  fComparison[1] = (vCurrentPixelDepth > ShadowSliptDepth[1]);
+  fComparison[2] = (vCurrentPixelDepth > ShadowSliptDepth[2]);
+  fComparison[3] = (vCurrentPixelDepth > ShadowSliptDepth[3]);
+
+  //TODO: change the 4 with a activated cascades int const
+  float fIndex = dot(float4(4 > 0, 4 > 1, 4 > 2, 4 > 3), fComparison);
+  fIndex = min(fIndex, 4);
+  iCurrentCascadeIndex = (int)fIndex;
+
+  //if (iCurrentCascadeIndex == 0)
+  //  return float4(1, 0, 0, 1);
+  //if (iCurrentCascadeIndex == 1)
+  //  return float4(0, 1, 0, 1);
+  //if (iCurrentCascadeIndex == 2)
+  //  return float4(0, 0, 1, 1);
+  //if (iCurrentCascadeIndex == 3)
+  //  return float4(1, 1, 1, 1);
+#else //MAP_BASED_SELECTION
+  iCurrentCascadeIndex = 3;
+  iCurrentCascadeIndex = insideBounds(mul(kShadowVP[3], float4(position, 1.0f))) ? 3 : iCurrentCascadeIndex;
+  iCurrentCascadeIndex = insideBounds(mul(kShadowVP[2], float4(position, 1.0f))) ? 2 : iCurrentCascadeIndex;
+  iCurrentCascadeIndex = insideBounds(mul(kShadowVP[1], float4(position, 1.0f))) ? 1 : iCurrentCascadeIndex;
+  iCurrentCascadeIndex = insideBounds(mul(kShadowVP[0], float4(position, 1.0f))) ? 0 : iCurrentCascadeIndex;
+  
+  //if (iCurrentCascadeIndex == 0)
+  //  return float4(1, 0, 0, 1);
+  //if (iCurrentCascadeIndex == 1)
+  //  return float4(0, 1, 0, 1);
+  //if (iCurrentCascadeIndex == 2)
+  //  return float4(0, 0, 1, 1);
+  //if (iCurrentCascadeIndex == 3)
+  //  return float4(1, 1, 1, 1);
+#endif
   //Projects the position from the mainCam to what shadowCam sees
   float4 fromLightPos = mul(kShadowVP[iCurrentCascadeIndex], float4(position, 1.0f));
   //fromLightPos.xyz /= fromLightPos.w;
   float ShadowValue = GetShadowValue(fromLightPos, iCurrentCascadeIndex);
   
-  
-  //return float4(albedo, 1.0f);
+  return float4((finalColor * ShadowValue) + emissive, 1.0f);
+  return float4(finalColor + emissive, 1.0f);
+  return float4(luminescence((finalColor * ShadowValue) + emissive).xxx, 1.0f);
   return float4(albedo * ShadowValue, 1.0f);
-  return float4(finalColor * ShadowValue  + emissive, 1.0f);
 }

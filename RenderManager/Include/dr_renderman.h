@@ -55,10 +55,10 @@ class DR_RENDERMAN_EXPORT RenderMan {
    UInt32 screenHeight;
  protected:
 
-  GBuffer1Pass m_GBuffer1Pass;
-  GBuffer1InitData m_GBuffer1InitData;
-  GBuffer1DrawData m_GBuffer1DrawData;
-  GFXShared<DepthStencil> m_GBuffer1DSoptions;
+  GBufferPass m_GBufferPass;
+  GBufferInitData m_GBufferInitData;
+  GBufferDrawData m_GBufferDrawData;
+  GFXShared<DepthStencil> m_GBufferDSoptions;
 
   SSAOPass m_SSAOPass;
   SSAOInitData m_SSAOInitData;
@@ -93,7 +93,7 @@ class DR_RENDERMAN_EXPORT RenderMan {
   //0: { xyz: normal,   w: position };
   //1: { xyz: albedo,   w: metallic };
   //2: { xyz: emissive, w: roughness }
-  GFXShared<RenderTarget> m_RTGBuffer1;
+  GFXShared<RenderTarget> m_RTGBuffer;
   GFXShared<RenderTarget> m_RTSSAO;
   GFXShared<RenderTarget> m_RTSSAOInitBlur;
   GFXShared<RenderTarget> m_RTSSAOFinalBlur;

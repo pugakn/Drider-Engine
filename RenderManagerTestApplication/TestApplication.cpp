@@ -112,12 +112,12 @@ RenderManApp::postInit() {
 
   CameraManager::createCamera(_T("PATO_CAM"),
                               { 0.0f, 150.0f, -400.0f },
-                              { 0.0f, 50.f, 0.0f },
+                              { 0.0f, 0.f, 0.0f },
                               m_viewport,
                               45.f,
                               //1024, 1024,
                               0.1f,
-                              10000.f);
+                              10000.0f);
   CameraManager::setActiveCamera(_T("PATO_CAM"));
 
   modelMovement = Vector3D(0.0f, 0.0f, 0.0f);
@@ -131,7 +131,7 @@ RenderManApp::postInit() {
     model->createComponent<AABBCollider>(ptrModel->aabb);
     model->getTransform().setPosition(Vector3D(0.0f, 50.0f, 0.0f));
     model->getTransform().setScale(Vector3D(100.0f, 100.0f, 100.0f));
-    model->getTransform().setRotation(Vector3D(0.0f, Math::QUARTER_PI*0.5f, 0.0f));
+    model->getTransform().setRotation(Vector3D(0.0f, Math::QUARTER_PI*0.25f, 0.0f));
 
     modelMat = std::make_shared<Material>(_T("ModelMaterial"));
 
@@ -161,7 +161,7 @@ RenderManApp::postInit() {
     floor->createComponent<RenderComponent>(ptrFloor);
     floor->createComponent<AABBCollider>(ptrFloor->aabb);
     floor->getTransform().setPosition(Vector3D(0.0f, -50.0f, 0.0f));
-    floor->getTransform().setScale(Vector3D(10.0f, 1.0f, 1000.0f));
+    floor->getTransform().setScale(Vector3D(1000.0f, 1.0f, 1000.0f));
 
     floorMat = std::make_shared<Material>(_T("FloorMaterial"));
 
@@ -201,10 +201,6 @@ RenderManApp::postInit() {
     renderComp->getMeshes().front().material = floorMat;
   }
 
-  //auto tmpComp = SceneGraph::createObject(_T("X"))->createComponent<FrustumDebug>(m_renderMan.m_vecShadowCamera[0].get());
-  //tmpComp->setShaderTechnique(&tecnico);
-  //tecnico.compile();
-
   initInputCallbacks();
 }
 
@@ -243,9 +239,6 @@ void
 RenderManApp::postRender() {
   GraphicsDriver::API().clear();
   m_renderMan.draw();
-  //tecnico.setCamera(CameraManager::getActiveCamera().get());
-  //tecnico.prepareForDraw();
-  //SceneGraph::getRoot()->getChild(_T("X"))->render();
   GraphicsDriver::API().swapBuffers();
 }
 

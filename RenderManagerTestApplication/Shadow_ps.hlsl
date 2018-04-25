@@ -9,14 +9,14 @@ struct PS_INPUT {
 };
 
 struct PS_OUTPUT {
-	float Shadow1 : SV_TARGET0;
+	float4 Shadow1 : SV_TARGET0;
 };
 
 PS_OUTPUT
 FS(PS_INPUT input) {
 	PS_OUTPUT outRT;
 	
-	outRT.Shadow1 = input.fDepth;
+	outRT.Shadow1 = input.fDepth.xxxx;
 
 	return outRT;
 }

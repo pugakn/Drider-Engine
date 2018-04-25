@@ -65,6 +65,45 @@ ShadowPass::init(PassInitData* initData) {
 }
 
 void
+ShadowPass::recompileShader() {
+  RenderPass::recompileShader();
+
+  if (m_ShaderVMerge != nullptr) {
+    m_ShaderVMerge->release();
+    m_ShaderVMerge.release();
+  }
+  if (m_ShaderFMerge != nullptr) {
+    m_ShaderFMerge->release();
+    m_ShaderFMerge.release();
+  }
+
+  Device& device = GraphicsAPI::getDevice();
+  
+  driderSDK::File file;
+  String shaderSource;
+
+  file.Open(_T("ShadowMerge_vs.hlsl"));
+  shaderSource = StringUtils::toString(file.GetAsString(file.Size()));
+  file.Close();
+
+  m_ShaderVMerge = dr_gfx_unique(device.createShaderFromMemory(shaderSource.data(),
+                                                               shaderSource.size(),
+                                                               DR_SHADER_TYPE_FLAG::kVertex));
+
+  shaderSource.clear();
+
+  file.Open(_T("ShadowMerge_ps.hlsl"));
+  shaderSource = StringUtils::toString(file.GetAsString(file.Size()));
+  file.Close();
+
+  m_ShaderFMerge = dr_gfx_unique(device.createShaderFromMemory(shaderSource.data(),
+                                                               shaderSource.size(),
+                                                               DR_SHADER_TYPE_FLAG::kFragment));
+
+  shaderSource.clear();
+}
+
+void
 ShadowPass::draw(PassDrawData* drawData) {
   ShadowDrawData* data = static_cast<ShadowDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();

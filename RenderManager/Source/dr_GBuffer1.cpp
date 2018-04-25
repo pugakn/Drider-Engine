@@ -10,14 +10,14 @@
 
 namespace driderSDK {
 
-GBuffer1Pass::GBuffer1Pass() {
+GBufferPass::GBufferPass() {
 }
 
-GBuffer1Pass::~GBuffer1Pass() {
+GBufferPass::~GBufferPass() {
 }
 
 void
-GBuffer1Pass::init(PassInitData* initData) {
+GBufferPass::init(PassInitData* initData) {
   Device& device = GraphicsAPI::getDevice();
 
   m_vsFilename = _T("GBuffer1_vs.hlsl");
@@ -41,8 +41,8 @@ GBuffer1Pass::init(PassInitData* initData) {
 }
 
 void
-GBuffer1Pass::draw(PassDrawData* drawData) {
-  GBuffer1DrawData* data = static_cast<GBuffer1DrawData*>(drawData);
+GBufferPass::draw(PassDrawData* drawData) {
+  GBufferDrawData* data = static_cast<GBufferDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
   data->OutRt->set(dc, *data->dsOptions);
@@ -113,7 +113,7 @@ GBuffer1Pass::draw(PassDrawData* drawData) {
 }
 /*
 void
-GBuffer1Pass::exit() {
+GBufferPass::exit() {
   m_inputLayout->release();
   m_constantBuffer->release();
 

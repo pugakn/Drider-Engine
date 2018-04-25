@@ -12,7 +12,7 @@ struct PostProcessingInitData : PassInitData {};
 struct PostProcessingDrawData : PassDrawData {
   std::shared_ptr<Camera> activeCam;
   Vector4D DirLight;
-  GFXShared<RenderTarget> Gbuffer1RT;
+  GFXShared<RenderTarget> GbufferRT;
   GFXShared<RenderTarget> SSAORT;
   GFXShared<RenderTarget> ShadowRT;
   float ActiveLights;
