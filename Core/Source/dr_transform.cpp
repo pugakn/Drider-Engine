@@ -43,13 +43,14 @@ Transform::getPosition() const {
   return m_position;
 }
 
-//const Vector3D& 
-//Transform::getEulerAngles() const {
-//  
-//  getMatrix(); //Update if needed.
-//
-//  return m_eulerAngles;
-//}
+
+const Vector3D& 
+Transform::getEulerAngles() const {
+  
+  getMatrix(); //Update if needed.
+
+  return m_eulerAngles;
+}
 
 const Vector3D& 
 Transform::getDirection() const {

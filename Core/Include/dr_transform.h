@@ -51,8 +51,8 @@ class DR_CORE_EXPORT Transform
   const Vector3D& 
   getPosition() const;
 
-  /*const Vector3D&
-  getEulerAngles() const;*/
+  const Vector3D&
+  getEulerAngles() const;
 
   
   /**

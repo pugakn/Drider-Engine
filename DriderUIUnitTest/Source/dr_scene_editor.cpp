@@ -22,6 +22,8 @@
 #include <dr_math.h>
 #include<Shlwapi.h>
 #pragma comment(lib, "Shlwapi.lib")
+
+#include <dr_model.h>
 namespace driderSDK {
 
   void
@@ -166,6 +168,7 @@ void SceneEditor::init(Viewport v)
 
     proportion += (1.0f / 128.0f);
   }
+
   m_renderMan.lights = &Lights;
 
   CameraManager::createCamera(_T("PATO_CAM"),
@@ -263,7 +266,7 @@ void SceneEditor::init(Viewport v)
 void
 SceneEditor::loadResources() {
   //ResourceManager::loadResource(_T("Checker.fbx"));
-  //ResourceManager::loadResource(_T("Sphere.fbx"));
+  ResourceManager::loadResource(_T("Sphere.fbx"));
   ResourceManager::loadResource(_T("plane.fbx"));
   //ResourceManager::loadResource(_T("Croc.X"));
   ResourceManager::loadResource(_T("model.dae"));
@@ -393,13 +396,14 @@ void SceneEditor::initUI()
     //TODO: Search parent name 
     addGameObject(SceneGraph::getRoot(),
       name,
-      { 0, 0, 0 })->getTransform().scale({ 1, 1, 1 });
+      { 0, 0, 0 })->getTransform().scale({ 100, 100, 100 });
 
     webRenderer.executeJSCode("JS_ClearSceneGraphTree();");
     UI_UpdateSceneGraph();
   }));
   webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeSceneGraphNodeSelection", [&](const CefRefPtr<CefListValue>& arguments) {
     TString name = arguments->GetString(1);
+    m_onFocusGMO = name;
     if (name == _T("ROOT_NODE_X")) return;
     auto n = SceneGraph::getRoot()->findNode(name);
     auto pos = n->getTransform().getPosition();
@@ -445,8 +449,7 @@ void SceneEditor::initUI()
     width = Math::abs(width * 2.0 );
     float height = (float)arguments->GetDouble(4) / (float)m_viewport.height;
     height = Math::abs(height * 2.0 );
-    height = width * 0.5625*2;
-    //TODO: Search parent name 
+
     vertex vertex[4];
     vertex[0] = { left,  top, 0.9f, 1.0f,    0.5f, 0.5f,0.0f, 1.0f  ,0.0,0.0 };
     vertex[1] = { left,  top - height, 0.9f, 1.0f,    0.0f, 0.0f,0.0f, 1.0f  ,0.0,1.0 };
@@ -454,7 +457,10 @@ void SceneEditor::initUI()
     vertex[3] = { left + width,   top,  0.9f,  1.0f,    0.0f, 1.0f,1.0f, 1.0f  ,1.0,0.0 };
     m_editorQuad.VB->updateFromBuffer(GraphicsAPI::getDeviceContext(), (byte*)vertex);
 
-
+    Viewport view;
+    view.width = (Int32)arguments->GetDouble(3);
+    view.height = (Int32)arguments->GetDouble(4);
+    CameraManager::getActiveCamera()->setViewport(view);
     //m_RT.reset(); //AAAAAAAAAAAAAAAAA
     //DrTextureDesc backDesc;
     //backDesc.width = (Int32)arguments->GetDouble(3);
@@ -477,6 +483,86 @@ void SceneEditor::initUI()
     //depthTextureDesc.Format = DR_FORMAT::kD24_UNORM_S8_UINT;
     //m_RTDPTH = dr_gfx_shared(GraphicsAPI::getDevice().createDepthStencil(depthTextureDesc));
   }));
+  //components
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_AddRenderComponent", [&](const CefRefPtr<CefListValue>& arguments) {
+    TString type = arguments->GetString(1);
+    auto ptrModel = ResourceManager::getReferenceT<Model>(_T("Sphere.fbx"));
+    auto gmoO = SceneGraph::getRoot()->findNode(m_onFocusGMO);
+    auto rComp = gmoO->createComponent<RenderComponent>(ptrModel);
+    gmoO->createComponent<AABBCollider>(ptrModel->aabb);
+
+    rComp->getMeshes().front().material = modelMat;
+    webRenderer.executeJSCode("JS_ClearPropertySheetUI();");
+    UI_UpdatePropertySheet(*gmoO);
+  }));
+
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeXPos", [&](const CefRefPtr<CefListValue>& arguments) {
+    float val = arguments->GetDouble(1);
+    auto gmoO = SceneGraph::getRoot()->findNode(m_onFocusGMO);
+    auto pos = gmoO->getTransform().getPosition();
+    pos.x = val;
+    gmoO->getTransform().setPosition(pos);
+  }));
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeYPos", [&](const CefRefPtr<CefListValue>& arguments) {
+    float val = arguments->GetDouble(1);
+    auto gmoO = SceneGraph::getRoot()->findNode(m_onFocusGMO);
+    auto pos = gmoO->getTransform().getPosition();
+    pos.y = val;
+    gmoO->getTransform().setPosition(pos);
+  }));
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeZPos", [&](const CefRefPtr<CefListValue>& arguments) {
+    float val = arguments->GetDouble(1);
+    auto gmoO = SceneGraph::getRoot()->findNode(m_onFocusGMO);
+    auto pos = gmoO->getTransform().getPosition();
+    pos.z = val;
+    gmoO->getTransform().setPosition(pos);
+  }));
+
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeXScale", [&](const CefRefPtr<CefListValue>& arguments) {
+    float val = arguments->GetDouble(1);
+    auto gmoO = SceneGraph::getRoot()->findNode(m_onFocusGMO);
+    auto sc = gmoO->getTransform().getScale();
+    sc.x = val;
+    gmoO->getTransform().setScale(sc);
+  }));
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeYScale", [&](const CefRefPtr<CefListValue>& arguments) {
+    float val = arguments->GetDouble(1);
+    auto gmoO = SceneGraph::getRoot()->findNode(m_onFocusGMO);
+    auto sc = gmoO->getTransform().getScale();
+    sc.y = val;
+    gmoO->getTransform().setScale(sc);
+  }));
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeZScale", [&](const CefRefPtr<CefListValue>& arguments) {
+    float val = arguments->GetDouble(1);
+    auto gmoO = SceneGraph::getRoot()->findNode(m_onFocusGMO);
+    auto sc = gmoO->getTransform().getScale();
+    sc.z = val;
+    gmoO->getTransform().setScale(sc);
+  }));
+
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeXRot", [&](const CefRefPtr<CefListValue>& arguments) {
+    float val = arguments->GetDouble(1);
+    auto gmoO = SceneGraph::getRoot()->findNode(m_onFocusGMO);
+    auto rot = gmoO->getTransform().getEulerAngles();
+    rot.x = val;
+    gmoO->getTransform().setRotation(rot);
+  }));
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeYRot", [&](const CefRefPtr<CefListValue>& arguments) {
+    float val = arguments->GetDouble(1);
+    auto gmoO = SceneGraph::getRoot()->findNode(m_onFocusGMO);
+    auto rot = gmoO->getTransform().getEulerAngles();
+    rot.y = val;
+    gmoO->getTransform().setRotation(rot);
+  }));
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeZRot", [&](const CefRefPtr<CefListValue>& arguments) {
+    float val = arguments->GetDouble(1);
+    auto gmoO = SceneGraph::getRoot()->findNode(m_onFocusGMO);
+    auto rot = gmoO->getTransform().getEulerAngles();
+    rot.z = val;
+    gmoO->getTransform().setRotation(rot);
+  }));
+  
+  
 
 }
 void SceneEditor::initSceneGraph()
@@ -550,14 +636,14 @@ void SceneEditor::UI_UpdatePropertySheet(const GameObject& obj)
   auto components = ncnst.getComponents<RenderComponent>();
   for (auto &it : components) {
     webRenderer.executeJSCode(WString(_T("JS_AddComponent_Render('")) +
-      it->getName() + TString(_T("','")) + _T("ModelName")+
+      it->getName() + TString(_T("','")) + it->getModel().lock()->getName() +
       WString(_T("');")));
   }
 
   auto scriptComponents = ncnst.getComponents<ScriptComponent>();
   for (auto &it : scriptComponents) {
     webRenderer.executeJSCode(WString(_T("JS_AddComponent_Script('")) +
-      it->getName() + TString(_T("','")) + _T("ScripthPath")+
+      it->getName() + TString(_T("','")) + it->getGameObject().getName() +
       WString(_T("');")));
   }
 }
@@ -565,6 +651,7 @@ void SceneEditor::UI_UpdatePropertySheet(const GameObject& obj)
 void driderSDK::SceneEditor::destroy()
 {
   m_renderMan.exit();
+  webRenderer.Destroy();
 }
 
 }

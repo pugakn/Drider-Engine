@@ -35,6 +35,7 @@ function getViewport(el) {
 }
 
 document.addEventListener('contextmenu', event => event.preventDefault());
+
 //===================================================================================================================
 //                                                  WEBIX
 // ==================================================================================================================
@@ -74,7 +75,7 @@ webix.ready(function(){
 	var transform_UI = {
 	cols:[
 		{
-			view:"fieldset", id:"myform1", label:"Propiedades", body:{
+			view:"fieldset", id:"myform1", label:"Propiedades", drag:true,body:{
 			rows:[
 				{rows:[
 				    { template:"Name", type:"header", id: "prop_title" },
@@ -92,7 +93,7 @@ webix.ready(function(){
 					]},
 					{ type:"section", template:" Position" },
 					{ height: 30, margin:0,padding:0, cols:[
-						{ view:"text",   label:"x", inputWidth:80 , labelWidth:20, inputHeight:24,autowidth:false ,id:"posX"},
+						{ view:"text",   label:"x", inputWidth:80 , labelWidth:20, inputHeight:24,autowidth:false ,id:"posX",drag:true,},
 						{ view:"text",   label:"y", inputWidth:80 , labelWidth:20, inputHeight:24,autowidth:false ,id:"posY"},
 						{ view:"text",   label:"z", inputWidth:80 , labelWidth:20, inputHeight:24,autowidth:false ,id:"posZ"},
 					]},
@@ -129,7 +130,7 @@ webix.ready(function(){
 			view:"fieldset", label:"Render Component", body:{
 				rows:[
 				    { value: compName, view:"text", id: "prop_comp_" + compName},
-					{ view:"text",   label:"Model", inputWidth:0 , labelWidth:80, inputHeight:24,autowidth:false ,id:"aaaaaaa" + compName},
+					{ value: modelName,view:"text",   label:"Model", inputWidth:0 , labelWidth:80, inputHeight:24,autowidth:false ,id:"aaaaaaa" + compName},
 					{ view:"text",   label:"Material", inputWidth:0 , labelWidth:80, inputHeight:24,autowidth:false ,id:"bbbbbbb" + compName},
 				]}
 		}
@@ -352,18 +353,29 @@ webix.ready(function(){
 	webix.ui({
 		view:"contextmenu",
 		id:"general_prop_ctx_menu",
-		data:[{value:"Add Component" ,submenu:[ 
-			  "Render", "Animator", "Script", "Collider"]}],
-		master:$$("prop_grid").$view,
-		on:{
+		data:[{value:"Add Component" ,submenu: {
+		data:[ 
+		"Render", "Animator", "Script", "Collider"],
+		id:"general_prop_ctx_menu_sub",
+		view:"contextmenu",
+		},
+		config:{
+			on:{
 			onItemClick:function(id){
-				if (this.getItem(id).value == "Render"){
+				console.log(this.getItem(id).value);
 
+				if (this.getItem(id).value == "Render"){
+					C_AddRenderComponent("default");
 				}
 			}
-		},
+			},
+		}
+		}],
+		master:$$("prop_grid").$view,
 		openAction:"click",
+
 	});
+	
 	//Tree View
 	webix.ui({
 	view:"contextmenu",
@@ -404,8 +416,57 @@ webix.ready(function(){
             }
         }
     });
+	//Position
+	$$("posX").attachEvent("onChange", function(newv, oldv){
+		webix.message("Value changed from: "+oldv+" to: "+newv);
+		C_ChangeXPos(parseInt(newv));
+	});
+	$$("posY").attachEvent("onChange", function(newv, oldv){
+		webix.message("Value changed from: "+oldv+" to: "+newv);
+		C_ChangeYPos(parseInt(newv));
+	});
+	$$("posZ").attachEvent("onChange", function(newv, oldv){
+		webix.message("Value changed from: "+oldv+" to: "+newv);
+		C_ChangeZPos(parseInt(newv));
+	});
+	
+	$$("scX").attachEvent("onChange", function(newv, oldv){
+		webix.message("Value changed from: "+oldv+" to: "+newv);
+		C_ChangeXScale(parseInt(newv));
+	});
+	$$("scY").attachEvent("onChange", function(newv, oldv){
+		webix.message("Value changed from: "+oldv+" to: "+newv);
+		C_ChangeYScale(parseInt(newv));
+	});
+	$$("scZ").attachEvent("onChange", function(newv, oldv){
+		webix.message("Value changed from: "+oldv+" to: "+newv);
+		C_ChangeZScale(parseInt(newv));
+	});
 	
 	
+	$$("rtX").attachEvent("onChange", function(newv, oldv){
+		webix.message("Value changed from: "+oldv+" to: "+newv);
+		C_ChangeXRot(parseInt(newv));
+	});
+	$$("rtY").attachEvent("onChange", function(newv, oldv){
+		webix.message("Value changed from: "+oldv+" to: "+newv);
+		C_ChangeYRot(parseInt(newv));
+	});
+	$$("rtZ").attachEvent("onChange", function(newv, oldv){
+		webix.message("Value changed from: "+oldv+" to: "+newv);
+		C_ChangeZRot(parseInt(newv));
+	});
+	
+	
+	$$("posX").attachEvent("onSwipeX",function(c1,c2){
+	   if( c2.x - c1.x > 0 ){
+			webix.message("ss: ");
+		}
+	   else{
+		   // swipe from right to left
+	   }
+	});
+	//
 	webix.UIManager.addHotKey("enter", function(view){
 	var pos = $$("tree").getSelectedId();
 	$$("tree").edit(pos);

@@ -77,5 +77,8 @@ private:
 
   Vector3D modelMovement;
   std::array<Light, 128> Lights;
+
+
+  TString m_onFocusGMO;
 };
 }
