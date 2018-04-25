@@ -40,7 +40,14 @@
 #include <dr_script_object.h>
 #include <dr_context_manager.h>
 
-#include <dr_sound_api.h>
+#include <dr_fmod_sound_api.h>
+#include <dr_soundSystem.h>
+#include <dr_sound_core.h>
+#include <dr_channel.h>
+#include <dr_channelGroup.h>
+#include <dr_soundExtraInfo.h>
+#include <dr_sound.h>
+#include <dr_sound_component.h>
 
 namespace driderSDK {
 
@@ -57,6 +64,7 @@ TestApplication::postInit() {
   createScene();
   createTechniques();
   initScriptEngine();
+  playSoundTest();
 
   Time::update();
 }
@@ -65,9 +73,8 @@ void
 TestApplication::postUpdate() {
   Time::update();
   InputManager::update();
-  playerScript->onUpdate();
   
-  //SoundAPI::update();
+  SoundAPI::instance().API->update();
   SceneGraph::update();  
 }
 
@@ -84,13 +91,10 @@ TestApplication::postRender() {
   m_animTech->setCamera(&camera);
   m_staticTech->setCamera(&camera);
 
-  auto& mainC = CameraManager::getCamera(m_camNames[0]);
-
-
 
   auto& dc = GraphicsAPI::getDeviceContext();
 
-  auto queryRes = SceneGraph::query(*mainC,
+  auto queryRes = SceneGraph::query(camera,
                                     QUERY_ORDER::kBackToFront,
                                     queryFlags);
 
@@ -143,13 +147,11 @@ TestApplication::initModules() {
                           m_hwnd);
   Time::startUp();
   InputManager::startUp(reinterpret_cast<SizeT>(m_hwnd));
+  SoundAPI::startUp();
   ResourceManager::startUp();
   CameraManager::startUp();
   ContextManager::startUp();
   ScriptEngine::startUp();
-  SoundAPI::startUp(1,
-                    DR_INITFLAGS::kDrInitFlags_NORMAL,
-                    nullptr);
   SceneGraph::startUp();
 }
 
@@ -177,8 +179,8 @@ TestApplication::loadResources() {
   m_camNames[1] = _T("UP_CAM");
 
   CameraManager::createCamera(m_camNames[0],
-                              { 0, 200, -400 },
-                              { 0, 150, 10 },
+                              { 0, 500, -400 },
+                              { 0, 0, 1 },
                               m_viewport,
                               45, 0.1f, 4000.f);
 
@@ -198,9 +200,16 @@ TestApplication::loadResources() {
   ResourceManager::loadResource(_T("Sphere.fbx"));
 
   //Scripts
-  ResourceManager::loadResource(_T("MontiBehavior.as"));
+  ResourceManager::loadResource(_T("montiBehavior.as"));
   ResourceManager::loadResource(_T("script1.as"));
   ResourceManager::loadResource(_T("script2.as"));
+
+  //Sounds (All sunds requiere extraInfo data)
+  auto system = SoundAPI::instance().API->system;
+  auto channel = SoundAPI::instance().API->channel1;
+  extraInfo = new SoundExtraInfo(reinterpret_cast<SoundSystem*>(system),
+                                 reinterpret_cast<DrChannel*>(channel));
+  ResourceManager::loadResource(_T("testSound1.mp3"), extraInfo);
 }
 
 void
@@ -219,17 +228,6 @@ TestApplication::createScene() {
   animator->addAnimation(wa, walkerAnimName);
   animator->setCurrentAnimation(walkerAnimName);
   m_player->getTransform().setPosition({ 0, 0, 300 });
-
-
-  auto sphereMod = ResourceManager::getReferenceT<Model>(_T("Sphere.fbx"));
-  auto sphereCenter = SceneGraph::createObject(_T("Spherin"));
-  sphereCenter->getTransform().scale({ 20, 20, 20 });
-
-
-  auto camNode = SceneGraph::createObject(_T("Camera"));
-  camNode->createComponent<CameraComponent>(activeCam);
-  camNode->getTransform().setPosition({ 0, 0, -20 });
-  camNode->setParent(sphereCenter);
 
   auto quadMod = ResourceManager::getReferenceT<Model>(_T("ScreenAlignedQuad.3ds"));
   auto quad = addObjectFromModel(quadMod, _T("Floor"));
@@ -289,7 +287,7 @@ TestApplication::initScriptEngine() {
   result = Time::registerFunctions(scriptEngine);
 
   //Get script references of the ResourceManager
-  auto rBehaviorScript = ResourceManager::getReference(_T("MontiBehavior.as"));
+  auto rBehaviorScript = ResourceManager::getReference(_T("montiBehavior.as"));
   auto BehaviorScript = std::dynamic_pointer_cast<ScriptCore>(rBehaviorScript);
 
   auto rScript1 = ResourceManager::getReference(_T("script1.as"));
@@ -323,20 +321,40 @@ TestApplication::initScriptEngine() {
 }
 
 void
+TestApplication::playSoundTest() {
+
+  auto sound1Resource = ResourceManager::instance().getReferenceT<
+                        SoundCore>(_T("testSound1.mp3"));
+
+  auto sound1 = sound1Resource.get()->soundResource;
+  auto soundComponent = m_player->createComponent<SoundComponent>();
+
+  //Add all sounds to SoundComponent
+  soundComponent->addSound(_T("testSound1"),
+                           sound1);
+
+  soundComponent->play(_T("testSound1"));
+  
+}
+
+void
 TestApplication::destroyModules() {
 
-  m_staticTech->destroy();
+  delete extraInfo;
 
+  m_staticTech->destroy();
+  m_animTech->destroy();
+
+  ContextManager::shutDown();
+  ScriptEngine::shutDown();
   SceneGraph::shutDown();
-  ResourceManager::shutDown();
   CameraManager::shutDown();
+  SoundAPI::shutDown();
   InputManager::shutDown();
   Time::shutDown();
   GraphicsDriver::shutDown();
-  ContextManager::shutDown();
-  ScriptEngine::shutDown();
-  SoundAPI::shutDown();
   Logger::shutDown();
+
 }
 
 }

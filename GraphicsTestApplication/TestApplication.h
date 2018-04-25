@@ -11,6 +11,7 @@ class GameObject;
 class Model;
 class Technique;
 class ScriptComponent;
+class SoundExtraInfo;
 
 class TestApplication : public Application
 {
@@ -53,6 +54,9 @@ class TestApplication : public Application
   initScriptEngine();
 
   void
+  playSoundTest();
+
+  void
   destroyModules();
 
   Int32 m_currCam;
@@ -64,6 +68,8 @@ class TestApplication : public Application
   std::unique_ptr<Technique> m_animTech;
 
   ScriptComponent *playerScript;
+
+  SoundExtraInfo *extraInfo;
 
   //DrSound *sound1;
   //DrSound *sound2;
