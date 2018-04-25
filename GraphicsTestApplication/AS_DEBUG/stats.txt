@@ -1,29 +1,25 @@
 
 Total count
-PopPtr     : 12740
-PshC4      : 55959
-PshV4      : 12697
-PSF        : 40834
+PopPtr     : 1811
+PshC4      : 7240
+PshV4      : 1810
+PSF        : 3624
 CALL       : 1
-RET        : 25462
-JNZ        : 21
-PshVPtr    : 23386
-RDSPtr     : 10645
-CMPIi      : 21
-CALLSYS    : 84431
-SUSPEND    : 86970
+RET        : 3625
+PshVPtr    : 1812
+CALLSYS    : 9053
+SUSPEND    : 10866
 ALLOC      : 1
-FREE       : 12740
+FREE       : 1811
 LOADOBJ    : 1
-REFCPY     : 12740
-GETOBJREF  : 12740
-GETREF     : 10645
-ADDSi      : 23385
-CpyRtoV4   : 12697
+REFCPY     : 1811
+GETOBJREF  : 1811
+ADDSi      : 1811
+CpyRtoV4   : 1810
 PGA        : 1
-VAR        : 23385
-MULIf      : 12697
-JLowZ      : 25394
+VAR        : 1811
+MULIf      : 1810
+JLowZ      : 3620
 
 Never executed
 PshGPtr   
@@ -33,6 +29,7 @@ PshG4
 LdGRdR4   
 JMP       
 JZ        
+JNZ       
 JS        
 JNS       
 JP        
@@ -67,10 +64,12 @@ BSRL
 BSRA      
 COPY      
 PshC8     
+RDSPtr    
 CMPd      
 CMPu      
 CMPf      
 CMPi      
+CMPIi     
 CMPIf     
 CMPIu     
 JMPP      
@@ -81,6 +80,7 @@ CALLBND
 STOREOBJ  
 GETOBJ    
 CHKREF    
+GETREF    
 PshNull   
 ClrVPtr   
 OBJTYPE   
@@ -205,48 +205,39 @@ POWu64
 Thiscall1 
 
 Sequences
-PopPtr    , SUSPEND    : 12740
-PshC4     , PshC4      : 12719
-PshC4     , PSF        : 5149
-PshC4     , CALLSYS    : 38091
-PshV4     , PSF        : 12697
-PSF       , PSF        : 5138
-PSF       , CALLSYS    : 35695
+PopPtr    , SUSPEND    : 1811
+PshC4     , PshC4      : 1810
+PshC4     , CALLSYS    : 5430
+PshV4     , PSF        : 1810
+PSF       , CALLSYS    : 3623
 PSF       , ALLOC      : 1
 CALL      , SUSPEND    : 1
 RET       , RET        : 1
-RET       , SUSPEND    : 25459
+RET       , SUSPEND    : 3622
 RET       , LOADOBJ    : 1
-JNZ       , SUSPEND    : 21
 PshVPtr   , CALL       : 1
-PshVPtr   , ADDSi      : 23385
-RDSPtr    , GETREF     : 10645
-CMPIi     , JNZ        : 21
-CALLSYS   , PSF        : 5151
-CALLSYS   , RET        : 12697
-CALLSYS   , SUSPEND    : 23354
-CALLSYS   , CpyRtoV4   : 12697
-CALLSYS   , VAR        : 5138
-CALLSYS   , JLowZ      : 25394
-SUSPEND   , PshC4      : 43240
-SUSPEND   , PSF        : 12697
-SUSPEND   , RET        : 23
+PshVPtr   , ADDSi      : 1811
+CALLSYS   , PSF        : 2
+CALLSYS   , RET        : 1810
+CALLSYS   , SUSPEND    : 1811
+CALLSYS   , CpyRtoV4   : 1810
+CALLSYS   , JLowZ      : 3620
+SUSPEND   , PshC4      : 5430
+SUSPEND   , PSF        : 1810
+SUSPEND   , RET        : 2
 SUSPEND   , PshVPtr    : 1
-SUSPEND   , CMPIi      : 21
-SUSPEND   , FREE       : 12740
+SUSPEND   , FREE       : 1811
 SUSPEND   , PGA        : 1
-SUSPEND   , VAR        : 18247
+SUSPEND   , VAR        : 1811
 ALLOC     , SUSPEND    : 1
-FREE      , RET        : 12740
+FREE      , RET        : 1811
 LOADOBJ   , RET        : 1
-REFCPY    , PopPtr     : 12740
-GETOBJREF , REFCPY     : 12740
-GETREF    , CALLSYS    : 10645
-ADDSi     , RDSPtr     : 10645
-ADDSi     , GETOBJREF  : 12740
-CpyRtoV4  , MULIf      : 12697
+REFCPY    , PopPtr     : 1811
+GETOBJREF , REFCPY     : 1811
+ADDSi     , GETOBJREF  : 1811
+CpyRtoV4  , MULIf      : 1810
 PGA       , PSF        : 1
-VAR       , PshVPtr    : 23385
-MULIf     , PshV4      : 12697
-JLowZ     , SUSPEND    : 25394
+VAR       , PshVPtr    : 1811
+MULIf     , PshV4      : 1810
+JLowZ     , SUSPEND    : 3620
 LABEL     , PSF        : 1

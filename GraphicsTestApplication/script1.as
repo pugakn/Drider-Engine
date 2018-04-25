@@ -1,7 +1,7 @@
 class script1 : MontiBehavior {
 
 	void Start() {
-		Print("Start\n");
+		Print("01: What in the goddamn...? 3.141592 ");
 	}
 		
 	float timer;
