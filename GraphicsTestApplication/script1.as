@@ -2,6 +2,7 @@ class script1 : MontiBehavior {
 
 	void Start() {
 		Print("Start\n");
+		//Object.findOBject("Floor");
 	}
 		
 	float timer;

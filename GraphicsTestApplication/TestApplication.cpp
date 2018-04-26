@@ -284,6 +284,8 @@ TestApplication::initScriptEngine() {
   result = vector.registerFunctions(scriptEngine);
   Transform transform;
   result = transform.registerFunctions(scriptEngine);
+  GameObject::registerFunctions(scriptEngine);
+  
   result = Time::registerFunctions(scriptEngine);
 
   //Get script references of the ResourceManager
@@ -307,6 +309,7 @@ TestApplication::initScriptEngine() {
 
   //Add script component to the objects and add script sections of the scripts
   playerScript = m_player->createComponent<ScriptComponent>(Script1);
+  //playerScript = m_player->createComponent<ScriptComponent>(Script2);
 
   //Build module
   auto currentModule = scriptEngine->m_scriptEngine->GetModule("GameModule");

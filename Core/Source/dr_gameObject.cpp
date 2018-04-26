@@ -9,13 +9,19 @@
 
 namespace driderSDK {
 
+GameObject* Ref_GameObject() {
+  return new GameObject();
+}
+
 GameObject::GameObject(const TString& name)
   : NameObject(name), 
     m_tag(_T("UNTAGGED")),
     m_isStatic(false),
     m_change(false)
     DR_DEBUG_ONLY_PARAM(m_destroyed(false))
-{}
+{
+  refCount = 1;
+}
 
 GameObject::~GameObject() {
   DR_DEBUG_ONLY(
@@ -311,6 +317,12 @@ GameObject::findNode(const TString & nodeName) {
   }
 
   return node;
+}
+
+GameObject*
+GameObject::findObject(const TString& nodeName) {
+  auto gO = findNode(nodeName);
+  return gO.get();
 }
 
 SizeT 

@@ -7,6 +7,8 @@
 #include "dr_script_core.h"
 #include <dr_gameObject.h>
 
+#include <dr_graph.h>
+
 namespace driderSDK {
 
 
@@ -93,6 +95,12 @@ ScriptComponent::start() {
                                   0,
                                   &m_gameObject.getTransform(),
                                   obj);
+
+  //scriptEngine->setObjectToScript(type,
+  //                                _T("void SetGameObject(GameObject@ object)"),
+  //                                1,
+  //                                &SceneGraph::getRoot(),
+  //                                obj);
 
   scriptEngine->executeFunction(_T("void Start()"),
                                 type,

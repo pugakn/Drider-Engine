@@ -1,12 +1,24 @@
 void script2::Update()
 
-Temps: 
+Temps: 7
 
 Variables: 
  000: script2 this
+ 007: string {noname}
 
 
+- 8,3 -
+    0   7 *    SUSPEND
+    1   7 *    PGA      251029400
+    3   8 *    PSF      v7
+    4   9 *    CALLSYS  20           (string::string(const string&in))
+               ObjInfo  v7, 1
+    6   7 *    PSF      v7
+    7   8 *    CALLSYS  69           (void Print(string&in))
+    9   7 *    PSF      v7
+   10   8 *    CALLSYS  21           (string::~string())
 - 9,3 -
-    0   0 *    SUSPEND
+               ObjInfo  v7, 0
+   12   7 *    SUSPEND
             0:
-    1   0 *    RET      1
+   13   7 *    RET      1

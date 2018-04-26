@@ -9,6 +9,11 @@ namespace driderSDK {
 class DrSound;
 class SoundAPI;
 class SoundSystem;
+class FMODSoundAPI;
+class DrChannelGroup;
+class DrChannel;
+
+class Vector3D;
 
 class DR_CORE_EXPORT SoundComponent : public GameComponent {
 
@@ -41,8 +46,17 @@ class DR_CORE_EXPORT SoundComponent : public GameComponent {
     void
     play(TString soundName);
 
-    private:
-      std::unordered_map<TString, DrSound*> sounds;
+  private:
+    void
+    updateChannel(const Vector3D* pos);
+  
+  private:
+    std::unordered_map<TString, DrSound*> sounds;
+  
+    FMODSoundAPI* soundAPI;
+    SoundSystem* system;
+    DrChannelGroup * gChannels;
+    DrChannel* channel;
 };
 
 }

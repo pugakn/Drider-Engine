@@ -14,6 +14,9 @@
 #include "dr_enableObject.h"
 #include "dr_name_object.h"
 
+#include <dr_export_script.h>
+#include <..\..\Script\Include\dr_script_engine.h>
+
 namespace driderSDK {
 
 class GameComponent;
@@ -23,6 +26,9 @@ class DR_CORE_EXPORT ComponentPartition
  public:
   bool operator()(const std::unique_ptr<GameComponent>& l) const;
 };
+
+class GameObject;
+GameObject* Ref_GameObject();
 
 class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject>,  
                                   public EnableObject,
@@ -35,6 +41,8 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   using ChildrenList = std::vector<SharedGameObj>;
   using ComponentPtr = std::unique_ptr<GameComponent>;
   using ComponentsList = std::vector<ComponentPtr>;
+
+  Int32 refCount;
 
   GameObject(const TString& name = _T(""));
 
@@ -261,6 +269,12 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   findNode(const TString& nodeName);
 
   /**
+  * Gets GameObject*
+  */
+  GameObject* 
+  findObject(const TString& nodeName);
+
+  /**
   * Gets the number of children.
   * 
   * @return
@@ -277,6 +291,41 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
 
   bool
   changed() const;
+
+  void addRef() {
+    refCount++;
+  }
+
+  void release() {
+    if (--refCount == 0)
+      delete this;
+  }
+
+  static BEGINING_REGISTER(GameObject, 0, asOBJ_REF)
+
+  result = scriptEngine->m_scriptEngine->RegisterObjectBehaviour("GameObject",
+                                                                 asBEHAVE_FACTORY,
+                                                                 "GameObject @f()",
+                                                                 asFUNCTION(Ref_GameObject),
+                                                                 asCALL_CDECL);
+
+  result = scriptEngine->m_scriptEngine->RegisterObjectBehaviour("GameObject",
+                                                                 asBEHAVE_ADDREF,
+                                                                 "void f()",
+                                                                 asMETHOD(GameObject, addRef),
+                                                                 asCALL_THISCALL);
+  result = scriptEngine->m_scriptEngine->RegisterObjectBehaviour("GameObject",
+                                                                 asBEHAVE_RELEASE,
+                                                                 "void f()",
+                                                                 asMETHOD(GameObject, release),
+                                                                 asCALL_THISCALL);
+
+  result = scriptEngine->m_scriptEngine->RegisterObjectMethod("GameObject",
+                                                              "GameObject@ findObject(string& in)",
+                                                              asMETHODPR(GameObject, findObject, (const TString&), GameObject*),
+                                                              asCALL_THISCALL);
+
+  END_REGISTER  
  private:
 
   friend GameComponent;

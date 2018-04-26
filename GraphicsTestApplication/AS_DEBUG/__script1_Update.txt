@@ -8,40 +8,40 @@ Variables:
  011: Vector3D {noname}
 
 
-- 10,3 -
+- 11,3 -
     0  11 *    SUSPEND
                VarDecl  0
     1  11 *    PshC4    0x0          (i:0, f:0)
     3  12 *    PshC4    0x0          (i:0, f:0)
-    5  13 *    CALLSYS  99           (float getDelta())
+    5  13 *    CALLSYS  103           (float getDelta())
     7  13 *    CpyRtoV4 v4
     8  13 *    MULIf    v5, v4, 100.000000
    11  13 *    PshV4    v5
    12  14 *    PSF      v3
    13  15 *    CALLSYS  75           (Vector3D::Vector3D(float, float, float))
-- 12,3 -
+- 13,3 -
                ObjInfo  v3, 1
    15  11 *    SUSPEND
    16  11 *    PshC4    0x20          (i:32, f:4.48416e-44)
    18  12 *    CALLSYS  71           (bool isKeyDown(KeyCode))
    20  11 *    JLowZ    +9              (d:31)
-- 13,4 -
+- 14,4 -
             {
    22  11 *    SUSPEND
    23  11 *    VAR      v3
    24  12 *    PshVPtr  v0
-   25  13 *    ADDSi    v20, 134217745
+   25  13 *    ADDSi    v20, 134217746
    27  13 *    RDSPtr
    28  13 *    GETREF   1
    29  13 *    CALLSYS  97           (void Transform::move(const Vector3D&in))
-- 17,3 -
+- 18,3 -
             }
             1:
    31  11 *    SUSPEND
    32  11 *    PshC4    0x1e          (i:30, f:4.2039e-44)
    34  12 *    CALLSYS  71           (bool isKeyDown(KeyCode))
    36  11 *    JLowZ    +18              (d:56)
-- 18,4 -
+- 19,4 -
             {
    38  11 *    SUSPEND
    39  11 *    PshC4    0xbf800000          (i:-1082130432, f:-1)
@@ -51,13 +51,13 @@ Variables:
                ObjInfo  v11, 1
    45  11 *    VAR      v11
    46  12 *    PshVPtr  v0
-   47  13 *    ADDSi    v20, 134217745
+   47  13 *    ADDSi    v20, 134217746
    49  13 *    RDSPtr
    50  13 *    GETREF   1
    51  13 *    CALLSYS  97           (void Transform::move(const Vector3D&in))
    53  11 *    PSF      v11
    54  12 *    CALLSYS  73           (Vector3D::~Vector3D())
-- 21,3 -
+- 22,3 -
                ObjInfo  v11, 0
             }
             2:
