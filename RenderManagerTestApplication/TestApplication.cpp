@@ -112,7 +112,7 @@ RenderManApp::postInit() {
 
   CameraManager::createCamera(_T("PATO_CAM"),
                               { 0.0f, 150.0f, -400.0f },
-                              { 0.0f, 0.f, 0.0f },
+                              { 0.0f, 150.0f, 0.0f },
                               m_viewport,
                               45.f,
                               //1024, 1024,
@@ -201,6 +201,25 @@ RenderManApp::postInit() {
     renderComp->getMeshes().front().material = floorMat;
   }
 
+  m_vecGos.push_back(SceneGraph::createObject(_T("Cube1")));
+  m_vecGos.push_back(SceneGraph::createObject(_T("Cube2")));
+  m_vecGos.push_back(SceneGraph::createObject(_T("Cube3")));
+  m_vecGos.push_back(SceneGraph::createObject(_T("Cube4")));
+
+  auto ptrChecker = ResourceManager::getReferenceT<Model>(_T("Checker.fbx"));
+  if (ptrChecker) {
+    for (SizeT i = 0; i < 4; ++i) {
+      m_vecGos[i]->createComponent<RenderComponent>(ptrChecker);
+      m_vecGos[i]->createComponent<AABBCollider>(ptrChecker->aabb);
+      m_vecGos[i]->getTransform().setScale(Vector3D(i / 4.0f, i / 4.0f, i / 4.0f) * 10.0f);
+
+      auto renderComp = m_vecGos[i]->getComponent<RenderComponent>();
+      renderComp->getMeshes().front().material = floorMat;
+    }
+  }
+
+  m_renderMan.m_vecGos = m_vecGos;
+
   initInputCallbacks();
 }
 
@@ -285,8 +304,8 @@ RenderManApp::MoveModel(Vector3D direction) {
 
 void
 RenderManApp::loadResources() {
-  //ResourceManager::loadResource(_T("Checker.fbx"));
-  //ResourceManager::loadResource(_T("Sphere.fbx"));
+  ResourceManager::loadResource(_T("Checker.fbx"));
+  ResourceManager::loadResource(_T("Sphere.fbx"));
   ResourceManager::loadResource(_T("plane.fbx"));
   //ResourceManager::loadResource(_T("Croc.X"));
   ResourceManager::loadResource(_T("model.dae"));

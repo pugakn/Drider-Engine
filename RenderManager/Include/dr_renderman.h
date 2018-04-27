@@ -50,9 +50,10 @@ class DR_RENDERMAN_EXPORT RenderMan {
 
   std::array<Light, 128>* lights;
   std::array<std::shared_ptr<Camera>, 4> m_vecShadowCamera;
+  std::vector<SceneGraph::SharedGameObject> m_vecGos;
   std::vector<float> partitions;
-   UInt32 screenWidth;
-   UInt32 screenHeight;
+  UInt32 screenWidth;
+  UInt32 screenHeight;
  protected:
 
   GBufferPass m_GBufferPass;

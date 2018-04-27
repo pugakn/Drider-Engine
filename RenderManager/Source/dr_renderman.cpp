@@ -25,8 +25,9 @@ RenderMan::init() {
     m_vecShadowCamera[i] = std::make_shared<Camera>();
   }
   m_szActiveShadowCameras = 4;
-  //m_vec3DirectionalLight = Vector3D(0.0f, -1.0f, 1.0f).normalize();
-  m_vec3DirectionalLight = Vector3D(0.0f, -10000.0f, 0.1f).normalize();
+  m_vec3DirectionalLight = Vector3D(-1.0f, -1.0f, 0.0f).normalize();
+  //m_vec3DirectionalLight = Vector3D(0.0f, -10000.0f, 0.1f).normalize();
+  //m_vec3DirectionalLight = Vector3D(-1.0f, -1.0f, -1.0f).normalize();
   m_fDepth = 10000.0f;
   m_bFitToFrustrum = true;
 
@@ -196,21 +197,26 @@ RenderMan::updateShadowCameras() {
   float SphereRad;
 
   Vector3D TrueCenter;
+  Vector3D CamPos = mainCam->getPosition();
+  Vector3D CamDir = mainCam->getDirection();
+  //printf("CamPos: %f, %f, %f\n", CamPos.x, CamPos.y, CamPos.z);
+  //printf("CamDir: %f, %f, %f\n", CamDir.x, CamDir.y, CamDir.z);
   
   for (size_t i = 0; i < m_szActiveShadowCameras; ++i) {
     subFrustraSphere = frustrumSphere(fViewportWidth,
                                       fViewportHeight,
                                       Math::lerp(fNearPlane,
                                                  fFarPlane,
-                                                 partitions[m_bFitToFrustrum ? i : 0]),
+                                                 partitions[i]),
                                       Math::lerp(fNearPlane,
                                                  fFarPlane,
                                                  partitions[i + 1]),
                                       fFov);
     SphereRad = subFrustraSphere.second;
+    
+    TrueCenter = CamPos + (CamDir * subFrustraSphere.first.z);
 
-    TrueCenter = mainCam->getPosition() +
-                 (mainCam->getDirection() * subFrustraSphere.first.z);
+    m_vecGos[i]->getTransform().setPosition(TrueCenter - m_vec3DirectionalLight);
 
     m_vecShadowCamera[i]->setPosition(TrueCenter +
                                       (m_vec3DirectionalLight * SphereRad) -
@@ -218,8 +224,8 @@ RenderMan::updateShadowCameras() {
     m_vecShadowCamera[i]->setTarget(TrueCenter);
     m_vecShadowCamera[i]->createProyection(Math::ceil(SphereRad * 2.0f),
                                            Math::ceil(SphereRad * 2.0f),
-                                           0.001f,
-                                           Math::max(m_fDepth, SphereRad * 2.0f));
+                                           0.1f,
+                                           m_fDepth);
   }
 }
 

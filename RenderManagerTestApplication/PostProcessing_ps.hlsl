@@ -19,6 +19,7 @@ cbuffer ConstantBuffer {
   float4x4 VPInv;
   float4x4 kShadowVP[4];
   float4   ShadowSliptDepth;
+  //float BloomThreshold;
 };
 
 struct PS_INPUT {
@@ -121,6 +122,12 @@ luminescence(float3 Color) {
   return (dot(Color, LuminanceFactor) + delta);
   //Case HDR
   return log(dot(Color, LuminanceFactor) + delta);
+}
+
+float3
+brightness(float3 LinearColor) {
+  float3 BloomThreshold = float3(0.5f, 0.5f, 0.5f);
+  return luminescence(LinearColor) * (LinearColor - BloomThreshold.xxx);
 }
 
 float3
@@ -266,7 +273,7 @@ float4 FS(PS_INPUT input) : SV_TARGET {
   //return float4(roughness.rrr, 1.0f);
   //return float4(specular, 1.0f);
   //return float4(SSAO.rrr, 1.0f);
-  //return float4(ShadowTex1.Sample(SS, uv).xxx, 1.0f);
+  return float4(ShadowTex1.Sample(SS, uv).xxx, 1.0f);
   //return float4(ShadowTex1.Sample(SS, uv).yyy, 1.0f);
   //return float4(ShadowTex1.Sample(SS, uv).zzz, 1.0f);
   //return float4(ShadowTex1.Sample(SS, uv).www, 1.0f);
@@ -305,22 +312,22 @@ float4 FS(PS_INPUT input) : SV_TARGET {
   iCurrentCascadeIndex = insideBounds(mul(kShadowVP[1], float4(position, 1.0f))) ? 1 : iCurrentCascadeIndex;
   iCurrentCascadeIndex = insideBounds(mul(kShadowVP[0], float4(position, 1.0f))) ? 0 : iCurrentCascadeIndex;
   
-  //if (iCurrentCascadeIndex == 0)
-  //  return float4(1, 0, 0, 1);
-  //if (iCurrentCascadeIndex == 1)
-  //  return float4(0, 1, 0, 1);
-  //if (iCurrentCascadeIndex == 2)
-  //  return float4(0, 0, 1, 1);
-  //if (iCurrentCascadeIndex == 3)
-  //  return float4(1, 1, 1, 1);
+  if (iCurrentCascadeIndex == 0)
+    return float4(1, 0, 0, 1);
+  if (iCurrentCascadeIndex == 1)
+    return float4(0, 1, 0, 1);
+  if (iCurrentCascadeIndex == 2)
+    return float4(0, 0, 1, 1);
+  if (iCurrentCascadeIndex == 3)
+    return float4(1, 1, 1, 1);
 #endif
   //Projects the position from the mainCam to what shadowCam sees
   float4 fromLightPos = mul(kShadowVP[iCurrentCascadeIndex], float4(position, 1.0f));
-  //fromLightPos.xyz /= fromLightPos.w;
+  fromLightPos.xyz /= fromLightPos.w;
   float ShadowValue = GetShadowValue(fromLightPos, iCurrentCascadeIndex);
   
-  return float4((finalColor * ShadowValue) + emissive, 1.0f);
-  return float4(finalColor + emissive, 1.0f);
-  return float4(luminescence((finalColor * ShadowValue) + emissive).xxx, 1.0f);
   return float4(albedo * ShadowValue, 1.0f);
+  return float4(finalColor + emissive, 1.0f);
+  return float4((finalColor * ShadowValue) + emissive, 1.0f);
+  return float4(luminescence((finalColor * ShadowValue) + emissive).xxx, 1.0f);
 }

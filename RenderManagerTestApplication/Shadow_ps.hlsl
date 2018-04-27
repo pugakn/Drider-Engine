@@ -5,18 +5,18 @@ cbuffer ConstantBuffer {
 
 struct PS_INPUT {
   float4 Position : SV_POSITION;
-  float  fDepth   : TEXCOORD1;
+  float  fDepth   : TEXCOORD0;
 };
 
 struct PS_OUTPUT {
-	float4 Shadow1 : SV_TARGET0;
+	float4 Shadow : SV_TARGET0;
 };
 
 PS_OUTPUT
 FS(PS_INPUT input) {
 	PS_OUTPUT outRT;
 	
-	outRT.Shadow1 = input.fDepth.xxxx;
+	outRT.Shadow = input.fDepth.xxxx;
 
 	return outRT;
 }
