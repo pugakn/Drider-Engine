@@ -282,12 +282,14 @@ void
 WebRenderer::startRendering()
 {
   m_running = true;
+  //CefRunMessageLoop();
 }
 void 
 WebRenderer::stoptRendering()
 {
   if (m_running) {
     m_running = false;
+   // CefQuitMessageLoop();
   }
 }
 void 

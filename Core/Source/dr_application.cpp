@@ -22,8 +22,6 @@ void
 Application::init() {
   m_running = true;
 
-  //m_viewport.width = 1920;
-  //m_viewport.height = 1024;
   m_viewport.width = 1280;
   m_viewport.height = 720;
     
@@ -45,7 +43,7 @@ Application::createWindow() {
   Int32 flags = SDL_HWSURFACE;
   
   //flags |= SDL_FULLSCREEN;
-  //flags |= SDL_RESIZABLE;
+  flags |= SDL_RESIZABLE;
 
   SDL_ShowCursor(SDL_ENABLE);
 

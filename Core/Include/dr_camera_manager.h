@@ -73,6 +73,45 @@ class DR_CORE_EXPORT CameraManager : public Module<CameraManager>
 							 float nearPlane,
 							 float farPlane);
 
+  
+	/**
+	* TEST::createCamera
+	* Creates a camera with it's given values and stores it.
+	*
+	* @param name
+	*   Name of the camera to create.
+	*
+	* @param pos
+	*   Position to initialize the camera.
+	*
+	* @param target
+	*   Point to look at.
+	*
+	* @param viewport
+	*   Viewport of the camera.
+	*
+	* @param width
+	*   Ortoghonal width.
+	*
+	* @param height
+	*   Ortoghonal height.
+	*
+	* @param nearPlane
+	*   Value of the closest plane of the proyection.
+	*
+	* @param farPlane
+	*   Value of the farthest plane of the proyection.
+	*/
+	static void 
+	createCamera(const TString& cameraName,
+							 const Vector3D& pos,
+							 const Vector3D& target,
+							 const Viewport& viewport,
+               float width,
+               float height,
+							 float nearPlane,
+							 float farPlane);
+
 	/**
 	* TEST::deleteCamera
 	* Delete a camera by searching it's name.

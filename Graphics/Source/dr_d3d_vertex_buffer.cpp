@@ -81,21 +81,22 @@ D3DVertexBuffer::updateFromSysMemCpy(const DeviceContext& deviceContext) {
 void
 D3DVertexBuffer::updateFromBuffer(const DeviceContext& deviceContext,
                                   const byte* dataBuffer) {
+  m_sysMemCpy.clear();
   m_sysMemCpy.assign(dataBuffer, dataBuffer + m_descriptor.sizeInBytes);
-  /*reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
+  reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext->
-      UpdateSubresource(VB, 0, 0, &dataBuffer[0], 0, 0);*/
+      UpdateSubresource(VB, 0, 0, dataBuffer, 0, 0);
 
-  D3D11_MAPPED_SUBRESOURCE mappedResource;
-	ZeroMemory(&mappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
+ // D3D11_MAPPED_SUBRESOURCE mappedResource;
+	//ZeroMemory(&mappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 
-  auto d3d = reinterpret_cast<const D3DDeviceContext*>(&deviceContext);
-	//	Disable GPU access to the vertex buffer data.
-	d3d->D3D11DeviceContext->Map(VB, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-	//	Update the vertex buffer here.
-	memcpy(mappedResource.pData, dataBuffer, m_sysMemCpy.size());
-	//	Reenable GPU access to the vertex buffer data.
-	d3d->D3D11DeviceContext->Unmap(VB, 0);
+ // auto d3d = reinterpret_cast<const D3DDeviceContext*>(&deviceContext);
+	////	Disable GPU access to the vertex buffer data.
+	//d3d->D3D11DeviceContext->Map(VB, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	////	Update the vertex buffer here.
+	//memcpy(mappedResource.pData, dataBuffer, m_sysMemCpy.size());
+	////	Reenable GPU access to the vertex buffer data.
+	//d3d->D3D11DeviceContext->Unmap(VB, 0);
 
 }
 

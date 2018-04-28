@@ -8,16 +8,73 @@
 #include <dr_aabb_collider.h>
 #include <windows.h>
 
+#include <dr_texture_core.h>
+#include <dr_degree.h>
+#include <dr_camera_manager.h>
+
 #include <dr_render_component.h>
 #include <dr_script_component.h>
 #include <dr_animator_component.h>
 #include <dr_collider_component.h>
 #include <dr_model.h>
 #include <dr_script_core.h>
-
+#include <dr_depth_stencil_state.h>
+#include <dr_math.h>
 #include<Shlwapi.h>
 #pragma comment(lib, "Shlwapi.lib")
+
+#include <dr_model.h>
 namespace driderSDK {
+
+  void
+    HSVtoRGB(float fH, float fS, float fV,
+      float& fR, float& fG, float& fB) {
+    float fC = fV * fS;
+    float fX = fC * (1.0f - abs(fmod((fH / 60.0f), 2) - 1.0f));
+    float fM = fV - fC;
+
+    fR = fM;
+    fG = fM;
+    fB = fM;
+
+    if (fH < 60.0f) {
+      fR += fC;
+      fG += fX;
+      //fB += 0.0f;
+      return;
+    }
+    else if (fH < 120.0f) {
+      fR += fX;
+      fG += fC;
+      //fB += 0.0f;
+      return;
+    }
+    else if (fH < 180.0f) {
+      //fR += 0.0f;
+      fG += fC;
+      fB += fX;
+      return;
+    }
+    else if (fH < 240.0f) {
+      //fR += 0.0f;
+      fG += fX;
+      fB += fC;
+      return;
+    }
+    else if (fH < 300.0f) {
+      fR += fX;
+      //fG += 0.0f;
+      fB += fC;
+      return;
+    }
+    else if (fH <= 360.0f) {
+      fR = fC;
+      //fG = 0.0f;
+      fB = fX;
+      return;
+    }
+  }
+
 
 void read_directory(const TString& name, std::vector<TString>& v)
 {
@@ -61,60 +118,201 @@ void SceneEditor::init(Viewport v)
 {
   m_viewport = v;
   DrTextureDesc backDesc;
-  backDesc.width = 1024;
-  backDesc.height = 1024;
+  backDesc.width = m_viewport.width;
+  backDesc.height = m_viewport.height;
   backDesc.pitch = backDesc.width * 4;
   backDesc.Format = DR_FORMAT::kR8G8B8A8_UNORM;
-  backDesc.CPUAccessFlags = DR_CPU_ACCESS_FLAG::drRead;
-  m_RT = dr_gfx_unique(GraphicsAPI::getDevice().createRenderTarget(backDesc,1));
+  backDesc.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE | DR_BIND_FLAGS::RENDER_TARGET;
+  backDesc.dimension = DR_DIMENSION::k2D;
+  backDesc.mipLevels = 0;
+  backDesc.CPUAccessFlags = 0;
+  backDesc.genMipMaps = true;
 
+  m_RT = dr_gfx_shared(GraphicsAPI::getDevice().createRenderTarget(backDesc,1));
+
+  DrDepthStencilDesc depthTextureDesc;
+  depthTextureDesc.bindFlags = DR_BIND_FLAGS::DEPTH_STENCIL | DR_BIND_FLAGS::SHADER_RESOURCE;
+  depthTextureDesc.width = m_viewport.width;
+  depthTextureDesc.height = m_viewport.height;
+  depthTextureDesc.Format = DR_FORMAT::kD24_UNORM_S8_UINT;
+  m_RTDPTH = dr_gfx_shared(GraphicsAPI::getDevice().createDepthStencil(depthTextureDesc));
 
   initCameras();
   initUI();
   initSceneGraph();
+
+  //Renderman stuff
+  m_renderMan.init();
+
+  Degree grados(2.8125f);
+  Vector4D LightPosition(0.0f, 50.0f, -100.0f, 1);
+  Matrix4x4 rotationMatrix(driderSDK::Math::FORCE_INIT::kIdentity);
+  rotationMatrix = rotationMatrix.RotationY(grados.toRadian());
+
+  float proportion = 0.0f;
+  for (int lighIndex = 0; lighIndex < 128; ++lighIndex) {
+    //Posicion
+    Lights[lighIndex].m_vec4Position = LightPosition;
+    LightPosition = LightPosition * rotationMatrix;
+
+    //Color
+    HSVtoRGB(proportion * 256,
+      1.0f,
+      1.0f,
+      Lights[lighIndex].m_vec4Color.x,
+      Lights[lighIndex].m_vec4Color.y,
+      Lights[lighIndex].m_vec4Color.z);
+
+    //Intensidad
+    Lights[lighIndex].m_vec4Color.w = (lighIndex / 128.0f) * 100.0f;
+
+    proportion += (1.0f / 128.0f);
+  }
+
+  m_renderMan.lights = &Lights;
+
+  CameraManager::createCamera(_T("PATO_CAM"),
+  { 0.0f, 150.0f, -400.0f },
+  { 0.0f, 50.f, 0.0f },
+    m_viewport,
+    45.f,
+    //1024, 1024,
+    0.1f,
+    10000.f);
+  CameraManager::setActiveCamera(_T("PATO_CAM"));
+
+  modelMovement = Vector3D(0.0f, 0.0f, 0.0f);
+
+  loadResources();
+
+  model = SceneGraph::createObject(_T("Model"));
+  auto ptrModel = ResourceManager::getReferenceT<Model>(_T("model.dae"));
+  if (ptrModel) {
+    model->createComponent<RenderComponent>(ptrModel);
+    model->createComponent<AABBCollider>(ptrModel->aabb);
+    model->getTransform().setPosition(Vector3D(0.0f, 50.0f, 0.0f));
+    model->getTransform().setScale(Vector3D(100.0f, 100.0f, 100.0f));
+    model->getTransform().setRotation(Vector3D(0.0f, Math::QUARTER_PI*0.5f, 0.0f));
+
+    modelMat = std::make_shared<Material>(_T("ModelMaterial"));
+
+    auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("default_albedo.tga"));
+    auto emissiveTex = ResourceManager::getReferenceT<TextureCore>(_T("default_emissive.tga"));
+    auto metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("default_metallic.tga"));
+    auto normalTex = ResourceManager::getReferenceT<TextureCore>(_T("default_normal.tga"));
+    auto roughnessTex = ResourceManager::getReferenceT<TextureCore>(_T("default_roughness.tga"));
+    modelMat->addProperty(_T("Albedo"), PROPERTY_TYPE::kVec3);
+    modelMat->addProperty(_T("Normal"), PROPERTY_TYPE::kVec3);
+    modelMat->addProperty(_T("Emisivity"), PROPERTY_TYPE::kVec3);
+    modelMat->addProperty(_T("Metallic"), PROPERTY_TYPE::kVec3);
+    modelMat->addProperty(_T("Roughness"), PROPERTY_TYPE::kVec3);
+    modelMat->setTexture(albedoTex, _T("Albedo"));
+    modelMat->setTexture(normalTex, _T("Normal"));
+    modelMat->setTexture(emissiveTex, _T("Emisivity"));
+    modelMat->setTexture(metallicTex, _T("Metallic"));
+    modelMat->setTexture(roughnessTex, _T("Roughness"));
+
+    auto rComp = model->getComponent<RenderComponent>();
+    rComp->getMeshes().front().material = modelMat;
+  }
+  floor = SceneGraph::createObject(_T("Floor"));
+  auto ptrFloor = ResourceManager::getReferenceT<Model>(_T("plane.fbx"));
+  if (ptrFloor) {
+    floor->createComponent<RenderComponent>(ptrFloor);
+    floor->createComponent<AABBCollider>(ptrFloor->aabb);
+    floor->getTransform().setPosition(Vector3D(0.0f, -50.0f, 0.0f));
+    floor->getTransform().setScale(Vector3D(5.0f, 5.0f, 5.0f));
+
+    floorMat = std::make_shared<Material>(_T("FloorMaterial"));
+
+    auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Diffuse.tga"));
+    auto normalTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Normal.tga"));
+    auto emissiveTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Emissive.tga"));
+    auto metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Metallic.tga"));
+    auto roughnessTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Roughness.tga"));
+    floorMat->addProperty(_T("Albedo"), PROPERTY_TYPE::kVec3);
+    floorMat->addProperty(_T("Normal"), PROPERTY_TYPE::kVec3);
+    floorMat->addProperty(_T("Emisivity"), PROPERTY_TYPE::kVec3);
+    floorMat->addProperty(_T("Metallic"), PROPERTY_TYPE::kVec3);
+    floorMat->addProperty(_T("Roughness"), PROPERTY_TYPE::kVec3);
+    floorMat->setTexture(albedoTex, _T("Albedo"));
+    floorMat->setTexture(normalTex, _T("Normal"));
+    floorMat->setTexture(emissiveTex, _T("Emisivity"));
+    floorMat->setTexture(metallicTex, _T("Metallic"));
+    floorMat->setTexture(roughnessTex, _T("Roughness"));
+
+    auto displacementTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Displacement.tga"));
+    auto opacityTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Opacity.tga"));
+    auto specularTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Specular.tga"));
+    auto sscolorTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_SSColor.tga"));
+    auto thicknessTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Thickness.tga"));
+    floorMat->addProperty(_T("Displacement"), PROPERTY_TYPE::kVec3);
+    floorMat->addProperty(_T("Opacity"), PROPERTY_TYPE::kVec3);
+    floorMat->addProperty(_T("Specular"), PROPERTY_TYPE::kVec3);
+    floorMat->addProperty(_T("SSColor"), PROPERTY_TYPE::kVec3);
+    floorMat->addProperty(_T("Thickness"), PROPERTY_TYPE::kVec3);
+    floorMat->setTexture(displacementTex, _T("Displacement"));
+    floorMat->setTexture(opacityTex, _T("Opacity"));
+    floorMat->setTexture(specularTex, _T("Specular"));
+    floorMat->setTexture(sscolorTex, _T("SSColor"));
+    floorMat->setTexture(thicknessTex, _T("Thickness"));
+
+    auto renderComp = floor->getComponent<RenderComponent>();
+    renderComp->getMeshes().front().material = floorMat;
+  }
+
 }
+
+void
+SceneEditor::loadResources() {
+  //ResourceManager::loadResource(_T("Checker.fbx"));
+  ResourceManager::loadResource(_T("Sphere.fbx"));
+  ResourceManager::loadResource(_T("plane.fbx"));
+  //ResourceManager::loadResource(_T("Croc.X"));
+  ResourceManager::loadResource(_T("model.dae"));
+
+  ResourceManager::loadResource(_T("default_albedo.tga"));
+  ResourceManager::loadResource(_T("default_emissive.tga"));
+  ResourceManager::loadResource(_T("default_metallic.tga"));
+  ResourceManager::loadResource(_T("default_normal.tga"));
+  ResourceManager::loadResource(_T("default_roughness.tga"));
+
+  ResourceManager::loadResource(_T("256_Checker_Diffuse.tga"));
+  ResourceManager::loadResource(_T("256_Checker_Displacement.tga"));
+  ResourceManager::loadResource(_T("256_Checker_Emissive.tga"));
+  ResourceManager::loadResource(_T("256_Checker_Metallic.tga"));
+  ResourceManager::loadResource(_T("256_Checker_Normal.tga"));
+  ResourceManager::loadResource(_T("256_Checker_Opacity.tga"));
+  ResourceManager::loadResource(_T("256_Checker_Roughness.tga"));
+  ResourceManager::loadResource(_T("256_Checker_Specular.tga"));
+  ResourceManager::loadResource(_T("256_Checker_SSColor.tga"));
+  ResourceManager::loadResource(_T("256_Checker_Thickness.tga"));
+}
+
 void SceneEditor::update()
 {
   webRenderer.update();
 }
 void SceneEditor::draw()
 {
+  GraphicsAPI::getDepthStencilState(DR_DEPTH_STENCIL_STATES::kDepthRW).set(GraphicsAPI::getDeviceContext(),1.0);
   const float clearColor[4]{ 1,0,1,1 };
   m_RT->clear(GraphicsAPI::getDeviceContext(), clearColor);
   //m_RT->set(GraphicsAPI::getDeviceContext(), GraphicsAPI::getDepthStencil());
   //Draw Scene
+  m_renderMan.draw(*m_RT,*m_RTDPTH);
 
-  //WString buff;
-  //std::vector<byte> bBuff;
-  //buff.resize(m_sceneWidth * m_sceneHeight * 4);
-  //m_RT->getTexture(0).getMemoryBuffer(GraphicsAPI::getDeviceContext(),bBuff);
-  //for (size_t i = 0; i < buff.size(); i++)
-  //{
-  //  buff[i] = bBuff[i];
-  //}
-
-  //////std::cout << std::string("C_UpdateEditor('") + buff + std::string("',") + std::to_string(m_sceneWidth) + std::string(",") + std::to_string(m_sceneHeight) + std::string(");") << std::endl;
-
-  //webRenderer.executeJSCode(WString(_T("C_UpdateEditor('")) +
-  //  buff + WString(_T("',")) +
-  //  std::to_wstring(m_sceneWidth) +
-  //  WString(_T(",")) +
-  //  std::to_wstring(m_sceneHeight) +
-  //  WString(_T(");")));
-
-
-
+  //Draw End
+  GraphicsAPI::getDepthStencilState(DR_DEPTH_STENCIL_STATES::kDepthR).set(GraphicsAPI::getDeviceContext(), 1.0);
   GraphicsAPI::getBackBufferRT().set(GraphicsAPI::getDeviceContext(), GraphicsAPI::getDepthStencil());
-  //GraphicsDriver::API().clear();
   webRenderer.setTexture();
-  GraphicsAPI::getBlendState(DR_BLEND_STATES::kAlphaBlend).set(GraphicsAPI::getDeviceContext());
+  
+  //GraphicsAPI::getBlendState(DR_BLEND_STATES::kAlphaBlend).set(GraphicsAPI::getDeviceContext());
   quad.draw();
-  GraphicsAPI::getBlendState(DR_BLEND_STATES::kOpaque).set(GraphicsAPI::getDeviceContext());
-  //GraphicsDriver::API().swapBuffers();
+  //GraphicsAPI::getBlendState(DR_BLEND_STATES::kOpaque).set(GraphicsAPI::getDeviceContext());
 
-
-
-
+  m_RT->getTexture(0).set(GraphicsAPI::getDeviceContext(), 0);
+  m_editorQuad.draw();
 }
 std::shared_ptr<GameObject> 
 SceneEditor::addGameObject(std::shared_ptr<GameObject> parent, 
@@ -132,32 +330,12 @@ SceneEditor::addGameObject(std::shared_ptr<GameObject> parent,
 }
 void SceneEditor::initCameras()
 {
-  //m_camera = std::make_shared<Camera>(_T("MAIN_CAM"),
-  //  m_viewport);
-
-  //m_camera->createProyection(45.f, 20.f, 3000.f);
-  //m_camera->getTransform().setPosition({ 0.f, 300.0f, -400 });
-  //m_camera->setTarget({ 0.0f, 200.f, 1.0f });
-
-  //m_leftCam = std::make_shared<Camera>(_T("LEFT_CAM"),
-  //  m_viewport);
-
-  //m_leftCam->createProyection(45.f, 0.1f, 10000.f);
-  //m_leftCam->getTransform().setPosition({ -4000.f, 0000.f, 1000.f });
-  //m_leftCam->setTarget({ 0.f, 0.f, 1000.f });
-
-  //m_upCam = std::make_shared<Camera>(_T("UP_CAM"),
-  //  m_viewport);
-
-  //m_upCam->createProyection(45.f, 0.1f, 10000.f);
-  //m_upCam->getTransform().setPosition({ 0.f, 4000.f, 0.f });
-  //m_upCam->setTarget({ 1.f, 1.f, 200.f });
-
-  //m_activeCam = m_leftCam;
 }
 void SceneEditor::initUI()
 {
   quad.init();
+  m_editorQuad.init();
+
   webRenderer.Init(m_viewport.width, m_viewport.height, BROWSER_MODE::kHeadless);
   webRenderer.loadURL("file:///C:/Users/Ulises/Documents/GitHub/Drider-Engine/DriderUIUnitTest/WebixTest/ss.html");
 
@@ -218,13 +396,14 @@ void SceneEditor::initUI()
     //TODO: Search parent name 
     addGameObject(SceneGraph::getRoot(),
       name,
-      { 0, 0, 0 })->getTransform().scale({ 1, 1, 1 });
+      { 0, 0, 0 })->getTransform().scale({ 100, 100, 100 });
 
     webRenderer.executeJSCode("JS_ClearSceneGraphTree();");
     UI_UpdateSceneGraph();
   }));
   webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeSceneGraphNodeSelection", [&](const CefRefPtr<CefListValue>& arguments) {
     TString name = arguments->GetString(1);
+    m_onFocusGMO = name;
     if (name == _T("ROOT_NODE_X")) return;
     auto n = SceneGraph::getRoot()->findNode(name);
     auto pos = n->getTransform().getPosition();
@@ -258,66 +437,170 @@ void SceneEditor::initUI()
       name,
       { 0, 0, 0 })->getTransform().scale({ 1, 1, 1 });
   }));
+
+  //Editor
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_SetSceneAreaViewport", [&](const CefRefPtr<CefListValue>& arguments) {
+    float top = ((float)arguments->GetDouble(1)) / (float)m_viewport.height;
+    top = top * 2.0 - 1.0;
+    top *= -1;
+    float left = (float)arguments->GetDouble(2) / (float)m_viewport.width;
+    left = left * 2.0 - 1.0;
+    float width = (float)arguments->GetDouble(3) /  (float)m_viewport.width;
+    width = Math::abs(width * 2.0 );
+    float height = (float)arguments->GetDouble(4) / (float)m_viewport.height;
+    height = Math::abs(height * 2.0 );
+
+    vertex vertex[4];
+    vertex[0] = { left,  top, 0.9f, 1.0f,    0.5f, 0.5f,0.0f, 1.0f  ,0.0,0.0 };
+    vertex[1] = { left,  top - height, 0.9f, 1.0f,    0.0f, 0.0f,0.0f, 1.0f  ,0.0,1.0 };
+    vertex[2] = { left + width,   top - height,  0.9f,  1.0f,    0.0f, 0.0f,1.0f, 1.0f  ,1.0,1.0 };
+    vertex[3] = { left + width,   top,  0.9f,  1.0f,    0.0f, 1.0f,1.0f, 1.0f  ,1.0,0.0 };
+    m_editorQuad.VB->updateFromBuffer(GraphicsAPI::getDeviceContext(), (byte*)vertex);
+
+    Viewport view;
+    view.width = (Int32)arguments->GetDouble(3);
+    view.height = (Int32)arguments->GetDouble(4);
+    CameraManager::getActiveCamera()->setViewport(view);
+    //m_RT.reset(); //AAAAAAAAAAAAAAAAA
+    //DrTextureDesc backDesc;
+    //backDesc.width = (Int32)arguments->GetDouble(3);
+    //backDesc.height = (Int32)arguments->GetDouble(4);
+    //backDesc.pitch = backDesc.width * 4;
+    //backDesc.Format = DR_FORMAT::kR8G8B8A8_UNORM;
+    //backDesc.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE | DR_BIND_FLAGS::RENDER_TARGET;
+    //backDesc.dimension = DR_DIMENSION::k2D;
+    //backDesc.mipLevels = 0;
+    //backDesc.CPUAccessFlags = 0;
+    //backDesc.genMipMaps = true;
+    //m_RT = dr_gfx_shared(GraphicsAPI::getDevice().createRenderTarget(backDesc, 1));
+
+
+    //m_RTDPTH.reset();
+    //DrDepthStencilDesc depthTextureDesc;
+    //depthTextureDesc.bindFlags = DR_BIND_FLAGS::DEPTH_STENCIL | DR_BIND_FLAGS::SHADER_RESOURCE;
+    //depthTextureDesc.width = (Int32)arguments->GetDouble(3);
+    //depthTextureDesc.height = (Int32)arguments->GetDouble(4);
+    //depthTextureDesc.Format = DR_FORMAT::kD24_UNORM_S8_UINT;
+    //m_RTDPTH = dr_gfx_shared(GraphicsAPI::getDevice().createDepthStencil(depthTextureDesc));
+  }));
+  //components
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_AddRenderComponent", [&](const CefRefPtr<CefListValue>& arguments) {
+    TString type = arguments->GetString(1);
+    auto ptrModel = ResourceManager::getReferenceT<Model>(_T("Sphere.fbx"));
+    auto gmoO = SceneGraph::getRoot()->findNode(m_onFocusGMO);
+    auto rComp = gmoO->createComponent<RenderComponent>(ptrModel);
+    gmoO->createComponent<AABBCollider>(ptrModel->aabb);
+
+    rComp->getMeshes().front().material = modelMat;
+    webRenderer.executeJSCode("JS_ClearPropertySheetUI();");
+    UI_UpdatePropertySheet(*gmoO);
+  }));
+
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeXPos", [&](const CefRefPtr<CefListValue>& arguments) {
+    float val = arguments->GetDouble(1);
+    auto gmoO = SceneGraph::getRoot()->findNode(m_onFocusGMO);
+    auto pos = gmoO->getTransform().getPosition();
+    pos.x = val;
+    gmoO->getTransform().setPosition(pos);
+  }));
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeYPos", [&](const CefRefPtr<CefListValue>& arguments) {
+    float val = arguments->GetDouble(1);
+    auto gmoO = SceneGraph::getRoot()->findNode(m_onFocusGMO);
+    auto pos = gmoO->getTransform().getPosition();
+    pos.y = val;
+    gmoO->getTransform().setPosition(pos);
+  }));
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeZPos", [&](const CefRefPtr<CefListValue>& arguments) {
+    float val = arguments->GetDouble(1);
+    auto gmoO = SceneGraph::getRoot()->findNode(m_onFocusGMO);
+    auto pos = gmoO->getTransform().getPosition();
+    pos.z = val;
+    gmoO->getTransform().setPosition(pos);
+  }));
+
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeXScale", [&](const CefRefPtr<CefListValue>& arguments) {
+    float val = arguments->GetDouble(1);
+    auto gmoO = SceneGraph::getRoot()->findNode(m_onFocusGMO);
+    auto sc = gmoO->getTransform().getScale();
+    sc.x = val;
+    gmoO->getTransform().setScale(sc);
+  }));
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeYScale", [&](const CefRefPtr<CefListValue>& arguments) {
+    float val = arguments->GetDouble(1);
+    auto gmoO = SceneGraph::getRoot()->findNode(m_onFocusGMO);
+    auto sc = gmoO->getTransform().getScale();
+    sc.y = val;
+    gmoO->getTransform().setScale(sc);
+  }));
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeZScale", [&](const CefRefPtr<CefListValue>& arguments) {
+    float val = arguments->GetDouble(1);
+    auto gmoO = SceneGraph::getRoot()->findNode(m_onFocusGMO);
+    auto sc = gmoO->getTransform().getScale();
+    sc.z = val;
+    gmoO->getTransform().setScale(sc);
+  }));
+
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeXRot", [&](const CefRefPtr<CefListValue>& arguments) {
+    float val = arguments->GetDouble(1);
+    auto gmoO = SceneGraph::getRoot()->findNode(m_onFocusGMO);
+    auto rot = gmoO->getTransform().getEulerAngles();
+    rot.x = val;
+    gmoO->getTransform().setRotation(rot);
+  }));
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeYRot", [&](const CefRefPtr<CefListValue>& arguments) {
+    float val = arguments->GetDouble(1);
+    auto gmoO = SceneGraph::getRoot()->findNode(m_onFocusGMO);
+    auto rot = gmoO->getTransform().getEulerAngles();
+    rot.y = val;
+    gmoO->getTransform().setRotation(rot);
+  }));
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeZRot", [&](const CefRefPtr<CefListValue>& arguments) {
+    float val = arguments->GetDouble(1);
+    auto gmoO = SceneGraph::getRoot()->findNode(m_onFocusGMO);
+    auto rot = gmoO->getTransform().getEulerAngles();
+    rot.z = val;
+    gmoO->getTransform().setRotation(rot);
+  }));
+  
+  
+
 }
 void SceneEditor::initSceneGraph()
 {
   //n->getParent()->addChild(l);
-  auto root = SceneGraph::getRoot();
+  //auto root = SceneGraph::getRoot();
 
-   addGameObject(root,
-    _T("Quad"),
-    { 50, 300, 200 })->getTransform().scale({ 40, 40, 40 });
+  // addGameObject(root,
+  //  _T("Quad"),
+  //  { 50, 300, 200 })->getTransform().scale({ 40, 40, 40 });
 
-  addGameObject(root,
-    _T("Quad2"),
-    { 50, 300, 200 })->getTransform().scale({ 40, 40, 40 });
+  //addGameObject(root,
+  //  _T("Quad2"),
+  //  { 50, 300, 200 })->getTransform().scale({ 40, 40, 40 });
 
-  addGameObject(root,
-    _T("Quad3"),
-    { 50, 300, 200 })->getTransform().scale({ 40, 40, 40 });
+  //addGameObject(root,
+  //  _T("Quad3"),
+  //  { 50, 300, 200 })->getTransform().scale({ 40, 40, 40 });
 
-  addGameObject(SceneGraph::getRoot()->getChild(_T("Quad")),
-    _T("Quad4_child"),
-    { 50, 300, 200 })->getTransform().scale({ 40, 40, 40 });
+  //addGameObject(SceneGraph::getRoot()->getChild(_T("Quad")),
+  //  _T("Quad4_child"),
+  //  { 50, 300, 200 })->getTransform().scale({ 40, 40, 40 });
 
-  addGameObject(SceneGraph::getRoot()->getChild(_T("Quad"))->getChild(_T("Quad4_child")),
-    _T("Quad5_child"),
-    { 50, 300, 200 })->getTransform().scale({ 40, 40, 40 });
+  //addGameObject(SceneGraph::getRoot()->getChild(_T("Quad"))->getChild(_T("Quad4_child")),
+  //  _T("Quad5_child"),
+  //  { 50, 300, 200 })->getTransform().scale({ 40, 40, 40 });
 
-  ResourceManager::loadResource(_T("Sphere.fbx"));
-  ResourceManager::loadResource(_T("montiBehavior.as"));
-  auto sphereMod = ResourceManager::getReferenceT<Model>(_T("Sphere.fbx"));
-  auto script = ResourceManager::getReferenceT<ScriptCore>(_T("montiBehavior.as"));
+  //ResourceManager::loadResource(_T("Sphere.fbx"));
+  //ResourceManager::loadResource(_T("montiBehavior.as"));
+  //auto sphereMod = ResourceManager::getReferenceT<Model>(_T("Sphere.fbx"));
+  //auto script = ResourceManager::getReferenceT<ScriptCore>(_T("montiBehavior.as"));
 
-  root->findNode(_T("Quad"))->createComponent<RenderComponent>(sphereMod);
-  root->findNode(_T("Quad"))->createComponent<RenderComponent>(sphereMod);
+  //root->findNode(_T("Quad"))->createComponent<RenderComponent>(sphereMod);
+  //root->findNode(_T("Quad"))->createComponent<RenderComponent>(sphereMod);
  // root->findNode(_T("Quad"))->createComponent<ScriptComponent>(script);
 }
 void SceneEditor::sceneResized()
 {
-  m_RT.release();
-  DrTextureDesc backDesc;
-  backDesc.width = m_sceneWidth;
-  backDesc.height = m_sceneHeight;
-  backDesc.pitch = backDesc.width * 4;
-  backDesc.Format = DR_FORMAT::kR8G8B8A8_UNORM;
-  backDesc.CPUAccessFlags = DR_CPU_ACCESS_FLAG::drRead;
-  m_RT = dr_gfx_unique(GraphicsAPI::getDevice().createRenderTarget(backDesc, 1));
-
-  WString buff;
-  buff.resize(m_sceneWidth * m_sceneHeight * 4);
-  UInt8 val = 255;
-  for (size_t i = 0; i < buff.size(); i++)
-  {
-    buff[i] = 255;
-  }
-  //std::cout << std::string("C_UpdateEditor('") + buff + std::string("',") + std::to_string(m_sceneWidth) + std::string(",") + std::to_string(m_sceneHeight) + std::string(");") << std::endl;
-  webRenderer.executeJSCode(WString(_T("C_UpdateEditor('")) +
-                            buff + WString(_T("',")) +
-                            std::to_wstring(m_sceneWidth) + 
-                            WString(_T(",")) +
-                            std::to_wstring(m_sceneHeight) +
-                            WString(_T(");")));
 }
 
 void SceneEditor::UI_UpdateSceneGraph()
@@ -353,16 +636,22 @@ void SceneEditor::UI_UpdatePropertySheet(const GameObject& obj)
   auto components = ncnst.getComponents<RenderComponent>();
   for (auto &it : components) {
     webRenderer.executeJSCode(WString(_T("JS_AddComponent_Render('")) +
-      it->getName() + TString(_T("','")) + _T("ModelName")+
+      it->getName() + TString(_T("','")) + it->getModel().lock()->getName() +
       WString(_T("');")));
   }
 
   auto scriptComponents = ncnst.getComponents<ScriptComponent>();
   for (auto &it : scriptComponents) {
     webRenderer.executeJSCode(WString(_T("JS_AddComponent_Script('")) +
-      it->getName() + TString(_T("','")) + _T("ScripthPath")+
+      it->getName() + TString(_T("','")) + it->getGameObject().getName() +
       WString(_T("');")));
   }
+}
+
+void driderSDK::SceneEditor::destroy()
+{
+  m_renderMan.exit();
+  webRenderer.Destroy();
 }
 
 }

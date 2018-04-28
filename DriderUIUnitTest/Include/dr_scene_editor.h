@@ -14,6 +14,9 @@
 
 #include <dr_web_renderer.h>
 #include <dr_quad.h>
+
+#include <dr_renderman.h>
+#include <dr_depth_stencil.h>
 namespace driderSDK {
 class SceneEditor {
 public:
@@ -40,11 +43,12 @@ private:
   void initCameras();
   void initUI();
   void initSceneGraph();
-
+  void loadResources();
   void sceneResized();
 
   void UI_UpdateSceneGraph();
   void UI_UpdatePropertySheet(const GameObject& obj);
+
 
   //QUERY_ORDER::E m_queryOrder;
 
@@ -57,8 +61,24 @@ private:
   std::shared_ptr<GameObject> m_joker;
 
 
-  GFXUnique<RenderTarget> m_RT;
+  GFXShared<RenderTarget> m_RT;
+  GFXShared<DepthStencil> m_RTDPTH;
+
   WebRenderer webRenderer;
   Quad quad;
+  Quad m_editorQuad;
+
+
+  RenderMan m_renderMan;
+  SceneGraph::SharedGameObject model;
+  std::shared_ptr<Material> modelMat;
+  SceneGraph::SharedGameObject floor;
+  std::shared_ptr<Material> floorMat;
+
+  Vector3D modelMovement;
+  std::array<Light, 128> Lights;
+
+
+  TString m_onFocusGMO;
 };
 }

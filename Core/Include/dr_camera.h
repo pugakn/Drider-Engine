@@ -101,7 +101,7 @@ class DR_CORE_EXPORT Camera
 
 	/**
 	* TEST::createProyection
-	* Creates the camera's proyection matrix
+	* Creates the camera's perspective proyection matrix
 	*
 	* @param fov
 	*   Vision angle in degrees.
@@ -114,6 +114,28 @@ class DR_CORE_EXPORT Camera
 	*/
 	void
 	createProyection(float fov,
+									 float nearPlane,
+									 float farPlane);
+
+  /**
+	* TEST::createProyection
+	* Creates the camera's orthogonal proyection matrix
+	*
+	* @param width
+	*   Width vision.
+  *
+  * @param height
+  *   Height hision.
+	*
+	* @param nearPlane
+	*   Value of the closest plane of the proyection.
+	*
+	* @param farPlane
+	*   Value of the farthest plane of the proyection.
+	*/
+	void
+	createProyection(float width,
+                   float height,
 									 float nearPlane,
 									 float farPlane);
 
@@ -202,6 +224,17 @@ class DR_CORE_EXPORT Camera
   float
   getFOV() const;
 
+  UInt32
+  getViewportWidth() const;
+
+  UInt32
+  getViewportHeight() const;
+
+
+  Vector3D
+  getDirection() const;
+
+  //BEGINING_REGISTER(Camera)
   BEGINING_REGISTER(Camera, sizeof(Camera), VALUE_FLAGS)
   
   REGISTER_CONSTRUC_DESTRUCT(Camera)

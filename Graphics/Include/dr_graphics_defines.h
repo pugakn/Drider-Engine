@@ -423,19 +423,19 @@ struct DR_GRAPHICS_EXPORT DrSampleDesc {
   float minLOD;
   float maxLOD;
   DrSampleDesc() {
-    Filter = DR_TEXTURE_FILTER::kANISOTROPIC;
+    Filter = DR_TEXTURE_FILTER::kMIN_MAG_LINEAR_MIP_POINT;
     addressU = DR_TEXTURE_ADDRESS::kClamp;
     addressV = DR_TEXTURE_ADDRESS::kClamp;
     addressW = DR_TEXTURE_ADDRESS::kClamp;
     mipLODBias = 0;
-    mipLODBias = 1;
-    comparisonFunc = DR_COMPARISON_FUNC::kGREATER;
+    comparisonFunc = DR_COMPARISON_FUNC::kNEVER;
     borderColor[0] = 0;
     borderColor[1] = 0;
     borderColor[2] = 0;
     borderColor[3] = 0;
     minLOD = 0;
-    maxLOD = 0;
+    maxLOD = 0;//3.402823466e+38F;
+    maxAnisotropy = 1.0;
   }
 };
 
