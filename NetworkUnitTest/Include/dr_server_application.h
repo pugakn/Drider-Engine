@@ -1,7 +1,7 @@
 #pragma once
 
 #include <dr_application.h>
-
+#include <dr_udp_socket.h>
 #include "dr_network_prerequisites.h"
 
 namespace driderSDK {
@@ -15,6 +15,7 @@ private:
   virtual void postUpdate() override;
   virtual void postRender() override;
   virtual void postDestroy() override;
+  UDPSocket m_socket;
 };
 
 }

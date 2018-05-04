@@ -33,23 +33,54 @@ class DR_NETWORK_EXPORT UDPSocket
    void
    destroy();
 
+   /**
+   * Tests if the socket is on a valid state.
+   *
+   * @return 
+   *   True if the socket is valid, false otherwise.
+   */
+   bool
+   isValid();
+
+   /**
+   * Retreives the handle for the socket
+   * 
+   * @return
+   *   The handle of the socket.
+   */
+   SocketHandle
+   getHandle();
+  
+   /**
+   * Sets the mode of the socket.
+   */
    void 
    setBlocking(bool blocking);
 
+   /**
+   * Binds the socket to a specific port and address. 
+   * Used only by the server receiver socket.
+   * 
+   * @param port
+   *  The port of the server.
+   *
+   * @param ipAddress 
+   *  The address of the server.
+   */
    void 
    bind(UInt16 port, const String& ipAddress);
 
-   void
+   bool
    send(const DataBuffer& data, UInt16 port, const String& ipAddress);
 
-   void 
+   bool 
    send(const Packet& packet, UInt16 port, const String& ipAddress);
 
-   void
-   receive(DataBuffer& buffer, UInt16 port, const String& ipAddress);
+   Int32
+   receive(DataBuffer& buffer, UInt16& port, String& ipAddress);
 
-   void
-   receive(Packet& packet, UInt16 port, const String& ipAddress);
+   Int32
+   receive(Packet& packet, Int32 maxBuffSize, UInt16& port, String& ipAddress);
  private:
    bool m_blocking;
    SocketHandle m_handle;

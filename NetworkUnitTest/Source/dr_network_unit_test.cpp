@@ -18,11 +18,11 @@ int main(int argc, char* argv[]) {
   std::unique_ptr<Application> app;
 
   if (opc == 1) {
-    app = dr_make_unique<ServerApplication>();
+    app = dr_make_unique<driderSDK::ServerApplication>();
     std::cout << "Initializing as Server." << std::endl;
   }
   else {
-    app = dr_make_unique<ClientApplication>();
+    app = dr_make_unique<driderSDK::ClientApplication>();
     std::cout << "Initializing as Client" << std::endl;
   }   
 

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <atomic>
-#include <dr_graphics_api.h>
 #include <dr_memory.h>
 #include "dr_core_prerequisites.h"
 #include "dr_viewport.h"

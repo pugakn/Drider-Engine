@@ -1,4 +1,5 @@
 #include "dr_packet.h"
+#include <iterator>
 
 namespace driderSDK {
 
@@ -16,6 +17,18 @@ Packet::addData(const void* data, SizeT dataSize) {
     auto dataP = static_cast<const Int8*>(data);
 
     m_data.insert(m_data.end(), dataP, dataP + dataSize);
+  }
+}
+
+void 
+Packet::addData(std::vector<Int8>&& data) {
+  if (m_data.empty()) {
+    m_data = std::move(data);
+  }
+  else {
+    m_data.reserve(m_data.size() + data.size());
+    std::move(m_data.begin(), m_data.end(), std::back_inserter(m_data));
+    data.clear();
   }
 }
 

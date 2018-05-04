@@ -4,7 +4,7 @@
 
 #ifdef DR_PLATFORM_WINDOWS
 
-#include <Windows.h>
+#include <WinSock2.h>
 
 #endif
 

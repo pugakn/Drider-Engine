@@ -17,6 +17,9 @@ class DR_NETWORK_EXPORT Packet
   void 
   addData(const void* data, SizeT dataSize);
 
+  void
+  addData(std::vector<Int8>&& data);
+  
   template<class T>
   Packet& 
   operator<<(const T& data)
