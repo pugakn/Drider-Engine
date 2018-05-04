@@ -16,6 +16,7 @@ private:
   virtual void postRender() override;
   virtual void postDestroy() override;
   UDPSocket m_socket;
+  UInt32 m_tick;
 };
 
 }

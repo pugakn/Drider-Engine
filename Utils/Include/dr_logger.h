@@ -25,7 +25,9 @@ class DR_UTIL_EXPORT Logger : public Module<Logger>
   *
   * Default constructor.
   */
-  Logger() {};
+  Logger(const TString& _filePath = _T("../Docs/Logger/logger.html"))
+    : m_filePath(_filePath)
+  {}
 
   /**
   * TEST::defaultDestructor
@@ -33,7 +35,7 @@ class DR_UTIL_EXPORT Logger : public Module<Logger>
   * Default destructor.
   */
   virtual
-  ~Logger() {};
+  ~Logger() {}
 
   /**
   * TEST::reset

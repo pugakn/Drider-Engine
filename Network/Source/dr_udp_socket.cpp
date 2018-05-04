@@ -81,7 +81,7 @@ UDPSocket::send(const DataBuffer& data,
     sendBytes = sendto(m_handle, 
                        reinterpret_cast<const char*>(data.data()), 
                        static_cast<int>(data.size()), 
-                       MSG_DONTROUTE,
+                       0,
                        (sockaddr*)&server,
                        sizeof(server));
   }
@@ -112,7 +112,7 @@ UDPSocket::receive(DataBuffer& buffer,
     received = recvfrom(m_handle, 
                         reinterpret_cast<char*>(buffer.data()), 
                         static_cast<int>(buffer.size()),
-                        MSG_PEEK,
+                        0,
                         (sockaddr*)&sender,
                         &senderSAS);
   }
@@ -129,7 +129,7 @@ UDPSocket::receive(DataBuffer& buffer,
               const_cast<char*>(ipAddress.c_str()), 
               ipAddress.size());
 
-    port = (sender.sin_port);
+    port = ntohs(sender.sin_port);
 
     if (static_cast<Int32>(buffer.size()) < received) {
       //DR_ASSERT(0);
