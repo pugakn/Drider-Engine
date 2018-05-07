@@ -301,6 +301,9 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
       delete this;
   }
 
+  GameObject&
+  operator=(GameObject& ref);
+
   static BEGINING_REGISTER(GameObject, 0, asOBJ_REF)
 
   result = scriptEngine->m_scriptEngine->RegisterObjectBehaviour("GameObject",
@@ -321,11 +324,13 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
                                                                  asCALL_THISCALL);
 
   result = scriptEngine->m_scriptEngine->RegisterObjectMethod("GameObject",
-                                                              "GameObject@ findObject(string& in)",
+                                                              "GameObject@ findObject(const string& in)",
                                                               asMETHODPR(GameObject, findObject, (const TString&), GameObject*),
                                                               asCALL_THISCALL);
+  result = REGISTER_OP(GameObject, operator=, opEqual, GameObject&, GameObject&, "GameObject@", in)
 
   END_REGISTER  
+
  private:
 
   friend GameComponent;

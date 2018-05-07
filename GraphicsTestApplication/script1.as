@@ -1,11 +1,13 @@
 class script1 : MontiBehavior {
 
+	float timer;
+	GameObject Floor;
+
 	void Start() {
 		Print("Start\n");
-		//Object.findOBject("Floor");
-	}
 		
-	float timer;
+		//Object.findObject("Floor");
+	}
 
 	void Update() {
 		Vector3D vec(100.0 * getDelta(),0.0,0.0);

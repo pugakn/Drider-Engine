@@ -9,7 +9,7 @@ Variables:
 
 - 8,3 -
     0   7 *    SUSPEND
-    1   7 *    PGA      251029400
+    1   7 *    PGA      231368368
     3   8 *    PSF      v7
     4   9 *    CALLSYS  20           (string::string(const string&in))
                ObjInfo  v7, 1

@@ -96,11 +96,11 @@ ScriptComponent::start() {
                                   &m_gameObject.getTransform(),
                                   obj);
 
-  //scriptEngine->setObjectToScript(type,
-  //                                _T("void SetGameObject(GameObject@ object)"),
-  //                                1,
-  //                                &SceneGraph::getRoot(),
-  //                                obj);
+  scriptEngine->setObjectToScript(type,
+                                  _T("void SetGameObject(GameObject@ object)"),
+                                  0,
+                                  &SceneGraph::getRoot(),
+                                  obj);
 
   scriptEngine->executeFunction(_T("void Start()"),
                                 type,

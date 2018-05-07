@@ -7,5 +7,5 @@ Variables:
 
 
     0   0 *    PshVPtr  v0
-    1   1 *    CALL     106           (MontiBehavior::MontiBehavior())
+    1   1 *    CALL     107           (MontiBehavior::MontiBehavior())
     3   0 *    RET      1

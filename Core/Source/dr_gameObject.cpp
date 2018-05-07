@@ -322,6 +322,7 @@ GameObject::findNode(const TString & nodeName) {
 GameObject*
 GameObject::findObject(const TString& nodeName) {
   auto gO = findNode(nodeName);
+  gO->addRef();
   return gO.get();
 }
 
@@ -365,6 +366,23 @@ GameObject::createInstance() {
 bool 
 ComponentPartition::operator()(const std::unique_ptr<GameComponent>& l) const {
   return static_cast<bool>(dynamic_cast<ScriptComponent*>(l.get()));
+}
+
+GameObject&
+GameObject::operator=(GameObject& ref) {
+  /*auto obj = ref.clone();
+  this->m_change = obj->m_change;
+  this->m_children = obj->m_children;
+  this->m_componentNames = obj->m_componentNames;
+  this->m_components = obj->m_components;
+  this->m_componentsToRemove = obj->m_componentsToRemove;
+  this->m_destroyed = obj->m_destroyed;
+  this->m_finalTransform = obj->m_finalTransform;
+  this->m_isStatic = obj->m_isStatic;
+  this->m_localTransform = obj->m_localTransform;
+  this->m_parent = obj->m_parent;
+  this->m_tag = obj->m_tag;*/
+  return *this;
 }
 
 }

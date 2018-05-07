@@ -284,7 +284,7 @@ TestApplication::initScriptEngine() {
   result = vector.registerFunctions(scriptEngine);
   Transform transform;
   result = transform.registerFunctions(scriptEngine);
-  GameObject::registerFunctions(scriptEngine);
+  result = GameObject::registerFunctions(scriptEngine);
   
   result = Time::registerFunctions(scriptEngine);
 
@@ -308,18 +308,26 @@ TestApplication::initScriptEngine() {
                           _T("GameModule"));
 
   //Add script component to the objects and add script sections of the scripts
-  playerScript = m_player->createComponent<ScriptComponent>(Script1);
-  //playerScript = m_player->createComponent<ScriptComponent>(Script2);
+  auto playerScript = m_player->createComponent<ScriptComponent>(Script1);
+  m_scripts.insert({_T("script1"), playerScript});
+
+  playerScript = m_player->createComponent<ScriptComponent>(Script2);
+  m_scripts.insert({ _T("script2"), playerScript });
 
   //Build module
   auto currentModule = scriptEngine->m_scriptEngine->GetModule("GameModule");
   result = currentModule->Build();
 
+  //SceneGraph::instance().getRoot()->findObject(_T("Floor"));
+
   //Initialize scripts
-  playerScript->initScript();
+  m_scripts.find(_T("script1"))->second->initScript();
+  m_scripts.find(_T("script2"))->second->initScript();
 
   //Start the script
-  playerScript->start();
+  m_scripts.find(_T("script1"))->second->start();
+  m_scripts.find(_T("script2"))->second->start();
+
 
 }
 
