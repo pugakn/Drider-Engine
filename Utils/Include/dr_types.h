@@ -46,16 +46,19 @@ namespace driderSDK {
 
 using String = std::basic_string<ANSIChar>;
 using WString = std::basic_string<UNIChar>;
-
+using OStringstream = std::basic_ostringstream<ANSIChar>;
+using WOStringstream = std::basic_ostringstream<UNIChar>;
 
 
 #ifdef _UNICODE
   using TString  = WString;
   using TChar = UNIChar;
+	using TOStringstream = WOStringstream;
 #define _T(src) L##src
 #else
   using TString = String;
   using TChar = ANSIChar;
+	using TOStringstream = OStringstream;
 #define _T(src) src
 #endif
 

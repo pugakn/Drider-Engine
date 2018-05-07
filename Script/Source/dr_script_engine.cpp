@@ -15,8 +15,8 @@ unsigned long g_timeout;
 
 
 void stringPrint_g(asIScriptGeneric* gen) {
-	String *str = (String*)gen->GetArgAddress(0);
-	std::wcout << StringUtils::toTString(*str);
+	TString *str = (TString*)gen->GetArgAddress(0);
+	std::wcout << *str;
 }
 
 ScriptEngine::ScriptEngine() {
@@ -40,15 +40,15 @@ ScriptEngine::createEngine() {
 
 	// Register string type
 
-	RegisterStdString(m_scriptEngine);
-	//RegisterTString(m_scriptEngine);
+	//RegisterStdString(m_scriptEngine);
+	registerTString(m_scriptEngine);
 
 	// Register the functions that the scripts will be allowed to use.
-	result = m_scriptEngine->RegisterGlobalFunction("void Print(string &in)",
+	result = m_scriptEngine->RegisterGlobalFunction("void Print(TString &in)",
 																									asFUNCTION(stringPrint_g), 
 																									asCALL_GENERIC);
 
-	Debug = new ScriptDebug;
+//	Debug = new ScriptDebug;
 	return result;
 }
 
