@@ -6,6 +6,8 @@
 #include <dr_camera_manager.h>
 #include <dr_depth_stencil.h>
 
+#include <dr_texture_core.h>
+
 namespace driderSDK {
 
 RenderMan::RenderMan() {
@@ -18,6 +20,24 @@ void
 RenderMan::init() {
   Device& dc = GraphicsAPI::getDevice();
 
+  ResourceManager::loadResource(_T("GraceCubemap.tga"));
+  auto CmR = ResourceManager::getReferenceT<TextureCore>(_T("GraceCubemap.tga"));
+
+
+  DrTextureDesc cubeMapDesc;
+  cubeMapDesc.width = 256;
+  cubeMapDesc.height = 256;
+  cubeMapDesc.pitch = 256 * 4;
+  cubeMapDesc.dimension = DR_DIMENSION::kCUBE_MAP;
+  cubeMapDesc.Format = DR_FORMAT::kB8G8R8A8_UNORM_SRGB;
+  cubeMapDesc.mipLevels = 0;
+  cubeMapDesc.CPUAccessFlags = 0;
+  cubeMapDesc.genMipMaps = true;
+  cubeMapDesc.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE;
+  cubeMapDesc.dimension = DR_DIMENSION::kCUBE_MAP;
+
+  //dc.createTextureFromMemory(, cubeMapDesc);
+
   screenWidth = 1280;
   screenHeight = 720;
 
@@ -29,7 +49,25 @@ RenderMan::init() {
   //m_vec3DirectionalLight = Vector3D(0.0f, -10000.0f, 0.1f).normalize();
   //m_vec3DirectionalLight = Vector3D(-1.0f, -1.0f, -1.0f).normalize();
   m_fDepth = 10000.0f;
-  m_bFitToFrustrum = true;
+  m_bFitToScene = false;
+  partitions = calculatePartitions(m_szActiveShadowCameras);
+  std::shared_ptr<Camera> mainCam = CameraManager::getActiveCamera();
+  float fViewportWidth = mainCam->getViewportWidth();
+  float fViewportHeight = mainCam->getViewportHeight();
+  float fNearPlane = mainCam->getNearPlane();
+  float fFarPlane = mainCam->getFarPlane();
+  float fFov = mainCam->getFOV();
+  for (size_t i = 0; i < m_szActiveShadowCameras; ++i) {
+    m_ShadowSubFrustras[i] = frustrumSphere(fViewportWidth,
+                                            fViewportHeight,
+                                            Math::lerp(fNearPlane,
+                                                       fFarPlane,
+                                                       partitions[m_bFitToScene ? 0 : i]),
+                                            Math::lerp(fNearPlane,
+                                                       fFarPlane,
+                                                       partitions[i + 1]),
+                                            fFov);
+  }
 
   GBufferTexDesc.width = screenWidth;
   GBufferTexDesc.height = screenHeight;
@@ -42,7 +80,7 @@ RenderMan::init() {
   GBufferTexDesc.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE |
                              DR_BIND_FLAGS::RENDER_TARGET;
 
-  m_RTGBuffer      = dr_gfx_shared(dc.createRenderTarget(GBufferTexDesc, 3));
+  m_RTGBuffer       = dr_gfx_shared(dc.createRenderTarget(GBufferTexDesc, 3));
   m_RTSSAO          = dr_gfx_shared(dc.createRenderTarget(GBufferTexDesc, 1));
   m_RTSSAOInitBlur  = dr_gfx_shared(dc.createRenderTarget(GBufferTexDesc, 1));
   m_RTSSAOFinalBlur = dr_gfx_shared(dc.createRenderTarget(GBufferTexDesc, 1));
@@ -69,6 +107,7 @@ RenderMan::init() {
   m_VerBlurDSoptions  = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
   m_ShadowDSoptions   = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
 
+  ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
   ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
 
   Viewport vp;
@@ -184,65 +223,52 @@ RenderMan::updateShadowCameras() {
   m_szActiveShadowCameras = Math::clamp(m_szActiveShadowCameras,
                                         static_cast<size_t>(1),
                                         static_cast<size_t>(4));
-  partitions = calculatePartitions(m_szActiveShadowCameras);
 
   std::shared_ptr<Camera> mainCam = CameraManager::getActiveCamera();
-  float fViewportWidth = mainCam->getViewportWidth();
-  float fViewportHeight = mainCam->getViewportHeight();
-  float fNearPlane = mainCam->getNearPlane();
-  float fFarPlane = mainCam->getFarPlane();
-  float fFov = mainCam->getFOV();
 
-  std::pair<Vector3D, float> subFrustraSphere;
   float SphereRad;
 
   Vector3D TrueCenter;
   Vector3D CamPos = mainCam->getPosition();
   Vector3D CamDir = mainCam->getDirection();
-  //printf("CamPos: %f, %f, %f\n", CamPos.x, CamPos.y, CamPos.z);
-  //printf("CamDir: %f, %f, %f\n", CamDir.x, CamDir.y, CamDir.z);
   
   for (size_t i = 0; i < m_szActiveShadowCameras; ++i) {
-    subFrustraSphere = frustrumSphere(fViewportWidth,
-                                      fViewportHeight,
-                                      Math::lerp(fNearPlane,
-                                                 fFarPlane,
-                                                 partitions[i]),
-                                      Math::lerp(fNearPlane,
-                                                 fFarPlane,
-                                                 partitions[i + 1]),
-                                      fFov);
-    SphereRad = subFrustraSphere.second;
+    SphereRad = m_ShadowSubFrustras[i].second;
     
-    TrueCenter = CamPos + (CamDir * subFrustraSphere.first.z);
+    TrueCenter = CamPos + (CamDir * m_ShadowSubFrustras[i].first.z);
 
-    m_vecGos[i]->getTransform().setPosition(TrueCenter - m_vec3DirectionalLight);
-
-    m_vecShadowCamera[i]->setPosition(TrueCenter +
-                                      (m_vec3DirectionalLight * SphereRad) -
-                                      (m_vec3DirectionalLight * m_fDepth));
+    m_vecShadowCamera[i]->setPosition(TrueCenter - (m_vec3DirectionalLight * Math::max(m_fDepth, SphereRad)));
     m_vecShadowCamera[i]->setTarget(TrueCenter);
     m_vecShadowCamera[i]->createProyection(Math::ceil(SphereRad * 2.0f),
                                            Math::ceil(SphereRad * 2.0f),
                                            0.1f,
-                                           m_fDepth);
+                                           //m_fDepth + SphereRad);
+                                           Math::max(m_fDepth, SphereRad) + SphereRad);
   }
 }
 
 std::vector<float>
-RenderMan::calculatePartitions(size_t cuts) {
-  float fLinearValue = 0.0f,
-        fLnValue = 0.0f,
+RenderMan::calculatePartitions(SizeT cuts) {
+  float fProportion = 0.0f,
+        fLinearValue = 0.0f,
+        fPwValue = 0.0f,
         fRealValue = 0.0f;
 
   std::vector<float> realValues;
 
-  for (size_t i = 0; i < cuts + 1; ++i) {
-    fLinearValue = (float)i / cuts;
-    //fLnValue = log(1.0f + ((float)i / cuts));
-    fLnValue = Math::pow((float)i / cuts, 2.0f);
-    fRealValue = Math::lerp(fLnValue, fLinearValue, fLinearValue);
+  for (SizeT i = 0; i < cuts + 1; ++i) {
+    fProportion = (float)i / cuts;
 
+    //fLinearValue = fProportion;
+    //fPwValue = Math::pow(fProportion, 2.0f);
+    //fRealValue = Math::lerp(fPwValue, fLinearValue, fProportion);
+
+    fLinearValue = Math::pow(fProportion, 2.0f);
+    fPwValue = Math::pow(fProportion, 6.0f);
+    fRealValue = Math::lerp(fLinearValue, fPwValue, fProportion);
+    
+    //realValues.push_back(fLinearValue);
+    //realValues.push_back(fPwValue);
     realValues.push_back(fRealValue);
   }
   return realValues;

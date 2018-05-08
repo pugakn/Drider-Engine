@@ -145,21 +145,21 @@ ShadowPass::merge(std::array<GFXShared<RenderTarget>, 4> m_RTShadowDummy,
                   GFXShared<RenderTarget> OutRt) {
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
+  OutRt->set(dc, *dsOptions);
+
   m_ShaderVMerge->set(dc);
   m_ShaderFMerge->set(dc);
-
-  m_RTShadowDummy[3]->getTexture(0).set(dc, 0);
-  m_RTShadowDummy[1]->getTexture(0).set(dc, 1);
-  m_RTShadowDummy[2]->getTexture(0).set(dc, 2);
-  m_RTShadowDummy[3]->getTexture(0).set(dc, 3);
 
   m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kFragment);
 
   m_inputLayout->set(dc);
 
-  OutRt->set(dc, *dsOptions);
-
   dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
+
+  m_RTShadowDummy[0]->getTexture(0).set(dc, 0);
+  m_RTShadowDummy[1]->getTexture(0).set(dc, 1);
+  m_RTShadowDummy[2]->getTexture(0).set(dc, 2);
+  m_RTShadowDummy[3]->getTexture(0).set(dc, 3);
 
   const float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
   OutRt->clear(dc, clearColor);

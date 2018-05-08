@@ -34,13 +34,13 @@ FS(PS_INPUT input) {
 	
 	float4 albedo   = AlbedoTex.Sample(SS, uv);
   float4 emmisive = EmissiveTex.Sample(SS, uv);
-  float3 normal   = normalize(2.0f * NormalTex.Sample(SS, uv).xyz - 1.0f);
+  float3 normal   = normalize((2.0f * NormalTex.Sample(SS, uv).xyz) - 1.0f);
   normal = normalize(mul(normal, input.TBN));
   
   float metalic   = Metallic.Sample(SS, uv).r;
   float roughness = Roughness.Sample(SS, uv).r;
 	
-  output.PosNorm    = float4(normal, input.RealPos.z / input.RealPos.w);
+  output.PosNorm    = float4(normal, input.RealPos.x);
   output.Albedo_M   = float4(albedo.xyz, metalic);
   output.Emissive_R = float4(emmisive.xyz, roughness);
   

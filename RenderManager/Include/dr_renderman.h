@@ -8,6 +8,8 @@
 #include "dr_HorBlur.h"
 #include "dr_VerBlur.h"
 
+#include <dr_texture.h>
+
 namespace driderSDK {
 
 /*
@@ -55,6 +57,7 @@ class DR_RENDERMAN_EXPORT RenderMan {
   UInt32 screenWidth;
   UInt32 screenHeight;
  protected:
+  std::shared_ptr<Texture> m_cubemap;
 
   GBufferPass m_GBufferPass;
   GBufferInitData m_GBufferInitData;
@@ -85,6 +88,7 @@ class DR_RENDERMAN_EXPORT RenderMan {
   ShadowInitData m_ShadowInitData;
   ShadowDrawData m_ShadowDrawData;
   GFXShared<DepthStencil> m_ShadowDSoptions;
+  std::array<std::pair<Vector3D, float>, 4> m_ShadowSubFrustras;
 
   PostProcessingPass m_PostProcessingPass;
   PostProcessingInitData m_PostProcessingInitData;
@@ -113,7 +117,7 @@ class DR_RENDERMAN_EXPORT RenderMan {
   updateShadowCameras();
 
   std::vector<float>
-  calculatePartitions(size_t cuts);
+  calculatePartitions(SizeT cuts);
 
   std::pair<Vector3D, float>
   frustrumSphere(float fViewportWidth,
@@ -124,10 +128,10 @@ class DR_RENDERMAN_EXPORT RenderMan {
 
   Vector3D m_vec3DirectionalLight;
 
-  size_t m_szActiveShadowCameras;
+  SizeT m_szActiveShadowCameras;
   float  m_fDepth;
 
-  bool m_bFitToFrustrum;
+  bool m_bFitToScene;
   /***************************************************************************/
   /////////////////////////////////////////////////////////////////////////////
 

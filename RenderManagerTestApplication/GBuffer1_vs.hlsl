@@ -27,7 +27,7 @@ VS(VS_INPUT input) {
   VS_OUTPUT Output;
 
   Output.Position = mul(WVP, input.Position);
-  Output.RealPos  = Output.Position;
+  Output.RealPos  = (Output.Position.z / Output.Position.w).xxxx;
   Output.Texcoord = input.Texcoord;
   
   Output.TBN[0] = normalize(mul(WorldView, input.Tangent));

@@ -78,12 +78,16 @@ struct PS_OUTPUT {
 	float4 SSAO : SV_TARGET0;
 };
 
-PS_OUTPUT FS(PS_INPUT input) {
+PS_OUTPUT
+FS(PS_INPUT input) {
 	PS_OUTPUT outRT;
+  //outRT.SSAO = float4(1.0f, 1.0f, 1.0f, 1.0f);
+  //return outRT;
 	
 	float2 uv = input.Texcoord;
 
   float3 p = getPosition(uv);
+  float pD = PositionNormal.Sample(SS, uv).w;
   float3 n = getNormal(uv);
   float2 r = getRandom(uv).xy;
 	float ao = 0.0f;
@@ -106,7 +110,7 @@ PS_OUTPUT FS(PS_INPUT input) {
 	}
 	
 	ao *= 0.0625f;
-	ao = 1.0f - ao;
+	ao  = 1.0f - ao;
 	
 	outRT.SSAO = float4(ao.rrr, 1.0f);
 	

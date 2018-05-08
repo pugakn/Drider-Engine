@@ -81,6 +81,15 @@ RenderManApp::postInit() {
   SceneGraph::startUp();
   Time::startUp();
   CameraManager::startUp();
+  CameraManager::createCamera(_T("PATO_CAM"),
+                              { 0.0f, 150.0f, -400.0f },
+                              { 0.0f, 10.0f, 0.0f },
+                              m_viewport,
+                              45.f,
+                              //1024, 1024,
+                              0.1f,
+                              10000.0f);
+  CameraManager::setActiveCamera(_T("PATO_CAM"));
   m_renderMan.init();
 
   Degree grados(2.8125f);
@@ -109,16 +118,6 @@ RenderManApp::postInit() {
   }
 
   m_renderMan.lights = &Lights;
-
-  CameraManager::createCamera(_T("PATO_CAM"),
-                              { 0.0f, 150.0f, -400.0f },
-                              { 0.0f, 150.0f, 0.0f },
-                              m_viewport,
-                              45.f,
-                              //1024, 1024,
-                              0.1f,
-                              10000.0f);
-  CameraManager::setActiveCamera(_T("PATO_CAM"));
 
   modelMovement = Vector3D(0.0f, 0.0f, 0.0f);
 
@@ -161,7 +160,8 @@ RenderManApp::postInit() {
     floor->createComponent<RenderComponent>(ptrFloor);
     floor->createComponent<AABBCollider>(ptrFloor->aabb);
     floor->getTransform().setPosition(Vector3D(0.0f, -50.0f, 0.0f));
-    floor->getTransform().setScale(Vector3D(1000.0f, 1.0f, 1000.0f));
+    //floor->getTransform().setScale(Vector3D(1000.0f, 1.0f, 1000.0f));
+    floor->getTransform().setScale(Vector3D(5.0f, 1.0f, 5.0f));
 
     floorMat = std::make_shared<Material>(_T("FloorMaterial"));
 
@@ -200,26 +200,7 @@ RenderManApp::postInit() {
     auto renderComp = floor->getComponent<RenderComponent>();
     renderComp->getMeshes().front().material = floorMat;
   }
-
-  m_vecGos.push_back(SceneGraph::createObject(_T("Cube1")));
-  m_vecGos.push_back(SceneGraph::createObject(_T("Cube2")));
-  m_vecGos.push_back(SceneGraph::createObject(_T("Cube3")));
-  m_vecGos.push_back(SceneGraph::createObject(_T("Cube4")));
-
-  auto ptrChecker = ResourceManager::getReferenceT<Model>(_T("Checker.fbx"));
-  if (ptrChecker) {
-    for (SizeT i = 0; i < 4; ++i) {
-      m_vecGos[i]->createComponent<RenderComponent>(ptrChecker);
-      m_vecGos[i]->createComponent<AABBCollider>(ptrChecker->aabb);
-      m_vecGos[i]->getTransform().setScale(Vector3D(i / 4.0f, i / 4.0f, i / 4.0f) * 10.0f);
-
-      auto renderComp = m_vecGos[i]->getComponent<RenderComponent>();
-      renderComp->getMeshes().front().material = floorMat;
-    }
-  }
-
-  m_renderMan.m_vecGos = m_vecGos;
-
+  
   initInputCallbacks();
 }
 
