@@ -9,8 +9,8 @@ struct PS_INPUT {
 };
 
 struct PS_OUTPUT {
-  float4 Position  : SV_POSITION;
-  float2 Texcoord  : TEXCOORD0;
+  float4 Position : SV_POSITION;
+  float2 Texcoord : TEXCOORD0;
 };
 
 PS_OUTPUT

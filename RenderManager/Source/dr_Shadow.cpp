@@ -18,6 +18,7 @@ ShadowPass::~ShadowPass() {
 
 void
 ShadowPass::init(PassInitData* initData) {
+  ShadowInitData* data = static_cast<ShadowInitData*>(initData);
   Device& dv = GraphicsAPI::getDevice();
 
   m_vsFilename = _T("Shadow_vs.hlsl");

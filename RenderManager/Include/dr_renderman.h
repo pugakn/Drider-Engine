@@ -1,61 +1,91 @@
 #pragma once
 #include "dr_renderman_prerequisites.h"
+#include "dr_light.h"
 #include "dr_GBuffer1.h"
 #include "dr_SSAO.h"
-#include "dr_Shadow.h"
-#include "dr_PostProcessing.h"
-#include "dr_light.h"
 #include "dr_HorBlur.h"
 #include "dr_VerBlur.h"
+#include "dr_Shadow.h"
+#include "dr_Lightning.h"
+#include "dr_PostProcessing.h"
 
 #include <dr_texture.h>
 
 namespace driderSDK {
 
-/*
+/**
+* Render manager.
+* This class handles and performs the draw logic.
+*
+* Sample usage:
+* 
+* RenderMan RenderManager;
+* RenderManager.init();
+* while (bDraw) {
+*   RenderManager.draw();
+*   if (bRecompileRenderManager) {
+*     RenderManager.recompile();
+*   }
+* }
+* RenderManager.exit();
+}
 */
 class DR_RENDERMAN_EXPORT RenderMan {
  public:
-  /*
-  TEST::Constructor
-
-  Default class constructuror.
+  /**
+  * TEST::defaultConstructor
+  *
+  * Default constructor.
   */
-   RenderMan();
+  RenderMan();
 
-  /*
-  TEST::Destructor
-
-  Default class destructuror.
+  /**
+  * TEST::destructor
+  *
+  * Default destructor
+  *
   */
   ~RenderMan();
 
-  /*
+  /**
+  * TEST::init
+  *
+  * Initializes the RenderManager (Including all the passes).
   */
   void
   init();
 
-  /*
+  /**
+  * TEST::draw
+  *
+  * Sets up the passes draw information and calls the Draw
+  * function of the passes.
   */
   void
   draw();
 
-  /*
+  /**
+  * TEST::exit
+  *
+  * Calls the exit function of the passes.
   */
   void
   exit();
 
-  /*
+  /**
+  * TEST::recompile
+  *
+  * Calls the recompile function of the passes.
   */
   void
   recompile();
 
-  std::array<Light, 128>* lights;
-  std::array<std::shared_ptr<Camera>, 4> m_vecShadowCamera;
-  std::vector<SceneGraph::SharedGameObject> m_vecGos;
-  std::vector<float> partitions;
   UInt32 screenWidth;
   UInt32 screenHeight;
+  std::array<Light, 128>* lights;
+  std::array<std::shared_ptr<Camera>, 4> vecShadowCamera;
+  std::vector<float> partitions;
+  std::vector<SceneGraph::SharedGameObject> vecGos;
  protected:
   std::shared_ptr<Texture> m_cubemap;
 
@@ -90,23 +120,31 @@ class DR_RENDERMAN_EXPORT RenderMan {
   GFXShared<DepthStencil> m_ShadowDSoptions;
   std::array<std::pair<Vector3D, float>, 4> m_ShadowSubFrustras;
 
+  LightningPass m_LightningPass;
+  LightningInitData m_LightningInitData;
+  LightningDrawData m_LightningDrawData;
+  GFXShared<DepthStencil> m_LightningDSoptions;
+
   PostProcessingPass m_PostProcessingPass;
   PostProcessingInitData m_PostProcessingInitData;
   PostProcessingDrawData m_PostProcessingDrawData;
   GFXShared<DepthStencil> m_PostProcessingDSoptions;
 
-  //0: { xyz: normal,   w: position };
+  //Gbuffer info:
+  //0: { xyz: position, w: linear depth };
+  //0: { xyz: normal,   w: CoC };
   //1: { xyz: albedo,   w: metallic };
-  //2: { xyz: emissive, w: roughness }
+  //2: { xyz: emissive, w: roughness };
   GFXShared<RenderTarget> m_RTGBuffer;
   GFXShared<RenderTarget> m_RTSSAO;
   GFXShared<RenderTarget> m_RTSSAOInitBlur;
   GFXShared<RenderTarget> m_RTSSAOFinalBlur;
+  GFXShared<RenderTarget> m_RTLightning;
   std::array<GFXShared<RenderTarget>, 4> m_RTShadowDummy; //Used for render separated shadowCams
   GFXShared<RenderTarget> m_RTShadow;
+  GFXShared<RenderTarget> m_RTPostProcessing;
 
-  DrTextureDesc GBufferTexDesc;
-
+  DrTextureDesc m_TexDescDefault;
 
   /////////////////////////////////////////////////////////////////////////////
   /*****************************Shadow pass stuff*****************************/

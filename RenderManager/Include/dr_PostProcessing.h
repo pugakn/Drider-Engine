@@ -10,15 +10,7 @@ namespace driderSDK {
 struct PostProcessingInitData : PassInitData {};
 
 struct PostProcessingDrawData : PassDrawData {
-  std::shared_ptr<Camera> activeCam;
-  Vector4D DirLight;
-  GFXShared<RenderTarget> GbufferRT;
-  GFXShared<RenderTarget> SSAORT;
-  GFXShared<RenderTarget> ShadowRT;
-  float ActiveLights;
-  std::array<Light, 128>* Lights;
-  std::array<std::shared_ptr<Camera>, 4>* ShadowCam;
-  std::vector<float> shadowDepths;
+  GFXShared<RenderTarget> ColorRT;
 };
 
 class PostProcessingPass : public RenderPass {
@@ -51,18 +43,7 @@ class PostProcessingPass : public RenderPass {
 
  private:
   struct CBuffer {
-    Vector4D  EyePosition;         // [XYZ = Cameraposition, W = ActiveLights]
-    Vector4D  DirLight;
-    Vector4D  LightPosition[128];  // [XYZ = LightPosition]
-    Vector4D  LightColor[128];     // [XYZ = LightColor, W = LightIntensity]
-    Matrix4x4 View;
-    Matrix4x4 ViewInverse;
-    Matrix4x4 Projection;
-    Matrix4x4 ProjectionInverse;
-    Matrix4x4 VP;
-    Matrix4x4 VPInverse;
-    Matrix4x4 ShadowVP[4];
-    Vector4D  ShadowSliptDepth;
+    Vector4D Var;
   };
 
   CBuffer CB;

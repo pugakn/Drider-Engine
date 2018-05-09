@@ -23,7 +23,6 @@ RenderMan::init() {
   ResourceManager::loadResource(_T("GraceCubemap.tga"));
   auto CmR = ResourceManager::getReferenceT<TextureCore>(_T("GraceCubemap.tga"));
 
-
   DrTextureDesc cubeMapDesc;
   cubeMapDesc.width = 256;
   cubeMapDesc.height = 256;
@@ -42,24 +41,25 @@ RenderMan::init() {
   screenHeight = 720;
 
   for (SizeT i = 0; i < 4; ++i) {
-    m_vecShadowCamera[i] = std::make_shared<Camera>();
+    vecShadowCamera[i] = std::make_shared<Camera>();
   }
   m_szActiveShadowCameras = 4;
-  m_vec3DirectionalLight = Vector3D(-1.0f, -1.0f, 0.0f).normalize();
+  //m_vec3DirectionalLight = Vector3D(-1.0f, -1.0f, 0.0f).normalize();
   //m_vec3DirectionalLight = Vector3D(0.0f, -10000.0f, 0.1f).normalize();
-  //m_vec3DirectionalLight = Vector3D(-1.0f, -1.0f, -1.0f).normalize();
+  m_vec3DirectionalLight = Vector3D(-1.0f, -1.0f, -1.0f).normalize();
   m_fDepth = 10000.0f;
   m_bFitToScene = false;
   partitions = calculatePartitions(m_szActiveShadowCameras);
   std::shared_ptr<Camera> mainCam = CameraManager::getActiveCamera();
-  float fViewportWidth = mainCam->getViewportWidth();
-  float fViewportHeight = mainCam->getViewportHeight();
+  float fViewportWidth = static_cast<float>(mainCam->getViewportWidth());
+  float fViewportHeight = static_cast<float>(mainCam->getViewportHeight());
   float fNearPlane = mainCam->getNearPlane();
   float fFarPlane = mainCam->getFarPlane();
   float fFov = mainCam->getFOV();
+
   for (size_t i = 0; i < m_szActiveShadowCameras; ++i) {
-    m_ShadowSubFrustras[i] = frustrumSphere(fViewportWidth,
-                                            fViewportHeight,
+    m_ShadowSubFrustras[i] = frustrumSphere(fViewportHeight,
+                                            fViewportWidth,
                                             Math::lerp(fNearPlane,
                                                        fFarPlane,
                                                        partitions[m_bFitToScene ? 0 : i]),
@@ -69,31 +69,32 @@ RenderMan::init() {
                                             fFov);
   }
 
-  GBufferTexDesc.width = screenWidth;
-  GBufferTexDesc.height = screenHeight;
-  GBufferTexDesc.pitch = screenWidth * 4;
-  GBufferTexDesc.dimension = DR_DIMENSION::k2D;
-  GBufferTexDesc.Format = DR_FORMAT::kR32G32B32A32_FLOAT;
-  GBufferTexDesc.mipLevels = 0;
-  GBufferTexDesc.CPUAccessFlags = 0;
-  GBufferTexDesc.genMipMaps = true;
-  GBufferTexDesc.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE |
-                             DR_BIND_FLAGS::RENDER_TARGET;
+  m_TexDescDefault.width = screenWidth;
+  m_TexDescDefault.height = screenHeight;
+  m_TexDescDefault.pitch = screenWidth * 4;
+  m_TexDescDefault.dimension = DR_DIMENSION::k2D;
+  m_TexDescDefault.Format = DR_FORMAT::kR32G32B32A32_FLOAT;
+  m_TexDescDefault.mipLevels = 0;
+  m_TexDescDefault.CPUAccessFlags = 0;
+  m_TexDescDefault.genMipMaps = true;
+  m_TexDescDefault.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE |
+                               DR_BIND_FLAGS::RENDER_TARGET;
 
-  m_RTGBuffer       = dr_gfx_shared(dc.createRenderTarget(GBufferTexDesc, 3));
-  m_RTSSAO          = dr_gfx_shared(dc.createRenderTarget(GBufferTexDesc, 1));
-  m_RTSSAOInitBlur  = dr_gfx_shared(dc.createRenderTarget(GBufferTexDesc, 1));
-  m_RTSSAOFinalBlur = dr_gfx_shared(dc.createRenderTarget(GBufferTexDesc, 1));
-  //GBufferTexDesc.width  = static_cast<Int32>(2048);
-  //GBufferTexDesc.height = static_cast<Int32>(2048);
-  //GBufferTexDesc.pitch =  GBufferTexDesc.width * 4;
-  GBufferTexDesc.Format = DR_FORMAT::kR32_FLOAT;
-  m_RTShadowDummy[0] = dr_gfx_shared(dc.createRenderTarget(GBufferTexDesc, 1));
-  m_RTShadowDummy[1] = dr_gfx_shared(dc.createRenderTarget(GBufferTexDesc, 1));
-  m_RTShadowDummy[2] = dr_gfx_shared(dc.createRenderTarget(GBufferTexDesc, 1));
-  m_RTShadowDummy[3] = dr_gfx_shared(dc.createRenderTarget(GBufferTexDesc, 1));
-  GBufferTexDesc.Format = DR_FORMAT::kR32G32B32A32_FLOAT;
-  m_RTShadow    = dr_gfx_shared(dc.createRenderTarget(GBufferTexDesc, 1));
+  m_RTGBuffer        = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 3));
+  m_RTSSAO           = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
+  m_RTSSAOInitBlur   = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
+  m_RTSSAOFinalBlur  = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
+  m_RTLightning      = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
+  m_RTPostProcessing = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
+  //m_TexDescDefault.width  = static_cast<Int32>(2048);
+  //m_TexDescDefault.height = static_cast<Int32>(2048);
+  //m_TexDescDefault.pitch =  m_TexDescDefault.width * 4;
+  m_RTShadow         = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
+  m_TexDescDefault.Format = DR_FORMAT::kR32_FLOAT;
+  m_RTShadowDummy[0] = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
+  m_RTShadowDummy[1] = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
+  m_RTShadowDummy[2] = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
+  m_RTShadowDummy[3] = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
 
   DrDepthStencilDesc depthTextureDesc;
   depthTextureDesc.bindFlags = DR_BIND_FLAGS::DEPTH_STENCIL | DR_BIND_FLAGS::SHADER_RESOURCE;
@@ -101,13 +102,14 @@ RenderMan::init() {
   depthTextureDesc.height = screenHeight;
   depthTextureDesc.Format = DR_FORMAT::kD24_UNORM_S8_UINT;
 
-  m_GBufferDSoptions = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
-  m_SSAODSoptions     = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
-  m_HorBlurDSoptions  = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
-  m_VerBlurDSoptions  = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
-  m_ShadowDSoptions   = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
+  m_GBufferDSoptions        = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
+  m_SSAODSoptions           = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
+  m_HorBlurDSoptions        = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
+  m_VerBlurDSoptions        = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
+  m_ShadowDSoptions         = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
+  m_LightningDSoptions      = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
+  m_PostProcessingDSoptions = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
 
-  ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
   ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
 
   Viewport vp;
@@ -117,14 +119,15 @@ RenderMan::init() {
   vp.height = static_cast<UInt32>(1024);
 
   for (size_t camIndex = 0; camIndex < 4; ++camIndex) {
-    m_vecShadowCamera[camIndex]->setViewport(vp);
+    vecShadowCamera[camIndex]->setViewport(vp);
   }
 
   m_GBufferPass.init(&m_GBufferInitData);
-  m_ShadowPass.init(&m_ShadowInitData);
   m_SSAOPass.init(&m_SSAOInitData);
   m_HorBlurPass.init(&m_HorBlurInitData);
-  m_VerBlurPass.init(&m_HorBlurInitData);
+  m_VerBlurPass.init(&m_VerBlurInitData);
+  m_ShadowPass.init(&m_ShadowInitData);
+  m_LightningPass.init(&m_LightningInitData);
   m_PostProcessingPass.init(&m_PostProcessingInitData);
 }
 
@@ -135,10 +138,10 @@ RenderMan::draw() {
 
   auto mainCam = CameraManager::getActiveCamera();
   auto queryRequest = SceneGraph::query(*mainCam,
-                                 QUERY_ORDER::kFrontToBack,
-                                 QUERY_PROPERTY::kOpaque | 
-                                 QUERY_PROPERTY::kDynamic | 
-                                 QUERY_PROPERTY::kStatic);
+                                        QUERY_ORDER::kFrontToBack,
+                                        QUERY_PROPERTY::kOpaque | 
+                                        QUERY_PROPERTY::kDynamic | 
+                                        QUERY_PROPERTY::kStatic);
 
   m_GBufferDrawData.activeCam = mainCam;
   m_GBufferDrawData.models = &queryRequest;
@@ -152,43 +155,48 @@ RenderMan::draw() {
   m_SSAODrawData.dsOptions = m_SSAODSoptions;
   m_SSAOPass.draw(&m_SSAODrawData);
 
-  m_HorBlurDrawData.viewportDimensionX = screenWidth;
-  m_HorBlurDrawData.viewportDimensionY = screenHeight;
+  m_HorBlurDrawData.viewportDimensionX = static_cast<float>(screenWidth);
+  m_HorBlurDrawData.viewportDimensionY = static_cast<float>(screenHeight);
   m_HorBlurDrawData.dsOptions = m_HorBlurDSoptions;
   m_HorBlurDrawData.InRt = m_RTSSAO;
   m_HorBlurDrawData.OutRt = m_RTSSAOInitBlur;
   m_HorBlurPass.draw(&m_HorBlurDrawData);
 
-  m_VerBlurDrawData.viewportDimensionX = screenWidth;
-  m_VerBlurDrawData.viewportDimensionY = screenHeight;
+  m_VerBlurDrawData.viewportDimensionX = static_cast<float>(screenWidth);
+  m_VerBlurDrawData.viewportDimensionY = static_cast<float>(screenHeight);
   m_VerBlurDrawData.dsOptions = m_VerBlurDSoptions;
   m_VerBlurDrawData.InRt = m_RTSSAOInitBlur;
   m_VerBlurDrawData.OutRt = m_RTSSAOFinalBlur;
   m_VerBlurPass.draw(&m_VerBlurDrawData);
 
   for (size_t camIndex = 0; camIndex < m_szActiveShadowCameras; ++camIndex) {
-    queryRequest = SceneGraph::query(*m_vecShadowCamera[camIndex],
+    queryRequest = SceneGraph::query(*vecShadowCamera[camIndex],
                                      QUERY_ORDER::kFrontToBack,          
                                      QUERY_PROPERTY::kOpaque |
                                      QUERY_PROPERTY::kDynamic |
                                      QUERY_PROPERTY::kStatic);
-    m_ShadowDrawData.shadowCam   = m_vecShadowCamera[camIndex];
-    m_ShadowDrawData.models      = &queryRequest;
-    m_ShadowDrawData.OutRt       = m_RTShadowDummy[camIndex];
-    m_ShadowDrawData.dsOptions   = m_ShadowDSoptions;
+    m_ShadowDrawData.shadowCam = vecShadowCamera[camIndex];
+    m_ShadowDrawData.models = &queryRequest;
+    m_ShadowDrawData.OutRt = m_RTShadowDummy[camIndex];
+    m_ShadowDrawData.dsOptions = m_ShadowDSoptions;
     m_ShadowPass.draw(&m_ShadowDrawData);
   }
   m_ShadowPass.merge(m_RTShadowDummy, m_ShadowDSoptions, m_RTShadow);
 
-  m_PostProcessingDrawData.activeCam = mainCam;
-  m_PostProcessingDrawData.DirLight = Vector4D(m_vec3DirectionalLight, 1.0f);
-  m_PostProcessingDrawData.GbufferRT = m_RTGBuffer;
-  m_PostProcessingDrawData.SSAORT = m_RTSSAOFinalBlur;
-  m_PostProcessingDrawData.ShadowRT = m_RTShadow;
-  m_PostProcessingDrawData.Lights = &lights[0];
-  m_PostProcessingDrawData.ActiveLights = 128;
-  m_PostProcessingDrawData.ShadowCam = &m_vecShadowCamera;
-  m_PostProcessingDrawData.shadowDepths = partitions;
+  m_LightningDrawData.activeCam = mainCam;
+  m_LightningDrawData.DirLight = Vector4D(m_vec3DirectionalLight, 1.0f);
+  m_LightningDrawData.GbufferRT = m_RTGBuffer;
+  m_LightningDrawData.SSAORT = m_RTSSAOFinalBlur;
+  m_LightningDrawData.ShadowRT = m_RTShadow;
+  m_LightningDrawData.Lights = &lights[0];
+  m_LightningDrawData.ActiveLights = 128;
+  m_LightningDrawData.ShadowCam = &vecShadowCamera;
+  m_LightningDrawData.shadowDepths = partitions;
+  m_LightningDrawData.dsOptions = m_LightningDSoptions;
+  m_LightningDrawData.OutRt = m_RTLightning;
+  m_LightningPass.draw(&m_LightningDrawData);
+  
+  m_PostProcessingDrawData.ColorRT = m_RTLightning;
   m_PostProcessingPass.draw(&m_PostProcessingDrawData);
 
   /*
@@ -211,10 +219,11 @@ RenderMan::exit() {
 void
 RenderMan::recompile() {
   m_GBufferPass.recompileShader();
-  m_ShadowPass.recompileShader();
   m_SSAOPass.recompileShader();
   m_HorBlurPass.recompileShader();
   m_VerBlurPass.recompileShader();
+  m_ShadowPass.recompileShader();
+  m_LightningPass.recompileShader();
   m_PostProcessingPass.recompileShader();
 }
 
@@ -225,25 +234,26 @@ RenderMan::updateShadowCameras() {
                                         static_cast<size_t>(4));
 
   std::shared_ptr<Camera> mainCam = CameraManager::getActiveCamera();
-
-  float SphereRad;
-
-  Vector3D TrueCenter;
   Vector3D CamPos = mainCam->getPosition();
   Vector3D CamDir = mainCam->getDirection();
+
+  float SphereRad;
+  Vector3D TrueCenter;
   
   for (size_t i = 0; i < m_szActiveShadowCameras; ++i) {
     SphereRad = m_ShadowSubFrustras[i].second;
     
     TrueCenter = CamPos + (CamDir * m_ShadowSubFrustras[i].first.z);
 
-    m_vecShadowCamera[i]->setPosition(TrueCenter - (m_vec3DirectionalLight * Math::max(m_fDepth, SphereRad)));
-    m_vecShadowCamera[i]->setTarget(TrueCenter);
-    m_vecShadowCamera[i]->createProyection(Math::ceil(SphereRad * 2.0f),
-                                           Math::ceil(SphereRad * 2.0f),
-                                           0.1f,
-                                           //m_fDepth + SphereRad);
-                                           Math::max(m_fDepth, SphereRad) + SphereRad);
+    vecShadowCamera[i]->setPosition(TrueCenter +
+                                    (m_vec3DirectionalLight * SphereRad) -
+                                    (m_vec3DirectionalLight * m_fDepth));
+    vecShadowCamera[i]->setTarget(TrueCenter);
+    vecShadowCamera[i]->createProyection(Math::floor(SphereRad * 2.0f),
+                                         Math::floor(SphereRad * 2.0f),
+                                         0.1f,
+                                         //m_fDepth + SphereRad);
+                                         m_fDepth);
   }
 }
 
@@ -282,8 +292,7 @@ RenderMan::frustrumSphere(float fVW,
                           float fF) {
   Vector3D fCenter;
   float fRadius;
-
-  float fK = Math::sqrt(1.0f + ((fVH * fVH) / (fVW * fVW))) * Math::tan(fF * 0.5f);
+  float fK = Math::sqrt(1.0f + ((fVH * fVH) / (fVW * fVW))) * Math::tan(Math::DEGREE_TO_RADIAN * fF * 0.5f);
   
   if ((fK * fK) < ((fFP - fNP) / (fFP + fNP))) {
     fCenter = Vector3D(0.0f, 0.0f, 0.5f * (fFP + fNP) * (1.0f + (fK * fK)));

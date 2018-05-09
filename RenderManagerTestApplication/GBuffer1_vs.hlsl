@@ -1,7 +1,6 @@
 cbuffer ConstantBuffer {
-	float4x4 WVP;
-  float4x4 WVPTrans;
 	float4x4 WorldView;
+  float4x4 WVP;
   float4x4 Bones[200];
 };
 
@@ -17,17 +16,17 @@ struct VS_INPUT {
 
 struct VS_OUTPUT {
   float4   Position : SV_POSITION;
-  float4   RealPos  : TEXCOORD0;
-  float2   Texcoord : TEXCOORD1;
+  float2   Texcoord : TEXCOORD0;
+  float4   RealPos  : TEXCOORD1;
   float3x3 TBN      : TEXCOORD2;
 };
 
 VS_OUTPUT
 VS(VS_INPUT input) {
   VS_OUTPUT Output;
-
+  
   Output.Position = mul(WVP, input.Position);
-  Output.RealPos  = (Output.Position.z / Output.Position.w).xxxx;
+  Output.RealPos  = Output.Position;
   Output.Texcoord = input.Texcoord;
   
   Output.TBN[0] = normalize(mul(WorldView, input.Tangent));

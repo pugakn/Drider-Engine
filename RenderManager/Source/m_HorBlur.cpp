@@ -18,6 +18,7 @@ HorBlurPass::~HorBlurPass() {
 
 void
 HorBlurPass::init(PassInitData* initData) {
+  HorBlurInitData* data = static_cast<HorBlurInitData*>(initData);
   Device& device = GraphicsAPI::getDevice();
 
   m_vsFilename = _T("HorBlur_vs.hlsl");

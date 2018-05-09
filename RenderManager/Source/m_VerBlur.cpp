@@ -18,6 +18,7 @@ VerBlurPass::~VerBlurPass() {
 
 void
 VerBlurPass::init(PassInitData* initData) {
+  VerBlurInitData* data = static_cast<VerBlurInitData*>(initData);
   Device& device = GraphicsAPI::getDevice();
 
   m_vsFilename = _T("VerBlur_vs.hlsl");

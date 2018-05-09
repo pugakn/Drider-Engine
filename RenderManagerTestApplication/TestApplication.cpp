@@ -24,7 +24,7 @@ void
 HSVtoRGB(float fH, float fS, float fV,
          float& fR, float& fG, float& fB) {
   float fC = fV * fS;
-  float fX = fC * (1.0f - abs(fmod((fH / 60.0f), 2) - 1.0f));
+  float fX = fC * (1.0f - Math::abs(fmod((fH / 60.0f), 2.0f) - 1.0f));
   float fM = fV - fC;
 
   fR = fM;
@@ -160,8 +160,8 @@ RenderManApp::postInit() {
     floor->createComponent<RenderComponent>(ptrFloor);
     floor->createComponent<AABBCollider>(ptrFloor->aabb);
     floor->getTransform().setPosition(Vector3D(0.0f, -50.0f, 0.0f));
-    //floor->getTransform().setScale(Vector3D(1000.0f, 1.0f, 1000.0f));
-    floor->getTransform().setScale(Vector3D(5.0f, 1.0f, 5.0f));
+    floor->getTransform().setScale(Vector3D(1000.0f, 1.0f, 1000.0f));
+    //floor->getTransform().setScale(Vector3D(5.0f, 1.0f, 5.0f));
 
     floorMat = std::make_shared<Material>(_T("FloorMaterial"));
 
@@ -239,6 +239,7 @@ void
 RenderManApp::postRender() {
   GraphicsDriver::API().clear();
   m_renderMan.draw();
+  CameraManager::getActiveCamera()->setTarget(model->getTransform().getPosition());
   GraphicsDriver::API().swapBuffers();
 }
 
@@ -262,19 +263,20 @@ void
 RenderManApp::RotateModel() {
   Vector2DI mouseDelta = Mouse::getDisplacement();
   Vector3D rotation{0.0f, 0.0f, 0.0f};
+  float scale = 0.25f;
 
   if (Mouse::isButtonDown(MOUSE_BUTTON::kLeft)) {
     if (Math::abs(mouseDelta.x) < 3.0f) {
-      mouseDelta.x = 0.0f;
+      mouseDelta.x = static_cast<Int32>(0.0f);
     }
     if (Math::abs(mouseDelta.y) < 3.0f) {
-      mouseDelta.y = 0.0f;
+      mouseDelta.y = static_cast<Int32>(0.0f);
     }
 
-    rotation.y = -mouseDelta.x;
-    rotation.x = -mouseDelta.y;
+    rotation.y = static_cast<float>(-mouseDelta.x);
+    rotation.x = static_cast<float>(-mouseDelta.y);
 
-    model->getTransform().rotate(rotation * Time::getDelta());
+    model->getTransform().rotate(rotation * scale * Time::getDelta());
   }
 }
 

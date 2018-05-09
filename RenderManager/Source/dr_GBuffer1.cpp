@@ -18,6 +18,7 @@ GBufferPass::~GBufferPass() {
 
 void
 GBufferPass::init(PassInitData* initData) {
+  GBufferInitData* data = static_cast<GBufferInitData*>(initData);
   Device& device = GraphicsAPI::getDevice();
 
   m_vsFilename = _T("GBuffer1_vs.hlsl");
@@ -98,9 +99,7 @@ GBufferPass::draw(PassDrawData* drawData) {
     }
 
     CB.WorldView = modelPair.world * data->activeCam->getView();
-    CB.WVP = modelPair.world * (data->activeCam->getVP());
-    CB.WVPTrans = CB.WVP;
-    CB.WVPTrans.transpose();
+    CB.WVP = modelPair.world * data->activeCam->getVP();
   
     m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
     m_constantBuffer->set(dc);

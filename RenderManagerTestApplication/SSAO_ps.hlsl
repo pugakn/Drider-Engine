@@ -1,4 +1,4 @@
-Texture2D PositionNormal : register(t0);
+Texture2D NormalDepthTex : register(t0);
 
 SamplerState SS;
 
@@ -20,13 +20,13 @@ float3
 getPosition(in float2 uv) {
   float x = (2.0f * uv.x) - 1.0f;
   float y = (2.0f * (1.0f - uv.y)) - 1.0;
-  float z = PositionNormal.Sample(SS, uv).w;
+  float z = NormalDepthTex.Sample(SS, uv).w;
 
   float4 posView = mul(VPInv, float4(x, y, z, 1.0f));
-	posView /= posView.w;
-
+  posView /= posView.w;
+  
   return posView.xyz;
-};
+}
 
 float3
 getPosition(in float2 uv, in float z) {
@@ -41,7 +41,7 @@ getPosition(in float2 uv, in float z) {
 
 float3
 getNormal(float2 uv) {
-  return PositionNormal.Sample(SS, uv).xyz;
+  return NormalDepthTex.Sample(SS, uv).xyz;
 };
 
 float3
@@ -81,13 +81,12 @@ struct PS_OUTPUT {
 PS_OUTPUT
 FS(PS_INPUT input) {
 	PS_OUTPUT outRT;
-  //outRT.SSAO = float4(1.0f, 1.0f, 1.0f, 1.0f);
-  //return outRT;
-	
+  outRT.SSAO = float4(1.0f, 1.0f, 1.0f, 1.0f);
+	return outRT;
+
 	float2 uv = input.Texcoord;
 
   float3 p = getPosition(uv);
-  float pD = PositionNormal.Sample(SS, uv).w;
   float3 n = getNormal(uv);
   float2 r = getRandom(uv).xy;
 	float ao = 0.0f;
@@ -100,8 +99,8 @@ FS(PS_INPUT input) {
 	[unroll]
 	for (int i = 0; i < iterations; ++i) {
 		float2 coord1 = reflect(vec[i], r) * rad;
-		float2 coord2 = float2(coord1.x * 0.707 - coord1.y * 0.707,
-													 coord1.x * 0.707 + coord1.y * 0.707);
+		float2 coord2 = float2(coord1.x * 0.707f - coord1.y * 0.707f,
+													 coord1.x * 0.707f + coord1.y * 0.707f);
 													 
 		ao += doOclussion(uv, coord1 * 0.25f, p, n);
 		ao += doOclussion(uv, coord2 * 0.50f, p, n);
