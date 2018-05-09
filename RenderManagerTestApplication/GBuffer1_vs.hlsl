@@ -1,5 +1,6 @@
 cbuffer ConstantBuffer {
-	float4x4 WorldView;
+	float4x4 World;
+  float4x4 WorldView;
   float4x4 WVP;
   float4x4 Bones[200];
 };
@@ -26,7 +27,7 @@ VS(VS_INPUT input) {
   VS_OUTPUT Output;
   
   Output.Position = mul(WVP, input.Position);
-  Output.RealPos  = Output.Position;
+  Output.RealPos  = float4(mul(World, input.Position).xyz, Output.Position.z / 10000.0f);
   Output.Texcoord = input.Texcoord;
   
   Output.TBN[0] = normalize(mul(WorldView, input.Tangent));

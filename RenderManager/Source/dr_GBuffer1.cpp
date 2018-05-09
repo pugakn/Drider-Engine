@@ -98,6 +98,7 @@ GBufferPass::draw(PassDrawData* drawData) {
       }
     }
 
+    CB.World = modelPair.world;
     CB.WorldView = modelPair.world * data->activeCam->getView();
     CB.WVP = modelPair.world * data->activeCam->getVP();
   

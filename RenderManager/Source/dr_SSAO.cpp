@@ -78,6 +78,7 @@ SSAOPass::draw(PassDrawData* drawData) {
   (data->dsOptions)->clear(dc, 1, 0);
 
   data->InRt->getTexture(0).set(dc, 0);
+  data->InRt->getTexture(1).set(dc, 1);
 
   auto screenQuadModel = ResourceManager::getReferenceT<Model>(_T("ScreenAlignedQuad.3ds"));
   if (screenQuadModel) {

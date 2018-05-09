@@ -1,8 +1,9 @@
-Texture2D NormalDepthTex       : register(t0);
-Texture2D AlbedoMetallicTex    : register(t1);
-Texture2D EmissiveRoughnessTex : register(t2);
-Texture2D SSAOTex              : register(t3);
-Texture2D ShadowTex            : register(t4);
+Texture2D PositionLDepthTex    : register(t0);
+Texture2D NormalCoCTex         : register(t1);
+Texture2D AlbedoMetallicTex    : register(t2);
+Texture2D EmissiveRoughnessTex : register(t3);
+Texture2D SSAOTex              : register(t4);
+Texture2D ShadowTex            : register(t5);
 
 SamplerState SS;
 
@@ -32,25 +33,7 @@ static const float EPSILON = 1e-6f;
 
 float3
 getPosition(in float2 uv) {
-  float x = (2.0f * uv.x) - 1.0f;
-  float y = (2.0f * (1.0f - uv.y)) - 1.0f;
-  float z = NormalDepthTex.Sample(SS, uv).w;
-
-  float4 posView = mul(VPInv, float4(x, y, z, 1.0f));
-  posView /= posView.w;
-  
-  return posView.xyz;
-}
-
-float3
-getPosition(in float2 uv, in float z) {
-  float x = (2.0f * uv.x) - 1.0f;
-  float y = (2.0f * (1.0f - uv.y)) - 1.0f;
-
-  float4 posView = mul(VPInv, float4(x, y, z, 1.0f));
-  posView /= posView.w;
-  
-  return posView.xyz;
+  return PositionLDepthTex.Sample(SS, uv).xyz;
 }
 
 bool
@@ -64,7 +47,7 @@ insideBounds(float4 fromLightPos) {
 	        fromLightPos.z < 1.0f);
 }
 
-//#define DR_SH_PCF_ENABLED
+#define DR_SH_PCF_ENABLED
 float
 GetShadowValue(float4 fromLightPos, const int camIndex) {
   const float shadowBias = 0.0005f;
@@ -93,7 +76,7 @@ GetShadowValue(float4 fromLightPos, const int camIndex) {
       [unroll]
       for (float x = -sampleRadius; x <= sampleRadius; x += 1.0f) {
         //Projected depth
-        float depthSample = ShadowTex.Sample(SS, fromLightCoords.xy + texelSize * float2(x,y))[camIndex];
+        float depthSample = ShadowTex.Sample(SS, fromLightCoords.xy + texelSize * float2(x, y))[camIndex];
         
         if (depthPos > (depthSample + shadowBias)) {
           shadowValue -= modifier;
@@ -206,7 +189,7 @@ FS(PS_INPUT input) : SV_TARGET0 {
   float2 uv = input.Texcoord;
   
   float3 position  = getPosition(uv);
-  float3 normal    = NormalDepthTex.Sample(SS, uv).xyz;
+  float3 normal    = NormalCoCTex.Sample(SS, uv).xyz;
   float3 albedo    = AlbedoMetallicTex.Sample(SS, uv).xyz;
   float  metallic  = AlbedoMetallicTex.Sample(SS, uv).w;
   float3 emissive  = EmissiveRoughnessTex.Sample(SS, uv).xyz;
@@ -330,7 +313,7 @@ FS(PS_INPUT input) : SV_TARGET0 {
   float ShadowValue = GetShadowValue(fromLightPos, iCurrentCascadeIndex);
   
   return float4(albedo * ShadowValue, 1.0f);
-  //return float4((finalColor * ShadowValue) + emissive, 1.0f);
-  return float4(finalColor + emissive, 1.0f);
-  return float4(luminescence((finalColor * ShadowValue) + emissive).xxx, 1.0f);
+  //return float4(finalColor + emissive, 1.0f);
+  return float4((finalColor * ShadowValue) + emissive, 1.0f);
+  //return float4(luminescence((finalColor * ShadowValue) + emissive).xxx, 1.0f);
 }

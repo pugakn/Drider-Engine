@@ -214,7 +214,7 @@ RenderManApp::postUpdate() {
     m_renderMan.recompile();
   }
 
-  const float fMovementSpeed = 1000.0f;
+  const float fMovementSpeed = 500.0f;
   if (Keyboard::isKeyDown(KEY_CODE::kA)) {
     model->getTransform().move(Vector3D(1.0f, 0.0f, 0.0f) * Time::getDelta() * fMovementSpeed);
   }

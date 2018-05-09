@@ -86,11 +86,12 @@ LightningPass::draw(PassDrawData* drawData) {
 
   dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
 
-  data->GbufferRT->getTexture(0).set(dc, 0); //Normal, depth
-  data->GbufferRT->getTexture(1).set(dc, 1); //Albedo, Metallic
-  data->GbufferRT->getTexture(2).set(dc, 2); //Emissivve, Roughness
-  data->SSAORT->getTexture(0).set(dc, 3);    //SSAO
-  data->ShadowRT->getTexture(0).set(dc, 4);  //Shadow
+  data->GbufferRT->getTexture(0).set(dc, 0); //Position, linear depth
+  data->GbufferRT->getTexture(1).set(dc, 1); //Normal, CoC
+  data->GbufferRT->getTexture(2).set(dc, 2); //Albedo, Metallic
+  data->GbufferRT->getTexture(3).set(dc, 3); //Emissivve, Roughness
+  data->SSAORT->getTexture(0).set(dc, 4);    //SSAO
+  data->ShadowRT->getTexture(0).set(dc, 5);  //Shadow
 
   const float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
   data->OutRt->clear(dc, clearColor);

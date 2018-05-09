@@ -80,7 +80,7 @@ RenderMan::init() {
   m_TexDescDefault.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE |
                                DR_BIND_FLAGS::RENDER_TARGET;
 
-  m_RTGBuffer        = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 3));
+  m_RTGBuffer        = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 4));
   m_RTSSAO           = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
   m_RTSSAOInitBlur   = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
   m_RTSSAOFinalBlur  = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
@@ -245,15 +245,14 @@ RenderMan::updateShadowCameras() {
     
     TrueCenter = CamPos + (CamDir * m_ShadowSubFrustras[i].first.z);
 
-    vecShadowCamera[i]->setPosition(TrueCenter +
-                                    (m_vec3DirectionalLight * SphereRad) -
+    vecShadowCamera[i]->setPosition(TrueCenter -
                                     (m_vec3DirectionalLight * m_fDepth));
     vecShadowCamera[i]->setTarget(TrueCenter);
     vecShadowCamera[i]->createProyection(Math::floor(SphereRad * 2.0f),
                                          Math::floor(SphereRad * 2.0f),
                                          0.1f,
-                                         //m_fDepth + SphereRad);
-                                         m_fDepth);
+                                         m_fDepth + SphereRad);
+                                         //m_fDepth);
   }
 }
 

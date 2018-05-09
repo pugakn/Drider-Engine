@@ -7,9 +7,9 @@ Texture2D Roughness   : register(t4);
 SamplerState SS;
 
 cbuffer ConstantBuffer {
-	float4x4 WVP;
-  float4x4 WVPTrans;
-	float4x4 WorldView;
+	float4x4 World;
+  float4x4 WorldView;
+  float4x4 WVP;
   float4x4 Bones[200];
 };
 
@@ -21,9 +21,10 @@ struct PS_INPUT {
 };
 
 struct PS_OUTPUT {
-  float4 NormDepth	: SV_TARGET0;
-	float4 Albedo_M	  : SV_TARGET1;
-	float4 Emissive_R : SV_TARGET2;
+  float4 PositionLDepth	: SV_TARGET0;
+  float4 NormCoC	      : SV_TARGET1;
+	float4 Albedo_M	      : SV_TARGET2;
+	float4 Emissive_R     : SV_TARGET3;
 };
 
 PS_OUTPUT
@@ -40,7 +41,8 @@ FS(PS_INPUT input) {
   float metalic   = Metallic.Sample(SS, uv).r;
   float roughness = Roughness.Sample(SS, uv).r;
   
-  output.NormDepth  = float4(normal, input.RealPos.z / input.RealPos.w);
+  output.PositionLDepth  = input.RealPos;
+  output.NormCoC    = float4(normal, 1.0f);
   output.Albedo_M   = float4(albedo.xyz, metalic);
   output.Emissive_R = float4(emmisive.xyz, roughness);
   

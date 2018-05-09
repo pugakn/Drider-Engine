@@ -1,4 +1,5 @@
-Texture2D NormalDepthTex : register(t0);
+Texture2D PositionLDepthTex : register(t0);
+Texture2D NormalCoC         : register(t1);
 
 SamplerState SS;
 
@@ -11,37 +12,19 @@ cbuffer ConstantBuffer {
   float4x4 VPInv;
 };
 
-static const float SampleRadio = 0.08f;
+static const float SampleRadio = 0.008f;
 static const float Intensity = 5.0f;
 static const float Scale = 1.0f;
-static const float Bias = 0.0002f;
+static const float Bias = 0.2f;
 
 float3
 getPosition(in float2 uv) {
-  float x = (2.0f * uv.x) - 1.0f;
-  float y = (2.0f * (1.0f - uv.y)) - 1.0;
-  float z = NormalDepthTex.Sample(SS, uv).w;
-
-  float4 posView = mul(VPInv, float4(x, y, z, 1.0f));
-  posView /= posView.w;
-  
-  return posView.xyz;
-}
-
-float3
-getPosition(in float2 uv, in float z) {
-  float x = (2.0f * uv.x) - 1.0f;
-  float y = (2.0f * (1.0f - uv.y)) - 1.0f;
-
-  float4 posView = mul(VPInv, float4(x, y, z, 1.0f));
-  posView /= posView.w;
-  
-  return posView.xyz;
+  return PositionLDepthTex.Sample(SS, uv).xyz;
 }
 
 float3
 getNormal(float2 uv) {
-  return NormalDepthTex.Sample(SS, uv).xyz;
+  return NormalCoC.Sample(SS, uv).xyz;
 };
 
 float3
@@ -81,8 +64,8 @@ struct PS_OUTPUT {
 PS_OUTPUT
 FS(PS_INPUT input) {
 	PS_OUTPUT outRT;
-  outRT.SSAO = float4(1.0f, 1.0f, 1.0f, 1.0f);
-	return outRT;
+  //outRT.SSAO = float4(1.0f, 1.0f, 1.0f, 1.0f);
+	//return outRT;
 
 	float2 uv = input.Texcoord;
 
