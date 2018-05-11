@@ -40,11 +40,22 @@ FS(PS_INPUT input) {
   
   float metalic   = Metallic.Sample(SS, uv).r;
   float roughness = Roughness.Sample(SS, uv).r;
+
+  float RealDepth = input.RealPos.w;
+  float fFocusDistance = 380.0f;
+  float fFocusRange = 70.0f;
+  float CoC = (RealDepth - fFocusDistance) / abs(fFocusRange);
+  
+  //sign: Returns -1 if x is less than zero; 0 if x equals zero; and 1 if x is greater than zero.
+  float fA = saturate(sign(fFocusRange));
+  
+  CoC = clamp(CoC, -1.0f * fA, 1.0f);
+  CoC = abs(CoC);
   
   output.PositionLDepth  = input.RealPos;
-  output.NormCoC    = float4(normal, 1.0f);
-  output.Albedo_M   = float4(albedo.xyz, metalic);
-  output.Emissive_R = float4(emmisive.xyz, roughness);
+  output.NormCoC         = float4(normal, CoC);
+  output.Albedo_M        = float4(albedo.xyz, metalic);
+  output.Emissive_R      = float4(emmisive.xyz, roughness);
   
   return output;
 }

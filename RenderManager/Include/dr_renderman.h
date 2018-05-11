@@ -137,11 +137,12 @@ class DR_RENDERMAN_EXPORT RenderMan {
   //2: { xyz: emissive, w: roughness };
   GFXShared<RenderTarget> m_RTGBuffer;
   GFXShared<RenderTarget> m_RTSSAO;
-  GFXShared<RenderTarget> m_RTSSAOInitBlur;
-  GFXShared<RenderTarget> m_RTSSAOFinalBlur;
+  GFXShared<RenderTarget> m_RTBlurInit;
+  GFXShared<RenderTarget> m_RTSSAOBlur;
   GFXShared<RenderTarget> m_RTLightning;
   std::array<GFXShared<RenderTarget>, 4> m_RTShadowDummy; //Used for render separated shadowCams
   GFXShared<RenderTarget> m_RTShadow;
+  GFXShared<RenderTarget> m_RTPreFinalBlur;
   GFXShared<RenderTarget> m_RTPostProcessing;
 
   DrTextureDesc m_TexDescDefault;

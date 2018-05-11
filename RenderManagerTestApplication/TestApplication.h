@@ -45,12 +45,11 @@ class RenderManApp : public Application
 
   RenderMan m_renderMan;
 
-  SceneGraph::SharedGameObject* selectedGO;
+  SceneGraph::SharedGameObject m_selectedGO;
+  SizeT m_SzTGosIndex;
   std::vector<SceneGraph::SharedGameObject> m_vecGos;
-  SceneGraph::SharedGameObject model;
-  SceneGraph::SharedGameObject floor;
-  std::shared_ptr<Material> modelMat;
-  std::shared_ptr<Material> floorMat;
+  std::shared_ptr<Material> m_floorMat;
+  std::shared_ptr<Material> m_modelMat;
 
   Vector3D modelMovement;
   std::array<Light, 128> Lights;

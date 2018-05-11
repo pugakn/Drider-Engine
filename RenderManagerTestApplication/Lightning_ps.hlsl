@@ -312,8 +312,8 @@ FS(PS_INPUT input) : SV_TARGET0 {
   fromLightPos.xyz /= fromLightPos.w;
   float ShadowValue = GetShadowValue(fromLightPos, iCurrentCascadeIndex);
   
-  return float4(albedo * ShadowValue, 1.0f);
-  //return float4(finalColor + emissive, 1.0f);
+  return float4((albedo * SSAO * ShadowValue) + emissive, 1.0f);
+  //return float4((albedo * SSAO * ShadowValue) + emissive, 1.0f);
   return float4((finalColor * ShadowValue) + emissive, 1.0f);
   //return float4(luminescence((finalColor * ShadowValue) + emissive).xxx, 1.0f);
 }

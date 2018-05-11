@@ -82,10 +82,11 @@ RenderMan::init() {
 
   m_RTGBuffer        = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 4));
   m_RTSSAO           = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
-  m_RTSSAOInitBlur   = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
-  m_RTSSAOFinalBlur  = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
+  m_RTBlurInit       = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
+  m_RTSSAOBlur       = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
   m_RTLightning      = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
   m_RTPostProcessing = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
+  m_RTPreFinalBlur   = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
   //m_TexDescDefault.width  = static_cast<Int32>(2048);
   //m_TexDescDefault.height = static_cast<Int32>(2048);
   //m_TexDescDefault.pitch =  m_TexDescDefault.width * 4;
@@ -159,14 +160,14 @@ RenderMan::draw() {
   m_HorBlurDrawData.viewportDimensionY = static_cast<float>(screenHeight);
   m_HorBlurDrawData.dsOptions = m_HorBlurDSoptions;
   m_HorBlurDrawData.InRt = m_RTSSAO;
-  m_HorBlurDrawData.OutRt = m_RTSSAOInitBlur;
+  m_HorBlurDrawData.OutRt = m_RTBlurInit;
   m_HorBlurPass.draw(&m_HorBlurDrawData);
 
   m_VerBlurDrawData.viewportDimensionX = static_cast<float>(screenWidth);
   m_VerBlurDrawData.viewportDimensionY = static_cast<float>(screenHeight);
   m_VerBlurDrawData.dsOptions = m_VerBlurDSoptions;
-  m_VerBlurDrawData.InRt = m_RTSSAOInitBlur;
-  m_VerBlurDrawData.OutRt = m_RTSSAOFinalBlur;
+  m_VerBlurDrawData.InRt = m_RTBlurInit;
+  m_VerBlurDrawData.OutRt = m_RTSSAOBlur;
   m_VerBlurPass.draw(&m_VerBlurDrawData);
 
   for (size_t camIndex = 0; camIndex < m_szActiveShadowCameras; ++camIndex) {
@@ -186,7 +187,7 @@ RenderMan::draw() {
   m_LightningDrawData.activeCam = mainCam;
   m_LightningDrawData.DirLight = Vector4D(m_vec3DirectionalLight, 1.0f);
   m_LightningDrawData.GbufferRT = m_RTGBuffer;
-  m_LightningDrawData.SSAORT = m_RTSSAOFinalBlur;
+  m_LightningDrawData.SSAORT = m_RTSSAOBlur;
   m_LightningDrawData.ShadowRT = m_RTShadow;
   m_LightningDrawData.Lights = &lights[0];
   m_LightningDrawData.ActiveLights = 128;
@@ -195,8 +196,24 @@ RenderMan::draw() {
   m_LightningDrawData.dsOptions = m_LightningDSoptions;
   m_LightningDrawData.OutRt = m_RTLightning;
   m_LightningPass.draw(&m_LightningDrawData);
+
+  m_HorBlurDrawData.viewportDimensionX = static_cast<float>(screenWidth);
+  m_HorBlurDrawData.viewportDimensionY = static_cast<float>(screenHeight);
+  m_HorBlurDrawData.dsOptions = m_HorBlurDSoptions;
+  m_HorBlurDrawData.InRt = m_RTLightning;
+  m_HorBlurDrawData.OutRt = m_RTBlurInit;
+  m_HorBlurPass.draw(&m_HorBlurDrawData);
+
+  m_VerBlurDrawData.viewportDimensionX = static_cast<float>(screenWidth);
+  m_VerBlurDrawData.viewportDimensionY = static_cast<float>(screenHeight);
+  m_VerBlurDrawData.dsOptions = m_VerBlurDSoptions;
+  m_VerBlurDrawData.InRt = m_RTBlurInit;
+  m_VerBlurDrawData.OutRt = m_RTPreFinalBlur;
+  m_VerBlurPass.draw(&m_VerBlurDrawData);
   
   m_PostProcessingDrawData.ColorRT = m_RTLightning;
+  m_PostProcessingDrawData.ColorBlurRT = m_RTPreFinalBlur;
+  m_PostProcessingDrawData.Gbuffer = m_RTGBuffer;
   m_PostProcessingPass.draw(&m_PostProcessingDrawData);
 
   /*
