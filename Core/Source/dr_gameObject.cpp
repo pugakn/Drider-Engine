@@ -105,47 +105,6 @@ GameObject::destroy() {
   m_children.clear();
 }
 
-GameObject::SharedGameObj 
-GameObject::clone(bool addToParent) {
-  
-  SharedGameObj dup = createInstance();
-
-  copyData(dup);
-
-  dup->m_tag = m_tag;
-  
-  if (addToParent && getParent()) {
-    dup->m_parent = m_parent;
-    getParent()->addChild(dup);
-  }
-
-  dup->m_localTransform = m_localTransform;
-
-  dup->m_localTransform.invalidate();
-
-  dup->m_isStatic = m_isStatic;
-
-  static_cast<EnableObject&>(*dup) = *this; 
-
-  static_cast<NameObject&>(*dup) = *this;
-
-  dup->setName(dup->getName() + _T(" clone"));
-  /**
-  dup->m_finalTransform = m_finalTransform;
-   dup->m_finalTransform.invalidate();
-  **/
-  for (auto& component : m_components) {
-    component->cloneIn(*dup);
-  }
-
-  /*********************************/
-  for (auto& child : m_children) {
-    dup->addChild(child->clone(false));
-  }
-
-  return dup;
-}
-
 //void 
 //GameObject::destroy() {}
 
@@ -322,7 +281,6 @@ GameObject::findNode(const TString & nodeName) {
 GameObject*
 GameObject::findObject(const TString& nodeName) {
   auto gO = findNode(nodeName);
-  gO->addRef();
   return gO.get();
 }
 
@@ -370,19 +328,49 @@ ComponentPartition::operator()(const std::unique_ptr<GameComponent>& l) const {
 
 GameObject&
 GameObject::operator=(GameObject& ref) {
-  /*auto obj = ref.clone();
-  this->m_change = obj->m_change;
-  this->m_children = obj->m_children;
-  this->m_componentNames = obj->m_componentNames;
-  this->m_components = obj->m_components;
-  this->m_componentsToRemove = obj->m_componentsToRemove;
-  this->m_destroyed = obj->m_destroyed;
-  this->m_finalTransform = obj->m_finalTransform;
-  this->m_isStatic = obj->m_isStatic;
-  this->m_localTransform = obj->m_localTransform;
-  this->m_parent = obj->m_parent;
-  this->m_tag = obj->m_tag;*/
+  auto thisPtr = shared_from_this();
+  ref.copyData(thisPtr);
+
+  m_tag = ref.m_tag;
+
+  if (auto parent = ref.getParent()) {
+    m_parent = parent;
+    parent->addChild(thisPtr);
+  }
+
+  m_localTransform = ref.m_localTransform;
+
+  m_localTransform.invalidate();
+
+  m_isStatic = ref.m_isStatic;
+
+  static_cast<EnableObject&>(*thisPtr) = ref;
+
+  static_cast<NameObject&>(*thisPtr) = ref;
+
+  setName(ref.getName() + _T(" clone"));
+  /**
+  dup->m_finalTransform = m_finalTransform;
+  dup->m_finalTransform.invalidate();
+  **/
+  for (auto& component : ref.m_components) {
+    component->cloneIn(*thisPtr);
+  }
+
+  /*********************************/
+  for (auto& child : ref.m_children) {
+    //addChild(child->clone(false));
+    auto c = child->createInstance();
+    *c = *child;
+  }
+
   return *this;
+
+}
+
+GameObject*
+GameObject::getChildByIndex(Int32 index) {
+  return getChild(index).get();
 }
 
 }

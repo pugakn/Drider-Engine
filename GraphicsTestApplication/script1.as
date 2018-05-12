@@ -1,12 +1,12 @@
 class script1 : MontiBehavior {
 
 	float timer;
-	GameObject Floor;
 
 	void Start() {
 		Print("Start\n");
 		
-		//Object.findObject("Floor");
+		GameObject@ a = Object.findObject("Floor");
+		GameObject@ ch = Object.getChildByIndex(0);
 	}
 
 	void Update() {

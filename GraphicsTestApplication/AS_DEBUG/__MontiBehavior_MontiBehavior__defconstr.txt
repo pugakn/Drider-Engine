@@ -6,6 +6,6 @@ Variables:
  000: MontiBehavior this
 
 
-- 12,14 -
+- 7,13 -
     0   0 *    SUSPEND
     1   0 *    RET      1

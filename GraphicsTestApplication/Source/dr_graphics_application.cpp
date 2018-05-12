@@ -402,12 +402,14 @@ GraphicsApplication::createScene() {
   std::uniform_real_distribution<float> dt_A(10, 50);
 
   for (Int32 i = 0; i < copies; ++i) {
-    auto c = walkerObj->clone();
+    auto c = walkerObj->createInstance();
+    *c = *walkerObj;
     c->getTransform().setPosition({dt(mt), 0, dt(mt)});
     c->getComponent<AnimatorComponent>()->setTime(dt_A(mt));
   }
 
-  auto copy = walkerObj->clone();
+  auto copy = walkerObj->createInstance();
+  *copy = *walkerObj;
 
   copy->getTransform().move(-300, AXIS::kX);
 

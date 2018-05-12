@@ -285,6 +285,13 @@ TestApplication::initScriptEngine() {
   Transform transform;
   result = transform.registerFunctions(scriptEngine);
   result = GameObject::registerFunctions(scriptEngine);
+
+  //Register global properties
+  m_root = SceneGraph::instance().getRoot().get(); // Get root
+
+  result = scriptEngine->m_scriptEngine->RegisterGlobalProperty("GameObject@ Object",
+                                                                &m_root);
+                                                                
   
   result = Time::registerFunctions(scriptEngine);
 

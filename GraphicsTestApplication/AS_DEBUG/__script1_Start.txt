@@ -1,42 +1,56 @@
 void script1::Start()
 
-Temps: 7, 8
+Temps: 7, 9, 11
 
 Variables: 
+ 008: (heap) GameObject@ a
+ 010: (heap) GameObject@ ch
  000: script1 this
- 008: (heap) GameObject {noname}
- 007: string {noname}
+ 009: (heap) GameObject {noname}
+ 007: TString {noname}
 
 
-- 7,3 -
-    0   8 *    SUSPEND
-    1   8 *    PGA      273810944
-    3   9 *    PSF      v7
-    4  10 *    CALLSYS  20           (string::string(const string&in))
+- 6,3 -
+    0  11 *    SUSPEND
+    1  11 *    PGA      216028496
+    3  12 *    PSF      v7
+    4  13 *    CALLSYS  20           (TString::TString(const TString&in))
                ObjInfo  v7, 1
-    6   8 *    PSF      v7
-    7   9 *    CALLSYS  69           (void Print(string&in))
-    9   8 *    PSF      v7
-   10   9 *    CALLSYS  21           (string::~string())
+    6  11 *    PSF      v7
+    7  12 *    CALLSYS  56           (void Print(TString&in))
+    9  11 *    PSF      v7
+   10  12 *    CALLSYS  21           (TString::~TString())
+- 8,3 -
+               ObjInfo  v7, 0
+   12  11 *    SUSPEND
+               VarDecl  0
+   13  11 *    PGA      216027792
+   15  12 *    PSF      v7
+   16  13 *    CALLSYS  20           (TString::TString(const TString&in))
+               ObjInfo  v7, 1
+   18  11 *    VAR      v7
+   19  12 *    PshGPtr  3996908
+   21  13 *    GETREF   1
+   22  13 *    CALLSYS  89           (GameObject@ GameObject::findObject(const TString&in))
+   24  11 *    STOREOBJ v9
+   25  11 *    PSF      v7
+   26  12 *    CALLSYS  21           (TString::~TString())
+               ObjInfo  v7, 0
+   28  11 *    PshVPtr  v9
+   29  12 *    RefCpyV  v8, 215375584
+   31  12 *    FREE     v9, 215375584
+   33  12 *    PopPtr
 - 9,3 -
-               ObjInfo  v7, 0
-   12   8 *    SUSPEND
-   13   8 *    PGA      273812616
-   15   9 *    PSF      v7
-   16  10 *    CALLSYS  20           (string::string(const string&in))
-               ObjInfo  v7, 1
-   18   8 *    VAR      v7
-   19   9 *    PshVPtr  v0
-   20  10 *    ADDSi    v24, 134217746
-   22  10 *    RDSPtr
-   23  10 *    GETREF   1
-   24  10 *    CALLSYS  102           (GameObject@ GameObject::findObject(const string&in))
-   26   8 *    STOREOBJ v8
-   27   8 *    PSF      v7
-   28   9 *    CALLSYS  21           (string::~string())
-               ObjInfo  v7, 0
-   30   8 *    FREE     v8, 229940112
+   34  11 *    SUSPEND
+               VarDecl  1
+   35  11 *    PshC4    0x0          (i:0, f:0)
+   37  12 *    PshGPtr  3996908
+   39  13 *    CALLSYS  90           (GameObject@ GameObject::getChildByIndex(int))
+   41  11 *    FREE     v10, 215375584
+   43  11 *    STOREOBJ v10
 - 10,3 -
-   32   8 *    SUSPEND
+   44  11 *    SUSPEND
+   45  11 *    FREE     v10, 215375584
+   47  11 *    FREE     v8, 215375584
             0:
-   33   8 *    RET      1
+   49  11 *    RET      1

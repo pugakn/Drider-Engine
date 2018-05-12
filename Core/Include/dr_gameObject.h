@@ -63,9 +63,6 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
 
   void
   destroy();
-
-  SharedGameObj
-  clone(bool addToParent = true);
   
   virtual SharedGameObj
   createInstance();
@@ -297,8 +294,16 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   }
 
   void release() {
-    if (--refCount == 0)
-      delete this;
+    if (--refCount == 0) {
+      
+    }
+  }
+  
+  void kill() {
+    if(auto parent = getParent()) {
+      parent->removeChild(shared_from_this());
+      //m_isStatic = true;
+    }
   }
 
   GameObject&
@@ -323,13 +328,21 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
                                                                  asMETHOD(GameObject, release),
                                                                  asCALL_THISCALL);
 
-  result = scriptEngine->m_scriptEngine->RegisterObjectMethod("GameObject",
-                                                              "GameObject@ findObject(const string& in)",
-                                                              asMETHODPR(GameObject, findObject, (const TString&), GameObject*),
-                                                              asCALL_THISCALL);
-  result = REGISTER_OP(GameObject, operator=, opEqual, GameObject&, GameObject&, "GameObject@", in)
+  result = REGISTER_FOO_1PP(GameObject,
+                            "GameObject@ findObject(const TString& in)",
+                            asMETHODPR(GameObject, findObject, (const TString&), GameObject*))
 
-  END_REGISTER  
+  result = REGISTER_FOO_1PP(GameObject, 
+                            "GameObject@ getChildByIndex(int)", 
+                            asMETHODPR(GameObject, getChildByIndex, (Int32), GameObject*))
+  result = REGISTER_OP(GameObject, operator=, opAssign, GameObject&, GameObject&, "GameObject@", in)
+
+  END_REGISTER 
+
+ // Private functions only use to scripting
+ private:
+  GameObject*
+  getChildByIndex(Int32 index);
 
  private:
 

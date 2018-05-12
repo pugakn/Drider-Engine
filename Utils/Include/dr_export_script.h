@@ -90,6 +90,13 @@ namespace driderSDK {
                                                                 asCALL_THISCALL);\
     if (result < 0) return result;
 
+#define REGISTER_FOO_1PP(className, strFooDef, method)\
+    result = scriptEngine->m_scriptEngine->RegisterObjectMethod(#className,\
+                                                                strFooDef,\
+                                                                method,\
+                                                                asCALL_THISCALL);\
+    if (result < 0) return result;
+
 #define REGISTER_FOO_1P_CONST(className, fooName, pType, rType, rTypeStr, paramName)\
     result = scriptEngine->m_scriptEngine->RegisterObjectMethod(#className,\
                                                                 rTypeStr" "#fooName "(" #pType " "#paramName ")",\

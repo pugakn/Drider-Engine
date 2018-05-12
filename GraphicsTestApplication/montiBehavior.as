@@ -4,11 +4,6 @@ class MontiBehavior {
 		@transform = trans;
 	}
 
-	private void SetGameObject(GameObject@ object) {
-		@Object = object;
-	}
-
 	Transform@ transform;
-	GameObject@ Object;
 
 }
