@@ -8,10 +8,16 @@
 #include <dr_aabb_collider.h>
 #include <windows.h>
 
+#include <iostream>
+#include <dr_ray.h>
+
+#include <dr_matrix4x4.h>
 #include <dr_texture_core.h>
 #include <dr_degree.h>
 #include <dr_camera_manager.h>
-
+#include <dr_input_manager.h>
+#include <dr_keyboard.h>
+#include <dr_mouse.h>
 #include <dr_render_component.h>
 #include <dr_script_component.h>
 #include <dr_animator_component.h>
@@ -260,7 +266,7 @@ void SceneEditor::init(Viewport v)
     auto renderComp = floor->getComponent<RenderComponent>();
     renderComp->getMeshes().front().material = floorMat;
   }
-
+  initInputs();
 }
 
 void
@@ -327,6 +333,62 @@ SceneEditor::addGameObject(std::shared_ptr<GameObject> parent,
   node->setParent(parent);
 
   return node;
+}
+void SceneEditor::initInputs()
+{
+  InputManager::getMouse()->addMovedCallback([this]()
+  {
+    auto dis = Mouse::getDisplacement();
+    auto pos = Mouse::getPosition();
+    auto cam = CameraManager::getActiveCamera();
+    if (dis.z) {
+      cam->move(dis.z *0.1, 0, 0);
+    }
+    if (m_rotWorldActive) {
+      std::cout << pos.x << std::endl;
+      cam->orbit(pos.x, pos.y);
+    }
+
+  });
+  InputManager::getMouse()->addAnyButtonCallback(MOUSE_INPUT_EVENT::kButtonPressed,
+    [this](MOUSE_BUTTON::E pressedId)
+  {
+    auto pos = Mouse::getPosition();
+
+    if (pressedId == MOUSE_BUTTON::kRight) {
+      m_rotWorldActive = true;
+    }
+    if (pressedId == MOUSE_BUTTON::kLeft) {
+      auto gmo = GetGMOMouseCollition();
+      if (gmo) {
+        m_GMOOnFocus = gmo;
+        //std::cout << gmo->getName().c_str() << std::endl;
+      }
+    }
+    if (pressedId == MOUSE_BUTTON::kMiddle) {
+
+    }
+  });
+  InputManager::getMouse()->addAnyButtonCallback(MOUSE_INPUT_EVENT::kButtonReleased,
+    [this](MOUSE_BUTTON::E pressedId)
+  {
+    auto pos = Mouse::getPosition();
+    if (pressedId == MOUSE_BUTTON::kRight) {
+      m_rotWorldActive = false;
+    }
+    if (pressedId == MOUSE_BUTTON::kLeft) {
+
+    }
+    if (pressedId == MOUSE_BUTTON::kMiddle) {
+
+    }
+  });
+  InputManager::getKeyboard()->addAnyKeyCallback(KEYBOARD_EVENT::kKeyPressed,
+    [this](KEY_CODE::E key)
+  {
+    char c = Keyboard::getAsChar(key);
+
+  });
 }
 void SceneEditor::initCameras()
 {
@@ -455,12 +517,17 @@ void SceneEditor::initUI()
     vertex[1] = { left,  top - height, 0.9f, 1.0f,    0.0f, 0.0f,0.0f, 1.0f  ,0.0,1.0 };
     vertex[2] = { left + width,   top - height,  0.9f,  1.0f,    0.0f, 0.0f,1.0f, 1.0f  ,1.0,1.0 };
     vertex[3] = { left + width,   top,  0.9f,  1.0f,    0.0f, 1.0f,1.0f, 1.0f  ,1.0,0.0 };
-    m_editorQuad.VB->updateFromBuffer(GraphicsAPI::getDeviceContext(), (byte*)vertex);
-
+    //m_editorQuad.VB->updateFromBuffer(GraphicsAPI::getDeviceContext(), (byte*)vertex); UNCOMMENT
+    m_sceneViewportNormalized.topLeftX = left;
+    m_sceneViewportNormalized.topLeftY = top;
+    m_sceneViewportNormalized.width = width;
+    m_sceneViewportNormalized.height = height;
     Viewport view;
     view.width = (Int32)arguments->GetDouble(3);
     view.height = (Int32)arguments->GetDouble(4);
-    CameraManager::getActiveCamera()->setViewport(view);
+    //CameraManager::getActiveCamera()->setViewport(view);UNCOMMENT
+
+
     //m_RT.reset(); //AAAAAAAAAAAAAAAAA
     //DrTextureDesc backDesc;
     //backDesc.width = (Int32)arguments->GetDouble(3);
@@ -567,37 +634,6 @@ void SceneEditor::initUI()
 }
 void SceneEditor::initSceneGraph()
 {
-  //n->getParent()->addChild(l);
-  //auto root = SceneGraph::getRoot();
-
-  // addGameObject(root,
-  //  _T("Quad"),
-  //  { 50, 300, 200 })->getTransform().scale({ 40, 40, 40 });
-
-  //addGameObject(root,
-  //  _T("Quad2"),
-  //  { 50, 300, 200 })->getTransform().scale({ 40, 40, 40 });
-
-  //addGameObject(root,
-  //  _T("Quad3"),
-  //  { 50, 300, 200 })->getTransform().scale({ 40, 40, 40 });
-
-  //addGameObject(SceneGraph::getRoot()->getChild(_T("Quad")),
-  //  _T("Quad4_child"),
-  //  { 50, 300, 200 })->getTransform().scale({ 40, 40, 40 });
-
-  //addGameObject(SceneGraph::getRoot()->getChild(_T("Quad"))->getChild(_T("Quad4_child")),
-  //  _T("Quad5_child"),
-  //  { 50, 300, 200 })->getTransform().scale({ 40, 40, 40 });
-
-  //ResourceManager::loadResource(_T("Sphere.fbx"));
-  //ResourceManager::loadResource(_T("montiBehavior.as"));
-  //auto sphereMod = ResourceManager::getReferenceT<Model>(_T("Sphere.fbx"));
-  //auto script = ResourceManager::getReferenceT<ScriptCore>(_T("montiBehavior.as"));
-
-  //root->findNode(_T("Quad"))->createComponent<RenderComponent>(sphereMod);
-  //root->findNode(_T("Quad"))->createComponent<RenderComponent>(sphereMod);
- // root->findNode(_T("Quad"))->createComponent<ScriptComponent>(script);
 }
 void SceneEditor::sceneResized()
 {
@@ -648,7 +684,61 @@ void SceneEditor::UI_UpdatePropertySheet(const GameObject& obj)
   }
 }
 
-void driderSDK::SceneEditor::destroy()
+SceneGraph::SharedGameObject SceneEditor::GetGMOMouseCollition()
+{
+  auto v = Mouse::getPosition();
+  Vector2D mouseViewPios(v.x,v.y);
+  mouseViewPios.x /= (float)m_viewport.width;
+  mouseViewPios.y /= (float)m_viewport.height;
+  mouseViewPios = mouseViewPios * 2 - Vector2D(1, 1);
+  mouseViewPios.y = -mouseViewPios.y;
+  std::cout << mouseViewPios.x << std::endl;
+  std::cout << mouseViewPios.y << std::endl;
+  Vector4D mouseWorldPosNear = Vector4D(mouseViewPios.x, mouseViewPios.y,0,1);
+  Vector4D mouseWorldPosFar = Vector4D(mouseViewPios.x, mouseViewPios.y, 1,1);
+
+  auto view = CameraManager::getActiveCamera()->getView();
+  auto pro = CameraManager::getActiveCamera()->getProjection();
+  view.inverse();
+  pro.inverse();
+
+  mouseWorldPosNear = mouseWorldPosNear*pro;
+  mouseWorldPosNear = mouseWorldPosNear*view;
+  mouseWorldPosNear.x /= mouseWorldPosNear.w;
+  mouseWorldPosNear.y /= mouseWorldPosNear.w;
+  mouseWorldPosNear.z /= mouseWorldPosNear.w;
+  mouseWorldPosNear.w = 1.0f;
+
+  mouseWorldPosFar = mouseWorldPosFar*pro;
+  mouseWorldPosFar = mouseWorldPosFar*view;
+  mouseWorldPosFar.x /= mouseWorldPosFar.w;
+  mouseWorldPosFar.y /= mouseWorldPosFar.w;
+  mouseWorldPosFar.z /= mouseWorldPosFar.w;
+  mouseWorldPosFar.w = 1.0f;
+
+  Ray ray;
+  ray.origin = Vector3D(mouseWorldPosNear);
+  ray.direction = Vector3D(mouseWorldPosFar);
+  std::function<std::shared_ptr<GameObject>(const std::shared_ptr<GameObject>&)> search =
+    [&](const std::shared_ptr<GameObject>& child) {
+    std::shared_ptr<GameObject> sr;
+    for (auto &it : child->getChildren()) {
+      auto bbox = it->getComponent<AABBCollider>();
+      Vector3D point;
+      std::cout << "Search" << std::endl;
+      if (ray.intersects(bbox->getTransformedAABB(),&point)) {
+        std::cout << "Found" << std::endl;
+        return it;
+      }
+      sr = search(it);
+    }
+    return sr;
+  };
+  auto child = SceneGraph::getRoot();
+  return search(child);
+}
+
+void SceneEditor::destroy()
 {
   m_renderMan.exit();
   webRenderer.Destroy();

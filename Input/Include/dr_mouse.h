@@ -7,6 +7,7 @@
 #include <dr_vector2di.h>
 #include "dr_input_prerequisites.h"
 
+#include "dr_vector3d.h"
 namespace driderSDK {
 
 
@@ -42,7 +43,7 @@ class DR_INPUT_EXPORT Mouse
   * @return 
   *   The position of the mouse.
   */
-  static Vector2DI 
+  static Vector3D
   getPosition();
 
   /**
@@ -51,7 +52,7 @@ class DR_INPUT_EXPORT Mouse
   * @return
   *   Delta of the movement.
   */
-  static Vector2DI
+  static Vector3D
   getDisplacement();
 
   /**

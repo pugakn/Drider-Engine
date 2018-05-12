@@ -49,10 +49,12 @@ private:
   void UI_UpdateSceneGraph();
   void UI_UpdatePropertySheet(const GameObject& obj);
 
+  SceneGraph::SharedGameObject GetGMOMouseCollition();
 
   //QUERY_ORDER::E m_queryOrder;
 
   Viewport m_viewport;
+  Viewport m_sceneViewportNormalized;
   std::shared_ptr<Camera> m_camera;
   std::shared_ptr<Camera> m_leftCam;
   std::shared_ptr<Camera> m_upCam;
@@ -80,5 +82,8 @@ private:
 
 
   TString m_onFocusGMO;
+  bool m_sceneOnFocus = true;
+  bool m_rotWorldActive = false;
+  SceneGraph::SharedGameObject m_GMOOnFocus;
 };
 }
