@@ -12,15 +12,15 @@ float3
 PeturbNormal(float3 localNormal,
              float3 surfaceNormalWS,
              float3 surfaceTangentWS) {
-    float3 normal = normalize(surfaceNormalWS);
-    float3 tangent = normalize(surfaceTangentWS);
-    float3 binormal = cross(normal, tangent);     // reconstructed from normal & tangent
-    float3x3 TBN; // world "frame" for local normal 
-    TBN[0] = tangent;
-    TBN[1] = binormal;
-    TBN[2] = normal;
-
-    return mul(localNormal, TBN);                // transform to local to world (tangent space)
+  float3 normal = normalize(surfaceNormalWS);
+  float3 tangent = normalize(surfaceTangentWS);
+  float3 binormal = cross(normal, tangent);     // reconstructed from normal & tangent
+  float3x3 TBN; // world "frame" for local normal 
+  TBN[0] = tangent;
+  TBN[1] = binormal;
+  TBN[2] = normal;
+  
+  return mul(localNormal, TBN);                // transform to local to world (tangent space)
 };
 
 // Shlick's approximation of Fresnel

@@ -304,19 +304,13 @@ void SceneEditor::draw()
   GraphicsAPI::getDepthStencilState(DR_DEPTH_STENCIL_STATES::kDepthRW).set(GraphicsAPI::getDeviceContext(),1.0);
   const float clearColor[4]{ 1,0,1,1 };
   m_RT->clear(GraphicsAPI::getDeviceContext(), clearColor);
-  //m_RT->set(GraphicsAPI::getDeviceContext(), GraphicsAPI::getDepthStencil());
   //Draw Scene
   m_renderMan.draw(*m_RT,*m_RTDPTH);
-
   //Draw End
   GraphicsAPI::getDepthStencilState(DR_DEPTH_STENCIL_STATES::kDepthR).set(GraphicsAPI::getDeviceContext(), 1.0);
   GraphicsAPI::getBackBufferRT().set(GraphicsAPI::getDeviceContext(), GraphicsAPI::getDepthStencil());
   webRenderer.setTexture();
-  
-  //GraphicsAPI::getBlendState(DR_BLEND_STATES::kAlphaBlend).set(GraphicsAPI::getDeviceContext());
   quad.draw();
-  //GraphicsAPI::getBlendState(DR_BLEND_STATES::kOpaque).set(GraphicsAPI::getDeviceContext());
-
   m_RT->getTexture(0).set(GraphicsAPI::getDeviceContext(), 0);
   m_editorQuad.draw();
 }
@@ -342,11 +336,17 @@ void SceneEditor::initInputs()
     auto pos = Mouse::getPosition();
     auto cam = CameraManager::getActiveCamera();
     if (dis.z) {
-      cam->move(dis.z *0.1, 0, 0);
+      float vel = W_SCROLL_VEL;
+      if (m_GMOOnFocus) {
+        //vel = vel * (m_GMOOnFocus->getTransform().getPosition() - cam->getPosition()).lengthSqr() / 100000.0f;
+      }
+      cam->move(dis.z *vel, 0, 0);
     }
     if (m_rotWorldActive) {
-      std::cout << pos.x << std::endl;
-      cam->orbit(pos.x, pos.y);
+      cam->pan(0, dis.x * W_ROT_VEL, dis.y * W_ROT_VEL);
+    }
+    if (m_movWorldActive) {
+      cam->move(0, dis.x * W_MOVE_VEL, dis.y * W_MOVE_VEL);
     }
 
   });
@@ -357,16 +357,23 @@ void SceneEditor::initInputs()
 
     if (pressedId == MOUSE_BUTTON::kRight) {
       m_rotWorldActive = true;
-    }
-    if (pressedId == MOUSE_BUTTON::kLeft) {
-      auto gmo = GetGMOMouseCollition();
-      if (gmo) {
-        m_GMOOnFocus = gmo;
-        //std::cout << gmo->getName().c_str() << std::endl;
-      }
+  
     }
     if (pressedId == MOUSE_BUTTON::kMiddle) {
-
+      m_movWorldActive = true;
+    }
+    if (pressedId == MOUSE_BUTTON::kLeft) {
+      m_movWorldActive = true;
+      auto gmo = GetGMOMouseCollition();
+      if (gmo) {
+        if (m_GMOOnFocus == gmo) {
+          auto cam = CameraManager::getActiveCamera();
+          cam->setTarget(m_GMOOnFocus->getTransform().getPosition());
+        }
+        else {
+          m_GMOOnFocus = gmo;
+        }
+      }
     }
   });
   InputManager::getMouse()->addAnyButtonCallback(MOUSE_INPUT_EVENT::kButtonReleased,
@@ -376,11 +383,11 @@ void SceneEditor::initInputs()
     if (pressedId == MOUSE_BUTTON::kRight) {
       m_rotWorldActive = false;
     }
-    if (pressedId == MOUSE_BUTTON::kLeft) {
-
-    }
     if (pressedId == MOUSE_BUTTON::kMiddle) {
-
+      m_movWorldActive = false;
+    }
+    if (pressedId == MOUSE_BUTTON::kLeft) {
+      m_movWorldActive = false;
     }
   });
   InputManager::getKeyboard()->addAnyKeyCallback(KEYBOARD_EVENT::kKeyPressed,
@@ -502,6 +509,11 @@ void SceneEditor::initUI()
 
   //Editor
   webRenderer.registerJS2CPPFunction(std::make_pair("C_SetSceneAreaViewport", [&](const CefRefPtr<CefListValue>& arguments) {
+    m_sceneViewportNormalized.topLeftY = ((float)arguments->GetDouble(1));
+    m_sceneViewportNormalized.topLeftX = (float)arguments->GetDouble(2);
+    m_sceneViewportNormalized.width = (float)arguments->GetDouble(3);
+    m_sceneViewportNormalized.height = (float)arguments->GetDouble(4);
+
     float top = ((float)arguments->GetDouble(1)) / (float)m_viewport.height;
     top = top * 2.0 - 1.0;
     top *= -1;
@@ -517,38 +529,11 @@ void SceneEditor::initUI()
     vertex[1] = { left,  top - height, 0.9f, 1.0f,    0.0f, 0.0f,0.0f, 1.0f  ,0.0,1.0 };
     vertex[2] = { left + width,   top - height,  0.9f,  1.0f,    0.0f, 0.0f,1.0f, 1.0f  ,1.0,1.0 };
     vertex[3] = { left + width,   top,  0.9f,  1.0f,    0.0f, 1.0f,1.0f, 1.0f  ,1.0,0.0 };
-    //m_editorQuad.VB->updateFromBuffer(GraphicsAPI::getDeviceContext(), (byte*)vertex); UNCOMMENT
-    m_sceneViewportNormalized.topLeftX = left;
-    m_sceneViewportNormalized.topLeftY = top;
-    m_sceneViewportNormalized.width = width;
-    m_sceneViewportNormalized.height = height;
+    m_editorQuad.VB->updateFromBuffer(GraphicsAPI::getDeviceContext(), (byte*)vertex); 
     Viewport view;
     view.width = (Int32)arguments->GetDouble(3);
     view.height = (Int32)arguments->GetDouble(4);
-    //CameraManager::getActiveCamera()->setViewport(view);UNCOMMENT
-
-
-    //m_RT.reset(); //AAAAAAAAAAAAAAAAA
-    //DrTextureDesc backDesc;
-    //backDesc.width = (Int32)arguments->GetDouble(3);
-    //backDesc.height = (Int32)arguments->GetDouble(4);
-    //backDesc.pitch = backDesc.width * 4;
-    //backDesc.Format = DR_FORMAT::kR8G8B8A8_UNORM;
-    //backDesc.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE | DR_BIND_FLAGS::RENDER_TARGET;
-    //backDesc.dimension = DR_DIMENSION::k2D;
-    //backDesc.mipLevels = 0;
-    //backDesc.CPUAccessFlags = 0;
-    //backDesc.genMipMaps = true;
-    //m_RT = dr_gfx_shared(GraphicsAPI::getDevice().createRenderTarget(backDesc, 1));
-
-
-    //m_RTDPTH.reset();
-    //DrDepthStencilDesc depthTextureDesc;
-    //depthTextureDesc.bindFlags = DR_BIND_FLAGS::DEPTH_STENCIL | DR_BIND_FLAGS::SHADER_RESOURCE;
-    //depthTextureDesc.width = (Int32)arguments->GetDouble(3);
-    //depthTextureDesc.height = (Int32)arguments->GetDouble(4);
-    //depthTextureDesc.Format = DR_FORMAT::kD24_UNORM_S8_UINT;
-    //m_RTDPTH = dr_gfx_shared(GraphicsAPI::getDevice().createDepthStencil(depthTextureDesc));
+    CameraManager::getActiveCamera()->setViewport(view);
   }));
   //components
   webRenderer.registerJS2CPPFunction(std::make_pair("C_AddRenderComponent", [&](const CefRefPtr<CefListValue>& arguments) {
@@ -688,10 +673,14 @@ SceneGraph::SharedGameObject SceneEditor::GetGMOMouseCollition()
 {
   auto v = Mouse::getPosition();
   Vector2D mouseViewPios(v.x,v.y);
-  mouseViewPios.x /= (float)m_viewport.width;
-  mouseViewPios.y /= (float)m_viewport.height;
+  mouseViewPios.x /= (float)m_sceneViewportNormalized.width;
+  mouseViewPios.y /= (float)m_sceneViewportNormalized.height;
+  mouseViewPios.x -= m_sceneViewportNormalized.topLeftX / (float)m_sceneViewportNormalized.width;
+  mouseViewPios.y -= m_sceneViewportNormalized.topLeftY / (float)m_sceneViewportNormalized.height;
   mouseViewPios = mouseViewPios * 2 - Vector2D(1, 1);
   mouseViewPios.y = -mouseViewPios.y;
+  mouseViewPios.x = -mouseViewPios.x;
+
   std::cout << mouseViewPios.x << std::endl;
   std::cout << mouseViewPios.y << std::endl;
   Vector4D mouseWorldPosNear = Vector4D(mouseViewPios.x, mouseViewPios.y,0,1);
@@ -725,7 +714,6 @@ SceneGraph::SharedGameObject SceneEditor::GetGMOMouseCollition()
     for (auto &it : child->getChildren()) {
       auto bbox = it->getComponent<AABBCollider>();
       Vector3D point;
-      std::cout << "Search" << std::endl;
       if (ray.intersects(bbox->getTransformedAABB(),&point)) {
         std::cout << "Found" << std::endl;
         return it;

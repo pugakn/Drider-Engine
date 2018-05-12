@@ -55,6 +55,12 @@ Camera::move(const Vector3D& direction) {
 
 void
 Camera::pan(float forward, float strafe, float upVelocity, bool lockY) {
+  auto dir = (m_target - m_position).normalize();
+  auto upDir = m_up.normalize();
+  auto strafeDir = (upDir.cross(dir)).normalize();
+  m_position += dir * forward;
+  m_position += upDir * upVelocity;
+  m_position += strafeDir * strafe;
   invalidateView();
 }
 
@@ -129,7 +135,7 @@ Camera::rotate(float yawDegree, float pitchDegree) {
 
 void
 Camera::orbit(float pitch, float yaw) {
-	
+  invalidateView();
 }
 
 const Matrix4x4&

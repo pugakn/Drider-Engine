@@ -80,10 +80,13 @@ private:
   Vector3D modelMovement;
   std::array<Light, 128> Lights;
 
-
+  const float W_SCROLL_VEL = 0.2;
+  const float W_MOVE_VEL = 0.38;
+  const float W_ROT_VEL = 1;
   TString m_onFocusGMO;
   bool m_sceneOnFocus = true;
   bool m_rotWorldActive = false;
+  bool m_movWorldActive = false;
   SceneGraph::SharedGameObject m_GMOOnFocus;
 };
 }
