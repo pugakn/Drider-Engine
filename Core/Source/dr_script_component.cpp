@@ -11,9 +11,9 @@ namespace driderSDK {
 
 
 ScriptComponent::ScriptComponent(GameObject &gameObject,
-                                 std::shared_ptr<ScriptCore> _script) : 
-                                              GameComponent(gameObject, _T("ScriptComponent")),
-                                              m_script(_script) {
+                                 std::shared_ptr<ScriptCore> _script) 
+  : GameComponent(gameObject, _T("ScriptComponent")),
+    m_script(_script) {
   scriptEngine = ScriptEngine::instancePtr();
 
   Keyboard::addAnyKeyCallback(KEYBOARD_EVENT::kKeyPressed,

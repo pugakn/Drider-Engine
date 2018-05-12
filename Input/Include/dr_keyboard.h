@@ -49,9 +49,6 @@ class DR_INPUT_EXPORT Keyboard
   static bool
   isKeyDown(KEY_CODE::E key); 
 
-  static bool
-  keyDown(KEY_CODE::E key);
-
   /**
   * Adds a callback
   * 
@@ -124,7 +121,6 @@ class DR_INPUT_EXPORT Keyboard
   REGISTER_ENUM_VALUE(KeyCode, KEY_CODE, kM)
 
   REGISTER_GLO_FOO_1P(&Keyboard::isKeyDown, isKeyDown, KEY_CODE::E, KeyCode, bool, "bool")
-  REGISTER_GLO_FOO_1P(&Keyboard::keyDown, keyDown, KEY_CODE::E, KeyCode, bool, "bool")
 
   END_REGISTER
 

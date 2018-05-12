@@ -39,11 +39,11 @@ namespace driderSDK
 		return destiny;
 	}
 
-	static asUINT tStringLength(const TString& a) {
-		return (asUINT)a.length();
+	static UInt32 tStringLength(const TString& a) {
+		return (UInt32)a.length();
 	}
 
-	static void tStringResize(asUINT size, TString &a) {
+	static void tStringResize(UInt32 size, TString &a) {
 		a.resize(size);
 	}
 
@@ -51,7 +51,7 @@ namespace driderSDK
 		return a.empty();
 	}
 
-	static TString::value_type * tStringIndex(Int8 index, TString& a) {
+	static TString::value_type * tStringIndex(Int32 index, TString& a) {
 		if (index >= a.size()) {
 			asIScriptContext* context = asGetActiveContext();
 			context->SetException("Out of range");
@@ -64,15 +64,15 @@ namespace driderSDK
 		a.clear();
 	}
 
-	static asUINT tStringSize(const TString& a) {
-		return (asUINT)a.size();
+	static UInt32 tStringSize(const TString& a) {
+		return (UInt32)a.size();
 	}
 
 	static void tStringPushBack(const TString::value_type& character, TString& a) {
 		a.push_back(character);
 	}
 
-	static int tStringCompare(const TString& a, const TString& b) {
+	static Int32 tStringCompare(const TString& a, const TString& b) {
 		return a.compare(b);
 	}
 
@@ -82,11 +82,11 @@ namespace driderSDK
 		}
 	}
 
-	static TString tStringSubstr(Int8 position, Int8 length, const TString& string) {
+	static TString tStringSubstr(Int32 position, Int32 length, const TString& string) {
 		return string.substr(position, length);
 	}
 
-	static int tStringCopy(TString& a, TString::value_type* destiny, int count, int pos) {
+	static Int32 tStringCopy(TString& a, TString::value_type* destiny, Int32 count, Int32 pos) {
 		if (count >= a.size() || pos > a.max_size()) {
 			asIScriptContext* context = asGetActiveContext();
 			context->SetException("Out of range");
@@ -99,18 +99,115 @@ namespace driderSDK
 
 		return count - pos;
 	}
-
-	static int tStringFind(TString& a, TString& in, int pos) {
+	
+	static Int32 tStringFind(TString& a, TString& in, Int32 pos) {
 		return a.find(in, pos);
 	}
 	
-	static TString& tStringInsert(TString& a, int pos, const TString& in) {
+	static TString& tStringInsert(TString& a, Int32 pos, const TString& in) {
 		//add exceptions
 		return a.insert(pos, in);
 	}
 
-	static int tStringRFind(TString& a, TString& in, int pos) {
+	static Int32 tStringRFind(TString& a, TString& in, Int32 pos) {
 		return a.rfind(in, pos);
+	}
+
+	//Conversions
+	static TString &AssignBool(bool b, TString &destiny)
+	{
+		b ? destiny = _T("true") : destiny = _T("false");
+		return destiny;
+	}
+
+	static TString &AddAssignBool(bool b, TString &destiny)
+	{
+		b ? destiny += _T("true") : destiny += _T("false");
+		return destiny;
+
+	}
+
+	static TString AddBool(bool b, const TString &in)
+	{
+		TString result;
+		b ? result = _T("true") : result = _T("false");
+		return in + result;
+	}
+
+	static TString &AssignFloat(float f, TString &destiny)
+	{
+		destiny = f;
+		return destiny;
+	}
+
+	static TString &AddAssignFloat(float f, TString &destiny)
+	{
+		destiny += f;
+		return destiny;
+	}
+
+	static TString AddFloat(float f, const TString &in)
+	{
+		TString result;
+		result = f;
+		return in + result;
+	}
+
+	static TString &AssignDouble(double d, TString &destiny)
+	{
+		destiny = d;
+		return destiny;
+	}
+
+	static TString &AddAssignDouble(double f, TString &destiny)
+	{
+		destiny += f;
+		return destiny;
+	}
+
+	static TString AddDouble(double f, const TString &in)
+	{
+		TString result;
+		result = f;
+		return in + result;
+	}
+
+	static TString &AssignInt32(Int32 i, TString &destiny)
+	{
+		destiny = i;
+		return destiny;
+	}
+
+	static TString &AddAssignInt32(Int32 i, TString &destiny)
+	{
+		destiny += i;
+		return destiny;
+	}
+
+	static TString AddInt32(Int32 i, const TString &in)
+	{
+		TString result;
+		result = i;
+		return in + result;
+	}
+
+	static TString &AssignInt64(Int64 i, TString &destiny)
+	{
+		destiny = i;
+		return destiny;
+	}
+
+	static TString &AddAssignInt64(Int64 i, TString &destiny)
+	{
+		destiny += i;
+		return destiny;
+	}
+
+	static TString AddInt64(Int64 i, const TString &in)
+	{
+		TString result;
+		result = i;
+		return in + result;
 	}
 
 	void registerTString(asIScriptEngine* engine) {
@@ -232,6 +329,73 @@ namespace driderSDK
 		//...
 
 		//Conversions
+
+		result = engine->RegisterObjectMethod("TString",
+																					"TString &opAssign(bool)",
+																					asFUNCTION(AssignBool),
+																					asCALL_CDECL_OBJLAST); 
+		result = engine->RegisterObjectMethod("TString",
+																					"TString &opAddAssign(bool)",
+																					asFUNCTION(AddAssignBool),
+																					asCALL_CDECL_OBJLAST);
+		result = engine->RegisterObjectMethod("TString",
+																					"TString opAdd(bool) const",
+																					asFUNCTION(AddBool),
+																					asCALL_CDECL_OBJLAST); 
+
+		result = engine->RegisterObjectMethod("TString",
+																					"TString &opAssign(float)",
+																					asFUNCTION(AssignFloat),
+																					asCALL_CDECL_OBJLAST);
+		result = engine->RegisterObjectMethod("TString",
+																					"TString &opAddAssign(float)",
+																					asFUNCTION(AddAssignFloat),
+																					asCALL_CDECL_OBJLAST);
+		result = engine->RegisterObjectMethod("TString",
+																					"TString opAdd(float) const",
+																					asFUNCTION(AddFloat),
+																					asCALL_CDECL_OBJLAST);
+
+		result = engine->RegisterObjectMethod("TString",
+																					"TString &opAssign(double)",
+																					asFUNCTION(AssignDouble),
+																					asCALL_CDECL_OBJLAST);
+		result = engine->RegisterObjectMethod("TString",
+																					"TString &opAddAssign(double)",
+																					asFUNCTION(AddAssignDouble),
+																					asCALL_CDECL_OBJLAST);
+		result = engine->RegisterObjectMethod("TString",
+																					"TString opAdd(double) const",
+																					asFUNCTION(AddDouble),
+																					asCALL_CDECL_OBJLAST);
+
+		result = engine->RegisterObjectMethod("TString",
+																					"TString &opAssign(int)",
+																					asFUNCTION(AssignInt32),
+																					asCALL_CDECL_OBJLAST);
+		result = engine->RegisterObjectMethod("TString",
+																					"TString &opAddAssign(int)",
+																					asFUNCTION(AddAssignInt32),
+																					asCALL_CDECL_OBJLAST);
+		result = engine->RegisterObjectMethod("TString",
+																					"TString opAdd(int) const",
+																					asFUNCTION(AddInt32),
+																					asCALL_CDECL_OBJLAST);
+
+		result = engine->RegisterObjectMethod("TString",
+																					"TString &opAssign(int64)",
+																					asFUNCTION(AssignInt64),
+																					asCALL_CDECL_OBJLAST);
+		result = engine->RegisterObjectMethod("TString",
+																					"TString &opAddAssign(int64)",
+																					asFUNCTION(AddAssignInt64),
+																					asCALL_CDECL_OBJLAST);
+		result = engine->RegisterObjectMethod("TString",
+																					"TString opAdd(int64) const",
+																					asFUNCTION(AddInt64),
+																					asCALL_CDECL_OBJLAST);
+
+
 		//result = engine->RegisterObjectMethod("TString",
 		//																			"",
 		//																			asFUNCTION(),
@@ -252,14 +416,13 @@ namespace driderSDK
 			Assign
 			AddAssign
 			Add
-			Add_r
 
 			TYPES:
-			float
-			bool
-			double
-			int8
-
+			[X]bool
+			[X]float
+			[x]double
+			[x]int32
+			[x]int64
 
 
 		*/

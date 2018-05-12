@@ -546,6 +546,7 @@ class DR_MATH_EXPORT Vector3D
   result = REGISTER_OP(Vector3D, operator+=, opAddAssign, const Vector3D&, Vector3D&, "Vector3D&", in)
   result = REGISTER_OP_CONST(Vector3D, operator*, opMul, const Vector3D&, Vector3D, "Vector3D", out)
   result = REGISTER_OP(Vector3D, operator*=, opMulAssign, const Vector3D&, Vector3D&, "Vector3D&", in)
+  result = REGISTER_OP_CONST(Vector3D, operator*, opMul, float, Vector3D, "Vector3D", );
   //result = REGISTER_OP_CONST(Vector3D, operator/, opDiv, const float, Vector3D, "Vector3D", out)
   //result = REGISTER_OP(Vector3D, operator*=, opMulAssign, const float, Vector3D&, "Vector3D&", in)  
   

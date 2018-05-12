@@ -10,6 +10,7 @@
 #include <dr_camera.h>
 #include <dr_camera_component.h>
 #include <dr_camera_manager.h> 
+#include <dr_context_manager.h>
 #include <dr_degree.h>
 #include <dr_device.h>
 #include <dr_device_context.h>
@@ -29,14 +30,19 @@
 #include <dr_render_component.h>
 #include <dr_resource_manager.h>
 #include <dr_skeleton.h>
+#include <dr_script_component.h>
+#include <dr_script_core.h>
+#include <dr_script_engine.h>
 #include <dr_vertex_buffer.h>
 #include <dr_time.h>
 
 #include "AABBDebug.h"
 #include "AnimationTechnique.h"
+#include "FrustumDebug.h"
 #include "LinesTechnique.h"
 #include "SkeletonDebug.h"
 #include "StaticMeshTechnique.h"
+
 
 namespace driderSDK {
 
@@ -49,17 +55,13 @@ GraphicsApplication::~GraphicsApplication() {}
 
 void
 GraphicsApplication::postInit() {
-      
-  Transform x;
-  x.setRotation({Degree(0).toRadian(), 
-                 Degree(45).toRadian(), 0});
-  auto f = x.getDirection();
-
+  
   initModules();   
   initInputCallbacks();
   loadResources();
-  createScene();
+  initScriptEngine();
   createTechniques();
+  createScene();
 
   Time::update();
 
@@ -104,12 +106,9 @@ GraphicsApplication::postRender() {
   m_linesTech->setCamera(&camera);
 
   auto& mainC = CameraManager::getCamera(m_camNames[0]);
-
-
-
+  
   auto& dc = GraphicsAPI::getDeviceContext();
-
-
+  
   if (m_drawMeshes) {
 
     auto queryRes = SceneGraph::query(*mainC, 
@@ -184,11 +183,17 @@ GraphicsApplication::initModules() {
   InputManager::startUp(reinterpret_cast<SizeT>(m_hwnd));
   ResourceManager::startUp();
   CameraManager::startUp();
+  ScriptEngine::startUp();
+  ContextManager::startUp();
   SceneGraph::startUp();
 }
 
 void 
 GraphicsApplication::initInputCallbacks() {
+  
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::k9,
+                        &SceneGraph::buildOctree); 
 
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::k2,
@@ -210,7 +215,13 @@ GraphicsApplication::initInputCallbacks() {
                         KEY_CODE::k1,
                         std::bind(&GraphicsApplication::toggleAABBDebug,
                                   this, 
-                                  SceneGraph::getRoot().get())); 
+                                  SceneGraph::getRoot())); 
+
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::k1,
+                        std::bind(&GraphicsApplication::toggleAABBDebug,
+                                  this, 
+                                  SceneGraph::getOctree())); 
 
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::k4,
@@ -228,6 +239,10 @@ GraphicsApplication::initInputCallbacks() {
                         std::bind(&GraphicsApplication::recompileShaders,
                                   this));
   
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kJ, 
+                        std::bind(&GraphicsApplication::toggleAnimation,
+                                  this));
 
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kV,
@@ -238,8 +253,16 @@ void
 GraphicsApplication::loadResources() {
   
   m_currCam = 0;
+  m_currAnim = 0;
+
   m_camNames[0] = _T("MAIN_CAM");
   m_camNames[1] = _T("UP_CAM");
+
+  //m_animationsNames[0] = _T("Animation_mixamo.com");
+  m_animationsNames[0] = _T("Animation_0");
+  m_animationsNames[1] = _T("Animation_1");
+  m_animationsNames[2] = _T("Animation_2");
+  m_animationsNames[3] = _T("Animation_3");
 
   CameraManager::createCamera(m_camNames[0], 
                               {0, 200, -400}, 
@@ -257,17 +280,39 @@ GraphicsApplication::loadResources() {
 
   ResourceManager::loadResource(_T("Croc.X"));
 
-  //ResourceManager::loadResource(_T("HipHopDancing.fbx"));
+  ResourceManager::loadResource(_T("Jump In Place.fbx"));
+  
+  ResourceManager::renameResource(_T("Animation_mixamo.com"), 
+                                  m_animationsNames[0]);
 
-  //ResourceManager::loadResource(_T("Shoot Rifle.fbx"));
+  ResourceManager::loadResource(_T("Shoot Rifle.fbx"));
 
-  ResourceManager::loadResource(_T("Strafe_Left.fbx"));
+  ResourceManager::renameResource(_T("Animation_mixamo.com"), 
+                                  m_animationsNames[1]);
 
-  ResourceManager::loadResource(_T("Weapons-of-survival.fbx"));
+  ResourceManager::loadResource(_T("Gunplay.fbx"));
 
+  ResourceManager::renameResource(_T("Animation_mixamo.com"),
+                                  m_animationsNames[2]);
+
+  ResourceManager::loadResource(_T("Hit_Reaction_shoot.fbx"));
+
+  ResourceManager::renameResource(_T("Animation_mixamo.com"), 
+                                  m_animationsNames[3]);
+
+  ResourceManager::loadResource(_T("Run.fbx"));
+
+  ResourceManager::loadResource(_T("Unidad_1m.fbx"));
+  
   ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
 
   ResourceManager::loadResource(_T("Sphere.fbx"));
+  
+  ResourceManager::loadResource(_T("script1.as"));
+
+  ResourceManager::loadResource(_T("MontiBehavior.as"));
+
+  ResourceManager::loadResource(_T("nanosuit.obj"));
 }
 
 void 
@@ -288,14 +333,68 @@ GraphicsApplication::createTechniques() {
 
 void 
 GraphicsApplication::createScene() {
-  
-  auto activeCam = CameraManager::getActiveCamera();
-  
-  auto walkerModel = ResourceManager::getReferenceT<Model>(_T("Strafe_Left.fbx"));
+    
+  auto cubo = ResourceManager::getReferenceT<Model>(_T("Unidad_1m.fbx"));
 
-  auto& walkerAnimName = walkerModel->animationsNames[0];
+  auto cuboObj = addObjectFromModel(cubo, _T("CUBIN"));
 
-  auto wa = ResourceManager::getReferenceT<Animation>(walkerAnimName);
+  cuboObj->setStatic(true);
+
+  auto terr = ResourceManager::getReferenceT<Model>(_T("nanosuit.obj"));
+
+  auto terrainObj = addObjectFromModel(terr, _T("Terrain"));
+
+  
+
+  terrainObj->setStatic(true);
+
+  terrainObj->clone()->getTransform().setPosition({0, 0, 550});
+
+  auto woman = ResourceManager::getReferenceT<Model>(_T("Run.fbx"));
+
+  auto woms = ResourceManager::getReferenceT<Skeleton>(woman->skeletonName);
+
+  auto womanNode = addObjectFromModel(woman, _T("LE Morrita"));
+
+  auto animatorW = womanNode->createComponent<AnimatorComponent>();
+
+  animatorW->setSkeleton(woms);
+
+  auto womAni = ResourceManager::getReferenceT<Animation>(woman->animationsNames[0]);
+
+  animatorW->addAnimation(womAni, woman->animationsNames[0]);
+
+  animatorW->setCurrentAnimation(woman->animationsNames[0], false, false);
+  
+  auto printComponents = [](GameObject* go) 
+  {
+    auto cmps = go->getComponents<GameComponent>();
+    Logger::addLog(_T("----------------"));
+    for (auto& cmp : cmps) {
+      Logger::addLog(cmp->getName());
+    }
+    Logger::addLog(_T("----------------"));
+  };
+
+  auto sc = ResourceManager::getReferenceT<ScriptCore>(_T("script1.as"));
+
+  auto scomp = womanNode->createComponent<ScriptComponent>(sc);
+
+  auto currentModule = ScriptEngine::instancePtr()->m_scriptEngine->GetModule("GameModule");
+  
+  auto result = currentModule->Build(); 
+
+  scomp->initScript();
+
+  scomp->start();
+
+  printComponents(womanNode.get());
+
+  womanNode->getTransform().setPosition({-200.f, 0, 200.f});
+
+  womanNode->getTransform().setScale({10.f, 10.f, 10.f});
+
+  auto walkerModel = ResourceManager::getReferenceT<Model>(_T("Gunplay.fbx"));
 
   auto ws = ResourceManager::getReferenceT<Skeleton>(walkerModel->skeletonName);
   
@@ -305,12 +404,32 @@ GraphicsApplication::createScene() {
 
   animator->setSkeleton(ws);
 
-  animator->addAnimation(wa, walkerAnimName);
+  for (Int32 i = 0; i < (sizeof(m_animationsNames) / sizeof(TString)); ++i)
+  {
+    auto wa = ResourceManager::getReferenceT<Animation>(m_animationsNames[i]);
+    
+    animator->addAnimation(wa, m_animationsNames[i]);
+  }
 
-  animator->setCurrentAnimation(walkerAnimName);
+  animator->setCurrentAnimation(m_animationsNames[m_currAnim], false, false);
+  
+  //walkerObj->removeComponent<AnimatorComponent>();
 
   walkerObj->getTransform().setPosition({300, 0, 200});
-  
+
+  auto clone1 = walkerObj->clone();
+
+  clone1->getTransform().setPosition({150, 0, 200});
+
+  clone1->setName(_T("LE Walker 2"));
+
+  clone1 = walkerObj->clone();
+
+  clone1->getTransform().setPosition({450, 0, 200});
+
+  clone1->setName(_T("LE Walker 3"));
+  //walkerObj->getTransform().setScale({10.f, 10.f, 10.f});
+    
   m_right = walkerObj.get();
 
   Int32 copies = 0;
@@ -341,18 +460,24 @@ GraphicsApplication::createScene() {
   
   auto camNode = SceneGraph::createObject(_T("Camera"));
   
+  auto activeCam = CameraManager::getActiveCamera();
+
   camNode->createComponent<CameraComponent>(activeCam);
 
   camNode->getTransform().setPosition({0, 0, -20});
 
   camNode->setParent(sphereCenter);
 
-  auto quadMod = ResourceManager::getReferenceT<Model>(_T("ScreenAlignedQuad.3ds"));
+  auto fd = copy->createComponent<FrustumDebug>(activeCam.get());
+
+  fd->setShaderTechnique(m_linesTech.get());
+
+  /*auto quadMod = ResourceManager::getReferenceT<Model>(_T("ScreenAlignedQuad.3ds"));
 
   auto quad = addObjectFromModel(quadMod, _T("Floor"));
 
   quad->getTransform().rotate({-Math::HALF_PI, 0, 0});
-  quad->getTransform().setScale({10000, 10000, 10000});
+  quad->getTransform().setScale({10000, 10000, 10000});*/
 }
 
 std::shared_ptr<GameObject>
@@ -415,7 +540,11 @@ GraphicsApplication::toggleSkeletonView(GameObject* obj) {
 }
 
 void 
-GraphicsApplication::toggleAABBDebug(GameObject* obj) {
+GraphicsApplication::toggleAABBDebug(std::shared_ptr<GameObject> obj) {
+
+  if (!obj) {
+    return;
+  }
 
   if (obj->getComponent<AABBDebug>()) {
     obj->removeComponent<AABBDebug>();
@@ -426,7 +555,7 @@ GraphicsApplication::toggleAABBDebug(GameObject* obj) {
   }
 
   for (auto& child : obj->getChildren()) {
-    toggleAABBDebug(child.get());
+    toggleAABBDebug(child);
   }
 
 }
@@ -454,11 +583,78 @@ GraphicsApplication::toggleWireframe() {
 }
 
 void 
+GraphicsApplication::toggleAnimation() {
+
+  m_currAnim = (m_currAnim + 1) % (sizeof(m_animationsNames) / sizeof(TString));
+
+  if (auto obj = SceneGraph::getRoot()->findNode(_T("LE Walker"))) {
+
+    if (auto animCmp = obj->getComponent<AnimatorComponent>()) {
+      animCmp->setCurrentAnimation(m_animationsNames[m_currAnim], true, true);
+      //animCmp->setTime(0);
+    }
+  }
+
+  if (auto obj = SceneGraph::getRoot()->findNode(_T("LE Walker 2"))) {
+
+    if (auto animCmp = obj->getComponent<AnimatorComponent>()) {
+      animCmp->setCurrentAnimation(m_animationsNames[m_currAnim], true, false);
+      //animCmp->setTime(0);
+    }
+  }
+
+  if (auto obj = SceneGraph::getRoot()->findNode(_T("LE Walker 3"))) {
+
+    if (auto animCmp = obj->getComponent<AnimatorComponent>()) {
+      animCmp->setCurrentAnimation(m_animationsNames[m_currAnim], false, false);
+      //animCmp->setTime(0);
+    }
+  }
+}
+
+void 
 GraphicsApplication::toggleCamera() {
   
   m_currCam = !m_currCam;
 
   CameraManager::setActiveCamera(m_camNames[m_currCam]);
+}
+
+void 
+GraphicsApplication::initScriptEngine() {
+  Int32 result;
+
+  auto ctxMag = ContextManager::instancePtr();
+
+  auto scriptEngine = ScriptEngine::instancePtr();
+
+  //Create engine
+  result = scriptEngine->createEngine();
+
+  //Configurate engine
+  result = scriptEngine->configurateEngine(ctxMag);
+
+  //Register all functions
+  result = Keyboard::registerFunctions(scriptEngine);
+  Vector3D vector;
+  result = vector.registerFunctions(scriptEngine);
+  Transform transform;
+  result = transform.registerFunctions(scriptEngine);
+  result = Time::registerFunctions(scriptEngine);
+  
+  //Create a context
+  scriptEngine->m_scriptContext = ctxMag->addContext(scriptEngine->m_scriptEngine,
+                                                     _T("GameModule"));
+
+  //Get script references of the ResourceManager
+  auto bs = ResourceManager::getReferenceT<ScriptCore>(_T("MontiBehavior.as"));
+
+  //Add script section of behavior
+  scriptEngine->addScript(bs->getName(),
+                          bs->getScript(),
+                          _T("GameModule"));
+
+  
 }
 
 void 

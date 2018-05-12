@@ -5,6 +5,7 @@
 #include <dr_string_utils.h>
 
 #include "dr_gameComponent.h"
+#include "dr_script_component.h"
 
 namespace driderSDK {
 
@@ -29,22 +30,47 @@ GameObject::update() {
   m_change = m_localTransform.changed() ||
              getParent()->changed();
 
+  m_localTransform.m_change = false;
+
   if (m_change) {
     m_finalTransform = m_localTransform * getParent()->m_finalTransform;  
-  } 
+  }   
 
   updateImpl();
 
   for (auto& component : m_components) {
-    component->onUpdate();
+    
+    if (component->isEnabled()) {
+   
+      component->onUpdate();
+
+      //If the local transform changed inside the component update
+      if (m_localTransform.changed()) {
+
+        //Recalculate the final transform
+        m_finalTransform = m_localTransform * getParent()->m_finalTransform;
+
+        m_localTransform.m_change = false;
+      }
+    }
+  }
+
+  if (!m_componentsToRemove.empty()) {
+
+    for (const auto& cmpToRem : m_componentsToRemove) {
+      removeComponentP(cmpToRem);
+    }
+
+    m_componentsToRemove.clear();
   }
 
   for (auto& child : m_children) {
-    child->update();
+    if (child->isEnabled()) {
+      child->update();
+    }
   }
 
   m_finalTransform.m_change = false;
-  m_localTransform.m_change = false;
 }
 
 void 
@@ -97,8 +123,11 @@ GameObject::clone(bool addToParent) {
 
   dup->m_isStatic = m_isStatic;
 
-  static_cast<EnableObject>(*dup) = *this; 
-  static_cast<NameObject>(*dup) = *this;
+  static_cast<EnableObject&>(*dup) = *this; 
+
+  static_cast<NameObject&>(*dup) = *this;
+
+  dup->setName(dup->getName() + _T(" clone"));
   /**
   dup->m_finalTransform = m_finalTransform;
    dup->m_finalTransform.invalidate();
@@ -120,6 +149,11 @@ GameObject::clone(bool addToParent) {
 
 void
 GameObject::removeComponent(const TString& compName) {
+  m_componentsToRemove.insert(compName);
+}
+
+void
+GameObject::removeComponentP(const TString& compName) {
 
   for (auto it = m_components.begin(); it != m_components.end(); ++it) {
     if ((*it)->getName() == compName) {
@@ -129,13 +163,20 @@ GameObject::removeComponent(const TString& compName) {
     }
   }
 
-  DR_DEBUG_ONLY(Logger::addLog(_T("Trying to remove unexisting component")));
-
+  DR_DEBUG_ONLY(Logger::addLog(_T("Trying to remove unexisting component: ") + 
+                               compName));
 }
 
 void
 GameObject::addComponent(ComponentPtr component) {
+
+  DR_ASSERT(&component->getGameObject() == this);
+
   m_components.push_back(std::move(component));
+
+  std::stable_partition(m_components.begin(),
+                        m_components.end(),
+                        ComponentPartition{});
 }
 
 void 
@@ -311,6 +352,11 @@ GameObject::getValidName(TString name) {
 GameObject::SharedGameObj 
 GameObject::createInstance() {
   return std::make_shared<GameObject>();
+}
+
+bool 
+ComponentPartition::operator()(const std::unique_ptr<GameComponent>& l) const {
+  return static_cast<bool>(dynamic_cast<ScriptComponent*>(l.get()));
 }
 
 }

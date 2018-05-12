@@ -4,9 +4,10 @@
 
 #include "dr_script_engine.h"
 #include "scriptstdstring.h"
-//#include "dr_script_custom_string.h"
+#include "dr_script_custom_string.h"
 #include <vector>
 #include <dr_context_manager.h>
+#include <dr_script_debug.h>
 
 namespace driderSDK {
 
@@ -19,14 +20,6 @@ void stringPrint_g(asIScriptGeneric* gen) {
 }
 
 ScriptEngine::ScriptEngine() {
-
-	/*if (!Logger::isStarted()) {
-    Logger::startUp();
-	}
-
-	if (!Time::isStarted()) {
-		Time::startUp();
-	}*/
 
 }
 
@@ -55,10 +48,7 @@ ScriptEngine::createEngine() {
 																									asFUNCTION(stringPrint_g), 
 																									asCALL_GENERIC);
 
-  /*
-  * Seccion para registrar metodos //eso dice arriba pero en ingles...(asi es comente un comentario)
-  */
-
+	Debug = new ScriptDebug;
 	return result;
 }
 
@@ -100,13 +90,17 @@ ScriptEngine::getScriptObject(TString scriptName,
                               asIScriptModule *mod,
                               asIScriptObject **objectRef,
                               asITypeInfo **typeRef) {
+  //Get script's real name
+  String realName = StringUtils::toString(scriptName);
+  realName.erase(realName.length() - 3,
+                 realName.length());
+
   //Get type of the script object
-  asITypeInfo* type = mod->GetTypeInfoByDecl(StringUtils::toString(
-                                             scriptName).c_str());
+  asITypeInfo* type = mod->GetTypeInfoByDecl(realName.c_str());
 
   // Get the factory function from the object type
-  String path = StringUtils::toString(scriptName) + " @" 
-                + StringUtils::toString(scriptName) + "()";
+  String path = realName + " @"
+                + realName + "()";
   asIScriptFunction *factory = type->GetFactoryByDecl(path.c_str());
 
   // Prepare the context to call the factory function
@@ -183,6 +177,7 @@ void
 ScriptEngine::release() {
 	m_scriptContext->Release();
 	m_scriptEngine->ShutDownAndRelease();
+	delete Debug;
 }
 
 void
@@ -212,17 +207,13 @@ void
 ScriptEngine::addScriptLog(const TString& log, int type) {
 
 	if (type == asMSGTYPE_WARNING) {
-    Logger::instancePtr()->addWarning(__FILE__,
-															__LINE__, 
-															_T("[ScriptEngine] ") + log);
+    Logger::instancePtr()->addWarning(__FILE__, __LINE__,  _T("[ScriptEngine] ") + log);
 	}
 	else if (type == asMSGTYPE_INFORMATION) {
     Logger::instancePtr()->addLog(_T("[ScriptEngine] ") + log);
 	}
 	else if (type == asMSGTYPE_ERROR) {
-    Logger::instancePtr()->addError(__FILE__,
-														__LINE__, 
-														_T("[ScriptEngine] ") + log);
+    Logger::instancePtr()->addError(__FILE__, __LINE__,  _T("[ScriptEngine] ") + log);
 	}
 }
 

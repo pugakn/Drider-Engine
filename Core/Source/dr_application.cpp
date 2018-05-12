@@ -5,7 +5,7 @@
 
 namespace driderSDK {
 
-int Application::run() {
+Int32 Application::run() {
 
   init();
 
