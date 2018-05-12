@@ -12,39 +12,40 @@ ServerApplication::postInit() {
   NetworkManager::startUp();
 
   
-  m_socket.init();
+  m_socket.create();
   if (!m_socket.isValid()) {
-    Logger::addLog(_T("Could not initliaze socket!"));
-    NetworkManager::getLastError();
+    Logger::addLog(_T("Could not initliaze socket: ") + 
+                   NetworkManager::getNetworkErrorStr());
     return;
   }
 
   Logger::addLog(_T("Socket init!"));
 
-  m_socket.bind(8888, "127.0.0.1");
-
-  if (!m_socket.isValid()) {
-    Logger::addLog(_T("Could not bind socket!"));
-    NetworkManager::getLastError();
+  if (!m_socket.bind("127.0.0.1", 8888)) {
+    Logger::addLog(_T("Could not bind socket!") + 
+                   NetworkManager::getNetworkErrorStr());
     return;
   }
-
-  Logger::addLog(_T("Socket binded!"));
   
+  Logger::addLog(_T("Socket binded!"));
+
+  m_socket.setBlockMode(false);
 }
 
 void 
 ServerApplication::postUpdate() {
 
-  Logger::addLog(_T("Waiting for data!"));
+  //Logger::addLog(_T("Waiting for data!"));
 
   Packet packet;
   UInt16 recPort = 0;
   String recIp;
 
-  Int32 recSize = m_socket.receive(packet, 256, recPort, recIp);
+  Int32 recSize;
+  
+  auto res = m_socket.receive(packet, 256, recSize, recPort, recIp);
 
-  if (recSize != -1) {
+  if (recSize > 0) {
     String message;
     UInt32 tick;
     packet >> tick;
@@ -59,9 +60,9 @@ ServerApplication::postUpdate() {
     packet << message;
     m_socket.send(packet, recPort, recIp);
   }
-  else {
-    Logger::addLog(_T("Error while receiving data!"));
-    Logger::addLog(NetworkManager::getLastError());
+  else if (res == SOCKET_ERR::kError) {
+    Logger::addLog(_T("Error while receiving data!") +
+                   NetworkManager::getNetworkErrorStr());   
   }
 
 }
@@ -72,8 +73,9 @@ ServerApplication::postRender() {
 
 void 
 ServerApplication::postDestroy() {
-  Logger::shutDown();
+  m_socket.close();
   NetworkManager::shutDown();
+  Logger::shutDown();
 }
 
 }

@@ -19,7 +19,7 @@ ClientApplication::postInit() {
 
   m_tick = 0;
 
-  m_socket.init();
+  m_socket.create();
   
   if (!m_socket.isValid()) {
     Logger::addLog(_T("Could not initliaze socket!"));
@@ -35,7 +35,8 @@ ClientApplication::postInit() {
     String serverIP = "127.0.0.1";
     ++m_tick;
 
-    if (m_socket.send(packet, serverPort, serverIP)) {
+    if (m_socket.send(packet, serverPort, serverIP) == 
+        SOCKET_ERR::kSuccess) {
       Logger::addLog(_T("Message send: ") + StringUtils::toTString(msg));
     }
     else {
@@ -61,9 +62,9 @@ ClientApplication::postInit() {
 
   //msgCallback("Hello server!");
 
-  Packet packet;
+  /*Packet packet;
   UInt16 serverPort;
-  String serverIP;
+  String serverIP;*/
   
   msgCallback("Hello server!!");
 
@@ -93,7 +94,7 @@ ClientApplication::postRender() {}
 
 void 
 ClientApplication::postDestroy() {
-
+  m_socket.close();
   InputManager::shutDown();
   NetworkManager::shutDown();
   Logger::shutDown();

@@ -2,162 +2,117 @@
 #include "dr_network_manager.h"
 #include "dr_packet.h"
 
-#ifdef DR_PLATFORM_WINDOWS
-#include <WinSock2.h>
-#include <WS2tcpip.h>
-#endif
-
 namespace driderSDK {
 
 UDPSocket::UDPSocket() 
-  : m_blocking(true), 
-    m_handle(NetworkManager::getInvalidHandle())
 {}
 
 UDPSocket::~UDPSocket() 
 {}
 
-void 
-UDPSocket::init() {
-  m_handle = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-}
-
 void
-UDPSocket::destroy() {
-  if (isValid()) {
-    closesocket(m_handle);
-  }
+UDPSocket::create() {
+  m_handle = NetworkManager::createSocket(SOCKET_TYPE::kUDP);
 }
 
 bool
-UDPSocket::isValid() {
-  return NetworkManager::isSocketValid(m_handle);
-}
-
-SocketHandle
-UDPSocket::getHandle() {
-  return m_handle;
-}
-
-void
-UDPSocket::setBlocking(bool blocking) {
-  m_blocking = blocking;
-}
-
-void
-UDPSocket::bind(UInt16 port, const String& ipAddress) {
+UDPSocket::bind(const String& ipAddress, UInt16 port) {
   
   if (!isValid()) {
-    return;
+    return false;
   }
 
-  sockaddr_in server{};
-
-  server.sin_family = AF_INET;
-  server.sin_port = htons(port);
-
-  inet_pton(AF_INET, ipAddress.c_str(), &server.sin_addr);
+  sockaddr_in server = NetworkManager::getAddress(ipAddress, port);
   
   if (::bind(m_handle, (sockaddr*)&server, sizeof(server)) != 0) {
     m_handle = NetworkManager::getInvalidHandle();
+
+    return false;
   }
+
+  return true;
 }
 
-bool
+SOCKET_ERR::E
 UDPSocket::send(const DataBuffer& data,
                 UInt16 port,
                 const String& ipAddress) {
 
-  sockaddr_in server{};
-
-  server.sin_family = AF_INET;
-  server.sin_port = htons(port);
-
-  inet_pton(AF_INET, ipAddress.c_str(), &server.sin_addr);
+  sockaddr_in server = NetworkManager::getAddress(ipAddress, port);
 
   Int32 sendBytes = 0;
 
-  if (m_blocking) {
-    sendBytes = sendto(m_handle, 
-                       reinterpret_cast<const char*>(data.data()), 
-                       static_cast<int>(data.size()), 
-                       0,
-                       (sockaddr*)&server,
-                       sizeof(server));
-  }
-  else {
+  sendBytes = sendto(m_handle, 
+                     reinterpret_cast<const char*>(data.data()), 
+                     static_cast<int>(data.size()), 
+                     0,
+                     (sockaddr*)&server,
+                     sizeof(server));
 
-  }
-
-  return sendBytes != -1;
+  return sendBytes != -1 ? SOCKET_ERR::kSuccess : SOCKET_ERR::kError;
 }
 
-bool
+SOCKET_ERR::E
 UDPSocket::send(const Packet& packet,
                 UInt16 port, 
                 const String& ipAddress) {
   return send(packet.getData(), port, ipAddress);
 }
 
-Int32
+SOCKET_ERR::E
 UDPSocket::receive(DataBuffer& buffer, 
+                   Int32& receivedLen,
                    UInt16& port, 
                    String& ipAddress) {
 
   sockaddr_in sender{};
   Int32 senderSAS = sizeof(sender);
-  Int32 received = 0;
+  receivedLen = 0;
 
-  if (m_blocking) {
-    received = recvfrom(m_handle, 
-                        reinterpret_cast<char*>(buffer.data()), 
-                        static_cast<int>(buffer.size()),
-                        0,
-                        (sockaddr*)&sender,
-                        &senderSAS);
-  }
-  else {
+  receivedLen = recvfrom(m_handle, 
+                         reinterpret_cast<char*>(buffer.data()), 
+                         static_cast<int>(buffer.size()),
+                         0,
+                         (sockaddr*)&sender,
+                         &senderSAS);
 
-  }
+  auto result = SOCKET_ERR::kSuccess;
 
-  if (received != -1) {
-    //15 is the maximum size of characters an ip can contain
-    ipAddress.resize(15);
+  if (receivedLen != SOCKET_ERR::kError) {
+    
+    NetworkManager::getAddrPort(sender, ipAddress, port);
 
-    inet_ntop(AF_INET, 
-              &sender.sin_addr, 
-              const_cast<char*>(ipAddress.c_str()), 
-              ipAddress.size());
-
-    port = ntohs(sender.sin_port);
-
-    if (static_cast<Int32>(buffer.size()) < received) {
+    if (static_cast<Int32>(buffer.size()) < receivedLen) {
       //DR_ASSERT(0);
-      Int32 x = 0;
+      //Int32 x = 0;
     }
   }
-    
-  return received;
+  else {
+    result = NetworkManager::getSocketError();  
+  }
+      
+  return result;
 }
 
-Int32
+SOCKET_ERR::E
 UDPSocket::receive(Packet& packet,
                    Int32 maxBuffSize,
+                   Int32& receivedLen,
                    UInt16& port, 
                    String& ipAddress) {
 
   DataBuffer buff(maxBuffSize, 0);
 
-  Int32 received = receive(buff, port, ipAddress);
+  auto result = receive(buff, receivedLen, port, ipAddress);
 
-  if (received != -1) {
+  if (receivedLen != -1) {
 
-    buff.resize(received);
+    buff.resize(receivedLen);
 
     packet.addData(std::move(buff));
   }
   
-  return received;
+  return result;
 }
 
 }

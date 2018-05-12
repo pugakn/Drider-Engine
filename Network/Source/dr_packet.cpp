@@ -22,13 +22,16 @@ Packet::addData(const void* data, SizeT dataSize) {
 
 void 
 Packet::addData(std::vector<Int8>&& data) {
-  if (m_data.empty()) {
-    m_data = std::move(data);
-  }
-  else {
-    m_data.reserve(m_data.size() + data.size());
-    std::move(m_data.begin(), m_data.end(), std::back_inserter(m_data));
-    data.clear();
+  
+  if (!data.empty()) {
+    if (m_data.empty()) {
+      m_data = std::move(data);
+    }
+    else {
+      m_data.reserve(m_data.size() + data.size());
+      std::move(m_data.begin(), m_data.end(), std::back_inserter(m_data));
+      data.clear();
+    }
   }
 }
 
