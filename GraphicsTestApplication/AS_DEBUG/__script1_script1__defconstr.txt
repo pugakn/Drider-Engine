@@ -1,13 +1,22 @@
 script1::script1()
 
-Temps: 
+Temps: 1
 
 Variables: 
  000: script1 this
+ 001: (heap) GameObject {noname}
 
 
-- 7,8 -
-    0   0 *    SUSPEND
-    1   0 *    PshVPtr  v0
-    2   1 *    CALL     101           (MontiBehavior::MontiBehavior())
-    4   0 *    RET      1
+- 4,13 -
+    0   1 *    SUSPEND
+    1   1 *    CALLSYS  99           (GameObject@ GameObject())
+    3   1 *    STOREOBJ v1
+    4   1 *    PshVPtr  v1
+    5   2 *    PshVPtr  v0
+    6   3 *    ADDSi    v32, 134217746
+    8   3 *    REFCPY   0xe179430
+   10   2 *    PopPtr
+   11   1 *    FREE     v1, 236426288
+   13   1 *    PshVPtr  v0
+   14   2 *    CALL     107           (MontiBehavior::MontiBehavior())
+   16   1 *    RET      1

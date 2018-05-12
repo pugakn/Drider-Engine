@@ -1,19 +1,19 @@
 #include "dr_script_custom_string.h"
 #include "dr_script_string_factory.h"
-
+#include <dr_string_utils.h>
 #include <angelscript\angelscript.h>
 
 namespace driderSDK
 {
 	static StringFactory g_stringFactory;
 
-	const char* gStringName = "TString";
+	const char* gStrName = "TString";
 
 	void tStringConstructor(TString* pString) {
 		new(pString) TString();
 	}
 
-	void tStringCopyConstructor(TString* pString, TString& copy) {
+	void tStringCopyConstructor(const TString& copy, TString* pString) {
 		new(pString) TString(copy);
 	}
 
@@ -68,8 +68,10 @@ namespace driderSDK
 		return (UInt32)a.size();
 	}
 
-	static void tStringPushBack(const TString::value_type& character, TString& a) {
-		a.push_back(character);
+	static void tStringPushBack(const TString& character, TString& a) {
+		if (!character.empty()) {
+			a.push_back(character[0]);
+		}
 	}
 
 	static Int32 tStringCompare(const TString& a, const TString& b) {
@@ -86,7 +88,7 @@ namespace driderSDK
 		return string.substr(position, length);
 	}
 
-	static Int32 tStringCopy(TString& a, TString::value_type* destiny, Int32 count, Int32 pos) {
+	static Int32 tStringCopy(TString& a, TString& destiny, Int32 count, Int32 pos) {
 		if (count >= a.size() || pos > a.max_size()) {
 			asIScriptContext* context = asGetActiveContext();
 			context->SetException("Out of range");
@@ -136,78 +138,94 @@ namespace driderSDK
 
 	static TString &AssignFloat(float f, TString &destiny)
 	{
-		destiny = f;
+		TOStringstream stream;
+		stream << f;
+		destiny = stream.str();
 		return destiny;
 	}
 
 	static TString &AddAssignFloat(float f, TString &destiny)
 	{
-		destiny += f;
+		TOStringstream stream;
+		stream << f;
+		destiny += stream.str();
 		return destiny;
 	}
 
 	static TString AddFloat(float f, const TString &in)
 	{
-		TString result;
-		result = f;
-		return in + result;
+		TOStringstream stream;
+		stream << f;
+		return in + stream.str();
 	}
 
-	static TString &AssignDouble(double d, TString &destiny)
+	static TString &AssignDouble(Float64 d, TString &destiny)
 	{
-		destiny = d;
+		TOStringstream stream;
+		stream << d;
+		destiny = stream.str();
 		return destiny;
 	}
 
-	static TString &AddAssignDouble(double f, TString &destiny)
+	static TString &AddAssignDouble(Float64 d, TString &destiny)
 	{
-		destiny += f;
+		TOStringstream stream;
+		stream << d;
+		destiny += stream.str();
 		return destiny;
 	}
 
-	static TString AddDouble(double f, const TString &in)
+	static TString AddDouble(Float64 d, const TString &in)
 	{
-		TString result;
-		result = f;
-		return in + result;
+		TOStringstream stream;
+		stream << d;
+		return in + stream.str();
 	}
 
 	static TString &AssignInt32(Int32 i, TString &destiny)
 	{
-		destiny = i;
+		TOStringstream stream;
+		stream << i;
+		destiny = stream.str();
 		return destiny;
 	}
 
 	static TString &AddAssignInt32(Int32 i, TString &destiny)
 	{
-		destiny += i;
+		TOStringstream stream;
+		stream << i;
+		destiny += stream.str();
 		return destiny;
 	}
 
 	static TString AddInt32(Int32 i, const TString &in)
 	{
-		TString result;
-		result = i;
-		return in + result;
+		TOStringstream stream;
+		stream << i;
+		return in + stream.str();
 	}
 
 	static TString &AssignInt64(Int64 i, TString &destiny)
 	{
-		destiny = i;
+		TOStringstream stream;
+		stream << i;
+		destiny = stream.str();
 		return destiny;
 	}
 
 	static TString &AddAssignInt64(Int64 i, TString &destiny)
 	{
-		destiny += i;
+		TOStringstream stream;
+		stream << i;
+		destiny += stream.str();
 		return destiny;
 	}
 
 	static TString AddInt64(Int64 i, const TString &in)
 	{
-		TString result;
-		result = i;
-		return in + result;
+		TOStringstream stream;
+		stream << i;
+		return in + stream.str();
 	}
 
 	void registerTString(asIScriptEngine* engine) {
@@ -215,194 +233,220 @@ namespace driderSDK
 			registerTStringMethodsNative(engine);
 		}
 		else {
-
+			//generic methods, not implemented
 		}
 	}
 
 	void registerTStringMethodsNative(asIScriptEngine* engine) {
 
 		Int8 result;
+		String declaration, name(gStrName);
 		//Main class and factory
-		result = engine->RegisterObjectType("TString",
+		result = engine->RegisterObjectType(gStrName,
 																				sizeof(TString),
 																				asOBJ_VALUE | asGetTypeTraits<TString>());
 
-		result = engine->RegisterStringFactory("TString", &g_stringFactory);
+		result = engine->RegisterStringFactory(gStrName, &g_stringFactory);
 
 		//Behaviors
-		result = engine->RegisterObjectBehaviour("TString", 
+		result = engine->RegisterObjectBehaviour(gStrName,
 																						 asBEHAVE_CONSTRUCT, 
 																						 "void f()", 
 																						 asFUNCTION(tStringConstructor), 
 																						 asCALL_CDECL_OBJLAST);
-		result = engine->RegisterObjectBehaviour("TString",
+		declaration = "void f(const " + name + "& in) ";
+		result = engine->RegisterObjectBehaviour(gStrName,
 																						 asBEHAVE_CONSTRUCT,
-																						 "void f(const TString& in)",
+																						 declaration.c_str(),
 																						 asFUNCTION(tStringCopyConstructor),
 																						 asCALL_CDECL_OBJLAST);
-		result = engine->RegisterObjectBehaviour("TString", 
+		result = engine->RegisterObjectBehaviour(gStrName, 
 																						 asBEHAVE_DESTRUCT, 
 																						 "void f()", 
 																						 asFUNCTION(tStringDestructor), 
 																						 asCALL_CDECL_OBJLAST);
 		//Operators
-		result = engine->RegisterObjectMethod("TString", 
-																					"bool opEquals(const TString& in) const", 
+		declaration = "bool opEquals(const " + name + "&in) const";
+		result = engine->RegisterObjectMethod(gStrName,
+																					declaration.c_str(),
 																					asFUNCTIONPR(tStringEquals, 
-																					(const TString&, const TString&), bool), 
+																					(const TString&, 
+																					 const TString&), bool), 
 																					asCALL_CDECL_OBJFIRST);
-		result = engine->RegisterObjectMethod("TString", 
-																					"TString opAdd(const TString& in) const", 
+		declaration = name + " opAdd(const " + name + "&in) const";
+		result = engine->RegisterObjectMethod(gStrName, 
+																					declaration.c_str(),
 																					asFUNCTIONPR(tStringAdd, 
-																					(const TString&, const TString&), TString),
+																					(const TString&, 
+																					 const TString&), TString),
 																					asCALL_CDECL_OBJFIRST);
-		result = engine->RegisterObjectMethod("TString", 
-																					"TString& opAssign(const TString& in)", 
+		declaration = name + "& opAssign(const " + name + "&in)";
+		result = engine->RegisterObjectMethod(gStrName,
+																					declaration.c_str(),
 																					asFUNCTION(tStringAssign),
 																					asCALL_CDECL_OBJLAST);
-		result = engine->RegisterObjectMethod("TString", 
-																					"TString& opAddAssign(const TString& in)", 
+		declaration = name + "& opAddAssign(const " + name + "&in)";
+		result = engine->RegisterObjectMethod(gStrName, 
+																					declaration.c_str(), 
 																					asFUNCTION(tStringAddAssign), 
 																					asCALL_CDECL_OBJLAST);
 		//String methods
-		result = engine->RegisterObjectMethod("TString", 
+		result = engine->RegisterObjectMethod(gStrName, 
 																					"uint length() const", 
 																					asFUNCTION(tStringLength), 
 																					asCALL_CDECL_OBJLAST);
-		result = engine->RegisterObjectMethod("TString", 
+		result = engine->RegisterObjectMethod(gStrName, 
 																					"void resize(uint)", 
 																					asFUNCTION(tStringResize), 
 																					asCALL_CDECL_OBJLAST); 
-		result = engine->RegisterObjectMethod("TString",
+		result = engine->RegisterObjectMethod(gStrName,
 																					"bool empty() const",
 																					asFUNCTION(tStringIsEmpty),
 																					asCALL_CDECL_OBJLAST);
-		result = engine->RegisterObjectMethod("TString",
+		result = engine->RegisterObjectMethod(gStrName,
 																					"uint8 opIndex(uint)",
 																					asFUNCTION(tStringIndex),
 																					asCALL_CDECL_OBJLAST);
-		result = engine->RegisterObjectMethod("TString",
+		result = engine->RegisterObjectMethod(gStrName,
 																					"const uint8 opIndex(uint) const",
 																					asFUNCTION(tStringIndex),
 																					asCALL_CDECL_OBJLAST);
-		result = engine->RegisterObjectMethod("TString",
+		result = engine->RegisterObjectMethod(gStrName,
 																					"void clear()",
 																					asFUNCTION(tStringClear),
 																					asCALL_CDECL_OBJLAST);
-		result = engine->RegisterObjectMethod("TString",
+		result = engine->RegisterObjectMethod(gStrName,
 																					"uint size() const",
 																					asFUNCTION(tStringSize),
 																					asCALL_CDECL_OBJLAST);
-		result = engine->RegisterObjectMethod("TString",
-																					"void push_back(char& a)",
+		declaration = "void push_back(" + name + "& in)";
+		result = engine->RegisterObjectMethod(gStrName,
+																					declaration.c_str(),
 																					asFUNCTION(tStringPushBack),
 																					asCALL_CDECL_OBJLAST);
-		result = engine->RegisterObjectMethod("TString",
-																					"int compare(const TString& in) const",
+		declaration = "int compare(const " + name + "& in) const";
+		result = engine->RegisterObjectMethod(gStrName,
+																					declaration.c_str(),
 																					asFUNCTION(tStringCompare),
 																					asCALL_CDECL_OBJFIRST); 
 		//right now string compare only works with strings
-		result = engine->RegisterObjectMethod("TString",
+		result = engine->RegisterObjectMethod(gStrName,
 																					"void pop_back()",
 																					asFUNCTION(tStringPopBack),
 																					asCALL_CDECL_OBJLAST);
-		result = engine->RegisterObjectMethod("TString",
-																					"TString substr(uint pos, uint len)",
+		declaration = name + " substr(uint pos, uint len)";
+		result = engine->RegisterObjectMethod(gStrName,
+																					declaration.c_str(),
 																					asFUNCTION(tStringSubstr),
 																					asCALL_CDECL_OBJLAST);
-		result = engine->RegisterObjectMethod("TString", 
-																					"uint copy(char* dest, int count, int pos)",
+		declaration = "uint copy(" + name + "& out, int count, int pos)";
+		result = engine->RegisterObjectMethod(gStrName,
+																					declaration.c_str(),
 																					asFUNCTION(tStringCopy),
 																				  asCALL_CDECL_OBJFIRST);
-		result = engine->RegisterObjectMethod("TString",
-																					"int find(TString& in, int pos)",
+		declaration = "int find(" + name + "& in, int pos)";
+		result = engine->RegisterObjectMethod(gStrName,
+																					declaration.c_str(),
 																					asFUNCTION(tStringFind),
-																					asCALL_THISCALL_OBJFIRST);
-		result = engine->RegisterObjectMethod("TString",
-																					"TString& insert(int pos, const TString& in)",
+																					asCALL_CDECL_OBJFIRST);
+		declaration = name + "& insert(int pos, const " + name + "& in)";
+		result = engine->RegisterObjectMethod(gStrName,
+																					declaration.c_str() ,
 																					asFUNCTION(tStringInsert),
 																					asCALL_CDECL_OBJFIRST);
-		result = engine->RegisterObjectMethod("TString",
-																					"int rfind(TString& in, int pos)",
+		declaration = "int rfind(" + name + "& in, int pos)";
+		result = engine->RegisterObjectMethod(gStrName,
+																					declaration.c_str(),
 																					asFUNCTION(tStringRFind),
-																					asCALL_THISCALL_OBJFIRST);
+																					asCALL_CDECL_OBJFIRST);
 		//...
 
 		//Conversions
 
-		result = engine->RegisterObjectMethod("TString",
-																					"TString &opAssign(bool)",
+		declaration = name + " &opAssign(bool)";
+		result = engine->RegisterObjectMethod(gStrName,
+																					declaration.c_str(),
 																					asFUNCTION(AssignBool),
 																					asCALL_CDECL_OBJLAST); 
-		result = engine->RegisterObjectMethod("TString",
-																					"TString &opAddAssign(bool)",
+		declaration = name + " &opAddAssign(bool)";
+		result = engine->RegisterObjectMethod(gStrName,
+																					declaration.c_str(),
 																					asFUNCTION(AddAssignBool),
 																					asCALL_CDECL_OBJLAST);
-		result = engine->RegisterObjectMethod("TString",
-																					"TString opAdd(bool) const",
+		declaration = name + " opAdd(bool) const";
+		result = engine->RegisterObjectMethod(gStrName,
+																					declaration.c_str(),
 																					asFUNCTION(AddBool),
 																					asCALL_CDECL_OBJLAST); 
-
-		result = engine->RegisterObjectMethod("TString",
-																					"TString &opAssign(float)",
+		declaration = name + " &opAssign(float)";
+		result = engine->RegisterObjectMethod(gStrName,
+																					declaration.c_str(),
 																					asFUNCTION(AssignFloat),
 																					asCALL_CDECL_OBJLAST);
-		result = engine->RegisterObjectMethod("TString",
-																					"TString &opAddAssign(float)",
+		declaration = name + " &opAddAssign(float)";
+		result = engine->RegisterObjectMethod(gStrName,
+																					declaration.c_str(),
 																					asFUNCTION(AddAssignFloat),
 																					asCALL_CDECL_OBJLAST);
-		result = engine->RegisterObjectMethod("TString",
-																					"TString opAdd(float) const",
+		declaration = name + " opAdd(float) const";
+		result = engine->RegisterObjectMethod(gStrName,
+																					declaration.c_str(),
 																					asFUNCTION(AddFloat),
 																					asCALL_CDECL_OBJLAST);
-
-		result = engine->RegisterObjectMethod("TString",
-																					"TString &opAssign(double)",
+		declaration = name + " &opAssign(double)";
+		result = engine->RegisterObjectMethod(gStrName,
+																					declaration.c_str(),
 																					asFUNCTION(AssignDouble),
 																					asCALL_CDECL_OBJLAST);
-		result = engine->RegisterObjectMethod("TString",
-																					"TString &opAddAssign(double)",
+		declaration = name + " &opAddAssign(double)";
+		result = engine->RegisterObjectMethod(gStrName,
+																					declaration.c_str(),
 																					asFUNCTION(AddAssignDouble),
 																					asCALL_CDECL_OBJLAST);
-		result = engine->RegisterObjectMethod("TString",
-																					"TString opAdd(double) const",
+		declaration = name + " opAdd(double) const";
+		result = engine->RegisterObjectMethod(gStrName,
+																					declaration.c_str(),
 																					asFUNCTION(AddDouble),
 																					asCALL_CDECL_OBJLAST);
-
-		result = engine->RegisterObjectMethod("TString",
-																					"TString &opAssign(int)",
+		declaration = name + " &opAssign(int)";
+		result = engine->RegisterObjectMethod(gStrName,
+																					declaration.c_str(),
 																					asFUNCTION(AssignInt32),
 																					asCALL_CDECL_OBJLAST);
-		result = engine->RegisterObjectMethod("TString",
-																					"TString &opAddAssign(int)",
+		declaration = name + " &opAddAssign(int)";
+		result = engine->RegisterObjectMethod(gStrName,
+																					declaration.c_str(),
 																					asFUNCTION(AddAssignInt32),
 																					asCALL_CDECL_OBJLAST);
-		result = engine->RegisterObjectMethod("TString",
-																					"TString opAdd(int) const",
+		declaration = name + " opAdd(int) const";
+		result = engine->RegisterObjectMethod(gStrName,
+																					declaration.c_str(),
 																					asFUNCTION(AddInt32),
 																					asCALL_CDECL_OBJLAST);
-
-		result = engine->RegisterObjectMethod("TString",
-																					"TString &opAssign(int64)",
+		declaration = name + " &opAssign(int64)";
+		result = engine->RegisterObjectMethod(gStrName,
+																					declaration.c_str(),
 																					asFUNCTION(AssignInt64),
 																					asCALL_CDECL_OBJLAST);
-		result = engine->RegisterObjectMethod("TString",
-																					"TString &opAddAssign(int64)",
+		declaration = name + " &opAddAssign(int64)";
+		result = engine->RegisterObjectMethod(gStrName,
+																					declaration.c_str(),
 																					asFUNCTION(AddAssignInt64),
 																					asCALL_CDECL_OBJLAST);
-		result = engine->RegisterObjectMethod("TString",
-																					"TString opAdd(int64) const",
+		declaration = name + " opAdd(int64) const";
+		result = engine->RegisterObjectMethod(gStrName,
+																					declaration.c_str(),
 																					asFUNCTION(AddInt64),
 																					asCALL_CDECL_OBJLAST);
 
 
-		//result = engine->RegisterObjectMethod("TString",
+		//result = engine->RegisterObjectMethod(gStrName,
 		//																			"",
 		//																			asFUNCTION(),
 		//																			asCALL_CDECL_OBJLAST);
 
 		/*
-			TO DO...
+			TO DO... (maybe)
 
 			/////METHODS://///
 
@@ -410,20 +454,6 @@ namespace driderSDK
 			findLastOf
 			findFirstNotOf
 			findLastNotOF
-
-
-			////CONVERSIONS:////
-			Assign
-			AddAssign
-			Add
-
-			TYPES:
-			[X]bool
-			[X]float
-			[x]double
-			[x]int32
-			[x]int64
-
 
 		*/
 	}

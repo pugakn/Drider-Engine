@@ -5,6 +5,8 @@
 #include <dr_util_prerequisites.h>
 #include <dr_timer.h>
 
+#include <unordered_map>
+
 namespace driderSDK {
 
 class GameObject;
@@ -67,19 +69,9 @@ class TestApplication : public Application
   std::unique_ptr<Technique> m_staticTech;
   std::unique_ptr<Technique> m_animTech;
 
-  ScriptComponent *playerScript;
+  std::unordered_map<TString, ScriptComponent*> m_scripts;
 
   SoundExtraInfo *extraInfo;
-
-  //DrSound *sound1;
-  //DrSound *sound2;
-  //DrChannel *channel;
-  
-  /*FMOD::System     *system;
-  FMOD::Sound      *sound1;
-  FMOD::Channel    *channel = 0;
-  FMOD_RESULT       result;
-  unsigned int      version;*/
 
 };
 

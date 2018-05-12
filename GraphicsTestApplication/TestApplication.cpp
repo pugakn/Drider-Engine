@@ -40,7 +40,6 @@
 #include <dr_script_object.h>
 #include <dr_context_manager.h>
 
-#include <dr_sound_api.h>
 #include <dr_fmod_sound_api.h>
 #include <dr_soundSystem.h>
 #include <dr_sound_core.h>
@@ -48,6 +47,7 @@
 #include <dr_channelGroup.h>
 #include <dr_soundExtraInfo.h>
 #include <dr_sound.h>
+#include <dr_sound_component.h>
 
 namespace driderSDK {
 
@@ -91,13 +91,10 @@ TestApplication::postRender() {
   m_animTech->setCamera(&camera);
   m_staticTech->setCamera(&camera);
 
-  auto& mainC = CameraManager::getCamera(m_camNames[0]);
-
-
 
   auto& dc = GraphicsAPI::getDeviceContext();
 
-  auto queryRes = SceneGraph::query(*mainC,
+  auto queryRes = SceneGraph::query(camera,
                                     QUERY_ORDER::kBackToFront,
                                     queryFlags);
 
@@ -182,8 +179,8 @@ TestApplication::loadResources() {
   m_camNames[1] = _T("UP_CAM");
 
   CameraManager::createCamera(m_camNames[0],
-                              { 0, 200, -400 },
-                              { 0, 150, 10 },
+                              { 0, 500, -400 },
+                              { 0, 0, 1 },
                               m_viewport,
                               45, 0.1f, 4000.f);
 
@@ -203,11 +200,11 @@ TestApplication::loadResources() {
   ResourceManager::loadResource(_T("Sphere.fbx"));
 
   //Scripts
-  ResourceManager::loadResource(_T("MontiBehavior.as"));
+  ResourceManager::loadResource(_T("montiBehavior.as"));
   ResourceManager::loadResource(_T("script1.as"));
   ResourceManager::loadResource(_T("script2.as"));
 
-  //Sounds
+  //Sounds (All sunds requiere extraInfo data)
   auto system = SoundAPI::instance().API->system;
   auto channel = SoundAPI::instance().API->channel1;
   extraInfo = new SoundExtraInfo(reinterpret_cast<SoundSystem*>(system),
@@ -231,17 +228,6 @@ TestApplication::createScene() {
   animator->addAnimation(wa, walkerAnimName);
   animator->setCurrentAnimation(walkerAnimName, true, true);
   m_player->getTransform().setPosition({ 0, 0, 300 });
-
-
-  auto sphereMod = ResourceManager::getReferenceT<Model>(_T("Sphere.fbx"));
-  auto sphereCenter = SceneGraph::createObject(_T("Spherin"));
-  sphereCenter->getTransform().scale({ 20, 20, 20 });
-
-
-  auto camNode = SceneGraph::createObject(_T("Camera"));
-  camNode->createComponent<CameraComponent>(activeCam);
-  camNode->getTransform().setPosition({ 0, 0, -20 });
-  camNode->setParent(sphereCenter);
 
   auto quadMod = ResourceManager::getReferenceT<Model>(_T("ScreenAlignedQuad.3ds"));
   auto quad = addObjectFromModel(quadMod, _T("Floor"));
@@ -298,10 +284,12 @@ TestApplication::initScriptEngine() {
   result = vector.registerFunctions(scriptEngine);
   Transform transform;
   result = transform.registerFunctions(scriptEngine);
+  result = GameObject::registerFunctions(scriptEngine);
+  
   result = Time::registerFunctions(scriptEngine);
 
   //Get script references of the ResourceManager
-  auto rBehaviorScript = ResourceManager::getReference(_T("MontiBehavior.as"));
+  auto rBehaviorScript = ResourceManager::getReference(_T("montiBehavior.as"));
   auto BehaviorScript = std::dynamic_pointer_cast<ScriptCore>(rBehaviorScript);
 
   auto rScript1 = ResourceManager::getReference(_T("script1.as"));
@@ -320,17 +308,26 @@ TestApplication::initScriptEngine() {
                           _T("GameModule"));
 
   //Add script component to the objects and add script sections of the scripts
-  playerScript = m_player->createComponent<ScriptComponent>(Script1);
+  auto playerScript = m_player->createComponent<ScriptComponent>(Script1);
+  m_scripts.insert({_T("script1"), playerScript});
+
+  playerScript = m_player->createComponent<ScriptComponent>(Script2);
+  m_scripts.insert({ _T("script2"), playerScript });
 
   //Build module
   auto currentModule = scriptEngine->m_scriptEngine->GetModule("GameModule");
   result = currentModule->Build();
 
+  //SceneGraph::instance().getRoot()->findObject(_T("Floor"));
+
   //Initialize scripts
-  playerScript->initScript();
+  m_scripts.find(_T("script1"))->second->initScript();
+  m_scripts.find(_T("script2"))->second->initScript();
 
   //Start the script
-  playerScript->start();
+  m_scripts.find(_T("script1"))->second->start();
+  m_scripts.find(_T("script2"))->second->start();
+
 
 }
 
@@ -340,20 +337,15 @@ TestApplication::playSoundTest() {
   auto sound1Resource = ResourceManager::instance().getReferenceT<
                         SoundCore>(_T("testSound1.mp3"));
 
-  auto sound1Ref = sound1Resource.get()->soundResource->getReference();
-  auto sound1 = reinterpret_cast<DrSound*>(sound1Ref);
+  auto sound1 = sound1Resource.get()->soundResource;
+  auto soundComponent = m_player->createComponent<SoundComponent>();
+
+  //Add all sounds to SoundComponent
+  soundComponent->addSound(_T("testSound1"),
+                           sound1);
+
+  soundComponent->play(_T("testSound1"));
   
-
-  auto channel1Ref = SoundAPI::instance().API->channel1->getReference();
-  auto channel1 = reinterpret_cast<DrChannel*>(channel1Ref);
-
-  auto channelGroupRef = SoundAPI::instance().API->masterGroup->getReference();
-  auto channelGroup = reinterpret_cast<DrChannelGroup*>(channelGroupRef);
-
-  SoundAPI::instance().API->system->playSound(sound1,
-                                              channelGroup,
-                                              false,
-                                              &channel1);
 }
 
 void

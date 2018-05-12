@@ -9,13 +9,19 @@
 
 namespace driderSDK {
 
+GameObject* Ref_GameObject() {
+  return new GameObject();
+}
+
 GameObject::GameObject(const TString& name)
   : NameObject(name), 
     m_tag(_T("UNTAGGED")),
     m_isStatic(false),
     m_change(false)
     DR_DEBUG_ONLY_PARAM(m_destroyed(false))
-{}
+{
+  refCount = 1;
+}
 
 GameObject::~GameObject() {
   DR_DEBUG_ONLY(
@@ -317,6 +323,13 @@ GameObject::findNode(const TString & nodeName) {
   return node;
 }
 
+GameObject*
+GameObject::findObject(const TString& nodeName) {
+  auto gO = findNode(nodeName);
+  gO->addRef();
+  return gO.get();
+}
+
 SizeT 
 GameObject::getChildrenCount() const {
   return m_children.size();
@@ -357,6 +370,23 @@ GameObject::createInstance() {
 bool 
 ComponentPartition::operator()(const std::unique_ptr<GameComponent>& l) const {
   return static_cast<bool>(dynamic_cast<ScriptComponent*>(l.get()));
+}
+
+GameObject&
+GameObject::operator=(GameObject& ref) {
+  /*auto obj = ref.clone();
+  this->m_change = obj->m_change;
+  this->m_children = obj->m_children;
+  this->m_componentNames = obj->m_componentNames;
+  this->m_components = obj->m_components;
+  this->m_componentsToRemove = obj->m_componentsToRemove;
+  this->m_destroyed = obj->m_destroyed;
+  this->m_finalTransform = obj->m_finalTransform;
+  this->m_isStatic = obj->m_isStatic;
+  this->m_localTransform = obj->m_localTransform;
+  this->m_parent = obj->m_parent;
+  this->m_tag = obj->m_tag;*/
+  return *this;
 }
 
 }

@@ -37,6 +37,11 @@ FMODSoundSystem::getObjectReference() {
   return reinterpret_cast<void**>(&fmodSoundSystem);
 }
 
+SoundSystem*
+FMODSoundSystem::get() {
+  return reinterpret_cast<SoundSystem*>(fmodSoundSystem);
+}
+
 void
 FMODSoundSystem::createSound(TString name,
                              DR_SOUND_MODE::E mode,

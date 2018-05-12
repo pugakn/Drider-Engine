@@ -27,6 +27,9 @@ class DR_SOUND_EXPORT FMODSoundSystem : public SoundSystem {
    void**
    getObjectReference() override;
 
+   SoundSystem*
+   get() override;
+
    void 
    createSound(TString name,
                DR_SOUND_MODE::E mode,

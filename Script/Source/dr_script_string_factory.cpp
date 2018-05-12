@@ -12,7 +12,9 @@ StringFactory::~StringFactory() {
 const void* 
 StringFactory::GetStringConstant(const char* data, asUINT length) {
 
-	TString string(StringUtils::toTString(data), length);
+	WString stringData((const wchar_t*)data, length/2);
+	//String stringData(data, length);
+	TString string(StringUtils::toTString(stringData));
 
 	map_t::iterator it = m_stringCache.find(string);
 
@@ -48,12 +50,12 @@ StringFactory::GetRawStringData(const void* str, char* data, asUINT* length) con
 		return asERROR;
 	}
 	if (length) {
-		*length = (asUINT)reinterpret_cast<const TString*>(str)->length();
+		*length = (asUINT)reinterpret_cast<const TString*>(str)->length()*2;
 	}
 	if (data) {
 		memcpy(data, 
 					 reinterpret_cast<const TString*>(str)->c_str(), 
-					 reinterpret_cast<const TString*>(str)->length());
+					 reinterpret_cast<const TString*>(str)->length()*2);
 	}
 	return asSUCCESS;
 }

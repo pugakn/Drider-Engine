@@ -12,6 +12,11 @@ FMODChannel::getObjectReference() {
   return reinterpret_cast<void**>(&channel);
 }
 
+DrChannel*
+FMODChannel::get() {
+  return reinterpret_cast<DrChannel*>(channel);
+}
+
 void
 FMODChannel::setPaused(bool paused) {
   channel->setPaused(paused);
