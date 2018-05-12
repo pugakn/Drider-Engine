@@ -24,7 +24,7 @@ void
 HSVtoRGB(float fH, float fS, float fV,
          float& fR, float& fG, float& fB) {
   float fC = fV * fS;
-  float fX = fC * (1.0f - abs(fmod((fH / 60.0f), 2) - 1.0f));
+  float fX = fC * (1.0f - Math::abs(fmod((fH / 60.0f), 2.0f) - 1.0f));
   float fM = fV - fC;
 
   fR = fM;
@@ -81,6 +81,15 @@ RenderManApp::postInit() {
   SceneGraph::startUp();
   Time::startUp();
   CameraManager::startUp();
+  CameraManager::createCamera(_T("PATO_CAM"),
+                              { 0.0f, 150.0f, -400.0f },
+                              { 0.0f, 10.0f, 0.0f },
+                              m_viewport,
+                              45.f,
+                              //1024, 1024,
+                              0.1f,
+                              10000.0f);
+  CameraManager::setActiveCamera(_T("PATO_CAM"));
   m_renderMan.init();
 
   Degree grados(2.8125f);
@@ -110,16 +119,6 @@ RenderManApp::postInit() {
 
   m_renderMan.lights = &Lights;
 
-  CameraManager::createCamera(_T("PATO_CAM"),
-                              { 0.0f, 150.0f, -400.0f },
-                              { 0.0f, 50.f, 0.0f },
-                              m_viewport,
-                              45.f,
-                              //1024, 1024,
-                              0.1f,
-                              10000.f);
-  CameraManager::setActiveCamera(_T("PATO_CAM"));
-
   modelMovement = Vector3D(0.0f, 0.0f, 0.0f);
 
   loadResources();
@@ -131,7 +130,7 @@ RenderManApp::postInit() {
     model->createComponent<AABBCollider>(ptrModel->aabb);
     model->getTransform().setPosition(Vector3D(0.0f, 50.0f, 0.0f));
     model->getTransform().setScale(Vector3D(100.0f, 100.0f, 100.0f));
-    model->getTransform().setRotation(Vector3D(0.0f, Math::QUARTER_PI*0.5f, 0.0f));
+    model->getTransform().setRotation(Vector3D(0.0f, Math::QUARTER_PI*0.25f, 0.0f));
 
     modelMat = std::make_shared<Material>(_T("ModelMaterial"));
 
@@ -155,14 +154,14 @@ RenderManApp::postInit() {
     rComp->getMeshes().front().material = modelMat;
   }
 
-
   floor = SceneGraph::createObject(_T("Floor"));
   auto ptrFloor = ResourceManager::getReferenceT<Model>(_T("plane.fbx"));
   if (ptrFloor) {
     floor->createComponent<RenderComponent>(ptrFloor);
     floor->createComponent<AABBCollider>(ptrFloor->aabb);
     floor->getTransform().setPosition(Vector3D(0.0f, -50.0f, 0.0f));
-    floor->getTransform().setScale(Vector3D(5.0f, 5.0f, 5.0f));
+    floor->getTransform().setScale(Vector3D(1000.0f, 1.0f, 1000.0f));
+    //floor->getTransform().setScale(Vector3D(5.0f, 1.0f, 5.0f));
 
     floorMat = std::make_shared<Material>(_T("FloorMaterial"));
 
@@ -201,11 +200,7 @@ RenderManApp::postInit() {
     auto renderComp = floor->getComponent<RenderComponent>();
     renderComp->getMeshes().front().material = floorMat;
   }
-
-  //auto tmpComp = SceneGraph::createObject(_T("X"))->createComponent<FrustumDebug>(m_renderMan.m_vecShadowCamera[0].get());
-  //tmpComp->setShaderTechnique(&tecnico);
-  //tecnico.compile();
-
+  
   initInputCallbacks();
 }
 
@@ -219,7 +214,7 @@ RenderManApp::postUpdate() {
     m_renderMan.recompile();
   }
 
-  const float fMovementSpeed = 1000.0f;
+  const float fMovementSpeed = 500.0f;
   if (Keyboard::isKeyDown(KEY_CODE::kA)) {
     model->getTransform().move(Vector3D(1.0f, 0.0f, 0.0f) * Time::getDelta() * fMovementSpeed);
   }
@@ -244,6 +239,7 @@ void
 RenderManApp::postRender() {
   GraphicsDriver::API().clear();
   m_renderMan.draw(GraphicsAPI::getBackBufferRT(),GraphicsAPI::getDepthStencil());
+  CameraManager::getActiveCamera()->setTarget(model->getTransform().getPosition());
   //tecnico.setCamera(CameraManager::getActiveCamera().get());
   //tecnico.prepareForDraw();
   //SceneGraph::getRoot()->getChild(_T("X"))->render();
@@ -270,19 +266,20 @@ void
 RenderManApp::RotateModel() {
   Vector2DI mouseDelta = Mouse::getDisplacement();
   Vector3D rotation{0.0f, 0.0f, 0.0f};
+  float scale = 0.25f;
 
   if (Mouse::isButtonDown(MOUSE_BUTTON::kLeft)) {
     if (Math::abs(mouseDelta.x) < 3.0f) {
-      mouseDelta.x = 0.0f;
+      mouseDelta.x = static_cast<Int32>(0.0f);
     }
     if (Math::abs(mouseDelta.y) < 3.0f) {
-      mouseDelta.y = 0.0f;
+      mouseDelta.y = static_cast<Int32>(0.0f);
     }
 
-    rotation.y = -mouseDelta.x;
-    rotation.x = -mouseDelta.y;
+    rotation.y = static_cast<float>(-mouseDelta.x);
+    rotation.x = static_cast<float>(-mouseDelta.y);
 
-    model->getTransform().rotate(rotation * Time::getDelta());
+    model->getTransform().rotate(rotation * scale * Time::getDelta());
   }
 }
 
@@ -293,8 +290,8 @@ RenderManApp::MoveModel(Vector3D direction) {
 
 void
 RenderManApp::loadResources() {
-  //ResourceManager::loadResource(_T("Checker.fbx"));
-  //ResourceManager::loadResource(_T("Sphere.fbx"));
+  ResourceManager::loadResource(_T("Checker.fbx"));
+  ResourceManager::loadResource(_T("Sphere.fbx"));
   ResourceManager::loadResource(_T("plane.fbx"));
   //ResourceManager::loadResource(_T("Croc.X"));
   ResourceManager::loadResource(_T("model.dae"));

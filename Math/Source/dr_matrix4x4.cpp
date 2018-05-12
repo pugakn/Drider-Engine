@@ -219,7 +219,7 @@ Matrix4x4::Translation(const Vector3D& Pos) {
 
 Matrix4x4&
 Matrix4x4::Move(const Vector3D& Move) {
-  vector3 += Vector4D(Move, 0.f);
+  vector3 += Vector4D(Move, 0.0f);
   return *this;
 }
 
@@ -341,7 +341,7 @@ Matrix4x4::ProjectionFov(float FOV, float Aspect, float ZNear, float ZFar) {
 
   float Height = CosFov / SinFov;
   float Width = Height / Aspect;
-  float fRange = ZFar / (ZFar-ZNear);
+  float fRange = ZFar / (ZFar - ZNear);
 
   *this = zerosMat4x4;
 
@@ -361,7 +361,7 @@ Matrix4x4::Orthogonal(float Width, float Height, float ZNear, float ZFar) {
   (*this)[0][0] = 2.0f / Width;
   (*this)[1][1] = 2.0f / Height;
   (*this)[2][2] = 1.0f / (ZFar - ZNear);
-  (*this)[2][3] = ZNear / (ZNear - ZFar);
+  (*this)[3][2] = -ZNear / (ZNear - ZFar);
   (*this)[3][3] = 1.0f;
 
   return *this;

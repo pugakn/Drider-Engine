@@ -46,8 +46,7 @@ class RenderManApp : public Application
   RenderMan m_renderMan;
 
   SceneGraph::SharedGameObject* selectedGO;
-  std::vector<std::pair<SceneGraph::SharedGameObject,
-                        std::shared_ptr<Material>>> m_vecGoMat;
+  std::vector<SceneGraph::SharedGameObject> m_vecGos;
   SceneGraph::SharedGameObject model;
   SceneGraph::SharedGameObject floor;
   std::shared_ptr<Material> modelMat;
