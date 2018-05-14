@@ -669,7 +669,8 @@ GraphicsApplication::playerMovement() {
 
   const float velocity = 200.f;
 
-  auto direction = m_player->getTransform().getDirection();
+  auto& worldMat = m_player->getTransform().getMatrix();
+  auto direction = Vector3D(worldMat.vector2);
   auto left = direction.cross({0,1,0});
 
   direction.y = 0;

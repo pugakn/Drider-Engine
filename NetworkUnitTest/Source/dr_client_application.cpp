@@ -26,23 +26,33 @@ ClientApplication::postInit() {
     return;
   }
 
-  auto msgCallback = [this](const String& msg)
+  String ip;
+
+  std::cout << "Enter server ip: ";
+
+  std::cin.ignore(256, '\n');
+
+  std::getline(std::cin, ip);
+
+  auto msgCallback = [this, ip](const String& msg)
   {
     Packet packet;
-    packet << m_tick;
+    //packet << m_tick;
     packet << msg;
+
     UInt16 serverPort = 8888;
-    String serverIP = "127.0.0.1";
+    TString serverIP = StringUtils::toTString(ip);
     ++m_tick;
 
-    if (m_socket.send(packet, serverPort, serverIP) == 
-        SOCKET_ERR::kSuccess) {
+    if (m_socket.send(packet, serverPort, serverIP) == SOCKET_ERR::kSuccess) {
       Logger::addLog(_T("Message send: ") + StringUtils::toTString(msg));
     }
     else {
       Logger::addLog(_T("Error while sending the message!"));
     }
   };
+
+  m_socket.setBlockMode(false);
 
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed, 
                         KEY_CODE::kA, 
@@ -66,7 +76,7 @@ ClientApplication::postInit() {
   UInt16 serverPort;
   String serverIP;*/
   
-  msgCallback("Hello server!!");
+  msgCallback("Hello server!");
 
   /*Int32 recSize = m_socket.receive(packet, 256, serverPort, serverIP);
 
@@ -87,6 +97,27 @@ void
 ClientApplication::postUpdate() {
   
   InputManager::update();
+
+  Packet packet;
+  Int32 recvLen;
+  TString serverIP;
+  UInt16 serverPort;
+
+  auto err = m_socket.receive(packet, 256, recvLen, serverPort, serverIP);
+
+  if (err == SOCKET_ERR::kSuccess) {
+    String msg;
+    
+    packet >> msg;
+    
+    Logger::addLog(_T("Received from server: ") + StringUtils::toTString(msg));
+    Logger::addLog(_T("From Ip: ") + StringUtils::toTString(serverIP) + 
+                   _T(" Port: ") + StringUtils::toTString(serverPort));
+  }
+  else if (err == SOCKET_ERR::kError) {
+    Logger::addLog(_T("Error while receiving msg: ") + 
+                   NetworkManager::getNetworkErrorStr());
+  }
 }
 
 void 

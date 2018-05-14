@@ -16,19 +16,25 @@ UDPSocket::create() {
 }
 
 bool
-UDPSocket::bind(const String& ipAddress, UInt16 port) {
+UDPSocket::bind(const TString& ipAddress, UInt16 port) {
   
   if (!isValid()) {
     return false;
   }
 
+  m_bindAddress.clear();
+  m_bindPort = 0;
+
   sockaddr_in server = NetworkManager::getAddress(ipAddress, port);
   
   if (::bind(m_handle, (sockaddr*)&server, sizeof(server)) != 0) {
     m_handle = NetworkManager::getInvalidHandle();
-
+    m_bindAddress = _T("");
+    m_bindPort = 0;
     return false;
   }
+
+  NetworkManager::getAddrPort(server, m_bindAddress, m_bindPort);
 
   return true;
 }
@@ -36,7 +42,7 @@ UDPSocket::bind(const String& ipAddress, UInt16 port) {
 SOCKET_ERR::E
 UDPSocket::send(const DataBuffer& data,
                 UInt16 port,
-                const String& ipAddress) {
+                const TString& ipAddress) {
 
   sockaddr_in server = NetworkManager::getAddress(ipAddress, port);
 
@@ -55,7 +61,7 @@ UDPSocket::send(const DataBuffer& data,
 SOCKET_ERR::E
 UDPSocket::send(const Packet& packet,
                 UInt16 port, 
-                const String& ipAddress) {
+                const TString& ipAddress) {
   return send(packet.getData(), port, ipAddress);
 }
 
@@ -63,7 +69,7 @@ SOCKET_ERR::E
 UDPSocket::receive(DataBuffer& buffer, 
                    Int32& receivedLen,
                    UInt16& port, 
-                   String& ipAddress) {
+                   TString& ipAddress) {
 
   sockaddr_in sender{};
   Int32 senderSAS = sizeof(sender);
@@ -99,7 +105,7 @@ UDPSocket::receive(Packet& packet,
                    Int32 maxBuffSize,
                    Int32& receivedLen,
                    UInt16& port, 
-                   String& ipAddress) {
+                   TString& ipAddress) {
 
   DataBuffer buff(maxBuffSize, 0);
 
@@ -109,7 +115,7 @@ UDPSocket::receive(Packet& packet,
 
     buff.resize(receivedLen);
 
-    packet.addData(std::move(buff));
+    packet.addData(buff);
   }
   
   return result;

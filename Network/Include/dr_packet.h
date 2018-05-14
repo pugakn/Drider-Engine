@@ -14,11 +14,17 @@ class DR_NETWORK_EXPORT Packet
 
   ~Packet();
 
+  /**
+  * Resets the internal buffer.
+  */
+  void
+  clear();
+
   void 
   addData(const void* data, SizeT dataSize);
 
   void
-  addData(std::vector<Int8>&& data);
+  addData(std::vector<Int8>& data);
   
   template<class T>
   Packet& 
@@ -62,12 +68,12 @@ class DR_NETWORK_EXPORT Packet
     
     Int8* buffer;
 
-    extractData(buffer, sizeof(T));
+    getDataPtr(buffer, sizeof(T));
 
     if (buffer) {
       data = *reinterpret_cast<T*>(buffer);
 
-      removeData(sizeof(T));
+      //removeData(sizeof(T));
     }
 
     return *this;
@@ -84,10 +90,10 @@ class DR_NETWORK_EXPORT Packet
 
     if (size > 0) {
       Int8* buffer;
-      extractData(buffer, size);
+      getDataPtr(buffer, size);
       if (buffer) {
         data.assign(buffer, buffer + size);
-        removeData(size);
+        //removeData(size);
       }
     }
 
@@ -110,14 +116,14 @@ class DR_NETWORK_EXPORT Packet
     
     if (size > 0) {
       Int8* buffer;
-      extractData(buffer, size);
+      getDataPtr(buffer, size);
       if (buffer) {
         for (auto& wc : data) {
           UInt32 v = *reinterpret_cast<UInt32*>(buffer);
           wc = static_cast<WString::value_type>(v);
           buffer += sizeof(UInt32);
         }
-        removeData(size);
+        //removeData(size);
       }
     }
 
@@ -143,24 +149,29 @@ class DR_NETWORK_EXPORT Packet
     return m_isOk;
   }
 
+  /**
+  * Tests if the packet has no further information to read.
+  */
   FORCEINLINE bool
   isEmpty() const
   {
-    return m_data.empty();
+    return m_data.empty() || m_readPoint == m_data.size();
   }
 
  private:
 
   void
-  extractData(Int8*& buffer, SizeT size);
+  getDataPtr(Int8*& buffer, SizeT size);
 
-  void
-  removeData(SizeT size);
+  /*void
+  removeData(SizeT size);*/
 
   bool
   canRead(SizeT size);
 
   std::vector<Int8> m_data;
+
+  UInt32 m_readPoint;
 
   bool m_isOk;
 };

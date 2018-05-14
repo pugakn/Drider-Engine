@@ -49,13 +49,13 @@ class DR_NETWORK_EXPORT NetworkManager : public Module<NetworkManager>
   getAddress(UInt32 address, UInt16 port);
   
   static sockaddr_in
-  getAddress(const String& address, UInt16 port);
+  getAddress(const TString& address, UInt16 port);
 
   /**
   * Extracts the ip addres and port from the given address struct.
   */
   static void
-  getAddrPort(sockaddr_in address, String& outAddress, UInt16& outPort);
+  getAddrPort(sockaddr_in address, TString& outAddress, UInt16& outPort);
   
   /**
   * Gets the error string from the last network operation.

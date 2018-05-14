@@ -19,14 +19,18 @@ NetworkManager::isSocketValid(SocketHandle handle) {
 }
 
 void
-NetworkManager::getAddrPort(sockaddr_in address, String& addrStr, UInt16& port) {
+NetworkManager::getAddrPort(sockaddr_in address, 
+                            TString& addrStr, 
+                            UInt16& port) {
   
-  addrStr.resize(15);
-  
+  String addr(15, '\0');
+
   inet_ntop(AF_INET, 
             &address.sin_addr, 
-            const_cast<char*>(addrStr.c_str()), 
-            addrStr.size());
+            const_cast<char*>(addr.c_str()), 
+            addr.size());
+
+  addrStr = StringUtils::toTString(addr);
 
   port = ntohs(address.sin_port);
 }

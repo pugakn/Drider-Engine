@@ -26,13 +26,33 @@ NetworkManager::getAddress(UInt32 address, UInt16 port) {
 }
 
 sockaddr_in
-NetworkManager::getAddress(const String& address, UInt16 port) {
+NetworkManager::getAddress(const TString& address, UInt16 port) {
   
   sockaddr_in addr = {};
 
+  if (address.empty()) {
+    hostent* hp{};
+    char hostName[256];
+    gethostname(hostName,
+                sizeof(hostName));
+
+    hp = gethostbyname(hostName);
+
+    if (hp) {
+      addr.sin_addr.S_un.S_un_b.s_b1 = hp->h_addr_list[0][0];
+      addr.sin_addr.S_un.S_un_b.s_b2 = hp->h_addr_list[0][1];
+      addr.sin_addr.S_un.S_un_b.s_b3 = hp->h_addr_list[0][2];
+      addr.sin_addr.S_un.S_un_b.s_b4 = hp->h_addr_list[0][3];
+    }
+  }
+  else {
+    auto str = StringUtils::toString(address);
+    inet_pton(AF_INET, str.c_str(), &addr.sin_addr);
+  }
+
   addr.sin_family = AF_INET;
+  
   addr.sin_port = htons(port);
-  inet_pton(AF_INET, address.c_str(), &addr.sin_addr);
 
   return addr;
 }
@@ -55,7 +75,7 @@ NetworkManager::closeSocket(SocketHandle socket) {
 TString 
 NetworkManager::getNetworkErrorStr() {
   
-  TString errString{128};
+  TString errString(128, '\0');
 
   Int32 errCode = getNetworkError();
 

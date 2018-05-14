@@ -3,6 +3,7 @@
 #include <dr_network_manager.h>
 #include <dr_packet.h>
 #include <dr_string_utils.h>
+#include <iostream>
 
 namespace driderSDK {
 
@@ -19,15 +20,29 @@ ServerApplication::postInit() {
     return;
   }
 
-  Logger::addLog(_T("Socket init!"));
+  Logger::addLog(_T("Socket init!\nEnter server ip: "));
 
-  if (!m_socket.bind("127.0.0.1", 8888)) {
-    Logger::addLog(_T("Could not bind socket!") + 
+  String ip;
+
+  std::cin.ignore(256, '\n');
+
+  std::getline(std::cin, ip);
+
+  if (!m_socket.bind(StringUtils::toTString(ip), 8888)) {
+    Logger::addLog(_T("Could not bind socket: ") + 
                    NetworkManager::getNetworkErrorStr());
     return;
   }
+
+  auto& bindAddr = m_socket.getBindAddress();
+  auto bindPort = m_socket.getBindPort();
   
   Logger::addLog(_T("Socket binded!"));
+
+  Logger::addLog(_T("Hosted on: ") + 
+                 bindAddr + 
+                 _T(" port: ") + 
+                 StringUtils::toTString(bindPort));
 
   m_socket.setBlockMode(false);
 }
@@ -39,7 +54,7 @@ ServerApplication::postUpdate() {
 
   Packet packet;
   UInt16 recPort = 0;
-  String recIp;
+  TString recIp;
 
   Int32 recSize;
   
@@ -47,16 +62,16 @@ ServerApplication::postUpdate() {
 
   if (recSize > 0) {
     String message;
-    UInt32 tick;
-    packet >> tick;
+    //UInt32 tick;
+    //packet >> tick;
     packet >> message;
-
-    Logger::addLog(_T("Message received: ") + StringUtils::toTString(message) + 
-                   _T(" Tick: ") + StringUtils::toTString(tick));
-    Logger::addLog(_T("From Ip: ") + StringUtils::toTString(recIp) + 
+    
+    Logger::addLog(_T("Message received: ") + StringUtils::toTString(message));// + 
+                   //_T(" Tick: ") + StringUtils::toTString(tick));
+    Logger::addLog(_T("From Ip: ") + recIp + 
                    _T(" Port: ") + StringUtils::toTString(recPort));
     
-    message = "Hello client!";
+    message = "Hello client: " + message;
     packet << message;
     m_socket.send(packet, recPort, recIp);
   }
