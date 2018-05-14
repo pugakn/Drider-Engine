@@ -66,6 +66,25 @@ namespace driderSDK {
                                                                   asFUNCTION(ConstructFromTwoFloats##className),\
                                                                   asCALL_CDECL_OBJLAST);
 
+#define REGISTER_REF(className) \
+      result = scriptEngine->m_scriptEngine->RegisterObjectBehaviour(#className,\
+                                                                     asBEHAVE_FACTORY,\
+                                                                     #className" @f()",\
+                                                                     asFUNCTION(Ref_##className),\
+                                                                     asCALL_CDECL);\
+      if(result < 0) return result;\
+      result = scriptEngine->m_scriptEngine->RegisterObjectBehaviour(#className,\
+                                                                     asBEHAVE_ADDREF,\
+                                                                     "void f()",\
+                                                                     asMETHOD(className, addRef),\
+                                                                     asCALL_THISCALL);\
+      if(result < 0) return result;\
+      result = scriptEngine->m_scriptEngine->RegisterObjectBehaviour(#className,\
+                                                                     asBEHAVE_RELEASE,\
+                                                                     "void f()",\
+                                                                     asMETHOD(className, release),\
+                                                                     asCALL_THISCALL);\
+      if (result < 0) return result;
 
 // METHODS FUNCTIONS
 #define REGISTER_FOO_0P(className, fooName, rType, rTypeStr)\
@@ -90,7 +109,7 @@ namespace driderSDK {
                                                                 asCALL_THISCALL);\
     if (result < 0) return result;
 
-#define REGISTER_FOO_1PP(className, strFooDef, method)\
+#define REGISTER_FOO(className, strFooDef, method)\
     result = scriptEngine->m_scriptEngine->RegisterObjectMethod(#className,\
                                                                 strFooDef,\
                                                                 method,\

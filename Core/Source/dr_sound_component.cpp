@@ -8,8 +8,6 @@
 
 #include <dr_vector3d.h>
 
-#include <dr_gameObject.h>
-
 namespace driderSDK {
 
 SoundComponent::SoundComponent(GameObject &gameObject_) 
@@ -30,9 +28,9 @@ SoundComponent::onCreate() {
 
 void
 SoundComponent::onUpdate() {
-  Transform trans = getGameObject().getTransform();
+  /*Transform trans = getGameObject().getTransform();
 
-  const Vector3D vel(0.0f, 0.0f, 0.0f);
+  const Vector3D vel(0.0f, 0.0f, 0.0f);*/
 
   //updateChannel(const_cast<Vector3D*>(&trans.getPosition()));
                 

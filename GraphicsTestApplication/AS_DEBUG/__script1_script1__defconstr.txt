@@ -9,5 +9,5 @@ Variables:
 - 3,8 -
     0   0 *    SUSPEND
     1   0 *    PshVPtr  v0
-    2   1 *    CALL     94           (MontiBehavior::MontiBehavior())
+    2   1 *    CALL     96           (MontiBehavior::MontiBehavior())
     4   0 *    RET      1

@@ -325,8 +325,6 @@ TestApplication::initScriptEngine() {
   auto currentModule = scriptEngine->m_scriptEngine->GetModule("GameModule");
   result = currentModule->Build();
 
-  //SceneGraph::instance().getRoot()->findObject(_T("Floor"));
-
   //Initialize scripts
   m_scripts.find(_T("script1"))->second->initScript();
   m_scripts.find(_T("script2"))->second->initScript();

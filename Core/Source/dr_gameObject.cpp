@@ -368,6 +368,11 @@ GameObject::operator=(GameObject& ref) {
 
 }
 
+bool 
+GameObject::operator==(GameObject& ref) {
+  return (m_tag.getName() == ref.m_tag.getName());
+}
+
 GameObject*
 GameObject::getChildByIndex(Int32 index) {
   return getChild(index).get();

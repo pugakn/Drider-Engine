@@ -51,6 +51,9 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   GameObject(const GameObject&) = delete;
 
   GameObject& operator=(const GameObject&) = delete;
+
+  bool
+  operator==(GameObject&);
   
   /*void
   init();*/
@@ -311,30 +314,26 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
 
   static BEGINING_REGISTER(GameObject, 0, asOBJ_REF)
 
-  result = scriptEngine->m_scriptEngine->RegisterObjectBehaviour("GameObject",
-                                                                 asBEHAVE_FACTORY,
-                                                                 "GameObject @f()",
-                                                                 asFUNCTION(Ref_GameObject),
-                                                                 asCALL_CDECL);
+  result = REGISTER_REF(GameObject)
 
-  result = scriptEngine->m_scriptEngine->RegisterObjectBehaviour("GameObject",
-                                                                 asBEHAVE_ADDREF,
-                                                                 "void f()",
-                                                                 asMETHOD(GameObject, addRef),
-                                                                 asCALL_THISCALL);
-  result = scriptEngine->m_scriptEngine->RegisterObjectBehaviour("GameObject",
-                                                                 asBEHAVE_RELEASE,
-                                                                 "void f()",
-                                                                 asMETHOD(GameObject, release),
-                                                                 asCALL_THISCALL);
+  //Register functions
+  result = REGISTER_FOO(GameObject,
+                        "GameObject@ findObject(const TString& in)",
+                        asMETHODPR(GameObject, findObject, (const TString&), GameObject*))
 
-  result = REGISTER_FOO_1PP(GameObject,
-                            "GameObject@ findObject(const TString& in)",
-                            asMETHODPR(GameObject, findObject, (const TString&), GameObject*))
+  result = REGISTER_FOO(GameObject, 
+                        "GameObject@ getChildByIndex(int)", 
+                        asMETHODPR(GameObject, getChildByIndex, (Int32), GameObject*))
 
-  result = REGISTER_FOO_1PP(GameObject, 
-                            "GameObject@ getChildByIndex(int)", 
-                            asMETHODPR(GameObject, getChildByIndex, (Int32), GameObject*))
+  result = REGISTER_FOO(GameObject,
+                        "const TString& getTag()",
+                        asMETHODPR(GameObject, getTag, () const, const TString&))
+
+  result = REGISTER_FOO(GameObject,
+                        "void setTag(const TString& in)",
+                        asMETHODPR(GameObject, setTag, (const TString&), void))
+
+  //Register operators
   result = REGISTER_OP(GameObject, operator=, opAssign, GameObject&, GameObject&, "GameObject@", in)
 
   END_REGISTER 
