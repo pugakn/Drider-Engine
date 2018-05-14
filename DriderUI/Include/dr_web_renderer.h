@@ -68,7 +68,7 @@ private:
 * This class manages all the communication with the 
 * render process from the browser process
 */
-class DriderRenderProcessHandler : public  CefRenderProcessHandler {
+class DriderRenderProcessHandler : public  CefRenderProcessHandler { 
 public:
   DriderRenderProcessHandler() { m_v8Handler = new DriderV8Handler(); };
   DriderRenderProcessHandler(const DriderRenderProcessHandler&) = delete;

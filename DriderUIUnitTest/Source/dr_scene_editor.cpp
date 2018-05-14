@@ -31,7 +31,6 @@
 
 #include <dr_model.h>
 namespace driderSDK {
-
   void
     HSVtoRGB(float fH, float fS, float fV,
       float& fR, float& fG, float& fB) {
@@ -81,7 +80,6 @@ namespace driderSDK {
     }
   }
 
-
 void read_directory(const TString& name, std::vector<TString>& v)
 {
   TString pattern(name);
@@ -123,33 +121,43 @@ void updateFolders(WebRenderer& webRenderer) {
 void SceneEditor::init(Viewport v)
 {
   m_viewport = v;
-  DrTextureDesc backDesc;
-  backDesc.width = m_viewport.width;
-  backDesc.height = m_viewport.height;
-  backDesc.pitch = backDesc.width * 4;
-  backDesc.Format = DR_FORMAT::kR8G8B8A8_UNORM;
-  backDesc.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE | DR_BIND_FLAGS::RENDER_TARGET;
-  backDesc.dimension = DR_DIMENSION::k2D;
-  backDesc.mipLevels = 0;
-  backDesc.CPUAccessFlags = 0;
-  backDesc.genMipMaps = true;
-
-  m_RT = dr_gfx_shared(GraphicsAPI::getDevice().createRenderTarget(backDesc,1));
-
-  DrDepthStencilDesc depthTextureDesc;
-  depthTextureDesc.bindFlags = DR_BIND_FLAGS::DEPTH_STENCIL | DR_BIND_FLAGS::SHADER_RESOURCE;
-  depthTextureDesc.width = m_viewport.width;
-  depthTextureDesc.height = m_viewport.height;
-  depthTextureDesc.Format = DR_FORMAT::kD24_UNORM_S8_UINT;
-  m_RTDPTH = dr_gfx_shared(GraphicsAPI::getDevice().createDepthStencil(depthTextureDesc));
-
-  initCameras();
   initUI();
   initSceneGraph();
+  initInputs();
+  m_sceneViewer.init(m_viewport);
+  quad.init();
+}
 
-  //Renderman stuff
-  m_renderMan.init();
+void SceneEditor::update()
+{
+  webRenderer.update();
+}
+void SceneEditor::draw()
+{
+  webRenderer.setTexture();
+  quad.draw();
+  m_sceneViewer.draw();
+}
+std::shared_ptr<GameObject> 
+SceneEditor::addGameObject(std::shared_ptr<GameObject> parent, 
+                           const TString & name, 
+                           const Vector3D & pos)
+{
+  auto node = std::make_shared<GameObject>();
+  parent->addChild(node);
+  SceneGraph::addObject(node);
+  node->setName(name);
+  node->getTransform().setPosition(pos);
+  node->setParent(parent);
 
+  return node;
+}
+void SceneEditor::initInputs()
+{
+}
+
+void SceneEditor::initSceneGraph()
+{
   Degree grados(2.8125f);
   Vector4D LightPosition(0.0f, 50.0f, -100.0f, 1);
   Matrix4x4 rotationMatrix(driderSDK::Math::FORCE_INIT::kIdentity);
@@ -175,7 +183,7 @@ void SceneEditor::init(Viewport v)
     proportion += (1.0f / 128.0f);
   }
 
-  m_renderMan.lights = &Lights;
+  m_sceneViewer.getRenderManager().lights = &Lights;
 
   CameraManager::createCamera(_T("PATO_CAM"),
   { 0.0f, 150.0f, -400.0f },
@@ -266,11 +274,9 @@ void SceneEditor::init(Viewport v)
     auto renderComp = floor->getComponent<RenderComponent>();
     renderComp->getMeshes().front().material = floorMat;
   }
-  initInputs();
 }
-
-void
-SceneEditor::loadResources() {
+void SceneEditor::loadResources()
+{
   //ResourceManager::loadResource(_T("Checker.fbx"));
   ResourceManager::loadResource(_T("Sphere.fbx"));
   ResourceManager::loadResource(_T("plane.fbx"));
@@ -294,117 +300,8 @@ SceneEditor::loadResources() {
   ResourceManager::loadResource(_T("256_Checker_SSColor.tga"));
   ResourceManager::loadResource(_T("256_Checker_Thickness.tga"));
 }
-
-void SceneEditor::update()
-{
-  webRenderer.update();
-}
-void SceneEditor::draw()
-{
-  GraphicsAPI::getDepthStencilState(DR_DEPTH_STENCIL_STATES::kDepthRW).set(GraphicsAPI::getDeviceContext(),1.0);
-  const float clearColor[4]{ 1,0,1,1 };
-  m_RT->clear(GraphicsAPI::getDeviceContext(), clearColor);
-  //Draw Scene
-  m_renderMan.draw(*m_RT,*m_RTDPTH);
-  //Draw End
-  GraphicsAPI::getDepthStencilState(DR_DEPTH_STENCIL_STATES::kDepthR).set(GraphicsAPI::getDeviceContext(), 1.0);
-  GraphicsAPI::getBackBufferRT().set(GraphicsAPI::getDeviceContext(), GraphicsAPI::getDepthStencil());
-  webRenderer.setTexture();
-  quad.draw();
-  m_RT->getTexture(0).set(GraphicsAPI::getDeviceContext(), 0);
-  m_editorQuad.draw();
-}
-std::shared_ptr<GameObject> 
-SceneEditor::addGameObject(std::shared_ptr<GameObject> parent, 
-                           const TString & name, 
-                           const Vector3D & pos)
-{
-  auto node = std::make_shared<GameObject>();
-  parent->addChild(node);
-  SceneGraph::addObject(node);
-  node->setName(name);
-  node->getTransform().setPosition(pos);
-  node->setParent(parent);
-
-  return node;
-}
-void SceneEditor::initInputs()
-{
-  InputManager::getMouse()->addMovedCallback([this]()
-  {
-    auto dis = Mouse::getDisplacement();
-    auto pos = Mouse::getPosition();
-    auto cam = CameraManager::getActiveCamera();
-    if (dis.z) {
-      float vel = W_SCROLL_VEL;
-      if (m_GMOOnFocus) {
-        //vel = vel * (m_GMOOnFocus->getTransform().getPosition() - cam->getPosition()).lengthSqr() / 100000.0f;
-      }
-      cam->move(dis.z *vel, 0, 0);
-    }
-    if (m_rotWorldActive) {
-      cam->pan(0, dis.x * W_ROT_VEL, dis.y * W_ROT_VEL);
-    }
-    if (m_movWorldActive) {
-      cam->move(0, dis.x * W_MOVE_VEL, dis.y * W_MOVE_VEL);
-    }
-
-  });
-  InputManager::getMouse()->addAnyButtonCallback(MOUSE_INPUT_EVENT::kButtonPressed,
-    [this](MOUSE_BUTTON::E pressedId)
-  {
-    auto pos = Mouse::getPosition();
-
-    if (pressedId == MOUSE_BUTTON::kRight) {
-      m_rotWorldActive = true;
-  
-    }
-    if (pressedId == MOUSE_BUTTON::kMiddle) {
-      m_movWorldActive = true;
-    }
-    if (pressedId == MOUSE_BUTTON::kLeft) {
-      m_movWorldActive = true;
-      auto gmo = GetGMOMouseCollition();
-      if (gmo) {
-        if (m_GMOOnFocus == gmo) {
-          auto cam = CameraManager::getActiveCamera();
-          cam->setTarget(m_GMOOnFocus->getTransform().getPosition());
-        }
-        else {
-          m_GMOOnFocus = gmo;
-        }
-      }
-    }
-  });
-  InputManager::getMouse()->addAnyButtonCallback(MOUSE_INPUT_EVENT::kButtonReleased,
-    [this](MOUSE_BUTTON::E pressedId)
-  {
-    auto pos = Mouse::getPosition();
-    if (pressedId == MOUSE_BUTTON::kRight) {
-      m_rotWorldActive = false;
-    }
-    if (pressedId == MOUSE_BUTTON::kMiddle) {
-      m_movWorldActive = false;
-    }
-    if (pressedId == MOUSE_BUTTON::kLeft) {
-      m_movWorldActive = false;
-    }
-  });
-  InputManager::getKeyboard()->addAnyKeyCallback(KEYBOARD_EVENT::kKeyPressed,
-    [this](KEY_CODE::E key)
-  {
-    char c = Keyboard::getAsChar(key);
-
-  });
-}
-void SceneEditor::initCameras()
-{
-}
 void SceneEditor::initUI()
 {
-  quad.init();
-  m_editorQuad.init();
-
   webRenderer.Init(m_viewport.width, m_viewport.height, BROWSER_MODE::kHeadless);
   webRenderer.loadURL("file:///C:/Users/Ulises/Documents/GitHub/Drider-Engine/DriderUIUnitTest/WebixTest/ss.html");
 
@@ -414,17 +311,8 @@ void SceneEditor::initUI()
     UI_UpdatePropertySheet(*SceneGraph::getRoot().get());
   }));
   webRenderer.registerJS2CPPFunction(std::make_pair("canvasReady", [&](const CefRefPtr<CefListValue>& arguments) {
-    webRenderer.executeJSCode(std::string("C_GetSceneViewSize();"));
+    
   }));
-
-
-  webRenderer.registerJS2CPPFunction(std::make_pair("JS_GetSceneViewSize", [&](const CefRefPtr<CefListValue>& arguments) {
-    m_sceneWidth = arguments->GetInt(1);
-    m_sceneHeight = arguments->GetInt(2);
-    std::cout << m_sceneWidth << " , " << m_sceneHeight << std::endl;
-    sceneResized();
-  }));
-
 
   //Scene Graph UI
   webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeSceneGraphNodeName", [&](const CefRefPtr<CefListValue>& arguments) {
@@ -469,7 +357,8 @@ void SceneEditor::initUI()
 
     webRenderer.executeJSCode("JS_ClearSceneGraphTree();");
     UI_UpdateSceneGraph();
-  }));
+  }
+  ));
   webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeSceneGraphNodeSelection", [&](const CefRefPtr<CefListValue>& arguments) {
     TString name = arguments->GetString(1);
     m_onFocusGMO = name;
@@ -493,7 +382,7 @@ void SceneEditor::initUI()
 
     webRenderer.executeJSCode("JS_ClearPropertySheetUI();");
     auto node = SceneGraph::getRoot()->findNode(name);
-    DR_ASSERT (node)
+    DR_ASSERT(node);
     UI_UpdatePropertySheet(*node);
   }));
 
@@ -509,31 +398,13 @@ void SceneEditor::initUI()
 
   //Editor
   webRenderer.registerJS2CPPFunction(std::make_pair("C_SetSceneAreaViewport", [&](const CefRefPtr<CefListValue>& arguments) {
-    m_sceneViewportNormalized.topLeftY = ((float)arguments->GetDouble(1));
-    m_sceneViewportNormalized.topLeftX = (float)arguments->GetDouble(2);
-    m_sceneViewportNormalized.width = (float)arguments->GetDouble(3);
-    m_sceneViewportNormalized.height = (float)arguments->GetDouble(4);
+    Viewport sceneViewport;
+    sceneViewport.topLeftY = ((float)arguments->GetDouble(1));
+    sceneViewport.topLeftX = (float)arguments->GetDouble(2);
+    sceneViewport.width = (float)arguments->GetDouble(3);
+    sceneViewport.height = (float)arguments->GetDouble(4);
 
-    float top = ((float)arguments->GetDouble(1)) / (float)m_viewport.height;
-    top = top * 2.0 - 1.0;
-    top *= -1;
-    float left = (float)arguments->GetDouble(2) / (float)m_viewport.width;
-    left = left * 2.0 - 1.0;
-    float width = (float)arguments->GetDouble(3) /  (float)m_viewport.width;
-    width = Math::abs(width * 2.0 );
-    float height = (float)arguments->GetDouble(4) / (float)m_viewport.height;
-    height = Math::abs(height * 2.0 );
-
-    vertex vertex[4];
-    vertex[0] = { left,  top, 0.9f, 1.0f,    0.5f, 0.5f,0.0f, 1.0f  ,0.0,0.0 };
-    vertex[1] = { left,  top - height, 0.9f, 1.0f,    0.0f, 0.0f,0.0f, 1.0f  ,0.0,1.0 };
-    vertex[2] = { left + width,   top - height,  0.9f,  1.0f,    0.0f, 0.0f,1.0f, 1.0f  ,1.0,1.0 };
-    vertex[3] = { left + width,   top,  0.9f,  1.0f,    0.0f, 1.0f,1.0f, 1.0f  ,1.0,0.0 };
-    m_editorQuad.VB->updateFromBuffer(GraphicsAPI::getDeviceContext(), (byte*)vertex); 
-    Viewport view;
-    view.width = (Int32)arguments->GetDouble(3);
-    view.height = (Int32)arguments->GetDouble(4);
-    CameraManager::getActiveCamera()->setViewport(view);
+    m_sceneViewer.resize(sceneViewport);
   }));
   //components
   webRenderer.registerJS2CPPFunction(std::make_pair("C_AddRenderComponent", [&](const CefRefPtr<CefListValue>& arguments) {
@@ -543,7 +414,7 @@ void SceneEditor::initUI()
     auto rComp = gmoO->createComponent<RenderComponent>(ptrModel);
     gmoO->createComponent<AABBCollider>(ptrModel->aabb);
 
-    rComp->getMeshes().front().material = modelMat;
+    //rComp->getMeshes().front().material = modelMat; ASDFG
     webRenderer.executeJSCode("JS_ClearPropertySheetUI();");
     UI_UpdatePropertySheet(*gmoO);
   }));
@@ -617,16 +488,8 @@ void SceneEditor::initUI()
   
 
 }
-void SceneEditor::initSceneGraph()
-{
-}
-void SceneEditor::sceneResized()
-{
-}
-
 void SceneEditor::UI_UpdateSceneGraph()
 {
-  
     webRenderer.executeJSCode(WString(_T("JS_AddSceneGraphNode('")) +
       _T("ROOT_NODE_X") + TString(_T("','")) + _T("ROOT_NODE_X") +
       WString(_T("');")));
@@ -669,66 +532,15 @@ void SceneEditor::UI_UpdatePropertySheet(const GameObject& obj)
   }
 }
 
-SceneGraph::SharedGameObject SceneEditor::GetGMOMouseCollition()
+void driderSDK::SceneEditor::resize(Viewport _viewport)
 {
-  auto v = Mouse::getPosition();
-  Vector2D mouseViewPios(v.x,v.y);
-  mouseViewPios.x /= (float)m_sceneViewportNormalized.width;
-  mouseViewPios.y /= (float)m_sceneViewportNormalized.height;
-  mouseViewPios.x -= m_sceneViewportNormalized.topLeftX / (float)m_sceneViewportNormalized.width;
-  mouseViewPios.y -= m_sceneViewportNormalized.topLeftY / (float)m_sceneViewportNormalized.height;
-  mouseViewPios = mouseViewPios * 2 - Vector2D(1, 1);
-  mouseViewPios.y = -mouseViewPios.y;
-  mouseViewPios.x = -mouseViewPios.x;
-
-  std::cout << mouseViewPios.x << std::endl;
-  std::cout << mouseViewPios.y << std::endl;
-  Vector4D mouseWorldPosNear = Vector4D(mouseViewPios.x, mouseViewPios.y,0,1);
-  Vector4D mouseWorldPosFar = Vector4D(mouseViewPios.x, mouseViewPios.y, 1,1);
-
-  auto view = CameraManager::getActiveCamera()->getView();
-  auto pro = CameraManager::getActiveCamera()->getProjection();
-  view.inverse();
-  pro.inverse();
-
-  mouseWorldPosNear = mouseWorldPosNear*pro;
-  mouseWorldPosNear = mouseWorldPosNear*view;
-  mouseWorldPosNear.x /= mouseWorldPosNear.w;
-  mouseWorldPosNear.y /= mouseWorldPosNear.w;
-  mouseWorldPosNear.z /= mouseWorldPosNear.w;
-  mouseWorldPosNear.w = 1.0f;
-
-  mouseWorldPosFar = mouseWorldPosFar*pro;
-  mouseWorldPosFar = mouseWorldPosFar*view;
-  mouseWorldPosFar.x /= mouseWorldPosFar.w;
-  mouseWorldPosFar.y /= mouseWorldPosFar.w;
-  mouseWorldPosFar.z /= mouseWorldPosFar.w;
-  mouseWorldPosFar.w = 1.0f;
-
-  Ray ray;
-  ray.origin = Vector3D(mouseWorldPosNear);
-  ray.direction = Vector3D(mouseWorldPosFar);
-  std::function<std::shared_ptr<GameObject>(const std::shared_ptr<GameObject>&)> search =
-    [&](const std::shared_ptr<GameObject>& child) {
-    std::shared_ptr<GameObject> sr;
-    for (auto &it : child->getChildren()) {
-      auto bbox = it->getComponent<AABBCollider>();
-      Vector3D point;
-      if (ray.intersects(bbox->getTransformedAABB(),&point)) {
-        std::cout << "Found" << std::endl;
-        return it;
-      }
-      sr = search(it);
-    }
-    return sr;
-  };
-  auto child = SceneGraph::getRoot();
-  return search(child);
+  m_viewport = _viewport;
+  webRenderer.resize(m_viewport.width, m_viewport.height);
 }
+
 
 void SceneEditor::destroy()
 {
-  m_renderMan.exit();
   webRenderer.Destroy();
 }
 

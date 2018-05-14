@@ -1,4 +1,14 @@
 
+window.addEventListener('resize', function(event){
+    var pos = getViewport($$("editor_grid").$view);
+	C_SetSceneAreaViewport(pos.top,pos.left,pos.width,pos.height);
+	
+    var width = document.body.clientWidth;
+    var height = document.body.clientHeight;
+    webix.callEvent('WEBIX_Resize',[width,height]);
+	
+});
+
 // ==================================================================================================================
 //                                                  C app
 // ==================================================================================================================
@@ -339,15 +349,42 @@ webix.ready(function(){
 		{ view:"panel", x:0, y:3, dx:3, dy:1,resize:true, body:fman_UI},
 		{ view:"panel", x:0, y:0, dx:2, dy:3,resize:true,  body: editor_UI},
 	],
+	position:function(sizes){
+		sizes.width = sizes.maxWidth - 50;
+		sizes.height = sizes.maxHeight - 100;    
+		sizes.left = 25;
+		sizes.top = 50;
+	},
 	onContext:{},
 	};
 	
-	webix.ui({view:"scrollview", body: {rows:[toolbar_UI,grid]}});
 	
+	webix.ui({rows:[toolbar_UI,grid] , 
+		position:function(sizes){
+		sizes.width = sizes.maxWidth - 50;
+		sizes.height = sizes.maxHeight - 100;    
+		sizes.left = 25;
+		sizes.top = 50;
+		}
+    });
+	
+
+	
+    webix.attachEvent("WEBIX_Resize", function(w,h){
+		$$("grid").define("height", h) ;
+		$$("grid").define("width",  (w - 30));
+		$$("grid").define("cellHeight", (h - 65) / 4);
+		$$("grid").define("cellWidth",  (w - 30) /4);
+		$$("grid").resize();
+	    var pos = getViewport($$("editor_grid").$view);
+	    C_SetSceneAreaViewport(pos.top,pos.left,pos.width,pos.height);
+	});
 	$$("grid").attachEvent("onChange",function(){
 		var pos = getViewport($$("editor_grid").$view);
 		C_SetSceneAreaViewport(pos.top,pos.left,pos.width,pos.height);
 	});
+    
+	webix.callEvent('WEBIX_Resize',[document.body.clientWidth,document.body.clientHeight]);
 	
 	//Property sheet
 	webix.ui({

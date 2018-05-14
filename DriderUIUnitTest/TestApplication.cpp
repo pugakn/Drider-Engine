@@ -82,6 +82,13 @@ TestApplication::postDestroy() {
   Logger::shutDown();
 }
 
+void TestApplication::onResize()
+{
+  GraphicsDriver::API().resizeBackBuffer(m_viewport.width, m_viewport.height);
+  std::cout << "RESIZE " << m_viewport .width<<  std::endl;
+  m_editor.resize(m_viewport);
+}
+
 
 
 }

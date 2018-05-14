@@ -1,7 +1,6 @@
 #pragma once
 #include <dr_camera.h>
 #include <dr_viewport.h>
-//#include <dr_resource_manager.h>
 #include <memory>
 #include <dr_memory.h>
 #include <dr_shader.h>
@@ -17,6 +16,8 @@
 
 #include <dr_renderman.h>
 #include <dr_depth_stencil.h>
+
+#include <dr_scene_viewer.h>
 namespace driderSDK {
 class SceneEditor {
 public:
@@ -32,46 +33,31 @@ public:
     const Vector3D& pos);
   //void removeGameObject();
 
-  void createComponentOnGMO(const TString& gmoID, const Int32 type);// Uno por uno asd gdsagfdsf dsf< ?
-  void removeComponentOnGMO(const TString& gmoID, const TString& componentID);
+  //void createComponentOnGMO(const TString& gmoID, const Int32 type);
+  //void removeComponentOnGMO(const TString& gmoID, const TString& componentID);
 
 
+  void resize(Viewport _viewport);
 private:
-  Int32 m_sceneWidth;
-  Int32 m_sceneHeight;
   void initInputs();
-  void initCameras();
   void initUI();
   void initSceneGraph();
   void loadResources();
-  void sceneResized();
 
   void UI_UpdateSceneGraph();
   void UI_UpdatePropertySheet(const GameObject& obj);
 
-  SceneGraph::SharedGameObject GetGMOMouseCollition();
-
-  //QUERY_ORDER::E m_queryOrder;
 
   Viewport m_viewport;
-  Viewport m_sceneViewportNormalized;
-  std::shared_ptr<Camera> m_camera;
-  std::shared_ptr<Camera> m_leftCam;
-  std::shared_ptr<Camera> m_upCam;
-  std::shared_ptr<Camera> m_activeCam;
-
-  std::shared_ptr<GameObject> m_joker;
 
 
-  GFXShared<RenderTarget> m_RT;
-  GFXShared<DepthStencil> m_RTDPTH;
 
   WebRenderer webRenderer;
   Quad quad;
-  Quad m_editorQuad;
+  TString m_onFocusGMO;
 
+  SceneViewer m_sceneViewer;
 
-  RenderMan m_renderMan;
   SceneGraph::SharedGameObject model;
   std::shared_ptr<Material> modelMat;
   SceneGraph::SharedGameObject floor;
@@ -79,14 +65,5 @@ private:
 
   Vector3D modelMovement;
   std::array<Light, 128> Lights;
-
-  const float W_SCROLL_VEL = 0.2;
-  const float W_MOVE_VEL = 0.38;
-  const float W_ROT_VEL = 1;
-  TString m_onFocusGMO;
-  bool m_sceneOnFocus = true;
-  bool m_rotWorldActive = false;
-  bool m_movWorldActive = false;
-  SceneGraph::SharedGameObject m_GMOOnFocus;
 };
 }

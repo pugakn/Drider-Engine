@@ -1,12 +1,17 @@
 #include "dr_application.h"
 #include <iostream>
 #include <Windows.h>
-#include <SDL\SDL.h>
+#include <SDL2/SDL.h>
 
 namespace driderSDK {
-
-Int32 Application::run() {
-
+Application* Application::application;
+Int32 Application::run(const Viewport& _viewport) {
+  if (Application::application) {
+    std::cout << "Application already running" << std::endl;
+    return 0;
+  }
+  Application::application = this;
+  m_viewport = _viewport;
   init();
 
   while (m_running) {
@@ -18,12 +23,19 @@ Int32 Application::run() {
 
   return 0;
 }
+Viewport Application::getViewPort()
+{
+  return getApplication().m_viewport;
+}
+void Application::setViewport(const Viewport & _viewport)
+{
+  Application& app = getApplication();
+  app.m_viewport = _viewport;
+  SDL_SetWindowSize(app.m_window, app.m_viewport.width, app.m_viewport.height);
+}
 void 
 Application::init() {
   m_running = true;
-
-  m_viewport.width = 1280;
-  m_viewport.height = 720;
     
   createWindow();
 
@@ -37,18 +49,16 @@ Application::createWindow() {
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
     std::cout << "Video initialization failed: " << SDL_GetError() << std::endl;
   }
+    m_window = SDL_CreateWindow("Drider Engine", 
+    SDL_WINDOWPOS_CENTERED, 
+    SDL_WINDOWPOS_CENTERED, 
+    m_viewport.width, 
+    m_viewport.height, 
+    SDL_WINDOW_RESIZABLE);
 
-  SDL_WM_SetCaption("Drider 2018", 0);
-
-  Int32 flags = SDL_HWSURFACE;
-  
-  //flags |= SDL_FULLSCREEN;
-  flags |= SDL_RESIZABLE;
-
-  SDL_ShowCursor(SDL_ENABLE);
-
-  if (SDL_SetVideoMode(m_viewport.width, m_viewport.height, 32, flags) == 0) {
-    std::cout << "Video mode set failed: " << SDL_GetError() << std::endl;
+  if (!m_window) {
+    std::cout << "Error creating SDL window " << std::endl;
+    exit(666);
   }
 }
 void 
@@ -60,6 +70,15 @@ Application::update() {
     if (event.type == SDL_QUIT) {
       m_running = false;
     }
+    if (event.type == SDL_WINDOWEVENT) {
+      if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+        m_viewport.width = event.window.data1;
+        m_viewport.height = event.window.data2;
+        onResize();
+      }
+    }
+
+
   }
 
   postUpdate();
@@ -76,5 +95,8 @@ Application::destroy() {
   
   postDestroy();
 }
-
+Application & Application::getApplication()
+{
+  return *Application::application;
+}
 }
