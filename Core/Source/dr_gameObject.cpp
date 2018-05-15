@@ -9,9 +9,9 @@
 
 namespace driderSDK {
 
-GameObject* Ref_GameObject() {
-  return new GameObject();
-}
+//GameObject* Ref_GameObject() {
+//  return new GameObject();
+//}
 
 GameObject::GameObject(const TString& name)
   : NameObject(name), 
@@ -20,7 +20,12 @@ GameObject::GameObject(const TString& name)
     m_change(false)
     DR_DEBUG_ONLY_PARAM(m_destroyed(false))
 {
-  refCount = 1;
+  //refCount = 1;
+}
+
+GameObject::GameObject(const GameObject& other)
+{
+  *this = other;
 }
 
 GameObject::~GameObject() {
@@ -331,8 +336,9 @@ ComponentPartition::operator()(const std::unique_ptr<GameComponent>& l) const {
 }
 
 GameObject&
-GameObject::operator=(GameObject& ref) {
+GameObject::operator=(const GameObject& ref) {
   auto thisPtr = shared_from_this();
+
   ref.copyData(thisPtr);
 
   m_tag = ref.m_tag;

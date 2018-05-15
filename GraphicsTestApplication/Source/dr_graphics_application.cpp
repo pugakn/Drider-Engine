@@ -378,7 +378,7 @@ GraphicsApplication::createScene() {
     Logger::addLog(_T("----------------"));
   };
 
-  auto sc = ResourceManager::getReferenceT<ScriptCore>(_T("script1.as"));
+  /*auto sc = ResourceManager::getReferenceT<ScriptCore>(_T("script1.as"));
 
   auto scomp = womanNode->createComponent<ScriptComponent>(sc);
 
@@ -388,7 +388,7 @@ GraphicsApplication::createScene() {
 
   scomp->initScript();
 
-  scomp->start();
+  scomp->start();*/
 
   printComponents(womanNode.get());
 
@@ -419,17 +419,19 @@ GraphicsApplication::createScene() {
 
   walkerObj->getTransform().setPosition({300, 0, 450});
 
-  auto clone1 = walkerObj->clone();
+  auto clone1 = walkerObj->createInstance();
+  *clone1 = *walkerObj;
 
   clone1->getTransform().setPosition({150, 0, 300});
 
   clone1->setName(_T("LE Walker 2 300"));
 
-  clone1 = walkerObj->clone();
+  auto clone2 = walkerObj->createInstance();
+  *clone2 = *walkerObj;
 
-  clone1->getTransform().setPosition({450, 0, 150});
+  clone2->getTransform().setPosition({450, 0, 150});
 
-  clone1->setName(_T("LE Walker 3 150"));
+  clone2->setName(_T("LE Walker 3 150"));
   //walkerObj->getTransform().setScale({10.f, 10.f, 10.f});
     
   m_right = walkerObj.get();
