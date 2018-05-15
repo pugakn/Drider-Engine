@@ -36,26 +36,19 @@ ScriptEngine::createEngine() {
 	m_scriptEngine->SetMessageCallback(asMETHOD(ScriptEngine, messageCallback),
 																		 this, 
 																		 asCALL_THISCALL);
-
-
 	// Register string type
-
-	//RegisterStdString(m_scriptEngine);
 	registerTString(m_scriptEngine);
-
 	// Register the functions that the scripts will be allowed to use.
 	result = m_scriptEngine->RegisterGlobalFunction("void Print(TString &in)",
 																									asFUNCTION(stringPrint_g), 
 																									asCALL_GENERIC);
-
-//	Debug = new ScriptDebug;
+	Debug = new ScriptDebug(this);
 	return result;
 }
 
 Int8
 ScriptEngine::configurateEngine(ContextManager *ctx) {
   Int8 result = 0;
-
   // Register the functions for controlling the script threads, e.g. sleep
   ctx->registerThreadSupport(m_scriptEngine);
 
@@ -186,6 +179,18 @@ ScriptEngine::lineCallback(asIScriptContext* scriptContext) {
 		scriptContext->Abort(); 
 		//scriptContext->Suspend(); //we can also use suspend
 	}*/
+}
+
+void 
+ScriptEngine::debugLineCallback(asIScriptContext* scriptContext) {
+
+	//if (bIsStopped) {
+
+	//}
+
+	//if (checkBreakPoint()) {
+	//	scriptContext->Suspend();
+	//}
 }
 
 void 
