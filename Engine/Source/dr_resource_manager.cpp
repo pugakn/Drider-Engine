@@ -148,6 +148,8 @@ ResourceManager::renameResource(const TString& lastName,
     })
 
     resources[newName] = res;
+
+    res->setName(newName);
   }
 }
 

@@ -64,7 +64,7 @@ private:
   toggleSkeletonView(GameObject* obj);
 
   void
-  toggleAABBDebug(GameObject* obj);
+  toggleAABBDebug(std::shared_ptr<GameObject> obj);
 
   void
   toggleWireframe();

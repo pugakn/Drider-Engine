@@ -7,7 +7,6 @@ namespace driderSDK
 
 void
 Logger::reset() {
-  m_filePath = _T("../Docs/Logger/logger.html");
 
   FileSystem fSys;
   fSys.Remove(m_filePath);
@@ -109,7 +108,7 @@ void
 Logger::addLog(const TString message) {
   
   std::cout << StringUtils::toString(message) << std::endl;
-
+  
   TString fullMessage(_T(""));
   fullMessage += _T("<section class = \"section\">");
   fullMessage += _T("<a class = \"logTitle\">Log</a>");

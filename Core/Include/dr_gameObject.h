@@ -117,8 +117,8 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   * Gets the frist component of the specified type in the template parameter.
   *
   * @return
-  *  If any of the components matches the specified type it'll return 
-  *  a pointer to the component, nullptr otherwise.
+  *   If any of the components matches the specified type it'll return 
+  *   a pointer to the component, nullptr otherwise.
   */
   template<class T> 
   T* 
