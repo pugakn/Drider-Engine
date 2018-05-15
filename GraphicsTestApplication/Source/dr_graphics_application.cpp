@@ -62,7 +62,7 @@ GraphicsApplication::postInit() {
   initScriptEngine();
   createTechniques();
   createScene();
-
+  
   Time::update();
 
   m_timer.init();
@@ -348,7 +348,9 @@ GraphicsApplication::createScene() {
 
   terrainObj->setStatic(true);
 
-  terrainObj->clone()->getTransform().setPosition({0, 0, 550});
+  terrainObj->getTransform().setPosition({0, 0, 550});
+
+  terrainObj->getTransform().setScale({10, 10, 10});
 
   auto woman = ResourceManager::getReferenceT<Model>(_T("Run.fbx"));
 
@@ -390,7 +392,7 @@ GraphicsApplication::createScene() {
 
   printComponents(womanNode.get());
 
-  womanNode->getTransform().setPosition({-200.f, 0, 200.f});
+  womanNode->getTransform().setPosition({-500.f, 0, 200.f});
 
   womanNode->getTransform().setScale({10.f, 10.f, 10.f});
 
@@ -398,7 +400,7 @@ GraphicsApplication::createScene() {
 
   auto ws = ResourceManager::getReferenceT<Skeleton>(walkerModel->skeletonName);
   
-  auto walkerObj = addObjectFromModel(walkerModel, _T("LE Walker"));
+  auto walkerObj = addObjectFromModel(walkerModel, _T("LE Walker 450"));
 
   auto animator = walkerObj->createComponent<AnimatorComponent>();
 
@@ -415,19 +417,19 @@ GraphicsApplication::createScene() {
   
   //walkerObj->removeComponent<AnimatorComponent>();
 
-  walkerObj->getTransform().setPosition({300, 0, 200});
+  walkerObj->getTransform().setPosition({300, 0, 450});
 
   auto clone1 = walkerObj->clone();
 
-  clone1->getTransform().setPosition({150, 0, 200});
+  clone1->getTransform().setPosition({150, 0, 300});
 
-  clone1->setName(_T("LE Walker 2"));
+  clone1->setName(_T("LE Walker 2 300"));
 
   clone1 = walkerObj->clone();
 
-  clone1->getTransform().setPosition({450, 0, 200});
+  clone1->getTransform().setPosition({450, 0, 150});
 
-  clone1->setName(_T("LE Walker 3"));
+  clone1->setName(_T("LE Walker 3 150"));
   //walkerObj->getTransform().setScale({10.f, 10.f, 10.f});
     
   m_right = walkerObj.get();
@@ -447,6 +449,8 @@ GraphicsApplication::createScene() {
   auto copy = walkerObj->clone();
 
   copy->getTransform().move(-300, AXIS::kX);
+  copy->getTransform().setPosition(50, AXIS::kX);
+  copy->setName(_T("Player"));
 
   auto sphereMod = ResourceManager::getReferenceT<Model>(_T("Sphere.fbx"));
 
