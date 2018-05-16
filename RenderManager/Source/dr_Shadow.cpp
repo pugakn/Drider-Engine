@@ -127,6 +127,12 @@ ShadowPass::draw(PassDrawData* drawData) {
   data->OutRt->clear(dc, clearColor);
   data->dsOptions->clear(dc, 1, 0);
 
+  CB.CameraInfo.x = data->shadowCam->getViewportWidth() /
+                    data->shadowCam->getViewportHeight();
+  CB.CameraInfo.y = data->shadowCam->getFOV();
+  CB.CameraInfo.z = data->shadowCam->getNearPlane();
+  CB.CameraInfo.w = data->shadowCam->getFarPlane();
+
   for (auto& modelPair : *data->models) {
     CB.WVP = modelPair.world * (data->shadowCam->getVP());
 

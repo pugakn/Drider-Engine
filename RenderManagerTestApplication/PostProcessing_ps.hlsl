@@ -62,6 +62,7 @@ float4
   float4 finalColor = lerp(Color, ColorBlur, fCoC);
   finalColor *= vignette;
   
+  //return ColorTex.Sample(SS, uv);
   //return tex2D(ColorTex, uv);
   return finalColor;
 }

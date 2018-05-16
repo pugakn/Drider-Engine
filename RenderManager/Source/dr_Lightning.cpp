@@ -52,7 +52,7 @@ LightningPass::draw(PassDrawData* drawData) {
   m_vertexShader->set(dc);
   m_fragmentShader->set(dc);
 
-  m_samplerState->set(dc,DR_SHADER_TYPE_FLAG::kFragment);
+  m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kFragment);
 
   m_inputLayout->set(dc);
 
@@ -78,7 +78,9 @@ LightningPass::draw(PassDrawData* drawData) {
 
   for (SizeT i = 0; i < 4; ++i) {
     CB.ShadowVP[i] = (*data->ShadowCam)[i]->getVP();
-    CB.ShadowSliptDepth.data[i] = data->shadowDepths[i + 1];
+    CB.ShadowSliptDepth[i] = data->shadowDepths[i + 1];
+    CB.ShadowSizes[i] = data->shadowSizes[i];
+    CB.ShadowFarPlanes[i] = (*data->ShadowCam)[i]->getFarPlane();
   }
 
   m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));

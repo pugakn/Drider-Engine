@@ -1,6 +1,7 @@
 cbuffer ConstantBuffer {
 	float4x4 WVP;
   float4x4 Bones[200];
+  float4   CameraInfo;
 };
 
 struct PS_INPUT {

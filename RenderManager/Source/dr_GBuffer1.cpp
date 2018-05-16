@@ -64,6 +64,12 @@ GBufferPass::draw(PassDrawData* drawData) {
   data->OutRt->clear(dc, clearColor);
   data->dsOptions->clear(dc, 1, 0);
 
+  CB.CameraInfo.x  = data->activeCam->getViewportWidth() /
+                     data->activeCam->getViewportHeight();
+  CB.CameraInfo.y  = data->activeCam->getFOV();
+  CB.CameraInfo.z  = data->activeCam->getNearPlane();
+  CB.CameraInfo.w  = data->activeCam->getFarPlane();
+
   for (auto& modelPair : *data->models) {
     if (auto material = modelPair.mesh.material.lock()) {
       auto AlbedoTex = material->getProperty(_T("Albedo"));

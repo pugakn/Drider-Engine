@@ -262,4 +262,3 @@ class DR_CORE_EXPORT Camera
 };
 
 }
-
