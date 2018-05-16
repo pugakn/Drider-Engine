@@ -25,6 +25,10 @@ class script1 : MontiBehavior {
 		a.setTag("NewTag");
 		Print("a tag is " + a.getTag() + "\n");
 
+		//Get gameobject's transform
+		Transform t = a.getTransform();
+		Print("Position a: " + t.m_position.x + "," + t.m_position.y);
+
 	}
 
 	void Update() {
