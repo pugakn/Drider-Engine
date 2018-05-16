@@ -122,6 +122,22 @@ CodecModel::loadVertices(const aiMesh& inMesh,
                          Vector3D& maxPos) {
   outMesh.vertices.resize(inMesh.mNumVertices);
 
+  bool hasNormals = inMesh.HasNormals();
+  bool hasBinTangs = inMesh.HasTangentsAndBitangents();
+  bool hasUVs = inMesh.HasTextureCoords(0);
+
+  if (!hasNormals) {
+    Logger::addLog(_T("Model will be loaded without normals"));
+  }
+
+  if (!hasBinTangs) {
+    Logger::addLog(_T("Model will be loaded without binormals/tangents"));
+  }
+
+  if (!hasUVs) {
+    Logger::addLog(_T("Model will be loaded without texture coords"));
+  }
+
   for (Int32 vertexIndex = 0; 
        vertexIndex < static_cast<Int32>(inMesh.mNumVertices); 
        ++vertexIndex) {
@@ -130,31 +146,35 @@ CodecModel::loadVertices(const aiMesh& inMesh,
     outMesh.vertices[vertexIndex].position.y = inMesh.mVertices[vertexIndex].y;
     outMesh.vertices[vertexIndex].position.z = inMesh.mVertices[vertexIndex].z;
     outMesh.vertices[vertexIndex].position.w = 1.f;
-    
-    Vector3D pos(outMesh.vertices[vertexIndex].position);
-
+ 
     for (Int32 e = 0; e < 3; ++e) {
-      minPos[e] = Math::min(minPos[e], pos[e]);
-      maxPos[e] = Math::max(maxPos[e], pos[e]);
+      minPos[e] = Math::min(minPos[e], outMesh.vertices[vertexIndex].position[e]);
+      maxPos[e] = Math::max(maxPos[e], outMesh.vertices[vertexIndex].position[e]);
+    }
+    
+    if (hasNormals) {
+      outMesh.vertices[vertexIndex].normal.x = inMesh.mNormals[vertexIndex].x;
+      outMesh.vertices[vertexIndex].normal.y = inMesh.mNormals[vertexIndex].y;
+      outMesh.vertices[vertexIndex].normal.z = inMesh.mNormals[vertexIndex].z;
+      outMesh.vertices[vertexIndex].normal.w = 0.f;
+    }
+    
+    if (hasBinTangs) {
+      outMesh.vertices[vertexIndex].binormal.x = inMesh.mBitangents[vertexIndex].x;
+      outMesh.vertices[vertexIndex].binormal.y = inMesh.mBitangents[vertexIndex].y;
+      outMesh.vertices[vertexIndex].binormal.z = inMesh.mBitangents[vertexIndex].z;
+      outMesh.vertices[vertexIndex].binormal.w = 0.f;
+
+      outMesh.vertices[vertexIndex].tangent.x = inMesh.mTangents[vertexIndex].x;
+      outMesh.vertices[vertexIndex].tangent.y = inMesh.mTangents[vertexIndex].y;
+      outMesh.vertices[vertexIndex].tangent.z = inMesh.mTangents[vertexIndex].z;
+      outMesh.vertices[vertexIndex].tangent.w = 0.f;
     }
 
-    outMesh.vertices[vertexIndex].normal.x = inMesh.mNormals[vertexIndex].x;
-    outMesh.vertices[vertexIndex].normal.y = inMesh.mNormals[vertexIndex].y;
-    outMesh.vertices[vertexIndex].normal.z = inMesh.mNormals[vertexIndex].z;
-    outMesh.vertices[vertexIndex].normal.w = 0.f;
-
-    outMesh.vertices[vertexIndex].binormal.x = inMesh.mBitangents[vertexIndex].x;
-    outMesh.vertices[vertexIndex].binormal.y = inMesh.mBitangents[vertexIndex].y;
-    outMesh.vertices[vertexIndex].binormal.z = inMesh.mBitangents[vertexIndex].z;
-    outMesh.vertices[vertexIndex].binormal.w = 0.f;
-
-    outMesh.vertices[vertexIndex].tangent.x = inMesh.mTangents[vertexIndex].x;
-    outMesh.vertices[vertexIndex].tangent.y = inMesh.mTangents[vertexIndex].y;
-    outMesh.vertices[vertexIndex].tangent.z = inMesh.mTangents[vertexIndex].z;
-    outMesh.vertices[vertexIndex].tangent.w = 0.f;
-
-    outMesh.vertices[vertexIndex].uv.x = inMesh.mTextureCoords[0][vertexIndex].x;
-    outMesh.vertices[vertexIndex].uv.y = inMesh.mTextureCoords[0][vertexIndex].y;
+    if (hasUVs) {
+      outMesh.vertices[vertexIndex].uv.x = inMesh.mTextureCoords[0][vertexIndex].x;
+      outMesh.vertices[vertexIndex].uv.y = inMesh.mTextureCoords[0][vertexIndex].y;
+    }
   }
 }
 

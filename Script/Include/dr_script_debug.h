@@ -1,90 +1,115 @@
 #pragma once
 #include "dr_script_prerequisites.h"
+#include <vector>
+//#include <unordered_map>
 
 namespace driderSDK {
+
+	class ScriptEngine;
+
+	namespace DebugCommands {
+
+		enum E 
+		{
+			CONTINUE,
+			STEP_OVER,
+			STEP_IN,
+			STEP_OUT
+		};
+
+	}
 
 	/**
 	*  Class containing debug functions for the script engine class.
 	*
 	* Sample usage:
 	*	ScriptEngine scriptMgr;
-	* scriptMgr->Debug.setBreakpoint();
+	* scriptMgr->Debug.printToLogger(_T("Test log from debug"));
 	*/
 	class DR_SCRIPT_EXPORT ScriptDebug 
 	{
-		class asIScriptContext;
-		//class ScriptEngine;
+		//class asIScriptContext;
+
+		struct BreakPoint
+		{
+			BreakPoint(TString _section,
+								 UInt32 _line, 
+								 bool func) : section(_section), line(_line), function(func) {}
+			TString section;
+			UInt32 line;
+			bool function;
+		};
 
 	public:
 
 		/**
-		*  Constructor
+		* Constructor
 		*
 		*/
-		ScriptDebug();
+		ScriptDebug(ScriptEngine* engine);
 
 		/**
-		*  Default destructor
+		* Default destructor
 		*
 		*/
 		~ScriptDebug();
 
 		/**
-		*  Adds a breakpoint into the code.
+		* Adds a breakpoint into the code.
 		*
 		*/
 		void setBreakPoint();
 
 		/**
-		*  Checks for a breakpoint.
+		* x
 		*
-		*  @return
+		*/
+		void sendCommand(DebugCommands::E command);
+
+		/**
+		* Checks for a breakpoint.
+		*
+		* @return
 		*   true if it found a breakpoint.
 		*/
 		bool checkBreakPoint();
 
 		/**
-		*  Print all the Callstack using the Logger.
+		* Print all the Callstack using the Logger.
 		*
 		*/
 		void printCallStack();
 
 		/**
-		*  Print all the local variables using the Logger.
+		* Print all the local variables using the Logger.
 		*
 		*/
 		void printLocalVariables();
 
 		/**
-		*  Print all the global variables using the Logger.
+		* Print all the global variables using the Logger.
 		*
 		*/
 		void printGlobalVariables();
 
 		/**
-		*  x
+		* x
 		*
 		*/
 		void printValue();
 
 		/**
-		*  Calls the Logger and adds a new log.
+		* Calls the Logger and adds a new log.
 		*
-		*  @param log
+		* @param log
 		*   String containing the message.
 		*/
-		void printToLogger(TString& log);
+		void printToLogger(TString log);
 
-		/**
-		*  Function to be called for each statement executed, called by AngelScript.
-		*
-		*  @param scriptContext
-		*   pointer to a script context.
-		*/
-		void debugLineCallback(asIScriptContext* scriptContext);
-
+		bool bIsStopped;
 	private:
-		//ScriptEngine* pScriptEngine;
+		ScriptEngine* pScriptEngine;
+		std::vector<BreakPoint> m_breakpoints;
 	};
 
 }

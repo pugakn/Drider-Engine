@@ -1,7 +1,6 @@
 #pragma once
 
 #include <atomic>
-#include <dr_graphics_api.h>
 #include <dr_memory.h>
 #include "dr_core_prerequisites.h"
 #include "dr_viewport.h"
@@ -12,7 +11,7 @@ class DR_CORE_EXPORT Application
  public:
   virtual ~Application() {}
   
-  int run();
+  Int32 run();
 
  protected:
   virtual void postInit() = 0;

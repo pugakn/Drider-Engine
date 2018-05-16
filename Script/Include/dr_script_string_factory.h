@@ -61,6 +61,10 @@ class DR_SCRIPT_EXPORT StringFactory : public asIStringFactory
 	GetRawStringData(const void* str, char* data, asUINT* length) const;
 
 	map_t m_stringCache;
+
+private:
+	//To divide string's lengths to fit into the correct spaces when converting unicode
+	const UInt16 m_unicode = 2; 
 };
 
 }

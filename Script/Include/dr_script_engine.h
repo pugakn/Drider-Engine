@@ -128,6 +128,14 @@ class DR_SCRIPT_EXPORT ScriptEngine : public Module<ScriptEngine>
 	lineCallback(asIScriptContext *scriptContext);
 
 	/**
+	* Function to be called for each statement executed, called by AngelScript.
+	*
+	* @param scriptContext
+	*   pointer to a script context.
+	*/
+	void debugLineCallback(asIScriptContext* scriptContext);
+
+	/**
 	* Gets the messages from the script's engine and logs them.
 	*
 	* @param scriptMessage

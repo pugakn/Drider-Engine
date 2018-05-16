@@ -46,17 +46,19 @@ GameObject::update() {
 
   for (auto& component : m_components) {
     
-    component->onUpdate();
+    if (component->isEnabled()) {
+   
+      component->onUpdate();
 
-    //If the local transform changed inside the component update
-    if (m_localTransform.changed()) {
+      //If the local transform changed inside the component update
+      if (m_localTransform.changed()) {
 
-      //Recalculate the final transform
-      m_finalTransform = m_localTransform * getParent()->m_finalTransform;
+        //Recalculate the final transform
+        m_finalTransform = m_localTransform * getParent()->m_finalTransform;
 
-      m_localTransform.m_change = false;
+        m_localTransform.m_change = false;
+      }
     }
-
   }
 
   if (!m_componentsToRemove.empty()) {
@@ -69,7 +71,9 @@ GameObject::update() {
   }
 
   for (auto& child : m_children) {
-    child->update();
+    if (child->isEnabled()) {
+      child->update();
+    }
   }
 
   m_finalTransform.m_change = false;

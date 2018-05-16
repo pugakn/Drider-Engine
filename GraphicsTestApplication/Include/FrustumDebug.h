@@ -5,12 +5,13 @@
 namespace driderSDK {
 
 class GameObject;
+class Camera;
 
 class FrustumDebug : public DrawableComponent 
 {
  public:
   
-  FrustumDebug(GameObject& _go);
+  FrustumDebug(GameObject& _go, Camera* _camera);
 
   // Inherited via DrawableComponent
   virtual void 
@@ -21,9 +22,14 @@ class FrustumDebug : public DrawableComponent
 
   virtual void 
   cloneIn(GameObject& _go) override;
+
+  void 
+  setCamera(Camera* _camera);
  private:
   void
   create();
+
+  Camera* m_camera;
 };
 
 }

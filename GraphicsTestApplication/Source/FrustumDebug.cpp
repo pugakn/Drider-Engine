@@ -2,24 +2,29 @@
 #include <dr_camera.h>
 #include <dr_mesh.h>
 #include <dr_aabb.h>
+#include <dr_camera.h>
 
 namespace driderSDK {
 
-FrustumDebug::FrustumDebug(GameObject& _go) 
-  : DrawableComponent(_go, _T("FrustrumDebug")){}
+FrustumDebug::FrustumDebug(GameObject& _go, Camera* _camera) 
+  : DrawableComponent(_go, _T("FrustrumDebug")),
+    m_camera(_camera)
+{}
 
 void 
 FrustumDebug::create() {
   
+  if (!m_camera) {
+    return;
+  }
+
   //Create index buffer & vertex buffer 4 lines
   std::vector<Mesh> meshes{1};
 
   auto& mesh = meshes[0];
-
-  auto camera = dynamic_cast<Camera*>(&m_gameObject);
-
-  auto view = camera->getView();
-  auto pro = camera->getProjection();
+  
+  auto view = m_camera->getView();
+  auto pro = m_camera->getProjection();
 
   float size = 1;
 
@@ -106,8 +111,14 @@ void FrustumDebug::onUpdate() {
 
 void 
 FrustumDebug::cloneIn(GameObject& _go) {
-  auto p = _go.createComponent<FrustumDebug>(); 
+  auto p = _go.createComponent<FrustumDebug>(m_camera); 
   p->m_technique = m_technique;
+  p->m_camera = m_camera;
+}
+
+void 
+FrustumDebug::setCamera(Camera* _camera) {
+  m_camera = _camera;
 }
 
 }
