@@ -53,6 +53,7 @@ private:
 
 
   WebRenderer webRenderer;
+  WebRenderer m_netLobby;
   Quad quad;
   TString m_onFocusGMO;
 

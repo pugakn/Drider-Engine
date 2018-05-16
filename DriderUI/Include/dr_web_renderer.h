@@ -246,6 +246,15 @@ public:
   * It initializes the necesary process to run chromium
   */
   static void start();
+  static void shutDown();
+  /**
+  * Do a render loop work
+  */
+  static void
+  update();
+
+
+
   WebRenderer(){}
   void 
   Init(UInt32 width, UInt32 height, BROWSER_MODE::E mode = BROWSER_MODE::kHeadless);
@@ -254,21 +263,6 @@ public:
   */
   void 
   Destroy();
-  /**
-  * Set m_running to true
-  */
-  void 
-  startRendering();
-  /**
-  * Set m_running to false
-  */
-  void 
-  stoptRendering();
-  /**
-  * Do a render loop work
-  */
-  void 
-  update();
   /**
   * Not commented
   */

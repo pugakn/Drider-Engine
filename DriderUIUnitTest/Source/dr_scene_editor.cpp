@@ -130,7 +130,7 @@ void SceneEditor::init(Viewport v)
 
 void SceneEditor::update()
 {
-  webRenderer.update();
+  WebRenderer::update();
 }
 void SceneEditor::draw()
 {
@@ -302,6 +302,12 @@ void SceneEditor::loadResources()
 }
 void SceneEditor::initUI()
 {
+  m_netLobby.Init(1024,720, BROWSER_MODE::kPopUp);
+  m_netLobby.loadURL("file:///C:/Users/Ulises/Documents/GitHub/Drider-Engine/DriderUIUnitTest/netLobby/NetLobby.html");
+  m_netLobby.registerJS2CPPFunction(std::make_pair("EEE", [&](const CefRefPtr<CefListValue>& arguments) {
+    std::cout << "EEE";
+  }));
+
   webRenderer.Init(m_viewport.width, m_viewport.height, BROWSER_MODE::kHeadless);
   webRenderer.loadURL("file:///C:/Users/Ulises/Documents/GitHub/Drider-Engine/DriderUIUnitTest/WebixTest/ss.html");
 
@@ -541,7 +547,9 @@ void driderSDK::SceneEditor::resize(Viewport _viewport)
 
 void SceneEditor::destroy()
 {
+  m_netLobby.Destroy();
   webRenderer.Destroy();
+  WebRenderer::shutDown();
 }
 
 }

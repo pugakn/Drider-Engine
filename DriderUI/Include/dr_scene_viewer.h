@@ -9,32 +9,58 @@
 #include <dr_quad.h>
 #include <dr_renderman.h>
 namespace driderSDK {
-  class DR_UI_EXPORT SceneViewer {
-    const float W_SCROLL_VEL = 0.2;
-    const float W_MOVE_VEL = 0.38;
-    const float W_ROT_VEL = 1;
-  public:
-    void init(Viewport v);
-    void draw();
-    void destroy();
-    void resize(const Viewport& _v);
+class DR_UI_EXPORT SceneViewer {
+  const float W_SCROLL_VEL = 0.2;
+  const float W_MOVE_VEL = 0.38;
+  const float W_ROT_VEL = 1;
+public:
 
-    RenderMan& getRenderManager();
-  private:
-    void initInputs();
-    void loadResources();
-    SceneGraph::SharedGameObject GetGMOMouseCollition();
-    //QUERY_ORDER::E m_queryOrder;
+  /**
+  * Init scene viewer
+  *
+  * @param _v
+  *  Render area viewport
+  *
+  */
+  void 
+  init(Viewport v);
+  /**
+  * 1.- Draw render manager to RT
+  * 2.- Draw RT texture on a quad with m_viewport
+  *
+  */
+  void 
+  draw();
+  /**
+  * Resize the render area
+  *
+  */
+  void 
+  destroy();
+  /**
+  * Resize the render area
+  *
+  * @param _v
+  *  New viewport
+  *
+  */
+  void 
+  resize(const Viewport& _v);
 
-    RenderMan m_renderMan;
-    Viewport m_sceneViewport;
-    GFXShared<RenderTarget> m_RT;
-    GFXShared<DepthStencil> m_RTDPTH;
-    Quad m_editorQuad;
+  RenderMan& getRenderManager();
+private:
+  void initInputs();
+  SceneGraph::SharedGameObject GetGMOMouseCollition();
 
-    bool m_sceneOnFocus = true;
-    bool m_rotWorldActive = false;
-    bool m_movWorldActive = false;
-    SceneGraph::SharedGameObject m_GMOOnFocus;
-  };
+  RenderMan m_renderMan;
+  Viewport m_sceneViewport;
+  GFXShared<RenderTarget> m_RT;
+  GFXShared<DepthStencil> m_RTDPTH;
+  Quad m_editorQuad;
+
+  bool m_sceneOnFocus = true;
+  bool m_rotWorldActive = false;
+  bool m_movWorldActive = false;
+  SceneGraph::SharedGameObject m_GMOOnFocus;
+};
 }
