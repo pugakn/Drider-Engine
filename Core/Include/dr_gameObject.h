@@ -51,6 +51,9 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   GameObject(const GameObject&) = delete;
 
   GameObject& operator=(const GameObject&) = delete;
+
+  bool
+  operator==(GameObject&);
   
   /*void
   init();*/
@@ -63,9 +66,6 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
 
   void
   destroy();
-
-  SharedGameObj
-  clone(bool addToParent = true);
   
   virtual SharedGameObj
   createInstance();
@@ -117,8 +117,8 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   * Gets the frist component of the specified type in the template parameter.
   *
   * @return
-  *  If any of the components matches the specified type it'll return 
-  *  a pointer to the component, nullptr otherwise.
+  *   If any of the components matches the specified type it'll return 
+  *   a pointer to the component, nullptr otherwise.
   */
   template<class T> 
   T* 
@@ -297,8 +297,16 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   }
 
   void release() {
-    if (--refCount == 0)
-      delete this;
+    if (--refCount == 0) {
+      
+    }
+  }
+  
+  void kill() {
+    if(auto parent = getParent()) {
+      parent->removeChild(shared_from_this());
+      //m_isStatic = true;
+    }
   }
 
   GameObject&
@@ -306,30 +314,34 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
 
   static BEGINING_REGISTER(GameObject, 0, asOBJ_REF)
 
-  result = scriptEngine->m_scriptEngine->RegisterObjectBehaviour("GameObject",
-                                                                 asBEHAVE_FACTORY,
-                                                                 "GameObject @f()",
-                                                                 asFUNCTION(Ref_GameObject),
-                                                                 asCALL_CDECL);
+  result = REGISTER_REF(GameObject)
 
-  result = scriptEngine->m_scriptEngine->RegisterObjectBehaviour("GameObject",
-                                                                 asBEHAVE_ADDREF,
-                                                                 "void f()",
-                                                                 asMETHOD(GameObject, addRef),
-                                                                 asCALL_THISCALL);
-  result = scriptEngine->m_scriptEngine->RegisterObjectBehaviour("GameObject",
-                                                                 asBEHAVE_RELEASE,
-                                                                 "void f()",
-                                                                 asMETHOD(GameObject, release),
-                                                                 asCALL_THISCALL);
+  //Register functions
+  result = REGISTER_FOO(GameObject,
+                        "GameObject@ findObject(const TString& in)",
+                        asMETHODPR(GameObject, findObject, (const TString&), GameObject*))
 
-  result = scriptEngine->m_scriptEngine->RegisterObjectMethod("GameObject",
-                                                              "GameObject@ findObject(const string& in)",
-                                                              asMETHODPR(GameObject, findObject, (const TString&), GameObject*),
-                                                              asCALL_THISCALL);
-  result = REGISTER_OP(GameObject, operator=, opEqual, GameObject&, GameObject&, "GameObject@", in)
+  result = REGISTER_FOO(GameObject, 
+                        "Transform& getTransform()", 
+                        asMETHODPR(GameObject, getTransform, (), Transform&))
 
-  END_REGISTER  
+  result = REGISTER_FOO(GameObject,
+                        "const TString& getTag()",
+                        asMETHODPR(GameObject, getTag, () const, const TString&))
+
+  result = REGISTER_FOO(GameObject,
+                        "void setTag(const TString& in)",
+                        asMETHODPR(GameObject, setTag, (const TString&), void))
+
+  //Register operators
+  result = REGISTER_OP(GameObject, operator=, opAssign, GameObject&, GameObject&, "GameObject@", in)
+
+  END_REGISTER 
+
+ // Private functions only use to scripting
+ private:
+  GameObject*
+  getChildByIndex(Int32 index);
 
  private:
 

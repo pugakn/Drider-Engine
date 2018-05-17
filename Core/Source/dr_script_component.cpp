@@ -11,7 +11,6 @@
 
 namespace driderSDK {
 
-
 ScriptComponent::ScriptComponent(GameObject &gameObject,
                                  std::shared_ptr<ScriptCore> _script) 
   : GameComponent(gameObject, _T("ScriptComponent")),
@@ -94,12 +93,6 @@ ScriptComponent::start() {
                                   _T("void SetTransform(Transform@ trans)"),
                                   0,
                                   &m_gameObject.getTransform(),
-                                  obj);
-
-  scriptEngine->setObjectToScript(type,
-                                  _T("void SetGameObject(GameObject@ object)"),
-                                  0,
-                                  &SceneGraph::getRoot(),
                                   obj);
 
   scriptEngine->executeFunction(_T("void Start()"),

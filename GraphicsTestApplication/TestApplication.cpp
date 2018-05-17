@@ -282,11 +282,15 @@ TestApplication::initScriptEngine() {
   result = Keyboard::registerFunctions(scriptEngine);
   Vector3D vector;
   result = vector.registerFunctions(scriptEngine);
-  Transform transform;
-  result = transform.registerFunctions(scriptEngine);
+  result = Transform::registerFunctions(scriptEngine);
   result = GameObject::registerFunctions(scriptEngine);
-  
   result = Time::registerFunctions(scriptEngine);
+
+  //Register global properties
+  m_root = SceneGraph::instance().getRoot().get(); // Get root
+
+  result = scriptEngine->m_scriptEngine->RegisterGlobalProperty("GameObject@ Object",
+                                                                &m_root);
 
   //Get script references of the ResourceManager
   auto rBehaviorScript = ResourceManager::getReference(_T("montiBehavior.as"));
@@ -317,8 +321,6 @@ TestApplication::initScriptEngine() {
   //Build module
   auto currentModule = scriptEngine->m_scriptEngine->GetModule("GameModule");
   result = currentModule->Build();
-
-  //SceneGraph::instance().getRoot()->findObject(_T("Floor"));
 
   //Initialize scripts
   m_scripts.find(_T("script1"))->second->initScript();

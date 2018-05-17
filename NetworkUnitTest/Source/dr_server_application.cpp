@@ -3,6 +3,7 @@
 #include <dr_network_manager.h>
 #include <dr_packet.h>
 #include <dr_string_utils.h>
+#include <iostream>
 
 namespace driderSDK {
 
@@ -12,56 +13,71 @@ ServerApplication::postInit() {
   NetworkManager::startUp();
 
   
-  m_socket.init();
+  m_socket.create();
   if (!m_socket.isValid()) {
-    Logger::addLog(_T("Could not initliaze socket!"));
-    NetworkManager::getLastError();
+    Logger::addLog(_T("Could not initliaze socket: ") + 
+                   NetworkManager::getNetworkErrorStr());
     return;
   }
 
-  Logger::addLog(_T("Socket init!"));
+  Logger::addLog(_T("Socket init!\nEnter server ip: "));
 
-  m_socket.bind(8888, "127.0.0.1");
+  String ip;
 
-  if (!m_socket.isValid()) {
-    Logger::addLog(_T("Could not bind socket!"));
-    NetworkManager::getLastError();
+  std::cin.ignore(256, '\n');
+
+  std::getline(std::cin, ip);
+
+  if (!m_socket.bind(StringUtils::toTString(ip), 8888)) {
+    Logger::addLog(_T("Could not bind socket: ") + 
+                   NetworkManager::getNetworkErrorStr());
     return;
   }
 
-  Logger::addLog(_T("Socket binded!"));
+  auto& bindAddr = m_socket.getBindAddress();
+  auto bindPort = m_socket.getBindPort();
   
+  Logger::addLog(_T("Socket binded!"));
+
+  Logger::addLog(_T("Hosted on: ") + 
+                 bindAddr + 
+                 _T(" port: ") + 
+                 StringUtils::toTString(bindPort));
+
+  m_socket.setBlockMode(false);
 }
 
 void 
 ServerApplication::postUpdate() {
 
-  Logger::addLog(_T("Waiting for data!"));
+  //Logger::addLog(_T("Waiting for data!"));
 
   Packet packet;
   UInt16 recPort = 0;
-  String recIp;
+  TString recIp;
 
-  Int32 recSize = m_socket.receive(packet, 256, recPort, recIp);
+  Int32 recSize;
+  
+  auto res = m_socket.receive(packet, 256, recSize, recPort, recIp);
 
-  if (recSize != -1) {
+  if (recSize > 0) {
     String message;
-    UInt32 tick;
-    packet >> tick;
+    //UInt32 tick;
+    //packet >> tick;
     packet >> message;
-
-    Logger::addLog(_T("Message received: ") + StringUtils::toTString(message) + 
-                   _T(" Tick: ") + StringUtils::toTString(tick));
-    Logger::addLog(_T("From Ip: ") + StringUtils::toTString(recIp) + 
+    
+    Logger::addLog(_T("Message received: ") + StringUtils::toTString(message));// + 
+                   //_T(" Tick: ") + StringUtils::toTString(tick));
+    Logger::addLog(_T("From Ip: ") + recIp + 
                    _T(" Port: ") + StringUtils::toTString(recPort));
     
-    message = "Hello client!";
+    message = "Hello client: " + message;
     packet << message;
     m_socket.send(packet, recPort, recIp);
   }
-  else {
-    Logger::addLog(_T("Error while receiving data!"));
-    Logger::addLog(NetworkManager::getLastError());
+  else if (res == SOCKET_ERR::kError) {
+    Logger::addLog(_T("Error while receiving data!") +
+                   NetworkManager::getNetworkErrorStr());   
   }
 
 }
@@ -72,8 +88,9 @@ ServerApplication::postRender() {
 
 void 
 ServerApplication::postDestroy() {
-  Logger::shutDown();
+  m_socket.close();
   NetworkManager::shutDown();
+  Logger::shutDown();
 }
 
 }

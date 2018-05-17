@@ -90,7 +90,7 @@ SceneGraph::draw() {
 }
 
 SceneGraph::QueryResult
-SceneGraph::query(Camera& camera, QUERY_ORDER::E order, UInt32 props) {
+SceneGraph::query(const Camera& camera, QUERY_ORDER::E order, UInt32 props) {
   
   GameObjectQueue objects(DepthComparer{camera, order});
 
@@ -109,9 +109,28 @@ SceneGraph::query(Camera& camera, QUERY_ORDER::E order, UInt32 props) {
   return queryRes;  
 }
 
+SceneGraph::GameObjectList
+SceneGraph::queryGameObjects(const Camera& camera, QUERY_ORDER::E order) {
+
+  GameObjectQueue objsPQ(DepthComparer{camera, order});
+
+  testObject(instance().m_root, 
+             Frustrum{camera.getView(), camera.getProjection()}, 
+             objsPQ);
+
+  GameObjectList objsList;
+  
+  while(!objsPQ.empty()) {
+    objsList.push_back(objsPQ.top());
+    objsPQ.pop();
+  }
+
+  return objsList;
+}
+
 void 
 SceneGraph::testObjectOct(SharedGameObject object, 
-                          Frustrum& frustrum, 
+                          const Frustrum& frustrum, 
                           GameObjectQueue& objects, 
                           bool test) {
 
@@ -149,7 +168,7 @@ SceneGraph::testObjectOct(SharedGameObject object,
 
 void
 SceneGraph::testObject(SharedGameObject object, 
-                       Frustrum& frustrum,
+                       const Frustrum& frustrum,
                        GameObjectQueue& objects) {
 
   auto aabbCollider = object->getComponent<AABBCollider>();
@@ -266,7 +285,9 @@ SceneGraph::addAllChilds(GameObject & node,
   }
 }
 
-SceneGraph::DepthComparer::DepthComparer(Camera& _camera, QUERY_ORDER::E _order) 
+/*Depth Comparer*/
+SceneGraph::DepthComparer::DepthComparer(const Camera& _camera, 
+                                         QUERY_ORDER::E _order) 
   : m_camera(_camera),
     m_order(_order)
 {}
