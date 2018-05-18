@@ -7,7 +7,12 @@
 
 namespace driderSDK {
 
-void 
+ServerApplication::ServerApplication(const String& ip, UInt16 port) 
+: m_ip(ip),
+  m_port(port) 
+{}
+
+void
 ServerApplication::postInit() {
   Logger::startUp(_T("../Docs/Logger/serverLog.html"));
   NetworkManager::startUp();
@@ -22,13 +27,7 @@ ServerApplication::postInit() {
 
   Logger::addLog(_T("Socket init!\nEnter server ip: "));
 
-  String ip;
-
-  std::cin.ignore(256, '\n');
-
-  std::getline(std::cin, ip);
-
-  if (!m_socket.bind(StringUtils::toTString(ip), 8888)) {
+  if (!m_socket.bind(StringUtils::toTString(m_ip), m_port)) {
     Logger::addLog(_T("Could not bind socket: ") + 
                    NetworkManager::getNetworkErrorStr());
     return;
@@ -70,8 +69,9 @@ ServerApplication::postUpdate() {
                    //_T(" Tick: ") + StringUtils::toTString(tick));
     Logger::addLog(_T("From Ip: ") + recIp + 
                    _T(" Port: ") + StringUtils::toTString(recPort));
-    
+   
     message = "Hello client: " + message;
+    packet.clear();
     packet << message;
     m_socket.send(packet, recPort, recIp);
   }
