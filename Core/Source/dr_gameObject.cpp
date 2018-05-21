@@ -8,11 +8,6 @@
 #include "dr_script_component.h"
 
 namespace driderSDK {
-
-//GameObject* Ref_GameObject() {
-//  return new GameObject();
-//}
-
 GameObject::GameObject(const TString& name)
   : NameObject(name), 
     m_tag(_T("UNTAGGED")),

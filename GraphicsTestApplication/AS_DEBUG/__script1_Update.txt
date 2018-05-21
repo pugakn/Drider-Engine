@@ -13,7 +13,7 @@ Variables:
                VarDecl  0
     1  11 *    PshC4    0x0          (i:0, f:0)
     3  12 *    PshC4    0x0          (i:0, f:0)
-    5  13 *    CALLSYS  95           (float getDelta())
+    5  13 *    CALLSYS  92           (float getDelta())
     7  13 *    CpyRtoV4 v4
     8  13 *    MULIf    v5, v4, 100.000000
    11  13 *    PshV4    v5

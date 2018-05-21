@@ -193,11 +193,8 @@ TestApplication::loadResources() {
   CameraManager::setActiveCamera(_T("MAIN_CAM"));
 
   //Models
-  ResourceManager::loadResource(_T("Croc.X"));
-  ResourceManager::loadResource(_T("Strafe_Left.fbx"));
-  ResourceManager::loadResource(_T("Weapons-of-survival.fbx"));
+  ResourceManager::loadResource(_T("Walking.fbx"));
   ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
-  ResourceManager::loadResource(_T("Sphere.fbx"));
 
   //Scripts
   ResourceManager::loadResource(_T("montiBehavior.as"));
@@ -217,7 +214,7 @@ TestApplication::createScene() {
 
   auto activeCam = CameraManager::getActiveCamera();
 
-  auto walkerModel = ResourceManager::getReferenceT<Model>(_T("Strafe_Left.fbx"));
+  auto walkerModel = ResourceManager::getReferenceT<Model>(_T("Walking.fbx"));
   auto& walkerAnimName = walkerModel->animationsNames[0];
   auto wa = ResourceManager::getReferenceT<Animation>(walkerAnimName);
   auto ws = ResourceManager::getReferenceT<Skeleton>(walkerModel->skeletonName);
