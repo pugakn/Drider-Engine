@@ -20,20 +20,29 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\dr_GBuffer1.h" />
-    <ClInclude Include="Include\dr_GBuffer2.h" />
+    <ClInclude Include="Include\dr_HorBlur.h" />
+    <ClInclude Include="Include\dr_Lightning.h" />
+    <ClInclude Include="Include\dr_Shadow.h" />
+    <ClInclude Include="Include\dr_SSAO.h" />
+    <ClInclude Include="Include\dr_light.h" />
     <ClInclude Include="Include\dr_PostProcessing.h" />
     <ClInclude Include="Include\dr_renderman.h" />
     <ClInclude Include="Include\dr_rendermanapp.h" />
     <ClInclude Include="Include\dr_renderman_prerequisites.h" />
     <ClInclude Include="Include\dr_renderpass.h" />
+    <ClInclude Include="Include\dr_VerBlur.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_GBuffer1.cpp" />
-    <ClCompile Include="Source\dr_GBuffer2.cpp" />
+    <ClCompile Include="Source\dr_Lightning.cpp" />
+    <ClCompile Include="Source\dr_Shadow.cpp" />
+    <ClCompile Include="Source\dr_SSAO.cpp" />
     <ClCompile Include="Source\dr_PostProcessing.cpp" />
     <ClCompile Include="Source\dr_renderman.cpp" />
     <ClCompile Include="Source\dr_rendermanapp.cpp" />
     <ClCompile Include="Source\dr_renderpass.cpp" />
+    <ClCompile Include="Source\m_HorBlur.cpp" />
+    <ClCompile Include="Source\m_VerBlur.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

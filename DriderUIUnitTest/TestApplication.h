@@ -31,12 +31,12 @@ public:
   void postRender() override;
   void postDestroy() override;
 
-  
-  Viewport viewport;
+  void onResize() override;
 
 
 private:
   SceneEditor m_editor;
+
 
 };
 

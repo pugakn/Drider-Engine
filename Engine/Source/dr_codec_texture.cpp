@@ -20,7 +20,7 @@ CodecTexture::decode(TString pathName) {
   auto data = stbi_load(StringUtils::toString(pathName).c_str(), 
                         &width, 
                         &height, 
-                        &channels, 
+                        &channels,
                         0);
 
   if (data) {
@@ -54,6 +54,7 @@ CodecTexture::isCompatible(TString extension) {
   //TString extension = FileSystem::getFileExtension(resourceName);
   if (extension == _T("png") || 
       extension == _T("jpg") || 
+      extension == _T("jpeg") || 
       extension == _T("tga") ||
       extension == _T("hdr")) {
     return true;

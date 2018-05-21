@@ -35,7 +35,16 @@ Camera::setPosition(const Vector3D& position) {
 
 void
 Camera::move(float forward, float strafe, float upVelocity, bool lockY) {
-    
+  auto dir = (m_target - m_position).normalize();
+  auto upDir = m_up.normalize();
+  auto strafeDir = (upDir.cross(dir)).normalize();
+  m_position += dir * forward;
+  m_position += upDir * upVelocity;
+  m_position += strafeDir * strafe;
+  m_target += dir * forward;
+  m_target += upDir * upVelocity;
+  m_target += strafeDir * strafe;
+  invalidateView();
 }
 
 void
@@ -46,11 +55,17 @@ Camera::move(const Vector3D& direction) {
 
 void
 Camera::pan(float forward, float strafe, float upVelocity, bool lockY) {
+  auto dir = (m_target - m_position).normalize();
+  auto upDir = m_up.normalize();
+  auto strafeDir = (upDir.cross(dir)).normalize();
+  m_position += dir * forward;
+  m_position += upDir * upVelocity;
+  m_position += strafeDir * strafe;
   invalidateView();
 }
 
 void
-Camera::pan(const Vector3D & direction) {
+Camera::pan(const Vector3D& direction) {
   move(direction);
   m_target += direction;
   invalidateView();
@@ -74,6 +89,20 @@ Camera::createProyection(float fov,
 }
 
 void
+Camera::createProyection(float width,
+                         float height,
+                         float nearPlane,
+                         float farPlane) {
+  m_farPlane = farPlane;
+  m_nearPlane = nearPlane;
+  m_fov = 0;
+	
+  m_projection.Orthogonal(width, height, m_nearPlane, m_farPlane);
+
+  m_vp = getView() * m_projection;
+}
+
+void
 Camera::setUp(const Vector3D& up) {
   m_up = up;
 
@@ -89,7 +118,6 @@ Camera::setTarget(const Vector3D& target) {
 
 void
 Camera::setViewport(const Viewport& viewport) {
-	
   m_viewport = viewport;
 
   createProyection(m_fov, m_nearPlane, m_farPlane);
@@ -107,7 +135,7 @@ Camera::rotate(float yawDegree, float pitchDegree) {
 
 void
 Camera::orbit(float pitch, float yaw) {
-	
+  invalidateView();
 }
 
 const Matrix4x4&
@@ -152,9 +180,24 @@ Camera::getFOV() const {
   return m_fov;
 }
 
+UInt32
+Camera::getViewportWidth() const {
+  return m_viewport.width;
+}
+
+UInt32
+Camera::getViewportHeight() const {
+  return m_viewport.height;
+}
+
 Vector3D
 Camera::getPosition() const {
   return m_position;
+}
+
+Vector3D
+Camera::getDirection() const {
+  return (m_target - m_position).normalize();
 }
 
 void 

@@ -1,24 +1,19 @@
 #pragma once
 #include "dr_renderman_prerequisites.h"
 #include "dr_renderpass.h"
-#include <dr_render_component.h>
-#include <dr_camera.h>
-#include <dr_matrix4x4.h>
-#include <dr_input_layout.h>
-#include <dr_constant_buffer.h>
+#include "dr_light.h"
 #include <dr_sample_state.h>
+#include <dr_camera.h>
 
 namespace driderSDK {
 
 struct PostProcessingInitData : PassInitData {};
 
 struct PostProcessingDrawData : PassDrawData {
-  Vector4D CameraPosition;
-  GFXShared<RenderTarget> Gbuffer1RT;
-  GFXShared<RenderTarget> Gbuffer2RT;
+  GFXShared<RenderTarget> ColorRT;
 };
 
-class PostProcessingPass : RenderPass {
+class PostProcessingPass : public RenderPass {
  public:
   /*
   TEST::testName
@@ -48,7 +43,7 @@ class PostProcessingPass : RenderPass {
 
  private:
   struct CBuffer {
-    Vector4D EyePosition;
+    Vector4D Var;
   };
 
   CBuffer CB;

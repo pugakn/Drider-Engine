@@ -226,6 +226,17 @@ WebRenderer::start()
 
 }
 
+void WebRenderer::shutDown()
+{
+  CefShutdown();
+}
+
+void
+WebRenderer::update()
+{
+  CefDoMessageLoopWork();
+}
+
 void 
 WebRenderer::Init(UInt32  width, UInt32  height, BROWSER_MODE::E mode)
 {
@@ -251,7 +262,7 @@ WebRenderer::Init(UInt32  width, UInt32  height, BROWSER_MODE::E mode)
     window_info.SetAsWindowless((HWND)GraphicsAPI::getWindowHandle());
     break;
   case driderSDK::BROWSER_MODE::kPopUp:
-    window_info.SetAsPopup((HWND)GraphicsAPI::getWindowHandle(), "NAMAE");
+    window_info.SetAsPopup((HWND)GraphicsAPI::getWindowHandle(), "Drider Project");
     break;
   case driderSDK::BROWSER_MODE::kChild:
     throw "Not implemented exeption";
@@ -261,14 +272,21 @@ WebRenderer::Init(UInt32  width, UInt32  height, BROWSER_MODE::E mode)
   window_info.y = 0;
   window_info.width = width;
   window_info.height = height;
-  renderHandler = new RenderHandler(width, height);
-  renderHandler->init();
-  browserClient = new BrowserClient(renderHandler);
+  if (mode != BROWSER_MODE::kHeadless) {
+    window_info.style =
+      WS_OVERLAPPED | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_VISIBLE | WS_SYSMENU;
+  }
+  else {
+    renderHandler = new RenderHandler(width, height);
+    renderHandler->init();
+    initInput();
+  }
 
+  browserClient = new BrowserClient(renderHandler);
   browser = CefBrowserHost::CreateBrowserSync(window_info, browserClient.get(), "http://www.google.com", browserSettings, nullptr);
   //browser->GetMainFrame()->VisitDOM();
-  startRendering();
-  initInput();
+
+
 }
 void 
 WebRenderer::Destroy()
@@ -276,25 +294,6 @@ WebRenderer::Destroy()
   browser = nullptr;
   browserClient = nullptr;
   renderHandler = nullptr;
-  CefShutdown();
-}
-void 
-WebRenderer::startRendering()
-{
-  m_running = true;
-}
-void 
-WebRenderer::stoptRendering()
-{
-  if (m_running) {
-    m_running = false;
-  }
-}
-void 
-WebRenderer::update()
-{
-  if (m_running)
-    CefDoMessageLoopWork();
 }
 void 
 WebRenderer::loadURL(std::string path)

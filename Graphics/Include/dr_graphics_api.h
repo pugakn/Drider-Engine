@@ -49,6 +49,9 @@ class DR_GRAPHICS_EXPORT GraphicsAPI {
   virtual
   void swapBuffers();
 
+  virtual
+  void resizeBackBuffer(UInt32 w, UInt32 h);
+
   static Device& 
   getDevice();
 
@@ -81,7 +84,7 @@ class DR_GRAPHICS_EXPORT GraphicsAPI {
   GFXUnique<Device> m_device;
   GFXUnique<DeviceContext> m_deviceContext;
   GFXUnique<SwapChain> m_swapChain;
-  GFXUnique<RenderTarget> m_backBufferView;
+  //GFXUnique<RenderTarget> m_backBufferView;
   GFXUnique<DepthStencil> m_depthStencilView;
   GFXUnique<RasterizerState> m_rasterizerState;
 

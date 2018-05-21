@@ -16,7 +16,7 @@ struct vertex
   float u, v;
 };
 struct CBuffer {
-  float xd[16];
+  float xd[4];
 };
 class Quad {
  public:

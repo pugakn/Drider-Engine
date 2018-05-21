@@ -36,10 +36,25 @@
     <ClInclude Include="Include\dr_GBuffer1.h">
       <Filter>Archivos de encabezado\Passes</Filter>
     </ClInclude>
-    <ClInclude Include="Include\dr_GBuffer2.h">
+    <ClInclude Include="Include\dr_PostProcessing.h">
       <Filter>Archivos de encabezado\Passes</Filter>
     </ClInclude>
-    <ClInclude Include="Include\dr_PostProcessing.h">
+    <ClInclude Include="Include\dr_light.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_SSAO.h">
+      <Filter>Archivos de encabezado\Passes</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_Shadow.h">
+      <Filter>Archivos de encabezado\Passes</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_HorBlur.h">
+      <Filter>Archivos de encabezado\Passes</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_VerBlur.h">
+      <Filter>Archivos de encabezado\Passes</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_Lightning.h">
       <Filter>Archivos de encabezado\Passes</Filter>
     </ClInclude>
   </ItemGroup>
@@ -56,10 +71,22 @@
     <ClCompile Include="Source\dr_GBuffer1.cpp">
       <Filter>Archivos de código fuente\Passes</Filter>
     </ClCompile>
-    <ClCompile Include="Source\dr_GBuffer2.cpp">
+    <ClCompile Include="Source\dr_PostProcessing.cpp">
       <Filter>Archivos de código fuente\Passes</Filter>
     </ClCompile>
-    <ClCompile Include="Source\dr_PostProcessing.cpp">
+    <ClCompile Include="Source\dr_SSAO.cpp">
+      <Filter>Archivos de código fuente\Passes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_Shadow.cpp">
+      <Filter>Archivos de código fuente\Passes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\m_HorBlur.cpp">
+      <Filter>Archivos de código fuente\Passes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\m_VerBlur.cpp">
+      <Filter>Archivos de código fuente\Passes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_Lightning.cpp">
       <Filter>Archivos de código fuente\Passes</Filter>
     </ClCompile>
   </ItemGroup>

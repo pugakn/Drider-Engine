@@ -321,8 +321,8 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
                         asMETHODPR(GameObject, findObject, (const TString&), GameObject*))
 
   result = REGISTER_FOO(GameObject, 
-                        "GameObject@ getChildByIndex(int)", 
-                        asMETHODPR(GameObject, getChildByIndex, (Int32), GameObject*))
+                        "Transform& getTransform()", 
+                        asMETHODPR(GameObject, getTransform, (), Transform&))
 
   result = REGISTER_FOO(GameObject,
                         "const TString& getTag()",

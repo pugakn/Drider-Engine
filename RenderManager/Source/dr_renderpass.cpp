@@ -1,7 +1,8 @@
 #include "dr_renderpass.h"
 #include <dr_graphics_api.h>
-#include <dr_file.h>
 #include <dr_device.h>
+#include <dr_file.h>
+#include <dr_string_utils.h>
 
 namespace driderSDK {
 
@@ -15,9 +16,11 @@ void
 RenderPass::recompileShader() {
   if (m_vertexShader != nullptr) {
     m_vertexShader->release();
+    m_vertexShader.release();
   }
   if (m_fragmentShader != nullptr) {
     m_fragmentShader->release();
+    m_fragmentShader.release();
   }
 
   Device& device = GraphicsAPI::getDevice();

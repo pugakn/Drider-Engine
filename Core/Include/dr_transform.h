@@ -51,8 +51,8 @@ class DR_CORE_EXPORT Transform
   const Vector3D& 
   getPosition() const;
 
-  /*const Vector3D&
-  getEulerAngles() const;*/
+  const Vector3D&
+  getEulerAngles() const;
 
   
   /**
@@ -181,7 +181,7 @@ class DR_CORE_EXPORT Transform
       delete this;
   }
 
-  BEGINING_REGISTER(Transform, 0, asOBJ_REF)
+  static BEGINING_REGISTER(Transform, 0, asOBJ_REF)
 
   result = scriptEngine->m_scriptEngine->RegisterObjectBehaviour("Transform",
                                                                  asBEHAVE_FACTORY,
@@ -205,6 +205,8 @@ class DR_CORE_EXPORT Transform
   result = scriptEngine->m_scriptEngine->RegisterObjectProperty("Transform",
                                                                 "Vector3D m_position",
                                                                 asOFFSET(Transform, m_position));
+
+   result = REGISTER_OP(Transform, operator=, opAssign, const Transform&, Transform&, "Transform&", in)
 
   END_REGISTER
   

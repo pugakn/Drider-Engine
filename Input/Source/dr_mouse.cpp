@@ -1,6 +1,5 @@
 #include "dr_mouse.h"
 #include "dr_input_manager.h"
-
 namespace driderSDK {
 
 Mouse::Mouse(Pass) 
@@ -12,33 +11,33 @@ Mouse::Mouse(Pass)
 
 Mouse::~Mouse() {}
 
-Vector2DI 
+Vector3D
 Mouse::getPosition() {
  
   auto mouse = InputManager::getMouse()->m_mouseOIS;
   
   auto& state = mouse->getMouseState();
 
-  Vector2DI pos;
+  Vector3D pos;
 
   pos.x = state.X.abs;
   pos.y = state.Y.abs;
-
+  pos.z = state.Z.abs;
   return pos;
 }
 
-Vector2DI 
+Vector3D
 Mouse::getDisplacement() {
   
   auto mouse = InputManager::getMouse()->m_mouseOIS;
   
   auto& state = mouse->getMouseState();
 
-  Vector2DI pos;
+  Vector3D pos;
 
   pos.x = state.X.rel;
   pos.y = state.Y.rel;
-
+  pos.z = state.Z.rel;
   return pos;
 }
 

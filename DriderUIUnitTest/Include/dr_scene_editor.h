@@ -1,7 +1,6 @@
 #pragma once
 #include <dr_camera.h>
 #include <dr_viewport.h>
-//#include <dr_resource_manager.h>
 #include <memory>
 #include <dr_memory.h>
 #include <dr_shader.h>
@@ -14,6 +13,11 @@
 
 #include <dr_web_renderer.h>
 #include <dr_quad.h>
+
+#include <dr_renderman.h>
+#include <dr_depth_stencil.h>
+
+#include <dr_scene_viewer.h>
 namespace driderSDK {
 class SceneEditor {
 public:
@@ -29,36 +33,38 @@ public:
     const Vector3D& pos);
   //void removeGameObject();
 
-  void createComponentOnGMO(const TString& gmoID, const Int32 type);// Uno por uno asd gdsagfdsf dsf< ?
-  void removeComponentOnGMO(const TString& gmoID, const TString& componentID);
+  //void createComponentOnGMO(const TString& gmoID, const Int32 type);
+  //void removeComponentOnGMO(const TString& gmoID, const TString& componentID);
 
 
+  void resize(Viewport _viewport);
 private:
-  Int32 m_sceneWidth;
-  Int32 m_sceneHeight;
   void initInputs();
-  void initCameras();
   void initUI();
   void initSceneGraph();
-
-  void sceneResized();
+  void loadResources();
 
   void UI_UpdateSceneGraph();
   void UI_UpdatePropertySheet(const GameObject& obj);
 
-  //QUERY_ORDER::E m_queryOrder;
 
   Viewport m_viewport;
-  std::shared_ptr<Camera> m_camera;
-  std::shared_ptr<Camera> m_leftCam;
-  std::shared_ptr<Camera> m_upCam;
-  std::shared_ptr<Camera> m_activeCam;
-
-  std::shared_ptr<GameObject> m_joker;
 
 
-  GFXUnique<RenderTarget> m_RT;
+
   WebRenderer webRenderer;
+  WebRenderer m_netLobby;
   Quad quad;
+  TString m_onFocusGMO;
+
+  SceneViewer m_sceneViewer;
+
+  SceneGraph::SharedGameObject model;
+  std::shared_ptr<Material> modelMat;
+  SceneGraph::SharedGameObject floor;
+  std::shared_ptr<Material> floorMat;
+
+  Vector3D modelMovement;
+  std::array<Light, 128> Lights;
 };
 }

@@ -4,37 +4,34 @@
 #include <dr_graph.h>
 #include <dr_render_component.h>
 #include <dr_camera.h>
-#include <dr_matrix4x4.h>
-#include <dr_input_layout.h>
-#include <dr_constant_buffer.h>
-
+#include <dr_sample_state.h>
 namespace driderSDK {
 
-struct GBuffer1InitData : PassInitData {
+struct GBufferInitData : PassInitData {
 };
 
-struct GBuffer1DrawData : PassDrawData {
+struct GBufferDrawData : PassDrawData {
   std::shared_ptr<Camera> activeCam;
   SceneGraph::QueryResult* models;
   GFXShared<RenderTarget> OutRt;
   GFXShared<DepthStencil> dsOptions;
 };
 
-class GBuffer1Pass : RenderPass {
+class GBufferPass : public RenderPass {
  public:
   /*
   TEST::testName
   
   Description.
   */
-   GBuffer1Pass();
+   GBufferPass();
 
   /*
   TEST::testName
   
   Description.
   */
-  ~GBuffer1Pass();
+  ~GBufferPass();
 
   /*
   TEST::testName
@@ -56,14 +53,16 @@ class GBuffer1Pass : RenderPass {
 
  private:
   struct CBuffer {
-    Matrix4x4 WVP;
     Matrix4x4 World;
+    Matrix4x4 WorldView;
+    Matrix4x4 WVP;
     Matrix4x4 Bones[200];
   };
 
   CBuffer CB;
 
   GFXUnique<Texture> cubeMapTex;
+  GFXUnique<SamplerState> m_samplerState;
 };
 
 }

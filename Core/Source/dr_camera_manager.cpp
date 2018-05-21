@@ -23,12 +23,29 @@ CameraManager::createCamera(const TString& cameraName,
 														float fov,
 														float nearPlane,
 														float farPlane) {
-	
   auto cam = std::make_shared<Camera>(pos, target);
   
   cam->setViewport(viewport);
   
   cam->createProyection(fov, nearPlane, farPlane);
+
+  instance().m_cameras[cameraName] = cam;
+}
+
+void
+CameraManager::createCamera(const TString& cameraName,
+                            const Vector3D& pos,
+                            const Vector3D& target,
+                            const Viewport& viewport,
+                            float width,
+                            float height,
+                            float nearPlane,
+                            float farPlane) {
+  auto cam = std::make_shared<Camera>(pos, target);
+  
+  cam->setViewport(viewport);
+  
+  cam->createProyection(width, height, nearPlane, farPlane);
 
   instance().m_cameras[cameraName] = cam;
 }

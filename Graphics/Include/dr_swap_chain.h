@@ -7,6 +7,7 @@ namespace driderSDK {
 class Device;
 class DeviceContext;
 class Texture;
+class RenderTarget;
 
 class DR_GRAPHICS_EXPORT SwapChain
 {
@@ -47,14 +48,21 @@ class DR_GRAPHICS_EXPORT SwapChain
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  virtual void
-  getBackBuffer(Texture& texture) = 0;
+  virtual RenderTarget&
+  getBackBufferRT() = 0;
 
   /**
   * Release the allocated memory
   */
   virtual void
   release() = 0;
+
+  /**
+  * Resize back buffer.
+  * This should be called when the application window is resized.
+  */
+  virtual void
+  resize(const Device& device, UInt32 _w, UInt32 _h) = 0;
 
   /**
   * Swap back-front buffer
