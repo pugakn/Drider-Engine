@@ -13,7 +13,7 @@ Variables:
                VarDecl  0
     1  11 *    PshC4    0x0          (i:0, f:0)
     3  12 *    PshC4    0x0          (i:0, f:0)
-    5  13 *    CALLSYS  92           (float getDelta())
+    5  13 *    CALLSYS  91           (float getDelta())
     7  13 *    CpyRtoV4 v4
     8  13 *    MULIf    v5, v4, 100.000000
    11  13 *    PshV4    v5
@@ -33,7 +33,7 @@ Variables:
    25  13 *    ADDSi    v20, 134217746
    27  13 *    RDSPtr
    28  13 *    GETREF   1
-   29  13 *    CALLSYS  84           (void Transform::move(const Vector3D&in))
+   29  13 *    CALLSYS  82           (void Transform::move(const Vector3D&in))
 - 42,3 -
             }
             1:
@@ -54,7 +54,7 @@ Variables:
    47  13 *    ADDSi    v20, 134217746
    49  13 *    RDSPtr
    50  13 *    GETREF   1
-   51  13 *    CALLSYS  84           (void Transform::move(const Vector3D&in))
+   51  13 *    CALLSYS  82           (void Transform::move(const Vector3D&in))
    53  11 *    PSF      v11
    54  12 *    CALLSYS  60           (Vector3D::~Vector3D())
 - 46,3 -

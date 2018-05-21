@@ -29,6 +29,8 @@ class DR_CORE_EXPORT ComponentPartition
 
 class GameObject;
 
+GameObject* Ref_GameObject();
+
 class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject>,  
                                   public EnableObject,
                                   public NameObject,
@@ -300,6 +302,8 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   operator=(const GameObject& ref);
 
   static BEGINING_REGISTER(GameObject, 0, asOBJ_REF | asOBJ_NOCOUNT)
+
+  result = REGISTER_REF_NOCOUNT(GameObject)
 
   //Register functions
   result = REGISTER_FOO(GameObject,

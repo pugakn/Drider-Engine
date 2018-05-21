@@ -86,6 +86,13 @@ namespace driderSDK {
                                                                      asCALL_THISCALL);\
       if (result < 0) return result;
 
+#define REGISTER_REF_NOCOUNT(className)\
+    result = scriptEngine->m_scriptEngine->RegisterObjectBehaviour(#className,\
+                                                                   asBEHAVE_FACTORY,\
+                                                                   #className " @f()",\
+                                                                   asFUNCTION(Ref_##className),\
+                                                                   asCALL_CDECL);
+
 // METHODS FUNCTIONS
 #define REGISTER_FOO_0P(className, fooName, rType, rTypeStr)\
     result = scriptEngine->m_scriptEngine->RegisterObjectMethod(#className,\
