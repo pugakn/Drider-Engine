@@ -28,16 +28,14 @@ namespace driderSDK {
 	*/
 	class DR_SCRIPT_EXPORT ScriptDebug 
 	{
-		//class asIScriptContext;
 
 		struct BreakPoint
 		{
 			BreakPoint(TString _section,
-								 UInt32 _line, 
-								 bool func) : section(_section), line(_line), function(func) {}
+								 UInt32 _line) : section(_section), line(_line) {}
 			TString section;
 			UInt32 line;
-			bool function;
+
 		};
 
 	public:
@@ -61,18 +59,40 @@ namespace driderSDK {
 		void setBreakPoint();
 
 		/**
-		* x
+		* Removes a breakpoint from the code.
 		*
 		*/
-		void sendCommand(DebugCommands::E command);
+		bool removeBreakPoint(Int32 line, TString& section);
+
+		/**
+		* Sets a command to the debugger
+		*
+		*  @param command
+		*   Command to set from an enumerator.
+		*/
+		void setCommand(DebugCommands::E command);
+
+		/**
+		* Gets the current command of the debugger.
+		*
+		*  @return
+		*   Active command
+		*/
+		DebugCommands::E getCommand();
 
 		/**
 		* Checks for a breakpoint.
 		*
 		* @return
-		*   true if it found a breakpoint.
+		*   True if it found a breakpoint.
 		*/
 		bool checkBreakPoint();
+
+		/**
+		* Removes all Breakpoints.
+		*
+		*/
+		void clearBreakPoints();
 
 		/**
 		* Print all the Callstack using the Logger.
@@ -93,12 +113,6 @@ namespace driderSDK {
 		void printGlobalVariables();
 
 		/**
-		* x
-		*
-		*/
-		void printValue();
-
-		/**
 		* Calls the Logger and adds a new log.
 		*
 		* @param log
@@ -106,10 +120,31 @@ namespace driderSDK {
 		*/
 		void printToLogger(TString log);
 
-		bool bIsStopped;
+		/**
+		* Interprets the value of the object
+		*
+		*  @param value
+		*   pointer to the value to interpret.
+		*
+		*  @param typeId
+		*   Int from an enumerator indicating the type of value.
+		*
+		*  @return
+		*   TString containing the interpreted value.
+		*/
+		TString interpretValue(void* value, Int32 typeId);
+
+		/**
+		* Prints the Garbage Collector's status.
+		*
+		*/
+		void printGarbageStatus();
+
+		UInt32 lastStackLevel;
 	private:
 		ScriptEngine* pScriptEngine;
 		std::vector<BreakPoint> m_breakpoints;
+		DebugCommands::E m_command;
 	};
 
 }
