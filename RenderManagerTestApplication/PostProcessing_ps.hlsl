@@ -19,13 +19,12 @@ float4
   float2 uv = input.Texcoord;
   
   float fCoC = NormCoC.Sample(SS, uv).w;
-  //return float4(fCoC.xxx, 1.0f);
 
   float2 fVignetteConcentration = float2(4.0f, 4.0f);
   float2 fVignetteRad = float2(1.25f, 1.25f);
-  float fVignetteScale = 1.0f;
-  float fChromaticAberrationStrength = 0.1f;
-  float fChromaticAberrationConcentration = 2.0f;
+  float  fVignetteScale = 1.0f;
+  float  fChromaticAberrationStrength = 0.1f;
+  float  fChromaticAberrationConcentration = 2.0f;
   
   //Vignette
   float x = pow((uv.x * 2.0f) - 1.0f, fVignetteConcentration.x);
@@ -62,7 +61,6 @@ float4
   float4 finalColor = lerp(Color, ColorBlur, fCoC);
   finalColor *= vignette;
   
-  //return ColorTex.Sample(SS, uv);
-  //return tex2D(ColorTex, uv);
+  return ColorTex.Sample(SS, uv);
   return finalColor;
 }
