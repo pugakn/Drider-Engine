@@ -127,7 +127,7 @@ RenderManApp::RotateModel() {
 }
 
 void
-RenderManApp::MoveModel(Vector3D direction) {
+RenderManApp::MoveModel(const Vector3D& direction) {
   modelMovement += direction;
 }
 

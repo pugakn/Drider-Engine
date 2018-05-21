@@ -31,7 +31,7 @@ class RenderManApp : public Application
   RotateModel();
 
   void
-  MoveModel(Vector3D direction);
+  MoveModel(const Vector3D& direction);
 
   void 
   loadResources();

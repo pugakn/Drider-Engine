@@ -14,9 +14,6 @@ SoundComponent::SoundComponent(GameObject &gameObject_)
   : GameComponent(gameObject_, _T("SoundComponent")) 
 {}
 
-SoundComponent::~SoundComponent() 
-{}
-
 void
 SoundComponent::onCreate() {
   soundAPI = SoundAPI::instance().API;

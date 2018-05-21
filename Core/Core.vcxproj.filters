@@ -242,11 +242,11 @@
     <ClCompile Include="Source\dr_name_object.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Include\dr_sound_component.h">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\dr_sound_component.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\dr_sound_component.h">
+      <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

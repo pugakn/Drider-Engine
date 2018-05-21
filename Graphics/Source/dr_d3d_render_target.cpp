@@ -82,7 +82,7 @@ D3DRenderTarget::set(const DeviceContext& deviceContext,
     D3D11DeviceContext->RSSetViewports(1, &viewport_RT);
 }
 
-void D3DRenderTarget::clear(const DeviceContext & deviceContext, const float color[4])
+void D3DRenderTarget::clear(const DeviceContext& deviceContext, const float color[4])
 {
   float rgba[4]; // Cambiar después xD
   rgba[0] = 0.0f;
@@ -90,7 +90,7 @@ void D3DRenderTarget::clear(const DeviceContext & deviceContext, const float col
   rgba[2] = 1.0f;
   rgba[3] = 1.0f;
 
-  for (int i = 0; i < RTVs.size(); i++) {
+  for (SizeT i = 0; i < RTVs.size(); i++) {
     reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
       D3D11DeviceContext->ClearRenderTargetView(RTVs[i], color);
   }

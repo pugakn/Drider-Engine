@@ -33,6 +33,9 @@
     <ClInclude Include="Include\dr_network_manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\dr_server_lobby.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_udp_socket.cpp">

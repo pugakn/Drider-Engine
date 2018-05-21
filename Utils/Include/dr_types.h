@@ -36,7 +36,7 @@ namespace driderSDK {
   using Float64 = double;
   using byte = unsigned char;
 
-#if DR_COMPILER == DR_COMPILER_MSV || DR_PLATFORM == DR_PLATFORM_PS4
+#if DR_COMPILER == DR_COMPILER_MSVC|| DR_PLATFORM == DR_PLATFORM_PS4
   using WChar = wchar_t;		//Wide Character (used by Visual Studio)
 #else
   using WChar = unsigned short; //Wide Character (Any other compiler)

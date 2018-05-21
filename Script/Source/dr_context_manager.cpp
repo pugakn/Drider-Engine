@@ -156,7 +156,7 @@ ContextManager::executeScripts() {
   if (!ScriptEngine::isStarted()) {
     ScriptEngine::startUp();
   }
-  asUINT time = Time::getElapsedMilli();
+  asUINT time = static_cast<asUINT>(Time::getElapsedMilli());
   for (m_currentThread = 0; m_currentThread < m_threads.size(); m_currentThread++)
   {
     SContextInfo *thread = m_threads[m_currentThread];

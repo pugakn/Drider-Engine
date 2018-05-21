@@ -51,7 +51,7 @@ namespace driderSDK
 		return a.empty();
 	}
 
-	static TString::value_type * tStringIndex(Int32 index, TString& a) {
+	static TString::value_type* tStringIndex(SizeT index, TString& a) {
 		if (index >= a.size()) {
 			asIScriptContext* context = asGetActiveContext();
 			context->SetException("Out of range");
@@ -84,18 +84,25 @@ namespace driderSDK
 		}
 	}
 
-	static TString tStringSubstr(Int32 position, Int32 length, const TString& string) {
+	static TString 
+  tStringSubstr(Int32 position, 
+                Int32 length, 
+                const TString& string) {
 		return string.substr(position, length);
 	}
 
-	static Int32 tStringCopy(TString& a, TString& destiny, Int32 count, Int32 pos) {
+	static Int32 
+  tStringCopy(TString& a, 
+              TString& destiny, 
+              SizeT count, 
+              SizeT pos) {
 		if (count >= a.size() || pos > a.max_size()) {
 			asIScriptContext* context = asGetActiveContext();
 			context->SetException("Out of range");
 			return -1;
 		}
 
-    for (Int32 i = pos; i < count; ++i) {
+    for (SizeT i = pos; i < count; ++i) {
       destiny[i] = a[i];
     }
 
@@ -129,7 +136,8 @@ namespace driderSDK
 
 	}
 
-	static TString AddBool(bool b, const TString &in)
+	static TString 
+  AddBool(bool b, const TString &in)
 	{
 		TString result;
 		b ? result = _T("true") : result = _T("false");
@@ -144,7 +152,8 @@ namespace driderSDK
 		return destiny;
 	}
 
-	static TString &AddAssignFloat(float f, TString &destiny)
+	static TString&
+  AddAssignFloat(float f, TString &destiny)
 	{
 		TOStringstream stream;
 		stream << f;

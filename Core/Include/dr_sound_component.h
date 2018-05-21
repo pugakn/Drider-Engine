@@ -1,3 +1,5 @@
+#pragma once
+
 #include "dr_core_prerequisites.h"
 
 #include <unordered_map>
@@ -21,7 +23,7 @@ class DR_CORE_EXPORT SoundComponent : public GameComponent {
     SoundComponent(GameObject &gameObject_);
 
     virtual 
-    ~SoundComponent();
+    ~SoundComponent() = default;
     
     void
     onCreate() override;

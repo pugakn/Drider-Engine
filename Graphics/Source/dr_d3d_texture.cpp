@@ -1,9 +1,15 @@
 #include "dr_d3d_texture.h"
+
 #include <d3d11.h>
 #include <dxgi.h>
+
+#include <dr_math.h>
+
 #include "dr_d3d_device.h"
 #include "dr_d3d_device_context.h"
 #include "dr_gfx_memory.h"
+
+
 namespace driderSDK {
 
 void* D3DTexture::getAPIObject() {
@@ -51,7 +57,7 @@ D3DTexture::createFromMemory(const Device& device,
   D3D11_SUBRESOURCE_DATA initData[6];
   Int32 bufferSize = desc.pitch * desc.height;
   char *pHead = const_cast<char*>(buffer);
-  for (Int32 i = 0; i < m_arraySize; ++i) {
+  for (UInt32 i = 0; i < m_arraySize; ++i) {
     initData[i].pSysMem = pHead;
     initData[i].SysMemPitch = desc.pitch;
     pHead += bufferSize;
@@ -94,7 +100,7 @@ D3DTexture::createFromMemory(const Device& device,
     }
   }
   else {
-    srvDesc.Texture2D.MipLevels = -1;
+    srvDesc.Texture2D.MipLevels = Math::MAX_UINT32;
   }
 
   HRESULT hr = apiDevice->
@@ -195,7 +201,7 @@ D3DTexture::udpateFromMemory(const DeviceContext& deviceContext,
   D3D11_TEXTURE2D_DESC pDesc;
   APITexture->GetDesc(&pDesc);
 
-  for (Int32 i = 0; i < m_arraySize; ++i) {
+  for (UInt32 i = 0; i < m_arraySize; ++i) {
     reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
       D3D11DeviceContext->
       UpdateSubresource(APITexture, D3D11CalcSubresource(0, i, pDesc.MipLevels), 0, pHead, m_descriptor.pitch, 0);

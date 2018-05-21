@@ -39,7 +39,9 @@ GBuffer1Pass::init(PassInitData* initData) {
 
   bdesc.type = DR_BUFFER_TYPE::kCONSTANT;
   bdesc.sizeInBytes = sizeof(CBuffer);
-  m_constantBuffer = dr_gfx_unique((ConstantBuffer*)device.createBuffer(bdesc));
+
+  m_constantBuffer = dr_gfx_unique(reinterpret_cast<ConstantBuffer*>(
+                                        device.createBuffer(bdesc)));
 }
 
 void

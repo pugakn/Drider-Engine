@@ -65,7 +65,7 @@ Vector2D::equals(const Vector2D& otherVector, float errorRange) const {
 }
 
 Int32
-Vector2D::compare(const Vector2D p1, const Vector2D p2) {
+Vector2D::compare(const Vector2D& p1, const Vector2D& p2) {
   Int32 compOrientation = orientation(p1, p2);
 
   if (compOrientation == 0) {
@@ -86,7 +86,7 @@ Vector2D::compare(const Vector2D p1, const Vector2D p2) {
 }
 
 Int32
-Vector2D::orientation(const Vector2D q, const Vector2D r) const {
+Vector2D::orientation(const Vector2D& q, const Vector2D& r) const {
   float val = (q.y - y) * (r.x - q.x) - (q.x - x) * (r.y - q.y);
 
   if (val == 0.0f) {
