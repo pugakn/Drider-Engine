@@ -21,7 +21,7 @@ cbuffer ConstantBuffer {
   float4x4 kShadowVP[4];
   float4   ShadowSplitDepth;
   float4   ShadowSizes;
-  float4   ShadowFarPlanes;
+  float4   ShadowSizesProportion;
   //float BloomThreshold;
 };
 
@@ -47,46 +47,58 @@ insideBounds(float4 fromLightPos) {
           fromLightCoords.y < 1.0f);
 }
 
-//#define DR_SH_PCF_ENABLED
+#define DR_SH_PCF_ENABLED
 float
-GetShadowValue(float4 fromLightPos, const int camIndex) {
-  const float shadowBias = 0.0005f;
-  float2 fromLightCoords = (0.5f * fromLightPos.xy) + 0.5f;
-
+GetShadowValue(float4 fromMinLightPos, float4 fromMaxLightPos, const int camIndex, const float cascadeLerp) {
   float shadowValue = 1.0f;
+  int camIndexMax = min(camIndex + 1, 3);
+
+  float CascadeBiasModifier = ShadowSizesProportion[camIndex] - (camIndex * 1.5f); //Dunno LOL
+  float CascadeBiasModifierMax = ShadowSizesProportion[camIndexMax] - (camIndexMax * 1.5f); //Dunno LOL
+  //CascadeBiasModifier = 1.0f;
+  float shadowBias = 0.0005f;
   
-  fromLightCoords.y = 1.0 - fromLightCoords.y;
-  //Pixel Depth seen from shadowCam
-  float depthPos = fromLightPos.z;
+  float2 MinUV = (0.5f * fromMinLightPos.xy) + 0.5f;
+  MinUV.y = 1.0 - MinUV.y;
+  float2 MaxUV = (0.5f * fromMaxLightPos.xy) + 0.5f;
+  MaxUV.y = 1.0 - MaxUV.y;
+
+  float depthMinPos = fromMinLightPos.z;
+  float depthMaxPos = fromMaxLightPos.z;
+
   #ifdef DR_SH_PCF_ENABLED
   
   float texelSize = 1.0f / ShadowSizes[camIndex];
   const float sampleRadius = 3.0f;
   const float modifier = 0.25f / (sampleRadius * sampleRadius * 2.0f);
 
-  //shadowValue += modifier * sampleRadius * sampleRadius * camIndex;
-  
   [unroll]
   for (float y = -sampleRadius; y <= sampleRadius; y += 1.0f) {
     [unroll]
     for (float x = -sampleRadius; x <= sampleRadius; x += 1.0f) {
       //Projected depth
-      float depthSample = ShadowTex.Sample(SS, fromLightCoords.xy + (float2(x * texelSize, y * texelSize)))[camIndex];
-      if (depthPos > (depthSample + shadowBias)) {
-        shadowValue -= modifier;
-      }
+      //float depthSample = ShadowTex.Sample(SS, MinUV + (texelSize * float2(x, y)))[camIndex];
+      float depthMinSample = ShadowTex.Sample(SS, MinUV + (texelSize * float2(x, y)))[camIndex];
+      float depthMaxSample = ShadowTex.Sample(SS, MaxUV + (texelSize * float2(x, y)))[camIndexMax];
+      
+      //Dunno LOL
+      float minPCF = (modifier + (camIndex * 0.0004f)) * (depthMinPos > (depthMinSample + (shadowBias * CascadeBiasModifier)));
+      float maxPCF = (modifier + (camIndexMax * 0.0004f)) * (depthMaxPos > (depthMaxSample + (shadowBias * CascadeBiasModifierMax)));
+      shadowValue -= lerp(minPCF, maxPCF, cascadeLerp);
     }
   }
   
   #else //DR_SH_PCF_ENABLED
-  //Projected depth	
-  float depthSample = ShadowTex.Sample(SS, fromLightCoords.xy)[camIndex];
+  float depthMinSample = ShadowTex.Sample(SS, MinUV)[camIndex];
+  float depthMaxSample = ShadowTex.Sample(SS, MaxUV)[camIndexMax];
   
-  if (depthPos > (depthSample + shadowBias)) {
-    shadowValue = 0.25f;
-  }
+  float shadowValueMin = 1.0f - (0.25f * (depthMinPos > (depthMinSample + shadowBias)));
+  float shadowValueMax = 1.0f - (0.25f * (depthMaxPos > (depthMaxSample + shadowBias)));
+
+  shadowValue = lerp(shadowValueMin, shadowValueMax, cascadeLerp);
+
   #endif //DR_SH_PCF_ENABLED
-  
+
   return shadowValue;
 }
 
@@ -215,12 +227,12 @@ FS(PS_INPUT input) : SV_TARGET0 {
   
   const int activeLights = kEyePosition.w;
   [unroll]
-  for (int index = 0; index < activeLights; index += 4) {
+  for (int index = 0; index < activeLights; index += 1) {
     lightPosition  = kLightPosition[index].xyz;
     lightColor     = kLightColor[index].xyz;
     lightIntensity = kLightColor[index].w;
     
-    LightPower = saturate( 1.0f - (length(lightPosition - position.xyz) / 130.0f) );
+    LightPower = saturate( 1.0f - (length(lightPosition - position.xyz) / 110.0f) );
 
     LightDir = normalize(lightPosition - position.xyz);
 
@@ -260,9 +272,13 @@ FS(PS_INPUT input) : SV_TARGET0 {
   float vCurrentPixelDepth = VPPos.z / 10000.0f;
   
   int iCurrentCascadeIndex = 0;
+  
+  float LP = 0.3f;
+  float ShadowLerp = 0.0f;
 
 //#define INTERVAL_BASED_SELECTION
 //#define MAP_BASED_SELECTION
+#define CASCADE_BLUR
 
 #ifdef INTERVAL_BASED_SELECTION
   float4 fComparison;
@@ -276,6 +292,11 @@ FS(PS_INPUT input) : SV_TARGET0 {
   fIndex = min(fIndex, 4);
   iCurrentCascadeIndex = (int)fIndex;
 
+  #ifdef CASCADE_BLUR
+  float pxProportion = vCurrentPixelDepth / ShadowSplitDepth[iCurrentCascadeIndex];
+  ShadowLerp = saturate( (pxProportion - LP)/(1.0f - LP) );
+  #endif //CASCADE_BLUR
+
   //if (iCurrentCascadeIndex == 0)
   //  return float4(1, 0, 0, 1);
   //if (iCurrentCascadeIndex == 1)
@@ -286,15 +307,23 @@ FS(PS_INPUT input) : SV_TARGET0 {
   //  return float4(1, 1, 1, 1);
 #else //MAP_BASED_SELECTION
   float4 fComparison;
-  fComparison[0] = insideBounds(mul(kShadowVP[0], float4(position, 1.0f)));
-  fComparison[1] = insideBounds(mul(kShadowVP[1], float4(position, 1.0f)));
-  fComparison[2] = insideBounds(mul(kShadowVP[2], float4(position, 1.0f)));
-  fComparison[3] = insideBounds(mul(kShadowVP[3], float4(position, 1.0f)));
+  fComparison[0] = insideBounds(mul(kShadowVP[0], float4(position, 1.0f))) * 4;
+  fComparison[1] = insideBounds(mul(kShadowVP[1], float4(position, 1.0f))) * 3;
+  fComparison[2] = insideBounds(mul(kShadowVP[2], float4(position, 1.0f))) * 2;
+  fComparison[3] = insideBounds(mul(kShadowVP[3], float4(position, 1.0f))) * 1;
 
-  //TODO: change the "4" with a number of activated shadow cascades variable
-  float fIndex = dot(float4(4 > 0, 4 > 1, 4 > 2, 4 > 3), fComparison);
-  fIndex = min(fIndex, 4);
-  iCurrentCascadeIndex = 4 - (int)fIndex;
+  iCurrentCascadeIndex = fComparison[0];
+  iCurrentCascadeIndex = max(fComparison[1], iCurrentCascadeIndex);
+  iCurrentCascadeIndex = max(fComparison[2], iCurrentCascadeIndex);
+  iCurrentCascadeIndex = max(fComparison[3], iCurrentCascadeIndex);
+
+  iCurrentCascadeIndex = min(4 - iCurrentCascadeIndex, 3);
+
+  #ifdef CASCADE_BLUR
+  float2 cascadeUV = abs(mul(kShadowVP[iCurrentCascadeIndex], float4(position, 1.0f)).xy);
+
+  ShadowLerp = saturate( (max(cascadeUV.x, cascadeUV.y) - LP)/(1.0f - LP) );
+  #endif //CASCADE_BLUR
   
   //if (iCurrentCascadeIndex == 0)
   //  return float4(1, 0, 0, 1);
@@ -306,9 +335,12 @@ FS(PS_INPUT input) : SV_TARGET0 {
   //  return float4(1, 1, 1, 1);
 #endif
   //Projects the position from the mainCam to what shadowCam sees
-  float4 fromLightPos = mul(kShadowVP[iCurrentCascadeIndex], float4(position, 1.0f));
-  //fromLightPos.xyz /= fromLightPos.w;
-  float ShadowValue = GetShadowValue(fromLightPos, iCurrentCascadeIndex);
+  float4 fromMinLightPos = mul(kShadowVP[iCurrentCascadeIndex], float4(position, 1.0f));
+  float4 fromMaxLightPos = mul(kShadowVP[min(iCurrentCascadeIndex + 1, 3)], float4(position, 1.0f));
+
+  float ShadowValue = GetShadowValue(fromMinLightPos, fromMaxLightPos, iCurrentCascadeIndex, ShadowLerp);
+  return float4(ShadowValue.xxx, 1.0f);
+  return float4(ShadowLerp.xxx, 1.0f);
   
   return float4((albedo * SSAO * ShadowValue) + emissive, 1.0f);
   //return float4((finalColor * ShadowValue) + emissive, 1.0f);

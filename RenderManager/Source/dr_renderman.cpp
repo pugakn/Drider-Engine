@@ -46,40 +46,25 @@ RenderMan::init() {
   shadowWidth = 1024;
   shadowHeight = 1024;
 
-  //screenWidth = 512;
-  //screenHeight = 512;
-  //shadowWidth = screenWidth;
-  //shadowHeight = screenHeight;
-
-  //Shadows stuff
-  m_szActiveShadowCameras = 4;
-
-  //m_vec3DirectionalLight = Vector3D(-1.0f, -1.0f, 0.0f).normalize();
-  //m_vec3DirectionalLight = Vector3D(0.0f, -10000.0f, 0.1f).normalize();
-  m_vec3DirectionalLight = Vector3D(-1.0f, -1.0f, -1.0f).normalize();
-
-  m_fMinDepth = 0.1f;
-  m_fMaxDepth = 10000.0f;
-  m_bFitToScene = false;
-
-  Viewport vpShadow;
-  vpShadow.minDepth = m_fMinDepth;
-  vpShadow.maxDepth = m_fMaxDepth;
-  vpShadow.width = shadowWidth;
-  vpShadow.height = shadowHeight;
-
-  for (SizeT camIndex = 0; camIndex < 4; ++camIndex) {
-    vecShadowCamera[camIndex] = std::make_shared<Camera>();
-    vecShadowCamera[camIndex]->setViewport(vpShadow);
-  }
-
-  partitions = calculatePartitions(m_szActiveShadowCameras);
+  //////////Shadows stuff//////////
   std::shared_ptr<Camera> mainCam = CameraManager::getActiveCamera();
   float fViewportWidth = static_cast<float>(mainCam->getViewportWidth());
   float fViewportHeight = static_cast<float>(mainCam->getViewportHeight());
   float fNearPlane = mainCam->getNearPlane();
   float fFarPlane = mainCam->getFarPlane();
   float fFov = mainCam->getFOV();
+
+  m_szActiveShadowCameras = 4;
+
+  m_fMinDepth = 0.1f;
+  m_fMaxDepth = 10000.0f;
+  m_bFitToScene = false;
+
+  //m_vec3DirectionalLight = Vector3D(-1.0f, -1.0f, 0.0f).normalize();
+  //m_vec3DirectionalLight = Vector3D(0.0f, -10000.0f, 0.1f).normalize();
+  m_vec3DirectionalLight = Vector3D(-1.0f, -1.0f, -1.0f).normalize();
+
+  partitions = calculatePartitions(m_szActiveShadowCameras);
 
   for (SizeT i = 0; i < m_szActiveShadowCameras; ++i) {
     m_ShadowSubFrustras[i] = frustrumSphere(fViewportHeight,
@@ -92,7 +77,22 @@ RenderMan::init() {
                                                        partitions[i + 1]),
                                             fFov);
   }
-  //End of shadow stuff
+  float extraDepth = m_ShadowSubFrustras[0].second;
+  extraDepth = Math::max(extraDepth, m_ShadowSubFrustras[1].second);
+  extraDepth = Math::max(extraDepth, m_ShadowSubFrustras[2].second);
+  extraDepth = Math::max(extraDepth, m_ShadowSubFrustras[3].second);
+
+  Viewport vpShadow;
+  vpShadow.minDepth = m_fMinDepth;
+  vpShadow.maxDepth = m_fMaxDepth + extraDepth;
+  vpShadow.width = shadowWidth;
+  vpShadow.height = shadowHeight;
+
+  for (SizeT camIndex = 0; camIndex < 4; ++camIndex) {
+    vecShadowCamera[camIndex] = std::make_shared<Camera>();
+    vecShadowCamera[camIndex]->setViewport(vpShadow);
+  }
+  //////////End of Shadows stuff//////////
 
   m_TexDescDefault.width = screenWidth;
   m_TexDescDefault.height = screenHeight;
@@ -213,6 +213,13 @@ RenderMan::draw(const RenderTarget & _out, const DepthStencil & _outds) {
                                              shadowWidth,
                                              shadowWidth,
                                              shadowWidth);
+  m_LightningDrawData.shadowSizesProportion[0] = 1.0f;
+  m_LightningDrawData.shadowSizesProportion[1] = m_ShadowSubFrustras[1].second /
+                                                 m_ShadowSubFrustras[0].second;
+  m_LightningDrawData.shadowSizesProportion[2] = m_ShadowSubFrustras[2].second /
+                                                 m_ShadowSubFrustras[0].second;
+  m_LightningDrawData.shadowSizesProportion[3] = m_ShadowSubFrustras[3].second /
+                                                 m_ShadowSubFrustras[0].second;
   m_LightningDrawData.dsOptions = m_LightningDSoptions;
   m_LightningDrawData.OutRt = m_RTLightning;
   m_LightningPass.draw(&m_LightningDrawData);

@@ -80,7 +80,7 @@ LightningPass::draw(PassDrawData* drawData) {
     CB.ShadowVP[i] = (*data->ShadowCam)[i]->getVP();
     CB.ShadowSliptDepth[i] = data->shadowDepths[i + 1];
     CB.ShadowSizes[i] = data->shadowSizes[i];
-    CB.ShadowFarPlanes[i] = (*data->ShadowCam)[i]->getFarPlane();
+    CB.ShadowSizesProportion[i] = data->shadowSizesProportion[i];
   }
 
   m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
