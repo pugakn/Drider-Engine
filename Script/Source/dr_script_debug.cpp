@@ -6,7 +6,7 @@ namespace driderSDK
 {
 
 	ScriptDebug::ScriptDebug(ScriptEngine* engine) {
-		DR_ASSERT(!ScriptEngine::isStarted()); //Just in case
+		DR_ASSERT(ScriptEngine::isStarted()); //Just in case
 		pScriptEngine = engine;
 	}
 

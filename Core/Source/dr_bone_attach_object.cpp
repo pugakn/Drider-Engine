@@ -94,7 +94,7 @@ BoneAttachObject::createInstance() {
 }
 
 void
-BoneAttachObject::copyData(SharedGameObj obj) {
+BoneAttachObject::copyData(SharedGameObj obj) const {
 
   auto dup = std::dynamic_pointer_cast<BoneAttachObject>(obj);
 

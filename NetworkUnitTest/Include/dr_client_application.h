@@ -9,6 +9,7 @@ namespace driderSDK {
 class ClientApplication : public Application
 {
 public:
+  ClientApplication(const String& ip, UInt16 port);
 private:
   // Inherited via Application
   virtual void postInit() override;
@@ -17,6 +18,8 @@ private:
   virtual void postDestroy() override;
   UDPSocket m_socket;
   UInt32 m_tick;
+  String m_ip;
+  UInt16 m_port;
 };
 
 }

@@ -28,7 +28,8 @@ class DR_CORE_EXPORT ComponentPartition
 };
 
 class GameObject;
-GameObject* Ref_GameObject();
+
+//GameObject* Ref_GameObject();
 
 class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject>,  
                                   public EnableObject,
@@ -42,15 +43,13 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   using ComponentPtr = std::unique_ptr<GameComponent>;
   using ComponentsList = std::vector<ComponentPtr>;
 
-  Int32 refCount;
+  //Int32 refCount;
 
   GameObject(const TString& name = _T(""));
 
-  virtual ~GameObject();
-  
-  GameObject(const GameObject&) = delete;
+  GameObject(const GameObject& other);
 
-  GameObject& operator=(const GameObject&) = delete;
+  virtual ~GameObject();
 
   bool
   operator==(GameObject&);
@@ -292,7 +291,7 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   bool
   changed() const;
 
-  void addRef() {
+  /*void addRef() {
     refCount++;
   }
 
@@ -300,7 +299,7 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
     if (--refCount == 0) {
       
     }
-  }
+  }*/
   
   void kill() {
     if(auto parent = getParent()) {
@@ -310,11 +309,11 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   }
 
   GameObject&
-  operator=(GameObject& ref);
+  operator=(const GameObject& ref);
 
   static BEGINING_REGISTER(GameObject, 0, asOBJ_REF)
 
-  result = REGISTER_REF(GameObject)
+  //result = REGISTER_REF(GameObject)
 
   //Register functions
   result = REGISTER_FOO(GameObject,
@@ -334,7 +333,7 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
                         asMETHODPR(GameObject, setTag, (const TString&), void))
 
   //Register operators
-  result = REGISTER_OP(GameObject, operator=, opAssign, GameObject&, GameObject&, "GameObject@", in)
+  result = REGISTER_OP(GameObject, operator=, opAssign, const GameObject&, GameObject&, "GameObject@", in)
 
   END_REGISTER 
 
@@ -361,7 +360,7 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   removeComponentP(const TString& compName);
 
   virtual void
-  copyData(SharedGameObj other){}
+  copyData(SharedGameObj other) const {}
 
   virtual void
   updateImpl(){}

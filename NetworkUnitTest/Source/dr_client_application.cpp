@@ -11,7 +11,13 @@
 
 namespace driderSDK {
 
-void 
+
+ClientApplication::ClientApplication(const String& ip, UInt16 port)
+: m_ip(ip),
+  m_port(port)
+{}
+
+void
 ClientApplication::postInit() {
   Logger::startUp(_T("../Docs/Logger/clientLog.html"));
   NetworkManager::startUp();
@@ -26,22 +32,14 @@ ClientApplication::postInit() {
     return;
   }
 
-  String ip;
-
-  std::cout << "Enter server ip: ";
-
-  std::cin.ignore(256, '\n');
-
-  std::getline(std::cin, ip);
-
-  auto msgCallback = [this, ip](const String& msg)
+  auto msgCallback = [this](const String& msg)
   {
     Packet packet;
     //packet << m_tick;
     packet << msg;
 
-    UInt16 serverPort = 8888;
-    TString serverIP = StringUtils::toTString(ip);
+    UInt16 serverPort = m_port;
+    TString serverIP = StringUtils::toTString(m_ip);
     ++m_tick;
 
     if (m_socket.send(packet, serverPort, serverIP) == SOCKET_ERR::kSuccess) {
