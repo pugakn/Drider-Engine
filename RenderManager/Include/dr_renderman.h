@@ -82,6 +82,8 @@ class DR_RENDERMAN_EXPORT RenderMan {
 
   UInt32 screenWidth;
   UInt32 screenHeight;
+  UInt32 shadowWidth;
+  UInt32 shadowHeight;
   std::array<Light, 128>* lights;
   std::array<std::shared_ptr<Camera>, 4> vecShadowCamera;
   std::vector<float> partitions;
@@ -137,11 +139,12 @@ class DR_RENDERMAN_EXPORT RenderMan {
   //2: { xyz: emissive, w: roughness };
   GFXShared<RenderTarget> m_RTGBuffer;
   GFXShared<RenderTarget> m_RTSSAO;
-  GFXShared<RenderTarget> m_RTSSAOInitBlur;
-  GFXShared<RenderTarget> m_RTSSAOFinalBlur;
+  GFXShared<RenderTarget> m_RTBlurInit;
+  GFXShared<RenderTarget> m_RTSSAOBlur;
   GFXShared<RenderTarget> m_RTLightning;
   std::array<GFXShared<RenderTarget>, 4> m_RTShadowDummy; //Used for render separated shadowCams
   GFXShared<RenderTarget> m_RTShadow;
+  GFXShared<RenderTarget> m_RTPreFinalBlur;
   GFXShared<RenderTarget> m_RTPostProcessing;
 
   DrTextureDesc m_TexDescDefault;
@@ -167,7 +170,8 @@ class DR_RENDERMAN_EXPORT RenderMan {
   Vector3D m_vec3DirectionalLight;
 
   SizeT m_szActiveShadowCameras;
-  float  m_fDepth;
+  float  m_fMinDepth;
+  float  m_fMaxDepth;
 
   bool m_bFitToScene;
   /***************************************************************************/

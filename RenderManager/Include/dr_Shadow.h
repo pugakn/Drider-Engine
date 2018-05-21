@@ -63,6 +63,7 @@ class ShadowPass : public RenderPass {
   struct CBuffer {
     Matrix4x4 WVP;
     Matrix4x4 Bones[200];
+    Vector4D  CameraInfo; //x: aspect ratio; y: fov; z: near plane; w: far plane
   };
 
   CBuffer CB;

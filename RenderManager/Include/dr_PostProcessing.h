@@ -11,6 +11,8 @@ struct PostProcessingInitData : PassInitData {};
 
 struct PostProcessingDrawData : PassDrawData {
   GFXShared<RenderTarget> ColorRT;
+  GFXShared<RenderTarget> ColorBlurRT;
+  GFXShared<RenderTarget> Gbuffer;
 };
 
 class PostProcessingPass : public RenderPass {
