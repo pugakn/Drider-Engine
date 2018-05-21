@@ -6,52 +6,87 @@ namespace driderSDK
 {
 
 	ScriptDebug::ScriptDebug(ScriptEngine* engine) {
-		DR_ASSERT(ScriptEngine::isStarted()); //Just in case
 		pScriptEngine = engine;
+		lastStackLevel = 0;
 	}
 
 	ScriptDebug::~ScriptDebug() {}
 
 	void 
 	ScriptDebug::setBreakPoint() {
-
-		Int32 line = pScriptEngine->m_scriptContext->GetLineNumber();
-		TString section; //need to get section
+		const char* pSection;
+		Int32 line = pScriptEngine->m_scriptContext->GetLineNumber(0, 0, &pSection);
+		TString section(StringUtils::toTString(pSection));
 
 		if (!checkBreakPoint()) {
-			m_breakpoints.push_back(BreakPoint(section, line, true));
+			m_breakpoints.push_back(BreakPoint(section, line));
 		}
-
 	}
 
-	void 
-	ScriptDebug::sendCommand(DebugCommands::E command) {
-		if (command == DebugCommands::CONTINUE) {
-			bIsStopped = false;
-		}
-		//rest of commands
-	}
-
-	bool 
-	ScriptDebug::checkBreakPoint() {
-		asIScriptContext* context = pScriptEngine->m_scriptContext;
-
-		TString section;//need to get section 
-		Int32 line = pScriptEngine->m_scriptContext->GetLineNumber(); 
-		asIScriptFunction* function = pScriptEngine->m_scriptContext->GetFunction();
-		for (UInt16 i = 0; i < m_breakpoints.size(); ++i) {
-			if (m_breakpoints[i].section == section) {
-				if (m_breakpoints[i].line == line) {
-					return true;
-				}
+	bool ScriptDebug::removeBreakPoint(Int32 line, TString& section)
+	{
+		for (std::vector<BreakPoint>::iterator it = m_breakpoints.begin(); it != m_breakpoints.end(); ++it) {
+			if (it->line == line && it->section == section) {
+				m_breakpoints.erase(it);
+				return true;
 			}
 		}
 		return false;
 	}
 
 	void 
+	ScriptDebug::setCommand(DebugCommands::E command) {
+		m_command = command;
+		if (m_command == DebugCommands::STEP_OVER || m_command == DebugCommands::STEP_IN) {
+			asIScriptContext* context = pScriptEngine->m_scriptContext;
+			if (context) {
+				lastStackLevel = context->GetCallstackSize();
+			}
+		}
+	}
+
+	DebugCommands::E 
+	ScriptDebug::getCommand() {
+		return m_command;
+	}
+
+	bool 
+	ScriptDebug::checkBreakPoint() {
+		const char* pSection;
+		Int32 line = pScriptEngine->m_scriptContext->GetLineNumber(0, 0, &pSection);
+		TString section(StringUtils::toTString(pSection));
+
+		for (UInt16 i = 0; i < m_breakpoints.size(); ++i) {
+			if (m_breakpoints[i].section == section && m_breakpoints[i].line == line) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	void 
+	ScriptDebug::clearBreakPoints() {
+		m_breakpoints.clear();
+	}
+
+	void 
 	ScriptDebug::printCallStack() {
 
+		asIScriptContext* context = pScriptEngine->m_scriptContext;
+		if (!context) {
+			printToLogger(_T("No context selected"));
+			return;
+		}
+		TOStringstream result;
+		UInt32 line = 0;
+		const char* section;
+
+		for (UInt16 i = 0; i < context->GetCallstackSize(); ++i) {
+			line = context->GetLineNumber(i, 0, &section);
+			result << section << "(" << line << ") : ";
+			result << context->GetFunction(i)->GetDeclaration() << "/n";
+		}
+		printToLogger(result.str());
 	}
 
 	void 
@@ -63,30 +98,51 @@ namespace driderSDK
 			return;
 		}
 
-		asIScriptFunction* function = pScriptEngine->m_scriptContext->GetFunction();
+		asIScriptFunction* function = context->GetFunction();
 		if (!function) {
 			printToLogger(_T("No function selected"));
 			return;
 		}
 
+		TOStringstream result;
 		for (UInt16 i = 0; i < function->GetVarCount(); ++i) {
-			TOStringstream result;
 			result << function->GetVarDecl(i);
 			result << TString(_T(" : ")).c_str();
-			result << context->GetAddressOfVar(i);
+			result << interpretValue(context->GetAddressOfVar(i), context->GetVarTypeId(i));
 			result << TString(_T("/n")).c_str();
 		}
-
+		printToLogger(result.str());
 	}
 
 	void 
 	ScriptDebug::printGlobalVariables() {
 
-	}
+		asIScriptContext* context = pScriptEngine->m_scriptContext;
+		if (!context) {
+			printToLogger(_T("No context selected"));
+			return;
+		}
+		asIScriptFunction* function = context->GetFunction();
+		if (!function) {
+			printToLogger(_T("No function selected"));
+			return;
+		}
+		asIScriptModule* mod = function->GetModule();
+		if (!mod) {
+			printToLogger(_T("No module selected"));
+			return;
+		}
 
-	void 
-	ScriptDebug::printValue() {
+		TOStringstream result;
+		Int32 typeId;
 
+		for (UInt16 i = 0; i < mod->GetGlobalVarCount(); ++i) {
+			typeId = 0;
+			mod->GetGlobalVar(i, 0, 0, &typeId);
+			result << mod->GetGlobalVarDeclaration(i) << " : ";
+			result << interpretValue(mod->GetAddressOfGlobalVar(i), typeId) << "/n";
+		}
+		printToLogger(result.str());
 	}
 
 	void 
@@ -95,6 +151,97 @@ namespace driderSDK
 		pScriptEngine->addScriptLog(Signature + log, asMSGTYPE_INFORMATION);
 	}
 
+	TString 
+	ScriptDebug::interpretValue(void * value, Int32 typeId)
+	{
+		TOStringstream result;
 
+		if (typeId == asTYPEID_VOID) {
+			return L"void";
+		}
+		else if (typeId == asTYPEID_BOOL) {
+			return *(bool*)value ? L"true" : L"false";
+		}
+		else if (typeId == asTYPEID_INT8) {
+			result << *(Int8*)value;
+		}
+		else if (typeId == asTYPEID_INT16) {
+			result << *(Int16*)value;
+		}
+		else if (typeId == asTYPEID_INT32) {
+			result << *(Int32*)value;
+		}
+		else if (typeId == asTYPEID_INT64) {
+			result << *(Int64*)value;
+		}
+		else if (typeId == asTYPEID_UINT8) {
+			result << *(UInt8*)value;
+		}
+		else if (typeId == asTYPEID_UINT16) {
+			result << *(UInt16*)value;
+		}
+		else if (typeId == asTYPEID_UINT32) {
+			result << *(UInt32*)value;
+		}
+		else if (typeId == asTYPEID_UINT64) {
+			result << *(UInt64*)value;
+		}
+		else if (typeId == asTYPEID_FLOAT) {
+			result << *(float*)value;
+		}
+		else if (typeId == asTYPEID_DOUBLE) {
+			result << *(double*)value;
+		}
+		else if (typeId & asTYPEID_MASK_OBJECT) {
+			result << *(Int32*)value;
+			asITypeInfo *typeInfo = pScriptEngine->m_scriptEngine->GetTypeInfoById(typeId);
+			Int32 enumValue;
+			for (Int32 i = typeInfo->GetEnumValueCount(); --i > 0; ) {
+				enumValue = 0;
+				const char *enumName = typeInfo->GetEnumValueByIndex(i, &enumValue);
+				if (enumValue == *(Int32*)value) {
+					result << " (" << enumName << ")";
+					break;
+				}
+			}
+		}
+		else if (typeId & asTYPEID_SCRIPTOBJECT) {
+			result << "(Object)";
+			//expand into more details
+		}
+		else {
+			result << "(Other type of value)";
+			//expand into more details
+		}
+		return result.str();
+	}
+
+	void 
+	ScriptDebug::printGarbageStatus() {
+
+		asIScriptContext* context = pScriptEngine->m_scriptContext;
+		if (!context) {
+			printToLogger(_T("No context selected"));
+			return;
+		}
+
+		asIScriptEngine* pEngine = pScriptEngine->m_scriptEngine;
+		UInt32 gcSize, gcTotalDestroyed, gcTotalDetected, gcNewObjects, gcTotalNewDestroyed;
+		pEngine->GetGCStatistics(&gcSize, 
+														 &gcTotalDestroyed, 
+														 &gcTotalDetected, 
+														 &gcNewObjects, 
+														 &gcTotalNewDestroyed);
+		TOStringstream result;
+		result << "Garbage Collector Status: \n";
+		result << "Current size = " << gcSize << "\n";
+		result << "Total destroyed = " << gcTotalDestroyed << "\n";
+		result << "Total detected = " << gcTotalDetected << "\n";
+		result << "New objects = " << gcNewObjects << "\n";
+		result << "Total new objects destroyed = " << gcTotalNewDestroyed << "\n";
+
+		printToLogger(result.str());
+
+	}
 
 }

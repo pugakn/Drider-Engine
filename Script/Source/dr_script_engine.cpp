@@ -184,13 +184,27 @@ ScriptEngine::lineCallback(asIScriptContext* scriptContext) {
 void 
 ScriptEngine::debugLineCallback(asIScriptContext* scriptContext) {
 
-	//if (bIsStopped) {
+	if (scriptContext->GetState() != asEXECUTION_ACTIVE) {
+		return;
+	}
 
-	//}
+	if (Debug->getCommand() == DebugCommands::CONTINUE) {
 
-	//if (checkBreakPoint()) {
-	//	scriptContext->Suspend();
-	//}
+	}
+	if (Debug->getCommand() == DebugCommands::STEP_IN) {
+
+	}
+	if (Debug->getCommand() == DebugCommands::STEP_OUT) {
+
+	}
+	if (Debug->getCommand() == DebugCommands::STEP_OVER) {
+
+	}
+
+	if (Debug->checkBreakPoint()) {
+		addScriptLog(_T("Breakpoint Reached!"), asMSGTYPE_INFORMATION);
+		scriptContext->Suspend();
+	}
 }
 
 void 
@@ -211,14 +225,16 @@ ScriptEngine::messageCallback(const asSMessageInfo* scriptMessage) {
 void
 ScriptEngine::addScriptLog(const TString& log, int type) {
 
+	const TString signature = _T("[ScriptEngine] ");
+
 	if (type == asMSGTYPE_WARNING) {
-    Logger::instancePtr()->addWarning(__FILE__, __LINE__,  _T("[ScriptEngine] ") + log);
+		Logger::instancePtr()->addWarning(__FILE__, __LINE__, signature + log);
 	}
 	else if (type == asMSGTYPE_INFORMATION) {
-    Logger::instancePtr()->addLog(_T("[ScriptEngine] ") + log);
+    Logger::instancePtr()->addLog(signature + log);
 	}
 	else if (type == asMSGTYPE_ERROR) {
-    Logger::instancePtr()->addError(__FILE__, __LINE__,  _T("[ScriptEngine] ") + log);
+    Logger::instancePtr()->addError(__FILE__, __LINE__, signature + log);
 	}
 }
 
