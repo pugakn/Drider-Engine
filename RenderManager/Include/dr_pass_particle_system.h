@@ -52,7 +52,6 @@ class ParticleSystemPass : public RenderPass {
   };
 
   CBuffer CB;
-
   GFXUnique<SamplerState> m_samplerState;
 };
 

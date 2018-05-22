@@ -135,22 +135,34 @@ RenderMan::init() {
   driderSDK::ParticleEmitterAttributes attr;
   attr.m_maxParticles = 10000;
   attr.m_initialTime = 0;
-  attr.m_rithm = 1;
-  attr.m_particleMaxLife = 25;
-  attr.m_numParticlesToEmit = 200;
-  attr.m_initialVelocity = driderSDK::Vector3D(0, 15, 0);
+  attr.m_rate = 1;
+  attr.m_particleMaxLife = 10;
+  attr.m_numParticlesToEmit = 800;
+
+  attr.m_initialSpeedLimit = 400;
+  attr.m_finalSpeedLimit = 200;
+
+  attr.m_position = driderSDK::Vector3D(0, 0, 0);
   attr.m_positionRandomMin = driderSDK::Vector3D(-30, -15, -30);
   attr.m_positionRandomMax = driderSDK::Vector3D(30, 15, 30);
+
+  attr.m_initialVelocity = driderSDK::Vector3D(0, 0, 0);
   attr.m_velocityRandomMin = driderSDK::Vector3D(-800, -800, -800);
   attr.m_velocityRandomMax = driderSDK::Vector3D(800, 800, 800);
-  attr.m_color = driderSDK::Vector3D(0.2, 0, 0);
+
+  attr.m_initialColor = driderSDK::Vector3D(1, 0.1, 0.1);
+  attr.m_finalColor = driderSDK::Vector3D(0.0, 0.0, 0.0);
   attr.m_colorRandomMin = driderSDK::Vector3D(0, 0, 0);
-  attr.m_colorRandomMax = driderSDK::Vector3D(0.8, 0, 0);
-  attr.m_position = driderSDK::Vector3D(0, 0, 0);
-  attr.m_scale = 10;
+  attr.m_colorRandomMax = driderSDK::Vector3D(0.0, 0, 0);
+
+  attr.m_initialScale = 2;
+  attr.m_finaleScale = 20;
   attr.m_scaleRandomMin = -5;
   attr.m_scaleRandomMax = 5;
+
   attr.m_particleMass = 0.2;
+  attr.m_systemMaxLife = 50;
+  attr.m_isActive = true;
   m_emitter.init(attr);
 }
 

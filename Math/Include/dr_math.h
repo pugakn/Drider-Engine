@@ -289,7 +289,7 @@ struct DR_MATH_EXPORT Math
   */
   template<class T>
   static FORCEINLINE T lerp(const T a, const T b, const float proportion) {
-    return ((1.0f - proportion) * a) + (proportion * b);
+    return (a * (1.0f - proportion)) + (b * proportion);
   }
 
   /**********************************************************************
