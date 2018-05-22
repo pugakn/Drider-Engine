@@ -45,7 +45,6 @@ namespace driderSDK {
     for (auto &it : m_forces) {
       _forcesSum += it;
     }
-
     for (size_t i = 0; i < m_particles.size(); ++i) {
       Particle& p = m_particles[i];
       if (p.m_isActive) {
@@ -79,7 +78,7 @@ namespace driderSDK {
   ParticleEmitter::emit()
   {
     if (m_timeAccum >= m_attributes.m_rate) {
-      m_timeAccum = 0.0f;
+      m_timeAccum -= m_attributes.m_rate;
       //Emit particles
       for (size_t i = 0; i < m_attributes.m_numParticlesToEmit; ++i) {
         Particle particle;
