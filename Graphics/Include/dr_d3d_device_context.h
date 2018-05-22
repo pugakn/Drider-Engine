@@ -240,6 +240,13 @@ class DR_GRAPHICS_EXPORT D3DDeviceContext : public DeviceContext
        UInt32 startIndexLocation,
        UInt32 startVertexLocation) const override;
 
+  void
+    drawInstanced(UInt32 indexCount,
+      UInt32 instanceCount,
+      UInt32 startIndexLocation,
+      UInt32 startVertexLocation,
+      UInt32 startInstanceLocation) const override;
+
   ID3D11DeviceContext* D3D11DeviceContext;
 };
 

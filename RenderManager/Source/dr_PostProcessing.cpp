@@ -74,7 +74,6 @@ PostProcessingPass::draw(PassDrawData* drawData) {
       dc.draw(SAQ.indices.size(), 0, 0);
     }
   }
-  GraphicsAPI::getBackBufferRT().set(dc, GraphicsAPI::getDepthStencil());
 }
 
 }

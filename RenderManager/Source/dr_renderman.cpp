@@ -129,6 +129,29 @@ RenderMan::init() {
   m_ShadowPass.init(&m_ShadowInitData);
   m_LightningPass.init(&m_LightningInitData);
   m_PostProcessingPass.init(&m_PostProcessingInitData);
+
+  m_particlePass.init(&m_particleInitData);
+  driderSDK::ParticleEmitter emitter;
+  driderSDK::ParticleEmitterAttributes attr;
+  attr.m_maxParticles = 10000;
+  attr.m_initialTime = 0;
+  attr.m_rithm = 1;
+  attr.m_particleMaxLife = 25;
+  attr.m_numParticlesToEmit = 200;
+  attr.m_initialVelocity = driderSDK::Vector3D(0, 15, 0);
+  attr.m_positionRandomMin = driderSDK::Vector3D(-30, -15, -30);
+  attr.m_positionRandomMax = driderSDK::Vector3D(30, 15, 30);
+  attr.m_velocityRandomMin = driderSDK::Vector3D(-800, -800, -800);
+  attr.m_velocityRandomMax = driderSDK::Vector3D(800, 800, 800);
+  attr.m_color = driderSDK::Vector3D(0.2, 0, 0);
+  attr.m_colorRandomMin = driderSDK::Vector3D(0, 0, 0);
+  attr.m_colorRandomMax = driderSDK::Vector3D(0.8, 0, 0);
+  attr.m_position = driderSDK::Vector3D(0, 0, 0);
+  attr.m_scale = 10;
+  attr.m_scaleRandomMin = -5;
+  attr.m_scaleRandomMax = 5;
+  attr.m_particleMass = 0.2;
+  m_emitter.init(attr);
 }
 
 void
@@ -197,9 +220,16 @@ RenderMan::draw(const RenderTarget & _out, const DepthStencil & _outds) {
   m_LightningPass.draw(&m_LightningDrawData);
   
   _out.set(GraphicsAPI::getDeviceContext(), _outds);
-  m_PostProcessingDrawData.ColorRT = m_RTLightning;
-  m_PostProcessingPass.draw(&m_PostProcessingDrawData);
+  //m_PostProcessingDrawData.ColorRT = m_RTLightning; 
+  //m_PostProcessingPass.draw(&m_PostProcessingDrawData); 
 
+  m_emitter.update();
+  m_particleDrawData.activeCam = mainCam;
+  m_particleDrawData.numParticles = m_emitter.m_particles.size();
+  m_particleDrawData.particles = &m_emitter.m_particles[0];
+  m_particlePass.draw(&m_particleDrawData);
+
+  GraphicsAPI::getBackBufferRT().set(GraphicsAPI::getDeviceContext(), GraphicsAPI::getDepthStencil());
   /*
   ./ GBuffer:
   ./ SSAO:

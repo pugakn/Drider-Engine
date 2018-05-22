@@ -22,6 +22,7 @@
     <ClInclude Include="Include\dr_GBuffer1.h" />
     <ClInclude Include="Include\dr_HorBlur.h" />
     <ClInclude Include="Include\dr_Lightning.h" />
+    <ClInclude Include="Include\dr_pass_particle_system.h" />
     <ClInclude Include="Include\dr_Shadow.h" />
     <ClInclude Include="Include\dr_SSAO.h" />
     <ClInclude Include="Include\dr_light.h" />
@@ -35,6 +36,7 @@
   <ItemGroup>
     <ClCompile Include="Source\dr_GBuffer1.cpp" />
     <ClCompile Include="Source\dr_Lightning.cpp" />
+    <ClCompile Include="Source\dr_pass_particle_system.cpp" />
     <ClCompile Include="Source\dr_Shadow.cpp" />
     <ClCompile Include="Source\dr_SSAO.cpp" />
     <ClCompile Include="Source\dr_PostProcessing.cpp" />
@@ -110,11 +112,11 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include\;$(SolutionDir)Graphics\Include\;$(SolutionDir)Core\Include;$(SolutionDir)Engine\Include;$(SolutionDir)Math\Include;$(DRIDER_DEPENDENCIES)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)ParticleSystem\Include;$(SolutionDir)Utils\Include\;$(SolutionDir)Graphics\Include\;$(SolutionDir)Core\Include;$(SolutionDir)Engine\Include;$(SolutionDir)Math\Include;$(DRIDER_DEPENDENCIES)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>DR_RENDERMAN_EXPORTS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>Utilsd.lib;Cored.lib;Graphicsd.lib;Engined.lib;Mathd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ParticleSystemd.lib;Utilsd.lib;Cored.lib;Graphicsd.lib;Engined.lib;Mathd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -123,11 +125,11 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include\;$(SolutionDir)Graphics\Include\;$(SolutionDir)Core\Include;$(SolutionDir)Engine\Include;$(SolutionDir)Math\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)ParticleSystem\Include;$(SolutionDir)Utils\Include\;$(SolutionDir)Graphics\Include\;$(SolutionDir)Core\Include;$(SolutionDir)Engine\Include;$(SolutionDir)Math\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>DR_RENDERMAN_EXPORTS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>Utilsd.lib;Cored.lib;Graphicsd.lib;Engined.lib;Mathd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ParticleSystemd.lib;Utilsd.lib;Cored.lib;Graphicsd.lib;Engined.lib;Mathd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -138,13 +140,13 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include\;$(SolutionDir)Graphics\Include\;$(SolutionDir)Core\Include;$(SolutionDir)Engine\Include;$(SolutionDir)Math\Include;$(DRIDER_DEPENDENCIES)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)ParticleSystem\Include;$(SolutionDir)Utils\Include\;$(SolutionDir)Graphics\Include\;$(SolutionDir)Core\Include;$(SolutionDir)Engine\Include;$(SolutionDir)Math\Include;$(DRIDER_DEPENDENCIES)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>DR_RENDERMAN_EXPORTS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>Utils.lib;Core.lib;Graphics.lib;Engine.lib;Math.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ParticleSystem.lib;Utils.lib;Core.lib;Graphics.lib;Engine.lib;Math.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -155,13 +157,13 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include\;$(SolutionDir)Graphics\Include\;$(SolutionDir)Core\Include;$(SolutionDir)Engine\Include;$(SolutionDir)Math\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)ParticleSystem\Include;$(SolutionDir)Utils\Include\;$(SolutionDir)Graphics\Include\;$(SolutionDir)Core\Include;$(SolutionDir)Engine\Include;$(SolutionDir)Math\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>DR_RENDERMAN_EXPORTS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>Utils.lib;Core.lib;Graphics.lib;Engine.lib;Math.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ParticleSystem.lib;Utils.lib;Core.lib;Graphics.lib;Engine.lib;Math.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>

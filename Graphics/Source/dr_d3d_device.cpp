@@ -40,6 +40,21 @@ namespace driderSDK {
 D3DDevice::createDeviceAndDeviceContext(DeviceContext& deviceContext) {
   D3D_FEATURE_LEVEL lvl = D3D_FEATURE_LEVEL_11_0;
   D3D_FEATURE_LEVEL lvlRet = D3D_FEATURE_LEVEL_11_0;
+  UINT i = 0;
+  IDXGIAdapter * pAdapter;
+  IDXGIAdapter * pAdapterNvidia = nullptr;
+  std::vector <IDXGIAdapter*> vAdapters;
+  IDXGIFactory* pFactory = NULL;
+  CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&pFactory);
+  while (pFactory->EnumAdapters(i, &pAdapter) != DXGI_ERROR_NOT_FOUND)
+  {
+    vAdapters.push_back(pAdapter);
+    DXGI_ADAPTER_DESC adapterDescription; 
+    vAdapters[i]->GetDesc(&adapterDescription);
+    if (adapterDescription.VendorId == 0x10DE)//nvidia
+      pAdapterNvidia = pAdapter;
+    ++i;
+  }
   if (D3D11CreateDevice(0,
     D3D_DRIVER_TYPE_HARDWARE,
     0,
@@ -53,6 +68,10 @@ D3DDevice::createDeviceAndDeviceContext(DeviceContext& deviceContext) {
     D3D11DeviceContext) != S_OK) {
 
       throw "Error: createDeviceAndDeviceContext";
+  }
+  pFactory->Release();
+  for (auto &it : vAdapters) {
+    it->Release();
   }
   
 }

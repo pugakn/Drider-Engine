@@ -68,8 +68,9 @@ SceneViewer::init(Viewport v)
 void 
 SceneViewer::draw()
 {
-  const float clearColor[4]{ 1,0,1,1 };
+  const float clearColor[4]{ 0.2,0.5,0.8,1 };
   m_RT->clear(GraphicsAPI::getDeviceContext(), clearColor);
+  m_RTDPTH->clear(GraphicsAPI::getDeviceContext(),1,0);
   //Draw Scene
   m_renderMan.draw(*m_RT, *m_RTDPTH);
   //Draw End

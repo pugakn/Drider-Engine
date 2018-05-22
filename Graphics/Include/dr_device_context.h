@@ -227,6 +227,13 @@ class DR_GRAPHICS_EXPORT DeviceContext
        UInt32 startIndexLocation,
        UInt32 startVertexLocation) const = 0;
 
+  virtual void
+    drawInstanced(UInt32 indexCount,
+      UInt32 instanceCount,
+      UInt32 startIndexLocation,
+      UInt32 startVertexLocation,
+      UInt32 startInstanceLocation) const = 0;
+
   /*//TODO: Add get methods
   struct DeviceContextData;
   DeviceContextData* m_deviceContext;*/
