@@ -20,7 +20,7 @@ NetworkManager::getAddress(UInt32 address, UInt16 port) {
 
   addr.sin_family = AF_INET;
   addr.sin_port = htons(port);
-  addr.sin_addr.s_addr = htonl(address);
+  addr.sin_addr.s_addr = address;//htonl(address);
 
   return addr;
 }
@@ -55,6 +55,28 @@ NetworkManager::getAddress(const TString& address, UInt16 port) {
   addr.sin_port = htons(port);
 
   return addr;
+}
+
+UInt32 
+NetworkManager::ipAddrStrToUInt(const TString& address) {
+  UInt32 result = 0;
+  auto str = StringUtils::toString(address);
+  inet_pton(AF_INET, str.c_str(), &result);
+  return result;
+}
+
+TString
+NetworkManager::ipAddrUIntToStr(UInt32 address) {
+
+  TString res;
+
+  String rr(15, '\0');
+
+  inet_ntop(AF_INET, &address, &rr[0], rr.size());
+
+  res = StringUtils::toTString(rr);
+
+  return res;  
 }
 
 void

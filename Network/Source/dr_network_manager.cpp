@@ -35,4 +35,14 @@ NetworkManager::getAddrPort(sockaddr_in address,
   port = ntohs(address.sin_port);
 }
 
+void
+NetworkManager::getAddrPort(sockaddr_in address, 
+                            UInt32& addrStr, 
+                            UInt16& port) {
+  
+  addrStr = address.sin_addr.s_addr;
+
+  port = ntohs(address.sin_port);
+}
+
 }

@@ -39,10 +39,11 @@ ClientApplication::postInit() {
     packet << msg;
 
     UInt16 serverPort = m_port;
-    TString serverIP = StringUtils::toTString(m_ip);
+    auto serverIP = NetworkManager::ipAddrStrToUInt(StringUtils::toTString(m_ip));
+
     ++m_tick;
 
-    if (m_socket.send(packet, serverPort, serverIP) == SOCKET_ERR::kSuccess) {
+    if (m_socket.send(packet, serverIP, serverPort) == SOCKET_ERR::kSuccess) {
       Logger::addLog(_T("Message send: ") + StringUtils::toTString(msg));
     }
     else {
@@ -98,18 +99,20 @@ ClientApplication::postUpdate() {
 
   Packet packet;
   Int32 recvLen;
-  TString serverIP;
+  UInt32 serverIP;
   UInt16 serverPort;
 
-  auto err = m_socket.receive(packet, 256, recvLen, serverPort, serverIP);
+  auto err = m_socket.receive(packet, 256, recvLen, serverIP, serverPort);
 
   if (err == SOCKET_ERR::kSuccess) {
     String msg;
     
     packet >> msg;
+
+    TString ip = NetworkManager::ipAddrUIntToStr(serverIP);
     
     Logger::addLog(_T("Received from server: ") + StringUtils::toTString(msg));
-    Logger::addLog(_T("From Ip: ") + StringUtils::toTString(serverIP) + 
+    Logger::addLog(_T("From Ip: ") + ip + 
                    _T(" Port: ") + StringUtils::toTString(serverPort));
   }
   else if (err == SOCKET_ERR::kError) {

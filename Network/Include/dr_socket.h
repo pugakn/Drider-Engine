@@ -29,7 +29,7 @@ class DR_NETWORK_EXPORT Socket {
  public:
   
   using DataBuffer = std::vector<Int8>;
-
+  
   Socket();
   
   ~Socket();
