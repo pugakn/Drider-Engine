@@ -134,12 +134,12 @@ RenderMan::init() {
   driderSDK::ParticleEmitter emitter;
   driderSDK::ParticleEmitterAttributes attr;
   //System
-  attr.m_maxParticles = 50000;
+  attr.m_maxParticles = ParticleEmitter::MAX_PARTICLES;
   attr.m_initialTime = 10;
   attr.m_rate = 10;
   attr.m_systemMaxLife = 500;
   attr.m_particleMaxLife = 10;
-  attr.m_numParticlesToEmit = 20000;
+  attr.m_numParticlesToEmit = 50000;
   attr.m_isActive = true;
 
   //Speed / Velocity
@@ -240,6 +240,7 @@ RenderMan::draw(const RenderTarget & _out, const DepthStencil & _outds) {
   m_particleDrawData.activeCam = mainCam;
   m_particleDrawData.numParticles = m_emitter.m_particles.size();
   m_particleDrawData.particles = &m_emitter.m_particles[0];
+  m_particleDrawData.emitter = &m_emitter;
   m_particlePass.draw(&m_particleDrawData);
 
   GraphicsAPI::getBackBufferRT().set(GraphicsAPI::getDeviceContext(), GraphicsAPI::getDepthStencil());

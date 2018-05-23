@@ -14,6 +14,7 @@ struct ParticleSystemInitData : PassInitData {};
 struct ParticleSystemDrawData : PassDrawData {
   std::shared_ptr<Camera> activeCam;
   Particle* particles;
+  ParticleEmitter* emitter;
   size_t numParticles;
 };
 
@@ -47,13 +48,7 @@ class ParticleSystemPass : public RenderPass {
   draw(PassDrawData* drawData);
 
  private:
-   const Int32 MAX_PARTICLES = 65536;//1000000;
-  struct CBuffer {
-    Matrix4x4 WVP;
-    Vector4D color;
-  };
 
-  CBuffer* CB;
   GFXUnique<SamplerState> m_samplerState;
   GFXUnique<InputLayout> m_inputLayoutInstance;
   GFXUnique<VertexBuffer> m_instanceBuffer;

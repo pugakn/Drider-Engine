@@ -3,7 +3,8 @@
 #include <dr_vector3d.h>
 #include <dr_pool.h>
 #include <vector>
-
+#include <dr_matrix4x4.h>
+#include <dr_vector4d.h>
 #include <iostream>
 namespace driderSDK {
 struct DR_PARTICLES_EXPORT Particle {
@@ -71,6 +72,7 @@ struct DR_PARTICLES_EXPORT ParticleEmitterAttributes {
 
 class DR_PARTICLES_EXPORT ParticleEmitter {
 public:
+  static const Int32 MAX_PARTICLES = 65536;//1000000;
   void 
   init(const ParticleEmitterAttributes& _attributes);
   void
@@ -79,6 +81,12 @@ public:
   emit();
     
   PoolAllocator<Particle> m_particles;
+  struct CBuffer {
+    Matrix4x4 WVP;
+    Vector4D color;
+  };
+  CBuffer* m_buffer;
+  size_t m_bufferSize;
 private:
   ParticleEmitterAttributes m_attributes;
   std::vector<Vector3D> m_forces;
@@ -86,6 +94,7 @@ private:
   float m_timeAccum = 0.0f;
 
   //Internal
+  Matrix4x4 _trensform;
   float _proportionMul;
   float _proportion;
   float _speedLimitMax;

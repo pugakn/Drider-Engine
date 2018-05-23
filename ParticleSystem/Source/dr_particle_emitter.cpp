@@ -1,10 +1,13 @@
 #include "dr_particle_emitter.h"
 #include <dr_time.h>
 #include <dr_random.h>
+#include <dr_camera_manager.h>
+#include <dr_camera.h>
 namespace driderSDK {
 void 
 ParticleEmitter::init(const ParticleEmitterAttributes & _attributes)
 {
+  m_buffer = new CBuffer[MAX_PARTICLES]; //Memn leak xdxdxd
   m_forces.push_back(Vector3D(0,-160.81,0));
   m_attributes = _attributes;
   m_lifeTime = m_attributes.m_initialTime;
@@ -37,6 +40,7 @@ ParticleEmitter::update()
   for (auto &it : m_forces) {
     _forcesSum += it;
   }
+  m_bufferSize = 0;
   for (size_t i = 0; i < m_particles.size(); ++i) {
     Particle& p = m_particles[i];
     if (p.m_isActive) {
@@ -58,6 +62,22 @@ ParticleEmitter::update()
       p.m_position += p.m_velocity * tm;
       p.m_color = Math::lerp(m_attributes.m_initialColor,m_attributes.m_finalColor,_proportion);
       p.m_scale = Math::lerp(m_attributes.m_initialScale, m_attributes.m_finaleScale, _proportion) * p.m_scaleFactor;
+
+      //BUFFER
+      _trensform.identity();
+      //Scale
+      _trensform.vector0.x = p.m_scale;
+      _trensform.vector1.y = p.m_scale;
+      _trensform.vector2.z = p.m_scale;
+      //Rotation
+      //trensform.Rotation(p.m_rotation.x, p.m_rotation.y, p.m_rotation.z);
+      //Traslation
+      _trensform.vector3 = p.m_position;
+      _trensform.vector3.w = 1.0;
+
+      m_buffer[m_bufferSize].WVP = _trensform * CameraManager::getActiveCamera()->getVP();
+      m_buffer[m_bufferSize].color = p.m_color;
+      m_bufferSize++;
     }
   }
   emit();
@@ -67,21 +87,20 @@ ParticleEmitter::emit()
 {
   if (m_timeAccum >= m_attributes.m_rate) {
     m_timeAccum -= m_attributes.m_rate;
+    Particle particle;
+    particle.m_rotation = m_attributes.m_rotation;
+    particle.m_color = m_attributes.m_initialColor;
+    particle.m_scale = m_attributes.m_initialScale;
+    particle.m_isActive = true;
+    particle.m_lifeTime = 0.0f;
+    Particle* mem = m_particles.allocate(m_attributes.m_numParticlesToEmit, std::move(particle));
     for (size_t i = 0; i < m_attributes.m_numParticlesToEmit; ++i) {
-      Particle particle;
-      particle.m_velocity = Random::RandomRange(m_attributes.m_initialVelocityRandomMin,
+      mem[i].m_velocity = Random::RandomRange(m_attributes.m_initialVelocityRandomMin,
           m_attributes.m_initialVelocityRandomMax);
-      particle.m_position = Random::RandomRange(m_attributes.m_initialPositionRandomMin,
+      mem[i].m_position = Random::RandomRange(m_attributes.m_initialPositionRandomMin,
           m_attributes.m_initialPositionRandomMax);
-
-      particle.m_rotation = m_attributes.m_rotation;
-      particle.m_color = m_attributes.m_initialColor;
-      particle.m_scale = m_attributes.m_initialScale;
-      particle.m_isActive = true;
-      particle.m_lifeTime = 0.0f;
-      particle.m_scaleFactor = Random::RandomRange(m_attributes.m_scaleFactorRandomMin,
+      mem[i].m_scaleFactor = Random::RandomRange(m_attributes.m_scaleFactorRandomMin,
         m_attributes.m_scaleFactorRandomMax);
-      m_particles.allocate(1, std::move(particle));
     }
   }
 }
