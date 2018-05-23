@@ -6,6 +6,7 @@
 #include <dr_matrix4x4.h>
 #include <dr_particle_emitter.h>
 #include <dr_camera.h>
+#include <dr_vertex_buffer.h>
 namespace driderSDK {
 
 struct ParticleSystemInitData : PassInitData {};
@@ -46,13 +47,16 @@ class ParticleSystemPass : public RenderPass {
   draw(PassDrawData* drawData);
 
  private:
+   const Int32 MAX_PARTICLES = 65536;//1000000;
   struct CBuffer {
     Matrix4x4 WVP;
     Vector4D color;
   };
 
-  CBuffer CB;
+  CBuffer* CB;
   GFXUnique<SamplerState> m_samplerState;
+  GFXUnique<InputLayout> m_inputLayoutInstance;
+  GFXUnique<VertexBuffer> m_instanceBuffer;
 };
 
 }

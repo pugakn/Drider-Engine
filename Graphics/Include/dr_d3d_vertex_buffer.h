@@ -69,6 +69,10 @@ class DR_GRAPHICS_EXPORT D3DVertexBuffer : public VertexBuffer
   set(const DeviceContext& deviceContext,
       UInt32 offset) const override;
 
+  void
+    set(const DeviceContext& deviceContext, 
+      VertexBuffer* extraBuffers, 
+      UInt32 offset = 0)const override;
 
   /**
   * TEST::updateFromMemory

@@ -134,12 +134,12 @@ RenderMan::init() {
   driderSDK::ParticleEmitter emitter;
   driderSDK::ParticleEmitterAttributes attr;
   //System
-  attr.m_maxParticles = 10000;
-  attr.m_initialTime = 0;
-  attr.m_rate = 1;
-  attr.m_systemMaxLife = 50;
-  attr.m_particleMaxLife = 5;
-  attr.m_numParticlesToEmit = 800;
+  attr.m_maxParticles = 50000;
+  attr.m_initialTime = 10;
+  attr.m_rate = 10;
+  attr.m_systemMaxLife = 500;
+  attr.m_particleMaxLife = 10;
+  attr.m_numParticlesToEmit = 20000;
   attr.m_isActive = true;
 
   //Speed / Velocity

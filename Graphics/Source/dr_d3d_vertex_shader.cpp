@@ -65,7 +65,7 @@ D3DVertexShader::compile(const Device&,
                        0,
                        &reinterpret_cast<D3DShaderBytecode*>
                          (m_shaderBytecode)->shader_blob,
-                       0);
+                       &errorBlob);
   if (errorBlob) {
     std::cout << (char*)errorBlob->GetBufferPointer() << std::endl;
     errorBlob->Release();

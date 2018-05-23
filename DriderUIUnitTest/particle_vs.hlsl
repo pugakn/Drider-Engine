@@ -1,7 +1,3 @@
-cbuffer ConstantBuffer {
-  float4x4 WVP;
-  float4 color;
-};
 
 struct VS_INPUT {
   float4 Position     : POSITION;
@@ -11,17 +7,26 @@ struct VS_INPUT {
   float4 BonesWeights : BONEWEIGHTS;
   int4   BonesIDs     : BONEIDS;
   float2 Texcoord     : TEXCOORD;
+
+
+  float4 InstancePos0 : TRANSFORM0;
+  float4 InstancePos1 : TRANSFORM1;
+  float4 InstancePos2 : TRANSFORM2;
+  float4 InstancePos3 : TRANSFORM3;
+
+  float4 color : COLOR;
 };
 
 struct VS_OUTPUT {
   float4 Position : SV_POSITION;
   float2 Texcoord : TEXCOORD0;
+  float4 color : COLOR;
 };
 
 VS_OUTPUT
 VS(VS_INPUT input) {
   VS_OUTPUT output;
-  
+   float4x4 WVP = float4x4(input.InstancePos0, input.InstancePos1, input.InstancePos2, input.InstancePos3);
   //output.Position   =  input.Position;
   //output.Position.x = -output.Position.x;
 
@@ -34,8 +39,9 @@ VS(VS_INPUT input) {
   //psOut.Position = mul(vp,psOut.Position.xyzw);
   //psOut.Position.w = 1;
 
-  output.Position = mul(WVP, float4(input.Position.xyz,1));
+  output.Position = mul(float4(input.Position.xyz,1), WVP);
+  //output.Position = float4(input.Position.xyz, 1);
   output.Texcoord  = 1.0f - input.Texcoord;
-  
+  output.color = input.color;
   return output;
 }

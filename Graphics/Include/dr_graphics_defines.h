@@ -394,13 +394,20 @@ namespace DR_DEPTH_WRITE_MASK {
     kMASK_ALL = 1
   };
 }
-
+namespace DR_INPUT_CLASSIFICATION {
+  enum E {
+    kPerVertex = 0,
+    kPerInstance = 1
+  };
+}
 struct DR_GRAPHICS_EXPORT DrInputElementDesc {
   String semanticName;
   UInt32 semanticIndex;
   DR_FORMAT::E format;
   UInt32 inputSlot;
   UInt32 offset;
+  DR_INPUT_CLASSIFICATION::E slotClass;
+  UInt32 stepRate;
   DrInputElementDesc()
   {
     format = DR_FORMAT::kB4G4R4A4_UNORM;
@@ -408,6 +415,8 @@ struct DR_GRAPHICS_EXPORT DrInputElementDesc {
     offset = 0;
     semanticIndex = 0;
     semanticName = "";
+    stepRate = 0;
+    slotClass = DR_INPUT_CLASSIFICATION::kPerVertex;
   }
 };
 
