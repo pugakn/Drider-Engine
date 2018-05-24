@@ -66,6 +66,9 @@ class DR_NETWORK_EXPORT NetworkManager : public Module<NetworkManager>
   static void
   getAddrPort(sockaddr_in address, UInt32& outAddress, UInt16& outPort);
   
+  static UInt32
+  getLocalAddr();
+
   /**
   * Gets the error string from the last network operation.
   */

@@ -45,6 +45,10 @@ UDPSocket::send(const DataBuffer& data,
                 UInt32 ipAddress, 
                 UInt16 port) {
 
+  if (!isValid()) {
+    return SOCKET_ERR::kUninitialized;
+  }
+
   sockaddr_in server = NetworkManager::getAddress(ipAddress, port);
 
   Int32 sendBytes = 0;
@@ -71,6 +75,10 @@ UDPSocket::receive(DataBuffer& buffer,
                    Int32& receivedLen,
                    UInt32& ipAddress,
                    UInt16& port) {
+
+  if (!isValid()) {
+    return SOCKET_ERR::kUninitialized;
+  }
 
   sockaddr_in sender{};
   Int32 senderSAS = sizeof(sender);
@@ -120,6 +128,15 @@ UDPSocket::receive(Packet& packet,
   }
   
   return result;
+}
+
+SOCKET_ERR::E 
+UDPSocket::receive(Packet& packet, 
+                   Int32& receivedLen, 
+                   UInt32& ipAddress, 
+                   UInt16& port) {
+      
+  return receive(packet.m_data, receivedLen, ipAddress, port);
 }
 
 }

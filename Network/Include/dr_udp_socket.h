@@ -61,7 +61,13 @@ class DR_NETWORK_EXPORT UDPSocket : public Socket
   SOCKET_ERR::E
   receive(Packet& packet, 
           Int32 maxBuffSize, 
-          Int32& recievedLen, 
+          Int32& receivedLen, 
+          UInt32& ipAddress,
+          UInt16& port);
+
+  SOCKET_ERR::E
+  receive(Packet& packet, 
+          Int32& receivedLen, 
           UInt32& ipAddress,
           UInt16& port);
  private:

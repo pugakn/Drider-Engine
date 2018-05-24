@@ -45,4 +45,15 @@ NetworkManager::getAddrPort(sockaddr_in address,
   port = ntohs(address.sin_port);
 }
 
+UInt32
+NetworkManager::getLocalAddr() {
+
+  auto sockadd = getAddress(_T(""), 0);
+  UInt16 port;
+  UInt32 addr;
+  getAddrPort(sockadd, addr, port);
+
+  return addr;
+}
+
 }

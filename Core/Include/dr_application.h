@@ -9,6 +9,10 @@ namespace driderSDK {
 class DR_CORE_EXPORT Application
 {
  public:
+
+  Application(bool _usesWindow = true) : m_usesWindow(_usesWindow)
+  {}
+
   virtual ~Application() {}
   
   Int32 run();
@@ -27,7 +31,8 @@ class DR_CORE_EXPORT Application
  protected:
   Viewport m_viewport;
   void* m_hwnd;
- private:
   std::atomic<bool> m_running;
+ private:
+  bool m_usesWindow;
 };
 }

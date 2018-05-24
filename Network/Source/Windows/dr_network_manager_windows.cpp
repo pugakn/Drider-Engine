@@ -31,18 +31,18 @@ NetworkManager::getAddress(const TString& address, UInt16 port) {
   sockaddr_in addr = {};
 
   if (address.empty()) {
-    hostent* hp{};
-    char hostName[256];
-    gethostname(hostName,
-                sizeof(hostName));
+    addrinfo* result;
+    addrinfo hints = {};
+    hints.ai_family = AF_INET;
+    hints.ai_protocol = IPPROTO_UDP;
+    hints.ai_socktype = SOCK_DGRAM;
 
-    hp = gethostbyname(hostName);
+    auto res = getaddrinfo("", nullptr, &hints, &result);
 
-    if (hp) {
-      addr.sin_addr.S_un.S_un_b.s_b1 = hp->h_addr_list[0][0];
-      addr.sin_addr.S_un.S_un_b.s_b2 = hp->h_addr_list[0][1];
-      addr.sin_addr.S_un.S_un_b.s_b3 = hp->h_addr_list[0][2];
-      addr.sin_addr.S_un.S_un_b.s_b4 = hp->h_addr_list[0][3];
+    if (!res) {
+      for (auto ptr = result; ptr != nullptr; ptr = ptr->ai_next) {
+        addr.sin_addr.s_addr = ((struct sockaddr_in*)ptr->ai_addr)->sin_addr.s_addr;
+      }
     }
   }
   else {
