@@ -1,7 +1,6 @@
 cbuffer ConstantBuffer {
 	float4x4 WVP;
   float4x4 Bones[200];
-  float4   CameraInfo;
 };
 
 struct VS_INPUT {
@@ -23,7 +22,7 @@ VS_OUTPUT
 VS(VS_INPUT input) {
   VS_OUTPUT psOut;
   
-  psOut.Position = mul(WVP, float4(input.Position.xyz, 1.0f));
+  psOut.Position = mul(WVP, input.Position);
   //psOut.fDepth   = psOut.Position.z / psOut.Position.w;
   psOut.fDepth   = psOut.Position.z;
   

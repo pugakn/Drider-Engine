@@ -69,7 +69,7 @@ D3DSwapChain::release() {
 
 void
 D3DSwapChain::swapBuffers() {
-  APISwapchain->Present(0, 0);
+  APISwapchain->Present(DXGI_SWAP_EFFECT_DISCARD, 0);
 }
 
 }

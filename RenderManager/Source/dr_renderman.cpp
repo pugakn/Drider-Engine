@@ -150,7 +150,8 @@ RenderMan::init() {
 
 void
 RenderMan::draw() {
-  GraphicsDriver::API().clear();
+  //GraphicsDriver::API().clear();
+
   updateShadowCameras();
 
   auto mainCam = CameraManager::getActiveCamera();
@@ -185,7 +186,7 @@ RenderMan::draw() {
   m_VerBlurDrawData.InRt = m_RTBlurInit;
   m_VerBlurDrawData.OutRt = m_RTSSAOBlur;
   m_VerBlurPass.draw(&m_VerBlurDrawData);
-
+  
   for (size_t camIndex = 0; camIndex < m_szActiveShadowCameras; ++camIndex) {
     queryRequest = SceneGraph::query(*vecShadowCamera[camIndex],
                                      QUERY_ORDER::kFrontToBack,          
@@ -199,7 +200,7 @@ RenderMan::draw() {
     m_ShadowPass.draw(&m_ShadowDrawData);
   }
   m_ShadowPass.merge(m_RTShadowDummy, m_ShadowDSoptions, m_RTShadow);
-
+  
   m_LightningDrawData.activeCam = mainCam;
   m_LightningDrawData.DirLight = Vector4D(m_vec3DirectionalLight, 1.0f);
   m_LightningDrawData.GbufferRT = m_RTGBuffer;
@@ -273,22 +274,18 @@ RenderMan::recompile() {
 
 void
 RenderMan::updateShadowCameras() {
-  m_szActiveShadowCameras = Math::clamp(m_szActiveShadowCameras,
-                                        static_cast<size_t>(1),
-                                        static_cast<size_t>(4));
-
   std::shared_ptr<Camera> mainCam = CameraManager::getActiveCamera();
   Vector3D CamPos = mainCam->getPosition();
   Vector3D CamDir = mainCam->getDirection();
 
   float extraDepth = m_ShadowSubFrustras[0].second;
-  extraDepth = Math::max(extraDepth, m_ShadowSubFrustras[1].second);
-  extraDepth = Math::max(extraDepth, m_ShadowSubFrustras[2].second);
-  extraDepth = Math::max(extraDepth, m_ShadowSubFrustras[3].second);
+  extraDepth = Math::max(m_ShadowSubFrustras[1].second, extraDepth);
+  extraDepth = Math::max(m_ShadowSubFrustras[2].second, extraDepth);
+  extraDepth = Math::max(m_ShadowSubFrustras[3].second, extraDepth);
 
   Vector3D TrueCenter;
   
-  for (size_t i = 0; i < m_szActiveShadowCameras; ++i) {
+  for (SizeT i = 0; i < m_szActiveShadowCameras; ++i) {
     float SphereRad = m_ShadowSubFrustras[i].second;
     
     TrueCenter = CamPos + (CamDir * m_ShadowSubFrustras[i].first.z);

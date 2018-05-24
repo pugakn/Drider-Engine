@@ -93,7 +93,7 @@ RenderManApp::postInit() {
   m_renderMan.init();
 
   Degree grados(2.8125f);
-  Vector4D LightPosition(0.0f, 50.0f, 150.0f, 1);
+  Vector4D LightPosition(0.0f, 50.0f, 150.0f, 1.0f);
   Matrix4x4 rotationMatrix(driderSDK::Math::FORCE_INIT::kIdentity);
   rotationMatrix = rotationMatrix.RotationY(grados.toRadian());
 
