@@ -141,7 +141,6 @@
     <ClInclude Include="Include\dr_network_manager.h" />
     <ClInclude Include="Include\dr_network_prerequisites.h" />
     <ClInclude Include="Include\dr_packet.h" />
-    <ClInclude Include="Include\dr_server_lobby.h" />
     <ClInclude Include="Include\dr_socket.h" />
     <ClInclude Include="Include\dr_socket_handle.h" />
     <ClInclude Include="Include\dr_udp_socket.h" />

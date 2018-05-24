@@ -35,13 +35,13 @@ ServerApplication::postInit() {
     return;
   }
 
-  auto bindAddr = m_socket.getBindAddress();
+  auto bindAddr = NetworkManager::ipAddrUIntToStr(m_socket.getBindAddress());
   auto bindPort = m_socket.getBindPort();
   
   Logger::addLog(_T("Socket binded!"));
 
   Logger::addLog(_T("Hosted on: ") + 
-                 StringUtils::toTString(bindAddr) + 
+                 bindAddr + 
                  _T(" port: ") + 
                  StringUtils::toTString(bindPort));
 
@@ -67,9 +67,11 @@ ServerApplication::postUpdate() {
     //packet >> tick;
     packet >> message;
     
+    TString clientIP = NetworkManager::ipAddrUIntToStr(recIp);
+
     Logger::addLog(_T("Message received: ") + StringUtils::toTString(message));// + 
                    //_T(" Tick: ") + StringUtils::toTString(tick));
-    Logger::addLog(_T("From Ip: ") + StringUtils::toTString(recIp) + 
+    Logger::addLog(_T("From Ip: ") + clientIP + 
                    _T(" Port: ") + StringUtils::toTString(recPort));
    
     message = "Hello client: " + message;
