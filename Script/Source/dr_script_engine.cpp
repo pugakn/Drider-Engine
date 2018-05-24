@@ -51,7 +51,6 @@ ScriptEngine::configurateEngine(ContextManager *ctx) {
   Int8 result = 0;
   // Register the functions for controlling the script threads, e.g. sleep
   ctx->registerThreadSupport(m_scriptEngine);
-
   return result;
 }
 
@@ -92,10 +91,12 @@ ScriptEngine::getScriptObject(TString scriptName,
   asITypeInfo* type = mod->GetTypeInfoByDecl(realName.c_str());
 
   // Get the factory function from the object type
-  String path = realName + " @"
-                + realName + "()";
+  String path = realName + " @" + realName + "()";
   asIScriptFunction *factory = type->GetFactoryByDecl(path.c_str());
 
+	m_scriptContext->SetLineCallback(asMETHOD(ScriptEngine, debugLineCallback), 
+																	 this, 
+																	 asCALL_THISCALL);
   // Prepare the context to call the factory function
   m_scriptContext->Prepare(factory);
   // Execute the call
@@ -189,22 +190,32 @@ ScriptEngine::debugLineCallback(asIScriptContext* scriptContext) {
 	}
 
 	if (Debug->getCommand() == DebugCommands::CONTINUE) {
-
+		if (!Debug->checkBreakPoint()) {
+			return;
+		}
 	}
 	if (Debug->getCommand() == DebugCommands::STEP_IN) {
-
+		Debug->checkBreakPoint();
 	}
 	if (Debug->getCommand() == DebugCommands::STEP_OUT) {
-
+		if (m_scriptContext->GetCallstackSize() >= Debug->lastStackLevel) {
+			if (!Debug->checkBreakPoint()) {
+				return;
+			}
+		}
 	}
 	if (Debug->getCommand() == DebugCommands::STEP_OVER) {
-
+		if (m_scriptContext->GetCallstackSize() > Debug->lastStackLevel) {
+			if (!Debug->checkBreakPoint()) {
+				return;
+			}
+		}
 	}
 
-	if (Debug->checkBreakPoint()) {
-		addScriptLog(_T("Breakpoint Reached!"), asMSGTYPE_INFORMATION);
-		scriptContext->Suspend();
-	}
+	// Function to recive inputs
+	TString input;
+	Debug->interpretInput(input);
+
 }
 
 void 

@@ -65,6 +65,14 @@ namespace driderSDK {
 		bool removeBreakPoint(Int32 line, TString& section);
 
 		/**
+		* Takes the input and interpret it's action
+		*
+		*  @param input
+		*   String containing the action
+		*/
+		void interpretInput(TString& input);
+
+		/**
 		* Sets a command to the debugger
 		*
 		*  @param command

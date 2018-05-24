@@ -18,12 +18,13 @@ namespace driderSDK
 		Int32 line = pScriptEngine->m_scriptContext->GetLineNumber(0, 0, &pSection);
 		TString section(StringUtils::toTString(pSection));
 
-		if (!checkBreakPoint()) {
+		//if (!checkBreakPoint()) {
 			m_breakpoints.push_back(BreakPoint(section, line));
-		}
+		//}
 	}
 
-	bool ScriptDebug::removeBreakPoint(Int32 line, TString& section)
+	bool 
+	ScriptDebug::removeBreakPoint(Int32 line, TString& section)
 	{
 		for (std::vector<BreakPoint>::iterator it = m_breakpoints.begin(); it != m_breakpoints.end(); ++it) {
 			if (it->line == line && it->section == section) {
@@ -32,6 +33,56 @@ namespace driderSDK
 			}
 		}
 		return false;
+	}
+
+	void 
+	ScriptDebug::interpretInput(TString& input) {
+
+		switch (input[0]) {
+
+			case 'p': //print info
+
+
+				if (input[1] == 'c') { // callstack
+					printCallStack();
+				}
+				else if (input[1] == 'l') { //local variables
+					printLocalVariables();
+				}
+				else if (input[1] == 'g') { //global variables
+					printGlobalVariables();
+				}
+				else if (input[1] == 't') { //garbage collector
+					printGarbageStatus();
+				}
+
+				break;
+
+			case 'c': //give command
+
+				DebugCommands::E comm;
+
+				if (input[1] == 'c') { // continue
+					comm = DebugCommands::CONTINUE;
+				}
+				else if (input[1] == 'o') { //step out
+					comm = DebugCommands::STEP_OUT;
+				}
+				else if (input[1] == 'i') { //step into
+					comm = DebugCommands::STEP_IN;
+				}
+				else if (input[1] == 'v') { //step over
+					comm = DebugCommands::STEP_OVER;
+				}
+				else {
+					break;
+				}
+
+				setCommand(comm);
+
+				break;
+		}
+
 	}
 
 	void 
@@ -58,6 +109,7 @@ namespace driderSDK
 
 		for (UInt16 i = 0; i < m_breakpoints.size(); ++i) {
 			if (m_breakpoints[i].section == section && m_breakpoints[i].line == line) {
+				printToLogger(L"Breakpoint Reached");
 				return true;
 			}
 		}
