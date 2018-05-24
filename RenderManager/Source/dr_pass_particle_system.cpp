@@ -80,6 +80,28 @@ namespace driderSDK {
     bdescInstance.sizeInBytes = (sizeof(Matrix4x4) + sizeof(Vector4D)) * ParticleEmitter::MAX_PARTICLES;
     bdescInstance.stride = (sizeof(Matrix4x4) + sizeof(Vector4D));
     m_instanceBuffer = dr_gfx_unique((VertexBuffer*)device.createBuffer(bdescInstance));
+
+    m_vertex[0] = { -1.f,  1.f, 1.f, 1.0f, };
+    m_vertex[1] = { -1.f, -1.f, 1.f, 1.0f, };
+    m_vertex[2] = { 1.f, -1.f,  1.f,  1.0f, };
+    m_vertex[3] = { 1.f,  1.f,  1.f,  1.0f, };
+
+    m_index[0] = 2;
+    m_index[1] = 1;
+    m_index[2] = 0;
+    m_index[3] = 0;
+    m_index[4] = 3;
+    m_index[5] = 2;
+
+    bdescInstance.type = DR_BUFFER_TYPE::kVERTEX;
+    bdescInstance.sizeInBytes = sizeof(Vector4D) * 4 ;
+    bdescInstance.stride = sizeof(Vector4D);
+    m_VBQUAD = dr_gfx_unique((VertexBuffer*)device.createBuffer(bdescInstance, reinterpret_cast<byte*>(&m_vertex[0])));
+
+    bdescInstance.type = DR_BUFFER_TYPE::kINDEX;
+    bdescInstance.sizeInBytes = 6 * sizeof(UInt32);
+    bdescInstance.stride = 0;
+    m_IBQUAD = dr_gfx_unique(reinterpret_cast<IndexBuffer*>(device.createBuffer(bdescInstance, reinterpret_cast<byte*>(&m_index[0]))));
   }
 
   void
@@ -91,24 +113,16 @@ namespace driderSDK {
     m_vertexShader->set(dc);
     m_fragmentShader->set(dc);
     m_inputLayoutInstance->set(dc);
-
-    dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
     //const float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
     //data->OutRt->clear(dc, clearColor);
     //(data->dsOptions)->clear(dc, 1, 0);
 
-
-    //auto screenQuadModel = ResourceManager::getReferenceT<Model>(_T("Sphere.fbx"));//ScreenAlignedQuad.3ds
-    auto screenQuadModel = ResourceManager::getReferenceT<Model>(_T("ScreenAlignedQuad.3ds"));//
     m_instanceBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(data->emitter->m_buffer));
+    m_VBQUAD->set(dc, m_instanceBuffer.get());
+    m_IBQUAD->set(dc);
+    dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
 
-    if (screenQuadModel) {
-      for (auto& SAQ : screenQuadModel->meshes) {
-        SAQ.vertexBuffer->set(dc,m_instanceBuffer.get());
-        SAQ.indexBuffer->set(dc);
-        dc.drawInstanced(SAQ.indices.size(), data->emitter->m_aliveParticles,0, 0, 0);
-      }
-    }
+    dc.drawInstanced(6, data->emitter->m_aliveParticles, 0, 0, 0);
   }
 
 }

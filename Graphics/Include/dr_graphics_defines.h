@@ -240,7 +240,8 @@ enum E {
   kLineList,
   kTriangleList,
   kLineStrip,
-  kTriangleStrip
+  kTriangleStrip,
+  kPoint
 };
 
 }

@@ -69,10 +69,16 @@ struct DR_PARTICLES_EXPORT ParticleEmitterAttributes {
   //Volumen/Area
   //Evento
 };
+class DR_PARTICLES_EXPORT ParticleUpdater {
 
+};
+class DR_PARTICLES_EXPORT ParticleGenerator {
+public:
+  virtual void generate() = 0;
+};
 class DR_PARTICLES_EXPORT ParticleEmitter {
 public:
-  static const Int32 MAX_PARTICLES = 150000;//65536;
+  static const Int32 MAX_PARTICLES = 250000;//65536;
   void 
   init(const ParticleEmitterAttributes& _attributes);
   void

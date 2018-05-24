@@ -148,6 +148,9 @@ D3DDeviceContext::setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::E topology) const 
   case driderSDK::DR_PRIMITIVE_TOPOLOGY::kTriangleStrip:
     topo = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP;
     break;
+  case driderSDK::DR_PRIMITIVE_TOPOLOGY::kPoint:
+    topo = D3D11_PRIMITIVE_TOPOLOGY_POINTLIST;
+    break;
   default:
     break;
   }

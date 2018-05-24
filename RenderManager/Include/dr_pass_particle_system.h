@@ -8,7 +8,7 @@
 #include <dr_camera.h>
 #include <dr_vertex_buffer.h>
 namespace driderSDK {
-
+  class IndexBuffer;
 struct ParticleSystemInitData : PassInitData {};
 
 struct ParticleSystemDrawData : PassDrawData {
@@ -52,6 +52,10 @@ class ParticleSystemPass : public RenderPass {
   GFXUnique<SamplerState> m_samplerState;
   GFXUnique<InputLayout> m_inputLayoutInstance;
   GFXUnique<VertexBuffer> m_instanceBuffer;
+  GFXUnique<VertexBuffer> m_VBQUAD;
+  GFXUnique<IndexBuffer> m_IBQUAD;
+  Vector4D m_vertex[4];
+  UInt32 m_index[6];
 };
 
 }

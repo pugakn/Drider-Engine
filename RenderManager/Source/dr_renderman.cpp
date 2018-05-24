@@ -139,7 +139,7 @@ RenderMan::init() {
   attr.m_rate = 10;
   attr.m_systemMaxLife = 500;
   attr.m_particleMaxLife = 10;
-  attr.m_numParticlesToEmit = 100000;
+  attr.m_numParticlesToEmit = 200000;
   attr.m_isActive = true;
 
   //Speed / Velocity

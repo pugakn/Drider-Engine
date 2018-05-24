@@ -42,44 +42,43 @@ ParticleEmitter::update()
     _forcesSum += it;
   }
   for (size_t i = 0; i < m_aliveParticles; ++i) {
-    Particle& p = m_particles[i];
+    Particle* __restrict p = &m_particles[i];
     //consumir tiempo
-    if (p.m_lifeTime > m_attributes.m_particleMaxLife)
+    if (p->m_lifeTime > m_attributes.m_particleMaxLife)
     {
-      p.m_isActive = false;
-      std::swap(p, m_particles[m_aliveParticles - 1]);
+      p->m_isActive = false;
+      std::swap(*p, m_particles[m_aliveParticles - 1]);
       m_aliveParticles--;
       continue;
     }
-    _proportion = p.m_lifeTime * _proportionMul;
+    _proportion = p->m_lifeTime * _proportionMul;
     float m1Proportion = (1.0f - _proportion);
     _speedLimitMax = (m_attributes.m_initialSpeedLimit * m1Proportion) + (m_attributes.m_finalSpeedLimit * _proportion);
-    p.m_lifeTime += tm;
+    p->m_lifeTime += tm;
     //fuerzas
-    p.m_acceleration = _forcesSum;
-    p.m_velocity += p.m_acceleration * tm;
+    p->m_acceleration = _forcesSum;
+    p->m_velocity += p->m_acceleration * tm;
     //Limits
-    float speed = p.m_velocity.length();
+    float speed = p->m_velocity.length();
     if (speed > _speedLimitMax) {
-      p.m_velocity = p.m_velocity.normalize() * _speedLimitMax;
+      p->m_velocity = p->m_velocity.normalize() * _speedLimitMax;
     }
     //cambios
-    p.m_position += p.m_velocity * tm;
-    p.m_scale = (m_attributes.m_initialScale * m1Proportion) + (m_attributes.m_finaleScale * _proportion) * p.m_scaleFactor;
-    m_buffer[i].color = (m_attributes.m_initialColor * m1Proportion) + (m_attributes.m_finalColor * _proportion);
+    p->m_position += p->m_velocity * tm;
+    p->m_scale = (m_attributes.m_initialScale * m1Proportion) + (m_attributes.m_finaleScale * _proportion) * p->m_scaleFactor;
 
     //BUFFER
+    m_buffer[i].color = (m_attributes.m_initialColor * m1Proportion) + (m_attributes.m_finalColor * _proportion);
     m_buffer[i].WVP.identity();
     //Scale
-    m_buffer[i].WVP.vector0.x = p.m_scale;
-    m_buffer[i].WVP.vector1.y = p.m_scale;
-    m_buffer[i].WVP.vector2.z = p.m_scale;
+    m_buffer[i].WVP.vector0.x = p->m_scale;
+    m_buffer[i].WVP.vector1.y = p->m_scale;
+    m_buffer[i].WVP.vector2.z = p->m_scale;
     //Rotation
     //trensform.Rotation(p.m_rotation.x, p.m_rotation.y, p.m_rotation.z);
     //Traslation
-    m_buffer[i].WVP.vector3 = p.m_position;
+    m_buffer[i].WVP.vector3 = p->m_position;
     m_buffer[i].WVP.vector3.w = 1.0;
-
     m_buffer[i].WVP = m_buffer[i].WVP * CameraManager::getActiveCamera()->getVP();
     //m_buffer[i].color = p.m_color;
   }
@@ -92,16 +91,17 @@ ParticleEmitter::emit()
     m_timeAccum -= m_attributes.m_rate;
     size_t endID = std::min(m_aliveParticles + m_attributes.m_numParticlesToEmit, m_attributes.m_maxParticles);
     for (size_t i = m_aliveParticles; i < endID; ++i) {
-      m_particles[i].m_isActive = true;
-      m_particles[i].m_lifeTime = 0.0f;
-      m_particles[i].m_rotation = m_attributes.m_rotation;
-      m_particles[i].m_color = m_attributes.m_initialColor;
-      m_particles[i].m_scale = m_attributes.m_initialScale;
-      m_particles[i].m_velocity = Random::RandomRange(m_attributes.m_initialVelocityRandomMin,
+      Particle* __restrict p = &m_particles[i];
+      p->m_isActive = true;
+      p->m_lifeTime = 0.0f;
+      p->m_rotation = m_attributes.m_rotation;
+      p->m_color = m_attributes.m_initialColor;
+      p->m_scale = m_attributes.m_initialScale;
+      p->m_velocity = Random::RandomRange(m_attributes.m_initialVelocityRandomMin,
         m_attributes.m_initialVelocityRandomMax);
-      m_particles[i].m_position = Random::RandomRange(m_attributes.m_initialPositionRandomMin,
+      p->m_position = Random::RandomRange(m_attributes.m_initialPositionRandomMin,
         m_attributes.m_initialPositionRandomMax);
-      m_particles[i].m_scaleFactor = Random::RandomRange(m_attributes.m_scaleFactorRandomMin,
+      p->m_scaleFactor = Random::RandomRange(m_attributes.m_scaleFactorRandomMin,
         m_attributes.m_scaleFactorRandomMax);
       m_aliveParticles++;
     }
