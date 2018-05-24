@@ -282,6 +282,7 @@ TestApplication::initScriptEngine() {
   result = Transform::registerFunctions(scriptEngine);
   result = GameObject::registerFunctions(scriptEngine);
   result = Time::registerFunctions(scriptEngine);
+  result = SoundComponent::registerFunctions(scriptEngine);
 
   //Register global properties
   m_root = SceneGraph::instance().getRoot().get(); // Get root

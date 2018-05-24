@@ -16,6 +16,12 @@ namespace driderSDK {
   void Destruct##className (void *memory) {\
     ((className*)memory)->~className(); }
 
+//#define REF_CONSTRUCT(className)\
+//  class className;\
+//  className* Ref_##className() {\
+//    return new className();/
+//  }
+
 #define COPY_CONSTRUCT_DECL(className)\
   void CopyConstruct##className(const className &other, className *thisPointer);
 

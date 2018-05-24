@@ -4,6 +4,9 @@
 
 #include "dr_gameComponent.h"
 
+#include <dr_export_script.h>
+#include <..\..\Script\Include\dr_script_engine.h>
+
 namespace driderSDK {
 
 class DrSound;
@@ -44,7 +47,15 @@ class DR_CORE_EXPORT SoundComponent : public GameComponent {
              DrSound* sound);
 
     void
-    play(TString soundName);
+    play(const TString& soundName);
+
+    static BEGINING_REGISTER(SoundComponent, 0, asOBJ_REF | asOBJ_NOCOUNT)
+
+    result = REGISTER_FOO(SoundComponent,
+                          "void play(const TString& in)",
+                          asMETHODPR(SoundComponent, play, (const TString&), void));    
+
+    END_REGISTER
 
   private:
     void

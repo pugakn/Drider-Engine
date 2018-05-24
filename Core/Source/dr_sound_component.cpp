@@ -61,7 +61,7 @@ SoundComponent::addSound(TString soundName,
 }
 
 void
-SoundComponent::play(TString soundName) {
+SoundComponent::play(const TString& soundName) {
   
   std::unordered_map<TString, 
                      DrSound*>::iterator 

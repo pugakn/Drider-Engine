@@ -30,7 +30,7 @@ Variables:
    22  11 *    SUSPEND
    23  11 *    VAR      v3
    24  12 *    PshVPtr  v0
-   25  13 *    ADDSi    v20, 134217746
+   25  13 *    ADDSi    v20, 134217747
    27  13 *    RDSPtr
    28  13 *    GETREF   1
    29  13 *    CALLSYS  82           (void Transform::move(const Vector3D&in))
@@ -51,7 +51,7 @@ Variables:
                ObjInfo  v11, 1
    45  11 *    VAR      v11
    46  12 *    PshVPtr  v0
-   47  13 *    ADDSi    v20, 134217746
+   47  13 *    ADDSi    v20, 134217747
    49  13 *    RDSPtr
    50  13 *    GETREF   1
    51  13 *    CALLSYS  82           (void Transform::move(const Vector3D&in))
