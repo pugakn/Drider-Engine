@@ -139,7 +139,7 @@ RenderMan::init() {
   attr.m_rate = 10;
   attr.m_systemMaxLife = 500;
   attr.m_particleMaxLife = 10;
-  attr.m_numParticlesToEmit = 50000;
+  attr.m_numParticlesToEmit = 100000;
   attr.m_isActive = true;
 
   //Speed / Velocity
@@ -170,74 +170,74 @@ RenderMan::init() {
 void
 RenderMan::draw(const RenderTarget & _out, const DepthStencil & _outds) {
   //GraphicsDriver::API().clear();
-  updateShadowCameras();
+  //updateShadowCameras();
 
-  auto mainCam = CameraManager::getActiveCamera();
-  auto queryRequest = SceneGraph::query(*mainCam,
-                                        QUERY_ORDER::kFrontToBack,
-                                        QUERY_PROPERTY::kOpaque | 
-                                        QUERY_PROPERTY::kDynamic | 
-                                        QUERY_PROPERTY::kStatic);
+  //auto mainCam = CameraManager::getActiveCamera();
+  //auto queryRequest = SceneGraph::query(*mainCam,
+  //                                      QUERY_ORDER::kFrontToBack,
+  //                                      QUERY_PROPERTY::kOpaque | 
+  //                                      QUERY_PROPERTY::kDynamic | 
+  //                                      QUERY_PROPERTY::kStatic);
 
-  m_GBufferDrawData.activeCam = mainCam;
-  m_GBufferDrawData.models = &queryRequest;
-  m_GBufferDrawData.OutRt = m_RTGBuffer;
-  m_GBufferDrawData.dsOptions = m_GBufferDSoptions;
-  m_GBufferPass.draw(&m_GBufferDrawData);
+  //m_GBufferDrawData.activeCam = mainCam;
+  //m_GBufferDrawData.models = &queryRequest;
+  //m_GBufferDrawData.OutRt = m_RTGBuffer;
+  //m_GBufferDrawData.dsOptions = m_GBufferDSoptions;
+  //m_GBufferPass.draw(&m_GBufferDrawData);
 
-  m_SSAODrawData.activeCam = mainCam;
-  m_SSAODrawData.InRt = m_RTGBuffer;
-  m_SSAODrawData.OutRt = m_RTSSAO;
-  m_SSAODrawData.dsOptions = m_SSAODSoptions;
-  m_SSAOPass.draw(&m_SSAODrawData);
+  //m_SSAODrawData.activeCam = mainCam;
+  //m_SSAODrawData.InRt = m_RTGBuffer;
+  //m_SSAODrawData.OutRt = m_RTSSAO;
+  //m_SSAODrawData.dsOptions = m_SSAODSoptions;
+  //m_SSAOPass.draw(&m_SSAODrawData);
 
-  m_HorBlurDrawData.viewportDimensionX = static_cast<float>(screenWidth);
-  m_HorBlurDrawData.viewportDimensionY = static_cast<float>(screenHeight);
-  m_HorBlurDrawData.dsOptions = m_HorBlurDSoptions;
-  m_HorBlurDrawData.InRt = m_RTSSAO;
-  m_HorBlurDrawData.OutRt = m_RTSSAOInitBlur;
-  m_HorBlurPass.draw(&m_HorBlurDrawData);
+  //m_HorBlurDrawData.viewportDimensionX = static_cast<float>(screenWidth);
+  //m_HorBlurDrawData.viewportDimensionY = static_cast<float>(screenHeight);
+  //m_HorBlurDrawData.dsOptions = m_HorBlurDSoptions;
+  //m_HorBlurDrawData.InRt = m_RTSSAO;
+  //m_HorBlurDrawData.OutRt = m_RTSSAOInitBlur;
+  //m_HorBlurPass.draw(&m_HorBlurDrawData);
 
-  m_VerBlurDrawData.viewportDimensionX = static_cast<float>(screenWidth);
-  m_VerBlurDrawData.viewportDimensionY = static_cast<float>(screenHeight);
-  m_VerBlurDrawData.dsOptions = m_VerBlurDSoptions;
-  m_VerBlurDrawData.InRt = m_RTSSAOInitBlur;
-  m_VerBlurDrawData.OutRt = m_RTSSAOFinalBlur;
-  m_VerBlurPass.draw(&m_VerBlurDrawData);
+  //m_VerBlurDrawData.viewportDimensionX = static_cast<float>(screenWidth);
+  //m_VerBlurDrawData.viewportDimensionY = static_cast<float>(screenHeight);
+  //m_VerBlurDrawData.dsOptions = m_VerBlurDSoptions;
+  //m_VerBlurDrawData.InRt = m_RTSSAOInitBlur;
+  //m_VerBlurDrawData.OutRt = m_RTSSAOFinalBlur;
+  //m_VerBlurPass.draw(&m_VerBlurDrawData);
 
-  for (size_t camIndex = 0; camIndex < m_szActiveShadowCameras; ++camIndex) {
-    queryRequest = SceneGraph::query(*vecShadowCamera[camIndex],
-                                     QUERY_ORDER::kFrontToBack,          
-                                     QUERY_PROPERTY::kOpaque |
-                                     QUERY_PROPERTY::kDynamic |
-                                     QUERY_PROPERTY::kStatic);
-    m_ShadowDrawData.shadowCam = vecShadowCamera[camIndex];
-    m_ShadowDrawData.models = &queryRequest;
-    m_ShadowDrawData.OutRt = m_RTShadowDummy[camIndex];
-    m_ShadowDrawData.dsOptions = m_ShadowDSoptions;
-    m_ShadowPass.draw(&m_ShadowDrawData);
-  }
-  m_ShadowPass.merge(m_RTShadowDummy, m_ShadowDSoptions, m_RTShadow);
+  //for (size_t camIndex = 0; camIndex < m_szActiveShadowCameras; ++camIndex) {
+  //  queryRequest = SceneGraph::query(*vecShadowCamera[camIndex],
+  //                                   QUERY_ORDER::kFrontToBack,          
+  //                                   QUERY_PROPERTY::kOpaque |
+  //                                   QUERY_PROPERTY::kDynamic |
+  //                                   QUERY_PROPERTY::kStatic);
+  //  m_ShadowDrawData.shadowCam = vecShadowCamera[camIndex];
+  //  m_ShadowDrawData.models = &queryRequest;
+  //  m_ShadowDrawData.OutRt = m_RTShadowDummy[camIndex];
+  //  m_ShadowDrawData.dsOptions = m_ShadowDSoptions;
+  //  m_ShadowPass.draw(&m_ShadowDrawData);
+  //}
+  //m_ShadowPass.merge(m_RTShadowDummy, m_ShadowDSoptions, m_RTShadow);
 
-  m_LightningDrawData.activeCam = mainCam;
-  m_LightningDrawData.DirLight = Vector4D(m_vec3DirectionalLight, 1.0f);
-  m_LightningDrawData.GbufferRT = m_RTGBuffer;
-  m_LightningDrawData.SSAORT = m_RTSSAOFinalBlur;
-  m_LightningDrawData.ShadowRT = m_RTShadow;
-  m_LightningDrawData.Lights = &lights[0];
-  m_LightningDrawData.ActiveLights = 128;
-  m_LightningDrawData.ShadowCam = &vecShadowCamera;
-  m_LightningDrawData.shadowDepths = partitions;
-  m_LightningDrawData.dsOptions = m_LightningDSoptions;
-  m_LightningDrawData.OutRt = m_RTLightning;
-  m_LightningPass.draw(&m_LightningDrawData);
+  //m_LightningDrawData.activeCam = mainCam;
+  //m_LightningDrawData.DirLight = Vector4D(m_vec3DirectionalLight, 1.0f);
+  //m_LightningDrawData.GbufferRT = m_RTGBuffer;
+  //m_LightningDrawData.SSAORT = m_RTSSAOFinalBlur;
+  //m_LightningDrawData.ShadowRT = m_RTShadow;
+  //m_LightningDrawData.Lights = &lights[0];
+  //m_LightningDrawData.ActiveLights = 128;
+  //m_LightningDrawData.ShadowCam = &vecShadowCamera;
+  //m_LightningDrawData.shadowDepths = partitions;
+  //m_LightningDrawData.dsOptions = m_LightningDSoptions;
+  //m_LightningDrawData.OutRt = m_RTLightning;
+  //m_LightningPass.draw(&m_LightningDrawData);
   
   _out.set(GraphicsAPI::getDeviceContext(), _outds);
   //m_PostProcessingDrawData.ColorRT = m_RTLightning; 
   //m_PostProcessingPass.draw(&m_PostProcessingDrawData); 
 
   m_emitter.update();
-  m_particleDrawData.activeCam = mainCam;
+  //m_particleDrawData.activeCam = mainCam;
   m_particleDrawData.numParticles = m_emitter.m_particles.size();
   m_particleDrawData.particles = &m_emitter.m_particles[0];
   m_particleDrawData.emitter = &m_emitter;

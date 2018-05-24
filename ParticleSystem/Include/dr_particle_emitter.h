@@ -72,7 +72,7 @@ struct DR_PARTICLES_EXPORT ParticleEmitterAttributes {
 
 class DR_PARTICLES_EXPORT ParticleEmitter {
 public:
-  static const Int32 MAX_PARTICLES = 65536;//1000000;
+  static const Int32 MAX_PARTICLES = 150000;//65536;
   void 
   init(const ParticleEmitterAttributes& _attributes);
   void
@@ -86,7 +86,7 @@ public:
     Vector4D color;
   };
   CBuffer* m_buffer;
-  size_t m_bufferSize;
+  size_t m_aliveParticles = 0;
 private:
   ParticleEmitterAttributes m_attributes;
   std::vector<Vector3D> m_forces;
@@ -94,7 +94,6 @@ private:
   float m_timeAccum = 0.0f;
 
   //Internal
-  Matrix4x4 _trensform;
   float _proportionMul;
   float _proportion;
   float _speedLimitMax;

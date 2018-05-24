@@ -98,29 +98,15 @@ namespace driderSDK {
     //(data->dsOptions)->clear(dc, 1, 0);
 
 
-    auto screenQuadModel = ResourceManager::getReferenceT<Model>(_T("Sphere.fbx"));//ScreenAlignedQuad.3ds
-    //Matrix4x4 trensform;
-    //Int32 j = 0;
-    //for (size_t i = 0; i < data->numParticles; i++)
-    //{
-    //  Particle* p = &data->particles[i];
-    //  if (p->m_isActive) {
-    //    trensform.identity();
-    //    trensform.Scale(Vector3D(p->m_scale, p->m_scale, p->m_scale));
-    //    trensform.Rotation(p->m_rotation.x, p->m_rotation.y, p->m_rotation.z);
-    //    trensform.Translation(p->m_position);
-    //    CB[j].WVP = trensform * data->activeCam->getVP();
-    //    CB[j].color = p->m_color;
-    //    j++;
-    //  }
-    //}
+    //auto screenQuadModel = ResourceManager::getReferenceT<Model>(_T("Sphere.fbx"));//ScreenAlignedQuad.3ds
+    auto screenQuadModel = ResourceManager::getReferenceT<Model>(_T("ScreenAlignedQuad.3ds"));//
     m_instanceBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(data->emitter->m_buffer));
 
     if (screenQuadModel) {
       for (auto& SAQ : screenQuadModel->meshes) {
         SAQ.vertexBuffer->set(dc,m_instanceBuffer.get());
         SAQ.indexBuffer->set(dc);
-        dc.drawInstanced(SAQ.indices.size(), data->emitter->m_bufferSize,0, 0, 0);
+        dc.drawInstanced(SAQ.indices.size(), data->emitter->m_aliveParticles,0, 0, 0);
       }
     }
   }
