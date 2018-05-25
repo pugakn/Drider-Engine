@@ -24,12 +24,12 @@ namespace driderSDK {
     m_updaters.push_back(pU);
 
     ParticleGenerator* pG = new BoxGenerator();
-    ((BoxGenerator*)pG)->m_initialPositionRandomMin = (Vector3D(0, 0, 0));
-    ((BoxGenerator*)pG)->m_initialPositionRandomMax = (Vector3D(0, 0, 0));
+    ((BoxGenerator*)pG)->m_initialPositionRandomMin = (Vector3D(-500, 0, -500));
+    ((BoxGenerator*)pG)->m_initialPositionRandomMax = (Vector3D(500, 0, 500));
     m_generator.push_back(pG);
     pG = new RandomVelocityGenerator();
-    ((RandomVelocityGenerator*)pG)->m_initialVelocityRandomMin = (Vector3D(-1200, -1200, -1200));
-    ((RandomVelocityGenerator*)pG)->m_initialVelocityRandomMax = (Vector3D(1200, 1200, 1200));
+    ((RandomVelocityGenerator*)pG)->m_initialVelocityRandomMin = (Vector3D(-0, -0, -0));
+    ((RandomVelocityGenerator*)pG)->m_initialVelocityRandomMax = (Vector3D(0, 1200, 0));
     m_generator.push_back(pG);
     pG = new RandomScaleFactorGenerator();
     ((RandomScaleFactorGenerator*)pG)->m_scaleFactorRandomMin = 0.8;
@@ -37,7 +37,7 @@ namespace driderSDK {
     m_generator.push_back(pG);
 
     m_buffer = new CBuffer[MAX_PARTICLES]; //Memn leak xdxdxd
-    m_forces.push_back(Vector3D(0, -160.81, 0));
+    m_forces.push_back(Vector3D(0, -0, 0));
     m_attributes = _attributes;
     m_lifeTime = m_attributes.m_initialTime;
     m_timeAccum = m_attributes.m_initialTime;
@@ -86,13 +86,13 @@ namespace driderSDK {
       if (m_particles.m_lifeTime[i] > m_attributes.m_particleMaxLife)
       {
         m_particles.m_isActive[i] = false;
-        m_particles.m_acceleration[i] = {0,0,0};
+ /*       m_particles.m_acceleration[i] = {0,0,0};
         m_particles.m_velocity[i] = { 0,0,0 };
         m_particles.m_color[i] = { 0,0,0 };
         m_particles.m_position[i] = { 0,0,0 };
         m_particles.m_rotation[i] = { 0,0,0 };
         m_particles.m_scale[i] = { 0 };
-        m_particles.m_scaleFactor[i] = { 0 };
+        m_particles.m_scaleFactor[i] = { 0 };*/
 
         std::swap(m_particles.m_acceleration[i], m_particles.m_acceleration[m_aliveParticles - 1]);
         std::swap(m_particles.m_color[i], m_particles.m_color[m_aliveParticles - 1]);
@@ -146,7 +146,7 @@ namespace driderSDK {
   }
   void BoxGenerator::generate(size_t start, size_t end, Particle * p)
   {
-    [[unroll]]
+    //[[unroll]]
     for (size_t i = start; i < end; ++i) {
       p->m_position[i] = Random::RandomRange(m_initialPositionRandomMin,
         m_initialPositionRandomMax);
