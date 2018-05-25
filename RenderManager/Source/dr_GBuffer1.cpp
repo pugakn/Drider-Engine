@@ -1,33 +1,24 @@
 #include "dr_GBuffer1.h"
-#include <dr_device.h>
-#include <dr_string_utils.h>
-#include <dr_file.h>
 #include <dr_graphics_api.h>
 #include <dr_device.h>
-#include <dr_constant_buffer.h>
 #include <dr_vertex_buffer.h>
 #include <dr_index_buffer.h>
 #include <dr_depth_stencil.h>
-#include <dr_vertex.h>
-#include <dr_render_component.h>
 #include <dr_device_context.h>
-#include <dr_camera.h>
-#include <dr_material.h>
-#include <dr_resource_manager.h>
 #include <dr_model.h>
 #include <dr_texture_core.h>
-#include <dr_texture.h>
 
 namespace driderSDK {
 
-GBuffer1Pass::GBuffer1Pass() {
+GBufferPass::GBufferPass() {
 }
 
-GBuffer1Pass::~GBuffer1Pass() {
+GBufferPass::~GBufferPass() {
 }
 
 void
-GBuffer1Pass::init(PassInitData* initData) {
+GBufferPass::init(PassInitData* initData) {
+  GBufferInitData* data = static_cast<GBufferInitData*>(initData);
   Device& device = GraphicsAPI::getDevice();
 
   m_vsFilename = _T("GBuffer1_vs.hlsl");
@@ -39,38 +30,45 @@ GBuffer1Pass::init(PassInitData* initData) {
 
   bdesc.type = DR_BUFFER_TYPE::kCONSTANT;
   bdesc.sizeInBytes = sizeof(CBuffer);
+  m_constantBuffer = dr_gfx_unique((ConstantBuffer*)device.createBuffer(bdesc));
 
-  m_constantBuffer = dr_gfx_unique(reinterpret_cast<ConstantBuffer*>(
-                                        device.createBuffer(bdesc)));
+  DrSampleDesc SSdesc;
+  SSdesc.Filter = DR_TEXTURE_FILTER::kMIN_MAG_LINEAR_MIP_POINT;
+  SSdesc.maxAnisotropy = 16;
+  SSdesc.addressU = DR_TEXTURE_ADDRESS::kWrap;
+  SSdesc.addressV = DR_TEXTURE_ADDRESS::kWrap;
+  SSdesc.addressW = DR_TEXTURE_ADDRESS::kWrap;
+  m_samplerState = dr_gfx_unique(device.createSamplerState(SSdesc));
 }
 
 void
-GBuffer1Pass::draw(PassDrawData* drawData) {
-  GBuffer1DrawData* data = static_cast<GBuffer1DrawData*>(drawData);
+GBufferPass::draw(PassDrawData* drawData) {
+  GBufferDrawData* data = static_cast<GBufferDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
   data->OutRt->set(dc, *data->dsOptions);
-  
+
   m_vertexShader->set(dc);
   m_fragmentShader->set(dc);
 
-  m_inputLayout->set(dc);
-  
-  m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
-  
-  m_constantBuffer->set(dc);
-  
-  dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
-  
-  const float clearColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-  data->OutRt->clear(dc, clearColor);
-  (data->dsOptions)->clear(dc, 1, 0);
+  m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kFragment);
 
-  CB.CameraInfo.x  = data->activeCam->getViewportWidth() /
-                     data->activeCam->getViewportHeight();
-  CB.CameraInfo.y  = data->activeCam->getFOV();
-  CB.CameraInfo.z  = data->activeCam->getNearPlane();
-  CB.CameraInfo.w  = data->activeCam->getFarPlane();
+  m_inputLayout->set(dc);
+
+  m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
+  m_constantBuffer->set(dc);
+
+  dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
+
+  const float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+  data->OutRt->clear(dc, clearColor);
+  data->dsOptions->clear(dc, 1, 0);
+
+  CB.CameraInfo.x = data->activeCam->getViewportWidth() /
+    data->activeCam->getViewportHeight();
+  CB.CameraInfo.y = data->activeCam->getFOV();
+  CB.CameraInfo.z = data->activeCam->getNearPlane();
+  CB.CameraInfo.w = data->activeCam->getFarPlane();
 
   for (auto& modelPair : *data->models) {
     if (auto material = modelPair.mesh.material.lock()) {
@@ -92,15 +90,25 @@ GBuffer1Pass::draw(PassDrawData* drawData) {
           GA_Tex->textureGFX->set(dc, 2);
         }
       }
+      auto MetallicTex = material->getProperty(_T("Metallic"));
+      if (MetallicTex != nullptr) {
+        if (auto GA_Tex = MetallicTex->texture.lock()) {
+          GA_Tex->textureGFX->set(dc, 3);
+        }
+      }
+      auto RoughnessTex = material->getProperty(_T("Roughness"));
+      if (RoughnessTex != nullptr) {
+        if (auto GA_Tex = RoughnessTex->texture.lock()) {
+          GA_Tex->textureGFX->set(dc, 4);
+        }
+      }
     }
 
-    Matrix4x4 worldTranspose = modelPair.world;
-    CB.World = worldTranspose.transpose();
-    Matrix4x4 newViewProjection = data->activeCam->getVP();
-    CB.WVP = modelPair.world * (data->activeCam->getVP());
-  
+    CB.World = modelPair.world;
+    CB.WorldView = modelPair.world * data->activeCam->getView();
+    CB.WVP = modelPair.world * data->activeCam->getVP();
+
     m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
-  
     m_constantBuffer->set(dc);
 
     modelPair.mesh.vertexBuffer->set(dc);
@@ -111,12 +119,12 @@ GBuffer1Pass::draw(PassDrawData* drawData) {
 }
 /*
 void
-GBuffer1Pass::exit() {
-  m_inputLayout->release();
-  m_constantBuffer->release();
+GBufferPass::exit() {
+m_inputLayout->release();
+m_constantBuffer->release();
 
-  m_vertexShader->release();
-  m_fragmentShader->release();
+m_vertexShader->release();
+m_fragmentShader->release();
 }
 s*/
 
