@@ -135,34 +135,34 @@ RenderMan::init() {
   driderSDK::ParticleEmitterAttributes attr;
   //System
   attr.m_maxParticles = ParticleEmitter::MAX_PARTICLES;
-  attr.m_initialTime = 10;
+  attr.m_initialTime = 0;
   attr.m_rate = 10;
-  attr.m_systemMaxLife = 500;
+  attr.m_systemMaxLife = 5000;
   attr.m_particleMaxLife = 10;
-  attr.m_numParticlesToEmit = 200000;
+  attr.m_numParticlesToEmit = 90000;
   attr.m_isActive = true;
 
-  //Speed / Velocity
-  attr.m_initialSpeedLimit = 1200;
-  attr.m_finalSpeedLimit = 5;
-  attr.m_initialVelocityRandomMin = driderSDK::Vector3D(-1200, -1800, -1200);
-  attr.m_initialVelocityRandomMax = driderSDK::Vector3D(1200, 1800, 1200);
+  ////Speed / Velocity
+  //attr.m_initialSpeedLimit = 1200;
+  //attr.m_finalSpeedLimit = 5;
+  //attr.m_initialVelocityRandomMin = driderSDK::Vector3D(-0, -0, -0);
+  //attr.m_initialVelocityRandomMax = driderSDK::Vector3D(0, 1800, 0);
 
-  //Position
-  attr.m_initialPositionRandomMin = driderSDK::Vector3D(-0, -0, -0);
-  attr.m_initialPositionRandomMax = driderSDK::Vector3D(0, 0, 0);
+  ////Position
+  //attr.m_initialPositionRandomMin = driderSDK::Vector3D(-200, -0, -200);
+  //attr.m_initialPositionRandomMax = driderSDK::Vector3D(50, 0, 50);
 
-  //Color
-  attr.m_initialColor = driderSDK::Vector3D(1, 0.1, 0.1);
-  attr.m_finalColor = driderSDK::Vector3D(0.0, 0.0, 0.0);
-  attr.m_colorRandomMin = driderSDK::Vector3D(0, 0, 0);
-  attr.m_colorRandomMax = driderSDK::Vector3D(0.0, 0, 0);
+  ////Color
+  //attr.m_initialColor = driderSDK::Vector3D(1, 0.1, 0.1);
+  //attr.m_finalColor = driderSDK::Vector3D(0.0, 0.0, 0.0);
+  //attr.m_colorRandomMin = driderSDK::Vector3D(0, 0, 0);
+  //attr.m_colorRandomMax = driderSDK::Vector3D(0.0, 0, 0);
 
-  //Scale
-  attr.m_initialScale = 2;
-  attr.m_finaleScale = 5;
-  attr.m_scaleFactorRandomMin = 0.8;
-  attr.m_scaleFactorRandomMax = 5;
+  ////Scale
+  //attr.m_initialScale = 2;
+  //attr.m_finaleScale = 5;
+  //attr.m_scaleFactorRandomMin = 0.8;
+  //attr.m_scaleFactorRandomMax = 5;
 
   m_emitter.init(attr);
 }
@@ -238,8 +238,8 @@ RenderMan::draw(const RenderTarget & _out, const DepthStencil & _outds) {
 
   m_emitter.update();
   //m_particleDrawData.activeCam = mainCam;
-  m_particleDrawData.numParticles = m_emitter.m_particles.size();
-  m_particleDrawData.particles = &m_emitter.m_particles[0];
+  //m_particleDrawData.numParticles = m_emitter.m_.size();
+  m_particleDrawData.particles = &m_emitter.m_particles;
   m_particleDrawData.emitter = &m_emitter;
   m_particlePass.draw(&m_particleDrawData);
 
