@@ -99,6 +99,10 @@ private:
   GameObject* m_player;
   GameObject* m_cameraHolder;
   Timer m_timer;
+
+
+  // Inherited via Application
+  virtual void onResize() override;
 };
 
 }

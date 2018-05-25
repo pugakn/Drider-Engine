@@ -738,4 +738,10 @@ GraphicsApplication::playerRotation() {
   m_player->getTransform().setRotation({0, ry, 0});
 }
 
+
+// Inherited via Application
+void 
+GraphicsApplication::onResize() {
+}
+
 }

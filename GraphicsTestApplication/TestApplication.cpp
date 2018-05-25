@@ -367,5 +367,9 @@ TestApplication::destroyModules() {
   Logger::shutDown();
 
 }
+void TestApplication::onResize()
+{
+}
 
 }
+
