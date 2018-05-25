@@ -17,7 +17,7 @@ Variables:
 
 - 6,3 -
     0  34 *    SUSPEND
-    1  34 *    PGA      222060240
+    1  34 *    PGA      172028360
     3  35 *    PSF      v7
     4  36 *    CALLSYS  20           (TString::TString(const TString&in))
                ObjInfo  v7, 1
@@ -29,59 +29,59 @@ Variables:
                ObjInfo  v7, 0
    12  34 *    SUSPEND
                VarDecl  0
-   13  34 *    PGA      222059360
+   13  34 *    PGA      172028448
    15  35 *    PSF      v7
    16  36 *    CALLSYS  20           (TString::TString(const TString&in))
                ObjInfo  v7, 1
    18  34 *    VAR      v7
-   19  35 *    PshGPtr  16185988
+   19  35 *    PshGPtr  13630732
    21  36 *    GETREF   1
-   22  36 *    CALLSYS  90           (GameObject@ GameObject::findObject(const TString&in))
+   22  36 *    CALLSYS  86           (GameObject@ GameObject::findObject(const TString&in))
    24  34 *    STOREOBJ v9
    25  34 *    PSF      v7
    26  35 *    CALLSYS  21           (TString::~TString())
                ObjInfo  v7, 0
    28  34 *    PshVPtr  v9
-   29  35 *    RefCpyV  v8, 232218016
-   31  35 *    FREE     v9, 232218016
+   29  35 *    RefCpyV  v8, 174399608
+   31  35 *    FREE     v9, 174399608
    33  35 *    PopPtr
 - 10,3 -
    34  34 *    SUSPEND
                VarDecl  1
-   35  34 *    PGA      222059360
+   35  34 *    PGA      172028448
    37  35 *    PSF      v7
    38  36 *    CALLSYS  20           (TString::TString(const TString&in))
                ObjInfo  v7, 1
    40  34 *    VAR      v7
-   41  35 *    PshGPtr  16185988
+   41  35 *    PshGPtr  13630732
    43  36 *    GETREF   1
-   44  36 *    CALLSYS  90           (GameObject@ GameObject::findObject(const TString&in))
+   44  36 *    CALLSYS  86           (GameObject@ GameObject::findObject(const TString&in))
    46  34 *    STOREOBJ v9
    47  34 *    PSF      v7
    48  35 *    CALLSYS  21           (TString::~TString())
                ObjInfo  v7, 0
    50  34 *    PshVPtr  v9
-   51  35 *    RefCpyV  v10, 232218016
-   53  35 *    FREE     v9, 232218016
+   51  35 *    RefCpyV  v10, 174399608
+   53  35 *    FREE     v9, 174399608
    55  35 *    PopPtr
 - 12,3 -
    56  34 *    SUSPEND
                VarDecl  2
-   57  34 *    PGA      222059536
+   57  34 *    PGA      172028536
    59  35 *    PSF      v7
    60  36 *    CALLSYS  20           (TString::TString(const TString&in))
                ObjInfo  v7, 1
    62  34 *    VAR      v7
    63  35 *    PshVPtr  v8
    64  36 *    GETREF   1
-   65  36 *    CALLSYS  90           (GameObject@ GameObject::findObject(const TString&in))
+   65  36 *    CALLSYS  86           (GameObject@ GameObject::findObject(const TString&in))
    67  34 *    STOREOBJ v9
    68  34 *    PSF      v7
    69  35 *    CALLSYS  21           (TString::~TString())
                ObjInfo  v7, 0
    71  34 *    PshVPtr  v9
-   72  35 *    RefCpyV  v11, 232218016
-   74  35 *    FREE     v9, 232218016
+   72  35 *    RefCpyV  v11, 174399608
+   74  35 *    FREE     v9, 174399608
    76  35 *    PopPtr
 - 14,3 -
    77  34 *    SUSPEND
@@ -89,7 +89,7 @@ Variables:
    80  34 *    JNZ      +14              (d:96)
 - 15,4 -
    82  34 *    SUSPEND
-   83  34 *    PGA      222061384
+   83  34 *    PGA      172028624
    85  35 *    PSF      v7
    86  36 *    CALLSYS  20           (TString::TString(const TString&in))
                ObjInfo  v7, 1
@@ -102,7 +102,7 @@ Variables:
 - 17,4 -
             1:
    96  34 *    SUSPEND
-   97  34 *    PGA      222062528
+   97  34 *    PGA      172029328
    99  35 *    PSF      v7
   100  36 *    CALLSYS  20           (TString::TString(const TString&in))
                ObjInfo  v7, 1
@@ -118,12 +118,12 @@ Variables:
   110  34 *    CmpPtr   v11, v9
   112  34 *    TZ
   113  34 *    CpyRtoV4 v12
-  114  34 *    FREE     v9, 232218016
+  114  34 *    FREE     v9, 174399608
   116  34 *    CpyVtoR4 v12
   117  34 *    JLowZ    +12              (d:131)
 - 20,4 -
   119  34 *    SUSPEND
-  120  34 *    PGA      222061736
+  120  34 *    PGA      172027480
   122  35 *    PSF      v7
   123  36 *    CALLSYS  20           (TString::TString(const TString&in))
                ObjInfo  v7, 1
@@ -137,14 +137,14 @@ Variables:
   131  34 *    SUSPEND
                VarDecl  3
   132  34 *    PshVPtr  v8
-  133  35 *    CALLSYS  92           (const TString& GameObject::getTag())
+  133  35 *    CALLSYS  88           (const TString& GameObject::getTag())
   135  34 *    PshRPtr
   136  35 *    PSF      v19
   137  36 *    CALLSYS  20           (TString::TString(const TString&in))
 - 24,3 -
                ObjInfo  v19, 1
   139  34 *    SUSPEND
-  140  34 *    PGA      222061560
+  140  34 *    PGA      172028976
   142  35 *    PSF      v7
   143  36 *    CALLSYS  20           (TString::TString(const TString&in))
                ObjInfo  v7, 1
@@ -157,7 +157,7 @@ Variables:
   151  34 *    PSF      v7
   152  35 *    CALLSYS  21           (TString::~TString())
                ObjInfo  v7, 0
-  154  34 *    PGA      222061296
+  154  34 *    PGA      172027568
   156  35 *    PSF      v7
   157  36 *    CALLSYS  20           (TString::TString(const TString&in))
                ObjInfo  v7, 1
@@ -180,25 +180,25 @@ Variables:
 - 25,3 -
                ObjInfo  v33, 0
   177  34 *    SUSPEND
-  178  34 *    PGA      222061032
+  178  34 *    PGA      172029064
   180  35 *    PSF      v26
   181  36 *    CALLSYS  20           (TString::TString(const TString&in))
                ObjInfo  v26, 1
   183  34 *    VAR      v26
   184  35 *    PshVPtr  v8
   185  36 *    GETREF   1
-  186  36 *    CALLSYS  93           (void GameObject::setTag(const TString&in))
+  186  36 *    CALLSYS  89           (void GameObject::setTag(const TString&in))
   188  34 *    PSF      v26
   189  35 *    CALLSYS  21           (TString::~TString())
 - 26,3 -
                ObjInfo  v26, 0
   191  34 *    SUSPEND
-  192  34 *    PGA      222061560
+  192  34 *    PGA      172028976
   194  35 *    PSF      v33
   195  36 *    CALLSYS  20           (TString::TString(const TString&in))
                ObjInfo  v33, 1
   197  34 *    PshVPtr  v8
-  198  35 *    CALLSYS  92           (const TString& GameObject::getTag())
+  198  35 *    CALLSYS  88           (const TString& GameObject::getTag())
   200  34 *    PshRPtr
   201  35 *    PSF      v26
   202  36 *    CALLSYS  20           (TString::TString(const TString&in))
@@ -215,7 +215,7 @@ Variables:
   213  34 *    PSF      v26
   214  35 *    CALLSYS  21           (TString::~TString())
                ObjInfo  v26, 0
-  216  34 *    PGA      222061296
+  216  34 *    PGA      172027568
   218  35 *    PSF      v33
   219  36 *    CALLSYS  20           (TString::TString(const TString&in))
                ObjInfo  v33, 1
@@ -240,15 +240,15 @@ Variables:
   239  34 *    SUSPEND
                VarDecl  4
   240  34 *    PshVPtr  v8
-  241  35 *    CALLSYS  91           (Transform& GameObject::getTransform())
+  241  35 *    CALLSYS  87           (Transform& GameObject::getTransform())
   243  34 *    PshRPtr
   244  35 *    CALLSYS  81           (Transform@ Transform())
   246  35 *    STOREOBJ v34
   247  35 *    PshVPtr  v34
-  248  36 *    CALLSYS  86           (Transform& Transform::opAssign(const Transform&in))
+  248  36 *    CALLSYS  84           (Transform& Transform::opAssign(const Transform&in))
 - 30,3 -
   250  34 *    SUSPEND
-  251  34 *    PGA      222061208
+  251  34 *    PGA      172029152
   253  35 *    PSF      v7
   254  36 *    CALLSYS  20           (TString::TString(const TString&in))
                ObjInfo  v7, 1
@@ -265,7 +265,7 @@ Variables:
   268  34 *    PSF      v7
   269  35 *    CALLSYS  21           (TString::~TString())
                ObjInfo  v7, 0
-  271  34 *    PGA      222060416
+  271  34 *    PGA      172029240
   273  35 *    PSF      v26
   274  36 *    CALLSYS  20           (TString::TString(const TString&in))
                ObjInfo  v26, 1
@@ -301,12 +301,12 @@ Variables:
 - 32,3 -
                ObjInfo  v26, 0
   309  34 *    SUSPEND
-  310  34 *    FREE     v34, 223869752
+  310  34 *    FREE     v34, 174399224
   312  34 *    PSF      v19
   313  35 *    CALLSYS  21           (TString::~TString())
                ObjInfo  v19, 0
-  315  34 *    FREE     v11, 232218016
-  317  34 *    FREE     v10, 232218016
-  319  34 *    FREE     v8, 232218016
+  315  34 *    FREE     v11, 174399608
+  317  34 *    FREE     v10, 174399608
+  319  34 *    FREE     v8, 174399608
             0:
   321  34 *    RET      1

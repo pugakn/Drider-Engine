@@ -4,7 +4,7 @@
 using namespace driderSDK;
 int main(int argc, char* argv[]) {
 
-  if(argc > 1) {
+  if(argc > 0) {
     TestApplication scriptApp;
     return scriptApp.run();
   }

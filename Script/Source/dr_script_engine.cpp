@@ -51,7 +51,6 @@ ScriptEngine::configurateEngine(ContextManager *ctx) {
   Int8 result = 0;
   // Register the functions for controlling the script threads, e.g. sleep
   ctx->registerThreadSupport(m_scriptEngine);
-
   return result;
 }
 
@@ -92,10 +91,12 @@ ScriptEngine::getScriptObject(TString scriptName,
   asITypeInfo* type = mod->GetTypeInfoByDecl(realName.c_str());
 
   // Get the factory function from the object type
-  String path = realName + " @"
-                + realName + "()";
+  String path = realName + " @" + realName + "()";
   asIScriptFunction *factory = type->GetFactoryByDecl(path.c_str());
 
+	m_scriptContext->SetLineCallback(asMETHOD(ScriptEngine, debugLineCallback), 
+																	 this, 
+																	 asCALL_THISCALL);
   // Prepare the context to call the factory function
   m_scriptContext->Prepare(factory);
   // Execute the call
@@ -184,13 +185,37 @@ ScriptEngine::lineCallback(asIScriptContext* scriptContext) {
 void 
 ScriptEngine::debugLineCallback(asIScriptContext* scriptContext) {
 
-	//if (bIsStopped) {
+	if (scriptContext->GetState() != asEXECUTION_ACTIVE) {
+		return;
+	}
 
-	//}
+	if (Debug->getCommand() == DebugCommands::CONTINUE) {
+		if (!Debug->checkBreakPoint()) {
+			return;
+		}
+	}
+	if (Debug->getCommand() == DebugCommands::STEP_IN) {
+		Debug->checkBreakPoint();
+	}
+	if (Debug->getCommand() == DebugCommands::STEP_OUT) {
+		if (m_scriptContext->GetCallstackSize() >= Debug->lastStackLevel) {
+			if (!Debug->checkBreakPoint()) {
+				return;
+			}
+		}
+	}
+	if (Debug->getCommand() == DebugCommands::STEP_OVER) {
+		if (m_scriptContext->GetCallstackSize() > Debug->lastStackLevel) {
+			if (!Debug->checkBreakPoint()) {
+				return;
+			}
+		}
+	}
 
-	//if (checkBreakPoint()) {
-	//	scriptContext->Suspend();
-	//}
+	// Function to recive inputs
+	TString input;
+	Debug->interpretInput(input);
+
 }
 
 void 
@@ -211,14 +236,16 @@ ScriptEngine::messageCallback(const asSMessageInfo* scriptMessage) {
 void
 ScriptEngine::addScriptLog(const TString& log, int type) {
 
+	const TString signature = _T("[ScriptEngine] ");
+
 	if (type == asMSGTYPE_WARNING) {
-    Logger::instancePtr()->addWarning(__FILE__, __LINE__,  _T("[ScriptEngine] ") + log);
+		Logger::instancePtr()->addWarning(__FILE__, __LINE__, signature + log);
 	}
 	else if (type == asMSGTYPE_INFORMATION) {
-    Logger::instancePtr()->addLog(_T("[ScriptEngine] ") + log);
+    Logger::instancePtr()->addLog(signature + log);
 	}
 	else if (type == asMSGTYPE_ERROR) {
-    Logger::instancePtr()->addError(__FILE__, __LINE__,  _T("[ScriptEngine] ") + log);
+    Logger::instancePtr()->addError(__FILE__, __LINE__, signature + log);
 	}
 }
 

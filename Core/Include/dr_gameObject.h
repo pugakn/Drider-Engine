@@ -29,7 +29,7 @@ class DR_CORE_EXPORT ComponentPartition
 
 class GameObject;
 
-//GameObject* Ref_GameObject();
+GameObject* Ref_GameObject();
 
 class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject>,  
                                   public EnableObject,
@@ -290,16 +290,6 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
 
   bool
   changed() const;
-
-  /*void addRef() {
-    refCount++;
-  }
-
-  void release() {
-    if (--refCount == 0) {
-      
-    }
-  }*/
   
   void kill() {
     if(auto parent = getParent()) {
@@ -311,9 +301,9 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   GameObject&
   operator=(const GameObject& ref);
 
-  static BEGINING_REGISTER(GameObject, 0, asOBJ_REF)
+  static BEGINING_REGISTER(GameObject, 0, asOBJ_REF | asOBJ_NOCOUNT)
 
-  //result = REGISTER_REF(GameObject)
+  result = REGISTER_REF_NOCOUNT(GameObject)
 
   //Register functions
   result = REGISTER_FOO(GameObject,

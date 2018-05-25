@@ -269,3 +269,5 @@ __pycache__/
 /DriderUIUnitTest/VideoDecodeStats
 TestScriptApp/AS_DEBUG/__main.txt
 /DriderUIUnitTest/WebixTest/codebase
+
+*.txt

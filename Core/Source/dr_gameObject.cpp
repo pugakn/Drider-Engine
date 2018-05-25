@@ -9,9 +9,9 @@
 
 namespace driderSDK {
 
-//GameObject* Ref_GameObject() {
-//  return new GameObject();
-//}
+GameObject* Ref_GameObject() {
+  return new GameObject();
+}
 
 GameObject::GameObject(const TString& name)
   : NameObject(name), 
