@@ -1,0 +1,69 @@
+void script1::Update()
+
+Temps: 4, 5, 6, 7, 8, 11
+
+Variables: 
+ 003: Vector3D vec
+ 000: script1 this
+ 011: Vector3D {noname}
+
+
+- 35,3 -
+    0  11 *    SUSPEND
+               VarDecl  0
+    1  11 *    PshC4    0x0          (i:0, f:0)
+    3  12 *    PshC4    0x0          (i:0, f:0)
+    5  13 *    CALLSYS  91           (float getDelta())
+    7  13 *    CpyRtoV4 v4
+    8  13 *    MULIf    v5, v4, 100.000000
+   11  13 *    PshV4    v5
+   12  14 *    PSF      v3
+   13  15 *    CALLSYS  62           (Vector3D::Vector3D(float, float, float))
+- 37,3 -
+               ObjInfo  v3, 1
+   15  11 *    SUSPEND
+   16  11 *    PshC4    0x20          (i:32, f:4.48416e-44)
+   18  12 *    CALLSYS  58           (bool isKeyDown(KeyCode))
+   20  11 *    JLowZ    +9              (d:31)
+- 38,4 -
+            {
+   22  11 *    SUSPEND
+   23  11 *    VAR      v3
+   24  12 *    PshVPtr  v0
+   25  13 *    ADDSi    v20, 134217747
+   27  13 *    RDSPtr
+   28  13 *    GETREF   1
+   29  13 *    CALLSYS  82           (void Transform::move(const Vector3D&in))
+- 42,3 -
+            }
+            1:
+   31  11 *    SUSPEND
+   32  11 *    PshC4    0x1e          (i:30, f:4.2039e-44)
+   34  12 *    CALLSYS  58           (bool isKeyDown(KeyCode))
+   36  11 *    JLowZ    +18              (d:56)
+- 43,4 -
+            {
+   38  11 *    SUSPEND
+   39  11 *    PshC4    0xbf800000          (i:-1082130432, f:-1)
+   41  12 *    PSF      v11
+   42  13 *    PSF      v3
+   43  14 *    CALLSYS  79           (Vector3D Vector3D::opMul(float))
+               ObjInfo  v11, 1
+   45  11 *    VAR      v11
+   46  12 *    PshVPtr  v0
+   47  13 *    ADDSi    v20, 134217747
+   49  13 *    RDSPtr
+   50  13 *    GETREF   1
+   51  13 *    CALLSYS  82           (void Transform::move(const Vector3D&in))
+   53  11 *    PSF      v11
+   54  12 *    CALLSYS  60           (Vector3D::~Vector3D())
+- 46,3 -
+               ObjInfo  v11, 0
+            }
+            2:
+   56  11 *    SUSPEND
+   57  11 *    PSF      v3
+   58  12 *    CALLSYS  60           (Vector3D::~Vector3D())
+               ObjInfo  v3, 0
+            0:
+   60  11 *    RET      1

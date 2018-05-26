@@ -58,8 +58,25 @@ BoneAttachObject::update() {
                                               
   updateImpl();
 
+  m_localTransform.m_change = false;
+
   for (auto& component : m_components) {
     component->onUpdate();
+
+    if (m_localTransform.changed()) {
+      m_finalTransform = m_localTransform *
+                         *m_boneTransform *
+                         getParent()->getWorldTransform();
+    }
+  }
+
+  if (!m_componentsToRemove.empty()) {
+
+    for (const auto& cmpToRem : m_componentsToRemove) {
+      removeComponentP(cmpToRem);
+    }
+
+    m_componentsToRemove.clear();
   }
 
   for (auto& child : m_children) {
@@ -77,7 +94,7 @@ BoneAttachObject::createInstance() {
 }
 
 void
-BoneAttachObject::copyData(SharedGameObj obj) {
+BoneAttachObject::copyData(SharedGameObj obj) const {
 
   auto dup = std::dynamic_pointer_cast<BoneAttachObject>(obj);
 

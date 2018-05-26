@@ -96,6 +96,15 @@ struct DR_MATH_EXPORT Math
   **********************************************************************/
 
   /**
+  *
+  */
+
+  static FORCEINLINE float
+  almostEqual(float a, float b) {
+    return Math::abs(a - b) < Math::EPSILON; 
+  }
+
+  /**
   * TEST::cos
   */
   static FORCEINLINE float 

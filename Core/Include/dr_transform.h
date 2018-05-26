@@ -4,6 +4,9 @@
 #include <dr_matrix4x4.h>
 #include "dr_core_prerequisites.h"
 
+#include <dr_export_script.h>
+#include <..\..\Script\Include\dr_script_engine.h>
+
 namespace driderSDK {
 
 class Radian;
@@ -17,12 +20,17 @@ namespace AXIS {
   };
 }
 
+class Transform;
+Transform* Ref_Transform();
+
 class DR_CORE_EXPORT Transform 
 {
  public:
   friend class GameObject;
   friend class BoneAttachObject;
-
+  
+  Int32 refCount;
+  
   Transform();
 
   /**
@@ -46,8 +54,7 @@ class DR_CORE_EXPORT Transform
   const Vector3D&
   getEulerAngles() const;
 
-  const Vector3D&
-  getDirection() const;
+  
   /**
   * Gets the rotation matrix.
   */
@@ -61,10 +68,10 @@ class DR_CORE_EXPORT Transform
   * Gets the current facing direction.
   *
   * @return
-  *   Vector with the direction of the camera.
+  *   Vector with the direction of the transform.
   */
-  /*Vector3D
-  getDirection() const;*/
+  const Vector3D&
+  getDirection() const;
 
   /**
   * Sets the value of the specified position component.
@@ -164,6 +171,21 @@ class DR_CORE_EXPORT Transform
 
   Transform&
   operator=(const Transform& other);
+ 
+
+  static BEGINING_REGISTER(Transform, 0, asOBJ_REF | asOBJ_NOCOUNT)
+
+  result = REGISTER_REF_NOCOUNT(Transform)
+  
+  result = REGISTER_FOO_1P(Transform, move, const Vector3D&, void, "void", in)
+  result = REGISTER_FOO_1P(Transform, rotate, const Vector3D&, void, "void", in)
+  result = scriptEngine->m_scriptEngine->RegisterObjectProperty("Transform",
+                                                                "Vector3D m_position",
+                                                                asOFFSET(Transform, m_position));
+
+   result = REGISTER_OP(Transform, operator=, opAssign, const Transform&, Transform&, "Transform&", in)
+
+  END_REGISTER
   
  private:
   /**

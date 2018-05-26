@@ -14,6 +14,8 @@
 #include "dr_root_node.h"
 #include "dr_octree.h"
 
+#include "dr_script_component.h"
+
 namespace driderSDK {
 
 SceneGraph::SceneGraph() {}
@@ -25,11 +27,15 @@ SceneGraph::onStartUp() {
   auto r = std::make_shared<RootNode>();
   r->init();
   m_root = r;
+
+  
+  m_octree = std::make_shared<GameObject>(_T("OCTREE_ROOT_X"));
 }
 
 void
 SceneGraph::onShutDown() {
   m_root->destroy();
+  m_root = nullptr;
 }
 
 void 
@@ -39,12 +45,16 @@ SceneGraph::addObject(SharedGameObject gameObject) {
 
 void 
 SceneGraph::buildOctree() {
-  instance().m_octree = std::make_shared<GameObject>();
+  
+  auto& sc = instance();
+
+  sc.m_octree->destroy();
+    
   std::vector<std::shared_ptr<GameObject>> staticGameObjects;
 
-  addGameObjectsStatics(*instance().m_root, &staticGameObjects);
+  addGameObjectsStatics(*sc.m_root, &staticGameObjects);
 
-  Octree octree(&(*instance().m_octree), &staticGameObjects);
+  Octree octree(&(*sc.m_octree), &staticGameObjects, 10000);
   octree.buildTree();
 }
 
@@ -74,15 +84,13 @@ SceneGraph::draw() {
   //instance().m_mutex.lock();
 
   instance().m_root->render();
-  if (instance().m_octree)
-  {
-    instance().m_octree->render();
-  }
+  
+  instance().m_octree->render();
   //instance().m_mutex.unlock();
 }
 
 SceneGraph::QueryResult
-SceneGraph::query(Camera& camera, QUERY_ORDER::E order, UInt32 props) {
+SceneGraph::query(const Camera& camera, QUERY_ORDER::E order, UInt32 props) {
   
   GameObjectQueue objects(DepthComparer{camera, order});
 
@@ -101,27 +109,45 @@ SceneGraph::query(Camera& camera, QUERY_ORDER::E order, UInt32 props) {
   return queryRes;  
 }
 
+SceneGraph::GameObjectList
+SceneGraph::queryGameObjects(const Camera& camera, QUERY_ORDER::E order) {
+
+  GameObjectQueue objsPQ(DepthComparer{camera, order});
+
+  testObject(instance().m_root, 
+             Frustrum{camera.getView(), camera.getProjection()}, 
+             objsPQ);
+
+  GameObjectList objsList;
+  
+  while(!objsPQ.empty()) {
+    objsList.push_back(objsPQ.top());
+    objsPQ.pop();
+  }
+
+  return objsList;
+}
+
 void 
 SceneGraph::testObjectOct(SharedGameObject object, 
-                          Frustrum& frustrum, 
+                          const Frustrum& frustrum, 
                           GameObjectQueue& objects, 
                           bool test) {
 
   bool ins = !test;
 
   if (test) {
-    auto aabbCollider = object->getComponent<AABBCollider>();
+    if (auto aabbCollider = object->getComponent<AABBCollider>()) {
+    
+      auto inter = frustrum.intersects(aabbCollider->getTransformedAABB());
 
-    DR_ASSERT(aabbCollider);
-
-    auto inter = frustrum.intersects(aabbCollider->getTransformedAABB());
-
-    if (inter != FRUSTRUM_INTERSECT::kOutside) {
+      if (inter != FRUSTRUM_INTERSECT::kOutside) {
       
-      ins = true;
+        ins = true;
 
-      if (inter == FRUSTRUM_INTERSECT::kInside) {
-        test = false;
+        if (inter == FRUSTRUM_INTERSECT::kInside) {
+          test = false;
+        }
       }
     }
   }  
@@ -133,7 +159,6 @@ SceneGraph::testObjectOct(SharedGameObject object,
     }
   }
 
-
   auto& children = object->getChildren();
 
   for (auto& child : children) {
@@ -143,7 +168,7 @@ SceneGraph::testObjectOct(SharedGameObject object,
 
 void
 SceneGraph::testObject(SharedGameObject object, 
-                       Frustrum& frustrum,
+                       const Frustrum& frustrum,
                        GameObjectQueue& objects) {
 
   auto aabbCollider = object->getComponent<AABBCollider>();
@@ -164,7 +189,9 @@ SceneGraph::testObject(SharedGameObject object,
   auto& children = object->getChildren();
 
   for (auto& child : children) {
-    testObject(child, frustrum, objects);
+    if (child->isEnabled()) {
+      testObject(child, frustrum, objects);
+    }
   }  
 }
 
@@ -258,7 +285,9 @@ SceneGraph::addAllChilds(GameObject & node,
   }
 }
 
-SceneGraph::DepthComparer::DepthComparer(Camera& _camera, QUERY_ORDER::E _order) 
+/*Depth Comparer*/
+SceneGraph::DepthComparer::DepthComparer(const Camera& _camera, 
+                                         QUERY_ORDER::E _order) 
   : m_camera(_camera),
     m_order(_order)
 {}

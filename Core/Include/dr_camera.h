@@ -52,6 +52,9 @@ class DR_CORE_EXPORT Camera
   
   void
   setPosition(const Vector3D& position);
+
+  Vector3D
+  getPosition() const;
 	  
 	/**
 	* TEST::move
@@ -227,15 +230,16 @@ class DR_CORE_EXPORT Camera
   UInt32
   getViewportHeight() const;
 
-  Vector3D
-  getPosition() const;
 
   Vector3D
   getDirection() const;
 
-  BEGINING_REGISTER(Camera)
+  //BEGINING_REGISTER(Camera)
+  BEGINING_REGISTER(Camera, sizeof(Camera), VALUE_FLAGS)
   
-  //REGISTER_FOO_4P(Camera, move, float, float, float, bool, void)
+  REGISTER_CONSTRUC_DESTRUCT(Camera)
+  
+  result = REGISTER_FOO_1P(Camera, move, const Vector3D&, void, "void", in)
 
   /*REGISTER_FOO_0P(Camera, getFarPlane, float)
   REGISTER_FOO_0P(Camera, getNearPlane, float)

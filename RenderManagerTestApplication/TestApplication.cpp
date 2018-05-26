@@ -257,13 +257,17 @@ RenderManApp::postDestroy() {
 }
 
 void
+RenderManApp::onResize() {
+}
+
+void
 RenderManApp::initInputCallbacks() {
   Mouse::addMovedCallback(std::bind(&RenderManApp::RotateModel, this));
 }
 
 void
 RenderManApp::RotateModel() {
-  Vector2DI mouseDelta = Mouse::getDisplacement();
+  Vector3D mouseDelta = Mouse::getDisplacement();
   Vector3D rotation{0.0f, 0.0f, 0.0f};
   float scale = 0.25f;
 
@@ -275,8 +279,8 @@ RenderManApp::RotateModel() {
       mouseDelta.y = static_cast<Int32>(0.0f);
     }
 
-    rotation.y = static_cast<float>(-mouseDelta.x);
-    rotation.x = static_cast<float>(-mouseDelta.y);
+    rotation.y = -mouseDelta.x;
+    rotation.x = -mouseDelta.y;
 
     m_selectedGO->getTransform().rotate(rotation * scale * Time::getDelta());
   }

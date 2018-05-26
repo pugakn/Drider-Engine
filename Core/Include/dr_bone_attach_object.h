@@ -35,7 +35,7 @@ private:
   createInstance();
 
   virtual void
-  copyData(SharedGameObj obj);
+  copyData(SharedGameObj obj) const;
 
   using WeakSkeleton = std::weak_ptr<Skeleton>;
 

@@ -4,5 +4,11 @@ using namespace driderSDK;
 int main(int argc, char* argv[]) {
   RenderManApp app;
 
-  return app.run();
+  Viewport vp;
+  vp.topLeftX = 0;
+  vp.topLeftY = 0;
+  vp.width = 1920;
+  vp.height = 1080;
+
+  return app.run(vp);
 }

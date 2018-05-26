@@ -5,6 +5,8 @@ namespace driderSDK
 {
 
 CONSTRUCT_DESTRUCT_DEF(Vector3D)
+COPY_CONSTRUCT_DEF(Vector3D)
+CONSTRUCT_3P_DEF(Vector3D, float, float, float)
 
 Vector3D::Vector3D(Math::FORCE_INIT k) {
   if (Math::FORCE_INIT::kZero == k) {

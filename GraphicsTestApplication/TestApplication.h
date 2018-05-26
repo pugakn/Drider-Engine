@@ -1,31 +1,20 @@
 #pragma once
-#include <unordered_map>
-#include <vector>
-#include <dr_util_prerequisites.h>
-#include <dr_camera.h>
-#include <dr_viewport.h>
-#include "dr_application.h"
-#include <dr_resource_manager.h>
+
+#include <dr_application.h>
 #include <dr_memory.h>
-#include <dr_shader.h>
+#include <dr_util_prerequisites.h>
+#include <dr_timer.h>
 
-#include <Windows.h>
-#include <iostream>
-#include <dr_graph.h>
-#include <thread>
-
-//#include <FMOD\fmod.hpp>
-#include <dr_fmod_sound_api.h>
-#include <dr_fmod_sound.h>
-#include <dr_fmod_channel.h>
-#include <dr_fmod_soundSystem.h>
+#include <unordered_map>
 
 namespace driderSDK {
 
+class GameObject;
+class Model;
 class Technique;
-class StaticMeshTechnique;
-class AnimationTechnique;
-  
+class ScriptComponent;
+class SoundExtraInfo;
+
 class TestApplication : public Application
 {
  public:
@@ -34,48 +23,63 @@ class TestApplication : public Application
 
   void 
   postInit() override;
-  /*void onInput() override;*/
+
   void
   postUpdate() override;
 
   void 
   postRender() override;
-  //void onDraw() override;
+
   void
   postDestroy() override;
-  
-  void input();
-  void initInput();
-  void initResources();
-  void initSceneGraph();
 
-  void printHerarchy(std::shared_ptr<GameObject> obj, const TString& off);
+  void
+  initModules();
 
-  void toggleAABBDebug(std::shared_ptr<GameObject> obj);
+  void
+  initInputCallbacks();
 
-  void toggleSkeletonDebug(std::shared_ptr<GameObject> obj);
+  void 
+  createTechniques();
 
-  bool m_debugList;
-  //SoundAPI* soundDriver;
-  QUERY_ORDER::E m_queryOrder;
-  //DrSound *sound1;
-  //DrSound *sound2;
-  //DrChannel *channel;
-  
-  /*FMOD::System     *system;
-  FMOD::Sound      *sound1;
-  FMOD::Channel    *channel = 0;
-  FMOD_RESULT       result;
-  unsigned int      version;*/
-  std::shared_ptr<Camera> m_camera;
-  std::shared_ptr<Camera> m_leftCam;
-  std::shared_ptr<Camera> m_upCam;
-  std::shared_ptr<Camera> m_activeCam;
-  std::unique_ptr<Technique> m_technique;
-  std::unique_ptr<AnimationTechnique> m_animTech;
-  std::unique_ptr<Technique> m_linesTech;
-  std::shared_ptr<GameObject> m_joker;
-  std::shared_ptr<GameObject> m_wep;
+  void
+  loadResources();
+
+  void
+  createScene();
+
+  std::shared_ptr<GameObject>
+  addObjectFromModel(std::shared_ptr<Model> model,
+                     const TString& name);
+
+  void
+  initScriptEngine();
+
+  void
+  playSoundTest();
+
+  void
+  destroyModules();
+
+  private:
+    Int32 m_currCam;
+    TString m_camNames[2];
+
+    std::shared_ptr<GameObject> m_player;
+
+    std::unique_ptr<Technique> m_staticTech;
+    std::unique_ptr<Technique> m_animTech;
+
+    std::unordered_map<TString, ScriptComponent*> m_scripts;
+
+    SoundExtraInfo *extraInfo;
+
+    GameObject* m_root;
+
+
+    // Inherited via Application
+    virtual void onResize() override;
+
 };
 
 }

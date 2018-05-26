@@ -9,7 +9,7 @@ void
 Spline::ReCalculateSegmentsLength()
 {
   DR_ASSERT(m_points.size() >= 4);
-  for (int i = 0; i < (m_points.size() - 3); i++)
+  for (SizeT i = 0; i < (m_points.size() - 3); i++)
   {
     m_totalLength += (m_points[i].m_length = GetSegmentLength(i));
   }
@@ -17,24 +17,24 @@ Spline::ReCalculateSegmentsLength()
 SplinePoint 
 Spline::GetPoint(float t)
 {
-  int p0, p1, p2, p3;
+  Int32 p0, p1, p2, p3;
   SplinePoint ret;
   if (!m_looped)
   {
-    p1 = (int)t + 1;
+    p1 = (Int32)t + 1;
     p2 = p1 + 1;
     p3 = p2 + 1;
     p0 = p1 - 1;
   }
   else
   {
-    p1 = (int)t;
+    p1 = (Int32)t;
     p2 = (p1 + 1) % m_points.size();
     p3 = (p2 + 1) % m_points.size();
     p0 = p1 >= 1 ? p1 - 1 : m_points.size() - 1;
   }
 
-  t = t - (int)t;
+  t = t - (Int32)t;
   if (t == 0) return m_points[p0];
   float tt = t * t;
   float ttt = tt * t;
@@ -57,24 +57,24 @@ Spline::GetPoint(float t)
 Vector3D 
 Spline::GetGradient(float t)
 {
-  int p0, p1, p2, p3;
+  Int32 p0, p1, p2, p3;
   SplinePoint ret;
   if (!m_looped)
   {
-    p1 = (int)t + 1;
+    p1 = (Int32)t + 1;
     p2 = p1 + 1;
     p3 = p2 + 1;
     p0 = p1 - 1;
   }
   else
   {
-    p1 = (int)t;
+    p1 = (Int32)t;
     p2 = (p1 + 1) % m_points.size();
     p3 = (p2 + 1) % m_points.size();
     p0 = p1 >= 1 ? p1 - 1 : m_points.size() - 1;
   }
 
-  t = t - (int)t;
+  t = t - (Int32)t;
   if (t == 0) return m_points[p0];
 
   float tt = t * t;
@@ -92,7 +92,7 @@ Spline::GetGradient(float t)
   return ret;
 }
 float 
-Spline::GetSegmentLength(int node)
+Spline::GetSegmentLength(Int32 node)
 {
   float fLength = 0.0f;
 
@@ -112,7 +112,7 @@ Spline::GetSegmentLength(int node)
 float 
 Spline::GetNormalizedOffset(float p)
 {
-  int i = 0;
+  Int32 i = 0;
   while (p > m_points[i].m_length)
   {
     p -= m_points[i].m_length;

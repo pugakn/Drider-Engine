@@ -219,7 +219,10 @@ class DR_MATH_EXPORT Matrix4x4
   *   vextor3d to values of angles.
   */
   Vector3D
-  eulerAngles();
+  eulerAngles() const;
+
+  Quaternion
+  toQuaternion();
 
   /**
   * TEST::Translation

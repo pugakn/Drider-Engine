@@ -10,7 +10,7 @@
 namespace driderSDK {
 
 SkeletonDebug::SkeletonDebug(GameObject& _go)
-  : DrawableComponent(_go)
+  : DrawableComponent(_go, _T("SkeletonDebug"))
 {}
 
 void 

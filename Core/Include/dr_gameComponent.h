@@ -1,19 +1,21 @@
 #pragma once
 
 #include <dr_memory.h>
-#include "dr_enableObject.h"
 #include "dr_core_prerequisites.h"
+#include "dr_enableObject.h"
+#include "dr_name_object.h"
 
 namespace driderSDK {
 
 class GameObject;
 
-class DR_CORE_EXPORT GameComponent : public EnableObject                  
+class DR_CORE_EXPORT GameComponent : public EnableObject,
+                                     public NameObject
 {
  public:
-  GameComponent(GameObject& gameObject_);
+  GameComponent(GameObject& gameObject_, const TString& _name);
 
-  virtual ~GameComponent(){}
+  virtual ~GameComponent();
 
   GameObject& 
   getGameObject();
@@ -32,6 +34,9 @@ class DR_CORE_EXPORT GameComponent : public EnableObject
 
   virtual void
   onDestroy() = 0;
+
+  virtual void
+  setName(const TString& name);
 
   /**
   * Clones the component inside the given gameObject

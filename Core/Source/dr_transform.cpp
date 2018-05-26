@@ -3,8 +3,13 @@
 #include <dr_matrix3x3.h>
 #include <dr_radian.h>
 #include <dr_vector4d.h>
+#include <dr_quaternion.h>
 
 namespace driderSDK {
+
+Transform* Ref_Transform(){
+  return new Transform();
+}
 
 Transform::Transform() 
   : m_outdatedTransform(true),
@@ -14,9 +19,9 @@ Transform::Transform()
     m_scale(1,1,1),
     m_rotX(Math::FORCE_INIT::kIdentity),
     m_rotY(Math::FORCE_INIT::kIdentity),
-    m_rotZ(Math::FORCE_INIT::kIdentity),
-    m_eulerAngles(0,0,0)
-{}
+    m_rotZ(Math::FORCE_INIT::kIdentity) {
+  refCount = 1;
+}
 
 Transform::Transform(const Transform& other)
 {
@@ -38,6 +43,7 @@ Transform::getPosition() const {
   return m_position;
 }
 
+
 const Vector3D& 
 Transform::getEulerAngles() const {
   
@@ -57,20 +63,24 @@ Transform::getDirection() const {
 const Matrix4x4& 
 Transform::getRotation() const {
   if (m_outdatedRotation) {
-    
+  
     m_rotation = m_rotZ * m_rotX * m_rotY;
 
-    //Update euler angles
-    m_eulerAngles = m_rotation.eulerAngles();
+    auto rightDir = m_rotY * m_rotX * m_rotZ;
 
-    //Update local direction
+    auto quat = m_rotation.toQuaternion();
+    
+    m_direction = quat.getDirection();
 
-    m_direction = {Math::cos(m_eulerAngles.y) * Math::sin(m_eulerAngles.x),
-                   Math::sin(m_eulerAngles.y),
-                   Math::cos(m_eulerAngles.y) * Math::cos(m_eulerAngles.x)};
+    m_eulerAngles = rightDir.eulerAngles();
 
-    m_direction.normalize();
-
+    /**
+    * Set from 0 to 2PI
+    */
+    m_eulerAngles.x = Radian(m_eulerAngles.x).unwind();
+    m_eulerAngles.y = Radian(m_eulerAngles.y).unwind();
+    m_eulerAngles.z = Radian(m_eulerAngles.z).unwind();
+    
     m_outdatedRotation = false;
   }
 
@@ -261,8 +271,9 @@ Transform::invalidateRotation() {
 void
 Transform::update() const {
   m_outdatedTransform = false;
-  m_transform = getRotation();
+  m_transform.identity();
   m_transform.Scale(m_scale);
+  m_transform *= getRotation();
   m_transform.Translation(m_position);
 }
 

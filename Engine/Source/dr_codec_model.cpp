@@ -25,7 +25,7 @@ Codec::UniqueVoidPtr
 CodecModel::decode(TString pathName) { 
   Assimp::Importer importer;
 
-  ModelInfo* pModelInfo = nullptr;
+  ModelInfo* modelInfo = nullptr;
 
   UInt32 flags = 0;
 
@@ -44,8 +44,8 @@ CodecModel::decode(TString pathName) {
 
   if (scene) {
 
-    pModelInfo = new ModelInfo;
-    pModelInfo->meshes.resize(scene->mNumMeshes);
+    modelInfo = new ModelInfo;
+    modelInfo->meshes.resize(scene->mNumMeshes);
 
     Vector3D min{Math::MAX_FLOAT, Math::MAX_FLOAT, Math::MAX_FLOAT};
     Vector3D max{Math::MIN_FLOAT, Math::MIN_FLOAT, Math::MIN_FLOAT};
@@ -54,50 +54,50 @@ CodecModel::decode(TString pathName) {
     auto defMaterial = ResourceManager::getReferenceT<Material>(defMatName);
     
     for (SizeT iMesh = 0; iMesh < scene->mNumMeshes; ++iMesh) {
-      MeshInfo& mesh = pModelInfo->meshes[iMesh];
-      aiMesh* pMesh = scene->mMeshes[iMesh];
+      MeshInfo& drMesh = modelInfo->meshes[iMesh];
+      aiMesh* mesh = scene->mMeshes[iMesh];
       
-      loadVertices(*pMesh, mesh, min, max);
-      loadIndices(*pMesh, mesh);
-      mesh.material = defMaterial;
+      loadVertices(*mesh, drMesh, min, max);
+      loadIndices(*mesh, drMesh);
+      drMesh.material = defMaterial;
     }
 
-    loadMaterials(*scene, *pModelInfo, pathName);
+    loadMaterials(*scene, *modelInfo, pathName);
 
     Vector3D size = max - min;
 
-    pModelInfo->aabb.width = size.x;
-    pModelInfo->aabb.height = size.y;
-    pModelInfo->aabb.depth = size.z;
-    pModelInfo->aabb.center = (max + min) * 0.5f;
+    modelInfo->aabb.width = size.x;
+    modelInfo->aabb.height = size.y;
+    modelInfo->aabb.depth = size.z;
+    modelInfo->aabb.center = (max + min) * 0.5f;
     
     TString skeletonName;
     
     if (scene->HasAnimations()) {
       skeletonName = _T("Skeleton_") + pathName;
 
-      auto pSkeleton = std::make_shared<Skeleton>();
+      auto skeleton = std::make_shared<Skeleton>();
      
-      std::memcpy(pSkeleton->gloabalInverseTransform.data, 
+      std::memcpy(skeleton->gloabalInverseTransform.data, 
                   &scene->mRootNode->mTransformation[0][0],
                   64);
 
-      pSkeleton->gloabalInverseTransform.inverse();
+      skeleton->gloabalInverseTransform.inverse();
 
-      loadSkeleton(*scene, *pModelInfo, *pSkeleton);
+      loadSkeleton(*scene, *modelInfo, *skeleton);
 
-      addResource(pSkeleton, skeletonName);
+      addResource(skeleton, skeletonName);
 
-      loadAnimations(*scene, *pModelInfo);
+      loadAnimations(*scene, *modelInfo);
     }
 
-    pModelInfo->skeletonName = skeletonName;
+    modelInfo->skeletonName = skeletonName;
   }
   else {
     Logger::addLog(StringUtils::toTString(importer.GetErrorString()));
   }
 
-  return UniqueVoidPtr(pModelInfo, &dr_void_deleter<ModelInfo>);
+  return UniqueVoidPtr(modelInfo, &dr_void_deleter<ModelInfo>);
 }
 
 bool
@@ -122,6 +122,22 @@ CodecModel::loadVertices(const aiMesh& inMesh,
                          Vector3D& maxPos) {
   outMesh.vertices.resize(inMesh.mNumVertices);
 
+  bool hasNormals = inMesh.HasNormals();
+  bool hasBinTangs = inMesh.HasTangentsAndBitangents();
+  bool hasUVs = inMesh.HasTextureCoords(0);
+
+  if (!hasNormals) {
+    Logger::addLog(_T("Model will be loaded without normals"));
+  }
+
+  if (!hasBinTangs) {
+    Logger::addLog(_T("Model will be loaded without binormals/tangents"));
+  }
+
+  if (!hasUVs) {
+    Logger::addLog(_T("Model will be loaded without texture coords"));
+  }
+
   for (Int32 vertexIndex = 0; 
        vertexIndex < static_cast<Int32>(inMesh.mNumVertices); 
        ++vertexIndex) {
@@ -130,31 +146,35 @@ CodecModel::loadVertices(const aiMesh& inMesh,
     outMesh.vertices[vertexIndex].position.y = inMesh.mVertices[vertexIndex].y;
     outMesh.vertices[vertexIndex].position.z = inMesh.mVertices[vertexIndex].z;
     outMesh.vertices[vertexIndex].position.w = 1.f;
-    
-    Vector3D pos(outMesh.vertices[vertexIndex].position);
-
+ 
     for (Int32 e = 0; e < 3; ++e) {
-      minPos[e] = Math::min(minPos[e], pos[e]);
-      maxPos[e] = Math::max(maxPos[e], pos[e]);
+      minPos[e] = Math::min(minPos[e], outMesh.vertices[vertexIndex].position[e]);
+      maxPos[e] = Math::max(maxPos[e], outMesh.vertices[vertexIndex].position[e]);
+    }
+    
+    if (hasNormals) {
+      outMesh.vertices[vertexIndex].normal.x = inMesh.mNormals[vertexIndex].x;
+      outMesh.vertices[vertexIndex].normal.y = inMesh.mNormals[vertexIndex].y;
+      outMesh.vertices[vertexIndex].normal.z = inMesh.mNormals[vertexIndex].z;
+      outMesh.vertices[vertexIndex].normal.w = 0.f;
+    }
+    
+    if (hasBinTangs) {
+      outMesh.vertices[vertexIndex].binormal.x = inMesh.mBitangents[vertexIndex].x;
+      outMesh.vertices[vertexIndex].binormal.y = inMesh.mBitangents[vertexIndex].y;
+      outMesh.vertices[vertexIndex].binormal.z = inMesh.mBitangents[vertexIndex].z;
+      outMesh.vertices[vertexIndex].binormal.w = 0.f;
+
+      outMesh.vertices[vertexIndex].tangent.x = inMesh.mTangents[vertexIndex].x;
+      outMesh.vertices[vertexIndex].tangent.y = inMesh.mTangents[vertexIndex].y;
+      outMesh.vertices[vertexIndex].tangent.z = inMesh.mTangents[vertexIndex].z;
+      outMesh.vertices[vertexIndex].tangent.w = 0.f;
     }
 
-    outMesh.vertices[vertexIndex].normal.x = inMesh.mNormals[vertexIndex].x;
-    outMesh.vertices[vertexIndex].normal.y = inMesh.mNormals[vertexIndex].y;
-    outMesh.vertices[vertexIndex].normal.z = inMesh.mNormals[vertexIndex].z;
-    outMesh.vertices[vertexIndex].normal.w = 0.f;
-
-    outMesh.vertices[vertexIndex].binormal.x = inMesh.mBitangents[vertexIndex].x;
-    outMesh.vertices[vertexIndex].binormal.y = inMesh.mBitangents[vertexIndex].y;
-    outMesh.vertices[vertexIndex].binormal.z = inMesh.mBitangents[vertexIndex].z;
-    outMesh.vertices[vertexIndex].binormal.w = 0.f;
-
-    outMesh.vertices[vertexIndex].tangent.x = inMesh.mTangents[vertexIndex].x;
-    outMesh.vertices[vertexIndex].tangent.y = inMesh.mTangents[vertexIndex].y;
-    outMesh.vertices[vertexIndex].tangent.z = inMesh.mTangents[vertexIndex].z;
-    outMesh.vertices[vertexIndex].tangent.w = 0.f;
-
-    outMesh.vertices[vertexIndex].uv.x = inMesh.mTextureCoords[0][vertexIndex].x;
-    outMesh.vertices[vertexIndex].uv.y = inMesh.mTextureCoords[0][vertexIndex].y;
+    if (hasUVs) {
+      outMesh.vertices[vertexIndex].uv.x = inMesh.mTextureCoords[0][vertexIndex].x;
+      outMesh.vertices[vertexIndex].uv.y = inMesh.mTextureCoords[0][vertexIndex].y;
+    }
   }
 }
 
@@ -259,11 +279,11 @@ CodecModel::loadAnimations(const aiScene& model, ModelInfo& outModel) {
 
     outModel.animationsNames.push_back(animName);
 
-    auto pAnimation = std::make_shared<Animation>();
+    auto drAnimation = std::make_shared<Animation>();
 
-    pAnimation->setDuration(static_cast<float>(animation.mDuration));
+    drAnimation->setDuration(static_cast<float>(animation.mDuration));
 
-    pAnimation->setTicksPerSecond(static_cast<float>(animation.mTicksPerSecond));
+    drAnimation->setTicksPerSecond(static_cast<float>(animation.mTicksPerSecond));
   
     for (Int32 i = 0; i < static_cast<Int32>(animation.mNumChannels); ++i) {
       aiNodeAnim& channel = *animation.mChannels[i];
@@ -310,11 +330,11 @@ CodecModel::loadAnimations(const aiScene& model, ModelInfo& outModel) {
         boneAnim.scales[scl].value.z = sclKey.mValue.z;
       }
 
-      pAnimation->setBoneAnimation(StringUtils::toTString(channel.mNodeName.data),
+      drAnimation->setBoneAnimation(StringUtils::toTString(channel.mNodeName.data),
                                    std::move(boneAnim));
     }
 
-    addResource(pAnimation, animName);
+    addResource(drAnimation, animName);
   }
 }
 
@@ -363,7 +383,7 @@ CodecModel::loadMaterials(const aiScene& model,
 
       if (mapNameIt != supportedMaps.end()) {
 
-        auto nt = material->GetTextureCount(textureType);
+        //auto nt = material->GetTextureCount(textureType);
 
         aiReturn ret = material->GetTexture(textureType, 0, &path);
 

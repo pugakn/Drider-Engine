@@ -33,6 +33,9 @@ private:
   postDestroy() override;
 
   void
+  recompileShaders();
+
+  void
   initModules();
 
   void
@@ -61,19 +64,45 @@ private:
   toggleSkeletonView(GameObject* obj);
 
   void
-  toggleAABBDebug(GameObject* obj);
+  toggleAABBDebug(std::shared_ptr<GameObject> obj);
 
   void
   toggleWireframe();
+
+  void
+  toggleAnimation();
+
+  void 
+  toggleCamera();
+
+  void
+  initScriptEngine();
+
+  void
+  playerMovement();
+
+  void
+  playerRotation();
 
   std::unique_ptr<Technique> m_animTech;
   std::unique_ptr<Technique> m_staticTech;
   std::unique_ptr<Technique> m_linesTech;
 
+  Int32 m_currCam;
+  Int32 m_currAnim;
+  TString m_camNames[2];
+  TString m_animationsNames[4];
+
+  bool m_lockView;
   bool m_drawMeshes;
-  GameObject* m_left;
   GameObject* m_right;
+  GameObject* m_player;
+  GameObject* m_cameraHolder;
   Timer m_timer;
+
+
+  // Inherited via Application
+  virtual void onResize() override;
 };
 
 }

@@ -27,6 +27,9 @@ class RenderManApp : public Application
   virtual void 
   postDestroy() override;
 
+  virtual void
+  onResize() override;
+
   void
   initInputCallbacks();
 

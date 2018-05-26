@@ -1,0 +1,12 @@
+void script2::Start()
+
+Temps: 
+
+Variables: 
+ 000: script2 this
+
+
+- 5,3 -
+    0   0 *    SUSPEND
+            0:
+    1   0 *    RET      1

@@ -56,7 +56,11 @@ class DR_CORE_EXPORT SceneGraph : public Module<SceneGraph>
   using SharedModel = std::shared_ptr<Model>;
   using SharedGameObject = std::shared_ptr<GameObject>;
   using GameObjectList = std::vector<SharedGameObject>;
-  using QueryResult = std::vector<QueryObjectInfo>;   
+  using QueryResult = std::vector<QueryObjectInfo>;
+  using ObjectComp = std::function<bool(SharedGameObject, SharedGameObject)>;
+  using GameObjectQueue = std::priority_queue<SharedGameObject,
+                                              GameObjectList,
+                                              ObjectComp>;
 
   SceneGraph();
 
@@ -95,11 +99,17 @@ class DR_CORE_EXPORT SceneGraph : public Module<SceneGraph>
   getOctree();
 
   /**
-  * Query meshes from the scene graph
+  * Queries meshes from the scene graph
   */
   static QueryResult
-  query(Camera& camera, QUERY_ORDER::E order, UInt32 props);
-     
+  query(const Camera& camera, QUERY_ORDER::E order, UInt32 props);
+
+  /**
+  * Queries the gameObjects that are inside a camera frustrum.
+  */
+  static GameObjectList
+  queryGameObjects(const Camera& camera, QUERY_ORDER::E order);
+
   static void 
   update();
   /****************/
@@ -107,11 +117,8 @@ class DR_CORE_EXPORT SceneGraph : public Module<SceneGraph>
   static void 
   draw();
   /****************/
+
  private:
-  using ObjectComp = std::function<bool(SharedGameObject, SharedGameObject)>;
-  using GameObjectQueue = std::priority_queue<SharedGameObject,
-                                              GameObjectList,
-                                              ObjectComp>;
 
   /**
   * Class used for ordering gameObjects by depth
@@ -119,13 +126,13 @@ class DR_CORE_EXPORT SceneGraph : public Module<SceneGraph>
   class DepthComparer
   {
   public:
-    DepthComparer(Camera& _camera, QUERY_ORDER::E _order);
+    DepthComparer(const Camera& _camera, QUERY_ORDER::E _order);
 
     bool 
     operator()(SharedGameObject objA, 
                SharedGameObject objB) const;
   private:
-    Camera& m_camera;
+    const Camera& m_camera;
     QUERY_ORDER::E m_order;
   };
   
@@ -137,13 +144,13 @@ class DR_CORE_EXPORT SceneGraph : public Module<SceneGraph>
 
   static void
   testObjectOct(SharedGameObject object,
-                Frustrum& frustrum, 
+                const Frustrum& frustrum, 
                 GameObjectQueue& objects,
                 bool test);
 
   static void 
   testObject(SharedGameObject object, 
-             Frustrum& frustrum,
+             const Frustrum& frustrum,
              GameObjectQueue& objects);
 
   static void

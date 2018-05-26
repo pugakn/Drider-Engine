@@ -1,5 +1,7 @@
 #include "dr_resource_manager.h"
 
+#include <exception>
+
 #include <dr_file_system.h>
 #include <dr_image_info.h>
 #include <dr_logger.h>
@@ -13,6 +15,7 @@
 #include "dr_codec_script.h"
 #include "dr_codec_sound.h"
 #include "dr_codec_texture.h"
+#include "dr_script_core.h"
 
 namespace driderSDK {
 
@@ -30,10 +33,12 @@ ResourceManager::onStartUp() {
   m_resourceFactories[codecTexture.get()] = std::make_shared<TextureCore>;
   m_resourceFactories[codecModel.get()] = std::make_shared<Model>;
   m_resourceFactories[codecSound.get()] = std::make_shared<SoundCore>;
+  m_resourceFactories[codecScript.get()] = std::make_shared<ScriptCore>;
 
   m_codecs.push_back(std::move(codecModel));
   m_codecs.push_back(std::move(codecTexture));
   m_codecs.push_back(std::move(codecSound));
+  m_codecs.push_back(std::move(codecScript));
 
   createDefaultResources();
 }
@@ -73,6 +78,11 @@ ResourceManager::loadResource(const TString& resourceName,
       if (codec->isCompatible(extension)) {
         rm.createResource(resourceName, codec.get(), extraData);
         r = getReference(resourceName);
+
+        if (r) {
+          r->setName(resourceName);
+        }
+
         codecRead = true;
       }
     }
@@ -125,12 +135,34 @@ ResourceManager::isResourceLoaded(const TString& resourceName) {
   return instance().m_resources.count(resourceName);
 }
 
+void 
+ResourceManager::renameResource(const TString& lastName, 
+                                const TString& newName) {
+  auto& resources = instance().m_resources;
+  auto it = resources.find(lastName);
+  if (it != resources.end()) {
+    auto res = it->second;
+    resources.erase(it);
+
+    DR_DEBUG_ONLY(
+    if (resources.count(newName)) {
+      Logger::addLog(_T("About to replace existing resource named: ") + newName);
+    })
+
+    resources[newName] = res;
+
+    res->setName(newName);
+  }
+}
+
 ResourceManager::SharedResource
 ResourceManager::getReference(const TString& resourceName) {
   std::shared_ptr<Resource> res;
 
   if (instance().isResourceLoaded(resourceName)) {
     res = instance().m_resources[resourceName];
+  } else {
+    throw std::exception(("Resource not found: " + StringUtils::toString(resourceName)).c_str() );
   }
 
   return res;

@@ -3,38 +3,23 @@
 #include <dr_time.h>
 
 #include "dr_script_engine.h"
-#include "dr_script_string_factory.h"
 #include "scriptstdstring.h"
-
-#include "dr_object.h"
-
+#include "dr_script_custom_string.h"
+#include <vector>
+#include <dr_context_manager.h>
+#include <dr_script_debug.h>
 
 namespace driderSDK {
 
-	unsigned long g_timeout;
+unsigned long g_timeout;
 
-ObjectAS *Ref_Factory() {
-  return new ObjectAS();
-}
 
 void stringPrint_g(asIScriptGeneric* gen) {
-	WString *str = (WString*)gen->GetArgAddress(0);
-	std::wcout << StringUtils::toTString(*str);
+	TString *str = (TString*)gen->GetArgAddress(0);
+	std::wcout << *str;
 }
 
 ScriptEngine::ScriptEngine() {
-	m_scriptLogger = nullptr;
-	m_scriptTime = nullptr;
-
-	Logger::startUp();
-
-	if (Logger::isStarted()) {
-		m_scriptLogger = &Logger::instance();
-	}
-
-	if (Time::isStarted()) {
-		m_scriptTime = &Time::instance();
-	}
 
 }
 
@@ -48,167 +33,197 @@ ScriptEngine::createEngine() {
 	}
 
 	m_scriptEngine->SetEngineProperty(asEP_STRING_ENCODING, 1);
-	m_scriptEngine->SetMessageCallback(asMETHOD(ScriptEngine, messageCallback), 
-																		 0, 
-																		 asCALL_CDECL);
-	RegisterStdString(m_scriptEngine);
-
+	m_scriptEngine->SetMessageCallback(asMETHOD(ScriptEngine, messageCallback),
+																		 this, 
+																		 asCALL_THISCALL);
+	// Register string type
+	registerTString(m_scriptEngine);
 	// Register the functions that the scripts will be allowed to use.
-	result = m_scriptEngine->RegisterGlobalFunction("void Print(string &in)",
+	result = m_scriptEngine->RegisterGlobalFunction("void Print(TString &in)",
 																									asFUNCTION(stringPrint_g), 
 																									asCALL_GENERIC);
-
-  /*result = m_scriptEngine->RegisterObjectType("Object",
-                                              0,
-                                              asOBJ_REF);
-
-  result = m_scriptEngine->RegisterObjectBehaviour("Object", 
-                                                   asBEHAVE_FACTORY,
-                                                   "Object@ f()", 
-                                                   asFUNCTION(Ref_Factory),
-                                                   asCALL_CDECL);
-
-  result = m_scriptEngine->RegisterObjectBehaviour("Object",
-                                      asBEHAVE_ADDREF,
-                                      "void f()", 
-                                      asMETHOD(ObjectAS, AddRef),
-                                      asCALL_THISCALL);
-
-  result = m_scriptEngine->RegisterObjectBehaviour("Object", 
-                                                   asBEHAVE_RELEASE, 
-                                                   "void f()", 
-                                                   asMETHOD(ObjectAS, Release), 
-                                                   asCALL_THISCALL);
-
-  result = m_scriptEngine->RegisterObjectMethod("Object",
-                                                "float Add(float param1)",
-                                                asMETHODPR(ObjectAS, Add, (float), float),
-                                                asCALL_THISCALL);*/
-
-  /*
-  * Seccion para registrar metodos //eso dice arriba pero en ingles...(asi es comente un comentario)
-  */
-
+	Debug = new ScriptDebug(this);
 	return result;
 }
+
+Int8
+ScriptEngine::configurateEngine(ContextManager *ctx) {
+  Int8 result = 0;
+  // Register the functions for controlling the script threads, e.g. sleep
+  ctx->registerThreadSupport(m_scriptEngine);
+  return result;
+}
+
+
 
 Int8
 ScriptEngine::addScript(const TString& scriptName,
-                        const TString& script) {
+                        const TString& script,
+                        const TString& module) {
 
-	m_scriptModule = m_scriptEngine->GetModule("module", asGM_CREATE_IF_NOT_EXISTS);
+  asIScriptModule *mod = m_scriptEngine->GetModule(StringUtils::toString(module).c_str(),
+                                                   asGM_CREATE_IF_NOT_EXISTS);
+  
+  Int8 result = mod->AddScriptSection(StringUtils::toString(scriptName).c_str(),
+                                      StringUtils::toString(script).c_str(),
+                                      script.length());
 
-	Int8 result = m_scriptModule->AddScriptSection(StringUtils::toString(scriptName).c_str(),
-                                                 StringUtils::toString(script).c_str());
-	if(result < 0) {
-		addScriptLog(_T("AddScriptSection failed on file ") + scriptName, asMSGTYPE_ERROR);
-		m_scriptEngine->Release();
-		return -1;
-	}
-	return 0;
-}
-
-Int8
-ScriptEngine::compileScript() {
-	Int8 result = m_scriptModule->Build();
-	if(result < 0) {
-		addScriptLog(_T("Failed to compile script."), asMSGTYPE_ERROR);
-		m_scriptEngine->Release();
-		return -1;
-	}
-	return 0;
-}
-
-Int8
-ScriptEngine::configureContext() {
-	m_scriptContext = m_scriptEngine->CreateContext();
-	if(m_scriptContext == 0) {
-		addScriptLog(_T("Failed to create script context."), asMSGTYPE_ERROR);
-		m_scriptEngine->Release();
-		return -1;
-	}
-
-	Int8 result = m_scriptContext->SetLineCallback(asMETHOD(ScriptEngine, lineCallback),
-																								 &g_timeout,
-																								 asCALL_THISCALL);
-	if(result < 0) {
-		addScriptLog(_T("Failed to set the line callback."), asMSGTYPE_ERROR);
-		m_scriptContext->Release();
-		m_scriptEngine->Release();
-		return -2;
-	}
-
-	return 0;
-}
-
-Int8
-ScriptEngine::prepareFunction(TString function) {
-
-	auto modul = m_scriptEngine->GetModule("module");
-  m_scriptFunction = modul->GetFunctionByName(StringUtils::toString(function).c_str());
-	if (m_scriptFunction == 0)
-	{
-		addScriptLog(_T("Function : ") + function + _T(" not found."), asMSGTYPE_ERROR);
-		m_scriptContext->Release();
-		m_scriptEngine->Release();
-		return -1;
-	}
-	Int8 result = m_scriptContext->Prepare(m_scriptFunction);
-
-	if (result < 0)
-	{
-		addScriptLog(_T("Failed to prepare script context."), asMSGTYPE_ERROR);
-		m_scriptContext->Release();
-		m_scriptEngine->Release();
-		return -2;
-	}
+  if (result < 0) {
+    addScriptLog(_T("AddScriptSection failed on file ") + scriptName, asMSGTYPE_ERROR);
+    m_scriptEngine->Release();
+    return -1;
+  }
 
 	return result;
 }
 
-Int8
-ScriptEngine::executeCall() {
-	g_timeout = m_scriptTime->getElapsedMilli() + 5000;
-	Int8 result = m_scriptContext->Execute();			
+void
+ScriptEngine::getScriptObject(TString scriptName,
+                              asIScriptModule *mod,
+                              asIScriptObject **objectRef,
+                              asITypeInfo **typeRef) {
+  //Get script's real name
+  String realName = StringUtils::toString(scriptName);
+  realName.erase(realName.length() - 3,
+                 realName.length());
 
-	if (result != asEXECUTION_FINISHED) {
-		if (result == asEXECUTION_EXCEPTION) {
-	    TString NewLine(_T("<br>"));
-	    addScriptLog(_T("There was an exception within a script call."), asMSGTYPE_ERROR);
-			TString details = _T("Exception details:") + NewLine + _T("Function: ") + 
-												StringUtils::toTString(m_scriptFunction->GetDeclaration()) + 
-												NewLine + _T("Line: ") + 
-												StringUtils::toTString(m_scriptContext->GetExceptionLineNumber()) + 
-												NewLine + _T("Description: ") + 
-												StringUtils::toTString(m_scriptContext->GetExceptionString());
+  //Get type of the script object
+  asITypeInfo* type = mod->GetTypeInfoByDecl(realName.c_str());
 
-			addScriptLog(details, asMSGTYPE_INFORMATION);
-		}
-	}
-	return result;
+  // Get the factory function from the object type
+  String path = realName + " @" + realName + "()";
+  asIScriptFunction *factory = type->GetFactoryByDecl(path.c_str());
+
+	m_scriptContext->SetLineCallback(asMETHOD(ScriptEngine, debugLineCallback), 
+																	 this, 
+																	 asCALL_THISCALL);
+  // Prepare the context to call the factory function
+  m_scriptContext->Prepare(factory);
+  // Execute the call
+  m_scriptContext->Execute();
+  // Get the object that was created
+  asIScriptObject *obj = *(asIScriptObject**)m_scriptContext->GetAddressOfReturnValue();
+  // If you're going to store the object you must increase the reference,
+  // otherwise it will be destroyed when the context is reused or destroyed.
+  obj->AddRef();
+  
+  *objectRef = obj;
+  *typeRef = type;
+}
+
+void
+ScriptEngine::setObjectToScript(asITypeInfo *type,
+                                TString methodDecl,
+                                UInt32 arg,
+                                void* appObj,
+                                asIScriptObject* scriptObj) {
+  // Obtain the function object that represents the class method
+  asIScriptFunction *func = type->GetMethodByDecl(StringUtils::toString
+                                                  (methodDecl).c_str());
+  // Prepare the context for calling the method
+  Int8 result = m_scriptContext->Prepare(func);
+  result = m_scriptContext->SetArgObject(arg, appObj);
+  // Set the object pointer
+  m_scriptContext->SetObject(scriptObj);
+  // Execute the call
+  m_scriptContext->Execute();
+}
+
+void
+ScriptEngine::executeFunction(TString function,
+                              asITypeInfo *type,
+                              asIScriptObject* scriptObj) {
+  // Obtain the function object that represents the class method
+  asIScriptFunction *func = type->GetMethodByDecl(StringUtils::toString(
+                                                  function).c_str());
+  if(func == nullptr) {
+    return;
+  }
+  // Prepare the context for calling the method
+  m_scriptContext->Prepare(func);
+  // Set the object pointer
+  m_scriptContext->SetObject(scriptObj);
+  // Execute the call
+  m_scriptContext->Execute();
+}
+
+void
+ScriptEngine::executeFunctionParam(TString function,
+                                   asITypeInfo *type,
+                                   asIScriptObject* scriptObj,
+                                   KEY_CODE::E param) {
+  // Obtain the function object that represents the class method
+  asIScriptFunction *func = type->GetMethodByDecl(StringUtils::toString(
+                                                  function).c_str());
+  if (func == nullptr) {
+    return;
+  }
+  Int8 r;
+  // Prepare the context for calling the method
+  r = m_scriptContext->Prepare(func);
+  // Set the object pointer
+  r = m_scriptContext->SetObject(scriptObj);
+  r = m_scriptContext->SetArgDWord(0, (Int32)param);
+  r = m_scriptContext->Execute();
 }
 
 void
 ScriptEngine::release() {
 	m_scriptContext->Release();
 	m_scriptEngine->ShutDownAndRelease();
+	delete Debug;
 }
 
 void
 ScriptEngine::lineCallback(asIScriptContext* scriptContext) {
-	if(g_timeout < m_scriptTime->getElapsedMilli()) {
-		addScriptLog(_T("The script timed out, stoping now..."), asMSGTYPE_ERROR);
+	/*if(g_timeout < Time::instancePtr()->getElapsedMilli()) {
 		scriptContext->Abort(); 
 		//scriptContext->Suspend(); //we can also use suspend
-	}
+	}*/
 }
 
 void 
-ScriptEngine::messageCallback(const asSMessageInfo* scriptMessage, void* param) {
+ScriptEngine::debugLineCallback(asIScriptContext* scriptContext) {
+
+	if (scriptContext->GetState() != asEXECUTION_ACTIVE) {
+		return;
+	}
+
+	if (Debug->getCommand() == DebugCommands::CONTINUE) {
+		if (!Debug->checkBreakPoint()) {
+			return;
+		}
+	}
+	if (Debug->getCommand() == DebugCommands::STEP_IN) {
+		Debug->checkBreakPoint();
+	}
+	if (Debug->getCommand() == DebugCommands::STEP_OUT) {
+		if (m_scriptContext->GetCallstackSize() >= Debug->lastStackLevel) {
+			if (!Debug->checkBreakPoint()) {
+				return;
+			}
+		}
+	}
+	if (Debug->getCommand() == DebugCommands::STEP_OVER) {
+		if (m_scriptContext->GetCallstackSize() > Debug->lastStackLevel) {
+			if (!Debug->checkBreakPoint()) {
+				return;
+			}
+		}
+	}
+
+	// Function to recive inputs
+	TString input;
+	Debug->interpretInput(input);
+
+}
+
+void 
+ScriptEngine::messageCallback(const asSMessageInfo* scriptMessage) {
 
 	Int8 row = scriptMessage->row, col = scriptMessage->col;
 
-	//Expect something like "mySection (5, 1) : Example message here"
+	//Expect something like "myScript.as (5, 1) : Example message here"
 	TString message = StringUtils::toTString(scriptMessage->section) + 
 																					 _T(" (") + StringUtils::toTString(row) +
 																					 _T(", ") + StringUtils::toTString(col) +
@@ -221,18 +236,16 @@ ScriptEngine::messageCallback(const asSMessageInfo* scriptMessage, void* param) 
 void
 ScriptEngine::addScriptLog(const TString& log, int type) {
 
+	const TString signature = _T("[ScriptEngine] ");
+
 	if (type == asMSGTYPE_WARNING) {
-		m_scriptLogger->addWarning(__FILE__, 
-															__LINE__, 
-															_T("[ScriptEngine] ") + log);
+		Logger::instancePtr()->addWarning(__FILE__, __LINE__, signature + log);
 	}
 	else if (type == asMSGTYPE_INFORMATION) {
-		m_scriptLogger->addLog(_T("[ScriptEngine] ") + log);
+    Logger::instancePtr()->addLog(signature + log);
 	}
 	else if (type == asMSGTYPE_ERROR) {
-		m_scriptLogger->addError(__FILE__,
-														__LINE__, 
-														_T("[ScriptEngine] ") + log);
+    Logger::instancePtr()->addError(__FILE__, __LINE__, signature + log);
 	}
 }
 

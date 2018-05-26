@@ -23,14 +23,14 @@ class DR_SOUND_EXPORT FMODSound : public DrSound {
     void
     setChannel(DrChannel **channel) override;
 
-    FMOD::Sound *
-    get();
-
     void*
     getReference() override;
 
     virtual void**
     getObjectReference() override;
+
+    DrSound*
+    get() override;
 
     void
     setMode(DR_SOUND_MODE::E mode) override;

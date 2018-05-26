@@ -7,13 +7,14 @@ namespace driderSDK {
 	ScriptCore::init(void* pData) {
 
 		ScriptInfo* script = static_cast<ScriptInfo*>(pData);
-		m_name = script->name;
+    script->name.erase(script->name.length() - 3,
+                       script->name.length());
 		m_script = script->data;
 
 	}
 
   void
-	ScriptCore::init(void* pData, void* extraData) {
+	ScriptCore::init(void*, void*) {
 
 	}
 
@@ -21,10 +22,4 @@ namespace driderSDK {
 	ScriptCore::getScript() {
 		return m_script;
 	}
-
-  const TString&
-  ScriptCore::getName() {
-		return m_name;
- }
-
 }

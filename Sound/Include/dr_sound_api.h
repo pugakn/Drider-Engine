@@ -1,6 +1,7 @@
 #pragma once
 #include "dr_sound_prerequisites.h"
 #include <dr_module.h>
+#include "dr_sound_defines.h"
 
 namespace driderSDK {
 
@@ -9,28 +10,23 @@ class DrChannel;
 class DrChannelGroup;
 class SoundSystem;
 class DrDSP;
+class FMODSoundAPI;
   
 class DR_SOUND_EXPORT SoundAPI  : public Module<SoundAPI> {
 
   public:
-    virtual void
-    init() = 0;
+    SoundAPI();
 
-    virtual void
-    update() = 0;
+    ~SoundAPI();
+    
+    FMODSoundAPI *API;
 
-    virtual void
-    destroy() = 0;
-
-    SoundSystem *system;
-
-    DrChannel* channel1;
-    DrChannel* channel2;
-    DrChannel* channel3;
-    DrChannel* channel4;
-
-    DrChannelGroup* masterGroup;
-    DrDSP *dspLowPass;
+  private:
+    void
+    onStartUp() override;
+  
+    void
+    onShutDown() override;
 };
 
 }

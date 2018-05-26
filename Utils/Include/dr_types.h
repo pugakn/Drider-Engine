@@ -36,7 +36,7 @@ namespace driderSDK {
   using Float64 = double;
   using byte = unsigned char;
 
-#if DR_COMPILER == DR_COMPILER_MSV || DR_PLATFORM == DR_PLATFORM_PS4
+#if DR_COMPILER == DR_COMPILER_MSVC|| DR_PLATFORM == DR_PLATFORM_PS4
   using WChar = wchar_t;		//Wide Character (used by Visual Studio)
 #else
   using WChar = unsigned short; //Wide Character (Any other compiler)
@@ -46,16 +46,19 @@ namespace driderSDK {
 
 using String = std::basic_string<ANSIChar>;
 using WString = std::basic_string<UNIChar>;
-
+using OStringstream = std::basic_ostringstream<ANSIChar>;
+using WOStringstream = std::basic_ostringstream<UNIChar>;
 
 
 #ifdef _UNICODE
   using TString  = WString;
   using TChar = UNIChar;
+	using TOStringstream = WOStringstream;
 #define _T(src) L##src
 #else
   using TString = String;
   using TChar = ANSIChar;
+	using TOStringstream = OStringstream;
 #define _T(src) src
 #endif
 

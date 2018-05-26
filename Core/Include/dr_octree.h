@@ -81,7 +81,8 @@ class DR_CORE_EXPORT Octree
   */
   void
   compareMinMax(Vector4D &position);
-
+ public:
+  std::vector<std::vector<UInt32>> verticesInGameObjects;
  private:
   Int32 m_minFaces;
 

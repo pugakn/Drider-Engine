@@ -7,69 +7,12 @@
 #include <dr_input_manager.h>
 #include <dr_graphics_driver.h>
 #include <dr_blend_state.h>
-#include <dr_texture.h>
-
-#include <windows.h>
-
-#include<Shlwapi.h>
-#pragma comment(lib, "Shlwapi.lib")
-
+#include <dr_resource_manager.h>
+#include <dr_camera_manager.h>
+#include <dr_renderman.h>
 namespace driderSDK {
-
-
-
-//#include <sys/types.h>
-//#include <dirent.h>
-//
-//  void read_directory(const std::string& name, stringvec& v)
-//  {
-//    DIR* dirp = opendir(name.c_str());
-//    struct dirent * dp;
-//    while ((dp = readdir(dirp)) != NULL) {
-//      v.push_back(dp->d_name);
-//    }
-//    closedir(dirp);
-//  }
-
-void read_directory(const TString& name, std::vector<TString>& v)
-{
-  TString pattern(name);
-  TString parent(name);
-  pattern.append(_T("\\*"));
-  WIN32_FIND_DATA data;
-  HANDLE hFind;
-  parent = PathFindFileName(name.c_str());
-  hFind = FindFirstFile(pattern.c_str(), &data);
-  if (hFind != INVALID_HANDLE_VALUE) {
-    do {
-      if (data.cFileName[0] == '.') continue;
-      if (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-      {
-        v.push_back(_T("webix.callEvent('addFile',['") + TString(data.cFileName) + _T("','") + parent + _T("','") + _T(".folder") + _T("']);"));
-        read_directory(name + _T("\\") + data.cFileName, v);
-      }
-      else 
-      {
-        auto ext = PathFindExtension(data.cFileName);
-        v.push_back(_T("webix.callEvent('addFile',['") + TString(data.cFileName) + _T("','") + parent + _T("','") + ext + _T("']);"));
-      }
-    } while (FindNextFile(hFind, &data) != 0);
-    FindClose(hFind);
-  }
-}
-void updateFolders(WebRenderer& webRenderer) {
-  TString root(_T("Assets"));
-  std::vector<TString> folders;
-  folders.push_back(_T("webix.callEvent('addFile',['") + root + _T("','") + root + _T("','") + _T(".folder") + _T("']);"));
-  read_directory(root, folders);
-  for (auto &it : folders) {
-    std::string str(it.begin(), it.end());
-    webRenderer.executeJSCode(str);
-  }
-}
-
 TestApplication::TestApplication()
-  : viewport{0,0,1920, 1024}, webRenderer(){
+{
 }
 
 TestApplication::~TestApplication() {
@@ -82,15 +25,15 @@ TestApplication::postInit() {
     m_viewport.height,
     m_hwnd);
   InputManager::startUp((SizeT)m_hwnd);
+  SceneGraph::startUp();
   Time::startUp();
+  ResourceManager::startUp();
 
-  quad.init();
-  webRenderer.Init(m_viewport.width, m_viewport.height,BROWSER_MODE::kHeadless);
-  webRenderer.loadURL("file:///C:/Users/Ulises/Documents/GitHub/Drider-Engine/DriderUIUnitTest/WebixTest/ss.html");
+  CameraManager::startUp();
 
-  webRenderer.registerJS2CPPFunction(std::make_pair("webixReady", [&](const CefRefPtr<CefListValue>& arguments) {
-    updateFolders(webRenderer);
-  }));
+
+  m_editor.init(m_viewport);
+
   ////Manage
   //webRenderer.registerJS2CPPFunction(std::make_pair("createFolder", [&](CefRefPtr<CefV8Value>& retval, const CefV8ValueList& arguments) {
   //}));
@@ -117,22 +60,33 @@ TestApplication::postInit() {
 
 void
 TestApplication::postUpdate() {
-  InputManager::capture();
-  webRenderer.update();
+  Time::update();
+  SceneGraph::update();
+  InputManager::update();
+  m_editor.update();
 }
 
 void
 TestApplication::postRender() {
   GraphicsDriver::API().clear();
-  webRenderer.setTexture();
-  GraphicsAPI::getBlendState(DR_BLEND_STATES::kAlphaBlend).set(GraphicsAPI::getDeviceContext());
-  quad.draw();
-  GraphicsAPI::getBlendState(DR_BLEND_STATES::kOpaque).set(GraphicsAPI::getDeviceContext());
+  m_editor.draw();
   GraphicsDriver::API().swapBuffers();
 }
 void
 TestApplication::postDestroy() {
+  GraphicsDriver::shutDown();
+  ResourceManager::shutDown();
+  SceneGraph::shutDown();
+  InputManager::shutDown();
+  Time::shutDown();
+  Logger::shutDown();
+}
 
+void TestApplication::onResize()
+{
+  GraphicsDriver::API().resizeBackBuffer(m_viewport.width, m_viewport.height);
+  std::cout << "RESIZE " << m_viewport .width<<  std::endl;
+  m_editor.resize(m_viewport);
 }
 
 

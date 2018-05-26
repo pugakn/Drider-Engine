@@ -1,9 +1,13 @@
 #include "dr_d3d_texture.h"
+
 #include <d3d11.h>
 #include <dxgi.h>
 #include "dr_graphics_prerequisites.h"
+#include <dr_math.h>
 #include "dr_d3d_device.h"
 #include "dr_d3d_device_context.h"
+#include "dr_gfx_memory.h"
+
 
 namespace driderSDK {
 
@@ -31,7 +35,8 @@ D3DTexture::createFromMemory(const Device& device,
     m_arraySize = 6;
     flags = D3D11_RESOURCE_MISC_TEXTURECUBE;
   }
-  
+
+
   apiDesc.Width = desc.width;
   apiDesc.Height = desc.height;
   apiDesc.ArraySize = m_arraySize;
@@ -41,8 +46,9 @@ D3DTexture::createFromMemory(const Device& device,
   apiDesc.SampleDesc.Quality = 0;
   apiDesc.BindFlags = desc.bindFlags;
   apiDesc.MiscFlags = flags;
-  apiDesc.CPUAccessFlags = 0;
-  apiDesc.Usage = D3D11_USAGE_DEFAULT;
+  if (desc.CPUAccessFlags & DR_CPU_ACCESS_FLAG::drRead)
+    apiDesc.CPUAccessFlags = desc.CPUAccessFlags ^ DR_CPU_ACCESS_FLAG::drRead;
+  apiDesc.Usage = static_cast<D3D11_USAGE>(desc.Usage);//D3D11_USAGE_STAGING;//D3D11_USAGE_DEFAULT;
 
   if (desc.genMipMaps) {
     apiDesc.MiscFlags |= D3D11_RESOURCE_MISC_GENERATE_MIPS;
@@ -52,7 +58,7 @@ D3DTexture::createFromMemory(const Device& device,
   D3D11_SUBRESOURCE_DATA initData[6];
   Int32 bufferSize = desc.pitch * desc.height;
   char *pHead = const_cast<char*>(buffer);
-  for (Int32 i = 0; i < m_arraySize; ++i) {
+  for (UInt32 i = 0; i < m_arraySize; ++i) {
     initData[i].pSysMem = pHead;
     initData[i].SysMemPitch = desc.pitch;
     pHead += bufferSize;
@@ -76,7 +82,7 @@ D3DTexture::createFromMemory(const Device& device,
     dim = D3D11_SRV_DIMENSION_TEXTURE3D;
     break;
   case DR_DIMENSION::kCUBE_MAP:
-    dim = D3D11_SRV_DIMENSION_TEXTURECUBE;
+    dim = D3D10_SRV_DIMENSION_TEXTURECUBE;
     break;
   default:
     break;
@@ -95,7 +101,7 @@ D3DTexture::createFromMemory(const Device& device,
     }
   }
   else {
-    srvDesc.Texture2D.MipLevels = -1;
+    srvDesc.Texture2D.MipLevels = Math::MAX_UINT32;
   }
 
   HRESULT hr = apiDevice->
@@ -109,6 +115,17 @@ D3DTexture::createFromMemory(const Device& device,
     CreateShaderResourceView(APITexture,
       &srvDesc,
       &APIView);
+  
+  if (desc.CPUAccessFlags & DR_CPU_ACCESS_FLAG::drRead) {
+    D3D11_TEXTURE2D_DESC apiDesc2 = apiDesc;
+    apiDesc2.CPUAccessFlags = D3D11_CPU_ACCESS_FLAG::D3D11_CPU_ACCESS_READ;
+    apiDesc2.Usage = D3D11_USAGE_STAGING;;
+    hr = apiDevice->
+      D3D11Device->
+      CreateTexture2D(&apiDesc2,
+        0,
+        &m_stagingTexture);
+  }
 }
 
 void
@@ -117,9 +134,9 @@ D3DTexture::createEmpty(const Device& device, const DrTextureDesc& desc){
 }
 
 void
-D3DTexture::map(const DeviceContext& deviceContext, char* buffer) {
+D3DTexture::map(const DeviceContext& deviceContext, char** buffer) {
   D3D11_MAPPED_SUBRESOURCE mappedResource;
-  reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
+  HRESULT HR = reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext->
       Map(APITexture,
           0,
@@ -127,7 +144,27 @@ D3DTexture::map(const DeviceContext& deviceContext, char* buffer) {
           0,
           &mappedResource);
 
-  buffer = static_cast<char*>(mappedResource.pData);
+  *buffer = static_cast<char*>(mappedResource.pData);
+}
+
+void 
+D3DTexture::getMemoryBuffer(const DeviceContext& deviceContext, std::vector<byte>& buff)
+{
+  if (!(m_descriptor.CPUAccessFlags & DR_CPU_ACCESS_FLAG::drRead))
+    return;
+  ID3D11DeviceContext* dc = reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
+    D3D11DeviceContext;
+  dc->CopyResource(m_stagingTexture,APITexture);
+  D3D11_MAPPED_SUBRESOURCE mappedResource;
+  dc->Map(
+    m_stagingTexture,
+    0,
+    D3D11_MAP_READ,
+    0,
+    &mappedResource);  
+  buff.clear();
+  buff.assign((byte*)mappedResource.pData, (byte*)mappedResource.pData + m_descriptor.pitch * m_descriptor.height);
+  dc->Unmap(m_stagingTexture,0);
 }
 
 void
@@ -150,6 +187,8 @@ D3DTexture::set(const DeviceContext& deviceContext, UInt32 slot) const {
 void
 D3DTexture::release() {
   APITexture->Release();
+  if (m_descriptor.CPUAccessFlags & DR_CPU_ACCESS_FLAG::drRead)
+    m_stagingTexture->Release();
   if (APIView)
     APIView->Release();
   delete this;
@@ -169,10 +208,13 @@ D3DTexture::udpateFromMemory(const DeviceContext& deviceContext,
   Int32 buffSize = m_descriptor.pitch * m_descriptor.height;
   char *pHead = const_cast<char*>(buffer);
 
-  for (Int32 i = 0; i < m_arraySize; ++i) {
+  D3D11_TEXTURE2D_DESC pDesc;
+  APITexture->GetDesc(&pDesc);
+
+  for (UInt32 i = 0; i < m_arraySize; ++i) {
     reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
       D3D11DeviceContext->
-      UpdateSubresource(APITexture, 0, 0, pHead, m_descriptor.pitch, 0);
+      UpdateSubresource(APITexture, D3D11CalcSubresource(0, i, pDesc.MipLevels), 0, pHead, m_descriptor.pitch, 0);
       pHead += buffSize;
   }
   

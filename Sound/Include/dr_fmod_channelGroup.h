@@ -17,6 +17,9 @@ namespace driderSDK {
       void **
       getObjectReference() override;
 
+      DrChannelGroup*
+      get() override;
+
       void
       addDSP(Int32 index,
              DrDSP * dsp) override;

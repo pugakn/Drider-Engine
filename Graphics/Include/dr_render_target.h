@@ -92,7 +92,7 @@ class DR_GRAPHICS_EXPORT RenderTarget
 
 
   const DrTextureDesc& getDescriptor() const { return m_descriptor; }
-  const Texture& getTexture(UInt32 id) const 
+  Texture& getTexture(UInt32 id) const 
   { 
     DR_ASSERT(id < m_texturesVec.size());
     return *m_texturesVec[id]; 

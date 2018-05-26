@@ -1,6 +1,10 @@
+#pragma once
 #include <dr_module.h>
 #include "dr_timer.h"
 #include "dr_util_prerequisites.h"
+
+#include "dr_export_script.h"
+#include <..\..\Script\Include\dr_script_engine.h>
 
 namespace driderSDK {
 
@@ -8,6 +12,7 @@ class DR_UTIL_EXPORT Time : public Module<Time>
 {
   friend class Application;
  public:
+
   /**
   * Gets the elapsed time since the begin of the app.
   * 
@@ -64,6 +69,12 @@ class DR_UTIL_EXPORT Time : public Module<Time>
   
   static void 
   update();
+
+  static BEGINING_DEFAULT_REGISTER
+
+  result = REGISTER_GLO_FOO_0P(&Time::getDelta, getDelta, float, "float")
+
+  END_REGISTER
 
  private:  
   

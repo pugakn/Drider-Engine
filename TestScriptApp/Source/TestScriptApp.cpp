@@ -1,34 +1,41 @@
 #include "TestScriptApp.h"
 
 //ResourceManager
-#include <dr_script_core.h>
-#include <dr_render_component.h>
+#include <dr_input_manager.h>
+#include <dr_keyboard.h>
+
+#include <dr_graphics_driver.h>
 #include <dr_device_context.h>
+#include <dr_render_component.h>
+
+#include <dr_time.h>
+
+#include <dr_script_core.h>
 
 namespace driderSDK {
 
-void Constructor(void *memory)
-{
-  // Initialize the pre-allocated memory by calling the
-  // object constructor with the placement-new operator
-  new(memory) Object();
-}
-
-void CopyConstruct(const Object &other, Object *thisPointer)
-{
-  new(thisPointer) Object(other);
-}
-
-void ConstructFromTwoFloats(float a, float b, Object *thisPointer)
-{
-  new(thisPointer) Object(a, b);
-}
-
-void Destructor(void *memory)
-{
-  // Uninitialize the memory by calling the object destructor
-  ((Object*)memory)->~Object();
-}
+//void Constructor(void *memory)
+//{
+//  // Initialize the pre-allocated memory by calling the
+//  // object constructor with the placement-new operator
+//  new(memory) Object();
+//}
+//
+//void CopyConstruct(const Object &other, Object *thisPointer)
+//{
+//  new(thisPointer) Object(other);
+//}
+//
+//void ConstructFromTwoFloats(float a, float b, Object *thisPointer)
+//{
+//  new(thisPointer) Object(a, b);
+//}
+//
+//void Destructor(void *memory)
+//{
+//  // Uninitialize the memory by calling the object destructor
+//  ((Object*)memory)->~Object();
+//}
 
 TestScriptApp::TestScriptApp() {
 
@@ -39,20 +46,27 @@ TestScriptApp::~TestScriptApp() {
 
 void
 TestScriptApp::postInit(){
+  //Logger::startUp();
+  GraphicsDriver::startUp(DR_GRAPHICS_API::D3D11,
+                          m_viewport.width,
+                          m_viewport.height,
+                          m_hwnd);
+  InputManager::startUp((SizeT)m_hwnd);
+  //SceneGraph::startUp();
+  //Time::startUp();
+  ResourceManager::startUp();
+
+  m_queryOrder = QUERY_ORDER::kFrontToBack;
+
   m_camera = std::make_shared<Camera>(_T("MAIN_CAM"),
                                       m_viewport);
 
-  m_camera->createProyection(45.f, 20.f, 4000.f);
-  m_camera->getTransform().setPosition({ 0.f, 100.0f, -100 });
-  m_camera->setTarget({ 0.0f, 100.0f, 1.0f });
-
-  ResourceManager::startUp();
+  m_camera->createProyection(45.f, 20.f, 3000.f);
+  m_camera->getTransform().setPosition({ 0.f, 300.0f, -400 });
+  m_camera->setTarget({ 0.0f, 200.f, 1.0f });
 
   initResources();
-  initInput();
-  initSound();
   initSceneGraph();
-  initScriptEngine();
 }
 void
 TestScriptApp::postUpdate(){
@@ -61,29 +75,8 @@ TestScriptApp::postUpdate(){
 
 void
 TestScriptApp::postRender() {
-  /*auto dc = &GraphicsAPI::getDeviceContext();
-
-  dc->setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
-  ResourceManager* resourceManager = nullptr;
-  if (ResourceManager::isStarted()) {
-    resourceManager = &ResourceManager::instance();
-  }
-
-  auto meshes = SceneGraph::query(*m_camera,
-                                  m_queryOrder,
-                                  QUERY_PROPERTYS::kOpaque |
-                                  QUERY_PROPERTYS::kDynamic |
-                                  QUERY_PROPERTYS::kStatic);
-
-  for(auto& mesh: meshes) {
-    mesh.second.vertexBuffer->set(*dc);
-    mesh.second.indexBuffer->set(*dc);
-
-    dc->draw(mesh.second.indicesCount, 0, 0);
-  }*/
-
+  
 }
-//void onDraw() override;
 void
 TestScriptApp::postDestroy() {
   scriptEngine->release();
@@ -95,45 +88,26 @@ TestScriptApp::input() {
 }
 void 
 TestScriptApp::initInput() {
-
+  
 }
 void 
 TestScriptApp::initResources() {
-  ResourceManager* resourceManager = nullptr;
-  if (ResourceManager::isStarted()) {
-    resourceManager = &ResourceManager::instance();
-  }
 
-  resourceManager->loadResource(_T("Croc.X"));
-  resourceManager->loadResource(_T("test.as"));
+  ResourceManager::loadResource(_T("Croc.X"));
+  ResourceManager::loadResource(_T("test.as"));
 
 }
 void
 TestScriptApp::initSound() {
-
 }
 void
 TestScriptApp::initSceneGraph() {
-  /*SceneGraph::startUp();
  
-  std::shared_ptr<GameObject> nodo;
-  nodo = std::make_shared<GameObject>();
-
-  ResourceManager* resourceManager = &ResourceManager::instance();
-
-  auto model = std::dynamic_pointer_cast<Model>(resourceManager->getReference(_T("Croc.X")));
-  nodo->createComponent<RenderComponent>(model);
-  SceneGraph::addObject(nodo);*/
 }
 
 void
 TestScriptApp::initScriptEngine() {
   int result;
-
-  ResourceManager* resourceManager = nullptr;
-  if (ResourceManager::isStarted()) {
-    resourceManager = &ResourceManager::instance();
-  }
 
   if (!ScriptEngine::isStarted()) {
     ScriptEngine::startUp();
@@ -145,12 +119,20 @@ TestScriptApp::initScriptEngine() {
   result = scriptEngine->createEngine();
 
   auto script = std::dynamic_pointer_cast<ScriptCore>
-                        (resourceManager->getReference(_T("test.as")));
+                        (ResourceManager::getReference(_T("test.as")));
 
   result = scriptEngine->addScript(_T("test.as"),
                                    script->getScript());
 
-  Object obj;
+  result = scriptEngine->m_scriptEngine->RegisterObjectType("OneRefObj",
+                                                            0,
+                                                            asOBJ_REF | asOBJ_NOHANDLE);
+  
+  result = scriptEngine->m_scriptEngine->RegisterGlobalFunction("boo cmpInts(int, int)",
+                                                                asFUNCTIONPR(&oneRefObj::cmpInts, (int, int), bool),
+                                                                asCALL_CDECL);
+
+  /*Object obj;
   result = scriptEngine->m_scriptEngine->RegisterObjectType("Object", 
                                                             sizeof(Object), 
                                                             asOBJ_VALUE | asOBJ_APP_CLASS |
@@ -202,11 +184,11 @@ TestScriptApp::initScriptEngine() {
   result = scriptEngine->m_scriptEngine->RegisterObjectMethod("Object",
                                                               "Object& si()",
                                                               asMETHOD(Object, si, Object&),
-                                                              asCALL_THISCALL);
-  result = m_camera->registerFunctions(scriptEngine);
+                                                              asCALL_THISCALL);*/
+  //result = m_camera->registerFunctions(scriptEngine);
   
-  Vector3D vector;
-  result = vector.registerFunctions(scriptEngine);
+  //Vector3D vector;
+  //result = vector.registerFunctions(scriptEngine);
 
   result = scriptEngine->compileScript();
 

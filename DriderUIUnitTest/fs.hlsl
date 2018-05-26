@@ -1,5 +1,5 @@
 cbuffer ConstantBuffer{
-	float4x4 WVP;
+	float4 config;
 }
 Texture2D t : t0;
 SamplerState SS;

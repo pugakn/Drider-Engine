@@ -35,7 +35,16 @@ Camera::setPosition(const Vector3D& position) {
 
 void
 Camera::move(float forward, float strafe, float upVelocity, bool lockY) {
-    
+  auto dir = (m_target - m_position).normalize();
+  auto upDir = m_up.normalize();
+  auto strafeDir = (upDir.cross(dir)).normalize();
+  m_position += dir * forward;
+  m_position += upDir * upVelocity;
+  m_position += strafeDir * strafe;
+  m_target += dir * forward;
+  m_target += upDir * upVelocity;
+  m_target += strafeDir * strafe;
+  invalidateView();
 }
 
 void
@@ -46,6 +55,12 @@ Camera::move(const Vector3D& direction) {
 
 void
 Camera::pan(float forward, float strafe, float upVelocity, bool lockY) {
+  auto dir = (m_target - m_position).normalize();
+  auto upDir = m_up.normalize();
+  auto strafeDir = (upDir.cross(dir)).normalize();
+  m_position += dir * forward;
+  m_position += upDir * upVelocity;
+  m_position += strafeDir * strafe;
   invalidateView();
 }
 
@@ -70,7 +85,7 @@ Camera::createProyection(float fov,
                              m_nearPlane, 
                              m_farPlane);
 
-  m_vp = getView() * m_projection;
+  m_vp = m_view * m_projection;
 }
 
 void
@@ -120,7 +135,7 @@ Camera::rotate(float yawDegree, float pitchDegree) {
 
 void
 Camera::orbit(float pitch, float yaw) {
-	
+  invalidateView();
 }
 
 const Matrix4x4&
@@ -190,6 +205,5 @@ Camera::invalidateView() {
   m_outdateView = true;
 }
 
-//CREATE_REF_FACTORY_FUNC(Camera)
 
 }

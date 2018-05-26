@@ -129,7 +129,13 @@
     <ClInclude Include="Include\dr_bone_attach_object.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\dr_script_component.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Include\dr_camera_component.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_name_object.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -229,6 +235,18 @@
     </ClCompile>
     <ClCompile Include="Source\dr_camera_component.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_script_component.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_name_object.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_sound_component.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\dr_sound_component.h">
+      <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
