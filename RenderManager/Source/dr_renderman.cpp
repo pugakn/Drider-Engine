@@ -43,8 +43,8 @@ RenderMan::init() {
 
   screenWidth = 1280;
   screenHeight = 720;
-  shadowWidth = 512;
-  shadowHeight = 512;
+  shadowWidth = 1024;
+  shadowHeight = 1024;
 
   //////////Shadows stuff//////////
   std::shared_ptr<Camera> mainCam = CameraManager::getActiveCamera();

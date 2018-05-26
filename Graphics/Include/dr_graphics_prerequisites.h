@@ -10,6 +10,7 @@
 *																	                                    *
 **********************************************************************/
 
+#define MAX_TEXTURES 16
 #define MAX_RENDERTARGETS 8
 
 #if DR_PLATFORM == DR_PLATFORM_WINDOWS

@@ -1,16 +1,19 @@
 #include "dr_d3d_texture.h"
 #include <d3d11.h>
 #include <dxgi.h>
+#include "dr_graphics_prerequisites.h"
 #include "dr_d3d_device.h"
 #include "dr_d3d_device_context.h"
 
 namespace driderSDK {
 
-void* D3DTexture::getAPIObject() {
+void*
+D3DTexture::getAPIObject() {
   return APIView;
 }
 
-void** D3DTexture::getAPIObjectReference() {
+void**
+D3DTexture::getAPIObjectReference() {
   DR_ASSERT(m_descriptor.bindFlags != DR_BIND_FLAGS::DEPTH_STENCIL);
   return reinterpret_cast<void**>(&APIView);
 }
@@ -106,8 +109,6 @@ D3DTexture::createFromMemory(const Device& device,
     CreateShaderResourceView(APITexture,
       &srvDesc,
       &APIView);
-
-
 }
 
 void
@@ -127,6 +128,16 @@ D3DTexture::map(const DeviceContext& deviceContext, char* buffer) {
           &mappedResource);
 
   buffer = static_cast<char*>(mappedResource.pData);
+}
+
+void
+D3DTexture::setTextureNull(const DeviceContext& deviceContext) const {
+  ID3D11ShaderResourceView* nullTextures[MAX_TEXTURES] = {};
+  std::memset(nullTextures, 0, sizeof(nullTextures));
+
+  reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
+    D3D11DeviceContext->
+      PSSetShaderResources(0, MAX_TEXTURES, nullTextures);
 }
 
 void

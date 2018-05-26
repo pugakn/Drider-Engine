@@ -46,6 +46,7 @@ GBufferPass::draw(PassDrawData* drawData) {
   GBufferDrawData* data = static_cast<GBufferDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
+  data->OutRt->getTexture(0).setTextureNull(dc);
   data->OutRt->setRTNull(dc);
   data->OutRt->set(dc, *data->dsOptions);
   

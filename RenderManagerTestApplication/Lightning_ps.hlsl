@@ -49,8 +49,8 @@ insideBounds(float4 fromLightPos) {
 
 //#define INTERVAL_BASED_SELECTION
 //#define MAP_BASED_SELECTION
+#define DR_SH_PCF_ENABLED
 //#define CASCADE_BLUR
-//#define DR_SH_PCF_ENABLED
 float
 GetShadowValue(float4 fromMinLightPos, const int camIndex) {
   float shadowValue = 1.0f;
@@ -215,12 +215,12 @@ FS(PS_INPUT input) : SV_TARGET0 {
   
   const int activeLights = kEyePosition.w;
   [unroll]
-  for (int index = 0; index < activeLights; index += 4) {
-    lightPosition  = kLightPosition[index].xyz + float3(0.0f, 0.0f, 0.0f);
+  for (int index = 0; index < activeLights; index += 2) {
+    lightPosition  = kLightPosition[index].xyz + float3(0.0f, 25.0f, 0.0f);
     lightColor     = kLightColor[index].xyz;
     lightIntensity = kLightColor[index].w;
     
-    LightPower = saturate( 1.0f - (length(lightPosition - position.xyz) / 150.0f) );
+    LightPower = saturate( 1.0f - (length(lightPosition - position.xyz) / 200.0f) );
 
     LightDir = normalize(lightPosition - position.xyz);
 
@@ -317,8 +317,8 @@ FS(PS_INPUT input) : SV_TARGET0 {
   #ifdef CASCADE_BLUR
     float4 fromMaxLightPos = mul(kShadowVP[min(iCurrentCascadeIndex + 1, 3)], float4(position, 1.0f));
     ShadowValue = lerp(GetShadowValue(fromMinLightPos, iCurrentCascadeIndex),
-                             GetShadowValue(fromMaxLightPos, min(iCurrentCascadeIndex + 1, 3)),
-                            ShadowLerp);
+                       GetShadowValue(fromMaxLightPos, min(iCurrentCascadeIndex + 1, 3)),
+                       ShadowLerp);
   #else
     ShadowValue = GetShadowValue(fromMinLightPos, iCurrentCascadeIndex);
   #endif //CASCADE_BLUR

@@ -1,4 +1,5 @@
 #include "dr_graphics_driver.h"
+
 namespace driderSDK {
 GraphicsDriver::GraphicsDriver(DR_GRAPHICS_API::E apiType, 
                                UInt32 w, 

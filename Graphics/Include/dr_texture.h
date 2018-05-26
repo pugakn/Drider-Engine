@@ -103,6 +103,19 @@ class DR_GRAPHICS_EXPORT Texture
   *
   */
   virtual void
+  setTextureNull(const DeviceContext& deviceContext) const = 0;
+
+  /**
+  * Set the texture to the shader
+  *
+  * @param deviceContext
+  *   The device context to set the resource
+  *
+  * @param slot
+  *   The slot where the texture will be placed
+  *
+  */
+  virtual void
   set(const DeviceContext& deviceContext, UInt32 slot) const = 0;
 
   /**
