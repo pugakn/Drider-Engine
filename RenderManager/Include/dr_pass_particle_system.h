@@ -48,7 +48,12 @@ class ParticleSystemPass : public RenderPass {
   draw(PassDrawData* drawData);
 
  private:
-
+   struct CBuff {
+     Matrix4x4 V;
+     Matrix4x4 P;
+   };
+  
+   CBuff m_cbuff;
   GFXUnique<SamplerState> m_samplerState;
   GFXUnique<InputLayout> m_inputLayoutInstance;
   GFXUnique<VertexBuffer> m_instanceBuffer;

@@ -40,7 +40,7 @@ namespace driderSDK {
   };
   class DR_PARTICLES_EXPORT ParticleUpdater {
   public:
-    FORCEINLINE virtual void update(size_t start, size_t end, Particle* p, const ParticleEmitterAttributes& attr) = 0;
+    FORCEINLINE virtual void update(float dt, size_t start, size_t end, Particle* p, const ParticleEmitterAttributes& attr) = 0;
   };
   class DR_PARTICLES_EXPORT ParticleGenerator {
   public:
@@ -75,40 +75,40 @@ namespace driderSDK {
   };
   class DR_PARTICLES_EXPORT TimeColorUpdater : public ParticleUpdater {
   public:
-    FORCEINLINE void update(size_t start, size_t end, Particle* p, const ParticleEmitterAttributes& attr) override;
+    FORCEINLINE void update(float dt, size_t start, size_t end, Particle* p, const ParticleEmitterAttributes& attr) override;
     Vector3D m_initialColor{ 0,0,0 };
     Vector3D m_finalColor{ 0,0,0 };
   };
   class DR_PARTICLES_EXPORT TimeScaleUpdater : public ParticleUpdater {
   public:
-    FORCEINLINE void update(size_t start, size_t end, Particle* p, const ParticleEmitterAttributes& attr) override;
+    FORCEINLINE void update(float dt, size_t start, size_t end, Particle* p, const ParticleEmitterAttributes& attr) override;
     float m_initialScale{ 0 };
     float m_finaleScale{ 0 };
   };
   class DR_PARTICLES_EXPORT EulerUpdater : public ParticleUpdater {
   public:
-    FORCEINLINE void update(size_t start, size_t end, Particle* p, const ParticleEmitterAttributes& attr) override;
+    FORCEINLINE void update(float dt, size_t start, size_t end, Particle* p, const ParticleEmitterAttributes& attr) override;
     FORCEINLINE void addForce(Vector3D _force);
     Vector3D m_globalAcceleration{ 0, -0, 0 };
     float m_gravity{0};
   };
   class DR_PARTICLES_EXPORT VelocityLimiter : public ParticleUpdater {
   public:
-    FORCEINLINE void update(size_t start, size_t end, Particle* p, const ParticleEmitterAttributes& attr) override;
+    FORCEINLINE void update(float dt, size_t start, size_t end, Particle* p, const ParticleEmitterAttributes& attr) override;
     float m_initialSpeedLimit{ 0 };
     float m_finalSpeedLimit{ 0 };
   };
 
   class DR_PARTICLES_EXPORT AttractorUpdater : public ParticleUpdater {
   public:
-    FORCEINLINE void update(size_t start, size_t end, Particle* p, const ParticleEmitterAttributes& attr) override;
+    FORCEINLINE void update(float dt, size_t start, size_t end, Particle* p, const ParticleEmitterAttributes& attr) override;
     float m_atractionForce{ 0 };
     Vector3D m_position{ 0, 0, 0 };
     float m_radius;
   };
   class DR_PARTICLES_EXPORT RepellerUpdater : public ParticleUpdater {
   public:
-    FORCEINLINE void update(size_t start, size_t end, Particle* p, const ParticleEmitterAttributes& attr) override;
+    FORCEINLINE void update(float dt, size_t start, size_t end, Particle* p, const ParticleEmitterAttributes& attr) override;
     float m_repellerForce{ 0 };
     Vector3D m_position{ 0, 0, 0 };
     float m_radius;

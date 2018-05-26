@@ -7,6 +7,7 @@
 #include <dr_device_context.h>
 #include <dr_resource_manager.h>
 #include <dr_model.h>
+#include <dr_camera_manager.h>
 namespace driderSDK {
 
   ParticleSystemPass::ParticleSystemPass() {
@@ -25,10 +26,11 @@ namespace driderSDK {
 
     recompileShader();
 
-    //DrBufferDesc bdesc;
-    //bdesc.type = DR_BUFFER_TYPE::kCONSTANT;
-    //bdesc.sizeInBytes = (sizeof(Matrix4x4) + sizeof(Vector4D)) * ParticleEmitter::MAX_PARTICLES;
-    //m_constantBuffer = dr_gfx_unique((ConstantBuffer*)device.createBuffer(bdesc));
+    DrBufferDesc bdesc;
+    bdesc.type = DR_BUFFER_TYPE::kCONSTANT;
+    bdesc.sizeInBytes = sizeof(CBuff);
+    m_constantBuffer = dr_gfx_unique((ConstantBuffer*)device.createBuffer(bdesc));
+
     auto ls = m_inputLayout->getDescriptor();
     ls.pop_back();
     ls.pop_back();
@@ -116,6 +118,15 @@ namespace driderSDK {
     //const float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
     //data->OutRt->clear(dc, clearColor);
     //(data->dsOptions)->clear(dc, 1, 0);
+
+    m_cbuff.V = CameraManager::getActiveCamera()->getView();
+    m_cbuff.P = CameraManager::getActiveCamera()->getProjection();
+    m_cbuff.V.transpose();
+    m_cbuff.P.transpose();
+
+    m_constantBuffer->updateFromBuffer(dc,(byte*)&m_cbuff);
+    m_constantBuffer->set(dc);
+
 
     m_instanceBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(data->emitter->m_buffer));
     m_VBQUAD->set(dc, m_instanceBuffer.get());

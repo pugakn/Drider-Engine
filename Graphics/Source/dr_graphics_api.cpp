@@ -61,7 +61,7 @@ GraphicsAPI::init(UInt32 w, UInt32 h, void * hwnd, DR_GRAPHICS_API::E api)
 
   DrRasterizerDesc rasterizerStateDesc;
   rasterizerStateDesc.fillMode = DR_FILL_MODE::kSolid;
-  rasterizerStateDesc.cullMode = DR_CULL_MODE::kNone;
+  rasterizerStateDesc.cullMode = DR_CULL_MODE::kBack;
   rasterizerStateDesc.frontCounterClockwise = false;
   rasterizerStateDesc.depthBias = 0;
   rasterizerStateDesc.depthBiasClamp = 0.0f;

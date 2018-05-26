@@ -1,4 +1,9 @@
 
+cbuffer ConstantBuffer {
+  float4x4 V;
+  float4x4 P;
+};
+
 struct VS_INPUT {
   //Vertex
   float4 Position     : POSITION;
@@ -20,11 +25,15 @@ struct VS_OUTPUT {
 VS_OUTPUT
 VS(VS_INPUT input) {
   VS_OUTPUT output;
-  float4x4 WVP = float4x4(input.InstancePos0, input.InstancePos1, input.InstancePos2, input.InstancePos3);
-  //output.Position   =  input.Position;
-  //output.Position.x = -output.Position.x;
+  float4x4 World = float4x4(input.InstancePos0, input.InstancePos1, input.InstancePos2, input.InstancePos3);
+  float4x4 worldViewMatrix = mul(World, V);
+  float3 positionVS = input.Position * float3(World._11, World._22, World._33);
+  positionVS = positionVS + float3(worldViewMatrix._41, worldViewMatrix._42, worldViewMatrix._43);
+  output.Position = mul(float4(positionVS, 1.0f), P);
 
-  output.Position = mul(float4(input.Position.xyz,1), WVP);
+
+
+  //output.Position = mul(float4(input.Position.xyz,1), WVP);
   output.color = input.color;
   return output;
 }
