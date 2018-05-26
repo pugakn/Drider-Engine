@@ -59,7 +59,7 @@ SceneViewer::init(Viewport v)
                                DR_BIND_FLAGS::SHADER_RESOURCE;
   depthTextureDesc.width = m_sceneViewport.width;
   depthTextureDesc.height = m_sceneViewport.height;
-  depthTextureDesc.Format = DR_FORMAT::kD24_UNORM_S8_UINT;
+  depthTextureDesc.Format = DR_FORMAT::kD32_FLOAT;
   m_RTDPTH = dr_gfx_shared(GraphicsAPI::getDevice().createDepthStencil(depthTextureDesc));
 
   m_renderMan.init();

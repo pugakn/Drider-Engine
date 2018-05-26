@@ -17,6 +17,8 @@ namespace driderSDK {
 
     float* m_scale;
     float* m_scaleFactor;
+    float* m_speedLimit;
+    //float* m_rotationSpeed;
 
     Vector3D* m_color;
 
@@ -35,11 +37,6 @@ namespace driderSDK {
     float m_trailDist = 0.0f;
     float m_particleMaxLife = 0.0f;
     float m_systemMaxLife = 0.0f;
-
-    //float m_initialSpeedLimit{ 0 };
-    //float m_finalSpeedLimit{ 0 };
-    //Volumen/Area
-    //Evento
   };
   class DR_PARTICLES_EXPORT ParticleUpdater {
   public:
@@ -55,6 +52,13 @@ namespace driderSDK {
     FORCEINLINE void generate(size_t start, size_t end, Particle* p) override;
     Vector3D m_initialPositionRandomMin{ 0,0,0 };
     Vector3D m_initialPositionRandomMax{ 0,0,0 };
+  };
+  class DR_PARTICLES_EXPORT SphereGenerator : public ParticleGenerator {
+  public:
+    FORCEINLINE void generate(size_t start, size_t end, Particle* p) override;
+    float m_radiusRandomMax{0};
+    float m_radiusRandomMin{0};
+    Vector3D m_centerPosition{0,0,0};
   };
 
   class DR_PARTICLES_EXPORT RandomVelocityGenerator : public ParticleGenerator {
@@ -84,7 +88,9 @@ namespace driderSDK {
   class DR_PARTICLES_EXPORT EulerUpdater : public ParticleUpdater {
   public:
     FORCEINLINE void update(size_t start, size_t end, Particle* p, const ParticleEmitterAttributes& attr) override;
-    Vector3D m_Acceleration{ 0, -160.81, 0 };
+    FORCEINLINE void addForce(Vector3D _force);
+    Vector3D m_globalAcceleration{ 0, -0, 0 };
+    float m_gravity{0};
   };
   class DR_PARTICLES_EXPORT VelocityLimiter : public ParticleUpdater {
   public:
@@ -92,6 +98,22 @@ namespace driderSDK {
     float m_initialSpeedLimit{ 0 };
     float m_finalSpeedLimit{ 0 };
   };
+
+  class DR_PARTICLES_EXPORT AttractorUpdater : public ParticleUpdater {
+  public:
+    FORCEINLINE void update(size_t start, size_t end, Particle* p, const ParticleEmitterAttributes& attr) override;
+    float m_atractionForce{ 0 };
+    Vector3D m_position{ 0, 0, 0 };
+    float m_radius;
+  };
+  class DR_PARTICLES_EXPORT RepellerUpdater : public ParticleUpdater {
+  public:
+    FORCEINLINE void update(size_t start, size_t end, Particle* p, const ParticleEmitterAttributes& attr) override;
+    float m_repellerForce{ 0 };
+    Vector3D m_position{ 0, 0, 0 };
+    float m_radius;
+  };
+
   class DR_PARTICLES_EXPORT ParticleEmitter {
   public:
     static const Int32 MAX_PARTICLES = 100000;
@@ -101,28 +123,22 @@ namespace driderSDK {
       update();
     void
       emit();
-
-    //PoolAllocator<Particle> m_particles;
     Particle m_particles;
     struct CBuffer {
       Matrix4x4 WVP;
       Vector4D color;
     };
     CBuffer* m_buffer;
-    size_t m_aliveParticles = 0;
+    size_t m_aliveParticles{0};
 
     std::vector<ParticleUpdater*> m_updaters;
     std::vector<ParticleGenerator*> m_generator;
+    Vector3D m_position;
+    Vector3D m_rotation{0,0,0};
+    Matrix4x4 m_localTransform;
   private:
     ParticleEmitterAttributes m_attributes;
-    std::vector<Vector3D> m_forces;
     float m_lifeTime = 0.0f;
     float m_timeAccum = 0.0f;
-
-    //Internal
-    float _proportionMul;
-    float _proportion;
-    float _speedLimitMax;
-    Vector3D _forcesSum;
   };
 }

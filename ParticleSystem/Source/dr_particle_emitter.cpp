@@ -8,8 +8,7 @@ namespace driderSDK {
   void
     ParticleEmitter::init(const ParticleEmitterAttributes & _attributes)
   {
-    ParticleUpdater* pU = new EulerUpdater();
-    m_updaters.push_back(pU);
+    ParticleUpdater* pU;
     pU = new TimeColorUpdater();
     ((TimeColorUpdater*)pU)->m_initialColor = (Vector3D(1, 1, 0));
     ((TimeColorUpdater*)pU)->m_finalColor = (Vector3D(0, 1, 1));
@@ -18,9 +17,23 @@ namespace driderSDK {
     ((TimeScaleUpdater*)pU)->m_initialScale = 10;
     ((TimeScaleUpdater*)pU)->m_finaleScale = 1;
     m_updaters.push_back(pU);
+    //pU = new AttractorUpdater();
+    //((AttractorUpdater*)pU)->m_position = {250,-500,0};
+    //((AttractorUpdater*)pU)->m_radius = 1000;
+    //((AttractorUpdater*)pU)->m_atractionForce = 200;
+    //m_updaters.push_back(pU);
+    //pU = new RepellerUpdater();
+    //((RepellerUpdater*)pU)->m_position = { 0,250,250 };
+    //((RepellerUpdater*)pU)->m_radius = 1000;
+    //((RepellerUpdater*)pU)->m_repellerForce = 100;
+    //m_updaters.push_back(pU);
+
+
+    pU = new EulerUpdater();
+    m_updaters.push_back(pU);
     pU = new VelocityLimiter();
-    ((VelocityLimiter*)pU)->m_initialSpeedLimit = 1200;
-    ((VelocityLimiter*)pU)->m_finalSpeedLimit = 5;
+    ((VelocityLimiter*)pU)->m_initialSpeedLimit = 800;
+    ((VelocityLimiter*)pU)->m_finalSpeedLimit = 0;
     m_updaters.push_back(pU);
 
     ParticleGenerator* pG = new BoxGenerator();
@@ -37,7 +50,6 @@ namespace driderSDK {
     m_generator.push_back(pG);
 
     m_buffer = new CBuffer[MAX_PARTICLES]; //Memn leak xdxdxd
-    m_forces.push_back(Vector3D(0, -0, 0));
     m_attributes = _attributes;
     m_lifeTime = m_attributes.m_initialTime;
     m_timeAccum = m_attributes.m_initialTime;
@@ -52,7 +64,7 @@ namespace driderSDK {
     m_particles.m_scale = new float[m_attributes.m_maxParticles];
     m_particles.m_scaleFactor = new float[m_attributes.m_maxParticles];
     m_particles.m_velocity = new Vector3D[m_attributes.m_maxParticles];
-
+    m_particles.m_speedLimit = new float[m_attributes.m_maxParticles];
 
     //Particle particle;
     //particle.m_isActive = false;
@@ -60,7 +72,7 @@ namespace driderSDK {
     emit();
   }
   void
-    ParticleEmitter::update()
+  ParticleEmitter::update()
   {
     if (!m_attributes.m_isActive) {
       return;
@@ -76,10 +88,11 @@ namespace driderSDK {
     float tm = Time::getDelta();
     m_lifeTime += tm;
     m_timeAccum += tm;
-    _forcesSum *= 0;
-    for (auto &it : m_forces) {
-      _forcesSum += it;
-    }
+    //
+    m_localTransform.identity();
+    m_localTransform.Translation(m_position);
+    m_localTransform.Rotation(m_rotation.x, m_rotation.y, m_rotation.z);
+    //
     for (size_t i = 0; i < m_aliveParticles; ++i) {
       //Particle* __restrict p = &m_particles[i];
       //consumir tiempo
@@ -124,6 +137,9 @@ namespace driderSDK {
       m_buffer[i].WVP.vector3 = m_particles.m_position[i];
       m_buffer[i].WVP.vector3.w = 1.0;
       m_buffer[i].WVP = m_buffer[i].WVP * CameraManager::getActiveCamera()->getVP();
+      if (m_attributes.m_localSpace) {
+        m_buffer[i].WVP = m_buffer[i].WVP * m_localTransform;
+      }
       m_buffer[i].color = m_particles.m_color[i];
     }
     emit();
@@ -140,6 +156,7 @@ namespace driderSDK {
       for (size_t i = m_aliveParticles; i < endID; ++i) {
         m_particles.m_lifeTime[i] = 0.0f;
         m_particles.m_isActive[i] = true;
+        m_particles.m_speedLimit[i] = Math::MAX_FLOAT;
         m_aliveParticles++;
       }
     }
@@ -223,7 +240,11 @@ namespace driderSDK {
     for (size_t i = start; i < end; ++i) {
 
       //for (size_t i = start; i < end; ++i) {
-      p->m_velocity[i] += m_Acceleration * tm;
+      p->m_velocity[i] += (p->m_acceleration[i] + m_globalAcceleration) * tm;
+      if (p->m_velocity[i].length() > p->m_speedLimit[i]) {
+        p->m_velocity[i] = p->m_velocity[i].normalize() * p->m_speedLimit[i];
+      }
+      p->m_position[i] += p->m_velocity[i] * tm;
       //p->m_velocity[i+1] += m_Acceleration * tm;
       //p->m_velocity[i+2] += m_Acceleration * tm;
       //p->m_velocity[i+3] += m_Acceleration * tm;
@@ -240,7 +261,7 @@ namespace driderSDK {
       //p->m_velocity[i + 14] += m_Acceleration * tm;
       //p->m_velocity[i + 15] += m_Acceleration * tm;
 
-      p->m_position[i] += p->m_velocity[i] * tm;
+      //p->m_position[i] += p->m_velocity[i] * tm;
       //p->m_position[i + 1] += p->m_velocity[i+1] * tm;
       //p->m_position[i + 2] += p->m_velocity[i+2] * tm;
       //p->m_position[i + 3] += p->m_velocity[i+3] * tm;
@@ -336,11 +357,32 @@ namespace driderSDK {
     for (size_t i = start; i < end; ++i) {
       float _proportion = p->m_lifeTime[i] * _proportionMul;
       float m1Proportion = (1.0f - _proportion);
-      float _speedLimitMax = (m_initialSpeedLimit * m1Proportion) + (m_finalSpeedLimit * _proportion);
-      float speed = p->m_velocity[i].length();
-      if (speed > _speedLimitMax) {
-        p->m_velocity[i] = p->m_velocity[i].normalize() * _speedLimitMax;
+      p->m_speedLimit[i] = (m_initialSpeedLimit * m1Proportion) + (m_finalSpeedLimit * _proportion);
+    }
+  }
+  void AttractorUpdater::update(size_t start, size_t end, Particle * p, const ParticleEmitterAttributes & attr)
+  {
+    float tm = Time::getDelta();
+    for (size_t i = start; i < end; ++i) {
+      Vector3D v = m_position - p->m_position[i];
+      float l = v.length();
+      if (l <= m_radius) {
+        p->m_acceleration[i] += v.normalize() * (m_atractionForce * (m_radius/l));
       }
     }
+  }
+  void RepellerUpdater::update(size_t start, size_t end, Particle * p, const ParticleEmitterAttributes & attr)
+  {
+    float tm = Time::getDelta();
+    for (size_t i = start; i < end; ++i) {
+      Vector3D v = p->m_position[i] - m_position;
+      float l = v.length();
+      if (l <= m_radius) {
+        p->m_acceleration[i] += v.normalize() * (m_repellerForce * (m_radius / l));
+      }
+    }
+  }
+  void SphereGenerator::generate(size_t start, size_t end, Particle * p)
+  {
   }
 }

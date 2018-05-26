@@ -232,6 +232,8 @@ RenderMan::draw(const RenderTarget & _out, const DepthStencil & _outds) {
   //m_LightningDrawData.OutRt = m_RTLightning;
   //m_LightningPass.draw(&m_LightningDrawData);
   
+  //const float clearColor[4]{ 0.2,0.5,0.8,1 };
+  //_out->clear(GraphicsAPI::getDeviceContext(), clearColor);
   _out.set(GraphicsAPI::getDeviceContext(), _outds);
   //m_PostProcessingDrawData.ColorRT = m_RTLightning; 
   //m_PostProcessingPass.draw(&m_PostProcessingDrawData); 

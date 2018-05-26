@@ -121,7 +121,6 @@ namespace driderSDK {
     m_VBQUAD->set(dc, m_instanceBuffer.get());
     m_IBQUAD->set(dc);
     dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
-
     dc.drawInstanced(6, data->emitter->m_aliveParticles, 0, 0, 0);
   }
 
