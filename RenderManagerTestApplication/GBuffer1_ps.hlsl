@@ -28,6 +28,12 @@ struct PS_OUTPUT {
 	float4 Emissive_R     : SV_TARGET3;
 };
 
+#define ALBEDO
+#define NORMAL_MAP
+#define EMISSIVE
+#define METALLIC
+#define ROUGHNESS
+
 PS_OUTPUT
 FS(PS_INPUT input) {
 	PS_OUTPUT output;
@@ -36,15 +42,20 @@ FS(PS_INPUT input) {
 	
 	float4 albedo   = AlbedoTex.Sample(SS, uv);
   float4 emmisive = EmissiveTex.Sample(SS, uv);
-  float3 normal   = normalize((2.0f * NormalTex.Sample(SS, uv).xyz) - 1.0f);
+  float3 normal;
+#ifdef NORMAL_MAP
+  normal = normalize((2.0f * NormalTex.Sample(SS, uv).xyz) - 1.0f);
   normal = normalize(mul(normal, input.TBN));
+#else
+  normal = input.TBN[2];
+#endif //NORMAL_MAP
   
   float metalic   = Metallic.Sample(SS, uv).r;
   float roughness = Roughness.Sample(SS, uv).r;
 
   float RealDepth = input.RealPos.w;
-  float fFocusDistance = 380.0f;
-  float fFocusRange = 70.0f;
+  float fFocusDistance = 390.0f;
+  float fFocusRange = 50.0f;
   float CoC = (RealDepth - fFocusDistance) / abs(fFocusRange);
   
   //sign: Returns -1 if x is less than zero; 0 if x equals zero; and 1 if x is greater than zero.

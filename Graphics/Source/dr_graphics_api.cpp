@@ -18,9 +18,9 @@
 #include "dr_d3d_device_context.h"
 #endif
 namespace driderSDK {
+
 void 
-GraphicsAPI::init(UInt32 w, UInt32 h, void * hwnd, DR_GRAPHICS_API::E api)
-{
+GraphicsAPI::init(UInt32 w, UInt32 h, void* hwnd, DR_GRAPHICS_API::E api) {
   if (api == DR_GRAPHICS_API::D3D11) {
 #if DR_PLATFORM  == DR_PLATFORM_WINDOWS
     m_device = dr_gfx_unique<Device>(new D3DDevice);
@@ -140,13 +140,13 @@ GraphicsAPI::init(UInt32 w, UInt32 h, void * hwnd, DR_GRAPHICS_API::E api)
     m_depthStencilStates[DR_DEPTH_STENCIL_STATES::kDepthR] = dr_gfx_unique(bd);
   }
 }
-void 
-GraphicsAPI::destroy()
-{
-}
+
 void
-GraphicsAPI::clear()
-{
+GraphicsAPI::destroy() {
+}
+
+void
+GraphicsAPI::clear() {
   float rgba[4];
   rgba[0] = 0.25f;
   rgba[1] = 0.35f;
@@ -154,15 +154,18 @@ GraphicsAPI::clear()
   rgba[3] = 1.0f;
   m_deviceContext->clearRenderTargetView(m_swapChain->getBackBufferRT(), rgba);
   m_deviceContext->clearDepthStencilView(*m_depthStencilView,
-    DR_DEPTH_STENCIL_CLEAR_TYPE::kClearDepth,
-    1.0f, 0);
+                                         DR_DEPTH_STENCIL_CLEAR_TYPE::kClearDepth,
+                                         1.0f,
+                                         0);
 }
-void GraphicsAPI::swapBuffers()
-{
+
+void
+GraphicsAPI::swapBuffers() {
   m_swapChain->swapBuffers();
 }
-void GraphicsAPI::resizeBackBuffer(UInt32 w, UInt32 h)
-{
+
+void
+GraphicsAPI::resizeBackBuffer(UInt32 w, UInt32 h) {
   m_swapChain->resize(*m_device, w,h);
   m_depthStencilView.reset();
   DrDepthStencilDesc depthTextureDesc;
@@ -175,7 +178,8 @@ void GraphicsAPI::resizeBackBuffer(UInt32 w, UInt32 h)
     m_depthStencilView = dr_gfx_unique(ds);
   }
 }
-  Device&
+
+Device&
 GraphicsAPI::getDevice() {
   return *GraphicsDriver::API().m_device;
 }
@@ -211,16 +215,14 @@ GraphicsAPI::getWindowHandle() {
   return GraphicsDriver::API().m_hwnd;
 }
 
-BlendState & GraphicsAPI::getBlendState(DR_BLEND_STATES::E state)
-{
+BlendState&
+GraphicsAPI::getBlendState(DR_BLEND_STATES::E state) {
   return *GraphicsDriver::API().m_blendSStates[state];
 }
 
-DepthStencilState & GraphicsAPI::getDepthStencilState(DR_DEPTH_STENCIL_STATES::E state)
-{
+DepthStencilState&
+GraphicsAPI::getDepthStencilState(DR_DEPTH_STENCIL_STATES::E state) {
   return *GraphicsDriver::API().m_depthStencilStates[state];
 }
-
-
 
 }

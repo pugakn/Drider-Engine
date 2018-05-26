@@ -47,7 +47,6 @@ LightningPass::draw(PassDrawData* drawData) {
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
   data->OutRt->setRTNull(dc);
-  //GraphicsAPI::getBackBufferRT().set(dc, GraphicsAPI::getDepthStencil());
   data->OutRt->set(dc, *data->dsOptions);
 
   m_vertexShader->set(dc);

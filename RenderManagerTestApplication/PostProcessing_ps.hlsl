@@ -53,6 +53,7 @@ float4
 
   #ifdef DEPTH_OF_FIELD
     float fCoC = NormCoC.Sample(SS, uv).w;
+    //return float4(fCoC.xxx, 1.0f);
   #endif //DEPTH_OF_FIELD
 
   #ifdef VIGNETTE
@@ -74,7 +75,6 @@ float4
   //CA = GodRays.Sample(SS, uv).w;
   //float4 ColorGodray = float4(CR, CG, CB, CA);
   
-  //float4 finalColor = lerp(Color, ColorBlur, fCoC) + ColorGodray;
   float4 finalColor;
 
   #ifdef DEPTH_OF_FIELD

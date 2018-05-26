@@ -41,8 +41,13 @@ RenderMan::init() {
   dc.createTextureFromMemory(, cubeMapDesc);
   */
 
+  //screenWidth = 1920;
+  //screenHeight = 1080;
+  //screenWidth = 1536;
+  //screenHeight = 864;
   screenWidth = 1280;
   screenHeight = 720;
+
   shadowWidth = 1024;
   shadowHeight = 1024;
 
@@ -62,7 +67,7 @@ RenderMan::init() {
 
   //m_vec3DirectionalLight = Vector3D(-1.0f, -1.0f, 0.0f).normalize();
   //m_vec3DirectionalLight = Vector3D(0.0f, -10000.0f, 0.1f).normalize();
-  m_vec3DirectionalLight = Vector3D(-1.0f, -1.0f, -1.0f).normalize();
+  m_vec3DirectionalLight = Vector3D(1.0f, -1.0f, -1.0f).normalize();
 
   partitions = calculatePartitions(m_szActiveShadowCameras);
 
@@ -140,21 +145,21 @@ RenderMan::init() {
   m_RTShadowDummy[2] = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
   m_RTShadowDummy[3] = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
 
-  DrDepthStencilDesc depthTextureDesc;
-  depthTextureDesc.bindFlags = DR_BIND_FLAGS::DEPTH_STENCIL | DR_BIND_FLAGS::SHADER_RESOURCE;
-  depthTextureDesc.width = screenWidth;
-  depthTextureDesc.height = screenHeight;
-  depthTextureDesc.Format = DR_FORMAT::kD24_UNORM_S8_UINT;
+  DrDepthStencilDesc commonTextureDesc;
+  commonTextureDesc.bindFlags = DR_BIND_FLAGS::DEPTH_STENCIL | DR_BIND_FLAGS::SHADER_RESOURCE;
+  commonTextureDesc.width = screenWidth;
+  commonTextureDesc.height = screenHeight;
+  commonTextureDesc.Format = DR_FORMAT::kD24_UNORM_S8_UINT;
 
-  m_GBufferDSoptions        = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
-  m_SSAODSoptions           = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
-  m_HorBlurDSoptions        = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
-  m_VerBlurDSoptions        = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
-  m_LightningDSoptions      = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
-  m_PostProcessingDSoptions = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
-  depthTextureDesc.width  = shadowWidth;
-  depthTextureDesc.height = shadowHeight;
-  m_ShadowDSoptions         = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
+  m_GBufferDSoptions        = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
+  m_SSAODSoptions           = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
+  m_HorBlurDSoptions        = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
+  m_VerBlurDSoptions        = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
+  m_LightningDSoptions      = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
+  m_PostProcessingDSoptions = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
+  commonTextureDesc.width   = shadowWidth;
+  commonTextureDesc.height  = shadowHeight;
+  m_ShadowDSoptions         = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
 
   m_GBufferPass.init(&m_GBufferInitData);
   m_SSAOPass.init(&m_SSAOInitData);
@@ -217,8 +222,7 @@ RenderMan::draw() {
     m_ShadowPass.draw(&m_ShadowDrawData);
   }
   m_ShadowPass.merge(m_RTShadowDummy, m_ShadowDSoptions, m_RTShadow);
-  /*
-  */
+
   m_LightningDrawData.activeCam = mainCam;
   m_LightningDrawData.DirLight = Vector4D(m_vec3DirectionalLight, 1.0f);
   m_LightningDrawData.GbufferRT = m_RTGBuffer;

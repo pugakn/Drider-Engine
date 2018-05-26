@@ -49,9 +49,13 @@ class RenderManApp : public Application
   RenderMan m_renderMan;
 
   SceneGraph::SharedGameObject m_selectedGO;
-  SizeT m_SzTGosIndex;
+  Int32 m_SzTGosIndex;
+  bool m_bRotate;
   std::vector<SceneGraph::SharedGameObject> m_vecGos;
   std::shared_ptr<Material> m_floorMat;
+  std::shared_ptr<Material> m_hkBodyMat;
+  std::shared_ptr<Material> m_hkBodySMat;
+  std::shared_ptr<Material> m_hkEyeMat;
   std::shared_ptr<Material> m_modelMat;
 
   Vector3D modelMovement;

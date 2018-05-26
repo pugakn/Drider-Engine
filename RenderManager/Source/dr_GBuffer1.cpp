@@ -73,8 +73,8 @@ GBufferPass::draw(PassDrawData* drawData) {
   CB.CameraInfo.w  = data->activeCam->getFarPlane();
 
   for (auto& modelPair : *data->models) {
+    data->OutRt->getTexture(0).setTextureNull(dc);
     if (auto material = modelPair.mesh.material.lock()) {
-
       auto AlbedoTex = material->getProperty(_T("Albedo"));
       if (AlbedoTex != nullptr) {
         if (auto GA_Tex = AlbedoTex->texture.lock()) {
