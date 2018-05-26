@@ -47,6 +47,7 @@ SSAOPass::draw(PassDrawData* drawData) {
   SSAODrawData* data = static_cast<SSAODrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
+  data->OutRt->setRTNull(dc);
   data->OutRt->set(dc, *data->dsOptions);
 
   m_vertexShader->set(dc);

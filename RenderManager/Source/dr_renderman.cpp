@@ -43,8 +43,8 @@ RenderMan::init() {
 
   screenWidth = 1280;
   screenHeight = 720;
-  shadowWidth = 1024;
-  shadowHeight = 1024;
+  shadowWidth = 512;
+  shadowHeight = 512;
 
   //////////Shadows stuff//////////
   std::shared_ptr<Camera> mainCam = CameraManager::getActiveCamera();
@@ -98,26 +98,43 @@ RenderMan::init() {
   m_TexDescDefault.height = screenHeight;
   m_TexDescDefault.pitch = m_TexDescDefault.width * 4;
   m_TexDescDefault.dimension = DR_DIMENSION::k2D;
-  m_TexDescDefault.Format = DR_FORMAT::kR32G32B32A32_FLOAT;
+  m_TexDescDefault.Format = DR_FORMAT::kR16G16B16A16_FLOAT;
   m_TexDescDefault.mipLevels = 0;
   m_TexDescDefault.CPUAccessFlags = 0;
   m_TexDescDefault.genMipMaps = true;
   m_TexDescDefault.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE |
                                DR_BIND_FLAGS::RENDER_TARGET;
 
+  m_TexDescDefault.Format = DR_FORMAT::kR16G16B16A16_FLOAT;
   m_RTGBuffer        = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 4));
+
+  m_TexDescDefault.Format = DR_FORMAT::kR8_SNORM;
+  m_TexDescDefault.pitch = m_TexDescDefault.width;
   m_RTSSAO           = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
+
+  m_TexDescDefault.Format = DR_FORMAT::kR16G16B16A16_FLOAT;
+  m_TexDescDefault.pitch = m_TexDescDefault.width * 4;
   m_RTBlurInit       = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
+
+  m_TexDescDefault.Format = DR_FORMAT::kR8_SNORM;
+  m_TexDescDefault.pitch = m_TexDescDefault.width * 4;
   m_RTSSAOBlur       = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
+
+  m_TexDescDefault.Format = DR_FORMAT::kR16G16B16A16_FLOAT;
+  m_TexDescDefault.pitch = m_TexDescDefault.width * 4;
   m_RTLightning      = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
   m_RTPostProcessing = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
   m_RTPreFinalBlur   = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
+
+  m_TexDescDefault.Format = DR_FORMAT::kR32G32B32A32_FLOAT;
   m_TexDescDefault.width  = shadowWidth;
   m_TexDescDefault.height = shadowHeight;
   m_TexDescDefault.pitch =  m_TexDescDefault.width * 4;
   m_RTShadow         = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
   m_TexDescDefault.pitch = m_TexDescDefault.width;
+
   m_TexDescDefault.Format = DR_FORMAT::kR32_FLOAT;
+  m_TexDescDefault.pitch = m_TexDescDefault.width;
   m_RTShadowDummy[0] = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
   m_RTShadowDummy[1] = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
   m_RTShadowDummy[2] = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
@@ -186,7 +203,7 @@ RenderMan::draw() {
   m_VerBlurDrawData.InRt = m_RTBlurInit;
   m_VerBlurDrawData.OutRt = m_RTSSAOBlur;
   m_VerBlurPass.draw(&m_VerBlurDrawData);
-  
+
   for (size_t camIndex = 0; camIndex < m_szActiveShadowCameras; ++camIndex) {
     queryRequest = SceneGraph::query(*vecShadowCamera[camIndex],
                                      QUERY_ORDER::kFrontToBack,          
@@ -200,7 +217,8 @@ RenderMan::draw() {
     m_ShadowPass.draw(&m_ShadowDrawData);
   }
   m_ShadowPass.merge(m_RTShadowDummy, m_ShadowDSoptions, m_RTShadow);
-  
+  /*
+  */
   m_LightningDrawData.activeCam = mainCam;
   m_LightningDrawData.DirLight = Vector4D(m_vec3DirectionalLight, 1.0f);
   m_LightningDrawData.GbufferRT = m_RTGBuffer;

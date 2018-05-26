@@ -109,6 +109,7 @@ ShadowPass::draw(PassDrawData* drawData) {
   ShadowDrawData* data = static_cast<ShadowDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
+  data->OutRt->setRTNull(dc);
   data->OutRt->set(dc, *data->dsOptions);
 
   m_vertexShader->set(dc);
@@ -146,6 +147,7 @@ ShadowPass::merge(std::array<GFXShared<RenderTarget>, 4> m_RTShadowDummy,
                   GFXShared<RenderTarget> OutRt) {
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
+  OutRt->setRTNull(dc);
   OutRt->set(dc, *dsOptions);
 
   m_ShaderVMerge->set(dc);

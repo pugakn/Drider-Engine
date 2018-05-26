@@ -45,6 +45,7 @@ PostProcessingPass::draw(PassDrawData* drawData) {
   PostProcessingDrawData* data = static_cast<PostProcessingDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
+  GraphicsAPI::getBackBufferRT().setRTNull(dc);
   GraphicsAPI::getBackBufferRT().set(dc, GraphicsAPI::getDepthStencil());
 
   m_vertexShader->set(dc);

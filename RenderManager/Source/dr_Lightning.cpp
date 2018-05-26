@@ -46,6 +46,7 @@ LightningPass::draw(PassDrawData* drawData) {
   LightningDrawData* data = static_cast<LightningDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
+  data->OutRt->setRTNull(dc);
   //GraphicsAPI::getBackBufferRT().set(dc, GraphicsAPI::getDepthStencil());
   data->OutRt->set(dc, *data->dsOptions);
 

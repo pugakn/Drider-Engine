@@ -46,6 +46,7 @@ GBufferPass::draw(PassDrawData* drawData) {
   GBufferDrawData* data = static_cast<GBufferDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
+  data->OutRt->setRTNull(dc);
   data->OutRt->set(dc, *data->dsOptions);
   
   m_vertexShader->set(dc);
@@ -72,6 +73,7 @@ GBufferPass::draw(PassDrawData* drawData) {
 
   for (auto& modelPair : *data->models) {
     if (auto material = modelPair.mesh.material.lock()) {
+
       auto AlbedoTex = material->getProperty(_T("Albedo"));
       if (AlbedoTex != nullptr) {
         if (auto GA_Tex = AlbedoTex->texture.lock()) {

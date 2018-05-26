@@ -46,6 +46,7 @@ VerBlurPass::draw(PassDrawData* drawData) {
   VerBlurDrawData* data = static_cast<VerBlurDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
+  data->OutRt->setRTNull(dc);
   data->OutRt->set(dc, *data->dsOptions);
 
   m_vertexShader->set(dc);

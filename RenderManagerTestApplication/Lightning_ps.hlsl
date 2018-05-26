@@ -47,7 +47,10 @@ insideBounds(float4 fromLightPos) {
           fromLightCoords.y < 1.0f);
 }
 
-#define DR_SH_PCF_ENABLED
+//#define INTERVAL_BASED_SELECTION
+//#define MAP_BASED_SELECTION
+//#define CASCADE_BLUR
+//#define DR_SH_PCF_ENABLED
 float
 GetShadowValue(float4 fromMinLightPos, const int camIndex) {
   float shadowValue = 1.0f;
@@ -212,7 +215,7 @@ FS(PS_INPUT input) : SV_TARGET0 {
   
   const int activeLights = kEyePosition.w;
   [unroll]
-  for (int index = 0; index < activeLights; index += 8) {
+  for (int index = 0; index < activeLights; index += 4) {
     lightPosition  = kLightPosition[index].xyz + float3(0.0f, 0.0f, 0.0f);
     lightColor     = kLightColor[index].xyz;
     lightIntensity = kLightColor[index].w;
@@ -260,10 +263,6 @@ FS(PS_INPUT input) : SV_TARGET0 {
   
   float LP = 0.3f;
   float ShadowLerp = 0.0f;
-
-  //#define INTERVAL_BASED_SELECTION
-  //#define MAP_BASED_SELECTION
-  //#define CASCADE_BLUR
   
   #ifdef INTERVAL_BASED_SELECTION
     float4 fComparison;

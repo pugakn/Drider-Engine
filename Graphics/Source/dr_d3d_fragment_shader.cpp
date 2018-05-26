@@ -5,6 +5,9 @@
 #include "dr_d3d_device.h"
 #include "dr_d3d_device_context.h"
 #include "dr_d3d_shader_bytecode.h"
+
+#include <dr_defines.h>
+
 #include <iostream> //DEBUG ONLY
 
 namespace driderSDK {
@@ -55,6 +58,12 @@ D3DFragmentShader::compile(const Device& device,
                            size_t bufferSize) {
   m_shaderBytecode = new D3DShaderBytecode();
   ID3DBlob* errorBlob = nullptr;
+
+  UInt32 flags = D3DCOMPILE_ENABLE_STRICTNESS;
+#if DR_DEBUG_MODE
+  flags |= D3DCOMPILE_DEBUG;
+#endif
+
   HRESULT hr = D3DCompile(buffer,
                           bufferSize,
                           0,
@@ -62,7 +71,7 @@ D3DFragmentShader::compile(const Device& device,
                           0,
                           "FS",
                           "ps_5_0",
-                          0,
+                          flags,
                           0,
                           &reinterpret_cast<D3DShaderBytecode*>
                             (m_shaderBytecode)->shader_blob,

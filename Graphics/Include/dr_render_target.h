@@ -52,7 +52,20 @@ class DR_GRAPHICS_EXPORT RenderTarget
   virtual void
   create(const Device& device, const std::vector<Texture*>& textures) = 0;
 
-
+  /**
+  * TEST::setRTNull
+  *
+  * Set the render target and depth stencil
+  *
+  * @param deviceContext
+  *   The device context to set the shader
+  *
+  * @param depthStencil
+  *   The depth stencil to set with the render target
+  *
+  */
+  virtual void
+  setRTNull(const DeviceContext& deviceContext) const = 0;
 
   /**
   * Set the render target and depth stencil

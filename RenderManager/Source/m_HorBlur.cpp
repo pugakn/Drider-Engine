@@ -46,6 +46,7 @@ HorBlurPass::draw(PassDrawData* drawData) {
   HorBlurDrawData* data = static_cast<HorBlurDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
+  data->OutRt->setRTNull(dc);
   data->OutRt->set(dc, *data->dsOptions);
 
   m_vertexShader->set(dc);

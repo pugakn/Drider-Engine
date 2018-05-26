@@ -109,4 +109,16 @@ D3DRenderTarget::release() {
   delete this;
 }
 
+void
+D3DRenderTarget::setRTNull(const DeviceContext& deviceContext) const {
+  ID3D11RenderTargetView* nullRTs[MAX_RENDERTARGETS] = {};
+  std::memset(nullRTs, 0, sizeof(nullRTs));
+  
+  reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
+    D3D11DeviceContext->
+      OMSetRenderTargets(MAX_RENDERTARGETS,
+                         nullRTs,
+                         nullptr);
+}
+
 }

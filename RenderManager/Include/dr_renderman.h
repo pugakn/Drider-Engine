@@ -134,9 +134,9 @@ class DR_RENDERMAN_EXPORT RenderMan {
 
   //Gbuffer info:
   //0: { xyz: position, w: linear depth };
-  //0: { xyz: normal,   w: CoC };
-  //1: { xyz: albedo,   w: metallic };
-  //2: { xyz: emissive, w: roughness };
+  //1: { xyz: normal,   w: CoC };
+  //2: { xyz: albedo,   w: metallic };
+  //3: { xyz: emissive, w: roughness };
   GFXShared<RenderTarget> m_RTGBuffer;
   GFXShared<RenderTarget> m_RTSSAO;
   GFXShared<RenderTarget> m_RTBlurInit;

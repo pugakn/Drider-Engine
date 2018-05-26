@@ -1,5 +1,6 @@
 #pragma once
 #include "dr_render_target.h"
+#include "dr_graphics_prerequisites.h"
 #include <vector>
 
 struct ID3D11RenderTargetView;
@@ -44,6 +45,12 @@ class DR_GRAPHICS_EXPORT D3DRenderTarget : public RenderTarget
 
   void
   create(const Device& device, const std::vector<Texture*>& textures) override;
+
+  /**
+  * @copydoc RenderTarget::setRTNull(const DeviceContext& deviceContext)
+  */
+  void
+  setRTNull(const DeviceContext& deviceContext) const override;
 
   /**
   * TEST::set

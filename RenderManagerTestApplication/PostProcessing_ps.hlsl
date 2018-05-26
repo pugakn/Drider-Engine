@@ -30,20 +30,19 @@ float4
     
     float2 CAOffset = float2(pow(-abs((0.5f - uv.x) * fChromaticAberrationStrength), fChromaticAberrationConcentration), 0.0f);
     
-    float CR, CG, CB, CA;
+    float CR, CG;
+    float2 CBA;
 
     CR = ColorTex.Sample(SS, uv + CAOffset).x;
     CG = ColorTex.Sample(SS, uv - CAOffset).y;
-    CB = ColorTex.Sample(SS, uv).z;
-    CA = ColorTex.Sample(SS, uv).w;
-    Color = float4(CR, CG, CB, CA);
+    CBA = ColorTex.Sample(SS, uv).zw;
+    Color = float4(CR, CG, CBA);
     
     #ifdef DEPTH_OF_FIELD
       CR = ColorBlurTex.Sample(SS, uv + CAOffset).x;
       CG = ColorBlurTex.Sample(SS, uv - CAOffset).y;
-      CB = ColorBlurTex.Sample(SS, uv).z;
-      CA = ColorBlurTex.Sample(SS, uv).w;
-      ColorBlur = float4(CR, CG, CB, CA);
+      CBA = ColorBlurTex.Sample(SS, uv).zw;
+      ColorBlur = float4(CR, CG, CBA);
     #endif //DEPTH_OF_FIELD
   #else
     Color = ColorTex.Sample(SS, uv);
