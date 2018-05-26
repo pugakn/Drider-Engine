@@ -28,11 +28,11 @@ struct PS_OUTPUT {
 	float4 Emissive_R     : SV_TARGET3;
 };
 
-#define ALBEDO
-#define NORMAL_MAP
-#define EMISSIVE
-#define METALLIC
-#define ROUGHNESS
+//#define ALBEDO
+//#define NORMAL_MAP
+//#define EMISSIVE
+//#define METALLIC
+//#define ROUGHNESS
 
 PS_OUTPUT
 FS(PS_INPUT input) {
