@@ -55,7 +55,7 @@ D3DFragmentShader::compile(const Device&,
                            size_t bufferSize) {
   m_shaderBytecode = new D3DShaderBytecode();
   ID3DBlob* errorBlob = nullptr;
-  HRESULT hr = D3DCompile(buffer,
+  D3DCompile(buffer,
                           bufferSize,
                           0,
                           0,

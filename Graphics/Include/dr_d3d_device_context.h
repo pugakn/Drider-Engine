@@ -247,6 +247,17 @@ class DR_GRAPHICS_EXPORT D3DDeviceContext : public DeviceContext
       UInt32 startVertexLocation,
       UInt32 startInstanceLocation) const override;
 
+  void
+    dispatch(UInt32 _threadGroupCountX,
+      UInt32 _threadGroupCountY,
+      UInt32 _threadGroupCountZ) const override;
+
+  void
+    setResourcesNull() override;
+
+  void
+    setUAVsNull() override;
+
   ID3D11DeviceContext* D3D11DeviceContext;
 };
 

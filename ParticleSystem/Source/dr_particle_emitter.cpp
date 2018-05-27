@@ -3,11 +3,18 @@
 #include <dr_random.h>
 #include <dr_camera_manager.h>
 #include <dr_camera.h>
-
+#include <dr_device.h>
+#include <dr_device_context.h>
+#include <dr_graphics_api.h>
+#include <dr_file.h>
+#include <dr_string_utils.h>
 namespace driderSDK {
   void
     ParticleEmitter::init(const ParticleEmitterAttributes & _attributes)
   {
+    //TEST
+    Device& device = GraphicsAPI::getDevice();
+    //
     ParticleUpdater* pU;
     pU = new TimeColorUpdater();
     ((TimeColorUpdater*)pU)->m_initialColor = (Vector3D(1, 0, 0));
@@ -49,26 +56,52 @@ namespace driderSDK {
     ((RandomScaleFactorGenerator*)pG)->m_scaleFactorRandomMax = 1;
     m_generator.push_back(pG);
 
-    m_buffer = new CBuffer[MAX_PARTICLES]; //Memn leak xdxdxd
+#if (DR_PARTICLES_METHOD == DR_PARTICLES_GPU)
+    driderSDK::File file;
+    String shaderSource;
+
+    file.Open(_T("particle_update_cs.hlsl"));
+    shaderSource = StringUtils::toString(file.GetAsString(file.Size()));
+    file.Close();
+
+    m_cs = device.createShaderFromMemory(shaderSource.data(),
+      shaderSource.size(),
+      DR_SHADER_TYPE_FLAG::kCompute);
+    shaderSource.clear();
+
+
+
+    const Int32 numElements = 1024;
+    DrBufferDesc desc;
+    desc.usage = DR_BUFFER_USAGE::kDefault;
+    desc.type = DR_BUFFER_TYPE::kSTRUCTURE;
+    desc.sizeInBytes = sizeof(inBuff) * numElements;
+    desc.stride = sizeof(inBuff);
+    m_bufferIN = (StructureBuffer*)device.createBuffer(desc);
+
+    desc.type = DR_BUFFER_TYPE::kRWSTRUCTURE;
+    desc.sizeInBytes = sizeof(outBuff) * numElements;
+    desc.stride = sizeof(outBuff);
+    m_bufferOUT = (StructureBuffer*)device.createBuffer(desc);
+
+#endif
+#if (DR_PARTICLES_METHOD == DR_PARTICLES_CPU)
+    m_buffer = new CBuffer[MAX_PARTICLES]; //Mem leak xdxdxd
     m_attributes = _attributes;
     m_lifeTime = m_attributes.m_initialTime;
     m_timeAccum = m_attributes.m_initialTime;
-    //m_particles.init(m_attributes.m_maxParticles);
 
-    m_particles.m_acceleration = new Vector3D[m_attributes.m_maxParticles];
-    m_particles.m_color = new Vector3D[m_attributes.m_maxParticles];
-    m_particles.m_isActive = new bool[m_attributes.m_maxParticles];
-    m_particles.m_lifeTime = new float[m_attributes.m_maxParticles];
-    m_particles.m_position = new Vector3D[m_attributes.m_maxParticles];
-    m_particles.m_rotation = new Vector3D[m_attributes.m_maxParticles];
-    m_particles.m_scale = new float[m_attributes.m_maxParticles];
-    m_particles.m_scaleFactor = new float[m_attributes.m_maxParticles];
-    m_particles.m_velocity = new Vector3D[m_attributes.m_maxParticles];
-    m_particles.m_speedLimit = new float[m_attributes.m_maxParticles];
-
-    //Particle particle;
-    //particle.m_isActive = false;
-    //m_particles.allocate(m_attributes.m_maxParticles, particle);
+    m_particles.m_acceleration = new Vector3D[m_attributes.m_maxParticles];//Mem leak xdxdxd
+    m_particles.m_color = new Vector3D[m_attributes.m_maxParticles];//Mem leak xdxdxd
+    m_particles.m_isActive = new bool[m_attributes.m_maxParticles];//Mem leak xdxdxd
+    m_particles.m_lifeTime = new float[m_attributes.m_maxParticles];//Mem leak xdxdxd
+    m_particles.m_position = new Vector3D[m_attributes.m_maxParticles];//Mem leak xdxdxd
+    m_particles.m_rotation = new Vector3D[m_attributes.m_maxParticles];//Mem leak xdxdxd
+    m_particles.m_scale = new float[m_attributes.m_maxParticles];//Mem leak xdxdxd
+    m_particles.m_scaleFactor = new float[m_attributes.m_maxParticles];//Mem leak xdxdxd
+    m_particles.m_velocity = new Vector3D[m_attributes.m_maxParticles];//Mem leak xdxdxd
+    m_particles.m_speedLimit = new float[m_attributes.m_maxParticles];//Mem leak xdxdxd
+#endif
     emit();
   }
   void
@@ -77,6 +110,7 @@ namespace driderSDK {
     if (!m_attributes.m_isActive) {
       return;
     }
+#if (DR_PARTICLES_METHOD == DR_PARTICLES_CPU)
     if (m_lifeTime >= m_attributes.m_systemMaxLife) {
       m_attributes.m_isActive = false;
       for (size_t i = 0; i < m_attributes.m_maxParticles; ++i) {
@@ -85,28 +119,18 @@ namespace driderSDK {
       }
       return;
     }
+#endif
     float tm = Time::getDelta();
     m_lifeTime += tm;
     m_timeAccum += tm;
-    //
     m_localTransform.identity();
     m_localTransform.Translation(m_position);
     m_localTransform.Rotation(m_rotation.x, m_rotation.y, m_rotation.z);
-    //
+#if (DR_PARTICLES_METHOD == DR_PARTICLES_CPU)
     for (size_t i = 0; i < m_aliveParticles; ++i) {
-      //Particle* __restrict p = &m_particles[i];
-      //consumir tiempo
       if (m_particles.m_lifeTime[i] > m_attributes.m_particleMaxLife)
       {
         m_particles.m_isActive[i] = false;
-        //m_particles.m_acceleration[i] = {0,0,0};
-        //m_particles.m_velocity[i] = { 0,0,0 };
-        //m_particles.m_color[i] = { 0,0,0 };
-        //m_particles.m_position[i] = { 0,0,0 };
-        //m_particles.m_rotation[i] = { 0,0,0 };
-        //m_particles.m_scale[i] = { 0 };
-        //m_particles.m_scaleFactor[i] = { 0 };
-
         std::swap(m_particles.m_acceleration[i], m_particles.m_acceleration[m_aliveParticles - 1]);
         std::swap(m_particles.m_color[i], m_particles.m_color[m_aliveParticles - 1]);
         std::swap(m_particles.m_isActive[i], m_particles.m_isActive[m_aliveParticles - 1]);
@@ -125,7 +149,15 @@ namespace driderSDK {
     for (auto &it : m_updaters) {
       it->update(tm, 0, m_aliveParticles, &m_particles, m_attributes);
     }
+#endif
+#if (DR_PARTICLES_METHOD == DR_PARTICLES_GPU)
+    m_cs->set(GraphicsAPI::getDeviceContext());
+    m_bufferOUT->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute, 0);
+    GraphicsAPI::getDeviceContext().dispatch(32, 1, 1);
+    GraphicsAPI::getDeviceContext().setUAVsNull();
+#endif
     emit();
+#if (DR_PARTICLES_METHOD == DR_PARTICLES_CPU)
     for (size_t i = 0; i < m_aliveParticles; ++i) {
       //BUFFER
       m_buffer[i].WVP.identity();
@@ -144,12 +176,14 @@ namespace driderSDK {
       }
       m_buffer[i].color = m_particles.m_color[i];
     }
+#endif
   }
   void
     ParticleEmitter::emit()
   {
     if (m_timeAccum > m_attributes.m_rate) {
       m_timeAccum -= m_attributes.m_rate;
+#if (DR_PARTICLES_METHOD == DR_PARTICLES_CPU)
       size_t endID = std::min(m_aliveParticles + m_attributes.m_numParticlesToEmit, m_attributes.m_maxParticles);
       size_t tmp = m_aliveParticles;
       for (size_t i = m_aliveParticles; i < endID; ++i) {
@@ -164,6 +198,10 @@ namespace driderSDK {
       for (auto &it : m_updaters) {
         it->update(0,tmp, endID, &m_particles,m_attributes);
       }
+#endif
+#if (DR_PARTICLES_METHOD == DR_PARTICLES_GPU)
+
+#endif
     }
   }
   void BoxGenerator::generate(size_t start, size_t end, Particle * p)

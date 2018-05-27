@@ -179,4 +179,34 @@ D3DDeviceContext::drawInstanced(UInt32 indexCount,
                                            startInstanceLocation);
 }
 
+void 
+D3DDeviceContext::dispatch(UInt32 _threadGroupCountX, 
+                           UInt32 _threadGroupCountY, 
+                           UInt32 _threadGroupCountZ) const
+{
+  D3D11DeviceContext->Dispatch(_threadGroupCountX, 
+                               _threadGroupCountY, 
+                               _threadGroupCountZ);
+}
+
+void D3DDeviceContext::setResourcesNull()
+{
+  ID3D11ShaderResourceView* nullTextures[16] = {};
+  std::memset(nullTextures, 0, sizeof(nullTextures));
+  D3D11DeviceContext->
+  PSSetShaderResources(0, 16, nullTextures);
+  D3D11DeviceContext->
+  VSSetShaderResources(0, 16, nullTextures);
+  D3D11DeviceContext->
+  CSSetShaderResources(0, 16, nullTextures);
+}
+
+void D3DDeviceContext::setUAVsNull()
+{
+  ID3D11UnorderedAccessView* null[16] = {};
+  std::memset(null, 0, sizeof(null));
+  D3D11DeviceContext->
+  CSSetUnorderedAccessViews(0, 16, null,NULL);
+}
+
 }

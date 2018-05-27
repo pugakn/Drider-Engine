@@ -1,7 +1,6 @@
 #pragma once
 #include "dr_constant_buffer.h"
-#include <wrl.h>
-#include <wrl/client.h>
+
 
 struct ID3D11Buffer;
 

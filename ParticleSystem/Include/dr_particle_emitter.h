@@ -6,8 +6,14 @@
 #include <dr_matrix4x4.h>
 #include <dr_vector4d.h>
 #include <iostream>
+#include <dr_shader.h>
+#include <dr_structure_buffer.h>
 
+#define DR_PARTICLES_CPU 0
+#define DR_PARTICLES_GPU 1
+#define DR_PARTICLES_METHOD  DR_PARTICLES_CPU
 namespace driderSDK {
+
   struct DR_PARTICLES_EXPORT Particle { 
     float* m_lifeTime;
     bool* m_isActive;
@@ -136,9 +142,26 @@ namespace driderSDK {
     Vector3D m_position;
     Vector3D m_rotation{0,0,0};
     Matrix4x4 m_localTransform;
+
+    StructureBuffer* m_poolBuffer;
   private:
     ParticleEmitterAttributes m_attributes;
     float m_lifeTime = 0.0f;
     float m_timeAccum = 0.0f;
+
+    struct inBuff{
+      //Vector4D acceleration;
+      Vector4D color;
+    };
+    struct outBuff {
+      //Vector4D position;
+      Vector4D color;
+    };
+
+    Shader* m_initCS;
+    Shader* m_updateCS;
+    Shader* m_emitCS;
+    StructureBuffer* m_deadBuffer;
+    StructureBuffer* m_aliveBuffer;
   };
 }

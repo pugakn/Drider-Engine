@@ -234,6 +234,17 @@ class DR_GRAPHICS_EXPORT DeviceContext
       UInt32 startVertexLocation,
       UInt32 startInstanceLocation) const = 0;
 
+  virtual void
+    dispatch(UInt32 _threadGroupCountX, 
+             UInt32 _threadGroupCountY, 
+             UInt32 _threadGroupCountZ) const = 0;
+
+  virtual void
+    setResourcesNull() = 0;
+
+  virtual void
+    setUAVsNull() = 0;
+
   /*//TODO: Add get methods
   struct DeviceContextData;
   DeviceContextData* m_deviceContext;*/

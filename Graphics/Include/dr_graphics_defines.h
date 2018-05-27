@@ -341,7 +341,9 @@ namespace DR_BUFFER_TYPE {
     kVERTEX,
     kINDEX,
     kCONSTANT,
-    kCOMMAND
+    kCOMMAND,
+    kRWSTRUCTURE,
+    kSTRUCTURE
   };
 
 }

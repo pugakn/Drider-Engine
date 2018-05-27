@@ -126,13 +126,15 @@ namespace driderSDK {
 
     m_constantBuffer->updateFromBuffer(dc,(byte*)&m_cbuff);
     m_constantBuffer->set(dc);
-
-
+#if (DR_PARTICLES_METHOD == DR_PARTICLES_GPU)
+    data->emitter->m_poolBuffer->set(GraphicsAPI::getDeviceContext(), 0, 0);
+#endif
     m_instanceBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(data->emitter->m_buffer));
     m_VBQUAD->set(dc, m_instanceBuffer.get());
     m_IBQUAD->set(dc);
     dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
     dc.drawInstanced(6, data->emitter->m_aliveParticles, 0, 0, 0);
+    GraphicsAPI::getDeviceContext().setResourcesNull();
   }
 
 }
