@@ -2,9 +2,8 @@
 
 #include <d3d11.h>
 #include <dxgi.h>
-
+#include "dr_graphics_prerequisites.h"
 #include <dr_math.h>
-
 #include "dr_d3d_device.h"
 #include "dr_d3d_device_context.h"
 #include "dr_gfx_memory.h"
@@ -12,11 +11,13 @@
 
 namespace driderSDK {
 
-void* D3DTexture::getAPIObject() {
+void*
+D3DTexture::getAPIObject() {
   return APIView;
 }
 
-void** D3DTexture::getAPIObjectReference() {
+void**
+D3DTexture::getAPIObjectReference() {
   DR_ASSERT(m_descriptor.bindFlags != DR_BIND_FLAGS::DEPTH_STENCIL);
   return reinterpret_cast<void**>(&APIView);
 }
@@ -114,7 +115,7 @@ D3DTexture::createFromMemory(const Device& device,
     CreateShaderResourceView(APITexture,
       &srvDesc,
       &APIView);
-
+  
   if (desc.CPUAccessFlags & DR_CPU_ACCESS_FLAG::drRead) {
     D3D11_TEXTURE2D_DESC apiDesc2 = apiDesc;
     apiDesc2.CPUAccessFlags = D3D11_CPU_ACCESS_FLAG::D3D11_CPU_ACCESS_READ;
@@ -125,7 +126,6 @@ D3DTexture::createFromMemory(const Device& device,
         0,
         &m_stagingTexture);
   }
-
 }
 
 void
@@ -165,6 +165,16 @@ D3DTexture::getMemoryBuffer(const DeviceContext& deviceContext, std::vector<byte
   buff.clear();
   buff.assign((byte*)mappedResource.pData, (byte*)mappedResource.pData + m_descriptor.pitch * m_descriptor.height);
   dc->Unmap(m_stagingTexture,0);
+}
+
+void
+D3DTexture::setTextureNull(const DeviceContext& deviceContext) const {
+  ID3D11ShaderResourceView* nullTextures[MAX_TEXTURES] = {};
+  std::memset(nullTextures, 0, sizeof(nullTextures));
+
+  reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
+    D3D11DeviceContext->
+      PSSetShaderResources(0, MAX_TEXTURES, nullTextures);
 }
 
 void

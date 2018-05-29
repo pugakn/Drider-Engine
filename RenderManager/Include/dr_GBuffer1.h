@@ -18,17 +18,17 @@ struct GBufferDrawData : PassDrawData {
 };
 
 class GBufferPass : public RenderPass {
-public:
+ public:
   /*
   TEST::testName
-
+  
   Description.
   */
-  GBufferPass();
+   GBufferPass();
 
   /*
   TEST::testName
-
+  
   Description.
   */
   ~GBufferPass();
@@ -39,19 +39,19 @@ public:
   Description.
   */
   void
-    init(PassInitData* initData);
+  init(PassInitData* initData);
 
   /*
   */
   void
-    draw(PassDrawData* drawData);
+  draw(PassDrawData* drawData);
 
   /*
   void
   exit();
   */
 
-private:
+ private:
   struct CBuffer {
     Matrix4x4 World;
     Matrix4x4 WorldView;

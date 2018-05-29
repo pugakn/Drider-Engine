@@ -46,31 +46,34 @@ GBufferPass::draw(PassDrawData* drawData) {
   GBufferDrawData* data = static_cast<GBufferDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
+  data->OutRt->getTexture(0).setTextureNull(dc);
+  data->OutRt->setRTNull(dc);
   data->OutRt->set(dc, *data->dsOptions);
-
+  
   m_vertexShader->set(dc);
   m_fragmentShader->set(dc);
 
   m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kFragment);
 
   m_inputLayout->set(dc);
-
+  
   m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
   m_constantBuffer->set(dc);
-
+  
   dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
-
+  
   const float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
   data->OutRt->clear(dc, clearColor);
   data->dsOptions->clear(dc, 1, 0);
 
-  CB.CameraInfo.x = data->activeCam->getViewportWidth() /
-    data->activeCam->getViewportHeight();
-  CB.CameraInfo.y = data->activeCam->getFOV();
-  CB.CameraInfo.z = data->activeCam->getNearPlane();
-  CB.CameraInfo.w = data->activeCam->getFarPlane();
+  CB.CameraInfo.x  = data->activeCam->getViewportWidth() /
+                     data->activeCam->getViewportHeight();
+  CB.CameraInfo.y  = data->activeCam->getFOV();
+  CB.CameraInfo.z  = data->activeCam->getNearPlane();
+  CB.CameraInfo.w  = data->activeCam->getFarPlane();
 
   for (auto& modelPair : *data->models) {
+    data->OutRt->getTexture(0).setTextureNull(dc);
     if (auto material = modelPair.mesh.material.lock()) {
       auto AlbedoTex = material->getProperty(_T("Albedo"));
       if (AlbedoTex != nullptr) {
@@ -107,7 +110,7 @@ GBufferPass::draw(PassDrawData* drawData) {
     CB.World = modelPair.world;
     CB.WorldView = modelPair.world * data->activeCam->getView();
     CB.WVP = modelPair.world * data->activeCam->getVP();
-
+  
     m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
     m_constantBuffer->set(dc);
 
@@ -120,11 +123,11 @@ GBufferPass::draw(PassDrawData* drawData) {
 /*
 void
 GBufferPass::exit() {
-m_inputLayout->release();
-m_constantBuffer->release();
+  m_inputLayout->release();
+  m_constantBuffer->release();
 
-m_vertexShader->release();
-m_fragmentShader->release();
+  m_vertexShader->release();
+  m_fragmentShader->release();
 }
 s*/
 

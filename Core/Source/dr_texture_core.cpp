@@ -20,10 +20,19 @@ TextureCore::init(void* data) {
   desc.height = image->height;
   desc.pitch = image->width * image->channels;
   desc.dimension = DR_DIMENSION::k2D;
+  //desc.dimension = image->textureDimension;
   desc.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE;
   desc.genMipMaps = true;
   desc.mipLevels = 1;
-  desc.Format = DR_FORMAT::kR8G8B8A8_UNORM;
+  if (1 == image->channels) {
+    desc.Format = DR_FORMAT::kR8_UNORM;
+  }
+  else if (2 == image->channels) {
+    desc.Format = DR_FORMAT::kR8G8_UNORM;
+  }
+  else {
+    desc.Format = DR_FORMAT::kR8G8B8A8_UNORM;
+  }
 
  /* switch (image->channels) {
   case 1:

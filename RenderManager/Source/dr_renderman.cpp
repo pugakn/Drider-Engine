@@ -41,8 +41,13 @@ RenderMan::init() {
   dc.createTextureFromMemory(, cubeMapDesc);
   */
 
+  //screenWidth = 1920;
+  //screenHeight = 1080;
+  //screenWidth = 1536;
+  //screenHeight = 864;
   screenWidth = 1280;
   screenHeight = 720;
+
   shadowWidth = 1024;
   shadowHeight = 1024;
 
@@ -62,7 +67,7 @@ RenderMan::init() {
 
   //m_vec3DirectionalLight = Vector3D(-1.0f, -1.0f, 0.0f).normalize();
   //m_vec3DirectionalLight = Vector3D(0.0f, -10000.0f, 0.1f).normalize();
-  m_vec3DirectionalLight = Vector3D(-1.0f, -1.0f, -1.0f).normalize();
+  m_vec3DirectionalLight = Vector3D(1.0f, -1.0f, -1.0f).normalize();
 
   partitions = calculatePartitions(m_szActiveShadowCameras);
 
@@ -98,7 +103,7 @@ RenderMan::init() {
   m_TexDescDefault.height = screenHeight;
   m_TexDescDefault.pitch = m_TexDescDefault.width * 4;
   m_TexDescDefault.dimension = DR_DIMENSION::k2D;
-  m_TexDescDefault.Format = DR_FORMAT::kR32G32B32A32_FLOAT;
+  m_TexDescDefault.Format = DR_FORMAT::kR16G16B16A16_FLOAT;
   m_TexDescDefault.mipLevels = 0;
   m_TexDescDefault.CPUAccessFlags = 0;
   m_TexDescDefault.genMipMaps = true;
@@ -106,38 +111,54 @@ RenderMan::init() {
                                DR_BIND_FLAGS::RENDER_TARGET;
 
   m_RTGBuffer        = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 4));
+
+  m_TexDescDefault.Format = DR_FORMAT::kR8_SNORM;
+  m_TexDescDefault.pitch = m_TexDescDefault.width;
   m_RTSSAO           = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
+
+  m_TexDescDefault.Format = DR_FORMAT::kR16G16B16A16_FLOAT;
+  m_TexDescDefault.pitch = m_TexDescDefault.width * 4;
   m_RTBlurInit       = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
+
+  m_TexDescDefault.Format = DR_FORMAT::kR8_SNORM;
+  m_TexDescDefault.pitch = m_TexDescDefault.width * 4;
   m_RTSSAOBlur       = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
+
+  m_TexDescDefault.Format = DR_FORMAT::kR16G16B16A16_FLOAT;
+  m_TexDescDefault.pitch = m_TexDescDefault.width * 4;
   m_RTLightning      = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
   m_RTPostProcessing = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
   m_RTPreFinalBlur   = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
+
+  m_TexDescDefault.Format = DR_FORMAT::kR32G32B32A32_FLOAT;
   m_TexDescDefault.width  = shadowWidth;
   m_TexDescDefault.height = shadowHeight;
   m_TexDescDefault.pitch =  m_TexDescDefault.width * 4;
   m_RTShadow         = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
   m_TexDescDefault.pitch = m_TexDescDefault.width;
+
   m_TexDescDefault.Format = DR_FORMAT::kR32_FLOAT;
+  m_TexDescDefault.pitch = m_TexDescDefault.width;
   m_RTShadowDummy[0] = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
   m_RTShadowDummy[1] = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
   m_RTShadowDummy[2] = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
   m_RTShadowDummy[3] = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
 
-  DrDepthStencilDesc depthTextureDesc;
-  depthTextureDesc.bindFlags = DR_BIND_FLAGS::DEPTH_STENCIL | DR_BIND_FLAGS::SHADER_RESOURCE;
-  depthTextureDesc.width = screenWidth;
-  depthTextureDesc.height = screenHeight;
-  depthTextureDesc.Format = DR_FORMAT::kD24_UNORM_S8_UINT;
+  DrDepthStencilDesc commonTextureDesc;
+  commonTextureDesc.bindFlags = DR_BIND_FLAGS::DEPTH_STENCIL | DR_BIND_FLAGS::SHADER_RESOURCE;
+  commonTextureDesc.width = screenWidth;
+  commonTextureDesc.height = screenHeight;
+  commonTextureDesc.Format = DR_FORMAT::kD24_UNORM_S8_UINT;
 
-  m_GBufferDSoptions        = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
-  m_SSAODSoptions           = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
-  m_HorBlurDSoptions        = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
-  m_VerBlurDSoptions        = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
-  m_LightningDSoptions      = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
-  m_PostProcessingDSoptions = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
-  depthTextureDesc.width  = shadowWidth;
-  depthTextureDesc.height = shadowHeight;
-  m_ShadowDSoptions         = dr_gfx_shared(dc.createDepthStencil(depthTextureDesc));
+  m_GBufferDSoptions        = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
+  m_SSAODSoptions           = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
+  m_HorBlurDSoptions        = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
+  m_VerBlurDSoptions        = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
+  m_LightningDSoptions      = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
+  m_PostProcessingDSoptions = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
+  commonTextureDesc.width   = shadowWidth;
+  commonTextureDesc.height  = shadowHeight;
+  m_ShadowDSoptions         = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
 
   m_GBufferPass.init(&m_GBufferInitData);
   m_SSAOPass.init(&m_SSAOInitData);
@@ -149,8 +170,9 @@ RenderMan::init() {
 }
 
 void
-RenderMan::draw(const RenderTarget & _out, const DepthStencil & _outds) {
+RenderMan::draw() {
   //GraphicsDriver::API().clear();
+
   updateShadowCameras();
 
   auto mainCam = CameraManager::getActiveCamera();
@@ -238,7 +260,6 @@ RenderMan::draw(const RenderTarget & _out, const DepthStencil & _outds) {
   m_VerBlurDrawData.OutRt = m_RTPreFinalBlur;
   m_VerBlurPass.draw(&m_VerBlurDrawData);
   
-  _out.set(GraphicsAPI::getDeviceContext(), _outds);
   m_PostProcessingDrawData.ColorRT = m_RTLightning;
   m_PostProcessingDrawData.ColorBlurRT = m_RTPreFinalBlur;
   m_PostProcessingDrawData.Gbuffer = m_RTGBuffer;
@@ -254,7 +275,7 @@ RenderMan::draw(const RenderTarget & _out, const DepthStencil & _outds) {
    X Opacity: Blends
   */
 
-  //GraphicsDriver::API().swapBuffers();
+  GraphicsDriver::API().swapBuffers();
 }
 
 void
@@ -274,22 +295,18 @@ RenderMan::recompile() {
 
 void
 RenderMan::updateShadowCameras() {
-  m_szActiveShadowCameras = Math::clamp(m_szActiveShadowCameras,
-                                        static_cast<size_t>(1),
-                                        static_cast<size_t>(4));
-
   std::shared_ptr<Camera> mainCam = CameraManager::getActiveCamera();
   Vector3D CamPos = mainCam->getPosition();
   Vector3D CamDir = mainCam->getDirection();
 
   float extraDepth = m_ShadowSubFrustras[0].second;
-  extraDepth = Math::max(extraDepth, m_ShadowSubFrustras[1].second);
-  extraDepth = Math::max(extraDepth, m_ShadowSubFrustras[2].second);
-  extraDepth = Math::max(extraDepth, m_ShadowSubFrustras[3].second);
+  extraDepth = Math::max(m_ShadowSubFrustras[1].second, extraDepth);
+  extraDepth = Math::max(m_ShadowSubFrustras[2].second, extraDepth);
+  extraDepth = Math::max(m_ShadowSubFrustras[3].second, extraDepth);
 
   Vector3D TrueCenter;
   
-  for (size_t i = 0; i < m_szActiveShadowCameras; ++i) {
+  for (SizeT i = 0; i < m_szActiveShadowCameras; ++i) {
     float SphereRad = m_ShadowSubFrustras[i].second;
     
     TrueCenter = CamPos + (CamDir * m_ShadowSubFrustras[i].first.z);

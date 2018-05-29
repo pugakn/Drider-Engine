@@ -4,13 +4,13 @@
 namespace driderSDK {
 
 void
-renderManagerApp(const SceneGraph* sceneGraph, const RenderTarget & _out, const DepthStencil & _outds) {
+renderManagerApp() {
   RenderMan Manager;
 
   Manager.init();
 
   while (1) {
-    Manager.draw(_out,_outds);
+    Manager.draw();
   }
 
   Manager.exit();
