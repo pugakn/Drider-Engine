@@ -168,7 +168,7 @@ RenderMan::init() {
   m_LightningPass.init(&m_LightningInitData);
   m_PostProcessingPass.init(&m_PostProcessingInitData);
 
-  //m_particlePass.init(&m_particleInitData);
+  m_particlePass.init(&m_particleInitData);
   driderSDK::ParticleEmitter emitter;
   driderSDK::ParticleEmitterAttributes attr;
   //System
