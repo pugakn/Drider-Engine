@@ -187,8 +187,8 @@ void SceneEditor::initSceneGraph()
   m_sceneViewer.getRenderManager().lights = &Lights;
 
   CameraManager::createCamera(_T("PATO_CAM"),
-  { 0.0f, 150.0f, -400.0f },
-  { 0.0f, 50.f, 0.0f },
+  { 0.0f, 0.0f, -400.0f },
+  { 0.0f, 1.f, 0.0f },
     m_viewport,
     45.f,
     //1024, 1024,

@@ -59,7 +59,7 @@ SceneViewer::init(Viewport v)
                                DR_BIND_FLAGS::SHADER_RESOURCE;
   depthTextureDesc.width = m_sceneViewport.width;
   depthTextureDesc.height = m_sceneViewport.height;
-  depthTextureDesc.Format = DR_FORMAT::kD24_UNORM_S8_UINT;
+  depthTextureDesc.Format = DR_FORMAT::kD32_FLOAT;
   m_RTDPTH = dr_gfx_shared(GraphicsAPI::getDevice().createDepthStencil(depthTextureDesc));
 
   m_renderMan.init();
@@ -67,8 +67,9 @@ SceneViewer::init(Viewport v)
 }
 void 
 SceneViewer::draw() {
-  const float clearColor[4]{ 1,0,1,1 };
+  const float clearColor[4]{ 0.2, 0.5, 0.8, 1};
   m_RT->clear(GraphicsAPI::getDeviceContext(), clearColor);
+  m_RTDPTH->clear(GraphicsAPI::getDeviceContext(),1,0);
   //Draw Scene
   m_renderMan.draw(*m_RT, *m_RTDPTH);
   //Draw End

@@ -1,7 +1,6 @@
 #pragma once
 #include "dr_index_buffer.h"
-#include <wrl.h>
-#include <wrl/client.h>
+
 
 struct ID3D11Buffer;
 
@@ -19,7 +18,7 @@ class DR_GRAPHICS_EXPORT D3DIndexBuffer : public IndexBuffer
 {
  public:
    void*
-   getAPIObject() override;
+   getAPIObject() const override;
 
    void**
    getAPIObjectReference() override;

@@ -7,12 +7,12 @@
 namespace driderSDK {
 
 void*
-D3DIndexBuffer::getAPIObject() {
+D3DIndexBuffer::getAPIObject() const {
   return IB;
 }
 
 void**
-D3DIndexBuffer::getAPIObjectReference() {
+D3DIndexBuffer::getAPIObjectReference()  {
   return reinterpret_cast<void**>(&IB);
 }
 

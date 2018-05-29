@@ -6,13 +6,13 @@
 
 namespace driderSDK {
 void * 
-D3DVertexBuffer::getAPIObject()
+D3DVertexBuffer::getAPIObject() const
 {
   return VB;
 }
 
 void ** 
-D3DVertexBuffer::getAPIObjectReference()
+D3DVertexBuffer::getAPIObjectReference() 
 {
   return reinterpret_cast<void**>(&VB);
 }
@@ -69,6 +69,24 @@ D3DVertexBuffer::set(const DeviceContext& deviceContext,
                          &VB, 
                          &m_descriptor.stride, 
                          &offset);
+}
+
+void D3DVertexBuffer::set(const DeviceContext & deviceContext, VertexBuffer* extraBuffers, UInt32 offset) const
+{
+  ID3D11Buffer * buffers[2]; //TODO: more buffers
+  buffers[0] = (ID3D11Buffer*)VB;
+  buffers[1] = (ID3D11Buffer*)((D3DVertexBuffer*)extraBuffers)->VB;
+  unsigned int offsets[2] = { offset,offset };
+  unsigned int strides[2];
+  strides[0] = m_descriptor.stride;
+  strides[1] = extraBuffers->getDescriptor().stride;
+  reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
+    D3D11DeviceContext->
+    IASetVertexBuffers(0,
+      2,
+      buffers,
+      strides,
+      offsets);
 }
 
 void

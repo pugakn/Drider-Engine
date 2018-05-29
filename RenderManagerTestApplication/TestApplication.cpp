@@ -228,7 +228,6 @@ RenderManApp::postInit() {
     meshes[0].material = m_hkBodySMat; 
     meshes[1].material = m_hkBodyMat;
     meshes[2].material = m_hkEyeMat;
-
   }
 
   m_vecGos.push_back(SceneGraph::createObject(_T("Model")));
