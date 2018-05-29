@@ -6,8 +6,9 @@
 #include <dr_particle_emitter.h>
 #include <dr_vector3d.h>
 #include <dr_time.h>
-int main()
-{
+
+int
+main() {
   driderSDK::Time::startUp();
   driderSDK::ParticleEmitter emitter;
   driderSDK::ParticleEmitterAttributes attr;
@@ -20,11 +21,9 @@ int main()
   attr.m_position = driderSDK::Vector3D(0, 0, 0);
   emitter.init(attr);
 
-  while (true)
-  {
+  while (true) {
     driderSDK::Time::update();
     emitter.update();
   }
     return 0;
 }
-

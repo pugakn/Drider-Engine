@@ -31,9 +31,9 @@ VS(VS_INPUT input) {
   Output.RealPos  = float4(mul(World, input.Position).xyz, Output.Position.z);
   Output.Texcoord = input.Texcoord;
   
-  Output.TBN[0] = normalize(mul(WorldView, input.Tangent));
-  Output.TBN[1] = normalize(mul(WorldView, input.Binormal));
-  Output.TBN[2] = normalize(mul(WorldView, input.Normal));
+  Output.TBN[0] = normalize(mul(WorldView, input.Tangent).xyz);
+  Output.TBN[1] = normalize(mul(WorldView, input.Binormal).xyz);
+  Output.TBN[2] = normalize(mul(WorldView, input.Normal).xyz);
   
   return Output;
 }

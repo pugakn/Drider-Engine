@@ -208,7 +208,7 @@ RenderMan::init() {
 void
 RenderMan::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   //GraphicsDriver::API().clear();
-  /*
+  //*
   updateShadowCameras();
 
   auto mainCam = CameraManager::getActiveCamera();
@@ -295,23 +295,23 @@ RenderMan::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_VerBlurDrawData.InRt = m_RTBlurInit;
   m_VerBlurDrawData.OutRt = m_RTPreFinalBlur;
   m_VerBlurPass.draw(&m_VerBlurDrawData);
-  */
+  //*/
 
-  m_emitter.update();
+  //m_emitter.update();
   //m_particleDrawData.activeCam = mainCam;
   //m_particleDrawData.numParticles = m_emitter.m_.size();
-  m_particleDrawData.particles = &m_emitter.m_particles;
-  m_particleDrawData.emitter = &m_emitter;
-  m_particlePass.draw(&m_particleDrawData);
+  //m_particleDrawData.particles = &m_emitter.m_particles;
+  //m_particleDrawData.emitter = &m_emitter;
+  //m_particlePass.draw(&m_particleDrawData);
 
   //const float clearColor[4]{ 0.2,0.5,0.8,1 };
   //_out->clear(GraphicsAPI::getDeviceContext(), clearColor);
   _out.set(GraphicsAPI::getDeviceContext(), _outds);
 
-  //m_PostProcessingDrawData.ColorRT = m_RTLightning;
-  //m_PostProcessingDrawData.ColorBlurRT = m_RTPreFinalBlur;
-  //m_PostProcessingDrawData.Gbuffer = m_RTGBuffer;
-  //m_PostProcessingPass.draw(&m_PostProcessingDrawData);
+  m_PostProcessingDrawData.ColorRT = m_RTLightning;
+  m_PostProcessingDrawData.ColorBlurRT = m_RTPreFinalBlur;
+  m_PostProcessingDrawData.Gbuffer = m_RTGBuffer;
+  m_PostProcessingPass.draw(&m_PostProcessingDrawData);
 
   GraphicsAPI::getBackBufferRT().set(GraphicsAPI::getDeviceContext(), GraphicsAPI::getDepthStencil());
   /*
