@@ -25,11 +25,6 @@ cbuffer ConstantBuffer : register(b0) {
   float4x4 V;
   float4x4 P;
 };
-cbuffer ListCount2 : register(b1)
-{
-  uint	numActiveParticles;
-  uint3	pad;
-};
 
 struct VS_INPUT {
   float4 Position     : POSITION;
@@ -63,9 +58,9 @@ struct PoolBuffer
 
 StructuredBuffer<PoolBuffer> poolBuffer : register(t0);
 StructuredBuffer<uint> aliveBuffer : register(t1);
-
-#endif
+#else
 StructuredBuffer<CPUStructureBuffer> renderBuffer : register(t2);
+#endif
 VS_OUTPUT
 VS(VS_INPUT input) {
   VS_OUTPUT output = (VS_OUTPUT)0;
@@ -73,14 +68,10 @@ VS(VS_INPUT input) {
   float3 color;
   float sacale;
 #ifdef DR_PARTICLES_GPU
-  if (input.id > numActiveParticles) {
-    discard;
-  }
   uint pID = aliveBuffer[input.id];
   position = poolBuffer[pID].position.xyz;
   color = poolBuffer[pID].color.xyz;
   sacale = poolBuffer[pID].scale;
-  sacale = 5;
 #else
   position = renderBuffer[input.id].position.xyz;
   color = renderBuffer[input.id].color.xyz;
@@ -96,8 +87,5 @@ VS(VS_INPUT input) {
 
   output.Position = mul(float4(positionVS, 1.0f), P);
   output.color = float4(color.xyz,1);
-#ifdef DR_PARTICLES_GPU
-  //}
-#endif
   return output;
 }

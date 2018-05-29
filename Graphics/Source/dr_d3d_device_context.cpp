@@ -5,6 +5,7 @@
 #include "dr_d3d_vertex_buffer.h"
 #include "dr_d3d_index_buffer.h"
 #include "dr_d3d_constant_buffer.h"
+#include "dr_d3d_indirect_args_buffer.h"
 #include "dr_structure_buffer.h"
 #include "dr_shader.h"
 #include "dr_d3d_device_context.h"
@@ -218,6 +219,12 @@ void D3DDeviceContext::setUAVsNull()
   std::memset(null, 0, sizeof(null));
   D3D11DeviceContext->
   CSSetUnorderedAccessViews(0, 16, null,NULL);
+}
+
+void 
+D3DDeviceContext::drawIndexedInstancedIndirect(const IndirectArgsBuffer & pBufferForArgs, UInt32 _alignedByteOffsetForArgs)
+{
+  D3D11DeviceContext->DrawIndexedInstancedIndirect(static_cast<ID3D11Buffer*>(pBufferForArgs.getAPIObject()),_alignedByteOffsetForArgs);
 }
 
 }

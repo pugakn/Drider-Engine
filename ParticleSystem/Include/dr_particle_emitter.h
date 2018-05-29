@@ -9,6 +9,7 @@
 #include <dr_shader.h>
 #include <dr_structure_buffer.h>
 #include <dr_constant_buffer.h>
+#include <dr_indirect_args_buffer.h>
 #define DR_PARTICLES_CPU 0
 #define DR_PARTICLES_GPU 1
 #define DR_PARTICLES_METHOD  DR_PARTICLES_GPU
@@ -165,11 +166,6 @@ namespace driderSDK {
     void
       emit();
     Particle m_particles;
-    struct CBuffer {
-      Matrix4x4 WVP;
-      Vector4D color;
-    };
-    //CBuffer* m_buffer;
     size_t m_aliveParticles{0};
 
     std::vector<ParticleUpdater*> m_updaters;
@@ -182,6 +178,9 @@ namespace driderSDK {
     StructureBuffer* m_aliveBuffer;
     StructureBuffer* m_renderBuffer;
     ConstantBuffer* m_cbufferAliveCount;
+
+    IndirectArgsBuffer* m_drawIndirectBuffer;
+    IndirectArgsBuffer* m_updateIndirectBuffer;
   private:
     ParticleEmitterAttributes m_attributes;
     float m_lifeTime = 0.0f;
@@ -199,8 +198,10 @@ namespace driderSDK {
     Shader* m_initCS;
     Shader* m_updateCS;
     Shader* m_emitCS;
+    Shader* m_setupDrawArgsCS;
     StructureBuffer* m_deadBuffer;
     ConstantBuffer* m_cbuffer;
+    ConstantBuffer* m_cbufferDT;
     ConstantBuffer* m_cbufferDeadCount;
     GPUParticleSystemCBuff m_cpuCbuff;
     RenderStructureBuffer* m_cpuRenderBuffer;

@@ -3,6 +3,7 @@
 #include <D3Dcompiler.h>
 #include <d3d11.h>
 #include <dxgi.h>
+#include "dr_d3d_indirect_args_buffer.h"
 #include "dr_d3d_structure_buffer.h"
 #include "dr_d3d_vertex_buffer.h"
 #include "dr_d3d_index_buffer.h"
@@ -110,6 +111,12 @@ D3DDevice::createBuffer(const DrBufferDesc& desc,
     break;
   case DR_BUFFER_TYPE::kSTRUCTURE:
     buffer = new D3DStructureBuffer;
+    break;
+  case DR_BUFFER_TYPE::kINDIRECT_DRAW_INSTANCED_INDEXED:
+    buffer = new D3DIndirectArgsBuffer;
+    break;
+  case DR_BUFFER_TYPE::kINDIRECT_DISPATCH:
+    buffer = new D3DIndirectArgsBuffer;
     break;
   }
 

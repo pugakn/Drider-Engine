@@ -17,7 +17,7 @@ class DR_GRAPHICS_EXPORT D3DVertexBuffer : public VertexBuffer
 {
  public:
   void*
-  getAPIObject() override;
+  getAPIObject() const override;
 
   void**
   getAPIObjectReference() override;
