@@ -1,5 +1,5 @@
 #pragma once
-#include "dr_structure_buffer.h"
+#include "dr_indirect_args_buffer.h"
 
 struct ID3D11Buffer;
 struct ID3D11UnorderedAccessView;
@@ -14,7 +14,7 @@ namespace driderSDK {
   * Sample usage:
   *	StructureBuffer* = new D3DStructureBuffer;
   */
-  class DR_GRAPHICS_EXPORT D3DStructureBuffer : public StructureBuffer
+  class DR_GRAPHICS_EXPORT D3DIndirectArgsBuffer : public IndirectArgsBuffer
   {
   public:
     void*
@@ -28,9 +28,9 @@ namespace driderSDK {
     *
     * Class default constructor.
     */
-    D3DStructureBuffer();
+    D3DIndirectArgsBuffer();
 
-    ~D3DStructureBuffer();
+    ~D3DIndirectArgsBuffer();
 
     /**
     * TEST::
@@ -54,21 +54,8 @@ namespace driderSDK {
         const DrBufferDesc& desc,
         const byte* initialData) override;
 
-    /**
-    * TEST::
-    *
-    * Set the constant buffer to all shaders specifyed on typeFlag
-    *
-    * @param deviceContext
-    *   The device context to set the resource
-    *
-    * @param typeFlag
-    *   Bit flag that specifyes the shaders to set the constant buffer
-    *
-    */
     void
-      set(const DeviceContext& deviceContext,
-        Int32 typeFlag = 0 ,Int32 startSlot = 0, UInt32 _resetCounter = -1) const override;
+    set(const DeviceContext& deviceContext, Int32 typeFlag = 0, Int32 startSlot = 0) const override;
 
     /**
     * TEST::
@@ -111,9 +98,8 @@ namespace driderSDK {
     void
       release() override;
 
-    ID3D11Buffer* CB;
+    ID3D11Buffer* m_buffer;
     ID3D11UnorderedAccessView * m_pBufferUAV;
-    ID3D11ShaderResourceView* m_pBufferView;
   };
 
 }

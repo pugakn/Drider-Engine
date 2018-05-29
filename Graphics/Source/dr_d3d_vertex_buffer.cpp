@@ -6,13 +6,13 @@
 
 namespace driderSDK {
 void * 
-D3DVertexBuffer::getAPIObject()
+D3DVertexBuffer::getAPIObject() const
 {
   return VB;
 }
 
 void ** 
-D3DVertexBuffer::getAPIObjectReference()
+D3DVertexBuffer::getAPIObjectReference() 
 {
   return reinterpret_cast<void**>(&VB);
 }

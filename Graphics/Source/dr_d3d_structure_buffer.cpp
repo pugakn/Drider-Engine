@@ -6,12 +6,12 @@
 
 namespace driderSDK {
 
-  void* D3DStructureBuffer::getAPIObject() {
+  void* D3DStructureBuffer::getAPIObject() const {
     return CB;
   }
 
   void**
-    D3DStructureBuffer::getAPIObjectReference() {
+    D3DStructureBuffer::getAPIObjectReference()  {
     return reinterpret_cast<void**>(&CB);
   }
 

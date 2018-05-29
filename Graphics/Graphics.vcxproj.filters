@@ -189,6 +189,12 @@
     <ClInclude Include="Include\dr_d3d_structure_buffer.h">
       <Filter>Archivos de encabezado\DirectX11\Buffers</Filter>
     </ClInclude>
+    <ClInclude Include="Include\dr_indirect_args_buffer.h">
+      <Filter>Archivos de encabezado\Base\Buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_d3d_indirect_args_buffer.h">
+      <Filter>Archivos de encabezado\DirectX11\Buffers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_d3d_constant_buffer.cpp">
@@ -261,6 +267,9 @@
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
     <ClCompile Include="Source\dr_d3d_structure_buffer.cpp">
+      <Filter>Archivos de código fuente\DirectX11\Buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_d3d_indirect_args_buffer.cpp">
       <Filter>Archivos de código fuente\DirectX11\Buffers</Filter>
     </ClCompile>
   </ItemGroup>

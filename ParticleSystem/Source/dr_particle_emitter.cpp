@@ -88,7 +88,14 @@ namespace driderSDK {
       DR_SHADER_TYPE_FLAG::kCompute);
     shaderSource.clear();
 
-
+    file.Open(_T("particle_setup_indirect_cs.hlsl"));
+    shaderSource = StringUtils::toString(file.GetAsString(file.Size()));
+    file.Close();
+    m_setupDrawArgsCS = device.createShaderFromMemory(shaderSource.data(),
+      shaderSource.size(),
+      DR_SHADER_TYPE_FLAG::kCompute);
+    shaderSource.clear();
+    
     DrBufferDesc desc;
     desc.usage = DR_BUFFER_USAGE::kDefault;
     desc.type = DR_BUFFER_TYPE::kRWSTRUCTURE;
@@ -130,6 +137,13 @@ namespace driderSDK {
     desc.stride = sizeof(UInt32);
     m_cbufferDeadCount = (ConstantBuffer*)device.createBuffer(desc);
 
+    float dt[4] = {0,0,0,0};
+    desc.type = DR_BUFFER_TYPE::kCONSTANT;
+    desc.sizeInBytes = sizeof(float)*4;
+    desc.stride = sizeof(float);
+    m_cbufferDT = (ConstantBuffer*)device.createBuffer(desc,(byte*)&dt[0]);
+    
+
     m_initCS->set(GraphicsAPI::getDeviceContext());
     m_poolBuffer->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute, 0);
     m_deadBuffer->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute, 1);
@@ -138,14 +152,14 @@ namespace driderSDK {
     GraphicsAPI::getDeviceContext().dispatch(
       Math::alignValue(m_attributes.m_maxParticles, numThreadsPerBlock) / numThreadsPerBlock, 1, 1);
     GraphicsAPI::getDeviceContext().setUAVsNull();
+    GraphicsAPI::getDeviceContext().copyAtomicCounter(*m_aliveBuffer, *m_cbufferAliveCount);
+    GraphicsAPI::getDeviceContext().copyAtomicCounter(*m_deadBuffer, *m_cbufferDeadCount);
 
     {
       DrBufferDesc desc;
       desc.usage = DR_BUFFER_USAGE::kDefault;
-      desc.type = DR_BUFFER_TYPE::kRWSTRUCTURE;
-      desc.sizeInBytes = sizeof(RenderStructureBuffer) * m_attributes.m_maxParticles;
-      desc.stride = sizeof(RenderStructureBuffer);
-      m_renderBuffer = (StructureBuffer*)device.createBuffer(desc);
+      desc.type = DR_BUFFER_TYPE::kINDIRECT_DRAW_INSTANCED_INDEXED;
+      m_drawIndirectBuffer = (IndirectArgsBuffer*)device.createBuffer(desc);
     }
 
 #endif
@@ -174,10 +188,6 @@ namespace driderSDK {
     }
 #endif
     emit();
-#if (DR_PARTICLES_METHOD == DR_PARTICLES_GPU)
-    GraphicsAPI::getDeviceContext().copyAtomicCounter(*m_aliveBuffer, *m_cbufferAliveCount);
-    GraphicsAPI::getDeviceContext().copyAtomicCounter(*m_deadBuffer, *m_cbufferDeadCount);
-#endif
   }
   void
   ParticleEmitter::update()
@@ -226,16 +236,25 @@ namespace driderSDK {
     }
 #endif
 #if (DR_PARTICLES_METHOD == DR_PARTICLES_GPU)
+    float dt[4] = { tm,0,0,0 };
+    std::cout << dt[0] << std::endl;
+    m_cbufferDT->updateFromBuffer(GraphicsAPI::getDeviceContext(),(byte*)&dt[0]);
+
     m_updateCS->set(GraphicsAPI::getDeviceContext());
     m_poolBuffer->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute, 0);
     m_deadBuffer->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute, 1);
-    m_aliveBuffer->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute, 2, 0);
+    m_aliveBuffer->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute, 2);
 
     m_cbuffer->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute,0);
+    m_cbufferAliveCount->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute, 1);
+    m_cbufferDT->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute, 2);
+
     const Int32 numThreadsPerBlock = 256;
     GraphicsAPI::getDeviceContext().dispatch(
       Math::alignValue(m_attributes.m_maxParticles, numThreadsPerBlock) / numThreadsPerBlock, 1, 1);
     GraphicsAPI::getDeviceContext().setUAVsNull();
+    GraphicsAPI::getDeviceContext().setResourcesNull();
+    GraphicsAPI::getDeviceContext().copyAtomicCounter(*m_deadBuffer, *m_cbufferDeadCount);
 #endif
     emit();
 #if (DR_PARTICLES_METHOD == DR_PARTICLES_CPU)
@@ -245,10 +264,6 @@ namespace driderSDK {
       m_cpuRenderBuffer[i].scale = m_particles.m_scale[i];
     }
     static_cast<StructureBuffer*>(m_renderBuffer)->updateFromBuffer(GraphicsAPI::getDeviceContext(), (byte*)m_cpuRenderBuffer);
-#endif
-#if (DR_PARTICLES_METHOD == DR_PARTICLES_GPU)
-    GraphicsAPI::getDeviceContext().copyAtomicCounter(*m_aliveBuffer, *m_cbufferAliveCount);
-    GraphicsAPI::getDeviceContext().copyAtomicCounter(*m_deadBuffer, *m_cbufferDeadCount);
 #endif
   }
   void
@@ -276,6 +291,7 @@ namespace driderSDK {
       m_emitCS->set(GraphicsAPI::getDeviceContext());
       m_poolBuffer->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute, 0);
       m_deadBuffer->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute, 1);
+      m_aliveBuffer->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute, 2, 0);
 
       m_cbuffer->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute,0);
       m_cbufferDeadCount->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute,1);
@@ -283,6 +299,18 @@ namespace driderSDK {
       const Int32 numThreadsPerBlock = 1024;
       GraphicsAPI::getDeviceContext().dispatch(
         Math::alignValue(m_attributes.m_numParticlesToEmit, numThreadsPerBlock) / numThreadsPerBlock, 1, 1);
+      GraphicsAPI::getDeviceContext().setUAVsNull();
+
+
+
+      GraphicsAPI::getDeviceContext().copyAtomicCounter(*m_aliveBuffer, *m_cbufferAliveCount);
+
+
+      m_setupDrawArgsCS->set(GraphicsAPI::getDeviceContext());
+      m_drawIndirectBuffer->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute, 0);
+      m_cbufferAliveCount->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute, 0);
+
+      GraphicsAPI::getDeviceContext().dispatch(1, 1, 1);
       GraphicsAPI::getDeviceContext().setUAVsNull();
 #endif
     }

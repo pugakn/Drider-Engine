@@ -32,62 +32,6 @@ namespace driderSDK {
     m_constantBuffer = dr_gfx_unique((ConstantBuffer*)device.createBuffer(bdesc));
 
     auto ls = m_inputLayout->getDescriptor();
-    //ls.pop_back();
-    //DrInputElementDesc idesc;
-    //idesc.stepRate = 1;
-    //idesc.slotClass = DR_INPUT_CLASSIFICATION::kPerInstance;
-
-    //idesc.format = DR_FORMAT::kR32_UINT;
-    //idesc.semanticIndex = 0;
-    //idesc.semanticName = "SV_InstanceID";
-    //idesc.inputSlot = 1;
-    //idesc.offset = 0;
-    //ls.push_back(idesc);
-#if (DR_PARTICLES_METHOD == DR_PARTICLES_CPU)
-    //ls.pop_back();
-    //ls.pop_back();
-    //ls.pop_back();
-    //ls.pop_back();
-    //ls.pop_back();
-    //DrInputElementDesc idesc;
-    //idesc.stepRate = 1;
-    //idesc.slotClass = DR_INPUT_CLASSIFICATION::kPerInstance;
-
-    //idesc.format = DR_FORMAT::kR32G32B32A32_FLOAT;
-    //idesc.semanticIndex = 0;
-    //idesc.semanticName = "TRANSFORM";
-    //idesc.inputSlot = 1;
-    //idesc.offset = 0;
-    //ls.push_back(idesc);
-
-    //idesc.format = DR_FORMAT::kR32G32B32A32_FLOAT;
-    //idesc.semanticIndex = 1;
-    //idesc.semanticName = "TRANSFORM";
-    //idesc.inputSlot =  1;
-    //idesc.offset = 16;
-    //ls.push_back(idesc);
-
-    //idesc.format = DR_FORMAT::kR32G32B32A32_FLOAT;
-    //idesc.semanticIndex = 2;
-    //idesc.semanticName = "TRANSFORM";
-    //idesc.inputSlot =  1;
-    //idesc.offset = 32;
-    //ls.push_back(idesc);
-
-    //idesc.format = DR_FORMAT::kR32G32B32A32_FLOAT;
-    //idesc.semanticIndex = 3;
-    //idesc.semanticName = "TRANSFORM";
-    //idesc.inputSlot =  1;
-    //idesc.offset = 48;
-    //ls.push_back(idesc);
-
-    //idesc.format = DR_FORMAT::kR32G32B32A32_FLOAT;
-    //idesc.semanticIndex = 0;
-    //idesc.semanticName = "COLOR";
-    //idesc.inputSlot = 1;
-    //idesc.offset = 64;
-    //ls.push_back(idesc);
-#endif
     m_inputLayoutInstance = dr_gfx_unique(device.createInputLayout(ls, *m_vertexShader->m_shaderBytecode));
 
     DrBufferDesc bdescInstance;
@@ -143,14 +87,13 @@ namespace driderSDK {
 #if (DR_PARTICLES_METHOD == DR_PARTICLES_GPU)
     data->emitter->m_poolBuffer->set(GraphicsAPI::getDeviceContext(),DR_SHADER_TYPE_FLAG::kVertex, 0);
     data->emitter->m_aliveBuffer->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kVertex, 1);
-    data->emitter->m_aliveParticles = 1;//ParticleEmitter::MAX_PARTICLES;
-    data->emitter->m_cbufferAliveCount->set(GraphicsAPI::getDeviceContext(), 0, 1);
-#endif
+#else
     data->emitter->m_renderBuffer->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kVertex,2);
-    m_VBQUAD->set(dc);//
+#endif
+    m_VBQUAD->set(dc);
     m_IBQUAD->set(dc);
     dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
-    dc.drawInstanced(6, data->emitter->m_aliveParticles, 0, 0, 0);
+    dc.drawIndexedInstancedIndirect(*data->emitter->m_drawIndirectBuffer);
     GraphicsAPI::getDeviceContext().setResourcesNull();
   }
 

@@ -18,7 +18,7 @@ class DR_GRAPHICS_EXPORT D3DIndexBuffer : public IndexBuffer
 {
  public:
    void*
-   getAPIObject() override;
+   getAPIObject() const override;
 
    void**
    getAPIObjectReference() override;

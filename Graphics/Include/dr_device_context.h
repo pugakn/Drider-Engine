@@ -13,6 +13,7 @@ class RenderTarget;
 class DepthStencil;
 class ConstantBuffer;
 class StructureBuffer;
+class IndirectArgsBuffer;
 class DR_GRAPHICS_EXPORT DeviceContext
 {
  public:
@@ -248,6 +249,10 @@ class DR_GRAPHICS_EXPORT DeviceContext
 
   virtual void
     setUAVsNull() = 0;
+
+  virtual void 
+    drawIndexedInstancedIndirect(const IndirectArgsBuffer& pBufferForArgs,
+                                 UInt32 _alignedByteOffsetForArgs = 0) = 0;
 
   /*//TODO: Add get methods
   struct DeviceContextData;

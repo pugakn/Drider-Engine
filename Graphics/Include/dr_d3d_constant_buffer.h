@@ -18,10 +18,10 @@ class DR_GRAPHICS_EXPORT D3DConstantBuffer : public ConstantBuffer
 {
  public:
    void*
-   getAPIObject() override;
+   getAPIObject() const override;
 
    void**
-   getAPIObjectReference() override;
+   getAPIObjectReference()  override;
 
   /**
   * TEST::

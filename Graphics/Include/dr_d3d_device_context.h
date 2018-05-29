@@ -262,6 +262,10 @@ class DR_GRAPHICS_EXPORT D3DDeviceContext : public DeviceContext
   void
     setUAVsNull() override;
 
+  void
+    drawIndexedInstancedIndirect(const IndirectArgsBuffer& pBufferForArgs,
+      UInt32 _alignedByteOffsetForArgs = 0) override;
+
   ID3D11DeviceContext* D3D11DeviceContext;
 };
 
