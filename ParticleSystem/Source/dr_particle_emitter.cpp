@@ -56,40 +56,101 @@ namespace driderSDK {
     ((RandomScaleFactorGenerator*)pG)->m_scaleFactorRandomMax = 1;
     m_generator.push_back(pG);
 
+
+    m_attributes = _attributes;
+    m_lifeTime = m_attributes.m_initialTime;
+    m_timeAccum = m_attributes.m_initialTime;
 #if (DR_PARTICLES_METHOD == DR_PARTICLES_GPU)
     driderSDK::File file;
     String shaderSource;
 
+    file.Open(_T("particle_init_cs.hlsl"));
+    shaderSource = StringUtils::toString(file.GetAsString(file.Size()));
+    file.Close();
+    m_initCS = device.createShaderFromMemory(shaderSource.data(),
+      shaderSource.size(),
+      DR_SHADER_TYPE_FLAG::kCompute);
+    shaderSource.clear();
+
+    file.Open(_T("particle_emit_cs.hlsl"));
+    shaderSource = StringUtils::toString(file.GetAsString(file.Size()));
+    file.Close();
+    m_emitCS = device.createShaderFromMemory(shaderSource.data(),
+      shaderSource.size(),
+      DR_SHADER_TYPE_FLAG::kCompute);
+    shaderSource.clear();
+
     file.Open(_T("particle_update_cs.hlsl"));
     shaderSource = StringUtils::toString(file.GetAsString(file.Size()));
     file.Close();
-
-    m_cs = device.createShaderFromMemory(shaderSource.data(),
+    m_updateCS = device.createShaderFromMemory(shaderSource.data(),
       shaderSource.size(),
       DR_SHADER_TYPE_FLAG::kCompute);
     shaderSource.clear();
 
 
-
-    const Int32 numElements = 1024;
     DrBufferDesc desc;
     desc.usage = DR_BUFFER_USAGE::kDefault;
-    desc.type = DR_BUFFER_TYPE::kSTRUCTURE;
-    desc.sizeInBytes = sizeof(inBuff) * numElements;
-    desc.stride = sizeof(inBuff);
-    m_bufferIN = (StructureBuffer*)device.createBuffer(desc);
+    desc.type = DR_BUFFER_TYPE::kRWSTRUCTURE;
+    desc.sizeInBytes = sizeof(UInt32) * m_attributes.m_maxParticles;
+    desc.stride = sizeof(UInt32);
+    m_aliveBuffer = (StructureBuffer*)device.createBuffer(desc);
 
     desc.type = DR_BUFFER_TYPE::kRWSTRUCTURE;
-    desc.sizeInBytes = sizeof(outBuff) * numElements;
-    desc.stride = sizeof(outBuff);
-    m_bufferOUT = (StructureBuffer*)device.createBuffer(desc);
+    desc.sizeInBytes = sizeof(UInt32) *  m_attributes.m_maxParticles;
+    desc.stride = sizeof(UInt32);
+    m_deadBuffer = (StructureBuffer*)device.createBuffer(desc);
+
+    desc.type = DR_BUFFER_TYPE::kRWSTRUCTURE;
+    desc.sizeInBytes = sizeof(GPUParticle) *  m_attributes.m_maxParticles;
+    desc.stride = sizeof(GPUParticle);
+    m_poolBuffer = (StructureBuffer*)device.createBuffer(desc);
+
+
+    m_cpuCbuff.m_particlesToEmit = m_attributes.m_numParticlesToEmit;
+    m_cpuCbuff.dt = 1/60.0f;
+    m_cpuCbuff.m_finalColor = { 0,0,1,1 };
+    m_cpuCbuff.m_globalAcceleration = { 0,0,0,0 };
+    m_cpuCbuff.m_initialColor = { 1,0,0,1 };
+    m_cpuCbuff.m_particleMaxLife = m_attributes.m_particleMaxLife;
+    m_cpuCbuff.m_initialScale = 5;
+    m_cpuCbuff.m_finaleScale = 0;
+    desc.type = DR_BUFFER_TYPE::kCONSTANT;
+    desc.sizeInBytes = sizeof(GPUParticleSystemCBuff);
+    desc.stride = sizeof(GPUParticleSystemCBuff);
+    m_cbuffer = (ConstantBuffer*)device.createBuffer(desc, (byte*)&m_cpuCbuff);
+
+    desc.type = DR_BUFFER_TYPE::kCONSTANT;
+    desc.sizeInBytes = sizeof(UInt32)*4;
+    desc.stride = sizeof(UInt32);
+    m_cbufferAliveCount = (ConstantBuffer*)device.createBuffer(desc);
+
+    desc.type = DR_BUFFER_TYPE::kCONSTANT;
+    desc.sizeInBytes = sizeof(UInt32) * 4;
+    desc.stride = sizeof(UInt32);
+    m_cbufferDeadCount = (ConstantBuffer*)device.createBuffer(desc);
+
+    m_initCS->set(GraphicsAPI::getDeviceContext());
+    m_poolBuffer->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute, 0);
+    m_deadBuffer->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute, 1);
+
+    const Int32 numThreadsPerBlock = 1024;
+    GraphicsAPI::getDeviceContext().dispatch(
+      Math::alignValue(m_attributes.m_maxParticles, numThreadsPerBlock) / numThreadsPerBlock, 1, 1);
+    GraphicsAPI::getDeviceContext().setUAVsNull();
+
+    {
+      DrBufferDesc desc;
+      desc.usage = DR_BUFFER_USAGE::kDefault;
+      desc.type = DR_BUFFER_TYPE::kRWSTRUCTURE;
+      desc.sizeInBytes = sizeof(RenderStructureBuffer) * m_attributes.m_maxParticles;
+      desc.stride = sizeof(RenderStructureBuffer);
+      m_renderBuffer = (StructureBuffer*)device.createBuffer(desc);
+    }
 
 #endif
 #if (DR_PARTICLES_METHOD == DR_PARTICLES_CPU)
-    m_buffer = new CBuffer[MAX_PARTICLES]; //Mem leak xdxdxd
-    m_attributes = _attributes;
-    m_lifeTime = m_attributes.m_initialTime;
-    m_timeAccum = m_attributes.m_initialTime;
+    //m_buffer = new CBuffer[MAX_PARTICLES]; //Mem leak xdxdxd
 
     m_particles.m_acceleration = new Vector3D[m_attributes.m_maxParticles];//Mem leak xdxdxd
     m_particles.m_color = new Vector3D[m_attributes.m_maxParticles];//Mem leak xdxdxd
@@ -101,8 +162,22 @@ namespace driderSDK {
     m_particles.m_scaleFactor = new float[m_attributes.m_maxParticles];//Mem leak xdxdxd
     m_particles.m_velocity = new Vector3D[m_attributes.m_maxParticles];//Mem leak xdxdxd
     m_particles.m_speedLimit = new float[m_attributes.m_maxParticles];//Mem leak xdxdxd
+
+    m_cpuRenderBuffer = new RenderStructureBuffer[m_attributes.m_maxParticles]; // Mem leak xdxdxd
+    {
+      DrBufferDesc desc;
+      desc.usage = DR_BUFFER_USAGE::kDefault;
+      desc.type = DR_BUFFER_TYPE::kSTRUCTURE;
+      desc.sizeInBytes = sizeof(RenderStructureBuffer) * m_attributes.m_maxParticles;
+      desc.stride = sizeof(RenderStructureBuffer);
+      m_renderBuffer = (StructureBuffer*)device.createBuffer(desc);
+    }
 #endif
     emit();
+#if (DR_PARTICLES_METHOD == DR_PARTICLES_GPU)
+    GraphicsAPI::getDeviceContext().copyAtomicCounter(*m_aliveBuffer, *m_cbufferAliveCount);
+    GraphicsAPI::getDeviceContext().copyAtomicCounter(*m_deadBuffer, *m_cbufferDeadCount);
+#endif
   }
   void
   ParticleEmitter::update()
@@ -151,31 +226,29 @@ namespace driderSDK {
     }
 #endif
 #if (DR_PARTICLES_METHOD == DR_PARTICLES_GPU)
-    m_cs->set(GraphicsAPI::getDeviceContext());
-    m_bufferOUT->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute, 0);
-    GraphicsAPI::getDeviceContext().dispatch(32, 1, 1);
+    m_updateCS->set(GraphicsAPI::getDeviceContext());
+    m_poolBuffer->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute, 0);
+    m_deadBuffer->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute, 1);
+    m_aliveBuffer->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute, 2, 0);
+
+    m_cbuffer->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute,0);
+    const Int32 numThreadsPerBlock = 256;
+    GraphicsAPI::getDeviceContext().dispatch(
+      Math::alignValue(m_attributes.m_maxParticles, numThreadsPerBlock) / numThreadsPerBlock, 1, 1);
     GraphicsAPI::getDeviceContext().setUAVsNull();
 #endif
     emit();
 #if (DR_PARTICLES_METHOD == DR_PARTICLES_CPU)
     for (size_t i = 0; i < m_aliveParticles; ++i) {
-      //BUFFER
-      m_buffer[i].WVP.identity();
-      //Scale
-      m_buffer[i].WVP.vector0.x = m_particles.m_scale[i];
-      m_buffer[i].WVP.vector1.y = m_particles.m_scale[i];
-      m_buffer[i].WVP.vector2.z = m_particles.m_scale[i];
-      //Rotation
-      //trensform.Rotation(p.m_rotation.x, p.m_rotation.y, p.m_rotation.z);
-      //Traslation
-      m_buffer[i].WVP.vector3 = m_particles.m_position[i];
-      m_buffer[i].WVP.vector3.w = 1.0;
-      m_buffer[i].WVP = m_buffer[i].WVP ;//* CameraManager::getActiveCamera()->getVP()
-      if (m_attributes.m_localSpace) {
-        m_buffer[i].WVP = m_buffer[i].WVP * m_localTransform;
-      }
-      m_buffer[i].color = m_particles.m_color[i];
+      m_cpuRenderBuffer[i].position = m_particles.m_position[i];
+      m_cpuRenderBuffer[i].color = m_particles.m_color[i];
+      m_cpuRenderBuffer[i].scale = m_particles.m_scale[i];
     }
+    static_cast<StructureBuffer*>(m_renderBuffer)->updateFromBuffer(GraphicsAPI::getDeviceContext(), (byte*)m_cpuRenderBuffer);
+#endif
+#if (DR_PARTICLES_METHOD == DR_PARTICLES_GPU)
+    GraphicsAPI::getDeviceContext().copyAtomicCounter(*m_aliveBuffer, *m_cbufferAliveCount);
+    GraphicsAPI::getDeviceContext().copyAtomicCounter(*m_deadBuffer, *m_cbufferDeadCount);
 #endif
   }
   void
@@ -200,7 +273,17 @@ namespace driderSDK {
       }
 #endif
 #if (DR_PARTICLES_METHOD == DR_PARTICLES_GPU)
+      m_emitCS->set(GraphicsAPI::getDeviceContext());
+      m_poolBuffer->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute, 0);
+      m_deadBuffer->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute, 1);
 
+      m_cbuffer->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute,0);
+      m_cbufferDeadCount->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute,1);
+
+      const Int32 numThreadsPerBlock = 1024;
+      GraphicsAPI::getDeviceContext().dispatch(
+        Math::alignValue(m_attributes.m_numParticlesToEmit, numThreadsPerBlock) / numThreadsPerBlock, 1, 1);
+      GraphicsAPI::getDeviceContext().setUAVsNull();
 #endif
     }
   }

@@ -12,7 +12,7 @@ class Buffer;
 class RenderTarget;
 class DepthStencil;
 class ConstantBuffer;
-
+class StructureBuffer;
 class DR_GRAPHICS_EXPORT DeviceContext
 {
  public:
@@ -241,6 +241,10 @@ class DR_GRAPHICS_EXPORT DeviceContext
 
   virtual void
     setResourcesNull() = 0;
+
+  virtual void
+    copyAtomicCounter(const StructureBuffer& _structureCounter, 
+                      ConstantBuffer& _cbuff) = 0;
 
   virtual void
     setUAVsNull() = 0;

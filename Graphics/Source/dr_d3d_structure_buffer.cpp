@@ -95,7 +95,7 @@ namespace driderSDK {
 
   void
     D3DStructureBuffer::set(const DeviceContext& deviceContext,
-      Int32 typeFlag, Int32 startSlot) const {
+      Int32 typeFlag, Int32 startSlot , UInt32 _resetCounter) const {
     const D3DDeviceContext* context = reinterpret_cast<const D3DDeviceContext*>
       (&deviceContext);
     if (typeFlag == 0) {
@@ -109,8 +109,9 @@ namespace driderSDK {
       context->D3D11DeviceContext->PSSetShaderResources(startSlot, 1, &m_pBufferView);
     }
     if (typeFlag& DR_SHADER_TYPE_FLAG::kCompute) {
-      if (m_descriptor.type == DR_BUFFER_TYPE::kRWSTRUCTURE)
-        context->D3D11DeviceContext->CSSetUnorderedAccessViews(startSlot, 1, &m_pBufferUAV,NULL);
+      if (m_descriptor.type == DR_BUFFER_TYPE::kRWSTRUCTURE) {
+        context->D3D11DeviceContext->CSSetUnorderedAccessViews(startSlot, 1, &m_pBufferUAV, &_resetCounter);
+      }
       else 
         context->D3D11DeviceContext->CSSetShaderResources(startSlot, 1, &m_pBufferView);
     }

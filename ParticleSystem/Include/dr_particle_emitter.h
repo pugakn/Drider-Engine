@@ -8,12 +8,11 @@
 #include <iostream>
 #include <dr_shader.h>
 #include <dr_structure_buffer.h>
-
+#include <dr_constant_buffer.h>
 #define DR_PARTICLES_CPU 0
 #define DR_PARTICLES_GPU 1
-#define DR_PARTICLES_METHOD  DR_PARTICLES_CPU
+#define DR_PARTICLES_METHOD  DR_PARTICLES_GPU
 namespace driderSDK {
-
   struct DR_PARTICLES_EXPORT Particle { 
     float* m_lifeTime;
     bool* m_isActive;
@@ -30,6 +29,38 @@ namespace driderSDK {
 
     Vector3D* m_velocity;
     Vector3D* m_acceleration;
+  };
+  struct DR_PARTICLES_EXPORT GPUParticle {
+    Vector4D position;
+    Vector4D velocity;
+    Vector4D acceleration;
+    Vector4D color;
+
+    float lifeTime;
+    float scale;
+    Int32 isActive;
+    Int32 pad;
+  };
+  struct DR_PARTICLES_EXPORT RenderStructureBuffer {
+    Vector4D position;
+    Vector4D color;
+    float scale;
+    float aa;
+    float aaa;
+    float aaaa;
+  };
+  struct DR_PARTICLES_EXPORT GPUParticleSystemCBuff {
+    Vector4D m_globalAcceleration;
+    Vector4D m_initialColor;
+    Vector4D m_finalColor;
+    float m_particleMaxLife;
+    float dt;
+    int m_particlesToEmit;
+    int  aliveParticles;
+    float m_initialScale;
+    float m_finaleScale;
+    float aa;
+    float aaaa;
   };
   struct DR_PARTICLES_EXPORT ParticleEmitterAttributes {
     bool m_isActive = false;
@@ -134,7 +165,7 @@ namespace driderSDK {
       Matrix4x4 WVP;
       Vector4D color;
     };
-    CBuffer* m_buffer;
+    //CBuffer* m_buffer;
     size_t m_aliveParticles{0};
 
     std::vector<ParticleUpdater*> m_updaters;
@@ -144,6 +175,9 @@ namespace driderSDK {
     Matrix4x4 m_localTransform;
 
     StructureBuffer* m_poolBuffer;
+    StructureBuffer* m_aliveBuffer;
+    StructureBuffer* m_renderBuffer;
+    ConstantBuffer* m_cbufferAliveCount;
   private:
     ParticleEmitterAttributes m_attributes;
     float m_lifeTime = 0.0f;
@@ -162,6 +196,9 @@ namespace driderSDK {
     Shader* m_updateCS;
     Shader* m_emitCS;
     StructureBuffer* m_deadBuffer;
-    StructureBuffer* m_aliveBuffer;
+    ConstantBuffer* m_cbuffer;
+    ConstantBuffer* m_cbufferDeadCount;
+    GPUParticleSystemCBuff m_cpuCbuff;
+    RenderStructureBuffer* m_cpuRenderBuffer;
   };
 }

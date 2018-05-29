@@ -256,6 +256,10 @@ class DR_GRAPHICS_EXPORT D3DDeviceContext : public DeviceContext
     setResourcesNull() override;
 
   void
+    copyAtomicCounter(const StructureBuffer& _structureCounter,
+      ConstantBuffer& _cbuff) override;
+
+  void
     setUAVsNull() override;
 
   ID3D11DeviceContext* D3D11DeviceContext;

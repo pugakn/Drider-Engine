@@ -5,6 +5,7 @@
 #include "dr_d3d_vertex_buffer.h"
 #include "dr_d3d_index_buffer.h"
 #include "dr_d3d_constant_buffer.h"
+#include "dr_structure_buffer.h"
 #include "dr_shader.h"
 #include "dr_d3d_device_context.h"
 #include "dr_d3d_texture.h"
@@ -15,7 +16,7 @@
 #include "dr_d3d_rasterizer_state.h"
 #include "dr_d3d_input_layout.h"
 #include "dr_d3d_swap_chain.h"
-
+#include "dr_d3d_structure_buffer.h"
 namespace driderSDK {
 
 struct DeviceContextData {
@@ -199,6 +200,16 @@ void D3DDeviceContext::setResourcesNull()
   VSSetShaderResources(0, 16, nullTextures);
   D3D11DeviceContext->
   CSSetShaderResources(0, 16, nullTextures);
+}
+
+void D3DDeviceContext::copyAtomicCounter(const StructureBuffer & _structureCounter, 
+                                         ConstantBuffer & _cbuff)
+{
+  auto pUAV = static_cast<const D3DStructureBuffer*>(&_structureCounter)->m_pBufferUAV;
+  DR_ASSERT(pUAV);
+  D3D11DeviceContext->CopyStructureCount(static_cast<ID3D11Buffer*>(_cbuff.getAPIObject()),
+    0,
+    pUAV);
 }
 
 void D3DDeviceContext::setUAVsNull()

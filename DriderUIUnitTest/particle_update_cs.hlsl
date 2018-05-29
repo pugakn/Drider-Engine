@@ -1,5 +1,7 @@
-
-struct OutBuff
+#define EULER_UPDATER
+#define TIME_COLOR
+#define TIME_SCALE
+struct PoolBuffer
 {
   float4 position;
   float4 velocity;
@@ -8,48 +10,52 @@ struct OutBuff
 
   float lifeTime;
   float scale;
-  float speedLimit;
   int isActive;
+  float speedLimit;
 };
 cbuffer ConstantBuffer {
   float4 m_globalAcceleration;
-  float4 m_initialScale;
-  float4 m_finaleScale;
   float4 m_initialColor;
   float4 m_finalColor;
-
+  float m_particleMaxLife;
   float dt;
+  int m_particlesToEmit;
   int  aliveParticles;
-  float asdfg2;
-  float asdfg3;
+  float m_initialScale;
+  float m_finaleScale;
+  float aa;
+  float aaaa;
 };
 //StructuredBuffer<BufType> Buffer0 : register(t0);
 //StructuredBuffer<BufType> Buffer1 : register(t1);
-RWStructuredBuffer<OutBuff> BufferOut : register(u0);
-RWStructuredBuffer<int> DeadBuffer : register(u1);
-[numthreads(32, 1, 1)]
-
-void CS( uint3 DTid : SV_DispatchThreadID )
+RWStructuredBuffer<PoolBuffer> poolBuffer : register(u0);
+AppendStructuredBuffer<uint> DeadBuffer : register(u1);
+AppendStructuredBuffer<uint> AliveBuffer : register(u2);
+[numthreads(256, 1, 1)]
+void CS( uint3 id : SV_DispatchThreadID )
 {
-  if (BufferOut[DTid.x].lifeTime) {
-    DeadBuffer[aliveParticles] = DTid.x;
-    aliveParticles = aliveParticles - 1;
-  }
-  BufferOut[DTid.x].lifeTime += dt;
-
   float _proportionMul = 1.0f / 2.0; // maxLife
-  float _proportion = BufferOut[DTid.x].lifeTime * _proportionMul;
+  float _proportion = poolBuffer[id.x].lifeTime * _proportionMul;
   float m1Proportion = (1.0f - _proportion);
 #ifdef TIME_COLOR
-  BufferOut[DTid.x].color = (m_initialColor * m1Proportion) + (m_finalColor * _proportion);
+  poolBuffer[id.x].color = (m_initialColor * m1Proportion) + (m_finalColor * _proportion);
 #endif
 #ifdef TIME_SCALE
-  BufferOut[DTid.x].scale = (m_initialScale * m1Proportion) + (m_finaleScale * _proportion); //* p->m_scaleFactor[i]
+  poolBuffer[id.x].scale = (m_initialScale * m1Proportion) + (m_finaleScale * _proportion); //* p->m_scaleFactor[i]
 #endif
 #ifdef EULER_UPDATER
-  BufferOut[DTid.x].velocity += (BufferOut[DTid.x].acceleration + m_globalAcceleration) * dt;
-  BufferOut[DTid.x].position += BufferOut[DTid.x].velocity * dt;
+  poolBuffer[id.x].velocity += (poolBuffer[id.x].acceleration /*+ m_globalAcceleration*/) * dt;
+  poolBuffer[id.x].position += poolBuffer[id.x].velocity * dt;
 #endif
-  //BufferOut[DTid.x].color = float4(1,1,0,1);
+  //poolBuffer[id.x].scale = 15;
+  //poolBuffer[id.x].color = float4(1,0,0,1);
+
+  if (poolBuffer[id.x].lifeTime < m_particleMaxLife) {
+    poolBuffer[id.x].lifeTime += dt; //TODO:
+    AliveBuffer.Append(id.x);
+  }
+  else {
+    DeadBuffer.Append(id.x);
+  }
 }
 

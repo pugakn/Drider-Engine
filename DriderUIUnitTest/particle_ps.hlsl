@@ -18,7 +18,4 @@ FS(PS_INPUT input) : SV_TARGET0 {
 #ifdef DR_PARTICLES_CPU
   return float4(input.color.xyz, 1.0f);
 #endif
-#ifdef DR_PARTICLES_GPU
-  return float4(BufferOut[64].color.xyz, 1.0f);
-#endif
 }

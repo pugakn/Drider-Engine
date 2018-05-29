@@ -98,6 +98,14 @@ struct DR_MATH_EXPORT Math
   /**
   *
   */
+  static FORCEINLINE Int32 
+  alignValue(Int32 value, Int32 alignment) {
+    return (value + (alignment - 1)) & ~(alignment - 1);
+  }
+
+  /**
+  *
+  */
 
   static FORCEINLINE float
   almostEqual(float a, float b) {

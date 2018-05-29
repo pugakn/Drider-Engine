@@ -32,7 +32,7 @@ namespace driderSDK {
     *
     */
     virtual void
-      set(const DeviceContext& deviceContext, Int32 typeFlag = 0, Int32 startSlot = 0) const = 0;
+      set(const DeviceContext& deviceContext, Int32 typeFlag = 0, Int32 startSlot = 0, UInt32 _resetCounter = -1) const = 0;
   };
 
 }

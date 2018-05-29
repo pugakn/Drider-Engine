@@ -68,7 +68,7 @@ namespace driderSDK {
     */
     void
       set(const DeviceContext& deviceContext,
-        Int32 typeFlag = 0 ,Int32 startSlot = 0) const override;
+        Int32 typeFlag = 0 ,Int32 startSlot = 0, UInt32 _resetCounter = -1) const override;
 
     /**
     * TEST::
