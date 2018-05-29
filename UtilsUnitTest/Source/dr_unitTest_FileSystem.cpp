@@ -28,6 +28,20 @@ TEST(FileSystem, GetWorkingPath) {
   EXPECT_TRUE(!WorkingPath.empty());
 }
 
+TEST(FileSystem, GetDirectoryContent) {
+  driderSDK::FileSystem fileMaganer;
+  driderSDK::TString WorkingPath = fileMaganer.GetWorkingPath();
+  std::vector<driderSDK::TString> contents = fileMaganer.GetDirectoryContent();
+
+  printf("\n");
+  for (auto content : contents) {
+    printf("%s\n", driderSDK::StringUtils::toString(content));
+  }
+  printf("\n\n");
+
+  EXPECT_TRUE(!WorkingPath.empty());
+}
+
 TEST(FileSystem, CreateAndOpen) {
   driderSDK::FileSystem fileMaganer;
 
