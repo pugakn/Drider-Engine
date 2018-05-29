@@ -62,7 +62,7 @@ class DR_RENDERMAN_EXPORT RenderMan {
   * function of the passes.
   */
   void
-  draw();
+  draw(const RenderTarget& _out, const DepthStencil& _outds);
 
   /**
   * TEST::exit

@@ -336,7 +336,7 @@ RenderManApp::postUpdate() {
 void
 RenderManApp::postRender() {
   GraphicsDriver::API().clear();
-  m_renderMan.draw();
+  m_renderMan.draw(GraphicsAPI::getBackBufferRT(), GraphicsAPI::getDepthStencil());
   //CameraManager::getActiveCamera()->setTarget(m_selectedGO->getTransform().getPosition());
   GraphicsDriver::API().swapBuffers();
 }

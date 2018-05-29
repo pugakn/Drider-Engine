@@ -260,6 +260,7 @@ RenderMan::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_VerBlurDrawData.OutRt = m_RTPreFinalBlur;
   m_VerBlurPass.draw(&m_VerBlurDrawData);
   
+  _out.set(GraphicsAPI::getDeviceContext(), _outds);
   m_PostProcessingDrawData.ColorRT = m_RTLightning;
   m_PostProcessingDrawData.ColorBlurRT = m_RTPreFinalBlur;
   m_PostProcessingDrawData.Gbuffer = m_RTGBuffer;

@@ -10,7 +10,7 @@ renderManagerApp() {
   Manager.init();
 
   while (1) {
-    Manager.draw();
+    //Manager.draw();
   }
 
   Manager.exit();
