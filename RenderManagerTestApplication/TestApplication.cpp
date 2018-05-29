@@ -82,8 +82,8 @@ RenderManApp::postInit() {
   Time::startUp();
   CameraManager::startUp();
   CameraManager::createCamera(_T("PATO_CAM"),
-                              { 0.0f, 150.0f, -400.0f },
-                              { 0.0f, 10.0f, 0.0f },
+                              { 0.0f, 200.0f, -400.0f },
+                              { 0.0f, 50.0f, 0.0f },
                               m_viewport,
                               45.f,
                               //1024, 1024,
@@ -92,10 +92,10 @@ RenderManApp::postInit() {
   CameraManager::setActiveCamera(_T("PATO_CAM"));
   m_renderMan.init();
 
-  m_bRotate = false;
+  m_bRotate = true;
 
   Degree grados(2.8125f);
-  Vector4D LightPosition(0.0f, 50.0f, 150.0f, 1.0f);
+  Vector4D LightPosition(0.0f, 100.0f, 150.0f, 1.0f);
   Matrix4x4 rotationMatrix(driderSDK::Math::FORCE_INIT::kIdentity);
   rotationMatrix = rotationMatrix.RotationY(grados.toRadian());
 
@@ -131,7 +131,7 @@ RenderManApp::postInit() {
   if (ptrFloor) {
     m_selectedGO->createComponent<RenderComponent>(ptrFloor);
     m_selectedGO->createComponent<AABBCollider>(ptrFloor->aabb);
-    m_selectedGO->getTransform().setPosition(Vector3D(0.0f, -50.0f, 0.0f));
+    m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, 0.0f));
     //m_selectedGO->getTransform().setScale(Vector3D(1000.0f, 1.0f, 1000.0f));
     m_selectedGO->getTransform().setScale(Vector3D(5.0f, 1.0f, 5.0f));
 
@@ -178,9 +178,9 @@ RenderManApp::postInit() {
   if (ptrHK) {
     m_selectedGO->createComponent<RenderComponent>(ptrHK);
     m_selectedGO->createComponent<AABBCollider>(ptrHK->aabb);
+    m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, 0.0f));
     m_selectedGO->getTransform().setScale(Vector3D(100.0f, 100.0f, 100.0f));
     m_selectedGO->getTransform().setRotation(Vector3D(Math::Math::HALF_PI * 3.0f, Math::PI*0.75f, 0.0f));
-    m_selectedGO->getTransform().setPosition(Vector3D(-200.0f, -50.0f, 0.0f));
 
     m_hkBodyMat = std::make_shared<Material>(_T("HKBodyMaterial"));
     m_hkBodySMat = std::make_shared<Material>(_T("HKBodyMaterial"));
@@ -228,7 +228,6 @@ RenderManApp::postInit() {
     meshes[0].material = m_hkBodySMat; 
     meshes[1].material = m_hkBodyMat;
     meshes[2].material = m_hkEyeMat;
-
   }
 
   m_vecGos.push_back(SceneGraph::createObject(_T("Model")));
@@ -237,8 +236,8 @@ RenderManApp::postInit() {
   if (ptrModel) {
     m_selectedGO->createComponent<RenderComponent>(ptrModel);
     m_selectedGO->createComponent<AABBCollider>(ptrModel->aabb);
-    m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 50.0f, 0.0f));
-    m_selectedGO->getTransform().setScale(Vector3D(100.0f, 100.0f, 100.0f));
+    m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 12.5f, -100.0f));
+    m_selectedGO->getTransform().setScale(Vector3D(10.0f, 10.0f, 10.0f));
     m_selectedGO->getTransform().setRotation(Vector3D(0.0f, Math::PI*1.15f, 0.0f));
 
     m_modelMat = std::make_shared<Material>(_T("ModelMaterial"));
@@ -263,7 +262,9 @@ RenderManApp::postInit() {
     rComp->getMeshes().front().material = m_modelMat;
   }
 
-  m_SzTGosIndex = m_vecGos.size() - 1;
+  //Selecting Hat Kid
+  m_SzTGosIndex = 1;
+  m_selectedGO = m_vecGos[m_SzTGosIndex];
 
   initInputCallbacks();
 }

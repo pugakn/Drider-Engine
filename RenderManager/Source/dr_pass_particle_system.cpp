@@ -18,7 +18,7 @@ ParticleSystemPass::~ParticleSystemPass() {
 }
 
 void
-  ParticleSystemPass::init(PassInitData* initData) {
+ParticleSystemPass::init(PassInitData* initData) {
   ParticleSystemInitData* data = static_cast<ParticleSystemInitData*>(initData);
   Device& device = GraphicsAPI::getDevice();
 

@@ -168,13 +168,13 @@ RenderMan::init() {
   m_LightningPass.init(&m_LightningInitData);
   m_PostProcessingPass.init(&m_PostProcessingInitData);
 
-  m_particlePass.init(&m_particleInitData);
+  //m_particlePass.init(&m_particleInitData);
   driderSDK::ParticleEmitter emitter;
   driderSDK::ParticleEmitterAttributes attr;
   //System
   attr.m_maxParticles = ParticleEmitter::MAX_PARTICLES;
-  attr.m_initialTime = 0.1;
-  attr.m_rate = 0.1;
+  attr.m_initialTime = 0.1f;
+  attr.m_rate = 0.1f;
   attr.m_systemMaxLife = 5000;
   attr.m_particleMaxLife = 2;
   attr.m_numParticlesToEmit = 500;
@@ -267,10 +267,10 @@ RenderMan::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_LightningDrawData.ActiveLights = 128;
   m_LightningDrawData.ShadowCam = &vecShadowCamera;
   m_LightningDrawData.shadowDepths = partitions;
-  m_LightningDrawData.shadowSizes = Vector4D(shadowWidth,
-                                             shadowWidth,
-                                             shadowWidth,
-                                             shadowWidth);
+  m_LightningDrawData.shadowSizes = Vector4D(static_cast<float>(shadowWidth),
+                                             static_cast<float>(shadowWidth),
+                                             static_cast<float>(shadowWidth),
+                                             static_cast<float>(shadowWidth));
   m_LightningDrawData.shadowSizesProportion[0] = 1.0f;
   m_LightningDrawData.shadowSizesProportion[1] = m_ShadowSubFrustras[1].second /
                                                  m_ShadowSubFrustras[0].second;
