@@ -207,7 +207,7 @@ FS(PS_INPUT input) : SV_TARGET0 {
   
   const int activeLights = kEyePosition.w;
   [unroll]
-  for (int index = 0; index < activeLights; index += 2) {
+  for (int index = 0; index < activeLights; index += 1) {
     lightPosition  = kLightPosition[index].xyz;
 
     lightColor     = kLightColor[index].xyz;

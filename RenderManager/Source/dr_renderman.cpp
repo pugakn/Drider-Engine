@@ -110,7 +110,6 @@ RenderMan::init() {
   m_TexDescDefault.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE |
                                DR_BIND_FLAGS::RENDER_TARGET;
 
-  m_TexDescDefault.Format = DR_FORMAT::kR16G16B16A16_FLOAT;
   m_RTGBuffer        = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 4));
 
   m_TexDescDefault.Format = DR_FORMAT::kR8_SNORM;

@@ -25,7 +25,7 @@ float4
   float4 ColorBlur;
 
   #ifdef CHROMATIC_ABERRATION
-    float  fChromaticAberrationStrength = 0.1f;
+    float  fChromaticAberrationStrength = 0.075f;
     float  fChromaticAberrationConcentration = 2.0f;
     
     float2 CAOffset = float2(pow(-abs((0.5f - uv.x) * fChromaticAberrationStrength), fChromaticAberrationConcentration), 0.0f);

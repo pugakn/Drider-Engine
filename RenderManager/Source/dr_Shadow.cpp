@@ -33,7 +33,7 @@ ShadowPass::init(PassInitData* initData) {
   m_constantBuffer = dr_gfx_unique((ConstantBuffer*)dv.createBuffer(bdesc));
 
   DrSampleDesc SSdesc;
-  SSdesc.Filter = DR_TEXTURE_FILTER::kMIN_MAG_MIP_LINEAR;
+  SSdesc.Filter = DR_TEXTURE_FILTER::kMIN_MAG_LINEAR_MIP_POINT;
   SSdesc.maxAnisotropy = 16;
   SSdesc.addressU = DR_TEXTURE_ADDRESS::kWrap;
   SSdesc.addressV = DR_TEXTURE_ADDRESS::kWrap;
@@ -109,6 +109,7 @@ ShadowPass::draw(PassDrawData* drawData) {
   ShadowDrawData* data = static_cast<ShadowDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
+  data->OutRt->getTexture(0).setTextureNull(dc);
   data->OutRt->setRTNull(dc);
   data->OutRt->set(dc, *data->dsOptions);
 
@@ -147,6 +148,7 @@ ShadowPass::merge(std::array<GFXShared<RenderTarget>, 4> m_RTShadowDummy,
                   GFXShared<RenderTarget> OutRt) {
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
+  OutRt->getTexture(0).setTextureNull(dc);
   OutRt->setRTNull(dc);
   OutRt->set(dc, *dsOptions);
 

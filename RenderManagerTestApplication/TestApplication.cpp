@@ -186,35 +186,42 @@ RenderManApp::postInit() {
     m_hkBodySMat = std::make_shared<Material>(_T("HKBodyMaterial"));
     m_hkEyeMat = std::make_shared<Material>(_T("HKEyeMaterial"));
 
-    auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_main_mat_BaseColor.png"));
-    auto emissiveTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_main_mat_Emissive.png"));
-    auto metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_main_mat_Metallic.png"));
-    auto roughnessTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_main_mat_Roughness.png"));
+    auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_main_mat_BaseColor.tga"));
+    auto emissiveTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_main_mat_Emissive.tga"));
+    auto metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_main_mat_Metallic.tga"));
+    auto roughnessTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_main_mat_Roughness.tga"));
+    auto normalTex = ResourceManager::getReferenceT<TextureCore>(_T("NormNormal.tga"));
     m_hkBodyMat->addProperty(_T("Albedo"), PROPERTY_TYPE::kVec3);
     m_hkBodyMat->addProperty(_T("Emisivity"), PROPERTY_TYPE::kVec3);
     m_hkBodyMat->addProperty(_T("Metallic"), PROPERTY_TYPE::kVec3);
     m_hkBodyMat->addProperty(_T("Roughness"), PROPERTY_TYPE::kVec3);
+    m_hkBodyMat->addProperty(_T("Normal"), PROPERTY_TYPE::kVec3);
     m_hkBodyMat->setTexture(albedoTex, _T("Albedo"));
     m_hkBodyMat->setTexture(emissiveTex, _T("Emisivity"));
     m_hkBodyMat->setTexture(metallicTex, _T("Metallic"));
     m_hkBodyMat->setTexture(roughnessTex, _T("Roughness"));
+    m_hkBodyMat->setTexture(normalTex, _T("Normal"));
 
-    albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_second_mat_BaseColor.png"));
-    metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_second_mat_Metallic.png"));
-    roughnessTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_second_mat_Roughness.png"));
+    albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_second_mat_BaseColor.tga"));
+    metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_second_mat_Metallic.tga"));
+    roughnessTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_second_mat_Roughness.tga"));
     m_hkBodySMat->addProperty(_T("Albedo"), PROPERTY_TYPE::kVec3);
     m_hkBodySMat->addProperty(_T("Metallic"), PROPERTY_TYPE::kVec3);
     m_hkBodySMat->addProperty(_T("Roughness"), PROPERTY_TYPE::kVec3);
+    m_hkBodySMat->addProperty(_T("Normal"), PROPERTY_TYPE::kVec3);
     m_hkBodySMat->setTexture(albedoTex, _T("Albedo"));
     m_hkBodySMat->setTexture(metallicTex, _T("Metallic"));
     m_hkBodySMat->setTexture(roughnessTex, _T("Roughness"));
+    m_hkBodySMat->setTexture(normalTex, _T("Normal"));
 
-    albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("HK_eye_dif.png"));
-    metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("HK_eye_spc.png"));
+    albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("HK_eye_dif.tga"));
+    metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("HK_eye_spc.tga"));
     m_hkEyeMat->addProperty(_T("Albedo"), PROPERTY_TYPE::kVec3);
     m_hkEyeMat->addProperty(_T("Specular"), PROPERTY_TYPE::kVec3);
+    m_hkEyeMat->addProperty(_T("Normal"), PROPERTY_TYPE::kVec3);
     m_hkEyeMat->setTexture(albedoTex, _T("Albedo"));
     m_hkEyeMat->setTexture(metallicTex, _T("Specular"));
+    m_hkEyeMat->setTexture(normalTex, _T("Normal"));
 
     auto renderComp = m_selectedGO->getComponent<RenderComponent>();
     std::vector<RenderMesh>& meshes = renderComp->getMeshes();
@@ -394,15 +401,16 @@ RenderManApp::loadResources() {
   ResourceManager::loadResource(_T("default_normal.tga"));
   ResourceManager::loadResource(_T("default_roughness.tga"));
 
-  ResourceManager::loadResource(_T("hatkid_HK_main_mat_BaseColor.png"));
-  ResourceManager::loadResource(_T("hatkid_HK_main_mat_Emissive.png"));
-  ResourceManager::loadResource(_T("hatkid_HK_main_mat_Metallic.png"));
-  ResourceManager::loadResource(_T("hatkid_HK_main_mat_Roughness.png"));
-  ResourceManager::loadResource(_T("hatkid_HK_second_mat_BaseColor.png"));
-  ResourceManager::loadResource(_T("hatkid_HK_second_mat_Metallic.png"));
-  ResourceManager::loadResource(_T("hatkid_HK_second_mat_Roughness.png"));
-  ResourceManager::loadResource(_T("HK_eye_dif.png"));
-  ResourceManager::loadResource(_T("HK_eye_spc.png"));
+  ResourceManager::loadResource(_T("hatkid_HK_main_mat_BaseColor.tga"));
+  ResourceManager::loadResource(_T("hatkid_HK_main_mat_Emissive.tga"));
+  ResourceManager::loadResource(_T("hatkid_HK_main_mat_Metallic.tga"));
+  ResourceManager::loadResource(_T("hatkid_HK_main_mat_Roughness.tga"));
+  ResourceManager::loadResource(_T("hatkid_HK_second_mat_BaseColor.tga"));
+  ResourceManager::loadResource(_T("hatkid_HK_second_mat_Metallic.tga"));
+  ResourceManager::loadResource(_T("hatkid_HK_second_mat_Roughness.tga"));
+  ResourceManager::loadResource(_T("HK_eye_dif.tga"));
+  ResourceManager::loadResource(_T("HK_eye_spc.tga"));
+  ResourceManager::loadResource(_T("NormNormal.tga"));
 
   ResourceManager::loadResource(_T("256_Checker_Diffuse.tga"));
   ResourceManager::loadResource(_T("256_Checker_Displacement.tga"));
