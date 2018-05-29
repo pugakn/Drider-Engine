@@ -177,6 +177,7 @@
     <ClInclude Include="Include\dr_plane.h" />
     <ClInclude Include="Include\dr_quaternion.h" />
     <ClInclude Include="Include\dr_radian.h" />
+    <ClInclude Include="Include\dr_random.h" />
     <ClInclude Include="Include\dr_ray.h" />
     <ClInclude Include="Include\dr_sphere.h" />
     <ClInclude Include="Include\dr_vector2d.h" />

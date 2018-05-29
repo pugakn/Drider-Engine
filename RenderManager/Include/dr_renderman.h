@@ -11,6 +11,9 @@
 
 #include <dr_texture.h>
 
+#include "dr_pass_particle_system.h"
+#include <dr_particle_emitter.h>
+#include <dr_vector3d.h>
 namespace driderSDK {
 
 /**
@@ -105,6 +108,11 @@ class DR_RENDERMAN_EXPORT RenderMan {
   HorBlurInitData m_HorBlurInitData;
   HorBlurDrawData m_HorBlurDrawData;
   GFXShared<DepthStencil> m_HorBlurDSoptions;
+
+  ParticleSystemPass m_particlePass;
+  ParticleSystemInitData m_particleInitData;
+  ParticleSystemDrawData m_particleDrawData;
+  ParticleEmitter m_emitter;
 
   VerBlurPass m_VerBlurPass;
   VerBlurInitData m_VerBlurInitData;

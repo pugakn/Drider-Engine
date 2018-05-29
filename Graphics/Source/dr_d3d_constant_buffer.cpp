@@ -60,7 +60,8 @@ D3DConstantBuffer::create(const Device& device,
 
 void
 D3DConstantBuffer::set(const DeviceContext& deviceContext,
-                       Int32 typeFlag) const {
+                       Int32 typeFlag,
+                       Int32 startSlot) const {
   const D3DDeviceContext* context = reinterpret_cast<const D3DDeviceContext*>
                                       (&deviceContext);
   if (typeFlag == 0) {
@@ -68,22 +69,22 @@ D3DConstantBuffer::set(const DeviceContext& deviceContext,
     typeFlag |= DR_SHADER_TYPE_FLAG::kFragment;
   }
   if (typeFlag& DR_SHADER_TYPE_FLAG::kVertex) {
-    context->D3D11DeviceContext->VSSetConstantBuffers(0, 1, &CB);
+    context->D3D11DeviceContext->VSSetConstantBuffers(startSlot, 1, &CB);
   }
   if (typeFlag& DR_SHADER_TYPE_FLAG::kFragment) {
-    context->D3D11DeviceContext->PSSetConstantBuffers(0, 1, &CB);
+    context->D3D11DeviceContext->PSSetConstantBuffers(startSlot, 1, &CB);
   }
   if (typeFlag& DR_SHADER_TYPE_FLAG::kCompute) {
-    context->D3D11DeviceContext->CSSetConstantBuffers(0, 1, &CB);
+    context->D3D11DeviceContext->CSSetConstantBuffers(startSlot, 1, &CB);
   }
   if (typeFlag& DR_SHADER_TYPE_FLAG::kDomain) {
-    context->D3D11DeviceContext->DSSetConstantBuffers(0, 1, &CB);
+    context->D3D11DeviceContext->DSSetConstantBuffers(startSlot, 1, &CB);
   }
   if (typeFlag& DR_SHADER_TYPE_FLAG::kHull) {
-    context->D3D11DeviceContext->HSSetConstantBuffers(0, 1, &CB);
+    context->D3D11DeviceContext->HSSetConstantBuffers(startSlot, 1, &CB);
   }
   if (typeFlag& DR_SHADER_TYPE_FLAG::kGeometry) {
-    context->D3D11DeviceContext->GSSetConstantBuffers(0, 1, &CB);
+    context->D3D11DeviceContext->GSSetConstantBuffers(startSlot, 1, &CB);
   }
   if (typeFlag & DR_SHADER_TYPE_FLAG::kTeselation) {
     //Not implemented

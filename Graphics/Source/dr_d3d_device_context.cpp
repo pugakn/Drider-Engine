@@ -5,6 +5,7 @@
 #include "dr_d3d_vertex_buffer.h"
 #include "dr_d3d_index_buffer.h"
 #include "dr_d3d_constant_buffer.h"
+#include "dr_structure_buffer.h"
 #include "dr_shader.h"
 #include "dr_d3d_device_context.h"
 #include "dr_d3d_texture.h"
@@ -15,7 +16,7 @@
 #include "dr_d3d_rasterizer_state.h"
 #include "dr_d3d_input_layout.h"
 #include "dr_d3d_swap_chain.h"
-
+#include "dr_d3d_structure_buffer.h"
 namespace driderSDK {
 
 struct DeviceContextData {
@@ -148,6 +149,9 @@ D3DDeviceContext::setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::E topology) const 
   case driderSDK::DR_PRIMITIVE_TOPOLOGY::kTriangleStrip:
     topo = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP;
     break;
+  case driderSDK::DR_PRIMITIVE_TOPOLOGY::kPoint:
+    topo = D3D11_PRIMITIVE_TOPOLOGY_POINTLIST;
+    break;
   default:
     break;
   }
@@ -160,6 +164,60 @@ D3DDeviceContext::draw(UInt32 indexCount,
                        UInt32 startIndexLocation,
                        UInt32 startVertexLocation) const {
   D3D11DeviceContext->DrawIndexed(indexCount, startIndexLocation, startVertexLocation);
+}
+
+void 
+D3DDeviceContext::drawInstanced(UInt32 indexCount, 
+                                UInt32 instanceCount, 
+                                UInt32 startIndexLocation, 
+                                UInt32 startVertexLocation, 
+                                UInt32 startInstanceLocation) const
+{
+  D3D11DeviceContext->DrawIndexedInstanced(indexCount, 
+                                           instanceCount, 
+                                           startIndexLocation, 
+                                           startVertexLocation, 
+                                           startInstanceLocation);
+}
+
+void 
+D3DDeviceContext::dispatch(UInt32 _threadGroupCountX, 
+                           UInt32 _threadGroupCountY, 
+                           UInt32 _threadGroupCountZ) const
+{
+  D3D11DeviceContext->Dispatch(_threadGroupCountX, 
+                               _threadGroupCountY, 
+                               _threadGroupCountZ);
+}
+
+void D3DDeviceContext::setResourcesNull()
+{
+  ID3D11ShaderResourceView* nullTextures[16] = {};
+  std::memset(nullTextures, 0, sizeof(nullTextures));
+  D3D11DeviceContext->
+  PSSetShaderResources(0, 16, nullTextures);
+  D3D11DeviceContext->
+  VSSetShaderResources(0, 16, nullTextures);
+  D3D11DeviceContext->
+  CSSetShaderResources(0, 16, nullTextures);
+}
+
+void D3DDeviceContext::copyAtomicCounter(const StructureBuffer & _structureCounter, 
+                                         ConstantBuffer & _cbuff)
+{
+  auto pUAV = static_cast<const D3DStructureBuffer*>(&_structureCounter)->m_pBufferUAV;
+  DR_ASSERT(pUAV);
+  D3D11DeviceContext->CopyStructureCount(static_cast<ID3D11Buffer*>(_cbuff.getAPIObject()),
+    0,
+    pUAV);
+}
+
+void D3DDeviceContext::setUAVsNull()
+{
+  ID3D11UnorderedAccessView* null[16] = {};
+  std::memset(null, 0, sizeof(null));
+  D3D11DeviceContext->
+  CSSetUnorderedAccessViews(0, 16, null,NULL);
 }
 
 }

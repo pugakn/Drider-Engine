@@ -12,7 +12,7 @@ class Buffer;
 class RenderTarget;
 class DepthStencil;
 class ConstantBuffer;
-
+class StructureBuffer;
 class DR_GRAPHICS_EXPORT DeviceContext
 {
  public:
@@ -226,6 +226,28 @@ class DR_GRAPHICS_EXPORT DeviceContext
   draw(UInt32 indexCount,
        UInt32 startIndexLocation,
        UInt32 startVertexLocation) const = 0;
+
+  virtual void
+    drawInstanced(UInt32 indexCount,
+      UInt32 instanceCount,
+      UInt32 startIndexLocation,
+      UInt32 startVertexLocation,
+      UInt32 startInstanceLocation) const = 0;
+
+  virtual void
+    dispatch(UInt32 _threadGroupCountX, 
+             UInt32 _threadGroupCountY, 
+             UInt32 _threadGroupCountZ) const = 0;
+
+  virtual void
+    setResourcesNull() = 0;
+
+  virtual void
+    copyAtomicCounter(const StructureBuffer& _structureCounter, 
+                      ConstantBuffer& _cbuff) = 0;
+
+  virtual void
+    setUAVsNull() = 0;
 
   /*//TODO: Add get methods
   struct DeviceContextData;

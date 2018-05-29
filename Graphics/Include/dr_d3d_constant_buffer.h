@@ -1,7 +1,6 @@
 #pragma once
 #include "dr_constant_buffer.h"
-#include <wrl.h>
-#include <wrl/client.h>
+
 
 struct ID3D11Buffer;
 
@@ -67,7 +66,8 @@ class DR_GRAPHICS_EXPORT D3DConstantBuffer : public ConstantBuffer
   */
   void
   set(const DeviceContext& deviceContext,
-      Int32 typeFlag = 0) const override;
+      Int32 typeFlag = 0, 
+      Int32 startSlot = 0) const override;
 
   /**
   * TEST::

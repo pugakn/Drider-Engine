@@ -34,6 +34,8 @@ D3DInputLayout::create(const Device& device,
     desc[i].SemanticIndex = inputDescArray[i].semanticIndex;
     desc[i].SemanticName = inputDescArray[i].semanticName.c_str();
     desc[i].InputSlot = inputDescArray[i].inputSlot;
+    desc[i].InputSlotClass = (D3D11_INPUT_CLASSIFICATION)inputDescArray[i].slotClass;
+    desc[i].InstanceDataStepRate = inputDescArray[i].stepRate;
   }
 
   HRESULT HR = reinterpret_cast<const D3DDevice*>(&device)->D3D11Device->

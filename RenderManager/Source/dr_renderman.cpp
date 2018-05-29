@@ -167,12 +167,48 @@ RenderMan::init() {
   m_ShadowPass.init(&m_ShadowInitData);
   m_LightningPass.init(&m_LightningInitData);
   m_PostProcessingPass.init(&m_PostProcessingInitData);
+
+  m_particlePass.init(&m_particleInitData);
+  driderSDK::ParticleEmitter emitter;
+  driderSDK::ParticleEmitterAttributes attr;
+  //System
+  attr.m_maxParticles = ParticleEmitter::MAX_PARTICLES;
+  attr.m_initialTime = 0.1;
+  attr.m_rate = 0.1;
+  attr.m_systemMaxLife = 5000;
+  attr.m_particleMaxLife = 2;
+  attr.m_numParticlesToEmit = 500;
+  attr.m_isActive = true;
+
+  ////Speed / Velocity
+  //attr.m_initialSpeedLimit = 1200;
+  //attr.m_finalSpeedLimit = 5;
+  //attr.m_initialVelocityRandomMin = driderSDK::Vector3D(-0, -0, -0);
+  //attr.m_initialVelocityRandomMax = driderSDK::Vector3D(0, 1800, 0);
+
+  ////Position
+  //attr.m_initialPositionRandomMin = driderSDK::Vector3D(-200, -0, -200);
+  //attr.m_initialPositionRandomMax = driderSDK::Vector3D(50, 0, 50);
+
+  ////Color
+  //attr.m_initialColor = driderSDK::Vector3D(1, 0.1, 0.1);
+  //attr.m_finalColor = driderSDK::Vector3D(0.0, 0.0, 0.0);
+  //attr.m_colorRandomMin = driderSDK::Vector3D(0, 0, 0);
+  //attr.m_colorRandomMax = driderSDK::Vector3D(0.0, 0, 0);
+
+  ////Scale
+  //attr.m_initialScale = 2;
+  //attr.m_finaleScale = 5;
+  //attr.m_scaleFactorRandomMin = 0.8;
+  //attr.m_scaleFactorRandomMax = 5;
+
+  m_emitter.init(attr);
 }
 
 void
 RenderMan::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   //GraphicsDriver::API().clear();
-
+  /*
   updateShadowCameras();
 
   auto mainCam = CameraManager::getActiveCamera();
@@ -259,13 +295,25 @@ RenderMan::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_VerBlurDrawData.InRt = m_RTBlurInit;
   m_VerBlurDrawData.OutRt = m_RTPreFinalBlur;
   m_VerBlurPass.draw(&m_VerBlurDrawData);
-  
-  _out.set(GraphicsAPI::getDeviceContext(), _outds);
-  m_PostProcessingDrawData.ColorRT = m_RTLightning;
-  m_PostProcessingDrawData.ColorBlurRT = m_RTPreFinalBlur;
-  m_PostProcessingDrawData.Gbuffer = m_RTGBuffer;
-  m_PostProcessingPass.draw(&m_PostProcessingDrawData);
+  */
 
+  m_emitter.update();
+  //m_particleDrawData.activeCam = mainCam;
+  //m_particleDrawData.numParticles = m_emitter.m_.size();
+  m_particleDrawData.particles = &m_emitter.m_particles;
+  m_particleDrawData.emitter = &m_emitter;
+  m_particlePass.draw(&m_particleDrawData);
+
+  //const float clearColor[4]{ 0.2,0.5,0.8,1 };
+  //_out->clear(GraphicsAPI::getDeviceContext(), clearColor);
+  _out.set(GraphicsAPI::getDeviceContext(), _outds);
+
+  //m_PostProcessingDrawData.ColorRT = m_RTLightning;
+  //m_PostProcessingDrawData.ColorBlurRT = m_RTPreFinalBlur;
+  //m_PostProcessingDrawData.Gbuffer = m_RTGBuffer;
+  //m_PostProcessingPass.draw(&m_PostProcessingDrawData);
+
+  GraphicsAPI::getBackBufferRT().set(GraphicsAPI::getDeviceContext(), GraphicsAPI::getDepthStencil());
   /*
   ./ GBuffer:
   ./ SSAO:

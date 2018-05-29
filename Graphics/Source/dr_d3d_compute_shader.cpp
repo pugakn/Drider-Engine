@@ -4,7 +4,7 @@
 #include "dr_d3d_device.h"
 #include "dr_d3d_device_context.h"
 #include "dr_d3d_shader_bytecode.h"
-
+#include <iostream>
 namespace driderSDK {
 
 void*
@@ -50,6 +50,7 @@ void
 D3DComputeShader::compile(const Device& device,
                           const char* buffer,
                           size_t bufferSize)  {
+  ID3DBlob* errorBlob = nullptr;
   m_shaderBytecode = new D3DShaderBytecode();
   D3DCompile(buffer,
              bufferSize,
@@ -61,7 +62,11 @@ D3DComputeShader::compile(const Device& device,
              0,
              0,
              &reinterpret_cast<D3DShaderBytecode*>(m_shaderBytecode)->shader_blob,
-             0);
+             &errorBlob);
+  if (errorBlob) {
+    std::cout << (char*)errorBlob->GetBufferPointer() << std::endl;
+    errorBlob->Release();
+  }
 }
 
 }

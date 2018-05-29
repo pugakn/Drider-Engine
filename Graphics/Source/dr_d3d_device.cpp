@@ -3,6 +3,7 @@
 #include <D3Dcompiler.h>
 #include <d3d11.h>
 #include <dxgi.h>
+#include "dr_d3d_structure_buffer.h"
 #include "dr_d3d_vertex_buffer.h"
 #include "dr_d3d_index_buffer.h"
 #include "dr_d3d_constant_buffer.h"
@@ -28,15 +29,16 @@
 #include "dr_d3d_blend_state.h"
 
 namespace driderSDK {
-  void * D3DDevice::getAPIObject()
-  {
-    return D3D11Device;
-  }
-  void ** D3DDevice::getAPIObjectReference()
-  {
-    return reinterpret_cast<void**>(&D3D11Device);
-  }
-  void
+
+void* D3DDevice::getAPIObject() {
+  return D3D11Device;
+}
+
+void** D3DDevice::getAPIObjectReference() {
+  return reinterpret_cast<void**>(&D3D11Device);
+}
+
+void
 D3DDevice::createDeviceAndDeviceContext(DeviceContext& deviceContext) {
   D3D_FEATURE_LEVEL lvl = D3D_FEATURE_LEVEL_11_0;
   D3D_FEATURE_LEVEL lvlRet = D3D_FEATURE_LEVEL_11_0;
@@ -45,22 +47,41 @@ D3DDevice::createDeviceAndDeviceContext(DeviceContext& deviceContext) {
 #if DR_DEBUG_MODE
   flags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
-  
-  if (D3D11CreateDevice(0,
-    D3D_DRIVER_TYPE_HARDWARE,
-    0,
-    flags,
-    &lvl,
-    1,
-    D3D11_SDK_VERSION,
-    &D3D11Device,
-    &lvlRet,
-    &reinterpret_cast<D3DDeviceContext*>(&deviceContext)->
-    D3D11DeviceContext) != S_OK) {
 
-      throw "Error: createDeviceAndDeviceContext";
+  UINT i = 0;
+  IDXGIAdapter * pAdapter;
+  IDXGIAdapter * pAdapterNvidia = nullptr;
+  std::vector <IDXGIAdapter*> vAdapters;
+  IDXGIFactory* pFactory = NULL;
+  CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&pFactory);
+  while (pFactory->EnumAdapters(i, &pAdapter) != DXGI_ERROR_NOT_FOUND) {
+    vAdapters.push_back(pAdapter);
+    DXGI_ADAPTER_DESC adapterDescription; 
+    vAdapters[i]->GetDesc(&adapterDescription);
+    if (adapterDescription.VendorId == 0x10DE)//nvidia
+      pAdapterNvidia = pAdapter;
+    ++i;
   }
-  
+
+  if (D3D11CreateDevice(0,
+      D3D_DRIVER_TYPE_HARDWARE,
+      0,
+      flags,
+      &lvl,
+      1,
+      D3D11_SDK_VERSION,
+      &D3D11Device,
+      &lvlRet,
+      &reinterpret_cast<D3DDeviceContext*>(&deviceContext)->
+      D3D11DeviceContext) != S_OK) {
+    throw "Error: createDeviceAndDeviceContext";
+  }
+
+  pFactory->Release();
+
+  for (auto &it : vAdapters) {
+    it->Release();
+  }
 }
 
 void
@@ -83,6 +104,12 @@ D3DDevice::createBuffer(const DrBufferDesc& desc,
     break;
   case DR_BUFFER_TYPE::kCONSTANT:
     buffer = new D3DConstantBuffer;
+    break;
+  case DR_BUFFER_TYPE::kRWSTRUCTURE:
+    buffer = new D3DStructureBuffer;
+    break;
+  case DR_BUFFER_TYPE::kSTRUCTURE:
+    buffer = new D3DStructureBuffer;
     break;
   }
 
