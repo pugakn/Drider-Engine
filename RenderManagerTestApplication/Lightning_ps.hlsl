@@ -214,7 +214,7 @@ FS(PS_INPUT input) : SV_TARGET0 {
     lightIntensity = kLightColor[index].w;
     
     //Dunno LOL
-    LightPower = saturate( 1.0f - (length(lightPosition - position.xyz) / 150.0f) );
+    LightPower = saturate( 1.0f - (length(lightPosition - position.xyz) / 150.0f) ) * 0.5f;
 
     LightDir = normalize(lightPosition - position.xyz);
 
