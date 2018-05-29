@@ -338,7 +338,7 @@ RenderManApp::postUpdate() {
 void
 RenderManApp::postRender() {
   GraphicsDriver::API().clear();
-  m_renderMan.draw();
+  m_renderMan.draw(GraphicsAPI::getBackBufferRT(), GraphicsAPI::getDepthStencil());
   //CameraManager::getActiveCamera()->setTarget(m_selectedGO->getTransform().getPosition());
   GraphicsDriver::API().swapBuffers();
 }
@@ -371,10 +371,10 @@ RenderManApp::RotateModel() {
 
   if (Mouse::isButtonDown(MOUSE_BUTTON::kLeft)) {
     if (Math::abs(mouseDelta.x) < 3.0f) {
-      mouseDelta.x = static_cast<Int32>(0.0f);
+      mouseDelta.x = 0.0f;
     }
     if (Math::abs(mouseDelta.y) < 3.0f) {
-      mouseDelta.y = static_cast<Int32>(0.0f);
+      mouseDelta.y = 0.0f;
     }
 
     rotation.y = -mouseDelta.x;
