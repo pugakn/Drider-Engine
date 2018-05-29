@@ -18,39 +18,104 @@
 #include <dr_depth_stencil.h>
 
 #include <dr_scene_viewer.h>
+
 namespace driderSDK {
-class SceneEditor {
-public:
-  void init(Viewport v);
-  void update();
-  void draw();
-  void destroy();
 
-  std::shared_ptr<GameObject> 
-    addGameObject(
-    std::shared_ptr<GameObject> parent,
-    const TString& name,
-    const Vector3D& pos);
-  //void removeGameObject();
+class SceneEditor
+{
+ public:
 
-  //void createComponentOnGMO(const TString& gmoID, const Int32 type);
-  //void removeComponentOnGMO(const TString& gmoID, const TString& componentID);
+  /**
+  * 
+  */
+  void
+  init(Viewport v);
 
+  /**
+  *
+  */
+  void
+  update();
 
-  void resize(Viewport _viewport);
-private:
-  void initInputs();
-  void initUI();
-  void initSceneGraph();
-  void loadResources();
+  /**
+  *
+  */
+  void
+  draw();
 
-  void UI_UpdateSceneGraph();
-  void UI_UpdatePropertySheet(const GameObject& obj);
+  /**
+  *
+  */
+  void
+  destroy();
 
+  std::shared_ptr<GameObject>
+  addGameObject(std::shared_ptr<GameObject> parent,
+                const TString& name,
+                const Vector3D& pos);
+
+  /**
+  *
+  */
+  //void
+  //removeGameObject();
+
+  /**
+  *
+  */
+  //void
+  //createComponentOnGMO(const TString& gmoID, const Int32 type);
+
+  /**
+  *
+  */
+  //void
+  //removeComponentOnGMO(const TString& gmoID, const TString& componentID);
+
+  /**
+  * 
+  */
+  void
+  resize(Viewport _viewport);
+ private:
+
+  /**
+  * 
+  */
+  void
+  initInputs();
+
+  /**
+  *
+  */
+  void
+  initUI();
+
+  /**
+  *
+  */
+  void
+  initSceneGraph();
+
+  /**
+  *
+  */
+  void
+  loadResources();
+
+  /**
+  *
+  */
+  void
+  UI_UpdateSceneGraph();
+
+  /**
+  *
+  */
+  void
+  UI_UpdatePropertySheet(const GameObject& obj);
 
   Viewport m_viewport;
-
-
 
   WebRenderer webRenderer;
   WebRenderer m_netLobby;
@@ -59,12 +124,18 @@ private:
 
   SceneViewer m_sceneViewer;
 
-  SceneGraph::SharedGameObject model;
-  std::shared_ptr<Material> modelMat;
-  SceneGraph::SharedGameObject floor;
-  std::shared_ptr<Material> floorMat;
+  SceneGraph::SharedGameObject m_selectedGO;
+  Int32 m_SzTGosIndex;
+  bool m_bRotate;
+  std::vector<SceneGraph::SharedGameObject> m_vecGos;
+  std::shared_ptr<Material> m_floorMat;
+  std::shared_ptr<Material> m_hkBodyMat;
+  std::shared_ptr<Material> m_hkBodySMat;
+  std::shared_ptr<Material> m_hkEyeMat;
+  std::shared_ptr<Material> m_modelMat;
 
   Vector3D modelMovement;
   std::array<Light, 128> Lights;
 };
+
 }

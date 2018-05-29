@@ -63,4 +63,3 @@ class RenderManApp : public Application
 };
 
 }
-

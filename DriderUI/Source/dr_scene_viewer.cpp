@@ -66,8 +66,7 @@ SceneViewer::init(Viewport v)
   initInputs();
 }
 void 
-SceneViewer::draw()
-{
+SceneViewer::draw() {
   const float clearColor[4]{ 1,0,1,1 };
   m_RT->clear(GraphicsAPI::getDeviceContext(), clearColor);
   //Draw Scene
@@ -80,9 +79,9 @@ SceneViewer::draw()
   m_editorQuad.draw();
   GraphicsAPI::getDepthStencilState(DR_DEPTH_STENCIL_STATES::kDepthRW).set(GraphicsAPI::getDeviceContext(), 1.0);
 }
+
 void 
-SceneViewer::initInputs()
-{
+SceneViewer::initInputs() {
   InputManager::getMouse()->addMovedCallback([this]()
   {
     auto dis = Mouse::getDisplacement();
