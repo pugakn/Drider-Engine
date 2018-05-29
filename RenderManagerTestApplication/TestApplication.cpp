@@ -264,20 +264,20 @@ RenderManApp::initInputCallbacks() {
 
 void
 RenderManApp::RotateModel() {
-  Vector2DI mouseDelta = Mouse::getDisplacement();
+  Vector3D mouseDelta = Mouse::getDisplacement();
   Vector3D rotation{0.0f, 0.0f, 0.0f};
   float scale = 0.25f;
 
   if (Mouse::isButtonDown(MOUSE_BUTTON::kLeft)) {
     if (Math::abs(mouseDelta.x) < 3.0f) {
-      mouseDelta.x = static_cast<Int32>(0.0f);
+      mouseDelta.x = 0.0f;
     }
     if (Math::abs(mouseDelta.y) < 3.0f) {
-      mouseDelta.y = static_cast<Int32>(0.0f);
+      mouseDelta.y = 0.0f;
     }
 
-    rotation.y = static_cast<float>(-mouseDelta.x);
-    rotation.x = static_cast<float>(-mouseDelta.y);
+    rotation.y = -mouseDelta.x;
+    rotation.x = -mouseDelta.y;
 
     model->getTransform().rotate(rotation * scale * Time::getDelta());
   }
