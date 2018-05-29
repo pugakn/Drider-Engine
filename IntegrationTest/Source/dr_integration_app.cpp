@@ -47,13 +47,14 @@
 
 namespace driderSDK {
 
-DriderEngine::DriderEngine() {}
+DriderEngine::DriderEngine() {
+}
 
-DriderEngine::~DriderEngine() {}
+DriderEngine::~DriderEngine() {
+}
 
 void
 DriderEngine::postInit() {
-
   initModules();
   //initInputCallbacks();
   loadResources();
@@ -76,13 +77,10 @@ DriderEngine::postUpdate() {
 
 void
 DriderEngine::postRender() {
-
-  
 }
 
 void
 DriderEngine::postDestroy() {
-
   destroyModules();
 }
 
@@ -120,7 +118,6 @@ DriderEngine::initModules() {
 
 void
 DriderEngine::loadResources() {
-
   //Models
   ResourceManager::loadResource(_T("Walking.fbx"));
   ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
@@ -140,7 +137,6 @@ DriderEngine::loadResources() {
 
 void
 DriderEngine::createScene() {
-
   auto activeCam = CameraManager::getActiveCamera();
 
   auto walkerModel = ResourceManager::getReferenceT<Model>(_T("Walking.fbx"));
@@ -164,8 +160,6 @@ DriderEngine::createScene() {
 std::shared_ptr<GameObject>
 DriderEngine::addObjectFromModel(std::shared_ptr<Model> model,
                                     const TString& name) {
-
-
   auto obj = SceneGraph::createObject(name);
 
   if (!model) {
@@ -213,7 +207,7 @@ DriderEngine::initScriptEngine() {
   result = SoundComponent::registerFunctions(scriptEngine);
 
   //Register global properties
-  m_root = SceneGraph::instance().getRoot().get(); // Get root
+  auto m_root = SceneGraph::instance().getRoot().get(); // Get root
 
   result = scriptEngine->m_scriptEngine->RegisterGlobalProperty("GameObject@ Object",
                                                                 &m_root);
@@ -255,8 +249,6 @@ DriderEngine::initScriptEngine() {
   //Start the script
   m_scripts.find(_T("script1"))->second->start();
   m_scripts.find(_T("script2"))->second->start();
-
-
 }
 
 void
@@ -278,7 +270,6 @@ DriderEngine::playSoundTest() {
 
 void
 DriderEngine::destroyModules() {
-
   delete extraInfo;
 
   m_staticTech->destroy();
@@ -295,8 +286,9 @@ DriderEngine::destroyModules() {
   Logger::shutDown();
 
 }
-void DriderEngine::onResize()
-{
+
+void
+DriderEngine::onResize() {
 }
 
 }

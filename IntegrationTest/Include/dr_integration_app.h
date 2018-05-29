@@ -56,16 +56,17 @@ private:
   void
   playSoundTest();
 
-
-
   // Inherited via Application
-  virtual void onResize() override;
+  virtual void
+  onResize() override;
 
-  private:
-    SceneEditor m_editor;
-    RenderMan m_renderMan;
+ private:
+  SceneEditor m_editor;
+  RenderMan m_renderMan;
 
-    SoundExtraInfo* extraInfoSound;
+  SoundExtraInfo* extraInfoSound;
+
+  std::shared_ptr<GameObject> m_player;
 };
 
 }

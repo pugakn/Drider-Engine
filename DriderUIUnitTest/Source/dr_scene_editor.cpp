@@ -31,57 +31,58 @@
 
 #include <dr_model.h>
 namespace driderSDK {
-  void
-    HSVtoRGB(float fH, float fS, float fV,
-      float& fR, float& fG, float& fB) {
-    float fC = fV * fS;
-    float fX = fC * (1.0f - abs(fmod((fH / 60.0f), 2) - 1.0f));
-    float fM = fV - fC;
 
-    fR = fM;
-    fG = fM;
-    fB = fM;
+void
+HSVtoRGB(float fH, float fS, float fV,
+         float& fR, float& fG, float& fB) {
+  float fC = fV * fS;
+  float fX = fC * (1.0f - abs(fmod((fH / 60.0f), 2) - 1.0f));
+  float fM = fV - fC;
 
-    if (fH < 60.0f) {
-      fR += fC;
-      fG += fX;
-      //fB += 0.0f;
-      return;
-    }
-    else if (fH < 120.0f) {
-      fR += fX;
-      fG += fC;
-      //fB += 0.0f;
-      return;
-    }
-    else if (fH < 180.0f) {
-      //fR += 0.0f;
-      fG += fC;
-      fB += fX;
-      return;
-    }
-    else if (fH < 240.0f) {
-      //fR += 0.0f;
-      fG += fX;
-      fB += fC;
-      return;
-    }
-    else if (fH < 300.0f) {
-      fR += fX;
-      //fG += 0.0f;
-      fB += fC;
-      return;
-    }
-    else if (fH <= 360.0f) {
-      fR = fC;
-      //fG = 0.0f;
-      fB = fX;
-      return;
-    }
+  fR = fM;
+  fG = fM;
+  fB = fM;
+
+  if (fH < 60.0f) {
+    fR += fC;
+    fG += fX;
+    //fB += 0.0f;
+    return;
   }
+  else if (fH < 120.0f) {
+    fR += fX;
+    fG += fC;
+    //fB += 0.0f;
+    return;
+  }
+  else if (fH < 180.0f) {
+    //fR += 0.0f;
+    fG += fC;
+    fB += fX;
+    return;
+  }
+  else if (fH < 240.0f) {
+    //fR += 0.0f;
+    fG += fX;
+    fB += fC;
+    return;
+  }
+  else if (fH < 300.0f) {
+    fR += fX;
+    //fG += 0.0f;
+    fB += fC;
+    return;
+  }
+  else if (fH <= 360.0f) {
+    fR = fC;
+    //fG = 0.0f;
+    fB = fX;
+    return;
+  }
+}
 
-void read_directory(const TString& name, std::vector<TString>& v)
-{
+void
+read_directory(const TString& name, std::vector<TString>& v) {
   TString pattern(name);
   TString parent(name);
   pattern.append(_T("\\*"));
@@ -92,13 +93,11 @@ void read_directory(const TString& name, std::vector<TString>& v)
   if (hFind != INVALID_HANDLE_VALUE) {
     do {
       if (data.cFileName[0] == '.') continue;
-      if (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-      {
+      if (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
         v.push_back(_T("webix.callEvent('WEBIX_AddFile',['") + TString(data.cFileName) + _T("','") + parent + _T("','") + _T(".folder") + _T("']);"));
         read_directory(name + _T("\\") + data.cFileName, v);
       }
-      else
-      {
+      else {
         auto ext = PathFindExtension(data.cFileName);
         v.push_back(_T("webix.callEvent('WEBIX_AddFile',['") + TString(data.cFileName) + _T("','") + parent + _T("','") + ext + _T("']);"));
       }
@@ -106,7 +105,9 @@ void read_directory(const TString& name, std::vector<TString>& v)
     FindClose(hFind);
   }
 }
-void updateFolders(WebRenderer& webRenderer) {
+
+void
+updateFolders(WebRenderer& webRenderer) {
   TString root(_T("Assets"));
   std::vector<TString> folders;
   folders.push_back(_T("webix.callEvent('WEBIX_AddFile',['") + root + _T("','") + root + _T("','") + _T(".folder") + _T("']);"));
