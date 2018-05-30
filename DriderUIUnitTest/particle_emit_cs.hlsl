@@ -1,4 +1,13 @@
 
+float3
+getRandom(float2 uv) {
+  float nx = frac(sin(dot(uv, float2(15.8989f, 76.133f) * 1.0f)) * 46736.23457f);
+  float ny = frac(sin(dot(uv, float2(11.9899f, 62.223f) * 1.0f)) * 34748.34744f);
+  float nz = frac(sin(dot(uv, float2(13.3238f, 63.122f) * 1.0f)) * 59998.47332f);
+
+  return normalize(float3(nx, ny, nz));
+};
+
 struct PoolBuffer
 {
   float4 position;
@@ -39,7 +48,10 @@ void CS( uint3 id : SV_DispatchThreadID )
 {
   if (id.x < m_particlesToEmit && id.x < numDeadParticles) {
     uint particleID = DeadBuffer.Consume();
-    poolBuffer[particleID].position = float4(0, 0, 0, 1);
+    float3 randPosMin = float3(-900,0,-900);
+    float3 randPosMax = float3(900, 0, 900);
+    float3 boxRand = randPosMin + getRandom(id.xx) * (randPosMax);
+    poolBuffer[particleID].position = float4(boxRand.xyz, 1);
     poolBuffer[particleID].velocity = float4(0, 100, 0, 0);
     poolBuffer[particleID].acceleration = float4(0, 0, 0, 0);
 
@@ -47,7 +59,7 @@ void CS( uint3 id : SV_DispatchThreadID )
     poolBuffer[particleID].lifeTime = 0;
     poolBuffer[particleID].scale = m_initialScale;
     poolBuffer[particleID].isActive = 1;
-    //AliveBuffer.Append(particleID);
+    AliveBuffer.Append(particleID);
   }
 }
 

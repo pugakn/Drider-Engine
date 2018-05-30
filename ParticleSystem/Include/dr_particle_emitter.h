@@ -154,7 +154,7 @@ namespace driderSDK {
 
   class DR_PARTICLES_EXPORT ParticleEmitter {
   public:
-    static const Int32 MAX_PARTICLES = 100000;
+    static const Int32 MAX_PARTICLES = 10000000;
     void
       init(const ParticleEmitterAttributes& _attributes);
     void

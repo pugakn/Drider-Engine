@@ -44,7 +44,7 @@ void CS( uint3 id : SV_DispatchThreadID )
 {
  /* if (id.x < numAliveParticles)
   {*/
-  if (id.x < m_maxParticles) {
+  if (id.x < m_maxParticles && poolBuffer[id.x].isActive) {
     uint pID = id.x;
     poolBuffer[pID].lifeTime += DT;
     float _proportionMul = 1.0f / m_particleMaxLife;
@@ -60,12 +60,13 @@ void CS( uint3 id : SV_DispatchThreadID )
   poolBuffer[pID].velocity += (poolBuffer[pID].acceleration + m_globalAcceleration) * DT;
   poolBuffer[pID].position += poolBuffer[pID].velocity * DT;
 #endif
-    if (poolBuffer[pID].lifeTime > m_particleMaxLife && poolBuffer[pID].isActive) {
+    if (poolBuffer[pID].lifeTime > m_particleMaxLife) {
       poolBuffer[pID].isActive = 0;
       DeadBuffer.Append(pID);
       //AliveBuffer.DecrementCounter();
     }
     else {
+      //poolBuffer[pID].color = float4(1, 1, 1, 1);
       AliveBuffer.Append(pID);
     }
   }

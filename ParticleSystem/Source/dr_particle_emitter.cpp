@@ -121,7 +121,7 @@ namespace driderSDK {
     m_cpuCbuff.m_initialColor = { 1,0,0,1 };
     m_cpuCbuff.m_particleMaxLife = m_attributes.m_particleMaxLife;
     m_cpuCbuff.m_initialScale = 5;
-    m_cpuCbuff.m_finaleScale = 5;
+    m_cpuCbuff.m_finaleScale = 0;
     m_cpuCbuff.m_maxParticles = m_attributes.m_maxParticles;
     desc.type = DR_BUFFER_TYPE::kCONSTANT;
     desc.sizeInBytes = sizeof(GPUParticleSystemCBuff);
