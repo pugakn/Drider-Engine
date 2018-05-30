@@ -1,5 +1,7 @@
 #include "dr_resource_manager.h"
 
+#include <exception>
+
 #include <dr_file_system.h>
 #include <dr_image_info.h>
 #include <dr_logger.h>
@@ -159,6 +161,8 @@ ResourceManager::getReference(const TString& resourceName) {
 
   if (instance().isResourceLoaded(resourceName)) {
     res = instance().m_resources[resourceName];
+  } else {
+    throw std::exception(("Resource not found: " + StringUtils::toString(resourceName)).c_str() );
   }
 
   return res;

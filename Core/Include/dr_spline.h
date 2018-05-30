@@ -31,7 +31,7 @@ namespace driderSDK {
     Vector3D 
     GetGradient(float t);
     float 
-    GetSegmentLength(int node);
+    GetSegmentLength(Int32 node);
     float 
     GetNormalizedOffset(float p);
 

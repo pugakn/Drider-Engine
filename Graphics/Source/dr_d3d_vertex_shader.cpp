@@ -6,6 +6,7 @@
 #include "dr_d3d_device_context.h"
 #include "dr_d3d_shader_bytecode.h"
 #include <iostream>
+
 namespace driderSDK {
 
 void*

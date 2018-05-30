@@ -64,15 +64,20 @@ class Module
     return !isShutDown() && !isDestroyed();
   }
  protected:
-  Module() {}
+
+  Module() = default;
+
   virtual ~Module() {
     _instance() = nullptr;
     isDestroyed() = true;
   }
-  Module(const Module&) {}
-  Module& operator=(const Module&) {
-    return *this;
-  }
+  Module(const Module&) = delete;
+
+  Module(Module&&) = delete;
+
+  Module& operator=(const Module&) = delete;
+
+  Module& operator=(Module&&) = delete;
 
   virtual void onStartUp() {}
 

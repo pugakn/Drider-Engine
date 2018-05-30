@@ -75,6 +75,10 @@ namespace driderSDK {
     float m_trailDist = 0.0f;
     float m_particleMaxLife = 0.0f;
     float m_systemMaxLife = 0.0f;
+
+    float m_rithm;
+    Vector3D m_initialVelocity;
+    Vector3D m_position;
   };
   class DR_PARTICLES_EXPORT ParticleUpdater {
   public:

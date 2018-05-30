@@ -82,9 +82,15 @@ D3DRenderTarget::set(const DeviceContext& deviceContext,
     D3D11DeviceContext->RSSetViewports(1, &viewport_RT);
 }
 
-void D3DRenderTarget::clear(const DeviceContext & deviceContext, const float color[4])
+void D3DRenderTarget::clear(const DeviceContext& deviceContext, const float color[4])
 {
-  for (int i = 0; i < RTVs.size(); i++) {
+  float rgba[4]; // Cambiar después xD
+  rgba[0] = 0.0f;
+  rgba[1] = 0.0f;
+  rgba[2] = 1.0f;
+  rgba[3] = 1.0f;
+
+  for (SizeT i = 0; i < RTVs.size(); i++) {
     reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
       D3D11DeviceContext->ClearRenderTargetView(RTVs[i], color);
   }
@@ -101,6 +107,18 @@ D3DRenderTarget::release() {
     }
   }
   delete this;
+}
+
+void
+D3DRenderTarget::setRTNull(const DeviceContext& deviceContext) const {
+  ID3D11RenderTargetView* nullRTs[MAX_RENDERTARGETS] = {};
+  std::memset(nullRTs, 0, sizeof(nullRTs));
+  
+  reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
+    D3D11DeviceContext->
+      OMSetRenderTargets(MAX_RENDERTARGETS,
+                         nullRTs,
+                         nullptr);
 }
 
 }

@@ -7,8 +7,10 @@
 #include <dr_particle_emitter.h>
 #include <dr_camera.h>
 #include <dr_vertex_buffer.h>
+
 namespace driderSDK {
-  class IndexBuffer;
+
+class IndexBuffer;
 struct ParticleSystemInitData : PassInitData {};
 
 struct ParticleSystemDrawData : PassDrawData {
@@ -25,7 +27,7 @@ class ParticleSystemPass : public RenderPass {
   
   Description.
   */
-   ParticleSystemPass();
+  ParticleSystemPass();
 
   /*
   TEST::testName
@@ -48,12 +50,12 @@ class ParticleSystemPass : public RenderPass {
   draw(PassDrawData* drawData);
 
  private:
-   struct CBuff {
-     Matrix4x4 V;
-     Matrix4x4 P;
-   };
+  struct CBuff {
+    Matrix4x4 V;
+    Matrix4x4 P;
+  };
   
-   CBuff m_cbuff;
+  CBuff m_cbuff;
   GFXUnique<SamplerState> m_samplerState;
   GFXUnique<InputLayout> m_inputLayoutInstance;
   GFXUnique<VertexBuffer> m_instanceBuffer;

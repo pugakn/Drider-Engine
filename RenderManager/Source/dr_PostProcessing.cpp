@@ -32,7 +32,7 @@ PostProcessingPass::init(PassInitData* initData) {
   m_constantBuffer = dr_gfx_unique((ConstantBuffer*)device.createBuffer(bdesc));
 
   DrSampleDesc SSdesc;
-  SSdesc.Filter = DR_TEXTURE_FILTER::kMIN_MAG_MIP_LINEAR;
+  SSdesc.Filter = DR_TEXTURE_FILTER::kMIN_MAG_LINEAR_MIP_POINT;
   SSdesc.maxAnisotropy = 16;
   SSdesc.addressU = DR_TEXTURE_ADDRESS::kWrap;
   SSdesc.addressV = DR_TEXTURE_ADDRESS::kWrap;
@@ -45,7 +45,9 @@ PostProcessingPass::draw(PassDrawData* drawData) {
   PostProcessingDrawData* data = static_cast<PostProcessingDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
-  //GraphicsAPI::getBackBufferRT().set(dc, GraphicsAPI::getDepthStencil());
+  data->ColorBlurRT->getTexture(0).setTextureNull(dc);
+  GraphicsAPI::getBackBufferRT().setRTNull(dc);
+  GraphicsAPI::getBackBufferRT().set(dc, GraphicsAPI::getDepthStencil());
 
   m_vertexShader->set(dc);
   m_fragmentShader->set(dc);
@@ -64,6 +66,8 @@ PostProcessingPass::draw(PassDrawData* drawData) {
   m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kFragment);
 
   data->ColorRT->getTexture(0).set(dc, 0);
+  data->ColorBlurRT->getTexture(0).set(dc, 1);
+  data->Gbuffer->getTexture(1).set(dc, 2);
 
   auto screenQuadModel = ResourceManager::getReferenceT<Model>(_T("ScreenAlignedQuad.3ds"));
   if (screenQuadModel) {

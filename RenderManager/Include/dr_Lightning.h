@@ -19,6 +19,8 @@ struct LightningDrawData : PassDrawData {
   std::array<Light, 128>* Lights;
   std::array<std::shared_ptr<Camera>, 4>* ShadowCam;
   std::vector<float> shadowDepths;
+  Vector4D shadowSizes;
+  Vector4D shadowSizesProportion;
   GFXShared<RenderTarget> OutRt;
   GFXShared<DepthStencil> dsOptions;
 };
@@ -65,6 +67,8 @@ class LightningPass : public RenderPass {
     Matrix4x4 VPInverse;
     Matrix4x4 ShadowVP[4];
     Vector4D  ShadowSliptDepth;
+    Vector4D  ShadowSizes;
+    Vector4D  ShadowSizesProportion;
   };
 
   CBuffer CB;

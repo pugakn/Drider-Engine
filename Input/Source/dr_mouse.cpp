@@ -20,9 +20,9 @@ Mouse::getPosition() {
 
   Vector3D pos;
 
-  pos.x = state.X.abs;
-  pos.y = state.Y.abs;
-  pos.z = state.Z.abs;
+  pos.x = static_cast<float>(state.X.abs);
+  pos.y = static_cast<float>(state.Y.abs);
+  pos.z = static_cast<float>(state.Z.abs);
   return pos;
 }
 
@@ -35,9 +35,9 @@ Mouse::getDisplacement() {
 
   Vector3D pos;
 
-  pos.x = state.X.rel;
-  pos.y = state.Y.rel;
-  pos.z = state.Z.rel;
+  pos.x = static_cast<float>(state.X.rel);
+  pos.y = static_cast<float>(state.Y.rel);
+  pos.z = static_cast<float>(state.Z.rel);
   return pos;
 }
 

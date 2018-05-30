@@ -12,6 +12,7 @@ class DR_UTIL_EXPORT Time : public Module<Time>
 {
   friend class Application;
  public:
+
   /**
   * Gets the elapsed time since the begin of the app.
   * 

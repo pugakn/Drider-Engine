@@ -15,14 +15,25 @@ int main(int argc, char* argv[]) {
 
   std::cin >> opc;
 
+  String ip;
+  UInt16 port;
+
+  std::cout << "Ip: ";
+
+  std::cin >> ip;
+
+  std::cout << "Port: ";
+
+  std::cin >> port;
+
   std::unique_ptr<Application> app;
 
   if (opc == 1) {
-    app = dr_make_unique<driderSDK::ServerApplication>();
+    app = dr_make_unique<driderSDK::ServerApplication>(ip, port);
     std::cout << "Initializing as Server." << std::endl;
   }
   else {
-    app = dr_make_unique<driderSDK::ClientApplication>();
+    app = dr_make_unique<driderSDK::ClientApplication>(ip, port);
     std::cout << "Initializing as Client" << std::endl;
   }   
 

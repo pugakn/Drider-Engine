@@ -22,8 +22,9 @@ VS_OUTPUT
 VS(VS_INPUT input) {
   VS_OUTPUT psOut;
   
-  psOut.Position = mul(WVP, float4(input.Position.xyz, 1.0f));
-  psOut.fDepth   = psOut.Position.z / psOut.Position.w;
+  psOut.Position = mul(WVP, input.Position);
+  //psOut.fDepth   = psOut.Position.z / psOut.Position.w;
+  psOut.fDepth   = psOut.Position.z;
   
   return psOut;
 }

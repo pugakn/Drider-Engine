@@ -1,6 +1,7 @@
 #pragma once
 #include "dr_util_prerequisites.h"
 #include "dr_file.h"
+#include <vector>
 
 namespace driderSDK {
 
@@ -41,13 +42,30 @@ class DR_UTIL_EXPORT FileSystem
   GetWorkingPath();
 
   /**
-  * TEST::CreateAndOpen
+  * TEST::GetDirectoryContent
   *
-  * Description
-  *
-  * @param filename
+  * Returns the fullpath of the working directory.
+  * OS specific.
   *
   * @return
+  *   TString containing the fullpath of the working directory.
+  */
+  std::vector<TString>
+  GetDirectoryContent(TString path = _T(""));
+
+  /**
+  * TEST::CreateAndOpen
+  *
+  * Creates a File and open it.
+  *
+  * @param filename
+  *  Name of the new file to create.
+  *
+  * @param file
+  *  File class whichs will handle te opened file.
+  *
+  * @return
+  *  true if file is successfully created.
   */
   bool
   CreateAndOpen(const TString& filename, File& file);
@@ -55,11 +73,13 @@ class DR_UTIL_EXPORT FileSystem
   /**
   * TEST::Copy
   *
-  * Description
+  * Copies a File.
   *
-  * @param filename
+  * @param filepathSrc
+  *  Path of the source file to copy.
   *
-  * @return
+  * @param filepathDst
+  *  Path of the destiny file.
   */
   void
   Copy(const TString& filepathSrc, const TString& filepathDst);
@@ -67,11 +87,13 @@ class DR_UTIL_EXPORT FileSystem
   /**
   * TEST::Move
   *
-  * Description
+  * Moves a file.
   *
-  * @param filename
+  * @param filepathSrc
+  *  Path of the file to move.
   *
-  * @return
+  * @param filepathDst
+  *  Destiny path.
   */
   void
   Move(const TString& filepathSrc, const TString& filepathDst);
@@ -79,12 +101,13 @@ class DR_UTIL_EXPORT FileSystem
   /**
   * TEST::Remove
   *
-  * Description
+  * Removes a file.
   *
-  * @param filename
+  * @param filepath
+  *  Path of file to remove.
   *
   * @return
-  *   
+  *  True if the file was successfully removed.
   */
   bool
   Remove(const TString& filepath);
@@ -92,11 +115,12 @@ class DR_UTIL_EXPORT FileSystem
   /**
   * TEST::IsFile
   *
-  * Description
+  * Checks is given path is a file.
   *
-  * @param filename
+  * @param filepath
   *
   * @return
+  *  True if is file.
   */
   bool
   IsFile(const TString& filepath);
@@ -104,11 +128,12 @@ class DR_UTIL_EXPORT FileSystem
   /**
   * TEST::IsDirectory
   *
-  * Description
+  * Checks is given path is a directory.
   *
-  * @param filename
+  * @param filepath
   *
   * @return
+  *  True if is directory.
   */
   bool
   IsDirectory(const TString& filepath);
@@ -116,11 +141,12 @@ class DR_UTIL_EXPORT FileSystem
   /**
   * TEST::Exists
   *
-  * Description
+  * Checks if path exists.
   *
-  * @param filename
+  * @param filepath
   *
   * @return
+  *  True if exists.
   */
   bool
   Exists(const TString& filepath);
@@ -128,11 +154,13 @@ class DR_UTIL_EXPORT FileSystem
   /**
   * TEST::GetFileExtension
   *
-  * Description
+  * Returns the extension of a file.
   *
-  * @param filename
+  * @param filepath
+  *  Path where the file extension will be taken.
   *
   * @return
+  *  The file extension.
   */
   static TString 
   GetFileExtension(const TString& filepath);

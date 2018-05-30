@@ -187,7 +187,7 @@ class DR_MATH_EXPORT Vector2D
   *   +1: If it's clockwise.
   */
   Int32
-  compare(const Vector2D p1, const Vector2D p2);
+  compare(const Vector2D& p1, const Vector2D& p2);
 
   /**
   * TEST::orientation
@@ -205,7 +205,7 @@ class DR_MATH_EXPORT Vector2D
   *   2: Counterclockwise
   */
   Int32
-  orientation(const Vector2D q, const Vector2D r) const;
+  orientation(const Vector2D& q, const Vector2D& r) const;
 
   /**
   * TEST::opPtr

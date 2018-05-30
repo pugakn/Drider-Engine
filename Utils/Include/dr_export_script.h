@@ -16,6 +16,12 @@ namespace driderSDK {
   void Destruct##className (void *memory) {\
     ((className*)memory)->~className(); }
 
+//#define REF_CONSTRUCT(className)\
+//  class className;\
+//  className* Ref_##className() {\
+//    return new className();/
+//  }
+
 #define COPY_CONSTRUCT_DECL(className)\
   void CopyConstruct##className(const className &other, className *thisPointer);
 
@@ -85,6 +91,13 @@ namespace driderSDK {
                                                                      asMETHOD(className, release),\
                                                                      asCALL_THISCALL);\
       if (result < 0) return result;
+
+#define REGISTER_REF_NOCOUNT(className)\
+    result = scriptEngine->m_scriptEngine->RegisterObjectBehaviour(#className,\
+                                                                   asBEHAVE_FACTORY,\
+                                                                   #className " @f()",\
+                                                                   asFUNCTION(Ref_##className),\
+                                                                   asCALL_CDECL);
 
 // METHODS FUNCTIONS
 #define REGISTER_FOO_0P(className, fooName, rType, rTypeStr)\

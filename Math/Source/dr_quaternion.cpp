@@ -152,9 +152,9 @@ Quaternion::getDirection() {
 Vector3D 
 Quaternion::getEulerAngles() {
   
-  Matrix4x4 x(*this);
+  Matrix4x4 tx(*this);
 
-  return x.eulerAngles();  
+  return tx.eulerAngles();  
 }
 
 float*

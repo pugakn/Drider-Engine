@@ -14,9 +14,6 @@ SoundComponent::SoundComponent(GameObject &gameObject_)
   : GameComponent(gameObject_, _T("SoundComponent")) 
 {}
 
-SoundComponent::~SoundComponent() 
-{}
-
 void
 SoundComponent::onCreate() {
   soundAPI = SoundAPI::instance().API;
@@ -61,7 +58,7 @@ SoundComponent::addSound(TString soundName,
 }
 
 void
-SoundComponent::play(TString soundName) {
+SoundComponent::play(const TString& soundName) {
   
   std::unordered_map<TString, 
                      DrSound*>::iterator 

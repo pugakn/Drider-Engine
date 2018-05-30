@@ -191,7 +191,7 @@
     <ClInclude Include="Include\dr_viewport.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Include\dr_sound_component.h" />
+    <ClInclude Include="Include\dr_sound_component.h" />
     <ClCompile Include="Source\dr_aabb_collider.cpp" />
     <ClCompile Include="Source\dr_animation.cpp" />
     <ClCompile Include="Source\dr_animator.cpp" />

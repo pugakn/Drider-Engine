@@ -449,7 +449,7 @@ struct DR_GRAPHICS_EXPORT DrSampleDesc {
     borderColor[3] = 0;
     minLOD = 0;
     maxLOD = 0;//3.402823466e+38F;
-    maxAnisotropy = 1.0;
+    maxAnisotropy = 1;
   }
 };
 

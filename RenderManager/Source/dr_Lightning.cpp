@@ -33,7 +33,7 @@ LightningPass::init(PassInitData* initData) {
   m_constantBuffer = dr_gfx_unique((ConstantBuffer*)device.createBuffer(bdesc));
 
   DrSampleDesc SSdesc;
-  SSdesc.Filter = DR_TEXTURE_FILTER::kMIN_MAG_MIP_LINEAR;
+  SSdesc.Filter = DR_TEXTURE_FILTER::kMIN_MAG_LINEAR_MIP_POINT;
   SSdesc.maxAnisotropy = 16;
   SSdesc.addressU = DR_TEXTURE_ADDRESS::kWrap;
   SSdesc.addressV = DR_TEXTURE_ADDRESS::kWrap;
@@ -46,13 +46,14 @@ LightningPass::draw(PassDrawData* drawData) {
   LightningDrawData* data = static_cast<LightningDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
-  //GraphicsAPI::getBackBufferRT().set(dc, GraphicsAPI::getDepthStencil());
+  data->OutRt->getTexture(0).setTextureNull(dc);
+  data->OutRt->setRTNull(dc);
   data->OutRt->set(dc, *data->dsOptions);
 
   m_vertexShader->set(dc);
   m_fragmentShader->set(dc);
 
-  m_samplerState->set(dc,DR_SHADER_TYPE_FLAG::kFragment);
+  m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kFragment);
 
   m_inputLayout->set(dc);
 
@@ -78,7 +79,9 @@ LightningPass::draw(PassDrawData* drawData) {
 
   for (SizeT i = 0; i < 4; ++i) {
     CB.ShadowVP[i] = (*data->ShadowCam)[i]->getVP();
-    CB.ShadowSliptDepth.data[i] = data->shadowDepths[i + 1];
+    CB.ShadowSliptDepth[i] = data->shadowDepths[i + 1];
+    CB.ShadowSizes[i] = data->shadowSizes[i];
+    CB.ShadowSizesProportion[i] = data->shadowSizesProportion[i];
   }
 
   m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));

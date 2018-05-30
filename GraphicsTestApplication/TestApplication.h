@@ -76,6 +76,10 @@ class TestApplication : public Application
 
     GameObject* m_root;
 
+
+    // Inherited via Application
+    virtual void onResize() override;
+
 };
 
 }

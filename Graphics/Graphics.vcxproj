@@ -89,7 +89,7 @@
     </ClCompile>
     <Link>
       <ImportLibrary>$(SolutionDir)Lib\$(PlatformTarget)\$(Projectname)d.lib</ImportLibrary>
-      <AdditionalDependencies>dxguid.lib;dxgi.lib;D3D11.lib;D3DCompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Mathd.lib;dxguid.lib;dxgi.lib;D3D11.lib;D3DCompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -103,7 +103,7 @@
     </ClCompile>
     <Link>
       <ImportLibrary>$(SolutionDir)Lib\$(PlatformTarget)\$(TargetName).lib</ImportLibrary>
-      <AdditionalDependencies>dxguid.lib;dxgi.lib;D3D11.lib;D3DCompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Mathd.lib;dxguid.lib;dxgi.lib;D3D11.lib;D3DCompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -120,7 +120,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>dxguid.lib;dxgi.lib;D3D11.lib;D3DCompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Math.lib;dxguid.lib;dxgi.lib;D3D11.lib;D3DCompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary>$(SolutionDir)Lib\$(PlatformTarget)\$(TargetName).lib</ImportLibrary>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);</AdditionalLibraryDirectories>
     </Link>
@@ -138,7 +138,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>dxguid.lib;dxgi.lib;D3D11.lib;D3DCompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Math.lib;dxguid.lib;dxgi.lib;D3D11.lib;D3DCompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>

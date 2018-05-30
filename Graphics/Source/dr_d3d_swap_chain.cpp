@@ -108,7 +108,7 @@ void D3DSwapChain::resize(const Device& device, UInt32 _w, UInt32 _h)
 
 void
 D3DSwapChain::swapBuffers() {
-  APISwapchain->Present(0, 0);
+  APISwapchain->Present(DXGI_SWAP_EFFECT_DISCARD, 0);
 }
 
 }

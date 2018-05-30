@@ -36,76 +36,16 @@
     <ClInclude Include="targetver.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Model3D.h">
-      <Filter>Archivos de encabezado\Geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\DrawableAnimated.h">
-      <Filter>Archivos de encabezado\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\InputComponent.h">
-      <Filter>Archivos de encabezado\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\ModelDebbug.h">
-      <Filter>Archivos de encabezado\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\NPCMovement.h">
-      <Filter>Archivos de encabezado\Components</Filter>
-    </ClInclude>
     <ClInclude Include="TestApplication.h">
       <Filter>Archivos de encabezado\Application</Filter>
     </ClInclude>
-    <ClInclude Include="Include\CameraDebbug.h">
-      <Filter>Archivos de encabezado\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\FrustumDebug.h">
-      <Filter>Archivos de encabezado\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\LinesTechnique.h">
-      <Filter>Archivos de encabezado\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\Technique.h">
-      <Filter>Archivos de encabezado\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\DrawableComponent.h">
-      <Filter>Archivos de encabezado\Components</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\DrawableAnimated.cpp">
-      <Filter>Archivos de origen\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\NPCMovement.cpp">
-      <Filter>Archivos de origen\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\ModelDebbug.cpp">
-      <Filter>Archivos de origen\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\InputComponent.cpp">
-      <Filter>Archivos de origen\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Model3D.cpp">
-      <Filter>Archivos de origen\Geometry</Filter>
-    </ClCompile>
     <ClCompile Include="TestApplication.cpp">
       <Filter>Archivos de origen\Application</Filter>
     </ClCompile>
     <ClCompile Include="RenderManagerTestApplication.cpp">
       <Filter>Archivos de origen</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\CameraDebbug.cpp">
-      <Filter>Archivos de origen\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\FrustumDebug.cpp">
-      <Filter>Archivos de origen\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\LinesTechnique.cpp">
-      <Filter>Archivos de origen\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Technique.cpp">
-      <Filter>Archivos de origen\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\DrawableComponent.cpp">
-      <Filter>Archivos de origen\Components</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
