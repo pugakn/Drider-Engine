@@ -23,7 +23,7 @@ cbuffer ConstantBuffer : register(b0) {
   int  aliveParticles;
   float m_initialScale;
   float m_finaleScale;
-  float aa;
+  int m_maxParticles;
   float aaaa;
 };
 cbuffer ListCount1 : register(b1)
@@ -38,12 +38,13 @@ cbuffer dtBuff : register(b2)
 };
 RWStructuredBuffer<PoolBuffer> poolBuffer : register(u0);
 AppendStructuredBuffer<uint> DeadBuffer : register(u1);
-RWStructuredBuffer<uint> AliveBuffer : register(u2);
+AppendStructuredBuffer<uint> AliveBuffer : register(u2);
 [numthreads(256, 1, 1)]
 void CS( uint3 id : SV_DispatchThreadID )
 {
  /* if (id.x < numAliveParticles)
   {*/
+  if (id.x < m_maxParticles) {
     uint pID = id.x;
     poolBuffer[pID].lifeTime += DT;
     float _proportionMul = 1.0f / m_particleMaxLife;
@@ -64,6 +65,9 @@ void CS( uint3 id : SV_DispatchThreadID )
       DeadBuffer.Append(pID);
       //AliveBuffer.DecrementCounter();
     }
-  //}
+    else {
+      AliveBuffer.Append(pID);
+    }
+  }
 }
 

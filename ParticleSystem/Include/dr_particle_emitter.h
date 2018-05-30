@@ -60,7 +60,7 @@ namespace driderSDK {
     int  aliveParticles;
     float m_initialScale;
     float m_finaleScale;
-    float aa;
+    Int32 m_maxParticles;
     float aaaa;
   };
   struct DR_PARTICLES_EXPORT ParticleEmitterAttributes {

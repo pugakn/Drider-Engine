@@ -21,7 +21,7 @@ cbuffer ConstantBuffer : register(b0) {
   int  aliveParticles;
   float m_initialScale;
   float m_finaleScale;
-  float aa;
+  int m_maxParticles;
   float aaaa;
 };
 
@@ -47,7 +47,7 @@ void CS( uint3 id : SV_DispatchThreadID )
     poolBuffer[particleID].lifeTime = 0;
     poolBuffer[particleID].scale = m_initialScale;
     poolBuffer[particleID].isActive = 1;
-    AliveBuffer.Append(particleID);
+    //AliveBuffer.Append(particleID);
   }
 }
 

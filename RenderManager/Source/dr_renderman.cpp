@@ -136,7 +136,7 @@ RenderMan::init() {
   //System
   attr.m_maxParticles = ParticleEmitter::MAX_PARTICLES;
   attr.m_initialTime = 0.1;
-  attr.m_rate = 1;
+  attr.m_rate = 0.5;
   attr.m_systemMaxLife = 5000;
   attr.m_particleMaxLife = 5;
   attr.m_numParticlesToEmit = 10;
