@@ -231,7 +231,7 @@ RenderMan::init() {
 
 void
 RenderMan::draw(const RenderTarget& _out, const DepthStencil& _outds) {
-  //GraphicsDriver::API().clear();
+
   //*
   updateShadowCameras();
 
