@@ -1,4 +1,4 @@
-class script1 : MontiBehavior {
+class script1 : driderBehavior {
 
 	float timer;
 

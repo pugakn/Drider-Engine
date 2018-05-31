@@ -197,7 +197,7 @@ TestApplication::loadResources() {
   ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
 
   //Scripts
-  ResourceManager::loadResource(_T("montiBehavior.as"));
+  ResourceManager::loadResource(_T("driderBehavior.as"));
   ResourceManager::loadResource(_T("script1.as"));
   ResourceManager::loadResource(_T("script2.as"));
 
@@ -291,7 +291,7 @@ TestApplication::initScriptEngine() {
                                                                 &m_root);
 
   //Get script references of the ResourceManager
-  auto rBehaviorScript = ResourceManager::getReference(_T("montiBehavior.as"));
+  auto rBehaviorScript = ResourceManager::getReference(_T("driderBehavior.as"));
   auto BehaviorScript = std::dynamic_pointer_cast<ScriptCore>(rBehaviorScript);
 
   auto rScript1 = ResourceManager::getReference(_T("script1.as"));

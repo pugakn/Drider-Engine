@@ -310,7 +310,7 @@ GraphicsApplication::loadResources() {
   
   ResourceManager::loadResource(_T("script1.as"));
 
-  ResourceManager::loadResource(_T("MontiBehavior.as"));
+  ResourceManager::loadResource(_T("driderBehavior.as"));
 
   ResourceManager::loadResource(_T("nanosuit.obj"));
 }
@@ -655,7 +655,7 @@ GraphicsApplication::initScriptEngine() {
                                                      _T("GameModule"));
 
   //Get script references of the ResourceManager
-  auto bs = ResourceManager::getReferenceT<ScriptCore>(_T("MontiBehavior.as"));
+  auto bs = ResourceManager::getReferenceT<ScriptCore>(_T("driderBehavior.as"));
 
   //Add script section of behavior
   scriptEngine->addScript(bs->getName(),

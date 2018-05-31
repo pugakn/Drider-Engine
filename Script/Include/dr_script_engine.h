@@ -133,7 +133,8 @@ class DR_SCRIPT_EXPORT ScriptEngine : public Module<ScriptEngine>
 	* @param scriptContext
 	*   pointer to a script context.
 	*/
-	void debugLineCallback(asIScriptContext* scriptContext);
+	void 
+	debugLineCallback(asIScriptContext* scriptContext);
 
 	/**
 	* Gets the messages from the script's engine and logs them.

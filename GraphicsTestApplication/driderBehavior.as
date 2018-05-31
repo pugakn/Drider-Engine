@@ -1,4 +1,4 @@
-class MontiBehavior {
+class driderBehavior {
 
 	private void SetTransform(Transform@ trans) {
 		@transform = trans;
