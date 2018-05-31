@@ -197,11 +197,11 @@ RenderMan::init() {
   driderSDK::ParticleEmitterAttributes attr;
   //System
   attr.m_maxParticles = ParticleEmitter::MAX_PARTICLES;
-  attr.m_initialTime = 0.1f;
-  attr.m_rate = 0.1f;
+  attr.m_initialTime = 0.1;
+  attr.m_rate = 0.05;
   attr.m_systemMaxLife = 5000;
   attr.m_particleMaxLife = 5;
-  attr.m_numParticlesToEmit = 10;
+  attr.m_numParticlesToEmit = 100000;
   attr.m_isActive = true;
 
   ////Speed / Velocity
@@ -320,17 +320,15 @@ RenderMan::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_VerBlurDrawData.OutRt = m_RTLightningBlur;
   m_VerBlurPass.draw(&m_VerBlurDrawData);
   //*/
+  _out.set(GraphicsAPI::getDeviceContext(), _outds);
 
-  //m_emitter.update();
-  //m_particleDrawData.activeCam = mainCam;
-  //m_particleDrawData.numParticles = m_emitter.m_aliveParticles;
-  //m_particleDrawData.particles = &m_emitter.m_particles;
-  //m_particleDrawData.emitter = &m_emitter;
-  //m_particlePass.draw(&m_particleDrawData);
+  m_emitter.update();
+  m_particleDrawData.activeCam = mainCam;
+  m_particleDrawData.emitter = &m_emitter;
+  m_particlePass.draw(&m_particleDrawData);
 
   //const float clearColor[4]{0.2f, 0.5f, 0.8f, 1.0f };
   //_out->clear(GraphicsAPI::getDeviceContext(), clearColor);
-  _out.set(GraphicsAPI::getDeviceContext(), _outds);
 
   m_PostProcessingDrawData.ColorRT = m_RTLightning;
   m_PostProcessingDrawData.ColorBlurRT = m_RTLightningBlur;
@@ -348,7 +346,7 @@ RenderMan::draw(const RenderTarget& _out, const DepthStencil& _outds) {
    X Opacity: Blends
   */
 
-  GraphicsDriver::API().swapBuffers();
+  //GraphicsDriver::API().swapBuffers();
 }
 
 void
