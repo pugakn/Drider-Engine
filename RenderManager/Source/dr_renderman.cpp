@@ -172,6 +172,7 @@ RenderMan::init() {
   driderSDK::ParticleEmitter emitter;
   driderSDK::ParticleEmitterAttributes attr;
   //System
+#if (DR_PARTICLES_METHOD == DR_PARTICLES_GPU)
   attr.m_maxParticles = ParticleEmitter::MAX_PARTICLES;
   attr.m_initialTime = 0.1;
   attr.m_rate = 0.05;
@@ -179,6 +180,16 @@ RenderMan::init() {
   attr.m_particleMaxLife = 5;
   attr.m_numParticlesToEmit = 100000;
   attr.m_isActive = true;
+#else
+  attr.m_maxParticles = ParticleEmitter::MAX_PARTICLES;
+  attr.m_initialTime = 0.1;
+  attr.m_rate = 0.1;
+  attr.m_systemMaxLife = 5000;
+  attr.m_particleMaxLife = 2;
+  attr.m_numParticlesToEmit = 5000;
+  attr.m_isActive = true;
+#endif
+
 
   ////Speed / Velocity
   //attr.m_initialSpeedLimit = 1200;

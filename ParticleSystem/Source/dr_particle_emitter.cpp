@@ -297,6 +297,7 @@ namespace driderSDK {
 
       m_cbuffer->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute,0);
       m_cbufferDeadCount->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute,1);
+      m_cbufferDT->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute, 2);
 
       const Int32 numThreadsPerBlock = 1024;
       GraphicsAPI::getDeviceContext().dispatch(

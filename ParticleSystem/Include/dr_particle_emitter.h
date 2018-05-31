@@ -158,7 +158,11 @@ namespace driderSDK {
 
   class DR_PARTICLES_EXPORT ParticleEmitter {
   public:
+#if (DR_PARTICLES_METHOD == DR_PARTICLES_GPU)
     static const Int32 MAX_PARTICLES = 10000000;
+#else
+    static const Int32 MAX_PARTICLES = 150000;
+#endif
     void
       init(const ParticleEmitterAttributes& _attributes);
     void
