@@ -1,4 +1,4 @@
-#include "TestApplication.h"
+  #include "TestApplication.h"
 
 //Modules
 #include <dr_camera_manager.h>
@@ -72,8 +72,8 @@ HSVtoRGB(float fH, float fS, float fV,
 void
 RenderManApp::postInit() {
   Logger::startUp();
-  GraphicsDriver::startUp(DR_GRAPHICS_API::D3D11, 
-                          m_viewport.width, 
+  GraphicsDriver::startUp(DR_GRAPHICS_API::D3D11,
+                          m_viewport.width,
                           m_viewport.height,
                           m_hwnd);
   InputManager::startUp(reinterpret_cast<SizeT>(m_hwnd));
@@ -86,7 +86,6 @@ RenderManApp::postInit() {
                               { 0.0f, 50.0f, 0.0f },
                               m_viewport,
                               45.f,
-                              //1024, 1024,
                               0.1f,
                               10000.0f);
   CameraManager::setActiveCamera(_T("PATO_CAM"));
@@ -113,8 +112,11 @@ RenderManApp::postInit() {
              Lights[lighIndex].m_vec4Color.y,
              Lights[lighIndex].m_vec4Color.z);
 
+    //Range
+    Lights[lighIndex].m_vec4Position.w = 150.0f;
+
     //Intensidad
-    Lights[lighIndex].m_vec4Color.w = (lighIndex / 128.0f) * 100.0f;
+    Lights[lighIndex].m_vec4Color.w = (lighIndex / 128.0f);
 
     proportion += (1.0f/128.0f);
   }
@@ -133,7 +135,7 @@ RenderManApp::postInit() {
     m_selectedGO->createComponent<AABBCollider>(ptrFloor->aabb);
     m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, 0.0f));
     //m_selectedGO->getTransform().setScale(Vector3D(1000.0f, 1.0f, 1000.0f));
-    m_selectedGO->getTransform().setScale(Vector3D(5.0f, 1.0f, 5.0f));
+    m_selectedGO->getTransform().setScale(Vector3D(4.0f, 1.0f, 4.0f));
 
     m_floorMat = std::make_shared<Material>(_T("FloorMaterial"));
 
@@ -338,7 +340,6 @@ void
 RenderManApp::postRender() {
   GraphicsDriver::API().clear();
   m_renderMan.draw(GraphicsAPI::getBackBufferRT(), GraphicsAPI::getDepthStencil());
-  //CameraManager::getActiveCamera()->setTarget(m_selectedGO->getTransform().getPosition());
   GraphicsDriver::API().swapBuffers();
 }
 

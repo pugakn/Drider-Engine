@@ -152,7 +152,7 @@ class DR_RENDERMAN_EXPORT RenderMan {
   GFXShared<RenderTarget> m_RTLightning;
   std::array<GFXShared<RenderTarget>, 4> m_RTShadowDummy; //Used for render separated shadowCams
   GFXShared<RenderTarget> m_RTShadow;
-  GFXShared<RenderTarget> m_RTPreFinalBlur;
+  GFXShared<RenderTarget> m_RTLightningBlur;
   GFXShared<RenderTarget> m_RTPostProcessing;
 
   DrTextureDesc m_TexDescDefault;

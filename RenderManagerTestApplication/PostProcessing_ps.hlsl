@@ -14,9 +14,101 @@ struct PS_INPUT {
   float2 Texcoord : TEXCOORD0;
 };
 
+//sampler2D ColorSampler;
+//sampler2D LuminescenceSampler;
+//sampler2D BloomSampler;
+//sampler2D FilmLutSampler;
+
+static const float kExposure;
+
+static const float A = 0.15f;
+static const float B = 0.50f;
+static const float C = 0.10f;
+static const float D = 0.20f;
+static const float E = 0.02f;
+static const float F = 0.30f;
+static const float W = 11.2f;
+
+float4
+BasicExposure(in float3 Color, in float exposure) {
+  float4 retColor = float4(Color, 1.0f);
+  retColor *= exposure;
+  retColor = pow(retColor, 1.0f/2.2f);
+  
+  return retColor;
+}
+
+float4
+Reinhard(in float3 Color, in float exposure) {
+  float4 retColor = float4(Color, 1.0f);
+  retColor *= exposure;
+  retColor = retColor/(1.0f + retColor);
+  retColor = pow(retColor, 1.0f/2.0f);
+  
+  return retColor;
+}
+
+float4
+Haarm_Peter_Duiker(in float3 Color, in float exposure) {
+  float3 texColor = Color;
+  texColor *= exposure;
+  
+  float3 ld           = 0.002f;
+  float  linReference = 0.18f;
+  float  logReference = 444.0f;
+  float  logGamma     = 0.45f;
+  
+  float3 LogColor;
+  LogColor.rgb = (log10(0.4f*texColor.rgb/linReference)/ld*logGamma + logReference)/1023.0f;
+  LogColor.rgb = saturate(LogColor.rgb);
+  
+  float FilmLutWidth = 256.0f;
+  float Padding = 0.5f / FilmLutWidth;
+  
+  float3 retColor = float3(1.0f, 1.0f, 1.0f);
+  //retColor.r = tex2D(FilmLutSampler, float2( lerp(Padding, 1 - Padding, LogColor.r), 0.5f)).r;
+  //retColor.g = tex2D(FilmLutSampler, float2( lerp(Padding, 1 - Padding, LogColor.g), 0.5f)).r;
+  //retColor.b = tex2D(FilmLutSampler, float2( lerp(Padding, 1 - Padding, LogColor.b), 0.5f)).r;
+
+  //retColor.r = tex2D(FilmLutSampler, float2( lerp(Padding, 1 - Padding, LogColor.r), 0.5f)).r;
+  //retColor.g = tex2D(FilmLutSampler, float2( lerp(Padding, 1 - Padding, LogColor.r), 0.5f)).g;
+  //retColor.b = tex2D(FilmLutSampler, float2( lerp(Padding, 1 - Padding, LogColor.r), 0.5f)).b;
+  return float4(retColor, 1.0f);
+}
+
+float4 Burgeos_Dawson(in float3 Color, float exposure) {
+  float3 texColor = Color;
+  texColor *= exposure;
+  float3 x = max(0.0f, texColor - 0.004f);
+  float3 retColor = (x * (6.2f * x + 0.5f)) / ( x * (6.2f * x * 1.7f) + 0.06f);
+  
+  return float4(retColor, 1.0f);
+}
+
+float3
+Uncharted2Tonemap(float3 r) {
+  return ((r * (A * r + B * C) + D * E) / (r * (A * r + B) + D * F)) - E/F;
+}
+
+float4
+Uncharted2(in float3 Color, in float exposure) {
+  float3 texColor = Color;
+  texColor *= exposure;
+  
+  float ExposureBias = 2.0f;
+  float3 curr = Uncharted2Tonemap(ExposureBias * texColor);
+  
+  float3 whiteScale = 1.0f / Uncharted2Tonemap(W);
+  float3 color = curr * whiteScale;
+  
+  float3 retColor = pow(color, 1.0f/2.2f);
+  return float4(retColor, 1.0f);
+}
+
 #define CHROMATIC_ABERRATION
 #define DEPTH_OF_FIELD
 #define VIGNETTE
+#define TONE_MAPPING
 
 float4
  FS(PS_INPUT input) : SV_TARGET0 {
