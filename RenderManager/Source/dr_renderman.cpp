@@ -226,7 +226,7 @@ RenderMan::init() {
   //attr.m_scaleFactorRandomMin = 0.8;
   //attr.m_scaleFactorRandomMax = 5;
 
-  m_emitter.init(attr);
+  //m_emitter.init(attr);
 }
 
 void
@@ -322,10 +322,10 @@ RenderMan::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   //*/
   _out.set(GraphicsAPI::getDeviceContext(), _outds);
 
-  m_emitter.update();
-  m_particleDrawData.activeCam = mainCam;
-  m_particleDrawData.emitter = &m_emitter;
-  m_particlePass.draw(&m_particleDrawData);
+  //m_emitter.update();
+  //m_particleDrawData.activeCam = mainCam;
+  //m_particleDrawData.emitter = &m_emitter;
+  //m_particlePass.draw(&m_particleDrawData);
 
   //const float clearColor[4]{0.2f, 0.5f, 0.8f, 1.0f };
   //_out->clear(GraphicsAPI::getDeviceContext(), clearColor);
