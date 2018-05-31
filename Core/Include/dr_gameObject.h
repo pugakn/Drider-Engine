@@ -14,6 +14,8 @@
 #include "dr_enableObject.h"
 #include "dr_name_object.h"
 
+#include "dr_gameComponent.h"
+
 #include <dr_export_script.h>
 #include <..\..\Script\Include\dr_script_engine.h>
 
@@ -303,7 +305,7 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
 
   static BEGINING_REGISTER(GameObject, 0, asOBJ_REF | asOBJ_NOCOUNT)
 
-  result = REGISTER_REF_NOCOUNT(GameObject)
+  result = REGISTER_REF_NOCOUNT(GameObject)                                                           
 
   //Register functions
   result = REGISTER_FOO(GameObject,
@@ -322,7 +324,11 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
                         "void setTag(const TString& in)",
                         asMETHODPR(GameObject, setTag, (const TString&), void))
 
-  //Register operators
+  result = REGISTER_FOO(GameObject,
+                        "GameComponent@ getComponent(const TString& in)",
+                        asMETHODPR(GameObject, getComponent, (const TString&), GameComponent*))
+
+//Register operators
   result = REGISTER_OP(GameObject, operator=, opAssign, const GameObject&, GameObject&, "GameObject@", in)
 
   END_REGISTER 

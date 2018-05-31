@@ -63,8 +63,8 @@ TestApplication::postInit() {
   loadResources();
   createScene();
   createTechniques();
-  initScriptEngine();
   playSoundTest();
+  initScriptEngine();
 
   Time::update();
 }
@@ -279,10 +279,11 @@ TestApplication::initScriptEngine() {
   result = Keyboard::registerFunctions(scriptEngine);
   Vector3D vector;
   result = vector.registerFunctions(scriptEngine);
+  result = Time::registerFunctions(scriptEngine);
+  result = GameComponent::registerFunctions(scriptEngine);
+  result = SoundComponent::registerFunctions(scriptEngine);
   result = Transform::registerFunctions(scriptEngine);
   result = GameObject::registerFunctions(scriptEngine);
-  result = Time::registerFunctions(scriptEngine);
-  result = SoundComponent::registerFunctions(scriptEngine);
 
   //Register global properties
   m_root = SceneGraph::instance().getRoot().get(); // Get root
@@ -344,7 +345,7 @@ TestApplication::playSoundTest() {
   soundComponent->addSound(_T("testSound1"),
                            sound1);
 
-  soundComponent->play(_T("testSound1"));
+  //soundComponent->play(_T("testSound1"));
   
 }
 

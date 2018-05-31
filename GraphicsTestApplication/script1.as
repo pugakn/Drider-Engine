@@ -29,6 +29,15 @@ class script1 : driderBehavior {
 		Transform t = a.getTransform();
 		Print("Position a: " + t.m_position.x + "," + t.m_position.y);
 
+		//Get soundComponent
+		GameObject@ player = Object.findObject("Player");
+		SoundComponent@ sound = cast<SoundComponent>(player.getComponent("SoundComponent"));
+		if(@sound != null) {
+			sound.play("testSound1");
+		}
+		else
+			Print("\nSound null");
+
 	}
 
 	void Update() {
