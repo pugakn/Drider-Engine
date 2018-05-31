@@ -1,12 +1,15 @@
-Texture2D ColorTex     : register(t0);
-Texture2D ColorBlurTex : register(t1);
-Texture2D NormCoC      : register(t2);
-//Texture2D GodRays      : register(t3);
+Texture2D PositionLDepthTex : register(t0);
+Texture2D ColorTex          : register(t1);
+Texture2D ColorBlurTex      : register(t2);
+Texture2D NormCoC           : register(t3);
+//Texture2D GodRays           : register(t3);
 
 SamplerState SS;
 
 cbuffer ConstantBuffer {
-  float4 Var;
+  float4 CameraInfo;      //X: Aspect Ratio; Y: FOV; Z: Near Plane; W: Far Plane
+  float4 CA_CoC_V;        //X: ChromaticAberrationStrenght, Y: FocusDistance, Z: FocusRange, W: VignetteScale
+  float4 VignetteOptions; //XY: fVignetteConcentration, ZW: fVignetteRad;
 };
 
 struct PS_INPUT {
@@ -76,7 +79,8 @@ Haarm_Peter_Duiker(in float3 Color, in float exposure) {
   return float4(retColor, 1.0f);
 }
 
-float4 Burgeos_Dawson(in float3 Color, float exposure) {
+float4
+Burgeos_Dawson(in float3 Color, float exposure) {
   float3 texColor = Color;
   texColor *= exposure;
   float3 x = max(0.0f, texColor - 0.004f);
@@ -107,20 +111,20 @@ Uncharted2(in float3 Color, in float exposure) {
 
 #define CHROMATIC_ABERRATION
 #define DEPTH_OF_FIELD
-#define VIGNETTE
-#define TONE_MAPPING
+//#define VIGNETTE
+//#define TONE_MAPPING
 
 float4
  FS(PS_INPUT input) : SV_TARGET0 {
-  float2 uv = input.Texcoord;
+  const float2 uv = input.Texcoord;
   float4 Color;
   float4 ColorBlur;
 
   #ifdef CHROMATIC_ABERRATION
-    float  fChromaticAberrationStrength = 0.075f;
-    float  fChromaticAberrationConcentration = 2.0f;
+    static const float fChromaticAberrationStrength = CA_CoC_V[0];
     
-    float2 CAOffset = float2(pow(-abs((0.5f - uv.x) * fChromaticAberrationStrength), fChromaticAberrationConcentration), 0.0f);
+    float2 CAOffset = float2(-abs((0.5f - uv.x) * fChromaticAberrationStrength), 0.0f);
+    CAOffset *= CAOffset;
     
     float CR, CG;
     float2 CBA;
@@ -144,21 +148,28 @@ float4
   #endif
 
   #ifdef DEPTH_OF_FIELD
-    float fCoC = NormCoC.Sample(SS, uv).w;
-    //return float4(fCoC.xxx, 1.0f);
+    const float RealDepth = PositionLDepthTex.Sample(SS, uv).w * CameraInfo.w;
+    static const float fFocusDistance = CA_CoC_V.y;
+    static const float fFocusRange = CA_CoC_V.z;
+    float fCoC = (RealDepth - fFocusDistance) / abs(fFocusRange);
+
+    //sign: Returns -1 if x is less than zero; 0 if x equals zero; and 1 if x is greater than zero.
+    const float fA = saturate(sign(fFocusRange));
+
+    fCoC = clamp(fCoC, -1.0f * fA, 1.0f);
+    fCoC = abs(fCoC);
   #endif //DEPTH_OF_FIELD
 
   #ifdef VIGNETTE
-    float2 fVignetteConcentration = float2(4.0f, 4.0f);
-    float2 fVignetteRad = float2(1.25f, 1.25f);
-    float  fVignetteScale = 1.0f;
+    static const float2 fVignetteConcentration = VignetteOptions.xy;
+    static const float2 fVignetteRad = VignetteOptions.zw;
+    static const float  fVignetteScale = CA_CoC_V.w;
     
-    float x = pow((uv.x * 2.0f) - 1.0f, fVignetteConcentration.x);
-    float y = pow((uv.y * 2.0f) - 1.0f, fVignetteConcentration.y);
-    float xR = fVignetteRad.x;
-    float yR = fVignetteRad.y;
+    const float x = pow(abs((uv.x * 2.0f) - 1.0f), fVignetteConcentration.x);
+    const float y = pow(abs((uv.y * 2.0f) - 1.0f), fVignetteConcentration.y);
     
-    float vignette = 1.0f - (saturate(((x*x)/(xR*xR)) + ((y*y)/(yR*yR))) * fVignetteScale);
+    const float vignette = 1.0f - (saturate(((x * x) / (fVignetteRad.x * fVignetteRad.x)) +
+                                            ((y * y) / (fVignetteRad.y * fVignetteRad.y))) * fVignetteScale);
   #endif //VIGNETTE
   
   //CR = GodRays.Sample(SS, uv + CAOffset).x;

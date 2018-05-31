@@ -330,12 +330,19 @@ RenderMan::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   //const float clearColor[4]{0.2f, 0.5f, 0.8f, 1.0f };
   //_out->clear(GraphicsAPI::getDeviceContext(), clearColor);
 
+  m_PostProcessingDrawData.activeCam = mainCam;
+  m_PostProcessingDrawData.ChromaticAberrationStrenght = 0.075f;
+  m_PostProcessingDrawData.CoCFocusDistance = 390.0f;
+  m_PostProcessingDrawData.CoCFocusRange = 50.0f;
+  m_PostProcessingDrawData.VignetteScale = 1.0f;
+  m_PostProcessingDrawData.VignetteConcentration = Vector2D(4.0f, 4.0f);
+  m_PostProcessingDrawData.VignetteRad = Vector2D(1.25f, 1.25f);
+  m_PostProcessingDrawData.PositionDepthRT = m_RTGBuffer;
   m_PostProcessingDrawData.ColorRT = m_RTLightning;
   m_PostProcessingDrawData.ColorBlurRT = m_RTLightningBlur;
   m_PostProcessingDrawData.Gbuffer = m_RTGBuffer;
   m_PostProcessingPass.draw(&m_PostProcessingDrawData);
 
-  GraphicsAPI::getBackBufferRT().set(GraphicsAPI::getDeviceContext(), GraphicsAPI::getDepthStencil());
   /*
   ./ GBuffer:
   ./ SSAO:
@@ -380,7 +387,7 @@ RenderMan::updateShadowCameras() {
   for (SizeT i = 0; i < m_szActiveShadowCameras; ++i) {
     float SphereRad = m_ShadowSubFrustras[i].second;
     
-    TrueCenter = CamPos + (CamDir * m_ShadowSubFrustras[i].first.z);
+    TrueCenter = CamPos + (CamDir * m_ShadowSubFrustras[i].first);
 
     vecShadowCamera[i]->setPosition(TrueCenter -
                                     (m_vec3DirectionalLight * m_fMaxDepth));
@@ -419,28 +426,28 @@ RenderMan::calculatePartitions(SizeT cuts) {
   return realValues;
 }
 
-std::pair<Vector3D, float>
+std::pair<float, float>
 RenderMan::frustrumSphere(float fVW,
                           float fVH,
                           float fNP,
                           float fFP,
                           float fF) {
-  Vector3D fCenter;
+  float fCenter;
   float fRadius;
   float fK = Math::sqrt(1.0f + ((fVH * fVH) / (fVW * fVW))) * Math::tan(Math::DEGREE_TO_RADIAN * fF * 0.5f);
   
   if ((fK * fK) < ((fFP - fNP) / (fFP + fNP))) {
-    fCenter = Vector3D(0.0f, 0.0f, 0.5f * (fFP + fNP) * (1.0f + (fK * fK)));
+    fCenter = 0.5f * (fFP + fNP) * (1.0f + (fK * fK));
     fRadius = 0.5f * Math::sqrt((Math::pow((fFP - fNP), 2.0f)) +
                                 (2.0f * ((fFP * fFP) + (fNP * fNP)) * (fK * fK)) +
                                 (Math::pow(fFP + fNP, 2.0f) * Math::pow(fK, 4.0f)));
   }
   else {
-    fCenter = Vector3D(0.0f, 0.0f, fFP);
+    fCenter = fFP;
     fRadius = fFP * fK;
   }
 
-  return std::pair<Vector3D, float>(fCenter, fRadius);
+  return std::pair<float, float>(fCenter, fRadius);
 }
 
 }

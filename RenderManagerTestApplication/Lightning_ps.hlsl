@@ -47,13 +47,13 @@ float
 GetShadowValue(float4 fromLightPos, const int camIndex) {
   float shadowValue = 1.0f;
 
-  float CascadeBiasModifier = ShadowSizesProportion[camIndex] - (camIndex * 1.5f); //Dunno LOL
+  const float CascadeBiasModifier = ShadowSizesProportion[camIndex] - (camIndex * 1.5f); //Dunno LOL
   static const float shadowBias = 0.0005f;
   
   float2 uv = 0.5f + (0.5f * fromLightPos.xy);
   uv.y = 1.0 - uv.y;
 
-  float depthValue = fromLightPos.z;
+  const float depthValue = fromLightPos.z;
 
   #ifdef DR_SH_PCF_ENABLED
   
@@ -82,7 +82,7 @@ GetShadowValue(float4 fromLightPos, const int camIndex) {
 
 float
 luminescence(float3 Color) {
-  float delta = BloomThresholdLuminiscenceDelta.w;
+  static const float delta = BloomThresholdLuminiscenceDelta.w;
   static const float3 LuminanceFactor = float3(0.3f, 0.59f, 0.03f);
   //Case LDR
   return (dot(Color, LuminanceFactor) + delta);
@@ -92,7 +92,7 @@ luminescence(float3 Color) {
 
 float3
 brightness(float3 LinearColor) {
-  float3 BloomThreshold = BloomThresholdLuminiscenceDelta.xyz;
+  static const float3 BloomThreshold = BloomThresholdLuminiscenceDelta.xyz;
   return luminescence(LinearColor) * saturate(LinearColor - BloomThreshold.xxx);
 }
 
@@ -152,21 +152,21 @@ FS(PS_INPUT input) {
 
   float3 finalColor = float3(0.0f, 0.0f, 0.0f);
 
-  float2 uv = input.Texcoord;
+  const float2 uv = input.Texcoord;
   
-  float4 position  = float4(PositionLDepthTex.Sample(SS, uv).xyz, 1.0f);
-  float3 normal    = NormalCoCTex.Sample(SS, uv).xyz;
-  float3 albedo    = AlbedoMetallicTex.Sample(SS, uv).xyz;
-  float  metallic  = AlbedoMetallicTex.Sample(SS, uv).w;
-  float3 emissive  = EmissiveRoughnessTex.Sample(SS, uv).xyz;
-  float  roughness = EmissiveRoughnessTex.Sample(SS, uv).w;
-  float3 specular  = lerp(float3(0.03f, 0.03f, 0.03f), albedo, metallic);
-  float  SSAO      = SSAOTex.Sample(SS, uv).x;
-  float  alpha     = max(0.01f, roughness * roughness);
+  const float4 position  = float4(PositionLDepthTex.Sample(SS, uv).xyz, 1.0f);
+  const float3 normal    = NormalCoCTex.Sample(SS, uv).xyz;
+  const float3 albedo    = AlbedoMetallicTex.Sample(SS, uv).xyz;
+  const float  metallic  = AlbedoMetallicTex.Sample(SS, uv).w;
+  const float3 emissive  = EmissiveRoughnessTex.Sample(SS, uv).xyz;
+  const float  roughness = EmissiveRoughnessTex.Sample(SS, uv).w;
+  const float3 specular  = lerp(float3(0.03f, 0.03f, 0.03f), albedo, metallic);
+  const float  SSAO      = SSAOTex.Sample(SS, uv).x;
+  const float  alpha     = max(0.01f, roughness * roughness);
   
   //Lightning Stuff
-  float3 ViewDir = normalize(kEyePosition.xyz - position.xyz);
-  float  NdotV = saturate(dot(normal, ViewDir));
+  const float3 ViewDir = normalize(kEyePosition.xyz - position.xyz);
+  const float  NdotV = saturate(dot(normal, ViewDir));
 
   const int activeLights = kEyePosition.w;
   [unroll]
@@ -191,8 +191,8 @@ FS(PS_INPUT input) {
 
     float3 DiffAcc = Diffuse_Burley(NdotL, NdotV, LdotH, roughness) * albedo;
     float3 SpecAcc = Specular_D(alpha, NdotH) *
-              Specular_F(specular * lightColor, LdotH) *
-              Specular_G(alpha, LdotH);
+                     Specular_F(specular * lightColor, LdotH) *
+                     Specular_G(alpha, LdotH);
     SpecAcc /= (4.0f * cos(NdotL) * cos(NdotV));
     
     finalColor += (SSAO * NdotL * LightPower) * (DiffAcc + SpecAcc);
@@ -201,11 +201,10 @@ FS(PS_INPUT input) {
   //Shadow Stuff
   int iCurrentCascadeIndex = 0;
   
-  const float CascadeLerp = ShadowInfo[2];
-  float ShadowLerp = 0.0f;
+  static const float CascadeLerp = ShadowInfo[2];
   
   #if defined(INTERVAL_BASED_SELECTION)
-    float vCurrentPixelDepth = PositionLDepthTex.Sample(SS, uv).w;
+    const float vCurrentPixelDepth = PositionLDepthTex.Sample(SS, uv).w;
 
     float4 fComparison;
     fComparison[0] = vCurrentPixelDepth > ShadowSplitDepth[0];
@@ -213,7 +212,7 @@ FS(PS_INPUT input) {
     fComparison[2] = vCurrentPixelDepth > ShadowSplitDepth[2];
     fComparison[3] = vCurrentPixelDepth > ShadowSplitDepth[3];
 
-    const int activatedCacades = ShadowInfo[0];
+    static const int activatedCacades = ShadowInfo[0];
     float fIndex = dot(float4(activatedCacades > 0,
                               activatedCacades > 1,
                               activatedCacades > 2,
@@ -223,8 +222,8 @@ FS(PS_INPUT input) {
     iCurrentCascadeIndex = (int)fIndex;
 
     #ifdef CASCADE_BLUR
-      float pxProportion = vCurrentPixelDepth / ShadowSplitDepth[iCurrentCascadeIndex];
-      ShadowLerp = saturate((pxProportion - CascadeLerp) / (1.0f - CascadeLerp));
+      const float pxProportion = vCurrentPixelDepth / ShadowSplitDepth[iCurrentCascadeIndex];
+      const float ShadowLerp = saturate((pxProportion - CascadeLerp) / (1.0f - CascadeLerp));
     #endif //CASCADE_BLUR
   #elif defined(MAP_BASED_SELECTION)
     float4 fComparison;
@@ -241,23 +240,23 @@ FS(PS_INPUT input) {
     iCurrentCascadeIndex = min(4 - iCurrentCascadeIndex, 3);
 
     #ifdef CASCADE_BLUR
-      float2 cascadeUV = abs(mul(kShadowVP[iCurrentCascadeIndex], position).xy);
-      ShadowLerp = saturate((max(cascadeUV.x, cascadeUV.y) - CascadeLerp) / (1.0f - CascadeLerp));
+      const float2 cascadeUV = abs(mul(kShadowVP[iCurrentCascadeIndex], position).xy);
+      const float ShadowLerp = saturate((max(cascadeUV.x, cascadeUV.y) - CascadeLerp) / (1.0f - CascadeLerp));
     #endif //CASCADE_BLUR
   #endif //INTERVAL_BASED_SELECTION || MAP_BASED_SELECTION
 
   //Projects the position from the mainCam to what shadowCam sees
-  float4 fromMinLightPos = mul(kShadowVP[iCurrentCascadeIndex], position);
+  const float4 fromMinLightPos = mul(kShadowVP[iCurrentCascadeIndex], position);
 
   float ShadowValue = 1.0f;
 
 
   #if defined(INTERVAL_BASED_SELECTION) || defined(MAP_BASED_SELECTION)
     #ifdef CASCADE_BLUR
-      float4 fromMaxLightPos = mul(kShadowVP[min(iCurrentCascadeIndex + 1, 3)], position);
+      const float4 fromMaxLightPos = mul(kShadowVP[min(iCurrentCascadeIndex + 1, 3)], position);
       ShadowValue = lerp(GetShadowValue(fromMinLightPos, iCurrentCascadeIndex),
-                        GetShadowValue(fromMaxLightPos, min(iCurrentCascadeIndex + 1, 3)),
-                        ShadowLerp);
+                         GetShadowValue(fromMaxLightPos, min(iCurrentCascadeIndex + 1, 3)),
+                         ShadowLerp);
     #else
       ShadowValue = GetShadowValue(fromMinLightPos, iCurrentCascadeIndex);
     #endif //CASCADE_BLUR
