@@ -1,4 +1,4 @@
-class MontiBehavior : IScript {
+class driderBehavior : IScript {
 
 	private void SetTransform(Transform@ trans) {
 		@transform = trans;

@@ -1,4 +1,4 @@
-class script2 : MontiBehavior {
+class script2 : driderBehavior {
 
 	TString name = "TEST_NAME";
 
