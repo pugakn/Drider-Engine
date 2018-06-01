@@ -63,7 +63,7 @@ TestApplication::postInit() {
   loadResources();
   createScene();
   createTechniques();
-  playSoundTest();
+  addSounds();
   initScriptEngine();
 
   Time::update();
@@ -282,6 +282,7 @@ TestApplication::initScriptEngine() {
   result = Time::registerFunctions(scriptEngine);
   result = GameComponent::registerFunctions(scriptEngine);
   result = SoundComponent::registerFunctions(scriptEngine);
+  result = ScriptComponent::registerFunctions(scriptEngine);
   result = Transform::registerFunctions(scriptEngine);
   result = GameObject::registerFunctions(scriptEngine);
 
@@ -333,7 +334,7 @@ TestApplication::initScriptEngine() {
 }
 
 void
-TestApplication::playSoundTest() {
+TestApplication::addSounds() {
 
   auto sound1Resource = ResourceManager::instance().getReferenceT<
                         SoundCore>(_T("testSound1.mp3"));

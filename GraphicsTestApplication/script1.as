@@ -1,6 +1,7 @@
 class script1 : MontiBehavior {
 
 	float timer;
+	TString name = "TEST_NAME";
 
 	void Start() {
 		Print("Start\n");
@@ -19,7 +20,7 @@ class script1 : MontiBehavior {
 		if(@c == null)
 			Print("c is null\n");
 
-		//Change tag and print
+		//Change tag and print it
 		TString tag = a.getTag();
 		Print("a tag is " + tag + "\n");
 		a.setTag("NewTag");
@@ -35,23 +36,42 @@ class script1 : MontiBehavior {
 		if(@sound != null) {
 			sound.play("testSound1");
 		}
-		else
+		else {
 			Print("\nSound null");
+		}
+
+		name = "EDIT_TEST";
+
+		script2@ sc = cast<script2>(cast<ScriptComponent>(player.getComponent("ScriptComponent11")).getScript());
+		sc.doSomething();
 
 	}
 
 	void Update() {
-		Vector3D vec(100.0 * getDelta(),0.0,0.0);
+		Vector3D vecRight(100.0 * getDelta(),0.0,0.0);
+		Vector3D vecFront(0,0.0,100.0 * getDelta());
 
 		if(isKeyDown(kD)) {
-			this.transform.move(vec);
+			this.transform.move(vecRight);
 			//Print("move, x = " + this.transform.m_position.x + "\n");
 		}
 
 		if(isKeyDown(kA)) {
-			this.transform.move(vec * -1.0);
+			this.transform.move(vecRight * -1.0);
 			//Print("move, x = " + this.transform.m_position.x + "\n");
 		}
+
+		if(isKeyDown(kW)) {
+			this.transform.move(vecFront);
+		}
+
+		if(isKeyDown(kS)) {
+			this.transform.move(vecFront * -1.0);
+		}
+	}
+
+	void Do() {
+		Print(name + "\n");
 	}
 
 	/*void onKeyDown(KeyCode key) {

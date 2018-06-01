@@ -133,5 +133,14 @@ ScriptComponent::setScriptLocalProperties() {
   Int8 result;  
 }
 
+asIScriptObject*
+ScriptComponent::getScript() {
+  if(obj == 0)
+    return 0;
+  
+  obj->AddRef();
+  return obj;
+}
+
 }
 

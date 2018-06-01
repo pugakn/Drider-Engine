@@ -9,5 +9,11 @@ Variables:
 - 3,8 -
     0   0 *    SUSPEND
     1   0 *    PshVPtr  v0
-    2   1 *    CALL     97           (MontiBehavior::MontiBehavior())
-    4   0 *    RET      1
+    2   1 *    CALL     102           (MontiBehavior::MontiBehavior())
+- 4,10 -
+    4   0 *    SUSPEND
+    5   0 *    PshVPtr  v0
+    6   1 *    ADDSi    v28, 134217750
+    8   1 *    PGA      167723952
+   10   2 *    ALLOC    0xa065430, 20             (type:TString, {no func})
+   13   0 *    RET      1
