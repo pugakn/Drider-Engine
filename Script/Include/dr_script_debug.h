@@ -1,7 +1,7 @@
 #pragma once
 #include "dr_script_prerequisites.h"
 #include <vector>
-//#include <unordered_map>
+#include "angelscript\angelscript.h"
 
 namespace driderSDK {
 
@@ -29,6 +29,8 @@ namespace driderSDK {
 	class DR_SCRIPT_EXPORT ScriptDebug 
 	{
 
+		//class asIScriptGeneric;
+
 		struct BreakPoint
 		{
 			BreakPoint(TString _section,
@@ -47,6 +49,12 @@ namespace driderSDK {
 		ScriptDebug(ScriptEngine* engine);
 
 		/**
+		* Default constructor
+		*
+		*/
+		ScriptDebug();
+
+		/**
 		* Default destructor
 		*
 		*/
@@ -56,13 +64,15 @@ namespace driderSDK {
 		* Adds a breakpoint into the code.
 		*
 		*/
-		void setBreakPoint();
+		void 
+		setBreakPoint();
 
 		/**
 		* Removes a breakpoint from the code.
 		*
 		*/
-		bool removeBreakPoint(Int32 line, TString& section);
+		bool 
+		removeBreakPoint(Int32 line, TString& section);
 
 		/**
 		* Takes the input and interpret it's action
@@ -70,7 +80,8 @@ namespace driderSDK {
 		*  @param input
 		*   String containing the action
 		*/
-		void interpretInput(TString& input);
+		void 
+		interpretInput(TString& input);
 
 		/**
 		* Sets a command to the debugger
@@ -78,7 +89,8 @@ namespace driderSDK {
 		*  @param command
 		*   Command to set from an enumerator.
 		*/
-		void setCommand(DebugCommands::E command);
+		void 
+		setCommand(DebugCommands::E command);
 
 		/**
 		* Gets the current command of the debugger.
@@ -86,7 +98,8 @@ namespace driderSDK {
 		*  @return
 		*   Active command
 		*/
-		DebugCommands::E getCommand();
+		DebugCommands::E 
+		getCommand();
 
 		/**
 		* Checks for a breakpoint.
@@ -94,31 +107,36 @@ namespace driderSDK {
 		* @return
 		*   True if it found a breakpoint.
 		*/
-		bool checkBreakPoint();
+		bool 
+		checkBreakPoint();
 
 		/**
 		* Removes all Breakpoints.
 		*
 		*/
-		void clearBreakPoints();
+		void 
+		clearBreakPoints();
 
 		/**
 		* Print all the Callstack using the Logger.
 		*
 		*/
-		void printCallStack();
+		void 
+		printCallStack();
 
 		/**
 		* Print all the local variables using the Logger.
 		*
 		*/
-		void printLocalVariables();
+		void 
+		printLocalVariables();
 
 		/**
 		* Print all the global variables using the Logger.
 		*
 		*/
-		void printGlobalVariables();
+		void 
+		printGlobalVariables();
 
 		/**
 		* Calls the Logger and adds a new log.
@@ -126,7 +144,8 @@ namespace driderSDK {
 		* @param log
 		*   String containing the message.
 		*/
-		void printToLogger(TString log);
+		void 
+		printToLogger(TString log);
 
 		/**
 		* Interprets the value of the object
@@ -140,13 +159,33 @@ namespace driderSDK {
 		*  @return
 		*   TString containing the interpreted value.
 		*/
-		TString interpretValue(void* value, Int32 typeId);
+		TString 
+		interpretValue(void* value, Int32 typeId);
 
 		/**
 		* Prints the Garbage Collector's status.
 		*
 		*/
-		void printGarbageStatus();
+		void 
+		printGarbageStatus();
+
+		/**
+		* Prints a string, called from the script
+		*
+		* @param string
+		*   Pointer to the string to print.
+		*/
+		void 
+		printString(TString* string);
+
+		/**
+		* Prints the value of a variable, called from the script
+		*
+		* @param gen
+		*   Pointer to the value of the variable.
+		*/
+		static void 
+		logValue(asIScriptGeneric* gen);
 
 		UInt32 lastStackLevel;
 	private:

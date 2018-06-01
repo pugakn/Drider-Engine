@@ -3,7 +3,6 @@
 #include <dr_time.h>
 
 #include "dr_script_engine.h"
-#include "scriptstdstring.h"
 #include "dr_script_custom_string.h"
 #include <vector>
 #include <dr_context_manager.h>
@@ -15,8 +14,7 @@ unsigned long g_timeout;
 
 
 void stringPrint_g(asIScriptGeneric* gen) {
-	TString *str = (TString*)gen->GetArgAddress(0);
-	std::wcout << *str;
+	
 }
 
 ScriptEngine::ScriptEngine() {
@@ -31,7 +29,7 @@ ScriptEngine::createEngine() {
 		addScriptLog(_T("Failed to create script engine"), asMSGTYPE_ERROR);
 		return -1;
 	}
-
+	Debug = new ScriptDebug(this);
 	m_scriptEngine->SetEngineProperty(asEP_STRING_ENCODING, 1);
 	m_scriptEngine->SetMessageCallback(asMETHOD(ScriptEngine, messageCallback),
 																		 this, 
@@ -39,10 +37,15 @@ ScriptEngine::createEngine() {
 	// Register string type
 	registerTString(m_scriptEngine);
 	// Register the functions that the scripts will be allowed to use.
+
 	result = m_scriptEngine->RegisterGlobalFunction("void Print(TString &in)",
-																									asFUNCTION(stringPrint_g), 
+																									asMETHOD(ScriptDebug, printString),
+																									asCALL_THISCALL_ASGLOBAL,
+																									&Debug);
+	result = m_scriptEngine->RegisterGlobalFunction("void Log(? &in)", 
+																									asFUNCTION(ScriptDebug::logValue), 
 																									asCALL_GENERIC);
-	Debug = new ScriptDebug(this);
+
 	return result;
 }
 
