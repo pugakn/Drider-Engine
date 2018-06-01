@@ -24,11 +24,10 @@ FS(PS_INPUT input) : SV_TARGET0 {
   float2 sampleCoords;
   
   [unroll]
-  for (int i = -6; i <= 6; i++) {
+  for (int i = -6; i <= 6; ++i) {
     sampleCoords = float2(uv.x, uv.y + (i * offset));
     shadowVal += inTex.Sample(SS, sampleCoords.xy).x * BlurWeights[i + 6];
   }
   
   return float4(shadowVal, shadowVal, shadowVal, 1.0f);
-  return inTex.Sample(SS, uv);
 }

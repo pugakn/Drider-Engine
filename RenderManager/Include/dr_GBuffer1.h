@@ -7,31 +7,31 @@
 #include <dr_sample_state.h>
 namespace driderSDK {
 
-struct GBuffer1InitData : PassInitData {
+struct GBufferInitData : PassInitData {
 };
 
-struct GBuffer1DrawData : PassDrawData {
+struct GBufferDrawData : PassDrawData {
   std::shared_ptr<Camera> activeCam;
   SceneGraph::QueryResult* models;
   GFXShared<RenderTarget> OutRt;
   GFXShared<DepthStencil> dsOptions;
 };
 
-class GBuffer1Pass : public RenderPass {
+class GBufferPass : public RenderPass {
  public:
   /*
   TEST::testName
   
   Description.
   */
-   GBuffer1Pass();
+   GBufferPass();
 
   /*
   TEST::testName
   
   Description.
   */
-  ~GBuffer1Pass();
+  ~GBufferPass();
 
   /*
   TEST::testName
@@ -53,10 +53,11 @@ class GBuffer1Pass : public RenderPass {
 
  private:
   struct CBuffer {
-    Matrix4x4 WVP;
-    Matrix4x4 WVPTrans;
+    Matrix4x4 World;
     Matrix4x4 WorldView;
+    Matrix4x4 WVP;
     Matrix4x4 Bones[200];
+    Vector4D CameraInfo; //x: aspect ratio; y: fov; z: near plane; w: far plane
   };
 
   CBuffer CB;

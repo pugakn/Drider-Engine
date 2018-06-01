@@ -1,0 +1,23 @@
+void MontiBehavior::SetGameObject(GameObject@)
+
+Temps: 
+
+Variables: 
+ -001: GameObject@ object
+ 000: MontiBehavior this
+
+
+- 8,3 -
+               VarDecl  0
+    0   0 *    SUSPEND
+    1   0 *    VAR      v-1
+    2   1 *    PshVPtr  v0
+    3   2 *    ADDSi    v24, 134217745
+    5   2 *    GETOBJREF 1
+    6   2 *    REFCPY   0xdb62420
+    8   1 *    PopPtr
+- 9,3 -
+    9   0 *    SUSPEND
+            0:
+   10   0 *    FREE     v-1, 230040608
+   12   0 *    RET      2

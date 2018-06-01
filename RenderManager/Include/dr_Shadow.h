@@ -13,7 +13,6 @@ struct ShadowInitData : PassInitData {
 
 struct ShadowDrawData : PassDrawData {
   std::shared_ptr<Camera>  shadowCam;
-  Int32                    shadowIndex;
   SceneGraph::QueryResult* models;
   GFXShared<RenderTarget>  OutRt;
   GFXShared<DepthStencil>  dsOptions;
@@ -42,6 +41,11 @@ class ShadowPass : public RenderPass {
   */
   void
   init(PassInitData* initData);
+
+  /*
+  */
+  void
+  recompileShader();
 
   /*
   */

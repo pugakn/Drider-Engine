@@ -1,31 +1,38 @@
 #include "dr_network_manager.h"
-
-#include <dr_logger.h>
-
-#ifdef DR_PLATFORM_WINDOWS
-#pragma comment(lib,"ws2_32.lib") //Winsock Library
-#include <WinSock2.h>
-#endif
+#include <dr_string_utils.h>
+//#include <dr_logger.h>
 
 namespace driderSDK {
 
-void 
-NetworkManager::onStartUp() {
-  #ifdef DR_PLATFORM_WINDOWS
-  WSADATA wsadata;
-  auto status = WSAStartup(MAKEWORD(2,2), &wsadata);
+SocketHandle
+NetworkManager::createSocket(SOCKET_TYPE::E type) {
 
-  if (status != 0) {
-    Logger::addLog(_T("WSAStartup() failed!");
-  }
-  #endif
+  auto handle = socket(AF_INET, 
+                       type == SOCKET_TYPE::kUDP ? SOCK_DGRAM : SOCK_STREAM, 
+                       IPPROTO_UDP);
+  return handle;
 }
 
-void 
-NetworkManager::onShutDown() {
-  #ifdef DR_PLATFORM_WINDOWS
-  WSACleanup();
-  #endif
+bool 
+NetworkManager::isSocketValid(SocketHandle handle) {
+  return handle != getInvalidHandle();
+}
+
+void
+NetworkManager::getAddrPort(sockaddr_in address, 
+                            TString& addrStr, 
+                            UInt16& port) {
+  
+  String addr(15, '\0');
+
+  inet_ntop(AF_INET, 
+            &address.sin_addr, 
+            const_cast<char*>(addr.c_str()), 
+            addr.size());
+
+  addrStr = StringUtils::toTString(addr);
+
+  port = ntohs(address.sin_port);
 }
 
 }

@@ -1,4 +1,5 @@
-Texture2D PositionNormal : register(t0);
+Texture2D PositionLDepthTex : register(t0);
+Texture2D NormalCoC         : register(t1);
 
 SamplerState SS;
 
@@ -11,41 +12,19 @@ cbuffer ConstantBuffer {
   float4x4 VPInv;
 };
 
-static const float SampleRadio = 0.08f;
-static const float Intensity = 1.0f;
+static const float SampleRadio = 0.008f;
+static const float Intensity = 5.0f;
 static const float Scale = 1.0f;
-static const float Bias = 0.002f;
-//static const float SampleRadio = 3.00000;
-//static const float Intensity = 3.00000;
-//static const float Scale = 1.00000;
-//static const float Bias = 0.00200;
+static const float Bias = 0.2f;
 
 float3
 getPosition(in float2 uv) {
-  float x = (2.0f * uv.x) - 1.0f;
-  float y = (2.0f * (1.0f - uv.y)) - 1.0;
-  float z = PositionNormal.Sample(SS, uv).w;
-
-  float4 posView = mul(ProjectionInv, float4(x, y, z, 1.0f));
-	posView /= posView.w;
-
-  return posView.xyz;
-};
-
-float3
-getPosition(in float2 uv, in float z) {
-  float x = (2.0f * uv.x) - 1.0f;
-  float y = (2.0f * (1.0f - uv.y)) - 1.0f;
-
-  float4 posView = mul(ProjectionInv, float4(x, y, z, 1.0f));
-  posView /= posView.w;
-  
-  return posView.xyz;
+  return PositionLDepthTex.Sample(SS, uv).xyz;
 }
 
 float3
 getNormal(float2 uv) {
-  return PositionNormal.Sample(SS, uv).xyz;
+  return NormalCoC.Sample(SS, uv).xyz;
 };
 
 float3
@@ -82,9 +61,12 @@ struct PS_OUTPUT {
 	float4 SSAO : SV_TARGET0;
 };
 
-PS_OUTPUT FS(PS_INPUT input) {
+PS_OUTPUT
+FS(PS_INPUT input) {
 	PS_OUTPUT outRT;
-	
+  //outRT.SSAO = float4(1.0f, 1.0f, 1.0f, 1.0f);
+	//return outRT;
+
 	float2 uv = input.Texcoord;
 
   float3 p = getPosition(uv);
@@ -93,14 +75,15 @@ PS_OUTPUT FS(PS_INPUT input) {
 	float ao = 0.0f;
 	
 	//float rad = SampleRadio / p.z;
-	float rad = SampleRadio / abs(max(100, p.z));
+  float rad = SampleRadio;
+	//float rad = SampleRadio / abs(max(100, p.z));
 
 	static const int iterations = 4;
 	[unroll]
 	for (int i = 0; i < iterations; ++i) {
 		float2 coord1 = reflect(vec[i], r) * rad;
-		float2 coord2 = float2(coord1.x * 0.707 - coord1.y * 0.707,
-													 coord1.x * 0.707 + coord1.y * 0.707);
+		float2 coord2 = float2(coord1.x * 0.707f - coord1.y * 0.707f,
+													 coord1.x * 0.707f + coord1.y * 0.707f);
 													 
 		ao += doOclussion(uv, coord1 * 0.25f, p, n);
 		ao += doOclussion(uv, coord2 * 0.50f, p, n);
@@ -109,7 +92,7 @@ PS_OUTPUT FS(PS_INPUT input) {
 	}
 	
 	ao *= 0.0625f;
-	ao = 1.0f - ao;
+	ao  = 1.0f - ao;
 	
 	outRT.SSAO = float4(ao.rrr, 1.0f);
 	

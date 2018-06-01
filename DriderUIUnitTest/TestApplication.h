@@ -31,6 +31,8 @@ public:
   void postRender() override;
   void postDestroy() override;
 
+  void onResize() override;
+
 
 private:
   SceneEditor m_editor;

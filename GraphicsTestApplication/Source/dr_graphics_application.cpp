@@ -62,7 +62,7 @@ GraphicsApplication::postInit() {
   initScriptEngine();
   createTechniques();
   createScene();
-
+  
   Time::update();
 
   m_timer.init();
@@ -348,7 +348,9 @@ GraphicsApplication::createScene() {
 
   terrainObj->setStatic(true);
 
-  terrainObj->clone()->getTransform().setPosition({0, 0, 550});
+  terrainObj->getTransform().setPosition({0, 0, 550});
+
+  terrainObj->getTransform().setScale({10, 10, 10});
 
   auto woman = ResourceManager::getReferenceT<Model>(_T("Run.fbx"));
 
@@ -376,7 +378,7 @@ GraphicsApplication::createScene() {
     Logger::addLog(_T("----------------"));
   };
 
-  auto sc = ResourceManager::getReferenceT<ScriptCore>(_T("script1.as"));
+  /*auto sc = ResourceManager::getReferenceT<ScriptCore>(_T("script1.as"));
 
   auto scomp = womanNode->createComponent<ScriptComponent>(sc);
 
@@ -386,11 +388,11 @@ GraphicsApplication::createScene() {
 
   scomp->initScript();
 
-  scomp->start();
+  scomp->start();*/
 
   printComponents(womanNode.get());
 
-  womanNode->getTransform().setPosition({-200.f, 0, 200.f});
+  womanNode->getTransform().setPosition({-500.f, 0, 200.f});
 
   womanNode->getTransform().setScale({10.f, 10.f, 10.f});
 
@@ -398,7 +400,7 @@ GraphicsApplication::createScene() {
 
   auto ws = ResourceManager::getReferenceT<Skeleton>(walkerModel->skeletonName);
   
-  auto walkerObj = addObjectFromModel(walkerModel, _T("LE Walker"));
+  auto walkerObj = addObjectFromModel(walkerModel, _T("LE Walker 450"));
 
   auto animator = walkerObj->createComponent<AnimatorComponent>();
 
@@ -415,19 +417,21 @@ GraphicsApplication::createScene() {
   
   //walkerObj->removeComponent<AnimatorComponent>();
 
-  walkerObj->getTransform().setPosition({300, 0, 200});
+  walkerObj->getTransform().setPosition({300, 0, 450});
 
-  auto clone1 = walkerObj->clone();
+  auto clone1 = walkerObj->createInstance();
+  *clone1 = *walkerObj;
 
-  clone1->getTransform().setPosition({150, 0, 200});
+  clone1->getTransform().setPosition({150, 0, 300});
 
-  clone1->setName(_T("LE Walker 2"));
+  clone1->setName(_T("LE Walker 2 300"));
 
-  clone1 = walkerObj->clone();
+  auto clone2 = walkerObj->createInstance();
+  *clone2 = *walkerObj;
 
-  clone1->getTransform().setPosition({450, 0, 200});
+  clone2->getTransform().setPosition({450, 0, 150});
 
-  clone1->setName(_T("LE Walker 3"));
+  clone2->setName(_T("LE Walker 3 150"));
   //walkerObj->getTransform().setScale({10.f, 10.f, 10.f});
     
   m_right = walkerObj.get();
@@ -439,14 +443,18 @@ GraphicsApplication::createScene() {
   std::uniform_real_distribution<float> dt_A(10, 50);
 
   for (Int32 i = 0; i < copies; ++i) {
-    auto c = walkerObj->clone();
+    auto c = walkerObj->createInstance();
+    *c = *walkerObj;
     c->getTransform().setPosition({dt(mt), 0, dt(mt)});
     c->getComponent<AnimatorComponent>()->setTime(dt_A(mt));
   }
 
-  auto copy = walkerObj->clone();
+  auto copy = walkerObj->createInstance();
+  *copy = *walkerObj;
 
   copy->getTransform().move(-300, AXIS::kX);
+  copy->getTransform().setPosition(50, AXIS::kX);
+  copy->setName(_T("Player"));
 
   auto sphereMod = ResourceManager::getReferenceT<Model>(_T("Sphere.fbx"));
 
@@ -669,7 +677,8 @@ GraphicsApplication::playerMovement() {
 
   const float velocity = 200.f;
 
-  auto direction = m_player->getTransform().getDirection();
+  auto& worldMat = m_player->getTransform().getMatrix();
+  auto direction = Vector3D(worldMat.vector2);
   auto left = direction.cross({0,1,0});
 
   direction.y = 0;
@@ -727,6 +736,12 @@ GraphicsApplication::playerRotation() {
  
   m_cameraHolder->getTransform().setRotation({rx, ry, 0});
   m_player->getTransform().setRotation({0, ry, 0});
+}
+
+
+// Inherited via Application
+void 
+GraphicsApplication::onResize() {
 }
 
 }

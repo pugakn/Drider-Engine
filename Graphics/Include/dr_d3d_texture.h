@@ -83,6 +83,12 @@ class DR_GRAPHICS_EXPORT D3DTexture : public Texture
   getMemoryBuffer(const DeviceContext& deviceContext, std::vector<byte>& buff) override;
 
   /**
+  * 
+  */
+  void
+  setTextureNull(const DeviceContext& deviceContext) const override;
+
+  /**
   * TEST::
   *
   * Set the texture to the shader

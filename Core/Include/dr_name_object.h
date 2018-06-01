@@ -6,7 +6,7 @@ namespace driderSDK {
 
 class DR_CORE_EXPORT NameObject
 {
-public:
+ public:
 
   NameObject() = default;
 
@@ -14,7 +14,7 @@ public:
 
   NameObject(NameObject&&) = default;
 
-  NameObject(const TString& _name);
+  explicit NameObject(const TString& _name);
 
   NameObject& operator=(const NameObject&) = default;
 
@@ -30,7 +30,7 @@ public:
 
   virtual const TString& 
   getName() const;
-private:
+ private:
   TString m_name;
 };
 

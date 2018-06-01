@@ -7,8 +7,9 @@
 #include "dr_script_core.h"
 #include <dr_gameObject.h>
 
-namespace driderSDK {
+#include <dr_graph.h>
 
+namespace driderSDK {
 
 ScriptComponent::ScriptComponent(GameObject &gameObject,
                                  std::shared_ptr<ScriptCore> _script) 

@@ -1,90 +1,158 @@
 #pragma once
 #include "dr_script_prerequisites.h"
+#include <vector>
+//#include <unordered_map>
 
 namespace driderSDK {
+
+	class ScriptEngine;
+
+	namespace DebugCommands {
+
+		enum E 
+		{
+			CONTINUE,
+			STEP_OVER,
+			STEP_IN,
+			STEP_OUT
+		};
+
+	}
 
 	/**
 	*  Class containing debug functions for the script engine class.
 	*
 	* Sample usage:
 	*	ScriptEngine scriptMgr;
-	* scriptMgr->Debug.setBreakpoint();
+	* scriptMgr->Debug.printToLogger(_T("Test log from debug"));
 	*/
 	class DR_SCRIPT_EXPORT ScriptDebug 
 	{
-		class asIScriptContext;
-		//class ScriptEngine;
+
+		struct BreakPoint
+		{
+			BreakPoint(TString _section,
+								 UInt32 _line) : section(_section), line(_line) {}
+			TString section;
+			UInt32 line;
+
+		};
 
 	public:
 
 		/**
-		*  Constructor
+		* Constructor
 		*
 		*/
-		ScriptDebug();
+		ScriptDebug(ScriptEngine* engine);
 
 		/**
-		*  Default destructor
+		* Default destructor
 		*
 		*/
 		~ScriptDebug();
 
 		/**
-		*  Adds a breakpoint into the code.
+		* Adds a breakpoint into the code.
 		*
 		*/
 		void setBreakPoint();
 
 		/**
-		*  Checks for a breakpoint.
+		* Removes a breakpoint from the code.
+		*
+		*/
+		bool removeBreakPoint(Int32 line, TString& section);
+
+		/**
+		* Takes the input and interpret it's action
+		*
+		*  @param input
+		*   String containing the action
+		*/
+		void interpretInput(TString& input);
+
+		/**
+		* Sets a command to the debugger
+		*
+		*  @param command
+		*   Command to set from an enumerator.
+		*/
+		void setCommand(DebugCommands::E command);
+
+		/**
+		* Gets the current command of the debugger.
 		*
 		*  @return
-		*   true if it found a breakpoint.
+		*   Active command
+		*/
+		DebugCommands::E getCommand();
+
+		/**
+		* Checks for a breakpoint.
+		*
+		* @return
+		*   True if it found a breakpoint.
 		*/
 		bool checkBreakPoint();
 
 		/**
-		*  Print all the Callstack using the Logger.
+		* Removes all Breakpoints.
+		*
+		*/
+		void clearBreakPoints();
+
+		/**
+		* Print all the Callstack using the Logger.
 		*
 		*/
 		void printCallStack();
 
 		/**
-		*  Print all the local variables using the Logger.
+		* Print all the local variables using the Logger.
 		*
 		*/
 		void printLocalVariables();
 
 		/**
-		*  Print all the global variables using the Logger.
+		* Print all the global variables using the Logger.
 		*
 		*/
 		void printGlobalVariables();
 
 		/**
-		*  x
+		* Calls the Logger and adds a new log.
 		*
-		*/
-		void printValue();
-
-		/**
-		*  Calls the Logger and adds a new log.
-		*
-		*  @param log
+		* @param log
 		*   String containing the message.
 		*/
-		void printToLogger(TString& log);
+		void printToLogger(TString log);
 
 		/**
-		*  Function to be called for each statement executed, called by AngelScript.
+		* Interprets the value of the object
 		*
-		*  @param scriptContext
-		*   pointer to a script context.
+		*  @param value
+		*   pointer to the value to interpret.
+		*
+		*  @param typeId
+		*   Int from an enumerator indicating the type of value.
+		*
+		*  @return
+		*   TString containing the interpreted value.
 		*/
-		void debugLineCallback(asIScriptContext* scriptContext);
+		TString interpretValue(void* value, Int32 typeId);
 
+		/**
+		* Prints the Garbage Collector's status.
+		*
+		*/
+		void printGarbageStatus();
+
+		UInt32 lastStackLevel;
 	private:
-		//ScriptEngine* pScriptEngine;
+		ScriptEngine* pScriptEngine;
+		std::vector<BreakPoint> m_breakpoints;
+		DebugCommands::E m_command;
 	};
 
 }

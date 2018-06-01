@@ -40,7 +40,7 @@ class DR_MATH_EXPORT Ray
   *  The direction of the ray
   *
   */
-  Ray(Vector3D _origin, Vector3D _direction)
+  Ray(const Vector3D& _origin, const Vector3D& _direction)
     : origin(_origin),
 	    direction(_direction)
   {}

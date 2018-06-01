@@ -7,6 +7,8 @@
 #include "dr_fmod_dsp.h"
 #include "dr_fmod_channelGroup.h"
 
+#include "dr_time.h"
+
 namespace driderSDK {
 
 void
@@ -26,18 +28,18 @@ FMODSoundAPI::init() {
   dspLowPass->setBypass(true);
 
   channel1 = new FMODChannel;
-  Vector3D pos(-100.f, 0.f, 0.f);
+  pos = Vector3D(-100.f, 0.f, 0.f);
   Vector3D vel(0.f,0.f,0.f);
   channel1->set3DAttributes(&pos, &vel);
                             
   channel2 = new FMODChannel;
   channel3 = new FMODChannel;
-  channel4 = new FMODChannel;
- 
+  channel4 = new FMODChannel; 
 }
 
 void
 FMODSoundAPI::update() {
+  
   system->update();
 }
 
@@ -46,5 +48,10 @@ FMODSoundAPI::destroy() {
 
 }
 
+void
+FMODSoundAPI::selectChannel(Int32 indexChannel) {
+  
+}
+  
 
 }

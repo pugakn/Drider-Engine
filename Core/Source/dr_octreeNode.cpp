@@ -45,13 +45,13 @@ OctreeNode::buildTree(OctreeNode& node) {
   node.planes.push_back(Plane(node.boundingRegion.center, pointUp, pointBack));
   node.planes.push_back(Plane(node.boundingRegion.center, pointLeft, pointUp));
 
-  Int32 counter = 0;
+  //Int32 counter = 0;
   while (!node.objectsToReview.empty()) {
     Face temp = node.objectsToReview.front();
     node.objectsToReview.pop();
 
     bool flag = true;
-    Int32 counterChilds = 0;
+    SizeT counterChilds = 0;
     while (counterChilds < node.childs.size())
     {
       OctreeNode* child = node.childs[counterChilds];

@@ -112,8 +112,8 @@ createList(std::vector<Face>* faces) {
 		  idsRenderMesh.push_back(tempInfo);
 		  ptrIdsRenderMesh = &idsRenderMesh.back();
 	  }
-	  Int32 indexVertex;
-	  Int32 indexIdVertex;
+	  SizeT indexVertex;
+	  //Int32 indexIdVertex;
 
 	  for (indexVertex = 0;
 		     indexVertex < face.vertices.size();

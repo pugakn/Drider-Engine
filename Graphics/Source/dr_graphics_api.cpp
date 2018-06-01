@@ -18,16 +18,13 @@
 #include "dr_d3d_device_context.h"
 #endif
 namespace driderSDK {
+
 void 
-GraphicsAPI::init(UInt32 w, UInt32 h, void * hwnd, DR_GRAPHICS_API::E api)
-{
-  GFXUnique<D3DTexture> backBufferTexture;
+GraphicsAPI::init(UInt32 w, UInt32 h, void* hwnd, DR_GRAPHICS_API::E api) {
   if (api == DR_GRAPHICS_API::D3D11) {
 #if DR_PLATFORM  == DR_PLATFORM_WINDOWS
     m_device = dr_gfx_unique<Device>(new D3DDevice);
     m_deviceContext = dr_gfx_unique<DeviceContext>(new D3DDeviceContext);
-    /* WHUT */
-    backBufferTexture = dr_make_unique<D3DTexture>();
 #else
     exit(666);
 #endif
@@ -35,12 +32,7 @@ GraphicsAPI::init(UInt32 w, UInt32 h, void * hwnd, DR_GRAPHICS_API::E api)
   else {
     exit(666);
   }
-  DrTextureDesc backDesc;
-  backDesc.width = w;
-  backDesc.height = h;
-  backDesc.pitch = w * 4;
-  backDesc.Format = DR_FORMAT::kR8G8B8A8_UNORM;
-  backBufferTexture->setDescriptor(backDesc);
+
   m_hwnd = hwnd;
   m_device->createDeviceAndDeviceContext(*m_deviceContext);
 
@@ -64,17 +56,8 @@ GraphicsAPI::init(UInt32 w, UInt32 h, void * hwnd, DR_GRAPHICS_API::E api)
     auto ds = m_device->createDepthStencil(depthTextureDesc);
     m_depthStencilView = dr_gfx_unique(ds);
   }
-  m_swapChain->getBackBuffer(*backBufferTexture);
-  {
-    std::vector<Texture*> texturesVec;
-    texturesVec.push_back(backBufferTexture.get());
-    auto bbRT = m_device->createRenderTarget(texturesVec);
 
-    m_backBufferView = dr_gfx_unique(bbRT);
-  }
-
-
-  m_backBufferView->set(*m_deviceContext, *m_depthStencilView);
+  m_swapChain->getBackBufferRT().set(*m_deviceContext, *m_depthStencilView);
 
   DrRasterizerDesc rasterizerStateDesc;
   rasterizerStateDesc.fillMode = DR_FILL_MODE::kSolid;
@@ -157,28 +140,46 @@ GraphicsAPI::init(UInt32 w, UInt32 h, void * hwnd, DR_GRAPHICS_API::E api)
     m_depthStencilStates[DR_DEPTH_STENCIL_STATES::kDepthR] = dr_gfx_unique(bd);
   }
 }
-void 
-GraphicsAPI::destroy()
-{
-}
+
 void
-GraphicsAPI::clear()
-{
+GraphicsAPI::destroy() {
+}
+
+void
+GraphicsAPI::clear() {
   float rgba[4];
   rgba[0] = 0.25f;
   rgba[1] = 0.35f;
   rgba[2] = 0.45f;
   rgba[3] = 1.0f;
-  m_deviceContext->clearRenderTargetView(*m_backBufferView, rgba);
+  m_deviceContext->clearRenderTargetView(m_swapChain->getBackBufferRT(), rgba);
   m_deviceContext->clearDepthStencilView(*m_depthStencilView,
-    DR_DEPTH_STENCIL_CLEAR_TYPE::kClearDepth,
-    1.0f, 0);
+                                         DR_DEPTH_STENCIL_CLEAR_TYPE::kClearDepth,
+                                         1.0f,
+                                         0);
 }
-void GraphicsAPI::swapBuffers()
-{
+
+void
+GraphicsAPI::swapBuffers() {
   m_swapChain->swapBuffers();
 }
-  Device&
+
+void
+GraphicsAPI::resizeBackBuffer(UInt32 w, UInt32 h) {
+  m_swapChain->resize(*m_device, w,h);
+  m_depthStencilView.reset();
+  DrDepthStencilDesc depthTextureDesc;
+  depthTextureDesc.bindFlags = DR_BIND_FLAGS::DEPTH_STENCIL | DR_BIND_FLAGS::SHADER_RESOURCE;
+  depthTextureDesc.width = w;
+  depthTextureDesc.height = h;
+  depthTextureDesc.Format = DR_FORMAT::kD24_UNORM_S8_UINT;
+  {
+    auto ds = m_device->createDepthStencil(depthTextureDesc);
+    m_depthStencilView = dr_gfx_unique(ds);
+  }
+}
+
+Device&
 GraphicsAPI::getDevice() {
   return *GraphicsDriver::API().m_device;
 }
@@ -195,7 +196,7 @@ GraphicsAPI::getSwapChain() {
 
 RenderTarget&
 GraphicsAPI::getBackBufferRT() {
-  return *GraphicsDriver::API().m_backBufferView;
+  return GraphicsDriver::API().m_swapChain->getBackBufferRT();
 }
 
 DepthStencil&
@@ -214,16 +215,14 @@ GraphicsAPI::getWindowHandle() {
   return GraphicsDriver::API().m_hwnd;
 }
 
-BlendState & GraphicsAPI::getBlendState(DR_BLEND_STATES::E state)
-{
+BlendState&
+GraphicsAPI::getBlendState(DR_BLEND_STATES::E state) {
   return *GraphicsDriver::API().m_blendSStates[state];
 }
 
-DepthStencilState & GraphicsAPI::getDepthStencilState(DR_DEPTH_STENCIL_STATES::E state)
-{
+DepthStencilState&
+GraphicsAPI::getDepthStencilState(DR_DEPTH_STENCIL_STATES::E state) {
   return *GraphicsDriver::API().m_depthStencilStates[state];
 }
-
-
 
 }

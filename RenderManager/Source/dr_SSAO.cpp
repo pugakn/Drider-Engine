@@ -19,6 +19,7 @@ SSAOPass::~SSAOPass() {
 
 void
 SSAOPass::init(PassInitData* initData) {
+  SSAOInitData* data = static_cast<SSAOInitData*>(initData);
   Device& device = GraphicsAPI::getDevice();
 
   m_vsFilename = _T("SSAO_vs.hlsl");
@@ -33,7 +34,7 @@ SSAOPass::init(PassInitData* initData) {
   m_constantBuffer = dr_gfx_unique((ConstantBuffer*)device.createBuffer(bdesc));
 
   DrSampleDesc SSdesc;
-  SSdesc.Filter = DR_TEXTURE_FILTER::kMIN_MAG_MIP_LINEAR;
+  SSdesc.Filter = DR_TEXTURE_FILTER::kMIN_MAG_LINEAR_MIP_POINT;
   SSdesc.maxAnisotropy = 16;
   SSdesc.addressU = DR_TEXTURE_ADDRESS::kWrap;
   SSdesc.addressV = DR_TEXTURE_ADDRESS::kWrap;
@@ -46,6 +47,8 @@ SSAOPass::draw(PassDrawData* drawData) {
   SSAODrawData* data = static_cast<SSAODrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
+  data->OutRt->getTexture(0).setTextureNull(dc);
+  data->OutRt->setRTNull(dc);
   data->OutRt->set(dc, *data->dsOptions);
 
   m_vertexShader->set(dc);
@@ -77,6 +80,7 @@ SSAOPass::draw(PassDrawData* drawData) {
   (data->dsOptions)->clear(dc, 1, 0);
 
   data->InRt->getTexture(0).set(dc, 0);
+  data->InRt->getTexture(1).set(dc, 1);
 
   auto screenQuadModel = ResourceManager::getReferenceT<Model>(_T("ScreenAlignedQuad.3ds"));
   if (screenQuadModel) {

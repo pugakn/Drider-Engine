@@ -15,8 +15,8 @@ unsigned long g_timeout;
 
 
 void stringPrint_g(asIScriptGeneric* gen) {
-	String *str = (String*)gen->GetArgAddress(0);
-	std::wcout << StringUtils::toTString(*str);
+	TString *str = (TString*)gen->GetArgAddress(0);
+	std::wcout << *str;
 }
 
 ScriptEngine::ScriptEngine() {
@@ -36,29 +36,21 @@ ScriptEngine::createEngine() {
 	m_scriptEngine->SetMessageCallback(asMETHOD(ScriptEngine, messageCallback),
 																		 this, 
 																		 asCALL_THISCALL);
-
-
 	// Register string type
-
-	RegisterStdString(m_scriptEngine);
-	//RegisterTString(m_scriptEngine);
-
+	registerTString(m_scriptEngine);
 	// Register the functions that the scripts will be allowed to use.
-	result = m_scriptEngine->RegisterGlobalFunction("void Print(string &in)",
+	result = m_scriptEngine->RegisterGlobalFunction("void Print(TString &in)",
 																									asFUNCTION(stringPrint_g), 
 																									asCALL_GENERIC);
-
-	Debug = new ScriptDebug;
+	Debug = new ScriptDebug(this);
 	return result;
 }
 
 Int8
 ScriptEngine::configurateEngine(ContextManager *ctx) {
   Int8 result = 0;
-
   // Register the functions for controlling the script threads, e.g. sleep
   ctx->registerThreadSupport(m_scriptEngine);
-
   return result;
 }
 
@@ -99,10 +91,12 @@ ScriptEngine::getScriptObject(TString scriptName,
   asITypeInfo* type = mod->GetTypeInfoByDecl(realName.c_str());
 
   // Get the factory function from the object type
-  String path = realName + " @"
-                + realName + "()";
+  String path = realName + " @" + realName + "()";
   asIScriptFunction *factory = type->GetFactoryByDecl(path.c_str());
 
+	m_scriptContext->SetLineCallback(asMETHOD(ScriptEngine, debugLineCallback), 
+																	 this, 
+																	 asCALL_THISCALL);
   // Prepare the context to call the factory function
   m_scriptContext->Prepare(factory);
   // Execute the call
@@ -189,6 +183,42 @@ ScriptEngine::lineCallback(asIScriptContext* scriptContext) {
 }
 
 void 
+ScriptEngine::debugLineCallback(asIScriptContext* scriptContext) {
+
+	if (scriptContext->GetState() != asEXECUTION_ACTIVE) {
+		return;
+	}
+
+	if (Debug->getCommand() == DebugCommands::CONTINUE) {
+		if (!Debug->checkBreakPoint()) {
+			return;
+		}
+	}
+	if (Debug->getCommand() == DebugCommands::STEP_IN) {
+		Debug->checkBreakPoint();
+	}
+	if (Debug->getCommand() == DebugCommands::STEP_OUT) {
+		if (m_scriptContext->GetCallstackSize() >= Debug->lastStackLevel) {
+			if (!Debug->checkBreakPoint()) {
+				return;
+			}
+		}
+	}
+	if (Debug->getCommand() == DebugCommands::STEP_OVER) {
+		if (m_scriptContext->GetCallstackSize() > Debug->lastStackLevel) {
+			if (!Debug->checkBreakPoint()) {
+				return;
+			}
+		}
+	}
+
+	// Function to recive inputs
+	TString input;
+	Debug->interpretInput(input);
+
+}
+
+void 
 ScriptEngine::messageCallback(const asSMessageInfo* scriptMessage) {
 
 	Int8 row = scriptMessage->row, col = scriptMessage->col;
@@ -206,14 +236,16 @@ ScriptEngine::messageCallback(const asSMessageInfo* scriptMessage) {
 void
 ScriptEngine::addScriptLog(const TString& log, int type) {
 
+	const TString signature = _T("[ScriptEngine] ");
+
 	if (type == asMSGTYPE_WARNING) {
-    Logger::instancePtr()->addWarning(__FILE__, __LINE__,  _T("[ScriptEngine] ") + log);
+		Logger::instancePtr()->addWarning(__FILE__, __LINE__, signature + log);
 	}
 	else if (type == asMSGTYPE_INFORMATION) {
-    Logger::instancePtr()->addLog(_T("[ScriptEngine] ") + log);
+    Logger::instancePtr()->addLog(signature + log);
 	}
 	else if (type == asMSGTYPE_ERROR) {
-    Logger::instancePtr()->addError(__FILE__, __LINE__,  _T("[ScriptEngine] ") + log);
+    Logger::instancePtr()->addError(__FILE__, __LINE__, signature + log);
 	}
 }
 

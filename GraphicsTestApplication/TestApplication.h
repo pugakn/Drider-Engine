@@ -5,6 +5,8 @@
 #include <dr_util_prerequisites.h>
 #include <dr_timer.h>
 
+#include <unordered_map>
+
 namespace driderSDK {
 
 class GameObject;
@@ -59,27 +61,24 @@ class TestApplication : public Application
   void
   destroyModules();
 
-  Int32 m_currCam;
-  TString m_camNames[2];
+  private:
+    Int32 m_currCam;
+    TString m_camNames[2];
 
-  std::shared_ptr<GameObject> m_player;
+    std::shared_ptr<GameObject> m_player;
 
-  std::unique_ptr<Technique> m_staticTech;
-  std::unique_ptr<Technique> m_animTech;
+    std::unique_ptr<Technique> m_staticTech;
+    std::unique_ptr<Technique> m_animTech;
 
-  ScriptComponent *playerScript;
+    std::unordered_map<TString, ScriptComponent*> m_scripts;
 
-  SoundExtraInfo *extraInfo;
+    SoundExtraInfo *extraInfo;
 
-  //DrSound *sound1;
-  //DrSound *sound2;
-  //DrChannel *channel;
-  
-  /*FMOD::System     *system;
-  FMOD::Sound      *sound1;
-  FMOD::Channel    *channel = 0;
-  FMOD_RESULT       result;
-  unsigned int      version;*/
+    GameObject* m_root;
+
+
+    // Inherited via Application
+    virtual void onResize() override;
 
 };
 

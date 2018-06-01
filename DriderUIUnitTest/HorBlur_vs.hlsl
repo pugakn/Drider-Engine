@@ -14,10 +14,10 @@ struct PS_OUTPUT {
 };
 
 PS_OUTPUT
-VS(PS_INPUT input){
+VS(PS_INPUT input) {
   PS_OUTPUT psOut;
   
-  psOut.Position  = input.Position;
+  psOut.Position   =  input.Position;
   psOut.Position.x = -psOut.Position.x;
 
   psOut.Texcoord  = 1.0f - input.Texcoord;

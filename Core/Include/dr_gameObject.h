@@ -14,6 +14,9 @@
 #include "dr_enableObject.h"
 #include "dr_name_object.h"
 
+#include <dr_export_script.h>
+#include <..\..\Script\Include\dr_script_engine.h>
+
 namespace driderSDK {
 
 class GameComponent;
@@ -23,6 +26,10 @@ class DR_CORE_EXPORT ComponentPartition
  public:
   bool operator()(const std::unique_ptr<GameComponent>& l) const;
 };
+
+class GameObject;
+
+GameObject* Ref_GameObject();
 
 class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject>,  
                                   public EnableObject,
@@ -36,13 +43,16 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   using ComponentPtr = std::unique_ptr<GameComponent>;
   using ComponentsList = std::vector<ComponentPtr>;
 
+  //Int32 refCount;
+
   GameObject(const TString& name = _T(""));
 
-  virtual ~GameObject();
-  
-  GameObject(const GameObject&) = delete;
+  GameObject(const GameObject& other);
 
-  GameObject& operator=(const GameObject&) = delete;
+  virtual ~GameObject();
+
+  bool
+  operator==(GameObject&);
   
   /*void
   init();*/
@@ -55,9 +65,6 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
 
   void
   destroy();
-
-  SharedGameObj
-  clone(bool addToParent = true);
   
   virtual SharedGameObj
   createInstance();
@@ -109,8 +116,8 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   * Gets the frist component of the specified type in the template parameter.
   *
   * @return
-  *  If any of the components matches the specified type it'll return 
-  *  a pointer to the component, nullptr otherwise.
+  *   If any of the components matches the specified type it'll return 
+  *   a pointer to the component, nullptr otherwise.
   */
   template<class T> 
   T* 
@@ -261,6 +268,12 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   findNode(const TString& nodeName);
 
   /**
+  * Gets GameObject*
+  */
+  GameObject* 
+  findObject(const TString& nodeName);
+
+  /**
   * Gets the number of children.
   * 
   * @return
@@ -277,6 +290,48 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
 
   bool
   changed() const;
+  
+  void kill() {
+    if(auto parent = getParent()) {
+      parent->removeChild(shared_from_this());
+      //m_isStatic = true;
+    }
+  }
+
+  GameObject&
+  operator=(const GameObject& ref);
+
+  static BEGINING_REGISTER(GameObject, 0, asOBJ_REF | asOBJ_NOCOUNT)
+
+  result = REGISTER_REF_NOCOUNT(GameObject)
+
+  //Register functions
+  result = REGISTER_FOO(GameObject,
+                        "GameObject@ findObject(const TString& in)",
+                        asMETHODPR(GameObject, findObject, (const TString&), GameObject*))
+
+  result = REGISTER_FOO(GameObject, 
+                        "Transform& getTransform()", 
+                        asMETHODPR(GameObject, getTransform, (), Transform&))
+
+  result = REGISTER_FOO(GameObject,
+                        "const TString& getTag()",
+                        asMETHODPR(GameObject, getTag, () const, const TString&))
+
+  result = REGISTER_FOO(GameObject,
+                        "void setTag(const TString& in)",
+                        asMETHODPR(GameObject, setTag, (const TString&), void))
+
+  //Register operators
+  result = REGISTER_OP(GameObject, operator=, opAssign, const GameObject&, GameObject&, "GameObject@", in)
+
+  END_REGISTER 
+
+ // Private functions only use to scripting
+ private:
+  GameObject*
+  getChildByIndex(Int32 index);
+
  private:
 
   friend GameComponent;
@@ -295,7 +350,7 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   removeComponentP(const TString& compName);
 
   virtual void
-  copyData(SharedGameObj other){}
+  copyData(SharedGameObj other) const {}
 
   virtual void
   updateImpl(){}

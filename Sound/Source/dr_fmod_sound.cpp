@@ -19,11 +19,6 @@ FMODSound::setChannel(DrChannel **channel){
   m_Channel = reinterpret_cast<FMOD::Channel**>(channel);
 }
 
-FMOD::Sound *
-FMODSound::get() {
-  return fmodSound;
-}
-
 void*
 FMODSound::getReference() {
   return fmodSound;
@@ -32,6 +27,11 @@ FMODSound::getReference() {
 void**
 FMODSound::getObjectReference() {
   return reinterpret_cast<void**>(&fmodSound);
+}
+
+DrSound*
+FMODSound::get() {
+  return reinterpret_cast<DrSound*>(fmodSound);
 }
 
 void

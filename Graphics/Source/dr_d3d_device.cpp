@@ -40,10 +40,16 @@ namespace driderSDK {
 D3DDevice::createDeviceAndDeviceContext(DeviceContext& deviceContext) {
   D3D_FEATURE_LEVEL lvl = D3D_FEATURE_LEVEL_11_0;
   D3D_FEATURE_LEVEL lvlRet = D3D_FEATURE_LEVEL_11_0;
+  
+  UInt32 flags = 0;
+#if DR_DEBUG_MODE
+  flags |= D3D11_CREATE_DEVICE_DEBUG;
+#endif
+  
   if (D3D11CreateDevice(0,
     D3D_DRIVER_TYPE_HARDWARE,
     0,
-    0,
+    flags,
     &lvl,
     1,
     D3D11_SDK_VERSION,

@@ -85,7 +85,7 @@ InputManager::onShutDown() {
   
   m_objects.clear();
 
-  m_manager->destroyInputSystem(m_manager);
+  OIS::InputManager::destroyInputSystem(m_manager);
 
   m_mouse.reset();
   m_keyboard.reset();
@@ -97,7 +97,7 @@ InputManager::registerMouse() {
   
   OIS::Object* object = m_manager->createInputObject(OIS::OISMouse, true);
   
-  auto mouseOIS = reinterpret_cast<OIS::Mouse*>(object);
+  auto mouseOIS = static_cast<OIS::Mouse*>(object);
 
   mouseOIS->getMouseState().width = 4096;
   mouseOIS->getMouseState().height = 4096;
@@ -116,7 +116,7 @@ InputManager::registerKeyboard() {
 
   OIS::Object* object = m_manager->createInputObject(OIS::OISKeyboard, true);
 
-  auto keyboardOIS = reinterpret_cast<OIS::Keyboard*>(object);
+  auto keyboardOIS = static_cast<OIS::Keyboard*>(object);
 
   m_keyboard = dr_make_unique<Keyboard>(Keyboard::Pass{});
 
@@ -130,12 +130,12 @@ InputManager::registerKeyboard() {
 void InputManager::registerJoysticks() {
 
   Int32 joysticksCount = m_manager->getNumberOfDevices(OIS::Type::OISJoyStick);
-
+  
   for (Int32 i = 0; i <joysticksCount; ++i) {
 
     OIS::Object* object = m_manager->createInputObject(OIS::OISJoyStick, true);
 
-    auto joystickOIS = reinterpret_cast<OIS::JoyStick*>(object);
+    auto joystickOIS = static_cast<OIS::JoyStick*>(object);
 
     m_objects.push_back(object);
 

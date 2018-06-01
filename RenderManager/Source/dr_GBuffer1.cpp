@@ -10,14 +10,15 @@
 
 namespace driderSDK {
 
-GBuffer1Pass::GBuffer1Pass() {
+GBufferPass::GBufferPass() {
 }
 
-GBuffer1Pass::~GBuffer1Pass() {
+GBufferPass::~GBufferPass() {
 }
 
 void
-GBuffer1Pass::init(PassInitData* initData) {
+GBufferPass::init(PassInitData* initData) {
+  GBufferInitData* data = static_cast<GBufferInitData*>(initData);
   Device& device = GraphicsAPI::getDevice();
 
   m_vsFilename = _T("GBuffer1_vs.hlsl");
@@ -41,10 +42,12 @@ GBuffer1Pass::init(PassInitData* initData) {
 }
 
 void
-GBuffer1Pass::draw(PassDrawData* drawData) {
-  GBuffer1DrawData* data = static_cast<GBuffer1DrawData*>(drawData);
+GBufferPass::draw(PassDrawData* drawData) {
+  GBufferDrawData* data = static_cast<GBufferDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
+  data->OutRt->getTexture(0).setTextureNull(dc);
+  data->OutRt->setRTNull(dc);
   data->OutRt->set(dc, *data->dsOptions);
   
   m_vertexShader->set(dc);
@@ -63,7 +66,14 @@ GBuffer1Pass::draw(PassDrawData* drawData) {
   data->OutRt->clear(dc, clearColor);
   data->dsOptions->clear(dc, 1, 0);
 
+  CB.CameraInfo.x  = data->activeCam->getViewportWidth() /
+                     data->activeCam->getViewportHeight();
+  CB.CameraInfo.y  = data->activeCam->getFOV();
+  CB.CameraInfo.z  = data->activeCam->getNearPlane();
+  CB.CameraInfo.w  = data->activeCam->getFarPlane();
+
   for (auto& modelPair : *data->models) {
+    data->OutRt->getTexture(0).setTextureNull(dc);
     if (auto material = modelPair.mesh.material.lock()) {
       auto AlbedoTex = material->getProperty(_T("Albedo"));
       if (AlbedoTex != nullptr) {
@@ -97,10 +107,9 @@ GBuffer1Pass::draw(PassDrawData* drawData) {
       }
     }
 
+    CB.World = modelPair.world;
     CB.WorldView = modelPair.world * data->activeCam->getView();
-    CB.WVP = modelPair.world * (data->activeCam->getVP());
-    CB.WVPTrans = CB.WVP;
-    CB.WVPTrans.transpose();
+    CB.WVP = modelPair.world * data->activeCam->getVP();
   
     m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
     m_constantBuffer->set(dc);
@@ -113,7 +122,7 @@ GBuffer1Pass::draw(PassDrawData* drawData) {
 }
 /*
 void
-GBuffer1Pass::exit() {
+GBufferPass::exit() {
   m_inputLayout->release();
   m_constantBuffer->release();
 

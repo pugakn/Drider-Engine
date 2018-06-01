@@ -17,6 +17,7 @@ PostProcessingPass::~PostProcessingPass() {
 
 void
 PostProcessingPass::init(PassInitData* initData) {
+  PostProcessingInitData* data = static_cast<PostProcessingInitData*>(initData);
   Device& device = GraphicsAPI::getDevice();
 
   m_vsFilename = _T("PostProcessing_vs.hlsl");
@@ -31,7 +32,7 @@ PostProcessingPass::init(PassInitData* initData) {
   m_constantBuffer = dr_gfx_unique((ConstantBuffer*)device.createBuffer(bdesc));
 
   DrSampleDesc SSdesc;
-  SSdesc.Filter = DR_TEXTURE_FILTER::kMIN_MAG_MIP_LINEAR;
+  SSdesc.Filter = DR_TEXTURE_FILTER::kMIN_MAG_LINEAR_MIP_POINT;
   SSdesc.maxAnisotropy = 16;
   SSdesc.addressU = DR_TEXTURE_ADDRESS::kWrap;
   SSdesc.addressV = DR_TEXTURE_ADDRESS::kWrap;
@@ -44,7 +45,9 @@ PostProcessingPass::draw(PassDrawData* drawData) {
   PostProcessingDrawData* data = static_cast<PostProcessingDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
-  //GraphicsAPI::getBackBufferRT().set(dc, GraphicsAPI::getDepthStencil());
+  data->ColorBlurRT->getTexture(0).setTextureNull(dc);
+  GraphicsAPI::getBackBufferRT().setRTNull(dc);
+  GraphicsAPI::getBackBufferRT().set(dc, GraphicsAPI::getDepthStencil());
 
   m_vertexShader->set(dc);
   m_fragmentShader->set(dc);
@@ -53,44 +56,18 @@ PostProcessingPass::draw(PassDrawData* drawData) {
 
   m_inputLayout->set(dc);
 
-  CB.EyePosition = data->activeCam->getPosition();
-  CB.EyePosition.w = data->ActiveLights;
-  CB.DirLight = data->DirLight;
-  for (int lighIndex = 0; lighIndex < 128; ++lighIndex) {
-    CB.LightPosition[lighIndex] = (*data->Lights)[lighIndex].m_vec4Position;
-    CB.LightColor[lighIndex] = (*data->Lights)[lighIndex].m_vec4Color;
-  }
-
-  CB.View = data->activeCam->getView();
-  CB.ViewInverse = CB.View;
-  CB.ViewInverse.inverse();
-
-  CB.Projection = data->activeCam->getProjection();
-  CB.ProjectionInverse = CB.Projection;
-  CB.ProjectionInverse.inverse();
-
-  CB.VP = data->activeCam->getVP();
-  CB.VPInverse = CB.VP;
-  CB.VPInverse.inverse();
-
-  for (SizeT i = 0; i < 4; ++i) {
-    CB.ShadowVP[i] = (*data->ShadowCam)[i]->getVP();
-    CB.ShadowSliptDepth[i] = data->shadowDepths[i];
-  }
+  CB.Var = Vector4D(0.0f, 1.0f, 2.0f, 3.0f);
 
   m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
-
   m_constantBuffer->set(dc);
 
   dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
 
   m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kFragment);
 
-  data->Gbuffer1RT->getTexture(0).set(dc, 0); //Normal, Position
-  data->Gbuffer1RT->getTexture(1).set(dc, 1); //Albedo, Metallic
-  data->Gbuffer1RT->getTexture(2).set(dc, 2); //Emissivve, Roughness
-  data->SSAORT->getTexture(0).set(dc, 3);     //SSAO
-  data->ShadowRT->getTexture(0).set(dc, 4);   //Shadow
+  data->ColorRT->getTexture(0).set(dc, 0);
+  data->ColorBlurRT->getTexture(0).set(dc, 1);
+  data->Gbuffer->getTexture(1).set(dc, 2);
 
   auto screenQuadModel = ResourceManager::getReferenceT<Model>(_T("ScreenAlignedQuad.3ds"));
   if (screenQuadModel) {
@@ -101,7 +78,6 @@ PostProcessingPass::draw(PassDrawData* drawData) {
       dc.draw(SAQ.indices.size(), 0, 0);
     }
   }
-  GraphicsAPI::getBackBufferRT().set(dc, GraphicsAPI::getDepthStencil());
 }
 
 }

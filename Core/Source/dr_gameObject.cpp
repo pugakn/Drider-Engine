@@ -9,13 +9,24 @@
 
 namespace driderSDK {
 
+GameObject* Ref_GameObject() {
+  return new GameObject();
+}
+
 GameObject::GameObject(const TString& name)
   : NameObject(name), 
     m_tag(_T("UNTAGGED")),
     m_isStatic(false),
     m_change(false)
     DR_DEBUG_ONLY_PARAM(m_destroyed(false))
-{}
+{
+  //refCount = 1;
+}
+
+GameObject::GameObject(const GameObject& other)
+{
+  *this = other;
+}
 
 GameObject::~GameObject() {
   DR_DEBUG_ONLY(
@@ -101,47 +112,6 @@ GameObject::destroy() {
   }
 
   m_children.clear();
-}
-
-GameObject::SharedGameObj 
-GameObject::clone(bool addToParent) {
-  
-  SharedGameObj dup = createInstance();
-
-  copyData(dup);
-
-  dup->m_tag = m_tag;
-  
-  if (addToParent && getParent()) {
-    dup->m_parent = m_parent;
-    getParent()->addChild(dup);
-  }
-
-  dup->m_localTransform = m_localTransform;
-
-  dup->m_localTransform.invalidate();
-
-  dup->m_isStatic = m_isStatic;
-
-  static_cast<EnableObject&>(*dup) = *this; 
-
-  static_cast<NameObject&>(*dup) = *this;
-
-  dup->setName(dup->getName() + _T(" clone"));
-  /**
-  dup->m_finalTransform = m_finalTransform;
-   dup->m_finalTransform.invalidate();
-  **/
-  for (auto& component : m_components) {
-    component->cloneIn(*dup);
-  }
-
-  /*********************************/
-  for (auto& child : m_children) {
-    dup->addChild(child->clone(false));
-  }
-
-  return dup;
 }
 
 //void 
@@ -317,6 +287,12 @@ GameObject::findNode(const TString & nodeName) {
   return node;
 }
 
+GameObject*
+GameObject::findObject(const TString& nodeName) {
+  auto gO = findNode(nodeName);
+  return gO.get();
+}
+
 SizeT 
 GameObject::getChildrenCount() const {
   return m_children.size();
@@ -357,6 +333,59 @@ GameObject::createInstance() {
 bool 
 ComponentPartition::operator()(const std::unique_ptr<GameComponent>& l) const {
   return static_cast<bool>(dynamic_cast<ScriptComponent*>(l.get()));
+}
+
+GameObject&
+GameObject::operator=(const GameObject& ref) {
+  auto thisPtr = shared_from_this();
+
+  ref.copyData(thisPtr);
+
+  m_tag = ref.m_tag;
+
+  if (auto parent = ref.getParent()) {
+    m_parent = parent;
+    parent->addChild(thisPtr);
+  }
+
+  m_localTransform = ref.m_localTransform;
+
+  m_localTransform.invalidate();
+
+  m_isStatic = ref.m_isStatic;
+
+  static_cast<EnableObject&>(*thisPtr) = ref;
+
+  static_cast<NameObject&>(*thisPtr) = ref;
+
+  setName(ref.getName() + _T(" clone"));
+  /**
+  dup->m_finalTransform = m_finalTransform;
+  dup->m_finalTransform.invalidate();
+  **/
+  for (auto& component : ref.m_components) {
+    component->cloneIn(*thisPtr);
+  }
+
+  /*********************************/
+  for (auto& child : ref.m_children) {
+    //addChild(child->clone(false));
+    auto c = child->createInstance();
+    *c = *child;
+  }
+
+  return *this;
+
+}
+
+bool 
+GameObject::operator==(GameObject& ref) {
+  return (m_tag.getName() == ref.m_tag.getName());
+}
+
+GameObject*
+GameObject::getChildByIndex(Int32 index) {
+  return getChild(index).get();
 }
 
 }

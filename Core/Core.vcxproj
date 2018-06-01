@@ -89,7 +89,7 @@
       <PreprocessorDefinitions>CORE_EXPORTS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL.lib;SDLmain.lib;Utilsd.lib;Mathd.lib;Inputd.lib;Soundd.lib;Graphicsd.lib;Scriptd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;Utilsd.lib;Mathd.lib;Inputd.lib;Soundd.lib;Graphicsd.lib;Scriptd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(DRIDER_DEPENDENCIES)Lib\$(PlatformTarget);$(SolutionDir)Lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>$(SolutionDir)Lib\$(PlatformTarget)\$(TargetName).lib</ImportLibrary>
     </Link>
@@ -104,7 +104,7 @@
       <PreprocessorDefinitions>CORE_EXPORTS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL.lib;SDLmain.lib;Utilsd.lib;Mathd.lib;Inputd.lib;Soundd.lib;Graphicsd.lib;Scriptd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;Utilsd.lib;Mathd.lib;Inputd.lib;Soundd.lib;Graphicsd.lib;Scriptd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(DRIDER_DEPENDENCIES)Lib\$(PlatformTarget);$(SolutionDir)Lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>$(SolutionDir)Lib\$(PlatformTarget)\$(TargetName).lib</ImportLibrary>
     </Link>
@@ -117,13 +117,13 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Math\Include;$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Sound\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)Input\Include;$(SolutionDir)Script\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Math\Include;$(SolutionDir)Sound\Include;$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Graphics\Include;$(SolutionDir)Input\Include;$(SolutionDir)Script\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>CORE_EXPORTS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>SDL.lib;SDLmain.lib;Utils.lib;Math.lib;Input.lib;Sound.lib;Graphics.lib;Script.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;Utils.lib;Math.lib;Input.lib;Sound.lib;Graphics.lib;Script.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(DRIDER_DEPENDENCIES)Lib\$(PlatformTarget);$(SolutionDir)Lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>$(SolutionDir)Lib\$(PlatformTarget)\$(TargetName).lib</ImportLibrary>
     </Link>
@@ -142,7 +142,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>SDL.lib;SDLmain.lib;Utils.lib;Math.lib;Input.lib;Sound.lib;Graphics.lib;Script.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;Utils.lib;Math.lib;Input.lib;Sound.lib;Graphics.lib;Script.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(DRIDER_DEPENDENCIES)Lib\$(PlatformTarget);$(SolutionDir)Lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>$(SolutionDir)Lib\$(PlatformTarget)\$(TargetName).lib</ImportLibrary>
     </Link>
@@ -191,6 +191,7 @@
     <ClInclude Include="Include\dr_viewport.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\dr_sound_component.h" />
     <ClCompile Include="Source\dr_aabb_collider.cpp" />
     <ClCompile Include="Source\dr_animation.cpp" />
     <ClCompile Include="Source\dr_animator.cpp" />
@@ -220,6 +221,7 @@
     <ClCompile Include="Source\dr_script_component.cpp" />
     <ClCompile Include="Source\dr_script_core.cpp" />
     <ClCompile Include="Source\dr_skeleton.cpp" />
+    <ClCompile Include="Source\dr_sound_component.cpp" />
     <ClCompile Include="Source\dr_sound_core.cpp" />
     <ClCompile Include="Source\dr_spline.cpp" />
     <ClCompile Include="Source\dr_texture_core.cpp" />

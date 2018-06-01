@@ -5,5 +5,5 @@
 namespace driderSDK {
 
 void 
-DR_RENDERMAN_EXPORT renderManagerApp(const SceneGraph* sceneGraph);
+DR_RENDERMAN_EXPORT renderManagerApp();
 }

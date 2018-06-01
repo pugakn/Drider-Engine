@@ -1,10 +1,35 @@
 class script1 : MontiBehavior {
 
+	float timer;
+
 	void Start() {
 		Print("Start\n");
-	}
 		
-	float timer;
+		//Compare two GameObject ref
+		GameObject@ a = Object.findObject("Floor");
+		GameObject@ b = Object.findObject("Floor");
+
+		GameObject@ c = a.findObject("Test");
+
+		if(a is b)
+			Print("a is equal to b\n");
+		else
+			Print("a is not equal to b\n");
+
+		if(@c == null)
+			Print("c is null\n");
+
+		//Change tag and print
+		TString tag = a.getTag();
+		Print("a tag is " + tag + "\n");
+		a.setTag("NewTag");
+		Print("a tag is " + a.getTag() + "\n");
+
+		//Get gameobject's transform
+		Transform t = a.getTransform();
+		Print("Position a: " + t.m_position.x + "," + t.m_position.y);
+
+	}
 
 	void Update() {
 		Vector3D vec(100.0 * getDelta(),0.0,0.0);
