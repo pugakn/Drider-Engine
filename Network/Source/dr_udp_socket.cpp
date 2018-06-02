@@ -22,7 +22,6 @@ UDPSocket::bind(UInt32 ipAddress, UInt16 port) {
     return false;
   }
 
-  //m_bindAddress.clear();
   m_bindAddress = 0;
   m_bindPort = 0;
 
@@ -86,7 +85,7 @@ UDPSocket::receive(DataBuffer& buffer,
 
   receivedLen = recvfrom(m_handle, 
                          reinterpret_cast<char*>(buffer.data()), 
-                         static_cast<int>(buffer.size()),
+                         static_cast<Int32>(buffer.size()),
                          0,
                          (sockaddr*)&sender,
                          &senderSAS);
@@ -117,6 +116,8 @@ UDPSocket::receive(Packet& packet,
                    UInt16& port) {
 
   DataBuffer buff(maxBuffSize, 0);
+
+  packet.clear();
 
   auto result = receive(buff, receivedLen, ipAddress, port);
 

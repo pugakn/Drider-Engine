@@ -8,9 +8,18 @@
 
 namespace driderSDK {
 
-class PacketHandler
+class DR_NETWORK_EXPORT PacketHandler
 {
  public:
+
+  struct MessageData
+  {
+    UDPSocket& socket;
+    Packet& packet;
+    SizeT size;
+    UInt32 senderIP;
+    UInt16 senderPort;
+  };
 
   using SharedSocket = std::shared_ptr<UDPSocket>;
 
@@ -35,15 +44,12 @@ class PacketHandler
   shouldUsePacket(Packet& packet);
 
   virtual void 
-  processPacket(UDPSocket& socket,
-                Packet& packet,
-                SizeT recvLen,
-                UInt32 senderIP, 
-                UInt16 senderPort) = 0;
+  processPacket(MessageData& data) = 0;
 
   
  protected:
   std::vector<SharedSocket> m_sockets;
+ private:
   Packet m_packet;
 };
 

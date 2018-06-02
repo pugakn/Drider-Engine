@@ -28,11 +28,13 @@ PacketHandler::checkIncomingPackets() {
     if ((socket->receive(m_packet, recvLen, senderIP, senderPort) == 
          SOCKET_ERR::kSuccess) && shouldUsePacket(m_packet)) {
 
-      processPacket(*socket, 
-                    m_packet, 
-                    static_cast<SizeT>(recvLen),
-                    senderIP, 
-                    senderPort);
+      auto message = MessageData{*socket, 
+                                 m_packet, 
+                                 static_cast<SizeT>(recvLen),
+                                 senderIP, 
+                                 senderPort};
+
+      processPacket(message);
     }
 
     m_packet.resetReadPos();

@@ -9,6 +9,8 @@
 #include <dr_packet.h>
 #include <dr_string_utils.h>
 
+#include <dr_hash.h>
+
 namespace driderSDK {
 
 
@@ -22,6 +24,14 @@ ClientApplication::postInit() {
   Logger::startUp(_T("../Docs/Logger/clientLog.html"));
   NetworkManager::startUp();
   InputManager::startUp(reinterpret_cast<SizeT>(m_hwnd));
+
+
+  Int32 a = 10;
+  Int32 b = 20;
+  Int32 c  = 30;
+  SizeT seed = 0;
+
+  dr_hash_combine(seed, a, b, c);
 
   m_tick = 0;
 

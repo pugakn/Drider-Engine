@@ -1,9 +1,10 @@
 #pragma once
 
+#include <stack>
 #include <vector>
 
 #include <dr_application.h>
-#include <dr_udp_socket.h>
+#include <dr_connection_enums.h>
 #include <dr_packet.h>
 #include <dr_timer.h>
 #include <dr_packet_handler.h>
@@ -32,20 +33,63 @@ class LobbyServerApp : public Application, public PacketHandler
   postDestroy() override;
 
  private:
-
+   
   struct GameServerData
   {
-
+    Timer timeOut;
+    UInt32 publicIP;
+    UInt16 assignedPort;
+    UInt16 localPort;
+    bool canJoin;
   };
   
   virtual void 
-  processPacket(UDPSocket& socket, 
-                Packet& packet, 
-                SizeT recvLen, 
-                UInt32 senderIP, 
-                UInt16 senderPort) override;
+  processPacket(MessageData& msg) override;
+
+  void 
+  portRequest(MessageData& msg);
+
+  void 
+  closeServer(MessageData& msg);
+
+  void
+  serverFull(MessageData& msg);
+
+  void
+  serverNotFull(MessageData& msg);
+
+  void
+  lobbiesRequest(MessageData& msg);
+
+  void
+  notifyActive(MessageData& msg);
+
+  void 
+  setServerJoinStatus(UInt16 port, bool canJoin);
+
+  void 
+  checkActiveServerStatus();
+
+  void 
+  requestActiveNotify(const GameServerData& gsd);
 
  private:
+
+  using Command = decltype(&processPacket);
+  using CommandList = std::vector<std::pair<REQUEST_ID::E, Command>>;
+  using ServerList = std::vector<GameServerData>;
+
+  //Find by ip and port
+  ServerList::iterator
+  findServer(UInt16 port);
+
+  UInt32 m_localIP;
+  CommandList m_commands;
+  std::stack<UInt16> m_unusedPorts;
+  ServerList m_servers;
+  //Limit of time until server will be disconnected
+  const float m_maxTimeOut = 12.f;
+  const float m_requestActiveRate = 5.f;
 };
 
 }

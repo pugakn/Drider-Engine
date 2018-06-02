@@ -27,7 +27,7 @@ GraphicsAPI::init(UInt32 w, UInt32 h, void * hwnd, DR_GRAPHICS_API::E api)
     m_device = dr_gfx_unique<Device>(new D3DDevice);
     m_deviceContext = dr_gfx_unique<DeviceContext>(new D3DDeviceContext);
     /* WHUT */
-    backBufferTexture = dr_make_unique<D3DTexture>();
+    backBufferTexture = dr_gfx_unique<D3DTexture>(new D3DTexture);
 #else
     exit(666);
 #endif
