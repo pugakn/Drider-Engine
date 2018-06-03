@@ -79,6 +79,7 @@ LobbyServerApp::postRender() {
 
 void 
 LobbyServerApp::postDestroy() {
+  removeSockets();
   NetworkManager::shutDown();
 }
 
@@ -121,6 +122,7 @@ LobbyServerApp::portRequest(MessageData& msg) {
     newServer.assignedPort = port;
     newServer.localPort = msg.senderPort;
     newServer.canJoin = true;
+    newServer.ignoredRequests = 0;
     newServer.timeOut.init();
     
     std::cout << "New server connected ip: "
@@ -194,6 +196,7 @@ LobbyServerApp::notifyActive(MessageData& msg) {
 
   if (it != m_servers.end()) {
     it->timeOut.init();
+    it->ignoredRequests = 0;
   }
 }
 
@@ -212,22 +215,24 @@ LobbyServerApp::checkActiveServerStatus() {
   for (auto server = m_servers.begin(); server != m_servers.end();) {
 
     float time = server->timeOut.getSeconds();
-
+    
     //Remove server
-    if (time >= m_maxTimeOut) {
+    if (server->ignoredRequests >= m_maxIgnoredRequest) {
       std::cout << "Server disconnected: " << 
                    server->publicIP << " port:" << server->assignedPort << std::endl;
       m_unusedPorts.push(server->assignedPort);
       server = m_servers.erase(server);
       continue;
     }
+
     //After m_requestActiveRate this will spam the server
-    else if (time >= m_requestActiveRate && 
-             std::fmod(time, m_requestActiveRate) < 0.005f) { 
+    if (time >= m_requestActiveRate) {
+      server->ignoredRequests++;
+      server->timeOut.init();
       std::cout << "Requested active status to: " << 
                    server->publicIP << " port:" << server->assignedPort << std::endl;
       requestActiveNotify(*server);
-    }
+    }  
 
     ++server;
   }

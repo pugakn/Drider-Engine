@@ -40,6 +40,7 @@ class LobbyServerApp : public Application, public PacketHandler
     UInt32 publicIP;
     UInt16 assignedPort;
     UInt16 localPort;
+    UInt8 ignoredRequests;
     bool canJoin;
   };
   
@@ -87,9 +88,9 @@ class LobbyServerApp : public Application, public PacketHandler
   CommandList m_commands;
   std::stack<UInt16> m_unusedPorts;
   ServerList m_servers;
-  //Limit of time until server will be disconnected
-  const float m_maxTimeOut = 12.f;
-  const float m_requestActiveRate = 5.f;
+  const float m_requestActiveRate = 3.5f;
+  //Max number of requests ignored until disconnect
+  const UInt8 m_maxIgnoredRequest = 3;
 };
 
 }

@@ -22,14 +22,13 @@ class GameServer : public Application, public PacketHandler
 
   struct ClientData
   {
-    String name;
+    WString name;
+    Timer timeOut;
     UInt32 ip;
     UInt16 port;
-    Timer timeOut;
+    UInt8 ignoredRequests;
   };
-   
-  using Command = decltype(&processPacket);      
-  using CommandList = std::vector<std::pair<REQUEST_ID::E, Command>>;
+     
   using ClientList = std::vector<ClientData>;
 
   // Inherited via Application
@@ -80,6 +79,9 @@ class GameServer : public Application, public PacketHandler
 
  private: 
 
+  using Command = decltype(&requestNotify);      
+  using CommandList = std::vector<std::pair<REQUEST_ID::E, Command>>;
+
    bool m_inGame;
    ClientList m_clients;
    CommandList m_commands;
@@ -91,12 +93,12 @@ class GameServer : public Application, public PacketHandler
    Timer m_notifyTimer;
    //Max capacity for clients
    const SizeT m_maxClients = 10;
-   //Rate for asking active notifications to clients
-   const float m_requestActiveRate = 5.f;
-   //Max time after disconect a client
-   const float m_clientTimeOut = 11.f;
    //If after 10 secs we haven't recv any msg form the main server we disconnect
    const float m_maxTimeOut = 11.f;
+   //Rate for asking active notifications to clients
+   const float m_requestActiveRate = 2.5f;
+   //Max request that can be ignored util close connection with client
+   const UInt8 m_maxIgnoredRequests = 4;
 };
 
 }

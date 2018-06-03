@@ -28,6 +28,8 @@ GameServer::postInit() {
   m_publicIP = NetworkManager::ipAddrStrToUInt(getPublicIP());
   m_localIP = NetworkManager::ipAddrStrToUInt(_T("127.0.0.1"));
 
+  m_publicIP = m_localIP;
+
   m_commands.emplace_back(REQUEST_ID::kClientJoin, &GameServer::clientJoin);
   m_commands.emplace_back(REQUEST_ID::kClientLeave, &GameServer::clientLeave);
   m_commands.emplace_back(REQUEST_ID::kChatMsg, &GameServer::chatMsg);
@@ -94,6 +96,7 @@ GameServer::postRender() {
 
 void 
 GameServer::postDestroy() {
+  removeSockets();
   NetworkManager::shutDown();
 }
 
@@ -133,10 +136,14 @@ GameServer::clientJoin(MessageData& msg) {
 
     ClientData client;
 
-    msg.packet >> client.ip;
-    msg.packet >> client.port;
+    /*msg.packet >> client.ip;
+    msg.packet >> client.port;*/
     msg.packet >> client.name;
 
+    client.ip = msg.senderIP;
+    client.port = msg.senderPort;
+    client.ignoredRequests = 0;
+   
     client.timeOut.init();
 
     m_clients.push_back(std::move(client));
@@ -230,6 +237,7 @@ GameServer::notifyActive(MessageData& msg) {
 
   if (client != m_clients.end()) {
     client->timeOut.init();
+    client->ignoredRequests = 0;
   }
 
 }
@@ -260,7 +268,7 @@ GameServer::checkClientsActiveState() {
     float time = client->timeOut.getSeconds();
 
     //Remove server
-    if (time >= m_maxTimeOut) {
+    if (client->ignoredRequests >= m_maxIgnoredRequests) {
       std::cout << "Client disconnected: " << 
                    client->ip << " port:" << client->port << std::endl;
 
@@ -273,8 +281,11 @@ GameServer::checkClientsActiveState() {
       continue;
     }
     //After m_requestActiveRate this will spam the server
-    else if (time >= m_requestActiveRate && 
-             std::fmod(time, m_requestActiveRate) < 0.005f) { 
+    if (time >= m_requestActiveRate) { 
+
+      client->ignoredRequests++;
+      client->timeOut.init();
+
       std::cout << "Requested active status to: " << 
                    client->ip << " port:" << client->port << std::endl;
 
