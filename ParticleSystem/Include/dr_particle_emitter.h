@@ -82,7 +82,9 @@ namespace driderSDK {
     //Repellers Updater
     Vector4D m_RepellerPos[MAX_REPELLERS];
     Vector4D m_RepellerForceX_radiuusY[MAX_REPELLERS];
-    ////Plane Collition Updater
+    ////Plane Collision Updater
+    Vector4D m_planeNormal;
+    Vector4D m_planePoint;
 
     //Time Scale Updater
     float m_initialScale;

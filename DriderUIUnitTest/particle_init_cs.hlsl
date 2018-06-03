@@ -40,7 +40,9 @@ cbuffer ConstantBuffer : register(b0) {
   //Repellers Updater
   float4 m_RepellerPos[MAX_REPELLERS];
   float4 m_RepellerForceX_radiuusY[MAX_REPELLERS];
-  ////Plane Collition Updater
+  //Plane Collision Updater
+  float4 m_planeNormal;
+  float4 m_planePoint;
 
   //Time Scale Updater
   float m_initialScale;

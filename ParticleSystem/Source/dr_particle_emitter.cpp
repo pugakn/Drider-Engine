@@ -234,7 +234,6 @@ namespace driderSDK {
       m_cpuCbuff.m_particlesToEmit = m_attributes.m_numParticlesToEmit;
       m_cpuCbuff.m_maxParticles = m_attributes.m_maxParticles;
 
-      
       //Active
       m_cpuCbuff.m_bAttractorUpdaterActive = static_cast<AttractorUpdater*>(m_updaters[UPDATERS::kATTRACTORS])->m_bActive;
       m_cpuCbuff.m_bBoxGeneratorActive = static_cast<BoxGenerator*>(m_generator[GENERATORS::kBOX])->m_bActive;
@@ -259,6 +258,10 @@ namespace driderSDK {
         m_cpuCbuff.m_attractorForceX_radiusY[i].x = static_cast<AttractorUpdater*>(m_updaters[UPDATERS::kATTRACTORS])->get(i).m_atractionForce;
         m_cpuCbuff.m_attractorForceX_radiusY[i].y = static_cast<AttractorUpdater*>(m_updaters[UPDATERS::kATTRACTORS])->get(i).m_radius;
       }
+
+      m_cpuCbuff.m_bColliderUpdaterActive = true;
+      m_cpuCbuff.m_planeNormal = Vector4D(0, 1, 0, 0);
+      m_cpuCbuff.m_planePoint = m_cpuCbuff.m_planeNormal * -500;
       //Generators
       m_cpuCbuff.m_randomPosMin = static_cast<BoxGenerator*>(m_generator[GENERATORS::kBOX])->m_initialPositionRandomMin;
       m_cpuCbuff.m_randomPosMax = static_cast<BoxGenerator*>(m_generator[GENERATORS::kBOX])->m_initialPositionRandomMax;
@@ -266,6 +269,7 @@ namespace driderSDK {
       m_cpuCbuff.m_randomVelMax = static_cast<RandomVelocityGenerator*>(m_generator[GENERATORS::kRANDOM_VELOCITY])->m_initialVelocityRandomMax;
       m_cbuffer->updateFromBuffer(dc, (byte*)&m_cpuCbuff);
     }
+
     m_updateCS->set(dc);
     m_poolBuffer->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
     m_deadBuffer->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 1);

@@ -40,7 +40,9 @@ cbuffer ConstantBuffer : register(b0) {
   //Repellers Updater
   float4 m_RepellerPos[MAX_REPELLERS];
   float4 m_RepellerForceX_radiuusY[MAX_REPELLERS];
-  //Plane Collition Updater
+  //Plane Collision Updater
+  float4 m_planeNormal;
+  float4 m_planePoint;
 
   //Time Scale Updater
   float m_initialScale;
@@ -105,16 +107,34 @@ void CS( uint3 id : SV_DispatchThreadID )
         }
       }
     }
-    //Plane colider updater
-    if (m_bColliderUpdaterActive) {
 
-    }
-
-    //Always at the end
+    //Euler Updater
     if (m_bEulerUpdaterActive) {
       poolBuffer[pID].velocity += (poolBuffer[pID].acceleration + m_globalAcceleration) * DT;
       poolBuffer[pID].position += poolBuffer[pID].velocity * DT;
     }
+
+
+    //Plane colider updater
+    if (m_bColliderUpdaterActive) {
+      if (dot(poolBuffer[pID].position.xyz - m_planePoint.xyz, m_planeNormal.xyz) < 0.0005) {
+        if (dot(poolBuffer[pID].velocity.xyz, m_planeNormal.xyz) < 0.0005) {
+          const float restCoef = 0.4;
+          float3 rayOrigin = poolBuffer[pID].position - poolBuffer[pID].velocity *DT;
+          float3 rayDir = normalize(poolBuffer[pID].position.xyz - rayOrigin);
+          float denom = dot(rayDir, m_planeNormal.xyz);
+
+          float t = dot(m_planePoint.xyz - rayOrigin, m_planeNormal.xyz) / denom;
+          poolBuffer[pID].position.xyz = rayOrigin + rayDir * t;
+          float d = dot(poolBuffer[pID].velocity.xyz, m_planeNormal.xyz);
+          float j = max(-(1 + restCoef) * d, 0);
+          poolBuffer[pID].velocity.xyz += j * m_planeNormal.xyz;
+          poolBuffer[pID].position += poolBuffer[pID].velocity * DT;
+        }
+      }
+    }
+
+
     if (poolBuffer[pID].lifeTime > m_particleMaxLife) {
       poolBuffer[pID].isActive = 0;
       DeadBuffer.Append(pID);
