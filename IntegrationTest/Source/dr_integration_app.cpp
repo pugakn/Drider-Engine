@@ -130,9 +130,9 @@ DriderEngine::loadResources() {
   //Sounds (All sunds requiere extraInfo data)
   auto system = SoundAPI::instance().API->system;
   auto channel = SoundAPI::instance().API->channel1;
-  extraInfoSound = new SoundExtraInfo(reinterpret_cast<SoundSystem*>(system),
+  extraInfo = new SoundExtraInfo(reinterpret_cast<SoundSystem*>(system),
                                  reinterpret_cast<DrChannel*>(channel));
-  ResourceManager::loadResource(_T("testSound1.mp3"), extraInfoSound);
+  ResourceManager::loadResource(_T("testSound1.mp3"), extraInfo);
 }
 
 void
@@ -271,9 +271,6 @@ DriderEngine::playSoundTest() {
 void
 DriderEngine::destroyModules() {
   delete extraInfo;
-
-  m_staticTech->destroy();
-  m_animTech->destroy();
 
   ContextManager::shutDown();
   ScriptEngine::shutDown();

@@ -11,6 +11,8 @@ namespace driderSDK {
 
 class GameObject;
 class Model;
+class SoundExtraInfo;
+class ScriptComponent;
 
 class DriderEngine : public Application
 {
@@ -64,7 +66,8 @@ private:
   SceneEditor m_editor;
   RenderMan m_renderMan;
 
-  SoundExtraInfo* extraInfoSound;
+  SoundExtraInfo* extraInfo;
+  std::unordered_map<TString, ScriptComponent*> m_scripts;
 
   std::shared_ptr<GameObject> m_player;
 };

@@ -21,8 +21,8 @@ LightningPass::init(PassInitData* initData) {
   LightningInitData* data = static_cast<LightningInitData*>(initData);
   Device& device = GraphicsAPI::getDevice();
 
-  m_vsFilename = _T("Lightning_vs.hlsl");
-  m_fsFilename = _T("Lightning_ps.hlsl");
+  m_vsFilename = _T("Resources\\Shaders\\Lightning_vs.hlsl");
+  m_fsFilename = _T("Resources\\Shaders\\Lightning_ps.hlsl");
 
   recompileShader();
 

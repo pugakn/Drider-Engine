@@ -39,8 +39,10 @@ CodecModel::decode(TString pathName) {
 	flags |= aiProcess_FindInvalidData;
 	flags |= aiProcess_GenUVCoords;
 
-  const aiScene* scene = importer.ReadFile(StringUtils::toString(pathName), 
-                                            flags);
+  String path = "Resources\\Models\\";
+
+  const aiScene* scene = importer.ReadFile(path + StringUtils::toString(pathName), 
+                                           flags);
 
   if (scene) {
 

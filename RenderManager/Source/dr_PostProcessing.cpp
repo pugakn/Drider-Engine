@@ -20,8 +20,8 @@ PostProcessingPass::init(PassInitData* initData) {
   PostProcessingInitData* data = static_cast<PostProcessingInitData*>(initData);
   Device& device = GraphicsAPI::getDevice();
 
-  m_vsFilename = _T("PostProcessing_vs.hlsl");
-  m_fsFilename = _T("PostProcessing_ps.hlsl");
+  m_vsFilename = _T("Resources\\Shaders\\PostProcessing_vs.hlsl");
+  m_fsFilename = _T("Resources\\Shaders\\PostProcessing_ps.hlsl");
 
   recompileShader();
 

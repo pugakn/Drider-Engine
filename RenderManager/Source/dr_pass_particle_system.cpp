@@ -22,8 +22,8 @@ ParticleSystemPass::init(PassInitData* initData) {
   ParticleSystemInitData* data = static_cast<ParticleSystemInitData*>(initData);
   Device& device = GraphicsAPI::getDevice();
 
-  m_vsFilename = _T("particle_vs.hlsl");
-  m_fsFilename = _T("particle_ps.hlsl");
+  m_vsFilename = _T("Resources\\Shaders\\particle_vs.hlsl");
+  m_fsFilename = _T("Resources\\Shaders\\particle_ps.hlsl");
 
   recompileShader();
 
