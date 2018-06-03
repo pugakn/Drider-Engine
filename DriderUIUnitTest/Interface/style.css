@@ -1,0 +1,40 @@
+body  {
+  margin: 0px;
+}
+#container {
+  background-color: yellow;
+  width: 100%;
+}
+#hierarchy {
+  height: 66%;
+  width: 25%;
+  background-color: red;
+}
+#scene {
+  height: 66%;
+  width: 50%;
+  background-color: black;
+}
+#inspector {
+  height: 100%;
+  width: 25%;
+  background-color: green;
+}
+#project {
+  height: 34%;
+  width: 75%;
+  border-top: solid 1px #BBB;
+  border-left: solid 1px #BBB;
+  border-bottom: solid 1px #FFF;
+  border-right: solid 1px #FFF;
+  background: #FFF;
+  overflow: scroll;
+  padding: 5px;
+}
+.subSection {
+  height: 100%;
+  width: 100%;
+}
+.section {
+  position: fixed;
+}

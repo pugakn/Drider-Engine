@@ -80,7 +80,7 @@ namespace driderSDK {
     }
   }
 
-void read_directory(const TString& name, std::vector<TString>& v)
+void read_directory(const TString& name, TString& v)
 {
   TString pattern(name);
   TString parent(name);
@@ -94,27 +94,24 @@ void read_directory(const TString& name, std::vector<TString>& v)
       if (data.cFileName[0] == '.') continue;
       if (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
       {
-        v.push_back(_T("webix.callEvent('WEBIX_AddFile',['") + TString(data.cFileName) + _T("','") + parent + _T("','") + _T(".folder") + _T("']);"));
-        read_directory(name + _T("\\") + data.cFileName, v);
+        v += (_T("{'name':'") + TString(data.cFileName) + _T("','parent':'") + parent + _T("/") + TString(data.cFileName) + _T("','type':'folder'},"));
       }
       else
       {
         auto ext = PathFindExtension(data.cFileName);
-        v.push_back(_T("webix.callEvent('WEBIX_AddFile',['") + TString(data.cFileName) + _T("','") + parent + _T("','") + ext + _T("']);"));
+        v += (_T("{'name':'") + TString(data.cFileName) + _T("','parent':'") + parent + _T("','type':'") + ext + _T("'},"));
       }
     } while (FindNextFile(hFind, &data) != 0);
     FindClose(hFind);
   }
 }
-void updateFolders(WebRenderer& webRenderer) {
-  TString root(_T("Assets"));
-  std::vector<TString> folders;
-  folders.push_back(_T("webix.callEvent('WEBIX_AddFile',['") + root + _T("','") + root + _T("','") + _T(".folder") + _T("']);"));
+void updateFolders(WebRenderer& webRenderer, TString root) {
+  TString folders = _T("JS_InfoTreeFile(\"") + root + _T("\",");
+  folders += _T("\"{'items':[");
   read_directory(root, folders);
-  for (auto &it : folders) {
-    std::string str(it.begin(), it.end());
-    webRenderer.executeJSCode(str);
-  }
+  folders.erase(folders.length() - 1);
+  folders += _T("]}\");");
+  webRenderer.executeJSCode(folders);
 }
 
 
@@ -302,19 +299,17 @@ void SceneEditor::loadResources()
 }
 void SceneEditor::initUI()
 {
-  m_netLobby.Init(1024,720, BROWSER_MODE::kPopUp);
-  m_netLobby.loadURL("file:///C:/Users/Ulises/Documents/GitHub/Drider-Engine/DriderUIUnitTest/netLobby/NetLobby.html");
-  m_netLobby.registerJS2CPPFunction(std::make_pair("EEE", [&](const CefRefPtr<CefListValue>& arguments) {
-    std::cout << "EEE";
-  }));
+
+
 
   webRenderer.Init(m_viewport.width, m_viewport.height, BROWSER_MODE::kHeadless);
-  webRenderer.loadURL("file:///C:/Users/Ulises/Documents/GitHub/Drider-Engine/DriderUIUnitTest/WebixTest/ss.html");
+  webRenderer.loadURL("file:///F:/projectsVS2017/Drider-Engine/DriderUIUnitTest/Interface/index.html");
 
-  webRenderer.registerJS2CPPFunction(std::make_pair("webixReady", [&](const CefRefPtr<CefListValue>& arguments) {
-    updateFolders(webRenderer);
-    UI_UpdateSceneGraph();
-    UI_UpdatePropertySheet(*SceneGraph::getRoot().get());
+  webRenderer.registerJS2CPPFunction(std::make_pair("UIReady", [&](const CefRefPtr<CefListValue>& arguments) {
+    TString root = arguments->GetString(1);
+    updateFolders(webRenderer, root);
+    //UI_UpdateSceneGraph();
+    //UI_UpdatePropertySheet(*SceneGraph::getRoot().get());
   }));
   webRenderer.registerJS2CPPFunction(std::make_pair("canvasReady", [&](const CefRefPtr<CefListValue>& arguments) {
     
@@ -409,7 +404,6 @@ void SceneEditor::initUI()
     sceneViewport.topLeftX = (float)arguments->GetDouble(2);
     sceneViewport.width = (float)arguments->GetDouble(3);
     sceneViewport.height = (float)arguments->GetDouble(4);
-
     m_sceneViewer.resize(sceneViewport);
   }));
   //components
