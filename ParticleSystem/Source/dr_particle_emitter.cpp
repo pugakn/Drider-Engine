@@ -12,49 +12,31 @@ namespace driderSDK {
   void
     ParticleEmitter::init(const ParticleEmitterAttributes & _attributes)
   {
-    //TEST
     Device& device = GraphicsAPI::getDevice();
-    //
+    m_updaters.resize(UPDATERS::kUPDATER_COUNT);
+    m_generator.resize(GENERATORS::kGENERATOR_COUNT);
+    //Updaters
     ParticleUpdater* pU;
     pU = new TimeColorUpdater();
-    ((TimeColorUpdater*)pU)->m_initialColor = (Vector3D(1, 0, 0));
-    ((TimeColorUpdater*)pU)->m_finalColor = (Vector3D(0, 0, 1));
-    m_updaters.push_back(pU);
+    m_updaters[UPDATERS::kTIME_COLOR]  = (pU);
     pU = new TimeScaleUpdater();
-    ((TimeScaleUpdater*)pU)->m_initialScale = 5;
-    ((TimeScaleUpdater*)pU)->m_finaleScale = 0;
-    m_updaters.push_back(pU);
-    //pU = new AttractorUpdater();
-    //((AttractorUpdater*)pU)->m_position = {250,-500,0};
-    //((AttractorUpdater*)pU)->m_radius = 1000;
-    //((AttractorUpdater*)pU)->m_atractionForce = 200;
-    //m_updaters.push_back(pU);
-    //pU = new RepellerUpdater();
-    //((RepellerUpdater*)pU)->m_position = { 0,-250, 0 };
-    //((RepellerUpdater*)pU)->m_radius = 500;
-    //((RepellerUpdater*)pU)->m_repellerForce = 100;
-    //m_updaters.push_back(pU);
-
-
+    m_updaters[UPDATERS::kTIME_SCALE] = (pU);
+    pU = new AttractorUpdater();
+    m_updaters[UPDATERS::kATTRACTORS] = (pU);
+    pU = new RepellerUpdater();
+    m_updaters[UPDATERS::kREPELLERS] = (pU);
     pU = new EulerUpdater();
-    m_updaters.push_back(pU);
-    //pU = new VelocityLimiter();
-    //((VelocityLimiter*)pU)->m_initialSpeedLimit = 1200;
-    //((VelocityLimiter*)pU)->m_finalSpeedLimit = 25;
-    //m_updaters.push_back(pU);
+    m_updaters[UPDATERS::kEULER] = (pU);
 
+    //Generators
     ParticleGenerator* pG = new BoxGenerator();
-    ((BoxGenerator*)pG)->m_initialPositionRandomMin = (Vector3D(-500, 0, -500));
-    ((BoxGenerator*)pG)->m_initialPositionRandomMax = (Vector3D(500, 50, 500));
-    m_generator.push_back(pG);
+    m_generator[GENERATORS::kBOX] = (pG);
     pG = new RandomVelocityGenerator();
-    ((RandomVelocityGenerator*)pG)->m_initialVelocityRandomMin = (Vector3D(-0, 200, -0));
-    ((RandomVelocityGenerator*)pG)->m_initialVelocityRandomMax = (Vector3D(0, 200, 0));
-    m_generator.push_back(pG);
-    pG = new RandomScaleFactorGenerator();
-    ((RandomScaleFactorGenerator*)pG)->m_scaleFactorRandomMin = 1;
-    ((RandomScaleFactorGenerator*)pG)->m_scaleFactorRandomMax = 1;
-    m_generator.push_back(pG);
+    m_generator[GENERATORS::kRANDOM_VELOCITY] = (pG);
+    //pG = new RandomScaleFactorGenerator();
+    //((RandomScaleFactorGenerator*)pG)->m_scaleFactorRandomMin = 1;
+    //((RandomScaleFactorGenerator*)pG)->m_scaleFactorRandomMax = 1;
+    //m_generator[GENERATORS::kSca] = (pG);
 
 
     m_attributes = _attributes;
@@ -113,14 +95,17 @@ namespace driderSDK {
     desc.stride = sizeof(GPUParticle);
     m_poolBuffer = (StructureBuffer*)device.createBuffer(desc);
 
-
+    m_cpuCbuff.m_systemPosition = { 100,-500,0,1 };
     m_cpuCbuff.m_particlesToEmit = m_attributes.m_numParticlesToEmit;
-    m_cpuCbuff.dt = 1/60.0f;
     m_cpuCbuff.m_finalColor = { 0,0,1,1 };
     m_cpuCbuff.m_globalAcceleration = { 0,0,0,0 };
     m_cpuCbuff.m_initialColor = { 1,0,0,1 };
     m_cpuCbuff.m_particleMaxLife = m_attributes.m_particleMaxLife;
-    m_cpuCbuff.m_initialScale = 5;
+    m_cpuCbuff.m_randomPosMin = {-500,0,-500};
+    m_cpuCbuff.m_randomPosMax = { 500,0,500 };
+    m_cpuCbuff.m_randomVelMin = { -0,200,-0 };
+    m_cpuCbuff.m_randomVelMax = { -0,200,-0 };
+    m_cpuCbuff.m_initialScale = 10;
     m_cpuCbuff.m_finaleScale = 0;
     m_cpuCbuff.m_maxParticles = m_attributes.m_maxParticles;
     desc.type = DR_BUFFER_TYPE::kCONSTANT;
@@ -239,24 +224,64 @@ namespace driderSDK {
 #endif
 #if (DR_PARTICLES_METHOD == DR_PARTICLES_GPU)
     float dt[4] = { tm,0,0,0 };
-    m_cbufferDT->updateFromBuffer(GraphicsAPI::getDeviceContext(),(byte*)&dt[0]);
+    DeviceContext& dc = GraphicsAPI::getDeviceContext();
+    m_cbufferDT->updateFromBuffer(dc,(byte*)&dt[0]);
 
-    m_updateCS->set(GraphicsAPI::getDeviceContext());
-    m_poolBuffer->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute, 0);
-    m_deadBuffer->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute, 1);
-    m_aliveBuffer->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute, 2,0);
+    const bool paramsChanged = true; //TODO: 
+    if (paramsChanged) {
+      m_cpuCbuff.m_systemPosition = { 0,-0,0,1 };
+      m_cpuCbuff.m_particleMaxLife = m_attributes.m_particleMaxLife;
+      m_cpuCbuff.m_particlesToEmit = m_attributes.m_numParticlesToEmit;
+      m_cpuCbuff.m_maxParticles = m_attributes.m_maxParticles;
 
-    m_cbuffer->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute,0);
-    m_cbufferAliveCount->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute, 1);
-    m_cbufferDT->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute, 2);
+      
+      //Active
+      m_cpuCbuff.m_bAttractorUpdaterActive = static_cast<AttractorUpdater*>(m_updaters[UPDATERS::kATTRACTORS])->m_bActive;
+      m_cpuCbuff.m_bBoxGeneratorActive = static_cast<BoxGenerator*>(m_generator[GENERATORS::kBOX])->m_bActive;
+      //m_cpuCbuff.m_bColliderUpdaterActive = 
+      m_cpuCbuff.m_bEulerUpdaterActive = static_cast<EulerUpdater*>(m_updaters[UPDATERS::kEULER])->m_bActive;
+      m_cpuCbuff.m_bRandVelocityGeneratorActive = static_cast<RandomVelocityGenerator*>(m_generator[GENERATORS::kRANDOM_VELOCITY])->m_bActive;
+      m_cpuCbuff.m_bRepellerUpdaterActive = static_cast<RepellerUpdater*>(m_updaters[UPDATERS::kREPELLERS])->m_bActive;
+      m_cpuCbuff.m_bTimeColorUpdaterActive = static_cast<TimeColorUpdater*>(m_updaters[UPDATERS::kTIME_COLOR])->m_bActive;
+      m_cpuCbuff.m_bTimeScaleUpdaterActive = static_cast<TimeScaleUpdater*>(m_updaters[UPDATERS::kTIME_SCALE])->m_bActive;
+      //Updaters
+      m_cpuCbuff.m_initialColor = static_cast<TimeColorUpdater*>(m_updaters[UPDATERS::kTIME_COLOR])->m_initialColor;
+      m_cpuCbuff.m_finalColor = static_cast<TimeColorUpdater*>(m_updaters[UPDATERS::kTIME_COLOR])->m_finalColor;
+      m_cpuCbuff.m_initialScale = static_cast<TimeScaleUpdater*>(m_updaters[UPDATERS::kTIME_SCALE])->m_initialScale;
+      m_cpuCbuff.m_finaleScale = static_cast<TimeScaleUpdater*>(m_updaters[UPDATERS::kTIME_SCALE])->m_finaleScale;
+      static_cast<EulerUpdater*>(m_updaters[UPDATERS::kEULER])->m_globalAcceleration = static_cast<EulerUpdater*>(m_updaters[UPDATERS::kEULER])->m_windForce;
+      static_cast<EulerUpdater*>(m_updaters[UPDATERS::kEULER])->m_globalAcceleration.y += -9.81 * static_cast<EulerUpdater*>(m_updaters[UPDATERS::kEULER])->m_gravityScale;
+      m_cpuCbuff.m_globalAcceleration = static_cast<EulerUpdater*>(m_updaters[UPDATERS::kEULER])->m_globalAcceleration;
+      
+      m_cpuCbuff.m_numAttractors = static_cast<AttractorUpdater*>(m_updaters[UPDATERS::kATTRACTORS])->size();
+      for (SizeT i = 0; i < m_cpuCbuff.m_numAttractors; ++i) {
+        m_cpuCbuff.m_attractorPos[i] = static_cast<AttractorUpdater*>(m_updaters[UPDATERS::kATTRACTORS])->get(i).m_position;
+        m_cpuCbuff.m_attractorForceX_radiusY[i].x = static_cast<AttractorUpdater*>(m_updaters[UPDATERS::kATTRACTORS])->get(i).m_atractionForce;
+        m_cpuCbuff.m_attractorForceX_radiusY[i].y = static_cast<AttractorUpdater*>(m_updaters[UPDATERS::kATTRACTORS])->get(i).m_radius;
+      }
+      //Generators
+      m_cpuCbuff.m_randomPosMin = static_cast<BoxGenerator*>(m_generator[GENERATORS::kBOX])->m_initialPositionRandomMin;
+      m_cpuCbuff.m_randomPosMax = static_cast<BoxGenerator*>(m_generator[GENERATORS::kBOX])->m_initialPositionRandomMax;
+      m_cpuCbuff.m_randomVelMin = static_cast<RandomVelocityGenerator*>(m_generator[GENERATORS::kRANDOM_VELOCITY])->m_initialVelocityRandomMin;
+      m_cpuCbuff.m_randomVelMax = static_cast<RandomVelocityGenerator*>(m_generator[GENERATORS::kRANDOM_VELOCITY])->m_initialVelocityRandomMax;
+      m_cbuffer->updateFromBuffer(dc, (byte*)&m_cpuCbuff);
+    }
+    m_updateCS->set(dc);
+    m_poolBuffer->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
+    m_deadBuffer->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 1);
+    m_aliveBuffer->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 2,0);
+
+    m_cbuffer->set(dc, DR_SHADER_TYPE_FLAG::kCompute,0);
+    m_cbufferAliveCount->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 1);
+    m_cbufferDT->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 2);
 
     const Int32 numThreadsPerBlock = 256;
-    GraphicsAPI::getDeviceContext().dispatch(
+    dc.dispatch(
       Math::alignValue(m_attributes.m_maxParticles, numThreadsPerBlock) / numThreadsPerBlock, 1, 1);
-    GraphicsAPI::getDeviceContext().setUAVsNull();
-    GraphicsAPI::getDeviceContext().setResourcesNull();
-    GraphicsAPI::getDeviceContext().copyAtomicCounter(*m_deadBuffer, *m_cbufferDeadCount);
-    GraphicsAPI::getDeviceContext().copyAtomicCounter(*m_aliveBuffer, *m_cbufferAliveCount);
+    dc.setUAVsNull();
+    dc.setResourcesNull();
+    dc.copyAtomicCounter(*m_deadBuffer, *m_cbufferDeadCount);
+    dc.copyAtomicCounter(*m_aliveBuffer, *m_cbufferAliveCount);
 #endif
     emit();
 #if (DR_PARTICLES_METHOD == DR_PARTICLES_CPU)
@@ -290,31 +315,32 @@ namespace driderSDK {
       }
 #endif
 #if (DR_PARTICLES_METHOD == DR_PARTICLES_GPU)
-      m_emitCS->set(GraphicsAPI::getDeviceContext());
-      m_poolBuffer->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute, 0);
-      m_deadBuffer->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute, 1);
-      m_aliveBuffer->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute, 2);
+      DeviceContext& dc = GraphicsAPI::getDeviceContext();
+      m_emitCS->set(dc);
+      m_poolBuffer->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
+      m_deadBuffer->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 1);
+      m_aliveBuffer->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 2);
 
-      m_cbuffer->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute,0);
-      m_cbufferDeadCount->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute,1);
-      m_cbufferDT->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute, 2);
+      m_cbuffer->set(dc, DR_SHADER_TYPE_FLAG::kCompute,0);
+      m_cbufferDeadCount->set(dc, DR_SHADER_TYPE_FLAG::kCompute,1);
+      m_cbufferDT->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 2);
 
       const Int32 numThreadsPerBlock = 1024;
-      GraphicsAPI::getDeviceContext().dispatch(
+      dc.dispatch(
         Math::alignValue(m_attributes.m_numParticlesToEmit, numThreadsPerBlock) / numThreadsPerBlock, 1, 1);
-      GraphicsAPI::getDeviceContext().setUAVsNull();
+      dc.setUAVsNull();
 
 
-      GraphicsAPI::getDeviceContext().copyAtomicCounter(*m_deadBuffer, *m_cbufferDeadCount);
-      GraphicsAPI::getDeviceContext().copyAtomicCounter(*m_aliveBuffer, *m_cbufferAliveCount);
+      dc.copyAtomicCounter(*m_deadBuffer, *m_cbufferDeadCount);
+      dc.copyAtomicCounter(*m_aliveBuffer, *m_cbufferAliveCount);
 
 
-      m_setupDrawArgsCS->set(GraphicsAPI::getDeviceContext());
-      m_drawIndirectBuffer->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute, 0);
-      m_cbufferAliveCount->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kCompute, 0);
+      m_setupDrawArgsCS->set(dc);
+      m_drawIndirectBuffer->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
+      m_cbufferAliveCount->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
 
-      GraphicsAPI::getDeviceContext().dispatch(1, 1, 1);
-      GraphicsAPI::getDeviceContext().setUAVsNull();
+      dc.dispatch(1, 1, 1);
+      dc.setUAVsNull();
 #endif
     }
   }
@@ -322,13 +348,12 @@ namespace driderSDK {
   {
     //[[unroll]]
     for (size_t i = start; i < end; ++i) {
-      p->m_position[i] = Random::RandomRange(m_initialPositionRandomMin,
+      p->m_position[i] =  Random::RandomRange(m_initialPositionRandomMin,
         m_initialPositionRandomMax);
     }
   }
   void RandomVelocityGenerator::generate(size_t start, size_t end, Particle * p)
   {
-    [[unroll]]
     for (size_t i = start; i < end; ++i) {
       p->m_velocity[i] = Random::RandomRange(m_initialVelocityRandomMin,
         m_initialVelocityRandomMax);
@@ -338,7 +363,6 @@ namespace driderSDK {
   {
     float _proportionMul = 1.0f / attr.m_particleMaxLife;
     //end /= 16;
-    [[unroll]]
     for (size_t i = start; i < end; ++i ) {
       float _proportion = p->m_lifeTime[i] * _proportionMul;
       float m1Proportion = (1.0f - _proportion);
@@ -365,7 +389,6 @@ namespace driderSDK {
   {
       float _proportionMul = 1.0f / attr.m_particleMaxLife;
       //end /= 16;
-      [[unroll]]
       for (size_t i = start; i < end; i = (i + 1) ) {
         float _proportion = p->m_lifeTime[i] * _proportionMul;
         float m1Proportion = (1.0f - _proportion);
@@ -392,7 +415,6 @@ namespace driderSDK {
     //std::cout << start << "   +++    " << end << std::endl;
     //Int32 mod = end % 16;
     //end = (Int32)end / 16;
-    [[unroll]]
     for (size_t i = start; i < end; ++i) {
 
       //for (size_t i = start; i < end; ++i) {
@@ -509,30 +531,78 @@ namespace driderSDK {
   void VelocityLimiter::update(float dt, size_t start, size_t end, Particle * p, const ParticleEmitterAttributes & attr)
   {
     float _proportionMul = 1.0f / attr.m_particleMaxLife;
-    [[unroll]]
+
     for (size_t i = start; i < end; ++i) {
       float _proportion = p->m_lifeTime[i] * _proportionMul;
       float m1Proportion = (1.0f - _proportion);
       p->m_speedLimit[i] = (m_initialSpeedLimit * m1Proportion) + (m_finalSpeedLimit * _proportion);
     }
   }
+  void AttractorUpdater::add(const Vector3D & _pos, float _force, float _radius)
+  {
+    if (size() >= MAX_ATTRACTORS)
+      return;
+    Attractor atr;
+    atr.m_position = _pos;
+    atr.m_atractionForce = _force;
+    atr.m_radius = _radius;
+    m_attractors.push_back(atr);
+  }
+  void AttractorUpdater::remove(Int32 _id)
+  {
+    m_attractors.erase(m_attractors.begin() + _id);
+  }
+  Attractor & AttractorUpdater::get(Int32 _id)
+  {
+    return m_attractors[_id];
+  }
+  Int32 AttractorUpdater::size()
+  {
+    return m_attractors.size();
+  }
   void AttractorUpdater::update(float dt, size_t start, size_t end, Particle * p, const ParticleEmitterAttributes & attr)
   {
-    for (size_t i = start; i < end; ++i) {
-      Vector3D v = m_position - p->m_position[i];
-      float l = v.length();
-      if (l <= m_radius) {
-        p->m_acceleration[i] += v.normalize() * (m_atractionForce * (m_radius/l));
+    for (auto &it : m_attractors) {
+      for (size_t i = start; i < end; ++i) {
+        Vector3D v = it.m_position - p->m_position[i];
+        float l = v.length();
+        if (l <= it.m_radius) {
+          p->m_acceleration[i] += v.normalize() * (it.m_atractionForce * (it.m_radius / l));
+        }
       }
     }
   }
+  void RepellerUpdater::add(const Vector3D & _pos, float _force, float _radius)
+  {
+    if (size() >= MAX_REPELLERS)
+      return;
+    Repeller rep;
+    rep.m_position = _pos;
+    rep.m_repellerForce = _force;
+    rep.m_radius = _radius;
+    m_repellers.push_back(rep);
+  }
+  void RepellerUpdater::remove(Int32 _id)
+  {
+    m_repellers.erase(m_repellers.begin() + _id);
+  }
+  Repeller & RepellerUpdater::get(Int32 _id)
+  {
+    return m_repellers[_id];
+  }
+  Int32 RepellerUpdater::size()
+  {
+    return m_repellers.size();
+  }
   void RepellerUpdater::update(float dt, size_t start, size_t end, Particle * p, const ParticleEmitterAttributes & attr)
   {
-    for (size_t i = start; i < end; ++i) {
-      Vector3D v = p->m_position[i] - m_position;
-      float l = v.length();
-      if (l <= m_radius) {
-        p->m_acceleration[i] += v.normalize() * (m_repellerForce * (m_radius / l));
+    for (auto &it : m_repellers) {
+      for (size_t i = start; i < end; ++i) {
+        Vector3D v = p->m_position[i] - it.m_position;
+        float l = v.length();
+        if (l <= it.m_radius) {
+          p->m_acceleration[i] += v.normalize() * (it.m_repellerForce * (it.m_radius / l));
+        }
       }
     }
   }

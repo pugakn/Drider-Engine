@@ -180,6 +180,7 @@ RenderMan::init() {
   attr.m_particleMaxLife = 5;
   attr.m_numParticlesToEmit = 100000;
   attr.m_isActive = true;
+  m_emitter.init(attr);
 #else
   attr.m_maxParticles = ParticleEmitter::MAX_PARTICLES;
   attr.m_initialTime = 0.1;
@@ -189,31 +190,31 @@ RenderMan::init() {
   attr.m_numParticlesToEmit = 5000;
   attr.m_isActive = true;
 #endif
+  //Generators
+  m_emitter.getGenerator<BoxGenerator>(ParticleEmitter::GENERATORS::kBOX).m_bActive = true;
+  m_emitter.getGenerator<BoxGenerator>(ParticleEmitter::GENERATORS::kBOX).m_initialPositionRandomMin = Vector3D(-900,0,-900);
+  m_emitter.getGenerator<BoxGenerator>(ParticleEmitter::GENERATORS::kBOX).m_initialPositionRandomMax = Vector3D(900, 0, 900);
 
+  m_emitter.getGenerator<RandomVelocityGenerator>(ParticleEmitter::GENERATORS::kRANDOM_VELOCITY).m_bActive = true;
+  m_emitter.getGenerator<RandomVelocityGenerator>(ParticleEmitter::GENERATORS::kRANDOM_VELOCITY).m_initialVelocityRandomMin = Vector3D(-0, 500, -0);
+  m_emitter.getGenerator<RandomVelocityGenerator>(ParticleEmitter::GENERATORS::kRANDOM_VELOCITY).m_initialVelocityRandomMax = Vector3D(0, 200, 0);
 
-  ////Speed / Velocity
-  //attr.m_initialSpeedLimit = 1200;
-  //attr.m_finalSpeedLimit = 5;
-  //attr.m_initialVelocityRandomMin = driderSDK::Vector3D(-0, -0, -0);
-  //attr.m_initialVelocityRandomMax = driderSDK::Vector3D(0, 1800, 0);
+  //Updaters
+  m_emitter.getUpdater<TimeColorUpdater>(ParticleEmitter::UPDATERS::kTIME_COLOR).m_bActive = true;
+  m_emitter.getUpdater<TimeColorUpdater>(ParticleEmitter::UPDATERS::kTIME_COLOR).m_initialColor = Vector3D(1, 0.5, 0);
+  m_emitter.getUpdater<TimeColorUpdater>(ParticleEmitter::UPDATERS::kTIME_COLOR).m_finalColor = Vector3D(0, 0, 1);
 
-  ////Position
-  //attr.m_initialPositionRandomMin = driderSDK::Vector3D(-200, -0, -200);
-  //attr.m_initialPositionRandomMax = driderSDK::Vector3D(50, 0, 50);
+  m_emitter.getUpdater<TimeScaleUpdater>(ParticleEmitter::UPDATERS::kTIME_SCALE).m_bActive = true;
+  m_emitter.getUpdater<TimeScaleUpdater>(ParticleEmitter::UPDATERS::kTIME_SCALE).m_initialScale = 2;
+  m_emitter.getUpdater<TimeScaleUpdater>(ParticleEmitter::UPDATERS::kTIME_SCALE).m_finaleScale = 0;
 
-  ////Color
-  //attr.m_initialColor = driderSDK::Vector3D(1, 0.1, 0.1);
-  //attr.m_finalColor = driderSDK::Vector3D(0.0, 0.0, 0.0);
-  //attr.m_colorRandomMin = driderSDK::Vector3D(0, 0, 0);
-  //attr.m_colorRandomMax = driderSDK::Vector3D(0.0, 0, 0);
+  m_emitter.getUpdater<EulerUpdater>(ParticleEmitter::UPDATERS::kEULER).m_bActive = true;
+  m_emitter.getUpdater<EulerUpdater>(ParticleEmitter::UPDATERS::kEULER).m_windForce = Vector3D(50, 0, 0);
+  m_emitter.getUpdater<EulerUpdater>(ParticleEmitter::UPDATERS::kEULER).m_gravityScale = 1;
 
-  ////Scale
-  //attr.m_initialScale = 2;
-  //attr.m_finaleScale = 5;
-  //attr.m_scaleFactorRandomMin = 0.8;
-  //attr.m_scaleFactorRandomMax = 5;
-
-  m_emitter.init(attr);
+  m_emitter.getUpdater<AttractorUpdater>(ParticleEmitter::UPDATERS::kATTRACTORS).m_bActive = true;
+  m_emitter.getUpdater<AttractorUpdater>(ParticleEmitter::UPDATERS::kATTRACTORS).add(Vector3D(0,-5000,500),100,10000);
+  //Fuerzas predefinidas
 }
 
 void
