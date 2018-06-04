@@ -2,8 +2,8 @@
 
 #include <dr_application.h>
 #include <dr_timer.h>
-
 #include "dr_client.h"
+#include <dr_web_renderer.h>
 
 namespace driderSDK {
 
@@ -75,6 +75,8 @@ private:
   String m_nameStr; 
   String m_msg;
   std::vector<std::pair<String, String>> m_messages;
+
+  WebRenderer m_netLobby;
 };
 
 }

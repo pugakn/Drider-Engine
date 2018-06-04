@@ -40,18 +40,45 @@ ClientLobby::postInit() {
 
   m_currentDraw = &ClientLobby::drawMainMenu;
 
-  m_nameStr = "Pimpollo";
+  m_nameStr = "Pimpolloppp";
   m_nameStr.resize(13);
   m_msg.resize(30);
 
   ImGui_ImplDX11_Init(m_hwnd, d3dDev, d3dDevCont);
 
   initCallbacks();
+
+  m_netLobby.Init(1024, 720, BROWSER_MODE::kPopUp);
+  m_netLobby.loadURL("file:///netLobby/NetLobby.html");
+  m_netLobby.registerJS2CPPFunction(std::make_pair("C_RequestLobbies", [&](const CefRefPtr<CefListValue>& arguments) {
+    std::cout << "Requesting lobbies..." << std::endl;
+    requestLobbies();
+  }));
+  m_netLobby.registerJS2CPPFunction(std::make_pair("C_LobbyCLick", [&](const CefRefPtr<CefListValue>& arguments) {
+    Int32 id = arguments->GetInt(1);
+    std::cout << "Connecting..." << std::endl;
+    requestConnection(m_lobbies[id].ip, m_lobbies[id].port);
+  }));
+  m_netLobby.registerJS2CPPFunction(std::make_pair("C_SendMsg", [&](const CefRefPtr<CefListValue>& arguments) {
+    String msg = arguments->GetString(1);
+    std::cout <<"You: "<< msg << std::endl;
+    sendMessage(StringUtils::toWString(msg));
+  }));
+  m_netLobby.registerJS2CPPFunction(std::make_pair("C_SetUsername", [&](const CefRefPtr<CefListValue>& arguments) {
+    String name = arguments->GetString(1);
+    std::cout << "New name: " <<name << std::endl;
+    m_userName = StringUtils::toWString(name);
+    m_nameStr = name;
+  }));
+  m_netLobby.registerJS2CPPFunction(std::make_pair("C_Disconnect", [&](const CefRefPtr<CefListValue>& arguments) {
+    requestDisconnection();
+  }));
+  
 }
 
 void 
 ClientLobby::postUpdate() {
-  
+  WebRenderer::update();
   ImGui_ImplDX11_NewFrame();
   
   Client::update();
@@ -87,7 +114,7 @@ ClientLobby::postRender() {
 
 void 
 ClientLobby::postDestroy() {
-  
+  WebRenderer::shutDown();
   Client::quit();
 
   ImGui_ImplDX11_Shutdown();
@@ -166,6 +193,8 @@ ClientLobby::onJoinAccepted() {
   //IMPORTANT
   auto temp = m_nameStr.substr(0, m_nameStr.find_first_of('\0'));
   m_userName = StringUtils::toWString(temp);
+
+  m_netLobby.executeJSCode("JS_OnLobbyConnected();");
 }
 
 void 
@@ -183,11 +212,26 @@ ClientLobby::onChatMsgReceived(WString&& clientName, WString&& msg) {
   
   m_messages.emplace_back(StringUtils::toString(clientName),
                           StringUtils::toString(msg)); 
+
+  //JS
+  m_netLobby.executeJSCode("JS_AddMesage('" + StringUtils::toString(clientName) + "'" + ",'" + 
+                           StringUtils::toString(msg) + "')");
 }
 
 void 
 ClientLobby::onLobbiesListReceived(LobbiesList&& lobbies) {
   m_lobbies = std::move(lobbies);
+
+  //JS
+  m_netLobby.executeJSCode("JS_ClearLobbyItems();");
+  Int32 index = 0;
+  for (auto& lobby : m_lobbies) {
+    String lobbyName = "Lobby ";
+    lobbyName += ((index) + 48);
+    lobbyName += '\0';
+    m_netLobby.executeJSCode("JS_AddLobbyItem(" + std::to_string(index) + ",'"+ lobbyName  + "');");
+    index++;
+  }
 }
 
 void 
@@ -195,7 +239,7 @@ ClientLobby::drawMainMenu() {
 
   ImGui::Text("Name: ");
   ImGui::SameLine();
-  ImGui::InputText("##", const_cast<char*>(m_nameStr.data()), m_nameStr.size());
+  //ImGui::InputText("##", const_cast<char*>(m_nameStr.data()), m_nameStr.size());
 
   if (ImGui::Button("Get Lobbies")) {
     //Call to receive current lobbies
