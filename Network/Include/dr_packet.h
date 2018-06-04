@@ -12,6 +12,8 @@ class DR_NETWORK_EXPORT Packet
   
    Packet();
 
+   Packet(SizeT initialSize);
+
   ~Packet();
 
   /**
@@ -158,7 +160,16 @@ class DR_NETWORK_EXPORT Packet
     return m_data.empty() || m_readPoint == m_data.size();
   }
 
+  FORCEINLINE void
+  resetReadPos()
+  {
+    m_readPoint = 0;
+  }
+ 
+
  private:
+
+  friend class UDPSocket;
 
   void
   getDataPtr(Int8*& buffer, SizeT size);

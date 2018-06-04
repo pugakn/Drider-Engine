@@ -6,17 +6,10 @@ namespace driderSDK {
 
 template<class T>
 void 
-dr_void_deleter(void* pData)
+dr_void_deleter(void* data)
 {
-  T* pInfo = static_cast<T*>(pData);
-  delete pInfo;
-}
-
-template<class T>
-void 
-dr_gfx_deleter(T* obj)
-{
-  obj->release();
+  T* info = static_cast<T*>(data);
+  delete info;
 }
 
 template<class T, class Deleter>

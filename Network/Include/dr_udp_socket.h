@@ -32,9 +32,9 @@ class DR_NETWORK_EXPORT UDPSocket : public Socket
   *  successful, false otherwise.
   */
   bool 
-  bind(const TString& ipAddress, UInt16 port);
+  bind(UInt32 ipAddress, UInt16 port);
 
-  const TString&
+  UInt32
   getBindAddress() 
   {
     return m_bindAddress;
@@ -47,25 +47,31 @@ class DR_NETWORK_EXPORT UDPSocket : public Socket
   }
 
   SOCKET_ERR::E
-  send(const DataBuffer& data, UInt16 port, const TString& ipAddress);
+  send(const DataBuffer& data, UInt32 ipAddress, UInt16 port);
 
   SOCKET_ERR::E
-  send(const Packet& packet, UInt16 port, const TString& ipAddress);
+  send(const Packet& packet, UInt32 ipAddress, UInt16 port);
 
   SOCKET_ERR::E
   receive(DataBuffer& buffer, 
           Int32& recievedLen, 
-          UInt16& port, 
-          TString& ipAddress);
+          UInt32& ipAddress,
+          UInt16& port);
 
   SOCKET_ERR::E
   receive(Packet& packet, 
           Int32 maxBuffSize, 
-          Int32& recievedLen, 
-          UInt16& port, 
-          TString& ipAddress);
+          Int32& receivedLen, 
+          UInt32& ipAddress,
+          UInt16& port);
+
+  SOCKET_ERR::E
+  receive(Packet& packet, 
+          Int32& receivedLen, 
+          UInt32& ipAddress,
+          UInt16& port);
  private:
-  TString m_bindAddress;
+  UInt32 m_bindAddress;
   UInt16  m_bindPort;
 };
 

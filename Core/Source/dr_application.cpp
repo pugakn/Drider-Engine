@@ -35,12 +35,19 @@ void Application::setViewport(const Viewport & _viewport)
 }
 void 
 Application::init() {
+
   m_running = true;
-    
-  createWindow();
 
-  m_hwnd = GetActiveWindow();
-
+  //m_viewport.width = 1920;
+  //m_viewport.height = 1024;
+  m_viewport.width = 1280;
+  m_viewport.height = 720;
+  
+  if (m_usesWindow) {
+    createWindow();
+    m_hwnd = GetActiveWindow();
+  }
+  
   postInit();
 }
 void 
@@ -64,7 +71,9 @@ Application::createWindow() {
 void 
 Application::update() {
  
-  SDL_Event event;
+  if (m_usesWindow) {
+
+    SDL_Event event;
 
   while (SDL_PollEvent(&event)){
     if (event.type == SDL_QUIT) {
@@ -81,6 +90,8 @@ Application::update() {
 
   }
 
+  }
+  
   postUpdate();
 }
 
@@ -91,7 +102,10 @@ Application::render() {
 
 void 
 Application::destroy() {
-  SDL_Quit();
+  
+  if (m_usesWindow) {
+    SDL_Quit();
+  }
   
   postDestroy();
 }
