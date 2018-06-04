@@ -10,5 +10,5 @@ int main(int argc, char* argv[]) {
 
   ClientLobby app;
 
-  return app.run();
+  return app.run({0,0, 800, 600});
 }

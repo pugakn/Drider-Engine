@@ -4,5 +4,5 @@ int main(int argc, char* argv[]) {
 
   using namespace driderSDK;
 
-  return LobbyServerApp().run();
+  return LobbyServerApp().run({});
 }

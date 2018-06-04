@@ -45,7 +45,7 @@ class Client : private PacketHandler
 
   //Called when we receive a message
   virtual void
-  onChatMsgReceived(const WString& clientName, const WString& msg) = 0;
+  onChatMsgReceived(WString&& clientName, WString&& msg) = 0;
 
   //Called when we receive the active servers
   virtual void

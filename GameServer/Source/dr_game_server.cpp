@@ -2,6 +2,6 @@
 
 int main(int argc, char* argv[]) {
 
-  return driderSDK::GameServer().run();
+  return driderSDK::GameServer().run({});
 
 }

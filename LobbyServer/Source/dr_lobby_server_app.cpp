@@ -158,12 +158,14 @@ LobbyServerApp::closeServer(MessageData& msg) {
 
 void 
 LobbyServerApp::serverFull(MessageData& msg) {
-  setServerJoinStatus(msg.senderPort, true);  
+  //can join = false
+  setServerJoinStatus(msg.senderPort, false);  
 }
 
 void 
 LobbyServerApp::serverNotFull(MessageData& msg) {
-  setServerJoinStatus(msg.senderPort, false);  
+  //can join = true
+  setServerJoinStatus(msg.senderPort, true);  
 }
 
 void 
@@ -229,8 +231,8 @@ LobbyServerApp::checkActiveServerStatus() {
     if (time >= m_requestActiveRate) {
       server->ignoredRequests++;
       server->timeOut.init();
-      std::cout << "Requested active status to: " << 
-                   server->publicIP << " port:" << server->assignedPort << std::endl;
+      /*std::cout << "Requested active status to: " << 
+                   server->publicIP << " port:" << server->assignedPort << std::endl;*/
       requestActiveNotify(*server);
     }  
 

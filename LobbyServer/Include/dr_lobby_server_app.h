@@ -32,6 +32,9 @@ class LobbyServerApp : public Application, public PacketHandler
   virtual void 
   postDestroy() override;
 
+  void 
+  onResize(){}
+
  private:
    
   struct GameServerData

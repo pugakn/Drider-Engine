@@ -142,4 +142,6 @@ ClientApplication::postDestroy() {
   Logger::shutDown();
 }
 
+void ClientApplication::onResize() {}
+
 }

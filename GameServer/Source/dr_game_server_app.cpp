@@ -88,6 +88,7 @@ GameServer::postUpdate() {
     return;
   }
   checkIncomingPackets();
+  checkClientsActiveState();
 }
 
 void 
@@ -143,6 +144,8 @@ GameServer::clientJoin(MessageData& msg) {
     client.ip = msg.senderIP;
     client.port = msg.senderPort;
     client.ignoredRequests = 0;
+
+    std::cout << "New client joined: " << client.ip << " " << client.port << std::endl;
    
     client.timeOut.init();
 
@@ -166,6 +169,8 @@ GameServer::clientLeave(MessageData& msg) {
   auto client = findClient(msg.senderIP, msg.senderPort);
 
   if (client != m_clients.end()) {
+
+    std::cout << "Client leaved: " << client->ip << " " << client->port << std::endl;
 
     m_clients.erase(client);
 
@@ -214,8 +219,8 @@ GameServer::requestNotify(MessageData& msg) {
 void 
 GameServer::chatMsg(MessageData& msg) {
 
-  String data;
-  String who;
+  WString data;
+  WString who;
 
   msg.packet >> who;
   msg.packet >> data;
@@ -269,10 +274,10 @@ GameServer::checkClientsActiveState() {
 
     //Remove server
     if (client->ignoredRequests >= m_maxIgnoredRequests) {
-      std::cout << "Client disconnected: " << 
+      std::cout << "Client loss connection: " << 
                    client->ip << " port:" << client->port << std::endl;
 
-      m_clients.erase(client);
+      client = m_clients.erase(client);
 
       if(!m_inGame) {
         notifyServerCapacityFull(false);
@@ -286,8 +291,8 @@ GameServer::checkClientsActiveState() {
       client->ignoredRequests++;
       client->timeOut.init();
 
-      std::cout << "Requested active status to: " << 
-                   client->ip << " port:" << client->port << std::endl;
+      /*std::cout << "Requested active status to: " << 
+                   client->ip << " port:" << client->port << std::endl;*/
 
       Packet pack;
 

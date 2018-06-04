@@ -93,7 +93,7 @@ Client::chatMsg(MessageData& msg) {
   msg.packet >> user;
   msg.packet >> data;
 
-  onChatMsgReceived(user, data);
+  onChatMsgReceived(std::move(user), std::move(data));
 }
 
 void 
@@ -123,7 +123,9 @@ Client::requestActive(MessageData& msg) {
   pack << VER_NUM::kN;
   pack << REQUEST_ID::kNotifyActive;
 
-  m_socket->send(pack, msg.senderIP, msg.senderPort);
+  m_currentServer.timeOut.init();
+
+  m_socket->send(pack, m_currentServer.ip, m_currentServer.port);
 }
 
 void 
@@ -180,6 +182,7 @@ void
 Client::sendMessage(const WString& msg) {
   
   if (m_currentServer.ip) {
+
     Packet pack;
     pack << VER_NUM::kN;
     pack << REQUEST_ID::kChatMsg;

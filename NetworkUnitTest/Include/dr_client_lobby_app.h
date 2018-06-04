@@ -1,6 +1,7 @@
 #pragma once
 
 #include <dr_application.h>
+#include <dr_timer.h>
 
 #include "dr_client.h"
 
@@ -26,6 +27,11 @@ private:
   virtual void 
   postDestroy() override;
 
+  virtual void
+  onResize() override;
+
+  void 
+  initCallbacks();
 
   // Inherited via Client
   virtual void 
@@ -38,15 +44,37 @@ private:
   onConnectionLoss() override;
 
   virtual void 
-  onChatMsgReceived(const WString& clientName, 
-                    const WString& msg) override;
+  onChatMsgReceived(WString&& clientName, 
+                    WString&& msg) override;
 
   virtual void 
   onLobbiesListReceived(LobbiesList&& lobbies) override;
- private:
+
+  void 
+  drawMainMenu();
   
+  void 
+  drawInGame();
+
+  void
+  drawPopupErrConn();
+
+  void
+  drawPopupDisconn();
+
+  void 
+  drawLoading();
+ private:
+
+  using DrawFunc = decltype(&drawInGame);
+  
+  bool m_err;
+  Timer m_timer;
+  DrawFunc m_currentDraw;
   LobbiesList m_lobbies;
- 
+  String m_nameStr; 
+  String m_msg;
+  std::vector<std::pair<String, String>> m_messages;
 };
 
 }

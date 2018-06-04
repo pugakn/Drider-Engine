@@ -38,7 +38,6 @@ class DR_CORE_EXPORT Application
  private:
   static Application* application;
   static Application& getApplication();
-  std::atomic<bool> m_running;
   SDL_Window* m_window;
   bool m_usesWindow;
 };

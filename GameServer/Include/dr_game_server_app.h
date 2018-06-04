@@ -44,6 +44,9 @@ class GameServer : public Application, public PacketHandler
   virtual void
   postDestroy() override;
 
+  void 
+  onResize(){}
+
   virtual void 
   processPacket(MessageData& msg) override;
 
@@ -92,7 +95,7 @@ class GameServer : public Application, public PacketHandler
    UInt16 m_port;
    Timer m_notifyTimer;
    //Max capacity for clients
-   const SizeT m_maxClients = 10;
+   const SizeT m_maxClients = 5;
    //If after 10 secs we haven't recv any msg form the main server we disconnect
    const float m_maxTimeOut = 11.f;
    //Rate for asking active notifications to clients
