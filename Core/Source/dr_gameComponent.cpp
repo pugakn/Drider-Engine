@@ -7,7 +7,6 @@
 #include <chrono>
 
 namespace driderSDK {
-
 GameComponent::GameComponent(GameObject& gameObject_, const TString& _name) 
   : NameObject(gameObject_.getValidName(_name)), 
     m_gameObject(gameObject_)

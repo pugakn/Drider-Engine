@@ -1,6 +1,6 @@
 #include "dr_script_debug.h"
 #include "dr_script_engine.h"
-#include "angelscript\angelscript.h"
+
 
 namespace driderSDK
 {
@@ -9,6 +9,8 @@ namespace driderSDK
 		pScriptEngine = engine;
 		lastStackLevel = 0;
 	}
+
+	ScriptDebug::ScriptDebug() {}
 
 	ScriptDebug::~ScriptDebug() {}
 
@@ -244,6 +246,13 @@ namespace driderSDK
 		else if (typeId == asTYPEID_DOUBLE) {
 			result << *(double*)value;
 		}
+		else if (typeId & asTYPEID_APPOBJECT) {
+			result << *(TString*)value;
+		}
+		else if (typeId & asTYPEID_SCRIPTOBJECT) {
+			result << "(Object)";
+			//expand into more details
+		}
 		else if (typeId & asTYPEID_MASK_OBJECT) {
 			result << *(Int32*)value;
 			asITypeInfo *typeInfo = pScriptEngine->m_scriptEngine->GetTypeInfoById(typeId);
@@ -256,10 +265,6 @@ namespace driderSDK
 					break;
 				}
 			}
-		}
-		else if (typeId & asTYPEID_SCRIPTOBJECT) {
-			result << "(Object)";
-			//expand into more details
 		}
 		else {
 			result << "(Other type of value)";
@@ -295,5 +300,19 @@ namespace driderSDK
 		printToLogger(result.str());
 
 	}
+
+	void 
+	ScriptDebug::printString(TString* string) {
+		std::wcout << *string;
+	}
+
+	void 
+	ScriptDebug::logValue(asIScriptGeneric* gen) {
+		ScriptDebug instance;
+		TString value = instance.interpretValue(gen->GetArgAddress(0), gen->GetArgTypeId(0));
+		std::wcout << L"\n" + value;
+	}
+
+
 
 }

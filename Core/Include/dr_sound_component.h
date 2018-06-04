@@ -55,7 +55,17 @@ class DR_CORE_EXPORT SoundComponent : public GameComponent {
 
     result = REGISTER_FOO(SoundComponent,
                           "void play(const TString& in)",
-                          asMETHODPR(SoundComponent, play, (const TString&), void));    
+                          asMETHODPR(SoundComponent, play, (const TString&), void));
+    
+    result = scriptEngine->m_scriptEngine->RegisterObjectMethod("SoundComponent", 
+                                                                "GameComponent@ opImplCast()", 
+                                                                asFUNCTION((refCast<SoundComponent, GameComponent>)),
+                                                                asCALL_CDECL_OBJLAST);
+
+    result = scriptEngine->m_scriptEngine->RegisterObjectMethod("GameComponent",
+                                                                "SoundComponent@ opCast()",
+                                                                asFUNCTION((refCast<GameComponent, SoundComponent>)),
+                                                                asCALL_CDECL_OBJLAST);
 
     END_REGISTER
 

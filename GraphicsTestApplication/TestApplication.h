@@ -56,7 +56,7 @@ class TestApplication : public Application
   initScriptEngine();
 
   void
-  playSoundTest();
+  addSounds();
 
   void
   destroyModules();

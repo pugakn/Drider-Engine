@@ -3,6 +3,11 @@
 #include "dr_gameComponent.h"
 #include <dr_keyboard.h>
 
+#include "dr_gameComponent.h"
+
+#include <dr_export_script.h>
+#include <..\..\Script\Include\dr_script_engine.h>
+
 namespace driderSDK {
 
 class ScriptEnine;
@@ -54,6 +59,28 @@ class DR_CORE_EXPORT ScriptComponent : public GameComponent {
 
     void
     onKeyUp(KEY_CODE::E key);
+
+    asIScriptObject*
+    getScript();
+
+    static BEGINING_REGISTER(ScriptComponent, 0, asOBJ_REF | asOBJ_NOCOUNT)
+
+    result = scriptEngine->m_scriptEngine->RegisterInterface("IScript");
+    result = REGISTER_FOO(ScriptComponent,
+                          "IScript@ getScript()",
+                          asMETHOD(ScriptComponent, getScript))
+
+    result = scriptEngine->m_scriptEngine->RegisterObjectMethod("ScriptComponent",
+                                                                "GameComponent@ opImplCast()",
+                                                                asFUNCTION((refCast<ScriptComponent, GameComponent>)),
+                                                                asCALL_CDECL_OBJLAST);
+
+    result = scriptEngine->m_scriptEngine->RegisterObjectMethod("GameComponent",
+                                                                "ScriptComponent@ opCast()",
+                                                                asFUNCTION((refCast<GameComponent, ScriptComponent>)),
+                                                                asCALL_CDECL_OBJLAST);
+    
+    END_REGISTER
 
   private:
     ScriptEngine *scriptEngine = nullptr;

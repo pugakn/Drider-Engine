@@ -235,9 +235,15 @@ asMODULE_IS_IN_USE                     = -28
 */
 
 //r = engine->RegisterObjectMethod("object", "int getAttr(int) const", asMETHODPR(Object, getAttr, (int) const, int), asCALL_THISCALL);
+
+template<class A, class B>
+B* refCast(A* a)
+{
+  // If the handle already is a null handle, then just return the null handle
+  if (!a) return 0;
+  // Now try to dynamically cast the pointer to the wanted type
+  B* b = dynamic_cast<B*>(a);
+  return b;
 }
 
-/*    result = scriptEngine->m_scriptEngine->RegisterObjectMethod("Camera",
-                                                                "float get_variable()",
-                                                                asMETHODPR(Camera, get_variable, (void), float),
-                                                                asCALL_THISCALL);*/
+}

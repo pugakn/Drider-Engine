@@ -5,6 +5,9 @@
 #include "dr_enableObject.h"
 #include "dr_name_object.h"
 
+#include <dr_export_script.h>
+#include <..\..\Script\Include\dr_script_engine.h>
+
 namespace driderSDK {
 
 class GameObject;
@@ -43,6 +46,10 @@ class DR_CORE_EXPORT GameComponent : public EnableObject,
   */
   virtual void
   cloneIn(GameObject& _go) = 0;
+
+  static BEGINING_REGISTER(GameComponent, 0, asOBJ_REF | asOBJ_NOCOUNT)
+
+  END_REGISTER
  protected:
   GameObject& m_gameObject;
 };
