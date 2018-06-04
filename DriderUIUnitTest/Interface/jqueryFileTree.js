@@ -51,7 +51,6 @@ if(jQuery) (function($){
         if( $(this).parent().hasClass('directory') ) {
           if( $(this).parent().hasClass('collapsed') ) {
             // Expand
-            console.log("doble click");
             if( !o.multiFolder ) {
               $(this).parent().parent().find('UL').slideUp({ duration: o.collapseSpeed, easing: o.collapseEasing });
               $(this).parent().parent().find('LI.directory').removeClass('expanded').addClass('collapsed');
@@ -59,8 +58,7 @@ if(jQuery) (function($){
             $(this).parent().find('UL').remove(); // cleanup
             $('#fileTree').SetDirectory( $(this).parent(), escape($(this).attr('rel').match( /.*\// )) );
             $(this).parent().removeClass('collapsed').addClass('expanded');
-            UIReady(urlDirectory);
-            console.log(urlDirectory);
+            CFUIReady(urlDirectory);
           } else {
             // Collapse
             $(this).parent().find('UL').slideUp({ duration: o.collapseSpeed, easing: o.collapseEasing });
@@ -101,7 +99,6 @@ if(jQuery) (function($){
 function JS_InfoTreeFile( root, datos) {
   var r = '<ul class="jqueryFileTree" style="display: none;">';
   var files = JSON.parse(datos.replace(/\'/g, '"')).items;
-  console.log(files);
   var index, len = files.length;
   for (index = 0; index < len; ++index) {
     if (files[index].type === "folder") {
@@ -110,10 +107,15 @@ function JS_InfoTreeFile( root, datos) {
       r += '<li class="file ext_' + files[index].type + '"><a href="#" rel='+ files[index].parent + '>' + files[index].name + '</a></li>';
     }
   }
-  console.log("Asdasdasda");
   $('#fileTree').showTree(globalDirectory, urlDirectory, r, o);
 }
-UIReady("Assets");
-/*function UIReady () {setTimeout(function(){
+
+function CFUIReady(url) {
+  UIReady(url);
+  /*
+  function UIReady () {setTimeout(function(){
   JS_InfoTreeFile("Assets","{'items':[{'name':'Models','parent':'Assets/Models','type':'folder'},{'name':'Scripts','parent':'Assets/Scripts','type':'folder'}]}"); }, 1000);
 };*/
+}
+
+CFUIReady("Assets")
