@@ -169,8 +169,8 @@ FS(PS_INPUT input) {
   const float  NdotV = saturate(dot(normal, ViewDir));
 
   const int activeLights = kEyePosition.w;
-  [unroll]
-  for (int index = 0; index < activeLights; ++index) {
+  //[unroll]
+  for (int index = 0; index < activeLights; index += 4) {
     float3 lightPosition  = kLightPosition[index].xyz;
     float3 lightColor     = kLightColor[index].xyz;
     float  lightRange     = kLightPosition[index].w;
@@ -266,7 +266,7 @@ FS(PS_INPUT input) {
   psOut.Brightness = float4(brightness(psOut.Lightning.xyz), 1.0f);
 
   //psOut.Lightning = position;
-  //psOut.Lightning = float4(normal, 1.0f);
+  psOut.Lightning = float4(normal, 1.0f);
   //psOut.Lightning = float4(albedo, 1.0f);
   //psOut.Lightning = float4(metallic.rrr, 1.0f);
   //psOut.Lightning = float4(emissive, 1.0f);
