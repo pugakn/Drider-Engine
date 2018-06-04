@@ -71,9 +71,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\dr_string_utils.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Include\dr_compressor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
