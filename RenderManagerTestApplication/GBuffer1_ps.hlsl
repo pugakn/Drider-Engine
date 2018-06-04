@@ -28,12 +28,6 @@ struct PS_OUTPUT {
 	float4 Emissive_R     : SV_TARGET3;
 };
 
-#define ALBEDO
-#define NORMAL
-#define EMISSIVE
-#define METALLIC
-#define ROUGHNESS
-
 PS_OUTPUT
 FS(PS_INPUT input) {
 	PS_OUTPUT output;
@@ -43,12 +37,9 @@ FS(PS_INPUT input) {
 	float4 albedo   = AlbedoTex.Sample(SS, uv);
   float4 emmisive = EmissiveTex.Sample(SS, uv);
   float3 normal;
-#ifdef NORMAL
+
   normal = normalize((2.0f * NormalTex.Sample(SS, uv).xyz) - 1.0f);
   normal = normalize(mul(normal, input.TBN));
-#else
-  normal = input.TBN[2];
-#endif //NORMAL
   
   float metalic   = Metallic.Sample(SS, uv).r;
   float roughness = Roughness.Sample(SS, uv).r;

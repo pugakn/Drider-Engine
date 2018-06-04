@@ -225,8 +225,8 @@ void
 ResourceManager::createDummyNormalTexture() {
   auto texture = std::make_shared<TextureCore>();
 
-  constexpr Int32 size = 2;
-  constexpr Int32 channels = 4;
+  constexpr Int32 size = 1;
+  constexpr Int32 channels = 3;
 
   ImageInfo imageInfo;
 
@@ -240,16 +240,9 @@ ResourceManager::createDummyNormalTexture() {
     UInt8 d[channels];
   };
 
-  Pixel BluePixel = { 0, 255, 0, 255 };
-
-  Pixel matrix[size][size];
-
-  matrix[0][0] = BluePixel;
-  matrix[0][1] = BluePixel;
-  matrix[1][0] = BluePixel;
-  matrix[1][1] = BluePixel;
+  Pixel BluePixel = { 127, 127, 255 };
  
-  std::memcpy(imageInfo.data.data(), matrix[0][0].d, size * size * channels);
+  std::memcpy(imageInfo.data.data(), &BluePixel.d[0], sizeof(BluePixel));
 
   texture->init(&imageInfo);
 
@@ -260,7 +253,7 @@ void
 ResourceManager::createDummyWhiteTexture() {
   auto texture = std::make_shared<TextureCore>();
 
-  constexpr Int32 size = 2;
+  constexpr Int32 size = 1;
   constexpr Int32 channels = 4;
 
   ImageInfo imageInfo;
@@ -277,14 +270,7 @@ ResourceManager::createDummyWhiteTexture() {
 
   Pixel WhitePixel = { 255, 255, 255, 255 };
 
-  Pixel matrix[size][size];
-
-  matrix[0][0] = WhitePixel;
-  matrix[0][1] = WhitePixel;
-  matrix[1][0] = WhitePixel;
-  matrix[1][1] = WhitePixel;
-
-  std::memcpy(imageInfo.data.data(), matrix[0][0].d, size * size * channels);
+  std::memcpy(imageInfo.data.data(), &WhitePixel.d[0], sizeof(WhitePixel));
 
   texture->init(&imageInfo);
 
@@ -295,7 +281,7 @@ void
 ResourceManager::createDummyBlackTexture() {
   auto texture = std::make_shared<TextureCore>();
 
-  constexpr Int32 size = 2;
+  constexpr Int32 size = 1;
   constexpr Int32 channels = 4;
 
   ImageInfo imageInfo;
@@ -312,14 +298,7 @@ ResourceManager::createDummyBlackTexture() {
 
   Pixel BlackPixel = { 0, 0, 0, 255 };
 
-  Pixel matrix[size][size];
-
-  matrix[0][0] = BlackPixel;
-  matrix[0][1] = BlackPixel;
-  matrix[1][0] = BlackPixel;
-  matrix[1][1] = BlackPixel;
-
-  std::memcpy(imageInfo.data.data(), matrix[0][0].d, size * size * channels);
+  std::memcpy(imageInfo.data.data(), &BlackPixel.d[0], sizeof(BlackPixel));
 
   texture->init(&imageInfo);
 

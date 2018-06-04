@@ -111,7 +111,7 @@ Uncharted2(in float3 Color, in float exposure) {
 
 #define CHROMATIC_ABERRATION
 #define DEPTH_OF_FIELD
-//#define VIGNETTE
+#define VIGNETTE
 //#define TONE_MAPPING
 
 float4
