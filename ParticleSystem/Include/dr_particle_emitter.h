@@ -16,8 +16,7 @@
 namespace driderSDK {
   static const Int32 MAX_ATTRACTORS = 4;
   static const Int32 MAX_REPELLERS = MAX_ATTRACTORS;
-  static const Int32 MAX_COLLIDERS = MAX_ATTRACTORS;
-
+  static const Int32 MAX_VORTEX = MAX_ATTRACTORS;
   struct DR_PARTICLES_EXPORT Particle { 
     float* m_lifeTime;
     bool* m_isActive;
@@ -59,7 +58,7 @@ namespace driderSDK {
     Int32 m_bTimeScaleUpdaterActive;
     Int32 m_bEulerUpdaterActive;
     Int32 m_bAttractorUpdaterActive;
-    Int32 m_bRepellerUpdaterActive;
+    Int32 m_bVortexActive;
     Int32 m_bColliderUpdaterActive;
     Int32 m_bBoxGeneratorActive;
     Int32 m_bRandVelocityGeneratorActive;
@@ -79,11 +78,13 @@ namespace driderSDK {
     //Attractors Updater
     Vector4D m_attractorPos[MAX_ATTRACTORS];
     Vector4D m_attractorForceX_radiusY[MAX_ATTRACTORS];
-    //Repellers Updater
-    Vector4D m_RepellerPos[MAX_REPELLERS];
-    Vector4D m_RepellerForceX_radiuusY[MAX_REPELLERS];
+    //Vortex Updater
+    Vector4D m_VortexPos[MAX_VORTEX];
+    Vector4D m_VortexForceX_radiuusY[MAX_VORTEX];
+    Vector4D m_VortexUP[MAX_VORTEX];
+
     ////Plane Collision Updater
-    Vector4D m_planeNormal;
+    Vector4D m_planeNormal_k;
     Vector4D m_planePoint;
 
     //Time Scale Updater
@@ -92,10 +93,10 @@ namespace driderSDK {
 
     float m_particleMaxLife;
     Int32 m_particlesToEmit;
-    Int32  aliveParticles;
     Int32 m_maxParticles;
     Int32 m_numAttractors;
     Int32 m_numRepellers;
+    Int32  m_numVortex;
   };
   struct DR_PARTICLES_EXPORT ParticleEmitterAttributes {
     bool m_isActive = false;
@@ -226,6 +227,32 @@ namespace driderSDK {
     void update(float dt, size_t start, size_t end, Particle* p, const ParticleEmitterAttributes& attr) override;
     std::vector<Repeller> m_repellers;
   };
+  struct DR_PARTICLES_EXPORT Vortex {
+    Vector3D m_position{ 0, 0, 0 };
+    Vector3D m_up{ 0, 0, 0 };
+    float m_radius{ 0 };
+    float m_force{ 0 };
+  };
+  class DR_PARTICLES_EXPORT VortexUpdater : public ParticleUpdater {
+  public:
+    void add(const Vector3D& _pos, const Vector3D& _up, float _force, float _radius);
+    void remove(Int32 _id);
+    Vortex& get(Int32 _id);
+    Int32 size();
+  private:
+    friend class ParticleEmitter;
+    void update(float dt, size_t start, size_t end, Particle* p, const ParticleEmitterAttributes& attr) override;
+    std::vector<Vortex> m_vortex;
+  };
+  class DR_PARTICLES_EXPORT PlaneColliderUpdater : public ParticleUpdater {
+  public:
+    Vector3D m_normal{ 0, 0, 0 };
+    Vector3D m_point{ 0, 0, 0 };
+    float m_k{ 0 };
+  private:
+    friend class ParticleEmitter;
+    void update(float dt, size_t start, size_t end, Particle* p, const ParticleEmitterAttributes& attr) override;
+  };
 
   class DR_PARTICLES_EXPORT ParticleEmitter {
   public:
@@ -239,13 +266,14 @@ namespace driderSDK {
       kTIME_COLOR,
       kTIME_SCALE,
       kATTRACTORS,
-      kREPELLERS,
-      kDEPTH_COLLITION,
+      kDEPTH_COLLISION,
       kEULER,
+      kPLANE_COLLISION,
+      kVORTEX,
       kUPDATER_COUNT
     };
 #if (DR_PARTICLES_METHOD == DR_PARTICLES_GPU)
-    static const Int32 MAX_PARTICLES = 10000000;
+    static const Int32 MAX_PARTICLES = 1000000;
 #else
     static const Int32 MAX_PARTICLES = 150000;
 #endif

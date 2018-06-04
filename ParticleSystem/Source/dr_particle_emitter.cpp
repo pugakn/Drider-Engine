@@ -23,10 +23,12 @@ namespace driderSDK {
     m_updaters[UPDATERS::kTIME_SCALE] = (pU);
     pU = new AttractorUpdater();
     m_updaters[UPDATERS::kATTRACTORS] = (pU);
-    pU = new RepellerUpdater();
-    m_updaters[UPDATERS::kREPELLERS] = (pU);
     pU = new EulerUpdater();
     m_updaters[UPDATERS::kEULER] = (pU);
+    pU = new VortexUpdater();
+    m_updaters[UPDATERS::kVORTEX] = (pU);
+    pU = new PlaneColliderUpdater();
+    m_updaters[UPDATERS::kPLANE_COLLISION] = (pU);
 
     //Generators
     ParticleGenerator* pG = new BoxGenerator();
@@ -235,12 +237,13 @@ namespace driderSDK {
       m_cpuCbuff.m_maxParticles = m_attributes.m_maxParticles;
 
       //Active
+      m_cpuCbuff.m_bColliderUpdaterActive = static_cast<PlaneColliderUpdater*>(m_updaters[UPDATERS::kPLANE_COLLISION])->m_bActive;
       m_cpuCbuff.m_bAttractorUpdaterActive = static_cast<AttractorUpdater*>(m_updaters[UPDATERS::kATTRACTORS])->m_bActive;
       m_cpuCbuff.m_bBoxGeneratorActive = static_cast<BoxGenerator*>(m_generator[GENERATORS::kBOX])->m_bActive;
+      m_cpuCbuff.m_bVortexActive = static_cast<VortexUpdater*>(m_updaters[UPDATERS::kVORTEX])->m_bActive;
       //m_cpuCbuff.m_bColliderUpdaterActive = 
       m_cpuCbuff.m_bEulerUpdaterActive = static_cast<EulerUpdater*>(m_updaters[UPDATERS::kEULER])->m_bActive;
       m_cpuCbuff.m_bRandVelocityGeneratorActive = static_cast<RandomVelocityGenerator*>(m_generator[GENERATORS::kRANDOM_VELOCITY])->m_bActive;
-      m_cpuCbuff.m_bRepellerUpdaterActive = static_cast<RepellerUpdater*>(m_updaters[UPDATERS::kREPELLERS])->m_bActive;
       m_cpuCbuff.m_bTimeColorUpdaterActive = static_cast<TimeColorUpdater*>(m_updaters[UPDATERS::kTIME_COLOR])->m_bActive;
       m_cpuCbuff.m_bTimeScaleUpdaterActive = static_cast<TimeScaleUpdater*>(m_updaters[UPDATERS::kTIME_SCALE])->m_bActive;
       //Updaters
@@ -258,10 +261,18 @@ namespace driderSDK {
         m_cpuCbuff.m_attractorForceX_radiusY[i].x = static_cast<AttractorUpdater*>(m_updaters[UPDATERS::kATTRACTORS])->get(i).m_atractionForce;
         m_cpuCbuff.m_attractorForceX_radiusY[i].y = static_cast<AttractorUpdater*>(m_updaters[UPDATERS::kATTRACTORS])->get(i).m_radius;
       }
+      m_cpuCbuff.m_numVortex = static_cast<VortexUpdater*>(m_updaters[UPDATERS::kVORTEX])->size();
+      for (SizeT i = 0; i < m_cpuCbuff.m_numVortex; ++i) {
+        m_cpuCbuff.m_VortexPos[i] = static_cast<VortexUpdater*>(m_updaters[UPDATERS::kVORTEX])->get(i).m_position;
+        m_cpuCbuff.m_VortexForceX_radiuusY[i].x = static_cast<VortexUpdater*>(m_updaters[UPDATERS::kVORTEX])->get(i).m_force;
+        m_cpuCbuff.m_VortexForceX_radiuusY[i].y = static_cast<VortexUpdater*>(m_updaters[UPDATERS::kVORTEX])->get(i).m_radius;
+        m_cpuCbuff.m_VortexUP[i] = static_cast<VortexUpdater*>(m_updaters[UPDATERS::kVORTEX])->get(i).m_up;
+      }
+      m_cpuCbuff.m_planeNormal_k = static_cast<PlaneColliderUpdater*>(m_updaters[UPDATERS::kPLANE_COLLISION])->m_normal;
+      m_cpuCbuff.m_planeNormal_k.w = static_cast<PlaneColliderUpdater*>(m_updaters[UPDATERS::kPLANE_COLLISION])->m_k;
+      m_cpuCbuff.m_planePoint = static_cast<PlaneColliderUpdater*>(m_updaters[UPDATERS::kPLANE_COLLISION])->m_point;
 
-      m_cpuCbuff.m_bColliderUpdaterActive = true;
-      m_cpuCbuff.m_planeNormal = Vector4D(0, 1, 0, 0);
-      m_cpuCbuff.m_planePoint = m_cpuCbuff.m_planeNormal * -500;
+
       //Generators
       m_cpuCbuff.m_randomPosMin = static_cast<BoxGenerator*>(m_generator[GENERATORS::kBOX])->m_initialPositionRandomMin;
       m_cpuCbuff.m_randomPosMax = static_cast<BoxGenerator*>(m_generator[GENERATORS::kBOX])->m_initialPositionRandomMax;
@@ -611,6 +622,35 @@ namespace driderSDK {
     }
   }
   void SphereGenerator::generate(size_t start, size_t end, Particle * p)
+  {
+  }
+  void PlaneColliderUpdater::update(float dt, size_t start, size_t end, Particle * p, const ParticleEmitterAttributes & attr)
+  {
+  }
+  void VortexUpdater::add(const Vector3D & _pos, const Vector3D & _up, float _force, float _radius)
+  {
+    if (size() >= MAX_VORTEX)
+      return;
+    Vortex vortex;
+    vortex.m_position = _pos;
+    vortex.m_up = _up;
+    vortex.m_force = _force;
+    vortex.m_radius = _radius;
+    m_vortex.push_back(vortex);
+  }
+  void VortexUpdater::remove(Int32 _id)
+  {
+    m_vortex.erase(m_vortex.begin() + _id);
+  }
+  Vortex & VortexUpdater::get(Int32 _id)
+  {
+    return m_vortex[_id];
+  }
+  Int32 VortexUpdater::size()
+  {
+    return m_vortex.size();
+  }
+  void VortexUpdater::update(float dt, size_t start, size_t end, Particle * p, const ParticleEmitterAttributes & attr)
   {
   }
 }

@@ -1,5 +1,6 @@
 #define MAX_ATTRACTORS 4
 #define MAX_REPELLERS 4
+#define MAX_VORTEX 4
 struct PoolBuffer
 {
   float4 position;
@@ -17,7 +18,7 @@ cbuffer ConstantBuffer : register(b0) {
   int m_bTimeScaleUpdaterActive;
   int m_bEulerUpdaterActive;
   int m_bAttractorUpdaterActive;
-  int m_bRepellerUpdaterActive;
+  int m_bVortexActive;
   int m_bColliderUpdaterActive;
   int m_bBoxGeneratorActive;
   int m_bRandVelocityGeneratorActive;
@@ -37,11 +38,12 @@ cbuffer ConstantBuffer : register(b0) {
   //Attractors Updater
   float4 m_attractorPos[MAX_ATTRACTORS];
   float4 m_attractorForceX_radiusY[MAX_ATTRACTORS];
-  //Repellers Updater
-  float4 m_RepellerPos[MAX_REPELLERS];
-  float4 m_RepellerForceX_radiuusY[MAX_REPELLERS];
+  //Vortex Updater
+  float4 m_VortexPos[MAX_VORTEX];
+  float4 m_VortexForceX_radiuusY[MAX_VORTEX];
+  float4 m_VortexUP[MAX_VORTEX];
   //Plane Collision Updater
-  float4 m_planeNormal;
+  float4 m_planeNormal_k;
   float4 m_planePoint;
 
   //Time Scale Updater
@@ -50,10 +52,10 @@ cbuffer ConstantBuffer : register(b0) {
 
   float m_particleMaxLife;
   int m_particlesToEmit;
-  int  aliveParticles;
   int m_maxParticles;
   int m_numAttractors;
   int m_numRepellers;
+  int m_numVortex;
 };
 RWStructuredBuffer<PoolBuffer> poolBuffer : register(u0);
 AppendStructuredBuffer<uint> DeadBuffer : register(u1);

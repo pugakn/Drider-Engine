@@ -1,5 +1,6 @@
 #define MAX_ATTRACTORS 4
 #define MAX_REPELLERS 4
+#define MAX_VORTEX 4
 struct PoolBuffer
 {
   float4 position;
@@ -17,7 +18,7 @@ cbuffer ConstantBuffer : register(b0) {
   int m_bTimeScaleUpdaterActive;
   int m_bEulerUpdaterActive;
   int m_bAttractorUpdaterActive;
-  int m_bRepellerUpdaterActive;
+  int m_bVortexActive;
   int m_bColliderUpdaterActive;
   int m_bBoxGeneratorActive;
   int m_bRandVelocityGeneratorActive;
@@ -37,11 +38,12 @@ cbuffer ConstantBuffer : register(b0) {
   //Attractors Updater
   float4 m_attractorPos[MAX_ATTRACTORS];
   float4 m_attractorForceX_radiusY[MAX_ATTRACTORS];
-  //Repellers Updater
-  float4 m_RepellerPos[MAX_REPELLERS];
-  float4 m_RepellerForceX_radiuusY[MAX_REPELLERS];
+  //Vortex Updater
+  float4 m_VortexPos[MAX_VORTEX];
+  float4 m_VortexForceX_radiuusY[MAX_VORTEX];
+  float4 m_VortexUP[MAX_VORTEX];
   //Plane Collision Updater
-  float4 m_planeNormal;
+  float4 m_planeNormal_k;
   float4 m_planePoint;
 
   //Time Scale Updater
@@ -50,10 +52,10 @@ cbuffer ConstantBuffer : register(b0) {
 
   float m_particleMaxLife;
   int m_particlesToEmit;
-  int  aliveParticles;
   int m_maxParticles;
   int m_numAttractors;
   int m_numRepellers;
+  int m_numVortex;
 };
 cbuffer ListCount1 : register(b1)
 {
@@ -79,6 +81,7 @@ void CS( uint3 id : SV_DispatchThreadID )
     float _proportionMul = 1.0f / m_particleMaxLife;
     float _proportion = poolBuffer[pID].lifeTime * _proportionMul;
     float m1Proportion = (1.0f - _proportion);
+    poolBuffer[pID].acceleration.xyz = 0;
     //Time color updater
     if (m_bTimeColorUpdaterActive) {
       poolBuffer[pID].color = (m_initialColor * m1Proportion) + (m_finalColor * _proportion);
@@ -93,21 +96,23 @@ void CS( uint3 id : SV_DispatchThreadID )
         float3 v = m_attractorPos[i] - poolBuffer[pID].position.xyz;
         float l = length(v);
         if (l < m_attractorForceX_radiusY[i].y) {
-          poolBuffer[pID].acceleration.xyz += normalize(v) * (m_attractorForceX_radiusY[i].x * (m_attractorForceX_radiusY[i].y/l + 0.00000001));
-        }
-      }
-    }
-    //Repeller updater
-    if (m_bRepellerUpdaterActive) {
-      for (int i = 0; i < m_numRepellers; ++i) {
-        float3 v = poolBuffer[pID].position.xyz - m_RepellerPos[i];
-        float l = length(v);
-        if (l < m_RepellerForceX_radiuusY[i].y) {
-          poolBuffer[pID].acceleration.xyz += normalize(v) * (m_RepellerForceX_radiuusY[i].x * (m_RepellerForceX_radiuusY[i].y / l + 0.00000001));
+          float3 desiredVelocity = normalize(v) * (m_attractorForceX_radiusY[i].x * (l / m_attractorForceX_radiusY[i].y));
+          poolBuffer[pID].acceleration.xyz += (desiredVelocity - poolBuffer[pID].velocity.xyz);
         }
       }
     }
 
+    if (m_bVortexActive) {
+      for (int i = 0; i < m_numVortex; ++i) {
+        float3 v = m_VortexPos[i].xyz - poolBuffer[pID].position.xyz;
+        float l = length(v);
+        if (l < m_VortexForceX_radiuusY[i].y) {
+          v = cross(m_VortexUP[i], v) - poolBuffer[pID].position.xyz;
+          float3 desiredVelocity = normalize(v) * (m_VortexForceX_radiuusY[i].x * (l / m_VortexForceX_radiuusY[i].y));
+          poolBuffer[pID].acceleration.xyz += (desiredVelocity - poolBuffer[pID].velocity.xyz);
+        }
+      }
+    }
     //Euler Updater
     if (m_bEulerUpdaterActive) {
       poolBuffer[pID].velocity += (poolBuffer[pID].acceleration + m_globalAcceleration) * DT;
@@ -117,18 +122,16 @@ void CS( uint3 id : SV_DispatchThreadID )
 
     //Plane colider updater
     if (m_bColliderUpdaterActive) {
-      if (dot(poolBuffer[pID].position.xyz - m_planePoint.xyz, m_planeNormal.xyz) < 0.0005) {
-        if (dot(poolBuffer[pID].velocity.xyz, m_planeNormal.xyz) < 0.0005) {
-          const float restCoef = 0.4;
-          float3 rayOrigin = poolBuffer[pID].position - poolBuffer[pID].velocity *DT;
-          float3 rayDir = normalize(poolBuffer[pID].position.xyz - rayOrigin);
-          float denom = dot(rayDir, m_planeNormal.xyz);
-
-          float t = dot(m_planePoint.xyz - rayOrigin, m_planeNormal.xyz) / denom;
-          poolBuffer[pID].position.xyz = rayOrigin + rayDir * t;
-          float d = dot(poolBuffer[pID].velocity.xyz, m_planeNormal.xyz);
-          float j = max(-(1 + restCoef) * d, 0);
-          poolBuffer[pID].velocity.xyz += j * m_planeNormal.xyz;
+      if (dot(poolBuffer[pID].position.xyz - m_planePoint.xyz, m_planeNormal_k.xyz) < 0.0005) {
+        float3 rayOrigin = poolBuffer[pID].position - poolBuffer[pID].velocity *DT;
+        float3 rayDir = normalize(poolBuffer[pID].position.xyz - rayOrigin);
+        float denom = dot(rayDir, m_planeNormal_k.xyz);
+        float t = dot(m_planePoint.xyz - rayOrigin, m_planeNormal_k.xyz) / denom;
+        poolBuffer[pID].position.xyz = rayOrigin + rayDir * t;
+        if (dot(poolBuffer[pID].velocity.xyz, m_planeNormal_k.xyz) < 0.0005) {
+          float d = dot(poolBuffer[pID].velocity.xyz, m_planeNormal_k.xyz);
+          float j = max(-(1 + m_planeNormal_k.w) * d, 0);
+          poolBuffer[pID].velocity.xyz += j * m_planeNormal_k.xyz;
           poolBuffer[pID].position += poolBuffer[pID].velocity * DT;
         }
       }
