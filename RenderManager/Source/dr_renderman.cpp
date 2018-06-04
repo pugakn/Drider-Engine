@@ -324,7 +324,7 @@ RenderMan::draw(const RenderTarget& _out, const DepthStencil& _outds) {
    X Opacity: Blends
   */
 
-  GraphicsDriver::API().swapBuffers();
+  //GraphicsDriver::API().swapBuffers();
 }
 
 void
