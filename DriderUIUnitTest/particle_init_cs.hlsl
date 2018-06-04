@@ -1,6 +1,3 @@
-#define MAX_ATTRACTORS 4
-#define MAX_REPELLERS 4
-#define MAX_VORTEX 4
 struct PoolBuffer
 {
   float4 position;

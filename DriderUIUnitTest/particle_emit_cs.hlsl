@@ -1,6 +1,3 @@
-#define MAX_ATTRACTORS 4
-#define MAX_REPELLERS 4
-#define MAX_VORTEX 4
 static uint w_seed;
 uint wang_hash()
 {
@@ -83,7 +80,7 @@ cbuffer dtBuff : register(b2)
 RWStructuredBuffer<PoolBuffer> poolBuffer : register(u0);
 ConsumeStructuredBuffer<uint> DeadBuffer : register(u1);
 AppendStructuredBuffer<uint> AliveBuffer : register(u2);
-[numthreads(1024, 1, 1)]
+[numthreads(DR_NUM_THREADS_PER_BLOCK, 1, 1)]
 void CS( uint3 id : SV_DispatchThreadID )
 {
   if (id.x < m_particlesToEmit && id.x < numDeadParticles) {

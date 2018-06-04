@@ -49,7 +49,12 @@ namespace driderSDK {
     String shaderSource;
 
     file.Open(_T("particle_init_cs.hlsl"));
-    shaderSource = StringUtils::toString(file.GetAsString(file.Size()));
+    shaderSource.clear();
+    shaderSource += "#define MAX_ATTRACTORS " +
+      std::to_string(MAX_ATTRACTORS) + "\n";
+    shaderSource += "#define MAX_VORTEX " +
+      std::to_string(MAX_VORTEX) + "\n";
+    shaderSource += StringUtils::toString(file.GetAsString(file.Size()));
     file.Close();
     m_initCS = device.createShaderFromMemory(shaderSource.data(),
       shaderSource.size(),
@@ -57,7 +62,13 @@ namespace driderSDK {
     shaderSource.clear();
 
     file.Open(_T("particle_emit_cs.hlsl"));
-    shaderSource = StringUtils::toString(file.GetAsString(file.Size()));
+    shaderSource += "#define DR_NUM_THREADS_PER_BLOCK " + 
+      std::to_string(EMIT_NUM_THREADS_PER_BLOCK) + "\n";
+    shaderSource += "#define MAX_ATTRACTORS " +
+      std::to_string(MAX_ATTRACTORS) + "\n";
+    shaderSource += "#define MAX_VORTEX " +
+      std::to_string(MAX_VORTEX) + "\n";
+    shaderSource += StringUtils::toString(file.GetAsString(file.Size()));
     file.Close();
     m_emitCS = device.createShaderFromMemory(shaderSource.data(),
       shaderSource.size(),
@@ -65,7 +76,15 @@ namespace driderSDK {
     shaderSource.clear();
 
     file.Open(_T("particle_update_cs.hlsl"));
-    shaderSource = StringUtils::toString(file.GetAsString(file.Size()));
+    shaderSource += "#define DR_NUM_THREADS_PER_BLOCK " + 
+      std::to_string(UPDATE_NUM_THREADS_PER_BLOCK) + "\n";
+    shaderSource += "#define DR_NUM_PARTICLES_PER_THREAD " +
+      std::to_string(UPDATE_NUM_PARTICLES_PER_THREAD) + "\n";
+    shaderSource += "#define MAX_ATTRACTORS " +
+      std::to_string(MAX_ATTRACTORS) + "\n";
+    shaderSource += "#define MAX_VORTEX " +
+      std::to_string(MAX_VORTEX) + "\n";
+    shaderSource += StringUtils::toString(file.GetAsString(file.Size()));
     file.Close();
     m_updateCS = device.createShaderFromMemory(shaderSource.data(),
       shaderSource.size(),
@@ -290,9 +309,9 @@ namespace driderSDK {
     m_cbufferAliveCount->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 1);
     m_cbufferDT->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 2);
 
-    const Int32 numThreadsPerBlock = 256;
     dc.dispatch(
-      Math::alignValue(m_attributes.m_maxParticles, numThreadsPerBlock) / numThreadsPerBlock, 1, 1);
+      Math::alignValue(m_attributes.m_maxParticles / static_cast<float>(UPDATE_NUM_PARTICLES_PER_THREAD), 
+                       UPDATE_NUM_THREADS_PER_BLOCK) / UPDATE_NUM_THREADS_PER_BLOCK, 1, 1);
     dc.setUAVsNull();
     dc.setResourcesNull();
     dc.copyAtomicCounter(*m_deadBuffer, *m_cbufferDeadCount);
@@ -340,9 +359,8 @@ namespace driderSDK {
       m_cbufferDeadCount->set(dc, DR_SHADER_TYPE_FLAG::kCompute,1);
       m_cbufferDT->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 2);
 
-      const Int32 numThreadsPerBlock = 1024;
       dc.dispatch(
-        Math::alignValue(m_attributes.m_numParticlesToEmit, numThreadsPerBlock) / numThreadsPerBlock, 1, 1);
+        Math::alignValue(m_attributes.m_numParticlesToEmit, EMIT_NUM_THREADS_PER_BLOCK) / EMIT_NUM_THREADS_PER_BLOCK, 1, 1);
       dc.setUAVsNull();
 
 

@@ -274,6 +274,9 @@ namespace driderSDK {
     };
 #if (DR_PARTICLES_METHOD == DR_PARTICLES_GPU)
     static const Int32 MAX_PARTICLES = 1000000;
+    static const Int32 EMIT_NUM_THREADS_PER_BLOCK = 1024;
+    static const Int32 UPDATE_NUM_THREADS_PER_BLOCK = 256;
+    static const Int32 UPDATE_NUM_PARTICLES_PER_THREAD = 1;
 #else
     static const Int32 MAX_PARTICLES = 150000;
 #endif
