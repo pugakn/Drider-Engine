@@ -17,8 +17,8 @@ std::string file2string(const char *path) {
 void Quad::init()
 {
   Device& device = GraphicsAPI::getDevice();
-  std::string vsSource = file2string("vs.hlsl");
-  std::string fsSource = file2string("fs.hlsl");
+  std::string vsSource = file2string("Resources\\Shaders\\vs.hlsl");
+  std::string fsSource = file2string("Resources\\Shaders\\fs.hlsl");
   vs = reinterpret_cast<Shader*>(device.createShaderFromMemory(vsSource.c_str(), vsSource.size(),DR_SHADER_TYPE_FLAG::kVertex));
   fs = reinterpret_cast<Shader*>(device.createShaderFromMemory(fsSource.c_str(), fsSource.size(), DR_SHADER_TYPE_FLAG::kFragment));
 

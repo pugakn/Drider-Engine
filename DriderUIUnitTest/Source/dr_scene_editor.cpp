@@ -303,7 +303,7 @@ void SceneEditor::initUI()
 
 
   webRenderer.Init(m_viewport.width, m_viewport.height, BROWSER_MODE::kHeadless);
-  webRenderer.loadURL("file:///F:/projectsVS2017/Drider-Engine/DriderUIUnitTest/Interface/index.html");
+  webRenderer.loadURL("file:///Interface/index.html");
 
   webRenderer.registerJS2CPPFunction(std::make_pair("UIReady", [&](const CefRefPtr<CefListValue>& arguments) {
     TString root = arguments->GetString(1);
