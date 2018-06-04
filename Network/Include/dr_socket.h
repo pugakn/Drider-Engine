@@ -13,6 +13,7 @@ namespace SOCKET_ERR
   {
     kError = -1,
     kSuccess = 0,
+    kUninitialized,
     KWouldBlock
   };
 }
@@ -29,10 +30,10 @@ class DR_NETWORK_EXPORT Socket {
  public:
   
   using DataBuffer = std::vector<Int8>;
-
+  
   Socket();
   
-  ~Socket();
+  virtual ~Socket();
   /**
   * Sets the mode of the socket.
   */

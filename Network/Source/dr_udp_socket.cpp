@@ -16,20 +16,20 @@ UDPSocket::create() {
 }
 
 bool
-UDPSocket::bind(const TString& ipAddress, UInt16 port) {
+UDPSocket::bind(UInt32 ipAddress, UInt16 port) {
   
   if (!isValid()) {
     return false;
   }
 
-  m_bindAddress.clear();
+  m_bindAddress = 0;
   m_bindPort = 0;
 
   sockaddr_in server = NetworkManager::getAddress(ipAddress, port);
   
   if (::bind(m_handle, (sockaddr*)&server, sizeof(server)) != 0) {
     m_handle = NetworkManager::getInvalidHandle();
-    m_bindAddress = _T("");
+    m_bindAddress = 0;
     m_bindPort = 0;
     return false;
   }
@@ -41,8 +41,12 @@ UDPSocket::bind(const TString& ipAddress, UInt16 port) {
 
 SOCKET_ERR::E
 UDPSocket::send(const DataBuffer& data,
-                UInt16 port,
-                const TString& ipAddress) {
+                UInt32 ipAddress, 
+                UInt16 port) {
+
+  if (!isValid()) {
+    return SOCKET_ERR::kUninitialized;
+  }
 
   sockaddr_in server = NetworkManager::getAddress(ipAddress, port);
 
@@ -60,16 +64,20 @@ UDPSocket::send(const DataBuffer& data,
 
 SOCKET_ERR::E
 UDPSocket::send(const Packet& packet,
-                UInt16 port, 
-                const TString& ipAddress) {
-  return send(packet.getData(), port, ipAddress);
+                UInt32 ipAddress,
+                UInt16 port) {
+  return send(packet.getData(), ipAddress, port);
 }
 
 SOCKET_ERR::E
 UDPSocket::receive(DataBuffer& buffer, 
                    Int32& receivedLen,
-                   UInt16& port, 
-                   TString& ipAddress) {
+                   UInt32& ipAddress,
+                   UInt16& port) {
+
+  if (!isValid()) {
+    return SOCKET_ERR::kUninitialized;
+  }
 
   sockaddr_in sender{};
   Int32 senderSAS = sizeof(sender);
@@ -77,7 +85,7 @@ UDPSocket::receive(DataBuffer& buffer,
 
   receivedLen = recvfrom(m_handle, 
                          reinterpret_cast<char*>(buffer.data()), 
-                         static_cast<int>(buffer.size()),
+                         static_cast<Int32>(buffer.size()),
                          0,
                          (sockaddr*)&sender,
                          &senderSAS);
@@ -104,12 +112,14 @@ SOCKET_ERR::E
 UDPSocket::receive(Packet& packet,
                    Int32 maxBuffSize,
                    Int32& receivedLen,
-                   UInt16& port, 
-                   TString& ipAddress) {
+                   UInt32& ipAddress, 
+                   UInt16& port) {
 
   DataBuffer buff(maxBuffSize, 0);
 
-  auto result = receive(buff, receivedLen, port, ipAddress);
+  packet.clear();
+
+  auto result = receive(buff, receivedLen, ipAddress, port);
 
   if (receivedLen != -1) {
 
@@ -119,6 +129,15 @@ UDPSocket::receive(Packet& packet,
   }
   
   return result;
+}
+
+SOCKET_ERR::E 
+UDPSocket::receive(Packet& packet, 
+                   Int32& receivedLen, 
+                   UInt32& ipAddress, 
+                   UInt16& port) {
+      
+  return receive(packet.m_data, receivedLen, ipAddress, port);
 }
 
 }

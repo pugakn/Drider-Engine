@@ -4,6 +4,8 @@
 #include <sstream>
 #include <type_traits>
 #include <iostream>
+#include <locale>
+#include <codecvt>
 
 namespace driderSDK {
 
@@ -27,8 +29,10 @@ struct DR_UTIL_EXPORT StringUtils
     return string;
   }
   
-  static String
-  toString(const WString& wstring);
+  static FORCEINLINE String
+  toString(const WString& wstring) {
+    return std::wstring_convert<std::codecvt_utf8_utf16<WChar>>().to_bytes(wstring);
+  }
 
   /**
   * Converts tstring into a utf-16 string.
@@ -42,14 +46,16 @@ struct DR_UTIL_EXPORT StringUtils
 
   /*static WString
   toWString(const TString& tstring);*/
-  static WString
+  static FORCEINLINE WString
   toWString(const WString& wstring)
   {
     return wstring;
   }
 
-  static WString
-  toWString(const String& string);
+  static FORCEINLINE WString
+  toWString(const String& string) {
+    return std::wstring_convert<std::codecvt_utf8_utf16<WChar>>().from_bytes(string);
+  }
 
   /**
   * Converts a real number into a string.
@@ -146,12 +152,23 @@ struct DR_UTIL_EXPORT StringUtils
     return toStringBase<TString::value_type>(value, 0, width, fill, flags);
   }
 
-  static TString 
-  toTString(const String& string);
+  static FORCEINLINE TString 
+  toTString(const String& string) {
+  #ifdef UNICODE
+    return toWString(string);
+  #else
+    return string;
+  #endif
+  }
 
-  static TString 
-  toTString(const WString& wstring);
-
+  static FORCEINLINE TString 
+  toTString(const WString& wstring) {
+  #ifdef UNICODE
+    return wstring;
+  #else
+    return toString(wstring);
+  #endif
+  }
 
   /**
   * Converts a string into an integer number.

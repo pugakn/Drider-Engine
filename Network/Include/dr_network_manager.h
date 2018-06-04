@@ -50,13 +50,25 @@ class DR_NETWORK_EXPORT NetworkManager : public Module<NetworkManager>
   
   static sockaddr_in
   getAddress(const TString& address, UInt16 port);
+  
+  static UInt32 
+  ipAddrStrToUInt(const TString& address);
+
+  static TString
+  ipAddrUIntToStr(UInt32 address);
 
   /**
   * Extracts the ip addres and port from the given address struct.
   */
   static void
   getAddrPort(sockaddr_in address, TString& outAddress, UInt16& outPort);
+
+  static void
+  getAddrPort(sockaddr_in address, UInt32& outAddress, UInt16& outPort);
   
+  static UInt32
+  getLocalAddr();
+
   /**
   * Gets the error string from the last network operation.
   */
