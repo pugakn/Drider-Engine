@@ -1,4 +1,4 @@
-class script1 : driderBehavior {
+class script1 : MontiBehavior {
 
 	float timer;
 	TString name = "TEST_NAME";
@@ -42,7 +42,7 @@ class script1 : driderBehavior {
 
 		name = "EDIT_TEST";
 
-		script2@ sc = cast<script2>(cast<ScriptComponent>(player.getComponent("ScriptComponent11")).getScript());
+		script2@ sc = cast<script2>(cast<ScriptComponent>(player.getComponent("ScriptComponent1")).getScript());
 		sc.doSomething();
 
 	}
@@ -71,7 +71,7 @@ class script1 : driderBehavior {
 	}
 
 	void Do() {
-		Print(name + "\n");
+		Print("\n" + name + "\n");
 	}
 
 	/*void onKeyDown(KeyCode key) {
