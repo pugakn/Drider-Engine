@@ -6,6 +6,7 @@
 #include <dr_renderman.h>
 
 #include "dr_scene_editor.h"
+#include <dr_web_renderer.h>
 
 namespace driderSDK {
 

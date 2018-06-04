@@ -63,10 +63,12 @@ DriderEngine::postInit() {
   playSoundTest();
 
   Time::update();
+  m_editor.init(Application::getViewPort());
 }
 
 void
 DriderEngine::postUpdate() {
+  WebRenderer::update();
   Time::update();
   InputManager::update();
 
@@ -281,6 +283,7 @@ DriderEngine::destroyModules() {
   Time::shutDown();
   GraphicsDriver::shutDown();
   Logger::shutDown();
+  WebRenderer::shutDown();
 
 }
 

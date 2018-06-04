@@ -1,4 +1,4 @@
-#include "dr_scene_editor.h"
+#include "..\Include\dr_scene_editor.h"
 #include <dr_device.h>
 #include <dr_graphics_api.h>
 #include <dr_graphics_driver.h>
@@ -31,7 +31,6 @@
 
 #include <dr_model.h>
 namespace driderSDK {
-
 void
 HSVtoRGB(float fH, float fS, float fV,
          float& fR, float& fG, float& fB) {
@@ -81,8 +80,8 @@ HSVtoRGB(float fH, float fS, float fV,
   }
 }
 
-void
-read_directory(const TString& name, std::vector<TString>& v) {
+void read_directory(const TString& name, TString& v)
+{
   TString pattern(name);
   TString parent(name);
   pattern.append(_T("\\*"));
@@ -95,39 +94,29 @@ read_directory(const TString& name, std::vector<TString>& v) {
       if (data.cFileName[0] == '.') continue;
       if (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
       {
-        v.push_back(_T("webix.callEvent('WEBIX_AddFile',['") + TString(data.cFileName) + _T("','") + parent + _T("','") + _T(".folder") + _T("']);"));
-        read_directory(name + _T("\\") + data.cFileName, v);
+        v += (_T("{'name':'") + TString(data.cFileName) + _T("','parent':'") + parent + _T("/") + TString(data.cFileName) + _T("','type':'folder'},"));
       }
       else
       {
         auto ext = PathFindExtension(data.cFileName);
-        v.push_back(_T("webix.callEvent('WEBIX_AddFile',['") + TString(data.cFileName) + _T("','") + parent + _T("','") + ext + _T("']);"));
+        v += (_T("{'name':'") + TString(data.cFileName) + _T("','parent':'") + parent + _T("','type':'") + ext + _T("'},"));
       }
     } while (FindNextFile(hFind, &data) != 0);
     FindClose(hFind);
   }
 }
-
-void
-updateFolders(WebRenderer& webRenderer) {
-  TString root(_T("Assets"));
-  std::vector<TString> folders;
-  folders.push_back(_T("webix.callEvent('WEBIX_AddFile',['") +
-                       root +
-                       _T("','") +
-                       root +
-                       _T("','") +
-                       _T(".folder") +
-                       _T("']);"));
+void updateFolders(WebRenderer& webRenderer, TString root) {
+  TString folders = _T("JS_InfoTreeFile(\"") + root + _T("\",");
+  folders += _T("\"{'items':[");
   read_directory(root, folders);
-  for (auto &it : folders) {
-    std::string str(it.begin(), it.end());
-    webRenderer.executeJSCode(str);
-  }
+  folders.erase(folders.length() - 1);
+  folders += _T("]}\");");
+  webRenderer.executeJSCode(folders);
 }
 
-void
-SceneEditor::init(Viewport v) {
+
+void SceneEditor::init(Viewport v)
+{
   m_viewport = v;
   initUI();
   initSceneGraph();
@@ -136,22 +125,21 @@ SceneEditor::init(Viewport v) {
   quad.init();
 }
 
-void
-SceneEditor::update() {
+void SceneEditor::update()
+{
   WebRenderer::update();
 }
-
-void
-SceneEditor::draw() {
+void SceneEditor::draw()
+{
   webRenderer.setTexture();
   quad.draw();
   m_sceneViewer.draw();
 }
-
-std::shared_ptr<GameObject> 
-SceneEditor::addGameObject(std::shared_ptr<GameObject> parent, 
-                           const TString& name, 
-                           const Vector3D& pos) {
+std::shared_ptr<GameObject>
+SceneEditor::addGameObject(std::shared_ptr<GameObject> parent,
+                           const TString & name,
+                           const Vector3D & pos)
+{
   auto node = std::make_shared<GameObject>();
   parent->addChild(node);
   SceneGraph::addObject(node);
@@ -161,15 +149,14 @@ SceneEditor::addGameObject(std::shared_ptr<GameObject> parent,
 
   return node;
 }
-
-void
-SceneEditor::initInputs() {
+void SceneEditor::initInputs()
+{
 }
 
-void
-SceneEditor::initSceneGraph() {
+void SceneEditor::initSceneGraph()
+{
   Degree grados(2.8125f);
-  Vector4D LightPosition(0.0f, 100.0f, 150.0f, 1.0f);
+  Vector4D LightPosition(0.0f, 50.0f, -100.0f, 1);
   Matrix4x4 rotationMatrix(driderSDK::Math::FORCE_INIT::kIdentity);
   rotationMatrix = rotationMatrix.RotationY(grados.toRadian());
 
@@ -187,176 +174,110 @@ SceneEditor::initSceneGraph() {
              Lights[lighIndex].m_vec4Color.y,
              Lights[lighIndex].m_vec4Color.z);
 
-    //Intensity
+    //Intensidad
     Lights[lighIndex].m_vec4Color.w = (lighIndex / 128.0f) * 100.0f;
 
-    proportion += (1.0f/128.0f);
+    proportion += (1.0f / 128.0f);
   }
 
   m_sceneViewer.getRenderManager().lights = &Lights;
 
   CameraManager::createCamera(_T("PATO_CAM"),
-                              { 0.0f, 200.0f, -400.0f },
-                              { 0.0f, 50.0f, 0.0f },
+                              { 0.0f, 150.0f, -400.0f },
+                              { 0.0f, 50.f, 0.0f },
                               m_viewport,
                               45.f,
+                              //1024, 1024,
                               0.1f,
-                              10000.0f);
+                              10000.f);
   CameraManager::setActiveCamera(_T("PATO_CAM"));
 
   modelMovement = Vector3D(0.0f, 0.0f, 0.0f);
 
   loadResources();
 
-  m_vecGos.push_back(SceneGraph::createObject(_T("Floor")));
-  m_selectedGO = m_vecGos.back();
-  auto ptrFloor = ResourceManager::getReferenceT<Model>(_T("plane.fbx"));
-  if (ptrFloor) {
-    m_selectedGO->createComponent<RenderComponent>(ptrFloor);
-    m_selectedGO->createComponent<AABBCollider>(ptrFloor->aabb);
-    m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, 0.0f));
-    //m_selectedGO->getTransform().setScale(Vector3D(1000.0f, 1.0f, 1000.0f));
-    m_selectedGO->getTransform().setScale(Vector3D(5.0f, 1.0f, 5.0f));
-
-    m_floorMat = std::make_shared<Material>(_T("FloorMaterial"));
-
-    auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Diffuse.tga"));
-    auto normalTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Normal.tga"));
-    auto emissiveTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Emissive.tga"));
-    auto metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Metallic.tga"));
-    auto roughnessTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Roughness.tga"));
-    auto displacementTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Displacement.tga"));
-    auto opacityTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Opacity.tga"));
-    auto specularTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Specular.tga"));
-    auto sscolorTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_SSColor.tga"));
-    auto thicknessTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Thickness.tga"));
-    m_floorMat->addProperty(_T("Albedo"), PROPERTY_TYPE::kVec3);
-    m_floorMat->addProperty(_T("Normal"), PROPERTY_TYPE::kVec3);
-    m_floorMat->addProperty(_T("Emisivity"), PROPERTY_TYPE::kVec3);
-    m_floorMat->addProperty(_T("Metallic"), PROPERTY_TYPE::kVec3);
-    m_floorMat->addProperty(_T("Roughness"), PROPERTY_TYPE::kVec3);
-    m_floorMat->addProperty(_T("Displacement"), PROPERTY_TYPE::kVec3);
-    m_floorMat->addProperty(_T("Opacity"), PROPERTY_TYPE::kVec3);
-    m_floorMat->addProperty(_T("Specular"), PROPERTY_TYPE::kVec3);
-    m_floorMat->addProperty(_T("SSColor"), PROPERTY_TYPE::kVec3);
-    m_floorMat->addProperty(_T("Thickness"), PROPERTY_TYPE::kVec3);
-    m_floorMat->setTexture(albedoTex, _T("Albedo"));
-    m_floorMat->setTexture(normalTex, _T("Normal"));
-    m_floorMat->setTexture(emissiveTex, _T("Emisivity"));
-    m_floorMat->setTexture(metallicTex, _T("Metallic"));
-    m_floorMat->setTexture(roughnessTex, _T("Roughness"));
-    m_floorMat->setTexture(displacementTex, _T("Displacement"));
-    m_floorMat->setTexture(opacityTex, _T("Opacity"));
-    m_floorMat->setTexture(specularTex, _T("Specular"));
-    m_floorMat->setTexture(sscolorTex, _T("SSColor"));
-    m_floorMat->setTexture(thicknessTex, _T("Thickness"));
-
-    auto renderComp = m_selectedGO->getComponent<RenderComponent>();
-    renderComp->getMeshes().front().material = m_floorMat;
-  }
-
-  m_vecGos.push_back(SceneGraph::createObject(_T("HatKid")));
-  m_selectedGO = m_vecGos.back();
-  auto ptrHK = ResourceManager::getReferenceT<Model>(_T("HK_Teen.fbx"));
-  if (ptrHK) {
-    m_selectedGO->createComponent<RenderComponent>(ptrHK);
-    m_selectedGO->createComponent<AABBCollider>(ptrHK->aabb);
-    m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, 0.0f));
-    m_selectedGO->getTransform().setScale(Vector3D(100.0f, 100.0f, 100.0f));
-    m_selectedGO->getTransform().setRotation(Vector3D(Math::Math::HALF_PI * 3.0f, Math::PI*0.75f, 0.0f));
-
-    m_hkBodyMat = std::make_shared<Material>(_T("HKBodyMaterial"));
-    m_hkBodySMat = std::make_shared<Material>(_T("HKBodyMaterial"));
-    m_hkEyeMat = std::make_shared<Material>(_T("HKEyeMaterial"));
-
-    auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_main_mat_BaseColor.tga"));
-    auto emissiveTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_main_mat_Emissive.tga"));
-    auto metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_main_mat_Metallic.tga"));
-    auto roughnessTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_main_mat_Roughness.tga"));
-    auto normalTex = ResourceManager::getReferenceT<TextureCore>(_T("NormNormal.tga"));
-    m_hkBodyMat->addProperty(_T("Albedo"), PROPERTY_TYPE::kVec3);
-    m_hkBodyMat->addProperty(_T("Emisivity"), PROPERTY_TYPE::kVec3);
-    m_hkBodyMat->addProperty(_T("Metallic"), PROPERTY_TYPE::kVec3);
-    m_hkBodyMat->addProperty(_T("Roughness"), PROPERTY_TYPE::kVec3);
-    m_hkBodyMat->addProperty(_T("Normal"), PROPERTY_TYPE::kVec3);
-    m_hkBodyMat->setTexture(albedoTex, _T("Albedo"));
-    m_hkBodyMat->setTexture(emissiveTex, _T("Emisivity"));
-    m_hkBodyMat->setTexture(metallicTex, _T("Metallic"));
-    m_hkBodyMat->setTexture(roughnessTex, _T("Roughness"));
-    m_hkBodyMat->setTexture(normalTex, _T("Normal"));
-
-    albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_second_mat_BaseColor.tga"));
-    metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_second_mat_Metallic.tga"));
-    roughnessTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_second_mat_Roughness.tga"));
-    m_hkBodySMat->addProperty(_T("Albedo"), PROPERTY_TYPE::kVec3);
-    m_hkBodySMat->addProperty(_T("Metallic"), PROPERTY_TYPE::kVec3);
-    m_hkBodySMat->addProperty(_T("Roughness"), PROPERTY_TYPE::kVec3);
-    m_hkBodySMat->addProperty(_T("Normal"), PROPERTY_TYPE::kVec3);
-    m_hkBodySMat->setTexture(albedoTex, _T("Albedo"));
-    m_hkBodySMat->setTexture(metallicTex, _T("Metallic"));
-    m_hkBodySMat->setTexture(roughnessTex, _T("Roughness"));
-    m_hkBodySMat->setTexture(normalTex, _T("Normal"));
-
-    albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("HK_eye_dif.tga"));
-    metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("HK_eye_spc.tga"));
-    m_hkEyeMat->addProperty(_T("Albedo"), PROPERTY_TYPE::kVec3);
-    m_hkEyeMat->addProperty(_T("Specular"), PROPERTY_TYPE::kVec3);
-    m_hkEyeMat->addProperty(_T("Normal"), PROPERTY_TYPE::kVec3);
-    m_hkEyeMat->setTexture(albedoTex, _T("Albedo"));
-    m_hkEyeMat->setTexture(metallicTex, _T("Specular"));
-    m_hkEyeMat->setTexture(normalTex, _T("Normal"));
-
-    auto renderComp = m_selectedGO->getComponent<RenderComponent>();
-    std::vector<RenderMesh>& meshes = renderComp->getMeshes();
-    meshes[0].material = m_hkBodySMat; 
-    meshes[1].material = m_hkBodyMat;
-    meshes[2].material = m_hkEyeMat;
-
-  }
-
-  m_vecGos.push_back(SceneGraph::createObject(_T("Model")));
-  m_selectedGO = m_vecGos.back();
+  model = SceneGraph::createObject(_T("Model"));
   auto ptrModel = ResourceManager::getReferenceT<Model>(_T("model.dae"));
   if (ptrModel) {
-    m_selectedGO->createComponent<RenderComponent>(ptrModel);
-    m_selectedGO->createComponent<AABBCollider>(ptrModel->aabb);
-    m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 12.5f, -100.0f));
-    m_selectedGO->getTransform().setScale(Vector3D(10.0f, 10.0f, 10.0f));
-    m_selectedGO->getTransform().setRotation(Vector3D(0.0f, Math::PI*1.15f, 0.0f));
+    model->createComponent<RenderComponent>(ptrModel);
+    model->createComponent<AABBCollider>(ptrModel->aabb);
+    model->getTransform().setPosition(Vector3D(0.0f, 50.0f, 0.0f));
+    model->getTransform().setScale(Vector3D(100.0f, 100.0f, 100.0f));
+    model->getTransform().setRotation(Vector3D(0.0f, Math::QUARTER_PI*0.5f, 0.0f));
 
-    m_modelMat = std::make_shared<Material>(_T("ModelMaterial"));
+    modelMat = std::make_shared<Material>(_T("ModelMaterial"));
 
     auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("default_albedo.tga"));
     auto emissiveTex = ResourceManager::getReferenceT<TextureCore>(_T("default_emissive.tga"));
     auto metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("default_metallic.tga"));
     auto normalTex = ResourceManager::getReferenceT<TextureCore>(_T("default_normal.tga"));
     auto roughnessTex = ResourceManager::getReferenceT<TextureCore>(_T("default_roughness.tga"));
-    m_modelMat->addProperty(_T("Albedo"), PROPERTY_TYPE::kVec3);
-    m_modelMat->addProperty(_T("Normal"), PROPERTY_TYPE::kVec3);
-    m_modelMat->addProperty(_T("Emisivity"), PROPERTY_TYPE::kVec3);
-    m_modelMat->addProperty(_T("Metallic"), PROPERTY_TYPE::kVec3);
-    m_modelMat->addProperty(_T("Roughness"), PROPERTY_TYPE::kVec3);
-    m_modelMat->setTexture(albedoTex, _T("Albedo"));
-    m_modelMat->setTexture(normalTex, _T("Normal"));
-    m_modelMat->setTexture(emissiveTex, _T("Emisivity"));
-    m_modelMat->setTexture(metallicTex, _T("Metallic"));
-    m_modelMat->setTexture(roughnessTex, _T("Roughness"));
+    modelMat->addProperty(_T("Albedo"), PROPERTY_TYPE::kVec3);
+    modelMat->addProperty(_T("Normal"), PROPERTY_TYPE::kVec3);
+    modelMat->addProperty(_T("Emisivity"), PROPERTY_TYPE::kVec3);
+    modelMat->addProperty(_T("Metallic"), PROPERTY_TYPE::kVec3);
+    modelMat->addProperty(_T("Roughness"), PROPERTY_TYPE::kVec3);
+    modelMat->setTexture(albedoTex, _T("Albedo"));
+    modelMat->setTexture(normalTex, _T("Normal"));
+    modelMat->setTexture(emissiveTex, _T("Emisivity"));
+    modelMat->setTexture(metallicTex, _T("Metallic"));
+    modelMat->setTexture(roughnessTex, _T("Roughness"));
 
-    auto rComp = m_selectedGO->getComponent<RenderComponent>();
-    rComp->getMeshes().front().material = m_modelMat;
+    auto rComp = model->getComponent<RenderComponent>();
+    rComp->getMeshes().front().material = modelMat;
   }
+  floor = SceneGraph::createObject(_T("Floor"));
+  auto ptrFloor = ResourceManager::getReferenceT<Model>(_T("plane.fbx"));
+  if (ptrFloor) {
+    floor->createComponent<RenderComponent>(ptrFloor);
+    floor->createComponent<AABBCollider>(ptrFloor->aabb);
+    floor->getTransform().setPosition(Vector3D(0.0f, -50.0f, 0.0f));
+    floor->getTransform().setScale(Vector3D(5.0f, 5.0f, 5.0f));
 
-  //Selecting Hat Kid
-  m_SzTGosIndex = 1;
-  m_selectedGO = m_vecGos[m_SzTGosIndex];
+    floorMat = std::make_shared<Material>(_T("FloorMaterial"));
+
+    auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Diffuse.tga"));
+    auto normalTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Normal.tga"));
+    auto emissiveTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Emissive.tga"));
+    auto metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Metallic.tga"));
+    auto roughnessTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Roughness.tga"));
+    floorMat->addProperty(_T("Albedo"), PROPERTY_TYPE::kVec3);
+    floorMat->addProperty(_T("Normal"), PROPERTY_TYPE::kVec3);
+    floorMat->addProperty(_T("Emisivity"), PROPERTY_TYPE::kVec3);
+    floorMat->addProperty(_T("Metallic"), PROPERTY_TYPE::kVec3);
+    floorMat->addProperty(_T("Roughness"), PROPERTY_TYPE::kVec3);
+    floorMat->setTexture(albedoTex, _T("Albedo"));
+    floorMat->setTexture(normalTex, _T("Normal"));
+    floorMat->setTexture(emissiveTex, _T("Emisivity"));
+    floorMat->setTexture(metallicTex, _T("Metallic"));
+    floorMat->setTexture(roughnessTex, _T("Roughness"));
+
+    auto displacementTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Displacement.tga"));
+    auto opacityTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Opacity.tga"));
+    auto specularTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Specular.tga"));
+    auto sscolorTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_SSColor.tga"));
+    auto thicknessTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Thickness.tga"));
+    floorMat->addProperty(_T("Displacement"), PROPERTY_TYPE::kVec3);
+    floorMat->addProperty(_T("Opacity"), PROPERTY_TYPE::kVec3);
+    floorMat->addProperty(_T("Specular"), PROPERTY_TYPE::kVec3);
+    floorMat->addProperty(_T("SSColor"), PROPERTY_TYPE::kVec3);
+    floorMat->addProperty(_T("Thickness"), PROPERTY_TYPE::kVec3);
+    floorMat->setTexture(displacementTex, _T("Displacement"));
+    floorMat->setTexture(opacityTex, _T("Opacity"));
+    floorMat->setTexture(specularTex, _T("Specular"));
+    floorMat->setTexture(sscolorTex, _T("SSColor"));
+    floorMat->setTexture(thicknessTex, _T("Thickness"));
+
+    auto renderComp = floor->getComponent<RenderComponent>();
+    renderComp->getMeshes().front().material = floorMat;
+  }
 }
-
-void
-SceneEditor::loadResources() {
-  ResourceManager::loadResource(_T("Checker.fbx"));
+void SceneEditor::loadResources()
+{
+  //ResourceManager::loadResource(_T("Checker.fbx"));
   ResourceManager::loadResource(_T("Sphere.fbx"));
   ResourceManager::loadResource(_T("plane.fbx"));
-  ResourceManager::loadResource(_T("HK_Teen.fbx"));
+  //ResourceManager::loadResource(_T("Croc.X"));
   ResourceManager::loadResource(_T("model.dae"));
 
   ResourceManager::loadResource(_T("default_albedo.tga"));
@@ -364,17 +285,6 @@ SceneEditor::loadResources() {
   ResourceManager::loadResource(_T("default_metallic.tga"));
   ResourceManager::loadResource(_T("default_normal.tga"));
   ResourceManager::loadResource(_T("default_roughness.tga"));
-
-  ResourceManager::loadResource(_T("hatkid_HK_main_mat_BaseColor.tga"));
-  ResourceManager::loadResource(_T("hatkid_HK_main_mat_Emissive.tga"));
-  ResourceManager::loadResource(_T("hatkid_HK_main_mat_Metallic.tga"));
-  ResourceManager::loadResource(_T("hatkid_HK_main_mat_Roughness.tga"));
-  ResourceManager::loadResource(_T("hatkid_HK_second_mat_BaseColor.tga"));
-  ResourceManager::loadResource(_T("hatkid_HK_second_mat_Metallic.tga"));
-  ResourceManager::loadResource(_T("hatkid_HK_second_mat_Roughness.tga"));
-  ResourceManager::loadResource(_T("HK_eye_dif.tga"));
-  ResourceManager::loadResource(_T("HK_eye_spc.tga"));
-  ResourceManager::loadResource(_T("NormNormal.tga"));
 
   ResourceManager::loadResource(_T("256_Checker_Diffuse.tga"));
   ResourceManager::loadResource(_T("256_Checker_Displacement.tga"));
@@ -387,25 +297,22 @@ SceneEditor::loadResources() {
   ResourceManager::loadResource(_T("256_Checker_SSColor.tga"));
   ResourceManager::loadResource(_T("256_Checker_Thickness.tga"));
 }
+void SceneEditor::initUI()
+{
 
-void
-SceneEditor::initUI() {
-  m_netLobby.Init(1024,720, BROWSER_MODE::kPopUp);
-  m_netLobby.loadURL("file:///C:/Users/Ulises/Documents/GitHub/Drider-Engine/DriderUIUnitTest/netLobby/NetLobby.html");
-  m_netLobby.registerJS2CPPFunction(std::make_pair("EEE", [&](const CefRefPtr<CefListValue>& arguments) {
-    std::cout << "EEE";
-  }));
+
 
   webRenderer.Init(m_viewport.width, m_viewport.height, BROWSER_MODE::kHeadless);
-  webRenderer.loadURL("file:///C:/Users/Ulises/Documents/GitHub/Drider-Engine/DriderUIUnitTest/WebixTest/ss.html");
+  webRenderer.loadURL("file:///Interface/index.html");
 
-  webRenderer.registerJS2CPPFunction(std::make_pair("webixReady", [&](const CefRefPtr<CefListValue>& arguments) {
-    updateFolders(webRenderer);
-    UI_UpdateSceneGraph();
-    UI_UpdatePropertySheet(*SceneGraph::getRoot().get());
+  webRenderer.registerJS2CPPFunction(std::make_pair("UIReady", [&](const CefRefPtr<CefListValue>& arguments) {
+    TString root = arguments->GetString(1);
+    updateFolders(webRenderer, root);
+    //UI_UpdateSceneGraph();
+    //UI_UpdatePropertySheet(*SceneGraph::getRoot().get());
   }));
   webRenderer.registerJS2CPPFunction(std::make_pair("canvasReady", [&](const CefRefPtr<CefListValue>& arguments) {
-    
+
   }));
 
   //Scene Graph UI
@@ -429,7 +336,8 @@ SceneEditor::initUI() {
     TString name = arguments->GetString(1);
     TString newParent = arguments->GetString(2);
     if (!(name == _T("") || newParent == _T(""))) {
-      if (newParent == _T("ROOT_NODE_X")) {
+      if (newParent == _T("ROOT_NODE_X"))
+      {
         SceneGraph::getRoot()->findNode(name)->setParent(SceneGraph::getRoot());
       }
       else {
@@ -445,8 +353,8 @@ SceneEditor::initUI() {
     TString parent = arguments->GetString(2);
     //TODO: Search parent name 
     addGameObject(SceneGraph::getRoot(),
-      name,
-      { 0, 0, 0 })->getTransform().scale({ 100, 100, 100 });
+                  name,
+                  { 0, 0, 0 })->getTransform().scale({ 100, 100, 100 });
 
     webRenderer.executeJSCode("JS_ClearSceneGraphTree();");
     UI_UpdateSceneGraph();
@@ -461,7 +369,7 @@ SceneEditor::initUI() {
     auto scale = n->getTransform().getScale();
     auto rot = const_cast<Matrix4x4&>(n->getTransform().getRotation()).eulerAngles();
 
-    webRenderer.executeJSCode(_T("JS_ChangeGMOFocus('") + name + _T("',") + 
+    webRenderer.executeJSCode(_T("JS_ChangeGMOFocus('") + name + _T("',") +
                               std::to_wstring(pos.x) + _T(",") +
                               std::to_wstring(pos.y) + _T(",") +
                               std::to_wstring(pos.z) + _T(",") +
@@ -472,7 +380,7 @@ SceneEditor::initUI() {
                               std::to_wstring(rot.y) + _T(",") +
                               std::to_wstring(rot.z) +
                               +_T(");"));
-    
+
     webRenderer.executeJSCode("JS_ClearPropertySheetUI();");
     auto node = SceneGraph::getRoot()->findNode(name);
     DR_ASSERT(node);
@@ -485,8 +393,8 @@ SceneEditor::initUI() {
     TString parent = arguments->GetString(2);
     //TODO: Search parent name 
     addGameObject(SceneGraph::getRoot(),
-      name,
-      { 0, 0, 0 })->getTransform().scale({ 1, 1, 1 });
+                  name,
+                  { 0, 0, 0 })->getTransform().scale({ 1, 1, 1 });
   }));
 
   //Editor
@@ -496,7 +404,6 @@ SceneEditor::initUI() {
     sceneViewport.topLeftX = (float)arguments->GetDouble(2);
     sceneViewport.width = (float)arguments->GetDouble(3);
     sceneViewport.height = (float)arguments->GetDouble(4);
-
     m_sceneViewer.resize(sceneViewport);
   }));
   //components
@@ -577,60 +484,64 @@ SceneEditor::initUI() {
     rot.z = val;
     gmoO->getTransform().setRotation(rot);
   }));
-}
 
-void
-SceneEditor::UI_UpdateSceneGraph() {
+
+
+}
+void SceneEditor::UI_UpdateSceneGraph()
+{
   webRenderer.executeJSCode(WString(_T("JS_AddSceneGraphNode('")) +
-                            _T("ROOT_NODE_X") + TString(_T("','")) +
-                            _T("ROOT_NODE_X") + WString(_T("');")));
-  std::function<void(const std::vector<std::shared_ptr<GameObject>>&)> search = 
+                            _T("ROOT_NODE_X") + TString(_T("','")) + _T("ROOT_NODE_X") +
+                            WString(_T("');")));
+  std::function<void(const std::vector<std::shared_ptr<GameObject>>&)> search =
     [&](const std::vector<std::shared_ptr<GameObject>>& children) {
     for (auto &it : children) {
       auto name = it->getName();
       auto pName = it->getParent()->getName();
 
       webRenderer.executeJSCode(WString(_T("JS_AddSceneGraphNode('")) +
-                                name + TString(_T("','")) +
-                                pName +  WString(_T("');")));
+                                name + TString(_T("','")) + pName +
+                                WString(_T("');")));
 
       auto children2 = it->getChildren();
       search(children2);
     }
   };
 
+
   SceneGraph::getRoot()->getName();
   auto children = SceneGraph::getRoot()->getChildren();
   search(children);
 }
 
-void
-SceneEditor::UI_UpdatePropertySheet(const GameObject& obj) {
+void SceneEditor::UI_UpdatePropertySheet(const GameObject& obj)
+{
   GameObject& ncnst = const_cast<GameObject&>(obj);
   auto components = ncnst.getComponents<RenderComponent>();
   for (auto &it : components) {
     webRenderer.executeJSCode(WString(_T("JS_AddComponent_Render('")) +
-      it->getName() + TString(_T("','")) + it->getModel().lock()->getName() +
-      WString(_T("');")));
+                              it->getName() + TString(_T("','")) + it->getModel().lock()->getName() +
+                              WString(_T("');")));
   }
 
   auto scriptComponents = ncnst.getComponents<ScriptComponent>();
   for (auto &it : scriptComponents) {
     webRenderer.executeJSCode(WString(_T("JS_AddComponent_Script('")) +
-      it->getName() + TString(_T("','")) + it->getGameObject().getName() +
-      WString(_T("');")));
+                              it->getName() + TString(_T("','")) + it->getGameObject().getName() +
+                              WString(_T("');")));
   }
 }
 
-void
-driderSDK::SceneEditor::resize(Viewport _viewport) {
+void driderSDK::SceneEditor::resize(Viewport _viewport)
+{
   m_viewport = _viewport;
   webRenderer.resize(m_viewport.width, m_viewport.height);
 }
 
-void
-SceneEditor::destroy() {
-  m_netLobby.Destroy();
+
+void SceneEditor::destroy()
+{
+  //m_netLobby.Destroy();
   webRenderer.Destroy();
   WebRenderer::shutDown();
 }

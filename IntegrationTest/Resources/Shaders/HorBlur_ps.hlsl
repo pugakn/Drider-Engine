@@ -19,15 +19,15 @@ FS(PS_INPUT input) : SV_TARGET0 {
   float2 uv = input.Texcoord;
 
   static const float offset = 1.0f / fViewportDimensions.x;
-  float4 shadowVal = float4(0.0f, 0.0f, 0.0f, 0.0f);
+  float shadowVal = 0.0f;
   
   float2 sampleCoords;
   
   [unroll]
   for (int i = -6; i <= 6; ++i) {
     sampleCoords = float2(uv.x + (i * offset), uv.y);
-    shadowVal += inTex.Sample(SS, sampleCoords.xy) * BlurWeights[i + 6];
+    shadowVal += inTex.Sample(SS, sampleCoords.xy).x * BlurWeights[i + 6];
   }
 
-  return shadowVal;
+  return float4(shadowVal, shadowVal, shadowVal, 1.0f);
 }
