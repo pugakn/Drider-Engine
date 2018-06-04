@@ -248,7 +248,7 @@ ClientLobby::drawInGame() {
     auto temp = m_msg.substr(0, m_msg.find_first_of('\0'));
     if (!temp.empty()) {
       sendMessage(StringUtils::toWString(temp));
-      m_msg.assign(temp.size(), '\0');
+      m_msg.assign(30, '\0');
     }
   }
 
