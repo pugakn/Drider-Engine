@@ -1,6 +1,6 @@
 #include "dr_network_manager.h"
 
-#if (DR_PLATFORM == DR_PLATFORM_WINDOWS)
+//#if (DR_PLATFORM == DR_PLATFORM_WINDOWS)
 
 #include <dr_string_utils.h>
 
@@ -151,4 +151,4 @@ NetworkManager::onShutDown() {
 
 }
 
-#endif
+//#endif

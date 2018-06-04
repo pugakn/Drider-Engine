@@ -172,7 +172,6 @@
     <ClCompile Include="Source\dr_id_object.cpp" />
     <ClCompile Include="Source\dr_logger.cpp" />
     <ClCompile Include="Source\dr_process_windows.cpp" />
-    <ClCompile Include="Source\dr_string_utils.cpp" />
     <ClCompile Include="Source\dr_time.cpp" />
     <ClCompile Include="Source\dr_timer.cpp" />
   </ItemGroup>

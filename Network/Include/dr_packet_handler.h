@@ -2,6 +2,8 @@
 
 #include <vector>
 
+#include <dr_memory.h>
+
 #include "dr_network_prerequisites.h"
 #include "dr_packet.h"
 #include "dr_udp_socket.h"
