@@ -41,7 +41,7 @@ insideBounds(float4 fromLightPos) {
 
 //#define INTERVAL_BASED_SELECTION
 #define MAP_BASED_SELECTION
-#define DR_SH_PCF_ENABLED
+//#define DR_SH_PCF_ENABLED
 #define CASCADE_BLUR
 float
 GetShadowValue(float4 fromLightPos, const int camIndex) {
@@ -170,7 +170,7 @@ FS(PS_INPUT input) {
 
   const int activeLights = kEyePosition.w;
   //[unroll]
-  for (int index = 0; index < activeLights; index += 4) {
+  for (int index = 0; index < activeLights; ++index) {
     float3 lightPosition  = kLightPosition[index].xyz;
     float3 lightColor     = kLightColor[index].xyz;
     float  lightRange     = kLightPosition[index].w;
