@@ -46,6 +46,9 @@ ResourceManager::onStartUp() {
 void 
 ResourceManager::createDefaultResources() {
   createDummyTexture();
+  createDummyNormalTexture();
+  createDummyWhiteTexture();
+  createDummyBlackTexture();
   createDummyMaterial();
 }
 
@@ -218,6 +221,90 @@ ResourceManager::createDummyTexture() {
   addResource(texture, _T("DUMMY_TEXTURE"));
 }
 
+void
+ResourceManager::createDummyNormalTexture() {
+  auto texture = std::make_shared<TextureCore>();
+
+  constexpr Int32 size = 1;
+  constexpr Int32 channels = 3;
+
+  ImageInfo imageInfo;
+
+  imageInfo.width = size;
+  imageInfo.height = size;
+  imageInfo.channels = channels;
+  imageInfo.data.resize(size * size * channels);
+
+  struct Pixel
+  {
+    UInt8 d[channels];
+  };
+
+  Pixel BluePixel = { 127, 127, 255 };
+ 
+  std::memcpy(imageInfo.data.data(), &BluePixel.d[0], sizeof(BluePixel));
+
+  texture->init(&imageInfo);
+
+  addResource(texture, _T("DUMMY_NORMAL_TEXTURE"));
+}
+
+void
+ResourceManager::createDummyWhiteTexture() {
+  auto texture = std::make_shared<TextureCore>();
+
+  constexpr Int32 size = 1;
+  constexpr Int32 channels = 4;
+
+  ImageInfo imageInfo;
+
+  imageInfo.width = size;
+  imageInfo.height = size;
+  imageInfo.channels = channels;
+  imageInfo.data.resize(size * size * channels);
+
+  struct Pixel
+  {
+    UInt8 d[channels];
+  };
+
+  Pixel WhitePixel = { 255, 255, 255, 255 };
+
+  std::memcpy(imageInfo.data.data(), &WhitePixel.d[0], sizeof(WhitePixel));
+
+  texture->init(&imageInfo);
+
+  addResource(texture, _T("DUMMY_WHITE_TEXTURE"));
+}
+
+void
+ResourceManager::createDummyBlackTexture() {
+  auto texture = std::make_shared<TextureCore>();
+
+  constexpr Int32 size = 1;
+  constexpr Int32 channels = 4;
+
+  ImageInfo imageInfo;
+
+  imageInfo.width = size;
+  imageInfo.height = size;
+  imageInfo.channels = channels;
+  imageInfo.data.resize(size * size * channels);
+
+  struct Pixel
+  {
+    UInt8 d[channels];
+  };
+
+  Pixel BlackPixel = { 0, 0, 0, 255 };
+
+  std::memcpy(imageInfo.data.data(), &BlackPixel.d[0], sizeof(BlackPixel));
+
+  texture->init(&imageInfo);
+
+  addResource(texture, _T("DUMMY_BLACK_TEXTURE"));
+}
+
 std::shared_ptr<Material>
 ResourceManager::createMaterial(const TString& materialName, bool empty) {
   
@@ -241,10 +328,19 @@ void
 ResourceManager::createDummyMaterial() {
 
   auto res = getReference(_T("DUMMY_TEXTURE"));
+  auto resNorm = getReference(_T("DUMMY_NORMAL_TEXTURE"));
+  auto resWhite = getReference(_T("DUMMY_WHITE_TEXTURE"));
+  auto resBlack = getReference(_T("DUMMY_BLACK_TEXTURE"));
 
-  auto dummyTextue = std::dynamic_pointer_cast<TextureCore>(res);
+  auto dummyTexture = std::dynamic_pointer_cast<TextureCore>(res);
+  auto dummyNormalTexture = std::dynamic_pointer_cast<TextureCore>(resNorm);
+  auto dummyWhiteTexture = std::dynamic_pointer_cast<TextureCore>(resWhite);
+  auto dummyBlackTexture = std::dynamic_pointer_cast<TextureCore>(resBlack);
 
-  DR_ASSERT(dummyTextue);
+  DR_ASSERT(dummyTexture);
+  DR_ASSERT(dummyNormalTexture);
+  DR_ASSERT(dummyWhiteTexture);
+  DR_ASSERT(dummyBlackTexture);
 
   auto dummyMat = std::make_shared<Material>(_T("DUMMY_MATERIAL"));
 
@@ -252,31 +348,31 @@ ResourceManager::createDummyMaterial() {
                                       {0,0,0}, 
                                       {CHANNEL::kR, 
                                        CHANNEL::kG, 
-                                       CHANNEL::kB})->texture = dummyTextue;
+                                       CHANNEL::kB})->texture = dummyTexture;
 
   dummyMat->addProperty<FloatProperty>(_T("Metallic"), 
                                        1.f, 
-                                       CHANNEL::kA)->texture = dummyTextue;
+                                       CHANNEL::kA)->texture = dummyBlackTexture;
 
   dummyMat->addProperty<Vec3Property>(_T("Normal"), 
                                       {1.f, 1.f, 1.f}, 
                                       {CHANNEL::kR, 
                                        CHANNEL::kG, 
-                                       CHANNEL::kB })->texture = dummyTextue;
+                                       CHANNEL::kB })->texture = dummyNormalTexture;
 
   dummyMat->addProperty<FloatProperty>(_T("Roughness"), 
                                         1.f, 
-                                        CHANNEL::kA)->texture = dummyTextue;
+                                        CHANNEL::kA)->texture = dummyWhiteTexture;
 
   dummyMat->addProperty<Vec3Property>(_T("Emisivity"), 
                                       {1.f, 1.f, 1.f}, 
                                       {CHANNEL::kR, 
                                        CHANNEL::kG, 
-                                       CHANNEL::kB})->texture = dummyTextue;
+                                       CHANNEL::kB})->texture = dummyBlackTexture;
 
   dummyMat->addProperty<FloatProperty>(_T("Transparency"), 
                                        1.f, 
-                                       CHANNEL::kA)->texture = dummyTextue;
+                                       CHANNEL::kA)->texture = dummyBlackTexture;
 
   addResource(dummyMat, _T("DUMMY_MATERIAL"));
 }

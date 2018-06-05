@@ -55,7 +55,18 @@ PostProcessingPass::draw(PassDrawData* drawData) {
 
   m_inputLayout->set(dc);
 
-  CB.Var = Vector4D(0.0f, 1.0f, 2.0f, 3.0f);
+  CB.CameraInfo.x = data->activeCam->getViewportWidth() /
+                    data->activeCam->getViewportHeight();
+  CB.CameraInfo.y = data->activeCam->getFOV();
+  CB.CameraInfo.z = data->activeCam->getNearPlane();
+  CB.CameraInfo.w = data->activeCam->getFarPlane();
+
+  CB.CA_CoC_V.x = data->ChromaticAberrationStrenght;
+  CB.CA_CoC_V.y = data->CoCFocusDistance;
+  CB.CA_CoC_V.z = data->CoCFocusRange;
+  CB.CA_CoC_V.w = data->VignetteScale;
+
+  CB.VignetteOptions = Vector4D(data->VignetteConcentration, data->VignetteRad);
 
   m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
   m_constantBuffer->set(dc);
@@ -64,9 +75,10 @@ PostProcessingPass::draw(PassDrawData* drawData) {
 
   m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kFragment);
 
-  data->ColorRT->getTexture(0).set(dc, 0);
-  data->ColorBlurRT->getTexture(0).set(dc, 1);
-  data->Gbuffer->getTexture(1).set(dc, 2);
+  data->PositionDepthRT->getTexture(0).set(dc, 0);
+  data->ColorRT->getTexture(0).set(dc, 1);
+  data->ColorBlurRT->getTexture(0).set(dc, 2);
+  data->Gbuffer->getTexture(1).set(dc, 3);
 
   auto screenQuadModel = ResourceManager::getReferenceT<Model>(_T("ScreenAlignedQuad.3ds"));
   if (screenQuadModel) {

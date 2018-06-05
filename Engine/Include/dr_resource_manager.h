@@ -139,6 +139,15 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager>
   createDummyTexture();
 
   void
+  createDummyNormalTexture();
+
+  void
+  createDummyWhiteTexture();
+  
+  void
+  createDummyBlackTexture();
+
+  void
   createDummyMaterial();
 
   /**

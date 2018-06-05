@@ -57,32 +57,26 @@ LightningPass::draw(PassDrawData* drawData) {
 
   m_inputLayout->set(dc);
 
-  CB.EyePosition = data->activeCam->getPosition();
+  CB.EyePosition = data->ActiveCam->getPosition();
   CB.EyePosition.w = data->ActiveLights;
-  CB.DirLight = data->DirLight;
+
   for (SizeT lighIndex = 0; lighIndex < 128; ++lighIndex) {
     CB.LightPosition[lighIndex] = (*data->Lights)[lighIndex].m_vec4Position;
     CB.LightColor[lighIndex] = (*data->Lights)[lighIndex].m_vec4Color;
   }
 
-  CB.View = data->activeCam->getView();
-  CB.ViewInverse = CB.View;
-  CB.ViewInverse.inverse();
-
-  CB.Projection = data->activeCam->getProjection();
-  CB.ProjectionInverse = CB.Projection;
-  CB.ProjectionInverse.inverse();
-
-  CB.VP = data->activeCam->getVP();
-  CB.VPInverse = CB.VP;
-  CB.VPInverse.inverse();
-
   for (SizeT i = 0; i < 4; ++i) {
-    CB.ShadowVP[i] = (*data->ShadowCam)[i]->getVP();
-    CB.ShadowSliptDepth[i] = data->shadowDepths[i + 1];
-    CB.ShadowSizes[i] = data->shadowSizes[i];
-    CB.ShadowSizesProportion[i] = data->shadowSizesProportion[i];
+    CB.ShadowCameraVP[i] = (*data->ShadowCameras)[i]->getVP();
+    CB.ShadowSliptDepth[i] = data->ShadowSliptDepths[i + 1];
   }
+  CB.ShadowSizesProportion = data->ShadowSizesProportion;
+
+  CB.ShadowInfo[0] = data->ActivatedShadowCascades;
+  CB.ShadowInfo[1] = data->ShadowMapTextureSize;
+  CB.ShadowInfo[2] = data->LerpBetweenShadowCascade;
+
+  CB.BloomThresholdLuminiscenceDelta = data->BloomThreshold;
+  CB.BloomThresholdLuminiscenceDelta.w = data->LuminiscenceDelta;
 
   m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
   m_constantBuffer->set(dc);
