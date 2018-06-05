@@ -86,6 +86,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Core\Include;$(SolutionDir)Engine\Include;$(SolutionDir)Input\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)Script\Include;$(SolutionDir)Math\Include;$(SolutionDir)Sound\Include;$(SolutionDir)RenderManager\Include;$(SolutionDir)DriderUI\Include;$(DRIDER_DEPENDENCIES)Include\CEF;$(DRIDER_DEPENDENCIES)Include\CEF\Include;$(SolutionDir)ParticleSystem\Include;$(SolutionDir)GraphicsUtils\Include;$(SolutionDir)Utils\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
     </ClCompile>
     <Link>
       <AdditionalDependencies>Utilsd.lib;Mathd.lib;Cored.lib;Soundd.lib;Inputd.lib;Graphicsd.lib;Engined.lib;RenderManagerd.lib;DriderUId.lib;libcef_dll_wrapperd.lib;libcef.lib;Scriptd.lib;GraphicsUtilsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -99,6 +100,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Core\Include;$(SolutionDir)Engine\Include;$(SolutionDir)Input\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)Script\Include;$(SolutionDir)Math\Include;$(SolutionDir)Sound\Include;$(SolutionDir)RenderManager\Include;$(SolutionDir)DriderUI\Include;$(DRIDER_DEPENDENCIES)Include\CEF;$(DRIDER_DEPENDENCIES)Include\CEF\Include;$(SolutionDir)ParticleSystem\Include;$(SolutionDir)GraphicsUtils\Include;$(SolutionDir)Utils\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
     </ClCompile>
     <Link>
       <AdditionalDependencies>Utilsd.lib;Mathd.lib;Cored.lib;Soundd.lib;Inputd.lib;Graphicsd.lib;Engined.lib;RenderManagerd.lib;DriderUId.lib;libcef_dll_wrapperd.lib;libcef.lib;Scriptd.lib;GraphicsUtilsd.lib;%(AdditionalDependencies)</AdditionalDependencies>

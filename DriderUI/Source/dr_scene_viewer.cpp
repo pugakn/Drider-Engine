@@ -67,18 +67,18 @@ SceneViewer::init(Viewport v)
 }
 void 
 SceneViewer::draw() {
-  const float clearColor[4]{ 0.2, 0.5, 0.8, 1};
+  const float clearColor[4]{ 0.2f, 0.5f, 0.8f, 1.f};
   m_RT->clear(GraphicsAPI::getDeviceContext(), clearColor);
   m_RTDPTH->clear(GraphicsAPI::getDeviceContext(),1,0);
   //Draw Scene
   m_renderMan.draw(*m_RT, *m_RTDPTH);
   //Draw End
-  GraphicsAPI::getDepthStencilState(DR_DEPTH_STENCIL_STATES::kDepthR).set(GraphicsAPI::getDeviceContext(), 1.0);
+  GraphicsAPI::getDepthStencilState(DR_DEPTH_STENCIL_STATES::kDepthR).set(GraphicsAPI::getDeviceContext(), 1);
   GraphicsAPI::getBackBufferRT().set(GraphicsAPI::getDeviceContext(), 
                                      GraphicsAPI::getDepthStencil());
   m_RT->getTexture(0).set(GraphicsAPI::getDeviceContext(), 0);
   m_editorQuad.draw();
-  GraphicsAPI::getDepthStencilState(DR_DEPTH_STENCIL_STATES::kDepthRW).set(GraphicsAPI::getDeviceContext(), 1.0);
+  GraphicsAPI::getDepthStencilState(DR_DEPTH_STENCIL_STATES::kDepthRW).set(GraphicsAPI::getDeviceContext(), 1);
 }
 
 void 
