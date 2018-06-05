@@ -41,7 +41,7 @@ insideBounds(float4 fromLightPos) {
 
 //#define INTERVAL_BASED_SELECTION
 #define MAP_BASED_SELECTION
-#define DR_SH_PCF_ENABLED
+//#define DR_SH_PCF_ENABLED
 #define CASCADE_BLUR
 float
 GetShadowValue(float4 fromLightPos, const int camIndex) {
@@ -170,7 +170,7 @@ FS(PS_INPUT input) {
 
   const int activeLights = kEyePosition.w;
   //[unroll]
-  for (int index = 0; index < activeLights; index += 4) {
+  for (int index = 0; index < 1; index += 4) {
     float3 lightPosition  = kLightPosition[index].xyz;
     float3 lightColor     = kLightColor[index].xyz;
     float  lightRange     = kLightPosition[index].w;
@@ -193,8 +193,10 @@ FS(PS_INPUT input) {
     float3 SpecAcc = Specular_D(alpha, NdotH) *
                      Specular_F(specular * lightColor, LdotH) *
                      Specular_G(alpha, LdotH);
+    
+    //float3 DiffAcc = float3(0,0,0);
+    //float SpecAcc = float3(0,0,0);
     SpecAcc /= (4.0f * cos(NdotL) * cos(NdotV));
-    //SpecAcc = float3(0,0,0);
     
     finalColor += (SSAO * NdotL * LightPower) * (DiffAcc + SpecAcc);
   };
@@ -264,6 +266,7 @@ FS(PS_INPUT input) {
   #endif //INTERVAL_BASED_SELECTION || MAP_BASED_SELECTION
   
   psOut.Lightning = float4((finalColor * ShadowValue) + emissive, 1.0f);
+  //psOut.Lightning= float4(1,0,1,1);
   psOut.Brightness = float4(brightness(psOut.Lightning.xyz), 1.0f);
 
   //psOut.Lightning = position;
@@ -274,11 +277,11 @@ FS(PS_INPUT input) {
   //psOut.Lightning = float4(roughness.rrr, 1.0f);
   //psOut.Lightning = float4(specular, 1.0f);
   //psOut.Lightning = float4(SSAO.rrr, 1.0f);
-  psOut.Lightning = float4(ShadowValue.xxx, 1.0f);
+  //psOut.Lightning = float4(ShadowValue.xxx, 1.0f);
   //psOut.Lightning = float4(ShadowTex.Sample(SS, uv).xxx, 1.0f);
   //psOut.Lightning = float4(ShadowTex.Sample(SS, uv).yyy, 1.0f);
   //psOut.Lightning = float4(ShadowTex.Sample(SS, uv).zzz, 1.0f);
   //psOut.Lightning = float4(ShadowTex.Sample(SS, uv).www, 1.0f);
- 
+
   return psOut;
 }

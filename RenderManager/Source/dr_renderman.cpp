@@ -284,7 +284,7 @@ RenderMan::draw(const RenderTarget& _out, const DepthStencil& _outds) {
 
   m_LightningDrawData.ActiveCam = mainCam;
   m_LightningDrawData.Lights = &lights[0];
-  m_LightningDrawData.ActiveLights = 128;
+  m_LightningDrawData.ActiveLights = 1;
   m_LightningDrawData.ShadowCameras = &vecShadowCamera;
   m_LightningDrawData.ShadowSliptDepths = partitions;
   m_LightningDrawData.ActivatedShadowCascades = m_szActiveShadowCameras;
