@@ -12,10 +12,10 @@ cbuffer ConstantBuffer {
   float4x4 VPInv;
 };
 
-static const float SampleRadio = 0.008f;
-static const float Intensity = 5.0f;
+static const float SampleRadio = 0.0008f;
+static const float Intensity = 1.0f;
 static const float Scale = 1.0f;
-static const float Bias = 0.2f;
+static const float Bias = 0.0002f;
 
 float3
 getPosition(in float2 uv) {
