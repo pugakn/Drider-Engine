@@ -61,9 +61,9 @@ GetShadowValue(float4 fromLightPos, const int camIndex) {
   const float sampleRadius = 3.0f;
   const float modifier = 0.25f / (sampleRadius * sampleRadius * 2.0f);
 
-  [unroll]
+  //[unroll]
   for (float y = -sampleRadius; y <= sampleRadius; y += 1.0f) {
-    [unroll]
+    //[unroll]
     for (float x = -sampleRadius; x <= sampleRadius; x += 1.0f) {
       //Projected depth
       float depthSample = ShadowTex.Sample(SS, uv + (texelSize * float2(x, y)))[camIndex];
