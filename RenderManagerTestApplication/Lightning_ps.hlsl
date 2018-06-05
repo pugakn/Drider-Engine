@@ -48,7 +48,6 @@ GetShadowValue(float4 fromLightPos, const int camIndex) {
   float shadowValue = 1.0f;
 
   const float CascadeBiasModifier = ShadowSizesProportion[camIndex] - (camIndex * 1.5f); //Dunno LOL
-  static const float shadowBias = 0.0005f;
   
   float2 uv = 0.5f + (0.5f * fromLightPos.xy);
   uv.y = 1.0 - uv.y;
@@ -56,7 +55,8 @@ GetShadowValue(float4 fromLightPos, const int camIndex) {
   const float depthValue = fromLightPos.z;
 
   #ifdef DR_SH_PCF_ENABLED
-  
+  static const float shadowBias = 0.0005f;
+
   const float texelSize = 1.0f / ShadowInfo[1];
   const float sampleRadius = 3.0f;
   const float modifier = 0.25f / (sampleRadius * sampleRadius * 2.0f);
@@ -73,8 +73,9 @@ GetShadowValue(float4 fromLightPos, const int camIndex) {
   }
   
   #else //DR_SH_PCF_ENABLED
+  static const float shadowBias = 0.00005f;
   float depthSample = ShadowTex.Sample(SS, uv)[camIndex];
-  shadowValue -= (0.25f * (depthValue > (depthSample + shadowBias)));
+  shadowValue -= (0.25f * (depthValue > (depthSample + (shadowBias * CascadeBiasModifier))));
   #endif //DR_SH_PCF_ENABLED
 
   return shadowValue;
@@ -155,6 +156,7 @@ FS(PS_INPUT input) {
   const float2 uv = input.Texcoord;
   
   const float4 position  = float4(PositionLDepthTex.Sample(SS, uv).xyz, 1.0f);
+  const float  depthCam  = PositionLDepthTex.Sample(SS, uv).w;
   const float3 normal    = NormalCoCTex.Sample(SS, uv).xyz;
   const float3 albedo    = AlbedoMetallicTex.Sample(SS, uv).xyz;
   const float  metallic  = AlbedoMetallicTex.Sample(SS, uv).w;
@@ -170,7 +172,7 @@ FS(PS_INPUT input) {
 
   const int activeLights = kEyePosition.w;
   //[unroll]
-  for (int index = 0; index < activeLights; ++index) {
+  for (int index = 0; index < activeLights; index += 2) {
     float3 lightPosition  = kLightPosition[index].xyz;
     float3 lightColor     = kLightColor[index].xyz;
     float  lightRange     = kLightPosition[index].w;
@@ -194,7 +196,6 @@ FS(PS_INPUT input) {
                      Specular_F(specular * lightColor, LdotH) *
                      Specular_G(alpha, LdotH);
     SpecAcc /= (4.0f * cos(NdotL) * cos(NdotV));
-    //SpecAcc = float3(0,0,0);
     
     finalColor += (SSAO * NdotL * LightPower) * (DiffAcc + SpecAcc);
   };
@@ -251,7 +252,6 @@ FS(PS_INPUT input) {
 
   float ShadowValue = 1.0f;
 
-
   #if defined(INTERVAL_BASED_SELECTION) || defined(MAP_BASED_SELECTION)
     #ifdef CASCADE_BLUR
       const float4 fromMaxLightPos = mul(kShadowVP[min(iCurrentCascadeIndex + 1, 3)], position);
@@ -267,6 +267,7 @@ FS(PS_INPUT input) {
   psOut.Brightness = float4(brightness(psOut.Lightning.xyz), 1.0f);
 
   //psOut.Lightning = position;
+  //psOut.Lightning = float4(depthCam.xxx, 1.0f);
   //psOut.Lightning = float4(normal, 1.0f);
   //psOut.Lightning = float4(albedo, 1.0f);
   //psOut.Lightning = float4(metallic.rrr, 1.0f);
@@ -274,7 +275,7 @@ FS(PS_INPUT input) {
   //psOut.Lightning = float4(roughness.rrr, 1.0f);
   //psOut.Lightning = float4(specular, 1.0f);
   //psOut.Lightning = float4(SSAO.rrr, 1.0f);
-  psOut.Lightning = float4(ShadowValue.xxx, 1.0f);
+  //psOut.Lightning = float4(ShadowValue.xxx, 1.0f);
   //psOut.Lightning = float4(ShadowTex.Sample(SS, uv).xxx, 1.0f);
   //psOut.Lightning = float4(ShadowTex.Sample(SS, uv).yyy, 1.0f);
   //psOut.Lightning = float4(ShadowTex.Sample(SS, uv).zzz, 1.0f);
