@@ -165,7 +165,8 @@ ResourceManager::getReference(const TString& resourceName) {
   if (instance().isResourceLoaded(resourceName)) {
     res = instance().m_resources[resourceName];
   } else {
-    throw std::exception(("Resource not found: " + StringUtils::toString(resourceName)).c_str() );
+    //throw std::exception(("Resource not found: " + StringUtils::toString(resourceName)).c_str() );
+
   }
 
   return res;

@@ -4,6 +4,7 @@
 using namespace driderSDK;
 int main(int argc, char* argv[]) {
 
+  argc = 0;
   TestApplication scriptApp;
   Viewport nuevo;
   nuevo.topLeftX = 0;

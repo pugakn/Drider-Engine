@@ -1,8 +1,12 @@
 
+#include <array>
+
 #include <dr_application.h>
+#include <dr_light.h>
 #include <dr_memory.h>
 #include <dr_util_prerequisites.h>
 #include <dr_timer.h>
+#include <dr_renderman.h>
 
 namespace driderSDK {
 
@@ -98,9 +102,8 @@ private:
   GameObject* m_right;
   GameObject* m_player;
   GameObject* m_cameraHolder;
-  Timer m_timer;
-
-
+  Timer m_timer;RenderMan m_renderMan;
+  std::array<Light, 128> m_light;
   // Inherited via Application
   virtual void onResize() override;
 };
