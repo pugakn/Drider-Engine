@@ -79,6 +79,9 @@ DriderEngine::postUpdate() {
 
 void
 DriderEngine::postRender() {
+  GraphicsDriver::API().clear();
+  m_editor.draw();
+  GraphicsDriver::API().swapBuffers();
 }
 
 void
@@ -114,8 +117,6 @@ DriderEngine::initModules() {
   ContextManager::startUp();
   ScriptEngine::startUp();
   SceneGraph::startUp();
-
-  m_editor.init(m_viewport);
 }
 
 void
@@ -125,7 +126,7 @@ DriderEngine::loadResources() {
   ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
 
   //Scripts
-  ResourceManager::loadResource(_T("montiBehavior.as"));
+  ResourceManager::loadResource(_T("driderBehavior.as"));
   ResourceManager::loadResource(_T("script1.as"));
   ResourceManager::loadResource(_T("script2.as"));
 
@@ -203,19 +204,21 @@ DriderEngine::initScriptEngine() {
   result = Keyboard::registerFunctions(scriptEngine);
   Vector3D vector;
   result = vector.registerFunctions(scriptEngine);
+  result = Time::registerFunctions(scriptEngine);
+  result = GameComponent::registerFunctions(scriptEngine);
+  result = SoundComponent::registerFunctions(scriptEngine);
+  result = ScriptComponent::registerFunctions(scriptEngine);
   result = Transform::registerFunctions(scriptEngine);
   result = GameObject::registerFunctions(scriptEngine);
-  result = Time::registerFunctions(scriptEngine);
-  result = SoundComponent::registerFunctions(scriptEngine);
 
   //Register global properties
-  auto m_root = SceneGraph::instance().getRoot().get(); // Get root
+  m_root = SceneGraph::instance().getRoot().get(); // Get root
 
   result = scriptEngine->m_scriptEngine->RegisterGlobalProperty("GameObject@ Object",
                                                                 &m_root);
 
   //Get script references of the ResourceManager
-  auto rBehaviorScript = ResourceManager::getReference(_T("montiBehavior.as"));
+  auto rBehaviorScript = ResourceManager::getReference(_T("driderBehavior.as"));
   auto BehaviorScript = std::dynamic_pointer_cast<ScriptCore>(rBehaviorScript);
 
   auto rScript1 = ResourceManager::getReference(_T("script1.as"));

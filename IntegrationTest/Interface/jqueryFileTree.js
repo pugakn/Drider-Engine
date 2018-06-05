@@ -118,4 +118,4 @@ function CFUIReady(url) {
 };*/
 }
 
-CFUIReady("Assets")
+CFUIReady("Resources")

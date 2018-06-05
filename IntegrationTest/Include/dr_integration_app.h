@@ -71,6 +71,8 @@ private:
   std::unordered_map<TString, ScriptComponent*> m_scripts;
 
   std::shared_ptr<GameObject> m_player;
+
+  GameObject* m_root;
 };
 
 }
