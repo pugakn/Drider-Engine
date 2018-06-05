@@ -174,8 +174,11 @@ void SceneEditor::initSceneGraph()
              Lights[lighIndex].m_vec4Color.y,
              Lights[lighIndex].m_vec4Color.z);
 
+    //Range
+    Lights[lighIndex].m_vec4Position.w = 150.0f;
+
     //Intensidad
-    Lights[lighIndex].m_vec4Color.w = (lighIndex / 128.0f) * 100.0f;
+    Lights[lighIndex].m_vec4Color.w = (lighIndex / 128.0f);
 
     proportion += (1.0f / 128.0f);
   }

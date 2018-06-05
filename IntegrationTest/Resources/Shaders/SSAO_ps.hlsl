@@ -64,8 +64,6 @@ struct PS_OUTPUT {
 PS_OUTPUT
 FS(PS_INPUT input) {
 	PS_OUTPUT outRT;
-  //outRT.SSAO = float4(1.0f, 1.0f, 1.0f, 1.0f);
-	//return outRT;
 
 	float2 uv = input.Texcoord;
 
