@@ -7,11 +7,11 @@ Variables:
 
 
     0   0 *    PshVPtr  v0
-    1   1 *    CALL     103           (MontiBehavior::MontiBehavior())
+    1   1 *    CALL     103           (driderBehavior::driderBehavior())
 - 3,10 -
     3   0 *    SUSPEND
     4   0 *    PshVPtr  v0
     5   1 *    ADDSi    v24, 134217751
-    7   1 *    PGA      146966880
-    9   2 *    ALLOC    0x8bbd7d0, 20             (type:TString, {no func})
+    7   1 *    PGA      207535912
+    9   2 *    ALLOC    0xc622348, 20             (type:TString, {no func})
    12   0 *    RET      1

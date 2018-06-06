@@ -1,130 +1,237 @@
 void script2::Start()
 
-Temps: 8, 9, 11, 12, 13, 15, 16, 17
+Temps: 7, 8, 10, 12, 14, 15, 16, 18, 19
 
 Variables: 
- 001: (heap) GameObject@ player
- 010: (heap) ScriptComponent@ sc
- 014: (heap) script1@ a
- 024: TString name
+ 011: (heap) GameObject@ player
+ 013: (heap) ScriptComponent@ sc
+ 017: (heap) script1@ a
+ 026: TString name
  000: script2 this
- 009: (heap) GameObject {noname}
- 011: (heap) GameComponent {noname}
- 012: null handle {noname}
- 013: (heap) ScriptComponent {noname}
- 015: (heap) IScript {noname}
- 016: (heap) script1 {noname}
- 008: TString {noname}
+ 012: (heap) GameObject {noname}
+ 014: (heap) GameComponent {noname}
+ 015: null handle {noname}
+ 016: (heap) ScriptComponent {noname}
+ 018: (heap) IScript {noname}
+ 019: (heap) script1 {noname}
+ 007: TString {noname}
 
 
-- 7,3 -
-    0  24 *    SUSPEND
-               VarDecl  0
-    1  24 *    PGA      146967232
-    3  25 *    PSF      v8
-    4  26 *    CALLSYS  20           (TString::TString(const TString&in))
-               ObjInfo  v8, 1
-    6  24 *    VAR      v8
-    7  25 *    PshGPtr  13302368
-    9  26 *    GETREF   1
-   10  26 *    CALLSYS  94           (GameObject@ GameObject::findObject(const TString&in))
-   12  24 *    STOREOBJ v9
-   13  24 *    PSF      v8
-   14  25 *    CALLSYS  21           (TString::~TString())
-               ObjInfo  v8, 0
-   16  24 *    PshVPtr  v9
-   17  25 *    RefCpyV  v1, 135640496
-   19  25 *    FREE     v9, 135640496
-   21  25 *    PopPtr
 - 8,3 -
-   22  24 *    SUSPEND
-               VarDecl  1
-   23  24 *    PGA      146968640
-   25  25 *    PSF      v8
-   26  26 *    CALLSYS  20           (TString::TString(const TString&in))
-               ObjInfo  v8, 1
-   28  24 *    VAR      v8
-   29  25 *    PshVPtr  v1
-   30  26 *    GETREF   1
-   31  26 *    CALLSYS  98           (GameComponent@ GameObject::getComponent(const TString&in))
-   33  24 *    STOREOBJ v11
-   34  24 *    PSF      v8
-   35  25 *    CALLSYS  21           (TString::~TString())
-               ObjInfo  v8, 0
-   37  24 *    ClrVPtr  v12
-   38  24 *    CmpPtr   v11, v12
-   40  24 *    JZ       +8              (d:50)
-   42  24 *    PshVPtr  v11
-   43  25 *    CALLSYS  88           (ScriptComponent@ GameComponent::opCast())
-   45  24 *    STOREOBJ v13
-   46  24 *    FREE     v11, 149206328
-   48  24 *    JMP      +1              (d:51)
-            1:
-   50  24 *    ClrVPtr  v13
-            2:
-   51  24 *    PshVPtr  v13
-   52  25 *    RefCpyV  v10, 149192952
-   54  25 *    FREE     v13, 149192952
-   56  25 *    PopPtr
-- 9,3 -
-   57  24 *    SUSPEND
-               VarDecl  2
-   58  24 *    PshVPtr  v10
-   59  25 *    CALLSYS  86           (IScript@ ScriptComponent::getScript())
-   61  24 *    STOREOBJ v15
-   62  24 *    PSF      v15
-   63  25 *    Cast     0x48000016          (i:1207959574, f:131072)
-   65  24 *    STOREOBJ v16
-   66  24 *    FREE     v15, 135639728
-   68  24 *    PshVPtr  v16
-   69  25 *    RefCpyV  v14, 145190376
-   71  25 *    FREE     v16, 145190376
-   73  25 *    PopPtr
+    0  26 *    SUSPEND
+    1  26 *    PGA      207535120
+    3  27 *    PSF      v7
+    4  28 *    CALLSYS  20           (TString::TString(const TString&in))
+               ObjInfo  v7, 1
+    6  26 *    PSF      v7
+    7  27 *    CALLSYS  56           (void Print(TString&in))
+    9  26 *    PSF      v7
+   10  27 *    CALLSYS  21           (TString::~TString())
 - 10,3 -
-   74  24 *    SUSPEND
-   75  24 *    ClrVPtr  v16
-   76  24 *    CmpPtr   v14, v16
-   78  24 *    TZ
-   79  24 *    CpyRtoV4 v17
-   80  24 *    FREE     v16, 145190376
-   82  24 *    CpyVtoR4 v17
-   83  24 *    JLowZ    +14              (d:99)
-- 11,4 -
+               ObjInfo  v7, 0
+   12  26 *    SUSPEND
+   13  26 *    TYPEID   0x400000c          'TString'
+   15  27 *    PGA      207534944
+   17  28 *    PSF      v7
+   18  29 *    CALLSYS  20           (TString::TString(const TString&in))
+               ObjInfo  v7, 1
+   20  27 *    PSF      v7
+   21  28 *    CALLSYS  57           (void Log(?&in))
+   23  26 *    PSF      v7
+   24  27 *    CALLSYS  21           (TString::~TString())
+- 11,3 -
+               ObjInfo  v7, 0
+   26  26 *    SUSPEND
+   27  26 *    TYPEID   0x400000c          'TString'
+   29  27 *    PGA      207534856
+   31  28 *    PSF      v7
+   32  29 *    CALLSYS  20           (TString::TString(const TString&in))
+               ObjInfo  v7, 1
+   34  27 *    PSF      v7
+   35  28 *    CALLSYS  57           (void Log(?&in))
+   37  26 *    PSF      v7
+   38  27 *    CALLSYS  21           (TString::~TString())
+- 12,3 -
+               ObjInfo  v7, 0
+   40  26 *    SUSPEND
+   41  26 *    TYPEID   0x400000c          'TString'
+   43  27 *    PGA      207535032
+   45  28 *    PSF      v7
+   46  29 *    CALLSYS  20           (TString::TString(const TString&in))
+               ObjInfo  v7, 1
+   48  27 *    PSF      v7
+   49  28 *    CALLSYS  57           (void Log(?&in))
+   51  26 *    PSF      v7
+   52  27 *    CALLSYS  21           (TString::~TString())
+- 13,3 -
+               ObjInfo  v7, 0
+   54  26 *    SUSPEND
+   55  26 *    TYPEID   0x4          'int'
+   57  27 *    SetV4    v8, 0x5          (i:5, f:7.00649e-45)
+   59  27 *    PSF      v8
+   60  28 *    CALLSYS  57           (void Log(?&in))
+- 14,3 -
+   62  26 *    SUSPEND
+   63  26 *    TYPEID   0x400000c          'TString'
+   65  27 *    PGA      207533976
+   67  28 *    PSF      v7
+   68  29 *    CALLSYS  20           (TString::TString(const TString&in))
+               ObjInfo  v7, 1
+   70  27 *    PSF      v7
+   71  28 *    CALLSYS  57           (void Log(?&in))
+   73  26 *    PSF      v7
+   74  27 *    CALLSYS  21           (TString::~TString())
+- 15,3 -
+               ObjInfo  v7, 0
+   76  26 *    SUSPEND
+   77  26 *    TYPEID   0xb          'double'
+   79  27 *    SetV8    v10, 0x400b333333333333          (i:4614838538166547251, f:3.4)
+   82  27 *    PSF      v10
+   83  28 *    CALLSYS  57           (void Log(?&in))
+- 16,3 -
+   85  26 *    SUSPEND
+   86  26 *    TYPEID   0x400000c          'TString'
+   88  27 *    PGA      207535296
+   90  28 *    PSF      v7
+   91  29 *    CALLSYS  20           (TString::TString(const TString&in))
+               ObjInfo  v7, 1
+   93  27 *    PSF      v7
+   94  28 *    CALLSYS  57           (void Log(?&in))
+   96  26 *    PSF      v7
+   97  27 *    CALLSYS  21           (TString::~TString())
+- 17,3 -
+               ObjInfo  v7, 0
+   99  26 *    SUSPEND
+  100  26 *    TYPEID   0xb          'double'
+  102  27 *    SetV8    v10, 0x401aaaaa7ded6ba9          (i:4619192017055738793, f:6.66667)
+  105  27 *    PSF      v10
+  106  28 *    CALLSYS  57           (void Log(?&in))
+- 18,3 -
+  108  26 *    SUSPEND
+  109  26 *    TYPEID   0x400000c          'TString'
+  111  27 *    PGA      207535384
+  113  28 *    PSF      v7
+  114  29 *    CALLSYS  20           (TString::TString(const TString&in))
+               ObjInfo  v7, 1
+  116  27 *    PSF      v7
+  117  28 *    CALLSYS  57           (void Log(?&in))
+  119  26 *    PSF      v7
+  120  27 *    CALLSYS  21           (TString::~TString())
+- 19,3 -
+               ObjInfo  v7, 0
+  122  26 *    SUSPEND
+  123  26 *    TYPEID   0x1          'bool'
+  125  27 *    SetV1    v8, 0x0
+  127  27 *    PSF      v8
+  128  28 *    CALLSYS  57           (void Log(?&in))
+- 22,3 -
+  130  26 *    SUSPEND
+               VarDecl  0
+  131  26 *    PGA      207532128
+  133  27 *    PSF      v7
+  134  28 *    CALLSYS  20           (TString::TString(const TString&in))
+               ObjInfo  v7, 1
+  136  26 *    VAR      v7
+  137  27 *    PshGPtr  18087136
+  139  28 *    GETREF   1
+  140  28 *    CALLSYS  94           (GameObject@ GameObject::findObject(const TString&in))
+  142  26 *    STOREOBJ v12
+  143  26 *    PSF      v7
+  144  27 *    CALLSYS  21           (TString::~TString())
+               ObjInfo  v7, 0
+  146  26 *    PshVPtr  v12
+  147  27 *    RefCpyV  v11, 209353480
+  149  27 *    FREE     v12, 209353480
+  151  27 *    PopPtr
+- 23,3 -
+  152  26 *    SUSPEND
+               VarDecl  1
+  153  26 *    PGA      207535472
+  155  27 *    PSF      v7
+  156  28 *    CALLSYS  20           (TString::TString(const TString&in))
+               ObjInfo  v7, 1
+  158  26 *    VAR      v7
+  159  27 *    PshVPtr  v11
+  160  28 *    GETREF   1
+  161  28 *    CALLSYS  98           (GameComponent@ GameObject::getComponent(const TString&in))
+  163  26 *    STOREOBJ v14
+  164  26 *    PSF      v7
+  165  27 *    CALLSYS  21           (TString::~TString())
+               ObjInfo  v7, 0
+  167  26 *    ClrVPtr  v15
+  168  26 *    CmpPtr   v14, v15
+  170  26 *    JZ       +8              (d:180)
+  172  26 *    PshVPtr  v14
+  173  27 *    CALLSYS  88           (ScriptComponent@ GameComponent::opCast())
+  175  26 *    STOREOBJ v16
+  176  26 *    FREE     v14, 55999288
+  178  26 *    JMP      +1              (d:181)
+            1:
+  180  26 *    ClrVPtr  v16
+            2:
+  181  26 *    PshVPtr  v16
+  182  27 *    RefCpyV  v13, 196062552
+  184  27 *    FREE     v16, 196062552
+  186  27 *    PopPtr
+- 24,3 -
+  187  26 *    SUSPEND
+               VarDecl  2
+  188  26 *    PshVPtr  v13
+  189  27 *    CALLSYS  86           (IScript@ ScriptComponent::getScript())
+  191  26 *    STOREOBJ v18
+  192  26 *    PSF      v18
+  193  27 *    Cast     0x48000016          (i:1207959574, f:131072)
+  195  26 *    STOREOBJ v19
+  196  26 *    FREE     v18, 201985408
+  198  26 *    PshVPtr  v19
+  199  27 *    RefCpyV  v17, 207679680
+  201  27 *    FREE     v19, 207679680
+  203  27 *    PopPtr
+- 25,3 -
+  204  26 *    SUSPEND
+  205  26 *    ClrVPtr  v19
+  206  26 *    CmpPtr   v17, v19
+  208  26 *    TZ
+  209  26 *    CpyRtoV4 v8
+  210  26 *    FREE     v19, 207679680
+  212  26 *    CpyVtoR4 v8
+  213  26 *    JLowZ    +14              (d:229)
+- 26,4 -
             {
-   85  24 *    SUSPEND
-   86  24 *    PGA      146967320
-   88  25 *    PSF      v8
-   89  26 *    CALLSYS  20           (TString::TString(const TString&in))
-               ObjInfo  v8, 1
-   91  24 *    PSF      v8
-   92  25 *    CALLSYS  56           (void Print(TString&in))
-   94  24 *    PSF      v8
-   95  25 *    CALLSYS  21           (TString::~TString())
-               ObjInfo  v8, 0
+  215  26 *    SUSPEND
+  216  26 *    PGA      207534504
+  218  27 *    PSF      v7
+  219  28 *    CALLSYS  20           (TString::TString(const TString&in))
+               ObjInfo  v7, 1
+  221  26 *    PSF      v7
+  222  27 *    CALLSYS  56           (void Print(TString&in))
+  224  26 *    PSF      v7
+  225  27 *    CALLSYS  21           (TString::~TString())
+               ObjInfo  v7, 0
             }
-   97  24 *    JMP      +4              (d:103)
-- 13,4 -
+  227  26 *    JMP      +4              (d:233)
+- 28,4 -
             3:
             {
-   99  24 *    SUSPEND
-  100  24 *    PshVPtr  v14
-  101  25 *    CALLINTF 118           (void script1::Do())
-- 16,3 -
+  229  26 *    SUSPEND
+  230  26 *    PshVPtr  v17
+  231  27 *    CALLINTF 118           (void script1::Do())
+- 31,3 -
             }
             4:
-  103  24 *    SUSPEND
+  233  26 *    SUSPEND
                VarDecl  3
-  104  24 *    PGA      146969080
-  106  25 *    PSF      v24
-  107  26 *    CALLSYS  20           (TString::TString(const TString&in))
-- 18,3 -
-               ObjInfo  v24, 1
-  109  24 *    SUSPEND
-  110  24 *    PSF      v24
-  111  25 *    CALLSYS  21           (TString::~TString())
-               ObjInfo  v24, 0
-  113  24 *    FREE     v14, 145190376
-  115  24 *    FREE     v10, 149192952
-  117  24 *    FREE     v1, 135640496
+  234  26 *    PGA      207535208
+  236  27 *    PSF      v26
+  237  28 *    CALLSYS  20           (TString::TString(const TString&in))
+- 33,3 -
+               ObjInfo  v26, 1
+  239  26 *    SUSPEND
+  240  26 *    PSF      v26
+  241  27 *    CALLSYS  21           (TString::~TString())
+               ObjInfo  v26, 0
+  243  26 *    FREE     v17, 207679680
+  245  26 *    FREE     v13, 196062552
+  247  26 *    FREE     v11, 209353480
             0:
-  119  24 *    RET      1
+  249  26 *    RET      1
