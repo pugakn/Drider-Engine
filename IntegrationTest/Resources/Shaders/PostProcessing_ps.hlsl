@@ -158,6 +158,7 @@ float4
 
     fCoC = clamp(fCoC, -1.0f * fA, 1.0f);
     fCoC = abs(fCoC);
+    //return float4(fCoC.xxx, 1.0f);
   #endif //DEPTH_OF_FIELD
 
   #ifdef VIGNETTE
