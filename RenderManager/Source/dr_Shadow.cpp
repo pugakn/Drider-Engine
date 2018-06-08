@@ -130,7 +130,17 @@ ShadowPass::draw(PassDrawData* drawData) {
   data->dsOptions->clear(dc, 1, 0);
 
   for (auto& modelPair : *data->models) {
+    CB.World = modelPair.world;
     CB.WVP = modelPair.world * (data->shadowCam->getVP());
+
+    std::memset(&CB.Bones[0].data[0], 0.0f, sizeof(CB.Bones));
+    auto Bones = modelPair.bones;
+    if (Bones != nullptr) {
+      Int32 maxBones = modelPair.bones->size();
+      for (SizeT index = 0; index < maxBones; ++index) {
+        CB.Bones[index] = (*modelPair.bones)[index];
+      }
+    }
 
     m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
     m_constantBuffer->set(dc);

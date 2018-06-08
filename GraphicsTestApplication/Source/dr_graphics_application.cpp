@@ -32,6 +32,7 @@
 #include <dr_skeleton.h>
 #include <dr_script_component.h>
 #include <dr_script_core.h>
+#include <dr_swap_chain.h>
 #include <dr_script_engine.h>
 #include <dr_vertex_buffer.h>
 #include <dr_time.h>
@@ -62,8 +63,18 @@ GraphicsApplication::postInit() {
   initScriptEngine();
   createTechniques();
   createScene();
-  
+    
   Time::update();
+
+  
+  m_light[0].m_vec4Position = {100, 100, 100, 2000};
+  m_light[0].m_vec4Color = {255, 0, 0, 1};
+
+  /*for (Int32 i = 0; i < 32; ++i) {
+
+  }*/
+; 
+  m_renderMan.lights = &m_light;
 
   m_timer.init();
 }
@@ -97,7 +108,10 @@ GraphicsApplication::postRender() {
 
   GraphicsDriver::API().clear();
 
-  Int32 queryFlags = QUERY_PROPERTY::kAny;
+  m_renderMan.draw(GraphicsDriver::API().getBackBufferRT(),
+                   GraphicsDriver::API().getDepthStencil());
+
+  /*Int32 queryFlags = QUERY_PROPERTY::kAny;
 
   auto& camera = *CameraManager::getActiveCamera();
 
@@ -145,7 +159,7 @@ GraphicsApplication::postRender() {
       }
 
     }
-  }
+  }*/
 
   GraphicsDriver::API().swapBuffers();
 }
@@ -186,11 +200,17 @@ GraphicsApplication::initModules() {
   ScriptEngine::startUp();
   ContextManager::startUp();
   SceneGraph::startUp();
+
+  m_renderMan.init();
 }
 
 void 
 GraphicsApplication::initInputCallbacks() {
   
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kP,
+                        std::bind(&RenderMan::recompile, &m_renderMan)); 
+
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::k9,
                         &SceneGraph::buildOctree); 
@@ -344,8 +364,6 @@ GraphicsApplication::createScene() {
 
   auto terrainObj = addObjectFromModel(terr, _T("Terrain"));
 
-  
-
   terrainObj->setStatic(true);
 
   terrainObj->getTransform().setPosition({0, 0, 550});
@@ -479,13 +497,6 @@ GraphicsApplication::createScene() {
   auto fd = copy->createComponent<FrustumDebug>(activeCam.get());
 
   fd->setShaderTechnique(m_linesTech.get());
-
-  /*auto quadMod = ResourceManager::getReferenceT<Model>(_T("ScreenAlignedQuad.3ds"));
-
-  auto quad = addObjectFromModel(quadMod, _T("Floor"));
-
-  quad->getTransform().rotate({-Math::HALF_PI, 0, 0});
-  quad->getTransform().setScale({10000, 10000, 10000});*/
 }
 
 std::shared_ptr<GameObject>
@@ -512,6 +523,7 @@ GraphicsApplication::destroyModules() {
   m_animTech->destroy();
   m_staticTech->destroy();
 
+  m_renderMan.exit();
   SceneGraph::shutDown();
   ResourceManager::shutDown();
   CameraManager::shutDown();
@@ -742,6 +754,11 @@ GraphicsApplication::playerRotation() {
 // Inherited via Application
 void 
 GraphicsApplication::onResize() {
+
+  GraphicsDriver::API().getSwapChain().resize(GraphicsDriver::API().getDevice(),
+                                               m_viewport.width,
+                                               m_viewport.height);
+
 }
 
 }

@@ -66,14 +66,14 @@ GameObject::update() {
     }
   }
 
-  if (!m_componentsToRemove.empty()) {
+  /*if (!m_componentsToRemove.empty()) {
 
     for (const auto& cmpToRem : m_componentsToRemove) {
       removeComponentP(cmpToRem);
     }
 
     m_componentsToRemove.clear();
-  }
+  }*/
 
   for (auto& child : m_children) {
     if (child->isEnabled()) {
