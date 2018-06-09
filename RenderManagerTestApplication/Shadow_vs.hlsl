@@ -24,26 +24,28 @@ VS(VS_INPUT input) {
   VS_OUTPUT psOut;
 
   float4x4 BoneTransform = (float4x4)0;
-  BoneTransform[0][0] = 1.0f;
-  BoneTransform[1][1] = 1.0f;
-  BoneTransform[2][2] = 1.0f;
-  BoneTransform[3][3] = 1.0f;
+  int activationScale = 0;
+  int activeWeights = 0;
+  int boneIndex = 0;
   
   [unroll]
   for (int i = 0; i < 4; ++i) {
-    int index = input.BonesIDs[i];
-    if (index != -1) {
-      BoneTransform += mul(Bones[index], input.BonesWeights[i]);
-    }
+    boneIndex = input.BonesIDs[i];
+    activationScale = (boneIndex > -1);
+    activeWeights += activationScale;
+    BoneTransform += mul(Bones[boneIndex], input.BonesWeights[i] * activationScale);
   }
+  
+  BoneTransform[0][0] += 1.0f * (activeWeights <= 0);
+  BoneTransform[1][1] += 1.0f * (activeWeights <= 0);
+  BoneTransform[2][2] += 1.0f * (activeWeights <= 0);
+  BoneTransform[3][3] += 1.0f * (activeWeights <= 0);
   
 	float4 vertexTransformed = mul(BoneTransform, input.Position);
   
-  //psOut.Position = mul(WVP, input.Position);
-  psOut.Position  = mul(WVP, vertexTransformed);
-  //psOut.fDepth   = psOut.Position.z / psOut.Position.w;
+  psOut.Position = mul(WVP, vertexTransformed);
+  //psOut.fDepth   = mul(WVP, input.Position).z;
   psOut.fDepth   = psOut.Position.z;
-  psOut.fDepth   = mul(WVP, input.Position).z;
   
   return psOut;
 }
