@@ -86,11 +86,11 @@ GraphicsApplication::postUpdate() {
 
   static Vector3D dir{0,0,200.f};
 
-  //m_right->getTransform().move(dir * Time::getDelta());
+  m_right->getTransform().move(dir * Time::getDelta());
   
   if (m_timer.getSeconds() > 4.f) {
     dir *= -1;
-    //m_right->getTransform().rotate({0,Math::PI,0});
+    m_right->getTransform().rotate({0,Math::PI,0});
     m_timer.init();
   }
 

@@ -109,9 +109,9 @@ Uncharted2(in float3 Color, in float exposure) {
   return float4(retColor, 1.0f);
 }
 
-#define CHROMATIC_ABERRATION
-#define DEPTH_OF_FIELD
-#define VIGNETTE
+//#define CHROMATIC_ABERRATION
+//#define DEPTH_OF_FIELD
+//#define VIGNETTE
 //#define TONE_MAPPING
 
 float4
@@ -150,7 +150,7 @@ float4
   #ifdef DEPTH_OF_FIELD
     const float RealDepth = PositionLDepthTex.Sample(SS, uv).w * CameraInfo.w;
     static const float fFocusDistance = CA_CoC_V.y;
-    static const float fFocusRange = CA_CoC_V.z;
+    static const float fFocusRange = -CA_CoC_V.z;
     float fCoC = (RealDepth - fFocusDistance) / abs(fFocusRange);
 
     //sign: Returns -1 if x is less than zero; 0 if x equals zero; and 1 if x is greater than zero.
@@ -158,6 +158,7 @@ float4
 
     fCoC = clamp(fCoC, -1.0f * fA, 1.0f);
     fCoC = abs(fCoC);
+    //return float4(fCoC.xxx, 1.0f);
   #endif //DEPTH_OF_FIELD
 
   #ifdef VIGNETTE
