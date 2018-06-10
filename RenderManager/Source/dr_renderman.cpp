@@ -196,37 +196,59 @@ RenderMan::init() {
   driderSDK::ParticleEmitter emitter;
   driderSDK::ParticleEmitterAttributes attr;
   //System
+#if (DR_PARTICLES_METHOD == DR_PARTICLES_GPU)
+  attr.m_maxParticles = ParticleEmitter::MAX_PARTICLES;
+  attr.m_initialTime = 0.0;
+  attr.m_rate = 0.1;
+  attr.m_systemMaxLife = 500000;
+  attr.m_particleMaxLife = 15;
+  attr.m_numParticlesToEmit = 5000;
+  attr.m_isActive = true;
+  m_emitter.init(attr);
+#else
   attr.m_maxParticles = ParticleEmitter::MAX_PARTICLES;
   attr.m_initialTime = 0.1;
-  attr.m_rate = 0.05;
+  attr.m_rate = 0.1;
   attr.m_systemMaxLife = 5000;
-  attr.m_particleMaxLife = 5;
-  attr.m_numParticlesToEmit = 100000;
+  attr.m_particleMaxLife = 2;
+  attr.m_numParticlesToEmit = 5000;
   attr.m_isActive = true;
 
-  ////Speed / Velocity
-  //attr.m_initialSpeedLimit = 1200;
-  //attr.m_finalSpeedLimit = 5;
-  //attr.m_initialVelocityRandomMin = driderSDK::Vector3D(-0, -0, -0);
-  //attr.m_initialVelocityRandomMax = driderSDK::Vector3D(0, 1800, 0);
+#endif
+  //Generators
+  m_emitter.getGenerator<BoxGenerator>(ParticleEmitter::GENERATORS::kBOX).m_bActive = true;
+  m_emitter.getGenerator<BoxGenerator>(ParticleEmitter::GENERATORS::kBOX).m_initialPositionRandomMin = Vector3D(-1500, 0,-1500);
+  m_emitter.getGenerator<BoxGenerator>(ParticleEmitter::GENERATORS::kBOX).m_initialPositionRandomMax = Vector3D(1500, 1500, 1500);
 
-  ////Position
-  //attr.m_initialPositionRandomMin = driderSDK::Vector3D(-200, -0, -200);
-  //attr.m_initialPositionRandomMax = driderSDK::Vector3D(50, 0, 50);
+  m_emitter.getGenerator<RandomVelocityGenerator>(ParticleEmitter::GENERATORS::kRANDOM_VELOCITY).m_bActive = false;
+  m_emitter.getGenerator<RandomVelocityGenerator>(ParticleEmitter::GENERATORS::kRANDOM_VELOCITY).m_initialVelocityRandomMin = Vector3D(-0, 500, -0);
+  m_emitter.getGenerator<RandomVelocityGenerator>(ParticleEmitter::GENERATORS::kRANDOM_VELOCITY).m_initialVelocityRandomMax = Vector3D(0, 200, 0);
 
-  ////Color
-  //attr.m_initialColor = driderSDK::Vector3D(1, 0.1, 0.1);
-  //attr.m_finalColor = driderSDK::Vector3D(0.0, 0.0, 0.0);
-  //attr.m_colorRandomMin = driderSDK::Vector3D(0, 0, 0);
-  //attr.m_colorRandomMax = driderSDK::Vector3D(0.0, 0, 0);
+  //Updaters
+  m_emitter.getUpdater<TimeColorUpdater>(ParticleEmitter::UPDATERS::kTIME_COLOR).m_bActive = true;
+  m_emitter.getUpdater<TimeColorUpdater>(ParticleEmitter::UPDATERS::kTIME_COLOR).m_initialColor = Vector3D(1, 0.0274509804, 0.22745098);
+  m_emitter.getUpdater<TimeColorUpdater>(ParticleEmitter::UPDATERS::kTIME_COLOR).m_finalColor = Vector3D(1, 0.8, 0.8);
 
-  ////Scale
-  //attr.m_initialScale = 2;
-  //attr.m_finaleScale = 5;
-  //attr.m_scaleFactorRandomMin = 0.8;
-  //attr.m_scaleFactorRandomMax = 5;
+  m_emitter.getUpdater<TimeScaleUpdater>(ParticleEmitter::UPDATERS::kTIME_SCALE).m_bActive = true;
+  m_emitter.getUpdater<TimeScaleUpdater>(ParticleEmitter::UPDATERS::kTIME_SCALE).m_initialScale = 1;
+  m_emitter.getUpdater<TimeScaleUpdater>(ParticleEmitter::UPDATERS::kTIME_SCALE).m_finaleScale = 1;
 
-  //m_emitter.init(attr);
+  m_emitter.getUpdater<EulerUpdater>(ParticleEmitter::UPDATERS::kEULER).m_bActive = true;
+  m_emitter.getUpdater<EulerUpdater>(ParticleEmitter::UPDATERS::kEULER).m_windForce = Vector3D(0, 0, 0);
+  m_emitter.getUpdater<EulerUpdater>(ParticleEmitter::UPDATERS::kEULER).m_gravityScale = 10;
+
+  m_emitter.getUpdater<AttractorUpdater>(ParticleEmitter::UPDATERS::kATTRACTORS).m_bActive = true;
+  m_emitter.getUpdater<AttractorUpdater>(ParticleEmitter::UPDATERS::kATTRACTORS).add(Vector3D(0,-0, 0),1000, 1500);
+  m_emitter.getUpdater<AttractorUpdater>(ParticleEmitter::UPDATERS::kATTRACTORS).add(Vector3D(0, -0, 0), -1000, 100);
+
+  m_emitter.getUpdater<VortexUpdater>(ParticleEmitter::UPDATERS::kVORTEX).m_bActive = true;
+  m_emitter.getUpdater<VortexUpdater>(ParticleEmitter::UPDATERS::kVORTEX).add(Vector3D(0, -0, 0), Vector3D(0, 1, 0), 3000, 800);
+  m_emitter.getUpdater<VortexUpdater>(ParticleEmitter::UPDATERS::kVORTEX).add(Vector3D(0, -0, 0), Vector3D(0, 1, 0), 1000, 2000);
+
+  m_emitter.getUpdater<PlaneColliderUpdater>(ParticleEmitter::UPDATERS::kPLANE_COLLISION).m_bActive = true;
+  m_emitter.getUpdater<PlaneColliderUpdater>(ParticleEmitter::UPDATERS::kPLANE_COLLISION).m_normal = Vector3D(0,1,0);
+  m_emitter.getUpdater<PlaneColliderUpdater>(ParticleEmitter::UPDATERS::kPLANE_COLLISION).m_point = Vector3D(0, 0, 0);
+  m_emitter.getUpdater<PlaneColliderUpdater>(ParticleEmitter::UPDATERS::kPLANE_COLLISION).m_k = 0;
 }
 
 void

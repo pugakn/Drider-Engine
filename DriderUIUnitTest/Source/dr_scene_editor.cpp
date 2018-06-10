@@ -302,11 +302,8 @@ void SceneEditor::loadResources()
 }
 void SceneEditor::initUI()
 {
-  m_netLobby.Init(1024,720, BROWSER_MODE::kPopUp);
-  m_netLobby.loadURL("file:///C:/Users/Ulises/Documents/GitHub/Drider-Engine/DriderUIUnitTest/netLobby/NetLobby.html");
-  m_netLobby.registerJS2CPPFunction(std::make_pair("EEE", [&](const CefRefPtr<CefListValue>& arguments) {
-    std::cout << "EEE";
-  }));
+  //m_netLobby.Init(1024,720, BROWSER_MODE::kPopUp);
+  //m_netLobby.loadURL("file:///netLobby/NetLobby.html");
 
   webRenderer.Init(m_viewport.width, m_viewport.height, BROWSER_MODE::kHeadless);
   webRenderer.loadURL("file:///C:/Users/Ulises/Documents/GitHub/Drider-Engine/DriderUIUnitTest/WebixTest/ss.html");
