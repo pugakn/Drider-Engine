@@ -48,9 +48,6 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="targetver.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
     <ClInclude Include="Include\DrawableComponent.h">
       <Filter>Archivos de encabezado\Components</Filter>
     </ClInclude>
@@ -81,9 +78,6 @@
     <ClInclude Include="Include\dr_graphics_application.h">
       <Filter>Archivos de encabezado\Application</Filter>
     </ClInclude>
-    <ClInclude Include="TestApplication.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\DrawableComponent.cpp">
@@ -94,9 +88,6 @@
     </ClCompile>
     <ClCompile Include="Source\StaticMeshTechnique.cpp">
       <Filter>Archivos de origen\Technique</Filter>
-    </ClCompile>
-    <ClCompile Include="GraphicsTestApplication.cpp">
-      <Filter>Archivos de origen</Filter>
     </ClCompile>
     <ClCompile Include="Source\LinesTechnique.cpp">
       <Filter>Archivos de origen\Technique</Filter>
@@ -119,7 +110,7 @@
     <ClCompile Include="Source\dr_graphics_application.cpp">
       <Filter>Archivos de origen\Application</Filter>
     </ClCompile>
-    <ClCompile Include="TestApplication.cpp">
+    <ClCompile Include="Source\dr_graphics_test.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
   </ItemGroup>

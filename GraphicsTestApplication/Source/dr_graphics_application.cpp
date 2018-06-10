@@ -29,11 +29,12 @@
 #include <dr_rasterizer_state.h>
 #include <dr_render_component.h>
 #include <dr_resource_manager.h>
-#include <dr_skeleton.h>
+#include <dr_scoped_timer.h>
 #include <dr_script_component.h>
 #include <dr_script_core.h>
-#include <dr_swap_chain.h>
 #include <dr_script_engine.h>
+#include <dr_skeleton.h>
+#include <dr_swap_chain.h>
 #include <dr_vertex_buffer.h>
 #include <dr_time.h>
 
@@ -108,10 +109,10 @@ GraphicsApplication::postRender() {
 
   GraphicsDriver::API().clear();
 
-  m_renderMan.draw(GraphicsDriver::API().getBackBufferRT(),
-                   GraphicsDriver::API().getDepthStencil());
+  /*m_renderMan.draw(GraphicsDriver::API().getBackBufferRT(),
+                   GraphicsDriver::API().getDepthStencil());*/
 
-  /*Int32 queryFlags = QUERY_PROPERTY::kAny;
+  Int32 queryFlags = QUERY_PROPERTY::kAny;
 
   auto& camera = *CameraManager::getActiveCamera();
 
@@ -159,7 +160,7 @@ GraphicsApplication::postRender() {
       }
 
     }
-  }*/
+  }
 
   GraphicsDriver::API().swapBuffers();
 }
@@ -297,15 +298,13 @@ GraphicsApplication::loadResources() {
                               45, 0.1f, 10000.f);
   
   CameraManager::setActiveCamera(_T("MAIN_CAM"));
-
-  ResourceManager::loadResource(_T("Croc.X"));
-
+  
   ResourceManager::loadResource(_T("Jump In Place.fbx"));
   
   ResourceManager::renameResource(_T("Animation_mixamo.com"), 
                                   m_animationsNames[0]);
 
-  ResourceManager::loadResource(_T("Shoot Rifle.fbx"));
+  ResourceManager::loadResource(_T("Rifle Punch.fbx"));
 
   ResourceManager::renameResource(_T("Animation_mixamo.com"), 
                                   m_animationsNames[1]);
@@ -319,20 +318,16 @@ GraphicsApplication::loadResources() {
 
   ResourceManager::renameResource(_T("Animation_mixamo.com"), 
                                   m_animationsNames[3]);
-
+  
   ResourceManager::loadResource(_T("Run.fbx"));
 
   ResourceManager::loadResource(_T("Unidad_1m.fbx"));
   
   ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
-
-  ResourceManager::loadResource(_T("Sphere.fbx"));
-  
+    
   ResourceManager::loadResource(_T("script1.as"));
 
   ResourceManager::loadResource(_T("driderBehavior.as"));
-
-  ResourceManager::loadResource(_T("nanosuit.obj"));
 }
 
 void 
@@ -360,7 +355,7 @@ GraphicsApplication::createScene() {
 
   cuboObj->setStatic(true);
 
-  auto terr = ResourceManager::getReferenceT<Model>(_T("nanosuit.obj"));
+  /*auto terr = ResourceManager::getReferenceT<Model>(_T("nanosuit.obj"));
 
   auto terrainObj = addObjectFromModel(terr, _T("Terrain"));
 
@@ -368,10 +363,13 @@ GraphicsApplication::createScene() {
 
   terrainObj->getTransform().setPosition({0, 0, 550});
 
-  terrainObj->getTransform().setScale({10, 10, 10});
+  terrainObj->getTransform().setScale({10, 10, 10});*/
 
   auto woman = ResourceManager::getReferenceT<Model>(_T("Run.fbx"));
 
+  if (!woman)
+    return;
+ 
   auto woms = ResourceManager::getReferenceT<Skeleton>(woman->skeletonName);
 
   auto womanNode = addObjectFromModel(woman, _T("LE Morrita"));
@@ -385,6 +383,11 @@ GraphicsApplication::createScene() {
   animatorW->addAnimation(womAni, woman->animationsNames[0]);
 
   animatorW->setCurrentAnimation(woman->animationsNames[0], false, false);
+
+  womanNode->getTransform().setPosition({-500.f, 0, 200.f});
+
+  womanNode->getTransform().setScale({10.f, 10.f, 10.f});
+ 
   
   auto printComponents = [](GameObject* go) 
   {
@@ -407,14 +410,11 @@ GraphicsApplication::createScene() {
   scomp->initScript();
 
   scomp->start();*/
-
-  printComponents(womanNode.get());
-
-  womanNode->getTransform().setPosition({-500.f, 0, 200.f});
-
-  womanNode->getTransform().setScale({10.f, 10.f, 10.f});
-
+  
   auto walkerModel = ResourceManager::getReferenceT<Model>(_T("Gunplay.fbx"));
+
+  if (!walkerModel)
+    return;
 
   auto ws = ResourceManager::getReferenceT<Skeleton>(walkerModel->skeletonName);
   
@@ -502,8 +502,7 @@ GraphicsApplication::createScene() {
 std::shared_ptr<GameObject>
 GraphicsApplication::addObjectFromModel(std::shared_ptr<Model> model,
                                         const TString& name) {
-
-
+  
   auto obj = SceneGraph::createObject(name);  
   
   if (!model) {

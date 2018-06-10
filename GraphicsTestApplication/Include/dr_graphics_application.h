@@ -87,7 +87,7 @@ private:
 
   void
   playerRotation();
-
+  
   std::unique_ptr<Technique> m_animTech;
   std::unique_ptr<Technique> m_staticTech;
   std::unique_ptr<Technique> m_linesTech;
