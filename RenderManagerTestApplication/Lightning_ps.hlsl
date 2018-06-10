@@ -274,7 +274,7 @@ FS(PS_INPUT input) {
   //psOut.Lightning = float4(emissive, 1.0f);
   //psOut.Lightning = float4(roughness.rrr, 1.0f);
   //psOut.Lightning = float4(specular, 1.0f);
-  //psOut.Lightning = float4(SSAO.rrr, 1.0f);
+  psOut.Lightning = float4(SSAO.rrr, 1.0f);
   //psOut.Lightning = float4(ShadowValue.xxx, 1.0f);
   //psOut.Lightning = float4(ShadowTex.Sample(SS, uv).xxx, 1.0f);
   //psOut.Lightning = float4(ShadowTex.Sample(SS, uv).yyy, 1.0f);
