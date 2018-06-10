@@ -20,48 +20,19 @@ LuminescencePass::~LuminescencePass() {
 void
 LuminescencePass::init(PassInitData* initData) {
   LuminescenceInitData* data = static_cast<LuminescenceInitData*>(initData);
-  Device& device = GraphicsAPI::getDevice();
+  Device& dc = GraphicsAPI::getDevice();
 
-  m_vsFilename = _T("particle_vs.hlsl");
-  m_fsFilename = _T("particle_ps.hlsl");
+  driderSDK::File file;
+  String shaderSrc = "";
 
-  recompileShader();
+  file.Open(_T("luminescence_cs.hlsl"));
+  shaderSrc += StringUtils::toString(file.GetAsString(file.Size()));
+  file.Close();
 
-  DrBufferDesc bdesc;
-  bdesc.type = DR_BUFFER_TYPE::kCONSTANT;
-  bdesc.sizeInBytes = sizeof(CBuff);
-  m_constantBuffer = dr_gfx_unique((ConstantBuffer*)device.createBuffer(bdesc));
-
-  auto ls = m_inputLayout->getDescriptor();
-  m_inputLayoutInstance = dr_gfx_unique(device.createInputLayout(ls, *m_vertexShader->m_shaderBytecode));
-
-  DrBufferDesc bdescInstance;
-  bdescInstance.type = DR_BUFFER_TYPE::kVERTEX;
-  bdescInstance.sizeInBytes = (sizeof(Matrix4x4) + sizeof(Vector4D)) * ParticleEmitter::MAX_PARTICLES;
-  bdescInstance.stride = (sizeof(Matrix4x4) + sizeof(Vector4D));
-  m_instanceBuffer = dr_gfx_unique((VertexBuffer*)device.createBuffer(bdescInstance));
-
-  m_vertex[0] = { -1.f,  1.f, 1.f, 1.0f, };
-  m_vertex[1] = { -1.f, -1.f, 1.f, 1.0f, };
-  m_vertex[2] = { 1.f, -1.f,  1.f,  1.0f, };
-  m_vertex[3] = { 1.f,  1.f,  1.f,  1.0f, };
-
-  m_index[0] = 2;
-  m_index[1] = 1;
-  m_index[2] = 0;
-  m_index[3] = 0;
-  m_index[4] = 3;
-  m_index[5] = 2;
-
-  bdescInstance.type = DR_BUFFER_TYPE::kVERTEX;
-  bdescInstance.sizeInBytes = sizeof(Vector4D) * 4 ;
-  bdescInstance.stride = sizeof(Vector4D);
-  m_VBQUAD = dr_gfx_unique((VertexBuffer*)device.createBuffer(bdescInstance, reinterpret_cast<byte*>(&m_vertex[0])));
-
-  bdescInstance.type = DR_BUFFER_TYPE::kINDEX;
-  bdescInstance.sizeInBytes = 6 * sizeof(UInt32);
-  bdescInstance.stride = 0;
-  m_IBQUAD = dr_gfx_unique(reinterpret_cast<IndexBuffer*>(device.createBuffer(bdescInstance, reinterpret_cast<byte*>(&m_index[0]))));
+  m_computeShader = dr_gfx_unique(dc.createShaderFromMemory(shaderSrc.data(),
+                                                            shaderSrc.size(),
+                                                            DR_SHADER_TYPE_FLAG::kCompute));
+  shaderSrc.clear();
 }
 
 void
@@ -69,32 +40,19 @@ LuminescencePass::draw(PassDrawData* drawData) {
   LuminescenceDrawData* data = static_cast<LuminescenceDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
-  //data->OutRt->set(dc, *data->dsOptions);
-  m_vertexShader->set(dc);
-  m_fragmentShader->set(dc);
-  m_inputLayoutInstance->set(dc);
-  //const float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-  //data->OutRt->clear(dc, clearColor);
-  //(data->dsOptions)->clear(dc, 1, 0);
+  m_computeShader->set(dc);
 
-  m_cbuff.V = CameraManager::getActiveCamera()->getView();
-  m_cbuff.P = CameraManager::getActiveCamera()->getProjection();
-  m_cbuff.V.transpose();
-  m_cbuff.P.transpose();
+  m_CB.LuminiscenceDelta = data->LuminiscenceDelta;
+  m_CB.TextureWidth = data->InTexture->getDescriptor().width;
+  m_CB.TextureHeight = data->InTexture->getDescriptor().height;
 
-  m_constantBuffer->updateFromBuffer(dc,(byte*)&m_cbuff);
-  m_constantBuffer->set(dc,0,0);
+  m_constantBuffer->updateFromBuffer(dc,(byte*)&m_CB);
+  m_constantBuffer->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
 
-#if (DR_PARTICLES_METHOD == DR_PARTICLES_GPU)
-  data->emitter->m_poolBuffer->set(GraphicsAPI::getDeviceContext(),DR_SHADER_TYPE_FLAG::kVertex, 0);
-  data->emitter->m_aliveBuffer->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kVertex, 1);
-#else
-  data->emitter->m_renderBuffer->set(GraphicsAPI::getDeviceContext(), DR_SHADER_TYPE_FLAG::kVertex,2);
-#endif
-  m_VBQUAD->set(dc);
-  m_IBQUAD->set(dc);
-  dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
-  dc.drawIndexedInstancedIndirect(*data->emitter->m_drawIndirectBuffer);
+  data->InTexture->set(dc, 0);
+
+  dc.dispatch(1, 1, 1);
+
   GraphicsAPI::getDeviceContext().setResourcesNull();
 }
 
