@@ -66,8 +66,7 @@ GraphicsApplication::postInit() {
   createScene();
     
   Time::update();
-
-  
+    
   m_light[0].m_vec4Position = {100, 100, 100, 2000};
   m_light[0].m_vec4Color = {255, 0, 0, 1};
 
@@ -87,11 +86,11 @@ GraphicsApplication::postUpdate() {
 
   static Vector3D dir{0,0,200.f};
 
-  //m_right->getTransform().move(dir * Time::getDelta());
+  m_right->getTransform().move(dir * Time::getDelta());
   
   if (m_timer.getSeconds() > 4.f) {
     dir *= -1;
-    //m_right->getTransform().rotate({0,Math::PI,0});
+    m_right->getTransform().rotate({0,Math::PI,0});
     m_timer.init();
   }
 
@@ -101,7 +100,11 @@ GraphicsApplication::postUpdate() {
     playerRotation();
   }
 
-  SceneGraph::update();
+  {
+    //std::cout << "Scene graph update: ";
+    //ScopedTimer q;
+    SceneGraph::update();
+  }
 }
 
 void 
@@ -202,12 +205,26 @@ GraphicsApplication::initModules() {
   ContextManager::startUp();
   SceneGraph::startUp();
 
-  m_renderMan.init();
+  //m_renderMan.init();
 }
 
 void 
 GraphicsApplication::initInputCallbacks() {
   
+  auto spell = [this]() {
+
+    auto vato = SceneGraph::getRoot()->findNode(_T("LE Walker 2"));
+    auto comp = vato->getComponent<AnimatorComponent>();
+
+    comp->setCurrentAnimation(m_animationsNames[0], false, false);  
+
+    comp->setCurrentAnimation(m_animationsNames[1], true, false);  
+  };
+
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kN,
+                        spell); 
+
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kP,
                         std::bind(&RenderMan::recompile, &m_renderMan)); 
@@ -268,6 +285,14 @@ GraphicsApplication::initInputCallbacks() {
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kV,
                         [&](){ m_lockView = !m_lockView; });
+
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kUP,
+                        std::bind(&GraphicsApplication::speedAnim, this, 1.f));
+
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kDOWN,
+                        std::bind(&GraphicsApplication::speedAnim, this, -1.f));
 }
 
 void 
@@ -299,6 +324,8 @@ GraphicsApplication::loadResources() {
   
   CameraManager::setActiveCamera(_T("MAIN_CAM"));
   
+  ResourceManager::loadResource(_T("tiny_4anim.x"));
+
   ResourceManager::loadResource(_T("Jump In Place.fbx"));
   
   ResourceManager::renameResource(_T("Animation_mixamo.com"), 
@@ -349,11 +376,52 @@ GraphicsApplication::createTechniques() {
 void 
 GraphicsApplication::createScene() {
     
-  auto cubo = ResourceManager::getReferenceT<Model>(_T("Unidad_1m.fbx"));
+  //auto cubo = ResourceManager::getReferenceT<Model>(_T("Unidad_1m.fbx"));
+  auto cubo = ResourceManager::getReferenceT<Model>(_T("tiny_4anim.x"));
 
   auto cuboObj = addObjectFromModel(cubo, _T("CUBIN"));
 
-  cuboObj->setStatic(true);
+  cuboObj->getTransform().setScale({0.4f, 0.4f, 0.4f});
+  //cuboObj->getTransform().move({0, 0, 0});
+  cuboObj->getTransform().rotate({Degree(90).toRadian(), Degree(180).toRadian(), 0});
+
+  auto animSk = ResourceManager::getReferenceT<Skeleton>(cubo->skeletonName);
+
+
+  auto comp = cuboObj->createComponent<AnimatorComponent>();
+
+  comp->setBlendDuration(0.5f);
+
+  comp->setSkeleton(animSk);
+
+  m_anims[_T("Idle")] = cubo->animationsNames[0];
+  m_anims[_T("Walk")] = cubo->animationsNames[1];
+  m_anims[_T("Run")] = cubo->animationsNames[2];
+  m_anims[_T("Wave")] = cubo->animationsNames[3];
+
+  std::copy(std::begin(cubo->animationsNames), std::end(cubo->animationsNames), std::begin(m_playerAnims));
+
+  for (auto& p : cubo->animationsNames) {
+    auto animA = ResourceManager::getReferenceT<Animation>(p);
+    animA->setTicksPerSecond(4500.f);
+    comp->addAnimation(animA, animA->getName());
+  }
+  
+  comp->setCurrentAnimation(cubo->animationsNames[0], false, false);
+  
+  for (Int32 i = 0; i < 0; ++i) {
+    auto clon = std::make_shared<GameObject>();
+    *clon = *cuboObj;
+    auto animCmp = clon->getComponent<AnimatorComponent>();
+    Int32 res = rand() % 4;
+    animCmp->setCurrentAnimation(cubo->animationsNames[res], false, false);
+    float x = ((rand() % 5000) - 2500) * 1.f;
+    float z = ((rand() % 5000) - 2500) * 1.f;
+    
+    Int32 time = rand() % 400;
+    clon->getTransform().setPosition({x, 0, z});
+    animCmp->setTime(time);
+  }
 
   /*auto terr = ResourceManager::getReferenceT<Model>(_T("nanosuit.obj"));
 
@@ -418,7 +486,7 @@ GraphicsApplication::createScene() {
 
   auto ws = ResourceManager::getReferenceT<Skeleton>(walkerModel->skeletonName);
   
-  auto walkerObj = addObjectFromModel(walkerModel, _T("LE Walker 450"));
+  auto walkerObj = addObjectFromModel(walkerModel, _T("LE Walker"));
 
   auto animator = walkerObj->createComponent<AnimatorComponent>();
 
@@ -433,6 +501,8 @@ GraphicsApplication::createScene() {
 
   animator->setCurrentAnimation(m_animationsNames[m_currAnim], false, false);
   
+  animator->setBlendDuration(3.5f);
+  
   //walkerObj->removeComponent<AnimatorComponent>();
 
   walkerObj->getTransform().setPosition({300, 0, 450});
@@ -442,14 +512,14 @@ GraphicsApplication::createScene() {
 
   clone1->getTransform().setPosition({150, 0, 300});
 
-  clone1->setName(_T("LE Walker 2 300"));
+  clone1->setName(_T("LE Walker 2"));
 
   auto clone2 = walkerObj->createInstance();
   *clone2 = *walkerObj;
 
   clone2->getTransform().setPosition({450, 0, 150});
 
-  clone2->setName(_T("LE Walker 3 150"));
+  clone2->setName(_T("LE Walker 3"));
   //walkerObj->getTransform().setScale({10.f, 10.f, 10.f});
     
   m_right = walkerObj.get();
@@ -483,6 +553,7 @@ GraphicsApplication::createScene() {
   m_cameraHolder = sphereCenter.get();
   
   m_player = copy.get();
+  m_player = cuboObj.get();
   
   auto camNode = SceneGraph::createObject(_T("Camera"));
   
@@ -606,6 +677,9 @@ GraphicsApplication::toggleAnimation() {
 
   m_currAnim = (m_currAnim + 1) % (sizeof(m_animationsNames) / sizeof(TString));
 
+  auto s = m_player->getComponent<AnimatorComponent>();
+  s->setCurrentAnimation(m_playerAnims[m_currAnim], true, true);
+
   if (auto obj = SceneGraph::getRoot()->findNode(_T("LE Walker"))) {
 
     if (auto animCmp = obj->getComponent<AnimatorComponent>()) {
@@ -617,7 +691,7 @@ GraphicsApplication::toggleAnimation() {
   if (auto obj = SceneGraph::getRoot()->findNode(_T("LE Walker 2"))) {
 
     if (auto animCmp = obj->getComponent<AnimatorComponent>()) {
-      animCmp->setCurrentAnimation(m_animationsNames[m_currAnim], true, false);
+      animCmp->setCurrentAnimation(m_animationsNames[m_currAnim], true, true);
       //animCmp->setTime(0);
     }
   }
@@ -627,6 +701,20 @@ GraphicsApplication::toggleAnimation() {
     if (auto animCmp = obj->getComponent<AnimatorComponent>()) {
       animCmp->setCurrentAnimation(m_animationsNames[m_currAnim], false, false);
       //animCmp->setTime(0);
+    }
+  }
+}
+
+void 
+GraphicsApplication::speedAnim(float val) {
+
+  auto names = {_T("LE Walker"), _T("LE Walker 2"), _T("LE Walker 3"), _T("LE Morrita")};
+
+  for (auto& n : names) {
+    if (auto obj = SceneGraph::getRoot()->findNode(n)) {
+      if (auto animCmp = obj->getComponent<AnimatorComponent>()) {
+        animCmp->setSpeed(Math::max(animCmp->getSpeed() + val, 0.f));
+      }
     }
   }
 }
@@ -678,7 +766,7 @@ GraphicsApplication::initScriptEngine() {
 
 void 
 GraphicsApplication::playerMovement() {
-
+  
   if (!m_player) {
     return;
   }
@@ -686,7 +774,7 @@ GraphicsApplication::playerMovement() {
   float forward = 0;
   float strafe = 0;
 
-  const float velocity = 200.f;
+  float velocity = 200.f;
 
   auto& worldMat = m_player->getTransform().getMatrix();
   auto direction = Vector3D(worldMat.vector2);
@@ -697,6 +785,10 @@ GraphicsApplication::playerMovement() {
 
   direction.normalize();
   left.normalize();
+
+  if (Keyboard::isKeyDown(KEY_CODE::kLSHIFT)) {
+    velocity *= 1.5f; 
+  }
 
   if (Keyboard::isKeyDown(KEY_CODE::kA)) {
     strafe += velocity;
@@ -713,6 +805,30 @@ GraphicsApplication::playerMovement() {
   if (Keyboard::isKeyDown(KEY_CODE::kS)) {
     forward -= velocity;
   }  
+
+  static TString current = _T("Idle");
+
+  auto anim = m_player->getComponent<AnimatorComponent>();
+  //auto currAnim = anim->getCurrentAnimation()->getName();
+
+  if (Math::abs(strafe) < Math::EPSILON && Math::abs(forward) < Math::EPSILON)  {
+    if (current != _T("Idle")) {
+      current = _T("Idle");
+      m_player->getComponent<AnimatorComponent>()->setCurrentAnimation(m_anims[_T("Idle")], true, true);
+    }
+  }
+  else {
+
+    if (velocity > 250.f && current != _T("Run")) {
+      current = _T("Run");
+      m_player->getComponent<AnimatorComponent>()->setCurrentAnimation(m_anims[_T("Run")], true, true);
+    }
+    else if (current != _T("Walk") && velocity < 249.f){
+      current = _T("Walk");
+      m_player->getComponent<AnimatorComponent>()->setCurrentAnimation(m_anims[_T("Walk")], true, true);
+    }
+
+  }
   
   auto movement = (direction * forward + left * strafe) * Time::getDelta();
 
@@ -735,9 +851,9 @@ GraphicsApplication::playerRotation() {
 
   auto delta = Mouse::getDisplacement();
 
-  float sensitivity = 0.08f;
-  float dx = delta.x * 0.09f * Time::getDelta();
-  float dy = delta.y * 0.09f * Time::getDelta();
+  float sensitivity = 0.07f;
+  float dx = delta.x * sensitivity * sensitivity; //* Time::getDelta();
+  float dy = delta.y * sensitivity * sensitivity; //* Time::getDelta();
 
   //auto angles = m_cameraHolder->getTransform().getEulerAngles();
   
@@ -746,7 +862,7 @@ GraphicsApplication::playerRotation() {
   rx = Math::clamp(rx + dy, -cx, cx);
  
   m_cameraHolder->getTransform().setRotation({rx, ry, 0});
-  m_player->getTransform().setRotation({0, ry, 0});
+  m_player->getTransform().setRotation({Math::HALF_PI, ry + Math::PI, 0});
 }
 
 

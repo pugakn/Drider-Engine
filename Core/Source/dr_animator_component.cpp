@@ -15,7 +15,8 @@ AnimatorComponent::AnimatorComponent(GameObject& _gameObject)
     m_blending(false),
     m_blendVal(0.0f),
     m_lastTimeRef(&m_lastTime),
-    m_blendDuration(1.0f)
+    m_blendDuration(1.0f),
+    m_speed(1.0f)
 {}
 
 void
@@ -32,16 +33,10 @@ AnimatorComponent::setCurrentAnimation(const TString& animName,
   auto it = m_animations.find(animName);
   
   if (it != m_animations.end()) {
-    /*m_currentAnim = it->second;
-
-    auto anim = getCurrentAnimation();
-
-    if (anim) {
-      m_lastPositions = FrameCache(anim->getBonesAnimations().size(),
-                                   std::make_tuple(0,0,0));
-    }*/
-    
+        
     auto currAnim = getCurrentAnimation();
+
+    bool resetCurrent = false;
 
     //If there is an animation already running
     if (currAnim && blend) {
@@ -49,46 +44,66 @@ AnimatorComponent::setCurrentAnimation(const TString& animName,
       //If there are 2 animationns blending
       if (getNextAnimation()) {
         
-        m_nextAnim = it->second;
-
         m_currentAnim = m_nextAnim;
 
-        if (auto curr = getCurrentAnimation()) {
-          m_lastPositions = FrameCache(curr->getBonesAnimations().size(),
-                                       std::make_tuple(0,0,0));
-        }
+        m_nextAnim = it->second;
+        
+        m_elapsed = m_elapsedNext;
 
+        m_lastTime = m_lastTimeNext;
+
+        resetCurrent = true;
       }
       else {
         m_nextAnim = it->second;
       }
     }
     else {
+      
+      //Reset next animation data
+      m_nextAnim = WeakAnimation();
+      m_blending = false;
+     
       m_currentAnim = it->second;
+
+      //Start from 0
+      if (!cloneElapsedTime) {
+        m_elapsed = 0;
+        m_lastTime = 0.0f;
+      }
+      //Else start where last animation started
 
       //If the animation isn't changed the chache will be cleared for
       //current animation
+      resetCurrent = true;
+    }
+
+    if (resetCurrent) {
+
       if (auto curr = getCurrentAnimation()) {
         m_lastPositions = FrameCache(curr->getBonesAnimations().size(),
                                          std::make_tuple(0,0,0));
       }
+      else {
+        throw std::exception("Requested animation doesn't exists");
+      }
     }
-
 
     if (auto next = getNextAnimation()) {
       m_lastPosNext = FrameCache(next->getBonesAnimations().size(),
                                   std::make_tuple(0,0,0));
       m_blending = true;
       m_blendVal = 0.0f;
+      
       if (cloneElapsedTime) {
         m_elapsedNext = m_elapsed;
+        m_lastTimeNext = m_lastTime;
       }
-      else {
+      else {  
         m_elapsedNext = 0.0f;
+        m_lastTimeNext  = 0.0f;  
       }
-      m_lastTimeNext  = 0.0f;
-    }
-        
+    }    
   }
 }
 
@@ -110,6 +125,21 @@ AnimatorComponent::setTime(float time) {
 void 
 AnimatorComponent::setBlendDuration(float blendDur) {
   m_blendDuration = blendDur;
+}
+
+void 
+AnimatorComponent::setSpeed(float speed) {
+  m_speed = speed;
+}
+
+float 
+AnimatorComponent::getSpeed() const {
+  return m_speed;
+}
+
+float 
+AnimatorComponent::getBlendDuration() const {
+  return m_blendDuration;
 }
 
 AnimatorComponent::SharedSkeleton 
@@ -144,18 +174,29 @@ AnimatorComponent::onUpdate() {
   if (m_blending) {
     //Advance 0.25f per second so blend will be completed in 4 seconds
     
-    m_blendVal += (1.f / m_blendDuration) * Time::getDelta();
-    m_elapsedNext += Time::getDelta();
+    m_blendVal += (1.f / m_blendDuration) * Time::getDelta() * m_speed;
+
+    m_elapsedNext += Time::getDelta() * m_speed;
 
     if (m_blendVal >= 1.0f) {
       m_blending = false;
+      
       m_currentAnim = m_nextAnim;
+
       m_nextAnim = WeakAnimation();
-      setTime(m_elapsedNext);
+      
+
+      if (auto curr = getCurrentAnimation()) {
+        m_lastPositions = FrameCache(curr->getBonesAnimations().size(),
+                                           std::make_tuple(0,0,0));
+      }
+
+      m_elapsed = m_elapsedNext;
+      m_lastTime = m_lastTimeNext;
     }
   }
 
-  m_elapsed += Time::getDelta();
+  m_elapsed += Time::getDelta() * m_speed;
 
   auto skeleton = getSkeleton();
   auto animation = getCurrentAnimation();
@@ -176,15 +217,19 @@ AnimatorComponent::onUpdate() {
 
     if (m_blending) {
       
-      auto nextAnim = getNextAnimation();
+      if (auto nextAnim = getNextAnimation()) {
+        nextAnimP = nextAnim.get();
 
-      nextAnimP = nextAnim.get();
+        float tpsN = nextAnim->getTicksPerSecond(); 
+        float durationN = nextAnim->getDurationInTicks();
+        float timeInTicksN = m_elapsedNext * tpsN;
 
-      float tpsN = nextAnim->getTicksPerSecond();
-      float durationN = nextAnim->getDurationInTicks();
-      float timeInTicksN = m_elapsedNext * tpsN;
-
-      animTimeNext = std::fmod(timeInTicksN, durationN);
+        animTimeNext = std::fmod(timeInTicksN, durationN);
+      }
+      else {
+        m_blending = false;
+        throw std::exception("Animation was erased while begin used");
+      }      
     }
 
     readNodeHeirarchy(animTime, 
@@ -245,6 +290,10 @@ AnimatorComponent::cloneIn(GameObject& _go) {
   dup->m_blendVal       = m_blendVal;
   dup->m_nextAnim       = m_nextAnim;
   dup->m_lastTimeNext   = m_lastTimeNext;
+  dup->m_speed          = m_speed;
+  dup->m_blending       = m_blending;
+  dup->m_blendDuration  = m_blendDuration;
+  dup->m_lastTimeRef    = nullptr;
 }
 
 Quaternion 

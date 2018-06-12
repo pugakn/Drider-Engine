@@ -49,6 +49,15 @@ class DR_CORE_EXPORT AnimatorComponent : public GameComponent
   void
   setBlendDuration(float blendDur);
 
+  void 
+  setSpeed(float speed);
+
+  float 
+  getSpeed() const;
+
+  float 
+  getBlendDuration() const;
+
   SharedSkeleton
   getSkeleton() const;
 
@@ -141,8 +150,6 @@ class DR_CORE_EXPORT AnimatorComponent : public GameComponent
   using AnimationsMap = std::unordered_map<TString, WeakAnimation>;
   using WeakSkeleton = std::weak_ptr<Skeleton>;
 
-  
-  
   FrameCache m_lastPositions;
   FrameCache m_lastPosNext;
   UInt32 m_currentBone;
@@ -154,6 +161,7 @@ class DR_CORE_EXPORT AnimatorComponent : public GameComponent
   bool m_blending;
   float m_blendVal;
   float m_blendDuration;
+  float m_speed;
   TransformsList m_transforms;
   WeakSkeleton m_skeleton;
   WeakAnimation m_currentAnim;
