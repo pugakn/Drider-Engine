@@ -36,9 +36,21 @@ class DR_CORE_EXPORT AnimatorComponent : public GameComponent
                const TString& animName);
 
   void
-  setCurrentAnimation(const TString& animName, 
-                      bool blend, 
-                      bool cloneElapsedTime);
+  setCurrentAnimation(const TString& animName,
+                      bool reuseElapsedTime);
+
+  void
+  blendAnimation(const TString& animName, 
+                 bool cloneElpasedTime);
+
+  //Use to combine animations
+  void 
+  mergeAnimation(const TString& animName, 
+                 float alpha, 
+                 bool cloneElapsedTime);
+
+  void
+  isolateAnimation();
 
   void
   setSkeleton(SharedSkeleton skeleton);
@@ -54,6 +66,9 @@ class DR_CORE_EXPORT AnimatorComponent : public GameComponent
 
   float 
   getSpeed() const;
+
+  bool
+  isBlending() const;
 
   float 
   getBlendDuration() const;
@@ -162,6 +177,7 @@ class DR_CORE_EXPORT AnimatorComponent : public GameComponent
   float m_blendVal;
   float m_blendDuration;
   float m_speed;
+  bool m_animMerge;
   TransformsList m_transforms;
   WeakSkeleton m_skeleton;
   WeakAnimation m_currentAnim;

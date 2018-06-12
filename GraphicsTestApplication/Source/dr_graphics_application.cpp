@@ -213,12 +213,12 @@ GraphicsApplication::initInputCallbacks() {
   
   auto spell = [this]() {
 
-    auto vato = SceneGraph::getRoot()->findNode(_T("LE Walker 2"));
+    auto vato = SceneGraph::getRoot()->findNode(_T("CUBIN"));
     auto comp = vato->getComponent<AnimatorComponent>();
 
-    comp->setCurrentAnimation(m_animationsNames[0], false, false);  
+    comp->setCurrentAnimation(m_anims[_T("Run")], false);  
 
-    comp->setCurrentAnimation(m_animationsNames[1], true, false);  
+    comp->mergeAnimation(m_anims[_T("Wave")], 0.75f, false);  
   };
 
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
@@ -407,14 +407,14 @@ GraphicsApplication::createScene() {
     comp->addAnimation(animA, animA->getName());
   }
   
-  comp->setCurrentAnimation(cubo->animationsNames[0], false, false);
+  comp->setCurrentAnimation(cubo->animationsNames[0], false);
   
   for (Int32 i = 0; i < 0; ++i) {
     auto clon = std::make_shared<GameObject>();
     *clon = *cuboObj;
     auto animCmp = clon->getComponent<AnimatorComponent>();
     Int32 res = rand() % 4;
-    animCmp->setCurrentAnimation(cubo->animationsNames[res], false, false);
+    animCmp->setCurrentAnimation(cubo->animationsNames[res], false);
     float x = ((rand() % 5000) - 2500) * 1.f;
     float z = ((rand() % 5000) - 2500) * 1.f;
     
@@ -450,7 +450,7 @@ GraphicsApplication::createScene() {
 
   animatorW->addAnimation(womAni, woman->animationsNames[0]);
 
-  animatorW->setCurrentAnimation(woman->animationsNames[0], false, false);
+  animatorW->setCurrentAnimation(woman->animationsNames[0], false);
 
   womanNode->getTransform().setPosition({-500.f, 0, 200.f});
 
@@ -499,9 +499,9 @@ GraphicsApplication::createScene() {
     animator->addAnimation(wa, m_animationsNames[i]);
   }
 
-  animator->setCurrentAnimation(m_animationsNames[m_currAnim], false, false);
+  animator->setCurrentAnimation(m_animationsNames[m_currAnim], false);
   
-  animator->setBlendDuration(3.5f);
+  animator->setBlendDuration(1.f);
   
   //walkerObj->removeComponent<AnimatorComponent>();
 
@@ -678,12 +678,12 @@ GraphicsApplication::toggleAnimation() {
   m_currAnim = (m_currAnim + 1) % (sizeof(m_animationsNames) / sizeof(TString));
 
   auto s = m_player->getComponent<AnimatorComponent>();
-  s->setCurrentAnimation(m_playerAnims[m_currAnim], true, true);
+  s->blendAnimation(m_playerAnims[m_currAnim], true);
 
   if (auto obj = SceneGraph::getRoot()->findNode(_T("LE Walker"))) {
 
     if (auto animCmp = obj->getComponent<AnimatorComponent>()) {
-      animCmp->setCurrentAnimation(m_animationsNames[m_currAnim], true, true);
+      animCmp->blendAnimation(m_animationsNames[m_currAnim], true);
       //animCmp->setTime(0);
     }
   }
@@ -691,7 +691,7 @@ GraphicsApplication::toggleAnimation() {
   if (auto obj = SceneGraph::getRoot()->findNode(_T("LE Walker 2"))) {
 
     if (auto animCmp = obj->getComponent<AnimatorComponent>()) {
-      animCmp->setCurrentAnimation(m_animationsNames[m_currAnim], true, true);
+      animCmp->blendAnimation(m_animationsNames[m_currAnim], true);
       //animCmp->setTime(0);
     }
   }
@@ -699,7 +699,7 @@ GraphicsApplication::toggleAnimation() {
   if (auto obj = SceneGraph::getRoot()->findNode(_T("LE Walker 3"))) {
 
     if (auto animCmp = obj->getComponent<AnimatorComponent>()) {
-      animCmp->setCurrentAnimation(m_animationsNames[m_currAnim], false, false);
+      animCmp->blendAnimation(m_animationsNames[m_currAnim], false);
       //animCmp->setTime(0);
     }
   }
@@ -814,18 +814,18 @@ GraphicsApplication::playerMovement() {
   if (Math::abs(strafe) < Math::EPSILON && Math::abs(forward) < Math::EPSILON)  {
     if (current != _T("Idle")) {
       current = _T("Idle");
-      m_player->getComponent<AnimatorComponent>()->setCurrentAnimation(m_anims[_T("Idle")], true, true);
+      m_player->getComponent<AnimatorComponent>()->blendAnimation(m_anims[_T("Idle")], true);
     }
   }
   else {
 
     if (velocity > 250.f && current != _T("Run")) {
       current = _T("Run");
-      m_player->getComponent<AnimatorComponent>()->setCurrentAnimation(m_anims[_T("Run")], true, true);
+      m_player->getComponent<AnimatorComponent>()->blendAnimation(m_anims[_T("Run")], true);
     }
     else if (current != _T("Walk") && velocity < 249.f){
       current = _T("Walk");
-      m_player->getComponent<AnimatorComponent>()->setCurrentAnimation(m_anims[_T("Walk")], true, true);
+      m_player->getComponent<AnimatorComponent>()->blendAnimation(m_anims[_T("Walk")], true);
     }
 
   }
