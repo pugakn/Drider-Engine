@@ -21,9 +21,9 @@ struct PS_INPUT {
   float2 Texcoord : TEXCOORD0;
 };
 
-//#define CHROMATIC_ABERRATION
-//#define DEPTH_OF_FIELD
-//#define VIGNETTE
+#define CHROMATIC_ABERRATION
+#define DEPTH_OF_FIELD
+#define VIGNETTE
 //#define TONE_MAPPING
 
 static const float kExposure;
@@ -149,6 +149,7 @@ float4
   #ifdef DEPTH_OF_FIELD
     const float RealDepth = PositionLDepthTex.Sample(SS, uv).w * CameraInfo.w;
     static const float fFocusDistance = CA_CoC_V.y;
+    //If focus Range is negative, everithing between the eye and the focus distance will be focus.
     static const float fFocusRange = -CA_CoC_V.z;
     float fCoC = (RealDepth - fFocusDistance) / abs(fFocusRange);
 
