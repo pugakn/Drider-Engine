@@ -1,6 +1,7 @@
 #include "dr_renderman.h"
 #include <dr_graphics_driver.h>
 #include <dr_device.h>
+#include <dr_texture.h>
 #include <dr_resource_manager.h>
 #include <dr_image_info.h>
 #include <dr_camera_manager.h>
@@ -22,24 +23,16 @@ RenderMan::init() {
 
   ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
 
-  /*
-  ResourceManager::loadResource(_T("GraceCubemap.tga"));
-  auto CmR = ResourceManager::getReferenceT<TextureCore>(_T("GraceCubemap.tga"));
-
-  DrTextureDesc cubeMapDesc;
+  ImageInfo cubeMapDesc;
   cubeMapDesc.width = 256;
   cubeMapDesc.height = 256;
-  cubeMapDesc.pitch = 256 * 4;
-  cubeMapDesc.dimension = DR_DIMENSION::kCUBE_MAP;
-  cubeMapDesc.Format = DR_FORMAT::kB8G8R8A8_UNORM_SRGB;
-  cubeMapDesc.mipLevels = 0;
-  cubeMapDesc.CPUAccessFlags = 0;
-  cubeMapDesc.genMipMaps = true;
-  cubeMapDesc.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE;
-  cubeMapDesc.dimension = DR_DIMENSION::kCUBE_MAP;
+  cubeMapDesc.textureDimension = DR_DIMENSION::kCUBE_MAP;
+  cubeMapDesc.channels = DR_FORMAT::kB8G8R8A8_UNORM_SRGB;
 
-  dc.createTextureFromMemory(, cubeMapDesc);
-  */
+  ResourceManager::loadResource(_T("GraceCubemap.tga"), &cubeMapDesc);
+  m_cubemap = ResourceManager::getReferenceT<TextureCore>(_T("GraceCubemap.tga"));
+  ResourceManager::loadResource(_T("GraceDiffuseCubemap.tga"), &cubeMapDesc);
+  m_cubemapDiffuse = ResourceManager::getReferenceT<TextureCore>(_T("GraceDiffuseCubemap.tga"));
 
   //screenWidth = 1920;
   //screenHeight = 1080;
@@ -325,6 +318,7 @@ RenderMan::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_LightningDrawData.SSAORT = m_RTSSAOBlur;
   m_LightningDrawData.ShadowRT = m_RTShadow;
   m_LightningDrawData.OutRt = m_RTLightning;
+  m_LightningDrawData.Cubemap = m_cubemap;
   m_LightningDrawData.dsOptions = m_LightningDSoptions;
   m_LightningPass.draw(&m_LightningDrawData);
 

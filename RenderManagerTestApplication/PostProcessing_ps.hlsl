@@ -3,6 +3,10 @@ Texture2D ColorTex          : register(t1);
 Texture2D ColorBlurTex      : register(t2);
 Texture2D NormCoC           : register(t3);
 //Texture2D GodRays           : register(t3);
+//sampler2D ColorSampler;
+//sampler2D LuminescenceSampler;
+//sampler2D BloomSampler;
+//sampler2D FilmLutSampler;
 
 SamplerState SS;
 
@@ -17,10 +21,10 @@ struct PS_INPUT {
   float2 Texcoord : TEXCOORD0;
 };
 
-//sampler2D ColorSampler;
-//sampler2D LuminescenceSampler;
-//sampler2D BloomSampler;
-//sampler2D FilmLutSampler;
+//#define CHROMATIC_ABERRATION
+//#define DEPTH_OF_FIELD
+//#define VIGNETTE
+//#define TONE_MAPPING
 
 static const float kExposure;
 
@@ -108,11 +112,6 @@ Uncharted2(in float3 Color, in float exposure) {
   float3 retColor = pow(color, 1.0f/2.2f);
   return float4(retColor, 1.0f);
 }
-
-#define CHROMATIC_ABERRATION
-#define DEPTH_OF_FIELD
-#define VIGNETTE
-//#define TONE_MAPPING
 
 float4
  FS(PS_INPUT input) : SV_TARGET0 {

@@ -71,13 +71,11 @@ ResourceManager::loadResource(const TString& resourceName,
     r = getReference(resourceName);
   } 
   else {
-
     bool codecRead = false;
 
+    TString extension = FileSystem::GetFileExtension(resourceName);
+
     for (auto &codec : rm.m_codecs) {
-
-      TString extension = FileSystem::GetFileExtension(resourceName);
-
       if (codec->isCompatible(extension)) {
         rm.createResource(resourceName, codec.get(), extraData);
         r = getReference(resourceName);
@@ -87,6 +85,8 @@ ResourceManager::loadResource(const TString& resourceName,
         }
 
         codecRead = true;
+
+        break;
       }
     }
 

@@ -4,6 +4,7 @@ Texture2D AlbedoMetallicTex    : register(t2);
 Texture2D EmissiveRoughnessTex : register(t3);
 Texture2D SSAOTex              : register(t4);
 Texture2D ShadowTex            : register(t5);
+TextureCube Cubemap            : register(t6);
 
 SamplerState SS;
 
@@ -274,12 +275,13 @@ FS(PS_INPUT input) {
   //psOut.Lightning = float4(emissive, 1.0f);
   //psOut.Lightning = float4(roughness.rrr, 1.0f);
   //psOut.Lightning = float4(specular, 1.0f);
-  psOut.Lightning = float4(SSAO.rrr, 1.0f);
+  //psOut.Lightning = float4(SSAO.rrr, 1.0f);
   //psOut.Lightning = float4(ShadowValue.xxx, 1.0f);
   //psOut.Lightning = float4(ShadowTex.Sample(SS, uv).xxx, 1.0f);
   //psOut.Lightning = float4(ShadowTex.Sample(SS, uv).yyy, 1.0f);
   //psOut.Lightning = float4(ShadowTex.Sample(SS, uv).zzz, 1.0f);
   //psOut.Lightning = float4(ShadowTex.Sample(SS, uv).www, 1.0f);
+  psOut.Lightning = float4(Cubemap.Sample(SS, normal).xyz, 1.0f);
  
   return psOut;
 }
