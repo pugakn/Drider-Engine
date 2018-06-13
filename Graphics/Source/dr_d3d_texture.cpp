@@ -129,7 +129,7 @@ D3DTexture::createFromMemory(const Device& device,
 }
 
 void
-D3DTexture::createEmpty(const Device& device, const DrTextureDesc& desc){
+D3DTexture::createEmpty(const Device& device, const DrTextureDesc& desc) {
   return createFromMemory(device, desc, 0);
 }
 
@@ -148,20 +148,21 @@ D3DTexture::map(const DeviceContext& deviceContext, char** buffer) {
 }
 
 void 
-D3DTexture::getMemoryBuffer(const DeviceContext& deviceContext, std::vector<byte>& buff)
-{
-  if (!(m_descriptor.CPUAccessFlags & DR_CPU_ACCESS_FLAG::drRead))
+D3DTexture::getMemoryBuffer(const DeviceContext& deviceContext,
+                            std::vector<byte>& buff) {
+  if (!(m_descriptor.CPUAccessFlags & DR_CPU_ACCESS_FLAG::drRead)) {
     return;
+  }
+
   ID3D11DeviceContext* dc = reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext;
   dc->CopyResource(m_stagingTexture,APITexture);
   D3D11_MAPPED_SUBRESOURCE mappedResource;
-  dc->Map(
-    m_stagingTexture,
-    0,
-    D3D11_MAP_READ,
-    0,
-    &mappedResource);  
+  dc->Map(m_stagingTexture,
+          0,
+          D3D11_MAP_READ,
+          0,
+          &mappedResource);  
   buff.clear();
   buff.assign((byte*)mappedResource.pData, (byte*)mappedResource.pData + m_descriptor.pitch * m_descriptor.height);
   dc->Unmap(m_stagingTexture,0);

@@ -11,30 +11,29 @@
 namespace driderSDK {
 
 class IndexBuffer;
-struct ParticleSystemInitData : PassInitData {};
+struct LuminescenceInitData : PassInitData {};
 
-struct ParticleSystemDrawData : PassDrawData {
+struct LuminescenceDrawData : PassDrawData {
   std::shared_ptr<Camera> activeCam;
-  Particle* particles;
-  ParticleEmitter* emitter;
-  size_t numParticles;
+  GFXShared<Texture> InTexture;
+  float LuminiscenceDelta;
 };
 
-class ParticleSystemPass : public RenderPass {
+class LuminescencePass : public RenderPass {
  public:
   /*
-  TEST::testName
+  TEST::defaultConstructor
   
   Description.
   */
-  ParticleSystemPass();
+   LuminescencePass();
 
   /*
-  TEST::testName
+  TEST::defaultDestructor
   
   Description.
   */
-  ~ParticleSystemPass();
+  ~LuminescencePass();
 
   /*
   TEST::testName
@@ -51,16 +50,15 @@ class ParticleSystemPass : public RenderPass {
 
  private:
   struct CBuff {
-    Matrix4x4 V;
-    Matrix4x4 P;
+    float	LuminiscenceDelta;
+    UInt32 TextureWidth;
+    UInt32 TextureHeight;
+    float pad;
   };
   
-  CBuff m_cbuff;
-  GFXUnique<SamplerState> m_samplerState;
-  GFXUnique<VertexBuffer> m_VBQUAD;
-  GFXUnique<IndexBuffer> m_IBQUAD;
-  Vector4D m_vertex[4];
-  UInt32 m_index[6];
+  CBuff m_CB;
+
+  GFXUnique<Shader> m_computeShader;
 };
 
 }

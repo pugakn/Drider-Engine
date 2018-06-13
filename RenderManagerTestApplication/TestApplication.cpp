@@ -229,7 +229,6 @@ RenderManApp::postInit() {
     rComp->getMeshes().front().material = m_modelMat;
   }
 
-
   m_vecGos.push_back(SceneGraph::createObject(_T("HatKid")));
   m_selectedGO = m_vecGos.back();
   auto ptrHK = ResourceManager::getReferenceT<Model>(_T("HK_Teen.fbx"));
@@ -271,6 +270,17 @@ RenderManApp::postInit() {
     meshes[1].material = m_hkBodyMat;
     meshes[2].material = m_hkEyeMat;
   }
+  
+  /*
+  m_vecGos.push_back(SceneGraph::createObject(_T("SkySphere")));
+  m_selectedGO = m_vecGos.back();
+  auto ptrSS = ResourceManager::getReferenceT<Model>(_T("SkySphere100.fbx"));
+  if (ptrSS) {
+    m_selectedGO->createComponent<RenderComponent>(ptrSS);
+    m_selectedGO->createComponent<AABBCollider>(ptrSS->aabb);
+    m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, 0.0f));
+  }
+  */
 
   m_SzTGosIndex = m_vecGos.size() - 1;
   m_selectedGO = m_vecGos[m_SzTGosIndex];
@@ -405,6 +415,7 @@ RenderManApp::SelectModel(Int32 jump) {
 
 void
 RenderManApp::loadResources() {
+  ResourceManager::loadResource(_T("SkySphere100.fbx"));
   ResourceManager::loadResource(_T("Checker.fbx"));
   ResourceManager::loadResource(_T("Sphere.fbx"));
   ResourceManager::loadResource(_T("plane.fbx"));
