@@ -55,12 +55,12 @@ VS(VS_INPUT input) {
   Output.RealPos.w = mul(WVP, input.Position).z / CameraInfo[3];
   Output.Texcoord  = input.Texcoord;
   
-  //Output.TBN[0] = normalize(mul((float3x3)World, TransformedT));
-  //Output.TBN[1] = normalize(mul((float3x3)World, TransformedB));
-  //Output.TBN[2] = normalize(mul((float3x3)World, TransformedN));
-  Output.TBN[0] = normalize(TransformedT);
-  Output.TBN[1] = normalize(TransformedB);
-  Output.TBN[2] = normalize(TransformedN);
+  Output.TBN[0] = normalize(mul((float3x3)World, TransformedT));
+  Output.TBN[1] = normalize(mul((float3x3)World, TransformedB));
+  Output.TBN[2] = normalize(mul((float3x3)World, TransformedN));
+  //Output.TBN[0] = normalize(TransformedT);
+  //Output.TBN[1] = normalize(TransformedB);
+  //Output.TBN[2] = normalize(TransformedN);
   
   return Output;
 }

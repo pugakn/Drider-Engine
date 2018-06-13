@@ -1,10 +1,11 @@
-Texture2D PositionLDepthTex    : register(t0);
+Texture2D PositionDepthTex     : register(t0);
 Texture2D NormalCoCTex         : register(t1);
 Texture2D AlbedoMetallicTex    : register(t2);
 Texture2D EmissiveRoughnessTex : register(t3);
 Texture2D SSAOTex              : register(t4);
 Texture2D ShadowTex            : register(t5);
-TextureCube Cubemap            : register(t6);
+TextureCube EnvironmentTex     : register(t6);
+TextureCube IrradianceTex      : register(t7);
 
 SamplerState SS;
 
@@ -156,50 +157,79 @@ FS(PS_INPUT input) {
 
   const float2 uv = input.Texcoord;
   
-  const float4 position  = float4(PositionLDepthTex.Sample(SS, uv).xyz, 1.0f);
-  const float  depthCam  = PositionLDepthTex.Sample(SS, uv).w;
-  const float3 normal    = NormalCoCTex.Sample(SS, uv).xyz;
-  const float3 albedo    = AlbedoMetallicTex.Sample(SS, uv).xyz;
-  const float  metallic  = AlbedoMetallicTex.Sample(SS, uv).w;
-  const float3 emissive  = EmissiveRoughnessTex.Sample(SS, uv).xyz;
-  const float  roughness = EmissiveRoughnessTex.Sample(SS, uv).w;
-  const float3 specular  = lerp(float3(0.03f, 0.03f, 0.03f), albedo, metallic);
-  const float  SSAO      = SSAOTex.Sample(SS, uv).x;
-  const float  alpha     = max(0.01f, roughness * roughness);
+  const float  SSAO        = SSAOTex.Sample(SS, uv).x;
+  const float4 position    = float4(PositionDepthTex.Sample(SS, uv).xyz, 1.0f);
+  const float3 diffuse     = AlbedoMetallicTex.Sample(SS, uv).xyz * SSAO;
+  const float  depthCam    = PositionDepthTex.Sample(SS, uv).w;
+  const float3 normal      = NormalCoCTex.Sample(SS, uv).xyz;
+  const float  metallic    = AlbedoMetallicTex.Sample(SS, uv).w;
+  const float3 emissive    = EmissiveRoughnessTex.Sample(SS, uv).xyz;
+  const float  roughness   = EmissiveRoughnessTex.Sample(SS, uv).w;
+  const float3 diffusePBR  = (diffuse - (diffuse * metallic));
+  const float3 specularPBR = lerp(float3(0.04f, 0.04f, 0.04f), diffuse, metallic) * SSAO;
+  const float  alpha       = max(0.01f, roughness * roughness);
   
   //Lightning Stuff
+  float3 lightPosition;
+  float3 lightColor;
+  float  lightRange;
+  float  lightIntensity;
+  float  LightPower;
+
+  float3 LightViewDir;
+
+  float3 H;
+
+  float  NdotL;
+  float  LdotV;
+    
+  float  NdotH;
+  float  VdotH;
+  float  LdotH;
+
   const float3 ViewDir = normalize(kEyePosition.xyz - position.xyz);
   const float  NdotV = saturate(dot(normal, ViewDir));
+
+  float3 DiffAcc;
+  float3 SpecAcc;
 
   const int activeLights = kEyePosition.w;
   //[unroll]
   for (int index = 0; index < activeLights; index += 2) {
-    float3 lightPosition  = kLightPosition[index].xyz;
-    float3 lightColor     = kLightColor[index].xyz;
-    float  lightRange     = kLightPosition[index].w;
-    float  lightIntensity = kLightColor[index].w;
+    lightPosition  = kLightPosition[index].xyz;
+    lightColor     = kLightColor[index].xyz;
+    lightRange     = kLightPosition[index].w;
+    lightIntensity = kLightColor[index].w;
     
-    float  LightPower = saturate(1.0f - (length(lightPosition - position.xyz) / lightRange)) * lightIntensity;
+    LightPower = saturate(1.0f - (length(lightPosition - position.xyz) / lightRange)) * lightIntensity;
 
-    float3 LightDir = normalize(lightPosition - position.xyz);
+    LightViewDir = normalize(lightPosition - position.xyz);
 
-    float3 H     = normalize(LightDir + ViewDir);
+    H = normalize(LightViewDir + ViewDir);
 
-    float  NdotL = saturate(dot(normal, LightDir));
-    float  LdotV = saturate(dot(LightDir, ViewDir));
+    NdotL = saturate(dot(normal, LightViewDir));
+    LdotV = saturate(dot(LightViewDir, ViewDir));
+    
+    NdotH = saturate(dot(normal, H));
+    VdotH = saturate(dot(ViewDir, H));
+    LdotH = saturate(dot(LightViewDir, H));
 
-    float  NdotH = saturate(dot(normal, H));
-    float  VdotH = saturate(dot(ViewDir, H));
-    float  LdotH = saturate(dot(LightDir, H));
-
-    float3 DiffAcc = Diffuse_Burley(NdotL, NdotV, LdotH, roughness) * albedo;
-    float3 SpecAcc = Specular_D(alpha, NdotH) *
-                     Specular_F(specular * lightColor, LdotH) *
-                     Specular_G(alpha, LdotH);
+    DiffAcc = Diffuse_Burley(NdotL, NdotV, LdotH, roughness) * diffuse;
+    SpecAcc = Specular_D(alpha, NdotH) *
+              Specular_F(specularPBR * lightColor, LdotH) *
+              Specular_G(alpha, LdotH);
     SpecAcc /= (4.0f * cos(NdotL) * cos(NdotV));
     
-    finalColor += (SSAO * NdotL * LightPower) * (DiffAcc + SpecAcc);
+    finalColor += (DiffAcc + SpecAcc) * (NdotL * LightPower);
   };
+  
+  float3 reflectVector = reflect(-ViewDir, normal);
+  float mipIndex = alpha * 0.8f;
+
+  float4 envColor = EnvironmentTex.SampleLevel(SS, reflectVector, mipIndex);
+  float4 Irradiance = IrradianceTex.Sample(SS, reflectVector);
+  
+  float3 IBL = (specularPBR * envColor) + (diffusePBR * Irradiance);
   
   //Shadow Stuff
   int iCurrentCascadeIndex = 0;
@@ -207,9 +237,9 @@ FS(PS_INPUT input) {
   static const float CascadeLerp = ShadowInfo[2];
   
   #if defined(INTERVAL_BASED_SELECTION)
-    const float vCurrentPixelDepth = PositionLDepthTex.Sample(SS, uv).w;
-
-    float4 fComparison;
+    const float vCurrentPixelDepth = PositionDepthTex.Sample(SS, uv).w;
+  float4 fComparison;
+  
     fComparison[0] = vCurrentPixelDepth > ShadowSplitDepth[0];
     fComparison[1] = vCurrentPixelDepth > ShadowSplitDepth[1];
     fComparison[2] = vCurrentPixelDepth > ShadowSplitDepth[2];
@@ -229,7 +259,8 @@ FS(PS_INPUT input) {
       const float ShadowLerp = saturate((pxProportion - CascadeLerp) / (1.0f - CascadeLerp));
     #endif //CASCADE_BLUR
   #elif defined(MAP_BASED_SELECTION)
-    float4 fComparison;
+  float4 fComparison;
+
     fComparison[0] = insideBounds(mul(kShadowVP[0], position)) * 4;
     fComparison[1] = insideBounds(mul(kShadowVP[1], position)) * 3;
     fComparison[2] = insideBounds(mul(kShadowVP[2], position)) * 2;
@@ -264,13 +295,14 @@ FS(PS_INPUT input) {
     #endif //CASCADE_BLUR
   #endif //INTERVAL_BASED_SELECTION || MAP_BASED_SELECTION
   
-  psOut.Lightning = float4((finalColor * ShadowValue) + emissive, 1.0f);
+  psOut.Lightning = float4(((finalColor + IBL) * ShadowValue) + emissive, 1.0f);
+  //psOut.Lightning = float4((finalColor * ShadowValue) + emissive, 1.0f);
   psOut.Brightness = float4(brightness(psOut.Lightning.xyz), 1.0f);
 
   //psOut.Lightning = position;
   //psOut.Lightning = float4(depthCam.xxx, 1.0f);
   //psOut.Lightning = float4(normal, 1.0f);
-  //psOut.Lightning = float4(albedo, 1.0f);
+  //psOut.Lightning = float4(diffuse, 1.0f);
   //psOut.Lightning = float4(metallic.rrr, 1.0f);
   //psOut.Lightning = float4(emissive, 1.0f);
   //psOut.Lightning = float4(roughness.rrr, 1.0f);
@@ -281,7 +313,6 @@ FS(PS_INPUT input) {
   //psOut.Lightning = float4(ShadowTex.Sample(SS, uv).yyy, 1.0f);
   //psOut.Lightning = float4(ShadowTex.Sample(SS, uv).zzz, 1.0f);
   //psOut.Lightning = float4(ShadowTex.Sample(SS, uv).www, 1.0f);
-  psOut.Lightning = float4(Cubemap.Sample(SS, normal).xyz, 1.0f);
  
   return psOut;
 }

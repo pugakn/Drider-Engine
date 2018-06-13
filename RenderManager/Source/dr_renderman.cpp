@@ -318,7 +318,8 @@ RenderMan::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_LightningDrawData.SSAORT = m_RTSSAOBlur;
   m_LightningDrawData.ShadowRT = m_RTShadow;
   m_LightningDrawData.OutRt = m_RTLightning;
-  m_LightningDrawData.Cubemap = m_cubemap;
+  m_LightningDrawData.EnviromentCubemap = m_cubemap;
+  m_LightningDrawData.IrradianceCubemap = m_cubemapDiffuse;
   m_LightningDrawData.dsOptions = m_LightningDSoptions;
   m_LightningPass.draw(&m_LightningDrawData);
 

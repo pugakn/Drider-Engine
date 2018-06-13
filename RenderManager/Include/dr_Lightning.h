@@ -28,7 +28,8 @@ struct LightningDrawData : PassDrawData {
   GFXShared<RenderTarget> SSAORT;
   GFXShared<RenderTarget> ShadowRT;
   GFXShared<RenderTarget> OutRt;
-  GFXShared<TextureCore> Cubemap;
+  GFXShared<TextureCore> EnviromentCubemap;
+  GFXShared<TextureCore> IrradianceCubemap;
   GFXShared<DepthStencil> dsOptions;
 };
 
