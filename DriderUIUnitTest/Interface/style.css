@@ -8,7 +8,7 @@ body  {
 #hierarchy {
   height: 66%;
   width: 25%;
-  background-color: red;
+  background-color: #FFF;
 }
 #scene {
   height: 66%;
@@ -38,9 +38,6 @@ body  {
   padding: 5px;
 }
 
-#fileTree {
-  overflow: scroll;
-}
 .front{
     z-index:100;
 }

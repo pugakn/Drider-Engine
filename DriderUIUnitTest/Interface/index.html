@@ -6,14 +6,21 @@
   <link href="external/jquery-ui.css" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="style.css">
   <link href="jqueryFileTree.css" rel="stylesheet" type="text/css" media="screen" />
+  <link href="hierarchy.css" rel="stylesheet" type="text/css" media="screen" />
 
 </head>
 <body >
   <div id="container" class="snapTarget">
     <div id="hierarchy" class="section snapTarget">
-      <div class="subSection">
+      <div id="hierarchyDiv" class="subSection">
         <h3 class="titleSection">Hierarchy</h3>
-        hola
+        <div id="divHierarchy">
+          <div id="generalPlus" class="droppableHierarchy">
+            +
+          </div>
+          <ul class="sortableHierarchy" id="idSorteableHierarchy">
+          </ul>
+        </div>
       </div>
     </div>
     <div id="scene" class="section snapTarget">
@@ -31,9 +38,7 @@
     <div id="project" class="section snapTarget">
       <div  id="projectDiv" class="subSection">
         <h3 class="titleSection">Archivos</h3>
-        <div id="fileTree">
-
-        </div>
+        <div id="fileTree"></div>
       </div>
     </div>
   </div>
@@ -43,6 +48,7 @@
   <script src="external/jquery.easing.js"></script>
   <script src="configWindow.js"></script>
   <script src="jqueryFileTree.js"></script>
+  <script src="hierarchy.js"></script>
 
 </body>
 </html>

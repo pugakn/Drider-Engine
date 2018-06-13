@@ -30,6 +30,7 @@ $("#scene").css({left: unitWidth});
 $("#inspector").css({left: unitWidth*3});
 $("#project").css({top: unitHeight});
 $('#fileTree')[0].style.height = $( window ).height() * .34 - sizeHeader + "px";
+$('#divHierarchy')[0].style.height = $( window ).height() * .65 - sizeHeader + "px";
 
 $( ".section" ).each(function( section ) {
   $(this).draggable({
@@ -42,6 +43,7 @@ $( ".section" ).each(function( section ) {
     $(this).addClass('front');
 });
 });
+
 $( ".subSection" ).each(function(  ) {
   $(this).resizable({
     containment: "#container",
@@ -76,8 +78,16 @@ $("#projectDiv").resizable({
   }
 });
 
+$("#hierarchyDiv").resizable({
+  resize: function( event, ui ) {
+    $($(ui.element[0]).parent()[0]).css("height", ui.size.height);
+    $($(ui.element[0]).parent()[0]).css("width", ui.size.width);
+    $(event.target).find("#divHierarchy").css("height", ui.size.height - sizeHeader);
+  }
+});
+
 function CFSetSceneAreaViewport() {
-  C_SetSceneAreaViewport($("#scene").position().top + sizeHeader, $("#scene").position().left, $("#scene").width(), $("#scene").height() - sizeHeader);
+  //C_SetSceneAreaViewport($("#scene").position().top + sizeHeader, $("#scene").position().left, $("#scene").width(), $("#scene").height() - sizeHeader);
 }
 
 CFSetSceneAreaViewport();
