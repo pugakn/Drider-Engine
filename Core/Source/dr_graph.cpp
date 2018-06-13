@@ -35,6 +35,8 @@ SceneGraph::onStartUp() {
 void
 SceneGraph::onShutDown() {
   m_root->destroy();
+  m_octree->destroy();
+  m_octree = nullptr;
   m_root = nullptr;
 }
 

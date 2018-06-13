@@ -20,7 +20,7 @@ class FrustumDebug : public DrawableComponent
   virtual void 
   onUpdate() override;
 
-  virtual void 
+  virtual GameComponent*
   cloneIn(GameObject& _go) override;
 
   void 

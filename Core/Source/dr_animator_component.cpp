@@ -333,7 +333,7 @@ AnimatorComponent::onDestroy() {
 
 }
 
-void
+GameComponent*
 AnimatorComponent::cloneIn(GameObject& _go) {
   
   auto dup = _go.createComponent<AnimatorComponent>();
@@ -356,6 +356,8 @@ AnimatorComponent::cloneIn(GameObject& _go) {
   dup->m_blendDuration  = m_blendDuration;
   dup->m_animMerge      = m_animMerge;
   dup->m_lastTimeRef    = nullptr;
+
+  return dup;
 }
 
 Quaternion 

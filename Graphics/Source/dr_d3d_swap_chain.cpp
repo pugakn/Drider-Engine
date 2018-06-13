@@ -5,6 +5,9 @@
 #include "dr_d3d_device_context.h"
 #include "dr_d3d_texture.h"
 #include "dr_d3d_render_target.h"
+///////////////////////////////
+#include "dr_graphics_driver.h"
+///////////////////////////////
 #include <iostream>
 namespace driderSDK {
   void * D3DSwapChain::getAPIObject()
@@ -84,11 +87,18 @@ D3DSwapChain::release() {
 
 void D3DSwapChain::resize(const Device& device, UInt32 _w, UInt32 _h)
 {
+  /////////////////////////////////////////
+  auto& api = GraphicsDriver::API();
+  auto& devContext = api.getDeviceContext();
+  {
+    reinterpret_cast<D3DDeviceContext*>(&devContext)->D3D11DeviceContext->OMSetRenderTargets(0,0,0);
+  }
+  /////////////////////////////////////////
   m_descriptor.width = _w;
   m_descriptor.height = _h;
   m_backBufferView->release();
   m_backBufferTexture->release();
-  std::cout << APISwapchain->ResizeBuffers(0, _w, _h, DXGI_FORMAT_UNKNOWN, 0) << std::endl;
+  std::cout << APISwapchain->ResizeBuffers(0, 0, 0, DXGI_FORMAT_UNKNOWN, 0) << std::endl;
   DrTextureDesc backDesc;
   backDesc.width = m_descriptor.width;
   backDesc.height = m_descriptor.height;
@@ -97,13 +107,16 @@ void D3DSwapChain::resize(const Device& device, UInt32 _w, UInt32 _h)
   m_backBufferTexture = new D3DTexture;
   m_backBufferTexture->setDescriptor(backDesc);
   HRESULT hr = APISwapchain->GetBuffer(0,
-    __uuidof(m_backBufferTexture->APITexture),
+    __uuidof(ID3D11Texture2D),
     (void**)&m_backBufferTexture->APITexture);
 
   std::vector<Texture*> texturesVec;
   texturesVec.push_back(m_backBufferTexture);
   auto bbRT = device.createRenderTarget(texturesVec);
   m_backBufferView = bbRT;
+  ///////////////////////////////
+  bbRT->set(devContext, api.getDepthStencil());
+  ///////////////////////////////
 }
 
 void

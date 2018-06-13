@@ -68,7 +68,7 @@ class DR_CORE_EXPORT RenderComponent : public GameComponent
   virtual void 
   onDestroy() override;
 
-  virtual void
+  virtual GameComponent*
   cloneIn(GameObject& _go);
 
   bool m_isModel;

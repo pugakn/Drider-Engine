@@ -40,7 +40,7 @@ class DR_CORE_EXPORT SoundComponent : public GameComponent {
     void
     onDestroy() override;
 
-    void
+    GameComponent*
     cloneIn(GameObject& _go) override;
 
 

@@ -171,6 +171,7 @@
     <ClInclude Include="Include\LinesTechnique.h" />
     <ClInclude Include="Include\OneRef.h" />
     <ClInclude Include="Include\SkeletonDebug.h" />
+    <ClInclude Include="Include\SpiderBehavior.h" />
     <ClInclude Include="Include\StaticMeshTechnique.h" />
     <ClInclude Include="Include\Technique.h" />
   </ItemGroup>
@@ -184,6 +185,7 @@
     <ClCompile Include="Source\LinesTechnique.cpp" />
     <ClCompile Include="Source\OneRef.cpp" />
     <ClCompile Include="Source\SkeletonDebug.cpp" />
+    <ClCompile Include="Source\SpiderBehavior.cpp" />
     <ClCompile Include="Source\StaticMeshTechnique.cpp" />
     <ClCompile Include="Source\Technique.cpp" />
   </ItemGroup>

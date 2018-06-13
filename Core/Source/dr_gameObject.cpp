@@ -31,7 +31,8 @@ GameObject::GameObject(const GameObject& other)
 GameObject::~GameObject() {
   DR_DEBUG_ONLY(
   if (!m_destroyed) {
-    Logger::addLog(_T("Object called destructor without begin destoyed() first"));
+    Logger::addLog(_T("Object called destructor without begin destoyed() first: ")
+                   + getName());
   });
 }
 
@@ -66,14 +67,14 @@ GameObject::update() {
     }
   }
 
-  /*if (!m_componentsToRemove.empty()) {
+  if (!m_componentsToRemove.empty()) {
 
     for (const auto& cmpToRem : m_componentsToRemove) {
       removeComponentP(cmpToRem);
     }
 
     m_componentsToRemove.clear();
-  }*/
+  }
 
   for (auto& child : m_children) {
     if (child->isEnabled()) {
@@ -350,32 +351,37 @@ GameObject::operator=(const GameObject& ref) {
 
   m_localTransform = ref.m_localTransform;
 
-  m_localTransform.invalidate();
+  m_finalTransform = ref.m_finalTransform;
 
   m_isStatic = ref.m_isStatic;
+
+  m_change = ref.m_change;
 
   static_cast<EnableObject&>(*thisPtr) = ref;
 
   static_cast<NameObject&>(*thisPtr) = ref;
 
   setName(ref.getName() + _T(" clone"));
-  /**
-  dup->m_finalTransform = m_finalTransform;
-  dup->m_finalTransform.invalidate();
-  **/
+  
+  m_components.clear();
+
+  m_componentNames.clear();
+
   for (auto& component : ref.m_components) {
     component->cloneIn(*thisPtr);
+    
   }
 
   /*********************************/
+  m_children.clear();
+
   for (auto& child : ref.m_children) {
-    //addChild(child->clone(false));
     auto c = child->createInstance();
     *c = *child;
+    addChild(c);
   }
 
   return *this;
-
 }
 
 bool 

@@ -98,7 +98,7 @@ class DR_CORE_EXPORT AnimatorComponent : public GameComponent
   virtual void 
   onDestroy() override;
 
-  virtual void
+  virtual GameComponent*
   cloneIn(GameObject& _go) override;
 
   Quaternion

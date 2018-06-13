@@ -326,6 +326,8 @@ GraphicsApplication::loadResources() {
   
   ResourceManager::loadResource(_T("tiny_4anim.x"));
 
+  ResourceManager::loadResource(_T("Spidey.fbx"));
+
   ResourceManager::loadResource(_T("Jump In Place.fbx"));
   
   ResourceManager::renameResource(_T("Animation_mixamo.com"), 
@@ -375,7 +377,11 @@ GraphicsApplication::createTechniques() {
 
 void 
 GraphicsApplication::createScene() {
-    
+  
+  auto spidey = addObject(_T("ARA"), _T("Spidey.fbx"), true);
+
+  //spidey->getTransform().scale({15.f, 15.f, 15.f});
+
   //auto cubo = ResourceManager::getReferenceT<Model>(_T("Unidad_1m.fbx"));
   auto cubo = ResourceManager::getReferenceT<Model>(_T("tiny_4anim.x"));
 
@@ -386,7 +392,6 @@ GraphicsApplication::createScene() {
   cuboObj->getTransform().rotate({Degree(90).toRadian(), Degree(180).toRadian(), 0});
 
   auto animSk = ResourceManager::getReferenceT<Skeleton>(cubo->skeletonName);
-
 
   auto comp = cuboObj->createComponent<AnimatorComponent>();
 
@@ -418,7 +423,7 @@ GraphicsApplication::createScene() {
     float x = ((rand() % 5000) - 2500) * 1.f;
     float z = ((rand() % 5000) - 2500) * 1.f;
     
-    Int32 time = rand() % 400;
+    float time = rand() % 400 * 1.f;
     clon->getTransform().setPosition({x, 0, z});
     animCmp->setTime(time);
   }
@@ -433,24 +438,8 @@ GraphicsApplication::createScene() {
 
   terrainObj->getTransform().setScale({10, 10, 10});*/
 
-  auto woman = ResourceManager::getReferenceT<Model>(_T("Run.fbx"));
-
-  if (!woman)
-    return;
  
-  auto woms = ResourceManager::getReferenceT<Skeleton>(woman->skeletonName);
-
-  auto womanNode = addObjectFromModel(woman, _T("LE Morrita"));
-
-  auto animatorW = womanNode->createComponent<AnimatorComponent>();
-
-  animatorW->setSkeleton(woms);
-
-  auto womAni = ResourceManager::getReferenceT<Animation>(woman->animationsNames[0]);
-
-  animatorW->addAnimation(womAni, woman->animationsNames[0]);
-
-  animatorW->setCurrentAnimation(woman->animationsNames[0], false);
+  auto womanNode = addObject(_T("LE Morrita"), _T("Run.fbx"), true);
 
   womanNode->getTransform().setPosition({-500.f, 0, 200.f});
 
@@ -565,7 +554,7 @@ GraphicsApplication::createScene() {
 
   camNode->setParent(sphereCenter);
 
-  auto fd = copy->createComponent<FrustumDebug>(activeCam.get());
+  auto fd = m_player->createComponent<FrustumDebug>(activeCam.get());
 
   fd->setShaderTechnique(m_linesTech.get());
 }
@@ -585,6 +574,41 @@ GraphicsApplication::addObjectFromModel(std::shared_ptr<Model> model,
   }
 
   return obj;
+}
+
+std::shared_ptr<GameObject> 
+GraphicsApplication::addObject(const TString& name, 
+                               const TString& model, 
+                               bool animated) {
+
+    auto obj = SceneGraph::createObject(name);  
+
+    if (auto mod = ResourceManager::getReferenceT<Model>(model)) {
+
+      obj->createComponent<RenderComponent>(mod);
+      obj->createComponent<AABBCollider>(mod->aabb);
+
+      if (animated && !mod->animationsNames.empty()) {
+
+        auto animator = obj->createComponent<AnimatorComponent>();
+
+        for (auto& anim : mod->animationsNames) {
+          auto animation = ResourceManager::getReferenceT<Animation>(anim);
+          animator->addAnimation(animation, anim);          
+        }
+
+        animator->setCurrentAnimation(mod->animationsNames[0], false);
+
+        auto skel = ResourceManager::getReferenceT<Skeleton>(mod->skeletonName);
+
+        animator->setSkeleton(skel);
+      }
+    }
+    else {
+      std::cout << "Model not found: " << StringUtils::toString(model) << std::endl;
+    }
+
+    return obj;
 }
 
 void 
@@ -873,7 +897,7 @@ GraphicsApplication::onResize() {
   GraphicsDriver::API().getSwapChain().resize(GraphicsDriver::API().getDevice(),
                                                m_viewport.width,
                                                m_viewport.height);
-
+  CameraManager::getActiveCamera()->setViewport(m_viewport);
 }
 
 }

@@ -109,11 +109,15 @@ void FrustumDebug::onUpdate() {
   }
 }
 
-void 
+GameComponent*
 FrustumDebug::cloneIn(GameObject& _go) {
   auto p = _go.createComponent<FrustumDebug>(m_camera); 
+
   p->m_technique = m_technique;
   p->m_camera = m_camera;
+  p->m_primitive = m_primitive;
+  p->m_meshes = m_meshes;
+  return p;
 }
 
 void 

@@ -27,7 +27,7 @@ class SkeletonDebug : public DrawableComponent {
   virtual void 
   onUpdate() override;
   
-  virtual void 
+  virtual GameComponent* 
   cloneIn(GameObject& _go);
  private:
   

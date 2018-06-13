@@ -44,7 +44,7 @@ class DR_CORE_EXPORT GameComponent : public EnableObject,
   /**
   * Clones the component inside the given gameObject
   */
-  virtual void
+  virtual GameComponent*
   cloneIn(GameObject& _go) = 0;
 
   static BEGINING_REGISTER(GameComponent, 0, asOBJ_REF | asOBJ_NOCOUNT)

@@ -59,6 +59,9 @@ private:
   addObjectFromModel(std::shared_ptr<Model> model,
                      const TString& name);
 
+  std::shared_ptr<GameObject>
+  addObject(const TString& name, const TString& model, bool animated);
+
   void
   destroyModules();
 

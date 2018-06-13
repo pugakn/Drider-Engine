@@ -73,9 +73,9 @@ ScriptComponent::onDestroy() {
 /**
 * Clones the component inside the given gameObject
 */
-void
+GameComponent*
 ScriptComponent::cloneIn(GameObject& _go) {
-
+  return _go.createComponent<ScriptComponent>(m_script);
 }
 
 void
