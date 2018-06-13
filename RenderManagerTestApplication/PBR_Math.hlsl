@@ -1,4 +1,3 @@
-
 static const float M_PI = 3.14159265f;
 static const float EPSILON = 1e-6f;
 

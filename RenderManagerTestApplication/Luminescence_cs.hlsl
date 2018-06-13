@@ -27,9 +27,9 @@ CS(uint3 id : SV_DispatchThreadID) {
   float4 actualPixel;
   for (int txWidth = 0; txWidth < TextureWidth; ++txWidth) {
     for (int txHeight = 0; txHeight < TextureHeight; ++txHeight) {
-	  actualPixel = BufferIn.Load(uint3(txWidth, txHeight, 1));
-	  totalLuminescence += luminescence(actualPixel.xyz);
-	}
+	    actualPixel = BufferIn.Load(uint3(txWidth, txHeight, 1));
+	    totalLuminescence += luminescence(actualPixel.xyz);
+	  }
   }
   totalLuminescence /= TextureWidth * TextureHeight;
   
