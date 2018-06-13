@@ -48,7 +48,7 @@ namespace driderSDK {
     driderSDK::File file;
     String shaderSource;
 
-    file.Open(_T("particle_init_cs.hlsl"));
+    file.Open(_T("Resources\\Shaders\\particle_init_cs.hlsl"));
     shaderSource.clear();
     shaderSource += "#define MAX_ATTRACTORS " +
       std::to_string(MAX_ATTRACTORS) + "\n";
@@ -61,7 +61,7 @@ namespace driderSDK {
       DR_SHADER_TYPE_FLAG::kCompute);
     shaderSource.clear();
 
-    file.Open(_T("particle_emit_cs.hlsl"));
+    file.Open(_T("Resources\\Shaders\\particle_emit_cs.hlsl"));
     shaderSource += "#define DR_NUM_THREADS_PER_BLOCK " + 
       std::to_string(EMIT_NUM_THREADS_PER_BLOCK) + "\n";
     shaderSource += "#define MAX_ATTRACTORS " +
@@ -75,7 +75,7 @@ namespace driderSDK {
       DR_SHADER_TYPE_FLAG::kCompute);
     shaderSource.clear();
 
-    file.Open(_T("particle_update_cs.hlsl"));
+    file.Open(_T("Resources\\Shaders\\particle_update_cs.hlsl"));
     shaderSource += "#define DR_NUM_THREADS_PER_BLOCK " + 
       std::to_string(UPDATE_NUM_THREADS_PER_BLOCK) + "\n";
     shaderSource += "#define DR_NUM_PARTICLES_PER_THREAD " +
@@ -91,7 +91,7 @@ namespace driderSDK {
       DR_SHADER_TYPE_FLAG::kCompute);
     shaderSource.clear();
 
-    file.Open(_T("particle_setup_indirect_cs.hlsl"));
+    file.Open(_T("Resources\\Shaders\\particle_setup_indirect_cs.hlsl"));
     shaderSource = StringUtils::toString(file.GetAsString(file.Size()));
     file.Close();
     m_setupDrawArgsCS = device.createShaderFromMemory(shaderSource.data(),
