@@ -4,6 +4,7 @@
 
 #include <dr_string_utils.h>
 
+#include "dr_aabb_collider.h"
 #include "dr_gameComponent.h"
 #include "dr_script_component.h"
 
@@ -17,7 +18,9 @@ GameObject::GameObject(const TString& name)
   : NameObject(name), 
     m_tag(_T("UNTAGGED")),
     m_isStatic(false),
-    m_change(false)
+    m_isStarted(false),
+    m_change(false),
+    m_isKilled(false)
     DR_DEBUG_ONLY_PARAM(m_destroyed(false))
 {
   //refCount = 1;
@@ -36,8 +39,44 @@ GameObject::~GameObject() {
   });
 }
 
+void 
+GameObject::start() {
+  
+  m_change = m_localTransform.changed() ||
+             getParent()->changed();
+
+  m_localTransform.m_change = false;
+
+  if (m_change) {
+    m_finalTransform = m_localTransform * getParent()->m_finalTransform;  
+  }   
+
+  if (auto collider = getComponent<AABBCollider>()) {
+    collider->onUpdate();
+  }
+  DR_DEBUG_ONLY(
+  else {
+    Logger::addLog(_T("Warning: object started without collider ") + getName());
+  });
+
+  for (auto& component : m_components) {
+    component->onStart();
+  }
+
+  for (auto& child : m_children) {
+    child->start();
+  }
+
+  m_isStarted = true;
+}
+
 void
 GameObject::update() {
+
+  DR_DEBUG_ONLY(
+  if(!m_isStarted) {
+    Logger::addLog(_T("Warning: updating object that wasn't started ") + getName());
+  });
 
   m_change = m_localTransform.changed() ||
              getParent()->changed();
@@ -50,9 +89,11 @@ GameObject::update() {
 
   updateImpl();
 
+  Int32 ck = 0;
+
   for (auto& component : m_components) {
     
-    if (component->isEnabled()) {
+    if (component->isEnabled() && !component->isKilled()) {
    
       component->onUpdate();
 
@@ -65,21 +106,59 @@ GameObject::update() {
         m_localTransform.m_change = false;
       }
     }
-  }
 
-  if (!m_componentsToRemove.empty()) {
-
-    for (const auto& cmpToRem : m_componentsToRemove) {
-      removeComponentP(cmpToRem);
+    if (component->isKilled()) {
+      ck++;
     }
 
-    m_componentsToRemove.clear();
+    if (isKilled()) {
+      return;
+    }
   }
+
+  static auto shouldDestroyCmp = 
+  [](ComponentPtr& obj) {
+    if (obj->isKilled()) {
+      obj->onDestroy();
+      return true;
+    }
+    return false;
+  };
+    
+  if (ck) {
+    m_components.erase(std::remove_if(m_components.begin(), 
+                                      m_components.end(),
+                                      shouldDestroyCmp),
+                       m_components.end());
+  }
+
+  ck = 0;
 
   for (auto& child : m_children) {
-    if (child->isEnabled()) {
+
+    if (child->isEnabled() && !child->isKilled()) {
       child->update();
     }
+
+    if (child->isKilled()) {
+      ck++;
+    }
+  }
+
+  static auto shouldDestroy = 
+  [](SharedGameObj obj) {
+    if (obj->isKilled()) {
+      obj->destroy();
+      return true;
+    }
+    return false;
+  };
+  
+  if (ck) {
+    m_children.erase(std::remove_if(m_children.begin(), 
+                                    m_children.end(), 
+                                    shouldDestroy),
+                     m_children.end());
   }
 
   m_finalTransform.m_change = false;
@@ -120,7 +199,9 @@ GameObject::destroy() {
 
 void
 GameObject::removeComponent(const TString& compName) {
-  m_componentsToRemove.insert(compName);
+  if (auto comp = getComponent(compName)) {
+    comp->kill();
+  }
 }
 
 void
@@ -336,6 +417,16 @@ ComponentPartition::operator()(const std::unique_ptr<GameComponent>& l) const {
   return static_cast<bool>(dynamic_cast<ScriptComponent*>(l.get()));
 }
 
+void 
+GameObject::kill() const {
+  m_isKilled = true;
+}
+
+bool 
+GameObject::isKilled() const {
+  return m_isKilled;
+}
+
 GameObject&
 GameObject::operator=(const GameObject& ref) {
   auto thisPtr = shared_from_this();
@@ -357,6 +448,8 @@ GameObject::operator=(const GameObject& ref) {
 
   m_change = ref.m_change;
 
+  m_isKilled = ref.m_isKilled;
+
   static_cast<EnableObject&>(*thisPtr) = ref;
 
   static_cast<NameObject&>(*thisPtr) = ref;
@@ -368,8 +461,10 @@ GameObject::operator=(const GameObject& ref) {
   m_componentNames.clear();
 
   for (auto& component : ref.m_components) {
-    component->cloneIn(*thisPtr);
-    
+    auto cmp = component->cloneIn(*thisPtr);
+    if (cmp->getName() != component->getName()) {
+      cmp->setName(component->getName());
+    }
   }
 
   /*********************************/

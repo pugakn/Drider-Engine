@@ -43,6 +43,9 @@
 #include "FrustumDebug.h"
 #include "LinesTechnique.h"
 #include "SkeletonDebug.h"
+#include "SpiderAI.h"
+#include "SpiderBehavior.h"
+#include "SpiderPlayer.h"
 #include "StaticMeshTechnique.h"
 
 
@@ -64,7 +67,9 @@ GraphicsApplication::postInit() {
   initScriptEngine();
   createTechniques();
   createScene();
-    
+  
+  SceneGraph::start();
+
   Time::update();
     
   m_light[0].m_vec4Position = {100, 100, 100, 2000};
@@ -83,16 +88,7 @@ void
 GraphicsApplication::postUpdate() {
   Time::update();
   InputManager::update();
-
-  static Vector3D dir{0,0,200.f};
-
-  m_right->getTransform().move(dir * Time::getDelta());
   
-  if (m_timer.getSeconds() > 4.f) {
-    dir *= -1;
-    m_right->getTransform().rotate({0,Math::PI,0});
-    m_timer.init();
-  }
 
   playerMovement();
 
@@ -211,20 +207,6 @@ GraphicsApplication::initModules() {
 void 
 GraphicsApplication::initInputCallbacks() {
   
-  auto spell = [this]() {
-
-    auto vato = SceneGraph::getRoot()->findNode(_T("CUBIN"));
-    auto comp = vato->getComponent<AnimatorComponent>();
-
-    comp->setCurrentAnimation(m_anims[_T("Run")], false);  
-
-    comp->mergeAnimation(m_anims[_T("Wave")], 0.75f, false);  
-  };
-
-  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
-                        KEY_CODE::kN,
-                        spell); 
-
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kP,
                         std::bind(&RenderMan::recompile, &m_renderMan)); 
@@ -233,11 +215,11 @@ GraphicsApplication::initInputCallbacks() {
                         KEY_CODE::k9,
                         &SceneGraph::buildOctree); 
 
-  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+  /*Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::k2,
                         std::bind(&GraphicsApplication::toggleSkeletonView,
                                   this,
-                                  SceneGraph::getRoot().get())); 
+                                  SceneGraph::getRoot().get())); */
 
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::k3,
@@ -277,22 +259,22 @@ GraphicsApplication::initInputCallbacks() {
                         std::bind(&GraphicsApplication::recompileShaders,
                                   this));
   
-  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+  /*Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kJ, 
                         std::bind(&GraphicsApplication::toggleAnimation,
-                                  this));
+                                  this));*/
 
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kV,
                         [&](){ m_lockView = !m_lockView; });
 
-  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+  /*Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kUP,
                         std::bind(&GraphicsApplication::speedAnim, this, 1.f));
 
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kDOWN,
-                        std::bind(&GraphicsApplication::speedAnim, this, -1.f));
+                        std::bind(&GraphicsApplication::speedAnim, this, -1.f));*/
 }
 
 void 
@@ -380,53 +362,70 @@ GraphicsApplication::createScene() {
   
   auto spidey = addObject(_T("ARA"), _T("Spidey.fbx"), true);
 
-  //spidey->getTransform().scale({15.f, 15.f, 15.f});
-
-  //auto cubo = ResourceManager::getReferenceT<Model>(_T("Unidad_1m.fbx"));
-  auto cubo = ResourceManager::getReferenceT<Model>(_T("tiny_4anim.x"));
-
-  auto cuboObj = addObjectFromModel(cubo, _T("CUBIN"));
-
-  cuboObj->getTransform().setScale({0.4f, 0.4f, 0.4f});
-  //cuboObj->getTransform().move({0, 0, 0});
-  cuboObj->getTransform().rotate({Degree(90).toRadian(), Degree(180).toRadian(), 0});
-
-  auto animSk = ResourceManager::getReferenceT<Skeleton>(cubo->skeletonName);
-
-  auto comp = cuboObj->createComponent<AnimatorComponent>();
-
-  comp->setBlendDuration(0.5f);
-
-  comp->setSkeleton(animSk);
-
-  m_anims[_T("Idle")] = cubo->animationsNames[0];
-  m_anims[_T("Walk")] = cubo->animationsNames[1];
-  m_anims[_T("Run")] = cubo->animationsNames[2];
-  m_anims[_T("Wave")] = cubo->animationsNames[3];
-
-  std::copy(std::begin(cubo->animationsNames), std::end(cubo->animationsNames), std::begin(m_playerAnims));
-
-  for (auto& p : cubo->animationsNames) {
-    auto animA = ResourceManager::getReferenceT<Animation>(p);
-    animA->setTicksPerSecond(4500.f);
-    comp->addAnimation(animA, animA->getName());
-  }
+  spidey->createComponent<SpiderBehavior>();
   
-  comp->setCurrentAnimation(cubo->animationsNames[0], false);
-  
-  for (Int32 i = 0; i < 0; ++i) {
+  spidey->setParent(SceneGraph::createObject(_T("Spiders")));
+
+  m_player = spidey.get();
+
+  auto spiderAI = spidey->createInstance();
+
+  *spiderAI = *spidey;
+
+  spidey->createComponent<SpiderPlayer>();
+
+  spiderAI->createComponent<SpiderAI>();
+
+  const auto nSpiders = 59;
+
+  for (Int32 i = 0; i < nSpiders; ++i) {
+
     auto clon = std::make_shared<GameObject>();
-    *clon = *cuboObj;
-    auto animCmp = clon->getComponent<AnimatorComponent>();
+    
+    *clon = *spiderAI;
     Int32 res = rand() % 4;
-    animCmp->setCurrentAnimation(cubo->animationsNames[res], false);
     float x = ((rand() % 5000) - 2500) * 1.f;
     float z = ((rand() % 5000) - 2500) * 1.f;
     
     float time = rand() % 400 * 1.f;
     clon->getTransform().setPosition({x, 0, z});
+    
+    auto animCmp = clon->getComponent<AnimatorComponent>();
     animCmp->setTime(time);
   }
+
+  /*auto cubo = ResourceManager::getReferenceT<Model>(_T("Unidad_1m.fbx"));
+  //auto cubo = ResourceManager::getReferenceT<Model>(_T("tiny_4anim.x"));
+
+  //auto cuboObj = addObjectFromModel(cubo, _T("CUBIN"));
+
+  //cuboObj->getTransform().setScale({0.4f, 0.4f, 0.4f});
+  ////cuboObj->getTransform().move({0, 0, 0});
+  //cuboObj->getTransform().rotate({Degree(90).toRadian(), Degree(180).toRadian(), 0});
+
+  //auto animSk = ResourceManager::getReferenceT<Skeleton>(cubo->skeletonName);
+
+  //auto comp = cuboObj->createComponent<AnimatorComponent>();
+
+  //comp->setBlendDuration(0.5f);
+
+  //comp->setSkeleton(animSk);
+
+  //m_anims[_T("Idle")] = cubo->animationsNames[0];
+  //m_anims[_T("Walk")] = cubo->animationsNames[1];
+  //m_anims[_T("Run")] = cubo->animationsNames[2];
+  //m_anims[_T("Wave")] = cubo->animationsNames[3];
+
+  //std::copy(std::begin(cubo->animationsNames), std::end(cubo->animationsNames), std::begin(m_playerAnims));
+
+  //for (auto& p : cubo->animationsNames) {
+  //  auto animA = ResourceManager::getReferenceT<Animation>(p);
+  //  animA->setTicksPerSecond(4500.f);
+  //  comp->addAnimation(animA, animA->getName());
+  //}
+  //
+  //comp->setCurrentAnimation(cubo->animationsNames[0], false);
+   
 
   /*auto terr = ResourceManager::getReferenceT<Model>(_T("nanosuit.obj"));
 
@@ -436,114 +435,110 @@ GraphicsApplication::createScene() {
 
   terrainObj->getTransform().setPosition({0, 0, 550});
 
-  terrainObj->getTransform().setScale({10, 10, 10});*/
+  terrainObj->getTransform().setScale({10, 10, 10});
 
  
-  auto womanNode = addObject(_T("LE Morrita"), _T("Run.fbx"), true);
+  //auto womanNode = addObject(_T("LE Morrita"), _T("Run.fbx"), true);
 
-  womanNode->getTransform().setPosition({-500.f, 0, 200.f});
+  //womanNode->getTransform().setPosition({-500.f, 0, 200.f});
 
-  womanNode->getTransform().setScale({10.f, 10.f, 10.f});
+  //womanNode->getTransform().setScale({10.f, 10.f, 10.f});
  
-  
-  auto printComponents = [](GameObject* go) 
-  {
-    auto cmps = go->getComponents<GameComponent>();
-    Logger::addLog(_T("----------------"));
-    for (auto& cmp : cmps) {
-      Logger::addLog(cmp->getName());
-    }
-    Logger::addLog(_T("----------------"));
-  };
+  //
+  //auto printComponents = [](GameObject* go) 
+  //{
+  //  auto cmps = go->getComponents<GameComponent>();
+  //  Logger::addLog(_T("----------------"));
+  //  for (auto& cmp : cmps) {
+  //    Logger::addLog(cmp->getName());
+  //  }
+  //  Logger::addLog(_T("----------------"));
+  //};
 
-  /*auto sc = ResourceManager::getReferenceT<ScriptCore>(_T("script1.as"));
+  ///*auto sc = ResourceManager::getReferenceT<ScriptCore>(_T("script1.as"));
 
-  auto scomp = womanNode->createComponent<ScriptComponent>(sc);
+  //auto scomp = womanNode->createComponent<ScriptComponent>(sc);
 
-  auto currentModule = ScriptEngine::instancePtr()->m_scriptEngine->GetModule("GameModule");
-  
-  auto result = currentModule->Build(); 
+  //auto currentModule = ScriptEngine::instancePtr()->m_scriptEngine->GetModule("GameModule");
+  //
+  //auto result = currentModule->Build(); 
 
-  scomp->initScript();
+  //scomp->initScript();
 
-  scomp->start();*/
-  
-  auto walkerModel = ResourceManager::getReferenceT<Model>(_T("Gunplay.fbx"));
+  //scomp->start();
+  //auto walkerModel = ResourceManager::getReferenceT<Model>(_T("Gunplay.fbx"));
 
-  if (!walkerModel)
-    return;
+  //if (!walkerModel)
+  //  return;
 
-  auto ws = ResourceManager::getReferenceT<Skeleton>(walkerModel->skeletonName);
-  
-  auto walkerObj = addObjectFromModel(walkerModel, _T("LE Walker"));
+  //auto ws = ResourceManager::getReferenceT<Skeleton>(walkerModel->skeletonName);
+  //
+  //auto walkerObj = addObjectFromModel(walkerModel, _T("LE Walker"));
 
-  auto animator = walkerObj->createComponent<AnimatorComponent>();
+  //auto animator = walkerObj->createComponent<AnimatorComponent>();
 
-  animator->setSkeleton(ws);
+  //animator->setSkeleton(ws);
 
-  for (Int32 i = 0; i < (sizeof(m_animationsNames) / sizeof(TString)); ++i)
-  {
-    auto wa = ResourceManager::getReferenceT<Animation>(m_animationsNames[i]);
-    
-    animator->addAnimation(wa, m_animationsNames[i]);
-  }
+  //for (Int32 i = 0; i < (sizeof(m_animationsNames) / sizeof(TString)); ++i)
+  //{
+  //  auto wa = ResourceManager::getReferenceT<Animation>(m_animationsNames[i]);
+  //  
+  //  animator->addAnimation(wa, m_animationsNames[i]);
+  //}
 
-  animator->setCurrentAnimation(m_animationsNames[m_currAnim], false);
-  
-  animator->setBlendDuration(1.f);
-  
-  //walkerObj->removeComponent<AnimatorComponent>();
+  //animator->setCurrentAnimation(m_animationsNames[m_currAnim], false);
+  //
+  //animator->setBlendDuration(1.f);
+  //
+  ////walkerObj->removeComponent<AnimatorComponent>();
 
-  walkerObj->getTransform().setPosition({300, 0, 450});
+  //walkerObj->getTransform().setPosition({300, 0, 450});
 
-  auto clone1 = walkerObj->createInstance();
-  *clone1 = *walkerObj;
+  //auto clone1 = walkerObj->createInstance();
+  //*clone1 = *walkerObj;
 
-  clone1->getTransform().setPosition({150, 0, 300});
+  //clone1->getTransform().setPosition({150, 0, 300});
 
-  clone1->setName(_T("LE Walker 2"));
+  //clone1->setName(_T("LE Walker 2"));
 
-  auto clone2 = walkerObj->createInstance();
-  *clone2 = *walkerObj;
+  //auto clone2 = walkerObj->createInstance();
+  //*clone2 = *walkerObj;
 
-  clone2->getTransform().setPosition({450, 0, 150});
+  //clone2->getTransform().setPosition({450, 0, 150});
 
-  clone2->setName(_T("LE Walker 3"));
-  //walkerObj->getTransform().setScale({10.f, 10.f, 10.f});
-    
-  m_right = walkerObj.get();
+  //clone2->setName(_T("LE Walker 3"));
+  ////walkerObj->getTransform().setScale({10.f, 10.f, 10.f});
+  //  
+  //m_right = walkerObj.get();
 
-  Int32 copies = 0;
+  //Int32 copies = 0;
 
-  std::mt19937 mt(std::random_device{}());
-  std::uniform_real_distribution<float> dt(-2000, 2000);
-  std::uniform_real_distribution<float> dt_A(10, 50);
+  //std::mt19937 mt(std::random_device{}());
+  //std::uniform_real_distribution<float> dt(-2000, 2000);
+  //std::uniform_real_distribution<float> dt_A(10, 50);
 
-  for (Int32 i = 0; i < copies; ++i) {
-    auto c = walkerObj->createInstance();
-    *c = *walkerObj;
-    c->getTransform().setPosition({dt(mt), 0, dt(mt)});
-    c->getComponent<AnimatorComponent>()->setTime(dt_A(mt));
-  }
+  //for (Int32 i = 0; i < copies; ++i) {
+  //  auto c = walkerObj->createInstance();
+  //  *c = *walkerObj;
+  //  c->getTransform().setPosition({dt(mt), 0, dt(mt)});
+  //  c->getComponent<AnimatorComponent>()->setTime(dt_A(mt));
+  //}
 
-  auto copy = walkerObj->createInstance();
-  *copy = *walkerObj;
+  //auto copy = walkerObj->createInstance();
+  //*copy = *walkerObj;
 
-  copy->getTransform().move(-300, AXIS::kX);
-  copy->getTransform().setPosition(50, AXIS::kX);
-  copy->setName(_T("Player"));
+  //copy->getTransform().move(-300, AXIS::kX);
+  //copy->getTransform().setPosition(50, AXIS::kX);
+  //copy->setName(_T("Player"));
 
-  auto sphereMod = ResourceManager::getReferenceT<Model>(_T("Sphere.fbx"));
+  //auto sphereMod = ResourceManager::getReferenceT<Model>(_T("Sphere.fbx"));*/
 
   auto sphereCenter = SceneGraph::createObject(_T("Spherin"));
 
   sphereCenter->getTransform().scale({20, 20, 20});
   
   m_cameraHolder = sphereCenter.get();
-  
-  m_player = copy.get();
-  m_player = cuboObj.get();
-  
+    
   auto camNode = SceneGraph::createObject(_T("Camera"));
   
   auto activeCam = CameraManager::getActiveCamera();
@@ -831,29 +826,7 @@ GraphicsApplication::playerMovement() {
   }  
 
   static TString current = _T("Idle");
-
-  auto anim = m_player->getComponent<AnimatorComponent>();
-  //auto currAnim = anim->getCurrentAnimation()->getName();
-
-  if (Math::abs(strafe) < Math::EPSILON && Math::abs(forward) < Math::EPSILON)  {
-    if (current != _T("Idle")) {
-      current = _T("Idle");
-      m_player->getComponent<AnimatorComponent>()->blendAnimation(m_anims[_T("Idle")], true);
-    }
-  }
-  else {
-
-    if (velocity > 250.f && current != _T("Run")) {
-      current = _T("Run");
-      m_player->getComponent<AnimatorComponent>()->blendAnimation(m_anims[_T("Run")], true);
-    }
-    else if (current != _T("Walk") && velocity < 249.f){
-      current = _T("Walk");
-      m_player->getComponent<AnimatorComponent>()->blendAnimation(m_anims[_T("Walk")], true);
-    }
-
-  }
-  
+      
   auto movement = (direction * forward + left * strafe) * Time::getDelta();
 
   m_player->getTransform().move(movement);
@@ -886,7 +859,7 @@ GraphicsApplication::playerRotation() {
   rx = Math::clamp(rx + dy, -cx, cx);
  
   m_cameraHolder->getTransform().setRotation({rx, ry, 0});
-  m_player->getTransform().setRotation({Math::HALF_PI, ry + Math::PI, 0});
+  m_player->getTransform().setRotation({0, ry + Math::PI, 0});
 }
 
 

@@ -1,6 +1,10 @@
 #include "SpiderBehavior.h"
 
+#include <dr_animator_component.h>
+#include <dr_model.h>
+#include <dr_render_component.h>
 #include <dr_gameObject.h>
+
 
 namespace driderSDK {
 
@@ -10,18 +14,23 @@ SpiderBehavior::SpiderBehavior(GameObject& _gameObject)
 
 void
 SpiderBehavior::onCreate() {
+  m_model = m_gameObject.getComponent<RenderComponent>()->getModel();
+  //m_currentAnim = Animations::Atack;
 }
 
 void 
 SpiderBehavior::onUpdate() {
+ 
 }
 
 void 
 SpiderBehavior::onRender() {
+
 }
 
 void 
 SpiderBehavior::onDestroy() {
+
 }
 
 GameComponent*
@@ -29,9 +38,26 @@ SpiderBehavior::cloneIn(GameObject& _go) {
 
   auto comp = _go.createComponent<SpiderBehavior>();
  
-  comp->m_state = m_state;
+  //comp->m_currentAnim = m_currentAnim;
+  comp->m_model = m_model;
 
   return comp;
+}
+
+void 
+SpiderBehavior::setAnimation(Animations anim, bool blend, bool copyElapsed) {
+  
+  auto model = m_model.lock();
+  auto comp = m_gameObject.getComponent<AnimatorComponent>();
+  
+  if (comp && model && anim < model->animationsNames.size()) {
+    if (blend) {
+      comp->blendAnimation(model->animationsNames[anim], copyElapsed);
+    }
+    else {
+      comp->setCurrentAnimation(model->animationsNames[anim], copyElapsed);
+    }
+  }
 }
 
 }

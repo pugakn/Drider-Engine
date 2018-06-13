@@ -72,6 +72,13 @@ SceneGraph::getOctree()
   return instance().m_octree;
 }
 
+void 
+SceneGraph::start() {
+  
+  instance().m_root->start();
+
+}
+
 void
 SceneGraph::update() {
 

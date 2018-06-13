@@ -9,7 +9,8 @@
 namespace driderSDK {
 GameComponent::GameComponent(GameObject& gameObject_, const TString& _name) 
   : NameObject(gameObject_.getValidName(_name)), 
-    m_gameObject(gameObject_)
+    m_gameObject(gameObject_),
+    m_isKilled(false)
 {}
 
 GameComponent::~GameComponent() {
@@ -27,6 +28,16 @@ GameComponent::getGameObject() {
 void
 GameComponent::setName(const TString& name) {
   setName(m_gameObject.getValidName(name));
+}
+
+void 
+GameComponent::kill() {
+  m_isKilled = true;
+}
+
+bool 
+GameComponent::isKilled() const {
+  return m_isKilled;
 }
 
 }
