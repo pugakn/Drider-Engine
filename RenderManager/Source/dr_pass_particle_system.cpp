@@ -32,14 +32,6 @@ ParticleSystemPass::init(PassInitData* initData) {
   bdesc.sizeInBytes = sizeof(CBuff);
   m_constantBuffer = dr_gfx_unique((ConstantBuffer*)device.createBuffer(bdesc));
 
-  auto ls = m_inputLayout->getDescriptor();
-  m_inputLayoutInstance = dr_gfx_unique(device.createInputLayout(ls, *m_vertexShader->m_shaderBytecode));
-
-  DrBufferDesc bdescInstance;
-  bdescInstance.type = DR_BUFFER_TYPE::kVERTEX;
-  bdescInstance.sizeInBytes = (sizeof(Matrix4x4) + sizeof(Vector4D)) * ParticleEmitter::MAX_PARTICLES;
-  bdescInstance.stride = (sizeof(Matrix4x4) + sizeof(Vector4D));
-  m_instanceBuffer = dr_gfx_unique((VertexBuffer*)device.createBuffer(bdescInstance));
 
   m_vertex[0] = { -1.f,  1.f, 1.f, 1.0f, };
   m_vertex[1] = { -1.f, -1.f, 1.f, 1.0f, };
@@ -53,6 +45,7 @@ ParticleSystemPass::init(PassInitData* initData) {
   m_index[4] = 3;
   m_index[5] = 2;
 
+  DrBufferDesc bdescInstance;
   bdescInstance.type = DR_BUFFER_TYPE::kVERTEX;
   bdescInstance.sizeInBytes = sizeof(Vector4D) * 4 ;
   bdescInstance.stride = sizeof(Vector4D);
@@ -72,7 +65,7 @@ ParticleSystemPass::draw(PassDrawData* drawData) {
   //data->OutRt->set(dc, *data->dsOptions);
   m_vertexShader->set(dc);
   m_fragmentShader->set(dc);
-  m_inputLayoutInstance->set(dc);
+  m_inputLayout->set(dc);
   //const float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
   //data->OutRt->clear(dc, clearColor);
   //(data->dsOptions)->clear(dc, 1, 0);

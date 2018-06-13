@@ -25,7 +25,7 @@ RenderPass::recompileShader() {
 
   Device& device = GraphicsAPI::getDevice();
   
-  driderSDK::File file;
+  File file;
   String shaderSource;
 
   file.Open(m_vsFilename);

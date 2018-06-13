@@ -2,6 +2,9 @@
 #include "dr_renderman_prerequisites.h"
 #include "dr_renderpass.h"
 #include "dr_light.h"
+
+#include <dr_texture_core.h>
+#include <dr_texture.h>
 #include <dr_sample_state.h>
 #include <dr_camera.h>
 
@@ -25,6 +28,8 @@ struct LightningDrawData : PassDrawData {
   GFXShared<RenderTarget> SSAORT;
   GFXShared<RenderTarget> ShadowRT;
   GFXShared<RenderTarget> OutRt;
+  GFXShared<TextureCore> EnviromentCubemap;
+  GFXShared<TextureCore> IrradianceCubemap;
   GFXShared<DepthStencil> dsOptions;
 };
 
@@ -71,6 +76,7 @@ class LightningPass : public RenderPass {
   CBuffer CB;
 
   GFXUnique<SamplerState> m_samplerState;
+  GFXUnique<SamplerState> m_samplerStateCubemap;
 };
 
 }

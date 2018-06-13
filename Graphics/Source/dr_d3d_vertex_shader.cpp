@@ -55,18 +55,24 @@ D3DVertexShader::compile(const Device&,
                          size_t bufferSize) {
   m_shaderBytecode = new D3DShaderBytecode();
   ID3DBlob* errorBlob = nullptr;
-  auto pp = D3DCompile(buffer,
-                       bufferSize,
-                       0,
-                       0,
-                       0,
-                       "VS",
-                       "vs_5_0",
-                       0,
-                       0,
-                       &reinterpret_cast<D3DShaderBytecode*>
-                         (m_shaderBytecode)->shader_blob,
-                       &errorBlob);
+
+  UInt32 flags = D3DCOMPILE_ENABLE_STRICTNESS;
+#if DR_DEBUG_MODE
+  flags |= D3DCOMPILE_DEBUG;
+#endif
+
+  HRESULT pp = D3DCompile(buffer,
+                          bufferSize,
+                          0,
+                          0,
+                          0,
+                          "VS",
+                          "vs_5_0",
+                          flags,
+                          0,
+                          &reinterpret_cast<D3DShaderBytecode*>
+                            (m_shaderBytecode)->shader_blob,
+                          &errorBlob);
   if (errorBlob) {
     std::cout << (char*)errorBlob->GetBufferPointer() << std::endl;
     errorBlob->Release();
