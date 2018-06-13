@@ -1,5 +1,6 @@
 
 #include <array>
+#include <map>
 
 #include <dr_application.h>
 #include <dr_light.h>
@@ -77,6 +78,9 @@ private:
   toggleAnimation();
 
   void 
+  speedAnim(float val);
+
+  void 
   toggleCamera();
 
   void
@@ -87,7 +91,7 @@ private:
 
   void
   playerRotation();
-
+  
   std::unique_ptr<Technique> m_animTech;
   std::unique_ptr<Technique> m_staticTech;
   std::unique_ptr<Technique> m_linesTech;
@@ -96,6 +100,9 @@ private:
   Int32 m_currAnim;
   TString m_camNames[2];
   TString m_animationsNames[4];
+  TString m_playerAnims[4];
+
+  std::map<TString, TString> m_anims;
 
   bool m_lockView;
   bool m_drawMeshes;

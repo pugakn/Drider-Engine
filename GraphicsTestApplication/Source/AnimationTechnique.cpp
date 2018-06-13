@@ -24,13 +24,13 @@ AnimationTechnique::compile() {
 
   File file;
 
-  file.Open(_T("vs.hlsl"));
+  file.Open(_T("Resources\\Shaders\\anim_vs.hlsl"));
 
   String vertexSrc = StringUtils::toString(file.GetAsString(file.Size()));
   
   file.Close();
 
-  file.Open(_T("fs.hlsl"));
+  file.Open(_T("Resources\\Shaders\\anim_fs.hlsl"));
 
   String fragmentSrc = StringUtils::toString(file.GetAsString(file.Size()));
 
