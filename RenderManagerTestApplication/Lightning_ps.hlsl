@@ -119,7 +119,7 @@ FS(PS_INPUT input) {
 
   float3 finalColor = float3(0.0f, 0.0f, 0.0f);
   
-  //Lightning Stuff
+  //////////Lightning//////////
   float3 lightPosition,
          lightColor;
   float  lightRange,
@@ -171,6 +171,7 @@ FS(PS_INPUT input) {
     finalColor += (DiffAcc + SpecAcc) * (NdotL * LightPower);
   };
   
+  //////////IBL//////////
   const float3 reflectVector = reflect(-ViewDir, normal);
   const float mipIndex = alpha * 0.8f;
 
@@ -179,7 +180,7 @@ FS(PS_INPUT input) {
   
   const float3 IBL = (specularPBR * envColor) + (diffusePBR * Irradiance);
   
-  //Shadow Stuff
+  //////////Shadow//////////
   float ShadowValue = 1.0f;
   static const float CascadeLerp = ShadowInfo[2];
   
@@ -207,11 +208,12 @@ FS(PS_INPUT input) {
     #endif //CASCADE_BLUR
   #elif defined(MAP_BASED_SELECTION)
     float4 fComparison;
-
-    fComparison[0] = insideBounds(mul(kShadowVP[0], position)) * 4;
-    fComparison[1] = insideBounds(mul(kShadowVP[1], position)) * 3;
-    fComparison[2] = insideBounds(mul(kShadowVP[2], position)) * 2;
-    fComparison[3] = insideBounds(mul(kShadowVP[3], position)) * 1;
+    
+    static const int activatedCacades = ShadowInfo[0];
+    fComparison[0] = insideBounds(mul(kShadowVP[0], position)) * 4 * (0 < activatedCacades);
+    fComparison[1] = insideBounds(mul(kShadowVP[1], position)) * 3 * (1 < activatedCacades);
+    fComparison[2] = insideBounds(mul(kShadowVP[2], position)) * 2 * (2 < activatedCacades);
+    fComparison[3] = insideBounds(mul(kShadowVP[3], position)) * 1 * (3 < activatedCacades);
 
     iCurrentCascadeIndex = fComparison[0];
     iCurrentCascadeIndex = max(fComparison[1], iCurrentCascadeIndex);
@@ -257,6 +259,10 @@ FS(PS_INPUT input) {
   //psOut.Lightning = float4(ShadowTex.Sample(SS, uv).yyy, 1.0f);
   //psOut.Lightning = float4(ShadowTex.Sample(SS, uv).zzz, 1.0f);
   //psOut.Lightning = float4(ShadowTex.Sample(SS, uv).www, 1.0f);
+  //if (iCurrentCascadeIndex == 0) psOut.Lightning = float4(1, 0, 0, 1);
+  //if (iCurrentCascadeIndex == 1) psOut.Lightning = float4(0, 1, 0, 1);
+  //if (iCurrentCascadeIndex == 2) psOut.Lightning = float4(0, 0, 1, 1);
+  //if (iCurrentCascadeIndex == 3) psOut.Lightning = float4(1, 1, 1, 1);
  
   return psOut;
 }

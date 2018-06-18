@@ -41,8 +41,8 @@ RenderMan::init() {
   screenWidth = 1280;
   screenHeight = 720;
 
-  shadowWidth = 1024 * 3;
-  shadowHeight = 1024 * 3;
+  shadowWidth = 1024;
+  shadowHeight = 1024;
 
   //////////Shadows stuff//////////
   std::shared_ptr<Camera> mainCam = CameraManager::getActiveCamera();
@@ -52,7 +52,7 @@ RenderMan::init() {
   float fFarPlane = mainCam->getFarPlane();
   float fFov = mainCam->getFOV();
 
-  m_szActiveShadowCameras = 4;
+  m_szActiveShadowCameras = Math::max(4, 4);
 
   m_fMinDepth = 0.1f;
   m_fMaxDepth = 10000.0f;
@@ -162,8 +162,8 @@ RenderMan::init() {
   commonTextureDesc.height = screenHeight;
   m_GBufferDSoptions        = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
 
-  commonTextureDesc.width = screenWidth * 0.5;
-  commonTextureDesc.height = screenHeight * 0.5;
+  commonTextureDesc.width = screenWidth * 0.5f;
+  commonTextureDesc.height = screenHeight * 0.5f;
   m_SSAODSoptions           = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
   m_HorBlurDSoptions        = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
   m_VerBlurDSoptions        = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
@@ -246,8 +246,6 @@ RenderMan::init() {
 
 void
 RenderMan::draw(const RenderTarget& _out, const DepthStencil& _outds) {
-
-  //*
   updateShadowCameras();
 
   auto mainCam = CameraManager::getActiveCamera();

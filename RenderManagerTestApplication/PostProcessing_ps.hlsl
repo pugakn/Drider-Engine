@@ -2,11 +2,10 @@ Texture2D PositionLDepthTex : register(t0);
 Texture2D ColorTex          : register(t1);
 Texture2D ColorBlurTex      : register(t2);
 Texture2D NormCoC           : register(t3);
-//Texture2D GodRays           : register(t3);
-//sampler2D ColorSampler;
-//sampler2D LuminescenceSampler;
-//sampler2D BloomSampler;
-//sampler2D FilmLutSampler;
+//Texture2D GodRays           : register(tn);
+//Texture2D LuminescenceTex   : register(tn);
+//Texture2D BloomTex          : register(tn);
+//Texture2D FilmLutTex        : register(tn);
 
 SamplerState SS;
 
@@ -24,17 +23,10 @@ struct PS_INPUT {
 #define CHROMATIC_ABERRATION
 #define DEPTH_OF_FIELD
 #define VIGNETTE
-//#define TONE_MAPPING
+#define BLOOM
+#define TONE_MAPPING
 
-static const float kExposure;
-
-static const float A = 0.15f;
-static const float B = 0.50f;
-static const float C = 0.10f;
-static const float D = 0.20f;
-static const float E = 0.02f;
-static const float F = 0.30f;
-static const float W = 11.2f;
+static const float kExposure = 1.0f;
 
 float4
 BasicExposure(in float3 Color, in float exposure) {
@@ -87,19 +79,28 @@ float4
 Burgeos_Dawson(in float3 Color, float exposure) {
   float3 texColor = Color;
   texColor *= exposure;
-  float3 x = max(0.0f, texColor - 0.004f);
-  float3 retColor = (x * (6.2f * x + 0.5f)) / ( x * (6.2f * x * 1.7f) + 0.06f);
+  float3 x = max((0.0f).xxx, texColor - (0.004f).xxx);
+  float3 retColor = (x * (6.2f * x + (0.5f).xxx)) / (x * (6.2f * x * 1.7f) + (0.06f).xxx);
   
   return float4(retColor, 1.0f);
 }
 
 float3
 Uncharted2Tonemap(float3 r) {
+  static const float A = 0.15f;
+  static const float B = 0.50f;
+  static const float C = 0.10f;
+  static const float D = 0.20f;
+  static const float E = 0.02f;
+  static const float F = 0.30f;
+
   return ((r * (A * r + B * C) + D * E) / (r * (A * r + B) + D * F)) - E/F;
 }
 
 float4
 Uncharted2(in float3 Color, in float exposure) {
+  static const float W = 11.2f;
+
   float3 texColor = Color;
   texColor *= exposure;
   
@@ -114,7 +115,7 @@ Uncharted2(in float3 Color, in float exposure) {
 }
 
 float4
- FS(PS_INPUT input) : SV_TARGET0 {
+FS(PS_INPUT input) : SV_TARGET0 {
   const float2 uv = input.Texcoord;
   float4 Color;
   float4 ColorBlur;
@@ -186,6 +187,16 @@ float4
   #else
   finalColor = Color;
   #endif //DEPTH_OF_FIELD
+
+  #ifdef BLOOM
+  #endif //BLOOM
+
+  #ifdef TONE_MAPPING
+  //finalColor = BasicExposure(finalColor, kExposure);
+  finalColor = Reinhard(finalColor, kExposure);
+  //finalColor = Burgeos_Dawson(finalColor, kExposure); //Caca
+  //finalColor = Uncharted2(finalColor, kExposure);
+  #endif //TONE_MAPPING
 
   #ifdef VIGNETTE
   finalColor *= vignette;

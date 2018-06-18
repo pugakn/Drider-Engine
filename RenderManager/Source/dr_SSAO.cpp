@@ -49,6 +49,7 @@ SSAOPass::draw(PassDrawData* drawData) {
 
   data->OutRt->getTexture(0).setTextureNull(dc);
   data->OutRt->setRTNull(dc);
+
   data->OutRt->set(dc, *data->dsOptions);
 
   m_vertexShader->set(dc);

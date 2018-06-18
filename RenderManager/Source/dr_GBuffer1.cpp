@@ -116,9 +116,9 @@ GBufferPass::draw(PassDrawData* drawData) {
     auto Bones = modelPair.bones;
     if (Bones != nullptr) {
       Int32 maxBones = modelPair.bones->size();
-      for (SizeT index = 0; index < maxBones; ++index) {
-        CB.Bones[index] = (*modelPair.bones)[index];
-      }
+      std::memcpy(&CB.Bones[0],
+                  &(*modelPair.bones)[0],
+                   sizeof(Matrix4x4) * maxBones);
     }
   
     m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));

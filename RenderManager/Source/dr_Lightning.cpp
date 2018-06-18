@@ -67,7 +67,7 @@ LightningPass::draw(PassDrawData* drawData) {
     CB.LightColor[lighIndex] = (*data->Lights)[lighIndex].m_vec4Color;
   }
 
-  for (SizeT i = 0; i < 4; ++i) {
+  for (SizeT i = 0; i < data->ActivatedShadowCascades; ++i) {
     CB.ShadowCameraVP[i] = (*data->ShadowCameras)[i]->getVP();
     CB.ShadowSliptDepth[i] = data->ShadowSliptDepths[i + 1];
   }
