@@ -48,6 +48,7 @@ GBufferPass::draw(PassDrawData* drawData) {
 
   data->OutRt->getTexture(0).setTextureNull(dc);
   data->OutRt->setRTNull(dc);
+
   data->OutRt->set(dc, *data->dsOptions);
   
   m_vertexShader->set(dc);
@@ -56,6 +57,12 @@ GBufferPass::draw(PassDrawData* drawData) {
   m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kFragment);
 
   m_inputLayout->set(dc);
+
+  CB.CameraInfo.x  = data->activeCam->getViewportWidth() /
+                     data->activeCam->getViewportHeight();
+  CB.CameraInfo.y  = data->activeCam->getFOV();
+  CB.CameraInfo.z  = data->activeCam->getNearPlane();
+  CB.CameraInfo.w  = data->activeCam->getFarPlane();
   
   m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
   m_constantBuffer->set(dc);
@@ -65,12 +72,6 @@ GBufferPass::draw(PassDrawData* drawData) {
   const float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
   data->OutRt->clear(dc, clearColor);
   data->dsOptions->clear(dc, 1, 0);
-
-  CB.CameraInfo.x  = data->activeCam->getViewportWidth() /
-                     data->activeCam->getViewportHeight();
-  CB.CameraInfo.y  = data->activeCam->getFOV();
-  CB.CameraInfo.z  = data->activeCam->getNearPlane();
-  CB.CameraInfo.w  = data->activeCam->getFarPlane();
 
   for (auto& modelPair : *data->models) {
     data->OutRt->getTexture(0).setTextureNull(dc);

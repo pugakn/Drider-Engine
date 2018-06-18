@@ -15,7 +15,7 @@ Diffuse_Burley(float NdotL,
                float NdotV,
                float LdotH,
                float roughness) {
-    float fd90 = 0.5f + 2.f * roughness * LdotH * LdotH;
+    float fd90 = 0.5f + 2.0f * roughness * LdotH * LdotH;
     return Fresnel_Shlick((1.0f).xxx, fd90.xxx, NdotL).x * Fresnel_Shlick((1.0f).xxx, fd90.xxx, NdotV).x;
 };
 

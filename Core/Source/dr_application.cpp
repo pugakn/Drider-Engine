@@ -45,28 +45,28 @@ Application::init() {
 }
 void 
 Application::createWindow() {
-
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
     std::cout << "Video initialization failed: " << SDL_GetError() << std::endl;
   }
-    m_window = SDL_CreateWindow("Drider Engine", 
-    SDL_WINDOWPOS_CENTERED, 
-    SDL_WINDOWPOS_CENTERED, 
-    m_viewport.width, 
-    m_viewport.height, 
-    SDL_WINDOW_RESIZABLE);
+
+  m_window = SDL_CreateWindow("Drider Engine", 
+                              SDL_WINDOWPOS_CENTERED, 
+                              SDL_WINDOWPOS_CENTERED, 
+                              m_viewport.width, 
+                              m_viewport.height, 
+                              SDL_WINDOW_RESIZABLE);
 
   if (!m_window) {
     std::cout << "Error creating SDL window " << std::endl;
     exit(666);
   }
 }
+
 void 
-Application::update() {
- 
+Application::update() { 
   SDL_Event event;
 
-  while (SDL_PollEvent(&event)){
+  while (SDL_PollEvent(&event)) {
     if (event.type == SDL_QUIT) {
       m_running = false;
     }
@@ -77,8 +77,6 @@ Application::update() {
         onResize();
       }
     }
-
-
   }
 
   postUpdate();
@@ -95,8 +93,10 @@ Application::destroy() {
   
   postDestroy();
 }
-Application & Application::getApplication()
-{
+
+Application&
+Application::getApplication() {
   return *Application::application;
 }
+
 }

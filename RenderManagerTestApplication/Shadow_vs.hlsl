@@ -16,7 +16,8 @@ struct VS_INPUT {
 
 struct VS_OUTPUT {
   float4 Position : SV_POSITION;
-  float  fDepth   : TEXCOORD0;
+	float2 Texcoord : TEXCOORD0;
+  float  fDepth   : TEXCOORD1;
 };
 
 VS_OUTPUT
@@ -24,9 +25,9 @@ VS(VS_INPUT input) {
   VS_OUTPUT psOut;
 
   float4x4 BoneTransform = (float4x4)0;
-  int activationScale = 0;
-  int activeWeights = 0;
-  int boneIndex = 0;
+  int activationScale = 0,
+      activeWeights = 0,
+      boneIndex = 0;
   
   [unroll]
   for (int i = 0; i < 4; ++i) {
@@ -44,7 +45,7 @@ VS(VS_INPUT input) {
 	float4 vertexTransformed = mul(BoneTransform, input.Position);
   
   psOut.Position = mul(WVP, vertexTransformed);
-  //psOut.fDepth   = mul(WVP, input.Position).z;
+  psOut.Texcoord = input.Texcoord;
   psOut.fDepth   = psOut.Position.z;
   
   return psOut;

@@ -128,38 +128,6 @@ RenderManApp::postInit() {
 
   loadResources();
 
-  m_vecGos.push_back(SceneGraph::createObject(_T("Stormtrooper")));
-  m_selectedGO = m_vecGos.back();   
-  auto ptrStorm = ResourceManager::getReferenceT<Model>(_T("stormtrooper_dancing.fbx"));
-  if (ptrStorm) {
-    auto rComp = m_selectedGO->createComponent<RenderComponent>(ptrStorm);
-    auto aComp = m_selectedGO->createComponent<AnimatorComponent>();
-    m_selectedGO->createComponent<AABBCollider>(ptrStorm->aabb);
-    m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, -50.0f));
-    m_selectedGO->getTransform().setScale(Vector3D(30.0f, 30.0f, 30.0f));
-    m_selectedGO->getTransform().setRotation(Vector3D(00.0f, Math::PI, 00.0f));
-
-    m_StormtrooperMat = ResourceManager::createMaterial(_T("StormtrooperMaterial"));
-
-    auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("Stormtrooper_Diffuse.png"));
-    m_StormtrooperMat->setTexture(albedoTex, _T("Albedo"));
-
-    rComp->getMeshes().front().material = m_StormtrooperMat;
-
-    auto ws = ResourceManager::getReferenceT<Skeleton>(ptrStorm->skeletonName);
-    
-    aComp->setSkeleton(ws);
-
-    for (Int32 i = 0; i < ptrStorm->animationsNames.size(); ++i) {
-      auto wa = ResourceManager::getReferenceT<Animation>(ptrStorm->animationsNames[i]);
-
-      aComp->addAnimation(wa, ptrStorm->animationsNames[i]);
-    }
-
-    aComp->setCurrentAnimation(ptrStorm->animationsNames[0], false, false);
-    aComp->setTime(1.0f);
-  }
-
   m_vecGos.push_back(SceneGraph::createObject(_T("Floor")));
   m_selectedGO = m_vecGos.back();
   auto ptrFloor = ResourceManager::getReferenceT<Model>(_T("plane.fbx"));
@@ -201,6 +169,24 @@ RenderManApp::postInit() {
     auto renderComp = m_selectedGO->getComponent<RenderComponent>();
     renderComp->getMeshes().front().material = m_floorMat;
   }
+  
+  m_vecGos.push_back(SceneGraph::createObject(_T("Bush")));
+  m_selectedGO = m_vecGos.back();
+  auto ptrBs = ResourceManager::getReferenceT<Model>(_T("FernBush.obj"));
+  if (ptrBs) {
+    auto renderComp = m_selectedGO->createComponent<RenderComponent>(ptrBs);
+    m_selectedGO->createComponent<AABBCollider>(ptrBs->aabb);
+    m_selectedGO->getTransform().setPosition(Vector3D(110.0f, 0.0f, 110.0f));
+    m_selectedGO->getTransform().setScale(Vector3D(0.05f, 0.05f, 0.05f));
+
+    m_BushMat = ResourceManager::createMaterial(_T("BushMaterial"));
+
+    auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("FernTarga.tga"));
+    m_BushMat->setTexture(albedoTex, _T("Albedo"));
+
+    std::vector<RenderMesh>& meshes = renderComp->getMeshes();
+    meshes.front().material = m_BushMat;
+  }
 
   m_vecGos.push_back(SceneGraph::createObject(_T("Model")));
   m_selectedGO = m_vecGos.back();
@@ -227,6 +213,38 @@ RenderManApp::postInit() {
 
     auto rComp = m_selectedGO->getComponent<RenderComponent>();
     rComp->getMeshes().front().material = m_modelMat;
+  }
+
+  m_vecGos.push_back(SceneGraph::createObject(_T("Stormtrooper")));
+  m_selectedGO = m_vecGos.back();   
+  auto ptrStorm = ResourceManager::getReferenceT<Model>(_T("stormtrooper_dancing.fbx"));
+  if (ptrStorm) {
+    auto rComp = m_selectedGO->createComponent<RenderComponent>(ptrStorm);
+    auto aComp = m_selectedGO->createComponent<AnimatorComponent>();
+    m_selectedGO->createComponent<AABBCollider>(ptrStorm->aabb);
+    m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, -50.0f));
+    m_selectedGO->getTransform().setScale(Vector3D(30.0f, 30.0f, 30.0f));
+    m_selectedGO->getTransform().setRotation(Vector3D(00.0f, Math::PI, 00.0f));
+
+    m_StormtrooperMat = ResourceManager::createMaterial(_T("StormtrooperMaterial"));
+
+    auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("Stormtrooper_Diffuse.png"));
+    m_StormtrooperMat->setTexture(albedoTex, _T("Albedo"));
+
+    rComp->getMeshes().front().material = m_StormtrooperMat;
+
+    auto ws = ResourceManager::getReferenceT<Skeleton>(ptrStorm->skeletonName);
+    
+    aComp->setSkeleton(ws);
+
+    for (Int32 i = 0; i < ptrStorm->animationsNames.size(); ++i) {
+      auto wa = ResourceManager::getReferenceT<Animation>(ptrStorm->animationsNames[i]);
+
+      aComp->addAnimation(wa, ptrStorm->animationsNames[i]);
+    }
+
+    aComp->setCurrentAnimation(ptrStorm->animationsNames[0], false, false);
+    aComp->setTime(1.0f);
   }
 
   m_vecGos.push_back(SceneGraph::createObject(_T("HatKid")));
@@ -270,7 +288,7 @@ RenderManApp::postInit() {
     meshes[1].material = m_hkBodyMat;
     meshes[2].material = m_hkEyeMat;
   }
-  
+
   /*
   m_vecGos.push_back(SceneGraph::createObject(_T("SkySphere")));
   m_selectedGO = m_vecGos.back();
@@ -401,13 +419,13 @@ void
 RenderManApp::SelectModel(Int32 jump) {
   m_SzTGosIndex += jump;
 
+  m_bRotate = false;
+
   if (m_SzTGosIndex < 0) {
     m_SzTGosIndex = m_vecGos.size() - 1;
-    m_bRotate = false;
   }
   else if (m_SzTGosIndex >= m_vecGos.size()) {
     m_SzTGosIndex = 0;
-    m_bRotate = false;
   }
 
   m_selectedGO = m_vecGos[m_SzTGosIndex];
@@ -415,36 +433,11 @@ RenderManApp::SelectModel(Int32 jump) {
 
 void
 RenderManApp::loadResources() {
-  ResourceManager::loadResource(_T("SkySphere100.fbx"));
-  ResourceManager::loadResource(_T("Checker.fbx"));
-  ResourceManager::loadResource(_T("Sphere.fbx"));
   ResourceManager::loadResource(_T("plane.fbx"));
-  ResourceManager::loadResource(_T("HK_Teen.fbx"));
+  ResourceManager::loadResource(_T("FernBush.obj"));
   ResourceManager::loadResource(_T("model.dae"));
-  ResourceManager::loadResource(_T("StreetArt.fbx"));
   ResourceManager::loadResource(_T("stormtrooper_dancing.fbx"));
-
-  ResourceManager::loadResource(_T("SA_basecolor.tga"));
-  ResourceManager::loadResource(_T("SA_normal.tga"));
-  ResourceManager::loadResource(_T("SA_roughness.tga"));
-
-  ResourceManager::loadResource(_T("Stormtrooper_Diffuse.png"));
-
-  ResourceManager::loadResource(_T("default_albedo.tga"));
-  ResourceManager::loadResource(_T("default_emissive.tga"));
-  ResourceManager::loadResource(_T("default_metallic.tga"));
-  ResourceManager::loadResource(_T("default_normal.tga"));
-  ResourceManager::loadResource(_T("default_roughness.tga"));
-
-  ResourceManager::loadResource(_T("hatkid_HK_main_mat_BaseColor.tga"));
-  ResourceManager::loadResource(_T("hatkid_HK_main_mat_Emissive.tga"));
-  ResourceManager::loadResource(_T("hatkid_HK_main_mat_Metallic.tga"));
-  ResourceManager::loadResource(_T("hatkid_HK_main_mat_Roughness.tga"));
-  ResourceManager::loadResource(_T("hatkid_HK_second_mat_BaseColor.tga"));
-  ResourceManager::loadResource(_T("hatkid_HK_second_mat_Metallic.tga"));
-  ResourceManager::loadResource(_T("hatkid_HK_second_mat_Roughness.tga"));
-  ResourceManager::loadResource(_T("HK_eye_dif.tga"));
-  ResourceManager::loadResource(_T("HK_eye_spc.tga"));
+  ResourceManager::loadResource(_T("HK_Teen.fbx"));
 
   ResourceManager::loadResource(_T("256_Checker_Diffuse.tga"));
   ResourceManager::loadResource(_T("256_Checker_Displacement.tga"));
@@ -456,6 +449,26 @@ RenderManApp::loadResources() {
   ResourceManager::loadResource(_T("256_Checker_Specular.tga"));
   ResourceManager::loadResource(_T("256_Checker_SSColor.tga"));
   ResourceManager::loadResource(_T("256_Checker_Thickness.tga"));
+
+  ResourceManager::loadResource(_T("FernTarga.tga"));
+
+  ResourceManager::loadResource(_T("default_albedo.tga"));
+  ResourceManager::loadResource(_T("default_emissive.tga"));
+  ResourceManager::loadResource(_T("default_metallic.tga"));
+  ResourceManager::loadResource(_T("default_normal.tga"));
+  ResourceManager::loadResource(_T("default_roughness.tga"));
+
+  ResourceManager::loadResource(_T("Stormtrooper_Diffuse.png"));
+
+  ResourceManager::loadResource(_T("hatkid_HK_main_mat_BaseColor.tga"));
+  ResourceManager::loadResource(_T("hatkid_HK_main_mat_Emissive.tga"));
+  ResourceManager::loadResource(_T("hatkid_HK_main_mat_Metallic.tga"));
+  ResourceManager::loadResource(_T("hatkid_HK_main_mat_Roughness.tga"));
+  ResourceManager::loadResource(_T("hatkid_HK_second_mat_BaseColor.tga"));
+  ResourceManager::loadResource(_T("hatkid_HK_second_mat_Metallic.tga"));
+  ResourceManager::loadResource(_T("hatkid_HK_second_mat_Roughness.tga"));
+  ResourceManager::loadResource(_T("HK_eye_dif.tga"));
+  ResourceManager::loadResource(_T("HK_eye_spc.tga"));
 }
 
 }

@@ -7,6 +7,7 @@
 #include <dr_depth_stencil.h>
 #include <dr_model.h>
 #include <dr_resource_manager.h>
+#include <dr_texture_core.h>
 
 namespace driderSDK {
 
@@ -19,7 +20,7 @@ ShadowPass::~ShadowPass() {
 void
 ShadowPass::init(PassInitData* initData) {
   ShadowInitData* data = static_cast<ShadowInitData*>(initData);
-  Device& dv = GraphicsAPI::getDevice();
+  Device& dc = GraphicsAPI::getDevice();
 
   m_vsFilename = _T("Shadow_vs.hlsl");
   m_fsFilename = _T("Shadow_ps.hlsl");
@@ -30,7 +31,7 @@ ShadowPass::init(PassInitData* initData) {
 
   bdesc.type = DR_BUFFER_TYPE::kCONSTANT;
   bdesc.sizeInBytes = sizeof(CBuffer);
-  m_constantBuffer = dr_gfx_unique((ConstantBuffer*)dv.createBuffer(bdesc));
+  m_constantBuffer = dr_gfx_unique((ConstantBuffer*)dc.createBuffer(bdesc));
 
   DrSampleDesc SSdesc;
   SSdesc.Filter = DR_TEXTURE_FILTER::kMIN_MAG_LINEAR_MIP_POINT;
@@ -38,7 +39,7 @@ ShadowPass::init(PassInitData* initData) {
   SSdesc.addressU = DR_TEXTURE_ADDRESS::kWrap;
   SSdesc.addressV = DR_TEXTURE_ADDRESS::kWrap;
   SSdesc.addressW = DR_TEXTURE_ADDRESS::kWrap;
-  m_samplerState = dr_gfx_unique(dv.createSamplerState(SSdesc));
+  m_samplerState = dr_gfx_unique(dc.createSamplerState(SSdesc));
 
   /////////////////////////////////////////////////////////////////////////////
   driderSDK::File file;
@@ -48,7 +49,7 @@ ShadowPass::init(PassInitData* initData) {
   shaderSource = StringUtils::toString(file.GetAsString(file.Size()));
   file.Close();
 
-  m_ShaderVMerge = dr_gfx_unique(dv.createShaderFromMemory(shaderSource.data(),
+  m_ShaderVMerge = dr_gfx_unique(dc.createShaderFromMemory(shaderSource.data(),
                                                            shaderSource.size(),
                                                            DR_SHADER_TYPE_FLAG::kVertex));
 
@@ -58,7 +59,7 @@ ShadowPass::init(PassInitData* initData) {
   shaderSource = StringUtils::toString(file.GetAsString(file.Size()));
   file.Close();
 
-  m_ShaderFMerge = dr_gfx_unique(dv.createShaderFromMemory(shaderSource.data(),
+  m_ShaderFMerge = dr_gfx_unique(dc.createShaderFromMemory(shaderSource.data(),
                                                            shaderSource.size(),
                                                            DR_SHADER_TYPE_FLAG::kFragment));
 
@@ -130,6 +131,14 @@ ShadowPass::draw(PassDrawData* drawData) {
   data->dsOptions->clear(dc, 1, 0);
 
   for (auto& modelPair : *data->models) {
+    data->OutRt->getTexture(0).setTextureNull(dc);
+    if (auto material = modelPair.mesh.material.lock()) {
+      if (auto AlbedoTex = material->getProperty(_T("Albedo"))) {
+        if (auto GA_Tex = AlbedoTex->texture.lock()) {
+          GA_Tex->textureGFX->set(dc, 0);
+        }
+      }
+    }
     CB.World = modelPair.world;
     CB.WVP = modelPair.world * (data->shadowCam->getVP());
 

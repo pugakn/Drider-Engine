@@ -242,7 +242,7 @@ FS(PS_INPUT input) {
   
   psOut.Lightning = float4(((finalColor + IBL) * ShadowValue) + emissive, 1.0f);
   psOut.Brightness = float4(brightness(psOut.Lightning.xyz), 1.0f);
-
+  
   //psOut.Lightning = position;
   //psOut.Lightning = float4(depthCam.xxx, 1.0f);
   //psOut.Lightning = float4(normal, 1.0f);

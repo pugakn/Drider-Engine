@@ -58,7 +58,7 @@ class RenderManApp : public Application
   Int32 m_SzTGosIndex;
   bool m_bRotate;
   std::vector<SceneGraph::SharedGameObject> m_vecGos;
-  std::shared_ptr<Material> m_StreetMat;
+  std::shared_ptr<Material> m_BushMat;
   std::shared_ptr<Material> m_StormtrooperMat;
   std::shared_ptr<Material> m_floorMat;
   std::shared_ptr<Material> m_hkBodyMat;

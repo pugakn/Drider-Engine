@@ -34,7 +34,8 @@ FS(PS_INPUT input) {
 
 	float2 uv = input.Texcoord;
 	
-	float4 albedo   = AlbedoTex.Sample(SS, uv);
+	float4 albedo = AlbedoTex.Sample(SS, uv);
+  if (albedo.w < 0.8f) discard;
   float4 emmisive = EmissiveTex.Sample(SS, uv);
   float3 normal = normalize((2.0f * NormalTex.Sample(SS, uv).xyz) - 1.0f);
   normal = normalize(mul(normal, input.TBN));
