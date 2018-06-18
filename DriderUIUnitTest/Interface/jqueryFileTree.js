@@ -111,11 +111,11 @@ function JS_InfoTreeFile( root, datos) {
 }
 
 function CFUIReady(url) {
-  UIReady(url);
+  C_FileTree(url);
 
-  function UIReady () {setTimeout(function(){
+  /*function C_FileTree () {setTimeout(function(){
   JS_InfoTreeFile("Assets","{'items':[{'name':'Models','parent':'Assets/Models','type':'folder'},{'name':'Scripts','parent':'Assets/Scripts','type':'folder'}]}"); }, 1000);
-};
+};*/
 }
 
 CFUIReady("Assets")

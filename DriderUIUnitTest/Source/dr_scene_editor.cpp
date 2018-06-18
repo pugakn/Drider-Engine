@@ -299,18 +299,20 @@ void SceneEditor::loadResources()
 }
 void SceneEditor::initUI()
 {
-
-
-
   webRenderer.Init(m_viewport.width, m_viewport.height, BROWSER_MODE::kHeadless);
   webRenderer.loadURL("file:///F:/projectsVS2017/Drider-Engine/DriderUIUnitTest/Interface/index.html");
 
-  webRenderer.registerJS2CPPFunction(std::make_pair("UIReady", [&](const CefRefPtr<CefListValue>& arguments) {
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_FileTree", [&](const CefRefPtr<CefListValue>& arguments) {
     TString root = arguments->GetString(1);
     updateFolders(webRenderer, root);
-    //UI_UpdateSceneGraph();
     //UI_UpdatePropertySheet(*SceneGraph::getRoot().get());
   }));
+
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_HierarchyUpdate", [&](const CefRefPtr<CefListValue>& arguments) {
+    UI_UpdateSceneGraph();
+  }));
+
+
   webRenderer.registerJS2CPPFunction(std::make_pair("canvasReady", [&](const CefRefPtr<CefListValue>& arguments) {
     
   }));
@@ -490,28 +492,38 @@ void SceneEditor::initUI()
 }
 void SceneEditor::UI_UpdateSceneGraph()
 {
-    webRenderer.executeJSCode(WString(_T("JS_AddSceneGraphNode('")) +
-      _T("ROOT_NODE_X") + TString(_T("','")) + _T("ROOT_NODE_X") +
-      WString(_T("');")));
+    TString nodes = _T("JS_InfoHierarchy(");
+    nodes += _T("\"{'id':1,");
+    nodes += _T("'name':'root',");
+    nodes += _T("'childs': [");
+
   std::function<void(const std::vector<std::shared_ptr<GameObject>>&)> search = 
     [&](const std::vector<std::shared_ptr<GameObject>>& children) {
     for (auto &it : children) {
       auto name = it->getName();
-      auto pName = it->getParent()->getName();
-
-      webRenderer.executeJSCode(WString(_T("JS_AddSceneGraphNode('")) +
-        name + TString(_T("','")) + pName + 
-        WString(_T("');")));
-
+      nodes += _T("{'id':1,");
+      nodes += _T("'name':'") + name + _T("',");
+      nodes += _T("'childs': [");
       auto children2 = it->getChildren();
       search(children2);
+      nodes += _T("},");
+    }
+    if (children.size())
+    {
+      nodes.erase(nodes.length() - 1);
+      nodes += _T("]}");
+    }
+    else
+    {
+      nodes += _T("]");
     }
   };
-
 
   SceneGraph::getRoot()->getName();
   auto children = SceneGraph::getRoot()->getChildren();
   search(children);
+  nodes += _T("\");");
+  webRenderer.executeJSCode(nodes);
 }
 
 void SceneEditor::UI_UpdatePropertySheet(const GameObject& obj)
