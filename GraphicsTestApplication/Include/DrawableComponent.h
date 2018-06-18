@@ -34,7 +34,7 @@ class DrawableComponent : public GameComponent
 
   virtual void 
   onDestroy() override;
-
+  
  protected:
 
   struct MeshBuffers 

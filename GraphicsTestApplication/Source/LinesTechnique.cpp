@@ -15,13 +15,13 @@ LinesTechnique::compile() {
 
   File file;
 
-  file.Open(_T("lines_vs.hlsl"));
+  file.Open(_T("Resources\\Shaders\\lines_vs.hlsl"));
 
   String vertexSrc = StringUtils::toString(file.GetAsString(file.Size()));
   
   file.Close();
 
-  file.Open(_T("lines_fs.hlsl"));
+  file.Open(_T("Resources\\Shaders\\lines_fs.hlsl"));
 
   String fragmentSrc = StringUtils::toString(file.GetAsString(file.Size()));
 

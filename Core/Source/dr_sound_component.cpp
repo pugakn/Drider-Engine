@@ -8,6 +8,8 @@
 
 #include <dr_vector3d.h>
 
+#include "dr_gameObject.h"
+
 namespace driderSDK {
 
 SoundComponent::SoundComponent(GameObject &gameObject_) 
@@ -45,9 +47,9 @@ SoundComponent::onDestroy(){
 
 }
 
-void
+GameComponent*
 SoundComponent::cloneIn(GameObject& _go) {
-
+  return _go.createComponent<SoundComponent>();
 }
 
 void

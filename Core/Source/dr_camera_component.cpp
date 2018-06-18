@@ -54,9 +54,9 @@ void
 CameraComponent::onDestroy() {
 }
 
-void 
-CameraComponent::cloneIn(GameObject&) {
-
+GameComponent* 
+CameraComponent::cloneIn(GameObject& _go) {
+  return _go.createComponent<CameraComponent>();
 }
 
 }

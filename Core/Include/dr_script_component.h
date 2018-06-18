@@ -42,7 +42,7 @@ class DR_CORE_EXPORT ScriptComponent : public GameComponent {
     /**
     * Clones the component inside the given gameObject
     */
-    void
+    GameComponent*
     cloneIn(GameObject& _go) override;
 
     void

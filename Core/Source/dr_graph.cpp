@@ -35,6 +35,8 @@ SceneGraph::onStartUp() {
 void
 SceneGraph::onShutDown() {
   m_root->destroy();
+  m_octree->destroy();
+  m_octree = nullptr;
   m_root = nullptr;
 }
 
@@ -68,6 +70,13 @@ SceneGraph::SharedGameObject
 SceneGraph::getOctree()
 {
   return instance().m_octree;
+}
+
+void 
+SceneGraph::start() {
+  
+  instance().m_root->start();
+
 }
 
 void

@@ -71,10 +71,12 @@ void
 AABBCollider::onDestroy() {
 }
 
-void
+GameComponent*
 AABBCollider::cloneIn(GameObject& _go) {
   auto dup = _go.createComponent<AABBCollider>(m_originalAABB);
+  dup->m_originalAABB = m_originalAABB;
   dup->m_transformedAABB = m_transformedAABB;
+  return dup;
 }
 
 COLLIDER_TYPE::E 

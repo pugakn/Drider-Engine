@@ -58,6 +58,8 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   
   /*void
   init();*/
+  void 
+  start();
 
   virtual void 
   update();
@@ -94,7 +96,13 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
     
     addComponent(std::move(component));
 
-    m_components.back()->onCreate();
+    auto&t = m_components.back();
+
+    t->onCreate();
+
+    if (m_isStarted) {
+      t->onStart();
+    }
 
     return rawPtr;
   }
@@ -292,13 +300,11 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
 
   bool
   changed() const;
-  
-  void kill() {
-    if(auto parent = getParent()) {
-      parent->removeChild(shared_from_this());
-      //m_isStatic = true;
-    }
-  }
+
+  void kill() const;
+
+  bool 
+  isKilled() const;
 
   GameObject&
   operator=(const GameObject& ref);
@@ -361,7 +367,9 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   virtual void
   updateImpl(){}
 
+  mutable bool m_isKilled;
   bool m_change;
+  bool m_isStarted;
   bool m_isStatic;
   ChildrenList m_children;
   ComponentsList m_components;
@@ -370,7 +378,7 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   WeakGameObj m_parent;
   NameObject m_tag;
   NamesMap m_componentNames;
-  NamesSet m_componentsToRemove;
+  //NamesSet m_componentsToRemove;
   DR_DEBUG_ONLY(bool m_destroyed);
 };
 

@@ -60,27 +60,73 @@ BoneAttachObject::update() {
 
   m_localTransform.m_change = false;
 
+  Int32 ck = 0;
+
   for (auto& component : m_components) {
-    component->onUpdate();
+    
+    if (component->isEnabled() && !component->isKilled()) {
+   
+      component->onUpdate();
 
-    if (m_localTransform.changed()) {
-      m_finalTransform = m_localTransform *
-                         *m_boneTransform *
-                         getParent()->getWorldTransform();
+      if (m_localTransform.changed()) {
+        m_finalTransform = m_localTransform *
+                           *m_boneTransform *
+                           getParent()->getWorldTransform();
+      }
+    }
+
+    if (component->isKilled()) {
+      ck++;
+    }
+
+    if (isKilled()) {
+      return;
     }
   }
 
-  if (!m_componentsToRemove.empty()) {
-
-    for (const auto& cmpToRem : m_componentsToRemove) {
-      removeComponentP(cmpToRem);
+  static auto shouldDestroyCmp = 
+  [](ComponentPtr& obj) {
+    if (obj->isKilled()) {
+      obj->onDestroy();
+      return true;
     }
-
-    m_componentsToRemove.clear();
+    return false;
+  };
+    
+  if (ck) {
+    m_components.erase(std::remove_if(m_components.begin(), 
+                                      m_components.end(),
+                                      shouldDestroyCmp),
+                       m_components.end());
   }
+
+  ck = 0;
 
   for (auto& child : m_children) {
-    child->update();
+
+    if (child->isEnabled() && !child->isKilled()) {
+      child->update();
+    }
+
+    if (child->isKilled()) {
+      ck++;
+    }
+  }
+
+  static auto shouldDestroy = 
+  [](SharedGameObj obj) {
+    if (obj->isKilled()) {
+      obj->destroy();
+      return true;
+    }
+    return false;
+  };
+  
+  if (ck) {
+    m_children.erase(std::remove_if(m_children.begin(), 
+                                    m_children.end(), 
+                                    shouldDestroy),
+                     m_children.end());
   }
 
   m_change = false;

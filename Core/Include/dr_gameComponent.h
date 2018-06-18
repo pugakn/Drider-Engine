@@ -27,6 +27,9 @@ class DR_CORE_EXPORT GameComponent : public EnableObject,
   onCreate() = 0;
 
   virtual void
+  onStart() {}
+
+  virtual void
   onUpdate() = 0;
 
   /*********
@@ -41,10 +44,16 @@ class DR_CORE_EXPORT GameComponent : public EnableObject,
   virtual void
   setName(const TString& name);
 
+  void 
+  kill();
+
+  bool 
+  isKilled() const;
+
   /**
   * Clones the component inside the given gameObject
   */
-  virtual void
+  virtual GameComponent*
   cloneIn(GameObject& _go) = 0;
 
   static BEGINING_REGISTER(GameComponent, 0, asOBJ_REF | asOBJ_NOCOUNT)
@@ -52,6 +61,7 @@ class DR_CORE_EXPORT GameComponent : public EnableObject,
   END_REGISTER
  protected:
   GameObject& m_gameObject;
+  bool m_isKilled;
 };
 
 }

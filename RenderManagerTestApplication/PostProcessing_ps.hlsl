@@ -3,6 +3,10 @@ Texture2D ColorTex          : register(t1);
 Texture2D ColorBlurTex      : register(t2);
 Texture2D NormCoC           : register(t3);
 //Texture2D GodRays           : register(t3);
+//sampler2D ColorSampler;
+//sampler2D LuminescenceSampler;
+//sampler2D BloomSampler;
+//sampler2D FilmLutSampler;
 
 SamplerState SS;
 
@@ -17,10 +21,10 @@ struct PS_INPUT {
   float2 Texcoord : TEXCOORD0;
 };
 
-//sampler2D ColorSampler;
-//sampler2D LuminescenceSampler;
-//sampler2D BloomSampler;
-//sampler2D FilmLutSampler;
+#define CHROMATIC_ABERRATION
+#define DEPTH_OF_FIELD
+#define VIGNETTE
+//#define TONE_MAPPING
 
 static const float kExposure;
 
@@ -109,11 +113,6 @@ Uncharted2(in float3 Color, in float exposure) {
   return float4(retColor, 1.0f);
 }
 
-#define CHROMATIC_ABERRATION
-#define DEPTH_OF_FIELD
-#define VIGNETTE
-//#define TONE_MAPPING
-
 float4
  FS(PS_INPUT input) : SV_TARGET0 {
   const float2 uv = input.Texcoord;
@@ -150,7 +149,8 @@ float4
   #ifdef DEPTH_OF_FIELD
     const float RealDepth = PositionLDepthTex.Sample(SS, uv).w * CameraInfo.w;
     static const float fFocusDistance = CA_CoC_V.y;
-    static const float fFocusRange = CA_CoC_V.z;
+    //If focus Range is negative, everithing between the eye and the focus distance will be focus.
+    static const float fFocusRange = -CA_CoC_V.z;
     float fCoC = (RealDepth - fFocusDistance) / abs(fFocusRange);
 
     //sign: Returns -1 if x is less than zero; 0 if x equals zero; and 1 if x is greater than zero.
@@ -158,6 +158,7 @@ float4
 
     fCoC = clamp(fCoC, -1.0f * fA, 1.0f);
     fCoC = abs(fCoC);
+    //return float4(fCoC.xxx, 1.0f);
   #endif //DEPTH_OF_FIELD
 
   #ifdef VIGNETTE

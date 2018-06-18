@@ -36,9 +36,7 @@ FS(PS_INPUT input) {
 	
 	float4 albedo   = AlbedoTex.Sample(SS, uv);
   float4 emmisive = EmissiveTex.Sample(SS, uv);
-  float3 normal;
-
-  normal = normalize((2.0f * NormalTex.Sample(SS, uv).xyz) - 1.0f);
+  float3 normal = normalize((2.0f * NormalTex.Sample(SS, uv).xyz) - 1.0f);
   normal = normalize(mul(normal, input.TBN));
   
   float metalic   = Metallic.Sample(SS, uv).r;

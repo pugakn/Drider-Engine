@@ -18,7 +18,6 @@ class DR_CORE_EXPORT AABBCollider : public ColliderComponent
   const AABB& 
   getAABB();
 
- private:
   virtual void 
   onCreate() override;
     
@@ -30,8 +29,10 @@ class DR_CORE_EXPORT AABBCollider : public ColliderComponent
   
   virtual void 
   onDestroy() override;
+
+ private:  
   
-  virtual void
+  virtual GameComponent*
   cloneIn(GameObject& _go) override;
 
   virtual COLLIDER_TYPE::E 

@@ -48,9 +48,6 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="targetver.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
     <ClInclude Include="Include\DrawableComponent.h">
       <Filter>Archivos de encabezado\Components</Filter>
     </ClInclude>
@@ -81,8 +78,14 @@
     <ClInclude Include="Include\dr_graphics_application.h">
       <Filter>Archivos de encabezado\Application</Filter>
     </ClInclude>
-    <ClInclude Include="TestApplication.h">
-      <Filter>Archivos de encabezado</Filter>
+    <ClInclude Include="Include\SpiderBehavior.h">
+      <Filter>Archivos de encabezado\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\SpiderAI.h">
+      <Filter>Archivos de encabezado\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\SpiderPlayer.h">
+      <Filter>Archivos de encabezado\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -94,9 +97,6 @@
     </ClCompile>
     <ClCompile Include="Source\StaticMeshTechnique.cpp">
       <Filter>Archivos de origen\Technique</Filter>
-    </ClCompile>
-    <ClCompile Include="GraphicsTestApplication.cpp">
-      <Filter>Archivos de origen</Filter>
     </ClCompile>
     <ClCompile Include="Source\LinesTechnique.cpp">
       <Filter>Archivos de origen\Technique</Filter>
@@ -119,8 +119,17 @@
     <ClCompile Include="Source\dr_graphics_application.cpp">
       <Filter>Archivos de origen\Application</Filter>
     </ClCompile>
-    <ClCompile Include="TestApplication.cpp">
+    <ClCompile Include="Source\dr_graphics_test.cpp">
       <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SpiderBehavior.cpp">
+      <Filter>Archivos de origen\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SpiderAI.cpp">
+      <Filter>Archivos de origen\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SpiderPlayer.cpp">
+      <Filter>Archivos de origen\Components</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

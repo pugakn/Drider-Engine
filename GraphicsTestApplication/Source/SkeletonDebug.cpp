@@ -112,12 +112,16 @@ SkeletonDebug::onUpdate() {
   create();
 }
 
-void 
+GameComponent*
 SkeletonDebug::cloneIn(GameObject& _go) {
 
   auto dup = _go.createComponent<SkeletonDebug>();
+  
+  dup->m_technique = m_technique;
+  dup->m_primitive = m_primitive;
+  dup->m_meshes = m_meshes;
 
-  dup->setShaderTechnique(m_technique);
+  return dup;
 }
 
 
