@@ -27,13 +27,43 @@ VS_OUTPUT
 VS(VS_INPUT input) {
   VS_OUTPUT Output;
   
-  Output.Position = mul(WVP, input.Position);
-  Output.RealPos  = float4(mul(World, input.Position).xyz, Output.Position.z / CameraInfo[3]);
-  Output.Texcoord = input.Texcoord;
+  float4x4 BoneTransform = (float4x4)0;
   
-  Output.TBN[0] = normalize(mul(World, input.Tangent).xyz);
-  Output.TBN[1] = normalize(mul(World, input.Binormal).xyz);
-  Output.TBN[2] = normalize(mul(World, input.Normal).xyz);
+  int i = 0;
+
+  //[unroll]
+  for (; i < 4; ++i) {
+    int index = input.BonesIDs[i];
+    if (index == -1) {
+    	break;
+    }
+
+    BoneTransform += mul(Bones[index], input.BonesWeights[i]);
+  } 
+
+  BoneTransform = (float4x4)0;
+  i = 0;
+
+  if (i == 0) {
+  	BoneTransform[0][0] = 1.0f;
+  	BoneTransform[1][1] = 1.0f;
+  	BoneTransform[2][2] = 1.0f;
+  	BoneTransform[3][3] = 1.0f;
+  }
+  
+  float4 vertexTransformed = mul(BoneTransform, input.Position);
+  float3 TransformedT = mul(BoneTransform, input.Tangent).xyz;
+  float3 TransformedB = mul(BoneTransform, input.Binormal).xyz;
+  float3 TransformedN = mul(BoneTransform, input.Normal).xyz;
+  
+  Output.Position  = mul(WVP, vertexTransformed);
+  Output.RealPos   = float4(mul(World, input.Position).xyz, 1.0f);
+  Output.RealPos.w = mul(WVP, input.Position).z / CameraInfo[3];
+  Output.Texcoord  = input.Texcoord;
+  
+  Output.TBN[0] = normalize(mul((float3x3)World, TransformedT));
+  Output.TBN[1] = normalize(mul((float3x3)World, TransformedB));
+  Output.TBN[2] = normalize(mul((float3x3)World, TransformedN));
   
   return Output;
 }
