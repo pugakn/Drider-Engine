@@ -257,7 +257,7 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   *   the number of childs nullptr.
   */
   SharedGameObj
-  getChild(SizeT index);
+  getChild(UInt32 index);
   
   /**
   * Gets a node in the tree hierarchy. If the node isn't on the
@@ -266,6 +266,9 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   */
   SharedGameObj
   findNode(const TString& nodeName);
+
+  SharedGameObj
+  findNode(const UInt32 idNode);
 
   /**
   * Gets GameObject*

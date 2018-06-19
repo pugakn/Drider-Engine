@@ -41,7 +41,7 @@ $( ".section" ).each(function( section ) {
   $(this).mousedown(function(){
     $('.front').removeClass('front');
     $(this).addClass('front');
-});
+  });
 });
 
 $( ".subSection" ).each(function(  ) {

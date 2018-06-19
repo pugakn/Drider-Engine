@@ -20,6 +20,7 @@
 #include <dr_mouse.h>
 #include <dr_render_component.h>
 #include <dr_script_component.h>
+#include <dr_string_utils.h>
 #include <dr_animator_component.h>
 #include <dr_collider_component.h>
 #include <dr_model.h>
@@ -312,11 +313,6 @@ void SceneEditor::initUI()
     UI_UpdateSceneGraph();
   }));
 
-
-  webRenderer.registerJS2CPPFunction(std::make_pair("canvasReady", [&](const CefRefPtr<CefListValue>& arguments) {
-    
-  }));
-
   //Scene Graph UI
   webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeSceneGraphNodeName", [&](const CefRefPtr<CefListValue>& arguments) {
     TString prevName = arguments->GetString(1);
@@ -335,33 +331,42 @@ void SceneEditor::initUI()
     UI_UpdateSceneGraph();
   }));
   webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeNodeParent", [&](const CefRefPtr<CefListValue>& arguments) {
-    TString name = arguments->GetString(1);
-    TString newParent = arguments->GetString(2);
-    if (!(name == _T("") || newParent == _T(""))) {
-      if (newParent == _T("ROOT_NODE_X"))
-      {
-        SceneGraph::getRoot()->findNode(name)->setParent(SceneGraph::getRoot());
-      }
-      else {
-        SceneGraph::getRoot()->findNode(name)->setParent(SceneGraph::getRoot()->findNode(newParent));
-      }
-    }
+    TString idParentTemp = arguments->GetString(1);
+    TString idSonTemp = arguments->GetString(2);
+    UInt32 idParent = StringUtils::toInt(idParentTemp);
+    UInt32 idSon = StringUtils::toInt(idSonTemp);
 
-    webRenderer.executeJSCode("JS_ClearSceneGraphTree();");
+    auto father = SceneGraph::getRoot()->findNode(idParent);
+    auto son = SceneGraph::getRoot()->findNode(idSon);
+    if (!father)
+    {
+      father = SceneGraph::getRoot();
+    }
+    son->setParent(father);
     UI_UpdateSceneGraph();
   }));
+
   webRenderer.registerJS2CPPFunction(std::make_pair("C_AddSceneGraphNode", [&](const CefRefPtr<CefListValue>& arguments) {
     TString name = arguments->GetString(1);
-    TString parent = arguments->GetString(2);
-    //TODO: Search parent name 
-    addGameObject(SceneGraph::getRoot(),
+    TString temp = arguments->GetString(2);
+    UInt32 id = StringUtils::toInt(temp);
+    auto father = SceneGraph::getRoot()->findNode(id);
+    //TODO: Search parent name
+    if (!father)
+    {
+      father = SceneGraph::getRoot();
+    }
+    addGameObject(father,
       name,
       { 0, 0, 0 })->getTransform().scale({ 100, 100, 100 });
 
-    webRenderer.executeJSCode("JS_ClearSceneGraphTree();");
     UI_UpdateSceneGraph();
   }
   ));
+
+
+
+
   webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeSceneGraphNodeSelection", [&](const CefRefPtr<CefListValue>& arguments) {
     TString name = arguments->GetString(1);
     m_onFocusGMO = name;
@@ -492,16 +497,15 @@ void SceneEditor::initUI()
 }
 void SceneEditor::UI_UpdateSceneGraph()
 {
-    TString nodes = _T("JS_InfoHierarchy(");
-    nodes += _T("\"{'id':1,");
-    nodes += _T("'name':'root',");
-    nodes += _T("'childs': [");
+  TString nodes = _T("JS_InfoHierarchy(");
 
   std::function<void(const std::vector<std::shared_ptr<GameObject>>&)> search = 
     [&](const std::vector<std::shared_ptr<GameObject>>& children) {
     for (auto &it : children) {
       auto name = it->getName();
-      nodes += _T("{'id':1,");
+      auto id = it->getID();
+      StringUtils::toTString(id);
+      nodes += _T("{'id':") + StringUtils::toTString(id) + _T(",");
       nodes += _T("'name':'") + name + _T("',");
       nodes += _T("'childs': [");
       auto children2 = it->getChildren();
@@ -511,7 +515,7 @@ void SceneEditor::UI_UpdateSceneGraph()
     if (children.size())
     {
       nodes.erase(nodes.length() - 1);
-      nodes += _T("]}");
+      nodes += _T("]");
     }
     else
     {
@@ -519,10 +523,19 @@ void SceneEditor::UI_UpdateSceneGraph()
     }
   };
 
-  SceneGraph::getRoot()->getName();
+
+  //SceneGraph::getRoot()->getName();
   auto children = SceneGraph::getRoot()->getChildren();
+  auto root = SceneGraph::getRoot();
+  auto name = root->getName();
+  auto id = root->getID();
+
+  nodes += _T("\"{'id':") + StringUtils::toTString(id) + _T(",");
+  nodes += _T("'name':'") + name + _T("',");
+  nodes += _T("'childs': [");
+
   search(children);
-  nodes += _T("\");");
+  nodes += _T("}\");");
   webRenderer.executeJSCode(nodes);
 }
 

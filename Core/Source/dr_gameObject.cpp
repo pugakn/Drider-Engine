@@ -264,11 +264,18 @@ GameObject::getChild(const TString& childName) {
 }
 
 GameObject::SharedGameObj 
-GameObject::getChild(SizeT index) {
+GameObject::getChild(UInt32 id) {
   
-  DR_ASSERT(index < m_children.size());
-  
-  return m_children[index];
+  SharedGameObj ch;
+
+  for (auto& child : m_children) {
+    if (id == child->getID()) {
+      ch = child;
+      break;
+    }
+  }
+
+  return ch;
 }
 
 GameObject::SharedGameObj 
@@ -279,6 +286,22 @@ GameObject::findNode(const TString & nodeName) {
   if (!node) {
     for (auto& child : m_children) {
       if (node = child->findNode(nodeName)) {
+        break;
+      }
+    }
+  }
+
+  return node;
+}
+
+GameObject::SharedGameObj
+GameObject::findNode(const UInt32 idNode) {
+
+  SharedGameObj node = getChild(idNode);
+
+  if (!node) {
+    for (auto& child : m_children) {
+      if (node = child->findNode(idNode)) {
         break;
       }
     }

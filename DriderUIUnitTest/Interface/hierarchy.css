@@ -31,3 +31,14 @@
   text-align: center;
   width: 100%;
 }
+
+#optionsHierarchy-button {
+  float: right;
+  width: 20px;
+  height: 20px;
+  padding: 0px;
+}
+
+.selectedGameobject {
+  background: red;
+}
