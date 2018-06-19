@@ -42,3 +42,9 @@
 .selectedGameobject {
   background: red;
 }
+
+#menuHierarchy {
+  width: 250px;
+  position: fixed;
+  z-index: 500;
+}

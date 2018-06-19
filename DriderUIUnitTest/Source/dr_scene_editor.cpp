@@ -323,11 +323,11 @@ void SceneEditor::initUI()
     UI_UpdateSceneGraph();
   }));
   webRenderer.registerJS2CPPFunction(std::make_pair("C_DeleteSceneGraphNode", [&](const CefRefPtr<CefListValue>& arguments) {
-    TString name = arguments->GetString(1);
-    auto n = SceneGraph::getRoot()->findNode(name);
+    TString temp = arguments->GetString(1);
+    UInt32 id = StringUtils::toInt(temp);
+    auto n = SceneGraph::getRoot()->findNode(id);
     n->getParent()->removeChild(n);
     n->destroy();
-    webRenderer.executeJSCode("JS_ClearSceneGraphTree();");
     UI_UpdateSceneGraph();
   }));
   webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeNodeParent", [&](const CefRefPtr<CefListValue>& arguments) {

@@ -20,6 +20,10 @@ function addGO(newNode, nodeFather) {
    entry.setAttribute("class", "ui-widget-content");
    entry.setAttribute("data-id", newNode.id);
    entry.addEventListener("click", selectGO);
+   entry.oncontextmenu = function (e) {
+     selectGO(e);
+     showMenuHierarchy(e);
+   };
    divName.appendChild(document.createTextNode(newNode.name));
    divPlus.setAttribute("class", "droppableHierarchy");
    divPlus.appendChild(document.createTextNode("+"));
@@ -82,9 +86,59 @@ $( "#optionsHierarchy" ).selectmenu({
   }
 });
 
+$( function() {
+  $( "#menuHierarchy" ).menu();
+} );
+
+function showMenuHierarchy(e) {
+  $("#menuHierarchy").css({'display':'block', 'left':e.pageX, 'top':e.pageY});
+  return false;
+}
+$(document).ready(function(){
+
+  //Ocultamos el menú al cargar la página
+  $("#menuHierarchy").hide();
+
+  /* mostramos el menú si hacemos click derecho
+  con el ratón */
+  $(document).bind("contextmenu", function(e){
+    return false;
+  });
+
+  //cuando hagamos click, el menú desaparecerá
+  $(document).click(function(e){
+    if(e.button == 0){
+      $("#menuHierarchy").css("display", "none");
+    }
+  });
+
+  //si pulsamos escape, el menú desaparecerá
+  $(document).keydown(function(e){
+    if(e.keyCode == 27){
+          $("#menuHierarchy").css("display", "none");
+    }
+  });
+
+  //controlamos los botones del menú
+  $("#menuHierarchy").click(function(e){
+    // El switch utiliza los IDs de los <li> del menú
+    switch(e.target.id){
+      case "eliminar":
+        DeleteSceneGraphNode();
+      break;
+    }
+
+  });
+
+});
+
+function DeleteSceneGraphNode() {
+  C_DeleteSceneGraphNode(gameObjectSelected.dataset.id);
+}
+
 function HierarchyUpdate() {
-  //C_HierarchyUpdate();
-  JS_InfoHierarchy("{'id':0,'name':'ROOT_NODE_X','childs': [{'id':3,'name':'Model','childs': []},{'id':4,'name':'Floor','childs': []}]}");
+  C_HierarchyUpdate();
+  //JS_InfoHierarchy("{'id':0,'name':'ROOT_NODE_X','childs': [{'id':3,'name':'Model','childs': []},{'id':4,'name':'Floor','childs': []}]}");
 }
 
 function AddSceneGraphNode() {
