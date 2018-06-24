@@ -90,17 +90,18 @@ class DR_GRAPHICS_EXPORT Texture
   //setTextureNull(const DeviceContext& deviceContext) const = 0;
 
   /**
-  * Set the texture to the shader
+  * Set null texture to the shader
   *
   * @param deviceContext
   *   The device context to set the resource
   *
-  * @param slot
-  *   The slot where the texture will be placed
+  * @param shaderType
+  *   The shader where the texture will be set to null
   *
   */
   virtual void
-  setTextureNull(const DeviceContext& deviceContext) const = 0;
+  setTextureNull(const DeviceContext& deviceContext,
+                 DR_SHADER_TYPE_FLAG::E shaderType = DR_SHADER_TYPE_FLAG::kFragment) const = 0;
 
   /**
   * Set the texture to the shader
@@ -111,9 +112,14 @@ class DR_GRAPHICS_EXPORT Texture
   * @param slot
   *   The slot where the texture will be placed
   *
+  * @param shaderType
+  *   The shader where the texture will be set on
+  *
   */
   virtual void
-  set(const DeviceContext& deviceContext, UInt32 slot) const = 0;
+  set(const DeviceContext& deviceContext,
+      UInt32 slot,
+      DR_SHADER_TYPE_FLAG::E shaderType = DR_SHADER_TYPE_FLAG::kFragment) const = 0;
 
   virtual void
   getMemoryBuffer(const DeviceContext& deviceContext, std::vector<byte>& buff) = 0;

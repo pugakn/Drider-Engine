@@ -14,8 +14,7 @@ class IndexBuffer;
 struct LuminescenceInitData : PassInitData {};
 
 struct LuminescenceDrawData : PassDrawData {
-  std::shared_ptr<Camera> activeCam;
-  GFXShared<Texture> InTexture;
+  Texture* InTexture;
   float LuminiscenceDelta;
 };
 
@@ -49,16 +48,18 @@ class LuminescencePass : public RenderPass {
   draw(PassDrawData* drawData);
 
  private:
-  struct CBuff {
+  struct CBuffer {
     float	LuminiscenceDelta;
-    UInt32 TextureWidth;
-    UInt32 TextureHeight;
+    float	TextureWidth;
+    float	TextureHeight;
     float pad;
   };
   
-  CBuff m_CB;
+  CBuffer CB;
 
-  GFXUnique<Shader> m_computeShader;
+  StructureBuffer* m_resultBuffer;
+
+  GFXUnique<SamplerState> m_samplerState;
 };
 
 }

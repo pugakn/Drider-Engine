@@ -193,7 +193,7 @@ FS(PS_INPUT input) : SV_TARGET0 {
 
   #ifdef TONE_MAPPING
   //finalColor = BasicExposure(finalColor, kExposure);
-  finalColor = Reinhard(finalColor, kExposure);
+  finalColor = Reinhard(finalColor.xyz, kExposure);
   //finalColor = Burgeos_Dawson(finalColor, kExposure); //Caca
   //finalColor = Uncharted2(finalColor, kExposure);
   #endif //TONE_MAPPING

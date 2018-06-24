@@ -7,6 +7,7 @@
 #include "dr_VerBlur.h"
 #include "dr_Shadow.h"
 #include "dr_Lightning.h"
+#include "dr_Luminescence.h"
 #include "dr_PostProcessing.h"
 
 #include <dr_texture.h>
@@ -137,6 +138,10 @@ class DR_RENDERMAN_EXPORT RenderMan {
   ParticleSystemInitData m_particleInitData;
   ParticleSystemDrawData m_particleDrawData;
   ParticleEmitter m_emitter;
+
+  LuminescencePass m_luminescencePass;
+  LuminescenceInitData m_luminescenceInitData;
+  LuminescenceDrawData m_luminescenceDrawData;
 
   PostProcessingPass m_PostProcessingPass;
   PostProcessingInitData m_PostProcessingInitData;

@@ -1,14 +1,16 @@
-Texture2D<float4> BufferIn : register(t0);
+Texture2D TextureIn : register(t0);
 
-cbuffer ListCount1 : register(b0)
+SamplerState SS : register(s0);
+
+cbuffer ConstantBuffer : register(b0)
 {
   float	LuminiscenceDelta;
-  uint  TextureWidth;
-  uint  TextureHeight;
+  float TextureWidth;
+  float TextureHeight;
   float pad;
 };
 
-float AverageLuminescence : register(u0);
+RWStructuredBuffer<float> AverageLuminescence : register(u0);
 
 float
 luminescence(float3 Color) {
@@ -22,16 +24,25 @@ luminescence(float3 Color) {
 [numthreads(1, 1, 1)]
 void
 CS(uint3 id : SV_DispatchThreadID) {
+  static const float widthOffset = 1.0f / TextureWidth;
+  static const float heightOffset = 1.0f / TextureHeight;
+  
+  float3 actualPixel = float3(0.0f, 0.0f, 0.0f);
   float totalLuminescence = 0.0f;
   
-  float4 actualPixel;
-  for (int txWidth = 0; txWidth < TextureWidth; ++txWidth) {
-    for (int txHeight = 0; txHeight < TextureHeight; ++txHeight) {
-	    actualPixel = BufferIn.Load(uint3(txWidth, txHeight, 1));
-	    totalLuminescence += luminescence(actualPixel.xyz);
-	  }
+  float2 uv = float2(0.0f, 0.0f);
+  
+  for (int txHeight = 0; txHeight < TextureHeight; ++txHeight) {
+    uv.x = 0.0f;
+    for (int txWidth = 0; txWidth < TextureWidth; ++txWidth) {
+      actualPixel = TextureIn.SampleLevel(SS, uv, 0).xyz;
+      totalLuminescence += luminescence(actualPixel);
+      uv.x += widthOffset;
+    }
+    uv.y += heightOffset;
   }
+  
   totalLuminescence /= TextureWidth * TextureHeight;
   
-  AverageLuminescence = totalLuminescence;
+  AverageLuminescence[0] = 1.0f;
 }

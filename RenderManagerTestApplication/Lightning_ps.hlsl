@@ -143,6 +143,7 @@ FS(PS_INPUT input) {
 
   const int activeLights = kEyePosition.w;
   
+  [loop]
   for (int index = 0; index < activeLights; index += 2) {
     lightPosition  = kLightPosition[index].xyz;
     lightColor     = kLightColor[index].xyz;

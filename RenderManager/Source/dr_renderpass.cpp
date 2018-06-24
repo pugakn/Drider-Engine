@@ -6,7 +6,10 @@
 
 namespace driderSDK {
 
-RenderPass::RenderPass() : m_vertexShader(nullptr), m_fragmentShader(nullptr) {
+RenderPass::RenderPass()
+  : m_vertexShader(nullptr),
+    m_fragmentShader(nullptr),
+    m_computeShader(nullptr) {
 }
 
 RenderPass::~RenderPass() {
@@ -22,34 +25,55 @@ RenderPass::recompileShader() {
     m_fragmentShader->release();
     m_fragmentShader.release();
   }
+  if (m_computeShader != nullptr) {
+    m_computeShader->release();
+    m_computeShader.release();
+  }
 
-  Device& device = GraphicsAPI::getDevice();
+  Device& dc = GraphicsAPI::getDevice();
   
   driderSDK::File file;
-  String shaderSource;
+  String shaderSrc = "";
 
-  file.Open(m_vsFilename);
-  shaderSource = StringUtils::toString(file.GetAsString(file.Size()));
-  file.Close();
+  if (!m_vsFilename.empty()) {
+    file.Open(m_vsFilename);
+    shaderSrc = StringUtils::toString(file.GetAsString(file.Size()));
+    file.Close();
 
-  m_vertexShader = dr_gfx_unique(device.createShaderFromMemory(shaderSource.data(),
-                                                               shaderSource.size(),
-                                                               DR_SHADER_TYPE_FLAG::kVertex));
+    m_vertexShader = dr_gfx_unique(dc.createShaderFromMemory(shaderSrc.data(),
+                                                             shaderSrc.size(),
+                                                             DR_SHADER_TYPE_FLAG::kVertex));
 
-  shaderSource.clear();
+    shaderSrc.clear();
+  }
 
-  file.Open(m_fsFilename);
-  shaderSource = StringUtils::toString(file.GetAsString(file.Size()));
-  file.Close();
+  if (!m_fsFilename.empty()) {
+    file.Open(m_fsFilename);
+    shaderSrc = StringUtils::toString(file.GetAsString(file.Size()));
+    file.Close();
 
-  m_fragmentShader = dr_gfx_unique(device.createShaderFromMemory(shaderSource.data(),
-                                                                 shaderSource.size(),
-                                                                 DR_SHADER_TYPE_FLAG::kFragment));
+    m_fragmentShader = dr_gfx_unique(dc.createShaderFromMemory(shaderSrc.data(),
+                                                               shaderSrc.size(),
+                                                               DR_SHADER_TYPE_FLAG::kFragment));
 
-  shaderSource.clear();
+    shaderSrc.clear();
 
-  m_inputLayout = dr_gfx_unique(device.createInputLayout(m_vertexShader->reflect(),
-                                                         *m_vertexShader->m_shaderBytecode));
+    m_inputLayout = dr_gfx_unique(dc.createInputLayout(m_vertexShader->reflect(),
+                                                       *m_vertexShader->m_shaderBytecode));
+  }
+
+  if (!m_csFilename.empty()) {
+    file.Open(m_csFilename);
+    shaderSrc = StringUtils::toString(file.GetAsString(file.Size()));
+    file.Close();
+
+    m_computeShader = dr_gfx_unique(dc.createShaderFromMemory(shaderSrc.data(),
+                                                              shaderSrc.size(),
+                                                              DR_SHADER_TYPE_FLAG::kCompute));
+
+    shaderSrc.clear();
+  }
+
 }
 
 }

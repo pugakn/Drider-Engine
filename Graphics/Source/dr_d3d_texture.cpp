@@ -169,20 +169,37 @@ D3DTexture::getMemoryBuffer(const DeviceContext& deviceContext,
 }
 
 void
-D3DTexture::setTextureNull(const DeviceContext& deviceContext) const {
+D3DTexture::setTextureNull(const DeviceContext& deviceContext,
+                           DR_SHADER_TYPE_FLAG::E shaderType) const {
   ID3D11ShaderResourceView* nullTextures[MAX_TEXTURES] = {};
   std::memset(nullTextures, 0, sizeof(nullTextures));
+  if (DR_SHADER_TYPE_FLAG::kFragment == shaderType) {
+    reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
+      D3D11DeviceContext->
+        PSSetShaderResources(0, MAX_TEXTURES, nullTextures);
+  }
+  else if (DR_SHADER_TYPE_FLAG::kCompute == shaderType) {
+    reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
+      D3D11DeviceContext->
+        CSSetShaderResources(0, MAX_TEXTURES, nullTextures);
+  }
 
-  reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
-    D3D11DeviceContext->
-      PSSetShaderResources(0, MAX_TEXTURES, nullTextures);
 }
 
 void
-D3DTexture::set(const DeviceContext& deviceContext, UInt32 slot) const {
+D3DTexture::set(const DeviceContext& deviceContext,
+                UInt32 slot,
+                DR_SHADER_TYPE_FLAG::E shaderType) const {
+  if (DR_SHADER_TYPE_FLAG::kFragment == shaderType) {
     reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
       D3D11DeviceContext->
-      PSSetShaderResources(slot, 1, &APIView);
+        PSSetShaderResources(slot, 1, &APIView);
+  }
+  else if (DR_SHADER_TYPE_FLAG::kCompute == shaderType) {
+    reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
+      D3D11DeviceContext->
+        CSSetShaderResources(slot, 1, &APIView);
+  }
 }
 
 void

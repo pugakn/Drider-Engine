@@ -49,9 +49,11 @@ class RenderPass {
  protected:
   TString m_vsFilename;
   TString m_fsFilename;
+  TString m_csFilename;
 
   GFXUnique<Shader> m_vertexShader;
-  GFXUnique<Shader>  m_fragmentShader;
+  GFXUnique<Shader> m_fragmentShader;
+  GFXUnique<Shader> m_computeShader;
 
   GFXUnique<ConstantBuffer> m_constantBuffer;
   GFXUnique<InputLayout> m_inputLayout;

@@ -22,17 +22,27 @@ LuminescencePass::init(PassInitData* initData) {
   LuminescenceInitData* data = static_cast<LuminescenceInitData*>(initData);
   Device& dc = GraphicsAPI::getDevice();
 
-  driderSDK::File file;
-  String shaderSrc = "";
+  m_csFilename = _T("luminescence_cs.hlsl");
+  
+  recompileShader();
 
-  file.Open(_T("luminescence_cs.hlsl"));
-  shaderSrc += StringUtils::toString(file.GetAsString(file.Size()));
-  file.Close();
+  DrBufferDesc bdesc;
+  bdesc.type = DR_BUFFER_TYPE::kCONSTANT;
+  bdesc.sizeInBytes = sizeof(CBuffer);
+  m_constantBuffer = dr_gfx_unique((ConstantBuffer*)dc.createBuffer(bdesc));
 
-  m_computeShader = dr_gfx_unique(dc.createShaderFromMemory(shaderSrc.data(),
-                                                            shaderSrc.size(),
-                                                            DR_SHADER_TYPE_FLAG::kCompute));
-  shaderSrc.clear();
+  bdesc.type = DR_BUFFER_TYPE::kRWSTRUCTURE;
+  bdesc.sizeInBytes = sizeof(float);
+  bdesc.stride = sizeof(float);
+  m_resultBuffer = (StructureBuffer*)dc.createBuffer(bdesc);
+
+  DrSampleDesc SSdesc;
+  SSdesc.Filter = DR_TEXTURE_FILTER::kMIN_MAG_LINEAR_MIP_POINT;
+  SSdesc.maxAnisotropy = 16;
+  SSdesc.addressU = DR_TEXTURE_ADDRESS::kWrap;
+  SSdesc.addressV = DR_TEXTURE_ADDRESS::kWrap;
+  SSdesc.addressW = DR_TEXTURE_ADDRESS::kWrap;
+  m_samplerState = dr_gfx_unique(dc.createSamplerState(SSdesc));
 }
 
 void
@@ -42,18 +52,24 @@ LuminescencePass::draw(PassDrawData* drawData) {
 
   m_computeShader->set(dc);
 
-  m_CB.LuminiscenceDelta = data->LuminiscenceDelta;
-  m_CB.TextureWidth = data->InTexture->getDescriptor().width;
-  m_CB.TextureHeight = data->InTexture->getDescriptor().height;
+  data->InTexture->set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute);
 
-  m_constantBuffer->updateFromBuffer(dc,(byte*)&m_CB);
+  m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kCompute);
+
+  CB.LuminiscenceDelta = data->LuminiscenceDelta;
+  CB.TextureWidth = static_cast<float>(data->InTexture->getDescriptor().width);
+  CB.TextureHeight = static_cast<float>(data->InTexture->getDescriptor().height);
+
+  m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
   m_constantBuffer->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
 
-  data->InTexture->set(dc, 0);
+  m_resultBuffer->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
 
   dc.dispatch(1, 1, 1);
 
-  GraphicsAPI::getDeviceContext().setResourcesNull();
+  printf("%f\n", m_resultBuffer);
+
+  dc.setResourcesNull();
 }
 
 }

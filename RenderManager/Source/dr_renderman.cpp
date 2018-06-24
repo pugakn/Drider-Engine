@@ -183,6 +183,7 @@ RenderMan::init() {
   m_VerBlurPass.init(&m_VerBlurInitData);
   m_ShadowPass.init(&m_ShadowInitData);
   m_LightningPass.init(&m_LightningInitData);
+  m_luminescencePass.init(&m_luminescenceInitData);
   m_PostProcessingPass.init(&m_PostProcessingInitData);
 
   m_particlePass.init(&m_particleInitData);
@@ -344,6 +345,10 @@ RenderMan::draw(const RenderTarget& _out, const DepthStencil& _outds) {
 
   //const float clearColor[4]{0.2f, 0.5f, 0.8f, 1.0f };
   //_out->clear(GraphicsAPI::getDeviceContext(), clearColor);
+
+  m_luminescenceDrawData.InTexture = &m_RTLightning->getTexture(0);
+  m_luminescenceDrawData.LuminiscenceDelta = 0.0f;
+  m_luminescencePass.draw(&m_luminescenceDrawData);
 
   m_PostProcessingDrawData.activeCam = mainCam;
   m_PostProcessingDrawData.ChromaticAberrationStrenght = 0.075f;

@@ -83,10 +83,20 @@ class DR_GRAPHICS_EXPORT D3DTexture : public Texture
   getMemoryBuffer(const DeviceContext& deviceContext, std::vector<byte>& buff) override;
 
   /**
-  * 
+  * TEST::
+  *
+  * Set the texture to the shader
+  *
+  * @param deviceContext
+  *   The device context to set the resource
+  *
+  * @param shaderType
+  *   The shader where the texture will be set to null
   */
   void
-  setTextureNull(const DeviceContext& deviceContext) const override;
+  setTextureNull(const DeviceContext& deviceContext,
+                 DR_SHADER_TYPE_FLAG::E shaderType =
+                   DR_SHADER_TYPE_FLAG::kFragment) const override;
 
   /**
   * TEST::
@@ -99,9 +109,14 @@ class DR_GRAPHICS_EXPORT D3DTexture : public Texture
   * @param slot
   *   The slot where the texture will be placed
   *
+  * @param shaderType
+  *   The shader where the texture will be set on
+  *
   */
   void
-  set(const DeviceContext& deviceContext, UInt32 slot) const override;
+  set(const DeviceContext& deviceContext,
+      UInt32 slot,
+      DR_SHADER_TYPE_FLAG::E shaderType = DR_SHADER_TYPE_FLAG::kFragment) const override;
 
   /**
   * TEST::
@@ -160,7 +175,7 @@ class DR_GRAPHICS_EXPORT D3DTexture : public Texture
   ID3D11ShaderResourceView* APIView;
  private:
   ID3D11Texture2D* m_stagingTexture;
-    UInt32 m_arraySize;
+  UInt32 m_arraySize;
 };
 
 }
