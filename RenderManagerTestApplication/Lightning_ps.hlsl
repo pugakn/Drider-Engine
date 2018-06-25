@@ -151,7 +151,7 @@ FS(PS_INPUT input) {
     lightIntensity = kLightColor[index].w;
     
     LightPower = saturate(1.0f - (length(lightPosition - position.xyz) / lightRange)) * lightIntensity;
-
+    
     LightViewDir = normalize(lightPosition - position.xyz);
 
     H = normalize(LightViewDir + ViewDir);

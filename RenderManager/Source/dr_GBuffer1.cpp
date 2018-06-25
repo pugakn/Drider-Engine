@@ -34,6 +34,7 @@ GBufferPass::init(PassInitData* initData) {
 
   DrSampleDesc SSdesc;
   SSdesc.Filter = DR_TEXTURE_FILTER::kMIN_MAG_LINEAR_MIP_POINT;
+  SSdesc.comparisonFunc = DR_COMPARISON_FUNC::kGREATER;
   SSdesc.maxAnisotropy = 16;
   SSdesc.addressU = DR_TEXTURE_ADDRESS::kWrap;
   SSdesc.addressV = DR_TEXTURE_ADDRESS::kWrap;

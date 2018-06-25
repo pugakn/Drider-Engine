@@ -10,7 +10,7 @@ cbuffer ConstantBuffer : register(b0)
   float pad;
 };
 
-RWStructuredBuffer<float> AverageLuminescence : register(u0);
+RWStructuredBuffer<float4> AverageLuminescence : register(u0);
 
 float
 luminescence(float3 Color) {
@@ -44,5 +44,5 @@ CS(uint3 id : SV_DispatchThreadID) {
   
   totalLuminescence /= TextureWidth * TextureHeight;
   
-  AverageLuminescence[0] = 1.0f;
+  AverageLuminescence[0].x = 1.0f;
 }

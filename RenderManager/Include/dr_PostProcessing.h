@@ -6,6 +6,7 @@
 #include <dr_vector2d.h>
 #include <dr_sample_state.h>
 #include <dr_camera.h>
+#include <dr_structure_buffer.h>
 
 namespace driderSDK {
 
@@ -17,6 +18,7 @@ struct PostProcessingDrawData : PassDrawData {
   float CoCFocusDistance;
   float CoCFocusRange;
   float VignetteScale;
+  StructureBuffer* luminescenceBuffer;
   Vector2D VignetteConcentration;
   Vector2D VignetteRad;
   GFXShared<RenderTarget> PositionDepthRT;

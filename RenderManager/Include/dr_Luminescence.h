@@ -4,9 +4,9 @@
 #include "dr_renderpass.h"
 #include <dr_sample_state.h>
 #include <dr_matrix4x4.h>
-#include <dr_particle_emitter.h>
 #include <dr_camera.h>
 #include <dr_vertex_buffer.h>
+#include <dr_structure_buffer.h>
 
 namespace driderSDK {
 
@@ -16,6 +16,7 @@ struct LuminescenceInitData : PassInitData {};
 struct LuminescenceDrawData : PassDrawData {
   Texture* InTexture;
   float LuminiscenceDelta;
+  StructureBuffer** resultBuffer;
 };
 
 class LuminescencePass : public RenderPass {
@@ -57,7 +58,7 @@ class LuminescencePass : public RenderPass {
   
   CBuffer CB;
 
-  StructureBuffer* m_resultBuffer;
+  GFXUnique<StructureBuffer> m_resultBuffer;
 
   GFXUnique<SamplerState> m_samplerState;
 };

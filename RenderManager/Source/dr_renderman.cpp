@@ -143,7 +143,7 @@ RenderMan::init() {
   m_RTShadow         = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
   m_TexDescDefault.pitch = m_TexDescDefault.width;
 
-  m_TexDescDefault.width = shadowWidth;
+  m_TexDescDefault.width  = shadowWidth;
   m_TexDescDefault.height = shadowHeight;
   m_TexDescDefault.Format = DR_FORMAT::kR32_FLOAT;
   m_TexDescDefault.pitch = m_TexDescDefault.width * 1 * 4;
@@ -154,22 +154,22 @@ RenderMan::init() {
 
   DrDepthStencilDesc commonTextureDesc;
   commonTextureDesc.bindFlags = DR_BIND_FLAGS::DEPTH_STENCIL | DR_BIND_FLAGS::SHADER_RESOURCE;
-  commonTextureDesc.width = screenWidth;
+  commonTextureDesc.width  = screenWidth;
   commonTextureDesc.height = screenHeight;
   commonTextureDesc.Format = DR_FORMAT::kD24_UNORM_S8_UINT;
 
-  commonTextureDesc.width = screenWidth;
+  commonTextureDesc.width  = screenWidth;
   commonTextureDesc.height = screenHeight;
-  m_GBufferDSoptions        = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
+  m_GBufferDSoptions       = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
 
-  commonTextureDesc.width = screenWidth * 0.5f;
-  commonTextureDesc.height = screenHeight * 0.5f;
+  commonTextureDesc.width   = screenWidth * 0.5f;
+  commonTextureDesc.height  = screenHeight * 0.5f;
   m_SSAODSoptions           = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
   m_HorBlurDSoptions        = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
   m_VerBlurDSoptions        = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
 
-  commonTextureDesc.width = screenWidth;
-  commonTextureDesc.height = screenHeight;
+  commonTextureDesc.width   = screenWidth;
+  commonTextureDesc.height  = screenHeight;
   m_LightningDSoptions      = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
   m_PostProcessingDSoptions = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
 
@@ -335,7 +335,7 @@ RenderMan::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_VerBlurDrawData.InRt = m_RTBlurInit;
   m_VerBlurDrawData.OutRt = m_RTLightningBlur;
   m_VerBlurPass.draw(&m_VerBlurDrawData);
-  //*/
+
   _out.set(GraphicsAPI::getDeviceContext(), _outds);
 
   //m_emitter.update();
@@ -348,6 +348,7 @@ RenderMan::draw(const RenderTarget& _out, const DepthStencil& _outds) {
 
   m_luminescenceDrawData.InTexture = &m_RTLightning->getTexture(0);
   m_luminescenceDrawData.LuminiscenceDelta = 0.0f;
+  m_luminescenceDrawData.resultBuffer = &resultBuffer;
   m_luminescencePass.draw(&m_luminescenceDrawData);
 
   m_PostProcessingDrawData.activeCam = mainCam;
@@ -361,6 +362,7 @@ RenderMan::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_PostProcessingDrawData.ColorRT = m_RTLightning;
   m_PostProcessingDrawData.ColorBlurRT = m_RTLightningBlur;
   m_PostProcessingDrawData.Gbuffer = m_RTGBuffer;
+  m_PostProcessingDrawData.luminescenceBuffer = resultBuffer;
   m_PostProcessingPass.draw(&m_PostProcessingDrawData);
 
   /*
@@ -388,6 +390,7 @@ RenderMan::recompile() {
   m_VerBlurPass.recompileShader();
   m_ShadowPass.recompileShader();
   m_LightningPass.recompileShader();
+  m_luminescencePass.recompileShader();
   m_PostProcessingPass.recompileShader();
 }
 

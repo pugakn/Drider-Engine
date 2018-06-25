@@ -1,8 +1,6 @@
 #include "dr_Luminescence.h"
 #include <dr_device.h>
 #include <dr_graphics_api.h>
-#include <dr_vertex_buffer.h>
-#include <dr_index_buffer.h>
 #include <dr_depth_stencil.h>
 #include <dr_device_context.h>
 #include <dr_resource_manager.h>
@@ -32,9 +30,9 @@ LuminescencePass::init(PassInitData* initData) {
   m_constantBuffer = dr_gfx_unique((ConstantBuffer*)dc.createBuffer(bdesc));
 
   bdesc.type = DR_BUFFER_TYPE::kRWSTRUCTURE;
-  bdesc.sizeInBytes = sizeof(float);
-  bdesc.stride = sizeof(float);
-  m_resultBuffer = (StructureBuffer*)dc.createBuffer(bdesc);
+  bdesc.sizeInBytes = sizeof(Vector4D);
+  bdesc.stride = sizeof(Vector4D);
+  m_resultBuffer = dr_gfx_unique((StructureBuffer*)dc.createBuffer(bdesc));
 
   DrSampleDesc SSdesc;
   SSdesc.Filter = DR_TEXTURE_FILTER::kMIN_MAG_LINEAR_MIP_POINT;
@@ -67,8 +65,9 @@ LuminescencePass::draw(PassDrawData* drawData) {
 
   dc.dispatch(1, 1, 1);
 
-  printf("%f\n", m_resultBuffer);
+  *data->resultBuffer = m_resultBuffer.get();
 
+  dc.setUAVsNull();
   dc.setResourcesNull();
 }
 

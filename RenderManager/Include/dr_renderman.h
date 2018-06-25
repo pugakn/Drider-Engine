@@ -142,6 +142,7 @@ class DR_RENDERMAN_EXPORT RenderMan {
   LuminescencePass m_luminescencePass;
   LuminescenceInitData m_luminescenceInitData;
   LuminescenceDrawData m_luminescenceDrawData;
+  StructureBuffer* resultBuffer;
 
   PostProcessingPass m_PostProcessingPass;
   PostProcessingInitData m_PostProcessingInitData;

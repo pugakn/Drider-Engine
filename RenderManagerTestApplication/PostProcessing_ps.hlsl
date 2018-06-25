@@ -2,8 +2,9 @@ Texture2D PositionLDepthTex : register(t0);
 Texture2D ColorTex          : register(t1);
 Texture2D ColorBlurTex      : register(t2);
 Texture2D NormCoC           : register(t3);
-//Texture2D GodRays           : register(tn);
+StructuredBuffer<float4> LuminescenceTex : register (t4);
 //Texture2D LuminescenceTex   : register(tn);
+//Texture2D GodRays           : register(tn);
 //Texture2D BloomTex          : register(tn);
 //Texture2D FilmLutTex        : register(tn);
 
@@ -25,8 +26,6 @@ struct PS_INPUT {
 #define VIGNETTE
 #define BLOOM
 #define TONE_MAPPING
-
-static const float kExposure = 1.0f;
 
 float4
 BasicExposure(in float3 Color, in float exposure) {
@@ -119,7 +118,7 @@ FS(PS_INPUT input) : SV_TARGET0 {
   const float2 uv = input.Texcoord;
   float4 Color;
   float4 ColorBlur;
-
+  
   #ifdef CHROMATIC_ABERRATION
     static const float fChromaticAberrationStrength = CA_CoC_V[0];
     
@@ -128,7 +127,7 @@ FS(PS_INPUT input) : SV_TARGET0 {
     
     float CR, CG;
     float2 CBA;
-
+    
     CR = ColorTex.Sample(SS, uv + CAOffset).x;
     CG = ColorTex.Sample(SS, uv - CAOffset).y;
     CBA = ColorTex.Sample(SS, uv).zw;
@@ -146,22 +145,22 @@ FS(PS_INPUT input) : SV_TARGET0 {
       ColorBlur = ColorBlurTex.Sample(SS, uv);
     #endif //DEPTH_OF_FIELD
   #endif
-
+  
   #ifdef DEPTH_OF_FIELD
     const float RealDepth = PositionLDepthTex.Sample(SS, uv).w * CameraInfo.w;
     static const float fFocusDistance = CA_CoC_V.y;
     //If focus Range is negative, everithing between the eye and the focus distance will be focus.
     static const float fFocusRange = -CA_CoC_V.z;
     float fCoC = (RealDepth - fFocusDistance) / abs(fFocusRange);
-
+    
     //sign: Returns -1 if x is less than zero; 0 if x equals zero; and 1 if x is greater than zero.
     const float fA = saturate(sign(fFocusRange));
-
+    
     fCoC = clamp(fCoC, -1.0f * fA, 1.0f);
     fCoC = abs(fCoC);
     //return float4(fCoC.xxx, 1.0f);
   #endif //DEPTH_OF_FIELD
-
+  
   #ifdef VIGNETTE
     static const float2 fVignetteConcentration = VignetteOptions.xy;
     static const float2 fVignetteRad = VignetteOptions.zw;
@@ -181,23 +180,25 @@ FS(PS_INPUT input) : SV_TARGET0 {
   //float4 ColorGodray = float4(CR, CG, CB, CA);
   
   float4 finalColor;
-
+  
   #ifdef DEPTH_OF_FIELD
   finalColor = lerp(Color, ColorBlur, fCoC);
   #else
   finalColor = Color;
   #endif //DEPTH_OF_FIELD
-
+  
   #ifdef BLOOM
   #endif //BLOOM
-
+  
   #ifdef TONE_MAPPING
+  const float kExposure = LuminescenceTex[0].x;
+  
   //finalColor = BasicExposure(finalColor, kExposure);
   finalColor = Reinhard(finalColor.xyz, kExposure);
   //finalColor = Burgeos_Dawson(finalColor, kExposure); //Caca
   //finalColor = Uncharted2(finalColor, kExposure);
   #endif //TONE_MAPPING
-
+  
   #ifdef VIGNETTE
   finalColor *= vignette;
   #endif //VIGNETTE

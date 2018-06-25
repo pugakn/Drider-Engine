@@ -80,6 +80,7 @@ PostProcessingPass::draw(PassDrawData* drawData) {
   data->ColorRT->getTexture(0).set(dc, 1);
   data->ColorBlurRT->getTexture(0).set(dc, 2);
   data->Gbuffer->getTexture(1).set(dc, 3);
+  data->luminescenceBuffer->set(dc, DR_SHADER_TYPE_FLAG::kFragment, 4);
 
   auto screenQuadModel = ResourceManager::getReferenceT<Model>(_T("ScreenAlignedQuad.3ds"));
   if (screenQuadModel) {
