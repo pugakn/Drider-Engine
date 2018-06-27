@@ -31,6 +31,8 @@ $("#inspector").css({left: unitWidth*3});
 $("#project").css({top: unitHeight});
 $('#fileTree')[0].style.height = $( window ).height() * .34 - sizeHeader + "px";
 $('#divHierarchy')[0].style.height = $( window ).height() * .65 - sizeHeader + "px";
+$('#divInspector')[0].style.height = $( window ).height() - sizeHeader + "px";
+
 
 $( ".section" ).each(function( section ) {
   $(this).draggable({

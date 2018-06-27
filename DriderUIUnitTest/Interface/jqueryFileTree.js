@@ -1,38 +1,6 @@
-// jQuery File Tree Plugin
-//
-// Version 1.01
-//
-// Cory S.N. LaViska
-// A Beautiful Site (http://abeautifulsite.net/)
-// 24 March 2008
-//
-// Visit http://abeautifulsite.net/notebook.php?article=58 for more information
-//
-// Usage: $('.fileTreeDemo').fileTree( options, callback )
-//
-// Options:  root           - root folder to display; default = /
-//           script         - location of the serverside AJAX file to use; default = jqueryFileTree.php
-//           folderEvent    - event to trigger expand/collapse; default = click
-//           expandSpeed    - default = 500 (ms); use -1 for no animation
-//           collapseSpeed  - default = 500 (ms); use -1 for no animation
-//           expandEasing   - easing function to use on expand (optional)
-//           collapseEasing - easing function to use on collapse (optional)
-//           multiFolder    - whether or not to limit the browser to one subfolder at a time
-//           loadMessage    - Message to display while initial tree loads (can be HTML)
-//
-// History:
-//
-// 1.01 - updated to work with foreign characters in directory/file names (12 April 2008)
-// 1.00 - released (24 March 2008)
-//
-// TERMS OF USE
-//
-// This plugin is dual-licensed under the GNU General Public License and the MIT License and
-// is copyright 2008 A Beautiful Site, LLC.
-//
 var globalDirectory, urlDirectory, o;
 $(document).ready( function() {
-    o = $('#fileTree').fileTree({ }, function(file) {});
+  o = $('#fileTree').fileTree({ }, function(file) {});
 });
 
 if(jQuery) (function($){
@@ -104,18 +72,25 @@ function JS_InfoTreeFile( root, datos) {
     if (files[index].type === "folder") {
       r += '<li class="directory collapsed"><a href="#" rel="' + files[index].parent  + '/">' + files[index].name + '</a></li>';
     } else {
-      r += '<li class="file ext_' + files[index].type + '"><a href="#" rel='+ files[index].parent + '>' + files[index].name + '</a></li>';
+      r += '<li data-url="' + files[index].parent + files[index].name + '" class="file ext_' + files[index].type + ' draggableItemFile"><a href="#" rel='+ files[index].parent + '>' + files[index].name + '</a></li>';
     }
   }
   $('#fileTree').showTree(globalDirectory, urlDirectory, r, o);
+  updateDragablesFiles();
+}
+
+function updateDragablesFiles() {
+  $(".draggableItemFile" ).draggable({ revert: true, helper: "clone" });
+
 }
 
 function CFUIReady(url) {
   C_FileTree(url);
 
-  /*function C_FileTree () {setTimeout(function(){
-  JS_InfoTreeFile("Assets","{'items':[{'name':'Models','parent':'Assets/Models','type':'folder'},{'name':'Scripts','parent':'Assets/Scripts','type':'folder'}]}"); }, 1000);
-};*/
+  function C_FileTree () {setTimeout(function(){
+    JS_InfoTreeFile("Assets/Models/","{'items':[{'name':'Checker.fbx','parent':'Models/','type':'.fbx'},{'name':'Croc.X','parent':'Models/','type':'.X'},{'name':'model.dae','parent':'Models/','type':'.dae'},{'name':'plane.fbx','parent':'Models/','type':'.fbx'},{'name':'ScreenAlignedQuad.3ds','parent':'Models/','type':'.3ds'},{'name':'Sphere.fbx','parent':'Models/','type':'.fbx'}]}");
+    }, 1000);
+  };
 }
 
 CFUIReady("Assets")

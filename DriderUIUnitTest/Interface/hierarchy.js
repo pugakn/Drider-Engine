@@ -18,6 +18,7 @@ function addGO(newNode, nodeFather) {
    list.setAttribute("class", "sortableHierarchy");
    entry.setAttribute("class", "ui-state-default");
    entry.setAttribute("class", "ui-widget-content");
+   entry.setAttribute("class", "gameObjectElement");
    entry.setAttribute("data-id", newNode.id);
    entry.addEventListener("click", selectGO);
    entry.oncontextmenu = function (e) {
@@ -38,6 +39,7 @@ function addGO(newNode, nodeFather) {
 
 function updateDropables() {
   $(".droppableHierarchy" ).droppable({
+    accept: ".gameObjectElement",
     drop: function( event, ui ) {
       var element = $(event.toElement).parent()[0],
         idParent = $(event.target).parent().parent()[0].dataset.id;
@@ -45,7 +47,7 @@ function updateDropables() {
       if (!idParent) {
         idParent = hierarchy.dataset.id;
       }
-      ChangeNodeParent(idParent, idSon);
+      //ChangeNodeParent(idParent, idSon);
     },
     classes: {
       "ui-droppable-hover": "ui-state-hover"
@@ -137,8 +139,8 @@ function DeleteSceneGraphNode() {
 }
 
 function HierarchyUpdate() {
-  C_HierarchyUpdate();
-  //JS_InfoHierarchy("{'id':0,'name':'ROOT_NODE_X','childs': [{'id':3,'name':'Model','childs': []},{'id':4,'name':'Floor','childs': []}]}");
+  //C_HierarchyUpdate();
+  JS_InfoHierarchy("{'id':0,'name':'ROOT_NODE_X','childs': [{'id':3,'name':'Model','childs': []},{'id':4,'name':'Floor','childs': []}]}");
 }
 
 function AddSceneGraphNode() {
