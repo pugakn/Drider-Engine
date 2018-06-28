@@ -11,17 +11,48 @@ struct PoolBuffer
   int padaaasdasdas;
 };
 cbuffer ConstantBuffer : register(b0) {
+  int m_bTimeColorUpdaterActive;
+  int m_bTimeScaleUpdaterActive;
+  int m_bEulerUpdaterActive;
+  int m_bAttractorUpdaterActive;
+  int m_bVortexActive;
+  int m_bColliderUpdaterActive;
+  int m_bBoxGeneratorActive;
+  int m_bRandVelocityGeneratorActive;
+
+  //Particle system
+  float4 m_systemPosition;
   float4 m_globalAcceleration;
+  //Time Color Updater
   float4 m_initialColor;
   float4 m_finalColor;
-  float m_particleMaxLife;
-  float dt;
-  int m_particlesToEmit;
-  int  aliveParticles;
+  //Box Generator
+  float4 m_randomPosMin;
+  float4 m_randomPosMax;
+  //Random Velocity Generator
+  float4 m_randomVelMin;
+  float4 m_randomVelMax;
+  //Attractors Updater
+  float4 m_attractorPos[MAX_ATTRACTORS];
+  float4 m_attractorForceX_radiusY[MAX_ATTRACTORS];
+  //Vortex Updater
+  float4 m_VortexPos[MAX_VORTEX];
+  float4 m_VortexForceX_radiuusY[MAX_VORTEX];
+  float4 m_VortexUP[MAX_VORTEX];
+  //Plane Collision Updater
+  float4 m_planeNormal_k;
+  float4 m_planePoint;
+
+  //Time Scale Updater
   float m_initialScale;
   float m_finaleScale;
+
+  float m_particleMaxLife;
+  int m_particlesToEmit;
   int m_maxParticles;
-  float aaaa;
+  int m_numAttractors;
+  int m_numRepellers;
+  int m_numVortex;
 };
 RWStructuredBuffer<PoolBuffer> poolBuffer : register(u0);
 AppendStructuredBuffer<uint> DeadBuffer : register(u1);

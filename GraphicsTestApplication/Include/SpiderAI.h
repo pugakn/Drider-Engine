@@ -1,10 +1,13 @@
 #pragma once
 
 #include <dr_gameComponent.h>
+#include <dr_vector3d.h>
 
 #include "SpiderBehavior.h"
 
 namespace driderSDK {
+
+class PathHolder;
 
 class SpiderAI : public GameComponent {
  public:
@@ -14,6 +17,9 @@ class SpiderAI : public GameComponent {
   // Inherited via GameComponent
   virtual void 
   onCreate() override;
+
+  virtual void
+  onStart() override;
 
   virtual void 
   onUpdate() override;
@@ -26,6 +32,9 @@ class SpiderAI : public GameComponent {
 
   virtual GameComponent*
   cloneIn(GameObject& _go) override;
+
+  void
+  setPath(PathHolder* _path);
  private:
 
   enum State 
@@ -45,8 +54,12 @@ class SpiderAI : public GameComponent {
     None
   };
 
+  Vector3D m_velocity;
   State m_state;
   Direction m_dir;
+  SpiderBehavior* m_behavior;
+  PathHolder* m_path{nullptr};
+  UInt32 m_pathIndex{0};
 };
 
 }

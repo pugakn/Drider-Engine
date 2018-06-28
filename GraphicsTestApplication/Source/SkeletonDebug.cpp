@@ -25,7 +25,7 @@ SkeletonDebug::create() {
     return;
   }
   
-  if (auto skel = anim->getSkeleton()) {
+  /*if (auto skel = anim->getSkeleton()) {
     
     std::vector<Mesh> meshes(1);
 
@@ -46,7 +46,7 @@ SkeletonDebug::create() {
   }
   else {
     Logger::addLog(_T("Animator has no skeleton assigned"));
-  }  
+  }  */
 }
 
 void 
@@ -58,7 +58,7 @@ SkeletonDebug::buildSkeleton(void* data,
 
   auto it = skeleton.bonesMapping.find(bone->name);
 
-  if (it != skeleton.bonesMapping.end()) {
+  /*if (it != skeleton.bonesMapping.end()) {
     Int32 index = it->second;
 
     auto& aabb = skeleton.bonesAABBs[index];
@@ -96,7 +96,7 @@ SkeletonDebug::buildSkeleton(void* data,
     for (auto& child : bone->children) {
       buildSkeleton(child.get(), skeleton, mesh);
     }
-  }
+  }*/
 }
 
 void

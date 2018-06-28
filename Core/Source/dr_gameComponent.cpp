@@ -15,8 +15,8 @@ GameComponent::GameComponent(GameObject& gameObject_, const TString& _name)
 
 GameComponent::~GameComponent() {
   
-  DR_DEBUG_ONLY(Logger::addLog(m_gameObject.getName() + _T(": ") + 
-                               getName() + _T(" component destroyed")));
+  /*DR_DEBUG_ONLY(Logger::addLog(m_gameObject.getName() + _T(": ") + 
+                               getName() + _T(" component destroyed")));*/
 
 }
 

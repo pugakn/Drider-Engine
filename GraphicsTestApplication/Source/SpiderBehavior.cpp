@@ -50,7 +50,7 @@ SpiderBehavior::setAnimation(Animations anim, bool blend, bool copyElapsed) {
   auto model = m_model.lock();
   auto comp = m_gameObject.getComponent<AnimatorComponent>();
   
-  if (comp && model && anim < model->animationsNames.size()) {
+  if (comp && model && static_cast<SizeT>(anim) < model->animationsNames.size()) {
     if (blend) {
       comp->blendAnimation(model->animationsNames[anim], copyElapsed);
     }

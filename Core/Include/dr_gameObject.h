@@ -358,8 +358,8 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   getValidName(TString name);
   
  protected:
-  void
-  removeComponentP(const TString& compName);
+  /*void
+  removeComponentP(const TString& compName);*/
 
   virtual void
   copyData(SharedGameObj other) const {}

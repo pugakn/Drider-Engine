@@ -204,20 +204,20 @@ GameObject::removeComponent(const TString& compName) {
   }
 }
 
-void
-GameObject::removeComponentP(const TString& compName) {
-
-  for (auto it = m_components.begin(); it != m_components.end(); ++it) {
-    if ((*it)->getName() == compName) {
-      (*it)->onDestroy();
-      m_components.erase(it);
-      return;
-    }
-  }
-
-  DR_DEBUG_ONLY(Logger::addLog(_T("Trying to remove unexisting component: ") + 
-                               compName));
-}
+//void
+//GameObject::removeComponentP(const TString& compName) {
+//
+//  for (auto it = m_components.begin(); it != m_components.end(); ++it) {
+//    if ((*it)->getName() == compName) {
+//      (*it)->onDestroy();
+//      m_components.erase(it);
+//      return;
+//    }
+//  }
+//
+//  DR_DEBUG_ONLY(Logger::addLog(_T("Trying to remove unexisting component: ") + 
+//                               compName));
+//}
 
 void
 GameObject::addComponent(ComponentPtr component) {
@@ -447,6 +447,8 @@ GameObject::operator=(const GameObject& ref) {
   m_isStatic = ref.m_isStatic;
 
   m_change = ref.m_change;
+
+  m_isStarted = ref.m_isStarted;
 
   m_isKilled = ref.m_isKilled;
 
