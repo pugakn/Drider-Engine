@@ -27,6 +27,7 @@
 #include <dr_script_core.h>
 #include <dr_depth_stencil_state.h>
 #include <dr_math.h>
+#include <dr_id_object.h>
 #include<Shlwapi.h>
 #pragma comment(lib, "Shlwapi.lib")
 
@@ -365,33 +366,24 @@ void SceneEditor::initUI()
   ));
 
 
-
-
   webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeSceneGraphNodeSelection", [&](const CefRefPtr<CefListValue>& arguments) {
-    TString name = arguments->GetString(1);
-    m_onFocusGMO = name;
-    if (name == _T("ROOT_NODE_X")) return;
-    auto n = SceneGraph::getRoot()->findNode(name);
-    auto pos = n->getTransform().getPosition();
-    auto scale = n->getTransform().getScale();
-    auto rot = const_cast<Matrix4x4&>(n->getTransform().getRotation()).eulerAngles();
+    TString temp = arguments->GetString(1);
+    UInt32 id = StringUtils::toInt(temp);
+    auto gameObject = SceneGraph::getRoot()->findNode(id);
 
-    webRenderer.executeJSCode(_T("JS_ChangeGMOFocus('") + name + _T("',") + 
-      std::to_wstring(pos.x) + _T(",") +
-      std::to_wstring(pos.y) + _T(",") +
-      std::to_wstring(pos.z) + _T(",") +
-      std::to_wstring(scale.x) + _T(",") +
-      std::to_wstring(scale.y) + _T(",") +
-      std::to_wstring(scale.z) + _T(",") +
-      std::to_wstring(rot.x) + _T(",") +
-      std::to_wstring(rot.y) + _T(",") +
-      std::to_wstring(rot.z) +
-      +_T(");"));
+    TString response = _T("JS_UpdateComponents(\"{'id':'") + temp + _T("','components': [");
 
-    webRenderer.executeJSCode("JS_ClearPropertySheetUI();");
-    auto node = SceneGraph::getRoot()->findNode(name);
-    DR_ASSERT(node);
-    UI_UpdatePropertySheet(*node);
+    auto components = gameObject->getComponents<GameComponent>();
+    for (auto component : components) {
+      response += _T("{'name':'") + component->getName() + _T("', 'inputs':[");
+      if (component->getClassID() == CLASS_NAME_ID(RenderComponent)) {
+        addRenderComponentInputs(&response);
+      }
+      response += _T("]},");
+    }
+    response.erase(response.length() - 1);
+    response += _T("]}\");");
+    webRenderer.executeJSCode(response);
   }));
 
   //Property Sheet UI

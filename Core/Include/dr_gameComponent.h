@@ -38,6 +38,8 @@ class DR_CORE_EXPORT GameComponent : public EnableObject,
   virtual void
   setName(const TString& name);
 
+  virtual UInt32
+  getClassID() = 0;
   /**
   * Clones the component inside the given gameObject
   */

@@ -1,6 +1,7 @@
 #include "dr_camera_component.h"
 
 #include <dr_matrix3x3.h>
+#include <dr_id_object.h>
 #include "dr_camera.h"
 #include "dr_camera_manager.h"
 
@@ -52,6 +53,11 @@ CameraComponent::onRender() {
 
 void 
 CameraComponent::onDestroy() {
+}
+
+UInt32
+CameraComponent::getClassID() {
+  return CLASS_NAME_ID(CameraComponent);
 }
 
 void 

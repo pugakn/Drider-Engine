@@ -8,6 +8,7 @@ function selectGO(ui) {
   $('.selectedGameobject').removeClass('selectedGameobject');
   $(ui.path[1]).addClass('selectedGameobject');
   gameObjectSelected = ui.path[1];
+  C_ChangeSceneGraphNodeSelection(gameObjectSelected.dataset.id);
 }
 
 function addGO(newNode, nodeFather) {
@@ -47,7 +48,7 @@ function updateDropables() {
       if (!idParent) {
         idParent = hierarchy.dataset.id;
       }
-      //ChangeNodeParent(idParent, idSon);
+      ChangeNodeParent(idParent, idSon);
     },
     classes: {
       "ui-droppable-hover": "ui-state-hover"
@@ -139,8 +140,8 @@ function DeleteSceneGraphNode() {
 }
 
 function HierarchyUpdate() {
-  //C_HierarchyUpdate();
-  JS_InfoHierarchy("{'id':0,'name':'ROOT_NODE_X','childs': [{'id':3,'name':'Model','childs': []},{'id':4,'name':'Floor','childs': []}]}");
+  C_HierarchyUpdate();
+  //JS_InfoHierarchy("{'id':0,'name':'ROOT_NODE_X','childs': [{'id':3,'name':'Model','childs': []},{'id':4,'name':'Floor','childs': []}]}");
 }
 
 function AddSceneGraphNode() {

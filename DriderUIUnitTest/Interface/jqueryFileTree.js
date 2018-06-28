@@ -87,10 +87,10 @@ function updateDragablesFiles() {
 function CFUIReady(url) {
   C_FileTree(url);
 
-  function C_FileTree () {setTimeout(function(){
+  /*function C_FileTree () {setTimeout(function(){
     JS_InfoTreeFile("Assets/Models/","{'items':[{'name':'Checker.fbx','parent':'Models/','type':'.fbx'},{'name':'Croc.X','parent':'Models/','type':'.X'},{'name':'model.dae','parent':'Models/','type':'.dae'},{'name':'plane.fbx','parent':'Models/','type':'.fbx'},{'name':'ScreenAlignedQuad.3ds','parent':'Models/','type':'.3ds'},{'name':'Sphere.fbx','parent':'Models/','type':'.fbx'}]}");
     }, 1000);
-  };
+  };*/
 }
 
 CFUIReady("Assets")

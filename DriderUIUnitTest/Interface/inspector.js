@@ -45,6 +45,7 @@ function addComponent(data) {
   $(element).appendTo($('#accordionInspector'));
 
   activateDropablesAreas();
+  $( "#accordionInspector" ).accordion( "refresh" );
 }
 
 function activateDropablesAreas() {
@@ -200,14 +201,13 @@ function updateInput(input){
   console.log(input.value);
 }
 
-function updateComponents(components) {
+function JS_UpdateComponents(data) {
   while ($('#accordionInspector')[0].firstChild) {
     $('#accordionInspector')[0].removeChild($('#accordionInspector')[0].firstChild);
   }
+  var components = JSON.parse(data.replace(/\'/g, '"'));
   for (var i = 0; i < components.components.length; i++) {
     addComponent(components.components[i]);
   }
 }
-
-updateComponents(componentes);
-updateComponents(componentes);
+//JS_UpdateComponents("{'id':'3','components': [{'name':'RenderComponent', 'inputs':[]},{'name':'AABBCollider', 'inputs':[]}]}");

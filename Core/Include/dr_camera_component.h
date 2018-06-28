@@ -39,6 +39,9 @@ private:
   virtual void 
   onDestroy() override;
 
+  virtual UInt32
+  getClassID() override;
+
   virtual void 
   cloneIn(GameObject& _go) override;
 
