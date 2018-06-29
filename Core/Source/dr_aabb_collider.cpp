@@ -1,3 +1,4 @@
+#include <dr_id_object.h>
 #include "dr_aabb_collider.h"
 #include "dr_animator_component.h"
 #include "dr_gameObject.h"
@@ -69,6 +70,11 @@ AABBCollider::onUpdate() {
 
 void 
 AABBCollider::onDestroy() {
+}
+
+UInt32 AABBCollider::getClassID()
+{
+  return CLASS_NAME_ID(AABBCollider);
 }
 
 GameComponent*

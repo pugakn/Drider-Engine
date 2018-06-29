@@ -98,6 +98,9 @@ class DR_CORE_EXPORT AnimatorComponent : public GameComponent
   virtual void 
   onDestroy() override;
 
+  virtual UInt32
+  getClassID() override;
+
   virtual GameComponent*
   cloneIn(GameObject& _go) override;
 

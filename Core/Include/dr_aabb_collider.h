@@ -29,6 +29,9 @@ class DR_CORE_EXPORT AABBCollider : public ColliderComponent
   
   virtual void 
   onDestroy() override;
+  
+  virtual UInt32
+  getClassID() override;
 
  private:  
   

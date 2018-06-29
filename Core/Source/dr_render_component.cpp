@@ -1,6 +1,7 @@
 #include "dr_render_component.h"
 #include <dr_index_buffer.h>
 #include <dr_vertex_buffer.h>
+#include <dr_id_object.h>
 #include "dr_gameObject.h"
 #include "dr_model.h"
 #include "dr_logger.h"
@@ -80,6 +81,11 @@ RenderComponent::onDestroy() {
   }
 
   m_meshes.clear();
+}
+
+UInt32 RenderComponent::getClassID()
+{
+  return CLASS_NAME_ID(RenderComponent);
 }
 
 GameComponent*

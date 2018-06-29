@@ -39,6 +39,9 @@ class DR_CORE_EXPORT ScriptComponent : public GameComponent {
     void
     onDestroy() override;
 
+    virtual UInt32
+    getClassID() override;
+
     /**
     * Clones the component inside the given gameObject
     */

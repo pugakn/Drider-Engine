@@ -6,6 +6,7 @@
 
 #include "dr_script_core.h"
 #include <dr_gameObject.h>
+#include <dr_id_object.h>
 
 #include <dr_graph.h>
 
@@ -68,6 +69,11 @@ ScriptComponent::onRender() {
 void
 ScriptComponent::onDestroy() {
 
+}
+
+UInt32 ScriptComponent::getClassID()
+{
+  return CLASS_NAME_ID(ScriptComponent);
 }
 
 /**

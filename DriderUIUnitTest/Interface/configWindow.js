@@ -30,6 +30,9 @@ $("#scene").css({left: unitWidth});
 $("#inspector").css({left: unitWidth*3});
 $("#project").css({top: unitHeight});
 $('#fileTree')[0].style.height = $( window ).height() * .34 - sizeHeader + "px";
+$('#divHierarchy')[0].style.height = $( window ).height() * .65 - sizeHeader + "px";
+$('#divInspector')[0].style.height = $( window ).height() - sizeHeader + "px";
+
 
 $( ".section" ).each(function( section ) {
   $(this).draggable({
@@ -40,8 +43,9 @@ $( ".section" ).each(function( section ) {
   $(this).mousedown(function(){
     $('.front').removeClass('front');
     $(this).addClass('front');
+  });
 });
-});
+
 $( ".subSection" ).each(function(  ) {
   $(this).resizable({
     containment: "#container",
@@ -73,6 +77,14 @@ $("#projectDiv").resizable({
     $($(ui.element[0]).parent()[0]).css("height", ui.size.height);
     $($(ui.element[0]).parent()[0]).css("width", ui.size.width);
     $(event.target).find("#fileTree").css("height", ui.size.height - sizeHeader);
+  }
+});
+
+$("#hierarchyDiv").resizable({
+  resize: function( event, ui ) {
+    $($(ui.element[0]).parent()[0]).css("height", ui.size.height);
+    $($(ui.element[0]).parent()[0]).css("width", ui.size.width);
+    $(event.target).find("#divHierarchy").css("height", ui.size.height - sizeHeader);
   }
 });
 

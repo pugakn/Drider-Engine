@@ -1,3 +1,6 @@
+#fileTree {
+  overflow: scroll;
+}
 UL.jqueryFileTree {
 	font-family: Verdana, sans-serif;
 	font-size: 11px;
