@@ -6,7 +6,6 @@
 
 #include "dr_script_core.h"
 #include <dr_gameObject.h>
-#include <dr_id_object.h>
 
 #include <dr_graph.h>
 

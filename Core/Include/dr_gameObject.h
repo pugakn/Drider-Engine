@@ -134,16 +134,36 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   getComponent()
   {
     T* componentCasted = nullptr;
-    for (auto& componet : m_components) {
-      if (auto casted = dynamic_cast<T*>(componet.get())) {
+    for (auto& component : m_components) {
+      /*if (auto casted = dynamic_cast<T*>(componet.get())) {
         componentCasted = casted;
+        break;
+      }*/
+      
+      if (IDClass<T>::ID() == component->getClassID()) {
+        componentCasted = static_cast<T*>(component.get());
         break;
       }
     }
 
     return componentCasted;
   }
-  
+
+  /*template<class T> 
+  T* 
+  getComponent(UInt32 classID)
+  {
+    T* componentCasted = nullptr;
+    for (auto& component : m_components) {
+      if (classID == component->getClassID()) {
+        componentCasted = static_cast<T*>(component.get());
+        break;
+      }
+    }
+
+    return componentCasted;
+  }*/
+
   template<class T = GameComponent>
   T*
   getComponent(const TString& componentName)

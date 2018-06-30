@@ -4,7 +4,6 @@
 #include <dr_logger.h>
 #include <dr_matrix4x4.h>
 #include <dr_time.h>
-#include <dr_id_object.h>
 
 #include "dr_animation.h"
 #include "dr_skeleton.h"
@@ -339,7 +338,6 @@ AnimatorComponent::getClassID() {
   return CLASS_NAME_ID(AnimatorComponent);
 }
 
-void
 GameComponent*
 AnimatorComponent::cloneIn(GameObject& _go) {
   

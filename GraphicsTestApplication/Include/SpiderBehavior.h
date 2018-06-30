@@ -36,10 +36,16 @@ class SpiderBehavior : public GameComponent
 
   SpiderBehavior(GameObject& _gameObject);
 
-  virtual void onCreate() override;
-  virtual void onUpdate() override;
-  virtual void onRender() override;
-  virtual void onDestroy() override;
+  virtual void 
+  onCreate() override;
+  virtual void 
+  onUpdate() override;
+  virtual void 
+  onRender() override;
+  virtual void 
+  onDestroy() override;
+  virtual UInt32
+  getClassID();
 
   virtual GameComponent*
   cloneIn(GameObject & _go) override;

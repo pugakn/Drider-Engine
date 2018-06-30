@@ -1,6 +1,7 @@
 #include "SpiderBehavior.h"
 
 #include <dr_animator_component.h>
+#include <dr_id_object.h>
 #include <dr_model.h>
 #include <dr_render_component.h>
 #include <dr_gameObject.h>
@@ -31,6 +32,10 @@ SpiderBehavior::onRender() {
 void 
 SpiderBehavior::onDestroy() {
 
+}
+
+UInt32 SpiderBehavior::getClassID() {
+  return CLASS_NAME_ID(SpiderBehavior);
 }
 
 GameComponent*

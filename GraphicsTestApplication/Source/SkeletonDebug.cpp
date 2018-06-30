@@ -2,6 +2,7 @@
 #include <dr_aabb.h>
 #include <dr_animator_component.h>
 #include <dr_gameObject.h>
+#include <dr_id_object.h>
 #include <dr_logger.h>
 #include <dr_skeleton.h>
 #include <dr_transform.h>
@@ -122,6 +123,10 @@ SkeletonDebug::cloneIn(GameObject& _go) {
   dup->m_meshes = m_meshes;
 
   return dup;
+}
+
+UInt32 SkeletonDebug::getClassID() {
+  return CLASS_NAME_ID(SkeletonDebug);
 }
 
 

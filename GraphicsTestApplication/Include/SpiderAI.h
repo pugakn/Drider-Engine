@@ -33,6 +33,9 @@ class SpiderAI : public GameComponent {
   virtual GameComponent*
   cloneIn(GameObject& _go) override;
 
+  virtual UInt32
+  getClassID();
+
   void
   setPath(PathHolder* _path);
  private:

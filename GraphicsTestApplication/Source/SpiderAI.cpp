@@ -1,6 +1,7 @@
 #include "SpiderAI.h"
 
 #include <dr_gameObject.h>
+#include <dr_id_object.h>
 #include <dr_time.h>
 #include <dr_math.h>
 #include "../../Utils/Include/dr_random.h"
@@ -134,6 +135,10 @@ SpiderAI::cloneIn(GameObject& _go) {
   //comp->m_state = m_state;
 
   return comp;
+}
+
+UInt32 SpiderAI::getClassID() {
+  return CLASS_NAME_ID(SpiderAI);
 }
 
 void 

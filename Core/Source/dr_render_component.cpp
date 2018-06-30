@@ -1,7 +1,8 @@
 #include "dr_render_component.h"
+
 #include <dr_index_buffer.h>
 #include <dr_vertex_buffer.h>
-#include <dr_id_object.h>
+
 #include "dr_gameObject.h"
 #include "dr_model.h"
 #include "dr_logger.h"
@@ -85,6 +86,7 @@ RenderComponent::onDestroy() {
 
 UInt32 RenderComponent::getClassID()
 {
+  auto id = CLASS_NAME_ID(RenderComponent);
   return CLASS_NAME_ID(RenderComponent);
 }
 

@@ -1,5 +1,7 @@
 #include "FrustumDebug.h"
+
 #include <dr_camera.h>
+#include <dr_id_object.h>
 #include <dr_mesh.h>
 #include <dr_aabb.h>
 #include <dr_camera.h>
@@ -96,6 +98,10 @@ FrustumDebug::create() {
 
   createMeshBuffers(meshes);
 
+}
+
+UInt32 FrustumDebug::getClassID() {
+  return CLASS_NAME_ID(FrustumDebug);
 }
 
 void FrustumDebug::onCreate() {

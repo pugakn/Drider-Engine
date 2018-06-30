@@ -3,6 +3,7 @@
 #include <vector>
 #include <unordered_map>
 
+#include <dr_id_object.h>
 #include <dr_memory.h>
 #include <dr_quaternion.h>
 
@@ -19,7 +20,8 @@ class Matrix4x4;
 * Component used to manage a gameObject animations
 */
 
-class DR_CORE_EXPORT AnimatorComponent : public GameComponent
+class DR_CORE_EXPORT AnimatorComponent : public GameComponent,
+                                         public IDClass<AnimatorComponent>
 {
 
  public:

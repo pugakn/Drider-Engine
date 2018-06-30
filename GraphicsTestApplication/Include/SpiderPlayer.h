@@ -35,7 +35,10 @@ private:
 
   virtual void 
   onDestroy() override;
-  
+
+  virtual UInt32
+  getClassID();
+
   enum State 
   {
     Idle = SpiderBehavior::Warte,

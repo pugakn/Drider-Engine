@@ -93,11 +93,8 @@ GraphicsApplication::postUpdate() {
   Time::update();
   InputManager::update();
   
-  {
-    //std::cout << "Scene graph update: ";
-    //ScopedTimer q;
-    SceneGraph::update();
-  }
+  //ScopedTimer{},
+  SceneGraph::update();
 
   playerMovement();
 
@@ -123,7 +120,7 @@ GraphicsApplication::postRender() {
   m_staticTech->setCamera(&camera);
   m_linesTech->setCamera(&camera);
 
-  auto& mainC = CameraManager::getCamera(m_camNames[0]);
+  auto mainC = CameraManager::getCamera(m_camNames[0]);
   
   auto& dc = GraphicsAPI::getDeviceContext();
   
@@ -141,10 +138,13 @@ GraphicsApplication::postRender() {
 
     }    
 
-    auto queryRes = SceneGraph::query(*mainC, 
-                                      QUERY_ORDER::kBackToFront, 
-                                      queryFlags);
-    
+    std::vector<QueryObjectInfo> queryRes;
+
+    ScopedTimer{},
+    queryRes = SceneGraph::query(*mainC,  
+                                  QUERY_ORDER::kBackToFront, 
+                                  queryFlags);
+
     dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
 
     for (auto& queryObj : queryRes) {
@@ -233,9 +233,11 @@ GraphicsApplication::initInputCallbacks() {
 
   auto spawnSp =
   [this]() {
-    auto obj = m_spiderSpawn.spawn();
-    auto ai = obj->getComponent<SpiderAI>();
-    ai->setPath(&m_paths[Random::get(0, (Int32)m_paths.size() - 1)]);
+    for (Int32 i = 0; i < 50; ++i) {
+      auto obj = m_spiderSpawn.spawn();
+      auto ai = obj->getComponent<SpiderAI>();
+      ai->setPath(&m_paths[Random::get(0, (Int32)m_paths.size() - 1)]);
+    }
   };
 
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
@@ -408,6 +410,10 @@ GraphicsApplication::createScene() {
   }
 
   auto spidey = addObject(_T("ARA"), _T("Spidey.fbx"), true);
+
+  auto id = CLASS_NAME_ID(RenderComponent);
+  auto ida = CLASS_NAME_ID(AnimatorComponent);
+  auto idb = CLASS_NAME_ID(AABBCollider);
 
   spidey->createComponent<SpiderBehavior>();
   

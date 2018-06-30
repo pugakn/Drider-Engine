@@ -1,8 +1,10 @@
 #pragma once
-#include "dr_core_prerequisites.h"
-#include "dr_gameComponent.h"
+
+#include <dr_id_object.h>
 #include <dr_keyboard.h>
 
+#include "dr_core_prerequisites.h"
+#include "dr_gameComponent.h"
 #include "dr_gameComponent.h"
 
 #include <dr_export_script.h>
@@ -13,7 +15,8 @@ namespace driderSDK {
 class ScriptEnine;
 class ScriptCore;
 
-class DR_CORE_EXPORT ScriptComponent : public GameComponent {
+class DR_CORE_EXPORT ScriptComponent : public GameComponent,
+                                       public IDClass<ScriptComponent> {
   public:
     
     //ScriptComponent(GameObject& _gameObj);

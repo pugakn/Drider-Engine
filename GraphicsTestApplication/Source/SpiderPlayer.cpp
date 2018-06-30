@@ -7,6 +7,7 @@
 #include <dr_aabb_collider.h>
 #include <dr_animator_component.h>
 #include <dr_gameObject.h>
+#include <dr_id_object.h>
 #include <dr_keyboard.h>
 #include <dr_math.h>
 #include <dr_time.h>
@@ -134,6 +135,10 @@ SpiderPlayer::movement(Vector3D dir) {
 void 
 SpiderPlayer::onDestroy() {
 
+}
+
+UInt32 SpiderPlayer::getClassID() {
+  return CLASS_NAME_ID(SpiderPlayer);
 }
 
 void 
