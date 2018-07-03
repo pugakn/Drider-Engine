@@ -86,7 +86,7 @@ function addInput(dataInput) {
   component += '<label for="objectName' + dataInput.name + '">'+  dataInput.name + ': </label>';
   component += '<input oninput="updateInput(this)" name:"objectName' + dataInput.name + '" type="' + dataInput.type;
   if (dataInput.type == "checkbox") {
-    component += '" checked="'+ dataInput.checked + '">';
+    component += '" checked="'+ dataInput.value + '">';
   }
   else {
     component += '" value="'+ dataInput.value + '">';
@@ -140,17 +140,17 @@ var componentes = {
         {
           "type": "number",
           "name": "altura",
-          "value": 0
+          "value": "0"
         },
         {
           "type": "checkbox",
           "name": "activado",
-          "checked": true
+          "value": "true"
         },
         {
           "type": "selectable",
           "name": "colores",
-          "selected": 5,
+          "selected": "1",
           "options": [
             {"name": "rojos"},
             {"name": "rojo"},
@@ -210,4 +210,5 @@ function JS_UpdateComponents(data) {
     addComponent(components.components[i]);
   }
 }
-//JS_UpdateComponents("{'id':'3','components': [{'name':'RenderComponent', 'inputs':[]},{'name':'AABBCollider', 'inputs':[]}]}");
+
+JS_UpdateComponents("{'id':'3','components': [{'name':'RenderComponent', 'inputs':[{'type': 'text','name': 'nombre','id': '0','value': 'lucas'},{'type': 'number','name': 'altura','id': '1','value': '0'},{'type': 'checkbox','name': 'activado','id': '2','value': 'true'},{'type': 'checkbox','name': 'activado','id': '3','value': 'false'},{'type': 'color','name': 'color','id': '4','value': '#ff0000'},{'type': 'droppableFile','name': 'Albedo','id': '5','value': 'colo.x'},{'type': 'droppableGO','name': 'colider','id': '5','value': 'piso'},{'type': 'selectable','name': 'Tipos de campos','id': '5','selected': 'colider','options': [{'name': 'text'},{'name': 'number'},{'name': 'checkbox'},{'name': 'color'},{'name': 'droppableFile'},{'name': 'droppableGO'}]}]},{'name':'AABBCollider', 'inputs':[]}]}");

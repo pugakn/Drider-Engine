@@ -1,4 +1,5 @@
 #include "..\Include\dr_scene_editor.h"
+#include "..\Include\dr_render_inputs.h"
 #include <dr_device.h>
 #include <dr_graphics_api.h>
 #include <dr_graphics_driver.h>
@@ -29,6 +30,7 @@
 #include <dr_math.h>
 #include <dr_id_object.h>
 #include<Shlwapi.h>
+
 #pragma comment(lib, "Shlwapi.lib")
 
 #include <dr_model.h>
@@ -377,7 +379,10 @@ void SceneEditor::initUI()
     for (auto component : components) {
       response += _T("{'name':'") + component->getName() + _T("', 'inputs':[");
       if (component->getClassID() == CLASS_NAME_ID(RenderComponent)) {
-        addRenderComponentInputs(&response);
+        //addRenderComponentInputs(&response);
+        RenderInputs temp;
+        temp.getInputs(&response);
+        response.erase(response.length() - 1);
       }
       response += _T("]},");
     }
