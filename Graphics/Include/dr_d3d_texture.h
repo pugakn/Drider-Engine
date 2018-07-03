@@ -4,7 +4,7 @@
 
 struct ID3D11Texture2D;
 struct ID3D11ShaderResourceView;
-
+struct ID3D11UnorderedAccessView;
 namespace driderSDK {
 
 /**
@@ -157,6 +157,7 @@ class DR_GRAPHICS_EXPORT D3DTexture : public Texture
 
   ID3D11Texture2D* APITexture;
   ID3D11ShaderResourceView* APIView;
+  ID3D11UnorderedAccessView* m_APIUAV;
  private:
   ID3D11Texture2D* m_stagingTexture;
   UInt32 m_arraySize;

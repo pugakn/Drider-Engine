@@ -104,6 +104,8 @@ D3DTexture::createFromMemory(const Device& device,
     srvDesc.Texture2D.MipLevels = Math::MAX_UINT32;
   }
 
+
+
   HRESULT hr = apiDevice->
     D3D11Device->
     CreateTexture2D(&apiDesc,
@@ -115,6 +117,33 @@ D3DTexture::createFromMemory(const Device& device,
     CreateShaderResourceView(APITexture,
       &srvDesc,
       &APIView);
+
+  if (desc.bindFlags & DR_BIND_FLAGS::UNORDERED_ACCESS) {
+    D3D11_UAV_DIMENSION dimUAV;
+    D3D11_UNORDERED_ACCESS_VIEW_DESC viewDescUAV;
+    ZeroMemory(&viewDescUAV, sizeof(viewDescUAV));
+    viewDescUAV.Format = apiDesc.Format; //DXGI_FORMAT_R32G32B32A32_FLOAT;
+    switch (desc.dimension)
+    {
+    case DR_DIMENSION::k1D:
+      dimUAV = D3D11_UAV_DIMENSION_TEXTURE1D;
+      break;
+    case DR_DIMENSION::k2D:
+      dimUAV = D3D11_UAV_DIMENSION_TEXTURE2D;
+      break;
+    case DR_DIMENSION::k3D:
+      dimUAV = D3D11_UAV_DIMENSION_TEXTURE3D;
+      break;
+    case DR_DIMENSION::kCUBE_MAP:
+      dimUAV = D3D11_UAV_DIMENSION_UNKNOWN;
+      break;
+    default:
+      break;
+      viewDescUAV.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
+      viewDescUAV.Texture2D.MipSlice = 0;
+      apiDevice->D3D11Device->CreateUnorderedAccessView(APITexture, &viewDescUAV, &m_APIUAV);
+    }
+  }
   
   if (desc.CPUAccessFlags & DR_CPU_ACCESS_FLAG::drRead) {
     D3D11_TEXTURE2D_DESC apiDesc2 = apiDesc;
@@ -178,9 +207,17 @@ D3DTexture::set(const DeviceContext& deviceContext,
         PSSetShaderResources(slot, 1, &APIView);
   }
   else if (DR_SHADER_TYPE_FLAG::kCompute == shaderType) {
-    reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
-      D3D11DeviceContext->
+    if (m_descriptor.bindFlags & DR_BIND_FLAGS::UNORDERED_ACCESS) {
+      reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
+        D3D11DeviceContext->
+        CSSetUnorderedAccessViews(slot, 1, &m_APIUAV,0);
+    }
+    else
+    {
+      reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
+        D3D11DeviceContext->
         CSSetShaderResources(slot, 1, &APIView);
+    }
   }
 }
 
@@ -191,6 +228,9 @@ D3DTexture::release() {
     m_stagingTexture->Release();
   if (APIView)
     APIView->Release();
+  if (m_descriptor.bindFlags & DR_BIND_FLAGS::UNORDERED_ACCESS) {
+    m_APIUAV->Release();
+  }
   delete this;
 }
 
