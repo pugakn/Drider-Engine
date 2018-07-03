@@ -90,22 +90,6 @@ class DR_GRAPHICS_EXPORT D3DTexture : public Texture
   * @param deviceContext
   *   The device context to set the resource
   *
-  * @param shaderType
-  *   The shader where the texture will be set to null
-  */
-  void
-  setTextureNull(const DeviceContext& deviceContext,
-                 DR_SHADER_TYPE_FLAG::E shaderType =
-                   DR_SHADER_TYPE_FLAG::kFragment) const override;
-
-  /**
-  * TEST::
-  *
-  * Set the texture to the shader
-  *
-  * @param deviceContext
-  *   The device context to set the resource
-  *
   * @param slot
   *   The slot where the texture will be placed
   *

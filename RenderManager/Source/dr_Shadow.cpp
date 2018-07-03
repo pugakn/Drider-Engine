@@ -24,7 +24,9 @@ ShadowPass::init(PassInitData* initData) {
 
   m_vsFilename = _T("Shadow_vs.hlsl");
   m_fsFilename = _T("Shadow_ps.hlsl");
+  m_csFilename = _T("Shadow_cs.hlsl");
 
+  changeSize(data->RTWidht, data->RTHeight);
   recompileShader();
 
   DrBufferDesc bdesc;
@@ -40,69 +42,23 @@ ShadowPass::init(PassInitData* initData) {
   SSdesc.addressV = DR_TEXTURE_ADDRESS::kWrap;
   SSdesc.addressW = DR_TEXTURE_ADDRESS::kWrap;
   m_samplerState = dr_gfx_unique(dc.createSamplerState(SSdesc));
-
-  /////////////////////////////////////////////////////////////////////////////
-  driderSDK::File file;
-  String shaderSource;
-
-  file.Open(_T("ShadowMerge_vs.hlsl"));
-  shaderSource = StringUtils::toString(file.GetAsString(file.Size()));
-  file.Close();
-
-  m_ShaderVMerge = dr_gfx_unique(dc.createShaderFromMemory(shaderSource.data(),
-                                                           shaderSource.size(),
-                                                           DR_SHADER_TYPE_FLAG::kVertex));
-
-  shaderSource.clear();
-
-  file.Open(_T("ShadowMerge_ps.hlsl"));
-  shaderSource = StringUtils::toString(file.GetAsString(file.Size()));
-  file.Close();
-
-  m_ShaderFMerge = dr_gfx_unique(dc.createShaderFromMemory(shaderSource.data(),
-                                                           shaderSource.size(),
-                                                           DR_SHADER_TYPE_FLAG::kFragment));
-
-  shaderSource.clear();
 }
 
 void
-ShadowPass::recompileShader() {
-  RenderPass::recompileShader();
+ShadowPass::changeSize(SizeT Width, SizeT Height) {
+  RTWidht = Width;
+  RTHeight = Height;
+}
 
-  if (m_ShaderVMerge != nullptr) {
-    m_ShaderVMerge->release();
-    m_ShaderVMerge.release();
-  }
-  if (m_ShaderFMerge != nullptr) {
-    m_ShaderFMerge->release();
-    m_ShaderFMerge.release();
-  }
+void
+ShadowPass::recompileShader(String vsPreText,
+                            String psPreText,
+                            String csPreText) {
+  String preComputeData = "";
+  preComputeData += "#define TXWIDTH " + StringUtils::toString(RTWidht) + "\n";
+  preComputeData += "#define TXHEIGHT " + StringUtils::toString(RTHeight) + "\n";
 
-  Device& device = GraphicsAPI::getDevice();
-  
-  driderSDK::File file;
-  String shaderSource;
-
-  file.Open(_T("ShadowMerge_vs.hlsl"));
-  shaderSource = StringUtils::toString(file.GetAsString(file.Size()));
-  file.Close();
-
-  m_ShaderVMerge = dr_gfx_unique(device.createShaderFromMemory(shaderSource.data(),
-                                                               shaderSource.size(),
-                                                               DR_SHADER_TYPE_FLAG::kVertex));
-
-  shaderSource.clear();
-
-  file.Open(_T("ShadowMerge_ps.hlsl"));
-  shaderSource = StringUtils::toString(file.GetAsString(file.Size()));
-  file.Close();
-
-  m_ShaderFMerge = dr_gfx_unique(device.createShaderFromMemory(shaderSource.data(),
-                                                               shaderSource.size(),
-                                                               DR_SHADER_TYPE_FLAG::kFragment));
-
-  shaderSource.clear();
+  RenderPass::recompileShader("", "", preComputeData);
 }
 
 void
@@ -110,7 +66,7 @@ ShadowPass::draw(PassDrawData* drawData) {
   ShadowDrawData* data = static_cast<ShadowDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
-  data->OutRt->getTexture(0).setTextureNull(dc);
+  dc.setResourcesNull();
   data->OutRt->setRTNull(dc);
   data->OutRt->set(dc, *data->dsOptions);
 
@@ -131,7 +87,7 @@ ShadowPass::draw(PassDrawData* drawData) {
   data->dsOptions->clear(dc, 1, 0);
 
   for (auto& modelPair : *data->models) {
-    data->OutRt->getTexture(0).setTextureNull(dc);
+    dc.setResourcesNull();
     if (auto material = modelPair.mesh.material.lock()) {
       if (auto AlbedoTex = material->getProperty(_T("Albedo"))) {
         if (auto GA_Tex = AlbedoTex->texture.lock()) {
@@ -167,37 +123,29 @@ ShadowPass::merge(std::array<GFXShared<RenderTarget>, 4> m_RTShadowDummy,
                   GFXShared<RenderTarget> OutRt) {
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
-  OutRt->getTexture(0).setTextureNull(dc);
+  dc.setResourcesNull();
   OutRt->setRTNull(dc);
+
+  m_computeShader->set(dc);
+
   OutRt->set(dc, *dsOptions);
 
-  m_ShaderVMerge->set(dc);
-  m_ShaderFMerge->set(dc);
-
-  m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kFragment);
+  m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kCompute);
 
   m_inputLayout->set(dc);
 
-  dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
-
-  m_RTShadowDummy[0]->getTexture(0).set(dc, 0);
-  m_RTShadowDummy[1]->getTexture(0).set(dc, 1);
-  m_RTShadowDummy[2]->getTexture(0).set(dc, 2);
-  m_RTShadowDummy[3]->getTexture(0).set(dc, 3);
+  m_RTShadowDummy[0]->getTexture(0).set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute);
+  m_RTShadowDummy[1]->getTexture(0).set(dc, 1, DR_SHADER_TYPE_FLAG::kCompute);
+  m_RTShadowDummy[2]->getTexture(0).set(dc, 2, DR_SHADER_TYPE_FLAG::kCompute);
+  m_RTShadowDummy[3]->getTexture(0).set(dc, 3, DR_SHADER_TYPE_FLAG::kCompute);
 
   const float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
   OutRt->clear(dc, clearColor);
   dsOptions->clear(dc, 1, 0);
 
-  auto screenQuadModel = ResourceManager::getReferenceT<Model>(_T("ScreenAlignedQuad.3ds"));
-  if (screenQuadModel) {
-    for (auto& SAQ : screenQuadModel->meshes) {
-      SAQ.vertexBuffer->set(dc);
-      SAQ.indexBuffer->set(dc);
+  dc.dispatch(1, RTHeight, 1);
 
-      dc.draw(SAQ.indices.size(), 0, 0);
-    }
-  }
+  dc.setUAVsNull();
 }
 
 }

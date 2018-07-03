@@ -45,7 +45,7 @@ PostProcessingPass::draw(PassDrawData* drawData) {
   PostProcessingDrawData* data = static_cast<PostProcessingDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
-  data->ColorBlurRT->getTexture(0).setTextureNull(dc);
+  dc.setResourcesNull();
   GraphicsAPI::getBackBufferRT().setRTNull(dc);
   GraphicsAPI::getBackBufferRT().set(dc, GraphicsAPI::getDepthStencil());
 

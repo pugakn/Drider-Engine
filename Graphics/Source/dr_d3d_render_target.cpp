@@ -82,15 +82,9 @@ D3DRenderTarget::set(const DeviceContext& deviceContext,
     D3D11DeviceContext->RSSetViewports(1, &viewport_RT);
 }
 
-void D3DRenderTarget::clear(const DeviceContext& deviceContext, const float color[4])
-{
-  float rgba[4]; // Cambiar después xD
-  rgba[0] = 0.0f;
-  rgba[1] = 0.0f;
-  rgba[2] = 1.0f;
-  rgba[3] = 1.0f;
-
-  for (SizeT i = 0; i < RTVs.size(); i++) {
+void
+D3DRenderTarget::clear(const DeviceContext& deviceContext, const float color[4]) {
+  for (SizeT i = 0; i < RTVs.size(); ++i) {
     reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
       D3D11DeviceContext->ClearRenderTargetView(RTVs[i], color);
   }
@@ -98,11 +92,11 @@ void D3DRenderTarget::clear(const DeviceContext& deviceContext, const float colo
 
 void
 D3DRenderTarget::release() {
-  for (auto &it : RTVs) {
+  for (auto& it : RTVs) {
     it->Release();
   }
   if (_textureOwner) {
-    for (auto &it : m_texturesVec) {
+    for (auto& it : m_texturesVec) {
       it->release();
     }
   }

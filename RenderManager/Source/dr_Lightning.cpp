@@ -48,7 +48,7 @@ LightningPass::draw(PassDrawData* drawData) {
   LightningDrawData* data = static_cast<LightningDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
-  data->OutRt->getTexture(0).setTextureNull(dc);
+  dc.setResourcesNull();
   data->OutRt->setRTNull(dc);
   data->OutRt->set(dc, *data->dsOptions);
 

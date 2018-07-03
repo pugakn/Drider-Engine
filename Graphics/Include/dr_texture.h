@@ -85,33 +85,6 @@ class DR_GRAPHICS_EXPORT Texture
   * @param slot
   *   The slot where the texture will be placed
   *
-  */
-  //virtual void
-  //setTextureNull(const DeviceContext& deviceContext) const = 0;
-
-  /**
-  * Set null texture to the shader
-  *
-  * @param deviceContext
-  *   The device context to set the resource
-  *
-  * @param shaderType
-  *   The shader where the texture will be set to null
-  *
-  */
-  virtual void
-  setTextureNull(const DeviceContext& deviceContext,
-                 DR_SHADER_TYPE_FLAG::E shaderType = DR_SHADER_TYPE_FLAG::kFragment) const = 0;
-
-  /**
-  * Set the texture to the shader
-  *
-  * @param deviceContext
-  *   The device context to set the resource
-  *
-  * @param slot
-  *   The slot where the texture will be placed
-  *
   * @param shaderType
   *   The shader where the texture will be set on
   *

@@ -193,14 +193,14 @@ D3DDeviceContext::dispatch(UInt32 _threadGroupCountX,
 
 void
 D3DDeviceContext::setResourcesNull() {
-  ID3D11ShaderResourceView* nullTextures[16] = {};
+  ID3D11ShaderResourceView* nullTextures[MAX_TEXTURES] = {};
   std::memset(nullTextures, 0, sizeof(nullTextures));
   D3D11DeviceContext->
-    PSSetShaderResources(0, 16, nullTextures);
+    PSSetShaderResources(0, MAX_TEXTURES, nullTextures);
   D3D11DeviceContext->
-    VSSetShaderResources(0, 16, nullTextures);
+    VSSetShaderResources(0, MAX_TEXTURES, nullTextures);
   D3D11DeviceContext->
-    CSSetShaderResources(0, 16, nullTextures);
+    CSSetShaderResources(0, MAX_TEXTURES, nullTextures);
 }
 
 void

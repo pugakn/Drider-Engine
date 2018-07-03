@@ -100,8 +100,8 @@ class DR_RENDERMAN_EXPORT RenderMan {
   std::vector<float> partitions;
   std::vector<SceneGraph::SharedGameObject> vecGos;
  protected:
-   std::shared_ptr<TextureCore> m_cubemap;
-   std::shared_ptr<TextureCore> m_cubemapDiffuse;
+  std::shared_ptr<TextureCore> m_cubemap;
+  std::shared_ptr<TextureCore> m_cubemapDiffuse;
 
   GBufferPass m_GBufferPass;
   GBufferInitData m_GBufferInitData;

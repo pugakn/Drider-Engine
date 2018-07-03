@@ -21,11 +21,11 @@ struct PS_INPUT {
   float2 Texcoord : TEXCOORD0;
 };
 
-#define CHROMATIC_ABERRATION
-#define DEPTH_OF_FIELD
-#define VIGNETTE
-#define BLOOM
-#define TONE_MAPPING
+//#define CHROMATIC_ABERRATION
+//#define DEPTH_OF_FIELD
+//#define VIGNETTE
+//#define BLOOM
+//#define TONE_MAPPING
 
 float4
 BasicExposure(in float3 Color, in float exposure) {
@@ -203,5 +203,6 @@ FS(PS_INPUT input) : SV_TARGET0 {
   finalColor *= vignette;
   #endif //VIGNETTE
   
+  return float4(LuminescenceTex[0].xxx, 1.0f);
   return finalColor;
 }

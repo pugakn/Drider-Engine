@@ -46,7 +46,7 @@ HorBlurPass::draw(PassDrawData* drawData) {
   HorBlurDrawData* data = static_cast<HorBlurDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
-  data->OutRt->getTexture(0).setTextureNull(dc);
+  dc.setResourcesNull();
   data->OutRt->setRTNull(dc);
   data->OutRt->set(dc, *data->dsOptions);
 

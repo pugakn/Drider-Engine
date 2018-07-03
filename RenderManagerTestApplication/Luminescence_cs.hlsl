@@ -44,5 +44,5 @@ CS(uint3 id : SV_DispatchThreadID) {
   
   totalLuminescence /= TextureWidth * TextureHeight;
   
-  AverageLuminescence[0].x = 1.0f;
+  AverageLuminescence[0].x = 0.5f;
 }

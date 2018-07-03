@@ -78,7 +78,8 @@ class DR_GRAPHICS_EXPORT RenderTarget
   *
   */
   virtual void
-  set(const DeviceContext& deviceContext, const DepthStencil& depthStencil) const = 0;
+  set(const DeviceContext& deviceContext,
+      const DepthStencil& depthStencil) const = 0;
 
   /**
   * Release the allocated memory

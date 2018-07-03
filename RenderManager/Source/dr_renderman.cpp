@@ -181,6 +181,8 @@ RenderMan::init() {
   m_SSAOPass.init(&m_SSAOInitData);
   m_HorBlurPass.init(&m_HorBlurInitData);
   m_VerBlurPass.init(&m_VerBlurInitData);
+  m_ShadowInitData.RTWidht = shadowWidth;
+  m_ShadowInitData.RTHeight = shadowHeight;
   m_ShadowPass.init(&m_ShadowInitData);
   m_LightningPass.init(&m_LightningInitData);
   m_luminescencePass.init(&m_luminescenceInitData);

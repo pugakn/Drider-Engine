@@ -47,7 +47,7 @@ GBufferPass::draw(PassDrawData* drawData) {
   GBufferDrawData* data = static_cast<GBufferDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
-  data->OutRt->getTexture(0).setTextureNull(dc);
+  dc.setResourcesNull();
   data->OutRt->setRTNull(dc);
 
   data->OutRt->set(dc, *data->dsOptions);
@@ -75,7 +75,7 @@ GBufferPass::draw(PassDrawData* drawData) {
   data->dsOptions->clear(dc, 1, 0);
 
   for (auto& modelPair : *data->models) {
-    data->OutRt->getTexture(0).setTextureNull(dc);
+    dc.setResourcesNull();
     if (auto material = modelPair.mesh.material.lock()) {
       auto AlbedoTex = material->getProperty(_T("Albedo"));
       if (AlbedoTex != nullptr) {

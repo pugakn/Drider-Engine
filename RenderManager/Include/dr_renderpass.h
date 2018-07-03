@@ -34,7 +34,9 @@ class RenderPass {
   /*
   */
   virtual void
-  recompileShader();
+  recompileShader(String vsPreText = "",
+                  String psPreText = "",
+                  String csPreText = "");
 
   /*
   */

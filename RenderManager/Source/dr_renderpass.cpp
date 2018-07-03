@@ -16,7 +16,9 @@ RenderPass::~RenderPass() {
 }
 
 void
-RenderPass::recompileShader() {
+RenderPass::recompileShader(String vsPreText,
+                            String psPreText,
+                            String csPreText) {
   if (m_vertexShader != nullptr) {
     m_vertexShader->release();
     m_vertexShader.release();
@@ -37,7 +39,7 @@ RenderPass::recompileShader() {
 
   if (!m_vsFilename.empty()) {
     file.Open(m_vsFilename);
-    shaderSrc = StringUtils::toString(file.GetAsString(file.Size()));
+    shaderSrc = vsPreText + StringUtils::toString(file.GetAsString(file.Size()));
     file.Close();
 
     m_vertexShader = dr_gfx_unique(dc.createShaderFromMemory(shaderSrc.data(),
@@ -49,7 +51,7 @@ RenderPass::recompileShader() {
 
   if (!m_fsFilename.empty()) {
     file.Open(m_fsFilename);
-    shaderSrc = StringUtils::toString(file.GetAsString(file.Size()));
+    shaderSrc = psPreText + StringUtils::toString(file.GetAsString(file.Size()));
     file.Close();
 
     m_fragmentShader = dr_gfx_unique(dc.createShaderFromMemory(shaderSrc.data(),
@@ -64,7 +66,7 @@ RenderPass::recompileShader() {
 
   if (!m_csFilename.empty()) {
     file.Open(m_csFilename);
-    shaderSrc = StringUtils::toString(file.GetAsString(file.Size()));
+    shaderSrc = csPreText + StringUtils::toString(file.GetAsString(file.Size()));
     file.Close();
 
     m_computeShader = dr_gfx_unique(dc.createShaderFromMemory(shaderSrc.data(),

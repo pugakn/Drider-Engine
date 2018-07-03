@@ -9,6 +9,8 @@
 namespace driderSDK {
 
 struct ShadowInitData : PassInitData {
+  SizeT RTWidht;
+  SizeT RTHeight;
 };
 
 struct ShadowDrawData : PassDrawData {
@@ -42,10 +44,13 @@ class ShadowPass : public RenderPass {
   void
   init(PassInitData* initData);
 
-  /*
-  */
   void
-  recompileShader();
+  changeSize(SizeT Width, SizeT Height);
+
+  void
+  recompileShader(String vsPreText = "",
+                  String psPreText = "",
+                  String csPreText = "");
 
   /*
   */
@@ -70,9 +75,8 @@ class ShadowPass : public RenderPass {
 
   GFXUnique<SamplerState> m_samplerState;
 
-  /////////////////////////////////////////////////////////////////////////////
-  GFXUnique<Shader> m_ShaderVMerge;
-  GFXUnique<Shader> m_ShaderFMerge;
+  SizeT RTWidht;
+  SizeT RTHeight;
 };
 
 }

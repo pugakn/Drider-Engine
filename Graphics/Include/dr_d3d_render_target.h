@@ -69,6 +69,7 @@ class DR_GRAPHICS_EXPORT D3DRenderTarget : public RenderTarget
       const DepthStencil& depthStencil) const override;
 
 
+
   void
     clear(const DeviceContext& deviceContext, const float color[4]) override;
   /**
