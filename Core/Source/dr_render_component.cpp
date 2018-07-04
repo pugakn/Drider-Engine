@@ -86,7 +86,6 @@ RenderComponent::onDestroy() {
 
 UInt32 RenderComponent::getClassID()
 {
-  auto id = CLASS_NAME_ID(RenderComponent);
   return CLASS_NAME_ID(RenderComponent);
 }
 

@@ -135,8 +135,7 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   {
     T* componentCasted = nullptr;
     for (auto& component : m_components) {
-      /*if (auto casted = dynamic_cast<T*>(componet.get())) {
-        componentCasted = casted;
+      /*if (componentCasted = dynamic_cast<T*>(component.get())) {
         break;
       }*/
       

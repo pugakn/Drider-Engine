@@ -63,6 +63,8 @@ GraphicsApplication::~GraphicsApplication() {}
 void
 GraphicsApplication::postInit() {
   
+  IDClass<int>::ID();
+
   initModules();   
   initInputCallbacks();
   loadResources();
@@ -140,7 +142,7 @@ GraphicsApplication::postRender() {
 
     std::vector<QueryObjectInfo> queryRes;
 
-    ScopedTimer{},
+    //ScopedTimer{},
     queryRes = SceneGraph::query(*mainC,  
                                   QUERY_ORDER::kBackToFront, 
                                   queryFlags);
@@ -410,10 +412,6 @@ GraphicsApplication::createScene() {
   }
 
   auto spidey = addObject(_T("ARA"), _T("Spidey.fbx"), true);
-
-  auto id = CLASS_NAME_ID(RenderComponent);
-  auto ida = CLASS_NAME_ID(AnimatorComponent);
-  auto idb = CLASS_NAME_ID(AABBCollider);
 
   spidey->createComponent<SpiderBehavior>();
   
