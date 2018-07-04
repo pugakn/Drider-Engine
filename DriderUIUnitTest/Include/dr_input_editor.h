@@ -1,10 +1,17 @@
 #pragma once
+#include <vector>
+
+#include <dr_memory.h>
 #include <dr_util_prerequisites.h>
 
-#include<vector>
 namespace driderSDK {
+
+class GameComponent;
+
 class InputEditor {
  public:
+
+  InputEditor(GameComponent& _component);
   /**
   * Return to inputs in component
   *
@@ -42,5 +49,10 @@ class InputEditor {
                      TString selected,
                      std::vector<TString> *options);
 
+  static std::unique_ptr<InputEditor>
+  createInputEditor(GameComponent& _component);
+
+ protected:
+  GameComponent& m_component;
 };
 }

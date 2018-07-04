@@ -1,5 +1,5 @@
 #include "..\Include\dr_scene_editor.h"
-#include "..\Include\dr_render_inputs.h"
+#include "..\Include\dr_input_editor.h"
 #include <dr_device.h>
 #include <dr_graphics_api.h>
 #include <dr_graphics_driver.h>
@@ -378,12 +378,20 @@ void SceneEditor::initUI()
     auto components = gameObject->getComponents<GameComponent>();
     for (auto component : components) {
       response += _T("{'name':'") + component->getName() + _T("', 'inputs':[");
-      if (component->getClassID() == CLASS_NAME_ID(RenderComponent)) {
-        //addRenderComponentInputs(&response);
-        RenderInputs temp;
-        temp.getInputs(&response);
-        response.erase(response.length() - 1);
-      }
+
+      auto inputEditor = InputEditor::createInputEditor(*component);
+      //map[component->getID()]->setComponent(*component);
+      //map[component->getID()]->getInputs()
+
+      inputEditor->getInputs(&response);
+
+      response.erase(response.length() - 1);
+
+      //if (component->getClassID() == CLASS_NAME_ID(RenderComponent)) {
+      //  RenderInputs temp;
+      //  temp.getInputs(&response);
+      //  response.erase(response.length() - 1);
+      //}
       response += _T("]},");
     }
     response.erase(response.length() - 1);

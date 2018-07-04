@@ -1,8 +1,11 @@
 #include "dr_render_inputs.h"
+#include <dr_render_component.h>
+
 #include <vector>
 
 void
 driderSDK::RenderInputs::getInputs(TString * response) {
+
   (*response) += addInput(_T("0"), _T("text"), _T("nombre"), _T("lucas"));
   (*response) += addInput(_T("1"), _T("number"), _T("altura"), _T("0"));
   (*response) += addInput(_T("2"), _T("checkbox"), _T("activado"), _T("true"));
@@ -21,6 +24,9 @@ driderSDK::RenderInputs::getInputs(TString * response) {
                                     _T("Tipos de campos"),
                                     _T("colider"),
                                     &options);
+  
+  auto render = static_cast<RenderComponent&>(m_component);
+
   
 
 }
