@@ -138,6 +138,9 @@
     <ClInclude Include="Include\dr_name_object.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\dr_sound_component.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_animation.cpp">
@@ -244,9 +247,6 @@
     </ClCompile>
     <ClCompile Include="Source\dr_sound_component.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Include\dr_sound_component.h">
-      <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
