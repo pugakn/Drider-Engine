@@ -169,25 +169,25 @@ D3DDeviceContext::draw(UInt32 indexCount,
 }
 
 void 
-D3DDeviceContext::drawInstanced(UInt32 indexCount, 
-                                UInt32 instanceCount, 
-                                UInt32 startIndexLocation, 
-                                UInt32 startVertexLocation, 
+D3DDeviceContext::drawInstanced(UInt32 indexCount,
+                                UInt32 instanceCount,
+                                UInt32 startIndexLocation,
+                                UInt32 startVertexLocation,
                                 UInt32 startInstanceLocation) const
 {
-  D3D11DeviceContext->DrawIndexedInstanced(indexCount, 
-                                           instanceCount, 
-                                           startIndexLocation, 
-                                           startVertexLocation, 
+  D3D11DeviceContext->DrawIndexedInstanced(indexCount,
+                                           instanceCount,
+                                           startIndexLocation,
+                                           startVertexLocation,
                                            startInstanceLocation);
 }
 
 void 
-D3DDeviceContext::dispatch(UInt32 _threadGroupCountX, 
-                           UInt32 _threadGroupCountY, 
+D3DDeviceContext::dispatch(UInt32 _threadGroupCountX,
+                           UInt32 _threadGroupCountY,
                            UInt32 _threadGroupCountZ) const {
-  D3D11DeviceContext->Dispatch(_threadGroupCountX, 
-                               _threadGroupCountY, 
+  D3D11DeviceContext->Dispatch(_threadGroupCountX,
+                               _threadGroupCountY,
                                _threadGroupCountZ);
 }
 
@@ -218,7 +218,7 @@ D3DDeviceContext::setUAVsNull() {
   ID3D11UnorderedAccessView* null[16] = {};
   std::memset(null, 0, sizeof(null));
   D3D11DeviceContext->
-    CSSetUnorderedAccessViews(0, 16, null,NULL);
+    CSSetUnorderedAccessViews(0, 7, null,NULL);
 }
 
 void 

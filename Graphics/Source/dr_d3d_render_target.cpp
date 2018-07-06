@@ -42,9 +42,8 @@ D3DRenderTarget::create(const Device& device,
 }
 
 void 
-D3DRenderTarget::create(const Device & device, 
-                        const std::vector<Texture*>& textures)
-{
+D3DRenderTarget::create(const Device& device, 
+                        const std::vector<Texture*>& textures) {
   _textureOwner = false;
   m_descriptor = textures.back()->getDescriptor();
   m_texturesVec = textures;

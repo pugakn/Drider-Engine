@@ -139,10 +139,10 @@ D3DTexture::createFromMemory(const Device& device,
       break;
     default:
       break;
-      viewDescUAV.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
-      viewDescUAV.Texture2D.MipSlice = 0;
-      apiDevice->D3D11Device->CreateUnorderedAccessView(APITexture, &viewDescUAV, &m_APIUAV);
     }
+    viewDescUAV.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
+    viewDescUAV.Texture2D.MipSlice = 0;
+    apiDevice->D3D11Device->CreateUnorderedAccessView(APITexture, &viewDescUAV, &m_APIUAV);
   }
   
   if (desc.CPUAccessFlags & DR_CPU_ACCESS_FLAG::drRead) {
@@ -210,13 +210,12 @@ D3DTexture::set(const DeviceContext& deviceContext,
     if (m_descriptor.bindFlags & DR_BIND_FLAGS::UNORDERED_ACCESS) {
       reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
         D3D11DeviceContext->
-        CSSetUnorderedAccessViews(slot, 1, &m_APIUAV,0);
+          CSSetUnorderedAccessViews(slot, 1, &m_APIUAV, 0);
     }
-    else
-    {
+    else {
       reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
         D3D11DeviceContext->
-        CSSetShaderResources(slot, 1, &APIView);
+          CSSetShaderResources(slot, 1, &APIView);
     }
   }
 }

@@ -24,7 +24,7 @@ ShadowPass::init(PassInitData* initData) {
 
   m_vsFilename = _T("Shadow_vs.hlsl");
   m_fsFilename = _T("Shadow_ps.hlsl");
-  m_csFilename = _T("Shadow_cs.hlsl");
+  m_csFilename = _T("ShadowMerge_cs.hlsl");
 
   changeSize(data->RTWidht, data->RTHeight);
   recompileShader();
@@ -128,11 +128,9 @@ ShadowPass::merge(std::array<GFXShared<RenderTarget>, 4> m_RTShadowDummy,
 
   m_computeShader->set(dc);
 
-  OutRt->set(dc, *dsOptions);
+  OutRt->getTexture(0).set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute);
 
   m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kCompute);
-
-  m_inputLayout->set(dc);
 
   m_RTShadowDummy[0]->getTexture(0).set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute);
   m_RTShadowDummy[1]->getTexture(0).set(dc, 1, DR_SHADER_TYPE_FLAG::kCompute);
@@ -141,9 +139,9 @@ ShadowPass::merge(std::array<GFXShared<RenderTarget>, 4> m_RTShadowDummy,
 
   const float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
   OutRt->clear(dc, clearColor);
-  dsOptions->clear(dc, 1, 0);
 
-  dc.dispatch(1, RTHeight, 1);
+  DrTextureDesc outRTDesc = OutRt->getDescriptor();
+  dc.dispatch(outRTDesc.width / 32, outRTDesc.height / 32, 1);
 
   dc.setUAVsNull();
 }

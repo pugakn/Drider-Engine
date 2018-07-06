@@ -22,10 +22,13 @@ SSAOPass::init(PassInitData* initData) {
   SSAOInitData* data = static_cast<SSAOInitData*>(initData);
   Device& device = GraphicsAPI::getDevice();
 
-  m_vsFilename = _T("SSAO_vs.hlsl");
-  m_fsFilename = _T("SSAO_ps.hlsl");
+  m_csFilename = _T("SSAO_cs.hlsl");
 
-  recompileShader();
+  String preComputeString = "";
+  preComputeString += "#define TXWIDTH " + StringUtils::toString(data->RTWidth) + "\n";
+  preComputeString += "#define TXHEIGHT " + StringUtils::toString(data->RTHeight) + "\n";
+
+  recompileShader("", "", preComputeString);
 
   DrBufferDesc bdesc;
 
@@ -44,54 +47,37 @@ SSAOPass::init(PassInitData* initData) {
 
 void
 SSAOPass::draw(PassDrawData* drawData) {
-  SSAODrawData* data = static_cast<SSAODrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
+
+  SSAODrawData* data = static_cast<SSAODrawData*>(drawData);
 
   dc.setResourcesNull();
   data->OutRt->setRTNull(dc);
 
-  data->OutRt->set(dc, *data->dsOptions);
+  m_computeShader->set(dc);
 
-  m_vertexShader->set(dc);
-  m_fragmentShader->set(dc);
+  data->OutRt->getTexture(0).set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute);
 
-  m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kFragment);
+  m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kCompute);
 
-  CB.View = data->activeCam->getView();
-  CB.ViewInverse = CB.View;
-  CB.ViewInverse.inverse();
+  data->InRt->getTexture(0).set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute);
+  data->InRt->getTexture(1).set(dc, 1, DR_SHADER_TYPE_FLAG::kCompute);
 
-  CB.Projection = data->activeCam->getProjection();
-  CB.ProjectionInverse = CB.Projection;
-  CB.ProjectionInverse.inverse();
-
-  CB.VP = data->activeCam->getVP();
-  CB.VPInverse = CB.VP;
-  CB.VPInverse.inverse();
+  CB.SSAO_Options[0] = data->SampleRadio;
+  CB.SSAO_Options[1] = data->Intensity;
+  CB.SSAO_Options[2] = data->Scale;
+  CB.SSAO_Options[3] = data->Bias;
 
   m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
-  m_constantBuffer->set(dc);
-
-  m_inputLayout->set(dc);
-
-  dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
+  m_constantBuffer->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
 
   const float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
   data->OutRt->clear(dc, clearColor);
-  (data->dsOptions)->clear(dc, 1, 0);
+  
+  DrTextureDesc outRTDesc = data->OutRt->getDescriptor();
+  dc.dispatch(outRTDesc.width / 32, outRTDesc.height / 32, 1);
 
-  data->InRt->getTexture(0).set(dc, 0);
-  data->InRt->getTexture(1).set(dc, 1);
-
-  auto screenQuadModel = ResourceManager::getReferenceT<Model>(_T("ScreenAlignedQuad.3ds"));
-  if (screenQuadModel) {
-    for (auto& SAQ : screenQuadModel->meshes) {
-      SAQ.vertexBuffer->set(dc);
-      SAQ.indexBuffer->set(dc);
-
-      dc.draw(SAQ.indices.size(), 0, 0);
-    }
-  }
+  dc.setUAVsNull();
 }
 
 }
