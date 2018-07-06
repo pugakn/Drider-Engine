@@ -161,6 +161,7 @@ class DR_RENDERMAN_EXPORT RenderMan {
   GFXShared<RenderTarget> m_RTLightning;
   std::array<GFXShared<RenderTarget>, 4> m_RTShadowDummy; //Used for render shadow cascades.
   GFXShared<RenderTarget> m_RTShadow;
+  std::vector<Texture*> m_vecTexture;
   GFXShared<RenderTarget> m_RTLightningBlur;
   GFXShared<RenderTarget> m_RTPostProcessing;
 

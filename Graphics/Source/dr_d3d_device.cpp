@@ -183,8 +183,8 @@ D3DDevice::createRenderTarget(const DrTextureDesc& desc, UInt32 numRTs)const {
   return renderTarget;
 }
 
-RenderTarget * D3DDevice::createRenderTarget(const std::vector<Texture*>& textures) const
-{
+RenderTarget*
+D3DDevice::createRenderTarget(const std::vector<Texture*>& textures) const {
   RenderTarget* renderTarget = new D3DRenderTarget;
   renderTarget->create(*this, textures);
   return renderTarget;

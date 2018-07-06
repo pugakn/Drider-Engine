@@ -32,6 +32,9 @@ CS(uint3 id : SV_DispatchThreadID) {
   
   float2 uv = float2(0.0f, 0.0f);
   
+  AverageLuminescence[0].x = 0.5f;
+  return;
+
   for (int txHeight = 0; txHeight < TextureHeight; ++txHeight) {
     uv.x = 0.0f;
     for (int txWidth = 0; txWidth < TextureWidth; ++txWidth) {
@@ -44,5 +47,5 @@ CS(uint3 id : SV_DispatchThreadID) {
   
   totalLuminescence /= TextureWidth * TextureHeight;
   
-  AverageLuminescence[0].x = 0.5f;
+  AverageLuminescence[0].x = totalLuminescence;
 }

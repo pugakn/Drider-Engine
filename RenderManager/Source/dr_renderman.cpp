@@ -109,7 +109,11 @@ RenderMan::init() {
   m_TexDescDefault.height = screenHeight * 0.5f;
   m_TexDescDefault.Format = DR_FORMAT::kR8_SNORM;
   m_TexDescDefault.pitch = m_TexDescDefault.width * 1 * 1;
-  m_RTSSAO           = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
+  m_TexDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
+  Texture* SSAOTexure = dc.createEmptyTexture(m_TexDescDefault);
+  m_vecTexture.push_back(SSAOTexure);
+  m_RTSSAO           = dr_gfx_shared(dc.createRenderTarget(m_vecTexture));
+  m_TexDescDefault.bindFlags &= ~DR_BIND_FLAGS::UNORDERED_ACCESS;
 
   m_TexDescDefault.width = screenWidth * 0.5f;
   m_TexDescDefault.height = screenHeight * 0.5f;
@@ -140,8 +144,11 @@ RenderMan::init() {
   m_TexDescDefault.height = shadowHeight;
   m_TexDescDefault.Format = DR_FORMAT::kR32G32B32A32_FLOAT;
   m_TexDescDefault.pitch =  m_TexDescDefault.width * 4 * 4;
-  m_RTShadow         = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
-  m_TexDescDefault.pitch = m_TexDescDefault.width;
+  m_TexDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
+  Texture* ShadowTexure = dc.createEmptyTexture(m_TexDescDefault);
+  m_vecTexture.push_back(ShadowTexure);
+  m_RTShadow = dr_gfx_shared(dc.createRenderTarget(m_vecTexture));
+  m_TexDescDefault.bindFlags &= ~DR_BIND_FLAGS::UNORDERED_ACCESS;
 
   m_TexDescDefault.width  = shadowWidth;
   m_TexDescDefault.height = shadowHeight;
@@ -178,6 +185,8 @@ RenderMan::init() {
   m_ShadowDSoptions         = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
 
   m_GBufferPass.init(&m_GBufferInitData);
+  m_SSAOInitData.RTWidth = screenWidth * 0.5f;
+  m_SSAOInitData.RTHeight = screenWidth * 0.5f;
   m_SSAOPass.init(&m_SSAOInitData);
   m_HorBlurPass.init(&m_HorBlurInitData);
   m_VerBlurPass.init(&m_VerBlurInitData);
@@ -264,10 +273,14 @@ RenderMan::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_GBufferDrawData.dsOptions = m_GBufferDSoptions;
   m_GBufferPass.draw(&m_GBufferDrawData);
 
-  m_SSAODrawData.activeCam = mainCam;
+  m_SSAODrawData.activeCam = mainCam; 
   m_SSAODrawData.InRt = m_RTGBuffer;
   m_SSAODrawData.OutRt = m_RTSSAO;
   m_SSAODrawData.dsOptions = m_SSAODSoptions;
+  m_SSAODrawData.SampleRadio = 0.0008f;
+  m_SSAODrawData.Intensity = 1.0F;
+  m_SSAODrawData.Scale = 1.0f;
+  m_SSAODrawData.Bias = 0.0002f;
   m_SSAOPass.draw(&m_SSAODrawData);
 
   m_HorBlurDrawData.viewportDimensionX = static_cast<float>(screenWidth);

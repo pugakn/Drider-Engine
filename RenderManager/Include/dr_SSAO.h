@@ -7,13 +7,20 @@
 
 namespace driderSDK {
 
-struct SSAOInitData : PassInitData {};
+struct SSAOInitData : PassInitData {
+  SizeT RTWidth;
+  SizeT RTHeight;
+};
 
 struct SSAODrawData : PassDrawData {
   std::shared_ptr<Camera> activeCam;
   GFXShared<RenderTarget> InRt;
   GFXShared<RenderTarget> OutRt;
   GFXShared<DepthStencil> dsOptions;
+  float SampleRadio;
+  float Intensity;
+  float Scale;
+  float Bias;
 };
 
 class SSAOPass : public RenderPass {
@@ -47,12 +54,7 @@ class SSAOPass : public RenderPass {
 
  private:
    struct CBuffer {
-     Matrix4x4 View;
-     Matrix4x4 ViewInverse;
-     Matrix4x4 Projection;
-     Matrix4x4 ProjectionInverse;
-     Matrix4x4 VP;
-     Matrix4x4 VPInverse;
+     Vector4D SSAO_Options; //X: SampleRadio Y: Intensity Z: Scale X: Bias
    };
 
    CBuffer CB;

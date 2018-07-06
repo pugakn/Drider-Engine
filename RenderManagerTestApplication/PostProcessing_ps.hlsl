@@ -203,6 +203,5 @@ FS(PS_INPUT input) : SV_TARGET0 {
   finalColor *= vignette;
   #endif //VIGNETTE
   
-  return float4(LuminescenceTex[0].xxx, 1.0f);
   return finalColor;
 }
