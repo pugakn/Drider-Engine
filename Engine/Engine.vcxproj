@@ -146,6 +146,7 @@
   <ItemGroup>
     <ClInclude Include="Include\dr_codec.h" />
     <ClInclude Include="Include\dr_codec_model.h" />
+    <ClInclude Include="Include\dr_codec_scene.h" />
     <ClInclude Include="Include\dr_codec_script.h" />
     <ClInclude Include="Include\dr_codec_sound.h" />
     <ClInclude Include="Include\dr_codec_texture.h" />
@@ -157,6 +158,7 @@
   <ItemGroup>
     <ClCompile Include="Source\dr_codec.cpp" />
     <ClCompile Include="Source\dr_codec_model.cpp" />
+    <ClCompile Include="Source\dr_codec_scene.cpp" />
     <ClCompile Include="Source\dr_codec_script.cpp" />
     <ClCompile Include="Source\dr_codec_sound.cpp" />
     <ClCompile Include="Source\dr_codec_texture.cpp" />
