@@ -105,21 +105,23 @@ RenderMan::init() {
 
   m_RTGBuffer        = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 4));
 
-  m_TexDescDefault.width = screenWidth * 0.5f;
-  m_TexDescDefault.height = screenHeight * 0.5f;
+  m_TexDescDefault.width = screenWidth;
+  m_TexDescDefault.height = screenHeight;
   m_TexDescDefault.Format = DR_FORMAT::kR8_SNORM;
   m_TexDescDefault.pitch = m_TexDescDefault.width * 1 * 1;
   m_TexDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
-  Texture* SSAOTexure = dc.createEmptyTexture(m_TexDescDefault);
-  m_vecTexture.push_back(SSAOTexure);
-  m_RTSSAO           = dr_gfx_shared(dc.createRenderTarget(m_vecTexture));
+  GFXUnique<Texture> SSAOTexure = dr_gfx_unique<Texture>(dc.createEmptyTexture(m_TexDescDefault));
+  m_vecTexture.push_back(SSAOTexure.get());
+  m_RTSSAO = dr_gfx_shared(dc.createRenderTarget(m_vecTexture));
+  m_vecTexture.clear();
+  SSAOTexure.release();
   m_TexDescDefault.bindFlags &= ~DR_BIND_FLAGS::UNORDERED_ACCESS;
 
   m_TexDescDefault.width = screenWidth * 0.5f;
   m_TexDescDefault.height = screenHeight * 0.5f;
   m_TexDescDefault.Format = DR_FORMAT::kR16G16B16A16_FLOAT;
   m_TexDescDefault.pitch = m_TexDescDefault.width * 4 * 2;
-  m_RTBlurInit       = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
+  m_RTBlurInit = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
 
   m_TexDescDefault.width = screenWidth * 0.5f;
   m_TexDescDefault.height = screenHeight * 0.5f;
@@ -148,6 +150,7 @@ RenderMan::init() {
   Texture* ShadowTexure = dc.createEmptyTexture(m_TexDescDefault);
   m_vecTexture.push_back(ShadowTexure);
   m_RTShadow = dr_gfx_shared(dc.createRenderTarget(m_vecTexture));
+  m_vecTexture.clear();
   m_TexDescDefault.bindFlags &= ~DR_BIND_FLAGS::UNORDERED_ACCESS;
 
   m_TexDescDefault.width  = shadowWidth;
@@ -160,33 +163,39 @@ RenderMan::init() {
   m_RTShadowDummy[3] = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
 
   DrDepthStencilDesc commonTextureDesc;
-  commonTextureDesc.bindFlags = DR_BIND_FLAGS::DEPTH_STENCIL | DR_BIND_FLAGS::SHADER_RESOURCE;
+  commonTextureDesc.bindFlags = DR_BIND_FLAGS::DEPTH_STENCIL |
+                                DR_BIND_FLAGS::SHADER_RESOURCE;
   commonTextureDesc.width  = screenWidth;
   commonTextureDesc.height = screenHeight;
   commonTextureDesc.Format = DR_FORMAT::kD24_UNORM_S8_UINT;
 
   commonTextureDesc.width  = screenWidth;
   commonTextureDesc.height = screenHeight;
-  m_GBufferDSoptions       = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
+
+  /***************************************************************************/
+
+  m_GBufferDSoptions = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
+
+  m_SSAODSoptions = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
 
   commonTextureDesc.width   = screenWidth * 0.5f;
   commonTextureDesc.height  = screenHeight * 0.5f;
-  m_SSAODSoptions           = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
   m_HorBlurDSoptions        = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
   m_VerBlurDSoptions        = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
-
-  commonTextureDesc.width   = screenWidth;
-  commonTextureDesc.height  = screenHeight;
-  m_LightningDSoptions      = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
-  m_PostProcessingDSoptions = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
 
   commonTextureDesc.width   = shadowWidth;
   commonTextureDesc.height  = shadowHeight;
   m_ShadowDSoptions         = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
 
+  commonTextureDesc.width   = screenWidth;
+  commonTextureDesc.height  = screenHeight;
+  m_LightningDSoptions      = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
+
+  m_PostProcessingDSoptions = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
+
   m_GBufferPass.init(&m_GBufferInitData);
-  m_SSAOInitData.RTWidth = screenWidth * 0.5f;
-  m_SSAOInitData.RTHeight = screenWidth * 0.5f;
+  m_SSAOInitData.RTWidth = screenWidth;
+  m_SSAOInitData.RTHeight = screenHeight;
   m_SSAOPass.init(&m_SSAOInitData);
   m_HorBlurPass.init(&m_HorBlurInitData);
   m_VerBlurPass.init(&m_VerBlurInitData);
