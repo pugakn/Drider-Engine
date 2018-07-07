@@ -3,11 +3,14 @@
 
 namespace driderSDK {
 
+	class File;
+
 	/**
 	*  Class that managaes scenes.
 	*
 	* Sample usage:
-	*	Don't
+	*	SceneManager Mgr;
+	*	SceneManager.saveSceneInFile(L"MAP30");
 	*/
 	class DR_CORE_EXPORT SceneManager 
 	{
@@ -49,14 +52,22 @@ namespace driderSDK {
 		bool
 		saveSceneInFile(const TString& fileName);
 
+	private:
+
 		void
 		setActiveScene();
 
-
-	private:
+		void
+		interpretInput(File& input);
 
 		void 
-		openSceneFile();
+		interpretOutput(TString& output);
+
+		String 
+		objectToStr(void* obj);
+
+		void
+		strToObject();
 
 	};
 
