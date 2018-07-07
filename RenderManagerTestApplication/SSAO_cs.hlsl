@@ -75,8 +75,8 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
 	[unroll]
 	for (int i = 0; i < iterations; ++i) {
 		coord1 = reflect(vec[i], r) * rad;
-		coord2 = float2(coord1.x * 0.707f - coord1.y * 0.707f,
-										coord1.x * 0.707f + coord1.y * 0.707f);
+		coord2 = float2((coord1.x * 0.707f) - (coord1.y * 0.707f),
+										(coord1.x * 0.707f) + (coord1.y * 0.707f));
 		
 		ao += doOclussion(wUVScale, coord1 * 0.25f, p, n);
 		ao += doOclussion(wUVScale, coord2 * 0.50f, p, n);
