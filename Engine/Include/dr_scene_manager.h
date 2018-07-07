@@ -58,7 +58,7 @@ namespace driderSDK {
 		setActiveScene();
 
 		void
-		interpretInput(File& input);
+		interpretInput(const TString& input);
 
 		void 
 		interpretOutput(TString& output);

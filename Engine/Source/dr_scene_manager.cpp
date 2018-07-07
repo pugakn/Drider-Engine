@@ -28,12 +28,9 @@ namespace driderSDK {
 		auto rSceneFile = ResourceManager::getReference(fileName);
 		auto sceneFile = std::dynamic_pointer_cast<SceneCore>(rSceneFile);
 
-		File scene;
 
-		//get the file
-
-		if (scene.Size()) {
-			interpretInput(scene);
+		if (sceneFile->getData().size()) {
+			interpretInput(sceneFile->getData());
 			return true;
 		}
 		Logger::instancePtr()->addError(__FILE__,
@@ -56,7 +53,7 @@ namespace driderSDK {
 		FileSystem fileMgr;
 		File scene;
 
-		//open file
+		//can save comprobation
 
 		if (true) {
 			interpretOutput(data);
@@ -76,14 +73,7 @@ namespace driderSDK {
 	}
 
 	void 
-	SceneManager::interpretInput(File& input) {
-
-		ANSIChar* data;
-		data = new ANSIChar[input.Size()];
-		input.Seek(0);
-		input.Read(input.Size(), data);
-
-		String strData = StringUtils::toString(data);
+	SceneManager::interpretInput(const TString& input) {
 
 		while (true) {
 
