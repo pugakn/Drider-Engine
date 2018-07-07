@@ -565,9 +565,10 @@ AnimatorComponent::readNodeHeirarchy(float animTime,
     nodeTransform.InitScale(scaling);
     nodeTransform *= rotation.matrixFromQuaternion();
     nodeTransform.Translation(translation);
+    //nodeTransform.identity();
   }
   else {
-
+    int c = 9;
   }
 
   Matrix4x4 globalTransform = nodeTransform * parentTransform;

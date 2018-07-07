@@ -98,8 +98,8 @@ GraphicsApplication::postUpdate() {
 
   if (m_right && m_center) {
     
-    /*m_right->getTransform().rotate({0, Math::PI * Time::getDelta(), 0});
-    m_center->getTransform().rotate({0, Math::PI * Time::getDelta(), 0});*/
+    /*m_right->getTransform().rotate({0, Math::PI * Time::getDelta(), 0});*/
+    m_center->getTransform().rotate({0, Math::PI * Time::getDelta(), 0});
   }
 
   //ScopedTimer{},
@@ -434,7 +434,11 @@ GraphicsApplication::createScene() {
 
   m_center = hippy.get()
              ;
+  auto rot = Matrix4x4(Math::FORCE_INIT::kIdentity).RotationX(Math::HALF_PI);
+  auto tra = Matrix4x4(Math::FORCE_INIT::kIdentity).Translation({11, 23, 71});
 
+  auto rt = rot * tra;
+  auto tr = tra * rot;
   /*auto cl = hipNoAnim->createInstance();
 
   *cl = *hipNoAnim;
@@ -622,13 +626,13 @@ GraphicsApplication::createScene() {
     
   auto camNode = SceneGraph::createObject(_T("Camera"));
   
-  /*auto activeCam = CameraManager::getActiveCamera();
+  auto activeCam = CameraManager::getActiveCamera();
 
   camNode->createComponent<CameraComponent>(activeCam);
 
   camNode->getTransform().setPosition({0, 0, -20});
 
-  camNode->setParent(sphereCenter);*/
+  camNode->setParent(sphereCenter);
 
   /*auto fd = m_player->createComponent<FrustumDebug>(activeCam.get());
 

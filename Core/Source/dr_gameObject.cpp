@@ -48,7 +48,8 @@ GameObject::start() {
   m_localTransform.m_change = false;
 
   if (m_change) {
-    m_finalTransform = getParent()->m_finalTransform * m_localTransform;  
+    m_finalTransform = m_localTransform * getParent()->m_finalTransform;  
+    //m_finalTransform = getParent()->m_finalTransform * m_localTransform;  
   }   
 
   if (auto collider = getComponent<AABBCollider>()) {
@@ -84,8 +85,8 @@ GameObject::update() {
   m_localTransform.m_change = false;
 
   if (m_change) {
-    //m_finalTransform = m_localTransform * getParent()->m_finalTransform;  
-    m_finalTransform = getParent()->m_finalTransform * m_localTransform;  
+    m_finalTransform = m_localTransform * getParent()->m_finalTransform;  
+    //m_finalTransform = getParent()->m_finalTransform * m_localTransform;  
   }   
 
   updateImpl();
@@ -102,8 +103,8 @@ GameObject::update() {
       if (m_localTransform.changed()) {
 
         //Recalculate the final transform
-        //m_finalTransform = m_localTransform * getParent()->m_finalTransform;
-        m_finalTransform = getParent()->m_finalTransform * m_localTransform;
+        m_finalTransform = m_localTransform * getParent()->m_finalTransform;
+        //m_finalTransform = getParent()->m_finalTransform * m_localTransform;
 
         m_localTransform.m_change = false;
       }

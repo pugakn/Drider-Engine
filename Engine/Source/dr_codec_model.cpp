@@ -84,6 +84,8 @@ CodecModel::decode(TString pathName) {
                   &scene->mRootNode->mTransformation[0][0],
                   64);
 
+      skeleton->gloabalInverseTransform.transpose();
+
       skeleton->gloabalInverseTransform.inverse();
 
       loadSkeleton(*scene, *modelInfo, *skeleton);
@@ -237,7 +239,7 @@ CodecModel::loadSkeleton(const aiScene& model,
         std::memcpy(bones[index]->boneOffset.ptr(), 
                     &bone.mOffsetMatrix[0][0], 64);
         
-        nodesRefs[boneName]->boneOffset.transpose();
+        bones[index]->boneOffset.transpose();
         //nodesRefs[boneName]->boneOffset.identity();
       }
       else {
