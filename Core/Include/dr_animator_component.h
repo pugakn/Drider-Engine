@@ -147,7 +147,6 @@ class DR_CORE_EXPORT AnimatorComponent : public GameComponent,
             
           ++frame;
         }
-
       }
 
       std::get<index>(frameCache[m_currentBone]) = frame;

@@ -121,6 +121,7 @@ private:
   bool m_lockView;
   bool m_drawMeshes;
   GameObject* m_right;
+  GameObject* m_center;
   GameObject* m_player;
   GameObject* m_cameraHolder;
   Timer m_timer;RenderMan m_renderMan;

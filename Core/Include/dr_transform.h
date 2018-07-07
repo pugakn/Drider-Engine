@@ -54,7 +54,6 @@ class DR_CORE_EXPORT Transform
   const Vector3D&
   getEulerAngles() const;
 
-  
   /**
   * Gets the rotation matrix.
   */

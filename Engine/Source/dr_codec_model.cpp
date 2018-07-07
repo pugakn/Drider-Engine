@@ -238,6 +238,7 @@ CodecModel::loadSkeleton(const aiScene& model,
                     &bone.mOffsetMatrix[0][0], 64);
         
         nodesRefs[boneName]->boneOffset.transpose();
+        //nodesRefs[boneName]->boneOffset.identity();
       }
       else {
         index = bonesMap[boneName];
@@ -454,8 +455,10 @@ CodecModel::buildTree(const aiNode* nodeSrc,
   
   nodesRefs[node->name] = node;
 
-  std::memcpy(node->transform.data, &nodeSrc->mTransformation[0][0], 64);
-      
+  std::memcpy(node->transform.ptr(), &nodeSrc->mTransformation[0][0], 64);
+  
+  node->transform.transpose();
+
   for (Int32 childInddex = 0; 
        childInddex < static_cast<Int32>(nodeSrc->mNumChildren); 
        ++childInddex) {

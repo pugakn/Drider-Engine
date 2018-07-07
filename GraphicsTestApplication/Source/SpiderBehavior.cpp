@@ -1,5 +1,7 @@
 #include "SpiderBehavior.h"
 
+#include <iostream>
+
 #include <dr_animator_component.h>
 #include <dr_id_object.h>
 #include <dr_model.h>

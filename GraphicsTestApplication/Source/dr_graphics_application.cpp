@@ -95,8 +95,14 @@ GraphicsApplication::postUpdate() {
   Time::update();
   InputManager::update();
   
+
+  if (m_right && m_center) {
+    
+    /*m_right->getTransform().rotate({0, Math::PI * Time::getDelta(), 0});
+    m_center->getTransform().rotate({0, Math::PI * Time::getDelta(), 0});*/
+  }
+
   //ScopedTimer{},
-  SceneGraph::update();
 
   playerMovement();
 
@@ -104,6 +110,7 @@ GraphicsApplication::postUpdate() {
     playerRotation();
   }
 
+  SceneGraph::update();
 }
 
 void 
@@ -235,7 +242,7 @@ GraphicsApplication::initInputCallbacks() {
 
   auto spawnSp =
   [this]() {
-    for (Int32 i = 0; i < 50; ++i) {
+    for (Int32 i = 0; i < 100; ++i) {
       auto obj = m_spiderSpawn.spawn();
       auto ai = obj->getComponent<SpiderAI>();
       ai->setPath(&m_paths[Random::get(0, (Int32)m_paths.size() - 1)]);
@@ -338,14 +345,14 @@ GraphicsApplication::loadResources() {
   m_animationsNames[3] = _T("Animation_3");
 
   CameraManager::createCamera(m_camNames[0], 
-                              {0, 200, -400}, 
-                              {0, 150, 10}, 
+                              {0, 100, 500}, 
+                              {0, 100, 1}, 
                               m_viewport,
                               45, 0.1f, 10000.f);
 
   CameraManager::createCamera(m_camNames[1], 
-                              {0, 5000, 0}, 
-                              {1, 0, 1}, 
+                              {0, 100, -500}, 
+                              {1, 100, 1}, 
                               m_viewport,
                               45, 0.1f, 10000.f);
   
@@ -354,7 +361,7 @@ GraphicsApplication::loadResources() {
   ResourceManager::loadResource(_T("tiny_4anim.x"));
 
   ResourceManager::loadResource(_T("Spidey.fbx"));
-
+  
   ResourceManager::loadResource(_T("Jump In Place.fbx"));
   
   ResourceManager::renameResource(_T("Animation_mixamo.com"), 
@@ -375,6 +382,8 @@ GraphicsApplication::loadResources() {
   ResourceManager::renameResource(_T("Animation_mixamo.com"), 
                                   m_animationsNames[3]);
   
+  ResourceManager::loadResource(_T("HipHopDancing.fbx"));
+
   ResourceManager::loadResource(_T("Run.fbx"));
 
   ResourceManager::loadResource(_T("Unidad_1m.fbx"));
@@ -405,6 +414,39 @@ GraphicsApplication::createTechniques() {
 void 
 GraphicsApplication::createScene() {
   
+  auto hip = addObject(_T("Grr"), _T("HipHopDancing.fbx"), true);
+
+  hip->getTransform().setPosition({200, 0, 0});
+
+  m_right = hip.get();
+
+  auto hipNoAnim = addObject(_T("Grr2"), _T("HipHopDancing.fbx"), false);
+
+  hipNoAnim->getTransform().setPosition({-200, 0, 0});
+
+  auto hippy = addObject(_T("Grr3"), _T("HipHopDancing.fbx"), false);
+
+  hippy->getTransform().setPosition({0, 0, 0});
+
+  //hippy->getTransform().setRotation({0, Math::HALF_PI, 0});
+
+  hippy->addChild(hip);
+
+  m_center = hippy.get()
+             ;
+
+  /*auto cl = hipNoAnim->createInstance();
+
+  *cl = *hipNoAnim;
+
+  cl->getTransform().setPosition({-400, 0, 100});
+  cl->getTransform().setRotation({-Math::HALF_PI, 0, 0});
+
+  auto& cl2 = *cl->createInstance() = *cl;
+
+  cl2.getTransform().setPosition({400, 0, 100});
+  cl2.getTransform().setRotation({Math::HALF_PI, 0, 0});*/
+
   m_paths.resize(3);
 
   for (Int32 i = 0; i < 3; ++i) {
@@ -418,7 +460,7 @@ GraphicsApplication::createScene() {
   spidey->setParent(SceneGraph::createObject(_T("Spiders")));
 
   spidey->getTransform().rotate({0, Math::PI, 0});
-
+  
   m_player = spidey.get();
 
   auto spiderAI = spidey->createInstance();
@@ -427,7 +469,7 @@ GraphicsApplication::createScene() {
 
   spidey->createComponent<SpiderPlayer>();
 
-  spidey->getTransform().setPosition({200.f, 0.f, 300.f});
+  spidey->getTransform().setPosition({0.f, 0.f, 300.f});
 
   spiderAI->createComponent<SpiderAI>();
 
@@ -580,13 +622,13 @@ GraphicsApplication::createScene() {
     
   auto camNode = SceneGraph::createObject(_T("Camera"));
   
-  auto activeCam = CameraManager::getActiveCamera();
+  /*auto activeCam = CameraManager::getActiveCamera();
 
   camNode->createComponent<CameraComponent>(activeCam);
 
   camNode->getTransform().setPosition({0, 0, -20});
 
-  camNode->setParent(sphereCenter);
+  camNode->setParent(sphereCenter);*/
 
   /*auto fd = m_player->createComponent<FrustumDebug>(activeCam.get());
 

@@ -184,7 +184,7 @@ Transform Transform::operator*(const Transform& other) const {
   
   Transform r;
   
-  r.m_position = Vector4D(other.m_scale * m_position, 1) * 
+  /*r.m_position = Vector4D(other.m_scale * m_position, 1) * 
                  other.getRotation() + 
                  other.m_position;
 
@@ -192,7 +192,16 @@ Transform Transform::operator*(const Transform& other) const {
   r.m_rotY = m_rotY * other.m_rotY;
   r.m_rotZ = m_rotZ * other.m_rotZ;
 
-  r.m_scale = m_scale * other.m_scale;
+  r.m_scale = m_scale * other.m_scale;*/
+
+  r.m_position = Vector4D(m_scale * other.m_position, 1) * 
+                 getRotation() + m_position; 
+
+  r.m_rotX = other.m_rotX * m_rotX;
+  r.m_rotY = other.m_rotY * m_rotY;
+  r.m_rotZ = other.m_rotZ * m_rotZ;
+
+  r.m_scale = other.m_scale * m_scale;
 
   r.invalidateRotation();
   
