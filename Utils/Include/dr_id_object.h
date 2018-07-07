@@ -4,7 +4,26 @@
 #include <atomic>
 #include "dr_util_prerequisites.h"
 
-#define CLASS_NAME_ID(name) std::hash<driderSDK::String>{}(#name)
+class DR_UTIL_EXPORT IDBase
+{
+ public:
+  static driderSDK::UInt32
+  getNextID();
+};
+
+template<class T>
+class IDClass
+{
+public:
+  static const driderSDK::UInt32& ID()
+  {
+    static driderSDK::UInt32 id = IDBase::getNextID();
+    return id;
+  }
+private:
+};
+
+#define CLASS_NAME_ID(name) IDClass<name>::ID()
 
 namespace driderSDK {
 

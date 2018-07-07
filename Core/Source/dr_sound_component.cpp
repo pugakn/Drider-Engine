@@ -5,7 +5,6 @@
 #include <dr_fmod_channel.h>
 #include <dr_fmod_channelGroup.h>
 #include <dr_soundSystem.h>
-
 #include <dr_vector3d.h>
 
 #include "dr_gameObject.h"
@@ -45,6 +44,11 @@ SoundComponent::onRender() {
 void
 SoundComponent::onDestroy(){
 
+}
+
+UInt32 SoundComponent::getClassID()
+{
+  return CLASS_NAME_ID(SoundComponent);
 }
 
 GameComponent*

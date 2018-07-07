@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+#include <dr_id_object.h>
 #include <dr_mesh.h>
 #include <dr_aabb_collider.h>
 #include <dr_gameObject.h>
@@ -129,6 +130,10 @@ AABBDebug::cloneIn(GameObject& _go) {
   dup->m_aabbD = m_aabbD;
 
   return dup;
+}
+
+UInt32 AABBDebug::getClassID() {
+  return CLASS_NAME_ID(AABBDebug);
 }
 
 }

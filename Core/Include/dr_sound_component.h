@@ -4,9 +4,11 @@
 
 #include <unordered_map>
 
+#include <dr_export_script.h>
+#include <dr_id_object.h>
+
 #include "dr_gameComponent.h"
 
-#include <dr_export_script.h>
 #include <..\..\Script\Include\dr_script_engine.h>
 
 namespace driderSDK {
@@ -20,7 +22,9 @@ class DrChannel;
 
 class Vector3D;
 
-class DR_CORE_EXPORT SoundComponent : public GameComponent {
+class DR_CORE_EXPORT SoundComponent : public GameComponent, 
+                                      public IDClass<SoundComponent>
+{
 
   public:
     SoundComponent(GameObject &gameObject_);
@@ -39,6 +43,9 @@ class DR_CORE_EXPORT SoundComponent : public GameComponent {
     
     void
     onDestroy() override;
+
+    virtual UInt32
+    getClassID() override;
 
     GameComponent*
     cloneIn(GameObject& _go) override;

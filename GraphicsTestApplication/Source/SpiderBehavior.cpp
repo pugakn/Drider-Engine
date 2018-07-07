@@ -1,6 +1,7 @@
 #include "SpiderBehavior.h"
 
 #include <dr_animator_component.h>
+#include <dr_id_object.h>
 #include <dr_model.h>
 #include <dr_render_component.h>
 #include <dr_gameObject.h>
@@ -33,6 +34,10 @@ SpiderBehavior::onDestroy() {
 
 }
 
+UInt32 SpiderBehavior::getClassID() {
+  return CLASS_NAME_ID(SpiderBehavior);
+}
+
 GameComponent*
 SpiderBehavior::cloneIn(GameObject& _go) {
 
@@ -50,7 +55,7 @@ SpiderBehavior::setAnimation(Animations anim, bool blend, bool copyElapsed) {
   auto model = m_model.lock();
   auto comp = m_gameObject.getComponent<AnimatorComponent>();
   
-  if (comp && model && anim < model->animationsNames.size()) {
+  if (comp && model && static_cast<SizeT>(anim) < model->animationsNames.size()) {
     if (blend) {
       comp->blendAnimation(model->animationsNames[anim], copyElapsed);
     }

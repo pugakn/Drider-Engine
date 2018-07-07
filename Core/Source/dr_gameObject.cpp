@@ -204,20 +204,20 @@ GameObject::removeComponent(const TString& compName) {
   }
 }
 
-void
-GameObject::removeComponentP(const TString& compName) {
-
-  for (auto it = m_components.begin(); it != m_components.end(); ++it) {
-    if ((*it)->getName() == compName) {
-      (*it)->onDestroy();
-      m_components.erase(it);
-      return;
-    }
-  }
-
-  DR_DEBUG_ONLY(Logger::addLog(_T("Trying to remove unexisting component: ") + 
-                               compName));
-}
+//void
+//GameObject::removeComponentP(const TString& compName) {
+//
+//  for (auto it = m_components.begin(); it != m_components.end(); ++it) {
+//    if ((*it)->getName() == compName) {
+//      (*it)->onDestroy();
+//      m_components.erase(it);
+//      return;
+//    }
+//  }
+//
+//  DR_DEBUG_ONLY(Logger::addLog(_T("Trying to remove unexisting component: ") + 
+//                               compName));
+//}
 
 void
 GameObject::addComponent(ComponentPtr component) {
@@ -346,11 +346,18 @@ GameObject::getChild(const TString& childName) {
 }
 
 GameObject::SharedGameObj 
-GameObject::getChild(SizeT index) {
+GameObject::getChild(UInt32 id) {
   
-  DR_ASSERT(index < m_children.size());
-  
-  return m_children[index];
+  SharedGameObj ch;
+
+  for (auto& child : m_children) {
+    if (id == child->getID()) {
+      ch = child;
+      break;
+    }
+  }
+
+  return ch;
 }
 
 GameObject::SharedGameObj 
@@ -361,6 +368,22 @@ GameObject::findNode(const TString & nodeName) {
   if (!node) {
     for (auto& child : m_children) {
       if (node = child->findNode(nodeName)) {
+        break;
+      }
+    }
+  }
+
+  return node;
+}
+
+GameObject::SharedGameObj
+GameObject::findNode(const UInt32 idNode) {
+
+  SharedGameObj node = getChild(idNode);
+
+  if (!node) {
+    for (auto& child : m_children) {
+      if (node = child->findNode(idNode)) {
         break;
       }
     }
@@ -447,6 +470,8 @@ GameObject::operator=(const GameObject& ref) {
   m_isStatic = ref.m_isStatic;
 
   m_change = ref.m_change;
+
+  m_isStarted = ref.m_isStarted;
 
   m_isKilled = ref.m_isKilled;
 

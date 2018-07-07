@@ -1,6 +1,7 @@
 
 #include <array>
 #include <map>
+#include <vector>
 
 #include <dr_application.h>
 #include <dr_light.h>
@@ -8,6 +9,9 @@
 #include <dr_util_prerequisites.h>
 #include <dr_timer.h>
 #include <dr_renderman.h>
+#include "PathHolder.h"
+#include "PathRenderer.h"
+#include "Spawner.h"
 
 namespace driderSDK {
 
@@ -36,6 +40,9 @@ private:
 
   virtual void 
   postDestroy() override;
+    
+  virtual void 
+  onResize() override;
 
   void
   recompileShaders();
@@ -95,6 +102,10 @@ private:
   void
   playerRotation();
   
+  std::vector<Vector3D>
+  calculatePoints();
+  
+
   std::unique_ptr<Technique> m_animTech;
   std::unique_ptr<Technique> m_staticTech;
   std::unique_ptr<Technique> m_linesTech;
@@ -114,8 +125,10 @@ private:
   GameObject* m_cameraHolder;
   Timer m_timer;RenderMan m_renderMan;
   std::array<Light, 128> m_light;
+  std::vector<PathHolder> m_paths;
+  std::vector<PathRenderer> m_pathRenders;
+  Spawner m_spiderSpawn;
   // Inherited via Application
-  virtual void onResize() override;
 };
 
 }

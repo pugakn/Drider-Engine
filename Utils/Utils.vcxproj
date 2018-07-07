@@ -156,6 +156,7 @@
     <ClInclude Include="Include\dr_module.h" />
     <ClInclude Include="Include\dr_pool.h" />
     <ClInclude Include="Include\dr_process.h" />
+    <ClInclude Include="Include\dr_random.h" />
     <ClInclude Include="Include\dr_scoped_timer.h" />
     <ClInclude Include="Include\dr_string_utils.h" />
     <ClInclude Include="Include\dr_time.h" />
@@ -173,6 +174,7 @@
     <ClCompile Include="Source\dr_id_object.cpp" />
     <ClCompile Include="Source\dr_logger.cpp" />
     <ClCompile Include="Source\dr_process_windows.cpp" />
+    <ClCompile Include="Source\dr_random.cpp" />
     <ClCompile Include="Source\dr_scoped_timer.cpp" />
     <ClCompile Include="Source\dr_time.cpp" />
     <ClCompile Include="Source\dr_timer.cpp" />

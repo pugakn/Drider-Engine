@@ -23,6 +23,10 @@ class FrustumDebug : public DrawableComponent
   virtual GameComponent*
   cloneIn(GameObject& _go) override;
 
+    // Inherited via DrawableComponent
+  virtual UInt32 
+  getClassID() override;
+
   void 
   setCamera(Camera* _camera);
  private:

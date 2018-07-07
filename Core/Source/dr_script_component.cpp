@@ -70,6 +70,11 @@ ScriptComponent::onDestroy() {
 
 }
 
+UInt32 ScriptComponent::getClassID()
+{
+  return CLASS_NAME_ID(ScriptComponent);
+}
+
 /**
 * Clones the component inside the given gameObject
 */

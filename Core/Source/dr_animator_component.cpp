@@ -333,6 +333,11 @@ AnimatorComponent::onDestroy() {
 
 }
 
+UInt32
+AnimatorComponent::getClassID() {
+  return CLASS_NAME_ID(AnimatorComponent);
+}
+
 GameComponent*
 AnimatorComponent::cloneIn(GameObject& _go) {
   

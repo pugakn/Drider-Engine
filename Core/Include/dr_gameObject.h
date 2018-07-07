@@ -134,16 +134,35 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   getComponent()
   {
     T* componentCasted = nullptr;
-    for (auto& componet : m_components) {
-      if (auto casted = dynamic_cast<T*>(componet.get())) {
-        componentCasted = casted;
+    for (auto& component : m_components) {
+      /*if (componentCasted = dynamic_cast<T*>(component.get())) {
+        break;
+      }*/
+      
+      if (IDClass<T>::ID() == component->getClassID()) {
+        componentCasted = static_cast<T*>(component.get());
         break;
       }
     }
 
     return componentCasted;
   }
-  
+
+  /*template<class T> 
+  T* 
+  getComponent(UInt32 classID)
+  {
+    T* componentCasted = nullptr;
+    for (auto& component : m_components) {
+      if (classID == component->getClassID()) {
+        componentCasted = static_cast<T*>(component.get());
+        break;
+      }
+    }
+
+    return componentCasted;
+  }*/
+
   template<class T = GameComponent>
   T*
   getComponent(const TString& componentName)
@@ -267,7 +286,7 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   *   the number of childs nullptr.
   */
   SharedGameObj
-  getChild(SizeT index);
+  getChild(UInt32 index);
   
   /**
   * Gets a node in the tree hierarchy. If the node isn't on the
@@ -276,6 +295,9 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   */
   SharedGameObj
   findNode(const TString& nodeName);
+
+  SharedGameObj
+  findNode(const UInt32 idNode);
 
   /**
   * Gets GameObject*
@@ -358,8 +380,8 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   getValidName(TString name);
   
  protected:
-  void
-  removeComponentP(const TString& compName);
+  /*void
+  removeComponentP(const TString& compName);*/
 
   virtual void
   copyData(SharedGameObj other) const {}

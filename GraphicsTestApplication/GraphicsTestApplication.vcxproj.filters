@@ -87,6 +87,15 @@
     <ClInclude Include="Include\SpiderPlayer.h">
       <Filter>Archivos de encabezado\Components</Filter>
     </ClInclude>
+    <ClInclude Include="Include\PathHolder.h">
+      <Filter>Archivos de encabezado\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\PathRenderer.h">
+      <Filter>Archivos de encabezado\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Spawner.h">
+      <Filter>Archivos de encabezado\Application</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\DrawableComponent.cpp">
@@ -130,6 +139,15 @@
     </ClCompile>
     <ClCompile Include="Source\SpiderPlayer.cpp">
       <Filter>Archivos de origen\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\PathHolder.cpp">
+      <Filter>Archivos de origen\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\PathRenderer.cpp">
+      <Filter>Archivos de origen\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Spawner.cpp">
+      <Filter>Archivos de origen\Application</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

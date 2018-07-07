@@ -26,6 +26,7 @@
 #include <dr_mouse.h>
 #include <dr_logger.h>
 #include <dr_radian.h>
+#include <../../Utils/Include/dr_random.h>
 #include <dr_rasterizer_state.h>
 #include <dr_render_component.h>
 #include <dr_resource_manager.h>
@@ -36,6 +37,7 @@
 #include <dr_skeleton.h>
 #include <dr_swap_chain.h>
 #include <dr_vertex_buffer.h>
+#include <dr_vector3d.h>
 #include <dr_time.h>
 
 #include "AABBDebug.h"
@@ -53,7 +55,7 @@ namespace driderSDK {
 
 GraphicsApplication::GraphicsApplication() 
   : m_drawMeshes(true), 
-    m_lockView(true) 
+    m_lockView(true)
 {}
 
 GraphicsApplication::~GraphicsApplication() {}
@@ -61,6 +63,8 @@ GraphicsApplication::~GraphicsApplication() {}
 void
 GraphicsApplication::postInit() {
   
+  IDClass<int>::ID();
+
   initModules();   
   initInputCallbacks();
   loadResources();
@@ -81,6 +85,8 @@ GraphicsApplication::postInit() {
 ; 
   m_renderMan.lights = &m_light;
 
+  //m_renderMan.init();
+
   m_timer.init();
 }
 
@@ -89,6 +95,8 @@ GraphicsApplication::postUpdate() {
   Time::update();
   InputManager::update();
   
+  //ScopedTimer{},
+  SceneGraph::update();
 
   playerMovement();
 
@@ -96,11 +104,6 @@ GraphicsApplication::postUpdate() {
     playerRotation();
   }
 
-  {
-    //std::cout << "Scene graph update: ";
-    //ScopedTimer q;
-    SceneGraph::update();
-  }
 }
 
 void 
@@ -119,16 +122,31 @@ GraphicsApplication::postRender() {
   m_staticTech->setCamera(&camera);
   m_linesTech->setCamera(&camera);
 
-  auto& mainC = CameraManager::getCamera(m_camNames[0]);
+  auto mainC = CameraManager::getCamera(m_camNames[0]);
   
   auto& dc = GraphicsAPI::getDeviceContext();
   
   if (m_drawMeshes) {
 
-    auto queryRes = SceneGraph::query(*mainC, 
-                                      QUERY_ORDER::kBackToFront, 
-                                      queryFlags);
-    
+    auto points = calculatePoints();
+
+    for (SizeT i = 0; i < m_paths.size(); ++i) {
+
+      m_paths[i].pushPoint(points[i]);
+
+      m_pathRenders[i].draw(m_linesTech.get());
+
+      m_paths[i].popPoint();
+
+    }    
+
+    std::vector<QueryObjectInfo> queryRes;
+
+    //ScopedTimer{},
+    queryRes = SceneGraph::query(*mainC,  
+                                  QUERY_ORDER::kBackToFront, 
+                                  queryFlags);
+
     dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
 
     for (auto& queryObj : queryRes) {
@@ -215,6 +233,33 @@ GraphicsApplication::initInputCallbacks() {
                         KEY_CODE::k9,
                         &SceneGraph::buildOctree); 
 
+  auto spawnSp =
+  [this]() {
+    for (Int32 i = 0; i < 50; ++i) {
+      auto obj = m_spiderSpawn.spawn();
+      auto ai = obj->getComponent<SpiderAI>();
+      ai->setPath(&m_paths[Random::get(0, (Int32)m_paths.size() - 1)]);
+    }
+  };
+
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kH,
+                        spawnSp); 
+
+  auto pushPoint = 
+  [this]() {
+
+    auto points = calculatePoints();
+
+    for (SizeT i = 0; i < m_paths.size(); ++i) {
+      m_paths[i].pushPoint(points[i]);
+    }
+  };
+
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed, 
+                        KEY_CODE::kSPACE, 
+                        pushPoint);
+
   /*Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::k2,
                         std::bind(&GraphicsApplication::toggleSkeletonView,
@@ -282,7 +327,7 @@ GraphicsApplication::loadResources() {
   
   m_currCam = 0;
   m_currAnim = 0;
-
+  
   m_camNames[0] = _T("MAIN_CAM");
   m_camNames[1] = _T("UP_CAM");
 
@@ -296,7 +341,7 @@ GraphicsApplication::loadResources() {
                               {0, 200, -400}, 
                               {0, 150, 10}, 
                               m_viewport,
-                              45, 0.1f, 4000.f);
+                              45, 0.1f, 10000.f);
 
   CameraManager::createCamera(m_camNames[1], 
                               {0, 5000, 0}, 
@@ -360,11 +405,19 @@ GraphicsApplication::createTechniques() {
 void 
 GraphicsApplication::createScene() {
   
+  m_paths.resize(3);
+
+  for (Int32 i = 0; i < 3; ++i) {
+    m_pathRenders.emplace_back(m_paths[i]);
+  }
+
   auto spidey = addObject(_T("ARA"), _T("Spidey.fbx"), true);
 
   spidey->createComponent<SpiderBehavior>();
   
   spidey->setParent(SceneGraph::createObject(_T("Spiders")));
+
+  spidey->getTransform().rotate({0, Math::PI, 0});
 
   m_player = spidey.get();
 
@@ -374,25 +427,11 @@ GraphicsApplication::createScene() {
 
   spidey->createComponent<SpiderPlayer>();
 
+  spidey->getTransform().setPosition({200.f, 0.f, 300.f});
+
   spiderAI->createComponent<SpiderAI>();
 
-  const auto nSpiders = 59;
-
-  for (Int32 i = 0; i < nSpiders; ++i) {
-
-    auto clon = std::make_shared<GameObject>();
-    
-    *clon = *spiderAI;
-    Int32 res = rand() % 4;
-    float x = ((rand() % 5000) - 2500) * 1.f;
-    float z = ((rand() % 5000) - 2500) * 1.f;
-    
-    float time = rand() % 400 * 1.f;
-    clon->getTransform().setPosition({x, 0, z});
-    
-    auto animCmp = clon->getComponent<AnimatorComponent>();
-    animCmp->setTime(time);
-  }
+  m_spiderSpawn.setModel(spiderAI);
 
   /*auto cubo = ResourceManager::getReferenceT<Model>(_T("Unidad_1m.fbx"));
   //auto cubo = ResourceManager::getReferenceT<Model>(_T("tiny_4anim.x"));
@@ -549,9 +588,9 @@ GraphicsApplication::createScene() {
 
   camNode->setParent(sphereCenter);
 
-  auto fd = m_player->createComponent<FrustumDebug>(activeCam.get());
+  /*auto fd = m_player->createComponent<FrustumDebug>(activeCam.get());
 
-  fd->setShaderTechnique(m_linesTech.get());
+  fd->setShaderTechnique(m_linesTech.get());*/
 }
 
 std::shared_ptr<GameObject>
@@ -591,6 +630,8 @@ GraphicsApplication::addObject(const TString& name,
           auto animation = ResourceManager::getReferenceT<Animation>(anim);
           animator->addAnimation(animation, anim);          
         }
+
+        animator->setBlendDuration(0.7f);
 
         animator->setCurrentAnimation(mod->animationsNames[0], false);
 
@@ -650,7 +691,7 @@ GraphicsApplication::toggleSkeletonView(GameObject* obj) {
 
 void 
 GraphicsApplication::toggleAABBDebug(std::shared_ptr<GameObject> obj) {
-
+  
   if (!obj) {
     return;
   }
@@ -789,48 +830,7 @@ GraphicsApplication::playerMovement() {
   if (!m_player) {
     return;
   }
-  
-  float forward = 0;
-  float strafe = 0;
-
-  float velocity = 200.f;
-
-  auto& worldMat = m_player->getTransform().getMatrix();
-  auto direction = Vector3D(worldMat.vector2);
-  auto left = direction.cross({0,1,0});
-
-  direction.y = 0;
-  left.y = 0;
-
-  direction.normalize();
-  left.normalize();
-
-  if (Keyboard::isKeyDown(KEY_CODE::kLSHIFT)) {
-    velocity *= 1.5f; 
-  }
-
-  if (Keyboard::isKeyDown(KEY_CODE::kA)) {
-    strafe += velocity;
-  }
-
-  if (Keyboard::isKeyDown(KEY_CODE::kD)) {
-    strafe -= velocity;
-  }
-
-  if (Keyboard::isKeyDown(KEY_CODE::kW)) {
-    forward += velocity;
-  }
-
-  if (Keyboard::isKeyDown(KEY_CODE::kS)) {
-    forward -= velocity;
-  }  
-
-  static TString current = _T("Idle");
-      
-  auto movement = (direction * forward + left * strafe) * Time::getDelta();
-
-  m_player->getTransform().move(movement);
-
+    
   auto& playerPos = m_player->getTransform().getPosition();
 
   m_cameraHolder->getTransform().setPosition(playerPos);
@@ -860,6 +860,30 @@ GraphicsApplication::playerRotation() {
  
   m_cameraHolder->getTransform().setRotation({rx, ry, 0});
   m_player->getTransform().setRotation({0, ry + Math::PI, 0});
+}
+
+std::vector<Vector3D> 
+GraphicsApplication::calculatePoints() {
+  std::vector<Vector3D> points(m_paths.size());
+
+  float offset = 400.f;
+
+  auto dir = Vector3D(m_player->getTransform().getRotation().vector2);
+
+  auto left = dir.cross({0.f, 1.f, 0.f});
+
+  left.normalize();
+
+  auto& pos = m_player->getTransform().getPosition();
+
+  points[0] = pos;
+
+  for (SizeT i = 1; i < m_paths.size(); ++i) {
+    points[i] = pos + left * offset;
+    left *= -1;
+  }
+
+  return points;
 }
 
 
