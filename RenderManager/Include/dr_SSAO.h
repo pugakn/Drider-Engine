@@ -40,12 +40,26 @@ class SSAOPass : public RenderPass {
   ~SSAOPass();
 
   /*
-  TEST::testName
-
-  Description.
+  * TEST::testName
+  *
+  * Description.
   */
   void
   init(PassInitData* initData);
+
+  /*
+  *
+  */
+  void
+  changeSize(SizeT Width, SizeT Height);
+
+  /*
+  *
+  */
+  void
+  recompileShader(String vsPreText = "",
+                  String psPreText = "",
+                  String csPreText = "");
 
   /*
   */
@@ -56,6 +70,8 @@ class SSAOPass : public RenderPass {
    struct CBuffer {
      Vector4D SSAO_Options; //X: SampleRadio Y: Intensity Z: Scale X: Bias
    };
+   SizeT RTWidht;
+   SizeT RTHeight;
 
    CBuffer CB;
 

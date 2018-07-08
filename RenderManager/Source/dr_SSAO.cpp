@@ -24,11 +24,8 @@ SSAOPass::init(PassInitData* initData) {
 
   m_csFilename = _T("SSAO_cs.hlsl");
 
-  String preComputeString = "";
-  preComputeString += "#define TXWIDTH " + StringUtils::toString(data->RTWidth) + "\n";
-  preComputeString += "#define TXHEIGHT " + StringUtils::toString(data->RTHeight) + "\n";
-
-  recompileShader("", "", preComputeString);
+  changeSize(data->RTWidth, data->RTHeight);
+  recompileShader();
 
   DrBufferDesc bdesc;
 
@@ -43,6 +40,23 @@ SSAOPass::init(PassInitData* initData) {
   SSdesc.addressV = DR_TEXTURE_ADDRESS::kWrap;
   SSdesc.addressW = DR_TEXTURE_ADDRESS::kWrap;
   m_samplerState = dr_gfx_unique(device.createSamplerState(SSdesc));
+}
+
+void
+SSAOPass::changeSize(SizeT Width, SizeT Height) {
+  RTWidht = Width;
+  RTHeight = Height;
+}
+
+void
+SSAOPass::recompileShader(String vsPreText,
+                          String psPreText,
+                          String csPreText) {
+  String preComputeData = "";
+  preComputeData += "#define TXWIDTH " + StringUtils::toString(RTWidht) + "\n";
+  preComputeData += "#define TXHEIGHT " + StringUtils::toString(RTHeight) + "\n";
+
+  RenderPass::recompileShader("", "", preComputeData);
 }
 
 void

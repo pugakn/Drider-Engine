@@ -270,11 +270,27 @@ RenderMan::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   updateShadowCameras();
 
   auto mainCam = CameraManager::getActiveCamera();
-  auto queryRequest = SceneGraph::query(*mainCam,
-                                        QUERY_ORDER::kFrontToBack,
-                                        QUERY_PROPERTY::kOpaque | 
-                                        QUERY_PROPERTY::kDynamic | 
-                                        QUERY_PROPERTY::kStatic);
+  SceneGraph::QueryResult queryRequest;
+
+  for (size_t camIndex = 0; camIndex < m_szActiveShadowCameras; ++camIndex) {
+    queryRequest = SceneGraph::query(*vecShadowCamera[camIndex],
+                                     QUERY_ORDER::kFrontToBack,          
+                                     QUERY_PROPERTY::kOpaque |
+                                     QUERY_PROPERTY::kDynamic |
+                                     QUERY_PROPERTY::kStatic);
+    m_ShadowDrawData.shadowCam = vecShadowCamera[camIndex];
+    m_ShadowDrawData.models = &queryRequest;
+    m_ShadowDrawData.OutRt = m_RTShadowDummy[camIndex];
+    m_ShadowDrawData.dsOptions = m_ShadowDSoptions;
+    m_ShadowPass.draw(&m_ShadowDrawData);
+  }
+  m_ShadowPass.merge(m_RTShadowDummy, m_ShadowDSoptions, m_RTShadow);
+
+  queryRequest = SceneGraph::query(*mainCam,
+                                   QUERY_ORDER::kFrontToBack,
+                                   QUERY_PROPERTY::kOpaque | 
+                                   QUERY_PROPERTY::kDynamic | 
+                                   QUERY_PROPERTY::kStatic);
 
   m_GBufferDrawData.activeCam = mainCam;
   m_GBufferDrawData.models = &queryRequest;
@@ -305,20 +321,6 @@ RenderMan::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_VerBlurDrawData.InRt = m_RTBlurInit;
   m_VerBlurDrawData.OutRt = m_RTSSAOBlur;
   m_VerBlurPass.draw(&m_VerBlurDrawData);
-
-  for (size_t camIndex = 0; camIndex < m_szActiveShadowCameras; ++camIndex) {
-    queryRequest = SceneGraph::query(*vecShadowCamera[camIndex],
-                                     QUERY_ORDER::kFrontToBack,          
-                                     QUERY_PROPERTY::kOpaque |
-                                     QUERY_PROPERTY::kDynamic |
-                                     QUERY_PROPERTY::kStatic);
-    m_ShadowDrawData.shadowCam = vecShadowCamera[camIndex];
-    m_ShadowDrawData.models = &queryRequest;
-    m_ShadowDrawData.OutRt = m_RTShadowDummy[camIndex];
-    m_ShadowDrawData.dsOptions = m_ShadowDSoptions;
-    m_ShadowPass.draw(&m_ShadowDrawData);
-  }
-  m_ShadowPass.merge(m_RTShadowDummy, m_ShadowDSoptions, m_RTShadow);
 
   m_LightningDrawData.ActiveCam = mainCam;
   m_LightningDrawData.Lights = &lights[0];
