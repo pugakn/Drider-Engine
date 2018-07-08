@@ -12,6 +12,8 @@ class InputEditor {
  public:
 
   InputEditor(GameComponent& _component);
+
+  virtual ~InputEditor();
   /**
   * Return to inputs in component
   *

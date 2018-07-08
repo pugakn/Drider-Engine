@@ -6,10 +6,14 @@
 #include <dr_id_object.h>
 #include <dr_gameComponent.h>
 
+#include "..\Include\dr_render_inputs.h"
+
 namespace driderSDK {
 
 InputEditor::InputEditor(GameComponent& _component) : m_component(_component)
 {}
+
+InputEditor::~InputEditor() {}
 
 TString
 driderSDK::InputEditor::addInput(TString id,
@@ -50,13 +54,19 @@ driderSDK::InputEditor::addInputSelectable(TString id,
 std::unique_ptr<InputEditor> 
 InputEditor::createInputEditor(GameComponent& _component) {
   
-  using Factory = std::function<std::unique_ptr<InputEditor>()>;
-  static std::unordered_map<UInt32, Factory> m_factories;
+  using UniqueInput = std::unique_ptr<InputEditor>;
+  using Factory = std::function<UniqueInput(GameComponent&)>;
+
+  static std::unordered_map<UInt32, Factory> m_factories
+  { 
+    //Template
+    //{CLASS_NAME_ID(Class), dr_make_unique<Class, GameComponent&>}
+    {CLASS_NAME_ID(RenderComponent), dr_make_unique<RenderInputs, GameComponent&>}
+  };
  
-  m_factories[CLASS_NAME_ID(RenderComponent)] = dr_make_unique<RenderInputs>;
   //m_factories[CLASS_NAME_ID(RenderComponent)] = dr_make_unique<RenderInputs>;
   
-  return m_factories[_component->getClassID()]();
+  return m_factories[_component.getClassID()](_component);
 }
 
 }
