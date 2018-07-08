@@ -579,8 +579,9 @@ AnimatorComponent::readNodeHeirarchy(float animTime,
     
     auto& pBone = skeleton.bones[boneIt->second];
 
-    pBone->finalTransform = skeleton.gloabalInverseTransform * 
-                            pBone->boneOffset * globalTransform;
+    pBone->finalTransform = pBone->boneOffset * 
+                            globalTransform * 
+                            skeleton.gloabalInverseTransform;
 
     /*m_transforms[boneIt->second] = skeleton.bones[boneIt->second]->boneOffset * 
                                    globalTransform;*/

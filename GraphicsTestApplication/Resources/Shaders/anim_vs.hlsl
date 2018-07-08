@@ -27,6 +27,8 @@ VS_OUTPUT VS( VS_INPUT input ) {
 
     float4x4 BoneTransform;
 
+	float4 Test = float4(0,0,0,0);
+
     for(int i = 0; i < 4; ++i)
 	{
 		int index = input.boneids[i];
@@ -37,6 +39,8 @@ VS_OUTPUT VS( VS_INPUT input ) {
 		}
 
 		BoneTransform += Bones[index] * input.weights[i];
+
+		
 	}
 
 	//BoneTransform = float4x4(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);

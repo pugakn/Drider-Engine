@@ -99,7 +99,7 @@ GraphicsApplication::postUpdate() {
   if (m_right && m_center) {
     
     /*m_right->getTransform().rotate({0, Math::PI * Time::getDelta(), 0});*/
-    m_center->getTransform().rotate({0, Math::PI * Time::getDelta(), 0});
+    //m_center->getTransform().rotate({0, Math::PI * Time::getDelta(), 0});
   }
 
   //ScopedTimer{},
