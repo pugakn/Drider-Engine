@@ -85,11 +85,11 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Core\Include;$(SolutionDir)Engine\Include;$(SolutionDir)Input\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)Script\Include;$(SolutionDir)Math\Include;$(SolutionDir)Sound\Include;$(SolutionDir)RenderManager\Include;$(SolutionDir)DriderUI\Include;$(DRIDER_DEPENDENCIES)Include\CEF;$(DRIDER_DEPENDENCIES)Include\CEF\Include;$(SolutionDir)ParticleSystem\Include;$(SolutionDir)GraphicsUtils\Include;$(SolutionDir)Utils\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Core\Include;$(SolutionDir)Engine\Include;$(SolutionDir)Input\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)Script\Include;$(SolutionDir)Math\Include;$(SolutionDir)Sound\Include;$(SolutionDir)RenderManager\Include;$(SolutionDir)DriderUI\Include;$(DRIDER_DEPENDENCIES)Include\CEF;$(DRIDER_DEPENDENCIES)Include\CEF\Include;$(SolutionDir)ParticleSystem\Include;$(SolutionDir)GraphicsUtils\Include;$(SolutionDir)Utils\Include;$(SolutionDir)Network\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>Utilsd.lib;Mathd.lib;Cored.lib;Soundd.lib;Inputd.lib;Graphicsd.lib;Engined.lib;RenderManagerd.lib;DriderUId.lib;libcef_dll_wrapperd.lib;libcef.lib;Scriptd.lib;GraphicsUtilsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Utilsd.lib;Mathd.lib;Cored.lib;Soundd.lib;Inputd.lib;Graphicsd.lib;Engined.lib;RenderManagerd.lib;DriderUId.lib;libcef_dll_wrapperd.lib;libcef.lib;Scriptd.lib;GraphicsUtilsd.lib;Networkd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);$(DRIDER_DEPENDENCIES)Lib\$(PlatformTarget);</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -99,11 +99,11 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Core\Include;$(SolutionDir)Engine\Include;$(SolutionDir)Input\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)Script\Include;$(SolutionDir)Math\Include;$(SolutionDir)Sound\Include;$(SolutionDir)RenderManager\Include;$(SolutionDir)DriderUI\Include;$(DRIDER_DEPENDENCIES)Include\CEF;$(DRIDER_DEPENDENCIES)Include\CEF\Include;$(SolutionDir)ParticleSystem\Include;$(SolutionDir)GraphicsUtils\Include;$(SolutionDir)Utils\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Core\Include;$(SolutionDir)Engine\Include;$(SolutionDir)Input\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)Script\Include;$(SolutionDir)Math\Include;$(SolutionDir)Sound\Include;$(SolutionDir)RenderManager\Include;$(SolutionDir)DriderUI\Include;$(DRIDER_DEPENDENCIES)Include\CEF;$(DRIDER_DEPENDENCIES)Include\CEF\Include;$(SolutionDir)ParticleSystem\Include;$(SolutionDir)GraphicsUtils\Include;$(SolutionDir)Utils\Include;$(SolutionDir)Network\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>Utilsd.lib;Mathd.lib;Cored.lib;Soundd.lib;Inputd.lib;Graphicsd.lib;Engined.lib;RenderManagerd.lib;DriderUId.lib;libcef_dll_wrapperd.lib;libcef.lib;Scriptd.lib;GraphicsUtilsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Utilsd.lib;Mathd.lib;Cored.lib;Soundd.lib;Inputd.lib;Graphicsd.lib;Engined.lib;RenderManagerd.lib;DriderUId.lib;libcef_dll_wrapperd.lib;libcef.lib;Scriptd.lib;GraphicsUtilsd.lib;Networkd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);$(DRIDER_DEPENDENCIES)Lib\$(PlatformTarget);</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -115,12 +115,12 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Core\Include;$(SolutionDir)Engine\Include;$(SolutionDir)Input\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)Script\Include;$(SolutionDir)Math\Include;$(SolutionDir)Sound\Include;$(SolutionDir)RenderManager\Include;$(SolutionDir)DriderUI\Include;$(DRIDER_DEPENDENCIES)Include\CEF;$(DRIDER_DEPENDENCIES)Include\CEF\Include;$(SolutionDir)ParticleSystem\Include;$(SolutionDir)GraphicsUtils\Include;$(SolutionDir)Utils\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Core\Include;$(SolutionDir)Engine\Include;$(SolutionDir)Input\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)Script\Include;$(SolutionDir)Math\Include;$(SolutionDir)Sound\Include;$(SolutionDir)RenderManager\Include;$(SolutionDir)DriderUI\Include;$(DRIDER_DEPENDENCIES)Include\CEF;$(DRIDER_DEPENDENCIES)Include\CEF\Include;$(SolutionDir)ParticleSystem\Include;$(SolutionDir)GraphicsUtils\Include;$(SolutionDir)Utils\Include;$(SolutionDir)Network\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>Utils.lib;Math.lib;Core.lib;Sound.lib;Input.lib;Graphics.lib;Engine.lib;RenderManager.lib;DriderUI.lib;libcef_dll_wrapper.lib;libcef.lib;Script.lib;GraphicsUtils.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Utils.lib;Math.lib;Core.lib;Sound.lib;Input.lib;Graphics.lib;Engine.lib;RenderManager.lib;DriderUI.lib;libcef_dll_wrapper.lib;libcef.lib;Script.lib;GraphicsUtils.lib;Network.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);$(DRIDER_DEPENDENCIES)Lib\$(PlatformTarget);</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -132,16 +132,17 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Core\Include;$(SolutionDir)Engine\Include;$(SolutionDir)Input\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)Script\Include;$(SolutionDir)Math\Include;$(SolutionDir)Sound\Include;$(SolutionDir)RenderManager\Include;$(SolutionDir)DriderUI\Include;$(DRIDER_DEPENDENCIES)Include\CEF;$(DRIDER_DEPENDENCIES)Include\CEF\Include;$(SolutionDir)ParticleSystem\Include;$(SolutionDir)GraphicsUtils\Include;$(SolutionDir)Utils\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Core\Include;$(SolutionDir)Engine\Include;$(SolutionDir)Input\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)Script\Include;$(SolutionDir)Math\Include;$(SolutionDir)Sound\Include;$(SolutionDir)RenderManager\Include;$(SolutionDir)DriderUI\Include;$(DRIDER_DEPENDENCIES)Include\CEF;$(DRIDER_DEPENDENCIES)Include\CEF\Include;$(SolutionDir)ParticleSystem\Include;$(SolutionDir)GraphicsUtils\Include;$(SolutionDir)Utils\Include;$(SolutionDir)Network\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>Utils.lib;Math.lib;Core.lib;Sound.lib;Input.lib;Graphics.lib;Engine.lib;RenderManager.lib;DriderUI.lib;libcef_dll_wrapper.lib;libcef.lib;Script.lib;GraphicsUtils.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Utils.lib;Math.lib;Core.lib;Sound.lib;Input.lib;Graphics.lib;Engine.lib;RenderManager.lib;DriderUI.lib;libcef_dll_wrapper.lib;libcef.lib;Script.lib;GraphicsUtils.lib;Network.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);$(DRIDER_DEPENDENCIES)Lib\$(PlatformTarget);</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\dr_client.cpp" />
     <ClCompile Include="Source\dr_integration.cpp" />
     <ClCompile Include="Source\dr_integration_app.cpp" />
     <ClCompile Include="Source\dr_scene_editor.cpp" />
@@ -149,6 +150,7 @@
   <ItemGroup>
     <ClInclude Include="Include\dr_integration_app.h" />
     <ClInclude Include="Include\dr_scene_editor.h" />
+    <ClInclude Include="Source\dr_client.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

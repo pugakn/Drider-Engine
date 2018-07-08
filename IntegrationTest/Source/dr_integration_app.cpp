@@ -54,6 +54,33 @@ DriderEngine::~DriderEngine() {
 }
 
 void
+DriderEngine::onJoinAccepted() {
+  //IMPORTANT
+  auto temp = m_nameStr.substr(0, m_nameStr.find_first_of('\0'));
+  m_userName = StringUtils::toWString(temp);
+}
+
+void
+DriderEngine::onJoinDenied() {
+  m_err = true;
+}
+
+void
+DriderEngine::onConnectionLoss() {
+  m_err = true;
+}
+
+void
+DriderEngine::onLobbiesListReceived(LobbiesList&& lobbies) {
+  m_lobbies = std::move(lobbies);
+}
+
+void
+DriderEngine::onGameStateReceived(WString&& msg) {
+
+}
+
+void
 DriderEngine::postInit() {
   initModules();
   //initInputCallbacks();
