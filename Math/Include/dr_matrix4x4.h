@@ -2,6 +2,7 @@
 
 #include "dr_math_prerequisites.h"
 #include "dr_math.h"
+#include "dr_vector3d.h"
 #include "dr_vector4d.h"
 
 namespace driderSDK {
@@ -218,7 +219,10 @@ class DR_MATH_EXPORT Matrix4x4
   *   vextor3d to values of angles.
   */
   Vector3D
-  eulerAngles();
+  eulerAngles() const;
+
+  Quaternion
+  toQuaternion();
 
   /**
   * TEST::Translation
@@ -291,34 +295,39 @@ class DR_MATH_EXPORT Matrix4x4
   RotationZ(const float teta);
 
   /**
-  * TEST:
+  * TEST::LookAt
   */
   Matrix4x4&
   LookAt(const Vector3D &Eye, const Vector3D &At, const Vector3D &Up);
 
   /**
-  * TEST:
+  * TEST::Projection
+  *
+  * MAtrix for look at for camera
   */
   Matrix4x4&
   Projection(float Width, float Height, float ZNear, float ZFar);
 
   /**
-  * TEST:
+  * TEST::ProjectionFov
   */
   Matrix4x4&
   ProjectionFov(float FOV, float Aspect, float ZNear, float ZFar);
 
   /**
-  * TEST:
+  * TEST::Orthogonal
   */
   Matrix4x4&
   Orthogonal(float Width, float Height, float ZNear, float ZFar);
 
   /**
-  * TEST:
+  * TEST::Reflection
   */
   Matrix4x4&
   Reflection(Vector3D NormalOfMirror);
+
+  /*Vector3D
+  eulerAngles();*/
   
   /**
   * TEST::getPointer

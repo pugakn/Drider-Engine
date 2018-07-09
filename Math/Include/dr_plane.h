@@ -1,13 +1,10 @@
 #pragma once
 
 #include "dr_math_prerequisites.h"
+#include "dr_intersections.h"
 #include "dr_vector3d.h"
 
 namespace driderSDK {
-
-namespace PLANE_INTERSECT {
-enum E;
-}
 
 class Ray;
 class Sphere;
@@ -58,8 +55,8 @@ class DR_MATH_EXPORT Plane : public Vector3D
   */
   Plane(const Plane& other);
 
-  /*
-  * TEST:distanceToPoint
+  /**
+  * TEST::distanceToPoint
   * Computes the distance from the plane to a point
   * 
   * @param point
@@ -69,7 +66,7 @@ class DR_MATH_EXPORT Plane : public Vector3D
   *
   */
   float 
-  distanceToPoint(const Vector3D& point);
+  distanceToPoint(const Vector3D& point) const;
    
   /**
   * TEST::intersectsPoint

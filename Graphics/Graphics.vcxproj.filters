@@ -51,21 +51,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Include\dr_vertex_shader.h">
-      <Filter>Archivos de encabezado\Base\Shaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\dr_teselation_shader.h">
-      <Filter>Archivos de encabezado\Base\Shaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\dr_compute_shader.h">
-      <Filter>Archivos de encabezado\Base\Shaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\dr_domain_shader.h">
-      <Filter>Archivos de encabezado\Base\Shaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\dr_fragment_shader.h">
-      <Filter>Archivos de encabezado\Base\Shaders</Filter>
-    </ClInclude>
     <ClInclude Include="Include\dr_shader.h">
       <Filter>Archivos de encabezado\Base\Shaders</Filter>
     </ClInclude>
@@ -80,12 +65,6 @@
     </ClInclude>
     <ClInclude Include="Include\dr_index_buffer.h">
       <Filter>Archivos de encabezado\Base\Buffers</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\dr_hull_shader.h">
-      <Filter>Archivos de encabezado\Base\Shaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\dr_geometry_shader.h">
-      <Filter>Archivos de encabezado\Base\Shaders</Filter>
     </ClInclude>
     <ClInclude Include="Include\dr_d3d_index_buffer.h">
       <Filter>Archivos de encabezado\DirectX11\Buffers</Filter>
@@ -186,14 +165,35 @@
     <ClInclude Include="Include\dr_graphics_api.h">
       <Filter>Archivos de encabezado\Base</Filter>
     </ClInclude>
-    <ClInclude Include="Include\dr_d3d_graphics_api.h">
-      <Filter>Archivos de encabezado\DirectX11</Filter>
-    </ClInclude>
     <ClInclude Include="Include\dr_graphics_prerequisites.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="Include\dr_texture_shader.h">
-      <Filter>Archivos de encabezado\Base\Shaders</Filter>
+    <ClInclude Include="Include\dr_d3d_shader.h">
+      <Filter>Archivos de encabezado\DirectX11\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_graphics_driver.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_blend_state.h">
+      <Filter>Archivos de encabezado\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_d3d_blend_state.h">
+      <Filter>Archivos de encabezado\DirectX11</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_gfx_memory.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_structure_buffer.h">
+      <Filter>Archivos de encabezado\Base\Buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_d3d_structure_buffer.h">
+      <Filter>Archivos de encabezado\DirectX11\Buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_indirect_args_buffer.h">
+      <Filter>Archivos de encabezado\Base\Buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_d3d_indirect_args_buffer.h">
+      <Filter>Archivos de encabezado\DirectX11\Buffers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -254,8 +254,23 @@
     <ClCompile Include="Source\dr_d3d_depth_stencil_state.cpp">
       <Filter>Archivos de código fuente\DirectX11</Filter>
     </ClCompile>
-    <ClCompile Include="Source\dr_d3d_graphics_api.cpp">
-      <Filter>Archivos de código fuente\DirectX11</Filter>
+    <ClCompile Include="Source\dr_d3d_shader.cpp">
+      <Filter>Archivos de código fuente\DirectX11\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_graphics_driver.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_graphics_api.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_d3d_blend_state.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_d3d_structure_buffer.cpp">
+      <Filter>Archivos de código fuente\DirectX11\Buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_d3d_indirect_args_buffer.cpp">
+      <Filter>Archivos de código fuente\DirectX11\Buffers</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

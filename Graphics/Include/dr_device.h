@@ -17,6 +17,7 @@ class RenderTarget;
 class DepthStencil;
 class DeviceContext;
 class ShaderBytecode;
+class BlendState;
 
 class DR_GRAPHICS_EXPORT Device
 {
@@ -59,7 +60,7 @@ class DR_GRAPHICS_EXPORT Device
   */
   virtual Buffer*
   createBuffer(const DrBufferDesc& desc,
-                     byte* initialData = nullptr) = 0;
+               const byte* initialData = nullptr) const  = 0;
 
 
 
@@ -81,7 +82,7 @@ class DR_GRAPHICS_EXPORT Device
   virtual Shader*
   createShaderFromMemory(const char* shaderBuffer,
                          size_t bufferSize,
-                         DR_SHADER_TYPE_FLAG::E shaderType) = 0;
+                         DR_SHADER_TYPE_FLAG::E shaderType) const  = 0;
 
   /**
   * Create a texture from a memory buffer
@@ -100,7 +101,7 @@ class DR_GRAPHICS_EXPORT Device
   */
   virtual Texture*
   createTextureFromMemory(const char* buffer,
-                          const DrTextureDesc& desc) = 0;
+                          const DrTextureDesc& desc) const  = 0;
 
   /**
   * Create a texture without initial data
@@ -115,7 +116,7 @@ class DR_GRAPHICS_EXPORT Device
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   virtual Texture*
-  createEmptyTexture(const DrTextureDesc& desc) = 0;
+  createEmptyTexture(const DrTextureDesc& desc) const  = 0;
 
   /**
   * Create a render target
@@ -129,11 +130,13 @@ class DR_GRAPHICS_EXPORT Device
   * @param out renderTarget
   *   The RenderTarget object taht will be filled out
   *
-  * @return
-  *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   virtual RenderTarget*
-  createRenderTarget(const Texture& texture) = 0;
+  createRenderTarget(const DrTextureDesc& desc, UInt32 numRTs) const = 0;
+
+
+  virtual RenderTarget*
+  createRenderTarget(const std::vector<Texture*>& textures) const  = 0;
 
   /**
   * Create a depth stencil
@@ -144,11 +147,12 @@ class DR_GRAPHICS_EXPORT Device
   * @param out depthStencil
   *   The DepthStencil object taht will be filled out
   *
-  * @return
-  *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   virtual DepthStencil*
-  createDepthStencil(const Texture& texture) = 0;
+  createDepthStencil(const DrDepthStencilDesc& desc) const = 0;
+
+  virtual DepthStencil*
+  createDepthStencil(const Texture& texture) const = 0;
 
   /**
   * Create a sampler state
@@ -163,7 +167,7 @@ class DR_GRAPHICS_EXPORT Device
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   virtual SamplerState*
-  createSamplerState(const DrSampleDesc& desc) = 0;
+  createSamplerState(const DrSampleDesc& desc) const  = 0;
 
   /**
   * Create a sampler rasterizer state
@@ -178,7 +182,7 @@ class DR_GRAPHICS_EXPORT Device
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   virtual RasterizerState*
-  createRasteizerState(const DrRasterizerDesc& desc) = 0;
+  createRasteizerState(const DrRasterizerDesc& desc)const = 0;
 
   /**
   * Create a deth stencil state
@@ -193,7 +197,7 @@ class DR_GRAPHICS_EXPORT Device
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   virtual DepthStencilState*
-  createDepthStencilState(const DrDepthStencilDesc& desc) = 0;
+  createDepthStencilState(const DrDepthStencilStateDesc& desc)const = 0;
 
   /**
   * Create a input layout
@@ -212,7 +216,7 @@ class DR_GRAPHICS_EXPORT Device
   */
   virtual InputLayout*
   createInputLayout(const std::vector<DrInputElementDesc>& inputDescArray, 
-                    const ShaderBytecode& shaderBytecode) = 0;
+                    const ShaderBytecode& shaderBytecode)const = 0;
 
   /**
   * Create a swap chain
@@ -227,7 +231,20 @@ class DR_GRAPHICS_EXPORT Device
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   virtual SwapChain*
-  createSwapChain(const DrSwapChainDesc& desc) = 0;
+  createSwapChain(const DrSwapChainDesc& desc) const = 0;
+
+  /**
+  * Create a blend rasterizer state
+  *
+  * @param desc
+  *   Describes the state parameters
+  *
+  * @param out state
+  *   The BlendState object taht will be filled out
+  *
+  */
+  virtual BlendState*
+    createBlendState(const DrBlendStateDesc& desc) const = 0;
 };
 
 }

@@ -1,12 +1,13 @@
 #pragma once
 #include "dr_swap_chain.h"
 #include "dr_graphics_prerequisites.h"
+#include "dr_gfx_memory.h"
 
 struct IDXGISwapChain;
-struct ID3D11RenderTargetView;
 
 namespace driderSDK {
-
+  class D3DTexture;
+  class RenderTarget;
 class DR_GRAPHICS_EXPORT D3DSwapChain : public SwapChain
 {
  public:
@@ -44,8 +45,8 @@ class DR_GRAPHICS_EXPORT D3DSwapChain : public SwapChain
   * @return
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
-  void
-  getBackBuffer(Texture& texture) override;
+  RenderTarget&
+  getBackBufferRT() override;
 
   /**
   * TEST::release
@@ -56,6 +57,14 @@ class DR_GRAPHICS_EXPORT D3DSwapChain : public SwapChain
   release() override;
 
   /**
+  * Resize back buffer.
+  * This should be called when the application window is resized.
+  */
+  void
+  resize(const Device& device, UInt32 _w, UInt32 _h) override;
+
+
+  /**
   * TEST::swapBuffers
   *
   * Swap back-front buffer
@@ -63,8 +72,10 @@ class DR_GRAPHICS_EXPORT D3DSwapChain : public SwapChain
   void
   swapBuffers() override;
 
+private:
   IDXGISwapChain* APISwapchain;
-  ID3D11RenderTargetView* APIRenderTargetView;  // View into the back buffer
+  RenderTarget* m_backBufferView;
+  D3DTexture* m_backBufferTexture;
 };
 
 }

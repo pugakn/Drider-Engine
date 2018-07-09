@@ -52,8 +52,8 @@ Quaternion::normalize() {
   *this *= 1 / measure();
 }
 
-Vector3D
-Quaternion::rotation(const Vector3D& V) {
+const Vector3D
+Quaternion::rotation(const Vector3D& V) const {
 
 	Quaternion norm(*this);
 	if (norm.measure() != 1.f) {
@@ -73,17 +73,17 @@ Quaternion::matrixFromQuaternion(Matrix4x4& MatrixOut) {
 		Normalized.normalize();
 	}
   MatrixOut[0][0] = 1.f - (2.f*Normalized.y*Normalized.y) - (2.f*Normalized.z*Normalized.z);
-  MatrixOut[0][1] = (2.f*Normalized.x*Normalized.y) - (2.f*Normalized.z*Normalized.w);
-  MatrixOut[0][2] = (2.f*Normalized.x*Normalized.z) + (2.f*Normalized.w*Normalized.y);
-  MatrixOut[1][0] = (2.f*Normalized.x*Normalized.y) + (2.f*Normalized.z*Normalized.w);
+  MatrixOut[1][0] = (2.f*Normalized.x*Normalized.y) - (2.f*Normalized.z*Normalized.w);
+  MatrixOut[2][0] = (2.f*Normalized.x*Normalized.z) + (2.f*Normalized.w*Normalized.y);
+  MatrixOut[0][1] = (2.f*Normalized.x*Normalized.y) + (2.f*Normalized.z*Normalized.w);
   MatrixOut[1][1] = 1.f - (2.f*Normalized.x*Normalized.x) - (2.f*Normalized.z*Normalized.z);
-  MatrixOut[1][2] = (2.f*Normalized.y*Normalized.z) - (2.f*Normalized.x*Normalized.w);
-  MatrixOut[2][0] = (2.f*Normalized.x*Normalized.z) - (2.f*Normalized.y*Normalized.w);
-  MatrixOut[2][1] = (2.f*Normalized.y*Normalized.z) + (2.f*Normalized.x*Normalized.w);
+  MatrixOut[2][1] = (2.f*Normalized.y*Normalized.z) - (2.f*Normalized.x*Normalized.w);
+  MatrixOut[0][2] = (2.f*Normalized.x*Normalized.z) - (2.f*Normalized.y*Normalized.w);
+  MatrixOut[1][2] = (2.f*Normalized.y*Normalized.z) + (2.f*Normalized.x*Normalized.w);
   MatrixOut[2][2] = 1.f - (2.f*Normalized.x*Normalized.x) - (2.f*Normalized.y*Normalized.y);
   MatrixOut[3][3] = 1.f;
-  MatrixOut[0][3] = MatrixOut[1][3] = MatrixOut[2][3] = 0.f;
-  MatrixOut[3][0] = MatrixOut[3][1] = MatrixOut[3][2] = 0.f;
+  MatrixOut[3][0] = MatrixOut[1][3] = MatrixOut[2][3] = 0.f;
+  MatrixOut[0][3] = MatrixOut[3][1] = MatrixOut[3][2] = 0.f;
 }
 
 void
@@ -101,6 +101,60 @@ Quaternion::matrixFromQuaternion(Matrix3x3& MatrixOut) {
 	MatrixOut[2][0] = (2.f*Normalized.x*Normalized.z) - (2.f*Normalized.y*Normalized.w);
 	MatrixOut[2][1] = (2.f*Normalized.y*Normalized.z) + (2.f*Normalized.x*Normalized.w);
 	MatrixOut[2][2] = 1.f - (2.f*Normalized.x*Normalized.x) - (2.f*Normalized.y*Normalized.y);
+}
+
+Quaternion Quaternion::slerp(const Quaternion& end, float factor) const {
+    float cosom = x * end.x + y * end.y + z * end.z + w * end.w;
+
+    Quaternion endMod = end;
+    if ( cosom < 0.0f)
+    {
+        cosom = -cosom;
+        endMod.x = -endMod.x; 
+        endMod.y = -endMod.y;
+        endMod.z = -endMod.z;
+        endMod.w = -endMod.w;
+    }
+
+    float sclp, sclq;
+    if ((1.0f - cosom) > Math::EPSILON)
+    {
+        float omega, sinom;
+        omega = std::acos( cosom);
+        sinom = std::sin( omega);
+        sclp  = std::sin( (1.0f - factor) * omega) / sinom;
+        sclq  = std::sin( factor * omega) / sinom;
+    } 
+    else
+    {
+        sclp = 1.0f - factor;
+        sclq = factor;
+    }
+
+    Quaternion interpolated;
+
+    interpolated.x = sclp * x + sclq * endMod.x;
+    interpolated.y = sclp * y + sclq * endMod.y;
+    interpolated.z = sclp * z + sclq * endMod.z;
+    interpolated.w = sclp * w + sclq * endMod.w;
+
+    return interpolated;
+}
+
+Vector3D 
+Quaternion::getDirection() {
+  
+  return {-2.f * (x * z - w * y), 
+          2.f * (y * z + w * x), 
+          1.f - 2.f * (x * x + y * y)};  
+}
+
+Vector3D 
+Quaternion::getEulerAngles() {
+  
+  Matrix4x4 tx(*this);
+
+  return tx.eulerAngles();  
 }
 
 float*

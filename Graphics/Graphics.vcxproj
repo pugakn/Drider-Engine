@@ -89,7 +89,8 @@
     </ClCompile>
     <Link>
       <ImportLibrary>$(SolutionDir)Lib\$(PlatformTarget)\$(Projectname)d.lib</ImportLibrary>
-      <AdditionalDependencies>dxgi.lib;D3D11.lib;D3DCompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Mathd.lib;dxguid.lib;dxgi.lib;D3D11.lib;D3DCompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -101,8 +102,9 @@
       <PreprocessorDefinitions>GRAPHICS_EXPORTS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <ImportLibrary>$(SolutionDir)Lib\$(PlatformTarget)\$(Projectname)d.lib</ImportLibrary>
-      <AdditionalDependencies>dxgi.lib;D3D11.lib;D3DCompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ImportLibrary>$(SolutionDir)Lib\$(PlatformTarget)\$(TargetName).lib</ImportLibrary>
+      <AdditionalDependencies>Mathd.lib;dxguid.lib;dxgi.lib;D3D11.lib;D3DCompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -118,7 +120,9 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>dxgi.lib;D3D11.lib;D3DCompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Math.lib;dxguid.lib;dxgi.lib;D3D11.lib;D3DCompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ImportLibrary>$(SolutionDir)Lib\$(PlatformTarget)\$(TargetName).lib</ImportLibrary>
+      <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -134,11 +138,14 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>dxgi.lib;D3D11.lib;D3DCompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Math.lib;dxguid.lib;dxgi.lib;D3D11.lib;D3DCompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Include\dr_blend_state.h" />
     <ClInclude Include="Include\dr_compiled_shader_container.h" />
+    <ClInclude Include="Include\dr_d3d_blend_state.h" />
     <ClInclude Include="Include\dr_d3d_compute_shader.h" />
     <ClInclude Include="Include\dr_d3d_constant_buffer.h" />
     <ClInclude Include="Include\dr_d3d_depth_stencil.h" />
@@ -146,48 +153,47 @@
     <ClInclude Include="Include\dr_d3d_device.h" />
     <ClInclude Include="Include\dr_buffer.h" />
     <ClInclude Include="Include\dr_command_buffer.h" />
-    <ClInclude Include="Include\dr_compute_shader.h" />
     <ClInclude Include="Include\dr_constant_buffer.h" />
     <ClInclude Include="Include\dr_d3d_device_context.h" />
     <ClInclude Include="Include\dr_d3d_domain_shader.h" />
     <ClInclude Include="Include\dr_d3d_fragment_shader.h" />
     <ClInclude Include="Include\dr_d3d_geometry_shader.h" />
-    <ClInclude Include="Include\dr_d3d_graphics_api.h" />
     <ClInclude Include="Include\dr_d3d_hull_shader.h" />
     <ClInclude Include="Include\dr_d3d_index_buffer.h" />
+    <ClInclude Include="Include\dr_d3d_indirect_args_buffer.h" />
     <ClInclude Include="Include\dr_d3d_input_layout.h" />
     <ClInclude Include="Include\dr_d3d_render_target.h" />
     <ClInclude Include="Include\dr_d3d_rasterizer_state.h" />
     <ClInclude Include="Include\dr_d3d_sample_state.h" />
+    <ClInclude Include="Include\dr_d3d_shader.h" />
+    <ClInclude Include="Include\dr_d3d_structure_buffer.h" />
     <ClInclude Include="Include\dr_d3d_swap_chain.h" />
     <ClInclude Include="Include\dr_d3d_texture.h" />
     <ClInclude Include="Include\dr_d3d_vertex_buffer.h" />
     <ClInclude Include="Include\dr_d3d_vertex_shader.h" />
     <ClInclude Include="Include\dr_depth_stencil.h" />
     <ClInclude Include="Include\dr_depth_stencil_state.h" />
-    <ClInclude Include="Include\dr_domain_shader.h" />
-    <ClInclude Include="Include\dr_fragment_shader.h" />
-    <ClInclude Include="Include\dr_geometry_shader.h" />
+    <ClInclude Include="Include\dr_gfx_memory.h" />
     <ClInclude Include="Include\dr_graphics_api.h" />
     <ClInclude Include="Include\dr_graphics_defines.h" />
     <ClInclude Include="Include\dr_device.h" />
     <ClInclude Include="Include\dr_device_context.h" />
+    <ClInclude Include="Include\dr_graphics_driver.h" />
     <ClInclude Include="Include\dr_graphics_prerequisites.h" />
-    <ClInclude Include="Include\dr_hull_shader.h" />
     <ClInclude Include="Include\dr_index_buffer.h" />
+    <ClInclude Include="Include\dr_indirect_args_buffer.h" />
     <ClInclude Include="Include\dr_input_layout.h" />
     <ClInclude Include="Include\dr_rasterizer_state.h" />
     <ClInclude Include="Include\dr_render_target.h" />
     <ClInclude Include="Include\dr_sample_state.h" />
     <ClInclude Include="Include\dr_shader.h" />
+    <ClInclude Include="Include\dr_structure_buffer.h" />
     <ClInclude Include="Include\dr_swap_chain.h" />
-    <ClInclude Include="Include\dr_teselation_shader.h" />
     <ClInclude Include="Include\dr_texture.h" />
-    <ClInclude Include="Include\dr_texture_shader.h" />
     <ClInclude Include="Include\dr_vertex_buffer.h" />
-    <ClInclude Include="Include\dr_vertex_shader.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\dr_d3d_blend_state.cpp" />
     <ClCompile Include="Source\dr_d3d_compute_shader.cpp" />
     <ClCompile Include="Source\dr_d3d_constant_buffer.cpp" />
     <ClCompile Include="Source\dr_d3d_depth_stencil.cpp" />
@@ -197,17 +203,21 @@
     <ClCompile Include="Source\dr_d3d_domain_shader.cpp" />
     <ClCompile Include="Source\dr_d3d_fragment_shader.cpp" />
     <ClCompile Include="Source\dr_d3d_geometry_shader.cpp" />
-    <ClCompile Include="Source\dr_d3d_graphics_api.cpp" />
     <ClCompile Include="Source\dr_d3d_hull_shader.cpp" />
     <ClCompile Include="Source\dr_d3d_index_buffer.cpp" />
+    <ClCompile Include="Source\dr_d3d_indirect_args_buffer.cpp" />
     <ClCompile Include="Source\dr_d3d_input_layout.cpp" />
     <ClCompile Include="Source\dr_d3d_rasterizer_state.cpp" />
     <ClCompile Include="Source\dr_d3d_render_target.cpp" />
     <ClCompile Include="Source\dr_d3d_sample_state.cpp" />
+    <ClCompile Include="Source\dr_d3d_shader.cpp" />
+    <ClCompile Include="Source\dr_d3d_structure_buffer.cpp" />
     <ClCompile Include="Source\dr_d3d_swap_chain.cpp" />
     <ClCompile Include="Source\dr_d3d_texture.cpp" />
     <ClCompile Include="Source\dr_d3d_vertex_buffer.cpp" />
     <ClCompile Include="Source\dr_d3d_vertex_shader.cpp" />
+    <ClCompile Include="Source\dr_graphics_api.cpp" />
+    <ClCompile Include="Source\dr_graphics_driver.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -18,7 +18,7 @@ class DR_GRAPHICS_EXPORT Buffer
 {
  public:
    virtual void*
-     getAPIObject() = 0;
+     getAPIObject() const = 0;
 
    virtual void**
      getAPIObjectReference() = 0;
@@ -84,6 +84,9 @@ class DR_GRAPHICS_EXPORT Buffer
   virtual void
   release() = 0;
 
+  std::vector<byte>& getSysMemCopy() { return m_sysMemCpy; }
+  const DrBufferDesc& getDescriptor() const { return m_descriptor; }
+ protected:
   std::vector<byte> m_sysMemCpy;
   DrBufferDesc m_descriptor;
 };

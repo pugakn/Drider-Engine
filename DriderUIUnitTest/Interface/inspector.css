@@ -1,0 +1,8 @@
+#divInspector {
+  overflow: scroll;
+  background: white
+}
+
+.ui-accordion .ui-accordion-content {
+  padding: 5px;
+}

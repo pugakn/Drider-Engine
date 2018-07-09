@@ -1,6 +1,4 @@
 #pragma once
-#pragma warning(disable : 4201)
-#pragma warning(disable : 4251)
 
 #define DR_PLATFORM_WINDOWS	  1   //Windows Platform 
 #define DR_PLATFORM_LINUX	    2	  //Linux Platform
@@ -9,7 +7,7 @@
 #define DR_PLATFORM_ANDROID	  5	  //Android Platform
 #define DR_PLATFORM_PS4		    6	  //Play Station 4 Platform
 
-#define DR_COMPILER_MSV   1   //VS Compiler
+#define DR_COMPILER_MSVC   1   //VS Compiler
 #define DR_COMPILER_GNU   2   //GCC Compiler
 #define DR_COMPILER_INTEL 3   //Intel Compiler
 #define DR_COMPILER_CLANG 4   //Clang Compiler
@@ -38,9 +36,11 @@
 #if DR_DEBUG_MODE
 # define DR_ASSERT(x) assert(x)		  
 # define DR_DEBUG_ONLY(x) x
+# define DR_DEBUG_ONLY_PARAM(x) ,x
 #else
 # define DR_ASSERT(x) 
 # define DR_DEBUG_ONLY(x)
+# define DR_DEBUG_ONLY_PARAM(x)
 #endif
 
 /**********************************************************************
@@ -49,23 +49,23 @@
 *																	                                    *
 **********************************************************************/
 
-#if defined( _MSC_VER )                       //Visual Studio
-# define DR_COMPILER DR_COMPILER_MSV          //Set as Actual Compiler
+#if defined(_MSC_VER)                       //Visual Studio
+# define DR_COMPILER DR_COMPILER_MSVC          //Set as Actual Compiler
 # define DR_COMP_VER _MSC_VER                 //Compiler version
 # define DR_THREADLOCAL __declspec(thread)    //Local Thread type
-#elif defined( __GNUC__ )                     //GCC Compiler
+#elif defined(__GNUC__)                     //GCC Compiler
 # define DR_COMPILER DR_COMPILER_GNU		  //Set as Actual Compiler
 //Compiler version (computed from integrated defines)
 # define DR_COMP_VER (((__GNUC__)*100) + (__GNUC_MINOR__*10) + __GNUC_PATCHLEVEL__)
 # define DR_THREADLOCAL __thread              //Local Thread type
-#elif defined ( __INTEL_COMPILER )            //Intel compiler
+#elif defined (__INTEL_COMPILER)            //Intel compiler
 # define DR_COMPILER DR_COMPILER_INTEL        //Set as Actual Compiler
 # define DR_COMP_VER __INTEL_COMPILER         //Compiler version
 /** 
  * DR_THREADLOCAL define is down below because Intel compiler defines it
  * differently based on platform
  */
-#elif defined ( __clang__ )                   //Clang compiler
+#elif defined (__clang__)                   //Clang compiler
 # define DR_COMPILER DR_COMPILER_CLANG        //Set as Actual Compiler
 # define DR_COMP_VER __clang_version__        //Compiler version
 # define DR_THREADLOCAL __thread              //Local Thread type
@@ -102,7 +102,7 @@
 *																	                                    *
 **********************************************************************/
 
-#if DR_COMPILER == DR_COMPILER_MSV            //If we are compiling on Visual Studio
+#if DR_COMPILER == DR_COMPILER_MSVC            //If we are compiling on Visual Studio
 # if DR_COMP_VER >= 1200                      //If we are on Visual Studio 6 or higher
 #   define FORCEINLINE __forceinline          //Set __forceinline
 #   ifndef RESTRICT
@@ -133,4 +133,11 @@
 # define DR_ARCH_TYPE DR_ARCHITECTURE_X86_64
 #else                                         //If it's a x86 compile
 # define DR_ARCH_TYPE DR_ARCHITECTURE_X86_32
+#endif
+
+#if (DR_COMPILER == DR_COMPILER_MSVC)
+#pragma warning(disable : 4201)
+#pragma warning(disable : 4251)
+#pragma warning(disable : 4275)
+#pragma warning(disable : 4099)
 #endif

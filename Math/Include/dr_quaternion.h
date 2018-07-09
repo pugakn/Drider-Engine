@@ -120,8 +120,8 @@ class DR_MATH_EXPORT Quaternion
   * @return
   *   A rotated vector.
   */
-  Vector3D
-  rotation(const Vector3D& V);
+  const Vector3D
+  rotation(const Vector3D& V) const;
 
   /**
 	* TEST::matrixFromQuaternion4x4
@@ -142,6 +142,28 @@ class DR_MATH_EXPORT Quaternion
 	*/
 	void
 	matrixFromQuaternion(Matrix3x3& MatrixOut);
+
+  /**
+  * 
+  *
+  *
+  */
+
+  Quaternion 
+  slerp(const Quaternion& end, float factor) const;
+
+  /**
+  *
+  */
+  Vector3D
+  getDirection();
+
+  /**
+  *
+  */
+
+  Vector3D
+  getEulerAngles();
 
 	/**
 	* TEST::pointer

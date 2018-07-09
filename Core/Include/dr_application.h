@@ -1,26 +1,44 @@
 #pragma once
-#include "dr_core_prerequisites.h"
+
 #include <atomic>
+#include <dr_memory.h>
+#include "dr_core_prerequisites.h"
+#include "dr_viewport.h"
+class SDL_Window;
 namespace driderSDK {
-class DR_CORE_EXPORT Application 
+class DR_CORE_EXPORT Application
 {
-public:
+ public:
+
+  Application(bool _usesWindow = true) : m_usesWindow(_usesWindow)
+  {}
+
   virtual ~Application() {}
+  
+  Int32 run(const Viewport& _viewport);
+  static void setViewport(const Viewport& _viewport);
+  static Viewport getViewPort();
+ protected:
+  virtual void postInit() = 0;
+  virtual void postUpdate() = 0;
+  virtual void postRender() = 0;
+  virtual void postDestroy() = 0;
 
-  virtual void onInit() = 0;
-  virtual void onInput() = 0;
-  virtual void onUpdate() = 0;
-  virtual void onDraw() = 0;
-  virtual void onDestroy() = 0;
-  virtual void onPause() = 0;
-  virtual void onResume() = 0;
-
-  void startApplication();
-  void stopApplication();
-  void pauseApplication();
-  void resumeApplication();
-private:
-  std::atomic<bool> m_alive;
+  virtual void onResize() = 0;
+ private:
+  void init();
+  void createWindow();
+  void update();
+  void render();
+  void destroy();
+ protected:
+  Viewport m_viewport;
+  void* m_hwnd;
   std::atomic<bool> m_running;
+ private:
+  static Application* application;
+  static Application& getApplication();
+  SDL_Window* m_window;
+  bool m_usesWindow;
 };
 }

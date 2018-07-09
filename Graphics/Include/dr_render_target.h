@@ -19,11 +19,11 @@ class DepthStencil;
 class DR_GRAPHICS_EXPORT RenderTarget
 {
  public:
-   virtual void*
-     getAPIObject() = 0;
+   //virtual void*
+   //  getAPIObject() = 0;
 
-   virtual void**
-     getAPIObjectReference() = 0;
+   //virtual void**
+   //  getAPIObjectReference() = 0;
 
   /**
   * Class virtual destructor.
@@ -47,7 +47,25 @@ class DR_GRAPHICS_EXPORT RenderTarget
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   virtual void
-  create(const Device& device,const Texture& texture) = 0;
+  create(const Device& device, const DrTextureDesc& desc, UInt32 numRTs) = 0;
+
+  virtual void
+  create(const Device& device, const std::vector<Texture*>& textures) = 0;
+
+  /**
+  * TEST::setRTNull
+  *
+  * Set the render target and depth stencil
+  *
+  * @param deviceContext
+  *   The device context to set the shader
+  *
+  * @param depthStencil
+  *   The depth stencil to set with the render target
+  *
+  */
+  virtual void
+  setRTNull(const DeviceContext& deviceContext) const = 0;
 
   /**
   * Set the render target and depth stencil
@@ -67,6 +85,22 @@ class DR_GRAPHICS_EXPORT RenderTarget
   */
   virtual void
   release() = 0;
+
+
+  virtual void
+  clear(const DeviceContext& deviceContext, const float color[4]) = 0;
+
+
+  const DrTextureDesc& getDescriptor() const { return m_descriptor; }
+  Texture& getTexture(UInt32 id) const 
+  { 
+    DR_ASSERT(id < m_texturesVec.size());
+    return *m_texturesVec[id]; 
+  }
+ protected:
+  DrTextureDesc m_descriptor;
+  std::vector<Texture*> m_texturesVec;
+  bool _textureOwner = false;
 };
 
 }

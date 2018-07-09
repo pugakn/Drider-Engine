@@ -10,6 +10,7 @@ class Sphere;
 class Capsule;
 class Frustrum;
 class AABB;
+class Line;
 
 /**
 *  Ray class with origin and direction
@@ -39,7 +40,7 @@ class DR_MATH_EXPORT Ray
   *  The direction of the ray
   *
   */
-  Ray(Vector3D _origin, Vector3D _direction)
+  Ray(const Vector3D& _origin, const Vector3D& _direction)
     : origin(_origin),
 	    direction(_direction)
   {}
@@ -84,6 +85,8 @@ class DR_MATH_EXPORT Ray
 	intersects(const Plane& plane, float* t) const;
 
 	/**
+  * TEST::intersectSphere
+  *
 	* Check if the ray intersects with a sphere
 	*
 	*	@param sphere
@@ -97,6 +100,7 @@ class DR_MATH_EXPORT Ray
 	intersects(const Sphere& sphere) const;
 
   /**
+  * TEST::intersectSphere
   * Check if the ray intersects with a sphere
   *
   *	@param sphere
@@ -109,7 +113,7 @@ class DR_MATH_EXPORT Ray
   bool
   intersects(const Sphere& sphere, Vector3D* pointIntersect) const;
 
-	/**
+	/*
 	* Check if the ray intersects with a capsule
 	*
 	*	@param capsule
@@ -119,8 +123,9 @@ class DR_MATH_EXPORT Ray
 	*	  True if the ray intersects with the capsule
 	*
 	*/
+  /*
 	bool
-	intersects(const Capsule& capsule) const;
+	intersects(const Capsule& capsule) const;*/
 
   /**
   * TEST::intersectAABB
@@ -137,6 +142,7 @@ class DR_MATH_EXPORT Ray
   intersects(const AABB& aabb, Vector3D* point);
 
 	/**
+  * TEST::frustrumRay
 	* Check if the ray intersects with a frustrum
 	*
 	*	@param frustrum
@@ -148,6 +154,40 @@ class DR_MATH_EXPORT Ray
 	*/
 	bool
 	intersects(const Frustrum& frustrum) const;
+
+  /**
+  * TEST::intersectRay
+  * Check if the ray intersects with a ray
+  *
+  *	@param ray
+  *	 The ray to check the intersecton.
+  *
+  * @return
+  *	  True if the ray intersects with the ray
+  *
+  * @Point
+  *	  Intersection point
+  *
+  */
+  bool
+  intersects(const Ray& ray, Vector3D* point) const;
+
+  /*
+  * TEST::intersectLine
+  * Check if the ray intersects with a line
+  *
+  *	@param line
+  *	 The line to check the intersecton.
+  *
+  * @return
+  *	  True if the ray intersects with the line
+  *
+  * @Point
+  *	  Intersection point
+  *
+  */
+  /*bool
+  intersects(const Line& line, Vector3D* point) const;*/
 
 	Vector3D origin;
 	Vector3D direction;

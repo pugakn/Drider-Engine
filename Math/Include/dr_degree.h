@@ -152,7 +152,7 @@ class DR_MATH_EXPORT Degree
   */
   Degree&
   operator/=(float V);
-private:
+ private:
   float m_value;
 };
 

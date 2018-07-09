@@ -58,7 +58,7 @@ TEST(Matrix4x4, Constructor3x3) {
 }
 
 TEST(Matrix4x4, ConstructorQuaternion) {
-  driderSDK::Quaternion testQuaternion(0.7071, 0, 0, 0.7071f);
+  driderSDK::Quaternion testQuaternion(0.7071f, 0, 0, 0.7071f);
   driderSDK::Matrix4x4 checkMatrix(1, 0, 0, 0,
                                    0, 0, -1, 0,
                                    0, 1, 0, 0,
@@ -297,6 +297,63 @@ TEST(Matrix4x4, RotationZ) {
 
   driderSDK::Vector4D check(0, 1, 0, 1);
   EXPECT_TRUE(check.equals(pos, 0.0000001f));
+}
+
+TEST(Matrix4x4, LookAt) {
+  driderSDK::Matrix4x4 temp;
+  driderSDK::Vector3D Eye(0.0f, 3.0f, -5.0f);
+  driderSDK::Vector3D At(0.0f, 0.0f, 0.0f);
+  driderSDK::Vector3D Up(0,1,0);
+
+  temp.LookAt(Eye, At, Up);
+  checkValuesMatrix(temp,
+                    -1, 0, 0, 0,
+                    0, 0.85749298f, 0.51449579f, 0,
+                    0, .51449579f, -0.857492983f, -5.83095264f,
+                    0, 0, 0, 1);
+}
+
+TEST(Matrix4x4, Projection) {
+  driderSDK::Matrix4x4 temp;
+  temp.Projection(1280, 720, 10, 1000);
+  checkValuesMatrix(temp,
+                    0.015625f, 0, 0, 0,
+                    0, 0.027777778f, 0, 0,
+                    0, 0, -1.010101f, -1,
+                    0, 0, -10.10101f, 0);
+}
+
+TEST(Matrix4x4, ProjectionFov) {
+  driderSDK::Matrix4x4 temp;
+  temp.ProjectionFov(60, 1.33f, 10, 1000);
+  checkValuesMatrix(temp,
+                    0.15611996f, 0, 0, 0,
+                    0, -0.20763955f, 0, 0,
+                    0, 0, -1.010101f, -1,
+                    0, 0, -10.10101f, 0);
+}
+
+TEST(Matrix4x4, Orthogonal) {
+  driderSDK::Matrix4x4 temp;
+  temp.Orthogonal(1280, 720, 10, 1000);
+  checkValuesMatrix(temp,
+                    0.0015625f, 0, 0, 0,
+                    0, 0.0027777778f, 0, 0,
+                    0, 0, -0.0010101011f, 0.01010101f,
+                    0, 0, 0, 1);
+}
+
+TEST(Matrix4x4, Reflection) {
+  driderSDK::Matrix4x4 temp;
+  temp.Reflection(driderSDK::Vector3D(0,1,1).normalize());
+
+  driderSDK::Vector3D point(1, 1, 1);
+
+  point = temp * point;
+  EXPECT_FLOAT_EQ(1, point[0]);
+  EXPECT_FLOAT_EQ(-1, point[1]);
+  EXPECT_FLOAT_EQ(-1, point[2]);
+
 }
 
 TEST(Matrix4x4, getPointer) {

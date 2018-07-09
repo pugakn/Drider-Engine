@@ -5,7 +5,9 @@
 
 namespace driderSDK {
 
+class Vector2D;
 class Vector3D;
+class Matrix4x4;
 
 /**
 * Vector with 4 elements (x, y, z, w)
@@ -66,6 +68,14 @@ class DR_MATH_EXPORT Vector4D
   *
   */
   Vector4D(const Vector3D& V, float _w);
+
+  /**
+  * TEST::copyConstructorDouble2D
+  *
+  * Copy constructor for two vec2 to vec4.
+  *
+  */
+  Vector4D(const Vector2D& V1, const Vector2D& V2);
 
   /**
   * TEST::floatsConstructor
@@ -473,6 +483,10 @@ class DR_MATH_EXPORT Vector4D
   */
   Vector4D
   operator*(const Vector4D& A) const;
+
+  //TMP
+  Vector4D
+  operator*(Matrix4x4 matrix) const;
 
   /**
   * TEST::mulEqual

@@ -5,15 +5,17 @@
 #include "dr_d3d_device_context.h"
 
 namespace driderSDK {
-  void * D3DConstantBuffer::getAPIObject()
-  {
-    return CB;
-  }
-  void ** D3DConstantBuffer::getAPIObjectReference()
-  {
-    return reinterpret_cast<void**>(&CB);
-  }
-  D3DConstantBuffer::D3DConstantBuffer() {
+
+void* D3DConstantBuffer::getAPIObject() const {
+  return CB;
+}
+
+void**
+D3DConstantBuffer::getAPIObjectReference()  {
+  return reinterpret_cast<void**>(&CB);
+}
+
+D3DConstantBuffer::D3DConstantBuffer() {
 }
 
 void
@@ -22,8 +24,8 @@ D3DConstantBuffer::create(const Device& device,
                           const byte* initialData) {
   const D3DDevice* apiDevice = reinterpret_cast<const D3DDevice*>(&device);
   m_descriptor = desc;
+  m_sysMemCpy.resize(desc.sizeInBytes);
   if (initialData != nullptr) {
-    m_sysMemCpy.resize(desc.sizeInBytes);
     m_sysMemCpy.assign(initialData, initialData + desc.sizeInBytes);
   }
   D3D11_BUFFER_DESC bdesc = { 0 };
@@ -47,44 +49,42 @@ D3DConstantBuffer::create(const Device& device,
   D3D11_SUBRESOURCE_DATA subData = { &initialData[0], 0, 0 };
 
   if (initialData != nullptr) {
-    D3D11_SUBRESOURCE_DATA subData = { &initialData[0], 0, 0 };
     apiDevice->D3D11Device->
       CreateBuffer(&bdesc, &subData, &CB);
   }
-  else
-  {
+  else {
     apiDevice->D3D11Device->
       CreateBuffer(&bdesc, nullptr, &CB);
   }
-  
 }
 
 void
 D3DConstantBuffer::set(const DeviceContext& deviceContext,
-                       Int32 typeFlag) const {
-  const D3DDeviceContext* context = reinterpret_cast<const D3DDeviceContext*>(&deviceContext);
-  if (typeFlag == 0)
-  {
+                       Int32 typeFlag,
+                       Int32 startSlot) const {
+  const D3DDeviceContext* context = reinterpret_cast<const D3DDeviceContext*>
+                                      (&deviceContext);
+  if (typeFlag == 0) {
     typeFlag |= DR_SHADER_TYPE_FLAG::kVertex;
     typeFlag |= DR_SHADER_TYPE_FLAG::kFragment;
   }
   if (typeFlag& DR_SHADER_TYPE_FLAG::kVertex) {
-    context->D3D11DeviceContext->VSSetConstantBuffers(0, 1, &CB);
+    context->D3D11DeviceContext->VSSetConstantBuffers(startSlot, 1, &CB);
   }
   if (typeFlag& DR_SHADER_TYPE_FLAG::kFragment) {
-    context->D3D11DeviceContext->PSSetConstantBuffers(0, 1, &CB);
+    context->D3D11DeviceContext->PSSetConstantBuffers(startSlot, 1, &CB);
   }
   if (typeFlag& DR_SHADER_TYPE_FLAG::kCompute) {
-    context->D3D11DeviceContext->CSSetConstantBuffers(0, 1, &CB);
+    context->D3D11DeviceContext->CSSetConstantBuffers(startSlot, 1, &CB);
   }
   if (typeFlag& DR_SHADER_TYPE_FLAG::kDomain) {
-    context->D3D11DeviceContext->DSSetConstantBuffers(0, 1, &CB);
+    context->D3D11DeviceContext->DSSetConstantBuffers(startSlot, 1, &CB);
   }
   if (typeFlag& DR_SHADER_TYPE_FLAG::kHull) {
-    context->D3D11DeviceContext->HSSetConstantBuffers(0, 1, &CB);
+    context->D3D11DeviceContext->HSSetConstantBuffers(startSlot, 1, &CB);
   }
   if (typeFlag& DR_SHADER_TYPE_FLAG::kGeometry) {
-    context->D3D11DeviceContext->GSSetConstantBuffers(0, 1, &CB);
+    context->D3D11DeviceContext->GSSetConstantBuffers(startSlot, 1, &CB);
   }
   if (typeFlag & DR_SHADER_TYPE_FLAG::kTeselation) {
     //Not implemented
@@ -98,7 +98,7 @@ void
 D3DConstantBuffer::updateFromSysMemCpy(const DeviceContext& deviceContext) {
   reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext->
-    UpdateSubresource(CB, 0, 0, &m_sysMemCpy[0], 0, 0);
+      UpdateSubresource(CB, 0, 0, &m_sysMemCpy[0], 0, 0);
 }
 
 void
@@ -109,7 +109,8 @@ D3DConstantBuffer::updateFromBuffer(const DeviceContext& deviceContext,
     D3D11DeviceContext->
       UpdateSubresource(CB, 0, 0, &dataBuffer[0], 0, 0);
 }
-void D3DConstantBuffer::release() {
+void
+D3DConstantBuffer::release() {
   CB->Release();
   m_sysMemCpy.clear();
   delete this;

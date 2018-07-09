@@ -35,7 +35,15 @@ class DR_GRAPHICS_EXPORT D3DDepthStencil : public DepthStencil
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   void
+  create(const Device& device, const DrDepthStencilDesc& texture) override;
+
+  void
   create(const Device& device, const Texture& texture) override;
+
+  void
+  clear(const DeviceContext& deviceContext, 
+        float valueDepth, 
+        UInt8 valueStencil) override;
 
   //void
   //set(const DeviceContext& deviceContext, const DepthStencil& depthStencil) const = 0;

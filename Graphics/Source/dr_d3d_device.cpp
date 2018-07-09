@@ -3,6 +3,8 @@
 #include <D3Dcompiler.h>
 #include <d3d11.h>
 #include <dxgi.h>
+#include "dr_d3d_indirect_args_buffer.h"
+#include "dr_d3d_structure_buffer.h"
 #include "dr_d3d_vertex_buffer.h"
 #include "dr_d3d_index_buffer.h"
 #include "dr_d3d_constant_buffer.h"
@@ -25,32 +27,62 @@
 #include "dr_d3d_texture.h"
 #include "dr_d3d_geometry_shader.h"
 #include "dr_d3d_domain_shader.h"
+#include "dr_d3d_blend_state.h"
 
 namespace driderSDK {
-  void * D3DDevice::getAPIObject()
-  {
-    return D3D11Device;
-  }
-  void ** D3DDevice::getAPIObjectReference()
-  {
-    return reinterpret_cast<void**>(&D3D11Device);
-  }
-  void
+
+void* D3DDevice::getAPIObject() {
+  return D3D11Device;
+}
+
+void** D3DDevice::getAPIObjectReference() {
+  return reinterpret_cast<void**>(&D3D11Device);
+}
+
+void
 D3DDevice::createDeviceAndDeviceContext(DeviceContext& deviceContext) {
   D3D_FEATURE_LEVEL lvl = D3D_FEATURE_LEVEL_11_0;
   D3D_FEATURE_LEVEL lvlRet = D3D_FEATURE_LEVEL_11_0;
-  D3D11CreateDevice(0,
-    D3D_DRIVER_TYPE_HARDWARE,
-    0,
-    0,
-    &lvl,
-    1,
-    D3D11_SDK_VERSION,
-    &D3D11Device,
-    &lvlRet,
-    &reinterpret_cast<D3DDeviceContext*>(&deviceContext)->
-    D3D11DeviceContext);
   
+  UInt32 flags = 0;
+#if DR_DEBUG_MODE
+  flags |= D3D11_CREATE_DEVICE_DEBUG;
+#endif
+
+  UINT i = 0;
+  IDXGIAdapter * pAdapter;
+  IDXGIAdapter * pAdapterNvidia = nullptr;
+  std::vector <IDXGIAdapter*> vAdapters;
+  IDXGIFactory* pFactory = NULL;
+  CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&pFactory);
+  while (pFactory->EnumAdapters(i, &pAdapter) != DXGI_ERROR_NOT_FOUND) {
+    vAdapters.push_back(pAdapter);
+    DXGI_ADAPTER_DESC adapterDescription; 
+    vAdapters[i]->GetDesc(&adapterDescription);
+    if (adapterDescription.VendorId == 0x10DE)//nvidia
+      pAdapterNvidia = pAdapter;
+    ++i;
+  }
+
+  if (D3D11CreateDevice(0,
+      D3D_DRIVER_TYPE_HARDWARE,
+      0,
+      flags,
+      &lvl,
+      1,
+      D3D11_SDK_VERSION,
+      &D3D11Device,
+      &lvlRet,
+      &reinterpret_cast<D3DDeviceContext*>(&deviceContext)->
+      D3D11DeviceContext) != S_OK) {
+    throw "Error: createDeviceAndDeviceContext";
+  }
+
+  pFactory->Release();
+
+  for (auto &it : vAdapters) {
+    it->Release();
+  }
 }
 
 void
@@ -61,7 +93,7 @@ D3DDevice::release() {
 
 Buffer*
 D3DDevice::createBuffer(const DrBufferDesc& desc,
-                        byte* initialData) {
+                        const byte* initialData) const {
   Buffer* buffer = nullptr;
   switch (desc.type)
   {
@@ -74,6 +106,18 @@ D3DDevice::createBuffer(const DrBufferDesc& desc,
   case DR_BUFFER_TYPE::kCONSTANT:
     buffer = new D3DConstantBuffer;
     break;
+  case DR_BUFFER_TYPE::kRWSTRUCTURE:
+    buffer = new D3DStructureBuffer;
+    break;
+  case DR_BUFFER_TYPE::kSTRUCTURE:
+    buffer = new D3DStructureBuffer;
+    break;
+  case DR_BUFFER_TYPE::kINDIRECT_DRAW_INSTANCED_INDEXED:
+    buffer = new D3DIndirectArgsBuffer;
+    break;
+  case DR_BUFFER_TYPE::kINDIRECT_DISPATCH:
+    buffer = new D3DIndirectArgsBuffer;
+    break;
   }
 
   buffer->create(*this,desc,initialData);
@@ -83,7 +127,7 @@ D3DDevice::createBuffer(const DrBufferDesc& desc,
 Shader*
 D3DDevice::createShaderFromMemory(const char* shaderBuffer,
                                   size_t bufferSize,
-                                  DR_SHADER_TYPE_FLAG::E shaderType) {
+                                  DR_SHADER_TYPE_FLAG::E shaderType) const {
   Shader* shader = nullptr;
   switch (shaderType)
   {
@@ -119,49 +163,63 @@ D3DDevice::createShaderFromMemory(const char* shaderBuffer,
 
 Texture*
 D3DDevice::createTextureFromMemory(const char* buffer,
-                                   const DrTextureDesc& desc) {
+                                   const DrTextureDesc& desc)const {
   Texture* texture = new D3DTexture;
   texture->createFromMemory(*this, desc, buffer);
   return texture;
 }
 
 Texture*
-D3DDevice::createEmptyTexture(const DrTextureDesc& desc) {
+D3DDevice::createEmptyTexture(const DrTextureDesc& desc)const {
   Texture* texture = new D3DTexture;
   texture->createEmpty(*this, desc);
   return texture;
 }
 
 RenderTarget* 
-D3DDevice::createRenderTarget(const Texture& texture) {
+D3DDevice::createRenderTarget(const DrTextureDesc& desc, UInt32 numRTs)const {
   RenderTarget* renderTarget = new D3DRenderTarget;
-  renderTarget->create(*this,texture);
+  renderTarget->create(*this,desc,numRTs);
+  return renderTarget;
+}
+
+RenderTarget * D3DDevice::createRenderTarget(const std::vector<Texture*>& textures) const
+{
+  RenderTarget* renderTarget = new D3DRenderTarget;
+  renderTarget->create(*this, textures);
   return renderTarget;
 }
 
 DepthStencil* 
-D3DDevice::createDepthStencil(const Texture& texture) {
+D3DDevice::createDepthStencil(const DrDepthStencilDesc& desc) const {
   DepthStencil* depthStencil = new D3DDepthStencil;
-  depthStencil->create(*this,texture);
+  depthStencil->create(*this, desc);
+  return depthStencil;
+}
+
+DepthStencil * D3DDevice::createDepthStencil(const Texture & texture) const
+{
+  DepthStencil* depthStencil = new D3DDepthStencil;
+  depthStencil->create(*this, texture);
   return depthStencil;
 }
 
 SamplerState* 
-D3DDevice::createSamplerState(const DrSampleDesc& desc) {
+D3DDevice::createSamplerState(const DrSampleDesc& desc) const {
   SamplerState* state = new D3D11SamplerState;
   state->create(*this, desc);
   return state;
 }
 
 RasterizerState* 
-D3DDevice::createRasteizerState(const DrRasterizerDesc& desc) {
+D3DDevice::createRasteizerState(const DrRasterizerDesc& desc)const {
   RasterizerState* state = new D3DRasterizerState;
   state->create(*this, desc);
   return state;
 }
 
 DepthStencilState* 
-D3DDevice::createDepthStencilState(const DrDepthStencilDesc& desc) {
+D3DDevice::createDepthStencilState(const DrDepthStencilStateDesc& desc)const {
   DepthStencilState* state = new D3DDepthStencilState;
   state->create(*this, desc);
   return state;
@@ -169,17 +227,24 @@ D3DDevice::createDepthStencilState(const DrDepthStencilDesc& desc) {
 
 InputLayout*
 D3DDevice::createInputLayout(const std::vector<DrInputElementDesc>& inputDescArray,
-                             const ShaderBytecode& shaderBytecode) {
+                             const ShaderBytecode& shaderBytecode)const {
   InputLayout* layout = new D3DInputLayout;
   layout->create(*this, inputDescArray, shaderBytecode);
   return layout;
 }
 
 SwapChain*
-D3DDevice::createSwapChain(const DrSwapChainDesc& desc) {
+D3DDevice::createSwapChain(const DrSwapChainDesc& desc) const {
   SwapChain* swapChain = new D3DSwapChain;
   swapChain->create(*this, desc);
   return swapChain;
+}
+
+BlendState * D3DDevice::createBlendState(const DrBlendStateDesc & desc)const
+{
+  BlendState* bst = new D3DBlendState;
+  bst->create(*this,desc);
+  return bst;
 }
 
 }

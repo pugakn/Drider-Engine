@@ -1,0 +1,21 @@
+void main()
+
+Temps: 
+
+Variables: 
+ 007: TString a
+
+
+- 3,2 -
+    0   7 *    SUSPEND
+               VarDecl  0
+    1   7 *    PSF      v7
+    2   8 *    CALLSYS  19           (TString::TString())
+- 4,2 -
+               ObjInfo  v7, 1
+    4   7 *    SUSPEND
+    5   7 *    PSF      v7
+    6   8 *    CALLSYS  21           (TString::~TString())
+               ObjInfo  v7, 0
+            0:
+    8   7 *    RET      0

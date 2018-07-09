@@ -1,0 +1,125 @@
+void script1::Update()
+
+Temps: 4, 5, 6, 7, 11, 14
+
+Variables: 
+ 003: Vector3D vecRight
+ 010: Vector3D vecFront
+ 000: script1 this
+ 014: Vector3D {noname}
+
+
+- 51,3 -
+    0  14 *    SUSPEND
+               VarDecl  0
+    1  14 *    PshC4    0x0          (i:0, f:0)
+    3  15 *    PshC4    0x0          (i:0, f:0)
+    5  16 *    CALLSYS  82           (float getDelta())
+    7  16 *    CpyRtoV4 v4
+    8  16 *    MULIf    v5, v4, 100.000000
+   11  16 *    PshV4    v5
+   12  17 *    PSF      v3
+   13  18 *    CALLSYS  63           (Vector3D::Vector3D(float, float, float))
+- 52,3 -
+               ObjInfo  v3, 1
+   15  14 *    SUSPEND
+               VarDecl  1
+   16  14 *    CALLSYS  82           (float getDelta())
+   18  14 *    CpyRtoV4 v4
+   19  14 *    MULIf    v7, v4, 100.000000
+   22  14 *    PshV4    v7
+   23  15 *    PshC4    0x0          (i:0, f:0)
+   25  16 *    PshC4    0x0          (i:0, f:0)
+   27  17 *    PSF      v10
+   28  18 *    CALLSYS  63           (Vector3D::Vector3D(float, float, float))
+- 54,3 -
+               ObjInfo  v10, 1
+   30  14 *    SUSPEND
+   31  14 *    PshC4    0x20          (i:32, f:4.48416e-44)
+   33  15 *    CALLSYS  59           (bool isKeyDown(KeyCode))
+   35  14 *    JLowZ    +9              (d:46)
+- 55,4 -
+            {
+   37  14 *    SUSPEND
+   38  14 *    VAR      v3
+   39  15 *    PshVPtr  v0
+   40  16 *    ADDSi    v20, 134217750
+   42  16 *    RDSPtr
+   43  16 *    GETREF   1
+   44  16 *    CALLSYS  90           (void Transform::move(const Vector3D&in))
+- 59,3 -
+            }
+            1:
+   46  14 *    SUSPEND
+   47  14 *    PshC4    0x1e          (i:30, f:4.2039e-44)
+   49  15 *    CALLSYS  59           (bool isKeyDown(KeyCode))
+   51  14 *    JLowZ    +18              (d:71)
+- 60,4 -
+            {
+   53  14 *    SUSPEND
+   54  14 *    PshC4    0xbf800000          (i:-1082130432, f:-1)
+   56  15 *    PSF      v14
+   57  16 *    PSF      v3
+   58  17 *    CALLSYS  80           (Vector3D Vector3D::opMul(float))
+               ObjInfo  v14, 1
+   60  14 *    VAR      v14
+   61  15 *    PshVPtr  v0
+   62  16 *    ADDSi    v20, 134217750
+   64  16 *    RDSPtr
+   65  16 *    GETREF   1
+   66  16 *    CALLSYS  90           (void Transform::move(const Vector3D&in))
+   68  14 *    PSF      v14
+   69  15 *    CALLSYS  61           (Vector3D::~Vector3D())
+- 64,3 -
+               ObjInfo  v14, 0
+            }
+            2:
+   71  14 *    SUSPEND
+   72  14 *    PshC4    0x11          (i:17, f:2.38221e-44)
+   74  15 *    CALLSYS  59           (bool isKeyDown(KeyCode))
+   76  14 *    JLowZ    +9              (d:87)
+- 65,4 -
+            {
+   78  14 *    SUSPEND
+   79  14 *    VAR      v10
+   80  15 *    PshVPtr  v0
+   81  16 *    ADDSi    v20, 134217750
+   83  16 *    RDSPtr
+   84  16 *    GETREF   1
+   85  16 *    CALLSYS  90           (void Transform::move(const Vector3D&in))
+- 68,3 -
+            }
+            3:
+   87  14 *    SUSPEND
+   88  14 *    PshC4    0x1f          (i:31, f:4.34403e-44)
+   90  15 *    CALLSYS  59           (bool isKeyDown(KeyCode))
+   92  14 *    JLowZ    +18              (d:112)
+- 69,4 -
+            {
+   94  14 *    SUSPEND
+   95  14 *    PshC4    0xbf800000          (i:-1082130432, f:-1)
+   97  15 *    PSF      v14
+   98  16 *    PSF      v10
+   99  17 *    CALLSYS  80           (Vector3D Vector3D::opMul(float))
+               ObjInfo  v14, 1
+  101  14 *    VAR      v14
+  102  15 *    PshVPtr  v0
+  103  16 *    ADDSi    v20, 134217750
+  105  16 *    RDSPtr
+  106  16 *    GETREF   1
+  107  16 *    CALLSYS  90           (void Transform::move(const Vector3D&in))
+  109  14 *    PSF      v14
+  110  15 *    CALLSYS  61           (Vector3D::~Vector3D())
+- 71,3 -
+               ObjInfo  v14, 0
+            }
+            4:
+  112  14 *    SUSPEND
+  113  14 *    PSF      v10
+  114  15 *    CALLSYS  61           (Vector3D::~Vector3D())
+               ObjInfo  v10, 0
+  116  14 *    PSF      v3
+  117  15 *    CALLSYS  61           (Vector3D::~Vector3D())
+               ObjInfo  v3, 0
+            0:
+  119  14 *    RET      1

@@ -5,6 +5,8 @@
 #include "dr_d3d_vertex_buffer.h"
 #include "dr_d3d_index_buffer.h"
 #include "dr_d3d_constant_buffer.h"
+#include "dr_d3d_indirect_args_buffer.h"
+#include "dr_structure_buffer.h"
 #include "dr_shader.h"
 #include "dr_d3d_device_context.h"
 #include "dr_d3d_texture.h"
@@ -15,10 +17,11 @@
 #include "dr_d3d_rasterizer_state.h"
 #include "dr_d3d_input_layout.h"
 #include "dr_d3d_swap_chain.h"
-
+#include "dr_d3d_structure_buffer.h"
 namespace driderSDK {
+
 struct DeviceContextData {
-  ID3D11DeviceContext * pDeviceContext;
+  ID3D11DeviceContext* pDeviceContext;
   void*  getObject() {};
   void** getObjectReference() {};
 };
@@ -41,30 +44,32 @@ D3DDeviceContext::clearDepthStencilView(DepthStencil& depthstencil,
     clearFlags |= D3D11_CLEAR_DEPTH;
     clearFlags |= D3D11_CLEAR_STENCIL;
     break;
+  default:
+    break;
   }
 
   D3D11DeviceContext->
     ClearDepthStencilView(reinterpret_cast<D3DDepthStencil*>(&depthstencil)->APIDepthView,
                           clearFlags,
                           depthValue,
-                          stencilValue);
+                          static_cast<driderSDK::UInt8>(stencilValue));
 }
 
 void
 D3DDeviceContext::clearRenderTargetView(RenderTarget& renderTarget,
                                         const float colorRGBA[4]) const {
+  for (auto&it : static_cast<D3DRenderTarget*>(&renderTarget)->RTVs) {
     D3D11DeviceContext->
-      ClearRenderTargetView(static_cast<D3DRenderTarget*>(&renderTarget)->RTV,colorRGBA);
-
+      ClearRenderTargetView(it, colorRGBA);
+  }
 }
 
-void * D3DDeviceContext::getAPIObject()
-{
+void* D3DDeviceContext::getAPIObject() {
   return D3D11DeviceContext;
 }
 
-void ** D3DDeviceContext::getAPIObjectReference()
-{
+void**
+D3DDeviceContext::getAPIObjectReference() {
   return reinterpret_cast<void**>(&D3D11DeviceContext);
 }
 
@@ -129,7 +134,8 @@ D3DDeviceContext::setConstantBuffer(const ConstantBuffer& buffer,
 
 void
 D3DDeviceContext::setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::E topology) const {
-  D3D11_PRIMITIVE_TOPOLOGY topo;
+  D3D11_PRIMITIVE_TOPOLOGY topo = D3D11_PRIMITIVE_TOPOLOGY_UNDEFINED;
+
   switch (topology)
   {
   case driderSDK::DR_PRIMITIVE_TOPOLOGY::kLineList:
@@ -144,8 +150,14 @@ D3DDeviceContext::setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::E topology) const 
   case driderSDK::DR_PRIMITIVE_TOPOLOGY::kTriangleStrip:
     topo = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP;
     break;
+  case driderSDK::DR_PRIMITIVE_TOPOLOGY::kPoint:
+    topo = D3D11_PRIMITIVE_TOPOLOGY_POINTLIST;
+    break;
+  default:
+    break;
   }
-  D3D11DeviceContext->IASetPrimitiveTopology(topo); //Hardcoded
+
+  D3D11DeviceContext->IASetPrimitiveTopology(topo);
 }
 
 void
@@ -153,6 +165,66 @@ D3DDeviceContext::draw(UInt32 indexCount,
                        UInt32 startIndexLocation,
                        UInt32 startVertexLocation) const {
   D3D11DeviceContext->DrawIndexed(indexCount, startIndexLocation, startVertexLocation);
+}
+
+void 
+D3DDeviceContext::drawInstanced(UInt32 indexCount, 
+                                UInt32 instanceCount, 
+                                UInt32 startIndexLocation, 
+                                UInt32 startVertexLocation, 
+                                UInt32 startInstanceLocation) const
+{
+  D3D11DeviceContext->DrawIndexedInstanced(indexCount, 
+                                           instanceCount, 
+                                           startIndexLocation, 
+                                           startVertexLocation, 
+                                           startInstanceLocation);
+}
+
+void 
+D3DDeviceContext::dispatch(UInt32 _threadGroupCountX, 
+                           UInt32 _threadGroupCountY, 
+                           UInt32 _threadGroupCountZ) const
+{
+  D3D11DeviceContext->Dispatch(_threadGroupCountX, 
+                               _threadGroupCountY, 
+                               _threadGroupCountZ);
+}
+
+void D3DDeviceContext::setResourcesNull()
+{
+  ID3D11ShaderResourceView* nullTextures[16] = {};
+  std::memset(nullTextures, 0, sizeof(nullTextures));
+  D3D11DeviceContext->
+  PSSetShaderResources(0, 16, nullTextures);
+  D3D11DeviceContext->
+  VSSetShaderResources(0, 16, nullTextures);
+  D3D11DeviceContext->
+  CSSetShaderResources(0, 16, nullTextures);
+}
+
+void D3DDeviceContext::copyAtomicCounter(const StructureBuffer & _structureCounter, 
+                                         ConstantBuffer & _cbuff)
+{
+  auto pUAV = static_cast<const D3DStructureBuffer*>(&_structureCounter)->m_pBufferUAV;
+  DR_ASSERT(pUAV);
+  D3D11DeviceContext->CopyStructureCount(static_cast<ID3D11Buffer*>(_cbuff.getAPIObject()),
+    0,
+    pUAV);
+}
+
+void D3DDeviceContext::setUAVsNull()
+{
+  ID3D11UnorderedAccessView* null[16] = {};
+  std::memset(null, 0, sizeof(null));
+  D3D11DeviceContext->
+  CSSetUnorderedAccessViews(0, 16, null,NULL);
+}
+
+void 
+D3DDeviceContext::drawIndexedInstancedIndirect(const IndirectArgsBuffer & pBufferForArgs, UInt32 _alignedByteOffsetForArgs)
+{
+  D3D11DeviceContext->DrawIndexedInstancedIndirect(static_cast<ID3D11Buffer*>(pBufferForArgs.getAPIObject()),_alignedByteOffsetForArgs);
 }
 
 }

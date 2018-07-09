@@ -49,7 +49,7 @@ TEST(Matrix3x3, Constructor4X4) {
 }
 
 TEST(Matrix3x3, ConstructorQuaternion) {
-  driderSDK::Quaternion testQuaternion( 0.7071, 0, 0, 0.7071f);
+  driderSDK::Quaternion testQuaternion( 0.7071f, 0, 0, 0.7071f);
   driderSDK::Matrix3x3 checkMatrix(1, 0, 0,
                                    0, 0, -1,
                                    0, 1, 0);
@@ -161,16 +161,16 @@ TEST(Matrix3x3, toEulerAngles) {
   driderSDK::Vector3D testVector(testMatrix.eulerAngles());
   EXPECT_FLOAT_EQ(-2.6336787f, testVector[0]);
   EXPECT_FLOAT_EQ(-0.47157675f, testVector[1]);
-  EXPECT_FLOAT_EQ(-1.2795428, testVector[2]);
+  EXPECT_FLOAT_EQ(-1.2795428f, testVector[2]);
 
   driderSDK::Matrix3x3 testMatrix3(0.5f, -0.1464f, 0.8536f,
-    0.5f, .8536, -0.1464f,
+    0.5f, .8536f, -0.1464f,
     -0.7071f, .5f, .5f);
   
   driderSDK::Vector3D testVector2(testMatrix3.eulerAngles());
-  EXPECT_FLOAT_EQ(.78539819, testVector2[0]);
-  EXPECT_FLOAT_EQ(.78539336, testVector2[1]);
-  EXPECT_FLOAT_EQ(.78539819, testVector2[2]);
+  EXPECT_FLOAT_EQ(.78539819f, testVector2[0]);
+  EXPECT_FLOAT_EQ(.78539336f, testVector2[1]);
+  EXPECT_FLOAT_EQ(.78539819f, testVector2[2]);
 
 }
 

@@ -5,15 +5,17 @@
 #include "dr_d3d_device.h"
 #include "dr_d3d_device_context.h"
 #include "dr_d3d_shader_bytecode.h"
+#include <iostream>
+
 namespace driderSDK {
-void * 
-D3DVertexShader::getAPIObject()
-{
+
+void*
+D3DVertexShader::getAPIObject() {
   return APIShader;
 }
-void ** 
-D3DVertexShader::getAPIObjectReference()
-{
+
+void**
+D3DVertexShader::getAPIObjectReference() {
   return reinterpret_cast<void**>(&APIShader);
 }
 
@@ -26,7 +28,8 @@ D3DVertexShader::set(const DeviceContext& deviceContext) const {
 
 void
 D3DVertexShader::release() {
-  ID3DBlob* apiShaderBytcode = reinterpret_cast<D3DShaderBytecode*>(m_shaderBytecode)->shader_blob;
+  ID3DBlob* apiShaderBytcode = reinterpret_cast<D3DShaderBytecode*>
+                                 (m_shaderBytecode)->shader_blob;
   APIShader->Release();
   apiShaderBytcode->Release();
   delete m_shaderBytecode;
@@ -35,31 +38,45 @@ D3DVertexShader::release() {
 
 void
 D3DVertexShader::create(const Device& device) {
-  ID3DBlob* apiShaderBytcode = reinterpret_cast<D3DShaderBytecode*>(m_shaderBytecode)->shader_blob;
+  ID3DBlob* apiShaderBytcode = reinterpret_cast<D3DShaderBytecode*>
+                                 (m_shaderBytecode)->shader_blob;
   reinterpret_cast<const D3DDevice*>(&device)->
     D3D11Device->
     CreateVertexShader(apiShaderBytcode->GetBufferPointer(),
-      apiShaderBytcode->GetBufferSize(),
-      0,
-      &APIShader);
+                       apiShaderBytcode->GetBufferSize(),
+                       0,
+                       &APIShader);
 }
 
 
 void
-D3DVertexShader::compile(const Device& device, const char* buffer, size_t bufferSize)
-{
+D3DVertexShader::compile(const Device&,
+                         const char* buffer,
+                         size_t bufferSize) {
   m_shaderBytecode = new D3DShaderBytecode();
-  D3DCompile(buffer,
-    bufferSize,
-    0,
-    0,
-    0,
-    "VS",
-    "vs_5_0",
-    0,
-    0,
-    &reinterpret_cast<D3DShaderBytecode*>(m_shaderBytecode)->shader_blob,
-    0);
+  ID3DBlob* errorBlob = nullptr;
+
+  UInt32 flags = D3DCOMPILE_ENABLE_STRICTNESS;
+#if DR_DEBUG_MODE
+  flags |= D3DCOMPILE_DEBUG;
+#endif
+
+  HRESULT pp = D3DCompile(buffer,
+                          bufferSize,
+                          0,
+                          0,
+                          0,
+                          "VS",
+                          "vs_5_0",
+                          flags,
+                          0,
+                          &reinterpret_cast<D3DShaderBytecode*>
+                            (m_shaderBytecode)->shader_blob,
+                          &errorBlob);
+  if (errorBlob) {
+    std::cout << (char*)errorBlob->GetBufferPointer() << std::endl;
+    errorBlob->Release();
+  }
 }
 
 }

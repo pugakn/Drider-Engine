@@ -1,15 +1,33 @@
 #pragma once
 
+#include <array>
 #include "dr_math_prerequisites.h"
 #include "dr_vector3d.h"
 
 namespace driderSDK {
 
+class Matrix4x4;
 class Plane;
 class Sphere;
 class Capsule;
 class Frustrum;
 class Ray;
+
+namespace AABB_POINT {
+
+enum E 
+{
+  kXMinYMinZMin,
+  kXMaxYMinZMin,
+  kXMinYMinZMax,
+  kXMaxYMinZMax,
+  kXMinYMaxZMin,
+  kXMaxYMaxZMin,
+  kXMinYMaxZMax,
+  kXMaxYMaxZMax
+};
+
+}
 
 /**
 *  Axis aligned bounding box class with center, width, height and depth
@@ -75,7 +93,7 @@ class DR_MATH_EXPORT AABB
 	*  AABB's max point
 	*
 	*/
-	const Vector3D
+	Vector3D
 	getMaxPoint() const;
 
 	/**
@@ -86,8 +104,23 @@ class DR_MATH_EXPORT AABB
 	*  AABB's min point
 	*
 	*/
-	const Vector3D
+	Vector3D
 	getMinPoint() const;
+
+  /**
+  * TEST::operatorEqual
+  *
+  * Set the  values of this AABB
+  * with the values of the other AABB.
+  *
+  * @param A
+  *  The AABB with the values to use.
+  *
+  * @return
+  *   A reference to this AABB.
+  */
+  AABB&
+  operator=(const AABB& A);
 
   /**
 	* TEST::intersectAABB
@@ -100,7 +133,7 @@ class DR_MATH_EXPORT AABB
   *  True if it intersects
   */
   bool
-  intersect(AABB& aabb);
+  intersect(const AABB& aabb) const;
 
   /**
 	* TEST::intersectSphere
@@ -113,7 +146,7 @@ class DR_MATH_EXPORT AABB
   *  True if it intersects
   */
   bool
-  intersect(Sphere& sphere);
+  intersect(const Sphere& sphere) const;
 
   /**
 	* TEST::intersectPlane
@@ -126,7 +159,7 @@ class DR_MATH_EXPORT AABB
   *  True if it intersects
   */
   bool
-  intersect(Plane& plane);
+  intersect(const Plane& plane) const;
 
   /**
 	* TEST::intersectFrustrum
@@ -139,7 +172,7 @@ class DR_MATH_EXPORT AABB
   *  True if it intersects
   */
   bool
-  intersect(Frustrum& frustrum);
+  intersect(const Frustrum& frustrum) const;
 
   /**
 	* TEST::intersectRay
@@ -152,7 +185,7 @@ class DR_MATH_EXPORT AABB
   *  True if the ray intersects with the AABB
   */
   bool
-  intersect(Ray& ray);
+  intersect(const Ray& ray) const;
 
   /**
 	* TEST::intersectPoint
@@ -165,7 +198,14 @@ class DR_MATH_EXPORT AABB
   *  True if the point is inside
   */
   bool
-  intersect(Vector3D& point);
+  intersect(const Vector3D& point) const;
+    
+  std::array<Vector3D, 8>
+  getBounds() const;
+
+  void
+  recalculate(const Matrix4x4& transform);
+
   
 	float width, height, depth;
 

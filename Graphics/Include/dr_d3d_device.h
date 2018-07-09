@@ -49,7 +49,7 @@ class DR_GRAPHICS_EXPORT D3DDevice : public Device
   */
   Buffer*
   createBuffer(const DrBufferDesc& desc,
-                     byte* initialData = nullptr) override;
+               const byte* initialData = nullptr) const override;
 
   /**
   * TEST::createShaderFromMemory
@@ -71,7 +71,7 @@ class DR_GRAPHICS_EXPORT D3DDevice : public Device
   Shader*
   createShaderFromMemory(const char* shaderBuffer,
                          size_t bufferSize,
-                         DR_SHADER_TYPE_FLAG::E shaderType) override;
+                         DR_SHADER_TYPE_FLAG::E shaderType) const  override;
 
   /**
   * TEST::createTextureFromMemory
@@ -92,7 +92,7 @@ class DR_GRAPHICS_EXPORT D3DDevice : public Device
   */
   Texture*
   createTextureFromMemory(const char* buffer,
-                          const DrTextureDesc& desc) override;
+                          const DrTextureDesc& desc) const override;
 
   /**
   * TEST::createEmptyTexture
@@ -109,7 +109,7 @@ class DR_GRAPHICS_EXPORT D3DDevice : public Device
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   Texture*
-  createEmptyTexture(const DrTextureDesc& desc) override;
+  createEmptyTexture(const DrTextureDesc& desc) const override;
 
   /**
   * TEST::createRenderTarget
@@ -129,7 +129,10 @@ class DR_GRAPHICS_EXPORT D3DDevice : public Device
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   RenderTarget*
-  createRenderTarget(const Texture& texture) override;
+  createRenderTarget(const DrTextureDesc& desc, UInt32 numRTs) const override;
+
+  RenderTarget*
+  createRenderTarget(const std::vector<Texture*>& textures) const override;
 
   /**
   * TEST::createDepthStencil
@@ -146,7 +149,10 @@ class DR_GRAPHICS_EXPORT D3DDevice : public Device
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   DepthStencil*
-  createDepthStencil(const Texture& texture) override;
+  createDepthStencil(const DrDepthStencilDesc& desc) const override;
+
+  DepthStencil*
+  createDepthStencil(const Texture& texture) const override;
 
   /**
   * TEST::createSamplerState
@@ -163,7 +169,7 @@ class DR_GRAPHICS_EXPORT D3DDevice : public Device
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   SamplerState*
-  createSamplerState(const DrSampleDesc& desc) override;
+  createSamplerState(const DrSampleDesc& desc) const override;
 
   /**
   * TEST::createRasteizerState
@@ -180,7 +186,7 @@ class DR_GRAPHICS_EXPORT D3DDevice : public Device
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   RasterizerState*
-  createRasteizerState(const DrRasterizerDesc& desc) override;
+  createRasteizerState(const DrRasterizerDesc& desc) const override;
 
   /**
   * TEST::createDepthStencilState
@@ -197,7 +203,7 @@ class DR_GRAPHICS_EXPORT D3DDevice : public Device
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   DepthStencilState*
-  createDepthStencilState(const DrDepthStencilDesc& desc) override;
+  createDepthStencilState(const DrDepthStencilStateDesc& desc) const override;
 
   /**
   * TEST::createInputLayout
@@ -218,7 +224,7 @@ class DR_GRAPHICS_EXPORT D3DDevice : public Device
   */
   InputLayout*
   createInputLayout(const std::vector<DrInputElementDesc>& inputDescArray,
-                    const ShaderBytecode& shaderBytecode) override;
+                    const ShaderBytecode& shaderBytecode) const override;
 
   /**
   * TEST::createSwapChain
@@ -235,7 +241,21 @@ class DR_GRAPHICS_EXPORT D3DDevice : public Device
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   SwapChain* 
-  createSwapChain(const DrSwapChainDesc& desc) override;
+  createSwapChain(const DrSwapChainDesc& desc) const override;
+
+
+  /**
+  * Create a blend rasterizer state
+  *
+  * @param desc
+  *   Describes the state parameters
+  *
+  * @param out state
+  *   The BlendState object taht will be filled out
+  *
+  */
+  BlendState*
+  createBlendState(const DrBlendStateDesc& desc) const  override;
 
   ID3D11Device* D3D11Device;
 };

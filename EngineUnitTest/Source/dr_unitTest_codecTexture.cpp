@@ -6,8 +6,7 @@
 
 TEST(Codec, decode) {
   driderSDK::CodecTexture odec;
-  void* s = odec.decode(_T("testImage.jpg")).get();
-  driderSDK::sImage *i = static_cast<driderSDK::sImage*>(s);
+  driderSDK::sImage *i = static_cast<driderSDK::sImage*>(odec.decode(_T("testImage.jpg")).get());
   EXPECT_TRUE(i->data.size() != 0);
   EXPECT_TRUE(i->channels != 0);
 }

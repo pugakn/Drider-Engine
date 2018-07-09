@@ -1,20 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="1">
-    <paths>
-        <dir name="C:/Users/Francisco/source/repos/Drider-Engine/Core"/>
-        <dir name="C:/Users/Francisco/source/repos/Drider-Engine/CoreUnitTest"/>
-        <dir name="C:/Users/Francisco/source/repos/Drider-Engine/Engine"/>
-        <dir name="C:/Users/Francisco/source/repos/Drider-Engine/EngineUnitTest"/>
-        <dir name="C:/Users/Francisco/source/repos/Drider-Engine/Graphics"/>
-        <dir name="C:/Users/Francisco/source/repos/Drider-Engine/GraphicsUnitTest"/>
-        <dir name="C:/Users/Francisco/source/repos/Drider-Engine/Math"/>
-        <dir name="C:/Users/Francisco/source/repos/Drider-Engine/MathUnitTest"/>
-        <dir name="C:/Users/Francisco/source/repos/Drider-Engine/Utils"/>
-    </paths>
-    <exclude>
-        <path name="3rdParties/"/>
-    </exclude>
-    <libraries>
-        <library>windows</library>
-    </libraries>
+    <root name="C:/Users/Gerardo/Desktop/Engines/DriderEngine"/>
+    <importproject>../DriderEngine.sln</importproject>
 </project>

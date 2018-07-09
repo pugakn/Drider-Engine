@@ -1,0 +1,11 @@
+MontiBehavior::MontiBehavior()
+
+Temps: 
+
+Variables: 
+ 000: MontiBehavior this
+
+
+- 14,13 -
+    0   0 *    SUSPEND
+    1   0 *    RET      1

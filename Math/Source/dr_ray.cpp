@@ -4,7 +4,9 @@
 #include "dr_sphere.h"
 #include "dr_capsule.h"
 #include "dr_aabb.h"
-
+#include "dr_line.h"
+#include "dr_matrix4x4.h"
+#include "dr_frustrum.h"
 namespace driderSDK {
 
 bool
@@ -33,7 +35,7 @@ Ray::intersects(const Sphere& sphere, Vector3D* pointIntersect) const
                               pointIntersect);
 }
 
-bool 
+/*bool 
 Ray::intersects(const Capsule& capsule) const
 {
   float point;
@@ -43,7 +45,7 @@ Ray::intersects(const Capsule& capsule) const
                                direction,
                                capsule.radius,
                                point);
-}
+}*/
 
 bool
 Ray::intersects(const AABB& aabb, Vector3D* point) {
@@ -52,6 +54,22 @@ Ray::intersects(const AABB& aabb, Vector3D* point) {
                             origin,
                             direction,
                             point);
+}
+
+bool
+Ray::intersects(const Frustrum & frustrum) const
+{
+  return Intersect::rayFrustrum(origin, direction, frustrum.planes);
+}
+
+bool
+Ray::intersects(const Ray& ray, Vector3D* point) const
+{
+  return Intersect::rayRay(origin,
+                           direction,
+                           ray.origin,
+                           ray.direction,
+                           point);
 }
 
 }

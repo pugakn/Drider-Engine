@@ -15,7 +15,7 @@ Parser::split(TString str,
 
   SizeT pos = 0;
   
-  while( (pos = str.find_first_of(separators)) != TString::npos )
+  while ( (pos = str.find_first_of(separators)) != TString::npos )
   {
     TString token = str.substr(0, pos++);
 
@@ -26,7 +26,7 @@ Parser::split(TString str,
     str.erase(str.begin(), str.begin() + pos);
   }
 
-  if(!str.empty() || keepEmptyTokens) {
+  if (!str.empty() || keepEmptyTokens) {
     tokens.push_back(str);
   }
   

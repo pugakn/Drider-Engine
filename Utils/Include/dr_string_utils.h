@@ -4,6 +4,8 @@
 #include <sstream>
 #include <type_traits>
 #include <iostream>
+#include <locale>
+#include <codecvt>
 
 namespace driderSDK {
 
@@ -18,9 +20,20 @@ struct DR_UTIL_EXPORT StringUtils
   * @return
   *   The utf-8 string.
   */
+ 
+  /*static String
+  toString(const TString& tstring);*/
+
   static String
-  toString(const TString& tstring);
+  toString(const String& string) {
+    return string;
+  }
   
+  static FORCEINLINE String
+  toString(const WString& wstring) {
+    return std::wstring_convert<std::codecvt_utf8_utf16<WChar>>().to_bytes(wstring);
+  }
+
   /**
   * Converts tstring into a utf-16 string.
   * 
@@ -30,8 +43,19 @@ struct DR_UTIL_EXPORT StringUtils
   * @return 
   *   The utf-16 string.
   */
-  static WString
-  toWString(const TString& tstring);
+
+  /*static WString
+  toWString(const TString& tstring);*/
+  static FORCEINLINE WString
+  toWString(const WString& wstring)
+  {
+    return wstring;
+  }
+
+  static FORCEINLINE WString
+  toWString(const String& string) {
+    return std::wstring_convert<std::codecvt_utf8_utf16<WChar>>().from_bytes(string);
+  }
 
   /**
   * Converts a real number into a string.
@@ -111,11 +135,7 @@ struct DR_UTIL_EXPORT StringUtils
             TString::value_type fill = 0, 
             std::ios::fmtflags flags = 0) 
   {
-    return toStringBase<TString::value_type>(value, 
-                                             precision, 
-                                             width, 
-                                             fill, 
-                                             flags);
+    return toStringBase<TString::value_type>(value, precision, width, fill, flags);
   }
 
   /**
@@ -130,6 +150,24 @@ struct DR_UTIL_EXPORT StringUtils
             std::ios::fmtflags flags = 0) 
   {
     return toStringBase<TString::value_type>(value, 0, width, fill, flags);
+  }
+
+  static FORCEINLINE TString 
+  toTString(const String& string) {
+  #ifdef UNICODE
+    return toWString(string);
+  #else
+    return string;
+  #endif
+  }
+
+  static FORCEINLINE TString 
+  toTString(const WString& wstring) {
+  #ifdef UNICODE
+    return wstring;
+  #else
+    return toString(wstring);
+  #endif
   }
 
   /**
@@ -159,10 +197,9 @@ struct DR_UTIL_EXPORT StringUtils
  private:
   
   template<typename CharType,
-           typename Real,
-           typename = std::enable_if<std::is_floating_point<Real>::value>::type>
+           typename T>
   static FORCEINLINE std::basic_string<CharType> 
-  toStringBase(Real value, 
+  toStringBase(T value, 
                std::streamsize precision,
                std::streamsize width = 0,
                typename std::basic_string<CharType>::value_type fill = 0, 

@@ -35,7 +35,7 @@ class VectorN
   */
   explicit VectorN(float _scalar)
   {
-	  for(auto& element : m_elements){
+	  for (auto& element : m_elements){
 	    element = _scalar;
 	  }
   }
@@ -200,7 +200,7 @@ class VectorN
   operator*=(float scalar)
   {
 	  //For each element on the vector do the multiplication assigment
-	  for(auto& element : m_elements){
+	  for (auto& element : m_elements){
 	    element *= scalar;
 	  }
 
@@ -295,7 +295,7 @@ class VectorN
   operator-()
   {
     VectorN out;
-    for(int i = 0; i < _elements; ++i) {
+    for (int i = 0; i < _elements; ++i) {
       out[i] = -m_elements[i];
     }
 

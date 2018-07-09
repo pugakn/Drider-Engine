@@ -1,7 +1,9 @@
 #pragma once
 #include "dr_render_target.h"
+#include "dr_graphics_prerequisites.h"
 #include <vector>
-class ID3D11RenderTargetView;
+
+struct ID3D11RenderTargetView;
 
 namespace driderSDK {
 
@@ -16,11 +18,11 @@ class DepthStencil;
 class DR_GRAPHICS_EXPORT D3DRenderTarget : public RenderTarget
 {
  public:
-   void*
-     getAPIObject() override;
+   //void*
+   //getAPIObject() override;
 
-   void**
-     getAPIObjectReference() override;
+   //void**
+   //getAPIObjectReference() override;
   /**
   * TEST::create
   *
@@ -39,7 +41,16 @@ class DR_GRAPHICS_EXPORT D3DRenderTarget : public RenderTarget
   *   Return a DR_GRAPHICS_ERROR code, ERROR_NONE means all went well
   */
   void
-  create(const Device& device, const Texture& texture) override;
+  create(const Device& device, const DrTextureDesc& desc, UInt32 numRTs) override;
+
+  void
+  create(const Device& device, const std::vector<Texture*>& textures) override;
+
+  /**
+  * @copydoc RenderTarget::setRTNull(const DeviceContext& deviceContext)
+  */
+  void
+  setRTNull(const DeviceContext& deviceContext) const override;
 
   /**
   * TEST::set
@@ -57,6 +68,9 @@ class DR_GRAPHICS_EXPORT D3DRenderTarget : public RenderTarget
   set(const DeviceContext& deviceContext,
       const DepthStencil& depthStencil) const override;
 
+
+  void
+    clear(const DeviceContext& deviceContext, const float color[4]) override;
   /**
   * TEST::release
   *
@@ -65,7 +79,7 @@ class DR_GRAPHICS_EXPORT D3DRenderTarget : public RenderTarget
   void
   release() override;
 
-  ID3D11RenderTargetView* RTV;
+  std::vector<ID3D11RenderTargetView*> RTVs;
 };
 
 }

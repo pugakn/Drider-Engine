@@ -1,5 +1,6 @@
 #include "dr_aabb.h"
-#include "dr_matrixnxm.h"
+#include "dr_matrix4x4.h"
+#include "dr_vector4d.h"
 #include "dr_intersections.h"
 #include "dr_sphere.h"
 #include "dr_plane.h"
@@ -29,22 +30,32 @@ AABB::AABB(const AABB& A) {
 
 AABB::~AABB() {}
 
-const Vector3D
+Vector3D
 AABB::getMaxPoint() const {
 	return Vector3D(center.x + (width * 0.5f),
 									center.y + (height * 0.5f),
 									center.z + (depth * 0.5f));
 }
 
-const Vector3D
+Vector3D
 AABB::getMinPoint() const {
 	return Vector3D(center.x - (width * 0.5f),
 									center.y - (height * 0.5f),
 									center.z - (depth * 0.5f));
 }
 
+AABB&
+AABB::operator=(const AABB & A)
+{
+  width = A.width;
+  height = A.height;
+  depth = A.depth;
+  center = A.center;
+  return *this;
+}
+
 bool
-AABB::intersect(AABB& aabb) {
+AABB::intersect(const AABB& aabb) const {
   return Intersect::aabbAabb(center, 
 														 width,
 														 height,
@@ -56,7 +67,7 @@ AABB::intersect(AABB& aabb) {
 }
 
 bool
-AABB::intersect(Sphere& sphere) {
+AABB::intersect(const Sphere& sphere) const {
   return Intersect::aabbSphere(getMinPoint(), 
 															 getMaxPoint(), 
                                sphere.center, 
@@ -64,36 +75,87 @@ AABB::intersect(Sphere& sphere) {
 }
 
 bool
-AABB::intersect(Plane& plane) {
+AABB::intersect(const Plane& plane) const {
   return Intersect::aabbPlane(center, 
 															width,
 															height,
-															depth,
-	                            static_cast<Vector3D&>(plane), 
+	                            static_cast<const Vector3D&>(plane), 
 	                            plane.d);
 }
 
 bool
-AABB::intersect(Frustrum& frustrum) {
-  return Intersect::aabbFrustrum(center, 
-																 width,
-																 height,
-																 depth,
+AABB::intersect(const Frustrum& frustrum) const {
+  return Intersect::aabbFrustrum(getMaxPoint(),
+                                 getMinPoint(),
 																 frustrum.planes);
 }
 
 bool
-AABB::intersect(Ray& ray) {
-	return Intersect::aabbRay(center, 
-														getMaxPoint(), 
+AABB::intersect(const Ray& ray) const {
+	return Intersect::aabbRay(getMaxPoint(), 
 														getMinPoint(), 
 														ray.origin, 
 														ray.direction);
 }
 
 bool
-AABB::intersect(Vector3D& point) {
-  return Intersect::aabbPoint(center, getMaxPoint(), getMinPoint(), point);
+AABB::intersect(const Vector3D& point) const {
+  return Intersect::aabbPoint(getMaxPoint(), getMinPoint(), point);
+}
+
+std::array<Vector3D, 8>
+AABB::getBounds() const {
+  std::array<Vector3D, 8> points;
+
+  Vector3D min = getMinPoint();
+
+  points[AABB_POINT::kXMinYMinZMin] = min;
+  points[AABB_POINT::kXMaxYMinZMin] = min + Vector3D(width,0,0);
+  points[AABB_POINT::kXMinYMinZMax] = min + Vector3D(0,0,depth);
+  points[AABB_POINT::kXMaxYMinZMax] = min + Vector3D(width,0,depth);
+  points[AABB_POINT::kXMinYMaxZMin] = min + Vector3D(0,height,0);
+  points[AABB_POINT::kXMaxYMaxZMin] = min + Vector3D(width,height,0);
+  points[AABB_POINT::kXMinYMaxZMax] = min + Vector3D(0,height,depth);
+  points[AABB_POINT::kXMaxYMaxZMax] = min + Vector3D(width, height, depth);
+
+  return points;
+}
+
+void
+AABB::recalculate(const Matrix4x4& transform) {
+  //Left, Down, Back, Right, Up, Front
+  //0 (-x,-y,-z)  L-D-B
+  //1 (x, -y, -z) R-D-B
+  //2 (-x, -y, z) L-D-F
+  //3 (x, -y, z)  R-D-F
+  //4 (-x, y, -z) L-U-B
+  //5 (x, y, -z)  R-U-B
+  //6 (-x, y, z)  L-U-F
+  //7 (x, y, z)   R-U-F
+  
+  auto points = getBounds();
+
+  Vector3D min{Math::MAX_FLOAT, Math::MAX_FLOAT, Math::MAX_FLOAT};
+  Vector3D max{Math::MIN_FLOAT, Math::MIN_FLOAT, Math::MIN_FLOAT};
+
+  for(auto& point : points) {
+
+    Vector4D temp(point, 1);
+
+    temp = temp * transform;
+
+    for (Int32 i = 0; i < 3; ++i) {
+      min[i] = Math::min(min[i], temp[i]);
+      max[i] = Math::max(max[i], temp[i]);
+    }  
+  }
+
+  auto size = max - min; 
+
+  width = size.x;
+  height = size.y;
+  depth = size.z;
+  center = (max + min) * 0.5f;
 }
 
 } 

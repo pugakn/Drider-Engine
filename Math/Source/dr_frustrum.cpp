@@ -1,54 +1,82 @@
 #include "dr_frustrum.h"
 #include "dr_sphere.h"
-
+#include "dr_aabb.h"
+#include "dr_ray.h"
 namespace driderSDK {
-Frustrum::Frustrum(const Matrix4x4& ViewProjection) {
-	createFromVP(ViewProjection);
+Frustrum::Frustrum(const Matrix4x4& view, const Matrix4x4& projection) {
+	createFromVP(view, projection);
 }
 
 void
-driderSDK::Frustrum::createFromVP(const Matrix4x4& ViewProjection) {
-	// Left clipping plane   
-	planes[0].x = ViewProjection.vector0[3] + ViewProjection.vector0[0];
-	planes[0].y = ViewProjection.vector1[3] + ViewProjection.vector1[0];
-	planes[0].z = ViewProjection.vector2[3] + ViewProjection.vector2[0];
-	planes[0].d = ViewProjection.vector3[3] + ViewProjection.vector3[0];
-	// Right clipping plane    
-	planes[1].x = ViewProjection.vector0[3] - ViewProjection.vector0[0];
-	planes[1].y = ViewProjection.vector1[3] - ViewProjection.vector1[0];
-	planes[1].z = ViewProjection.vector2[3] - ViewProjection.vector2[0];
-	planes[1].d = ViewProjection.vector3[3] - ViewProjection.vector3[0];
-	// Top clipping plane    
-	planes[2].x = ViewProjection.vector0[3] - ViewProjection.vector0[1];
-	planes[2].y = ViewProjection.vector1[3] - ViewProjection.vector1[1];
-	planes[2].z = ViewProjection.vector2[3] - ViewProjection.vector2[1];
-	planes[2].d = ViewProjection.vector3[3] - ViewProjection.vector3[1];
-	// Bottom clipping plane    
-	planes[3].x = ViewProjection.vector0[3] + ViewProjection.vector0[1];
-	planes[3].y = ViewProjection.vector1[3] + ViewProjection.vector1[1];
-	planes[3].z = ViewProjection.vector2[3] + ViewProjection.vector2[1];
-	planes[3].d = ViewProjection.vector3[3] + ViewProjection.vector3[1];
-	// Near clipping plane    
-	planes[4].x = ViewProjection.vector0[2];
-	planes[4].y = ViewProjection.vector1[2];
-	planes[4].z = ViewProjection.vector2[2];
-	planes[4].d = ViewProjection.vector3[2];
-	// Far clipping plane    
-	planes[5].x = ViewProjection.vector0[3] - ViewProjection.vector0[2];
-	planes[5].y = ViewProjection.vector1[3] - ViewProjection.vector1[2];
-	planes[5].z = ViewProjection.vector2[3] - ViewProjection.vector2[2];
-	planes[5].d = ViewProjection.vector3[3] - ViewProjection.vector3[2];
-	// Normalize the planes   
-	planes[0].normalize();
-	planes[1].normalize();
-	planes[2].normalize();
-	planes[3].normalize();
-	planes[4].normalize();
-	planes[5].normalize();
+driderSDK::Frustrum::createFromVP(Matrix4x4 view, 
+                                  Matrix4x4 projection) {
+
+  float size = 1;
+
+  std::array<Vector3D, 8> vertices = {
+    Vector3D{-size, size, size}, Vector3D{size, size, size},
+    Vector3D{-size, size, 0},    Vector3D{size, size, 0},
+    Vector3D{-size, -size, size},Vector3D{size, -size, size},
+    Vector3D{-size, -size, 0},   Vector3D{size, -size, 0}
+  };
+
+  view.inverse();
+  projection.inverse();
+
+  for (auto& vertex : vertices) {    
+    Vector4D A = Vector4D(vertex,1) * projection;
+    A = A * view;
+    vertex = A;
+    vertex /= A.w;
+  }  
+ 
+  /*Far Plane*/
+  planes[0] = Plane(Vector3D(vertices[4]), 
+                    Vector3D(vertices[5]),
+                    Vector3D(vertices[0]));
+
+  /*Near plane*/
+  planes[5] = Plane(Vector3D(vertices[7]), 
+                    Vector3D(vertices[6]),
+                    Vector3D(vertices[3]));
+
+  /*Left*/
+  planes[1] = Plane(Vector3D(vertices[4]), 
+                    Vector3D(vertices[0]),
+                    Vector3D(vertices[6]));
+
+  /*Right*/
+  planes[2] = Plane(Vector3D(vertices[7]), 
+                    Vector3D(vertices[3]),
+                    Vector3D(vertices[5]));
+
+  /*Top*/
+  planes[3] = Plane(Vector3D(vertices[2]), 
+                    Vector3D(vertices[0]),
+                    Vector3D(vertices[3]));
+  
+  /*Down*/
+  planes[4] = Plane(Vector3D(vertices[7]), 
+                    Vector3D(vertices[5]),
+                    Vector3D(vertices[6]));
+}
+
+bool
+Frustrum::intersects(const Ray& bRay) const
+{
+  Intersect::rayFrustrum(bRay.origin, bRay.direction, planes);
+  return false;
 }
 
 bool
 Frustrum::intersects(const Sphere& sphere) const {
   return Intersect::frustrumSphere(planes, sphere.center, sphere.radius);
+}
+
+
+FRUSTRUM_INTERSECT::E
+Frustrum::intersects(const AABB& aabb) const
+{
+  return Intersect::aabbFrustrum(aabb.getMaxPoint(), aabb.getMinPoint(), planes);
 }
 }

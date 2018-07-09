@@ -1,6 +1,8 @@
 #include "dr_vector4d.h"
 #include "dr_vector3d.h"
-
+#include "dr_vector2d.h"
+#include "dr_matrix4x4.h"
+  
 namespace driderSDK
 {
 
@@ -26,11 +28,21 @@ Vector4D::Vector4D(const Vector4D& V) : x(V.x), y(V.y), z(V.z), w(V.w) {}
 Vector4D::Vector4D(const Vector3D& V) : x(V.x), y(V.y), z(V.z) {
 }
 
-Vector4D::Vector4D(const Vector3D& V, float _w) : x(V.x), y(V.y), z(V.z), w(_w) {}
+Vector4D::Vector4D(const Vector3D& V, float _w) : x(V.x), y(V.y), z(V.z), w(_w) {
+}
 
-Vector4D::Vector4D(float _x, float _y, float _z, float _w) : x(_x), y(_y), z(_z), w(_w) {}
+Vector4D::Vector4D(const Vector2D& V1, const Vector2D& V2)
+  : x(V1.x),
+    y(V1.y),
+    z(V2.x),
+    w(V2.y) {
+}
 
-Vector4D::~Vector4D() {}
+Vector4D::Vector4D(float _x, float _y, float _z, float _w) : x(_x), y(_y), z(_z), w(_w) {
+}
+
+Vector4D::~Vector4D() {
+}
 
 float
 Vector4D::dot3(const Vector4D& B) const {
@@ -185,6 +197,11 @@ Vector4D::operator-=(const Vector4D& A) {
 Vector4D
 Vector4D::operator*(const Vector4D& A) const {
   return Vector4D(x*A.x, y*A.y, z*A.z, w * A.w);
+}
+
+Vector4D 
+Vector4D::operator*(Matrix4x4 matrix) const {
+    return matrix.transpose() * *this;
 }
 
 Vector4D&

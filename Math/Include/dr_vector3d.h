@@ -3,9 +3,16 @@
 #include "dr_math_prerequisites.h"
 #include "dr_math.h"
 
+#include <dr_export_script.h>
+#include <..\..\Script\Include\dr_script_engine.h>
+
 namespace driderSDK {
 
 class Vector4D;
+class Vector3D;
+CONSTRUCT_DESTRUCT_DECL(Vector3D)
+COPY_CONSTRUCT_DECL(Vector3D)
+CONSTRUCT_3P_DECL(Vector3D, float, float, float)
 
 /**
 * Vector with 3 elements (x, y, z)
@@ -22,7 +29,7 @@ class DR_MATH_EXPORT Vector3D
   * Default constructor
   *
   */
-  Vector3D();
+  Vector3D() {}
 
   /**
   * TEST::forceInit
@@ -486,7 +493,7 @@ class DR_MATH_EXPORT Vector3D
   *   Flag if vectors are equal.
   */
   bool
-  operator==(const Vector3D& otherVector);
+  operator==(const Vector3D& otherVector) const;
 
   /**
   * TEST::operatorNotEqual
@@ -497,7 +504,7 @@ class DR_MATH_EXPORT Vector3D
   *   Flag if vectors aren't equal.
   */
   bool
-  operator!=(const Vector3D& otherVector);
+  operator!=(const Vector3D& otherVector) const;
 
   /**
   * TEST::operatorNegate
@@ -515,6 +522,49 @@ class DR_MATH_EXPORT Vector3D
     };
     float data[3];
   };
+
+  BEGINING_REGISTER(Vector3D, sizeof(Vector3D), VALUE_FLAGS)
+  
+  REGISTER_CONSTRUC_DESTRUCT(Vector3D)
+  REGISTER_COPY_CONSTRUCT(Vector3D)
+  result = REGISTER_CONSTRUCT_3P(Vector3D, float, float, float)
+  
+  result = REGISTER_FOO_1P_CONST(Vector3D, dot, const Vector3D&, float, "float", in)
+  result = REGISTER_FOO_1P_CONST(Vector3D, cross, const Vector3D&, Vector3D, "float", in)
+  result = REGISTER_FOO_0P_CONST(Vector3D, length, float, "float")
+  result = REGISTER_FOO_0P_CONST(Vector3D, lengthSqr, float, "float")
+  result = REGISTER_FOO_0P(Vector3D, normalize, Vector3D&, "Vector3D&")
+  result = REGISTER_FOO_1P_CONST(Vector3D, distance, const Vector3D&, float, "float", in)
+  result = REGISTER_FOO_1P_CONST(Vector3D, distanceSqr, const Vector3D&, float, "float", in)
+  result = REGISTER_FOO_2P_CONST(Vector3D, sqrDistSegment, const Vector3D&, const Vector3D&, float, "float", in, in)
+  
+  result = REGISTER_OP_CONST(Vector3D, operator^, opXor, const Vector3D&, Vector3D, "Vector3D", out)
+  result = REGISTER_OP(Vector3D, operator=, opAssign, const Vector3D&, Vector3D&, "Vector3D&", in)
+  result = REGISTER_OP_CONST(Vector3D, operator-, opSub, const Vector3D&, Vector3D, "Vector3D", out)
+  result = REGISTER_OP_CONST(Vector3D, operator+, opAdd, const Vector3D&, Vector3D, "Vector3D", out)
+  result = REGISTER_OP(Vector3D, operator-=, opSubAssign, const Vector3D&, Vector3D&, "Vector3D&", in)
+  result = REGISTER_OP(Vector3D, operator+=, opAddAssign, const Vector3D&, Vector3D&, "Vector3D&", in)
+  result = REGISTER_OP_CONST(Vector3D, operator*, opMul, const Vector3D&, Vector3D, "Vector3D", out)
+  result = REGISTER_OP(Vector3D, operator*=, opMulAssign, const Vector3D&, Vector3D&, "Vector3D&", in)
+  result = REGISTER_OP_CONST(Vector3D, operator*, opMul, float, Vector3D, "Vector3D", );
+  //result = REGISTER_OP_CONST(Vector3D, operator/, opDiv, const float, Vector3D, "Vector3D", out)
+  //result = REGISTER_OP(Vector3D, operator*=, opMulAssign, const float, Vector3D&, "Vector3D&", in)  
+  
+  result = REGISTER_OP_CONST(Vector3D, operator==, opEquals, const Vector3D&, bool, "bool", out)
+  //result = REGISTER_OP(Vector3D, operator!=, opEquals, const Vector3D&, bool, "bool", out)
+  result = scriptEngine->m_scriptEngine->RegisterObjectProperty("Vector3D",
+                                                                "float x",
+                                                                asOFFSET(Vector3D, x));
+  result = scriptEngine->m_scriptEngine->RegisterObjectProperty("Vector3D",
+                                                                "float y",
+                                                                asOFFSET(Vector3D, y));
+  result = scriptEngine->m_scriptEngine->RegisterObjectProperty("Vector3D",
+                                                                "float z",
+                                                                asOFFSET(Vector3D, x));
+  
+
+  END_REGISTER
+
 };
 
 }

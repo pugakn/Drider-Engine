@@ -4,7 +4,9 @@
 namespace driderSDK
 {
 
-Vector3D::Vector3D() : x(0.0f), y(0.0f), z(0.0f) {}
+CONSTRUCT_DESTRUCT_DEF(Vector3D)
+COPY_CONSTRUCT_DEF(Vector3D)
+CONSTRUCT_3P_DEF(Vector3D, float, float, float)
 
 Vector3D::Vector3D(Math::FORCE_INIT k) {
   if (Math::FORCE_INIT::kZero == k) {
@@ -84,7 +86,7 @@ Vector3D::sqrDistSegment(const Vector3D& pointA, const Vector3D& pointB) const {
 
   float f = AB.dot(AB);
   
-  if(e >= f) {
+  if (e >= f) {
    return BC.dot(BC);
   }
   
@@ -205,12 +207,12 @@ Vector3D::operator/=(const float scalar) {
 }
 
 bool
-Vector3D::operator==(const Vector3D& otherVector) {
+Vector3D::operator==(const Vector3D& otherVector) const {
   return ((x == otherVector.x) && (y == otherVector.y) && (z == otherVector.z));
 }
 
 bool
-Vector3D::operator!=(const Vector3D& otherVector) {
+Vector3D::operator!=(const Vector3D& otherVector) const {
   return !((*this) == otherVector);
 }
 
