@@ -31,9 +31,6 @@ CS(uint3 id : SV_DispatchThreadID) {
   float totalLuminescence = 0.0f;
   
   float2 uv = float2(0.0f, 0.0f);
-  
-  AverageLuminescence[0].x = 0.5f;
-  return;
 
   for (int txHeight = 0; txHeight < TextureHeight; ++txHeight) {
     uv.x = 0.0f;

@@ -40,7 +40,7 @@ Tga::Tga(const char* FilePath) {
     hFile.read(reinterpret_cast<char*>(imageData.data()), m_size);
   }
   else if (!std::memcmp(isCompressed, &header, sizeof(isCompressed))) {
-    printf("Image is compressed, may load wrong.\n");
+    printf("Image is compressed, it may be loaded wrong.\n");
     m_ImageCompressed = true;
 
     PixelInfo pixel = { 0 };
