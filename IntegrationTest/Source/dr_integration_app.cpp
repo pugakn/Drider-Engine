@@ -45,10 +45,12 @@
 #include <dr_sound.h>
 #include <dr_sound_component.h>
 
+#include <dr_networkManager_component.h>
+
 namespace driderSDK {
 
-DriderEngine::DriderEngine() {
-}
+/*DriderEngine::DriderEngine() {
+}*/
 
 DriderEngine::~DriderEngine() {
 }
@@ -76,7 +78,7 @@ DriderEngine::onLobbiesListReceived(LobbiesList&& lobbies) {
 }
 
 void
-DriderEngine::onGameStateReceived(WString&& msg) {
+DriderEngine::onGameStatusReceived(WString&& msg) {
 
 }
 

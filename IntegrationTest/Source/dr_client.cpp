@@ -114,7 +114,7 @@ Client::receiveGameStatus(MessageData& msg) {
   WString data;
   msg.packet >> data;
 
-  onGameStateReceived(std::move(data));
+  onGameStatusReceived(std::move(data));
 }
 
 void

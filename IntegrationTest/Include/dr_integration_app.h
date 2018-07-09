@@ -16,11 +16,12 @@ class Model;
 class SoundExtraInfo;
 class ScriptComponent;
 
-class DriderEngine : public Application, public Client
+class DriderEngine : public Application, 
+                     public Client
 {
 public:
 
-  DriderEngine();
+  DriderEngine() : Application() {}
 
   ~DriderEngine();
 
@@ -38,7 +39,7 @@ protected:
   onLobbiesListReceived(LobbiesList&& lobbies) override;
 
   virtual void
-  onGameStateReceived(WString&& msg) override;
+  onGameStatusReceived(WString&& msg) override;
 
 private:
   // Inherited via Application

@@ -66,6 +66,9 @@ class GameServer : public Application, public PacketHandler
   chatMsg(MessageData& msg);
 
   void
+  executeFunction(MessageData& msg);
+
+  void
   notifyActive(MessageData& msg); //Client
 
   void

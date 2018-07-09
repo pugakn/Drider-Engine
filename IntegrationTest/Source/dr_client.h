@@ -19,6 +19,7 @@ public:
   };
 
   using LobbiesList = std::vector<Lobby>;
+
 protected:
 
   void
@@ -48,7 +49,7 @@ protected:
 
   //Called when we receive the game state
   virtual void
-  onGameStateReceived(WString&& msg) = 0;
+  onGameStatusReceived(WString&& msg) = 0;
 
   void
   requestConnection(UInt32 ip, UInt16 port);
@@ -58,6 +59,9 @@ protected:
 
   void
   requestLobbies();
+
+  void
+  executeFunction(const WString& msg);
 
 private:
 
@@ -78,9 +82,6 @@ private:
 
   void
   receiveGameStatus(MessageData& msg);
-
-  void
-  executeFunction(const WString& msg);
 
   void
   checkConnectionStatus();

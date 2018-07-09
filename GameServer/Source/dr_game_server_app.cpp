@@ -36,6 +36,7 @@ GameServer::postInit() {
   m_commands.emplace_back(REQUEST_ID::kNotifyActive, &GameServer::notifyActive);
   m_commands.emplace_back(REQUEST_ID::kServerAccepted, &GameServer::serverAccepted);
   m_commands.emplace_back(REQUEST_ID::kRequestActive, &GameServer::requestNotify);
+  m_commands.emplace_back(REQUEST_ID::kExecuteFunction, &GameServer::executeFunction);
 
   m_localSocket = std::make_shared<UDPSocket>();
 
@@ -235,6 +236,10 @@ GameServer::chatMsg(MessageData& msg) {
   broadcastMessage(pack);
 }
 
+void
+GameServer::executeFunction(MessageData& msg) {
+   
+}
 void 
 GameServer::notifyActive(MessageData& msg) {
 
