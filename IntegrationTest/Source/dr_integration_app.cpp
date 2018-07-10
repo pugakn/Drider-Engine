@@ -45,6 +45,8 @@
 #include <dr_sound.h>
 #include <dr_sound_component.h>
 
+#include <typeinfo>
+
 namespace driderSDK {
 
 DriderEngine::DriderEngine() {
@@ -254,6 +256,10 @@ DriderEngine::initScriptEngine() {
   //Start the script
   m_scripts.find(_T("script1"))->second->start();
   m_scripts.find(_T("script2"))->second->start();
+
+  //Resource manager test
+  auto allResources = ResourceManager::getAllResources();  
+  auto sounds = ResourceManager::getAllResourcesOfType<TextureCore>();
 }
 
 void

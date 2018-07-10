@@ -8,6 +8,9 @@
 
 #include "dr_engine_prerequisites.h"
 
+#include <typeinfo>
+#include <vector>
+
 namespace driderSDK {
 
 class Resource;
@@ -126,6 +129,29 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager>
   getReferenceT(const TString& resourceName)
   {
     return std::dynamic_pointer_cast<T>(getReference(resourceName));
+  }
+  
+  /*
+    Returns the list of resources into a std::vector
+  */
+  static std::vector<std::shared_ptr<Resource>>
+  getAllResources();
+
+  /*
+    Returns all resources of a type
+  */
+  template<class T>
+  static std::vector<std::shared_ptr<T>>
+  getAllResourcesOfType() {
+    std::vector<std::shared_ptr<T>> resources;
+
+    for (auto it : ResourceManager::instance().m_resources) {
+      if (typeid(*it.second.get()) == typeid(T)) {
+        resources.emplace_back(std::dynamic_pointer_cast<T>(it.second));
+      }
+    }
+
+    return resources;
   }
 
  private:

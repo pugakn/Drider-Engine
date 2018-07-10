@@ -378,4 +378,15 @@ ResourceManager::createDummyMaterial() {
   addResource(dummyMat, _T("DUMMY_MATERIAL"));
 }
 
+std::vector<std::shared_ptr<Resource>>
+ResourceManager::getAllResources() {
+  std::vector<std::shared_ptr<Resource>> resources;
+
+  for(auto it : ResourceManager::instance().m_resources) {
+    resources.emplace_back(it.second);
+  }
+
+  return resources;
+}
+
 }
