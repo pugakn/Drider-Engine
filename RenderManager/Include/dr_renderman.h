@@ -13,6 +13,7 @@
 #include <dr_texture.h>
 
 #include "dr_pass_particle_system.h"
+#include <dr_module.h>
 #include <dr_particle_emitter.h>
 #include <dr_vector3d.h>
 namespace driderSDK {
@@ -34,14 +35,14 @@ namespace driderSDK {
 * RenderManager.exit();
 }
 */
-class DR_RENDERMAN_EXPORT RenderMan {
+class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
  public:
   /**
   * TEST::defaultConstructor
   *
   * Default constructor.
   */
-  RenderMan();
+  RenderManager();
 
   /**
   * TEST::destructor
@@ -49,7 +50,7 @@ class DR_RENDERMAN_EXPORT RenderMan {
   * Default destructor
   *
   */
-  ~RenderMan();
+  ~RenderManager();
 
   /**
   * TEST::init
@@ -99,7 +100,23 @@ class DR_RENDERMAN_EXPORT RenderMan {
   std::array<std::shared_ptr<Camera>, 4> vecShadowCamera;
   std::vector<float> partitions;
   std::vector<SceneGraph::SharedGameObject> vecGos;
+
+  /*
+  * TEST::onStartUp
+  *
+  */
+  void
+  onStartUp();
+
+  /*
+  * TEST::onStartUp
+  *
+  */
+  void
+  onShutDown();
+
  protected:
+
   std::shared_ptr<TextureCore> m_cubemap;
   std::shared_ptr<TextureCore> m_cubemapDiffuse;
 

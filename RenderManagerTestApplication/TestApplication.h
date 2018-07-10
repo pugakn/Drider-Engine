@@ -49,10 +49,8 @@ class RenderManApp : public Application
   loadResources();
 
   // Inherited via Application
-
-  //LinesTechnique tecnico;
-
-  RenderMan m_renderMan;
+  std::thread m_RenderManagerThread;
+  bool render;
 
   SceneGraph::SharedGameObject m_selectedGO;
   Int32 m_SzTGosIndex;
