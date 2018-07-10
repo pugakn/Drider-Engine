@@ -1,4 +1,8 @@
 #include "AABBDebug.h"
+
+#include <iostream>
+
+#include <dr_id_object.h>
 #include <dr_mesh.h>
 #include <dr_aabb_collider.h>
 #include <dr_gameObject.h>
@@ -111,11 +115,25 @@ void AABBDebug::onUpdate() {
   
 }
 
-void 
+GameComponent*
 AABBDebug::cloneIn(GameObject& _go) {
 
   auto dup = _go.createComponent<AABBDebug>(m_updateFromGO);
+  
   dup->m_technique = m_technique;
+  dup->m_primitive = m_primitive;
+  dup->m_meshes = m_meshes;
+
+  std::cout << "Warnign trying to copy AABBDebug" << std::endl;
+  
+  dup->m_updateFromGO = m_updateFromGO;
+  dup->m_aabbD = m_aabbD;
+
+  return dup;
+}
+
+UInt32 AABBDebug::getClassID() {
+  return CLASS_NAME_ID(AABBDebug);
 }
 
 }

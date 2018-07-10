@@ -28,7 +28,7 @@ Keyboard::addCallback(KEYBOARD_EVENT::E trigger,
                       Callback callback) {
 
   Keyboard* keyboard = InputManager::getKeyboard();
-
+  
   keyboard->m_callbacks[trigger][key].push_back(callback);
 }
 
@@ -47,18 +47,22 @@ Keyboard::getAsChar(KEY_CODE::E key) {
 
   static std::unordered_map<KEY_CODE::E, char> keysMap
   {
+    {KEY_CODE::kLEFT, 37},
+    {KEY_CODE::kRIGHT, 39},
+    {KEY_CODE::kUP, 38},
+    {KEY_CODE::kDOWN, 40},
     {KEY_CODE::kUNASSIGNED , 0},
     {KEY_CODE::kESCAPE, 0}, 
-    {KEY_CODE::k1, '0'},
-    {KEY_CODE::k2, '1'},
-    {KEY_CODE::k3, '2'},
-    {KEY_CODE::k4, '3'},
-    {KEY_CODE::k5, '4'},
-    {KEY_CODE::k6, '5'},
-    {KEY_CODE::k7, '6'},
-    {KEY_CODE::k8, '7'},
-    {KEY_CODE::k9, '8'},
-    {KEY_CODE::k0, '9'},
+    {KEY_CODE::k1, '1'},
+    {KEY_CODE::k2, '2'},
+    {KEY_CODE::k3, '3'},
+    {KEY_CODE::k4, '4'},
+    {KEY_CODE::k5, '5'},
+    {KEY_CODE::k6, '6'},
+    {KEY_CODE::k7, '7'},
+    {KEY_CODE::k8, '8'},
+    {KEY_CODE::k9, '9'},
+    {KEY_CODE::k0, '0'},
     {KEY_CODE::kMINUS, '-'},    // - on main keyboard
     {KEY_CODE::kEQUALS, '='},
     {KEY_CODE::kBACK, 8},    // backspace
@@ -74,7 +78,7 @@ Keyboard::getAsChar(KEY_CODE::E key) {
     {KEY_CODE::kO, 'o'},
     {KEY_CODE::kP, 'p'},
     {KEY_CODE::kLBRACKET, '{'},
-  {KEY_CODE::kRBRACKET, '}'},
+    {KEY_CODE::kRBRACKET, '}'},
     {KEY_CODE::kRETURN, 13},    // Enter on main keyboard
     {KEY_CODE::kLCONTROL, 0},
     {KEY_CODE::kA, 'a'},
@@ -89,7 +93,7 @@ Keyboard::getAsChar(KEY_CODE::E key) {
     {KEY_CODE::kSEMICOLON, ';'},
     {KEY_CODE::kAPOSTROPHE, '~'},
     {KEY_CODE::kGRAVE, '´'},    // accent
-    {KEY_CODE::kLSHIFT, 0},
+    {KEY_CODE::kLSHIFT, 16},
     {KEY_CODE::kBACKSLASH, '\\'},
     {KEY_CODE::kZ, 'z'},
     {KEY_CODE::kX, 'x'},
@@ -101,11 +105,11 @@ Keyboard::getAsChar(KEY_CODE::E key) {
     {KEY_CODE::kCOMMA, ','},
     {KEY_CODE::kPERIOD, '.'},    // . on main keyboard
     {KEY_CODE::kSLASH, '/'},    // / on main keyboard
-    {KEY_CODE::kRSHIFT, 0},
+    {KEY_CODE::kRSHIFT, 16},
     {KEY_CODE::kMULTIPLY, '*'},    // * on numeric keypad
     {KEY_CODE::kLMENU, 0},    // left Alt
     {KEY_CODE::kSPACE, ' '},
-    {KEY_CODE::kCAPITAL, 0},
+    {KEY_CODE::kCAPITAL, 20},
     {KEY_CODE::kF1, 0},
     {KEY_CODE::kF2, 0},
     {KEY_CODE::kF3, 0},

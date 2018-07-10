@@ -10,9 +10,9 @@
 #include <dr_renderman.h>
 namespace driderSDK {
 class DR_UI_EXPORT SceneViewer {
-  const float W_SCROLL_VEL = 0.2;
-  const float W_MOVE_VEL = 0.38;
-  const float W_ROT_VEL = 1;
+  const float W_SCROLL_VEL = 0.2f;
+  const float W_MOVE_VEL = 0.38f;
+  const float W_ROT_VEL = 1.f;
 public:
 
   /**

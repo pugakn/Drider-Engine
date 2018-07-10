@@ -6,7 +6,6 @@
 
 #include "dr_script_core.h"
 #include <dr_gameObject.h>
-#include <dr_id_object.h>
 
 #include <dr_graph.h>
 
@@ -79,9 +78,9 @@ UInt32 ScriptComponent::getClassID()
 /**
 * Clones the component inside the given gameObject
 */
-void
+GameComponent*
 ScriptComponent::cloneIn(GameObject& _go) {
-
+  return _go.createComponent<ScriptComponent>(m_script);
 }
 
 void
@@ -137,6 +136,15 @@ ScriptComponent::onKeyUp(KEY_CODE::E key) {
 void
 ScriptComponent::setScriptLocalProperties() {
   Int8 result;  
+}
+
+asIScriptObject*
+ScriptComponent::getScript() {
+  if(obj == 0)
+    return 0;
+  
+  obj->AddRef();
+  return obj;
 }
 
 }

@@ -3,7 +3,13 @@
 
 namespace driderSDK {
 
-Packet::Packet() : m_isOk(true), m_readPoint(0)
+Packet::Packet() : Packet(0)
+{}
+
+Packet::Packet(SizeT initialSize) 
+  : m_isOk(true), 
+    m_readPoint(0), 
+    m_data(initialSize, 0)
 {}
 
 Packet::~Packet() 

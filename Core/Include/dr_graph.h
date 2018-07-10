@@ -110,6 +110,11 @@ class DR_CORE_EXPORT SceneGraph : public Module<SceneGraph>
   static GameObjectList
   queryGameObjects(const Camera& camera, QUERY_ORDER::E order);
 
+  //Called when all initial objects
+  //and components are created
+  static void 
+  start();
+
   static void 
   update();
   /****************/

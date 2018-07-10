@@ -60,9 +60,9 @@ CameraComponent::getClassID() {
   return CLASS_NAME_ID(CameraComponent);
 }
 
-void 
-CameraComponent::cloneIn(GameObject&) {
-
+GameComponent* 
+CameraComponent::cloneIn(GameObject& _go) {
+  return _go.createComponent<CameraComponent>();
 }
 
 }

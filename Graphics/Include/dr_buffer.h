@@ -18,7 +18,7 @@ class DR_GRAPHICS_EXPORT Buffer
 {
  public:
    virtual void*
-     getAPIObject() = 0;
+     getAPIObject() const = 0;
 
    virtual void**
      getAPIObjectReference() = 0;

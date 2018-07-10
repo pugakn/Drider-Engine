@@ -6,6 +6,7 @@
 #include <dr_device_context.h>
 #include <dr_resource_manager.h>
 #include <dr_model.h>
+#include <dr_texture.h>
 #include <dr_depth_stencil.h>
 
 namespace driderSDK {
@@ -21,8 +22,8 @@ LightningPass::init(PassInitData* initData) {
   LightningInitData* data = static_cast<LightningInitData*>(initData);
   Device& device = GraphicsAPI::getDevice();
 
-  m_vsFilename = _T("Lightning_vs.hlsl");
-  m_fsFilename = _T("Lightning_ps.hlsl");
+  m_vsFilename = _T("Resources\\Shaders\\Lightning_vs.hlsl");
+  m_fsFilename = _T("Resources\\Shaders\\Lightning_ps.hlsl");
 
   recompileShader();
 
@@ -38,6 +39,7 @@ LightningPass::init(PassInitData* initData) {
   SSdesc.addressU = DR_TEXTURE_ADDRESS::kWrap;
   SSdesc.addressV = DR_TEXTURE_ADDRESS::kWrap;
   SSdesc.addressW = DR_TEXTURE_ADDRESS::kWrap;
+
   m_samplerState = dr_gfx_unique(device.createSamplerState(SSdesc));
 }
 
@@ -57,44 +59,40 @@ LightningPass::draw(PassDrawData* drawData) {
 
   m_inputLayout->set(dc);
 
-  CB.EyePosition = data->activeCam->getPosition();
+  CB.EyePosition = data->ActiveCam->getPosition();
   CB.EyePosition.w = data->ActiveLights;
-  CB.DirLight = data->DirLight;
+
   for (SizeT lighIndex = 0; lighIndex < 128; ++lighIndex) {
     CB.LightPosition[lighIndex] = (*data->Lights)[lighIndex].m_vec4Position;
     CB.LightColor[lighIndex] = (*data->Lights)[lighIndex].m_vec4Color;
   }
 
-  CB.View = data->activeCam->getView();
-  CB.ViewInverse = CB.View;
-  CB.ViewInverse.inverse();
-
-  CB.Projection = data->activeCam->getProjection();
-  CB.ProjectionInverse = CB.Projection;
-  CB.ProjectionInverse.inverse();
-
-  CB.VP = data->activeCam->getVP();
-  CB.VPInverse = CB.VP;
-  CB.VPInverse.inverse();
-
   for (SizeT i = 0; i < 4; ++i) {
-    CB.ShadowVP[i] = (*data->ShadowCam)[i]->getVP();
-    CB.ShadowSliptDepth[i] = data->shadowDepths[i + 1];
-    CB.ShadowSizes[i] = data->shadowSizes[i];
-    CB.ShadowSizesProportion[i] = data->shadowSizesProportion[i];
+    CB.ShadowCameraVP[i] = (*data->ShadowCameras)[i]->getVP();
+    CB.ShadowSliptDepth[i] = data->ShadowSliptDepths[i + 1];
   }
+  CB.ShadowSizesProportion = data->ShadowSizesProportion;
+
+  CB.ShadowInfo[0] = data->ActivatedShadowCascades;
+  CB.ShadowInfo[1] = data->ShadowMapTextureSize;
+  CB.ShadowInfo[2] = data->LerpBetweenShadowCascade;
+
+  CB.BloomThresholdLuminiscenceDelta = data->BloomThreshold;
+  CB.BloomThresholdLuminiscenceDelta.w = data->LuminiscenceDelta;
 
   m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
   m_constantBuffer->set(dc);
 
   dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
 
-  data->GbufferRT->getTexture(0).set(dc, 0); //Position, linear depth
-  data->GbufferRT->getTexture(1).set(dc, 1); //Normal, CoC
-  data->GbufferRT->getTexture(2).set(dc, 2); //Albedo, Metallic
-  data->GbufferRT->getTexture(3).set(dc, 3); //Emissivve, Roughness
-  data->SSAORT->getTexture(0).set(dc, 4);    //SSAO
-  data->ShadowRT->getTexture(0).set(dc, 5);  //Shadow
+  data->GbufferRT->getTexture(0).set(dc, 0);        //Position, linear depth
+  data->GbufferRT->getTexture(1).set(dc, 1);        //Normal, CoC
+  data->GbufferRT->getTexture(2).set(dc, 2);        //Albedo, Metallic
+  data->GbufferRT->getTexture(3).set(dc, 3);        //Emissivve, Roughness
+  data->SSAORT->getTexture(0).set(dc, 4);           //SSAO
+  data->ShadowRT->getTexture(0).set(dc, 5);         //Shadow
+  data->EnviromentCubemap->textureGFX->set(dc, 6);  //Cubemap
+  data->IrradianceCubemap->textureGFX->set(dc, 7);  //CubemapDiffuse
 
   const float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
   data->OutRt->clear(dc, clearColor);

@@ -4,15 +4,16 @@
 #include "dr_d3d_device_context.h"
 
 namespace driderSDK {
-  void * D3DDepthStencilState::getAPIObject()
-  {
-    return APIState;
-  }
-  void ** D3DDepthStencilState::getAPIObjectReference()
-  {
-    return reinterpret_cast<void**>(&APIState);
-  }
-  void
+
+void* D3DDepthStencilState::getAPIObject() {
+  return APIState;
+}
+
+void** D3DDepthStencilState::getAPIObjectReference() {
+  return reinterpret_cast<void**>(&APIState);
+}
+
+void
 D3DDepthStencilState::create(const Device& device,
                              const DrDepthStencilStateDesc& desc) {
   m_descriptor = desc;

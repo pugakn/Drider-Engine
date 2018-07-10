@@ -86,6 +86,29 @@ Quaternion::matrixFromQuaternion(Matrix4x4& MatrixOut) {
   MatrixOut[0][3] = MatrixOut[3][1] = MatrixOut[3][2] = 0.f;
 }
 
+Matrix4x4 
+Quaternion::matrixFromQuaternion() {
+
+  Quaternion Normalized(*this);
+	if (Normalized.measure() != 1.f) {
+		Normalized.normalize();
+	}
+  Matrix4x4 MatrixOut(Math::FORCE_INIT::kZero);
+
+	MatrixOut[0][0] = 1.f - (2.f*Normalized.y*Normalized.y) - (2.f*Normalized.z*Normalized.z);
+  MatrixOut[1][0] = (2.f*Normalized.x*Normalized.y) - (2.f*Normalized.z*Normalized.w);
+  MatrixOut[2][0] = (2.f*Normalized.x*Normalized.z) + (2.f*Normalized.w*Normalized.y);
+  MatrixOut[0][1] = (2.f*Normalized.x*Normalized.y) + (2.f*Normalized.z*Normalized.w);
+  MatrixOut[1][1] = 1.f - (2.f*Normalized.x*Normalized.x) - (2.f*Normalized.z*Normalized.z);
+  MatrixOut[2][1] = (2.f*Normalized.y*Normalized.z) - (2.f*Normalized.x*Normalized.w);
+  MatrixOut[0][2] = (2.f*Normalized.x*Normalized.z) - (2.f*Normalized.y*Normalized.w);
+  MatrixOut[1][2] = (2.f*Normalized.y*Normalized.z) + (2.f*Normalized.x*Normalized.w);
+  MatrixOut[2][2] = 1.f - (2.f*Normalized.x*Normalized.x) - (2.f*Normalized.y*Normalized.y);
+  MatrixOut[3][3] = 1.f;
+  
+  return MatrixOut;
+}
+
 void
 Quaternion::matrixFromQuaternion(Matrix3x3& MatrixOut) {
 	Quaternion Normalized(*this);

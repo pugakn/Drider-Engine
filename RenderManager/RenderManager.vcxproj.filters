@@ -57,6 +57,12 @@
     <ClInclude Include="Include\dr_Lightning.h">
       <Filter>Archivos de encabezado\Passes</Filter>
     </ClInclude>
+    <ClInclude Include="Include\dr_pass_particle_system.h">
+      <Filter>Archivos de encabezado\Passes</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_Luminescence.h">
+      <Filter>Archivos de encabezado\Passes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_rendermanapp.cpp">
@@ -87,6 +93,12 @@
       <Filter>Archivos de código fuente\Passes</Filter>
     </ClCompile>
     <ClCompile Include="Source\dr_Lightning.cpp">
+      <Filter>Archivos de código fuente\Passes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_pass_particle_system.cpp">
+      <Filter>Archivos de código fuente\Passes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_Luminescence.cpp">
       <Filter>Archivos de código fuente\Passes</Filter>
     </ClCompile>
   </ItemGroup>

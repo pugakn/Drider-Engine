@@ -42,7 +42,7 @@ private:
   virtual UInt32
   getClassID() override;
 
-  virtual void 
+  virtual GameComponent* 
   cloneIn(GameObject& _go) override;
 
   WeakCamera m_camera;

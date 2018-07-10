@@ -17,7 +17,9 @@ CodecTexture::decode(TString pathName) {
   Int32 height = 0;
   Int32 channels = 0;
 
-  auto data = stbi_load(StringUtils::toString(pathName).c_str(), 
+  TString realPath = _T("Resources\\Textures\\") + pathName;
+
+  auto data = stbi_load(StringUtils::toString(realPath).c_str(),
                         &width, 
                         &height, 
                         &channels,

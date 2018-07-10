@@ -1,12 +1,15 @@
 #pragma once
 
 #include <dr_aabb.h>
+#include <dr_id_object.h>
+
 #include "dr_collider_component.h"
 #include "dr_core_prerequisites.h"
 
 namespace driderSDK {
 
-class DR_CORE_EXPORT AABBCollider : public ColliderComponent
+class DR_CORE_EXPORT AABBCollider : public ColliderComponent, 
+                                    public IDClass<AABBCollider>
 {
 
  public:
@@ -18,7 +21,6 @@ class DR_CORE_EXPORT AABBCollider : public ColliderComponent
   AABB& 
   getAABB();
 
- private:
   virtual void 
   onCreate() override;
     
@@ -34,7 +36,9 @@ class DR_CORE_EXPORT AABBCollider : public ColliderComponent
   virtual UInt32
   getClassID() override;
 
-  virtual void
+ private:  
+  
+  virtual GameComponent*
   cloneIn(GameObject& _go) override;
 
   virtual COLLIDER_TYPE::E 

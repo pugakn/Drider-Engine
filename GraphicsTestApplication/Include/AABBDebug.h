@@ -25,8 +25,11 @@ class AABBDebug : public DrawableComponent {
   virtual void
   onUpdate() override;
 
-  virtual void
-  cloneIn(GameObject& _go);
+  virtual GameComponent*
+  cloneIn(GameObject& _go) override;
+
+  virtual UInt32
+  getClassID();
 
  private:
   std::vector<Mesh> m_meshesCore;

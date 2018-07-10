@@ -20,6 +20,9 @@ private:
   UInt32 m_tick;
   String m_ip;
   UInt16 m_port;
+
+  // Inherited via Application
+  virtual void onResize() override;
 };
 
 }

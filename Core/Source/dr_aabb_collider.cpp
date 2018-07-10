@@ -1,5 +1,5 @@
-#include <dr_id_object.h>
 #include "dr_aabb_collider.h"
+
 #include "dr_animator_component.h"
 #include "dr_gameObject.h"
 
@@ -43,10 +43,12 @@ UInt32 AABBCollider::getClassID()
   return CLASS_NAME_ID(AABBCollider);
 }
 
-void
+GameComponent*
 AABBCollider::cloneIn(GameObject& _go) {
   auto dup = _go.createComponent<AABBCollider>(m_originalAABB);
+  dup->m_originalAABB = m_originalAABB;
   dup->m_transformedAABB = m_transformedAABB;
+  return dup;
 }
 
 COLLIDER_TYPE::E 

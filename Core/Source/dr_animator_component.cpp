@@ -1,10 +1,12 @@
 #include "dr_animator_component.h"
 
+#include <iostream>
+
 #include <dr_gameObject.h>
 #include <dr_logger.h>
 #include <dr_matrix4x4.h>
+#include <dr_scoped_timer.h>
 #include <dr_time.h>
-#include <dr_id_object.h>
 
 #include "dr_animation.h"
 #include "dr_skeleton.h"
@@ -16,7 +18,9 @@ AnimatorComponent::AnimatorComponent(GameObject& _gameObject)
     m_blending(false),
     m_blendVal(0.0f),
     m_lastTimeRef(&m_lastTime),
-    m_blendDuration(1.0f)
+    m_blendDuration(1.0f),
+    m_speed(1.0f),
+    m_animMerge(false)
 {}
 
 void
@@ -27,70 +31,138 @@ AnimatorComponent::addAnimation(SharedAnimation animation,
 
 void 
 AnimatorComponent::setCurrentAnimation(const TString& animName, 
-                                       bool blend,
                                        bool cloneElapsedTime) {
   
   auto it = m_animations.find(animName);
   
   if (it != m_animations.end()) {
-    /*m_currentAnim = it->second;
 
-    auto anim = getCurrentAnimation();
+    m_nextAnim = WeakAnimation();
 
-    if (anim) {
-      m_lastPositions = FrameCache(anim->getBonesAnimations().size(),
+    m_blending = false;
+
+    m_animMerge = false;
+     
+    m_currentAnim = it->second;
+
+    //Start from 0
+    if (!cloneElapsedTime) {
+      m_elapsed = 0;
+      m_lastTime = 0.0f;
+    }
+
+    if (auto curr = getCurrentAnimation()) {
+      m_lastPositions = FrameCache(curr->getBonesAnimations().size(),
                                    std::make_tuple(0,0,0));
-    }*/
-    
-    auto currAnim = getCurrentAnimation();
+    }
+    else {
+      throw std::exception("Requested animation no longer exists");
+    } 
+  }
+  else {
+    throw std::exception("Requested animation isn't loaded");
+  }
+}
 
-    //If there is an animation already running
-    if (currAnim && blend) {
+void
+AnimatorComponent::blendAnimation(const TString& animName, 
+                                  bool cloneElpasedTime) {
+  auto it = m_animations.find(animName);
+  
+  if (it != m_animations.end()) {
+    {
+      auto next = getNextAnimation();
 
-      //If there are 2 animationns blending
-      if (getNextAnimation()) {
-        
+      if (next && !m_animMerge) {
+
+        m_currentAnim = next;
+
+        m_lastPositions = FrameCache(next->getBonesAnimations().size(),
+                                     std::make_tuple(0,0,0));
+      
         m_nextAnim = it->second;
+          
+        m_elapsed = m_elapsedNext;
 
-        m_currentAnim = m_nextAnim;
-
-        if (auto curr = getCurrentAnimation()) {
-          m_lastPositions = FrameCache(curr->getBonesAnimations().size(),
-                                       std::make_tuple(0,0,0));
-        }
-
+        m_lastTime = m_lastTimeNext;
       }
       else {
         m_nextAnim = it->second;
       }
     }
-    else {
-      m_currentAnim = it->second;
-
-      //If the animation isn't changed the chache will be cleared for
-      //current animation
-      if (auto curr = getCurrentAnimation()) {
-        m_lastPositions = FrameCache(curr->getBonesAnimations().size(),
-                                         std::make_tuple(0,0,0));
-      }
+    if (auto next = getNextAnimation()) {
+      m_lastPosNext = FrameCache(next->getBonesAnimations().size(),
+                                 std::make_tuple(0,0,0));
     }
+    else {
+      throw std::exception("Requested animation no longer exists");
+    }
+    
+    m_animMerge = false;
 
+    m_blending = true;
+
+    m_blendVal = 0.0f;
+      
+    if (cloneElpasedTime) {
+      m_elapsedNext = m_elapsed;
+      m_lastTimeNext = m_lastTime;
+    }
+    else {  
+      m_elapsedNext = 0.0f;
+      m_lastTimeNext  = 0.0f;  
+    }
+  }
+  else {
+    throw std::exception("Requested animation isn't loaded");
+  }
+}
+
+void 
+AnimatorComponent::mergeAnimation(const TString& animName, 
+                                  float alpha, 
+                                  bool cloneElapsedTime) {
+
+   auto it = m_animations.find(animName);
+  
+  if (it != m_animations.end()) {
+    m_nextAnim = it->second;
 
     if (auto next = getNextAnimation()) {
       m_lastPosNext = FrameCache(next->getBonesAnimations().size(),
-                                  std::make_tuple(0,0,0));
-      m_blending = true;
-      m_blendVal = 0.0f;
-      if (cloneElapsedTime) {
-        m_elapsedNext = m_elapsed;
-      }
-      else {
-        m_elapsedNext = 0.0f;
-      }
-      m_lastTimeNext  = 0.0f;
+                                 std::make_tuple(0,0,0));
     }
-        
+    else {
+      throw std::exception("Requested animation no longer exists");
+    }
+
+    m_animMerge = true;
+    m_blending = true;
+    m_blendVal = alpha; 
+
+    if (cloneElapsedTime) {
+      m_elapsedNext = m_elapsed;
+      m_lastTimeNext = m_lastTime;
+    }
+    else {  
+      m_elapsedNext = 0.0f;
+      m_lastTimeNext  = 0.0f;  
+    }
   }
+  else {
+    throw std::exception("Requested animation isn't loaded");
+  }  
+}
+
+void 
+AnimatorComponent::isolateAnimation() {
+
+  if (m_animMerge) {
+    m_animMerge = false;
+    m_blending = false;
+
+    m_nextAnim = WeakAnimation();
+  }  
 }
 
 void 
@@ -111,6 +183,26 @@ AnimatorComponent::setTime(float time) {
 void 
 AnimatorComponent::setBlendDuration(float blendDur) {
   m_blendDuration = blendDur;
+}
+
+void 
+AnimatorComponent::setSpeed(float speed) {
+  m_speed = speed;
+}
+
+float 
+AnimatorComponent::getSpeed() const {
+  return m_speed;
+}
+
+bool
+AnimatorComponent::isBlending() const {
+  return m_blending;
+}
+
+float 
+AnimatorComponent::getBlendDuration() const {
+  return m_blendDuration;
 }
 
 AnimatorComponent::SharedSkeleton 
@@ -141,22 +233,39 @@ AnimatorComponent::onCreate() {
 void 
 AnimatorComponent::onUpdate() {
 
+  static int count = 0;
+  static float accum = 0.0f;
+
+  Timer timer;
+  timer.init();
 
   if (m_blending) {
     //Advance 0.25f per second so blend will be completed in 4 seconds
-    
-    m_blendVal += (1.f / m_blendDuration) * Time::getDelta();
-    m_elapsedNext += Time::getDelta();
+    if (!m_animMerge) {
+      m_blendVal += (1.f / m_blendDuration) * Time::getDelta() * m_speed;
+    }
+
+    m_elapsedNext += Time::getDelta() * m_speed;
 
     if (m_blendVal >= 1.0f) {
       m_blending = false;
+      
       m_currentAnim = m_nextAnim;
+
       m_nextAnim = WeakAnimation();
-      setTime(m_elapsedNext);
+      
+
+      if (auto curr = getCurrentAnimation()) {
+        m_lastPositions = FrameCache(curr->getBonesAnimations().size(),
+                                           std::make_tuple(0,0,0));
+      }
+
+      m_elapsed = m_elapsedNext;
+      m_lastTime = m_lastTimeNext;
     }
   }
 
-  m_elapsed += Time::getDelta();
+  m_elapsed += Time::getDelta() * m_speed;
 
   auto skeleton = getSkeleton();
   auto animation = getCurrentAnimation();
@@ -177,15 +286,19 @@ AnimatorComponent::onUpdate() {
 
     if (m_blending) {
       
-      auto nextAnim = getNextAnimation();
+      if (auto nextAnim = getNextAnimation()) {
+        nextAnimP = nextAnim.get();
 
-      nextAnimP = nextAnim.get();
+        float tpsN = nextAnim->getTicksPerSecond(); 
+        float durationN = nextAnim->getDurationInTicks();
+        float timeInTicksN = m_elapsedNext * tpsN;
 
-      float tpsN = nextAnim->getTicksPerSecond();
-      float durationN = nextAnim->getDurationInTicks();
-      float timeInTicksN = m_elapsedNext * tpsN;
-
-      animTimeNext = std::fmod(timeInTicksN, durationN);
+        animTimeNext = std::fmod(timeInTicksN, durationN);
+      }
+      else {
+        m_blending = false;
+        throw std::exception("Animation was erased while begin used");
+      }      
     }
 
     readNodeHeirarchy(animTime, 
@@ -216,6 +329,16 @@ AnimatorComponent::onUpdate() {
     }
 
   }
+
+  accum += timer.getMilliseconds();
+  count++;
+
+  if (count == 100) {
+    float t = accum / 100;
+    std::cout << "Prom: " << t << std::endl;
+    count = 0;
+    accum = 0;
+  }
 }
 
 void  
@@ -233,7 +356,7 @@ AnimatorComponent::getClassID() {
   return CLASS_NAME_ID(AnimatorComponent);
 }
 
-void
+GameComponent*
 AnimatorComponent::cloneIn(GameObject& _go) {
   
   auto dup = _go.createComponent<AnimatorComponent>();
@@ -251,6 +374,13 @@ AnimatorComponent::cloneIn(GameObject& _go) {
   dup->m_blendVal       = m_blendVal;
   dup->m_nextAnim       = m_nextAnim;
   dup->m_lastTimeNext   = m_lastTimeNext;
+  dup->m_speed          = m_speed;
+  dup->m_blending       = m_blending;
+  dup->m_blendDuration  = m_blendDuration;
+  dup->m_animMerge      = m_animMerge;
+  dup->m_lastTimeRef    = nullptr;
+
+  return dup;
 }
 
 Quaternion 
@@ -432,12 +562,10 @@ AnimatorComponent::readNodeHeirarchy(float animTime,
       }
     }
     
-    rotation.matrixFromQuaternion(nodeTransform);
-    nodeTransform.Scale(scaling);
+    nodeTransform.InitScale(scaling);
+    nodeTransform *= rotation.matrixFromQuaternion();
     nodeTransform.Translation(translation);
-  }
-  else {
-    nodeTransform.transpose();
+    //nodeTransform.identity();
   }
 
   Matrix4x4 globalTransform = nodeTransform * parentTransform;
@@ -448,8 +576,9 @@ AnimatorComponent::readNodeHeirarchy(float animTime,
     
     auto& pBone = skeleton.bones[boneIt->second];
 
-    pBone->finalTransform = //skeleton.gloabalInverseTransform * 
-                            pBone->boneOffset * globalTransform;
+    pBone->finalTransform = pBone->boneOffset * 
+                            globalTransform * 
+                            skeleton.gloabalInverseTransform;
 
     /*m_transforms[boneIt->second] = skeleton.bones[boneIt->second]->boneOffset * 
                                    globalTransform;*/

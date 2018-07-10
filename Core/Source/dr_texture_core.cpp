@@ -71,7 +71,7 @@ TextureCore::init(void* data, void* extraData) {
   DrTextureDesc desc;
 
   desc.width = image->width;
-  desc.height = image->height;
+  desc.height = image->width;
   desc.pitch = image->width * image->channels;
   desc.dimension = imageExtraData->textureDimension;
   desc.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE;

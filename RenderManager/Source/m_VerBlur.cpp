@@ -21,8 +21,8 @@ VerBlurPass::init(PassInitData* initData) {
   VerBlurInitData* data = static_cast<VerBlurInitData*>(initData);
   Device& device = GraphicsAPI::getDevice();
 
-  m_vsFilename = _T("VerBlur_vs.hlsl");
-  m_fsFilename = _T("VerBlur_ps.hlsl");
+  m_vsFilename = _T("Resources\\Shaders\\VerBlur_vs.hlsl");
+  m_fsFilename = _T("Resources\\Shaders\\VerBlur_ps.hlsl");
 
   recompileShader();
 

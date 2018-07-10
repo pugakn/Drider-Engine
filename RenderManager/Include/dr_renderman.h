@@ -11,6 +11,9 @@
 
 #include <dr_texture.h>
 
+#include "dr_pass_particle_system.h"
+#include <dr_particle_emitter.h>
+#include <dr_vector3d.h>
 namespace driderSDK {
 
 /**
@@ -50,7 +53,8 @@ class DR_RENDERMAN_EXPORT RenderMan {
   /**
   * TEST::init
   *
-  * Initializes the RenderManager (Including all the passes).
+  * Initializes the RenderManager
+  * (Including all the passes).
   */
   void
   init();
@@ -60,6 +64,12 @@ class DR_RENDERMAN_EXPORT RenderMan {
   *
   * Sets up the passes draw information and calls the Draw
   * function of the passes.
+  *
+  * @param _out
+  *  Renter target where the finall pass will draw on.
+  *
+  * @param _outds
+  *  Depth stencil to use.
   */
   void
   draw(const RenderTarget& _out, const DepthStencil& _outds);
@@ -89,7 +99,8 @@ class DR_RENDERMAN_EXPORT RenderMan {
   std::vector<float> partitions;
   std::vector<SceneGraph::SharedGameObject> vecGos;
  protected:
-  std::shared_ptr<Texture> m_cubemap;
+   std::shared_ptr<TextureCore> m_cubemap;
+   std::shared_ptr<TextureCore> m_cubemapDiffuse;
 
   GBufferPass m_GBufferPass;
   GBufferInitData m_GBufferInitData;
@@ -111,21 +122,21 @@ class DR_RENDERMAN_EXPORT RenderMan {
   VerBlurDrawData m_VerBlurDrawData;
   GFXShared<DepthStencil> m_VerBlurDSoptions;
 
-  //VerBlurPass m_VerBlurPass;
-  //VerBlurInitData m_VerBlurInitData;
-  //VerBlurDrawData m_VerBlurDrawData;
-  //GFXShared<DepthStencil> m_VerBlurDSoptions;
-
   ShadowPass m_ShadowPass;
   ShadowInitData m_ShadowInitData;
   ShadowDrawData m_ShadowDrawData;
   GFXShared<DepthStencil> m_ShadowDSoptions;
-  std::array<std::pair<Vector3D, float>, 4> m_ShadowSubFrustras;
+  std::array<std::pair<float, float>, 4> m_ShadowSubFrustras;
 
   LightningPass m_LightningPass;
   LightningInitData m_LightningInitData;
   LightningDrawData m_LightningDrawData;
   GFXShared<DepthStencil> m_LightningDSoptions;
+
+  ParticleSystemPass m_particlePass;
+  ParticleSystemInitData m_particleInitData;
+  ParticleSystemDrawData m_particleDrawData;
+  ParticleEmitter m_emitter;
 
   PostProcessingPass m_PostProcessingPass;
   PostProcessingInitData m_PostProcessingInitData;
@@ -142,9 +153,9 @@ class DR_RENDERMAN_EXPORT RenderMan {
   GFXShared<RenderTarget> m_RTBlurInit;
   GFXShared<RenderTarget> m_RTSSAOBlur;
   GFXShared<RenderTarget> m_RTLightning;
-  std::array<GFXShared<RenderTarget>, 4> m_RTShadowDummy; //Used for render separated shadowCams
+  std::array<GFXShared<RenderTarget>, 4> m_RTShadowDummy; //Used for render shadow cascades.
   GFXShared<RenderTarget> m_RTShadow;
-  GFXShared<RenderTarget> m_RTPreFinalBlur;
+  GFXShared<RenderTarget> m_RTLightningBlur;
   GFXShared<RenderTarget> m_RTPostProcessing;
 
   DrTextureDesc m_TexDescDefault;
@@ -153,14 +164,52 @@ class DR_RENDERMAN_EXPORT RenderMan {
   /*****************************Shadow pass stuff*****************************/
 
   /*
+  * Test::updateShadowCameras
+  * 
+  * Updates the shadow cameras.
   */
   void
   updateShadowCameras();
 
+  /*
+  * Test::calculatePartitions
+  *
+  * Updates the shadow cameras.
+  *
+  * @param cuts
+  *  The number of partition of shadow subfrustras.
+  *
+  * @return
+  *  The cuts proportions.
+  */
   std::vector<float>
   calculatePartitions(SizeT cuts);
 
-  std::pair<Vector3D, float>
+  /*
+  * Test::frustrumSphere
+  *
+  * Calculates the shadow frustrum spheres radius and position.
+  *
+  * @param fViewportWidth
+  *  The main camera viewport width
+  * 
+  * @param fViewportHeight
+  *  The main camera viewport height
+  * 
+  * @param fNearPlane
+  *  The main camera near plane
+  * 
+  * @param fFarPlane
+  *  The main camera far plane
+  * 
+  * @param fFov
+  *  The main camera fov
+  *
+  * @return
+  *  The forward position and radius
+  *  of the frustrum sphere
+  */
+  std::pair<float, float>
   frustrumSphere(float fViewportWidth,
                  float fViewportHeight,
                  float fNearPlane,

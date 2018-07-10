@@ -150,7 +150,6 @@
   <ItemGroup>
     <ClInclude Include="Include\dr_aabb_collider.h" />
     <ClInclude Include="Include\dr_animation.h" />
-    <ClInclude Include="Include\dr_animator.h" />
     <ClInclude Include="Include\dr_animator_component.h" />
     <ClInclude Include="Include\dr_application.h" />
     <ClInclude Include="Include\dr_bone_attach_object.h" />
@@ -194,7 +193,6 @@
     <ClInclude Include="Include\dr_sound_component.h" />
     <ClCompile Include="Source\dr_aabb_collider.cpp" />
     <ClCompile Include="Source\dr_animation.cpp" />
-    <ClCompile Include="Source\dr_animator.cpp" />
     <ClCompile Include="Source\dr_animator_component.cpp" />
     <ClCompile Include="Source\dr_application.cpp" />
     <ClCompile Include="Source\dr_bone_attach_object.cpp" />

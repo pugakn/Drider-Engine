@@ -59,30 +59,30 @@ SceneViewer::init(Viewport v)
                                DR_BIND_FLAGS::SHADER_RESOURCE;
   depthTextureDesc.width = m_sceneViewport.width;
   depthTextureDesc.height = m_sceneViewport.height;
-  depthTextureDesc.Format = DR_FORMAT::kD24_UNORM_S8_UINT;
+  depthTextureDesc.Format = DR_FORMAT::kD32_FLOAT;
   m_RTDPTH = dr_gfx_shared(GraphicsAPI::getDevice().createDepthStencil(depthTextureDesc));
 
   m_renderMan.init();
   initInputs();
 }
 void 
-SceneViewer::draw()
-{
-  const float clearColor[4]{ 1,0,1,1 };
+SceneViewer::draw() {
+  const float clearColor[4]{ 0.2f, 0.5f, 0.8f, 1.f};
   m_RT->clear(GraphicsAPI::getDeviceContext(), clearColor);
+  m_RTDPTH->clear(GraphicsAPI::getDeviceContext(),1,0);
   //Draw Scene
   m_renderMan.draw(*m_RT, *m_RTDPTH);
   //Draw End
-  GraphicsAPI::getDepthStencilState(DR_DEPTH_STENCIL_STATES::kDepthR).set(GraphicsAPI::getDeviceContext(), 1.0);
+  GraphicsAPI::getDepthStencilState(DR_DEPTH_STENCIL_STATES::kDepthR).set(GraphicsAPI::getDeviceContext(), 1);
   GraphicsAPI::getBackBufferRT().set(GraphicsAPI::getDeviceContext(), 
                                      GraphicsAPI::getDepthStencil());
   m_RT->getTexture(0).set(GraphicsAPI::getDeviceContext(), 0);
   m_editorQuad.draw();
-  GraphicsAPI::getDepthStencilState(DR_DEPTH_STENCIL_STATES::kDepthRW).set(GraphicsAPI::getDeviceContext(), 1.0);
+  GraphicsAPI::getDepthStencilState(DR_DEPTH_STENCIL_STATES::kDepthRW).set(GraphicsAPI::getDeviceContext(), 1);
 }
+
 void 
-SceneViewer::initInputs()
-{
+SceneViewer::initInputs() {
   InputManager::getMouse()->addMovedCallback([this]()
   {
     auto dis = Mouse::getDisplacement();

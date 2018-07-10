@@ -12,6 +12,8 @@ class DR_NETWORK_EXPORT Packet
   
    Packet();
 
+   Packet(SizeT initialSize);
+
   ~Packet();
 
   /**
@@ -53,7 +55,7 @@ class DR_NETWORK_EXPORT Packet
     *this << strLen;
 
     for (auto& wc : data) {
-      *this << static_cast<UInt32>(wc);
+      *this << static_cast<UInt16>(wc);
     }
 
     return *this;
@@ -112,16 +114,16 @@ class DR_NETWORK_EXPORT Packet
 
     data.resize(size);
 
-    size *= sizeof(UInt32);
+    size *= sizeof(UInt16);
     
     if (size > 0) {
       Int8* buffer;
       getDataPtr(buffer, size);
       if (buffer) {
         for (auto& wc : data) {
-          UInt32 v = *reinterpret_cast<UInt32*>(buffer);
+          UInt16 v = *reinterpret_cast<UInt16*>(buffer);
           wc = static_cast<WString::value_type>(v);
-          buffer += sizeof(UInt32);
+          buffer += sizeof(UInt16);
         }
         //removeData(size);
       }
@@ -158,7 +160,16 @@ class DR_NETWORK_EXPORT Packet
     return m_data.empty() || m_readPoint == m_data.size();
   }
 
+  FORCEINLINE void
+  resetReadPos()
+  {
+    m_readPoint = 0;
+  }
+ 
+
  private:
+
+  friend class UDPSocket;
 
   void
   getDataPtr(Int8*& buffer, SizeT size);

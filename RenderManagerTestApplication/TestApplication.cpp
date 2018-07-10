@@ -1,4 +1,4 @@
-#include "TestApplication.h"
+  #include "TestApplication.h"
 
 //Modules
 #include <dr_camera_manager.h>
@@ -13,6 +13,7 @@
 #include <dr_keyboard.h>
 #include <dr_mouse.h>
 
+#include <dr_animator_component.h>
 #include <dr_render_component.h>
 #include <dr_aabb_collider.h>
 #include <dr_degree.h>
@@ -72,8 +73,8 @@ HSVtoRGB(float fH, float fS, float fV,
 void
 RenderManApp::postInit() {
   Logger::startUp();
-  GraphicsDriver::startUp(DR_GRAPHICS_API::D3D11, 
-                          m_viewport.width, 
+  GraphicsDriver::startUp(DR_GRAPHICS_API::D3D11,
+                          m_viewport.width,
                           m_viewport.height,
                           m_hwnd);
   InputManager::startUp(reinterpret_cast<SizeT>(m_hwnd));
@@ -82,11 +83,10 @@ RenderManApp::postInit() {
   Time::startUp();
   CameraManager::startUp();
   CameraManager::createCamera(_T("PATO_CAM"),
-                              { 0.0f, 150.0f, -400.0f },
-                              { 0.0f, 10.0f, 0.0f },
+                              { 0.0f, 200.0f, -400.0f },
+                              { 0.0f, 50.0f, 0.0f },
                               m_viewport,
                               45.f,
-                              //1024, 1024,
                               0.1f,
                               10000.0f);
   CameraManager::setActiveCamera(_T("PATO_CAM"));
@@ -95,7 +95,7 @@ RenderManApp::postInit() {
   m_bRotate = false;
 
   Degree grados(2.8125f);
-  Vector4D LightPosition(0.0f, 50.0f, 150.0f, 1.0f);
+  Vector4D LightPosition(0.0f, 100.0f, 150.0f, 1.0f);
   Matrix4x4 rotationMatrix(driderSDK::Math::FORCE_INIT::kIdentity);
   rotationMatrix = rotationMatrix.RotationY(grados.toRadian());
 
@@ -113,8 +113,11 @@ RenderManApp::postInit() {
              Lights[lighIndex].m_vec4Color.y,
              Lights[lighIndex].m_vec4Color.z);
 
+    //Range
+    Lights[lighIndex].m_vec4Position.w = 150.0f;
+
     //Intensidad
-    Lights[lighIndex].m_vec4Color.w = (lighIndex / 128.0f) * 100.0f;
+    Lights[lighIndex].m_vec4Color.w = (lighIndex / 128.0f);
 
     proportion += (1.0f/128.0f);
   }
@@ -125,17 +128,49 @@ RenderManApp::postInit() {
 
   loadResources();
 
+  m_vecGos.push_back(SceneGraph::createObject(_T("Stormtrooper")));
+  m_selectedGO = m_vecGos.back();   
+  auto ptrStorm = ResourceManager::getReferenceT<Model>(_T("stormtrooper_dancing.fbx"));
+  if (ptrStorm) {
+    auto rComp = m_selectedGO->createComponent<RenderComponent>(ptrStorm);
+    auto aComp = m_selectedGO->createComponent<AnimatorComponent>();
+    m_selectedGO->createComponent<AABBCollider>(ptrStorm->aabb);
+    m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, -50.0f));
+    m_selectedGO->getTransform().setScale(Vector3D(30.0f, 30.0f, 30.0f));
+    m_selectedGO->getTransform().setRotation(Vector3D(00.0f, Math::PI, 00.0f));
+
+    m_StormtrooperMat = ResourceManager::createMaterial(_T("StormtrooperMaterial"));
+
+    auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("Stormtrooper_Diffuse.png"));
+    m_StormtrooperMat->setTexture(albedoTex, _T("Albedo"));
+
+    rComp->getMeshes().front().material = m_StormtrooperMat;
+
+    auto ws = ResourceManager::getReferenceT<Skeleton>(ptrStorm->skeletonName);
+    
+    aComp->setSkeleton(ws);
+
+    for (Int32 i = 0; i < ptrStorm->animationsNames.size(); ++i) {
+      auto wa = ResourceManager::getReferenceT<Animation>(ptrStorm->animationsNames[i]);
+
+      aComp->addAnimation(wa, ptrStorm->animationsNames[i]);
+    }
+
+    aComp->setCurrentAnimation(ptrStorm->animationsNames[0], false, false);
+    aComp->setTime(1.0f);
+  }
+
   m_vecGos.push_back(SceneGraph::createObject(_T("Floor")));
   m_selectedGO = m_vecGos.back();
   auto ptrFloor = ResourceManager::getReferenceT<Model>(_T("plane.fbx"));
   if (ptrFloor) {
     m_selectedGO->createComponent<RenderComponent>(ptrFloor);
     m_selectedGO->createComponent<AABBCollider>(ptrFloor->aabb);
-    m_selectedGO->getTransform().setPosition(Vector3D(0.0f, -50.0f, 0.0f));
+    m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, 0.0f));
     //m_selectedGO->getTransform().setScale(Vector3D(1000.0f, 1.0f, 1000.0f));
-    m_selectedGO->getTransform().setScale(Vector3D(5.0f, 1.0f, 5.0f));
+    m_selectedGO->getTransform().setScale(Vector3D(4.0f, 1.0f, 4.0f));
 
-    m_floorMat = std::make_shared<Material>(_T("FloorMaterial"));
+    m_floorMat = ResourceManager::createMaterial(_T("FloorMaterial"));
 
     auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Diffuse.tga"));
     auto normalTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Normal.tga"));
@@ -147,11 +182,6 @@ RenderManApp::postInit() {
     auto specularTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Specular.tga"));
     auto sscolorTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_SSColor.tga"));
     auto thicknessTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Thickness.tga"));
-    m_floorMat->addProperty(_T("Albedo"), PROPERTY_TYPE::kVec3);
-    m_floorMat->addProperty(_T("Normal"), PROPERTY_TYPE::kVec3);
-    m_floorMat->addProperty(_T("Emisivity"), PROPERTY_TYPE::kVec3);
-    m_floorMat->addProperty(_T("Metallic"), PROPERTY_TYPE::kVec3);
-    m_floorMat->addProperty(_T("Roughness"), PROPERTY_TYPE::kVec3);
     m_floorMat->addProperty(_T("Displacement"), PROPERTY_TYPE::kVec3);
     m_floorMat->addProperty(_T("Opacity"), PROPERTY_TYPE::kVec3);
     m_floorMat->addProperty(_T("Specular"), PROPERTY_TYPE::kVec3);
@@ -172,87 +202,23 @@ RenderManApp::postInit() {
     renderComp->getMeshes().front().material = m_floorMat;
   }
 
-  m_vecGos.push_back(SceneGraph::createObject(_T("HatKid")));
-  m_selectedGO = m_vecGos.back();
-  auto ptrHK = ResourceManager::getReferenceT<Model>(_T("HK_Teen.fbx"));
-  if (ptrHK) {
-    m_selectedGO->createComponent<RenderComponent>(ptrHK);
-    m_selectedGO->createComponent<AABBCollider>(ptrHK->aabb);
-    m_selectedGO->getTransform().setScale(Vector3D(100.0f, 100.0f, 100.0f));
-    m_selectedGO->getTransform().setRotation(Vector3D(Math::Math::HALF_PI * 3.0f, Math::PI*0.75f, 0.0f));
-    m_selectedGO->getTransform().setPosition(Vector3D(-200.0f, -50.0f, 0.0f));
-
-    m_hkBodyMat = std::make_shared<Material>(_T("HKBodyMaterial"));
-    m_hkBodySMat = std::make_shared<Material>(_T("HKBodyMaterial"));
-    m_hkEyeMat = std::make_shared<Material>(_T("HKEyeMaterial"));
-
-    auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_main_mat_BaseColor.tga"));
-    auto emissiveTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_main_mat_Emissive.tga"));
-    auto metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_main_mat_Metallic.tga"));
-    auto roughnessTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_main_mat_Roughness.tga"));
-    auto normalTex = ResourceManager::getReferenceT<TextureCore>(_T("NormNormal.tga"));
-    m_hkBodyMat->addProperty(_T("Albedo"), PROPERTY_TYPE::kVec3);
-    m_hkBodyMat->addProperty(_T("Emisivity"), PROPERTY_TYPE::kVec3);
-    m_hkBodyMat->addProperty(_T("Metallic"), PROPERTY_TYPE::kVec3);
-    m_hkBodyMat->addProperty(_T("Roughness"), PROPERTY_TYPE::kVec3);
-    m_hkBodyMat->addProperty(_T("Normal"), PROPERTY_TYPE::kVec3);
-    m_hkBodyMat->setTexture(albedoTex, _T("Albedo"));
-    m_hkBodyMat->setTexture(emissiveTex, _T("Emisivity"));
-    m_hkBodyMat->setTexture(metallicTex, _T("Metallic"));
-    m_hkBodyMat->setTexture(roughnessTex, _T("Roughness"));
-    m_hkBodyMat->setTexture(normalTex, _T("Normal"));
-
-    albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_second_mat_BaseColor.tga"));
-    metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_second_mat_Metallic.tga"));
-    roughnessTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_second_mat_Roughness.tga"));
-    m_hkBodySMat->addProperty(_T("Albedo"), PROPERTY_TYPE::kVec3);
-    m_hkBodySMat->addProperty(_T("Metallic"), PROPERTY_TYPE::kVec3);
-    m_hkBodySMat->addProperty(_T("Roughness"), PROPERTY_TYPE::kVec3);
-    m_hkBodySMat->addProperty(_T("Normal"), PROPERTY_TYPE::kVec3);
-    m_hkBodySMat->setTexture(albedoTex, _T("Albedo"));
-    m_hkBodySMat->setTexture(metallicTex, _T("Metallic"));
-    m_hkBodySMat->setTexture(roughnessTex, _T("Roughness"));
-    m_hkBodySMat->setTexture(normalTex, _T("Normal"));
-
-    albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("HK_eye_dif.tga"));
-    metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("HK_eye_spc.tga"));
-    m_hkEyeMat->addProperty(_T("Albedo"), PROPERTY_TYPE::kVec3);
-    m_hkEyeMat->addProperty(_T("Specular"), PROPERTY_TYPE::kVec3);
-    m_hkEyeMat->addProperty(_T("Normal"), PROPERTY_TYPE::kVec3);
-    m_hkEyeMat->setTexture(albedoTex, _T("Albedo"));
-    m_hkEyeMat->setTexture(metallicTex, _T("Specular"));
-    m_hkEyeMat->setTexture(normalTex, _T("Normal"));
-
-    auto renderComp = m_selectedGO->getComponent<RenderComponent>();
-    std::vector<RenderMesh>& meshes = renderComp->getMeshes();
-    meshes[0].material = m_hkBodySMat; 
-    meshes[1].material = m_hkBodyMat;
-    meshes[2].material = m_hkEyeMat;
-
-  }
-
   m_vecGos.push_back(SceneGraph::createObject(_T("Model")));
   m_selectedGO = m_vecGos.back();
   auto ptrModel = ResourceManager::getReferenceT<Model>(_T("model.dae"));
   if (ptrModel) {
     m_selectedGO->createComponent<RenderComponent>(ptrModel);
     m_selectedGO->createComponent<AABBCollider>(ptrModel->aabb);
-    m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 50.0f, 0.0f));
-    m_selectedGO->getTransform().setScale(Vector3D(100.0f, 100.0f, 100.0f));
+    m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 12.5f, -100.0f));
+    m_selectedGO->getTransform().setScale(Vector3D(10.0f, 10.0f, 10.0f));
     m_selectedGO->getTransform().setRotation(Vector3D(0.0f, Math::PI*1.15f, 0.0f));
 
-    m_modelMat = std::make_shared<Material>(_T("ModelMaterial"));
+    m_modelMat = ResourceManager::createMaterial(_T("ModelMaterial"));
 
     auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("default_albedo.tga"));
     auto emissiveTex = ResourceManager::getReferenceT<TextureCore>(_T("default_emissive.tga"));
     auto metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("default_metallic.tga"));
     auto normalTex = ResourceManager::getReferenceT<TextureCore>(_T("default_normal.tga"));
     auto roughnessTex = ResourceManager::getReferenceT<TextureCore>(_T("default_roughness.tga"));
-    m_modelMat->addProperty(_T("Albedo"), PROPERTY_TYPE::kVec3);
-    m_modelMat->addProperty(_T("Normal"), PROPERTY_TYPE::kVec3);
-    m_modelMat->addProperty(_T("Emisivity"), PROPERTY_TYPE::kVec3);
-    m_modelMat->addProperty(_T("Metallic"), PROPERTY_TYPE::kVec3);
-    m_modelMat->addProperty(_T("Roughness"), PROPERTY_TYPE::kVec3);
     m_modelMat->setTexture(albedoTex, _T("Albedo"));
     m_modelMat->setTexture(normalTex, _T("Normal"));
     m_modelMat->setTexture(emissiveTex, _T("Emisivity"));
@@ -263,7 +229,61 @@ RenderManApp::postInit() {
     rComp->getMeshes().front().material = m_modelMat;
   }
 
+  m_vecGos.push_back(SceneGraph::createObject(_T("HatKid")));
+  m_selectedGO = m_vecGos.back();
+  auto ptrHK = ResourceManager::getReferenceT<Model>(_T("HK_Teen.fbx"));
+  if (ptrHK) {
+    m_selectedGO->createComponent<RenderComponent>(ptrHK);
+    m_selectedGO->createComponent<AABBCollider>(ptrHK->aabb);
+    m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, 25.0f));
+    m_selectedGO->getTransform().setScale(Vector3D(100.0f, 100.0f, 100.0f));
+    m_selectedGO->getTransform().setRotation(Vector3D(Math::Math::HALF_PI * 3.0f, Math::PI, 0.0f));
+
+    m_hkBodyMat = ResourceManager::createMaterial(_T("HKBodyMaterial"));
+    m_hkBodySMat = ResourceManager::createMaterial(_T("HKBodySMaterial"));
+    m_hkEyeMat = ResourceManager::createMaterial(_T("HKEyeMaterial"));
+
+    auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_main_mat_BaseColor.tga"));
+    auto emissiveTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_main_mat_Emissive.tga"));
+    auto metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_main_mat_Metallic.tga"));
+    auto roughnessTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_main_mat_Roughness.tga"));
+    m_hkBodyMat->setTexture(albedoTex, _T("Albedo"));
+    m_hkBodyMat->setTexture(emissiveTex, _T("Emisivity"));
+    m_hkBodyMat->setTexture(metallicTex, _T("Metallic"));
+    m_hkBodyMat->setTexture(roughnessTex, _T("Roughness"));
+
+    albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_second_mat_BaseColor.tga"));
+    metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_second_mat_Metallic.tga"));
+    roughnessTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_second_mat_Roughness.tga"));
+    m_hkBodySMat->setTexture(albedoTex, _T("Albedo"));
+    m_hkBodySMat->setTexture(metallicTex, _T("Metallic"));
+    m_hkBodySMat->setTexture(roughnessTex, _T("Roughness"));
+
+    albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("HK_eye_dif.tga"));
+    metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("HK_eye_spc.tga"));
+    m_hkEyeMat->setTexture(albedoTex, _T("Albedo"));
+    m_hkEyeMat->setTexture(metallicTex, _T("Specular"));
+
+    auto renderComp = m_selectedGO->getComponent<RenderComponent>();
+    std::vector<RenderMesh>& meshes = renderComp->getMeshes();
+    meshes[0].material = m_hkBodySMat;
+    meshes[1].material = m_hkBodyMat;
+    meshes[2].material = m_hkEyeMat;
+  }
+  
+  /*
+  m_vecGos.push_back(SceneGraph::createObject(_T("SkySphere")));
+  m_selectedGO = m_vecGos.back();
+  auto ptrSS = ResourceManager::getReferenceT<Model>(_T("SkySphere100.fbx"));
+  if (ptrSS) {
+    m_selectedGO->createComponent<RenderComponent>(ptrSS);
+    m_selectedGO->createComponent<AABBCollider>(ptrSS->aabb);
+    m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, 0.0f));
+  }
+  */
+
   m_SzTGosIndex = m_vecGos.size() - 1;
+  m_selectedGO = m_vecGos[m_SzTGosIndex];
 
   initInputCallbacks();
 }
@@ -308,36 +328,12 @@ RenderManApp::postUpdate() {
   if (Keyboard::isKeyDown(KEY_CODE::kF)) {
     m_selectedGO->getTransform().scale(Vector3D(1.0f, 1.0f, 1.0f) - (Vector3D(1.0f, 1.0f, 1.0f) *  Time::getDelta()));
   }
-
-  if (Keyboard::isKeyDown(KEY_CODE::kZ)) {
-    --m_SzTGosIndex;
-    if (m_SzTGosIndex < 0) {
-      m_SzTGosIndex = m_vecGos.size() - 1;
-      m_bRotate = false;
-    }
-
-    m_selectedGO = m_vecGos[m_SzTGosIndex];
-  }
-  if (Keyboard::isKeyDown(KEY_CODE::kX)) {
-    ++m_SzTGosIndex;
-    if (m_SzTGosIndex >= m_vecGos.size()) {
-      m_SzTGosIndex = 0;
-      m_bRotate = false;
-    }
-
-    m_selectedGO = m_vecGos[m_SzTGosIndex];
-  }
-
-  if (Keyboard::isKeyDown(KEY_CODE::kSPACE)) {
-    m_bRotate = !m_bRotate;
-  }
 }
 
 void
 RenderManApp::postRender() {
   GraphicsDriver::API().clear();
   m_renderMan.draw(GraphicsAPI::getBackBufferRT(), GraphicsAPI::getDepthStencil());
-  //CameraManager::getActiveCamera()->setTarget(m_selectedGO->getTransform().getPosition());
   GraphicsDriver::API().swapBuffers();
 }
 
@@ -358,6 +354,15 @@ RenderManApp::onResize() {
 
 void
 RenderManApp::initInputCallbacks() {
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kSPACE,
+                        std::bind(&RenderManApp::AutoRotateModel, this));
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kZ,
+                        std::bind(&RenderManApp::SelectModel, this, -1));
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kX,
+                        std::bind(&RenderManApp::SelectModel, this, 1));
   Mouse::addMovedCallback(std::bind(&RenderManApp::RotateModel, this));
 }
 
@@ -383,17 +388,47 @@ RenderManApp::RotateModel() {
 }
 
 void
+RenderManApp::AutoRotateModel() {
+  m_bRotate = !m_bRotate;
+}
+
+void
 RenderManApp::MoveModel(Vector3D direction) {
   modelMovement += direction;
 }
 
 void
+RenderManApp::SelectModel(Int32 jump) {
+  m_SzTGosIndex += jump;
+
+  if (m_SzTGosIndex < 0) {
+    m_SzTGosIndex = m_vecGos.size() - 1;
+    m_bRotate = false;
+  }
+  else if (m_SzTGosIndex >= m_vecGos.size()) {
+    m_SzTGosIndex = 0;
+    m_bRotate = false;
+  }
+
+  m_selectedGO = m_vecGos[m_SzTGosIndex];
+}
+
+void
 RenderManApp::loadResources() {
+  ResourceManager::loadResource(_T("SkySphere100.fbx"));
   ResourceManager::loadResource(_T("Checker.fbx"));
   ResourceManager::loadResource(_T("Sphere.fbx"));
   ResourceManager::loadResource(_T("plane.fbx"));
   ResourceManager::loadResource(_T("HK_Teen.fbx"));
   ResourceManager::loadResource(_T("model.dae"));
+  ResourceManager::loadResource(_T("StreetArt.fbx"));
+  ResourceManager::loadResource(_T("stormtrooper_dancing.fbx"));
+
+  ResourceManager::loadResource(_T("SA_basecolor.tga"));
+  ResourceManager::loadResource(_T("SA_normal.tga"));
+  ResourceManager::loadResource(_T("SA_roughness.tga"));
+
+  ResourceManager::loadResource(_T("Stormtrooper_Diffuse.png"));
 
   ResourceManager::loadResource(_T("default_albedo.tga"));
   ResourceManager::loadResource(_T("default_emissive.tga"));
@@ -410,7 +445,6 @@ RenderManApp::loadResources() {
   ResourceManager::loadResource(_T("hatkid_HK_second_mat_Roughness.tga"));
   ResourceManager::loadResource(_T("HK_eye_dif.tga"));
   ResourceManager::loadResource(_T("HK_eye_spc.tga"));
-  ResourceManager::loadResource(_T("NormNormal.tga"));
 
   ResourceManager::loadResource(_T("256_Checker_Diffuse.tga"));
   ResourceManager::loadResource(_T("256_Checker_Displacement.tga"));

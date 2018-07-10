@@ -21,8 +21,8 @@ ShadowPass::init(PassInitData* initData) {
   ShadowInitData* data = static_cast<ShadowInitData*>(initData);
   Device& dv = GraphicsAPI::getDevice();
 
-  m_vsFilename = _T("Shadow_vs.hlsl");
-  m_fsFilename = _T("Shadow_ps.hlsl");
+  m_vsFilename = _T("Resources\\Shaders\\Shadow_vs.hlsl");
+  m_fsFilename = _T("Resources\\Shaders\\Shadow_ps.hlsl");
 
   recompileShader();
 
@@ -44,7 +44,7 @@ ShadowPass::init(PassInitData* initData) {
   driderSDK::File file;
   String shaderSource;
 
-  file.Open(_T("ShadowMerge_vs.hlsl"));
+  file.Open(_T("Resources\\Shaders\\ShadowMerge_vs.hlsl"));
   shaderSource = StringUtils::toString(file.GetAsString(file.Size()));
   file.Close();
 
@@ -54,7 +54,7 @@ ShadowPass::init(PassInitData* initData) {
 
   shaderSource.clear();
 
-  file.Open(_T("ShadowMerge_ps.hlsl"));
+  file.Open(_T("Resources\\Shaders\\ShadowMerge_ps.hlsl"));
   shaderSource = StringUtils::toString(file.GetAsString(file.Size()));
   file.Close();
 
@@ -83,7 +83,7 @@ ShadowPass::recompileShader() {
   driderSDK::File file;
   String shaderSource;
 
-  file.Open(_T("ShadowMerge_vs.hlsl"));
+  file.Open(_T("Resources\\Shaders\\ShadowMerge_vs.hlsl"));
   shaderSource = StringUtils::toString(file.GetAsString(file.Size()));
   file.Close();
 
@@ -93,7 +93,7 @@ ShadowPass::recompileShader() {
 
   shaderSource.clear();
 
-  file.Open(_T("ShadowMerge_ps.hlsl"));
+  file.Open(_T("Resources\\Shaders\\ShadowMerge_ps.hlsl"));
   shaderSource = StringUtils::toString(file.GetAsString(file.Size()));
   file.Close();
 
@@ -130,7 +130,17 @@ ShadowPass::draw(PassDrawData* drawData) {
   data->dsOptions->clear(dc, 1, 0);
 
   for (auto& modelPair : *data->models) {
+    CB.World = modelPair.world;
     CB.WVP = modelPair.world * (data->shadowCam->getVP());
+
+    std::memset(&CB.Bones[0].data[0], 0.0f, sizeof(CB.Bones));
+    auto Bones = modelPair.bones;
+    if (Bones != nullptr) {
+      Int32 maxBones = modelPair.bones->size();
+      for (SizeT index = 0; index < maxBones; ++index) {
+        CB.Bones[index] = (*modelPair.bones)[index];
+      }
+    }
 
     m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
     m_constantBuffer->set(dc);
