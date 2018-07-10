@@ -18,6 +18,7 @@
 #include <dr_aabb_collider.h>
 #include <dr_degree.h>
 #include <dr_texture_core.h>
+#include "dr_rendermanapp.h"
 
 namespace driderSDK {
 
@@ -90,7 +91,7 @@ RenderManApp::postInit() {
                               0.1f,
                               10000.0f);
   CameraManager::setActiveCamera(_T("PATO_CAM"));
-  m_renderMan.init();
+  RenderManager::startUp();
 
   m_bRotate = false;
 
@@ -122,7 +123,7 @@ RenderManApp::postInit() {
     proportion += (1.0f/128.0f);
   }
 
-  m_renderMan.lights = &Lights;
+  RenderManager::instance().lights = &Lights;
 
   modelMovement = Vector3D(0.0f, 0.0f, 0.0f);
 
@@ -304,6 +305,9 @@ RenderManApp::postInit() {
   m_selectedGO = m_vecGos[m_SzTGosIndex];
 
   initInputCallbacks();
+
+  render = true;
+  m_RenderManagerThread = std::thread(renderManagerApp, &render);
 }
 
 void
@@ -317,7 +321,7 @@ RenderManApp::postUpdate() {
   }
 
   if (Keyboard::isKeyDown(KEY_CODE::kP)) {
-    m_renderMan.recompile();
+    RenderManager::instance().recompile();
   }
 
   const float fMovementSpeed = 500.0f;
@@ -350,14 +354,16 @@ RenderManApp::postUpdate() {
 
 void
 RenderManApp::postRender() {
-  GraphicsDriver::API().clear();
-  m_renderMan.draw(GraphicsAPI::getBackBufferRT(), GraphicsAPI::getDepthStencil());
-  GraphicsDriver::API().swapBuffers();
+  //GraphicsDriver::API().clear();
+  //RenderManager::instance().draw(GraphicsAPI::getBackBufferRT(), GraphicsAPI::getDepthStencil());
+  //GraphicsDriver::API().swapBuffers();
 }
 
 void
 RenderManApp::postDestroy() {
-  m_renderMan.exit();
+  render = false;
+  m_RenderManagerThread.join();
+  RenderManager::shutDown();
   GraphicsDriver::shutDown();
   ResourceManager::shutDown();
   SceneGraph::shutDown();

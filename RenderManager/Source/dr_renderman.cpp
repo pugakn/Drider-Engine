@@ -11,14 +11,14 @@
 
 namespace driderSDK {
 
-RenderMan::RenderMan() {
+RenderManager::RenderManager() {
 }
 
-RenderMan::~RenderMan() {
+RenderManager::~RenderManager() {
 }
 
 void
-RenderMan::init() {
+RenderManager::init() {
   Device& dc = GraphicsAPI::getDevice();
 
   ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
@@ -266,7 +266,7 @@ RenderMan::init() {
 }
 
 void
-RenderMan::draw(const RenderTarget& _out, const DepthStencil& _outds) {
+RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   updateShadowCameras();
 
   auto mainCam = CameraManager::getActiveCamera();
@@ -405,11 +405,11 @@ RenderMan::draw(const RenderTarget& _out, const DepthStencil& _outds) {
 }
 
 void
-RenderMan::exit() {
+RenderManager::exit() {
 }
 
 void
-RenderMan::recompile() {
+RenderManager::recompile() {
   m_GBufferPass.recompileShader();
   m_SSAOPass.recompileShader();
   m_HorBlurPass.recompileShader();
@@ -421,7 +421,17 @@ RenderMan::recompile() {
 }
 
 void
-RenderMan::updateShadowCameras() {
+RenderManager::onStartUp() {
+  init();
+}
+
+void
+RenderManager::onShutDown() {
+  exit();
+}
+
+void
+RenderManager::updateShadowCameras() {
   std::shared_ptr<Camera> mainCam = CameraManager::getActiveCamera();
   Vector3D CamPos = mainCam->getPosition();
   Vector3D CamDir = mainCam->getDirection();
@@ -449,7 +459,7 @@ RenderMan::updateShadowCameras() {
 }
 
 std::vector<float>
-RenderMan::calculatePartitions(SizeT cuts) {
+RenderManager::calculatePartitions(SizeT cuts) {
   float fProportion = 0.0f,
         fLinearValue = 0.0f,
         fPwValue = 0.0f,
@@ -476,7 +486,7 @@ RenderMan::calculatePartitions(SizeT cuts) {
 }
 
 std::pair<float, float>
-RenderMan::frustrumSphere(float fVW,
+RenderManager::frustrumSphere(float fVW,
                           float fVH,
                           float fNP,
                           float fFP,
