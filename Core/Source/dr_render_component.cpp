@@ -149,7 +149,7 @@ UInt32 RenderComponent::getClassID()
   return CLASS_NAME_ID(RenderComponent);
 }
 
-void
+GameComponent*
 RenderComponent::cloneIn(GameObject& _go) {
 
   auto dup = _go.createComponent<RenderComponent>(MeshList{}, m_aabb);
@@ -160,6 +160,8 @@ RenderComponent::cloneIn(GameObject& _go) {
   dup->m_meshes = m_meshes;
   dup->m_aabb = m_aabb;
   dup->m_transformedAABB = m_transformedAABB;
+
+  return dup;
 }
 
 }
