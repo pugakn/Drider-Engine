@@ -1,6 +1,42 @@
-$('<option value="1">Item 4</option>').appendTo($('#tagSelector'));
-console.log("Ayuda");
 
+var IdSelected;
+
+$(document).ready(function(){
+  $("#divInspector").oncontextmenu = function (e) {
+    showMenuInspector(e);
+  };
+  $("#menuInspector").hide();
+  $(document).click(function(e){
+    if(e.button == 0){
+      $("#menuInspector").css("display", "none");
+    }
+  });
+  $(document).keydown(function(e){
+    if(e.keyCode == 27){
+      $("#menuInspector").css("display", "none");
+    }
+  });
+
+  //controlamos los botones del menú
+  $("#menuInspector").click(function(e){
+    // El switch utiliza los IDs de los <li> del menú
+    console.log(e);
+    /*
+    switch(e.target.id){
+      case "eliminar":
+        DeleteSceneGraphNode();
+      break;
+    }
+    */
+
+  });
+
+});
+
+function showMenuInspector(e) {
+  $("#menuInspector").css({'display':'block', 'left':e.pageX, 'top':e.pageY});
+  return false;
+}
 
 $( function() {
   $( "#accordionInspector" )
@@ -22,24 +58,33 @@ $( function() {
     });
 } );
 
+$( "#tagSelector" ).selectmenu({
+  select: function( event, ui ) {
+    if (ui.item.index === 0) {
+      AddSceneGraphNode();
+    }
+  }
+});
+
 function addComponent(data) {
-  console.log(data);
   var element = '<div class="group"><h3>' + data.name + '</h3><div>';
 
   for (var i = 0; i < data.inputs.length; i++) {
     var type = data.inputs[i].type;
+    var component = '<div data-id="' + data.inputs[i].id + '" data-namecomponent="'+ data.name +'"" >';
     if (type === "selectable") {
-      element += addSelectable(data.inputs[i]);
+      element += addSelectable(data.inputs[i], component);
     }
     else if (type === "droppableFile") {
-      element += addDroppableFile(data.inputs[i]);
+      element += addDroppableFile(data.inputs[i], component);
     }
     else if (type === "droppableGO") {
-      element += addDroppableGO(data.inputs[i]);
+      element += addDroppableGO(data.inputs[i], component);
     }
     else {
-      element += addInput(data.inputs[i]);
+      element += addInput(data.inputs[i], component);
     }
+    component += '</div>';
   }
   element += '</div></div>'
   $(element).appendTo($('#accordionInspector'));
@@ -52,9 +97,6 @@ function activateDropablesAreas() {
   $(".droppableElementFile" ).droppable({
     accept: ".file",
     drop: function( event, ui ) {
-      console.log(event);
-      console.log(ui);
-      console.log(ui.draggable[0].dataset.url);
       event.target.value = ui.draggable[0].innerText;
       updateInput(event.target);
     },
@@ -67,10 +109,6 @@ function activateDropablesAreas() {
   $(".droppableElementGO" ).droppable({
     accept: ".gameObjectElement",
     drop: function( event, ui ) {
-      console.log(event);
-      console.log(ui);
-      console.log(ui.draggable[0].baseURI);
-      console.log(ui.draggable[0].innerText);
       event.target.value = ui.draggable[0].innerText;
       updateInput(event.target);
     },
@@ -79,50 +117,49 @@ function activateDropablesAreas() {
     },
     tolerance: "pointer"
   });
+
+  $( ".selectOption" ).selectmenu({
+    select: function( event, ui ) {
+      updateInput(ui.item.element[0].parentElement);
+    }
+  });
 }
 
-function addInput(dataInput) {
-  var component = '<div>'
-  component += '<label for="objectName' + dataInput.name + '">'+  dataInput.name + ': </label>';
-  component += '<input oninput="updateInput(this)" name:"objectName' + dataInput.name + '" type="' + dataInput.type;
+function addInput(dataInput, component) {
+  component += '<label for=' + dataInput.name + '">'+  dataInput.name + ': </label>';
+  component += '<input  oninput="updateInput(this)" name:"' + dataInput.name + '" type="' + dataInput.type;
   if (dataInput.type == "checkbox") {
     component += '" checked="'+ dataInput.value + '">';
   }
   else {
     component += '" value="'+ dataInput.value + '">';
   }
-  component += '</div>'
   return component;
 }
 
-function addDroppableFile(dataInput) {
-  var component = '<div>'
-  component += '<label for="objectName' + dataInput.name + '">'+  dataInput.name + ': </label>';
-  component += '<input disabled="true" class="droppableElementFile" oninput="updateInput(this)" name:"objectName' + dataInput.name + '" value="'+ dataInput.value + '">';
-  component += '</div>'
+function addDroppableFile(dataInput, component) {
+  component += '<label for="' + dataInput.name + '">'+  dataInput.name + ': </label>';
+  component += '<input disabled="true" class="droppableElementFile" oninput="updateInput(this)" name:"' + dataInput.name + '" value="'+ dataInput.value + '">';
   return component;
 }
 
-function addDroppableGO(dataInput) {
-  var component = '<div>'
-  component += '<label for="objectName' + dataInput.name + '">'+  dataInput.name + ': </label>';
-  component += '<input disabled="true" class="droppableElementGO" oninput="updateInput(this)" name:"objectName' + dataInput.name + '" value="'+ dataInput.value + '">';
-  component += '</div>'
+function addDroppableGO(dataInput, component) {
+  component += '<label for="' + dataInput.name + '">'+  dataInput.name + ': </label>';
+  component += '<input disabled="true" class="droppableElementGO" oninput="updateInput(this)" name:"' + dataInput.name + '" value="'+ dataInput.value + '">';
   return component;
 }
 
-function addSelectable(dataInput) {
-  var component = '<div>'
-  component += '<label for="objectName' + dataInput.name + '">'+  dataInput.name + ': </label>';
-  component += '<select oninput="updateInput(this)" name:"objectName' + dataInput.name + '">';
+function addSelectable(dataInput, component) {
+  component += '<label for="' + dataInput.name + '">'+  dataInput.name + ': </label>';
+  component += '<select class="selectOption" oninput="updateInput(this)" name:"' + dataInput.name + '">';
   for (var i = 0; i < dataInput.options.length; i++) {
     component += '  <option value="' + i + '"';
-    if (dataInput.selected === i) {
+    if ( parseInt(dataInput.selected, 10) === i) {
       component += ' selected'
     }
     component +='>' + dataInput.options[i].name + '</option>';
   }
-  component += '</select></div>'
+  component += '</select>';
   return component;
 }
 
@@ -195,20 +232,25 @@ var componentes = {
 }
 
 function updateInput(input){
-  console.log("ASdasdasdasdas");
-  console.log(input);
-  console.log(input.checked);
-  console.log(input.value);
+  if (input.type === 'checkbox') {
+    input.value = input.checked;
+  }
+  C_InputChange(IdSelected,
+                input.parentElement.dataset.namecomponent,
+                input.parentElement.dataset.id,
+                input.value);
 }
 
 function JS_UpdateComponents(data) {
   while ($('#accordionInspector')[0].firstChild) {
     $('#accordionInspector')[0].removeChild($('#accordionInspector')[0].firstChild);
   }
-  var components = JSON.parse(data.replace(/\'/g, '"'));
-  for (var i = 0; i < components.components.length; i++) {
-    addComponent(components.components[i]);
+  var gameObject = JSON.parse(data.replace(/\'/g, '"'));
+  IdSelected = gameObject.id;
+  for (var i = 0; i < gameObject.components.length; i++) {
+    addComponent(gameObject.components[i]);
   }
 }
-
-JS_UpdateComponents("{'id':'3','components': [{'name':'RenderComponent', 'inputs':[{'type': 'text','name': 'nombre','id': '0','value': 'lucas'},{'type': 'number','name': 'altura','id': '1','value': '0'},{'type': 'checkbox','name': 'activado','id': '2','value': 'true'},{'type': 'checkbox','name': 'activado','id': '3','value': 'false'},{'type': 'color','name': 'color','id': '4','value': '#ff0000'},{'type': 'droppableFile','name': 'Albedo','id': '5','value': 'colo.x'},{'type': 'droppableGO','name': 'colider','id': '5','value': 'piso'},{'type': 'selectable','name': 'Tipos de campos','id': '5','selected': 'colider','options': [{'name': 'text'},{'name': 'number'},{'name': 'checkbox'},{'name': 'color'},{'name': 'droppableFile'},{'name': 'droppableGO'}]}]},{'name':'AABBCollider', 'inputs':[]}]}");
+/*
+JS_UpdateComponents("{'id':'4','components': [{'name':'RenderComponent', 'inputs':[{'type': 'droppableFile','name': 'Model','id': '0','value': 'RenderComponent'},{'type': 'selectable','name': 'Tipos de campos','id': '5','selected': 'colider','options': [{'name': 'text'},{'name': 'number'},{'name': 'checkbox'},{'name': 'color'},{'name': 'droppableFile'},{'name': 'droppableGO'}]},{'type': 'selectable','name': 'HOli','id': '4','selected': 'color123','options': [{'name': 'text123'},{'name': 'number123'},{'name': 'checkbox123'},{'name': 'color123'},{'name': 'droppableFile123'},{'name': 'droppableGO123'}]}]},{'name':'RenderComponent1', 'inputs':[{'type': 'droppableFile','name': 'Model','id': '0','value': 'RenderComponent1'},{'type': 'selectable','name': 'Tipos de campos','id': '5','selected': 'colider','options': [{'name': 'text'},{'name': 'number'},{'name': 'checkbox'},{'name': 'color'},{'name': 'droppableFile'},{'name': 'droppableGO'}]},{'type': 'selectable','name': 'HOli','id': '4','selected': 'color123','options': [{'name': 'text123'},{'name': 'number123'},{'name': 'checkbox123'},{'name': 'color123'},{'name': 'droppableFile123'},{'name': 'droppableGO123'}]}]},{'name':'AABBCollider', 'inputs':[{'type': 'text','name': 'nombre','id': '0','value': 'lucas'}]}]}");
+*/

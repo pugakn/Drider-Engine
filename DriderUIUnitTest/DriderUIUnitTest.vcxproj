@@ -164,15 +164,25 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DriderUIUnitTest.cpp" />
-    <ClCompile Include="Include\dr_render_inputs.cpp" />
+    <ClCompile Include="Source\dr_aabb_collider_inputs.cpp" />
+    <ClCompile Include="Source\dr_animator_inputs.cpp" />
+    <ClCompile Include="Source\dr_camera_inputs.cpp" />
     <ClCompile Include="Source\dr_input_editor.cpp" />
+    <ClCompile Include="Source\dr_render_inputs.cpp" />
     <ClCompile Include="Source\dr_scene_editor.cpp" />
+    <ClCompile Include="Source\dr_scrip_inputs.cpp" />
+    <ClCompile Include="Source\dr_sound_inputs.cpp" />
     <ClCompile Include="TestApplication.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\dr_aabb_collider_inputs.h" />
+    <ClInclude Include="Include\dr_animator_inputs.h" />
+    <ClInclude Include="Include\dr_camera_inputs.h" />
     <ClInclude Include="Include\dr_input_editor.h" />
     <ClInclude Include="Include\dr_render_inputs.h" />
     <ClInclude Include="Include\dr_scene_editor.h" />
+    <ClInclude Include="Include\dr_scrip_inputs.h" />
+    <ClInclude Include="Include\dr_sound_inputs.h" />
     <ClInclude Include="TestApplication.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

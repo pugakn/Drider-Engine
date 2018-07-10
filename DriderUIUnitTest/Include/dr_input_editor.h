@@ -25,6 +25,9 @@ class InputEditor {
   virtual void
   getInputs(TString* response) = 0;
 
+  virtual void
+  changeValue(TString &value, TString &id) = 0;
+
   /**
   * Add input for diferents types:
   *   droppableFile - values: nameFile
@@ -52,7 +55,7 @@ class InputEditor {
                      std::vector<TString> *options);
 
   static std::unique_ptr<InputEditor>
-  createInputEditor(GameComponent& _component);
+  createInputEditor(GameComponent &_component);
 
  protected:
   GameComponent& m_component;

@@ -3,16 +3,17 @@
 #include "dr_input_editor.h"
 
 namespace driderSDK {
-class RenderInputs : public InputEditor {
+class AnimatorInputs : public InputEditor {
  public:
-   
+
   using InputEditor::InputEditor;
 
   void
   getInputs(TString* response);
-  
+
   void
   changeValue(TString &value, TString &id);
+
 };
 
 }

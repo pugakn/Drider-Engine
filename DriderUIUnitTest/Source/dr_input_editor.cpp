@@ -6,7 +6,14 @@
 #include <dr_id_object.h>
 #include <dr_gameComponent.h>
 
+#include "..\Include\dr_aabb_collider_inputs.h"
+#include "..\Include\dr_animator_inputs.h"
+#include "..\Include\dr_camera_inputs.h"
 #include "..\Include\dr_render_inputs.h"
+#include "..\Include\dr_scrip_inputs.h"
+#include "..\Include\dr_sound_inputs.h"
+
+
 
 namespace driderSDK {
 
@@ -52,8 +59,7 @@ driderSDK::InputEditor::addInputSelectable(TString id,
 }
 
 std::unique_ptr<InputEditor> 
-InputEditor::createInputEditor(GameComponent& _component) {
-  
+InputEditor::createInputEditor(GameComponent &_component) {
   using UniqueInput = std::unique_ptr<InputEditor>;
   using Factory = std::function<UniqueInput(GameComponent&)>;
 
@@ -61,7 +67,12 @@ InputEditor::createInputEditor(GameComponent& _component) {
   { 
     //Template
     //{CLASS_NAME_ID(Class), dr_make_unique<Class, GameComponent&>}
-    {CLASS_NAME_ID(RenderComponent), dr_make_unique<RenderInputs, GameComponent&>}
+    {CLASS_NAME_ID(AABBCollider), dr_make_unique<AABBColliderInputs, GameComponent&>},
+    {CLASS_NAME_ID(AnimatorComponent), dr_make_unique<AnimatorInputs, GameComponent&>},
+    {CLASS_NAME_ID(Camera), dr_make_unique<CameraInputs, GameComponent&>},
+    {CLASS_NAME_ID(RenderComponent), dr_make_unique<RenderInputs, GameComponent&>},
+    {CLASS_NAME_ID(ScripComponent), dr_make_unique<ScripInputs, GameComponent&>},
+    {CLASS_NAME_ID(SoundComponent), dr_make_unique<SoundInputs, GameComponent&>}
   };
  
   //m_factories[CLASS_NAME_ID(RenderComponent)] = dr_make_unique<RenderInputs>;

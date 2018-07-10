@@ -234,6 +234,8 @@ void SceneEditor::initSceneGraph()
   auto ptrFloor = ResourceManager::getReferenceT<Model>(_T("plane.fbx"));
   if (ptrFloor) {
     floor->createComponent<RenderComponent>(ptrFloor);
+    floor->createComponent<RenderComponent>(ptrFloor);
+
     floor->createComponent<AABBCollider>(ptrFloor->aabb);
     floor->getTransform().setPosition(Vector3D(0.0f, -50.0f, 0.0f));
     floor->getTransform().setScale(Vector3D(5.0f, 5.0f, 5.0f));
@@ -309,7 +311,6 @@ void SceneEditor::initUI()
   webRenderer.registerJS2CPPFunction(std::make_pair("C_FileTree", [&](const CefRefPtr<CefListValue>& arguments) {
     TString root = arguments->GetString(1);
     updateFolders(webRenderer, root);
-    //UI_UpdatePropertySheet(*SceneGraph::getRoot().get());
   }));
 
   webRenderer.registerJS2CPPFunction(std::make_pair("C_HierarchyUpdate", [&](const CefRefPtr<CefListValue>& arguments) {
@@ -399,6 +400,21 @@ void SceneEditor::initUI()
     webRenderer.executeJSCode(response);
   }));
 
+
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_InputChange", [&](const CefRefPtr<CefListValue>& arguments) {
+    TString temp = arguments->GetString(1);
+    UInt32 id = StringUtils::toInt(temp);
+    TString componentName = arguments->GetString(2);
+    TString idField = arguments->GetString(3);
+    TString value = arguments->GetString(4);
+
+    auto gameObject = SceneGraph::getRoot()->findNode(id);
+    auto component = gameObject->getComponent(componentName);
+
+    auto inputEditor = InputEditor::createInputEditor(*component);
+
+    inputEditor->changeValue(value, idField);
+  }));
   //Property Sheet UI
   webRenderer.registerJS2CPPFunction(std::make_pair("C_OnTransformChange", [&](const CefRefPtr<CefListValue>& arguments) {
     TString name = arguments->GetString(1);

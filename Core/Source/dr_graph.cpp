@@ -5,7 +5,6 @@
 #include <dr_vector3d.h>
 #include <dr_vector4d.h>
 
-#include "dr_aabb_collider.h"
 #include "dr_animator_component.h"
 #include "dr_camera.h"
 #include "dr_gameObject.h"
@@ -137,9 +136,9 @@ SceneGraph::testObjectOct(SharedGameObject object,
   bool ins = !test;
 
   if (test) {
-    if (auto aabbCollider = object->getComponent<AABBCollider>()) {
+    if (auto renderComp = object->getComponent<RenderComponent>()) {
     
-      auto inter = frustrum.intersects(aabbCollider->getTransformedAABB());
+      auto inter = frustrum.intersects(renderComp->getAABB());
 
       if (inter != FRUSTRUM_INTERSECT::kOutside) {
       
@@ -171,12 +170,12 @@ SceneGraph::testObject(SharedGameObject object,
                        const Frustrum& frustrum,
                        GameObjectQueue& objects) {
 
-  auto aabbCollider = object->getComponent<AABBCollider>();
+  auto aabbCollider = object->getComponent<RenderComponent>();
 
   if (object->getComponent<RenderComponent>() && 
       aabbCollider) {      
 
-    auto inter = frustrum.intersects(aabbCollider->getTransformedAABB());
+    auto inter = frustrum.intersects(aabbCollider->getAABB());
 
     if (inter != FRUSTRUM_INTERSECT::kOutside) {
       /******************************************/
@@ -296,17 +295,17 @@ bool
 SceneGraph::DepthComparer::operator()(SharedGameObject objA, 
                                       SharedGameObject objB) const {
 
-  auto renderA = objA->getComponent<AABBCollider>();
+  auto renderA = objA->getComponent<RenderComponent>();
  
   Vector4D posA(renderA->getAABB().center, 1.f);
 
-  auto WVPA = objA->getWorldTransform().getMatrix() * m_camera.getVP();
+  auto WVPA = m_camera.getVP();
 
-  auto renderB = objB->getComponent<AABBCollider>();
+  auto renderB = objB->getComponent<RenderComponent>();
 
   Vector4D posB(renderB->getAABB().center, 1.f);
 
-  auto WVPB = objB->getWorldTransform().getMatrix() * m_camera.getVP();
+  auto WVPB = m_camera.getVP();
 
   auto aW = (posA * WVPA).w;
 
