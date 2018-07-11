@@ -1,3 +1,4 @@
+#include "dr_TextureCompressor.h"
 #include "dr_TGA.h"
 
 int
@@ -13,21 +14,6 @@ main(int argc, char* argv[]) {
   //  return -1;
   //}
 
-  driderSDK::TGA RedTesto;
-  RedTesto.create(8, 8);
-  driderSDK::Pixel RedGradient = driderSDK::Pixel::Black;
-
-  driderSDK::UInt8 jump = 256 / (8 * 8);
-
-  for (driderSDK::SizeT index = 0; index < 64; ++index) {
-    RedTesto.GetPixel(index) = RedGradient;
-    RedGradient.r += jump;
-  }
-
-  RedTesto.save(_T("C:\\Users\\Francisco\\Desktop\\RedGradient.tga"));
-
-  return 0;
-
   driderSDK::TGA TestAlbedo;
   driderSDK::TGA TestEmissive;
   driderSDK::TGA TestNormals;
@@ -35,20 +21,39 @@ main(int argc, char* argv[]) {
   driderSDK::TGA TestRoughness;
   driderSDK::TGA TestAlphaMask;
 
-  bool hasAlbedoTexture     = TestAlbedo.load(_T("C:\\Users\\Francisco\\Desktop\\TestAlbedo.tga"));
-  bool hasEmissiveTexture   = TestEmissive.load(_T("C:\\Users\\Francisco\\Desktop\\TestEmissive.tga"));
+  driderSDK::TGA compressedNormals;
+  driderSDK::TGA uncompressedNormals;
+
+
+
+  //bool hasAlbedoTexture     = TestAlbedo.load(_T("C:\\Users\\Francisco\\Desktop\\TestAlbedo.tga"));
+  //bool hasEmissiveTexture   = TestEmissive.load(_T("C:\\Users\\Francisco\\Desktop\\TestEmissive.tga"));
   bool hasNormalsTexture    = TestNormals.load(_T("C:\\Users\\Francisco\\Desktop\\TestNormals.tga"));
-  bool hasMetallicTexture   = TestMetallic.load(_T("C:\\Users\\Francisco\\Desktop\\TestMetallic.tga"));
-  bool hasRoughnessTexture  = TestRoughness.load(_T("C:\\Users\\Francisco\\Desktop\\TestRoughness.tga"));
-  bool hasAlphaMaskTexture  = TestAlphaMask.load(_T("C:\\Users\\Francisco\\Desktop\\TestAlphaMask.tga"));
+  //bool hasMetallicTexture   = TestMetallic.load(_T("C:\\Users\\Francisco\\Desktop\\TestMetallic.tga"));
+  //bool hasRoughnessTexture  = TestRoughness.load(_T("C:\\Users\\Francisco\\Desktop\\TestRoughness.tga"));
+  //bool hasAlphaMaskTexture  = TestAlphaMask.load(_T("C:\\Users\\Francisco\\Desktop\\TestAlphaMask.tga"));
+
+
+  driderSDK::Int32 texWidth = static_cast<driderSDK::Int32>(TestNormals.GetWidth());
+  driderSDK::Int32 texHeight = static_cast<driderSDK::Int32>(TestNormals.GetHeight());
+  driderSDK::Int32 texSize = texWidth * texHeight;
+
+  compressedNormals.create(texWidth, texHeight);
+
+  driderSDK::Pixel actual;
+  for (driderSDK::Int32 i; i < texSize; ++i) {
+    TestNormals.GetPixel(i);
+  }
+
+  driderSDK::TextureCompressor::Cartesian2Spherical();
 
   
-  TestAlbedo.save(_T("C:\\Users\\Francisco\\Desktop\\TestAlbedoCompressed.tga"));
-  TestEmissive.save(_T("C:\\Users\\Francisco\\Desktop\\TestEmissiveCompressed.tga"));
+  //TestAlbedo.save(_T("C:\\Users\\Francisco\\Desktop\\TestAlbedoCompressed.tga"));
+  //TestEmissive.save(_T("C:\\Users\\Francisco\\Desktop\\TestEmissiveCompressed.tga"));
   TestNormals.save(_T("C:\\Users\\Francisco\\Desktop\\TestNormalsCompressed.tga"));
-  TestMetallic.save(_T("C:\\Users\\Francisco\\Desktop\\TestMetallicCompressed.tga"));
-  TestRoughness.save(_T("C:\\Users\\Francisco\\Desktop\\TestRoughnessCompressed.tga"));
-  TestAlphaMask.save(_T("C:\\Users\\Francisco\\Desktop\\TestAlphaMaskCompressed.tga"));
+  //TestMetallic.save(_T("C:\\Users\\Francisco\\Desktop\\TestMetallicCompressed.tga"));
+  //TestRoughness.save(_T("C:\\Users\\Francisco\\Desktop\\TestRoughnessCompressed.tga"));
+  //TestAlphaMask.save(_T("C:\\Users\\Francisco\\Desktop\\TestAlphaMaskCompressed.tga"));
 
   return 0;
 }
