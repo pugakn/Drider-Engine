@@ -63,7 +63,6 @@ class DR_CORE_EXPORT RenderComponent : public GameComponent,
   const AABB&
   getAABB();
 
- private:
   // Inherited via GameComponent
   virtual void 
   onCreate() override;
@@ -82,6 +81,9 @@ class DR_CORE_EXPORT RenderComponent : public GameComponent,
 
   virtual GameComponent*
   cloneIn(GameObject& _go);
+
+  
+ private:
 
   bool m_isModel;
   WeakModelRef m_model;

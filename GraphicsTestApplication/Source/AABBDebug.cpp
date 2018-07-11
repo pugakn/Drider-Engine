@@ -2,12 +2,13 @@
 
 #include <iostream>
 
-#include <dr_id_object.h>
-#include <dr_mesh.h>
-#include <dr_aabb_collider.h>
-#include <dr_gameObject.h>
-#include <dr_matrix4x4.h>
 #include <dr_animator_component.h>
+#include <dr_gameObject.h>
+#include <dr_id_object.h>
+#include <dr_matrix4x4.h>
+#include <dr_mesh.h>
+//#include <dr_aabb_collider.h>
+#include <dr_render_component.h>
 
 namespace driderSDK {
 
@@ -88,7 +89,7 @@ void AABBDebug::onCreate() {
 
 
   if (m_updateFromGO) {
-      m_aabbD = m_gameObject.getComponent<AABBCollider>()->getTransformedAABB();
+      m_aabbD = m_gameObject.getComponent<RenderComponent>()->getAABB();
   }
 
   create();
@@ -98,7 +99,7 @@ void AABBDebug::onUpdate() {
 
   if (m_gameObject.getComponent<AnimatorComponent>()) {
     
-    m_aabbD = m_gameObject.getComponent<AABBCollider>()->getTransformedAABB();
+    m_aabbD = m_gameObject.getComponent<RenderComponent>()->getAABB();
     
     create();
   }
@@ -106,7 +107,7 @@ void AABBDebug::onUpdate() {
     if (m_gameObject.changed()) {
 
       if (m_updateFromGO) {
-        m_aabbD = m_gameObject.getComponent<AABBCollider>()->getTransformedAABB();
+        m_aabbD = m_gameObject.getComponent<RenderComponent>()->getAABB();
       }
 
       create();

@@ -4,7 +4,8 @@
 
 #include <dr_string_utils.h>
 
-#include "dr_aabb_collider.h"
+//#include "dr_aabb_collider.h"
+#include "dr_render_component.h"
 #include "dr_gameComponent.h"
 #include "dr_script_component.h"
 
@@ -52,8 +53,8 @@ GameObject::start() {
     //m_finalTransform = getParent()->m_finalTransform * m_localTransform;  
   }   
 
-  if (auto collider = getComponent<AABBCollider>()) {
-    collider->onUpdate();
+  if (auto render = getComponent<RenderComponent>()) {
+    render->onUpdate();
   }
   DR_DEBUG_ONLY(
   else {

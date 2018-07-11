@@ -69,6 +69,9 @@ RenderComponent::onCreate() {
         m_meshes.push_back(renderMesh);
       }
     }
+
+    m_transformedAABB = m_aabb;
+    m_transformedAABB.recalculate(m_gameObject.getWorldTransform().getMatrix());
   }
 }
 

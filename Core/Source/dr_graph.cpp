@@ -183,12 +183,11 @@ SceneGraph::testObject(SharedGameObject object,
                        const Frustrum& frustrum,
                        GameObjectQueue& objects) {
 
-  auto aabbCollider = object->getComponent<RenderComponent>();
+  auto renderComponent = object->getComponent<RenderComponent>();
 
-  if (object->getComponent<RenderComponent>() && 
-      aabbCollider) {      
+  if (renderComponent) {      
 
-    auto inter = frustrum.intersects(aabbCollider->getAABB());
+    auto inter = frustrum.intersects(renderComponent->getAABB());
 
     if (inter != FRUSTRUM_INTERSECT::kOutside) {
       /******************************************/

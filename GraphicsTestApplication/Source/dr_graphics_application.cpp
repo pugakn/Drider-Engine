@@ -240,6 +240,18 @@ GraphicsApplication::initInputCallbacks() {
                         KEY_CODE::k9,
                         &SceneGraph::buildOctree); 
 
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kZ,
+                        [&]() { 
+                          auto root = SceneGraph::getRoot();
+
+                          auto child = root->findNode(_T("Grr2"));
+
+                          auto model = ResourceManager::getReferenceT<Model>(_T("Croc.X"));
+
+                          child->getComponent<RenderComponent>()->setModel(model);
+                        }); 
+
   auto spawnSp =
   [this]() {
     for (Int32 i = 0; i < 100; ++i) {
@@ -389,6 +401,8 @@ GraphicsApplication::loadResources() {
   ResourceManager::loadResource(_T("Unidad_1m.fbx"));
   
   ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
+
+  ResourceManager::loadResource(_T("Croc.X"));
     
   ResourceManager::loadResource(_T("script1.as"));
 
