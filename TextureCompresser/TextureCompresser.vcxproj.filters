@@ -21,9 +21,15 @@
     <ClCompile Include="Source\dr_TGA.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\dr_TGAHeader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\dr_TGA.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_TGAHeader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

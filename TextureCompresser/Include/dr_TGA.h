@@ -1,18 +1,11 @@
+#include "dr_Pixel.h"
+#include "dr_TGAHeader.h"
+
 #include <vector>
-#include <dr_types.h>
 
 namespace driderSDK {
 
-typedef union PixelInfo
-{
-  std::uint32_t color;
-  struct
-  {
-    std::uint8_t b, g, r, a;
-  };
-};
-
-class Tga
+class TGA
 {
  public:
 
@@ -21,7 +14,7 @@ class Tga
   *
   * Default class constructor.
   */
-  Tga();
+  TGA();
 
   /**
   * TEST::loadFileConstructor
@@ -31,7 +24,44 @@ class Tga
   * @param FilePath
   *  Reference to the filepath of the image.
   */
-  Tga(const char* FilePath);
+  TGA(TString FilePath);
+
+  /**
+  * TEST::load
+  *
+  * Loads a TGA.
+  *
+  * @param FilePath
+  *  Reference to the filepath of the TGA image.
+  */
+  bool
+  load(TString FilePath);
+
+  /**
+  * TEST::save
+  *
+  * Saves a TGA.
+  *
+  * @param FilePath
+  *  Reference to the filepath where
+  *  the TGA image will be saved.
+  */
+  void
+  save(TString FilePath);
+
+  /**
+  * TEST::create
+  *
+  * Creates an uncompressed TGA.
+  *
+  * @param width
+  *  Width of the texture.
+
+  * @param height
+  *  Height of the texture.
+  */
+  void
+  create(SizeT width, SizeT height);
 
   /**
   * TEST::GetPixels
@@ -41,8 +71,19 @@ class Tga
   * @return
   *  Description.
   */
-  std::vector<PixelInfo>
+  std::vector<Pixel>
   GetPixels();
+
+  /**
+  * TEST::GetPixel
+  *
+  * Description.
+  *
+  * @return
+  *  Description.
+  */
+  Pixel&
+  GetPixel(SizeT pixelIndex);
 
   /**
   * TEST::GetWidth
@@ -78,12 +119,14 @@ class Tga
   HasAlphaChannel();
 
  private:
+  TGAHeader m_header;
 
   bool m_ImageCompressed;
 
-  std::vector<PixelInfo> m_Pixels;
-
   UInt32 m_width, m_height, m_numberOfPixels, m_size, m_BitsPerPixel;
+
+  std::vector<Pixel> m_Pixels;
+
 };
 
 }
