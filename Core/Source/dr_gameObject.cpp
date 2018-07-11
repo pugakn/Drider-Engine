@@ -56,10 +56,6 @@ GameObject::start() {
   if (auto render = getComponent<RenderComponent>()) {
     render->onUpdate();
   }
-  DR_DEBUG_ONLY(
-  else {
-    Logger::addLog(_T("Warning: object started without collider ") + getName());
-  });
 
   for (auto& component : m_components) {
     component->onStart();

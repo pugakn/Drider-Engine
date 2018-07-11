@@ -71,23 +71,19 @@ GraphicsApplication::postInit() {
   initScriptEngine();
   createTechniques();
   createScene();
-  
-  SceneGraph::start();
-
-  Time::update();
-    
+      
   m_light[0].m_vec4Position = {100, 100, 100, 2000};
   m_light[0].m_vec4Color = {255, 0, 0, 1};
-
-  /*for (Int32 i = 0; i < 32; ++i) {
-
-  }*/
-; 
+  
   m_renderMan.lights = &m_light;
 
   //m_renderMan.init();
+    
+  SceneGraph::start();
 
   m_timer.init();
+
+  Time::update();
 }
 
 void 
@@ -951,10 +947,11 @@ GraphicsApplication::calculatePoints() {
 void 
 GraphicsApplication::onResize() {
 
-  GraphicsDriver::API().getSwapChain().resize(GraphicsDriver::API().getDevice(),
+  /*GraphicsDriver::API().getSwapChain().resize(GraphicsDriver::API().getDevice(),
                                                m_viewport.width,
-                                               m_viewport.height);
-  CameraManager::getActiveCamera()->setViewport(m_viewport);
+                                               m_viewport.height);*/
+  GraphicsDriver::API().resizeBackBuffer(m_viewport.width, m_viewport.height);
+  CameraManager::setViewportToAll(m_viewport);
 }
 
 }
