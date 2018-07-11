@@ -19,11 +19,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\dr_Pixel.cpp" />
     <ClCompile Include="Source\dr_TGA.cpp" />
     <ClCompile Include="Source\dr_TGAHeader.cpp" />
     <ClCompile Include="Source\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\dr_Pixel.h" />
     <ClInclude Include="Include\dr_TGA.h" />
     <ClInclude Include="Include\dr_TGAHeader.h" />
   </ItemGroup>
