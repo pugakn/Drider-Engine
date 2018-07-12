@@ -4,6 +4,12 @@
 #include <functional>
 
 #include <dr_id_object.h>
+#include <dr_aabb_collider.h>
+#include <dr_animator_component.h>
+#include <dr_camera_component.h>
+#include <dr_script_component.h>
+#include <dr_sound_component.h>
+#include <dr_render_component.h>
 #include <dr_gameComponent.h>
 
 #include "..\Include\dr_aabb_collider_inputs.h"
@@ -71,7 +77,7 @@ InputEditor::createInputEditor(GameComponent &_component) {
     {CLASS_NAME_ID(AnimatorComponent), dr_make_unique<AnimatorInputs, GameComponent&>},
     {CLASS_NAME_ID(Camera), dr_make_unique<CameraInputs, GameComponent&>},
     {CLASS_NAME_ID(RenderComponent), dr_make_unique<RenderInputs, GameComponent&>},
-    {CLASS_NAME_ID(ScripComponent), dr_make_unique<ScripInputs, GameComponent&>},
+    {CLASS_NAME_ID(ScriptComponent), dr_make_unique<ScripInputs, GameComponent&>},
     {CLASS_NAME_ID(SoundComponent), dr_make_unique<SoundInputs, GameComponent&>}
   };
  
