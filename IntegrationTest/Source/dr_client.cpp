@@ -167,25 +167,12 @@ Client::requestLobbies() {
   m_socket->send(pack, m_globalServer.ip, m_globalServer.port);
 }
 
+
 void
-Client::executeFunction(const WString& msg) {
-
+Client::sendFunction(Packet packet) {
   if (m_currentServer.ip) {
-
-    Packet pack;
-    pack << VER_NUM::kN;
-    pack << REQUEST_ID::kExecuteFunction;
-    pack << m_userName;
-    pack << msg;
-
-    m_socket->send(pack, m_currentServer.ip, m_currentServer.port);
+    m_socket->send(packet, m_currentServer.ip, m_currentServer.port);
   }
-
-  //onChatMsgReceived(std::move(user), std::move(data));
-
 }
-
-
-
 
 }

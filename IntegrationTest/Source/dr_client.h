@@ -61,7 +61,7 @@ protected:
   requestLobbies();
 
   void
-  executeFunction(const WString& msg);
+  sendFunction(Packet packet);
 
 private:
 

@@ -46,6 +46,7 @@
 #include <dr_sound_component.h>
 
 #include <dr_networkManager_component.h>
+#include <dr_messenger.h>
 
 namespace driderSDK {
 
@@ -97,6 +98,7 @@ DriderEngine::postInit() {
 
 void
 DriderEngine::postUpdate() {
+  Client::update();
   WebRenderer::update();
   Time::update();
   InputManager::update();
@@ -146,6 +148,10 @@ DriderEngine::initModules() {
   ContextManager::startUp();
   ScriptEngine::startUp();
   SceneGraph::startUp();
+
+  Client::init();
+  Messenger::startUp();
+  
 }
 
 void
@@ -283,6 +289,10 @@ DriderEngine::initScriptEngine() {
   //Start the script
   m_scripts.find(_T("script1"))->second->start();
   m_scripts.find(_T("script2"))->second->start();
+
+  //Test Messeger
+  Vector3D vec3D(10.0f, 10.0f, 3.0f);
+  Messenger::sendFunction(0, FUNCTION_TYPE::Instantiate, vec3D);
 }
 
 void
@@ -304,6 +314,9 @@ DriderEngine::playSoundTest() {
 
 void
 DriderEngine::destroyModules() {
+
+  Messenger::shutDown();
+  Client::quit();
   delete extraInfo;
 
   ContextManager::shutDown();

@@ -153,6 +153,7 @@
     <ClInclude Include="Include\dr_file_system.h" />
     <ClInclude Include="Include\dr_logger.h" />
     <ClInclude Include="Include\dr_memory.h" />
+    <ClInclude Include="Include\dr_message_type.h" />
     <ClInclude Include="Include\dr_module.h" />
     <ClInclude Include="Include\dr_pool.h" />
     <ClInclude Include="Include\dr_process.h" />

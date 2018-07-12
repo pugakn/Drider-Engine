@@ -168,7 +168,6 @@
     <ClInclude Include="Include\dr_md5.h" />
     <ClInclude Include="Include\dr_mesh.h" />
     <ClInclude Include="Include\dr_mesh_info.h" />
-    <ClInclude Include="Include\dr_messenger.h" />
     <ClInclude Include="Include\dr_model.h" />
     <ClInclude Include="Include\dr_model_info.h" />
     <ClInclude Include="Include\dr_name_object.h" />
@@ -210,7 +209,6 @@
     <ClCompile Include="Source\dr_material.cpp" />
     <ClCompile Include="Source\dr_md5.cpp" />
     <ClCompile Include="Source\dr_mesh.cpp" />
-    <ClCompile Include="Source\dr_messenger.cpp" />
     <ClCompile Include="Source\dr_model.cpp" />
     <ClCompile Include="Source\dr_name_object.cpp" />
     <ClCompile Include="Source\dr_networkManager_component.cpp" />
