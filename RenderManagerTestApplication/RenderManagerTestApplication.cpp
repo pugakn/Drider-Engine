@@ -7,10 +7,24 @@ int main(int argc, char* argv[]) {
   Viewport vp;
   vp.topLeftX = 0;
   vp.topLeftY = 0;
+
+  //4K
+  //vp.width = 4096;
+  //vp.height = 2304;
+
+  //UHD
+  //vp.width = 3840;
+  //vp.height = 2160;
+
+  //2K
+  //vp.width = 2048;
+  //vp.height = 1152;
+
+  //1080p o FHD
   //vp.width = 1920;
   //vp.height = 1080;
-  //vp.width = 1536;
-  //vp.height = 864;
+
+  //720p o HD
   vp.width = 1280;
   vp.height = 720;
 

@@ -25,7 +25,7 @@ struct PS_INPUT {
 #define DEPTH_OF_FIELD
 #define VIGNETTE
 #define BLOOM
-#define TONE_MAPPING
+//#define TONE_MAPPING
 
 float4
 BasicExposure(in float3 Color, in float exposure) {

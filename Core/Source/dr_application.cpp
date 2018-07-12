@@ -4,8 +4,11 @@
 #include <SDL2/SDL.h>
 
 namespace driderSDK {
+
 Application* Application::application;
-Int32 Application::run(const Viewport& _viewport) {
+
+Int32
+Application::run(const Viewport& _viewport) {
   if (Application::application) {
     std::cout << "Application already running" << std::endl;
     return 0;
@@ -23,11 +26,14 @@ Int32 Application::run(const Viewport& _viewport) {
 
   return 0;
 }
-Viewport Application::getViewPort()
-{
+
+Viewport
+Application::getViewPort() {
   return getApplication().m_viewport;
 }
-void Application::setViewport(const Viewport & _viewport)
+
+void
+Application::setViewport(const Viewport& _viewport)
 {
   Application& app = getApplication();
   app.m_viewport = _viewport;
