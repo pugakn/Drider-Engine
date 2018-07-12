@@ -34,10 +34,23 @@ RenderManager::init() {
   ResourceManager::loadResource(_T("GraceDiffuseCubemap.tga"), &cubeMapDesc);
   m_cubemapDiffuse = ResourceManager::getReferenceT<TextureCore>(_T("GraceDiffuseCubemap.tga"));
 
+  //4K
+  //screenWidth = 4096;
+  //screenHeight = 2304;
+
+  //UHD
+  //screenWidth = 3840;
+  //screenHeight = 2160;
+
+  //2K
+  //screenWidth = 2048;
+  //screenHeight = 1152;
+
+  //1080p o FHD
   //screenWidth = 1920;
   //screenHeight = 1080;
-  //screenWidth = 1536;
-  //screenHeight = 864;
+
+  //720p o HD
   screenWidth = 1280;
   screenHeight = 720;
 

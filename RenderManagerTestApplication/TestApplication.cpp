@@ -307,7 +307,7 @@ RenderManApp::postInit() {
   initInputCallbacks();
 
   render = true;
-  m_RenderManagerThread = std::thread(renderManagerApp, &render);
+  //m_RenderManagerThread = std::thread(renderManagerApp, &render);
 }
 
 void
@@ -354,9 +354,9 @@ RenderManApp::postUpdate() {
 
 void
 RenderManApp::postRender() {
-  //GraphicsDriver::API().clear();
-  //RenderManager::instance().draw(GraphicsAPI::getBackBufferRT(), GraphicsAPI::getDepthStencil());
-  //GraphicsDriver::API().swapBuffers();
+  GraphicsDriver::API().clear();
+  RenderManager::instance().draw(GraphicsAPI::getBackBufferRT(), GraphicsAPI::getDepthStencil());
+  GraphicsDriver::API().swapBuffers();
 }
 
 void
