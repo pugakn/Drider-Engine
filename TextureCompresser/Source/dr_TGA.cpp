@@ -94,6 +94,8 @@ TGA::load(TString FilePath) {
   
   hFile.close();
   m_Pixels = imageData;
+
+  return true;
 }
 
 void

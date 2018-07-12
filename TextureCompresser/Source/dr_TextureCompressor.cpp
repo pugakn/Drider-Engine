@@ -11,9 +11,9 @@ TextureCompressor::color2Vector3D(Pixel color) {
 
 Pixel
 TextureCompressor::Vector3D2Color(Vector3D vec) {
-  return Pixel(vec.x,
-               vec.y,
-               vec.z);
+  return Pixel(static_cast<UInt8>(vec.x),
+               static_cast<UInt8>(vec.y),
+                 static_cast<UInt8>(vec.z));
 }
 
 
@@ -28,7 +28,7 @@ driderSDK::TextureCompressor::Spherical2Cartesian(Vector2D direction) {
   result.y = sin(theta) * sin(phi);
   result.z = cos(theta);
 
-  return result;
+  return result.normalize();
 }
 
 Vector2D
@@ -41,6 +41,16 @@ TextureCompressor::Cartesian2Spherical(Vector3D direction) {
   result.y = Math::aTan2(direction.y, direction.x);
 
   return result;
+}
+
+float
+TextureCompressor::int2float(UInt8& number) {
+  return *reinterpret_cast<float*>(&number);
+}
+
+UInt8
+TextureCompressor::float2int(float& number) {
+  return *reinterpret_cast<UInt8*>(&number);
 }
 
 }

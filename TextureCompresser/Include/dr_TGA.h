@@ -1,6 +1,6 @@
-#include "dr_Pixel.h"
+#pragma once
 #include "dr_TGAHeader.h"
-
+#include "dr_pixel.h"
 #include <vector>
 
 namespace driderSDK {

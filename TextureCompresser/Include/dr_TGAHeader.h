@@ -1,4 +1,4 @@
-#include <vector>
+#pragma once
 #include <dr_types.h>
 
 namespace driderSDK {

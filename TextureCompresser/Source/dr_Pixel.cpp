@@ -9,6 +9,9 @@ Pixel::Pixel()
     a(static_cast<UInt8>(0xFF)) {
 }
 
+Pixel::Pixel(const Pixel& A) : r(A.r), g(A.g), b(A.b), a(A.a) {
+}
+
 Pixel::Pixel(UInt8 red, UInt8 green, UInt8 blue)
   : r(red), g(green), b(blue), a(static_cast<UInt8>(0xFF)) {
 }
@@ -18,6 +21,15 @@ Pixel::Pixel(UInt8 red, UInt8 green, UInt8 blue, UInt8 alpha)
 }
 
 Pixel::~Pixel() {
+}
+
+Pixel&
+Pixel::operator=(const Pixel & A) {
+  r = A.r;
+  g = A.g;
+  b = A.b;
+  a = A.a;
+  return *this;
 }
 
 Pixel
@@ -78,6 +90,6 @@ Pixel::Yellow = Pixel(static_cast<UInt8>(0xFF),
 Pixel
 Pixel::Pink = Pixel(static_cast<UInt8>(0xFF),
                     static_cast<UInt8>(0x69),
-                    static_cast<UInt8>(0xB4))
+                    static_cast<UInt8>(0xB4));
 
 }

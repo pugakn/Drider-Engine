@@ -1,5 +1,4 @@
 #include "dr_TGAHeader.h"
-#include <dr_file_system.h>
 
 namespace driderSDK {
 
@@ -13,7 +12,7 @@ void
 TGAHeader::loadFromRawData(UInt8* data) {
   ID_Length = reinterpret_cast<UInt8&>(data[0]);
   ColorMapType = reinterpret_cast<UInt8&>(data[1]);
-  ImageType = reinterpret_cast<UInt16&>(data[2]);
+  ImageType = reinterpret_cast<UInt8&>(data[2]);
 
   FirstEntryIndex = reinterpret_cast<UInt16&>(data[3]);
   ColorMapLength = reinterpret_cast<UInt16&>(data[5]);
@@ -23,7 +22,7 @@ TGAHeader::loadFromRawData(UInt8* data) {
   Y_origin = reinterpret_cast<UInt16&>(data[10]);
   ImageWidth = reinterpret_cast<UInt16&>(data[12]);
   ImageHeight = reinterpret_cast<UInt16&>(data[14]);
-  PixelDepth = reinterpret_cast<UInt16&>(data[16]);
+  PixelDepth = reinterpret_cast<UInt8&>(data[16]);
   ImageDescriptor = reinterpret_cast<UInt8&>(data[17]);
 }
 

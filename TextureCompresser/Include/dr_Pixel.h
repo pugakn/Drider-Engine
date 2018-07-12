@@ -1,3 +1,4 @@
+#pragma once
 #include <dr_types.h>
 
 namespace driderSDK {
@@ -12,13 +13,28 @@ class Pixel
   */
   Pixel();
 
+  /**
+  * TEST::moveContructor
+  *
+  * Move constructor.
+  *
+  */
+  Pixel(Pixel&& V) = default;
+
+  /**
+  * TEST::copyConstructor
+  *
+  * Copy constructor.
+  *
+  */
+  Pixel(const Pixel& V);
+
   /*
   * TEST::colorConstructor
   *
   *
   */
   Pixel(UInt8 red, UInt8 green, UInt8 blue);
-
 
 
   /*
@@ -29,11 +45,15 @@ class Pixel
   Pixel(UInt8 red, UInt8 green, UInt8 blue, UInt8 alpha);
 
   /*
-  * TEST::defultConstructor
+  * TEST::defultDesstructor
   *
   *
   */
   ~Pixel();
+
+
+  Pixel&
+  operator=(const Pixel& A);
   
   union
   {
