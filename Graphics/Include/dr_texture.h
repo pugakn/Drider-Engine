@@ -49,6 +49,7 @@ class DR_GRAPHICS_EXPORT Texture
                    const DrTextureDesc& desc, 
                    const char* buffer) = 0;
 
+
   /**
   * Create a texture
   *

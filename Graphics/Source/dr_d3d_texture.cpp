@@ -50,7 +50,7 @@ D3DTexture::createFromMemory(const Device& device,
     apiDesc.CPUAccessFlags = desc.CPUAccessFlags ^ DR_CPU_ACCESS_FLAG::drRead;
   apiDesc.Usage = static_cast<D3D11_USAGE>(desc.Usage);//D3D11_USAGE_STAGING;//D3D11_USAGE_DEFAULT;
 
-  if (desc.genMipMaps) {
+  if (desc.genMipMaps && desc.Format != DR_FORMAT::kBC3_UNORM) {
     apiDesc.MiscFlags |= D3D11_RESOURCE_MISC_GENERATE_MIPS;
     apiDesc.BindFlags |= DR_BIND_FLAGS::RENDER_TARGET;
   }
@@ -126,7 +126,7 @@ D3DTexture::createFromMemory(const Device& device,
     switch (desc.dimension)
     {
     case DR_DIMENSION::k1D:
-      dimUAV = D3D11_UAV_DIMENSION_TEXTURE1D;
+      dimUAV = D3D11_UAV_DIMENSION_TEXTURE1D; 
       break;
     case DR_DIMENSION::k2D:
       dimUAV = D3D11_UAV_DIMENSION_TEXTURE2D;
@@ -156,6 +156,7 @@ D3DTexture::createFromMemory(const Device& device,
         &m_stagingTexture);
   }
 }
+
 
 void
 D3DTexture::createEmpty(const Device& device, const DrTextureDesc& desc) {
@@ -244,7 +245,7 @@ void
 D3DTexture::udpateFromMemory(const DeviceContext& deviceContext,
                              const char* buffer,
                              size_t bufferSize) {
-  Int32 buffSize = m_descriptor.pitch * m_descriptor.height;
+  Int32 buffSize = m_descriptor.pitch * m_descriptor.height; //This will crash on compressed textures, (h/4)
   char *pHead = const_cast<char*>(buffer);
 
   D3D11_TEXTURE2D_DESC pDesc;

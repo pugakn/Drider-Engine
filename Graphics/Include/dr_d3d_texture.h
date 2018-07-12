@@ -44,6 +44,7 @@ class DR_GRAPHICS_EXPORT D3DTexture : public Texture
                    const DrTextureDesc& desc,
                    const char* buffer) override;
 
+
   /**
   * TEST::
   *

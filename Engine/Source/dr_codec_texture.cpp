@@ -30,7 +30,9 @@ CodecTexture::decode(TString pathName) {
     image->width = width;
     image->height = height;
     image->channels = channels;
-    
+    image->mipMapCount = 0;
+    image->compressionType = 0;
+
     SizeT imageSize = width * height * channels;
 
     image->data.resize(imageSize);

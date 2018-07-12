@@ -22,7 +22,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{AB89A20F-171B-40CD-A7E8-84F4C35BECDC}</ProjectGuid>
     <RootNamespace>Engine</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -149,12 +149,14 @@
     <ClInclude Include="Include\dr_codec_script.h" />
     <ClInclude Include="Include\dr_codec_sound.h" />
     <ClInclude Include="Include\dr_codec_texture.h" />
+    <ClInclude Include="Include\dr_codec_ctexture.h" />
     <ClInclude Include="Include\dr_compatible_types.h" />
     <ClInclude Include="Include\dr_engine_prerequisites.h" />
     <ClInclude Include="Include\dr_resource_manager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_codec.cpp" />
+    <ClCompile Include="Source\dr_codec_ctexture.cpp" />
     <ClCompile Include="Source\dr_codec_model.cpp" />
     <ClCompile Include="Source\dr_codec_script.cpp" />
     <ClCompile Include="Source\dr_codec_sound.cpp" />
