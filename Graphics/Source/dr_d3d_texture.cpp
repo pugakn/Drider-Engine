@@ -50,7 +50,10 @@ D3DTexture::createFromMemory(const Device& device,
     apiDesc.CPUAccessFlags = desc.CPUAccessFlags ^ DR_CPU_ACCESS_FLAG::drRead;
   apiDesc.Usage = static_cast<D3D11_USAGE>(desc.Usage);//D3D11_USAGE_STAGING;//D3D11_USAGE_DEFAULT;
 
-  if (desc.genMipMaps && desc.Format != DR_FORMAT::kBC3_UNORM) {
+  if (desc.genMipMaps && 
+    desc.Format != DR_FORMAT::kBC1_UNORM && 
+    desc.Format != DR_FORMAT::kBC2_UNORM && 
+    desc.Format != DR_FORMAT::kBC3_UNORM) {
     apiDesc.MiscFlags |= D3D11_RESOURCE_MISC_GENERATE_MIPS;
     apiDesc.BindFlags |= DR_BIND_FLAGS::RENDER_TARGET;
   }
