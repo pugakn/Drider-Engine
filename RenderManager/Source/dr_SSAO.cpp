@@ -89,7 +89,7 @@ SSAOPass::draw(PassDrawData* drawData) {
   data->OutRt->clear(dc, clearColor);
   
   DrTextureDesc outRTDesc = data->OutRt->getDescriptor();
-  dc.dispatch(outRTDesc.width / 32, outRTDesc.height / 32, 1);
+  dc.dispatch(outRTDesc.width / 8, outRTDesc.height / 4, 1);
 
   dc.setUAVsNull();
 }

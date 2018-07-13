@@ -46,7 +46,10 @@ static const float2 vec[4] = {
   float2( 0.0f,  1.0f)
 };
 
-[numthreads(32, 32, 1)]
+//numthreads = 8 * 4 = 32
+#define NUMTHREADS_X 8
+#define NUMTHREADS_Y 4
+[numthreads(NUMTHREADS_X, NUMTHREADS_Y, 1)]
 void
 CS(uint3 groupThreadID	: SV_GroupThreadID,
 	 uint3 groupID				: SV_GroupID,
@@ -54,8 +57,8 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
 	 uint groupIndex			: SV_GroupIndex) {
 	const float2 uv = float2(dispatchID.x, dispatchID.y);
 	
-	const float2 wUVScale = float2(dispatchID.x / (float)TXWIDTH,
-																 dispatchID.y / (float)TXHEIGHT);
+	const float2 wUVScale = float2(saturate(dispatchID.x / (float)TXWIDTH),
+																 saturate(dispatchID.y / (float)TXHEIGHT));
 	//const float2 wUVScale = float2((dispatchID.x * 1280) / (float)TXWIDTH,
 	//												 			 (dispatchID.y * 720) / (float)TXHEIGHT);
 	//const float2 wUVScale = float2(dispatchID.x / (float)1280*2,
