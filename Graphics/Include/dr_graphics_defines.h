@@ -259,14 +259,14 @@ enum E {
 namespace DR_SHADER_TYPE_FLAG {
 
 enum E {
-  kVertex = 1,
-  kFragment = 1 << 1,
-  kHull = 1 << 2,
-  kCompute = 1 << 3,
-  kTexture = 1 << 4,
+  kVertex     = 1,
+  kFragment   = 1 << 1,
+  kHull       = 1 << 2,
+  kCompute    = 1 << 3,
+  kTexture    = 1 << 4,
   kTeselation = 1 << 5,
-  kDomain = 1 << 6,
-  kGeometry = 1 << 8
+  kDomain     = 1 << 6,
+  kGeometry   = 1 << 8
 };
 
 }

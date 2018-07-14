@@ -10,7 +10,10 @@
 
 namespace driderSDK {
 
-struct LightningInitData : PassInitData {};
+struct LightningInitData : PassInitData {
+  SizeT RTWidth;
+  SizeT RTHeight;
+};
 
 struct LightningDrawData : PassDrawData {
   std::shared_ptr<Camera> ActiveCam;
@@ -74,6 +77,17 @@ class LightningPass : public RenderPass {
   };
 
   CBuffer CB;
+
+  SizeT m_RTWidth;
+  SizeT m_RTHeight;
+  SizeT m_ComputeWidthDivisions;
+  SizeT m_ComputeHeightDivisions;
+  SizeT m_ComputeWidthBlocks;
+  SizeT m_ComputeHeightBlocks;
+  SizeT m_ComputeTotalBlocks;
+
+  std::vector<UInt32> numberOfLights;
+  std::vector<std::array<UInt32, 64>> LightsIndex;
 
   GFXUnique<SamplerState> m_samplerState;
   GFXUnique<SamplerState> m_samplerStateCubemap;

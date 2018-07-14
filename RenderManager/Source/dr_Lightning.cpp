@@ -24,6 +24,7 @@ LightningPass::init(PassInitData* initData) {
 
   m_vsFilename = _T("Lightning_vs.hlsl");
   m_fsFilename = _T("Lightning_ps.hlsl");
+  //m_csFilename = _T("TileLights_cs.hlsl");
 
   recompileShader();
 
@@ -41,6 +42,20 @@ LightningPass::init(PassInitData* initData) {
   SSdesc.addressW = DR_TEXTURE_ADDRESS::kWrap;
 
   m_samplerState = dr_gfx_unique(device.createSamplerState(SSdesc));
+
+  m_RTWidth = data->RTWidth;
+  m_RTHeight = data->RTHeight;
+
+  m_ComputeWidthDivisions = 8;
+  m_ComputeHeightDivisions = 4;
+
+  m_ComputeWidthBlocks = m_RTWidth / m_ComputeWidthDivisions;
+  m_ComputeHeightBlocks = m_RTHeight / m_ComputeHeightDivisions;
+
+  m_ComputeTotalBlocks = m_ComputeWidthBlocks * m_ComputeHeightBlocks;
+
+  numberOfLights.resize(m_ComputeTotalBlocks);
+  LightsIndex.resize(m_ComputeTotalBlocks);
 }
 
 void
@@ -107,6 +122,8 @@ LightningPass::draw(PassDrawData* drawData) {
       dc.draw(SAQ.indices.size(), 0, 0);
     }
   }
+
+  //dc.dispatch(m_ComputeWidthBlocks, m_ComputeHeightBlocks, 1);
 }
 
 }

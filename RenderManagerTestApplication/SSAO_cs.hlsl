@@ -1,12 +1,13 @@
+SamplerState SS : register(s0);
+
 Texture2D PositionLDepthTex : register(t0);
 Texture2D NormalCoC         : register(t1);
-
-SamplerState SS : register(s0);
 
 RWTexture2D<float4> SSAOTex : register(u0);
 
 cbuffer ConstantBuffer : register(b0)
 {
+  float4 fViewportDimensions;
 	float4 SSAO_Options; //X: SampleRadio Y: Intensity Z: Scale X: Bias
 };
 
@@ -46,7 +47,6 @@ static const float2 vec[4] = {
   float2( 0.0f,  1.0f)
 };
 
-//numthreads = 8 * 4 = 32
 #define NUMTHREADS_X 8
 #define NUMTHREADS_Y 4
 [numthreads(NUMTHREADS_X, NUMTHREADS_Y, 1)]
@@ -55,10 +55,11 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
 	 uint3 groupID				: SV_GroupID,
 	 uint3 dispatchID			: SV_DispatchThreadID,
 	 uint groupIndex			: SV_GroupIndex) {
+  
 	const float2 uv = float2(dispatchID.x, dispatchID.y);
 	
-	const float2 wUVScale = float2(saturate(dispatchID.x / (float)TXWIDTH),
-																 saturate(dispatchID.y / (float)TXHEIGHT));
+	const float2 wUVScale = float2(dispatchID.x / fViewportDimensions.x,
+																 dispatchID.y / fViewportDimensions.y);
 	//const float2 wUVScale = float2((dispatchID.x * 1280) / (float)TXWIDTH,
 	//												 			 (dispatchID.y * 720) / (float)TXHEIGHT);
 	//const float2 wUVScale = float2(dispatchID.x / (float)1280*2,

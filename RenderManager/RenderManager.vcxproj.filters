@@ -86,12 +86,6 @@
     <ClCompile Include="Source\dr_Shadow.cpp">
       <Filter>Archivos de código fuente\Passes</Filter>
     </ClCompile>
-    <ClCompile Include="Source\m_HorBlur.cpp">
-      <Filter>Archivos de código fuente\Passes</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\m_VerBlur.cpp">
-      <Filter>Archivos de código fuente\Passes</Filter>
-    </ClCompile>
     <ClCompile Include="Source\dr_Lightning.cpp">
       <Filter>Archivos de código fuente\Passes</Filter>
     </ClCompile>
@@ -99,6 +93,12 @@
       <Filter>Archivos de código fuente\Passes</Filter>
     </ClCompile>
     <ClCompile Include="Source\dr_Luminescence.cpp">
+      <Filter>Archivos de código fuente\Passes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_HorBlur.cpp">
+      <Filter>Archivos de código fuente\Passes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_VerBlur.cpp">
       <Filter>Archivos de código fuente\Passes</Filter>
     </ClCompile>
   </ItemGroup>

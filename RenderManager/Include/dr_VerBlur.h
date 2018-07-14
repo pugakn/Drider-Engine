@@ -6,14 +6,12 @@
 
 namespace driderSDK {
 
-struct VerBlurInitData : PassInitData {};
+struct VerBlurInitData : PassInitData {
+};
 
 struct VerBlurDrawData : PassDrawData {
-  float                   viewportDimensionX;
-  float                   viewportDimensionY;
-  GFXShared<RenderTarget> InRt;
+  Texture* InTexture;
   GFXShared<RenderTarget> OutRt;
-  GFXShared<DepthStencil> dsOptions;
 };
 
 class VerBlurPass : public RenderPass {
@@ -49,6 +47,14 @@ class VerBlurPass : public RenderPass {
   struct CBuffer {
     Vector4D fViewportDimensions;
   };
+
+  SizeT m_RTWidth;
+  SizeT m_RTHeight;
+  SizeT m_ComputeWidthDivisions;
+  SizeT m_ComputeHeightDivisions;
+  SizeT m_ComputeWidthBlocks;
+  SizeT m_ComputeHeightBlocks;
+  SizeT m_ComputeTotalBlocks;
 
   CBuffer CB;
 

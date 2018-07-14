@@ -1,6 +1,6 @@
-Texture2D AlbedoTex   : register(t0);
-
 SamplerState SS;
+
+Texture2D AlbedoTex   : register(t0);
 
 cbuffer ConstantBuffer {
 	float4x4 WVP;

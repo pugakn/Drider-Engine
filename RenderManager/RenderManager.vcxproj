@@ -45,8 +45,8 @@
     <ClCompile Include="Source\dr_renderman.cpp" />
     <ClCompile Include="Source\dr_rendermanapp.cpp" />
     <ClCompile Include="Source\dr_renderpass.cpp" />
-    <ClCompile Include="Source\m_HorBlur.cpp" />
-    <ClCompile Include="Source\m_VerBlur.cpp" />
+    <ClCompile Include="Source\dr_HorBlur.cpp" />
+    <ClCompile Include="Source\dr_VerBlur.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

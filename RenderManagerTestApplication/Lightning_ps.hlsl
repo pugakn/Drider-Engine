@@ -247,13 +247,11 @@ FS(PS_INPUT input) {
   psOut.Brightness = float4(brightness(psOut.Lightning.xyz), 1.0f);
   
   //psOut.Lightning = position;
-  //psOut.Lightning = float4(depthCam.xxx, 1.0f);
   //psOut.Lightning = float4(normal, 1.0f);
-  //psOut.Lightning = float4(diffuse, 1.0f);
+  //psOut.Lightning = float4(diffuse, 1.0f); //What?
   //psOut.Lightning = float4(metallic.rrr, 1.0f);
   //psOut.Lightning = float4(emissive, 1.0f);
   //psOut.Lightning = float4(roughness.rrr, 1.0f);
-  //psOut.Lightning = float4(specular, 1.0f);
   //psOut.Lightning = float4(SSAO.rrr, 1.0f);
   //psOut.Lightning = float4(ShadowValue.xxx, 1.0f);
   //psOut.Lightning = float4(ShadowTex.Sample(SS, uv).xyz, 1.0f);

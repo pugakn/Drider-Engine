@@ -92,7 +92,8 @@ class DR_GRAPHICS_EXPORT Texture
   virtual void
   set(const DeviceContext& deviceContext,
       UInt32 slot,
-      DR_SHADER_TYPE_FLAG::E shaderType = DR_SHADER_TYPE_FLAG::kFragment) const = 0;
+      DR_SHADER_TYPE_FLAG::E shaderType = DR_SHADER_TYPE_FLAG::kFragment,
+      bool forceComputeTexture = false) const = 0;
 
   virtual void
   getMemoryBuffer(const DeviceContext& deviceContext, std::vector<byte>& buff) = 0;
