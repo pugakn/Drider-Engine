@@ -24,6 +24,7 @@ struct PostProcessingDrawData : PassDrawData {
   GFXShared<RenderTarget> PositionDepthRT;
   GFXShared<RenderTarget> ColorRT;
   GFXShared<RenderTarget> ColorBlurRT;
+  GFXShared<RenderTarget> BloomRT;
   GFXShared<RenderTarget> Gbuffer;
 };
 

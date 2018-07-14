@@ -141,6 +141,7 @@ ShadowPass::merge(std::array<GFXShared<RenderTarget>, 4> m_RTShadowDummy,
   dc.dispatch(outRTDesc.width / 8, outRTDesc.height / 4, 1);
 
   dc.setUAVsNull();
+  dc.setResourcesNull();
 }
 
 }

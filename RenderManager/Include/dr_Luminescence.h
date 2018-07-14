@@ -50,11 +50,16 @@ class LuminescencePass : public RenderPass {
 
  private:
   struct CBuffer {
-    float	LuminiscenceDelta;
-    float	TextureWidth;
-    float	TextureHeight;
-    float pad;
+    Vector4D fViewportDimensions;
   };
+
+  SizeT m_RTWidth;
+  SizeT m_RTHeight;
+  SizeT m_ComputeWidthDivisions;
+  SizeT m_ComputeHeightDivisions;
+  SizeT m_ComputeWidthBlocks;
+  SizeT m_ComputeHeightBlocks;
+  SizeT m_ComputeTotalBlocks;
   
   CBuffer CB;
 

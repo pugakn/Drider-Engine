@@ -41,6 +41,9 @@ LuminescencePass::init(PassInitData* initData) {
   SSdesc.addressV = DR_TEXTURE_ADDRESS::kWrap;
   SSdesc.addressW = DR_TEXTURE_ADDRESS::kWrap;
   m_samplerState = dr_gfx_unique(dc.createSamplerState(SSdesc));
+
+  m_ComputeWidthDivisions = 8;
+  m_ComputeHeightDivisions = 4;
 }
 
 void
@@ -50,19 +53,30 @@ LuminescencePass::draw(PassDrawData* drawData) {
 
   m_computeShader->set(dc);
 
-  data->InTexture->set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute);
+  DrTextureDesc outRTDesc = data->InTexture->getDescriptor();
+
+  m_RTWidth = outRTDesc.width;
+  m_RTHeight = outRTDesc.height;
+
+  m_ComputeWidthBlocks = m_RTWidth / m_ComputeWidthDivisions;
+  m_ComputeHeightBlocks = m_RTHeight / m_ComputeHeightDivisions;
+
+  m_ComputeTotalBlocks = m_ComputeWidthBlocks * m_ComputeHeightBlocks;
 
   m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kCompute);
 
-  CB.LuminiscenceDelta = data->LuminiscenceDelta;
-  CB.TextureWidth = static_cast<float>(data->InTexture->getDescriptor().width);
-  CB.TextureHeight = static_cast<float>(data->InTexture->getDescriptor().height);
+  data->InTexture->set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute, true);
+
+  m_resultBuffer->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
+
+  CB.fViewportDimensions.x = m_RTWidth;
+  CB.fViewportDimensions.y = m_RTHeight;
+  CB.fViewportDimensions.z = data->LuminiscenceDelta;
 
   m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
   m_constantBuffer->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
 
-  m_resultBuffer->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
-
+  //dc.dispatch(m_ComputeWidthBlocks, m_ComputeHeightBlocks, 1);
   dc.dispatch(1, 1, 1);
 
   *data->resultBuffer = m_resultBuffer.get();
