@@ -3,9 +3,8 @@ Texture2D ColorTex          : register(t1);
 Texture2D ColorBlurTex      : register(t2);
 Texture2D NormCoC           : register(t3);
 StructuredBuffer<float4> LuminescenceTex : register (t4);
-//Texture2D LuminescenceTex   : register(tn);
+Texture2D BloomTex          : register(t5);
 //Texture2D GodRays           : register(tn);
-//Texture2D BloomTex          : register(tn);
 //Texture2D FilmLutTex        : register(tn);
 
 SamplerState SS;
@@ -24,7 +23,7 @@ struct PS_INPUT {
 //#define CHROMATIC_ABERRATION
 //#define DEPTH_OF_FIELD
 //#define VIGNETTE
-//#define BLOOM
+#define BLOOM
 //#define TONE_MAPPING
 
 float4
@@ -188,6 +187,7 @@ FS(PS_INPUT input) : SV_TARGET0 {
   #endif //DEPTH_OF_FIELD
   
   #ifdef BLOOM
+  finalColor += BloomTex.Sample(SS, uv);
   #endif //BLOOM
   
   #ifdef TONE_MAPPING

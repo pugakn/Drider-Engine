@@ -107,6 +107,7 @@ RenderManager::init() {
   }
 
   /////////Creation of RT's & DS's/////////
+  float blurScale = 0.5f;
   //RenderTarget Base
   {
     m_TexDescDefault.dimension = DR_DIMENSION::k2D;
@@ -213,8 +214,8 @@ RenderManager::init() {
   //Blur Aux
   {
     //RenderTarget
-    m_TexDescDefault.width = screenWidth * 0.5f;
-    m_TexDescDefault.height = screenHeight * 0.5f;
+    m_TexDescDefault.width = screenWidth * blurScale;
+    m_TexDescDefault.height = screenHeight * blurScale;
     m_TexDescDefault.Format = DR_FORMAT::kR16G16B16A16_FLOAT;
     m_TexDescDefault.pitch = m_TexDescDefault.width * 4 * 2;
     m_TexDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
@@ -232,8 +233,8 @@ RenderManager::init() {
   //Blurred SSAO
   {
     //RenderTarget
-    m_TexDescDefault.width = screenWidth * 0.5f;
-    m_TexDescDefault.height = screenHeight * 0.5f;
+    m_TexDescDefault.width = screenWidth * blurScale;
+    m_TexDescDefault.height = screenHeight * blurScale;
     m_TexDescDefault.Format = DR_FORMAT::kR16_FLOAT;
     m_TexDescDefault.pitch = m_TexDescDefault.width * 1 * 1;
     m_TexDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
@@ -255,10 +256,11 @@ RenderManager::init() {
     m_TexDescDefault.height = screenHeight;
     m_TexDescDefault.Format = DR_FORMAT::kR16G16B16A16_FLOAT;
     m_TexDescDefault.pitch = m_TexDescDefault.width * 4 * 2;
-    m_RTLightning      = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 2));
 
-    m_TexDescDefault.width = screenWidth * 0.5f;
-    m_TexDescDefault.height = screenHeight * 0.5f;
+    m_RTLightning = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 2));
+
+    m_TexDescDefault.width = screenWidth * blurScale;
+    m_TexDescDefault.height = screenHeight * blurScale;
     m_TexDescDefault.pitch = m_TexDescDefault.width * 4 * 2;
     m_RTLightningBlur = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
 
@@ -266,6 +268,25 @@ RenderManager::init() {
     commonTextureDesc.width = screenWidth;
     commonTextureDesc.height = screenHeight;
     m_LightningDSoptions = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
+  }
+
+  //Bloom
+  {
+    //RenderTarget
+    m_TexDescDefault.width = screenWidth * blurScale;
+    m_TexDescDefault.height = screenHeight * blurScale;
+    m_TexDescDefault.Format = DR_FORMAT::kR16G16B16A16_FLOAT;
+    m_TexDescDefault.pitch = m_TexDescDefault.width * 4 * 1;
+    m_TexDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
+
+    GFXUnique<Texture> BloomTexure = dr_gfx_unique<Texture>(dc.createEmptyTexture(m_TexDescDefault));
+    m_vecTexture.push_back(BloomTexure.get());
+    m_RTBloom = dr_gfx_shared(dc.createRenderTarget(m_vecTexture));
+
+    m_TexDescDefault.bindFlags &= ~DR_BIND_FLAGS::UNORDERED_ACCESS;
+
+    m_vecTexture.clear();
+    BloomTexure.release();
   }
 
   //PostProcessing
@@ -413,7 +434,7 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_LightningDrawData.ActivatedShadowCascades = m_szActiveShadowCameras;
   m_LightningDrawData.ShadowMapTextureSize = shadowWidth;
   m_LightningDrawData.LerpBetweenShadowCascade = 0.3f;
-  m_LightningDrawData.BloomThreshold = Vector3D(0.5f, 0.5f, 0.5f);
+  m_LightningDrawData.BloomThreshold = Vector3D(0.75f, 0.75f, 0.75f);
   m_LightningDrawData.LuminiscenceDelta = 0.0f;
   m_LightningDrawData.ShadowSizesProportion[0] = 1.0f;
   m_LightningDrawData.ShadowSizesProportion[1] = m_ShadowSubFrustras[1].second /
@@ -431,12 +452,22 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_LightningDrawData.dsOptions = m_LightningDSoptions;
   m_LightningPass.draw(&m_LightningDrawData);
 
+  //DoF
   m_HorBlurDrawData.InTexture = &m_RTLightning->getTexture(0);
   m_HorBlurDrawData.OutRt = m_RTBlurInit;
   m_HorBlurPass.draw(&m_HorBlurDrawData);
 
   m_VerBlurDrawData.InTexture = &m_RTBlurInit->getTexture(0);
   m_VerBlurDrawData.OutRt = m_RTLightningBlur;
+  m_VerBlurPass.draw(&m_VerBlurDrawData);
+
+  //Bloom
+  m_HorBlurDrawData.InTexture = &m_RTLightning->getTexture(1);
+  m_HorBlurDrawData.OutRt = m_RTBlurInit;
+  m_HorBlurPass.draw(&m_HorBlurDrawData);
+
+  m_VerBlurDrawData.InTexture = &m_RTBlurInit->getTexture(0);
+  m_VerBlurDrawData.OutRt = m_RTBloom;
   m_VerBlurPass.draw(&m_VerBlurDrawData);
 
   m_luminescenceDrawData.InTexture = &m_RTLightning->getTexture(0);
@@ -464,6 +495,7 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_PostProcessingDrawData.PositionDepthRT = m_RTGBuffer;
   m_PostProcessingDrawData.ColorRT = m_RTLightning;
   m_PostProcessingDrawData.ColorBlurRT = m_RTLightningBlur;
+  m_PostProcessingDrawData.BloomRT = m_RTBloom;
   m_PostProcessingDrawData.Gbuffer = m_RTGBuffer;
   m_PostProcessingDrawData.luminescenceBuffer = resultBuffer;
   m_PostProcessingPass.draw(&m_PostProcessingDrawData);

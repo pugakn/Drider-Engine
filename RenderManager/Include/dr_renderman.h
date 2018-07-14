@@ -185,6 +185,7 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   GFXShared<RenderTarget> m_RTBlurInit;
   GFXShared<RenderTarget> m_RTSSAOBlur;
   GFXShared<RenderTarget> m_RTLightning;
+  GFXShared<RenderTarget> m_RTBloom;
   std::vector<Texture*> m_vecTexture;
   GFXShared<RenderTarget> m_RTLightningBlur;
 

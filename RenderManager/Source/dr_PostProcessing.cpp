@@ -57,6 +57,7 @@ PostProcessingPass::draw(PassDrawData* drawData) {
   data->ColorBlurRT->getTexture(0).set(dc, 2);
   data->Gbuffer->getTexture(1).set(dc, 3);
   data->luminescenceBuffer->set(dc, DR_SHADER_TYPE_FLAG::kFragment, 4);
+  data->BloomRT->getTexture(0).set(dc, 5);
 
   m_inputLayout->set(dc);
 

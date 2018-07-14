@@ -78,6 +78,7 @@ VerBlurPass::draw(PassDrawData* drawData) {
   dc.dispatch(m_ComputeWidthBlocks, m_ComputeHeightBlocks, 1);
 
   dc.setUAVsNull();
+  dc.setResourcesNull();
 }
 
 }
