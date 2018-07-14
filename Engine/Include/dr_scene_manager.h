@@ -63,7 +63,7 @@ namespace driderSDK {
 		void 
 		interpretOutput(TString& output);
 
-		String 
+		TString 
 		objectToStr(void* obj);
 
 		void

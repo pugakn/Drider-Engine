@@ -6,6 +6,7 @@
 #include <dr_file_system.h>
 #include <dr_string_utils.h>
 #include <dr_scene_core.h>
+#include <dr_gameObject.h>
 
 namespace driderSDK {
 
@@ -17,17 +18,15 @@ namespace driderSDK {
 	SceneManager::loadSceneFromFile(const TString& fileName) {
 
 		if (!SceneGraph::isStarted() || !ResourceManager::isStarted()) {
-			Logger::instancePtr()->addError(__FILE__,
+			 Logger::instancePtr()->addError(__FILE__,
 																			__LINE__,
 																			L"[SceneManager] Modules not active");
 			return false;
 		}
-
 		ResourceManager::loadResource(fileName);
 
 		auto rSceneFile = ResourceManager::getReference(fileName);
 		auto sceneFile = std::dynamic_pointer_cast<SceneCore>(rSceneFile);
-
 
 		if (sceneFile->getData().size()) {
 			interpretInput(sceneFile->getData());
@@ -53,9 +52,7 @@ namespace driderSDK {
 		FileSystem fileMgr;
 		File scene;
 
-		//can save comprobation
-
-		if (true) {
+		if (SceneGraph::getRoot()->getChildren().size()) {
 			interpretOutput(data);
 		}
 
@@ -76,7 +73,7 @@ namespace driderSDK {
 	SceneManager::interpretInput(const TString& input) {
 
 		while (true) {
-
+			//SceneGraph::addObject();
 		}
 	}
 
@@ -88,16 +85,37 @@ namespace driderSDK {
 		while (true) {
 
 			//iterate through scenegraph
-
-			//objectToStr();
+			output += objectToStr(nullptr);
 		}
 
 	}
 
-	String 
+	TString 
 	SceneManager::objectToStr(void* obj) {
-	
-		return String();
+
+		/*
+		name {
+		component: val;
+		component: val;
+		component: val;
+		}
+		*/
+
+		GameObject* gObj = reinterpret_cast<GameObject*>(obj);
+		TString result;
+		result += gObj->getName();
+		result += L" {\n";
+		gObj->getComponents<>();
+
+		for (int i = 0; i < 0; ++i) {
+		gObj->
+
+		}
+		//component data
+
+		result += L"}\n";
+
+		return result;
 	}
 
 	void 
