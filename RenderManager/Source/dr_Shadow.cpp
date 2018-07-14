@@ -128,8 +128,6 @@ ShadowPass::merge(std::array<GFXShared<RenderTarget>, 4> m_RTShadowDummy,
 
   m_computeShader->set(dc);
 
-  OutRt->getTexture(0).set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute);
-
   m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kCompute);
 
   m_RTShadowDummy[0]->getTexture(0).set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute);
@@ -137,11 +135,10 @@ ShadowPass::merge(std::array<GFXShared<RenderTarget>, 4> m_RTShadowDummy,
   m_RTShadowDummy[2]->getTexture(0).set(dc, 2, DR_SHADER_TYPE_FLAG::kCompute);
   m_RTShadowDummy[3]->getTexture(0).set(dc, 3, DR_SHADER_TYPE_FLAG::kCompute);
 
-  const float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-  OutRt->clear(dc, clearColor);
+  OutRt->getTexture(0).set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute);
 
   DrTextureDesc outRTDesc = OutRt->getDescriptor();
-  dc.dispatch(outRTDesc.width / 32, outRTDesc.height / 32, 1);
+  dc.dispatch(outRTDesc.width / 8, outRTDesc.height / 4, 1);
 
   dc.setUAVsNull();
 }

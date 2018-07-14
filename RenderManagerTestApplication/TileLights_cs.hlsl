@@ -1,3 +1,5 @@
+#define MAX_LIGHTS_PER_BLOCK 64
+
 cbuffer ConstantBuffer : register(b0)
 {
   float2 threadsGroups; //X: Number of thread groups in x, Y: Number of thread groups in Y.
@@ -5,7 +7,8 @@ cbuffer ConstantBuffer : register(b0)
 };
 
 StructuredBuffer<float4> kLightPosition[128]	: register(u0);	//XYZ: Light Position, W: Range
-RWStructuredBuffer<float[100]> LightsIndex		: register(u1);
+RWStructuredBuffer<int> numberOfLights     		: register(u1);
+RWStructuredBuffer<int[MAX_LIGHTS_PER_BLOCK]> LightsIndex     : register(u2);
 
 bool
 intersects(float2 circlePos, float circleRadius, float2 RectPos, float2 RectSize) {
@@ -26,6 +29,10 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   
   //Este indica en que index esta este grupo thread (como si fuese un array).
   const uint group = (groupID.y * threadsGroups.x) + groupID.x;
+
+  numberOfLights[group] = 0;
+
+	GroupMemoryBarrierWithGroupSync();
   
   //Este indica la luz que tiene que analizar este thread
   const uint lightIndex = groupIndex;
@@ -46,9 +53,13 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   if (intersects(lightPos, lightRad, rectPos, rectSize)) {
 		//TODO: Comparar la profundidad de la luz con el min/max del depthbuffer,
 		//			si no esta entre esa profundidad y el ojo, no agregarla
-
-		//Agregar esta luz al array/vector de indices de luces
-		LightsIndex[group].append(lightIndex);
+    
+    //No agregar si ya hay MAX_LIGHTS_PER_BLOCK o mas luces
+    if (numberOfLights[group] < MAX_LIGHTS_PER_BLOCK) {
+		  //Agregar esta luz al array/vector de indices de luces
+      LightsIndex[numberOfLights[group]].append(lightIndex);
+      ++numberOfLights[group];
+    }
   }
 
 	return;

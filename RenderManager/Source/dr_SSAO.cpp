@@ -24,7 +24,6 @@ SSAOPass::init(PassInitData* initData) {
 
   m_csFilename = _T("SSAO_cs.hlsl");
 
-  changeSize(data->RTWidth, data->RTHeight);
   recompileShader();
 
   DrBufferDesc bdesc;
@@ -40,43 +39,40 @@ SSAOPass::init(PassInitData* initData) {
   SSdesc.addressV = DR_TEXTURE_ADDRESS::kWrap;
   SSdesc.addressW = DR_TEXTURE_ADDRESS::kWrap;
   m_samplerState = dr_gfx_unique(device.createSamplerState(SSdesc));
-}
 
-void
-SSAOPass::changeSize(SizeT Width, SizeT Height) {
-  RTWidht = Width;
-  RTHeight = Height;
-}
-
-void
-SSAOPass::recompileShader(String vsPreText,
-                          String psPreText,
-                          String csPreText) {
-  String preComputeData = "";
-  preComputeData += "#define TXWIDTH " + StringUtils::toString(RTWidht) + "\n";
-  preComputeData += "#define TXHEIGHT " + StringUtils::toString(RTHeight) + "\n";
-
-  RenderPass::recompileShader("", "", preComputeData);
+  m_ComputeWidthDivisions = 8;
+  m_ComputeHeightDivisions = 4;
 }
 
 void
 SSAOPass::draw(PassDrawData* drawData) {
-  DeviceContext& dc = GraphicsAPI::getDeviceContext();
-
   SSAODrawData* data = static_cast<SSAODrawData*>(drawData);
+  DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
   dc.setResourcesNull();
   data->OutRt->setRTNull(dc);
 
   m_computeShader->set(dc);
 
-  data->OutRt->getTexture(0).set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute);
+  DrTextureDesc outRTDesc = data->OutRt->getDescriptor();
+
+  m_RTWidth = outRTDesc.width;
+  m_RTHeight = outRTDesc.height;
+
+  m_ComputeWidthBlocks = m_RTWidth / m_ComputeWidthDivisions;
+  m_ComputeHeightBlocks = m_RTHeight / m_ComputeHeightDivisions;
+
+  m_ComputeTotalBlocks = m_ComputeWidthBlocks * m_ComputeHeightBlocks;
 
   m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kCompute);
 
-  data->InRt->getTexture(0).set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute);
-  data->InRt->getTexture(1).set(dc, 1, DR_SHADER_TYPE_FLAG::kCompute);
+  data->InRt->getTexture(0).set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute, true);
+  data->InRt->getTexture(1).set(dc, 1, DR_SHADER_TYPE_FLAG::kCompute, true);
 
+  data->OutRt->getTexture(0).set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute);
+
+  CB.fViewportDimensions.x = m_RTWidth;
+  CB.fViewportDimensions.y = m_RTHeight;
   CB.SSAO_Options[0] = data->SampleRadio;
   CB.SSAO_Options[1] = data->Intensity;
   CB.SSAO_Options[2] = data->Scale;
@@ -84,12 +80,8 @@ SSAOPass::draw(PassDrawData* drawData) {
 
   m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
   m_constantBuffer->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
-
-  const float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-  data->OutRt->clear(dc, clearColor);
   
-  DrTextureDesc outRTDesc = data->OutRt->getDescriptor();
-  dc.dispatch(outRTDesc.width / 8, outRTDesc.height / 4, 1);
+  dc.dispatch(m_ComputeWidthBlocks, m_ComputeHeightBlocks, 1);
 
   dc.setUAVsNull();
 }

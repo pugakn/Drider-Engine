@@ -21,10 +21,10 @@ struct PS_INPUT {
   float2 Texcoord : TEXCOORD0;
 };
 
-#define CHROMATIC_ABERRATION
-#define DEPTH_OF_FIELD
-#define VIGNETTE
-#define BLOOM
+//#define CHROMATIC_ABERRATION
+//#define DEPTH_OF_FIELD
+//#define VIGNETTE
+//#define BLOOM
 //#define TONE_MAPPING
 
 float4

@@ -210,14 +210,15 @@ D3DTexture::getMemoryBuffer(const DeviceContext& deviceContext,
 void
 D3DTexture::set(const DeviceContext& deviceContext,
                 UInt32 slot,
-                DR_SHADER_TYPE_FLAG::E shaderType) const {
+                DR_SHADER_TYPE_FLAG::E shaderType,
+                bool forceComputeTexture) const {
   if (DR_SHADER_TYPE_FLAG::kFragment == shaderType) {
     reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
       D3D11DeviceContext->
         PSSetShaderResources(slot, 1, &APIView);
   }
   else if (DR_SHADER_TYPE_FLAG::kCompute == shaderType) {
-    if (m_descriptor.bindFlags & DR_BIND_FLAGS::UNORDERED_ACCESS) {
+    if (m_descriptor.bindFlags & DR_BIND_FLAGS::UNORDERED_ACCESS && !forceComputeTexture) {
       reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
         D3D11DeviceContext->
           CSSetUnorderedAccessViews(slot, 1, &m_APIUAV, 0);

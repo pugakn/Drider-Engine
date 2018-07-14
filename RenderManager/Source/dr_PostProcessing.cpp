@@ -46,13 +46,17 @@ PostProcessingPass::draw(PassDrawData* drawData) {
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
   dc.setResourcesNull();
-  GraphicsAPI::getBackBufferRT().setRTNull(dc);
-  GraphicsAPI::getBackBufferRT().set(dc, GraphicsAPI::getDepthStencil());
 
   m_vertexShader->set(dc);
   m_fragmentShader->set(dc);
 
-  m_samplerState->set(dc,DR_SHADER_TYPE_FLAG::kFragment);
+  m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kFragment);
+
+  data->PositionDepthRT->getTexture(0).set(dc, 0);
+  data->ColorRT->getTexture(0).set(dc, 1);
+  data->ColorBlurRT->getTexture(0).set(dc, 2);
+  data->Gbuffer->getTexture(1).set(dc, 3);
+  data->luminescenceBuffer->set(dc, DR_SHADER_TYPE_FLAG::kFragment, 4);
 
   m_inputLayout->set(dc);
 
@@ -73,14 +77,6 @@ PostProcessingPass::draw(PassDrawData* drawData) {
   m_constantBuffer->set(dc);
 
   dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
-
-  m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kFragment);
-
-  data->PositionDepthRT->getTexture(0).set(dc, 0);
-  data->ColorRT->getTexture(0).set(dc, 1);
-  data->ColorBlurRT->getTexture(0).set(dc, 2);
-  data->Gbuffer->getTexture(1).set(dc, 3);
-  data->luminescenceBuffer->set(dc, DR_SHADER_TYPE_FLAG::kFragment, 4);
 
   auto screenQuadModel = ResourceManager::getReferenceT<Model>(_T("ScreenAlignedQuad.3ds"));
   if (screenQuadModel) {

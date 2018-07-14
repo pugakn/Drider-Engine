@@ -120,52 +120,61 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   std::shared_ptr<TextureCore> m_cubemap;
   std::shared_ptr<TextureCore> m_cubemapDiffuse;
 
+  //VS & FS
   GBufferPass m_GBufferPass;
   GBufferInitData m_GBufferInitData;
   GBufferDrawData m_GBufferDrawData;
   GFXShared<DepthStencil> m_GBufferDSoptions;
 
+  //CS
   SSAOPass m_SSAOPass;
   SSAOInitData m_SSAOInitData;
   SSAODrawData m_SSAODrawData;
-  GFXShared<DepthStencil> m_SSAODSoptions;
 
+  //CS
   HorBlurPass m_HorBlurPass;
   HorBlurInitData m_HorBlurInitData;
   HorBlurDrawData m_HorBlurDrawData;
-  GFXShared<DepthStencil> m_HorBlurDSoptions;
 
+  //CS
   VerBlurPass m_VerBlurPass;
   VerBlurInitData m_VerBlurInitData;
   VerBlurDrawData m_VerBlurDrawData;
   GFXShared<DepthStencil> m_VerBlurDSoptions;
 
+  //VS, FS & CS
   ShadowPass m_ShadowPass;
   ShadowInitData m_ShadowInitData;
   ShadowDrawData m_ShadowDrawData;
   GFXShared<DepthStencil> m_ShadowDSoptions;
   std::array<std::pair<float, float>, 4> m_ShadowSubFrustras;
 
+  //VS & CS (TODO: Make it Compute)
   LightningPass m_LightningPass;
   LightningInitData m_LightningInitData;
   LightningDrawData m_LightningDrawData;
   GFXShared<DepthStencil> m_LightningDSoptions;
 
+  //CS
   ParticleSystemPass m_particlePass;
   ParticleSystemInitData m_particleInitData;
   ParticleSystemDrawData m_particleDrawData;
   ParticleEmitter m_emitter;
 
+  //CS
   LuminescencePass m_luminescencePass;
   LuminescenceInitData m_luminescenceInitData;
   LuminescenceDrawData m_luminescenceDrawData;
   StructureBuffer* resultBuffer;
 
+  //VS & CS (TODO: Make it Compute)
   PostProcessingPass m_PostProcessingPass;
   PostProcessingInitData m_PostProcessingInitData;
   PostProcessingDrawData m_PostProcessingDrawData;
   GFXShared<DepthStencil> m_PostProcessingDSoptions;
 
+  std::array<GFXShared<RenderTarget>, 4> m_RTShadowDummy; //Used for render shadow cascades.
+  GFXShared<RenderTarget> m_RTShadow;
   //Gbuffer info:
   //0: { xyz: position, w: linear depth };
   //1: { xyz: normal,   w: CoC };
@@ -176,11 +185,8 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   GFXShared<RenderTarget> m_RTBlurInit;
   GFXShared<RenderTarget> m_RTSSAOBlur;
   GFXShared<RenderTarget> m_RTLightning;
-  std::array<GFXShared<RenderTarget>, 4> m_RTShadowDummy; //Used for render shadow cascades.
-  GFXShared<RenderTarget> m_RTShadow;
   std::vector<Texture*> m_vecTexture;
   GFXShared<RenderTarget> m_RTLightningBlur;
-  GFXShared<RenderTarget> m_RTPostProcessing;
 
   DrTextureDesc m_TexDescDefault;
 
@@ -243,8 +249,8 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   Vector3D m_vec3DirectionalLight;
 
   SizeT m_szActiveShadowCameras;
-  float  m_fMinDepth;
-  float  m_fMaxDepth;
+  float m_fMinDepth;
+  float m_fMaxDepth;
 
   bool m_bFitToScene;
   /***************************************************************************/

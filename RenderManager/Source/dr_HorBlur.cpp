@@ -21,8 +21,7 @@ HorBlurPass::init(PassInitData* initData) {
   HorBlurInitData* data = static_cast<HorBlurInitData*>(initData);
   Device& device = GraphicsAPI::getDevice();
 
-  m_vsFilename = _T("HorBlur_vs.hlsl");
-  m_fsFilename = _T("HorBlur_ps.hlsl");
+  m_csFilename = _T("HorBlur_cs.hlsl");
 
   recompileShader();
 
@@ -39,6 +38,9 @@ HorBlurPass::init(PassInitData* initData) {
   SSdesc.addressV = DR_TEXTURE_ADDRESS::kWrap;
   SSdesc.addressW = DR_TEXTURE_ADDRESS::kWrap;
   m_samplerState = dr_gfx_unique(device.createSamplerState(SSdesc));
+
+  m_ComputeWidthDivisions = 8;
+  m_ComputeHeightDivisions = 4;
 }
 
 void
@@ -48,36 +50,34 @@ HorBlurPass::draw(PassDrawData* drawData) {
 
   dc.setResourcesNull();
   data->OutRt->setRTNull(dc);
-  data->OutRt->set(dc, *data->dsOptions);
 
-  m_vertexShader->set(dc);
-  m_fragmentShader->set(dc);
+  m_computeShader->set(dc);
 
-  m_inputLayout->set(dc);
+  DrTextureDesc outRTDesc = data->OutRt->getDescriptor();
 
-  CB.fViewportDimensions.x = data->viewportDimensionX;
-  CB.fViewportDimensions.y = data->viewportDimensionY;
+  m_RTWidth = outRTDesc.width;
+  m_RTHeight = outRTDesc.height;
+
+  m_ComputeWidthBlocks = m_RTWidth / m_ComputeWidthDivisions;
+  m_ComputeHeightBlocks = m_RTHeight / m_ComputeHeightDivisions;
+
+  m_ComputeTotalBlocks = m_ComputeWidthBlocks * m_ComputeHeightBlocks;
+
+  m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kCompute);
+
+  data->InTexture->set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute, true);
+
+  data->OutRt->getTexture(0).set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute);
+
+  CB.fViewportDimensions.x = m_RTWidth;
+  CB.fViewportDimensions.y = m_RTHeight;
 
   m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
-  m_constantBuffer->set(dc);
+  m_constantBuffer->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
 
-  dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
+  dc.dispatch(m_ComputeWidthBlocks, m_ComputeHeightBlocks, 1);
 
-  data->InRt->getTexture(0).set(dc, 0);
-
-  const float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-  data->OutRt->clear(dc, clearColor);
-  (data->dsOptions)->clear(dc, 1, 0);
-
-  auto screenQuadModel = ResourceManager::getReferenceT<Model>(_T("ScreenAlignedQuad.3ds"));
-  if (screenQuadModel) {
-    for (auto& SAQ : screenQuadModel->meshes) {
-      SAQ.vertexBuffer->set(dc);
-      SAQ.indexBuffer->set(dc);
-
-      dc.draw(SAQ.indices.size(), 0, 0);
-    }
-  }
+  dc.setUAVsNull();
 }
 
 }

@@ -1,10 +1,10 @@
+SamplerState SS;
+
 Texture2D AlbedoTex   : register(t0);
 Texture2D NormalTex   : register(t1);
 Texture2D EmissiveTex : register(t2);
 Texture2D Metallic    : register(t3);
 Texture2D Roughness   : register(t4);
-
-SamplerState SS;
 
 cbuffer ConstantBuffer {
 	float4x4 World;

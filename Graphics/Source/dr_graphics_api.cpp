@@ -47,7 +47,8 @@ GraphicsAPI::init(UInt32 w, UInt32 h, void* hwnd, DR_GRAPHICS_API::E api) {
   m_swapChain = dr_gfx_unique(m_device->createSwapChain(swapDesc));
 
   DrDepthStencilDesc depthTextureDesc;
-  depthTextureDesc.bindFlags = DR_BIND_FLAGS::DEPTH_STENCIL | DR_BIND_FLAGS::SHADER_RESOURCE;
+  depthTextureDesc.bindFlags = DR_BIND_FLAGS::DEPTH_STENCIL |
+                               DR_BIND_FLAGS::SHADER_RESOURCE;
   depthTextureDesc.width = w;
   depthTextureDesc.height = h;
   depthTextureDesc.Format = DR_FORMAT::kD24_UNORM_S8_UINT;

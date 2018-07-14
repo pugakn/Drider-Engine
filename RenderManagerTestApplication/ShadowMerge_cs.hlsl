@@ -7,7 +7,9 @@ SamplerState SS : register(s0);
 
 RWTexture2D<float4> ShadowTex : register(u0);
 
-[numthreads(32, 32, 1)]
+#define NUMTHREADS_X 8
+#define NUMTHREADS_Y 4
+[numthreads(NUMTHREADS_X, NUMTHREADS_Y, 1)]
 void
 CS(uint3 groupThreadID	: SV_GroupThreadID,
 	 uint3 groupID				: SV_GroupID,

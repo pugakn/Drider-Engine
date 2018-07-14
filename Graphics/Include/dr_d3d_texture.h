@@ -101,7 +101,8 @@ class DR_GRAPHICS_EXPORT D3DTexture : public Texture
   void
   set(const DeviceContext& deviceContext,
       UInt32 slot,
-      DR_SHADER_TYPE_FLAG::E shaderType = DR_SHADER_TYPE_FLAG::kFragment) const override;
+      DR_SHADER_TYPE_FLAG::E shaderType = DR_SHADER_TYPE_FLAG::kFragment,
+      bool forceComputeTexture = false) const override;
 
   /**
   * TEST::

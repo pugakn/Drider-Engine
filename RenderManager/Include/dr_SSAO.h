@@ -48,34 +48,27 @@ class SSAOPass : public RenderPass {
   init(PassInitData* initData);
 
   /*
-  *
-  */
-  void
-  changeSize(SizeT Width, SizeT Height);
-
-  /*
-  *
-  */
-  void
-  recompileShader(String vsPreText = "",
-                  String psPreText = "",
-                  String csPreText = "");
-
-  /*
   */
   void
   draw(PassDrawData* drawData);
 
  private:
-   struct CBuffer {
-     Vector4D SSAO_Options; //X: SampleRadio Y: Intensity Z: Scale X: Bias
-   };
-   SizeT RTWidht;
-   SizeT RTHeight;
+  struct CBuffer {
+    Vector4D fViewportDimensions;
+    Vector4D SSAO_Options; //X: SampleRadio Y: Intensity Z: Scale X: Bias
+  };
 
-   CBuffer CB;
-
-   GFXUnique<SamplerState> m_samplerState;
+  SizeT m_RTWidth;
+  SizeT m_RTHeight;
+  SizeT m_ComputeWidthDivisions;
+  SizeT m_ComputeHeightDivisions;
+  SizeT m_ComputeWidthBlocks;
+  SizeT m_ComputeHeightBlocks;
+  SizeT m_ComputeTotalBlocks;
+  
+  CBuffer CB;
+  
+  GFXUnique<SamplerState> m_samplerState;
 };
 
 }
