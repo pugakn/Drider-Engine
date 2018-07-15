@@ -128,7 +128,8 @@ class DR_GRAPHICS_EXPORT Texture
   virtual void
   udpateFromMemory(const DeviceContext& deviceContext, 
                    const char* buffer, 
-                   size_t bufferSize) = 0;
+                   size_t bufferSize,
+                   size_t mipLevels = 1 ) = 0;
 
   /**
   * Generate mip maps for the current texture

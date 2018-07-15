@@ -38,18 +38,17 @@ TextureCore::init(void* data) {
     if (image->compressionType == TextureCompressionType::FOURCC_DXT1) {  //BTC1
       desc.Format = DR_FORMAT::kBC1_UNORM;
       desc.pitch = ((image->width + 3) / 4) * 8;
-      desc.CPUAccessFlags = DR_CPU_ACCESS_FLAG::drWrite;
     }
     else if (image->compressionType == TextureCompressionType::FOURCC_DXT3) {  //BTC2
       desc.Format = DR_FORMAT::kBC2_UNORM;
       desc.pitch = ((image->width + 3) / 4) * 16;
-      desc.CPUAccessFlags = DR_CPU_ACCESS_FLAG::drWrite;
     }
     else if (image->compressionType == TextureCompressionType::FOURCC_DXT5) {  //BTC3
       desc.Format = DR_FORMAT::kBC3_UNORM;
       desc.pitch = ((image->width + 3) / 4) * 16;
-      desc.CPUAccessFlags = DR_CPU_ACCESS_FLAG::drWrite;
     }
+    desc.CPUAccessFlags = DR_CPU_ACCESS_FLAG::drWrite;
+    desc.mipLevels = image->mipMapCount;
   }
 
 
@@ -77,7 +76,8 @@ TextureCore::init(void* data) {
 
   t->udpateFromMemory(GraphicsAPI::getDeviceContext(), 
                       cdata, 
-                      image->data.size());
+                      image->data.size(), 
+                      image->mipMapCount);
 
   textureGFX = dr_unique_custom<>(t, dr_gfx_deleter<Texture>);
 }

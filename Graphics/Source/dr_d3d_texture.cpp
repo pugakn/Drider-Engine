@@ -35,8 +35,6 @@ D3DTexture::createFromMemory(const Device& device,
     m_arraySize = 6;
     flags = D3D11_RESOURCE_MISC_TEXTURECUBE;
   }
-
-
   apiDesc.Width = desc.width;
   apiDesc.Height = desc.height;
   apiDesc.ArraySize = m_arraySize;
@@ -46,24 +44,32 @@ D3DTexture::createFromMemory(const Device& device,
   apiDesc.SampleDesc.Quality = 0;
   apiDesc.BindFlags = desc.bindFlags;
   apiDesc.MiscFlags = flags;
-  if (desc.CPUAccessFlags & DR_CPU_ACCESS_FLAG::drRead)
+  apiDesc.Usage = static_cast<D3D11_USAGE>(desc.Usage);
+  if (desc.CPUAccessFlags & DR_CPU_ACCESS_FLAG::drRead) {
     apiDesc.CPUAccessFlags = desc.CPUAccessFlags ^ DR_CPU_ACCESS_FLAG::drRead;
-  apiDesc.Usage = static_cast<D3D11_USAGE>(desc.Usage);//D3D11_USAGE_STAGING;//D3D11_USAGE_DEFAULT;
-
-  if (desc.genMipMaps && 
-    desc.Format != DR_FORMAT::kBC1_UNORM && 
-    desc.Format != DR_FORMAT::kBC2_UNORM && 
-    desc.Format != DR_FORMAT::kBC3_UNORM) {
-    apiDesc.MiscFlags |= D3D11_RESOURCE_MISC_GENERATE_MIPS;
-    apiDesc.BindFlags |= DR_BIND_FLAGS::RENDER_TARGET;
   }
 
+  if (desc.Format == DR_FORMAT::kBC1_UNORM ||  
+      desc.Format == DR_FORMAT::kBC2_UNORM ||
+      desc.Format == DR_FORMAT::kBC3_UNORM) {
+    m_descriptor.width =  (m_descriptor.width + 3) / 4;
+    m_descriptor.height = (m_descriptor.height + 3) / 4;
+  }
+  else { //Block compression does not support aoutogenerated Mipmaps
+    if (desc.genMipMaps) {
+      apiDesc.MiscFlags |= D3D11_RESOURCE_MISC_GENERATE_MIPS;
+      apiDesc.BindFlags |= DR_BIND_FLAGS::RENDER_TARGET;
+    }
+  }
+
+
+  /*This doesn´t work for some reason*/
   D3D11_SUBRESOURCE_DATA initData[6];
-  Int32 bufferSize = desc.pitch * desc.height;
+  Int32 bufferSize = m_descriptor.pitch * m_descriptor.height;
   char *pHead = const_cast<char*>(buffer);
   for (UInt32 i = 0; i < m_arraySize; ++i) {
     initData[i].pSysMem = pHead;
-    initData[i].SysMemPitch = desc.pitch;
+    initData[i].SysMemPitch = m_descriptor.pitch;
     pHead += bufferSize;
   }
   
@@ -125,7 +131,7 @@ D3DTexture::createFromMemory(const Device& device,
     D3D11_UAV_DIMENSION dimUAV;
     D3D11_UNORDERED_ACCESS_VIEW_DESC viewDescUAV;
     ZeroMemory(&viewDescUAV, sizeof(viewDescUAV));
-    viewDescUAV.Format = apiDesc.Format; //DXGI_FORMAT_R32G32B32A32_FLOAT;
+    viewDescUAV.Format = apiDesc.Format; 
     switch (desc.dimension)
     {
     case DR_DIMENSION::k1D:
@@ -247,20 +253,27 @@ D3DTexture::unmap(const DeviceContext& deviceContext) {
 void
 D3DTexture::udpateFromMemory(const DeviceContext& deviceContext,
                              const char* buffer,
-                             size_t bufferSize) {
-  Int32 buffSize = m_descriptor.pitch * m_descriptor.height; //This will crash on compressed textures, (h/4)
+                             size_t bufferSize, 
+                             size_t mipLevels) {
   char *pHead = const_cast<char*>(buffer);
 
   D3D11_TEXTURE2D_DESC pDesc;
   APITexture->GetDesc(&pDesc);
 
+  Int32 pitch = m_descriptor.pitch;
+  Int32 h = m_descriptor.height;
+
   for (UInt32 i = 0; i < m_arraySize; ++i) {
-    reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
-      D3D11DeviceContext->
-      UpdateSubresource(APITexture, D3D11CalcSubresource(0, i, pDesc.MipLevels), 0, pHead, m_descriptor.pitch, 0);
-      pHead += buffSize;
+    for (UInt32 j = 0; j < mipLevels; ++j) {
+      unsigned int size = h * m_descriptor.pitch;
+      reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
+        D3D11DeviceContext->
+        UpdateSubresource(APITexture, D3D11CalcSubresource(j, i, pDesc.MipLevels), 0, pHead, m_descriptor.pitch, 0);
+      pHead += size;
+      h = h / 2;
+      pitch = pitch / 2;
+    }
   }
-  
 }
 
 void

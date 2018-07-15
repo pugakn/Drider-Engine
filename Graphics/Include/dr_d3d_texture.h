@@ -139,7 +139,8 @@ class DR_GRAPHICS_EXPORT D3DTexture : public Texture
   void
   udpateFromMemory(const DeviceContext& deviceContext,
                    const char* buffer,
-                   size_t bufferSize) override;
+                   size_t bufferSize,
+                   size_t mipLevels = 1) override;
 
   /**
   * TEST::
