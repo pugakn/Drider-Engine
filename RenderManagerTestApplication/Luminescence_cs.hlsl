@@ -29,7 +29,7 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   
 	const float2 wUVScale = float2(dispatchID.x / fViewportDimensions.x,
 																 dispatchID.y / fViewportDimensions.y);
-  AverageLuminescence[0].x = 0.0f;
+  AverageLuminescence[0].x = 0.5;
   /*
 
   AllMemoryBarrierWithGroupSync();

@@ -261,8 +261,18 @@ RenderManager::init() {
 
     m_TexDescDefault.width = screenWidth * blurScale;
     m_TexDescDefault.height = screenHeight * blurScale;
+    m_TexDescDefault.Format = DR_FORMAT::kR16G16B16A16_FLOAT;
     m_TexDescDefault.pitch = m_TexDescDefault.width * 4 * 2;
-    m_RTLightningBlur = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
+    m_TexDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
+
+    GFXUnique<Texture> ColorBlurTexure = dr_gfx_unique<Texture>(dc.createEmptyTexture(m_TexDescDefault));
+    m_vecTexture.push_back(ColorBlurTexure.get());
+    m_RTLightningBlur = dr_gfx_shared(dc.createRenderTarget(m_vecTexture));
+
+    m_TexDescDefault.bindFlags &= ~DR_BIND_FLAGS::UNORDERED_ACCESS;
+
+    m_vecTexture.clear();
+    ColorBlurTexure.release();
 
     //DepthStencil
     commonTextureDesc.width = screenWidth;
