@@ -20,11 +20,11 @@ struct PS_INPUT {
   float2 Texcoord : TEXCOORD0;
 };
 
-//#define CHROMATIC_ABERRATION
-//#define DEPTH_OF_FIELD
-//#define VIGNETTE
+#define CHROMATIC_ABERRATION
+#define DEPTH_OF_FIELD
+#define VIGNETTE
 #define BLOOM
-//#define TONE_MAPPING
+#define TONE_MAPPING
 
 float4
 BasicExposure(in float3 Color, in float exposure) {
@@ -157,7 +157,6 @@ FS(PS_INPUT input) : SV_TARGET0 {
     
     fCoC = clamp(fCoC, -1.0f * fA, 1.0f);
     fCoC = abs(fCoC);
-    //return float4(fCoC.xxx, 1.0f);
   #endif //DEPTH_OF_FIELD
   
   #ifdef VIGNETTE
@@ -202,6 +201,14 @@ FS(PS_INPUT input) : SV_TARGET0 {
   #ifdef VIGNETTE
   finalColor *= vignette;
   #endif //VIGNETTE
+
+  //return float4(PositionLDepthTex.Sample(SS, uv).xyz, 1.0f);
+  //return float4(PositionLDepthTex.Sample(SS, uv).www, 1.0f);
+  //return ColorTex.Sample(SS, uv);
+  //return ColorBlurTex.Sample(SS, uv);
+  //return float4(NormCoC.Sample(SS, uv).xyz, 1.0f);
+  //return float4(NormCoC.Sample(SS, uv).www, 1.0f);
+  //return BloomTex.Sample(SS, uv);
   
   return finalColor;
 }
