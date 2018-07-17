@@ -1,11 +1,11 @@
-SamplerState SS;
-
-Texture2D AlbedoTex   : register(t0);
-
 cbuffer ConstantBuffer {
 	float4x4 WVP;
   float4x4 Bones[200];
 };
+
+SamplerState SS;
+
+Texture2D AlbedoTex   : register(t0);
 
 struct PS_INPUT {
   float4 Position : SV_POSITION;

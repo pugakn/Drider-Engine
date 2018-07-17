@@ -1,15 +1,14 @@
+cbuffer ConstantBuffer : register(b0) {
+  float4 fViewportDimensions;
+	float4 SSAO_Options; //X: SampleRadio Y: Intensity Z: Scale X: Bias
+};
+
 SamplerState SS : register(s0);
 
 Texture2D PositionLDepthTex : register(t0);
 Texture2D NormalCoC         : register(t1);
 
 RWTexture2D<float4> SSAOTex : register(u0);
-
-cbuffer ConstantBuffer : register(b0)
-{
-  float4 fViewportDimensions;
-	float4 SSAO_Options; //X: SampleRadio Y: Intensity Z: Scale X: Bias
-};
 
 float3
 getPosition(in float2 uv) {

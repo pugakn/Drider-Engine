@@ -1,14 +1,14 @@
 #define MAX_LIGHTS_PER_BLOCK 64
 
-cbuffer ConstantBuffer : register(b0)
-{
+cbuffer ConstantBuffer : register(b0) {
   float2 threadsGroups; //X: Number of thread groups in x, Y: Number of thread groups in Y.
   float4x4 VP;
 };
 
-StructuredBuffer<float4> kLightPosition[128]	: register(u0);	//XYZ: Light Position, W: Range
-RWStructuredBuffer<int> numberOfLights     		: register(u1);
-RWStructuredBuffer<int[MAX_LIGHTS_PER_BLOCK]> LightsIndex     : register(u2);
+StructuredBuffer<float4> kLightPosition[128]	: register(t0);	//XYZ: Light Position, W: Range
+
+RWStructuredBuffer<int> numberOfLights                    : register(u0);
+RWStructuredBuffer<int[MAX_LIGHTS_PER_BLOCK]> LightsIndex : register(u1);
 
 bool
 intersects(float2 circlePos, float circleRadius, float2 RectPos, float2 RectSize) {

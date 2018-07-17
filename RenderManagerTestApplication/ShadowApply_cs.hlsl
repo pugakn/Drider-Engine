@@ -3,13 +3,6 @@
 //#define DR_SH_PCF_ENABLED
 #define CASCADE_BLUR
 
-SamplerState SS : register(s0);
-
-Texture2D PositionDepthTex    : register(t0);
-Texture2D CompressedShadowTex : register(t1);
-
-RWTexture2D<float4> ShadowTex : register(u0);
-
 cbuffer ConstantBuffer : register(b0) {
   float4	 fViewportDimensions;
   float4x4 kShadowVP[4];
@@ -17,6 +10,13 @@ cbuffer ConstantBuffer : register(b0) {
   float4   ShadowSizesProportion;
   float4   ShadowInfo; //X: Activated cascades, Y: TextureSize, Z: CascadeLerp
 };
+
+SamplerState SS : register(s0);
+
+Texture2D PositionDepthTex    : register(t0);
+Texture2D CompressedShadowTex : register(t1);
+
+RWTexture2D<float4> ShadowTex : register(u0);
 
 bool
 insideBounds(float4 fromLightPos) {

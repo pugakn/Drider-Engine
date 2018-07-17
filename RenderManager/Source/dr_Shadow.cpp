@@ -89,8 +89,9 @@ ShadowPass::draw(PassDrawData* drawData) {
   ShadowDrawData* data = static_cast<ShadowDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
+  dc.setUAVsNull();
   dc.setResourcesNull();
-  data->OutRt->setRTNull(dc);
+
   data->OutRt->set(dc, *data->dsOptions);
 
   m_vertexShader->set(dc);
@@ -137,6 +138,9 @@ ShadowPass::draw(PassDrawData* drawData) {
 
     dc.draw(modelPair.mesh.indicesCount, 0, 0);
   }
+
+  dc.setUAVsNull();
+  dc.setResourcesNull();
 }
 
 void
@@ -144,6 +148,7 @@ ShadowPass::merge(std::array<GFXShared<RenderTarget>, 4> m_RTShadowDummy,
                   GFXShared<RenderTarget> CompressedShadowsOutRt) {
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
+  dc.setUAVsNull();
   dc.setResourcesNull();
 
   m_computeShader->set(dc);
@@ -162,7 +167,6 @@ ShadowPass::merge(std::array<GFXShared<RenderTarget>, 4> m_RTShadowDummy,
   dc.dispatch(outRTDesc.width / 8, outRTDesc.height / 4, 1);
 
   dc.setUAVsNull();
-
   dc.setResourcesNull();
 }
 
@@ -174,6 +178,7 @@ ShadowPass::apply(PassDrawData* drawData,
   ShadowDrawData* data = static_cast<ShadowDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
+  dc.setUAVsNull();
   dc.setResourcesNull();
 
   m_computeShaderApply->set(dc);
@@ -205,7 +210,6 @@ ShadowPass::apply(PassDrawData* drawData,
   dc.dispatch(outRTDesc.width / 8, outRTDesc.height / 4, 1);
 
   dc.setUAVsNull();
-
   dc.setResourcesNull();
 }
 

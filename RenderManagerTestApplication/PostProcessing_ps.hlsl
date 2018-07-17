@@ -1,11 +1,10 @@
 SamplerState SS;
 
-Texture2D PositionLDepthTex : register(t0);
-Texture2D ColorTex          : register(t1);
-Texture2D ColorBlurTex      : register(t2);
-Texture2D NormCoC           : register(t3);
+Texture2D ColorTex          : register(t0);
+Texture2D ColorBlurTex      : register(t1);
+Texture2D PositionLDepthTex : register(t2);
+Texture2D BloomTex          : register(t3);
 StructuredBuffer<float4> LuminescenceTex : register (t4);
-Texture2D BloomTex          : register(t5);
 //Texture2D GodRays           : register(tn);
 //Texture2D FilmLutTex        : register(tn);
 
@@ -20,10 +19,10 @@ struct PS_INPUT {
   float2 Texcoord : TEXCOORD0;
 };
 
-#define CHROMATIC_ABERRATION
-#define DEPTH_OF_FIELD
-#define VIGNETTE
-#define BLOOM
+//#define CHROMATIC_ABERRATION
+//#define DEPTH_OF_FIELD
+//#define VIGNETTE
+//#define BLOOM
 //#define TONE_MAPPING
 
 float4
@@ -159,6 +158,33 @@ FS(PS_INPUT input) : SV_TARGET0 {
     fCoC = abs(fCoC);
   #endif //DEPTH_OF_FIELD
   
+  //CR = GodRays.Sample(SS, uv + CAOffset).x;
+  //CG = GodRays.Sample(SS, uv - CAOffset).y;
+  //CB = GodRays.Sample(SS, uv).z;
+  //CA = GodRays.Sample(SS, uv).w;
+  //float4 ColorGodray = float4(CR, CG, CB, CA);
+  
+  float4 finalColor;
+  
+  #ifdef DEPTH_OF_FIELD
+    finalColor = lerp(Color, ColorBlur, fCoC);
+  #else
+    finalColor = Color;
+  #endif //DEPTH_OF_FIELD
+  
+  #ifdef BLOOM
+    finalColor += BloomTex.Sample(SS, uv);
+  #endif //BLOOM
+  
+  #ifdef TONE_MAPPING
+    const float kExposure = LuminescenceTex[0].x;
+
+    //finalColor = BasicExposure(finalColor, kExposure);
+    finalColor = Reinhard(finalColor.xyz, kExposure);
+    //finalColor = Burgeos_Dawson(finalColor, kExposure); //Caca
+    //finalColor = Uncharted2(finalColor, kExposure);
+  #endif //TONE_MAPPING
+  
   #ifdef VIGNETTE
     static const float2 fVignetteConcentration = VignetteOptions.xy;
     static const float2 fVignetteRad = VignetteOptions.zw;
@@ -169,45 +195,14 @@ FS(PS_INPUT input) : SV_TARGET0 {
     
     const float vignette = 1.0f - (saturate(((x * x) / (fVignetteRad.x * fVignetteRad.x)) +
                                             ((y * y) / (fVignetteRad.y * fVignetteRad.y))) * fVignetteScale);
-  #endif //VIGNETTE
-  
-  //CR = GodRays.Sample(SS, uv + CAOffset).x;
-  //CG = GodRays.Sample(SS, uv - CAOffset).y;
-  //CB = GodRays.Sample(SS, uv).z;
-  //CA = GodRays.Sample(SS, uv).w;
-  //float4 ColorGodray = float4(CR, CG, CB, CA);
-  
-  float4 finalColor;
-  
-  #ifdef DEPTH_OF_FIELD
-  finalColor = lerp(Color, ColorBlur, fCoC);
-  #else
-  finalColor = Color;
-  #endif //DEPTH_OF_FIELD
-  
-  #ifdef BLOOM
-  finalColor += BloomTex.Sample(SS, uv);
-  #endif //BLOOM
-  
-  #ifdef TONE_MAPPING
-  const float kExposure = LuminescenceTex[0].x;
-  
-  //finalColor = BasicExposure(finalColor, kExposure);
-  finalColor = Reinhard(finalColor.xyz, kExposure);
-  //finalColor = Burgeos_Dawson(finalColor, kExposure); //Caca
-  //finalColor = Uncharted2(finalColor, kExposure);
-  #endif //TONE_MAPPING
-  
-  #ifdef VIGNETTE
-  finalColor *= vignette;
+
+    finalColor *= vignette;
   #endif //VIGNETTE
 
   //return float4(PositionLDepthTex.Sample(SS, uv).xyz, 1.0f);
   //return float4(PositionLDepthTex.Sample(SS, uv).www, 1.0f);
   //return ColorTex.Sample(SS, uv);
   //return ColorBlurTex.Sample(SS, uv);
-  //return float4(NormCoC.Sample(SS, uv).xyz, 1.0f);
-  //return float4(NormCoC.Sample(SS, uv).www, 1.0f);
   //return BloomTex.Sample(SS, uv);
   
   return finalColor;

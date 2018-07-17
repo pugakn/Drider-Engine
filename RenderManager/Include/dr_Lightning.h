@@ -60,6 +60,7 @@ class LightningPass : public RenderPass {
 
  private:
   struct CBuffer {
+    Vector4D fViewportDimensions;
     Vector4D  EyePosition;         // [XYZ = Cameraposition, W = ActiveLights]
     Vector4D  LightPosition[128];  // [XYZ = LightPosition, W = Range]
     Vector4D  LightColor[128];     // [XYZ = LightColor, W = LightIntensity]

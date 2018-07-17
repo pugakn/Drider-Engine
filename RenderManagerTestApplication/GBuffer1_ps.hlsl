@@ -1,11 +1,3 @@
-SamplerState SS;
-
-Texture2D AlbedoTex   : register(t0);
-Texture2D NormalTex   : register(t1);
-Texture2D EmissiveTex : register(t2);
-Texture2D Metallic    : register(t3);
-Texture2D Roughness   : register(t4);
-
 cbuffer ConstantBuffer {
 	float4x4 World;
   float4x4 WorldView;
@@ -13,6 +5,14 @@ cbuffer ConstantBuffer {
   float4x4 Bones[200];
   float4   CameraInfo; //X: Aspect Ratio; Y: FOV; Z: Near Plane; W: Far Plane
 };
+
+SamplerState SS;
+
+Texture2D AlbedoTex   : register(t0);
+Texture2D NormalTex   : register(t1);
+Texture2D EmissiveTex : register(t2);
+Texture2D Metallic    : register(t3);
+Texture2D Roughness   : register(t4);
 
 struct PS_INPUT {
   float4   Position : SV_POSITION;
