@@ -521,22 +521,22 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_LightningDrawData.dsOptions = m_LightningDSoptions;
   m_LightningPass.draw(&m_LightningDrawData);
 
-  //DoF
-  m_HorBlurDrawData.InTexture = &m_RTLightning->getTexture(0);
-  m_HorBlurDrawData.OutRt = m_RTBlurInit;
-  m_HorBlurPass.draw(&m_HorBlurDrawData);
-
-  m_VerBlurDrawData.InTexture = &m_RTBlurInit->getTexture(0);
-  m_VerBlurDrawData.OutRt = m_RTLightningBlur;
-  m_VerBlurPass.draw(&m_VerBlurDrawData);
-
-  //Bloom
+  //Bloom Blur
   m_HorBlurDrawData.InTexture = &m_RTLightning->getTexture(1);
   m_HorBlurDrawData.OutRt = m_RTBlurInit;
   m_HorBlurPass.draw(&m_HorBlurDrawData);
 
   m_VerBlurDrawData.InTexture = &m_RTBlurInit->getTexture(0);
   m_VerBlurDrawData.OutRt = m_RTBloom;
+  m_VerBlurPass.draw(&m_VerBlurDrawData);
+
+  //DoF Blur
+  m_HorBlurDrawData.InTexture = &m_RTLightning->getTexture(0);
+  m_HorBlurDrawData.OutRt = m_RTBlurInit;
+  m_HorBlurPass.draw(&m_HorBlurDrawData);
+
+  m_VerBlurDrawData.InTexture = &m_RTBlurInit->getTexture(0);
+  m_VerBlurDrawData.OutRt = m_RTLightningBlur;
   m_VerBlurPass.draw(&m_VerBlurDrawData);
 
   m_luminescenceDrawData.InTexture = &m_RTLightning->getTexture(0);
