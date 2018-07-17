@@ -528,6 +528,9 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_LightningDrawData.EnviromentCubemap = m_cubemap;
   m_LightningDrawData.IrradianceCubemap = m_cubemapDiffuse;
   m_LightningDrawData.dsOptions = m_LightningDSoptions;
+
+  m_LightningPass.tileLights(&m_LightningDrawData);
+
   m_LightningPass.draw(&m_LightningDrawData);
 
   //DoF Blur
