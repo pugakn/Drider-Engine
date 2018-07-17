@@ -14,10 +14,18 @@ struct ShadowInitData : PassInitData {
 };
 
 struct ShadowDrawData : PassDrawData {
+  //CascadeInfo
   std::shared_ptr<Camera>  shadowCam;
   SceneGraph::QueryResult* models;
   GFXShared<RenderTarget>  OutRt;
   GFXShared<DepthStencil>  dsOptions;
+  //ShadowInfo
+  std::array<std::shared_ptr<Camera>, 4>* ShadowCameras;
+  std::vector<float> ShadowSliptDepths;
+  SizeT ActivatedShadowCascades;
+  SizeT ShadowMapTextureSize;
+  float LerpBetweenShadowCascade;
+  Vector4D ShadowSizesProportion;
 };
 
 class ShadowPass : public RenderPass {
@@ -61,17 +69,39 @@ class ShadowPass : public RenderPass {
   */
   void
   merge(std::array<GFXShared<RenderTarget>, 4> m_RTShadowDummy,
-        GFXShared<DepthStencil> dsOptions,
-        GFXShared<RenderTarget> OutRt);
+        GFXShared<RenderTarget> CompressedShadowsOutRt);
+
+  
+  /*
+  */
+  void
+  apply(PassDrawData* drawData,
+        GFXShared<RenderTarget> PositionDepthRt,
+        GFXShared<RenderTarget> CompressedShadowsOutRt,
+        GFXShared<RenderTarget> ResultShadowsRt);
 
  private:
-  struct CBuffer {
-    Matrix4x4 World;
+  struct CBuffer1 {
     Matrix4x4 WVP;
     Matrix4x4 Bones[200];
   };
 
-  CBuffer CB;
+  struct CBuffer2 {
+    Vector4D  fViewportDimensions;
+    Matrix4x4 ShadowVP[4];
+    Vector4D  ShadowSplitDepth;
+    Vector4D  ShadowSizesProportion;
+    Vector4D  ShadowInfo; //X: Activated cascades, Y: TextureSize, Z: CascadeLerp
+  };
+
+  CBuffer1 CascadeCB;
+  CBuffer2 ShadowCB;
+
+  TString m_csFilenameShadowApply;
+
+  GFXUnique<Shader> m_computeShaderApply;
+
+  GFXUnique<ConstantBuffer> m_constantBufferSSShadow;
 
   GFXUnique<SamplerState> m_samplerState;
 

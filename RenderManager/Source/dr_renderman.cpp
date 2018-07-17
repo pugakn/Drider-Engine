@@ -51,7 +51,7 @@ RenderManager::init() {
   //1080p o FHD
   //screenWidth = 1920;
   //screenHeight = 1080;
-
+   
   //720p o HD
   screenWidth = 1280;
   screenHeight = 720;
@@ -130,36 +130,6 @@ RenderManager::init() {
     commonTextureDesc.height = screenHeight;
     commonTextureDesc.Format = DR_FORMAT::kD24_UNORM_S8_UINT;
   }
-
-  //Shadows
-  {
-    //RenderTarget
-    m_TexDescDefault.width = shadowWidth;
-    m_TexDescDefault.height = shadowHeight;
-    m_TexDescDefault.Format = DR_FORMAT::kR32G32B32A32_FLOAT;
-    m_TexDescDefault.pitch = m_TexDescDefault.width * 4 * 4;
-    m_TexDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
-
-    Texture* ShadowTexure = dc.createEmptyTexture(m_TexDescDefault);
-    m_vecTexture.push_back(ShadowTexure);
-
-    m_RTShadow = dr_gfx_shared(dc.createRenderTarget(m_vecTexture));
-
-    m_vecTexture.clear();
-    m_TexDescDefault.bindFlags &= ~DR_BIND_FLAGS::UNORDERED_ACCESS;
-
-    m_TexDescDefault.Format = DR_FORMAT::kR32_FLOAT;
-    m_TexDescDefault.pitch = m_TexDescDefault.width * 1 * 4;
-    m_RTShadowDummy[0] = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
-    m_RTShadowDummy[1] = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
-    m_RTShadowDummy[2] = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
-    m_RTShadowDummy[3] = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
-
-    //DepthStencil
-    commonTextureDesc.width = shadowWidth;
-    commonTextureDesc.height = shadowHeight;
-    m_ShadowDSoptions = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
-  }
   
   //Gbuffer
   {
@@ -190,6 +160,78 @@ RenderManager::init() {
     commonTextureDesc.width = screenWidth;
     commonTextureDesc.height = screenHeight;
     m_GBufferDSoptions = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
+  }
+
+  //Shadows
+  {
+    //RenderTarget
+
+    //Dummies
+    m_TexDescDefault.width = shadowWidth;
+    m_TexDescDefault.height = shadowHeight;
+    m_TexDescDefault.Format = DR_FORMAT::kR32_FLOAT;
+    m_TexDescDefault.pitch = m_TexDescDefault.width * 1 * 4;
+    m_RTShadowDummy[0] = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
+    m_RTShadowDummy[1] = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
+    m_RTShadowDummy[2] = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
+    m_RTShadowDummy[3] = dr_gfx_shared(dc.createRenderTarget(m_TexDescDefault, 1));
+
+    //Compressed
+
+    m_TexDescDefault.width = shadowWidth;
+    m_TexDescDefault.height = shadowHeight;
+    m_TexDescDefault.Format = DR_FORMAT::kR32G32B32A32_FLOAT;
+    m_TexDescDefault.pitch = m_TexDescDefault.width * 4 * 4;
+    m_TexDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
+    
+    GFXUnique<Texture> ShadowTexure = dr_gfx_unique<Texture>(dc.createEmptyTexture(m_TexDescDefault));
+    m_vecTexture.push_back(ShadowTexure.get());
+
+    m_RTShadow = dr_gfx_shared(dc.createRenderTarget(m_vecTexture));
+
+    m_vecTexture.clear();
+    ShadowTexure.release();
+
+    m_TexDescDefault.bindFlags &= ~DR_BIND_FLAGS::UNORDERED_ACCESS;
+
+    //Final
+
+    m_TexDescDefault.width = shadowWidth;
+    m_TexDescDefault.height = shadowHeight;
+    m_TexDescDefault.Format = DR_FORMAT::kR32_FLOAT;
+    m_TexDescDefault.pitch = m_TexDescDefault.width * 4 * 4;
+    m_TexDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
+
+    GFXUnique<Texture> FinalShadowTexure = dr_gfx_unique<Texture>(dc.createEmptyTexture(m_TexDescDefault));
+    m_vecTexture.push_back(FinalShadowTexure.get());
+
+    m_RTSSShadow = dr_gfx_shared(dc.createRenderTarget(m_vecTexture));
+
+    m_vecTexture.clear();
+    FinalShadowTexure.release();
+
+    m_TexDescDefault.bindFlags &= ~DR_BIND_FLAGS::UNORDERED_ACCESS;
+
+    //Final Blured
+    m_TexDescDefault.width = screenWidth * blurScale;
+    m_TexDescDefault.height = screenHeight * blurScale;
+    m_TexDescDefault.Format = DR_FORMAT::kR16_FLOAT;
+    m_TexDescDefault.pitch = m_TexDescDefault.width * 1 * 1;
+    m_TexDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
+
+    GFXUnique<Texture> ShadowBlurTexure = dr_gfx_unique<Texture>(dc.createEmptyTexture(m_TexDescDefault));
+    m_vecTexture.push_back(ShadowBlurTexure.get());
+    m_RTSSShadowBlur = dr_gfx_shared(dc.createRenderTarget(m_vecTexture));
+
+    m_TexDescDefault.bindFlags &= ~DR_BIND_FLAGS::UNORDERED_ACCESS;
+
+    m_vecTexture.clear();
+    ShadowBlurTexure.release();
+
+    //DepthStencil
+    commonTextureDesc.width = shadowWidth;
+    commonTextureDesc.height = shadowHeight;
+    m_ShadowDSoptions = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
   }
 
   //SSAO
@@ -306,11 +348,11 @@ RenderManager::init() {
   }
 
   ////////initialization of passes////////
+  m_GBufferPass.init(&m_GBufferInitData);
+
   m_ShadowInitData.RTWidht = shadowWidth;
   m_ShadowInitData.RTHeight = shadowHeight;
   m_ShadowPass.init(&m_ShadowInitData);
-
-  m_GBufferPass.init(&m_GBufferInitData);
 
   m_SSAOInitData.RTWidth = screenWidth;
   m_SSAOInitData.RTHeight = screenHeight;
@@ -388,24 +430,11 @@ RenderManager::init() {
 
 void
 RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
+  DeviceContext& dc = GraphicsAPI::getDeviceContext();
   updateShadowCameras();
 
   auto mainCam = CameraManager::getActiveCamera();
   SceneGraph::QueryResult queryRequest;
-
-  for (size_t camIndex = 0; camIndex < m_szActiveShadowCameras; ++camIndex) {
-    queryRequest = SceneGraph::query(*vecShadowCamera[camIndex],
-                                     QUERY_ORDER::kFrontToBack,          
-                                     QUERY_PROPERTY::kOpaque |
-                                     QUERY_PROPERTY::kDynamic |
-                                     QUERY_PROPERTY::kStatic);
-    m_ShadowDrawData.shadowCam = vecShadowCamera[camIndex];
-    m_ShadowDrawData.models = &queryRequest;
-    m_ShadowDrawData.OutRt = m_RTShadowDummy[camIndex];
-    m_ShadowDrawData.dsOptions = m_ShadowDSoptions;
-    m_ShadowPass.draw(&m_ShadowDrawData);
-  }
-  m_ShadowPass.merge(m_RTShadowDummy, m_ShadowDSoptions, m_RTShadow);
 
   queryRequest = SceneGraph::query(*mainCam,
                                    QUERY_ORDER::kFrontToBack,
@@ -419,11 +448,53 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_GBufferDrawData.dsOptions = m_GBufferDSoptions;
   m_GBufferPass.draw(&m_GBufferDrawData);
 
+  static const float white[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+  m_RTShadow->clear(dc, white);
+  m_RTSSShadow->clear(dc, white);
+
+  for (size_t camIndex = 0; camIndex < m_szActiveShadowCameras; ++camIndex) {
+    queryRequest = SceneGraph::query(*vecShadowCamera[camIndex],
+                                     QUERY_ORDER::kFrontToBack,          
+                                     QUERY_PROPERTY::kOpaque |
+                                     QUERY_PROPERTY::kDynamic |
+                                     QUERY_PROPERTY::kStatic);
+    m_ShadowDrawData.shadowCam = vecShadowCamera[camIndex];
+    m_ShadowDrawData.models = &queryRequest;
+    m_ShadowDrawData.OutRt = m_RTShadowDummy[camIndex];
+    m_ShadowDrawData.dsOptions = m_ShadowDSoptions;
+    m_ShadowPass.draw(&m_ShadowDrawData);
+  }
+  m_ShadowPass.merge(m_RTShadowDummy,
+                     m_RTShadow);
+
+  m_ShadowDrawData.ShadowCameras = &vecShadowCamera;
+  m_ShadowDrawData.ShadowSliptDepths = partitions;
+  m_ShadowDrawData.ActivatedShadowCascades = m_szActiveShadowCameras;
+  m_ShadowDrawData.ShadowMapTextureSize = shadowWidth;
+  m_ShadowDrawData.LerpBetweenShadowCascade = 0.3f;
+  m_ShadowDrawData.ShadowSizesProportion[0] = 1.0f;
+  m_ShadowDrawData.ShadowSizesProportion[1] = m_ShadowSubFrustras[1].second /
+                                              m_ShadowSubFrustras[0].second;
+  m_ShadowDrawData.ShadowSizesProportion[2] = m_ShadowSubFrustras[2].second /
+                                              m_ShadowSubFrustras[0].second;
+  m_ShadowDrawData.ShadowSizesProportion[3] = m_ShadowSubFrustras[3].second /
+                                              m_ShadowSubFrustras[0].second;
+
+  m_ShadowPass.apply(&m_ShadowDrawData, m_RTGBuffer, m_RTShadow, m_RTSSShadow);
+
+  m_HorBlurDrawData.InTexture = &m_RTSSShadow->getTexture(0);
+  m_HorBlurDrawData.OutRt = m_RTBlurInit;
+  m_HorBlurPass.draw(&m_HorBlurDrawData);
+
+  m_VerBlurDrawData.InTexture = &m_RTBlurInit->getTexture(0);
+  m_VerBlurDrawData.OutRt = m_RTSSShadowBlur;
+  m_VerBlurPass.draw(&m_VerBlurDrawData);
+
   m_SSAODrawData.activeCam = mainCam; 
   m_SSAODrawData.InRt = m_RTGBuffer;
   m_SSAODrawData.OutRt = m_RTSSAO;
   m_SSAODrawData.SampleRadio = 0.0008f;
-  m_SSAODrawData.Intensity = 1.0F;
+  m_SSAODrawData.Intensity = 2.0F;
   m_SSAODrawData.Scale = 1.0f;
   m_SSAODrawData.Bias = 0.0002f;
   m_SSAOPass.draw(&m_SSAODrawData);
@@ -439,23 +510,11 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_LightningDrawData.ActiveCam = mainCam;
   m_LightningDrawData.Lights = &lights[0];
   m_LightningDrawData.ActiveLights = 128;
-  m_LightningDrawData.ShadowCameras = &vecShadowCamera;
-  m_LightningDrawData.ShadowSliptDepths = partitions;
-  m_LightningDrawData.ActivatedShadowCascades = m_szActiveShadowCameras;
-  m_LightningDrawData.ShadowMapTextureSize = shadowWidth;
-  m_LightningDrawData.LerpBetweenShadowCascade = 0.3f;
   m_LightningDrawData.BloomThreshold = Vector3D(0.75f, 0.75f, 0.75f);
   m_LightningDrawData.LuminiscenceDelta = 0.0f;
-  m_LightningDrawData.ShadowSizesProportion[0] = 1.0f;
-  m_LightningDrawData.ShadowSizesProportion[1] = m_ShadowSubFrustras[1].second /
-                                                 m_ShadowSubFrustras[0].second;
-  m_LightningDrawData.ShadowSizesProportion[2] = m_ShadowSubFrustras[2].second /
-                                                 m_ShadowSubFrustras[0].second;
-  m_LightningDrawData.ShadowSizesProportion[3] = m_ShadowSubFrustras[3].second /
-                                                 m_ShadowSubFrustras[0].second;
   m_LightningDrawData.GbufferRT = m_RTGBuffer;
   m_LightningDrawData.SSAORT = m_RTSSAOBlur;
-  m_LightningDrawData.ShadowRT = m_RTShadow;
+  m_LightningDrawData.ShadowRT = m_RTSSShadowBlur;
   m_LightningDrawData.OutRt = m_RTLightning;
   m_LightningDrawData.EnviromentCubemap = m_cubemap;
   m_LightningDrawData.IrradianceCubemap = m_cubemapDiffuse;
@@ -485,7 +544,7 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_luminescenceDrawData.resultBuffer = &resultBuffer;
   m_luminescencePass.draw(&m_luminescenceDrawData);
 
-  _out.set(GraphicsAPI::getDeviceContext(), _outds);
+  _out.set(dc, _outds);
 
   //m_emitter.update();
   //m_particleDrawData.activeCam = mainCam;

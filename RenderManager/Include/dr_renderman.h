@@ -174,7 +174,9 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   GFXShared<DepthStencil> m_PostProcessingDSoptions;
 
   std::array<GFXShared<RenderTarget>, 4> m_RTShadowDummy; //Used for render shadow cascades.
-  GFXShared<RenderTarget> m_RTShadow;
+  GFXShared<RenderTarget> m_RTShadow; //Compressed shadows.
+  GFXShared<RenderTarget> m_RTSSShadow;
+  GFXShared<RenderTarget> m_RTSSShadowBlur;
   //Gbuffer info:
   //0: { xyz: position, w: linear depth };
   //1: { xyz: normal,   w: CoC };
