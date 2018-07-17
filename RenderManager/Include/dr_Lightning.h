@@ -58,13 +58,17 @@ class LightningPass : public RenderPass {
   void
   draw(PassDrawData* drawData);
 
+  void
+  tileLights(PassDrawData* drawData);
+
  private:
   struct CBuffer {
     Vector4D fViewportDimensions;
-    Vector4D  EyePosition;         // [XYZ = Cameraposition, W = ActiveLights]
-    Vector4D  LightPosition[128];  // [XYZ = LightPosition, W = Range]
-    Vector4D  LightColor[128];     // [XYZ = LightColor, W = LightIntensity]
-    Vector4D  BloomThresholdLuminiscenceDelta;
+    Vector4D EyePosition;         // [XYZ = Cameraposition, W = ActiveLights]
+    Vector4D LightPosition[128];  // [XYZ = LightPosition, W = Range]
+    Vector4D LightColor[128];     // [XYZ = LightColor, W = LightIntensity]
+    Vector4D BloomThresholdLuminiscenceDelta;
+    Vector4D threadsInfo;
   };
 
   CBuffer CB;

@@ -84,6 +84,9 @@ LightningPass::draw(PassDrawData* drawData) {
   CB.BloomThresholdLuminiscenceDelta = data->BloomThreshold;
   CB.BloomThresholdLuminiscenceDelta.w = data->LuminiscenceDelta;
 
+  CB.threadsInfo.x = m_ComputeWidthBlocks;
+  CB.threadsInfo.y = m_ComputeHeightBlocks;
+
   m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
   m_constantBuffer->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
 
@@ -100,6 +103,20 @@ LightningPass::draw(PassDrawData* drawData) {
   data->OutRt->getTexture(1).set(dc, 1, DR_SHADER_TYPE_FLAG::kCompute, false);
 
   dc.dispatch(outRTDesc.width / 8, outRTDesc.height / 4, 1);
+
+  dc.setUAVsNull();
+  dc.setResourcesNull();
+}
+
+void
+LightningPass::tileLights(PassDrawData* drawData) {
+  LightningDrawData* data = static_cast<LightningDrawData*>(drawData);
+  DeviceContext& dc = GraphicsAPI::getDeviceContext();
+
+  dc.setUAVsNull();
+  dc.setResourcesNull();
+
+
 
   dc.setUAVsNull();
   dc.setResourcesNull();

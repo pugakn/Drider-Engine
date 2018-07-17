@@ -1,11 +1,12 @@
 #include "PBR_Math.hlsl"
 
 cbuffer ConstantBuffer : register(b0) {
-  float4  fViewportDimensions;
-  float4  kEyePosition;        //XYZ: EyePosition, W: Active Lights
-  float4  kLightPosition[128]; //XYZ: Light Position, W: Range
-  float4  kLightColor[128];    //XYZ: Light Color, W: Intensity
-  float4  BloomThresholdLuminiscenceDelta;
+  float4 fViewportDimensions;
+  float4 kEyePosition;        //XYZ: EyePosition, W: Active Lights
+  float4 kLightPosition[128]; //XYZ: Light Position, W: Range
+  float4 kLightColor[128];    //XYZ: Light Color, W: Intensity
+  float4 BloomThresholdLuminiscenceDelta;
+  float4 threadsInfo; //X: Number of thread groups in x, Y: Number of thread groups in Y.
 };
 
 SamplerState SS : register(s0);
@@ -46,6 +47,9 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
 	 uint3 groupID				: SV_GroupID,
 	 uint3 dispatchID			: SV_DispatchThreadID,
 	 uint  groupIndex			: SV_GroupIndex) {
+  
+  //Este indica en que index esta este grupo thread (como si fuese un array).
+  const uint group = (groupID.y * threadsInfo.x) + groupID.x;
   
   const float2 uvScale = float2(dispatchID.x, dispatchID.y);
 	
