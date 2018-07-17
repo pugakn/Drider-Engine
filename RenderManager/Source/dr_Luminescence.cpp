@@ -51,6 +51,9 @@ LuminescencePass::draw(PassDrawData* drawData) {
   LuminescenceDrawData* data = static_cast<LuminescenceDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
+  dc.setUAVsNull();
+  dc.setResourcesNull();
+
   m_computeShader->set(dc);
 
   DrTextureDesc outRTDesc = data->InTexture->getDescriptor();

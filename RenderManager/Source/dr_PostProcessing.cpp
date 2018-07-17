@@ -45,6 +45,7 @@ PostProcessingPass::draw(PassDrawData* drawData) {
   PostProcessingDrawData* data = static_cast<PostProcessingDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
+  dc.setUAVsNull();
   dc.setResourcesNull();
 
   m_vertexShader->set(dc);
@@ -52,12 +53,11 @@ PostProcessingPass::draw(PassDrawData* drawData) {
 
   m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kFragment);
 
-  data->PositionDepthRT->getTexture(0).set(dc, 0);
-  data->ColorRT->getTexture(0).set(dc, 1);
-  data->ColorBlurRT->getTexture(0).set(dc, 2);
-  data->Gbuffer->getTexture(1).set(dc, 3);
+  data->ColorTex->set(dc, 0);
+  data->ColorBlurTex->set(dc, 1);
+  data->PositionDepthTex->set(dc, 2);
+  data->BloomTex->set(dc, 3);
   data->luminescenceBuffer->set(dc, DR_SHADER_TYPE_FLAG::kFragment, 4);
-  data->BloomRT->getTexture(0).set(dc, 5);
 
   m_inputLayout->set(dc);
 
@@ -88,6 +88,9 @@ PostProcessingPass::draw(PassDrawData* drawData) {
       dc.draw(SAQ.indices.size(), 0, 0);
     }
   }
+
+  dc.setUAVsNull();
+  dc.setResourcesNull();
 }
 
 }

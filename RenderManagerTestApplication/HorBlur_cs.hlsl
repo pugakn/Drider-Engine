@@ -2,15 +2,15 @@
 #define NORMAL_BLUR
 //#define PERFORMANCE_BLUR
 
+cbuffer ConstantBuffer : register(b0) {
+  float4 fViewportDimensions;
+};
+
 SamplerState SS : register(s0);
 
 Texture2D inTex : register(t0);
 
 RWTexture2D<float4> outTex : register(u0);
-
-cbuffer ConstantBuffer : register(b0) {
-  float4 fViewportDimensions;
-};
 
 #if defined(QUALITY_BLUR)
   #define HALF_KERNEL_SIZE 15

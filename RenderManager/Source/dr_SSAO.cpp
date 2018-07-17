@@ -49,8 +49,8 @@ SSAOPass::draw(PassDrawData* drawData) {
   SSAODrawData* data = static_cast<SSAODrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
+  dc.setUAVsNull();
   dc.setResourcesNull();
-  data->OutRt->setRTNull(dc);
 
   m_computeShader->set(dc);
 

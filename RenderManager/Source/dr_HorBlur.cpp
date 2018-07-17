@@ -48,8 +48,8 @@ HorBlurPass::draw(PassDrawData* drawData) {
   HorBlurDrawData* data = static_cast<HorBlurDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
+  dc.setUAVsNull();
   dc.setResourcesNull();
-  data->OutRt->setRTNull(dc);
 
   m_computeShader->set(dc);
 

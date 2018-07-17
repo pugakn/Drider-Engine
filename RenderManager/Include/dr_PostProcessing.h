@@ -18,14 +18,13 @@ struct PostProcessingDrawData : PassDrawData {
   float CoCFocusDistance;
   float CoCFocusRange;
   float VignetteScale;
-  StructureBuffer* luminescenceBuffer;
   Vector2D VignetteConcentration;
   Vector2D VignetteRad;
-  GFXShared<RenderTarget> PositionDepthRT;
-  GFXShared<RenderTarget> ColorRT;
-  GFXShared<RenderTarget> ColorBlurRT;
-  GFXShared<RenderTarget> BloomRT;
-  GFXShared<RenderTarget> Gbuffer;
+  Texture* ColorTex;
+  Texture* ColorBlurTex;
+  Texture* PositionDepthTex;
+  Texture* BloomTex;
+  StructureBuffer* luminescenceBuffer;
 };
 
 class PostProcessingPass : public RenderPass {

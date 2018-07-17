@@ -47,8 +47,8 @@ GBufferPass::draw(PassDrawData* drawData) {
   GBufferDrawData* data = static_cast<GBufferDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
+  dc.setUAVsNull();
   dc.setResourcesNull();
-  data->OutRt->setRTNull(dc);
 
   data->OutRt->set(dc, *data->dsOptions);
   
@@ -130,6 +130,9 @@ GBufferPass::draw(PassDrawData* drawData) {
 
     dc.draw(modelPair.mesh.indicesCount, 0, 0);
   }
+
+  dc.setUAVsNull();
+  dc.setResourcesNull();
 }
 /*
 void
