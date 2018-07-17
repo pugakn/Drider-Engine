@@ -1,3 +1,5 @@
+SamplerState SS;
+
 Texture2D PositionLDepthTex : register(t0);
 Texture2D ColorTex          : register(t1);
 Texture2D ColorBlurTex      : register(t2);
@@ -6,8 +8,6 @@ StructuredBuffer<float4> LuminescenceTex : register (t4);
 Texture2D BloomTex          : register(t5);
 //Texture2D GodRays           : register(tn);
 //Texture2D FilmLutTex        : register(tn);
-
-SamplerState SS;
 
 cbuffer ConstantBuffer {
   float4 CameraInfo;      //X: Aspect Ratio; Y: FOV; Z: Near Plane; W: Far Plane
@@ -24,7 +24,7 @@ struct PS_INPUT {
 #define DEPTH_OF_FIELD
 #define VIGNETTE
 #define BLOOM
-#define TONE_MAPPING
+//#define TONE_MAPPING
 
 float4
 BasicExposure(in float3 Color, in float exposure) {

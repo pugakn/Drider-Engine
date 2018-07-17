@@ -82,16 +82,6 @@ LightningPass::draw(PassDrawData* drawData) {
     CB.LightColor[lighIndex] = (*data->Lights)[lighIndex].m_vec4Color;
   }
 
-  for (SizeT i = 0; i < data->ActivatedShadowCascades; ++i) {
-    CB.ShadowCameraVP[i] = (*data->ShadowCameras)[i]->getVP();
-    CB.ShadowSliptDepth[i] = data->ShadowSliptDepths[i + 1];
-  }
-  CB.ShadowSizesProportion = data->ShadowSizesProportion;
-
-  CB.ShadowInfo[0] = data->ActivatedShadowCascades;
-  CB.ShadowInfo[1] = data->ShadowMapTextureSize;
-  CB.ShadowInfo[2] = data->LerpBetweenShadowCascade;
-
   CB.BloomThresholdLuminiscenceDelta = data->BloomThreshold;
   CB.BloomThresholdLuminiscenceDelta.w = data->LuminiscenceDelta;
 
