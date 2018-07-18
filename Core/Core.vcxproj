@@ -183,6 +183,7 @@
     <ClInclude Include="Include\dr_script_component.h" />
     <ClInclude Include="Include\dr_script_core.h" />
     <ClInclude Include="Include\dr_script_info.h" />
+    <ClInclude Include="Include\dr_serializable.h" />
     <ClInclude Include="Include\dr_skeleton.h" />
     <ClInclude Include="Include\dr_sound_core.h" />
     <ClInclude Include="Include\dr_sound_info.h" />
