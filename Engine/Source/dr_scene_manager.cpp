@@ -6,7 +6,6 @@
 #include <dr_file_system.h>
 #include <dr_string_utils.h>
 #include <dr_scene_core.h>
-#include <dr_gameObject.h>
 
 namespace driderSDK {
 
@@ -23,7 +22,7 @@ namespace driderSDK {
 																			L"[SceneManager] Modules not active");
 			return false;
 		}
-		ResourceManager::loadResource(fileName);
+		ResourceManager::loadResource(fileName + L".scn");
 
 		auto rSceneFile = ResourceManager::getReference(fileName);
 		auto sceneFile = std::dynamic_pointer_cast<SceneCore>(rSceneFile);
@@ -60,7 +59,7 @@ namespace driderSDK {
 		scene.Write(data.size(), OutputData.c_str());
 
 		if (scene.Size()) {
-			fileMgr.CreateAndOpen(fileName, scene);
+			fileMgr.CreateAndOpen(fileName + L".scn", scene);
 			return true;
 		}
 		Logger::instancePtr()->addError(__FILE__,
@@ -71,50 +70,60 @@ namespace driderSDK {
 
 	void 
 	SceneManager::interpretInput(const TString& input) {
+		TString name;
 
-		while (true) {
-			//SceneGraph::addObject();
+		while (false/*iterate thriugh each object*/) {
+			auto obj = std::make_shared<GameObject>();
+			obj->setName(name);
+			for (/*each component*/;;) {
+				//obj->addComponent();
+			}
+
+			SceneGraph::addObject(obj);
 		}
 	}
 
 	void 
 	SceneManager::interpretOutput(TString& output) {
 
-		auto pRoot = SceneGraph::getRoot();
+		//Retrieve aditional info here
 
-		while (true) {
-
-			//iterate through scenegraph
-			output += objectToStr(nullptr);
+		//iterate and save through root's children
+		for (auto &rootChildren : SceneGraph::getRoot()->getChildren()) {
+			output += objectToStr(rootChildren);
 		}
 
 	}
 
 	TString 
-	SceneManager::objectToStr(void* obj) {
+	SceneManager::objectToStr(SharedGameObj obj) {
 
 		/*
 		name {
 		component: val;
 		component: val;
 		component: val;
+		child:
+			name2 {
+			component: val;
+			}
 		}
 		*/
 
-		GameObject* gObj = reinterpret_cast<GameObject*>(obj);
 		TString result;
-		result += gObj->getName();
+		result += obj->getName();
 		result += L" {\n";
-		gObj->getComponents<>();
-
-		for (int i = 0; i < 0; ++i) {
-		gObj->
+		
+		for (/*auto &compList : obj->getComponents()*/;;) {
+		//result += compList->serialize();
 
 		}
-		//component data
+
+		for (auto &it : obj->getChildren()) {
+			result += L"child:" + objectToStr(it) + L"\n";
+		}
 
 		result += L"}\n";
-
 		return result;
 	}
 

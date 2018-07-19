@@ -1,22 +1,25 @@
 #pragma once
 #include "dr_core_prerequisites.h"
 
+#include <dr_gameObject.h>
+
 namespace driderSDK {
 
 	class File;
 
 	/**
-	*  Class that managaes scenes.
+	*  Class that manages scenes.
 	*
 	* Sample usage:
 	*	SceneManager Mgr;
-	*	SceneManager.saveSceneInFile(L"MAP30");
+	*	Mgr.saveSceneInFile(L"MAP30");
 	*/
-	class DR_CORE_EXPORT SceneManager 
+	class DR_CORE_EXPORT SceneManager
 	{
 	public:
+		using SharedGameObj = std::shared_ptr<GameObject>;
 
-		/**
+	/**
 		* Default constructor
 		*
 		*/
@@ -54,8 +57,8 @@ namespace driderSDK {
 
 	private:
 
-		void
-		setActiveScene();
+		//void
+		//setActiveScene();
 
 		void
 		interpretInput(const TString& input);
@@ -64,7 +67,7 @@ namespace driderSDK {
 		interpretOutput(TString& output);
 
 		TString 
-		objectToStr(void* obj);
+		objectToStr(SharedGameObj obj);
 
 		void
 		strToObject();

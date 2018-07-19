@@ -18,7 +18,7 @@ namespace driderSDK {
 		*  TString containing the serialization.
 		*/
 		virtual const TString& 
-		serialize() {};
+		serialize() = 0;
 		
 		/**
 		* De-serialize the object using the given data
@@ -27,7 +27,7 @@ namespace driderSDK {
 		*  TString containing the object's data.
 		*/
 		virtual void 
-		deserialize(const TString& data) {};
+		deserialize(const TString& data) = 0;
 
 	};
 
