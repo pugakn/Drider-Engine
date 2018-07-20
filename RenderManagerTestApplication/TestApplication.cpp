@@ -98,7 +98,7 @@ RenderManApp::postInit() {
   CameraManager::setActiveCamera(_T("PATO_CAM"));
   RenderManager::startUp();
 
-  m_bRotate = true;
+  m_bRotate = false;
 
   Vector4D LightPosition(0.0f, 100.0f, 150.0f, 1.0f);
   
@@ -316,8 +316,8 @@ RenderManApp::postInit() {
   }
   */
 
-  //m_SzTGosIndex = m_vecGos.size() - 1;
-  m_SzTGosIndex = 0;
+  m_SzTGosIndex = m_vecGos.size() - 1;
+  //m_SzTGosIndex = 0;
   m_selectedGO = m_vecGos[m_SzTGosIndex];
 
   initInputCallbacks();
