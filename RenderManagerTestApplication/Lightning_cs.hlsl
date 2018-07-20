@@ -68,9 +68,10 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   int lightCount = 0;
   
   for (int lightIndex = 0; lightIndex < MAX_LIGHTS_PER_BLOCK; ++lightIndex) {
-    lightCount += LightsIndex[group].foo[lightIndex];
+    lightCount += (LightsIndex[group].foo[lightIndex] > 0);
   }
 
+  //Lightning[uvScale] = float4((lightCount / (float)128).xxx, 1.0f);
   Lightning[uvScale] = float4((lightCount / (float)128).xxx, 1.0f);
   Brightness[uvScale] = Lightning[uvScale];
   return;
