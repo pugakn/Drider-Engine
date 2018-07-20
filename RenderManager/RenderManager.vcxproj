@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\dr_Bloom.h" />
     <ClInclude Include="Include\dr_GBuffer1.h" />
     <ClInclude Include="Include\dr_HorBlur.h" />
     <ClInclude Include="Include\dr_Lightning.h" />
@@ -35,6 +36,7 @@
     <ClInclude Include="Include\dr_VerBlur.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\dr_Bloom.cpp" />
     <ClCompile Include="Source\dr_GBuffer1.cpp" />
     <ClCompile Include="Source\dr_Lightning.cpp" />
     <ClCompile Include="Source\dr_Luminescence.cpp" />

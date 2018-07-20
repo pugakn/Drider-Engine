@@ -12,8 +12,7 @@ struct lightsInBlock {
   int foo[128];
 };
 
-RWStructuredBuffer<int> numberOfLights        : register(u0);
-RWStructuredBuffer<lightsInBlock> LightsIndex : register(u1);
+RWStructuredBuffer<lightsInBlock> LightsIndex : register(u0);
 
 bool
 intersects(float2 circlePos, float circleRadius, float2 RectPos, float2 RectSize) {
@@ -45,7 +44,6 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
     return;
   }
 
-  numberOfLights[group] = 0;
   LightsIndex[group].foo[lightIndex] = -1;
 	//GroupMemoryBarrierWithGroupSync();
   
@@ -77,9 +75,7 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
     
     //No agregar si ya hay MAX_LIGHTS_PER_BLOCK o mas luces
     //Agregar esta luz al array/vector de indices de luces
-    //LightsIndex[group].foo[numberOfLights[group]] = 1;
     LightsIndex[group].foo[lightIndex] = 1;
-    ++numberOfLights[group];
   }
 
   return;
