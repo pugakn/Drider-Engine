@@ -1,3 +1,9 @@
+#define MAX_LIGHTS_PER_BLOCK 128
+
+struct lightsInBlock {
+  int foo[MAX_LIGHTS_PER_BLOCK];
+};
+
 #include "PBR_Math.hlsl"
 
 cbuffer ConstantBuffer : register(b0) {
@@ -20,8 +26,10 @@ Texture2D ShadowTex            : register(t5);
 TextureCube EnvironmentTex     : register(t6);
 TextureCube IrradianceTex      : register(t7);
 
-RWTexture2D<float4> Lightning  : register(u0);
-RWTexture2D<float4> Brightness : register(u1);
+RWStructuredBuffer<int> numberOfLights        : register(u0);
+RWStructuredBuffer<lightsInBlock> LightsIndex : register(u1);
+RWTexture2D<float4> Lightning  : register(u2);
+RWTexture2D<float4> Brightness : register(u3);
 
 float
 luminescence(float3 Color) {
@@ -56,6 +64,23 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
 	const float2 uv = float2(dispatchID.x / fViewportDimensions.x,
                            dispatchID.y / fViewportDimensions.y);
   
+  /*
+  int lightCount = 0;
+  
+  for (int lightIndex = 0; lightIndex < MAX_LIGHTS_PER_BLOCK; ++lightIndex) {
+    lightCount += LightsIndex[group].foo[lightIndex];
+  }
+
+  Lightning[uvScale] = float4((lightCount / (float)128).xxx, 1.0f);
+  Brightness[uvScale] = Lightning[uvScale];
+  return;
+  */
+  /*
+  Lightning[uvScale] = float4((numberOfLights[group] / (float)128).xxx, 1.0f);
+  Brightness[uvScale] = Lightning[uvScale];
+  return;
+  */
+
   const float4  position    = float4(PositionDepthTex.SampleLevel(SS, uv, 0).xyz, 1.0f);
   const float   SSAO        = SSAOTex.SampleLevel(SS, uv, 0).x;
   const float3  diffuse     = AlbedoMetallicTex.SampleLevel(SS, uv, 0).xyz * SSAO;
@@ -95,32 +120,34 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   const int activeLights = kEyePosition.w;
   
   [loop]
-  for (int index = 0; index < activeLights; index += 2) {
-    lightPosition  = kLightPosition[index].xyz;
-    lightColor     = kLightColor[index].xyz;
-    lightRange     = kLightPosition[index].w;
-    lightIntensity = kLightColor[index].w;
-    
-    LightPower = saturate(1.0f - (length(lightPosition - position.xyz) / lightRange)) * lightIntensity;
-    
-    LightViewDir = normalize(lightPosition - position.xyz);
+  for (int index = 0; index < MAX_LIGHTS_PER_BLOCK; ++index) {
+    if (LightsIndex[group].foo[index] > 0) {
+      lightPosition  = kLightPosition[index].xyz;
+      lightColor     = kLightColor[index].xyz;
+      lightRange     = kLightPosition[index].w;
+      lightIntensity = kLightColor[index].w;
+      
+      LightPower = pow(saturate(1.0f - (length(lightPosition - position.xyz) / lightRange)), 2) * lightIntensity;
+      
+      LightViewDir = normalize(lightPosition - position.xyz);
 
-    H = normalize(LightViewDir + ViewDir);
+      H = normalize(LightViewDir + ViewDir);
 
-    NdotL = saturate(dot(normal, LightViewDir));
-    LdotV = saturate(dot(LightViewDir, ViewDir));
-    
-    NdotH = saturate(dot(normal, H));
-    VdotH = saturate(dot(ViewDir, H));
-    LdotH = saturate(dot(LightViewDir, H));
+      NdotL = saturate(dot(normal, LightViewDir));
+      LdotV = saturate(dot(LightViewDir, ViewDir));
+      
+      NdotH = saturate(dot(normal, H));
+      VdotH = saturate(dot(ViewDir, H));
+      LdotH = saturate(dot(LightViewDir, H));
 
-    DiffAcc = Diffuse_Burley(NdotL, NdotV, LdotH, roughness) * diffuse;
-    SpecAcc = Specular_D(alpha, NdotH) *
-              Specular_F(specularPBR * lightColor, LdotH) *
-              Specular_G(alpha, LdotH);
-    SpecAcc /= (4.0f * cos(NdotL) * cos(NdotV));
-    
-    finalColor += (DiffAcc + SpecAcc) * (NdotL * LightPower);
+      DiffAcc = Diffuse_Burley(NdotL, NdotV, LdotH, roughness) * diffuse;
+      SpecAcc = Specular_D(alpha, NdotH) *
+                Specular_F(specularPBR * lightColor, LdotH) *
+                Specular_G(alpha, LdotH);
+      SpecAcc /= (4.0f * cos(NdotL) * cos(NdotV));
+      
+      finalColor += (DiffAcc + SpecAcc) * (NdotL * LightPower);
+    }
   };
   
   //////////IBL//////////
@@ -136,9 +163,11 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   //////////Final//////////
   const float3 resultColor = ((finalColor + IBL) * ShadowValue) + emissive;
 
+  //Lightning[uvScale] = float4(diffuse * ShadowValue, 1.0f);
+  //Lightning[uvScale] = float4(finalColor, 1.0f);
   Lightning[uvScale] = float4(resultColor, 1.0f);
   //Lightning[uvScale] = float4(1.0f, 0.0f, 0.0f, 1.0f);
-
+  
   //Brightness[uvScale] = float4(brightness(resultColor), 1.0f);
   //Brightness[uvScale] = float4(0.0f, 0.0f, 0.5f, 1.0f);
   Brightness[uvScale] = Lightning[uvScale];

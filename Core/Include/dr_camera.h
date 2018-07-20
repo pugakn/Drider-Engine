@@ -230,9 +230,14 @@ class DR_CORE_EXPORT Camera
   UInt32
   getViewportHeight() const;
 
-
   Vector3D
   getDirection() const;
+  
+  Vector3D
+  getLocalRight() const;
+
+  Vector3D
+  getLocalUp() const;
 
   //BEGINING_REGISTER(Camera)
   BEGINING_REGISTER(Camera, sizeof(Camera), VALUE_FLAGS)

@@ -7,6 +7,7 @@
 #include <dr_texture.h>
 #include <dr_sample_state.h>
 #include <dr_camera.h>
+#include <dr_structure_buffer.h>
 
 namespace driderSDK {
 
@@ -62,7 +63,7 @@ class LightningPass : public RenderPass {
   tileLights(PassDrawData* drawData);
 
  private:
-  struct CBuffer {
+  struct CBuffer1 {
     Vector4D fViewportDimensions;
     Vector4D EyePosition;         // [XYZ = Cameraposition, W = ActiveLights]
     Vector4D LightPosition[128];  // [XYZ = LightPosition, W = Range]
@@ -71,7 +72,18 @@ class LightningPass : public RenderPass {
     Vector4D threadsInfo;
   };
 
-  CBuffer CB;
+  struct CBuffer2 {
+    Vector4D ViewportDimensions;
+    Vector4D CameraUp;
+    Vector4D ThreadsGroups;
+    Matrix4x4 VP;
+    Vector4D LightPosition[128];	//XYZ: Light Position, W: Range
+  };
+
+  CBuffer1 CB;
+  CBuffer2 CBTiled;
+
+  GFXUnique<ConstantBuffer> m_constantBufferTiled;
 
   SizeT m_RTWidth;
   SizeT m_RTHeight;
@@ -81,11 +93,20 @@ class LightningPass : public RenderPass {
   SizeT m_ComputeHeightBlocks;
   SizeT m_ComputeTotalBlocks;
 
-  std::vector<UInt32> numberOfLights;
-  std::vector<std::array<UInt32, 64>> LightsIndex;
+  TString m_csTiledLightsFilename;
+
+  GFXUnique<Shader> m_csTiledLights;
 
   GFXUnique<SamplerState> m_samplerState;
   GFXUnique<SamplerState> m_samplerStateCubemap;
+
+  //std::array<Int32, 10000> numberOfLights;
+  //std::array<std::array<Int32, 64>, 10000> LightsIndex;
+  std::vector<Int32> numberOfLights;
+  std::vector<std::array<Int32, 128>> LightsIndex;
+
+  GFXUnique<StructureBuffer> m_sbNumberOfLights;
+  GFXUnique<StructureBuffer> m_sbLightsIndex;
 };
 
 }
