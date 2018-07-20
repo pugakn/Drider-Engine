@@ -20,8 +20,6 @@ struct LightningDrawData : PassDrawData {
   std::shared_ptr<Camera> ActiveCam;
   SizeT ActiveLights;
   std::array<Light, 128>* Lights;
-  Vector3D BloomThreshold;
-  float LuminiscenceDelta;
   GFXShared<RenderTarget> GbufferRT;
   GFXShared<RenderTarget> SSAORT;
   GFXShared<RenderTarget> ShadowRT;
@@ -68,7 +66,6 @@ class LightningPass : public RenderPass {
     Vector4D EyePosition;         // [XYZ = Cameraposition, W = ActiveLights]
     Vector4D LightPosition[128];  // [XYZ = LightPosition, W = Range]
     Vector4D LightColor[128];     // [XYZ = LightColor, W = LightIntensity]
-    Vector4D BloomThresholdLuminiscenceDelta;
     Vector4D threadsInfo;
   };
 
@@ -99,11 +96,6 @@ class LightningPass : public RenderPass {
 
   GFXUnique<SamplerState> m_samplerState;
   GFXUnique<SamplerState> m_samplerStateCubemap;
-
-  //std::array<Int32, 10000> numberOfLights;
-  //std::array<std::array<Int32, 64>, 10000> LightsIndex;
-  std::vector<Int32> numberOfLights;
-  std::vector<std::array<Int32, 128>> LightsIndex;
 
   GFXUnique<StructureBuffer> m_sbNumberOfLights;
   GFXUnique<StructureBuffer> m_sbLightsIndex;

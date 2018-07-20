@@ -2,11 +2,12 @@
 #include "dr_renderman_prerequisites.h"
 #include "dr_light.h"
 #include "dr_GBuffer1.h"
+#include "dr_Shadow.h"
 #include "dr_SSAO.h"
 #include "dr_HorBlur.h"
 #include "dr_VerBlur.h"
-#include "dr_Shadow.h"
 #include "dr_Lightning.h"
+#include "dr_Bloom.h"
 #include "dr_Luminescence.h"
 #include "dr_PostProcessing.h"
 
@@ -149,11 +150,16 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   GFXShared<DepthStencil> m_ShadowDSoptions;
   std::array<std::pair<float, float>, 4> m_ShadowSubFrustras;
 
-  //VS & CS (TODO: Make it Compute)
+  //CS
   LightningPass m_LightningPass;
   LightningInitData m_LightningInitData;
   LightningDrawData m_LightningDrawData;
   GFXShared<DepthStencil> m_LightningDSoptions;
+
+  //CS
+  BloomPass m_BloomPass;
+  BloomInitData m_BloomInitData;
+  BloomDrawData m_BloomDrawData;
 
   //CS
   ParticleSystemPass m_particlePass;
@@ -187,6 +193,7 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   GFXShared<RenderTarget> m_RTBlurInit;
   GFXShared<RenderTarget> m_RTSSAOBlur;
   GFXShared<RenderTarget> m_RTLightning;
+  GFXShared<RenderTarget> m_RTBrightness;
   GFXShared<RenderTarget> m_RTBloom;
   std::vector<Texture*> m_vecTexture;
   GFXShared<RenderTarget> m_RTLightningBlur;

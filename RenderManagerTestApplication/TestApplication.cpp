@@ -123,8 +123,8 @@ RenderManApp::postInit() {
                Lights[lighIndex].m_vec4Color.z);
 
       //Range
-      //Lights[lighIndex].m_vec4Position.w = 150.0f;
-      Lights[lighIndex].m_vec4Position.w = 100.0f;
+      Lights[lighIndex].m_vec4Position.w = 150.0f;
+      //Lights[lighIndex].m_vec4Position.w = 100.0f;
       //Lights[lighIndex].m_vec4Position.w = proportion * 150.0f;
 
       //Intensidad
@@ -151,8 +151,9 @@ RenderManApp::postInit() {
     m_selectedGO->createComponent<AABBCollider>(ptrFloor->aabb);
     m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, 0.0f));
     //m_selectedGO->getTransform().setScale(Vector3D(1000.0f, 1.0f, 1000.0f));
+    m_selectedGO->getTransform().setScale(Vector3D(100.0f, 1.0f, 100.0f));
+    //m_selectedGO->getTransform().setScale(Vector3D(5.0f, 1.0f, 5.0f));
     //m_selectedGO->getTransform().setScale(Vector3D(4.0f, 1.0f, 4.0f));
-    m_selectedGO->getTransform().setScale(Vector3D(5.0f, 1.0f, 5.0f));
 
     m_floorMat = ResourceManager::createMaterial(_T("FloorMaterial"));
 
@@ -192,8 +193,10 @@ RenderManApp::postInit() {
   if (ptrBs) {
     auto renderComp = m_selectedGO->createComponent<RenderComponent>(ptrBs);
     m_selectedGO->createComponent<AABBCollider>(ptrBs->aabb);
-    m_selectedGO->getTransform().setPosition(Vector3D(110.0f, 0.0f, 110.0f));
-    m_selectedGO->getTransform().setScale(Vector3D(0.05f, 0.05f, 0.05f));
+    //m_selectedGO->getTransform().setPosition(Vector3D(110.0f, 0.0f, 110.0f));
+    //m_selectedGO->getTransform().setScale(Vector3D(0.05f, 0.05f, 0.05f));
+    m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, 2000.0f));
+    m_selectedGO->getTransform().setScale(Vector3D(0.25f, 0.25f, 0.25f));
 
     m_BushMat = ResourceManager::createMaterial(_T("BushMaterial"));
 
@@ -210,9 +213,12 @@ RenderManApp::postInit() {
   if (ptrModel) {
     m_selectedGO->createComponent<RenderComponent>(ptrModel);
     m_selectedGO->createComponent<AABBCollider>(ptrModel->aabb);
-    m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 12.5f, -100.0f));
-    m_selectedGO->getTransform().setScale(Vector3D(10.0f, 10.0f, 10.0f));
-    m_selectedGO->getTransform().setRotation(Vector3D(0.0f, Math::PI*1.15f, 0.0f));
+    //m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 12.5f, -100.0f));
+    //m_selectedGO->getTransform().setScale(Vector3D(10.0f, 10.0f, 10.0f));
+    //m_selectedGO->getTransform().setRotation(Vector3D(0.0f, Math::PI*1.15f, 0.0f));
+    m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 80.0f, -100.0f));
+    m_selectedGO->getTransform().setScale(Vector3D(75.0f, 75.0f, 75.0f));
+    m_selectedGO->getTransform().setRotation(Vector3D(0.0f, Math::QUARTER_PI * 0.3f, 0.0f));
 
     m_modelMat = ResourceManager::createMaterial(_T("ModelMaterial"));
 
@@ -238,9 +244,12 @@ RenderManApp::postInit() {
     auto rComp = m_selectedGO->createComponent<RenderComponent>(ptrStorm);
     auto aComp = m_selectedGO->createComponent<AnimatorComponent>();
     m_selectedGO->createComponent<AABBCollider>(ptrStorm->aabb);
-    m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, -50.0f));
-    m_selectedGO->getTransform().setScale(Vector3D(30.0f, 30.0f, 30.0f));
-    m_selectedGO->getTransform().setRotation(Vector3D(00.0f, Math::PI, 00.0f));
+    //m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, -50.0f));
+    //m_selectedGO->getTransform().setScale(Vector3D(30.0f, 30.0f, 30.0f));
+    //m_selectedGO->getTransform().setRotation(Vector3D(00.0f, Math::PI, 00.0f));
+    m_selectedGO->getTransform().setPosition(Vector3D(200.0f, 0.0f, 150.0f));
+    m_selectedGO->getTransform().setScale(Vector3D(50.0f, 50.0f, 50.0f));
+    m_selectedGO->getTransform().setRotation(Vector3D(00.0f, Math::PI * 1.25f, 00.0f));
 
     m_StormtrooperMat = ResourceManager::createMaterial(_T("StormtrooperMaterial"));
 
@@ -269,9 +278,12 @@ RenderManApp::postInit() {
   if (ptrHK) {
     m_selectedGO->createComponent<RenderComponent>(ptrHK);
     m_selectedGO->createComponent<AABBCollider>(ptrHK->aabb);
-    m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, 25.0f));
-    m_selectedGO->getTransform().setScale(Vector3D(100.0f, 100.0f, 100.0f));
-    m_selectedGO->getTransform().setRotation(Vector3D(Math::Math::HALF_PI * 3.0f, Math::PI, 0.0f));
+    //m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, 25.0f));
+    //m_selectedGO->getTransform().setScale(Vector3D(100.0f, 100.0f, 100.0f));
+    //m_selectedGO->getTransform().setRotation(Vector3D(Math::Math::HALF_PI * 3.0f, Math::PI, 0.0f));
+    m_selectedGO->getTransform().setPosition(Vector3D(-200.0f, 0.0f, 150.0f));
+    m_selectedGO->getTransform().setScale(Vector3D(125.0f, 125.0f, 125.0f));
+    m_selectedGO->getTransform().setRotation(Vector3D(Math::Math::HALF_PI * 3.0f, Math::PI * 0.85f, 0.0f));
 
     m_hkBodyMat = ResourceManager::createMaterial(_T("HKBodyMaterial"));
     m_hkBodySMat = ResourceManager::createMaterial(_T("HKBodySMaterial"));

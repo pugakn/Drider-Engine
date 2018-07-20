@@ -64,16 +64,18 @@ LightningPass::init(PassInitData* initData) {
 
   shaderSrc.clear();
 
-  numberOfLights.resize(28800);
-  LightsIndex.resize(28800);
-
   bdesc.type = DR_BUFFER_TYPE::kRWSTRUCTURE;
-  bdesc.sizeInBytes = sizeof(Int32) * 28800;
+  bdesc.sizeInBytes = sizeof(Int32) *
+                      (data->RTWidth / m_ComputeWidthDivisions) *
+                      (data->RTHeight / m_ComputeHeightDivisions);
   bdesc.stride = sizeof(Int32);
   m_sbNumberOfLights = dr_gfx_unique((StructureBuffer*)device.createBuffer(bdesc));
 
   bdesc.type = DR_BUFFER_TYPE::kRWSTRUCTURE;
-  bdesc.sizeInBytes = sizeof(Int32) * 128 * 28800;
+  bdesc.sizeInBytes = sizeof(Int32) *
+                      128 *
+                      (data->RTWidth / m_ComputeWidthDivisions) *
+                      (data->RTHeight / m_ComputeHeightDivisions);
   bdesc.stride = sizeof(Int32) * 128;
   m_sbLightsIndex = dr_gfx_unique((StructureBuffer*)device.createBuffer(bdesc));
 }
@@ -111,9 +113,6 @@ LightningPass::draw(PassDrawData* drawData) {
     CB.LightColor[lighIndex] = (*data->Lights)[lighIndex].m_vec4Color;
   }
 
-  CB.BloomThresholdLuminiscenceDelta = data->BloomThreshold;
-  CB.BloomThresholdLuminiscenceDelta.w = data->LuminiscenceDelta;
-
   CB.threadsInfo.x = m_ComputeWidthBlocks;
   CB.threadsInfo.y = m_ComputeHeightBlocks;
 
@@ -129,10 +128,8 @@ LightningPass::draw(PassDrawData* drawData) {
   data->EnviromentCubemap->textureGFX->set(dc, 6, DR_SHADER_TYPE_FLAG::kCompute, true);  //Cubemap
   data->IrradianceCubemap->textureGFX->set(dc, 7, DR_SHADER_TYPE_FLAG::kCompute, true);  //CubemapDiffuse
 
-  m_sbNumberOfLights->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
-  m_sbLightsIndex->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 1);
-  data->OutRt->getTexture(0).set(dc, 2, DR_SHADER_TYPE_FLAG::kCompute, false);
-  data->OutRt->getTexture(1).set(dc, 3, DR_SHADER_TYPE_FLAG::kCompute, false);
+  m_sbLightsIndex->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
+  data->OutRt->getTexture(0).set(dc, 1, DR_SHADER_TYPE_FLAG::kCompute, false);
 
   dc.dispatch(outRTDesc.width / 8, outRTDesc.height / 4, 1);
 
@@ -160,8 +157,7 @@ LightningPass::tileLights(PassDrawData* drawData) {
 
   m_ComputeTotalBlocks = m_ComputeWidthBlocks * m_ComputeHeightBlocks;
 
-  m_sbNumberOfLights->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
-  m_sbLightsIndex->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 1);
+  m_sbLightsIndex->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
 
   CB.fViewportDimensions.x = m_RTWidth;
   CB.fViewportDimensions.y = m_RTHeight;
