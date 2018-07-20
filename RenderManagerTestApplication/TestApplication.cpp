@@ -1,4 +1,4 @@
-  #include "TestApplication.h"
+#include "TestApplication.h"
 
 //Modules
 #include <dr_camera_manager.h>
@@ -19,6 +19,11 @@
 #include <dr_degree.h>
 #include <dr_texture_core.h>
 #include "dr_rendermanapp.h"
+
+#define SINGLE_THREAD 1
+#define MULTI_THREAD 2
+
+#define RENDER_MANAGER SINGLE_THREAD
 
 namespace driderSDK {
 
@@ -93,36 +98,45 @@ RenderManApp::postInit() {
   CameraManager::setActiveCamera(_T("PATO_CAM"));
   RenderManager::startUp();
 
-  m_bRotate = false;
+  m_bRotate = true;
 
-  Degree grados(2.8125f);
   Vector4D LightPosition(0.0f, 100.0f, 150.0f, 1.0f);
-  Matrix4x4 rotationMatrix(driderSDK::Math::FORCE_INIT::kIdentity);
-  rotationMatrix = rotationMatrix.RotationY(grados.toRadian());
-
+  
+  SizeT lighIndex = 0;
+  Int32 zOffset = 0;
   float proportion = 0.0f;
-  for (int lighIndex = 0; lighIndex < 128; ++lighIndex) {
-    //Posicion
-    Lights[lighIndex].m_vec4Position = LightPosition;
-    LightPosition = LightPosition * rotationMatrix;
+  for (Int32 xPos = 0; xPos < 16; ++xPos) {
+    for (Int32 zPos = 0; zPos < 8; ++zPos) {
+      //Posicion
+      Lights[lighIndex].m_vec4Position = Vector4D(
+                                                  (zOffset * 50) - 375.0f,
+                                                  25,
+                                                  (zPos * 50) - 187.5 + 50,
+                                                  1.0f);
 
-    //Color
-    HSVtoRGB(proportion * 256,
-             1.0f,
-             1.0f,
-             Lights[lighIndex].m_vec4Color.x,
-             Lights[lighIndex].m_vec4Color.y,
-             Lights[lighIndex].m_vec4Color.z);
+      //Color
+      HSVtoRGB(proportion * 256,
+               1.0f,
+               1.0f,
+               Lights[lighIndex].m_vec4Color.x,
+               Lights[lighIndex].m_vec4Color.y,
+               Lights[lighIndex].m_vec4Color.z);
 
-    //Range
-    Lights[lighIndex].m_vec4Position.w = 150.0f;
+      //Range
+      //Lights[lighIndex].m_vec4Position.w = 150.0f;
+      Lights[lighIndex].m_vec4Position.w = 100.0f;
+      //Lights[lighIndex].m_vec4Position.w = proportion * 150.0f;
 
-    //Intensidad
-    Lights[lighIndex].m_vec4Color.w = (lighIndex / 128.0f);
+      //Intensidad
+      //Lights[lighIndex].m_vec4Color.w = (lighIndex / 128.0f);
+      Lights[lighIndex].m_vec4Color.w = 1.0f;
 
-    proportion += (1.0f/128.0f);
+      proportion += (1.0f / 128.0f);
+      ++lighIndex;
+    }
+    zOffset += 1;
   }
-
+  
   RenderManager::instance().lights = &Lights;
 
   modelMovement = Vector3D(0.0f, 0.0f, 0.0f);
@@ -137,7 +151,8 @@ RenderManApp::postInit() {
     m_selectedGO->createComponent<AABBCollider>(ptrFloor->aabb);
     m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, 0.0f));
     //m_selectedGO->getTransform().setScale(Vector3D(1000.0f, 1.0f, 1000.0f));
-    m_selectedGO->getTransform().setScale(Vector3D(4.0f, 1.0f, 4.0f));
+    //m_selectedGO->getTransform().setScale(Vector3D(4.0f, 1.0f, 4.0f));
+    m_selectedGO->getTransform().setScale(Vector3D(5.0f, 1.0f, 5.0f));
 
     m_floorMat = ResourceManager::createMaterial(_T("FloorMaterial"));
 
@@ -301,13 +316,15 @@ RenderManApp::postInit() {
   }
   */
 
-  m_SzTGosIndex = m_vecGos.size() - 1;
+  //m_SzTGosIndex = m_vecGos.size() - 1;
+  m_SzTGosIndex = 0;
   m_selectedGO = m_vecGos[m_SzTGosIndex];
 
   initInputCallbacks();
-
+#if (RENDER_MANAGER == MULTI_THREAD)
   render = true;
-  //m_RenderManagerThread = std::thread(renderManagerApp, &render);
+  m_RenderManagerThread = std::thread(renderManagerApp, &render);
+#endif
 }
 
 void
@@ -354,15 +371,19 @@ RenderManApp::postUpdate() {
 
 void
 RenderManApp::postRender() {
+#if (RENDER_MANAGER == SINGLE_THREAD)
   GraphicsDriver::API().clear();
   RenderManager::instance().draw(GraphicsAPI::getBackBufferRT(), GraphicsAPI::getDepthStencil());
   GraphicsDriver::API().swapBuffers();
+#endif
 }
 
 void
 RenderManApp::postDestroy() {
+#if (RENDER_MANAGER == MULTI_THREAD)
   render = false;
   m_RenderManagerThread.join();
+#endif
   RenderManager::shutDown();
   GraphicsDriver::shutDown();
   ResourceManager::shutDown();

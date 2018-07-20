@@ -297,7 +297,7 @@ RenderManager::init() {
     m_TexDescDefault.width = screenWidth;
     m_TexDescDefault.height = screenHeight;
     m_TexDescDefault.Format = DR_FORMAT::kR16G16B16A16_FLOAT;
-    m_TexDescDefault.pitch = m_TexDescDefault.width * 4 * 2;
+    m_TexDescDefault.pitch = m_TexDescDefault.width * 4;
     m_TexDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
 
     GFXUnique<Texture> ColorTexure = dr_gfx_unique<Texture>(dc.createEmptyTexture(m_TexDescDefault));

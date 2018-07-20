@@ -8,6 +8,7 @@
 #include <dr_model.h>
 #include <dr_texture.h>
 #include <dr_depth_stencil.h>
+#include <dr_camera_manager.h>
 
 namespace driderSDK {
 
@@ -22,18 +23,19 @@ LightningPass::init(PassInitData* initData) {
   LightningInitData* data = static_cast<LightningInitData*>(initData);
   Device& device = GraphicsAPI::getDevice();
 
-  //m_vsFilename = _T("Lightning_vs.hlsl");
-  //m_fsFilename = _T("Lightning_ps.hlsl");
   m_csFilename = _T("Lightning_cs.hlsl");
-  //m_csFilename = _T("TileLights_cs.hlsl");
 
   recompileShader();
 
   DrBufferDesc bdesc;
 
   bdesc.type = DR_BUFFER_TYPE::kCONSTANT;
-  bdesc.sizeInBytes = sizeof(CBuffer);
+  bdesc.sizeInBytes = sizeof(CBuffer1);
   m_constantBuffer = dr_gfx_unique((ConstantBuffer*)device.createBuffer(bdesc));
+
+  bdesc.type = DR_BUFFER_TYPE::kCONSTANT;
+  bdesc.sizeInBytes = sizeof(CBuffer2);
+  m_constantBufferTiled = dr_gfx_unique((ConstantBuffer*)device.createBuffer(bdesc));
 
   DrSampleDesc SSdesc;
   SSdesc.Filter = DR_TEXTURE_FILTER::kMIN_MAG_LINEAR_MIP_POINT;
@@ -46,6 +48,34 @@ LightningPass::init(PassInitData* initData) {
 
   m_ComputeWidthDivisions = 8;
   m_ComputeHeightDivisions = 4;
+
+  File file;
+  String shaderSrc;
+
+  m_csTiledLightsFilename = _T("TileLights_cs.hlsl");
+
+  file.Open(m_csTiledLightsFilename);
+  shaderSrc = StringUtils::toString(file.GetAsString(file.Size()));
+  file.Close();
+
+  m_csTiledLights = dr_gfx_unique(device.createShaderFromMemory(shaderSrc.data(),
+                                  shaderSrc.size(),
+                                  DR_SHADER_TYPE_FLAG::kCompute));
+
+  shaderSrc.clear();
+
+  numberOfLights.resize(28800);
+  LightsIndex.resize(28800);
+
+  bdesc.type = DR_BUFFER_TYPE::kRWSTRUCTURE;
+  bdesc.sizeInBytes = sizeof(Int32) * 28800;
+  bdesc.stride = sizeof(Int32);
+  m_sbNumberOfLights = dr_gfx_unique((StructureBuffer*)device.createBuffer(bdesc));
+
+  bdesc.type = DR_BUFFER_TYPE::kRWSTRUCTURE;
+  bdesc.sizeInBytes = sizeof(Int32) * 128 * 28800;
+  bdesc.stride = sizeof(Int32) * 128;
+  m_sbLightsIndex = dr_gfx_unique((StructureBuffer*)device.createBuffer(bdesc));
 }
 
 void
@@ -99,8 +129,10 @@ LightningPass::draw(PassDrawData* drawData) {
   data->EnviromentCubemap->textureGFX->set(dc, 6, DR_SHADER_TYPE_FLAG::kCompute, true);  //Cubemap
   data->IrradianceCubemap->textureGFX->set(dc, 7, DR_SHADER_TYPE_FLAG::kCompute, true);  //CubemapDiffuse
 
-  data->OutRt->getTexture(0).set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute, false);
-  data->OutRt->getTexture(1).set(dc, 1, DR_SHADER_TYPE_FLAG::kCompute, false);
+  m_sbNumberOfLights->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
+  m_sbLightsIndex->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 1);
+  data->OutRt->getTexture(0).set(dc, 2, DR_SHADER_TYPE_FLAG::kCompute, false);
+  data->OutRt->getTexture(1).set(dc, 3, DR_SHADER_TYPE_FLAG::kCompute, false);
 
   dc.dispatch(outRTDesc.width / 8, outRTDesc.height / 4, 1);
 
@@ -116,7 +148,40 @@ LightningPass::tileLights(PassDrawData* drawData) {
   dc.setUAVsNull();
   dc.setResourcesNull();
 
+  m_csTiledLights->set(dc);
 
+  DrTextureDesc outRTDesc = data->OutRt->getDescriptor();
+
+  m_RTWidth = outRTDesc.width;
+  m_RTHeight = outRTDesc.height;
+
+  m_ComputeWidthBlocks = m_RTWidth / m_ComputeWidthDivisions;
+  m_ComputeHeightBlocks = m_RTHeight / m_ComputeHeightDivisions;
+
+  m_ComputeTotalBlocks = m_ComputeWidthBlocks * m_ComputeHeightBlocks;
+
+  m_sbNumberOfLights->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
+  m_sbLightsIndex->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 1);
+
+  CB.fViewportDimensions.x = m_RTWidth;
+  CB.fViewportDimensions.y = m_RTHeight;
+
+  CBTiled.CameraUp = Vector4D(CameraManager::getActiveCamera()->getLocalUp(), 0.0f);
+
+  CBTiled.ThreadsGroups.x = m_ComputeWidthBlocks;
+  CBTiled.ThreadsGroups.y = m_ComputeHeightBlocks; 
+
+  Matrix4x4 CamVP = CameraManager::getActiveCamera()->getVP();
+  CBTiled.VP = CamVP;
+
+  for (SizeT lighIndex = 0; lighIndex < 128; ++lighIndex) {
+    CBTiled.LightPosition[lighIndex] = (*data->Lights)[lighIndex].m_vec4Position;
+  }
+
+  m_constantBufferTiled->updateFromBuffer(dc, reinterpret_cast<byte*>(&CBTiled));
+  m_constantBufferTiled->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
+
+  dc.dispatch(outRTDesc.width / 8, outRTDesc.height / 4, 1);
 
   dc.setUAVsNull();
   dc.setResourcesNull();
