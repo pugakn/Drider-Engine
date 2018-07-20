@@ -72,10 +72,10 @@ GraphicsApplication::postInit() {
   createTechniques();
   createScene();
       
-  m_light[0].m_vec4Position = {100, 100, 100, 2000};
+ /* m_light[0].m_vec4Position = {100, 100, 100, 2000};
   m_light[0].m_vec4Color = {255, 0, 0, 1};
   
-  m_renderMan.lights = &m_light;
+  m_renderMan.lights = &m_light;*/
 
   //m_renderMan.init();
     
@@ -114,9 +114,6 @@ GraphicsApplication::postRender() {
 
   GraphicsDriver::API().clear();
 
-  /*m_renderMan.draw(GraphicsDriver::API().getBackBufferRT(),
-                   GraphicsDriver::API().getDepthStencil());*/
-
   Int32 queryFlags = QUERY_PROPERTY::kAny;
 
   auto& camera = *CameraManager::getActiveCamera();
@@ -143,7 +140,7 @@ GraphicsApplication::postRender() {
 
     }    
 
-    std::vector<QueryObjectInfo> queryRes;
+    std::vector<RenderCommand> queryRes;
 
     //ScopedTimer{},
     queryRes = SceneGraph::query(*mainC,  
@@ -164,7 +161,7 @@ GraphicsApplication::postRender() {
         current = m_staticTech.get();
       }
 
-      current->setWorld(&queryObj.world);
+      current->setWorld(queryObj.world);
 
       auto material = queryObj.mesh.material.lock();
 
@@ -228,9 +225,9 @@ GraphicsApplication::initModules() {
 void 
 GraphicsApplication::initInputCallbacks() {
   
-  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+  /*Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kP,
-                        std::bind(&RenderMan::recompile, &m_renderMan)); 
+                        std::bind(&RenderMan::recompile, &m_renderMan)); */
 
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::k9,
@@ -709,7 +706,7 @@ GraphicsApplication::destroyModules() {
   m_animTech->destroy();
   m_staticTech->destroy();
 
-  m_renderMan.exit();
+  //m_renderMan.exit();
   SceneGraph::shutDown();
   ResourceManager::shutDown();
   CameraManager::shutDown();
@@ -952,6 +949,83 @@ GraphicsApplication::onResize() {
                                                m_viewport.height);*/
   GraphicsDriver::API().resizeBackBuffer(m_viewport.width, m_viewport.height);
   CameraManager::setViewportToAll(m_viewport);
+}
+
+void 
+RenderManangerT::render() {
+  
+  //GraphicsDriver::API().clear();
+
+  /*m_renderMan.draw(GraphicsDriver::API().getBackBufferRT(),
+                   GraphicsDriver::API().getDepthStencil());*/
+
+  //Int32 queryFlags = QUERY_PROPERTY::kAny;
+
+  //auto& camera = *CameraManager::getActiveCamera();
+
+  //m_animTech->setCamera(&camera);
+  //m_staticTech->setCamera(&camera);
+  //m_linesTech->setCamera(&camera);
+
+  //auto mainC = CameraManager::getCamera(m_camNames[0]);
+  //
+  //auto& dc = GraphicsAPI::getDeviceContext();
+  //
+  //if (m_drawMeshes) {
+
+  //  auto points = calculatePoints();
+
+  //  for (SizeT i = 0; i < m_paths.size(); ++i) {
+
+  //    m_paths[i].pushPoint(points[i]);
+
+  //    m_pathRenders[i].draw(m_linesTech.get());
+
+  //    m_paths[i].popPoint();
+
+  //  }    
+
+  //  std::vector<QueryObjectInfo> queryRes;
+
+  //  //ScopedTimer{},
+  //  queryRes = SceneGraph::query(*mainC,  
+  //                                QUERY_ORDER::kBackToFront, 
+  //                                queryFlags);
+
+  //  dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
+
+  //  for (auto& queryObj : queryRes) {
+  //  
+  //    Technique* current;
+
+  //    if (queryObj.bones) {
+  //      current = m_animTech.get();
+  //      dynamic_cast<AnimationTechnique*>(current)->setBones(*queryObj.bones);
+  //    }
+  //    else {
+  //      current = m_staticTech.get();
+  //    }
+
+  //    current->setWorld(&queryObj.world);
+
+  //    auto material = queryObj.mesh.material.lock();
+
+  //    if (material) {
+  //      material->set();
+  //    }
+
+  //    if (current->prepareForDraw()) {
+  //      queryObj.mesh.indexBuffer->set(dc);
+  //      queryObj.mesh.vertexBuffer->set(dc);
+
+  //      dc.draw(queryObj.mesh.indicesCount, 0, 0);
+  //    }
+
+  //  }
+  //}
+
+  //GraphicsDriver::API().swapBuffers();
+
 }
 
 }

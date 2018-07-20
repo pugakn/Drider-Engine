@@ -19,6 +19,12 @@ class GameObject;
 class Model;
 class Technique;
 
+class RenderManangerT
+{
+public:
+  void render();
+};
+
 class GraphicsApplication : public Application
 {
 public:
@@ -101,7 +107,7 @@ private:
 
   void
   playerRotation();
-  
+
   std::vector<Vector3D>
   calculatePoints();
   
@@ -124,8 +130,9 @@ private:
   GameObject* m_center;
   GameObject* m_player;
   GameObject* m_cameraHolder;
-  Timer m_timer;RenderMan m_renderMan;
-  std::array<Light, 128> m_light;
+  Timer m_timer;
+  //RenderMan m_renderMan;
+  //std::array<Light, 128> m_light;
   std::vector<PathHolder> m_paths;
   std::vector<PathRenderer> m_pathRenders;
   Spawner m_spiderSpawn;
