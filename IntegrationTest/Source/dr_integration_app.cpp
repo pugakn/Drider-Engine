@@ -47,6 +47,10 @@
 
 #include <dr_networkManager_component.h>
 #include <dr_messenger.h>
+#include <dr_network_manager.h>
+
+#include <dr_export_script.h>
+#include <dr_script_engine.h>
 
 namespace driderSDK {
 
@@ -85,6 +89,7 @@ DriderEngine::onGameStatusReceived(WString&& msg) {
 
 void
 DriderEngine::postInit() {
+  
   initModules();
   //initInputCallbacks();
   loadResources();
@@ -94,6 +99,7 @@ DriderEngine::postInit() {
 
   Time::update();
   m_editor.init(Application::getViewPort());
+  
 }
 
 void
@@ -105,7 +111,12 @@ DriderEngine::postUpdate() {
 
   SoundAPI::instance().API->update();
   SceneGraph::update();
-  m_editor.update();
+  m_editor.update(); 
+
+  if(!m_connected) {
+    requestConnection(m_lobbies[0].ip, m_lobbies[0].port);
+    m_connected = true;
+  }
 }
 
 void
@@ -149,9 +160,12 @@ DriderEngine::initModules() {
   ScriptEngine::startUp();
   SceneGraph::startUp();
 
+  m_err = false;
+  m_connected = false;
+  NetworkManager::startUp();
   Client::init();
-  Messenger::startUp();
-  
+  m_userName = _T("MontiTest");
+  requestLobbies(); 
 }
 
 void
@@ -210,6 +224,7 @@ DriderEngine::addObjectFromModel(std::shared_ptr<Model> model,
 
   return obj;
 }
+
 
 void
 DriderEngine::initScriptEngine() {
@@ -291,8 +306,8 @@ DriderEngine::initScriptEngine() {
   m_scripts.find(_T("script2"))->second->start();
 
   //Test Messeger
-  Vector3D vec3D(10.0f, 10.0f, 3.0f);
-  Messenger::sendFunction(0, FUNCTION_TYPE::Instantiate, vec3D);
+  /*Vector3D vec3D(10.0f, 10.0f, 3.0f);
+  Messenger::sendFunction(0, FUNCTION_TYPE::Instantiate, vec3D);*/
 }
 
 void

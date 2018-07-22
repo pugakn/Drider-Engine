@@ -89,6 +89,9 @@ private:
   void
   closeConnection();
 
+  void
+  sendPackets();
+
 protected:
 
   WString m_userName;

@@ -2,19 +2,20 @@
 
 #include <dr_id_object.h>
 
-#include "dr_core_prerequisites.h"
-#include "dr_gameComponent.h"
+#include "dr_network_prerequisites.h"
+#include <dr_gameComponent.h>
 #include <dr_vector3d.h>
 #include <dr_quaternion.h>
 
-#include "dr_gameComponent.h"
 #include <dr_script_engine.h>
+
+#include "dr_messenger.h"
 
 
 namespace driderSDK {
 
-class DR_CORE_EXPORT NetworkManagerComponent : public GameComponent,
-                                               public IDClass<NetworkManagerComponent> {
+class DR_NETWORK_EXPORT NetworkManagerComponent : public GameComponent,
+                                                  public IDClass<NetworkManagerComponent> {
 public:
 
   //ScriptComponent(GameObject& _gameObj);
@@ -42,9 +43,6 @@ public:
   GameComponent*
   cloneIn(GameObject& _go) override;
 
-  void
-  setExecuteFoo(void(*foo) (const WString&));
-
   void 
   instantiate(GameObject& object, 
               const Vector3D position, 
@@ -65,7 +63,6 @@ public:
   END_REGISTER
 
 private:
-  void (*executeFunctionFoo) (const WString& msg);
   
 };
 

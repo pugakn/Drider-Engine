@@ -198,15 +198,10 @@ B* refCast(A* a)
                                                              (Int32)enumC::valueName);
 
 //GLOBAL FUNCTIONS
-
-#define REGISTER_GLO_FOO_0P(foo, fooName, rType, strRType)\
-    result = scriptEngine->m_scriptEngine->RegisterGlobalFunction (strRType " "#fooName "()",\
-                                                                   asFUNCTIONPR(foo, (void), rType),\
-                                                                   asCALL_CDECL);
-#define REGISTER_GLO_FOO_1P(foo, fooName, pType, asPType, rType, strRType)\
-    result = scriptEngine->m_scriptEngine->RegisterGlobalFunction (strRType " "#fooName "("#asPType ")",\
-                                                                   asFUNCTIONPR(foo, (pType), rType),\
-                                                                   asCALL_CDECL);
+#define REGISTER_GLO_FOO(strFooDecl, foo)\
+  result = scriptEngine->m_scriptEngine->RegisterGlobalFunction(strFooDecl,\
+                                                                foo,\
+                                                                asCALL_CDECL);
 
 #define END_REGISTER\
     return result;\

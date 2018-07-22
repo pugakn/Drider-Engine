@@ -75,6 +75,12 @@ public:
 
   }
 
+  static std::vector<Packet>
+  getMessages();
+
+  static void
+  clearMessages();
+
 private:
   void
   onStartUp();

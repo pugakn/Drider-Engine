@@ -3,6 +3,7 @@
 #include <algorithm>
 
 #include <dr_network_manager.h>
+#include <dr_messenger.h>
 
 namespace driderSDK {
 
@@ -30,11 +31,14 @@ Client::init(const TString& globalServer) {
   //Filter commands to receive only lobby commands 
   m_commands = &m_lobbyCommands;
 
+  Messenger::startUp();
+
 }
 
 void
 Client::update() {
   checkIncomingPackets();
+  sendPackets();
   checkConnectionStatus();
 }
 
@@ -172,6 +176,18 @@ void
 Client::sendFunction(Packet packet) {
   if (m_currentServer.ip) {
     m_socket->send(packet, m_currentServer.ip, m_currentServer.port);
+  }
+}
+
+
+void
+Client::sendPackets() {
+  if (Messenger::getMessages().size() > 0) {
+    for (auto message : Messenger::getMessages()) {
+      sendFunction(message);
+    }
+
+    Messenger::clearMessages();
   }
 }
 

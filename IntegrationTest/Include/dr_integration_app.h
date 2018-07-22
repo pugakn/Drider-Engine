@@ -95,6 +95,8 @@ private:
   bool m_err;
   LobbiesList m_lobbies;
   String m_nameStr;
+
+  bool m_connected;
 };
 
 }

@@ -38,17 +38,12 @@ NetworkManagerComponent::cloneIn(GameObject&) {
 }
 
 void
-NetworkManagerComponent::setExecuteFoo(void(*foo) (const WString&)) {
-  executeFunctionFoo = foo;
-}
-
-void
 NetworkManagerComponent::instantiate(GameObject& object,
                                      const Vector3D position,
                                      const Quaternion& rotation) {
-
-  executeFunctionFoo(StringUtils::toWString("i"));
-  
+  Messenger::sendFunction(this->ID(),
+                          FUNCTION_TYPE::Instantiate,
+                          &object, position, rotation);
 }
 
 
