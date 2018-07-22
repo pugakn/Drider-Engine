@@ -124,7 +124,7 @@ class DR_MATH_EXPORT Vector2D
   *
   * Normalize the vector.
   */
-  void
+  Vector2D&
   normalize();
 
   /**
