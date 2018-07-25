@@ -21,8 +21,8 @@ GBufferPass::init(PassInitData* initData) {
   GBufferInitData* data = static_cast<GBufferInitData*>(initData);
   Device& device = GraphicsAPI::getDevice();
 
-  m_vsFilename = _T("GBuffer1_vs.hlsl");
-  m_fsFilename = _T("GBuffer1_ps.hlsl");
+  m_vsFilename = _T("Resources\\Shaders\\GBuffer1_vs.hlsl");
+  m_fsFilename = _T("Resources\\Shaders\\GBuffer1_ps.hlsl");
 
   recompileShader();
 

@@ -5,15 +5,14 @@
 #include "dr_d3d_device_context.h"
 
 namespace driderSDK {
-void * 
-D3DVertexBuffer::getAPIObject() const
-{
+
+void* 
+D3DVertexBuffer::getAPIObject() const {
   return VB;
 }
 
-void ** 
-D3DVertexBuffer::getAPIObjectReference() 
-{
+void** 
+D3DVertexBuffer::getAPIObjectReference() {
   return reinterpret_cast<void**>(&VB);
 }
 
@@ -51,42 +50,41 @@ D3DVertexBuffer::create(const Device& device,
     D3D11_SUBRESOURCE_DATA subData = { &initialData[0], 0, 0 };
     apiDevice->D3D11Device->CreateBuffer(&bdesc, &subData, &VB);
   }
-  else
-  {
+  else {
     apiDevice->D3D11Device->CreateBuffer(&bdesc, nullptr, &VB);
   }
-  
-  
 }
 
 void
-D3DVertexBuffer::set(const DeviceContext& deviceContext,  
+D3DVertexBuffer::set(const DeviceContext& deviceContext,
                      UInt32 offset) const {
   reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext->
-      IASetVertexBuffers(0, 
-                         1, 
-                         &VB, 
-                         &m_descriptor.stride, 
+      IASetVertexBuffers(0,
+                         1,
+                         &VB,
+                         &m_descriptor.stride,
                          &offset);
 }
 
-void D3DVertexBuffer::set(const DeviceContext & deviceContext, VertexBuffer* extraBuffers, UInt32 offset) const
-{
+void
+D3DVertexBuffer::set(const DeviceContext& deviceContext,
+                     VertexBuffer* extraBuffers,
+                     UInt32 offset) const {
   ID3D11Buffer * buffers[2]; //TODO: more buffers
   buffers[0] = (ID3D11Buffer*)VB;
   buffers[1] = (ID3D11Buffer*)((D3DVertexBuffer*)extraBuffers)->VB;
-  unsigned int offsets[2] = { offset,offset };
+  unsigned int offsets[2] = { offset, offset };
   unsigned int strides[2];
   strides[0] = m_descriptor.stride;
   strides[1] = extraBuffers->getDescriptor().stride;
   reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext->
-    IASetVertexBuffers(0,
-      2,
-      buffers,
-      strides,
-      offsets);
+      IASetVertexBuffers(0,
+                         2,
+                         buffers,
+                         strides,
+                         offsets);
 }
 
 void

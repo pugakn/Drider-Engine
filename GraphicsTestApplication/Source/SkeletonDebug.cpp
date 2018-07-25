@@ -2,6 +2,7 @@
 #include <dr_aabb.h>
 #include <dr_animator_component.h>
 #include <dr_gameObject.h>
+#include <dr_id_object.h>
 #include <dr_logger.h>
 #include <dr_skeleton.h>
 #include <dr_transform.h>
@@ -25,7 +26,7 @@ SkeletonDebug::create() {
     return;
   }
   
-  if (auto skel = anim->getSkeleton()) {
+  /*if (auto skel = anim->getSkeleton()) {
     
     std::vector<Mesh> meshes(1);
 
@@ -46,7 +47,7 @@ SkeletonDebug::create() {
   }
   else {
     Logger::addLog(_T("Animator has no skeleton assigned"));
-  }  
+  }  */
 }
 
 void 
@@ -58,7 +59,7 @@ SkeletonDebug::buildSkeleton(void* data,
 
   auto it = skeleton.bonesMapping.find(bone->name);
 
-  if (it != skeleton.bonesMapping.end()) {
+  /*if (it != skeleton.bonesMapping.end()) {
     Int32 index = it->second;
 
     auto& aabb = skeleton.bonesAABBs[index];
@@ -96,7 +97,7 @@ SkeletonDebug::buildSkeleton(void* data,
     for (auto& child : bone->children) {
       buildSkeleton(child.get(), skeleton, mesh);
     }
-  }
+  }*/
 }
 
 void
@@ -112,12 +113,20 @@ SkeletonDebug::onUpdate() {
   create();
 }
 
-void 
+GameComponent*
 SkeletonDebug::cloneIn(GameObject& _go) {
 
   auto dup = _go.createComponent<SkeletonDebug>();
+  
+  dup->m_technique = m_technique;
+  dup->m_primitive = m_primitive;
+  dup->m_meshes = m_meshes;
 
-  dup->setShaderTechnique(m_technique);
+  return dup;
+}
+
+UInt32 SkeletonDebug::getClassID() {
+  return CLASS_NAME_ID(SkeletonDebug);
 }
 
 

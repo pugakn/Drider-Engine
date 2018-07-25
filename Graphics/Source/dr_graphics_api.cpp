@@ -167,6 +167,7 @@ GraphicsAPI::swapBuffers() {
 
 void
 GraphicsAPI::resizeBackBuffer(UInt32 w, UInt32 h) {
+
   m_swapChain->resize(*m_device, w,h);
   m_depthStencilView.reset();
   DrDepthStencilDesc depthTextureDesc;
@@ -174,10 +175,14 @@ GraphicsAPI::resizeBackBuffer(UInt32 w, UInt32 h) {
   depthTextureDesc.width = w;
   depthTextureDesc.height = h;
   depthTextureDesc.Format = DR_FORMAT::kD24_UNORM_S8_UINT;
+  //depthTextureDesc.Format = DR_FORMAT::kD32_FLOAT;
   {
     auto ds = m_device->createDepthStencil(depthTextureDesc);
     m_depthStencilView = dr_gfx_unique(ds);
   }
+  /////////////////////////////////////////////////////////////////////////
+  m_swapChain->getBackBufferRT().set(*m_deviceContext, *m_depthStencilView);
+  /////////////////////////////////////////////////////////////////////////
 }
 
 Device&

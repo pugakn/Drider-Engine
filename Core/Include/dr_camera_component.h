@@ -39,7 +39,10 @@ private:
   virtual void 
   onDestroy() override;
 
-  virtual void 
+  virtual UInt32
+  getClassID() override;
+
+  virtual GameComponent* 
   cloneIn(GameObject& _go) override;
 
   WeakCamera m_camera;

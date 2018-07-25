@@ -4,9 +4,11 @@
 
 #include <unordered_map>
 
+#include <dr_export_script.h>
+#include <dr_id_object.h>
+
 #include "dr_gameComponent.h"
 
-#include <dr_export_script.h>
 #include <..\..\Script\Include\dr_script_engine.h>
 
 namespace driderSDK {
@@ -20,7 +22,9 @@ class DrChannel;
 
 class Vector3D;
 
-class DR_CORE_EXPORT SoundComponent : public GameComponent {
+class DR_CORE_EXPORT SoundComponent : public GameComponent, 
+                                      public IDClass<SoundComponent>
+{
 
   public:
     SoundComponent(GameObject &gameObject_);
@@ -40,7 +44,10 @@ class DR_CORE_EXPORT SoundComponent : public GameComponent {
     void
     onDestroy() override;
 
-    void
+    virtual UInt32
+    getClassID() override;
+
+    GameComponent*
     cloneIn(GameObject& _go) override;
 
 
@@ -55,7 +62,17 @@ class DR_CORE_EXPORT SoundComponent : public GameComponent {
 
     result = REGISTER_FOO(SoundComponent,
                           "void play(const TString& in)",
-                          asMETHODPR(SoundComponent, play, (const TString&), void));    
+                          asMETHODPR(SoundComponent, play, (const TString&), void));
+    
+    result = scriptEngine->m_scriptEngine->RegisterObjectMethod("SoundComponent", 
+                                                                "GameComponent@ opImplCast()", 
+                                                                asFUNCTION((refCast<SoundComponent, GameComponent>)),
+                                                                asCALL_CDECL_OBJLAST);
+
+    result = scriptEngine->m_scriptEngine->RegisterObjectMethod("GameComponent",
+                                                                "SoundComponent@ opCast()",
+                                                                asFUNCTION((refCast<GameComponent, SoundComponent>)),
+                                                                asCALL_CDECL_OBJLAST);
 
     END_REGISTER
 

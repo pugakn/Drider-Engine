@@ -166,7 +166,6 @@
     <ClCompile Include="Source\dr_script_string_factory.cpp" />
     <ClCompile Include="Source\scriptarray.cpp" />
     <ClCompile Include="Source\scriptdictionary.cpp" />
-    <ClCompile Include="Source\scriptstdstring.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\dr_context_manager.h" />
@@ -180,7 +179,6 @@
     <ClInclude Include="Include\dr_script_string_factory.h" />
     <ClInclude Include="Include\scriptarray.h" />
     <ClInclude Include="Include\scriptdictionary.h" />
-    <ClInclude Include="Include\scriptstdstring.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

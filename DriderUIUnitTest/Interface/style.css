@@ -1,0 +1,43 @@
+body  {
+  margin: 0px;
+}
+#container {
+  background-color: yellow;
+  width: 100%;
+}
+#hierarchy {
+  height: 66%;
+  width: 25%;
+  background-color: #FFF;
+}
+#scene {
+  height: 66%;
+  width: 50%;
+  background-color: white;
+}
+#inspector {
+  height: 100%;
+  width: 25%;
+  background-color: green;
+}
+#project {
+  height: 34%;
+  width: 75%;
+  background: #FFF;
+}
+.subSection {
+  height: 100%;
+  width: 100%;
+}
+.section {
+  position: fixed;
+}
+.titleSection {
+  margin: 0px;
+  background: gray;
+  padding: 5px;
+}
+
+.front{
+  z-index:100;
+}

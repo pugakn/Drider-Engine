@@ -1,6 +1,7 @@
 #include "dr_camera_component.h"
 
 #include <dr_matrix3x3.h>
+#include <dr_id_object.h>
 #include "dr_camera.h"
 #include "dr_camera_manager.h"
 
@@ -54,9 +55,14 @@ void
 CameraComponent::onDestroy() {
 }
 
-void 
-CameraComponent::cloneIn(GameObject&) {
+UInt32
+CameraComponent::getClassID() {
+  return CLASS_NAME_ID(CameraComponent);
+}
 
+GameComponent* 
+CameraComponent::cloneIn(GameObject& _go) {
+  return _go.createComponent<CameraComponent>();
 }
 
 }

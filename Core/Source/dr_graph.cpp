@@ -1,11 +1,12 @@
 #include "dr_graph.h"
 
 #include <dr_frustrum.h>
+#include <dr_id_object.h>
 #include <dr_matrix4x4.h>
+#include <dr_scoped_timer.h>
 #include <dr_vector3d.h>
 #include <dr_vector4d.h>
 
-#include "dr_aabb_collider.h"
 #include "dr_animator_component.h"
 #include "dr_camera.h"
 #include "dr_gameObject.h"
@@ -35,6 +36,8 @@ SceneGraph::onStartUp() {
 void
 SceneGraph::onShutDown() {
   m_root->destroy();
+  m_octree->destroy();
+  m_octree = nullptr;
   m_root = nullptr;
 }
 
@@ -70,6 +73,13 @@ SceneGraph::getOctree()
   return instance().m_octree;
 }
 
+void 
+SceneGraph::start() {
+  
+  instance().m_root->start();
+
+}
+
 void
 SceneGraph::update() {
 
@@ -96,6 +106,7 @@ SceneGraph::query(const Camera& camera, QUERY_ORDER::E order, UInt32 props) {
 
   Frustrum frustrum(camera.getView(), camera.getProjection());
 
+  //ScopedTimer{},
   testObject(instance().m_root, frustrum, objects);
 
   QueryResult queryRes;
@@ -104,6 +115,7 @@ SceneGraph::query(const Camera& camera, QUERY_ORDER::E order, UInt32 props) {
     testObjectOct(instance().m_octree, frustrum, objects, true);
   }
 
+  //ScopedTimer{},
   filterObjects(objects, queryRes, props);
 
   return queryRes;  
@@ -137,9 +149,9 @@ SceneGraph::testObjectOct(SharedGameObject object,
   bool ins = !test;
 
   if (test) {
-    if (auto aabbCollider = object->getComponent<AABBCollider>()) {
+    if (auto renderComp = object->getComponent<RenderComponent>()) {
     
-      auto inter = frustrum.intersects(aabbCollider->getTransformedAABB());
+      auto inter = frustrum.intersects(renderComp->getAABB());
 
       if (inter != FRUSTRUM_INTERSECT::kOutside) {
       
@@ -171,12 +183,11 @@ SceneGraph::testObject(SharedGameObject object,
                        const Frustrum& frustrum,
                        GameObjectQueue& objects) {
 
-  auto aabbCollider = object->getComponent<AABBCollider>();
+  auto renderComponent = object->getComponent<RenderComponent>();
 
-  if (object->getComponent<RenderComponent>() && 
-      aabbCollider) {      
+  if (renderComponent) {      
 
-    auto inter = frustrum.intersects(aabbCollider->getTransformedAABB());
+    auto inter = frustrum.intersects(renderComponent->getAABB());
 
     if (inter != FRUSTRUM_INTERSECT::kOutside) {
       /******************************************/
@@ -212,17 +223,19 @@ SceneGraph::filterObjects(GameObjectQueue& objects,
 
     auto& meshes = obj->getComponent<RenderComponent>()->getMeshes();
 
+    UInt32 staticFlag = 0;
+
+    if (obj->isStatic()) {
+      staticFlag |= QUERY_PROPERTY::kStatic;
+    }
+    else {
+      staticFlag |= QUERY_PROPERTY::kDynamic;
+    }
+
     for (auto& mesh : meshes) {
       
-      UInt32 meshProps = 0;
+      UInt32 meshProps = staticFlag;
       
-      if (obj->isStatic()) {
-        meshProps |= QUERY_PROPERTY::kStatic;
-      }
-      else {
-        meshProps |= QUERY_PROPERTY::kDynamic;
-      }
-
       auto material = mesh.material.lock();
             
       if (material) {
@@ -296,17 +309,17 @@ bool
 SceneGraph::DepthComparer::operator()(SharedGameObject objA, 
                                       SharedGameObject objB) const {
 
-  auto renderA = objA->getComponent<AABBCollider>();
+  auto renderA = objA->getComponent<RenderComponent>();
  
   Vector4D posA(renderA->getAABB().center, 1.f);
 
-  auto WVPA = objA->getWorldTransform().getMatrix() * m_camera.getVP();
+  auto WVPA = m_camera.getVP();
 
-  auto renderB = objB->getComponent<AABBCollider>();
+  auto renderB = objB->getComponent<RenderComponent>();
 
   Vector4D posB(renderB->getAABB().center, 1.f);
 
-  auto WVPB = objB->getWorldTransform().getMatrix() * m_camera.getVP();
+  auto WVPB = m_camera.getVP();
 
   auto aW = (posA * WVPA).w;
 

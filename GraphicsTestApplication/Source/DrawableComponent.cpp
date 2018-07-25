@@ -58,7 +58,7 @@ DrawableComponent::createMeshBuffers(std::vector<Mesh>& meshes) {
     DrBufferDesc buffDesc;
     
     buffDesc.type = DR_BUFFER_TYPE::kVERTEX;
-    buffDesc.usage = DR_BUFFER_USAGE::kDynamic;
+    buffDesc.usage = DR_BUFFER_USAGE::kDefault;
     buffDesc.sizeInBytes = mesh.vertices.size() * sizeof(Vertex);
     buffDesc.stride = sizeof(Vertex);
     auto buffData = reinterpret_cast<byte*>(mesh.vertices.data());

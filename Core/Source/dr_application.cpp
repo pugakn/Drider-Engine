@@ -4,11 +4,8 @@
 #include <SDL2/SDL.h>
 
 namespace driderSDK {
-
 Application* Application::application;
-
-Int32
-Application::run(const Viewport& _viewport) {
+Int32 Application::run(const Viewport& _viewport) {
   if (Application::application) {
     std::cout << "Application already running" << std::endl;
     return 0;
@@ -26,14 +23,11 @@ Application::run(const Viewport& _viewport) {
 
   return 0;
 }
-
-Viewport
-Application::getViewPort() {
+Viewport Application::getViewPort()
+{
   return getApplication().m_viewport;
 }
-
-void
-Application::setViewport(const Viewport& _viewport)
+void Application::setViewport(const Viewport & _viewport)
 {
   Application& app = getApplication();
   app.m_viewport = _viewport;
@@ -41,38 +35,42 @@ Application::setViewport(const Viewport& _viewport)
 }
 void 
 Application::init() {
+
   m_running = true;
     
-  createWindow();
-
-  m_hwnd = GetActiveWindow();
-
+  if (m_usesWindow) {
+    createWindow();
+    m_hwnd = GetActiveWindow();
+  }
+  
   postInit();
 }
 void 
 Application::createWindow() {
+
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
     std::cout << "Video initialization failed: " << SDL_GetError() << std::endl;
   }
-
-  m_window = SDL_CreateWindow("Drider Engine", 
-                              SDL_WINDOWPOS_CENTERED, 
-                              SDL_WINDOWPOS_CENTERED, 
-                              m_viewport.width, 
-                              m_viewport.height, 
-                              SDL_WINDOW_RESIZABLE);
+    m_window = SDL_CreateWindow("Drider Engine", 
+    SDL_WINDOWPOS_CENTERED, 
+    SDL_WINDOWPOS_CENTERED, 
+    m_viewport.width, 
+    m_viewport.height, 
+    SDL_WINDOW_RESIZABLE);
 
   if (!m_window) {
     std::cout << "Error creating SDL window " << std::endl;
     exit(666);
   }
 }
-
 void 
-Application::update() { 
-  SDL_Event event;
+Application::update() {
+ 
+  if (m_usesWindow) {
 
-  while (SDL_PollEvent(&event)) {
+    SDL_Event event;
+
+  while (SDL_PollEvent(&event)){
     if (event.type == SDL_QUIT) {
       m_running = false;
     }
@@ -83,8 +81,12 @@ Application::update() {
         onResize();
       }
     }
+
+
   }
 
+  }
+  
   postUpdate();
 }
 
@@ -95,14 +97,15 @@ Application::render() {
 
 void 
 Application::destroy() {
-  SDL_Quit();
+  
+  if (m_usesWindow) {
+    SDL_Quit();
+  }
   
   postDestroy();
 }
-
-Application&
-Application::getApplication() {
+Application & Application::getApplication()
+{
   return *Application::application;
 }
-
 }

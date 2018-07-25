@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Drider Engine</title>
+  <link href="external/jquery-ui.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <link href="jqueryFileTree.css" rel="stylesheet" type="text/css" media="screen" />
+  <link href="hierarchy.css" rel="stylesheet" type="text/css" media="screen" />
+  <link href="inspector.css" rel="stylesheet" type="text/css" media="screen" />
+
+</head>
+<body >
+  <ul id="menuInspector">
+    <li class="ui-state-disabled"><div>Toys (n/a)</div></li>
+    <li><div>Books</div></li>
+    <li><div>Clothing</div></li>
+    <li><div>Electronics</div>
+      <ul>
+        <li class="ui-state-disabled"><div>Home Entertainment</div></li>
+        <li><div>Car Hifi</div></li>
+        <li><div>Utilities</div></li>
+      </ul>
+    </li>
+    <li><div>Movies</div></li>
+    <li><div>Music</div>
+      <ul>
+        <li><div>Rock</div>
+          <ul>
+            <li><div>Alternative</div></li>
+            <li><div>Classic</div></li>
+          </ul>
+        </li>
+        <li><div>Jazz</div>
+          <ul>
+            <li><div>Freejazz</div></li>
+            <li><div>Big Band</div></li>
+            <li><div>Modern</div></li>
+          </ul>
+        </li>
+        <li><div>Pop</div></li>
+      </ul>
+    </li>
+    <li class="ui-state-disabled"><div>Specials (n/a)</div></li>
+  </ul>
+  <ul id="menuHierarchy">
+    <li id="eliminar">Eliminar</li>
+  </ul>
+  <div id="container" class="snapTarget">
+    <div id="hierarchy" class="section snapTarget">
+      <div id="hierarchyDiv" class="subSection">
+        <h3 class="titleSection">Hierarchy
+          <select id="optionsHierarchy">
+            <option>Nuevo Game Object</option>
+            <option>Actualizar</option>
+          </select>
+        </h3>
+        <div id="divHierarchy">
+          <div id="generalPlus" class="droppableHierarchy">
+            +
+          </div>
+          <ul class="sortableHierarchy" id="idSorteableHierarchy">
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div id="scene" class="section snapTarget">
+      <div id="sceneDiv" class="subSection">
+        <h3 class="titleSection">Escena</h3>
+
+      </div>
+    </div>
+    <div id="inspector" class="section snapTarget">
+      <div class="subSection">
+        <h3 class="titleSection">Inspector</h3>
+        <div id="divInspector">
+          <div>
+            <label for="objectName">Nombre: </label>
+            <input name:"objectName" type="text" value="">
+          </div>
+          <div>
+            <label for="tagSelector">Tag: </label>
+            <select name="tagSelector" id="tagSelector">
+              <option value="0" selected>Sin tag</option>
+            </select>
+          </div>
+          <div id="accordionInspector">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="project" class="section snapTarget">
+      <div  id="projectDiv" class="subSection">
+        <h3 class="titleSection">Archivos</h3>
+        <div id="fileTree"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="external/jquery.js"></script>
+  <script src="external/jquery-ui.js"></script>
+  <script src="external/jquery.easing.js"></script>
+  <script src="configWindow.js"></script>
+  <script src="jqueryFileTree.js"></script>
+  <script src="hierarchy.js"></script>
+  <script src="inspector.js"></script>
+
+</body>
+</html>

@@ -1,4 +1,5 @@
 #include "..\Include\dr_scene_editor.h"
+#include "..\Include\dr_input_editor.h"
 #include <dr_device.h>
 #include <dr_graphics_api.h>
 #include <dr_graphics_driver.h>
@@ -20,13 +21,16 @@
 #include <dr_mouse.h>
 #include <dr_render_component.h>
 #include <dr_script_component.h>
+#include <dr_string_utils.h>
 #include <dr_animator_component.h>
 #include <dr_collider_component.h>
 #include <dr_model.h>
 #include <dr_script_core.h>
 #include <dr_depth_stencil_state.h>
 #include <dr_math.h>
+#include <dr_id_object.h>
 #include<Shlwapi.h>
+
 #pragma comment(lib, "Shlwapi.lib")
 
 #include <dr_model.h>
@@ -80,7 +84,7 @@ namespace driderSDK {
     }
   }
 
-void read_directory(const TString& name, std::vector<TString>& v)
+void read_directory(const TString& name, TString& v)
 {
   TString pattern(name);
   TString parent(name);
@@ -94,27 +98,24 @@ void read_directory(const TString& name, std::vector<TString>& v)
       if (data.cFileName[0] == '.') continue;
       if (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
       {
-        v.push_back(_T("webix.callEvent('WEBIX_AddFile',['") + TString(data.cFileName) + _T("','") + parent + _T("','") + _T(".folder") + _T("']);"));
-        read_directory(name + _T("\\") + data.cFileName, v);
+        v += (_T("{'name':'") + TString(data.cFileName) + _T("','parent':'") + parent + _T("/") + TString(data.cFileName) + _T("','type':'folder'},"));
       }
       else
       {
         auto ext = PathFindExtension(data.cFileName);
-        v.push_back(_T("webix.callEvent('WEBIX_AddFile',['") + TString(data.cFileName) + _T("','") + parent + _T("','") + ext + _T("']);"));
+        v += (_T("{'name':'") + TString(data.cFileName) + _T("','parent':'") + parent + _T("','type':'") + ext + _T("'},"));
       }
     } while (FindNextFile(hFind, &data) != 0);
     FindClose(hFind);
   }
 }
-void updateFolders(WebRenderer& webRenderer) {
-  TString root(_T("Assets"));
-  std::vector<TString> folders;
-  folders.push_back(_T("webix.callEvent('WEBIX_AddFile',['") + root + _T("','") + root + _T("','") + _T(".folder") + _T("']);"));
+void updateFolders(WebRenderer& webRenderer, TString root) {
+  TString folders = _T("JS_InfoTreeFile(\"") + root + _T("\",");
+  folders += _T("\"{'items':[");
   read_directory(root, folders);
-  for (auto &it : folders) {
-    std::string str(it.begin(), it.end());
-    webRenderer.executeJSCode(str);
-  }
+  folders.erase(folders.length() - 1);
+  folders += _T("]}\");");
+  webRenderer.executeJSCode(folders);
 }
 
 
@@ -186,8 +187,8 @@ void SceneEditor::initSceneGraph()
   m_sceneViewer.getRenderManager().lights = &Lights;
 
   CameraManager::createCamera(_T("PATO_CAM"),
-  { 0.0f, 0.0f, -400.0f },
-  { 0.0f, 1.f, 0.0f },
+  { 0.0f, 150.0f, -400.0f },
+  { 0.0f, 50.f, 0.0f },
     m_viewport,
     45.f,
     //1024, 1024,
@@ -233,6 +234,8 @@ void SceneEditor::initSceneGraph()
   auto ptrFloor = ResourceManager::getReferenceT<Model>(_T("plane.fbx"));
   if (ptrFloor) {
     floor->createComponent<RenderComponent>(ptrFloor);
+    floor->createComponent<RenderComponent>(ptrFloor);
+
     floor->createComponent<AABBCollider>(ptrFloor->aabb);
     floor->getTransform().setPosition(Vector3D(0.0f, -50.0f, 0.0f));
     floor->getTransform().setScale(Vector3D(5.0f, 5.0f, 5.0f));
@@ -302,19 +305,16 @@ void SceneEditor::loadResources()
 }
 void SceneEditor::initUI()
 {
-  //m_netLobby.Init(1024,720, BROWSER_MODE::kPopUp);
-  //m_netLobby.loadURL("file:///netLobby/NetLobby.html");
-
   webRenderer.Init(m_viewport.width, m_viewport.height, BROWSER_MODE::kHeadless);
-  webRenderer.loadURL("file:///C:/Users/Ulises/Documents/GitHub/Drider-Engine/DriderUIUnitTest/WebixTest/ss.html");
+  webRenderer.loadURL("file:///Interface/index.html");
 
-  webRenderer.registerJS2CPPFunction(std::make_pair("webixReady", [&](const CefRefPtr<CefListValue>& arguments) {
-    updateFolders(webRenderer);
-    UI_UpdateSceneGraph();
-    UI_UpdatePropertySheet(*SceneGraph::getRoot().get());
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_FileTree", [&](const CefRefPtr<CefListValue>& arguments) {
+    TString root = arguments->GetString(1);
+    updateFolders(webRenderer, root);
   }));
-  webRenderer.registerJS2CPPFunction(std::make_pair("canvasReady", [&](const CefRefPtr<CefListValue>& arguments) {
-    
+
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_HierarchyUpdate", [&](const CefRefPtr<CefListValue>& arguments) {
+    UI_UpdateSceneGraph();
   }));
 
   //Scene Graph UI
@@ -327,68 +327,94 @@ void SceneEditor::initUI()
     UI_UpdateSceneGraph();
   }));
   webRenderer.registerJS2CPPFunction(std::make_pair("C_DeleteSceneGraphNode", [&](const CefRefPtr<CefListValue>& arguments) {
-    TString name = arguments->GetString(1);
-    auto n = SceneGraph::getRoot()->findNode(name);
+    TString temp = arguments->GetString(1);
+    UInt32 id = StringUtils::toInt(temp);
+    auto n = SceneGraph::getRoot()->findNode(id);
     n->getParent()->removeChild(n);
     n->destroy();
-    webRenderer.executeJSCode("JS_ClearSceneGraphTree();");
     UI_UpdateSceneGraph();
   }));
   webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeNodeParent", [&](const CefRefPtr<CefListValue>& arguments) {
-    TString name = arguments->GetString(1);
-    TString newParent = arguments->GetString(2);
-    if (!(name == _T("") || newParent == _T(""))) {
-      if (newParent == _T("ROOT_NODE_X"))
-      {
-        SceneGraph::getRoot()->findNode(name)->setParent(SceneGraph::getRoot());
-      }
-      else {
-        SceneGraph::getRoot()->findNode(name)->setParent(SceneGraph::getRoot()->findNode(newParent));
-      }
-    }
+    TString idParentTemp = arguments->GetString(1);
+    TString idSonTemp = arguments->GetString(2);
+    UInt32 idParent = StringUtils::toInt(idParentTemp);
+    UInt32 idSon = StringUtils::toInt(idSonTemp);
 
-    webRenderer.executeJSCode("JS_ClearSceneGraphTree();");
+    auto father = SceneGraph::getRoot()->findNode(idParent);
+    auto son = SceneGraph::getRoot()->findNode(idSon);
+    if (!father)
+    {
+      father = SceneGraph::getRoot();
+    }
+    son->setParent(father);
     UI_UpdateSceneGraph();
   }));
+
   webRenderer.registerJS2CPPFunction(std::make_pair("C_AddSceneGraphNode", [&](const CefRefPtr<CefListValue>& arguments) {
     TString name = arguments->GetString(1);
-    TString parent = arguments->GetString(2);
-    //TODO: Search parent name 
-    addGameObject(SceneGraph::getRoot(),
+    TString temp = arguments->GetString(2);
+    UInt32 id = StringUtils::toInt(temp);
+    auto father = SceneGraph::getRoot()->findNode(id);
+    //TODO: Search parent name
+    if (!father)
+    {
+      father = SceneGraph::getRoot();
+    }
+    addGameObject(father,
       name,
       { 0, 0, 0 })->getTransform().scale({ 100, 100, 100 });
 
-    webRenderer.executeJSCode("JS_ClearSceneGraphTree();");
     UI_UpdateSceneGraph();
   }
   ));
+
+
   webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeSceneGraphNodeSelection", [&](const CefRefPtr<CefListValue>& arguments) {
-    TString name = arguments->GetString(1);
-    m_onFocusGMO = name;
-    if (name == _T("ROOT_NODE_X")) return;
-    auto n = SceneGraph::getRoot()->findNode(name);
-    auto pos = n->getTransform().getPosition();
-    auto scale = n->getTransform().getScale();
-    auto rot = const_cast<Matrix4x4&>(n->getTransform().getRotation()).eulerAngles();
+    TString temp = arguments->GetString(1);
+    UInt32 id = StringUtils::toInt(temp);
+    auto gameObject = SceneGraph::getRoot()->findNode(id);
 
-    webRenderer.executeJSCode(_T("JS_ChangeGMOFocus('") + name + _T("',") + 
-      std::to_wstring(pos.x) + _T(",") +
-      std::to_wstring(pos.y) + _T(",") +
-      std::to_wstring(pos.z) + _T(",") +
-      std::to_wstring(scale.x) + _T(",") +
-      std::to_wstring(scale.y) + _T(",") +
-      std::to_wstring(scale.z) + _T(",") +
-      std::to_wstring(rot.x) + _T(",") +
-      std::to_wstring(rot.y) + _T(",") +
-      std::to_wstring(rot.z) +
-      +_T(");"));
+    TString response = _T("JS_UpdateComponents(\"{'id':'") + temp + _T("','components': [");
 
-    webRenderer.executeJSCode("JS_ClearPropertySheetUI();");
-    auto node = SceneGraph::getRoot()->findNode(name);
-    DR_ASSERT(node);
-    UI_UpdatePropertySheet(*node);
+    auto components = gameObject->getComponents<GameComponent>();
+    for (auto component : components) {
+      response += _T("{'name':'") + component->getName() + _T("', 'inputs':[");
+
+      auto inputEditor = InputEditor::createInputEditor(*component);
+      //map[component->getID()]->setComponent(*component);
+      //map[component->getID()]->getInputs()
+
+      inputEditor->getInputs(&response);
+
+      response.erase(response.length() - 1);
+
+      //if (component->getClassID() == CLASS_NAME_ID(RenderComponent)) {
+      //  RenderInputs temp;
+      //  temp.getInputs(&response);
+      //  response.erase(response.length() - 1);
+      //}
+      response += _T("]},");
+    }
+    response.erase(response.length() - 1);
+    response += _T("]}\");");
+    webRenderer.executeJSCode(response);
   }));
 
+
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_InputChange", [&](const CefRefPtr<CefListValue>& arguments) {
+    TString temp = arguments->GetString(1);
+    UInt32 id = StringUtils::toInt(temp);
+    TString componentName = arguments->GetString(2);
+    TString idField = arguments->GetString(3);
+    TString value = arguments->GetString(4);
+
+    auto gameObject = SceneGraph::getRoot()->findNode(id);
+    auto component = gameObject->getComponent(componentName);
+
+    auto inputEditor = InputEditor::createInputEditor(*component);
+
+    inputEditor->changeValue(value, idField);
+  }));
   //Property Sheet UI
   webRenderer.registerJS2CPPFunction(std::make_pair("C_OnTransformChange", [&](const CefRefPtr<CefListValue>& arguments) {
     TString name = arguments->GetString(1);
@@ -406,7 +432,6 @@ void SceneEditor::initUI()
     sceneViewport.topLeftX = (float)arguments->GetDouble(2);
     sceneViewport.width = (float)arguments->GetDouble(3);
     sceneViewport.height = (float)arguments->GetDouble(4);
-
     m_sceneViewer.resize(sceneViewport);
   }));
   //components
@@ -493,28 +518,46 @@ void SceneEditor::initUI()
 }
 void SceneEditor::UI_UpdateSceneGraph()
 {
-    webRenderer.executeJSCode(WString(_T("JS_AddSceneGraphNode('")) +
-      _T("ROOT_NODE_X") + TString(_T("','")) + _T("ROOT_NODE_X") +
-      WString(_T("');")));
+  TString nodes = _T("JS_InfoHierarchy(");
+
   std::function<void(const std::vector<std::shared_ptr<GameObject>>&)> search = 
     [&](const std::vector<std::shared_ptr<GameObject>>& children) {
     for (auto &it : children) {
       auto name = it->getName();
-      auto pName = it->getParent()->getName();
-
-      webRenderer.executeJSCode(WString(_T("JS_AddSceneGraphNode('")) +
-        name + TString(_T("','")) + pName + 
-        WString(_T("');")));
-
+      auto id = it->getID();
+      StringUtils::toTString(id);
+      nodes += _T("{'id':") + StringUtils::toTString(id) + _T(",");
+      nodes += _T("'name':'") + name + _T("',");
+      nodes += _T("'childs': [");
       auto children2 = it->getChildren();
       search(children2);
+      nodes += _T("},");
+    }
+    if (children.size())
+    {
+      nodes.erase(nodes.length() - 1);
+      nodes += _T("]");
+    }
+    else
+    {
+      nodes += _T("]");
     }
   };
 
 
-  SceneGraph::getRoot()->getName();
+  //SceneGraph::getRoot()->getName();
   auto children = SceneGraph::getRoot()->getChildren();
+  auto root = SceneGraph::getRoot();
+  auto name = root->getName();
+  auto id = root->getID();
+
+  nodes += _T("\"{'id':") + StringUtils::toTString(id) + _T(",");
+  nodes += _T("'name':'") + name + _T("',");
+  nodes += _T("'childs': [");
+
   search(children);
+  nodes += _T("}\");");
+  webRenderer.executeJSCode(nodes);
 }
 
 void SceneEditor::UI_UpdatePropertySheet(const GameObject& obj)
