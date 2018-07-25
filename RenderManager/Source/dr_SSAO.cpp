@@ -22,7 +22,7 @@ SSAOPass::init(PassInitData* initData) {
   SSAOInitData* data = static_cast<SSAOInitData*>(initData);
   Device& device = GraphicsAPI::getDevice();
 
-  m_csFilename = _T("SSAO_cs.hlsl");
+  m_csFilename = _T("Resources\\Shaders\\SSAO_cs.hlsl");
 
   recompileShader();
 

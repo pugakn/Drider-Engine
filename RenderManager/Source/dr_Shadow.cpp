@@ -25,10 +25,10 @@ ShadowPass::init(PassInitData* initData) {
   ShadowInitData* data = static_cast<ShadowInitData*>(initData);
   Device& dc = GraphicsAPI::getDevice();
 
-  m_vsFilename = _T("Shadow_vs.hlsl");
-  m_fsFilename = _T("Shadow_ps.hlsl");
-  m_csFilename = _T("ShadowMerge_cs.hlsl");
-  m_csFilenameShadowApply = _T("ShadowApply_cs.hlsl");
+  m_vsFilename = _T("Resources\\Shaders\\Shadow_vs.hlsl");
+  m_fsFilename = _T("Resources\\Shaders\\Shadow_ps.hlsl");
+  m_csFilename = _T("Resources\\Shaders\\ShadowMerge_cs.hlsl");
+  m_csFilenameShadowApply = _T("Resources\\Shaders\\ShadowApply_cs.hlsl");
 
   changeSize(data->RTWidht, data->RTHeight);
   recompileShader();
@@ -110,7 +110,7 @@ ShadowPass::draw(PassDrawData* drawData) {
   data->OutRt->clear(dc, clearColor);
   data->dsOptions->clear(dc, 1, 0);
 
-  for (auto& modelPair : *data->models) {
+  for (auto& modelPair : data->models->commands) {
     dc.setResourcesNull();
     if (auto material = modelPair.mesh.material.lock()) {
       if (auto AlbedoTex = material->getProperty(_T("Albedo"))) {
@@ -119,14 +119,14 @@ ShadowPass::draw(PassDrawData* drawData) {
         }
       }
     }
-    CascadeCB.WVP = modelPair.world * (data->shadowCam->getVP());
+    CascadeCB.WVP = data->models->worlds[modelPair.worldID] * (data->shadowCam->getVP());
 
     std::memset(&CascadeCB.Bones[0].data[0], 0.0f, sizeof(CascadeCB.Bones));
-    auto Bones = modelPair.bones;
-    if (Bones != nullptr) {
-      Int32 maxBones = modelPair.bones->size();
+    if (modelPair.bonesID != -1) {
+      auto& Bones = data->models->bonesTransforms[modelPair.bonesID];
+      Int32 maxBones = Bones.size();
       std::memcpy(&CascadeCB.Bones[0],
-                  &(*modelPair.bones)[0],
+                  &(Bones)[0],
                   sizeof(Matrix4x4) * maxBones);
     }
 

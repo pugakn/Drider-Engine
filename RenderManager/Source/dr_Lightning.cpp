@@ -23,7 +23,7 @@ LightningPass::init(PassInitData* initData) {
   LightningInitData* data = static_cast<LightningInitData*>(initData);
   Device& device = GraphicsAPI::getDevice();
 
-  m_csFilename = _T("Lightning_cs.hlsl");
+  m_csFilename = _T("Resources\\Shaders\\Lightning_cs.hlsl");
 
   recompileShader();
 
@@ -52,7 +52,7 @@ LightningPass::init(PassInitData* initData) {
   File file;
   String shaderSrc;
 
-  m_csTiledLightsFilename = _T("TileLights_cs.hlsl");
+  m_csTiledLightsFilename = _T("Resources\\Shaders\\TileLights_cs.hlsl");
 
   file.Open(m_csTiledLightsFilename);
   shaderSrc = StringUtils::toString(file.GetAsString(file.Size()));

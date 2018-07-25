@@ -16,7 +16,7 @@ struct ShadowInitData : PassInitData {
 struct ShadowDrawData : PassDrawData {
   //CascadeInfo
   std::shared_ptr<Camera>  shadowCam;
-  SceneGraph::QueryResult* models;
+  RenderCommandBuffer* models;
   GFXShared<RenderTarget>  OutRt;
   GFXShared<DepthStencil>  dsOptions;
   //ShadowInfo

@@ -21,7 +21,7 @@ HorBlurPass::init(PassInitData* initData) {
   HorBlurInitData* data = static_cast<HorBlurInitData*>(initData);
   Device& device = GraphicsAPI::getDevice();
 
-  m_csFilename = _T("HorBlur_cs.hlsl");
+  m_csFilename = _T("Resources\\Shaders\\HorBlur_cs.hlsl");
 
   recompileShader();
 

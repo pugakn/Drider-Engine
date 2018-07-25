@@ -4,7 +4,7 @@ struct lightsInBlock {
   int foo[MAX_LIGHTS_PER_BLOCK];
 };
 
-#include "PBR_Math.hlsl"
+#include "Resources\\Shaders\\PBR_Math.hlsl"
 
 cbuffer ConstantBuffer : register(b0) {
   float4 fViewportDimensions;

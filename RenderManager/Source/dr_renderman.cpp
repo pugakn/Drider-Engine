@@ -462,13 +462,21 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   updateShadowCameras();
 
   auto mainCam = CameraManager::getActiveCamera();
-  SceneGraph::QueryResult queryRequest;
+  auto mainCamRef = *CameraManager::getActiveCamera();
+  RenderCommandBuffer queryRequest;
 
+  RenderQuery rqRequest{mainCamRef,
+                        QUERY_ORDER::kFrontToBack,
+                        QUERY_PROPERTY::kOpaque |
+                        QUERY_PROPERTY::kDynamic |
+                        QUERY_PROPERTY::kStatic };
+  /*
   queryRequest = SceneGraph::query(*mainCam,
                                    QUERY_ORDER::kFrontToBack,
                                    QUERY_PROPERTY::kOpaque | 
                                    QUERY_PROPERTY::kDynamic | 
-                                   QUERY_PROPERTY::kStatic);
+                                   QUERY_PROPERTY::kStatic);*/
+  queryRequest = SceneGraph::query(rqRequest);
 
   m_GBufferDrawData.activeCam = mainCam;
   m_GBufferDrawData.models = &queryRequest;
@@ -481,11 +489,7 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_RTSSShadow->clear(dc, white);
 
   for (size_t camIndex = 0; camIndex < m_szActiveShadowCameras; ++camIndex) {
-    queryRequest = SceneGraph::query(*vecShadowCamera[camIndex],
-                                     QUERY_ORDER::kFrontToBack,          
-                                     QUERY_PROPERTY::kOpaque |
-                                     QUERY_PROPERTY::kDynamic |
-                                     QUERY_PROPERTY::kStatic);
+    queryRequest = SceneGraph::query(rqRequest);
     m_ShadowDrawData.shadowCam = vecShadowCamera[camIndex];
     m_ShadowDrawData.models = &queryRequest;
     m_ShadowDrawData.OutRt = m_RTShadowDummy[camIndex];

@@ -20,7 +20,7 @@ LuminescencePass::init(PassInitData* initData) {
   LuminescenceInitData* data = static_cast<LuminescenceInitData*>(initData);
   Device& dc = GraphicsAPI::getDevice();
 
-  m_csFilename = _T("luminescence_cs.hlsl");
+  m_csFilename = _T("Resources\\Shaders\\luminescence_cs.hlsl");
   
   recompileShader();
 

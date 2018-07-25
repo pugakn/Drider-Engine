@@ -48,19 +48,19 @@ enum E : UInt32
 struct DR_CORE_EXPORT RenderCommand 
 {
 
-  RenderCommand(const Matrix4x4& world_,
+  RenderCommand(Int32 _worldID,
                 const RenderMesh& mesh_,
-                const std::vector<Matrix4x4>* bones_)
-    : world(&world_),
+                Int32 _bones)
+    : worldID(_worldID),
       mesh(mesh_),
-      bones(bones_)
+      bonesID(_bones)
   {}
 
   ~RenderCommand()
   {}
-  
-  const std::vector<Matrix4x4>* bones = nullptr;
-  const Matrix4x4* world;
+
+  Int32 bonesID = -1;
+  Int32 worldID;
   RenderMesh mesh;
   AABB aabb;
 };
@@ -80,9 +80,12 @@ struct DR_CORE_EXPORT RenderCommandBuffer
 
   RenderCommandBuffer() = default;
 
+  RenderCommandBuffer(RenderCommandBuffer&& ) = default;
+
   RenderCommandBuffer(const RenderCommandBuffer&) = delete;
 
   RenderCommandBuffer& operator=(const RenderCommandBuffer&) = delete;
+  RenderCommandBuffer& operator=(RenderCommandBuffer&&) = default;
   //Store Matrices
   std::vector<WorldData> worlds;
   //Store Bones
@@ -98,6 +101,7 @@ class DR_CORE_EXPORT SceneGraph : public Module<SceneGraph>
   using SharedGameObject = std::shared_ptr<GameObject>;
   using GameObjectList = std::vector<SharedGameObject>;
   using QueryResult = std::vector<RenderCommand>;
+  using QueryBuffer = RenderCommandBuffer;
   using ObjectComp = std::function<bool(SharedGameObject, SharedGameObject)>;
   using GameObjectQueue = std::priority_queue<SharedGameObject,
                                               GameObjectList,
@@ -144,6 +148,9 @@ class DR_CORE_EXPORT SceneGraph : public Module<SceneGraph>
   */
   static QueryResult
   query(const Camera& camera, QUERY_ORDER::E order, UInt32 props);
+
+  static QueryBuffer
+  query(const RenderQuery& queryInfo);
 
   /**
   * Queries the gameObjects that are inside a camera frustrum.
@@ -202,9 +209,14 @@ class DR_CORE_EXPORT SceneGraph : public Module<SceneGraph>
              const Frustrum& frustrum,
              GameObjectQueue& objects);
 
-  static void
+  /*static void
   filterObjects(GameObjectQueue& objects, 
                 QueryResult& result, 
+                UInt32 props);*/
+
+  static void
+  filterObjects(GameObjectQueue& objects, 
+                QueryBuffer& result, 
                 UInt32 props);
 
   static void

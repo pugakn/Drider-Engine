@@ -238,7 +238,7 @@ RenderManApp::postInit() {
       aComp->addAnimation(wa, ptrStorm->animationsNames[i]);
     }
 
-    aComp->setCurrentAnimation(ptrStorm->animationsNames[0], false, false);
+    aComp->setCurrentAnimation(ptrStorm->animationsNames[0], false);
     aComp->setTime(1.0f);
   }
 
@@ -326,6 +326,8 @@ RenderManApp::postInit() {
 
     auto rComp = m_selectedGO->getComponent<RenderComponent>();
     rComp->getMeshes().front().material = m_modelMat;
+
+
   }
 
 
@@ -343,6 +345,8 @@ RenderManApp::postInit() {
   m_SzTGosIndex = m_vecGos.size() - 1;
   //m_SzTGosIndex = 0;
   m_selectedGO = m_vecGos[m_SzTGosIndex];
+
+  SceneGraph::start();
 
   initInputCallbacks();
 #if (RENDER_MANAGER == MULTI_THREAD)
