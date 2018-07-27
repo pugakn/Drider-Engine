@@ -45,7 +45,7 @@ class SpiderBehavior : public GameComponent
   virtual void 
   onDestroy() override;
   virtual UInt32
-  getClassID();
+  getClassID() const;
 
   virtual GameComponent*
   cloneIn(GameObject & _go) override;

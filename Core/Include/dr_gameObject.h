@@ -107,15 +107,21 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
     return rawPtr;
   }
 
+
+  const ComponentsList&
+  getComponents() const
+  {
+    return m_components;
+  }
+
   template<class T>
   std::vector<T*>
-  getComponents()
+  getComponents() const
   {
     std::vector<T*> componentCastedList;
     for (auto& componet : m_components) {
-      if (auto casted = dynamic_cast<T*>(componet.get())) {
-        componentCastedList.push_back(casted);
-        continue;
+      if (IDClass<T>::ID() == component->getClassID()) {
+        componentCastedList.push_back(static_cast<T*>(component.get()));
       }
     }
     return componentCastedList;

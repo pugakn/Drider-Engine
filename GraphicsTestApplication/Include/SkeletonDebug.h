@@ -31,7 +31,7 @@ class SkeletonDebug : public DrawableComponent {
   cloneIn(GameObject& _go);
 
   virtual UInt32
-  getClassID();
+  getClassID() const;
  private:
   
   void

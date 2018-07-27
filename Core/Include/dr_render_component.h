@@ -77,7 +77,7 @@ class DR_CORE_EXPORT RenderComponent : public GameComponent,
   onDestroy() override;
 
   virtual UInt32
-  getClassID() override;
+  getClassID() const override;
 
   virtual GameComponent*
   cloneIn(GameObject& _go);

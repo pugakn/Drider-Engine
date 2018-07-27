@@ -56,7 +56,7 @@ CameraComponent::onDestroy() {
 }
 
 UInt32
-CameraComponent::getClassID() {
+CameraComponent::getClassID() const {
   return CLASS_NAME_ID(CameraComponent);
 }
 

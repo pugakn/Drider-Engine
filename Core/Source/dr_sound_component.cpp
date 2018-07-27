@@ -46,7 +46,7 @@ SoundComponent::onDestroy(){
 
 }
 
-UInt32 SoundComponent::getClassID()
+UInt32 SoundComponent::getClassID() const
 {
   return CLASS_NAME_ID(SoundComponent);
 }

@@ -36,7 +36,8 @@ SpiderBehavior::onDestroy() {
 
 }
 
-UInt32 SpiderBehavior::getClassID() {
+UInt32 
+SpiderBehavior::getClassID() const {
   return CLASS_NAME_ID(SpiderBehavior);
 }
 

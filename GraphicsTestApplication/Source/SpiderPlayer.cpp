@@ -139,7 +139,8 @@ SpiderPlayer::onDestroy() {
 
 }
 
-UInt32 SpiderPlayer::getClassID() {
+UInt32 
+SpiderPlayer::getClassID() const {
   return CLASS_NAME_ID(SpiderPlayer);
 }
 

@@ -43,7 +43,7 @@ class DR_CORE_EXPORT ScriptComponent : public GameComponent,
     onDestroy() override;
 
     virtual UInt32
-    getClassID() override;
+    getClassID() const override;
 
     /**
     * Clones the component inside the given gameObject

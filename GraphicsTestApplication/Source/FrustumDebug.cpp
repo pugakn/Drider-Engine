@@ -100,16 +100,19 @@ FrustumDebug::create() {
 
 }
 
-UInt32 FrustumDebug::getClassID() {
+UInt32
+FrustumDebug::getClassID() const {
   return CLASS_NAME_ID(FrustumDebug);
 }
 
-void FrustumDebug::onCreate() {
+void 
+FrustumDebug::onCreate() {
   create();
   m_primitive = DR_PRIMITIVE_TOPOLOGY::kLineList;
 }
 
-void FrustumDebug::onUpdate() {
+void 
+FrustumDebug::onUpdate() {
   if (m_gameObject.changed()) {
     create();
   }

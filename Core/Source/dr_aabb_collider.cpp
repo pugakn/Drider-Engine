@@ -38,7 +38,7 @@ void
 AABBCollider::onDestroy() {
 }
 
-UInt32 AABBCollider::getClassID()
+UInt32 AABBCollider::getClassID() const
 {
   return CLASS_NAME_ID(AABBCollider);
 }

@@ -19,7 +19,8 @@ AABBDebug::AABBDebug(GameObject& _gameObject, bool _updateFromGO)
   m_primitive = DR_PRIMITIVE_TOPOLOGY::kLineList;
 }
 
-void AABBDebug::create() {
+void
+AABBDebug::create() {
 
   Mesh& mesh = m_meshesCore[0];
  
@@ -76,12 +77,14 @@ void AABBDebug::create() {
   }
 }
 
-void AABBDebug::setAABB(const AABB& _aabb) {
+void
+AABBDebug::setAABB(const AABB& _aabb) {
   m_aabbD = _aabb;
   create();
 }
 
-void AABBDebug::onCreate() {
+void 
+AABBDebug::onCreate() {
 
   m_meshesCore.resize(1);
   
@@ -94,7 +97,8 @@ void AABBDebug::onCreate() {
   create();
 }
 
-void AABBDebug::onUpdate() {
+void
+AABBDebug::onUpdate() {
 
   if (m_gameObject.getComponent<AnimatorComponent>()) {
     
@@ -133,7 +137,8 @@ AABBDebug::cloneIn(GameObject& _go) {
   return dup;
 }
 
-UInt32 AABBDebug::getClassID() {
+UInt32
+AABBDebug::getClassID() const {
   return CLASS_NAME_ID(AABBDebug);
 }
 

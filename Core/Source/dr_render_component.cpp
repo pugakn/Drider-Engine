@@ -147,7 +147,8 @@ RenderComponent::onDestroy() {
   m_meshes.clear();
 }
 
-UInt32 RenderComponent::getClassID()
+UInt32 
+RenderComponent::getClassID() const
 {
   return CLASS_NAME_ID(RenderComponent);
 }

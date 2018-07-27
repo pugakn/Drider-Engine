@@ -125,7 +125,8 @@ SkeletonDebug::cloneIn(GameObject& _go) {
   return dup;
 }
 
-UInt32 SkeletonDebug::getClassID() {
+UInt32 
+SkeletonDebug::getClassID() const {
   return CLASS_NAME_ID(SkeletonDebug);
 }
 

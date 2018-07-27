@@ -70,7 +70,8 @@ ScriptComponent::onDestroy() {
 
 }
 
-UInt32 ScriptComponent::getClassID()
+UInt32 
+ScriptComponent::getClassID() const
 {
   return CLASS_NAME_ID(ScriptComponent);
 }

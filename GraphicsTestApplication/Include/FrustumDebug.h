@@ -25,7 +25,7 @@ class FrustumDebug : public DrawableComponent
 
     // Inherited via DrawableComponent
   virtual UInt32 
-  getClassID() override;
+  getClassID() const override;
 
   void 
   setCamera(Camera* _camera);

@@ -352,7 +352,7 @@ AnimatorComponent::onDestroy() {
 }
 
 UInt32
-AnimatorComponent::getClassID() {
+AnimatorComponent::getClassID() const {
   return CLASS_NAME_ID(AnimatorComponent);
 }
 

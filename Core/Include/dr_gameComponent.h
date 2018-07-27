@@ -51,7 +51,7 @@ class DR_CORE_EXPORT GameComponent : public EnableObject,
   isKilled() const;
 
   virtual UInt32
-  getClassID() = 0;
+  getClassID() const = 0;
   /**
   * Clones the component inside the given gameObject
   */

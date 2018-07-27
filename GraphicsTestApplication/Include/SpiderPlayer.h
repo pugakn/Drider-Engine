@@ -37,7 +37,7 @@ private:
   onDestroy() override;
 
   virtual UInt32
-  getClassID();
+  getClassID() const;
 
   enum State 
   {

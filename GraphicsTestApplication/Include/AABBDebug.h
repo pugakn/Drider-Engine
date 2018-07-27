@@ -29,7 +29,7 @@ class AABBDebug : public DrawableComponent {
   cloneIn(GameObject& _go) override;
 
   virtual UInt32
-  getClassID();
+  getClassID() const override;
 
  private:
   std::vector<Mesh> m_meshesCore;

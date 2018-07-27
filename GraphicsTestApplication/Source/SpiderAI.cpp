@@ -165,7 +165,8 @@ SpiderAI::cloneIn(GameObject& _go) {
   return comp;
 }
 
-UInt32 SpiderAI::getClassID() {
+UInt32 
+SpiderAI::getClassID() const {
   return CLASS_NAME_ID(SpiderAI);
 }
 
