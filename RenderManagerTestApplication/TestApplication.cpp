@@ -330,7 +330,6 @@ RenderManApp::postInit() {
 
   }
 
-
   /*
   m_vecGos.push_back(SceneGraph::createObject(_T("SkySphere")));
   m_selectedGO = m_vecGos.back();

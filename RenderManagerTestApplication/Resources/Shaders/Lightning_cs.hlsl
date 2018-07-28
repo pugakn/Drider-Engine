@@ -145,10 +145,11 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   //////////Final//////////
   const float3 resultColor = ((finalColor + IBL) * ShadowValue) + emissive;
 
+  Lightning[uvScale] = float4(resultColor, 1.0f);
+  //Lightning[uvScale] = float4(ShadowValue.xxx, 1.0f);
   //Lightning[uvScale] = float4(diffuse * ShadowValue, 1.0f);
   //Lightning[uvScale] = float4(finalColor, 1.0f);
-  Lightning[uvScale] = float4(resultColor, 1.0f);
-  //Lightning[uvScale] = float4(1.0f, 0.0f, 0.0f, 1.0f);
+  //Lightning[uvScale] = float4(ShadowValue.xxx, 1.0f);
  
   return;
 }

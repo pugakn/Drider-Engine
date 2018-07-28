@@ -56,8 +56,9 @@ RenderManager::init() {
   screenWidth = 1280;
   screenHeight = 720;
 
-  shadowWidth = 1024;
-  shadowHeight = 1024;
+  float shadowQualityMultiplier = 1.0f;
+  shadowWidth = 1024 * shadowQualityMultiplier;
+  shadowHeight = 1024 * shadowQualityMultiplier;
 
   //////////Shadows stuff//////////
   std::shared_ptr<Camera> mainCam = CameraManager::getActiveCamera();
@@ -693,12 +694,16 @@ RenderManager::calculatePartitions(SizeT cuts) {
     fLinearValue = Math::pow(fProportion, 2.0f);
     fPwValue = Math::pow(fProportion, 6.0f);
     fRealValue = Math::lerp(fLinearValue, fPwValue, fProportion);
+
+    //fLinearValue = Math::pow(fProportion, 3.0f);
+    //fPwValue = Math::pow(fProportion, 1.5f);
+    //fRealValue = Math::lerp(fLinearValue, fPwValue, fProportion);
     
     //realValues.push_back(fLinearValue);
     //realValues.push_back(fPwValue);
     realValues.push_back(fRealValue);
   }
-  return realValues;
+   return realValues;
 }
 
 std::pair<float, float>

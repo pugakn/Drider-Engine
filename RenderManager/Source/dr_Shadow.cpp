@@ -45,6 +45,8 @@ ShadowPass::init(PassInitData* initData) {
 
   DrSampleDesc SSdesc;
   SSdesc.Filter = DR_TEXTURE_FILTER::kMIN_MAG_LINEAR_MIP_POINT;
+  //SSdesc.Filter = DR_TEXTURE_FILTER::kANISOTROPIC;
+  //SSdesc.Filter = DR_TEXTURE_FILTER::kCOMPARISON_ANISOTROPIC;
   SSdesc.maxAnisotropy = 16;
   SSdesc.addressU = DR_TEXTURE_ADDRESS::kWrap;
   SSdesc.addressV = DR_TEXTURE_ADDRESS::kWrap;

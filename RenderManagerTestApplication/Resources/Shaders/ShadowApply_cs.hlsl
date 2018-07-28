@@ -1,7 +1,7 @@
 //#define INTERVAL_BASED_SELECTION
 #define MAP_BASED_SELECTION
 //#define DR_SH_PCF_ENABLED
-#define CASCADE_BLUR
+//#define CASCADE_BLUR
 
 cbuffer ConstantBuffer : register(b0) {
   float4	 fViewportDimensions;
@@ -145,6 +145,15 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   #endif //INTERVAL_BASED_SELECTION || MAP_BASED_SELECTION
 
 	ShadowTex[uv] = max(0.0f, ShadowTex[uv] - ShadowValue);
+
+  //if (iCurrentCascadeIndex == 0)
+  //  ShadowTex[uv] = 1.0f;
+  //if (iCurrentCascadeIndex == 1)
+  //  ShadowTex[uv] = 0.6f;
+  //if (iCurrentCascadeIndex == 2)
+  //  ShadowTex[uv] = 0.3f;
+  //if (iCurrentCascadeIndex == 3)
+  //  ShadowTex[uv] = 0.0f;
 
 	return;
 }
