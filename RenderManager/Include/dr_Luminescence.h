@@ -4,19 +4,22 @@
 #include "dr_renderpass.h"
 #include <dr_sample_state.h>
 #include <dr_matrix4x4.h>
-#include <dr_particle_emitter.h>
 #include <dr_camera.h>
 #include <dr_vertex_buffer.h>
+#include <dr_structure_buffer.h>
 
 namespace driderSDK {
 
 class IndexBuffer;
-struct LuminescenceInitData : PassInitData {};
+struct LuminescenceInitData : PassInitData {
+  SizeT RTWidth;
+  SizeT RTHeight;
+};
 
 struct LuminescenceDrawData : PassDrawData {
-  std::shared_ptr<Camera> activeCam;
-  GFXShared<Texture> InTexture;
+  Texture* InTexture;
   float LuminiscenceDelta;
+  StructureBuffer** resultBuffer;
 };
 
 class LuminescencePass : public RenderPass {
@@ -49,16 +52,24 @@ class LuminescencePass : public RenderPass {
   draw(PassDrawData* drawData);
 
  private:
-  struct CBuff {
-    float	LuminiscenceDelta;
-    UInt32 TextureWidth;
-    UInt32 TextureHeight;
-    float pad;
+  struct CBuffer {
+    Vector4D fViewportDimensions;
+    Vector4D threadsInfo;
   };
-  
-  CBuff m_CB;
 
-  GFXUnique<Shader> m_computeShader;
+  SizeT m_RTWidth;
+  SizeT m_RTHeight;
+  SizeT m_ComputeWidthDivisions;
+  SizeT m_ComputeHeightDivisions;
+  SizeT m_ComputeWidthBlocks;
+  SizeT m_ComputeHeightBlocks;
+  SizeT m_ComputeTotalBlocks;
+  
+  CBuffer CB;
+
+  GFXUnique<StructureBuffer> m_resultBuffer;
+
+  GFXUnique<SamplerState> m_samplerState;
 };
 
 }

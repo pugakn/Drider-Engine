@@ -22,8 +22,7 @@ SSAOPass::init(PassInitData* initData) {
   SSAOInitData* data = static_cast<SSAOInitData*>(initData);
   Device& device = GraphicsAPI::getDevice();
 
-  m_vsFilename = _T("Resources\\Shaders\\SSAO_vs.hlsl");
-  m_fsFilename = _T("Resources\\Shaders\\SSAO_ps.hlsl");
+  m_csFilename = _T("Resources\\Shaders\\SSAO_cs.hlsl");
 
   recompileShader();
 
@@ -40,6 +39,9 @@ SSAOPass::init(PassInitData* initData) {
   SSdesc.addressV = DR_TEXTURE_ADDRESS::kWrap;
   SSdesc.addressW = DR_TEXTURE_ADDRESS::kWrap;
   m_samplerState = dr_gfx_unique(device.createSamplerState(SSdesc));
+
+  m_ComputeWidthDivisions = 8;
+  m_ComputeHeightDivisions = 4;
 }
 
 void
@@ -47,50 +49,42 @@ SSAOPass::draw(PassDrawData* drawData) {
   SSAODrawData* data = static_cast<SSAODrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
-  data->OutRt->getTexture(0).setTextureNull(dc);
-  data->OutRt->setRTNull(dc);
-  data->OutRt->set(dc, *data->dsOptions);
+  dc.setUAVsNull();
+  dc.setResourcesNull();
 
-  m_vertexShader->set(dc);
-  m_fragmentShader->set(dc);
+  m_computeShader->set(dc);
 
-  m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kFragment);
+  DrTextureDesc outRTDesc = data->OutRt->getDescriptor();
 
-  CB.View = data->activeCam->getView();
-  CB.ViewInverse = CB.View;
-  CB.ViewInverse.inverse();
+  m_RTWidth = outRTDesc.width;
+  m_RTHeight = outRTDesc.height;
 
-  CB.Projection = data->activeCam->getProjection();
-  CB.ProjectionInverse = CB.Projection;
-  CB.ProjectionInverse.inverse();
+  m_ComputeWidthBlocks = m_RTWidth / m_ComputeWidthDivisions;
+  m_ComputeHeightBlocks = m_RTHeight / m_ComputeHeightDivisions;
 
-  CB.VP = data->activeCam->getVP();
-  CB.VPInverse = CB.VP;
-  CB.VPInverse.inverse();
+  m_ComputeTotalBlocks = m_ComputeWidthBlocks * m_ComputeHeightBlocks;
+
+  m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kCompute);
+
+  data->InRt->getTexture(0).set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute, true);
+  data->InRt->getTexture(1).set(dc, 1, DR_SHADER_TYPE_FLAG::kCompute, true);
+
+  data->OutRt->getTexture(0).set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute);
+
+  CB.fViewportDimensions.x = m_RTWidth;
+  CB.fViewportDimensions.y = m_RTHeight;
+  CB.SSAO_Options[0] = data->SampleRadio;
+  CB.SSAO_Options[1] = data->Intensity;
+  CB.SSAO_Options[2] = data->Scale;
+  CB.SSAO_Options[3] = data->Bias;
 
   m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
-  m_constantBuffer->set(dc);
+  m_constantBuffer->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
+  
+  dc.dispatch(m_ComputeWidthBlocks, m_ComputeHeightBlocks, 1);
 
-  m_inputLayout->set(dc);
-
-  dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
-
-  const float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-  data->OutRt->clear(dc, clearColor);
-  (data->dsOptions)->clear(dc, 1, 0);
-
-  data->InRt->getTexture(0).set(dc, 0);
-  data->InRt->getTexture(1).set(dc, 1);
-
-  auto screenQuadModel = ResourceManager::getReferenceT<Model>(_T("ScreenAlignedQuad.3ds"));
-  if (screenQuadModel) {
-    for (auto& SAQ : screenQuadModel->meshes) {
-      SAQ.vertexBuffer->set(dc);
-      SAQ.indexBuffer->set(dc);
-
-      dc.draw(SAQ.indices.size(), 0, 0);
-    }
-  }
+  dc.setUAVsNull();
+  dc.setResourcesNull();
 }
 
 }

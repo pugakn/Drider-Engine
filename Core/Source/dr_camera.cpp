@@ -200,6 +200,18 @@ Camera::getDirection() const {
   return (m_target - m_position).normalize();
 }
 
+Vector3D
+Camera::getLocalRight() const {
+  Vector3D result = m_up.cross(getDirection());
+  return result.normalize();
+}
+
+Vector3D
+Camera::getLocalUp() const {
+  Vector3D result = getDirection().cross(getLocalRight());
+  return result.normalize();
+}
+
 void 
 Camera::invalidateView() {
   m_outdateView = true;

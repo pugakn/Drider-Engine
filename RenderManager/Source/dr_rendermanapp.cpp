@@ -1,17 +1,17 @@
 #include "dr_rendermanapp.h"
 #include <dr_graphics_api.h>
+#include <dr_graphics_driver.h>
 
 namespace driderSDK {
 
 void
-renderManagerApp(RenderMan& Manager) {
-
-  while (1) {
-    Manager.draw(GraphicsAPI::getBackBufferRT(),
-                 GraphicsAPI::getDepthStencil());
+renderManagerApp(const bool* renderFlag) {
+  while (*renderFlag) {
+    GraphicsDriver::API().clear();
+    RenderManager::instance().draw(GraphicsAPI::getBackBufferRT(),
+                                   GraphicsAPI::getDepthStencil());
+    GraphicsDriver::API().swapBuffers();
   }
-
-  Manager.exit();
 }
 
 }

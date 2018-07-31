@@ -199,6 +199,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ParticleSystemTestApplicati
 		{57D304CE-E01C-47BB-9720-B90BE468C0CE} = {57D304CE-E01C-47BB-9720-B90BE468C0CE}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TextureCompresser", "TextureCompresser\TextureCompresser.vcxproj", "{9358FB18-8356-4238-ABAB-DFB7AA1D0B92}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4C420F92-670E-4FFF-8EF6-B8F33B482386} = {4C420F92-670E-4FFF-8EF6-B8F33B482386}
+		{96C93CF8-BB4C-4D60-8C5D-3F439477662D} = {96C93CF8-BB4C-4D60-8C5D-3F439477662D}
+	EndProjectSection
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LobbyServer", "LobbyServer\LobbyServer.vcxproj", "{4C3AB259-F7D8-4BC3-9977-1DADDF45AD27}"
 	ProjectSection(ProjectDependencies) = postProject
 		{31C98D18-B491-49A8-A35B-60AC016FDB71} = {31C98D18-B491-49A8-A35B-60AC016FDB71}
@@ -451,6 +457,14 @@ Global
 		{C76FF6F4-9050-440A-B80B-AC0097BFFA10}.Release|x64.Build.0 = Release|x64
 		{C76FF6F4-9050-440A-B80B-AC0097BFFA10}.Release|x86.ActiveCfg = Release|Win32
 		{C76FF6F4-9050-440A-B80B-AC0097BFFA10}.Release|x86.Build.0 = Release|Win32
+		{9358FB18-8356-4238-ABAB-DFB7AA1D0B92}.Debug|x64.ActiveCfg = Debug|x64
+		{9358FB18-8356-4238-ABAB-DFB7AA1D0B92}.Debug|x64.Build.0 = Debug|x64
+		{9358FB18-8356-4238-ABAB-DFB7AA1D0B92}.Debug|x86.ActiveCfg = Debug|Win32
+		{9358FB18-8356-4238-ABAB-DFB7AA1D0B92}.Debug|x86.Build.0 = Debug|Win32
+		{9358FB18-8356-4238-ABAB-DFB7AA1D0B92}.Release|x64.ActiveCfg = Release|x64
+		{9358FB18-8356-4238-ABAB-DFB7AA1D0B92}.Release|x64.Build.0 = Release|x64
+		{9358FB18-8356-4238-ABAB-DFB7AA1D0B92}.Release|x86.ActiveCfg = Release|Win32
+		{9358FB18-8356-4238-ABAB-DFB7AA1D0B92}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

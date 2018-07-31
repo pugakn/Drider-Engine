@@ -4,7 +4,7 @@
 
 struct ID3D11Texture2D;
 struct ID3D11ShaderResourceView;
-
+struct ID3D11UnorderedAccessView;
 namespace driderSDK {
 
 /**
@@ -83,12 +83,6 @@ class DR_GRAPHICS_EXPORT D3DTexture : public Texture
   getMemoryBuffer(const DeviceContext& deviceContext, std::vector<byte>& buff) override;
 
   /**
-  * 
-  */
-  void
-  setTextureNull(const DeviceContext& deviceContext) const override;
-
-  /**
   * TEST::
   *
   * Set the texture to the shader
@@ -99,9 +93,15 @@ class DR_GRAPHICS_EXPORT D3DTexture : public Texture
   * @param slot
   *   The slot where the texture will be placed
   *
+  * @param shaderType
+  *   The shader where the texture will be set on
+  *
   */
   void
-  set(const DeviceContext& deviceContext, UInt32 slot) const override;
+  set(const DeviceContext& deviceContext,
+      UInt32 slot,
+      DR_SHADER_TYPE_FLAG::E shaderType = DR_SHADER_TYPE_FLAG::kFragment,
+      bool forceComputeTexture = false) const override;
 
   /**
   * TEST::
@@ -158,9 +158,10 @@ class DR_GRAPHICS_EXPORT D3DTexture : public Texture
 
   ID3D11Texture2D* APITexture;
   ID3D11ShaderResourceView* APIView;
+  ID3D11UnorderedAccessView* m_APIUAV;
  private:
   ID3D11Texture2D* m_stagingTexture;
-    UInt32 m_arraySize;
+  UInt32 m_arraySize;
 };
 
 }

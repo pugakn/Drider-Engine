@@ -49,16 +49,14 @@ class RenderManApp : public Application
   loadResources();
 
   // Inherited via Application
-
-  //LinesTechnique tecnico;
-
-  RenderMan m_renderMan;
+  std::thread m_RenderManagerThread;
+  bool render;
 
   SceneGraph::SharedGameObject m_selectedGO;
   Int32 m_SzTGosIndex;
   bool m_bRotate;
   std::vector<SceneGraph::SharedGameObject> m_vecGos;
-  std::shared_ptr<Material> m_StreetMat;
+  std::shared_ptr<Material> m_BushMat;
   std::shared_ptr<Material> m_StormtrooperMat;
   std::shared_ptr<Material> m_floorMat;
   std::shared_ptr<Material> m_hkBodyMat;
@@ -66,6 +64,7 @@ class RenderManApp : public Application
   std::shared_ptr<Material> m_hkEyeMat;
   std::shared_ptr<Material> m_modelMat;
 
+  float luminanceDelta;
   Vector3D modelMovement;
   std::array<Light, 128> Lights;
 };

@@ -8,6 +8,7 @@
 #include <dr_model.h>
 #include <dr_texture.h>
 #include <dr_depth_stencil.h>
+#include <dr_camera_manager.h>
 
 namespace driderSDK {
 
@@ -22,16 +23,19 @@ LightningPass::init(PassInitData* initData) {
   LightningInitData* data = static_cast<LightningInitData*>(initData);
   Device& device = GraphicsAPI::getDevice();
 
-  m_vsFilename = _T("Resources\\Shaders\\Lightning_vs.hlsl");
-  m_fsFilename = _T("Resources\\Shaders\\Lightning_ps.hlsl");
+  m_csFilename = _T("Resources\\Shaders\\Lightning_cs.hlsl");
 
   recompileShader();
 
   DrBufferDesc bdesc;
 
   bdesc.type = DR_BUFFER_TYPE::kCONSTANT;
-  bdesc.sizeInBytes = sizeof(CBuffer);
+  bdesc.sizeInBytes = sizeof(CBuffer1);
   m_constantBuffer = dr_gfx_unique((ConstantBuffer*)device.createBuffer(bdesc));
+
+  bdesc.type = DR_BUFFER_TYPE::kCONSTANT;
+  bdesc.sizeInBytes = sizeof(CBuffer2);
+  m_constantBufferTiled = dr_gfx_unique((ConstantBuffer*)device.createBuffer(bdesc));
 
   DrSampleDesc SSdesc;
   SSdesc.Filter = DR_TEXTURE_FILTER::kMIN_MAG_LINEAR_MIP_POINT;
@@ -41,6 +45,39 @@ LightningPass::init(PassInitData* initData) {
   SSdesc.addressW = DR_TEXTURE_ADDRESS::kWrap;
 
   m_samplerState = dr_gfx_unique(device.createSamplerState(SSdesc));
+
+  m_ComputeWidthDivisions = 8;
+  m_ComputeHeightDivisions = 4;
+
+  File file;
+  String shaderSrc;
+
+  m_csTiledLightsFilename = _T("Resources\\Shaders\\TileLights_cs.hlsl");
+
+  file.Open(m_csTiledLightsFilename);
+  shaderSrc = StringUtils::toString(file.GetAsString(file.Size()));
+  file.Close();
+
+  m_csTiledLights = dr_gfx_unique(device.createShaderFromMemory(shaderSrc.data(),
+                                  shaderSrc.size(),
+                                  DR_SHADER_TYPE_FLAG::kCompute));
+
+  shaderSrc.clear();
+
+  bdesc.type = DR_BUFFER_TYPE::kRWSTRUCTURE;
+  bdesc.sizeInBytes = sizeof(Int32) *
+                      (data->RTWidth / m_ComputeWidthDivisions) *
+                      (data->RTHeight / m_ComputeHeightDivisions);
+  bdesc.stride = sizeof(Int32);
+  m_sbNumberOfLights = dr_gfx_unique((StructureBuffer*)device.createBuffer(bdesc));
+
+  bdesc.type = DR_BUFFER_TYPE::kRWSTRUCTURE;
+  bdesc.sizeInBytes = sizeof(Int32) *
+                      128 *
+                      (data->RTWidth / m_ComputeWidthDivisions) *
+                      (data->RTHeight / m_ComputeHeightDivisions);
+  bdesc.stride = sizeof(Int32) * 128;
+  m_sbLightsIndex = dr_gfx_unique((StructureBuffer*)device.createBuffer(bdesc));
 }
 
 void
@@ -48,16 +85,25 @@ LightningPass::draw(PassDrawData* drawData) {
   LightningDrawData* data = static_cast<LightningDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
-  data->OutRt->getTexture(0).setTextureNull(dc);
-  data->OutRt->setRTNull(dc);
-  data->OutRt->set(dc, *data->dsOptions);
+  dc.setUAVsNull();
+  dc.setResourcesNull();
 
-  m_vertexShader->set(dc);
-  m_fragmentShader->set(dc);
+  m_computeShader->set(dc);
 
-  m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kFragment);
+  DrTextureDesc outRTDesc = data->OutRt->getDescriptor();
 
-  m_inputLayout->set(dc);
+  m_RTWidth = outRTDesc.width;
+  m_RTHeight = outRTDesc.height;
+
+  m_ComputeWidthBlocks = m_RTWidth / m_ComputeWidthDivisions;
+  m_ComputeHeightBlocks = m_RTHeight / m_ComputeHeightDivisions;
+
+  m_ComputeTotalBlocks = m_ComputeWidthBlocks * m_ComputeHeightBlocks;
+
+  m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kCompute);
+
+  CB.fViewportDimensions.x = m_RTWidth;
+  CB.fViewportDimensions.y = m_RTHeight;
 
   CB.EyePosition = data->ActiveCam->getPosition();
   CB.EyePosition.w = data->ActiveLights;
@@ -67,46 +113,74 @@ LightningPass::draw(PassDrawData* drawData) {
     CB.LightColor[lighIndex] = (*data->Lights)[lighIndex].m_vec4Color;
   }
 
-  for (SizeT i = 0; i < 4; ++i) {
-    CB.ShadowCameraVP[i] = (*data->ShadowCameras)[i]->getVP();
-    CB.ShadowSliptDepth[i] = data->ShadowSliptDepths[i + 1];
-  }
-  CB.ShadowSizesProportion = data->ShadowSizesProportion;
-
-  CB.ShadowInfo[0] = data->ActivatedShadowCascades;
-  CB.ShadowInfo[1] = data->ShadowMapTextureSize;
-  CB.ShadowInfo[2] = data->LerpBetweenShadowCascade;
-
-  CB.BloomThresholdLuminiscenceDelta = data->BloomThreshold;
-  CB.BloomThresholdLuminiscenceDelta.w = data->LuminiscenceDelta;
+  CB.threadsInfo.x = m_ComputeWidthBlocks;
+  CB.threadsInfo.y = m_ComputeHeightBlocks;
 
   m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
-  m_constantBuffer->set(dc);
+  m_constantBuffer->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
 
-  dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
+  data->GbufferRT->getTexture(0).set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute, true);        //Position, linear depth
+  data->GbufferRT->getTexture(1).set(dc, 1, DR_SHADER_TYPE_FLAG::kCompute, true);        //Normal, CoC
+  data->GbufferRT->getTexture(2).set(dc, 2, DR_SHADER_TYPE_FLAG::kCompute, true);        //Albedo, Metallic
+  data->GbufferRT->getTexture(3).set(dc, 3, DR_SHADER_TYPE_FLAG::kCompute, true);        //Emissivve, Roughness
+  data->SSAORT->getTexture(0).set(dc, 4, DR_SHADER_TYPE_FLAG::kCompute, true);           //SSAO
+  data->ShadowRT->getTexture(0).set(dc, 5, DR_SHADER_TYPE_FLAG::kCompute, true);         //Shadow
+  data->EnviromentCubemap->textureGFX->set(dc, 6, DR_SHADER_TYPE_FLAG::kCompute, true);  //Cubemap
+  data->IrradianceCubemap->textureGFX->set(dc, 7, DR_SHADER_TYPE_FLAG::kCompute, true);  //CubemapDiffuse
 
-  data->GbufferRT->getTexture(0).set(dc, 0);        //Position, linear depth
-  data->GbufferRT->getTexture(1).set(dc, 1);        //Normal, CoC
-  data->GbufferRT->getTexture(2).set(dc, 2);        //Albedo, Metallic
-  data->GbufferRT->getTexture(3).set(dc, 3);        //Emissivve, Roughness
-  data->SSAORT->getTexture(0).set(dc, 4);           //SSAO
-  data->ShadowRT->getTexture(0).set(dc, 5);         //Shadow
-  data->EnviromentCubemap->textureGFX->set(dc, 6);  //Cubemap
-  data->IrradianceCubemap->textureGFX->set(dc, 7);  //CubemapDiffuse
+  m_sbLightsIndex->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
+  data->OutRt->getTexture(0).set(dc, 1, DR_SHADER_TYPE_FLAG::kCompute, false);
 
-  const float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-  data->OutRt->clear(dc, clearColor);
-  data->dsOptions->clear(dc, 1, 0);
+  dc.dispatch(outRTDesc.width / 8, outRTDesc.height / 4, 1);
 
-  auto screenQuadModel = ResourceManager::getReferenceT<Model>(_T("ScreenAlignedQuad.3ds"));
-  if (screenQuadModel) {
-    for (auto& SAQ : screenQuadModel->meshes) {
-      SAQ.vertexBuffer->set(dc);
-      SAQ.indexBuffer->set(dc);
+  dc.setUAVsNull();
+  dc.setResourcesNull();
+}
 
-      dc.draw(SAQ.indices.size(), 0, 0);
-    }
+void
+LightningPass::tileLights(PassDrawData* drawData) {
+  LightningDrawData* data = static_cast<LightningDrawData*>(drawData);
+  DeviceContext& dc = GraphicsAPI::getDeviceContext();
+
+  dc.setUAVsNull();
+  dc.setResourcesNull();
+
+  m_csTiledLights->set(dc);
+
+  DrTextureDesc outRTDesc = data->OutRt->getDescriptor();
+
+  m_RTWidth = outRTDesc.width;
+  m_RTHeight = outRTDesc.height;
+
+  m_ComputeWidthBlocks = m_RTWidth / m_ComputeWidthDivisions;
+  m_ComputeHeightBlocks = m_RTHeight / m_ComputeHeightDivisions;
+
+  m_ComputeTotalBlocks = m_ComputeWidthBlocks * m_ComputeHeightBlocks;
+
+  m_sbLightsIndex->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
+
+  CB.fViewportDimensions.x = m_RTWidth;
+  CB.fViewportDimensions.y = m_RTHeight;
+
+  CBTiled.CameraUp = Vector4D(CameraManager::getActiveCamera()->getLocalUp(), 0.0f);
+
+  CBTiled.ThreadsGroups.x = m_ComputeWidthBlocks;
+  CBTiled.ThreadsGroups.y = m_ComputeHeightBlocks; 
+
+  Matrix4x4 CamVP = CameraManager::getActiveCamera()->getVP();
+  CBTiled.VP = CamVP;
+
+  for (SizeT lighIndex = 0; lighIndex < 128; ++lighIndex) {
+    CBTiled.LightPosition[lighIndex] = (*data->Lights)[lighIndex].m_vec4Position;
   }
+
+  m_constantBufferTiled->updateFromBuffer(dc, reinterpret_cast<byte*>(&CBTiled));
+  m_constantBufferTiled->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
+
+  dc.dispatch(m_ComputeWidthBlocks, m_ComputeHeightBlocks, 1);
+
+  dc.setUAVsNull();
+  dc.setResourcesNull();
 }
 
 }

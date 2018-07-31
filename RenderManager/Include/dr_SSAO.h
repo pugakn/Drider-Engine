@@ -7,13 +7,20 @@
 
 namespace driderSDK {
 
-struct SSAOInitData : PassInitData {};
+struct SSAOInitData : PassInitData {
+  SizeT RTWidth;
+  SizeT RTHeight;
+};
 
 struct SSAODrawData : PassDrawData {
   std::shared_ptr<Camera> activeCam;
   GFXShared<RenderTarget> InRt;
   GFXShared<RenderTarget> OutRt;
   GFXShared<DepthStencil> dsOptions;
+  float SampleRadio;
+  float Intensity;
+  float Scale;
+  float Bias;
 };
 
 class SSAOPass : public RenderPass {
@@ -33,9 +40,9 @@ class SSAOPass : public RenderPass {
   ~SSAOPass();
 
   /*
-  TEST::testName
-
-  Description.
+  * TEST::testName
+  *
+  * Description.
   */
   void
   init(PassInitData* initData);
@@ -46,18 +53,22 @@ class SSAOPass : public RenderPass {
   draw(PassDrawData* drawData);
 
  private:
-   struct CBuffer {
-     Matrix4x4 View;
-     Matrix4x4 ViewInverse;
-     Matrix4x4 Projection;
-     Matrix4x4 ProjectionInverse;
-     Matrix4x4 VP;
-     Matrix4x4 VPInverse;
-   };
+  struct CBuffer {
+    Vector4D fViewportDimensions;
+    Vector4D SSAO_Options; //X: SampleRadio Y: Intensity Z: Scale X: Bias
+  };
 
-   CBuffer CB;
-
-   GFXUnique<SamplerState> m_samplerState;
+  SizeT m_RTWidth;
+  SizeT m_RTHeight;
+  SizeT m_ComputeWidthDivisions;
+  SizeT m_ComputeHeightDivisions;
+  SizeT m_ComputeWidthBlocks;
+  SizeT m_ComputeHeightBlocks;
+  SizeT m_ComputeTotalBlocks;
+  
+  CBuffer CB;
+  
+  GFXUnique<SamplerState> m_samplerState;
 };
 
 }
