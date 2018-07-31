@@ -11,7 +11,10 @@
 namespace driderSDK {
 
 class IndexBuffer;
-struct LuminescenceInitData : PassInitData {};
+struct LuminescenceInitData : PassInitData {
+  SizeT RTWidth;
+  SizeT RTHeight;
+};
 
 struct LuminescenceDrawData : PassDrawData {
   Texture* InTexture;
@@ -51,6 +54,7 @@ class LuminescencePass : public RenderPass {
  private:
   struct CBuffer {
     Vector4D fViewportDimensions;
+    Vector4D threadsInfo;
   };
 
   SizeT m_RTWidth;

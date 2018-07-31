@@ -177,7 +177,7 @@ LightningPass::tileLights(PassDrawData* drawData) {
   m_constantBufferTiled->updateFromBuffer(dc, reinterpret_cast<byte*>(&CBTiled));
   m_constantBufferTiled->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
 
-  dc.dispatch(outRTDesc.width / 8, outRTDesc.height / 4, 1);
+  dc.dispatch(m_ComputeWidthBlocks, m_ComputeHeightBlocks, 1);
 
   dc.setUAVsNull();
   dc.setResourcesNull();

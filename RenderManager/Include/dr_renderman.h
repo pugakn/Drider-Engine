@@ -93,6 +93,7 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   void
   recompile();
 
+  float* luminanceDelta;
   UInt32 screenWidth;
   UInt32 screenHeight;
   UInt32 shadowWidth;

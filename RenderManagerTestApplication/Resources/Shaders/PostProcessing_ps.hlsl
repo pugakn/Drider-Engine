@@ -23,7 +23,7 @@ struct PS_INPUT {
 #define DEPTH_OF_FIELD
 #define VIGNETTE
 #define BLOOM
-//#define TONE_MAPPING
+#define TONE_MAPPING
 
 float4
 BasicExposure(in float3 Color, in float exposure) {
@@ -180,9 +180,9 @@ FS(PS_INPUT input) : SV_TARGET0 {
     const float kExposure = LuminescenceTex[0].x;
 
     //finalColor = BasicExposure(finalColor, kExposure);
-    finalColor = Reinhard(finalColor.xyz, kExposure);
+    //finalColor = Reinhard(finalColor.xyz, kExposure);
     //finalColor = Burgeos_Dawson(finalColor, kExposure); //Caca
-    //finalColor = Uncharted2(finalColor, kExposure);
+    finalColor = Uncharted2(finalColor, kExposure);
   #endif //TONE_MAPPING
   
   #ifdef VIGNETTE

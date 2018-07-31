@@ -98,6 +98,8 @@ RenderManApp::postInit() {
   CameraManager::setActiveCamera(_T("PATO_CAM"));
   RenderManager::startUp();
 
+  RenderManager::instancePtr()->luminanceDelta = &luminanceDelta;
+
   m_bRotate = false;
 
   Vector4D LightPosition(0.0f, 100.0f, 150.0f, 1.0f);
@@ -393,6 +395,13 @@ RenderManApp::postUpdate() {
   }
   if (Keyboard::isKeyDown(KEY_CODE::kF)) {
     m_selectedGO->getTransform().scale(Vector3D(1.0f, 1.0f, 1.0f) - (Vector3D(1.0f, 1.0f, 1.0f) *  Time::getDelta()));
+  }
+
+  if (Keyboard::isKeyDown(KEY_CODE::k1)) {
+    luminanceDelta += 0.01f;
+  }
+  if (Keyboard::isKeyDown(KEY_CODE::k2)) {
+    luminanceDelta -= 0.01f;
   }
 }
 

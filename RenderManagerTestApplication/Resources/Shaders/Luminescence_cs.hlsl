@@ -3,10 +3,12 @@ SamplerState SS : register(s0);
 Texture2D TextureIn : register(t0);
 
 cbuffer ConstantBuffer : register(b0) {
-  float4 fViewportDimensions;
+  float4 fViewportDimensions; //X: TextureIn width; Y: TextureIn height; Z: LuminiscenceDelta;
+  float4 threadsInfo; //X: Number of groups in X, Y: Number of groups in Y, Z: width divisions, Y: Height divisions
 };
 
-RWStructuredBuffer<float4> AverageLuminescence : register(u0);
+RWStructuredBuffer<float> GroupLuminescence : register(u0);
+//RWStructuredBuffer<float4> AverageLuminescence  : register(u1);
 
 float
 luminescence(float3 Color, float LuminiscenceDelta) {
@@ -17,9 +19,6 @@ luminescence(float3 Color, float LuminiscenceDelta) {
   return log(dot(Color, LuminanceFactor) + LuminiscenceDelta);
 }
 
-#define NUMTHREADS_X 8
-#define NUMTHREADS_Y 4
-//[numthreads(NUMTHREADS_X, NUMTHREADS_Y, 1)]
 [numthreads(1, 1, 1)]
 void
 CS(uint3 groupThreadID	: SV_GroupThreadID,
@@ -27,9 +26,60 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
 	 uint3 dispatchID			: SV_DispatchThreadID,
 	 uint  groupIndex			: SV_GroupIndex) {
   
-	const float2 wUVScale = float2(dispatchID.x / fViewportDimensions.x,
-																 dispatchID.y / fViewportDimensions.y);
-  AverageLuminescence[0].x = 0.5;
+	float2 wUVScale;
+  const uint group = (groupID.y * threadsInfo.x) + groupID.x;
+  
+  //Todos los grupos deben de hacer este calculo.
+  //Hacer la sumatoria de luminiscencia de cada pixel dentro de este grupo,
+  
+  float thisGroupLuminance = 0.0f;
+  float3 actualPixel;
+  
+  [loop]
+  for (int pxGroup_X = 0; pxGroup_X < threadsInfo.z; ++pxGroup_X) {
+    [loop]
+    for (int pxGroup_Y = 0; pxGroup_Y < threadsInfo.w; ++pxGroup_Y) {
+      wUVScale = float2(((dispatchID.x * threadsInfo.z) + pxGroup_X) / fViewportDimensions.x,
+                        ((dispatchID.y * threadsInfo.w) + pxGroup_Y) / fViewportDimensions.y);
+      actualPixel = TextureIn.SampleLevel(SS, wUVScale, 0).xyz;
+      thisGroupLuminance += luminescence(actualPixel, fViewportDimensions.z);
+    }
+  }
+  
+  GroupLuminescence[group] = thisGroupLuminance;
+  
+  //Todos los grupos de cualquier id.y, y con id.x == 0 deben de hacer este calculo.
+  //Hacer la sumatoria de aportacion de todos los grupos en X
+  
+  if (groupID.x != 0) {
+    return;
+  }
+
+  AllMemoryBarrierWithGroupSync();
+
+  float thisRowLuminance = 0.0f;
+  
+  for (int group_x = 0; group_x < threadsInfo.x; ++group_x) {
+    thisRowLuminance += GroupLuminescence[(groupID.y * threadsInfo.x) + group_x];
+  }
+
+  GroupLuminescence[group] = thisRowLuminance;
+
+  //Solo el grupo id.x == 0, id.y == 0 debe hacer este calculo.
+  //Hacer la sumatoria de aportacion de todos los grupos en Y
+  
+  if (groupID.y != 0) {
+    return;
+  }
+
+  AllMemoryBarrierWithGroupSync();
+
+  float thisColumnLuminance = 0.0f;
+
+  for (int group_y = 0; group_y < threadsInfo.y; ++group_y) {
+    thisColumnLuminance += GroupLuminescence[group_y * threadsInfo.x];
+  }
+
   /*
 
   AllMemoryBarrierWithGroupSync();
@@ -44,5 +94,10 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   
   AverageLuminescence[0].x = totalLuminescence;
   */
+
+  float totalAverageLuminescence = thisColumnLuminance *  rcp(fViewportDimensions.x * fViewportDimensions.y);
+  
+  GroupLuminescence[0].x = totalAverageLuminescence;
+
   return;
 }

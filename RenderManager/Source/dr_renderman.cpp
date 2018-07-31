@@ -34,6 +34,7 @@ RenderManager::init() {
   ResourceManager::loadResource(_T("GraceDiffuseCubemap.tga"), &cubeMapDesc);
   m_cubemapDiffuse = ResourceManager::getReferenceT<TextureCore>(_T("GraceDiffuseCubemap.tga"));
 
+  //luminanceDelta = 0.0f;
 
   ///////////Resolutions///////////
   //4K
@@ -394,6 +395,8 @@ RenderManager::init() {
   m_BloomInitData.RTHeight = screenHeight;
   m_BloomPass.init(&m_BloomInitData);
 
+  m_luminescenceInitData.RTWidth = screenWidth;
+  m_luminescenceInitData.RTHeight = screenHeight;
   m_luminescencePass.init(&m_luminescenceInitData);
 
   m_PostProcessingPass.init(&m_PostProcessingInitData);
@@ -556,7 +559,7 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_LightningPass.draw(&m_LightningDrawData);
 
   m_BloomDrawData.BloomThreshold = Vector3D(0.75f, 0.75f, 0.75f);
-  m_BloomDrawData.LuminiscenceDelta = 0.0f;
+  m_BloomDrawData.LuminiscenceDelta = *luminanceDelta;
   m_BloomDrawData.ColorTexture = &m_RTLightning->getTexture(0);
   m_BloomDrawData.OutTex = &m_RTBrightness->getTexture(0);
   m_BloomPass.draw(&m_BloomDrawData);
@@ -580,7 +583,7 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_VerBlurPass.draw(&m_VerBlurDrawData);
 
   m_luminescenceDrawData.InTexture = &m_RTLightning->getTexture(0);
-  m_luminescenceDrawData.LuminiscenceDelta = 0.0f;
+  m_luminescenceDrawData.LuminiscenceDelta = *luminanceDelta;
   m_luminescenceDrawData.resultBuffer = &resultBuffer;
   m_luminescencePass.draw(&m_luminescenceDrawData);
 
