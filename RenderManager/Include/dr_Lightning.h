@@ -19,7 +19,7 @@ struct LightningInitData : PassInitData {
 struct LightningDrawData : PassDrawData {
   std::shared_ptr<Camera> ActiveCam;
   SizeT ActiveLights;
-  std::array<Light, 512>* Lights;
+  std::array<Light, RENDER_MANAGER_MAX_LIGHTS>* Lights;
   GFXShared<RenderTarget> GbufferRT;
   GFXShared<RenderTarget> SSAORT;
   GFXShared<RenderTarget> ShadowRT;
@@ -64,8 +64,8 @@ class LightningPass : public RenderPass {
   struct CBuffer1 {
     Vector4D fViewportDimensions;
     Vector4D EyePosition;         // [XYZ = Cameraposition, W = ActiveLights]
-    Vector4D LightPosition[512];  // [XYZ = LightPosition, W = Range]
-    Vector4D LightColor[512];     // [XYZ = LightColor, W = LightIntensity]
+    Vector4D LightPosition[RENDER_MANAGER_MAX_LIGHTS];  // [XYZ = LightPosition, W = Range]
+    Vector4D LightColor[RENDER_MANAGER_MAX_LIGHTS];     // [XYZ = LightColor, W = LightIntensity]
     Vector4D threadsInfo;
   };
 
@@ -74,7 +74,7 @@ class LightningPass : public RenderPass {
     Vector4D CameraUp;
     Vector4D ThreadsGroups;
     Matrix4x4 VP;
-    Vector4D LightPosition[512];	//XYZ: Light Position, W: Range
+    Vector4D LightPosition[RENDER_MANAGER_MAX_LIGHTS];	//XYZ: Light Position, W: Range
   };
 
   CBuffer1 CB;
@@ -92,6 +92,7 @@ class LightningPass : public RenderPass {
 
   TString m_csTiledLightsFilename;
 
+  GFXUnique<Shader> m_csWorldLightsToSS;
   GFXUnique<Shader> m_csTiledLights;
 
   GFXUnique<SamplerState> m_samplerState;
@@ -99,6 +100,7 @@ class LightningPass : public RenderPass {
 
   GFXUnique<StructureBuffer> m_sbLightsIndex;
   GFXUnique<StructureBuffer> m_sbLightsIndexAux;
+  GFXUnique<StructureBuffer> m_sbLightsPositionTransformed;
 };
 
 }

@@ -1,3 +1,4 @@
+#define MAX_LIGHTS 512
 #define MAX_LIGHTS_PER_BLOCK 128
 
 struct lightsInBlock {
@@ -9,8 +10,8 @@ struct lightsInBlock {
 cbuffer ConstantBuffer : register(b0) {
   float4 fViewportDimensions;
   float4 kEyePosition;        //XYZ: EyePosition, W: Active Lights
-  float4 kLightPosition[512]; //XYZ: Light Position, W: Range
-  float4 kLightColor[512];    //XYZ: Light Color, W: Intensity
+  float4 kLightPosition[MAX_LIGHTS]; //XYZ: Light Position, W: Range
+  float4 kLightColor[MAX_LIGHTS];    //XYZ: Light Color, W: Intensity
   float4 threadsInfo; //X: Number of thread groups in x, Y: Number of thread groups in Y.
 };
 
@@ -44,24 +45,6 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
 	
 	const float2 uv = float2(dispatchID.x * rcp(fViewportDimensions.x),
                            dispatchID.y * rcp(fViewportDimensions.y));
-  
-  /*
-  int lightCount = 0;
-  
-  for (int lightIndex = 0; lightIndex < MAX_LIGHTS_PER_BLOCK; ++lightIndex) {
-    lightCount += (LightsIndex[group].foo[lightIndex] > 0);
-  }
-
-  //Lightning[uvScale] = float4((lightCount / (float)128).xxx, 1.0f);
-  Lightning[uvScale] = float4((lightCount / (float)128).xxx, 1.0f);
-  Brightness[uvScale] = Lightning[uvScale];
-  return;
-  */
-  /*
-  Lightning[uvScale] = float4((numberOfLights[group] / (float)128).xxx, 1.0f);
-  Brightness[uvScale] = Lightning[uvScale];
-  return;
-  */
 
   const float4  position    = float4(PositionDepthTex.SampleLevel(SS, uv, 0).xyz, 1.0f);
   const float   SSAO        = SSAOTex.SampleLevel(SS, uv, 0).x;
@@ -105,7 +88,7 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   uint totalLights = LightsIndex[group].foo[MAX_LIGHTS_PER_BLOCK - 1];
 
   [loop]
-  for (int index = 0; index < totalLights; ++index) {
+  for (uint index = 0; index < totalLights; ++index) {
     actualLight = LightsIndex[group].foo[index];
     
     lightPosition  = kLightPosition[actualLight].xyz;

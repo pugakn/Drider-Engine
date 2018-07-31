@@ -52,6 +52,18 @@ LightningPass::init(PassInitData* initData) {
   File file;
   String shaderSrc;
 
+  m_csTiledLightsFilename = _T("Resources\\Shaders\\WorldLightToSS_cs.hlsl");
+
+  file.Open(m_csTiledLightsFilename);
+  shaderSrc = StringUtils::toString(file.GetAsString(file.Size()));
+  file.Close();
+
+  m_csWorldLightsToSS = dr_gfx_unique(device.createShaderFromMemory(shaderSrc.data(),
+                                      shaderSrc.size(),
+                                      DR_SHADER_TYPE_FLAG::kCompute));
+
+  shaderSrc.clear();
+
   m_csTiledLightsFilename = _T("Resources\\Shaders\\TileLights_cs.hlsl");
 
   file.Open(m_csTiledLightsFilename);
@@ -65,18 +77,23 @@ LightningPass::init(PassInitData* initData) {
   shaderSrc.clear();
 
   bdesc.type = DR_BUFFER_TYPE::kRWSTRUCTURE;
-  bdesc.sizeInBytes = sizeof(Int32) * 128 * //Int32 * MaxLightsPerTile
+  bdesc.sizeInBytes = sizeof(Int32) * RENDER_MANAGER_MAX_LIGHTS_PER_BLOCK *
                       (data->RTWidth / m_ComputeWidthDivisions) *
                       (data->RTHeight / m_ComputeHeightDivisions);
-  bdesc.stride = sizeof(Int32) * 128;
+  bdesc.stride = sizeof(Int32) * RENDER_MANAGER_MAX_LIGHTS_PER_BLOCK;
   m_sbLightsIndex = dr_gfx_unique((StructureBuffer*)device.createBuffer(bdesc));
 
   bdesc.type = DR_BUFFER_TYPE::kRWSTRUCTURE;
-  bdesc.sizeInBytes = sizeof(Int32) * 512 * //Int32 * MaxLights
+  bdesc.sizeInBytes = sizeof(Int32) * RENDER_MANAGER_MAX_LIGHTS * //Int32 * MaxLights
                       (data->RTWidth / m_ComputeWidthDivisions) *
                       (data->RTHeight / m_ComputeHeightDivisions);
-  bdesc.stride = sizeof(Int32) * 512;
+  bdesc.stride = sizeof(Int32) * RENDER_MANAGER_MAX_LIGHTS;
   m_sbLightsIndexAux = dr_gfx_unique((StructureBuffer*)device.createBuffer(bdesc));
+
+  bdesc.type = DR_BUFFER_TYPE::kRWSTRUCTURE;
+  bdesc.sizeInBytes = sizeof(Vector4D) * RENDER_MANAGER_MAX_LIGHTS; // * MaxLights
+  bdesc.stride = sizeof(Vector4D);
+  m_sbLightsPositionTransformed = dr_gfx_unique((StructureBuffer*)device.createBuffer(bdesc));
 }
 
 void
@@ -107,7 +124,7 @@ LightningPass::draw(PassDrawData* drawData) {
   CB.EyePosition = data->ActiveCam->getPosition();
   CB.EyePosition.w = data->ActiveLights;
 
-  for (SizeT lighIndex = 0; lighIndex < 512; ++lighIndex) {
+  for (SizeT lighIndex = 0; lighIndex < RENDER_MANAGER_MAX_LIGHTS; ++lighIndex) {
     CB.LightPosition[lighIndex] = (*data->Lights)[lighIndex].m_vec4Position;
     CB.LightColor[lighIndex] = (*data->Lights)[lighIndex].m_vec4Color;
   }
@@ -144,6 +161,27 @@ LightningPass::tileLights(PassDrawData* drawData) {
   dc.setUAVsNull();
   dc.setResourcesNull();
 
+  m_csWorldLightsToSS->set(dc);
+
+  m_sbLightsPositionTransformed->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
+
+  CBTiled.CameraUp = Vector4D(CameraManager::getActiveCamera()->getLocalUp(), 0.0f);;
+
+  Matrix4x4 CamVP = CameraManager::getActiveCamera()->getVP();
+  CBTiled.VP = CamVP;
+
+  for (SizeT lighIndex = 0; lighIndex < RENDER_MANAGER_MAX_LIGHTS; ++lighIndex) {
+    CBTiled.LightPosition[lighIndex] = (*data->Lights)[lighIndex].m_vec4Position;
+  }
+
+  m_constantBufferTiled->updateFromBuffer(dc, reinterpret_cast<byte*>(&CBTiled));
+  m_constantBufferTiled->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
+
+  dc.dispatch(RENDER_MANAGER_MAX_LIGHTS / 32, 1, 1);
+
+  dc.setUAVsNull();
+  dc.setResourcesNull();
+
   m_csTiledLights->set(dc);
 
   DrTextureDesc outRTDesc = data->OutRt->getDescriptor();
@@ -158,21 +196,22 @@ LightningPass::tileLights(PassDrawData* drawData) {
 
   m_sbLightsIndex->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
   m_sbLightsIndexAux->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 1);
+  m_sbLightsPositionTransformed->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 2);
 
   CB.fViewportDimensions.x = m_RTWidth;
   CB.fViewportDimensions.y = m_RTHeight;
 
-  CBTiled.CameraUp = Vector4D(CameraManager::getActiveCamera()->getLocalUp(), 0.0f);
+  //CBTiled.CameraUp = Vector4D(CameraManager::getActiveCamera()->getLocalUp(), 0.0f);
 
   CBTiled.ThreadsGroups.x = m_ComputeWidthBlocks;
-  CBTiled.ThreadsGroups.y = m_ComputeHeightBlocks; 
+  CBTiled.ThreadsGroups.y = m_ComputeHeightBlocks;
 
-  Matrix4x4 CamVP = CameraManager::getActiveCamera()->getVP();
-  CBTiled.VP = CamVP;
+  //Matrix4x4 CamVP = CameraManager::getActiveCamera()->getVP();
+  //CBTiled.VP = CamVP;
 
-  for (SizeT lighIndex = 0; lighIndex < 512; ++lighIndex) {
-    CBTiled.LightPosition[lighIndex] = (*data->Lights)[lighIndex].m_vec4Position;
-  }
+  //for (SizeT lighIndex = 0; lighIndex < 512; ++lighIndex) {
+  //  CBTiled.LightPosition[lighIndex] = (*data->Lights)[lighIndex].m_vec4Position;
+  //}
 
   m_constantBufferTiled->updateFromBuffer(dc, reinterpret_cast<byte*>(&CBTiled));
   m_constantBufferTiled->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
