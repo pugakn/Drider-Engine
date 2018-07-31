@@ -19,7 +19,7 @@ struct LightningInitData : PassInitData {
 struct LightningDrawData : PassDrawData {
   std::shared_ptr<Camera> ActiveCam;
   SizeT ActiveLights;
-  std::array<Light, 128>* Lights;
+  std::array<Light, 512>* Lights;
   GFXShared<RenderTarget> GbufferRT;
   GFXShared<RenderTarget> SSAORT;
   GFXShared<RenderTarget> ShadowRT;
@@ -64,8 +64,8 @@ class LightningPass : public RenderPass {
   struct CBuffer1 {
     Vector4D fViewportDimensions;
     Vector4D EyePosition;         // [XYZ = Cameraposition, W = ActiveLights]
-    Vector4D LightPosition[128];  // [XYZ = LightPosition, W = Range]
-    Vector4D LightColor[128];     // [XYZ = LightColor, W = LightIntensity]
+    Vector4D LightPosition[512];  // [XYZ = LightPosition, W = Range]
+    Vector4D LightColor[512];     // [XYZ = LightColor, W = LightIntensity]
     Vector4D threadsInfo;
   };
 
@@ -74,7 +74,7 @@ class LightningPass : public RenderPass {
     Vector4D CameraUp;
     Vector4D ThreadsGroups;
     Matrix4x4 VP;
-    Vector4D LightPosition[128];	//XYZ: Light Position, W: Range
+    Vector4D LightPosition[512];	//XYZ: Light Position, W: Range
   };
 
   CBuffer1 CB;

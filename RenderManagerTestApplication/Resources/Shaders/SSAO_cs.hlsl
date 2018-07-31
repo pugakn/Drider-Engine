@@ -36,7 +36,8 @@ doOclussion(float2 texCoord, float2 uv, float3 p, float3 cnorm) {
   float3 v = normalize(diff);
   float  d = length(diff) * SSAO_Options[2];
   
-	return max(0.0f, dot(cnorm, v) - SSAO_Options[3]) * (1.0f / (1.0f + d)) * SSAO_Options[1];
+	//return max(0.0f, dot(cnorm, v) - SSAO_Options[3]) * (1.0f / (1.0f + d)) * SSAO_Options[1];
+	return max(0.0f, dot(cnorm, v) - SSAO_Options[3]) * rcp(1.0f + d) * SSAO_Options[1];
 };
 
 static const float2 vec[4] = {
@@ -57,8 +58,8 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   
 	const float2 uv = float2(dispatchID.x, dispatchID.y);
 	
-	const float2 wUVScale = float2(dispatchID.x / fViewportDimensions.x,
-																 dispatchID.y / fViewportDimensions.y);
+	const float2 wUVScale = float2(dispatchID.x * rcp(fViewportDimensions.x),
+																 dispatchID.y * rcp(fViewportDimensions.y));
 	//const float2 wUVScale = float2((dispatchID.x * 1280) / (float)TXWIDTH,
 	//												 			 (dispatchID.y * 720) / (float)TXHEIGHT);
 	//const float2 wUVScale = float2(dispatchID.x / (float)1280*2,

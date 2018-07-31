@@ -18,8 +18,8 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
 
 	float2 uv = float2(dispatchID.x, dispatchID.y);
 	
-	float2 uvScale = float2(dispatchID.x / (float)TXWIDTH,
-													dispatchID.y / (float)TXHEIGHT);
+	float2 uvScale = float2(dispatchID.x * rcp((float)TXWIDTH),
+													dispatchID.y * rcp((float)TXHEIGHT));
 
 	CompressedShadowTex[uv] = float4(ShadowSt.SampleLevel(SS, uvScale, 0).x,
 												 					 ShadowNd.SampleLevel(SS, uvScale, 0).x,

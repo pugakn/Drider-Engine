@@ -40,9 +40,11 @@ GetShadowValue(float4 fromLightPos, const int camIndex) {
   #ifdef DR_SH_PCF_ENABLED
     static const float shadowBias = 0.0005f;
 
-    const float texelSize = 1.0f / ShadowInfo[1];
+    //const float texelSize = 1.0f / ShadowInfo[1];
+    const float texelSize = rcp(ShadowInfo[1]);
     const float sampleRadius = 3.0f;
-    const float modifier = 4.0f / (sampleRadius * sampleRadius * 2.0f);
+    //const float modifier = 4.0f / (sampleRadius * sampleRadius * 2.0f);
+    const float modifier = 4.0f * rcp(sampleRadius * sampleRadius * 2.0f);
 
     [unroll]
     for (float y = -sampleRadius; y <= sampleRadius; y += 1.0f) {
@@ -77,8 +79,8 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
 
 	float2 uv = float2(dispatchID.x, dispatchID.y);
 	
-	float2 uvScale = float2(dispatchID.x / fViewportDimensions.x,
-													dispatchID.y / fViewportDimensions.y);
+	float2 uvScale = float2(dispatchID.x * rcp(fViewportDimensions.x),
+													dispatchID.y * rcp(fViewportDimensions.y));
   
   const float4 position = float4(PositionDepthTex.SampleLevel(SS, uvScale, 0).xyz, 1.0f);
   const float  depth		= PositionDepthTex.SampleLevel(SS, uvScale, 0).w;
@@ -105,8 +107,10 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
     iCurrentCascadeIndex = (int)min(fIndex, activatedCacades);
 
     #ifdef CASCADE_BLUR
-      const float pxProportion = depth / ShadowSplitDepth[iCurrentCascadeIndex];
-      const float ShadowLerp = saturate((pxProportion - CascadeLerp) / (1.0f - CascadeLerp));
+      //const float pxProportion = depth / ShadowSplitDepth[iCurrentCascadeIndex];
+      //const float ShadowLerp = saturate((pxProportion - CascadeLerp) / (1.0f - CascadeLerp));
+      const float pxProportion = depth * rcp(ShadowSplitDepth[iCurrentCascadeIndex]);
+      const float ShadowLerp = saturate((pxProportion - CascadeLerp) * rcp(1.0f - CascadeLerp));
     #endif //CASCADE_BLUR
   #elif defined(MAP_BASED_SELECTION)
     float4 fComparison;
@@ -126,23 +130,22 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
 
     #ifdef CASCADE_BLUR
       const float2 cascadeUV = abs(mul(kShadowVP[iCurrentCascadeIndex], position).xy);
-      const float ShadowLerp = saturate((max(cascadeUV.x, cascadeUV.y) - CascadeLerp) / (1.0f - CascadeLerp));
+      //const float ShadowLerp = saturate((max(cascadeUV.x, cascadeUV.y) - CascadeLerp) / (1.0f - CascadeLerp));
+      const float ShadowLerp = saturate((max(cascadeUV.x, cascadeUV.y) - CascadeLerp) * rcp(1.0f - CascadeLerp));
     #endif //CASCADE_BLUR
   #endif //INTERVAL_BASED_SELECTION || MAP_BASED_SELECTION
 
   //Projects the position from the mainCam to what shadowCam sees
   const float4 fromMinLightPos = mul(kShadowVP[iCurrentCascadeIndex], position);
 
-  #if (defined(INTERVAL_BASED_SELECTION) || defined(MAP_BASED_SELECTION))
-    #ifdef CASCADE_BLUR
-      const float4 fromMaxLightPos = mul(kShadowVP[min(iCurrentCascadeIndex + 1, 3)], position);
-      ShadowValue = lerp(GetShadowValue(fromMinLightPos, iCurrentCascadeIndex),
-                         GetShadowValue(fromMaxLightPos, min(iCurrentCascadeIndex + 1, 3)),
-                         ShadowLerp);
-    #else
-      ShadowValue = GetShadowValue(fromMinLightPos, iCurrentCascadeIndex);
-    #endif //CASCADE_BLUR
-  #endif //INTERVAL_BASED_SELECTION || MAP_BASED_SELECTION
+  #ifdef CASCADE_BLUR
+    const float4 fromMaxLightPos = mul(kShadowVP[min(iCurrentCascadeIndex + 1, 3)], position);
+    ShadowValue = lerp(GetShadowValue(fromMinLightPos, iCurrentCascadeIndex),
+                        GetShadowValue(fromMaxLightPos, min(iCurrentCascadeIndex + 1, 3)),
+                        ShadowLerp);
+  #else
+    ShadowValue = GetShadowValue(fromMinLightPos, iCurrentCascadeIndex);
+  #endif //CASCADE_BLUR
 
 	ShadowTex[uv] = max(0.0f, ShadowTex[uv] - ShadowValue);
 

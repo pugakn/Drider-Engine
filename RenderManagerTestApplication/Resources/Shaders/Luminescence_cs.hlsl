@@ -35,12 +35,15 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   float thisGroupLuminance = 0.0f;
   float3 actualPixel;
   
+  const float offsettedX = dispatchID.x * threadsInfo.z;
+  const float offsettedY = dispatchID.y * threadsInfo.w;
+
   [loop]
   for (int pxGroup_X = 0; pxGroup_X < threadsInfo.z; ++pxGroup_X) {
     [loop]
     for (int pxGroup_Y = 0; pxGroup_Y < threadsInfo.w; ++pxGroup_Y) {
-      wUVScale = float2(((dispatchID.x * threadsInfo.z) + pxGroup_X) / fViewportDimensions.x,
-                        ((dispatchID.y * threadsInfo.w) + pxGroup_Y) / fViewportDimensions.y);
+      wUVScale = float2((offsettedX + pxGroup_X) * rcp(fViewportDimensions.x),
+                        (offsettedY + pxGroup_Y) * rcp(fViewportDimensions.y));
       actualPixel = TextureIn.SampleLevel(SS, wUVScale, 0).xyz;
       thisGroupLuminance += luminescence(actualPixel, fViewportDimensions.z);
     }
@@ -58,9 +61,11 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   AllMemoryBarrierWithGroupSync();
 
   float thisRowLuminance = 0.0f;
+  float rowID = groupID.y * threadsInfo.x;
   
+  [loop]
   for (int group_x = 0; group_x < threadsInfo.x; ++group_x) {
-    thisRowLuminance += GroupLuminescence[(groupID.y * threadsInfo.x) + group_x];
+    thisRowLuminance += GroupLuminescence[rowID + group_x];
   }
 
   GroupLuminescence[group] = thisRowLuminance;
@@ -76,24 +81,10 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
 
   float thisColumnLuminance = 0.0f;
 
+  [loop]
   for (int group_y = 0; group_y < threadsInfo.y; ++group_y) {
     thisColumnLuminance += GroupLuminescence[group_y * threadsInfo.x];
   }
-
-  /*
-
-  AllMemoryBarrierWithGroupSync();
-
-  const float3 actualPixel = TextureIn.SampleLevel(SS, wUVScale, 0).xyz;
-
-  AverageLuminescence[0].x += luminescence(actualPixel, fViewportDimensions.z);
-  
-  AllMemoryBarrierWithGroupSync();
-
-  float totalLuminescence = AverageLuminescence[0].x / (fViewportDimensions.x * fViewportDimensions.y);
-  
-  AverageLuminescence[0].x = totalLuminescence;
-  */
 
   float totalAverageLuminescence = thisColumnLuminance *  rcp(fViewportDimensions.x * fViewportDimensions.y);
   

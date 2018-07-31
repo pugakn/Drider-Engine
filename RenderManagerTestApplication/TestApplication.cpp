@@ -106,15 +106,17 @@ RenderManApp::postInit() {
   Vector4D LightPosition(0.0f, 100.0f, 150.0f, 1.0f);
   
   SizeT lighIndex = 0;
-  Int32 zOffset = 0;
+  Int32 xOffset = 0;
+  float separationX = 100.0f;
+  float separationZ = 50.0f;
   float proportion = 0.0f;
   for (Int32 xPos = 0; xPos < 16; ++xPos) {
-    for (Int32 zPos = 0; zPos < 8; ++zPos) {
+    for (Int32 zPos = 0; zPos < 32; ++zPos) {
       //Posicion
       Lights[lighIndex].m_vec4Position = Vector4D(
-                                                  (zOffset * 50) - 375.0f,
+                                                  (xOffset * separationX) - (15 * separationX * 0.5f),
                                                   25,
-                                                  (zPos * 50) - 187.5 + 50,
+                                                  ((zPos + 1) * separationZ) - 187.5,
                                                   1.0f);
 
       //Color
@@ -126,18 +128,20 @@ RenderManApp::postInit() {
                Lights[lighIndex].m_vec4Color.z);
 
       //Range
-      Lights[lighIndex].m_vec4Position.w = 150.0f;
-      //Lights[lighIndex].m_vec4Position.w = 100.0f;
+      //Lights[lighIndex].m_vec4Position.w = 150.0f;
+      Lights[lighIndex].m_vec4Position.w = 100.0f;
+      //Lights[lighIndex].m_vec4Position.w = 50.0f;
       //Lights[lighIndex].m_vec4Position.w = proportion * 150.0f;
 
       //Intensidad
       //Lights[lighIndex].m_vec4Color.w = (lighIndex / 128.0f);
-      Lights[lighIndex].m_vec4Color.w = 1.0f;
+      //Lights[lighIndex].m_vec4Color.w = 1.0f;
+      Lights[lighIndex].m_vec4Color.w = 2.0f;
 
-      proportion += (1.0f / 128.0f);
+      proportion += (1.0f / 512.0f);
       ++lighIndex;
     }
-    zOffset += 1;
+    xOffset += 1;
   }
   
   RenderManager::instance().lights = &Lights;

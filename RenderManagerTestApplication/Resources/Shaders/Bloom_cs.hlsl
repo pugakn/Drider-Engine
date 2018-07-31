@@ -35,8 +35,8 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
 	 uint  groupIndex			: SV_GroupIndex) {
   const float2 uvScale = float2(dispatchID.x, dispatchID.y);
 	
-	const float2 uv = float2(dispatchID.x / fViewportDimensions.x,
-                           dispatchID.y / fViewportDimensions.y);
+	const float2 uv = float2(dispatchID.x * rcp(fViewportDimensions.x),
+                           dispatchID.y * rcp(fViewportDimensions.y));
 
   const float3 color = ColorTex.SampleLevel(SS, uv, 0).xyz;
   

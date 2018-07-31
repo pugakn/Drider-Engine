@@ -34,10 +34,11 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   
   const float2 uv = float2(dispatchID.x, dispatchID.y);
 	
-	const float2 uvScale = float2(dispatchID.x / fViewportDimensions.x,
-																dispatchID.y / fViewportDimensions.y);
+	const float2 uvScale = float2(dispatchID.x * rcp(fViewportDimensions.x),
+																dispatchID.y * rcp(fViewportDimensions.y));
 
-  static const float offset = 1.0f / fViewportDimensions.x;
+  //static const float offset = 1.0f / fViewportDimensions.x;
+  static const float offset = rcp(fViewportDimensions.x);
   float4 shadowVal = float4(0.0f, 0.0f, 0.0f, 0.0f);
   
   float2 sampleCoords;

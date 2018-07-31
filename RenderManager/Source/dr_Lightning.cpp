@@ -72,10 +72,10 @@ LightningPass::init(PassInitData* initData) {
   m_sbLightsIndex = dr_gfx_unique((StructureBuffer*)device.createBuffer(bdesc));
 
   bdesc.type = DR_BUFFER_TYPE::kRWSTRUCTURE;
-  bdesc.sizeInBytes = sizeof(Int32) * 128 * //Int32 * MaxLights
+  bdesc.sizeInBytes = sizeof(Int32) * 512 * //Int32 * MaxLights
                       (data->RTWidth / m_ComputeWidthDivisions) *
                       (data->RTHeight / m_ComputeHeightDivisions);
-  bdesc.stride = sizeof(Int32);
+  bdesc.stride = sizeof(Int32) * 512;
   m_sbLightsIndexAux = dr_gfx_unique((StructureBuffer*)device.createBuffer(bdesc));
 }
 
@@ -107,7 +107,7 @@ LightningPass::draw(PassDrawData* drawData) {
   CB.EyePosition = data->ActiveCam->getPosition();
   CB.EyePosition.w = data->ActiveLights;
 
-  for (SizeT lighIndex = 0; lighIndex < 128; ++lighIndex) {
+  for (SizeT lighIndex = 0; lighIndex < 512; ++lighIndex) {
     CB.LightPosition[lighIndex] = (*data->Lights)[lighIndex].m_vec4Position;
     CB.LightColor[lighIndex] = (*data->Lights)[lighIndex].m_vec4Color;
   }
@@ -170,7 +170,7 @@ LightningPass::tileLights(PassDrawData* drawData) {
   Matrix4x4 CamVP = CameraManager::getActiveCamera()->getVP();
   CBTiled.VP = CamVP;
 
-  for (SizeT lighIndex = 0; lighIndex < 128; ++lighIndex) {
+  for (SizeT lighIndex = 0; lighIndex < 512; ++lighIndex) {
     CBTiled.LightPosition[lighIndex] = (*data->Lights)[lighIndex].m_vec4Position;
   }
 

@@ -9,8 +9,8 @@ struct lightsInBlock {
 cbuffer ConstantBuffer : register(b0) {
   float4 fViewportDimensions;
   float4 kEyePosition;        //XYZ: EyePosition, W: Active Lights
-  float4 kLightPosition[128]; //XYZ: Light Position, W: Range
-  float4 kLightColor[128];    //XYZ: Light Color, W: Intensity
+  float4 kLightPosition[512]; //XYZ: Light Position, W: Range
+  float4 kLightColor[512];    //XYZ: Light Color, W: Intensity
   float4 threadsInfo; //X: Number of thread groups in x, Y: Number of thread groups in Y.
 };
 
@@ -42,8 +42,8 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   
   const float2 uvScale = float2(dispatchID.x, dispatchID.y);
 	
-	const float2 uv = float2(dispatchID.x / fViewportDimensions.x,
-                           dispatchID.y / fViewportDimensions.y);
+	const float2 uv = float2(dispatchID.x * rcp(fViewportDimensions.x),
+                           dispatchID.y * rcp(fViewportDimensions.y));
   
   /*
   int lightCount = 0;
@@ -103,6 +103,7 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   
   uint actualLight;
   uint totalLights = LightsIndex[group].foo[MAX_LIGHTS_PER_BLOCK - 1];
+
   [loop]
   for (int index = 0; index < totalLights; ++index) {
     actualLight = LightsIndex[group].foo[index];
@@ -119,17 +120,17 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
     H = normalize(LightViewDir + ViewDir);
 
     NdotL = saturate(dot(normal, LightViewDir));
-    LdotV = saturate(dot(LightViewDir, ViewDir));
+    //LdotV = saturate(dot(LightViewDir, ViewDir));
     
     NdotH = saturate(dot(normal, H));
-    VdotH = saturate(dot(ViewDir, H));
+    //VdotH = saturate(dot(ViewDir, H));
     LdotH = saturate(dot(LightViewDir, H));
 
     DiffAcc = Diffuse_Burley(NdotL, NdotV, LdotH, roughness) * diffuse;
     SpecAcc = Specular_D(alpha, NdotH) *
               Specular_F(specularPBR * lightColor, LdotH) *
               Specular_G(alpha, LdotH);
-    SpecAcc /= (4.0f * cos(NdotL) * cos(NdotV));
+    SpecAcc *= rcp(4.0f * cos(NdotL) * cos(NdotV));
     
     finalColor += (DiffAcc + SpecAcc) * (NdotL * LightPower);
   };

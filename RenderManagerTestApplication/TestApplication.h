@@ -66,7 +66,7 @@ class RenderManApp : public Application
 
   float luminanceDelta;
   Vector3D modelMovement;
-  std::array<Light, 128> Lights;
+  std::array<Light, 512> Lights;
 };
 
 }

@@ -5,15 +5,19 @@ cbuffer ConstantBuffer : register(b0) {
   float4 cameraUp; //X: Number of thread groups in x, Y: Number of thread groups in Y.
   float4 threadsGroups; //X: Number of thread groups in x, Y: Number of thread groups in Y.
   float4x4 VP;
-  float4 kLightPosition[128];	//XYZ: Light Position, W: Range
+  float4 kLightPosition[512];	//XYZ: Light Position, W: Range
 };
 
 struct lightsInBlock {
-  int foo[128];
+  int foo[MAX_LIGHTS_PER_BLOCK];
+};
+
+struct cacaInBlock {
+  int foo[512];
 };
 
 RWStructuredBuffer<lightsInBlock> LightsIndex : register(u0);
-RWStructuredBuffer<lightsInBlock> LightsIndexAux : register(u1);
+RWStructuredBuffer<cacaInBlock> LightsIndexAux : register(u1);
 
 bool
 intersects(float2 circlePos, float circleRadius, float2 RectPos, float2 RectSize) {
@@ -27,7 +31,7 @@ intersects(float2 circlePos, float circleRadius, float2 RectPos, float2 RectSize
 //Max lights = 32 * 16 = 512
 //Max lights = 32 * 32 = 1024
 #define NUMTHREADS_X 32
-#define NUMTHREADS_Y 4
+#define NUMTHREADS_Y 16
 [numthreads(NUMTHREADS_X, NUMTHREADS_Y, 1)]
 void
 CS(uint3 groupThreadID	: SV_GroupThreadID,
@@ -41,17 +45,12 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   //Este indica la luz que tiene que analizar este thread
   const uint lightIndex = groupIndex;
   
-  if (lightIndex < MAX_LIGHTS_PER_BLOCK){
-    LightsIndex[group].foo[lightIndex] = -1;
-  }
   LightsIndexAux[group].foo[lightIndex] = -1;
   
   static const float2 rectSize = float2(1.0f / threadsGroups.x, 1.0f / threadsGroups.y);
   const float2 rectPos = float2((rectSize.x * 0.5f) + (rectSize.x * groupID.x),
 																(rectSize.y * 0.5f) + (rectSize.y * groupID.y));
 
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   float4 LightPos = float4(kLightPosition[lightIndex].xyz, 1.0f);
@@ -85,9 +84,10 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
     return;
   }
   
-  static const int maxLights = NUMTHREADS_X * NUMTHREADS_Y;
+  //static const int maxLights = NUMTHREADS_X * NUMTHREADS_Y;
   uint counter = 0;
-  for (int currentLight = 0; (currentLight < maxLights) && (counter < (MAX_LIGHTS_PER_BLOCK - 1)) ; ++currentLight) {
+  [loop]
+  for (int currentLight = 0; (currentLight < 512) && (counter < (MAX_LIGHTS_PER_BLOCK - 1)) ; ++currentLight) {
     if (LightsIndexAux[group].foo[currentLight] > -1) {
       LightsIndex[group].foo[counter] = currentLight;
       ++counter;
