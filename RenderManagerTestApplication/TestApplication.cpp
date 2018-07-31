@@ -98,6 +98,7 @@ RenderManApp::postInit() {
   CameraManager::setActiveCamera(_T("PATO_CAM"));
   RenderManager::startUp();
 
+  luminanceDelta = 0.0f;
   RenderManager::instancePtr()->luminanceDelta = &luminanceDelta;
 
   m_bRotate = false;
