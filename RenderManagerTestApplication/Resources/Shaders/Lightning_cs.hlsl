@@ -101,35 +101,37 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
 
   const int activeLights = kEyePosition.w;
   
+  uint actualLight;
+  uint totalLights = LightsIndex[group].foo[MAX_LIGHTS_PER_BLOCK - 1];
   [loop]
-  for (int index = 0; index < MAX_LIGHTS_PER_BLOCK; ++index) {
-    if (LightsIndex[group].foo[index] > 0) {
-      lightPosition  = kLightPosition[index].xyz;
-      lightColor     = kLightColor[index].xyz;
-      lightRange     = kLightPosition[index].w;
-      lightIntensity = kLightColor[index].w;
-      
-      LightPower = pow(saturate(1.0f - (length(lightPosition - position.xyz) / lightRange)), 2) * lightIntensity;
-      
-      LightViewDir = normalize(lightPosition - position.xyz);
+  for (int index = 0; index < totalLights; ++index) {
+    actualLight = LightsIndex[group].foo[index];
+    
+    lightPosition  = kLightPosition[actualLight].xyz;
+    lightColor     = kLightColor[actualLight].xyz;
+    lightRange     = kLightPosition[actualLight].w;
+    lightIntensity = kLightColor[actualLight].w;
+    
+    LightPower = pow(saturate(1.0f - (length(lightPosition - position.xyz) / lightRange)), 2) * lightIntensity;
+    
+    LightViewDir = normalize(lightPosition - position.xyz);
 
-      H = normalize(LightViewDir + ViewDir);
+    H = normalize(LightViewDir + ViewDir);
 
-      NdotL = saturate(dot(normal, LightViewDir));
-      LdotV = saturate(dot(LightViewDir, ViewDir));
-      
-      NdotH = saturate(dot(normal, H));
-      VdotH = saturate(dot(ViewDir, H));
-      LdotH = saturate(dot(LightViewDir, H));
+    NdotL = saturate(dot(normal, LightViewDir));
+    LdotV = saturate(dot(LightViewDir, ViewDir));
+    
+    NdotH = saturate(dot(normal, H));
+    VdotH = saturate(dot(ViewDir, H));
+    LdotH = saturate(dot(LightViewDir, H));
 
-      DiffAcc = Diffuse_Burley(NdotL, NdotV, LdotH, roughness) * diffuse;
-      SpecAcc = Specular_D(alpha, NdotH) *
-                Specular_F(specularPBR * lightColor, LdotH) *
-                Specular_G(alpha, LdotH);
-      SpecAcc /= (4.0f * cos(NdotL) * cos(NdotV));
-      
-      finalColor += (DiffAcc + SpecAcc) * (NdotL * LightPower);
-    }
+    DiffAcc = Diffuse_Burley(NdotL, NdotV, LdotH, roughness) * diffuse;
+    SpecAcc = Specular_D(alpha, NdotH) *
+              Specular_F(specularPBR * lightColor, LdotH) *
+              Specular_G(alpha, LdotH);
+    SpecAcc /= (4.0f * cos(NdotL) * cos(NdotV));
+    
+    finalColor += (DiffAcc + SpecAcc) * (NdotL * LightPower);
   };
   
   //////////IBL//////////

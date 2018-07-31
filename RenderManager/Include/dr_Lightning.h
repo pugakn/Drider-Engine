@@ -97,8 +97,8 @@ class LightningPass : public RenderPass {
   GFXUnique<SamplerState> m_samplerState;
   GFXUnique<SamplerState> m_samplerStateCubemap;
 
-  GFXUnique<StructureBuffer> m_sbNumberOfLights;
   GFXUnique<StructureBuffer> m_sbLightsIndex;
+  GFXUnique<StructureBuffer> m_sbLightsIndexAux;
 };
 
 }

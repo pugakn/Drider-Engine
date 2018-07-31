@@ -65,19 +65,18 @@ LightningPass::init(PassInitData* initData) {
   shaderSrc.clear();
 
   bdesc.type = DR_BUFFER_TYPE::kRWSTRUCTURE;
-  bdesc.sizeInBytes = sizeof(Int32) *
-                      (data->RTWidth / m_ComputeWidthDivisions) *
-                      (data->RTHeight / m_ComputeHeightDivisions);
-  bdesc.stride = sizeof(Int32);
-  m_sbNumberOfLights = dr_gfx_unique((StructureBuffer*)device.createBuffer(bdesc));
-
-  bdesc.type = DR_BUFFER_TYPE::kRWSTRUCTURE;
-  bdesc.sizeInBytes = sizeof(Int32) *
-                      128 *
+  bdesc.sizeInBytes = sizeof(Int32) * 128 * //Int32 * MaxLightsPerTile
                       (data->RTWidth / m_ComputeWidthDivisions) *
                       (data->RTHeight / m_ComputeHeightDivisions);
   bdesc.stride = sizeof(Int32) * 128;
   m_sbLightsIndex = dr_gfx_unique((StructureBuffer*)device.createBuffer(bdesc));
+
+  bdesc.type = DR_BUFFER_TYPE::kRWSTRUCTURE;
+  bdesc.sizeInBytes = sizeof(Int32) * 128 * //Int32 * MaxLights
+                      (data->RTWidth / m_ComputeWidthDivisions) *
+                      (data->RTHeight / m_ComputeHeightDivisions);
+  bdesc.stride = sizeof(Int32);
+  m_sbLightsIndexAux = dr_gfx_unique((StructureBuffer*)device.createBuffer(bdesc));
 }
 
 void
@@ -158,6 +157,7 @@ LightningPass::tileLights(PassDrawData* drawData) {
   m_ComputeTotalBlocks = m_ComputeWidthBlocks * m_ComputeHeightBlocks;
 
   m_sbLightsIndex->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
+  m_sbLightsIndexAux->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 1);
 
   CB.fViewportDimensions.x = m_RTWidth;
   CB.fViewportDimensions.y = m_RTHeight;

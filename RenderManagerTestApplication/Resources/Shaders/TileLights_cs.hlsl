@@ -13,6 +13,7 @@ struct lightsInBlock {
 };
 
 RWStructuredBuffer<lightsInBlock> LightsIndex : register(u0);
+RWStructuredBuffer<lightsInBlock> LightsIndexAux : register(u1);
 
 bool
 intersects(float2 circlePos, float circleRadius, float2 RectPos, float2 RectSize) {
@@ -39,13 +40,19 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   
   //Este indica la luz que tiene que analizar este thread
   const uint lightIndex = groupIndex;
-
-  if (lightIndex >= MAX_LIGHTS_PER_BLOCK) {
-    return;
+  
+  if (lightIndex < MAX_LIGHTS_PER_BLOCK){
+    LightsIndex[group].foo[lightIndex] = -1;
   }
+  LightsIndexAux[group].foo[lightIndex] = -1;
+  
+  static const float2 rectSize = float2(1.0f / threadsGroups.x, 1.0f / threadsGroups.y);
+  const float2 rectPos = float2((rectSize.x * 0.5f) + (rectSize.x * groupID.x),
+																(rectSize.y * 0.5f) + (rectSize.y * groupID.y));
 
-  LightsIndex[group].foo[lightIndex] = -1;
-	//GroupMemoryBarrierWithGroupSync();
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   float4 LightPos = float4(kLightPosition[lightIndex].xyz, 1.0f);
   float4 MaxLightPos = LightPos + (cameraUp * kLightPosition[lightIndex].w);
@@ -63,10 +70,6 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
 
   const float  SSlightRad = abs(length(SSlightPos - SSmaxLightPos));
   
-  static const float2 rectSize = float2(1.0f / threadsGroups.x, 1.0f / threadsGroups.y);
-  const float2 rectPos = float2((rectSize.x * 0.5f) + (rectSize.x * groupID.x),
-																(rectSize.y * 0.5f) + (rectSize.y * groupID.y));
-  
   bool intersected = intersects(SSlightPos, SSlightRad, rectPos, rectSize);
 
   if (intersected) {
@@ -75,8 +78,23 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
     
     //No agregar si ya hay MAX_LIGHTS_PER_BLOCK o mas luces
     //Agregar esta luz al array/vector de indices de luces
-    LightsIndex[group].foo[lightIndex] = 1;
+    LightsIndexAux[group].foo[lightIndex] = 1;
   }
+
+  if (lightIndex > 0) {
+    return;
+  }
+  
+  static const int maxLights = NUMTHREADS_X * NUMTHREADS_Y;
+  uint counter = 0;
+  for (int currentLight = 0; (currentLight < maxLights) && (counter < (MAX_LIGHTS_PER_BLOCK - 1)) ; ++currentLight) {
+    if (LightsIndexAux[group].foo[currentLight] > -1) {
+      LightsIndex[group].foo[counter] = currentLight;
+      ++counter;
+    }
+  }
+
+  LightsIndex[group].foo[MAX_LIGHTS_PER_BLOCK - 1] = counter;
 
   return;
 }
