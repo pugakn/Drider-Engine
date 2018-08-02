@@ -90,7 +90,7 @@ LobbyServerApp::processPacket(MessageData& msg) {
 
   msg.packet >> request;
 
-  //std::cout << "New pacakage with request code: " << request << std::endl;
+  std::cout << "New pacakage with request code: " << request << std::endl;
 
   auto it = std::find_if(m_commands.begin(), m_commands.end(), 
                          [request](const CommandList::value_type& pair) 

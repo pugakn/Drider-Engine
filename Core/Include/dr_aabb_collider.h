@@ -18,7 +18,7 @@ class DR_CORE_EXPORT AABBCollider : public ColliderComponent,
   const AABB& 
   getTransformedAABB();
 
-  const AABB& 
+  AABB& 
   getAABB();
 
   virtual void 

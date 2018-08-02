@@ -118,7 +118,7 @@ $(document).ready(function(){
   //si pulsamos escape, el menú desaparecerá
   $(document).keydown(function(e){
     if(e.keyCode == 27){
-          $("#menuHierarchy").css("display", "none");
+      $("#menuHierarchy").css("display", "none");
     }
   });
 

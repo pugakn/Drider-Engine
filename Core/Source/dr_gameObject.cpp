@@ -4,7 +4,8 @@
 
 #include <dr_string_utils.h>
 
-#include "dr_aabb_collider.h"
+//#include "dr_aabb_collider.h"
+#include "dr_render_component.h"
 #include "dr_gameComponent.h"
 #include "dr_script_component.h"
 
@@ -49,15 +50,12 @@ GameObject::start() {
 
   if (m_change) {
     m_finalTransform = m_localTransform * getParent()->m_finalTransform;  
+    //m_finalTransform = getParent()->m_finalTransform * m_localTransform;  
   }   
 
-  if (auto collider = getComponent<AABBCollider>()) {
-    collider->onUpdate();
+  if (auto render = getComponent<RenderComponent>()) {
+    render->onUpdate();
   }
-  DR_DEBUG_ONLY(
-  else {
-    Logger::addLog(_T("Warning: object started without collider ") + getName());
-  });
 
   for (auto& component : m_components) {
     component->onStart();
@@ -85,6 +83,7 @@ GameObject::update() {
 
   if (m_change) {
     m_finalTransform = m_localTransform * getParent()->m_finalTransform;  
+    //m_finalTransform = getParent()->m_finalTransform * m_localTransform;  
   }   
 
   updateImpl();
@@ -102,6 +101,7 @@ GameObject::update() {
 
         //Recalculate the final transform
         m_finalTransform = m_localTransform * getParent()->m_finalTransform;
+        //m_finalTransform = getParent()->m_finalTransform * m_localTransform;
 
         m_localTransform.m_change = false;
       }

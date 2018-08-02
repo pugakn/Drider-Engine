@@ -6,3 +6,10 @@
 .ui-accordion .ui-accordion-content {
   padding: 5px;
 }
+
+#optionsHierarchy2-button {
+  float: right;
+  width: 20px;
+  height: 20px;
+  padding: 0px;
+}

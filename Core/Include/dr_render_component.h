@@ -39,7 +39,8 @@ class DR_CORE_EXPORT RenderComponent : public GameComponent,
                   SharedModel model);
 
   RenderComponent(GameObject& _gameObject, 
-                  MeshList&& _meshes);
+                  MeshList&& _meshes,
+                  const AABB& _aabb);
   
   void
   setModel(SharedModel model);
@@ -58,7 +59,10 @@ class DR_CORE_EXPORT RenderComponent : public GameComponent,
   {
     return m_model;
   }
- private:
+
+  const AABB&
+  getAABB();
+
   // Inherited via GameComponent
   virtual void 
   onCreate() override;
@@ -78,9 +82,14 @@ class DR_CORE_EXPORT RenderComponent : public GameComponent,
   virtual GameComponent*
   cloneIn(GameObject& _go);
 
+  
+ private:
+
   bool m_isModel;
   WeakModelRef m_model;
   MeshList m_meshes;
+  AABB m_aabb;
+  AABB m_transformedAABB;
 };
 
 }

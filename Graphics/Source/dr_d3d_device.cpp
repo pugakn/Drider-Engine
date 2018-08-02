@@ -65,16 +65,16 @@ D3DDevice::createDeviceAndDeviceContext(DeviceContext& deviceContext) {
   }
 
   if (D3D11CreateDevice(0,
-      D3D_DRIVER_TYPE_HARDWARE,
-      0,
-      flags,
-      &lvl,
-      1,
-      D3D11_SDK_VERSION,
-      &D3D11Device,
-      &lvlRet,
-      &reinterpret_cast<D3DDeviceContext*>(&deviceContext)->
-      D3D11DeviceContext) != S_OK) {
+                        D3D_DRIVER_TYPE_HARDWARE,
+                        0,
+                        flags,
+                        &lvl,
+                        1,
+                        D3D11_SDK_VERSION,
+                        &D3D11Device,
+                        &lvlRet,
+                        &reinterpret_cast<D3DDeviceContext*>(&deviceContext)->
+                          D3D11DeviceContext) != S_OK) {
     throw "Error: createDeviceAndDeviceContext";
   }
 
@@ -183,8 +183,8 @@ D3DDevice::createRenderTarget(const DrTextureDesc& desc, UInt32 numRTs)const {
   return renderTarget;
 }
 
-RenderTarget * D3DDevice::createRenderTarget(const std::vector<Texture*>& textures) const
-{
+RenderTarget*
+D3DDevice::createRenderTarget(const std::vector<Texture*>& textures) const {
   RenderTarget* renderTarget = new D3DRenderTarget;
   renderTarget->create(*this, textures);
   return renderTarget;

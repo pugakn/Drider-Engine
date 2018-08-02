@@ -112,6 +112,9 @@ class DR_CORE_EXPORT CameraManager : public Module<CameraManager>
 							 float nearPlane,
 							 float farPlane);
 
+  static void
+  setViewportToAll(const Viewport& viewport);
+
 	/**
 	* TEST::deleteCamera
 	* Delete a camera by searching it's name.

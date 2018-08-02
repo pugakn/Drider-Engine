@@ -2,16 +2,19 @@
 #include "dr_renderman_prerequisites.h"
 #include "dr_light.h"
 #include "dr_GBuffer1.h"
+#include "dr_Shadow.h"
 #include "dr_SSAO.h"
 #include "dr_HorBlur.h"
 #include "dr_VerBlur.h"
-#include "dr_Shadow.h"
 #include "dr_Lightning.h"
+#include "dr_Bloom.h"
+#include "dr_Luminescence.h"
 #include "dr_PostProcessing.h"
 
 #include <dr_texture.h>
 
 #include "dr_pass_particle_system.h"
+#include <dr_module.h>
 #include <dr_particle_emitter.h>
 #include <dr_vector3d.h>
 namespace driderSDK {
@@ -33,14 +36,14 @@ namespace driderSDK {
 * RenderManager.exit();
 }
 */
-class DR_RENDERMAN_EXPORT RenderMan {
+class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
  public:
   /**
   * TEST::defaultConstructor
   *
   * Default constructor.
   */
-  RenderMan();
+  RenderManager();
 
   /**
   * TEST::destructor
@@ -48,7 +51,7 @@ class DR_RENDERMAN_EXPORT RenderMan {
   * Default destructor
   *
   */
-  ~RenderMan();
+  ~RenderManager();
 
   /**
   * TEST::init
@@ -90,59 +93,97 @@ class DR_RENDERMAN_EXPORT RenderMan {
   void
   recompile();
 
+  float* luminanceDelta;
   UInt32 screenWidth;
   UInt32 screenHeight;
   UInt32 shadowWidth;
   UInt32 shadowHeight;
-  std::array<Light, 128>* lights;
+  std::array<Light, RENDER_MANAGER_MAX_LIGHTS>* lights;
   std::array<std::shared_ptr<Camera>, 4> vecShadowCamera;
   std::vector<float> partitions;
   std::vector<SceneGraph::SharedGameObject> vecGos;
- protected:
-   std::shared_ptr<TextureCore> m_cubemap;
-   std::shared_ptr<TextureCore> m_cubemapDiffuse;
 
+  /*
+  * TEST::onStartUp
+  *
+  */
+  void
+  onStartUp();
+
+  /*
+  * TEST::onStartUp
+  *
+  */
+  void
+  onShutDown();
+
+ protected:
+
+  std::shared_ptr<TextureCore> m_cubemap;
+  std::shared_ptr<TextureCore> m_cubemapDiffuse;
+
+  //VS & FS
   GBufferPass m_GBufferPass;
   GBufferInitData m_GBufferInitData;
   GBufferDrawData m_GBufferDrawData;
   GFXShared<DepthStencil> m_GBufferDSoptions;
 
+  //CS
   SSAOPass m_SSAOPass;
   SSAOInitData m_SSAOInitData;
   SSAODrawData m_SSAODrawData;
-  GFXShared<DepthStencil> m_SSAODSoptions;
 
+  //CS
   HorBlurPass m_HorBlurPass;
   HorBlurInitData m_HorBlurInitData;
   HorBlurDrawData m_HorBlurDrawData;
-  GFXShared<DepthStencil> m_HorBlurDSoptions;
 
+  //CS
   VerBlurPass m_VerBlurPass;
   VerBlurInitData m_VerBlurInitData;
   VerBlurDrawData m_VerBlurDrawData;
   GFXShared<DepthStencil> m_VerBlurDSoptions;
 
+  //VS, FS & CS
   ShadowPass m_ShadowPass;
   ShadowInitData m_ShadowInitData;
   ShadowDrawData m_ShadowDrawData;
   GFXShared<DepthStencil> m_ShadowDSoptions;
   std::array<std::pair<float, float>, 4> m_ShadowSubFrustras;
 
+  //CS
   LightningPass m_LightningPass;
   LightningInitData m_LightningInitData;
   LightningDrawData m_LightningDrawData;
   GFXShared<DepthStencil> m_LightningDSoptions;
 
+  //CS
+  BloomPass m_BloomPass;
+  BloomInitData m_BloomInitData;
+  BloomDrawData m_BloomDrawData;
+
+  //CS
   ParticleSystemPass m_particlePass;
   ParticleSystemInitData m_particleInitData;
   ParticleSystemDrawData m_particleDrawData;
   ParticleEmitter m_emitter;
 
+  //CS
+  LuminescencePass m_luminescencePass;
+  LuminescenceInitData m_luminescenceInitData;
+  LuminescenceDrawData m_luminescenceDrawData;
+  StructureBuffer* resultBuffer;
+
+  //VS & CS (TODO: Make it Compute)
   PostProcessingPass m_PostProcessingPass;
   PostProcessingInitData m_PostProcessingInitData;
   PostProcessingDrawData m_PostProcessingDrawData;
   GFXShared<DepthStencil> m_PostProcessingDSoptions;
 
+  std::array<GFXShared<RenderTarget>, 4> m_RTShadowDummy; //Used for render shadow cascades.
+  GFXShared<RenderTarget> m_RTShadow; //Compressed shadows.
+  GFXShared<RenderTarget> m_RTSSShadow;
+  GFXShared<RenderTarget> m_RTSSShadowBlur;
   //Gbuffer info:
   //0: { xyz: position, w: linear depth };
   //1: { xyz: normal,   w: CoC };
@@ -153,10 +194,10 @@ class DR_RENDERMAN_EXPORT RenderMan {
   GFXShared<RenderTarget> m_RTBlurInit;
   GFXShared<RenderTarget> m_RTSSAOBlur;
   GFXShared<RenderTarget> m_RTLightning;
-  std::array<GFXShared<RenderTarget>, 4> m_RTShadowDummy; //Used for render shadow cascades.
-  GFXShared<RenderTarget> m_RTShadow;
+  GFXShared<RenderTarget> m_RTBrightness;
+  GFXShared<RenderTarget> m_RTBloom;
+  std::vector<Texture*> m_vecTexture;
   GFXShared<RenderTarget> m_RTLightningBlur;
-  GFXShared<RenderTarget> m_RTPostProcessing;
 
   DrTextureDesc m_TexDescDefault;
 
@@ -219,8 +260,8 @@ class DR_RENDERMAN_EXPORT RenderMan {
   Vector3D m_vec3DirectionalLight;
 
   SizeT m_szActiveShadowCameras;
-  float  m_fMinDepth;
-  float  m_fMaxDepth;
+  float m_fMinDepth;
+  float m_fMaxDepth;
 
   bool m_bFitToScene;
   /***************************************************************************/

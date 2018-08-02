@@ -254,6 +254,9 @@ class DR_MATH_EXPORT Matrix4x4
   Matrix4x4&
   Scale(const Vector3D &Scale);
 
+  Matrix4x4
+  InitScale(const Vector3D &Scale);
+
   /**
   * TEST::Rotation
   *

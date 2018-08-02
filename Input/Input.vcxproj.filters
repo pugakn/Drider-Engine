@@ -47,20 +47,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Source\dr_input_joystick.cpp">
-      <Filter>Archivos de código fuente</Filter>
-    </None>
-    <None Include="Source\dr_input_keyboard.cpp">
-      <Filter>Archivos de código fuente</Filter>
-    </None>
-    <None Include="Source\dr_input_manager.cpp">
-      <Filter>Archivos de código fuente</Filter>
-    </None>
-    <None Include="Source\dr_input_mouse.cpp">
-      <Filter>Archivos de código fuente</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="Source\dr_input_manager.cpp">
       <Filter>Archivos de código fuente\v2</Filter>
     </ClCompile>

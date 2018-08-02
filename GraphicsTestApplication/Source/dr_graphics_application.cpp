@@ -71,23 +71,19 @@ GraphicsApplication::postInit() {
   initScriptEngine();
   createTechniques();
   createScene();
-  
-  SceneGraph::start();
-
-  Time::update();
-    
-  m_light[0].m_vec4Position = {100, 100, 100, 2000};
+      
+ /* m_light[0].m_vec4Position = {100, 100, 100, 2000};
   m_light[0].m_vec4Color = {255, 0, 0, 1};
-
-  /*for (Int32 i = 0; i < 32; ++i) {
-
-  }*/
-; 
-  m_renderMan.lights = &m_light;
+  
+  m_renderMan.lights = &m_light;*/
 
   //m_renderMan.init();
+    
+  SceneGraph::start();
 
   m_timer.init();
+
+  Time::update();
 }
 
 void 
@@ -95,8 +91,14 @@ GraphicsApplication::postUpdate() {
   Time::update();
   InputManager::update();
   
+
+  if (m_right && m_center) {
+    
+    /*m_right->getTransform().rotate({0, Math::PI * Time::getDelta(), 0});*/
+    //m_center->getTransform().rotate({0, Math::PI * Time::getDelta(), 0});
+  }
+
   //ScopedTimer{},
-  SceneGraph::update();
 
   playerMovement();
 
@@ -104,15 +106,13 @@ GraphicsApplication::postUpdate() {
     playerRotation();
   }
 
+  SceneGraph::update();
 }
 
 void 
 GraphicsApplication::postRender() {
 
   GraphicsDriver::API().clear();
-
-  /*m_renderMan.draw(GraphicsDriver::API().getBackBufferRT(),
-                   GraphicsDriver::API().getDepthStencil());*/
 
   Int32 queryFlags = QUERY_PROPERTY::kAny;
 
@@ -140,7 +140,7 @@ GraphicsApplication::postRender() {
 
     }    
 
-    std::vector<QueryObjectInfo> queryRes;
+    std::vector<RenderCommand> queryRes;
 
     //ScopedTimer{},
     queryRes = SceneGraph::query(*mainC,  
@@ -161,7 +161,7 @@ GraphicsApplication::postRender() {
         current = m_staticTech.get();
       }
 
-      current->setWorld(&queryObj.world);
+      current->setWorld(queryObj.world);
 
       auto material = queryObj.mesh.material.lock();
 
@@ -225,17 +225,29 @@ GraphicsApplication::initModules() {
 void 
 GraphicsApplication::initInputCallbacks() {
   
-  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+  /*Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kP,
-                        std::bind(&RenderMan::recompile, &m_renderMan)); 
+                        std::bind(&RenderMan::recompile, &m_renderMan)); */
 
   Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::k9,
                         &SceneGraph::buildOctree); 
 
+  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
+                        KEY_CODE::kZ,
+                        [&]() { 
+                          auto root = SceneGraph::getRoot();
+
+                          auto child = root->findNode(_T("Grr2"));
+
+                          auto model = ResourceManager::getReferenceT<Model>(_T("Croc.X"));
+
+                          child->getComponent<RenderComponent>()->setModel(model);
+                        }); 
+
   auto spawnSp =
   [this]() {
-    for (Int32 i = 0; i < 50; ++i) {
+    for (Int32 i = 0; i < 100; ++i) {
       auto obj = m_spiderSpawn.spawn();
       auto ai = obj->getComponent<SpiderAI>();
       ai->setPath(&m_paths[Random::get(0, (Int32)m_paths.size() - 1)]);
@@ -338,14 +350,14 @@ GraphicsApplication::loadResources() {
   m_animationsNames[3] = _T("Animation_3");
 
   CameraManager::createCamera(m_camNames[0], 
-                              {0, 200, -400}, 
-                              {0, 150, 10}, 
+                              {0, 100, 500}, 
+                              {0, 100, 1}, 
                               m_viewport,
                               45, 0.1f, 10000.f);
 
   CameraManager::createCamera(m_camNames[1], 
-                              {0, 5000, 0}, 
-                              {1, 0, 1}, 
+                              {0, 100, -500}, 
+                              {1, 100, 1}, 
                               m_viewport,
                               45, 0.1f, 10000.f);
   
@@ -354,7 +366,7 @@ GraphicsApplication::loadResources() {
   ResourceManager::loadResource(_T("tiny_4anim.x"));
 
   ResourceManager::loadResource(_T("Spidey.fbx"));
-
+  
   ResourceManager::loadResource(_T("Jump In Place.fbx"));
   
   ResourceManager::renameResource(_T("Animation_mixamo.com"), 
@@ -375,11 +387,15 @@ GraphicsApplication::loadResources() {
   ResourceManager::renameResource(_T("Animation_mixamo.com"), 
                                   m_animationsNames[3]);
   
+  ResourceManager::loadResource(_T("HipHopDancing.fbx"));
+
   ResourceManager::loadResource(_T("Run.fbx"));
 
   ResourceManager::loadResource(_T("Unidad_1m.fbx"));
   
   ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
+
+  ResourceManager::loadResource(_T("Croc.X"));
     
   ResourceManager::loadResource(_T("script1.as"));
 
@@ -405,6 +421,43 @@ GraphicsApplication::createTechniques() {
 void 
 GraphicsApplication::createScene() {
   
+  auto hip = addObject(_T("Grr"), _T("HipHopDancing.fbx"), true);
+
+  hip->getTransform().setPosition({200, 0, 0});
+
+  m_right = hip.get();
+
+  auto hipNoAnim = addObject(_T("Grr2"), _T("HipHopDancing.fbx"), false);
+
+  hipNoAnim->getTransform().setPosition({-200, 0, 0});
+
+  auto hippy = addObject(_T("Grr3"), _T("HipHopDancing.fbx"), false);
+
+  hippy->getTransform().setPosition({0, 0, 0});
+
+  //hippy->getTransform().setRotation({0, Math::HALF_PI, 0});
+
+  hippy->addChild(hip);
+
+  m_center = hippy.get()
+             ;
+  auto rot = Matrix4x4(Math::FORCE_INIT::kIdentity).RotationX(Math::HALF_PI);
+  auto tra = Matrix4x4(Math::FORCE_INIT::kIdentity).Translation({11, 23, 71});
+
+  auto rt = rot * tra;
+  auto tr = tra * rot;
+  /*auto cl = hipNoAnim->createInstance();
+
+  *cl = *hipNoAnim;
+
+  cl->getTransform().setPosition({-400, 0, 100});
+  cl->getTransform().setRotation({-Math::HALF_PI, 0, 0});
+
+  auto& cl2 = *cl->createInstance() = *cl;
+
+  cl2.getTransform().setPosition({400, 0, 100});
+  cl2.getTransform().setRotation({Math::HALF_PI, 0, 0});*/
+
   m_paths.resize(3);
 
   for (Int32 i = 0; i < 3; ++i) {
@@ -418,7 +471,7 @@ GraphicsApplication::createScene() {
   spidey->setParent(SceneGraph::createObject(_T("Spiders")));
 
   spidey->getTransform().rotate({0, Math::PI, 0});
-
+  
   m_player = spidey.get();
 
   auto spiderAI = spidey->createInstance();
@@ -427,7 +480,7 @@ GraphicsApplication::createScene() {
 
   spidey->createComponent<SpiderPlayer>();
 
-  spidey->getTransform().setPosition({200.f, 0.f, 300.f});
+  spidey->getTransform().setPosition({0.f, 0.f, 300.f});
 
   spiderAI->createComponent<SpiderAI>();
 
@@ -653,7 +706,7 @@ GraphicsApplication::destroyModules() {
   m_animTech->destroy();
   m_staticTech->destroy();
 
-  m_renderMan.exit();
+  //m_renderMan.exit();
   SceneGraph::shutDown();
   ResourceManager::shutDown();
   CameraManager::shutDown();
@@ -891,10 +944,88 @@ GraphicsApplication::calculatePoints() {
 void 
 GraphicsApplication::onResize() {
 
-  GraphicsDriver::API().getSwapChain().resize(GraphicsDriver::API().getDevice(),
+  /*GraphicsDriver::API().getSwapChain().resize(GraphicsDriver::API().getDevice(),
                                                m_viewport.width,
-                                               m_viewport.height);
-  CameraManager::getActiveCamera()->setViewport(m_viewport);
+                                               m_viewport.height);*/
+  GraphicsDriver::API().resizeBackBuffer(m_viewport.width, m_viewport.height);
+  CameraManager::setViewportToAll(m_viewport);
+}
+
+void 
+RenderManangerT::render() {
+  
+  //GraphicsDriver::API().clear();
+
+  /*m_renderMan.draw(GraphicsDriver::API().getBackBufferRT(),
+                   GraphicsDriver::API().getDepthStencil());*/
+
+  //Int32 queryFlags = QUERY_PROPERTY::kAny;
+
+  //auto& camera = *CameraManager::getActiveCamera();
+
+  //m_animTech->setCamera(&camera);
+  //m_staticTech->setCamera(&camera);
+  //m_linesTech->setCamera(&camera);
+
+  //auto mainC = CameraManager::getCamera(m_camNames[0]);
+  //
+  //auto& dc = GraphicsAPI::getDeviceContext();
+  //
+  //if (m_drawMeshes) {
+
+  //  auto points = calculatePoints();
+
+  //  for (SizeT i = 0; i < m_paths.size(); ++i) {
+
+  //    m_paths[i].pushPoint(points[i]);
+
+  //    m_pathRenders[i].draw(m_linesTech.get());
+
+  //    m_paths[i].popPoint();
+
+  //  }    
+
+  //  std::vector<QueryObjectInfo> queryRes;
+
+  //  //ScopedTimer{},
+  //  queryRes = SceneGraph::query(*mainC,  
+  //                                QUERY_ORDER::kBackToFront, 
+  //                                queryFlags);
+
+  //  dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
+
+  //  for (auto& queryObj : queryRes) {
+  //  
+  //    Technique* current;
+
+  //    if (queryObj.bones) {
+  //      current = m_animTech.get();
+  //      dynamic_cast<AnimationTechnique*>(current)->setBones(*queryObj.bones);
+  //    }
+  //    else {
+  //      current = m_staticTech.get();
+  //    }
+
+  //    current->setWorld(&queryObj.world);
+
+  //    auto material = queryObj.mesh.material.lock();
+
+  //    if (material) {
+  //      material->set();
+  //    }
+
+  //    if (current->prepareForDraw()) {
+  //      queryObj.mesh.indexBuffer->set(dc);
+  //      queryObj.mesh.vertexBuffer->set(dc);
+
+  //      dc.draw(queryObj.mesh.indicesCount, 0, 0);
+  //    }
+
+  //  }
+  //}
+
+  //GraphicsDriver::API().swapBuffers();
+
 }
 
 }

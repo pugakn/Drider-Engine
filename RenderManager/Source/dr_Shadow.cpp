@@ -1,12 +1,16 @@
 #include "dr_Shadow.h"
-#include <dr_device.h>
-#include <dr_graphics_api.h>
 #include <dr_vertex_buffer.h>
 #include <dr_index_buffer.h>
+#include <dr_device.h>
+#include <dr_device.h>
 #include <dr_device_context.h>
+#include <dr_graphics_api.h>
 #include <dr_depth_stencil.h>
 #include <dr_model.h>
 #include <dr_resource_manager.h>
+#include <dr_texture_core.h>
+#include <dr_file.h>
+
 
 namespace driderSDK {
 
@@ -19,89 +23,67 @@ ShadowPass::~ShadowPass() {
 void
 ShadowPass::init(PassInitData* initData) {
   ShadowInitData* data = static_cast<ShadowInitData*>(initData);
-  Device& dv = GraphicsAPI::getDevice();
+  Device& dc = GraphicsAPI::getDevice();
 
   m_vsFilename = _T("Resources\\Shaders\\Shadow_vs.hlsl");
   m_fsFilename = _T("Resources\\Shaders\\Shadow_ps.hlsl");
+  m_csFilename = _T("Resources\\Shaders\\ShadowMerge_cs.hlsl");
+  m_csFilenameShadowApply = _T("Resources\\Shaders\\ShadowApply_cs.hlsl");
 
+  changeSize(data->RTWidht, data->RTHeight);
   recompileShader();
 
   DrBufferDesc bdesc;
 
   bdesc.type = DR_BUFFER_TYPE::kCONSTANT;
-  bdesc.sizeInBytes = sizeof(CBuffer);
-  m_constantBuffer = dr_gfx_unique((ConstantBuffer*)dv.createBuffer(bdesc));
+
+  bdesc.sizeInBytes = sizeof(CBuffer1);
+  m_constantBuffer = dr_gfx_unique((ConstantBuffer*)dc.createBuffer(bdesc));
+
+  bdesc.sizeInBytes = sizeof(CBuffer2);
+  m_constantBufferSSShadow = dr_gfx_unique((ConstantBuffer*)dc.createBuffer(bdesc));
 
   DrSampleDesc SSdesc;
   SSdesc.Filter = DR_TEXTURE_FILTER::kMIN_MAG_LINEAR_MIP_POINT;
+  //SSdesc.Filter = DR_TEXTURE_FILTER::kANISOTROPIC;
+  //SSdesc.Filter = DR_TEXTURE_FILTER::kCOMPARISON_ANISOTROPIC;
   SSdesc.maxAnisotropy = 16;
   SSdesc.addressU = DR_TEXTURE_ADDRESS::kWrap;
   SSdesc.addressV = DR_TEXTURE_ADDRESS::kWrap;
   SSdesc.addressW = DR_TEXTURE_ADDRESS::kWrap;
-  m_samplerState = dr_gfx_unique(dv.createSamplerState(SSdesc));
-
-  /////////////////////////////////////////////////////////////////////////////
-  driderSDK::File file;
-  String shaderSource;
-
-  file.Open(_T("Resources\\Shaders\\ShadowMerge_vs.hlsl"));
-  shaderSource = StringUtils::toString(file.GetAsString(file.Size()));
-  file.Close();
-
-  m_ShaderVMerge = dr_gfx_unique(dv.createShaderFromMemory(shaderSource.data(),
-                                                           shaderSource.size(),
-                                                           DR_SHADER_TYPE_FLAG::kVertex));
-
-  shaderSource.clear();
-
-  file.Open(_T("Resources\\Shaders\\ShadowMerge_ps.hlsl"));
-  shaderSource = StringUtils::toString(file.GetAsString(file.Size()));
-  file.Close();
-
-  m_ShaderFMerge = dr_gfx_unique(dv.createShaderFromMemory(shaderSource.data(),
-                                                           shaderSource.size(),
-                                                           DR_SHADER_TYPE_FLAG::kFragment));
-
-  shaderSource.clear();
+  m_samplerState = dr_gfx_unique(dc.createSamplerState(SSdesc));
 }
 
 void
-ShadowPass::recompileShader() {
-  RenderPass::recompileShader();
+ShadowPass::changeSize(SizeT Width, SizeT Height) {
+  RTWidht = Width;
+  RTHeight = Height;
+}
 
-  if (m_ShaderVMerge != nullptr) {
-    m_ShaderVMerge->release();
-    m_ShaderVMerge.release();
-  }
-  if (m_ShaderFMerge != nullptr) {
-    m_ShaderFMerge->release();
-    m_ShaderFMerge.release();
-  }
+void
+ShadowPass::recompileShader(String vsPreText,
+                            String psPreText,
+                            String csPreText) {
+  Device& dc = GraphicsAPI::getDevice();
 
-  Device& device = GraphicsAPI::getDevice();
-  
-  driderSDK::File file;
-  String shaderSource;
+  String preComputeData = "";
+  preComputeData += "#define TXWIDTH " + StringUtils::toString(RTWidht) + "\n";
+  preComputeData += "#define TXHEIGHT " + StringUtils::toString(RTHeight) + "\n";
 
-  file.Open(_T("Resources\\Shaders\\ShadowMerge_vs.hlsl"));
-  shaderSource = StringUtils::toString(file.GetAsString(file.Size()));
+  RenderPass::recompileShader("", "", preComputeData);
+
+  File file;
+  String shaderSrc;
+
+  file.Open(m_csFilenameShadowApply);
+  shaderSrc = csPreText + StringUtils::toString(file.GetAsString(file.Size()));
   file.Close();
 
-  m_ShaderVMerge = dr_gfx_unique(device.createShaderFromMemory(shaderSource.data(),
-                                                               shaderSource.size(),
-                                                               DR_SHADER_TYPE_FLAG::kVertex));
+  m_computeShaderApply = dr_gfx_unique(dc.createShaderFromMemory(shaderSrc.data(),
+                                  shaderSrc.size(),
+                                  DR_SHADER_TYPE_FLAG::kCompute));
 
-  shaderSource.clear();
-
-  file.Open(_T("Resources\\Shaders\\ShadowMerge_ps.hlsl"));
-  shaderSource = StringUtils::toString(file.GetAsString(file.Size()));
-  file.Close();
-
-  m_ShaderFMerge = dr_gfx_unique(device.createShaderFromMemory(shaderSource.data(),
-                                                               shaderSource.size(),
-                                                               DR_SHADER_TYPE_FLAG::kFragment));
-
-  shaderSource.clear();
+  shaderSrc.clear();
 }
 
 void
@@ -109,8 +91,9 @@ ShadowPass::draw(PassDrawData* drawData) {
   ShadowDrawData* data = static_cast<ShadowDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
-  data->OutRt->getTexture(0).setTextureNull(dc);
-  data->OutRt->setRTNull(dc);
+  dc.setUAVsNull();
+  dc.setResourcesNull();
+
   data->OutRt->set(dc, *data->dsOptions);
 
   m_vertexShader->set(dc);
@@ -120,7 +103,7 @@ ShadowPass::draw(PassDrawData* drawData) {
 
   m_inputLayout->set(dc);
 
-  m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
+  m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CascadeCB));
   m_constantBuffer->set(dc);
 
   dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
@@ -129,20 +112,27 @@ ShadowPass::draw(PassDrawData* drawData) {
   data->OutRt->clear(dc, clearColor);
   data->dsOptions->clear(dc, 1, 0);
 
-  for (auto& modelPair : *data->models) {
-    CB.World = modelPair.world;
-    CB.WVP = modelPair.world * (data->shadowCam->getVP());
-
-    std::memset(&CB.Bones[0].data[0], 0.0f, sizeof(CB.Bones));
-    auto Bones = modelPair.bones;
-    if (Bones != nullptr) {
-      Int32 maxBones = modelPair.bones->size();
-      for (SizeT index = 0; index < maxBones; ++index) {
-        CB.Bones[index] = (*modelPair.bones)[index];
+  for (auto& modelPair : data->models->commands) {
+    dc.setResourcesNull();
+    if (auto material = modelPair.mesh.material.lock()) {
+      if (auto AlbedoTex = material->getProperty(_T("Albedo"))) {
+        if (auto GA_Tex = AlbedoTex->texture.lock()) {
+          GA_Tex->textureGFX->set(dc, 0);
+        }
       }
     }
+    CascadeCB.WVP = data->models->worlds[modelPair.worldID] * (data->shadowCam->getVP());
 
-    m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
+    std::memset(&CascadeCB.Bones[0].data[0], 0.0f, sizeof(CascadeCB.Bones));
+    if (modelPair.bonesID != -1) {
+      auto& Bones = data->models->bonesTransforms[modelPair.bonesID];
+      Int32 maxBones = Bones.size();
+      std::memcpy(&CascadeCB.Bones[0],
+                  &(Bones)[0],
+                  sizeof(Matrix4x4) * maxBones);
+    }
+
+    m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CascadeCB));
     m_constantBuffer->set(dc);
 
     modelPair.mesh.vertexBuffer->set(dc);
@@ -150,45 +140,79 @@ ShadowPass::draw(PassDrawData* drawData) {
 
     dc.draw(modelPair.mesh.indicesCount, 0, 0);
   }
+
+  dc.setUAVsNull();
+  dc.setResourcesNull();
 }
 
 void
 ShadowPass::merge(std::array<GFXShared<RenderTarget>, 4> m_RTShadowDummy,
-                  GFXShared<DepthStencil> dsOptions,
-                  GFXShared<RenderTarget> OutRt) {
+                  GFXShared<RenderTarget> CompressedShadowsOutRt) {
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
-  OutRt->getTexture(0).setTextureNull(dc);
-  OutRt->setRTNull(dc);
-  OutRt->set(dc, *dsOptions);
+  dc.setUAVsNull();
+  dc.setResourcesNull();
 
-  m_ShaderVMerge->set(dc);
-  m_ShaderFMerge->set(dc);
+  m_computeShader->set(dc);
 
-  m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kFragment);
+  m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kCompute);
 
-  m_inputLayout->set(dc);
+  m_RTShadowDummy[0]->getTexture(0).set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute);
+  m_RTShadowDummy[1]->getTexture(0).set(dc, 1, DR_SHADER_TYPE_FLAG::kCompute);
+  m_RTShadowDummy[2]->getTexture(0).set(dc, 2, DR_SHADER_TYPE_FLAG::kCompute);
+  m_RTShadowDummy[3]->getTexture(0).set(dc, 3, DR_SHADER_TYPE_FLAG::kCompute);
 
-  dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
+  CompressedShadowsOutRt->getTexture(0).set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute);
 
-  m_RTShadowDummy[0]->getTexture(0).set(dc, 0);
-  m_RTShadowDummy[1]->getTexture(0).set(dc, 1);
-  m_RTShadowDummy[2]->getTexture(0).set(dc, 2);
-  m_RTShadowDummy[3]->getTexture(0).set(dc, 3);
+  DrTextureDesc outRTDesc = CompressedShadowsOutRt->getDescriptor();
 
-  const float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-  OutRt->clear(dc, clearColor);
-  dsOptions->clear(dc, 1, 0);
+  dc.dispatch(outRTDesc.width / 8, outRTDesc.height / 4, 1);
 
-  auto screenQuadModel = ResourceManager::getReferenceT<Model>(_T("ScreenAlignedQuad.3ds"));
-  if (screenQuadModel) {
-    for (auto& SAQ : screenQuadModel->meshes) {
-      SAQ.vertexBuffer->set(dc);
-      SAQ.indexBuffer->set(dc);
+  dc.setUAVsNull();
+  dc.setResourcesNull();
+}
 
-      dc.draw(SAQ.indices.size(), 0, 0);
-    }
+void
+ShadowPass::apply(PassDrawData* drawData,
+                  GFXShared<RenderTarget> PositionDepthRt,
+                  GFXShared<RenderTarget> CompressedShadowsOutRt,
+                  GFXShared<RenderTarget> ResultShadowsRt) {
+  ShadowDrawData* data = static_cast<ShadowDrawData*>(drawData);
+  DeviceContext& dc = GraphicsAPI::getDeviceContext();
+
+  dc.setUAVsNull();
+  dc.setResourcesNull();
+
+  m_computeShaderApply->set(dc);
+
+  m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kCompute);
+
+  PositionDepthRt->getTexture(0).set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute, true);
+  CompressedShadowsOutRt->getTexture(0).set(dc, 1, DR_SHADER_TYPE_FLAG::kCompute, true);
+
+  ResultShadowsRt->getTexture(0).set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute);
+
+  DrTextureDesc outRTDesc = ResultShadowsRt->getDescriptor();
+
+  for (SizeT i = 0; i < data->ActivatedShadowCascades; ++i) {
+    ShadowCB.ShadowVP[i] = (*data->ShadowCameras)[i]->getVP();
+    ShadowCB.ShadowSplitDepth[i] = data->ShadowSliptDepths[i + 1];
   }
+  ShadowCB.ShadowSizesProportion = data->ShadowSizesProportion;
+
+  ShadowCB.ShadowInfo[0] = data->ActivatedShadowCascades;
+  ShadowCB.ShadowInfo[1] = data->ShadowMapTextureSize;
+  ShadowCB.ShadowInfo[2] = data->LerpBetweenShadowCascade;
+
+  ShadowCB.fViewportDimensions.x = outRTDesc.width;
+  ShadowCB.fViewportDimensions.y = outRTDesc.height;
+
+  m_constantBufferSSShadow->updateFromBuffer(dc, reinterpret_cast<byte*>(&ShadowCB));
+  m_constantBufferSSShadow->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
+  dc.dispatch(outRTDesc.width / 8, outRTDesc.height / 4, 1);
+
+  dc.setUAVsNull();
+  dc.setResourcesNull();
 }
 
 }

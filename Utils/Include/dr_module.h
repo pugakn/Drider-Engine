@@ -7,7 +7,13 @@ template<class T>
 class Module
 {
  public:
-  static T& instance() {
+  
+  /**
+  * TEST::instance
+  *
+  */
+  static T&
+  instance() {
     if (isShutDown()) {
       throw "Trying to access a module but it hasn't been started.";
     }
@@ -17,7 +23,13 @@ class Module
     }
     return *_instance();
   }
-  static T* instancePtr() {
+
+  /**
+  * TEST::instancePtr
+  *
+  */
+  static T*
+  instancePtr() {
     if (isShutDown()) {
       throw "Trying to access a module but it hasn't been started.";
     }
@@ -27,7 +39,13 @@ class Module
     }
     return _instance();
   }
-  template<class... Args> static void startUp(Args&& ...args) {
+
+  /**
+  * TEST::startUp
+  *
+  */
+  template<class... Args> static void
+  startUp(Args&& ...args) {
     if (!isShutDown()) {
       throw "Trying to start an already started module.";
     }
@@ -37,7 +55,13 @@ class Module
 
     static_cast<Module*>(_instance())->onStartUp();
   }
-  template<class SubType, class... Args> static void startUp(Args&& ...args) {
+
+  /**
+  * TEST::startUp
+  *
+  */
+  template<class SubType, class... Args> static void
+  startUp(Args&& ...args) {
     static_assert(std::is_base_of<T, SubType>::value,
       "Provided type isn't derived from type the Module is initialized with.");
 
@@ -50,7 +74,13 @@ class Module
 
     static_cast<Module*>(_instance())->onStartUp();
   }
-  static void shutDown() {
+
+  /**
+  * TEST::shutDown
+  *
+  */
+  static void
+  shutDown() {
     if (isShutDown() || isDestroyed()) {
       throw "Trying to shut down an already shut down module.";
     }
@@ -60,38 +90,99 @@ class Module
     delete(_instance());
     isShutDown() = true;
   }
-  static bool isStarted() {
+
+  /**
+  * TEST::isStarted
+  *
+  */
+  static bool
+  isStarted() {
     return !isShutDown() && !isDestroyed();
   }
- protected:
 
+ protected:
+  
+  /**
+  * TEST::DefaultConstructor
+  *
+  */
   Module() = default;
 
+  /**
+  * TEST::DefaultDestructor
+  *
+  */
   virtual ~Module() {
     _instance() = nullptr;
     isDestroyed() = true;
   }
+
+  /**
+  * TEST::Module
+  *
+  */
   Module(const Module&) = delete;
 
+  /**
+  * TEST::Module
+  *
+  */
   Module(Module&&) = delete;
 
-  Module& operator=(const Module&) = delete;
+  /**
+  * TEST::operatorEqual
+  *
+  */
+  Module&
+  operator=(const Module&) = delete;
 
-  Module& operator=(Module&&) = delete;
+  /**
+  * TEST::operatorEqual
+  *
+  */
+  Module&
+  operator=(Module&&) = delete;
 
-  virtual void onStartUp() {}
+  /**
+  * TEST::onStartUp
+  *
+  */
+  virtual void
+  onStartUp() {}
 
-  virtual void onShutDown() {}
+  /**
+  * TEST::onShutDown
+  *
+  */
+  virtual void
+  onShutDown() {}
 
-  static T*& _instance() {
+  /**
+  * TEST::_instance
+  *
+  */
+  static T*&
+  _instance() {
     static T* inst = nullptr;
     return inst;
   }
-  static bool& isDestroyed() {
+
+  /**
+  * TEST::isDestroyed
+  *
+  */
+  static bool&
+  isDestroyed() {
     static bool inst = false;
     return inst;
   }
-  static bool& isShutDown() {
+
+  /**
+  * TEST::isShutDown
+  *
+  */
+  static bool&
+  isShutDown() {
     static bool inst = true;
     return inst;
   }

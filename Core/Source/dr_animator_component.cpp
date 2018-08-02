@@ -1,8 +1,11 @@
 #include "dr_animator_component.h"
 
+#include <iostream>
+
 #include <dr_gameObject.h>
 #include <dr_logger.h>
 #include <dr_matrix4x4.h>
+#include <dr_scoped_timer.h>
 #include <dr_time.h>
 
 #include "dr_animation.h"
@@ -230,6 +233,11 @@ AnimatorComponent::onCreate() {
 void 
 AnimatorComponent::onUpdate() {
 
+  static int count = 0;
+  static float accum = 0.0f;
+
+  Timer timer;
+  timer.init();
 
   if (m_blending) {
     //Advance 0.25f per second so blend will be completed in 4 seconds
@@ -320,6 +328,16 @@ AnimatorComponent::onUpdate() {
                      m_gameObject.getName());
     }
 
+  }
+
+  accum += timer.getMilliseconds();
+  count++;
+
+  if (count == 100) {
+    float t = accum / 100;
+    std::cout << "Prom: " << t << std::endl;
+    count = 0;
+    accum = 0;
   }
 }
 
@@ -544,12 +562,10 @@ AnimatorComponent::readNodeHeirarchy(float animTime,
       }
     }
     
-    rotation.matrixFromQuaternion(nodeTransform);
-    nodeTransform.Scale(scaling);
+    nodeTransform.InitScale(scaling);
+    nodeTransform *= rotation.matrixFromQuaternion();
     nodeTransform.Translation(translation);
-  }
-  else {
-    nodeTransform.transpose();
+    //nodeTransform.identity();
   }
 
   Matrix4x4 globalTransform = nodeTransform * parentTransform;
@@ -560,8 +576,9 @@ AnimatorComponent::readNodeHeirarchy(float animTime,
     
     auto& pBone = skeleton.bones[boneIt->second];
 
-    pBone->finalTransform = skeleton.gloabalInverseTransform * 
-                            pBone->boneOffset * globalTransform;
+    pBone->finalTransform = pBone->boneOffset * 
+                            globalTransform * 
+                            skeleton.gloabalInverseTransform;
 
     /*m_transforms[boneIt->second] = skeleton.bones[boneIt->second]->boneOffset * 
                                    globalTransform;*/

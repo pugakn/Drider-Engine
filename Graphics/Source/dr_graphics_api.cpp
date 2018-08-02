@@ -47,7 +47,8 @@ GraphicsAPI::init(UInt32 w, UInt32 h, void* hwnd, DR_GRAPHICS_API::E api) {
   m_swapChain = dr_gfx_unique(m_device->createSwapChain(swapDesc));
 
   DrDepthStencilDesc depthTextureDesc;
-  depthTextureDesc.bindFlags = DR_BIND_FLAGS::DEPTH_STENCIL | DR_BIND_FLAGS::SHADER_RESOURCE;
+  depthTextureDesc.bindFlags = DR_BIND_FLAGS::DEPTH_STENCIL |
+                               DR_BIND_FLAGS::SHADER_RESOURCE;
   depthTextureDesc.width = w;
   depthTextureDesc.height = h;
   depthTextureDesc.Format = DR_FORMAT::kD24_UNORM_S8_UINT;
@@ -166,6 +167,7 @@ GraphicsAPI::swapBuffers() {
 
 void
 GraphicsAPI::resizeBackBuffer(UInt32 w, UInt32 h) {
+
   m_swapChain->resize(*m_device, w,h);
   m_depthStencilView.reset();
   DrDepthStencilDesc depthTextureDesc;
@@ -173,10 +175,14 @@ GraphicsAPI::resizeBackBuffer(UInt32 w, UInt32 h) {
   depthTextureDesc.width = w;
   depthTextureDesc.height = h;
   depthTextureDesc.Format = DR_FORMAT::kD24_UNORM_S8_UINT;
+  //depthTextureDesc.Format = DR_FORMAT::kD32_FLOAT;
   {
     auto ds = m_device->createDepthStencil(depthTextureDesc);
     m_depthStencilView = dr_gfx_unique(ds);
   }
+  /////////////////////////////////////////////////////////////////////////
+  m_swapChain->getBackBufferRT().set(*m_deviceContext, *m_depthStencilView);
+  /////////////////////////////////////////////////////////////////////////
 }
 
 Device&

@@ -5,15 +5,17 @@
 #include <mutex>
 #include <queue>
 #include <vector>
-#include "dr_module.h"
+
 #include "dr_core_prerequisites.h"
+#include "dr_module.h"
+#include "dr_render_component.h"
 
 /*********************/
+#include <dr_aabb.h>
 #include <dr_plane.h>
 
 namespace driderSDK {
 
-struct RenderMesh;
 class Matrix4x4;
 class Camera;
 class Frustrum;
@@ -43,11 +45,53 @@ enum E : UInt32
 };
 }
 
-struct DR_CORE_EXPORT QueryObjectInfo 
+struct DR_CORE_EXPORT RenderCommand 
 {
-  const Matrix4x4& world;
-  const RenderMesh& mesh;
-  const std::vector<Matrix4x4>* bones;
+
+  RenderCommand(Int32 _worldID,
+                const RenderMesh& mesh_,
+                Int32 _bones)
+    : worldID(_worldID),
+      mesh(mesh_),
+      bonesID(_bones)
+  {}
+
+  ~RenderCommand()
+  {}
+
+  Int32 bonesID = -1;
+  Int32 worldID;
+  RenderMesh mesh;
+  AABB aabb;
+};
+
+struct DR_CORE_EXPORT RenderQuery
+{
+  const Camera& camera;
+  QUERY_ORDER::E order;
+  UInt32 props;
+};
+
+struct DR_CORE_EXPORT RenderCommandBuffer
+{
+
+  using WorldData = Matrix4x4;
+  using BonesTransforms = std::vector<Matrix4x4>;
+
+  RenderCommandBuffer() = default;
+
+  RenderCommandBuffer(RenderCommandBuffer&& ) = default;
+
+  RenderCommandBuffer(const RenderCommandBuffer&) = delete;
+
+  RenderCommandBuffer& operator=(const RenderCommandBuffer&) = delete;
+  RenderCommandBuffer& operator=(RenderCommandBuffer&&) = default;
+  //Store Matrices
+  std::vector<WorldData> worlds;
+  //Store Bones
+  std::vector<BonesTransforms> bonesTransforms;
+
+  std::vector<RenderCommand> commands;
 };
 
 class DR_CORE_EXPORT SceneGraph : public Module<SceneGraph>
@@ -56,7 +100,8 @@ class DR_CORE_EXPORT SceneGraph : public Module<SceneGraph>
   using SharedModel = std::shared_ptr<Model>;
   using SharedGameObject = std::shared_ptr<GameObject>;
   using GameObjectList = std::vector<SharedGameObject>;
-  using QueryResult = std::vector<QueryObjectInfo>;
+  using QueryResult = std::vector<RenderCommand>;
+  using QueryBuffer = RenderCommandBuffer;
   using ObjectComp = std::function<bool(SharedGameObject, SharedGameObject)>;
   using GameObjectQueue = std::priority_queue<SharedGameObject,
                                               GameObjectList,
@@ -113,6 +158,9 @@ class DR_CORE_EXPORT SceneGraph : public Module<SceneGraph>
   static QueryResult
   query(const Camera& camera, QUERY_ORDER::E order, UInt32 props);
 
+  static QueryBuffer
+  query(const RenderQuery& queryInfo);
+
   /**
   * Queries the gameObjects that are inside a camera frustrum.
   */
@@ -126,12 +174,15 @@ class DR_CORE_EXPORT SceneGraph : public Module<SceneGraph>
 
   static void 
   update();
+
+  static void
+  fillBuffer();
+
   /****************/
   /*     TEMP     */
   static void 
   draw();
   /****************/
-
  private:
 
   /**
@@ -167,9 +218,14 @@ class DR_CORE_EXPORT SceneGraph : public Module<SceneGraph>
              const Frustrum& frustrum,
              GameObjectQueue& objects);
 
-  static void
+  /*static void
   filterObjects(GameObjectQueue& objects, 
                 QueryResult& result, 
+                UInt32 props);*/
+
+  static void
+  filterObjects(GameObjectQueue& objects, 
+                QueryBuffer& result, 
                 UInt32 props);
 
   static void
@@ -184,6 +240,9 @@ class DR_CORE_EXPORT SceneGraph : public Module<SceneGraph>
   SharedGameObject m_root;
   SharedGameObject m_octree;
   std::mutex m_mutex;
+  RenderCommandBuffer m_buffers[2];
+  RenderCommandBuffer* m_producer = nullptr;
+  RenderCommandBuffer* m_consumer = nullptr;
 };
 
 }

@@ -234,6 +234,16 @@ Matrix4x4::Scale(const Vector3D &Scale) {
   return *this;
 }
 
+Matrix4x4 Matrix4x4::InitScale(const Vector3D & Scale) {
+  *this = identityMat4x4;
+
+  vector0.x = Scale.x;
+  vector1.y = Scale.y;
+  vector2.z = Scale.z;
+
+  return *this;
+}
+
 Matrix4x4&
 Matrix4x4::Rotation(const float tetax, const float tetay, const float tetaz) {
   RotationY(tetay);

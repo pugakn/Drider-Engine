@@ -6,6 +6,7 @@
 #include <dr_vector2d.h>
 #include <dr_sample_state.h>
 #include <dr_camera.h>
+#include <dr_structure_buffer.h>
 
 namespace driderSDK {
 
@@ -19,10 +20,11 @@ struct PostProcessingDrawData : PassDrawData {
   float VignetteScale;
   Vector2D VignetteConcentration;
   Vector2D VignetteRad;
-  GFXShared<RenderTarget> PositionDepthRT;
-  GFXShared<RenderTarget> ColorRT;
-  GFXShared<RenderTarget> ColorBlurRT;
-  GFXShared<RenderTarget> Gbuffer;
+  Texture* ColorTex;
+  Texture* ColorBlurTex;
+  Texture* PositionDepthTex;
+  Texture* BloomTex;
+  StructureBuffer* luminescenceBuffer;
 };
 
 class PostProcessingPass : public RenderPass {

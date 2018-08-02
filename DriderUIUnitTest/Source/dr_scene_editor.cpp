@@ -1,4 +1,5 @@
 #include "..\Include\dr_scene_editor.h"
+#include "..\Include\dr_input_editor.h"
 #include <dr_device.h>
 #include <dr_graphics_api.h>
 #include <dr_graphics_driver.h>
@@ -29,6 +30,7 @@
 #include <dr_math.h>
 #include <dr_id_object.h>
 #include<Shlwapi.h>
+
 #pragma comment(lib, "Shlwapi.lib")
 
 #include <dr_model.h>
@@ -232,6 +234,8 @@ void SceneEditor::initSceneGraph()
   auto ptrFloor = ResourceManager::getReferenceT<Model>(_T("plane.fbx"));
   if (ptrFloor) {
     floor->createComponent<RenderComponent>(ptrFloor);
+    floor->createComponent<RenderComponent>(ptrFloor);
+
     floor->createComponent<AABBCollider>(ptrFloor->aabb);
     floor->getTransform().setPosition(Vector3D(0.0f, -50.0f, 0.0f));
     floor->getTransform().setScale(Vector3D(5.0f, 5.0f, 5.0f));
@@ -302,12 +306,11 @@ void SceneEditor::loadResources()
 void SceneEditor::initUI()
 {
   webRenderer.Init(m_viewport.width, m_viewport.height, BROWSER_MODE::kHeadless);
-  webRenderer.loadURL("file:///F:/projectsVS2017/Drider-Engine/DriderUIUnitTest/Interface/index.html");
+  webRenderer.loadURL("file:///Interface/index.html");
 
   webRenderer.registerJS2CPPFunction(std::make_pair("C_FileTree", [&](const CefRefPtr<CefListValue>& arguments) {
     TString root = arguments->GetString(1);
     updateFolders(webRenderer, root);
-    //UI_UpdatePropertySheet(*SceneGraph::getRoot().get());
   }));
 
   webRenderer.registerJS2CPPFunction(std::make_pair("C_HierarchyUpdate", [&](const CefRefPtr<CefListValue>& arguments) {
@@ -376,9 +379,20 @@ void SceneEditor::initUI()
     auto components = gameObject->getComponents<GameComponent>();
     for (auto component : components) {
       response += _T("{'name':'") + component->getName() + _T("', 'inputs':[");
-      if (component->getClassID() == CLASS_NAME_ID(RenderComponent)) {
-        addRenderComponentInputs(&response);
-      }
+
+      auto inputEditor = InputEditor::createInputEditor(*component);
+      //map[component->getID()]->setComponent(*component);
+      //map[component->getID()]->getInputs()
+
+      inputEditor->getInputs(&response);
+
+      response.erase(response.length() - 1);
+
+      //if (component->getClassID() == CLASS_NAME_ID(RenderComponent)) {
+      //  RenderInputs temp;
+      //  temp.getInputs(&response);
+      //  response.erase(response.length() - 1);
+      //}
       response += _T("]},");
     }
     response.erase(response.length() - 1);
@@ -386,6 +400,21 @@ void SceneEditor::initUI()
     webRenderer.executeJSCode(response);
   }));
 
+
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_InputChange", [&](const CefRefPtr<CefListValue>& arguments) {
+    TString temp = arguments->GetString(1);
+    UInt32 id = StringUtils::toInt(temp);
+    TString componentName = arguments->GetString(2);
+    TString idField = arguments->GetString(3);
+    TString value = arguments->GetString(4);
+
+    auto gameObject = SceneGraph::getRoot()->findNode(id);
+    auto component = gameObject->getComponent(componentName);
+
+    auto inputEditor = InputEditor::createInputEditor(*component);
+
+    inputEditor->changeValue(value, idField);
+  }));
   //Property Sheet UI
   webRenderer.registerJS2CPPFunction(std::make_pair("C_OnTransformChange", [&](const CefRefPtr<CefListValue>& arguments) {
     TString name = arguments->GetString(1);

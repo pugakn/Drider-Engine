@@ -4,6 +4,7 @@
 #include <dr_vector3d.h>
 
 #include "SpiderBehavior.h"
+#include <dr_timer.h>
 
 namespace driderSDK {
 
@@ -45,7 +46,8 @@ class SpiderAI : public GameComponent {
     Idle = SpiderBehavior::Warte,
     Walk = SpiderBehavior::WalkBack,
     Run = SpiderBehavior::RunBack,
-    Atack = SpiderBehavior::Atack
+    Atack = SpiderBehavior::Atack,
+    StopedRun
   };
 
   enum Direction
@@ -57,7 +59,11 @@ class SpiderAI : public GameComponent {
     None
   };
 
+  Timer m_inactive;
   Vector3D m_velocity;
+  Vector3D m_direction;
+  float m_velDecrese;
+  float m_stopTime;
   State m_state;
   Direction m_dir;
   SpiderBehavior* m_behavior;

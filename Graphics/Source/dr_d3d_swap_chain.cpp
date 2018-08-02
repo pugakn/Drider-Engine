@@ -87,13 +87,13 @@ D3DSwapChain::release() {
 
 void D3DSwapChain::resize(const Device& device, UInt32 _w, UInt32 _h)
 {
-  /////////////////////////////////////////
+  /////////////////////////////////////
   auto& api = GraphicsDriver::API();
   auto& devContext = api.getDeviceContext();
   {
     reinterpret_cast<D3DDeviceContext*>(&devContext)->D3D11DeviceContext->OMSetRenderTargets(0,0,0);
   }
-  /////////////////////////////////////////
+  /////////////////////////////////////
   m_descriptor.width = _w;
   m_descriptor.height = _h;
   m_backBufferView->release();
@@ -107,7 +107,8 @@ void D3DSwapChain::resize(const Device& device, UInt32 _w, UInt32 _h)
   m_backBufferTexture = new D3DTexture;
   m_backBufferTexture->setDescriptor(backDesc);
   HRESULT hr = APISwapchain->GetBuffer(0,
-    __uuidof(ID3D11Texture2D),
+    //__uuidof(ID3D11Texture2D),
+    __uuidof(m_backBufferTexture->APITexture),
     (void**)&m_backBufferTexture->APITexture);
 
   std::vector<Texture*> texturesVec;
@@ -115,7 +116,7 @@ void D3DSwapChain::resize(const Device& device, UInt32 _w, UInt32 _h)
   auto bbRT = device.createRenderTarget(texturesVec);
   m_backBufferView = bbRT;
   ///////////////////////////////
-  bbRT->set(devContext, api.getDepthStencil());
+  
   ///////////////////////////////
 }
 

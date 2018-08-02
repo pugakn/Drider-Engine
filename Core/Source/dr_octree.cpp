@@ -171,9 +171,9 @@ Octree::buildTree() {
 void Octree::configNode(GameObject *nodeRoot, OctreeNode* octreeNode)
 {
   nodeRoot->setStatic(true);
-  nodeRoot->createComponent<AABBCollider>(octreeNode->boundingRegion);
+  //nodeRoot->createComponent<AABBCollider>(octreeNode->boundingRegion);
   std::vector<RenderMesh> list = createList(&octreeNode->containedObjects);
-  nodeRoot->createComponent<RenderComponent>(std::move(list));
+  nodeRoot->createComponent<RenderComponent>(std::move(list), octreeNode->boundingRegion);
   
   for (auto& child : (*octreeNode).childs) {
 	  std::shared_ptr<GameObject> node = std::make_shared<GameObject>();
