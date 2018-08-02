@@ -58,6 +58,8 @@ Client::processPacket(MessageData& msg) {
                               [request](const CommandList::value_type& command)
   { return command.first == request; });
 
+  std::cout << request << std::endl;
+
   if (command != m_commands->end()) {
     (this->*command->second)(msg);
   }
@@ -174,9 +176,7 @@ Client::requestLobbies() {
 
 void
 Client::sendFunction(Packet packet) {
-  if (m_currentServer.ip) {
-    m_socket->send(packet, m_currentServer.ip, m_currentServer.port);
-  }
+  m_socket->send(packet, m_currentServer.ip, m_currentServer.port);
 }
 
 

@@ -19,7 +19,7 @@ public:
   ~Messenger();
 
   template<typename t0> static void
-  sendFunction(UInt32 objID,
+  sendFunction(const TString objName,
                FUNCTION_TYPE::E function,
                t0 var0) {
 
@@ -28,7 +28,7 @@ public:
     pack << REQUEST_ID::kExecuteFunction;
 
     pack << function;
-    pack << objID;
+    pack << objName;
     pack << var0;
 
     Messenger::instance().m_packets.emplace_back(pack);
@@ -36,17 +36,17 @@ public:
   }
 
   template<typename t0, typename t1> static void
-    sendFunction(UInt32 objID,
-                 FUNCTION_TYPE::E function,
-                 t0 var0,
-                 t1 var1) {
+  sendFunction(const TString objName,
+               FUNCTION_TYPE::E function,
+               t0 var0,
+               t1 var1) {
 
     Packet pack;
     pack << VER_NUM::kN;
     pack << REQUEST_ID::kExecuteFunction;
 
     pack << function;
-    pack << objID;
+    pack << objName;
     pack << var0;
     pack << var1;
 
@@ -55,18 +55,18 @@ public:
   }
 
   template<typename t0, typename t1, typename t2> static void
-    sendFunction(UInt32 objID,
-                 FUNCTION_TYPE::E function,
-                 t0 var0,
-                 t1 var1,
-                 t2 var2) {
+  sendFunction(const TString objName,
+               FUNCTION_TYPE::E function,
+               t0 var0,
+               t1 var1,
+               t2 var2) {
 
     Packet pack;
     pack << VER_NUM::kN;
     pack << REQUEST_ID::kExecuteFunction;
 
     pack << function;
-    pack << objID;
+    pack << objName;
     pack << var0;
     pack << var1;
     pack << var2;

@@ -92,6 +92,15 @@ class DR_CORE_EXPORT SceneGraph : public Module<SceneGraph>
     return obj;
   }
 
+  /**
+  * Creates a Transform into the scene game with a specific position and
+  * rotation.
+  */
+  void static
+  instanciate(GameObject& object,
+              const Vector3D& position,
+              const Vector3D& orientation);
+
   static SharedGameObject 
   getRoot();
 
@@ -170,6 +179,7 @@ class DR_CORE_EXPORT SceneGraph : public Module<SceneGraph>
   static void
   addAllChilds(GameObject& node,
                std::vector<std::shared_ptr<GameObject>>* list);
+
  private:
   SharedGameObject m_root;
   SharedGameObject m_octree;

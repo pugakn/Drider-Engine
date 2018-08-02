@@ -34,6 +34,9 @@ public:
   void
   onDestroy() override;
 
+  void
+  onRender() override;
+
   virtual UInt32
   getClassID() override;
 
@@ -47,6 +50,26 @@ public:
   instantiate(GameObject& object, 
               const Vector3D position, 
               const Quaternion& rotation);
+
+  void 
+  registerObject();
+
+  /*void 
+  registerVar(TString varName,
+              float value);
+
+  void 
+  registerVar(TString varName,
+              Int32 value);*/
+
+  template <typename T> void
+  registerVar(const TString& varName,
+              T const& value) {
+    Messenger::sendFunction(m_gameObject.getName(),
+                            FUNCTION_TYPE::RegisterVar,
+                            varName,
+                            value);
+  }
 
   static BEGINING_REGISTER(NetworkManagerComponent, 0, asOBJ_REF | asOBJ_NOCOUNT)
     

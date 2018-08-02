@@ -9,7 +9,9 @@ enum E : UInt32 {
   Instantiate,
   Move,
   SetPosition,
-  SetRotation
+  SetRotation,
+  RegisterObject,
+  RegisterVar
 };
 
 }

@@ -238,7 +238,7 @@ GameServer::chatMsg(MessageData& msg) {
 
 void
 GameServer::executeFunction(MessageData& msg) {
-   
+   std::cout << "Execute function" << std::endl;
 }
 void 
 GameServer::notifyActive(MessageData& msg) {

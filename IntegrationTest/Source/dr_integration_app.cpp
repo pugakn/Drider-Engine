@@ -117,6 +117,12 @@ DriderEngine::postUpdate() {
     requestConnection(m_lobbies[0].ip, m_lobbies[0].port);
     m_connected = true;
   }
+  
+  if(m_player) {
+    auto net = m_player->getComponent<NetworkManagerComponent>();
+    float a = 10.2f;
+    net->registerVar(_T("m_vel"), a);
+  }
 }
 
 void
@@ -207,6 +213,12 @@ DriderEngine::createScene() {
   auto quad = addObjectFromModel(quadMod, _T("Floor"));
   quad->getTransform().rotate({ -Math::HALF_PI, 0, 0 });
   quad->getTransform().setScale({ 10000, 10000, 10000 });
+
+  // Create NetworkManagerComponent
+  m_player->createComponent<NetworkManagerComponent>(); 
+
+  SceneGraph::start();
+
 }
 
 std::shared_ptr<GameObject>
@@ -260,6 +272,8 @@ DriderEngine::initScriptEngine() {
   result = ScriptComponent::registerFunctions(scriptEngine);
   result = Transform::registerFunctions(scriptEngine);
   result = GameObject::registerFunctions(scriptEngine);
+  /*result = REGISTER_GLO_FOO("void Instantiate(GameObject& in, const Vector3D& in, const Vector3D& in",
+                            asFUNCTION(&SceneGraph::instanciate));*/
 
   //Register global properties
   m_root = SceneGraph::instance().getRoot().get(); // Get root

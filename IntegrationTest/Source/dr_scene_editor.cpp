@@ -274,6 +274,8 @@ void SceneEditor::initSceneGraph()
     auto renderComp = floor->getComponent<RenderComponent>();
     renderComp->getMeshes().front().material = floorMat;
   }
+
+  SceneGraph::start();
 }
 void SceneEditor::loadResources()
 {

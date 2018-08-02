@@ -47,6 +47,18 @@ SceneGraph::addObject(SharedGameObject gameObject) {
   instance().m_root->addChild(gameObject);
 }
 
+void
+SceneGraph::instanciate(GameObject& object,
+                        const Vector3D& position,
+                        const Vector3D& orientation) {
+  
+  object.getTransform().setPosition(position);
+  object.getTransform().setRotation(orientation);
+
+  instance().m_root->addChild(std::make_shared<GameObject>(object));
+
+}
+
 void 
 SceneGraph::buildOctree() {
   

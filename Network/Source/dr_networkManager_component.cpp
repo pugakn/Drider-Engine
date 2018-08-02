@@ -1,6 +1,7 @@
 #include "dr_networkManager_component.h"
 
 #include <dr_id_object.h>
+#include <dr_gameObject.h>
 
 namespace driderSDK {
 
@@ -27,6 +28,11 @@ NetworkManagerComponent::onDestroy() {
 
 }
 
+void
+NetworkManagerComponent::onRender() {
+
+}
+
 UInt32
 NetworkManagerComponent::getClassID() {
   return CLASS_NAME_ID(NetworkManagerComponent);
@@ -41,12 +47,31 @@ void
 NetworkManagerComponent::instantiate(GameObject& object,
                                      const Vector3D position,
                                      const Quaternion& rotation) {
-  Messenger::sendFunction(this->ID(),
-                          FUNCTION_TYPE::Instantiate,
-                          &object, position, rotation);
+
 }
 
+void
+NetworkManagerComponent::registerObject() {
 
+}
+
+/*void
+NetworkManagerComponent::registerVar(TString varName,
+            float value) {
+  Messenger::sendFunction(m_gameObject.getName(),
+                          FUNCTION_TYPE::RegisterVar,
+                          varName,
+                          value);
+}
+
+void
+NetworkManagerComponent::registerVar(TString varName,
+                                     float value) {
+  Messenger::sendFunction(m_gameObject.getName(),
+                          FUNCTION_TYPE::RegisterVar,
+                          varName,
+                          value);
+}*/
 
 
 }
