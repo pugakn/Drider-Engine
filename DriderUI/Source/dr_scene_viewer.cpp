@@ -235,13 +235,13 @@ SceneViewer::GetGMOMouseCollition()
   return search(child);
 }
 void
-SceneViewer::destroy()
-{
+SceneViewer::destroy() {
   m_renderMan.exit();
 }
-RenderMan&
-SceneViewer::getRenderManager()
-{
+
+RenderManager&
+SceneViewer::getRenderManager() {
   return m_renderMan;
 }
+
 }

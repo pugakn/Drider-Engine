@@ -80,8 +80,8 @@ HSVtoRGB(float fH, float fS, float fV,
   }
 }
 
-void read_directory(const TString& name, TString& v)
-{
+void
+read_directory(const TString& name, TString& v) {
   TString pattern(name);
   TString parent(name);
   pattern.append(_T("\\*"));
@@ -106,7 +106,9 @@ void read_directory(const TString& name, TString& v)
     FindClose(hFind);
   }
 }
-void updateFolders(WebRenderer& webRenderer, TString root) {
+
+void
+updateFolders(WebRenderer& webRenderer, TString root) {
   TString folders = _T("JS_InfoTreeFile(\"") + root + _T("\",");
   folders += _T("\"{'items':[");
   read_directory(root, folders);
@@ -115,9 +117,8 @@ void updateFolders(WebRenderer& webRenderer, TString root) {
   webRenderer.executeJSCode(folders);
 }
 
-
-void SceneEditor::init(Viewport v)
-{
+void
+SceneEditor::init(Viewport v) {
   m_viewport = v;
   initUI();
   initSceneGraph();
@@ -126,16 +127,18 @@ void SceneEditor::init(Viewport v)
   quad.init();
 }
 
-void SceneEditor::update()
-{
+void
+SceneEditor::update() {
   WebRenderer::update();
 }
-void SceneEditor::draw()
-{
+
+void
+SceneEditor::draw() {
   webRenderer.setTexture();
   quad.draw();
   m_sceneViewer.draw();
 }
+
 std::shared_ptr<GameObject>
 SceneEditor::addGameObject(std::shared_ptr<GameObject> parent,
                            const TString & name,
@@ -150,38 +153,53 @@ SceneEditor::addGameObject(std::shared_ptr<GameObject> parent,
 
   return node;
 }
-void SceneEditor::initInputs()
-{
+
+void
+SceneEditor::initInputs() {
 }
 
-void SceneEditor::initSceneGraph()
-{
-  Degree grados(2.8125f);
-  Vector4D LightPosition(0.0f, 50.0f, -100.0f, 1);
-  Matrix4x4 rotationMatrix(driderSDK::Math::FORCE_INIT::kIdentity);
-  rotationMatrix = rotationMatrix.RotationY(grados.toRadian());
-
+void
+SceneEditor::initSceneGraph() {
+  Vector4D LightPosition(0.0f, 100.0f, 150.0f, 1.0f);
+  
+  SizeT lighIndex = 0;
+  Int32 xOffset = 0;
+  float separationX = 100.0f;
+  float separationZ = 50.0f;
   float proportion = 0.0f;
-  for (int lighIndex = 0; lighIndex < 128; ++lighIndex) {
-    //Posicion
-    Lights[lighIndex].m_vec4Position = LightPosition;
-    LightPosition = LightPosition * rotationMatrix;
+  SizeT horizontalLights = 16;
+  for (Int32 xPos = 0; xPos < horizontalLights; ++xPos) {
+    for (Int32 zPos = 0; zPos < (RENDER_MANAGER_MAX_LIGHTS / horizontalLights); ++zPos) {
+      //Posicion
+      Lights[lighIndex].m_vec4Position = Vector4D(
+                                                  (xOffset * separationX) - ((horizontalLights - 1) * separationX * 0.5f),
+                                                  25,
+                                                  ((zPos + 1) * separationZ) - 187.5,
+                                                  1.0f);
 
-    //Color
-    HSVtoRGB(proportion * 256,
-             1.0f,
-             1.0f,
-             Lights[lighIndex].m_vec4Color.x,
-             Lights[lighIndex].m_vec4Color.y,
-             Lights[lighIndex].m_vec4Color.z);
+      //Color
+      HSVtoRGB(proportion * 256,
+               1.0f,
+               1.0f,
+               Lights[lighIndex].m_vec4Color.x,
+               Lights[lighIndex].m_vec4Color.y,
+               Lights[lighIndex].m_vec4Color.z);
 
-    //Range
-    Lights[lighIndex].m_vec4Position.w = 150.0f;
+      //Range
+      //Lights[lighIndex].m_vec4Position.w = 150.0f;
+      Lights[lighIndex].m_vec4Position.w = 100.0f;
+      //Lights[lighIndex].m_vec4Position.w = 50.0f;
+      //Lights[lighIndex].m_vec4Position.w = proportion * 150.0f;
 
-    //Intensidad
-    Lights[lighIndex].m_vec4Color.w = (lighIndex / 128.0f);
+      //Intensidad
+      //Lights[lighIndex].m_vec4Color.w = (lighIndex / 128.0f);
+      //Lights[lighIndex].m_vec4Color.w = 1.0f;
+      Lights[lighIndex].m_vec4Color.w = 2.0f;
 
-    proportion += (1.0f / 128.0f);
+      proportion += (1.0f / RENDER_MANAGER_MAX_LIGHTS);
+      ++lighIndex;
+    }
+    xOffset += 1;
   }
 
   m_sceneViewer.getRenderManager().lights = &Lights;
@@ -230,6 +248,7 @@ void SceneEditor::initSceneGraph()
     auto rComp = model->getComponent<RenderComponent>();
     rComp->getMeshes().front().material = modelMat;
   }
+  
   floor = SceneGraph::createObject(_T("Floor"));
   auto ptrFloor = ResourceManager::getReferenceT<Model>(_T("plane.fbx"));
   if (ptrFloor) {
@@ -278,8 +297,9 @@ void SceneEditor::initSceneGraph()
 
   SceneGraph::start();
 }
-void SceneEditor::loadResources()
-{
+
+void
+SceneEditor::loadResources() {
   //ResourceManager::loadResource(_T("Checker.fbx"));
   ResourceManager::loadResource(_T("Sphere.fbx"));
   ResourceManager::loadResource(_T("plane.fbx"));
@@ -303,11 +323,9 @@ void SceneEditor::loadResources()
   ResourceManager::loadResource(_T("256_Checker_SSColor.tga"));
   ResourceManager::loadResource(_T("256_Checker_Thickness.tga"));
 }
-void SceneEditor::initUI()
-{
 
-
-
+void
+SceneEditor::initUI() {
   webRenderer.Init(m_viewport.width, m_viewport.height, BROWSER_MODE::kHeadless);
   webRenderer.loadURL("file:///Interface/index.html");
 
@@ -490,12 +508,10 @@ void SceneEditor::initUI()
     rot.z = val;
     gmoO->getTransform().setRotation(rot);
   }));
-
-
-
 }
-void SceneEditor::UI_UpdateSceneGraph()
-{
+
+void
+SceneEditor::UI_UpdateSceneGraph() {
   webRenderer.executeJSCode(WString(_T("JS_AddSceneGraphNode('")) +
                             _T("ROOT_NODE_X") + TString(_T("','")) + _T("ROOT_NODE_X") +
                             WString(_T("');")));
@@ -520,8 +536,8 @@ void SceneEditor::UI_UpdateSceneGraph()
   search(children);
 }
 
-void SceneEditor::UI_UpdatePropertySheet(const GameObject& obj)
-{
+void
+SceneEditor::UI_UpdatePropertySheet(const GameObject& obj) {
   GameObject& ncnst = const_cast<GameObject&>(obj);
   auto components = ncnst.getComponents<RenderComponent>();
   for (auto &it : components) {
@@ -538,15 +554,14 @@ void SceneEditor::UI_UpdatePropertySheet(const GameObject& obj)
   }
 }
 
-void driderSDK::SceneEditor::resize(Viewport _viewport)
-{
+void
+driderSDK::SceneEditor::resize(Viewport _viewport) {
   m_viewport = _viewport;
   webRenderer.resize(m_viewport.width, m_viewport.height);
 }
 
-
-void SceneEditor::destroy()
-{
+void
+SceneEditor::destroy() {
   //m_netLobby.Destroy();
   webRenderer.Destroy();
   WebRenderer::shutDown();

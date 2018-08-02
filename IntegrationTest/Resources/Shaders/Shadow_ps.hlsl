@@ -3,9 +3,14 @@ cbuffer ConstantBuffer {
   float4x4 Bones[200];
 };
 
+SamplerState SS;
+
+Texture2D AlbedoTex   : register(t0);
+
 struct PS_INPUT {
   float4 Position : SV_POSITION;
-  float  fDepth   : TEXCOORD0;
+	float2 Texcoord : TEXCOORD0;
+  float  fDepth   : TEXCOORD1;
 };
 
 struct PS_OUTPUT {
@@ -16,6 +21,7 @@ PS_OUTPUT
 FS(PS_INPUT input) {
 	PS_OUTPUT outRT;
 	
+	if (AlbedoTex.Sample(SS, input.Texcoord).w < 0.8f) discard;
 	outRT.Shadow = input.fDepth.xxxx;
 
 	return outRT;

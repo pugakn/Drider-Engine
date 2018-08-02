@@ -160,7 +160,7 @@ DriderEngine::initModules() {
                               10000.0f);
 
   CameraManager::setActiveCamera(_T("MainCamera"));
-  m_renderMan.init();
+  //m_renderMan.init();
 
   ContextManager::startUp();
   ScriptEngine::startUp();
@@ -218,7 +218,6 @@ DriderEngine::createScene() {
   m_player->createComponent<NetworkManagerComponent>(); 
 
   SceneGraph::start();
-
 }
 
 std::shared_ptr<GameObject>

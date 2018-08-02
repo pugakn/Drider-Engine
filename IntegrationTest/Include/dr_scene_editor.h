@@ -65,6 +65,7 @@ private:
   std::shared_ptr<Material> floorMat;
 
   Vector3D modelMovement;
-  std::array<Light, 128> Lights;
+
+  std::array<Light, RENDER_MANAGER_MAX_LIGHTS> Lights;
 };
 }
