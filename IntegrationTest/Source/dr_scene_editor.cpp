@@ -87,7 +87,7 @@ void read_directory(const TString& name, TString& v)
   pattern.append(_T("\\*"));
   WIN32_FIND_DATA data;
   HANDLE hFind;
-  parent = PathFindFileName(name.c_str());
+  parent = FileSystem::GetFileName(name.c_str());
   hFind = FindFirstFile(pattern.c_str(), &data);
   if (hFind != INVALID_HANDLE_VALUE) {
     do {
@@ -98,7 +98,8 @@ void read_directory(const TString& name, TString& v)
       }
       else
       {
-        auto ext = PathFindExtension(data.cFileName);
+        //auto ext = PathFindExtension(data.cFileName);
+        auto ext = FileSystem::GetFileExtension(data.cFileName);
         v += (_T("{'name':'") + TString(data.cFileName) + _T("','parent':'") + parent + _T("','type':'") + ext + _T("'},"));
       }
     } while (FindNextFile(hFind, &data) != 0);

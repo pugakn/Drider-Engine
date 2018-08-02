@@ -97,4 +97,21 @@ FileSystem::GetFileExtension(const TString& file) {
   return extension;
 }
 
+TString
+FileSystem::GetFileName(const TString& filepath) {
+  SizeT slashPos = filepath.find_last_of(_T('\\'));
+  SizeT dotPos = filepath.find_last_of(_T('.'));
+
+  TString name;
+
+  if (slashPos != TString::npos) {
+    name = filepath.substr(slashPos - 1, dotPos - slashPos);
+  } 
+  else {
+    name = filepath.substr(0, dotPos - 1);
+  }
+
+  return name;
+}
+
 }

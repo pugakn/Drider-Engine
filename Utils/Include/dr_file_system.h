@@ -165,6 +165,9 @@ class DR_UTIL_EXPORT FileSystem
   static TString 
   GetFileExtension(const TString& filepath);
 
+  static TString
+  GetFileName(const TString& filepath);
+
 };
 
 }
