@@ -16,4 +16,14 @@ enum E : UInt32 {
 
 }
 
+namespace PARAM_TYPE {
+
+enum E : UInt32 {
+  FLOAT = 1,
+  INT,
+  STRING
+};
+
+}
+
 }

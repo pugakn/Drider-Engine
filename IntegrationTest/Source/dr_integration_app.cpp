@@ -113,15 +113,17 @@ DriderEngine::postUpdate() {
   SceneGraph::update();
   m_editor.update(); 
 
+  // Hardcode section
   if(!m_connected) {
     requestConnection(m_lobbies[0].ip, m_lobbies[0].port);
     m_connected = true;
   }
   
-  if(m_player) {
+  if(m_player && !m_valueRegistered) {
+    m_valueRegistered = true;
     auto net = m_player->getComponent<NetworkManagerComponent>();
     float a = 10.2f;
-    net->registerVar(_T("m_vel"), a);
+    net->registerFloat(_T("m_vel"), a);
   }
 }
 
@@ -272,6 +274,7 @@ DriderEngine::initScriptEngine() {
   result = ScriptComponent::registerFunctions(scriptEngine);
   result = Transform::registerFunctions(scriptEngine);
   result = GameObject::registerFunctions(scriptEngine);
+  result = NetworkManagerComponent::registerFunctions(scriptEngine);
   /*result = REGISTER_GLO_FOO("void Instantiate(GameObject& in, const Vector3D& in, const Vector3D& in",
                             asFUNCTION(&SceneGraph::instanciate));*/
 

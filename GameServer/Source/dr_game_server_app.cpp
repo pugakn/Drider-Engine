@@ -9,6 +9,10 @@
 
 namespace driderSDK {
 
+NetworkValue::NetworkValue() {
+
+}
+
 void 
 GameServer::postInit() {
 
@@ -37,6 +41,8 @@ GameServer::postInit() {
   m_commands.emplace_back(REQUEST_ID::kServerAccepted, &GameServer::serverAccepted);
   m_commands.emplace_back(REQUEST_ID::kRequestActive, &GameServer::requestNotify);
   m_commands.emplace_back(REQUEST_ID::kExecuteFunction, &GameServer::executeFunction);
+
+  m_functions.emplace_back(FUNCTION_TYPE::RegisterVar, &GameServer::registerVar);
 
   m_localSocket = std::make_shared<UDPSocket>();
 
@@ -238,7 +244,24 @@ GameServer::chatMsg(MessageData& msg) {
 
 void
 GameServer::executeFunction(MessageData& msg) {
-   std::cout << "Execute function" << std::endl;
+  //std::cout << "Execute function" << std::endl;
+  
+  UInt32 functionType = 0;
+
+  msg.packet >> functionType;
+
+  auto it = std::find_if(m_functions.begin(), m_functions.end(),
+                         [functionType](const FunctionList::value_type& pair)
+  { return functionType == pair.first; });
+
+  //std::cout << "FunctionType:" << functionType << std::endl;
+
+  if (it != m_functions.end()) {
+    (this->*(*it).second)(msg);
+  } else {
+    std::cout << "Error function type not found" << std::endl;
+  }
+
 }
 void 
 GameServer::notifyActive(MessageData& msg) {
@@ -317,6 +340,44 @@ GameServer::findClient(UInt32 ip, UInt16 port) {
   return std::find_if(m_clients.begin(), m_clients.end(),
                       [ip, port](const ClientData& client) 
                       { return ip == client.ip && port == client.port; });
+}
+
+void
+GameServer::registerVar(MessageData& msg) {
+  //std::cout << "RegisterVar" << std::endl;
+  
+  TString objName;
+  msg.packet >> objName;
+
+  PARAM_TYPE::E type;
+  msg.packet >> type;
+
+  TString varName;
+  msg.packet >> varName;
+
+  NetworkValue netValue;
+  if(type == PARAM_TYPE::FLOAT) {
+    float value;
+    msg.packet >> value;
+    netValue.m_value = &value;
+  }
+  else if(type == PARAM_TYPE::INT) {
+    UInt32 value;
+    msg.packet >> value;
+    netValue.m_value = &value;
+  }
+  else if (type == PARAM_TYPE::STRING) {
+    TString value;
+    msg.packet >> value;
+    netValue.m_value = &value;
+  }
+
+  netValue.m_name = varName;
+  netValue.m_valueType = type;
+
+  m_values.emplace(objName, netValue);
+
+  std::cout << " Value: " << netValue.getValueCasted<float>() << std::endl;
 }
 
 }

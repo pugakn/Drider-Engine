@@ -55,23 +55,14 @@ NetworkManagerComponent::registerObject() {
 
 }
 
-/*void
-NetworkManagerComponent::registerVar(TString varName,
-            float value) {
+void
+NetworkManagerComponent::registerFloat(const TString& varName,
+                                       float const& value) {
   Messenger::sendFunction(m_gameObject.getName(),
                           FUNCTION_TYPE::RegisterVar,
+                          PARAM_TYPE::FLOAT,
                           varName,
                           value);
 }
-
-void
-NetworkManagerComponent::registerVar(TString varName,
-                                     float value) {
-  Messenger::sendFunction(m_gameObject.getName(),
-                          FUNCTION_TYPE::RegisterVar,
-                          varName,
-                          value);
-}*/
-
 
 }

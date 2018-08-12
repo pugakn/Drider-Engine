@@ -97,6 +97,7 @@ private:
   String m_nameStr;
 
   bool m_connected;
+  bool m_valueRegistered;
 };
 
 }

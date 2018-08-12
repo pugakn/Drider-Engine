@@ -71,8 +71,28 @@ public:
                             value);
   }
 
+  void
+  registerFloat(const TString& varName,
+                float const& value);
+
+  void
+  registerInt(const TString& varName,
+              Int32 const& value);
+
+  void
+  registerString(const TString& varName,
+                 TString const& value);
+
   static BEGINING_REGISTER(NetworkManagerComponent, 0, asOBJ_REF | asOBJ_NOCOUNT)
-    
+  
+  result = scriptEngine->m_scriptEngine->RegisterObjectType("Template<class T>", 
+                                                            0,
+                                                            asOBJ_REF | asOBJ_NOCOUNT | asOBJ_TEMPLATE);
+
+  /*result = REGISTER_FOO(NetworkManagerComponent,
+                        "void registerVar(const TString& in, Template const& in)",
+                        asMETHOD(NetworkManagerComponent, registerVar, (const TString&, float const&), void));*/
+
   result = scriptEngine->m_scriptEngine->RegisterObjectMethod("NetworkManagerComponent",
                                                               "GameComponent@ opImplCast()",
                                                               asFUNCTION((refCast<NetworkManagerComponent, GameComponent>)),
@@ -82,6 +102,9 @@ public:
                                                               "NetworkManagerComponent@ opCast()",
                                                               asFUNCTION((refCast<GameComponent, NetworkManagerComponent>)),
                                                               asCALL_CDECL_OBJLAST);
+
+
+
 
   END_REGISTER
 
