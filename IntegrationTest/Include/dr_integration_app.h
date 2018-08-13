@@ -41,6 +41,11 @@ protected:
   virtual void
   onGameStatusReceived(WString&& msg) override;
 
+  virtual void
+  onInstantiatePlayer(const TString& name,
+                      const Vector3D& pos,
+                      const Vector3D& dir) override;
+
 private:
   // Inherited via Application
   virtual void
@@ -75,7 +80,7 @@ private:
   initScriptEngine();
 
   void
-  playSoundTest();
+  loadSound();
 
   // Inherited via Application
   virtual void
@@ -98,6 +103,8 @@ private:
 
   bool m_connected;
   bool m_valueRegistered;
+  
+  std::vector<std::shared_ptr<GameObject>> m_players;
 };
 
 }

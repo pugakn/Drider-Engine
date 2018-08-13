@@ -7,6 +7,14 @@
 #include <dr_network_manager.h>
 #include <dr_string_utils.h>
 
+#include <dr_graph.h>
+#include <dr_time.h>
+#include <dr_context_manager.h>
+#include <dr_gameObject.h>
+#include <dr_vector3d.h>
+
+#include <dr_aabb_collider.h>
+
 namespace driderSDK {
 
 NetworkValue::NetworkValue() {
@@ -15,8 +23,15 @@ NetworkValue::NetworkValue() {
 
 void 
 GameServer::postInit() {
-
+  
+  Logger::startUp();
   NetworkManager::startUp();
+  Time::startUp();
+  ContextManager::startUp();
+  ScriptEngine::startUp();
+  SceneGraph::startUp();
+
+  SceneGraph::start();
 
   auto getPublicIP = []() -> TString
   {
@@ -43,6 +58,7 @@ GameServer::postInit() {
   m_commands.emplace_back(REQUEST_ID::kExecuteFunction, &GameServer::executeFunction);
 
   m_functions.emplace_back(FUNCTION_TYPE::RegisterVar, &GameServer::registerVar);
+  m_functions.emplace_back(FUNCTION_TYPE::Instantiate, &GameServer::instantiate);
 
   m_localSocket = std::make_shared<UDPSocket>();
 
@@ -90,12 +106,14 @@ GameServer::postInit() {
 
 void 
 GameServer::postUpdate() {
-  if (m_notifyTimer.getSeconds() >= m_maxTimeOut) {
+  /*if (m_notifyTimer.getSeconds() >= m_maxTimeOut) {
     m_running = false;
     return;
-  }
+  }*/
   checkIncomingPackets();
   checkClientsActiveState();
+  Time::update();
+  SceneGraph::update();
 }
 
 void 
@@ -106,6 +124,8 @@ void
 GameServer::postDestroy() {
   removeSockets();
   NetworkManager::shutDown();
+  SceneGraph::shutDown();
+  Time::shutDown();
 }
 
 void 
@@ -377,7 +397,64 @@ GameServer::registerVar(MessageData& msg) {
 
   m_values.emplace(objName, netValue);
 
-  std::cout << " Value: " << netValue.getValueCasted<float>() << std::endl;
+  //std::cout << " Value: " << netValue.getValueCasted<float>() << std::endl;
+}
+
+void
+GameServer::instantiate(MessageData& msg) {
+
+  TString name;
+  msg.packet >> name;
+  
+  OBJ_TYPE::E objType;
+  msg.packet >> objType;
+  
+  Vector3D position;
+  msg.packet >> position;
+  
+  Vector3D direction;
+  msg.packet >> direction;
+
+  if(objType == OBJ_TYPE::kPlayer) {
+    instantiatePlayer(position, direction);
+  }
+  
+}
+
+void
+GameServer::instantiatePlayer(const Vector3D& pos,
+                              const Vector3D& dir) {
+
+  auto newPlayer = SceneGraph::createObject(_T("Player" + m_players.size()));
+  newPlayer->getTransform().setPosition(pos);
+  newPlayer->getTransform().setRotation(dir);
+  SceneGraph::start();
+
+  /*Packet pack;
+
+  pack << VER_NUM::kN;
+  pack << REQUEST_ID::kExecuteFunction;
+  pack << FUNCTION_TYPE::Instantiate;
+  pack << newPlayer->getName();
+  pack << OBJ_TYPE::kPlayer;
+  pack << pos;
+  pack << dir;*/
+
+  m_players.push_back(newPlayer); 
+
+  for(int i = 0; i < m_players.size(); i++) {
+    
+    Packet pack;
+    pack << VER_NUM::kN;
+    pack << REQUEST_ID::kExecuteFunction;
+    pack << FUNCTION_TYPE::Instantiate;
+    pack << m_players[i]->getName();
+    pack << OBJ_TYPE::kPlayer;
+    pack << pos;
+    pack << dir;
+
+    broadcastMessage(pack);
+  }
 }
 
 }

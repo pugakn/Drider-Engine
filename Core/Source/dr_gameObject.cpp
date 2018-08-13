@@ -56,7 +56,7 @@ GameObject::start() {
   }
   DR_DEBUG_ONLY(
   else {
-    Logger::addLog(_T("Warning: object started without collider ") + getName());
+    //Logger::addLog(_T("Warning: object started without collider ") + getName());
   });
 
   for (auto& component : m_components) {

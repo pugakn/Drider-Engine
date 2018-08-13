@@ -5,8 +5,11 @@
 #include <dr_packet_handler.h>
 #include <dr_connection_enums.h>
 #include <dr_time.h>
+#include <dr_message_type.h>
 
 namespace driderSDK {
+
+class Vector3D;
 
 class Client : private PacketHandler {
 public:
@@ -51,6 +54,12 @@ protected:
   virtual void
   onGameStatusReceived(WString&& msg) = 0;
 
+  //Called whe we receive a game directive
+  virtual void
+  onInstantiatePlayer(const TString& name,
+                      const Vector3D& pos,
+                      const Vector3D& dir) = 0;
+
   void
   requestConnection(UInt32 ip, UInt16 port);
 
@@ -82,6 +91,9 @@ private:
 
   void
   receiveGameStatus(MessageData& msg);
+
+  void
+  receiveServerDirective(MessageData& msg);
 
   void
   checkConnectionStatus();

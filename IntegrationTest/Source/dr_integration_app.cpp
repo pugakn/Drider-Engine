@@ -88,14 +88,47 @@ DriderEngine::onGameStatusReceived(WString&& msg) {
 }
 
 void
+DriderEngine::onInstantiatePlayer(const TString& name,
+                                  const Vector3D& pos,
+                                  const Vector3D& dir) {
+  //std::cout << "Execute server foo" << std::endl;
+  
+  //auto newPlayer = SceneGraph::createObject(name);
+  //newPlayer->createComponent<ScriptComponent>();
+
+  if(SceneGraph::getRoot()->findObject(name) != nullptr) {
+    return;
+  } 
+
+  auto walkerModel = ResourceManager::getReferenceT<Model>(_T("Walking.fbx"));
+  auto& walkerAnimName = walkerModel->animationsNames[0];
+  auto wa = ResourceManager::getReferenceT<Animation>(walkerAnimName);
+  auto ws = ResourceManager::getReferenceT<Skeleton>(walkerModel->skeletonName);
+
+  auto newPlayer = addObjectFromModel(walkerModel, name);
+  auto animator = newPlayer->createComponent<AnimatorComponent>();
+  animator->setSkeleton(ws);
+  animator->addAnimation(wa, walkerAnimName);
+  animator->setCurrentAnimation(walkerAnimName, true);
+
+  newPlayer->getTransform().setPosition(pos);
+  newPlayer->getTransform().setRotation(dir);
+
+  m_players.push_back(newPlayer);
+
+  SceneGraph::start();
+}
+
+void
 DriderEngine::postInit() {
   
   initModules();
   //initInputCallbacks();
   loadResources();
   createScene();
+  loadSound();
   initScriptEngine();
-  playSoundTest();
+
 
   Time::update();
   m_editor.init(Application::getViewPort());
@@ -124,6 +157,9 @@ DriderEngine::postUpdate() {
     auto net = m_player->getComponent<NetworkManagerComponent>();
     float a = 10.2f;
     net->registerFloat(_T("m_vel"), a);
+    net->instantiate(OBJ_TYPE::kPlayer,
+                     Vector3D(0.0f, 0.0f, 0.0f),
+                     Vector3D(0.0f, 0.0f, 0.0f));    
   }
 }
 
@@ -204,7 +240,7 @@ DriderEngine::createScene() {
   auto wa = ResourceManager::getReferenceT<Animation>(walkerAnimName);
   auto ws = ResourceManager::getReferenceT<Skeleton>(walkerModel->skeletonName);
 
-  m_player = addObjectFromModel(walkerModel, _T("Player"));
+  m_player = addObjectFromModel(walkerModel, _T("LocalPlayer"));
   auto animator = m_player->createComponent<AnimatorComponent>();
   animator->setSkeleton(ws);
   animator->addAnimation(wa, walkerAnimName);
@@ -272,17 +308,25 @@ DriderEngine::initScriptEngine() {
   result = GameComponent::registerFunctions(scriptEngine);
   result = SoundComponent::registerFunctions(scriptEngine);
   result = ScriptComponent::registerFunctions(scriptEngine);
+  result = NetworkManagerComponent::registerFunctions(scriptEngine);
+
+
   result = Transform::registerFunctions(scriptEngine);
   result = GameObject::registerFunctions(scriptEngine);
-  result = NetworkManagerComponent::registerFunctions(scriptEngine);
+
   /*result = REGISTER_GLO_FOO("void Instantiate(GameObject& in, const Vector3D& in, const Vector3D& in",
                             asFUNCTION(&SceneGraph::instanciate));*/
 
   //Register global properties
   m_root = SceneGraph::instance().getRoot().get(); // Get root
 
-  result = scriptEngine->m_scriptEngine->RegisterGlobalProperty("GameObject@ Object",
-                                                                &m_root);
+  /*result = scriptEngine->m_scriptEngine->RegisterGlobalProperty("GameObject@ Object",
+                                                                &m_root);*/
+  result = REGISTER_GLO_PROPERTIE("GameObject@ Object",
+                                  &m_root);
+
+  result = REGISTER_GLO_PROPERTIE("const bool isConnected",
+                                  &m_connected);
 
   //Get script references of the ResourceManager
   auto rBehaviorScript = ResourceManager::getReference(_T("driderBehavior.as"));
@@ -328,7 +372,7 @@ DriderEngine::initScriptEngine() {
 }
 
 void
-DriderEngine::playSoundTest() {
+DriderEngine::loadSound() {
 
   auto sound1Resource = ResourceManager::instance().getReferenceT<
     SoundCore>(_T("testSound1.mp3"));
@@ -340,7 +384,7 @@ DriderEngine::playSoundTest() {
   soundComponent->addSound(_T("testSound1"),
                            sound1);
 
-  soundComponent->play(_T("testSound1"));
+  //soundComponent->play(_T("testSound1"));
 
 }
 

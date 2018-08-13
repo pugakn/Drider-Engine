@@ -203,6 +203,10 @@ B* refCast(A* a)
                                                                 foo,\
                                                                 asCALL_CDECL);
 
+//GLOBAL PROPERTIE
+#define REGISTER_GLO_PROPERTIE(strDeclaration, value)\
+  scriptEngine->m_scriptEngine->RegisterGlobalProperty(strDeclaration, value);
+
 #define END_REGISTER\
     return result;\
   }

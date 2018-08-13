@@ -26,4 +26,13 @@ enum E : UInt32 {
 
 }
 
+namespace OBJ_TYPE {
+
+enum E : UInt32 {
+  kPlayer = 1,
+  kProjectile
+};
+
+}
+
 }

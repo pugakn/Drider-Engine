@@ -14,6 +14,9 @@
 
 namespace driderSDK {
 
+class Vector3D;
+class GameObject;
+
 class NetworkValue {
   public: 
     NetworkValue();
@@ -105,17 +108,23 @@ class GameServer : public Application, public PacketHandler
   void
   registerVar(MessageData& msg);
 
+  void
+  instantiate(MessageData& msg);
+
  private: 
+  void
+  instantiatePlayer(const Vector3D& pos,
+                    const Vector3D& dir);
+
   using Command = decltype(&requestNotify);      
   using CommandList = std::vector<std::pair<REQUEST_ID::E, Command>>;
-
-  using Function = std::function<void (MessageData&)>;
   using FunctionList = std::vector<std::pair<FUNCTION_TYPE::E, Command>>;
 
   bool m_inGame;
   ClientList m_clients;
   CommandList m_commands;
   FunctionList m_functions;
+
   UInt32 m_publicIP;
   UInt32 m_localIP;
   SharedSocket m_localSocket;
@@ -132,8 +141,8 @@ class GameServer : public Application, public PacketHandler
   const UInt8 m_maxIgnoredRequests = 4;
 
   std::map<const TString, NetworkValue> m_values;
-  /*std::map<const TString, UInt32> m_intValues;
-  std::map<const TString, const TString> m_stringValues;*/
+
+  std::vector<std::shared_ptr<GameObject>> m_players;
   
 };
 

@@ -73,25 +73,40 @@ public:
 
   void
   registerFloat(const TString& varName,
-                float const& value);
+                float value);
 
   void
   registerInt(const TString& varName,
-              Int32 const& value);
+              Int32 value);
 
   void
   registerString(const TString& varName,
-                 TString const& value);
+                 const TString& value);
+
+  void
+  instantiate(OBJ_TYPE::E objType,
+              const Vector3D& position,
+              const Vector3D& direction);
 
   static BEGINING_REGISTER(NetworkManagerComponent, 0, asOBJ_REF | asOBJ_NOCOUNT)
-  
-  result = scriptEngine->m_scriptEngine->RegisterObjectType("Template<class T>", 
-                                                            0,
-                                                            asOBJ_REF | asOBJ_NOCOUNT | asOBJ_TEMPLATE);
 
-  /*result = REGISTER_FOO(NetworkManagerComponent,
-                        "void registerVar(const TString& in, Template const& in)",
-                        asMETHOD(NetworkManagerComponent, registerVar, (const TString&, float const&), void));*/
+  result = REGISTER_ENUM(ObjectType)
+  result = REGISTER_ENUM_VALUE(ObjectType, OBJ_TYPE, kPlayer)
+  result = REGISTER_ENUM_VALUE(ObjectType, OBJ_TYPE, kProjectile)
+
+  result = REGISTER_FOO(NetworkManagerComponent,
+                        "void instantiate(ObjectType, const Vector3D& in, const Vector3D& in)",
+                        asMETHODPR(NetworkManagerComponent, 
+                                   instantiate, 
+                                   (OBJ_TYPE::E, const Vector3D&, const Vector3D&),
+                                   void));
+
+  result = REGISTER_FOO(NetworkManagerComponent,
+                        "void registerFloat(const TString& in, float)",
+                        asMETHOD(NetworkManagerComponent,
+                                 registerFloat,
+                                 (const TString&, float),
+                                 void));
 
   result = scriptEngine->m_scriptEngine->RegisterObjectMethod("NetworkManagerComponent",
                                                               "GameComponent@ opImplCast()",

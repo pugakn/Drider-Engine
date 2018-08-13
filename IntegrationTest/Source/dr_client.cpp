@@ -4,6 +4,7 @@
 
 #include <dr_network_manager.h>
 #include <dr_messenger.h>
+#include <dr_vector3d.h>
 
 namespace driderSDK {
 
@@ -25,6 +26,7 @@ Client::init(const TString& globalServer) {
   //m_gameCommands.emplace_back(REQUEST_ID::kConnectionLoss, &Client::connectionLoss);
   m_gameCommands.emplace_back(REQUEST_ID::kRequestActive, &Client::requestActive);
   m_gameCommands.emplace_back(REQUEST_ID::kReceiveGameStatus, &Client::receiveGameStatus);
+  m_gameCommands.emplace_back(REQUEST_ID::kExecuteFunction, &Client::receiveServerDirective);
 
   m_gameCommands.emplace_back();
 
@@ -121,6 +123,28 @@ Client::receiveGameStatus(MessageData& msg) {
   msg.packet >> data;
 
   onGameStatusReceived(std::move(data));
+}
+
+void
+Client::receiveServerDirective(MessageData& msg) {
+  FUNCTION_TYPE::E fooType;
+  msg.packet >> fooType;
+
+  if(fooType == FUNCTION_TYPE::Instantiate) {
+    TString objName;
+    msg.packet >> objName;
+
+    OBJ_TYPE::E objType;
+    msg.packet >> objType;
+
+    if(objType == OBJ_TYPE::kPlayer) {
+      Vector3D pos;
+      msg.packet >> pos;
+      Vector3D dir;
+      msg.packet >> dir;
+      onInstantiatePlayer(objName, pos, dir);
+    }
+  }
 }
 
 void

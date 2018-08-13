@@ -3,6 +3,9 @@ class script1 : driderBehavior {
 	float timer;
 	TString name = "TEST_NAME";
 
+	bool m_isRegistered;
+	GameObject@ player;
+
 	void Start() {
 		Print("Start\n");
 		
@@ -31,9 +34,11 @@ class script1 : driderBehavior {
 		Print("Position a: " + t.m_position.x + "," + t.m_position.y);
 
 		//Get soundComponent
-		GameObject@ player = Object.findObject("Player");
+		player = Object.findObject("LocalPlayer");
 		SoundComponent@ sound = cast<SoundComponent>(player.getComponent("SoundComponent"));
+		Print("\nQue paso!\n");
 		if(@sound != null) {
+			//Print("\nPlay sound\n");
 			sound.play("testSound1");
 		}
 		else {
@@ -44,6 +49,8 @@ class script1 : driderBehavior {
 
 		script2@ sc = cast<script2>(cast<ScriptComponent>(player.getComponent("ScriptComponent1")).getScript());
 		sc.doSomething();
+
+		m_isRegistered = false;
 
 	}
 
@@ -72,10 +79,33 @@ class script1 : driderBehavior {
 		if(isKeyDown(kS)) {
 			this.transform.move(vecFront * -1.0);
 		}
+
+		/*if(isConnected && isKeyDown(kP)) {
+			//Print("Conectado a red" + "\n");
+			//NetworkManagerComponent@ net = cast<NetworkManagerComponent>(player.getComponent("NetworkManagerComponent"));
+			
+
+			if(@net != null) {
+				Print("net found");
+				m_isRegistered = true;
+				net.registerFloat("m_vel", 10.0);
+				Vector3D pos(0.0,0.0,0.0);
+				Vector3D dir(0.0,0.0,0.0);
+				net.instantiate(kPlayer, pos, dir);
+			} else {
+				Print("net not found");
+			}
+		}*/
 	}
 
 	void Do() {
 		Print("\n" + name + "\n");
+	}
+
+	void onKeyDown(KeyCode key) {
+		if(key == kP && isConnected) {
+			Print("instantiate" + "\n");
+		}
 	}
 
 	/*void onKeyDown(KeyCode key) {
