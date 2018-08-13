@@ -75,9 +75,10 @@ RenderManager::init() {
   m_fMaxDepth = 10000.0f;
   m_bFitToScene = false;
 
-  //m_vec3DirectionalLight = Vector3D(-1.0f, -1.0f, 0.0f).normalize();
-  //m_vec3DirectionalLight = Vector3D(0.0f, -10000.0f, 0.1f).normalize();
-  m_vec3DirectionalLight = Vector3D(1.0f, -1.0f, -1.0f).normalize();
+  m_vecDirectionalLights.push_back(Vector3D(1.0f, -1.0f, -1.0f).normalize());
+  m_vecDirectionalLights.push_back(Vector3D(1.0f, -1.0f, 1.0f).normalize());
+  m_vecDirectionalLights.push_back(Vector3D(-1.0f, -1.0f, -1.0f).normalize());
+  m_vecDirectionalLights.push_back(Vector3D(-1.0f, -1.0f, 1.0f).normalize());
 
   partitions = calculatePartitions(m_szActiveShadowCameras);
 
@@ -463,7 +464,6 @@ RenderManager::init() {
 void
 RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
-  updateShadowCameras();
 
   auto mainCam = CameraManager::getActiveCamera();
   auto mainCamRef = *CameraManager::getActiveCamera();
@@ -489,34 +489,39 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_GBufferPass.draw(&m_GBufferDrawData);
 
   static const float white[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-  m_RTShadow->clear(dc, white);
   m_RTSSShadow->clear(dc, white);
 
-  for (size_t camIndex = 0; camIndex < m_szActiveShadowCameras; ++camIndex) {
-    queryRequest = SceneGraph::query(rqRequest);
-    m_ShadowDrawData.shadowCam = vecShadowCamera[camIndex];
-    m_ShadowDrawData.models = &queryRequest;
-    m_ShadowDrawData.OutRt = m_RTShadowDummy[camIndex];
-    m_ShadowDrawData.dsOptions = m_ShadowDSoptions;
-    m_ShadowPass.draw(&m_ShadowDrawData);
+  //for all directional lights
+  for (const auto& directionalLight : m_vecDirectionalLights) {
+    m_RTShadow->clear(dc, white);
+    updateShadowCameras(directionalLight);
+
+    for (SizeT camIndex = 0; camIndex < m_szActiveShadowCameras; ++camIndex) {
+      queryRequest = SceneGraph::query(rqRequest);
+      m_ShadowDrawData.shadowCam = vecShadowCamera[camIndex];
+      m_ShadowDrawData.models = &queryRequest;
+      m_ShadowDrawData.OutRt = m_RTShadowDummy[camIndex];
+      m_ShadowDrawData.dsOptions = m_ShadowDSoptions;
+      m_ShadowPass.draw(&m_ShadowDrawData);
+    }
+    m_ShadowPass.merge(m_RTShadowDummy,
+                       m_RTShadow);
+
+    m_ShadowDrawData.ShadowCameras = &vecShadowCamera;
+    m_ShadowDrawData.ShadowSliptDepths = partitions;
+    m_ShadowDrawData.ActivatedShadowCascades = m_szActiveShadowCameras;
+    m_ShadowDrawData.ShadowMapTextureSize = shadowWidth;
+    m_ShadowDrawData.LerpBetweenShadowCascade = 0.3f;
+    m_ShadowDrawData.ShadowSizesProportion[0] = 1.0f;
+    m_ShadowDrawData.ShadowSizesProportion[1] = m_ShadowSubFrustras[1].second /
+                                                m_ShadowSubFrustras[0].second;
+    m_ShadowDrawData.ShadowSizesProportion[2] = m_ShadowSubFrustras[2].second /
+                                                m_ShadowSubFrustras[0].second;
+    m_ShadowDrawData.ShadowSizesProportion[3] = m_ShadowSubFrustras[3].second /
+                                                m_ShadowSubFrustras[0].second;
+
+    m_ShadowPass.apply(&m_ShadowDrawData, m_RTGBuffer, m_RTShadow, m_RTSSShadow);
   }
-  m_ShadowPass.merge(m_RTShadowDummy,
-                     m_RTShadow);
-
-  m_ShadowDrawData.ShadowCameras = &vecShadowCamera;
-  m_ShadowDrawData.ShadowSliptDepths = partitions;
-  m_ShadowDrawData.ActivatedShadowCascades = m_szActiveShadowCameras;
-  m_ShadowDrawData.ShadowMapTextureSize = shadowWidth;
-  m_ShadowDrawData.LerpBetweenShadowCascade = 0.3f;
-  m_ShadowDrawData.ShadowSizesProportion[0] = 1.0f;
-  m_ShadowDrawData.ShadowSizesProportion[1] = m_ShadowSubFrustras[1].second /
-                                              m_ShadowSubFrustras[0].second;
-  m_ShadowDrawData.ShadowSizesProportion[2] = m_ShadowSubFrustras[2].second /
-                                              m_ShadowSubFrustras[0].second;
-  m_ShadowDrawData.ShadowSizesProportion[3] = m_ShadowSubFrustras[3].second /
-                                              m_ShadowSubFrustras[0].second;
-
-  m_ShadowPass.apply(&m_ShadowDrawData, m_RTGBuffer, m_RTShadow, m_RTSSShadow);
 
   m_HorBlurDrawData.InTexture = &m_RTSSShadow->getTexture(0);
   m_HorBlurDrawData.OutRt = m_RTBlurInit;
@@ -651,7 +656,7 @@ RenderManager::onShutDown() {
 }
 
 void
-RenderManager::updateShadowCameras() {
+RenderManager::updateShadowCameras(const Vector3D lightDir) {
   std::shared_ptr<Camera> mainCam = CameraManager::getActiveCamera();
   Vector3D CamPos = mainCam->getPosition();
   Vector3D CamDir = mainCam->getDirection();
@@ -669,7 +674,7 @@ RenderManager::updateShadowCameras() {
     TrueCenter = CamPos + (CamDir * m_ShadowSubFrustras[i].first);
 
     vecShadowCamera[i]->setPosition(TrueCenter -
-                                    (m_vec3DirectionalLight * m_fMaxDepth));
+                                    (lightDir * m_fMaxDepth));
     vecShadowCamera[i]->setTarget(TrueCenter);
     vecShadowCamera[i]->createProyection(Math::floor(SphereRad * 2.0f),
                                          Math::floor(SphereRad * 2.0f),

@@ -17,8 +17,8 @@
 #include <dr_module.h>
 #include <dr_particle_emitter.h>
 #include <dr_vector3d.h>
-namespace driderSDK {
 
+namespace driderSDK {
 /**
 * Render manager.
 * This class handles and performs the draw logic.
@@ -210,7 +210,7 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   * Updates the shadow cameras.
   */
   void
-  updateShadowCameras();
+  updateShadowCameras(const Vector3D lightDir);
 
   /*
   * Test::calculatePartitions
@@ -257,7 +257,7 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
                  float fFarPlane,
                  float fFov);
 
-  Vector3D m_vec3DirectionalLight;
+  std::vector<Vector3D> m_vecDirectionalLights;
 
   SizeT m_szActiveShadowCameras;
   float m_fMinDepth;
