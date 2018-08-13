@@ -67,50 +67,7 @@ AABBCollider::onUpdate() {
   } 
 
   //Collisions
-
-
-  //Check collisions
-  auto lastCollisions = m_collisions;
-  m_collisions.clear();
-  GameObject* root = SceneGraph::getRoot().get();
-  for (auto &it : root->getChildren()) {
-    if (it.get() == this->getGameObjectPtr()) {
-      continue;
-    }
-    auto& components = it->getComponents<AABBCollider>(); //TODO: Add Other colliders
-    if (components.size()) {
-      for (auto & component : components) {
-        if (component->m_isTrigger || m_isTrigger) {
-        }
-        else {
-          //coll->onCollisionEnter(*component);
-          ////auto rbodi = component->getGameObject().getComponent<RigidBody3DComponent>();
-          ////if (rbodi) {
-          ////  //rbodi->
-          ////}
-          if (getTransformedAABB().intersect(component->getTransformedAABB())) {
-            if (std::find(lastCollisions.begin(), lastCollisions.end(), component) != lastCollisions.end()) {
-              //Already collisioning
-              onCollisionStay(*component);
-              std::cout << "Stay!" << std::endl;
-            }
-            else {
-              //New collision
-              onCollisionEnter(*component);
-              std::cout << "Enter!" << std::endl;
-            }
-            m_collisions.push_back(component);
-          }
-        }
-      }
-    }
-  }
-  for (auto & it : lastCollisions) {
-    if (std::find(m_collisions.begin(), m_collisions.end(), it) == m_collisions.end()) {
-      onCollisionExit(*it);
-      std::cout << "Exit!" << std::endl;
-    }
-  }
+  ColliderComponent::onUpdate();
 }
 
 void 
