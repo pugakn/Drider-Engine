@@ -15,6 +15,7 @@
 
 #include <dr_animator_component.h>
 #include <dr_render_component.h>
+#include <dr_rigidbody_component.h>
 #include <dr_aabb_collider.h>
 #include <dr_degree.h>
 #include <dr_texture_core.h>
@@ -278,6 +279,7 @@ RenderManApp::postInit() {
   if (ptrHK) {
     m_selectedGO->createComponent<RenderComponent>(ptrHK);
     m_selectedGO->createComponent<AABBCollider>(ptrHK->aabb);
+    m_selectedGO->createComponent<RigidBody3DComponent>();
     //m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, 25.0f));
     //m_selectedGO->getTransform().setScale(Vector3D(100.0f, 100.0f, 100.0f));
     //m_selectedGO->getTransform().setRotation(Vector3D(Math::Math::HALF_PI * 3.0f, Math::PI, 0.0f));

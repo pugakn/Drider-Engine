@@ -2,6 +2,7 @@
 #include "dr_graph.h"
 #include "dr_aabb_collider.h"
 #include "dr_gameObject.h"
+#include "dr_rigidbody_component.h"
 namespace driderSDK {
   void ColliderComponent::onUpdate()
   {
@@ -13,23 +14,26 @@ namespace driderSDK {
       if (it.get() == this->getGameObjectPtr()) {
         continue;
       }
+      auto rbodi = getGameObject().getComponent<RigidBody3DComponent>();
+      auto otherRbodi = it->getComponent<RigidBody3DComponent>();
       auto& components = it->getComponents<AABBCollider>(); //TODO: Add Other colliders
       if (components.size()) {
         for (auto & component : components) {
-          ////auto rbodi = component->getGameObject().getComponent<RigidBody3DComponent>();
-          ////if (rbodi) {
-          ////  //rbodi->
-          ////}
-          if (((AABBCollider*)this)->getTransformedAABB().intersect(component->getTransformedAABB())) { //TODO: Error when it is not AABB xDXdXDDD
-            if (std::find(lastCollisions.begin(), lastCollisions.end(), component) != lastCollisions.end()) {
-              //Already collisioning
-              CollisionStay(*component);
+          if ((rbodi || otherRbodi)) { //&& (!rbodi->m_isKinematic || !otherRbodi->m_isKinematic)
+            if (((AABBCollider*)this)->getTransformedAABB().intersect(component->getTransformedAABB())) { //TODO: Error when it is not AABB xDXdXDDD
+              if (std::find(lastCollisions.begin(), lastCollisions.end(), component) != lastCollisions.end()) {
+                //Already collisioning
+                CollisionStay(*component);
+              }
+              else {
+                //New collision
+                CollisionEnter(*component);
+              }
+              m_collisions.push_back(component);
             }
-            else {
-              //New collision
-              CollisionEnter(*component);
-            }
-            m_collisions.push_back(component);
+          }
+          else {
+
           }
         }
       }

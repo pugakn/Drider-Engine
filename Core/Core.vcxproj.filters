@@ -251,5 +251,8 @@
     <ClCompile Include="Source\dr_sound_component.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\dr_rigidbody_component.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

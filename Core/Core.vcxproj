@@ -218,6 +218,7 @@
     <ClCompile Include="Source\dr_parser.cpp" />
     <ClCompile Include="Source\dr_render_component.cpp" />
     <ClCompile Include="Source\dr_resource.cpp" />
+    <ClCompile Include="Source\dr_rigidbody_component.cpp" />
     <ClCompile Include="Source\dr_root_node.cpp" />
     <ClCompile Include="Source\dr_script_component.cpp" />
     <ClCompile Include="Source\dr_script_core.cpp" />
