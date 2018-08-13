@@ -1,7 +1,7 @@
 #include "dr_aabb_collider.h"
 #include "dr_animator_component.h"
 #include "dr_gameObject.h"
-
+#include "dr_graph.h"
 namespace driderSDK {
 AABBCollider::AABBCollider(GameObject& _gameObject, const AABB& aabb)
 : ColliderComponent(_gameObject, _T("AABBCollider")),
@@ -65,6 +65,52 @@ AABBCollider::onUpdate() {
       m_transformedAABB = m_originalAABB;
       m_transformedAABB.recalculate(m_gameObject.getWorldTransform().getMatrix());
   } 
+
+  //Collisions
+
+
+  //Check collisions
+  auto lastCollisions = m_collisions;
+  m_collisions.clear();
+  GameObject* root = SceneGraph::getRoot().get();
+  for (auto &it : root->getChildren()) {
+    if (it.get() == this->getGameObjectPtr()) {
+      continue;
+    }
+    auto& components = it->getComponents<AABBCollider>(); //TODO: Add Other colliders
+    if (components.size()) {
+      for (auto & component : components) {
+        if (component->m_isTrigger || m_isTrigger) {
+        }
+        else {
+          //coll->onCollisionEnter(*component);
+          ////auto rbodi = component->getGameObject().getComponent<RigidBody3DComponent>();
+          ////if (rbodi) {
+          ////  //rbodi->
+          ////}
+          if (getTransformedAABB().intersect(component->getTransformedAABB())) {
+            if (std::find(lastCollisions.begin(), lastCollisions.end(), component) != lastCollisions.end()) {
+              //Already collisioning
+              onCollisionStay(*component);
+              std::cout << "Stay!" << std::endl;
+            }
+            else {
+              //New collision
+              onCollisionEnter(*component);
+              std::cout << "Enter!" << std::endl;
+            }
+            m_collisions.push_back(component);
+          }
+        }
+      }
+    }
+  }
+  for (auto & it : lastCollisions) {
+    if (std::find(m_collisions.begin(), m_collisions.end(), it) == m_collisions.end()) {
+      onCollisionExit(*it);
+      std::cout << "Exit!" << std::endl;
+    }
+  }
 }
 
 void 

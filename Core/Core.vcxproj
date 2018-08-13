@@ -177,6 +177,7 @@
     <ClInclude Include="Include\dr_parser.h" />
     <ClInclude Include="Include\dr_render_component.h" />
     <ClInclude Include="Include\dr_resource.h" />
+    <ClInclude Include="Include\dr_rigidbody_component.h" />
     <ClInclude Include="Include\dr_root_node.h" />
     <ClInclude Include="Include\dr_script_component.h" />
     <ClInclude Include="Include\dr_script_core.h" />

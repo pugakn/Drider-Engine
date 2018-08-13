@@ -19,41 +19,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Include\dr_Bloom.h" />
-    <ClInclude Include="Include\dr_GBuffer1.h" />
-    <ClInclude Include="Include\dr_HorBlur.h" />
-    <ClInclude Include="Include\dr_Lightning.h" />
-    <ClInclude Include="Include\dr_Luminescence.h" />
-    <ClInclude Include="Include\dr_pass_particle_system.h" />
-    <ClInclude Include="Include\dr_Shadow.h" />
-    <ClInclude Include="Include\dr_SSAO.h" />
-    <ClInclude Include="Include\dr_light.h" />
-    <ClInclude Include="Include\dr_PostProcessing.h" />
-    <ClInclude Include="Include\dr_renderman.h" />
-    <ClInclude Include="Include\dr_rendermanapp.h" />
-    <ClInclude Include="Include\dr_renderman_prerequisites.h" />
-    <ClInclude Include="Include\dr_renderpass.h" />
-    <ClInclude Include="Include\dr_VerBlur.h" />
+    <ClInclude Include="Include\dr_rigidbody.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\dr_Bloom.cpp" />
-    <ClCompile Include="Source\dr_GBuffer1.cpp" />
-    <ClCompile Include="Source\dr_Lightning.cpp" />
-    <ClCompile Include="Source\dr_Luminescence.cpp" />
-    <ClCompile Include="Source\dr_pass_particle_system.cpp" />
-    <ClCompile Include="Source\dr_Shadow.cpp" />
-    <ClCompile Include="Source\dr_SSAO.cpp" />
-    <ClCompile Include="Source\dr_PostProcessing.cpp" />
-    <ClCompile Include="Source\dr_renderman.cpp" />
-    <ClCompile Include="Source\dr_rendermanapp.cpp" />
-    <ClCompile Include="Source\dr_renderpass.cpp" />
-    <ClCompile Include="Source\dr_HorBlur.cpp" />
-    <ClCompile Include="Source\dr_VerBlur.cpp" />
+    <ClCompile Include="Source\dr_rigidbody.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{B7A07E65-EAED-42A5-B50D-652D8E70DC55}</ProjectGuid>
-    <RootNamespace>RenderManager</RootNamespace>
+    <ProjectGuid>{8314020C-CE33-4602-858C-ABF57B4339AC}</ProjectGuid>
+    <RootNamespace>DriderUI</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -108,67 +82,64 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <TargetName>$(ProjectName)d</TargetName>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <TargetName>$(ProjectName)d</TargetName>
-  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)ParticleSystem\Include;$(SolutionDir)Utils\Include\;$(SolutionDir)Graphics\Include\;$(SolutionDir)Core\Include;$(SolutionDir)Engine\Include;$(SolutionDir)Math\Include;$(DRIDER_DEPENDENCIES)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>DR_RENDERMAN_EXPORTS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)Engine\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)RenderManager\Include;$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Input\Include;$(SolutionDir)Math\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)GraphicsUtils\Include;$(SolutionDir)Utils\Include;$(SolutionDir)Core\Include;$(DRIDER_DEPENDENCIES)Include\CEF;$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Utils\Include;$(SolutionDir)$(Projectname)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>DR_PARTICLES_EXPORTS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ParticleSystemd.lib;Utilsd.lib;Cored.lib;Graphicsd.lib;Engined.lib;Mathd.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(DRIDER_DEPENDENCIES)Lib\$(PlatformTarget);$(SolutionDir)Lib\$(PlatformTarget);</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Graphicsd.lib;Engined.lib;Cored.lib;Utilsd.lib;Mathd.lib;Inputd.lib;GraphicsUtilsd.lib;libcef_dll_wrapperd.lib;libcef.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)ParticleSystem\Include;$(SolutionDir)Utils\Include\;$(SolutionDir)Graphics\Include\;$(SolutionDir)Core\Include;$(SolutionDir)Engine\Include;$(SolutionDir)Math\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>DR_RENDERMAN_EXPORTS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)Engine\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)RenderManager\Include;$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Input\Include;$(SolutionDir)Math\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)GraphicsUtils\Include;$(SolutionDir)Utils\Include;$(SolutionDir)Core\Include;$(DRIDER_DEPENDENCIES)Include\CEF;$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Utils\Include;$(SolutionDir)$(Projectname)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>DR_PARTICLES_EXPORTS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ParticleSystemd.lib;Utilsd.lib;Cored.lib;Graphicsd.lib;Engined.lib;Mathd.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(DRIDER_DEPENDENCIES)Lib\$(PlatformTarget);$(SolutionDir)Lib\$(PlatformTarget);</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Graphicsd.lib;Engined.lib;Cored.lib;Utilsd.lib;Mathd.lib;Inputd.lib;GraphicsUtilsd.lib;libcef_dll_wrapperd.lib;libcef.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)ParticleSystem\Include;$(SolutionDir)Utils\Include\;$(SolutionDir)Graphics\Include\;$(SolutionDir)Core\Include;$(SolutionDir)Engine\Include;$(SolutionDir)Math\Include;$(DRIDER_DEPENDENCIES)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>DR_RENDERMAN_EXPORTS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)Engine\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)RenderManager\Include;$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Input\Include;$(SolutionDir)Math\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)GraphicsUtils\Include;$(SolutionDir)Utils\Include;$(SolutionDir)Core\Include;$(DRIDER_DEPENDENCIES)Include\CEF;$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Utils\Include;$(SolutionDir)$(Projectname)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>DR_PARTICLES_EXPORTS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>ParticleSystem.lib;Utils.lib;Core.lib;Graphics.lib;Engine.lib;Math.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(DRIDER_DEPENDENCIES)Lib\$(PlatformTarget);$(SolutionDir)Lib\$(PlatformTarget);</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Graphics.lib;Engine.lib;Core.lib;Utils.lib;Math.lib;Input.lib;GraphicsUtils.lib;libcef_dll_wrapper.lib;libcef.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)ParticleSystem\Include;$(SolutionDir)Utils\Include\;$(SolutionDir)Graphics\Include\;$(SolutionDir)Core\Include;$(SolutionDir)Engine\Include;$(SolutionDir)Math\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>DR_RENDERMAN_EXPORTS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)Engine\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)RenderManager\Include;$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Input\Include;$(SolutionDir)Math\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)GraphicsUtils\Include;$(SolutionDir)Utils\Include;$(SolutionDir)Core\Include;$(DRIDER_DEPENDENCIES)Include\CEF;$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Utils\Include;$(SolutionDir)$(Projectname)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>DR_PARTICLES_EXPORTS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>ParticleSystem.lib;Utils.lib;Core.lib;Graphics.lib;Engine.lib;Math.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(DRIDER_DEPENDENCIES)Lib\$(PlatformTarget);$(SolutionDir)Lib\$(PlatformTarget);</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Graphics.lib;Engine.lib;Core.lib;Utils.lib;Math.lib;Input.lib;GraphicsUtils.lib;libcef_dll_wrapper.lib;libcef.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -187,90 +187,90 @@ RenderManApp::postInit() {
     renderComp->getMeshes().front().material = m_floorMat;
   }
   
-  m_vecGos.push_back(SceneGraph::createObject(_T("Bush")));
-  m_selectedGO = m_vecGos.back();
-  auto ptrBs = ResourceManager::getReferenceT<Model>(_T("FernBush.obj"));
-  if (ptrBs) {
-    auto renderComp = m_selectedGO->createComponent<RenderComponent>(ptrBs);
-    m_selectedGO->createComponent<AABBCollider>(ptrBs->aabb);
-    //m_selectedGO->getTransform().setPosition(Vector3D(110.0f, 0.0f, 110.0f));
-    //m_selectedGO->getTransform().setScale(Vector3D(0.05f, 0.05f, 0.05f));
-    m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, 2000.0f));
-    m_selectedGO->getTransform().setScale(Vector3D(0.25f, 0.25f, 0.25f));
+  //m_vecGos.push_back(SceneGraph::createObject(_T("Bush")));
+  //m_selectedGO = m_vecGos.back();
+  //auto ptrBs = ResourceManager::getReferenceT<Model>(_T("FernBush.obj"));
+  //if (ptrBs) {
+  //  auto renderComp = m_selectedGO->createComponent<RenderComponent>(ptrBs);
+  //  m_selectedGO->createComponent<AABBCollider>(ptrBs->aabb);
+  //  //m_selectedGO->getTransform().setPosition(Vector3D(110.0f, 0.0f, 110.0f));
+  //  //m_selectedGO->getTransform().setScale(Vector3D(0.05f, 0.05f, 0.05f));
+  //  m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, 2000.0f));
+  //  m_selectedGO->getTransform().setScale(Vector3D(0.25f, 0.25f, 0.25f));
 
-    m_BushMat = ResourceManager::createMaterial(_T("BushMaterial"));
+  //  m_BushMat = ResourceManager::createMaterial(_T("BushMaterial"));
 
-    auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("FernTarga.tga"));
-    m_BushMat->setTexture(albedoTex, _T("Albedo"));
+  //  auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("FernTarga.tga"));
+  //  m_BushMat->setTexture(albedoTex, _T("Albedo"));
 
-    std::vector<RenderMesh>& meshes = renderComp->getMeshes();
-    meshes.front().material = m_BushMat;
-  }
+  //  std::vector<RenderMesh>& meshes = renderComp->getMeshes();
+  //  meshes.front().material = m_BushMat;
+  //}
 
-  m_vecGos.push_back(SceneGraph::createObject(_T("Model")));
-  m_selectedGO = m_vecGos.back();
-  auto ptrModel = ResourceManager::getReferenceT<Model>(_T("model.dae"));
-  if (ptrModel) {
-    m_selectedGO->createComponent<RenderComponent>(ptrModel);
-    m_selectedGO->createComponent<AABBCollider>(ptrModel->aabb);
-    //m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 12.5f, -100.0f));
-    //m_selectedGO->getTransform().setScale(Vector3D(10.0f, 10.0f, 10.0f));
-    //m_selectedGO->getTransform().setRotation(Vector3D(0.0f, Math::PI*1.15f, 0.0f));
-    m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 80.0f, -100.0f));
-    m_selectedGO->getTransform().setScale(Vector3D(75.0f, 75.0f, 75.0f));
-    m_selectedGO->getTransform().setRotation(Vector3D(0.0f, Math::QUARTER_PI * 0.3f, 0.0f));
+  //m_vecGos.push_back(SceneGraph::createObject(_T("Model")));
+  //m_selectedGO = m_vecGos.back();
+  //auto ptrModel = ResourceManager::getReferenceT<Model>(_T("model.dae"));
+  //if (ptrModel) {
+  //  m_selectedGO->createComponent<RenderComponent>(ptrModel);
+  //  m_selectedGO->createComponent<AABBCollider>(ptrModel->aabb);
+  //  //m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 12.5f, -100.0f));
+  //  //m_selectedGO->getTransform().setScale(Vector3D(10.0f, 10.0f, 10.0f));
+  //  //m_selectedGO->getTransform().setRotation(Vector3D(0.0f, Math::PI*1.15f, 0.0f));
+  //  m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 80.0f, -100.0f));
+  //  m_selectedGO->getTransform().setScale(Vector3D(75.0f, 75.0f, 75.0f));
+  //  m_selectedGO->getTransform().setRotation(Vector3D(0.0f, Math::QUARTER_PI * 0.3f, 0.0f));
 
-    m_modelMat = ResourceManager::createMaterial(_T("ModelMaterial"));
+  //  m_modelMat = ResourceManager::createMaterial(_T("ModelMaterial"));
 
-    auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("default_albedo.tga"));
-    auto emissiveTex = ResourceManager::getReferenceT<TextureCore>(_T("default_emissive.tga"));
-    auto metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("default_metallic.tga"));
-    auto normalTex = ResourceManager::getReferenceT<TextureCore>(_T("default_normal.tga"));
-    auto roughnessTex = ResourceManager::getReferenceT<TextureCore>(_T("default_roughness.tga"));
-    m_modelMat->setTexture(albedoTex, _T("Albedo"));
-    m_modelMat->setTexture(normalTex, _T("Normal"));
-    m_modelMat->setTexture(emissiveTex, _T("Emisivity"));
-    m_modelMat->setTexture(metallicTex, _T("Metallic"));
-    m_modelMat->setTexture(roughnessTex, _T("Roughness"));
+  //  auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("default_albedo.tga"));
+  //  auto emissiveTex = ResourceManager::getReferenceT<TextureCore>(_T("default_emissive.tga"));
+  //  auto metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("default_metallic.tga"));
+  //  auto normalTex = ResourceManager::getReferenceT<TextureCore>(_T("default_normal.tga"));
+  //  auto roughnessTex = ResourceManager::getReferenceT<TextureCore>(_T("default_roughness.tga"));
+  //  m_modelMat->setTexture(albedoTex, _T("Albedo"));
+  //  m_modelMat->setTexture(normalTex, _T("Normal"));
+  //  m_modelMat->setTexture(emissiveTex, _T("Emisivity"));
+  //  m_modelMat->setTexture(metallicTex, _T("Metallic"));
+  //  m_modelMat->setTexture(roughnessTex, _T("Roughness"));
 
-    auto rComp = m_selectedGO->getComponent<RenderComponent>();
-    rComp->getMeshes().front().material = m_modelMat;
-  }
+  //  auto rComp = m_selectedGO->getComponent<RenderComponent>();
+  //  rComp->getMeshes().front().material = m_modelMat;
+  //}
 
-  m_vecGos.push_back(SceneGraph::createObject(_T("Stormtrooper")));
-  m_selectedGO = m_vecGos.back();   
-  auto ptrStorm = ResourceManager::getReferenceT<Model>(_T("stormtrooper_dancing.fbx"));
-  if (ptrStorm) {
-    auto rComp = m_selectedGO->createComponent<RenderComponent>(ptrStorm);
-    auto aComp = m_selectedGO->createComponent<AnimatorComponent>();
-    m_selectedGO->createComponent<AABBCollider>(ptrStorm->aabb);
-    //m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, -50.0f));
-    //m_selectedGO->getTransform().setScale(Vector3D(30.0f, 30.0f, 30.0f));
-    //m_selectedGO->getTransform().setRotation(Vector3D(00.0f, Math::PI, 00.0f));
-    m_selectedGO->getTransform().setPosition(Vector3D(200.0f, 0.0f, 150.0f));
-    m_selectedGO->getTransform().setScale(Vector3D(50.0f, 50.0f, 50.0f));
-    m_selectedGO->getTransform().setRotation(Vector3D(00.0f, Math::PI * 1.25f, 00.0f));
+  //m_vecGos.push_back(SceneGraph::createObject(_T("Stormtrooper")));
+  //m_selectedGO = m_vecGos.back();   
+  //auto ptrStorm = ResourceManager::getReferenceT<Model>(_T("stormtrooper_dancing.fbx"));
+  //if (ptrStorm) {
+  //  auto rComp = m_selectedGO->createComponent<RenderComponent>(ptrStorm);
+  //  auto aComp = m_selectedGO->createComponent<AnimatorComponent>();
+  //  m_selectedGO->createComponent<AABBCollider>(ptrStorm->aabb);
+  //  //m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, -50.0f));
+  //  //m_selectedGO->getTransform().setScale(Vector3D(30.0f, 30.0f, 30.0f));
+  //  //m_selectedGO->getTransform().setRotation(Vector3D(00.0f, Math::PI, 00.0f));
+  //  m_selectedGO->getTransform().setPosition(Vector3D(200.0f, 0.0f, 150.0f));
+  //  m_selectedGO->getTransform().setScale(Vector3D(50.0f, 50.0f, 50.0f));
+  //  m_selectedGO->getTransform().setRotation(Vector3D(00.0f, Math::PI * 1.25f, 00.0f));
 
-    m_StormtrooperMat = ResourceManager::createMaterial(_T("StormtrooperMaterial"));
+  //  m_StormtrooperMat = ResourceManager::createMaterial(_T("StormtrooperMaterial"));
 
-    auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("Stormtrooper_Diffuse.png"));
-    m_StormtrooperMat->setTexture(albedoTex, _T("Albedo"));
+  //  auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("Stormtrooper_Diffuse.png"));
+  //  m_StormtrooperMat->setTexture(albedoTex, _T("Albedo"));
 
-    rComp->getMeshes().front().material = m_StormtrooperMat;
+  //  rComp->getMeshes().front().material = m_StormtrooperMat;
 
-    auto ws = ResourceManager::getReferenceT<Skeleton>(ptrStorm->skeletonName);
-    
-    aComp->setSkeleton(ws);
+  //  auto ws = ResourceManager::getReferenceT<Skeleton>(ptrStorm->skeletonName);
+  //  
+  //  aComp->setSkeleton(ws);
 
-    for (Int32 i = 0; i < ptrStorm->animationsNames.size(); ++i) {
-      auto wa = ResourceManager::getReferenceT<Animation>(ptrStorm->animationsNames[i]);
+  //  for (Int32 i = 0; i < ptrStorm->animationsNames.size(); ++i) {
+  //    auto wa = ResourceManager::getReferenceT<Animation>(ptrStorm->animationsNames[i]);
 
-      aComp->addAnimation(wa, ptrStorm->animationsNames[i]);
-    }
+  //    aComp->addAnimation(wa, ptrStorm->animationsNames[i]);
+  //  }
 
-    aComp->setCurrentAnimation(ptrStorm->animationsNames[0], false, false);
-    aComp->setTime(1.0f);
-  }
+  //  aComp->setCurrentAnimation(ptrStorm->animationsNames[0], false, false);
+  //  aComp->setTime(1.0f);
+  //}
 
   m_vecGos.push_back(SceneGraph::createObject(_T("HatKid")));
   m_selectedGO = m_vecGos.back();
