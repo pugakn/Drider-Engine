@@ -156,6 +156,7 @@ RenderManApp::postInit() {
     //m_selectedGO->getTransform().setScale(Vector3D(5.0f, 1.0f, 5.0f));
     //m_selectedGO->getTransform().setScale(Vector3D(4.0f, 1.0f, 4.0f));
 
+    m_selectedGO->update();//
     m_floorMat = ResourceManager::createMaterial(_T("FloorMaterial"));
 
     auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Diffuse.tga"));
@@ -277,15 +278,18 @@ RenderManApp::postInit() {
   m_selectedGO = m_vecGos.back();
   auto ptrHK = ResourceManager::getReferenceT<Model>(_T("HK_Teen.fbx"));
   if (ptrHK) {
-    m_selectedGO->createComponent<RenderComponent>(ptrHK);
-    m_selectedGO->createComponent<AABBCollider>(ptrHK->aabb);
-    m_selectedGO->createComponent<RigidBody3DComponent>();
     //m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, 25.0f));
     //m_selectedGO->getTransform().setScale(Vector3D(100.0f, 100.0f, 100.0f));
     //m_selectedGO->getTransform().setRotation(Vector3D(Math::Math::HALF_PI * 3.0f, Math::PI, 0.0f));
-    m_selectedGO->getTransform().setPosition(Vector3D(-200.0f, 0.0f, 150.0f));
+    m_selectedGO->getTransform().setPosition(Vector3D(-0.0f, 20.0f, 0.0f));
     m_selectedGO->getTransform().setScale(Vector3D(125.0f, 125.0f, 125.0f));
     m_selectedGO->getTransform().setRotation(Vector3D(Math::Math::HALF_PI * 3.0f, Math::PI * 0.85f, 0.0f));
+
+    m_selectedGO->createComponent<RenderComponent>(ptrHK);
+    m_selectedGO->createComponent<RigidBody3DComponent>();
+    m_selectedGO->createComponent<AABBCollider>(ptrHK->aabb);
+
+    m_selectedGO->update();//
 
     m_hkBodyMat = ResourceManager::createMaterial(_T("HKBodyMaterial"));
     m_hkBodySMat = ResourceManager::createMaterial(_T("HKBodySMaterial"));
@@ -369,10 +373,10 @@ RenderManApp::postUpdate() {
     m_selectedGO->getTransform().move(Vector3D(0.0f, 0.0f, -1.0f) * Time::getDelta() * fMovementSpeed);
   }
   if (Keyboard::isKeyDown(KEY_CODE::kQ)) {
-    m_selectedGO->getTransform().move(Vector3D(0.0f, 1.0f, 0.0f) * Time::getDelta() * fMovementSpeed);
+    m_selectedGO->getComponent<RigidBody3DComponent>()->addForce(Vector3D(0.0f, 1.0f, 0.0f) * Time::getDelta() * fMovementSpeed);
   }
   if (Keyboard::isKeyDown(KEY_CODE::kE)) {
-    m_selectedGO->getTransform().move(Vector3D(0.0f, -1.0f, 0.0f) * Time::getDelta() * fMovementSpeed);
+    m_selectedGO->getComponent<RigidBody3DComponent>()->addForce(Vector3D(0.0f, -1.0f, 0.0f) * Time::getDelta() * fMovementSpeed);
   }
 
   if (Keyboard::isKeyDown(KEY_CODE::kR)) {

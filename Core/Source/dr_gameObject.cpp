@@ -61,6 +61,9 @@ GameObject::update() {
         //Recalculate the final transform
         m_finalTransform = m_localTransform * getParent()->m_finalTransform;
 
+        m_change = m_localTransform.changed() ||
+          getParent()->changed();
+
         m_localTransform.m_change = false;
       }
     }

@@ -11,6 +11,7 @@ namespace driderSDK {
   {
   public:
     RigidBody3DComponent(GameObject& _gameObject);
+
     virtual void
       onCreate() override;
 
@@ -26,6 +27,8 @@ namespace driderSDK {
     virtual void
       cloneIn(GameObject& _go) override;
 
+    void 
+    addForce(Vector3D _force);
 
     float m_mass;
     float m_drag;
