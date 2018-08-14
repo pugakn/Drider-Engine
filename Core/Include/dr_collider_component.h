@@ -42,6 +42,8 @@ class DR_CORE_EXPORT ColliderComponent : public GameComponent
    void CollisionEnter(ColliderComponent& coll);
    void CollisionStay(ColliderComponent& coll);
    void CollisionExit(ColliderComponent& coll);
+
+   void CollisionRespone(ColliderComponent & coll);
 };
 
 }
