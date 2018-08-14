@@ -9,7 +9,9 @@
 namespace driderSDK {
   class DR_CORE_EXPORT RigidBody3DComponent : public GameComponent
   {
+   
   public:
+    const float GRAVITY = -0.081;
     RigidBody3DComponent(GameObject& _gameObject);
 
     virtual void

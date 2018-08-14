@@ -23,7 +23,7 @@ namespace driderSDK {
     //Aply forces
     Vector3D linearAcceleration = m_force / m_mass;
     if (m_useGravity) {
-      linearAcceleration += Vector3D(0,-0.081,0);
+      linearAcceleration += Vector3D(0, GRAVITY,0);
     }
     Vector3D angularAcceleration = m_torque; //
                                              //Update positions and velocities

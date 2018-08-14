@@ -144,64 +144,64 @@ namespace driderSDK {
   }
   void ColliderComponent::CollisionRespone(ColliderComponent & coll)
   {
-    auto dt = Time::getDelta();
-    Vector3D normal(0, 1, 0);
-    float penetration = 0;
-    auto& A = this->getGameObject();
-    auto B = coll.getGameObjectPtr();
-    Vector3D n = B->getWorldTransform().getPosition() - A.getWorldTransform().getPosition();
+    auto rgbody = getGameObject().getComponent<RigidBody3DComponent>();
+    if (rgbody) {
+      auto dt = Time::getDelta();
+      Vector3D normal(0, 1, 0);
+      float penetration = 0;
+      auto& A = this->getGameObject();
+      auto B = coll.getGameObjectPtr();
+      Vector3D n = B->getWorldTransform().getPosition() - A.getWorldTransform().getPosition();
 
-    const AABB& abox = ((AABBCollider*)this)->getTransformedAABB();
-    const AABB& bbox = ((AABBCollider*)&coll)->getTransformedAABB();
-    float a_extent = (abox.getMaxPoint().x - abox.getMinPoint().x) / 2;
-    float b_extent = (bbox.getMaxPoint().x - bbox.getMinPoint().x) / 2;
-    float x_overlap = a_extent + b_extent - abs(n.x);
+      const AABB& abox = ((AABBCollider*)this)->getTransformedAABB();
+      const AABB& bbox = ((AABBCollider*)&coll)->getTransformedAABB();
+      float a_extent = (abox.getMaxPoint().x - abox.getMinPoint().x) / 2;
+      float b_extent = (bbox.getMaxPoint().x - bbox.getMinPoint().x) / 2;
+      float x_overlap = a_extent + b_extent - abs(n.x);
 
-    if (x_overlap > 0)
-    {
-      float a_extent = (abox.getMaxPoint().y - abox.getMinPoint().y) / 2;
-      float b_extent = (bbox.getMaxPoint().y - bbox.getMinPoint().y) / 2;
-      float y_overlap = a_extent + b_extent - abs(n.y);
-
-      if (y_overlap > 0)
+      if (x_overlap > 0)
       {
-        float a_extent = (abox.getMaxPoint().z - abox.getMinPoint().z) / 2;
-        float b_extent = (bbox.getMaxPoint().z - bbox.getMinPoint().z) / 2;
-        float z_overlap = a_extent + b_extent - abs(n.z);
+        float a_extent = (abox.getMaxPoint().y - abox.getMinPoint().y) / 2;
+        float b_extent = (bbox.getMaxPoint().y - bbox.getMinPoint().y) / 2;
+        float y_overlap = a_extent + b_extent - abs(n.y);
 
-        if (z_overlap > 0)
+        if (y_overlap > 0)
         {
-          // Find out which axis is axis of least penetration
-          if (x_overlap < y_overlap && x_overlap < z_overlap)
-          {
-            if (n.x < 0)
-              normal = Vector3D(-1, 0, 0);
-            else
-              normal = Vector3D(1, 0, 0);
-            penetration = x_overlap;
-          }
-          else if (y_overlap < x_overlap && y_overlap < z_overlap)
-          {
-            if (n.y < 0)
-              normal = Vector3D(0, -1, 0);
-            else
-              normal = Vector3D(0, 1, 0);
-            penetration = y_overlap;
-          }
-          else {
-            if (n.z < 0)
-              normal = Vector3D(0, 0, -1);
-            else
-              normal = Vector3D(0, 0, 1);
-            penetration = z_overlap;
-          }
+          float a_extent = (abox.getMaxPoint().z - abox.getMinPoint().z) / 2;
+          float b_extent = (bbox.getMaxPoint().z - bbox.getMinPoint().z) / 2;
+          float z_overlap = a_extent + b_extent - abs(n.z);
 
-          Vector3D AVel(0, 0, 0);
-          Vector3D BVel(0, 0, 0);
-          float Amass = 1;
-          float Bmass = 1;
-          auto rgbody = getGameObject().getComponent<RigidBody3DComponent>();
-          if (rgbody) {
+          if (z_overlap > 0)
+          {
+            // Find out which axis is axis of least penetration
+            if (x_overlap < y_overlap && x_overlap < z_overlap)
+            {
+              if (n.x < 0)
+                normal = Vector3D(-1, 0, 0);
+              else
+                normal = Vector3D(1, 0, 0);
+              penetration = x_overlap;
+            }
+            else if (y_overlap < x_overlap && y_overlap < z_overlap)
+            {
+              if (n.y < 0)
+                normal = Vector3D(0, -1, 0);
+              else
+                normal = Vector3D(0, 1, 0);
+              penetration = y_overlap;
+            }
+            else {
+              if (n.z < 0)
+                normal = Vector3D(0, 0, -1);
+              else
+                normal = Vector3D(0, 0, 1);
+              penetration = z_overlap;
+            }
+
+            Vector3D AVel(0, 0, 0);
+            Vector3D BVel(0, 0, 0);
+            float Amass = 1;
+            float Bmass = 1;
             AVel = rgbody->m_linearVelocity;
             Amass = rgbody->m_mass;
 
