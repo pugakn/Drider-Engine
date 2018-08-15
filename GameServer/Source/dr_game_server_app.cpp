@@ -450,8 +450,8 @@ GameServer::instantiatePlayer(const Vector3D& pos,
     pack << FUNCTION_TYPE::Instantiate;
     pack << m_players[i]->getName();
     pack << OBJ_TYPE::kPlayer;
-    pack << pos;
-    pack << dir;
+    pack << m_players[i]->getTransform().getPosition();
+    pack << Vector3D(0.0,0.0,0.0);
 
     broadcastMessage(pack);
   }

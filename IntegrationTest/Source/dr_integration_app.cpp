@@ -152,7 +152,7 @@ DriderEngine::postUpdate() {
     m_connected = true;
   }
   
-  if(m_player && !m_valueRegistered) {
+  /*if(m_player && !m_valueRegistered) {
     m_valueRegistered = true;
     auto net = m_player->getComponent<NetworkManagerComponent>();
     float a = 10.2f;
@@ -160,7 +160,7 @@ DriderEngine::postUpdate() {
     net->instantiate(OBJ_TYPE::kPlayer,
                      Vector3D(0.0f, 0.0f, 0.0f),
                      Vector3D(0.0f, 0.0f, 0.0f));    
-  }
+  }*/
 }
 
 void

@@ -131,6 +131,9 @@ Client::receiveServerDirective(MessageData& msg) {
   msg.packet >> fooType;
 
   if(fooType == FUNCTION_TYPE::Instantiate) {
+    UInt32 numPlayers;
+    msg.packet >> numPlayers;
+
     TString objName;
     msg.packet >> objName;
 

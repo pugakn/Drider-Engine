@@ -4,11 +4,10 @@ class script1 : driderBehavior {
 	TString name = "TEST_NAME";
 
 	bool m_isRegistered;
-	GameObject@ player;
 
 	void Start() {
 		Print("Start\n");
-		
+
 		//Compare two GameObject ref
 		GameObject@ a = Object.findObject("Floor");
 		GameObject@ b = Object.findObject("Floor");
@@ -34,11 +33,10 @@ class script1 : driderBehavior {
 		Print("Position a: " + t.m_position.x + "," + t.m_position.y);
 
 		//Get soundComponent
-		player = Object.findObject("LocalPlayer");
+		GameObject@ player = Object.findObject("LocalPlayer");
 		SoundComponent@ sound = cast<SoundComponent>(player.getComponent("SoundComponent"));
-		Print("\nQue paso!\n");
 		if(@sound != null) {
-			//Print("\nPlay sound\n");
+			Print("\nPlay sound\n");
 			sound.play("testSound1");
 		}
 		else {
@@ -80,22 +78,6 @@ class script1 : driderBehavior {
 			this.transform.move(vecFront * -1.0);
 		}
 
-		/*if(isConnected && isKeyDown(kP)) {
-			//Print("Conectado a red" + "\n");
-			//NetworkManagerComponent@ net = cast<NetworkManagerComponent>(player.getComponent("NetworkManagerComponent"));
-			
-
-			if(@net != null) {
-				Print("net found");
-				m_isRegistered = true;
-				net.registerFloat("m_vel", 10.0);
-				Vector3D pos(0.0,0.0,0.0);
-				Vector3D dir(0.0,0.0,0.0);
-				net.instantiate(kPlayer, pos, dir);
-			} else {
-				Print("net not found");
-			}
-		}*/
 	}
 
 	void Do() {
@@ -103,8 +85,36 @@ class script1 : driderBehavior {
 	}
 
 	void onKeyDown(KeyCode key) {
-		if(key == kP && isConnected) {
-			Print("instantiate" + "\n");
+		if(isConnected) {
+			GameObject@ player = Object.findObject("LocalPlayer");
+			NetworkManagerComponent@ net = cast<NetworkManagerComponent>(player.getComponent("NetworkManagerComponent"));
+			if(key == kP) {
+				Print("Player instantiate\n");
+				m_isRegistered = true;
+
+				Vector3D pos(50.0,0.0,0.0);
+				Vector3D dir(0.0,0.0,0.0);
+				net.instantiate(kPlayer, pos, dir);
+			}
+
+			if(key == kL) {
+				Print("Player instantiate\n");
+				m_isRegistered = true;
+
+				Vector3D pos(-50.0,0.0,0.0);
+				Vector3D dir(0.0,0.0,0.0);
+				net.instantiate(kPlayer, pos, dir);
+			}
+
+			if(key == kK) {
+				Print("Player instantiate\n");
+				m_isRegistered = true;
+
+				Vector3D pos(0.0,0.0,0.0);
+				Vector3D dir(0.0,0.0,0.0);
+				net.instantiate(kPlayer, pos, dir);
+			}
+
 		}
 	}
 
