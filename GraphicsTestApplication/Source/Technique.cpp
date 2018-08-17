@@ -42,7 +42,7 @@ Technique::prepareForDraw() {
   return prepared;
 }
 
-void Technique::destroy() {
+void Technique::release() {
   
   if (m_inputLayout) {
     m_inputLayout->release();

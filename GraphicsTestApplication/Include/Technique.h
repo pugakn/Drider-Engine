@@ -41,7 +41,7 @@ class Technique
   }
 
   void 
-  destroy();
+  release();
 
  protected:
   virtual UInt8* getConstBufferData() = 0;

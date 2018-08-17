@@ -67,6 +67,10 @@ struct DR_CORE_EXPORT RenderCommand
 
 struct DR_CORE_EXPORT RenderQuery
 {
+  RenderQuery(const Camera& _camera, QUERY_ORDER::E _order, UInt32 _props) 
+    : camera(_camera), order(_order), props(_props)
+  {}
+
   const Camera& camera;
   QUERY_ORDER::E order;
   UInt32 props;
@@ -165,15 +169,18 @@ class DR_CORE_EXPORT SceneGraph : public Module<SceneGraph>
 
   static void 
   update();
-
-  static void
-  fillBuffer();
-
+  
   /****************/
   /*     TEMP     */
   static void 
   draw();
   /****************/
+
+  static std::mutex& 
+  getMutex()
+  {
+    return instance().m_mutex;
+  }
  private:
 
   /**

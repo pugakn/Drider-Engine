@@ -50,6 +50,8 @@
 #include "SpiderPlayer.h"
 #include "StaticMeshTechnique.h"
 
+//#define MULTI
+
 
 namespace driderSDK {
 
@@ -69,7 +71,6 @@ GraphicsApplication::postInit() {
   initInputCallbacks();
   loadResources();
   initScriptEngine();
-  createTechniques();
   createScene();
       
  /* m_light[0].m_vec4Position = {100, 100, 100, 2000};
@@ -84,6 +85,13 @@ GraphicsApplication::postInit() {
   m_timer.init();
 
   Time::update();
+
+  
+  m_render.init();
+  #ifdef MULTI
+  m_thread = std::thread(&RenderManagerT::render, &m_render);
+  #endif // MULTI
+
 }
 
 void 
@@ -112,96 +120,83 @@ GraphicsApplication::postUpdate() {
 void 
 GraphicsApplication::postRender() {
 
-  GraphicsDriver::API().clear();
+  #ifndef MULTI
+  m_render.render();
+  #endif
 
-  Int32 queryFlags = QUERY_PROPERTY::kAny;
+  //GraphicsDriver::API().clear();
 
-  auto& camera = *CameraManager::getActiveCamera();
+  //Int32 queryFlags = QUERY_PROPERTY::kAny;
 
-  m_animTech->setCamera(&camera);
-  m_staticTech->setCamera(&camera);
-  m_linesTech->setCamera(&camera);
+  //auto& camera = *CameraManager::getActiveCamera();
 
-  auto mainC = CameraManager::getCamera(m_camNames[0]);
-  
-  auto& dc = GraphicsAPI::getDeviceContext();
-  
-  if (m_drawMeshes) {
+  //m_animTech->setCamera(&camera);
+  //m_staticTech->setCamera(&camera);
+  //m_linesTech->setCamera(&camera);
 
-    auto points = calculatePoints();
+  //auto mainC = CameraManager::getCamera(m_camNames[0]);
+  //
+  //auto& dc = GraphicsAPI::getDeviceContext();
+  //
+  //if (m_drawMeshes) {
 
-    for (SizeT i = 0; i < m_paths.size(); ++i) {
+  //  auto points = calculatePoints();
 
-      m_paths[i].pushPoint(points[i]);
+  //  for (SizeT i = 0; i < m_paths.size(); ++i) {
 
-      m_pathRenders[i].draw(m_linesTech.get());
+  //    m_paths[i].pushPoint(points[i]);
 
-      m_paths[i].popPoint();
+  //    m_pathRenders[i].draw(m_linesTech.get());
 
-    }    
+  //    m_paths[i].popPoint();
 
-    std::vector<RenderCommand> queryRes;
+  //  }    
 
-    //ScopedTimer{},
-    queryRes = SceneGraph::query(*mainC,  
-                                  QUERY_ORDER::kBackToFront, 
-                                  queryFlags);
+  //  std::vector<RenderCommand> queryRes;
 
-    dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
+  //  //ScopedTimer{},
+  //  queryRes = SceneGraph::query(*mainC,  
+  //                                QUERY_ORDER::kBackToFront, 
+  //                                queryFlags);
 
-    for (auto& queryObj : queryRes) {
-    
-      Technique* current;
+  //  dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
 
-      if (queryObj.bones) {
-        current = m_animTech.get();
-        dynamic_cast<AnimationTechnique*>(current)->setBones(*queryObj.bones);
-      }
-      else {
-        current = m_staticTech.get();
-      }
+  //  for (auto& queryObj : queryRes) {
+  //  
+  //    Technique* current;
 
-      current->setWorld(queryObj.world);
+  //    if (queryObj.bones) {
+  //      current = m_animTech.get();
+  //      dynamic_cast<AnimationTechnique*>(current)->setBones(*queryObj.bones);
+  //    }
+  //    else {
+  //      current = m_staticTech.get();
+  //    }
 
-      auto material = queryObj.mesh.material.lock();
+  //    current->setWorld(queryObj.world);
 
-      if (material) {
-        material->set();
-      }
+  //    auto material = queryObj.mesh.material.lock();
 
-      if (current->prepareForDraw()) {
-        queryObj.mesh.indexBuffer->set(dc);
-        queryObj.mesh.vertexBuffer->set(dc);
+  //    if (material) {
+  //      material->set();
+  //    }
 
-        dc.draw(queryObj.mesh.indicesCount, 0, 0);
-      }
+  //    if (current->prepareForDraw()) {
+  //      queryObj.mesh.indexBuffer->set(dc);
+  //      queryObj.mesh.vertexBuffer->set(dc);
 
-    }
-  }
+  //      dc.draw(queryObj.mesh.indicesCount, 0, 0);
+  //    }
 
-  GraphicsDriver::API().swapBuffers();
+  //  }
+  //}
+
+  //GraphicsDriver::API().swapBuffers();
 }
 
 void 
 GraphicsApplication::postDestroy() {
   destroyModules();
-}
-
-void GraphicsApplication::recompileShaders() {
-  
-  if (m_animTech) {
-    m_animTech->destroy();
-  }
-
-  if (m_staticTech) {
-    m_staticTech->destroy();
-  }
-  
-  if (m_linesTech) {
-    m_linesTech->destroy();
-  }
-
-  createTechniques();
 }
 
 void 
@@ -218,7 +213,6 @@ GraphicsApplication::initModules() {
   ScriptEngine::startUp();
   ContextManager::startUp();
   SceneGraph::startUp();
-
   //m_renderMan.init();
 }
 
@@ -310,12 +304,7 @@ GraphicsApplication::initInputCallbacks() {
                                   this,
                                   SceneGraph::getRoot().get(),
                                   _T(""))); 
-
-  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
-                        KEY_CODE::kR, 
-                        std::bind(&GraphicsApplication::recompileShaders,
-                                  this));
-  
+    
   /*Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
                         KEY_CODE::kJ, 
                         std::bind(&GraphicsApplication::toggleAnimation,
@@ -400,22 +389,6 @@ GraphicsApplication::loadResources() {
   ResourceManager::loadResource(_T("script1.as"));
 
   ResourceManager::loadResource(_T("driderBehavior.as"));
-}
-
-void 
-GraphicsApplication::createTechniques() {
-  
-  m_animTech = dr_make_unique<AnimationTechnique>();
-
-  m_animTech->compile();
-
-  m_staticTech = dr_make_unique<StaticMeshTechnique>();
-  
-  m_staticTech->compile();
-
-  m_linesTech = dr_make_unique<LinesTechnique>();
-
-  m_linesTech->compile();
 }
 
 void 
@@ -703,10 +676,11 @@ GraphicsApplication::addObject(const TString& name,
 void 
 GraphicsApplication::destroyModules() {
 
-  m_animTech->destroy();
-  m_staticTech->destroy();
-
   //m_renderMan.exit();
+  #ifdef MULTI
+  m_render.close();
+  m_thread.join();
+  #endif // MULTI
   SceneGraph::shutDown();
   ResourceManager::shutDown();
   CameraManager::shutDown();
@@ -729,7 +703,7 @@ GraphicsApplication::printSceneHierachy(GameObject* obj, const TString& msg) {
 void 
 GraphicsApplication::toggleSkeletonView(GameObject* obj) {
 
-  if (obj->getComponent<SkeletonDebug>()) {
+  /*if (obj->getComponent<SkeletonDebug>()) {
     obj->removeComponent<SkeletonDebug>();
   }
   else if (obj->getComponent<AnimatorComponent>()) {
@@ -739,13 +713,13 @@ GraphicsApplication::toggleSkeletonView(GameObject* obj) {
 
   for (auto& child : obj->getChildren()) {
     toggleSkeletonView(child.get());
-  }
+  }*/
 }
 
 void 
 GraphicsApplication::toggleAABBDebug(std::shared_ptr<GameObject> obj) {
   
-  if (!obj) {
+  /*if (!obj) {
     return;
   }
 
@@ -759,7 +733,7 @@ GraphicsApplication::toggleAABBDebug(std::shared_ptr<GameObject> obj) {
 
   for (auto& child : obj->getChildren()) {
     toggleAABBDebug(child);
-  }
+  }*/
 
 }
 
@@ -951,81 +925,104 @@ GraphicsApplication::onResize() {
   CameraManager::setViewportToAll(m_viewport);
 }
 
-void 
-RenderManangerT::render() {
+RenderManagerT::RenderManagerT() 
+  : m_linesTech(nullptr, &dr_gfx_deleter<Technique>),
+    m_animTech(nullptr, &dr_gfx_deleter<Technique>),
+    m_staticTech(nullptr, &dr_gfx_deleter<Technique>)
+{}
+
+RenderManagerT::~RenderManagerT()
+{}
+
+void
+RenderManagerT::renderLoop() {
   
-  //GraphicsDriver::API().clear();
+  while (m_run.load()) {
+    render();
+  }
+}
 
+void 
+RenderManagerT::render() {
+  GraphicsDriver::API().clear();
+    
   /*m_renderMan.draw(GraphicsDriver::API().getBackBufferRT(),
-                   GraphicsDriver::API().getDepthStencil());*/
+                    GraphicsDriver::API().getDepthStencil());*/
+    
+  Int32 queryFlags = QUERY_PROPERTY::kAny;
+    
+  auto& camera = *CameraManager::getActiveCamera();
+    
+  m_animTech->setCamera(&camera);
+  m_staticTech->setCamera(&camera);
+  m_linesTech->setCamera(&camera);
+    
+  //auto mainC = CameraManager::getCamera(_T("MAIN_CAM"));
+    
+  auto& dc = GraphicsAPI::getDeviceContext();
+    
+  RenderCommandBuffer queryRes;
+    
+  RenderQuery query(camera, QUERY_ORDER::kFrontToBack, QUERY_PROPERTY::kAny);
+  //ScopedTimer{},
+  queryRes = SceneGraph::query(query);
+    
+  dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
+    
+  for (auto& command : queryRes.commands) {
+      
+    Technique* current;
+    
+    if (command.bonesID != -1) {
+      current = m_animTech.get();
+      static_cast<AnimationTechnique*>(current)->setBones(queryRes.bonesTransforms[command.bonesID]);
+    }
+    else {
+      current = m_staticTech.get();
+    }
+    
+    current->setWorld(&queryRes.worlds[command.worldID]);
+    
+    auto material = command.mesh.material.lock();
+    
+    if (material) {
+      material->set();
+    }
+    
+    if (current->prepareForDraw()) {
+      command.mesh.indexBuffer->set(dc);
+      command.mesh.vertexBuffer->set(dc);
+    
+      dc.draw(command.mesh.indicesCount, 0, 0);
+    }
+    
+  }
+  GraphicsDriver::API().swapBuffers();
+}
 
-  //Int32 queryFlags = QUERY_PROPERTY::kAny;
+void 
+RenderManagerT::init() { 
 
-  //auto& camera = *CameraManager::getActiveCamera();
+  m_animTech = TechniquePtr(new AnimationTechnique, &dr_gfx_deleter<Technique>);
 
-  //m_animTech->setCamera(&camera);
-  //m_staticTech->setCamera(&camera);
-  //m_linesTech->setCamera(&camera);
+  m_animTech->compile();
 
-  //auto mainC = CameraManager::getCamera(m_camNames[0]);
-  //
-  //auto& dc = GraphicsAPI::getDeviceContext();
-  //
-  //if (m_drawMeshes) {
+  m_staticTech = TechniquePtr(new StaticMeshTechnique, &dr_gfx_deleter<Technique>);
+  
+  m_staticTech->compile();
 
-  //  auto points = calculatePoints();
+  m_linesTech = TechniquePtr(new LinesTechnique, &dr_gfx_deleter<Technique>);
 
-  //  for (SizeT i = 0; i < m_paths.size(); ++i) {
+  m_linesTech->compile();
 
-  //    m_paths[i].pushPoint(points[i]);
+  m_run.store(true);
 
-  //    m_pathRenders[i].draw(m_linesTech.get());
+  m_cam = *CameraManager::getCamera(_T("UP_CAM"));
+}
 
-  //    m_paths[i].popPoint();
-
-  //  }    
-
-  //  std::vector<QueryObjectInfo> queryRes;
-
-  //  //ScopedTimer{},
-  //  queryRes = SceneGraph::query(*mainC,  
-  //                                QUERY_ORDER::kBackToFront, 
-  //                                queryFlags);
-
-  //  dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
-
-  //  for (auto& queryObj : queryRes) {
-  //  
-  //    Technique* current;
-
-  //    if (queryObj.bones) {
-  //      current = m_animTech.get();
-  //      dynamic_cast<AnimationTechnique*>(current)->setBones(*queryObj.bones);
-  //    }
-  //    else {
-  //      current = m_staticTech.get();
-  //    }
-
-  //    current->setWorld(&queryObj.world);
-
-  //    auto material = queryObj.mesh.material.lock();
-
-  //    if (material) {
-  //      material->set();
-  //    }
-
-  //    if (current->prepareForDraw()) {
-  //      queryObj.mesh.indexBuffer->set(dc);
-  //      queryObj.mesh.vertexBuffer->set(dc);
-
-  //      dc.draw(queryObj.mesh.indicesCount, 0, 0);
-  //    }
-
-  //  }
-  //}
-
-  //GraphicsDriver::API().swapBuffers();
-
+void
+RenderManagerT::close() {
+  m_run.store(false);
 }
 
 }

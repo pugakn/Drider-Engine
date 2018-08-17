@@ -281,6 +281,12 @@ void
 Transform::update() const {
   m_outdatedTransform = false;
                   
+  /*m_transform = Matrix4x4(Math::FORCE_INIT::kIdentity).Scale(m_scale) * 
+                  getRotation() *
+                  Matrix4x4(Math::FORCE_INIT::kIdentity).Translation(m_position);*/
+
+  //Apply Left to right multiplication first Scale, second Rotate and last Trans
+
   m_transform.InitScale(m_scale);
   m_transform *= getRotation();
   m_transform.Translation(m_position);

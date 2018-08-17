@@ -1,9 +1,12 @@
 
+#include <atomic>
 #include <array>
 #include <map>
 #include <vector>
+#include <thread>
 
 #include <dr_application.h>
+#include <dr_camera.h>
 #include <dr_light.h>
 #include <dr_memory.h>
 #include <dr_util_prerequisites.h>
@@ -19,10 +22,34 @@ class GameObject;
 class Model;
 class Technique;
 
-class RenderManangerT
+class RenderManagerT
 {
 public:
-  void render();
+
+  RenderManagerT();
+  
+  ~RenderManagerT();
+  
+  void 
+  renderLoop();
+
+  void 
+  render();
+
+  void 
+  init();
+
+  void 
+  close();
+private:
+  
+  using TechniquePtr = std::unique_ptr<Technique, void(*)(Technique*)>;
+
+  TechniquePtr m_animTech;
+  TechniquePtr m_staticTech;
+  TechniquePtr m_linesTech;
+  std::atomic_bool m_run;
+  Camera m_cam;
 };
 
 class GraphicsApplication : public Application
@@ -51,9 +78,6 @@ private:
   onResize() override;
 
   void
-  recompileShaders();
-
-  void
   initModules();
 
   void
@@ -61,10 +85,7 @@ private:
 
   void 
   loadResources();
-
-  void
-  createTechniques();
-
+  
   void
   createScene();
 
@@ -111,11 +132,6 @@ private:
   std::vector<Vector3D>
   calculatePoints();
   
-
-  std::unique_ptr<Technique> m_animTech;
-  std::unique_ptr<Technique> m_staticTech;
-  std::unique_ptr<Technique> m_linesTech;
-
   Int32 m_currCam;
   Int32 m_currAnim;
   TString m_camNames[2];
@@ -137,6 +153,8 @@ private:
   std::vector<PathRenderer> m_pathRenders;
   Spawner m_spiderSpawn;
   // Inherited via Application
+  RenderManagerT m_render;
+  std::thread m_thread;
 };
 
 }
