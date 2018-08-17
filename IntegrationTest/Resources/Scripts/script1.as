@@ -53,12 +53,12 @@ class script1 : driderBehavior {
 	}
 
 	void Update() {
-		Vector3D vecRight(100.0 * getDelta(),0.0,0.0);
+		/*Vector3D vecRight(100.0 * getDelta(),0.0,0.0);
 		Vector3D vecFront(0,0.0,100.0 * getDelta());
 
-		/*if(isKeyDown(kC)) {
-			connect();
-		}*/
+		//if(isKeyDown(kC)) {
+		//	connect();
+		//}
 
 		if(isKeyDown(kD)) {
 			this.transform.move(vecRight);
@@ -76,7 +76,7 @@ class script1 : driderBehavior {
 
 		if(isKeyDown(kS)) {
 			this.transform.move(vecFront * -1.0);
-		}
+		}*/
 
 	}
 

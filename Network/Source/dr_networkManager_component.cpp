@@ -44,13 +44,6 @@ NetworkManagerComponent::cloneIn(GameObject&) {
 }
 
 void
-NetworkManagerComponent::instantiate(GameObject& object,
-                                     const Vector3D position,
-                                     const Quaternion& rotation) {
-
-}
-
-void
 NetworkManagerComponent::registerObject() {
 
 }
@@ -94,6 +87,13 @@ NetworkManagerComponent::instantiate(OBJ_TYPE::E objType,
                           objType,
                           position,
                           direction);
+}
+
+void
+NetworkManagerComponent::move(const Vector3D& distance) {
+  Messenger::sendFunction(m_gameObject.getName(),
+                          FUNCTION_TYPE::Move,
+                          distance);
 }
 
 }

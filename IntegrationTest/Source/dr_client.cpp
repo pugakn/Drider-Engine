@@ -119,10 +119,18 @@ Client::requestActive(MessageData& msg) {
 
 void
 Client::receiveGameStatus(MessageData& msg) {
-  WString data;
-  msg.packet >> data;
+  UInt8 numPlayers;
+  msg.packet >> numPlayers;
 
-  onGameStatusReceived(std::move(data));
+  std::vector<Vector3D> positions;
+  for(int i = 0; i < numPlayers; i++) {
+    Vector3D pos;
+    msg.packet >> pos;
+    positions.push_back(pos);
+  }
+
+  onGameStatusReceived(numPlayers,
+                       positions);
 }
 
 void
@@ -131,8 +139,8 @@ Client::receiveServerDirective(MessageData& msg) {
   msg.packet >> fooType;
 
   if(fooType == FUNCTION_TYPE::Instantiate) {
-    UInt32 numPlayers;
-    msg.packet >> numPlayers;
+    /*UInt32 numPlayers;
+    msg.packet >> numPlayers;*/
 
     TString objName;
     msg.packet >> objName;
@@ -141,11 +149,23 @@ Client::receiveServerDirective(MessageData& msg) {
     msg.packet >> objType;
 
     if(objType == OBJ_TYPE::kPlayer) {
+      UInt16 port;  
+      msg.packet >> port;
+      
+      bool isLocalPlayer = true;
+      if(port == msg.senderPort) {
+        isLocalPlayer = true;
+      }
+   
       Vector3D pos;
       msg.packet >> pos;
+
       Vector3D dir;
       msg.packet >> dir;
-      onInstantiatePlayer(objName, pos, dir);
+      onInstantiatePlayer(isLocalPlayer,
+                          objName, 
+                          pos, 
+                          dir);
     }
   }
 }

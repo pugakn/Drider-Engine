@@ -47,11 +47,6 @@ public:
   cloneIn(GameObject& _go) override;
 
   void 
-  instantiate(GameObject& object, 
-              const Vector3D position, 
-              const Quaternion& rotation);
-
-  void 
   registerObject();
 
   /*void 
@@ -88,6 +83,9 @@ public:
               const Vector3D& position,
               const Vector3D& direction);
 
+  void
+  move(const Vector3D& distance);
+
   static BEGINING_REGISTER(NetworkManagerComponent, 0, asOBJ_REF | asOBJ_NOCOUNT)
 
   result = REGISTER_ENUM(ObjectType)
@@ -103,10 +101,17 @@ public:
 
   result = REGISTER_FOO(NetworkManagerComponent,
                         "void registerFloat(const TString& in, float)",
-                        asMETHOD(NetworkManagerComponent,
-                                 registerFloat,
-                                 (const TString&, float),
-                                 void));
+                        asMETHODPR(NetworkManagerComponent,
+                                   registerFloat,
+                                   (const TString&, float),
+                                   void));
+
+  result = REGISTER_FOO(NetworkManagerComponent,
+                        "void move(const Vector3D& in)",
+                        asMETHODPR(NetworkManagerComponent,
+                                   move,
+                                   (const Vector3D&),
+                                   void));
 
   result = scriptEngine->m_scriptEngine->RegisterObjectMethod("NetworkManagerComponent",
                                                               "GameComponent@ opImplCast()",

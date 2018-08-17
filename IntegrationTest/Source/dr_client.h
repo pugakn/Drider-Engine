@@ -52,11 +52,13 @@ protected:
 
   //Called when we receive the game state
   virtual void
-  onGameStatusReceived(WString&& msg) = 0;
+  onGameStatusReceived(UInt8 num_players,
+                       std::vector<Vector3D> positions) = 0;
 
   //Called whe we receive a game directive
   virtual void
-  onInstantiatePlayer(const TString& name,
+  onInstantiatePlayer(bool isLocalPlayer,
+                      const TString& name,
                       const Vector3D& pos,
                       const Vector3D& dir) = 0;
 

@@ -45,6 +45,7 @@
 #include <dr_sound.h>
 #include <dr_sound_component.h>
 
+#include <dr_networkTransform_component.h>
 #include <dr_networkManager_component.h>
 #include <dr_messenger.h>
 #include <dr_network_manager.h>
@@ -83,12 +84,22 @@ DriderEngine::onLobbiesListReceived(LobbiesList&& lobbies) {
 }
 
 void
-DriderEngine::onGameStatusReceived(WString&& msg) {
-
+DriderEngine::onGameStatusReceived(UInt8 num_players,
+                                   std::vector<Vector3D> positions) {
+  
+  if(num_players != m_players.size()) {
+    std::cout << "Players not instantiate\n";
+    return;
+  }
+  
+  for(int i = 0; i < positions.size(); i++) {
+    m_players[i]->getTransform().setPosition(positions[i]);
+  }
 }
 
 void
-DriderEngine::onInstantiatePlayer(const TString& name,
+DriderEngine::onInstantiatePlayer(bool isLocalPlayer,
+                                  const TString& name,
                                   const Vector3D& pos,
                                   const Vector3D& dir) {
   //std::cout << "Execute server foo" << std::endl;
@@ -110,6 +121,38 @@ DriderEngine::onInstantiatePlayer(const TString& name,
   animator->setSkeleton(ws);
   animator->addAnimation(wa, walkerAnimName);
   animator->setCurrentAnimation(walkerAnimName, true);
+
+  if(isLocalPlayer) {
+    newPlayer->createComponent<NetworkManagerComponent>();
+
+    ScriptEngine* scriptEngine = ScriptEngine::instancePtr();
+    ContextManager* ctxMag = ContextManager::instancePtr();
+
+    //Create a context
+    auto currentModule = scriptEngine->m_scriptEngine->GetModule("GameModule");
+    currentModule->Discard();
+    scriptEngine->m_scriptContext = ctxMag->addContext(scriptEngine->m_scriptEngine,
+                                                       _T("GameModule"));
+
+    //Add script section of behavior
+    auto BehaviorScript = ResourceManager::getReferenceT<
+                          ScriptCore>(_T("driderBehavior.as"));
+    scriptEngine->addScript(BehaviorScript->getName(),
+                            BehaviorScript->getScript(),
+                            _T("GameModule"));
+    
+    auto playerScript = ResourceManager::getReferenceT<ScriptCore>
+                        (_T("player.as"));
+    auto script = newPlayer->createComponent<ScriptComponent>(playerScript);
+
+    currentModule = scriptEngine->m_scriptEngine->GetModule("GameModule");
+    UInt16 result = currentModule->Build();
+
+    script->initScript();
+    script->start();
+
+  }
+  //newPlayer->createComponent<ScriptComponent>();
 
   newPlayer->getTransform().setPosition(pos);
   newPlayer->getTransform().setRotation(dir);
@@ -222,6 +265,8 @@ DriderEngine::loadResources() {
   ResourceManager::loadResource(_T("driderBehavior.as"));
   ResourceManager::loadResource(_T("script1.as"));
   ResourceManager::loadResource(_T("script2.as"));
+  ResourceManager::loadResource(_T("player.as"));
+  ResourceManager::loadResource(_T("dynamicScript.as"));
 
   //Sounds (All sunds requiere extraInfo data)
   auto system = SoundAPI::instance().API->system;
@@ -366,9 +411,39 @@ DriderEngine::initScriptEngine() {
   m_scripts.find(_T("script1"))->second->start();
   m_scripts.find(_T("script2"))->second->start();
 
-  //Test Messeger
-  /*Vector3D vec3D(10.0f, 10.0f, 3.0f);
-  Messenger::sendFunction(0, FUNCTION_TYPE::Instantiate, vec3D);*/
+  ///////////////////
+  /*currentModule->Discard();
+
+  //Create a context
+  scriptEngine->m_scriptContext = ctxMag->addContext(scriptEngine->m_scriptEngine,
+                                                     _T("GameModule"));
+
+  //Add script section of behavior
+  scriptEngine->addScript(BehaviorScript->getName(),
+                          BehaviorScript->getScript(),
+                          _T("GameModule"));
+
+  //Add script component to the objects and add script sections of the scripts
+  auto dynamicScript = ResourceManager::getReferenceT<ScriptCore>(_T("dynamicScript.as"));
+  playerScript = m_player->createComponent<ScriptComponent>(dynamicScript);
+  m_scripts.insert({ _T("dynamicScript"), playerScript });
+
+  //Build module
+  currentModule = scriptEngine->m_scriptEngine->GetModule("GameModule");
+  result = currentModule->Build();
+
+  m_scripts.find(_T("script1"))->second->initScript();
+  m_scripts.find(_T("script2"))->second->initScript();
+  m_scripts.find(_T("dynamicScript"))->second->initScript();
+
+  m_scripts.find(_T("dynamicScript"))->second->start();*/
+}
+
+
+void
+DriderEngine::buildScriptModule() {
+
+ 
 }
 
 void

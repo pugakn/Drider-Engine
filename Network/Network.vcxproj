@@ -147,6 +147,7 @@
     <ClInclude Include="Include\dr_connection_enums.h" />
     <ClInclude Include="Include\dr_messenger.h" />
     <ClInclude Include="Include\dr_networkManager_component.h" />
+    <ClInclude Include="Include\dr_networkTransform_component.h" />
     <ClInclude Include="Include\dr_network_manager.h" />
     <ClInclude Include="Include\dr_network_prerequisites.h" />
     <ClInclude Include="Include\dr_packet.h" />
@@ -159,6 +160,7 @@
     <ClCompile Include="Source\dr_connection_enums.cpp" />
     <ClCompile Include="Source\dr_messenger.cpp" />
     <ClCompile Include="Source\dr_networkManager_component.cpp" />
+    <ClCompile Include="Source\dr_networkTransform_component.cpp" />
     <ClCompile Include="Source\dr_network_manager.cpp" />
     <ClCompile Include="Source\dr_packet.cpp" />
     <ClCompile Include="Source\dr_packet_handler.cpp" />

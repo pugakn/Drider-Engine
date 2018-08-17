@@ -99,6 +99,9 @@ class GameServer : public Application, public PacketHandler
   void
   broadcastMessage(Packet& pack);
 
+  void
+  sendGameStatus();
+
   void 
   checkClientsActiveState();
 
@@ -111,9 +114,13 @@ class GameServer : public Application, public PacketHandler
   void
   instantiate(MessageData& msg);
 
+  void
+  movePlayer(MessageData& msg);
+
  private: 
   void
-  instantiatePlayer(const Vector3D& pos,
+  instantiatePlayer(UInt16 port,
+                    const Vector3D& pos,
                     const Vector3D& dir);
 
   using Command = decltype(&requestNotify);      
@@ -143,6 +150,8 @@ class GameServer : public Application, public PacketHandler
   std::map<const TString, NetworkValue> m_values;
 
   std::vector<std::shared_ptr<GameObject>> m_players;
+
+  float sendStatusTimer = 0.0f;
   
 };
 

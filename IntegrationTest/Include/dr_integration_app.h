@@ -39,10 +39,12 @@ protected:
   onLobbiesListReceived(LobbiesList&& lobbies) override;
 
   virtual void
-  onGameStatusReceived(WString&& msg) override;
+  onGameStatusReceived(UInt8 num_players,
+                       std::vector<Vector3D> positions) override;
 
   virtual void
-  onInstantiatePlayer(const TString& name,
+  onInstantiatePlayer(bool isLocalPlayer,
+                      const TString& name,
                       const Vector3D& pos,
                       const Vector3D& dir) override;
 
@@ -78,6 +80,9 @@ private:
 
   void
   initScriptEngine();
+
+  void
+  buildScriptModule();
 
   void
   loadSound();

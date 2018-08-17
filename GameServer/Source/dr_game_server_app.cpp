@@ -59,6 +59,7 @@ GameServer::postInit() {
 
   m_functions.emplace_back(FUNCTION_TYPE::RegisterVar, &GameServer::registerVar);
   m_functions.emplace_back(FUNCTION_TYPE::Instantiate, &GameServer::instantiate);
+  m_functions.emplace_back(FUNCTION_TYPE::Move, &GameServer::movePlayer);
 
   m_localSocket = std::make_shared<UDPSocket>();
 
@@ -102,6 +103,7 @@ GameServer::postInit() {
   std::cout << "Connection Failed" << std::endl;
 
   m_running = false;
+  sendStatusTimer = 0.0f;
 }
 
 void 
@@ -114,6 +116,22 @@ GameServer::postUpdate() {
   checkClientsActiveState();
   Time::update();
   SceneGraph::update();
+
+  auto player = SceneGraph::getRoot()->findObject(_T("Player"));
+  if(player != nullptr) {
+    /*std::cout << player->getTransform().getPosition().x << ", ";
+    std::cout << player->getTransform().getPosition().y << ", ";
+    std::cout << player->getTransform().getPosition().z << std::endl;*/
+    sendStatusTimer += Time::getDelta();
+    if(sendStatusTimer > 0.1f) {
+      std::cout << "Game status send\n";
+      sendStatusTimer = 0.0f;
+      sendGameStatus();
+    }
+  }
+
+
+  
 }
 
 void 
@@ -313,6 +331,27 @@ GameServer::broadcastMessage(Packet& pack) {
   }
 }
 
+void
+GameServer::sendGameStatus() {
+  Packet pack;
+
+  pack << VER_NUM::kN;
+  pack << REQUEST_ID::kReceiveGameStatus;
+
+  UInt8 numPlayer = static_cast<UInt8>(m_players.size());
+  pack << numPlayer;
+  
+  if(numPlayer > 0) {
+    for(auto player : m_players) {
+      //pack << player->getName();
+      pack << player->getTransform().getPosition();
+    }
+
+    broadcastMessage(pack);
+  }
+  
+}
+
 void 
 GameServer::checkClientsActiveState() {
 
@@ -416,13 +455,14 @@ GameServer::instantiate(MessageData& msg) {
   msg.packet >> direction;
 
   if(objType == OBJ_TYPE::kPlayer) {
-    instantiatePlayer(position, direction);
+    instantiatePlayer(msg.senderPort, position, direction);
   }
   
 }
 
 void
-GameServer::instantiatePlayer(const Vector3D& pos,
+GameServer::instantiatePlayer(UInt16 port,
+                              const Vector3D& pos,
                               const Vector3D& dir) {
 
   auto newPlayer = SceneGraph::createObject(_T("Player" + m_players.size()));
@@ -441,6 +481,7 @@ GameServer::instantiatePlayer(const Vector3D& pos,
   pack << dir;*/
 
   m_players.push_back(newPlayer); 
+  //std::cout << "\nPlayer added\n";
 
   for(int i = 0; i < m_players.size(); i++) {
     
@@ -450,11 +491,28 @@ GameServer::instantiatePlayer(const Vector3D& pos,
     pack << FUNCTION_TYPE::Instantiate;
     pack << m_players[i]->getName();
     pack << OBJ_TYPE::kPlayer;
+    pack << port;
     pack << m_players[i]->getTransform().getPosition();
     pack << Vector3D(0.0,0.0,0.0);
 
+    //std::cout << "\nPack sender\n";
     broadcastMessage(pack);
   }
+}
+
+void
+GameServer::movePlayer(MessageData& msg) {
+  TString objName;
+  msg.packet >> objName;
+
+  Vector3D distance;
+  msg.packet >> distance;
+
+  auto player = SceneGraph::getRoot()->findObject(objName);
+  player->getTransform().move(distance);
+  //std::cout << "move player:" << StringUtils::toString(player->getName()).c_str() << std::endl;
+  //std::cout << "distance: " << distance.x << ", " << distance.y << ", " << distance.z << std::endl;
+  
 }
 
 }
