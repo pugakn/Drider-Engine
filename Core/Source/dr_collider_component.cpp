@@ -19,7 +19,7 @@ namespace driderSDK {
       auto rbodi = getGameObject().getComponent<RigidBody3DComponent>();
       auto otherRbodi = it->getComponent<RigidBody3DComponent>();
       if ((rbodi || otherRbodi)) { //&& (!rbodi->m_isKinematic || !otherRbodi->m_isKinematic)
-      auto& components = it->getComponents<AABBCollider>(); //TODO: Add Other colliders
+      auto components = it->getComponents<AABBCollider>(); //TODO: Add Other colliders
       if (components.size()) {
         for (auto & component : components) {
             if (((AABBCollider*)this)->getTransformedAABB().intersect(component->getTransformedAABB())) { //TODO: Error when it is not AABB xDXdXDDD
