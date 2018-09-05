@@ -1,20 +1,17 @@
-#define MAX_LIGHTS 512
-#define MAX_LIGHTS_PER_BLOCK 128
-
 cbuffer ConstantBuffer : register(b0) {
   float4 fViewportDimensions;
   float4 cameraUp; //X: Number of thread groups in x, Y: Number of thread groups in Y.
   float4 threadsGroups; //X: Number of thread groups in x, Y: Number of thread groups in Y.
   float4x4 VP;
-  float4 kLightPosition[MAX_LIGHTS];	//XYZ: Light Position, W: Range
+  float4 kLightPosition[RENDER_MANAGER_MAX_LIGHTS];	//XYZ: Light Position, W: Range
 };
 
 struct lightsInBlock {
-  int foo[MAX_LIGHTS_PER_BLOCK];
+  int foo[RENDER_MANAGER_MAX_LIGHTS_PER_BLOCK];
 };
 
 struct cacaInBlock {
-  int foo[MAX_LIGHTS];
+  int foo[RENDER_MANAGER_MAX_LIGHTS];
 };
 
 RWStructuredBuffer<lightsInBlock> LightsIndex : register(u0);
@@ -45,7 +42,7 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   //////////Informacion que todos necesitan//////////
   ///////////////////////////////////////////////////
 
-  //Este indica en que index esta este thread grup (como si fuese un array).
+  //Este indica en que index esta este thread gruop (como si fuese un array).
   const uint group = (groupID.y * threadsGroups.x) + groupID.x;
   
   //Este indica la luz que tiene que analizar este thread
@@ -60,16 +57,17 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   const float2 SSlightPos = LightsTransformed[lightIndex].xy;
   const float SSlightRad = LightsTransformed[lightIndex].z;
 
-  bool intersected = intersects(SSlightPos, SSlightRad, rectPos, rectSize);
+  //bool intersected = intersects(SSlightPos, SSlightRad, rectPos, rectSize);
+  LightsIndexAux[group].foo[lightIndex] = (intersects(SSlightPos, SSlightRad, rectPos, rectSize) * 2) - 1;
 
-  if (intersected) {
+  //if (intersected) {
 		//TODO: Comparar la profundidad de la luz con el min/max del depthbuffer,
 		//			si no esta entre esa profundidad y el ojo, no agregarla
     
-    //No agregar si ya hay MAX_LIGHTS_PER_BLOCK o mas luces
+    //No agregar si ya hay RENDER_MANAGER_MAX_LIGHTS_PER_BLOCK o mas luces
     //Agregar esta luz al array/vector de indices de luces
-    LightsIndexAux[group].foo[lightIndex] = 1;
-  }
+    //LightsIndexAux[group].foo[lightIndex] = 1;
+  //}
 
   if (lightIndex > 0) {
     return;
@@ -78,14 +76,14 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   //static const int maxLights = NUMTHREADS_X * NUMTHREADS_Y;
   uint counter = 0;
   [loop]
-  for (int currentLight = 0; (currentLight < MAX_LIGHTS) && (counter < (MAX_LIGHTS_PER_BLOCK - 1)) ; ++currentLight) {
+  for (int currentLight = 0; (currentLight < RENDER_MANAGER_MAX_LIGHTS) && (counter < (RENDER_MANAGER_MAX_LIGHTS_PER_BLOCK - 1)) ; ++currentLight) {
     if (LightsIndexAux[group].foo[currentLight] > -1) {
       LightsIndex[group].foo[counter] = currentLight;
       ++counter;
     }
   }
 
-  LightsIndex[group].foo[MAX_LIGHTS_PER_BLOCK - 1] = counter;
+  LightsIndex[group].foo[RENDER_MANAGER_MAX_LIGHTS_PER_BLOCK - 1] = counter;
 
   return;
 }

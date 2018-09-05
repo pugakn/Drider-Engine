@@ -25,7 +25,14 @@ LightningPass::init(PassInitData* initData) {
 
   m_csFilename = _T("Resources\\Shaders\\Lightning_cs.hlsl");
 
-  recompileShader();
+  String precomputeString = "#define RENDER_MANAGER_MAX_LIGHTS " +
+                            StringUtils::toString(RENDER_MANAGER_MAX_LIGHTS) +
+                            "\n" +
+                            "#define RENDER_MANAGER_MAX_LIGHTS_PER_BLOCK " +
+                            StringUtils::toString(RENDER_MANAGER_MAX_LIGHTS_PER_BLOCK) +
+                            "\n";
+
+  recompileShader("", "", precomputeString);
 
   DrBufferDesc bdesc;
 
@@ -55,7 +62,7 @@ LightningPass::init(PassInitData* initData) {
   m_csTiledLightsFilename = _T("Resources\\Shaders\\WorldLightToSS_cs.hlsl");
 
   file.Open(m_csTiledLightsFilename);
-  shaderSrc = StringUtils::toString(file.GetAsString(file.Size()));
+  shaderSrc = precomputeString + StringUtils::toString(file.GetAsString(file.Size()));
   file.Close();
 
   m_csWorldLightsToSS = dr_gfx_unique(device.createShaderFromMemory(shaderSrc.data(),
@@ -67,7 +74,7 @@ LightningPass::init(PassInitData* initData) {
   m_csTiledLightsFilename = _T("Resources\\Shaders\\TileLights_cs.hlsl");
 
   file.Open(m_csTiledLightsFilename);
-  shaderSrc = StringUtils::toString(file.GetAsString(file.Size()));
+  shaderSrc = precomputeString + StringUtils::toString(file.GetAsString(file.Size()));
   file.Close();
 
   m_csTiledLights = dr_gfx_unique(device.createShaderFromMemory(shaderSrc.data(),
@@ -147,7 +154,7 @@ LightningPass::draw(PassDrawData* drawData) {
   m_sbLightsIndex->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
   data->OutRt->getTexture(0).set(dc, 1, DR_SHADER_TYPE_FLAG::kCompute, false);
 
-  dc.dispatch(outRTDesc.width / 8, outRTDesc.height / 4, 1);
+  dc.dispatch(m_ComputeWidthBlocks, m_ComputeHeightBlocks, 1);
 
   dc.setUAVsNull();
   dc.setResourcesNull();
@@ -181,6 +188,8 @@ LightningPass::tileLights(PassDrawData* drawData) {
 
   dc.setUAVsNull();
   dc.setResourcesNull();
+
+  ////////////////////////////////////////////////////////////////////////////////////////////
 
   m_csTiledLights->set(dc);
 

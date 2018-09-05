@@ -1,8 +1,5 @@
-#define MAX_LIGHTS 512
-#define MAX_LIGHTS_PER_BLOCK 128
-
 struct lightsInBlock {
-  int foo[MAX_LIGHTS_PER_BLOCK];
+  int foo[RENDER_MANAGER_MAX_LIGHTS_PER_BLOCK];
 };
 
 #include "Resources\\Shaders\\PBR_Math.hlsl"
@@ -10,8 +7,8 @@ struct lightsInBlock {
 cbuffer ConstantBuffer : register(b0) {
   float4 fViewportDimensions;
   float4 kEyePosition;        //XYZ: EyePosition, W: Active Lights
-  float4 kLightPosition[MAX_LIGHTS]; //XYZ: Light Position, W: Range
-  float4 kLightColor[MAX_LIGHTS];    //XYZ: Light Color, W: Intensity
+  float4 kLightPosition[RENDER_MANAGER_MAX_LIGHTS]; //XYZ: Light Position, W: Range
+  float4 kLightColor[RENDER_MANAGER_MAX_LIGHTS];    //XYZ: Light Color, W: Intensity
   float4 threadsInfo; //X: Number of thread groups in x, Y: Number of thread groups in Y.
 };
 
@@ -38,7 +35,7 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
 	 uint3 dispatchID			: SV_DispatchThreadID,
 	 uint  groupIndex			: SV_GroupIndex) {
   
-  //Este indica en que index esta este grupo thread (como si fuese un array).
+  //Este indica en que index esta este gruop thread (como si fuese un array).
   const uint group = (groupID.y * threadsInfo.x) + groupID.x;
   
   const float2 uvScale = float2(dispatchID.x, dispatchID.y);
@@ -85,7 +82,7 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   const int activeLights = kEyePosition.w;
   
   uint actualLight;
-  uint totalLights = LightsIndex[group].foo[MAX_LIGHTS_PER_BLOCK - 1];
+  uint totalLights = LightsIndex[group].foo[RENDER_MANAGER_MAX_LIGHTS_PER_BLOCK - 1];
 
   [loop]
   for (uint index = 0; index < totalLights; ++index) {

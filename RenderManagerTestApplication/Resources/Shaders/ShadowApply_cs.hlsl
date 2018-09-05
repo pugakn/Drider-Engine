@@ -62,7 +62,7 @@ GetShadowValue(float4 fromLightPos, const int camIndex) {
     static const float shadowBias = 0.000125f; //This value works well
     float depthSample = CompressedShadowTex.SampleLevel(SS, uv, 0)[camIndex];
     //shadowValue = (0.25f * (depthValue > (depthSample + (shadowBias * CascadeBiasModifier))));
-    shadowValue = (0.5f * (depthValue > (depthSample + (shadowBias * CascadeBiasModifier))));
+    shadowValue = (0.25f * (depthValue > (depthSample + (shadowBias * CascadeBiasModifier))));
   #endif //DR_SH_PCF_ENABLED
 
   return shadowValue;

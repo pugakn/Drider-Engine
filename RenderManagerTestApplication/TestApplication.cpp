@@ -111,6 +111,7 @@ RenderManApp::postInit() {
   float separationZ = 50.0f;
   float proportion = 0.0f;
   SizeT horizontalLights = 16;
+
   for (Int32 xPos = 0; xPos < horizontalLights; ++xPos) {
     for (Int32 zPos = 0; zPos < (RENDER_MANAGER_MAX_LIGHTS / horizontalLights); ++zPos) {
       //Posicion

@@ -4,8 +4,11 @@
 #include <SDL2/SDL.h>
 
 namespace driderSDK {
+
 Application* Application::application;
-Int32 Application::run(const Viewport& _viewport) {
+
+Int32
+Application::run(const Viewport& _viewport) {
   if (Application::application) {
     std::cout << "Application already running" << std::endl;
     return 0;
@@ -104,8 +107,10 @@ Application::destroy() {
   
   postDestroy();
 }
-Application & Application::getApplication()
-{
+
+Application&
+Application::getApplication() {
   return *Application::application;
 }
+
 }

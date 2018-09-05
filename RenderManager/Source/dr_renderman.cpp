@@ -76,9 +76,9 @@ RenderManager::init() {
   m_bFitToScene = false;
 
   m_vecDirectionalLights.push_back(Vector3D(1.0f, -1.0f, -1.0f).normalize());
-  m_vecDirectionalLights.push_back(Vector3D(1.0f, -1.0f, 1.0f).normalize());
-  m_vecDirectionalLights.push_back(Vector3D(-1.0f, -1.0f, -1.0f).normalize());
-  m_vecDirectionalLights.push_back(Vector3D(-1.0f, -1.0f, 1.0f).normalize());
+  //m_vecDirectionalLights.push_back(Vector3D(1.0f, -1.0f, 1.0f).normalize());
+  //m_vecDirectionalLights.push_back(Vector3D(-1.0f, -1.0f, -1.0f).normalize());
+  //m_vecDirectionalLights.push_back(Vector3D(-1.0f, -1.0f, 1.0f).normalize());
 
   partitions = calculatePartitions(m_szActiveShadowCameras);
 
@@ -497,7 +497,7 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
     updateShadowCameras(directionalLight);
 
     for (SizeT camIndex = 0; camIndex < m_szActiveShadowCameras; ++camIndex) {
-      queryRequest = SceneGraph::query(rqRequest);
+      //queryRequest = SceneGraph::query(rqRequest);
       m_ShadowDrawData.shadowCam = vecShadowCamera[camIndex];
       m_ShadowDrawData.models = &queryRequest;
       m_ShadowDrawData.OutRt = m_RTShadowDummy[camIndex];
@@ -547,6 +547,7 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_VerBlurDrawData.InTexture = &m_RTBlurInit->getTexture(0);
   m_VerBlurDrawData.OutRt = m_RTSSAOBlur;
   m_VerBlurPass.draw(&m_VerBlurDrawData);
+
 
   m_LightningDrawData.ActiveCam = mainCam;
   m_LightningDrawData.Lights = &lights[0];
