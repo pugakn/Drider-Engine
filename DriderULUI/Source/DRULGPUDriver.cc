@@ -127,7 +127,7 @@ DRULGPUDriver::CreateTexture(UInt32 texture_id,
     desc.BindFlags = D3D11_BIND_RENDER_TARGET |
                      D3D11_BIND_SHADER_RESOURCE;
     desc.Usage = D3D11_USAGE_DEFAULT;
-
+    
     hr = context_->device()->CreateTexture2D(&desc,
                                              NULL,
                                              texture_entry.first.GetAddressOf());
@@ -168,14 +168,19 @@ DRULGPUDriver::UpdateTexture(UInt32 texture_id,
   auto i = textures_.find(texture_id);
   if (i == textures_.end()) {
     MessageBox(nullptr,
-      L"DRULGPUDriver::UpdateTexture, texture id doesn't exist.", L"Error", MB_OK);
+               L"DRULGPUDriver::UpdateTexture, texture id doesn't exist.",
+               L"Error",
+               MB_OK);
     return;
   }
 
   auto& entry = i->second;
   D3D11_MAPPED_SUBRESOURCE res;
-  context_->immediate_context()->Map(entry.first.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0,
-    &res);
+  context_->immediate_context()->Map(entry.first.Get(),
+                                     0,
+                                     D3D11_MAP_WRITE_DISCARD,
+                                     0,
+                                     &res);
 
   if (res.RowPitch == bitmap->row_bytes()) {
     memcpy(res.pData, bitmap->pixels(), bitmap->size());
@@ -290,7 +295,8 @@ DRULGPUDriver::BindRenderBuffer(UInt32 render_buffer_id) {
   if (render_buffer_id == 0) {
     target = context_->render_target_view();
     context_->screen_size(render_buffer_width_, render_buffer_height_);
-  } else {
+  }
+  else {
     auto i = render_targets_.find(render_buffer_id);
     if (i == render_targets_.end()) {
       MessageBox(nullptr,
@@ -332,18 +338,22 @@ DRULGPUDriver::ClearRenderBuffer(UInt32 render_buffer_id) {
   float color[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 
   if (render_buffer_id == 0) {
-    context_->immediate_context()->ClearRenderTargetView(context_->render_target_view(), color);
+    context_->immediate_context()->ClearRenderTargetView(context_->render_target_view(),
+                                                         color);
     return;
   }
 
   auto i = render_targets_.find(render_buffer_id);
   if (i == render_targets_.end()) {
     MessageBox(nullptr,
-      L"DRULGPUDriver::ClearRenderBuffer, render buffer id doesn't exist.", L"Error", MB_OK);
+               L"DRULGPUDriver::ClearRenderBuffer, render buffer id doesn't exist.",
+               L"Error",
+               MB_OK);
     return;
   }
 
-  context_->immediate_context()->ClearRenderTargetView(i->second.rt_view.Get(), color);
+  context_->immediate_context()->ClearRenderTargetView(i->second.rt_view.Get(),
+                                                       color);
 }
 
 void
@@ -365,11 +375,13 @@ DRULGPUDriver::CreateGeometry(UInt32 geometry_id,
                               const ultralight::VertexBuffer& vertices,
                               const ultralight::IndexBuffer& indices) {
   auto layout = GetVertexLayout();
-  if (!layout)
+  if (!layout) {
     return;
+  }
 
-  if (geometry_.find(geometry_id) != geometry_.end())
+  if (geometry_.find(geometry_id) != geometry_.end()) {
     return;
+  }
 
   GeometryEntry geometry;
 
@@ -387,9 +399,10 @@ DRULGPUDriver::CreateGeometry(UInt32 geometry_id,
   vertex_data.pSysMem = vertices.data;
 
   hr = context_->device()->CreateBuffer(&vertex_desc, &vertex_data, 
-    geometry.first.GetAddressOf());
-  if (FAILED(hr))
+                                        geometry.first.GetAddressOf());
+  if (FAILED(hr)) {
     return;
+  }
 
   D3D11_BUFFER_DESC index_desc;
   ZeroMemory(&index_desc, sizeof(index_desc));
@@ -403,9 +416,10 @@ DRULGPUDriver::CreateGeometry(UInt32 geometry_id,
   index_data.pSysMem = indices.data;
 
   hr = context_->device()->CreateBuffer(&index_desc, &index_data, 
-    geometry.second.GetAddressOf());
-  if (FAILED(hr))
+                                        geometry.second.GetAddressOf());
+  if (FAILED(hr)) {
     return;
+  }
 
   geometry_.insert({ geometry_id, std::move(geometry) });
 }
@@ -467,7 +481,7 @@ DRULGPUDriver::DrawGeometry(UInt32 geometry_id,
   immediate_ctx->VSSetConstantBuffers(0, 1, constant_buffer_.GetAddressOf());
   immediate_ctx->PSSetConstantBuffers(0, 1, constant_buffer_.GetAddressOf());
   immediate_ctx->DrawIndexed(indices_count, indices_offset, 0);
-  batch_count_++;
+  ++batch_count_;
 }
 
 void
@@ -527,45 +541,62 @@ GetShaderPath(ultralight::ShaderType shader) {
 ComPtr<ID3D11PixelShader> DRULGPUDriver::GetShader(UInt8 shader) {
   ultralight::ShaderType shader_type = (ultralight::ShaderType)shader;
   auto i = shaders_.find(shader_type);
-  if (i != shaders_.end())
+  if (i != shaders_.end()) {
     return i->second.Get();
+  }
 
   auto& shader_entry = shaders_[shader_type];
 
   HRESULT hr;
 
   ComPtr<ID3DBlob> ps_blob;
-  hr = CompileShaderFromFile(GetShaderPath(shader_type), "PS", "ps_4_0", ps_blob.GetAddressOf());
+  hr = CompileShaderFromFile(GetShaderPath(shader_type),
+                             "PS",
+                             "ps_4_0",
+                             ps_blob.GetAddressOf());
   if (FAILED(hr)) {
     MessageBox(nullptr,
-      L"DRULGPUDriver::GetShader, The HLSL file cannot be compiled. Check your working directory.", L"Error", MB_OK);
+               L"DRULGPUDriver::GetShader, The HLSL file cannot be compiled. Check your working directory.",
+               L"Error",
+               MB_OK);
     return nullptr;
   }
 
   // Create the pixel shader
   hr = context_->device()->CreatePixelShader(ps_blob->GetBufferPointer(),
-    ps_blob->GetBufferSize(), nullptr, shader_entry.GetAddressOf());
+                                             ps_blob->GetBufferSize(),
+                                             nullptr,
+                                             shader_entry.GetAddressOf());
 
-  if (FAILED(hr))
+  if (FAILED(hr)) {
     return nullptr;
+  }
 
   return shader_entry.Get();
 }
 
 ComPtr<ID3D11InputLayout> DRULGPUDriver::GetVertexLayout() {
-  if (vertex_layout_)
+  if (vertex_layout_) {
     return vertex_layout_;
+  }
 
   HRESULT hr;
   ComPtr<ID3DBlob> vs_blob;
-  hr = CompileShaderFromFile(L"vs\\v2f_c4f_t2f_t2f_d28f.hlsl", "VS", "vs_4_0", vs_blob.GetAddressOf());
+  hr = CompileShaderFromFile(L"vs\\v2f_c4f_t2f_t2f_d28f.hlsl",
+                             "VS",
+                             "vs_4_0",
+                             vs_blob.GetAddressOf());
 
   // Create the vertex shader
   hr = context_->device()->CreateVertexShader(vs_blob->GetBufferPointer(),
-    vs_blob->GetBufferSize(), nullptr, vertex_shader_.GetAddressOf());
+                                              vs_blob->GetBufferSize(),
+                                              nullptr,
+                                              vertex_shader_.GetAddressOf());
   if (FAILED(hr)) {
     MessageBox(nullptr,
-      L"DRULGPUDriver::GetVertexLayout, The HLSL file cannot be compiled. Check your working directory.", L"Error", MB_OK);
+               L"DRULGPUDriver::GetVertexLayout, The HLSL file cannot be compiled. Check your working directory.",
+               L"Error",
+               MB_OK);
     return nullptr;
   }
 
@@ -585,11 +616,15 @@ ComPtr<ID3D11InputLayout> DRULGPUDriver::GetVertexLayout() {
   };
 
   // Create the input layout
-  hr = context_->device()->CreateInputLayout(layout, ARRAYSIZE(layout),
-    vs_blob->GetBufferPointer(), vs_blob->GetBufferSize(), vertex_layout_.GetAddressOf());
+  hr = context_->device()->CreateInputLayout(layout,
+                                             ARRAYSIZE(layout),
+                                             vs_blob->GetBufferPointer(),
+                                             vs_blob->GetBufferSize(),
+                                             vertex_layout_.GetAddressOf());
 
-  if (FAILED(hr))
+  if (FAILED(hr)) {
     return nullptr;
+  }
 
   context_->immediate_context()->IASetInputLayout(vertex_layout_.Get());
 
@@ -597,8 +632,9 @@ ComPtr<ID3D11InputLayout> DRULGPUDriver::GetVertexLayout() {
 }
 
 ComPtr<ID3D11SamplerState> DRULGPUDriver::GetSamplerState() {
-  if (sampler_state_)
+  if (sampler_state_) {
     return sampler_state_;
+  }
 
   D3D11_SAMPLER_DESC sampler_desc;
   ZeroMemory(&sampler_desc, sizeof(sampler_desc));
@@ -610,19 +646,23 @@ ComPtr<ID3D11SamplerState> DRULGPUDriver::GetSamplerState() {
   sampler_desc.MinLOD = 0;
   //sampler_desc.MaxLOD = D3D11_FLOAT32_MAX;
   sampler_desc.MaxLOD = 0;
-  HRESULT hr = context_->device()->CreateSamplerState(&sampler_desc, &sampler_state_);
+  HRESULT hr = context_->device()->CreateSamplerState(&sampler_desc,
+                                                      &sampler_state_);
 
   if (FAILED(hr)) {
     MessageBox(nullptr,
-      L"DRULGPUDriver::GetSamplerState, unable to create sampler state.", L"Error", MB_OK);
+               L"DRULGPUDriver::GetSamplerState, unable to create sampler state.",
+               L"Error",
+               MB_OK);
   }
 
   return sampler_state_;
 }
 
 ComPtr<ID3D11Buffer> DRULGPUDriver::GetConstantBuffer() {
-  if (constant_buffer_)
+  if (constant_buffer_) {
     return constant_buffer_;
+  }
 
   D3D11_BUFFER_DESC desc;
   ZeroMemory(&desc, sizeof(desc));
@@ -631,32 +671,50 @@ ComPtr<ID3D11Buffer> DRULGPUDriver::GetConstantBuffer() {
   desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
   desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
-  HRESULT hr = context_->device()->CreateBuffer(&desc, nullptr, constant_buffer_.GetAddressOf());
+  HRESULT hr = context_->device()->CreateBuffer(&desc,
+                                                nullptr,
+                                                constant_buffer_.GetAddressOf());
   if (FAILED(hr)) {
     MessageBox(nullptr,
-      L"DRULGPUDriver::GetConstantBuffer, unable to create constant buffer.", L"Error", MB_OK);
+               L"DRULGPUDriver::GetConstantBuffer, unable to create constant buffer.",
+               L"Error",
+               MB_OK);
   }
 
   return constant_buffer_;
 }
 
-void DRULGPUDriver::UpdateConstantBuffer(const ultralight::GPUState& state) {
+void
+DRULGPUDriver::UpdateConstantBuffer(const ultralight::GPUState& state) {
   auto buffer = GetConstantBuffer();
   Uniforms uniforms;
-  uniforms.State = { 0.0, (float)render_buffer_width_, (float)render_buffer_height_, (float)context_->scale() };
+  uniforms.State = { 0.0,
+                     (float)render_buffer_width_,
+                     (float)render_buffer_height_,
+                     (float)context_->scale() };
   uniforms.Transform = DirectX::XMMATRIX(state.transform.data);
-  uniforms.Scalar4[0] =
-    { state.uniform_scalar[0], state.uniform_scalar[1], state.uniform_scalar[2], state.uniform_scalar[3] };
-  uniforms.Scalar4[1] = 
-    { state.uniform_scalar[4], state.uniform_scalar[5], state.uniform_scalar[6], state.uniform_scalar[7] };
-  for (size_t i = 0; i < 8; ++i)
+  uniforms.Scalar4[0] = { state.uniform_scalar[0],
+                          state.uniform_scalar[1],
+                          state.uniform_scalar[2],
+                          state.uniform_scalar[3] };
+  uniforms.Scalar4[1] = { state.uniform_scalar[4],
+                          state.uniform_scalar[5],
+                          state.uniform_scalar[6],
+                          state.uniform_scalar[7] };
+  for (size_t i = 0; i < 8; ++i) {
     uniforms.Vector[i] = DirectX::XMFLOAT4(state.uniform_vector[i].value);
+  }
   uniforms.ClipSize = state.clip_size;
-  for (size_t i = 0; i < state.clip_size; ++i)
+  for (size_t i = 0; i < state.clip_size; ++i) {
     uniforms.Clip[i] = DirectX::XMMATRIX(state.clip[i].data);
+  }
 
   D3D11_MAPPED_SUBRESOURCE res;
-  context_->immediate_context()->Map(buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &res);
+  context_->immediate_context()->Map(buffer.Get(),
+                                     0,
+                                     D3D11_MAP_WRITE_DISCARD,
+                                     0,
+                                     &res);
   memcpy(res.pData, &uniforms, sizeof(Uniforms));
   context_->immediate_context()->Unmap(buffer.Get(), 0);
 }

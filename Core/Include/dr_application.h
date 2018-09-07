@@ -12,10 +12,9 @@ namespace driderSDK {
 class DR_CORE_EXPORT Application
 {
  public:
-  Application(bool _usesWindow = true) : m_usesWindow(_usesWindow)
-  {}
+  Application(bool _usesWindow = true);
 
-  virtual ~Application() {}
+  virtual ~Application();
   
   Int32
   run(const Viewport& _viewport);
@@ -71,4 +70,5 @@ class DR_CORE_EXPORT Application
   SDL_Window* m_window;
   bool m_usesWindow;
 };
+
 }

@@ -7,6 +7,12 @@ namespace driderSDK {
 
 Application* Application::application;
 
+Application::Application(bool _usesWindow): m_usesWindow(_usesWindow) {
+}
+
+Application::~Application() {
+}
+
 Int32
 Application::run(const Viewport& _viewport) {
   if (Application::application) {

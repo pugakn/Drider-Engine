@@ -22,11 +22,11 @@ class BlendState;
 class DR_GRAPHICS_EXPORT Device
 {
  public:
-   virtual void*
-     getAPIObject() = 0;
-
-   virtual void**
-     getAPIObjectReference() = 0;
+  virtual void*
+  getAPIObject() = 0;
+  
+  virtual void**
+  getAPIObjectReference() = 0;
 
   /**
   * Class virtual destructor.
@@ -244,7 +244,7 @@ class DR_GRAPHICS_EXPORT Device
   *
   */
   virtual BlendState*
-    createBlendState(const DrBlendStateDesc& desc) const = 0;
+  createBlendState(const DrBlendStateDesc& desc) const = 0;
 };
 
 }

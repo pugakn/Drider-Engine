@@ -7,7 +7,6 @@
 #include <map>
 #include <vector>
 #include <memory>
-//#include "PlatformWin.h"
 
 using Microsoft::WRL::ComPtr;
 
