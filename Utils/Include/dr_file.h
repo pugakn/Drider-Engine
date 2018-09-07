@@ -22,7 +22,15 @@ class DR_UTIL_EXPORT File
   *
   * Default File constructor
   */
-   File();
+  File();
+
+
+  /**
+  * TEST::OpenFileConstructor
+  *
+  * File constructor with immediate open.
+  */
+  File(const TString filename);
 
   /**
   * TEST::defaultDestructor

@@ -13,6 +13,7 @@ Application::run(const Viewport& _viewport) {
     std::cout << "Application already running" << std::endl;
     return 0;
   }
+
   Application::application = this;
   m_viewport = _viewport;
   init();
@@ -26,19 +27,24 @@ Application::run(const Viewport& _viewport) {
 
   return 0;
 }
-Viewport Application::getViewPort()
-{
+
+Viewport
+Application::getViewPort() {
   return getApplication().m_viewport;
 }
-void Application::setViewport(const Viewport & _viewport)
-{
+
+void
+Application::setViewport(const Viewport& _viewport) {
   Application& app = getApplication();
   app.m_viewport = _viewport;
-  SDL_SetWindowSize(app.m_window, app.m_viewport.width, app.m_viewport.height);
+
+  SDL_SetWindowSize(app.m_window,
+                    app.m_viewport.width,
+                    app.m_viewport.height);
 }
+
 void 
 Application::init() {
-
   m_running = true;
     
   if (m_usesWindow) {
@@ -48,46 +54,44 @@ Application::init() {
   
   postInit();
 }
-void 
-Application::createWindow() {
 
+void
+Application::createWindow() {
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
     std::cout << "Video initialization failed: " << SDL_GetError() << std::endl;
   }
-    m_window = SDL_CreateWindow("Drider Engine", 
-    SDL_WINDOWPOS_CENTERED, 
-    SDL_WINDOWPOS_CENTERED, 
-    m_viewport.width, 
-    m_viewport.height, 
-    SDL_WINDOW_RESIZABLE);
+
+  m_window = SDL_CreateWindow("Drider Engine UL",
+                              SDL_WINDOWPOS_CENTERED,
+                              SDL_WINDOWPOS_CENTERED,
+                              m_viewport.width,
+                              m_viewport.height,
+                              SDL_WINDOW_RESIZABLE);
 
   if (!m_window) {
     std::cout << "Error creating SDL window " << std::endl;
     exit(666);
   }
 }
+
 void 
 Application::update() {
- 
   if (m_usesWindow) {
-
     SDL_Event event;
 
-  while (SDL_PollEvent(&event)){
-    if (event.type == SDL_QUIT) {
-      m_running = false;
-    }
-    if (event.type == SDL_WINDOWEVENT) {
-      if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
-        m_viewport.width = event.window.data1;
-        m_viewport.height = event.window.data2;
-        onResize();
+    while (SDL_PollEvent(&event)) {
+      if (event.type == SDL_QUIT) {
+        m_running = false;
+      }
+
+      if (event.type == SDL_WINDOWEVENT) {
+        if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+          m_viewport.width = event.window.data1;
+          m_viewport.height = event.window.data2;
+          onResize();
+        }
       }
     }
-
-
-  }
-
   }
   
   postUpdate();
@@ -100,7 +104,6 @@ Application::render() {
 
 void 
 Application::destroy() {
-  
   if (m_usesWindow) {
     SDL_Quit();
   }

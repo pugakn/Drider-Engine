@@ -3,8 +3,11 @@
 namespace driderSDK
 {
 
-File::File() : m_size(0)
-{
+File::File() : m_size(0) {
+}
+
+File::File(const TString filename) {
+  Open(filename);
 }
 
 File::~File() {

@@ -1,26 +1,32 @@
 #include "dr_quad.h"
-#include <fstream>
+#include <dr_file.h>
+#include <dr_string_utils.h>
 #include <dr_d3d_shader_bytecode.h>
 #include <dr_graphics_defines.h>
 #include <dr_graphics_driver.h>
+
 using namespace driderSDK;
 
-
-//TODO: Remove
-std::string file2string(const char *path) {
-  std::ifstream file(path);
-  std::string content((std::istreambuf_iterator<char>(file)),
-    (std::istreambuf_iterator<char>()));
-  return content;
-}
-
-void Quad::init()
-{
+void
+Quad::init() {
   Device& device = GraphicsAPI::getDevice();
-  std::string vsSource = file2string("Resources\\Shaders\\vs.hlsl");
-  std::string fsSource = file2string("Resources\\Shaders\\fs.hlsl");
-  vs = reinterpret_cast<Shader*>(device.createShaderFromMemory(vsSource.c_str(), vsSource.size(),DR_SHADER_TYPE_FLAG::kVertex));
-  fs = reinterpret_cast<Shader*>(device.createShaderFromMemory(fsSource.c_str(), fsSource.size(), DR_SHADER_TYPE_FLAG::kFragment));
+
+  File vsFile;
+  vsFile.Open("Resources\\Shaders\\vs.hlsl");
+  std::string vsSource = StringUtils::toString(vsFile.GetAsString(vsFile.Size()));
+  vsFile.Close();
+
+  File fsFile;
+  fsFile.Open("Resources\\Shaders\\fs.hlsl");
+  std::string fsSource = StringUtils::toString(fsFile.GetAsString(fsFile.Size()));
+  fsFile.Close();
+
+  vs = reinterpret_cast<Shader*>(device.createShaderFromMemory(vsSource.c_str(),
+                                                               vsSource.size(),
+                                                               DR_SHADER_TYPE_FLAG::kVertex));
+  fs = reinterpret_cast<Shader*>(device.createShaderFromMemory(fsSource.c_str(),
+                                                               fsSource.size(),
+                                                               DR_SHADER_TYPE_FLAG::kFragment));
 
   m_vertex[0] = { -1.f,  1.f, 0.9f, 1.0f,    0.5f, 0.5f,0.0f, 1.0f  ,0.0,0.0 };
   m_vertex[1] = { -1.f, -1.f, 0.9f, 1.0f,    0.0f, 0.0f,0.0f, 1.0f  ,0.0,1.0 };
@@ -56,15 +62,15 @@ void Quad::init()
   //constBuff.WVP = Matrix4x4::identityMat4x4;
 }
 
-void Quad::destroy()
-{
+void
+Quad::destroy() {
   CB->release();
   IB->release();
   VB->release();
 }
 
-void Quad::draw()
-{ 
+void
+Quad::draw() { 
   //constBuff.WVP = wvp;
   DeviceContext& deviceContext = GraphicsAPI::getDeviceContext();
   fs->set(deviceContext);
