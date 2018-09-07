@@ -6,7 +6,7 @@
 #include <string>
 #include <sstream>
 
-#define SHADER_PATH L"Resources\\Shaders\\"
+#define SHADER_PATH "Resources\\Shaders\\"
 
 namespace {
 
@@ -34,7 +34,7 @@ struct Uniforms {
 };
 
 HRESULT
-CompileShaderFromFile(const driderSDK::WChar* szFileName,
+CompileShaderFromFile(const driderSDK::String szFileName,
                       LPCSTR szEntryPoint,
                       LPCSTR szShaderModel,
                       ID3DBlob** ppBlobOut) {
@@ -45,9 +45,9 @@ CompileShaderFromFile(const driderSDK::WChar* szFileName,
   //#endif
 
   ComPtr<ID3DBlob> pErrorBlob;
-  std::wstring path = SHADER_PATH;
+  driderSDK::String path = SHADER_PATH;
   path += szFileName;
-  HRESULT hr = D3DCompileFromFile(path.c_str(),
+  HRESULT hr = D3DCompileFromFile(path,
                                   nullptr,
                                   nullptr,
                                   szEntryPoint,
@@ -108,58 +108,31 @@ DRULGPUDriver::CreateTexture(UInt32 texture_id,
                MB_OK);
   }
 
-  D3D11_TEXTURE2D_DESC desc;
-  ZeroMemory(&desc, sizeof(desc));
-  desc.Width = bitmap->width();
-  desc.Height = bitmap->height();
-  desc.MipLevels = desc.ArraySize = 1;
-  desc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
-  desc.SampleDesc.Count = 1;
-  desc.Usage = D3D11_USAGE_DYNAMIC;
-  desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-  desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-  desc.MiscFlags = 0;
+  DrTextureDesc desc;
+  desc.Format = DR_FORMAT::kB8G8R8A8_UNORM;
+  desc.Usage = DR_BUFFER_USAGE::kDynamic;
+  desc.dimension = DR_DIMENSION::k2D;
+  desc.width = bitmap->width();
+  desc.height = bitmap->height();
+  desc.pitch = bitmap->width() * 4 * 1;
+  desc.mipLevels = 1;
+  desc.CPUAccessFlags = DR_CPU_ACCESS_FLAG::drWrite;
+  desc.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE;
 
   auto& texture_entry = textures_[texture_id];
-  HRESULT hr;
 
   if (bitmap->IsEmpty()) {
-    desc.BindFlags = D3D11_BIND_RENDER_TARGET |
-                     D3D11_BIND_SHADER_RESOURCE;
-    desc.Usage = D3D11_USAGE_DEFAULT;
+    desc.bindFlags = DR_BIND_FLAGS::RENDER_TARGET |
+                     DR_BIND_FLAGS::SHADER_RESOURCE;
+    desc.Usage = DR_BUFFER_USAGE::kDefault;
     
-    hr = context_->device()->CreateTexture2D(&desc,
-                                             NULL,
-                                             texture_entry.first.GetAddressOf());
-  } else {
-    D3D11_SUBRESOURCE_DATA tex_data;
-    ZeroMemory(&tex_data, sizeof(tex_data));
-    tex_data.pSysMem = bitmap->pixels();
-    tex_data.SysMemPitch = bitmap->row_bytes();
-    tex_data.SysMemSlicePitch = bitmap->size();
-
-    hr = context_->device()->CreateTexture2D(&desc,
-                                             &tex_data,
-                                             texture_entry.first.GetAddressOf());
+    texture_entry = drDevice.createEmptyTexture(desc);
   }
+  else {
+    const char* pixelsBuffer = static_cast<char*>(bitmap->pixels());
 
-  if (FAILED(hr)) {
-    MessageBox(nullptr,
-               L"DRULGPUDriver::CreateTexture, unable to create texture.",
-               L"Error",
-               MB_OK);
+    texture_entry = drDevice.createTextureFromMemory(pixelsBuffer, desc);
   }
-
-  D3D11_SHADER_RESOURCE_VIEW_DESC srv_desc;
-  ZeroMemory(&srv_desc, sizeof(srv_desc));
-  srv_desc.Format = desc.Format;
-  srv_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-  srv_desc.Texture2D.MostDetailedMip = 0;
-  srv_desc.Texture2D.MipLevels = 1;
-
-  hr = context_->device()->CreateShaderResourceView(texture_entry.first.Get(),
-                                                    &srv_desc,
-                                                    texture_entry.second.GetAddressOf());
 }
 
 void
@@ -174,13 +147,7 @@ DRULGPUDriver::UpdateTexture(UInt32 texture_id,
     return;
   }
 
-  auto& entry = i->second;
-  D3D11_MAPPED_SUBRESOURCE res;
-  context_->immediate_context()->Map(entry.first.Get(),
-                                     0,
-                                     D3D11_MAP_WRITE_DISCARD,
-                                     0,
-                                     &res);
+  auto entry = i->second;
 
   if (res.RowPitch == bitmap->row_bytes()) {
     memcpy(res.pData, bitmap->pixels(), bitmap->size());
@@ -197,7 +164,7 @@ DRULGPUDriver::UpdateTexture(UInt32 texture_id,
     mapped_bitmap->DrawBitmap(dest_rect, dest_rect, bitmap, false);
   }
 
-  context_->immediate_context()->Unmap(entry.first.Get(), 0);
+  context_->immediate_context()->Unmap(entry->second.first.Get(), 0);
 }
 
 void

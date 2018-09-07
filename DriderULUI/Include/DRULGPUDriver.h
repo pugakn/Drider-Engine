@@ -105,16 +105,16 @@ class DRULGPUDriver : public ultralight::GPUDriver {
   }
 
  protected:
-  ComPtr<ID3D11PixelShader> GetShader(UInt8 shader);
-  ComPtr<ID3D11InputLayout> GetVertexLayout();
-  ComPtr<ID3D11SamplerState> GetSamplerState();
-  ComPtr<ID3D11Buffer> GetConstantBuffer();
+  ComPtr<Shader> GetShader(UInt8 shader);
+  ComPtr<InputLayout> GetVertexLayout();
+  ComPtr<SamplerState> GetSamplerState();
+  ComPtr<Buffer> GetConstantBuffer();
   void UpdateConstantBuffer(const ultralight::GPUState& state);
   
-  ComPtr<ID3D11VertexShader> vertex_shader_;
-  ComPtr<ID3D11InputLayout> vertex_layout_;
-  ComPtr<ID3D11SamplerState> sampler_state_;
-  ComPtr<ID3D11Buffer> constant_buffer_;
+  ComPtr<Shader> vertex_shader_;
+  ComPtr<InputLayout> vertex_layout_;
+  ComPtr<SamplerState> sampler_state_;
+  ComPtr<Buffer> constant_buffer_;
 
   UInt32 next_texture_id_ = 1;
   UInt32 next_render_buffer_id_ = 1; //Render buffer id 0 is reserved for default render target view.
@@ -123,19 +123,17 @@ class DRULGPUDriver : public ultralight::GPUDriver {
   UInt32 render_buffer_width_ = 0;
   UInt32 render_buffer_height_ = 0;
 
-  typedef std::pair<ComPtr<ID3D11Buffer>, ComPtr<ID3D11Buffer>> GeometryEntry;
+  typedef std::pair<ComPtr<Buffer>, ComPtr<Buffer>> GeometryEntry;
   typedef std::map<UInt32, GeometryEntry> GeometryMap;
   GeometryMap geometry_;
 
-  typedef std::pair<ComPtr<ID3D11Texture2D>, ComPtr<ID3D11ShaderResourceView>> TextureEntry;
-  typedef std::map<UInt32, TextureEntry> TextureMap;
+  typedef std::map<UInt32, ComPtr<Texture>> TextureMap;
   TextureMap textures_;
 
-  struct RenderTarget { ComPtr<ID3D11RenderTargetView> rt_view; UInt32 width; UInt32 height; };
   typedef std::map<UInt32, RenderTarget> RenderTargetMap;
   RenderTargetMap render_targets_;
 
-  typedef std::map<ultralight::ShaderType, ComPtr<ID3D11PixelShader>> ShaderMap;
+  typedef std::map<ultralight::ShaderType, ComPtr<Shader>> ShaderMap;
   ShaderMap shaders_;
 
   std::vector<ultralight::Command> command_list_;
