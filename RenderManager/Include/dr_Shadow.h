@@ -15,10 +15,10 @@ struct ShadowInitData : PassInitData {
 
 struct ShadowDrawData : PassDrawData {
   //CascadeInfo
-  std::shared_ptr<Camera>  shadowCam;
-  RenderCommandBuffer* models;
-  GFXShared<RenderTarget>  OutRt;
-  GFXShared<DepthStencil>  dsOptions;
+  std::shared_ptr<Camera> shadowCam;
+  RenderCommandBuffer*    models;
+  GFXShared<RenderTarget> OutRt;
+  GFXShared<DepthStencil> dsOptions;
   //ShadowInfo
   std::array<std::shared_ptr<Camera>, 4>* ShadowCameras;
   std::vector<float> ShadowSliptDepths;

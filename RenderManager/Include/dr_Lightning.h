@@ -21,8 +21,7 @@ struct LightningDrawData : PassDrawData {
   SizeT ActiveLights;
   std::array<Light, RENDER_MANAGER_MAX_LIGHTS>* Lights;
   GFXShared<RenderTarget> GbufferRT;
-  GFXShared<RenderTarget> SSAORT;
-  GFXShared<RenderTarget> ShadowRT;
+  GFXShared<RenderTarget> SSAO_SSShadowRT;
   GFXShared<RenderTarget> OutRt;
   GFXShared<TextureCore> EnviromentCubemap;
   GFXShared<TextureCore> IrradianceCubemap;
@@ -71,8 +70,8 @@ class LightningPass : public RenderPass {
 
   struct CBuffer2 {
     Vector4D ViewportDimensions;
-    Vector4D CameraUp;
     Vector4D ThreadsGroups;
+    Vector4D CameraUp;
     Matrix4x4 VP;
     Vector4D LightPosition[RENDER_MANAGER_MAX_LIGHTS];	//XYZ: Light Position, W: Range
   };

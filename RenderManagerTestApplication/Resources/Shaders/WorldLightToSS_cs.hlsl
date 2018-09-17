@@ -1,7 +1,7 @@
 cbuffer ConstantBuffer : register(b0) {
   float4 fViewportDimensions;
-  float4 cameraUp; //X: Number of thread groups in x, Y: Number of thread groups in Y.
   float4 threadsGroups; //X: Number of thread groups in x, Y: Number of thread groups in Y.
+  float4 cameraUp; //X: Number of thread groups in x, Y: Number of thread groups in Y.
   float4x4 VP;
   float4 kLightPosition[RENDER_MANAGER_MAX_LIGHTS];	//XYZ: Light Position, W: Range
 };

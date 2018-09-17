@@ -18,10 +18,9 @@ Texture2D PositionDepthTex     : register(t0);
 Texture2D NormalCoCTex         : register(t1);
 Texture2D AlbedoMetallicTex    : register(t2);
 Texture2D EmissiveRoughnessTex : register(t3);
-Texture2D SSAOTex              : register(t4);
-Texture2D ShadowTex            : register(t5);
-TextureCube EnvironmentTex     : register(t6);
-TextureCube IrradianceTex      : register(t7);
+Texture2D SSAO_SSShadowTex     : register(t4);
+TextureCube EnvironmentTex     : register(t5);
+TextureCube IrradianceTex      : register(t6);
 
 RWStructuredBuffer<lightsInBlock> LightsIndex : register(u0);
 RWTexture2D<float4> Lightning  : register(u1);
@@ -44,7 +43,7 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
                            dispatchID.y * rcp(fViewportDimensions.y));
 
   const float4  position    = float4(PositionDepthTex.SampleLevel(SS, uv, 0).xyz, 1.0f);
-  const float   SSAO        = SSAOTex.SampleLevel(SS, uv, 0).x;
+  const float   SSAO        = SSAO_SSShadowTex.SampleLevel(SS, uv, 0).r;
   const float3  diffuse     = AlbedoMetallicTex.SampleLevel(SS, uv, 0).xyz * SSAO;
   const float3  normal      = NormalCoCTex.SampleLevel(SS, uv, 0).xyz;
   const float   metallic    = AlbedoMetallicTex.SampleLevel(SS, uv, 0).w;
@@ -53,7 +52,7 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   const float3  diffusePBR  = (diffuse - (diffuse * metallic));
   const float3  specularPBR = lerp(float3(0.04f, 0.04f, 0.04f), diffuse, metallic) * SSAO;
   const float   alpha       = max(0.01f, roughness * roughness);
-  const float   ShadowValue = ShadowTex.SampleLevel(SS, uv, 0).x;
+  const float   ShadowValue = SSAO_SSShadowTex.SampleLevel(SS, uv, 0).g;
 
   float3 finalColor = float3(0.0f, 0.0f, 0.0f);
   

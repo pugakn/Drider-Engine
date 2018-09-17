@@ -132,6 +132,7 @@ GBufferPass::draw(PassDrawData* drawData) {
     dc.draw(modelPair.mesh.indicesCount, 0, 0);
   }
 
+  data->OutRt->setRTNull(dc);
   dc.setUAVsNull();
   dc.setResourcesNull();
 }

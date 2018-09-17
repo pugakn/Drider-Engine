@@ -51,9 +51,8 @@ VS(VS_INPUT input) {
   float3 TransformedN = mul(BoneTransform, input.Normal).xyz;
   
   Output.Position  = mul(WVP, vertexTransformed);
-  Output.RealPos   = float4(mul(World, input.Position).xyz, 1.0f);
-  //Output.RealPos.w = mul(WVP, input.Position).z / CameraInfo[3];
-  Output.RealPos.w = mul(WVP, input.Position).z * rcp(CameraInfo[3]);
+  Output.RealPos   = float4(mul(World, vertexTransformed).xyz, 1.0f);
+  Output.RealPos.w = Output.Position.z * rcp(CameraInfo[3]);
   Output.Texcoord  = input.Texcoord;
   
   Output.TBN[0] = normalize(mul((float3x3)World, TransformedT));

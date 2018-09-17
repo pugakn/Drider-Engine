@@ -19,7 +19,7 @@ Texture2D CompressedShadowTex : register(t1);
 RWTexture2D<float4> ShadowTex : register(u0);
 
 bool
-insideBounds(float4 fromLightPos) {
+insideBounds(in const float4 fromLightPos) {
   return (fromLightPos.x > -1.0f) *
          (fromLightPos.x <  1.0f) *
 	       (fromLightPos.y > -1.0f) *
@@ -27,7 +27,7 @@ insideBounds(float4 fromLightPos) {
 }
 
 float
-GetShadowValue(float4 fromLightPos, const int camIndex) {
+GetShadowValue(in const float4 fromLightPos, in const int camIndex) {
   float shadowValue = 1.0f;
 
   const float CascadeBiasModifier = ShadowSizesProportion[camIndex] - (camIndex * 1.5f); //Dunno LOL
@@ -146,8 +146,12 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   #else
     ShadowValue = GetShadowValue(fromMinLightPos, iCurrentCascadeIndex);
   #endif //CASCADE_BLUR
+  
+  float4 shadowResult = ShadowTex[uv];
 
-	ShadowTex[uv] = max(0.0f, ShadowTex[uv] - ShadowValue);
+  shadowResult.g = max(0.0f, shadowResult.g - ShadowValue);
+
+	ShadowTex[uv] = shadowResult;
 
   //if (iCurrentCascadeIndex == 0)
   //  ShadowTex[uv] = 1.0f;

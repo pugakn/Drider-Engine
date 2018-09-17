@@ -11,30 +11,37 @@ Texture2D NormalCoC         : register(t1);
 RWTexture2D<float4> SSAOTex : register(u0);
 
 float3
-getPosition(in float2 uv) {
+getPosition(in const float2 uv) {
   return PositionLDepthTex.SampleLevel(SS, uv, 0).xyz;
 }
 
 float3
-getNormal(float2 uv) {
+getNormal(in const float2 uv) {
   return NormalCoC.SampleLevel(SS, uv, 0).xyz;
 };
 
 float3
-getRandom(float2 uv) {
+getRandom(in const float2 uv) {
 	float3 randonNormal;
-  randonNormal.x = frac(sin(dot(uv, float2(15.8989f, 76.133f) * 1.0f)) * 46736.23457f);
-  randonNormal.y = frac(sin(dot(uv, float2(11.9899f, 62.223f) * 1.0f)) * 34748.34744f);
-  randonNormal.z = frac(sin(dot(uv, float2(13.3238f, 63.122f) * 1.0f)) * 59998.47332f);
+  //randonNormal.x = frac(sin(dot(uv, float2(15.8989f, 76.133f) * 1.0f)) * 46736.23457f);
+  //randonNormal.y = frac(sin(dot(uv, float2(11.9899f, 62.223f) * 1.0f)) * 34748.34744f);
+  //randonNormal.z = frac(sin(dot(uv, float2(13.3238f, 63.122f) * 1.0f)) * 59998.47332f);
   
+	randonNormal.x = frac(sin(dot(uv, float2(15.8989f, 76.133f))) * 46736.23457f);
+	randonNormal.y = frac(sin(dot(uv, float2(11.9899f, 62.223f))) * 34748.34744f);
+	randonNormal.z = frac(sin(dot(uv, float2(13.3238f, 63.122f))) * 59998.47332f);
+
   return normalize(randonNormal);
 };
 
 float
-doOclussion(float2 texCoord, float2 uv, float3 p, float3 cnorm) {
-  float3 diff = getPosition(texCoord + uv) - p;
-  float3 v = normalize(diff);
-  float  d = length(diff) * SSAO_Options[2];
+doOclussion(in const float2 texCoord,
+						in const float2 uv,
+						in const float3 p,
+						in const float3 cnorm) {
+  const float3 diff = getPosition(texCoord + uv) - p;
+  const float3 v = normalize(diff);
+  const float  d = length(diff) * SSAO_Options[2];
   
 	//return max(0.0f, dot(cnorm, v) - SSAO_Options[3]) * (1.0f / (1.0f + d)) * SSAO_Options[1];
 	return max(0.0f, dot(cnorm, v) - SSAO_Options[3]) * rcp(1.0f + d) * SSAO_Options[1];
@@ -91,6 +98,9 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
 	ao *= 0.0625f;
 	ao  = 1.0f - ao;
 	
-	SSAOTex[uv] = float4(ao.rrr, 1.0f);
+	float4 SSAOColor = SSAOTex[uv];
+	SSAOColor.r = ao;
+
+	SSAOTex[uv] = SSAOColor;
 	return;
 }

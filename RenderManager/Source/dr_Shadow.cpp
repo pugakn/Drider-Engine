@@ -141,6 +141,7 @@ ShadowPass::draw(PassDrawData* drawData) {
     dc.draw(modelPair.mesh.indicesCount, 0, 0);
   }
 
+  data->OutRt->setRTNull(dc);
   dc.setUAVsNull();
   dc.setResourcesNull();
 }
@@ -198,6 +199,7 @@ ShadowPass::apply(PassDrawData* drawData,
     ShadowCB.ShadowVP[i] = (*data->ShadowCameras)[i]->getVP();
     ShadowCB.ShadowSplitDepth[i] = data->ShadowSliptDepths[i + 1];
   }
+
   ShadowCB.ShadowSizesProportion = data->ShadowSizesProportion;
 
   ShadowCB.ShadowInfo[0] = data->ActivatedShadowCascades;

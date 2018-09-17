@@ -23,7 +23,7 @@
 #define SINGLE_THREAD 1
 #define MULTI_THREAD 2
 
-#define RENDER_MANAGER MULTI_THREAD
+#define RENDER_MANAGER SINGLE_THREAD
 
 namespace driderSDK {
 

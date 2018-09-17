@@ -146,10 +146,9 @@ LightningPass::draw(PassDrawData* drawData) {
   data->GbufferRT->getTexture(1).set(dc, 1, DR_SHADER_TYPE_FLAG::kCompute, true);        //Normal, CoC
   data->GbufferRT->getTexture(2).set(dc, 2, DR_SHADER_TYPE_FLAG::kCompute, true);        //Albedo, Metallic
   data->GbufferRT->getTexture(3).set(dc, 3, DR_SHADER_TYPE_FLAG::kCompute, true);        //Emissivve, Roughness
-  data->SSAORT->getTexture(0).set(dc, 4, DR_SHADER_TYPE_FLAG::kCompute, true);           //SSAO
-  data->ShadowRT->getTexture(0).set(dc, 5, DR_SHADER_TYPE_FLAG::kCompute, true);         //Shadow
-  data->EnviromentCubemap->textureGFX->set(dc, 6, DR_SHADER_TYPE_FLAG::kCompute, true);  //Cubemap
-  data->IrradianceCubemap->textureGFX->set(dc, 7, DR_SHADER_TYPE_FLAG::kCompute, true);  //CubemapDiffuse
+  data->SSAO_SSShadowRT->getTexture(0).set(dc, 4, DR_SHADER_TYPE_FLAG::kCompute, true);  //SSAO & Shadow
+  data->EnviromentCubemap->textureGFX->set(dc, 5, DR_SHADER_TYPE_FLAG::kCompute, true);  //Cubemap
+  data->IrradianceCubemap->textureGFX->set(dc, 6, DR_SHADER_TYPE_FLAG::kCompute, true);  //CubemapDiffuse
 
   m_sbLightsIndex->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
   data->OutRt->getTexture(0).set(dc, 1, DR_SHADER_TYPE_FLAG::kCompute, false);
@@ -189,8 +188,8 @@ LightningPass::tileLights(PassDrawData* drawData) {
   dc.setUAVsNull();
   dc.setResourcesNull();
 
-  ////////////////////////////////////////////////////////////////////////////////////////////
-
+  //////////////////////////////////
+  //////////KILLER SECTION//////////
   m_csTiledLights->set(dc);
 
   DrTextureDesc outRTDesc = data->OutRt->getDescriptor();

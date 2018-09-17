@@ -54,10 +54,16 @@ RenderManager::init() {
   //screenHeight = 1080;
    
   //720p o HD
-  screenWidth = 1280;
+  //screenWidth = 1280;
+  //screenHeight = 720;
+
+  //////////21:9//////////
+
+  //720p o HD
+  screenWidth = 1680;
   screenHeight = 720;
 
-  float shadowQualityMultiplier = 1.0f;
+  float shadowQualityMultiplier = 0.5f;
   shadowWidth = 1024 * shadowQualityMultiplier;
   shadowHeight = 1024 * shadowQualityMultiplier;
 
@@ -110,7 +116,7 @@ RenderManager::init() {
   }
 
   /////////Creation of RT's & DS's/////////
-  float blurScale = 0.5f;
+  static const float blurScale = 0.5f;
   //RenderTarget Base
   {
     m_TexDescDefault.dimension = DR_DIMENSION::k2D;
@@ -165,7 +171,7 @@ RenderManager::init() {
     m_GBufferDSoptions = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
   }
 
-  //Shadows
+  //Shadows Auxiliars
   {
     //RenderTarget
 
@@ -197,63 +203,29 @@ RenderManager::init() {
 
     m_TexDescDefault.bindFlags &= ~DR_BIND_FLAGS::UNORDERED_ACCESS;
 
-    //Final
-
-    m_TexDescDefault.width = screenWidth;
-    m_TexDescDefault.height = screenHeight;
-    m_TexDescDefault.Format = DR_FORMAT::kR32_FLOAT;
-    m_TexDescDefault.pitch = m_TexDescDefault.width * 4 * 4;
-    m_TexDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
-
-    GFXUnique<Texture> FinalShadowTexure = dr_gfx_unique<Texture>(dc.createEmptyTexture(m_TexDescDefault));
-    m_vecTexture.push_back(FinalShadowTexure.get());
-
-    m_RTSSShadow = dr_gfx_shared(dc.createRenderTarget(m_vecTexture));
-
-    m_vecTexture.clear();
-    FinalShadowTexure.release();
-
-    m_TexDescDefault.bindFlags &= ~DR_BIND_FLAGS::UNORDERED_ACCESS;
-
-    //Final Blured
-    m_TexDescDefault.width = screenWidth * blurScale;
-    m_TexDescDefault.height = screenHeight * blurScale;
-    m_TexDescDefault.Format = DR_FORMAT::kR16_FLOAT;
-    m_TexDescDefault.pitch = m_TexDescDefault.width * 1 * 1;
-    m_TexDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
-
-    GFXUnique<Texture> ShadowBlurTexure = dr_gfx_unique<Texture>(dc.createEmptyTexture(m_TexDescDefault));
-    m_vecTexture.push_back(ShadowBlurTexure.get());
-    m_RTSSShadowBlur = dr_gfx_shared(dc.createRenderTarget(m_vecTexture));
-
-    m_TexDescDefault.bindFlags &= ~DR_BIND_FLAGS::UNORDERED_ACCESS;
-
-    m_vecTexture.clear();
-    ShadowBlurTexure.release();
-
     //DepthStencil
     commonTextureDesc.width = shadowWidth;
     commonTextureDesc.height = shadowHeight;
     m_ShadowDSoptions = dr_gfx_shared(dc.createDepthStencil(commonTextureDesc));
   }
 
-  //SSAO
+  //SSAO & SSShadow
   {
     //RenderTarget
-    m_TexDescDefault.width = screenWidth;
-    m_TexDescDefault.height = screenHeight;
-    m_TexDescDefault.Format = DR_FORMAT::kR8_UNORM;
-    m_TexDescDefault.pitch = m_TexDescDefault.width * 1 * 1;
+    m_TexDescDefault.width = screenWidth * blurScale;
+    m_TexDescDefault.height = screenHeight * blurScale;
+    m_TexDescDefault.Format = DR_FORMAT::kR8G8_UNORM;
+    m_TexDescDefault.pitch = m_TexDescDefault.width * 2 * 1;
     m_TexDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
 
-    GFXUnique<Texture> SSAOTexure = dr_gfx_unique<Texture>(dc.createEmptyTexture(m_TexDescDefault));
-    m_vecTexture.push_back(SSAOTexure.get());
-    m_RTSSAO = dr_gfx_shared(dc.createRenderTarget(m_vecTexture));
+    GFXUnique<Texture> SSAO_SSShadowTexure = dr_gfx_unique<Texture>(dc.createEmptyTexture(m_TexDescDefault));
+    m_vecTexture.push_back(SSAO_SSShadowTexure.get());
+    m_RTSSAO_SSShadow = dr_gfx_shared(dc.createRenderTarget(m_vecTexture));
 
     m_TexDescDefault.bindFlags &= ~DR_BIND_FLAGS::UNORDERED_ACCESS;
 
     m_vecTexture.clear();
-    SSAOTexure.release();
+    SSAO_SSShadowTexure.release();
   }
 
   //Blur Aux
@@ -262,7 +234,7 @@ RenderManager::init() {
     m_TexDescDefault.width = screenWidth * blurScale;
     m_TexDescDefault.height = screenHeight * blurScale;
     m_TexDescDefault.Format = DR_FORMAT::kR16G16B16A16_FLOAT;
-    m_TexDescDefault.pitch = m_TexDescDefault.width * 4 * 2;
+    m_TexDescDefault.pitch = m_TexDescDefault.width * 3 * 2;
     m_TexDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
 
     GFXUnique<Texture> BlurTexure = dr_gfx_unique<Texture>(dc.createEmptyTexture(m_TexDescDefault));
@@ -275,18 +247,18 @@ RenderManager::init() {
     BlurTexure.release();
   }
 
-  //Blurred SSAO
+  //Blurred SSAO & Shadow
   {
     //RenderTarget
     m_TexDescDefault.width = screenWidth * blurScale;
     m_TexDescDefault.height = screenHeight * blurScale;
-    m_TexDescDefault.Format = DR_FORMAT::kR16_FLOAT;
-    m_TexDescDefault.pitch = m_TexDescDefault.width * 1 * 1;
+    m_TexDescDefault.Format = DR_FORMAT::kR16G16_FLOAT;
+    m_TexDescDefault.pitch = m_TexDescDefault.width * 2 * 2;
     m_TexDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
 
     GFXUnique<Texture> SSAOBlurTexure = dr_gfx_unique<Texture>(dc.createEmptyTexture(m_TexDescDefault));
     m_vecTexture.push_back(SSAOBlurTexure.get());
-    m_RTSSAOBlur = dr_gfx_shared(dc.createRenderTarget(m_vecTexture));
+    m_RTSSAO_SSShadowBlur = dr_gfx_shared(dc.createRenderTarget(m_vecTexture));
 
     m_TexDescDefault.bindFlags &= ~DR_BIND_FLAGS::UNORDERED_ACCESS;
 
@@ -487,25 +459,24 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_GBufferDrawData.OutRt = m_RTGBuffer;
   m_GBufferDrawData.dsOptions = m_GBufferDSoptions;
   m_GBufferPass.draw(&m_GBufferDrawData);
-
+  
   static const float white[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-  m_RTSSShadow->clear(dc, white);
+  m_RTSSAO_SSShadow->clear(dc, white);
 
   //for all directional lights
   for (const auto& directionalLight : m_vecDirectionalLights) {
     m_RTShadow->clear(dc, white);
     updateShadowCameras(directionalLight);
 
+    m_ShadowDrawData.dsOptions = m_ShadowDSoptions;
     for (SizeT camIndex = 0; camIndex < m_szActiveShadowCameras; ++camIndex) {
       //queryRequest = SceneGraph::query(rqRequest);
       m_ShadowDrawData.shadowCam = vecShadowCamera[camIndex];
       m_ShadowDrawData.models = &queryRequest;
       m_ShadowDrawData.OutRt = m_RTShadowDummy[camIndex];
-      m_ShadowDrawData.dsOptions = m_ShadowDSoptions;
       m_ShadowPass.draw(&m_ShadowDrawData);
     }
-    m_ShadowPass.merge(m_RTShadowDummy,
-                       m_RTShadow);
+    m_ShadowPass.merge(m_RTShadowDummy, m_RTShadow);
 
     m_ShadowDrawData.ShadowCameras = &vecShadowCamera;
     m_ShadowDrawData.ShadowSliptDepths = partitions;
@@ -520,47 +491,39 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
     m_ShadowDrawData.ShadowSizesProportion[3] = m_ShadowSubFrustras[3].second /
                                                 m_ShadowSubFrustras[0].second;
 
-    m_ShadowPass.apply(&m_ShadowDrawData, m_RTGBuffer, m_RTShadow, m_RTSSShadow);
+    m_ShadowPass.apply(&m_ShadowDrawData, m_RTGBuffer, m_RTShadow, m_RTSSAO_SSShadow);
   }
-
-  m_HorBlurDrawData.InTexture = &m_RTSSShadow->getTexture(0);
-  m_HorBlurDrawData.OutRt = m_RTBlurInit;
-  m_HorBlurPass.draw(&m_HorBlurDrawData);
-
-  m_VerBlurDrawData.InTexture = &m_RTBlurInit->getTexture(0);
-  m_VerBlurDrawData.OutRt = m_RTSSShadowBlur;
-  m_VerBlurPass.draw(&m_VerBlurDrawData);
 
   m_SSAODrawData.activeCam = mainCam; 
   m_SSAODrawData.InRt = m_RTGBuffer;
-  m_SSAODrawData.OutRt = m_RTSSAO;
+  m_SSAODrawData.OutRt = m_RTSSAO_SSShadow;
   m_SSAODrawData.SampleRadio = 0.0008f;
-  m_SSAODrawData.Intensity = 2.0F;
+  m_SSAODrawData.Intensity = 2.0f;
   m_SSAODrawData.Scale = 1.0f;
   m_SSAODrawData.Bias = 0.0002f;
   m_SSAOPass.draw(&m_SSAODrawData);
 
-  m_HorBlurDrawData.InTexture = &m_RTSSAO->getTexture(0);
+  m_HorBlurDrawData.InTexture = &m_RTSSAO_SSShadow->getTexture(0);
   m_HorBlurDrawData.OutRt = m_RTBlurInit;
   m_HorBlurPass.draw(&m_HorBlurDrawData);
 
   m_VerBlurDrawData.InTexture = &m_RTBlurInit->getTexture(0);
-  m_VerBlurDrawData.OutRt = m_RTSSAOBlur;
+  m_VerBlurDrawData.OutRt = m_RTSSAO_SSShadowBlur;
   m_VerBlurPass.draw(&m_VerBlurDrawData);
-
 
   m_LightningDrawData.ActiveCam = mainCam;
   m_LightningDrawData.Lights = &lights[0];
   m_LightningDrawData.ActiveLights = 128;
   m_LightningDrawData.GbufferRT = m_RTGBuffer;
-  m_LightningDrawData.SSAORT = m_RTSSAOBlur;
-  m_LightningDrawData.ShadowRT = m_RTSSShadowBlur;
+  m_LightningDrawData.SSAO_SSShadowRT = m_RTSSAO_SSShadowBlur;
   m_LightningDrawData.OutRt = m_RTLightning;
   m_LightningDrawData.EnviromentCubemap = m_cubemap;
   m_LightningDrawData.IrradianceCubemap = m_cubemapDiffuse;
   m_LightningDrawData.dsOptions = m_LightningDSoptions;
 
-  m_LightningPass.tileLights(&m_LightningDrawData);
+  //m_LightningPass.tileLights(&m_LightningDrawData); //FPS KILLER
+
+  /*
 
   m_LightningPass.draw(&m_LightningDrawData);
 
@@ -592,7 +555,7 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_luminescenceDrawData.LuminiscenceDelta = *luminanceDelta;
   m_luminescenceDrawData.resultBuffer = &resultBuffer;
   m_luminescencePass.draw(&m_luminescenceDrawData);
-
+  */
   _out.set(dc, _outds);
 
   //m_emitter.update();
@@ -610,10 +573,17 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_PostProcessingDrawData.VignetteScale = 1.0f;
   m_PostProcessingDrawData.VignetteConcentration = Vector2D(4.0f, 4.0f);
   m_PostProcessingDrawData.VignetteRad = Vector2D(1.25f, 1.25f);
-  m_PostProcessingDrawData.ColorTex = &m_RTLightning->getTexture(0);
-  m_PostProcessingDrawData.ColorBlurTex = &m_RTLightningBlur->getTexture(0);
+
+  //m_PostProcessingDrawData.ColorTex = &m_RTLightning->getTexture(0);
+  //m_PostProcessingDrawData.ColorTex = &m_RTGBuffer->getTexture(0);
+  //m_PostProcessingDrawData.ColorTex = &m_RTSSAO_SSShadow ->getTexture(0);
+  m_PostProcessingDrawData.ColorTex = &m_RTGBuffer->getTexture(2);
+  m_PostProcessingDrawData.ColorBlurTex = &m_RTSSAO_SSShadowBlur->getTexture(0);
+
+  //m_PostProcessingDrawData.ColorBlurTex = &m_RTLightningBlur->getTexture(0);
   m_PostProcessingDrawData.PositionDepthTex = &m_RTGBuffer->getTexture(0);
   m_PostProcessingDrawData.BloomTex = &m_RTBloom->getTexture(0);
+
   m_PostProcessingDrawData.luminescenceBuffer = resultBuffer;
   m_PostProcessingPass.draw(&m_PostProcessingDrawData);
 

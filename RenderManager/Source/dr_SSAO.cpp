@@ -54,6 +54,13 @@ SSAOPass::draw(PassDrawData* drawData) {
 
   m_computeShader->set(dc);
 
+  m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kCompute);
+
+  data->InRt->getTexture(0).set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute, true);
+  data->InRt->getTexture(1).set(dc, 1, DR_SHADER_TYPE_FLAG::kCompute, true);
+
+  data->OutRt->getTexture(0).set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute);
+
   DrTextureDesc outRTDesc = data->OutRt->getDescriptor();
 
   m_RTWidth = outRTDesc.width;
@@ -61,15 +68,6 @@ SSAOPass::draw(PassDrawData* drawData) {
 
   m_ComputeWidthBlocks = m_RTWidth / m_ComputeWidthDivisions;
   m_ComputeHeightBlocks = m_RTHeight / m_ComputeHeightDivisions;
-
-  m_ComputeTotalBlocks = m_ComputeWidthBlocks * m_ComputeHeightBlocks;
-
-  m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kCompute);
-
-  data->InRt->getTexture(0).set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute, true);
-  data->InRt->getTexture(1).set(dc, 1, DR_SHADER_TYPE_FLAG::kCompute, true);
-
-  data->OutRt->getTexture(0).set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute);
 
   CB.fViewportDimensions.x = m_RTWidth;
   CB.fViewportDimensions.y = m_RTHeight;

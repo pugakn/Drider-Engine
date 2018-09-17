@@ -1,13 +1,13 @@
 cbuffer ConstantBuffer : register(b0) {
   float4 fViewportDimensions;
-  float4 cameraUp; //X: Number of thread groups in x, Y: Number of thread groups in Y.
   float4 threadsGroups; //X: Number of thread groups in x, Y: Number of thread groups in Y.
+  float4 cameraUp; //X: Number of thread groups in x, Y: Number of thread groups in Y.
   float4x4 VP;
   float4 kLightPosition[RENDER_MANAGER_MAX_LIGHTS];	//XYZ: Light Position, W: Range
 };
 
 struct lightsInBlock {
-  int foo[RENDER_MANAGER_MAX_LIGHTS_PER_BLOCK];
+  int foo[RENDER_MANAGER_MAX_LIGHTS_PER_BLOCK]; //64
 };
 
 struct cacaInBlock {
@@ -19,9 +19,12 @@ RWStructuredBuffer<cacaInBlock> LightsIndexAux : register(u1);
 RWStructuredBuffer<float4> LightsTransformed : register(u2);
 
 bool
-intersects(float2 circlePos, float circleRadius, float2 RectPos, float2 RectSize) {
-	float DeltaX = circlePos.x - max(RectPos.x, min(circlePos.x, RectPos.x + RectSize.x));
-  float DeltaY = circlePos.y - max(RectPos.y, min(circlePos.y, RectPos.y + RectSize.y));
+intersects(in const float2 circlePos,
+           in const float circleRadius,
+           in const float2 RectPos,
+           in const float2 RectSize) {
+	const float DeltaX = circlePos.x - max(RectPos.x, min(circlePos.x, RectPos.x + RectSize.x));
+  const float DeltaY = circlePos.y - max(RectPos.y, min(circlePos.y, RectPos.y + RectSize.y));
   return ((DeltaX * DeltaX) + (DeltaY * DeltaY)) < (circleRadius * circleRadius);
 }
 

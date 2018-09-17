@@ -25,7 +25,13 @@ int main(int argc, char* argv[]) {
   //vp.height = 1080;
 
   //720p o HD
-  vp.width = 1280;
+  //vp.width = 1280;
+  //vp.height = 720;
+
+  //////////21:9//////////
+
+  //720p o HD
+  vp.width = 1680;
   vp.height = 720;
 
   return app.run(vp);

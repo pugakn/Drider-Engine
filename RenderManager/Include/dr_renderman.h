@@ -182,17 +182,15 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
 
   std::array<GFXShared<RenderTarget>, 4> m_RTShadowDummy; //Used for render shadow cascades.
   GFXShared<RenderTarget> m_RTShadow; //Compressed shadows.
-  GFXShared<RenderTarget> m_RTSSShadow;
-  GFXShared<RenderTarget> m_RTSSShadowBlur;
   //Gbuffer info:
   //0: { xyz: position, w: linear depth };
   //1: { xyz: normal,   w: CoC };
   //2: { xyz: albedo,   w: metallic };
   //3: { xyz: emissive, w: roughness };
   GFXShared<RenderTarget> m_RTGBuffer;
-  GFXShared<RenderTarget> m_RTSSAO;
   GFXShared<RenderTarget> m_RTBlurInit;
-  GFXShared<RenderTarget> m_RTSSAOBlur;
+  GFXShared<RenderTarget> m_RTSSAO_SSShadow;
+  GFXShared<RenderTarget> m_RTSSAO_SSShadowBlur;
   GFXShared<RenderTarget> m_RTLightning;
   GFXShared<RenderTarget> m_RTBrightness;
   GFXShared<RenderTarget> m_RTBloom;
