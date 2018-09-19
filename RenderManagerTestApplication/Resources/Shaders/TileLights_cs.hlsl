@@ -8,13 +8,20 @@ RWTexture2D<int> LightsIndex : register(u0); //Size: width = total tiles, height
 RWTexture2D<int> LightsIndexAux : register(u1); //Size: width = total tiles, height = Max lights per tile
 
 bool
-intersects(in const float2 circlePos,
-           in const float circleRadius,
+intersects(in const float2 ellipsePos,
+           in const float2 ellipseRadius,
            in const float2 RectPos,
            in const float2 RectSize) {
-	const float DeltaX = circlePos.x - max(RectPos.x, min(circlePos.x, RectPos.x + RectSize.x));
-  const float DeltaY = circlePos.y - max(RectPos.y, min(circlePos.y, RectPos.y + RectSize.y));
-  return ((DeltaX * DeltaX) + (DeltaY * DeltaY)) < (circleRadius * circleRadius);
+  /*
+  //Circle case
+	const float DeltaX = ellipsePos.x - max(RectPos.x, min(ellipsePos.x, RectPos.x + RectSize.x));
+  const float DeltaY = ellipsePos.y - max(RectPos.y, min(ellipsePos.y, RectPos.y + RectSize.y));
+  return ((DeltaX * DeltaX) + (DeltaY * DeltaY)) < (ellipseRadius * ellipseRadius); //Circle case
+  */
+  //Ellipse case
+  const float DeltaX = max(RectPos.x - (RectSize.x * 0.5f), min(ellipsePos.x, RectPos.x + (RectSize.x * 0.5f)));
+  const float DeltaY = max(RectPos.y - (RectSize.y * 0.5f), min(ellipsePos.y, RectPos.y + (RectSize.y * 0.5f)));
+  return ((pow(DeltaX - ellipsePos.x, 2) / pow(ellipseRadius.x, 2)) + (pow(DeltaY - ellipsePos.y, 2) / pow(ellipseRadius.y, 2))) <= 1; 
 }
 
 //Max lights = 32 * 4 = 128
@@ -35,8 +42,10 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   
   //Este indica la luz que tiene que analizar este thread
   const uint lightIndex = groupIndex;
-  
-  //if (sign(LightsTransformed[lightIndex].w) < 1) { return; }
+
+  if (lightIndex >= RM_MAX_LIGHTS) {
+    return;
+  }
   
   LightsIndexAux[uint2(group, lightIndex)] = 0;
   LightsIndex[uint2(group, lightIndex)] = 0;
@@ -45,22 +54,28 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   const float2 rectPos = float2((rectSize.x * 0.5f) + (rectSize.x * groupID.x),
 																(rectSize.y * 0.5f) + (rectSize.y * groupID.y));
   
-  const float2 SSlightPos = LightsTransformed[uint2(lightIndex, 0)].xy;
-  const float SSlightRad = LightsTransformed[uint2(lightIndex, 0)].z;
-  //const float2 SSlightPos = float2(0.5f.xx);
-  //const float SSlightRad = 0.25f;
+  const float4 myLight = LightsTransformed[uint2(lightIndex, 0)];
 
-  //bool intersected = intersects(SSlightPos, SSlightRad, rectPos, rectSize);
-  LightsIndexAux[uint2(group, lightIndex)] = intersects(SSlightPos, SSlightRad, rectPos, rectSize);
-
-  //if (intersected) {
-		//TODO: Comparar la profundidad de la luz con el min/max del depthbuffer,
-		//			si no esta entre esa profundidad y el ojo, no agregarla
+  if (sign(myLight.w) < 1) {
+    LightsIndexAux[uint2(group, lightIndex)] = 0;
+  }
+  else {
+    const float2 SSlightPos = myLight.xy;
+    //const float2 SSlightPos = float2(0.5f.xx);
+    const float2 SSlightRad = float2(myLight.z * threadsGroups.z,
+                                     myLight.z);
     
-    //No agregar si ya hay RM_MAX_LIGHTS_PER_BLOCK o mas luces
-    //Agregar esta luz al array/vector de indices de luces
-    //LightsIndexAux[group].foo[lightIndex] = 1;
-  //}
+    LightsIndexAux[uint2(group, lightIndex)] = intersects(SSlightPos, SSlightRad, rectPos, rectSize);
+    //if (intersected) {
+      //TODO: Comparar la profundidad de la luz con el min/max del depthbuffer,
+      //			si no esta entre esa profundidad y el ojo, no agregarla
+      
+      //No agregar si ya hay RM_MAX_LIGHTS_PER_BLOCK o mas luces
+      //Agregar esta luz al array/vector de indices de luces
+      //LightsIndexAux[group].foo[lightIndex] = 1;
+    //}
+  }
+
 
   if (lightIndex > 0) {
     return;

@@ -106,7 +106,7 @@ LightningPass::init(PassInitData* initData) {
   m_TexDesc.dimension = DR_DIMENSION::k2D;
   m_TexDesc.width = RM_MAX_LIGHTS;
   m_TexDesc.height = 1;
-  m_TexDesc.Format = DR_FORMAT::kR32G32B32A32_FLOAT;
+  m_TexDesc.Format = DR_FORMAT::kR32G32B32A32_FLOAT;;
   m_TexDesc.pitch = m_TexDesc.width * 4 * 4;
   m_TexDesc.mipLevels = 0;
   m_TexDesc.CPUAccessFlags = 0;
@@ -129,7 +129,6 @@ LightningPass::init(PassInitData* initData) {
                      Math::ceil(m_RTHeight / ((float)RM_TILE_LIGHTS_SZ));
 
   //Lights index
-  m_TexDesc.dimension = DR_DIMENSION::k2D;
   m_TexDesc.width = totalTiles;
   m_TexDesc.height = 1 + RM_MAX_LIGHTS_PER_BLOCK;
   m_TexDesc.Format = DR_FORMAT::kR32_SINT;
@@ -173,6 +172,25 @@ LightningPass::recompileShader(String vsPreText,
   RenderPass::recompileShader("", "", precomputeString);
 }
 
+Vector2D
+get2dPoint(Vector4D point,
+           Matrix4x4 VPMatrix) {
+  Matrix4x4 WMat;
+  WMat.identity();
+  WMat.Translation(Vector3D(point));
+
+  //Vector4D SSPoint = Vector4D(0.0f, 0.0f, 0.0f, 1.0f);
+  //SSPoint = SSPoint * (WMat * VPMatrix);
+  //SSPoint /= SSPoint.w;
+  Vector4D SSPoint = point * VPMatrix;
+  SSPoint /= SSPoint.w;
+
+  float winX = (SSPoint.x + 1.0f) * 0.5f;
+  float winY = (1.0f - SSPoint.y) * 0.5f;
+  //winY = 1.0f - winY;
+  return Vector2D(winX, winY);
+}
+
 void
 LightningPass::lightsToScreenSpace(LightningLightsToSSData* data) {
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
@@ -185,15 +203,37 @@ LightningPass::lightsToScreenSpace(LightningLightsToSSData* data) {
   m_RTLightsInSS->getTexture(0).set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute);
   
   m_CBWSLightsToSSData.CameraUp = data->ActiveCam->getLocalUp().normalize();
+  m_CBWSLightsToSSData.CameraUp.w = 0.0f;
+  m_CBWSLightsToSSData.CameraUp.normalize();
   
   m_CBWSLightsToSSData.CameraVP = data->ActiveCam->getVP();
 
+  Vector4D lightPos;
+  Vector2D SSLights;
+  Vector2D SSLightsMax;
+  float lightRange;
   for (SizeT lighIndex = 0; lighIndex < RM_MAX_LIGHTS; ++lighIndex) {
-    m_CBWSLightsToSSData.LightPosition[lighIndex] = (*data->Lights)[lighIndex].m_vec4Position;
+    lightPos = (*data->Lights)[lighIndex].m_vec4Position;
+    lightRange = lightPos.w;
+    lightPos.w = 1.0f;
+
+    SSLights = get2dPoint(lightPos, data->ActiveCam->getVP());
+
+    lightPos += m_CBWSLightsToSSData.CameraUp * lightRange;
+    lightPos.w = 1.0f;
+
+    SSLightsMax = get2dPoint(lightPos, data->ActiveCam->getVP());
+
+    lightRange = (SSLightsMax - SSLights).length();
+
+    //m_CBWSLightsToSSData.LightPosition[lighIndex] = (*data->Lights)[lighIndex].m_vec4Position;
+    m_CBWSLightsToSSData.LightPosition[lighIndex] = Vector4D(SSLights.x, SSLights.y, lightRange, 1.0f);
+    //m_CBWSLightsToSSData.LightPosition[lighIndex] = Vector4D(0.5f, 0.5f, lightRange, 1.0f);
   }
 
   m_CBWSLightsToSS->updateFromBuffer(dc, reinterpret_cast<byte*>(&m_CBWSLightsToSSData));
   m_CBWSLightsToSS->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
+
 
   SizeT csDivisions = static_cast<SizeT>(Math::ceil(RM_MAX_LIGHTS / 32.0f));
   dc.dispatch(csDivisions, 1, 1);
@@ -227,6 +267,7 @@ LightningPass::tileLights(LightningTileLightsSSData* data) {
 
   m_CBTileLightsData.threadsInfo.x = m_ComputeWidthBlocks;
   m_CBTileLightsData.threadsInfo.y = m_ComputeHeightBlocks;
+  m_CBTileLightsData.threadsInfo.z = m_RTHeight / ((float)m_RTWidth);
 
   m_CBTileLights->updateFromBuffer(dc, reinterpret_cast<byte*>(&m_CBTileLightsData));
   m_CBTileLights->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);

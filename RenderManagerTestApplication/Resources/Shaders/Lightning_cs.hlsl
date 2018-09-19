@@ -34,7 +34,7 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   const uint group = (groupID.y * threadsInfo.x) + groupID.x;
 
   const int2 TileGroupID = uint2(floor(dispatchID.x / ((float)RM_TILE_LIGHTS_SZ)),
-                                  floor(dispatchID.y / ((float)RM_TILE_LIGHTS_SZ)));
+                                 floor(dispatchID.y / ((float)RM_TILE_LIGHTS_SZ)));
   
   const int TileGroup = (TileGroupID.y * threadsInfo.z) + TileGroupID.x;
   
@@ -83,6 +83,8 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   
   int actualLight;
   int totalLights = LightsIndex[uint2(TileGroup, RM_MAX_LIGHTS_PER_BLOCK)];
+
+  Lightning[uvScale] = float4((totalLights / ((float)RM_MAX_LIGHTS_PER_BLOCK)).xxx, 1.0f); return;
 
   [loop]
   for (int index = 0; index < totalLights; ++index) {
