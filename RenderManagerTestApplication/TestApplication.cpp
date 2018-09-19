@@ -113,7 +113,7 @@ RenderManApp::postInit() {
   SizeT horizontalLights = 16;
 
   for (Int32 xPos = 0; xPos < horizontalLights; ++xPos) {
-    for (Int32 zPos = 0; zPos < (RENDER_MANAGER_MAX_LIGHTS / horizontalLights); ++zPos) {
+    for (Int32 zPos = 0; zPos < (RM_MAX_LIGHTS / horizontalLights); ++zPos) {
       //Posicion
       Lights[lighIndex].m_vec4Position = Vector4D(
                                                   (xOffset * separationX) - ((horizontalLights - 1) * separationX * 0.5f),
@@ -140,7 +140,7 @@ RenderManApp::postInit() {
       //Lights[lighIndex].m_vec4Color.w = 1.0f;
       Lights[lighIndex].m_vec4Color.w = 2.0f;
 
-      proportion += (1.0f / RENDER_MANAGER_MAX_LIGHTS);
+      proportion += (1.0f / RM_MAX_LIGHTS);
       ++lighIndex;
     }
     xOffset += 1;

@@ -1,5 +1,5 @@
 struct lightsInBlock {
-  int foo[RENDER_MANAGER_MAX_LIGHTS_PER_BLOCK];
+  int foo[RM_MAX_LIGHTS_PER_BLOCK];
 };
 
 #include "Resources\\Shaders\\PBR_Math.hlsl"
@@ -7,8 +7,8 @@ struct lightsInBlock {
 cbuffer ConstantBuffer : register(b0) {
   float4 fViewportDimensions;
   float4 kEyePosition;        //XYZ: EyePosition, W: Active Lights
-  float4 kLightPosition[RENDER_MANAGER_MAX_LIGHTS]; //XYZ: Light Position, W: Range
-  float4 kLightColor[RENDER_MANAGER_MAX_LIGHTS];    //XYZ: Light Color, W: Intensity
+  float4 kLightPosition[RM_MAX_LIGHTS]; //XYZ: Light Position, W: Range
+  float4 kLightColor[RM_MAX_LIGHTS];    //XYZ: Light Color, W: Intensity
   float4 threadsInfo; //X: Number of thread groups in x, Y: Number of thread groups in Y.
 };
 
@@ -81,7 +81,7 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   const int activeLights = kEyePosition.w;
   
   uint actualLight;
-  uint totalLights = LightsIndex[group].foo[RENDER_MANAGER_MAX_LIGHTS_PER_BLOCK - 1];
+  uint totalLights = LightsIndex[group].foo[RM_MAX_LIGHTS_PER_BLOCK - 1];
 
   [loop]
   for (uint index = 0; index < totalLights; ++index) {

@@ -511,6 +511,19 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_VerBlurDrawData.OutRt = m_RTSSAO_SSShadowBlur;
   m_VerBlurPass.draw(&m_VerBlurDrawData);
 
+  //Transform Lights to ScreenSpace.
+  m_LWSLightsToSSData.ActiveCam = mainCam;
+  m_LWSLightsToSSData.Lights = &lights[0];
+  m_LightningPass.lightsToScreenSpace(&m_LWSLightsToSSData);
+  //Tile Lights
+  /*
+  m_LightningPass.tileLights();
+  */
+  //Lightning Pass
+  /*
+  m_LightningPass.draw();
+  */
+
   m_LightningDrawData.ActiveCam = mainCam;
   m_LightningDrawData.Lights = &lights[0];
   m_LightningDrawData.ActiveLights = 128;

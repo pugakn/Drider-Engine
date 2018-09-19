@@ -1,7 +1,9 @@
 #include "TestApplication.h"
 
 using namespace driderSDK;
-int main(int argc, char* argv[]) {
+
+Int32
+main(Int32 argc, char* argv[]) {
   RenderManApp app;
 
   Viewport vp;

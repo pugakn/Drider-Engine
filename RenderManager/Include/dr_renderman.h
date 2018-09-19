@@ -98,7 +98,7 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   UInt32 screenHeight;
   UInt32 shadowWidth;
   UInt32 shadowHeight;
-  std::array<Light, RENDER_MANAGER_MAX_LIGHTS>* lights;
+  std::array<Light, RM_MAX_LIGHTS>* lights;
   std::array<std::shared_ptr<Camera>, 4> vecShadowCamera;
   std::vector<float> partitions;
   std::vector<SceneGraph::SharedGameObject> vecGos;
@@ -154,6 +154,7 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   //CS
   LightningPass m_LightningPass;
   LightningInitData m_LightningInitData;
+  LightningLightsToSSData m_LWSLightsToSSData;
   LightningDrawData m_LightningDrawData;
   GFXShared<DepthStencil> m_LightningDSoptions;
 

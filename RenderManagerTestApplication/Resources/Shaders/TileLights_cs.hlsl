@@ -1,22 +1,19 @@
 cbuffer ConstantBuffer : register(b0) {
-  float4 fViewportDimensions;
   float4 threadsGroups; //X: Number of thread groups in x, Y: Number of thread groups in Y.
-  float4 cameraUp; //X: Number of thread groups in x, Y: Number of thread groups in Y.
-  float4x4 VP;
-  float4 kLightPosition[RENDER_MANAGER_MAX_LIGHTS];	//XYZ: Light Position, W: Range
 };
 
 struct lightsInBlock {
-  int foo[RENDER_MANAGER_MAX_LIGHTS_PER_BLOCK]; //64
+  int foo[RM_MAX_LIGHTS_PER_BLOCK]; //64
 };
 
 struct cacaInBlock {
-  int foo[RENDER_MANAGER_MAX_LIGHTS];
+  int foo[RM_MAX_LIGHTS];
 };
+
+RWTexture2D<float4> LightsTransformed : register(u0);
 
 RWStructuredBuffer<lightsInBlock> LightsIndex : register(u0);
 RWStructuredBuffer<cacaInBlock> LightsIndexAux : register(u1);
-RWStructuredBuffer<float4> LightsTransformed : register(u2);
 
 bool
 intersects(in const float2 circlePos,
@@ -67,7 +64,7 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
 		//TODO: Comparar la profundidad de la luz con el min/max del depthbuffer,
 		//			si no esta entre esa profundidad y el ojo, no agregarla
     
-    //No agregar si ya hay RENDER_MANAGER_MAX_LIGHTS_PER_BLOCK o mas luces
+    //No agregar si ya hay RM_MAX_LIGHTS_PER_BLOCK o mas luces
     //Agregar esta luz al array/vector de indices de luces
     //LightsIndexAux[group].foo[lightIndex] = 1;
   //}
@@ -79,14 +76,14 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   //static const int maxLights = NUMTHREADS_X * NUMTHREADS_Y;
   uint counter = 0;
   [loop]
-  for (int currentLight = 0; (currentLight < RENDER_MANAGER_MAX_LIGHTS) && (counter < (RENDER_MANAGER_MAX_LIGHTS_PER_BLOCK - 1)) ; ++currentLight) {
+  for (int currentLight = 0; (currentLight < RM_MAX_LIGHTS) && (counter < (RM_MAX_LIGHTS_PER_BLOCK - 1)) ; ++currentLight) {
     if (LightsIndexAux[group].foo[currentLight] > -1) {
       LightsIndex[group].foo[counter] = currentLight;
       ++counter;
     }
   }
 
-  LightsIndex[group].foo[RENDER_MANAGER_MAX_LIGHTS_PER_BLOCK - 1] = counter;
+  LightsIndex[group].foo[RM_MAX_LIGHTS_PER_BLOCK - 1] = counter;
 
   return;
 }

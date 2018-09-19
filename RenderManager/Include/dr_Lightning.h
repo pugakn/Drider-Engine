@@ -16,10 +16,15 @@ struct LightningInitData : PassInitData {
   SizeT RTHeight;
 };
 
+struct LightningLightsToSSData : PassDrawData {
+  std::shared_ptr<Camera> ActiveCam;
+  std::array<Light, RM_MAX_LIGHTS>* Lights;
+};
+
 struct LightningDrawData : PassDrawData {
   std::shared_ptr<Camera> ActiveCam;
   SizeT ActiveLights;
-  std::array<Light, RENDER_MANAGER_MAX_LIGHTS>* Lights;
+  std::array<Light, RM_MAX_LIGHTS>* Lights;
   GFXShared<RenderTarget> GbufferRT;
   GFXShared<RenderTarget> SSAO_SSShadowRT;
   GFXShared<RenderTarget> OutRt;
@@ -51,35 +56,38 @@ class LightningPass : public RenderPass {
   void
   init(PassInitData* initData);
 
+  void
+  lightsToScreenSpace(LightningLightsToSSData* data);
+
+  void
+  tileLights(PassDrawData* drawData);
+
   /*
   */
   void
   draw(PassDrawData* drawData);
 
-  void
-  tileLights(PassDrawData* drawData);
-
  private:
-  struct CBuffer1 {
-    Vector4D fViewportDimensions;
-    Vector4D EyePosition;         // [XYZ = Cameraposition, W = ActiveLights]
-    Vector4D LightPosition[RENDER_MANAGER_MAX_LIGHTS];  // [XYZ = LightPosition, W = Range]
-    Vector4D LightColor[RENDER_MANAGER_MAX_LIGHTS];     // [XYZ = LightColor, W = LightIntensity]
+  struct CBufferWSLightsToSS {
+    Vector4D CameraUp;
+    Matrix4x4 CameraVP;
+
+    // [XYZ = LightPosition, W = Range]
+    // W Sign: Positive = light is active, Negative = light is inactive
+    Vector4D LightPosition[RM_MAX_LIGHTS];
+  };
+
+  struct CBufferTiledLights {
     Vector4D threadsInfo;
   };
 
-  struct CBuffer2 {
+  struct CBufferDraw {
     Vector4D ViewportDimensions;
-    Vector4D ThreadsGroups;
-    Vector4D CameraUp;
-    Matrix4x4 VP;
-    Vector4D LightPosition[RENDER_MANAGER_MAX_LIGHTS];	//XYZ: Light Position, W: Range
+    Vector4D EyePosition;
+    Vector4D LightPosition[RM_MAX_LIGHTS];  //XYZ: Light Position, W: Range
+    Vector4D LightColor[RM_MAX_LIGHTS];     //XYZ: Light Color, W: Intensity
+    Vector4D ThreadsInfo;
   };
-
-  CBuffer1 CB;
-  CBuffer2 CBTiled;
-
-  GFXUnique<ConstantBuffer> m_constantBufferTiled;
 
   SizeT m_RTWidth;
   SizeT m_RTHeight;
@@ -97,9 +105,19 @@ class LightningPass : public RenderPass {
   GFXUnique<SamplerState> m_samplerState;
   GFXUnique<SamplerState> m_samplerStateCubemap;
 
-  GFXUnique<StructureBuffer> m_sbLightsIndex;
-  GFXUnique<StructureBuffer> m_sbLightsIndexAux;
-  GFXUnique<StructureBuffer> m_sbLightsPositionTransformed;
+  //////////New stuff//////////
+  GFXShared<RenderTarget> m_RTLightsInSS;
+  GFXShared<RenderTarget> m_RTLightsIndex;
+  GFXShared<RenderTarget> m_RTLightsIndexAux;
+
+  CBufferWSLightsToSS m_CBWSLightsToSSData;
+  GFXUnique<ConstantBuffer> m_CBWSLightsToSS;
+
+  CBufferTiledLights m_CBTileLightsData;
+  GFXUnique<ConstantBuffer> m_CBTileLights;
+
+  CBufferDraw m_CBDrawData;
+  GFXUnique<ConstantBuffer> m_CBDraw;
 };
 
 }

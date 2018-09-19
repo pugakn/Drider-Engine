@@ -1,12 +1,13 @@
 cbuffer ConstantBuffer : register(b0) {
-  float4 fViewportDimensions;
-  float4 threadsGroups; //X: Number of thread groups in x, Y: Number of thread groups in Y.
   float4 cameraUp; //X: Number of thread groups in x, Y: Number of thread groups in Y.
   float4x4 VP;
-  float4 kLightPosition[RENDER_MANAGER_MAX_LIGHTS];	//XYZ: Light Position, W: Range
+  
+  // [XYZ = LightPosition, W = Range]
+  // W Sign: Positive = light is active, Negative = light is inactive
+  float4 kLightPosition[RM_MAX_LIGHTS];
 };
 
-RWStructuredBuffer<float4> LightsTransformed : register(u0);
+RWTexture2D<float4> LightsTransformed : register(u0);
 
 #define NUMTHREADS_X 32
 #define NUMTHREADS_Y 1
@@ -17,10 +18,20 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
    uint3 dispatchID			: SV_DispatchThreadID,
    uint groupIndex			: SV_GroupIndex) {
   
-  //Este indica la luz que tiene que analizar este thread
-  //const uint lightIndex = groupIndex;
   const uint lightIndex = dispatchID.x;
-  
+
+  if (lightIndex >= RM_MAX_LIGHTS) {
+    LightsTransformed[lightIndex] = float4(-1.0f.xxxx);
+    return;
+  }
+  //if sign returns -1, range is negative
+  //if sign returns  0, range is 0
+  //if sign returns  1, range is positive
+  if (sign(kLightPosition[lightIndex].w) < 1) {
+    LightsTransformed[lightIndex] = float4(-1.0f.xxxx);
+    return;
+  }
+
   const float4 LightPos = float4(kLightPosition[lightIndex].xyz, 1.0f);
   const float4 MaxLightPos = LightPos + (cameraUp * kLightPosition[lightIndex].w);
   
@@ -37,8 +48,7 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   
   float SSlightRad = abs(length(SSlightPos - SSmaxLightPos));
 
-  LightsTransformed[lightIndex].xy = SSlightPos.xy;
-  LightsTransformed[lightIndex].z = SSlightRad;
-  
- return; 
+  LightsTransformed[lightIndex] = float4(SSlightPos.xy, SSlightRad, 0.0f);
+
+  return;
 }

@@ -4,8 +4,8 @@
 #include <dr_defines.h>
 #include <dr_types.h>
 
-#define RENDER_MANAGER_MAX_LIGHTS 512
-#define RENDER_MANAGER_MAX_LIGHTS_PER_BLOCK 64
+#define RM_MAX_LIGHTS 512
+#define RM_MAX_LIGHTS_PER_BLOCK 64
 #define RM_TILE_LIGHTS_SZ 32
 
 /**********************************************************************
