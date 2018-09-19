@@ -214,6 +214,7 @@ LightningPass::lightsToScreenSpace(LightningLightsToSSData* data) {
   std::vector<Vector4D> vecSSLights;
   float lightRange;
   for (SizeT lighIndex = 0; lighIndex < RM_MAX_LIGHTS; ++lighIndex) {
+    /*
     lightPos = (*data->Lights)[lighIndex].m_vec4Position;
     lightRange = lightPos.w;
     lightPos.w = 1.0f;
@@ -228,8 +229,8 @@ LightningPass::lightsToScreenSpace(LightningLightsToSSData* data) {
     lightRange = (SSLightsMax - SSLights).length();
 
     vecSSLights.push_back(Vector4D(SSLights.x, SSLights.y, lightRange, 1.0f));
-
-    //m_CBWSLightsToSSData.LightPosition[lighIndex] = Vector4D(SSLights.x, 1.0f - SSLights.y, lightRange, 1.0f);
+    m_CBWSLightsToSSData.LightPosition[lighIndex] = Vector4D(SSLights.x, 1.0f - SSLights.y, lightRange, 1.0f);
+    */
     m_CBWSLightsToSSData.LightPosition[lighIndex] = (*data->Lights)[lighIndex].m_vec4Position;
   }
 

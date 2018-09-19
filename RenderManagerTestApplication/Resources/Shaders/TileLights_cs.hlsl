@@ -21,7 +21,12 @@ intersects(in const float2 ellipsePos,
   //Ellipse case
   const float DeltaX = max(RectPos.x - (RectSize.x * 0.5f), min(ellipsePos.x, RectPos.x + (RectSize.x * 0.5f)));
   const float DeltaY = max(RectPos.y - (RectSize.y * 0.5f), min(ellipsePos.y, RectPos.y + (RectSize.y * 0.5f)));
-  return ((pow(DeltaX - ellipsePos.x, 2) / pow(ellipseRadius.x, 2)) + (pow(DeltaY - ellipsePos.y, 2) / pow(ellipseRadius.y, 2))) <= 1; 
+  //return ((pow(DeltaX - ellipsePos.x, 2) / pow(ellipseRadius.x, 2)) + (pow(DeltaY - ellipsePos.y, 2) / pow(ellipseRadius.y, 2))) <= 1; 
+  float result = ((pow(DeltaX - ellipsePos.x, 2.0f) / pow(ellipseRadius.x, 2.0f)) +
+                  (pow(DeltaY - ellipsePos.y, 2.0f) / pow(ellipseRadius.y, 2.0f)));
+  //float result = ((pow(DeltaX - ellipsePos.x, 2) / pow(ellipseRadius.x, 2)) + (pow(DeltaY - ellipsePos.y, 2) / pow(ellipseRadius.y, 2)));
+  //return (result >= 0) && (result <= 1);
+  return result <= 1;
 }
 
 //Max lights = 32 * 4 = 128

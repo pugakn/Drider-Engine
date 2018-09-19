@@ -133,7 +133,8 @@ RenderManApp::postInit() {
       Lights[lighIndex].m_vec4Position.w = 100.0f;
       //Lights[lighIndex].m_vec4Position.w = 50.0f;
       //Lights[lighIndex].m_vec4Position.w = proportion * 150.0f;
-      if (lighIndex > (RM_MAX_LIGHTS / 2)) Lights[lighIndex].m_vec4Position.w *= -1;
+      //  if (lighIndex > (RM_MAX_LIGHTS / 2)) Lights[lighIndex].m_vec4Position.w *= -1;
+      //if (lighIndex % 3 != 0) Lights[lighIndex].m_vec4Position.w *= -1;
 
       //Intensidad
       //Lights[lighIndex].m_vec4Color.w = (lighIndex / 128.0f);

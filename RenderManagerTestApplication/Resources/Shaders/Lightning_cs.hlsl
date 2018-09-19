@@ -82,14 +82,16 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   const int activeLights = kEyePosition.w;
   
   int actualLight;
-  int totalLights = LightsIndex[uint2(TileGroup, RM_MAX_LIGHTS_PER_BLOCK)];
-
+  //int totalLights = LightsIndex[uint2(TileGroup, RM_MAX_LIGHTS_PER_BLOCK)]; //This doesn't work for some reason
   //Lightning[uvScale] = float4((totalLights / ((float)RM_MAX_LIGHTS_PER_BLOCK)).xxx, 1.0f); return;
+
+  static const int totalLights = RM_MAX_LIGHTS_PER_BLOCK;
 
   [loop]
   for (int index = 0; index < totalLights; ++index) {
     actualLight = LightsIndex[uint2(TileGroup, index)];
-    
+    if (actualLight < 0) { break; }
+
     lightPosition  = kLightPosition[actualLight].xyz;
     lightColor     = kLightColor[actualLight].xyz;
     lightRange     = kLightPosition[actualLight].w;
