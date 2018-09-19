@@ -142,7 +142,7 @@ LightningPass::init(PassInitData* initData) {
   LightsIndexTex.release();
 
   //Lights index aux
-  m_TexDesc.height = RM_MAX_LIGHTS_PER_BLOCK;
+  m_TexDesc.height = RM_MAX_LIGHTS;
 
   GFXUnique<Texture> LightsIndexAuxTex = dr_gfx_unique<Texture>(device.createEmptyTexture(m_TexDesc));
   m_vecTexture.push_back(LightsIndexAuxTex.get());
@@ -187,7 +187,7 @@ get2dPoint(Vector4D point,
 
   float winX = (SSPoint.x + 1.0f) * 0.5f;
   float winY = (1.0f - SSPoint.y) * 0.5f;
-  //winY = 1.0f - winY;
+  winY = 1.0f - winY;
   return Vector2D(winX, winY);
 }
 
@@ -211,6 +211,7 @@ LightningPass::lightsToScreenSpace(LightningLightsToSSData* data) {
   Vector4D lightPos;
   Vector2D SSLights;
   Vector2D SSLightsMax;
+  std::vector<Vector4D> vecSSLights;
   float lightRange;
   for (SizeT lighIndex = 0; lighIndex < RM_MAX_LIGHTS; ++lighIndex) {
     lightPos = (*data->Lights)[lighIndex].m_vec4Position;
@@ -226,9 +227,10 @@ LightningPass::lightsToScreenSpace(LightningLightsToSSData* data) {
 
     lightRange = (SSLightsMax - SSLights).length();
 
-    //m_CBWSLightsToSSData.LightPosition[lighIndex] = (*data->Lights)[lighIndex].m_vec4Position;
-    m_CBWSLightsToSSData.LightPosition[lighIndex] = Vector4D(SSLights.x, SSLights.y, lightRange, 1.0f);
-    //m_CBWSLightsToSSData.LightPosition[lighIndex] = Vector4D(0.5f, 0.5f, lightRange, 1.0f);
+    vecSSLights.push_back(Vector4D(SSLights.x, SSLights.y, lightRange, 1.0f));
+
+    //m_CBWSLightsToSSData.LightPosition[lighIndex] = Vector4D(SSLights.x, 1.0f - SSLights.y, lightRange, 1.0f);
+    m_CBWSLightsToSSData.LightPosition[lighIndex] = (*data->Lights)[lighIndex].m_vec4Position;
   }
 
   m_CBWSLightsToSS->updateFromBuffer(dc, reinterpret_cast<byte*>(&m_CBWSLightsToSSData));

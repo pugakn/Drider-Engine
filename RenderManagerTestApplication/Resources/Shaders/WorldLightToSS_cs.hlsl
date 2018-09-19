@@ -34,10 +34,8 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   const float4 transformedLight = mul(VP, LightPos);
   const float4 transformedMaxLight = mul(VP, MaxLightPos);
   
-  //float2 SSlightPos = (transformedLight.xyz / transformedLight.w).xy;
-  //float2 SSmaxLightPos = (transformedMaxLight.xyz / transformedMaxLight.w).xy;
-  float2 SSlightPos = transformedLight.xy;
-  float2 SSmaxLightPos = transformedMaxLight.xy;
+  float2 SSlightPos = (transformedLight.xyz / transformedLight.w).xy;
+  float2 SSmaxLightPos = (transformedMaxLight.xyz / transformedMaxLight.w).xy;
   
   SSlightPos = (SSlightPos + (1.0f).xx) * 0.5f;
   SSlightPos.y = 1.0f - SSlightPos.y;
@@ -45,11 +43,11 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   SSmaxLightPos.y = 1.0f - SSmaxLightPos.y;
   
   const float SSlightRad = abs(length(SSlightPos - SSmaxLightPos));
-
-  //LightsTransformed[uint2(lightIndex, 0)] = float4(SSlightPos.xy, SSlightRad, 1.0f);
+  
   //LightsTransformed[uint2(lightIndex, 0)] = float4(0.5f.xx, SSlightRad, 1.0f);
   //LightsTransformed[uint2(lightIndex, 0)] = float4(kLightPosition[lightIndex].xy, 0.5f, 1.0f);
-  LightsTransformed[uint2(lightIndex, 0)] = float4(kLightPosition[lightIndex].xyz, 1.0f);
+  //LightsTransformed[uint2(lightIndex, 0)] = float4(kLightPosition[lightIndex].xyz, 1.0f);
+  LightsTransformed[uint2(lightIndex, 0)] = float4(SSlightPos.xy, SSlightRad, 1.0f);
 
   return;
 }

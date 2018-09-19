@@ -84,7 +84,7 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   int actualLight;
   int totalLights = LightsIndex[uint2(TileGroup, RM_MAX_LIGHTS_PER_BLOCK)];
 
-  Lightning[uvScale] = float4((totalLights / ((float)RM_MAX_LIGHTS_PER_BLOCK)).xxx, 1.0f); return;
+  //Lightning[uvScale] = float4((totalLights / ((float)RM_MAX_LIGHTS_PER_BLOCK)).xxx, 1.0f); return;
 
   [loop]
   for (int index = 0; index < totalLights; ++index) {

@@ -5,7 +5,7 @@ cbuffer ConstantBuffer : register(b0) {
 Texture2D<float4> LightsTransformed : register(t0);
 
 RWTexture2D<int> LightsIndex : register(u0); //Size: width = total tiles, height = Max lights per tile + 1
-RWTexture2D<int> LightsIndexAux : register(u1); //Size: width = total tiles, height = Max lights per tile
+RWTexture2D<int> LightsIndexAux : register(u1); //Size: width = total tiles, height = Max lights
 
 bool
 intersects(in const float2 ellipsePos,
@@ -47,17 +47,17 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
     return;
   }
   
-  LightsIndexAux[uint2(group, lightIndex)] = 0;
-  LightsIndex[uint2(group, lightIndex)] = 0;
+  LightsIndexAux[uint2(group, lightIndex)] = -1;
+  LightsIndex[uint2(group, clamp(lightIndex, 0, RM_MAX_LIGHTS_PER_BLOCK - 1))] = -1;
   
   const float2 rectSize = float2(rcp(threadsGroups.x), rcp(threadsGroups.y));
-  const float2 rectPos = float2((rectSize.x * 0.5f) + (rectSize.x * groupID.x),
-																(rectSize.y * 0.5f) + (rectSize.y * groupID.y));
+  const float2 rectPos = float2(((rectSize.x * 0.5f) + (rectSize.x * groupID.x)),
+																((rectSize.y * 0.5f) + (rectSize.y * groupID.y)));
   
   const float4 myLight = LightsTransformed[uint2(lightIndex, 0)];
 
   if (sign(myLight.w) < 1) {
-    LightsIndexAux[uint2(group, lightIndex)] = 0;
+    LightsIndexAux[uint2(group, lightIndex)] = -1;
   }
   else {
     const float2 SSlightPos = myLight.xy;
@@ -84,7 +84,7 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   int counter = 0;
   [loop]
   for (int currentLight = 0; (currentLight < RM_MAX_LIGHTS) && (counter < RM_MAX_LIGHTS_PER_BLOCK); ++currentLight) {
-    if (LightsIndexAux[uint2(group, currentLight)].x > 0) {
+    if (LightsIndexAux[uint2(group, currentLight)] > 0) {
       LightsIndex[uint2(group, counter)] = currentLight;
       ++counter;
     }
