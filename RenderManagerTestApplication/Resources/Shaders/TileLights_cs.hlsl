@@ -2,18 +2,10 @@ cbuffer ConstantBuffer : register(b0) {
   float4 threadsGroups; //X: Number of thread groups in x, Y: Number of thread groups in Y.
 };
 
-struct lightsInBlock {
-  int foo[RM_MAX_LIGHTS_PER_BLOCK]; //64
-};
+Texture2D<float4> LightsTransformed : register(t0);
 
-struct cacaInBlock {
-  int foo[RM_MAX_LIGHTS];
-};
-
-RWTexture2D<float4> LightsTransformed : register(u0);
-
-RWStructuredBuffer<lightsInBlock> LightsIndex : register(u0);
-RWStructuredBuffer<cacaInBlock> LightsIndexAux : register(u1);
+RWTexture2D<int> LightsIndex : register(u0); //Size: width = total tiles, height = Max lights per tile + 1
+RWTexture2D<int> LightsIndexAux : register(u1); //Size: width = total tiles, height = Max lights per tile
 
 bool
 intersects(in const float2 circlePos,
@@ -37,28 +29,29 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
    uint3 groupID				: SV_GroupID,
    uint3 dispatchID			: SV_DispatchThreadID,
    uint groupIndex			: SV_GroupIndex) {
-  
-  ///////////////////////////////////////////////////
-  //////////Informacion que todos necesitan//////////
-  ///////////////////////////////////////////////////
 
-  //Este indica en que index esta este thread gruop (como si fuese un array).
+  //Este indica en que index esta este thread group (como si fuese un array).
   const uint group = (groupID.y * threadsGroups.x) + groupID.x;
   
   //Este indica la luz que tiene que analizar este thread
   const uint lightIndex = groupIndex;
   
-  LightsIndexAux[group].foo[lightIndex] = -1;
+  //if (sign(LightsTransformed[lightIndex].w) < 1) { return; }
+  
+  LightsIndexAux[uint2(group, lightIndex)] = 0;
+  LightsIndex[uint2(group, lightIndex)] = 0;
   
   const float2 rectSize = float2(rcp(threadsGroups.x), rcp(threadsGroups.y));
   const float2 rectPos = float2((rectSize.x * 0.5f) + (rectSize.x * groupID.x),
 																(rectSize.y * 0.5f) + (rectSize.y * groupID.y));
   
-  const float2 SSlightPos = LightsTransformed[lightIndex].xy;
-  const float SSlightRad = LightsTransformed[lightIndex].z;
+  const float2 SSlightPos = LightsTransformed[uint2(lightIndex, 0)].xy;
+  const float SSlightRad = LightsTransformed[uint2(lightIndex, 0)].z;
+  //const float2 SSlightPos = float2(0.5f.xx);
+  //const float SSlightRad = 0.25f;
 
   //bool intersected = intersects(SSlightPos, SSlightRad, rectPos, rectSize);
-  LightsIndexAux[group].foo[lightIndex] = (intersects(SSlightPos, SSlightRad, rectPos, rectSize) * 2) - 1;
+  LightsIndexAux[uint2(group, lightIndex)] = intersects(SSlightPos, SSlightRad, rectPos, rectSize);
 
   //if (intersected) {
 		//TODO: Comparar la profundidad de la luz con el min/max del depthbuffer,
@@ -73,17 +66,16 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
     return;
   }
   
-  //static const int maxLights = NUMTHREADS_X * NUMTHREADS_Y;
-  uint counter = 0;
+  int counter = 0;
   [loop]
-  for (int currentLight = 0; (currentLight < RM_MAX_LIGHTS) && (counter < (RM_MAX_LIGHTS_PER_BLOCK - 1)) ; ++currentLight) {
-    if (LightsIndexAux[group].foo[currentLight] > -1) {
-      LightsIndex[group].foo[counter] = currentLight;
+  for (int currentLight = 0; (currentLight < RM_MAX_LIGHTS) && (counter < RM_MAX_LIGHTS_PER_BLOCK); ++currentLight) {
+    if (LightsIndexAux[uint2(group, currentLight)].x > 0) {
+      LightsIndex[uint2(group, counter)] = currentLight;
       ++counter;
     }
   }
 
-  LightsIndex[group].foo[RM_MAX_LIGHTS_PER_BLOCK - 1] = counter;
+  LightsIndex[uint2(group, RM_MAX_LIGHTS_PER_BLOCK)] = counter;
 
   return;
 }

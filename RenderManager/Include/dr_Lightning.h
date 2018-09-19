@@ -21,6 +21,10 @@ struct LightningLightsToSSData : PassDrawData {
   std::array<Light, RM_MAX_LIGHTS>* Lights;
 };
 
+struct LightningTileLightsSSData : PassDrawData {
+  GFXShared<RenderTarget> OutRt;
+};
+
 struct LightningDrawData : PassDrawData {
   std::shared_ptr<Camera> ActiveCam;
   SizeT ActiveLights;
@@ -55,12 +59,23 @@ class LightningPass : public RenderPass {
   */
   void
   init(PassInitData* initData);
+  
+  /*
+  */
+  void
+  recompileShader(String vsPreText = "",
+                  String psPreText = "",
+                  String csPreText = "");
 
+  /*
+  */
   void
   lightsToScreenSpace(LightningLightsToSSData* data);
 
+  /*
+  */
   void
-  tileLights(PassDrawData* drawData);
+  tileLights(LightningTileLightsSSData* data);
 
   /*
   */
@@ -96,8 +111,6 @@ class LightningPass : public RenderPass {
   SizeT m_ComputeWidthBlocks;
   SizeT m_ComputeHeightBlocks;
   SizeT m_ComputeTotalBlocks;
-
-  TString m_csTiledLightsFilename;
 
   GFXUnique<Shader> m_csWorldLightsToSS;
   GFXUnique<Shader> m_csTiledLights;

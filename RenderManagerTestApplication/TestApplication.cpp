@@ -115,8 +115,7 @@ RenderManApp::postInit() {
   for (Int32 xPos = 0; xPos < horizontalLights; ++xPos) {
     for (Int32 zPos = 0; zPos < (RM_MAX_LIGHTS / horizontalLights); ++zPos) {
       //Posicion
-      Lights[lighIndex].m_vec4Position = Vector4D(
-                                                  (xOffset * separationX) - ((horizontalLights - 1) * separationX * 0.5f),
+      Lights[lighIndex].m_vec4Position = Vector4D((xOffset * separationX) - ((horizontalLights - 1) * separationX * 0.5f),
                                                   25,
                                                   ((zPos + 1) * separationZ) - 187.5,
                                                   1.0f);

@@ -516,14 +516,9 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_LWSLightsToSSData.Lights = &lights[0];
   m_LightningPass.lightsToScreenSpace(&m_LWSLightsToSSData);
   //Tile Lights
-  /*
-  m_LightningPass.tileLights();
-  */
+  m_LTileLightsData.OutRt = m_RTLightning;
+  m_LightningPass.tileLights(&m_LTileLightsData);
   //Lightning Pass
-  /*
-  m_LightningPass.draw();
-  */
-
   m_LightningDrawData.ActiveCam = mainCam;
   m_LightningDrawData.Lights = &lights[0];
   m_LightningDrawData.ActiveLights = 128;
@@ -533,13 +528,9 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_LightningDrawData.EnviromentCubemap = m_cubemap;
   m_LightningDrawData.IrradianceCubemap = m_cubemapDiffuse;
   m_LightningDrawData.dsOptions = m_LightningDSoptions;
-
-  //m_LightningPass.tileLights(&m_LightningDrawData); //FPS KILLER
-
-  /*
-
   m_LightningPass.draw(&m_LightningDrawData);
 
+  /*
   m_BloomDrawData.BloomThreshold = Vector3D(0.75f, 0.75f, 0.75f);
   m_BloomDrawData.LuminiscenceDelta = *luminanceDelta;
   m_BloomDrawData.ColorTexture = &m_RTLightning->getTexture(0);
@@ -590,7 +581,8 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   //m_PostProcessingDrawData.ColorTex = &m_RTLightning->getTexture(0);
   //m_PostProcessingDrawData.ColorTex = &m_RTGBuffer->getTexture(0);
   //m_PostProcessingDrawData.ColorTex = &m_RTSSAO_SSShadow ->getTexture(0);
-  m_PostProcessingDrawData.ColorTex = &m_RTGBuffer->getTexture(2);
+  //m_PostProcessingDrawData.ColorTex = &m_RTGBuffer->getTexture(2);
+  m_PostProcessingDrawData.ColorTex = &m_RTLightning->getTexture(0);
   m_PostProcessingDrawData.ColorBlurTex = &m_RTSSAO_SSShadowBlur->getTexture(0);
 
   //m_PostProcessingDrawData.ColorBlurTex = &m_RTLightningBlur->getTexture(0);

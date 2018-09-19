@@ -1,7 +1,3 @@
-struct lightsInBlock {
-  int foo[RM_MAX_LIGHTS_PER_BLOCK];
-};
-
 #include "Resources\\Shaders\\PBR_Math.hlsl"
 
 cbuffer ConstantBuffer : register(b0) {
@@ -9,7 +5,7 @@ cbuffer ConstantBuffer : register(b0) {
   float4 kEyePosition;        //XYZ: EyePosition, W: Active Lights
   float4 kLightPosition[RM_MAX_LIGHTS]; //XYZ: Light Position, W: Range
   float4 kLightColor[RM_MAX_LIGHTS];    //XYZ: Light Color, W: Intensity
-  float4 threadsInfo; //X: Number of thread groups in x, Y: Number of thread groups in Y.
+  float4 threadsInfo; //X: Number of thread groups in x, Y: Number of thread groups in Y, Z: Number of Tiles in X, W: Number of Tiles in Y
 };
 
 SamplerState SS : register(s0);
@@ -19,11 +15,11 @@ Texture2D NormalCoCTex         : register(t1);
 Texture2D AlbedoMetallicTex    : register(t2);
 Texture2D EmissiveRoughnessTex : register(t3);
 Texture2D SSAO_SSShadowTex     : register(t4);
-TextureCube EnvironmentTex     : register(t5);
-TextureCube IrradianceTex      : register(t6);
+Texture2D<int> LightsIndex     : register(t5);
+TextureCube EnvironmentTex     : register(t6);
+TextureCube IrradianceTex      : register(t7);
 
-RWStructuredBuffer<lightsInBlock> LightsIndex : register(u0);
-RWTexture2D<float4> Lightning  : register(u1);
+RWTexture2D<float4> Lightning  : register(u0);
 
 #define NUMTHREADS_X 8
 #define NUMTHREADS_Y 4
@@ -34,8 +30,13 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
 	 uint3 dispatchID			: SV_DispatchThreadID,
 	 uint  groupIndex			: SV_GroupIndex) {
   
-  //Este indica en que index esta este gruop thread (como si fuese un array).
+  //Este indica en que index esta este group thread (como si fuese un array).
   const uint group = (groupID.y * threadsInfo.x) + groupID.x;
+
+  const int2 TileGroupID = uint2(floor(dispatchID.x / ((float)RM_TILE_LIGHTS_SZ)),
+                                  floor(dispatchID.y / ((float)RM_TILE_LIGHTS_SZ)));
+  
+  const int TileGroup = (TileGroupID.y * threadsInfo.z) + TileGroupID.x;
   
   const float2 uvScale = float2(dispatchID.x, dispatchID.y);
 	
@@ -80,12 +81,12 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
 
   const int activeLights = kEyePosition.w;
   
-  uint actualLight;
-  uint totalLights = LightsIndex[group].foo[RM_MAX_LIGHTS_PER_BLOCK - 1];
+  int actualLight;
+  int totalLights = LightsIndex[uint2(TileGroup, RM_MAX_LIGHTS_PER_BLOCK)];
 
   [loop]
-  for (uint index = 0; index < totalLights; ++index) {
-    actualLight = LightsIndex[group].foo[index];
+  for (int index = 0; index < totalLights; ++index) {
+    actualLight = LightsIndex[uint2(TileGroup, index)];
     
     lightPosition  = kLightPosition[actualLight].xyz;
     lightColor     = kLightColor[actualLight].xyz;

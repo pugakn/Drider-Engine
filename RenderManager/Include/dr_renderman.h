@@ -155,6 +155,7 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   LightningPass m_LightningPass;
   LightningInitData m_LightningInitData;
   LightningLightsToSSData m_LWSLightsToSSData;
+  LightningTileLightsSSData m_LTileLightsData;
   LightningDrawData m_LightningDrawData;
   GFXShared<DepthStencil> m_LightningDSoptions;
 
