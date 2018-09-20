@@ -214,23 +214,6 @@ LightningPass::lightsToScreenSpace(LightningLightsToSSData* data) {
   std::vector<Vector4D> vecSSLights;
   float lightRange;
   for (SizeT lighIndex = 0; lighIndex < RM_MAX_LIGHTS; ++lighIndex) {
-    /*
-    lightPos = (*data->Lights)[lighIndex].m_vec4Position;
-    lightRange = lightPos.w;
-    lightPos.w = 1.0f;
-
-    SSLights = get2dPoint(lightPos, data->ActiveCam->getVP());
-
-    lightPos += m_CBWSLightsToSSData.CameraUp * lightRange;
-    lightPos.w = 1.0f;
-
-    SSLightsMax = get2dPoint(lightPos, data->ActiveCam->getVP());
-
-    lightRange = (SSLightsMax - SSLights).length();
-
-    vecSSLights.push_back(Vector4D(SSLights.x, SSLights.y, lightRange, 1.0f));
-    m_CBWSLightsToSSData.LightPosition[lighIndex] = Vector4D(SSLights.x, 1.0f - SSLights.y, lightRange, 1.0f);
-    */
     m_CBWSLightsToSSData.LightPosition[lighIndex] = (*data->Lights)[lighIndex].m_vec4Position;
   }
 
@@ -245,7 +228,6 @@ LightningPass::lightsToScreenSpace(LightningLightsToSSData* data) {
   dc.setResourcesNull();
 }
 
-//////////KILLER FUNCTION//////////
 void
 LightningPass::tileLights(LightningTileLightsSSData* data) {
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
@@ -265,8 +247,10 @@ LightningPass::tileLights(LightningTileLightsSSData* data) {
   m_RTWidth = outRTDesc.width;
   m_RTHeight = outRTDesc.height;
 
-  m_ComputeWidthBlocks = Math::ceil(m_RTWidth / ((float)RM_TILE_LIGHTS_SZ));
+  m_ComputeWidthBlocks  = Math::ceil(m_RTWidth / ((float)RM_TILE_LIGHTS_SZ));
   m_ComputeHeightBlocks = Math::ceil(m_RTHeight / ((float)RM_TILE_LIGHTS_SZ));
+
+  SizeT totalTiles = m_ComputeWidthBlocks * m_ComputeHeightBlocks;
 
   m_CBTileLightsData.threadsInfo.x = m_ComputeWidthBlocks;
   m_CBTileLightsData.threadsInfo.y = m_ComputeHeightBlocks;
@@ -275,7 +259,8 @@ LightningPass::tileLights(LightningTileLightsSSData* data) {
   m_CBTileLights->updateFromBuffer(dc, reinterpret_cast<byte*>(&m_CBTileLightsData));
   m_CBTileLights->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
 
-  dc.dispatch(m_ComputeWidthBlocks, m_ComputeHeightBlocks, 1);
+  SizeT passes = RM_MAX_LIGHTS / 512;
+  dc.dispatch(m_ComputeWidthBlocks, m_ComputeHeightBlocks, passes);
 
   dc.setUAVsNull();
   dc.setResourcesNull();

@@ -1,5 +1,9 @@
 cbuffer ConstantBuffer : register(b0) {
-  float4 threadsGroups; //X: Number of thread groups in x, Y: Number of thread groups in Y.
+  //X: Number of thread groups in x
+  //Y: Number of thread groups in Y.
+  //Z: Vertical FOV.
+  //W: Offset.
+  float4 extraInfo;
 };
 
 Texture2D<float4> LightsTransformed : register(t0);
@@ -33,9 +37,11 @@ intersects(in const float2 ellipsePos,
 //Max lights = 32 * 8 = 256
 //Max lights = 32 * 16 = 512
 //Max lights = 32 * 32 = 1024
-#define NUMTHREADS_X 32
-#define NUMTHREADS_Y 16
-[numthreads(NUMTHREADS_X, NUMTHREADS_Y, 1)]
+//#define NUMTHREADS_X 512
+#define NUMTHREADS_X 512
+#define NUMTHREADS_Y 1
+#define NUMTHREADS_Z 1
+[numthreads(NUMTHREADS_X, NUMTHREADS_Y, NUMTHREADS_Z)]
 void
 CS(uint3 groupThreadID	: SV_GroupThreadID,
    uint3 groupID				: SV_GroupID,
@@ -43,10 +49,11 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
    uint groupIndex			: SV_GroupIndex) {
 
   //Este indica en que index esta este thread group (como si fuese un array).
-  const uint group = (groupID.y * threadsGroups.x) + groupID.x;
+  const uint group = (groupID.y * extraInfo.x) + groupID.x;
+  //const uint group = groupID.x;
   
   //Este indica la luz que tiene que analizar este thread
-  const uint lightIndex = groupIndex;
+  const uint lightIndex = groupIndex + (NUMTHREADS_X * groupID.z);
 
   if (lightIndex >= RM_MAX_LIGHTS) {
     return;
@@ -55,7 +62,7 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   LightsIndexAux[uint2(group, lightIndex)] = -1;
   LightsIndex[uint2(group, clamp(lightIndex, 0, RM_MAX_LIGHTS_PER_BLOCK - 1))] = -1;
   
-  const float2 rectSize = float2(rcp(threadsGroups.x), rcp(threadsGroups.y));
+  const float2 rectSize = float2(rcp(extraInfo.x), rcp(extraInfo.y));
   const float2 rectPos = float2(((rectSize.x * 0.5f) + (rectSize.x * groupID.x)),
 																((rectSize.y * 0.5f) + (rectSize.y * groupID.y)));
   
@@ -67,7 +74,7 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   else {
     const float2 SSlightPos = myLight.xy;
     //const float2 SSlightPos = float2(0.5f.xx);
-    const float2 SSlightRad = float2(myLight.z * threadsGroups.z,
+    const float2 SSlightRad = float2(myLight.z * extraInfo.z,
                                      myLight.z);
     
     LightsIndexAux[uint2(group, lightIndex)] = intersects(SSlightPos, SSlightRad, rectPos, rectSize);
@@ -85,17 +92,24 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   if (lightIndex > 0) {
     return;
   }
+
+  if (groupID.z > 0) {
+    return;
+  }
   
   int counter = 0;
   [loop]
-  for (int currentLight = 0; (currentLight < RM_MAX_LIGHTS) && (counter < RM_MAX_LIGHTS_PER_BLOCK); ++currentLight) {
+  for (int currentLight = 0;
+       (currentLight < RM_MAX_LIGHTS) && (counter < RM_MAX_LIGHTS_PER_BLOCK);
+       ++currentLight) {
     if (LightsIndexAux[uint2(group, currentLight)] > 0) {
-      LightsIndex[uint2(group, counter)] = currentLight;
+      LightsIndex[uint2(group, counter + 1)] = currentLight;
       ++counter;
     }
   }
 
-  LightsIndex[uint2(group, RM_MAX_LIGHTS_PER_BLOCK)] = counter;
+  //LightsIndex[uint2(group, RM_MAX_LIGHTS_PER_BLOCK)] = counter;
+  LightsIndex[uint2(group, 0)] = counter;
 
   return;
 }
