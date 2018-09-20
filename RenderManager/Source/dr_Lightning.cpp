@@ -157,7 +157,6 @@ LightningPass::recompileShader(String vsPreText,
                                String psPreText,
                                String csPreText) {
   Device& dc = GraphicsAPI::getDevice();
-
   
   String precomputeString = "#define RM_MAX_LIGHTS " +
                             StringUtils::toString(RM_MAX_LIGHTS) +
