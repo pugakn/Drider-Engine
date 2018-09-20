@@ -4,7 +4,7 @@ Texture2D ColorTex          : register(t0);
 Texture2D ColorBlurTex      : register(t1);
 Texture2D PositionLDepthTex : register(t2);
 Texture2D BloomTex          : register(t3);
-StructuredBuffer<float4> LuminescenceTex : register (t4);
+StructuredBuffer<float> LuminescenceValue : register (t4);
 //Texture2D GodRays           : register(tn);
 //Texture2D FilmLutTex        : register(tn);
 
@@ -177,7 +177,7 @@ FS(PS_INPUT input) : SV_TARGET0 {
   #endif //BLOOM
   
   #ifdef TONE_MAPPING
-    const float kExposure = LuminescenceTex[0].x;
+    const float kExposure = LuminescenceValue[0];
 
     //finalColor = BasicExposure(finalColor, kExposure);
     //finalColor = Reinhard(finalColor.xyz, kExposure);

@@ -37,6 +37,13 @@ RenderManager::init() {
   //luminanceDelta = 0.0f;
 
   ///////////Resolutions///////////
+
+  //////////16:9//////////
+
+  //8K
+  //screenWidth = 7680;
+  //screenHeight = 4320;
+
   //4K
   //screenWidth = 4096;
   //screenHeight = 2304;
@@ -52,16 +59,20 @@ RenderManager::init() {
   //1080p o FHD
   //screenWidth = 1920;
   //screenHeight = 1080;
-   
+
   //720p o HD
-  //screenWidth = 1280;
-  //screenHeight = 720;
+  screenWidth = 1280;
+  screenHeight = 720;
 
   //////////21:9//////////
 
+  //1080p o FHD
+  //screenWidth = 2560;
+  //screenHeight = 1080;
+
   //720p o HD
-  screenWidth = 1680;
-  screenHeight = 720;
+  //screenWidth = 1680;
+  //screenHeight = 720;
 
   static const float blurScale = 0.5f;
 

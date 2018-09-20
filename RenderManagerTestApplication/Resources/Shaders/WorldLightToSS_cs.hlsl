@@ -1,7 +1,13 @@
 cbuffer ConstantBuffer : register(b0) {
-  float4 cameraUp; //X: Number of thread groups in x, Y: Number of thread groups in Y.
+  //XYZ: normalized camera vector, W = camera far plane
+  float4 cameraUp;
+
+  float4 cameraFront;
   float4x4 VP;
-  float4 kLightPosition[RM_MAX_LIGHTS]; // [XYZ = LightPosition, W = Range] // W Sign: Positive = light is active, Negative = light is inactive
+
+  //XYZ = LightPosition, W = Range
+  //W Sign: Positive = light is active, Negative = light is inactive
+  float4 kLight[RM_MAX_LIGHTS];
 };
 
 RWTexture2D<float4> LightsTransformed : register(u0);
@@ -23,31 +29,34 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   //if sign returns -1, range is negative
   //if sign returns  0, range is 0
   //if sign returns  1, range is positive
-  if (sign(kLightPosition[lightIndex].w) <= 0) {
+  if (sign(kLight[lightIndex].w) <= 0) {
     LightsTransformed[uint2(lightIndex, 0)] = float4(-1.0f.xxxx);
     return;
   }
 
-  const float4 LightPos = float4(kLightPosition[lightIndex].xyz, 1.0f);
-  const float4 MaxLightPos = LightPos + (cameraUp * kLightPosition[lightIndex].w);
+  const float4 LightPos         = float4(kLight[lightIndex].xyz, 1.0f);
+  const float4 LightForwardPos  = LightPos + (float4(cameraFront.xyz, 0.0f) * kLight[lightIndex].w);
+  const float4 LightUpPos       = LightPos + (float4(cameraUp.xyz, 0.0f) * kLight[lightIndex].w);
+
+  const float4 transformedLightPos        = mul(VP, LightPos);
+  const float4 transformedLightForwardPos = mul(VP, LightForwardPos);
+  const float4 transformedLightUpPos      = mul(VP, LightUpPos);
   
-  const float4 transformedLight = mul(VP, LightPos);
-  const float4 transformedMaxLight = mul(VP, MaxLightPos);
-  
-  float2 SSlightPos = (transformedLight.xyz / transformedLight.w).xy;
-  float2 SSmaxLightPos = (transformedMaxLight.xyz / transformedMaxLight.w).xy;
-  
+  float2 SSlightPos = transformedLightPos.xy / transformedLightPos.w;
   SSlightPos = (SSlightPos + (1.0f).xx) * 0.5f;
   SSlightPos.y = 1.0f - SSlightPos.y;
-  SSmaxLightPos = (SSmaxLightPos + (1.0f).xx) * 0.5f;
-  SSmaxLightPos.y = 1.0f - SSmaxLightPos.y;
   
-  const float SSlightRad = abs(length(SSlightPos - SSmaxLightPos));
+  float2 SSLightUpPos = transformedLightUpPos.xyz / transformedLightUpPos.w;
+  SSLightUpPos = (SSLightUpPos + (1.0f).xx) * 0.5f;
+  SSLightUpPos.y = 1.0f - SSLightUpPos.y;
   
-  //LightsTransformed[uint2(lightIndex, 0)] = float4(0.5f.xx, SSlightRad, 1.0f);
-  //LightsTransformed[uint2(lightIndex, 0)] = float4(kLightPosition[lightIndex].xy, 0.5f, 1.0f);
-  //LightsTransformed[uint2(lightIndex, 0)] = float4(kLightPosition[lightIndex].xyz, 1.0f);
+  const float SSlightRad = abs(length(SSlightPos - SSLightUpPos));
+
+  const float lightLDepthPos = transformedLightPos.z * rcp(cameraUp.w);
+  const float lightLDepthRad = abs(LightPos.z - LightForwardPos.z) * rcp(cameraUp.w);
+  
   LightsTransformed[uint2(lightIndex, 0)] = float4(SSlightPos.xy, SSlightRad, 1.0f);
+  LightsTransformed[uint2(lightIndex, 1)] = float4(lightLDepthPos, lightLDepthRad, 0.0f, 0.0f);
 
   return;
 }

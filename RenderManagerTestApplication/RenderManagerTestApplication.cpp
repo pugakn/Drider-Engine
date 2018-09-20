@@ -10,6 +10,14 @@ main(Int32 argc, char* argv[]) {
   vp.topLeftX = 0;
   vp.topLeftY = 0;
 
+  ///////////Resolutions///////////
+
+  //////////16:9//////////
+
+  //8K
+  //screenWidth = 7680;
+  //screenHeight = 4320;
+
   //4K
   //vp.width = 4096;
   //vp.height = 2304;
@@ -27,14 +35,18 @@ main(Int32 argc, char* argv[]) {
   //vp.height = 1080;
 
   //720p o HD
-  //vp.width = 1280;
-  //vp.height = 720;
+  vp.width = 1280;
+  vp.height = 720;
 
   //////////21:9//////////
 
+  //1080p o FHD
+  //vp.width = 2560;
+  //vp.height = 1080;
+
   //720p o HD
-  vp.width = 1680;
-  vp.height = 720;
+  //vp.width = 1680;
+  //vp.height = 720;
 
   return app.run(vp);
 }

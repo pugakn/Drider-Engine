@@ -105,7 +105,7 @@ LightningPass::init(PassInitData* initData) {
   DrTextureDesc m_TexDesc;
   m_TexDesc.dimension = DR_DIMENSION::k2D;
   m_TexDesc.width = RM_MAX_LIGHTS;
-  m_TexDesc.height = 1;
+  m_TexDesc.height = 2;
   m_TexDesc.Format = DR_FORMAT::kR32G32B32A32_FLOAT;;
   m_TexDesc.pitch = m_TexDesc.width * 4 * 4;
   m_TexDesc.mipLevels = 0;
@@ -171,25 +171,6 @@ LightningPass::recompileShader(String vsPreText,
   RenderPass::recompileShader("", "", precomputeString);
 }
 
-Vector2D
-get2dPoint(Vector4D point,
-           Matrix4x4 VPMatrix) {
-  Matrix4x4 WMat;
-  WMat.identity();
-  WMat.Translation(Vector3D(point));
-
-  //Vector4D SSPoint = Vector4D(0.0f, 0.0f, 0.0f, 1.0f);
-  //SSPoint = SSPoint * (WMat * VPMatrix);
-  //SSPoint /= SSPoint.w;
-  Vector4D SSPoint = point * VPMatrix;
-  SSPoint /= SSPoint.w;
-
-  float winX = (SSPoint.x + 1.0f) * 0.5f;
-  float winY = (1.0f - SSPoint.y) * 0.5f;
-  winY = 1.0f - winY;
-  return Vector2D(winX, winY);
-}
-
 void
 LightningPass::lightsToScreenSpace(LightningLightsToSSData* data) {
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
@@ -201,9 +182,15 @@ LightningPass::lightsToScreenSpace(LightningLightsToSSData* data) {
 
   m_RTLightsInSS->getTexture(0).set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute);
   
-  m_CBWSLightsToSSData.CameraUp = data->ActiveCam->getLocalUp().normalize();
+  m_CBWSLightsToSSData.CameraUp = data->ActiveCam->getLocalUp();
   m_CBWSLightsToSSData.CameraUp.w = 0.0f;
   m_CBWSLightsToSSData.CameraUp.normalize();
+
+  m_CBWSLightsToSSData.CameraUp.w = data->ActiveCam->getFarPlane();
+
+  m_CBWSLightsToSSData.CameraFront = data->ActiveCam->getDirection();
+  m_CBWSLightsToSSData.CameraFront.w = 0.0f;
+  m_CBWSLightsToSSData.CameraFront.normalize();
   
   m_CBWSLightsToSSData.CameraVP = data->ActiveCam->getVP();
 

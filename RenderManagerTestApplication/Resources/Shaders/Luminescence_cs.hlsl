@@ -88,7 +88,7 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
 
   float totalAverageLuminescence = thisColumnLuminance *  rcp(fViewportDimensions.x * fViewportDimensions.y);
   
-  GroupLuminescence[0].x = totalAverageLuminescence;
+  GroupLuminescence[0] = totalAverageLuminescence;
 
   return;
 }

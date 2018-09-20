@@ -85,6 +85,7 @@ class LightningPass : public RenderPass {
  private:
   struct CBufferWSLightsToSS {
     Vector4D CameraUp;
+    Vector4D CameraFront;
     Matrix4x4 CameraVP;
 
     // [XYZ = LightPosition, W = Range]

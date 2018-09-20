@@ -1,4 +1,5 @@
 cbuffer ConstantBuffer : register(b0) {
+  //float4 fViewportDimensions;  
   //X: Number of thread groups in x
   //Y: Number of thread groups in Y.
   //Z: Vertical FOV.
@@ -7,6 +8,7 @@ cbuffer ConstantBuffer : register(b0) {
 };
 
 Texture2D<float4> LightsTransformed : register(t0);
+//Texture2D<float4> PositionLinearDepthTex : register(t1);
 
 RWTexture2D<int> LightsIndex : register(u0); //Size: width = total tiles, height = Max lights per tile + 1
 RWTexture2D<int> LightsIndexAux : register(u1); //Size: width = total tiles, height = Max lights
@@ -16,28 +18,43 @@ intersects(in const float2 ellipsePos,
            in const float2 ellipseRadius,
            in const float2 RectPos,
            in const float2 RectSize) {
-  /*
-  //Circle case
-	const float DeltaX = ellipsePos.x - max(RectPos.x, min(ellipsePos.x, RectPos.x + RectSize.x));
-  const float DeltaY = ellipsePos.y - max(RectPos.y, min(ellipsePos.y, RectPos.y + RectSize.y));
-  return ((DeltaX * DeltaX) + (DeltaY * DeltaY)) < (ellipseRadius * ellipseRadius); //Circle case
-  */
-  //Ellipse case
-  const float DeltaX = max(RectPos.x - (RectSize.x * 0.5f), min(ellipsePos.x, RectPos.x + (RectSize.x * 0.5f)));
-  const float DeltaY = max(RectPos.y - (RectSize.y * 0.5f), min(ellipsePos.y, RectPos.y + (RectSize.y * 0.5f)));
-  //return ((pow(DeltaX - ellipsePos.x, 2) / pow(ellipseRadius.x, 2)) + (pow(DeltaY - ellipsePos.y, 2) / pow(ellipseRadius.y, 2))) <= 1; 
+  const float DeltaX = max(RectPos.x - RectSize.x, min(ellipsePos.x, RectPos.x + RectSize.x));
+  const float DeltaY = max(RectPos.y - RectSize.y, min(ellipsePos.y, RectPos.y + RectSize.y));
+  
   float result = ((pow(DeltaX - ellipsePos.x, 2.0f) / pow(ellipseRadius.x, 2.0f)) +
                   (pow(DeltaY - ellipsePos.y, 2.0f) / pow(ellipseRadius.y, 2.0f)));
-  //float result = ((pow(DeltaX - ellipsePos.x, 2) / pow(ellipseRadius.x, 2)) + (pow(DeltaY - ellipsePos.y, 2) / pow(ellipseRadius.y, 2)));
-  //return (result >= 0) && (result <= 1);
-  return result <= 1;
+
+  return result < 1;
+}
+
+float2
+getMinMaxDepth(in const uint2 uvOffset) {
+  uint2 sampleUV = uvOffset;
+  float2 minMax;
+  //float2 minMax = PositionLinearDepthTex[uvOffset + uint2(x, y)].ww;
+
+  /*
+  float currentDepth;
+  for (int x = 0; x < RM_TILE_LIGHTS_SZ; ++x) {
+    for (int y = 0; y < RM_TILE_LIGHTS_SZ; ++y) {
+      sampleUV = uvOffset + uint2(x, y);
+      sampleUV.x = clamp(sampleUV.x, 0, fViewportDimensions.x - 1);
+      sampleUV.y = clamp(sampleUV.y, 0, fViewportDimensions.y - 1);
+
+      currentDepth = PositionLinearDepthTex[sampleUV].w;
+      minMax.x = min(minMax.x, currentDepth);
+      minMax.y = max(minMax.y, currentDepth);
+    }
+  }
+  */
+
+  return minMax;
 }
 
 //Max lights = 32 * 4 = 128
 //Max lights = 32 * 8 = 256
 //Max lights = 32 * 16 = 512
 //Max lights = 32 * 32 = 1024
-//#define NUMTHREADS_X 512
 #define NUMTHREADS_X 512
 #define NUMTHREADS_Y 1
 #define NUMTHREADS_Z 1
@@ -77,23 +94,24 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
     const float2 SSlightRad = float2(myLight.z * extraInfo.z,
                                      myLight.z);
     
-    LightsIndexAux[uint2(group, lightIndex)] = intersects(SSlightPos, SSlightRad, rectPos, rectSize);
+    LightsIndexAux[uint2(group, lightIndex)] = intersects(SSlightPos, SSlightRad, rectPos, rectSize * 0.5f);
+    //bool intersected = intersects(SSlightPos, SSlightRad, rectPos, rectSize * 0.5f);
     //if (intersected) {
-      //TODO: Comparar la profundidad de la luz con el min/max del depthbuffer,
+      //TODO: Comparar la profundidad min/max de la luz con el min/max del depthbuffer,
       //			si no esta entre esa profundidad y el ojo, no agregarla
       
-      //No agregar si ya hay RM_MAX_LIGHTS_PER_BLOCK o mas luces
-      //Agregar esta luz al array/vector de indices de luces
-      //LightsIndexAux[group].foo[lightIndex] = 1;
+      //float2 depthMinMax = getMinMaxDepth(Wololo);
+      //float2 lightMinMax = Wololo;
+      //if ((lightMinMax.x < depthMinMax.y) &&
+      //    (lightMinMax.y > depthMinMax.x) ) {
+          //LightsIndexAux[uint2(group, lightIndex)] = 1;
+      //
+      //}
     //}
   }
 
 
-  if (lightIndex > 0) {
-    return;
-  }
-
-  if (groupID.z > 0) {
+  if (lightIndex > 0 || groupID.z > 0) {
     return;
   }
   
