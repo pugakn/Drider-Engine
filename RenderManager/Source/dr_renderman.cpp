@@ -63,7 +63,9 @@ RenderManager::init() {
   screenWidth = 1680;
   screenHeight = 720;
 
-  float shadowQualityMultiplier = 0.5f;
+  static const float blurScale = 0.5f;
+
+  float shadowQualityMultiplier = 1.0f;
   shadowWidth = 1024 * shadowQualityMultiplier;
   shadowHeight = 1024 * shadowQualityMultiplier;
 
@@ -116,7 +118,6 @@ RenderManager::init() {
   }
 
   /////////Creation of RT's & DS's/////////
-  static const float blurScale = 0.5f;
   //RenderTarget Base
   {
     m_TexDescDefault.dimension = DR_DIMENSION::k2D;
@@ -212,8 +213,10 @@ RenderManager::init() {
   //SSAO & SSShadow
   {
     //RenderTarget
-    m_TexDescDefault.width = screenWidth * blurScale;
-    m_TexDescDefault.height = screenHeight * blurScale;
+    //m_TexDescDefault.width = screenWidth * blurScale;
+    //m_TexDescDefault.height = screenHeight * blurScale;
+    m_TexDescDefault.width = screenWidth;
+    m_TexDescDefault.height = screenHeight;
     m_TexDescDefault.Format = DR_FORMAT::kR8G8_UNORM;
     m_TexDescDefault.pitch = m_TexDescDefault.width * 2 * 1;
     m_TexDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
@@ -530,7 +533,11 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_LightningDrawData.dsOptions = m_LightningDSoptions;
   m_LightningPass.draw(&m_LightningDrawData);
 
-  /*
+  m_luminescenceDrawData.InTexture = &m_RTLightning->getTexture(0);
+  m_luminescenceDrawData.LuminiscenceDelta = *luminanceDelta;
+  m_luminescenceDrawData.resultBuffer = &resultBuffer;
+  m_luminescencePass.draw(&m_luminescenceDrawData);
+
   m_BloomDrawData.BloomThreshold = Vector3D(0.75f, 0.75f, 0.75f);
   m_BloomDrawData.LuminiscenceDelta = *luminanceDelta;
   m_BloomDrawData.ColorTexture = &m_RTLightning->getTexture(0);
@@ -555,11 +562,6 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_VerBlurDrawData.OutRt = m_RTLightningBlur;
   m_VerBlurPass.draw(&m_VerBlurDrawData);
 
-  m_luminescenceDrawData.InTexture = &m_RTLightning->getTexture(0);
-  m_luminescenceDrawData.LuminiscenceDelta = *luminanceDelta;
-  m_luminescenceDrawData.resultBuffer = &resultBuffer;
-  m_luminescencePass.draw(&m_luminescenceDrawData);
-  */
   _out.set(dc, _outds);
 
   //m_emitter.update();
@@ -578,17 +580,18 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_PostProcessingDrawData.VignetteConcentration = Vector2D(4.0f, 4.0f);
   m_PostProcessingDrawData.VignetteRad = Vector2D(1.25f, 1.25f);
 
-  //m_PostProcessingDrawData.ColorTex = &m_RTLightning->getTexture(0);
-  //m_PostProcessingDrawData.ColorTex = &m_RTGBuffer->getTexture(0);
-  //m_PostProcessingDrawData.ColorTex = &m_RTSSAO_SSShadow ->getTexture(0);
   //m_PostProcessingDrawData.ColorTex = &m_RTGBuffer->getTexture(2);
-  m_PostProcessingDrawData.ColorTex = &m_RTLightning->getTexture(0);
-  m_PostProcessingDrawData.ColorBlurTex = &m_RTSSAO_SSShadowBlur->getTexture(0);
+  //m_PostProcessingDrawData.ColorTex = &m_RTSSAO_SSShadow ->getTexture(0);
+  //m_PostProcessingDrawData.ColorTex = &m_RTSSAO_SSShadowBlur ->getTexture(0);
+  //m_PostProcessingDrawData.ColorTex = &m_RTLightning->getTexture(0);
+  //m_PostProcessingDrawData.ColorTex = &m_RTBrightness->getTexture(0);
+  //m_PostProcessingDrawData.ColorTex = &m_RTBloom->getTexture(0);
+  //m_PostProcessingDrawData.ColorTex = &m_RTLightningBlur->getTexture(0);
 
-  //m_PostProcessingDrawData.ColorBlurTex = &m_RTLightningBlur->getTexture(0);
+  m_PostProcessingDrawData.ColorTex = &m_RTLightning->getTexture(0);
+  m_PostProcessingDrawData.ColorBlurTex = &m_RTLightningBlur->getTexture(0);
   m_PostProcessingDrawData.PositionDepthTex = &m_RTGBuffer->getTexture(0);
   m_PostProcessingDrawData.BloomTex = &m_RTBloom->getTexture(0);
-
   m_PostProcessingDrawData.luminescenceBuffer = resultBuffer;
   m_PostProcessingPass.draw(&m_PostProcessingDrawData);
 

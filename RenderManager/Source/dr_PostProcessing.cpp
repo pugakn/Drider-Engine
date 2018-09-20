@@ -57,7 +57,7 @@ PostProcessingPass::draw(PassDrawData* drawData) {
   data->ColorBlurTex->set(dc, 1);
   data->PositionDepthTex->set(dc, 2);
   data->BloomTex->set(dc, 3);
-  //data->luminescenceBuffer->set(dc, DR_SHADER_TYPE_FLAG::kFragment, 4);
+  data->luminescenceBuffer->set(dc, DR_SHADER_TYPE_FLAG::kFragment, 4);
 
   m_inputLayout->set(dc);
 
