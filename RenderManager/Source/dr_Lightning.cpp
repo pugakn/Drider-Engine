@@ -194,18 +194,14 @@ LightningPass::lightsToScreenSpace(LightningLightsToSSData* data) {
   
   m_CBWSLightsToSSData.CameraVP = data->ActiveCam->getVP();
 
-  Vector4D lightPos;
-  Vector2D SSLights;
-  Vector2D SSLightsMax;
-  std::vector<Vector4D> vecSSLights;
-  float lightRange;
-  for (SizeT lighIndex = 0; lighIndex < RM_MAX_LIGHTS; ++lighIndex) {
-    m_CBWSLightsToSSData.LightPosition[lighIndex] = (*data->Lights)[lighIndex].m_vec4Position;
+  SizeT currentIndex = 0;
+  for (auto& currentVec : *data->Lights) {
+    m_CBWSLightsToSSData.LightPosition[currentIndex] = currentVec.m_vec4Position;
+    ++currentIndex;
   }
 
   m_CBWSLightsToSS->updateFromBuffer(dc, reinterpret_cast<byte*>(&m_CBWSLightsToSSData));
   m_CBWSLightsToSS->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
-
 
   SizeT csDivisions = static_cast<SizeT>(Math::ceil(RM_MAX_LIGHTS / 32.0f));
   dc.dispatch(csDivisions, 1, 1);
@@ -280,9 +276,11 @@ LightningPass::draw(PassDrawData* drawData) {
   m_CBDrawData.EyePosition = data->ActiveCam->getPosition();
   m_CBDrawData.EyePosition.w = data->ActiveLights;
 
-  for (SizeT lighIndex = 0; lighIndex < RM_MAX_LIGHTS; ++lighIndex) {
-    m_CBDrawData.LightPosition[lighIndex] = (*data->Lights)[lighIndex].m_vec4Position;
-    m_CBDrawData.LightColor[lighIndex] = (*data->Lights)[lighIndex].m_vec4Color;
+  SizeT currentIndex = 0;
+  for (auto& currentVec : *data->Lights) {
+    m_CBDrawData.LightPosition[currentIndex] = currentVec.m_vec4Position;
+    m_CBDrawData.LightColor[currentIndex] = currentVec.m_vec4Color;
+    ++currentIndex;
   }
 
   m_CBDrawData.ThreadsInfo.x = m_ComputeWidthBlocks;
