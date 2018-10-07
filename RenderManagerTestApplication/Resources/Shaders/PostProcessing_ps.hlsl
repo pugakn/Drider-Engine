@@ -4,9 +4,9 @@ Texture2D ColorTex          : register(t0);
 Texture2D ColorBlurTex      : register(t1);
 Texture2D PositionLDepthTex : register(t2);
 Texture2D BloomTex          : register(t3);
-StructuredBuffer<float> LuminescenceValue : register (t4);
+Texture2D FilmLutTex        : register(t4);
+StructuredBuffer<float> LuminescenceValue : register (t5);
 //Texture2D GodRays           : register(tn);
-//Texture2D FilmLutTex        : register(tn);
 
 cbuffer ConstantBuffer {
   float4 CameraInfo;      //X: Aspect Ratio; Y: FOV; Z: Near Plane; W: Far Plane
@@ -19,10 +19,10 @@ struct PS_INPUT {
   float2 Texcoord : TEXCOORD0;
 };
 
-//#define CHROMATIC_ABERRATION
-//#define DEPTH_OF_FIELD
-//#define VIGNETTE
-//#define BLOOM
+#define CHROMATIC_ABERRATION
+#define DEPTH_OF_FIELD
+#define VIGNETTE
+#define BLOOM
 //#define TONE_MAPPING
 
 float4
@@ -48,32 +48,31 @@ float4
 Haarm_Peter_Duiker(in float3 Color, in float exposure) {
   float3 texColor = Color;
   texColor *= exposure;
-  
-  float3 ld           = 0.002f;
-  float  linReference = 0.18f;
-  float  logReference = 444.0f;
-  float  logGamma     = 0.45f;
-  
+
+  float3 ld = (0.002f).xxx;
+  float linReference = 0.18f;
+  float logReference = 444.0f;
+  float logGamma = 0.45f;
+      
   float3 LogColor;
   LogColor.rgb = (log10(0.4f*texColor.rgb/linReference)/ld*logGamma + logReference)/1023.0f;
-  LogColor.rgb = saturate(LogColor.rgb);
-  
+  LogColor.r = saturate(LogColor.r);
+  LogColor.g = saturate(LogColor.g);
+  LogColor.b = saturate(LogColor.b);
+      
   float FilmLutWidth = 256.0f;
   float Padding = 0.5f / FilmLutWidth;
   
-  float3 retColor = float3(1.0f, 1.0f, 1.0f);
-  //retColor.r = tex2D(FilmLutSampler, float2( lerp(Padding, 1 - Padding, LogColor.r), 0.5f)).r;
-  //retColor.g = tex2D(FilmLutSampler, float2( lerp(Padding, 1 - Padding, LogColor.g), 0.5f)).r;
-  //retColor.b = tex2D(FilmLutSampler, float2( lerp(Padding, 1 - Padding, LogColor.b), 0.5f)).r;
+  float3 retColor = texColor;
+  retColor.r *= FilmLutTex.Sample(SS, float2( lerp(Padding, 1.0f - Padding, LogColor.r), 0.5f)).r;
+  retColor.g *= FilmLutTex.Sample(SS, float2( lerp(Padding, 1.0f - Padding, LogColor.g), 0.5f)).r;
+  retColor.b *= FilmLutTex.Sample(SS, float2( lerp(Padding, 1.0f - Padding, LogColor.b), 0.5f)).r;
 
-  //retColor.r = tex2D(FilmLutSampler, float2( lerp(Padding, 1 - Padding, LogColor.r), 0.5f)).r;
-  //retColor.g = tex2D(FilmLutSampler, float2( lerp(Padding, 1 - Padding, LogColor.r), 0.5f)).g;
-  //retColor.b = tex2D(FilmLutSampler, float2( lerp(Padding, 1 - Padding, LogColor.r), 0.5f)).b;
   return float4(retColor, 1.0f);
 }
 
 float4
-Burgeos_Dawson(in float3 Color, float exposure) {
+Burgess_Dawson(in float3 Color, float exposure) {
   float3 texColor = Color;
   texColor *= exposure;
   float3 x = max((0.0f).xxx, texColor - (0.004f).xxx);
@@ -181,8 +180,9 @@ FS(PS_INPUT input) : SV_TARGET0 {
 
     //finalColor = BasicExposure(finalColor, kExposure);
     //finalColor = Reinhard(finalColor.xyz, kExposure);
-    //finalColor = Burgeos_Dawson(finalColor, kExposure); //Caca
-    finalColor = Uncharted2(finalColor, kExposure);
+    //finalColor = Haarm_Peter_Duiker(finalColor, kExposure);
+    //finalColor = Burgess_Dawson(finalColor, kExposure);
+    //finalColor = Uncharted2(finalColor, kExposure);
   #endif //TONE_MAPPING
   
   #ifdef VIGNETTE
@@ -204,6 +204,6 @@ FS(PS_INPUT input) : SV_TARGET0 {
   //return ColorTex.Sample(SS, uv);
   //return ColorBlurTex.Sample(SS, uv);
   //return BloomTex.Sample(SS, uv);
-  
-  return finalColor;
+
+  return float4(finalColor.xyz, 1.0f);
 }

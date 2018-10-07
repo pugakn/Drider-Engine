@@ -59,14 +59,16 @@ D3DSwapChain::create(const Device& device, const DrSwapChainDesc& desc) {
   dxgiDevice->Release();
 
   DrTextureDesc backDesc;
+  backDesc.dimension = DR_DIMENSION::k2D;
   backDesc.width = desc.width;
   backDesc.height = desc.height;
-  backDesc.pitch = backDesc.width * 4;
   backDesc.Format = DR_FORMAT::kR8G8B8A8_UNORM;
+  backDesc.pitch = backDesc.width * 4 * 1;
+  backDesc.mipLevels = 0;
+  backDesc.genMipMaps = true;
   backDesc.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE |
-                       DR_BIND_FLAGS::RENDER_TARGET |
-                       DR_BIND_FLAGS::UNORDERED_ACCESS;
-  backDesc.CPUAccessFlags = DR_CPU_ACCESS_FLAG::drRead;
+                       DR_BIND_FLAGS::RENDER_TARGET;
+
   m_backBufferTexture = new D3DTexture;
   m_backBufferTexture->setDescriptor(backDesc);
   m_backBufferTexture->createFromMemory(device, backDesc, 0);

@@ -7,6 +7,7 @@
 #include <dr_sample_state.h>
 #include <dr_camera.h>
 #include <dr_structure_buffer.h>
+#include <dr_texture_core.h>
 
 namespace driderSDK {
 
@@ -24,6 +25,9 @@ struct PostProcessingDrawData : PassDrawData {
   Texture* ColorBlurTex;
   Texture* PositionDepthTex;
   Texture* BloomTex;
+  TextureCore* FilmLutTex;
+  const RenderTarget* OutRT;
+  const DepthStencil* OutDS;
   StructureBuffer* luminescenceBuffer;
 };
 

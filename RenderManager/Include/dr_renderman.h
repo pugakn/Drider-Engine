@@ -122,6 +122,7 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
 
   std::shared_ptr<TextureCore> m_cubemap;
   std::shared_ptr<TextureCore> m_cubemapDiffuse;
+  std::shared_ptr<TextureCore> m_FilmLut;
 
   //VS & FS
   GBufferPass m_GBufferPass;
@@ -180,11 +181,10 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   LuminescenceDrawData m_luminescenceDrawData;
   StructureBuffer* resultBuffer;
 
-  //VS & CS (TODO: Make it Compute)
+  //CS
   PostProcessingPass m_PostProcessingPass;
   PostProcessingInitData m_PostProcessingInitData;
   PostProcessingDrawData m_PostProcessingDrawData;
-  GFXUnique<DepthStencil> m_PostProcessingDSoptions;
 
   std::array<GFXUnique<RenderTarget>, 4> m_RTShadowDummy; //Used for render shadow cascades.
   GFXUnique<RenderTarget> m_RTShadow; //Compressed shadows.
@@ -202,8 +202,6 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   GFXUnique<RenderTarget> m_RTBrightness;
   GFXUnique<RenderTarget> m_RTBloom;
   GFXUnique<RenderTarget> m_RTLightningBlur;
-
-  DrTextureDesc m_TexDescDefault;
 
   /////////////////////////////////////////////////////////////////////////////
   /*****************************Shadow pass stuff*****************************/

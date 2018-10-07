@@ -50,11 +50,11 @@ class DR_ENGINE_EXPORT CodecTexture : public Codec
   *
   */
   bool
-  encodeImage(String pathname,
-              Int32 width,
-              Int32 height,
-              DR_FILE_FORMAT::E fileFormat,
-              std::vector<byte>* data);
+  encodeImage(const String pathname,
+              const Int32 width,
+              const Int32 height,
+              const DR_FILE_FORMAT::E fileFormat,
+              const std::vector<byte>* data) const;
 
   /**
   * TEST::isC

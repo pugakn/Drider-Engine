@@ -33,6 +33,8 @@ RenderManager::init() {
   m_cubemap = ResourceManager::getReferenceT<TextureCore>(_T("GraceCubemap.tga"));
   ResourceManager::loadResource(_T("GraceDiffuseCubemap.tga"), &cubeMapDesc);
   m_cubemapDiffuse = ResourceManager::getReferenceT<TextureCore>(_T("GraceDiffuseCubemap.tga"));
+  ResourceManager::loadResource(_T("FilmLut.tga"));
+  m_FilmLut = ResourceManager::getReferenceT<TextureCore>(_T("FilmLut.tga"));
 
   //luminanceDelta = 0.0f;
 
@@ -131,17 +133,18 @@ RenderManager::init() {
   /////////Creation of RT's & DS's/////////
   std::vector<Texture*> vecTextures;
 
-  //RenderTarget Base
+  DrTextureDesc texDescDefault;
+  //RenderTarget base desc
   {
-    m_TexDescDefault.dimension = DR_DIMENSION::k2D;
-    m_TexDescDefault.width = screenWidth;
-    m_TexDescDefault.height = screenHeight;
-    m_TexDescDefault.Format = DR_FORMAT::kR16G16B16A16_FLOAT;
-    m_TexDescDefault.pitch = m_TexDescDefault.width * 4 * 2;
-    m_TexDescDefault.mipLevels = 0;
-    m_TexDescDefault.CPUAccessFlags = 0;
-    m_TexDescDefault.genMipMaps = true;
-    m_TexDescDefault.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE |
+    texDescDefault.dimension = DR_DIMENSION::k2D;
+    texDescDefault.width = screenWidth;
+    texDescDefault.height = screenHeight;
+    texDescDefault.Format = DR_FORMAT::kR16G16B16A16_FLOAT;
+    texDescDefault.pitch = texDescDefault.width * 4 * 2;
+    texDescDefault.mipLevels = 0;
+    texDescDefault.CPUAccessFlags = 0;
+    texDescDefault.genMipMaps = true;
+    texDescDefault.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE |
                                  DR_BIND_FLAGS::RENDER_TARGET;
   }
   //DepthStencil Base
@@ -157,31 +160,31 @@ RenderManager::init() {
   //Gbuffer
   {
     //RenderTarget
-    m_TexDescDefault.width = screenWidth;
-    m_TexDescDefault.height = screenHeight;
-    m_TexDescDefault.Format = DR_FORMAT::kR32G32B32A32_FLOAT;
-    m_TexDescDefault.pitch = m_TexDescDefault.width * 4 * 4;
+    texDescDefault.width = screenWidth;
+    texDescDefault.height = screenHeight;
+    texDescDefault.Format = DR_FORMAT::kR32G32B32A32_FLOAT;
+    texDescDefault.pitch = texDescDefault.width * 4 * 4;
 
-    GFXUnique<Texture> PositionTexure = dr_gfx_unique<Texture>(dc.createEmptyTexture(m_TexDescDefault));
+    GFXUnique<Texture> PositionTexure = dr_gfx_unique<Texture>(dc.createEmptyTexture(texDescDefault));
     vecTextures.push_back(PositionTexure.get());
     vecTextures.push_back(PositionTexure.get());
 
-    m_TexDescDefault.Format = DR_FORMAT::kR16G16B16A16_FLOAT;
-    m_TexDescDefault.pitch = m_TexDescDefault.width * 4 * 2;
+    texDescDefault.Format = DR_FORMAT::kR16G16B16A16_FLOAT;
+    texDescDefault.pitch = texDescDefault.width * 4 * 2;
 
-    GFXUnique<Texture> BasicTexure = dr_gfx_unique<Texture>(dc.createEmptyTexture(m_TexDescDefault));
+    GFXUnique<Texture> BasicTexure = dr_gfx_unique<Texture>(dc.createEmptyTexture(texDescDefault));
     vecTextures.push_back(BasicTexure.get());
     vecTextures.push_back(BasicTexure.get());
 
-    m_RTGBuffer = dr_gfx_unique(dc.createRenderTarget(m_TexDescDefault, 4));
+    m_RTGBuffer = dr_gfx_unique(dc.createRenderTarget(texDescDefault, 4));
 
     vecTextures.clear();
     PositionTexure.release();
     BasicTexure.release();
 
     //DepthStencil
-    commonTextureDesc.width = m_TexDescDefault.width;
-    commonTextureDesc.height = m_TexDescDefault.height;
+    commonTextureDesc.width = texDescDefault.width;
+    commonTextureDesc.height = texDescDefault.height;
     m_GBufferDSoptions = dr_gfx_unique(dc.createDepthStencil(commonTextureDesc));
   }
 
@@ -190,23 +193,23 @@ RenderManager::init() {
     //RenderTarget
 
     //Dummies
-    m_TexDescDefault.width = shadowWidth;
-    m_TexDescDefault.height = shadowHeight;
-    m_TexDescDefault.Format = DR_FORMAT::kR32_FLOAT;
-    m_TexDescDefault.pitch = m_TexDescDefault.width * 1 * 4;
-    m_RTShadowDummy[0] = dr_gfx_unique(dc.createRenderTarget(m_TexDescDefault, 1));
-    m_RTShadowDummy[1] = dr_gfx_unique(dc.createRenderTarget(m_TexDescDefault, 1));
-    m_RTShadowDummy[2] = dr_gfx_unique(dc.createRenderTarget(m_TexDescDefault, 1));
-    m_RTShadowDummy[3] = dr_gfx_unique(dc.createRenderTarget(m_TexDescDefault, 1));
+    texDescDefault.width = shadowWidth;
+    texDescDefault.height = shadowHeight;
+    texDescDefault.Format = DR_FORMAT::kR32_FLOAT;
+    texDescDefault.pitch = texDescDefault.width * 1 * 4;
+    m_RTShadowDummy[0] = dr_gfx_unique(dc.createRenderTarget(texDescDefault, 1));
+    m_RTShadowDummy[1] = dr_gfx_unique(dc.createRenderTarget(texDescDefault, 1));
+    m_RTShadowDummy[2] = dr_gfx_unique(dc.createRenderTarget(texDescDefault, 1));
+    m_RTShadowDummy[3] = dr_gfx_unique(dc.createRenderTarget(texDescDefault, 1));
 
     //Compressed
-    m_TexDescDefault.width = m_TexDescDefault.width;
-    m_TexDescDefault.height = m_TexDescDefault.height;
-    m_TexDescDefault.Format = DR_FORMAT::kR32G32B32A32_FLOAT;
-    m_TexDescDefault.pitch = m_TexDescDefault.width * 4 * 4;
-    m_TexDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
+    texDescDefault.width = texDescDefault.width;
+    texDescDefault.height = texDescDefault.height;
+    texDescDefault.Format = DR_FORMAT::kR32G32B32A32_FLOAT;
+    texDescDefault.pitch = texDescDefault.width * 4 * 4;
+    texDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
     
-    GFXUnique<Texture> ShadowTexure = dr_gfx_unique<Texture>(dc.createEmptyTexture(m_TexDescDefault));
+    GFXUnique<Texture> ShadowTexure = dr_gfx_unique<Texture>(dc.createEmptyTexture(texDescDefault));
     vecTextures.push_back(ShadowTexure.get());
 
     m_RTShadow = dr_gfx_unique(dc.createRenderTarget(vecTextures));
@@ -214,30 +217,30 @@ RenderManager::init() {
     vecTextures.clear();
     ShadowTexure.release();
 
-    m_TexDescDefault.bindFlags &= ~DR_BIND_FLAGS::UNORDERED_ACCESS;
+    texDescDefault.bindFlags &= ~DR_BIND_FLAGS::UNORDERED_ACCESS;
 
     //DepthStencil
-    commonTextureDesc.width = m_TexDescDefault.width;
-    commonTextureDesc.height = m_TexDescDefault.height;
+    commonTextureDesc.width = texDescDefault.width;
+    commonTextureDesc.height = texDescDefault.height;
     m_ShadowDSoptions = dr_gfx_unique(dc.createDepthStencil(commonTextureDesc));
   }
 
   //SSAO & SSShadow
   {
     //RenderTarget
-    //m_TexDescDefault.width = screenWidth * blurScale;
-    //m_TexDescDefault.height = screenHeight * blurScale;
-    m_TexDescDefault.width = screenWidth;
-    m_TexDescDefault.height = screenHeight;
-    m_TexDescDefault.Format = DR_FORMAT::kR8G8_UNORM;
-    m_TexDescDefault.pitch = m_TexDescDefault.width * 2 * 1;
-    m_TexDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
+    //texDescDefault.width = screenWidth * blurScale;
+    //texDescDefault.height = screenHeight * blurScale;
+    texDescDefault.width = screenWidth;
+    texDescDefault.height = screenHeight;
+    texDescDefault.Format = DR_FORMAT::kR8G8_UNORM;
+    texDescDefault.pitch = texDescDefault.width * 2 * 1;
+    texDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
 
-    GFXUnique<Texture> SSAO_SSShadowTexure = dr_gfx_unique<Texture>(dc.createEmptyTexture(m_TexDescDefault));
+    GFXUnique<Texture> SSAO_SSShadowTexure = dr_gfx_unique<Texture>(dc.createEmptyTexture(texDescDefault));
     vecTextures.push_back(SSAO_SSShadowTexure.get());
     m_RTSSAO_SSShadow = dr_gfx_unique(dc.createRenderTarget(vecTextures));
 
-    m_TexDescDefault.bindFlags &= ~DR_BIND_FLAGS::UNORDERED_ACCESS;
+    texDescDefault.bindFlags &= ~DR_BIND_FLAGS::UNORDERED_ACCESS;
 
     vecTextures.clear();
     SSAO_SSShadowTexure.release();
@@ -246,17 +249,17 @@ RenderManager::init() {
   //Blur Aux
   {
     //RenderTarget
-    m_TexDescDefault.width = screenWidth * blurScale;
-    m_TexDescDefault.height = screenHeight * blurScale;
-    m_TexDescDefault.Format = DR_FORMAT::kR16G16B16A16_FLOAT;
-    m_TexDescDefault.pitch = m_TexDescDefault.width * 3 * 2;
-    m_TexDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
+    texDescDefault.width = screenWidth * blurScale;
+    texDescDefault.height = screenHeight * blurScale;
+    texDescDefault.Format = DR_FORMAT::kR16G16B16A16_FLOAT;
+    texDescDefault.pitch = texDescDefault.width * 3 * 2;
+    texDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
 
-    GFXUnique<Texture> BlurTexure = dr_gfx_unique<Texture>(dc.createEmptyTexture(m_TexDescDefault));
+    GFXUnique<Texture> BlurTexure = dr_gfx_unique<Texture>(dc.createEmptyTexture(texDescDefault));
     vecTextures.push_back(BlurTexure.get());
     m_RTBlurInit = dr_gfx_unique(dc.createRenderTarget(vecTextures));
 
-    m_TexDescDefault.bindFlags &= ~DR_BIND_FLAGS::UNORDERED_ACCESS;
+    texDescDefault.bindFlags &= ~DR_BIND_FLAGS::UNORDERED_ACCESS;
 
     vecTextures.clear();
     BlurTexure.release();
@@ -265,17 +268,17 @@ RenderManager::init() {
   //Blurred SSAO & Shadow
   {
     //RenderTarget
-    m_TexDescDefault.width = screenWidth * blurScale;
-    m_TexDescDefault.height = screenHeight * blurScale;
-    m_TexDescDefault.Format = DR_FORMAT::kR16G16_FLOAT;
-    m_TexDescDefault.pitch = m_TexDescDefault.width * 2 * 2;
-    m_TexDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
+    texDescDefault.width = screenWidth * blurScale;
+    texDescDefault.height = screenHeight * blurScale;
+    texDescDefault.Format = DR_FORMAT::kR16G16_FLOAT;
+    texDescDefault.pitch = texDescDefault.width * 2 * 2;
+    texDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
 
-    GFXUnique<Texture> SSAOBlurTexure = dr_gfx_unique<Texture>(dc.createEmptyTexture(m_TexDescDefault));
+    GFXUnique<Texture> SSAOBlurTexure = dr_gfx_unique<Texture>(dc.createEmptyTexture(texDescDefault));
     vecTextures.push_back(SSAOBlurTexure.get());
     m_RTSSAO_SSShadowBlur = dr_gfx_unique(dc.createRenderTarget(vecTextures));
 
-    m_TexDescDefault.bindFlags &= ~DR_BIND_FLAGS::UNORDERED_ACCESS;
+    texDescDefault.bindFlags &= ~DR_BIND_FLAGS::UNORDERED_ACCESS;
 
     vecTextures.clear();
     SSAOBlurTexure.release();
@@ -283,19 +286,19 @@ RenderManager::init() {
 
   //SSReflection
   {
-    m_TexDescDefault.width = screenWidth * blurScale;
-    m_TexDescDefault.height = screenHeight * blurScale;
-    //m_TexDescDefault.width = screenWidth;
-    //m_TexDescDefault.height = screenHeight;
-    m_TexDescDefault.Format = DR_FORMAT::kR16G16B16A16_FLOAT;
-    m_TexDescDefault.pitch = m_TexDescDefault.width * 4 * 1;
-    m_TexDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
+    texDescDefault.width = screenWidth * blurScale;
+    texDescDefault.height = screenHeight * blurScale;
+    //texDescDefault.width = screenWidth;
+    //texDescDefault.height = screenHeight;
+    texDescDefault.Format = DR_FORMAT::kR16G16B16A16_FLOAT;
+    texDescDefault.pitch = texDescDefault.width * 4 * 1;
+    texDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
 
-    GFXUnique<Texture> SSRefTexure = dr_gfx_unique<Texture>(dc.createEmptyTexture(m_TexDescDefault));
+    GFXUnique<Texture> SSRefTexure = dr_gfx_unique<Texture>(dc.createEmptyTexture(texDescDefault));
     vecTextures.push_back(SSRefTexure.get());
     m_RTSSReflection = dr_gfx_unique(dc.createRenderTarget(vecTextures));
 
-    m_TexDescDefault.bindFlags &= ~DR_BIND_FLAGS::UNORDERED_ACCESS;
+    texDescDefault.bindFlags &= ~DR_BIND_FLAGS::UNORDERED_ACCESS;
 
     vecTextures.clear();
     SSRefTexure.release();
@@ -304,34 +307,34 @@ RenderManager::init() {
   //Lightning & LightningBlur
   {
     //RenderTarget
-    m_TexDescDefault.width = screenWidth;
-    m_TexDescDefault.height = screenHeight;
-    m_TexDescDefault.Format = DR_FORMAT::kR16G16B16A16_FLOAT;
-    m_TexDescDefault.pitch = m_TexDescDefault.width * 4;
-    m_TexDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
-    m_TexDescDefault.CPUAccessFlags = DR_CPU_ACCESS_FLAG::drRead;
+    texDescDefault.width = screenWidth;
+    texDescDefault.height = screenHeight;
+    texDescDefault.Format = DR_FORMAT::kR16G16B16A16_FLOAT;
+    texDescDefault.pitch = texDescDefault.width * 4;
+    texDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
+    texDescDefault.CPUAccessFlags = DR_CPU_ACCESS_FLAG::drRead;
 
-    GFXUnique<Texture> ColorTexure = dr_gfx_unique<Texture>(dc.createEmptyTexture(m_TexDescDefault));
+    GFXUnique<Texture> ColorTexure = dr_gfx_unique<Texture>(dc.createEmptyTexture(texDescDefault));
     vecTextures.push_back(ColorTexure.get());
     m_RTLightning = dr_gfx_unique(dc.createRenderTarget(vecTextures));
 
-    m_TexDescDefault.CPUAccessFlags = 0;
-    m_TexDescDefault.bindFlags &= ~DR_BIND_FLAGS::UNORDERED_ACCESS;
+    texDescDefault.CPUAccessFlags = 0;
+    texDescDefault.bindFlags &= ~DR_BIND_FLAGS::UNORDERED_ACCESS;
 
     vecTextures.clear();
     ColorTexure.release();
 
-    m_TexDescDefault.width = screenWidth * blurScale;
-    m_TexDescDefault.height = screenHeight * blurScale;
-    m_TexDescDefault.Format = DR_FORMAT::kR16G16B16A16_FLOAT;
-    m_TexDescDefault.pitch = m_TexDescDefault.width * 4 * 2;
-    m_TexDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
+    texDescDefault.width = screenWidth * blurScale;
+    texDescDefault.height = screenHeight * blurScale;
+    texDescDefault.Format = DR_FORMAT::kR16G16B16A16_FLOAT;
+    texDescDefault.pitch = texDescDefault.width * 4 * 2;
+    texDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
 
-    GFXUnique<Texture> ColorBlurTexure = dr_gfx_unique<Texture>(dc.createEmptyTexture(m_TexDescDefault));
+    GFXUnique<Texture> ColorBlurTexure = dr_gfx_unique<Texture>(dc.createEmptyTexture(texDescDefault));
     vecTextures.push_back(ColorBlurTexure.get());
     m_RTLightningBlur = dr_gfx_unique(dc.createRenderTarget(vecTextures));
 
-    m_TexDescDefault.bindFlags &= ~DR_BIND_FLAGS::UNORDERED_ACCESS;
+    texDescDefault.bindFlags &= ~DR_BIND_FLAGS::UNORDERED_ACCESS;
 
     vecTextures.clear();
     ColorBlurTexure.release();
@@ -339,33 +342,33 @@ RenderManager::init() {
 
   //Bloom
   {
-    m_TexDescDefault.width = screenWidth;
-    m_TexDescDefault.height = screenHeight;
-    m_TexDescDefault.Format = DR_FORMAT::kR16G16B16A16_FLOAT;
-    m_TexDescDefault.pitch = m_TexDescDefault.width * 4 * 1;
-    m_TexDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
+    texDescDefault.width = screenWidth;
+    texDescDefault.height = screenHeight;
+    texDescDefault.Format = DR_FORMAT::kR16G16B16A16_FLOAT;
+    texDescDefault.pitch = texDescDefault.width * 4 * 1;
+    texDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
 
-    GFXUnique<Texture> BrightnessTexure = dr_gfx_unique<Texture>(dc.createEmptyTexture(m_TexDescDefault));
+    GFXUnique<Texture> BrightnessTexure = dr_gfx_unique<Texture>(dc.createEmptyTexture(texDescDefault));
     vecTextures.push_back(BrightnessTexure.get());
     m_RTBrightness = dr_gfx_unique(dc.createRenderTarget(vecTextures));
 
-    m_TexDescDefault.bindFlags &= ~DR_BIND_FLAGS::UNORDERED_ACCESS;
+    texDescDefault.bindFlags &= ~DR_BIND_FLAGS::UNORDERED_ACCESS;
 
     vecTextures.clear();
     BrightnessTexure.release();
 
     //RenderTarget
-    m_TexDescDefault.width = screenWidth * blurScale;
-    m_TexDescDefault.height = screenHeight * blurScale;
-    m_TexDescDefault.Format = DR_FORMAT::kR16G16B16A16_FLOAT;
-    m_TexDescDefault.pitch = m_TexDescDefault.width * 4 * 1;
-    m_TexDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
+    texDescDefault.width = screenWidth * blurScale;
+    texDescDefault.height = screenHeight * blurScale;
+    texDescDefault.Format = DR_FORMAT::kR16G16B16A16_FLOAT;
+    texDescDefault.pitch = texDescDefault.width * 4 * 1;
+    texDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
 
-    GFXUnique<Texture> BloomTexure = dr_gfx_unique<Texture>(dc.createEmptyTexture(m_TexDescDefault));
+    GFXUnique<Texture> BloomTexure = dr_gfx_unique<Texture>(dc.createEmptyTexture(texDescDefault));
     vecTextures.push_back(BloomTexure.get());
     m_RTBloom = dr_gfx_unique(dc.createRenderTarget(vecTextures));
 
-    m_TexDescDefault.bindFlags &= ~DR_BIND_FLAGS::UNORDERED_ACCESS;
+    texDescDefault.bindFlags &= ~DR_BIND_FLAGS::UNORDERED_ACCESS;
 
     vecTextures.clear();
     BloomTexure.release();
@@ -374,8 +377,6 @@ RenderManager::init() {
 
   //PostProcessing
   {
-    //DepthStencil
-    m_PostProcessingDSoptions = dr_gfx_unique(dc.createDepthStencil(commonTextureDesc));
   }
 
   ////////initialization of passes////////
@@ -594,7 +595,7 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_VerBlurDrawData.OutRt = m_RTLightningBlur.get();
   m_VerBlurPass.draw(&m_VerBlurDrawData);
 
-  _out.set(dc, _outds);
+  //_out.set(dc, _outds);
 
   //m_emitter.update();
   //m_particleDrawData.activeCam = mainCam;
@@ -615,7 +616,10 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_PostProcessingDrawData.ColorBlurTex = &m_RTLightningBlur->getTexture(0);
   m_PostProcessingDrawData.PositionDepthTex = &m_RTGBuffer->getTexture(0);
   m_PostProcessingDrawData.BloomTex = &m_RTBloom->getTexture(0);
+  m_PostProcessingDrawData.FilmLutTex = m_FilmLut.get();
   m_PostProcessingDrawData.luminescenceBuffer = resultBuffer;
+  m_PostProcessingDrawData.OutRT = &_out;
+  m_PostProcessingDrawData.OutDS = &_outds;
   m_PostProcessingPass.draw(&m_PostProcessingDrawData);
 
   /*

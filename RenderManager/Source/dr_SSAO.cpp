@@ -69,8 +69,8 @@ SSAOPass::draw(PassDrawData* drawData) {
   m_ComputeWidthBlocks = m_RTWidth / m_ComputeWidthDivisions;
   m_ComputeHeightBlocks = m_RTHeight / m_ComputeHeightDivisions;
 
-  CB.fViewportDimensions.x = m_RTWidth;
-  CB.fViewportDimensions.y = m_RTHeight;
+  CB.ViewportDimensions.x = m_RTWidth;
+  CB.ViewportDimensions.y = m_RTHeight;
   CB.SSAO_Options[0] = data->SampleRadio;
   CB.SSAO_Options[1] = data->Intensity;
   CB.SSAO_Options[2] = data->Scale;

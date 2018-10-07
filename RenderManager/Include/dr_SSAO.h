@@ -54,7 +54,7 @@ class SSAOPass : public RenderPass {
 
  private:
   struct CBuffer {
-    Vector4D fViewportDimensions;
+    Vector4D ViewportDimensions;
     Vector4D SSAO_Options; //X: SampleRadio Y: Intensity Z: Scale X: Bias
   };
 

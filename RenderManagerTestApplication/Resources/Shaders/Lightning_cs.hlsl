@@ -80,7 +80,6 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
          LdotH;
 
   const float3 ViewDir = normalize(kEyePosition.xyz - position.xyz);
-  const float3 InvViewDir = normalize(position.xyz - kEyePosition.xyz);
   const float  NdotV = saturate(dot(normal, -ViewDir));
 
   float3 DiffAcc, SpecAcc;

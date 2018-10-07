@@ -52,20 +52,22 @@ CodecTexture::encode(TString pathName) {
 }
 
 bool
-CodecTexture::encodeImage(String filename,
-                          Int32 width,
-                          Int32 height,
-                          DR_FILE_FORMAT::E fileFormat,
-                          std::vector<byte>* data) {
+CodecTexture::encodeImage(const String filename,
+                          const Int32 width,
+                          const Int32 height,
+                          const DR_FILE_FORMAT::E fileFormat,
+                          const std::vector<byte>* data) const {
+  String path = "Resources\\Screenshots\\" + filename + ".";
+
   if (DR_FILE_FORMAT::TGA == fileFormat) {
-    return stbi_write_tga(filename.append(".tga").c_str(),
+    return stbi_write_tga(path.append("tga").c_str(),
                           width,
                           height,
                           STBI_rgb_alpha,
                           &(*data)[0]);
   }
   else if (DR_FILE_FORMAT::BMP == fileFormat) {
-    return stbi_write_bmp(filename.append(".bmp").c_str(),
+    return stbi_write_bmp(path.append("bmp").c_str(),
                           width,
                           height,
                           STBI_rgb_alpha,
@@ -75,7 +77,7 @@ CodecTexture::encodeImage(String filename,
     return false;
   }
   else if (DR_FILE_FORMAT::JPG == fileFormat) {
-    return stbi_write_jpg(filename.append(".jpg").c_str(),
+    return stbi_write_jpg(path.append("jpg").c_str(),
                           width,
                           height,
                           STBI_rgb_alpha,
@@ -83,7 +85,7 @@ CodecTexture::encodeImage(String filename,
                           95);
   }
   else if (DR_FILE_FORMAT::PNG == fileFormat) {
-    return stbi_write_png(filename.append(".png").c_str(),
+    return stbi_write_png(path.append("png").c_str(),
                           width,
                           height,
                           STBI_rgb_alpha,

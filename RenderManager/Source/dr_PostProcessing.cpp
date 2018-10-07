@@ -57,7 +57,8 @@ PostProcessingPass::draw(PassDrawData* drawData) {
   data->ColorBlurTex->set(dc, 1);
   data->PositionDepthTex->set(dc, 2);
   data->BloomTex->set(dc, 3);
-  data->luminescenceBuffer->set(dc, DR_SHADER_TYPE_FLAG::kFragment, 4);
+  data->FilmLutTex->textureGFX->set(dc, 4, DR_SHADER_TYPE_FLAG::kCompute, true);
+  data->luminescenceBuffer->set(dc, DR_SHADER_TYPE_FLAG::kFragment, 5);
 
   m_inputLayout->set(dc);
 
@@ -78,6 +79,8 @@ PostProcessingPass::draw(PassDrawData* drawData) {
   m_constantBuffer->set(dc);
 
   dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
+
+  data->OutRT->set(dc, *data->OutDS);
 
   auto screenQuadModel = ResourceManager::getReferenceT<Model>(_T("ScreenAlignedQuad.3ds"));
   if (screenQuadModel) {

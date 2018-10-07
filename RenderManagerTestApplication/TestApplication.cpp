@@ -15,6 +15,7 @@
 #include <dr_device.h>
 #include <dr_device_context.h>
 #include <dr_codec_texture.h>
+#include <dr_depth_stencil.h>
 
 #include <dr_animator_component.h>
 #include <dr_render_component.h>
@@ -411,49 +412,84 @@ RenderManApp::postUpdate() {
   }
 
   if (Keyboard::isKeyDown(KEY_CODE::k1)) {
-    luminanceDelta += 0.01f;
-  }
-  if (Keyboard::isKeyDown(KEY_CODE::k2)) {
     luminanceDelta -= 0.01f;
   }
+  if (Keyboard::isKeyDown(KEY_CODE::k2)) {
+    luminanceDelta += 0.01f;
+  }
 
+  //Screenshot!
   if (Keyboard::isKeyDown(KEY_CODE::k0)) {
     Device& device = GraphicsAPI::getDevice();
     DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
-    GFXUnique<RenderTarget> resultRT;
-    {
-      //RenderTarget
-      DrTextureDesc m_TexDescDefault;
-      m_TexDescDefault.dimension = DR_DIMENSION::k2D;
-      m_TexDescDefault.width = m_viewport.width;
-      m_TexDescDefault.height = m_viewport.height;
-      m_TexDescDefault.Format = DR_FORMAT::kR8G8B8A8_UNORM;
-      m_TexDescDefault.pitch = m_TexDescDefault.width * 4 * 1;
-      m_TexDescDefault.mipLevels = 0;
-      m_TexDescDefault.CPUAccessFlags = DR_CPU_ACCESS_FLAG::drRead;
-      m_TexDescDefault.genMipMaps = true;
-      m_TexDescDefault.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE |
-                                   DR_BIND_FLAGS::RENDER_TARGET |
-                                   DR_BIND_FLAGS::UNORDERED_ACCESS;
+    //////////RenderTarget//////////
+    DrTextureDesc backDesc;
+    backDesc.dimension = DR_DIMENSION::k2D;
+    backDesc.width = m_viewport.width;
+    backDesc.height = m_viewport.height;
+    backDesc.Format = DR_FORMAT::kR8G8B8A8_UNORM;
+    backDesc.pitch = backDesc.width * 4 * 1;
+    backDesc.mipLevels = 0;
+    backDesc.genMipMaps = true;
+    backDesc.CPUAccessFlags = DR_CPU_ACCESS_FLAG::drRead;
+    backDesc.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE |
+                         DR_BIND_FLAGS::RENDER_TARGET |
+                         DR_BIND_FLAGS::UNORDERED_ACCESS;
 
-      std::vector<Texture*> m_vecTexture;
-      GFXUnique<Texture> ColorTexure = dr_gfx_unique<Texture>(device.createEmptyTexture(m_TexDescDefault));
-      m_vecTexture.push_back(ColorTexure.get());
-      resultRT = dr_gfx_unique<RenderTarget>(device.createRenderTarget(m_vecTexture));
+    GFXUnique<Texture> ssTexture = dr_gfx_unique(device.createEmptyTexture(backDesc));
+    std::vector<Texture*> vecTextures;
+    vecTextures.push_back(ssTexture.get());
+    GFXUnique<RenderTarget> SSRT = dr_gfx_unique(device.createRenderTarget(vecTextures));
+    
+    //////////Depthstencil//////////
+    DrDepthStencilDesc dsDesc;
+    dsDesc.bindFlags = DR_BIND_FLAGS::DEPTH_STENCIL |
+                       DR_BIND_FLAGS::SHADER_RESOURCE |
+                       DR_BIND_FLAGS::UNORDERED_ACCESS;
+    dsDesc.width = m_viewport.width;
+    dsDesc.height = m_viewport.height;
+    dsDesc.Format = DR_FORMAT::kD24_UNORM_S8_UINT;
 
-      m_vecTexture.clear();
-      ColorTexure.release();
-    }
+    GFXUnique<DepthStencil> ds = dr_gfx_unique(device.createDepthStencil(dsDesc));
+    //DepthStencil* ds = device.createDepthStencil(dsDesc);
+    
+    //////////Draw//////////
+    RenderManager::instance().draw(*SSRT, *ds);
 
-    RenderManager::instance().draw(*resultRT, GraphicsAPI::getDepthStencil());
-
-    std::vector<byte> memBuff;
-    (*resultRT).getTexture(0).getMemoryBuffer(dc, memBuff);
-
+    //////////Image 2 file//////////
+    std::vector<byte> rtMem;
+    SSRT->getTexture(0).getMemoryBuffer(dc, rtMem);
     CodecTexture CT;
-    CT.encodeImage("RM_SS", 1280, 720, DR_FILE_FORMAT::BMP, &memBuff);
-    }
+    CT.encodeImage("RM_SS",
+                   m_viewport.width,
+                   m_viewport.height,
+                   DR_FILE_FORMAT::BMP,
+                   &rtMem);
+    CT.encodeImage("RM_SS",
+                   m_viewport.width,
+                   m_viewport.height,
+                   DR_FILE_FORMAT::DDS,
+                   &rtMem);
+    CT.encodeImage("RM_SS",
+                   m_viewport.width,
+                   m_viewport.height,
+                   DR_FILE_FORMAT::JPG,
+                   &rtMem);
+    CT.encodeImage("RM_SS",
+                   m_viewport.width,
+                   m_viewport.height,
+                   DR_FILE_FORMAT::PNG,
+                   &rtMem);
+    CT.encodeImage("RM_SS",
+                   m_viewport.width,
+                   m_viewport.height,
+                   DR_FILE_FORMAT::TGA,
+                   &rtMem);
+    ssTexture.release();
+    SSRT.release();
+    ds.release();
+  }
 }
 
 void
