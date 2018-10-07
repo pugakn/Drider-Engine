@@ -15,9 +15,10 @@ Texture2D NormalCoCTex         : register(t1);
 Texture2D AlbedoMetallicTex    : register(t2);
 Texture2D EmissiveRoughnessTex : register(t3);
 Texture2D SSAO_SSShadowTex     : register(t4);
-Texture2D<int> LightsIndex     : register(t5);
-TextureCube EnvironmentTex     : register(t6);
-TextureCube IrradianceTex      : register(t7);
+Texture2D SSReflectionTex      : register(t5);
+Texture2D<int> LightsIndex     : register(t6);
+TextureCube EnvironmentTex     : register(t7);
+TextureCube IrradianceTex      : register(t8);
 
 RWTexture2D<float4> Lightning  : register(u0);
 
@@ -43,17 +44,21 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
 	const float2 uv = float2(dispatchID.x * rcp(fViewportDimensions.x),
                            dispatchID.y * rcp(fViewportDimensions.y));
 
-  const float4  position    = float4(PositionDepthTex.SampleLevel(SS, uv, 0).xyz, 1.0f);
-  const float   SSAO        = SSAO_SSShadowTex.SampleLevel(SS, uv, 0).r;
-  const float3  diffuse     = AlbedoMetallicTex.SampleLevel(SS, uv, 0).xyz * SSAO;
-  const float3  normal      = NormalCoCTex.SampleLevel(SS, uv, 0).xyz;
-  const float   metallic    = AlbedoMetallicTex.SampleLevel(SS, uv, 0).w;
-  const float3  emissive    = EmissiveRoughnessTex.SampleLevel(SS, uv, 0).xyz;
-  const float   roughness   = EmissiveRoughnessTex.SampleLevel(SS, uv, 0).w;
-  const float3  diffusePBR  = (diffuse - (diffuse * metallic));
-  const float3  specularPBR = lerp(float3(0.04f, 0.04f, 0.04f), diffuse, metallic) * SSAO;
-  const float   alpha       = max(0.01f, roughness * roughness);
-  const float   ShadowValue = SSAO_SSShadowTex.SampleLevel(SS, uv, 0).g;
+  const float4  position     = float4(PositionDepthTex.SampleLevel(SS, uv, 0).xyz, 1.0f);
+  const float   depth        = PositionDepthTex.SampleLevel(SS, uv, 0).w;
+  const float   SSAO         = SSAO_SSShadowTex.SampleLevel(SS, uv, 0).r;
+  const float3  diffuse      = AlbedoMetallicTex.SampleLevel(SS, uv, 0).xyz * SSAO;
+  const float3  normal       = NormalCoCTex.SampleLevel(SS, uv, 0).xyz;
+  const float   metallic     = AlbedoMetallicTex.SampleLevel(SS, uv, 0).w;
+  const float3  emissive     = EmissiveRoughnessTex.SampleLevel(SS, uv, 0).xyz;
+  const float   roughness    = EmissiveRoughnessTex.SampleLevel(SS, uv, 0).w;
+  const float3  SSReflection = SSReflectionTex.SampleLevel(SS, uv, 0).xyz;
+  const float3  diffusePBR   = (diffuse - (diffuse * metallic));
+  //const float3  specularPBR  = lerp(float3(0.04f, 0.04f, 0.04f), diffuse, metallic) * SSAO;
+  const float3  specularPBR  = lerp(float3(0.04f, 0.04f, 0.04f), SSReflection, metallic) * SSAO;
+  const float   alpha        = max(0.01f, roughness * roughness);
+  const float   ShadowValue  = SSAO_SSShadowTex.SampleLevel(SS, uv, 0).g;
+
 
   float3 finalColor = float3(0.0f, 0.0f, 0.0f);
   
@@ -75,7 +80,8 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
          LdotH;
 
   const float3 ViewDir = normalize(kEyePosition.xyz - position.xyz);
-  const float  NdotV = saturate(dot(normal, ViewDir));
+  const float3 InvViewDir = normalize(position.xyz - kEyePosition.xyz);
+  const float  NdotV = saturate(dot(normal, -ViewDir));
 
   float3 DiffAcc, SpecAcc;
 
@@ -128,16 +134,11 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   const float3 Irradiance = IrradianceTex.SampleLevel(SS, reflectVector, 0).xyz;
   
   const float3 IBL = (specularPBR * envColor) + (diffusePBR * Irradiance);
-  
 
   //////////Final//////////
   const float3 resultColor = ((finalColor + IBL) * ShadowValue) + emissive;
 
   Lightning[uvScale] = float4(resultColor, 1.0f);
-  //Lightning[uvScale] = float4(ShadowValue.xxx, 1.0f);
-  //Lightning[uvScale] = float4(diffuse * ShadowValue, 1.0f);
-  //Lightning[uvScale] = float4(finalColor, 1.0f);
-  //Lightning[uvScale] = float4(ShadowValue.xxx, 1.0f);
  
   return;
 }

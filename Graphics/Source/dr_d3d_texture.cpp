@@ -1,13 +1,14 @@
 #include "dr_d3d_texture.h"
 
-#include <d3d11.h>
-#include <dxgi.h>
-#include "dr_graphics_prerequisites.h"
-#include <dr_math.h>
+#include <dr_logger.h>
+
 #include "dr_d3d_device.h"
 #include "dr_d3d_device_context.h"
 #include "dr_gfx_memory.h"
+#include <dr_math.h>
 
+#include <d3d11.h>
+#include <dxgi.h>
 
 namespace driderSDK {
 
@@ -147,13 +148,23 @@ D3DTexture::createFromMemory(const Device& device,
   
   if (desc.CPUAccessFlags & DR_CPU_ACCESS_FLAG::drRead) {
     D3D11_TEXTURE2D_DESC apiDesc2 = apiDesc;
-    apiDesc2.CPUAccessFlags = D3D11_CPU_ACCESS_FLAG::D3D11_CPU_ACCESS_READ;
-    apiDesc2.Usage = D3D11_USAGE_STAGING;;
+    apiDesc2.MipLevels = 0;
+    apiDesc2.ArraySize = 1;
+    apiDesc2.SampleDesc.Count = 1;
+    apiDesc2.SampleDesc.Quality = 0;
+    apiDesc2.Usage = D3D11_USAGE_STAGING;
+    apiDesc2.BindFlags = 0;
+    apiDesc2.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+    apiDesc2.MiscFlags = 0;
+
     hr = apiDevice->
       D3D11Device->
       CreateTexture2D(&apiDesc2,
-        0,
-        &m_stagingTexture);
+                      NULL,
+                      &m_stagingTexture);
+    if (hr != S_OK) {
+      Logger::instance().addError(__FILE__, __LINE__, _T("Couldn't create staging texture"));
+    }
   }
 }
 
@@ -185,16 +196,16 @@ D3DTexture::getMemoryBuffer(const DeviceContext& deviceContext,
 
   ID3D11DeviceContext* dc = reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext;
-  dc->CopyResource(m_stagingTexture,APITexture);
+  dc->CopyResource(m_stagingTexture, APITexture);
   D3D11_MAPPED_SUBRESOURCE mappedResource;
   dc->Map(m_stagingTexture,
           0,
           D3D11_MAP_READ,
           0,
-          &mappedResource);  
+          &mappedResource);
   buff.clear();
   buff.assign((byte*)mappedResource.pData, (byte*)mappedResource.pData + m_descriptor.pitch * m_descriptor.height);
-  dc->Unmap(m_stagingTexture,0);
+  dc->Unmap(m_stagingTexture, 0);
 }
 
 void
@@ -276,4 +287,5 @@ D3DTexture::modifyTextureParams(const Device & device, const DrTextureDesc & des
     APIView->Release();
   createFromMemory(device, desc, 0);
 }
+
 }

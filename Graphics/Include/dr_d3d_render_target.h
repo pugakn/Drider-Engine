@@ -71,7 +71,8 @@ class DR_GRAPHICS_EXPORT D3DRenderTarget : public RenderTarget
 
 
   void
-    clear(const DeviceContext& deviceContext, const float color[4]) override;
+  clear(const DeviceContext& deviceContext, const float color[4]) override;
+
   /**
   * TEST::release
   *

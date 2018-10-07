@@ -67,7 +67,7 @@ struct DR_CORE_EXPORT RenderCommand
 
 struct DR_CORE_EXPORT RenderQuery
 {
-  const Camera& camera;
+  Camera& camera;
   QUERY_ORDER::E order;
   UInt32 props;
 };

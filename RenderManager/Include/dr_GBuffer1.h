@@ -13,8 +13,8 @@ struct GBufferInitData : PassInitData {
 struct GBufferDrawData : PassDrawData {
   std::shared_ptr<Camera> activeCam;
   RenderCommandBuffer* models;
-  GFXShared<RenderTarget> OutRt;
-  GFXShared<DepthStencil> dsOptions;
+  RenderTarget* OutRt;
+  DepthStencil* dsOptions;
 };
 
 class GBufferPass : public RenderPass {

@@ -1,48 +1,42 @@
 #pragma once
 #include "dr_renderman_prerequisites.h"
 #include "dr_renderpass.h"
-#include <dr_graph.h>
-#include <dr_matrix4x4.h>
+
+#include <dr_texture.h>
 #include <dr_sample_state.h>
+#include <dr_camera.h>
 
 namespace driderSDK {
 
-struct SSAOInitData : PassInitData {
-  SizeT RTWidth;
-  SizeT RTHeight;
+struct SSReflectionsInitData : PassInitData {
 };
 
-struct SSAODrawData : PassDrawData {
-  std::shared_ptr<Camera> activeCam;
-  RenderTarget* InRt;
+struct SSReflectionsDrawData : PassDrawData {
+  std::shared_ptr<Camera> ActiveCam;
+  RenderTarget* GbufferRT;
+  RenderTarget* ColorRT;
   RenderTarget* OutRt;
-  DepthStencil* dsOptions;
-  float SampleRadio;
-  float Intensity;
-  float Scale;
-  float Bias;
 };
 
-class SSAOPass : public RenderPass {
+class SSReflectionsPass : public RenderPass {
  public:
   /*
   TEST::testName
   
   Description.
   */
-  SSAOPass();
+  SSReflectionsPass();
 
   /*
   TEST::testName
   
   Description.
   */
-  ~SSAOPass();
+  ~SSReflectionsPass();
 
   /*
-  * TEST::testName
-  *
-  * Description.
+  TEST::testName
+  Description.
   */
   void
   init(PassInitData* initData);
@@ -53,9 +47,12 @@ class SSAOPass : public RenderPass {
   draw(PassDrawData* drawData);
 
  private:
-  struct CBuffer {
-    Vector4D fViewportDimensions;
-    Vector4D SSAO_Options; //X: SampleRadio Y: Intensity Z: Scale X: Bias
+  struct CBufferDraw {
+    Vector4D ViewportDimensions;
+    Vector4D EyePosition;
+    Vector4D CameraInfo;
+    Matrix4x4 CameraVP;
+    Vector4D ThreadsInfo;
   };
 
   SizeT m_RTWidth;
@@ -65,10 +62,11 @@ class SSAOPass : public RenderPass {
   SizeT m_ComputeWidthBlocks;
   SizeT m_ComputeHeightBlocks;
   SizeT m_ComputeTotalBlocks;
-  
-  CBuffer CB;
-  
+
   GFXUnique<SamplerState> m_samplerState;
+
+  CBufferDraw m_CBDrawData;
+  GFXUnique<ConstantBuffer> m_CBDraw;
 };
 
 }

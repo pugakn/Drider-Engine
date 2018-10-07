@@ -147,8 +147,8 @@ ShadowPass::draw(PassDrawData* drawData) {
 }
 
 void
-ShadowPass::merge(std::array<GFXShared<RenderTarget>, 4> m_RTShadowDummy,
-                  GFXShared<RenderTarget> CompressedShadowsOutRt) {
+ShadowPass::merge(std::array<GFXUnique<RenderTarget>, 4>& m_RTShadowDummy,
+                  RenderTarget* CompressedShadowsOutRt) {
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
   dc.setUAVsNull();
@@ -175,9 +175,9 @@ ShadowPass::merge(std::array<GFXShared<RenderTarget>, 4> m_RTShadowDummy,
 
 void
 ShadowPass::apply(PassDrawData* drawData,
-                  GFXShared<RenderTarget> PositionDepthRt,
-                  GFXShared<RenderTarget> CompressedShadowsOutRt,
-                  GFXShared<RenderTarget> ResultShadowsRt) {
+                  RenderTarget* PositionDepthRt,
+                  RenderTarget* CompressedShadowsOutRt,
+                  RenderTarget* ResultShadowsRt) {
   ShadowDrawData* data = static_cast<ShadowDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 

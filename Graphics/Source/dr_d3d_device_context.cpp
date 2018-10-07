@@ -65,7 +65,8 @@ D3DDeviceContext::clearRenderTargetView(RenderTarget& renderTarget,
   }
 }
 
-void* D3DDeviceContext::getAPIObject() {
+void*
+D3DDeviceContext::getAPIObject() const {
   return D3D11DeviceContext;
 }
 

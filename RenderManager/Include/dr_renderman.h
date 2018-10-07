@@ -6,6 +6,7 @@
 #include "dr_SSAO.h"
 #include "dr_HorBlur.h"
 #include "dr_VerBlur.h"
+#include "dr_SSReflection.h"
 #include "dr_Lightning.h"
 #include "dr_Bloom.h"
 #include "dr_Luminescence.h"
@@ -99,7 +100,7 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   UInt32 shadowWidth;
   UInt32 shadowHeight;
   std::array<Light, RM_MAX_LIGHTS>* lights;
-  std::array<std::shared_ptr<Camera>, 4> vecShadowCamera;
+  std::array<std::unique_ptr<Camera>, 4> vecShadowCamera;
   std::vector<float> partitions;
   std::vector<SceneGraph::SharedGameObject> vecGos;
 
@@ -126,7 +127,7 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   GBufferPass m_GBufferPass;
   GBufferInitData m_GBufferInitData;
   GBufferDrawData m_GBufferDrawData;
-  GFXShared<DepthStencil> m_GBufferDSoptions;
+  GFXUnique<DepthStencil> m_GBufferDSoptions;
 
   //CS
   SSAOPass m_SSAOPass;
@@ -142,14 +143,18 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   VerBlurPass m_VerBlurPass;
   VerBlurInitData m_VerBlurInitData;
   VerBlurDrawData m_VerBlurDrawData;
-  GFXShared<DepthStencil> m_VerBlurDSoptions;
 
   //VS, FS & CS
   ShadowPass m_ShadowPass;
   ShadowInitData m_ShadowInitData;
   ShadowDrawData m_ShadowDrawData;
-  GFXShared<DepthStencil> m_ShadowDSoptions;
+  GFXUnique<DepthStencil> m_ShadowDSoptions;
   std::array<std::pair<float, float>, 4> m_ShadowSubFrustras;
+
+  //CS
+  SSReflectionsPass m_SSReflectionPass;
+  SSReflectionsInitData m_SSReflectionInitData;
+  SSReflectionsDrawData m_SSReflectionDrawData;
 
   //CS
   LightningPass m_LightningPass;
@@ -157,7 +162,6 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   LightningLightsToSSData m_LWSLightsToSSData;
   LightningTileLightsSSData m_LTileLightsData;
   LightningDrawData m_LightningDrawData;
-  GFXShared<DepthStencil> m_LightningDSoptions;
 
   //CS
   BloomPass m_BloomPass;
@@ -180,24 +184,24 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   PostProcessingPass m_PostProcessingPass;
   PostProcessingInitData m_PostProcessingInitData;
   PostProcessingDrawData m_PostProcessingDrawData;
-  GFXShared<DepthStencil> m_PostProcessingDSoptions;
+  GFXUnique<DepthStencil> m_PostProcessingDSoptions;
 
-  std::array<GFXShared<RenderTarget>, 4> m_RTShadowDummy; //Used for render shadow cascades.
-  GFXShared<RenderTarget> m_RTShadow; //Compressed shadows.
+  std::array<GFXUnique<RenderTarget>, 4> m_RTShadowDummy; //Used for render shadow cascades.
+  GFXUnique<RenderTarget> m_RTShadow; //Compressed shadows.
   //Gbuffer info:
   //0: { xyz: position, w: linear depth };
   //1: { xyz: normal,   w: CoC };
   //2: { xyz: albedo,   w: metallic };
   //3: { xyz: emissive, w: roughness };
-  GFXShared<RenderTarget> m_RTGBuffer;
-  GFXShared<RenderTarget> m_RTBlurInit;
-  GFXShared<RenderTarget> m_RTSSAO_SSShadow;
-  GFXShared<RenderTarget> m_RTSSAO_SSShadowBlur;
-  GFXShared<RenderTarget> m_RTLightning;
-  GFXShared<RenderTarget> m_RTBrightness;
-  GFXShared<RenderTarget> m_RTBloom;
-  std::vector<Texture*> m_vecTexture;
-  GFXShared<RenderTarget> m_RTLightningBlur;
+  GFXUnique<RenderTarget> m_RTGBuffer;
+  GFXUnique<RenderTarget> m_RTBlurInit;
+  GFXUnique<RenderTarget> m_RTSSAO_SSShadow;
+  GFXUnique<RenderTarget> m_RTSSAO_SSShadowBlur;
+  GFXUnique<RenderTarget> m_RTSSReflection;
+  GFXUnique<RenderTarget> m_RTLightning;
+  GFXUnique<RenderTarget> m_RTBrightness;
+  GFXUnique<RenderTarget> m_RTBloom;
+  GFXUnique<RenderTarget> m_RTLightningBlur;
 
   DrTextureDesc m_TexDescDefault;
 

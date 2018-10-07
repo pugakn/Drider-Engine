@@ -22,19 +22,19 @@ struct LightningLightsToSSData : PassDrawData {
 };
 
 struct LightningTileLightsSSData : PassDrawData {
-  GFXShared<RenderTarget> OutRt;
+  RenderTarget* OutRt;
 };
 
 struct LightningDrawData : PassDrawData {
   std::shared_ptr<Camera> ActiveCam;
   SizeT ActiveLights;
   std::array<Light, RM_MAX_LIGHTS>* Lights;
-  GFXShared<RenderTarget> GbufferRT;
-  GFXShared<RenderTarget> SSAO_SSShadowRT;
-  GFXShared<RenderTarget> OutRt;
-  GFXShared<TextureCore> EnviromentCubemap;
-  GFXShared<TextureCore> IrradianceCubemap;
-  GFXShared<DepthStencil> dsOptions;
+  RenderTarget* GbufferRT;
+  RenderTarget* SSAO_SSShadowRT;
+  RenderTarget* SSReflection;
+  RenderTarget* OutRt;
+  TextureCore* EnviromentCubemap;
+  TextureCore* IrradianceCubemap;
 };
 
 class LightningPass : public RenderPass {

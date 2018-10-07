@@ -14,14 +14,15 @@ class DepthStencil;
 class ConstantBuffer;
 class StructureBuffer;
 class IndirectArgsBuffer;
+
 class DR_GRAPHICS_EXPORT DeviceContext
 {
  public:
-   virtual void*
-     getAPIObject() = 0;
-
-   virtual void**
-     getAPIObjectReference() = 0;
+  virtual void*
+  getAPIObject() const = 0;
+  
+  virtual void**
+  getAPIObjectReference() = 0;
 
   /**
   * Class virtual destructor.

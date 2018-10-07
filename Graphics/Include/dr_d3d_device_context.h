@@ -8,11 +8,11 @@ namespace driderSDK {
 class DR_GRAPHICS_EXPORT D3DDeviceContext : public DeviceContext
 {
  public:
-   void*
-     getAPIObject() override;
-
-   void**
-     getAPIObjectReference() override;
+  void*
+  getAPIObject() const override;
+  
+  void**
+  getAPIObjectReference() override;
 
    /**
    * TEST::

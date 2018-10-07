@@ -17,11 +17,11 @@ class DeviceContext;
 class DR_GRAPHICS_EXPORT Texture
 {
  public:
-   virtual void*
-     getAPIObject() = 0;
+  virtual void*
+  getAPIObject() = 0;
 
-   virtual void**
-     getAPIObjectReference() = 0;
+  virtual void**
+  getAPIObjectReference() = 0;
 
   /**
   * Class virtual destructor.
@@ -143,10 +143,14 @@ class DR_GRAPHICS_EXPORT Texture
   modifyTextureParams(const Device& device,
                       const DrTextureDesc& desc) = 0;
 
-  const DrTextureDesc& getDescriptor() const { return m_descriptor; }
-  void setDescriptor(const DrTextureDesc&desc) { m_descriptor = desc; };
+  const DrTextureDesc&
+  getDescriptor() const { return m_descriptor; }
+
+  void
+  setDescriptor(const DrTextureDesc&desc) { m_descriptor = desc; };
+
  protected:
-   DrTextureDesc m_descriptor;
+  DrTextureDesc m_descriptor;
 };
 
 }

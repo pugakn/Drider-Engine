@@ -33,6 +33,7 @@
     <ClInclude Include="Include\dr_rendermanapp.h" />
     <ClInclude Include="Include\dr_renderman_prerequisites.h" />
     <ClInclude Include="Include\dr_renderpass.h" />
+    <ClInclude Include="Include\dr_SSReflection.h" />
     <ClInclude Include="Include\dr_VerBlur.h" />
   </ItemGroup>
   <ItemGroup>
@@ -48,6 +49,7 @@
     <ClCompile Include="Source\dr_rendermanapp.cpp" />
     <ClCompile Include="Source\dr_renderpass.cpp" />
     <ClCompile Include="Source\dr_HorBlur.cpp" />
+    <ClCompile Include="Source\dr_SSReflection.cpp" />
     <ClCompile Include="Source\dr_VerBlur.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

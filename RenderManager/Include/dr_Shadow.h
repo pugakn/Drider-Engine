@@ -15,12 +15,12 @@ struct ShadowInitData : PassInitData {
 
 struct ShadowDrawData : PassDrawData {
   //CascadeInfo
-  std::shared_ptr<Camera> shadowCam;
+  Camera* shadowCam;
   RenderCommandBuffer*    models;
-  GFXShared<RenderTarget> OutRt;
-  GFXShared<DepthStencil> dsOptions;
+  RenderTarget* OutRt;
+  DepthStencil* dsOptions;
   //ShadowInfo
-  std::array<std::shared_ptr<Camera>, 4>* ShadowCameras;
+  std::array<std::unique_ptr<Camera>, 4>* ShadowCameras;
   std::vector<float> ShadowSliptDepths;
   SizeT ActivatedShadowCascades;
   SizeT ShadowMapTextureSize;
@@ -68,17 +68,17 @@ class ShadowPass : public RenderPass {
   /*
   */
   void
-  merge(std::array<GFXShared<RenderTarget>, 4> m_RTShadowDummy,
-        GFXShared<RenderTarget> CompressedShadowsOutRt);
+  merge(std::array<GFXUnique<RenderTarget>, 4>& m_RTShadowDummy,
+        RenderTarget* CompressedShadowsOutRt);
 
   
   /*
   */
   void
   apply(PassDrawData* drawData,
-        GFXShared<RenderTarget> PositionDepthRt,
-        GFXShared<RenderTarget> CompressedShadowsOutRt,
-        GFXShared<RenderTarget> ResultShadowsRt);
+        RenderTarget* PositionDepthRt,
+        RenderTarget* CompressedShadowsOutRt,
+        RenderTarget* ResultShadowsRt);
 
  private:
   struct CBuffer1 {

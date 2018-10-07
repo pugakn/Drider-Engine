@@ -12,6 +12,9 @@
 #include <dr_model.h>
 #include <dr_keyboard.h>
 #include <dr_mouse.h>
+#include <dr_device.h>
+#include <dr_device_context.h>
+#include <dr_codec_texture.h>
 
 #include <dr_animator_component.h>
 #include <dr_render_component.h>
@@ -413,13 +416,53 @@ RenderManApp::postUpdate() {
   if (Keyboard::isKeyDown(KEY_CODE::k2)) {
     luminanceDelta -= 0.01f;
   }
+
+  if (Keyboard::isKeyDown(KEY_CODE::k0)) {
+    Device& device = GraphicsAPI::getDevice();
+    DeviceContext& dc = GraphicsAPI::getDeviceContext();
+
+    GFXUnique<RenderTarget> resultRT;
+    {
+      //RenderTarget
+      DrTextureDesc m_TexDescDefault;
+      m_TexDescDefault.dimension = DR_DIMENSION::k2D;
+      m_TexDescDefault.width = m_viewport.width;
+      m_TexDescDefault.height = m_viewport.height;
+      m_TexDescDefault.Format = DR_FORMAT::kR8G8B8A8_UNORM;
+      m_TexDescDefault.pitch = m_TexDescDefault.width * 4 * 1;
+      m_TexDescDefault.mipLevels = 0;
+      m_TexDescDefault.CPUAccessFlags = DR_CPU_ACCESS_FLAG::drRead;
+      m_TexDescDefault.genMipMaps = true;
+      m_TexDescDefault.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE |
+                                   DR_BIND_FLAGS::RENDER_TARGET |
+                                   DR_BIND_FLAGS::UNORDERED_ACCESS;
+
+      std::vector<Texture*> m_vecTexture;
+      GFXUnique<Texture> ColorTexure = dr_gfx_unique<Texture>(device.createEmptyTexture(m_TexDescDefault));
+      m_vecTexture.push_back(ColorTexure.get());
+      resultRT = dr_gfx_unique<RenderTarget>(device.createRenderTarget(m_vecTexture));
+
+      m_vecTexture.clear();
+      ColorTexure.release();
+    }
+
+    RenderManager::instance().draw(*resultRT, GraphicsAPI::getDepthStencil());
+
+    std::vector<byte> memBuff;
+    (*resultRT).getTexture(0).getMemoryBuffer(dc, memBuff);
+
+    CodecTexture CT;
+    CT.encodeImage("RM_SS", 1280, 720, DR_FILE_FORMAT::BMP, &memBuff);
+    }
 }
 
 void
 RenderManApp::postRender() {
 #if (RENDER_MANAGER == SINGLE_THREAD)
   GraphicsDriver::API().clear();
+
   RenderManager::instance().draw(GraphicsAPI::getBackBufferRT(), GraphicsAPI::getDepthStencil());
+
   GraphicsDriver::API().swapBuffers();
 #endif
 }

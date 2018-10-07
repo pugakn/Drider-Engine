@@ -36,8 +36,8 @@ SSAOPass::init(PassInitData* initData) {
   SSdesc.Filter = DR_TEXTURE_FILTER::kMIN_MAG_LINEAR_MIP_POINT;
   SSdesc.maxAnisotropy = 16;
   SSdesc.addressU = DR_TEXTURE_ADDRESS::kWrap;
-  SSdesc.addressV = DR_TEXTURE_ADDRESS::kWrap;
-  SSdesc.addressW = DR_TEXTURE_ADDRESS::kWrap;
+  SSdesc.addressV = SSdesc.addressU;
+  SSdesc.addressW = SSdesc.addressV;
   m_samplerState = dr_gfx_unique(device.createSamplerState(SSdesc));
 
   m_ComputeWidthDivisions = 8;

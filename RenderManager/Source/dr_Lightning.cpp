@@ -89,9 +89,9 @@ LightningPass::init(PassInitData* initData) {
   DrSampleDesc SSdesc;
   SSdesc.Filter = DR_TEXTURE_FILTER::kMIN_MAG_LINEAR_MIP_POINT;
   SSdesc.maxAnisotropy = 16;
-  SSdesc.addressU = DR_TEXTURE_ADDRESS::kWrap;
-  SSdesc.addressV = DR_TEXTURE_ADDRESS::kWrap;
-  SSdesc.addressW = DR_TEXTURE_ADDRESS::kWrap;
+  SSdesc.addressU = DR_TEXTURE_ADDRESS::kBorder;
+  SSdesc.addressV = SSdesc.addressU;
+  SSdesc.addressW = SSdesc.addressV;
 
   m_samplerState = dr_gfx_unique(device.createSamplerState(SSdesc));
 
@@ -296,9 +296,13 @@ LightningPass::draw(PassDrawData* drawData) {
   data->GbufferRT->getTexture(2).set(dc, 2, DR_SHADER_TYPE_FLAG::kCompute, true);        //Albedo, Metallic
   data->GbufferRT->getTexture(3).set(dc, 3, DR_SHADER_TYPE_FLAG::kCompute, true);        //Emissivve, Roughness
   data->SSAO_SSShadowRT->getTexture(0).set(dc, 4, DR_SHADER_TYPE_FLAG::kCompute, true);  //SSAO & Shadow
-  m_RTLightsIndex->getTexture(0).set(dc, 5, DR_SHADER_TYPE_FLAG::kCompute, true);
-  data->EnviromentCubemap->textureGFX->set(dc, 6, DR_SHADER_TYPE_FLAG::kCompute, true);  //Cubemap
-  data->IrradianceCubemap->textureGFX->set(dc, 7, DR_SHADER_TYPE_FLAG::kCompute, true);  //CubemapDiffuse
+  
+  data->SSReflection->getTexture(0).set(dc, 5, DR_SHADER_TYPE_FLAG::kCompute, true);
+  //data->GbufferRT->getTexture(2).set(dc, 5, DR_SHADER_TYPE_FLAG::kCompute, true);
+
+  m_RTLightsIndex->getTexture(0).set(dc, 6, DR_SHADER_TYPE_FLAG::kCompute, true);
+  data->EnviromentCubemap->textureGFX->set(dc, 7, DR_SHADER_TYPE_FLAG::kCompute, true);  //Cubemap
+  data->IrradianceCubemap->textureGFX->set(dc, 8, DR_SHADER_TYPE_FLAG::kCompute, true);  //CubemapDiffuse
 
   data->OutRt->getTexture(0).set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute, false);
 
