@@ -69,6 +69,9 @@
     <ClInclude Include="Include\dr_SSReflection.h">
       <Filter>Archivos de encabezado\Passes</Filter>
     </ClInclude>
+    <ClInclude Include="Include\dr_FakeInterior.h">
+      <Filter>Archivos de encabezado\Passes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_rendermanapp.cpp">
@@ -111,6 +114,9 @@
       <Filter>Archivos de código fuente\Passes</Filter>
     </ClCompile>
     <ClCompile Include="Source\dr_SSReflection.cpp">
+      <Filter>Archivos de código fuente\Passes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_FakeInterior.cpp">
       <Filter>Archivos de código fuente\Passes</Filter>
     </ClCompile>
   </ItemGroup>

@@ -188,6 +188,28 @@ RenderManager::init() {
     m_GBufferDSoptions = dr_gfx_unique(dc.createDepthStencil(commonTextureDesc));
   }
 
+  //Fake Interior
+  {
+    //RenderTarget
+    texDescDefault.width = screenWidth;
+    texDescDefault.height = screenHeight;
+    texDescDefault.Format = DR_FORMAT::kR16G16B16A16_FLOAT;
+    texDescDefault.pitch = texDescDefault.width * 4 * 2;
+
+    GFXUnique<Texture> ColorTexure = dr_gfx_unique<Texture>(dc.createEmptyTexture(texDescDefault));
+    vecTextures.push_back(ColorTexure.get());
+
+    m_RTFakeInterior = dr_gfx_unique(dc.createRenderTarget(texDescDefault, 1));
+
+    vecTextures.clear();
+    ColorTexure.release();
+
+    //DepthStencil
+    commonTextureDesc.width = texDescDefault.width;
+    commonTextureDesc.height = texDescDefault.height;
+    m_FakeInteriorDSoptions = dr_gfx_unique(dc.createDepthStencil(commonTextureDesc));
+  }
+
   //Shadows Auxiliars
   {
     //RenderTarget
@@ -380,8 +402,10 @@ RenderManager::init() {
   }
 
   ////////initialization of passes////////
-  m_GBufferPass.init(&m_GBufferInitData);
+  m_FakeInteriorPass.init(&m_FakeInteriorInitData);
 
+  //m_GBufferPass.init(&m_GBufferInitData);
+  /*
   m_ShadowInitData.RTWidht = shadowWidth;
   m_ShadowInitData.RTHeight = shadowHeight;
   m_ShadowPass.init(&m_ShadowInitData);
@@ -466,6 +490,7 @@ RenderManager::init() {
   m_emitter.getUpdater<PlaneColliderUpdater>(ParticleEmitter::UPDATERS::kPLANE_COLLISION).m_normal = Vector3D(0,1,0);
   m_emitter.getUpdater<PlaneColliderUpdater>(ParticleEmitter::UPDATERS::kPLANE_COLLISION).m_point = Vector3D(0, 0, 0);
   m_emitter.getUpdater<PlaneColliderUpdater>(ParticleEmitter::UPDATERS::kPLANE_COLLISION).m_k = 0;
+  */
 }
 
 void
@@ -483,6 +508,13 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
                         QUERY_PROPERTY::kStatic };
   queryRequest = SceneGraph::query(rqRequest);
 
+  m_FakeInteriorDrawData.depthOffset = *depthOffset;
+  m_FakeInteriorDrawData.dsOptions = m_FakeInteriorDSoptions.get();
+  m_FakeInteriorDrawData.activeCam = mainCam;
+  m_FakeInteriorDrawData.models = &queryRequest;
+  m_FakeInteriorDrawData.OutRt = &_out;
+  m_FakeInteriorPass.draw(&m_FakeInteriorDrawData);
+  /*
   m_GBufferDrawData.activeCam = mainCam;
   m_GBufferDrawData.models = &queryRequest;
   m_GBufferDrawData.OutRt = m_RTGBuffer.get();
@@ -621,6 +653,7 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_PostProcessingDrawData.OutRT = &_out;
   m_PostProcessingDrawData.OutDS = &_outds;
   m_PostProcessingPass.draw(&m_PostProcessingDrawData);
+  */
 
   /*
   ./ GBuffer:

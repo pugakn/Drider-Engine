@@ -59,12 +59,14 @@ class RenderManApp : public Application
   std::shared_ptr<Material> m_BushMat;
   std::shared_ptr<Material> m_StormtrooperMat;
   std::shared_ptr<Material> m_floorMat;
+  std::shared_ptr<Material> m_fakeInteriorMat;
   std::shared_ptr<Material> m_hkBodyMat;
   std::shared_ptr<Material> m_hkBodySMat;
   std::shared_ptr<Material> m_hkEyeMat;
   std::shared_ptr<Material> m_modelMat;
 
   float luminanceDelta;
+  float depthOffset;
   Vector3D modelMovement;
   std::array<Light, RM_MAX_LIGHTS> Lights;
 };

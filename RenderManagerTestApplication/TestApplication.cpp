@@ -104,6 +104,8 @@ RenderManApp::postInit() {
 
   luminanceDelta = 0.0f;
   RenderManager::instancePtr()->luminanceDelta = &luminanceDelta;
+  depthOffset = 0.0f;
+  RenderManager::instancePtr()->depthOffset = &depthOffset;
 
   m_bRotate = false;
 
@@ -159,6 +161,40 @@ RenderManApp::postInit() {
 
   loadResources();
 
+  m_vecGos.push_back(SceneGraph::createObject(_T("FakeInterior")));
+  m_selectedGO = m_vecGos.back();
+  auto ptrFI = ResourceManager::getReferenceT<Model>(_T("SSAQ.obj"));
+  if (ptrFI) {
+    m_selectedGO->createComponent<RenderComponent>(ptrFI);
+    m_selectedGO->createComponent<AABBCollider>(ptrFI->aabb);
+
+    m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, 0.0f));
+    m_selectedGO->getTransform().setScale(Vector3D(1.0f, 1.0f, 1.0f));
+    m_selectedGO->getTransform().setRotation(Radian(Math::HALF_PI*3), AXIS::kX);
+
+    m_fakeInteriorMat = ResourceManager::createMaterial(_T("FakeInteriorMaterial"));
+
+    m_fakeInteriorMat->addProperty(_T("WallFront"), PROPERTY_TYPE::kVec3);
+    m_fakeInteriorMat->addProperty(_T("WallLeft"), PROPERTY_TYPE::kVec3);
+    m_fakeInteriorMat->addProperty(_T("WallRight"), PROPERTY_TYPE::kVec3);
+    m_fakeInteriorMat->addProperty(_T("Ceil"), PROPERTY_TYPE::kVec3);
+    m_fakeInteriorMat->addProperty(_T("Floor"), PROPERTY_TYPE::kVec3);
+    auto FrontTex = ResourceManager::getReferenceT<TextureCore>(_T("Fake_FrontWall.tga"));
+    auto LeftTex = ResourceManager::getReferenceT<TextureCore>(_T("Fake_LeftWall.tga"));
+    auto RightTex = ResourceManager::getReferenceT<TextureCore>(_T("Fake_RightWall.tga"));
+    auto CeilTex = ResourceManager::getReferenceT<TextureCore>(_T("Fake_Ceil.tga"));
+    auto FloorTex = ResourceManager::getReferenceT<TextureCore>(_T("Fake_Floor.tga"));
+    m_fakeInteriorMat->setTexture(FrontTex, _T("WallFront"));
+    m_fakeInteriorMat->setTexture(LeftTex, _T("WallLeft"));
+    m_fakeInteriorMat->setTexture(RightTex, _T("WallRight"));
+    m_fakeInteriorMat->setTexture(CeilTex, _T("Ceil"));
+    m_fakeInteriorMat->setTexture(FloorTex, _T("Floor"));
+
+    auto renderComp = m_selectedGO->getComponent<RenderComponent>();
+    renderComp->getMeshes().front().material = m_fakeInteriorMat;
+  }
+
+  /*
   m_vecGos.push_back(SceneGraph::createObject(_T("Floor")));
   m_selectedGO = m_vecGos.back();
   auto ptrFloor = ResourceManager::getReferenceT<Model>(_T("plane.fbx"));
@@ -166,10 +202,12 @@ RenderManApp::postInit() {
     m_selectedGO->createComponent<RenderComponent>(ptrFloor);
     m_selectedGO->createComponent<AABBCollider>(ptrFloor->aabb);
     m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, 0.0f));
-    //m_selectedGO->getTransform().setScale(Vector3D(1000.0f, 1.0f, 1000.0f));
-    m_selectedGO->getTransform().setScale(Vector3D(100.0f, 1.0f, 100.0f));
-    //m_selectedGO->getTransform().setScale(Vector3D(5.0f, 1.0f, 5.0f));
+    //m_selectedGO->getTransform().setScale(Vector3D(1.0f, 1.0f, 1.0f));
     //m_selectedGO->getTransform().setScale(Vector3D(4.0f, 1.0f, 4.0f));
+    //m_selectedGO->getTransform().setScale(Vector3D(5.0f, 1.0f, 5.0f));
+    //m_selectedGO->getTransform().setScale(Vector3D(10.0f, 1.0f, 10.0f));
+    m_selectedGO->getTransform().setScale(Vector3D(100.0f, 1.0f, 100.0f));
+    //m_selectedGO->getTransform().setScale(Vector3D(1000.0f, 1.0f, 1000.0f));
 
     m_floorMat = ResourceManager::createMaterial(_T("FloorMaterial"));
 
@@ -202,7 +240,6 @@ RenderManApp::postInit() {
     auto renderComp = m_selectedGO->getComponent<RenderComponent>();
     renderComp->getMeshes().front().material = m_floorMat;
   }
-  
   m_vecGos.push_back(SceneGraph::createObject(_T("Bush")));
   m_selectedGO = m_vecGos.back();
   auto ptrBs = ResourceManager::getReferenceT<Model>(_T("FernBush.obj"));
@@ -345,7 +382,7 @@ RenderManApp::postInit() {
 
 
   }
-
+  */
   /*
   m_vecGos.push_back(SceneGraph::createObject(_T("SkySphere")));
   m_selectedGO = m_vecGos.back();
@@ -416,6 +453,13 @@ RenderManApp::postUpdate() {
   }
   if (Keyboard::isKeyDown(KEY_CODE::k2)) {
     luminanceDelta += 0.01f;
+  }
+
+  if (Keyboard::isKeyDown(KEY_CODE::k3)) {
+    depthOffset -= 1.0f;
+  }
+  if (Keyboard::isKeyDown(KEY_CODE::k4)) {
+    depthOffset += 1.0f;
   }
 
   //Screenshot!
@@ -586,6 +630,7 @@ RenderManApp::SelectModel(Int32 jump) {
 void
 RenderManApp::loadResources() {
   ResourceManager::loadResource(_T("plane.fbx"));
+  ResourceManager::loadResource(_T("SSAQ.obj"));
   ResourceManager::loadResource(_T("FernBush.obj"));
   ResourceManager::loadResource(_T("model.dae"));
   ResourceManager::loadResource(_T("stormtrooper_dancing.fbx"));
@@ -602,6 +647,12 @@ RenderManApp::loadResources() {
   ResourceManager::loadResource(_T("256_Checker_Specular.tga"));
   ResourceManager::loadResource(_T("256_Checker_SSColor.tga"));
   ResourceManager::loadResource(_T("256_Checker_Thickness.tga"));
+
+  ResourceManager::loadResource(_T("Fake_FrontWall.tga"));
+  ResourceManager::loadResource(_T("Fake_LeftWall.tga"));
+  ResourceManager::loadResource(_T("Fake_RightWall.tga"));
+  ResourceManager::loadResource(_T("Fake_Ceil.tga"));
+  ResourceManager::loadResource(_T("Fake_Floor.tga"));
 
   ResourceManager::loadResource(_T("FernTarga.tga"));
 

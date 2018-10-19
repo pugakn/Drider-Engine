@@ -2,6 +2,7 @@
 #include "dr_renderman_prerequisites.h"
 #include "dr_light.h"
 #include "dr_GBuffer1.h"
+#include "dr_FakeInterior.h"
 #include "dr_Shadow.h"
 #include "dr_SSAO.h"
 #include "dr_HorBlur.h"
@@ -95,6 +96,8 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   recompile();
 
   float* luminanceDelta;
+  float* depthOffset;
+
   UInt32 screenWidth;
   UInt32 screenHeight;
   UInt32 shadowWidth;
@@ -129,6 +132,12 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   GBufferInitData m_GBufferInitData;
   GBufferDrawData m_GBufferDrawData;
   GFXUnique<DepthStencil> m_GBufferDSoptions;
+
+  //VS & FS
+  FakeInteriorPass m_FakeInteriorPass;
+  FakeInteriorInitData m_FakeInteriorInitData;
+  FakeInteriorDrawData m_FakeInteriorDrawData;
+  GFXUnique<DepthStencil> m_FakeInteriorDSoptions;
 
   //CS
   SSAOPass m_SSAOPass;
@@ -194,6 +203,7 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   //2: { xyz: albedo,   w: metallic };
   //3: { xyz: emissive, w: roughness };
   GFXUnique<RenderTarget> m_RTGBuffer;
+  GFXUnique<RenderTarget> m_RTFakeInterior;
   GFXUnique<RenderTarget> m_RTBlurInit;
   GFXUnique<RenderTarget> m_RTSSAO_SSShadow;
   GFXUnique<RenderTarget> m_RTSSAO_SSShadowBlur;
