@@ -52,14 +52,12 @@ LineVSSquare(const in float3 rayOrigin,
   
   //4: Project the point in plane on quad edges to get the UV value.
   float3 vecVertex1ToPointInPlane = pointInPlane - vertex1;
-  float u = dot(vecVertex1ToPointInPlane, vertex1to2) * rcp(dot(vertex1to2, vertex1to2));
-  float v = dot(vecVertex1ToPointInPlane, vertex1to3) * rcp(dot(vertex1to3, vertex1to3));
-
-  uvOut = float2(u, v);
+  uvOut.x = dot(vecVertex1ToPointInPlane, vertex1to2) * rcp(dot(vertex1to2, vertex1to2));
+  uvOut.y = dot(vecVertex1ToPointInPlane, vertex1to3) * rcp(dot(vertex1to3, vertex1to3));
   
   //5: Chek if the point is inside the quad.
-  return (u >= 0.0f && u <= 1.0f) &&
-         (v >= 0.0f && v <= 1.0f);
+  return (uvOut.x >= 0.0f && uvOut.x <= 1.0f) &&
+         (uvOut.y >= 0.0f && uvOut.y <= 1.0f);
 }
 
 PS_OUTPUT
