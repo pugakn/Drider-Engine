@@ -98,6 +98,7 @@ RenderManApp::postInit() {
                               10000.0f);
   CameraManager::setActiveCamera(_T("PATO_CAM"));
   RenderManager::startUp();
+  PhysicsManager::startUp();
 
   m_bRotate = false;
 
@@ -350,6 +351,8 @@ RenderManApp::postUpdate() {
   Time::update();
   InputManager::update();
   SceneGraph::update();
+  PhysicsManager::TestCollision();
+  PhysicsManager::simulate();
 
   if (m_bRotate) {
     m_selectedGO->getTransform().rotate(Vector3D(0.0f, Math::QUARTER_PI * Time::getDelta(), 0.0f));

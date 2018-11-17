@@ -21,7 +21,10 @@ AABBCollider::getAABB() {
 
 void
 AABBCollider::onCreate() {
-
+  Transform t;
+  t.setPosition(Vector3D(0, 0, 0));
+  m_body = PhysicsManager::createCollisionBody(t);
+  m_body->AddSphereShape(50);
 }
 
 void 
