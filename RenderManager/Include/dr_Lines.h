@@ -8,21 +8,9 @@
 
 namespace driderSDK {
 
-namespace DR_SHAPE_TYPE {
-
-enum E {
-  LINE = 0,
-  LINE_STRIP,
-  SPHERE,
-  BOX,
-  CAPSULE
-};
-
-}
-
 struct BaseShape {
-  DR_SHAPE_TYPE::E shape;
-  Vector3D Color;
+  Vector3D color;
+  Matrix4x4 transform;
 };
 
 struct LineShape : BaseShape {
@@ -96,17 +84,20 @@ class LinesPass : public RenderPass {
   void
   addLineToQueue(const Vector3D& start,
                  const Vector3D& end,
-                 const Vector3D& color);
+                 const Vector3D& color,
+                 const Matrix4x4& transform = Matrix4x4::identityMat4x4);
 
   /**
   * Adds a strip line to the render queue.
   */
   void
   addStripLineToQueue(const std::vector<Vector3D>& points,
-                      const Vector3D& color);
+                      const Vector3D& color,
+                      const Matrix4x4& transform = Matrix4x4::identityMat4x4);
 
  private:
   struct CBuffer {
+    Matrix4x4 W;
     Matrix4x4 VP;
     Vector4D LineColor;
     Vector4D CameraInfo; //x: aspect ratio; y: fov; z: near plane; w: far plane

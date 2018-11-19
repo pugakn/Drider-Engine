@@ -83,21 +83,25 @@ LinesPass::draw(PassDrawData* drawData) {
 void
 LinesPass::addLineToQueue(const Vector3D& start,
                           const Vector3D& end,
-                          const Vector3D& color) {
+                          const Vector3D& color,
+                          const Matrix4x4& transform) {
   LineShape tmpLineShape;
   tmpLineShape.start = start;
   tmpLineShape.end = end;
-  tmpLineShape.Color = color;
+  tmpLineShape.color = color;
+  tmpLineShape.transform = transform;
 
   debugLines.push(tmpLineShape);
 }
 
 void
 LinesPass::addStripLineToQueue(const std::vector<Vector3D>& points,
-                               const Vector3D& color) {
+                               const Vector3D& color,
+                               const Matrix4x4& transform) {
   LineStripShape tmpStripLine;
-  tmpStripLine.Color = color;
+  tmpStripLine.color = color;
   tmpStripLine.points = points;
+  tmpStripLine.transform = transform;
   debugLineStrips.push(tmpStripLine);
 }
 
@@ -150,7 +154,8 @@ LinesPass::drawLines() {
     vb->updateFromBuffer(dc, reinterpret_cast<byte*>(&vertexList));
     vb->set(dc);
 
-    CB.LineColor = tmpLine.Color;
+    CB.LineColor = tmpLine.color;
+    CB.W = tmpLine.transform;
     m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
     m_constantBuffer->set(dc);
 
@@ -212,7 +217,8 @@ LinesPass::drawStripLines() {
     vb->set(dc);
     ib->set(dc);
 
-    CB.LineColor = tmpStripLine.Color;
+    CB.LineColor = tmpStripLine.color;
+    CB.W = tmpStripLine.transform;
     m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
     m_constantBuffer->set(dc);
 

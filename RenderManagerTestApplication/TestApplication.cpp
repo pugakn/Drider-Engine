@@ -419,9 +419,19 @@ RenderManApp::postUpdate() {
   }
 
   if (Keyboard::isKeyDown(KEY_CODE::k0)) {
-    RenderManager::instance().drawDebugLine(Vector3D(0, 0, 0),
-                                            Vector3D(0, 100, 0),
-                                            Vector3D(1, 1, 1));
+    Matrix4x4 translateMat = Matrix4x4::identityMat4x4;
+    translateMat.Scale(Vector3D(0.8, 0.5, 0.8));
+    translateMat.Translation(Vector3D(0, 50, 0));
+
+    std::vector<Vector3D> points;
+    points.push_back(Vector3D(-75,  50, 0));
+    points.push_back(Vector3D(  0, 150, 0));
+    points.push_back(Vector3D( 75,  50,  0));
+    points.push_back(Vector3D(-75,  50,  0));
+    RenderManager::instance().drawDebugLine(Vector3D(0, 0, 0), Vector3D(0, 100, 0), Vector3D(1, 1, 0), translateMat);
+    RenderManager::instance().drawDebugLine(points, Vector3D(0, 1, 0), translateMat);
+    RenderManager::instance().drawDebugCube(Vector3D(100, 100, 100), Vector3D(0, 0, 1), translateMat);
+    RenderManager::instance().drawDebugSphere(50, Vector3D(1, 0, 0), translateMat);
   }
 
   //Screenshot!

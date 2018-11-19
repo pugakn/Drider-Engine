@@ -1,5 +1,6 @@
 cbuffer ConstantBuffer {
   float4x4 VP;
+  float4x4 W;
   float4   LineColor;
   float4   CameraInfo; //X: Aspect Ratio; Y: FOV; Z: Near Plane; W: Far Plane
 };

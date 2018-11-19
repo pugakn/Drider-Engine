@@ -135,11 +135,15 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   * 
   * @color
   *  color of the line.
+  *
+  * @transform
+  *  Transform of the line.
   */
   void
   drawDebugLine(const Vector3D& start,
                 const Vector3D& end,
-                const Vector3D& color);
+                const Vector3D& color,
+                const Matrix4x4& transform = Matrix4x4::identityMat4x4);
 
   /**
   * Draws a strip line in debug mode.
@@ -149,10 +153,48 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   *
   * @color
   *  color of the line.
+  *
+  * @transform
+  *  Transform of the line.
   */
   void
   drawDebugLine(const std::vector<Vector3D>& points,
-                const Vector3D& color);
+                const Vector3D& color,
+                const Matrix4x4& transform = Matrix4x4::identityMat4x4);
+  
+  /**
+  * Draws a cube in debug mode.
+  *
+  * @points
+  *  vector containing all the points to be renderer.
+  *
+  * @color
+  *  color of the line.
+  *
+  * @transform
+  *  Transform of the cube.
+  */
+  void
+  drawDebugCube(const Vector3D& dimensions,
+                const Vector3D& color,
+                const Matrix4x4& transform = Matrix4x4::identityMat4x4);
+ 
+  /**
+  * Draws a cube in debug mode.
+  *
+  * @points
+  *  vector containing all the points to be renderer.
+  *
+  * @color
+  *  color of the line.
+  *
+  * @transform
+  *  Transform of the cube.
+  */
+  void
+  drawDebugSphere(const float radius,
+                  const Vector3D& color,
+                  const Matrix4x4& transform = Matrix4x4::identityMat4x4);
 
  protected:
 

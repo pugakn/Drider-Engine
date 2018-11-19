@@ -1,5 +1,6 @@
 cbuffer ConstantBuffer {
   float4x4 VP;
+  float4x4 W;
   float4   LineColor;
   float4   CameraInfo; //X: Aspect Ratio; Y: FOV; Z: Near Plane; W: Far Plane
 };
@@ -22,7 +23,7 @@ VS_OUTPUT
 VS(VS_INPUT input) {
   VS_OUTPUT Output;
   
-  Output.Position  = mul(VP, input.Position);
+  Output.Position  = mul(mul(W, VP), input.Position);
 
   return Output;
 }

@@ -660,67 +660,7 @@ RenderManager::recompile() {
   m_luminescencePass.recompileShader();
   m_PostProcessingPass.recompileShader();
 }
-/*
-void
-RenderManager::drawLine(std::vector<Vector3D>& points, Vector3D color) {
-  #ifdef DR_DEBUG_MODE
-  Device& dev = GraphicsAPI::getDevice();
-  DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
-  std::vector<Vertex> vertexList;
-  std::vector<Int32> indexList;
-  SizeT indexCount;
-  Vertex tmpVertex;
-  Int32 currentIndex = 0;
-  for (auto it : points) {
-    tmpVertex.position = Vector4D(it, 1.0f);
-    vertexList.push_back(tmpVertex);
-    indexList.push_back(currentIndex);
-    ++currentIndex;
-  }
-
-  DrBufferDesc vbDesc;
-  vbDesc.type = DR_BUFFER_TYPE::kVERTEX;
-  vbDesc.usage = DR_BUFFER_USAGE::kDefault;
-  vbDesc.sizeInBytes = vertexList.size() * sizeof(Vertex);
-  vbDesc.stride = sizeof(Vertex);
-
-  VertexBuffer* vb = static_cast<VertexBuffer*>(dev.createBuffer(vbDesc, reinterpret_cast<byte*>(&vertexList[0])));
-  vertexList.clear();
-  
-  DrBufferDesc ibDesc;
-  ibDesc.type = DR_BUFFER_TYPE::kINDEX;
-  ibDesc.usage = DR_BUFFER_USAGE::kDefault;
-  ibDesc.sizeInBytes = indexList.size() * sizeof(Int32);
-  ibDesc.stride = sizeof(Int32);
-
-  IndexBuffer* ib = static_cast<IndexBuffer*>(dev.createBuffer(ibDesc, reinterpret_cast<byte*>(&indexList[0])));
-  indexCount = indexList.size();
-  indexList.clear();
-
-  m_RTGBuffer->set(dc, *m_GBufferDSoptions);
-
-  m_LineVertexShader->set(dc);
-  m_LineFragmentShader->set(dc);
-
-  m_LineInputLayout->set(dc);
-
-  CB.LineColor = Vector4D(color, 1.0f);
-  m_LineConstantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
-  m_LineConstantBuffer->set(dc);
-
-  dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kLineStrip);
-  
-  vb->set(dc);
-  ib->set(dc);
-
-  dc.draw(indexCount, 0, 0);
-
-  vb->release();
-  ib->release();
-#endif
-}
-*/
 void
 RenderManager::onStartUp() {
   init();
@@ -734,20 +674,122 @@ RenderManager::onShutDown() {
 void
 RenderManager::drawDebugLine(const Vector3D& start,
                              const Vector3D& end,
-                             const Vector3D& color) {
+                             const Vector3D& color,
+                             const Matrix4x4& transform) {
 #ifdef DR_DEBUG_MODE
-  m_LinesPass.addLineToQueue(start, end, color);
+  m_LinesPass.addLineToQueue(start, end, color, transform);
 #endif // DR_DEBUG_MODE
 
 }
 
 void
 RenderManager::drawDebugLine(const std::vector<Vector3D>& points,
-                             const Vector3D& color) {
+                             const Vector3D& color,
+                             const Matrix4x4& transform) {
 #ifdef DR_DEBUG_MODE
-  m_LinesPass.addStripLineToQueue(points, color);
+  m_LinesPass.addStripLineToQueue(points, color, transform);
 #endif // DR_DEBUG_MODE
 
+}
+
+void
+RenderManager::drawDebugCube(const Vector3D& dimensions,
+                             const Vector3D& color,
+                             const Matrix4x4& transform) {
+#ifdef DR_DEBUG_MODE
+  std::vector<Vector3D> square;
+  float width  = dimensions.x * 0.5f,
+        height = dimensions.y * 0.5f,
+        depth  = dimensions.z * 0.5f;
+  square.push_back(Vector3D(-width,  height, -depth));
+  square.push_back(Vector3D(-width,  height,  depth));
+  square.push_back(Vector3D( width,  height,  depth));
+  square.push_back(Vector3D( width,  height, -depth));
+  square.push_back(Vector3D(-width,  height, -depth));
+
+  m_LinesPass.addStripLineToQueue(square, color, transform);
+  for (auto& it : square) {
+    it.y = -height;
+  }
+  m_LinesPass.addStripLineToQueue(square, color, transform);
+  
+  m_LinesPass.addLineToQueue(Vector3D(-width, -height, -depth),
+                             Vector3D(-width,  height, -depth),
+                             color,
+                             transform);
+  m_LinesPass.addLineToQueue(Vector3D(-width, -height,  depth),
+                             Vector3D(-width,  height,  depth),
+                             color,
+                             transform);
+  m_LinesPass.addLineToQueue(Vector3D( width, -height,  depth),
+                             Vector3D( width,  height,  depth),
+                             color,
+                             transform);
+  m_LinesPass.addLineToQueue(Vector3D( width, -height, -depth),
+                             Vector3D( width,  height, -depth),
+                             color,
+                             transform);
+#endif // DR_DEBUG_MODE
+}
+
+void
+RenderManager::drawDebugSphere(const float radius,
+                               const Vector3D& color,
+                               const Matrix4x4& transform) {
+#ifdef DR_DEBUG_MODE
+  SizeT verticalDivs = 8;
+  SizeT horizontalDivs = 16;
+
+  Matrix4x4 verticalRotation = Matrix4x4::identityMat4x4,
+            horizontalRotation = Matrix4x4::identityMat4x4;
+  {
+    Radian verRads(Math::PI / (float)verticalDivs),
+           horRads(Math::TWO_PI / (float)horizontalDivs);
+
+    verticalRotation.RotationX(verRads);
+    horizontalRotation.RotationY(horRads);
+  }
+
+  //Auxiliar points
+  std::vector<Vector3D> halfCircle;
+  {
+    Vector3D refPoint = Vector3D(0, radius, 0);
+    for (Int32 i = 0; i < verticalDivs; ++i) {
+      halfCircle.push_back(refPoint);
+      refPoint = verticalRotation * refPoint;
+    }
+    halfCircle.push_back(refPoint);
+  }
+
+  //Vertical circles
+  {
+    std::vector<Vector3D> verticalCircle = halfCircle;
+
+    for (Int32 i = 0; i < horizontalDivs; ++i) {
+      for (auto& currentVertex : verticalCircle) {
+        currentVertex = horizontalRotation * currentVertex;
+      }
+      m_LinesPass.addStripLineToQueue(verticalCircle, color, transform);
+    }
+  }
+
+  //Horizontal divisions
+  {
+    std::vector<Vector3D> horizontalCircle;
+    Vector3D horRef;
+
+    for (Int32 i = 1; i < verticalDivs; ++i) {
+      horRef = halfCircle[i];
+      for (Int32 i = 0; i < (horizontalDivs + 1); ++i) {
+        horizontalCircle.push_back(horRef);
+        horRef = horizontalRotation * horRef;
+      }
+      m_LinesPass.addStripLineToQueue(horizontalCircle, color, transform);
+      horizontalCircle.clear();
+    }
+  }
+
+#endif
 }
 
 void
