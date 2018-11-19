@@ -22,19 +22,6 @@ struct LineStripShape : BaseShape {
   std::vector<Vector3D> points;
 };
 
-struct SphereShape : BaseShape {
-  float radius;
-};
-
-struct BoxShape : BaseShape {
-  Vector3D Dimensions;
-};
-
-struct CapsuleShape : BaseShape {
-  float height;
-  float radius;
-};
-
 struct LinesInitData : PassInitData {
 };
 
