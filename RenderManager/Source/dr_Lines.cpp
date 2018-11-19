@@ -64,18 +64,6 @@ LinesPass::draw(PassDrawData* drawData) {
   dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kLineStrip);
   drawStripLines();
 
-  /*
-  Draw Sphere
-  */
-  
-  /*
-  Draw Box
-  */
-
-  /*
-  Draw Capsule
-  */
-
   data->GBufferRT->setRTNull(dc);
   dc.setUAVsNull();
   dc.setResourcesNull();
