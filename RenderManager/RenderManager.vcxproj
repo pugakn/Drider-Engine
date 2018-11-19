@@ -23,6 +23,7 @@
     <ClInclude Include="Include\dr_GBuffer1.h" />
     <ClInclude Include="Include\dr_HorBlur.h" />
     <ClInclude Include="Include\dr_Lightning.h" />
+    <ClInclude Include="Include\dr_Lines.h" />
     <ClInclude Include="Include\dr_Luminescence.h" />
     <ClInclude Include="Include\dr_pass_particle_system.h" />
     <ClInclude Include="Include\dr_Shadow.h" />
@@ -40,6 +41,7 @@
     <ClCompile Include="Source\dr_Bloom.cpp" />
     <ClCompile Include="Source\dr_GBuffer1.cpp" />
     <ClCompile Include="Source\dr_Lightning.cpp" />
+    <ClCompile Include="Source\dr_Lines.cpp" />
     <ClCompile Include="Source\dr_Luminescence.cpp" />
     <ClCompile Include="Source\dr_pass_particle_system.cpp" />
     <ClCompile Include="Source\dr_Shadow.cpp" />

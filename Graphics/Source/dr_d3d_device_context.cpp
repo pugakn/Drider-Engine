@@ -169,7 +169,7 @@ D3DDeviceContext::draw(UInt32 indexCount,
   D3D11DeviceContext->DrawIndexed(indexCount, startIndexLocation, startVertexLocation);
 }
 
-void 
+void
 D3DDeviceContext::drawInstanced(UInt32 indexCount,
                                 UInt32 instanceCount,
                                 UInt32 startIndexLocation,

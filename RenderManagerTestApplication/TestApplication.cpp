@@ -418,8 +418,14 @@ RenderManApp::postUpdate() {
     luminanceDelta += 0.01f;
   }
 
-  //Screenshot!
   if (Keyboard::isKeyDown(KEY_CODE::k0)) {
+    RenderManager::instance().drawDebugLine(Vector3D(0, 0, 0),
+                                            Vector3D(0, 100, 0),
+                                            Vector3D(1, 1, 1));
+  }
+
+  //Screenshot!
+  if (Keyboard::isKeyDown(KEY_CODE::kF2)) {
     Device& device = GraphicsAPI::getDevice();
     DeviceContext& dc = GraphicsAPI::getDeviceContext();
 

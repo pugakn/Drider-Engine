@@ -241,30 +241,30 @@ class DR_GRAPHICS_EXPORT D3DDeviceContext : public DeviceContext
        UInt32 startVertexLocation) const override;
 
   void
-    drawInstanced(UInt32 indexCount,
-      UInt32 instanceCount,
-      UInt32 startIndexLocation,
-      UInt32 startVertexLocation,
-      UInt32 startInstanceLocation) const override;
+  drawInstanced(UInt32 indexCount,
+                UInt32 instanceCount,
+                UInt32 startIndexLocation,
+                UInt32 startVertexLocation,
+                UInt32 startInstanceLocation) const override;
 
   void
-    dispatch(UInt32 _threadGroupCountX,
-      UInt32 _threadGroupCountY,
-      UInt32 _threadGroupCountZ) const override;
+  dispatch(UInt32 _threadGroupCountX,
+           UInt32 _threadGroupCountY,
+           UInt32 _threadGroupCountZ) const override;
 
   void
-    setResourcesNull() override;
+  setResourcesNull() override;
 
   void
-    copyAtomicCounter(const StructureBuffer& _structureCounter,
-      ConstantBuffer& _cbuff) override;
+  copyAtomicCounter(const StructureBuffer& _structureCounter,
+                    ConstantBuffer& _cbuff) override;
 
   void
-    setUAVsNull() override;
+  setUAVsNull() override;
 
   void
-    drawIndexedInstancedIndirect(const IndirectArgsBuffer& pBufferForArgs,
-      UInt32 _alignedByteOffsetForArgs = 0) override;
+  drawIndexedInstancedIndirect(const IndirectArgsBuffer& pBufferForArgs,
+                               UInt32 _alignedByteOffsetForArgs = 0) override;
 
   ID3D11DeviceContext* D3D11DeviceContext;
 };

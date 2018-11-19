@@ -9,6 +9,11 @@
 #include <dr_camera_manager.h>
 #include <dr_depth_stencil.h>
 
+#include <dr_radian.h>
+#include <dr_vertex.h>
+#include <dr_vertex_buffer.h>
+#include <dr_index_buffer.h>
+
 namespace driderSDK {
 
 RenderManager::RenderManager() {
@@ -382,6 +387,8 @@ RenderManager::init() {
   ////////initialization of passes////////
   m_GBufferPass.init(&m_GBufferInitData);
 
+  m_LinesPass.init(&m_LinesInitData);
+
   m_ShadowInitData.RTWidht = shadowWidth;
   m_ShadowInitData.RTHeight = shadowHeight;
   m_ShadowPass.init(&m_ShadowInitData);
@@ -488,7 +495,12 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_GBufferDrawData.OutRt = m_RTGBuffer.get();
   m_GBufferDrawData.dsOptions = m_GBufferDSoptions.get();
   m_GBufferPass.draw(&m_GBufferDrawData);
-  
+
+  m_LinesDrawData.activeCam = mainCam;
+  m_LinesDrawData.dsOptions = m_GBufferDSoptions.get();
+  m_LinesDrawData.GBufferRT = m_RTGBuffer.get();
+  m_LinesPass.draw(&m_LinesDrawData);
+
   static const float white[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
   m_RTSSAO_SSShadow->clear(dc, white);
 
@@ -648,7 +660,67 @@ RenderManager::recompile() {
   m_luminescencePass.recompileShader();
   m_PostProcessingPass.recompileShader();
 }
+/*
+void
+RenderManager::drawLine(std::vector<Vector3D>& points, Vector3D color) {
+  #ifdef DR_DEBUG_MODE
+  Device& dev = GraphicsAPI::getDevice();
+  DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
+  std::vector<Vertex> vertexList;
+  std::vector<Int32> indexList;
+  SizeT indexCount;
+  Vertex tmpVertex;
+  Int32 currentIndex = 0;
+  for (auto it : points) {
+    tmpVertex.position = Vector4D(it, 1.0f);
+    vertexList.push_back(tmpVertex);
+    indexList.push_back(currentIndex);
+    ++currentIndex;
+  }
+
+  DrBufferDesc vbDesc;
+  vbDesc.type = DR_BUFFER_TYPE::kVERTEX;
+  vbDesc.usage = DR_BUFFER_USAGE::kDefault;
+  vbDesc.sizeInBytes = vertexList.size() * sizeof(Vertex);
+  vbDesc.stride = sizeof(Vertex);
+
+  VertexBuffer* vb = static_cast<VertexBuffer*>(dev.createBuffer(vbDesc, reinterpret_cast<byte*>(&vertexList[0])));
+  vertexList.clear();
+  
+  DrBufferDesc ibDesc;
+  ibDesc.type = DR_BUFFER_TYPE::kINDEX;
+  ibDesc.usage = DR_BUFFER_USAGE::kDefault;
+  ibDesc.sizeInBytes = indexList.size() * sizeof(Int32);
+  ibDesc.stride = sizeof(Int32);
+
+  IndexBuffer* ib = static_cast<IndexBuffer*>(dev.createBuffer(ibDesc, reinterpret_cast<byte*>(&indexList[0])));
+  indexCount = indexList.size();
+  indexList.clear();
+
+  m_RTGBuffer->set(dc, *m_GBufferDSoptions);
+
+  m_LineVertexShader->set(dc);
+  m_LineFragmentShader->set(dc);
+
+  m_LineInputLayout->set(dc);
+
+  CB.LineColor = Vector4D(color, 1.0f);
+  m_LineConstantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
+  m_LineConstantBuffer->set(dc);
+
+  dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kLineStrip);
+  
+  vb->set(dc);
+  ib->set(dc);
+
+  dc.draw(indexCount, 0, 0);
+
+  vb->release();
+  ib->release();
+#endif
+}
+*/
 void
 RenderManager::onStartUp() {
   init();
@@ -657,6 +729,25 @@ RenderManager::onStartUp() {
 void
 RenderManager::onShutDown() {
   exit();
+}
+
+void
+RenderManager::drawDebugLine(const Vector3D& start,
+                             const Vector3D& end,
+                             const Vector3D& color) {
+#ifdef DR_DEBUG_MODE
+  m_LinesPass.addLineToQueue(start, end, color);
+#endif // DR_DEBUG_MODE
+
+}
+
+void
+RenderManager::drawDebugLine(const std::vector<Vector3D>& points,
+                             const Vector3D& color) {
+#ifdef DR_DEBUG_MODE
+  m_LinesPass.addStripLineToQueue(points, color);
+#endif // DR_DEBUG_MODE
+
 }
 
 void

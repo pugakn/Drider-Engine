@@ -2,6 +2,7 @@
 #include "dr_renderman_prerequisites.h"
 #include "dr_light.h"
 #include "dr_GBuffer1.h"
+#include "dr_Lines.h"
 #include "dr_Shadow.h"
 #include "dr_SSAO.h"
 #include "dr_HorBlur.h"
@@ -94,6 +95,11 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   void
   recompile();
 
+  /*
+  void
+  drawBox(Vector3D boxDimensions, Matrix4x4 transform);
+  */
+
   float* luminanceDelta;
   UInt32 screenWidth;
   UInt32 screenHeight;
@@ -118,6 +124,36 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   void
   onShutDown();
 
+  /**
+  * Draws a line in debug mode.
+  *
+  * @start
+  *  line start position.
+  *
+  * @end
+  *  line end position.
+  * 
+  * @color
+  *  color of the line.
+  */
+  void
+  drawDebugLine(const Vector3D& start,
+                const Vector3D& end,
+                const Vector3D& color);
+
+  /**
+  * Draws a strip line in debug mode.
+  *
+  * @points
+  *  vector containing all the points to be renderer.
+  *
+  * @color
+  *  color of the line.
+  */
+  void
+  drawDebugLine(const std::vector<Vector3D>& points,
+                const Vector3D& color);
+
  protected:
 
   std::shared_ptr<TextureCore> m_cubemap;
@@ -129,6 +165,11 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   GBufferInitData m_GBufferInitData;
   GBufferDrawData m_GBufferDrawData;
   GFXUnique<DepthStencil> m_GBufferDSoptions;
+
+  //VS & FS
+  LinesPass m_LinesPass;
+  LinesInitData m_LinesInitData;
+  LinesDrawData m_LinesDrawData;
 
   //CS
   SSAOPass m_SSAOPass;
@@ -188,11 +229,13 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
 
   std::array<GFXUnique<RenderTarget>, 4> m_RTShadowDummy; //Used for render shadow cascades.
   GFXUnique<RenderTarget> m_RTShadow; //Compressed shadows.
-  //Gbuffer info:
-  //0: { xyz: position, w: linear depth };
-  //1: { xyz: normal,   w: CoC };
-  //2: { xyz: albedo,   w: metallic };
-  //3: { xyz: emissive, w: roughness };
+  /**
+  * Gbuffer info:
+  * 0: { xyz: position, w: linear depth };
+  * 1: { xyz: normal,   w: CoC };
+  * 2: { xyz: albedo,   w: metallic };
+  * 3: { xyz: emissive, w: roughness };
+  */
   GFXUnique<RenderTarget> m_RTGBuffer;
   GFXUnique<RenderTarget> m_RTBlurInit;
   GFXUnique<RenderTarget> m_RTSSAO_SSShadow;
