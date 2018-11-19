@@ -9,38 +9,16 @@ namespace driderSDK {
 
   void
    RigidBody3DComponent::onCreate() {
-    m_position = getGameObject().getTransform().getPosition();
-    m_linearVelocity = Vector3D(0, 0, 0);
-    m_mass = 1.0f;
-    m_drag = 0.0f;
-    m_useGravity = true;
-    m_force = Vector3D(0,0,0);
+    m_rigidBody = PhysicsManager::createRigidBody(m_gameObject.getTransform());
+    //m_rigidBody->AddBoxShape(Vector3D(5,5,5),10);
    }
 
   void
   RigidBody3DComponent::onUpdate() {
-    auto dt = Time::getDelta();
-    //Aply forces
-    Vector3D linearAcceleration = m_force / m_mass;
-    if (m_useGravity) {
-      linearAcceleration += Vector3D(0, GRAVITY,0);
-    }
-    Vector3D angularAcceleration = m_torque; //
-                                             //Update positions and velocities
-    m_linearVelocity += linearAcceleration * dt;
-    m_angularVelocity += angularAcceleration * dt;
-
-    m_position += m_linearVelocity * dt;
-    //m_rotation += m_angularVelocity * dt;
-
-    //Detect collisions
-
-
-    //Solve constrains
-
+    auto t = m_rigidBody->getTransform();
     //Update values
-    getGameObject().getTransform().setPosition(m_position);
-
+    getGameObject().getTransform().setPosition(t.getPosition());
+    getGameObject().getTransform().setRotation(t.getEulerAngles());
   }
 
   void
@@ -57,6 +35,6 @@ namespace driderSDK {
   }
   void RigidBody3DComponent::addForce(Vector3D _force)
   {
-    m_linearVelocity += _force; //ASDFG
+    m_rigidBody->applyForceToCenter(_force);
   }
 }

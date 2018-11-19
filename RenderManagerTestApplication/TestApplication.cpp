@@ -149,11 +149,14 @@ RenderManApp::postInit() {
   m_selectedGO = m_vecGos.back();
   auto ptrFloor = ResourceManager::getReferenceT<Model>(_T("plane.fbx"));
   if (ptrFloor) {
-    m_selectedGO->createComponent<RenderComponent>(ptrFloor);
-    m_selectedGO->createComponent<AABBCollider>(ptrFloor->aabb);
     m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, 0.0f));
-    //m_selectedGO->getTransform().setScale(Vector3D(1000.0f, 1.0f, 1000.0f));
-    m_selectedGO->getTransform().setScale(Vector3D(100.0f, 1.0f, 100.0f));
+    m_selectedGO->getTransform().setScale(Vector3D(1000.0f, 1.0f, 1000.0f));
+
+    m_selectedGO->createComponent<RenderComponent>(ptrFloor);
+    auto rigidBody = m_selectedGO->createComponent<RigidBody3DComponent>();
+    rigidBody->m_rigidBody->setType(RIGID_BODY_TYPE::kStatic);
+    m_selectedGO->createComponent<AABBCollider>(ptrFloor->aabb);
+    //m_selectedGO->getTransform().setScale(Vector3D(100.0f, 1.0f, 100.0f));
     //m_selectedGO->getTransform().setScale(Vector3D(5.0f, 1.0f, 5.0f));
     //m_selectedGO->getTransform().setScale(Vector3D(4.0f, 1.0f, 4.0f));
 
@@ -282,12 +285,13 @@ RenderManApp::postInit() {
     //m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, 25.0f));
     //m_selectedGO->getTransform().setScale(Vector3D(100.0f, 100.0f, 100.0f));
     //m_selectedGO->getTransform().setRotation(Vector3D(Math::Math::HALF_PI * 3.0f, Math::PI, 0.0f));
-    m_selectedGO->getTransform().setPosition(Vector3D(-0.0f, 20.0f, 0.0f));
+    m_selectedGO->getTransform().setPosition(Vector3D(-0.0f, 1115.0f, 0.0f));
     m_selectedGO->getTransform().setScale(Vector3D(125.0f, 125.0f, 125.0f));
-    m_selectedGO->getTransform().setRotation(Vector3D(Math::Math::HALF_PI * 3.0f, Math::PI * 0.85f, 0.0f));
+   // m_selectedGO->getTransform().setRotation(Vector3D(Math::Math::HALF_PI * 3.0f, Math::PI * 0.85f, 0.0f));
 
     m_selectedGO->createComponent<RenderComponent>(ptrHK);
-    m_selectedGO->createComponent<RigidBody3DComponent>();
+    auto rigidBody = m_selectedGO->createComponent<RigidBody3DComponent>();
+    rigidBody->m_rigidBody->enableGravity(true);
     m_selectedGO->createComponent<AABBCollider>(ptrHK->aabb);
 
     m_selectedGO->update();//
@@ -362,18 +366,18 @@ RenderManApp::postUpdate() {
     RenderManager::instance().recompile();
   }
 
-  const float fMovementSpeed = 500.0f;
+  const float fMovementSpeed = 5000.0f;
   if (Keyboard::isKeyDown(KEY_CODE::kA)) {
-    m_selectedGO->getTransform().move(Vector3D(-1.0f, 0.0f, 0.0f) * Time::getDelta()* fMovementSpeed);
+    m_selectedGO->getComponent<RigidBody3DComponent>()->addForce(Vector3D(-1.0f, 0.0f, 0.0f) * Time::getDelta() * fMovementSpeed);
   }
   if (Keyboard::isKeyDown(KEY_CODE::kD)) {
-    m_selectedGO->getTransform().move(Vector3D(1.0f, 0.0f, 0.0f) * Time::getDelta() * fMovementSpeed);
+    m_selectedGO->getComponent<RigidBody3DComponent>()->addForce(Vector3D(1.0f, 0.0f, 0.0f) * Time::getDelta() * fMovementSpeed);
   }
   if (Keyboard::isKeyDown(KEY_CODE::kW)) {
-    m_selectedGO->getTransform().move(Vector3D(0.0f, 0.0f, 1.0f) * Time::getDelta() * fMovementSpeed);
+    m_selectedGO->getComponent<RigidBody3DComponent>()->addForce(Vector3D(0.0f, 0.0f, 1.0f) * Time::getDelta() * fMovementSpeed);
   }
   if (Keyboard::isKeyDown(KEY_CODE::kS)) {
-    m_selectedGO->getTransform().move(Vector3D(0.0f, 0.0f, -1.0f) * Time::getDelta() * fMovementSpeed);
+    m_selectedGO->getComponent<RigidBody3DComponent>()->addForce(Vector3D(0.0f, 0.0f, -1.0f) * Time::getDelta() * fMovementSpeed);
   }
   if (Keyboard::isKeyDown(KEY_CODE::kQ)) {
     m_selectedGO->getComponent<RigidBody3DComponent>()->addForce(Vector3D(0.0f, 1.0f, 0.0f) * Time::getDelta() * fMovementSpeed);

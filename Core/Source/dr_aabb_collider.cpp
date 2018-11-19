@@ -2,6 +2,7 @@
 #include "dr_animator_component.h"
 #include "dr_gameObject.h"
 #include "dr_graph.h"
+#include "dr_rigidbody_component.h"
 namespace driderSDK {
 AABBCollider::AABBCollider(GameObject& _gameObject, const AABB& aabb)
 : ColliderComponent(_gameObject, _T("AABBCollider")),
@@ -21,10 +22,15 @@ AABBCollider::getAABB() {
 
 void
 AABBCollider::onCreate() {
-  Transform t;
-  t.setPosition(Vector3D(0, 0, 0));
-  m_body = PhysicsManager::createCollisionBody(t);
-  m_body->AddSphereShape(50);
+  RigidBody3DComponent* rbody = m_gameObject.getComponent<RigidBody3DComponent>();
+  if (rbody) {
+    auto transformedAABB = m_originalAABB;
+    transformedAABB.recalculate(m_gameObject.getTransform().getMatrix());
+    rbody->m_rigidBody->AddBoxShape(Vector3D(transformedAABB.width, transformedAABB.height, transformedAABB.depth),Vector3D(0, 0,0), 1);
+    //m_body = PhysicsManager::createCollisionBody(m_gameObject.getTransform());
+    //m_body->AddSphereShape(50);
+  }
+
 }
 
 void 

@@ -8,9 +8,9 @@
 namespace driderSDK {
   namespace RIGID_BODY_TYPE {
     enum E {
-      kDynamic,
       kStatic,
-      kKinematic
+      kKinematic,
+      kDynamic
     };
   }
 
@@ -37,15 +37,16 @@ namespace driderSDK {
   private:
     friend class PhysicsManager;
     std::list<rp3d::ConvexShape*> m_shapes;
+    std::list<rp3d::ProxyShape*> m_proxyShapes;
     rp3d::CollisionBody* m_body;
   };
 
   class DR_PHYSICS_EXPORT DrRigidBody {
   public:
     void setTransform(Transform transform);
-    void AddBoxShape(Vector3D dimensions);
-    void AddSphereShape(float radius);
-    void AddCapsuleShape(float radius, float height);
+    void AddBoxShape(Vector3D dimensions, Vector3D localPos, float mass);
+    void AddSphereShape(float radius, float mass);
+    void AddCapsuleShape(float radius, float height, float mass);
 
     void setType(RIGID_BODY_TYPE::E type);
     void enableGravity(bool useGravity);
@@ -58,6 +59,7 @@ namespace driderSDK {
   private:
     friend class PhysicsManager;
     std::list<rp3d::ConvexShape*> m_shapes;
+    std::list<rp3d::ProxyShape*> m_proxyShapes;
     rp3d::RigidBody* m_body;
   };
 
@@ -96,6 +98,6 @@ namespace driderSDK {
     rp3d::Vector3 m_gravity;
     rp3d::DynamicsWorld* m_dynamicWorld;
 
-
+    float accumulator = 0.0f;
   };
 }

@@ -2,6 +2,8 @@
 
 #include "dr_core_prerequisites.h"
 #include "dr_gameComponent.h"
+
+#include <dr_physics_manager.h>
 #include <dr_vector3d.h>
 #include <dr_quaternion.h>
 #include <dr_matrix3x3.h>
@@ -32,24 +34,8 @@ namespace driderSDK {
     void 
     addForce(Vector3D _force);
 
-    float m_mass;
-    float m_drag;
-    float m_angularDrag;
 
-    bool m_isKinematic;
-    bool m_useGravity;
-    bool m_detectCollisions;
-    bool m_freezeRotation;
-
-    Vector3D m_position;
-    Vector3D m_angularVelocity;
-    Vector3D m_linearVelocity;
-
-    Vector3D m_force;
-    Vector3D m_torque;
-
-    Quaternion m_rotation;
-    Matrix3x3 m_inertiaTensor;
+    DrRigidBody* m_rigidBody;
   protected:
 
   };
