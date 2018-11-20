@@ -14,6 +14,8 @@
 #include "dr_enableObject.h"
 #include "dr_name_object.h"
 
+#include "dr_gameComponent.h"
+
 #include <dr_export_script.h>
 #include <..\..\Script\Include\dr_script_engine.h>
 
@@ -56,6 +58,8 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   
   /*void
   init();*/
+  void 
+  start();
 
   virtual void 
   update();
@@ -92,7 +96,13 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
     
     addComponent(std::move(component));
 
-    m_components.back()->onCreate();
+    auto&t = m_components.back();
+
+    t->onCreate();
+
+    if (m_isStarted) {
+      t->onStart();
+    }
 
     return rawPtr;
   }
@@ -124,16 +134,35 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   getComponent()
   {
     T* componentCasted = nullptr;
-    for (auto& componet : m_components) {
-      if (auto casted = dynamic_cast<T*>(componet.get())) {
-        componentCasted = casted;
+    for (auto& component : m_components) {
+      /*if (componentCasted = dynamic_cast<T*>(component.get())) {
+        break;
+      }*/
+      
+      if (IDClass<T>::ID() == component->getClassID()) {
+        componentCasted = static_cast<T*>(component.get());
         break;
       }
     }
 
     return componentCasted;
   }
-  
+
+  /*template<class T> 
+  T* 
+  getComponent(UInt32 classID)
+  {
+    T* componentCasted = nullptr;
+    for (auto& component : m_components) {
+      if (classID == component->getClassID()) {
+        componentCasted = static_cast<T*>(component.get());
+        break;
+      }
+    }
+
+    return componentCasted;
+  }*/
+
   template<class T = GameComponent>
   T*
   getComponent(const TString& componentName)
@@ -257,7 +286,7 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   *   the number of childs nullptr.
   */
   SharedGameObj
-  getChild(SizeT index);
+  getChild(UInt32 index);
   
   /**
   * Gets a node in the tree hierarchy. If the node isn't on the
@@ -266,6 +295,9 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   */
   SharedGameObj
   findNode(const TString& nodeName);
+
+  SharedGameObj
+  findNode(const UInt32 idNode);
 
   /**
   * Gets GameObject*
@@ -290,20 +322,18 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
 
   bool
   changed() const;
-  
-  void kill() {
-    if(auto parent = getParent()) {
-      parent->removeChild(shared_from_this());
-      //m_isStatic = true;
-    }
-  }
+
+  void kill() const;
+
+  bool 
+  isKilled() const;
 
   GameObject&
   operator=(const GameObject& ref);
 
   static BEGINING_REGISTER(GameObject, 0, asOBJ_REF | asOBJ_NOCOUNT)
 
-  result = REGISTER_REF_NOCOUNT(GameObject)
+  result = REGISTER_REF_NOCOUNT(GameObject)                                                           
 
   //Register functions
   result = REGISTER_FOO(GameObject,
@@ -322,7 +352,11 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
                         "void setTag(const TString& in)",
                         asMETHODPR(GameObject, setTag, (const TString&), void))
 
-  //Register operators
+  result = REGISTER_FOO(GameObject,
+                        "GameComponent@ getComponent(const TString& in)",
+                        asMETHODPR(GameObject, getComponent, (const TString&), GameComponent*))
+
+//Register operators
   result = REGISTER_OP(GameObject, operator=, opAssign, const GameObject&, GameObject&, "GameObject@", in)
 
   END_REGISTER 
@@ -346,8 +380,8 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   getValidName(TString name);
   
  protected:
-  void
-  removeComponentP(const TString& compName);
+  /*void
+  removeComponentP(const TString& compName);*/
 
   virtual void
   copyData(SharedGameObj other) const {}
@@ -355,7 +389,9 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   virtual void
   updateImpl(){}
 
+  mutable bool m_isKilled;
   bool m_change;
+  bool m_isStarted;
   bool m_isStatic;
   ChildrenList m_children;
   ComponentsList m_components;
@@ -364,7 +400,7 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   WeakGameObj m_parent;
   NameObject m_tag;
   NamesMap m_componentNames;
-  NamesSet m_componentsToRemove;
+  //NamesSet m_componentsToRemove;
   DR_DEBUG_ONLY(bool m_destroyed);
 };
 

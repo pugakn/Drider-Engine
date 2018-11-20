@@ -22,7 +22,7 @@ SSAOPass::init(PassInitData* initData) {
   SSAOInitData* data = static_cast<SSAOInitData*>(initData);
   Device& device = GraphicsAPI::getDevice();
 
-  m_csFilename = _T("SSAO_cs.hlsl");
+  m_csFilename = _T("Resources\\Shaders\\SSAO_cs.hlsl");
 
   recompileShader();
 
@@ -36,8 +36,8 @@ SSAOPass::init(PassInitData* initData) {
   SSdesc.Filter = DR_TEXTURE_FILTER::kMIN_MAG_LINEAR_MIP_POINT;
   SSdesc.maxAnisotropy = 16;
   SSdesc.addressU = DR_TEXTURE_ADDRESS::kWrap;
-  SSdesc.addressV = DR_TEXTURE_ADDRESS::kWrap;
-  SSdesc.addressW = DR_TEXTURE_ADDRESS::kWrap;
+  SSdesc.addressV = SSdesc.addressU;
+  SSdesc.addressW = SSdesc.addressV;
   m_samplerState = dr_gfx_unique(device.createSamplerState(SSdesc));
 
   m_ComputeWidthDivisions = 8;
@@ -54,6 +54,13 @@ SSAOPass::draw(PassDrawData* drawData) {
 
   m_computeShader->set(dc);
 
+  m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kCompute);
+
+  data->InRt->getTexture(0).set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute, true);
+  data->InRt->getTexture(1).set(dc, 1, DR_SHADER_TYPE_FLAG::kCompute, true);
+
+  data->OutRt->getTexture(0).set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute);
+
   DrTextureDesc outRTDesc = data->OutRt->getDescriptor();
 
   m_RTWidth = outRTDesc.width;
@@ -62,17 +69,8 @@ SSAOPass::draw(PassDrawData* drawData) {
   m_ComputeWidthBlocks = m_RTWidth / m_ComputeWidthDivisions;
   m_ComputeHeightBlocks = m_RTHeight / m_ComputeHeightDivisions;
 
-  m_ComputeTotalBlocks = m_ComputeWidthBlocks * m_ComputeHeightBlocks;
-
-  m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kCompute);
-
-  data->InRt->getTexture(0).set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute, true);
-  data->InRt->getTexture(1).set(dc, 1, DR_SHADER_TYPE_FLAG::kCompute, true);
-
-  data->OutRt->getTexture(0).set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute);
-
-  CB.fViewportDimensions.x = m_RTWidth;
-  CB.fViewportDimensions.y = m_RTHeight;
+  CB.ViewportDimensions.x = m_RTWidth;
+  CB.ViewportDimensions.y = m_RTHeight;
   CB.SSAO_Options[0] = data->SampleRadio;
   CB.SSAO_Options[1] = data->Intensity;
   CB.SSAO_Options[2] = data->Scale;

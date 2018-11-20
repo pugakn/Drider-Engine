@@ -20,9 +20,12 @@ LuminescencePass::init(PassInitData* initData) {
   LuminescenceInitData* data = static_cast<LuminescenceInitData*>(initData);
   Device& dc = GraphicsAPI::getDevice();
 
-  m_csFilename = _T("luminescence_cs.hlsl");
+  m_csFilename = _T("Resources\\Shaders\\luminescence_cs.hlsl");
   
   recompileShader();
+
+  m_ComputeWidthDivisions = 8;
+  m_ComputeHeightDivisions = 4;
 
   DrBufferDesc bdesc;
   bdesc.type = DR_BUFFER_TYPE::kCONSTANT;
@@ -30,8 +33,10 @@ LuminescencePass::init(PassInitData* initData) {
   m_constantBuffer = dr_gfx_unique((ConstantBuffer*)dc.createBuffer(bdesc));
 
   bdesc.type = DR_BUFFER_TYPE::kRWSTRUCTURE;
-  bdesc.sizeInBytes = sizeof(Vector4D);
-  bdesc.stride = sizeof(Vector4D);
+  bdesc.sizeInBytes = sizeof(float) *
+                      (data->RTWidth / m_ComputeWidthDivisions) *
+                      (data->RTHeight / m_ComputeHeightDivisions);;
+  bdesc.stride = sizeof(float);
   m_resultBuffer = dr_gfx_unique((StructureBuffer*)dc.createBuffer(bdesc));
 
   DrSampleDesc SSdesc;
@@ -41,9 +46,6 @@ LuminescencePass::init(PassInitData* initData) {
   SSdesc.addressV = DR_TEXTURE_ADDRESS::kWrap;
   SSdesc.addressW = DR_TEXTURE_ADDRESS::kWrap;
   m_samplerState = dr_gfx_unique(dc.createSamplerState(SSdesc));
-
-  m_ComputeWidthDivisions = 8;
-  m_ComputeHeightDivisions = 4;
 }
 
 void
@@ -76,11 +78,16 @@ LuminescencePass::draw(PassDrawData* drawData) {
   CB.fViewportDimensions.y = m_RTHeight;
   CB.fViewportDimensions.z = data->LuminiscenceDelta;
 
+  CB.threadsInfo.x = m_ComputeWidthBlocks;
+  CB.threadsInfo.y = m_ComputeHeightBlocks;
+  CB.threadsInfo.z = m_ComputeWidthDivisions;
+  CB.threadsInfo.w = m_ComputeHeightDivisions;
+
   m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
   m_constantBuffer->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
 
-  //dc.dispatch(m_ComputeWidthBlocks, m_ComputeHeightBlocks, 1);
-  dc.dispatch(1, 1, 1);
+  dc.dispatch(m_ComputeWidthBlocks, m_ComputeHeightBlocks, 1);
+  //dc.dispatch(1, 1, 1);
 
   *data->resultBuffer = m_resultBuffer.get();
 

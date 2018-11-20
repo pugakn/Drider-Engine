@@ -1,5 +1,7 @@
 #include "FrustumDebug.h"
+
 #include <dr_camera.h>
+#include <dr_id_object.h>
 #include <dr_mesh.h>
 #include <dr_aabb.h>
 #include <dr_camera.h>
@@ -98,6 +100,10 @@ FrustumDebug::create() {
 
 }
 
+UInt32 FrustumDebug::getClassID() {
+  return CLASS_NAME_ID(FrustumDebug);
+}
+
 void FrustumDebug::onCreate() {
   create();
   m_primitive = DR_PRIMITIVE_TOPOLOGY::kLineList;
@@ -109,11 +115,15 @@ void FrustumDebug::onUpdate() {
   }
 }
 
-void 
+GameComponent*
 FrustumDebug::cloneIn(GameObject& _go) {
   auto p = _go.createComponent<FrustumDebug>(m_camera); 
+
   p->m_technique = m_technique;
   p->m_camera = m_camera;
+  p->m_primitive = m_primitive;
+  p->m_meshes = m_meshes;
+  return p;
 }
 
 void 

@@ -1,0 +1,50 @@
+#divHierarchy {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: scroll;
+  width: 100%;
+}
+
+.sortableHierarchy li {
+  padding-left: 5px;
+  margin: 5px 3px 3px 3px;
+  min-width: 100px;
+}
+
+.sortableHierarchy {
+  padding: 0px;
+  margin: 0 0 0 0;
+  height: 100%;
+  list-style:none;
+}
+
+.droppableHierarchy {
+  float: right;
+  margin: 0px;
+  width: 20px;
+  text-align: center;
+}
+
+#generalPlus{
+  float: none;
+  text-align: center;
+  width: 100%;
+}
+
+#optionsHierarchy-button {
+  float: right;
+  width: 20px;
+  height: 20px;
+  padding: 0px;
+}
+
+.selectedGameobject {
+  background: red;
+}
+
+#menuHierarchy {
+  width: 250px;
+  position: fixed;
+  z-index: 500;
+}

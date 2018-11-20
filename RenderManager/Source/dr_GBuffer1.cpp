@@ -21,8 +21,8 @@ GBufferPass::init(PassInitData* initData) {
   GBufferInitData* data = static_cast<GBufferInitData*>(initData);
   Device& device = GraphicsAPI::getDevice();
 
-  m_vsFilename = _T("GBuffer1_vs.hlsl");
-  m_fsFilename = _T("GBuffer1_ps.hlsl");
+  m_vsFilename = _T("Resources\\Shaders\\GBuffer1_vs.hlsl");
+  m_fsFilename = _T("Resources\\Shaders\\GBuffer1_ps.hlsl");
 
   recompileShader();
 
@@ -74,7 +74,7 @@ GBufferPass::draw(PassDrawData* drawData) {
   data->OutRt->clear(dc, clearColor);
   data->dsOptions->clear(dc, 1, 0);
 
-  for (auto& modelPair : *data->models) {
+  for (auto& modelPair : data->models->commands) {
     dc.setResourcesNull();
     if (auto material = modelPair.mesh.material.lock()) {
       auto AlbedoTex = material->getProperty(_T("Albedo"));
@@ -109,16 +109,17 @@ GBufferPass::draw(PassDrawData* drawData) {
       }
     }
 
-    CB.World = modelPair.world;
-    CB.WorldView = modelPair.world * data->activeCam->getView();
-    CB.WVP = modelPair.world * data->activeCam->getVP();
+    CB.World = data->models->worlds[modelPair.worldID];
+    CB.WorldView = CB.World * data->activeCam->getView();
+    CB.WVP = CB.World * data->activeCam->getVP();
 
     std::memset(&CB.Bones[0].data[0], 0.0f, sizeof(CB.Bones));
-    auto Bones = modelPair.bones;
-    if (Bones != nullptr) {
-      Int32 maxBones = modelPair.bones->size();
+    
+    if (modelPair.bonesID != -1) {
+      auto& Bones = data->models->bonesTransforms[modelPair.bonesID];
+      Int32 maxBones = Bones.size();
       std::memcpy(&CB.Bones[0],
-                  &(*modelPair.bones)[0],
+                  &(Bones)[0],
                    sizeof(Matrix4x4) * maxBones);
     }
   
@@ -131,6 +132,7 @@ GBufferPass::draw(PassDrawData* drawData) {
     dc.draw(modelPair.mesh.indicesCount, 0, 0);
   }
 
+  data->OutRt->setRTNull(dc);
   dc.setUAVsNull();
   dc.setResourcesNull();
 }

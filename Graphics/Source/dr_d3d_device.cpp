@@ -50,8 +50,8 @@ D3DDevice::createDeviceAndDeviceContext(DeviceContext& deviceContext) {
 #endif
 
   UINT i = 0;
-  IDXGIAdapter * pAdapter;
-  IDXGIAdapter * pAdapterNvidia = nullptr;
+  IDXGIAdapter* pAdapter;
+  IDXGIAdapter* pAdapterNvidia = nullptr;
   std::vector <IDXGIAdapter*> vAdapters;
   IDXGIFactory* pFactory = NULL;
   CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&pFactory);
@@ -240,8 +240,8 @@ D3DDevice::createSwapChain(const DrSwapChainDesc& desc) const {
   return swapChain;
 }
 
-BlendState * D3DDevice::createBlendState(const DrBlendStateDesc & desc)const
-{
+BlendState*
+D3DDevice::createBlendState(const DrBlendStateDesc& desc) const {
   BlendState* bst = new D3DBlendState;
   bst->create(*this,desc);
   return bst;

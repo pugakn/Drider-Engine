@@ -27,13 +27,15 @@ ServerApplication::postInit() {
 
   Logger::addLog(_T("Socket init!\nEnter server ip: "));
 
-  if (!m_socket.bind(StringUtils::toTString(m_ip), m_port)) {
+  auto tstr = StringUtils::toTString(m_ip);
+
+  if (!m_socket.bind(NetworkManager::ipAddrStrToUInt(tstr), m_port)) {
     Logger::addLog(_T("Could not bind socket: ") + 
                    NetworkManager::getNetworkErrorStr());
     return;
   }
 
-  auto& bindAddr = m_socket.getBindAddress();
+  auto bindAddr = NetworkManager::ipAddrUIntToStr(m_socket.getBindAddress());
   auto bindPort = m_socket.getBindPort();
   
   Logger::addLog(_T("Socket binded!"));
@@ -53,11 +55,11 @@ ServerApplication::postUpdate() {
 
   Packet packet;
   UInt16 recPort = 0;
-  TString recIp;
+  UInt32 recIp;
 
   Int32 recSize;
   
-  auto res = m_socket.receive(packet, 256, recSize, recPort, recIp);
+  auto res = m_socket.receive(packet, 256, recSize, recIp, recPort);
 
   if (recSize > 0) {
     String message;
@@ -65,15 +67,17 @@ ServerApplication::postUpdate() {
     //packet >> tick;
     packet >> message;
     
+    TString clientIP = NetworkManager::ipAddrUIntToStr(recIp);
+
     Logger::addLog(_T("Message received: ") + StringUtils::toTString(message));// + 
                    //_T(" Tick: ") + StringUtils::toTString(tick));
-    Logger::addLog(_T("From Ip: ") + recIp + 
+    Logger::addLog(_T("From Ip: ") + clientIP + 
                    _T(" Port: ") + StringUtils::toTString(recPort));
    
     message = "Hello client: " + message;
     packet.clear();
     packet << message;
-    m_socket.send(packet, recPort, recIp);
+    m_socket.send(packet, recIp, recPort);
   }
   else if (res == SOCKET_ERR::kError) {
     Logger::addLog(_T("Error while receiving data!") +

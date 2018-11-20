@@ -14,9 +14,9 @@ struct SSAOInitData : PassInitData {
 
 struct SSAODrawData : PassDrawData {
   std::shared_ptr<Camera> activeCam;
-  GFXShared<RenderTarget> InRt;
-  GFXShared<RenderTarget> OutRt;
-  GFXShared<DepthStencil> dsOptions;
+  RenderTarget* InRt;
+  RenderTarget* OutRt;
+  DepthStencil* dsOptions;
   float SampleRadio;
   float Intensity;
   float Scale;
@@ -54,7 +54,7 @@ class SSAOPass : public RenderPass {
 
  private:
   struct CBuffer {
-    Vector4D fViewportDimensions;
+    Vector4D ViewportDimensions;
     Vector4D SSAO_Options; //X: SampleRadio Y: Intensity Z: Scale X: Bias
   };
 

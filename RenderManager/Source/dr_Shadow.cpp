@@ -25,10 +25,10 @@ ShadowPass::init(PassInitData* initData) {
   ShadowInitData* data = static_cast<ShadowInitData*>(initData);
   Device& dc = GraphicsAPI::getDevice();
 
-  m_vsFilename = _T("Shadow_vs.hlsl");
-  m_fsFilename = _T("Shadow_ps.hlsl");
-  m_csFilename = _T("ShadowMerge_cs.hlsl");
-  m_csFilenameShadowApply = _T("ShadowApply_cs.hlsl");
+  m_vsFilename = _T("Resources\\Shaders\\Shadow_vs.hlsl");
+  m_fsFilename = _T("Resources\\Shaders\\Shadow_ps.hlsl");
+  m_csFilename = _T("Resources\\Shaders\\ShadowMerge_cs.hlsl");
+  m_csFilenameShadowApply = _T("Resources\\Shaders\\ShadowApply_cs.hlsl");
 
   changeSize(data->RTWidht, data->RTHeight);
   recompileShader();
@@ -45,6 +45,8 @@ ShadowPass::init(PassInitData* initData) {
 
   DrSampleDesc SSdesc;
   SSdesc.Filter = DR_TEXTURE_FILTER::kMIN_MAG_LINEAR_MIP_POINT;
+  //SSdesc.Filter = DR_TEXTURE_FILTER::kANISOTROPIC;
+  //SSdesc.Filter = DR_TEXTURE_FILTER::kCOMPARISON_ANISOTROPIC;
   SSdesc.maxAnisotropy = 16;
   SSdesc.addressU = DR_TEXTURE_ADDRESS::kWrap;
   SSdesc.addressV = DR_TEXTURE_ADDRESS::kWrap;
@@ -110,7 +112,7 @@ ShadowPass::draw(PassDrawData* drawData) {
   data->OutRt->clear(dc, clearColor);
   data->dsOptions->clear(dc, 1, 0);
 
-  for (auto& modelPair : *data->models) {
+  for (auto& modelPair : data->models->commands) {
     dc.setResourcesNull();
     if (auto material = modelPair.mesh.material.lock()) {
       if (auto AlbedoTex = material->getProperty(_T("Albedo"))) {
@@ -119,14 +121,14 @@ ShadowPass::draw(PassDrawData* drawData) {
         }
       }
     }
-    CascadeCB.WVP = modelPair.world * (data->shadowCam->getVP());
+    CascadeCB.WVP = data->models->worlds[modelPair.worldID] * (data->shadowCam->getVP());
 
     std::memset(&CascadeCB.Bones[0].data[0], 0.0f, sizeof(CascadeCB.Bones));
-    auto Bones = modelPair.bones;
-    if (Bones != nullptr) {
-      Int32 maxBones = modelPair.bones->size();
+    if (modelPair.bonesID != -1) {
+      auto& Bones = data->models->bonesTransforms[modelPair.bonesID];
+      Int32 maxBones = Bones.size();
       std::memcpy(&CascadeCB.Bones[0],
-                  &(*modelPair.bones)[0],
+                  &(Bones)[0],
                   sizeof(Matrix4x4) * maxBones);
     }
 
@@ -139,13 +141,14 @@ ShadowPass::draw(PassDrawData* drawData) {
     dc.draw(modelPair.mesh.indicesCount, 0, 0);
   }
 
+  data->OutRt->setRTNull(dc);
   dc.setUAVsNull();
   dc.setResourcesNull();
 }
 
 void
-ShadowPass::merge(std::array<GFXShared<RenderTarget>, 4> m_RTShadowDummy,
-                  GFXShared<RenderTarget> CompressedShadowsOutRt) {
+ShadowPass::merge(std::array<GFXUnique<RenderTarget>, 4>& m_RTShadowDummy,
+                  RenderTarget* CompressedShadowsOutRt) {
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
   dc.setUAVsNull();
@@ -172,9 +175,9 @@ ShadowPass::merge(std::array<GFXShared<RenderTarget>, 4> m_RTShadowDummy,
 
 void
 ShadowPass::apply(PassDrawData* drawData,
-                  GFXShared<RenderTarget> PositionDepthRt,
-                  GFXShared<RenderTarget> CompressedShadowsOutRt,
-                  GFXShared<RenderTarget> ResultShadowsRt) {
+                  RenderTarget* PositionDepthRt,
+                  RenderTarget* CompressedShadowsOutRt,
+                  RenderTarget* ResultShadowsRt) {
   ShadowDrawData* data = static_cast<ShadowDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
@@ -196,6 +199,7 @@ ShadowPass::apply(PassDrawData* drawData,
     ShadowCB.ShadowVP[i] = (*data->ShadowCameras)[i]->getVP();
     ShadowCB.ShadowSplitDepth[i] = data->ShadowSliptDepths[i + 1];
   }
+
   ShadowCB.ShadowSizesProportion = data->ShadowSizesProportion;
 
   ShadowCB.ShadowInfo[0] = data->ActivatedShadowCascades;

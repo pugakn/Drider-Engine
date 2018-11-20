@@ -11,7 +11,7 @@ struct HorBlurInitData : PassInitData {
 
 struct HorBlurDrawData : PassDrawData {
   Texture* InTexture;
-  GFXShared<RenderTarget> OutRt;
+  RenderTarget* OutRt;
 };
 
 class HorBlurPass : public RenderPass {

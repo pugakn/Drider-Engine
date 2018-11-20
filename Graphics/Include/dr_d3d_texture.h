@@ -44,7 +44,6 @@ class DR_GRAPHICS_EXPORT D3DTexture : public Texture
                    const DrTextureDesc& desc,
                    const char* buffer) override;
 
-
   /**
   * TEST::
   *
@@ -102,7 +101,7 @@ class DR_GRAPHICS_EXPORT D3DTexture : public Texture
   set(const DeviceContext& deviceContext,
       UInt32 slot,
       DR_SHADER_TYPE_FLAG::E shaderType = DR_SHADER_TYPE_FLAG::kFragment,
-      bool forceComputeTexture = false) const override;
+      bool isTexture = false) const override;
 
   /**
   * TEST::
@@ -140,8 +139,7 @@ class DR_GRAPHICS_EXPORT D3DTexture : public Texture
   void
   udpateFromMemory(const DeviceContext& deviceContext,
                    const char* buffer,
-                   size_t bufferSize,
-                   size_t mipLevels = 1) override;
+                   size_t bufferSize) override;
 
   /**
   * TEST::
@@ -161,6 +159,7 @@ class DR_GRAPHICS_EXPORT D3DTexture : public Texture
   ID3D11Texture2D* APITexture;
   ID3D11ShaderResourceView* APIView;
   ID3D11UnorderedAccessView* m_APIUAV;
+
  private:
   ID3D11Texture2D* m_stagingTexture;
   UInt32 m_arraySize;

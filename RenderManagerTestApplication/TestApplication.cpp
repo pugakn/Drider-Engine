@@ -12,13 +12,18 @@
 #include <dr_model.h>
 #include <dr_keyboard.h>
 #include <dr_mouse.h>
+#include <dr_device.h>
+#include <dr_device_context.h>
+#include <dr_codec_texture.h>
+#include <dr_depth_stencil.h>
 
 #include <dr_animator_component.h>
 #include <dr_render_component.h>
-#include <dr_rigidbody_component.h>
 #include <dr_aabb_collider.h>
+#include <dr_box_collider.h>
 #include <dr_degree.h>
 #include <dr_texture_core.h>
+#include <dr_rigidbody_component.h>
 #include "dr_rendermanapp.h"
 
 #define SINGLE_THREAD 1
@@ -100,20 +105,29 @@ RenderManApp::postInit() {
   RenderManager::startUp();
   PhysicsManager::startUp();
 
+  luminanceDelta = 0.0f;
+  RenderManager::instancePtr()->luminanceDelta = &luminanceDelta;
+
   m_bRotate = false;
 
   Vector4D LightPosition(0.0f, 100.0f, 150.0f, 1.0f);
   
   SizeT lighIndex = 0;
-  Int32 zOffset = 0;
+  float separationX = 75.0f;
+  float separationZ = 150.0f;
   float proportion = 0.0f;
-  for (Int32 xPos = 0; xPos < 16; ++xPos) {
-    for (Int32 zPos = 0; zPos < 8; ++zPos) {
+  SizeT horizontalLights = 32;
+  SizeT verticalLights = (RM_MAX_LIGHTS / horizontalLights);
+
+  Int32 xOffset = (horizontalLights / 2) * separationX;
+  Int32 zOffset = 1 * separationZ;
+
+  for (Int32 xPos = 0; xPos < horizontalLights; ++xPos) {
+    for (Int32 zPos = 0; zPos < verticalLights; ++zPos) {
       //Posicion
-      Lights[lighIndex].m_vec4Position = Vector4D(
-                                                  (zOffset * 50) - 375.0f,
+      Lights[lighIndex].m_vec4Position = Vector4D((xPos * separationX) - xOffset,
                                                   25,
-                                                  (zPos * 50) - 187.5 + 50,
+                                                  (zPos * separationZ) - zOffset,
                                                   1.0f);
 
       //Color
@@ -125,18 +139,21 @@ RenderManApp::postInit() {
                Lights[lighIndex].m_vec4Color.z);
 
       //Range
-      Lights[lighIndex].m_vec4Position.w = 150.0f;
-      //Lights[lighIndex].m_vec4Position.w = 100.0f;
+      //Lights[lighIndex].m_vec4Position.w = 150.0f;
+      Lights[lighIndex].m_vec4Position.w = 100.0f;
+      //Lights[lighIndex].m_vec4Position.w = 50.0f;
       //Lights[lighIndex].m_vec4Position.w = proportion * 150.0f;
+      //  if (lighIndex > (RM_MAX_LIGHTS / 2)) Lights[lighIndex].m_vec4Position.w *= -1;
+      //if (lighIndex % 3 != 0) Lights[lighIndex].m_vec4Position.w *= -1;
 
       //Intensidad
       //Lights[lighIndex].m_vec4Color.w = (lighIndex / 128.0f);
-      Lights[lighIndex].m_vec4Color.w = 1.0f;
+      //Lights[lighIndex].m_vec4Color.w = 1.0f;
+      Lights[lighIndex].m_vec4Color.w = 2.0f;
 
-      proportion += (1.0f / 128.0f);
+      proportion += (1.0f / RM_MAX_LIGHTS);
       ++lighIndex;
     }
-    zOffset += 1;
   }
   
   RenderManager::instance().lights = &Lights;
@@ -150,17 +167,17 @@ RenderManApp::postInit() {
   auto ptrFloor = ResourceManager::getReferenceT<Model>(_T("plane.fbx"));
   if (ptrFloor) {
     m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, 0.0f));
-    m_selectedGO->getTransform().setScale(Vector3D(1000.0f, 1.0f, 1000.0f));
-
-    m_selectedGO->createComponent<RenderComponent>(ptrFloor);
-    auto rigidBody = m_selectedGO->createComponent<RigidBody3DComponent>();
-    rigidBody->m_rigidBody->setType(RIGID_BODY_TYPE::kStatic);
-    m_selectedGO->createComponent<AABBCollider>(ptrFloor->aabb);
-    //m_selectedGO->getTransform().setScale(Vector3D(100.0f, 1.0f, 100.0f));
+    //m_selectedGO->getTransform().setScale(Vector3D(1000.0f, 1.0f, 1000.0f));
+    m_selectedGO->getTransform().setScale(Vector3D(100.0f, 1.0f, 100.0f));
     //m_selectedGO->getTransform().setScale(Vector3D(5.0f, 1.0f, 5.0f));
     //m_selectedGO->getTransform().setScale(Vector3D(4.0f, 1.0f, 4.0f));
 
-    m_selectedGO->update();//
+    auto rgbod = m_selectedGO->createComponent<RigidBody3DComponent>();
+    rgbod->setType(RIGID_BODY_TYPE::kStatic);
+    m_selectedGO->createComponent<AABBCollider>(ptrFloor->aabb);
+    m_selectedGO->createComponent<BoxCollider>(ptrFloor->aabb);
+    m_selectedGO->createComponent<RenderComponent>(ptrFloor);
+
     m_floorMat = ResourceManager::createMaterial(_T("FloorMaterial"));
 
     auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Diffuse.tga"));
@@ -193,90 +210,71 @@ RenderManApp::postInit() {
     renderComp->getMeshes().front().material = m_floorMat;
   }
   
-  //m_vecGos.push_back(SceneGraph::createObject(_T("Bush")));
-  //m_selectedGO = m_vecGos.back();
-  //auto ptrBs = ResourceManager::getReferenceT<Model>(_T("FernBush.obj"));
-  //if (ptrBs) {
-  //  auto renderComp = m_selectedGO->createComponent<RenderComponent>(ptrBs);
-  //  m_selectedGO->createComponent<AABBCollider>(ptrBs->aabb);
-  //  //m_selectedGO->getTransform().setPosition(Vector3D(110.0f, 0.0f, 110.0f));
-  //  //m_selectedGO->getTransform().setScale(Vector3D(0.05f, 0.05f, 0.05f));
-  //  m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, 2000.0f));
-  //  m_selectedGO->getTransform().setScale(Vector3D(0.25f, 0.25f, 0.25f));
+  m_vecGos.push_back(SceneGraph::createObject(_T("Bush")));
+  m_selectedGO = m_vecGos.back();
+  auto ptrBs = ResourceManager::getReferenceT<Model>(_T("FernBush.obj"));
+  if (ptrBs) {
+    auto renderComp = m_selectedGO->createComponent<RenderComponent>(ptrBs);
+    m_selectedGO->createComponent<AABBCollider>(ptrBs->aabb);
+    //m_selectedGO->getTransform().setPosition(Vector3D(110.0f, 0.0f, 110.0f));
+    //m_selectedGO->getTransform().setScale(Vector3D(0.05f, 0.05f, 0.05f));
+    m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, 2000.0f));
+    m_selectedGO->getTransform().setScale(Vector3D(0.25f, 0.25f, 0.25f));
 
-  //  m_BushMat = ResourceManager::createMaterial(_T("BushMaterial"));
+    m_BushMat = ResourceManager::createMaterial(_T("BushMaterial"));
 
-  //  auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("FernTarga.tga"));
-  //  m_BushMat->setTexture(albedoTex, _T("Albedo"));
+    auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("FernTarga.tga"));
+    m_BushMat->setTexture(albedoTex, _T("Albedo"));
 
-  //  std::vector<RenderMesh>& meshes = renderComp->getMeshes();
-  //  meshes.front().material = m_BushMat;
-  //}
+    std::vector<RenderMesh>& meshes = renderComp->getMeshes();
+    meshes.front().material = m_BushMat;
+  }
 
-  //m_vecGos.push_back(SceneGraph::createObject(_T("Model")));
-  //m_selectedGO = m_vecGos.back();
-  //auto ptrModel = ResourceManager::getReferenceT<Model>(_T("model.dae"));
-  //if (ptrModel) {
-  //  m_selectedGO->createComponent<RenderComponent>(ptrModel);
-  //  m_selectedGO->createComponent<AABBCollider>(ptrModel->aabb);
-  //  //m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 12.5f, -100.0f));
-  //  //m_selectedGO->getTransform().setScale(Vector3D(10.0f, 10.0f, 10.0f));
-  //  //m_selectedGO->getTransform().setRotation(Vector3D(0.0f, Math::PI*1.15f, 0.0f));
-  //  m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 80.0f, -100.0f));
-  //  m_selectedGO->getTransform().setScale(Vector3D(75.0f, 75.0f, 75.0f));
-  //  m_selectedGO->getTransform().setRotation(Vector3D(0.0f, Math::QUARTER_PI * 0.3f, 0.0f));
+  m_vecGos.push_back(SceneGraph::createObject(_T("Stormtrooper")));
+  m_selectedGO = m_vecGos.back();   
+  auto ptrStorm = ResourceManager::getReferenceT<Model>(_T("stormtrooper_dancing.fbx"));
+  if (ptrStorm) {
+    auto rComp = m_selectedGO->createComponent<RenderComponent>(ptrStorm);
+    auto aComp = m_selectedGO->createComponent<AnimatorComponent>();
+    m_selectedGO->createComponent<AABBCollider>(ptrStorm->aabb);
+    //m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, -50.0f));
+    //m_selectedGO->getTransform().setScale(Vector3D(30.0f, 30.0f, 30.0f));
+    //m_selectedGO->getTransform().setRotation(Vector3D(00.0f, Math::PI, 00.0f));
+    m_selectedGO->getTransform().setPosition(Vector3D(200.0f, 0.0f, 150.0f));
+    m_selectedGO->getTransform().setScale(Vector3D(50.0f, 50.0f, 50.0f));
+    m_selectedGO->getTransform().setRotation(Vector3D(00.0f, Math::PI * 1.25f, 00.0f));
 
-  //  m_modelMat = ResourceManager::createMaterial(_T("ModelMaterial"));
+    m_StormtrooperMat = ResourceManager::createMaterial(_T("StormtrooperMaterial"));
 
-  //  auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("default_albedo.tga"));
-  //  auto emissiveTex = ResourceManager::getReferenceT<TextureCore>(_T("default_emissive.tga"));
-  //  auto metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("default_metallic.tga"));
-  //  auto normalTex = ResourceManager::getReferenceT<TextureCore>(_T("default_normal.tga"));
-  //  auto roughnessTex = ResourceManager::getReferenceT<TextureCore>(_T("default_roughness.tga"));
-  //  m_modelMat->setTexture(albedoTex, _T("Albedo"));
-  //  m_modelMat->setTexture(normalTex, _T("Normal"));
-  //  m_modelMat->setTexture(emissiveTex, _T("Emisivity"));
-  //  m_modelMat->setTexture(metallicTex, _T("Metallic"));
-  //  m_modelMat->setTexture(roughnessTex, _T("Roughness"));
+    auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("Stormtrooper_Diffuse.png"));
+    m_StormtrooperMat->setTexture(albedoTex, _T("Albedo"));
 
-  //  auto rComp = m_selectedGO->getComponent<RenderComponent>();
-  //  rComp->getMeshes().front().material = m_modelMat;
-  //}
+    rComp->getMeshes().front().material = m_StormtrooperMat;
 
-  //m_vecGos.push_back(SceneGraph::createObject(_T("Stormtrooper")));
-  //m_selectedGO = m_vecGos.back();   
-  //auto ptrStorm = ResourceManager::getReferenceT<Model>(_T("stormtrooper_dancing.fbx"));
-  //if (ptrStorm) {
-  //  auto rComp = m_selectedGO->createComponent<RenderComponent>(ptrStorm);
-  //  auto aComp = m_selectedGO->createComponent<AnimatorComponent>();
-  //  m_selectedGO->createComponent<AABBCollider>(ptrStorm->aabb);
-  //  //m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, -50.0f));
-  //  //m_selectedGO->getTransform().setScale(Vector3D(30.0f, 30.0f, 30.0f));
-  //  //m_selectedGO->getTransform().setRotation(Vector3D(00.0f, Math::PI, 00.0f));
-  //  m_selectedGO->getTransform().setPosition(Vector3D(200.0f, 0.0f, 150.0f));
-  //  m_selectedGO->getTransform().setScale(Vector3D(50.0f, 50.0f, 50.0f));
-  //  m_selectedGO->getTransform().setRotation(Vector3D(00.0f, Math::PI * 1.25f, 00.0f));
+    auto ws = ResourceManager::getReferenceT<Skeleton>(ptrStorm->skeletonName);
+    
+    aComp->setSkeleton(ws);
 
-  //  m_StormtrooperMat = ResourceManager::createMaterial(_T("StormtrooperMaterial"));
+    for (Int32 i = 0; i < ptrStorm->animationsNames.size(); ++i) {
+      auto wa = ResourceManager::getReferenceT<Animation>(ptrStorm->animationsNames[i]);
 
-  //  auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("Stormtrooper_Diffuse.png"));
-  //  m_StormtrooperMat->setTexture(albedoTex, _T("Albedo"));
+      aComp->addAnimation(wa, ptrStorm->animationsNames[i]);
+    }
 
-  //  rComp->getMeshes().front().material = m_StormtrooperMat;
+    aComp->setCurrentAnimation(ptrStorm->animationsNames[0], false);
+    aComp->setTime(1.0f);
+  }
 
-  //  auto ws = ResourceManager::getReferenceT<Skeleton>(ptrStorm->skeletonName);
-  //  
-  //  aComp->setSkeleton(ws);
-
-  //  for (Int32 i = 0; i < ptrStorm->animationsNames.size(); ++i) {
-  //    auto wa = ResourceManager::getReferenceT<Animation>(ptrStorm->animationsNames[i]);
-
-  //    aComp->addAnimation(wa, ptrStorm->animationsNames[i]);
-  //  }
-
-  //  aComp->setCurrentAnimation(ptrStorm->animationsNames[0], false, false);
-  //  aComp->setTime(1.0f);
-  //}
+  m_vecGos.push_back(SceneGraph::createObject(_T("Popuko")));
+  m_selectedGO = m_vecGos.back();
+  auto ptrpk = ResourceManager::getReferenceT<Model>(_T("popuko.fbx"));
+  if (ptrpk) {
+    m_selectedGO->createComponent<RenderComponent>(ptrpk);
+    m_selectedGO->createComponent<AABBCollider>(ptrpk->aabb);
+    m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, 200.0f));
+    m_selectedGO->getTransform().setScale(Vector3D(2.0f, 2.0f, 2.0f));
+    m_selectedGO->getTransform().setRotation(Vector3D(0.0f, Math::PI, 0.0f));
+  }
 
   m_vecGos.push_back(SceneGraph::createObject(_T("HatKid")));
   m_selectedGO = m_vecGos.back();
@@ -285,16 +283,15 @@ RenderManApp::postInit() {
     //m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, 25.0f));
     //m_selectedGO->getTransform().setScale(Vector3D(100.0f, 100.0f, 100.0f));
     //m_selectedGO->getTransform().setRotation(Vector3D(Math::Math::HALF_PI * 3.0f, Math::PI, 0.0f));
-    m_selectedGO->getTransform().setPosition(Vector3D(-0.0f, 1115.0f, 0.0f));
+    m_selectedGO->getTransform().setPosition(Vector3D(-50.0f, 0.0f, 0.0f));
     m_selectedGO->getTransform().setScale(Vector3D(125.0f, 125.0f, 125.0f));
-   // m_selectedGO->getTransform().setRotation(Vector3D(Math::Math::HALF_PI * 3.0f, Math::PI * 0.85f, 0.0f));
+    m_selectedGO->getTransform().setRotation(Vector3D(Math::Math::HALF_PI * 3.0f, Math::PI * 0.85f, 0.0f));
 
-    m_selectedGO->createComponent<RenderComponent>(ptrHK);
-    auto rigidBody = m_selectedGO->createComponent<RigidBody3DComponent>();
-    rigidBody->m_rigidBody->enableGravity(true);
+    //auto rgbod = m_selectedGO->createComponent<RigidBody3DComponent>();
+    //m_selectedGO->createComponent<BoxCollider>(ptrHK->aabb);
     m_selectedGO->createComponent<AABBCollider>(ptrHK->aabb);
+    m_selectedGO->createComponent<RenderComponent>(ptrHK);
 
-    m_selectedGO->update();//
 
     m_hkBodyMat = ResourceManager::createMaterial(_T("HKBodyMaterial"));
     m_hkBodySMat = ResourceManager::createMaterial(_T("HKBodySMaterial"));
@@ -328,6 +325,39 @@ RenderManApp::postInit() {
     meshes[2].material = m_hkEyeMat;
   }
 
+  m_vecGos.push_back(SceneGraph::createObject(_T("Robot")));
+  m_selectedGO = m_vecGos.back();
+  auto ptrModel = ResourceManager::getReferenceT<Model>(_T("model.dae"));
+  if (ptrModel) {
+    //m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 12.5f, -100.0f));
+    //m_selectedGO->getTransform().setScale(Vector3D(10.0f, 10.0f, 10.0f));
+    //m_selectedGO->getTransform().setRotation(Vector3D(0.0f, Math::PI*1.15f, 0.0f));
+    m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 850.0f, -100.0f));
+    m_selectedGO->getTransform().setScale(Vector3D(75.0f, 75.0f, 75.0f));
+    m_selectedGO->getTransform().setRotation(Vector3D(0.0f, Math::QUARTER_PI * 0.3f, 0.0f));
+
+    auto rgbod = m_selectedGO->createComponent<RigidBody3DComponent>();
+    m_selectedGO->createComponent<AABBCollider>(ptrModel->aabb);
+    m_selectedGO->createComponent<BoxCollider>(ptrModel->aabb);
+    m_selectedGO->createComponent<RenderComponent>(ptrModel);
+
+    m_modelMat = ResourceManager::createMaterial(_T("ModelMaterial"));
+
+    auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("default_albedo.tga"));
+    auto emissiveTex = ResourceManager::getReferenceT<TextureCore>(_T("default_emissive.tga"));
+    auto metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("default_metallic.tga"));
+    auto normalTex = ResourceManager::getReferenceT<TextureCore>(_T("default_normal.tga"));
+    auto roughnessTex = ResourceManager::getReferenceT<TextureCore>(_T("default_roughness.tga"));
+    m_modelMat->setTexture(albedoTex, _T("Albedo"));
+    m_modelMat->setTexture(normalTex, _T("Normal"));
+    m_modelMat->setTexture(emissiveTex, _T("Emisivity"));
+    m_modelMat->setTexture(metallicTex, _T("Metallic"));
+    m_modelMat->setTexture(roughnessTex, _T("Roughness"));
+
+    auto rComp = m_selectedGO->getComponent<RenderComponent>();
+    rComp->getMeshes().front().material = m_modelMat;
+  }
+
   /*
   m_vecGos.push_back(SceneGraph::createObject(_T("SkySphere")));
   m_selectedGO = m_vecGos.back();
@@ -343,6 +373,8 @@ RenderManApp::postInit() {
   //m_SzTGosIndex = 0;
   m_selectedGO = m_vecGos[m_SzTGosIndex];
 
+  SceneGraph::start();
+
   initInputCallbacks();
 #if (RENDER_MANAGER == MULTI_THREAD)
   render = true;
@@ -354,9 +386,11 @@ void
 RenderManApp::postUpdate() {
   Time::update();
   InputManager::update();
+
   SceneGraph::update();
   PhysicsManager::TestCollision();
   PhysicsManager::simulate();
+
 
   if (m_bRotate) {
     m_selectedGO->getTransform().rotate(Vector3D(0.0f, Math::QUARTER_PI * Time::getDelta(), 0.0f));
@@ -366,24 +400,24 @@ RenderManApp::postUpdate() {
     RenderManager::instance().recompile();
   }
 
-  const float fMovementSpeed = 5000.0f;
+  const float fMovementSpeed = 500.0f;
   if (Keyboard::isKeyDown(KEY_CODE::kA)) {
-    m_selectedGO->getComponent<RigidBody3DComponent>()->addForce(Vector3D(-1.0f, 0.0f, 0.0f) * Time::getDelta() * fMovementSpeed);
+    m_selectedGO->getTransform().move(Vector3D(-1.0f, 0.0f, 0.0f) * Time::getDelta()* fMovementSpeed);
   }
   if (Keyboard::isKeyDown(KEY_CODE::kD)) {
-    m_selectedGO->getComponent<RigidBody3DComponent>()->addForce(Vector3D(1.0f, 0.0f, 0.0f) * Time::getDelta() * fMovementSpeed);
+    m_selectedGO->getTransform().move(Vector3D(1.0f, 0.0f, 0.0f) * Time::getDelta() * fMovementSpeed);
   }
   if (Keyboard::isKeyDown(KEY_CODE::kW)) {
-    m_selectedGO->getComponent<RigidBody3DComponent>()->addForce(Vector3D(0.0f, 0.0f, 1.0f) * Time::getDelta() * fMovementSpeed);
+    m_selectedGO->getTransform().move(Vector3D(0.0f, 0.0f, 1.0f) * Time::getDelta() * fMovementSpeed);
   }
   if (Keyboard::isKeyDown(KEY_CODE::kS)) {
-    m_selectedGO->getComponent<RigidBody3DComponent>()->addForce(Vector3D(0.0f, 0.0f, -1.0f) * Time::getDelta() * fMovementSpeed);
+    m_selectedGO->getTransform().move(Vector3D(0.0f, 0.0f, -1.0f) * Time::getDelta() * fMovementSpeed);
   }
   if (Keyboard::isKeyDown(KEY_CODE::kQ)) {
-    m_selectedGO->getComponent<RigidBody3DComponent>()->addForce(Vector3D(0.0f, 1.0f, 0.0f) * Time::getDelta() * fMovementSpeed);
+    m_selectedGO->getTransform().move(Vector3D(0.0f, 1.0f, 0.0f) * Time::getDelta() * fMovementSpeed);
   }
   if (Keyboard::isKeyDown(KEY_CODE::kE)) {
-    m_selectedGO->getComponent<RigidBody3DComponent>()->addForce(Vector3D(0.0f, -1.0f, 0.0f) * Time::getDelta() * fMovementSpeed);
+    m_selectedGO->getTransform().move(Vector3D(0.0f, -1.0f, 0.0f) * Time::getDelta() * fMovementSpeed);
   }
 
   if (Keyboard::isKeyDown(KEY_CODE::kR)) {
@@ -392,12 +426,109 @@ RenderManApp::postUpdate() {
   if (Keyboard::isKeyDown(KEY_CODE::kF)) {
     m_selectedGO->getTransform().scale(Vector3D(1.0f, 1.0f, 1.0f) - (Vector3D(1.0f, 1.0f, 1.0f) *  Time::getDelta()));
   }
+
+  if (Keyboard::isKeyDown(KEY_CODE::k1)) {
+    luminanceDelta -= 0.01f;
+  }
+  if (Keyboard::isKeyDown(KEY_CODE::k2)) {
+    luminanceDelta += 0.01f;
+  }
+
+  if (Keyboard::isKeyDown(KEY_CODE::k0)) {
+    Matrix4x4 translateMat = Matrix4x4::identityMat4x4;
+    translateMat.Scale(Vector3D(0.8, 0.5, 0.8));
+    translateMat.Translation(Vector3D(0, 50, 0));
+
+    std::vector<Vector3D> points;
+    points.push_back(Vector3D(-75,  50, 0));
+    points.push_back(Vector3D(  0, 150, 0));
+    points.push_back(Vector3D( 75,  50,  0));
+    points.push_back(Vector3D(-75,  50,  0));
+    RenderManager::instance().drawDebugLine(Vector3D(0, 0, 0), Vector3D(0, 100, 0), Vector3D(1, 1, 0), translateMat);
+    RenderManager::instance().drawDebugLine(points, Vector3D(0, 1, 0), translateMat);
+    RenderManager::instance().drawDebugCube(Vector3D(100, 100, 100), Vector3D(0, 0, 1), translateMat);
+    RenderManager::instance().drawDebugSphere(50, Vector3D(1, 0, 0), translateMat);
+  }
+
+  //Screenshot!
+  if (Keyboard::isKeyDown(KEY_CODE::kF2)) {
+    Device& device = GraphicsAPI::getDevice();
+    DeviceContext& dc = GraphicsAPI::getDeviceContext();
+
+    //////////RenderTarget//////////
+    DrTextureDesc backDesc;
+    backDesc.dimension = DR_DIMENSION::k2D;
+    backDesc.width = m_viewport.width;
+    backDesc.height = m_viewport.height;
+    backDesc.Format = DR_FORMAT::kR8G8B8A8_UNORM;
+    backDesc.pitch = backDesc.width * 4 * 1;
+    backDesc.mipLevels = 0;
+    backDesc.genMipMaps = true;
+    backDesc.CPUAccessFlags = DR_CPU_ACCESS_FLAG::drRead;
+    backDesc.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE |
+                         DR_BIND_FLAGS::RENDER_TARGET |
+                         DR_BIND_FLAGS::UNORDERED_ACCESS;
+
+    GFXUnique<Texture> ssTexture = dr_gfx_unique(device.createEmptyTexture(backDesc));
+    std::vector<Texture*> vecTextures;
+    vecTextures.push_back(ssTexture.get());
+    GFXUnique<RenderTarget> SSRT = dr_gfx_unique(device.createRenderTarget(vecTextures));
+    
+    //////////Depthstencil//////////
+    DrDepthStencilDesc dsDesc;
+    dsDesc.bindFlags = DR_BIND_FLAGS::DEPTH_STENCIL |
+                       DR_BIND_FLAGS::SHADER_RESOURCE |
+                       DR_BIND_FLAGS::UNORDERED_ACCESS;
+    dsDesc.width = m_viewport.width;
+    dsDesc.height = m_viewport.height;
+    dsDesc.Format = DR_FORMAT::kD24_UNORM_S8_UINT;
+
+    GFXUnique<DepthStencil> ds = dr_gfx_unique(device.createDepthStencil(dsDesc));
+    //DepthStencil* ds = device.createDepthStencil(dsDesc);
+    
+    //////////Draw//////////
+    RenderManager::instance().draw(*SSRT, *ds);
+
+    //////////Image 2 file//////////
+    std::vector<byte> rtMem;
+    SSRT->getTexture(0).getMemoryBuffer(dc, rtMem);
+    CodecTexture CT;
+    CT.encodeImage("RM_SS",
+                   m_viewport.width,
+                   m_viewport.height,
+                   DR_FILE_FORMAT::BMP,
+                   &rtMem);
+    CT.encodeImage("RM_SS",
+                   m_viewport.width,
+                   m_viewport.height,
+                   DR_FILE_FORMAT::DDS,
+                   &rtMem);
+    CT.encodeImage("RM_SS",
+                   m_viewport.width,
+                   m_viewport.height,
+                   DR_FILE_FORMAT::JPG,
+                   &rtMem);
+    CT.encodeImage("RM_SS",
+                   m_viewport.width,
+                   m_viewport.height,
+                   DR_FILE_FORMAT::PNG,
+                   &rtMem);
+    CT.encodeImage("RM_SS",
+                   m_viewport.width,
+                   m_viewport.height,
+                   DR_FILE_FORMAT::TGA,
+                   &rtMem);
+    ssTexture.release();
+    SSRT.release();
+    ds.release();
+  }
 }
 
 void
 RenderManApp::postRender() {
 #if (RENDER_MANAGER == SINGLE_THREAD)
   GraphicsDriver::API().clear();
+
   RenderManager::instance().draw(GraphicsAPI::getBackBufferRT(), GraphicsAPI::getDepthStencil());
   GraphicsDriver::API().swapBuffers();
 #endif
@@ -490,6 +621,7 @@ RenderManApp::loadResources() {
   ResourceManager::loadResource(_T("model.dae"));
   ResourceManager::loadResource(_T("stormtrooper_dancing.fbx"));
   ResourceManager::loadResource(_T("HK_Teen.fbx"));
+  ResourceManager::loadResource(_T("popuko.fbx"));
 
   ResourceManager::loadResource(_T("256_Checker_Diffuse.tga"));
   ResourceManager::loadResource(_T("256_Checker_Displacement.tga"));

@@ -5,6 +5,9 @@
 #include "dr_enableObject.h"
 #include "dr_name_object.h"
 
+#include <dr_export_script.h>
+#include <..\..\Script\Include\dr_script_engine.h>
+
 namespace driderSDK {
 
 class GameObject;
@@ -27,6 +30,9 @@ class DR_CORE_EXPORT GameComponent : public EnableObject,
   onCreate() = 0;
 
   virtual void
+  onStart() {}
+
+  virtual void
   onUpdate() = 0;
 
   /*********
@@ -41,13 +47,26 @@ class DR_CORE_EXPORT GameComponent : public EnableObject,
   virtual void
   setName(const TString& name);
 
+  void 
+  kill();
+
+  bool 
+  isKilled() const;
+
+  virtual UInt32
+  getClassID() = 0;
   /**
   * Clones the component inside the given gameObject
   */
-  virtual void
+  virtual GameComponent*
   cloneIn(GameObject& _go) = 0;
+
+  static BEGINING_REGISTER(GameComponent, 0, asOBJ_REF | asOBJ_NOCOUNT)
+
+  END_REGISTER
  protected:
   GameObject& m_gameObject;
+  bool m_isKilled;
 };
 
 }

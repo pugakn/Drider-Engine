@@ -20,8 +20,8 @@ PostProcessingPass::init(PassInitData* initData) {
   PostProcessingInitData* data = static_cast<PostProcessingInitData*>(initData);
   Device& device = GraphicsAPI::getDevice();
 
-  m_vsFilename = _T("PostProcessing_vs.hlsl");
-  m_fsFilename = _T("PostProcessing_ps.hlsl");
+  m_vsFilename = _T("Resources\\Shaders\\PostProcessing_vs.hlsl");
+  m_fsFilename = _T("Resources\\Shaders\\PostProcessing_ps.hlsl");
 
   recompileShader();
 
@@ -57,7 +57,8 @@ PostProcessingPass::draw(PassDrawData* drawData) {
   data->ColorBlurTex->set(dc, 1);
   data->PositionDepthTex->set(dc, 2);
   data->BloomTex->set(dc, 3);
-  data->luminescenceBuffer->set(dc, DR_SHADER_TYPE_FLAG::kFragment, 4);
+  data->FilmLutTex->textureGFX->set(dc, 4, DR_SHADER_TYPE_FLAG::kCompute, true);
+  data->luminescenceBuffer->set(dc, DR_SHADER_TYPE_FLAG::kFragment, 5);
 
   m_inputLayout->set(dc);
 
@@ -78,6 +79,8 @@ PostProcessingPass::draw(PassDrawData* drawData) {
   m_constantBuffer->set(dc);
 
   dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
+
+  data->OutRT->set(dc, *data->OutDS);
 
   auto screenQuadModel = ResourceManager::getReferenceT<Model>(_T("ScreenAlignedQuad.3ds"));
   if (screenQuadModel) {

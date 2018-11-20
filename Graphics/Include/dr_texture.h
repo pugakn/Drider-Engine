@@ -17,11 +17,11 @@ class DeviceContext;
 class DR_GRAPHICS_EXPORT Texture
 {
  public:
-   virtual void*
-     getAPIObject() = 0;
+  virtual void*
+  getAPIObject() = 0;
 
-   virtual void**
-     getAPIObjectReference() = 0;
+  virtual void**
+  getAPIObjectReference() = 0;
 
   /**
   * Class virtual destructor.
@@ -48,7 +48,6 @@ class DR_GRAPHICS_EXPORT Texture
   createFromMemory(const Device& device, 
                    const DrTextureDesc& desc, 
                    const char* buffer) = 0;
-
 
   /**
   * Create a texture
@@ -94,7 +93,7 @@ class DR_GRAPHICS_EXPORT Texture
   set(const DeviceContext& deviceContext,
       UInt32 slot,
       DR_SHADER_TYPE_FLAG::E shaderType = DR_SHADER_TYPE_FLAG::kFragment,
-      bool forceComputeTexture = false) const = 0;
+      bool isTexture = false) const = 0;
 
   virtual void
   getMemoryBuffer(const DeviceContext& deviceContext, std::vector<byte>& buff) = 0;
@@ -129,8 +128,7 @@ class DR_GRAPHICS_EXPORT Texture
   virtual void
   udpateFromMemory(const DeviceContext& deviceContext, 
                    const char* buffer, 
-                   size_t bufferSize,
-                   size_t mipLevels = 1 ) = 0;
+                   size_t bufferSize) = 0;
 
   /**
   * Generate mip maps for the current texture
@@ -145,10 +143,14 @@ class DR_GRAPHICS_EXPORT Texture
   modifyTextureParams(const Device& device,
                       const DrTextureDesc& desc) = 0;
 
-  const DrTextureDesc& getDescriptor() const { return m_descriptor; }
-  void setDescriptor(const DrTextureDesc&desc) { m_descriptor = desc; };
+  const DrTextureDesc&
+  getDescriptor() const { return m_descriptor; }
+
+  void
+  setDescriptor(const DrTextureDesc&desc) { m_descriptor = desc; };
+
  protected:
-   DrTextureDesc m_descriptor;
+  DrTextureDesc m_descriptor;
 };
 
 }

@@ -18,13 +18,13 @@ StaticMeshTechnique::compile() {
 
   File file;
 
-  file.Open(_T("mesh.hlsl"));
+  file.Open(_T("Resources\\Shaders\\mesh.hlsl"));
 
   String vertexSrc = StringUtils::toString(file.GetAsString(file.Size()));
   
   file.Close();
 
-  file.Open(_T("fs.hlsl"));
+  file.Open(_T("Resources\\Shaders\\anim_fs.hlsl"));
 
   String fragmentSrc = StringUtils::toString(file.GetAsString(file.Size()));
 

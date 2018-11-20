@@ -1,5 +1,7 @@
 
 #include <array>
+#include <map>
+#include <vector>
 
 #include <dr_application.h>
 #include <dr_light.h>
@@ -7,12 +9,21 @@
 #include <dr_util_prerequisites.h>
 #include <dr_timer.h>
 #include <dr_renderman.h>
+#include "PathHolder.h"
+#include "PathRenderer.h"
+#include "Spawner.h"
 
 namespace driderSDK {
 
 class GameObject;
 class Model;
 class Technique;
+
+class RenderManangerT
+{
+public:
+  void render();
+};
 
 class GraphicsApplication : public Application
 {
@@ -35,6 +46,9 @@ private:
 
   virtual void 
   postDestroy() override;
+    
+  virtual void 
+  onResize() override;
 
   void
   recompileShaders();
@@ -58,6 +72,9 @@ private:
   addObjectFromModel(std::shared_ptr<Model> model,
                      const TString& name);
 
+  std::shared_ptr<GameObject>
+  addObject(const TString& name, const TString& model, bool animated);
+
   void
   destroyModules();
 
@@ -77,6 +94,9 @@ private:
   toggleAnimation();
 
   void 
+  speedAnim(float val);
+
+  void 
   toggleCamera();
 
   void
@@ -88,6 +108,10 @@ private:
   void
   playerRotation();
 
+  std::vector<Vector3D>
+  calculatePoints();
+  
+
   std::unique_ptr<Technique> m_animTech;
   std::unique_ptr<Technique> m_staticTech;
   std::unique_ptr<Technique> m_linesTech;
@@ -96,16 +120,23 @@ private:
   Int32 m_currAnim;
   TString m_camNames[2];
   TString m_animationsNames[4];
+  TString m_playerAnims[4];
+
+  std::map<TString, TString> m_anims;
 
   bool m_lockView;
   bool m_drawMeshes;
   GameObject* m_right;
+  GameObject* m_center;
   GameObject* m_player;
   GameObject* m_cameraHolder;
-  Timer m_timer;RenderMan m_renderMan;
-  std::array<Light, 128> m_light;
+  Timer m_timer;
+  //RenderMan m_renderMan;
+  //std::array<Light, 128> m_light;
+  std::vector<PathHolder> m_paths;
+  std::vector<PathRenderer> m_pathRenders;
+  Spawner m_spiderSpawn;
   // Inherited via Application
-  virtual void onResize() override;
 };
 
 }

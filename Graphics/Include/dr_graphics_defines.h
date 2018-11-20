@@ -4,6 +4,18 @@
 
 namespace driderSDK {
 
+namespace DR_FILE_FORMAT {
+
+enum E {
+  DDS,
+  TGA,
+  JPG,
+  PNG,
+  BMP
+};
+
+}
+
 namespace DR_BUFFER_USAGE {
 
 enum E {

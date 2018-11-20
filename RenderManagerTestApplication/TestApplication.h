@@ -64,8 +64,9 @@ class RenderManApp : public Application
   std::shared_ptr<Material> m_hkEyeMat;
   std::shared_ptr<Material> m_modelMat;
 
+  float luminanceDelta;
   Vector3D modelMovement;
-  std::array<Light, 128> Lights;
+  std::array<Light, RM_MAX_LIGHTS> Lights;
 };
 
 }

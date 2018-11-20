@@ -15,6 +15,7 @@ class DepthStencil;
 class RasterizerState;
 class BlendState;
 class DepthStencilState;
+
 namespace DR_BLEND_STATES {
   enum E {
     kAlphaBlend,
@@ -23,6 +24,7 @@ namespace DR_BLEND_STATES {
     kCount
   };
 }
+
 namespace DR_DEPTH_STENCIL_STATES {
   enum E{
     kNone,
@@ -34,7 +36,7 @@ namespace DR_DEPTH_STENCIL_STATES {
 
 class DR_GRAPHICS_EXPORT GraphicsAPI {
  public:
-
+   
   virtual ~GraphicsAPI() {};
 
   virtual 

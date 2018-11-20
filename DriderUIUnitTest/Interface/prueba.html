@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<script type="text/javascript" src="external/jquery.js"></script>
+<script type="text/javascript">
+
+$( init );
+
+function init() {
+
+ // Move the paragraph from #myDiv1 to #myDiv2
+  $('#myDiv2').append( $('#myDiv1>p') );
+}
+
+</script>
+
+</head>
+<body>
+
+  <div id="myDiv1">
+    <p>A paragraph of text</p>
+  </div>
+
+  <div id="myDiv2">
+  </div>
+
+</body>
+</html>

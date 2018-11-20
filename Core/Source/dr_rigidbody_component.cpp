@@ -17,8 +17,8 @@ namespace driderSDK {
   RigidBody3DComponent::onUpdate() {
     auto t = m_rigidBody->getTransform();
     //Update values
-    getGameObject().getTransform().setPosition(t.getPosition());
     getGameObject().getTransform().setRotation(t.getEulerAngles());
+    getGameObject().getTransform().setPosition(t.getPosition());
   }
 
   void
@@ -29,12 +29,20 @@ namespace driderSDK {
   RigidBody3DComponent::onDestroy() {
   }
 
-  void
+  GameComponent*
   RigidBody3DComponent::cloneIn(GameObject& _go) {
-
+    auto dup = _go.createComponent<RigidBody3DComponent>();
+    return dup;
+  }
+  UInt32 RigidBody3DComponent::getClassID() {
+    return CLASS_NAME_ID(RigidBody3DComponent);
   }
   void RigidBody3DComponent::addForce(Vector3D _force)
   {
     m_rigidBody->applyForceToCenter(_force);
+  }
+
+  void RigidBody3DComponent::setType(RIGID_BODY_TYPE::E type) {
+    m_rigidBody->setType(type);
   }
 }

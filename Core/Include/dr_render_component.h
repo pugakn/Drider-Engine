@@ -1,9 +1,12 @@
 #pragma once
 
 #include <vector>
+
+#include <dr_aabb.h>
+#include <dr_id_object.h>
 #include <dr_memory.h>
 #include <dr_vector3d.h>
-#include <dr_aabb.h>
+
 #include "dr_core_prerequisites.h"
 #include "dr_gameComponent.h"
 
@@ -24,7 +27,8 @@ struct DR_CORE_EXPORT RenderMesh
   std::weak_ptr<Material> material;
 };
 
-class DR_CORE_EXPORT RenderComponent : public GameComponent
+class DR_CORE_EXPORT RenderComponent : public GameComponent,
+                                       public IDClass<RenderComponent>
 {
  public:
   using MeshList = std::vector<RenderMesh>;
@@ -35,7 +39,8 @@ class DR_CORE_EXPORT RenderComponent : public GameComponent
                   SharedModel model);
 
   RenderComponent(GameObject& _gameObject, 
-                  MeshList&& _meshes);
+                  MeshList&& _meshes,
+                  const AABB& _aabb);
   
   void
   setModel(SharedModel model);
@@ -54,7 +59,10 @@ class DR_CORE_EXPORT RenderComponent : public GameComponent
   {
     return m_model;
   }
- private:
+
+  const AABB&
+  getAABB();
+
   // Inherited via GameComponent
   virtual void 
   onCreate() override;
@@ -68,12 +76,20 @@ class DR_CORE_EXPORT RenderComponent : public GameComponent
   virtual void 
   onDestroy() override;
 
-  virtual void
+  virtual UInt32
+  getClassID() override;
+
+  virtual GameComponent*
   cloneIn(GameObject& _go);
+
+  
+ private:
 
   bool m_isModel;
   WeakModelRef m_model;
   MeshList m_meshes;
+  AABB m_aabb;
+  AABB m_transformedAABB;
 };
 
 }

@@ -11,7 +11,8 @@ namespace driderSDK {
 namespace COLLIDER_TYPE {
 enum E
 {
-  kAABB
+  kAABB,
+  kBOX
 };
 }
 

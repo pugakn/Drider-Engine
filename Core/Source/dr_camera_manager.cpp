@@ -51,6 +51,15 @@ CameraManager::createCamera(const TString& cameraName,
 }
 
 void
+CameraManager::setViewportToAll(const Viewport& viewport) {
+  auto& cm = instance();
+
+  for (auto& cam : cm.m_cameras) {
+    cam.second->setViewport(viewport);
+  }
+}
+
+void
 CameraManager::deleteCamera(const TString& cameraName) {
 	
   auto& cm = instance();

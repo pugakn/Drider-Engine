@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -93,7 +93,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
@@ -109,7 +109,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
@@ -125,7 +125,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -145,7 +145,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -164,11 +164,25 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DriderUIUnitTest.cpp" />
+    <ClCompile Include="Source\dr_aabb_collider_inputs.cpp" />
+    <ClCompile Include="Source\dr_animator_inputs.cpp" />
+    <ClCompile Include="Source\dr_camera_inputs.cpp" />
+    <ClCompile Include="Source\dr_input_editor.cpp" />
+    <ClCompile Include="Source\dr_render_inputs.cpp" />
     <ClCompile Include="Source\dr_scene_editor.cpp" />
+    <ClCompile Include="Source\dr_scrip_inputs.cpp" />
+    <ClCompile Include="Source\dr_sound_inputs.cpp" />
     <ClCompile Include="TestApplication.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\dr_aabb_collider_inputs.h" />
+    <ClInclude Include="Include\dr_animator_inputs.h" />
+    <ClInclude Include="Include\dr_camera_inputs.h" />
+    <ClInclude Include="Include\dr_input_editor.h" />
+    <ClInclude Include="Include\dr_render_inputs.h" />
     <ClInclude Include="Include\dr_scene_editor.h" />
+    <ClInclude Include="Include\dr_scrip_inputs.h" />
+    <ClInclude Include="Include\dr_sound_inputs.h" />
     <ClInclude Include="TestApplication.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

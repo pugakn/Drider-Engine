@@ -11,7 +11,7 @@ struct VerBlurInitData : PassInitData {
 
 struct VerBlurDrawData : PassDrawData {
   Texture* InTexture;
-  GFXShared<RenderTarget> OutRt;
+  RenderTarget* OutRt;
 };
 
 class VerBlurPass : public RenderPass {

@@ -23,6 +23,7 @@
     <ClInclude Include="Include\dr_GBuffer1.h" />
     <ClInclude Include="Include\dr_HorBlur.h" />
     <ClInclude Include="Include\dr_Lightning.h" />
+    <ClInclude Include="Include\dr_Lines.h" />
     <ClInclude Include="Include\dr_Luminescence.h" />
     <ClInclude Include="Include\dr_pass_particle_system.h" />
     <ClInclude Include="Include\dr_Shadow.h" />
@@ -33,12 +34,14 @@
     <ClInclude Include="Include\dr_rendermanapp.h" />
     <ClInclude Include="Include\dr_renderman_prerequisites.h" />
     <ClInclude Include="Include\dr_renderpass.h" />
+    <ClInclude Include="Include\dr_SSReflection.h" />
     <ClInclude Include="Include\dr_VerBlur.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_Bloom.cpp" />
     <ClCompile Include="Source\dr_GBuffer1.cpp" />
     <ClCompile Include="Source\dr_Lightning.cpp" />
+    <ClCompile Include="Source\dr_Lines.cpp" />
     <ClCompile Include="Source\dr_Luminescence.cpp" />
     <ClCompile Include="Source\dr_pass_particle_system.cpp" />
     <ClCompile Include="Source\dr_Shadow.cpp" />
@@ -48,13 +51,14 @@
     <ClCompile Include="Source\dr_rendermanapp.cpp" />
     <ClCompile Include="Source\dr_renderpass.cpp" />
     <ClCompile Include="Source\dr_HorBlur.cpp" />
+    <ClCompile Include="Source\dr_SSReflection.cpp" />
     <ClCompile Include="Source\dr_VerBlur.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{B7A07E65-EAED-42A5-B50D-652D8E70DC55}</ProjectGuid>
     <RootNamespace>RenderManager</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

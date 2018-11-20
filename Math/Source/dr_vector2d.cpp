@@ -42,10 +42,11 @@ Vector2D::lengthSqr() const {
   return dot(*this);
 }
 
-void
+Vector2D&
 Vector2D::normalize() {
   DR_ASSERT(length() != 0.0f);
   *this /= length();
+  return *this;
 }
 
 float

@@ -5,8 +5,9 @@
 #include <dr_fmod_channel.h>
 #include <dr_fmod_channelGroup.h>
 #include <dr_soundSystem.h>
-
 #include <dr_vector3d.h>
+
+#include "dr_gameObject.h"
 
 namespace driderSDK {
 
@@ -45,9 +46,14 @@ SoundComponent::onDestroy(){
 
 }
 
-void
-SoundComponent::cloneIn(GameObject& _go) {
+UInt32 SoundComponent::getClassID()
+{
+  return CLASS_NAME_ID(SoundComponent);
+}
 
+GameComponent*
+SoundComponent::cloneIn(GameObject& _go) {
+  return _go.createComponent<SoundComponent>();
 }
 
 void

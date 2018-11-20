@@ -39,8 +39,10 @@ CodecModel::decode(TString pathName) {
 	flags |= aiProcess_FindInvalidData;
 	flags |= aiProcess_GenUVCoords;
 
-  const aiScene* scene = importer.ReadFile(StringUtils::toString(pathName), 
-                                            flags);
+  String path = "Resources\\Models\\";
+
+  const aiScene* scene = importer.ReadFile(path + StringUtils::toString(pathName), 
+                                           flags);
 
   if (scene) {
 
@@ -81,6 +83,8 @@ CodecModel::decode(TString pathName) {
       std::memcpy(skeleton->gloabalInverseTransform.data, 
                   &scene->mRootNode->mTransformation[0][0],
                   64);
+
+      skeleton->gloabalInverseTransform.transpose();
 
       skeleton->gloabalInverseTransform.inverse();
 
@@ -235,7 +239,8 @@ CodecModel::loadSkeleton(const aiScene& model,
         std::memcpy(bones[index]->boneOffset.ptr(), 
                     &bone.mOffsetMatrix[0][0], 64);
         
-        nodesRefs[boneName]->boneOffset.transpose();
+        bones[index]->boneOffset.transpose();
+        //nodesRefs[boneName]->boneOffset.identity();
       }
       else {
         index = bonesMap[boneName];
@@ -452,8 +457,10 @@ CodecModel::buildTree(const aiNode* nodeSrc,
   
   nodesRefs[node->name] = node;
 
-  std::memcpy(node->transform.data, &nodeSrc->mTransformation[0][0], 64);
-      
+  std::memcpy(node->transform.ptr(), &nodeSrc->mTransformation[0][0], 64);
+  
+  node->transform.transpose();
+
   for (Int32 childInddex = 0; 
        childInddex < static_cast<Int32>(nodeSrc->mNumChildren); 
        ++childInddex) {

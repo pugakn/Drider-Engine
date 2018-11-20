@@ -76,8 +76,8 @@ TextureCore::init(void* data) {
 
   t->udpateFromMemory(GraphicsAPI::getDeviceContext(), 
                       cdata, 
-                      image->data.size(), 
-                      image->mipMapCount);
+                      image->data.size()//,
+                      );//image->mipMapCount
 
   textureGFX = dr_unique_custom<>(t, dr_gfx_deleter<Texture>);
 }

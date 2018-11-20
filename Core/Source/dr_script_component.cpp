@@ -70,12 +70,17 @@ ScriptComponent::onDestroy() {
 
 }
 
+UInt32 ScriptComponent::getClassID()
+{
+  return CLASS_NAME_ID(ScriptComponent);
+}
+
 /**
 * Clones the component inside the given gameObject
 */
-void
+GameComponent*
 ScriptComponent::cloneIn(GameObject& _go) {
-
+  return _go.createComponent<ScriptComponent>(m_script);
 }
 
 void
@@ -131,6 +136,15 @@ ScriptComponent::onKeyUp(KEY_CODE::E key) {
 void
 ScriptComponent::setScriptLocalProperties() {
   Int8 result;  
+}
+
+asIScriptObject*
+ScriptComponent::getScript() {
+  if(obj == 0)
+    return 0;
+  
+  obj->AddRef();
+  return obj;
 }
 
 }
