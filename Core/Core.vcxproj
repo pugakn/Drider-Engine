@@ -227,6 +227,7 @@
     <ClCompile Include="Source\dr_skeleton.cpp" />
     <ClCompile Include="Source\dr_sound_component.cpp" />
     <ClCompile Include="Source\dr_sound_core.cpp" />
+    <ClCompile Include="Source\dr_sphere_collider.cpp" />
     <ClCompile Include="Source\dr_spline.cpp" />
     <ClCompile Include="Source\dr_texture_core.cpp" />
     <ClCompile Include="Source\dr_transform.cpp" />

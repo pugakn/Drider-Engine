@@ -39,6 +39,9 @@ namespace driderSDK {
     void 
     addForce(Vector3D _force);
 
+    void
+      addTorque(Vector3D torque);
+
     void setType(RIGID_BODY_TYPE::E type);
 
 

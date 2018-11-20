@@ -27,9 +27,9 @@ namespace driderSDK {
   class DR_PHYSICS_EXPORT DrCollisionBody {
   public:
     void setTransform(Transform transform);
-    void AddBoxShape(Vector3D dimensions);
-    void AddSphereShape(float radius);
-    void AddCapsuleShape(float radius, float height);
+    void AddBoxShape(Vector3D dimensions, Vector3D localPos);
+    void AddSphereShape(float radius, Vector3D localPos);
+    void AddCapsuleShape(float radius, float height, Vector3D localPos);
 
     std::function<void(DrCollisionBody& coll)> onCollisionEnter;
     std::function<void(DrCollisionBody& coll)> onCollisionExit;
@@ -45,8 +45,8 @@ namespace driderSDK {
   public:
     void setTransform(Transform transform);
     void AddBoxShape(Vector3D dimensions, Vector3D localPos, float mass);
-    void AddSphereShape(float radius, float mass);
-    void AddCapsuleShape(float radius, float height, float mass);
+    void AddSphereShape(float radius, Vector3D localPos, float mass);
+    void AddCapsuleShape(float radius, float height,Vector3D localPos, float mass);
 
     void setType(RIGID_BODY_TYPE::E type);
     void enableGravity(bool useGravity);

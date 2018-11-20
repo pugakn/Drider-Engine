@@ -21,6 +21,7 @@
 #include <dr_render_component.h>
 #include <dr_aabb_collider.h>
 #include <dr_box_collider.h>
+#include <dr_sphere_collider.h>
 #include <dr_degree.h>
 #include <dr_texture_core.h>
 #include <dr_rigidbody_component.h>
@@ -338,7 +339,8 @@ RenderManApp::postInit() {
 
     auto rgbod = m_selectedGO->createComponent<RigidBody3DComponent>();
     m_selectedGO->createComponent<AABBCollider>(ptrModel->aabb);
-    m_selectedGO->createComponent<BoxCollider>(ptrModel->aabb);
+    //m_selectedGO->createComponent<BoxCollider>(ptrModel->aabb);
+    m_selectedGO->createComponent<SphereCollider>(1,Vector3D(0,0,0));
     m_selectedGO->createComponent<RenderComponent>(ptrModel);
 
     m_modelMat = ResourceManager::createMaterial(_T("ModelMaterial"));
@@ -426,6 +428,10 @@ RenderManApp::postUpdate() {
   if (Keyboard::isKeyDown(KEY_CODE::kF)) {
     m_selectedGO->getTransform().scale(Vector3D(1.0f, 1.0f, 1.0f) - (Vector3D(1.0f, 1.0f, 1.0f) *  Time::getDelta()));
   }
+  if (Keyboard::isKeyDown(KEY_CODE::kT)) {
+    m_selectedGO->getComponent<RigidBody3DComponent>()->addTorque(Vector3D(0,0,200));
+  }
+
 
   if (Keyboard::isKeyDown(KEY_CODE::k1)) {
     luminanceDelta -= 0.01f;

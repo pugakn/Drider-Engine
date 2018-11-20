@@ -97,27 +97,36 @@ namespace driderSDK {
     m_body->setTransform(newTransform);
   }
 
-  void DrCollisionBody::AddBoxShape(Vector3D dimensions)
+  void DrCollisionBody::AddBoxShape(Vector3D dimensions, Vector3D localPos)
   {
     const rp3d::Vector3 halfExtents(dimensions.x, dimensions.y, dimensions.z);
     // Create the box shape 
     rp3d::BoxShape* boxShape = new rp3d::BoxShape(halfExtents);
     m_shapes.push_back(boxShape);
-    m_proxyShapes.push_back(m_body->addCollisionShape(boxShape, rp3d::Transform::identity()));
+    rp3d::Transform t;
+    t.setPosition(rp3d::Vector3(localPos.x, localPos.y, localPos.z));
+    t.setOrientation(rp3d::Quaternion::identity());
+    m_proxyShapes.push_back(m_body->addCollisionShape(boxShape, t));
   }
 
-  void DrCollisionBody::AddSphereShape(float radius)
+  void DrCollisionBody::AddSphereShape(float radius, Vector3D localPos)
   {
     rp3d::SphereShape* sphereShape = new rp3d::SphereShape(radius);
     m_shapes.push_back(sphereShape);
-    m_proxyShapes.push_back(m_body->addCollisionShape(sphereShape, rp3d::Transform::identity()));
+    rp3d::Transform t;
+    t.setPosition(rp3d::Vector3(localPos.x, localPos.y, localPos.z));
+    t.setOrientation(rp3d::Quaternion::identity());
+    m_proxyShapes.push_back(m_body->addCollisionShape(sphereShape, t));
   }
 
-  void DrCollisionBody::AddCapsuleShape(float radius, float height)
+  void DrCollisionBody::AddCapsuleShape(float radius, float height, Vector3D localPos)
   {
     rp3d::CapsuleShape* shape = new rp3d::CapsuleShape(radius,height);
     m_shapes.push_back(shape);
-    m_proxyShapes.push_back(m_body->addCollisionShape(shape, rp3d::Transform::identity()));
+    rp3d::Transform t;
+    t.setPosition(rp3d::Vector3(localPos.x, localPos.y, localPos.z));
+    t.setOrientation(rp3d::Quaternion::identity());
+    m_proxyShapes.push_back(m_body->addCollisionShape(shape, t));
   }
 
 
@@ -152,18 +161,24 @@ namespace driderSDK {
     m_proxyShapes.push_back(m_body->addCollisionShape(boxShape, t,mass));
   }
 
-  void DrRigidBody::AddSphereShape(float radius, float mass)
+  void DrRigidBody::AddSphereShape(float radius, Vector3D localPos,float mass)
   {
     rp3d::SphereShape* sphereShape = new rp3d::SphereShape(radius);
     m_shapes.push_back(sphereShape);
-    m_proxyShapes.push_back(m_body->addCollisionShape(sphereShape, rp3d::Transform::identity(),mass));
+    rp3d::Transform t;
+    t.setPosition(rp3d::Vector3(localPos.x, localPos.y, localPos.z));
+    t.setOrientation(rp3d::Quaternion::identity());
+    m_proxyShapes.push_back(m_body->addCollisionShape(sphereShape,t,mass));
   }
 
-  void DrRigidBody::AddCapsuleShape(float radius, float height, float mass)
+  void DrRigidBody::AddCapsuleShape(float radius, float height, Vector3D localPos, float mass)
   {
     rp3d::CapsuleShape* shape = new rp3d::CapsuleShape(radius, height);
     m_shapes.push_back(shape);
-    m_proxyShapes.push_back(m_body->addCollisionShape(shape, rp3d::Transform::identity(),mass));
+    rp3d::Transform t;
+    t.setPosition(rp3d::Vector3(localPos.x, localPos.y, localPos.z));
+    t.setOrientation(rp3d::Quaternion::identity());
+    m_proxyShapes.push_back(m_body->addCollisionShape(shape, t,mass));
   }
 
   void DrRigidBody::setType(RIGID_BODY_TYPE::E type)

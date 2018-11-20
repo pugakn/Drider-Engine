@@ -12,7 +12,8 @@ namespace COLLIDER_TYPE {
 enum E
 {
   kAABB,
-  kBOX
+  kBOX,
+  kSPHERE
 };
 }
 

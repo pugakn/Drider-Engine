@@ -41,6 +41,9 @@ namespace driderSDK {
   {
     m_rigidBody->applyForceToCenter(_force);
   }
+  void RigidBody3DComponent::addTorque(Vector3D torque) {
+    m_rigidBody->applyTorque(torque);
+  }
 
   void RigidBody3DComponent::setType(RIGID_BODY_TYPE::E type) {
     m_rigidBody->setType(type);
