@@ -40,4 +40,9 @@ GameComponent::isKilled() const {
   return m_isKilled;
 }
 
+/*TString
+GameComponent::serialize() {
+  
+}*/
+
 }

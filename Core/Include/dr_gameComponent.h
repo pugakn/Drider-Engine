@@ -8,12 +8,14 @@
 #include <dr_export_script.h>
 #include <..\..\Script\Include\dr_script_engine.h>
 
+#include "dr_serializable.h"
+
 namespace driderSDK {
 
 class GameObject;
 
 class DR_CORE_EXPORT GameComponent : public EnableObject,
-                                     public NameObject
+                                     public NameObject                              
 {
  public:
   GameComponent(GameObject& gameObject_, const TString& _name);
@@ -57,6 +59,9 @@ class DR_CORE_EXPORT GameComponent : public EnableObject,
   */
   virtual GameComponent*
   cloneIn(GameObject& _go) = 0;
+
+  /*TString
+  serialize() override;*/
 
   static BEGINING_REGISTER(GameComponent, 0, asOBJ_REF | asOBJ_NOCOUNT)
 

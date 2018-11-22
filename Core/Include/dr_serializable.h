@@ -17,7 +17,7 @@ namespace driderSDK {
 		* @return
 		*  TString containing the serialization.
 		*/
-		virtual const TString& 
+		virtual TString 
 		serialize() = 0;
 		
 		/**

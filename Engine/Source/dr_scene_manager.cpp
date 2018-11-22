@@ -113,10 +113,11 @@ namespace driderSDK {
 		TString result;
 		result += obj->getName();
 		result += L" {\n";
-		
-		for (/*auto &compList : obj->getComponents()*/;;) {
-		//result += compList->serialize();
+	
+    auto componentList = obj->getComponents<GameComponent>();
 
+		for (auto &component : componentList) {
+		  //result += component->
 		}
 
 		for (auto &it : obj->getChildren()) {
