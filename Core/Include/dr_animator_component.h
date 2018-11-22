@@ -86,6 +86,13 @@ class DR_CORE_EXPORT AnimatorComponent : public GameComponent,
 
   const TransformsList&
   getBonesTransforms() const;
+
+  TString
+  serialize() override;
+
+  void 
+  deserialize(TString& data) override;
+
  private:
   // Inherited via GameComponent
   virtual void 

@@ -578,4 +578,14 @@ AnimatorComponent::readNodeHeirarchy(float animTime,
   }
 }
 
+TString
+AnimatorComponent::serialize() {
+  return L"Not implemented";
+}
+
+void
+AnimatorComponent::deserialize(TString& data) {
+  "Not implemented";
+}
+
 }

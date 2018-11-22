@@ -36,6 +36,16 @@ RenderComponent::setMeshes(MeshList&& _meshes) {
   m_meshes = std::move(_meshes);
 }
 
+TString
+RenderComponent::serialize() {
+  return L"Not implemented";
+}
+
+void
+RenderComponent::deserialize(TString &data) {
+
+}
+
 void
 RenderComponent::onCreate() {
   

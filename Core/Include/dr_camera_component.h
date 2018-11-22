@@ -24,6 +24,12 @@ public:
   void
   setActive();
 
+  TString
+  serialize() override;
+
+  void
+  deserialize(TString& data) override;
+
 private:  
 
   // Inherited via GameComponent

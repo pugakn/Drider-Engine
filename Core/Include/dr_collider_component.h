@@ -19,6 +19,12 @@ class DR_CORE_EXPORT ColliderComponent : public GameComponent
 
   virtual COLLIDER_TYPE::E
   getType() = 0;
+
+  TString
+  serialize() override;
+
+  void
+  deserialize(TString &data) override;
  protected:
 
 };

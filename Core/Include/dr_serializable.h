@@ -27,7 +27,7 @@ namespace driderSDK {
 		*  TString containing the object's data.
 		*/
 		virtual void 
-		deserialize(const TString& data) = 0;
+		deserialize(TString& data) = 0;
 
 	};
 

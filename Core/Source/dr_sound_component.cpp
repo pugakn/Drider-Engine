@@ -15,6 +15,15 @@ SoundComponent::SoundComponent(GameObject &gameObject_)
   : GameComponent(gameObject_, _T("SoundComponent")) 
 {}
 
+TString
+SoundComponent::serialize() {
+  return L"Not implemented";
+}
+void
+SoundComponent::deserialize(TString &data) {
+
+}
+
 void
 SoundComponent::onCreate() {
   soundAPI = SoundAPI::instance().API;

@@ -36,6 +36,12 @@ class DR_CORE_EXPORT AABBCollider : public ColliderComponent,
   virtual UInt32
   getClassID() override;
 
+  TString
+  serialize() override;
+
+  void 
+  deserialize(TString& data) override;
+
  private:  
   
   virtual GameComponent*

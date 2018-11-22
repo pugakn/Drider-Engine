@@ -89,4 +89,17 @@ COLLIDER_TYPE::E
 AABBCollider::getType() {
   return COLLIDER_TYPE::kAABB;
 }
+
+TString
+AABBCollider::serialize() {
+  TString result;
+  
+  result = L"No implemented";
+  return result;
+}
+
+void
+AABBCollider::deserialize(TString& data) {
+  this->setName(data);
+}
 }

@@ -65,4 +65,14 @@ CameraComponent::cloneIn(GameObject& _go) {
   return _go.createComponent<CameraComponent>();
 }
 
+TString
+CameraComponent::serialize() {
+  return L"Not implemented";
+}
+
+void
+CameraComponent::deserialize(TString& data) {
+  
+}
+
 }

@@ -39,6 +39,16 @@ ScriptComponent::~ScriptComponent() {
 
 }
 
+TString
+ScriptComponent::serialize() {
+  return L"Not implemented";
+}
+
+void
+ScriptComponent::deserialize(TString &data) {
+
+}
+
 void
 ScriptComponent::onCreate() {
   

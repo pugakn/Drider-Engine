@@ -58,6 +58,13 @@ class DR_CORE_EXPORT RenderComponent : public GameComponent,
   {
     return m_model;
   }
+
+  TString
+  serialize() override;
+
+  void
+  deserialize(TString &data) override;
+
  private:
   // Inherited via GameComponent
   virtual void 
