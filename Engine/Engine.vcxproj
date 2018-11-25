@@ -153,6 +153,7 @@
     <ClInclude Include="Include\dr_compatible_types.h" />
     <ClInclude Include="Include\dr_engine_prerequisites.h" />
     <ClInclude Include="Include\dr_resource_manager.h" />
+    <ClInclude Include="Include\dr_scene.h" />
     <ClInclude Include="Include\dr_scene_manager.h" />
   </ItemGroup>
   <ItemGroup>
@@ -163,6 +164,7 @@
     <ClCompile Include="Source\dr_codec_sound.cpp" />
     <ClCompile Include="Source\dr_codec_texture.cpp" />
     <ClCompile Include="Source\dr_resource_manager.cpp" />
+    <ClCompile Include="Source\dr_scene.cpp" />
     <ClCompile Include="Source\dr_scene_manager.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -89,6 +89,9 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager>
   loadResource(const TString& resourceName,
                void* extraData);
 
+  static void
+  saveScene(const String name);
+
   /**
   * TEST::existInResourceContent
   * Checks if a resource exist.
@@ -149,7 +152,7 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager>
 
   void
   createDummyMaterial();
-
+  
   /**
   * TEST::createResource
   * Creates a resource, then puts in the contentResource and sets a key
@@ -170,6 +173,7 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager>
   createResource(const TString& resourceName,
                  Codec* codec,
                  void* extraInfo);
+  
   /**
   * Add a resource to the ResourceContent of the ResourceManager
   */

@@ -5,7 +5,8 @@
 
 namespace driderSDK {
 
-	class File;
+	class File; 
+  class Scene;
 
 	/**
 	*  Class that manages scenes.
@@ -41,7 +42,7 @@ namespace driderSDK {
 		*   True if success.
 		*/
 		bool 
-		loadSceneFromFile(const TString& fileName);
+		loadProjectFromFile(const TString& fileName);
 
 		/**
 		* Saves the current scene into a file
@@ -53,24 +54,14 @@ namespace driderSDK {
 		*   True if success.
 		*/
 		bool
-		saveSceneInFile(const TString& fileName);
+		saveProjectInFile(const TString& fileName);
 
 	private:
 
-		//void
-		//setActiveScene();
-
-		void
-		interpretInput(const TString& input);
-
-		void 
-		interpretOutput(TString& output);
-
-		TString 
-		objectToStr(SharedGameObj obj);
-
-		void
-		strToObject();
+  public:
+    Int32 m_numScenes;
+    Int32 m_defaultScene;
+    std::vector<std::shared_ptr<Scene>> m_scenes;
 
 	};
 

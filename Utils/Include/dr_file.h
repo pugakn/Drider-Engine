@@ -130,9 +130,10 @@ class DR_UTIL_EXPORT File
   */
   TString
   GetAsString(const SizeT nBytes);
+  std::fstream m_file;
 
  protected:
-  std::fstream m_file;
+
   SizeT m_size;
   TString m_filename;
 };

@@ -17,6 +17,7 @@
 #include "dr_octree.h"
 
 #include "dr_script_component.h"
+#include "dr_file_system.h"
 
 namespace driderSDK {
 
@@ -345,6 +346,26 @@ SceneGraph::DepthComparer::operator()(SharedGameObject objA,
   else {
     return aW < bW;
   }
+}
+
+Int32
+SceneGraph::gameObjectsCount() {
+  
+  Int32 childs = 0;
+  
+  for(auto child : instance().m_root->getChildren()) {
+    childs += child->gameObjectsCount();
+  }
+  return childs;
+}
+
+void
+SceneGraph::saveGraph(TString sceneName) {
+  FileSystem fileSystem;
+  File sceneFile;
+  fileSystem.CreateAndOpen(sceneName, sceneFile);
+
+  sceneFile.Write(sizeof(Int32), 0);
 }
 
 }

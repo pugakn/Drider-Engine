@@ -40,6 +40,12 @@ class NetworkTransformComponent : public GameComponent,
   GameComponent*
   cloneIn(GameObject& _go) override;
 
+  TString 
+	serialize() override;
+		
+	void 
+	deserialize(TString& data) override;
+
   void
   move(const Vector3D& distance);
 

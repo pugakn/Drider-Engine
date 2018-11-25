@@ -180,6 +180,12 @@ class DR_CORE_EXPORT SceneGraph : public Module<SceneGraph>
   addAllChilds(GameObject& node,
                std::vector<std::shared_ptr<GameObject>>* list);
 
+  static Int32
+  gameObjectsCount();
+
+  static void
+  saveGraph(TString sceneName);
+
  private:
   SharedGameObject m_root;
   SharedGameObject m_octree;

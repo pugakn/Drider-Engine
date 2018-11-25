@@ -9,12 +9,15 @@
 
 namespace driderSDK {
 
-	SceneManager::SceneManager() {}
+	SceneManager::SceneManager() {
+    m_numScenes = 1;
+    m_defaultScene = 0;
+  }
 
 	SceneManager::~SceneManager() {}
 
 	bool
-	SceneManager::loadSceneFromFile(const TString& fileName) {
+	SceneManager::loadProjectFromFile(const TString& fileName) {
 
 		if (!SceneGraph::isStarted() || !ResourceManager::isStarted()) {
 			 Logger::instancePtr()->addError(__FILE__,
@@ -26,19 +29,14 @@ namespace driderSDK {
 
 		auto rSceneFile = ResourceManager::getReference(fileName);
 		auto sceneFile = std::dynamic_pointer_cast<SceneCore>(rSceneFile);
-
-		if (sceneFile->getData().size()) {
-			interpretInput(sceneFile->getData());
-			return true;
-		}
-		Logger::instancePtr()->addError(__FILE__,
-																		__LINE__,
-																		L"[SceneManager] The scene is corrupt");
+    
+    
+    
 		return false;
 	}
 
 	bool
-	SceneManager::saveSceneInFile(const TString& fileName) {
+	SceneManager::saveProjectInFile(const TString& fileName) {
 
 		if (!SceneGraph::isStarted()) {
 			Logger::instancePtr()->addError(__FILE__,
@@ -47,90 +45,23 @@ namespace driderSDK {
 			return false;
 		}
 
-		TString data;
 		FileSystem fileMgr;
-		File scene;
+    File projectFile;
+    
+    if(!fileMgr.Exists(fileName + L".txt")) {
+      fileMgr.CreateAndOpen(fileName + L".txt", projectFile);
+    } else {
+      Logger::instancePtr()->addError(__FILE__,
+                                      __LINE__,
+                                      L"[SceneManager] The file already exist");
+    }
 
-		if (SceneGraph::getRoot()->getChildren().size()) {
-			interpretOutput(data);
-		}
-
-		String OutputData = StringUtils::toString(data);
-		scene.Write(data.size(), OutputData.c_str());
-
-		if (scene.Size()) {
-			fileMgr.CreateAndOpen(fileName + L".scn", scene);
-			return true;
-		}
-		Logger::instancePtr()->addError(__FILE__,
-																		__LINE__,
-																		L"[SceneManager] Couldn't save the scene");
+    projectFile.m_file << m_numScenes;
+    projectFile.m_file << m_defaultScene; 
+    
+    projectFile.Close();
+  
 		return false;
-	}
-
-	void 
-	SceneManager::interpretInput(const TString& input) {
-		TString name;
-
-		while (false/*iterate thriugh each object*/) {
-			auto obj = std::make_shared<GameObject>();
-			obj->setName(name);
-			for (/*each component*/;;) {
-				//obj->addComponent();
-			}
-
-			SceneGraph::addObject(obj);
-		}
-	}
-
-	void 
-	SceneManager::interpretOutput(TString& output) {
-
-		//Retrieve aditional info here
-
-		//iterate and save through root's children
-		for (auto &rootChildren : SceneGraph::getRoot()->getChildren()) {
-			output += objectToStr(rootChildren);
-		}
-
-	}
-
-	TString 
-	SceneManager::objectToStr(SharedGameObj obj) {
-
-		/*
-		name {
-		component: val;
-		component: val;
-		component: val;
-		child:
-			name2 {
-			component: val;
-			}
-		}
-		*/
-
-		TString result;
-		result += obj->getName();
-		result += L" {\n";
-	
-    auto componentList = obj->getComponents<GameComponent>();
-
-		for (auto &component : componentList) {
-		  //result += component->
-		}
-
-		for (auto &it : obj->getChildren()) {
-			result += L"child:" + objectToStr(it) + L"\n";
-		}
-
-		result += L"}\n";
-		return result;
-	}
-
-	void 
-	SceneManager::strToObject() {
-
 	}
 
 }

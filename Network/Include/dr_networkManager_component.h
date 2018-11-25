@@ -46,6 +46,12 @@ public:
   GameComponent*
   cloneIn(GameObject& _go) override;
 
+  TString 
+	serialize() override;
+		
+	void 
+	deserialize(TString& data) override;
+
   void 
   registerObject();
 

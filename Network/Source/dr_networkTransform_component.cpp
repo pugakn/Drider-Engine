@@ -42,6 +42,16 @@ NetworkTransformComponent::cloneIn(GameObject& _go) {
   return _go.createComponent<NetworkTransformComponent>();
 }
 
+TString
+NetworkTransformComponent::serialize() {
+  return L"Not implemented";
+}
+
+void
+NetworkTransformComponent::deserialize(TString& data) {
+
+}
+
 void
 NetworkTransformComponent::move(const Vector3D& distance) {
   Messenger::sendFunction(m_gameObject.getName(),

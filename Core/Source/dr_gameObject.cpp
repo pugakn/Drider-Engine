@@ -403,6 +403,16 @@ GameObject::getChildrenCount() const {
   return m_children.size();
 }
 
+SizeT
+GameObject::gameObjectsCount() const {
+  SizeT numObj = 0;
+  for(auto obj: m_children) {
+    numObj++;
+  }
+
+  return numObj;
+}
+
 void 
 GameObject::setStatic(bool _static) {
   m_isStatic = _static;
@@ -512,6 +522,36 @@ GameObject::operator==(GameObject& ref) {
 GameObject*
 GameObject::getChildByIndex(Int32 index) {
   return getChild(index).get();
+}
+
+TString
+GameObject::serialize() {
+  return L"Nada";
+}
+
+void
+GameObject::deserialize(TString& data) {
+
+}
+
+void
+GameObject::serialize(File& file) {
+  //name
+  file.m_file << StringUtils::toString(getName());
+  //position
+  file.m_file << getTransform().m_position.x;
+  file.m_file << getTransform().m_position.y;
+  file.m_file << getTransform().m_position.z;
+  //rotation
+  file.m_file << 0.0f;
+  file.m_file << 0.0f;
+  file.m_file << 0.0f;
+  file.m_file << 1.0f;
+  //numComponents
+  file.m_file << m_components.size();
+
+  
+
 }
 
 }

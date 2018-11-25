@@ -19,6 +19,8 @@
 #include <dr_export_script.h>
 #include <..\..\Script\Include\dr_script_engine.h>
 
+#include "dr_serializable.h"
+
 namespace driderSDK {
 
 class GameComponent;
@@ -36,7 +38,8 @@ GameObject* Ref_GameObject();
 class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject>,  
                                   public EnableObject,
                                   public NameObject,
-                                  public IDObject
+                                  public IDObject,
+                                  public Serializable
 { 
  public:
   using SharedGameObj = std::shared_ptr<GameObject>;
@@ -313,6 +316,9 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   */
   SizeT
   getChildrenCount() const;
+  
+  SizeT
+  gameObjectsCount() const;
 
   void 
   setStatic(bool _static);
@@ -330,6 +336,15 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
 
   GameObject&
   operator=(const GameObject& ref);
+
+  TString 
+	serialize() override;
+	
+	void 
+	deserialize(TString& data) override;
+
+  void
+  serialize(File& file);
 
   static BEGINING_REGISTER(GameObject, 0, asOBJ_REF | asOBJ_NOCOUNT)
 

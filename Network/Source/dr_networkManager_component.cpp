@@ -43,6 +43,16 @@ NetworkManagerComponent::cloneIn(GameObject&) {
   return 0;
 }
 
+TString
+NetworkManagerComponent::serialize() {
+  return L"Not implemented";
+}
+
+void
+NetworkManagerComponent::deserialize(TString& data) {
+
+}
+
 void
 NetworkManagerComponent::registerObject() {
 

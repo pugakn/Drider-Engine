@@ -53,6 +53,8 @@
 #include <dr_export_script.h>
 #include <dr_script_engine.h>
 
+#include <dr_scene_manager.h>
+
 namespace driderSDK {
 
 /*DriderEngine::DriderEngine() {
@@ -215,6 +217,7 @@ DriderEngine::postRender() {
 
 void
 DriderEngine::postDestroy() {
+  ResourceManager::saveScene("Main");
   destroyModules();
 }
 

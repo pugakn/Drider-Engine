@@ -4,6 +4,8 @@
 
 namespace driderSDK {
 
+class File;
+
 	class DR_CORE_EXPORT SceneCore : public Resource {
 
 	public:
@@ -23,17 +25,9 @@ namespace driderSDK {
 		virtual void
 		init(void* pData, void* extraData) override;
 
-		/**
-		* Gets the scene data
-		*
-		* @return
-		*	  Scene's data file
-		*/
-		const TString& 
-		getData();
-
 	private:
-		TString m_data;
+    TString m_name;
+		File *m_dataFile;
 
 	};
 }

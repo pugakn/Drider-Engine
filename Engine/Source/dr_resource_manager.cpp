@@ -19,6 +19,9 @@
 #include "dr_script_core.h"
 #include "dr_scene_core.h"
 
+#include <dr_graph.h>
+#include <dr_gameObject.h>
+
 namespace driderSDK {
 
 ResourceManager::ResourceManager() {}
@@ -101,6 +104,30 @@ ResourceManager::loadResource(const TString& resourceName,
   }
 
   return r;
+}
+
+void
+ResourceManager::saveScene(const String name) {
+  auto &rm = ResourceManager::instance();
+  auto &sg = SceneGraph::instance();
+  
+  FileSystem fileSystem;
+  File sceneFile;
+  String pathName = name + ".txt";
+  if(fileSystem.CreateAndOpen(StringUtils::toTString(pathName).c_str(),
+                           sceneFile)) {
+    sceneFile.m_file << name;
+    sceneFile.m_file << sg.getRoot()->gameObjectsCount();
+    sg.getRoot()->serialize(sceneFile);
+
+    sceneFile.Close();
+  }
+  else {
+    Logger::instancePtr()->addError(__FILE__,
+                                    __LINE__,
+                                    L"[ResourceManager] Scene file wasn't saved");
+  }
+
 }
 
 void
