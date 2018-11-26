@@ -24,8 +24,8 @@ public:
   void
   setActive();
 
-  TString
-  serialize() override;
+  void
+  serialize(File &file) override;
 
   void
   deserialize(TString& data) override;

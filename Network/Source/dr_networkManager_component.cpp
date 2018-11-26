@@ -43,9 +43,12 @@ NetworkManagerComponent::cloneIn(GameObject&) {
   return 0;
 }
 
-TString
-NetworkManagerComponent::serialize() {
-  return L"Not implemented";
+void
+NetworkManagerComponent::serialize(File &file) {
+  file.m_file << SerializableTypeID::NetworkManager;
+  file.m_file << StringUtils::toString(getName());
+
+  
 }
 
 void

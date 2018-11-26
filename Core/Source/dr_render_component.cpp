@@ -36,9 +36,35 @@ RenderComponent::setMeshes(MeshList&& _meshes) {
   m_meshes = std::move(_meshes);
 }
 
-TString
-RenderComponent::serialize() {
-  return L"Not implemented";
+void
+RenderComponent::serialize(File &file) {
+  file.m_file << SerializableTypeID::Render;
+  file.m_file << StringUtils::toString(getName());
+
+  file.m_file << m_isModel;
+
+  if(m_isModel) {
+    file.m_file << m_model.lock()->aabb.width;
+    file.m_file << m_model.lock()->aabb.height;
+    file.m_file << m_model.lock()->aabb.depth;
+    file.m_file << m_model.lock()->aabb.center.x;
+    file.m_file << m_model.lock()->aabb.center.y;
+    file.m_file << m_model.lock()->aabb.center.z;
+  }
+  /*
+  if(isModel) {
+		aabb: struct "aabb"; (m_model->aabb)
+		modelName: string; (resourceName)
+	}
+
+	if(!isModel) {
+		"Guardar todas las meshes"
+		UInt32 indicesCount;
+  		IndexBuffer* indexBuffer;
+  		VertexBuffer* vertexBuffer;
+  		std::weak_ptr<Material> material;
+	}
+  */
 }
 
 void

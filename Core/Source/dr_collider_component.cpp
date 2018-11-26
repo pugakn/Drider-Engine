@@ -1,9 +1,9 @@
 #include "dr_collider_component.h"
 
 namespace driderSDK {
-TString
-ColliderComponent::serialize() {
-  return L"Not implemented";
+void
+ColliderComponent::serialize(File &file) {
+  //Not implemented
 }
 
 void

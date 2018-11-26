@@ -90,16 +90,16 @@ AABBCollider::getType() {
   return COLLIDER_TYPE::kAABB;
 }
 
-TString
-AABBCollider::serialize() {
-  TString result;
-  
-  result = L"No implemented";
-  return result;
-}
+void
+AABBCollider::serialize(File &file) {
+  file.m_file << SerializableTypeID::AABB;
+  file.m_file << StringUtils::toString(getName());
+
+  // Not Implemented
+} 
 
 void
 AABBCollider::deserialize(TString& data) {
-  this->setName(data);
+  // Not implemented
 }
 }

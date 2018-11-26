@@ -36,8 +36,8 @@ class DR_CORE_EXPORT AABBCollider : public ColliderComponent,
   virtual UInt32
   getClassID() override;
 
-  TString
-  serialize() override;
+  void
+  serialize(File &file) override;
 
   void 
   deserialize(TString& data) override;
@@ -52,7 +52,7 @@ class DR_CORE_EXPORT AABBCollider : public ColliderComponent,
 
  private:
   AABB m_originalAABB;
-  AABB m_transformedAABB;
+  AABB m_transformedAABB; // Inicializar a m_originalAABB
 
   // Inherited via ColliderComponent
 };

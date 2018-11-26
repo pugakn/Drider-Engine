@@ -65,9 +65,12 @@ CameraComponent::cloneIn(GameObject& _go) {
   return _go.createComponent<CameraComponent>();
 }
 
-TString
-CameraComponent::serialize() {
-  return L"Not implemented";
+void
+CameraComponent::serialize(File &file) {
+  file.m_file << SerializableTypeID::Camera;
+  file.m_file << StringUtils::toString(getName());
+
+  
 }
 
 void

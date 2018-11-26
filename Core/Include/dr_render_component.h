@@ -59,8 +59,8 @@ class DR_CORE_EXPORT RenderComponent : public GameComponent,
     return m_model;
   }
 
-  TString
-  serialize() override;
+  void
+  serialize(File &file) override;
 
   void
   deserialize(TString &data) override;

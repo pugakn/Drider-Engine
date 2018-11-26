@@ -15,10 +15,18 @@ SoundComponent::SoundComponent(GameObject &gameObject_)
   : GameComponent(gameObject_, _T("SoundComponent")) 
 {}
 
-TString
-SoundComponent::serialize() {
-  return L"Not implemented";
+void
+SoundComponent::serialize(File &file) {
+  file.m_file << SerializableTypeID::Sound;
+  file.m_file << StringUtils::toString(getName());
+
+  file.m_file << sounds.size();
+  for(auto sound: sounds) {
+    file.m_file << StringUtils::toString(sound.first);
+  }  
+
 }
+
 void
 SoundComponent::deserialize(TString &data) {
 

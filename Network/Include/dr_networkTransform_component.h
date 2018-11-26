@@ -12,6 +12,7 @@ namespace driderSDK {
 
 class Vector3D;
 class GameObject;
+class File;
 
 class NetworkTransformComponent : public GameComponent,
                                   public IDClass<NetworkTransformComponent> {
@@ -40,8 +41,8 @@ class NetworkTransformComponent : public GameComponent,
   GameComponent*
   cloneIn(GameObject& _go) override;
 
-  TString 
-	serialize() override;
+  void 
+	serialize(File &file) override;
 		
 	void 
 	deserialize(TString& data) override;

@@ -2,6 +2,7 @@
 
 #include <dr_vector3d.h>
 #include <dr_gameObject.h>
+#include <dr_file.h>
 
 namespace driderSDK {
 
@@ -42,9 +43,10 @@ NetworkTransformComponent::cloneIn(GameObject& _go) {
   return _go.createComponent<NetworkTransformComponent>();
 }
 
-TString
-NetworkTransformComponent::serialize() {
-  return L"Not implemented";
+void
+NetworkTransformComponent::serialize(File &file) {
+  file.m_file << SerializableTypeID::NetworkManager;
+  file.m_file << StringUtils::toString(getName());
 }
 
 void

@@ -27,8 +27,8 @@ class DR_CORE_EXPORT ScriptComponent : public GameComponent,
     virtual
     ~ScriptComponent();
 
-    TString
-    serialize() override;
+    void
+    serialize(File &file) override;
 
     void
     deserialize(TString &data) override;

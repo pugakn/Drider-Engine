@@ -7,6 +7,7 @@
 #include "dr_aabb_collider.h"
 #include "dr_gameComponent.h"
 #include "dr_script_component.h"
+#include "dr_file.h"
 
 namespace driderSDK {
 
@@ -524,18 +525,8 @@ GameObject::getChildByIndex(Int32 index) {
   return getChild(index).get();
 }
 
-TString
-GameObject::serialize() {
-  return L"Nada";
-}
-
 void
-GameObject::deserialize(TString& data) {
-
-}
-
-void
-GameObject::serialize(File& file) {
+GameObject::serialize(File &file) {
   //name
   file.m_file << StringUtils::toString(getName());
   //position
@@ -546,11 +537,22 @@ GameObject::serialize(File& file) {
   file.m_file << 0.0f;
   file.m_file << 0.0f;
   file.m_file << 0.0f;
-  file.m_file << 1.0f;
-  //numComponents
+  file.m_file << 0.1f;
+  //components
   file.m_file << m_components.size();
-
+  for(auto &component: m_components) {
+    component.get()->serialize(file);
+  }
+  //childres
+  file.m_file << getChildrenCount();
+  for(auto &child: m_children) {
+    child->serialize(file);
+  }
   
+}
+
+void
+GameObject::deserialize(TString& data) {
 
 }
 

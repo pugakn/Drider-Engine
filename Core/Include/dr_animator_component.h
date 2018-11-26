@@ -87,8 +87,8 @@ class DR_CORE_EXPORT AnimatorComponent : public GameComponent,
   const TransformsList&
   getBonesTransforms() const;
 
-  TString
-  serialize() override;
+  void
+  serialize(File &file) override;
 
   void 
   deserialize(TString& data) override;

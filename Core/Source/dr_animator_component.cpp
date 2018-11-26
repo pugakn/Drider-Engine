@@ -578,9 +578,27 @@ AnimatorComponent::readNodeHeirarchy(float animTime,
   }
 }
 
-TString
-AnimatorComponent::serialize() {
-  return L"Not implemented";
+void
+AnimatorComponent::serialize(File &file) {
+  file.m_file << SerializableTypeID::Animator;
+  file.m_file << StringUtils::toString(getName());
+
+  file.m_file << m_blendVal;
+  file.m_file << m_blending;
+  file.m_file << m_blendDuration;
+  file.m_file << m_elapsed;
+  file.m_file << m_elapsedNext;
+  file.m_file << m_lastTime;
+  file.m_file << m_lastTimeNext;
+  file.m_file << m_animMerge;
+  file.m_file << m_speed;
+  file.m_file << StringUtils::toString(m_skeleton.lock()->getName());
+  file.m_file << StringUtils::toString(m_currentAnim.lock()->getName());
+  //file.m_file << StringUtils::toString(m_nextAnim.lock()->getName());
+  file.m_file << m_animations.size();
+  for(auto &animation: m_animations) {
+    file.m_file << StringUtils::toString(animation.second.lock()->getName());
+  }
 }
 
 void
