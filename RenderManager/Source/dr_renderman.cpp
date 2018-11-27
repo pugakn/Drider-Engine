@@ -483,7 +483,7 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   auto mainCamRef = *CameraManager::getActiveCamera();
   RenderCommandBuffer queryRequest;
 
-  RenderQuery rqRequest{mainCamRef,
+  RenderQuery rqRequest{ mainCamRef,
                         QUERY_ORDER::kFrontToBack,
                         QUERY_PROPERTY::kOpaque |
                         QUERY_PROPERTY::kDynamic |
@@ -536,7 +536,7 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
     m_ShadowPass.apply(&m_ShadowDrawData, m_RTGBuffer.get(), m_RTShadow.get(), m_RTSSAO_SSShadow.get());
   }
 
-  m_SSAODrawData.activeCam = mainCam; 
+  m_SSAODrawData.activeCam = mainCam;
   m_SSAODrawData.InRt = m_RTGBuffer.get();
   m_SSAODrawData.OutRt = m_RTSSAO_SSShadow.get();
   m_SSAODrawData.SampleRadio = 0.0008f;
@@ -559,16 +559,25 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_SSReflectionDrawData.OutRt = m_RTSSReflection.get();
   m_SSReflectionPass.draw(&m_SSReflectionDrawData);
 
+  std::memset(&lights[0], -1, RM_MAX_LIGHTS);
+  std::vector<LightComponent*> allLights = SceneGraph::instance().getLightComponents();
+  SizeT numberOfLights = allLights.size();
+  numberOfLights = Math::clamp(numberOfLights, 0u, static_cast<SizeT>(RM_MAX_LIGHTS));
+  for (SizeT current = 0; current < numberOfLights; ++current) {
+    lights[current].m_vec4Position = allLights[current]->GetPositionRange();
+    lights[current].m_vec4Color = allLights[current]->GetColorIntensity();
+  }
+
   //Transform Lights to ScreenSpace.
   m_LWSLightsToSSData.ActiveCam = mainCam;
-  m_LWSLightsToSSData.Lights = &lights[0];
+  m_LWSLightsToSSData.Lights = &lights;
   m_LightningPass.lightsToScreenSpace(&m_LWSLightsToSSData);
   //Tile Lights
   m_LTileLightsData.OutRt = m_RTLightning.get();
   m_LightningPass.tileLights(&m_LTileLightsData);
   //Lightning Pass
   m_LightningDrawData.ActiveCam = mainCam;
-  m_LightningDrawData.Lights = &lights[0];
+  m_LightningDrawData.Lights = &lights;
   m_LightningDrawData.ActiveLights = 128;
   m_LightningDrawData.GbufferRT = m_RTGBuffer.get();
   m_LightningDrawData.SSAO_SSShadowRT = m_RTSSAO_SSShadowBlur.get();

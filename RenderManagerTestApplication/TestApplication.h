@@ -3,8 +3,6 @@
 #include <dr_renderman.h>
 #include <dr_light.h>
 #include <dr_material.h>
-//#include "LinesTechnique.h"
-//#include "FrustumDebug.h"
 
 namespace driderSDK {
 
@@ -66,7 +64,6 @@ class RenderManApp : public Application
 
   float luminanceDelta;
   Vector3D modelMovement;
-  std::array<Light, RM_MAX_LIGHTS> Lights;
 };
 
 }

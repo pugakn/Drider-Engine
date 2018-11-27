@@ -14,6 +14,8 @@
 #include <dr_aabb.h>
 #include <dr_plane.h>
 
+#include <dr_light_component.h>
+
 namespace driderSDK {
 
 class Matrix4x4;
@@ -158,6 +160,12 @@ class DR_CORE_EXPORT SceneGraph : public Module<SceneGraph>
   static GameObjectList
   queryGameObjects(const Camera& camera, QUERY_ORDER::E order);
 
+  const std::vector<LightComponent*>
+  getLightComponents();
+
+  void
+  updateLightsList();
+
   //Called when all initial objects
   //and components are created
   static void 
@@ -174,6 +182,7 @@ class DR_CORE_EXPORT SceneGraph : public Module<SceneGraph>
   static void 
   draw();
   /****************/
+
  private:
 
   /**
@@ -226,6 +235,7 @@ class DR_CORE_EXPORT SceneGraph : public Module<SceneGraph>
   static void
   addAllChilds(GameObject& node,
                std::vector<std::shared_ptr<GameObject>>* list);
+
  private:
   SharedGameObject m_root;
   SharedGameObject m_octree;
@@ -233,7 +243,7 @@ class DR_CORE_EXPORT SceneGraph : public Module<SceneGraph>
   RenderCommandBuffer m_buffers[2];
   RenderCommandBuffer* m_producer = nullptr;
   RenderCommandBuffer* m_consumer = nullptr;
+  std::vector<LightComponent*> lightsList;
 };
 
 }
-

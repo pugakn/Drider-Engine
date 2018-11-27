@@ -119,41 +119,57 @@ RenderManApp::postInit() {
   Int32 xOffset = (horizontalLights / 2) * separationX;
   Int32 zOffset = 1 * separationZ;
 
+  Vector4D lightPos;
+  Vector4D lightColor;
+  float lightRange;
+  float lightIntensity;
+  LightComponent* tmpLightCmp;
   for (Int32 xPos = 0; xPos < horizontalLights; ++xPos) {
     for (Int32 zPos = 0; zPos < verticalLights; ++zPos) {
-      //Posicion
-      Lights[lighIndex].m_vec4Position = Vector4D((xPos * separationX) - xOffset,
-                                                  25,
-                                                  (zPos * separationZ) - zOffset,
-                                                  1.0f);
+      m_selectedGO = SceneGraph::createObject(_T("Light") + StringUtils::toTString(lighIndex));
+      tmpLightCmp = m_selectedGO->createComponent<LightComponent>();
 
+      //Posicion
+      lightPos = Vector4D((xPos * separationX) - xOffset,
+                          25,
+                          (zPos * separationZ) - zOffset,
+                          1.0f);
+
+      m_selectedGO->getTransform().setPosition(Vector3D(lightPos.x,
+                                                        lightPos.y,
+                                                        lightPos.z));
       //Color
       HSVtoRGB(proportion * 256,
                1.0f,
                1.0f,
-               Lights[lighIndex].m_vec4Color.x,
-               Lights[lighIndex].m_vec4Color.y,
-               Lights[lighIndex].m_vec4Color.z);
+               lightColor.x,
+               lightColor.y,
+               lightColor.z);
+
 
       //Range
-      //Lights[lighIndex].m_vec4Position.w = 150.0f;
-      Lights[lighIndex].m_vec4Position.w = 100.0f;
-      //Lights[lighIndex].m_vec4Position.w = 50.0f;
-      //Lights[lighIndex].m_vec4Position.w = proportion * 150.0f;
-      //  if (lighIndex > (RM_MAX_LIGHTS / 2)) Lights[lighIndex].m_vec4Position.w *= -1;
-      //if (lighIndex % 3 != 0) Lights[lighIndex].m_vec4Position.w *= -1;
+      //lightRange = 150.0f;
+      lightRange = 100.0f;
+      //lightRange = 50.0f;
+      //lightRange = proportion * 150.0f;
+      //  if (lighIndex > (RM_MAX_LIGHTS / 2)) lightRange *= -1;
+      //if (lighIndex % 3 != 0) lightRange *= -1;
 
       //Intensidad
-      //Lights[lighIndex].m_vec4Color.w = (lighIndex / 128.0f);
-      //Lights[lighIndex].m_vec4Color.w = 1.0f;
-      Lights[lighIndex].m_vec4Color.w = 2.0f;
+      //tmpLight.m_vec4Color.w = (lighIndex / 128.0f);
+      //tmpLight.m_vec4Color.w = 1.0f;
+      lightIntensity = 2.0f;
+
+      tmpLightCmp->SetColor(Vector3D(lightColor.x, lightColor.y, lightColor.z));
+      tmpLightCmp->SetRange(lightRange);
+      tmpLightCmp->SetIntensity(lightIntensity);
 
       proportion += (1.0f / RM_MAX_LIGHTS);
       ++lighIndex;
     }
   }
-  
-  RenderManager::instance().lights = &Lights;
+
+  SceneGraph::instance().updateLightsList();
 
   modelMovement = Vector3D(0.0f, 0.0f, 0.0f);
 
@@ -420,17 +436,24 @@ RenderManApp::postUpdate() {
 
   if (Keyboard::isKeyDown(KEY_CODE::k0)) {
     Matrix4x4 translateMat = Matrix4x4::identityMat4x4;
-    translateMat.Scale(Vector3D(0.8, 0.5, 0.8));
-    translateMat.Translation(Vector3D(0, 50, 0));
+    //translateMat.Scale(Vector3D(0.8, 0.5, 0.8));
 
     std::vector<Vector3D> points;
     points.push_back(Vector3D(-75,  50, 0));
     points.push_back(Vector3D(  0, 150, 0));
     points.push_back(Vector3D( 75,  50,  0));
     points.push_back(Vector3D(-75,  50,  0));
-    RenderManager::instance().drawDebugLine(Vector3D(0, 0, 0), Vector3D(0, 100, 0), Vector3D(1, 1, 0), translateMat);
+
+    translateMat.Translation(Vector3D(0, 50, -100));
+    RenderManager::instance().drawDebugLine(Vector3D(-50, 0, 0), Vector3D(50, 0, 0), Vector3D(1, 1, 0), translateMat);
+
+    translateMat.Translation(Vector3D(0, 50, 0));
     RenderManager::instance().drawDebugLine(points, Vector3D(0, 1, 0), translateMat);
+
+    translateMat.Translation(Vector3D( 200, 100, 0));
     RenderManager::instance().drawDebugCube(Vector3D(100, 100, 100), Vector3D(0, 0, 1), translateMat);
+
+    translateMat.Translation(Vector3D(-200, 100, 0));
     RenderManager::instance().drawDebugSphere(50, Vector3D(1, 0, 0), translateMat);
   }
 
