@@ -82,9 +82,6 @@ private:
   initScriptEngine();
 
   void
-  buildScriptModule();
-
-  void
   loadSound();
 
   // Inherited via Application

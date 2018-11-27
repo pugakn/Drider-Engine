@@ -26,6 +26,11 @@ namespace driderSDK {
 class GameComponent;
 class File;
 
+struct DR_CORE_EXPORT ObjData {
+ public:  
+  
+};
+
 class DR_CORE_EXPORT ComponentPartition
 {
  public:
@@ -343,6 +348,9 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
 	
 	void 
 	deserialize(TString& data) override;
+
+	void 
+	deserialize(void *dataInfo);
 
   static BEGINING_REGISTER(GameObject, 0, asOBJ_REF | asOBJ_NOCOUNT)
 

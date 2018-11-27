@@ -164,12 +164,10 @@ void
 DriderEngine::postInit() {
   
   initModules();
-  //initInputCallbacks();
   loadResources();
   createScene();
-  loadSound();
-  initScriptEngine();
-
+  //loadSound();
+  //initScriptEngine();
 
   Time::update();
   m_editor.init(Application::getViewPort());
@@ -188,6 +186,7 @@ DriderEngine::postUpdate() {
   m_editor.update(); 
 
   // Hardcode section
+  m_connected = true;
   if(!m_connected) {
     requestConnection(m_lobbies[0].ip, m_lobbies[0].port);
     m_connected = true;
@@ -257,15 +256,9 @@ DriderEngine::initModules() {
 void
 DriderEngine::loadResources() {
   //Models
-  ResourceManager::loadResource(_T("Walking.fbx"));
-  ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
 
   //Scripts
   ResourceManager::loadResource(_T("driderBehavior.as"));
-  ResourceManager::loadResource(_T("script1.as"));
-  ResourceManager::loadResource(_T("script2.as"));
-  ResourceManager::loadResource(_T("player.as"));
-  ResourceManager::loadResource(_T("dynamicScript.as"));
 
   //Sounds (All sunds requiere extraInfo data)
   auto system = SoundAPI::instance().API->system;
@@ -277,27 +270,14 @@ DriderEngine::loadResources() {
 
 void
 DriderEngine::createScene() {
-  auto activeCam = CameraManager::getActiveCamera();
 
-  auto walkerModel = ResourceManager::getReferenceT<Model>(_T("Walking.fbx"));
-  auto& walkerAnimName = walkerModel->animationsNames[0];
-  auto wa = ResourceManager::getReferenceT<Animation>(walkerAnimName);
-  auto ws = ResourceManager::getReferenceT<Skeleton>(walkerModel->skeletonName);
+  auto obj = SceneGraph::createObject(_T("GameObject"));
 
-  m_player = addObjectFromModel(walkerModel, _T("LocalPlayer"));
-  auto animator = m_player->createComponent<AnimatorComponent>();
-  animator->setSkeleton(ws);
-  animator->addAnimation(wa, walkerAnimName);
-  animator->setCurrentAnimation(walkerAnimName, true);
-  m_player->getTransform().setPosition({ 0, 0, 300 });
-
-  auto quadMod = ResourceManager::getReferenceT<Model>(_T("ScreenAlignedQuad.3ds"));
-  auto quad = addObjectFromModel(quadMod, _T("Floor"));
-  quad->getTransform().rotate({ -Math::HALF_PI, 0, 0 });
-  quad->getTransform().setScale({ 10000, 10000, 10000 });
-
-  // Create NetworkManagerComponent
-  m_player->createComponent<NetworkManagerComponent>(); 
+  auto soundComponent = obj->createComponent<SoundComponent>();
+  auto soundResource = ResourceManager::getReferenceT<SoundCore>
+                       (_T("testSound1.mp3"));
+  soundComponent->addSound(_T("testSound1"), 
+                           soundResource->soundResource);
 
   SceneGraph::start();
 
@@ -364,8 +344,6 @@ DriderEngine::initScriptEngine() {
   //Register global properties
   m_root = SceneGraph::instance().getRoot().get(); // Get root
 
-  /*result = scriptEngine->m_scriptEngine->RegisterGlobalProperty("GameObject@ Object",
-                                                                &m_root);*/
   result = REGISTER_GLO_PROPERTIE("GameObject@ Object",
                                   &m_root);
 
@@ -376,12 +354,6 @@ DriderEngine::initScriptEngine() {
   auto rBehaviorScript = ResourceManager::getReference(_T("driderBehavior.as"));
   auto BehaviorScript = std::dynamic_pointer_cast<ScriptCore>(rBehaviorScript);
 
-  auto rScript1 = ResourceManager::getReference(_T("script1.as"));
-  auto Script1 = std::dynamic_pointer_cast<ScriptCore>(rScript1);
-
-  auto rScript2 = ResourceManager::getReference(_T("script2.as"));
-  auto Script2 = std::dynamic_pointer_cast<ScriptCore>(rScript2);
-
   //Create a context
   scriptEngine->m_scriptContext = ctxMag->addContext(scriptEngine->m_scriptEngine,
                                                      _T("GameModule"));
@@ -392,57 +364,15 @@ DriderEngine::initScriptEngine() {
                           _T("GameModule"));
 
   //Add script component to the objects and add script sections of the scripts
-  auto playerScript = m_player->createComponent<ScriptComponent>(Script1);
-  m_scripts.insert({ _T("script1"), playerScript });
-
-  playerScript = m_player->createComponent<ScriptComponent>(Script2);
-  m_scripts.insert({ _T("script2"), playerScript });
 
   //Build module
   auto currentModule = scriptEngine->m_scriptEngine->GetModule("GameModule");
   result = currentModule->Build();
 
   //Initialize scripts
-  m_scripts.find(_T("script1"))->second->initScript();
-  m_scripts.find(_T("script2"))->second->initScript();
 
   //Start the script
-  m_scripts.find(_T("script1"))->second->start();
-  m_scripts.find(_T("script2"))->second->start();
 
-  ///////////////////
-  /*currentModule->Discard();
-
-  //Create a context
-  scriptEngine->m_scriptContext = ctxMag->addContext(scriptEngine->m_scriptEngine,
-                                                     _T("GameModule"));
-
-  //Add script section of behavior
-  scriptEngine->addScript(BehaviorScript->getName(),
-                          BehaviorScript->getScript(),
-                          _T("GameModule"));
-
-  //Add script component to the objects and add script sections of the scripts
-  auto dynamicScript = ResourceManager::getReferenceT<ScriptCore>(_T("dynamicScript.as"));
-  playerScript = m_player->createComponent<ScriptComponent>(dynamicScript);
-  m_scripts.insert({ _T("dynamicScript"), playerScript });
-
-  //Build module
-  currentModule = scriptEngine->m_scriptEngine->GetModule("GameModule");
-  result = currentModule->Build();
-
-  m_scripts.find(_T("script1"))->second->initScript();
-  m_scripts.find(_T("script2"))->second->initScript();
-  m_scripts.find(_T("dynamicScript"))->second->initScript();
-
-  m_scripts.find(_T("dynamicScript"))->second->start();*/
-}
-
-
-void
-DriderEngine::buildScriptModule() {
-
- 
 }
 
 void

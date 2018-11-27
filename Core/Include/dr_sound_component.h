@@ -37,7 +37,7 @@ class DR_CORE_EXPORT SoundComponent : public GameComponent,
 
     void
     deserialize(TString &data) override;
-    
+
     void
     onCreate() override;
 

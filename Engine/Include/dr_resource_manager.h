@@ -7,12 +7,14 @@
 #include <dr_module.h>
 
 #include "dr_engine_prerequisites.h"
+#include "dr_serializable_data.h"
 
 namespace driderSDK {
 
 class Resource;
 class Codec;
 class Material;
+class File;
 /**
 * Load resources.
 *
@@ -89,8 +91,25 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager>
   loadResource(const TString& resourceName,
                void* extraData);
 
+  /**
+  * Save the scene info
+  *
+  * @param name
+  *   The name of the scene to save.
+  *
+  */
   static void
   saveScene(const String name);
+
+  /**
+  * Load the scene from file
+  *
+  * @param name
+  *   The name of the scene to load.
+  *
+  */
+  static void
+  loadScene(const String name);
 
   /**
   * TEST::existInResourceContent
@@ -181,6 +200,11 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager>
   addResource(SharedResource pResource,
               const TString& resourceName);
 
+  void
+  loadGameObject(File &file);
+
+  void
+  loadComponent(File &file);
   
  private:
   using ResourceFactory = std::function<SharedResource()>;
@@ -188,6 +212,9 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager>
   std::unordered_map<TString, SharedResource> m_resources;
   std::unordered_map<Codec*, ResourceFactory> m_resourceFactories;
   std::vector<std::unique_ptr<Codec>> m_codecs;
+
+  std::unordered_map<std::shared_ptr<SerializableData>,
+                     ResourceFactory> m_componentsLoaders;
 };
 
 }

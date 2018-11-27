@@ -21,6 +21,9 @@
 
 #include <dr_graph.h>
 #include <dr_gameObject.h>
+#include <dr_file_system.h>
+#include <dr_file.h>
+#include "dr_serializable_sound.h"
 
 namespace driderSDK {
 
@@ -116,9 +119,10 @@ ResourceManager::saveScene(const String name) {
   String pathName = name + ".txt";
   if(fileSystem.CreateAndOpen(StringUtils::toTString(pathName).c_str(),
                            sceneFile)) {
-    sceneFile.m_file << name;
-    sceneFile.m_file << sg.getRoot()->gameObjectsCount();
+    //sceneFile.m_file << name;
+    sceneFile.m_file << sg.getRoot()->gameObjectsCount() << "{\r\n";
     sg.getRoot()->serialize(sceneFile);
+    sceneFile.m_file << "\r\n}";
 
     sceneFile.Close();
   }
@@ -128,6 +132,24 @@ ResourceManager::saveScene(const String name) {
                                     L"[ResourceManager] Scene file wasn't saved");
   }
 
+}
+
+void
+ResourceManager::loadScene(const String name) {
+  File sceneFile;
+  if(sceneFile.Open(StringUtils::toTString(name) + L".txt")) {
+    SizeT numGameObjects;
+    sceneFile.m_file >> numGameObjects;
+    
+    for(int i = 0; i < numGameObjects; i++) {
+      
+    }
+  } 
+  else {
+    Logger::instancePtr()->addError(__FILE__,
+                                    __LINE__,
+                                    L"[ResourceManager] The scene file was not found");
+  }
 }
 
 void
@@ -163,6 +185,53 @@ ResourceManager::addResource(SharedResource pResource,
   Logger::addLog(_T("Added resource: ") + resourceName);
 
   instance().m_resources[resourceName] =  pResource;
+}
+
+void
+ResourceManager::loadGameObject(File &file) {
+  auto &sg = SceneGraph::instance();
+  std::shared_ptr<GameObject> obj;
+
+  String name;
+  file.m_file >> name;
+  obj->setName(StringUtils::toTString(name));
+
+  Vector3D pos;
+  file.m_file >> pos.x;
+  file.m_file >> pos.y;
+  file.m_file >> pos.z;
+  obj->getTransform().setPosition(pos);
+
+  Vector3D rot;
+  file.m_file >> rot.x;
+  file.m_file >> rot.y;
+  file.m_file >> rot.z;
+  obj->getTransform().setRotation(rot);
+
+  Int32 numComponents;
+  file.m_file >> numComponents;
+  for(int i = 0; i < numComponents; i++) {
+    loadComponent(file);
+  }
+
+  Int32 numChilds;
+  file.m_file >> numChilds;
+  for(int j = 0; j < numChilds; j++) {
+    loadGameObject(file);
+  }
+} 
+
+void
+ResourceManager::loadComponent(File &file) {
+  SerializableTypeID::E typeID;
+  Int32 type;
+  file.m_file >> type;
+  typeID = (SerializableTypeID::E)type;
+
+  if(typeID == SerializableTypeID::Sound) {
+    sSound s;
+    s.load(file, SceneGraph::getRoot());
+  }
 }
 
 bool

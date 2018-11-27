@@ -528,31 +528,33 @@ GameObject::getChildByIndex(Int32 index) {
 void
 GameObject::serialize(File &file) {
   //name
-  file.m_file << StringUtils::toString(getName());
+  file.m_file << StringUtils::toString(getName()) << "{\r\n";
   //position
-  file.m_file << getTransform().m_position.x;
-  file.m_file << getTransform().m_position.y;
-  file.m_file << getTransform().m_position.z;
+  file.m_file << getTransform().m_position.x << "{\r\n";
+  file.m_file << getTransform().m_position.y << "{\r\n";
+  file.m_file << getTransform().m_position.z << "{\r\n";
   //rotation
-  file.m_file << 0.0f;
-  file.m_file << 0.0f;
-  file.m_file << 0.0f;
-  file.m_file << 0.1f;
+  file.m_file << 0.0f << "{\r\n";
+  file.m_file << 0.0f << "{\r\n";
+  file.m_file << 0.0f << "{\r\n";
+  file.m_file << 1.0f << "{\r\n";
   //components
-  file.m_file << m_components.size();
+  file.m_file << m_components.size() << "{\r\n";
   for(auto &component: m_components) {
-    //file.m_file << "{\r\n";
     component.get()->serialize(file);
-    //file.m_file << "}\r\n";
   }
   //childres
   file.m_file << getChildrenCount();
   for(auto &child: m_children) {
-    //file.m_file << "{\r\n";
     child->serialize(file);
-    //file.m_file << "}\r\n";
   }
   
+  file.m_file << "\r\n}";
+}
+
+void
+GameObject::deserialize(void *dataInfo) {
+
 }
 
 void
