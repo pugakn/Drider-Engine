@@ -42,6 +42,17 @@ Quaternion::measure() {
 }
 
 Quaternion
+Quaternion::quaternionFromRotation(const Matrix4x4& mat) {
+  Quaternion q;
+  q.w = Math::sqrt(1.0 + mat.vector0.x + mat.vector1.y + mat.vector2.z) / 2.0f;//Math.sqrt(1.0 + m1.m00 + m1.m11 + m1.m22) / 2.0;
+  double w4 = (4.0 * q.w);
+  q.x = (mat.vector1.z - mat.vector2.y) / w4; //x = (m1.m21 - m1.m12) / w4;
+  q.y = (mat.vector2.x - mat.vector0.x) / w4;//y = (m1.m02 - m1.m20) / w4;
+  q.z = (mat.vector0.y - mat.vector1.x) / w4;//z = (m1.m10 - m1.m01) / w4;
+  return q;
+}
+
+Quaternion
 Quaternion::conjugate() {
   return Quaternion(-x, -y, -z, w);
 }

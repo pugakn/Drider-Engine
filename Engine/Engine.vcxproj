@@ -155,7 +155,9 @@
     <ClInclude Include="Include\dr_resource_manager.h" />
     <ClInclude Include="Include\dr_scene.h" />
     <ClInclude Include="Include\dr_scene_manager.h" />
+    <ClInclude Include="Include\dr_serializable_aabb.h" />
     <ClInclude Include="Include\dr_serializable_data.h" />
+    <ClInclude Include="Include\dr_serializable_render.h" />
     <ClInclude Include="Include\dr_serializable_sound.h" />
   </ItemGroup>
   <ItemGroup>
@@ -168,6 +170,8 @@
     <ClCompile Include="Source\dr_resource_manager.cpp" />
     <ClCompile Include="Source\dr_scene.cpp" />
     <ClCompile Include="Source\dr_scene_manager.cpp" />
+    <ClCompile Include="Source\dr_serializable_aabb.cpp" />
+    <ClCompile Include="Source\dr_serializable_render.cpp" />
     <ClCompile Include="Source\dr_serializable_sound.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

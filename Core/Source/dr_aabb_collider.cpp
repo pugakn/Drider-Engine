@@ -92,10 +92,15 @@ AABBCollider::getType() {
 
 void
 AABBCollider::serialize(File &file) {
-  file.m_file << SerializableTypeID::AABB;
-  file.m_file << StringUtils::toString(getName());
+  file.m_file << SerializableTypeID::AABB << "\n";
+  file.m_file << StringUtils::toString(getName()) << "\n";
 
-  // Not Implemented
+  file.m_file << m_originalAABB.width << "\n";
+  file.m_file << m_originalAABB.height << "\n";
+  file.m_file << m_originalAABB.depth << "\n";
+  file.m_file << m_originalAABB.center.x << "\n";
+  file.m_file << m_originalAABB.center.y << "\n";
+  file.m_file << m_originalAABB.center.z << "\n";
 } 
 
 void

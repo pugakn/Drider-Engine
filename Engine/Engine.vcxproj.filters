@@ -60,6 +60,12 @@
     <ClInclude Include="Include\dr_serializable_sound.h">
       <Filter>Archivos de encabezado\Serializable</Filter>
     </ClInclude>
+    <ClInclude Include="Include\dr_serializable_aabb.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_serializable_render.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_codec.cpp">
@@ -91,6 +97,12 @@
     </ClCompile>
     <ClCompile Include="Source\dr_serializable_sound.cpp">
       <Filter>Archivos de código fuente\Serializable</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_serializable_aabb.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_serializable_render.cpp">
+      <Filter>Archivos de código fuente</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

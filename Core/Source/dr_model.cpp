@@ -15,6 +15,7 @@ Model::~Model() {}
 void Model::init(void* modelData) {
     
   ModelInfo* model = static_cast<ModelInfo*>(modelData);
+  m_modelName = model->modelName;
   Device* device = &GraphicsAPI::getDevice();
 
   for (auto& meshInfo : model->meshes) {

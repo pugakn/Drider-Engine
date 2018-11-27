@@ -8,6 +8,7 @@
 #include "dr_gameComponent.h"
 #include "dr_script_component.h"
 #include "dr_file.h"
+#include "dr_quaternion.h"
 
 namespace driderSDK {
 
@@ -534,11 +535,24 @@ GameObject::serialize(File &file) {
     file.m_file << getTransform().m_position.x << "\n";
     file.m_file << getTransform().m_position.y << "\n";
     file.m_file << getTransform().m_position.z << "\n";
-    //rotation
-    file.m_file << 0.0f << "\n";
-    file.m_file << 0.0f << "\n";
-    file.m_file << 0.0f << "\n";
-    file.m_file << 1.0f << "\n";
+    //orientation
+    Matrix4x4 rotationMat(1,0,0,0,
+                          0,1,0,0,
+                          0,0,1,0,
+                          0,0,0,1);
+    rotationMat *= getTransform().m_rotX;
+    rotationMat *= getTransform().m_rotY;
+    rotationMat *= getTransform().m_rotZ;
+    
+    Quaternion rotation = Quaternion::quaternionFromRotation(rotationMat);
+    file.m_file << rotation.x << "\n";
+    file.m_file << rotation.y << "\n";
+    file.m_file << rotation.z << "\n";
+    file.m_file << rotation.w << "\n";
+    //scale
+    file.m_file << getTransform().m_scale.x << "\n";
+    file.m_file << getTransform().m_scale.y << "\n";
+    file.m_file << getTransform().m_scale.z << "\n";
     //components
     file.m_file << m_components.size() << "\n";
     for(auto &component: m_components) {

@@ -25,6 +25,11 @@
 #include <dr_file.h>
 #include "dr_serializable_sound.h"
 
+#include "dr_serializable_aabb.h"
+#include "dr_serializable_render.h"
+#include "dr_quaternion.h"
+#include "dr_transform.h"
+
 namespace driderSDK {
 
 ResourceManager::ResourceManager() {}
@@ -200,12 +205,24 @@ ResourceManager::loadGameObject(File &file) {
   file.m_file >> pos.z;
   obj->getTransform().setPosition(pos);
 
-  Vector4D rot;
+  Quaternion rot;
   file.m_file >> rot.x;
   file.m_file >> rot.y;
   file.m_file >> rot.z;
   file.m_file >> rot.w;
+  Vector3D rotEuler;
+  rotEuler.x = rot.x;
+  rotEuler.y = rot.y;
+  rotEuler.z = rot.z;
+  obj->getTransform().setRotation(rotEuler);
   //obj->getTransform().setRotation(rot);
+  
+  Vector3D scale;
+  file.m_file >> scale.x;
+  file.m_file >> scale.y;
+  file.m_file >> scale.z;
+  obj->getTransform().setScale(scale);
+  
 
   Int32 numComponents;
   file.m_file >> numComponents;
@@ -230,6 +247,12 @@ ResourceManager::loadComponent(File &file,
 
   if(typeID == SerializableTypeID::Sound) {
     sSound s;
+    s.load(file, obj);
+  } else if(typeID == SerializableTypeID::AABB) {
+    sAABBCollider s;
+    s.load(file, obj);
+  } else if (typeID == SerializableTypeID::Render) {
+    sRender s;
     s.load(file, obj);
   }
 }

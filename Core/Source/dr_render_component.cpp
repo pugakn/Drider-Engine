@@ -38,18 +38,19 @@ RenderComponent::setMeshes(MeshList&& _meshes) {
 
 void
 RenderComponent::serialize(File &file) {
-  file.m_file << SerializableTypeID::Render;
-  file.m_file << StringUtils::toString(getName());
+  file.m_file << SerializableTypeID::Render << "\n";
+  file.m_file << StringUtils::toString(getName()) << "\n";
 
-  file.m_file << m_isModel;
+  file.m_file << m_isModel << "\n";
 
-  if(m_isModel) {
-    file.m_file << m_model.lock()->aabb.width;
-    file.m_file << m_model.lock()->aabb.height;
-    file.m_file << m_model.lock()->aabb.depth;
-    file.m_file << m_model.lock()->aabb.center.x;
-    file.m_file << m_model.lock()->aabb.center.y;
-    file.m_file << m_model.lock()->aabb.center.z;
+  if(m_isModel) { 
+    file.m_file << m_model.lock()->m_modelName << "\n";
+    /*file.m_file << m_model.lock()->aabb.width << "\n";
+    file.m_file << m_model.lock()->aabb.height << "\n";
+    file.m_file << m_model.lock()->aabb.depth << "\n";
+    file.m_file << m_model.lock()->aabb.center.x << "\n";
+    file.m_file << m_model.lock()->aabb.center.y << "\n";
+    file.m_file << m_model.lock()->aabb.center.z << "\n";*/
   }
   /*
   if(isModel) {
