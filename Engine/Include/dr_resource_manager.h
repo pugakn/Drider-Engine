@@ -204,7 +204,8 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager>
   loadGameObject(File &file);
 
   void
-  loadComponent(File &file);
+  loadComponent(File &file,
+                std::shared_ptr<GameObject> obj);
   
  private:
   using ResourceFactory = std::function<SharedResource()>;

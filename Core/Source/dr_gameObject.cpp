@@ -527,29 +527,31 @@ GameObject::getChildByIndex(Int32 index) {
 
 void
 GameObject::serialize(File &file) {
-  //name
-  file.m_file << StringUtils::toString(getName()) << "{\r\n";
-  //position
-  file.m_file << getTransform().m_position.x << "{\r\n";
-  file.m_file << getTransform().m_position.y << "{\r\n";
-  file.m_file << getTransform().m_position.z << "{\r\n";
-  //rotation
-  file.m_file << 0.0f << "{\r\n";
-  file.m_file << 0.0f << "{\r\n";
-  file.m_file << 0.0f << "{\r\n";
-  file.m_file << 1.0f << "{\r\n";
-  //components
-  file.m_file << m_components.size() << "{\r\n";
-  for(auto &component: m_components) {
-    component.get()->serialize(file);
+  if(getName() != _T("ROOT_NODE_X")) {
+    //name
+    file.m_file << StringUtils::toString(getName()) << "\n";
+    //position
+    file.m_file << getTransform().m_position.x << "\n";
+    file.m_file << getTransform().m_position.y << "\n";
+    file.m_file << getTransform().m_position.z << "\n";
+    //rotation
+    file.m_file << 0.0f << "\n";
+    file.m_file << 0.0f << "\n";
+    file.m_file << 0.0f << "\n";
+    file.m_file << 1.0f << "\n";
+    //components
+    file.m_file << m_components.size() << "\n";
+    for(auto &component: m_components) {
+      component.get()->serialize(file);
+    }
   }
   //childres
-  file.m_file << getChildrenCount();
+  file.m_file << getChildrenCount() << "\n";
   for(auto &child: m_children) {
     child->serialize(file);
   }
   
-  file.m_file << "\r\n}";
+
 }
 
 void

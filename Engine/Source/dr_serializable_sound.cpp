@@ -27,24 +27,22 @@ sSound::load(File &file, std::shared_ptr<GameObject> obj) {
 
   Int32 numSounds;
   file.m_file >> numSounds;
-  std::unordered_map<TString,
-    std::shared_ptr<SoundCore>> sounds;
+  std::vector<String> namesSounds;
   for (int i = 0; i < numSounds; i++) {
     String soundName;
     file.m_file >> soundName;
 
     ResourceManager::loadResource(StringUtils::toTString(soundName),
                                   extraInfo);
-    auto sResource = ResourceManager::getReferenceT<SoundCore>(
-      StringUtils::toTString(soundName));
-    sounds.emplace(StringUtils::toTString(soundName),
-                   sResource);
+    namesSounds.push_back(soundName);
   }
 
   auto soundComponent = obj->createComponent<SoundComponent>();
-  for (auto sound : sounds) {
-    soundComponent->addSound(sound.first,
-                             sound.second->soundResource);
+  for (auto sound : namesSounds) {
+    auto resource = ResourceManager::instancePtr()->getReferenceT<
+                    SoundCore>(StringUtils::toTString(sound));
+    soundComponent->addSound(StringUtils::toTString(sound),
+                             resource.get()->soundResource);
   }
 
 }

@@ -17,12 +17,12 @@ SoundComponent::SoundComponent(GameObject &gameObject_)
 
 void
 SoundComponent::serialize(File &file) {
-  file.m_file << SerializableTypeID::Sound;
-  file.m_file << StringUtils::toString(getName());
+  file.m_file << SerializableTypeID::Sound << "\n";
+  file.m_file << StringUtils::toString(getName()) << "\n";
 
-  file.m_file << sounds.size();
+  file.m_file << sounds.size() << "\n";
   for(auto sound: sounds) {
-    file.m_file << StringUtils::toString(sound.first);
+    file.m_file << StringUtils::toString(sound.first) << "\n";
   }  
 
 }

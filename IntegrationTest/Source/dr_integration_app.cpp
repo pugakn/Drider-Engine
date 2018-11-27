@@ -166,7 +166,7 @@ DriderEngine::postInit() {
   initModules();
   loadResources();
   createScene();
-  //loadSound();
+  loadSound();
   //initScriptEngine();
 
   Time::update();
@@ -265,19 +265,16 @@ DriderEngine::loadResources() {
   auto channel = SoundAPI::instance().API->channel1;
   extraInfo = new SoundExtraInfo(reinterpret_cast<SoundSystem*>(system),
                                  reinterpret_cast<DrChannel*>(channel));
-  ResourceManager::loadResource(_T("testSound1.mp3"), extraInfo);
+  //ResourceManager::loadResource(_T("testSound1.mp3"), extraInfo);
 }
 
 void
 DriderEngine::createScene() {
 
-  auto obj = SceneGraph::createObject(_T("GameObject"));
+  /*auto obj = SceneGraph::createObject(_T("Player"));
+  SceneGraph::createObject(_T("Map"));*/
 
-  auto soundComponent = obj->createComponent<SoundComponent>();
-  auto soundResource = ResourceManager::getReferenceT<SoundCore>
-                       (_T("testSound1.mp3"));
-  soundComponent->addSound(_T("testSound1"), 
-                           soundResource->soundResource);
+  ResourceManager::loadScene("Main");
 
   SceneGraph::start();
 
@@ -378,17 +375,18 @@ DriderEngine::initScriptEngine() {
 void
 DriderEngine::loadSound() {
 
-  auto sound1Resource = ResourceManager::instance().getReferenceT<
+  //ResourceManager::loadResource(_T("testSound1.mp3"), extraInfo);
+  auto sound1Resource = ResourceManager::instancePtr()->getReferenceT<
     SoundCore>(_T("testSound1.mp3"));
 
   auto sound1 = sound1Resource.get()->soundResource;
-  auto soundComponent = m_player->createComponent<SoundComponent>();
+  auto player = SceneGraph::getRoot()->findObject(_T("Player"));
+  auto soundComponent = player->getComponent<SoundComponent>();
 
   //Add all sounds to SoundComponent
-  soundComponent->addSound(_T("testSound1"),
-                           sound1);
-
-  //soundComponent->play(_T("testSound1"));
+  /*soundComponent->addSound(_T("testSound1.mp3"),
+                           sound1);*/
+  soundComponent->play(_T("testSound1.mp3"));
 
 }
 

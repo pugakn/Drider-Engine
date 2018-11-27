@@ -120,9 +120,8 @@ ResourceManager::saveScene(const String name) {
   if(fileSystem.CreateAndOpen(StringUtils::toTString(pathName).c_str(),
                            sceneFile)) {
     //sceneFile.m_file << name;
-    sceneFile.m_file << sg.getRoot()->gameObjectsCount() << "{\r\n";
+    //sceneFile.m_file << sg.getRoot()->gameObjectsCount();
     sg.getRoot()->serialize(sceneFile);
-    sceneFile.m_file << "\r\n}";
 
     sceneFile.Close();
   }
@@ -138,11 +137,11 @@ void
 ResourceManager::loadScene(const String name) {
   File sceneFile;
   if(sceneFile.Open(StringUtils::toTString(name) + L".txt")) {
-    SizeT numGameObjects;
-    sceneFile.m_file >> numGameObjects;
+    Int32 numChildsRoot;
+    sceneFile.m_file >> numChildsRoot;
     
-    for(int i = 0; i < numGameObjects; i++) {
-      
+    for(int i = 0; i < numChildsRoot; i++) {
+      ResourceManager::instance().loadGameObject(sceneFile);
     }
   } 
   else {
@@ -189,12 +188,11 @@ ResourceManager::addResource(SharedResource pResource,
 
 void
 ResourceManager::loadGameObject(File &file) {
-  auto &sg = SceneGraph::instance();
-  std::shared_ptr<GameObject> obj;
+  auto sg = SceneGraph::instancePtr();
 
   String name;
   file.m_file >> name;
-  obj->setName(StringUtils::toTString(name));
+  auto obj = sg->createObject(StringUtils::toTString(name));
 
   Vector3D pos;
   file.m_file >> pos.x;
@@ -202,16 +200,17 @@ ResourceManager::loadGameObject(File &file) {
   file.m_file >> pos.z;
   obj->getTransform().setPosition(pos);
 
-  Vector3D rot;
+  Vector4D rot;
   file.m_file >> rot.x;
   file.m_file >> rot.y;
   file.m_file >> rot.z;
-  obj->getTransform().setRotation(rot);
+  file.m_file >> rot.w;
+  //obj->getTransform().setRotation(rot);
 
   Int32 numComponents;
   file.m_file >> numComponents;
   for(int i = 0; i < numComponents; i++) {
-    loadComponent(file);
+    loadComponent(file, obj);
   }
 
   Int32 numChilds;
@@ -222,7 +221,8 @@ ResourceManager::loadGameObject(File &file) {
 } 
 
 void
-ResourceManager::loadComponent(File &file) {
+ResourceManager::loadComponent(File &file, 
+                               std::shared_ptr<GameObject> obj) {
   SerializableTypeID::E typeID;
   Int32 type;
   file.m_file >> type;
@@ -230,7 +230,7 @@ ResourceManager::loadComponent(File &file) {
 
   if(typeID == SerializableTypeID::Sound) {
     sSound s;
-    s.load(file, SceneGraph::getRoot());
+    s.load(file, obj);
   }
 }
 
