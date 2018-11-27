@@ -541,12 +541,16 @@ GameObject::serialize(File &file) {
   //components
   file.m_file << m_components.size();
   for(auto &component: m_components) {
+    //file.m_file << "{\r\n";
     component.get()->serialize(file);
+    //file.m_file << "}\r\n";
   }
   //childres
   file.m_file << getChildrenCount();
   for(auto &child: m_children) {
+    //file.m_file << "{\r\n";
     child->serialize(file);
+    //file.m_file << "}\r\n";
   }
   
 }

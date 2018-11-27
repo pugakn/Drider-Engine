@@ -104,10 +104,6 @@ DriderEngine::onInstantiatePlayer(bool isLocalPlayer,
                                   const TString& name,
                                   const Vector3D& pos,
                                   const Vector3D& dir) {
-  //std::cout << "Execute server foo" << std::endl;
-  
-  //auto newPlayer = SceneGraph::createObject(name);
-  //newPlayer->createComponent<ScriptComponent>();
 
   if(SceneGraph::getRoot()->findObject(name) != nullptr) {
     return;
