@@ -12,18 +12,17 @@ namespace driderSDK {
   void BoxCollider::onCreate()
   {
     RigidBody3DComponent* rbody = m_gameObject.getComponent<RigidBody3DComponent>();
+    AABB transformedAABB = m_originalAABB;
+    transformedAABB.recalculate(m_gameObject.getTransform().getMatrix());
     if (rbody) {
-      AABB transformedAABB = m_originalAABB;
-      transformedAABB.recalculate(m_gameObject.getTransform().getMatrix());
       rbody->m_rigidBody->AddBoxShape(Vector3D(transformedAABB.width, transformedAABB.height, transformedAABB.depth), Vector3D(0, 0, 0), 1);
     }
-    else {
-      m_gameObject.createComponent<RigidBody3DComponent>();
-    }
+    m_body = PhysicsManager::createCollisionBody(m_gameObject.getTransform());
+    m_body->AddBoxShape(Vector3D(transformedAABB.width, transformedAABB.height, transformedAABB.depth), Vector3D(0, 0, 0));
   }
   void BoxCollider::onUpdate()
   {
-
+    m_body->setTransform(m_gameObject.getTransform());
   }
   void BoxCollider::onRender()
   {

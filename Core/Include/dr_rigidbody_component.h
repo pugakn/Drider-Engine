@@ -42,6 +42,12 @@ namespace driderSDK {
     void
       addTorque(Vector3D torque);
 
+    void
+      setTransform(Transform transform);
+
+    void 
+      enableGravity(bool bUseGravity);
+
     void setType(RIGID_BODY_TYPE::E type);
 
 

@@ -34,18 +34,31 @@ namespace driderSDK {
     auto dup = _go.createComponent<RigidBody3DComponent>();
     return dup;
   }
-  UInt32 RigidBody3DComponent::getClassID() {
+  UInt32 
+  RigidBody3DComponent::getClassID() {
     return CLASS_NAME_ID(RigidBody3DComponent);
   }
-  void RigidBody3DComponent::addForce(Vector3D _force)
+  void 
+  RigidBody3DComponent::addForce(Vector3D _force)
   {
     m_rigidBody->applyForceToCenter(_force);
   }
-  void RigidBody3DComponent::addTorque(Vector3D torque) {
+  void 
+  RigidBody3DComponent::addTorque(Vector3D torque) {
     m_rigidBody->applyTorque(torque);
   }
 
-  void RigidBody3DComponent::setType(RIGID_BODY_TYPE::E type) {
+  void
+  RigidBody3DComponent::setTransform(Transform transform) {
+    m_rigidBody->setTransform(transform);
+  }
+  void
+    RigidBody3DComponent::enableGravity(bool bUseGravity) {
+    m_rigidBody->enableGravity(bUseGravity);
+  }
+
+  void 
+  RigidBody3DComponent::setType(RIGID_BODY_TYPE::E type) {
     m_rigidBody->setType(type);
   }
 }

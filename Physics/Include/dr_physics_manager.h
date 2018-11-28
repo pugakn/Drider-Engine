@@ -5,6 +5,7 @@
 #include <functional>
 #include <dr_transform.h>
 #include <list>
+#include <unordered_map>
 namespace driderSDK {
   namespace RIGID_BODY_TYPE {
     enum E {
@@ -32,7 +33,7 @@ namespace driderSDK {
     void AddCapsuleShape(float radius, float height, Vector3D localPos);
 
     std::function<void(DrCollisionBody& coll)> onCollisionEnter;
-    std::function<void(DrCollisionBody& coll)> onCollisionExit;
+    std::function<void(DrCollisionBody& coll)> onCollisionExit ;
     std::function<void(DrCollisionBody& coll)> onCollisionStay;
   private:
     friend class PhysicsManager;
@@ -91,12 +92,17 @@ namespace driderSDK {
     //std::vector<std::pair<DrCollisionBody*, DrCollisionBody*>> m_collisions;
   private:
     friend class DrCollisionBody;
-    //rp3d::CollisionWorld* m_world;
+    friend class WorldCollisionCallback;
+    rp3d::CollisionWorld* m_world;
     WorldCollisionCallback m_collisionCallback;
 
     // Gravity vector 
     rp3d::Vector3 m_gravity;
     rp3d::DynamicsWorld* m_dynamicWorld;
+
+    std::unordered_map<rp3d::CollisionBody*, DrCollisionBody*> m_collisionItems;
+    std::unordered_map<DrCollisionBody*, DrCollisionBody*> m_currrentCollidingItems;
+    std::unordered_map<DrCollisionBody*, DrCollisionBody*> m_lastCollidingItems;
 
     float accumulator = 0.0f;
   };

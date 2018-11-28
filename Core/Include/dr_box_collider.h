@@ -28,6 +28,7 @@ namespace driderSDK {
     virtual UInt32
       getClassID() override;
 
+    DrCollisionBody * m_body;
   private:
     virtual GameComponent*
       cloneIn(GameObject& _go) override;

@@ -13,17 +13,17 @@ namespace driderSDK {
   void SphereCollider::onCreate()
   {
     RigidBody3DComponent* rbody = m_gameObject.getComponent<RigidBody3DComponent>();
+    Vector3D r(m_radius, m_radius, m_radius);
+    r = m_gameObject.getTransform().getMatrix() * r;
     if (rbody) {
-      Vector3D r(m_radius, m_radius, m_radius);
-      r = m_gameObject.getTransform().getMatrix() * r;
       rbody->m_rigidBody->AddSphereShape(r.x,m_center, 1);
     }
-    else {
-      m_gameObject.createComponent<RigidBody3DComponent>();
-    }
+    m_body = PhysicsManager::createCollisionBody(m_gameObject.getTransform());
+    m_body->AddSphereShape(r.x, m_center);
   }
   void SphereCollider::onUpdate()
   {
+    m_body->setTransform(m_gameObject.getTransform());
   }
   void SphereCollider::onRender()
   {

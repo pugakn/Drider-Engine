@@ -176,7 +176,10 @@ RenderManApp::postInit() {
     auto rgbod = m_selectedGO->createComponent<RigidBody3DComponent>();
     rgbod->setType(RIGID_BODY_TYPE::kStatic);
     m_selectedGO->createComponent<AABBCollider>(ptrFloor->aabb);
-    m_selectedGO->createComponent<BoxCollider>(ptrFloor->aabb);
+    auto coll = m_selectedGO->createComponent<BoxCollider>(ptrFloor->aabb);
+    coll->m_body->onCollisionEnter = [](DrCollisionBody& coll) {std::cout << "Floor Enter" << std::endl; };
+    coll->m_body->onCollisionExit = [](DrCollisionBody& coll) {std::cout << "Floor Exit" << std::endl; };
+    coll->m_body->onCollisionStay = [](DrCollisionBody& coll) {std::cout << "Floor Stay" << std::endl; };
     m_selectedGO->createComponent<RenderComponent>(ptrFloor);
 
     m_floorMat = ResourceManager::createMaterial(_T("FloorMaterial"));
@@ -339,8 +342,11 @@ RenderManApp::postInit() {
 
     auto rgbod = m_selectedGO->createComponent<RigidBody3DComponent>();
     m_selectedGO->createComponent<AABBCollider>(ptrModel->aabb);
-    //m_selectedGO->createComponent<BoxCollider>(ptrModel->aabb);
-    m_selectedGO->createComponent<SphereCollider>(1,Vector3D(0,0,0));
+    auto coll = m_selectedGO->createComponent<BoxCollider>(ptrModel->aabb);
+    coll->m_body->onCollisionEnter = [](DrCollisionBody& coll) {std::cout << "Robot Enter" << std::endl; };
+    coll->m_body->onCollisionExit = [](DrCollisionBody& coll) {std::cout << "Robot Exit" << std::endl; };
+    coll->m_body->onCollisionStay = [](DrCollisionBody& coll) {std::cout << "Robot Stay" << std::endl; };
+    //m_selectedGO->createComponent<SphereCollider>(1,Vector3D(0,0,0));
     m_selectedGO->createComponent<RenderComponent>(ptrModel);
 
     m_modelMat = ResourceManager::createMaterial(_T("ModelMaterial"));

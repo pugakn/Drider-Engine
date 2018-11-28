@@ -14,7 +14,8 @@ namespace driderSDK {
     rp3d::Transform transformRp(initPosition, initOrientation);
 
     DrCollisionBody *body = new DrCollisionBody();
-    body->m_body = instance().m_dynamicWorld->createCollisionBody(transformRp);
+    body->m_body = instance().m_world->createCollisionBody(transformRp);
+    instance().m_collisionItems[body->m_body] = body;
     return body;
   }
   DrRigidBody * PhysicsManager::createRigidBody(Transform transform)
@@ -37,7 +38,8 @@ namespace driderSDK {
     {
       delete it;
     }
-    instance().m_dynamicWorld->destroyCollisionBody(body->m_body);
+    instance().m_collisionItems.erase(body->m_body);
+    instance().m_world->destroyCollisionBody(body->m_body);
     delete body;
   }
 
@@ -53,7 +55,20 @@ namespace driderSDK {
 
   void PhysicsManager::TestCollision()
   {
-    instance().m_dynamicWorld->testCollision(&instance().m_collisionCallback);
+    instance().m_currrentCollidingItems.clear();
+    instance().m_world->testCollision(&instance().m_collisionCallback);
+    for (auto it: instance().m_lastCollidingItems)
+    {
+      if (instance().m_currrentCollidingItems.find(it.first) == instance().m_currrentCollidingItems.end())
+      {
+        if (it.first->onCollisionExit)
+          it.first->onCollisionExit(*it.second);
+        if (it.second->onCollisionExit)
+          it.second->onCollisionExit(*it.first);
+      }
+    }
+
+    instance().m_lastCollidingItems = instance().m_currrentCollidingItems;
   }
 
   void PhysicsManager::simulate()
@@ -75,15 +90,15 @@ namespace driderSDK {
 
   void PhysicsManager::onStartUp()
   {
-    //m_world = new rp3d::CollisionWorld(); 
+    instance().m_world = new rp3d::CollisionWorld(); 
     m_gravity = rp3d::Vector3(0, -9.81, 0);
     instance().m_dynamicWorld = new rp3d::DynamicsWorld(m_gravity);
   }
 
   void PhysicsManager::onShutDown()
   {
-    //delete m_world;
-    delete m_dynamicWorld;
+    delete instance().m_world;
+    delete instance().m_dynamicWorld;
   }
 
   void DrCollisionBody::setTransform(Transform transform)
@@ -99,7 +114,7 @@ namespace driderSDK {
 
   void DrCollisionBody::AddBoxShape(Vector3D dimensions, Vector3D localPos)
   {
-    const rp3d::Vector3 halfExtents(dimensions.x, dimensions.y, dimensions.z);
+    const rp3d::Vector3 halfExtents(dimensions.x / 2.0f, dimensions.y / 2.0f, dimensions.z / 2.0f);
     // Create the box shape 
     rp3d::BoxShape* boxShape = new rp3d::BoxShape(halfExtents);
     m_shapes.push_back(boxShape);
@@ -132,7 +147,27 @@ namespace driderSDK {
 
   void WorldCollisionCallback::notifyContact(const rp3d::CollisionCallback::CollisionCallbackInfo & collisionCallbackInfo)
   {
-    std::cout << "Hola" << std::endl;
+    auto item1 = PhysicsManager::instance().m_collisionItems[collisionCallbackInfo.body1];
+    auto item2 = PhysicsManager::instance().m_collisionItems[collisionCallbackInfo.body2];
+    bool found1 = false;
+    for (auto& it : PhysicsManager::instance().m_lastCollidingItems)
+    {
+      if (it.first == item1) {
+        if (item1->onCollisionStay)
+          item1->onCollisionStay(*item2);
+        if (item2->onCollisionStay)
+          item2->onCollisionStay(*item1);
+        found1 = true;
+        break;
+      }
+    }
+    if (!found1) {
+      if (item1->onCollisionEnter)
+        item1->onCollisionEnter(*item2);
+      if(item2->onCollisionEnter)
+        item2->onCollisionEnter(*item1);
+    }
+    PhysicsManager::instance().m_currrentCollidingItems[item1] = item2;
   }
 
 

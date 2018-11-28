@@ -36,6 +36,7 @@ namespace driderSDK {
   private:
     float m_radius;
     Vector3D m_center;
+    DrCollisionBody * m_body;
     // Inherited via ColliderComponent
   };
 
