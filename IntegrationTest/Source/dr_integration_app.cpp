@@ -256,7 +256,7 @@ DriderEngine::initModules() {
 void
 DriderEngine::loadResources() {
   //Models
-  ResourceManager::loadResource(_T("Sphere.fbx"));
+  ResourceManager::loadResource(_T("Chistina.obj"));
 
   //Scripts
   ResourceManager::loadResource(_T("driderBehavior.as"));
@@ -288,7 +288,11 @@ DriderEngine::createScene() {
   /*quad->getTransform().rotate({ -Math::HALF_PI, 0, 0 });
   quad->getTransform().setScale({ 10000, 10000, 10000 });*/
 
-  ResourceManager::loadScene("Main");
+  auto playerModel = ResourceManager::getReferenceT<Model>(_T("Chistina.obj"));
+  addObjectFromModel(playerModel, _T("GameObject"));
+  
+
+  //ResourceManager::loadScene("Main");
 
   SceneGraph::start();
 
