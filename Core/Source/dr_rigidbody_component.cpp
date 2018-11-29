@@ -27,6 +27,7 @@ namespace driderSDK {
 
   void
   RigidBody3DComponent::onDestroy() {
+    PhysicsManager::destroyRigidBody(m_rigidBody);
   }
 
   GameComponent*
@@ -34,15 +35,18 @@ namespace driderSDK {
     auto dup = _go.createComponent<RigidBody3DComponent>();
     return dup;
   }
+
   UInt32 
   RigidBody3DComponent::getClassID() {
     return CLASS_NAME_ID(RigidBody3DComponent);
   }
+
   void 
   RigidBody3DComponent::addForce(Vector3D _force)
   {
     m_rigidBody->applyForceToCenter(_force);
   }
+
   void 
   RigidBody3DComponent::addTorque(Vector3D torque) {
     m_rigidBody->applyTorque(torque);
@@ -52,6 +56,7 @@ namespace driderSDK {
   RigidBody3DComponent::setTransform(Transform transform) {
     m_rigidBody->setTransform(transform);
   }
+
   void
     RigidBody3DComponent::enableGravity(bool bUseGravity) {
     m_rigidBody->enableGravity(bUseGravity);

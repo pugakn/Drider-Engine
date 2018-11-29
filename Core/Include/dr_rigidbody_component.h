@@ -15,40 +15,40 @@ namespace driderSDK {
   {
    
   public:
-    const float GRAVITY = -0.081;
     RigidBody3DComponent(GameObject& _gameObject);
 
     virtual void
-      onCreate() override;
+    onCreate() override;
 
     virtual void
-      onUpdate() override;
+    onUpdate() override;
 
     virtual void
-      onRender() override;
+    onRender() override;
 
     virtual void
-      onDestroy() override;
+    onDestroy() override;
 
     virtual GameComponent*
-      cloneIn(GameObject& _go) override;
+    cloneIn(GameObject& _go) override;
 
     virtual UInt32
-      getClassID() override;
+    getClassID() override;
 
     void 
     addForce(Vector3D _force);
 
     void
-      addTorque(Vector3D torque);
+    addTorque(Vector3D torque);
 
     void
-      setTransform(Transform transform);
+    setTransform(Transform transform);
 
     void 
-      enableGravity(bool bUseGravity);
+    enableGravity(bool bUseGravity);
 
-    void setType(RIGID_BODY_TYPE::E type);
+    void 
+    setType(RIGID_BODY_TYPE::E type);
 
 
     DrRigidBody* m_rigidBody;

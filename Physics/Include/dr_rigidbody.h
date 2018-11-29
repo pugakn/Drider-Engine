@@ -1,38 +1,53 @@
 #pragma once
-#include <dr_vector3d.h>
-#include <dr_quaternion.h>
-#include <dr_matrix3x3.h>
-#include <dr_aabb_collider.h>
-#include <vector>
+#include <ReactPhysics/reactphysics3d.h>
+#include "dr_physics_prerequisites.h"
+#include <functional>
+#include <dr_transform.h>
+#include <list>
 namespace driderSDK {
-  class DR_CORE_EXPORT RigidBody3D {
+  namespace RIGID_BODY_TYPE {
+    enum E {
+      kStatic,
+      kKinematic,
+      kDynamic
+    };
+  }
+  class DR_PHYSICS_EXPORT DrRigidBody {
   public:
     void 
-    AddForce(Vector3D _force);
+    setTransform(Transform transform);
+
     void 
-    Update();
-    void applyCollisionForces();
+    AddBoxShape(Vector3D dimensions, Vector3D localPos, float mass);
+
+    void 
+    AddSphereShape(float radius, Vector3D localPos, float mass);
+
+    void 
+    AddCapsuleShape(float radius, float height, Vector3D localPos, float mass);
+
+    void 
+    setType(RIGID_BODY_TYPE::E type);
+
+    void 
+    enableGravity(bool useGravity);
+
+    void 
+    applyForce(Vector3D force, Vector3D point);
+
+    void 
+    applyForceToCenter(Vector3D force);
+
+    void 
+    applyTorque(Vector3D torque);
+
+    Transform 
+    getTransform();
 
   private:
-    float m_mass;
-    float m_drag;
-    float m_angularDrag;
-
-    bool m_isKinematic;
-    bool m_useGravity;
-    bool m_detectCollisions;
-    bool m_freezeRotation;
-
-    Vector3D m_position;
-    Vector3D m_angularVelocity;
-    Vector3D m_linearVelocity;
-
-    Vector3D m_force;
-    Vector3D m_torque;
-
-    Quaternion m_rotation;
-    Matrix3x3 m_inertiaTensor;
-
-    std::vector<ColliderComponent> m_colliders;
+    friend class PhysicsManager;
+    std::list<rp3d::ConvexShape*> m_shapes;
+    std::list<rp3d::ProxyShape*> m_proxyShapes;
+    rp3d::RigidBody* m_body;
   };
 }

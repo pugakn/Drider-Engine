@@ -29,27 +29,8 @@ class DR_CORE_EXPORT ColliderComponent : public GameComponent
   virtual void
   onUpdate() override;
 
-  //std::function<void(ColliderComponent& coll)> onCollisionEnter;
-  //std::function<void(ColliderComponent& coll)> onCollisionExit;
-  //std::function<void(ColliderComponent& coll)> onCollisionStay;
-
-
-  //std::function<void(ColliderComponent& coll)> onTriggerEnter;
-  //std::function<void(ColliderComponent& coll)> onTriggerExit;
-  //std::function<void(ColliderComponent& coll)> onTriggerStay;
-
-
-  std::vector<ColliderComponent*> m_collisions;
-
-  bool m_isTrigger = false;
-
-  DrCollisionBody* m_body;
+  DrCollisionBody * m_body;
  protected:
-   //void CollisionEnter(ColliderComponent& coll);
-   //void CollisionStay(ColliderComponent& coll);
-   //void CollisionExit(ColliderComponent& coll);
-
-   //void CollisionRespone(ColliderComponent & coll);
 };
 
 }

@@ -6,15 +6,9 @@
 #include <dr_transform.h>
 #include <list>
 #include <unordered_map>
+#include "dr_collision_body.h"
+#include "dr_rigidbody.h"
 namespace driderSDK {
-  namespace RIGID_BODY_TYPE {
-    enum E {
-      kStatic,
-      kKinematic,
-      kDynamic
-    };
-  }
-
   class DR_PHYSICS_EXPORT WorldCollisionCallback : public rp3d::CollisionCallback
   {
   public:
@@ -25,56 +19,32 @@ namespace driderSDK {
     virtual void notifyContact(const rp3d::CollisionCallback::CollisionCallbackInfo& collisionCallbackInfo) override;
   };
 
-  class DR_PHYSICS_EXPORT DrCollisionBody {
-  public:
-    void setTransform(Transform transform);
-    void AddBoxShape(Vector3D dimensions, Vector3D localPos);
-    void AddSphereShape(float radius, Vector3D localPos);
-    void AddCapsuleShape(float radius, float height, Vector3D localPos);
-
-    std::function<void(DrCollisionBody& coll)> onCollisionEnter;
-    std::function<void(DrCollisionBody& coll)> onCollisionExit ;
-    std::function<void(DrCollisionBody& coll)> onCollisionStay;
-  private:
-    friend class PhysicsManager;
-    std::list<rp3d::ConvexShape*> m_shapes;
-    std::list<rp3d::ProxyShape*> m_proxyShapes;
-    rp3d::CollisionBody* m_body;
-  };
-
-  class DR_PHYSICS_EXPORT DrRigidBody {
-  public:
-    void setTransform(Transform transform);
-    void AddBoxShape(Vector3D dimensions, Vector3D localPos, float mass);
-    void AddSphereShape(float radius, Vector3D localPos, float mass);
-    void AddCapsuleShape(float radius, float height,Vector3D localPos, float mass);
-
-    void setType(RIGID_BODY_TYPE::E type);
-    void enableGravity(bool useGravity);
-    void applyForce(Vector3D force, Vector3D point);
-    void applyForceToCenter(Vector3D force);
-    void applyTorque(Vector3D torque);
-
-    Transform getTransform();
-
-  private:
-    friend class PhysicsManager;
-    std::list<rp3d::ConvexShape*> m_shapes;
-    std::list<rp3d::ProxyShape*> m_proxyShapes;
-    rp3d::RigidBody* m_body;
-  };
-
 
   class DR_PHYSICS_EXPORT PhysicsManager : public Module<PhysicsManager>{
   public:
     PhysicsManager() = default;
     ~PhysicsManager() = default;
-    static DrCollisionBody* createCollisionBody(Transform transform);
-    static DrRigidBody* createRigidBody(Transform transform);
-    static void destroyCollisionBody(DrCollisionBody* body);
-    static void destroyRigidBody(DrRigidBody* body);
-    static void TestCollision();
-    static void simulate();
+
+    static DrCollisionBody* 
+    createCollisionBody(Transform transform);
+
+    static DrRigidBody* 
+    createRigidBody(Transform transform);
+
+    static void 
+    destroyCollisionBody(DrCollisionBody* body);
+
+    static void 
+    destroyRigidBody(DrRigidBody* body);
+
+    static void 
+    TestCollision();
+
+    static void 
+    simulate();
+
+    static void
+    setGravity(float g);
     /*
     * TEST::onStartUp
     *

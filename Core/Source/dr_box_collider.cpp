@@ -9,7 +9,9 @@ namespace driderSDK {
     : ColliderComponent(_gameObject, _T("BoxCollider")), m_originalAABB(aabb)
   {
   }
-  void BoxCollider::onCreate()
+
+  void 
+  BoxCollider::onCreate()
   {
     RigidBody3DComponent* rbody = m_gameObject.getComponent<RigidBody3DComponent>();
     AABB transformedAABB = m_originalAABB;
@@ -20,30 +22,43 @@ namespace driderSDK {
     m_body = PhysicsManager::createCollisionBody(m_gameObject.getTransform());
     m_body->AddBoxShape(Vector3D(transformedAABB.width, transformedAABB.height, transformedAABB.depth), Vector3D(0, 0, 0));
   }
-  void BoxCollider::onUpdate()
+
+  void 
+  BoxCollider::onUpdate()
   {
-    m_body->setTransform(m_gameObject.getTransform());
+    ColliderComponent::onUpdate();
   }
-  void BoxCollider::onRender()
+
+  void 
+  BoxCollider::onRender()
   {
     RenderManager::instance().drawDebugCube(
       Vector3D(m_originalAABB.width, m_originalAABB.height, m_originalAABB.depth),
       Vector3D(1, 1, 1), m_gameObject.getTransform().getMatrix());
   }
-  void BoxCollider::onDestroy()
+
+  void 
+  BoxCollider::onDestroy()
   {
+    PhysicsManager::destroyCollisionBody(m_body);
   }
-  UInt32 BoxCollider::getClassID()
+
+  UInt32 
+  BoxCollider::getClassID()
   {
     return CLASS_NAME_ID(BoxCollider);
   }
-  GameComponent * BoxCollider::cloneIn(GameObject & _go)
+
+  GameComponent* 
+  BoxCollider::cloneIn(GameObject & _go)
   {
     auto dup = _go.createComponent<BoxCollider>(m_originalAABB);
     dup->m_originalAABB = m_originalAABB;
     return dup;
   }
-  COLLIDER_TYPE::E BoxCollider::getType()
+
+  COLLIDER_TYPE::E 
+  BoxCollider::getType()
   {
     return COLLIDER_TYPE::kBOX;
   }

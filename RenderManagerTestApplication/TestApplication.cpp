@@ -395,9 +395,9 @@ RenderManApp::postUpdate() {
   Time::update();
   InputManager::update();
 
+  PhysicsManager::simulate();
   SceneGraph::update();
   PhysicsManager::TestCollision();
-  PhysicsManager::simulate();
 
 
   if (m_bRotate) {

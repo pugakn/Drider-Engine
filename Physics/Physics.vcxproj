@@ -19,11 +19,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\dr_collision_body.h" />
     <ClInclude Include="Include\dr_physics_manager.h" />
     <ClInclude Include="Include\dr_physics_prerequisites.h" />
     <ClInclude Include="Include\dr_rigidbody.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\dr_collision_body.cpp" />
     <ClCompile Include="Source\dr_physics_manager.cpp" />
     <ClCompile Include="Source\dr_rigidbody.cpp" />
   </ItemGroup>

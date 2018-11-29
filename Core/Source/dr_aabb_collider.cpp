@@ -33,9 +33,6 @@ AABBCollider::onUpdate() {
       m_transformedAABB = m_originalAABB;
       m_transformedAABB.recalculate(m_gameObject.getWorldTransform().getMatrix());
   } 
-
-  //Collisions
-  ColliderComponent::onUpdate();
 }
 
 void AABBCollider::onRender()
