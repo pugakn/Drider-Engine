@@ -82,7 +82,7 @@ private:
   initScriptEngine();
 
   void
-  loadSound();
+  playLoadedSounds();
 
   // Inherited via Application
   virtual void

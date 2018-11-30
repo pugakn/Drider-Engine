@@ -44,6 +44,7 @@
 #include <dr_soundExtraInfo.h>
 #include <dr_sound.h>
 #include <dr_sound_component.h>
+#include <dr_sound_core.h>
 
 #include <dr_networkTransform_component.h>
 #include <dr_networkManager_component.h>
@@ -166,7 +167,7 @@ DriderEngine::postInit() {
   initModules();
   loadResources();
   createScene();
-  //loadSound();
+  playLoadedSounds();
   //initScriptEngine();
 
   Time::update();
@@ -257,6 +258,10 @@ void
 DriderEngine::loadResources() {
   //Models
   ResourceManager::loadResource(_T("Chistina.obj"));
+  ResourceManager::loadResource(_T("body1.png"));
+  ResourceManager::loadResource(_T("quan_ao_copy.png"));
+  ResourceManager::loadResource(_T("weapon_copy.png"));
+  ResourceManager::loadResource(_T("Sphere.fbx"));
 
   //Scripts
   ResourceManager::loadResource(_T("driderBehavior.as"));
@@ -266,16 +271,17 @@ DriderEngine::loadResources() {
   auto channel = SoundAPI::instance().API->channel1;
   extraInfo = new SoundExtraInfo(reinterpret_cast<SoundSystem*>(system),
                                  reinterpret_cast<DrChannel*>(channel));
-  //ResourceManager::loadResource(_T("testSound1.mp3"), extraInfo);
+  ResourceManager::loadResource(_T("testSound1.mp3"), extraInfo);
 }
 
 void
 DriderEngine::createScene() {
 
   /*auto sphereModel = ResourceManager::getReferenceT<Model>(_T("Sphere.fbx"));
-  auto sphere = addObjectFromModel(sphereModel, _T("GameObject"));
+  auto sphere = addObjectFromModel(sphereModel, _T("Player"));
   sphere->getTransform().setScale({10,10,10});
   sphere->getTransform().setPosition({ -50,0,0 });
+
 
   sphere = addObjectFromModel(sphereModel, _T("GameObject"));
   sphere->getTransform().setScale({ 10,10,10 });
@@ -288,11 +294,34 @@ DriderEngine::createScene() {
   /*quad->getTransform().rotate({ -Math::HALF_PI, 0, 0 });
   quad->getTransform().setScale({ 10000, 10000, 10000 });*/
 
-  auto playerModel = ResourceManager::getReferenceT<Model>(_T("Chistina.obj"));
-  addObjectFromModel(playerModel, _T("GameObject"));
+  /*auto player = SceneGraph::createObject(_T("Model"));
+  auto ptrModel = ResourceManager::getReferenceT<Model>(_T("Chistina.obj"));
+  if (ptrModel) {
+    player->createComponent<RenderComponent>(ptrModel);
+    player->createComponent<AABBCollider>(ptrModel->aabb);
+    player->getTransform().setPosition(Vector3D(0.0f, 12.5f, -100.0f));
+    //player->getTransform().setScale(Vector3D(10.0f, 10.0f, 10.0f));
+    player->getTransform().setRotation(Vector3D(0.0f, Math::PI*1.15f, 0.0f));
+
+    auto m_body = ResourceManager::createMaterial(_T("Body"));
+    auto m_quan = ResourceManager::createMaterial(_T("Quan"));
+    auto m_weapon = ResourceManager::createMaterial(_T("Weapon"));
+
+    auto albedoTex0 = ResourceManager::getReferenceT<TextureCore>(_T("body1.png"));
+    auto albedoTex1 = ResourceManager::getReferenceT<TextureCore>(_T("quan_ao_copy.png"));
+    auto albedoTex2 = ResourceManager::getReferenceT<TextureCore>(_T("weapon_copy.png"));
+
+    m_body->addProperty(_T("Albedo"), PROPERTY_TYPE::kVec4);
+    m_body->setTexture(albedoTex0, _T("Albedo"));
+
+    m_quan->addProperty(_T("Albedo"), PROPERTY_TYPE::kVec4);
+    m_quan->setTexture(albedoTex1, _T("Albedo"));
+
+    m_weapon->addProperty(_T("Albedo"), PROPERTY_TYPE::kVec4);
+    m_weapon->setTexture(albedoTex2, _T("Albedo"));*/
   
 
-  //ResourceManager::loadScene("Main");
+  ResourceManager::loadScene("Main");
 
   SceneGraph::start();
 
@@ -391,16 +420,13 @@ DriderEngine::initScriptEngine() {
 }
 
 void
-DriderEngine::loadSound() {
+DriderEngine::playLoadedSounds() {
+  auto sound1Resource = ResourceManager::instance().getReferenceT<SoundCore>(
+                        _T("testSound1.mp3"));
 
-  //ResourceManager::loadResource(_T("testSound1.mp3"), extraInfo);
-  auto sound1Resource = ResourceManager::instancePtr()->getReferenceT<
-    SoundCore>(_T("testSound1.mp3"));
-
-  /*auto sound1 = sound1Resource.get()->soundResource;
   auto player = SceneGraph::getRoot()->findObject(_T("Player"));
   auto soundComponent = player->getComponent<SoundComponent>();
-  soundComponent->play(_T("testSound1.mp3"));*/
+  soundComponent->play(_T("testSound1.mp3"));
 
 }
 
