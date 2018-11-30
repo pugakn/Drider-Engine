@@ -91,12 +91,7 @@ class DR_MATH_EXPORT Quaternion
   */
   float
 	measure();
-  
-  /**
-  * Create a quaternio from Rotation Matrix
-  */
-  static Quaternion
-  quaternionFromRotation(const Matrix4x4& mat);
+
 
   /**
 	* TEST::conjugate
