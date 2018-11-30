@@ -257,11 +257,9 @@ DriderEngine::initModules() {
 void
 DriderEngine::loadResources() {
   //Models
-  ResourceManager::loadResource(_T("Chistina.obj"));
-  ResourceManager::loadResource(_T("body1.png"));
-  ResourceManager::loadResource(_T("quan_ao_copy.png"));
-  ResourceManager::loadResource(_T("weapon_copy.png"));
   ResourceManager::loadResource(_T("Sphere.fbx"));
+  ResourceManager::loadResource(_T("Checker.fbx"));
+  ResourceManager::loadResource(_T("Plane.fbx"));
 
   //Scripts
   ResourceManager::loadResource(_T("driderBehavior.as"));
@@ -281,46 +279,30 @@ DriderEngine::createScene() {
   auto sphere = addObjectFromModel(sphereModel, _T("Player"));
   sphere->getTransform().setScale({10,10,10});
   sphere->getTransform().setPosition({ -50,0,0 });
+  auto soundComponent = sphere->createComponent<SoundComponent>();
+  auto sound = ResourceManager::getReferenceT<SoundCore>(_T("testSound1.mp3"));
+  soundComponent->addSound(_T("testSound1.mp3"), sound->get());
 
 
-  sphere = addObjectFromModel(sphereModel, _T("GameObject"));
+  sphere = addObjectFromModel(sphereModel, _T("GameObject0"));
   sphere->getTransform().setScale({ 10,10,10 });
   sphere->getTransform().setPosition({ 0,0,0 });
 
-  sphere = addObjectFromModel(sphereModel, _T("GameObject"));
+  sphere = addObjectFromModel(sphereModel, _T("GameObject1"));
   sphere->getTransform().setScale({ 10,10,10 });
-  sphere->getTransform().setPosition({ 50,0,0 });*/
- 
-  /*quad->getTransform().rotate({ -Math::HALF_PI, 0, 0 });
-  quad->getTransform().setScale({ 10000, 10000, 10000 });*/
+  sphere->getTransform().setPosition({ 50,0,0 });
 
-  /*auto player = SceneGraph::createObject(_T("Model"));
-  auto ptrModel = ResourceManager::getReferenceT<Model>(_T("Chistina.obj"));
-  if (ptrModel) {
-    player->createComponent<RenderComponent>(ptrModel);
-    player->createComponent<AABBCollider>(ptrModel->aabb);
-    player->getTransform().setPosition(Vector3D(0.0f, 12.5f, -100.0f));
-    //player->getTransform().setScale(Vector3D(10.0f, 10.0f, 10.0f));
-    player->getTransform().setRotation(Vector3D(0.0f, Math::PI*1.15f, 0.0f));
-
-    auto m_body = ResourceManager::createMaterial(_T("Body"));
-    auto m_quan = ResourceManager::createMaterial(_T("Quan"));
-    auto m_weapon = ResourceManager::createMaterial(_T("Weapon"));
-
-    auto albedoTex0 = ResourceManager::getReferenceT<TextureCore>(_T("body1.png"));
-    auto albedoTex1 = ResourceManager::getReferenceT<TextureCore>(_T("quan_ao_copy.png"));
-    auto albedoTex2 = ResourceManager::getReferenceT<TextureCore>(_T("weapon_copy.png"));
-
-    m_body->addProperty(_T("Albedo"), PROPERTY_TYPE::kVec4);
-    m_body->setTexture(albedoTex0, _T("Albedo"));
-
-    m_quan->addProperty(_T("Albedo"), PROPERTY_TYPE::kVec4);
-    m_quan->setTexture(albedoTex1, _T("Albedo"));
-
-    m_weapon->addProperty(_T("Albedo"), PROPERTY_TYPE::kVec4);
-    m_weapon->setTexture(albedoTex2, _T("Albedo"));*/
+  auto cubeModel = ResourceManager::getReferenceT<Model>(_T("Checker.fbx"));
+  auto cube = addObjectFromModel(cubeModel, _T("Cube"));
+  cube->getTransform().rotate({ 0, Math::HALF_PI / 2.f, 0});
+  cube->getTransform().setScale({ .2f, .2f, .2f });
+  cube->getTransform().setPosition({ -20, 0, 0 });
   
-
+  auto modelQuad = ResourceManager::getReferenceT<Model>(_T("Plane.fbx"));
+  auto quad = addObjectFromModel(modelQuad, _T("Quad"));
+  quad->getTransform().setScale({ 3, 3, 3 });
+  quad->getTransform().setPosition({ 0, -10, 0 });*/
+ 
   ResourceManager::loadScene("Main");
 
   SceneGraph::start();

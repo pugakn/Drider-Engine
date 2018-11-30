@@ -544,7 +544,7 @@ GameObject::serialize(File &file) {
     rotationMat *= getTransform().m_rotY;
     rotationMat *= getTransform().m_rotZ;
     
-    Quaternion rotation = Quaternion::quaternionFromRotation(rotationMat);
+    Quaternion rotation = rotationMat.toQuaternion();
     file.m_file << rotation.x << "\n";
     file.m_file << rotation.y << "\n";
     file.m_file << rotation.z << "\n";

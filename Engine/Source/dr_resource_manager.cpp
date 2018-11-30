@@ -210,12 +210,11 @@ ResourceManager::loadGameObject(File &file) {
   file.m_file >> rot.y;
   file.m_file >> rot.z;
   file.m_file >> rot.w;
-  Vector3D rotEuler;
-  rotEuler.x = rot.x;
-  rotEuler.y = rot.y;
-  rotEuler.z = rot.z;
-  obj->getTransform().setRotation(rotEuler);
-  //obj->getTransform().setRotation(rot);
+  float rX = rot.getEulerAngles().x;
+  float rY = rot.getEulerAngles().y;
+  float rZ = rot.getEulerAngles().z;
+
+  obj->getTransform().setRotation({rX, rY, rZ});
   
   Vector3D scale;
   file.m_file >> scale.x;
