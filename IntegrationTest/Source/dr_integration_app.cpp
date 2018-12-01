@@ -257,9 +257,9 @@ DriderEngine::initModules() {
 void
 DriderEngine::loadResources() {
   //Models
-  ResourceManager::loadResource(_T("Sphere.fbx"));
+  /*ResourceManager::loadResource(_T("Sphere.fbx"));
   ResourceManager::loadResource(_T("Checker.fbx"));
-  ResourceManager::loadResource(_T("Plane.fbx"));
+  ResourceManager::loadResource(_T("Plane.fbx"));*/
 
   //Scripts
   ResourceManager::loadResource(_T("driderBehavior.as"));
@@ -269,7 +269,7 @@ DriderEngine::loadResources() {
   auto channel = SoundAPI::instance().API->channel1;
   extraInfo = new SoundExtraInfo(reinterpret_cast<SoundSystem*>(system),
                                  reinterpret_cast<DrChannel*>(channel));
-  ResourceManager::loadResource(_T("testSound1.mp3"), extraInfo);
+  //ResourceManager::loadResource(_T("testSound1.mp3"), extraInfo);
 }
 
 void
