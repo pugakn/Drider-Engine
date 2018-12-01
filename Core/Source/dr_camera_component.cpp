@@ -9,18 +9,8 @@ namespace driderSDK {
 
 CameraComponent::CameraComponent(GameObject& _gameObject,
                                  SharedCamera _camera) 
-  : GameComponent(_gameObject, _T("CameraComponent"))
-{
-  setCamera(_camera);
-}
-
-void 
-CameraComponent::setCamera(SharedCamera camera) {
-  m_camera = camera;
-
-  if (auto cam = m_camera.lock()) {
-      cam->setPosition(m_gameObject.getWorldTransform().getPosition());
-  }
+  : GameComponent(_gameObject, _T("CameraComponent")) {
+  onUpdate();
 }
 
 void 
@@ -28,13 +18,62 @@ CameraComponent::setActive() {
   CameraManager::setActiveCamera(m_camera.lock());
 }
 
+float
+CameraComponent::getWidth() {
+  return m_camera.lock()->getViewportWidth();
+}
+
+float
+CameraComponent::getHeight() {
+  return m_camera.lock()->getViewportHeight();
+}
+
+float
+CameraComponent::getNearPlane() {
+  return m_camera.lock()->getNearPlane();
+}
+
+float
+CameraComponent::getFarPlane() {
+  return m_camera.lock()->getFarPlane();
+}
+
+float
+CameraComponent::getFov() {
+  return m_camera.lock()->getFOV();
+}
+
 void
 CameraComponent::onCreate() {
+  Vector3D camPos = m_gameObject.getWorldTransform().getPosition();
+
+  Matrix3x3 m3 = Matrix3x3(m_gameObject.getWorldTransform().getRotation());
+  Vector3D camDir = m3.transpose() * Vector3D(0, 0, 1);
+
+  Viewport vp;
+  vp.topLeftX = 0;
+  vp.topLeftY = 0;
+  vp.width = 1280;
+  vp.height = 720;
+
+  float camFov = 45.f;
+  float camNP = 0.1f;
+  float camFP = 10000.0f;
+
+  SizeT id = CameraManager::instance().getCameraCounter();
+
+  m_camera =
+  CameraManager::createCamera(_T("CM_CAM_") + StringUtils::toTString(id),
+                              camPos,
+                              camDir,
+                              vp,
+                              60.f,
+                              0.1f,
+                              10000.0f);
 }
 
 void 
 CameraComponent::onUpdate() {
-
   if (m_gameObject.changed()) {
     if (auto cam = m_camera.lock()) {
       auto& pos = m_gameObject.getWorldTransform().getPosition();
@@ -53,6 +92,7 @@ CameraComponent::onRender() {
 
 void 
 CameraComponent::onDestroy() {
+  CameraManager::deleteCamera(m_camera.lock()->getName());
 }
 
 UInt32

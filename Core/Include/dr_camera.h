@@ -41,7 +41,8 @@ class DR_CORE_EXPORT Camera
 	*   Point to look at.
 	*/
 	Camera(const Vector3D& _position, 
-         const Vector3D& _target);
+         const Vector3D& _target,
+         const TString& _name = _T(""));
 
 	/**
 	* TEST::destructor
@@ -224,6 +225,9 @@ class DR_CORE_EXPORT Camera
   float
   getFOV() const;
 
+  TString
+  getName() const;
+
   UInt32
   getViewportWidth() const;
 
@@ -257,6 +261,7 @@ class DR_CORE_EXPORT Camera
   void 
   invalidateView();
 
+  TString m_name;
 	mutable Matrix4x4 m_vp;
 	mutable Matrix4x4 m_view;
   mutable bool m_outdateView;

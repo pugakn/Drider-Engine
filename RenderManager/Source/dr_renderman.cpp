@@ -295,7 +295,7 @@ RenderManager::init() {
     texDescDefault.height = screenHeight * blurScale;
     //texDescDefault.width = screenWidth;
     //texDescDefault.height = screenHeight;
-    texDescDefault.Format = DR_FORMAT::kR16G16B16A16_FLOAT;
+    texDescDefault.Format = DR_FORMAT::kR8G8B8A8_UNORM;
     texDescDefault.pitch = texDescDefault.width * 4 * 1;
     texDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
 
@@ -479,8 +479,8 @@ void
 RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
-  auto mainCam = CameraManager::getActiveCamera();
-  auto mainCamRef = *CameraManager::getActiveCamera();
+  auto mainCam = CameraManager::instance().getActiveCamera();
+  auto mainCamRef = *CameraManager::instance().getActiveCamera();
   RenderCommandBuffer queryRequest;
 
   RenderQuery rqRequest{ mainCamRef,

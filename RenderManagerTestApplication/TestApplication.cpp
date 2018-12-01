@@ -17,9 +17,10 @@
 #include <dr_codec_texture.h>
 #include <dr_depth_stencil.h>
 
-#include <dr_animator_component.h>
-#include <dr_render_component.h>
 #include <dr_aabb_collider.h>
+#include <dr_animator_component.h>
+#include <dr_camera_component.h>
+#include <dr_render_component.h>
 #include <dr_degree.h>
 #include <dr_texture_core.h>
 #include "dr_rendermanapp.h"
@@ -92,6 +93,8 @@ RenderManApp::postInit() {
   SceneGraph::startUp();
   Time::startUp();
   CameraManager::startUp();
+  RenderManager::startUp();
+  /*
   CameraManager::createCamera(_T("PATO_CAM"),
                               { 0.0f, 200.0f, -400.0f },
                               { 0.0f, 50.0f, 0.0f },
@@ -100,7 +103,13 @@ RenderManApp::postInit() {
                               0.1f,
                               10000.0f);
   CameraManager::setActiveCamera(_T("PATO_CAM"));
-  RenderManager::startUp();
+  */
+
+  auto rm_cam = SceneGraph::createObject(_T("DuckCamera"));
+  auto cam_cmp = rm_cam->createComponent<CameraComponent>();
+  rm_cam->getTransform().setPosition({ 0.0f, 200.0f, -400.0f });
+  rm_cam->getTransform().setRotation({ 0.0f, -50.0f, 0.0f });
+  cam_cmp->setActive();
 
   luminanceDelta = 0.0f;
   RenderManager::instancePtr()->luminanceDelta = &luminanceDelta;
@@ -371,6 +380,8 @@ RenderManApp::postInit() {
     m_selectedGO->createComponent<AABBCollider>(ptrSS->aabb);
     m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, 0.0f));
   }
+
+  m_vecGos.push_back(rm_cam);
   */
 
   m_SzTGosIndex = m_vecGos.size() - 1;
@@ -536,7 +547,8 @@ RenderManApp::postRender() {
 #if (RENDER_MANAGER == SINGLE_THREAD)
   GraphicsDriver::API().clear();
 
-  RenderManager::instance().draw(GraphicsAPI::getBackBufferRT(), GraphicsAPI::getDepthStencil());
+  RenderManager::instance().draw(GraphicsAPI::getBackBufferRT(),
+                                 GraphicsAPI::getDepthStencil());
 
   GraphicsDriver::API().swapBuffers();
 #endif

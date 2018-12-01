@@ -9,6 +9,13 @@ namespace driderSDK {
 
 class Camera;
 
+/**
+* Camera class component.
+* Holds the information of this camera.
+*
+* Sample usage:
+* gameObject.createComponent<CameraComponent>();
+*/
 class DR_CORE_EXPORT CameraComponent : public GameComponent
 {
 public:
@@ -19,12 +26,39 @@ public:
                   SharedCamera _camera = SharedCamera());
 
   void
-  setCamera(SharedCamera camera);
-
-  void
   setActive();
 
-private:  
+  /**
+  *
+  */
+  float
+  getWidth();
+
+  /**
+  *
+  */
+  float
+  getHeight();
+
+  /**
+  *
+  */
+  float
+  getNearPlane();
+
+  /**
+  *
+  */
+  float
+  getFarPlane();
+  
+  /**
+  *
+  */
+  float
+  getFov();
+
+ private:
 
   // Inherited via GameComponent
   virtual void 

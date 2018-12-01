@@ -10,11 +10,11 @@ CONSTRUCT_DESTRUCT_DEF(Camera)
 
 Camera::Camera() 
   : Camera({0, 100, -100}, {0, 100, 1}) {
-  
 }
 
 Camera::Camera(const Vector3D& _position, 
-               const Vector3D& _target)
+               const Vector3D& _target,
+               const TString& _name)
   : m_up(0.0f, 1.0f, 0.0f),
     m_farPlane(0),
     m_nearPlane(0),
@@ -22,6 +22,7 @@ Camera::Camera(const Vector3D& _position,
     m_viewport{0,0,100,100}, 
     m_position(_position),
     m_target(_target),
+    m_name(_name),
     m_outdateView(true) {
 }
 
@@ -178,6 +179,11 @@ Camera::getNearPlane() const {
 float 
 Camera::getFOV() const {
   return m_fov;
+}
+
+TString
+Camera::getName() const {
+  return m_name;
 }
 
 UInt32

@@ -64,7 +64,7 @@ class DR_CORE_EXPORT CameraManager : public Module<CameraManager>
 	* @param farPlane
 	*   Value of the farthest plane of the proyection.
 	*/
-	static void 
+  static SharedCamera
 	createCamera(const TString& cameraName,
 							 const Vector3D& pos,
 							 const Vector3D& target,
@@ -102,7 +102,7 @@ class DR_CORE_EXPORT CameraManager : public Module<CameraManager>
 	* @param farPlane
 	*   Value of the farthest plane of the proyection.
 	*/
-	static void 
+  static SharedCamera
 	createCamera(const TString& cameraName,
 							 const Vector3D& pos,
 							 const Vector3D& target,
@@ -141,7 +141,7 @@ class DR_CORE_EXPORT CameraManager : public Module<CameraManager>
 	* TEST::getActiveCamera
 	* Get the active camera and returns it.
 	*
-	* @return;
+	* @return
 	*   The name of the camera to delete.
 	*/
 	static SharedCamera
@@ -158,17 +158,42 @@ class DR_CORE_EXPORT CameraManager : public Module<CameraManager>
 	static void
 	setActiveCamera(const TString& cameraName);
 
+  /**
+  * TEST::setActiveCamera
+  * Sets the Manager's active camera
+  *
+  * @param camera
+  *   Reference to the active camera.
+  *
+  */
   static void
   setActiveCamera(SharedCamera camera);
 
- private:
+  /**
+  * TEST::getCameraCounter
+  * Returns the camera unique counter.
+  *
+  * @return
+  *  Camera counter.
+  *
+  */
+  static SizeT
+  getCameraCounter();
 
-   void
-   onStartUp();
+ private:
    
-   SharedCamera m_activeCam;
-   SharedCamera m_dummyCam;
-   CamerasMap m_cameras;
+  /**
+  * TEST::onStartUp
+  * Description
+  *
+  */
+  void
+  onStartUp();
+
+  SizeT CameraCounter;
+  SharedCamera m_activeCam;
+  SharedCamera m_dummyCam;
+  CamerasMap m_cameras;
 };
 
 }
