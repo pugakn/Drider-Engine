@@ -154,10 +154,20 @@ class DR_CORE_EXPORT Camera
 	setTarget(const Vector3D& target);
 
 	/**
+	* TEST::getViewport
+	* Returns the camera's viewport
+	*
+	* @return
+	*   Copy of the camera viewport.
+	*/
+  Viewport
+	getViewport();
+
+	/**
 	* TEST::setViewport
 	* Set the camera's viewport
 	*
-	* @param _viewport
+	* @param viewport
 	*   Viewport to set.
 	*/
 	void
@@ -216,14 +226,59 @@ class DR_CORE_EXPORT Camera
   const Matrix4x4&
   getProjection() const;
 
+  /**
+  * Returns the camera far plane.
+  *
+  * @return
+  *  The camera far plane.
+  */
   float
   getFarPlane() const;
 
+  /**
+  * Sets the camera far plane.
+  *
+  * @param farPlane
+  *  The new camera far plane.
+  */
+  void
+  setFarPlane(float farPlane);
+
+  /**
+  * Returns the camera near plane.
+  *
+  * @return
+  *  The camera near plane.
+  */
   float
   getNearPlane() const;
 
+  /**
+  * Sets the camera near plane.
+  *
+  * @param nearPlane
+  *  The new camera near plane.
+  */
+  void
+  setNearPlane(float nearPlane);
+
+  /**
+  * Returns the camera fov.
+  *
+  * @return
+  *  The camera fov plane.
+  */
   float
   getFOV() const;
+
+  /**
+  * Sets the camera FOV.
+  *
+  * @param FOV
+  *  The new camera FOV.
+  */
+  void
+  setFOV(float fov);
 
   TString
   getName() const;

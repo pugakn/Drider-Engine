@@ -23,9 +23,23 @@ CameraComponent::getWidth() {
   return m_camera.lock()->getViewportWidth();
 }
 
+void
+CameraComponent::setWidth(float width) {
+  Viewport newVp = m_camera.lock()->getViewport();
+  newVp.width = width;
+  m_camera.lock()->setViewport(newVp);
+}
+
 float
 CameraComponent::getHeight() {
   return m_camera.lock()->getViewportHeight();
+}
+
+void
+CameraComponent::setHeight(float height) {
+  Viewport newVp = m_camera.lock()->getViewport();
+  newVp.height = height;
+  m_camera.lock()->setViewport(newVp);
 }
 
 float
@@ -33,14 +47,29 @@ CameraComponent::getNearPlane() {
   return m_camera.lock()->getNearPlane();
 }
 
+void
+CameraComponent::setNearPlane(float nearPlane) {
+  m_camera.lock()->setNearPlane(nearPlane);
+}
+
 float
 CameraComponent::getFarPlane() {
   return m_camera.lock()->getFarPlane();
 }
 
+void
+CameraComponent::setFarPlane(float farPlane) {
+  m_camera.lock()->setFarPlane(farPlane);
+}
+
 float
 CameraComponent::getFov() {
   return m_camera.lock()->getFOV();
+}
+
+void
+CameraComponent::setFov(float fov) {
+  m_camera.lock()->setFOV(fov);
 }
 
 void

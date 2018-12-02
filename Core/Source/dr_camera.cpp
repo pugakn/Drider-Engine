@@ -117,6 +117,11 @@ Camera::setTarget(const Vector3D& target) {
   invalidateView();
 }
 
+Viewport
+Camera::getViewport() {
+  return m_viewport;
+}
+
 void
 Camera::setViewport(const Viewport& viewport) {
   m_viewport = viewport;
@@ -171,14 +176,32 @@ Camera::getFarPlane() const {
   return m_farPlane;
 }
 
-float 
+void
+Camera::setFarPlane(float farPlane) {
+  m_farPlane = farPlane;
+  createProyection(m_fov, m_nearPlane, m_farPlane);
+}
+
+float
 Camera::getNearPlane() const {
   return m_nearPlane;
+}
+
+void
+Camera::setNearPlane(float nearPlane) {
+  m_nearPlane = nearPlane;
+  createProyection(m_fov, m_nearPlane, m_farPlane);
 }
 
 float 
 Camera::getFOV() const {
   return m_fov;
+}
+
+void
+Camera::setFOV(float fov) {
+  m_fov = fov;
+  createProyection(m_fov, m_nearPlane, m_farPlane);
 }
 
 TString
