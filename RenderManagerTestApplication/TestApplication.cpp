@@ -108,7 +108,7 @@ RenderManApp::postInit() {
   auto rm_cam = SceneGraph::createObject(_T("DuckCamera"));
   auto cam_cmp = rm_cam->createComponent<CameraComponent>();
   rm_cam->getTransform().setPosition({ 0.0f, 200.0f, -400.0f });
-  rm_cam->getTransform().setRotation({ 0.0f, -50.0f, 0.0f });
+  rm_cam->getTransform().setRotation({ 0.0f, 0.0f, -50.0f });
   cam_cmp->setActive();
 
   luminanceDelta = 0.0f;

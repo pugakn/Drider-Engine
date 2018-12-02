@@ -106,11 +106,10 @@ CameraComponent::onUpdate() {
   if (m_gameObject.changed()) {
     if (auto cam = m_camera.lock()) {
       auto& pos = m_gameObject.getWorldTransform().getPosition();
-      auto m3 = Matrix3x3(m_gameObject.getWorldTransform().getRotation());
-      auto dir =  m3.transpose() * 
-                  Vector3D{0, 0, 1};
+      Matrix3x3 m3 = Matrix3x3(m_gameObject.getWorldTransform().getRotation());
+      auto dir =  m3.transpose() * Vector3D(0.0f, 0.0f, 1.0f);
       cam->setPosition(pos);
-      cam->setTarget(pos + dir * 50.f);
+      cam->setTarget(pos + (dir * 50.f));
     }
   }
 }
