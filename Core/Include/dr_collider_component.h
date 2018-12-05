@@ -3,11 +3,11 @@
 #include "dr_core_prerequisites.h"
 #include "dr_gameComponent.h"
 
-#include <dr_physics_manager.h>
 #include <functional>
 #include <vector>
-namespace driderSDK {
 
+namespace driderSDK {
+class DrCollisionBody;
 namespace COLLIDER_TYPE {
 enum E
 {
@@ -24,7 +24,6 @@ class DR_CORE_EXPORT ColliderComponent : public GameComponent
 
   virtual COLLIDER_TYPE::E
   getType() = 0;
-
 
   virtual void
   onUpdate() override;

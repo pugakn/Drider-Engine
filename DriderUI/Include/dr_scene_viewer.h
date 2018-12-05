@@ -47,12 +47,12 @@ public:
   void 
   resize(const Viewport& _v);
 
-  RenderMan& getRenderManager();
+  RenderManager& getRenderManager();
 private:
   void initInputs();
   SceneGraph::SharedGameObject GetGMOMouseCollition();
 
-  RenderMan m_renderMan;
+  RenderManager m_renderMan;
   Viewport m_sceneViewport;
   GFXShared<RenderTarget> m_RT;
   GFXShared<DepthStencil> m_RTDPTH;
