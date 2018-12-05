@@ -19,10 +19,10 @@ PostProcessingPass::init(PassInitData* initData) {
   PostProcessingInitData* data = static_cast<PostProcessingInitData*>(initData);
   Device& device = GraphicsAPI::getDevice();
 
-  m_vertex[0] = Vector4D(-1.0f,  1.0f, 1.0f, 1.0f);
-  m_vertex[1] = Vector4D(-1.0f, -1.0f, 1.0f, 1.0f);
-  m_vertex[2] = Vector4D( 1.0f, -1.0f, 1.0f, 1.0f);
-  m_vertex[3] = Vector4D( 1.0f,  1.0f, 1.0f, 1.0f);
+  m_vertex[0] = Vector4D(-1.0f,  1.0f, 0.0f, 1.0f);
+  m_vertex[1] = Vector4D(-1.0f, -1.0f, 0.0f, 1.0f);
+  m_vertex[2] = Vector4D( 1.0f, -1.0f, 0.0f, 1.0f);
+  m_vertex[3] = Vector4D( 1.0f,  1.0f, 0.0f, 1.0f);
 
   m_index[0] = 2;
   m_index[1] = 1;

@@ -12,10 +12,9 @@ VS(PS_INPUT input) {
   PS_OUTPUT psOut;
   
   psOut.Position   =  input.Position;
-  psOut.Position.x = -psOut.Position.x;
-
-  //psOut.Texcoord  = 1.0f - input.Texcoord;
+  
   psOut.Texcoord  = (psOut.Position.xy + float2(1.0f, 1.0f)) * 0.5f;
+  psOut.Texcoord.y  = 1.0f - psOut.Texcoord.y;
   
   return psOut;
 }
