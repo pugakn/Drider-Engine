@@ -109,8 +109,8 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   
 
   static const float reflectionBias = 1.0f;
-  static const float stepSize = 4.0f;
-  static const int nSteps = 125;
+  static const float stepSize = 10.0f;
+  static const int nSteps = 50;
 
   const float3 reflectDir = normalize(reflect(ViewDir, normal));
   const float4 reflectStep = float4(reflectDir * stepSize, 0.0f);
