@@ -66,8 +66,8 @@ BloomPass::draw(PassDrawData* drawData) {
 
   m_ComputeTotalBlocks = m_ComputeWidthBlocks * m_ComputeHeightBlocks;
 
-  CB.fViewportDimensions.x = m_RTWidth;
-  CB.fViewportDimensions.y = m_RTHeight;
+  CB.fViewportDimensions.x = static_cast<float>(m_RTWidth);
+  CB.fViewportDimensions.y = static_cast<float>(m_RTHeight);
 
   CB.BloomThresholdLuminiscenceDelta = data->BloomThreshold;
   CB.BloomThresholdLuminiscenceDelta.w = data->LuminiscenceDelta;

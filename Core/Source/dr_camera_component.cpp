@@ -18,25 +18,25 @@ CameraComponent::setActive() {
   CameraManager::setActiveCamera(m_camera.lock());
 }
 
-float
+UInt32
 CameraComponent::getWidth() {
   return m_camera.lock()->getViewportWidth();
 }
 
 void
-CameraComponent::setWidth(float width) {
+CameraComponent::setWidth(UInt32 width) {
   Viewport newVp = m_camera.lock()->getViewport();
   newVp.width = width;
   m_camera.lock()->setViewport(newVp);
 }
 
-float
+UInt32
 CameraComponent::getHeight() {
   return m_camera.lock()->getViewportHeight();
 }
 
 void
-CameraComponent::setHeight(float height) {
+CameraComponent::setHeight(UInt32 height) {
   Viewport newVp = m_camera.lock()->getViewport();
   newVp.height = height;
   m_camera.lock()->setViewport(newVp);
@@ -85,7 +85,7 @@ CameraComponent::onCreate() {
   vp.width = 1280;
   vp.height = 720;
 
-  float camFov = 45.f;
+  float camFov = 60.f;
   float camNP = 0.1f;
   float camFP = 10000.0f;
 
@@ -96,9 +96,9 @@ CameraComponent::onCreate() {
                               camPos,
                               camDir,
                               vp,
-                              60.f,
-                              0.1f,
-                              10000.0f);
+                              camFov,
+                              camNP,
+                              camFP);
 }
 
 void 

@@ -38,7 +38,7 @@ public:
   *  Returns the width of the camera viewport.
   *
   */
-  float
+  UInt32
   getWidth();
   
   /**
@@ -49,7 +49,7 @@ public:
   *
   */
   void
-  setWidth(float width);
+  setWidth(UInt32 width);
 
   /**
   * Returns the viewport height.
@@ -58,7 +58,7 @@ public:
   *  Returns the height of the camera viewport.
   *
   */
-  float
+  UInt32
   getHeight();
 
   /**
@@ -69,7 +69,7 @@ public:
   *
   */
   void
-  setHeight(float height);
+  setHeight(UInt32 height);
 
   /**
   * Returns the near plane.
