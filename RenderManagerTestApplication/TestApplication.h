@@ -51,7 +51,7 @@ class RenderManApp : public Application
   bool render;
 
   SceneGraph::SharedGameObject m_selectedGO;
-  Int32 m_SzTGosIndex;
+  SizeT m_SzTGosIndex;
   bool m_bRotate;
   std::vector<SceneGraph::SharedGameObject> m_vecGos;
   std::shared_ptr<Material> m_BushMat;

@@ -3,7 +3,14 @@
 using namespace driderSDK;
 
 Int32
-main(Int32 argc, char* argv[]) {
+main(Int32 argc, ANSIChar* argv[]) {
+
+  if (argc > 1) {
+    for (Int32 i = 0; i < argc; ++i) {
+      std::cout << argv[i] << std::endl;
+    }
+  }
+
   RenderManApp app;
 
   Viewport vp;

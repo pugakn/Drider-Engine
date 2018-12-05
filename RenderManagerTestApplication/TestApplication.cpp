@@ -125,11 +125,11 @@ RenderManApp::postInit() {
   float separationX = 75.0f;
   float separationZ = 150.0f;
   float proportion = 0.0f;
-  SizeT horizontalLights = 32;
-  SizeT verticalLights = (RM_MAX_LIGHTS / horizontalLights);
+  Int32 horizontalLights = 32;
+  Int32 verticalLights = (RM_MAX_LIGHTS / horizontalLights);
 
-  Int32 xOffset = (horizontalLights / 2) * separationX;
-  Int32 zOffset = 1 * separationZ;
+  float xOffset = (horizontalLights / 2.0f) * separationX;
+  float zOffset = 1 * separationZ;
 
   Vector4D lightPos;
   Vector4D lightColor;
@@ -283,7 +283,7 @@ RenderManApp::postInit() {
     
     aComp->setSkeleton(ws);
 
-    for (Int32 i = 0; i < ptrStorm->animationsNames.size(); ++i) {
+    for (SizeT i = 0; i < ptrStorm->animationsNames.size(); ++i) {
       auto wa = ResourceManager::getReferenceT<Animation>(ptrStorm->animationsNames[i]);
 
       aComp->addAnimation(wa, ptrStorm->animationsNames[i]);
