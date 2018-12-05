@@ -54,23 +54,33 @@ getColorFromPosition(const float4 posSample) {
 float3
 SSReflectDetail(const float4 startPos,
                 const float4 finalPos,
-                const int qualitySteps) {
+                const int qualitySteps,
+                const float baseDepth) {
+  static const float reflectionBias = 0.005f;
+  
   float4 currentPosition;
   float stepProportion = 0.0f;
   
   float positionDepth;
   float cameraDepth;
   
+  const float proportionScale = 1.0f / qualitySteps;
+
   [loop]
   for (int i = 0; i < qualitySteps; ++i) {
-    stepProportion = (i + 1.0f) * rcp(qualitySteps);
-
+    stepProportion = (i + 1.0f) * proportionScale;
     currentPosition = lerp(startPos, finalPos, stepProportion);
+
+    //stepProportion = (i + 1.0f) * proportionScale;
+    //currentPosition = lerp(startPos, finalPos, 1.0f - stepProportion);
 
     positionDepth = getPositionDepth(currentPosition);
     cameraDepth = getCameraDepth(currentPosition);
     
-    if (positionDepth > cameraDepth) {
+    //if (positionDepth > cameraDepth) {
+    //if ((positionDepth - cameraDepth) < reflectionBias) {
+    //if (positionDepth > baseDepth) {
+    if ((positionDepth - baseDepth) < reflectionBias) {
       return getColorFromPosition(currentPosition);
     }
   }
@@ -98,7 +108,7 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   const float3 ViewDir = normalize(position.xyz - kEyePosition.xyz);
   
 
-  static const float reflectionBias = 0.005f;
+  static const float reflectionBias = 1.0f;
   static const float stepSize = 10.0f;
   static const int nSteps = 50;
 
@@ -123,7 +133,7 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
         //reflectColor = getColorFromPosition(currentPosition);
         reflectColor = SSReflectDetail(currentPosition - reflectStep,
                                        currentPosition,
-                                       10);
+                                       10, cameraDepth);
         reflectColor *= 1.0f - ((i * rcp(nSteps)));
         break;
       }

@@ -20,7 +20,7 @@ GameObject::GameObject(const TString& name)
     m_tag(_T("UNTAGGED")),
     m_isStatic(false),
     m_isStarted(false),
-    m_change(false),
+    m_change(true),
     m_isKilled(false)
     DR_DEBUG_ONLY_PARAM(m_destroyed(false))
 {

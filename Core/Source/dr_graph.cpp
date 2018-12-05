@@ -165,6 +165,17 @@ SceneGraph::queryGameObjects(const Camera& camera, QUERY_ORDER::E order) {
   return objsList;
 }
 
+const std::vector<LightComponent*>
+SceneGraph::getLightComponents() {
+  return lightsList;
+}
+
+void
+SceneGraph::updateLightsList() {
+  lightsList.clear();
+  instance().m_root->getRecursiveComponents<LightComponent>(lightsList);
+}
+
 void 
 SceneGraph::testObjectOct(SharedGameObject object, 
                           const Frustrum& frustrum, 
@@ -370,9 +381,8 @@ SceneGraph::addGameObjectsStatics(GameObject & node,
 }
 
 void
-SceneGraph::addAllChilds(GameObject & node,
-                         std::vector<std::shared_ptr<GameObject>>* list)
-{
+SceneGraph::addAllChilds(GameObject& node,
+                         std::vector<std::shared_ptr<GameObject>>* list) {
   for (auto& child : node.getChildren()) {
     if (child->getComponent<RenderComponent>()) {
       list->push_back(child);

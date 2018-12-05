@@ -121,6 +121,21 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
     return componentCastedList;
   }
 
+  /**
+  * Get own and child components of given type.
+  */
+  template<class T>
+  void
+  getRecursiveComponents(std::vector<T*>& container) {
+    for (auto& child : m_children) {
+      child->getRecursiveComponents<T>(container);
+    }
+
+    std::vector<T*> ownComponents = getComponents<T>();
+    container.insert(std::end(container),
+                     std::begin(ownComponents),
+                     std::end(ownComponents));
+  }
 
   /**
   * Gets the frist component of the specified type in the template parameter.
@@ -323,7 +338,8 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   bool
   changed() const;
 
-  void kill() const;
+  void
+  kill() const;
 
   bool 
   isKilled() const;
