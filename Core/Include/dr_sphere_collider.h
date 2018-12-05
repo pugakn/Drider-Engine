@@ -1,9 +1,9 @@
 #pragma once
 
 #include <dr_id_object.h>
+#include <dr_vector3d.h>
 #include "dr_collider_component.h"
 #include "dr_core_prerequisites.h"
-
 namespace driderSDK {
 
   class DR_CORE_EXPORT SphereCollider : public ColliderComponent,
