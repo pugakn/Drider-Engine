@@ -1,7 +1,7 @@
 #pragma once
+#include "dr_renderman_prerequisites.h"
 #include <dr_render_target.h>
 #include <dr_shader.h>
-#include "dr_renderman_prerequisites.h"
 #include <dr_constant_buffer.h>
 #include <dr_input_layout.h>
 

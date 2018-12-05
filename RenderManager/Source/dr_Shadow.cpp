@@ -7,7 +7,6 @@
 #include <dr_graphics_api.h>
 #include <dr_depth_stencil.h>
 #include <dr_model.h>
-#include <dr_resource_manager.h>
 #include <dr_texture_core.h>
 #include <dr_file.h>
 

@@ -1,11 +1,5 @@
 struct PS_INPUT {
-  float4 Position     : POSITION;
-  float4 Normal       : NORMAL;
-  float4 Binormal     : BINORMAL;
-  float4 Tangent      : TANGENT;
-  float4 BonesWeights : BONEWEIGHTS;
-  int4   BonesIDs     : BONEIDS;
-	float2 Texcoord     : TEXCOORD;
+  float4 Position : POSITION;
 };
 
 struct PS_OUTPUT {
@@ -20,7 +14,8 @@ VS(PS_INPUT input) {
   psOut.Position   =  input.Position;
   psOut.Position.x = -psOut.Position.x;
 
-  psOut.Texcoord  = 1.0f - input.Texcoord;
+  //psOut.Texcoord  = 1.0f - input.Texcoord;
+  psOut.Texcoord  = (psOut.Position.xy + float2(1.0f, 1.0f)) * 0.5f;
   
   return psOut;
 }

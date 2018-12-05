@@ -4,7 +4,6 @@
 #include <dr_vertex_buffer.h>
 #include <dr_index_buffer.h>
 #include <dr_device_context.h>
-#include <dr_resource_manager.h>
 #include <dr_model.h>
 
 namespace driderSDK {
@@ -19,6 +18,29 @@ void
 PostProcessingPass::init(PassInitData* initData) {
   PostProcessingInitData* data = static_cast<PostProcessingInitData*>(initData);
   Device& device = GraphicsAPI::getDevice();
+
+  m_vertex[0] = Vector4D(-1.0f,  1.0f, 1.0f, 1.0f);
+  m_vertex[1] = Vector4D(-1.0f, -1.0f, 1.0f, 1.0f);
+  m_vertex[2] = Vector4D( 1.0f, -1.0f, 1.0f, 1.0f);
+  m_vertex[3] = Vector4D( 1.0f,  1.0f, 1.0f, 1.0f);
+
+  m_index[0] = 2;
+  m_index[1] = 1;
+  m_index[2] = 0;
+  m_index[3] = 0;
+  m_index[4] = 3;
+  m_index[5] = 2;
+
+  DrBufferDesc bdescInstance;
+  bdescInstance.type = DR_BUFFER_TYPE::kVERTEX;
+  bdescInstance.sizeInBytes = sizeof(Vector4D) * 4;
+  bdescInstance.stride = sizeof(Vector4D);
+  m_VBQUAD = dr_gfx_unique((VertexBuffer*)device.createBuffer(bdescInstance, reinterpret_cast<byte*>(&m_vertex[0])));
+
+  bdescInstance.type = DR_BUFFER_TYPE::kINDEX;
+  bdescInstance.sizeInBytes = 6 * sizeof(UInt32);
+  bdescInstance.stride = 0;
+  m_IBQUAD = dr_gfx_unique(reinterpret_cast<IndexBuffer*>(device.createBuffer(bdescInstance, reinterpret_cast<byte*>(&m_index[0]))));
 
   m_vsFilename = _T("Resources\\Shaders\\PostProcessing_vs.hlsl");
   m_fsFilename = _T("Resources\\Shaders\\PostProcessing_ps.hlsl");
@@ -82,15 +104,9 @@ PostProcessingPass::draw(PassDrawData* drawData) {
 
   data->OutRT->set(dc, *data->OutDS);
 
-  auto screenQuadModel = ResourceManager::getReferenceT<Model>(_T("ScreenAlignedQuad.3ds"));
-  if (screenQuadModel) {
-    for (auto& SAQ : screenQuadModel->meshes) {
-      SAQ.vertexBuffer->set(dc);
-      SAQ.indexBuffer->set(dc);
-
-      dc.draw(SAQ.indices.size(), 0, 0);
-    }
-  }
+  m_VBQUAD->set(dc);
+  m_IBQUAD->set(dc);
+  dc.draw(6, 0, 0);
 
   dc.setUAVsNull();
   dc.setResourcesNull();

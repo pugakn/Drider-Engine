@@ -95,11 +95,6 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   void
   recompile();
 
-  /*
-  void
-  drawBox(Vector3D boxDimensions, Matrix4x4 transform);
-  */
-
   float* luminanceDelta;
   UInt32 screenWidth;
   UInt32 screenHeight;
@@ -124,6 +119,14 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   void
   onShutDown();
 
+  void
+  setCubeMap(std::shared_ptr<TextureCore> cubemap);
+
+  void
+  setEnviromentMap(std::shared_ptr<TextureCore> enviromentmap);
+
+  void
+  setFilmLut(std::shared_ptr<TextureCore> filmLut);
   /**
   * Draws a line in debug mode.
   *
@@ -198,6 +201,7 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
 
  protected:
 
+  std::shared_ptr<Model> m_quad;
   std::shared_ptr<TextureCore> m_cubemap;
   std::shared_ptr<TextureCore> m_cubemapDiffuse;
   std::shared_ptr<TextureCore> m_FilmLut;

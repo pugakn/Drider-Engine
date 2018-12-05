@@ -4,7 +4,6 @@
 #include <dr_vertex_buffer.h>
 #include <dr_index_buffer.h>
 #include <dr_device_context.h>
-#include <dr_resource_manager.h>
 #include <dr_model.h>
 #include <dr_texture.h>
 #include <dr_depth_stencil.h>

@@ -21,7 +21,7 @@
 #include <dr_animator_component.h>
 #include <dr_camera_component.h>
 #include <dr_render_component.h>
-#include <dr_aabb_collider.h>
+#include <dr_image_info.h>
 #include <dr_box_collider.h>
 #include <dr_sphere_collider.h>
 #include <dr_degree.h>
@@ -186,6 +186,10 @@ RenderManApp::postInit() {
   modelMovement = Vector3D(0.0f, 0.0f, 0.0f);
 
   loadResources();
+
+  RenderManager::instance().setCubeMap(ResourceManager::getReferenceT<TextureCore>(_T("GraceCubemap.tga")));
+  RenderManager::instance().setEnviromentMap(ResourceManager::getReferenceT<TextureCore>(_T("GraceDiffuseCubemap.tga")));
+  RenderManager::instance().setFilmLut(ResourceManager::getReferenceT<TextureCore>(_T("FilmLut.tga")));
 
   m_vecGos.push_back(SceneGraph::createObject(_T("Floor")));
   m_selectedGO = m_vecGos.back();
@@ -663,6 +667,18 @@ RenderManApp::SelectModel(Int32 jump) {
 
 void
 RenderManApp::loadResources() {
+  ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
+
+  ImageInfo cubeMapDesc;
+  cubeMapDesc.width = 256;
+  cubeMapDesc.height = 256;
+  cubeMapDesc.textureDimension = DR_DIMENSION::kCUBE_MAP;
+  cubeMapDesc.channels = DR_FORMAT::kB8G8R8A8_UNORM_SRGB;
+
+  ResourceManager::loadResource(_T("GraceCubemap.tga"), &cubeMapDesc);
+  ResourceManager::loadResource(_T("GraceDiffuseCubemap.tga"), &cubeMapDesc);
+  ResourceManager::loadResource(_T("FilmLut.tga"));
+
   ResourceManager::loadResource(_T("plane.fbx"));
   ResourceManager::loadResource(_T("FernBush.obj"));
   ResourceManager::loadResource(_T("model.dae"));

@@ -4,8 +4,6 @@
 #include <dr_device_context.h>
 #include <dr_device.h>
 #include <dr_texture.h>
-#include <dr_resource_manager.h>
-#include <dr_image_info.h>
 #include <dr_camera_manager.h>
 #include <dr_depth_stencil.h>
 
@@ -25,21 +23,6 @@ RenderManager::~RenderManager() {
 void
 RenderManager::init() {
   Device& dc = GraphicsAPI::getDevice();
-
-  ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
-
-  ImageInfo cubeMapDesc;
-  cubeMapDesc.width = 256;
-  cubeMapDesc.height = 256;
-  cubeMapDesc.textureDimension = DR_DIMENSION::kCUBE_MAP;
-  cubeMapDesc.channels = DR_FORMAT::kB8G8R8A8_UNORM_SRGB;
-
-  ResourceManager::loadResource(_T("GraceCubemap.tga"), &cubeMapDesc);
-  m_cubemap = ResourceManager::getReferenceT<TextureCore>(_T("GraceCubemap.tga"));
-  ResourceManager::loadResource(_T("GraceDiffuseCubemap.tga"), &cubeMapDesc);
-  m_cubemapDiffuse = ResourceManager::getReferenceT<TextureCore>(_T("GraceDiffuseCubemap.tga"));
-  ResourceManager::loadResource(_T("FilmLut.tga"));
-  m_FilmLut = ResourceManager::getReferenceT<TextureCore>(_T("FilmLut.tga"));
 
   //luminanceDelta = 0.0f;
 
@@ -678,6 +661,21 @@ RenderManager::onStartUp() {
 void
 RenderManager::onShutDown() {
   exit();
+}
+
+void
+RenderManager::setCubeMap(std::shared_ptr<TextureCore> cubemap) {
+  m_cubemap = cubemap;
+}
+
+void
+RenderManager::setEnviromentMap(std::shared_ptr<TextureCore> enviromentmap) {
+  m_cubemapDiffuse = enviromentmap;
+}
+
+void
+RenderManager::setFilmLut(std::shared_ptr<TextureCore> filmLut) {
+  m_FilmLut = filmLut;
 }
 
 void

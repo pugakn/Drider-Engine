@@ -5,7 +5,6 @@
 #include <dr_index_buffer.h>
 #include <dr_depth_stencil.h>
 #include <dr_device_context.h>
-#include <dr_resource_manager.h>
 #include <dr_model.h>
 
 namespace driderSDK {

@@ -2,7 +2,7 @@
 
 #include <dr_vector3d.h>
 #include <dr_matrix4x4.h>
-#include "dr_core_prerequisites.h"
+#include "dr_physics_prerequisites.h"
 
 #include <dr_export_script.h>
 #include <..\..\Script\Include\dr_script_engine.h>
@@ -23,7 +23,7 @@ namespace AXIS {
 class Transform;
 Transform* Ref_Transform();
 
-class DR_CORE_EXPORT Transform 
+class DR_PHYSICS_EXPORT Transform
 {
  public:
   friend class GameObject;
@@ -48,18 +48,39 @@ class DR_CORE_EXPORT Transform
   const Matrix4x4& 
   getMatrix() const;
 
+  /**
+  * Returns the position of the transform.
+  *
+  * @return 
+  *   The transformation position.
+  */
   const Vector3D& 
   getPosition() const;
 
+  /**
+  * Returns the rotation of the transform.
+  *
+  * @return
+  *   The rotation in euler angles of the transform.
+  */
   const Vector3D&
   getEulerAngles() const;
 
   /**
-  * Gets the rotation matrix.
+  * Returns the rotation matrix of the transform.
+  *
+  * @return
+  *   The rotation matrix of the transform.
   */
   const Matrix4x4& 
   getRotation() const;
 
+  /**
+  * Returns the transform scale.
+  *
+  * @return
+  *   The scale of the transform.
+  */
   const Vector3D& 
   getScale() const;
 
@@ -80,15 +101,37 @@ class DR_CORE_EXPORT Transform
   * 
   * @param axis
   *  The position component (x|y|z) to be modified
-  */  
+  */
   void 
   setPosition(float pos, AXIS::E axis);
+
+  /**
+  * Sets the value of the specified position component.
+  *
+  * @param position
+  *  Value of the component.
+  */
   void 
   setPosition(const Vector3D& position);
 
-
-  void 
+  /**
+  * Adds the given distance to the given axis.
+  *
+  * @param dist
+  *  Value of the distance to be moved.
+  *
+  * @param axis
+  *  The axis component (x|y|z) to be modified
+  */
+  void
   move(float dist, AXIS::E axis);
+
+  /**
+  * Adds the given distance to the given axis.
+  *
+  * @param distancce
+  *  Distance to be increased.
+  */
   void 
   move(const Vector3D& distance);
 
@@ -142,9 +185,16 @@ class DR_CORE_EXPORT Transform
   * 
   * @param axis
   *  The scale component (x|y|z) to be setted.
-  */  
+  */
   void 
   setScale(float scale, AXIS::E axis);
+
+  /**
+  * Sets the value of the specified scale component.
+  *
+  * @param scale
+  *  The new scale of the component.
+  */
   void 
   setScale(const Vector3D& scale);
 
@@ -156,9 +206,16 @@ class DR_CORE_EXPORT Transform
   * 
   * @param axis
   *  The scale component (x|y|z) to be scaled.
-  */  
+  */
   void 
   scale(float scale, AXIS::E axis);
+
+  /**
+  * Scales the value of the specified scale component.
+  *
+  * @param scale
+  *  Scaling factor.
+  */
   void 
   scale(const Vector3D& scale);
 
