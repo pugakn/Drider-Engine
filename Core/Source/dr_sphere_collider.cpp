@@ -52,6 +52,16 @@ SphereCollider::getClassID() {
   return CLASS_NAME_ID(SphereCollider);
 }
 
+void
+SphereCollider::serialize(File &data) {
+
+}
+
+void
+SphereCollider::deserialize(TString &data) {
+
+}
+
 GameComponent* 
 SphereCollider::cloneIn(GameObject& _go) {
   auto dup = _go.createComponent<SphereCollider>(m_radius,m_center);

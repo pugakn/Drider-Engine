@@ -66,4 +66,14 @@ namespace driderSDK {
   RigidBody3DComponent::setType(RIGID_BODY_TYPE::E type) {
     m_rigidBody->setType(type);
   }
+
+  void
+  RigidBody3DComponent::serialize(File &file) {
+
+  }
+  
+  void
+  RigidBody3DComponent::deserialize(TString &data) {
+
+  }
 }

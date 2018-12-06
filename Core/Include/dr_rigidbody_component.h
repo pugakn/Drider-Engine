@@ -50,6 +50,12 @@ namespace driderSDK {
     void 
     setType(RIGID_BODY_TYPE::E type);
 
+    void
+    serialize(File &file) override;
+    
+    void
+    deserialize(TString &data) override;
+
 
     DrRigidBody* m_rigidBody;
   protected:

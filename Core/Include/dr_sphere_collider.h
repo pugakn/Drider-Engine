@@ -27,6 +27,12 @@ namespace driderSDK {
     virtual UInt32
       getClassID() override;
 
+    void
+    serialize(File &data) override;
+
+    void  
+    deserialize(TString &data) override;
+
   private:
     virtual GameComponent*
       cloneIn(GameObject& _go) override;

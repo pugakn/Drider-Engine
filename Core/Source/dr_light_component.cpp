@@ -58,6 +58,16 @@ LightComponent::GetIntensity() {
 }
 
 void
+LightComponent::serialize(File &file) {
+
+}
+
+void
+LightComponent::deserialize(TString &data) {
+
+}
+
+void
 LightComponent::onCreate() {
 }
 

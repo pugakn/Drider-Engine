@@ -49,6 +49,16 @@ BoxCollider::getClassID() {
   return CLASS_NAME_ID(BoxCollider);
 }
 
+void
+BoxCollider::serialize(File &file) {
+
+}
+
+void
+BoxCollider::deserialize(TString &data) {
+
+}
+
 GameComponent* 
 BoxCollider::cloneIn(GameObject& _go) {
   auto dup = _go.createComponent<BoxCollider>(m_originalAABB);

@@ -87,6 +87,12 @@ class DR_CORE_EXPORT LightComponent : public GameComponent
   float
   GetIntensity();
 
+  void
+  serialize(File &file) override;
+
+  void
+  deserialize(TString &data) override;
+
  private:
 
   // Inherited via GameComponent
