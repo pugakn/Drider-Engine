@@ -23,13 +23,11 @@
     <ClInclude Include="Include\dr_physics_manager.h" />
     <ClInclude Include="Include\dr_physics_prerequisites.h" />
     <ClInclude Include="Include\dr_rigidbody.h" />
-    <ClInclude Include="Include\dr_transform.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_collision_body.cpp" />
     <ClCompile Include="Source\dr_physics_manager.cpp" />
     <ClCompile Include="Source\dr_rigidbody.cpp" />
-    <ClCompile Include="Source\dr_transform.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
@@ -102,7 +100,7 @@
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <AdditionalIncludeDirectories>$(DRIDER_DEPENDENCIES)Include;$(DRIDER_DEPENDENCIES)Include\CEF;$(SolutionDir)$(Projectname)\Include;$(SolutionDir)Math\Include;$(SolutionDir)Utils\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>DR_PHYSICS_EXPORTS;_CRT_SECURE_NO_WARNINGS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
@@ -115,7 +113,7 @@
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <AdditionalIncludeDirectories>$(DRIDER_DEPENDENCIES)Include;$(DRIDER_DEPENDENCIES)Include\CEF;$(SolutionDir)$(Projectname)\Include;$(SolutionDir)Math\Include;$(SolutionDir)Utils\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>DR_PHYSICS_EXPORTS;_CRT_SECURE_NO_WARNINGS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>

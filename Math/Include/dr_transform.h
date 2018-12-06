@@ -2,7 +2,7 @@
 
 #include <dr_vector3d.h>
 #include <dr_matrix4x4.h>
-#include "dr_physics_prerequisites.h"
+#include "dr_math_prerequisites.h"
 
 #include <dr_export_script.h>
 #include <..\..\Script\Include\dr_script_engine.h>
@@ -23,7 +23,7 @@ namespace AXIS {
 class Transform;
 Transform* Ref_Transform();
 
-class DR_PHYSICS_EXPORT Transform
+class DR_MATH_EXPORT Transform
 {
  public:
   friend class GameObject;

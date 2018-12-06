@@ -96,7 +96,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)Physics\Include;$(SolutionDir)RenderManager\Include;$(SolutionDir)ParticleSystem\Include;$(SolutionDir)Sound\Include;$(SolutionDir)Input\Include;$(SolutionDir)Engine\Include;$(SolutionDir)Math\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)Core\Include;$(SolutionDir)Utils\Include;$(SolutionDir)$(Projectname)\Include;$(DRIDER_DEPENDENCIES)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -112,7 +112,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)Physics\Include;$(SolutionDir)RenderManager\Include;$(SolutionDir)ParticleSystem\Include;$(SolutionDir)Sound\Include;$(SolutionDir)Input\Include;$(SolutionDir)Engine\Include;$(SolutionDir)Math\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)Core\Include;$(SolutionDir)Utils\Include;$(SolutionDir)$(Projectname)\Include;$(DRIDER_DEPENDENCIES)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>

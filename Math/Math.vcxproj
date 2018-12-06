@@ -180,6 +180,7 @@
     <ClInclude Include="Include\dr_random.h" />
     <ClInclude Include="Include\dr_ray.h" />
     <ClInclude Include="Include\dr_sphere.h" />
+    <ClInclude Include="Include\dr_transform.h" />
     <ClInclude Include="Include\dr_vector2d.h" />
     <ClInclude Include="Include\dr_vector2di.h" />
     <ClInclude Include="Include\dr_vector3d.h" />
@@ -190,6 +191,7 @@
     <ClCompile Include="Source\dr_intersections.cpp" />
     <ClCompile Include="Source\dr_line.cpp" />
     <ClCompile Include="Source\dr_math.cpp" />
+    <ClCompile Include="Source\dr_transform.cpp" />
     <ClCompile Include="Source\dr_vector2d.cpp" />
     <ClCompile Include="Source\dr_aabb.cpp" />
     <ClCompile Include="Source\dr_capsule.cpp" />
