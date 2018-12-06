@@ -239,7 +239,7 @@ SceneViewer::destroy()
 {
   m_renderMan.exit();
 }
-RenderMan&
+RenderManager&
 SceneViewer::getRenderManager()
 {
   return m_renderMan;

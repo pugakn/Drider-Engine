@@ -4,7 +4,8 @@
 
 #include <dr_string_utils.h>
 
-#include "dr_aabb_collider.h"
+//#include "dr_aabb_collider.h"
+#include "dr_render_component.h"
 #include "dr_gameComponent.h"
 #include "dr_script_component.h"
 #include "dr_file.h"
@@ -21,7 +22,7 @@ GameObject::GameObject(const TString& name)
     m_tag(_T("UNTAGGED")),
     m_isStatic(false),
     m_isStarted(false),
-    m_change(false),
+    m_change(true),
     m_isKilled(false)
     DR_DEBUG_ONLY_PARAM(m_destroyed(false))
 {
@@ -51,10 +52,11 @@ GameObject::start() {
 
   if (m_change) {
     m_finalTransform = m_localTransform * getParent()->m_finalTransform;  
+    //m_finalTransform = getParent()->m_finalTransform * m_localTransform;  
   }   
 
-  if (auto collider = getComponent<AABBCollider>()) {
-    collider->onUpdate();
+  if (auto render = getComponent<RenderComponent>()) {
+    render->onUpdate();
   }
   DR_DEBUG_ONLY(
   else {
@@ -87,6 +89,7 @@ GameObject::update() {
 
   if (m_change) {
     m_finalTransform = m_localTransform * getParent()->m_finalTransform;  
+    //m_finalTransform = getParent()->m_finalTransform * m_localTransform;  
   }   
 
   updateImpl();
@@ -98,12 +101,17 @@ GameObject::update() {
     if (component->isEnabled() && !component->isKilled()) {
    
       component->onUpdate();
+      if (!m_change) {
+        m_change = m_localTransform.changed() ||
+          getParent()->changed();
+      }
 
       //If the local transform changed inside the component update
       if (m_localTransform.changed()) {
 
         //Recalculate the final transform
         m_finalTransform = m_localTransform * getParent()->m_finalTransform;
+        //m_finalTransform = getParent()->m_finalTransform * m_localTransform;
 
         m_localTransform.m_change = false;
       }

@@ -7,7 +7,8 @@ namespace driderSDK {
       TEXTURE,
       SOUND,
 			SCRIPT,
-			SCENE
+			SCENE,
+      COMPRESSED_TEXTURE
     };    
   } 
 }

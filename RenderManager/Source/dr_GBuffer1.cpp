@@ -34,6 +34,7 @@ GBufferPass::init(PassInitData* initData) {
 
   DrSampleDesc SSdesc;
   SSdesc.Filter = DR_TEXTURE_FILTER::kMIN_MAG_LINEAR_MIP_POINT;
+  SSdesc.comparisonFunc = DR_COMPARISON_FUNC::kGREATER;
   SSdesc.maxAnisotropy = 16;
   SSdesc.addressU = DR_TEXTURE_ADDRESS::kWrap;
   SSdesc.addressV = DR_TEXTURE_ADDRESS::kWrap;
@@ -46,8 +47,9 @@ GBufferPass::draw(PassDrawData* drawData) {
   GBufferDrawData* data = static_cast<GBufferDrawData*>(drawData);
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
-  data->OutRt->getTexture(0).setTextureNull(dc);
-  data->OutRt->setRTNull(dc);
+  dc.setUAVsNull();
+  dc.setResourcesNull();
+
   data->OutRt->set(dc, *data->dsOptions);
   
   m_vertexShader->set(dc);
@@ -56,24 +58,24 @@ GBufferPass::draw(PassDrawData* drawData) {
   m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kFragment);
 
   m_inputLayout->set(dc);
-  
-  m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
-  m_constantBuffer->set(dc);
-  
-  dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
-  
-  const float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-  data->OutRt->clear(dc, clearColor);
-  data->dsOptions->clear(dc, 1, 0);
 
   CB.CameraInfo.x  = data->activeCam->getViewportWidth() /
                      data->activeCam->getViewportHeight();
   CB.CameraInfo.y  = data->activeCam->getFOV();
   CB.CameraInfo.z  = data->activeCam->getNearPlane();
   CB.CameraInfo.w  = data->activeCam->getFarPlane();
+  
+  m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
+  m_constantBuffer->set(dc);
+  
+  dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
+  
+  const float clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+  data->OutRt->clear(dc, clearColor);
+  data->dsOptions->clear(dc, 1, 0);
 
-  for (auto& modelPair : *data->models) {
-    data->OutRt->getTexture(0).setTextureNull(dc);
+  for (auto& modelPair : data->models->commands) {
+    dc.setResourcesNull();
     if (auto material = modelPair.mesh.material.lock()) {
       auto AlbedoTex = material->getProperty(_T("Albedo"));
       if (AlbedoTex != nullptr) {
@@ -107,17 +109,18 @@ GBufferPass::draw(PassDrawData* drawData) {
       }
     }
 
-    CB.World = modelPair.world;
-    CB.WorldView = modelPair.world * data->activeCam->getView();
-    CB.WVP = modelPair.world * data->activeCam->getVP();
+    CB.World = data->models->worlds[modelPair.worldID];
+    CB.WorldView = CB.World * data->activeCam->getView();
+    CB.WVP = CB.World * data->activeCam->getVP();
 
     std::memset(&CB.Bones[0].data[0], 0.0f, sizeof(CB.Bones));
-    auto Bones = modelPair.bones;
-    if (Bones != nullptr) {
-      Int32 maxBones = modelPair.bones->size();
-      for (SizeT index = 0; index < maxBones; ++index) {
-        CB.Bones[index] = (*modelPair.bones)[index];
-      }
+    
+    if (modelPair.bonesID != -1) {
+      auto& Bones = data->models->bonesTransforms[modelPair.bonesID];
+      Int32 maxBones = Bones.size();
+      std::memcpy(&CB.Bones[0],
+                  &(Bones)[0],
+                   sizeof(Matrix4x4) * maxBones);
     }
   
     m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
@@ -128,6 +131,10 @@ GBufferPass::draw(PassDrawData* drawData) {
 
     dc.draw(modelPair.mesh.indicesCount, 0, 0);
   }
+
+  data->OutRt->setRTNull(dc);
+  dc.setUAVsNull();
+  dc.setResourcesNull();
 }
 /*
 void

@@ -145,8 +145,7 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager>
   
   template<class T>
   static std::shared_ptr<T>
-  getReferenceT(const TString& resourceName)
-  {
+  getReferenceT(const TString& resourceName) {
     return std::dynamic_pointer_cast<T>(getReference(resourceName));
   }
 

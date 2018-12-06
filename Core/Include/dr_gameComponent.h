@@ -25,6 +25,9 @@ class DR_CORE_EXPORT GameComponent : public EnableObject,
 
   GameObject& 
   getGameObject();
+
+  GameObject*
+  getGameObjectPtr();
   
   virtual void
   onCreate() = 0;

@@ -4,35 +4,38 @@
 
 namespace driderSDK {
 
-  class DeviceContext;
+class DeviceContext;
+
+/**
+* Base class for constant buffer shader resource
+*
+* Sample usage:
+*	ConstantBuffer* = new D3DConstantBuffer;
+*/
+class DR_GRAPHICS_EXPORT StructureBuffer : public Buffer
+{
+ public:
+  /**
+  * Virtual destructor.
+  */
+  virtual
+  ~StructureBuffer() {}
 
   /**
-  * Base class for constant buffer shader resource
+  * Set the constant buffer to all shaders specifyed on typeFlag
   *
-  * Sample usage:
-  *	ConstantBuffer* = new D3DConstantBuffer;
+  * @param deviceContext
+  *   The device context to set the resource
+  *
+  * @param typeFlag
+  *   Bit flag that specifyes the shaders to set the constant buffer
+  *
   */
-  class DR_GRAPHICS_EXPORT StructureBuffer : public Buffer
-  {
-  public:
-    /**
-    * Virtual destructor.
-    */
-    virtual
-      ~StructureBuffer() {}
-
-    /**
-    * Set the constant buffer to all shaders specifyed on typeFlag
-    *
-    * @param deviceContext
-    *   The device context to set the resource
-    *
-    * @param typeFlag
-    *   Bit flag that specifyes the shaders to set the constant buffer
-    *
-    */
-    virtual void
-      set(const DeviceContext& deviceContext, Int32 typeFlag = 0, Int32 startSlot = 0, UInt32 _resetCounter = -1) const = 0;
-  };
+  virtual void
+  set(const DeviceContext& deviceContext,
+      Int32 typeFlag = 0,
+      Int32 startSlot = 0,
+      UInt32 _resetCounter = -1) const = 0;
+};
 
 }

@@ -47,7 +47,7 @@ GameServer::postInit() {
   m_publicIP = NetworkManager::ipAddrStrToUInt(getPublicIP());
   m_localIP = NetworkManager::ipAddrStrToUInt(_T("127.0.0.1"));
 
-  m_publicIP = m_localIP;
+  //m_publicIP = m_localIP;
 
   m_commands.emplace_back(REQUEST_ID::kClientJoin, &GameServer::clientJoin);
   m_commands.emplace_back(REQUEST_ID::kClientLeave, &GameServer::clientLeave);

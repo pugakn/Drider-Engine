@@ -17,7 +17,7 @@ SpiderAI::SpiderAI(GameObject& _go)
 
 void 
 SpiderAI::onCreate() {
-   
+   m_stopTime = 0.5f;
 }
 
 void 
@@ -81,25 +81,53 @@ SpiderAI::onUpdate() {
     
   float angle = 0.0f;
 
+  //No forces applied
   if (accumulatedDirs.lengthSqr() < 0.01f) {
     
     if (m_state == Run) {
-      m_state = Idle;
+      m_velDecrese = m_velocity.length() / m_stopTime;
+      m_direction = m_velocity;
+      m_direction.normalize();
+      m_state = StopedRun;
+      m_inactive.init();
+    }
 
-      m_behavior->setAnimation(SpiderBehavior::Warte, true, true);
+    if (m_state == StopedRun) {
+      auto secs = m_inactive.getSeconds();
+      if (secs >= m_stopTime || m_velocity.lengthSqr() < 0.01f) {
+        
+        m_velocity = {0,0,0};
+        
+        //std::cout << "Stoped Animations" << std::endl;
+
+        m_state = Idle;
+
+        m_behavior->setAnimation(SpiderBehavior::Warte, true, true);
+      }
+      else {
+        //const float friction = 0.995f;
+        float t = 1 - (secs / m_stopTime);
+        if (t > 0){
+          m_velocity =  m_direction * (t * m_velDecrese);
+        }
+      }
+
+      //std::cout << m_velocity.lengthSqr() << std::endl;
     }
 
     auto& v =  m_gameObject.getTransform().getRotation();
     auto& row = v.vector2;
     angle = atan2f(row.x, row.z) + Math::PI;
-    m_velocity = {0,0,0};
+    //m_velocity = {0,0,0};
   }
   else {
+     
 
     if (m_state == Idle) {
-      m_state = Run;
       m_behavior->setAnimation(SpiderBehavior::RunFront, true, true);
     }
+
+    m_state = Run;
 
     angle = atan2f(m_velocity.x, m_velocity.z);
   }

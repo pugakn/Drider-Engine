@@ -20,5 +20,6 @@ float4 FS( VS_OUTPUT input ) : SV_TARGET  {
 	float2 uv = input.uvs;
 	float3 n = input.hnormal.xyz;
 	float4 color = Texture0.Sample(SS, uv);
+	//color.xyz = n;
     return color;
 }

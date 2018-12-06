@@ -46,6 +46,8 @@ void SpiderPlayer::onStart() {
 void 
 SpiderPlayer::onUpdate() {
   
+  
+
   float forward = 0;
   float strafe = 0;
 

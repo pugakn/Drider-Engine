@@ -10,11 +10,11 @@ CONSTRUCT_DESTRUCT_DEF(Camera)
 
 Camera::Camera() 
   : Camera({0, 100, -100}, {0, 100, 1}) {
-  
 }
 
 Camera::Camera(const Vector3D& _position, 
-               const Vector3D& _target)
+               const Vector3D& _target,
+               const TString& _name)
   : m_up(0.0f, 1.0f, 0.0f),
     m_farPlane(0),
     m_nearPlane(0),
@@ -22,6 +22,7 @@ Camera::Camera(const Vector3D& _position,
     m_viewport{0,0,100,100}, 
     m_position(_position),
     m_target(_target),
+    m_name(_name),
     m_outdateView(true) {
 }
 
@@ -116,6 +117,11 @@ Camera::setTarget(const Vector3D& target) {
   invalidateView();
 }
 
+Viewport
+Camera::getViewport() {
+  return m_viewport;
+}
+
 void
 Camera::setViewport(const Viewport& viewport) {
   m_viewport = viewport;
@@ -170,14 +176,37 @@ Camera::getFarPlane() const {
   return m_farPlane;
 }
 
-float 
+void
+Camera::setFarPlane(float farPlane) {
+  m_farPlane = farPlane;
+  createProyection(m_fov, m_nearPlane, m_farPlane);
+}
+
+float
 Camera::getNearPlane() const {
   return m_nearPlane;
+}
+
+void
+Camera::setNearPlane(float nearPlane) {
+  m_nearPlane = nearPlane;
+  createProyection(m_fov, m_nearPlane, m_farPlane);
 }
 
 float 
 Camera::getFOV() const {
   return m_fov;
+}
+
+void
+Camera::setFOV(float fov) {
+  m_fov = fov;
+  createProyection(m_fov, m_nearPlane, m_farPlane);
+}
+
+TString
+Camera::getName() const {
+  return m_name;
 }
 
 UInt32
@@ -198,6 +227,18 @@ Camera::getPosition() const {
 Vector3D
 Camera::getDirection() const {
   return (m_target - m_position).normalize();
+}
+
+Vector3D
+Camera::getLocalRight() const {
+  Vector3D result = m_up.cross(getDirection());
+  return result.normalize();
+}
+
+Vector3D
+Camera::getLocalUp() const {
+  Vector3D result = getDirection().cross(getLocalRight());
+  return result.normalize();
 }
 
 void 

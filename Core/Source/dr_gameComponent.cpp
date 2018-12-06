@@ -25,6 +25,11 @@ GameComponent::getGameObject() {
   return m_gameObject;
 }
 
+GameObject*
+GameComponent::getGameObjectPtr() {
+  return &m_gameObject;
+}
+
 void
 GameComponent::setName(const TString& name) {
   setName(m_gameObject.getValidName(name));

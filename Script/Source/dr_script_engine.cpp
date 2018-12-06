@@ -1,5 +1,4 @@
 #include <dr_string_utils.h>
-#include <dr_resource_manager.h>
 #include <dr_time.h>
 
 #include "dr_script_engine.h"

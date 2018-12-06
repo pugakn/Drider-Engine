@@ -19,9 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\dr_Bloom.h" />
     <ClInclude Include="Include\dr_GBuffer1.h" />
     <ClInclude Include="Include\dr_HorBlur.h" />
     <ClInclude Include="Include\dr_Lightning.h" />
+    <ClInclude Include="Include\dr_Lines.h" />
     <ClInclude Include="Include\dr_Luminescence.h" />
     <ClInclude Include="Include\dr_pass_particle_system.h" />
     <ClInclude Include="Include\dr_Shadow.h" />
@@ -32,11 +34,14 @@
     <ClInclude Include="Include\dr_rendermanapp.h" />
     <ClInclude Include="Include\dr_renderman_prerequisites.h" />
     <ClInclude Include="Include\dr_renderpass.h" />
+    <ClInclude Include="Include\dr_SSReflection.h" />
     <ClInclude Include="Include\dr_VerBlur.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\dr_Bloom.cpp" />
     <ClCompile Include="Source\dr_GBuffer1.cpp" />
     <ClCompile Include="Source\dr_Lightning.cpp" />
+    <ClCompile Include="Source\dr_Lines.cpp" />
     <ClCompile Include="Source\dr_Luminescence.cpp" />
     <ClCompile Include="Source\dr_pass_particle_system.cpp" />
     <ClCompile Include="Source\dr_Shadow.cpp" />
@@ -45,14 +50,15 @@
     <ClCompile Include="Source\dr_renderman.cpp" />
     <ClCompile Include="Source\dr_rendermanapp.cpp" />
     <ClCompile Include="Source\dr_renderpass.cpp" />
-    <ClCompile Include="Source\m_HorBlur.cpp" />
-    <ClCompile Include="Source\m_VerBlur.cpp" />
+    <ClCompile Include="Source\dr_HorBlur.cpp" />
+    <ClCompile Include="Source\dr_SSReflection.cpp" />
+    <ClCompile Include="Source\dr_VerBlur.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{B7A07E65-EAED-42A5-B50D-652D8E70DC55}</ProjectGuid>
     <RootNamespace>RenderManager</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -114,11 +120,11 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)ParticleSystem\Include;$(SolutionDir)Utils\Include\;$(SolutionDir)Graphics\Include\;$(SolutionDir)Core\Include;$(SolutionDir)Engine\Include;$(SolutionDir)Math\Include;$(DRIDER_DEPENDENCIES)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Utils\Include;$(SolutionDir)Math\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)ParticleSystem\Include;$(SolutionDir)Core\Include;$(SolutionDir)Physics\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>DR_RENDERMAN_EXPORTS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ParticleSystemd.lib;Utilsd.lib;Cored.lib;Graphicsd.lib;Engined.lib;Mathd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Utilsd.lib;Mathd.lib;Graphicsd.lib;ParticleSystemd.lib;Cored.lib;Physicsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -127,11 +133,11 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)ParticleSystem\Include;$(SolutionDir)Utils\Include\;$(SolutionDir)Graphics\Include\;$(SolutionDir)Core\Include;$(SolutionDir)Engine\Include;$(SolutionDir)Math\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Utils\Include;$(SolutionDir)Math\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)ParticleSystem\Include;$(SolutionDir)Core\Include;$(SolutionDir)Physics\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>DR_RENDERMAN_EXPORTS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ParticleSystemd.lib;Utilsd.lib;Cored.lib;Graphicsd.lib;Engined.lib;Mathd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Utilsd.lib;Mathd.lib;Graphicsd.lib;ParticleSystemd.lib;Cored.lib;Physicsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -142,13 +148,13 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)ParticleSystem\Include;$(SolutionDir)Utils\Include\;$(SolutionDir)Graphics\Include\;$(SolutionDir)Core\Include;$(SolutionDir)Engine\Include;$(SolutionDir)Math\Include;$(DRIDER_DEPENDENCIES)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Utils\Include;$(SolutionDir)Math\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)ParticleSystem\Include;$(SolutionDir)Core\Include;$(SolutionDir)Physics\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>DR_RENDERMAN_EXPORTS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>ParticleSystem.lib;Utils.lib;Core.lib;Graphics.lib;Engine.lib;Math.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Utils.lib;Math.lib;Graphics.lib;ParticleSystem.lib;Core.lib;Physics.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -159,13 +165,13 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)ParticleSystem\Include;$(SolutionDir)Utils\Include\;$(SolutionDir)Graphics\Include\;$(SolutionDir)Core\Include;$(SolutionDir)Engine\Include;$(SolutionDir)Math\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Utils\Include;$(SolutionDir)Math\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)ParticleSystem\Include;$(SolutionDir)Core\Include;$(SolutionDir)Physics\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>DR_RENDERMAN_EXPORTS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>ParticleSystem.lib;Utils.lib;Core.lib;Graphics.lib;Engine.lib;Math.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Utils.lib;Math.lib;Graphics.lib;ParticleSystem.lib;Core.lib;Physics.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>

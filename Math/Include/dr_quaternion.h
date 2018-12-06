@@ -134,6 +134,9 @@ class DR_MATH_EXPORT Quaternion
   void
   matrixFromQuaternion(Matrix4x4& MatrixOut);
 
+  Matrix4x4
+  matrixFromQuaternion();
+
 	/**
 	* TEST::matrixFromQuaternion3x3
 	* Creates a 3D matrix from the quaternion.

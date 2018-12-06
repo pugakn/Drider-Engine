@@ -1,13 +1,14 @@
 #include "dr_d3d_texture.h"
 
-#include <d3d11.h>
-#include <dxgi.h>
-#include "dr_graphics_prerequisites.h"
-#include <dr_math.h>
+#include <dr_logger.h>
+
 #include "dr_d3d_device.h"
 #include "dr_d3d_device_context.h"
 #include "dr_gfx_memory.h"
+#include <dr_math.h>
 
+#include <d3d11.h>
+#include <dxgi.h>
 
 namespace driderSDK {
 
@@ -104,6 +105,8 @@ D3DTexture::createFromMemory(const Device& device,
     srvDesc.Texture2D.MipLevels = Math::MAX_UINT32;
   }
 
+
+
   HRESULT hr = apiDevice->
     D3D11Device->
     CreateTexture2D(&apiDesc,
@@ -115,16 +118,53 @@ D3DTexture::createFromMemory(const Device& device,
     CreateShaderResourceView(APITexture,
       &srvDesc,
       &APIView);
+
+  if (desc.bindFlags & DR_BIND_FLAGS::UNORDERED_ACCESS) {
+    D3D11_UAV_DIMENSION dimUAV;
+    D3D11_UNORDERED_ACCESS_VIEW_DESC viewDescUAV;
+    ZeroMemory(&viewDescUAV, sizeof(viewDescUAV));
+    viewDescUAV.Format = apiDesc.Format; //DXGI_FORMAT_R32G32B32A32_FLOAT;
+    switch (desc.dimension)
+    {
+    case DR_DIMENSION::k1D:
+      dimUAV = D3D11_UAV_DIMENSION_TEXTURE1D;
+      break;
+    case DR_DIMENSION::k2D:
+      dimUAV = D3D11_UAV_DIMENSION_TEXTURE2D;
+      break;
+    case DR_DIMENSION::k3D:
+      dimUAV = D3D11_UAV_DIMENSION_TEXTURE3D;
+      break;
+    case DR_DIMENSION::kCUBE_MAP:
+      dimUAV = D3D11_UAV_DIMENSION_UNKNOWN;
+      break;
+    default:
+      break;
+    }
+    viewDescUAV.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
+    viewDescUAV.Texture2D.MipSlice = 0;
+    apiDevice->D3D11Device->CreateUnorderedAccessView(APITexture, &viewDescUAV, &m_APIUAV);
+  }
   
   if (desc.CPUAccessFlags & DR_CPU_ACCESS_FLAG::drRead) {
     D3D11_TEXTURE2D_DESC apiDesc2 = apiDesc;
-    apiDesc2.CPUAccessFlags = D3D11_CPU_ACCESS_FLAG::D3D11_CPU_ACCESS_READ;
-    apiDesc2.Usage = D3D11_USAGE_STAGING;;
+    apiDesc2.MipLevels = 0;
+    apiDesc2.ArraySize = 1;
+    apiDesc2.SampleDesc.Count = 1;
+    apiDesc2.SampleDesc.Quality = 0;
+    apiDesc2.Usage = D3D11_USAGE_STAGING;
+    apiDesc2.BindFlags = 0;
+    apiDesc2.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+    apiDesc2.MiscFlags = 0;
+
     hr = apiDevice->
       D3D11Device->
       CreateTexture2D(&apiDesc2,
-        0,
-        &m_stagingTexture);
+                      NULL,
+                      &m_stagingTexture);
+    if (hr != S_OK) {
+      Logger::instance().addError(__FILE__, __LINE__, _T("Couldn't create staging texture"));
+    }
   }
 }
 
@@ -156,33 +196,40 @@ D3DTexture::getMemoryBuffer(const DeviceContext& deviceContext,
 
   ID3D11DeviceContext* dc = reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
     D3D11DeviceContext;
-  dc->CopyResource(m_stagingTexture,APITexture);
+  dc->CopyResource(m_stagingTexture, APITexture);
   D3D11_MAPPED_SUBRESOURCE mappedResource;
   dc->Map(m_stagingTexture,
           0,
           D3D11_MAP_READ,
           0,
-          &mappedResource);  
+          &mappedResource);
   buff.clear();
   buff.assign((byte*)mappedResource.pData, (byte*)mappedResource.pData + m_descriptor.pitch * m_descriptor.height);
-  dc->Unmap(m_stagingTexture,0);
+  dc->Unmap(m_stagingTexture, 0);
 }
 
 void
-D3DTexture::setTextureNull(const DeviceContext& deviceContext) const {
-  ID3D11ShaderResourceView* nullTextures[MAX_TEXTURES] = {};
-  std::memset(nullTextures, 0, sizeof(nullTextures));
-
-  reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
-    D3D11DeviceContext->
-      PSSetShaderResources(0, MAX_TEXTURES, nullTextures);
-}
-
-void
-D3DTexture::set(const DeviceContext& deviceContext, UInt32 slot) const {
+D3DTexture::set(const DeviceContext& deviceContext,
+                UInt32 slot,
+                DR_SHADER_TYPE_FLAG::E shaderType,
+                bool isTexture) const {
+  if (DR_SHADER_TYPE_FLAG::kFragment == shaderType) {
     reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
       D3D11DeviceContext->
-      PSSetShaderResources(slot, 1, &APIView);
+        PSSetShaderResources(slot, 1, &APIView);
+  }
+  else if (DR_SHADER_TYPE_FLAG::kCompute == shaderType) {
+    if (m_descriptor.bindFlags & DR_BIND_FLAGS::UNORDERED_ACCESS && !isTexture) {
+      reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
+        D3D11DeviceContext->
+          CSSetUnorderedAccessViews(slot, 1, &m_APIUAV, 0);
+    }
+    else {
+      reinterpret_cast<const D3DDeviceContext*>(&deviceContext)->
+        D3D11DeviceContext->
+          CSSetShaderResources(slot, 1, &APIView);
+    }
+  }
 }
 
 void
@@ -192,6 +239,9 @@ D3DTexture::release() {
     m_stagingTexture->Release();
   if (APIView)
     APIView->Release();
+  if (m_descriptor.bindFlags & DR_BIND_FLAGS::UNORDERED_ACCESS) {
+    m_APIUAV->Release();
+  }
   delete this;
 }
 
@@ -237,4 +287,5 @@ D3DTexture::modifyTextureParams(const Device & device, const DrTextureDesc & des
     APIView->Release();
   createFromMemory(device, desc, 0);
 }
+
 }

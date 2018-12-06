@@ -7,7 +7,6 @@
 #include <dr_vector3d.h>
 #include <dr_vector4d.h>
 
-#include "dr_aabb_collider.h"
 #include "dr_animator_component.h"
 #include "dr_camera.h"
 #include "dr_gameObject.h"
@@ -98,6 +97,7 @@ void
 SceneGraph::update() {
 
   //instance().m_mutex.lock();
+  std::lock_guard<std::mutex> fMutex(instance().m_mutex);
 
   instance().m_root->update();
   //instance().m_mutex.unlock();
@@ -113,26 +113,50 @@ SceneGraph::draw() {
   //instance().m_mutex.unlock();
 }
 
-SceneGraph::QueryResult
-SceneGraph::query(const Camera& camera, QUERY_ORDER::E order, UInt32 props) {
-  
-  GameObjectQueue objects(DepthComparer{camera, order});
+//SceneGraph::QueryResult
+//SceneGraph::query(const Camera& camera, QUERY_ORDER::E order, UInt32 props) {
+//  
+//  GameObjectQueue objects(DepthComparer{camera, order});
+//
+//  Frustrum frustrum(camera.getView(), camera.getProjection());
+//
+//  //ScopedTimer{},
+//  testObject(instance().m_root, frustrum, objects);
+//
+//  QueryResult queryRes;
+//   
+//  if (instance().m_octree) {
+//    testObjectOct(instance().m_octree, frustrum, objects, true);
+//  }
+//
+//  //ScopedTimer{},
+//  filterObjects(objects, queryRes, props);
+//
+//  return queryRes;  
+//}
 
-  Frustrum frustrum(camera.getView(), camera.getProjection());
+SceneGraph::QueryBuffer
+SceneGraph::query(const RenderQuery& queryInfo) {
+  GameObjectQueue objects(DepthComparer{ queryInfo.camera, queryInfo.order });
 
-  //ScopedTimer{},
-  testObject(instance().m_root, frustrum, objects);
+  Frustrum frustrum(queryInfo.camera.getView(), queryInfo.camera.getProjection());
+  QueryBuffer queryRes;
+  auto& sg = instance();
+  {
 
-  QueryResult queryRes;
-   
-  if (instance().m_octree) {
-    testObjectOct(instance().m_octree, frustrum, objects, true);
+    std::lock_guard<std::mutex> fMutex(sg.m_mutex);
+    //ScopedTimer{},
+    testObject(sg.m_root, frustrum, objects);
+
+
+    if (instance().m_octree) {
+      testObjectOct(sg.m_octree, frustrum, objects, true);
+    }
+
+    //ScopedTimer{},
+    filterObjects(objects, queryRes, queryInfo.props);
   }
-
-  //ScopedTimer{},
-  filterObjects(objects, queryRes, props);
-
-  return queryRes;  
+  return std::move(queryRes);
 }
 
 SceneGraph::GameObjectList
@@ -154,6 +178,17 @@ SceneGraph::queryGameObjects(const Camera& camera, QUERY_ORDER::E order) {
   return objsList;
 }
 
+const std::vector<LightComponent*>
+SceneGraph::getLightComponents() {
+  return lightsList;
+}
+
+void
+SceneGraph::updateLightsList() {
+  lightsList.clear();
+  instance().m_root->getRecursiveComponents<LightComponent>(lightsList);
+}
+
 void 
 SceneGraph::testObjectOct(SharedGameObject object, 
                           const Frustrum& frustrum, 
@@ -163,9 +198,9 @@ SceneGraph::testObjectOct(SharedGameObject object,
   bool ins = !test;
 
   if (test) {
-    if (auto aabbCollider = object->getComponent<AABBCollider>()) {
+    if (auto renderComp = object->getComponent<RenderComponent>()) {
     
-      auto inter = frustrum.intersects(aabbCollider->getTransformedAABB());
+      auto inter = frustrum.intersects(renderComp->getAABB());
 
       if (inter != FRUSTRUM_INTERSECT::kOutside) {
       
@@ -197,12 +232,11 @@ SceneGraph::testObject(SharedGameObject object,
                        const Frustrum& frustrum,
                        GameObjectQueue& objects) {
 
-  auto aabbCollider = object->getComponent<AABBCollider>();
+  auto renderComponent = object->getComponent<RenderComponent>();
 
-  if (object->getComponent<RenderComponent>() && 
-      aabbCollider) {      
+  if (renderComponent) {      
 
-    auto inter = frustrum.intersects(aabbCollider->getTransformedAABB());
+    auto inter = frustrum.intersects(renderComponent->getAABB());
 
     if (inter != FRUSTRUM_INTERSECT::kOutside) {
       /******************************************/
@@ -221,19 +255,74 @@ SceneGraph::testObject(SharedGameObject object,
   }  
 }
 
-void 
-SceneGraph::filterObjects(GameObjectQueue& objects,
-                          QueryResult& result,
-                          UInt32 props) {
+//void 
+//SceneGraph::filterObjects(GameObjectQueue& objects,
+//                          QueryResult& result,
+//                          UInt32 props) {
+//
+//  while (!objects.empty()) {
+//
+//    auto obj = objects.top();
+//
+//    const std::vector<Matrix4x4>* bones = nullptr;
+//
+//    if (auto animComp = obj->getComponent<AnimatorComponent>()) {
+//      bones = &animComp->getBonesTransforms();
+//    }
+//
+//    auto& meshes = obj->getComponent<RenderComponent>()->getMeshes();
+//
+//    UInt32 staticFlag = 0;
+//
+//    if (obj->isStatic()) {
+//      staticFlag |= QUERY_PROPERTY::kStatic;
+//    }
+//    else {
+//      staticFlag |= QUERY_PROPERTY::kDynamic;
+//    }
+//
+//    for (auto& mesh : meshes) {
+//      
+//      UInt32 meshProps = staticFlag;
+//      
+//      auto material = mesh.material.lock();
+//            
+//      if (material) {
+//
+//        auto t = material->getProperty<FloatProperty>(_T("Transparency"));
+//        
+//        if (t && t->value < 1.f) {
+//          meshProps |= QUERY_PROPERTY::kTransparent;
+//        } 
+//        else {
+//          meshProps |= QUERY_PROPERTY::kOpaque;
+//        }
+//      }
+//      else {
+//        meshProps |= QUERY_PROPERTY::kOpaque;
+//      }
+//
+//      if (meshProps == (meshProps & props)) {
+//        result.push_back({obj->getWorldTransform().getMatrix(), mesh, bones});
+//      }
+//    }
+//
+//    objects.pop();
+//  }
+//}
 
+void
+SceneGraph::filterObjects(GameObjectQueue& objects, QueryBuffer& result, UInt32 props) {
   while (!objects.empty()) {
 
     auto obj = objects.top();
 
-    const std::vector<Matrix4x4>* bones = nullptr;
+    auto animComp = obj->getComponent<AnimatorComponent>();
+    Int32 bones = -1;
+    if (animComp) {
 
-    if (auto animComp = obj->getComponent<AnimatorComponent>()) {
-      bones = &animComp->getBonesTransforms();
+      bones = result.bonesTransforms.size();
+      result.bonesTransforms.push_back(animComp->getBonesTransforms());
     }
 
     auto& meshes = obj->getComponent<RenderComponent>()->getMeshes();
@@ -247,19 +336,21 @@ SceneGraph::filterObjects(GameObjectQueue& objects,
       staticFlag |= QUERY_PROPERTY::kDynamic;
     }
 
+    Int32 world = result.worlds.size();
+    result.worlds.push_back(obj->getWorldTransform().getMatrix());
     for (auto& mesh : meshes) {
-      
+
       UInt32 meshProps = staticFlag;
-      
+
       auto material = mesh.material.lock();
-            
+
       if (material) {
 
         auto t = material->getProperty<FloatProperty>(_T("Transparency"));
-        
+
         if (t && t->value < 1.f) {
           meshProps |= QUERY_PROPERTY::kTransparent;
-        } 
+        }
         else {
           meshProps |= QUERY_PROPERTY::kOpaque;
         }
@@ -267,9 +358,10 @@ SceneGraph::filterObjects(GameObjectQueue& objects,
       else {
         meshProps |= QUERY_PROPERTY::kOpaque;
       }
-
       if (meshProps == (meshProps & props)) {
-        result.push_back({obj->getWorldTransform().getMatrix(), mesh, bones});
+        result.commands.push_back(RenderCommand{ world,
+                                                 mesh,
+                                                 bones });
       }
     }
 
@@ -302,9 +394,8 @@ SceneGraph::addGameObjectsStatics(GameObject & node,
 }
 
 void
-SceneGraph::addAllChilds(GameObject & node,
-                         std::vector<std::shared_ptr<GameObject>>* list)
-{
+SceneGraph::addAllChilds(GameObject& node,
+                         std::vector<std::shared_ptr<GameObject>>* list) {
   for (auto& child : node.getChildren()) {
     if (child->getComponent<RenderComponent>()) {
       list->push_back(child);
@@ -324,17 +415,17 @@ bool
 SceneGraph::DepthComparer::operator()(SharedGameObject objA, 
                                       SharedGameObject objB) const {
 
-  auto renderA = objA->getComponent<AABBCollider>();
+  auto renderA = objA->getComponent<RenderComponent>();
  
   Vector4D posA(renderA->getAABB().center, 1.f);
 
-  auto WVPA = objA->getWorldTransform().getMatrix() * m_camera.getVP();
+  auto WVPA = m_camera.getVP();
 
-  auto renderB = objB->getComponent<AABBCollider>();
+  auto renderB = objB->getComponent<RenderComponent>();
 
   Vector4D posB(renderB->getAABB().center, 1.f);
 
-  auto WVPB = objB->getWorldTransform().getMatrix() * m_camera.getVP();
+  auto WVPB = m_camera.getVP();
 
   auto aW = (posA * WVPA).w;
 

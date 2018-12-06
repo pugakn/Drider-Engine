@@ -8,14 +8,20 @@ CameraManager::CameraManager() {
 
 CameraManager::~CameraManager() {}
 
-void CameraManager::onStartUp() {
+SizeT
+CameraManager::getCameraCounter() {
+  return instance().CameraCounter;
+}
+
+void
+CameraManager::onStartUp() {
   m_dummyCam = std::make_shared<Camera>();
   m_dummyCam->createProyection(60, 0.1f, 4000.f);
   m_activeCam = m_dummyCam;
+  CameraCounter = 0;
 }
 
-
-void
+CameraManager::SharedCamera
 CameraManager::createCamera(const TString& cameraName,
 														const Vector3D& pos,
 														const Vector3D& target,
@@ -30,9 +36,13 @@ CameraManager::createCamera(const TString& cameraName,
   cam->createProyection(fov, nearPlane, farPlane);
 
   instance().m_cameras[cameraName] = cam;
+
+  ++instance().CameraCounter;
+
+  return cam;
 }
 
-void
+CameraManager::SharedCamera
 CameraManager::createCamera(const TString& cameraName,
                             const Vector3D& pos,
                             const Vector3D& target,
@@ -48,6 +58,19 @@ CameraManager::createCamera(const TString& cameraName,
   cam->createProyection(width, height, nearPlane, farPlane);
 
   instance().m_cameras[cameraName] = cam;
+
+  ++instance().CameraCounter;
+
+  return cam;
+}
+
+void
+CameraManager::setViewportToAll(const Viewport& viewport) {
+  auto& cm = instance();
+
+  for (auto& cam : cm.m_cameras) {
+    cam.second->setViewport(viewport);
+  }
 }
 
 void
@@ -66,7 +89,7 @@ CameraManager::deleteCamera(const TString& cameraName) {
   }
 }
 
-CameraManager::SharedCamera 
+CameraManager::SharedCamera
 CameraManager::getCamera(const TString& cameraName) {
   
   SharedCamera cam;

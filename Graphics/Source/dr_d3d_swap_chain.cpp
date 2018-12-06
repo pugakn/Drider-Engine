@@ -10,16 +10,19 @@
 ///////////////////////////////
 #include <iostream>
 namespace driderSDK {
-  void * D3DSwapChain::getAPIObject()
-  {
-    return APISwapchain;
-  }
-  void ** D3DSwapChain::getAPIObjectReference()
-  {
-    return reinterpret_cast<void**>(&APISwapchain);
-  }
-  void D3DSwapChain::create(const Device& device,
-                                          const DrSwapChainDesc& desc) {
+
+void*
+D3DSwapChain::getAPIObject() {
+  return APISwapchain;
+}
+
+void**
+D3DSwapChain::getAPIObjectReference() {
+  return reinterpret_cast<void**>(&APISwapchain);
+}
+
+void
+D3DSwapChain::create(const Device& device, const DrSwapChainDesc& desc) {
   const D3DDevice* dev = reinterpret_cast<const D3DDevice*>(&device);
   m_descriptor = desc;
   DXGI_SWAP_CHAIN_DESC apiDesc;
@@ -56,15 +59,22 @@ namespace driderSDK {
   dxgiDevice->Release();
 
   DrTextureDesc backDesc;
+  backDesc.dimension = DR_DIMENSION::k2D;
   backDesc.width = desc.width;
   backDesc.height = desc.height;
-  backDesc.pitch = backDesc.width * 4;
   backDesc.Format = DR_FORMAT::kR8G8B8A8_UNORM;
+  backDesc.pitch = backDesc.width * 4 * 1;
+  backDesc.mipLevels = 0;
+  backDesc.genMipMaps = true;
+  backDesc.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE |
+                       DR_BIND_FLAGS::RENDER_TARGET;
+
   m_backBufferTexture = new D3DTexture;
   m_backBufferTexture->setDescriptor(backDesc);
+  m_backBufferTexture->createFromMemory(device, backDesc, 0);
   HRESULT hr = APISwapchain->GetBuffer(0,
-    __uuidof(m_backBufferTexture->APITexture),
-    (void**)&m_backBufferTexture->APITexture);
+                                       __uuidof(m_backBufferTexture->APITexture),
+                                       (void**)&m_backBufferTexture->APITexture);
 
   std::vector<Texture*> texturesVec;
   texturesVec.push_back(m_backBufferTexture);
@@ -85,15 +95,15 @@ D3DSwapChain::release() {
   delete this;
 }
 
-void D3DSwapChain::resize(const Device& device, UInt32 _w, UInt32 _h)
-{
-  /////////////////////////////////////////
+void
+D3DSwapChain::resize(const Device& device, UInt32 _w, UInt32 _h) {
+  /////////////////////////////////////
   auto& api = GraphicsDriver::API();
   auto& devContext = api.getDeviceContext();
   {
     reinterpret_cast<D3DDeviceContext*>(&devContext)->D3D11DeviceContext->OMSetRenderTargets(0,0,0);
   }
-  /////////////////////////////////////////
+  /////////////////////////////////////
   m_descriptor.width = _w;
   m_descriptor.height = _h;
   m_backBufferView->release();
@@ -104,10 +114,12 @@ void D3DSwapChain::resize(const Device& device, UInt32 _w, UInt32 _h)
   backDesc.height = m_descriptor.height;
   backDesc.pitch = backDesc.width * 4;
   backDesc.Format = DR_FORMAT::kR8G8B8A8_UNORM;
+  backDesc.CPUAccessFlags = DR_CPU_ACCESS_FLAG::drRead;
   m_backBufferTexture = new D3DTexture;
   m_backBufferTexture->setDescriptor(backDesc);
   HRESULT hr = APISwapchain->GetBuffer(0,
-    __uuidof(ID3D11Texture2D),
+    //__uuidof(ID3D11Texture2D),
+    __uuidof(m_backBufferTexture->APITexture),
     (void**)&m_backBufferTexture->APITexture);
 
   std::vector<Texture*> texturesVec;
@@ -115,7 +127,7 @@ void D3DSwapChain::resize(const Device& device, UInt32 _w, UInt32 _h)
   auto bbRT = device.createRenderTarget(texturesVec);
   m_backBufferView = bbRT;
   ///////////////////////////////
-  bbRT->set(devContext, api.getDepthStencil());
+  
   ///////////////////////////////
 }
 

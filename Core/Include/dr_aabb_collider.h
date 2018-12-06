@@ -18,7 +18,7 @@ class DR_CORE_EXPORT AABBCollider : public ColliderComponent,
   const AABB& 
   getTransformedAABB();
 
-  const AABB& 
+  AABB& 
   getAABB();
 
   virtual void 
@@ -27,8 +27,8 @@ class DR_CORE_EXPORT AABBCollider : public ColliderComponent,
   virtual void 
   onUpdate() override;
 
-  virtual void 
-  onRender() override {}
+  virtual void
+    onRender() override;
   
   virtual void 
   onDestroy() override;
