@@ -20,6 +20,7 @@
 #include <dr_keyboard.h>
 #include <dr_mouse.h>
 #include <dr_render_component.h>
+#include <dr_image_info.h>
 #include <dr_script_component.h>
 #include <dr_string_utils.h>
 #include <dr_animator_component.h>
@@ -35,57 +36,57 @@
 
 #include <dr_model.h>
 namespace driderSDK {
-  void
-    HSVtoRGB(float fH, float fS, float fV,
-      float& fR, float& fG, float& fB) {
-    float fC = fV * fS;
-    float fX = fC * (1.0f - abs(fmod((fH / 60.0f), 2) - 1.0f));
-    float fM = fV - fC;
 
-    fR = fM;
-    fG = fM;
-    fB = fM;
+void
+HSVtoRGB(float fH, float fS, float fV, float& fR, float& fG, float& fB) {
+  float fC = fV * fS;
+  float fX = fC * (1.0f - abs(fmod((fH / 60.0f), 2) - 1.0f));
+  float fM = fV - fC;
 
-    if (fH < 60.0f) {
-      fR += fC;
-      fG += fX;
-      //fB += 0.0f;
-      return;
-    }
-    else if (fH < 120.0f) {
-      fR += fX;
-      fG += fC;
-      //fB += 0.0f;
-      return;
-    }
-    else if (fH < 180.0f) {
-      //fR += 0.0f;
-      fG += fC;
-      fB += fX;
-      return;
-    }
-    else if (fH < 240.0f) {
-      //fR += 0.0f;
-      fG += fX;
-      fB += fC;
-      return;
-    }
-    else if (fH < 300.0f) {
-      fR += fX;
-      //fG += 0.0f;
-      fB += fC;
-      return;
-    }
-    else if (fH <= 360.0f) {
-      fR = fC;
-      //fG = 0.0f;
-      fB = fX;
-      return;
-    }
+  fR = fM;
+  fG = fM;
+  fB = fM;
+
+  if (fH < 60.0f) {
+    fR += fC;
+    fG += fX;
+    //fB += 0.0f;
+    return;
   }
+  else if (fH < 120.0f) {
+    fR += fX;
+    fG += fC;
+    //fB += 0.0f;
+    return;
+  }
+  else if (fH < 180.0f) {
+    //fR += 0.0f;
+    fG += fC;
+    fB += fX;
+    return;
+  }
+  else if (fH < 240.0f) {
+    //fR += 0.0f;
+    fG += fX;
+    fB += fC;
+    return;
+  }
+  else if (fH < 300.0f) {
+    fR += fX;
+    //fG += 0.0f;
+    fB += fC;
+    return;
+  }
+  else if (fH <= 360.0f) {
+    fR = fC;
+    //fG = 0.0f;
+    fB = fX;
+    return;
+  }
+}
 
-void read_directory(const TString& name, TString& v)
-{
+void
+read_directory(const TString& name, TString& v) {
   TString pattern(name);
   TString parent(name);
   pattern.append(_T("\\*"));
@@ -109,7 +110,9 @@ void read_directory(const TString& name, TString& v)
     FindClose(hFind);
   }
 }
-void updateFolders(WebRenderer& webRenderer, TString root) {
+
+void
+updateFolders(WebRenderer& webRenderer, TString root) {
   TString folders = _T("JS_InfoTreeFile(\"") + root + _T("\",");
   folders += _T("\"{'items':[");
   read_directory(root, folders);
@@ -118,9 +121,8 @@ void updateFolders(WebRenderer& webRenderer, TString root) {
   webRenderer.executeJSCode(folders);
 }
 
-
-void SceneEditor::init(Viewport v)
-{
+void
+SceneEditor::init(Viewport v) {
   m_viewport = v;
   initUI();
   initSceneGraph();
@@ -129,21 +131,22 @@ void SceneEditor::init(Viewport v)
   quad.init();
 }
 
-void SceneEditor::update()
-{
+void
+SceneEditor::update() {
   WebRenderer::update();
 }
-void SceneEditor::draw()
-{
+
+void
+SceneEditor::draw() {
   webRenderer.setTexture();
   quad.draw();
   m_sceneViewer.draw();
 }
+
 std::shared_ptr<GameObject> 
 SceneEditor::addGameObject(std::shared_ptr<GameObject> parent, 
-                           const TString & name, 
-                           const Vector3D & pos)
-{
+                           const TString& name, 
+                           const Vector3D& pos) {
   auto node = std::make_shared<GameObject>();
   parent->addChild(node);
   SceneGraph::addObject(node);
@@ -153,12 +156,13 @@ SceneEditor::addGameObject(std::shared_ptr<GameObject> parent,
   node->start();
   return node;
 }
-void SceneEditor::initInputs()
-{
+
+void
+SceneEditor::initInputs() {
 }
 
-void SceneEditor::initSceneGraph()
-{
+void
+SceneEditor::initSceneGraph() {
   Degree grados(2.8125f);
   Vector4D LightPosition(0.0f, 50.0f, -100.0f, 1);
   Matrix4x4 rotationMatrix(driderSDK::Math::FORCE_INIT::kIdentity);
@@ -172,11 +176,11 @@ void SceneEditor::initSceneGraph()
 
     //Color
     HSVtoRGB(proportion * 256,
-      1.0f,
-      1.0f,
-      Lights[lighIndex].m_vec4Color.x,
-      Lights[lighIndex].m_vec4Color.y,
-      Lights[lighIndex].m_vec4Color.z);
+             1.0f,
+             1.0f,
+             Lights[lighIndex].m_vec4Color.x,
+             Lights[lighIndex].m_vec4Color.y,
+             Lights[lighIndex].m_vec4Color.z);
 
     //Intensidad
     Lights[lighIndex].m_vec4Color.w = (lighIndex / 128.0f) * 100.0f;
@@ -184,20 +188,23 @@ void SceneEditor::initSceneGraph()
     proportion += (1.0f / 128.0f);
   }
 
-
   CameraManager::createCamera(_T("PATO_CAM"),
-  { 0.0f, 150.0f, -400.0f },
-  { 0.0f, 50.f, 0.0f },
-    m_viewport,
-    45.f,
-    //1024, 1024,
-    0.1f,
-    10000.f);
+                              { 0.0f, 150.0f, -400.0f },
+                              { 0.0f, 50.f, 0.0f },
+                              m_viewport,
+                              45.f,
+                              //1024, 1024,
+                              0.1f,
+                              10000.f);
   CameraManager::setActiveCamera(_T("PATO_CAM"));
 
   modelMovement = Vector3D(0.0f, 0.0f, 0.0f);
 
   loadResources();
+
+  RenderManager::instance().setCubeMap(ResourceManager::getReferenceT<TextureCore>(_T("GraceCubemap.tga")));
+  RenderManager::instance().setEnviromentMap(ResourceManager::getReferenceT<TextureCore>(_T("GraceDiffuseCubemap.tga")));
+  RenderManager::instance().setFilmLut(ResourceManager::getReferenceT<TextureCore>(_T("FilmLut.tga")));
 
   model = SceneGraph::createObject(_T("Model"));
   auto ptrModel = ResourceManager::getReferenceT<Model>(_T("model.dae"));
@@ -229,6 +236,7 @@ void SceneEditor::initSceneGraph()
     auto rComp = model->getComponent<RenderComponent>();
     rComp->getMeshes().front().material = modelMat;
   }
+
   floor = SceneGraph::createObject(_T("Floor"));
   auto ptrFloor = ResourceManager::getReferenceT<Model>(_T("plane.fbx"));
   if (ptrFloor) {
@@ -276,21 +284,30 @@ void SceneEditor::initSceneGraph()
     auto renderComp = floor->getComponent<RenderComponent>();
     renderComp->getMeshes().front().material = floorMat;
   }
+
   SceneGraph::start();
 }
-void SceneEditor::loadResources()
-{
-  //ResourceManager::loadResource(_T("Checker.fbx"));
-  ResourceManager::loadResource(_T("Sphere.fbx"));
-  ResourceManager::loadResource(_T("plane.fbx"));
-  //ResourceManager::loadResource(_T("Croc.X"));
-  ResourceManager::loadResource(_T("model.dae"));
 
-  ResourceManager::loadResource(_T("default_albedo.tga"));
-  ResourceManager::loadResource(_T("default_emissive.tga"));
-  ResourceManager::loadResource(_T("default_metallic.tga"));
-  ResourceManager::loadResource(_T("default_normal.tga"));
-  ResourceManager::loadResource(_T("default_roughness.tga"));
+void
+SceneEditor::loadResources() {
+  ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
+
+  ImageInfo cubeMapDesc;
+  cubeMapDesc.width = 256;
+  cubeMapDesc.height = 256;
+  cubeMapDesc.textureDimension = DR_DIMENSION::kCUBE_MAP;
+  cubeMapDesc.channels = DR_FORMAT::kB8G8R8A8_UNORM_SRGB;
+
+  ResourceManager::loadResource(_T("GraceCubemap.tga"), &cubeMapDesc);
+  ResourceManager::loadResource(_T("GraceDiffuseCubemap.tga"), &cubeMapDesc);
+  ResourceManager::loadResource(_T("FilmLut.tga"));
+
+  ResourceManager::loadResource(_T("plane.fbx"));
+  ResourceManager::loadResource(_T("FernBush.obj"));
+  ResourceManager::loadResource(_T("model.dae"));
+  ResourceManager::loadResource(_T("stormtrooper_dancing.fbx"));
+  ResourceManager::loadResource(_T("HK_Teen.fbx"));
+  ResourceManager::loadResource(_T("popuko.fbx"));
 
   ResourceManager::loadResource(_T("256_Checker_Diffuse.tga"));
   ResourceManager::loadResource(_T("256_Checker_Displacement.tga"));
@@ -302,9 +319,30 @@ void SceneEditor::loadResources()
   ResourceManager::loadResource(_T("256_Checker_Specular.tga"));
   ResourceManager::loadResource(_T("256_Checker_SSColor.tga"));
   ResourceManager::loadResource(_T("256_Checker_Thickness.tga"));
+
+  ResourceManager::loadResource(_T("FernTarga.tga"));
+
+  ResourceManager::loadResource(_T("default_albedo.tga"));
+  ResourceManager::loadResource(_T("default_emissive.tga"));
+  ResourceManager::loadResource(_T("default_metallic.tga"));
+  ResourceManager::loadResource(_T("default_normal.tga"));
+  ResourceManager::loadResource(_T("default_roughness.tga"));
+
+  ResourceManager::loadResource(_T("Stormtrooper_Diffuse.png"));
+
+  ResourceManager::loadResource(_T("hatkid_HK_main_mat_BaseColor.tga"));
+  ResourceManager::loadResource(_T("hatkid_HK_main_mat_Emissive.tga"));
+  ResourceManager::loadResource(_T("hatkid_HK_main_mat_Metallic.tga"));
+  ResourceManager::loadResource(_T("hatkid_HK_main_mat_Roughness.tga"));
+  ResourceManager::loadResource(_T("hatkid_HK_second_mat_BaseColor.tga"));
+  ResourceManager::loadResource(_T("hatkid_HK_second_mat_Metallic.tga"));
+  ResourceManager::loadResource(_T("hatkid_HK_second_mat_Roughness.tga"));
+  ResourceManager::loadResource(_T("HK_eye_dif.tga"));
+  ResourceManager::loadResource(_T("HK_eye_spc.tga"));
 }
-void SceneEditor::initUI()
-{
+
+void
+SceneEditor::initUI() {
   webRenderer.Init(m_viewport.width, m_viewport.height, BROWSER_MODE::kHeadless);
 
   webRenderer.loadURL("file:///Interface/index.html");
@@ -516,8 +554,9 @@ void SceneEditor::initUI()
   
 
 }
-void SceneEditor::UI_UpdateSceneGraph()
-{
+
+void
+SceneEditor::UI_UpdateSceneGraph() {
   TString nodes = _T("JS_InfoHierarchy(");
 
   std::function<void(const std::vector<std::shared_ptr<GameObject>>&)> search = 
@@ -533,13 +572,11 @@ void SceneEditor::UI_UpdateSceneGraph()
       search(children2);
       nodes += _T("},");
     }
-    if (children.size())
-    {
+    if (children.size()) {
       nodes.erase(nodes.length() - 1);
       nodes += _T("]");
     }
-    else
-    {
+    else {
       nodes += _T("]");
     }
   };
@@ -560,8 +597,8 @@ void SceneEditor::UI_UpdateSceneGraph()
   webRenderer.executeJSCode(nodes);
 }
 
-void SceneEditor::UI_UpdatePropertySheet(const GameObject& obj)
-{
+void
+SceneEditor::UI_UpdatePropertySheet(const GameObject& obj) {
   GameObject& ncnst = const_cast<GameObject&>(obj);
   auto components = ncnst.getComponents<RenderComponent>();
   for (auto &it : components) {
@@ -578,15 +615,14 @@ void SceneEditor::UI_UpdatePropertySheet(const GameObject& obj)
   }
 }
 
-void driderSDK::SceneEditor::resize(Viewport _viewport)
-{
+void
+driderSDK::SceneEditor::resize(Viewport _viewport) {
   m_viewport = _viewport;
   webRenderer.resize(m_viewport.width, m_viewport.height);
 }
 
-
-void SceneEditor::destroy()
-{
+void
+SceneEditor::destroy() {
   m_netLobby.Destroy();
   webRenderer.Destroy();
   WebRenderer::shutDown();

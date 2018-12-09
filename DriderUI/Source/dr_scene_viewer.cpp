@@ -62,7 +62,7 @@ SceneViewer::init(Viewport v)
   depthTextureDesc.Format = DR_FORMAT::kD32_FLOAT;
   m_RTDPTH = dr_gfx_shared(GraphicsAPI::getDevice().createDepthStencil(depthTextureDesc));
 
-  m_renderMan.init();
+  //m_renderMan.init();
   initInputs();
 }
 void 
@@ -71,7 +71,8 @@ SceneViewer::draw() {
   m_RT->clear(GraphicsAPI::getDeviceContext(), clearColor);
   m_RTDPTH->clear(GraphicsAPI::getDeviceContext(),1,0);
   //Draw Scene
-  m_renderMan.draw(*m_RT, *m_RTDPTH);
+  
+  RenderManager::instance().draw(*m_RT, *m_RTDPTH);
   //Draw End
   GraphicsAPI::getDepthStencilState(DR_DEPTH_STENCIL_STATES::kDepthR).set(GraphicsAPI::getDeviceContext(), 1);
   GraphicsAPI::getBackBufferRT().set(GraphicsAPI::getDeviceContext(), 
@@ -234,14 +235,9 @@ SceneViewer::GetGMOMouseCollition()
   auto child = SceneGraph::getRoot();
   return search(child);
 }
+
 void
-SceneViewer::destroy()
-{
-  m_renderMan.exit();
+SceneViewer::destroy() {
 }
-RenderManager&
-SceneViewer::getRenderManager()
-{
-  return m_renderMan;
-}
+
 }

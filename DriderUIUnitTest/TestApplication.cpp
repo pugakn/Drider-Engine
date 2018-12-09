@@ -10,27 +10,29 @@
 #include <dr_resource_manager.h>
 #include <dr_camera_manager.h>
 #include <dr_renderman.h>
+
 namespace driderSDK {
-TestApplication::TestApplication()
-{
+
+TestApplication::TestApplication() {
 }
 
 TestApplication::~TestApplication() {
 }
+
 void
 TestApplication::postInit() {
   Logger::startUp();
   GraphicsDriver::startUp(DR_GRAPHICS_API::D3D11,
-    m_viewport.width,
-    m_viewport.height,
-    m_hwnd);
+                          m_viewport.width,
+                          m_viewport.height,
+                          m_hwnd);
   InputManager::startUp((SizeT)m_hwnd);
+  ResourceManager::startUp();
   SceneGraph::startUp();
   Time::startUp();
-  ResourceManager::startUp();
-
   CameraManager::startUp();
-
+  RenderManager::startUp();
+  //PhysicsManager::startUp();
 
   m_editor.init(m_viewport);
 

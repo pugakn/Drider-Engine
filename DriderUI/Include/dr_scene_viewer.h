@@ -8,12 +8,14 @@
 #include <dr_web_renderer.h>
 #include <dr_quad.h>
 #include <dr_renderman.h>
+
 namespace driderSDK {
+
 class DR_UI_EXPORT SceneViewer {
   const float W_SCROLL_VEL = 0.2f;
   const float W_MOVE_VEL = 0.38f;
   const float W_ROT_VEL = 1.f;
-public:
+ public:
 
   /**
   * Init scene viewer
@@ -24,6 +26,7 @@ public:
   */
   void 
   init(Viewport v);
+
   /**
   * 1.- Draw render manager to RT
   * 2.- Draw RT texture on a quad with m_viewport
@@ -31,12 +34,14 @@ public:
   */
   void 
   draw();
+
   /**
   * Resize the render area
   *
   */
   void 
   destroy();
+
   /**
   * Resize the render area
   *
@@ -47,12 +52,14 @@ public:
   void 
   resize(const Viewport& _v);
 
-  RenderManager& getRenderManager();
-private:
-  void initInputs();
-  SceneGraph::SharedGameObject GetGMOMouseCollition();
+ private:
 
-  RenderManager m_renderMan;
+  void
+  initInputs();
+
+  SceneGraph::SharedGameObject
+  GetGMOMouseCollition();
+
   Viewport m_sceneViewport;
   GFXShared<RenderTarget> m_RT;
   GFXShared<DepthStencil> m_RTDPTH;
