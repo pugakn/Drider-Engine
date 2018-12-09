@@ -44,37 +44,164 @@
 #include <dr_soundExtraInfo.h>
 #include <dr_sound.h>
 #include <dr_sound_component.h>
+#include <dr_sound_core.h>
+
+#include <dr_networkTransform_component.h>
+#include <dr_networkManager_component.h>
+#include <dr_messenger.h>
+#include <dr_network_manager.h>
+
+#include <dr_export_script.h>
+#include <dr_script_engine.h>
+
+#include <dr_scene_manager.h>
 
 namespace driderSDK {
 
-DriderEngine::DriderEngine() {
-}
+/*DriderEngine::DriderEngine() {
+}*/
 
 DriderEngine::~DriderEngine() {
 }
 
 void
+DriderEngine::onJoinAccepted() {
+  //IMPORTANT
+  auto temp = m_nameStr.substr(0, m_nameStr.find_first_of('\0'));
+  m_userName = StringUtils::toWString(temp);
+}
+
+void
+DriderEngine::onJoinDenied() {
+  m_err = true;
+}
+
+void
+DriderEngine::onConnectionLoss() {
+  m_err = true;
+}
+
+void
+DriderEngine::onLobbiesListReceived(LobbiesList&& lobbies) {
+  m_lobbies = std::move(lobbies);
+}
+
+void
+DriderEngine::onGameStatusReceived(UInt8 num_players,
+                                   std::vector<Vector3D> positions) {
+  
+  if(num_players != m_players.size()) {
+    std::cout << "Players not instantiate\n";
+    return;
+  }
+  
+  for(int i = 0; i < positions.size(); i++) {
+    m_players[i]->getTransform().setPosition(positions[i]);
+  }
+}
+
+void
+DriderEngine::onInstantiatePlayer(bool isLocalPlayer,
+                                  const TString& name,
+                                  const Vector3D& pos,
+                                  const Vector3D& dir) {
+
+  if(SceneGraph::getRoot()->findObject(name) != nullptr) {
+    return;
+  } 
+
+  auto walkerModel = ResourceManager::getReferenceT<Model>(_T("Walking.fbx"));
+  auto& walkerAnimName = walkerModel->animationsNames[0];
+  auto wa = ResourceManager::getReferenceT<Animation>(walkerAnimName);
+  auto ws = ResourceManager::getReferenceT<Skeleton>(walkerModel->skeletonName);
+
+  auto newPlayer = addObjectFromModel(walkerModel, name);
+  auto animator = newPlayer->createComponent<AnimatorComponent>();
+  animator->setSkeleton(ws);
+  animator->addAnimation(wa, walkerAnimName);
+  animator->setCurrentAnimation(walkerAnimName, true);
+
+  if(isLocalPlayer) {
+    newPlayer->createComponent<NetworkManagerComponent>();
+
+    ScriptEngine* scriptEngine = ScriptEngine::instancePtr();
+    ContextManager* ctxMag = ContextManager::instancePtr();
+
+    //Create a context
+    auto currentModule = scriptEngine->m_scriptEngine->GetModule("GameModule");
+    currentModule->Discard();
+    scriptEngine->m_scriptContext = ctxMag->addContext(scriptEngine->m_scriptEngine,
+                                                       _T("GameModule"));
+
+    //Add script section of behavior
+    auto BehaviorScript = ResourceManager::getReferenceT<
+                          ScriptCore>(_T("driderBehavior.as"));
+    scriptEngine->addScript(BehaviorScript->getName(),
+                            BehaviorScript->getScript(),
+                            _T("GameModule"));
+    
+    auto playerScript = ResourceManager::getReferenceT<ScriptCore>
+                        (_T("player.as"));
+    auto script = newPlayer->createComponent<ScriptComponent>(playerScript);
+
+    currentModule = scriptEngine->m_scriptEngine->GetModule("GameModule");
+    UInt16 result = currentModule->Build();
+
+    script->initScript();
+    script->start();
+
+  }
+  //newPlayer->createComponent<ScriptComponent>();
+
+  newPlayer->getTransform().setPosition(pos);
+  newPlayer->getTransform().setRotation(dir);
+
+  m_players.push_back(newPlayer);
+
+  SceneGraph::start();
+}
+
+void
 DriderEngine::postInit() {
+  
   initModules();
-  //initInputCallbacks();
   loadResources();
   createScene();
-  initScriptEngine();
-  playSoundTest();
+  playLoadedSounds();
+  //initScriptEngine();
 
   Time::update();
   m_editor.init(Application::getViewPort());
+  
 }
 
 void
 DriderEngine::postUpdate() {
+  Client::update();
   WebRenderer::update();
   Time::update();
   InputManager::update();
 
   SoundAPI::instance().API->update();
   SceneGraph::update();
-  m_editor.update();
+  m_editor.update(); 
+
+  // Hardcode section
+  m_connected = true;
+  if(!m_connected) {
+    requestConnection(m_lobbies[0].ip, m_lobbies[0].port);
+    m_connected = true;
+  }
+  
+  /*if(m_player && !m_valueRegistered) {
+    m_valueRegistered = true;
+    auto net = m_player->getComponent<NetworkManagerComponent>();
+    float a = 10.2f;
+    net->registerFloat(_T("m_vel"), a);
+    net->instantiate(OBJ_TYPE::kPlayer,
+                     Vector3D(0.0f, 0.0f, 0.0f),
+                     Vector3D(0.0f, 0.0f, 0.0f));    
+  }*/
 }
 
 void
@@ -86,6 +213,7 @@ DriderEngine::postRender() {
 
 void
 DriderEngine::postDestroy() {
+  ResourceManager::saveScene("Main");
   destroyModules();
 }
 
@@ -117,47 +245,68 @@ DriderEngine::initModules() {
   ContextManager::startUp();
   ScriptEngine::startUp();
   SceneGraph::startUp();
+
+  m_err = false;
+  m_connected = false;
+  NetworkManager::startUp();
+  Client::init();
+  m_userName = _T("MontiTest");
+  requestLobbies(); 
 }
 
 void
 DriderEngine::loadResources() {
   //Models
-  ResourceManager::loadResource(_T("Walking.fbx"));
-  ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
+  /*ResourceManager::loadResource(_T("Sphere.fbx"));
+  ResourceManager::loadResource(_T("Checker.fbx"));
+  ResourceManager::loadResource(_T("Plane.fbx"));*/
 
   //Scripts
   ResourceManager::loadResource(_T("driderBehavior.as"));
-  ResourceManager::loadResource(_T("script1.as"));
-  ResourceManager::loadResource(_T("script2.as"));
 
   //Sounds (All sunds requiere extraInfo data)
   auto system = SoundAPI::instance().API->system;
   auto channel = SoundAPI::instance().API->channel1;
   extraInfo = new SoundExtraInfo(reinterpret_cast<SoundSystem*>(system),
                                  reinterpret_cast<DrChannel*>(channel));
-  ResourceManager::loadResource(_T("testSound1.mp3"), extraInfo);
+  //ResourceManager::loadResource(_T("testSound1.mp3"), extraInfo);
 }
 
 void
 DriderEngine::createScene() {
-  auto activeCam = CameraManager::getActiveCamera();
 
-  auto walkerModel = ResourceManager::getReferenceT<Model>(_T("Walking.fbx"));
-  auto& walkerAnimName = walkerModel->animationsNames[0];
-  auto wa = ResourceManager::getReferenceT<Animation>(walkerAnimName);
-  auto ws = ResourceManager::getReferenceT<Skeleton>(walkerModel->skeletonName);
+  /*auto sphereModel = ResourceManager::getReferenceT<Model>(_T("Sphere.fbx"));
+  auto sphere = addObjectFromModel(sphereModel, _T("Player"));
+  sphere->getTransform().setScale({10,10,10});
+  sphere->getTransform().setPosition({ -50,0,0 });
+  auto soundComponent = sphere->createComponent<SoundComponent>();
+  auto sound = ResourceManager::getReferenceT<SoundCore>(_T("testSound1.mp3"));
+  soundComponent->addSound(_T("testSound1.mp3"), sound->get());
 
-  m_player = addObjectFromModel(walkerModel, _T("Player"));
-  auto animator = m_player->createComponent<AnimatorComponent>();
-  animator->setSkeleton(ws);
-  animator->addAnimation(wa, walkerAnimName);
-  animator->setCurrentAnimation(walkerAnimName, true);
-  m_player->getTransform().setPosition({ 0, 0, 300 });
 
-  auto quadMod = ResourceManager::getReferenceT<Model>(_T("ScreenAlignedQuad.3ds"));
-  auto quad = addObjectFromModel(quadMod, _T("Floor"));
-  quad->getTransform().rotate({ -Math::HALF_PI, 0, 0 });
-  quad->getTransform().setScale({ 10000, 10000, 10000 });
+  sphere = addObjectFromModel(sphereModel, _T("GameObject0"));
+  sphere->getTransform().setScale({ 10,10,10 });
+  sphere->getTransform().setPosition({ 0,0,0 });
+
+  sphere = addObjectFromModel(sphereModel, _T("GameObject1"));
+  sphere->getTransform().setScale({ 10,10,10 });
+  sphere->getTransform().setPosition({ 50,0,0 });
+
+  auto cubeModel = ResourceManager::getReferenceT<Model>(_T("Checker.fbx"));
+  auto cube = addObjectFromModel(cubeModel, _T("Cube"));
+  cube->getTransform().rotate({ 0, Math::HALF_PI / 2.f, 0});
+  cube->getTransform().setScale({ .2f, .2f, .2f });
+  cube->getTransform().setPosition({ -20, 0, 0 });
+  
+  auto modelQuad = ResourceManager::getReferenceT<Model>(_T("Plane.fbx"));
+  auto quad = addObjectFromModel(modelQuad, _T("Quad"));
+  quad->getTransform().setScale({ 3, 3, 3 });
+  quad->getTransform().setPosition({ 0, -10, 0 });*/
+ 
+  ResourceManager::loadScene("Main");
+
+  SceneGraph::start();
+
 }
 
 std::shared_ptr<GameObject>
@@ -175,6 +324,7 @@ DriderEngine::addObjectFromModel(std::shared_ptr<Model> model,
 
   return obj;
 }
+
 
 void
 DriderEngine::initScriptEngine() {
@@ -208,24 +358,27 @@ DriderEngine::initScriptEngine() {
   result = GameComponent::registerFunctions(scriptEngine);
   result = SoundComponent::registerFunctions(scriptEngine);
   result = ScriptComponent::registerFunctions(scriptEngine);
+  result = NetworkManagerComponent::registerFunctions(scriptEngine);
+
+
   result = Transform::registerFunctions(scriptEngine);
   result = GameObject::registerFunctions(scriptEngine);
+
+  /*result = REGISTER_GLO_FOO("void Instantiate(GameObject& in, const Vector3D& in, const Vector3D& in",
+                            asFUNCTION(&SceneGraph::instanciate));*/
 
   //Register global properties
   m_root = SceneGraph::instance().getRoot().get(); // Get root
 
-  result = scriptEngine->m_scriptEngine->RegisterGlobalProperty("GameObject@ Object",
-                                                                &m_root);
+  result = REGISTER_GLO_PROPERTIE("GameObject@ Object",
+                                  &m_root);
+
+  result = REGISTER_GLO_PROPERTIE("const bool isConnected",
+                                  &m_connected);
 
   //Get script references of the ResourceManager
   auto rBehaviorScript = ResourceManager::getReference(_T("driderBehavior.as"));
   auto BehaviorScript = std::dynamic_pointer_cast<ScriptCore>(rBehaviorScript);
-
-  auto rScript1 = ResourceManager::getReference(_T("script1.as"));
-  auto Script1 = std::dynamic_pointer_cast<ScriptCore>(rScript1);
-
-  auto rScript2 = ResourceManager::getReference(_T("script2.as"));
-  auto Script2 = std::dynamic_pointer_cast<ScriptCore>(rScript2);
 
   //Create a context
   scriptEngine->m_scriptContext = ctxMag->addContext(scriptEngine->m_scriptEngine,
@@ -237,44 +390,33 @@ DriderEngine::initScriptEngine() {
                           _T("GameModule"));
 
   //Add script component to the objects and add script sections of the scripts
-  auto playerScript = m_player->createComponent<ScriptComponent>(Script1);
-  m_scripts.insert({ _T("script1"), playerScript });
-
-  playerScript = m_player->createComponent<ScriptComponent>(Script2);
-  m_scripts.insert({ _T("script2"), playerScript });
 
   //Build module
   auto currentModule = scriptEngine->m_scriptEngine->GetModule("GameModule");
   result = currentModule->Build();
 
   //Initialize scripts
-  m_scripts.find(_T("script1"))->second->initScript();
-  m_scripts.find(_T("script2"))->second->initScript();
 
   //Start the script
-  m_scripts.find(_T("script1"))->second->start();
-  m_scripts.find(_T("script2"))->second->start();
+
 }
 
 void
-DriderEngine::playSoundTest() {
+DriderEngine::playLoadedSounds() {
+  auto sound1Resource = ResourceManager::instance().getReferenceT<SoundCore>(
+                        _T("testSound1.mp3"));
 
-  auto sound1Resource = ResourceManager::instance().getReferenceT<
-    SoundCore>(_T("testSound1.mp3"));
-
-  auto sound1 = sound1Resource.get()->soundResource;
-  auto soundComponent = m_player->createComponent<SoundComponent>();
-
-  //Add all sounds to SoundComponent
-  soundComponent->addSound(_T("testSound1"),
-                           sound1);
-
-  soundComponent->play(_T("testSound1"));
+  auto player = SceneGraph::getRoot()->findObject(_T("Player"));
+  auto soundComponent = player->getComponent<SoundComponent>();
+  soundComponent->play(_T("testSound1.mp3"));
 
 }
 
 void
 DriderEngine::destroyModules() {
+
+  Messenger::shutDown();
+  Client::quit();
   delete extraInfo;
 
   ContextManager::shutDown();

@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Archivos de código fuente\Serializable">
+      <UniqueIdentifier>{efb9cec9-eb04-430d-bfba-918b43de0b54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\Serializable">
+      <UniqueIdentifier>{2beaaa75-408e-42ea-a896-75319ac768c7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\dr_codec.h">
@@ -39,6 +45,30 @@
     <ClInclude Include="Include\dr_resource_manager.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
+    <ClInclude Include="Include\dr_codec_ctexture.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_codec_scene.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_scene_manager.h">
+      <Filter>Archivos de encabezado\Serializable</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_scene.h">
+      <Filter>Archivos de encabezado\Serializable</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_serializable_data.h">
+      <Filter>Archivos de encabezado\Serializable</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_serializable_sound.h">
+      <Filter>Archivos de encabezado\Serializable</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_serializable_aabb.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_serializable_render.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_codec.cpp">
@@ -57,6 +87,27 @@
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
     <ClCompile Include="Source\dr_resource_manager.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_codec_ctexture.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_codec_scene.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_scene_manager.cpp">
+      <Filter>Archivos de código fuente\Serializable</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_scene.cpp">
+      <Filter>Archivos de código fuente\Serializable</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_serializable_sound.cpp">
+      <Filter>Archivos de código fuente\Serializable</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_serializable_aabb.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_serializable_render.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
   </ItemGroup>

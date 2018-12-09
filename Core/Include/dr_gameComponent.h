@@ -8,12 +8,15 @@
 #include <dr_export_script.h>
 #include <..\..\Script\Include\dr_script_engine.h>
 
+#include "dr_serializable.h"
+
 namespace driderSDK {
 
 class GameObject;
 
 class DR_CORE_EXPORT GameComponent : public EnableObject,
-                                     public NameObject
+                                     public NameObject,
+                                     public Serializable                              
 {
  public:
   GameComponent(GameObject& gameObject_, const TString& _name);
@@ -22,6 +25,9 @@ class DR_CORE_EXPORT GameComponent : public EnableObject,
 
   GameObject& 
   getGameObject();
+
+  GameObject*
+  getGameObjectPtr();
   
   virtual void
   onCreate() = 0;

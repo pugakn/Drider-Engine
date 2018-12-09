@@ -9,6 +9,13 @@ namespace driderSDK {
 
 class Camera;
 
+/**
+* Camera class component.
+* Holds the information of this camera.
+*
+* Sample usage:
+* gameObject.createComponent<CameraComponent>();
+*/
 class DR_CORE_EXPORT CameraComponent : public GameComponent
 {
 public:
@@ -18,11 +25,117 @@ public:
   CameraComponent(GameObject& _gameObject, 
                   SharedCamera _camera = SharedCamera());
 
-  void
-  setCamera(SharedCamera camera);
-
+  /**
+  * Makes this component the main camera.
+  */
   void
   setActive();
+
+  /**
+  * Returns the viewport width.
+  *
+  * @return
+  *  Returns the width of the camera viewport.
+  *
+  */
+  UInt32
+  getWidth();
+  
+  /**
+  * Sets the camera viewport width.
+  *
+  * @param width
+  *  The new width of the camera viewport.
+  *
+  */
+  void
+  setWidth(UInt32 width);
+
+  /**
+  * Returns the viewport height.
+  *
+  * @return
+  *  Returns the height of the camera viewport.
+  *
+  */
+  UInt32
+  getHeight();
+
+  /**
+  * Sets the camera viewport height.
+  *
+  * @param height
+  *  The new height of the camera viewport.
+  *
+  */
+  void
+  setHeight(UInt32 height);
+
+  /**
+  * Returns the near plane.
+  *
+  * @return
+  *  Returns the near plane of the camera.
+  *
+  */
+  float
+  getNearPlane();
+
+  /**
+  * Sets the camera near plane.
+  *
+  * @param nearPlane
+  *  The new near plane of the camera.
+  *
+  */
+  void
+  setNearPlane(float nearPlane);
+
+  /**
+  * Returns the far plane.
+  *
+  * @return
+  *  Returns the far plane of the camera.
+  *
+  */
+  float
+  getFarPlane();
+
+  /**
+  * Sets the camera far plane.
+  *
+  * @param farPlane
+  *  The new far plane of the camera.
+  *
+  */
+  void
+  setFarPlane(float farPlane);
+  
+  /**
+  * Returns the fov.
+  *
+  * @return
+  *  Returns the fov of the camera.
+  *
+  */
+  float
+  getFov();
+  
+  /**
+  * Sets the camera fov.
+  *
+  * @param fov
+  *  The new fov of the camera.
+  *
+  */
+  void
+  setFov(float fov);
+
+  void
+  serialize(File &file) override;
+
+  void
+  deserialize(TString& data) override;
 
 private:  
 

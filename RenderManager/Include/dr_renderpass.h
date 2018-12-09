@@ -1,7 +1,7 @@
 #pragma once
+#include "dr_renderman_prerequisites.h"
 #include <dr_render_target.h>
 #include <dr_shader.h>
-#include "dr_renderman_prerequisites.h"
 #include <dr_constant_buffer.h>
 #include <dr_input_layout.h>
 
@@ -34,7 +34,9 @@ class RenderPass {
   /*
   */
   virtual void
-  recompileShader();
+  recompileShader(String vsPreText = "",
+                  String psPreText = "",
+                  String csPreText = "");
 
   /*
   */
@@ -49,9 +51,11 @@ class RenderPass {
  protected:
   TString m_vsFilename;
   TString m_fsFilename;
+  TString m_csFilename;
 
   GFXUnique<Shader> m_vertexShader;
-  GFXUnique<Shader>  m_fragmentShader;
+  GFXUnique<Shader> m_fragmentShader;
+  GFXUnique<Shader> m_computeShader;
 
   GFXUnique<ConstantBuffer> m_constantBuffer;
   GFXUnique<InputLayout> m_inputLayout;

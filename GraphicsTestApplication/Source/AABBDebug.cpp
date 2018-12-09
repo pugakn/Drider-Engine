@@ -86,8 +86,7 @@ void AABBDebug::onCreate() {
   m_meshesCore.resize(1);
   
   m_meshesCore[0].vertices.resize(8);
-
-
+  
   if (m_updateFromGO) {
       m_aabbD = m_gameObject.getComponent<RenderComponent>()->getAABB();
   }
@@ -123,12 +122,13 @@ AABBDebug::cloneIn(GameObject& _go) {
   
   dup->m_technique = m_technique;
   dup->m_primitive = m_primitive;
-  dup->m_meshes = m_meshes;
 
-  std::cout << "Warnign trying to copy AABBDebug" << std::endl;
+  //std::cout << "Warnign trying to copy AABBDebug" << std::endl;
   
   dup->m_updateFromGO = m_updateFromGO;
   dup->m_aabbD = m_aabbD;
+
+  dup->create();
 
   return dup;
 }

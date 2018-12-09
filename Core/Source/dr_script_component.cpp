@@ -40,6 +40,18 @@ ScriptComponent::~ScriptComponent() {
 }
 
 void
+ScriptComponent::serialize(File &file) {
+  file.m_file << SerializableTypeID::Script;
+  file.m_file << StringUtils::toString(getName());
+
+}
+
+void
+ScriptComponent::deserialize(TString &data) {
+  //Not implemented
+}
+
+void
 ScriptComponent::onCreate() {
   
 }

@@ -4,14 +4,19 @@
 #include <SDL2/SDL.h>
 
 namespace driderSDK {
+
 Application* Application::application;
-Int32 Application::run(const Viewport& _viewport) {
+
+Int32
+Application::run(const Viewport& _viewport) {
   if (Application::application) {
     std::cout << "Application already running" << std::endl;
     return 0;
   }
+
   Application::application = this;
   m_viewport = _viewport;
+
   init();
 
   while (m_running) {
@@ -23,10 +28,12 @@ Int32 Application::run(const Viewport& _viewport) {
 
   return 0;
 }
-Viewport Application::getViewPort()
-{
+
+Viewport
+Application::getViewPort() {
   return getApplication().m_viewport;
 }
+
 void Application::setViewport(const Viewport & _viewport)
 {
   Application& app = getApplication();
@@ -63,28 +70,25 @@ Application::createWindow() {
     exit(666);
   }
 }
+
 void 
 Application::update() {
- 
   if (m_usesWindow) {
 
     SDL_Event event;
 
-  while (SDL_PollEvent(&event)){
-    if (event.type == SDL_QUIT) {
-      m_running = false;
-    }
-    if (event.type == SDL_WINDOWEVENT) {
-      if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
-        m_viewport.width = event.window.data1;
-        m_viewport.height = event.window.data2;
-        onResize();
+    while (SDL_PollEvent(&event)){
+      if (event.type == SDL_QUIT) {
+        m_running = false;
+      }
+      if (event.type == SDL_WINDOWEVENT) {
+        if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+          m_viewport.width = event.window.data1;
+          m_viewport.height = event.window.data2;
+          onResize();
+        }
       }
     }
-
-
-  }
-
   }
   
   postUpdate();
@@ -104,8 +108,10 @@ Application::destroy() {
   
   postDestroy();
 }
-Application & Application::getApplication()
-{
+
+Application&
+Application::getApplication() {
   return *Application::application;
 }
+
 }

@@ -27,7 +27,10 @@ enum E : UInt32
   kNotifyActive,
   kRequestActive,
   kServerFull,
-  kServerNotFull
+  kServerNotFull,
+  kExecuteFunction,
+  kReceiveGameStatus,
+  kReceiveGameInstances
 };
 }
 

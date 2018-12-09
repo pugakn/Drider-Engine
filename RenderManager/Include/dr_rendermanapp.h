@@ -5,5 +5,5 @@
 namespace driderSDK {
 
 void 
-DR_RENDERMAN_EXPORT renderManagerApp(RenderMan& Manager);
+DR_RENDERMAN_EXPORT renderManagerApp(const bool* renderFlag);
 }

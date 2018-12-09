@@ -27,14 +27,20 @@ class DR_CORE_EXPORT AABBCollider : public ColliderComponent,
   virtual void 
   onUpdate() override;
 
-  virtual void 
-  onRender() override {}
+  virtual void
+    onRender() override;
   
   virtual void 
   onDestroy() override;
   
   virtual UInt32
   getClassID() override;
+
+  void
+  serialize(File &file) override;
+
+  void 
+  deserialize(TString& data) override;
 
  private:  
   
@@ -46,7 +52,7 @@ class DR_CORE_EXPORT AABBCollider : public ColliderComponent,
 
  private:
   AABB m_originalAABB;
-  AABB m_transformedAABB;
+  AABB m_transformedAABB; // Inicializar a m_originalAABB
 
   // Inherited via ColliderComponent
 };

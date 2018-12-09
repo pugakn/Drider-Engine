@@ -2,6 +2,8 @@
 
 #include "dr_engine_prerequisites.h"
 #include "dr_codec.h"
+#include <dr_graphics_defines.h>
+#include <vector>
 
 namespace driderSDK {
 
@@ -43,6 +45,16 @@ class DR_ENGINE_EXPORT CodecTexture : public Codec
   */
   bool
   encode(TString pathName) override;
+
+  /**
+  *
+  */
+  bool
+  encodeImage(const String pathname,
+              const Int32 width,
+              const Int32 height,
+              const DR_FILE_FORMAT::E fileFormat,
+              const std::vector<byte>* data) const;
 
   /**
   * TEST::isC

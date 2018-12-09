@@ -16,7 +16,7 @@ FMODSoundAPI::init() {
 
   system = new FMODSoundSystem;
   system->init(32, DR_INITFLAGS::kDrInitFlags_NORMAL, 0);
-  system->set3DSettings(1.0f, 100.0f, 1.0f);
+  system->set3DSettings(1.0f, 100.0f, 1.0f); 
 
   masterGroup = new FMODChannelGroup;
   system->getMasterChannelGroup(reinterpret_cast<DrChannelGroup**>(masterGroup->getObjectReference()));
@@ -28,9 +28,12 @@ FMODSoundAPI::init() {
   dspLowPass->setBypass(true);
 
   channel1 = new FMODChannel;
-  pos = Vector3D(-100.f, 0.f, 0.f);
+  /*pos = Vector3D(-100.f, 0.f, 0.f);
   Vector3D vel(0.f,0.f,0.f);
-  channel1->set3DAttributes(&pos, &vel);
+  Vector3D fwd(0,0,1);
+  Vector3D up(0,1,0);
+  system->set3DListenerAttributes(4, &pos, &vel, &up, &up);
+  channel1->set3DAttributes(&pos, &vel);*/
                             
   channel2 = new FMODChannel;
   channel3 = new FMODChannel;

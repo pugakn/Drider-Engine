@@ -22,7 +22,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{31C98D18-B491-49A8-A35B-60AC016FDB71}</ProjectGuid>
     <RootNamespace>Core</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -83,13 +83,13 @@
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Math\Include;$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Sound\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)Input\Include;$(SolutionDir)Script\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>CORE_EXPORTS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Utils\Include;$(SolutionDir)Math\Include;$(SolutionDir)Physics\Include;$(SolutionDir)Sound\Include;$(SolutionDir)Input\Include;$(SolutionDir)Script\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)RenderManager\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;CORE_EXPORTS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;Utilsd.lib;Mathd.lib;Inputd.lib;Soundd.lib;Graphicsd.lib;Scriptd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Physicsd.lib;SDL2.lib;SDL2main.lib;Utilsd.lib;Mathd.lib;Inputd.lib;Soundd.lib;Graphicsd.lib;Scriptd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(DRIDER_DEPENDENCIES)Lib\$(PlatformTarget);$(SolutionDir)Lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>$(SolutionDir)Lib\$(PlatformTarget)\$(TargetName).lib</ImportLibrary>
     </Link>
@@ -98,13 +98,13 @@
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Math\Include;$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Sound\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)Input\Include;$(SolutionDir)Script\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>CORE_EXPORTS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Utils\Include;$(SolutionDir)Math\Include;$(SolutionDir)Physics\Include;$(SolutionDir)Sound\Include;$(SolutionDir)Input\Include;$(SolutionDir)Script\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)RenderManager\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;CORE_EXPORTS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;Utilsd.lib;Mathd.lib;Inputd.lib;Soundd.lib;Graphicsd.lib;Scriptd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Physicsd.lib;SDL2.lib;SDL2main.lib;Utilsd.lib;Mathd.lib;Inputd.lib;Soundd.lib;Graphicsd.lib;Scriptd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(DRIDER_DEPENDENCIES)Lib\$(PlatformTarget);$(SolutionDir)Lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>$(SolutionDir)Lib\$(PlatformTarget)\$(TargetName).lib</ImportLibrary>
     </Link>
@@ -117,13 +117,13 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Math\Include;$(SolutionDir)Sound\Include;$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Graphics\Include;$(SolutionDir)Input\Include;$(SolutionDir)Script\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>CORE_EXPORTS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Utils\Include;$(SolutionDir)Math\Include;$(SolutionDir)Physics\Include;$(SolutionDir)Sound\Include;$(SolutionDir)Input\Include;$(SolutionDir)Script\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)RenderManager\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;CORE_EXPORTS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;Utils.lib;Math.lib;Input.lib;Sound.lib;Graphics.lib;Script.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Physics.lib;SDL2.lib;SDL2main.lib;Utils.lib;Math.lib;Input.lib;Sound.lib;Graphics.lib;Script.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(DRIDER_DEPENDENCIES)Lib\$(PlatformTarget);$(SolutionDir)Lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>$(SolutionDir)Lib\$(PlatformTarget)\$(TargetName).lib</ImportLibrary>
     </Link>
@@ -136,13 +136,13 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Math\Include;$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Sound\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)Input\Include;$(SolutionDir)Script\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>CORE_EXPORTS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Utils\Include;$(SolutionDir)Math\Include;$(SolutionDir)Physics\Include;$(SolutionDir)Sound\Include;$(SolutionDir)Input\Include;$(SolutionDir)Script\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)RenderManager\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;CORE_EXPORTS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;Utils.lib;Math.lib;Input.lib;Sound.lib;Graphics.lib;Script.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Physics.lib;SDL2.lib;SDL2main.lib;Utils.lib;Math.lib;Input.lib;Sound.lib;Graphics.lib;Script.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(DRIDER_DEPENDENCIES)Lib\$(PlatformTarget);$(SolutionDir)Lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>$(SolutionDir)Lib\$(PlatformTarget)\$(TargetName).lib</ImportLibrary>
     </Link>
@@ -153,9 +153,11 @@
     <ClInclude Include="Include\dr_animator_component.h" />
     <ClInclude Include="Include\dr_application.h" />
     <ClInclude Include="Include\dr_bone_attach_object.h" />
+    <ClInclude Include="Include\dr_box_collider.h" />
     <ClInclude Include="Include\dr_camera.h" />
     <ClInclude Include="Include\dr_camera_component.h" />
     <ClInclude Include="Include\dr_camera_manager.h" />
+    <ClInclude Include="Include\dr_capsule_collider.h" />
     <ClInclude Include="Include\dr_collider_component.h" />
     <ClInclude Include="Include\dr_convexHull.h" />
     <ClInclude Include="Include\dr_core_prerequisites.h" />
@@ -164,6 +166,7 @@
     <ClInclude Include="Include\dr_gameObject.h" />
     <ClInclude Include="Include\dr_graph.h" />
     <ClInclude Include="Include\dr_image_info.h" />
+    <ClInclude Include="Include\dr_light_component.h" />
     <ClInclude Include="Include\dr_material.h" />
     <ClInclude Include="Include\dr_md5.h" />
     <ClInclude Include="Include\dr_mesh.h" />
@@ -176,16 +179,20 @@
     <ClInclude Include="Include\dr_parser.h" />
     <ClInclude Include="Include\dr_render_component.h" />
     <ClInclude Include="Include\dr_resource.h" />
+    <ClInclude Include="Include\dr_rigidbody_component.h" />
     <ClInclude Include="Include\dr_root_node.h" />
+    <ClInclude Include="Include\dr_scene_core.h" />
+    <ClInclude Include="Include\dr_scene_info.h" />
     <ClInclude Include="Include\dr_script_component.h" />
     <ClInclude Include="Include\dr_script_core.h" />
     <ClInclude Include="Include\dr_script_info.h" />
+    <ClInclude Include="Include\dr_serializable.h" />
     <ClInclude Include="Include\dr_skeleton.h" />
     <ClInclude Include="Include\dr_sound_core.h" />
     <ClInclude Include="Include\dr_sound_info.h" />
+    <ClInclude Include="Include\dr_sphere_collider.h" />
     <ClInclude Include="Include\dr_spline.h" />
     <ClInclude Include="Include\dr_texture_core.h" />
-    <ClInclude Include="Include\dr_transform.h" />
     <ClInclude Include="Include\dr_vertex.h" />
     <ClInclude Include="Include\dr_viewport.h" />
   </ItemGroup>
@@ -196,6 +203,7 @@
     <ClCompile Include="Source\dr_animator_component.cpp" />
     <ClCompile Include="Source\dr_application.cpp" />
     <ClCompile Include="Source\dr_bone_attach_object.cpp" />
+    <ClCompile Include="Source\dr_box_collider.cpp" />
     <ClCompile Include="Source\dr_camera.cpp" />
     <ClCompile Include="Source\dr_camera_component.cpp" />
     <ClCompile Include="Source\dr_camera_manager.cpp" />
@@ -205,6 +213,7 @@
     <ClCompile Include="Source\dr_gameComponent.cpp" />
     <ClCompile Include="Source\dr_gameObject.cpp" />
     <ClCompile Include="Source\dr_graph.cpp" />
+    <ClCompile Include="Source\dr_light_component.cpp" />
     <ClCompile Include="Source\dr_material.cpp" />
     <ClCompile Include="Source\dr_md5.cpp" />
     <ClCompile Include="Source\dr_mesh.cpp" />
@@ -215,15 +224,17 @@
     <ClCompile Include="Source\dr_parser.cpp" />
     <ClCompile Include="Source\dr_render_component.cpp" />
     <ClCompile Include="Source\dr_resource.cpp" />
+    <ClCompile Include="Source\dr_rigidbody_component.cpp" />
     <ClCompile Include="Source\dr_root_node.cpp" />
+    <ClCompile Include="Source\dr_scene_core.cpp" />
     <ClCompile Include="Source\dr_script_component.cpp" />
     <ClCompile Include="Source\dr_script_core.cpp" />
     <ClCompile Include="Source\dr_skeleton.cpp" />
     <ClCompile Include="Source\dr_sound_component.cpp" />
     <ClCompile Include="Source\dr_sound_core.cpp" />
+    <ClCompile Include="Source\dr_sphere_collider.cpp" />
     <ClCompile Include="Source\dr_spline.cpp" />
     <ClCompile Include="Source\dr_texture_core.cpp" />
-    <ClCompile Include="Source\dr_transform.cpp" />
     <ClCompile Include="Source\dr_vertex.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

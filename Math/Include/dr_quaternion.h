@@ -92,6 +92,7 @@ class DR_MATH_EXPORT Quaternion
   float
 	measure();
 
+
   /**
 	* TEST::conjugate
   * Computes the conjugate of the quaternion.

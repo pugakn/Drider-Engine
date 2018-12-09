@@ -3,9 +3,11 @@ class script1 : driderBehavior {
 	float timer;
 	TString name = "TEST_NAME";
 
+	bool m_isRegistered;
+
 	void Start() {
 		Print("Start\n");
-		
+
 		//Compare two GameObject ref
 		GameObject@ a = Object.findObject("Floor");
 		GameObject@ b = Object.findObject("Floor");
@@ -31,9 +33,10 @@ class script1 : driderBehavior {
 		Print("Position a: " + t.m_position.x + "," + t.m_position.y);
 
 		//Get soundComponent
-		GameObject@ player = Object.findObject("Player");
+		GameObject@ player = Object.findObject("LocalPlayer");
 		SoundComponent@ sound = cast<SoundComponent>(player.getComponent("SoundComponent"));
 		if(@sound != null) {
+			Print("\nPlay sound\n");
 			sound.play("testSound1");
 		}
 		else {
@@ -45,11 +48,17 @@ class script1 : driderBehavior {
 		script2@ sc = cast<script2>(cast<ScriptComponent>(player.getComponent("ScriptComponent1")).getScript());
 		sc.doSomething();
 
+		m_isRegistered = false;
+
 	}
 
 	void Update() {
-		Vector3D vecRight(100.0 * getDelta(),0.0,0.0);
+		/*Vector3D vecRight(100.0 * getDelta(),0.0,0.0);
 		Vector3D vecFront(0,0.0,100.0 * getDelta());
+
+		//if(isKeyDown(kC)) {
+		//	connect();
+		//}
 
 		if(isKeyDown(kD)) {
 			this.transform.move(vecRight);
@@ -67,11 +76,46 @@ class script1 : driderBehavior {
 
 		if(isKeyDown(kS)) {
 			this.transform.move(vecFront * -1.0);
-		}
+		}*/
+
 	}
 
 	void Do() {
 		Print("\n" + name + "\n");
+	}
+
+	void onKeyDown(KeyCode key) {
+		if(isConnected) {
+			GameObject@ player = Object.findObject("LocalPlayer");
+			NetworkManagerComponent@ net = cast<NetworkManagerComponent>(player.getComponent("NetworkManagerComponent"));
+			if(key == kP) {
+				Print("Player instantiate\n");
+				m_isRegistered = true;
+
+				Vector3D pos(50.0,0.0,0.0);
+				Vector3D dir(0.0,0.0,0.0);
+				net.instantiate(kPlayer, pos, dir);
+			}
+
+			if(key == kL) {
+				Print("Player instantiate\n");
+				m_isRegistered = true;
+
+				Vector3D pos(-50.0,0.0,0.0);
+				Vector3D dir(0.0,0.0,0.0);
+				net.instantiate(kPlayer, pos, dir);
+			}
+
+			if(key == kK) {
+				Print("Player instantiate\n");
+				m_isRegistered = true;
+
+				Vector3D pos(0.0,0.0,0.0);
+				Vector3D dir(0.0,0.0,0.0);
+				net.instantiate(kPlayer, pos, dir);
+			}
+
+		}
 	}
 
 	/*void onKeyDown(KeyCode key) {

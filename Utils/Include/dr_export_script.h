@@ -2,6 +2,16 @@
 
 namespace driderSDK {
 
+template<class A, class B>
+B* refCast(A* a)
+{
+  // If the handle already is a null handle, then just return the null handle
+  if (!a) return 0;
+  // Now try to dynamically cast the pointer to the wanted type
+  B* b = dynamic_cast<B*>(a);
+  return b;
+}
+
 #define VALUE_FLAGS (asOBJ_VALUE | asOBJ_APP_CLASS |\
                      asOBJ_APP_CLASS_CONSTRUCTOR | asOBJ_APP_CLASS_COPY_CONSTRUCTOR |\
                      asOBJ_APP_CLASS_DESTRUCTOR)
@@ -188,15 +198,14 @@ namespace driderSDK {
                                                              (Int32)enumC::valueName);
 
 //GLOBAL FUNCTIONS
+#define REGISTER_GLO_FOO(strFooDecl, foo)\
+  result = scriptEngine->m_scriptEngine->RegisterGlobalFunction(strFooDecl,\
+                                                                foo,\
+                                                                asCALL_CDECL);
 
-#define REGISTER_GLO_FOO_0P(foo, fooName, rType, strRType)\
-    result = scriptEngine->m_scriptEngine->RegisterGlobalFunction (strRType " "#fooName "()",\
-                                                                   asFUNCTIONPR(foo, (void), rType),\
-                                                                   asCALL_CDECL);
-#define REGISTER_GLO_FOO_1P(foo, fooName, pType, asPType, rType, strRType)\
-    result = scriptEngine->m_scriptEngine->RegisterGlobalFunction (strRType " "#fooName "("#asPType ")",\
-                                                                   asFUNCTIONPR(foo, (pType), rType),\
-                                                                   asCALL_CDECL);
+//GLOBAL PROPERTIE
+#define REGISTER_GLO_PROPERTIE(strDeclaration, value)\
+  scriptEngine->m_scriptEngine->RegisterGlobalProperty(strDeclaration, value);
 
 #define END_REGISTER\
     return result;\
@@ -236,14 +245,6 @@ asMODULE_IS_IN_USE                     = -28
 
 //r = engine->RegisterObjectMethod("object", "int getAttr(int) const", asMETHODPR(Object, getAttr, (int) const, int), asCALL_THISCALL);
 
-template<class A, class B>
-B* refCast(A* a)
-{
-  // If the handle already is a null handle, then just return the null handle
-  if (!a) return 0;
-  // Now try to dynamically cast the pointer to the wanted type
-  B* b = dynamic_cast<B*>(a);
-  return b;
-}
+
 
 }

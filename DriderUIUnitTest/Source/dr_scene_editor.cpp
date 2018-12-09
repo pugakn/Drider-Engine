@@ -184,7 +184,6 @@ void SceneEditor::initSceneGraph()
     proportion += (1.0f / 128.0f);
   }
 
-  m_sceneViewer.getRenderManager().lights = &Lights;
 
   CameraManager::createCamera(_T("PATO_CAM"),
   { 0.0f, 150.0f, -400.0f },
@@ -307,9 +306,8 @@ void SceneEditor::loadResources()
 void SceneEditor::initUI()
 {
   webRenderer.Init(m_viewport.width, m_viewport.height, BROWSER_MODE::kHeadless);
-  //webRenderer.loadURL("file:///F:/Drider/Drider-Engine/DriderUIUnitTest/Interface/index.html");
-  webRenderer.loadURL("file:///DriderUIUnitTest/Interface/index.html");
 
+  webRenderer.loadURL("file:///Interface/index.html");
 
   webRenderer.registerJS2CPPFunction(std::make_pair("C_FileTree", [&](const CefRefPtr<CefListValue>& arguments) {
     TString root = arguments->GetString(1);

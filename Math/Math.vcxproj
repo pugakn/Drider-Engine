@@ -23,7 +23,7 @@
     <ProjectGuid>{4C420F92-670E-4FFF-8EF6-B8F33B482386}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Math</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -180,6 +180,7 @@
     <ClInclude Include="Include\dr_random.h" />
     <ClInclude Include="Include\dr_ray.h" />
     <ClInclude Include="Include\dr_sphere.h" />
+    <ClInclude Include="Include\dr_transform.h" />
     <ClInclude Include="Include\dr_vector2d.h" />
     <ClInclude Include="Include\dr_vector2di.h" />
     <ClInclude Include="Include\dr_vector3d.h" />
@@ -190,6 +191,7 @@
     <ClCompile Include="Source\dr_intersections.cpp" />
     <ClCompile Include="Source\dr_line.cpp" />
     <ClCompile Include="Source\dr_math.cpp" />
+    <ClCompile Include="Source\dr_transform.cpp" />
     <ClCompile Include="Source\dr_vector2d.cpp" />
     <ClCompile Include="Source\dr_aabb.cpp" />
     <ClCompile Include="Source\dr_capsule.cpp" />

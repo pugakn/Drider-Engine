@@ -72,7 +72,7 @@ class DR_UTIL_EXPORT Time : public Module<Time>
 
   static BEGINING_DEFAULT_REGISTER
 
-  result = REGISTER_GLO_FOO_0P(&Time::getDelta, getDelta, float, "float")
+  result = REGISTER_GLO_FOO("float getDelta()", asFUNCTION(&Time::getDelta))
 
   END_REGISTER
 

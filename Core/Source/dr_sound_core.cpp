@@ -24,8 +24,8 @@ SoundCore::init(void* pData,
   soundResource = new FMODSound;
   soundResource->init(reinterpret_cast<SoundSystem*>(extraInfo->m_soundSystem->getReference()),
                       reinterpret_cast<DrChannel**>(extraInfo->m_channel->getObjectReference()));
-
-  extraInfo->m_soundSystem->createSound(name,
+  
+  extraInfo->m_soundSystem->createSound(_T("Resources\\Sounds\\") + name,
                                         DR_SOUND_MODE::kDrMode_DEFAULT,
                                         0,
                                         soundResource);

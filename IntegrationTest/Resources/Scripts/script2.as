@@ -7,7 +7,7 @@ class script2 : driderBehavior {
 		GameObject@ player = Object.findObject("Player");
 		ScriptComponent@ sc = cast<ScriptComponent>(player.getComponent("ScriptComponent"));
 		script1@ a = cast<script1>(sc.getScript());
-		if(a == null) {
+		if(@a == null) {
 			Print("\nScript null");
 		} else {
 			a.Do();

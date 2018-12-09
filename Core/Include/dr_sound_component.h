@@ -31,7 +31,13 @@ class DR_CORE_EXPORT SoundComponent : public GameComponent,
 
     virtual 
     ~SoundComponent() = default;
-    
+
+    void
+    serialize(File &file) override;
+
+    void
+    deserialize(TString &data) override;
+
     void
     onCreate() override;
 

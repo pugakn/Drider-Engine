@@ -1,8 +1,10 @@
 #include "dr_aabb_collider.h"
 
+#include <dr_renderman.h>
 #include "dr_animator_component.h"
 #include "dr_gameObject.h"
-
+#include "dr_graph.h"
+#include "dr_rigidbody_component.h"
 namespace driderSDK {
 AABBCollider::AABBCollider(GameObject& _gameObject, const AABB& aabb)
 : ColliderComponent(_gameObject, _T("AABBCollider")),
@@ -22,7 +24,6 @@ AABBCollider::getAABB() {
 
 void
 AABBCollider::onCreate() {
-
 }
 
 void 
@@ -32,6 +33,13 @@ AABBCollider::onUpdate() {
       m_transformedAABB = m_originalAABB;
       m_transformedAABB.recalculate(m_gameObject.getWorldTransform().getMatrix());
   } 
+}
+
+void AABBCollider::onRender()
+{
+  //RenderManager::instance().drawDebugCube(
+  //  Vector3D(m_originalAABB.width, m_originalAABB.height, m_originalAABB.depth),
+  //  Vector3D(1, 0, 1), m_gameObject.getTransform().getMatrix());
 }
 
 void 
@@ -54,5 +62,23 @@ AABBCollider::cloneIn(GameObject& _go) {
 COLLIDER_TYPE::E 
 AABBCollider::getType() {
   return COLLIDER_TYPE::kAABB;
+}
+
+void
+AABBCollider::serialize(File &file) {
+  file.m_file << SerializableTypeID::AABB << "\n";
+  file.m_file << StringUtils::toString(getName()) << "\n";
+
+  file.m_file << m_originalAABB.width << "\n";
+  file.m_file << m_originalAABB.height << "\n";
+  file.m_file << m_originalAABB.depth << "\n";
+  file.m_file << m_originalAABB.center.x << "\n";
+  file.m_file << m_originalAABB.center.y << "\n";
+  file.m_file << m_originalAABB.center.z << "\n";
+} 
+
+void
+AABBCollider::deserialize(TString& data) {
+  // Not implemented
 }
 }

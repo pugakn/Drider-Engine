@@ -48,6 +48,43 @@ RenderComponent::getAABB()
 }
 
 void
+RenderComponent::serialize(File &file) {
+  file.m_file << SerializableTypeID::Render << "\n";
+  file.m_file << StringUtils::toString(getName()) << "\n";
+
+  file.m_file << m_isModel << "\n";
+
+  if(m_isModel) { 
+    file.m_file << m_model.lock()->m_modelName << "\n";
+    /*file.m_file << m_model.lock()->aabb.width << "\n";
+    file.m_file << m_model.lock()->aabb.height << "\n";
+    file.m_file << m_model.lock()->aabb.depth << "\n";
+    file.m_file << m_model.lock()->aabb.center.x << "\n";
+    file.m_file << m_model.lock()->aabb.center.y << "\n";
+    file.m_file << m_model.lock()->aabb.center.z << "\n";*/
+  }
+  /*
+  if(isModel) {
+		aabb: struct "aabb"; (m_model->aabb)
+		modelName: string; (resourceName)
+	}
+
+	if(!isModel) {
+		"Guardar todas las meshes"
+		UInt32 indicesCount;
+  		IndexBuffer* indexBuffer;
+  		VertexBuffer* vertexBuffer;
+  		std::weak_ptr<Material> material;
+	}
+  */
+}
+
+void
+RenderComponent::deserialize(TString &data) {
+
+}
+
+void
 RenderComponent::onCreate() {
   
   if (m_isModel) {

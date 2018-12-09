@@ -18,6 +18,7 @@
 #include "dr_d3d_input_layout.h"
 #include "dr_d3d_swap_chain.h"
 #include "dr_d3d_structure_buffer.h"
+
 namespace driderSDK {
 
 struct DeviceContextData {
@@ -64,7 +65,8 @@ D3DDeviceContext::clearRenderTargetView(RenderTarget& renderTarget,
   }
 }
 
-void* D3DDeviceContext::getAPIObject() {
+void*
+D3DDeviceContext::getAPIObject() const {
   return D3D11DeviceContext;
 }
 
@@ -167,45 +169,44 @@ D3DDeviceContext::draw(UInt32 indexCount,
   D3D11DeviceContext->DrawIndexed(indexCount, startIndexLocation, startVertexLocation);
 }
 
-void 
-D3DDeviceContext::drawInstanced(UInt32 indexCount, 
-                                UInt32 instanceCount, 
-                                UInt32 startIndexLocation, 
-                                UInt32 startVertexLocation, 
+void
+D3DDeviceContext::drawInstanced(UInt32 indexCount,
+                                UInt32 instanceCount,
+                                UInt32 startIndexLocation,
+                                UInt32 startVertexLocation,
                                 UInt32 startInstanceLocation) const
 {
-  D3D11DeviceContext->DrawIndexedInstanced(indexCount, 
-                                           instanceCount, 
-                                           startIndexLocation, 
-                                           startVertexLocation, 
+  D3D11DeviceContext->DrawIndexedInstanced(indexCount,
+                                           instanceCount,
+                                           startIndexLocation,
+                                           startVertexLocation,
                                            startInstanceLocation);
 }
 
 void 
-D3DDeviceContext::dispatch(UInt32 _threadGroupCountX, 
-                           UInt32 _threadGroupCountY, 
-                           UInt32 _threadGroupCountZ) const
-{
-  D3D11DeviceContext->Dispatch(_threadGroupCountX, 
-                               _threadGroupCountY, 
+D3DDeviceContext::dispatch(UInt32 _threadGroupCountX,
+                           UInt32 _threadGroupCountY,
+                           UInt32 _threadGroupCountZ) const {
+  D3D11DeviceContext->Dispatch(_threadGroupCountX,
+                               _threadGroupCountY,
                                _threadGroupCountZ);
 }
 
-void D3DDeviceContext::setResourcesNull()
-{
-  ID3D11ShaderResourceView* nullTextures[16] = {};
+void
+D3DDeviceContext::setResourcesNull() {
+  ID3D11ShaderResourceView* nullTextures[MAX_TEXTURES] = {};
   std::memset(nullTextures, 0, sizeof(nullTextures));
   D3D11DeviceContext->
-  PSSetShaderResources(0, 16, nullTextures);
+    PSSetShaderResources(0, MAX_TEXTURES, nullTextures);
   D3D11DeviceContext->
-  VSSetShaderResources(0, 16, nullTextures);
+    VSSetShaderResources(0, MAX_TEXTURES, nullTextures);
   D3D11DeviceContext->
-  CSSetShaderResources(0, 16, nullTextures);
+    CSSetShaderResources(0, MAX_TEXTURES, nullTextures);
 }
 
-void D3DDeviceContext::copyAtomicCounter(const StructureBuffer & _structureCounter, 
-                                         ConstantBuffer & _cbuff)
-{
+void
+D3DDeviceContext::copyAtomicCounter(const StructureBuffer& _structureCounter, 
+                                    ConstantBuffer& _cbuff) {
   auto pUAV = static_cast<const D3DStructureBuffer*>(&_structureCounter)->m_pBufferUAV;
   DR_ASSERT(pUAV);
   D3D11DeviceContext->CopyStructureCount(static_cast<ID3D11Buffer*>(_cbuff.getAPIObject()),
@@ -213,18 +214,20 @@ void D3DDeviceContext::copyAtomicCounter(const StructureBuffer & _structureCount
     pUAV);
 }
 
-void D3DDeviceContext::setUAVsNull()
-{
+void
+D3DDeviceContext::setUAVsNull() {
   ID3D11UnorderedAccessView* null[16] = {};
   std::memset(null, 0, sizeof(null));
   D3D11DeviceContext->
-  CSSetUnorderedAccessViews(0, 16, null,NULL);
+    CSSetUnorderedAccessViews(0, 7, null,NULL);
 }
 
 void 
-D3DDeviceContext::drawIndexedInstancedIndirect(const IndirectArgsBuffer & pBufferForArgs, UInt32 _alignedByteOffsetForArgs)
-{
-  D3D11DeviceContext->DrawIndexedInstancedIndirect(static_cast<ID3D11Buffer*>(pBufferForArgs.getAPIObject()),_alignedByteOffsetForArgs);
+D3DDeviceContext::drawIndexedInstancedIndirect(const IndirectArgsBuffer& pBufferForArgs,
+                                               UInt32 _alignedByteOffsetForArgs) {
+  D3D11DeviceContext->
+    DrawIndexedInstancedIndirect(static_cast<ID3D11Buffer*>(pBufferForArgs.getAPIObject()),
+                                                            _alignedByteOffsetForArgs);
 }
 
 }

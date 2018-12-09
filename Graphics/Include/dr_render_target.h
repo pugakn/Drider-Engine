@@ -78,7 +78,8 @@ class DR_GRAPHICS_EXPORT RenderTarget
   *
   */
   virtual void
-  set(const DeviceContext& deviceContext, const DepthStencil& depthStencil) const = 0;
+  set(const DeviceContext& deviceContext,
+      const DepthStencil& depthStencil) const = 0;
 
   /**
   * Release the allocated memory
@@ -90,13 +91,17 @@ class DR_GRAPHICS_EXPORT RenderTarget
   virtual void
   clear(const DeviceContext& deviceContext, const float color[4]) = 0;
 
+  const DrTextureDesc&
+  getDescriptor() const {
+    return m_descriptor;
+  }
 
-  const DrTextureDesc& getDescriptor() const { return m_descriptor; }
-  Texture& getTexture(UInt32 id) const 
-  { 
+  Texture&
+  getTexture(UInt32 id) const { 
     DR_ASSERT(id < m_texturesVec.size());
     return *m_texturesVec[id]; 
   }
+
  protected:
   DrTextureDesc m_descriptor;
   std::vector<Texture*> m_texturesVec;

@@ -8,6 +8,8 @@
 #include "dr_render_component.h"
 #include "dr_gameComponent.h"
 #include "dr_script_component.h"
+#include "dr_file.h"
+#include "dr_quaternion.h"
 
 namespace driderSDK {
 
@@ -20,7 +22,7 @@ GameObject::GameObject(const TString& name)
     m_tag(_T("UNTAGGED")),
     m_isStatic(false),
     m_isStarted(false),
-    m_change(false),
+    m_change(true),
     m_isKilled(false)
     DR_DEBUG_ONLY_PARAM(m_destroyed(false))
 {
@@ -58,7 +60,7 @@ GameObject::start() {
   }
   DR_DEBUG_ONLY(
   else {
-    Logger::addLog(_T("Warning: object started without collider ") + getName());
+    //Logger::addLog(_T("Warning: object started without collider ") + getName());
   });
 
   for (auto& component : m_components) {
@@ -99,6 +101,10 @@ GameObject::update() {
     if (component->isEnabled() && !component->isKilled()) {
    
       component->onUpdate();
+      if (!m_change) {
+        m_change = m_localTransform.changed() ||
+          getParent()->changed();
+      }
 
       //If the local transform changed inside the component update
       if (m_localTransform.changed()) {
@@ -407,6 +413,16 @@ GameObject::getChildrenCount() const {
   return m_children.size();
 }
 
+SizeT
+GameObject::gameObjectsCount() const {
+  SizeT numObj = 0;
+  for(auto obj: m_children) {
+    numObj++;
+  }
+
+  return numObj;
+}
+
 void 
 GameObject::setStatic(bool _static) {
   m_isStatic = _static;
@@ -516,6 +532,58 @@ GameObject::operator==(GameObject& ref) {
 GameObject*
 GameObject::getChildByIndex(Int32 index) {
   return getChild(index).get();
+}
+
+void
+GameObject::serialize(File &file) {
+  if(getName() != _T("ROOT_NODE_X")) {
+    //name
+    file.m_file << StringUtils::toString(getName()) << "\n";
+    //position
+    file.m_file << getTransform().m_position.x << "\n";
+    file.m_file << getTransform().m_position.y << "\n";
+    file.m_file << getTransform().m_position.z << "\n";
+    //orientation
+    Matrix4x4 rotationMat(1,0,0,0,
+                          0,1,0,0,
+                          0,0,1,0,
+                          0,0,0,1);
+    rotationMat *= getTransform().m_rotX;
+    rotationMat *= getTransform().m_rotY;
+    rotationMat *= getTransform().m_rotZ;
+    
+    Quaternion rotation = rotationMat.toQuaternion();
+    file.m_file << rotation.x << "\n";
+    file.m_file << rotation.y << "\n";
+    file.m_file << rotation.z << "\n";
+    file.m_file << rotation.w << "\n";
+    //scale
+    file.m_file << getTransform().m_scale.x << "\n";
+    file.m_file << getTransform().m_scale.y << "\n";
+    file.m_file << getTransform().m_scale.z << "\n";
+    //components
+    file.m_file << m_components.size() << "\n";
+    for(auto &component: m_components) {
+      component.get()->serialize(file);
+    }
+  }
+  //childres
+  file.m_file << getChildrenCount() << "\n";
+  for(auto &child: m_children) {
+    child->serialize(file);
+  }
+  
+
+}
+
+void
+GameObject::deserialize(void *dataInfo) {
+
+}
+
+void
+GameObject::deserialize(TString& data) {
+
 }
 
 }

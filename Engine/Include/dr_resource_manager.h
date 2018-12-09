@@ -7,12 +7,14 @@
 #include <dr_module.h>
 
 #include "dr_engine_prerequisites.h"
+#include "dr_serializable_data.h"
 
 namespace driderSDK {
 
 class Resource;
 class Codec;
 class Material;
+class File;
 /**
 * Load resources.
 *
@@ -90,6 +92,26 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager>
                void* extraData);
 
   /**
+  * Save the scene info
+  *
+  * @param name
+  *   The name of the scene to save.
+  *
+  */
+  static void
+  saveScene(const String name);
+
+  /**
+  * Load the scene from file
+  *
+  * @param name
+  *   The name of the scene to load.
+  *
+  */
+  static void
+  loadScene(const String name);
+
+  /**
   * TEST::existInResourceContent
   * Checks if a resource exist.
   *
@@ -123,8 +145,7 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager>
   
   template<class T>
   static std::shared_ptr<T>
-  getReferenceT(const TString& resourceName)
-  {
+  getReferenceT(const TString& resourceName) {
     return std::dynamic_pointer_cast<T>(getReference(resourceName));
   }
 
@@ -149,7 +170,7 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager>
 
   void
   createDummyMaterial();
-
+  
   /**
   * TEST::createResource
   * Creates a resource, then puts in the contentResource and sets a key
@@ -170,6 +191,7 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager>
   createResource(const TString& resourceName,
                  Codec* codec,
                  void* extraInfo);
+  
   /**
   * Add a resource to the ResourceContent of the ResourceManager
   */
@@ -177,6 +199,12 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager>
   addResource(SharedResource pResource,
               const TString& resourceName);
 
+  void
+  loadGameObject(File &file);
+
+  void
+  loadComponent(File &file,
+                std::shared_ptr<GameObject> obj);
   
  private:
   using ResourceFactory = std::function<SharedResource()>;
@@ -184,6 +212,9 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager>
   std::unordered_map<TString, SharedResource> m_resources;
   std::unordered_map<Codec*, ResourceFactory> m_resourceFactories;
   std::vector<std::unique_ptr<Codec>> m_codecs;
+
+  std::unordered_map<std::shared_ptr<SerializableData>,
+                     ResourceFactory> m_componentsLoaders;
 };
 
 }

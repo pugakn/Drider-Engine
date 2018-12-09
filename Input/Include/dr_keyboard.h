@@ -120,7 +120,8 @@ class DR_INPUT_EXPORT Keyboard
   REGISTER_ENUM_VALUE(KeyCode, KEY_CODE, kN)
   REGISTER_ENUM_VALUE(KeyCode, KEY_CODE, kM)
 
-  REGISTER_GLO_FOO_1P(&Keyboard::isKeyDown, isKeyDown, KEY_CODE::E, KeyCode, bool, "bool")
+  REGISTER_GLO_FOO("bool isKeyDown(KeyCode)", 
+                   asFUNCTIONPR(&Keyboard::isKeyDown, (KEY_CODE::E), bool))
 
   END_REGISTER
 

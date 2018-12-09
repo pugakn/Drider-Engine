@@ -14,6 +14,7 @@ struct DR_CORE_EXPORT ModelInfo
   }
 
   AABB aabb;
+  String modelName;
   std::vector<MeshInfo> meshes;
   std::vector<TString> animationsNames;
   TString skeletonName;

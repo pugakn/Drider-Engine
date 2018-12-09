@@ -19,9 +19,17 @@
 #include <dr_export_script.h>
 #include <..\..\Script\Include\dr_script_engine.h>
 
+#include "dr_serializable.h"
+
 namespace driderSDK {
 
 class GameComponent;
+class File;
+
+struct DR_CORE_EXPORT ObjData {
+ public:  
+  
+};
 
 class DR_CORE_EXPORT ComponentPartition
 {
@@ -36,7 +44,8 @@ GameObject* Ref_GameObject();
 class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject>,  
                                   public EnableObject,
                                   public NameObject,
-                                  public IDObject
+                                  public IDObject,
+                                  public Serializable
 { 
  public:
   using SharedGameObj = std::shared_ptr<GameObject>;
@@ -121,6 +130,21 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
     return componentCastedList;
   }
 
+  /**
+  * Get own and child components of given type.
+  */
+  template<class T>
+  void
+  getRecursiveComponents(std::vector<T*>& container) {
+    for (auto& child : m_children) {
+      child->getRecursiveComponents<T>(container);
+    }
+
+    std::vector<T*> ownComponents = getComponents<T>();
+    container.insert(std::end(container),
+                     std::begin(ownComponents),
+                     std::end(ownComponents));
+  }
 
   /**
   * Gets the frist component of the specified type in the template parameter.
@@ -313,6 +337,9 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   */
   SizeT
   getChildrenCount() const;
+  
+  SizeT
+  gameObjectsCount() const;
 
   void 
   setStatic(bool _static);
@@ -323,13 +350,23 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   bool
   changed() const;
 
-  void kill() const;
+  void
+  kill() const;
 
   bool 
   isKilled() const;
 
   GameObject&
   operator=(const GameObject& ref);
+
+  void 
+	serialize(File &file) override;
+	
+	void 
+	deserialize(TString& data) override;
+
+	void 
+	deserialize(void *dataInfo);
 
   static BEGINING_REGISTER(GameObject, 0, asOBJ_REF | asOBJ_NOCOUNT)
 

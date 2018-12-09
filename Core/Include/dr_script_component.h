@@ -28,6 +28,12 @@ class DR_CORE_EXPORT ScriptComponent : public GameComponent,
     ~ScriptComponent();
 
     void
+    serialize(File &file) override;
+
+    void
+    deserialize(TString &data) override;
+
+    void
     onCreate() override;
 
     void

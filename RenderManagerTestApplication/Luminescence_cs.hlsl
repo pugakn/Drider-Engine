@@ -1,17 +1,15 @@
-Texture2D<float4> BufferIn : register(t0);
+SamplerState SS : register(s0);
 
-cbuffer ListCount1 : register(b0)
-{
-  float	LuminiscenceDelta;
-  uint  TextureWidth;
-  uint  TextureHeight;
-  float pad;
+Texture2D TextureIn : register(t0);
+
+cbuffer ConstantBuffer : register(b0) {
+  float4 fViewportDimensions;
 };
 
-float AverageLuminescence : register(u0);
+RWStructuredBuffer<float4> AverageLuminescence : register(u0);
 
 float
-luminescence(float3 Color) {
+luminescence(float3 Color, float LuminiscenceDelta) {
   static const float3 LuminanceFactor = float3(0.3f, 0.59f, 0.03f);
   //Case LDR
   return (dot(Color, LuminanceFactor) + LuminiscenceDelta);
@@ -19,19 +17,32 @@ luminescence(float3 Color) {
   return log(dot(Color, LuminanceFactor) + LuminiscenceDelta);
 }
 
+#define NUMTHREADS_X 8
+#define NUMTHREADS_Y 4
+//[numthreads(NUMTHREADS_X, NUMTHREADS_Y, 1)]
 [numthreads(1, 1, 1)]
 void
-CS(uint3 id : SV_DispatchThreadID) {
-  float totalLuminescence = 0.0f;
+CS(uint3 groupThreadID	: SV_GroupThreadID,
+	 uint3 groupID				: SV_GroupID,
+	 uint3 dispatchID			: SV_DispatchThreadID,
+	 uint  groupIndex			: SV_GroupIndex) {
   
-  float4 actualPixel;
-  for (int txWidth = 0; txWidth < TextureWidth; ++txWidth) {
-    for (int txHeight = 0; txHeight < TextureHeight; ++txHeight) {
-	    actualPixel = BufferIn.Load(uint3(txWidth, txHeight, 1));
-	    totalLuminescence += luminescence(actualPixel.xyz);
-	  }
-  }
-  totalLuminescence /= TextureWidth * TextureHeight;
+	const float2 wUVScale = float2(dispatchID.x / fViewportDimensions.x,
+																 dispatchID.y / fViewportDimensions.y);
+  AverageLuminescence[0].x = 0.5;
+  /*
+
+  AllMemoryBarrierWithGroupSync();
+
+  const float3 actualPixel = TextureIn.SampleLevel(SS, wUVScale, 0).xyz;
+
+  AverageLuminescence[0].x += luminescence(actualPixel, fViewportDimensions.z);
   
-  AverageLuminescence = totalLuminescence;
+  AllMemoryBarrierWithGroupSync();
+
+  float totalLuminescence = AverageLuminescence[0].x / (fViewportDimensions.x * fViewportDimensions.y);
+  
+  AverageLuminescence[0].x = totalLuminescence;
+  */
+  return;
 }

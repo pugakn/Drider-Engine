@@ -87,7 +87,7 @@ void read_directory(const TString& name, TString& v)
   pattern.append(_T("\\*"));
   WIN32_FIND_DATA data;
   HANDLE hFind;
-  parent = PathFindFileName(name.c_str());
+  parent = FileSystem::GetFileName(name.c_str());
   hFind = FindFirstFile(pattern.c_str(), &data);
   if (hFind != INVALID_HANDLE_VALUE) {
     do {
@@ -98,7 +98,8 @@ void read_directory(const TString& name, TString& v)
       }
       else
       {
-        auto ext = PathFindExtension(data.cFileName);
+        //auto ext = PathFindExtension(data.cFileName);
+        auto ext = FileSystem::GetFileExtension(data.cFileName);
         v += (_T("{'name':'") + TString(data.cFileName) + _T("','parent':'") + parent + _T("','type':'") + ext + _T("'},"));
       }
     } while (FindNextFile(hFind, &data) != 0);
@@ -195,116 +196,16 @@ void SceneEditor::initSceneGraph()
                               10000.f);
   CameraManager::setActiveCamera(_T("PATO_CAM"));
 
-  modelMovement = Vector3D(0.0f, 0.0f, 0.0f);
-
   loadResources();
 
-  model = SceneGraph::createObject(_T("Model"));
-  auto ptrModel = ResourceManager::getReferenceT<Model>(_T("model.dae"));
-  if (ptrModel) {
-    model->createComponent<RenderComponent>(ptrModel);
-    model->createComponent<AABBCollider>(ptrModel->aabb);
-    model->getTransform().setPosition(Vector3D(0.0f, 50.0f, 0.0f));
-    model->getTransform().setScale(Vector3D(100.0f, 100.0f, 100.0f));
-    model->getTransform().setRotation(Vector3D(0.0f, Math::QUARTER_PI*0.5f, 0.0f));
-
-    modelMat = std::make_shared<Material>(_T("ModelMaterial"));
-
-    auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("default_albedo.tga"));
-    auto emissiveTex = ResourceManager::getReferenceT<TextureCore>(_T("default_emissive.tga"));
-    auto metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("default_metallic.tga"));
-    auto normalTex = ResourceManager::getReferenceT<TextureCore>(_T("default_normal.tga"));
-    auto roughnessTex = ResourceManager::getReferenceT<TextureCore>(_T("default_roughness.tga"));
-    modelMat->addProperty(_T("Albedo"), PROPERTY_TYPE::kVec3);
-    modelMat->addProperty(_T("Normal"), PROPERTY_TYPE::kVec3);
-    modelMat->addProperty(_T("Emisivity"), PROPERTY_TYPE::kVec3);
-    modelMat->addProperty(_T("Metallic"), PROPERTY_TYPE::kVec3);
-    modelMat->addProperty(_T("Roughness"), PROPERTY_TYPE::kVec3);
-    modelMat->setTexture(albedoTex, _T("Albedo"));
-    modelMat->setTexture(normalTex, _T("Normal"));
-    modelMat->setTexture(emissiveTex, _T("Emisivity"));
-    modelMat->setTexture(metallicTex, _T("Metallic"));
-    modelMat->setTexture(roughnessTex, _T("Roughness"));
-
-    auto rComp = model->getComponent<RenderComponent>();
-    rComp->getMeshes().front().material = modelMat;
-  }
-  floor = SceneGraph::createObject(_T("Floor"));
-  auto ptrFloor = ResourceManager::getReferenceT<Model>(_T("plane.fbx"));
-  if (ptrFloor) {
-    floor->createComponent<RenderComponent>(ptrFloor);
-    floor->createComponent<AABBCollider>(ptrFloor->aabb);
-    floor->getTransform().setPosition(Vector3D(0.0f, -50.0f, 0.0f));
-    floor->getTransform().setScale(Vector3D(5.0f, 5.0f, 5.0f));
-
-    floorMat = std::make_shared<Material>(_T("FloorMaterial"));
-
-    auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Diffuse.tga"));
-    auto normalTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Normal.tga"));
-    auto emissiveTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Emissive.tga"));
-    auto metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Metallic.tga"));
-    auto roughnessTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Roughness.tga"));
-    floorMat->addProperty(_T("Albedo"), PROPERTY_TYPE::kVec3);
-    floorMat->addProperty(_T("Normal"), PROPERTY_TYPE::kVec3);
-    floorMat->addProperty(_T("Emisivity"), PROPERTY_TYPE::kVec3);
-    floorMat->addProperty(_T("Metallic"), PROPERTY_TYPE::kVec3);
-    floorMat->addProperty(_T("Roughness"), PROPERTY_TYPE::kVec3);
-    floorMat->setTexture(albedoTex, _T("Albedo"));
-    floorMat->setTexture(normalTex, _T("Normal"));
-    floorMat->setTexture(emissiveTex, _T("Emisivity"));
-    floorMat->setTexture(metallicTex, _T("Metallic"));
-    floorMat->setTexture(roughnessTex, _T("Roughness"));
-
-    auto displacementTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Displacement.tga"));
-    auto opacityTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Opacity.tga"));
-    auto specularTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Specular.tga"));
-    auto sscolorTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_SSColor.tga"));
-    auto thicknessTex = ResourceManager::getReferenceT<TextureCore>(_T("256_Checker_Thickness.tga"));
-    floorMat->addProperty(_T("Displacement"), PROPERTY_TYPE::kVec3);
-    floorMat->addProperty(_T("Opacity"), PROPERTY_TYPE::kVec3);
-    floorMat->addProperty(_T("Specular"), PROPERTY_TYPE::kVec3);
-    floorMat->addProperty(_T("SSColor"), PROPERTY_TYPE::kVec3);
-    floorMat->addProperty(_T("Thickness"), PROPERTY_TYPE::kVec3);
-    floorMat->setTexture(displacementTex, _T("Displacement"));
-    floorMat->setTexture(opacityTex, _T("Opacity"));
-    floorMat->setTexture(specularTex, _T("Specular"));
-    floorMat->setTexture(sscolorTex, _T("SSColor"));
-    floorMat->setTexture(thicknessTex, _T("Thickness"));
-
-    auto renderComp = floor->getComponent<RenderComponent>();
-    renderComp->getMeshes().front().material = floorMat;
-  }
+  SceneGraph::start();
 }
 void SceneEditor::loadResources()
 {
-  //ResourceManager::loadResource(_T("Checker.fbx"));
-  ResourceManager::loadResource(_T("Sphere.fbx"));
-  ResourceManager::loadResource(_T("plane.fbx"));
-  //ResourceManager::loadResource(_T("Croc.X"));
-  ResourceManager::loadResource(_T("model.dae"));
-
-  ResourceManager::loadResource(_T("default_albedo.tga"));
-  ResourceManager::loadResource(_T("default_emissive.tga"));
-  ResourceManager::loadResource(_T("default_metallic.tga"));
-  ResourceManager::loadResource(_T("default_normal.tga"));
-  ResourceManager::loadResource(_T("default_roughness.tga"));
-
-  ResourceManager::loadResource(_T("256_Checker_Diffuse.tga"));
-  ResourceManager::loadResource(_T("256_Checker_Displacement.tga"));
-  ResourceManager::loadResource(_T("256_Checker_Emissive.tga"));
-  ResourceManager::loadResource(_T("256_Checker_Metallic.tga"));
-  ResourceManager::loadResource(_T("256_Checker_Normal.tga"));
-  ResourceManager::loadResource(_T("256_Checker_Opacity.tga"));
-  ResourceManager::loadResource(_T("256_Checker_Roughness.tga"));
-  ResourceManager::loadResource(_T("256_Checker_Specular.tga"));
-  ResourceManager::loadResource(_T("256_Checker_SSColor.tga"));
-  ResourceManager::loadResource(_T("256_Checker_Thickness.tga"));
+  
 }
 void SceneEditor::initUI()
 {
-
-
-
   webRenderer.Init(m_viewport.width, m_viewport.height, BROWSER_MODE::kHeadless);
   webRenderer.loadURL("file:///Interface/index.html");
 

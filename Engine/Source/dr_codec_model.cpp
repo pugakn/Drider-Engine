@@ -47,6 +47,7 @@ CodecModel::decode(TString pathName) {
   if (scene) {
 
     modelInfo = new ModelInfo;
+    modelInfo->modelName = StringUtils::toString(pathName);
     modelInfo->meshes.resize(scene->mNumMeshes);
 
     Vector3D min{Math::MAX_FLOAT, Math::MAX_FLOAT, Math::MAX_FLOAT};

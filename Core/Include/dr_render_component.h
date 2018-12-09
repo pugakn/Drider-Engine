@@ -63,6 +63,13 @@ class DR_CORE_EXPORT RenderComponent : public GameComponent,
   const AABB&
   getAABB();
 
+
+  void
+  serialize(File &file) override;
+
+  void
+  deserialize(TString &data) override;
+
   // Inherited via GameComponent
   virtual void 
   onCreate() override;

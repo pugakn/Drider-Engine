@@ -15,7 +15,21 @@
 #include "dr_codec_script.h"
 #include "dr_codec_sound.h"
 #include "dr_codec_texture.h"
+#include "dr_codec_ctexture.h"
+#include "dr_codec_scene.h"
 #include "dr_script_core.h"
+#include "dr_scene_core.h"
+
+#include <dr_graph.h>
+#include <dr_gameObject.h>
+#include <dr_file_system.h>
+#include <dr_file.h>
+#include "dr_serializable_sound.h"
+
+#include "dr_serializable_aabb.h"
+#include "dr_serializable_render.h"
+#include "dr_quaternion.h"
+#include "dr_transform.h"
 
 namespace driderSDK {
 
@@ -29,16 +43,22 @@ ResourceManager::onStartUp() {
   auto codecModel = dr_make_unique<CodecModel>();
   auto codecSound = dr_make_unique<CodecSound>();
   auto codecScript = dr_make_unique<CodecScript>();
+  auto codecCTexture = dr_make_unique<CodecCompressedTexture>();
+	auto codecScene = dr_make_unique<CodecScene>();
   
   m_resourceFactories[codecTexture.get()] = std::make_shared<TextureCore>;
   m_resourceFactories[codecModel.get()] = std::make_shared<Model>;
   m_resourceFactories[codecSound.get()] = std::make_shared<SoundCore>;
   m_resourceFactories[codecScript.get()] = std::make_shared<ScriptCore>;
+  m_resourceFactories[codecCTexture.get()] = std::make_shared<TextureCore>;
+	m_resourceFactories[codecScene.get()] = std::make_shared<SceneCore>;
 
   m_codecs.push_back(std::move(codecModel));
   m_codecs.push_back(std::move(codecTexture));
   m_codecs.push_back(std::move(codecSound));
   m_codecs.push_back(std::move(codecScript));
+  m_codecs.push_back(std::move(codecCTexture));
+	m_codecs.push_back(std::move(codecScene));
 
   createDefaultResources();
 }
@@ -99,6 +119,48 @@ ResourceManager::loadResource(const TString& resourceName,
 }
 
 void
+ResourceManager::saveScene(const String name) {
+  auto &rm = ResourceManager::instance();
+  auto &sg = SceneGraph::instance();
+  
+  FileSystem fileSystem;
+  File sceneFile;
+  String pathName = name + ".txt";
+  if(fileSystem.CreateAndOpen(StringUtils::toTString(pathName).c_str(),
+                           sceneFile)) {
+    //sceneFile.m_file << name;
+    //sceneFile.m_file << sg.getRoot()->gameObjectsCount();
+    sg.getRoot()->serialize(sceneFile);
+
+    sceneFile.Close();
+  }
+  else {
+    Logger::instancePtr()->addError(__FILE__,
+                                    __LINE__,
+                                    L"[ResourceManager] Scene file wasn't saved");
+  }
+
+}
+
+void
+ResourceManager::loadScene(const String name) {
+  File sceneFile;
+  if(sceneFile.Open(StringUtils::toTString(name) + L".txt")) {
+    Int32 numChildsRoot;
+    sceneFile.m_file >> numChildsRoot;
+    
+    for(int i = 0; i < numChildsRoot; i++) {
+      ResourceManager::instance().loadGameObject(sceneFile);
+    }
+  } 
+  else {
+    Logger::instancePtr()->addError(__FILE__,
+                                    __LINE__,
+                                    L"[ResourceManager] The scene file was not found");
+  }
+}
+
+void
 ResourceManager::createResource(const TString& resourceName,
                                 Codec* codec,
                                 void* extraInfo) {
@@ -131,6 +193,71 @@ ResourceManager::addResource(SharedResource pResource,
   Logger::addLog(_T("Added resource: ") + resourceName);
 
   instance().m_resources[resourceName] =  pResource;
+}
+
+void
+ResourceManager::loadGameObject(File &file) {
+  auto sg = SceneGraph::instancePtr();
+
+  String name;
+  file.m_file >> name;
+  auto obj = sg->createObject(StringUtils::toTString(name));
+
+  Vector3D pos;
+  file.m_file >> pos.x;
+  file.m_file >> pos.y;
+  file.m_file >> pos.z;
+  obj->getTransform().setPosition(pos);
+
+  Quaternion rot;
+  file.m_file >> rot.x;
+  file.m_file >> rot.y;
+  file.m_file >> rot.z;
+  file.m_file >> rot.w;
+  float rX = rot.getEulerAngles().x;
+  float rY = rot.getEulerAngles().y;
+  float rZ = rot.getEulerAngles().z;
+
+  obj->getTransform().setRotation({rX, rY, rZ});
+  
+  Vector3D scale;
+  file.m_file >> scale.x;
+  file.m_file >> scale.y;
+  file.m_file >> scale.z;
+  obj->getTransform().setScale(scale);
+  
+
+  Int32 numComponents;
+  file.m_file >> numComponents;
+  for(int i = 0; i < numComponents; i++) {
+    loadComponent(file, obj);
+  }
+
+  Int32 numChilds;
+  file.m_file >> numChilds;
+  for(int j = 0; j < numChilds; j++) {
+    loadGameObject(file);
+  }
+} 
+
+void
+ResourceManager::loadComponent(File &file, 
+                               std::shared_ptr<GameObject> obj) {
+  SerializableTypeID::E typeID;
+  Int32 type;
+  file.m_file >> type;
+  typeID = (SerializableTypeID::E)type;
+
+  if(typeID == SerializableTypeID::Sound) {
+    sSound s;
+    s.load(file, obj);
+  } else if(typeID == SerializableTypeID::AABB) {
+    sAABBCollider s;
+    s.load(file, obj);
+  } else if (typeID == SerializableTypeID::Render) {
+    sRender s;
+    s.load(file, obj);
+  }
 }
 
 bool
