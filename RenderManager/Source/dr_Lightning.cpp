@@ -91,8 +91,8 @@ LightningPass::draw(PassDrawData* drawData) {
   data->GbufferRT->getTexture(3).set(dc, 3);        //Emissivve, Roughness
   data->SSAORT->getTexture(0).set(dc, 4);           //SSAO
   data->ShadowRT->getTexture(0).set(dc, 5);         //Shadow
-  data->EnviromentCubemap->textureGFX->set(dc, 6);  //Cubemap
-  data->IrradianceCubemap->textureGFX->set(dc, 7);  //CubemapDiffuse
+  //data->EnviromentCubemap->textureGFX->set(dc, 6);  //Cubemap
+  //data->IrradianceCubemap->textureGFX->set(dc, 7);  //CubemapDiffuse
 
   const float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
   data->OutRt->clear(dc, clearColor);

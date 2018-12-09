@@ -150,7 +150,7 @@ SceneEditor::addGameObject(std::shared_ptr<GameObject> parent,
   node->setName(name);
   node->getTransform().setPosition(pos);
   node->setParent(parent);
-
+  node->start();
   return node;
 }
 void SceneEditor::initInputs()
@@ -277,6 +277,7 @@ void SceneEditor::initSceneGraph()
     auto renderComp = floor->getComponent<RenderComponent>();
     renderComp->getMeshes().front().material = floorMat;
   }
+  SceneGraph::start();
 }
 void SceneEditor::loadResources()
 {
@@ -306,7 +307,9 @@ void SceneEditor::loadResources()
 void SceneEditor::initUI()
 {
   webRenderer.Init(m_viewport.width, m_viewport.height, BROWSER_MODE::kHeadless);
-  webRenderer.loadURL("file:///F:/projectsVS2017/Drider-Engine/DriderUIUnitTest/Interface/index.html");
+  //webRenderer.loadURL("file:///F:/Drider/Drider-Engine/DriderUIUnitTest/Interface/index.html");
+  webRenderer.loadURL("file:///DriderUIUnitTest/Interface/index.html");
+
 
   webRenderer.registerJS2CPPFunction(std::make_pair("C_FileTree", [&](const CefRefPtr<CefListValue>& arguments) {
     TString root = arguments->GetString(1);
@@ -363,7 +366,6 @@ void SceneEditor::initUI()
     addGameObject(father,
       name,
       { 0, 0, 0 })->getTransform().scale({ 100, 100, 100 });
-
     UI_UpdateSceneGraph();
   }
   ));
