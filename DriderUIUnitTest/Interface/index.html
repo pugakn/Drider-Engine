@@ -8,7 +8,7 @@
   <link href="jqueryFileTree.css" rel="stylesheet" type="text/css" media="screen" />
   <link href="hierarchy.css" rel="stylesheet" type="text/css" media="screen" />
   <link href="inspector.css" rel="stylesheet" type="text/css" media="screen" />
-
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 <body >
   <ul id="menuInspector">
@@ -74,17 +74,61 @@
       <div class="subSection">
         <h3 class="titleSection">Inspector</h3>
         <div id="divInspector">
-          <div>
-            <label for="objectName">Nombre: </label>
-            <input name:"objectName" type="text" value="">
-          </div>
-          <div>
-            <label for="tagSelector">Tag: </label>
-            <select name="tagSelector" id="tagSelector">
-              <option value="0" selected>Sin tag</option>
-            </select>
-          </div>
-          <div id="accordionInspector">
+          <div id="generalInspector">
+            <div>
+              <label for="objectName">Nombre: </label>
+              <input onchange="updateGeneralInput(9, this.value)" name:"objectName" type="text" value="" id="objectName">
+            </div>
+            <div>
+              <label for="tagSelector">Tag: </label>
+              <select name="tagSelector" id="tagSelector">
+                <option value="0" selected>Sin tag</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="positionX">X:</label>
+                <input onchange="updateGeneralInput(0, this.value)" type="number" class="form-control" id="positionX">
+              </div>
+              <div class="form-group col-md-4">
+                <label for="positionY">Y:</label>
+                <input onchange="updateGeneralInput(1, this.value)" type="number" class="form-control" id="positionY">
+              </div>
+              <div class="form-group col-md-4">
+                <label for="positionZ">Z:</label>
+                <input onchange="updateGeneralInput(2, this.value)" type="number" class="form-control" id="positionZ">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="rotX">rotX:</label>
+                <input onchange="updateGeneralInput(3, this.value)" type="number" class="form-control" id="rotX">
+              </div>
+              <div class="form-group col-md-4">
+                <label for="rotY">rotY:</label>
+                <input onchange="updateGeneralInput(4, this.value)" type="number" class="form-control" id="rotY">
+              </div>
+              <div class="form-group col-md-4">
+                <label for="rotZ">rotZ:</label>
+                <input onchange="updateGeneralInput(5, this.value)" type="number" class="form-control" id="rotZ">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="scaleX">scaleX:</label>
+                <input onchange="updateGeneralInput(6, this.value)" type="number" class="form-control" id="scaleX">
+              </div>
+              <div class="form-group col-md-4">
+                <label for="scaleY">scaleY:</label>
+                <input onchange="updateGeneralInput(7, this.value)" type="number" class="form-control" id="scaleY">
+              </div>
+              <div class="form-group col-md-4">
+                <label for="scaleZ">Z:</label>
+                <input onchange="updateGeneralInput(8, this.value)" type="number" class="form-control" id="scaleZ">
+              </div>
+            </div>
+            <div id="accordionInspector">
+            </div>
           </div>
         </div>
       </div>

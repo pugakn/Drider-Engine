@@ -12,6 +12,8 @@
 #include <iostream>
 #include <dr_ray.h>
 
+#include <dr_transform.h>
+#include <dr_math.h>
 #include <dr_matrix4x4.h>
 #include <dr_texture_core.h>
 #include <dr_degree.h>
@@ -413,9 +415,22 @@ SceneEditor::initUI() {
     TString temp = arguments->GetString(1);
     UInt32 id = StringUtils::toInt(temp);
     auto gameObject = SceneGraph::getRoot()->findNode(id);
+	Transform tranform = gameObject->getTransform();
+	Vector3D pos = tranform.getPosition();
+	
+	TString name = gameObject->getName();
 
-    TString response = _T("JS_UpdateComponents(\"{'id':'") + temp + _T("','components': [");
+	TString posX = _T("1");
+	TString posY = _T("2");
+	TString posZ = _T("3");
 
+    TString response = _T("JS_UpdateComponents(\"{'id':'") + temp;
+	response += _T("','name':'") + name;
+	response += _T("','position': ['") + StringUtils::toTString(pos.x, 1) + _T("','") + StringUtils::toTString(pos.x, 1) + _T("','") + StringUtils::toTString(pos.x, 1) + _T("']");
+	response += _T(",'rotation': ['") + posX + _T("','") + posY + _T("','") + posZ + _T("']");
+	response += _T(",'scale': ['") + posX + _T("','") + posY + _T("','") + posZ + _T("']");
+
+	response += _T(",'components': [");
     auto components = gameObject->getComponents<GameComponent>();
     for (auto component : components) {
       response += _T("{'name':'") + component->getName() + _T("', 'inputs':[");
@@ -454,6 +469,24 @@ SceneEditor::initUI() {
     auto inputEditor = InputEditor::createInputEditor(*component);
 
     inputEditor->changeValue(value, idField);
+  }));
+
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_InputGeneralChange", [&](const CefRefPtr<CefListValue>& arguments) {
+	  TString temp = arguments->GetString(1);
+	  UInt32 id = StringUtils::toInt(temp);
+	  TString idField = arguments->GetString(2);
+	  TString value = arguments->GetString(3);
+
+	  auto gameObject = SceneGraph::getRoot()->findNode(id);
+	  //0posx 1posy 2posz
+	  //3rotx 4roty 5rotz 
+	  //6scalex 7scaley 8scalez 
+	  //9name 
+	  
+	  if (idField == _T("0"))
+	  {
+
+	  }
   }));
   //Property Sheet UI
   webRenderer.registerJS2CPPFunction(std::make_pair("C_OnTransformChange", [&](const CefRefPtr<CefListValue>& arguments) {

@@ -31,6 +31,7 @@ $(document).ready(function(){
 
   });
 
+  $("#generalInspector")[0].hidden = true;
 });
 
 function showMenuInspector(e) {
@@ -163,74 +164,6 @@ function addSelectable(dataInput, component) {
   return component;
 }
 
-var componentes = {
-  "object": "idobject",
-  "components": [
-    {
-      "name": "Render",
-      "inputs": [
-        {
-          "type": "text",
-          "name": "nombre",
-          "value": "lucas"
-        },
-        {
-          "type": "number",
-          "name": "altura",
-          "value": "0"
-        },
-        {
-          "type": "checkbox",
-          "name": "activado",
-          "value": "true"
-        },
-        {
-          "type": "selectable",
-          "name": "colores",
-          "selected": "1",
-          "options": [
-            {"name": "rojos"},
-            {"name": "rojo"},
-            {"name": "negro"},
-            {"name": "verde"}
-          ]
-        }
-      ]
-    },
-    {
-      "name": "Posicion",
-      "inputs": [
-        {
-          "type": "number",
-          "name": "Y",
-          "value": 3
-        },
-        {
-          "type": "color",
-          "name": "X",
-          "value": "#ff0000"
-        }
-      ]
-    },
-    {
-      "name": "Material",
-      "inputs": [
-        {
-          "type": "droppableFile",
-          "name": "Albedo",
-          "value": "colo.x"
-        },
-        {
-          "type": "droppableGO",
-          "name": "colider",
-          "value": "piso"
-        }
-      ]
-    }
-  ]
-
-}
-
 function updateInput(input){
   if (input.type === 'checkbox') {
     input.value = input.checked;
@@ -243,6 +176,15 @@ function updateInput(input){
   C_ChangeSceneGraphNodeSelection(IdSelected);
 }
 
+function updateGeneralInput(id, input) {
+  console.log("##############");
+  console.log(input);
+  console.log(id);
+console.log(IdSelected);
+  C_InputGeneralChange(IdSelected,
+                       id.toString(),
+                       input);
+}
 function JS_UpdateComponents(data) {
   while ($('#accordionInspector')[0].firstChild) {
     $('#accordionInspector')[0].removeChild($('#accordionInspector')[0].firstChild);
@@ -252,7 +194,15 @@ function JS_UpdateComponents(data) {
   for (var i = 0; i < gameObject.components.length; i++) {
     addComponent(gameObject.components[i]);
   }
+  $("#positionX")[0].value = gameObject.position[0];
+  $("#positionY")[0].value = gameObject.position[1];
+  $("#positionZ")[0].value = gameObject.position[2];
+  $("#rotX")[0].value = gameObject.rotation[0];
+  $("#rotY")[0].value = gameObject.rotation[1];
+  $("#rotZ")[0].value = gameObject.rotation[2];
+  $("#scaleX")[0].value = gameObject.scale[0];
+  $("#scaleY")[0].value = gameObject.scale[1];
+  $("#scaleZ")[0].value = gameObject.scale[2];
+
+
 }
-/*
-JS_UpdateComponents("{'id':'4','components': [{'name':'RenderComponent', 'inputs':[{'type': 'droppableFile','name': 'Model','id': '0','value': 'RenderComponent'},{'type': 'selectable','name': 'Tipos de campos','id': '5','selected': 'colider','options': [{'name': 'text'},{'name': 'number'},{'name': 'checkbox'},{'name': 'color'},{'name': 'droppableFile'},{'name': 'droppableGO'}]},{'type': 'selectable','name': 'HOli','id': '4','selected': 'color123','options': [{'name': 'text123'},{'name': 'number123'},{'name': 'checkbox123'},{'name': 'color123'},{'name': 'droppableFile123'},{'name': 'droppableGO123'}]}]},{'name':'RenderComponent1', 'inputs':[{'type': 'droppableFile','name': 'Model','id': '0','value': 'RenderComponent1'},{'type': 'selectable','name': 'Tipos de campos','id': '5','selected': 'colider','options': [{'name': 'text'},{'name': 'number'},{'name': 'checkbox'},{'name': 'color'},{'name': 'droppableFile'},{'name': 'droppableGO'}]},{'type': 'selectable','name': 'HOli','id': '4','selected': 'color123','options': [{'name': 'text123'},{'name': 'number123'},{'name': 'checkbox123'},{'name': 'color123'},{'name': 'droppableFile123'},{'name': 'droppableGO123'}]}]},{'name':'AABBCollider', 'inputs':[{'type': 'text','name': 'nombre','id': '0','value': 'lucas'}]}]}");
-*/

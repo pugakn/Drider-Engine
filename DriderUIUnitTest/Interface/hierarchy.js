@@ -5,6 +5,8 @@ var hierarchy = document.getElementById('idSorteableHierarchy'),
   gameObjectSelected = hierarchy;
 
 function selectGO(ui) {
+  $("#generalInspector")[0].hidden = false;
+
   $('.selectedGameobject').removeClass('selectedGameobject');
   $(ui.path[1]).addClass('selectedGameobject');
   gameObjectSelected = ui.path[1];

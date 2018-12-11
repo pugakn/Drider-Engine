@@ -88,7 +88,7 @@ InputEditor::createInputEditor(GameComponent &_component) {
   }
 
   UInt32 temp = _component.getClassID();
-  UInt32 temp2 = CLASS_NAME_ID(Camera);
+  UInt32 temp2 = CLASS_NAME_ID(CameraComponent);
   return m_factories[_component.getClassID()](_component);
 }
 
