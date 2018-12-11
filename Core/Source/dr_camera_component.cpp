@@ -125,7 +125,8 @@ CameraComponent::onDestroy() {
 
 UInt32
 CameraComponent::getClassID() {
-  return CLASS_NAME_ID(CameraComponent);
+  UInt32 temp = CLASS_NAME_ID(CameraComponent);
+  return temp;
 }
 
 GameComponent* 

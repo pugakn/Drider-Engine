@@ -239,6 +239,8 @@ function updateInput(input){
                 input.parentElement.dataset.namecomponent,
                 input.parentElement.dataset.id,
                 input.value);
+
+  C_ChangeSceneGraphNodeSelection(IdSelected);
 }
 
 function JS_UpdateComponents(data) {

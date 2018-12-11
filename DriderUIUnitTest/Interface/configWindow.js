@@ -91,5 +91,4 @@ $("#hierarchyDiv").resizable({
 function CFSetSceneAreaViewport() {
   C_SetSceneAreaViewport($("#scene").position().top + sizeHeader, $("#scene").position().left, $("#scene").width(), $("#scene").height() - sizeHeader);
 }
-
-CFSetSceneAreaViewport();
+setTimeout(function(){ CFSetSceneAreaViewport(); }, 0);

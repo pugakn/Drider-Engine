@@ -25,6 +25,7 @@
 #include <dr_string_utils.h>
 #include <dr_animator_component.h>
 #include <dr_collider_component.h>
+#include <dr_camera_component.h>
 #include <dr_model.h>
 #include <dr_script_core.h>
 #include <dr_depth_stencil_state.h>
@@ -211,6 +212,7 @@ SceneEditor::initSceneGraph() {
   if (ptrModel) {
     model->createComponent<RenderComponent>(ptrModel);
     model->createComponent<AABBCollider>(ptrModel->aabb);
+    model->createComponent<CameraComponent>();
     model->getTransform().setPosition(Vector3D(0.0f, 50.0f, 0.0f));
     model->getTransform().setScale(Vector3D(100.0f, 100.0f, 100.0f));
     model->getTransform().setRotation(Vector3D(0.0f, Math::QUARTER_PI*0.5f, 0.0f));

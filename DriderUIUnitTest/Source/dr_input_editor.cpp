@@ -75,14 +75,20 @@ InputEditor::createInputEditor(GameComponent &_component) {
     //{CLASS_NAME_ID(Class), dr_make_unique<Class, GameComponent&>}
     {CLASS_NAME_ID(AABBCollider), dr_make_unique<AABBColliderInputs, GameComponent&>},
     {CLASS_NAME_ID(AnimatorComponent), dr_make_unique<AnimatorInputs, GameComponent&>},
-    {CLASS_NAME_ID(Camera), dr_make_unique<CameraInputs, GameComponent&>},
     {CLASS_NAME_ID(RenderComponent), dr_make_unique<RenderInputs, GameComponent&>},
     {CLASS_NAME_ID(ScriptComponent), dr_make_unique<ScripInputs, GameComponent&>},
-    {CLASS_NAME_ID(SoundComponent), dr_make_unique<SoundInputs, GameComponent&>}
+    {CLASS_NAME_ID(SoundComponent), dr_make_unique<SoundInputs, GameComponent&>},
+    {CLASS_NAME_ID(CameraComponent), dr_make_unique<CameraInputs, GameComponent&>}
   };
- 
-  //m_factories[CLASS_NAME_ID(RenderComponent)] = dr_make_unique<RenderInputs>;
-  
+
+  std::unordered_map<UInt32, Factory>::const_iterator got = m_factories.find(_component.getClassID());
+
+  if (got == m_factories.end()) {
+    m_factories.insert({ _component.getClassID(),dr_make_unique<CameraInputs, GameComponent&>});
+  }
+
+  UInt32 temp = _component.getClassID();
+  UInt32 temp2 = CLASS_NAME_ID(Camera);
   return m_factories[_component.getClassID()](_component);
 }
 
