@@ -1,4 +1,4 @@
-#include "..\Include\dr_scrip_inputs.h"
+#include "dr_scrip_inputs.h"
 #include <dr_script_component.h>
 
 namespace driderSDK {

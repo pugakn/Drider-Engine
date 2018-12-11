@@ -1,4 +1,4 @@
-#include "..\Include\dr_sound_inputs.h"
+#include "dr_sound_inputs.h"
 #include <dr_sound_component.h>
 
 namespace driderSDK {

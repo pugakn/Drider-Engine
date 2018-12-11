@@ -1,4 +1,4 @@
-#include "..\Include\dr_camera_inputs.h"
+#include "dr_camera_inputs.h"
 #include <dr_camera_component.h>
 
 namespace driderSDK {

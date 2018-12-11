@@ -1,4 +1,4 @@
-#include "..\Include\dr_animator_inputs.h"
+#include "dr_animator_inputs.h"
 #include <dr_animator_component.h>
 
 namespace driderSDK {

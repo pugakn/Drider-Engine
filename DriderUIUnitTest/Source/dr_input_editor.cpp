@@ -1,4 +1,4 @@
-#include "..\Include\dr_input_editor.h"
+#include "dr_input_editor.h"
 
 #include <unordered_map>
 #include <functional>
@@ -12,12 +12,12 @@
 #include <dr_render_component.h>
 #include <dr_gameComponent.h>
 
-#include "..\Include\dr_aabb_collider_inputs.h"
-#include "..\Include\dr_animator_inputs.h"
-#include "..\Include\dr_camera_inputs.h"
-#include "..\Include\dr_render_inputs.h"
-#include "..\Include\dr_scrip_inputs.h"
-#include "..\Include\dr_sound_inputs.h"
+#include "dr_aabb_collider_inputs.h"
+#include "dr_animator_inputs.h"
+#include "dr_camera_inputs.h"
+#include "dr_render_inputs.h"
+#include "dr_scrip_inputs.h"
+#include "dr_sound_inputs.h"
 
 
 

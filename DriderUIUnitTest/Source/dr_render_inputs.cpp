@@ -1,4 +1,4 @@
-#include "../Include/dr_render_inputs.h"
+#include "dr_render_inputs.h"
 #include <dr_memory.h>
 #include <dr_render_component.h>
 #include <dr_resource_manager.h>
