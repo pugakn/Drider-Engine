@@ -1,4 +1,4 @@
-#include "..\Include\dr_aabb_collider_inputs.h"
+#include "dr_aabb_collider_inputs.h"
 #include <dr_aabb_collider.h>
 
 namespace driderSDK {

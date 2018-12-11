@@ -1,5 +1,5 @@
-#include "..\Include\dr_scene_editor.h"
-#include "..\Include\dr_input_editor.h"
+#include "dr_scene_editor.h"
+#include "dr_input_editor.h"
 #include <dr_device.h>
 #include <dr_graphics_api.h>
 #include <dr_graphics_driver.h>
