@@ -240,7 +240,7 @@ DriderEngine::initModules() {
                               10000.0f);
 
   CameraManager::setActiveCamera(_T("MainCamera"));
-  m_renderMan.init();
+  
 
   ContextManager::startUp();
   ScriptEngine::startUp();

@@ -90,7 +90,6 @@ private:
 
  private:
   SceneEditor m_editor;
-  RenderMan m_renderMan;
 
   SoundExtraInfo* extraInfo;
   std::unordered_map<TString, ScriptComponent*> m_scripts;

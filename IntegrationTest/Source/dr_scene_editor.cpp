@@ -184,7 +184,7 @@ void SceneEditor::initSceneGraph()
     proportion += (1.0f / 128.0f);
   }
 
-  m_sceneViewer.getRenderManager().lights = &Lights;
+  //m_sceneViewer.getRenderManager().lights = &Lights;
 
   CameraManager::createCamera(_T("PATO_CAM"),
                               { 0.0f, 150.0f, -400.0f },
