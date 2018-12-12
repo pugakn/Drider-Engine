@@ -135,7 +135,7 @@ class DR_CORE_EXPORT SceneGraph : public Module<SceneGraph>
     auto obj = std::make_shared<T>(name);
 
     addObject(obj);
-
+    obj->start();
     return obj;
   }
 
@@ -145,6 +145,12 @@ class DR_CORE_EXPORT SceneGraph : public Module<SceneGraph>
   */
   void static
   instanciate(GameObject& object,
+              const Vector3D& position,
+              const Vector3D& orientation);
+
+  void static
+  instanciate(SharedGameObject object,
+              SharedGameObject father,
               const Vector3D& position,
               const Vector3D& orientation);
 

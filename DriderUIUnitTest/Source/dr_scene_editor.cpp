@@ -403,9 +403,13 @@ SceneEditor::initUI() {
     {
       father = SceneGraph::getRoot();
     }
-    addGameObject(father,
-      name,
-      { 0, 0, 0 })->getTransform().scale({ 100, 100, 100 });
+    
+    auto obj = SceneGraph::createObject(_T("GameObject"));
+    SceneGraph::instanciate(obj,
+                            father,
+                            { 0.0f, 0.0f, 0.0f },
+                            { 0.0f, 0.0f, 0.0f });
+
     UI_UpdateSceneGraph();
   }
   ));
@@ -417,18 +421,17 @@ SceneEditor::initUI() {
     auto gameObject = SceneGraph::getRoot()->findNode(id);
 	Transform tranform = gameObject->getTransform();
 	Vector3D pos = tranform.getPosition();
+  Vector3D rot = tranform.getEulerAngles();
+  Vector3D scale = tranform.getScale();
 	
 	TString name = gameObject->getName();
-
-	TString posX = _T("1");
-	TString posY = _T("2");
-	TString posZ = _T("3");
+  
 
     TString response = _T("JS_UpdateComponents(\"{'id':'") + temp;
 	response += _T("','name':'") + name;
 	response += _T("','position': ['") + StringUtils::toTString(pos.x, 1) + _T("','") + StringUtils::toTString(pos.x, 1) + _T("','") + StringUtils::toTString(pos.x, 1) + _T("']");
-	response += _T(",'rotation': ['") + posX + _T("','") + posY + _T("','") + posZ + _T("']");
-	response += _T(",'scale': ['") + posX + _T("','") + posY + _T("','") + posZ + _T("']");
+	response += _T(",'rotation': ['") + StringUtils::toTString(rot.x, 1) + _T("','") + StringUtils::toTString(rot.y, 1) + _T("','") + StringUtils::toTString(rot.z, 1) + _T("']");
+	response += _T(",'scale': ['") + StringUtils::toTString(scale.x, 1) + _T("','") + StringUtils::toTString(scale.y, 1) + _T("','") + StringUtils::toTString(scale.z, 1) + _T("']");
 
 	response += _T(",'components': [");
     auto components = gameObject->getComponents<GameComponent>();
@@ -482,11 +485,33 @@ SceneEditor::initUI() {
 	  //3rotx 4roty 5rotz 
 	  //6scalex 7scaley 8scalez 
 	  //9name 
+    Transform& trans = gameObject->getTransform();
+    Vector3D pos = trans.getPosition();
+    Vector3D rot = trans.getEulerAngles();
+    Vector3D scale = trans.getScale();
 	  
-	  if (idField == _T("0"))
-	  {
+    if(value.size() == 0)
+      return;
 
-	  }
+	  if (idField == _T("0")) {
+      trans.setPosition({StringUtils::toReal(value), pos.y, pos.z});
+	  } else if(idField == _T("1")) {
+      trans.setPosition({ pos.x, StringUtils::toReal(value), pos.z });
+    } else if (idField == _T("2")) {
+      trans.setPosition({ pos.x, pos.y, StringUtils::toReal(value) });
+    } else if (idField == _T("3")) {
+      trans.setRotation({ StringUtils::toReal(value), rot.y, rot.z });
+    } else if (idField == _T("4")) {
+      trans.setRotation({ rot.x, StringUtils::toReal(value), rot.z });
+    } else if (idField == _T("5")) {
+      trans.setRotation({ rot.x, rot.y, StringUtils::toReal(value) });
+    } else if (idField == _T("6")) {
+      trans.setRotation({ StringUtils::toReal(value), scale.y, scale.z });
+    } else if (idField == _T("7")) {
+      trans.setRotation({ scale.x, StringUtils::toReal(value), scale.z });
+    } else if (idField == _T("8")) {
+      trans.setRotation({ scale.x, scale.y, StringUtils::toReal(value) });
+    }
   }));
   //Property Sheet UI
   webRenderer.registerJS2CPPFunction(std::make_pair("C_OnTransformChange", [&](const CefRefPtr<CefListValue>& arguments) {

@@ -59,6 +59,23 @@ SceneGraph::instanciate(GameObject& object,
 
 }
 
+void
+SceneGraph::instanciate(SharedGameObject object,
+                        SharedGameObject father,
+                        const Vector3D& position,
+                        const Vector3D& orientation) {
+
+  object->getTransform().setPosition(position);
+  object->getTransform().setRotation(orientation);
+
+  if(father.get() != nullptr) {
+    father->addChild(object);
+  } else {
+    instance().m_root->addChild(object);
+  }
+
+}
+
 void 
 SceneGraph::buildOctree() {
   
