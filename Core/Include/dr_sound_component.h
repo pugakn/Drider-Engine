@@ -62,6 +62,12 @@ class DR_CORE_EXPORT SoundComponent : public GameComponent,
              DrSound* sound);
 
     void
+    setUISounds(Int32 numSounds);
+
+    Int32
+    getUISounds();
+
+    void
     play(const TString& soundName);
 
     static BEGINING_REGISTER(SoundComponent, 0, asOBJ_REF | asOBJ_NOCOUNT)
@@ -88,6 +94,8 @@ class DR_CORE_EXPORT SoundComponent : public GameComponent,
   
   private:
     std::unordered_map<TString, DrSound*> sounds;
+    //std::unordered_map<TString, std::unordered_map<TString, DrSound*>> sounds;
+    Int32 m_ui_sounds;
   
     FMODSoundAPI* soundAPI;
     SoundSystem* system;

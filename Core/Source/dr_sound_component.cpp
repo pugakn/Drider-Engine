@@ -81,6 +81,16 @@ SoundComponent::addSound(TString soundName,
 }
 
 void
+SoundComponent::setUISounds(Int32 numSounds) {
+  m_ui_sounds = numSounds;
+}
+
+Int32
+SoundComponent::getUISounds() {
+  return m_ui_sounds;
+}
+
+void
 SoundComponent::play(const TString& soundName) {
   
   std::unordered_map<TString, 
