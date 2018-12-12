@@ -453,7 +453,11 @@ SceneEditor::initUI() {
       //}
       response += _T("]},");
     }
-    response.erase(response.length() - 1);
+	if (components.size() == 0)
+	{
+		response += _T("[");
+	}
+	response.erase(response.length() - 1);
     response += _T("]}\");");
     webRenderer.executeJSCode(response);
   }));
