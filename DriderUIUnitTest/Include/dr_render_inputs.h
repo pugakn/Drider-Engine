@@ -11,7 +11,7 @@ class RenderInputs : public InputEditor {
   void
   getInputs(TString* response);
   
-  void
+  bool
   changeValue(TString &value, TString &id);
 };
 

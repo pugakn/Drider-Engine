@@ -135,7 +135,7 @@ class DR_CORE_EXPORT SceneGraph : public Module<SceneGraph>
     auto obj = std::make_shared<T>(name);
 
     addObject(obj);
-    obj->start();
+
     return obj;
   }
 

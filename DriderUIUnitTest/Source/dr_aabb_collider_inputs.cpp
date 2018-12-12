@@ -14,8 +14,9 @@ AABBColliderInputs::getInputs(TString * response) {
 
 }
 
-void
+bool
 AABBColliderInputs::changeValue(TString &value, TString &id) {
+  return false;
 }
 
 }

@@ -75,6 +75,20 @@
         <h3 class="titleSection">Inspector</h3>
         <div id="divInspector">
           <div id="generalInspector">
+            <div id="accordion">
+              <h3>Agregar componente</h3>
+              <div>
+                <button type="button" onclick="AddComponenenGameObject('Animator');" class="btn btn-primary">Animator</button>
+                <button type="button" onclick="AddComponenenGameObject('Camera');" class="btn btn-secondary">Camera</button>
+                <button type="button" onclick="AddComponenenGameObject('BoxCollider');" class="btn btn-success">BoxCollider</button>
+                <button type="button" onclick="AddComponenenGameObject('SphereCollider');" class="btn btn-success">SphereCollider</button>
+                <button type="button" onclick="AddComponenenGameObject('Ligth');" class="btn btn-danger">Ligth</button>
+                <button type="button" onclick="AddComponenenGameObject('Render');" class="btn btn-warning">Render</button>
+                <button type="button" onclick="AddComponenenGameObject('Rigidbody');" class="btn btn-info">Rigidbody</button>
+                <button type="button" onclick="AddComponenenGameObject('Script');" class="btn btn-light">Script</button>
+                <button type="button" onclick="AddComponenenGameObject('Sound');" class="btn btn-dark">Sound</button>
+              </div>
+            </div>
             <div>
               <label for="objectName">Nombre: </label>
               <input onchange="updateGeneralInput(9, this.value)" name:"objectName" type="text" value="" id="objectName">

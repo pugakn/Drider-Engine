@@ -1,5 +1,14 @@
 
-var IdSelected;
+var IdSelected,
+  componentSelected = false;
+
+$( function() {
+    $( "#accordion" ).accordion({
+      collapsible: true
+    });
+    $("#accordion").accordion( "option", "active", 2 );
+
+  } );
 
 $(document).ready(function(){
   $("#divInspector").oncontextmenu = function (e) {
@@ -31,7 +40,7 @@ $(document).ready(function(){
 
   });
 
-  $("#generalInspector")[0].hidden = true;
+  $("#generalInspector")[0].hidden = false;
 });
 
 function showMenuInspector(e) {
@@ -43,7 +52,13 @@ $( function() {
   $( "#accordionInspector" )
     .accordion({
       header: "> div > h3",
-      collapsible: true
+      collapsible: true,
+      animate: false,
+      activate: function( event, ui ) {
+        if ($("#accordionInspector").accordion( "option", "active" )) {
+          componentSelected = $("#accordionInspector").accordion( "option", "active" );
+        }
+      }
     })
     .sortable({
       axis: "y",
@@ -172,8 +187,6 @@ function updateInput(input){
                 input.parentElement.dataset.namecomponent,
                 input.parentElement.dataset.id,
                 input.value);
-
-  C_ChangeSceneGraphNodeSelection(IdSelected);
 }
 
 function updateGeneralInput(id, input) {
@@ -185,6 +198,14 @@ console.log(IdSelected);
                        id.toString(),
                        input);
 }
+function AddComponenenGameObject(value) {
+  console.log(value);
+  C_AddComponent(IdSelected, value);
+  C_ChangeSceneGraphNodeSelection(IdSelected);
+}
+function JS_UpdateInspector() {
+  C_ChangeSceneGraphNodeSelection(IdSelected);
+}
 function JS_UpdateComponents(data) {
   while ($('#accordionInspector')[0].firstChild) {
     $('#accordionInspector')[0].removeChild($('#accordionInspector')[0].firstChild);
@@ -194,6 +215,7 @@ function JS_UpdateComponents(data) {
   for (var i = 0; i < gameObject.components.length; i++) {
     addComponent(gameObject.components[i]);
   }
+  $("#objectName")[0].value = gameObject.name;
   $("#positionX")[0].value = gameObject.position[0];
   $("#positionY")[0].value = gameObject.position[1];
   $("#positionZ")[0].value = gameObject.position[2];
@@ -203,6 +225,7 @@ function JS_UpdateComponents(data) {
   $("#scaleX")[0].value = gameObject.scale[0];
   $("#scaleY")[0].value = gameObject.scale[1];
   $("#scaleZ")[0].value = gameObject.scale[2];
-
+  $("#accordionInspector").accordion( "option", "active", componentSelected);
+  console.log(componentSelected);
 
 }

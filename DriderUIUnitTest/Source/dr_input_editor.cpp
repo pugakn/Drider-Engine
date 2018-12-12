@@ -10,6 +10,7 @@
 #include <dr_script_component.h>
 #include <dr_sound_component.h>
 #include <dr_render_component.h>
+#include <dr_light_component.h>
 #include <dr_gameComponent.h>
 
 #include "dr_aabb_collider_inputs.h"
@@ -18,7 +19,7 @@
 #include "dr_render_inputs.h"
 #include "dr_scrip_inputs.h"
 #include "dr_sound_inputs.h"
-
+#include "dr_light_inputs.h"
 
 
 namespace driderSDK {
@@ -78,17 +79,27 @@ InputEditor::createInputEditor(GameComponent &_component) {
     {CLASS_NAME_ID(RenderComponent), dr_make_unique<RenderInputs, GameComponent&>},
     {CLASS_NAME_ID(ScriptComponent), dr_make_unique<ScripInputs, GameComponent&>},
     {CLASS_NAME_ID(SoundComponent), dr_make_unique<SoundInputs, GameComponent&>},
-    {CLASS_NAME_ID(CameraComponent), dr_make_unique<CameraInputs, GameComponent&>}
+    {CLASS_NAME_ID(CameraComponent), dr_make_unique<CameraInputs, GameComponent&>},
+    {CLASS_NAME_ID(LightComponent), dr_make_unique<LightInputs, GameComponent&>}
   };
 
-  std::unordered_map<UInt32, Factory>::const_iterator got = m_factories.find(_component.getClassID());
+  /*auto component = dr_make_unique<T>(*this,
+	  std::forward<Args>(args)...);
 
-  if (got == m_factories.end()) {
-    m_factories.insert({ _component.getClassID(),dr_make_unique<CameraInputs, GameComponent&>});
+  T* rawPtr = component.get();
+
+  addComponent(std::move(component));
+
+  auto&t = m_components.back();
+
+  t->onCreate();
+
+  if (m_isStarted) {
+	  t->onStart();
   }
 
-  UInt32 temp = _component.getClassID();
-  UInt32 temp2 = CLASS_NAME_ID(CameraComponent);
+  return rawPtr;*/
+
   return m_factories[_component.getClassID()](_component);
 }
 

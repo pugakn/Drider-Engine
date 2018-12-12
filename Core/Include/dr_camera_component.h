@@ -4,6 +4,7 @@
 
 #include "dr_core_prerequisites.h"
 #include "dr_gameComponent.h"
+#include <dr_id_object.h>
 
 namespace driderSDK {
 
@@ -16,7 +17,8 @@ class Camera;
 * Sample usage:
 * gameObject.createComponent<CameraComponent>();
 */
-class DR_CORE_EXPORT CameraComponent : public GameComponent
+class DR_CORE_EXPORT CameraComponent : public GameComponent,
+									   public IDClass<CameraComponent>
 {
 public:
   using SharedCamera = std::shared_ptr<Camera>;

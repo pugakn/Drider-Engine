@@ -12,8 +12,9 @@ SoundInputs::getInputs(TString * response) {
 
 }
 
-void
+bool
 SoundInputs::changeValue(TString &value, TString &id) {
+  return false;
 }
 
 }

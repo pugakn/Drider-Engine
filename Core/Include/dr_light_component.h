@@ -5,10 +5,12 @@
 
 #include "dr_core_prerequisites.h"
 #include "dr_gameComponent.h"
+#include <dr_id_object.h>
 
 namespace driderSDK {
 
-class DR_CORE_EXPORT LightComponent : public GameComponent
+class DR_CORE_EXPORT LightComponent : public GameComponent,
+								      public IDClass<LightComponent>
 {
  public:
   LightComponent(GameObject& _gameObject);

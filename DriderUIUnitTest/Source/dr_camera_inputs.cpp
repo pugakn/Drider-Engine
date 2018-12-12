@@ -32,14 +32,16 @@ CameraInputs::getInputs(TString * response) {
   //camera.getNearPlane();
 }
 
-void
+bool
 CameraInputs::changeValue(TString &value, TString &id) {
   auto camera = static_cast<CameraComponent&>(m_component);
   if (id == _T("1"))
   {
     camera.setFarPlane(StringUtils::toReal(value));
 
+    return true;
   }
+  return false;
 }
 
 }

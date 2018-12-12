@@ -56,7 +56,7 @@ SceneGraph::instanciate(GameObject& object,
   object.getTransform().setRotation(orientation);
 
   instance().m_root->addChild(std::make_shared<GameObject>(object));
-
+  object.start();
 }
 
 void
@@ -73,7 +73,7 @@ SceneGraph::instanciate(SharedGameObject object,
   } else {
     instance().m_root->addChild(object);
   }
-
+  object->start();
 }
 
 void 

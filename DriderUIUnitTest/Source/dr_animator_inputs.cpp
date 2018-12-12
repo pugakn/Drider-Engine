@@ -14,8 +14,9 @@ AnimatorInputs::getInputs(TString * response) {
 
 }
 
-void
+bool
 AnimatorInputs::changeValue(TString &value, TString &id) {
+  return false;
 }
 
 }

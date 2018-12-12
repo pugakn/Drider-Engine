@@ -18,6 +18,8 @@
 #include <dr_depth_stencil.h>
 
 #include <dr_scene_viewer.h>
+#include <unordered_map>
+
 namespace driderSDK {
 class SceneEditor {
 public:
@@ -66,5 +68,18 @@ private:
 
   Vector3D modelMovement;
   std::array<Light, 128> Lights;
+  enum ComponentsType
+  {
+	  kAnimator,
+	  kCamera,
+	  kBoxCollider,
+    kSphereCollider,
+	  kLigth,
+	  kRender,
+	  kRigidbody,
+	  kScript,
+	  kSound
+  };
+  std::unordered_map < TString, ComponentsType> m_componentsType;
 };
 }
