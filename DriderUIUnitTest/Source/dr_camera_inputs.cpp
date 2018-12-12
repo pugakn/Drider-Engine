@@ -8,12 +8,12 @@ CameraInputs::getInputs(TString * response) {
 
   auto camera = static_cast<CameraComponent&>(m_component);
 
-  (*response) += addInput(_T("0"), _T("number"), _T("nearPlane "), StringUtils::toTString(int(camera.getNearPlane())));
-  (*response) += addInput(_T("1"), _T("number"), _T("farPlane "), StringUtils::toTString(int(camera.getFarPlane())));
+  (*response) += addInput(_T("0"), _T("numberFloat"), _T("nearPlane "), StringUtils::toTString(int(camera.getNearPlane())));
+  (*response) += addInput(_T("1"), _T("number"), _T("farPlane "), _T(".2"));
   std::vector<TString> options = { _T("Perspective"),
                                    _T("Ortographic")};
   (*response) += addInputSelectable(_T("2"),
-                                     _T("Type"),
+                                     _T("Type"), 
                                      _T("4"),
                                      &options);
   if (camera.getFarPlane() > 10)

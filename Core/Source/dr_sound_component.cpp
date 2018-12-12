@@ -12,7 +12,8 @@
 namespace driderSDK {
 
 SoundComponent::SoundComponent(GameObject &gameObject_) 
-  : GameComponent(gameObject_, _T("SoundComponent")) 
+  : GameComponent(gameObject_, _T("SoundComponent")),
+    m_ui_sounds(0)
 {}
 
 void

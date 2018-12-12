@@ -592,6 +592,7 @@ SceneEditor::initUI() {
 
     break;
     case kSound:
+      gameObject->createComponent<SoundComponent>();
     break;
     default:
     break;
