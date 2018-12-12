@@ -506,11 +506,11 @@ SceneEditor::initUI() {
     } else if (idField == _T("5")) {
       trans.setRotation({ rot.x, rot.y, StringUtils::toReal(value) });
     } else if (idField == _T("6")) {
-      trans.setRotation({ StringUtils::toReal(value), scale.y, scale.z });
+      trans.setScale({ StringUtils::toReal(value), scale.y, scale.z });
     } else if (idField == _T("7")) {
-      trans.setRotation({ scale.x, StringUtils::toReal(value), scale.z });
+      trans.setScale({ scale.x, StringUtils::toReal(value), scale.z });
     } else if (idField == _T("8")) {
-      trans.setRotation({ scale.x, scale.y, StringUtils::toReal(value) });
+      trans.setScale({ scale.x, scale.y, StringUtils::toReal(value) });
     }
   }));
   //Property Sheet UI
