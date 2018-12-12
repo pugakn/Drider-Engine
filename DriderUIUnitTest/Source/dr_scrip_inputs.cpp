@@ -12,8 +12,9 @@ ScripInputs::getInputs(TString * response) {
 
 }
 
-void
+bool
 ScripInputs::changeValue(TString &value, TString &id) {
+  return false;
 }
 
 }

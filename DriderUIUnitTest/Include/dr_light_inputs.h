@@ -3,9 +3,8 @@
 #include "dr_input_editor.h"
 
 namespace driderSDK {
-class CameraInputs : public InputEditor {
+class LightInputs : public InputEditor {
  public:
-
   using InputEditor::InputEditor;
 
   void
@@ -13,7 +12,6 @@ class CameraInputs : public InputEditor {
 
   bool
   changeValue(TString &value, TString &id);
-
 };
 
 }

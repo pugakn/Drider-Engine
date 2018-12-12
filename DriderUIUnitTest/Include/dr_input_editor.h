@@ -25,7 +25,7 @@ class InputEditor {
   virtual void
   getInputs(TString* response) = 0;
 
-  virtual void
+  virtual bool
   changeValue(TString &value, TString &id) = 0;
 
   /**

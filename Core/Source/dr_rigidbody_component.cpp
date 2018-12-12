@@ -2,6 +2,7 @@
 #include "dr_time.h"
 #include "dr_gameObject.h"
 #include "dr_aabb_collider.h"
+#include <dr_physics_manager.h>
 namespace driderSDK {
   RigidBody3DComponent::RigidBody3DComponent(GameObject& _gameObject)
     : GameComponent(_gameObject, _T("RigidBody3D"))

@@ -21,24 +21,32 @@
 #include <dr_input_manager.h>
 #include <dr_keyboard.h>
 #include <dr_mouse.h>
-#include <dr_render_component.h>
 #include <dr_image_info.h>
-#include <dr_script_component.h>
 #include <dr_string_utils.h>
+#include <dr_render_component.h>
 #include <dr_animator_component.h>
-#include <dr_collider_component.h>
 #include <dr_camera_component.h>
+#include <dr_box_collider.h>
+#include <dr_sphere_collider.h>
+#include <dr_light_component.h>
+#include <dr_rigidbody_component.h>
+#include <dr_script_component.h>
+#include <dr_sound_component.h>
 #include <dr_model.h>
 #include <dr_script_core.h>
 #include <dr_depth_stencil_state.h>
 #include <dr_math.h>
 #include <dr_id_object.h>
+#include <dr_graph.h>
+#include <dr_aabb.h>
 #include<Shlwapi.h>
 
 #pragma comment(lib, "Shlwapi.lib")
 
 #include <dr_model.h>
 namespace driderSDK {
+
+
 
 void
 HSVtoRGB(float fH, float fS, float fV, float& fR, float& fG, float& fB) {
@@ -126,6 +134,15 @@ updateFolders(WebRenderer& webRenderer, TString root) {
 
 void
 SceneEditor::init(Viewport v) {
+  m_componentsType[_T("Animator")] = kAnimator;
+  m_componentsType[_T("Camera"]) = kCamera;
+  m_componentsType[_T("BoxCollider"]) = kBoxCollider;
+  m_componentsType[_T("SphereCollider"]) = kSphereCollider;
+  m_componentsType[_T("Ligth"]) = kLigth;
+  m_componentsType[_T("Render"]) = kRender;
+  m_componentsType[_T("Rigidbody"]) = kRigidbody;
+  m_componentsType[_T("Script"]) = kScript;
+  m_componentsType[_T("Sound"]) = kSound;
   m_viewport = v;
   initUI();
   initSceneGraph();
@@ -453,7 +470,11 @@ SceneEditor::initUI() {
       //}
       response += _T("]},");
     }
-    response.erase(response.length() - 1);
+	if (components.size() == 0)
+	{
+		response += _T("[");
+	}
+	response.erase(response.length() - 1);
     response += _T("]}\");");
     webRenderer.executeJSCode(response);
   }));
@@ -471,7 +492,10 @@ SceneEditor::initUI() {
 
     auto inputEditor = InputEditor::createInputEditor(*component);
 
-    inputEditor->changeValue(value, idField);
+    if (inputEditor->changeValue(value, idField))
+    {
+      webRenderer.executeJSCode(WString(_T("JS_UpdateInspector();")));
+    };
   }));
 
   webRenderer.registerJS2CPPFunction(std::make_pair("C_InputGeneralChange", [&](const CefRefPtr<CefListValue>& arguments) {
@@ -533,16 +557,46 @@ SceneEditor::initUI() {
     m_sceneViewer.resize(sceneViewport);
   }));
   //components
-  webRenderer.registerJS2CPPFunction(std::make_pair("C_AddRenderComponent", [&](const CefRefPtr<CefListValue>& arguments) {
-    TString type = arguments->GetString(1);
-    auto ptrModel = ResourceManager::getReferenceT<Model>(_T("Sphere.fbx"));
-    auto gmoO = SceneGraph::getRoot()->findNode(m_onFocusGMO);
-    auto rComp = gmoO->createComponent<RenderComponent>(ptrModel);
-    gmoO->createComponent<AABBCollider>(ptrModel->aabb);
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_AddComponent", [&](const CefRefPtr<CefListValue>& arguments) {
+	TString temp = arguments->GetString(1);
+	UInt32 id = StringUtils::toInt(temp);
+	TString idComponent = arguments->GetString(2);
+	auto gameObject = SceneGraph::getRoot()->findNode(id);
+	
+  switch (m_componentsType[idComponent])
+  {
+    case kAnimator:
+      gameObject->createComponent<AnimatorComponent>();
+    break;
+    case kCamera:
+      gameObject->createComponent<CameraComponent>();
+    break;
+    case kSphereCollider:
+      gameObject->createComponent<RigidBody3DComponent>();
+      gameObject->createComponent<SphereCollider>(1.f, Vector3D(0,0,0));
+    break;
+    case kBoxCollider:
+      gameObject->createComponent<RigidBody3DComponent>();
+      gameObject->createComponent<BoxCollider>(AABB(1.f,1.f,1.f, Vector3D(0,0,0)));
+    break;
+    case kLigth:
+      gameObject->createComponent<LightComponent>();
+    break;
+    case kRender:
+      gameObject->createComponent<RenderComponent>(std::shared_ptr<Model>());
+    break;
+    case kRigidbody:
+      //gameObject->createComponent<RigidBody3DComponent>();
+    break;
+    case kScript:
 
-    //rComp->getMeshes().front().material = modelMat; ASDFG
-    webRenderer.executeJSCode("JS_ClearPropertySheetUI();");
-    UI_UpdatePropertySheet(*gmoO);
+    break;
+    case kSound:
+    break;
+    default:
+    break;
+  }
+
   }));
 
   webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeXPos", [&](const CefRefPtr<CefListValue>& arguments) {

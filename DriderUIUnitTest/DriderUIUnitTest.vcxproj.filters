@@ -45,6 +45,9 @@
     <ClCompile Include="Source\dr_render_inputs.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
+    <ClCompile Include="Source\dr_light_inputs.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TestApplication.h">
@@ -72,6 +75,9 @@
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="Include\dr_camera_inputs.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_light_inputs.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>

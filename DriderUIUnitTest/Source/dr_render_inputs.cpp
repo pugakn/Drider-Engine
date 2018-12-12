@@ -12,9 +12,12 @@ RenderInputs::getInputs(TString * response) {
   auto model = render.getModel().lock();
   if (model)
   {
-
+    (*response) += addInput(_T("0"), _T("droppableFile"), _T("Model"), model->getName());
   }
-  (*response) += addInput(_T("0"), _T("droppableFile"), _T("Model"), model->getName());
+  else
+  {
+    (*response) += addInput(_T("0"), _T("droppableFile"), _T("Model"), _T(""));
+  }
   /*
   (*response) += addInput(_T("1"), _T("number"), _T("altura"), _T("0"));
   (*response) += addInput(_T("2"), _T("checkbox"), _T("activado"), _T("true"));
@@ -37,7 +40,7 @@ RenderInputs::getInputs(TString * response) {
   
 }
 
-void
+bool
 RenderInputs::changeValue(TString &value, TString &id) {
 
   auto& render = static_cast<RenderComponent&>(m_component);
@@ -45,6 +48,7 @@ RenderInputs::changeValue(TString &value, TString &id) {
   auto ptrModel = std::dynamic_pointer_cast<Model>(ptr);
 
   render.setModel(ptrModel);
+  return false;
 }
 
 }

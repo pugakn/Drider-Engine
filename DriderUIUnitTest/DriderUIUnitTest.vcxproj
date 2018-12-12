@@ -98,8 +98,8 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)ParticleSystem\Include;$(SolutionDir)RenderManager\Include;$(SolutionDir)Core\Include;$(SolutionDir)Engine\Include;$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Input\Include;$(SolutionDir)GraphicsUtils\Include;$(SolutionDir)Math\Include;$(SolutionDir)GraphicsUtils\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)DriderUI\Include;$(SolutionDir)Utils\Include;$(SolutionDir)Core\Include;$(DRIDER_DEPENDENCIES)Include\CEF;$(DRIDER_DEPENDENCIES)Include\CEF\include;;$(SolutionDir)$(Projectname)\Include</AdditionalIncludeDirectories>
+      <SDLCheck>false</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)ParticleSystem\Include;$(SolutionDir)RenderManager\Include;$(SolutionDir)Core\Include;$(SolutionDir)Engine\Include;$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Input\Include;$(SolutionDir)GraphicsUtils\Include;$(SolutionDir)Math\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)DriderUI\Include;$(SolutionDir)Utils\Include;$(DRIDER_DEPENDENCIES)Include\CEF;$(DRIDER_DEPENDENCIES)Include\CEF\include;$(SolutionDir)$(Projectname)\Include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -170,6 +170,7 @@
     <ClCompile Include="Source\dr_animator_inputs.cpp" />
     <ClCompile Include="Source\dr_camera_inputs.cpp" />
     <ClCompile Include="Source\dr_input_editor.cpp" />
+    <ClCompile Include="Source\dr_light_inputs.cpp" />
     <ClCompile Include="Source\dr_render_inputs.cpp" />
     <ClCompile Include="Source\dr_scene_editor.cpp" />
     <ClCompile Include="Source\dr_scrip_inputs.cpp" />
@@ -181,6 +182,7 @@
     <ClInclude Include="Include\dr_animator_inputs.h" />
     <ClInclude Include="Include\dr_camera_inputs.h" />
     <ClInclude Include="Include\dr_input_editor.h" />
+    <ClInclude Include="Include\dr_light_inputs.h" />
     <ClInclude Include="Include\dr_render_inputs.h" />
     <ClInclude Include="Include\dr_scene_editor.h" />
     <ClInclude Include="Include\dr_scrip_inputs.h" />

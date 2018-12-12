@@ -4,12 +4,16 @@
 #include "dr_gameComponent.h"
 
 #include <dr_id_object.h>
-#include <dr_physics_manager.h>
 #include <dr_vector3d.h>
 #include <dr_quaternion.h>
 #include <dr_matrix3x3.h>
 #include <vector>
+
+
 namespace driderSDK {
+class DrRigidBody;
+class Transform;
+namespace RIGID_BODY_TYPE { enum E;  }
   class DR_CORE_EXPORT RigidBody3DComponent : public GameComponent,
     public IDClass<RigidBody3DComponent>
   {
