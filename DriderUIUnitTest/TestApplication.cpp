@@ -10,7 +10,7 @@
 #include <dr_resource_manager.h>
 #include <dr_camera_manager.h>
 #include <dr_renderman.h>
-
+#include <dr_sound_api.h>
 namespace driderSDK {
 
 TestApplication::TestApplication() {
@@ -32,6 +32,7 @@ TestApplication::postInit() {
   Time::startUp();
   CameraManager::startUp();
   RenderManager::startUp();
+  SoundAPI::startUp();
   //PhysicsManager::startUp();
 
   m_editor.init(m_viewport);

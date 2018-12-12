@@ -40,7 +40,7 @@ $(document).ready(function(){
 
   });
 
-  $("#generalInspector")[0].hidden = false;
+  $("#generalInspector")[0].hidden = true;
 });
 
 function showMenuInspector(e) {
@@ -142,14 +142,22 @@ function activateDropablesAreas() {
 }
 
 function addInput(dataInput, component) {
+  console.log(dataInput.type);
   component += '<label for=' + dataInput.name + '">'+  dataInput.name + ': </label>';
-  component += '<input  oninput="updateInput(this)" name:"' + dataInput.name + '" type="' + dataInput.type;
+  if (dataInput.type === "numberFloat") {
+    console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+    component += '<input  oninput="updateInput(this)" name:"' + dataInput.name + '" type="number" step="any';
+  }
+  else {
+    component += '<input  oninput="updateInput(this)" name:"' + dataInput.name + '" type="' + dataInput.type;
+  }
   if (dataInput.type == "checkbox") {
     component += '" checked="'+ dataInput.value + '">';
   }
   else {
     component += '" value="'+ dataInput.value + '">';
   }
+  console.log(component);
   return component;
 }
 
