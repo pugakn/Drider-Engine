@@ -90,6 +90,27 @@ SoundComponent::getUISounds() {
   return m_ui_sounds;
 }
 
+TString
+SoundComponent::getNameByIndex(UInt32 index) {
+  UInt32 count = 0;
+  TString name = L"";
+
+  for (auto sound : sounds) {
+    if (count == index) {
+      name = sound.first;
+    }
+    count++;
+  }
+
+  return name;
+}
+
+void
+SoundComponent::removeFromIndexToEnd(UInt32 index) {
+   sounds.erase(sounds.find(getNameByIndex(index)),
+                sounds.end());
+}
+
 void
 SoundComponent::play(const TString& soundName) {
   

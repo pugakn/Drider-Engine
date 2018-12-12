@@ -68,6 +68,12 @@ class DR_CORE_EXPORT SoundComponent : public GameComponent,
     getUISounds();
 
     void
+    removeFromIndexToEnd(UInt32 index);
+
+    TString
+    getNameByIndex(UInt32 index);
+
+    void
     play(const TString& soundName);
 
     static BEGINING_REGISTER(SoundComponent, 0, asOBJ_REF | asOBJ_NOCOUNT)
