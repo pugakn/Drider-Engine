@@ -21,7 +21,7 @@ SoundInputs::getInputs(TString * response) {
 
   for (Int32 i = 0; i < sound.getUISounds(); i++)
   {
-    (*response) += addInput(StringUtils::toTString(i+1), _T("droppableFile"), _T("Sonido") + StringUtils::toTString(i), _T("nombresonido[i]"));
+    (*response) += addInput(StringUtils::toTString(i+1), _T("droppableFile"), _T("Sonido") + StringUtils::toTString(i), sound.getNameByIndex(i));
   }
   
 }
@@ -49,7 +49,13 @@ SoundInputs::changeValue(TString &value, TString &id) {
   }
   else
   {
-    sound.setUISounds(StringUtils::toInt(value));
+    Int32 val = StringUtils::toInt(value);
+    if (sound.getUISounds() > val)
+    {
+      sound.removeFromIndexToEnd(val);
+    }
+    sound.setUISounds(val);
+
     return true;
   }
   return false;
