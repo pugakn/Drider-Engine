@@ -30,7 +30,7 @@
 #include <dr_sphere_collider.h>
 #include <dr_light_component.h>
 #include <dr_rigidbody_component.h>
-#include <dr_script_component.h>
+
 #include <dr_sound_component.h>
 #include <dr_model.h>
 #include <dr_script_core.h>
@@ -44,6 +44,14 @@
 #pragma comment(lib, "Shlwapi.lib")
 
 #include <dr_model.h>
+
+#include <dr_script_core.h>
+#include <dr_script_component.h>
+#include <dr_script_object.h>
+#include <dr_context_manager.h>
+#include <dr_export_script.h>
+
+
 namespace driderSDK {
 
 
@@ -305,6 +313,8 @@ SceneEditor::initSceneGraph() {
     auto renderComp = floor->getComponent<RenderComponent>();
     renderComp->getMeshes().front().material = floorMat;
   }
+
+  initScriptEngine();
 
   SceneGraph::start();
 }
@@ -589,7 +599,7 @@ SceneEditor::initUI() {
       //gameObject->createComponent<RigidBody3DComponent>();
     break;
     case kScript:
-
+      gameObject->createComponent<ScriptComponent>();
     break;
     case kSound:
       gameObject->createComponent<SoundComponent>();
@@ -741,6 +751,89 @@ SceneEditor::destroy() {
   m_netLobby.Destroy();
   webRenderer.Destroy();
   WebRenderer::shutDown();
+}
+
+void
+SceneEditor::initScriptEngine() {
+  Int32 result;
+
+  //Create context manager and set time
+  ContextManager* ctxMag = nullptr;
+  if (!ContextManager::isStarted()) {
+    ContextManager::startUp();
+  }
+  ctxMag = ContextManager::instancePtr();
+
+  //Create the ScriptEngine
+  ScriptEngine* scriptEngine = nullptr;
+  if (!ScriptEngine::isStarted()) {
+    ScriptEngine::startUp();
+  }
+  scriptEngine = ScriptEngine::instancePtr();
+
+  //Create engine
+  result = scriptEngine->createEngine();
+
+  //Configurate engine
+  result = scriptEngine->configurateEngine(ctxMag);
+
+  //Register all functions
+  result = Keyboard::registerFunctions(scriptEngine);
+  Vector3D vector;
+  result = vector.registerFunctions(scriptEngine);
+  result = Time::registerFunctions(scriptEngine);
+  result = GameComponent::registerFunctions(scriptEngine);
+  result = SoundComponent::registerFunctions(scriptEngine);
+  result = ScriptComponent::registerFunctions(scriptEngine);
+  //result = NetworkManagerComponent::registerFunctions(scriptEngine);
+
+
+  result = Transform::registerFunctions(scriptEngine);
+  result = GameObject::registerFunctions(scriptEngine);
+
+  /*result = REGISTER_GLO_FOO("void Instantiate(GameObject& in, const Vector3D& in, const Vector3D& in",
+                            asFUNCTION(&SceneGraph::instanciate));*/
+
+                            //Register global properties
+  m_root = SceneGraph::instance().getRoot().get(); // Get root
+
+  result = REGISTER_GLO_PROPERTIE("GameObject@ Object",
+    &m_root);
+
+  //result = REGISTER_GLO_PROPERTIE("const bool isConnected",
+  //  &m_connected);
+
+  //Get script references of the ResourceManager
+  ResourceManager::loadResource(_T("driderBehavior.as"));
+  auto rBehaviorScript = ResourceManager::getReference(_T("driderBehavior.as"));
+  auto BehaviorScript = std::dynamic_pointer_cast<ScriptCore>(rBehaviorScript);
+
+  ResourceManager::loadResource(_T("test.as"));
+  auto rScript = ResourceManager::getReference(_T("test.as"));
+  auto Script = std::dynamic_pointer_cast<ScriptCore>(rScript);
+
+  //Create a context
+  scriptEngine->m_scriptContext = ctxMag->addContext(scriptEngine->m_scriptEngine,
+    _T("GameModule"));
+
+  //Add script section of behavior
+  scriptEngine->addScript(BehaviorScript->getName(),
+    BehaviorScript->getScript(),
+    _T("GameModule"));
+
+  //Add script component to the objects and add script sections of the scripts
+
+  //Build module
+  auto currentModule = scriptEngine->m_scriptEngine->GetModule("GameModule");
+  result = currentModule->Build();
+
+  //Initialize scripts
+  /*auto component = model->createComponent<ScriptComponent>(Script);
+  component->initScript();
+
+  component->start();*/
+  //Start the script
+
 }
 
 }

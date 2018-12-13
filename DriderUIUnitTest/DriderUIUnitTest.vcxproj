@@ -99,13 +99,13 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)ParticleSystem\Include;$(SolutionDir)RenderManager\Include;$(SolutionDir)Core\Include;$(SolutionDir)Engine\Include;$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Input\Include;$(SolutionDir)GraphicsUtils\Include;$(SolutionDir)Sound\Include;$(SolutionDir)Math\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)DriderUI\Include;$(SolutionDir)Utils\Include;$(DRIDER_DEPENDENCIES)Include\CEF;$(DRIDER_DEPENDENCIES)Include\CEF\include;$(SolutionDir)$(Projectname)\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Network\Include;$(SolutionDir)ParticleSystem\Include;$(SolutionDir)RenderManager\Include;$(SolutionDir)Core\Include;$(SolutionDir)Engine\Include;$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)Input\Include;$(SolutionDir)GraphicsUtils\Include;$(SolutionDir)Sound\Include;$(SolutionDir)Math\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)DriderUI\Include;$(SolutionDir)Utils\Include;$(DRIDER_DEPENDENCIES)Include\CEF;$(SolutionDir)Script\Include;$(DRIDER_DEPENDENCIES)Include\CEF\include;$(SolutionDir)$(Projectname)\Include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);$(DRIDER_DEPENDENCIES)Lib\$(PlatformTarget)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Soundd.lib;RenderManagerd.lib;libcef_dll_wrapperd.lib;libcef.lib;Inputd.lib;Engined.lib;Mathd.lib;GraphicsUtilsd.lib;Graphicsd.lib;Utilsd.lib;Cored.lib;DriderUId.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Soundd.lib;Networkd.lib;RenderManagerd.lib;Scriptd.lib;libcef_dll_wrapperd.lib;libcef.lib;Inputd.lib;Engined.lib;Mathd.lib;GraphicsUtilsd.lib;Graphicsd.lib;Utilsd.lib;Cored.lib;DriderUId.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

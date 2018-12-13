@@ -77,8 +77,17 @@ class DR_CORE_EXPORT ScriptComponent : public GameComponent,
     asIScriptObject*
     getScript();
 
+    FORCEINLINE bool
+    isEmpty() {
+      return m_script == NULL;
+    };
     void
     setScript(std::shared_ptr<ScriptCore> _script);
+
+    FORCEINLINE ScriptEngine*
+    getScriptEngine() {
+      return scriptEngine;
+    };
 
     static BEGINING_REGISTER(ScriptComponent, 0, asOBJ_REF | asOBJ_NOCOUNT)
 
@@ -98,6 +107,7 @@ class DR_CORE_EXPORT ScriptComponent : public GameComponent,
                                                                 asCALL_CDECL_OBJLAST);
     
     END_REGISTER
+    std::shared_ptr<ScriptCore> m_script;
 
   private:
     ScriptEngine *scriptEngine = nullptr;
@@ -105,7 +115,6 @@ class DR_CORE_EXPORT ScriptComponent : public GameComponent,
     asIScriptObject *obj = 0;
     asITypeInfo *type = 0;    
 
-    std::shared_ptr<ScriptCore> m_script;
 };
 
 }

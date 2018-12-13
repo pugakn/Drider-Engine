@@ -29,7 +29,6 @@ $(document).ready(function(){
   //controlamos los botones del menú
   $("#menuInspector").click(function(e){
     // El switch utiliza los IDs de los <li> del menú
-    console.log(e);
     /*
     switch(e.target.id){
       case "eliminar":
@@ -142,10 +141,8 @@ function activateDropablesAreas() {
 }
 
 function addInput(dataInput, component) {
-  console.log(dataInput.type);
   component += '<label for=' + dataInput.name + '">'+  dataInput.name + ': </label>';
   if (dataInput.type === "numberFloat") {
-    console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
     component += '<input  oninput="updateInput(this)" name:"' + dataInput.name + '" type="number" step="any';
   }
   else {
@@ -157,7 +154,6 @@ function addInput(dataInput, component) {
   else {
     component += '" value="'+ dataInput.value + '">';
   }
-  console.log(component);
   return component;
 }
 
@@ -198,16 +194,12 @@ function updateInput(input){
 }
 
 function updateGeneralInput(id, input) {
-  console.log("##############");
-  console.log(input);
-  console.log(id);
-console.log(IdSelected);
+
   C_InputGeneralChange(IdSelected,
                        id.toString(),
                        input);
 }
 function AddComponenenGameObject(value) {
-  console.log(value);
   C_AddComponent(IdSelected, value);
   C_ChangeSceneGraphNodeSelection(IdSelected);
 }
@@ -234,6 +226,5 @@ function JS_UpdateComponents(data) {
   $("#scaleY")[0].value = gameObject.scale[1];
   $("#scaleZ")[0].value = gameObject.scale[2];
   $("#accordionInspector").accordion( "option", "active", componentSelected);
-  console.log(componentSelected);
 
 }

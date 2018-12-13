@@ -11,6 +11,12 @@
 #include <dr_camera_manager.h>
 #include <dr_renderman.h>
 #include <dr_sound_api.h>
+
+#include <dr_context_manager.h>
+
+#include <dr_sound_component.h>
+#include <dr_networkManager_component.h>
+
 namespace driderSDK {
 
 TestApplication::TestApplication() {
@@ -28,15 +34,16 @@ TestApplication::postInit() {
                           m_hwnd);
   InputManager::startUp((SizeT)m_hwnd);
   ResourceManager::startUp();
-  SceneGraph::startUp();
   Time::startUp();
   CameraManager::startUp();
   RenderManager::startUp();
   SoundAPI::startUp();
+  ContextManager::startUp();
+  ScriptEngine::startUp();
+  SceneGraph::startUp();
   //PhysicsManager::startUp();
 
   m_editor.init(m_viewport);
-
   ////Manage
   //webRenderer.registerJS2CPPFunction(std::make_pair("createFolder", [&](CefRefPtr<CefV8Value>& retval, const CefV8ValueList& arguments) {
   //}));
@@ -91,6 +98,7 @@ void TestApplication::onResize()
   std::cout << "RESIZE " << m_viewport .width<<  std::endl;
   m_editor.resize(m_viewport);
 }
+
 
 
 

@@ -20,7 +20,12 @@
 #include <dr_scene_viewer.h>
 #include <unordered_map>
 
+
 namespace driderSDK {
+
+  class ContextManager;
+  class ScriptComponent;
+
 class SceneEditor {
 public:
   void init(Viewport v);
@@ -48,9 +53,11 @@ private:
 
   void UI_UpdateSceneGraph();
   void UI_UpdatePropertySheet(const GameObject& obj);
+  void initScriptEngine();
 
 
   Viewport m_viewport;
+  GameObject* m_root;
 
 
 

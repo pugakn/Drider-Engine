@@ -12,14 +12,13 @@
 
 #include <iostream>
 
-
 #include "Include/dr_scene_editor.h"
 
 
 namespace driderSDK {
 
 class Technique;
-  
+
 class TestApplication : public Application
 {
 public:
@@ -32,11 +31,10 @@ public:
   void postDestroy() override;
 
   void onResize() override;
-
+  
 
 private:
   SceneEditor m_editor;
-
 
 };
 

@@ -74,6 +74,10 @@ ScriptComponent::onCreate() {
 
 void
 ScriptComponent::onUpdate() {
+  if (isEmpty())
+  {
+    return;
+  }
   scriptEngine->setObjectToScript(type,
                                   _T("void SetTransform(Transform@ trans)"),
                                   0,
@@ -114,7 +118,9 @@ ScriptComponent::cloneIn(GameObject& _go) {
 void
 ScriptComponent::initScript() {
   //Get script object
-  scriptEngine->getScriptObject(m_script->getName(),
+  TString name = m_script->getName();
+
+  scriptEngine->getScriptObject(name,
                                 mod,
                                 &obj,
                                 &type);
@@ -177,6 +183,8 @@ ScriptComponent::getScript() {
 
 void
 ScriptComponent::setScript(std::shared_ptr<ScriptCore> _script) {
+  m_script = _script;
+
   scriptEngine->addScript(m_script->getName(),
                           m_script->getScript(),
                           _T("GameModule"));
