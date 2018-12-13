@@ -821,18 +821,19 @@ SceneEditor::initScriptEngine() {
     BehaviorScript->getScript(),
     _T("GameModule"));
 
-  //Add script component to the objects and add script sections of the scripts
-  auto component = model->createComponent<ScriptComponent>(Script);
+  /*//Add script component to the objects and add script sections of the scripts
+  auto component = model->createComponent<ScriptComponent>();
+  component->setScript(Script);
 
   //Build module
   auto currentModule = scriptEngine->m_scriptEngine->GetModule("GameModule");
-  result = currentModule->Build();
+  result = currentModule->Build(); 
 
   //Initialize scripts
   component->initScript();
 
   //Start the script
-  component->start();
+  component->start();*/
 }
 
 }
