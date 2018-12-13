@@ -4,6 +4,7 @@
 
 #include "dr_core_prerequisites.h"
 #include "dr_gameComponent.h"
+#include  <dr_camera.h>
 #include <dr_id_object.h>
 
 namespace driderSDK {
@@ -132,6 +133,12 @@ public:
   */
   void
   setFov(float fov);
+
+  CameraViewType::E
+  getTypeCamera();
+
+  void
+  setTypeCamera(CameraViewType::E cameraType);
 
   void
   serialize(File &file) override;

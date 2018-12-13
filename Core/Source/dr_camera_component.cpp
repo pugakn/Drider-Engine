@@ -2,7 +2,6 @@
 
 #include <dr_matrix3x3.h>
 #include <dr_id_object.h>
-#include "dr_camera.h"
 #include "dr_camera_manager.h"
 
 namespace driderSDK {
@@ -72,6 +71,11 @@ CameraComponent::setFov(float fov) {
   m_camera.lock()->setFOV(fov);
 }
 
+CameraViewType::E CameraComponent::getTypeCamera()
+{
+  return m_camera.lock()->typeCamera;
+}
+
 void
 CameraComponent::onCreate() {
   Vector3D camPos = m_gameObject.getWorldTransform().getPosition();
@@ -132,6 +136,11 @@ CameraComponent::getClassID() {
 GameComponent* 
 CameraComponent::cloneIn(GameObject& _go) {
   return _go.createComponent<CameraComponent>();
+}
+
+void CameraComponent::setTypeCamera(CameraViewType::E cameraType)
+{
+  m_camera.lock()->typeCamera = cameraType;
 }
 
 void

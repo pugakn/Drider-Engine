@@ -87,6 +87,7 @@ Camera::createProyection(float fov,
                              m_farPlane);
 
   m_vp = m_view * m_projection;
+  typeCamera = CameraViewType::kPerspective;
 }
 
 void
@@ -101,6 +102,8 @@ Camera::createProyection(float width,
   m_projection.Orthogonal(width, height, m_nearPlane, m_farPlane);
 
   m_vp = getView() * m_projection;
+  typeCamera = CameraViewType::kOrtographic;
+
 }
 
 void

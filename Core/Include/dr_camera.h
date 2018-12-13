@@ -11,7 +11,12 @@
 
 
 namespace driderSDK {
-
+namespace CameraViewType {
+  enum E {
+    kOrtographic = 0,
+    kPerspective
+  };
+}
 CONSTRUCT_DESTRUCT_DECL(Camera)
 
 /**
@@ -311,6 +316,7 @@ class DR_CORE_EXPORT Camera
 
   END_REGISTER
 
+  CameraViewType::E typeCamera;
  private:
    
   void 
