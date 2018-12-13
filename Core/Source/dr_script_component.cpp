@@ -35,6 +35,22 @@ ScriptComponent::ScriptComponent(GameObject &gameObject,
   //Int8 result = mod->Build();
 }
 
+ScriptComponent::ScriptComponent(GameObject &gameObject) :
+  GameComponent(gameObject, _T("ScriptComponent")) {
+
+  scriptEngine = ScriptEngine::instancePtr();
+
+  Keyboard::addAnyKeyCallback(KEYBOARD_EVENT::kKeyPressed,
+                              std::bind(&ScriptComponent::onKeyDown, this, std::placeholders::_1));
+
+  Keyboard::addAnyKeyCallback(KEYBOARD_EVENT::kKeyReleased,
+                              std::bind(&ScriptComponent::onKeyUp, this, std::placeholders::_1));
+
+  //Get module
+  mod = scriptEngine->m_scriptEngine->GetModule("GameModule");
+
+}
+
 ScriptComponent::~ScriptComponent() {
 
 }
@@ -157,6 +173,13 @@ ScriptComponent::getScript() {
   
   obj->AddRef();
   return obj;
+}
+
+void
+ScriptComponent::setScript(std::shared_ptr<ScriptCore> _script) {
+  scriptEngine->addScript(m_script->getName(),
+                          m_script->getScript(),
+                          _T("GameModule"));
 }
 
 }

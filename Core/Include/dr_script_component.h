@@ -23,6 +23,8 @@ class DR_CORE_EXPORT ScriptComponent : public GameComponent,
     
     ScriptComponent(GameObject &gameObject,
                     std::shared_ptr<ScriptCore> _script);
+
+    ScriptComponent(GameObject &gameObject);
     
     virtual
     ~ScriptComponent();
@@ -74,6 +76,9 @@ class DR_CORE_EXPORT ScriptComponent : public GameComponent,
 
     asIScriptObject*
     getScript();
+
+    void
+    setScript(std::shared_ptr<ScriptCore> _script);
 
     static BEGINING_REGISTER(ScriptComponent, 0, asOBJ_REF | asOBJ_NOCOUNT)
 
