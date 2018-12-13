@@ -24,15 +24,25 @@ ScripInputs::getInputs(TString * response) {
 bool
 ScripInputs::changeValue(TString &value, TString &id) {
   auto& scriptComponent = static_cast<ScriptComponent&>(m_component);
+  auto scriptEngine = ScriptEngine::instancePtr();
+
   if (id == _T("0"))
   {
     auto ptr = ResourceManager::loadResource(value);
     auto ptrScript = std::dynamic_pointer_cast<ScriptCore>(ptr);
+
+    //Add script component to the objects and add script sections of the scripts
     scriptComponent.setScript(ptrScript);
+
+    //Build module
+    auto currentModule = scriptEngine->m_scriptEngine->GetModule("GameModule");
+    currentModule->Build();
+
+    //Initialize scripts
     scriptComponent.initScript();
-    scriptComponent.getScriptEngine()->m_scriptEngine->GetModule("GameModule")->Build();
-     // auto currentModule = scriptEngine->m_scriptEngine->GetModule("GameModule");
-    //result = currentModule->Build();
+
+    //Start the script
+    scriptComponent.start();
   }
   return false;
 }
