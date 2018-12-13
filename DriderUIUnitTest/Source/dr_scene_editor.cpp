@@ -508,6 +508,12 @@ SceneEditor::initUI() {
     };
   }));
 
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_SaveScene", [&](const CefRefPtr<CefListValue>& arguments) {
+  }));
+
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_LoadScene", [&](const CefRefPtr<CefListValue>& arguments) {
+  }));
+
   webRenderer.registerJS2CPPFunction(std::make_pair("C_InputGeneralChange", [&](const CefRefPtr<CefListValue>& arguments) {
 	  TString temp = arguments->GetString(1);
 	  UInt32 id = StringUtils::toInt(temp);

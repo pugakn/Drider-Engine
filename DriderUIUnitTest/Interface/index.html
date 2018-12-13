@@ -11,41 +11,35 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 <body >
-  <ul id="menuInspector">
-    <li class="ui-state-disabled"><div>Toys (n/a)</div></li>
-    <li><div>Books</div></li>
-    <li><div>Clothing</div></li>
-    <li><div>Electronics</div>
-      <ul>
-        <li class="ui-state-disabled"><div>Home Entertainment</div></li>
-        <li><div>Car Hifi</div></li>
-        <li><div>Utilities</div></li>
-      </ul>
-    </li>
-    <li><div>Movies</div></li>
-    <li><div>Music</div>
-      <ul>
-        <li><div>Rock</div>
-          <ul>
-            <li><div>Alternative</div></li>
-            <li><div>Classic</div></li>
-          </ul>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Navbar</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav">
+        <li class="nav-item active">
+          <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
         </li>
-        <li><div>Jazz</div>
-          <ul>
-            <li><div>Freejazz</div></li>
-            <li><div>Big Band</div></li>
-            <li><div>Modern</div></li>
-          </ul>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Features</a>
         </li>
-        <li><div>Pop</div></li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Pricing</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Dropdown link
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+            <a class="dropdown-item" href="#">Action</a>
+            <a class="dropdown-item" href="#">Another action</a>
+            <a class="dropdown-item" href="#">Something else here</a>
+          </div>
+        </li>
       </ul>
-    </li>
-    <li class="ui-state-disabled"><div>Specials (n/a)</div></li>
-  </ul>
-  <ul id="menuHierarchy">
-    <li id="eliminar">Eliminar</li>
-  </ul>
+    </div>
+  </nav>
   <div id="container" class="snapTarget">
     <div id="hierarchy" class="section snapTarget">
       <div id="hierarchyDiv" class="subSection">
@@ -73,6 +67,9 @@
     <div id="inspector" class="section snapTarget">
       <div class="subSection">
         <h3 class="titleSection">Inspector</h3>
+        <button type="button" onclick="save()" name="button">guardar</button>
+        <button type="button" onclick="load()" name="button">cargar</button>
+
         <div id="divInspector">
           <div id="generalInspector">
             <div id="accordion">
@@ -162,6 +159,5 @@
   <script src="jqueryFileTree.js"></script>
   <script src="hierarchy.js"></script>
   <script src="inspector.js"></script>
-
 </body>
 </html>
