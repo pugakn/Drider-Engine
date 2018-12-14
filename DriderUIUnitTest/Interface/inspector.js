@@ -199,13 +199,7 @@ function updateGeneralInput(id, input) {
                        id.toString(),
                        input);
 }
-function save() {
-  C_SaveScene();
-}
-function load() {
-  C_LoadScene();
 
-}
 function AddComponenenGameObject(value) {
   C_AddComponent(IdSelected, value);
   C_ChangeSceneGraphNodeSelection(IdSelected);
