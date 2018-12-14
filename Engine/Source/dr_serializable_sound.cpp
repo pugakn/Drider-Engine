@@ -28,6 +28,7 @@ sSound::load(File &file, std::shared_ptr<GameObject> obj) {
   Int32 numSounds;
   file.m_file >> numSounds;
   std::vector<String> namesSounds;
+
   for (int i = 0; i < numSounds; i++) {
     String soundName;
     file.m_file >> soundName;
@@ -38,6 +39,7 @@ sSound::load(File &file, std::shared_ptr<GameObject> obj) {
   }
 
   auto soundComponent = obj->createComponent<SoundComponent>();
+  soundComponent->setUISounds(numSounds);
   for (auto sound : namesSounds) {
     auto resource = ResourceManager::instancePtr()->getReferenceT<
                     SoundCore>(StringUtils::toTString(sound));

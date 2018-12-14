@@ -24,10 +24,11 @@
 #include <dr_gameObject.h>
 #include <dr_file_system.h>
 #include <dr_file.h>
-#include "dr_serializable_sound.h"
 
+#include "dr_serializable_sound.h"
 #include "dr_serializable_aabb.h"
 #include "dr_serializable_render.h"
+#include "dr_serializable_camera.h"
 #include "dr_quaternion.h"
 #include "dr_transform.h"
 
@@ -61,6 +62,16 @@ ResourceManager::onStartUp() {
 	m_codecs.push_back(std::move(codecScene));
 
   createDefaultResources();
+  
+  auto cSound = std::make_shared<sSound>();
+  auto cAABB = std::make_shared<sAABBCollider>();
+  auto cRender = std::make_shared<sRender>();
+  auto cCamera = std::make_shared<sCamera>();
+
+  componentLoaders[SerializableTypeID::Sound] = cSound;
+  componentLoaders[SerializableTypeID::AABB] = cAABB;
+  componentLoaders[SerializableTypeID::Render] = cRender;
+  componentLoaders[SerializableTypeID::Camera] = cCamera;
 }
 
 void 
@@ -158,6 +169,8 @@ ResourceManager::loadScene(const String name) {
                                     __LINE__,
                                     L"[ResourceManager] The scene file was not found");
   }
+
+  SceneGraph::start();
 }
 
 void
@@ -248,7 +261,14 @@ ResourceManager::loadComponent(File &file,
   file.m_file >> type;
   typeID = (SerializableTypeID::E)type;
 
-  if(typeID == SerializableTypeID::Sound) {
+  auto loader = componentLoaders.find(typeID);
+
+  if(loader != componentLoaders.end()) {
+    loader->second->load(file, obj);
+
+  }
+  
+  /*if(typeID == SerializableTypeID::Sound) {
     sSound s;
     s.load(file, obj);
   } else if(typeID == SerializableTypeID::AABB) {
@@ -257,7 +277,7 @@ ResourceManager::loadComponent(File &file,
   } else if (typeID == SerializableTypeID::Render) {
     sRender s;
     s.load(file, obj);
-  }
+  }*/
 }
 
 bool
