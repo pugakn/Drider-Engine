@@ -25,7 +25,7 @@ sRender::load(File &file,
     //Load model
     ResourceManager::loadResource(StringUtils::toTString(modelName));
     auto model = ResourceManager::getReferenceT<Model>(StringUtils::toTString(modelName));
-    obj->createComponent<RenderComponent>(model);
+    auto comp = obj->createComponent<RenderComponent>(model);
    
     //Material
     Int32 numMat;
@@ -35,8 +35,8 @@ sRender::load(File &file,
       String name;
       file.m_file >> name;
       
-      ResourceManager::createMaterial(StringUtils::toTString(name), true);
-      auto mat = ResourceManager::getReferenceT<Material>(StringUtils::toTString(name));
+      auto mat = ResourceManager::createMaterial(StringUtils::toTString(name), true);
+      //auto mat = ResourceManager::getReferenceT<Material>(StringUtils::toTString(name));
 
       bool shadow;
       file.m_file >> shadow;
@@ -63,7 +63,7 @@ sRender::load(File &file,
         mat->setTexture(text, tName);
       }
     
-      model->meshes[i].material = mat;
+      comp->getMeshes()[i].material = mat;
     }
 
   }
