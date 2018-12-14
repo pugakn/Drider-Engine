@@ -198,6 +198,9 @@ class DR_CORE_EXPORT SceneGraph : public Module<SceneGraph>
   draw();
   /****************/
 
+  static void
+  clear();
+
  private:
 
   /**

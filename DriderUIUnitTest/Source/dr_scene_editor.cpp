@@ -235,7 +235,7 @@ SceneEditor::initSceneGraph() {
   RenderManager::instance().setEnviromentMap(ResourceManager::getReferenceT<TextureCore>(_T("GraceDiffuseCubemap.tga")));
   RenderManager::instance().setFilmLut(ResourceManager::getReferenceT<TextureCore>(_T("FilmLut.tga")));
 
-  model = SceneGraph::createObject(_T("Model"));
+  /*model = SceneGraph::createObject(_T("Model"));
   auto ptrModel = ResourceManager::getReferenceT<Model>(_T("model.dae"));
   if (ptrModel) {
     model->createComponent<RenderComponent>(ptrModel);
@@ -313,7 +313,7 @@ SceneEditor::initSceneGraph() {
 
     auto renderComp = floor->getComponent<RenderComponent>();
     renderComp->getMeshes().front().material = floorMat;
-  }
+  }*/
 
   initScriptEngine();
 
@@ -525,7 +525,9 @@ SceneEditor::initUI() {
   webRenderer.registerJS2CPPFunction(std::make_pair("C_LoadScene", [&](const CefRefPtr<CefListValue>& arguments) {
     String sceneName = arguments->GetString(1);
     sceneName = "NewScene";
+    SceneGraph::clear();
     ResourceManager::loadScene(sceneName);
+
   }));
 
   webRenderer.registerJS2CPPFunction(std::make_pair("C_InputGeneralChange", [&](const CefRefPtr<CefListValue>& arguments) {

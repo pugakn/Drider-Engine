@@ -130,6 +130,12 @@ SceneGraph::draw() {
   //instance().m_mutex.unlock();
 }
 
+
+void
+SceneGraph::clear() {
+  auto graph = SceneGraph::instancePtr();
+  graph->m_root->destroy();
+}
 //SceneGraph::QueryResult
 //SceneGraph::query(const Camera& camera, QUERY_ORDER::E order, UInt32 props) {
 //  

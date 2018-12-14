@@ -7,6 +7,7 @@
 #include <dr_module.h>
 
 #include "dr_engine_prerequisites.h"
+#include "dr_serializable.h"
 #include "dr_serializable_data.h"
 
 namespace driderSDK {
@@ -213,8 +214,11 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager>
   std::unordered_map<Codec*, ResourceFactory> m_resourceFactories;
   std::vector<std::unique_ptr<Codec>> m_codecs;
 
-  std::unordered_map<std::shared_ptr<SerializableData>,
-                     ResourceFactory> m_componentsLoaders;
+  std::unordered_map<SerializableTypeID::E,
+                     std::shared_ptr<SerializableData>> componentLoaders;
+
+  /*std::unordered_map<std::shared_ptr<SerializableData>,
+                     ResourceFactory> m_componentsLoaders;*/
 };
 
 }
