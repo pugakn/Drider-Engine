@@ -467,6 +467,7 @@ ResourceManager::createMaterial(const TString& materialName, bool empty) {
     }
   
     addResource(material, materialName);
+    ResourceManager::instance().m_materials.push_back(material);
   } else {
     material = ResourceManager::instance().getReferenceT<Material>(materialName);
   }

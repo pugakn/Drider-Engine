@@ -236,7 +236,7 @@ SceneEditor::initSceneGraph() {
   RenderManager::instance().setFilmLut(ResourceManager::getReferenceT<TextureCore>(_T("FilmLut.tga")));
 
   model = SceneGraph::createObject(_T("Model"));
-  auto ptrModel = ResourceManager::getReferenceT<Model>(_T("model.dae"));
+  auto ptrModel = std::dynamic_pointer_cast<Model>(ResourceManager::loadResource(_T("model.dae")));
   if (ptrModel) {
     model->createComponent<RenderComponent>(ptrModel);
     model->createComponent<AABBCollider>(ptrModel->aabb);
@@ -259,7 +259,7 @@ SceneEditor::initSceneGraph() {
     modelMat->addProperty(_T("Metallic"), PROPERTY_TYPE::kVec3);
     modelMat->addProperty(_T("Roughness"), PROPERTY_TYPE::kVec3);
     modelMat->setTexture(std::dynamic_pointer_cast<TextureCore>(albedoTex), _T("Albedo"));
-    TString textName = modelMat->getProperty(_T("Albedo"))->texture.lock()->getName();
+    String typeName = typeid(*modelMat).name();
     modelMat->setTexture(std::dynamic_pointer_cast<TextureCore>(normalTex), _T("Normal"));
     modelMat->setTexture(std::dynamic_pointer_cast<TextureCore>(emissiveTex), _T("Emisivity"));
     modelMat->setTexture(std::dynamic_pointer_cast<TextureCore>(metallicTex), _T("Metallic"));
@@ -269,6 +269,8 @@ SceneEditor::initSceneGraph() {
     rComp->getMeshes().back().material = modelMat;
     TString MatName = rComp->getMeshes().back().material.lock()->getName();
   }
+
+  //auto mats = ResourceManager::getMaterials();
 
   /*floor = SceneGraph::createObject(_T("Floor"));
   auto ptrFloor = ResourceManager::getReferenceT<Model>(_T("plane.fbx"));
