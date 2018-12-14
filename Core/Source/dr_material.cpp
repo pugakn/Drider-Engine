@@ -3,7 +3,9 @@
 #include <dr_graphics_api.h>
 #include <dr_texture_core.h>
 #include <dr_texture.h>
+#include <dr_string_utils.h>
 
+#include <dr_file.h>
 
 namespace driderSDK {
 
@@ -166,6 +168,40 @@ Material::projectShadow() const {
   return m_proyectShadow;
 }
 
+void
+Material::serialize(File &file) {
+  file.m_file << StringUtils::toString(m_name) << "\n";
+  m_proyectShadow = true;
+  file.m_file << m_proyectShadow << "\n";
+
+  file.m_file << m_properties.size() << "\n";
+
+  for(auto &prop : m_properties) {
+    file.m_file << StringUtils::toString(prop->name) << "\n";
+    file.m_file << (UInt32)prop->type << "\n";
+    auto tex = prop->texture.lock();
+    if(tex) {
+      String textName = StringUtils::toString(tex->getName());
+      file.m_file << textName << "\n";
+    }
+    else
+      file.m_file << "DUMMY_TEXTURE\n";
+  }
+
+  /*
+  TString name;
+  const PROPERTY_TYPE::E type;
+  std::weak_ptr<TextureCore> texture;
+  */
+  
+  
+}
+
+void Material::setProyectShadow(bool bShadow) {
+  m_proyectShadow = bShadow;
+}
+
+
 Material::PropertyPtr 
 Material::createProperty(const TString& name, PROPERTY_TYPE::E type) {
 
@@ -203,6 +239,50 @@ Material::createProperty(const TString& name, PROPERTY_TYPE::E type) {
   }
 
   return std::move(property);
+}
+
+TString Material::interpretType(PROPERTY_TYPE::E& _type, Property* _prop) {
+  /*TString val = L"";
+  if(_type == PROPERTY_TYPE::E::kFloat) {
+    FloatProperty* prop = static_cast<FloatProperty*>(_prop);
+    val += prop->value;
+    val += L"\n";
+    val += prop->readChannel;
+  }
+  else if (_type == PROPERTY_TYPE::E::kVec2) {
+    Vec2Property* prop = static_cast<Vec2Property*>(_prop);
+    Vector2D vec = prop->value;
+    val += StringUtils::toTString(vec.x) + L"\n" +
+           StringUtils::toTString(vec.y);
+    val += L"\n";
+    val += prop->readChannels[0];
+    val += prop->readChannels[1];
+  }
+  else if (_type == PROPERTY_TYPE::E::kVec3) {
+    Vec3Property* prop = static_cast<Vec3Property*>(_prop);
+    Vector3D vec = prop->value;
+    val += StringUtils::toTString(vec.x) + L"\n" +
+           StringUtils::toTString(vec.y) + L"\n" +
+           StringUtils::toTString(vec.z);
+    val += L"\n";
+    val += prop->readChannels[0];
+    val += prop->readChannels[1];
+    val += prop->readChannels[2];
+  }
+  else if (_type == PROPERTY_TYPE::E::kVec4) {
+    Vec4Property* prop = static_cast<Vec4Property*>(_prop);
+    Vector4D vec = prop->value;
+    val += StringUtils::toTString(vec.x) + L"\n" +
+           StringUtils::toTString(vec.y) + L"\n" +
+           StringUtils::toTString(vec.z) + L"\n" +
+           StringUtils::toTString(vec.w);
+    val += L"\n";
+    val += prop->readChannels[0];
+    val += prop->readChannels[1];
+    val += prop->readChannels[2];
+    val += prop->readChannels[3];
+  }*/
+  return L"";
 }
 
 }

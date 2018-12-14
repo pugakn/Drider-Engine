@@ -235,7 +235,7 @@ SceneEditor::initSceneGraph() {
   RenderManager::instance().setEnviromentMap(ResourceManager::getReferenceT<TextureCore>(_T("GraceDiffuseCubemap.tga")));
   RenderManager::instance().setFilmLut(ResourceManager::getReferenceT<TextureCore>(_T("FilmLut.tga")));
 
-  /*model = SceneGraph::createObject(_T("Model"));
+  model = SceneGraph::createObject(_T("Model"));
   auto ptrModel = ResourceManager::getReferenceT<Model>(_T("model.dae"));
   if (ptrModel) {
     model->createComponent<RenderComponent>(ptrModel);
@@ -267,7 +267,7 @@ SceneEditor::initSceneGraph() {
     rComp->getMeshes().front().material = modelMat;
   }
 
-  floor = SceneGraph::createObject(_T("Floor"));
+  /*floor = SceneGraph::createObject(_T("Floor"));
   auto ptrFloor = ResourceManager::getReferenceT<Model>(_T("plane.fbx"));
   if (ptrFloor) {
     floor->createComponent<RenderComponent>(ptrFloor);

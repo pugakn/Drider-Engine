@@ -145,8 +145,8 @@ void CameraComponent::setTypeCamera(CameraViewType::E cameraType)
 
 void
 CameraComponent::serialize(File &file) {
-  file.m_file << SerializableTypeID::Camera;
-  file.m_file << StringUtils::toString(getName());
+  file.m_file << SerializableTypeID::Camera << "\n";
+  file.m_file << StringUtils::toString(getName()) << "\n";
 
   
 }
