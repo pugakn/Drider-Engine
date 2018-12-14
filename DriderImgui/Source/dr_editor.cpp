@@ -174,42 +174,60 @@ void Editor::postUpdate()
   ImGui::NewFrame();
 
   ImGui::ShowTestWindow();
-  float height;
+  
+  //flags |= ImGuiWindowFlags_NoMove;
+  //flags |= ImGuiWindowFlags_NoResize;
+  //flags |= ImGuiWindowFlags_NoTitleBar;
+  //ImGui::SetNextWindowPos({0, height});
+  //ImGui::SetNextWindowSize({float(400), float(m_viewport.height) - height});
+  //ImGui::Begin("Hello, world!", &open, flags);                          // Create a window called "Hello, world!" and append into it.
+  //ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
+  //ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+  ////::Image();
+  //ImGui::End();
+  
+  float mainMenuBarheight;
   if (ImGui::BeginMainMenuBar())
+  {
+    mainMenuBarheight = ImGui::GetWindowSize().y;
+    if (ImGui::BeginMenu("File"))
     {
-        height = ImGui::GetWindowSize().y;
-        if (ImGui::BeginMenu("File"))
-        {
-            ImGui::EndMenu();
-        }
-        if (ImGui::BeginMenu("Edit"))
-        {
-            if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
-            if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item
-            ImGui::Separator();
-            if (ImGui::MenuItem("Cut", "CTRL+X")) {}
-            if (ImGui::MenuItem("Copy", "CTRL+C")) {}
-            if (ImGui::MenuItem("Paste", "CTRL+V")) {}
-            ImGui::EndMenu();
-        }
-        ImGui::EndMainMenuBar();
+      ImGui::EndMenu();
     }
+    if (ImGui::BeginMenu("Edit"))
+    {
+      if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
+      if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item
+      ImGui::Separator();
+      if (ImGui::MenuItem("Cut", "CTRL+X")) {}
+      if (ImGui::MenuItem("Copy", "CTRL+C")) {}
+      if (ImGui::MenuItem("Paste", "CTRL+V")) {}
+      ImGui::EndMenu();
+    }
+    ImGui::EndMainMenuBar();
+  }
+  
   static bool open = true;
   ImGuiWindowFlags flags = 0;
-  flags |= ImGuiWindowFlags_NoMove;
-  flags |= ImGuiWindowFlags_NoResize;
-  flags |= ImGuiWindowFlags_NoTitleBar;
-  ImGui::SetNextWindowPos({0, height});
-  ImGui::SetNextWindowSize({float(400), float(m_viewport.height) - height});
-  ImGui::Begin("Hello, world!", &open, flags);                          // Create a window called "Hello, world!" and append into it.
-  ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-  ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-  //::Image();
-  ImGui::End();
-  
+  float unitWidth = m_viewport.width * 0.25f;
+  float unitHeight = (m_viewport.height - mainMenuBarheight) * 0.33f;
+
   flags = 0;
-  ImGui::SetNextWindowPos({ 0, height });
-  ImGui::SetNextWindowSize({ float(m_viewport.width), float(m_viewport.height) - height });
+  if (m_initFlag)
+  {
+    initImguiMenus(mainMenuBarheight);
+    m_initFlag = false;
+  }
+  else
+  {
+    ImGui::Begin("Hierarchy", &open, flags);
+    loadHierarchy();
+    ImGui::End();
+    ImGui::Begin("Inspector", &open, flags);
+    ImGui::End();
+    ImGui::Begin("File Manager", &open, flags);
+    ImGui::End();
+  }
 }
 
 void Editor::postRender()
@@ -229,7 +247,7 @@ void Editor::postRender()
   
   auto texture = static_cast<ID3D11ShaderResourceView*>(m_RT->getTexture(0).getAPIObject());
   
-  if (ImGui::Begin("Test")) {
+  if (ImGui::Begin("Scene")) {
     ImGui::Image(texture, {(float)m_sceneViewport.width, (float)m_sceneViewport.height });
   }
   ImGui::End();
@@ -319,6 +337,155 @@ void Editor::initSceneGraph()
   RenderManager::instance().setCubeMap(ResourceManager::getReferenceT<TextureCore>(_T("GraceCubemap.tga")));
   RenderManager::instance().setEnviromentMap(ResourceManager::getReferenceT<TextureCore>(_T("GraceDiffuseCubemap.tga")));
   RenderManager::instance().setFilmLut(ResourceManager::getReferenceT<TextureCore>(_T("FilmLut.tga")));
+}
+
+void driderSDK::Editor::initImguiMenus(float mainMenuBarheight)
+{
+
+  static bool open = true;
+  ImGuiWindowFlags flags = 0;
+  float unitWidth = m_viewport.width * 0.25f;
+  float unitHeight = (m_viewport.height - mainMenuBarheight) * 0.33f;
+
+  ImGui::SetNextWindowPos({ 0, mainMenuBarheight });
+  ImGui::SetNextWindowSize({ unitWidth, unitHeight * 2 });
+  ImGui::Begin("Hierarchy", &open, flags);
+  loadHierarchy();
+  ImGui::End();
+
+  ImGui::SetNextWindowPos({ unitWidth * 3, mainMenuBarheight });
+  ImGui::SetNextWindowSize({ unitWidth, unitHeight * 3 });
+  ImGui::Begin("Inspector", &open, flags);
+  ImGui::End();
+
+  ImGui::SetNextWindowPos({ 0, mainMenuBarheight + 2 * unitHeight });
+  ImGui::SetNextWindowSize({ 3 * unitWidth, unitHeight });
+  ImGui::Begin("File Manager", &open, flags);
+  ImGui::End();
+
+  ImGui::SetNextWindowPos({ unitWidth, mainMenuBarheight });
+  ImGui::SetNextWindowSize({ 2 * unitWidth, 2 * unitHeight });
+}
+
+void driderSDK::Editor::loadHierarchy()
+{
+  if (ImGui::TreeNode("Advanced, with Selectable nodes"))
+  {
+    static bool align_label_with_current_x_position = true;
+    if (align_label_with_current_x_position)
+      ImGui::Unindent(ImGui::GetTreeNodeToLabelSpacing());
+
+    static int selection_mask = (1 << 2); // Dumb representation of what may be user-side selection state. You may carry selection state inside or outside your objects in whatever format you see fit.
+    int node_clicked = -1;                // Temporary storage of what node we have clicked to process selection at the end of the loop. May be a pointer to your own node type, etc.
+    ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, ImGui::GetFontSize() * 3); // Increase spacing to differentiate leaves from expanded contents.
+    for (int i = 0; i < 6; i++)
+    {
+      ImGui::PushID(i+100);
+      ImGuiTreeNodeFlags node_flags2 = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ((selection_mask & (1 << i)) ? ImGuiTreeNodeFlags_Selected : 0);
+      node_flags2 |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen; // ImGuiTreeNodeFlags_Bullet
+      ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags2, "espacio %d", i);
+      if (ImGui::BeginDragDropTarget())
+      {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("HIERARCHY_NODE"))
+        {
+          IM_ASSERT(payload->DataSize == sizeof(int));
+          int payload_n = *(const int*)payload->Data;
+        }
+        ImGui::EndDragDropTarget();
+      }
+      ImGui::PopID();
+      ImGui::PushID(i);
+      ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ((selection_mask & (1 << i)) ? ImGuiTreeNodeFlags_Selected : 0);
+      String name = "Selectable Node" + StringUtils::toString(i);
+      if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
+      {
+        ImGui::SetDragDropPayload("HIERARCHY_NODE", &i, sizeof(int)); 
+        ImGui::Text("Move %s", name.c_str());       // Set payload to carry the index of our item (could be anything)
+        ImGui::EndDragDropSource();
+      }
+      if (ImGui::BeginDragDropTarget())
+      {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("HIERARCHY_NODE"))
+        {
+          IM_ASSERT(payload->DataSize == sizeof(int));
+          int payload_n = *(const int*)payload->Data;
+        }
+        ImGui::EndDragDropTarget();
+      }
+      // Disable the default open on single-click behavior and pass in Selected flag according to our selection state.
+      if (i < 3)
+      {
+        // Node
+        bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, "Selectable Node %d", i);
+        if (ImGui::IsItemClicked())
+          node_clicked = i;
+        if (node_open)
+        {
+          ImGui::Text("Blah blah\nBlah Blah");
+          ImGui::TreePop();
+        }
+      }
+      else
+      {
+        // Leaf: The only reason we have a TreeNode at all is to allow selection of the leaf. Otherwise we can use BulletText() or TreeAdvanceToLabelPos()+Text().
+        node_flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen; // ImGuiTreeNodeFlags_Bullet
+        ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, "Selectable Leaf %d", i);
+        if (ImGui::IsItemClicked())
+          node_clicked = i;
+      }
+      ImGui::PopID();
+    }
+    if (node_clicked != -1)
+    {
+      // Update selection state. Process outside of tree loop to avoid visual inconsistencies during the clicking-frame.
+      if (ImGui::GetIO().KeyCtrl)
+        selection_mask ^= (1 << node_clicked);          // CTRL+click to toggle
+      else //if (!(selection_mask & (1 << node_clicked))) // Depending on selection behavior you want, this commented bit preserve selection when clicking on item that is part of the selection
+        selection_mask = (1 << node_clicked);           // Click to single-select
+    }
+    ImGui::PopStyleVar();
+    if (align_label_with_current_x_position)
+      ImGui::Indent(ImGui::GetTreeNodeToLabelSpacing());
+    ImGui::TreePop();
+  }
+  //TString nodes = _T("JS_InfoHierarchy(");
+
+  //std::function<void(const std::vector<std::shared_ptr<GameObject>>&)> search =
+  //  [&](const std::vector<std::shared_ptr<GameObject>>& children) {
+  //  for (auto &it : children) {
+  //    auto name = it->getName();
+  //    auto id = it->getID();
+  //    StringUtils::toTString(id);
+  //    nodes += _T("{'id':") + StringUtils::toTString(id) + _T(",");
+  //    nodes += _T("'name':'") + name + _T("',");
+  //    nodes += _T("'childs': [");
+  //    auto children2 = it->getChildren();
+  //    search(children2);
+  //    nodes += _T("},");
+  //  }
+  //  if (children.size()) {
+  //    nodes.erase(nodes.length() - 1);
+  //    nodes += _T("]");
+  //  }
+  //  else {
+  //    nodes += _T("]");
+  //  }
+  //};
+
+
+  ////SceneGraph::getRoot()->getName();
+  //auto children = SceneGraph::getRoot()->getChildren();
+  //auto root = SceneGraph::getRoot();
+  //auto name = root->getName();
+  //auto id = root->getID();
+
+  //nodes += _T("\"{'id':") + StringUtils::toTString(id) + _T(",");
+  //nodes += _T("'name':'") + name + _T("',");
+  //nodes += _T("'childs': [");
+
+  //search(children);
+  //nodes += _T("}\");");
+  //webRenderer.executeJSCode(nodes);
 }
 
 }
