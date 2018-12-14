@@ -162,6 +162,9 @@
     <ClInclude Include="Include\dr_serializable.h">
       <Filter>Header Files\Serializable</Filter>
     </ClInclude>
+    <ClInclude Include="..\DriderImgui\Include\imconfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_animation.cpp">

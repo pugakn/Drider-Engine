@@ -129,6 +129,7 @@ void ClientLobby::onResize() {
   GraphicsDriver::API().resizeBackBuffer(m_viewport.width, 
                                          m_viewport.height);
   ImGui_ImplDX11_CreateDeviceObjects(); 
+  ImGui_ImplDX11_CreateDeviceObjects(); 
 }
 
 void 

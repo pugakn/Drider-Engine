@@ -83,6 +83,7 @@ Application::update() {
       }
       if (event.type == SDL_WINDOWEVENT) {
         if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+          std::cout << "Resize" << std::endl;
           m_viewport.width = event.window.data1;
           m_viewport.height = event.window.data2;
           onResize();

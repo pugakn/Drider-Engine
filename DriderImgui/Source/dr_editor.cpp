@@ -1,0 +1,324 @@
+#include "..\Include\dr_editor.h"
+
+#include <iostream>
+
+#include <d3d11.h>
+
+#include <dr_camera_manager.h>
+#include <dr_device.h>
+#include <dr_depth_stencil_state.h>
+#include <dr_device_context.h>
+#include <dr_d3d_texture.h>
+#include <dr_graphics_api.h>
+#include <dr_graphics_driver.h>
+#include <dr_graph.h>
+#include <dr_image_info.h>
+#include <dr_input_manager.h>
+#include <dr_keyboard.h>
+#include <dr_logger.h>
+#include <dr_material.h>
+#include <dr_model.h>
+#include <dr_mouse.h>
+#include <dr_renderman.h>
+#include <dr_render_component.h>
+#include <dr_resource_manager.h>
+#include <dr_time.h>
+
+#include "imgui.h"
+#include "imgui_impl_dx11.h"
+#include "imgui_impl_win32.h"
+
+namespace driderSDK {
+
+void Editor::postInit()
+{
+  Logger::startUp();
+  GraphicsDriver::startUp(DR_GRAPHICS_API::D3D11,
+    m_viewport.width,
+    m_viewport.height,
+    m_hwnd);
+  InputManager::startUp(reinterpret_cast<SizeT>(m_hwnd));
+  Time::startUp();
+  CameraManager::startUp();
+  CameraManager::createCamera(_T("PATO_CAM"),
+                              { 0.0f, 150.0f, -400.0f },
+                              { 0.0f, 50.f, 0.0f },
+                              m_viewport,
+                              45.f,
+                              //1024, 1024,
+                              0.1f,
+                              10000.f);
+  CameraManager::setActiveCamera(_T("PATO_CAM"));
+  RenderManager::startUp();
+  SceneGraph::startUp();
+  ResourceManager::startUp();
+
+  m_sceneViewport = Viewport{0, 0, 480, 320};
+
+  auto deviceObj = GraphicsDriver::API().getDevice().getAPIObject();
+  auto deviceContextObj = GraphicsDriver::API().getDeviceContext().getAPIObject();
+
+  auto d3dDev = static_cast<ID3D11Device*>(deviceObj);
+  auto d3dDevCont = static_cast<ID3D11DeviceContext*>(deviceContextObj);
+  
+  IMGUI_CHECKVERSION();
+
+  ImGui::CreateContext();
+  ImGui_ImplWin32_Init(m_hwnd);
+  ImGui_ImplDX11_Init(d3dDev, d3dDevCont);
+
+  ImGui::StyleColorsDark();
+  
+  initRT();
+  initCallbacks();
+  initSceneGraph();
+  SceneGraph::start();
+}
+
+void Editor::initCallbacks()
+{
+  auto mouseButtonDown =
+  [](UInt32 b, bool down)
+  {
+    auto& io = ImGui::GetIO(); 
+    io.MouseDown[b] = io.MouseClicked[b] = down;
+  };
+
+  auto mouseMove = 
+  []() { 
+    auto& io = ImGui::GetIO();
+    auto pos = Mouse::getPosition();
+    io.MousePos.x = pos.x; io.MousePos.y = pos.y;
+  };
+
+  auto wheelMoved = 
+  []() {
+    auto delta = Mouse::getDisplacement().z;
+    auto& io = ImGui::GetIO();
+    io.MouseWheel += delta / 120; 
+  };
+
+  Mouse::addButtonCallback(MOUSE_INPUT_EVENT::kButtonPressed,
+    MOUSE_BUTTON::kLeft,
+    std::bind(mouseButtonDown, 0, true));
+
+  Mouse::addButtonCallback(MOUSE_INPUT_EVENT::kButtonReleased,
+                           MOUSE_BUTTON::kLeft,
+                           std::bind(mouseButtonDown, 0, false));
+
+  Mouse::addButtonCallback(MOUSE_INPUT_EVENT::kButtonPressed,
+    MOUSE_BUTTON::kRight,
+    std::bind(mouseButtonDown, 1, true));
+
+  Mouse::addButtonCallback(MOUSE_INPUT_EVENT::kButtonReleased,
+    MOUSE_BUTTON::kRight,
+    std::bind(mouseButtonDown, 1, false));
+
+  Mouse::addMovedCallback(mouseMove);
+  Mouse::addMovedCallback(wheelMoved);
+
+  auto charEntered =
+  [](KEY_CODE::E key)
+  {
+    auto& io = ImGui::GetIO();
+    UInt16 character = static_cast<UInt16>(Keyboard::getAsChar(key));
+    io.KeysDown[character] = true;
+    io.AddInputCharacter(character);
+  };
+
+  auto keyUp =
+  [](KEY_CODE::E key)
+  {
+    auto& io = ImGui::GetIO();
+    UInt16 character = static_cast<UInt16>(Keyboard::getAsChar(key));
+    io.KeysDown[character] = false;
+  };
+
+  Keyboard::addAnyKeyCallback(KEYBOARD_EVENT::kKeyPressed, charEntered);
+
+  Keyboard::addAnyKeyCallback(KEYBOARD_EVENT::kKeyReleased, keyUp);
+}
+
+void Editor::initRT()
+{
+  DrTextureDesc backDesc;
+  backDesc.width = m_sceneViewport.width;
+  backDesc.height = m_sceneViewport.height;
+  backDesc.pitch = backDesc.width * 4;
+  backDesc.Format = DR_FORMAT::kR8G8B8A8_UNORM;
+  backDesc.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE | DR_BIND_FLAGS::RENDER_TARGET;
+  backDesc.dimension = DR_DIMENSION::k2D;
+  backDesc.mipLevels = 0;
+  backDesc.CPUAccessFlags = 0;
+  backDesc.genMipMaps = true;
+  m_RT = dr_gfx_shared(GraphicsAPI::getDevice().createRenderTarget(backDesc, 1));
+
+  DrDepthStencilDesc depthTextureDesc;
+  depthTextureDesc.bindFlags = DR_BIND_FLAGS::DEPTH_STENCIL | DR_BIND_FLAGS::SHADER_RESOURCE;
+  depthTextureDesc.width = m_sceneViewport.width;
+  depthTextureDesc.height = m_sceneViewport.height;
+  depthTextureDesc.Format = DR_FORMAT::kD32_FLOAT;
+  m_RTDPTH = dr_gfx_shared(GraphicsAPI::getDevice().createDepthStencil(depthTextureDesc));
+}
+
+void Editor::postUpdate()
+{ 
+  Time::update();
+  InputManager::update();
+
+  SceneGraph::getRoot()->getTransform().rotate({0.f, Math::HALF_PI * Time::getDelta(), 0.f});
+
+  SceneGraph::update();
+  ImGui_ImplDX11_NewFrame();
+  ImGui_ImplWin32_NewFrame();
+  ImGui::NewFrame();
+
+  ImGui::ShowTestWindow();
+  float height;
+  if (ImGui::BeginMainMenuBar())
+    {
+        height = ImGui::GetWindowSize().y;
+        if (ImGui::BeginMenu("File"))
+        {
+            ImGui::EndMenu();
+        }
+        if (ImGui::BeginMenu("Edit"))
+        {
+            if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
+            if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item
+            ImGui::Separator();
+            if (ImGui::MenuItem("Cut", "CTRL+X")) {}
+            if (ImGui::MenuItem("Copy", "CTRL+C")) {}
+            if (ImGui::MenuItem("Paste", "CTRL+V")) {}
+            ImGui::EndMenu();
+        }
+        ImGui::EndMainMenuBar();
+    }
+  static bool open = true;
+  ImGuiWindowFlags flags = 0;
+  flags |= ImGuiWindowFlags_NoMove;
+  flags |= ImGuiWindowFlags_NoResize;
+  flags |= ImGuiWindowFlags_NoTitleBar;
+  ImGui::SetNextWindowPos({0, height});
+  ImGui::SetNextWindowSize({float(400), float(m_viewport.height) - height});
+  ImGui::Begin("Hello, world!", &open, flags);                          // Create a window called "Hello, world!" and append into it.
+  ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
+  ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+  //::Image();
+  ImGui::End();
+  
+  flags = 0;
+  ImGui::SetNextWindowPos({ 0, height });
+  ImGui::SetNextWindowSize({ float(m_viewport.width), float(m_viewport.height) - height });
+}
+
+void Editor::postRender()
+{
+
+  const float clearColor[4]{ 0.2f, 0.5f, 0.8f, 1.f };
+  m_RT->clear(GraphicsAPI::getDeviceContext(), clearColor);
+  m_RTDPTH->clear(GraphicsAPI::getDeviceContext(), 1, 0);
+
+  RenderManager::instance().draw(*m_RT, *m_RTDPTH);
+  
+  //Draw End
+  GraphicsAPI::getDepthStencilState(DR_DEPTH_STENCIL_STATES::kDepthR).set(GraphicsAPI::getDeviceContext(), 1);
+  GraphicsAPI::getBackBufferRT().set(GraphicsAPI::getDeviceContext(), GraphicsAPI::getDepthStencil());
+  //.set(GraphicsAPI::getDeviceContext(), 0);
+  //m_editorQuad.draw();
+  
+  auto texture = static_cast<ID3D11ShaderResourceView*>(m_RT->getTexture(0).getAPIObject());
+  
+  if (ImGui::Begin("Test")) {
+    ImGui::Image(texture, {(float)m_sceneViewport.width, (float)m_sceneViewport.height });
+  }
+  ImGui::End();
+
+
+  GraphicsAPI::getDepthStencilState(DR_DEPTH_STENCIL_STATES::kDepthRW).set(GraphicsAPI::getDeviceContext(), 1);
+  
+  ImGui::Render();
+
+  GraphicsDriver::API().clear();
+
+  ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+  GraphicsDriver::API().swapBuffers();  
+}
+
+void Editor::postDestroy()
+{
+  ImGui_ImplDX11_Shutdown();
+  ImGui_ImplWin32_Shutdown();
+  ImGui::DestroyContext();
+  ResourceManager::shutDown();
+  SceneGraph::shutDown();
+  CameraManager::shutDown();
+  InputManager::shutDown();
+  RenderManager::shutDown();
+  GraphicsDriver::shutDown();
+  Time::shutDown();
+  Logger::shutDown();
+}
+
+void Editor::onResize()
+{
+  ImGui_ImplDX11_InvalidateDeviceObjects();
+  GraphicsDriver::API().resizeBackBuffer(m_viewport.width, m_viewport.height);
+  ImGui_ImplDX11_CreateDeviceObjects();
+}
+
+void Editor::initSceneGraph()
+{
+  SceneGraph::SharedGameObject model = SceneGraph::createObject(_T("Model"));
+  ResourceManager::loadResource(_T("model.dae"));
+
+  auto ptrModel = ResourceManager::getReferenceT<Model>(_T("model.dae"));
+  if (ptrModel) {
+    model->createComponent<RenderComponent>(ptrModel);
+    model->getTransform().setPosition(Vector3D(0.0f, 0.0f, 0.0f));
+    model->getTransform().setScale(Vector3D(50.0f, 50.0f, 50.0f));
+    model->getTransform().setRotation(Vector3D(0.0f, Math::QUARTER_PI*0.5f, 0.0f));
+
+    std::shared_ptr<Material> modelMat = ResourceManager::createMaterial(_T("ModelMaterial"));
+
+    ResourceManager::loadResource(_T("default_albedo.tga"));
+    ResourceManager::loadResource(_T("default_emissive.tga"));
+    ResourceManager::loadResource(_T("default_metallic.tga"));
+    ResourceManager::loadResource(_T("default_normal.tga"));
+    ResourceManager::loadResource(_T("default_roughness.tga"));
+
+    auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("default_albedo.tga"));
+    auto emissiveTex = ResourceManager::getReferenceT<TextureCore>(_T("default_emissive.tga"));
+    auto metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("default_metallic.tga"));
+    auto normalTex = ResourceManager::getReferenceT<TextureCore>(_T("default_normal.tga"));
+    auto roughnessTex = ResourceManager::getReferenceT<TextureCore>(_T("default_roughness.tga"));
+    modelMat->addProperty(_T("Albedo"), PROPERTY_TYPE::kVec3);
+    modelMat->addProperty(_T("Normal"), PROPERTY_TYPE::kVec3);
+    modelMat->addProperty(_T("Emisivity"), PROPERTY_TYPE::kVec3);
+    modelMat->addProperty(_T("Metallic"), PROPERTY_TYPE::kVec3);
+    modelMat->addProperty(_T("Roughness"), PROPERTY_TYPE::kVec3);
+    modelMat->setTexture(albedoTex, _T("Albedo"));
+    modelMat->setTexture(normalTex, _T("Normal"));
+    modelMat->setTexture(emissiveTex, _T("Emisivity"));
+    modelMat->setTexture(metallicTex, _T("Metallic"));
+    modelMat->setTexture(roughnessTex, _T("Roughness"));
+
+    auto rComp = model->getComponent<RenderComponent>();
+    rComp->getMeshes().front().material = modelMat;
+  }
+
+  ImageInfo cubeMapDesc;
+  cubeMapDesc.width = 256;
+  cubeMapDesc.height = 256;
+  cubeMapDesc.textureDimension = DR_DIMENSION::kCUBE_MAP;
+  cubeMapDesc.channels = DR_FORMAT::kB8G8R8A8_UNORM_SRGB;
+  ResourceManager::loadResource(_T("GraceCubemap.tga"), &cubeMapDesc);
+  ResourceManager::loadResource(_T("GraceDiffuseCubemap.tga"), &cubeMapDesc);
+  ResourceManager::loadResource(_T("FilmLut.tga"));
+  RenderManager::instance().setCubeMap(ResourceManager::getReferenceT<TextureCore>(_T("GraceCubemap.tga")));
+  RenderManager::instance().setEnviromentMap(ResourceManager::getReferenceT<TextureCore>(_T("GraceDiffuseCubemap.tga")));
+  RenderManager::instance().setFilmLut(ResourceManager::getReferenceT<TextureCore>(_T("FilmLut.tga")));
+}
+
+}

@@ -61,7 +61,7 @@ struct DR_UTIL_EXPORT StringUtils
   * Converts a real number into a string.
   */
   template<typename Real, 
-           typename = std::enable_if<std::is_floating_point<Real>::value>::type>
+           typename = typename std::enable_if<std::is_floating_point<Real>::value>::type>
   static FORCEINLINE String 
   toString(Real value, 
            std::streamsize precision,
@@ -80,7 +80,7 @@ struct DR_UTIL_EXPORT StringUtils
   * Converts an integer number into a string.
   */
   template<typename Integer, 
-           typename = std::enable_if<std::is_integral<Integer>::value>::type>
+           typename = typename std::enable_if<std::is_integral<Integer>::value>::type>
   static FORCEINLINE String 
   toString(Integer value, 
            std::streamsize width = 0,
@@ -94,7 +94,7 @@ struct DR_UTIL_EXPORT StringUtils
   * Converts a real number into a wstring.
   */
   template<typename Real, 
-           typename = std::enable_if<std::is_floating_point<Real>::value>::type>
+           typename = typename std::enable_if<std::is_floating_point<Real>::value>::type>
   static FORCEINLINE WString 
   toWString(Real value, 
             std::streamsize precision,
@@ -113,7 +113,7 @@ struct DR_UTIL_EXPORT StringUtils
   * Converts an integer number into a wstring.
   */
   template<typename Integer, 
-           typename = std::enable_if<std::is_integral<Integer>::value>::type>
+           typename = typename std::enable_if<std::is_integral<Integer>::value>::type>
   static FORCEINLINE WString 
   toWString(Integer value, 
             std::streamsize width = 0,
@@ -127,7 +127,7 @@ struct DR_UTIL_EXPORT StringUtils
   * Converts a real number into a tstring(depends on character set of project).
   */
   template<typename Real, 
-           typename = std::enable_if<std::is_floating_point<Real>::value>::type>
+           typename = typename std::enable_if<std::is_floating_point<Real>::value>::type>
   static FORCEINLINE TString 
   toTString(Real value, 
             std::streamsize precision,
@@ -142,7 +142,7 @@ struct DR_UTIL_EXPORT StringUtils
   * Converts an integer number into a tstring(depends on character set of project).
   */
   template<typename Integer, 
-           typename = std::enable_if<std::is_integral<Integer>::value>::type>
+           typename = typename std::enable_if<std::is_integral<Integer>::value>::type>
   static FORCEINLINE TString 
   toTString(Integer value, 
             std::streamsize width = 0,
@@ -175,7 +175,7 @@ struct DR_UTIL_EXPORT StringUtils
   */
   template<typename IntType = Int32,
            typename CharType,
-           typename = std::enable_if<std::is_integral<IntType>::value>::type>
+           typename = typename std::enable_if<std::is_integral<IntType>::value>::type>
   static FORCEINLINE IntType 
   toInt(const std::basic_string<CharType>& string) 
   {
@@ -187,7 +187,7 @@ struct DR_UTIL_EXPORT StringUtils
   */
   template<typename RealType = float,
            typename CharType,
-           typename = std::enable_if<std::is_floating_point<RealType>::value>::type>
+           typename = typename std::enable_if<std::is_floating_point<RealType>::value>::type>
   static FORCEINLINE RealType 
   toReal(const std::basic_string<CharType>& string) 
   {

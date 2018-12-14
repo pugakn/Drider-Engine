@@ -235,7 +235,7 @@ D3DTexture::set(const DeviceContext& deviceContext,
 void
 D3DTexture::release() {
   APITexture->Release();
-  if (m_descriptor.CPUAccessFlags & DR_CPU_ACCESS_FLAG::drRead)
+  if (m_descriptor.CPUAccessFlags & DR_CPU_ACCESS_FLAG::drRead && m_stagingTexture)
     m_stagingTexture->Release();
   if (APIView)
     APIView->Release();

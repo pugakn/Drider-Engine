@@ -148,6 +148,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\DriderImgui\Include\imconfig.h" />
     <ClInclude Include="Include\dr_aabb_collider.h" />
     <ClInclude Include="Include\dr_animation.h" />
     <ClInclude Include="Include\dr_animator_component.h" />
