@@ -35,7 +35,7 @@ sRender::load(File &file,
       String name;
       file.m_file >> name;
       
-      ResourceManager::createMaterial(StringUtils::toTString(name), true);
+      ResourceManager::createMaterial(StringUtils::toTString(name), false);
       auto mat = ResourceManager::getReferenceT<Material>(StringUtils::toTString(name));
 
       bool shadow;

@@ -103,7 +103,6 @@ $("#hierarchyDiv").resizable({
     $($(ui.element[0]).parent()[0]).css("height", ui.size.height);
     $($(ui.element[0]).parent()[0]).css("width", ui.size.width);
     $(event.target).find("#divHierarchy").css("height", ui.size.height - menuHeight);
-    console.log("Asdasdasdasdasd");
   }
 });
 

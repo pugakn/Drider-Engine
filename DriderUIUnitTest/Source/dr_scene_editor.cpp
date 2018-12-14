@@ -337,13 +337,6 @@ SceneEditor::loadResources() {
   ResourceManager::loadResource(_T("GraceDiffuseCubemap.tga"), &cubeMapDesc);
   ResourceManager::loadResource(_T("FilmLut.tga"));
 
-  ResourceManager::loadResource(_T("plane.fbx"));
-  ResourceManager::loadResource(_T("FernBush.obj"));
-  ResourceManager::loadResource(_T("model.dae"));
-  ResourceManager::loadResource(_T("stormtrooper_dancing.fbx"));
-  ResourceManager::loadResource(_T("HK_Teen.fbx"));
-  ResourceManager::loadResource(_T("popuko.fbx"));
-
   ResourceManager::loadResource(_T("256_Checker_Diffuse.tga"));
   ResourceManager::loadResource(_T("256_Checker_Displacement.tga"));
   ResourceManager::loadResource(_T("256_Checker_Emissive.tga"));
@@ -355,25 +348,6 @@ SceneEditor::loadResources() {
   ResourceManager::loadResource(_T("256_Checker_SSColor.tga"));
   ResourceManager::loadResource(_T("256_Checker_Thickness.tga"));
 
-  ResourceManager::loadResource(_T("FernTarga.tga"));
-
-  /*ResourceManager::loadResource(_T("default_albedo.tga"));
-  ResourceManager::loadResource(_T("default_emissive.tga"));
-  ResourceManager::loadResource(_T("default_metallic.tga"));
-  ResourceManager::loadResource(_T("default_normal.tga"));
-  ResourceManager::loadResource(_T("default_roughness.tga"));*/
-
-  ResourceManager::loadResource(_T("Stormtrooper_Diffuse.png"));
-
-  ResourceManager::loadResource(_T("hatkid_HK_main_mat_BaseColor.tga"));
-  ResourceManager::loadResource(_T("hatkid_HK_main_mat_Emissive.tga"));
-  ResourceManager::loadResource(_T("hatkid_HK_main_mat_Metallic.tga"));
-  ResourceManager::loadResource(_T("hatkid_HK_main_mat_Roughness.tga"));
-  ResourceManager::loadResource(_T("hatkid_HK_second_mat_BaseColor.tga"));
-  ResourceManager::loadResource(_T("hatkid_HK_second_mat_Metallic.tga"));
-  ResourceManager::loadResource(_T("hatkid_HK_second_mat_Roughness.tga"));
-  ResourceManager::loadResource(_T("HK_eye_dif.tga"));
-  ResourceManager::loadResource(_T("HK_eye_spc.tga"));
 }
 
 void
