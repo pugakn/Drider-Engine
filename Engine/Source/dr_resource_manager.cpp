@@ -95,7 +95,7 @@ ResourceManager::SharedResource
 ResourceManager::loadResource(const TString& resourceName,
                               void* extraData) {
   std::shared_ptr<Resource> r;
-  
+
   auto& rm = instance();
 
   if (rm.isResourceLoaded(resourceName)) {
@@ -204,7 +204,7 @@ ResourceManager::addResource(SharedResource pResource,
                              const TString& resourceName) {
 
   Logger::addLog(_T("Added resource: ") + resourceName);
-
+  pResource->setName(resourceName);
   instance().m_resources[resourceName] =  pResource;
 }
 
@@ -467,9 +467,16 @@ ResourceManager::createMaterial(const TString& materialName, bool empty) {
     }
   
     addResource(material, materialName);
+  } else {
+    material = ResourceManager::instance().getReferenceT<Material>(materialName);
   }
 
   return material;
+}
+
+void
+ResourceManager::clear() {
+  ResourceManager::instance().m_resources.clear();
 }
 
 void 

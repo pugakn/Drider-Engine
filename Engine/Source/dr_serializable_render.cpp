@@ -34,7 +34,8 @@ sRender::load(File &file,
     for(int i = 0; i < numMat; i++) {
       String name;
       file.m_file >> name;
-      ResourceManager::createMaterial(StringUtils::toTString(name));
+      
+      ResourceManager::createMaterial(StringUtils::toTString(name), true);
       auto mat = ResourceManager::getReferenceT<Material>(StringUtils::toTString(name));
 
       bool shadow;
@@ -61,7 +62,7 @@ sRender::load(File &file,
         auto text = ResourceManager::getReferenceT<TextureCore>(tTextureName);
         mat->setTexture(text, tName);
       }
-
+    
       model->meshes[i].material = mat;
     }
 

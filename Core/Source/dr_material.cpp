@@ -72,7 +72,9 @@ void
 Material::setTexture(std::shared_ptr<TextureCore> texture, 
                      const TString& propertyName) {
   if (auto prop = getProperty(propertyName)) {
+    TString name = texture->getName();
     prop->texture = texture;
+    name = prop->texture.lock()->getName();
   }
 }
 
@@ -179,9 +181,9 @@ Material::serialize(File &file) {
   for(auto &prop : m_properties) {
     file.m_file << StringUtils::toString(prop->name) << "\n";
     file.m_file << (UInt32)prop->type << "\n";
-    auto tex = prop->texture.lock();
-    if(tex) {
-      String textName = StringUtils::toString(tex->getName());
+    auto tex = prop->texture.lock()->getName();
+    if(tex != L"") {
+      String textName = StringUtils::toString(tex);
       file.m_file << textName << "\n";
     }
     else

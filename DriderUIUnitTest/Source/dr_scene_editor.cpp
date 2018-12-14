@@ -235,7 +235,7 @@ SceneEditor::initSceneGraph() {
   RenderManager::instance().setEnviromentMap(ResourceManager::getReferenceT<TextureCore>(_T("GraceDiffuseCubemap.tga")));
   RenderManager::instance().setFilmLut(ResourceManager::getReferenceT<TextureCore>(_T("FilmLut.tga")));
 
-  model = SceneGraph::createObject(_T("Model"));
+  /*model = SceneGraph::createObject(_T("Model"));
   auto ptrModel = ResourceManager::getReferenceT<Model>(_T("model.dae"));
   if (ptrModel) {
     model->createComponent<RenderComponent>(ptrModel);
@@ -245,27 +245,30 @@ SceneEditor::initSceneGraph() {
     model->getTransform().setScale(Vector3D(100.0f, 100.0f, 100.0f));
     model->getTransform().setRotation(Vector3D(0.0f, Math::QUARTER_PI*0.5f, 0.0f));
 
-    modelMat = std::make_shared<Material>(_T("ModelMaterial"));
+    auto modelMat = ResourceManager::createMaterial(L"DefaultMat", true);
+    //modelMat = std::make_shared<Material>(_T("ModelMaterial"));
 
-    auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("default_albedo.tga"));
-    auto emissiveTex = ResourceManager::getReferenceT<TextureCore>(_T("default_emissive.tga"));
-    auto metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("default_metallic.tga"));
-    auto normalTex = ResourceManager::getReferenceT<TextureCore>(_T("default_normal.tga"));
-    auto roughnessTex = ResourceManager::getReferenceT<TextureCore>(_T("default_roughness.tga"));
+    auto albedoTex = ResourceManager::loadResource(_T("default_albedo.tga"));
+    auto emissiveTex = ResourceManager::loadResource(_T("default_emissive.tga"));
+    auto metallicTex = ResourceManager::loadResource(_T("default_metallic.tga"));
+    auto normalTex = ResourceManager::loadResource(_T("default_normal.tga"));
+    auto roughnessTex = ResourceManager::loadResource(_T("default_roughness.tga"));
     modelMat->addProperty(_T("Albedo"), PROPERTY_TYPE::kVec3);
     modelMat->addProperty(_T("Normal"), PROPERTY_TYPE::kVec3);
     modelMat->addProperty(_T("Emisivity"), PROPERTY_TYPE::kVec3);
     modelMat->addProperty(_T("Metallic"), PROPERTY_TYPE::kVec3);
     modelMat->addProperty(_T("Roughness"), PROPERTY_TYPE::kVec3);
-    modelMat->setTexture(albedoTex, _T("Albedo"));
-    modelMat->setTexture(normalTex, _T("Normal"));
-    modelMat->setTexture(emissiveTex, _T("Emisivity"));
-    modelMat->setTexture(metallicTex, _T("Metallic"));
-    modelMat->setTexture(roughnessTex, _T("Roughness"));
+    modelMat->setTexture(std::dynamic_pointer_cast<TextureCore>(albedoTex), _T("Albedo"));
+    TString textName = modelMat->getProperty(_T("Albedo"))->texture.lock()->getName();
+    modelMat->setTexture(std::dynamic_pointer_cast<TextureCore>(normalTex), _T("Normal"));
+    modelMat->setTexture(std::dynamic_pointer_cast<TextureCore>(emissiveTex), _T("Emisivity"));
+    modelMat->setTexture(std::dynamic_pointer_cast<TextureCore>(metallicTex), _T("Metallic"));
+    modelMat->setTexture(std::dynamic_pointer_cast<TextureCore>(roughnessTex), _T("Roughness"));
 
     auto rComp = model->getComponent<RenderComponent>();
-    rComp->getMeshes().front().material = modelMat;
-  }
+    rComp->getMeshes().back().material = modelMat;
+    TString MatName = rComp->getMeshes().back().material.lock()->getName();
+  }*/
 
   /*floor = SceneGraph::createObject(_T("Floor"));
   auto ptrFloor = ResourceManager::getReferenceT<Model>(_T("plane.fbx"));
@@ -354,11 +357,11 @@ SceneEditor::loadResources() {
 
   ResourceManager::loadResource(_T("FernTarga.tga"));
 
-  ResourceManager::loadResource(_T("default_albedo.tga"));
+  /*ResourceManager::loadResource(_T("default_albedo.tga"));
   ResourceManager::loadResource(_T("default_emissive.tga"));
   ResourceManager::loadResource(_T("default_metallic.tga"));
   ResourceManager::loadResource(_T("default_normal.tga"));
-  ResourceManager::loadResource(_T("default_roughness.tga"));
+  ResourceManager::loadResource(_T("default_roughness.tga"));*/
 
   ResourceManager::loadResource(_T("Stormtrooper_Diffuse.png"));
 
@@ -526,6 +529,7 @@ SceneEditor::initUI() {
     String sceneName = arguments->GetString(1);
     sceneName = "NewScene";
     SceneGraph::clear();
+    //ResourceManager::clear();
     ResourceManager::loadScene(sceneName);
     UI_UpdateSceneGraph();
   }));

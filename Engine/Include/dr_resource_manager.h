@@ -150,6 +150,9 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager>
     return std::dynamic_pointer_cast<T>(getReference(resourceName));
   }
 
+  static void
+  clear();
+
  private:
   void
   onStartUp();
