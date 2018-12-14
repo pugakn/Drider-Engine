@@ -51,7 +51,7 @@ SceneViewer::init(Viewport v)
   backDesc.mipLevels = 0;
   backDesc.CPUAccessFlags = 0;
   backDesc.genMipMaps = true;
-
+  m_activeInputs = false;
   m_RT = dr_gfx_shared(GraphicsAPI::getDevice().createRenderTarget(backDesc, 1));
 
   DrDepthStencilDesc depthTextureDesc;
@@ -86,6 +86,10 @@ void
 SceneViewer::initInputs() {
   InputManager::getMouse()->addMovedCallback([this]()
   {
+    if (!m_activeInputs)
+    {
+      return;
+    }
     auto dis = Mouse::getDisplacement();
     auto pos = Mouse::getPosition();
     auto cam = CameraManager::getActiveCamera();
@@ -107,6 +111,10 @@ SceneViewer::initInputs() {
   InputManager::getMouse()->addAnyButtonCallback(MOUSE_INPUT_EVENT::kButtonPressed,
     [this](MOUSE_BUTTON::E pressedId)
   {
+    if (!m_activeInputs)
+    {
+      return;
+    }
     auto pos = Mouse::getPosition();
 
     if (pressedId == MOUSE_BUTTON::kRight) {
@@ -133,6 +141,10 @@ SceneViewer::initInputs() {
   InputManager::getMouse()->addAnyButtonCallback(MOUSE_INPUT_EVENT::kButtonReleased,
     [this](MOUSE_BUTTON::E pressedId)
   {
+    if (!m_activeInputs)
+    {
+      return;
+    }
     auto pos = Mouse::getPosition();
     if (pressedId == MOUSE_BUTTON::kRight) {
       m_rotWorldActive = false;
@@ -175,6 +187,10 @@ SceneViewer::resize(const Viewport& _v)
   vertex[3] = { left + width,   top,  0.9f,  1.0f,    0.0f, 1.0f,1.0f, 1.0f  ,1.0,0.0 };
   m_editorQuad.VB->updateFromBuffer(GraphicsAPI::getDeviceContext(), (byte*)vertex); 
   CameraManager::getActiveCamera()->setViewport(m_sceneViewport); 
+}
+
+void SceneViewer::setActiveInputs(bool val) {
+  m_activeInputs = val;
 }
 
 SceneGraph::SharedGameObject 

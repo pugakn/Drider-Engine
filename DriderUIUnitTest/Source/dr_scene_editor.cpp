@@ -444,6 +444,7 @@ SceneEditor::initUI() {
 
 
   webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeSceneGraphNodeSelection", [&](const CefRefPtr<CefListValue>& arguments) {
+    
     TString temp = arguments->GetString(1);
     UInt32 id = StringUtils::toInt(temp);
     auto gameObject = SceneGraph::getRoot()->findNode(id);
@@ -490,6 +491,12 @@ SceneEditor::initUI() {
     webRenderer.executeJSCode(response);
   }));
 
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_ActiveScene", [&](const CefRefPtr<CefListValue>& arguments) {
+    TString tempValue = arguments->GetString(1);
+    
+    Int32 value = StringUtils::toInt(tempValue);
+    m_sceneViewer.setActiveInputs(value);
+  }));
 
   webRenderer.registerJS2CPPFunction(std::make_pair("C_InputChange", [&](const CefRefPtr<CefListValue>& arguments) {
     TString temp = arguments->GetString(1);
@@ -560,15 +567,6 @@ SceneEditor::initUI() {
       trans.setScale({ scale.x, scale.y, StringUtils::toReal(value) });
     }
   }));
-  //Property Sheet UI
-  webRenderer.registerJS2CPPFunction(std::make_pair("C_OnTransformChange", [&](const CefRefPtr<CefListValue>& arguments) {
-    TString name = arguments->GetString(1);
-    TString parent = arguments->GetString(2);
-    //TODO: Search parent name 
-    addGameObject(SceneGraph::getRoot(),
-      name,
-      { 0, 0, 0 })->getTransform().scale({ 1, 1, 1 });
-  }));
 
   //Editor
   webRenderer.registerJS2CPPFunction(std::make_pair("C_SetSceneAreaViewport", [&](const CefRefPtr<CefListValue>& arguments) {
@@ -623,72 +621,6 @@ SceneEditor::initUI() {
 
   }));
 
-  webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeXPos", [&](const CefRefPtr<CefListValue>& arguments) {
-    float val = arguments->GetDouble(1);
-    auto gmoO = SceneGraph::getRoot()->findNode(m_onFocusGMO);
-    auto pos = gmoO->getTransform().getPosition();
-    pos.x = val;
-    gmoO->getTransform().setPosition(pos);
-  }));
-  webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeYPos", [&](const CefRefPtr<CefListValue>& arguments) {
-    float val = arguments->GetDouble(1);
-    auto gmoO = SceneGraph::getRoot()->findNode(m_onFocusGMO);
-    auto pos = gmoO->getTransform().getPosition();
-    pos.y = val;
-    gmoO->getTransform().setPosition(pos);
-  }));
-  webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeZPos", [&](const CefRefPtr<CefListValue>& arguments) {
-    float val = arguments->GetDouble(1);
-    auto gmoO = SceneGraph::getRoot()->findNode(m_onFocusGMO);
-    auto pos = gmoO->getTransform().getPosition();
-    pos.z = val;
-    gmoO->getTransform().setPosition(pos);
-  }));
-
-  webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeXScale", [&](const CefRefPtr<CefListValue>& arguments) {
-    float val = arguments->GetDouble(1);
-    auto gmoO = SceneGraph::getRoot()->findNode(m_onFocusGMO);
-    auto sc = gmoO->getTransform().getScale();
-    sc.x = val;
-    gmoO->getTransform().setScale(sc);
-  }));
-  webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeYScale", [&](const CefRefPtr<CefListValue>& arguments) {
-    float val = arguments->GetDouble(1);
-    auto gmoO = SceneGraph::getRoot()->findNode(m_onFocusGMO);
-    auto sc = gmoO->getTransform().getScale();
-    sc.y = val;
-    gmoO->getTransform().setScale(sc);
-  }));
-  webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeZScale", [&](const CefRefPtr<CefListValue>& arguments) {
-    float val = arguments->GetDouble(1);
-    auto gmoO = SceneGraph::getRoot()->findNode(m_onFocusGMO);
-    auto sc = gmoO->getTransform().getScale();
-    sc.z = val;
-    gmoO->getTransform().setScale(sc);
-  }));
-
-  webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeXRot", [&](const CefRefPtr<CefListValue>& arguments) {
-    float val = arguments->GetDouble(1);
-    auto gmoO = SceneGraph::getRoot()->findNode(m_onFocusGMO);
-    auto rot = gmoO->getTransform().getEulerAngles();
-    rot.x = val;
-    gmoO->getTransform().setRotation(rot);
-  }));
-  webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeYRot", [&](const CefRefPtr<CefListValue>& arguments) {
-    float val = arguments->GetDouble(1);
-    auto gmoO = SceneGraph::getRoot()->findNode(m_onFocusGMO);
-    auto rot = gmoO->getTransform().getEulerAngles();
-    rot.y = val;
-    gmoO->getTransform().setRotation(rot);
-  }));
-  webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeZRot", [&](const CefRefPtr<CefListValue>& arguments) {
-    float val = arguments->GetDouble(1);
-    auto gmoO = SceneGraph::getRoot()->findNode(m_onFocusGMO);
-    auto rot = gmoO->getTransform().getEulerAngles();
-    rot.z = val;
-    gmoO->getTransform().setRotation(rot);
-  }));
-  
   
 
 }

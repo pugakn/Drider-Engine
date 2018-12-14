@@ -52,6 +52,9 @@ class DR_UI_EXPORT SceneViewer {
   void 
   resize(const Viewport& _v);
 
+  void
+  setActiveInputs(bool val);
+
  private:
 
   void
@@ -68,6 +71,7 @@ class DR_UI_EXPORT SceneViewer {
   bool m_sceneOnFocus = true;
   bool m_rotWorldActive = false;
   bool m_movWorldActive = false;
+  bool m_activeInputs = false;
   SceneGraph::SharedGameObject m_GMOOnFocus;
 };
 }
