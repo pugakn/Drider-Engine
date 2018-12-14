@@ -51,6 +51,7 @@
 #include <dr_context_manager.h>
 #include <dr_export_script.h>
 
+#include <dr_resource_manager.h>
 
 namespace driderSDK {
 
@@ -509,9 +510,15 @@ SceneEditor::initUI() {
   }));
 
   webRenderer.registerJS2CPPFunction(std::make_pair("C_SaveScene", [&](const CefRefPtr<CefListValue>& arguments) {
+    String sceneName = arguments->GetString(1);
+    sceneName = "NewScene";
+    ResourceManager::saveScene(sceneName);
   }));
 
   webRenderer.registerJS2CPPFunction(std::make_pair("C_LoadScene", [&](const CefRefPtr<CefListValue>& arguments) {
+    String sceneName = arguments->GetString(1);
+    sceneName = "NewScene";
+    ResourceManager::loadScene(sceneName);
   }));
 
   webRenderer.registerJS2CPPFunction(std::make_pair("C_InputGeneralChange", [&](const CefRefPtr<CefListValue>& arguments) {
