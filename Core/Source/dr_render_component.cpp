@@ -162,10 +162,10 @@ RenderComponent::onUpdate() {
     }
   }
 
-  if (!model && m_isModel) {
-    //setEnabled(false);
-    Logger::addLog(_T("Render Component model resource no logger available"));
-  }
+  //if (!model && m_isModel) {
+  //  //setEnabled(false);
+  //  Logger::addLog(_T("Render Component model resource no logger available"));
+  //}
 }
 
 void 
