@@ -527,7 +527,7 @@ SceneEditor::initUI() {
     sceneName = "NewScene";
     SceneGraph::clear();
     ResourceManager::loadScene(sceneName);
-
+    UI_UpdateSceneGraph();
   }));
 
   webRenderer.registerJS2CPPFunction(std::make_pair("C_InputGeneralChange", [&](const CefRefPtr<CefListValue>& arguments) {
