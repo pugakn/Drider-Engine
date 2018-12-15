@@ -1,5 +1,6 @@
 #include "dr_graph.h"
 
+#include <utility>
 #include <dr_frustrum.h>
 #include <dr_id_object.h>
 #include <dr_matrix4x4.h>
@@ -103,11 +104,9 @@ SceneGraph::getOctree()
   return instance().m_octree;
 }
 
-void 
+void
 SceneGraph::start() {
-  
   instance().m_root->start();
-
 }
 
 void
@@ -136,6 +135,7 @@ SceneGraph::clear() {
   auto graph = SceneGraph::instancePtr();
   graph->m_root->destroy();
 }
+
 //SceneGraph::QueryResult
 //SceneGraph::query(const Camera& camera, QUERY_ORDER::E order, UInt32 props) {
 //  
@@ -203,13 +203,19 @@ SceneGraph::queryGameObjects(const Camera& camera, QUERY_ORDER::E order) {
 
 const std::vector<LightComponent*>
 SceneGraph::getLightComponents() {
-  return lightsList;
+  std::vector<LightComponent*> allLights;
+  for (const auto& it : m_umLights) {
+    allLights.push_back(it.second);
+  }
+  return allLights;
 }
 
 void
-SceneGraph::updateLightsList() {
-  lightsList.clear();
-  instance().m_root->getRecursiveComponents<LightComponent>(lightsList);
+SceneGraph::registerLight(LightComponent* light) {
+  TString key = light->getName() +
+                StringUtils::toTString(light->getGameObjectPtr()->getID());
+
+  SceneGraph::instance().m_umLights.insert(std::make_pair(key, light));
 }
 
 void 

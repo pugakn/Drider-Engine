@@ -5,6 +5,7 @@
 #include <mutex>
 #include <queue>
 #include <vector>
+#include <unordered_map>
 
 #include "dr_core_prerequisites.h"
 #include "dr_module.h"
@@ -178,8 +179,11 @@ class DR_CORE_EXPORT SceneGraph : public Module<SceneGraph>
   const std::vector<LightComponent*>
   getLightComponents();
 
+  /**
+  *
+  */
   void
-  updateLightsList();
+  registerLight(LightComponent* light);
 
   //Called when all initial objects
   //and components are created
@@ -267,7 +271,7 @@ class DR_CORE_EXPORT SceneGraph : public Module<SceneGraph>
   RenderCommandBuffer m_buffers[2];
   RenderCommandBuffer* m_producer = nullptr;
   RenderCommandBuffer* m_consumer = nullptr;
-  std::vector<LightComponent*> lightsList;
+  std::unordered_map<TString, LightComponent*> m_umLights;
 };
 
 }

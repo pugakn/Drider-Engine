@@ -36,7 +36,7 @@ ScripInputs::changeValue(TString &value, TString &id) {
 
     //Build module
     auto currentModule = scriptEngine->m_scriptEngine->GetModule("GameModule");
-    currentModule->Build();
+    Int32 error = currentModule->Build();
 
     //Initialize scripts
     scriptComponent.initScript();

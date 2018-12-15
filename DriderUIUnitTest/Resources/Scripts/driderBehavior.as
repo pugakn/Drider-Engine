@@ -4,7 +4,7 @@ class driderBehavior : IScript {
 		@transform = trans;
 	}
 
-	/*private void SetTransform(GameObject@ obj) {
+	/*private void SetObject(GameObject@ obj) {
 		@gameObject = obj;
 	}*/
 

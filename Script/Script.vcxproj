@@ -77,11 +77,13 @@
     <TargetName>$(ProjectName)d</TargetName>
     <OutDir>$(SolutionDir)Bin\$(PlatformTarget)\</OutDir>
     <IntDir>$(SolutionDir)Intermediate\$(Projectname)\$(PlatformTarget)\$(Configuration)\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <TargetName>$(ProjectName)d</TargetName>
     <IntDir>$(SolutionDir)Intermediate\$(Projectname)\$(PlatformTarget)\$(Configuration)\</IntDir>
     <OutDir>$(SolutionDir)Bin\$(PlatformTarget)\</OutDir>
+    <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IntDir>$(SolutionDir)Intermediate\$(Projectname)\$(PlatformTarget)\$(Configuration)\</IntDir>
@@ -90,6 +92,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IntDir>$(SolutionDir)Intermediate\$(Projectname)\$(PlatformTarget)\$(Configuration)\</IntDir>
     <OutDir>$(SolutionDir)Bin\$(PlatformTarget)\</OutDir>
+    <LinkIncremental>
+    </LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -102,7 +106,7 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);$(DRIDER_DEPENDENCIES)Lib\$(PlatformTarget);</AdditionalLibraryDirectories>
-      <AdditionalDependencies>angelscript64d.lib;Utilsd.lib</AdditionalDependencies>
+      <AdditionalDependencies>angelscript64d.lib;Utilsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary>$(SolutionDir)Lib\$(PlatformTarget)\$(Projectname)d.lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
@@ -124,13 +128,14 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Disabled</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(DRIDER_DEPENDENCIES)Include;$(SolutionDir)$(ProjectName)\Include;$(SolutionDir)Utils\Include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>SCRIPT_EXPORTS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -153,7 +158,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>angelscript64.lib;Utils.lib</AdditionalDependencies>
+      <AdditionalDependencies>angelscript64.lib;Utils.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(PlatformTarget);$(DRIDER_DEPENDENCIES)Lib\$(PlatformTarget);</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
