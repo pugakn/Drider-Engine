@@ -379,6 +379,25 @@ void driderSDK::Editor::initImguiMenus(float mainMenuBarheight)
 
 void driderSDK::Editor::loadHierarchy()
 {
+  if (ImGui::Button("Create"))
+    ImGui::OpenPopup("my_file_popup");
+
+  if (ImGui::Button("DeleteNode")) {
+    UInt32 rootID = SceneGraph::getRoot()->getID();
+    auto n = SceneGraph::getRoot()->findNode(m_selectedItem);
+    if (rootID != m_selectedItem)
+    {
+      auto n = SceneGraph::getRoot()->findNode(m_selectedItem);
+      n->getParent()->removeChild(n);
+      n->destroy();
+      m_selectedItem = SceneGraph::getRoot()->getID();
+    }
+  }
+  if (ImGui::BeginPopup("my_file_popup"))
+  {
+    loadMenuHierarchy();
+    ImGui::EndPopup();
+  }
   std::function<void(const std::vector<std::shared_ptr<GameObject>>&)> search =
     [&](const std::vector<std::shared_ptr<GameObject>>& children) {
 
@@ -413,6 +432,8 @@ void driderSDK::Editor::loadHierarchy()
   auto name = StringUtils::toString(root->getName());
   if (ImGui::TreeNode(name.c_str()))
   {
+    if (ImGui::IsItemClicked())
+      m_selectedItem = 0;
     static bool align_label_with_current_x_position = false;
     if (align_label_with_current_x_position)
       ImGui::Unindent(ImGui::GetTreeNodeToLabelSpacing());
@@ -430,6 +451,24 @@ void driderSDK::Editor::loadHierarchy()
     ImGui::TreePop();
   }
 
+}
+
+void driderSDK::Editor::loadMenuHierarchy()
+{
+  if (ImGui::MenuItem("New Game Object")) {
+    auto father = SceneGraph::getRoot()->findNode(m_selectedItem);
+    //TODO: Search parent name
+    if (!father)
+    {
+      father = SceneGraph::getRoot();
+    }
+
+    auto obj = SceneGraph::createObject(_T("GameObject"));
+    SceneGraph::instanciate(obj,
+      father,
+      { 0.0f, 0.0f, 0.0f },
+      { 0.0f, 0.0f, 0.0f });
+  }
 }
 
 }

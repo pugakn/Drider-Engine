@@ -23,6 +23,7 @@ class Editor : public Application
   void initSceneGraph();
   void initImguiMenus(float mainMenuBarheight);
   void loadHierarchy();
+  void loadMenuHierarchy();
   GFXShared<RenderTarget> m_RT;
   GFXShared<DepthStencil> m_RTDPTH;
   Viewport m_sceneViewport;
