@@ -68,7 +68,8 @@ void Editor::postInit()
   ImGui_ImplDX11_Init(d3dDev, d3dDevCont);
 
   ImGui::StyleColorsDark();
-  
+  m_initFlag = true;
+  m_selectedItem = 0;
   initRT();
   initCallbacks();
   initSceneGraph();
@@ -245,10 +246,19 @@ void Editor::postRender()
   //.set(GraphicsAPI::getDeviceContext(), 0);
   //m_editorQuad.draw();
   
-  auto texture = static_cast<ID3D11ShaderResourceView*>(m_RT->getTexture(0).getAPIObject());
   
   if (ImGui::Begin("Scene")) {
-    ImGui::Image(texture, {(float)m_sceneViewport.width, (float)m_sceneViewport.height });
+    float width = ImGui::GetWindowWidth();
+    float height = ImGui::GetWindowHeight();
+    if (m_sceneViewport.width != width || m_sceneViewport.height != height)
+    {
+      m_sceneViewport.width = width;
+      m_sceneViewport.height = height;
+      initRT();
+      CameraManager::getActiveCamera()->setViewport(m_sceneViewport);
+    }
+    auto texture = static_cast<ID3D11ShaderResourceView*>(m_RT->getTexture(0).getAPIObject());
+    ImGui::Image(texture, { width, height });
   }
   ImGui::End();
 
@@ -369,123 +379,57 @@ void driderSDK::Editor::initImguiMenus(float mainMenuBarheight)
 
 void driderSDK::Editor::loadHierarchy()
 {
-  if (ImGui::TreeNode("Advanced, with Selectable nodes"))
-  {
-    static bool align_label_with_current_x_position = true;
-    if (align_label_with_current_x_position)
-      ImGui::Unindent(ImGui::GetTreeNodeToLabelSpacing());
+  std::function<void(const std::vector<std::shared_ptr<GameObject>>&)> search =
+    [&](const std::vector<std::shared_ptr<GameObject>>& children) {
 
-    static int selection_mask = (1 << 2); // Dumb representation of what may be user-side selection state. You may carry selection state inside or outside your objects in whatever format you see fit.
-    int node_clicked = -1;                // Temporary storage of what node we have clicked to process selection at the end of the loop. May be a pointer to your own node type, etc.
-    ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, ImGui::GetFontSize() * 3); // Increase spacing to differentiate leaves from expanded contents.
-    for (int i = 0; i < 6; i++)
-    {
-      ImGui::PushID(i+100);
-      ImGuiTreeNodeFlags node_flags2 = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ((selection_mask & (1 << i)) ? ImGuiTreeNodeFlags_Selected : 0);
-      node_flags2 |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen; // ImGuiTreeNodeFlags_Bullet
-      ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags2, "espacio %d", i);
-      if (ImGui::BeginDragDropTarget())
+    for (auto &it : children) {
+      auto name = StringUtils::toString(it->getName());
+      auto id = it->getID();
+      ImGui::PushID(id);
+      ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | (m_selectedItem == id ? ImGuiTreeNodeFlags_Selected : 0);
+      if (it->getChildrenCount() == 0)
       {
-        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("HIERARCHY_NODE"))
-        {
-          IM_ASSERT(payload->DataSize == sizeof(int));
-          int payload_n = *(const int*)payload->Data;
-        }
-        ImGui::EndDragDropTarget();
-      }
-      ImGui::PopID();
-      ImGui::PushID(i);
-      ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ((selection_mask & (1 << i)) ? ImGuiTreeNodeFlags_Selected : 0);
-      String name = "Selectable Node" + StringUtils::toString(i);
-      if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
-      {
-        ImGui::SetDragDropPayload("HIERARCHY_NODE", &i, sizeof(int)); 
-        ImGui::Text("Move %s", name.c_str());       // Set payload to carry the index of our item (could be anything)
-        ImGui::EndDragDropSource();
-      }
-      if (ImGui::BeginDragDropTarget())
-      {
-        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("HIERARCHY_NODE"))
-        {
-          IM_ASSERT(payload->DataSize == sizeof(int));
-          int payload_n = *(const int*)payload->Data;
-        }
-        ImGui::EndDragDropTarget();
-      }
-      // Disable the default open on single-click behavior and pass in Selected flag according to our selection state.
-      if (i < 3)
-      {
-        // Node
-        bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, "Selectable Node %d", i);
+        node_flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
+        bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)id, node_flags, name.c_str());
         if (ImGui::IsItemClicked())
-          node_clicked = i;
-        if (node_open)
-        {
-          ImGui::Text("Blah blah\nBlah Blah");
-          ImGui::TreePop();
-        }
+          m_selectedItem = id;
       }
       else
       {
-        // Leaf: The only reason we have a TreeNode at all is to allow selection of the leaf. Otherwise we can use BulletText() or TreeAdvanceToLabelPos()+Text().
-        node_flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen; // ImGuiTreeNodeFlags_Bullet
-        ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, "Selectable Leaf %d", i);
+        bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)id, node_flags, name.c_str());
         if (ImGui::IsItemClicked())
-          node_clicked = i;
+          m_selectedItem = id;
+        if (node_open)
+        {
+          auto children2 = it->getChildren();
+          search(children2);
+          ImGui::TreePop();
+        }
       }
       ImGui::PopID();
     }
-    if (node_clicked != -1)
-    {
-      // Update selection state. Process outside of tree loop to avoid visual inconsistencies during the clicking-frame.
-      if (ImGui::GetIO().KeyCtrl)
-        selection_mask ^= (1 << node_clicked);          // CTRL+click to toggle
-      else //if (!(selection_mask & (1 << node_clicked))) // Depending on selection behavior you want, this commented bit preserve selection when clicking on item that is part of the selection
-        selection_mask = (1 << node_clicked);           // Click to single-select
-    }
+  };
+  auto root = SceneGraph::getRoot();
+  auto name = StringUtils::toString(root->getName());
+  if (ImGui::TreeNode(name.c_str()))
+  {
+    static bool align_label_with_current_x_position = false;
+    if (align_label_with_current_x_position)
+      ImGui::Unindent(ImGui::GetTreeNodeToLabelSpacing());
+
+    static UInt32 selection_mask = 0; // Dumb representation of what may be user-side selection state. You may carry selection state inside or outside your objects in whatever format you see fit.
+    int node_clicked = -1;                // Temporary storage of what node we have clicked to process selection at the end of the loop. May be a pointer to your own node type, etc.
+    ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, ImGui::GetFontSize()); // Increase spacing to differentiate leaves from expanded contents.
+    
+    auto children = SceneGraph::getRoot()->getChildren();
+    search(children);
+
     ImGui::PopStyleVar();
     if (align_label_with_current_x_position)
       ImGui::Indent(ImGui::GetTreeNodeToLabelSpacing());
     ImGui::TreePop();
   }
-  //TString nodes = _T("JS_InfoHierarchy(");
 
-  //std::function<void(const std::vector<std::shared_ptr<GameObject>>&)> search =
-  //  [&](const std::vector<std::shared_ptr<GameObject>>& children) {
-  //  for (auto &it : children) {
-  //    auto name = it->getName();
-  //    auto id = it->getID();
-  //    StringUtils::toTString(id);
-  //    nodes += _T("{'id':") + StringUtils::toTString(id) + _T(",");
-  //    nodes += _T("'name':'") + name + _T("',");
-  //    nodes += _T("'childs': [");
-  //    auto children2 = it->getChildren();
-  //    search(children2);
-  //    nodes += _T("},");
-  //  }
-  //  if (children.size()) {
-  //    nodes.erase(nodes.length() - 1);
-  //    nodes += _T("]");
-  //  }
-  //  else {
-  //    nodes += _T("]");
-  //  }
-  //};
-
-
-  ////SceneGraph::getRoot()->getName();
-  //auto children = SceneGraph::getRoot()->getChildren();
-  //auto root = SceneGraph::getRoot();
-  //auto name = root->getName();
-  //auto id = root->getID();
-
-  //nodes += _T("\"{'id':") + StringUtils::toTString(id) + _T(",");
-  //nodes += _T("'name':'") + name + _T("',");
-  //nodes += _T("'childs': [");
-
-  //search(children);
-  //nodes += _T("}\");");
-  //webRenderer.executeJSCode(nodes);
 }
 
 }

@@ -27,7 +27,8 @@ class Editor : public Application
   GFXShared<DepthStencil> m_RTDPTH;
   Viewport m_sceneViewport;
   float m_luminanceDelta;
-  bool  m_initFlag = true;
+  bool  m_initFlag;
+  UInt32 m_selectedItem;
 };
 
 }
