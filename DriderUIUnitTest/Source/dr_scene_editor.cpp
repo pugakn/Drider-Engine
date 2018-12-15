@@ -470,11 +470,35 @@ SceneEditor::initUI() {
     webRenderer.executeJSCode(response);
   }));
 
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_LoadMaterials", [&](const CefRefPtr<CefListValue>& arguments) {
+    auto materials = ResourceManager::getMaterials();
+    TString response = _T("JS_UpdateMaterials(['");
+    for (auto& material:materials)
+    {
+      response += material->m_name + _T("',");
+    }
+    response.erase(response.length() - 1);
+    response += _T("]);");
+    webRenderer.executeJSCode(response);
+  }));
+
   webRenderer.registerJS2CPPFunction(std::make_pair("C_ActiveScene", [&](const CefRefPtr<CefListValue>& arguments) {
     TString tempValue = arguments->GetString(1);
     
     Int32 value = StringUtils::toInt(tempValue);
     m_sceneViewer.setActiveInputs(value);
+  }));
+
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeTexture", [&](const CefRefPtr<CefListValue>& arguments) {
+    TString nameProperty = arguments->GetString(1);
+    TString materialName = arguments->GetString(2);
+    TString texName = arguments->GetString(3);
+  
+    
+    auto material = ResourceManager::getReferenceT<Material>(materialName);
+    ResourceManager::loadResource(texName);
+    auto tex = ResourceManager::getReferenceT<TextureCore>(texName);
+    material->setTexture(tex, nameProperty);
   }));
 
   webRenderer.registerJS2CPPFunction(std::make_pair("C_InputChange", [&](const CefRefPtr<CefListValue>& arguments) {
@@ -493,6 +517,25 @@ SceneEditor::initUI() {
     {
       webRenderer.executeJSCode(WString(_T("JS_UpdateInspector();")));
     };
+  }));
+
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_InfoMaterial", [&](const CefRefPtr<CefListValue>& arguments) {
+    TString materialName = arguments->GetString(1);
+    auto material = ResourceManager::getReferenceT<Material>(materialName);
+    TString response = _T("JS_UpdateTextureMaterial(['");
+
+    
+    for (size_t i = 0; i < material->getPropertiesCount(); i++)
+    {
+      auto properties = material->getProperty(i);
+      TString nameSemantic = material->getProperty(i)->name;
+      auto nameTexture = material->getProperty(i)->texture.lock()->getName();
+      response += nameSemantic + _T("','");
+      response += nameTexture + _T("','");
+    }
+    response.erase(response.length() - 2);
+    response += _T("]);");
+    webRenderer.executeJSCode(response);
   }));
 
   webRenderer.registerJS2CPPFunction(std::make_pair("C_SaveScene", [&](const CefRefPtr<CefListValue>& arguments) {
