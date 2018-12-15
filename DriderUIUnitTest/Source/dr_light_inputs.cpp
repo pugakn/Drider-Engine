@@ -13,8 +13,8 @@ LightInputs::getInputs(TString * response) {
   auto& light = static_cast<LightComponent&>(m_component);
   Vector3D lightColor = light.GetColor();
 
-  (*response) += addInput(_T("0"), _T("number"), _T("Rango"), StringUtils::toTString(light.GetRange(), 4));
-  (*response) += addInput(_T("1"), _T("number"), _T("Intensidad"), StringUtils::toTString(light.GetIntensity(), 4));
+  (*response) += addInput(_T("0"), _T("number"), _T("Range"), StringUtils::toTString(light.GetRange(), 4));
+  (*response) += addInput(_T("1"), _T("number"), _T("Intensity"), StringUtils::toTString(light.GetIntensity(), 4));
   (*response) += addInput(_T("2"), _T("number"), _T("R"), StringUtils::toTString(Math::floor(lightColor.x * 255.f), 4));
   (*response) += addInput(_T("3"), _T("number"), _T("G"), StringUtils::toTString(Math::floor(lightColor.x * 255.f), 4));
   (*response) += addInput(_T("4"), _T("number"), _T("B"), StringUtils::toTString(Math::floor(lightColor.x * 255.f), 4));

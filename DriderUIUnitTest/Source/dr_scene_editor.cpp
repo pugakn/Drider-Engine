@@ -591,6 +591,10 @@ SceneEditor::initUI() {
     } else if (idField == _T("8")) {
       trans.setScale({ scale.x, scale.y, StringUtils::toReal(value) });
     }
+    else if (idField == _T("9")) {
+      //StringUtils(value);
+      //trans.setScale({ scale.x, scale.y, StringUtils::toReal(value) });
+    }
   }));
 
   //Editor
