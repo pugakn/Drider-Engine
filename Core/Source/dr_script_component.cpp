@@ -58,7 +58,7 @@ ScriptComponent::~ScriptComponent() {
 void
 ScriptComponent::serialize(File &file) {
   file.m_file << SerializableTypeID::Script;
-  file.m_file << StringUtils::toString(getName());
+  file.m_file << StringUtils::toString(getName()) << "\n";
 
 }
 

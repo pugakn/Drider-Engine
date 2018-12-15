@@ -69,7 +69,7 @@ private:
   SceneViewer m_sceneViewer;
 
   SceneGraph::SharedGameObject model;
-  std::shared_ptr<Material> modelMat;
+  //std::shared_ptr<Material> modelMat;
   SceneGraph::SharedGameObject floor;
   std::shared_ptr<Material> floorMat;
 

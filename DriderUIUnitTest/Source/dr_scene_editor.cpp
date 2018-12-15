@@ -235,8 +235,8 @@ SceneEditor::initSceneGraph() {
   RenderManager::instance().setEnviromentMap(ResourceManager::getReferenceT<TextureCore>(_T("GraceDiffuseCubemap.tga")));
   RenderManager::instance().setFilmLut(ResourceManager::getReferenceT<TextureCore>(_T("FilmLut.tga")));
 
-  /*model = SceneGraph::createObject(_T("Model"));
-  auto ptrModel = ResourceManager::getReferenceT<Model>(_T("model.dae"));
+  model = SceneGraph::createObject(_T("Model"));
+  auto ptrModel = std::dynamic_pointer_cast<Model>(ResourceManager::loadResource(_T("model.dae")));
   if (ptrModel) {
     model->createComponent<RenderComponent>(ptrModel);
     model->createComponent<AABBCollider>(ptrModel->aabb);
@@ -245,29 +245,34 @@ SceneEditor::initSceneGraph() {
     model->getTransform().setScale(Vector3D(100.0f, 100.0f, 100.0f));
     model->getTransform().setRotation(Vector3D(0.0f, Math::QUARTER_PI*0.5f, 0.0f));
 
-    modelMat = std::make_shared<Material>(_T("ModelMaterial"));
+    auto modelMat = ResourceManager::createMaterial(L"DefaultMat", true);
+    //modelMat = std::make_shared<Material>(_T("ModelMaterial"));
 
-    auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("default_albedo.tga"));
-    auto emissiveTex = ResourceManager::getReferenceT<TextureCore>(_T("default_emissive.tga"));
-    auto metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("default_metallic.tga"));
-    auto normalTex = ResourceManager::getReferenceT<TextureCore>(_T("default_normal.tga"));
-    auto roughnessTex = ResourceManager::getReferenceT<TextureCore>(_T("default_roughness.tga"));
+    auto albedoTex = ResourceManager::loadResource(_T("default_albedo.tga"));
+    auto emissiveTex = ResourceManager::loadResource(_T("default_emissive.tga"));
+    auto metallicTex = ResourceManager::loadResource(_T("default_metallic.tga"));
+    auto normalTex = ResourceManager::loadResource(_T("default_normal.tga"));
+    auto roughnessTex = ResourceManager::loadResource(_T("default_roughness.tga"));
     modelMat->addProperty(_T("Albedo"), PROPERTY_TYPE::kVec3);
     modelMat->addProperty(_T("Normal"), PROPERTY_TYPE::kVec3);
     modelMat->addProperty(_T("Emisivity"), PROPERTY_TYPE::kVec3);
     modelMat->addProperty(_T("Metallic"), PROPERTY_TYPE::kVec3);
     modelMat->addProperty(_T("Roughness"), PROPERTY_TYPE::kVec3);
-    modelMat->setTexture(albedoTex, _T("Albedo"));
-    modelMat->setTexture(normalTex, _T("Normal"));
-    modelMat->setTexture(emissiveTex, _T("Emisivity"));
-    modelMat->setTexture(metallicTex, _T("Metallic"));
-    modelMat->setTexture(roughnessTex, _T("Roughness"));
+    modelMat->setTexture(std::dynamic_pointer_cast<TextureCore>(albedoTex), _T("Albedo"));
+    String typeName = typeid(*modelMat).name();
+    modelMat->setTexture(std::dynamic_pointer_cast<TextureCore>(normalTex), _T("Normal"));
+    modelMat->setTexture(std::dynamic_pointer_cast<TextureCore>(emissiveTex), _T("Emisivity"));
+    modelMat->setTexture(std::dynamic_pointer_cast<TextureCore>(metallicTex), _T("Metallic"));
+    modelMat->setTexture(std::dynamic_pointer_cast<TextureCore>(roughnessTex), _T("Roughness"));
 
     auto rComp = model->getComponent<RenderComponent>();
-    rComp->getMeshes().front().material = modelMat;
+    rComp->getMeshes().back().material = modelMat;
+    TString MatName = rComp->getMeshes().back().material.lock()->getName();
   }
 
-  floor = SceneGraph::createObject(_T("Floor"));
+  //auto mats = ResourceManager::getMaterials();
+
+  /*floor = SceneGraph::createObject(_T("Floor"));
   auto ptrFloor = ResourceManager::getReferenceT<Model>(_T("plane.fbx"));
   if (ptrFloor) {
     floor->createComponent<RenderComponent>(ptrFloor);
@@ -334,13 +339,6 @@ SceneEditor::loadResources() {
   ResourceManager::loadResource(_T("GraceDiffuseCubemap.tga"), &cubeMapDesc);
   ResourceManager::loadResource(_T("FilmLut.tga"));
 
-  ResourceManager::loadResource(_T("plane.fbx"));
-  ResourceManager::loadResource(_T("FernBush.obj"));
-  ResourceManager::loadResource(_T("model.dae"));
-  ResourceManager::loadResource(_T("stormtrooper_dancing.fbx"));
-  ResourceManager::loadResource(_T("HK_Teen.fbx"));
-  ResourceManager::loadResource(_T("popuko.fbx"));
-
   ResourceManager::loadResource(_T("256_Checker_Diffuse.tga"));
   ResourceManager::loadResource(_T("256_Checker_Displacement.tga"));
   ResourceManager::loadResource(_T("256_Checker_Emissive.tga"));
@@ -352,25 +350,6 @@ SceneEditor::loadResources() {
   ResourceManager::loadResource(_T("256_Checker_SSColor.tga"));
   ResourceManager::loadResource(_T("256_Checker_Thickness.tga"));
 
-  ResourceManager::loadResource(_T("FernTarga.tga"));
-
-  ResourceManager::loadResource(_T("default_albedo.tga"));
-  ResourceManager::loadResource(_T("default_emissive.tga"));
-  ResourceManager::loadResource(_T("default_metallic.tga"));
-  ResourceManager::loadResource(_T("default_normal.tga"));
-  ResourceManager::loadResource(_T("default_roughness.tga"));
-
-  ResourceManager::loadResource(_T("Stormtrooper_Diffuse.png"));
-
-  ResourceManager::loadResource(_T("hatkid_HK_main_mat_BaseColor.tga"));
-  ResourceManager::loadResource(_T("hatkid_HK_main_mat_Emissive.tga"));
-  ResourceManager::loadResource(_T("hatkid_HK_main_mat_Metallic.tga"));
-  ResourceManager::loadResource(_T("hatkid_HK_main_mat_Roughness.tga"));
-  ResourceManager::loadResource(_T("hatkid_HK_second_mat_BaseColor.tga"));
-  ResourceManager::loadResource(_T("hatkid_HK_second_mat_Metallic.tga"));
-  ResourceManager::loadResource(_T("hatkid_HK_second_mat_Roughness.tga"));
-  ResourceManager::loadResource(_T("HK_eye_dif.tga"));
-  ResourceManager::loadResource(_T("HK_eye_spc.tga"));
 }
 
 void
@@ -491,11 +470,35 @@ SceneEditor::initUI() {
     webRenderer.executeJSCode(response);
   }));
 
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_LoadMaterials", [&](const CefRefPtr<CefListValue>& arguments) {
+    auto materials = ResourceManager::getMaterials();
+    TString response = _T("JS_UpdateMaterials(['");
+    for (auto& material:materials)
+    {
+      response += material->m_name + _T("',");
+    }
+    response.erase(response.length() - 1);
+    response += _T("]);");
+    webRenderer.executeJSCode(response);
+  }));
+
   webRenderer.registerJS2CPPFunction(std::make_pair("C_ActiveScene", [&](const CefRefPtr<CefListValue>& arguments) {
     TString tempValue = arguments->GetString(1);
     
     Int32 value = StringUtils::toInt(tempValue);
     m_sceneViewer.setActiveInputs(value);
+  }));
+
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_ChangeTexture", [&](const CefRefPtr<CefListValue>& arguments) {
+    TString nameProperty = arguments->GetString(1);
+    TString materialName = arguments->GetString(2);
+    TString texName = arguments->GetString(3);
+  
+    
+    auto material = ResourceManager::getReferenceT<Material>(materialName);
+    ResourceManager::loadResource(texName);
+    auto tex = ResourceManager::getReferenceT<TextureCore>(texName);
+    material->setTexture(tex, nameProperty);
   }));
 
   webRenderer.registerJS2CPPFunction(std::make_pair("C_InputChange", [&](const CefRefPtr<CefListValue>& arguments) {
@@ -516,6 +519,25 @@ SceneEditor::initUI() {
     };
   }));
 
+  webRenderer.registerJS2CPPFunction(std::make_pair("C_InfoMaterial", [&](const CefRefPtr<CefListValue>& arguments) {
+    TString materialName = arguments->GetString(1);
+    auto material = ResourceManager::getReferenceT<Material>(materialName);
+    TString response = _T("JS_UpdateTextureMaterial(['");
+
+    
+    for (size_t i = 0; i < material->getPropertiesCount(); i++)
+    {
+      auto properties = material->getProperty(i);
+      TString nameSemantic = material->getProperty(i)->name;
+      auto nameTexture = material->getProperty(i)->texture.lock()->getName();
+      response += nameSemantic + _T("','");
+      response += nameTexture + _T("','");
+    }
+    response.erase(response.length() - 2);
+    response += _T("]);");
+    webRenderer.executeJSCode(response);
+  }));
+
   webRenderer.registerJS2CPPFunction(std::make_pair("C_SaveScene", [&](const CefRefPtr<CefListValue>& arguments) {
     String sceneName = arguments->GetString(1);
     sceneName = "NewScene";
@@ -526,6 +548,7 @@ SceneEditor::initUI() {
     String sceneName = arguments->GetString(1);
     sceneName = "NewScene";
     SceneGraph::clear();
+    //ResourceManager::clear();
     ResourceManager::loadScene(sceneName);
     UI_UpdateSceneGraph();
   }));

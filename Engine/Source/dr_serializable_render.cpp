@@ -7,6 +7,7 @@
 #include <dr_resource_manager.h>
 #include <dr_render_component.h>
 #include <dr_model.h>
+#include <dr_texture_core.h>
 
 namespace driderSDK {
 void
@@ -24,15 +25,46 @@ sRender::load(File &file,
     //Load model
     ResourceManager::loadResource(StringUtils::toTString(modelName));
     auto model = ResourceManager::getReferenceT<Model>(StringUtils::toTString(modelName));
-    obj->createComponent<RenderComponent>(model);
+    auto comp = obj->createComponent<RenderComponent>(model);
+   
+    //Material
+    Int32 numMat;
+    file.m_file >> numMat;
     
-    /*AABB aabb;
-    file.m_file >> aabb.width;
-    file.m_file >> aabb.height;
-    file.m_file >> aabb.depth;
-    file.m_file >> aabb.center.x;
-    file.m_file >> aabb.center.y;
-    file.m_file >> aabb.center.z;*/
+    for(int i = 0; i < numMat; i++) {
+      String name;
+      file.m_file >> name;
+      
+      auto mat = ResourceManager::createMaterial(StringUtils::toTString(name), true);
+      //auto mat = ResourceManager::getReferenceT<Material>(StringUtils::toTString(name));
+
+      bool shadow;
+      file.m_file >> shadow;
+      mat->setProyectShadow(shadow);
+
+      UInt32 numProperties;
+      file.m_file >> numProperties;
+      for(int i = 0; i < numProperties; i++) {
+        String name;
+        file.m_file >> name;
+        TString tName = StringUtils::toTString(name);
+        
+        UInt32 propType;
+        file.m_file >> propType;
+        
+        String textureName;
+        file.m_file >> textureName;
+        TString tTextureName = StringUtils::toTString(textureName);
+        ResourceManager::loadResource(tTextureName);
+        
+        mat->addProperty(tName,
+                        (PROPERTY_TYPE::E)propType);
+        auto text = ResourceManager::getReferenceT<TextureCore>(tTextureName);
+        mat->setTexture(text, tName);
+      }
+    
+      comp->getMeshes()[i].material = mat;
+    }
 
   }
 
@@ -43,4 +75,6 @@ sRender::load(File &file,
 	center: vector3D;
   */ 
 }
+
+
 }

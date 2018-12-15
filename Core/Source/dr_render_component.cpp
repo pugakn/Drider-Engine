@@ -8,6 +8,9 @@
 #include "dr_model.h"
 #include "dr_logger.h"
 
+#include <dr_mesh.h>
+#include <dr_material.h>
+
 namespace driderSDK {
 
 RenderComponent::RenderComponent(GameObject& _gameObject, 
@@ -50,12 +53,22 @@ RenderComponent::getAABB()
 void
 RenderComponent::serialize(File &file) {
   file.m_file << SerializableTypeID::Render << "\n";
-  file.m_file << StringUtils::toString(getName()) << "\n";
+  String name = StringUtils::toString(getName());
+  file.m_file << name << "\n";
 
   file.m_file << m_isModel << "\n";
 
   if(m_isModel) { 
-    file.m_file << m_model.lock()->m_modelName << "\n";
+    String modelName = m_model.lock()->m_modelName;
+    file.m_file << modelName << "\n";
+    
+    file.m_file << m_model.lock()->meshes.size() << "\n";
+    TString n = getMeshes().back().material.lock()->m_name;
+    for(auto &mesh : getMeshes()) {
+      TString name = mesh.material.lock()->getName();
+      mesh.material.lock()->serialize(file);
+    }
+
     /*file.m_file << m_model.lock()->aabb.width << "\n";
     file.m_file << m_model.lock()->aabb.height << "\n";
     file.m_file << m_model.lock()->aabb.depth << "\n";

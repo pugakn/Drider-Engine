@@ -150,6 +150,14 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager>
     return std::dynamic_pointer_cast<T>(getReference(resourceName));
   }
 
+  static std::vector<std::shared_ptr<Material>>
+  getMaterials() {
+    return ResourceManager::instance().m_materials;
+  }
+  
+  static void
+  clear();
+
  private:
   void
   onStartUp();
@@ -211,6 +219,8 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager>
   using ResourceFactory = std::function<SharedResource()>;
 
   std::unordered_map<TString, SharedResource> m_resources;
+  std::vector<std::shared_ptr<Material>> m_materials;
+
   std::unordered_map<Codec*, ResourceFactory> m_resourceFactories;
   std::vector<std::unique_ptr<Codec>> m_codecs;
 

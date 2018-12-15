@@ -361,6 +361,11 @@ class DR_CORE_EXPORT Material : public Resource
   bool
   projectShadow() const;
 
+  void 
+  serialize(File &file);
+
+  void
+  setProyectShadow(bool bShadow);
 
  private:
   PropertyPtr
@@ -372,10 +377,17 @@ class DR_CORE_EXPORT Material : public Resource
   {
     return dr_make_unique<T>(dynamic_cast<T&>(*prop));    
   }
+
+  TString 
+  interpretType(PROPERTY_TYPE::E& _type, Property* _prop);
+
  private:
-  TString m_name;
+
   PropertyList m_properties;
   bool m_proyectShadow;
+
+public: 
+  TString m_name;
 };
 
 }
