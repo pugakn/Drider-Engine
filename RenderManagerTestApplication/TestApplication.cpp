@@ -27,6 +27,7 @@
 #include <dr_degree.h>
 #include <dr_texture_core.h>
 #include <dr_rigidbody_component.h>
+#include <dr_physics_manager.h>
 #include "dr_rendermanapp.h"
 
 #define SINGLE_THREAD 1

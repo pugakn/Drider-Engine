@@ -2,6 +2,7 @@
 
 #include <dr_id_object.h>
 #include <dr_gameObject.h>
+#include <dr_graph.h>
 
 namespace driderSDK {
 
@@ -10,6 +11,7 @@ LightComponent::LightComponent(GameObject& _gameObject)
     m_vec3Color(Vector3D(1.0f, 1.0f, 1.0f)),
     m_fRange(1.0f),
     m_fIntensity(1.0f) {
+  SceneGraph::instance().registerLight(this);
 }
 
 void
