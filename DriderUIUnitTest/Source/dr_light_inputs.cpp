@@ -16,8 +16,8 @@ LightInputs::getInputs(TString * response) {
   (*response) += addInput(_T("0"), _T("number"), _T("Range"), StringUtils::toTString(light.GetRange(), 4));
   (*response) += addInput(_T("1"), _T("number"), _T("Intensity"), StringUtils::toTString(light.GetIntensity(), 4));
   (*response) += addInput(_T("2"), _T("number"), _T("R"), StringUtils::toTString(Math::floor(lightColor.x * 255.f), 4));
-  (*response) += addInput(_T("3"), _T("number"), _T("G"), StringUtils::toTString(Math::floor(lightColor.x * 255.f), 4));
-  (*response) += addInput(_T("4"), _T("number"), _T("B"), StringUtils::toTString(Math::floor(lightColor.x * 255.f), 4));
+  (*response) += addInput(_T("3"), _T("number"), _T("G"), StringUtils::toTString(Math::floor(lightColor.y * 255.f), 4));
+  (*response) += addInput(_T("4"), _T("number"), _T("B"), StringUtils::toTString(Math::floor(lightColor.z * 255.f), 4));
 
 
 //#ifdef UNICODE
@@ -46,28 +46,22 @@ LightInputs::getInputs(TString * response) {
 bool
 LightInputs::changeValue(TString &value, TString &id) {
   auto& ligth = static_cast<LightComponent&>(m_component);
-  if (id == _T("0"))
-  {
+  if (id == _T("0")) {
     ligth.SetRange(StringUtils::toReal(value));
   }
-  else if (id == _T("1"))
-  {
+  else if (id == _T("1")) {
     ligth.SetIntensity(StringUtils::toReal(value));
   }
-  else
-  {
+  else {
     Vector3D lightColor = ligth.GetColor();
     float valueLigth = StringUtils::toReal(value) / 255.f;
-    if (id == _T("2"))
-    {
+    if (id == _T("2")) {
       ligth.SetColor({ valueLigth, lightColor.y, lightColor.z });
     }
-    else if (id == _T("3"))
-    {
+    else if (id == _T("3")) {
       ligth.SetColor({ lightColor.x, valueLigth, lightColor.z });
     }
-    else if (id == _T("4"))
-    {
+    else if (id == _T("4")) {
       ligth.SetColor({ lightColor.x, lightColor.y, valueLigth });
     }
   }
