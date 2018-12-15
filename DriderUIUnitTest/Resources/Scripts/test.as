@@ -25,7 +25,8 @@ class test : driderBehavior {
 			Print("\nPress D\n");
 			Print("\nPress asdasD\n");
 
-			GameObject@ player = Object.findObject("Model");
+			
+			/*GameObject@ player = Object.findObject("Model");
 			SoundComponent@ sound = cast<SoundComponent>(player.getComponent("SoundComponent"));
 			if(@sound != null) {
 				Print("\nPlay sound\n");
@@ -36,7 +37,7 @@ class test : driderBehavior {
 			}
 
 				//transform.move(vecRight);
-			}
+			}*/
 
 	}
 

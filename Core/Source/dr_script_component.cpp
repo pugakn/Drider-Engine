@@ -84,6 +84,13 @@ ScriptComponent::onUpdate() {
                                   &m_gameObject.getTransform(),
                                   obj);
 
+  /*scriptEngine->setObjectToScript(type,
+                                  _T("void SetObject(GameObject@ obj)"),
+                                  0,
+                                  &m_gameObject,
+                                  obj);*/
+
+
   scriptEngine->executeFunction(_T("void Update()"),
                                 type,
                                 obj);
@@ -134,6 +141,12 @@ ScriptComponent::start() {
                                   &m_gameObject.getTransform(),
                                   obj);
 
+  /*scriptEngine->setObjectToScript(type,
+                                  _T("void SetObject(GameObject@ obj)"),
+                                  0,
+                                  &m_gameObject,
+                                  obj);*/
+
   scriptEngine->executeFunction(_T("void Start()"),
                                 type,
                                 obj);
@@ -146,6 +159,12 @@ ScriptComponent::onKeyDown(KEY_CODE::E key) {
                                   0,
                                   &m_gameObject.getTransform(),
                                   obj);
+
+  /*scriptEngine->setObjectToScript(type,
+                                  _T("void SetObject(GameObject@ obj)"),
+                                  0,
+                                  &m_gameObject,
+                                  obj);*/
 
   scriptEngine->executeFunctionParam(_T("void onKeyDown(KeyCode)"),
                                      type,
@@ -160,6 +179,12 @@ ScriptComponent::onKeyUp(KEY_CODE::E key) {
                                 0,
                                 &m_gameObject.getTransform(),
                                 obj);
+
+  /*scriptEngine->setObjectToScript(type,
+                                  _T("void SetObject(GameObject@ obj)"),
+                                  0,
+                                  &m_gameObject,
+                                  obj);*/
                                 
   scriptEngine->executeFunctionParam(_T("void onKeyUp(KeyCode)"),
                                      type,
