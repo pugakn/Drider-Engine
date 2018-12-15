@@ -168,6 +168,9 @@ class DR_UTIL_EXPORT FileSystem
   static TString
   GetFileName(const TString& filepath);
 
+  static void
+  ScanDir(String paht);
+
 };
 
 }
