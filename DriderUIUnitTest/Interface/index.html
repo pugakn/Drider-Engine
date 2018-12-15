@@ -25,7 +25,7 @@
           <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
             <a class="dropdown-item" onclick="saveScene()" href="#">Save</a>
             <a class="dropdown-item" onclick="loadScene()" href="#">Load</a>
-            <a class="dropdown-item" onclick="loadMaterialsSection()" href="#">Materiales</a>
+            <a class="dropdown-item" onclick="loadMaterialsSection()" href="#">Materials</a>
 
           </div>
         </li>
@@ -44,8 +44,8 @@
       <div id="hierarchyDiv" class="subSection">
         <h3 class="titleSection">Hierarchy
           <select id="optionsHierarchy">
-            <option>Nuevo Game Object</option>
-            <option>Actualizar</option>
+            <option>New Game Object</option>
+            <option>Update</option>
           </select>
         </h3>
         <div id="divHierarchy">
@@ -59,7 +59,7 @@
     </div>
     <div id="scene" class="section snapTarget">
       <div id="sceneDiv" class="subSection">
-        <h3 class="titleSection">Escena</h3>
+        <h3 class="titleSection">Scene</h3>
 
       </div>
     </div>
@@ -69,7 +69,7 @@
         <div id="divInspector">
           <div id="generalInspector">
             <div id="accordion">
-              <h3>Agregar componente</h3>
+              <h3>Add component</h3>
               <div>
                 <button type="button" onclick="AddComponenenGameObject('Animator');" class="btn btn-primary">Animator</button>
                 <button type="button" onclick="AddComponenenGameObject('Camera');" class="btn btn-secondary">Camera</button>
@@ -83,13 +83,13 @@
               </div>
             </div>
             <div>
-              <label for="objectName">Nombre: </label>
+              <label for="objectName">Name: </label>
               <input onchange="updateGeneralInput(9, this.value)" name:"objectName" type="text" value="" id="objectName">
             </div>
             <div>
               <label for="tagSelector">Tag: </label>
               <select name="tagSelector" id="tagSelector">
-                <option value="0" selected>Sin tag</option>
+                <option value="0" selected>No tag</option>
               </select>
             </div>
             <div class="form-row">
@@ -142,7 +142,7 @@
     </div>
     <div id="project" class="section snapTarget">
       <div  id="projectDiv" class="subSection">
-        <h3 class="titleSection">Archivos</h3>
+        <h3 class="titleSection">Files</h3>
         <div id="fileTree"></div>
       </div>
     </div>
