@@ -273,7 +273,7 @@ LightningPass::draw(PassDrawData* drawData) {
   m_CBDrawData.ViewportDimensions.y = m_RTHeight;
 
   m_CBDrawData.EyePosition = data->ActiveCam->getPosition();
-  m_CBDrawData.EyePosition.w = data->ActiveLights;
+  m_CBDrawData.EyePosition.w = 0.0f;
 
   SizeT currentIndex = 0;
   for (auto& currentVec : *data->Lights) {

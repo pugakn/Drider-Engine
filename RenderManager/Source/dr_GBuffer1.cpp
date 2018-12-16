@@ -74,6 +74,7 @@ GBufferPass::draw(PassDrawData* drawData) {
 
   data->OutRt->clear(dc, clearColor);
   data->dsOptions->clear(dc, 1, 0);
+
   //Skybox
   if (false) {
     dc.setResourcesNull();

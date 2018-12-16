@@ -270,6 +270,14 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
     return &m_fSSAOBias;
   };
 
+  FORCEINLINE float* getCAStrenghtBias() { return &m_fChromaticAberrationStrenght; };
+  FORCEINLINE bool* getDoFFrontFocus() { return &m_bFrontFocus; };
+  FORCEINLINE float* getDoFDistance() { return &m_fFocusDistance; };
+  FORCEINLINE float* getDoFFocusRange() { return &m_fFocusRange; };
+  FORCEINLINE float* getVignetteScale() { return &m_fVignetteScale; };
+  FORCEINLINE Vector2D* getVignetteConcentration() { return &m_vec2VignetteConcentration; };
+  FORCEINLINE Vector2D* getVignetteRadius() { return &m_vec2VignetteRad; };
+
  protected:
 
   std::shared_ptr<TextureCore> m_cubemap;
@@ -308,7 +316,7 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   SSAOPass m_SSAOPass;
   SSAOInitData m_SSAOInitData;
   SSAODrawData m_SSAODrawData;
-
+  bool m_active;
   float m_fSSAOSampleRadio;
   float m_fSSAOIntensity;
   float m_fSSAOScale;
@@ -368,10 +376,26 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   LuminescenceDrawData m_luminescenceDrawData;
   StructureBuffer* resultBuffer;
 
-  //CS
+  /**
+  * Post-Processing
+  * Uses: Vertex and fragment shader.
+  * Vertex: renders a screen aligned quad.
+  * Fragment: Performs the active post
+  *           processing effects.
+  */
   PostProcessingPass m_PostProcessingPass;
   PostProcessingInitData m_PostProcessingInitData;
   PostProcessingDrawData m_PostProcessingDrawData;
+  bool m_bChromaticAberration;
+    float m_fChromaticAberrationStrenght;
+  bool m_bDoF;
+    bool m_bFrontFocus;
+    float m_fFocusDistance;
+    float m_fFocusRange;
+  bool m_bVignette;
+    float m_fVignetteScale;
+    Vector2D m_vec2VignetteConcentration;
+    Vector2D m_vec2VignetteRad;
 
   std::array<GFXUnique<RenderTarget>, 4> m_RTShadowDummy; //Used for render shadow cascades.
   GFXUnique<RenderTarget> m_RTShadow; //Compressed shadows.

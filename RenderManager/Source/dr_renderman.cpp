@@ -403,6 +403,13 @@ RenderManager::init() {
   m_luminescencePass.init(&m_luminescenceInitData);
 
   m_PostProcessingPass.init(&m_PostProcessingInitData);
+  m_fChromaticAberrationStrenght = 0.075f;
+  m_bFrontFocus = true;
+  m_fFocusDistance = 390.0f;
+  m_fFocusRange = 50.0f;
+  m_fVignetteScale = 1.0f;
+  m_vec2VignetteConcentration = Vector2D(4.0f, 4.0f);
+  m_vec2VignetteRad = Vector2D(1.25f, 1.25f);
 
 //  m_particlePass.init(&m_particleInitData);
 //  ParticleEmitter emitter;
@@ -568,7 +575,6 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   //Lightning Pass
   m_LightningDrawData.ActiveCam = mainCam;
   m_LightningDrawData.Lights = &lights;
-  m_LightningDrawData.ActiveLights = 128;
   m_LightningDrawData.GbufferRT = m_RTGBuffer.get();
   m_LightningDrawData.SSAO_SSShadowRT = m_RTSSAO_SSShadowBlur.get();
   m_LightningDrawData.SSReflection = m_RTSSReflection.get();
@@ -619,12 +625,12 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   //_out->clear(GraphicsAPI::getDeviceContext(), clearColor);
 
   m_PostProcessingDrawData.activeCam = mainCam;
-  m_PostProcessingDrawData.ChromaticAberrationStrenght = 0.075f;
-  m_PostProcessingDrawData.CoCFocusDistance = 390.0f;
-  m_PostProcessingDrawData.CoCFocusRange = 50.0f;
-  m_PostProcessingDrawData.VignetteScale = 1.0f;
-  m_PostProcessingDrawData.VignetteConcentration = Vector2D(4.0f, 4.0f);
-  m_PostProcessingDrawData.VignetteRad = Vector2D(1.25f, 1.25f);
+  m_PostProcessingDrawData.ChromaticAberrationStrenght = m_fChromaticAberrationStrenght;
+  m_PostProcessingDrawData.CoCFocusDistance = m_fFocusDistance;
+  m_PostProcessingDrawData.CoCFocusRange = m_bFrontFocus ? m_fFocusRange : -m_fFocusRange;
+  m_PostProcessingDrawData.VignetteScale = m_fVignetteScale;
+  m_PostProcessingDrawData.VignetteConcentration = m_vec2VignetteConcentration;
+  m_PostProcessingDrawData.VignetteRad = m_vec2VignetteRad;
   m_PostProcessingDrawData.ColorTex = &m_RTLightning->getTexture(0);
   m_PostProcessingDrawData.ColorBlurTex = &m_RTLightningBlur->getTexture(0);
   m_PostProcessingDrawData.PositionDepthTex = &m_RTGBuffer->getTexture(0);
