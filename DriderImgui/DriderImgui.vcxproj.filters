@@ -39,6 +39,9 @@
     <ClCompile Include="Source\imgui_impl_win32.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\ImGuiFileDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Source\dr_input_editor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -84,6 +87,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\imgui_stdlib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ImGuiFileDialog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

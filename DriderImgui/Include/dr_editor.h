@@ -25,6 +25,8 @@ class Editor : public Application
   void initImguiMenus(float mainMenuBarheight);
   void loadHierarchy();
   void loadMenuHierarchy();
+  void loadScene();
+  void saveScene();
   void loadInspector();
   void loadMenuAddComponent();
 
@@ -33,6 +35,10 @@ class Editor : public Application
   Viewport m_sceneViewport;
   float m_luminanceDelta;
   bool  m_initFlag;
+  UInt32 m_selectedItem;
+
+  bool showFileDilog;
+  bool showSaveFileDialog;
   SceneGraph::SharedGameObject m_selectedGameObject;
 };
 
