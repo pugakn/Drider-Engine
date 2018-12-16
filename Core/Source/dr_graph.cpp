@@ -203,19 +203,29 @@ SceneGraph::queryGameObjects(const Camera& camera, QUERY_ORDER::E order) {
 
 const std::vector<LightComponent*>
 SceneGraph::getLightComponents() {
-  std::vector<LightComponent*> allLights;
-  for (const auto& it : m_umLights) {
-    allLights.push_back(it.second);
-  }
-  return allLights;
+  return m_vecLights;
 }
 
 void
-SceneGraph::registerLight(LightComponent* light) {
+SceneGraph::addLight(LightComponent* light) {
   TString key = light->getName() +
                 StringUtils::toTString(light->getGameObjectPtr()->getID());
 
+  m_vecLights.push_back(light);
   SceneGraph::instance().m_umLights.insert(std::make_pair(key, light));
+}
+
+void
+SceneGraph::removeLight(LightComponent* light) {
+  TString key = light->getName() +
+                StringUtils::toTString(light->getGameObjectPtr()->getID());
+
+  SceneGraph::instance().m_umLights.erase(key);
+
+  m_vecLights.clear();
+  for (const auto& it : m_umLights) {
+    m_vecLights.push_back(it.second);
+  }
 }
 
 void 

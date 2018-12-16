@@ -64,7 +64,7 @@ RenderManager::init() {
   //screenWidth = 1680;
   //screenHeight = 720;
 
-  static const float blurScale = 0.5f;
+  static const float blurScale = 0.25f;
 
   float shadowQualityMultiplier = 1.0f;
   shadowWidth = 1024 * shadowQualityMultiplier;
@@ -380,6 +380,11 @@ RenderManager::init() {
   m_SSAOInitData.RTHeight = screenHeight;
   m_SSAOPass.init(&m_SSAOInitData);
 
+  m_fSSAOSampleRadio = 0.0008f;
+  m_fSSAOIntensity = 2.0f;
+  m_fSSAOScale = 1.0f;
+  m_fSSAOBias = 0.0002f;
+
   m_HorBlurPass.init(&m_HorBlurInitData);
   m_VerBlurPass.init(&m_VerBlurInitData);
 
@@ -522,10 +527,10 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_SSAODrawData.activeCam = mainCam;
   m_SSAODrawData.InRt = m_RTGBuffer.get();
   m_SSAODrawData.OutRt = m_RTSSAO_SSShadow.get();
-  m_SSAODrawData.SampleRadio = 0.0008f;
-  m_SSAODrawData.Intensity = 2.0f;
-  m_SSAODrawData.Scale = 1.0f;
-  m_SSAODrawData.Bias = 0.0002f;
+  m_SSAODrawData.SampleRadio = m_fSSAOSampleRadio;
+  m_SSAODrawData.Intensity = m_fSSAOIntensity;
+  m_SSAODrawData.Scale = m_fSSAOScale;
+  m_SSAODrawData.Bias = m_fSSAOBias;
   m_SSAOPass.draw(&m_SSAODrawData);
 
   m_HorBlurDrawData.InTexture = &m_RTSSAO_SSShadow->getTexture(0);

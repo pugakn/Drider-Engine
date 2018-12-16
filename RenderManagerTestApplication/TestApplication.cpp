@@ -116,7 +116,6 @@ RenderManApp::postInit() {
   cam_cmp->setActive();
 
   luminanceDelta = 0.0f;
-  RenderManager::instancePtr()->luminanceDelta = &luminanceDelta;
 
   m_bRotate = false;
 
@@ -182,8 +181,6 @@ RenderManApp::postInit() {
     }
   }
 
-  SceneGraph::instance().updateLightsList();
-
   modelMovement = Vector3D(0.0f, 0.0f, 0.0f);
 
   loadResources();
@@ -196,11 +193,8 @@ RenderManApp::postInit() {
   m_selectedGO = m_vecGos.back();
   auto ptrFloor = ResourceManager::getReferenceT<Model>(_T("plane.fbx"));
   if (ptrFloor) {
-    m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, 0.0f));
-    //m_selectedGO->getTransform().setScale(Vector3D(1000.0f, 1.0f, 1000.0f));
-    m_selectedGO->getTransform().setScale(Vector3D(100.0f, 1.0f, 100.0f));
-    //m_selectedGO->getTransform().setScale(Vector3D(5.0f, 1.0f, 5.0f));
-    //m_selectedGO->getTransform().setScale(Vector3D(4.0f, 1.0f, 4.0f));
+    m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, 100.0f));
+    m_selectedGO->getTransform().setScale(Vector3D(7.5f, 7.5f, 7.5f));
 
     auto rgbod = m_selectedGO->createComponent<RigidBody3DComponent>();
     rgbod->setType(RIGID_BODY_TYPE::kStatic);
@@ -243,124 +237,9 @@ RenderManApp::postInit() {
     renderComp->getMeshes().front().material = m_floorMat;
   }
   
-  m_vecGos.push_back(SceneGraph::createObject(_T("Bush")));
-  m_selectedGO = m_vecGos.back();
-  auto ptrBs = ResourceManager::getReferenceT<Model>(_T("FernBush.obj"));
-  if (ptrBs) {
-    auto renderComp = m_selectedGO->createComponent<RenderComponent>(ptrBs);
-    m_selectedGO->createComponent<AABBCollider>(ptrBs->aabb);
-    //m_selectedGO->getTransform().setPosition(Vector3D(110.0f, 0.0f, 110.0f));
-    //m_selectedGO->getTransform().setScale(Vector3D(0.05f, 0.05f, 0.05f));
-    m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, 2000.0f));
-    m_selectedGO->getTransform().setScale(Vector3D(0.25f, 0.25f, 0.25f));
-
-    m_BushMat = ResourceManager::createMaterial(_T("BushMaterial"));
-
-    auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("FernTarga.tga"));
-    m_BushMat->setTexture(albedoTex, _T("Albedo"));
-
-    std::vector<RenderMesh>& meshes = renderComp->getMeshes();
-    meshes.front().material = m_BushMat;
-  }
-
-  m_vecGos.push_back(SceneGraph::createObject(_T("Stormtrooper")));
-  m_selectedGO = m_vecGos.back();   
-  auto ptrStorm = ResourceManager::getReferenceT<Model>(_T("stormtrooper_dancing.fbx"));
-  if (ptrStorm) {
-    auto rComp = m_selectedGO->createComponent<RenderComponent>(ptrStorm);
-    auto aComp = m_selectedGO->createComponent<AnimatorComponent>();
-    m_selectedGO->createComponent<AABBCollider>(ptrStorm->aabb);
-    //m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, -50.0f));
-    //m_selectedGO->getTransform().setScale(Vector3D(30.0f, 30.0f, 30.0f));
-    //m_selectedGO->getTransform().setRotation(Vector3D(00.0f, Math::PI, 00.0f));
-    m_selectedGO->getTransform().setPosition(Vector3D(200.0f, 0.0f, 150.0f));
-    m_selectedGO->getTransform().setScale(Vector3D(50.0f, 50.0f, 50.0f));
-    m_selectedGO->getTransform().setRotation(Vector3D(00.0f, Math::PI * 1.25f, 00.0f));
-
-    m_StormtrooperMat = ResourceManager::createMaterial(_T("StormtrooperMaterial"));
-
-    auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("Stormtrooper_Diffuse.png"));
-    m_StormtrooperMat->setTexture(albedoTex, _T("Albedo"));
-
-    rComp->getMeshes().front().material = m_StormtrooperMat;
-
-    auto ws = ResourceManager::getReferenceT<Skeleton>(ptrStorm->skeletonName);
-    
-    aComp->setSkeleton(ws);
-
-    for (SizeT i = 0; i < ptrStorm->animationsNames.size(); ++i) {
-      auto wa = ResourceManager::getReferenceT<Animation>(ptrStorm->animationsNames[i]);
-
-      aComp->addAnimation(wa, ptrStorm->animationsNames[i]);
-    }
-
-    aComp->setCurrentAnimation(ptrStorm->animationsNames[0], false);
-    aComp->setTime(1.0f);
-  }
-
-  m_vecGos.push_back(SceneGraph::createObject(_T("Popuko")));
-  m_selectedGO = m_vecGos.back();
-  auto ptrpk = ResourceManager::getReferenceT<Model>(_T("popuko.fbx"));
-  if (ptrpk) {
-    m_selectedGO->createComponent<RenderComponent>(ptrpk);
-    m_selectedGO->createComponent<AABBCollider>(ptrpk->aabb);
-    m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, 200.0f));
-    m_selectedGO->getTransform().setScale(Vector3D(2.0f, 2.0f, 2.0f));
-    m_selectedGO->getTransform().setRotation(Vector3D(0.0f, Math::PI, 0.0f));
-  }
-
-  m_vecGos.push_back(SceneGraph::createObject(_T("HatKid")));
-  m_selectedGO = m_vecGos.back();
-  auto ptrHK = ResourceManager::getReferenceT<Model>(_T("HK_Teen.fbx"));
-  if (ptrHK) {
-    //m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, 25.0f));
-    //m_selectedGO->getTransform().setScale(Vector3D(100.0f, 100.0f, 100.0f));
-    //m_selectedGO->getTransform().setRotation(Vector3D(Math::Math::HALF_PI * 3.0f, Math::PI, 0.0f));
-    m_selectedGO->getTransform().setPosition(Vector3D(-50.0f, 0.0f, 0.0f));
-    m_selectedGO->getTransform().setScale(Vector3D(125.0f, 125.0f, 125.0f));
-    m_selectedGO->getTransform().setRotation(Vector3D(Math::Math::HALF_PI * 3.0f, Math::PI * 0.85f, 0.0f));
-
-    //auto rgbod = m_selectedGO->createComponent<RigidBody3DComponent>();
-    //m_selectedGO->createComponent<BoxCollider>(ptrHK->aabb);
-    m_selectedGO->createComponent<AABBCollider>(ptrHK->aabb);
-    m_selectedGO->createComponent<RenderComponent>(ptrHK);
-
-
-    m_hkBodyMat = ResourceManager::createMaterial(_T("HKBodyMaterial"));
-    m_hkBodySMat = ResourceManager::createMaterial(_T("HKBodySMaterial"));
-    m_hkEyeMat = ResourceManager::createMaterial(_T("HKEyeMaterial"));
-
-    auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_main_mat_BaseColor.tga"));
-    auto emissiveTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_main_mat_Emissive.tga"));
-    auto metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_main_mat_Metallic.tga"));
-    auto roughnessTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_main_mat_Roughness.tga"));
-    m_hkBodyMat->setTexture(albedoTex, _T("Albedo"));
-    m_hkBodyMat->setTexture(emissiveTex, _T("Emisivity"));
-    m_hkBodyMat->setTexture(metallicTex, _T("Metallic"));
-    m_hkBodyMat->setTexture(roughnessTex, _T("Roughness"));
-
-    albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_second_mat_BaseColor.tga"));
-    metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_second_mat_Metallic.tga"));
-    roughnessTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_second_mat_Roughness.tga"));
-    m_hkBodySMat->setTexture(albedoTex, _T("Albedo"));
-    m_hkBodySMat->setTexture(metallicTex, _T("Metallic"));
-    m_hkBodySMat->setTexture(roughnessTex, _T("Roughness"));
-
-    albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("HK_eye_dif.tga"));
-    metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("HK_eye_spc.tga"));
-    m_hkEyeMat->setTexture(albedoTex, _T("Albedo"));
-    m_hkEyeMat->setTexture(metallicTex, _T("Specular"));
-
-    auto renderComp = m_selectedGO->getComponent<RenderComponent>();
-    std::vector<RenderMesh>& meshes = renderComp->getMeshes();
-    meshes[0].material = m_hkBodySMat;
-    meshes[1].material = m_hkBodyMat;
-    meshes[2].material = m_hkEyeMat;
-  }
-
   m_vecGos.push_back(SceneGraph::createObject(_T("Robot")));
   m_selectedGO = m_vecGos.back();
-  auto ptrModel = ResourceManager::getReferenceT<Model>(_T("model.dae"));
+  auto ptrModel = ResourceManager::getReferenceT<Model>(_T("roboto.dae"));
   if (ptrModel) {
     //m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 12.5f, -100.0f));
     //m_selectedGO->getTransform().setScale(Vector3D(10.0f, 10.0f, 10.0f));
@@ -380,11 +259,11 @@ RenderManApp::postInit() {
 
     m_modelMat = ResourceManager::createMaterial(_T("ModelMaterial"));
 
-    auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("default_albedo.tga"));
-    auto emissiveTex = ResourceManager::getReferenceT<TextureCore>(_T("default_emissive.tga"));
-    auto metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("default_metallic.tga"));
-    auto normalTex = ResourceManager::getReferenceT<TextureCore>(_T("default_normal.tga"));
-    auto roughnessTex = ResourceManager::getReferenceT<TextureCore>(_T("default_roughness.tga"));
+    auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("roboto_albedo.tga"));
+    auto emissiveTex = ResourceManager::getReferenceT<TextureCore>(_T("roboto_emissive.tga"));
+    auto metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("roboto_metallic.tga"));
+    auto normalTex = ResourceManager::getReferenceT<TextureCore>(_T("roboto_normal.tga"));
+    auto roughnessTex = ResourceManager::getReferenceT<TextureCore>(_T("roboto_roughness.tga"));
     m_modelMat->setTexture(albedoTex, _T("Albedo"));
     m_modelMat->setTexture(normalTex, _T("Normal"));
     m_modelMat->setTexture(emissiveTex, _T("Emisivity"));
@@ -394,20 +273,7 @@ RenderManApp::postInit() {
     auto rComp = m_selectedGO->getComponent<RenderComponent>();
     rComp->getMeshes().front().material = m_modelMat;
   }
-
-  /*
-  m_vecGos.push_back(SceneGraph::createObject(_T("SkySphere")));
-  m_selectedGO = m_vecGos.back();
-  auto ptrSS = ResourceManager::getReferenceT<Model>(_T("SkySphere100.fbx"));
-  if (ptrSS) {
-    m_selectedGO->createComponent<RenderComponent>(ptrSS);
-    m_selectedGO->createComponent<AABBCollider>(ptrSS->aabb);
-    m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, 0.0f));
-  }
-
-  m_vecGos.push_back(rm_cam);
-  */
-
+  
   m_SzTGosIndex = m_vecGos.size() - 1;
   //m_SzTGosIndex = 0;
   m_selectedGO = m_vecGos[m_SzTGosIndex];
@@ -670,6 +536,7 @@ void
 RenderManApp::loadResources() {
   ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
 
+  //Cubemap
   ImageInfo cubeMapDesc;
   cubeMapDesc.width = 256;
   cubeMapDesc.height = 256;
@@ -680,13 +547,10 @@ RenderManApp::loadResources() {
   ResourceManager::loadResource(_T("GraceDiffuseCubemap.tga"), &cubeMapDesc);
   ResourceManager::loadResource(_T("FilmLut.tga"));
 
-  ResourceManager::loadResource(_T("plane.fbx"));
-  ResourceManager::loadResource(_T("FernBush.obj"));
-  ResourceManager::loadResource(_T("model.dae"));
-  ResourceManager::loadResource(_T("stormtrooper_dancing.fbx"));
-  ResourceManager::loadResource(_T("HK_Teen.fbx"));
-  ResourceManager::loadResource(_T("popuko.fbx"));
+  ResourceManager::loadResource(_T("SkySphere.fbx"));
 
+  //Checker
+  ResourceManager::loadResource(_T("plane.fbx"));
   ResourceManager::loadResource(_T("256_Checker_Diffuse.tga"));
   ResourceManager::loadResource(_T("256_Checker_Displacement.tga"));
   ResourceManager::loadResource(_T("256_Checker_Emissive.tga"));
@@ -698,25 +562,13 @@ RenderManApp::loadResources() {
   ResourceManager::loadResource(_T("256_Checker_SSColor.tga"));
   ResourceManager::loadResource(_T("256_Checker_Thickness.tga"));
 
-  ResourceManager::loadResource(_T("FernTarga.tga"));
-
-  ResourceManager::loadResource(_T("default_albedo.tga"));
-  ResourceManager::loadResource(_T("default_emissive.tga"));
-  ResourceManager::loadResource(_T("default_metallic.tga"));
-  ResourceManager::loadResource(_T("default_normal.tga"));
-  ResourceManager::loadResource(_T("default_roughness.tga"));
-
-  ResourceManager::loadResource(_T("Stormtrooper_Diffuse.png"));
-
-  ResourceManager::loadResource(_T("hatkid_HK_main_mat_BaseColor.tga"));
-  ResourceManager::loadResource(_T("hatkid_HK_main_mat_Emissive.tga"));
-  ResourceManager::loadResource(_T("hatkid_HK_main_mat_Metallic.tga"));
-  ResourceManager::loadResource(_T("hatkid_HK_main_mat_Roughness.tga"));
-  ResourceManager::loadResource(_T("hatkid_HK_second_mat_BaseColor.tga"));
-  ResourceManager::loadResource(_T("hatkid_HK_second_mat_Metallic.tga"));
-  ResourceManager::loadResource(_T("hatkid_HK_second_mat_Roughness.tga"));
-  ResourceManager::loadResource(_T("HK_eye_dif.tga"));
-  ResourceManager::loadResource(_T("HK_eye_spc.tga"));
+  //Roboto
+  ResourceManager::loadResource(_T("roboto.dae"));
+  ResourceManager::loadResource(_T("roboto_albedo.tga"));
+  ResourceManager::loadResource(_T("roboto_emissive.tga"));
+  ResourceManager::loadResource(_T("roboto_metallic.tga"));
+  ResourceManager::loadResource(_T("roboto_normal.tga"));
+  ResourceManager::loadResource(_T("roboto_roughness.tga"));
 }
 
 }

@@ -95,7 +95,7 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   void
   recompile();
 
-  float* luminanceDelta;
+  float luminanceDelta;
   UInt32 screenWidth;
   UInt32 screenHeight;
   UInt32 shadowWidth;
@@ -119,14 +119,24 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   void
   onShutDown();
 
+  /**
+  * 
+  */
   void
   setCubeMap(std::shared_ptr<TextureCore> cubemap);
 
+  /**
+  *
+  */
   void
   setEnviromentMap(std::shared_ptr<TextureCore> enviromentmap);
 
+  /**
+  *
+  */
   void
   setFilmLut(std::shared_ptr<TextureCore> filmLut);
+
   /**
   * Draws a line in debug mode.
   *
@@ -184,6 +194,9 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
  
   /**
   * Draws a cube in debug mode.
+  * This fuctions only works in
+  * debug mode, on release, it
+  * doesn't render the sphere.
   *
   * @points
   *  vector containing all the points to be renderer.
@@ -199,9 +212,60 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
                   const Vector3D& color,
                   const Matrix4x4& transform = Matrix4x4::identityMat4x4);
 
+  /**
+  * Returns a float pointer to modify
+  * the SSAO sample radio parameter.
+  * 
+  * @return
+  *  A pointer to the float value
+  *  used for SSAO sample radio.
+  */
+  FORCEINLINE float*
+  getSSAOSampleRadio() {
+    return &m_fSSAOSampleRadio;
+  };
+
+  /**
+  * Returns a float pointer to modify
+  * the SSAO intensity parameter.
+  *
+  * @return
+  *  A pointer to the float value
+  *  used for SSAO intensity.
+  */
+  FORCEINLINE float*
+  getSSAOIntensity() {
+    return &m_fSSAOIntensity;
+  };
+
+  /**
+  * Returns a float pointer to modify
+  * the SSAO scale parameter.
+  *
+  * @return
+  *  A pointer to the float value
+  *  used for SSAO scale.
+  */
+  FORCEINLINE float*
+  getSSAOScale() {
+    return &m_fSSAOScale;
+  };
+
+  /**
+  * Returns a float pointer to modify
+  * the SSAO bias parameter.
+  *
+  * @return
+  *  A pointer to the float value
+  *  used for SSAO bias.
+  */
+  FORCEINLINE float*
+  getSSAOBias() {
+    return &m_fSSAOBias;
+  };
+
  protected:
 
-  std::shared_ptr<Model> m_quad;
   std::shared_ptr<TextureCore> m_cubemap;
   std::shared_ptr<TextureCore> m_cubemapDiffuse;
   std::shared_ptr<TextureCore> m_FilmLut;
@@ -217,10 +281,15 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   LinesInitData m_LinesInitData;
   LinesDrawData m_LinesDrawData;
 
-  //CS
+  //Screen Space Ambient Occlussion: Compute shader
   SSAOPass m_SSAOPass;
   SSAOInitData m_SSAOInitData;
   SSAODrawData m_SSAODrawData;
+
+  float m_fSSAOSampleRadio;
+  float m_fSSAOIntensity;
+  float m_fSSAOScale;
+  float m_fSSAOBias;
 
   //CS
   HorBlurPass m_HorBlurPass;

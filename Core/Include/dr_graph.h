@@ -183,7 +183,13 @@ class DR_CORE_EXPORT SceneGraph : public Module<SceneGraph>
   *
   */
   void
-  registerLight(LightComponent* light);
+  addLight(LightComponent* light);
+
+  /**
+  *
+  */
+  void
+  removeLight(LightComponent* light);
 
   //Called when all initial objects
   //and components are created
@@ -271,6 +277,7 @@ class DR_CORE_EXPORT SceneGraph : public Module<SceneGraph>
   RenderCommandBuffer m_buffers[2];
   RenderCommandBuffer* m_producer = nullptr;
   RenderCommandBuffer* m_consumer = nullptr;
+  std::vector<LightComponent*> m_vecLights;
   std::unordered_map<TString, LightComponent*> m_umLights;
 };
 
