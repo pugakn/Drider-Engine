@@ -83,23 +83,6 @@ InputEditor::createInputEditor(GameComponent &_component) {
     {CLASS_NAME_ID(LightComponent), dr_make_unique<LightInputs, GameComponent&>}
   };
 
-  /*auto component = dr_make_unique<T>(*this,
-	  std::forward<Args>(args)...);
-
-  T* rawPtr = component.get();
-
-  addComponent(std::move(component));
-
-  auto&t = m_components.back();
-
-  t->onCreate();
-
-  if (m_isStarted) {
-	  t->onStart();
-  }
-
-  return rawPtr;*/
-
   return m_factories[_component.getClassID()](_component);
 }
 

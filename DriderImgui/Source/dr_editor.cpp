@@ -3,7 +3,11 @@
 #include <iostream>
 
 #include <d3d11.h>
+//#include <stdlib.h>
 
+#include <dr_animator_component.h>
+#include <dr_box_collider.h>
+#include <dr_camera_component.h>
 #include <dr_camera_manager.h>
 #include <dr_device.h>
 #include <dr_depth_stencil_state.h>
@@ -15,18 +19,25 @@
 #include <dr_image_info.h>
 #include <dr_input_manager.h>
 #include <dr_keyboard.h>
+#include <dr_light_component.h>
 #include <dr_logger.h>
 #include <dr_material.h>
 #include <dr_model.h>
 #include <dr_mouse.h>
+#include <dr_physics_manager.h>
 #include <dr_renderman.h>
 #include <dr_render_component.h>
 #include <dr_resource_manager.h>
+#include <dr_rigidbody_component.h>
+#include <dr_script_component.h>
+#include <dr_sound_component.h>
+#include <dr_sphere_collider.h>
 #include <dr_time.h>
 
 #include "imgui.h"
 #include "imgui_impl_dx11.h"
 #include "imgui_impl_win32.h"
+#include "imgui_stdlib.h"
 
 namespace driderSDK {
 
@@ -41,62 +52,60 @@ void Editor::postInit()
   Time::startUp();
   CameraManager::startUp();
   CameraManager::createCamera(_T("PATO_CAM"),
-                              { 0.0f, 150.0f, -400.0f },
-                              { 0.0f, 50.f, 0.0f },
-                              m_viewport,
-                              45.f,
-                              //1024, 1024,
-                              0.1f,
-                              10000.f);
+    { 0.0f, 150.0f, -400.0f },
+    { 0.0f, 50.f, 0.0f },
+    m_viewport,
+    45.f,
+    //1024, 1024,
+    0.1f,
+    10000.f);
   CameraManager::setActiveCamera(_T("PATO_CAM"));
   RenderManager::startUp();
   SceneGraph::startUp();
   ResourceManager::startUp();
-
-  m_sceneViewport = Viewport{0, 0, 480, 320};
+  PhysicsManager::startUp();
+  m_sceneViewport = Viewport{ 0, 0, 480, 320 };
 
   auto deviceObj = GraphicsDriver::API().getDevice().getAPIObject();
   auto deviceContextObj = GraphicsDriver::API().getDeviceContext().getAPIObject();
 
   auto d3dDev = static_cast<ID3D11Device*>(deviceObj);
   auto d3dDevCont = static_cast<ID3D11DeviceContext*>(deviceContextObj);
-  
-  IMGUI_CHECKVERSION();
 
-  ImGui::CreateContext();
-  ImGui_ImplWin32_Init(m_hwnd);
-  ImGui_ImplDX11_Init(d3dDev, d3dDevCont);
-
-  ImGui::StyleColorsDark();
   m_initFlag = true;
-  m_selectedItem = 0;
   initRT();
   initCallbacks();
   initSceneGraph();
   SceneGraph::start();
+  m_selectedGameObject = SceneGraph::getRoot();
+
+  ImGui::CreateContext();
+  ImGui_ImplWin32_Init(m_hwnd);
+  ImGui_ImplDX11_Init(d3dDev, d3dDevCont);
+  ImGui::StyleColorsDark();
 }
 
 void Editor::initCallbacks()
 {
   auto mouseButtonDown =
-  [](UInt32 b, bool down)
+    [](UInt32 b, bool down)
   {
-    auto& io = ImGui::GetIO(); 
+    auto& io = ImGui::GetIO();
     io.MouseDown[b] = io.MouseClicked[b] = down;
   };
 
-  auto mouseMove = 
-  []() { 
+  auto mouseMove =
+    []() {
     auto& io = ImGui::GetIO();
     auto pos = Mouse::getPosition();
     io.MousePos.x = pos.x; io.MousePos.y = pos.y;
   };
 
-  auto wheelMoved = 
-  []() {
+  auto wheelMoved =
+    []() {
     auto delta = Mouse::getDisplacement().z;
     auto& io = ImGui::GetIO();
-    io.MouseWheel += delta / 120; 
+    io.MouseWheel += delta / 120;
   };
 
   Mouse::addButtonCallback(MOUSE_INPUT_EVENT::kButtonPressed,
@@ -104,8 +113,8 @@ void Editor::initCallbacks()
     std::bind(mouseButtonDown, 0, true));
 
   Mouse::addButtonCallback(MOUSE_INPUT_EVENT::kButtonReleased,
-                           MOUSE_BUTTON::kLeft,
-                           std::bind(mouseButtonDown, 0, false));
+    MOUSE_BUTTON::kLeft,
+    std::bind(mouseButtonDown, 0, false));
 
   Mouse::addButtonCallback(MOUSE_INPUT_EVENT::kButtonPressed,
     MOUSE_BUTTON::kRight,
@@ -119,7 +128,7 @@ void Editor::initCallbacks()
   Mouse::addMovedCallback(wheelMoved);
 
   auto charEntered =
-  [](KEY_CODE::E key)
+    [](KEY_CODE::E key)
   {
     auto& io = ImGui::GetIO();
     UInt16 character = static_cast<UInt16>(Keyboard::getAsChar(key));
@@ -128,7 +137,7 @@ void Editor::initCallbacks()
   };
 
   auto keyUp =
-  [](KEY_CODE::E key)
+    [](KEY_CODE::E key)
   {
     auto& io = ImGui::GetIO();
     UInt16 character = static_cast<UInt16>(Keyboard::getAsChar(key));
@@ -163,19 +172,19 @@ void Editor::initRT()
 }
 
 void Editor::postUpdate()
-{ 
+{
   Time::update();
   InputManager::update();
 
-  SceneGraph::getRoot()->getTransform().rotate({0.f, Math::HALF_PI * Time::getDelta(), 0.f});
-
+  PhysicsManager::simulate();
   SceneGraph::update();
+  PhysicsManager::TestCollision();
   ImGui_ImplDX11_NewFrame();
   ImGui_ImplWin32_NewFrame();
   ImGui::NewFrame();
 
   ImGui::ShowTestWindow();
-  
+
   //flags |= ImGuiWindowFlags_NoMove;
   //flags |= ImGuiWindowFlags_NoResize;
   //flags |= ImGuiWindowFlags_NoTitleBar;
@@ -186,8 +195,8 @@ void Editor::postUpdate()
   //ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
   ////::Image();
   //ImGui::End();
-  
-  float mainMenuBarheight;
+
+  float mainMenuBarheight = 0;
   if (ImGui::BeginMainMenuBar())
   {
     mainMenuBarheight = ImGui::GetWindowSize().y;
@@ -207,11 +216,9 @@ void Editor::postUpdate()
     }
     ImGui::EndMainMenuBar();
   }
-  
+
   static bool open = true;
   ImGuiWindowFlags flags = 0;
-  float unitWidth = m_viewport.width * 0.25f;
-  float unitHeight = (m_viewport.height - mainMenuBarheight) * 0.33f;
 
   flags = 0;
   if (m_initFlag)
@@ -225,6 +232,7 @@ void Editor::postUpdate()
     loadHierarchy();
     ImGui::End();
     ImGui::Begin("Inspector", &open, flags);
+    loadInspector();
     ImGui::End();
     ImGui::Begin("File Manager", &open, flags);
     ImGui::End();
@@ -239,21 +247,21 @@ void Editor::postRender()
   m_RTDPTH->clear(GraphicsAPI::getDeviceContext(), 1, 0);
 
   RenderManager::instance().draw(*m_RT, *m_RTDPTH);
-  
+
   //Draw End
   GraphicsAPI::getDepthStencilState(DR_DEPTH_STENCIL_STATES::kDepthR).set(GraphicsAPI::getDeviceContext(), 1);
   GraphicsAPI::getBackBufferRT().set(GraphicsAPI::getDeviceContext(), GraphicsAPI::getDepthStencil());
   //.set(GraphicsAPI::getDeviceContext(), 0);
   //m_editorQuad.draw();
-  
-  
+
+
   if (ImGui::Begin("Scene")) {
     float width = ImGui::GetWindowWidth();
     float height = ImGui::GetWindowHeight();
     if (m_sceneViewport.width != width || m_sceneViewport.height != height)
     {
-      m_sceneViewport.width = width;
-      m_sceneViewport.height = height;
+      m_sceneViewport.width = (UInt32)width;
+      m_sceneViewport.height = (UInt32)height;
       initRT();
       CameraManager::getActiveCamera()->setViewport(m_sceneViewport);
     }
@@ -264,14 +272,14 @@ void Editor::postRender()
 
 
   GraphicsAPI::getDepthStencilState(DR_DEPTH_STENCIL_STATES::kDepthRW).set(GraphicsAPI::getDeviceContext(), 1);
-  
+
   ImGui::Render();
 
   GraphicsDriver::API().clear();
 
   ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
-  GraphicsDriver::API().swapBuffers();  
+  GraphicsDriver::API().swapBuffers();
 }
 
 void Editor::postDestroy()
@@ -279,6 +287,7 @@ void Editor::postDestroy()
   ImGui_ImplDX11_Shutdown();
   ImGui_ImplWin32_Shutdown();
   ImGui::DestroyContext();
+  PhysicsManager::shutDown();
   ResourceManager::shutDown();
   SceneGraph::shutDown();
   CameraManager::shutDown();
@@ -366,6 +375,7 @@ void driderSDK::Editor::initImguiMenus(float mainMenuBarheight)
   ImGui::SetNextWindowPos({ unitWidth * 3, mainMenuBarheight });
   ImGui::SetNextWindowSize({ unitWidth, unitHeight * 3 });
   ImGui::Begin("Inspector", &open, flags);
+  loadInspector();
   ImGui::End();
 
   ImGui::SetNextWindowPos({ 0, mainMenuBarheight + 2 * unitHeight });
@@ -380,24 +390,23 @@ void driderSDK::Editor::initImguiMenus(float mainMenuBarheight)
 void driderSDK::Editor::loadHierarchy()
 {
   if (ImGui::Button("Create"))
-    ImGui::OpenPopup("my_file_popup");
-
-  if (ImGui::Button("DeleteNode")) {
-    UInt32 rootID = SceneGraph::getRoot()->getID();
-    auto n = SceneGraph::getRoot()->findNode(m_selectedItem);
-    if (rootID != m_selectedItem)
-    {
-      auto n = SceneGraph::getRoot()->findNode(m_selectedItem);
-      n->getParent()->removeChild(n);
-      n->destroy();
-      m_selectedItem = SceneGraph::getRoot()->getID();
-    }
-  }
-  if (ImGui::BeginPopup("my_file_popup"))
+    ImGui::OpenPopup("menuHierarchy");
+  ImGui::SameLine();
+  if (ImGui::BeginPopup("menuHierarchy"))
   {
     loadMenuHierarchy();
     ImGui::EndPopup();
   }
+
+  if (ImGui::Button("DeleteNode")) {
+    if (SceneGraph::getRoot() != m_selectedGameObject)
+    {
+      m_selectedGameObject->getParent()->removeChild(m_selectedGameObject);
+      m_selectedGameObject->destroy();
+      m_selectedGameObject = SceneGraph::getRoot();
+    }
+  }
+
   std::function<void(const std::vector<std::shared_ptr<GameObject>>&)> search =
     [&](const std::vector<std::shared_ptr<GameObject>>& children) {
 
@@ -405,19 +414,19 @@ void driderSDK::Editor::loadHierarchy()
       auto name = StringUtils::toString(it->getName());
       auto id = it->getID();
       ImGui::PushID(id);
-      ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | (m_selectedItem == id ? ImGuiTreeNodeFlags_Selected : 0);
+      ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | (m_selectedGameObject == it ? ImGuiTreeNodeFlags_Selected : 0);
       if (it->getChildrenCount() == 0)
       {
         node_flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
-        bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)id, node_flags, name.c_str());
+        ImGui::TreeNodeEx((void*)(intptr_t)id, node_flags, name.c_str());
         if (ImGui::IsItemClicked())
-          m_selectedItem = id;
+          m_selectedGameObject = it;
       }
       else
       {
         bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)id, node_flags, name.c_str());
         if (ImGui::IsItemClicked())
-          m_selectedItem = id;
+          m_selectedGameObject = it;
         if (node_open)
         {
           auto children2 = it->getChildren();
@@ -433,15 +442,14 @@ void driderSDK::Editor::loadHierarchy()
   if (ImGui::TreeNode(name.c_str()))
   {
     if (ImGui::IsItemClicked())
-      m_selectedItem = 0;
+      m_selectedGameObject = root;
     static bool align_label_with_current_x_position = false;
     if (align_label_with_current_x_position)
       ImGui::Unindent(ImGui::GetTreeNodeToLabelSpacing());
 
     static UInt32 selection_mask = 0; // Dumb representation of what may be user-side selection state. You may carry selection state inside or outside your objects in whatever format you see fit.
-    int node_clicked = -1;                // Temporary storage of what node we have clicked to process selection at the end of the loop. May be a pointer to your own node type, etc.
     ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, ImGui::GetFontSize()); // Increase spacing to differentiate leaves from expanded contents.
-    
+
     auto children = SceneGraph::getRoot()->getChildren();
     search(children);
 
@@ -456,18 +464,151 @@ void driderSDK::Editor::loadHierarchy()
 void driderSDK::Editor::loadMenuHierarchy()
 {
   if (ImGui::MenuItem("New Game Object")) {
-    auto father = SceneGraph::getRoot()->findNode(m_selectedItem);
     //TODO: Search parent name
-    if (!father)
+    if (!m_selectedGameObject)
     {
-      father = SceneGraph::getRoot();
+      m_selectedGameObject = SceneGraph::getRoot();
     }
 
     auto obj = SceneGraph::createObject(_T("GameObject"));
     SceneGraph::instanciate(obj,
-      father,
+      m_selectedGameObject,
       { 0.0f, 0.0f, 0.0f },
       { 0.0f, 0.0f, 0.0f });
+  }
+}
+
+void Editor::loadInspector()
+{
+  if (m_selectedGameObject == SceneGraph::getRoot()) { return; }
+
+  if (ImGui::Button("Add Component"))
+    ImGui::OpenPopup("menuAddComponent");
+  if (ImGui::BeginPopup("menuAddComponent"))
+  {
+    loadMenuAddComponent();
+    ImGui::EndPopup();
+  }
+  auto temp = m_selectedGameObject->getName();
+  ImGui::Text("Name:"); ImGui::SameLine();
+  if (ImGui::InputText("##nameGO",
+    &temp)) {
+
+    m_selectedGameObject->setName(temp);
+  }
+
+  //TODO: Mover a un archivo de utils y hacer template
+  struct MagicTrick
+  {
+    Vector3D value;
+    bool valid = false;
+    
+    operator Vector3D()
+    {
+      return value;
+    }    
+
+    operator bool()
+    {
+      return valid;
+    }
+  };
+  
+  auto maxSize = ImGui::CalcTextSize("Position");
+
+  auto InputFloat3Drag = [&maxSize](const char* name, Vector3D original, float dragVel = 1.0f) -> MagicTrick {
+    MagicTrick trick{{}, false};
+   
+    ImGui::PushItemWidth(maxSize.x);
+    ImGui::LabelText((std::string("##") + name + "Label").c_str(), name);
+    //Para modificar X,Y,Z al mismo tiempo
+    if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
+      float delta = Mouse::getDisplacement().x * dragVel;
+      original += Vector3D(delta, delta, delta);
+      trick.valid = true;
+      ImGui::EndDragDropSource();
+    }
+    ImGui::PopItemWidth();
+
+    ImGui::SameLine();
+    ImGui::PushItemWidth(-1);
+    if (ImGui::DragFloat3((std::string("##") + name + "Input").c_str(), original.ptr(), dragVel) || trick.valid) {
+      trick.valid = true;
+      trick.value = original;
+    }
+    ImGui::PopItemWidth();
+
+    return trick;
+  };
+
+  Transform& transform = m_selectedGameObject->getTransform();
+  if (auto newPos = InputFloat3Drag("Position", transform.getPosition())) {
+    transform.setPosition(newPos);
+  }
+      
+  if (auto newRot = InputFloat3Drag("Rotation", transform.getEulerAngles(), 0.01f)) {
+    transform.setRotation(newRot);
+  }
+
+  if (auto newScale = InputFloat3Drag("Scale", transform.getScale())) {
+    
+    transform.setScale(newScale);
+  }
+  
+  auto leftPoint = ImGui::GetCursorScreenPos();
+  
+  leftPoint.y += 5.f;
+
+  auto rightPoint = ImVec2(leftPoint.x + ImGui::GetWindowWidth(), leftPoint.y);
+  
+  //Separador
+  ImGui::GetWindowDrawList()->AddLine(leftPoint, rightPoint, IM_COL32(75, 75, 255,255), 3.f);
+  
+  leftPoint.y += 5.f;
+
+  ImGui::SetCursorScreenPos(leftPoint);
+
+  auto components = m_selectedGameObject->getComponents<GameComponent>();
+  for (auto component : components) {
+    ImGui::Text(StringUtils::toString(component->getName()).c_str());
+  }
+
+}
+
+void Editor::loadMenuAddComponent()
+{
+  if (m_selectedGameObject == SceneGraph::getRoot()) { return; }
+
+  if (ImGui::MenuItem("Animator")) {
+    m_selectedGameObject->createComponent<AnimatorComponent>();
+  }
+  if (ImGui::BeginMenu("Collider")) {
+    if (ImGui::MenuItem("Sphere"))
+    {
+      m_selectedGameObject->createComponent<RigidBody3DComponent>();
+      m_selectedGameObject->createComponent<SphereCollider>(1.f, Vector3D(0, 0, 0));
+    }
+    if (ImGui::MenuItem("Box"))
+    {
+      m_selectedGameObject->createComponent<RigidBody3DComponent>();
+      m_selectedGameObject->createComponent<BoxCollider>(AABB(1.f, 1.f, 1.f, Vector3D(0, 0, 0)));
+    }
+    ImGui::EndMenu();
+  }
+  if (ImGui::MenuItem("Camera")) {
+    m_selectedGameObject->createComponent<CameraComponent>();
+  }
+  if (ImGui::MenuItem("Ligth")) {
+    m_selectedGameObject->createComponent<LightComponent>();
+  }
+  if (ImGui::MenuItem("Render")) {
+    m_selectedGameObject->createComponent<RenderComponent>(std::shared_ptr<Model>());
+  }
+  if (ImGui::MenuItem("Script")) {
+    m_selectedGameObject->createComponent<ScriptComponent>();
+  }
+  if (ImGui::MenuItem("Sound")) {
+    m_selectedGameObject->createComponent<SoundComponent>();
   }
 }
 

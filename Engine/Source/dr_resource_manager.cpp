@@ -361,7 +361,7 @@ ResourceManager::createDummyTexture() {
     }
     value = value ^ 255;
   }
- 
+
   std::memcpy(imageInfo.data.data(), matrix[0][0].d, 256 * 256 * 4);
 
   texture->init(&imageInfo);

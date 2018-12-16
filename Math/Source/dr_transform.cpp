@@ -73,14 +73,18 @@ Transform::getRotation() const {
     
     m_direction = quat.getDirection();
 
-    m_eulerAngles = rightDir.eulerAngles();
+    //m_eulerAngles = rightDir.eulerAngles();
+    m_eulerAngles.x = Math::aCos(m_rotX.vector1.y);
+    m_eulerAngles.y = Math::aCos(m_rotY.vector0.x);
+    m_eulerAngles.z = Math::aCos(m_rotZ.vector0.x);
 
     /**
     * Set from 0 to 2PI
     */
-    m_eulerAngles.x = Radian(m_eulerAngles.x).unwind();
+    /*m_eulerAngles.x = Radian(m_eulerAngles.x).unwind();
     m_eulerAngles.y = Radian(m_eulerAngles.y).unwind();
-    m_eulerAngles.z = Radian(m_eulerAngles.z).unwind();
+    m_eulerAngles.z = Radian(m_eulerAngles.z).unwind();*/
+    
     
     m_outdatedRotation = false;
   }

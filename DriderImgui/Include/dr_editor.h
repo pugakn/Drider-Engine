@@ -4,6 +4,7 @@
 #include <dr_depth_stencil.h>
 #include <dr_gfx_memory.h>
 #include <dr_render_target.h>
+#include <dr_graph.h>
 #include <dr_viewport.h>
 
 namespace driderSDK {
@@ -24,12 +25,15 @@ class Editor : public Application
   void initImguiMenus(float mainMenuBarheight);
   void loadHierarchy();
   void loadMenuHierarchy();
+  void loadInspector();
+  void loadMenuAddComponent();
+
   GFXShared<RenderTarget> m_RT;
   GFXShared<DepthStencil> m_RTDPTH;
   Viewport m_sceneViewport;
   float m_luminanceDelta;
   bool  m_initFlag;
-  UInt32 m_selectedItem;
+  SceneGraph::SharedGameObject m_selectedGameObject;
 };
 
 }
