@@ -482,6 +482,8 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_GBufferDrawData.models = &queryRequest;
   m_GBufferDrawData.OutRt = m_RTGBuffer.get();
   m_GBufferDrawData.dsOptions = m_GBufferDSoptions.get();
+  m_GBufferDrawData.skysphere = &(*m_SkySphere);
+  m_GBufferDrawData.cubeMapTex = m_cubemap.get();
   m_GBufferPass.draw(&m_GBufferDrawData);
 
   m_LinesDrawData.activeCam = mainCam;
@@ -668,6 +670,11 @@ RenderManager::onStartUp() {
 void
 RenderManager::onShutDown() {
   exit();
+}
+
+void
+RenderManager::setSkySphere(std::shared_ptr<Model> skysphere) {
+  m_SkySphere = skysphere;
 }
 
 void

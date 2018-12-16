@@ -185,6 +185,7 @@ RenderManApp::postInit() {
 
   loadResources();
 
+  RenderManager::instance().setSkySphere(ResourceManager::getReferenceT<Model>(_T("SkySphere.fbx")));
   RenderManager::instance().setCubeMap(ResourceManager::getReferenceT<TextureCore>(_T("GraceCubemap.tga")));
   RenderManager::instance().setEnviromentMap(ResourceManager::getReferenceT<TextureCore>(_T("GraceDiffuseCubemap.tga")));
   RenderManager::instance().setFilmLut(ResourceManager::getReferenceT<TextureCore>(_T("FilmLut.tga")));
@@ -543,11 +544,10 @@ RenderManApp::loadResources() {
   cubeMapDesc.textureDimension = DR_DIMENSION::kCUBE_MAP;
   cubeMapDesc.channels = DR_FORMAT::kB8G8R8A8_UNORM_SRGB;
 
+  ResourceManager::loadResource(_T("SkySphere.fbx"));
   ResourceManager::loadResource(_T("GraceCubemap.tga"), &cubeMapDesc);
   ResourceManager::loadResource(_T("GraceDiffuseCubemap.tga"), &cubeMapDesc);
   ResourceManager::loadResource(_T("FilmLut.tga"));
-
-  ResourceManager::loadResource(_T("SkySphere.fbx"));
 
   //Checker
   ResourceManager::loadResource(_T("plane.fbx"));

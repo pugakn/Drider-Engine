@@ -120,6 +120,12 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   onShutDown();
 
   /**
+  *
+  */
+  void
+  setSkySphere(std::shared_ptr<Model> cubemap);
+
+  /**
   * 
   */
   void
@@ -269,19 +275,36 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   std::shared_ptr<TextureCore> m_cubemap;
   std::shared_ptr<TextureCore> m_cubemapDiffuse;
   std::shared_ptr<TextureCore> m_FilmLut;
+  std::shared_ptr<Model> m_SkySphere;
 
-  //VS & FS
+  /**
+  * GBuffer.
+  * Uses: Vertex and fragment shader.
+  * Vertex: Used to transform vertex to
+  *         world view projection space.
+  * Fragment: Injects information to GBuffer RT's.
+  */
   GBufferPass m_GBufferPass;
   GBufferInitData m_GBufferInitData;
   GBufferDrawData m_GBufferDrawData;
   GFXUnique<DepthStencil> m_GBufferDSoptions;
 
-  //VS & FS
+  /**
+  * Lines.
+  * Uses: Vertex and fragment shader.
+  * Vertex: Used to transform line start and
+  *         end to world view projection space.
+  * Fragment: Used to store maps information to render targets.
+  */
   LinesPass m_LinesPass;
   LinesInitData m_LinesInitData;
   LinesDrawData m_LinesDrawData;
 
-  //Screen Space Ambient Occlussion: Compute shader
+  /**
+  * Screen Space Ambient Occlusion.
+  * Uses: Compute shader.
+  * Compute shader: Computes the half sphere occlussion.
+  */
   SSAOPass m_SSAOPass;
   SSAOInitData m_SSAOInitData;
   SSAODrawData m_SSAODrawData;
@@ -291,12 +314,20 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   float m_fSSAOScale;
   float m_fSSAOBias;
 
-  //CS
+  /**
+  * Horizontal blur.
+  * Uses: Compute shader.
+  * Compute shader: Horizontal blur.
+  */
   HorBlurPass m_HorBlurPass;
   HorBlurInitData m_HorBlurInitData;
   HorBlurDrawData m_HorBlurDrawData;
 
-  //CS
+  /**
+  * Vertical blur.
+  * Uses: Compute shader.
+  * Compute shader: Verticall blur.
+  */
   VerBlurPass m_VerBlurPass;
   VerBlurInitData m_VerBlurInitData;
   VerBlurDrawData m_VerBlurDrawData;
