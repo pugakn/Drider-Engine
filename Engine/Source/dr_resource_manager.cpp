@@ -130,14 +130,13 @@ ResourceManager::loadResource(const TString& resourceName,
 }
 
 void
-ResourceManager::saveScene(const String name) {
+ResourceManager::saveScene(const String pathName) {
   auto &rm = ResourceManager::instance();
   auto &sg = SceneGraph::instance();
   
   FileSystem fileSystem;
   File sceneFile;
-  String pathName = name + ".txt";
-  if(fileSystem.CreateAndOpen(StringUtils::toTString(pathName).c_str(),
+  if(fileSystem.CreateAndOpen(StringUtils::toTString(pathName + ".txt").c_str(),
                            sceneFile)) {
     //sceneFile.m_file << name;
     //sceneFile.m_file << sg.getRoot()->gameObjectsCount();
@@ -156,7 +155,7 @@ ResourceManager::saveScene(const String name) {
 void
 ResourceManager::loadScene(const String name) {
   File sceneFile;
-  if(sceneFile.Open(StringUtils::toTString(name) + L".txt")) {
+  if(sceneFile.Open(StringUtils::toTString(name))) {
     Int32 numChildsRoot;
     sceneFile.m_file >> numChildsRoot;
     

@@ -43,6 +43,7 @@
 #include "imgui.h"
 #include "imgui_impl_dx11.h"
 #include "imgui_impl_win32.h"
+#include "ImGuiFileDialog.h"
 #include "imgui_stdlib.h"
 #include "imguifilesystem.h"
 namespace driderSDK {
@@ -58,13 +59,13 @@ void Editor::postInit()
   Time::startUp();
   CameraManager::startUp();
   CameraManager::createCamera(_T("PATO_CAM"),
-    { 0.0f, 150.0f, -400.0f },
-    { 0.0f, 50.f, 0.0f },
-    m_viewport,
-    45.f,
-    //1024, 1024,
-    0.1f,
-    10000.f);
+                              { 0.0f, 150.0f, -400.0f },
+                              { 0.0f, 50.f, 0.0f },
+                              m_viewport,
+                              45.f,
+                              //1024, 1024,
+                              0.1f,
+                              10000.f);
   CameraManager::setActiveCamera(_T("PATO_CAM"));
   RenderManager::startUp();
   ContextManager::startUp();
@@ -212,8 +213,23 @@ void Editor::postUpdate()
   if (ImGui::BeginMainMenuBar())
   {
     mainMenuBarheight = ImGui::GetWindowSize().y;
+
     if (ImGui::BeginMenu("File"))
     {
+      if (ImGui::MenuItem("Load Scene", "CTRL+L")) {
+        //D:\\This PC\\Documentos\\Drider-Engine\\DriderImgui\\Resources
+        //FileSystem::ScanDir("D:\\This PC\\Documentos\\Drider-Engine\\DriderImgui\\Resources");
+        showFileDilog = true;
+
+      }
+
+      if (ImGui::MenuItem("Save Scene", "CTRL+S")) {
+        //D:\\This PC\\Documentos\\Drider-Engine\\DriderImgui\\Resources
+        //FileSystem::ScanDir("D:\\This PC\\Documentos\\Drider-Engine\\DriderImgui\\Resources");
+        showSaveFileDialog = true;
+
+      }
+
       ImGui::EndMenu();
     }
     if (ImGui::BeginMenu("Edit"))
@@ -229,6 +245,20 @@ void Editor::postUpdate()
     ImGui::EndMainMenuBar();
   }
 
+  if(showFileDilog) {
+    ImGui::OpenPopup("Choose File");
+    showFileDilog = false;
+  }
+
+  if (showSaveFileDialog) {
+    ImGui::OpenPopup("Save Scene");
+    showSaveFileDialog = false;
+  }
+
+  loadScene();
+  saveScene();
+
+
   static bool open = true;
   ImGuiWindowFlags flags = 0;
 
@@ -240,9 +270,12 @@ void Editor::postUpdate()
   }
   else
   {
-    ImGui::Begin("Hierarchy", &open, flags);
+
+if(ImGui::Begin("Hierarchy", &open, flags)) {
+
     loadHierarchy();
     ImGui::End();
+}
     ImGui::Begin("Inspector", &open, flags);
     loadInspector();
     ImGui::End();
@@ -463,6 +496,7 @@ void driderSDK::Editor::initImguiMenus(float mainMenuBarheight)
   ImGuiWindowFlags flags = 0;
   float unitWidth = m_viewport.width * 0.25f;
   float unitHeight = (m_viewport.height - mainMenuBarheight) * 0.33f;
+  showFileDilog = false;
 
   ImGui::SetNextWindowPos({ 0, mainMenuBarheight });
   ImGui::SetNextWindowSize({ unitWidth, unitHeight * 2 });
@@ -600,23 +634,23 @@ void Editor::loadInspector()
   {
     Vector3D value;
     bool valid = false;
-    
+
     operator Vector3D()
     {
       return value;
-    }    
+    }
 
     operator bool()
     {
       return valid;
     }
   };
-  
+
   auto maxSize = ImGui::CalcTextSize("Position");
 
   auto InputFloat3Drag = [&maxSize](const char* name, Vector3D original, float dragVel = 1.0f) -> MagicTrick {
     MagicTrick trick{{}, false};
-   
+
     ImGui::PushItemWidth(maxSize.x);
     ImGui::LabelText((std::string("##") + name + "Label").c_str(), name);
     //Para modificar X,Y,Z al mismo tiempo
@@ -643,25 +677,25 @@ void Editor::loadInspector()
   if (auto newPos = InputFloat3Drag("Position", transform.getPosition())) {
     transform.setPosition(newPos);
   }
-      
+
   if (auto newRot = InputFloat3Drag("Rotation", transform.getEulerAngles(), 0.01f)) {
     transform.setRotation(newRot);
   }
 
   if (auto newScale = InputFloat3Drag("Scale", transform.getScale())) {
-    
+
     transform.setScale(newScale);
   }
-  
+
   auto leftPoint = ImGui::GetCursorScreenPos();
-  
+
   leftPoint.y += 5.f;
 
   auto rightPoint = ImVec2(leftPoint.x + ImGui::GetWindowWidth(), leftPoint.y);
-  
+
   //Separador
   ImGui::GetWindowDrawList()->AddLine(leftPoint, rightPoint, IM_COL32(75, 75, 255,255), 3.f);
-  
+
   leftPoint.y += 5.f;
 
   ImGui::SetCursorScreenPos(leftPoint);
@@ -718,4 +752,58 @@ void Editor::loadFileManager()
   ImGuiFs::DirectoryGetDirectories("Resources", names);
 }
 
+
+void driderSDK::Editor::loadScene() {
+  if (ImGuiFileDialog::Instance()->FileDialog("Choose File", ".txt\0\0", ".", ""))
+  {
+    static std::string filePathName = "";
+    static std::string path = "";
+    static std::string fileName = "";
+    static std::string filter = "";
+
+    if (ImGuiFileDialog::Instance()->IsOk == true)
+    {
+      filePathName = ImGuiFileDialog::Instance()->GetFilepathName();
+      path = ImGuiFileDialog::Instance()->GetCurrentPath();
+      fileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
+      filter = ImGuiFileDialog::Instance()->GetCurrentFilter();
+
+      ResourceManager::loadScene(filePathName);
+    }
+    else
+    {
+      filePathName = "";
+      path = "";
+      fileName = "";
+      filter = "";
+    }
+  }
+}
+
+void driderSDK::Editor::saveScene() {
+  if (ImGuiFileDialog::Instance()->FileDialog("Save Scene", ".txt\0\0", ".", ""))
+  {
+    static std::string filePathName = "";
+    static std::string path = "";
+    static std::string fileName = "";
+    static std::string filter = "";
+
+    if (ImGuiFileDialog::Instance()->IsOk == true)
+    {
+      filePathName = ImGuiFileDialog::Instance()->GetFilepathName();
+      path = ImGuiFileDialog::Instance()->GetCurrentPath();
+      fileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
+      filter = ImGuiFileDialog::Instance()->GetCurrentFilter();
+
+      //ResourceManager::saveScene(filePathName);
+    }
+    else
+    {
+      filePathName = "";
+      path = "";
+      fileName = "";
+      filter = "";
+    }
+  }
+}
 }

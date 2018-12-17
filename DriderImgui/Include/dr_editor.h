@@ -11,7 +11,7 @@ namespace driderSDK {
 
 class Editor : public Application
 {
-  // Inherited via 
+  // Inherited via
   private:
   void initCallbacks();
   void initRT();
@@ -26,6 +26,8 @@ class Editor : public Application
   void initImguiMenus(float mainMenuBarheight);
   void loadHierarchy();
   void loadMenuHierarchy();
+  void loadScene();
+  void saveScene();
   void loadInspector();
   void loadMenuAddComponent();
   void loadFileManager();
@@ -36,6 +38,10 @@ class Editor : public Application
   bool  m_initFlag;
   GameObject* m_root;
 
+  UInt32 m_selectedItem;
+
+  bool showFileDilog;
+  bool showSaveFileDialog;
   SceneGraph::SharedGameObject m_selectedGameObject;
 };
 

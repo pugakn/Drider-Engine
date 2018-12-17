@@ -100,7 +100,7 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager>
   *
   */
   static void
-  saveScene(const String name);
+  saveScene(const String pathName);
 
   /**
   * Load the scene from file

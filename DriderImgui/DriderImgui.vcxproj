@@ -22,7 +22,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{A4A72C7A-1FF6-4AD5-AF99-9DCC9CFCFAA4}</ProjectGuid>
     <RootNamespace>DriderImgui</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -166,6 +166,7 @@
     <ClCompile Include="Source\dr_sphere_collider_inputs.cpp" />
     <ClCompile Include="Source\imgui.cpp" />
     <ClCompile Include="Source\imguifilesystem.cpp" />
+    <ClCompile Include="Source\ImGuiFileDialog.cpp" />
     <ClCompile Include="Source\imgui_demo.cpp" />
     <ClCompile Include="Source\imgui_draw.cpp" />
     <ClCompile Include="Source\imgui_impl_dx11.cpp" />
@@ -189,6 +190,7 @@
     <ClInclude Include="Include\imconfig.h" />
     <ClInclude Include="Include\imgui.h" />
     <ClInclude Include="Include\imguifilesystem.h" />
+    <ClInclude Include="Include\ImGuiFileDialog.h" />
     <ClInclude Include="Include\imgui_impl_dx11.h" />
     <ClInclude Include="Include\imgui_impl_win32.h" />
     <ClInclude Include="Include\imgui_internal.h" />

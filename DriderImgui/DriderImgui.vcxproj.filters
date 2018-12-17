@@ -56,6 +56,11 @@
     </ClCompile>
     <ClCompile Include="Source\imguifilesystem.cpp">
       <Filter>Source Files\Imgui</Filter>
+    <ClCompile Include="Source\ImGuiFileDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_input_editor.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\dr_render_inputs.cpp">
       <Filter>Source Files\InputComponents</Filter>
@@ -154,6 +159,9 @@
     </ClInclude>
     <ClInclude Include="Include\dr_animator_inputs.h">
       <Filter>InputComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ImGuiFileDialog.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
