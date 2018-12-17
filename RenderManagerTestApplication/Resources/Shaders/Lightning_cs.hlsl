@@ -59,7 +59,6 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   const float   alpha        = max(0.01f, roughness * roughness);
   const float   ShadowValue  = SSAO_SSShadowTex.SampleLevel(SS, uv, 0).g;
 
-
   float3 finalColor = float3(0.0f, 0.0f, 0.0f);
   
   //////////Lightning//////////

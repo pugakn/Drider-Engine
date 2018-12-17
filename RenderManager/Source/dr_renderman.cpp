@@ -47,12 +47,12 @@ RenderManager::init() {
   //screenHeight = 1152;
 
   //1080p o FHD
-  //screenWidth = 1920;
-  //screenHeight = 1080;
+  screenWidth = 1920;
+  screenHeight = 1080;
 
   //720p o HD
-  screenWidth = 1280;
-  screenHeight = 720;
+  //screenWidth = 1280;
+  //screenHeight = 720;
 
   //////////21:9//////////
 
@@ -64,7 +64,7 @@ RenderManager::init() {
   //screenWidth = 1680;
   //screenHeight = 720;
 
-  static const float blurScale = 0.25f;
+  static const float blurScale = 0.5f;
 
   float shadowQualityMultiplier = 1.0f;
   shadowWidth = 1024 * shadowQualityMultiplier;
@@ -375,11 +375,12 @@ RenderManager::init() {
   m_ShadowInitData.RTWidht = shadowWidth;
   m_ShadowInitData.RTHeight = shadowHeight;
   m_ShadowPass.init(&m_ShadowInitData);
-
+  
   m_SSAOInitData.RTWidth = screenWidth;
   m_SSAOInitData.RTHeight = screenHeight;
   m_SSAOPass.init(&m_SSAOInitData);
 
+  m_bSSAO = true;
   m_fSSAOSampleRadio = 0.0008f;
   m_fSSAOIntensity = 2.0f;
   m_fSSAOScale = 1.0f;
@@ -403,7 +404,7 @@ RenderManager::init() {
   m_luminescencePass.init(&m_luminescenceInitData);
 
   m_PostProcessingPass.init(&m_PostProcessingInitData);
-  m_fChromaticAberrationStrenght = 0.075f;
+  m_fChromaticAberrationStrenght = 0.125f;
   m_bFrontFocus = true;
   m_fFocusDistance = 390.0f;
   m_fFocusRange = 50.0f;
@@ -533,14 +534,16 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
     m_ShadowPass.apply(&m_ShadowDrawData, m_RTGBuffer.get(), m_RTShadow.get(), m_RTSSAO_SSShadow.get());
   }
 
-  m_SSAODrawData.activeCam = mainCam;
-  m_SSAODrawData.InRt = m_RTGBuffer.get();
-  m_SSAODrawData.OutRt = m_RTSSAO_SSShadow.get();
-  m_SSAODrawData.SampleRadio = m_fSSAOSampleRadio;
-  m_SSAODrawData.Intensity = m_fSSAOIntensity;
-  m_SSAODrawData.Scale = m_fSSAOScale;
-  m_SSAODrawData.Bias = m_fSSAOBias;
-  m_SSAOPass.draw(&m_SSAODrawData);
+  if (m_bSSAO) {
+    m_SSAODrawData.activeCam = mainCam;
+    m_SSAODrawData.InRt = m_RTGBuffer.get();
+    m_SSAODrawData.OutRt = m_RTSSAO_SSShadow.get();
+    m_SSAODrawData.SampleRadio = m_fSSAOSampleRadio;
+    m_SSAODrawData.Intensity = m_fSSAOIntensity;
+    m_SSAODrawData.Scale = m_fSSAOScale;
+    m_SSAODrawData.Bias = m_fSSAOBias;
+    m_SSAOPass.draw(&m_SSAODrawData);
+  }
 
   m_HorBlurDrawData.InTexture = &m_RTSSAO_SSShadow->getTexture(0);
   m_HorBlurDrawData.OutRt = m_RTBlurInit.get();

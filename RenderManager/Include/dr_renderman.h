@@ -219,6 +219,20 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
                   const Matrix4x4& transform = Matrix4x4::identityMat4x4);
 
   /**
+  * Returns a booll pointer to enable or
+  * disable the SSAO pass.
+  * 
+  * @return
+  *  A pointer to the bool value
+  *  that tells if the SSAO pass
+  *  will be executed.
+  */
+  FORCEINLINE bool*
+  getSSAOActive() {
+    return &m_bSSAO;
+  };
+
+  /**
   * Returns a float pointer to modify
   * the SSAO sample radio parameter.
   * 
@@ -270,7 +284,7 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
     return &m_fSSAOBias;
   };
 
-  FORCEINLINE float* getCAStrenghtBias() { return &m_fChromaticAberrationStrenght; };
+  FORCEINLINE float* getCAStrenght() { return &m_fChromaticAberrationStrenght; };
   FORCEINLINE bool* getDoFFrontFocus() { return &m_bFrontFocus; };
   FORCEINLINE float* getDoFDistance() { return &m_fFocusDistance; };
   FORCEINLINE float* getDoFFocusRange() { return &m_fFocusRange; };
@@ -316,7 +330,7 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   SSAOPass m_SSAOPass;
   SSAOInitData m_SSAOInitData;
   SSAODrawData m_SSAODrawData;
-  bool m_active;
+  bool m_bSSAO;
   float m_fSSAOSampleRadio;
   float m_fSSAOIntensity;
   float m_fSSAOScale;

@@ -344,6 +344,16 @@ RenderManApp::postUpdate() {
     luminanceDelta += 0.01f;
   }
 
+  if (Keyboard::isKeyDown(KEY_CODE::kNUMPAD1)) {
+    //*RenderManager::instance().getSSAOActive() = !(*RenderManager::instance().getSSAOActive());
+    //*RenderManager::instance().getDoFFrontFocus() = !(*RenderManager::instance().getDoFFrontFocus());
+    *RenderManager::instance().getCAStrenght() += (1.0f / 1920.0f);
+    float caStrenght = *RenderManager::instance().getCAStrenght();
+  }
+  if (Keyboard::isKeyDown(KEY_CODE::kNUMPAD2)) {
+    *RenderManager::instance().getCAStrenght() -= (1.0f / 1920.0f);
+  }
+
   if (Keyboard::isKeyDown(KEY_CODE::k0)) {
     Matrix4x4 translateMat = Matrix4x4::identityMat4x4;
     //translateMat.Scale(Vector3D(0.8, 0.5, 0.8));
