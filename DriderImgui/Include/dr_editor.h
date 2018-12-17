@@ -22,17 +22,20 @@ class Editor : public Application
   virtual void onResize() override;
 
   void initSceneGraph();
+  void initScriptEngine();
   void initImguiMenus(float mainMenuBarheight);
   void loadHierarchy();
   void loadMenuHierarchy();
   void loadInspector();
   void loadMenuAddComponent();
-
+  void loadFileManager();
   GFXShared<RenderTarget> m_RT;
   GFXShared<DepthStencil> m_RTDPTH;
   Viewport m_sceneViewport;
   float m_luminanceDelta;
   bool  m_initFlag;
+  GameObject* m_root;
+
   SceneGraph::SharedGameObject m_selectedGameObject;
 };
 

@@ -9,10 +9,12 @@
 #include <dr_box_collider.h>
 #include <dr_camera_component.h>
 #include <dr_camera_manager.h>
+#include <dr_context_manager.h>
 #include <dr_device.h>
 #include <dr_depth_stencil_state.h>
 #include <dr_device_context.h>
 #include <dr_d3d_texture.h>
+#include <dr_export_script.h>
 #include <dr_graphics_api.h>
 #include <dr_graphics_driver.h>
 #include <dr_graph.h>
@@ -29,16 +31,20 @@
 #include <dr_render_component.h>
 #include <dr_resource_manager.h>
 #include <dr_rigidbody_component.h>
+#include <dr_script_core.h>
 #include <dr_script_component.h>
+#include <dr_script_object.h>
+#include <dr_sound_api.h>
 #include <dr_sound_component.h>
 #include <dr_sphere_collider.h>
 #include <dr_time.h>
 
+#include "dr_input_editor.h"
 #include "imgui.h"
 #include "imgui_impl_dx11.h"
 #include "imgui_impl_win32.h"
 #include "imgui_stdlib.h"
-
+#include "imguifilesystem.h"
 namespace driderSDK {
 
 void Editor::postInit()
@@ -61,9 +67,13 @@ void Editor::postInit()
     10000.f);
   CameraManager::setActiveCamera(_T("PATO_CAM"));
   RenderManager::startUp();
+  ContextManager::startUp();
+  ScriptEngine::startUp();
   SceneGraph::startUp();
   ResourceManager::startUp();
   PhysicsManager::startUp();
+  SoundAPI::startUp();
+
   m_sceneViewport = Viewport{ 0, 0, 480, 320 };
 
   auto deviceObj = GraphicsDriver::API().getDevice().getAPIObject();
@@ -76,6 +86,8 @@ void Editor::postInit()
   initRT();
   initCallbacks();
   initSceneGraph();
+  //initScriptEngine();
+
   SceneGraph::start();
   m_selectedGameObject = SceneGraph::getRoot();
 
@@ -287,7 +299,10 @@ void Editor::postDestroy()
   ImGui_ImplDX11_Shutdown();
   ImGui_ImplWin32_Shutdown();
   ImGui::DestroyContext();
+  SoundAPI::shutDown();
+  ScriptEngine::shutDown();
   PhysicsManager::shutDown();
+  ContextManager::shutDown();
   ResourceManager::shutDown();
   SceneGraph::shutDown();
   CameraManager::shutDown();
@@ -356,6 +371,89 @@ void Editor::initSceneGraph()
   RenderManager::instance().setCubeMap(ResourceManager::getReferenceT<TextureCore>(_T("GraceCubemap.tga")));
   RenderManager::instance().setEnviromentMap(ResourceManager::getReferenceT<TextureCore>(_T("GraceDiffuseCubemap.tga")));
   RenderManager::instance().setFilmLut(ResourceManager::getReferenceT<TextureCore>(_T("FilmLut.tga")));
+}
+
+void
+Editor::initScriptEngine() {
+  Int32 result;
+
+  //Create context manager and set time
+  ContextManager* ctxMag = nullptr;
+  if (!ContextManager::isStarted()) {
+    ContextManager::startUp();
+  }
+  ctxMag = ContextManager::instancePtr();
+
+  //Create the ScriptEngine
+  ScriptEngine* scriptEngine = nullptr;
+  if (!ScriptEngine::isStarted()) {
+    ScriptEngine::startUp();
+  }
+  scriptEngine = ScriptEngine::instancePtr();
+
+  //Create engine
+  result = scriptEngine->createEngine();
+
+  //Configurate engine
+  result = scriptEngine->configurateEngine(ctxMag);
+
+  //Register all functions
+  result = Keyboard::registerFunctions(scriptEngine);
+  Vector3D vector;
+  result = vector.registerFunctions(scriptEngine);
+  result = Time::registerFunctions(scriptEngine);
+  result = GameComponent::registerFunctions(scriptEngine);
+  result = SoundComponent::registerFunctions(scriptEngine);
+  result = ScriptComponent::registerFunctions(scriptEngine);
+  //result = NetworkManagerComponent::registerFunctions(scriptEngine);
+
+
+  result = Transform::registerFunctions(scriptEngine);
+  result = GameObject::registerFunctions(scriptEngine);
+
+  /*result = REGISTER_GLO_FOO("void Instantiate(GameObject& in, const Vector3D& in, const Vector3D& in",
+                            asFUNCTION(&SceneGraph::instanciate));*/
+
+                            //Register global properties
+  m_root = SceneGraph::instance().getRoot().get(); // Get root
+
+  result = REGISTER_GLO_PROPERTIE("GameObject@ Object",
+    &m_root);
+
+  //result = REGISTER_GLO_PROPERTIE("const bool isConnected",
+  //  &m_connected);
+
+  //Get script references of the ResourceManager
+  ResourceManager::loadResource(_T("driderBehavior.as"));
+  auto rBehaviorScript = ResourceManager::getReference(_T("driderBehavior.as"));
+  auto BehaviorScript = std::dynamic_pointer_cast<ScriptCore>(rBehaviorScript);
+
+  ResourceManager::loadResource(_T("test.as"));
+  auto rScript = ResourceManager::getReference(_T("test.as"));
+  auto Script = std::dynamic_pointer_cast<ScriptCore>(rScript);
+
+  //Create a context
+  scriptEngine->m_scriptContext = ctxMag->addContext(scriptEngine->m_scriptEngine,
+    _T("GameModule"));
+
+  //Add script section of behavior
+  scriptEngine->addScript(BehaviorScript->getName(),
+    BehaviorScript->getScript(),
+    _T("GameModule"));
+
+  /*//Add script component to the objects and add script sections of the scripts
+  auto component = model->createComponent<ScriptComponent>();
+  component->setScript(Script);
+
+  //Build module
+  auto currentModule = scriptEngine->m_scriptEngine->GetModule("GameModule");
+  result = currentModule->Build();
+
+  //Initialize scripts
+  component->initScript();
+
+  //Start the script
+  component->start();*/
 }
 
 void driderSDK::Editor::initImguiMenus(float mainMenuBarheight)
@@ -571,6 +669,8 @@ void Editor::loadInspector()
   auto components = m_selectedGameObject->getComponents<GameComponent>();
   for (auto component : components) {
     ImGui::Text(StringUtils::toString(component->getName()).c_str());
+    auto inputEditor = InputEditor::createInputEditor(*component);
+    inputEditor->getInputs();
   }
 
 }
@@ -610,6 +710,12 @@ void Editor::loadMenuAddComponent()
   if (ImGui::MenuItem("Sound")) {
     m_selectedGameObject->createComponent<SoundComponent>();
   }
+}
+
+void Editor::loadFileManager()
+{
+  ImGuiFs::PathStringVector names;
+  ImGuiFs::DirectoryGetDirectories("Resources", names);
 }
 
 }

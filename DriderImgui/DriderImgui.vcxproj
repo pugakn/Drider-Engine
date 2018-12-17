@@ -93,11 +93,11 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Physics/Include;$(SolutionDir)Engine/Include;$(SolutionDir)RenderManager/Include;$(SolutionDir)Core/Include;$(SolutionDir)Math/Include;$(SolutionDir)Utils/Include;$(SolutionDir)DriderImgui/include;$(SolutionDir)Graphics/Include;$(SolutionDir)Input/Include;$(DRIDER_DEPENDENCIES)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Sound/Include;$(SolutionDir)Script/Include;$(SolutionDir)Physics/Include;$(SolutionDir)Engine/Include;$(SolutionDir)RenderManager/Include;$(SolutionDir)Core/Include;$(SolutionDir)Math/Include;$(SolutionDir)Utils/Include;$(SolutionDir)DriderImgui/include;$(SolutionDir)Graphics/Include;$(SolutionDir)Input/Include;$(DRIDER_DEPENDENCIES)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>Physicsd.lib;Engined.lib;RenderManagerd.lib;Mathd.lib;Graphicsd.lib;Inputd.lib;Utilsd.lib;Cored.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Soundd.lib;Scriptd.lib;Physicsd.lib;Engined.lib;RenderManagerd.lib;Mathd.lib;Graphicsd.lib;Inputd.lib;Utilsd.lib;Cored.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib/$(PlatformTarget)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -107,11 +107,11 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Physics/Include;$(SolutionDir)Engine/Include;$(SolutionDir)RenderManager/Include;$(SolutionDir)Core/Include;$(SolutionDir)Math/Include;$(SolutionDir)Utils/Include;$(SolutionDir)DriderImgui/include;$(SolutionDir)Graphics/Include;$(SolutionDir)Input/Include;$(DRIDER_DEPENDENCIES)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Sound/Include;$(SolutionDir)Script/Include;$(SolutionDir)Physics/Include;$(SolutionDir)Engine/Include;$(SolutionDir)RenderManager/Include;$(SolutionDir)Core/Include;$(SolutionDir)Math/Include;$(SolutionDir)Utils/Include;$(SolutionDir)DriderImgui/include;$(SolutionDir)Graphics/Include;$(SolutionDir)Input/Include;$(DRIDER_DEPENDENCIES)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>Physicsd.lib;Engined.lib;RenderManagerd.lib;Mathd.lib;Graphicsd.lib;Inputd.lib;Utilsd.lib;Cored.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Soundd.lib;Scriptd.lib;Physicsd.lib;Engined.lib;RenderManagerd.lib;Mathd.lib;Graphicsd.lib;Inputd.lib;Utilsd.lib;Cored.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib/$(PlatformTarget)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -123,13 +123,13 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Physics/Include;$(SolutionDir)Engine/Include;$(SolutionDir)RenderManager/Include;$(SolutionDir)Core/Include;$(SolutionDir)Math/Include;$(SolutionDir)Utils/Include;$(SolutionDir)DriderImgui/include;$(SolutionDir)Graphics/Include;$(SolutionDir)Input/Include;$(DRIDER_DEPENDENCIES)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Sound/Include;$(SolutionDir)Script/Include;$(SolutionDir)Physics/Include;$(SolutionDir)Engine/Include;$(SolutionDir)RenderManager/Include;$(SolutionDir)Core/Include;$(SolutionDir)Math/Include;$(SolutionDir)Utils/Include;$(SolutionDir)DriderImgui/include;$(SolutionDir)Graphics/Include;$(SolutionDir)Input/Include;$(DRIDER_DEPENDENCIES)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>Physics.lib;Engine.lib;RenderManager.lib;Math.lib;Graphics.lib;Input.lib;Utils.lib;Core.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Sound.lib;Script.lib;Physics.lib;Engine.lib;RenderManager.lib;Math.lib;Graphics.lib;Input.lib;Utils.lib;Core.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib/$(PlatformTarget)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -141,22 +141,31 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Physics/Include;$(SolutionDir)Engine/Include;$(SolutionDir)RenderManager/Include;$(SolutionDir)Core/Include;$(SolutionDir)Math/Include;$(SolutionDir)Utils/Include;$(SolutionDir)DriderImgui/include;$(SolutionDir)Graphics/Include;$(SolutionDir)Input/Include;$(DRIDER_DEPENDENCIES)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Sound/Include;$(SolutionDir)Script/Include;$(SolutionDir)Physics/Include;$(SolutionDir)Engine/Include;$(SolutionDir)RenderManager/Include;$(SolutionDir)Core/Include;$(SolutionDir)Math/Include;$(SolutionDir)Utils/Include;$(SolutionDir)DriderImgui/include;$(SolutionDir)Graphics/Include;$(SolutionDir)Input/Include;$(DRIDER_DEPENDENCIES)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>Physics.lib;Engine.lib;RenderManager.lib;Math.lib;Graphics.lib;Input.lib;Utils.lib;Core.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Sound.lib;Script.lib;Physics.lib;Engine.lib;RenderManager.lib;Math.lib;Graphics.lib;Input.lib;Utils.lib;Core.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib/$(PlatformTarget)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\dr_animator_inputs.cpp" />
+    <ClCompile Include="Source\dr_box_collider_inputs.cpp" />
+    <ClCompile Include="Source\dr_camera_inputs.cpp" />
     <ClCompile Include="Source\dr_editor.cpp" />
     <ClCompile Include="Source\dr_input_editor.cpp" />
+    <ClCompile Include="Source\dr_light_inputs.cpp" />
     <ClCompile Include="Source\dr_main.cpp" />
     <ClCompile Include="Source\dr_render_inputs.cpp" />
+    <ClCompile Include="Source\dr_rigidbody_inputs.cpp" />
+    <ClCompile Include="Source\dr_script_inputs.cpp" />
+    <ClCompile Include="Source\dr_sound_inputs.cpp" />
+    <ClCompile Include="Source\dr_sphere_collider_inputs.cpp" />
     <ClCompile Include="Source\imgui.cpp" />
+    <ClCompile Include="Source\imguifilesystem.cpp" />
     <ClCompile Include="Source\imgui_demo.cpp" />
     <ClCompile Include="Source\imgui_draw.cpp" />
     <ClCompile Include="Source\imgui_impl_dx11.cpp" />
@@ -165,11 +174,21 @@
     <ClCompile Include="Source\imgui_widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\dirent_portable.h" />
+    <ClInclude Include="Include\dr_animator_inputs.h" />
+    <ClInclude Include="Include\dr_box_collider_inputs.h" />
+    <ClInclude Include="Include\dr_camera_inputs.h" />
     <ClInclude Include="Include\dr_editor.h" />
     <ClInclude Include="Include\dr_input_editor.h" />
+    <ClInclude Include="Include\dr_light_inputs.h" />
     <ClInclude Include="Include\dr_render_inputs.h" />
+    <ClInclude Include="Include\dr_rigidbody_inputs.h" />
+    <ClInclude Include="Include\dr_script_inputs.h" />
+    <ClInclude Include="Include\dr_sound_inputs.h" />
+    <ClInclude Include="Include\dr_sphere_collider_inputs.h" />
     <ClInclude Include="Include\imconfig.h" />
     <ClInclude Include="Include\imgui.h" />
+    <ClInclude Include="Include\imguifilesystem.h" />
     <ClInclude Include="Include\imgui_impl_dx11.h" />
     <ClInclude Include="Include\imgui_impl_win32.h" />
     <ClInclude Include="Include\imgui_internal.h" />

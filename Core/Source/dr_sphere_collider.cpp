@@ -11,7 +11,7 @@ SphereCollider::SphereCollider(GameObject& _gameObject,
                                const float radius,
                                const Vector3D& position)
   : ColliderComponent(_gameObject,
-                      _T("BoxCollider")),
+                      _T("SphereCollider")),
                       m_radius(radius),
                       m_center(position) {
 }
