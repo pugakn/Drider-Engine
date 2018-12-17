@@ -38,12 +38,12 @@ main(Int32 argc, ANSIChar* argv[]) {
   //vp.height = 1152;
 
   //1080p o FHD
-  vp.width = 1920;
-  vp.height = 1080;
+  //vp.width = 1920;
+  //vp.height = 1080;
 
   //720p o HD
-  //vp.width = 1280;
-  //vp.height = 720;
+  vp.width = 1280;
+  vp.height = 720;
 
   //////////21:9//////////
 

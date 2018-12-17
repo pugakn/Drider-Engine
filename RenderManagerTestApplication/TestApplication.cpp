@@ -115,9 +115,7 @@ RenderManApp::postInit() {
   rm_cam->getTransform().setRotation({ 25.0f * Math::DEGREE_TO_RADIAN, 0.0f, 0.0f });
   cam_cmp->setActive();
 
-  luminanceDelta = 0.0f;
-
-  m_bRotate = false;
+  m_bSelected = false;
 
   Vector4D LightPosition(0.0f, 100.0f, 150.0f, 1.0f);
   
@@ -181,15 +179,13 @@ RenderManApp::postInit() {
     }
   }
 
-  modelMovement = Vector3D(0.0f, 0.0f, 0.0f);
-
   loadResources();
 
   RenderManager::instance().setSkySphere(ResourceManager::getReferenceT<Model>(_T("SkySphere.fbx")));
   RenderManager::instance().setCubeMap(ResourceManager::getReferenceT<TextureCore>(_T("GraceCubemap.tga")));
   RenderManager::instance().setEnviromentMap(ResourceManager::getReferenceT<TextureCore>(_T("GraceDiffuseCubemap.tga")));
   RenderManager::instance().setFilmLut(ResourceManager::getReferenceT<TextureCore>(_T("FilmLut.tga")));
-
+  
   m_vecGos.push_back(SceneGraph::createObject(_T("Floor")));
   m_selectedGO = m_vecGos.back();
   auto ptrFloor = ResourceManager::getReferenceT<Model>(_T("plane.fbx"));
@@ -197,13 +193,7 @@ RenderManApp::postInit() {
     m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, 100.0f));
     m_selectedGO->getTransform().setScale(Vector3D(7.5f, 7.5f, 7.5f));
 
-    auto rgbod = m_selectedGO->createComponent<RigidBody3DComponent>();
-    rgbod->setType(RIGID_BODY_TYPE::kStatic);
     m_selectedGO->createComponent<AABBCollider>(ptrFloor->aabb);
-    auto coll = m_selectedGO->createComponent<BoxCollider>(ptrFloor->aabb);
-    coll->m_body->onCollisionEnter = [](DrCollisionBody& coll) {std::cout << "Floor Enter" << std::endl; };
-    coll->m_body->onCollisionExit = [](DrCollisionBody& coll) {std::cout << "Floor Exit" << std::endl; };
-    coll->m_body->onCollisionStay = [](DrCollisionBody& coll) {std::cout << "Floor Stay" << std::endl; };
     m_selectedGO->createComponent<RenderComponent>(ptrFloor);
 
     m_floorMat = ResourceManager::createMaterial(_T("FloorMaterial"));
@@ -237,25 +227,16 @@ RenderManApp::postInit() {
     auto renderComp = m_selectedGO->getComponent<RenderComponent>();
     renderComp->getMeshes().front().material = m_floorMat;
   }
-  
+
   m_vecGos.push_back(SceneGraph::createObject(_T("Robot")));
   m_selectedGO = m_vecGos.back();
   auto ptrModel = ResourceManager::getReferenceT<Model>(_T("roboto.dae"));
   if (ptrModel) {
-    //m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 12.5f, -100.0f));
-    //m_selectedGO->getTransform().setScale(Vector3D(10.0f, 10.0f, 10.0f));
+    m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 50.5f, 0.0f));
+    m_selectedGO->getTransform().setScale(Vector3D(100.0f, 100.0f, 100.0f));
     //m_selectedGO->getTransform().setRotation(Vector3D(0.0f, Math::PI*1.15f, 0.0f));
-    m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 850.0f, -100.0f));
-    m_selectedGO->getTransform().setScale(Vector3D(75.0f, 75.0f, 75.0f));
-    m_selectedGO->getTransform().setRotation(Vector3D(0.0f, Math::QUARTER_PI * 0.3f, 0.0f));
 
-    auto rgbod = m_selectedGO->createComponent<RigidBody3DComponent>();
     m_selectedGO->createComponent<AABBCollider>(ptrModel->aabb);
-    auto coll = m_selectedGO->createComponent<BoxCollider>(ptrModel->aabb);
-    coll->m_body->onCollisionEnter = [](DrCollisionBody& coll) {std::cout << "Robot Enter" << std::endl; };
-    coll->m_body->onCollisionExit = [](DrCollisionBody& coll) {std::cout << "Robot Exit" << std::endl; };
-    coll->m_body->onCollisionStay = [](DrCollisionBody& coll) {std::cout << "Robot Stay" << std::endl; };
-    //m_selectedGO->createComponent<SphereCollider>(1,Vector3D(0,0,0));
     m_selectedGO->createComponent<RenderComponent>(ptrModel);
 
     m_modelMat = ResourceManager::createMaterial(_T("ModelMaterial"));
@@ -297,84 +278,85 @@ RenderManApp::postUpdate() {
   SceneGraph::update();
   PhysicsManager::TestCollision();
 
-
-  if (m_bRotate) {
-    m_selectedGO->getTransform().rotate(Vector3D(0.0f, Math::QUARTER_PI * Time::getDelta(), 0.0f));
+  for (const auto& it : m_vecGos) {
+    auto testAABB = it->getComponent<AABBCollider>();
+    auto min = testAABB->getTransformedAABB();
+    auto max = testAABB->getAABB();
   }
 
+  //Select object
+  if (Mouse::isButtonDown(MOUSE_BUTTON::kLeft)) {
+    CameraManager::SharedCamera Cam = CameraManager::getActiveCamera();
+
+    Vector3D rayOrigin = Cam->getPosition();
+    Vector3D rayDirection = GetCameraMouseRayDirection(Cam);
+    Vector3D intersectPoint;
+    Vector3D lastIntersectPoint;
+
+    if (true) {
+      m_selectedGO = nullptr;
+      m_bSelected = false;
+
+      RenderQuery rqRequest{*Cam,
+                            QUERY_ORDER::kFrontToBack,
+                            QUERY_PROPERTY::kOpaque |
+                            QUERY_PROPERTY::kDynamic |
+                            QUERY_PROPERTY::kStatic };
+      RenderCommandBuffer queryRequest = SceneGraph::query(rqRequest);
+
+      AABBCollider* testAABB;
+      for (const auto& go : queryRequest.commands) {
+        testAABB = go.gameObjectPtr->getComponent<AABBCollider>();
+        Vector3D minPoint = testAABB->getTransformedAABB().getMinPoint();
+        Vector3D maxPoint = testAABB->getTransformedAABB().getMaxPoint();
+        if (Intersect::rayAABB(maxPoint,
+                               minPoint,
+                               rayOrigin,
+                               rayDirection,
+                               &intersectPoint)) {
+          if (!m_bSelected) {
+            m_bSelected = true;
+            m_selectedGO = go.gameObjectPtr;
+            lastIntersectPoint = intersectPoint;
+          }
+          else {
+            float lastDist = (Cam->getPosition() - lastIntersectPoint).lengthSqr();
+            float  newDist = (Cam->getPosition() - intersectPoint).lengthSqr();
+            if (newDist < lastDist) {
+              lastIntersectPoint = intersectPoint;
+              m_selectedGO = go.gameObjectPtr;
+            }
+          }
+        }
+      }
+      if (m_selectedGO) {
+        std::cout << StringUtils::toString(m_selectedGO->getName()) << std::endl;
+      }
+    }
+    else {
+    }
+
+    Vector3D planeNormal = { 0, 1, 0 };
+    Vector3D planePoint = { 0, 0, 0 };
+    float denom = planeNormal.dot(rayDirection);
+    if (denom > Math::SMALL_NUMBER || denom < -Math::SMALL_NUMBER) {
+      Vector3D planeToRayOrigin = planePoint - rayOrigin;
+      float t = planeToRayOrigin.dot(planeNormal) / denom;
+      if (t >= 0) {
+
+        Vector3D spherePos;
+        spherePos = rayOrigin + (rayDirection * t);
+        Matrix4x4 sphereDeb = Matrix4x4::identityMat4x4;
+        sphereDeb = sphereDeb.Translation(spherePos);
+        RenderManager::instance().drawDebugSphere(10.0, {1.0f, 1.0f, 1.0f}, sphereDeb);
+      }
+    }
+
+  }
+
+  //Recompile shaders.
   if (Keyboard::isKeyDown(KEY_CODE::kP)) {
     RenderManager::instance().recompile();
-  }
-
-  const float fMovementSpeed = 500.0f;
-  if (Keyboard::isKeyDown(KEY_CODE::kA)) {
-    m_selectedGO->getTransform().move(Vector3D(-1.0f, 0.0f, 0.0f) * Time::getDelta()* fMovementSpeed);
-  }
-  if (Keyboard::isKeyDown(KEY_CODE::kD)) {
-    m_selectedGO->getTransform().move(Vector3D(1.0f, 0.0f, 0.0f) * Time::getDelta() * fMovementSpeed);
-  }
-  if (Keyboard::isKeyDown(KEY_CODE::kW)) {
-    m_selectedGO->getTransform().move(Vector3D(0.0f, 0.0f, 1.0f) * Time::getDelta() * fMovementSpeed);
-  }
-  if (Keyboard::isKeyDown(KEY_CODE::kS)) {
-    m_selectedGO->getTransform().move(Vector3D(0.0f, 0.0f, -1.0f) * Time::getDelta() * fMovementSpeed);
-  }
-  if (Keyboard::isKeyDown(KEY_CODE::kQ)) {
-    m_selectedGO->getTransform().move(Vector3D(0.0f, 1.0f, 0.0f) * Time::getDelta() * fMovementSpeed);
-  }
-  if (Keyboard::isKeyDown(KEY_CODE::kE)) {
-    m_selectedGO->getTransform().move(Vector3D(0.0f, -1.0f, 0.0f) * Time::getDelta() * fMovementSpeed);
-  }
-
-  if (Keyboard::isKeyDown(KEY_CODE::kR)) {
-    m_selectedGO->getTransform().scale(Vector3D(1.0f, 1.0f, 1.0f) + (Vector3D(1.0f, 1.0f, 1.0f) *  Time::getDelta()));
-  }
-  if (Keyboard::isKeyDown(KEY_CODE::kF)) {
-    m_selectedGO->getTransform().scale(Vector3D(1.0f, 1.0f, 1.0f) - (Vector3D(1.0f, 1.0f, 1.0f) *  Time::getDelta()));
-  }
-  if (Keyboard::isKeyDown(KEY_CODE::kT)) {
-    m_selectedGO->getComponent<RigidBody3DComponent>()->addTorque(Vector3D(0,0,200));
-  }
-
-
-  if (Keyboard::isKeyDown(KEY_CODE::k1)) {
-    luminanceDelta -= 0.01f;
-  }
-  if (Keyboard::isKeyDown(KEY_CODE::k2)) {
-    luminanceDelta += 0.01f;
-  }
-
-  if (Keyboard::isKeyDown(KEY_CODE::kNUMPAD1)) {
-    //*RenderManager::instance().getSSAOActive() = !(*RenderManager::instance().getSSAOActive());
-    //*RenderManager::instance().getDoFFrontFocus() = !(*RenderManager::instance().getDoFFrontFocus());
-    *RenderManager::instance().getCAStrenght() += (1.0f / 1920.0f);
-    float caStrenght = *RenderManager::instance().getCAStrenght();
-  }
-  if (Keyboard::isKeyDown(KEY_CODE::kNUMPAD2)) {
-    *RenderManager::instance().getCAStrenght() -= (1.0f / 1920.0f);
-  }
-
-  if (Keyboard::isKeyDown(KEY_CODE::k0)) {
-    Matrix4x4 translateMat = Matrix4x4::identityMat4x4;
-    //translateMat.Scale(Vector3D(0.8, 0.5, 0.8));
-
-    std::vector<Vector3D> points;
-    points.push_back(Vector3D(-75,  50, 0));
-    points.push_back(Vector3D(  0, 150, 0));
-    points.push_back(Vector3D( 75,  50,  0));
-    points.push_back(Vector3D(-75,  50,  0));
-
-    translateMat.Translation(Vector3D(0, 50, -100));
-    RenderManager::instance().drawDebugLine(Vector3D(-50, 0, 0), Vector3D(50, 0, 0), Vector3D(1, 1, 0), translateMat);
-
-    translateMat.Translation(Vector3D(0, 50, 0));
-    RenderManager::instance().drawDebugLine(points, Vector3D(0, 1, 0), translateMat);
-
-    translateMat.Translation(Vector3D( 200, 100, 0));
-    RenderManager::instance().drawDebugCube(Vector3D(100, 100, 100), Vector3D(0, 0, 1), translateMat);
-
-    translateMat.Translation(Vector3D(-200, 100, 0));
-    RenderManager::instance().drawDebugSphere(50, Vector3D(1, 0, 0), translateMat);
   }
 
   //Screenshot!
@@ -484,63 +466,6 @@ RenderManApp::onResize() {
 
 void
 RenderManApp::initInputCallbacks() {
-  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
-                        KEY_CODE::kSPACE,
-                        std::bind(&RenderManApp::AutoRotateModel, this));
-  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
-                        KEY_CODE::kZ,
-                        std::bind(&RenderManApp::SelectModel, this, -1));
-  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
-                        KEY_CODE::kX,
-                        std::bind(&RenderManApp::SelectModel, this, 1));
-  Mouse::addMovedCallback(std::bind(&RenderManApp::RotateModel, this));
-}
-
-void
-RenderManApp::RotateModel() {
-  Vector3D mouseDelta = Mouse::getDisplacement();
-  Vector3D rotation{0.0f, 0.0f, 0.0f};
-  float scale = 0.25f;
-
-  if (Mouse::isButtonDown(MOUSE_BUTTON::kLeft)) {
-    if (Math::abs(mouseDelta.x) < 3.0f) {
-      mouseDelta.x = 0.0f;
-    }
-    if (Math::abs(mouseDelta.y) < 3.0f) {
-      mouseDelta.y = 0.0f;
-    }
-
-    rotation.y = -mouseDelta.x;
-    rotation.x = -mouseDelta.y;
-
-    m_selectedGO->getTransform().rotate(rotation * scale * Time::getDelta());
-  }
-}
-
-void
-RenderManApp::AutoRotateModel() {
-  m_bRotate = !m_bRotate;
-}
-
-void
-RenderManApp::MoveModel(Vector3D direction) {
-  modelMovement += direction;
-}
-
-void
-RenderManApp::SelectModel(Int32 jump) {
-  m_SzTGosIndex += jump;
-
-  m_bRotate = false;
-
-  if (m_SzTGosIndex < 0) {
-    m_SzTGosIndex = m_vecGos.size() - 1;
-  }
-  else if (m_SzTGosIndex >= m_vecGos.size()) {
-    m_SzTGosIndex = 0;
-  }
-
-  m_selectedGO = m_vecGos[m_SzTGosIndex];
 }
 
 void
@@ -579,6 +504,105 @@ RenderManApp::loadResources() {
   ResourceManager::loadResource(_T("roboto_metallic.tga"));
   ResourceManager::loadResource(_T("roboto_normal.tga"));
   ResourceManager::loadResource(_T("roboto_roughness.tga"));
+}
+
+bool
+RayVSSquare(const Vector3D& RayOrigin,
+            const Vector3D& RayDir,
+            const Vector3D& S1,
+            const Vector3D& S2,
+            const Vector3D& S3,
+            Vector3D* outIntersection) {
+  static const float BIAS = 0.01f;
+  
+  // 1.
+  Vector3D dS21 = S2 - S1;
+  Vector3D dS31 = S3 - S1;
+  Vector3D n = dS21.cross(dS31);
+
+  float ndotdR = n.dot(RayDir);
+
+  if (Math::abs(ndotdR) < BIAS) {
+      return false;
+  }
+
+  float t = -n.dot(RayOrigin - S1) / ndotdR;
+  Vector3D M = RayOrigin + (RayDir * t);
+
+  // 3.
+  Vector3D dMS1 = M - S1;
+  float u = dMS1.dot(dS21);
+  float v = dMS1.dot(dS31);
+
+  // 4.
+  if (nullptr != outIntersection) {
+    *outIntersection = M;
+  }
+  return (u >= 0.0f && u <= dS21.dot(dS21)
+       && v >= 0.0f && v <= dS31.dot(dS31));
+}
+
+bool
+RenderManApp::rayVSAABB(const Vector3D& rayOrigin,
+                        const Vector3D& rayDir,
+                        const Vector3D& minPoint,
+                        const Vector3D& maxPoint,
+                        Vector3D* outIntersection) {
+
+  struct Quad {
+    Vector3D vertices[3];
+  };
+
+  std::vector<Tris> quads;
+
+  Vector3D hit;
+  for (const auto& it : quads) {
+    if (RayVSSquare(rayOrigin, rayDir, it.vertices[0], it.vertices[1], it.vertices[2], &hit)) {
+      if (nullptr != outIntersection) {
+        *outIntersection = hit;
+      }
+      return true;
+    }
+  }
+
+  return false;
+}
+
+Vector3D
+RenderManApp::GetCameraMouseRayDirection(CameraManager::SharedCamera Cam) {
+  Viewport viewport = Application::getViewPort();
+  float screenWidth =  viewport.width,
+        screenHeight = viewport.height;
+
+  Vector4D mouseInScreenPosition = Mouse::getPosition();
+  mouseInScreenPosition.x = Math::clamp(screenWidth, 0.0f, 1.0f);
+  mouseInScreenPosition.y = 1.0f - Math::clamp(screenHeight, 0.0f, 1.0f);
+  mouseInScreenPosition.z = 0.0f;
+  mouseInScreenPosition.w = 1.0f;
+
+  Vector4D mouseInViewPosition = mouseInScreenPosition;
+  mouseInViewPosition *= 2.0f;
+  mouseInViewPosition.x -= 1.0f;
+  mouseInViewPosition.y -= 1.0f;
+  mouseInViewPosition.z = 0.0f;
+  mouseInViewPosition.w = 1.0f;
+
+  Matrix4x4 invProj = Cam->getVP();
+  invProj = invProj.inverse();
+
+  mouseInViewPosition.z = 0.0f;
+  Vector4D startPosition = mouseInViewPosition * invProj;
+  startPosition /= startPosition.w;
+  
+  mouseInViewPosition.z = 1.0f;
+  Vector4D finalPosition = mouseInViewPosition * invProj;
+  finalPosition /= finalPosition.w;
+
+  Vector3D rayDirection;
+  rayDirection = finalPosition - startPosition;
+  rayDirection.normalize();
+
+  return rayDirection;
 }
 
 }

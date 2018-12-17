@@ -53,10 +53,12 @@ struct DR_CORE_EXPORT RenderCommand
 
   RenderCommand(Int32 _worldID,
                 const RenderMesh& mesh_,
-                Int32 _bones)
+                Int32 _bones,
+                std::shared_ptr<GameObject> _gameObjectPtr)
     : worldID(_worldID),
       mesh(mesh_),
-      bonesID(_bones)
+      bonesID(_bones),
+      gameObjectPtr(_gameObjectPtr)
   {}
 
   ~RenderCommand()
@@ -66,6 +68,7 @@ struct DR_CORE_EXPORT RenderCommand
   Int32 worldID;
   RenderMesh mesh;
   AABB aabb;
+  std::shared_ptr<GameObject> gameObjectPtr;
 };
 
 struct DR_CORE_EXPORT RenderQuery

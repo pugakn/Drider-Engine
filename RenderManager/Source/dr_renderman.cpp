@@ -47,12 +47,12 @@ RenderManager::init() {
   //screenHeight = 1152;
 
   //1080p o FHD
-  screenWidth = 1920;
-  screenHeight = 1080;
+  //screenWidth = 1920;
+  //screenHeight = 1080;
 
   //720p o HD
-  //screenWidth = 1280;
-  //screenHeight = 720;
+  screenWidth = 1280;
+  screenHeight = 720;
 
   //////////21:9//////////
 
@@ -477,14 +477,13 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
 
   auto mainCam = CameraManager::instance().getActiveCamera();
   auto mainCamRef = *CameraManager::instance().getActiveCamera();
-  RenderCommandBuffer queryRequest;
 
   RenderQuery rqRequest{ mainCamRef,
                         QUERY_ORDER::kFrontToBack,
                         QUERY_PROPERTY::kOpaque |
                         QUERY_PROPERTY::kDynamic |
                         QUERY_PROPERTY::kStatic };
-  queryRequest = SceneGraph::query(rqRequest);
+  RenderCommandBuffer queryRequest = SceneGraph::query(rqRequest);
 
   m_GBufferDrawData.activeCam = mainCam;
   m_GBufferDrawData.models = &queryRequest;

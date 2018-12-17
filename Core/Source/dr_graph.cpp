@@ -359,7 +359,6 @@ SceneGraph::filterObjects(GameObjectQueue& objects, QueryBuffer& result, UInt32 
     auto animComp = obj->getComponent<AnimatorComponent>();
     Int32 bones = -1;
     if (animComp) {
-
       bones = result.bonesTransforms.size();
       result.bonesTransforms.push_back(animComp->getBonesTransforms());
     }
@@ -398,9 +397,10 @@ SceneGraph::filterObjects(GameObjectQueue& objects, QueryBuffer& result, UInt32 
         meshProps |= QUERY_PROPERTY::kOpaque;
       }
       if (meshProps == (meshProps & props)) {
-        result.commands.push_back(RenderCommand{ world,
-                                                 mesh,
-                                                 bones });
+        result.commands.push_back(RenderCommand{world,
+                                                mesh,
+                                                bones,
+                                                obj});
       }
     }
 

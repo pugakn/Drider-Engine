@@ -1,6 +1,7 @@
 #pragma once
 #include <dr_application.h>
 #include <dr_renderman.h>
+#include <dr_camera_manager.h>
 #include <dr_light.h>
 #include <dr_material.h>
 
@@ -31,28 +32,27 @@ class RenderManApp : public Application
   void
   initInputCallbacks();
 
-  void
-  RotateModel();
-
-  void
-  AutoRotateModel();
-
-  void
-  MoveModel(Vector3D direction);
-
-  void
-  SelectModel(Int32 jump);
-
   void 
   loadResources();
+
+  bool
+  rayVSAABB(const Vector3D& rayOrigin,
+            const Vector3D& rayDir,
+            const Vector3D& minPoint,
+            const Vector3D& maxPoint,
+            Vector3D* outIntersection);
+
+  Vector3D
+  GetCameraMouseRayDirection(CameraManager::SharedCamera Cam);
 
   // Inherited via Application
   std::thread m_RenderManagerThread;
   bool render;
 
+  bool m_bSelected;
   SceneGraph::SharedGameObject m_selectedGO;
+
   SizeT m_SzTGosIndex;
-  bool m_bRotate;
   std::vector<SceneGraph::SharedGameObject> m_vecGos;
   std::shared_ptr<Material> m_BushMat;
   std::shared_ptr<Material> m_StormtrooperMat;
@@ -61,9 +61,6 @@ class RenderManApp : public Application
   std::shared_ptr<Material> m_hkBodySMat;
   std::shared_ptr<Material> m_hkEyeMat;
   std::shared_ptr<Material> m_modelMat;
-
-  float luminanceDelta;
-  Vector3D modelMovement;
 };
 
 }
