@@ -626,9 +626,7 @@ void Editor::loadInspector()
   }
   auto temp = m_selectedGameObject->getName();
   ImGui::Text("Name:"); ImGui::SameLine();
-  if (ImGui::InputText("##nameGO",
-    &temp)) {
-
+  if (ImGui::InputText("##nameGO", &temp)) {
     m_selectedGameObject->setName(temp);
   }
 
@@ -757,13 +755,20 @@ void Editor::loadFileManager()
     ImGuiFs::DirectoryGetDirectories("Resources", names);
     */
     std::function<void(ImGuiFs::PathStringVector&)> showFiles = [&](ImGuiFs::PathStringVector& files) {
-      char tempName[64] = "";
 
       ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
 
       for (size_t i = 0; i < files.size(); i++) {
+        char tempName[64] = "";
+
         ImGuiFs::PathGetFileName(files.Data[i], tempName);
         ImGui::TreeNodeEx((std::string("##") + tempName + "FM").c_str(), node_flags, tempName);
+        if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
+        {
+          ImGui::SetDragDropPayload("FILE_ITEM", &tempName, sizeof(tempName));        // Set payload to carry the index of our item (could be anything)
+          ImGui::Text("%s", tempName);
+          ImGui::EndDragDropSource();
+        }
       }
     };
 
@@ -789,6 +794,17 @@ void Editor::loadFileManager()
     
 
     auto rootDir = "Resources";
+    ImGui::Text("hola");
+    if (ImGui::BeginDragDropTarget())
+    {
+      if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILE_ITEM"))
+      {
+        char* lu = (char*)payload->Data;
+        int i = 0;
+i = i+3;
+      }
+      ImGui::EndDragDropTarget();
+    }
     if (ImGui::TreeNode(""))
     {
 
