@@ -8,14 +8,23 @@
 namespace driderSDK {
 
 namespace TransformMode {
-
 enum E {
-  Position = 0,
-  Scale,
-  Rotation,
-  Size
+  kPosition = 0,
+  kScale,
+  kRotation,
+  kSize
 };
-
+}
+namespace TransformAxis {
+enum E {
+  kX = 0,
+  kY,
+  kZ,
+  kXZ,
+  kXY,
+  kZY,
+  kNone
+};
 }
 
 class RenderManApp : public Application
@@ -49,7 +58,7 @@ class RenderManApp : public Application
   selectMoveAxe();
 
   void
-  MoveOnAxe(AXIS::E axisToMoveOn);
+  MoveOnAxe(TransformAxis::E axisToMoveOn);
 
   void
   selectModel();
@@ -65,7 +74,7 @@ class RenderManApp : public Application
   SceneGraph::SharedGameObject m_selectedGO;
 
   TransformMode::E m_TransformMode;
-  AXIS::E m_SelectedMoveAxis;
+  TransformAxis::E m_SelectedMoveAxis;
   float cubeLarge;
   float cubeDefault;
 

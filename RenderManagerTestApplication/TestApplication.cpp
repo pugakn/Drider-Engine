@@ -108,7 +108,7 @@ RenderManApp::postInit() {
 
   m_bSelected = false;
   m_selectedGO = nullptr;
-  m_TransformMode = TransformMode::Position;
+  m_TransformMode = TransformMode::kPosition;
   cubeLarge = 100.0f;
   cubeDefault = 5.0f;
 
@@ -273,27 +273,40 @@ RenderManApp::postUpdate() {
     aabbMatrix.Translation(m_selectedGO->getTransform().getPosition());
     RenderManager::instance().drawDebugCube(boxDimensions, { 1,1,1 }, aabbMatrix);
 
-    //X
-    CubeMatrix = Matrix4x4::identityMat4x4;
-    goPos = m_selectedGO->getTransform().getPosition();
-    goPos += Vector3D(cubeLarge * 0.5f, 0.0f, 0.0f);
-    CubeMatrix.Translation(goPos);
-    RenderManager::instance().drawDebugCube({ cubeLarge, cubeDefault, cubeDefault },
-                                            { 1.0f, 0.0f, 0.0f}, CubeMatrix);
-    //Y
-    CubeMatrix = Matrix4x4::identityMat4x4;
-    goPos = m_selectedGO->getTransform().getPosition();
-    goPos += Vector3D(0.0f, cubeLarge * 0.5f, 0.0f);
-    CubeMatrix.Translation(goPos);
-    RenderManager::instance().drawDebugCube({ cubeDefault, cubeLarge, cubeDefault },
-                                            { 0.0f, 1.0f, 0.0f}, CubeMatrix);
-    //Z
-    CubeMatrix = Matrix4x4::identityMat4x4;
-    goPos = m_selectedGO->getTransform().getPosition();
-    goPos += Vector3D(0.0f, 0.0f, cubeLarge * 0.5f);
-    CubeMatrix.Translation(goPos);
-    RenderManager::instance().drawDebugCube({ cubeDefault, cubeDefault, cubeLarge },
-                                            { 0.0f, 0.0f, 1.0f}, CubeMatrix);
+    if (TransformMode::kPosition == m_TransformMode) {
+      //X
+      CubeMatrix = Matrix4x4::identityMat4x4;
+      goPos = m_selectedGO->getTransform().getPosition();
+      goPos += Vector3D(cubeLarge * 0.5f, 0.0f, 0.0f);
+      CubeMatrix.Translation(goPos);
+      RenderManager::instance().drawDebugCube({ cubeLarge, cubeDefault, cubeDefault },
+        { 1.0f, 0.0f, 0.0f }, CubeMatrix);
+      //Y
+      CubeMatrix = Matrix4x4::identityMat4x4;
+      goPos = m_selectedGO->getTransform().getPosition();
+      goPos += Vector3D(0.0f, cubeLarge * 0.5f, 0.0f);
+      CubeMatrix.Translation(goPos);
+      RenderManager::instance().drawDebugCube({ cubeDefault, cubeLarge, cubeDefault },
+        { 0.0f, 1.0f, 0.0f }, CubeMatrix);
+      //Z
+      CubeMatrix = Matrix4x4::identityMat4x4;
+      goPos = m_selectedGO->getTransform().getPosition();
+      goPos += Vector3D(0.0f, 0.0f, cubeLarge * 0.5f);
+      CubeMatrix.Translation(goPos);
+      RenderManager::instance().drawDebugCube({ cubeDefault, cubeDefault, cubeLarge },
+        { 0.0f, 0.0f, 1.0f }, CubeMatrix);
+    }
+  }
+
+  //Change transform mode
+  if (Keyboard::isKeyDown(KEY_CODE::kQ)) {
+    m_TransformMode = TransformMode::kPosition;
+  }
+  else if (Keyboard::isKeyDown(KEY_CODE::kW)) {
+    m_TransformMode = TransformMode::kRotation;
+  }
+  else if (Keyboard::isKeyDown(KEY_CODE::kE)) {
+    m_TransformMode = TransformMode::kScale;
   }
 
   if (Mouse::isButtonDown(MOUSE_BUTTON::kLeft)) {
@@ -301,24 +314,23 @@ RenderManApp::postUpdate() {
       selectModel();
     }
     else {
-      if (TransformMode::E::Position == m_TransformMode) {
-        if (AXIS::kNone == m_SelectedMoveAxis) {
-          selectMoveAxe();
+      if (TransformMode::E::kPosition == m_TransformMode) {
+        if (TransformAxis::kNone == m_SelectedMoveAxis) {
+          if (!selectMoveAxe()) {
+            selectModel();
+          }
         }
         else {
           MoveOnAxe(m_SelectedMoveAxis);
         }
       }
 
-      selectModel();
     }
 
-    if (m_bSelected) {
-    }
 
   }
   if (!Mouse::isButtonDown(MOUSE_BUTTON::kLeft)) {
-    m_SelectedMoveAxis = AXIS::kNone;
+    m_SelectedMoveAxis = TransformAxis::kNone;
   }
 
   //Recompile shaders.
@@ -481,19 +493,22 @@ RenderManApp::selectMoveAxe() {
 
   Vector3D goPos;
 
-  std::vector<std::pair<AABB, AXIS::E>> axeBoxes;
+  std::vector<std::pair<AABB, TransformAxis::E>> axeBoxes;
   //X
   goPos = m_selectedGO->getTransform().getPosition();
   goPos += Vector3D(cubeLarge * 0.5f, 0.0f, 0.0f);
-  axeBoxes.push_back(std::make_pair(AABB(cubeLarge, cubeDefault, cubeDefault, goPos), AXIS::kX));
+  axeBoxes.push_back(std::make_pair(AABB(cubeLarge, cubeDefault, cubeDefault, goPos),
+                                    TransformAxis::kX));
   //Y
   goPos = m_selectedGO->getTransform().getPosition();
   goPos += Vector3D(0.0f, cubeLarge * 0.5f, 0.0f);
-  axeBoxes.push_back(std::make_pair(AABB(cubeDefault, cubeLarge, cubeDefault, goPos), AXIS::kY));
+  axeBoxes.push_back(std::make_pair(AABB(cubeDefault, cubeLarge, cubeDefault, goPos),
+                                    TransformAxis::kY));
   //Z
   goPos = m_selectedGO->getTransform().getPosition();
   goPos += Vector3D(0.0f, 0.0f, cubeLarge * 0.5f);
-  axeBoxes.push_back(std::make_pair(AABB(cubeDefault, cubeDefault, cubeLarge, goPos), AXIS::kZ));
+  axeBoxes.push_back(std::make_pair(AABB(cubeDefault, cubeDefault, cubeLarge, goPos),
+                                    TransformAxis::kZ));
 
 
   Vector3D rayOrigin = Cam->getPosition();
@@ -501,7 +516,7 @@ RenderManApp::selectMoveAxe() {
   Vector3D intersectPoint;
   Vector3D lastIntersectPoint;
 
-  m_SelectedMoveAxis = AXIS::kNone;
+  m_SelectedMoveAxis = TransformAxis::kNone;
 
   for (auto currentAxe : axeBoxes) {
     if (Intersect::rayAABB(currentAxe.first.getMaxPoint(),
@@ -528,7 +543,7 @@ RenderManApp::selectMoveAxe() {
 }
 
 void
-RenderManApp::MoveOnAxe(AXIS::E axisToMoveOn) {
+RenderManApp::MoveOnAxe(TransformAxis::E axisToMoveOn) {
   CameraManager::SharedCamera Cam = CameraManager::getActiveCamera();
 
   Vector3D rayOrigin = Cam->getPosition();
@@ -538,12 +553,32 @@ RenderManApp::MoveOnAxe(AXIS::E axisToMoveOn) {
   Vector3D lastIntersectPoint;
 
   Vector3D planeNormal;
-  if (AXIS::kX == axisToMoveOn || AXIS::kZ == axisToMoveOn) {
+
+  /*
+  * TODO: this is shit boi, why'd you hardcode this?
+  * Create a vector of Vec3, who'll contain all the
+  * axes normals.
+  * The plane normal we want, is the one which
+  * dot product with the camera direction its
+  * the closest to -1 (that means, the plane is looking
+  * to the camera).
+  *
+  * If the movement it's on 1 axis:
+  * Don't push the plane normals of the axis moving.
+  * In case of 2 moving axes:
+  * The plane normal its the cross product of
+  * both axes, and the normal should be pointing to
+  * the camera (there're only 2 planes, the positive
+  * and the negative one, same as above, keep the one with
+  * closest dot product to -1),
+  */
+  if (TransformAxis::kX == axisToMoveOn || TransformAxis::kZ == axisToMoveOn) {
     planeNormal = { 0, 1, 0 };
   }
   else {
     planeNormal = {0, 0, 1};
   }
+
   Vector3D planePoint = m_selectedGO->getTransform().getPosition();
 
   float denom = planeNormal.dot(rayDirection);
@@ -556,13 +591,13 @@ RenderManApp::MoveOnAxe(AXIS::E axisToMoveOn) {
       Vector3D raycastPos;
       raycastPos = rayOrigin + (rayDirection * t);
 
-      if (AXIS::kX == axisToMoveOn) {
+      if (TransformAxis::kX == axisToMoveOn) {
         newPos.x = raycastPos.x;
       }
-      else if (AXIS::kY == axisToMoveOn) {
+      else if (TransformAxis::kY == axisToMoveOn) {
         newPos.y = raycastPos.y;
       }
-      else if (AXIS::kZ == axisToMoveOn) {
+      else if (TransformAxis::kZ == axisToMoveOn) {
         newPos.z = raycastPos.z;
       }
 
