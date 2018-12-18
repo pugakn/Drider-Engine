@@ -873,7 +873,9 @@ void driderSDK::Editor::loadScene() {
       path = ImGuiFileDialog::Instance()->GetCurrentPath();
       fileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
       filter = ImGuiFileDialog::Instance()->GetCurrentFilter();
-
+      
+      SceneGraph::instance().getRoot()->destroy();
+      ResourceManager::clear();
       ResourceManager::loadScene(filePathName);
     }
     else

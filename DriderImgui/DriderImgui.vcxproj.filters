@@ -1,167 +1,51 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="Imgui">
-      <UniqueIdentifier>{b1a784f8-7c86-482a-8d50-2e86f01da2d7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Imgui">
-      <UniqueIdentifier>{928c4e1a-19a3-47fa-82c9-f71f000081c3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="InputComponents">
-      <UniqueIdentifier>{d39ecab1-ddb8-4c67-ba98-0973a5cab3b3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\InputComponents">
-      <UniqueIdentifier>{b33bf6b5-3c21-48de-a154-fb521417a44f}</UniqueIdentifier>
-    </Filter>
+    <ClCompile Include="Source\dr_animator_inputs.cpp" />
+    <ClCompile Include="Source\dr_box_collider_inputs.cpp" />
+    <ClCompile Include="Source\dr_camera_inputs.cpp" />
+    <ClCompile Include="Source\dr_editor.cpp" />
+    <ClCompile Include="Source\dr_input_editor.cpp" />
+    <ClCompile Include="Source\dr_light_inputs.cpp" />
+    <ClCompile Include="Source\dr_main.cpp" />
+    <ClCompile Include="Source\dr_render_inputs.cpp" />
+    <ClCompile Include="Source\dr_rigidbody_inputs.cpp" />
+    <ClCompile Include="Source\dr_script_inputs.cpp" />
+    <ClCompile Include="Source\dr_sound_inputs.cpp" />
+    <ClCompile Include="Source\dr_sphere_collider_inputs.cpp" />
+    <ClCompile Include="Source\imgui.cpp" />
+    <ClCompile Include="Source\imguifilesystem.cpp" />
+    <ClCompile Include="Source\ImGuiFileDialog.cpp" />
+    <ClCompile Include="Source\imgui_demo.cpp" />
+    <ClCompile Include="Source\imgui_draw.cpp" />
+    <ClCompile Include="Source\imgui_impl_dx11.cpp" />
+    <ClCompile Include="Source\imgui_impl_win32.cpp" />
+    <ClCompile Include="Source\imgui_stdlib.cpp" />
+    <ClCompile Include="Source\imgui_widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\dr_editor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\dr_input_editor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\imgui.cpp">
-      <Filter>Source Files\Imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\imgui_demo.cpp">
-      <Filter>Source Files\Imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\imgui_draw.cpp">
-      <Filter>Source Files\Imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\imgui_impl_dx11.cpp">
-      <Filter>Source Files\Imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\imgui_impl_win32.cpp">
-      <Filter>Source Files\Imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\imgui_stdlib.cpp">
-      <Filter>Source Files\Imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\imgui_widgets.cpp">
-      <Filter>Source Files\Imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\imguifilesystem.cpp">
-      <Filter>Source Files\Imgui</Filter>
-    <ClCompile Include="Source\ImGuiFileDialog.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\dr_input_editor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\dr_render_inputs.cpp">
-      <Filter>Source Files\InputComponents</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\dr_sphere_collider_inputs.cpp">
-      <Filter>Source Files\InputComponents</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\dr_sound_inputs.cpp">
-      <Filter>Source Files\InputComponents</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\dr_script_inputs.cpp">
-      <Filter>Source Files\InputComponents</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\dr_rigidbody_inputs.cpp">
-      <Filter>Source Files\InputComponents</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\dr_camera_inputs.cpp">
-      <Filter>Source Files\InputComponents</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\dr_box_collider_inputs.cpp">
-      <Filter>Source Files\InputComponents</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\dr_animator_inputs.cpp">
-      <Filter>Source Files\InputComponents</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\dr_main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\dr_light_inputs.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Include\dr_editor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\dr_input_editor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\imgui.h">
-      <Filter>Imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\imconfig.h">
-      <Filter>Imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\imgui_impl_dx11.h">
-      <Filter>Imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\imgui_impl_win32.h">
-      <Filter>Imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\imgui_internal.h">
-      <Filter>Imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\imgui_stdlib.h">
-      <Filter>Imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\imguifilesystem.h">
-      <Filter>Imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\imstb_rectpack.h">
-      <Filter>Imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\imstb_textedit.h">
-      <Filter>Imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\imstb_truetype.h">
-      <Filter>Imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\dirent_portable.h">
-      <Filter>Imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\dr_render_inputs.h">
-      <Filter>InputComponents</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\dr_light_inputs.h">
-      <Filter>InputComponents</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\dr_rigidbody_inputs.h">
-      <Filter>InputComponents</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\dr_script_inputs.h">
-      <Filter>InputComponents</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\dr_sound_inputs.h">
-      <Filter>InputComponents</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\dr_sphere_collider_inputs.h">
-      <Filter>InputComponents</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\dr_camera_inputs.h">
-      <Filter>InputComponents</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\dr_box_collider_inputs.h">
-      <Filter>InputComponents</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\dr_animator_inputs.h">
-      <Filter>InputComponents</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\ImGuiFileDialog.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <ClInclude Include="Include\dirent_portable.h" />
+    <ClInclude Include="Include\dr_animator_inputs.h" />
+    <ClInclude Include="Include\dr_box_collider_inputs.h" />
+    <ClInclude Include="Include\dr_camera_inputs.h" />
+    <ClInclude Include="Include\dr_editor.h" />
+    <ClInclude Include="Include\dr_input_editor.h" />
+    <ClInclude Include="Include\dr_light_inputs.h" />
+    <ClInclude Include="Include\dr_render_inputs.h" />
+    <ClInclude Include="Include\dr_rigidbody_inputs.h" />
+    <ClInclude Include="Include\dr_script_inputs.h" />
+    <ClInclude Include="Include\dr_sound_inputs.h" />
+    <ClInclude Include="Include\dr_sphere_collider_inputs.h" />
+    <ClInclude Include="Include\imconfig.h" />
+    <ClInclude Include="Include\imgui.h" />
+    <ClInclude Include="Include\imguifilesystem.h" />
+    <ClInclude Include="Include\ImGuiFileDialog.h" />
+    <ClInclude Include="Include\imgui_impl_dx11.h" />
+    <ClInclude Include="Include\imgui_impl_win32.h" />
+    <ClInclude Include="Include\imgui_internal.h" />
+    <ClInclude Include="Include\imgui_stdlib.h" />
+    <ClInclude Include="Include\imstb_rectpack.h" />
+    <ClInclude Include="Include\imstb_textedit.h" />
+    <ClInclude Include="Include\imstb_truetype.h" />
   </ItemGroup>
 </Project>
