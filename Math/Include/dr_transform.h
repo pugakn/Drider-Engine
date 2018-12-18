@@ -16,7 +16,8 @@ namespace AXIS {
   enum E {
     kX = 0,
     kY = 1,
-    kZ = 2
+    kZ = 2,
+    kNone = 3
   };
 }
 

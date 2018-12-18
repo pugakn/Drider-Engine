@@ -44,6 +44,12 @@ class RenderManApp : public Application
 
   void 
   loadResources();
+  
+  bool
+  selectMoveAxe();
+
+  void
+  MoveOnAxe(AXIS::E axisToMoveOn);
 
   void
   selectModel();
@@ -59,6 +65,9 @@ class RenderManApp : public Application
   SceneGraph::SharedGameObject m_selectedGO;
 
   TransformMode::E m_TransformMode;
+  AXIS::E m_SelectedMoveAxis;
+  float cubeLarge;
+  float cubeDefault;
 
   std::vector<SceneGraph::SharedGameObject> m_vecGos;
   std::shared_ptr<Material> m_BushMat;

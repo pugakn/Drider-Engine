@@ -109,6 +109,8 @@ RenderManApp::postInit() {
   m_bSelected = false;
   m_selectedGO = nullptr;
   m_TransformMode = TransformMode::Position;
+  cubeLarge = 100.0f;
+  cubeDefault = 5.0f;
 
   Vector4D LightPosition(0.0f, 100.0f, 150.0f, 1.0f);
   
@@ -271,8 +273,6 @@ RenderManApp::postUpdate() {
     aabbMatrix.Translation(m_selectedGO->getTransform().getPosition());
     RenderManager::instance().drawDebugCube(boxDimensions, { 1,1,1 }, aabbMatrix);
 
-    float cubeLarge = 100.0f;
-    float cubeDefault = 5.0f;
     //X
     CubeMatrix = Matrix4x4::identityMat4x4;
     goPos = m_selectedGO->getTransform().getPosition();
@@ -296,42 +296,29 @@ RenderManApp::postUpdate() {
                                             { 0.0f, 0.0f, 1.0f}, CubeMatrix);
   }
 
-  //Select object
   if (Mouse::isButtonDown(MOUSE_BUTTON::kLeft)) {
-    
-
     if (!m_bSelected) {
       selectModel();
     }
     else {
-      /*
-      if (AxisSelected)
-        MoveLogic
-      */
+      if (TransformMode::E::Position == m_TransformMode) {
+        if (AXIS::kNone == m_SelectedMoveAxis) {
+          selectMoveAxe();
+        }
+        else {
+          MoveOnAxe(m_SelectedMoveAxis);
+        }
+      }
+
       selectModel();
     }
 
     if (m_bSelected) {
     }
 
-    /*
-    Vector3D planeNormal = { 0, 1, 0 };
-    Vector3D planePoint = { 0, 0, 0 };
-    float denom = planeNormal.dot(rayDirection);
-    if (denom > Math::SMALL_NUMBER || denom < -Math::SMALL_NUMBER) {
-      Vector3D planeToRayOrigin = planePoint - rayOrigin;
-      float t = planeToRayOrigin.dot(planeNormal) / denom;
-      if (t >= 0) {
-
-        Vector3D spherePos;
-        spherePos = rayOrigin + (rayDirection * t);
-        Matrix4x4 sphereDeb = Matrix4x4::identityMat4x4;
-        sphereDeb = sphereDeb.Translation(spherePos);
-        RenderManager::instance().drawDebugSphere(10.0, {1.0f, 1.0f, 1.0f}, sphereDeb);
-      }
-    }
-    */
-
+  }
+  if (!Mouse::isButtonDown(MOUSE_BUTTON::kLeft)) {
+    m_SelectedMoveAxis = AXIS::kNone;
   }
 
   //Recompile shaders.
@@ -484,6 +471,104 @@ RenderManApp::loadResources() {
   ResourceManager::loadResource(_T("roboto_metallic.tga"));
   ResourceManager::loadResource(_T("roboto_normal.tga"));
   ResourceManager::loadResource(_T("roboto_roughness.tga"));
+}
+
+bool
+RenderManApp::selectMoveAxe() {
+  bool selected = false;
+
+  CameraManager::SharedCamera Cam = CameraManager::getActiveCamera();
+
+  Vector3D goPos;
+
+  std::vector<std::pair<AABB, AXIS::E>> axeBoxes;
+  //X
+  goPos = m_selectedGO->getTransform().getPosition();
+  goPos += Vector3D(cubeLarge * 0.5f, 0.0f, 0.0f);
+  axeBoxes.push_back(std::make_pair(AABB(cubeLarge, cubeDefault, cubeDefault, goPos), AXIS::kX));
+  //Y
+  goPos = m_selectedGO->getTransform().getPosition();
+  goPos += Vector3D(0.0f, cubeLarge * 0.5f, 0.0f);
+  axeBoxes.push_back(std::make_pair(AABB(cubeDefault, cubeLarge, cubeDefault, goPos), AXIS::kY));
+  //Z
+  goPos = m_selectedGO->getTransform().getPosition();
+  goPos += Vector3D(0.0f, 0.0f, cubeLarge * 0.5f);
+  axeBoxes.push_back(std::make_pair(AABB(cubeDefault, cubeDefault, cubeLarge, goPos), AXIS::kZ));
+
+
+  Vector3D rayOrigin = Cam->getPosition();
+  Vector3D rayDirection = GetCameraMouseRayDirection(Cam);
+  Vector3D intersectPoint;
+  Vector3D lastIntersectPoint;
+
+  m_SelectedMoveAxis = AXIS::kNone;
+
+  for (auto currentAxe : axeBoxes) {
+    if (Intersect::rayAABB(currentAxe.first.getMaxPoint(),
+                           currentAxe.first.getMinPoint(),
+                           rayOrigin,
+                           rayDirection,
+                           &intersectPoint)) {
+      if (!selected) {
+        selected = true;
+        lastIntersectPoint = intersectPoint;
+        m_SelectedMoveAxis = currentAxe.second;
+      }
+      else {
+        if ((rayOrigin - intersectPoint).lengthSqr() <
+            (rayOrigin - lastIntersectPoint).lengthSqr()) {
+          lastIntersectPoint = intersectPoint;
+          m_SelectedMoveAxis = currentAxe.second;
+        }
+      }
+    }
+  }
+
+  return selected;
+}
+
+void
+RenderManApp::MoveOnAxe(AXIS::E axisToMoveOn) {
+  CameraManager::SharedCamera Cam = CameraManager::getActiveCamera();
+
+  Vector3D rayOrigin = Cam->getPosition();
+  Vector3D rayDirection = GetCameraMouseRayDirection(Cam);
+
+  Vector3D intersectPoint;
+  Vector3D lastIntersectPoint;
+
+  Vector3D planeNormal;
+  if (AXIS::kX == axisToMoveOn || AXIS::kZ == axisToMoveOn) {
+    planeNormal = { 0, 1, 0 };
+  }
+  else {
+    planeNormal = {0, 0, 1};
+  }
+  Vector3D planePoint = m_selectedGO->getTransform().getPosition();
+
+  float denom = planeNormal.dot(rayDirection);
+  if (Math::abs(denom) > Math::SMALL_NUMBER) {
+    Vector3D planeToRayOrigin = planePoint - rayOrigin;
+    float t = planeToRayOrigin.dot(planeNormal) / denom;
+    if (t >= 0) {
+      Vector3D newPos;
+      newPos = m_selectedGO->getTransform().getPosition();
+      Vector3D raycastPos;
+      raycastPos = rayOrigin + (rayDirection * t);
+
+      if (AXIS::kX == axisToMoveOn) {
+        newPos.x = raycastPos.x;
+      }
+      else if (AXIS::kY == axisToMoveOn) {
+        newPos.y = raycastPos.y;
+      }
+      else if (AXIS::kZ == axisToMoveOn) {
+        newPos.z = raycastPos.z;
+      }
+
+      m_selectedGO->getTransform().setPosition(newPos);
+    }
+  }
 }
 
 void
