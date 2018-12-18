@@ -231,21 +231,18 @@ void Editor::postUpdate()
   else
   {
     if (m_hierarchyWindow) {
-      if (ImGui::Begin("Hierarchy", &m_hierarchyWindow, flags)) {
-        loadHierarchy();
-        ImGui::End();
-      }
+      ImGui::Begin("Hierarchy", &m_hierarchyWindow, flags);
+      loadHierarchy();
+      ImGui::End();
     }
     if (m_inpectorWindow) {
-      if (ImGui::Begin("Inspector", &m_inpectorWindow, flags)) {
-        loadInspector();
-        ImGui::End();
-      }
+      ImGui::Begin("Inspector", &m_inpectorWindow, flags);
+      loadInspector();
+      ImGui::End();
     }
     if (m_fileManagerWindow) {
-      if (ImGui::Begin("File Manager", &m_fileManagerWindow, flags)) {
-        ImGui::End();
-      }
+      ImGui::Begin("File Manager", &m_fileManagerWindow, flags);
+      ImGui::End();
     }
     loadRenderWindow();
   }
@@ -761,45 +758,44 @@ void Editor::loadFileManager()
 void
 Editor::loadRenderWindow() {
   if (m_renderConfigWindow) {
-    if (ImGui::Begin("Render Configuration", &m_renderConfigWindow)) {
-      if (ImGui::CollapsingHeader("Post-Processing"))
-      {
-        ImGui::Text("Post-Processing");
-      }
-      if (ImGui::CollapsingHeader("SSAO"))
-      {
-        ImGui::Checkbox("Enabled", &m_sceneWindow);
-        ImGui::Columns(2, "", false);
-        ImGui::Text("Sample Radio:");
-        ImGui::NextColumn();
-        float sampleRadioSSAO = 0;
-        if (ImGui::DragFloat("##sampleRadioSSAO", &sampleRadioSSAO)) {
-        }
-
-        ImGui::NextColumn();
-        ImGui::Text("Intensity:");
-        ImGui::NextColumn();
-        float intensitySSAO = 0;
-        if (ImGui::DragFloat("##intensitySSAO", &intensitySSAO)) {
-        }
-
-        ImGui::NextColumn();
-        ImGui::Text("Scale:");
-        ImGui::NextColumn();
-        float scaleSSAO = 0;
-        if (ImGui::DragFloat("##scaleSSAO", &scaleSSAO)) {
-        }
-
-        ImGui::NextColumn();
-        ImGui::Text("Bias:");
-        ImGui::NextColumn();
-        float biasSSAO = 0;
-        if (ImGui::DragFloat("##biasSSAO", &biasSSAO)) {
-        }
-      }
-
-      ImGui::End();
+    ImGui::Begin("Render Configuration", &m_renderConfigWindow);
+    if (ImGui::CollapsingHeader("Post-Processing"))
+    {
+      ImGui::Text("Post-Processing");
     }
+    if (ImGui::CollapsingHeader("SSAO"))
+    {
+      ImGui::Checkbox("Enabled", &m_sceneWindow);
+      ImGui::Columns(2, "", false);
+      ImGui::Text("Sample Radio:");
+      ImGui::NextColumn();
+      float sampleRadioSSAO = 0;
+      if (ImGui::DragFloat("##sampleRadioSSAO", &sampleRadioSSAO)) {
+      }
+
+      ImGui::NextColumn();
+      ImGui::Text("Intensity:");
+      ImGui::NextColumn();
+      float intensitySSAO = 0;
+      if (ImGui::DragFloat("##intensitySSAO", &intensitySSAO)) {
+      }
+
+      ImGui::NextColumn();
+      ImGui::Text("Scale:");
+      ImGui::NextColumn();
+      float scaleSSAO = 0;
+      if (ImGui::DragFloat("##scaleSSAO", &scaleSSAO)) {
+      }
+
+      ImGui::NextColumn();
+      ImGui::Text("Bias:");
+      ImGui::NextColumn();
+      float biasSSAO = 0;
+      if (ImGui::DragFloat("##biasSSAO", &biasSSAO)) {
+      }
+    }
+
+    ImGui::End();
   }
 }
 
