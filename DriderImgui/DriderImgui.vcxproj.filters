@@ -22,6 +22,7 @@
     <ClCompile Include="Source\imgui_impl_win32.cpp" />
     <ClCompile Include="Source\imgui_stdlib.cpp" />
     <ClCompile Include="Source\imgui_widgets.cpp" />
+    <ClCompile Include="Source\dr_aabb_inputs.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\dirent_portable.h" />
@@ -47,5 +48,6 @@
     <ClInclude Include="Include\imstb_rectpack.h" />
     <ClInclude Include="Include\imstb_textedit.h" />
     <ClInclude Include="Include\imstb_truetype.h" />
+    <ClInclude Include="Include\dr_aabb_inputs.h" />
   </ItemGroup>
 </Project>

@@ -152,6 +152,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\dr_aabb_inputs.cpp" />
     <ClCompile Include="Source\dr_animator_inputs.cpp" />
     <ClCompile Include="Source\dr_box_collider_inputs.cpp" />
     <ClCompile Include="Source\dr_camera_inputs.cpp" />
@@ -176,6 +177,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\dirent_portable.h" />
+    <ClInclude Include="Include\dr_aabb_inputs.h" />
     <ClInclude Include="Include\dr_animator_inputs.h" />
     <ClInclude Include="Include\dr_box_collider_inputs.h" />
     <ClInclude Include="Include\dr_camera_inputs.h" />

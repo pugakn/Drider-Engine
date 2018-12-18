@@ -92,7 +92,7 @@ void Editor::postInit()
   initRT();
   initCallbacks();
   initSceneGraph();
-  //initScriptEngine();
+  initScriptEngine();
 
   SceneGraph::start();
   m_selectedGameObject = SceneGraph::getRoot();
