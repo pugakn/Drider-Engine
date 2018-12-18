@@ -244,6 +244,7 @@ void Editor::postUpdate()
       ImGui::Begin("File Manager", &m_fileManagerWindow, flags);
       ImGui::End();
     }
+    loadFileManager();
     loadRenderWindow();
   }
 }
@@ -582,7 +583,6 @@ void driderSDK::Editor::loadHierarchy()
     if (align_label_with_current_x_position)
       ImGui::Unindent(ImGui::GetTreeNodeToLabelSpacing());
 
-    static UInt32 selection_mask = 0; // Dumb representation of what may be user-side selection state. You may carry selection state inside or outside your objects in whatever format you see fit.
     ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, ImGui::GetFontSize()); // Increase spacing to differentiate leaves from expanded contents.
 
     auto children = SceneGraph::getRoot()->getChildren();
@@ -751,8 +751,67 @@ void Editor::loadMenuAddComponent()
 
 void Editor::loadFileManager()
 {
-  ImGuiFs::PathStringVector names;
-  ImGuiFs::DirectoryGetDirectories("Resources", names);
+  if (m_fileManagerWindow) {
+    ImGui::Begin("File Manager", &m_fileManagerWindow);
+   /* ImGuiFs::PathStringVector names;
+    ImGuiFs::DirectoryGetDirectories("Resources", names);
+    */
+    std::function<void(ImGuiFs::PathStringVector&)> showFiles = [&](ImGuiFs::PathStringVector& files) {
+      char tempName[64] = "";
+
+      ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
+
+      for (size_t i = 0; i < files.size(); i++) {
+        ImGuiFs::PathGetFileName(files.Data[i], tempName);
+        ImGui::TreeNodeEx((std::string("##") + tempName + "FM").c_str(), node_flags, tempName);
+      }
+    };
+
+    std::function<void(ImGuiFs::PathStringVector&)> showDirectories = [&](ImGuiFs::PathStringVector& directories){
+      char tempName[64] = "";
+
+      ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
+      for (size_t i = 0; i < directories.size(); i++) {
+        ImGuiFs::PathGetFileName(directories.Data[i], tempName);
+        bool node_open = ImGui::TreeNodeEx((std::string("##") + tempName + "FM").c_str(), node_flags, tempName);
+        if (node_open) {
+          ImGuiFs::PathStringVector namesDirectories;
+          ImGuiFs::DirectoryGetDirectories(directories.Data[i], namesDirectories);
+          showDirectories(namesDirectories);
+          ImGuiFs::PathStringVector namesFiles;
+          ImGuiFs::DirectoryGetFiles(directories.Data[i], namesFiles);
+          showFiles(namesFiles);
+          ImGui::TreePop();
+        }
+      }
+    };
+
+    
+
+    auto rootDir = "Resources";
+    if (ImGui::TreeNode(""))
+    {
+
+      static bool align_label_with_current_x_position = false;
+      if (align_label_with_current_x_position)
+        ImGui::Unindent(ImGui::GetTreeNodeToLabelSpacing());
+
+      ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, ImGui::GetFontSize()); // Increase spacing to differentiate leaves from expanded contents.
+      
+      ImGuiFs::PathStringVector namesDirectories;
+      ImGuiFs::DirectoryGetDirectories(rootDir, namesDirectories);
+      showDirectories(namesDirectories);
+      ImGuiFs::PathStringVector namesFiles;
+      ImGuiFs::DirectoryGetFiles(rootDir, namesFiles);
+      showFiles(namesFiles);
+
+      ImGui::PopStyleVar();
+      if (align_label_with_current_x_position)
+        ImGui::Indent(ImGui::GetTreeNodeToLabelSpacing());
+      ImGui::TreePop();
+    }
+    ImGui::End();
+  }
 }
 
 void
