@@ -23,6 +23,7 @@ class Editor : public Application
 
   void initSceneGraph();
   void initScriptEngine();
+  void loadMainMenu();
   void initImguiMenus(float mainMenuBarheight);
   void loadHierarchy();
   void loadMenuHierarchy();
@@ -31,11 +32,18 @@ class Editor : public Application
   void loadInspector();
   void loadMenuAddComponent();
   void loadFileManager();
+  void loadRenderWindow();
   GFXShared<RenderTarget> m_RT;
   GFXShared<DepthStencil> m_RTDPTH;
   Viewport m_sceneViewport;
   float m_luminanceDelta;
+  float m_mainMenuBarheight;
   bool  m_initFlag;
+  bool m_renderConfigWindow;
+  bool m_hierarchyWindow;
+  bool m_sceneWindow;
+  bool m_inpectorWindow;
+  bool m_fileManagerWindow;
   GameObject* m_root;
 
   UInt32 m_selectedItem;

@@ -84,6 +84,12 @@ void Editor::postInit()
   auto d3dDevCont = static_cast<ID3D11DeviceContext*>(deviceContextObj);
 
   m_initFlag = true;
+  m_renderConfigWindow = false;
+  m_hierarchyWindow = true;
+  m_sceneWindow = true;
+  m_inpectorWindow = true;
+  m_fileManagerWindow = true;
+  m_mainMenuBarheight = 0;
   initRT();
   initCallbacks();
   initSceneGraph();
@@ -198,53 +204,6 @@ void Editor::postUpdate()
 
   ImGui::ShowTestWindow();
 
-  //flags |= ImGuiWindowFlags_NoMove;
-  //flags |= ImGuiWindowFlags_NoResize;
-  //flags |= ImGuiWindowFlags_NoTitleBar;
-  //ImGui::SetNextWindowPos({0, height});
-  //ImGui::SetNextWindowSize({float(400), float(m_viewport.height) - height});
-  //ImGui::Begin("Hello, world!", &open, flags);                          // Create a window called "Hello, world!" and append into it.
-  //ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-  //ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-  ////::Image();
-  //ImGui::End();
-
-  float mainMenuBarheight = 0;
-  if (ImGui::BeginMainMenuBar())
-  {
-    mainMenuBarheight = ImGui::GetWindowSize().y;
-
-    if (ImGui::BeginMenu("File"))
-    {
-      if (ImGui::MenuItem("Load Scene", "CTRL+L")) {
-        //D:\\This PC\\Documentos\\Drider-Engine\\DriderImgui\\Resources
-        //FileSystem::ScanDir("D:\\This PC\\Documentos\\Drider-Engine\\DriderImgui\\Resources");
-        showFileDilog = true;
-
-      }
-
-      if (ImGui::MenuItem("Save Scene", "CTRL+S")) {
-        //D:\\This PC\\Documentos\\Drider-Engine\\DriderImgui\\Resources
-        //FileSystem::ScanDir("D:\\This PC\\Documentos\\Drider-Engine\\DriderImgui\\Resources");
-        showSaveFileDialog = true;
-
-      }
-
-      ImGui::EndMenu();
-    }
-    if (ImGui::BeginMenu("Edit"))
-    {
-      if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
-      if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item
-      ImGui::Separator();
-      if (ImGui::MenuItem("Cut", "CTRL+X")) {}
-      if (ImGui::MenuItem("Copy", "CTRL+C")) {}
-      if (ImGui::MenuItem("Paste", "CTRL+V")) {}
-      ImGui::EndMenu();
-    }
-    ImGui::EndMainMenuBar();
-  }
-
   if(showFileDilog) {
     ImGui::OpenPopup("Choose File");
     showFileDilog = false;
@@ -260,27 +219,36 @@ void Editor::postUpdate()
 
 
   static bool open = true;
-  ImGuiWindowFlags flags = 0;
-
+  ImGuiWindowFlags flags;
+  loadMainMenu();
   flags = 0;
   if (m_initFlag)
   {
-    initImguiMenus(mainMenuBarheight);
+    initImguiMenus(m_mainMenuBarheight);
     m_initFlag = false;
   }
   else
   {
-
-if(ImGui::Begin("Hierarchy", &open, flags)) {
-
-    loadHierarchy();
-    ImGui::End();
-}
-    ImGui::Begin("Inspector", &open, flags);
-    loadInspector();
-    ImGui::End();
-    ImGui::Begin("File Manager", &open, flags);
-    ImGui::End();
+    if (m_hierarchyWindow) {
+      if (ImGui::Begin("Hierarchy", &m_hierarchyWindow, flags)) {
+        loadHierarchy();
+        ImGui::End();
+      }
+    }
+    if (m_inpectorWindow) {
+      if (ImGui::Begin("Inspector", &m_inpectorWindow, flags))
+      {
+        loadInspector();
+        ImGui::End();
+      }
+    }
+    if (m_fileManagerWindow) {
+      if (ImGui::Begin("File Manager", &m_fileManagerWindow, flags))
+      {
+        ImGui::End();
+      }
+    }
+    loadRenderWindow();
   }
 }
 
@@ -299,21 +267,23 @@ void Editor::postRender()
   //.set(GraphicsAPI::getDeviceContext(), 0);
   //m_editorQuad.draw();
 
-
-  if (ImGui::Begin("Scene")) {
-    float width = ImGui::GetWindowWidth();
-    float height = ImGui::GetWindowHeight();
-    if (m_sceneViewport.width != width || m_sceneViewport.height != height)
-    {
-      m_sceneViewport.width = (UInt32)width;
-      m_sceneViewport.height = (UInt32)height;
-      initRT();
-      CameraManager::getActiveCamera()->setViewport(m_sceneViewport);
+  if (m_sceneWindow)
+  {
+    if (ImGui::Begin("Scene", &m_sceneWindow)) {
+      float width = ImGui::GetWindowWidth();
+      float height = ImGui::GetWindowHeight();
+      if (m_sceneViewport.width != width || m_sceneViewport.height != height)
+      {
+        m_sceneViewport.width = (UInt32)width;
+        m_sceneViewport.height = (UInt32)height;
+        initRT();
+        CameraManager::getActiveCamera()->setViewport(m_sceneViewport);
+      }
+      auto texture = static_cast<ID3D11ShaderResourceView*>(m_RT->getTexture(0).getAPIObject());
+      ImGui::Image(texture, { width, height });
     }
-    auto texture = static_cast<ID3D11ShaderResourceView*>(m_RT->getTexture(0).getAPIObject());
-    ImGui::Image(texture, { width, height });
+    ImGui::End();
   }
-  ImGui::End();
 
 
   GraphicsAPI::getDepthStencilState(DR_DEPTH_STENCIL_STATES::kDepthRW).set(GraphicsAPI::getDeviceContext(), 1);
@@ -489,10 +459,46 @@ Editor::initScriptEngine() {
   component->start();*/
 }
 
-void driderSDK::Editor::initImguiMenus(float mainMenuBarheight)
-{
+void
+Editor::loadMainMenu() {
+  if (ImGui::BeginMainMenuBar())
+  {
+    m_mainMenuBarheight = ImGui::GetWindowSize().y;
 
-  static bool open = true;
+    if (ImGui::BeginMenu("File"))
+    {
+      if (ImGui::MenuItem("Load Scene", "CTRL+L")) {
+        //D:\\This PC\\Documentos\\Drider-Engine\\DriderImgui\\Resources
+        //FileSystem::ScanDir("D:\\This PC\\Documentos\\Drider-Engine\\DriderImgui\\Resources");
+        showFileDilog = true;
+
+      }
+
+      if (ImGui::MenuItem("Save Scene", "CTRL+S")) {
+        //D:\\This PC\\Documentos\\Drider-Engine\\DriderImgui\\Resources
+        //FileSystem::ScanDir("D:\\This PC\\Documentos\\Drider-Engine\\DriderImgui\\Resources");
+        showSaveFileDialog = true;
+
+      }
+
+      ImGui::EndMenu();
+    }
+    if (ImGui::BeginMenu("Windows"))
+    {
+      ImGui::Checkbox("Render Configuration", &m_renderConfigWindow);
+      ImGui::Checkbox("Hierarchy", &m_hierarchyWindow);
+      ImGui::Checkbox("Scene", &m_sceneWindow);
+      ImGui::Checkbox("Inspector", &m_inpectorWindow);
+      ImGui::Checkbox("File Manager", &m_fileManagerWindow);
+      ImGui::EndMenu();
+    }
+    ImGui::EndMainMenuBar();
+  }
+}
+
+void
+driderSDK::Editor::initImguiMenus(float mainMenuBarheight) {
+
   ImGuiWindowFlags flags = 0;
   float unitWidth = m_viewport.width * 0.25f;
   float unitHeight = (m_viewport.height - mainMenuBarheight) * 0.33f;
@@ -500,19 +506,19 @@ void driderSDK::Editor::initImguiMenus(float mainMenuBarheight)
 
   ImGui::SetNextWindowPos({ 0, mainMenuBarheight });
   ImGui::SetNextWindowSize({ unitWidth, unitHeight * 2 });
-  ImGui::Begin("Hierarchy", &open, flags);
+  ImGui::Begin("Hierarchy", &m_hierarchyWindow, flags);
   loadHierarchy();
   ImGui::End();
 
   ImGui::SetNextWindowPos({ unitWidth * 3, mainMenuBarheight });
   ImGui::SetNextWindowSize({ unitWidth, unitHeight * 3 });
-  ImGui::Begin("Inspector", &open, flags);
+  ImGui::Begin("Inspector", &m_inpectorWindow, flags);
   loadInspector();
   ImGui::End();
 
   ImGui::SetNextWindowPos({ 0, mainMenuBarheight + 2 * unitHeight });
   ImGui::SetNextWindowSize({ 3 * unitWidth, unitHeight });
-  ImGui::Begin("File Manager", &open, flags);
+  ImGui::Begin("File Manager", &m_fileManagerWindow, flags);
   ImGui::End();
 
   ImGui::SetNextWindowPos({ unitWidth, mainMenuBarheight });
@@ -750,6 +756,16 @@ void Editor::loadFileManager()
 {
   ImGuiFs::PathStringVector names;
   ImGuiFs::DirectoryGetDirectories("Resources", names);
+}
+
+void
+Editor::loadRenderWindow() {
+  if (m_renderConfigWindow) {
+    if (ImGui::Begin("Render Configuration", &m_renderConfigWindow)) {
+      ImGui::Text("IsItemHovered: ");
+      ImGui::End();
+    }
+  }
 }
 
 
