@@ -82,7 +82,6 @@ void Editor::postInit()
 
   auto d3dDev = static_cast<ID3D11Device*>(deviceObj);
   auto d3dDevCont = static_cast<ID3D11DeviceContext*>(deviceContextObj);
-
   m_initFlag = true;
   m_renderConfigWindow = false;
   m_hierarchyWindow = true;
@@ -219,9 +218,11 @@ void Editor::postUpdate()
 
 
   static bool open = true;
+
   ImGuiWindowFlags flags;
   loadMainMenu();
   flags = 0;
+
   if (m_initFlag)
   {
     initImguiMenus(m_mainMenuBarheight);
@@ -236,15 +237,13 @@ void Editor::postUpdate()
       }
     }
     if (m_inpectorWindow) {
-      if (ImGui::Begin("Inspector", &m_inpectorWindow, flags))
-      {
+      if (ImGui::Begin("Inspector", &m_inpectorWindow, flags)) {
         loadInspector();
         ImGui::End();
       }
     }
     if (m_fileManagerWindow) {
-      if (ImGui::Begin("File Manager", &m_fileManagerWindow, flags))
-      {
+      if (ImGui::Begin("File Manager", &m_fileManagerWindow, flags)) {
         ImGui::End();
       }
     }
@@ -269,7 +268,8 @@ void Editor::postRender()
 
   if (m_sceneWindow)
   {
-    if (ImGui::Begin("Scene", &m_sceneWindow)) {
+    ImGuiWindowFlags flags = 0;
+    if (ImGui::Begin("Scene", &m_sceneWindow, flags)) {
       float width = ImGui::GetWindowWidth();
       float height = ImGui::GetWindowHeight();
       if (m_sceneViewport.width != width || m_sceneViewport.height != height)
@@ -762,7 +762,42 @@ void
 Editor::loadRenderWindow() {
   if (m_renderConfigWindow) {
     if (ImGui::Begin("Render Configuration", &m_renderConfigWindow)) {
-      ImGui::Text("IsItemHovered: ");
+      if (ImGui::CollapsingHeader("Post-Processing"))
+      {
+        ImGui::Text("Post-Processing");
+      }
+      if (ImGui::CollapsingHeader("SSAO"))
+      {
+        ImGui::Checkbox("Enabled", &m_sceneWindow);
+        ImGui::Columns(2, "", false);
+        ImGui::Text("Sample Radio:");
+        ImGui::NextColumn();
+        float sampleRadioSSAO = 0;
+        if (ImGui::DragFloat("##sampleRadioSSAO", &sampleRadioSSAO)) {
+        }
+
+        ImGui::NextColumn();
+        ImGui::Text("Intensity:");
+        ImGui::NextColumn();
+        float intensitySSAO = 0;
+        if (ImGui::DragFloat("##intensitySSAO", &intensitySSAO)) {
+        }
+
+        ImGui::NextColumn();
+        ImGui::Text("Scale:");
+        ImGui::NextColumn();
+        float scaleSSAO = 0;
+        if (ImGui::DragFloat("##scaleSSAO", &scaleSSAO)) {
+        }
+
+        ImGui::NextColumn();
+        ImGui::Text("Bias:");
+        ImGui::NextColumn();
+        float biasSSAO = 0;
+        if (ImGui::DragFloat("##biasSSAO", &biasSSAO)) {
+        }
+      }
+
       ImGui::End();
     }
   }
