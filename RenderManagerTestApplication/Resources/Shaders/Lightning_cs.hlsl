@@ -59,7 +59,6 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   const float   alpha        = max(0.01f, roughness * roughness);
   const float   ShadowValue  = SSAO_SSShadowTex.SampleLevel(SS, uv, 0).g;
 
-
   float3 finalColor = float3(0.0f, 0.0f, 0.0f);
   
   //////////Lightning//////////
@@ -83,19 +82,14 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   const float  NdotV = saturate(dot(normal, -ViewDir));
 
   float3 DiffAcc, SpecAcc;
-
-  const int activeLights = kEyePosition.w;
   
   int actualLight;
-  //static const int totalLights = LightsIndex[uint2(TileGroup, RM_MAX_LIGHTS_PER_BLOCK)]; //This doesn't work for some reason
   //const int totalLights = LightsIndex[uint2(TileGroup, 0)]; //This doesn't work for some reason
   static const int totalLights = RM_MAX_LIGHTS_PER_BLOCK;
 
-  //Lightning[uvScale] = float4((totalLights / ((float)RM_MAX_LIGHTS_PER_BLOCK)).xxx, 1.0f); return;
-
   [loop]
-  for (int index = 0; index < totalLights; ++index) {
-    actualLight = LightsIndex[uint2(TileGroup, index + 1)];
+  for (int index = 1; index < totalLights; ++index) {
+    actualLight = LightsIndex[uint2(TileGroup, index)];
     if (actualLight < 0) { break; }
 
     lightPosition  = kLightPosition[actualLight].xyz;

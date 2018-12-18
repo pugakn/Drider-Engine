@@ -7,7 +7,7 @@
 #define DR_PLATFORM_ANDROID	  5	  //Android Platform
 #define DR_PLATFORM_PS4		    6	  //Play Station 4 Platform
 
-#define DR_COMPILER_MSVC   1   //VS Compiler
+#define DR_COMPILER_MSVC  1   //VS Compiler
 #define DR_COMPILER_GNU   2   //GCC Compiler
 #define DR_COMPILER_INTEL 3   //Intel Compiler
 #define DR_COMPILER_CLANG 4   //Clang Compiler
@@ -102,7 +102,7 @@
 *																	                                    *
 **********************************************************************/
 
-#if DR_COMPILER == DR_COMPILER_MSVC            //If we are compiling on Visual Studio
+#if DR_COMPILER == DR_COMPILER_MSVC           //If we are compiling on Visual Studio
 # if DR_COMP_VER >= 1200                      //If we are on Visual Studio 6 or higher
 #   define FORCEINLINE __forceinline          //Set __forceinline
 #   ifndef RESTRICT

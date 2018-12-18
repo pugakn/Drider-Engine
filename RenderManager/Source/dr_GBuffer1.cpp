@@ -71,7 +71,33 @@ GBufferPass::draw(PassDrawData* drawData) {
   dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
   
   const float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+
   data->OutRt->clear(dc, clearColor);
+  data->dsOptions->clear(dc, 1, 0);
+
+  //Skybox
+  if (false) {
+    dc.setResourcesNull();
+
+    data->cubeMapTex->textureGFX->set(dc, 0);  //Cubemap
+    //cubeMapTex->set(dc, 0);
+
+    //CB.World = data->models->worlds[modelPair.worldID];
+    //CB.WorldView = CB.World * data->activeCam->getView();
+    //CB.WVP = CB.World * data->activeCam->getVP();
+
+    std::memset(&CB.Bones[0].data[0], 0.0f, sizeof(CB.Bones));
+
+    m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
+    m_constantBuffer->set(dc);
+
+    //skysphere.get()->meshes.back().vertexBuffer->set(dc);
+    //skysphere.get()->meshes.back().indexBuffer->set(dc);
+    data->skysphere->meshes.back().vertexBuffer->set(dc);
+    data->skysphere->meshes.back().indexBuffer->set(dc);
+
+    dc.draw(data->skysphere->meshes.back().indices.size(), 0, 0);
+  }
   data->dsOptions->clear(dc, 1, 0);
 
   for (auto& modelPair : data->models->commands) {
@@ -134,6 +160,7 @@ GBufferPass::draw(PassDrawData* drawData) {
 
     dc.draw(modelPair.mesh.indicesCount, 0, 0);
   }
+
 
   data->OutRt->setRTNull(dc);
   dc.setUAVsNull();

@@ -27,7 +27,6 @@ struct LightningTileLightsSSData : PassDrawData {
 
 struct LightningDrawData : PassDrawData {
   std::shared_ptr<Camera> ActiveCam;
-  SizeT ActiveLights;
   std::array<Light, RM_MAX_LIGHTS>* Lights;
   RenderTarget* GbufferRT;
   RenderTarget* SSAO_SSShadowRT;

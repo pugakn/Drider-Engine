@@ -95,7 +95,7 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   void
   recompile();
 
-  float* luminanceDelta;
+  float luminanceDelta;
   UInt32 screenWidth;
   UInt32 screenHeight;
   UInt32 shadowWidth;
@@ -119,14 +119,30 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   void
   onShutDown();
 
+  /**
+  *
+  */
+  void
+  setSkySphere(std::shared_ptr<Model> cubemap);
+
+  /**
+  * 
+  */
   void
   setCubeMap(std::shared_ptr<TextureCore> cubemap);
 
+  /**
+  *
+  */
   void
   setEnviromentMap(std::shared_ptr<TextureCore> enviromentmap);
 
+  /**
+  *
+  */
   void
   setFilmLut(std::shared_ptr<TextureCore> filmLut);
+
   /**
   * Draws a line in debug mode.
   *
@@ -184,6 +200,9 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
  
   /**
   * Draws a cube in debug mode.
+  * This fuctions only works in
+  * debug mode, on release, it
+  * doesn't render the sphere.
   *
   * @points
   *  vector containing all the points to be renderer.
@@ -199,35 +218,138 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
                   const Vector3D& color,
                   const Matrix4x4& transform = Matrix4x4::identityMat4x4);
 
+  /**
+  * Returns a booll pointer to enable or
+  * disable the SSAO pass.
+  * 
+  * @return
+  *  A pointer to the bool value
+  *  that tells if the SSAO pass
+  *  will be executed.
+  */
+  FORCEINLINE bool*
+  getSSAOActive() {
+    return &m_bSSAO;
+  };
+
+  /**
+  * Returns a float pointer to modify
+  * the SSAO sample radio parameter.
+  * 
+  * @return
+  *  A pointer to the float value
+  *  used for SSAO sample radio.
+  */
+  FORCEINLINE float*
+  getSSAOSampleRadio() {
+    return &m_fSSAOSampleRadio;
+  };
+
+  /**
+  * Returns a float pointer to modify
+  * the SSAO intensity parameter.
+  *
+  * @return
+  *  A pointer to the float value
+  *  used for SSAO intensity.
+  */
+  FORCEINLINE float*
+  getSSAOIntensity() {
+    return &m_fSSAOIntensity;
+  };
+
+  /**
+  * Returns a float pointer to modify
+  * the SSAO scale parameter.
+  *
+  * @return
+  *  A pointer to the float value
+  *  used for SSAO scale.
+  */
+  FORCEINLINE float*
+  getSSAOScale() {
+    return &m_fSSAOScale;
+  };
+
+  /**
+  * Returns a float pointer to modify
+  * the SSAO bias parameter.
+  *
+  * @return
+  *  A pointer to the float value
+  *  used for SSAO bias.
+  */
+  FORCEINLINE float*
+  getSSAOBias() {
+    return &m_fSSAOBias;
+  };
+
+  FORCEINLINE float* getCAStrenght() { return &m_fChromaticAberrationStrenght; };
+  FORCEINLINE bool* getDoFFrontFocus() { return &m_bFrontFocus; };
+  FORCEINLINE float* getDoFDistance() { return &m_fFocusDistance; };
+  FORCEINLINE float* getDoFFocusRange() { return &m_fFocusRange; };
+  FORCEINLINE float* getVignetteScale() { return &m_fVignetteScale; };
+  FORCEINLINE Vector2D* getVignetteConcentration() { return &m_vec2VignetteConcentration; };
+  FORCEINLINE Vector2D* getVignetteRadius() { return &m_vec2VignetteRad; };
+
  protected:
 
-  std::shared_ptr<Model> m_quad;
   std::shared_ptr<TextureCore> m_cubemap;
   std::shared_ptr<TextureCore> m_cubemapDiffuse;
   std::shared_ptr<TextureCore> m_FilmLut;
+  std::shared_ptr<Model> m_SkySphere;
 
-  //VS & FS
+  /**
+  * GBuffer.
+  * Uses: Vertex and fragment shader.
+  * Vertex: Used to transform vertex to
+  *         world view projection space.
+  * Fragment: Injects information to GBuffer RT's.
+  */
   GBufferPass m_GBufferPass;
   GBufferInitData m_GBufferInitData;
   GBufferDrawData m_GBufferDrawData;
   GFXUnique<DepthStencil> m_GBufferDSoptions;
 
-  //VS & FS
+  /**
+  * Lines.
+  * Uses: Vertex and fragment shader.
+  * Vertex: Used to transform line start and
+  *         end to world view projection space.
+  * Fragment: Used to store maps information to render targets.
+  */
   LinesPass m_LinesPass;
   LinesInitData m_LinesInitData;
   LinesDrawData m_LinesDrawData;
 
-  //CS
+  /**
+  * Screen Space Ambient Occlusion.
+  * Uses: Compute shader.
+  * Compute shader: Computes the half sphere occlussion.
+  */
   SSAOPass m_SSAOPass;
   SSAOInitData m_SSAOInitData;
   SSAODrawData m_SSAODrawData;
+  bool m_bSSAO;
+  float m_fSSAOSampleRadio;
+  float m_fSSAOIntensity;
+  float m_fSSAOScale;
+  float m_fSSAOBias;
 
-  //CS
+  /**
+  * Horizontal blur.
+  * Uses: Compute shader.
+  * Compute shader: Horizontal blur.
+  */
   HorBlurPass m_HorBlurPass;
   HorBlurInitData m_HorBlurInitData;
   HorBlurDrawData m_HorBlurDrawData;
 
-  //CS
+  /**
+  * Vertical blur.
+  * Uses: Compute shader.
+  * Compute shader: Verticall blur.
+  */
   VerBlurPass m_VerBlurPass;
   VerBlurInitData m_VerBlurInitData;
   VerBlurDrawData m_VerBlurDrawData;
@@ -268,10 +390,26 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   LuminescenceDrawData m_luminescenceDrawData;
   StructureBuffer* resultBuffer;
 
-  //CS
+  /**
+  * Post-Processing
+  * Uses: Vertex and fragment shader.
+  * Vertex: renders a screen aligned quad.
+  * Fragment: Performs the active post
+  *           processing effects.
+  */
   PostProcessingPass m_PostProcessingPass;
   PostProcessingInitData m_PostProcessingInitData;
   PostProcessingDrawData m_PostProcessingDrawData;
+  bool m_bChromaticAberration;
+    float m_fChromaticAberrationStrenght;
+  bool m_bDoF;
+    bool m_bFrontFocus;
+    float m_fFocusDistance;
+    float m_fFocusRange;
+  bool m_bVignette;
+    float m_fVignetteScale;
+    Vector2D m_vec2VignetteConcentration;
+    Vector2D m_vec2VignetteRad;
 
   std::array<GFXUnique<RenderTarget>, 4> m_RTShadowDummy; //Used for render shadow cascades.
   GFXUnique<RenderTarget> m_RTShadow; //Compressed shadows.

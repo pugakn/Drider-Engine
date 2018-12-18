@@ -53,10 +53,12 @@ struct DR_CORE_EXPORT RenderCommand
 
   RenderCommand(Int32 _worldID,
                 const RenderMesh& mesh_,
-                Int32 _bones)
+                Int32 _bones,
+                std::shared_ptr<GameObject> _gameObjectPtr)
     : worldID(_worldID),
       mesh(mesh_),
-      bonesID(_bones)
+      bonesID(_bones),
+      gameObjectPtr(_gameObjectPtr)
   {}
 
   ~RenderCommand()
@@ -66,6 +68,7 @@ struct DR_CORE_EXPORT RenderCommand
   Int32 worldID;
   RenderMesh mesh;
   AABB aabb;
+  std::shared_ptr<GameObject> gameObjectPtr;
 };
 
 struct DR_CORE_EXPORT RenderQuery
@@ -183,7 +186,13 @@ class DR_CORE_EXPORT SceneGraph : public Module<SceneGraph>
   *
   */
   void
-  registerLight(LightComponent* light);
+  addLight(LightComponent* light);
+
+  /**
+  *
+  */
+  void
+  removeLight(LightComponent* light);
 
   //Called when all initial objects
   //and components are created
@@ -271,6 +280,7 @@ class DR_CORE_EXPORT SceneGraph : public Module<SceneGraph>
   RenderCommandBuffer m_buffers[2];
   RenderCommandBuffer* m_producer = nullptr;
   RenderCommandBuffer* m_consumer = nullptr;
+  std::vector<LightComponent*> m_vecLights;
   std::unordered_map<TString, LightComponent*> m_umLights;
 };
 

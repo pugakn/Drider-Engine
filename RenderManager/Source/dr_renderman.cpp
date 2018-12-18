@@ -135,6 +135,7 @@ RenderManager::init() {
     texDescDefault.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE |
                                  DR_BIND_FLAGS::RENDER_TARGET;
   }
+
   //DepthStencil Base
   DrDepthStencilDesc commonTextureDesc;
   {
@@ -375,10 +376,16 @@ RenderManager::init() {
   m_ShadowInitData.RTWidht = shadowWidth;
   m_ShadowInitData.RTHeight = shadowHeight;
   m_ShadowPass.init(&m_ShadowInitData);
-
+  
   m_SSAOInitData.RTWidth = screenWidth;
   m_SSAOInitData.RTHeight = screenHeight;
   m_SSAOPass.init(&m_SSAOInitData);
+
+  m_bSSAO = true;
+  m_fSSAOSampleRadio = 0.0008f;
+  m_fSSAOIntensity = 2.0f;
+  m_fSSAOScale = 1.0f;
+  m_fSSAOBias = 0.0002f;
 
   m_HorBlurPass.init(&m_HorBlurInitData);
   m_VerBlurPass.init(&m_VerBlurInitData);
@@ -398,6 +405,13 @@ RenderManager::init() {
   m_luminescencePass.init(&m_luminescenceInitData);
 
   m_PostProcessingPass.init(&m_PostProcessingInitData);
+  m_fChromaticAberrationStrenght = 0.125f;
+  m_bFrontFocus = true;
+  m_fFocusDistance = 390.0f;
+  m_fFocusRange = 300.0f;
+  m_fVignetteScale = 1.0f;
+  m_vec2VignetteConcentration = Vector2D(4.0f, 4.0f);
+  m_vec2VignetteRad = Vector2D(1.25f, 1.25f);
 
 //  m_particlePass.init(&m_particleInitData);
 //  ParticleEmitter emitter;
@@ -464,19 +478,20 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
 
   auto mainCam = CameraManager::instance().getActiveCamera();
   auto mainCamRef = *CameraManager::instance().getActiveCamera();
-  RenderCommandBuffer queryRequest;
 
   RenderQuery rqRequest{ mainCamRef,
                         QUERY_ORDER::kFrontToBack,
                         QUERY_PROPERTY::kOpaque |
                         QUERY_PROPERTY::kDynamic |
                         QUERY_PROPERTY::kStatic };
-  queryRequest = SceneGraph::query(rqRequest);
+  RenderCommandBuffer queryRequest = SceneGraph::query(rqRequest);
 
   m_GBufferDrawData.activeCam = mainCam;
   m_GBufferDrawData.models = &queryRequest;
   m_GBufferDrawData.OutRt = m_RTGBuffer.get();
   m_GBufferDrawData.dsOptions = m_GBufferDSoptions.get();
+  m_GBufferDrawData.skysphere = &(*m_SkySphere);
+  m_GBufferDrawData.cubeMapTex = m_cubemap.get();
   m_GBufferPass.draw(&m_GBufferDrawData);
 
   m_LinesDrawData.activeCam = mainCam;
@@ -519,14 +534,16 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
     m_ShadowPass.apply(&m_ShadowDrawData, m_RTGBuffer.get(), m_RTShadow.get(), m_RTSSAO_SSShadow.get());
   }
 
-  m_SSAODrawData.activeCam = mainCam;
-  m_SSAODrawData.InRt = m_RTGBuffer.get();
-  m_SSAODrawData.OutRt = m_RTSSAO_SSShadow.get();
-  m_SSAODrawData.SampleRadio = 0.0008f;
-  m_SSAODrawData.Intensity = 2.0f;
-  m_SSAODrawData.Scale = 1.0f;
-  m_SSAODrawData.Bias = 0.0002f;
-  m_SSAOPass.draw(&m_SSAODrawData);
+  if (m_bSSAO) {
+    m_SSAODrawData.activeCam = mainCam;
+    m_SSAODrawData.InRt = m_RTGBuffer.get();
+    m_SSAODrawData.OutRt = m_RTSSAO_SSShadow.get();
+    m_SSAODrawData.SampleRadio = m_fSSAOSampleRadio;
+    m_SSAODrawData.Intensity = m_fSSAOIntensity;
+    m_SSAODrawData.Scale = m_fSSAOScale;
+    m_SSAODrawData.Bias = m_fSSAOBias;
+    m_SSAOPass.draw(&m_SSAODrawData);
+  }
 
   m_HorBlurDrawData.InTexture = &m_RTSSAO_SSShadow->getTexture(0);
   m_HorBlurDrawData.OutRt = m_RTBlurInit.get();
@@ -561,7 +578,6 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   //Lightning Pass
   m_LightningDrawData.ActiveCam = mainCam;
   m_LightningDrawData.Lights = &lights;
-  m_LightningDrawData.ActiveLights = 128;
   m_LightningDrawData.GbufferRT = m_RTGBuffer.get();
   m_LightningDrawData.SSAO_SSShadowRT = m_RTSSAO_SSShadowBlur.get();
   m_LightningDrawData.SSReflection = m_RTSSReflection.get();
@@ -612,12 +628,12 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   //_out->clear(GraphicsAPI::getDeviceContext(), clearColor);
 
   m_PostProcessingDrawData.activeCam = mainCam;
-  m_PostProcessingDrawData.ChromaticAberrationStrenght = 0.075f;
-  m_PostProcessingDrawData.CoCFocusDistance = 390.0f;
-  m_PostProcessingDrawData.CoCFocusRange = 50.0f;
-  m_PostProcessingDrawData.VignetteScale = 1.0f;
-  m_PostProcessingDrawData.VignetteConcentration = Vector2D(4.0f, 4.0f);
-  m_PostProcessingDrawData.VignetteRad = Vector2D(1.25f, 1.25f);
+  m_PostProcessingDrawData.ChromaticAberrationStrenght = m_fChromaticAberrationStrenght;
+  m_PostProcessingDrawData.CoCFocusDistance = m_fFocusDistance;
+  m_PostProcessingDrawData.CoCFocusRange = m_bFrontFocus ? m_fFocusRange : -m_fFocusRange;
+  m_PostProcessingDrawData.VignetteScale = m_fVignetteScale;
+  m_PostProcessingDrawData.VignetteConcentration = m_vec2VignetteConcentration;
+  m_PostProcessingDrawData.VignetteRad = m_vec2VignetteRad;
   m_PostProcessingDrawData.ColorTex = &m_RTLightning->getTexture(0);
   m_PostProcessingDrawData.ColorBlurTex = &m_RTLightningBlur->getTexture(0);
   m_PostProcessingDrawData.PositionDepthTex = &m_RTGBuffer->getTexture(0);
@@ -663,6 +679,11 @@ RenderManager::onStartUp() {
 void
 RenderManager::onShutDown() {
   exit();
+}
+
+void
+RenderManager::setSkySphere(std::shared_ptr<Model> skysphere) {
+  m_SkySphere = skysphere;
 }
 
 void
