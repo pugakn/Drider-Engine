@@ -135,6 +135,7 @@ RenderManager::init() {
     texDescDefault.bindFlags = DR_BIND_FLAGS::SHADER_RESOURCE |
                                  DR_BIND_FLAGS::RENDER_TARGET;
   }
+
   //DepthStencil Base
   DrDepthStencilDesc commonTextureDesc;
   {
@@ -407,7 +408,7 @@ RenderManager::init() {
   m_fChromaticAberrationStrenght = 0.125f;
   m_bFrontFocus = true;
   m_fFocusDistance = 390.0f;
-  m_fFocusRange = 50.0f;
+  m_fFocusRange = 300.0f;
   m_fVignetteScale = 1.0f;
   m_vec2VignetteConcentration = Vector2D(4.0f, 4.0f);
   m_vec2VignetteRad = Vector2D(1.25f, 1.25f);

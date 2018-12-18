@@ -7,10 +7,20 @@
 
 namespace driderSDK {
 
+namespace TransformMode {
+
+enum E {
+  Position = 0,
+  Scale,
+  Rotation,
+  Size
+};
+
+}
+
 class RenderManApp : public Application
 {
  public:
-
 
  private:
 
@@ -35,12 +45,8 @@ class RenderManApp : public Application
   void 
   loadResources();
 
-  bool
-  rayVSAABB(const Vector3D& rayOrigin,
-            const Vector3D& rayDir,
-            const Vector3D& minPoint,
-            const Vector3D& maxPoint,
-            Vector3D* outIntersection);
+  void
+  selectModel();
 
   Vector3D
   GetCameraMouseRayDirection(CameraManager::SharedCamera Cam);
@@ -52,7 +58,8 @@ class RenderManApp : public Application
   bool m_bSelected;
   SceneGraph::SharedGameObject m_selectedGO;
 
-  SizeT m_SzTGosIndex;
+  TransformMode::E m_TransformMode;
+
   std::vector<SceneGraph::SharedGameObject> m_vecGos;
   std::shared_ptr<Material> m_BushMat;
   std::shared_ptr<Material> m_StormtrooperMat;
