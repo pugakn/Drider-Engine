@@ -26,7 +26,7 @@
 #include <dr_material.h>
 #include <dr_model.h>
 #include <dr_mouse.h>
-//#include <dr_physics_manager.h>
+#include <dr_physics_manager.h>
 #include <dr_renderman.h>
 #include <dr_render_component.h>
 #include <dr_resource_manager.h>
@@ -72,7 +72,7 @@ void Editor::postInit()
   ScriptEngine::startUp();
   SceneGraph::startUp();
   ResourceManager::startUp();
-  //PhysicsManager::startUp();
+  PhysicsManager::startUp();
   SoundAPI::startUp();
 
   m_sceneViewport = Viewport{ 0, 0, 480, 320 };
@@ -194,9 +194,9 @@ void Editor::postUpdate()
   Time::update();
   InputManager::update();
 
-  //PhysicsManager::simulate();
+  PhysicsManager::simulate();
   SceneGraph::update();
-  //PhysicsManager::TestCollision();
+  PhysicsManager::TestCollision();
   ImGui_ImplDX11_NewFrame();
   ImGui_ImplWin32_NewFrame();
   ImGui::NewFrame();
@@ -302,7 +302,7 @@ void Editor::postDestroy()
   ImGui::DestroyContext();
   SoundAPI::shutDown();
   ScriptEngine::shutDown();
-  //PhysicsManager::shutDown();
+  PhysicsManager::shutDown();
   ContextManager::shutDown();
   ResourceManager::shutDown();
   SceneGraph::shutDown();
