@@ -100,6 +100,7 @@ RenderManApp::postInit() {
   CameraManager::startUp();
   RenderManager::startUp();
   PhysicsManager::startUp();
+
   auto rm_cam = SceneGraph::createObject(_T("DuckCamera"));
   auto cam_cmp = rm_cam->createComponent<CameraComponent>();
   rm_cam->getTransform().setPosition({ 0.0f, 200.0f, 400.0f });
@@ -280,21 +281,24 @@ RenderManApp::postUpdate() {
       goPos += Vector3D(cubeLarge * 0.5f, 0.0f, 0.0f);
       CubeMatrix.Translation(goPos);
       RenderManager::instance().drawDebugCube({ cubeLarge, cubeDefault, cubeDefault },
-        { 1.0f, 0.0f, 0.0f }, CubeMatrix);
+                                              { 1.0f, 0.0f, 0.0f },
+                                              CubeMatrix);
       //Y
       CubeMatrix = Matrix4x4::identityMat4x4;
       goPos = m_selectedGO->getTransform().getPosition();
       goPos += Vector3D(0.0f, cubeLarge * 0.5f, 0.0f);
       CubeMatrix.Translation(goPos);
       RenderManager::instance().drawDebugCube({ cubeDefault, cubeLarge, cubeDefault },
-        { 0.0f, 1.0f, 0.0f }, CubeMatrix);
+                                              { 0.0f, 1.0f, 0.0f },
+                                              CubeMatrix);
       //Z
       CubeMatrix = Matrix4x4::identityMat4x4;
       goPos = m_selectedGO->getTransform().getPosition();
       goPos += Vector3D(0.0f, 0.0f, cubeLarge * 0.5f);
       CubeMatrix.Translation(goPos);
       RenderManager::instance().drawDebugCube({ cubeDefault, cubeDefault, cubeLarge },
-        { 0.0f, 0.0f, 1.0f }, CubeMatrix);
+                                              { 0.0f, 0.0f, 1.0f },
+                                              CubeMatrix);
     }
   }
 
