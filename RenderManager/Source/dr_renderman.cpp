@@ -635,6 +635,7 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_PostProcessingDrawData.VignetteConcentration = m_vec2VignetteConcentration;
   m_PostProcessingDrawData.VignetteRad = m_vec2VignetteRad;
   m_PostProcessingDrawData.ColorTex = &m_RTLightning->getTexture(0);
+  //m_PostProcessingDrawData.ColorTex = &m_RTGBuffer->getTexture(2);
   m_PostProcessingDrawData.ColorBlurTex = &m_RTLightningBlur->getTexture(0);
   m_PostProcessingDrawData.PositionDepthTex = &m_RTGBuffer->getTexture(0);
   m_PostProcessingDrawData.BloomTex = &m_RTBloom->getTexture(0);

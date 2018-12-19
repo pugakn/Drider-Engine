@@ -477,6 +477,7 @@ ResourceManager::createMaterial(const TString& materialName, bool empty) {
 void
 ResourceManager::clear() {
   ResourceManager::instance().m_resources.clear();
+  ResourceManager::instance().m_materials.clear();
 }
 
 void 

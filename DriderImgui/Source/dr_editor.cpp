@@ -92,7 +92,7 @@ void Editor::postInit()
   initRT();
   initCallbacks();
   initSceneGraph();
-  //initScriptEngine();
+  initScriptEngine();
 
   SceneGraph::start();
   m_selectedGameObject = SceneGraph::getRoot();
@@ -231,22 +231,20 @@ void Editor::postUpdate()
   else
   {
     if (m_hierarchyWindow) {
-      if (ImGui::Begin("Hierarchy", &m_hierarchyWindow, flags)) {
-        loadHierarchy();
-        ImGui::End();
-      }
+      ImGui::Begin("Hierarchy", &m_hierarchyWindow, flags);
+      loadHierarchy();
+      ImGui::End();
     }
     if (m_inpectorWindow) {
-      if (ImGui::Begin("Inspector", &m_inpectorWindow, flags)) {
-        loadInspector();
-        ImGui::End();
-      }
+      ImGui::Begin("Inspector", &m_inpectorWindow, flags);
+      loadInspector();
+      ImGui::End();
     }
     if (m_fileManagerWindow) {
-      if (ImGui::Begin("File Manager", &m_fileManagerWindow, flags)) {
-        ImGui::End();
-      }
+      ImGui::Begin("File Manager", &m_fileManagerWindow, flags);
+      ImGui::End();
     }
+    loadFileManager();
     loadRenderWindow();
   }
 }
@@ -585,7 +583,6 @@ void driderSDK::Editor::loadHierarchy()
     if (align_label_with_current_x_position)
       ImGui::Unindent(ImGui::GetTreeNodeToLabelSpacing());
 
-    static UInt32 selection_mask = 0; // Dumb representation of what may be user-side selection state. You may carry selection state inside or outside your objects in whatever format you see fit.
     ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, ImGui::GetFontSize()); // Increase spacing to differentiate leaves from expanded contents.
 
     auto children = SceneGraph::getRoot()->getChildren();
@@ -629,9 +626,7 @@ void Editor::loadInspector()
   }
   auto temp = m_selectedGameObject->getName();
   ImGui::Text("Name:"); ImGui::SameLine();
-  if (ImGui::InputText("##nameGO",
-    &temp)) {
-
+  if (ImGui::InputText("##nameGO", &temp)) {
     m_selectedGameObject->setName(temp);
   }
 
@@ -754,52 +749,128 @@ void Editor::loadMenuAddComponent()
 
 void Editor::loadFileManager()
 {
-  ImGuiFs::PathStringVector names;
-  ImGuiFs::DirectoryGetDirectories("Resources", names);
+  if (m_fileManagerWindow) {
+    ImGui::Begin("File Manager", &m_fileManagerWindow);
+   /* ImGuiFs::PathStringVector names;
+    ImGuiFs::DirectoryGetDirectories("Resources", names);
+    */
+    std::function<void(ImGuiFs::PathStringVector&)> showFiles = [&](ImGuiFs::PathStringVector& files) {
+
+      ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
+
+      for (size_t i = 0; i < files.size(); i++) {
+        char tempName[64] = "";
+
+        ImGuiFs::PathGetFileName(files.Data[i], tempName);
+        ImGui::TreeNodeEx((std::string("##") + tempName + "FM").c_str(), node_flags, tempName);
+        if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
+        {
+          ImGui::SetDragDropPayload("FILE_ITEM", &tempName, sizeof(tempName));        // Set payload to carry the index of our item (could be anything)
+          ImGui::Text("%s", tempName);
+          ImGui::EndDragDropSource();
+        }
+      }
+    };
+
+    std::function<void(ImGuiFs::PathStringVector&)> showDirectories = [&](ImGuiFs::PathStringVector& directories){
+      char tempName[64] = "";
+
+      ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
+      for (size_t i = 0; i < directories.size(); i++) {
+        ImGuiFs::PathGetFileName(directories.Data[i], tempName);
+        bool node_open = ImGui::TreeNodeEx((std::string("##") + tempName + "FM").c_str(), node_flags, tempName);
+        if (node_open) {
+          ImGuiFs::PathStringVector namesDirectories;
+          ImGuiFs::DirectoryGetDirectories(directories.Data[i], namesDirectories);
+          showDirectories(namesDirectories);
+          ImGuiFs::PathStringVector namesFiles;
+          ImGuiFs::DirectoryGetFiles(directories.Data[i], namesFiles);
+          showFiles(namesFiles);
+          ImGui::TreePop();
+        }
+      }
+    };
+
+    
+
+    auto rootDir = "Resources";
+    ImGui::Text("hola");
+    if (ImGui::BeginDragDropTarget())
+    {
+      if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILE_ITEM"))
+      {
+        char* lu = (char*)payload->Data;
+        int i = 0;
+i = i+3;
+      }
+      ImGui::EndDragDropTarget();
+    }
+    if (ImGui::TreeNode(""))
+    {
+
+      static bool align_label_with_current_x_position = false;
+      if (align_label_with_current_x_position)
+        ImGui::Unindent(ImGui::GetTreeNodeToLabelSpacing());
+
+      ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, ImGui::GetFontSize()); // Increase spacing to differentiate leaves from expanded contents.
+      
+      ImGuiFs::PathStringVector namesDirectories;
+      ImGuiFs::DirectoryGetDirectories(rootDir, namesDirectories);
+      showDirectories(namesDirectories);
+      ImGuiFs::PathStringVector namesFiles;
+      ImGuiFs::DirectoryGetFiles(rootDir, namesFiles);
+      showFiles(namesFiles);
+
+      ImGui::PopStyleVar();
+      if (align_label_with_current_x_position)
+        ImGui::Indent(ImGui::GetTreeNodeToLabelSpacing());
+      ImGui::TreePop();
+    }
+    ImGui::End();
+  }
 }
 
 void
 Editor::loadRenderWindow() {
   if (m_renderConfigWindow) {
-    if (ImGui::Begin("Render Configuration", &m_renderConfigWindow)) {
-      if (ImGui::CollapsingHeader("Post-Processing"))
-      {
-        ImGui::Text("Post-Processing");
-      }
-      if (ImGui::CollapsingHeader("SSAO"))
-      {
-        ImGui::Checkbox("Enabled", &m_sceneWindow);
-        ImGui::Columns(2, "", false);
-        ImGui::Text("Sample Radio:");
-        ImGui::NextColumn();
-        float sampleRadioSSAO = 0;
-        if (ImGui::DragFloat("##sampleRadioSSAO", &sampleRadioSSAO)) {
-        }
-
-        ImGui::NextColumn();
-        ImGui::Text("Intensity:");
-        ImGui::NextColumn();
-        float intensitySSAO = 0;
-        if (ImGui::DragFloat("##intensitySSAO", &intensitySSAO)) {
-        }
-
-        ImGui::NextColumn();
-        ImGui::Text("Scale:");
-        ImGui::NextColumn();
-        float scaleSSAO = 0;
-        if (ImGui::DragFloat("##scaleSSAO", &scaleSSAO)) {
-        }
-
-        ImGui::NextColumn();
-        ImGui::Text("Bias:");
-        ImGui::NextColumn();
-        float biasSSAO = 0;
-        if (ImGui::DragFloat("##biasSSAO", &biasSSAO)) {
-        }
-      }
-
-      ImGui::End();
+    ImGui::Begin("Render Configuration", &m_renderConfigWindow);
+    if (ImGui::CollapsingHeader("Post-Processing"))
+    {
+      ImGui::Text("Post-Processing");
     }
+    if (ImGui::CollapsingHeader("SSAO"))
+    {
+      ImGui::Checkbox("Enabled", &m_sceneWindow);
+      ImGui::Columns(2, "", false);
+      ImGui::Text("Sample Radio:");
+      ImGui::NextColumn();
+      float sampleRadioSSAO = 0;
+      if (ImGui::DragFloat("##sampleRadioSSAO", &sampleRadioSSAO)) {
+      }
+
+      ImGui::NextColumn();
+      ImGui::Text("Intensity:");
+      ImGui::NextColumn();
+      float intensitySSAO = 0;
+      if (ImGui::DragFloat("##intensitySSAO", &intensitySSAO)) {
+      }
+
+      ImGui::NextColumn();
+      ImGui::Text("Scale:");
+      ImGui::NextColumn();
+      float scaleSSAO = 0;
+      if (ImGui::DragFloat("##scaleSSAO", &scaleSSAO)) {
+      }
+
+      ImGui::NextColumn();
+      ImGui::Text("Bias:");
+      ImGui::NextColumn();
+      float biasSSAO = 0;
+      if (ImGui::DragFloat("##biasSSAO", &biasSSAO)) {
+      }
+    }
+
+    ImGui::End();
   }
 }
 
@@ -818,7 +889,9 @@ void driderSDK::Editor::loadScene() {
       path = ImGuiFileDialog::Instance()->GetCurrentPath();
       fileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
       filter = ImGuiFileDialog::Instance()->GetCurrentFilter();
-
+      
+      SceneGraph::instance().getRoot()->destroy();
+      ResourceManager::clear();
       ResourceManager::loadScene(filePathName);
     }
     else
