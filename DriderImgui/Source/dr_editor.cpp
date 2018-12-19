@@ -46,6 +46,8 @@
 #include "ImGuiFileDialog.h"
 #include "imgui_stdlib.h"
 #include "imguifilesystem.h"
+#include "imgui_internal.h"
+
 namespace driderSDK {
 
 void Editor::postInit()
@@ -242,6 +244,11 @@ void Editor::postUpdate()
     }
     if (m_fileManagerWindow) {
       ImGui::Begin("File Manager", &m_fileManagerWindow, flags);
+      ImGui::End();
+    }
+    if(m_materialEditorWindow) {
+      ImGui::Begin("Material Editor", &m_materialEditorWindow, flags);
+      materialEditor();
       ImGui::End();
     }
     loadFileManager();
@@ -483,6 +490,7 @@ Editor::loadMainMenu() {
     }
     if (ImGui::BeginMenu("Windows"))
     {
+      ImGui::Checkbox("Material Editor", &m_materialEditorWindow);
       ImGui::Checkbox("Render Configuration", &m_renderConfigWindow);
       ImGui::Checkbox("Hierarchy", &m_hierarchyWindow);
       ImGui::Checkbox("Scene", &m_sceneWindow);
@@ -611,6 +619,52 @@ void driderSDK::Editor::loadMenuHierarchy()
       { 0.0f, 0.0f, 0.0f },
       { 0.0f, 0.0f, 0.0f });
   }
+}
+
+void driderSDK::Editor::materialEditor() {
+
+  if (ImGui::Button("Create"))
+    ImGui::OpenPopup("menuHierarchy");
+  ImGui::SameLine();
+
+  if (ImGui::TreeNode("Collapsing Headers"))
+  {
+    static bool closable_group = true;
+    ImGui::Checkbox("Enable extra group", &closable_group);
+    if (ImGui::CollapsingHeader("Header"))
+    {
+      ImGui::Text("IsItemHovered: %d", ImGui::IsItemHovered());
+      for (int i = 0; i < 5; i++)
+        ImGui::Text("Some content %d", i);
+    }
+    if (ImGui::CollapsingHeader("Header with a close button", &closable_group))
+    {
+      ImGui::Text("IsItemHovered: %d", ImGui::IsItemHovered());
+      for (int i = 0; i < 5; i++)
+        ImGui::Text("More content %d", i);
+    }
+    ImGui::TreePop();
+  }
+
+  //ImGui::Text(StringUtils::toString(m_selectedMaterial->m_name).c_str());
+
+  /*ImGui::Text("Name:"); ImGui::SameLine();
+  ImGui::InputText("##modelRenderInputs", &temp, ImGuiInputTextFlags_ReadOnly);
+  if (ImGui::BeginDragDropTarget())
+  {
+    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILE_ITEM"))
+    {
+      char* lu = (char*)payload->Data;
+      auto& render = static_cast<RenderComponent&>(m_component);
+      auto ptr = ResourceManager::loadResource(StringUtils::toTString(lu));
+      auto ptrModel = std::dynamic_pointer_cast<Model>(ptr);
+
+      render.setModel(ptrModel);
+    }
+    ImGui::EndDragDropTarget();
+  }*/
+
+  
 }
 
 void Editor::loadInspector()
@@ -763,6 +817,7 @@ void Editor::loadFileManager()
 
         ImGuiFs::PathGetFileName(files.Data[i], tempName);
         ImGui::TreeNodeEx((std::string("##") + tempName + "FM").c_str(), node_flags, tempName);
+          
         if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
         {
           ImGui::SetDragDropPayload("FILE_ITEM", &tempName, sizeof(tempName));        // Set payload to carry the index of our item (could be anything)

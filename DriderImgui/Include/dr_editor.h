@@ -27,6 +27,7 @@ class Editor : public Application
   void initImguiMenus(float mainMenuBarheight);
   void loadHierarchy();
   void loadMenuHierarchy();
+  void materialEditor();
   void loadScene();
   void saveScene();
   void loadInspector();
@@ -44,6 +45,7 @@ class Editor : public Application
   bool m_sceneWindow;
   bool m_inpectorWindow;
   bool m_fileManagerWindow;
+  bool m_materialEditorWindow;
   GameObject* m_root;
 
   UInt32 m_selectedItem;
@@ -51,6 +53,7 @@ class Editor : public Application
   bool showFileDilog;
   bool showSaveFileDialog;
   SceneGraph::SharedGameObject m_selectedGameObject;
+  std::shared_ptr<Material> m_selectedMaterial;
 };
 
 }
