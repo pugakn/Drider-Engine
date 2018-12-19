@@ -30,6 +30,7 @@ class Editor : public Application
   void materialEditor();
   void loadScene();
   void saveScene();
+  void createMat();
   void loadInspector();
   void loadMenuAddComponent();
   void loadFileManager();
@@ -52,8 +53,11 @@ class Editor : public Application
 
   bool showFileDilog;
   bool showSaveFileDialog;
+  bool createMaterialFileDialog;
   SceneGraph::SharedGameObject m_selectedGameObject;
   std::shared_ptr<Material> m_selectedMaterial;
+
+  std::vector<TString> semantics;
 };
 
 }

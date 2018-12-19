@@ -103,6 +103,19 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager>
   saveScene(const String pathName);
 
   /**
+  * Save a material file
+  */
+  static void
+  saveMaterial(const String path,
+               const String name);
+
+  /**
+  * Load Material
+  */
+  static std::shared_ptr<Material>
+  loadMaterial(const String name);
+
+  /**
   * Load the scene from file
   *
   * @param name

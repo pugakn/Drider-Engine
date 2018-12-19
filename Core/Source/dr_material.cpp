@@ -6,6 +6,7 @@
 #include <dr_string_utils.h>
 
 #include <dr_file.h>
+#include <dr_material_info.h>
 
 namespace driderSDK {
 
@@ -57,6 +58,64 @@ Material::operator=(const Material& other) {
   }
     
   return *this;
+}
+
+void
+Material::init(void* matData) {
+  MaterialInfo* material = static_cast<MaterialInfo*>(matData);
+  setName(material->name);
+  m_name = material->name;  
+
+  /*File file;
+  file.Open(m_name);
+
+  //name: string;
+  //m_proyectShadow: bool;
+  //num_properties: int;
+  //properties: vector<Propertie>;
+
+
+  if(file.Size()) {
+    String name;
+    file.m_file >> name;
+    setName(StringUtils::toTString(name));
+
+    bool m_shadow;
+    file.m_file >> m_shadow;
+    setProyectShadow(m_shadow);
+
+    SizeT numProp;
+    file.m_file >> numProp;
+
+    for(int i = 0; i < numProp; i++) {
+      String name;
+      file.m_file >> name;
+      TString tName = StringUtils::toTString(name);
+
+      UInt32 propType;
+      file.m_file >> propType;
+
+      String textureName;
+      file.m_file >> textureName;
+      TString tTextureName = StringUtils::toTString(textureName);
+      ResourceManager::loadResource(tTextureName);
+
+      addProperty(tName,
+        (PROPERTY_TYPE::E)propType);
+      auto text = ResourceManager::getReferenceT<TextureCore>(tTextureName);
+      setTexture(text, tName);
+    }
+  } else {
+    Logger::instancePtr()->addError(__FILE__,
+                                    __LINE__,
+                                    L"[Material] File matirial not found");
+  }*/
+  
+}
+
+void
+Material::init(void* pData, void* extraData) {
+
 }
 
 void 

@@ -17,6 +17,7 @@
 #include "dr_codec_texture.h"
 #include "dr_codec_ctexture.h"
 #include "dr_codec_scene.h"
+#include "dr_codec_material.h"
 #include "dr_script_core.h"
 #include "dr_scene_core.h"
 
@@ -46,6 +47,7 @@ ResourceManager::onStartUp() {
   auto codecScript = dr_make_unique<CodecScript>();
   auto codecCTexture = dr_make_unique<CodecCompressedTexture>();
 	auto codecScene = dr_make_unique<CodecScene>();
+  auto codecMaterial = dr_make_unique<CodecMaterial>();
   
   m_resourceFactories[codecTexture.get()] = std::make_shared<TextureCore>;
   m_resourceFactories[codecModel.get()] = std::make_shared<Model>;
@@ -53,6 +55,7 @@ ResourceManager::onStartUp() {
   m_resourceFactories[codecScript.get()] = std::make_shared<ScriptCore>;
   m_resourceFactories[codecCTexture.get()] = std::make_shared<TextureCore>;
 	m_resourceFactories[codecScene.get()] = std::make_shared<SceneCore>;
+  m_resourceFactories[codecMaterial.get()] = std::make_shared<Material>;
 
   m_codecs.push_back(std::move(codecModel));
   m_codecs.push_back(std::move(codecTexture));
@@ -60,6 +63,7 @@ ResourceManager::onStartUp() {
   m_codecs.push_back(std::move(codecScript));
   m_codecs.push_back(std::move(codecCTexture));
 	m_codecs.push_back(std::move(codecScene));
+  m_codecs.push_back(std::move(codecMaterial));
 
   createDefaultResources();
   
@@ -150,6 +154,128 @@ ResourceManager::saveScene(const String pathName) {
                                     L"[ResourceManager] Scene file wasn't saved");
   }
 
+}
+
+void
+ResourceManager::saveMaterial(const String path,
+                              const String name) {
+  auto &rm = ResourceManager::instance();
+
+  FileSystem fileSystem;
+  File matFile;
+  if (fileSystem.CreateAndOpen(StringUtils::toTString(path + name).c_str(),
+                               matFile)) {
+   
+    /*
+    name: string;
+    m_proyectShadow: bool;
+    num_properties: int;
+    properties: vector<Propertie>;
+    */
+    auto matResource = rm.getReference(StringUtils::toTString(name));
+    if(!matResource) {
+      matResource = rm.createMaterial(StringUtils::toTString(name), true);
+
+      auto mat = std::dynamic_pointer_cast<Material>(matResource);
+
+      matFile.m_file << name << "\n";
+      matFile.m_file << false << "\n";
+
+      mat->addProperty(_T("Albedo"), PROPERTY_TYPE::kVec3);
+      mat->addProperty(_T("Normal"), PROPERTY_TYPE::kVec3);
+      mat->addProperty(_T("Emisivity"), PROPERTY_TYPE::kVec3);
+      mat->addProperty(_T("Metallic"), PROPERTY_TYPE::kVec3);
+      mat->addProperty(_T("Roughness"), PROPERTY_TYPE::kVec3);
+
+      SizeT properties = mat->getPropertiesCount();
+      matFile.m_file << properties << "\n";
+      for (int i = 0; i < properties; i++) {
+        matFile.m_file << StringUtils::toString(mat->getProperty(i)->name) << "\n";
+        matFile.m_file << mat->getProperty(i)->type << "\n";
+        matFile.m_file << "null" << "\n";
+      }
+    } else {
+      auto mat = std::dynamic_pointer_cast<Material>(matResource);
+
+      matFile.m_file << StringUtils::toString(mat->getName()) << "\n";
+      matFile.m_file << false << "\n";
+
+      SizeT properties = mat->getPropertiesCount();
+      matFile.m_file << properties << "\n";
+      for (int i = 0; i < properties; i++) {
+        matFile.m_file << StringUtils::toString(mat->getProperty(i)->name) << "\n";
+        matFile.m_file << mat->getProperty(i)->type << "\n";
+        matFile.m_file << "null" << "\n";
+      }
+    }
+     
+
+
+    matFile.Close();
+  }
+  else {
+    Logger::instancePtr()->addError(__FILE__,
+                                    __LINE__,
+                                    L"[ResourceManager] Material file wasn't saved");
+  }
+}
+
+std::shared_ptr<Material>
+ResourceManager::loadMaterial(const String name) {
+ 
+  auto &rm = ResourceManager::instance();
+
+  auto resource = rm.getReferenceT<Material>(StringUtils::toTString(name));
+  if(resource) {
+    return std::dynamic_pointer_cast<Material>(resource);
+  }
+
+  File file;
+  file.Open(L"Resources//Materials//" + StringUtils::toTString(name));
+
+  std::shared_ptr<Material> mat;
+  if (file.Size()) {
+    String name;
+    file.m_file >> name;
+    mat = rm.createMaterial(StringUtils::toTString(name),
+                                 true); 
+    
+    mat->setName(StringUtils::toTString(name));
+
+    bool m_shadow;
+    file.m_file >> m_shadow;
+    mat->setProyectShadow(m_shadow);
+
+    SizeT numProp;
+    file.m_file >> numProp;
+
+    for (int i = 0; i < numProp; i++) {
+      String name;
+      file.m_file >> name;
+      TString tName = StringUtils::toTString(name);
+
+      UInt32 propType;
+      file.m_file >> propType;
+
+      String textureName;
+      file.m_file >> textureName;
+      TString tTextureName = StringUtils::toTString(textureName);
+      ResourceManager::loadResource(tTextureName);
+
+      mat->addProperty(tName, (PROPERTY_TYPE::E)propType);
+      auto text = ResourceManager::getReferenceT<TextureCore>(tTextureName);
+      if(text) {
+        mat->setTexture(text, tName);
+      }
+    }
+  }
+  else {
+    Logger::instancePtr()->addError(__FILE__,
+                                    __LINE__,
+                                    L"[Resouce Manager] File material not found");
+  }
+
+  return mat;
 }
 
 void
