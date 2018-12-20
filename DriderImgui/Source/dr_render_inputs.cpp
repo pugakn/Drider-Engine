@@ -29,6 +29,8 @@ RenderInputs::getInputs() {
     }
     ImGui::EndDragDropTarget();
   }
+  SizeT meshes = model->meshes.size();
+  ImGui::Text("Meshes: 52");
 }
 
 }

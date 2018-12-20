@@ -205,7 +205,11 @@ ResourceManager::saveMaterial(const String path,
       for (int i = 0; i < properties; i++) {
         matFile.m_file << StringUtils::toString(mat->getProperty(i)->name) << "\n";
         matFile.m_file << mat->getProperty(i)->type << "\n";
-        matFile.m_file << "null" << "\n";
+        if(mat->getProperty(i)->texture.lock()) {
+          matFile.m_file << StringUtils::toString(mat->getProperty(i)->texture.lock()->getName()) << "\n";
+        } else {
+          matFile.m_file << "null" << "\n";
+        }
       }
     }
      
@@ -260,7 +264,9 @@ ResourceManager::loadMaterial(const String name) {
       String textureName;
       file.m_file >> textureName;
       TString tTextureName = StringUtils::toTString(textureName);
-      ResourceManager::loadResource(tTextureName);
+      if(tTextureName != L"null") {
+        ResourceManager::loadResource(tTextureName);
+      }
 
       mat->addProperty(tName, (PROPERTY_TYPE::E)propType);
       auto text = ResourceManager::getReferenceT<TextureCore>(tTextureName);
