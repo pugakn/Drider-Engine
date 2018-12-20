@@ -61,7 +61,18 @@ LightComponent::GetIntensity() {
 
 void
 LightComponent::serialize(File &file) {
+  file.m_file << SerializableTypeID::Light << "\n";
+  String name = StringUtils::toString(getName());
+  file.m_file << name << "\n";
 
+  file.m_file << m_vec3Color.x << "\n";
+  file.m_file << m_vec3Color.y << "\n";
+  file.m_file << m_vec3Color.z << "\n";
+
+  file.m_file << m_fRange << "\n";
+
+  file.m_file << m_fIntensity << "\n";
+  
 }
 
 void

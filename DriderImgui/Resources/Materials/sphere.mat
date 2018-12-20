@@ -1,9 +1,9 @@
-default.mat
+sphere.mat
 0
 5
 Albedo
 2
-default_albedo.tga
+HK_eye_dif.tga
 Normal
 2
 default_normal.tga
@@ -12,7 +12,7 @@ Emisivity
 default_emissive.tga
 Metallic
 2
-default_metallic.tga
+null
 Roughness
 2
-default_roughness.tga
+null

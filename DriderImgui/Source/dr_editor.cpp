@@ -348,7 +348,7 @@ void Editor::onResize()
 
 void Editor::initSceneGraph()
 {
-  SceneGraph::SharedGameObject model = SceneGraph::createObject(_T("Model"));
+  /*SceneGraph::SharedGameObject model = SceneGraph::createObject(_T("Model"));
   ResourceManager::loadResource(_T("model.dae"));
 
   auto ptrModel = ResourceManager::getReferenceT<Model>(_T("model.dae"));
@@ -384,7 +384,7 @@ void Editor::initSceneGraph()
 
     auto rComp = model->getComponent<RenderComponent>();
     rComp->getMeshes().front().material = modelMat;
-  }
+  }*/
 
   ImageInfo cubeMapDesc;
   cubeMapDesc.width = 256;
@@ -995,7 +995,7 @@ void driderSDK::Editor::saveScene() {
       fileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
       filter = ImGuiFileDialog::Instance()->GetCurrentFilter();
 
-      //ResourceManager::saveScene(filePathName);
+      ResourceManager::saveScene(filePathName);
     }
     else
     {

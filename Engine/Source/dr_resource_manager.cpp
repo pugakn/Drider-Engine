@@ -27,9 +27,10 @@
 #include <dr_file.h>
 
 #include "dr_serializable_sound.h"
-#include "dr_serializable_aabb.h"
+//#include "dr_serializable_aabb.h"
 #include "dr_serializable_render.h"
 #include "dr_serializable_camera.h"
+#include "dr_serializable_light.h"
 #include "dr_quaternion.h"
 #include "dr_transform.h"
 
@@ -67,15 +68,17 @@ ResourceManager::onStartUp() {
 
   createDefaultResources();
   
-  auto cSound = std::make_shared<sSound>();
-  auto cAABB = std::make_shared<sAABBCollider>();
-  auto cRender = std::make_shared<sRender>();
-  auto cCamera = std::make_shared<sCamera>();
+  auto seSound = std::make_shared<sSound>();
+  //auto cAABB = std::make_shared<sAABBCollider>();
+  auto seRender = std::make_shared<sRender>();
+  auto seCamera = std::make_shared<sCamera>();
+  auto seLight = std::make_shared<sLight>();
 
-  componentLoaders[SerializableTypeID::Sound] = cSound;
-  componentLoaders[SerializableTypeID::AABB] = cAABB;
-  componentLoaders[SerializableTypeID::Render] = cRender;
-  componentLoaders[SerializableTypeID::Camera] = cCamera;
+  componentLoaders[SerializableTypeID::Sound] = seSound;
+  //componentLoaders[SerializableTypeID::AABB] = cAABB;
+  componentLoaders[SerializableTypeID::Render] = seRender;
+  componentLoaders[SerializableTypeID::Camera] = seCamera;
+  componentLoaders[SerializableTypeID::Light] = seLight;
 }
 
 void 

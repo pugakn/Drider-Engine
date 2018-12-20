@@ -29,8 +29,8 @@ RenderInputs::getInputs() {
     }
     ImGui::EndDragDropTarget();
   }
-  SizeT meshes = model->meshes.size();
-  ImGui::Text("Meshes: %i", meshes);
+  /*SizeT meshes = model->meshes.size();
+  ImGui::Text("Meshes: %i", meshes);*/
 
   for(auto &mesh : render.getMeshes()) {
     TString name = _T("");

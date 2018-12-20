@@ -35,7 +35,7 @@ sRender::load(File &file,
       String name;
       file.m_file >> name;
       
-      auto mat = ResourceManager::loadResource(StringUtils::toTString(name));
+      auto mat = ResourceManager::loadMaterial(name);
       auto pMat = std::dynamic_pointer_cast<Material>(mat);
       //auto mat = ResourceManager::getReferenceT<Material>(StringUtils::toTString(name));
 

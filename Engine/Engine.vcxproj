@@ -160,6 +160,7 @@
     <ClInclude Include="Include\dr_serializable_aabb.h" />
     <ClInclude Include="Include\dr_serializable_camera.h" />
     <ClInclude Include="Include\dr_serializable_data.h" />
+    <ClInclude Include="Include\dr_serializable_light.h" />
     <ClInclude Include="Include\dr_serializable_render.h" />
     <ClInclude Include="Include\dr_serializable_sound.h" />
   </ItemGroup>
@@ -177,6 +178,7 @@
     <ClCompile Include="Source\dr_scene_manager.cpp" />
     <ClCompile Include="Source\dr_serializable_aabb.cpp" />
     <ClCompile Include="Source\dr_serializable_camera.cpp" />
+    <ClCompile Include="Source\dr_serializable_light.cpp" />
     <ClCompile Include="Source\dr_serializable_render.cpp" />
     <ClCompile Include="Source\dr_serializable_sound.cpp" />
   </ItemGroup>

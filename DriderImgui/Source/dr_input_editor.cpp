@@ -53,8 +53,7 @@ namespace driderSDK {
       {CLASS_NAME_ID(RigidBody3DComponent), dr_make_unique<RigidbodyInputs, GameComponent&>},
       {CLASS_NAME_ID(SphereCollider), dr_make_unique<SphereColliderInputs, GameComponent&>},
       {CLASS_NAME_ID(ScriptComponent), dr_make_unique<ScriptInputs, GameComponent&>},
-      {CLASS_NAME_ID(SoundComponent), dr_make_unique<SoundInputs, GameComponent&>},
-      {CLASS_NAME_ID(AABBCollider), dr_make_unique<SoundInputs, GameComponent&>}
+      {CLASS_NAME_ID(SoundComponent), dr_make_unique<SoundInputs, GameComponent&>}
     };
 
     return m_factories[_component.getClassID()](_component);

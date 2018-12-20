@@ -12,7 +12,8 @@ namespace driderSDK {
       Script,
       Sound,
       NetworkManager,
-      NetworkTransform
+      NetworkTransform,
+      Light
     };
   }
 
