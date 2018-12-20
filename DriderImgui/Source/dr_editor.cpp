@@ -454,10 +454,6 @@ Editor::initScriptEngine() {
   auto rBehaviorScript = ResourceManager::getReference(_T("driderBehavior.as"));
   auto BehaviorScript = std::dynamic_pointer_cast<ScriptCore>(rBehaviorScript);
 
-  ResourceManager::loadResource(_T("test.as"));
-  auto rScript = ResourceManager::getReference(_T("test.as"));
-  auto Script = std::dynamic_pointer_cast<ScriptCore>(rScript);
-
   //Create a context
   scriptEngine->m_scriptContext = ctxMag->addContext(scriptEngine->m_scriptEngine,
     _T("GameModule"));

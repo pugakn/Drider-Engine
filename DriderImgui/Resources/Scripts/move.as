@@ -1,4 +1,4 @@
-class test : driderBehavior {
+class move : driderBehavior {
 
 	void Start() {
 		Print("\nScript initialized\n");
@@ -24,21 +24,7 @@ class test : driderBehavior {
 		if(isKeyDown(kD)) {
 			Print("\nPress D\n");
 			Print("\nPress asdasD\n");
-
-			
-			/*GameObject@ player = Object.findObject("Model");
-			SoundComponent@ sound = cast<SoundComponent>(player.getComponent("SoundComponent"));
-			if(@sound != null) {
-				Print("\nPlay sound\n");
-				sound.play("testSound1.mp3");
-			}
-			else {
-				Print("\nSound null");
-			}
-
-				//transform.move(vecRight);
-			}*/
-
+		}
 	}
 
 }
