@@ -3,28 +3,31 @@
 #include "dr_physics_prerequisites.h"
 #include <functional>
 #include <dr_transform.h>
-#include <list>
+#include <map>
 namespace driderSDK {
   namespace RIGID_BODY_TYPE {
     enum E {
-      kStatic,
+      kStatic = 0,
       kKinematic,
       kDynamic
     };
   }
   class DR_PHYSICS_EXPORT DrRigidBody {
   public:
-    void 
+    void
     setTransform(Transform transform);
 
-    void 
+    int
     AddBoxShape(Vector3D dimensions, Vector3D localPos, float mass);
 
-    void 
+    int
     AddSphereShape(float radius, Vector3D localPos, float mass);
 
-    void 
+    int
     AddCapsuleShape(float radius, float height, Vector3D localPos, float mass);
+
+    void 
+    RemoveShape(const int shapeID);
 
     void 
     setType(RIGID_BODY_TYPE::E type);
@@ -44,10 +47,14 @@ namespace driderSDK {
     Transform 
     getTransform();
 
+    RIGID_BODY_TYPE::E
+    getMode();
+
   private:
     friend class PhysicsManager;
-    std::list<rp3d::ConvexShape*> m_shapes;
-    std::list<rp3d::ProxyShape*> m_proxyShapes;
+    std::map<int,rp3d::ConvexShape*> m_shapes;
+    std::map<int,rp3d::ProxyShape*> m_proxyShapes;
     rp3d::RigidBody* m_body;
+    int m_nextShapeID = 0;
   };
 }

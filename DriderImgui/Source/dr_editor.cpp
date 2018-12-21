@@ -38,6 +38,7 @@
 #include <dr_sound_component.h>
 #include <dr_sphere_collider.h>
 #include <dr_time.h>
+#include <dr_file_system.h>
 
 #include "dr_input_editor.h"
 #include "imgui.h"
@@ -46,6 +47,8 @@
 #include "ImGuiFileDialog.h"
 #include "imgui_stdlib.h"
 #include "imguifilesystem.h"
+#include "imgui_internal.h"
+
 namespace driderSDK {
 
 void Editor::postInit()
@@ -101,6 +104,17 @@ void Editor::postInit()
   ImGui_ImplWin32_Init(m_hwnd);
   ImGui_ImplDX11_Init(d3dDev, d3dDevCont);
   ImGui::StyleColorsDark();
+
+  /*_T("Albedo"), PROPERTY_TYPE::kVec3);
+modelMat->addProperty(_T("Normal"), PROPERTY_TYPE::kVec3);
+modelMat->addProperty(_T("Emisivity"), PROPERTY_TYPE::kVec3);
+modelMat->addProperty(_T("Metallic"), PROPERTY_TYPE::kVec3);
+modelMat->addProperty(_T("Roughness"*/
+  semantics.push_back(L"Albedo");
+  semantics.push_back(L"Normal");
+  semantics.push_back(L"Emisivity");
+  semantics.push_back(L"Metallic");
+  semantics.push_back(L"Roughness");
 }
 
 void Editor::initCallbacks()
@@ -212,9 +226,15 @@ void Editor::postUpdate()
     ImGui::OpenPopup("Save Scene");
     showSaveFileDialog = false;
   }
+  
+  if(createMaterialFileDialog) {
+    ImGui::OpenPopup("Create Material");
+    createMaterialFileDialog = false;
+  } 
 
   loadScene();
   saveScene();
+  createMat();
 
 
   static bool open = true;
@@ -244,6 +264,11 @@ void Editor::postUpdate()
       ImGui::Begin("File Manager", &m_fileManagerWindow, flags);
       ImGui::End();
     }
+    if(m_materialEditorWindow) {
+      ImGui::Begin("Material Editor", &m_materialEditorWindow, flags);
+      materialEditor();
+      ImGui::End();
+    }
     loadFileManager();
     loadRenderWindow();
   }
@@ -256,6 +281,8 @@ Editor::postRender() {
   m_RTDPTH->clear(GraphicsAPI::getDeviceContext(), 1, 0);
 
   RenderManager::instance().draw(*m_RT, *m_RTDPTH);
+  drawDebugStuff();
+
 
   //Draw End
   GraphicsAPI::getDepthStencilState(DR_DEPTH_STENCIL_STATES::kDepthR).set(GraphicsAPI::getDeviceContext(), 1);
@@ -322,7 +349,7 @@ Editor::onResize() {
 
 void
 Editor::initSceneGraph() {
-  SceneGraph::SharedGameObject model = SceneGraph::createObject(_T("Model"));
+  /*SceneGraph::SharedGameObject model = SceneGraph::createObject(_T("Model"));
   ResourceManager::loadResource(_T("model.dae"));
 
   auto ptrModel = ResourceManager::getReferenceT<Model>(_T("model.dae"));
@@ -332,7 +359,7 @@ Editor::initSceneGraph() {
     model->getTransform().setScale(Vector3D(50.0f, 50.0f, 50.0f));
     model->getTransform().setRotation(Vector3D(0.0f, Math::QUARTER_PI*0.5f, 0.0f));
 
-    std::shared_ptr<Material> modelMat = ResourceManager::createMaterial(_T("ModelMaterial"));
+    std::shared_ptr<Material> modelMat = ResourceManager::createMaterial(_T("ModelMaterial"), true);
 
     ResourceManager::loadResource(_T("default_albedo.tga"));
     ResourceManager::loadResource(_T("default_emissive.tga"));
@@ -358,7 +385,7 @@ Editor::initSceneGraph() {
 
     auto rComp = model->getComponent<RenderComponent>();
     rComp->getMeshes().front().material = modelMat;
-  }
+  }*/
 
   ImageInfo cubeMapDesc;
   cubeMapDesc.width = 256;
@@ -428,10 +455,6 @@ Editor::initScriptEngine() {
   auto rBehaviorScript = ResourceManager::getReference(_T("driderBehavior.as"));
   auto BehaviorScript = std::dynamic_pointer_cast<ScriptCore>(rBehaviorScript);
 
-  ResourceManager::loadResource(_T("test.as"));
-  auto rScript = ResourceManager::getReference(_T("test.as"));
-  auto Script = std::dynamic_pointer_cast<ScriptCore>(rScript);
-
   //Create a context
   scriptEngine->m_scriptContext = ctxMag->addContext(scriptEngine->m_scriptEngine,
     _T("GameModule"));
@@ -465,23 +488,22 @@ Editor::loadMainMenu() {
     if (ImGui::BeginMenu("File"))
     {
       if (ImGui::MenuItem("Load Scene", "CTRL+L")) {
-        //D:\\This PC\\Documentos\\Drider-Engine\\DriderImgui\\Resources
-        //FileSystem::ScanDir("D:\\This PC\\Documentos\\Drider-Engine\\DriderImgui\\Resources");
         showFileDilog = true;
-
       }
 
-      if (ImGui::MenuItem("Save Scene", "CTRL+S")) {
-        //D:\\This PC\\Documentos\\Drider-Engine\\DriderImgui\\Resources
-        //FileSystem::ScanDir("D:\\This PC\\Documentos\\Drider-Engine\\DriderImgui\\Resources");
+      if (ImGui::MenuItem("Save Scene", "CTRL+S")) {   
         showSaveFileDialog = true;
+      }
 
+      if (ImGui::MenuItem("Create Material")) {
+        createMaterialFileDialog = true;
       }
 
       ImGui::EndMenu();
     }
     if (ImGui::BeginMenu("Windows"))
     {
+      ImGui::Checkbox("Material Editor", &m_materialEditorWindow);
       ImGui::Checkbox("Render Configuration", &m_renderConfigWindow);
       ImGui::Checkbox("Hierarchy", &m_hierarchyWindow);
       ImGui::Checkbox("Scene", &m_sceneWindow);
@@ -612,6 +634,51 @@ void driderSDK::Editor::loadMenuHierarchy()
   }
 }
 
+void driderSDK::Editor::materialEditor() {
+
+  if (m_selectedMaterial) {
+    ImGui::Text(StringUtils::toString(m_selectedMaterial->m_name).c_str());
+
+    if(ImGui::Button("Save Material")) {
+      ResourceManager::saveMaterial("Resources//Materials//", 
+                       StringUtils::toString(m_selectedMaterial->m_name));
+    }
+    ImGui::Text("Textures");
+    
+    for(int i = 0; i < 5; i++) {
+      TString temp = _T("");
+      auto prop = m_selectedMaterial->getProperty(semantics[i]);
+      if(prop) {
+        if(prop->texture.lock())  {
+          temp = prop->texture.lock()->getName();
+        } else {
+          temp = L"null";
+        }      
+      }
+      ImGui::Text(StringUtils::toString(semantics[i]).c_str()); ImGui::SameLine();
+      ImGui::InputText("##material", &temp, ImGuiInputTextFlags_ReadOnly);
+      if (ImGui::BeginDragDropTarget())
+      {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILE_ITEM"))
+        {
+          char* lu = (char*)payload->Data;
+          auto ptr = ResourceManager::loadResource(StringUtils::toTString(lu));
+          auto ptrTexture = std::dynamic_pointer_cast<TextureCore>(ptr);
+          
+          //m_selectedMaterial->addProperty(_T("Albedo"), PROPERTY_TYPE::kVec3);
+          m_selectedMaterial->setTexture(ptrTexture, semantics[i]);
+        }
+        ImGui::EndDragDropTarget();
+      }
+    }
+    /*ImGui::Text("Normal"); ImGui::SameLine();
+    ImGui::Text("Specular"); ImGui::SameLine();
+    ImGui::Text("R"); ImGui::SameLine();
+    ImGui::Text("N"); ImGui::SameLine();*/
+  }
+  
+}
+
 void Editor::loadInspector()
 {
   if (m_selectedGameObject == SceneGraph::getRoot()) { return; }
@@ -719,12 +786,16 @@ void Editor::loadMenuAddComponent()
   if (ImGui::BeginMenu("Collider")) {
     if (ImGui::MenuItem("Sphere"))
     {
-      m_selectedGameObject->createComponent<RigidBody3DComponent>();
+      auto rigidBody = m_selectedGameObject->createComponent<RigidBody3DComponent>();
+      rigidBody->enableGravity(false);
+      rigidBody->setType(RIGID_BODY_TYPE::kStatic);
       m_selectedGameObject->createComponent<SphereCollider>(1.f, Vector3D(0, 0, 0));
     }
     if (ImGui::MenuItem("Box"))
     {
-      m_selectedGameObject->createComponent<RigidBody3DComponent>();
+      auto rigidBody = m_selectedGameObject->createComponent<RigidBody3DComponent>();
+      rigidBody->enableGravity(false);
+      rigidBody->setType(RIGID_BODY_TYPE::kStatic);
       m_selectedGameObject->createComponent<BoxCollider>(AABB(1.f, 1.f, 1.f, Vector3D(0, 0, 0)));
     }
     ImGui::EndMenu();
@@ -762,6 +833,13 @@ void Editor::loadFileManager()
 
         ImGuiFs::PathGetFileName(files.Data[i], tempName);
         ImGui::TreeNodeEx((std::string("##") + tempName + "FM").c_str(), node_flags, tempName);
+        if (ImGui::IsItemClicked()) {
+          TString extension = FileSystem::GetFileExtension(StringUtils::toTString(tempName));
+          if(extension == L"mat") {
+            m_selectedMaterial = ResourceManager::loadMaterial(tempName);
+          }
+        }
+         
         if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
         {
           ImGui::SetDragDropPayload("FILE_ITEM", &tempName, sizeof(tempName));        // Set payload to carry the index of our item (could be anything)
@@ -873,6 +951,29 @@ Editor::loadRenderWindow() {
   }
 }
 
+void Editor::drawDebugStuff()
+{
+  auto boxColliderComponent = m_selectedGameObject->getComponent<BoxCollider>();
+  if (boxColliderComponent) {
+    AABB aabb = boxColliderComponent->getAABB();
+    Matrix4x4 tr = boxColliderComponent->getGameObject().getTransform().getMatrix();
+    RenderManager::instance().drawDebugCube(Vector3D(aabb.width,
+      aabb.height,
+      aabb.depth),
+      Vector3D(1, 0, 1),
+      tr.Move(aabb.center));
+  }
+  auto sphereColliderComponent = m_selectedGameObject->getComponent<SphereCollider>();
+  if (sphereColliderComponent) {
+    float radius = sphereColliderComponent->getRadius();
+    Vector3D center = sphereColliderComponent->getCenter();
+    Matrix4x4 tr = sphereColliderComponent->getGameObject().getTransform().getMatrix();
+    RenderManager::instance().drawDebugSphere(radius,
+      Vector3D(1, 0, 1),
+      tr.Move(center));
+  }
+}
+
 
 void driderSDK::Editor::loadScene() {
   if (ImGuiFileDialog::Instance()->FileDialog("Choose File", ".txt\0\0", ".", ""))
@@ -918,7 +1019,35 @@ void driderSDK::Editor::saveScene() {
       fileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
       filter = ImGuiFileDialog::Instance()->GetCurrentFilter();
 
-      //ResourceManager::saveScene(filePathName);
+      ResourceManager::saveScene(filePathName);
+    }
+    else
+    {
+      filePathName = "";
+      path = "";
+      fileName = "";
+      filter = "";
+    }
+  }
+}
+
+void driderSDK::Editor::createMat() {
+  if (ImGuiFileDialog::Instance()->FileDialog("Create Material", ".mat\0\0", ".", ""))
+  {
+    static std::string filePathName = "";
+    static std::string path = "";
+    static std::string fileName = "";
+    static std::string filter = "";
+
+    if (ImGuiFileDialog::Instance()->IsOk == true)
+    {
+      filePathName = ImGuiFileDialog::Instance()->GetFilepathName();
+      path = ImGuiFileDialog::Instance()->GetCurrentPath();
+      fileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
+      filter = ImGuiFileDialog::Instance()->GetCurrentFilter();
+
+      ResourceManager::saveMaterial(path + "//",
+                                    fileName + filter);
     }
     else
     {

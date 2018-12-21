@@ -1,10 +1,48 @@
 #include "dr_rigidbody_inputs.h"
 
+#include <dr_rigidbody_component.h>
+#include <dr_rigidbody.h>
+
 namespace driderSDK {
 
 void
 RigidbodyInputs::getInputs() {
-  ImGui::Text("Hello RigidbodyInputs!");
+  auto& rigidBodyComponent = static_cast<RigidBody3DComponent&>(m_component);
+  if (ImGui::CollapsingHeader(StringUtils::toString(rigidBodyComponent.getName()).c_str())) {
+
+    // Gravity
+    bool tempGravity = rigidBodyComponent.isGravity();
+    //rigidBodyComponent.enableGravity(false);
+    if(ImGui::Checkbox("Use gravity", &tempGravity)) {
+      rigidBodyComponent.enableGravity(tempGravity);
+      //rigidBodyComponent.setType(RIGID_BODY_TYPE::kStatic);
+    }
+    /*ImGui::SameLine(); 
+    ImGui::TextDisabled("(?)");
+    if (ImGui::IsItemHovered())
+    {
+      ImGui::BeginTooltip();
+      ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+      ImGui::TextUnformatted("Activate the gravity");
+      ImGui::PopTextWrapPos();
+      ImGui::EndTooltip();
+    }*/
+
+    // Type
+    Int32 type = rigidBodyComponent.getMode();
+    if(ImGui::Combo("Inputs Mode", &type, "Static\0Kinematic\0Dynamic\0")) {
+      rigidBodyComponent.setType((RIGID_BODY_TYPE::E)type);
+    }
+
+    // Position
+    Vector3D pos = rigidBodyComponent.m_rigidBody->getTransform().getPosition();
+    if(ImGui::InputFloat3("Position", pos.ptr())) {
+      Transform t = rigidBodyComponent.m_rigidBody->getTransform();
+      t.setPosition(pos);
+      rigidBodyComponent.m_rigidBody->setTransform(t);
+    } 
+
+  }
 }
 
 }

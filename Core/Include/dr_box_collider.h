@@ -34,6 +34,13 @@ namespace driderSDK {
     void
     deserialize(TString &data) override;
 
+    void
+      setAABB(const AABB& aabb);
+    
+    AABB
+    getAABB();
+
+
   private:
     virtual GameComponent*
       cloneIn(GameObject& _go) override;
@@ -41,8 +48,8 @@ namespace driderSDK {
     virtual COLLIDER_TYPE::E
       getType() override;
 
-    AABB m_originalAABB;
   private:
+    AABB m_aabb;
 
     // Inherited via ColliderComponent
   };

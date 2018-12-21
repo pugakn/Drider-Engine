@@ -169,6 +169,7 @@
     <ClInclude Include="Include\dr_image_info.h" />
     <ClInclude Include="Include\dr_light_component.h" />
     <ClInclude Include="Include\dr_material.h" />
+    <ClInclude Include="Include\dr_material_info.h" />
     <ClInclude Include="Include\dr_md5.h" />
     <ClInclude Include="Include\dr_mesh.h" />
     <ClInclude Include="Include\dr_mesh_info.h" />

@@ -1,4 +1,4 @@
-class test : driderBehavior {
+class move : driderBehavior {
 
 	void Start() {
 		Print("\nScript initialized\n");
@@ -8,6 +8,9 @@ class test : driderBehavior {
 		Vector3D vecRight(100.0 * getDelta(),0.0,0.0);
 		Vector3D vecFront(0,0.0,100.0 * getDelta());
 
+		if(@gameObject == null) {
+			Print("\nObject null\n");
+		}
 		
 		if(isKeyDown(kD)) {
 			transform.move(vecRight);
@@ -23,11 +26,7 @@ class test : driderBehavior {
 	void onKeyDown(KeyCode key) {
 		if(isKeyDown(kD)) {
 			Print("\nPress D\n");
-			Print("\nPress asdasD\n");
-
-			
-			/*GameObject@ player = Object.findObject("Model");
-			SoundComponent@ sound = cast<SoundComponent>(player.getComponent("SoundComponent"));
+			SoundComponent@ sound = cast<SoundComponent>(gameObject.getComponent("SoundComponent"));
 			if(@sound != null) {
 				Print("\nPlay sound\n");
 				sound.play("testSound1.mp3");
@@ -35,10 +34,7 @@ class test : driderBehavior {
 			else {
 				Print("\nSound null");
 			}
-
-				//transform.move(vecRight);
-			}*/
-
+		}
 	}
 
 }

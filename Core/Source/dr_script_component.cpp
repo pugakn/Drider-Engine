@@ -84,11 +84,11 @@ ScriptComponent::onUpdate() {
                                   &m_gameObject.getTransform(),
                                   obj);
 
-  /*scriptEngine->setObjectToScript(type,
-                                  _T("void SetObject(GameObject@ obj)"),
+  scriptEngine->setObjectToScript(type,
+                                  _T("void SetGameObject(GameObject@ obj)"),
                                   0,
                                   &m_gameObject,
-                                  obj);*/
+                                  obj);
 
 
   scriptEngine->executeFunction(_T("void Update()"),
@@ -135,17 +135,22 @@ ScriptComponent::initScript() {
 
 void
 ScriptComponent::start() {
+  if (isEmpty())
+  {
+    Logger::addLog(_T("Script Component without script"));
+    return;
+  }
   scriptEngine->setObjectToScript(type,
                                   _T("void SetTransform(Transform@ trans)"),
                                   0,
                                   &m_gameObject.getTransform(),
                                   obj);
 
-  /*scriptEngine->setObjectToScript(type,
-                                  _T("void SetObject(GameObject@ obj)"),
+  scriptEngine->setObjectToScript(type,
+                                  _T("void SetGameObject(GameObject@ obj)"),
                                   0,
                                   &m_gameObject,
-                                  obj);*/
+                                  obj);
 
   scriptEngine->executeFunction(_T("void Start()"),
                                 type,
@@ -154,17 +159,23 @@ ScriptComponent::start() {
 
 void
 ScriptComponent::onKeyDown(KEY_CODE::E key) {
+  if (isEmpty())
+  {
+    Logger::addLog(_T("Script Component without script"));
+    return;
+  }
+
   scriptEngine->setObjectToScript(type,
                                   _T("void SetTransform(Transform@ trans)"),
                                   0,
                                   &m_gameObject.getTransform(),
                                   obj);
 
-  /*scriptEngine->setObjectToScript(type,
-                                  _T("void SetObject(GameObject@ obj)"),
+  scriptEngine->setObjectToScript(type,
+                                  _T("void SetGameObject(GameObject@ obj)"),
                                   0,
                                   &m_gameObject,
-                                  obj);*/
+                                  obj);
 
   scriptEngine->executeFunctionParam(_T("void onKeyDown(KeyCode)"),
                                      type,
@@ -174,17 +185,22 @@ ScriptComponent::onKeyDown(KEY_CODE::E key) {
 
 void
 ScriptComponent::onKeyUp(KEY_CODE::E key) {
+  if (isEmpty())
+  {
+    Logger::addLog(_T("Script Component without script"));
+    return;
+  }
   scriptEngine->setObjectToScript(type,
                                 _T("void SetTransform(Transform@ trans)"),
                                 0,
                                 &m_gameObject.getTransform(),
                                 obj);
 
-  /*scriptEngine->setObjectToScript(type,
-                                  _T("void SetObject(GameObject@ obj)"),
+  scriptEngine->setObjectToScript(type,
+                                  _T("void SetGameObject(GameObject@ obj)"),
                                   0,
                                   &m_gameObject,
-                                  obj);*/
+                                  obj);
                                 
   scriptEngine->executeFunctionParam(_T("void onKeyUp(KeyCode)"),
                                      type,

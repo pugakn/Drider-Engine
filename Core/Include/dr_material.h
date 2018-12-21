@@ -130,6 +130,12 @@ class DR_CORE_EXPORT Material : public Resource
   Material& operator=(const Material& other);
   
   virtual ~Material(){}
+
+	void
+	init(void* pData) override;
+
+	void
+	init(void* pData, void* extraData) override;
   
   void 
   set();

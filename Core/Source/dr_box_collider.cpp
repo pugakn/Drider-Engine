@@ -8,19 +8,17 @@
 namespace driderSDK {
 
 BoxCollider::BoxCollider(GameObject& _gameObject, const AABB& aabb)
-  : ColliderComponent(_gameObject, _T("BoxCollider")), m_originalAABB(aabb) {
+  : ColliderComponent(_gameObject, _T("BoxCollider")), m_aabb(aabb) {
 }
 
 void 
 BoxCollider::onCreate() {
   RigidBody3DComponent* rbody = m_gameObject.getComponent<RigidBody3DComponent>();
-  AABB transformedAABB = m_originalAABB;
-  transformedAABB.recalculate(m_gameObject.getTransform().getMatrix());
   if (rbody) {
-    rbody->m_rigidBody->AddBoxShape(Vector3D(transformedAABB.width, transformedAABB.height, transformedAABB.depth), Vector3D(0, 0, 0), 1);
+    m_rigidBodyShapeID = rbody->m_rigidBody->AddBoxShape(Vector3D(m_aabb.width, m_aabb.height, m_aabb.depth), m_aabb.center, 1);
   }
-  m_body = PhysicsManager::createCollisionBody(m_gameObject.getTransform());
-  m_body->AddBoxShape(Vector3D(transformedAABB.width, transformedAABB.height, transformedAABB.depth), Vector3D(0, 0, 0));
+   m_body = PhysicsManager::createCollisionBody(m_gameObject.getTransform());
+   m_collisionShapeID = m_body->AddBoxShape(Vector3D(m_aabb.width, m_aabb.height, m_aabb.depth), m_aabb.center);
 }
 
 void 
@@ -59,10 +57,28 @@ BoxCollider::deserialize(TString &data) {
 
 }
 
+void BoxCollider::setAABB(const AABB & aabb)
+{
+  RigidBody3DComponent* rbody = m_gameObject.getComponent<RigidBody3DComponent>();
+  m_aabb = aabb;
+  if (rbody) {
+    rbody->m_rigidBody->RemoveShape(m_rigidBodyShapeID);
+    m_rigidBodyShapeID = rbody->m_rigidBody->AddBoxShape(Vector3D(m_aabb.width, m_aabb.height, m_aabb.depth), m_aabb.center, 1);
+  }
+  m_body->RemoveShape(m_collisionShapeID);
+  m_collisionShapeID = m_body->AddBoxShape(Vector3D(m_aabb.width, m_aabb.height, m_aabb.depth), m_aabb.center);
+}
+
+AABB
+BoxCollider::getAABB() {
+  return m_aabb;
+}
+
+
 GameComponent* 
 BoxCollider::cloneIn(GameObject& _go) {
-  auto dup = _go.createComponent<BoxCollider>(m_originalAABB);
-  dup->m_originalAABB = m_originalAABB;
+  auto dup = _go.createComponent<BoxCollider>(m_aabb);
+  dup->m_aabb = m_aabb;
   return dup;
 }
 

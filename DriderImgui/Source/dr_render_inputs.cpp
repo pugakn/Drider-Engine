@@ -29,6 +29,28 @@ RenderInputs::getInputs() {
     }
     ImGui::EndDragDropTarget();
   }
-}
+  /*SizeT meshes = model->meshes.size();
+  ImGui::Text("Meshes: %i", meshes);*/
 
+  for(auto &mesh : render.getMeshes()) {
+    TString name = _T("");
+    if(mesh.material.lock()) {
+      name = mesh.material.lock()->getName();
+    }
+    ImGui::Text("Mesh:"); ImGui::SameLine();
+    ImGui::InputText("##mesh", &name, ImGuiInputTextFlags_ReadOnly);
+    if (ImGui::BeginDragDropTarget())
+    {
+      if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILE_ITEM"))
+      {
+        char* data = (char*)payload->Data;
+        auto ptr = ResourceManager::loadResource(StringUtils::toTString(data));
+        auto ptrMat = std::dynamic_pointer_cast<Material>(ptr);
+
+        mesh.material = ptrMat;
+      }
+      ImGui::EndDragDropTarget();
+    }
+  }
+}
 }

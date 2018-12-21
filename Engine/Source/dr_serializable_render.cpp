@@ -35,10 +35,11 @@ sRender::load(File &file,
       String name;
       file.m_file >> name;
       
-      auto mat = ResourceManager::createMaterial(StringUtils::toTString(name), true);
+      auto mat = ResourceManager::loadMaterial(name);
+      auto pMat = std::dynamic_pointer_cast<Material>(mat);
       //auto mat = ResourceManager::getReferenceT<Material>(StringUtils::toTString(name));
 
-      bool shadow;
+      /*bool shadow;
       file.m_file >> shadow;
       mat->setProyectShadow(shadow);
 
@@ -61,9 +62,9 @@ sRender::load(File &file,
                         (PROPERTY_TYPE::E)propType);
         auto text = ResourceManager::getReferenceT<TextureCore>(tTextureName);
         mat->setTexture(text, tName);
-      }
+      }*/
     
-      comp->getMeshes()[i].material = mat;
+      comp->getMeshes()[i].material = pMat;
     }
 
   }

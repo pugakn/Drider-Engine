@@ -41,7 +41,7 @@ namespace driderSDK {
   {
     for (auto &it: body->m_shapes)
     {
-      delete it;
+      delete it.second;
     }
     instance().m_collisionItems.erase(body->m_body);
     instance().m_world->destroyCollisionBody(body->m_body);
@@ -53,7 +53,7 @@ namespace driderSDK {
   {
     for (auto &it : body->m_shapes)
     {
-      delete it;
+      delete it.second;
     }
     instance().m_dynamicWorld->destroyRigidBody(body->m_body);
     delete body;

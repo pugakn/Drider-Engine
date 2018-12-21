@@ -63,10 +63,11 @@ RenderComponent::serialize(File &file) {
     file.m_file << modelName << "\n";
     
     file.m_file << m_model.lock()->meshes.size() << "\n";
-    TString n = getMeshes().back().material.lock()->m_name;
+    //TString n = getMeshes().back().material.lock()->m_name;
     for(auto &mesh : getMeshes()) {
       TString name = mesh.material.lock()->getName();
-      mesh.material.lock()->serialize(file);
+      file.m_file << StringUtils::toString(name) << "\n";
+      //mesh.material.lock()->serialize(file);
     }
 
     /*file.m_file << m_model.lock()->aabb.width << "\n";
