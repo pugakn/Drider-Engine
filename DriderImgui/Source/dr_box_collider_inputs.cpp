@@ -17,19 +17,27 @@ BoxColliderInputs::getInputs() {
   /*	float width, height, depth;
 
 	Vector3D center;*/
-    if(ImGui::InputFloat("Width:", &aabb.width)) {
+    float w = aabb.width;
+    if(ImGui::InputFloat("Width:", &w) && w > 0.0f) {
+      aabb.width = w;
       boxComponent.setAABB(aabb);
     }
 
-    if (ImGui::InputFloat("Height:", &aabb.height)) {
+    float h = aabb.height;
+    if (ImGui::InputFloat("Height:", &h) && h > 0.0f) {
+      aabb.height = h;
       boxComponent.setAABB(aabb);
     }
 
-    if (ImGui::InputFloat("Depth:", &aabb.depth)) {
+    float d = aabb.depth;
+    if (ImGui::InputFloat("Depth:", &d) && d > 0.0f) {
+      aabb.depth = d;
       boxComponent.setAABB(aabb);
     }
 
-    if(ImGui::InputFloat3("Center:", aabb.center.ptr())) {
+    Vector3D center = aabb.center;
+    if(ImGui::InputFloat3("Center:", center.ptr())) {
+      aabb.center = center;
       boxComponent.setAABB(aabb);
     }
     

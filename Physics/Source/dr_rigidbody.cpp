@@ -102,4 +102,9 @@ namespace driderSDK {
     rt.setRotation(q.getEulerAngles());
     return rt;
   }
+
+  RIGID_BODY_TYPE::E
+  DrRigidBody::getMode() {
+    return (RIGID_BODY_TYPE::E)m_body->getType();
+  }
 }

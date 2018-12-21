@@ -11,7 +11,7 @@ RigidbodyInputs::getInputs() {
   if (ImGui::CollapsingHeader(StringUtils::toString(rigidBodyComponent.getName()).c_str())) {
 
     // Gravity
-    static bool tempGravity = false;
+    bool tempGravity = rigidBodyComponent.isGravity();
     //rigidBodyComponent.enableGravity(false);
     if(ImGui::Checkbox("Use gravity", &tempGravity)) {
       rigidBodyComponent.enableGravity(tempGravity);
@@ -29,13 +29,13 @@ RigidbodyInputs::getInputs() {
     }*/
 
     // Type
-    static Int32 type = 0;
+    Int32 type = rigidBodyComponent.getMode();
     if(ImGui::Combo("Inputs Mode", &type, "Static\0Kinematic\0Dynamic\0")) {
       rigidBodyComponent.setType((RIGID_BODY_TYPE::E)type);
     }
 
     // Position
-    static Vector3D pos = rigidBodyComponent.m_rigidBody->getTransform().getPosition();
+    Vector3D pos = rigidBodyComponent.m_rigidBody->getTransform().getPosition();
     if(ImGui::InputFloat3("Position", pos.ptr())) {
       Transform t = rigidBodyComponent.m_rigidBody->getTransform();
       t.setPosition(pos);

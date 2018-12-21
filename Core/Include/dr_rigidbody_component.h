@@ -60,9 +60,16 @@ namespace RIGID_BODY_TYPE { enum E;  }
     void
     deserialize(TString &data) override;
 
+    bool
+    isGravity();
+
+    RIGID_BODY_TYPE::E
+    getMode();
+
 
     DrRigidBody* m_rigidBody;
   protected:
+    bool isGravityEnabled;
 
   };
 

@@ -60,6 +60,7 @@ namespace driderSDK {
 
   void
     RigidBody3DComponent::enableGravity(bool bUseGravity) {
+    isGravityEnabled = bUseGravity;
     m_rigidBody->enableGravity(bUseGravity);
   }
 
@@ -76,5 +77,15 @@ namespace driderSDK {
   void
   RigidBody3DComponent::deserialize(TString &data) {
 
+  }
+
+  bool
+  RigidBody3DComponent::isGravity() {
+    return isGravityEnabled;
+  }
+
+  RIGID_BODY_TYPE::E
+  RigidBody3DComponent::getMode() {
+    return (RIGID_BODY_TYPE::E)m_rigidBody->getMode();
   }
 }

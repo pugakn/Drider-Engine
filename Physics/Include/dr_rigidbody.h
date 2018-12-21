@@ -47,6 +47,9 @@ namespace driderSDK {
     Transform 
     getTransform();
 
+    RIGID_BODY_TYPE::E
+    getMode();
+
   private:
     friend class PhysicsManager;
     std::map<int,rp3d::ConvexShape*> m_shapes;
