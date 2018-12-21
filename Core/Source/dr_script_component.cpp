@@ -31,6 +31,8 @@ ScriptComponent::ScriptComponent(GameObject &gameObject,
   //Get module
   mod = scriptEngine->m_scriptEngine->GetModule("GameModule");
 
+  initialized = false;
+
   //Compile the module after adding a new script
   //Int8 result = mod->Build();
 }
@@ -48,6 +50,8 @@ ScriptComponent::ScriptComponent(GameObject &gameObject) :
 
   //Get module
   mod = scriptEngine->m_scriptEngine->GetModule("GameModule");
+
+  initialized = false;
 
 }
 
@@ -69,7 +73,7 @@ ScriptComponent::deserialize(TString &data) {
 
 void
 ScriptComponent::onCreate() {
-  
+  initialized = false;
 }
 
 void
@@ -133,6 +137,8 @@ ScriptComponent::initScript() {
                                 mod,
                                 &obj,
                                 &type);
+
+  initialized = true;
 }
 
 void

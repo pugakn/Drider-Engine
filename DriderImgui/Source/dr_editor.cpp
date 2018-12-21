@@ -531,6 +531,7 @@ Editor::loadMainMenu() {
         
         for(auto &s: m_scripts) {
           s->initScript();
+          //Int32 c = s->getObject()->GetPropertyCount();
           s->start();
         }
       }

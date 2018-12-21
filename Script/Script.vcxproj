@@ -182,6 +182,7 @@
     <ClInclude Include="Include\dr_script_object.h" />
     <ClInclude Include="Include\dr_script_prerequisites.h" />
     <ClInclude Include="Include\dr_script_string_factory.h" />
+    <ClInclude Include="Include\dr_script_var_types.h" />
     <ClInclude Include="Include\scriptarray.h" />
     <ClInclude Include="Include\scriptdictionary.h" />
   </ItemGroup>

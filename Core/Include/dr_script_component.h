@@ -15,6 +15,7 @@ namespace driderSDK {
 class ScriptEnine;
 class ScriptCore;
 
+
 class DR_CORE_EXPORT ScriptComponent : public GameComponent,
                                        public IDClass<ScriptComponent> {
   public:
@@ -96,6 +97,17 @@ class DR_CORE_EXPORT ScriptComponent : public GameComponent,
     discard() {
       obj = 0;
       type = 0;
+      initialized = false;
+    }
+
+    FORCEINLINE asIScriptObject*
+    getObject() {
+      return obj;
+    }
+
+    FORCEINLINE bool
+    isInitilized() {  
+      return initialized;
     }
 
     static BEGINING_REGISTER(ScriptComponent, 0, asOBJ_REF | asOBJ_NOCOUNT)
@@ -123,6 +135,8 @@ class DR_CORE_EXPORT ScriptComponent : public GameComponent,
     asIScriptModule *mod = 0;
     asIScriptObject *obj = 0;
     asITypeInfo *type = 0;    
+
+    bool initialized;
 
 };
 
