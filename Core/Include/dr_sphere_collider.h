@@ -39,6 +39,12 @@ namespace driderSDK {
     void
       setLocalPosition(const Vector3D& center);
 
+    float
+    getRadius();
+
+    Vector3D
+    getCenter();
+
   private:
     virtual GameComponent*
       cloneIn(GameObject& _go) override;

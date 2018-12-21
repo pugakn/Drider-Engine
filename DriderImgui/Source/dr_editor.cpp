@@ -282,6 +282,8 @@ void Editor::postRender()
   m_RTDPTH->clear(GraphicsAPI::getDeviceContext(), 1, 0);
 
   RenderManager::instance().draw(*m_RT, *m_RTDPTH);
+  drawDebugStuff();
+
 
   //Draw End
   GraphicsAPI::getDepthStencilState(DR_DEPTH_STENCIL_STATES::kDepthR).set(GraphicsAPI::getDeviceContext(), 1);
@@ -947,6 +949,29 @@ Editor::loadRenderWindow() {
     }
 
     ImGui::End();
+  }
+}
+
+void Editor::drawDebugStuff()
+{
+  auto boxColliderComponent = m_selectedGameObject->getComponent<BoxCollider>();
+  if (boxColliderComponent) {
+    AABB aabb = boxColliderComponent->getAABB();
+    Matrix4x4 tr = boxColliderComponent->getGameObject().getTransform().getMatrix();
+    RenderManager::instance().drawDebugCube(Vector3D(aabb.width,
+      aabb.height,
+      aabb.depth),
+      Vector3D(1, 0, 1),
+      tr.Move(aabb.center));
+  }
+  auto sphereColliderComponent = m_selectedGameObject->getComponent<SphereCollider>();
+  if (sphereColliderComponent) {
+    float radius = sphereColliderComponent->getRadius();
+    Vector3D center = sphereColliderComponent->getCenter();
+    Matrix4x4 tr = sphereColliderComponent->getGameObject().getTransform().getMatrix();
+    RenderManager::instance().drawDebugSphere(radius,
+      Vector3D(1, 0, 1),
+      tr.Move(center));
   }
 }
 

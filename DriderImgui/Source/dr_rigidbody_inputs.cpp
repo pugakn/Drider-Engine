@@ -34,6 +34,14 @@ RigidbodyInputs::getInputs() {
       rigidBodyComponent.setType((RIGID_BODY_TYPE::E)type);
     }
 
+    // Position
+    static Vector3D pos = rigidBodyComponent.m_rigidBody->getTransform().getPosition();
+    if(ImGui::InputFloat3("Position", pos.ptr())) {
+      Transform t = rigidBodyComponent.m_rigidBody->getTransform();
+      t.setPosition(pos);
+      rigidBodyComponent.m_rigidBody->setTransform(t);
+    } 
+
   }
 }
 

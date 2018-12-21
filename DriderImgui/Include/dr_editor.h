@@ -35,6 +35,7 @@ class Editor : public Application
   void loadMenuAddComponent();
   void loadFileManager();
   void loadRenderWindow();
+  void drawDebugStuff();
   GFXShared<RenderTarget> m_RT;
   GFXShared<DepthStencil> m_RTDPTH;
   Viewport m_sceneViewport;
