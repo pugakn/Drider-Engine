@@ -2,6 +2,7 @@
 #include "dr_renderman_prerequisites.h"
 #include "dr_renderpass.h"
 #include <dr_graph.h>
+#include <dr_texture_core.h>
 #include <dr_render_component.h>
 #include <dr_camera.h>
 #include <dr_sample_state.h>
@@ -15,6 +16,8 @@ struct GBufferDrawData : PassDrawData {
   RenderCommandBuffer* models;
   RenderTarget* OutRt;
   DepthStencil* dsOptions;
+  Model* skysphere;
+  TextureCore* cubeMapTex;
 };
 
 class GBufferPass : public RenderPass {
@@ -62,7 +65,8 @@ class GBufferPass : public RenderPass {
 
   CBuffer CB;
 
-  GFXUnique<Texture> cubeMapTex;
+  //GFXUnique<Model> skysphere;
+  //GFXUnique<Texture> cubeMapTex;
   GFXUnique<SamplerState> m_samplerState;
 };
 

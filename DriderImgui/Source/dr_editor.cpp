@@ -274,9 +274,8 @@ void Editor::postUpdate()
   }
 }
 
-void Editor::postRender()
-{
-
+void
+Editor::postRender() {
   const float clearColor[4]{ 0.2f, 0.5f, 0.8f, 1.f };
   m_RT->clear(GraphicsAPI::getDeviceContext(), clearColor);
   m_RTDPTH->clear(GraphicsAPI::getDeviceContext(), 1, 0);
@@ -322,8 +321,8 @@ void Editor::postRender()
   GraphicsDriver::API().swapBuffers();
 }
 
-void Editor::postDestroy()
-{
+void
+Editor::postDestroy() {
   ImGui_ImplDX11_Shutdown();
   ImGui_ImplWin32_Shutdown();
   ImGui::DestroyContext();
@@ -341,15 +340,15 @@ void Editor::postDestroy()
   Logger::shutDown();
 }
 
-void Editor::onResize()
-{
+void
+Editor::onResize() {
   ImGui_ImplDX11_InvalidateDeviceObjects();
   GraphicsDriver::API().resizeBackBuffer(m_viewport.width, m_viewport.height);
   ImGui_ImplDX11_CreateDeviceObjects();
 }
 
-void Editor::initSceneGraph()
-{
+void
+Editor::initSceneGraph() {
   /*SceneGraph::SharedGameObject model = SceneGraph::createObject(_T("Model"));
   ResourceManager::loadResource(_T("model.dae"));
 
@@ -571,8 +570,8 @@ driderSDK::Editor::initImguiMenus(float mainMenuBarheight) {
   ImGui::SetNextWindowSize({ 2 * unitWidth, 2 * unitHeight });
 }
 
-void driderSDK::Editor::loadHierarchy()
-{
+void
+driderSDK::Editor::loadHierarchy() {
   if (ImGui::Button("Create"))
     ImGui::OpenPopup("menuHierarchy");
   ImGui::SameLine();

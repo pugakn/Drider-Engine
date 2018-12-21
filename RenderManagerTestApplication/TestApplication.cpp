@@ -98,27 +98,22 @@ RenderManApp::postInit() {
   SceneGraph::startUp();
   Time::startUp();
   CameraManager::startUp();
-  CameraManager::createCamera(_T("PATO_CAM"),
-                              { 0.0f, 200.0f, -400.0f },
-                              { 0.0f, 50.0f, 0.0f },
-                              m_viewport,
-                              45.f,
-                              0.1f,
-                              10000.0f);
-  CameraManager::setActiveCamera(_T("PATO_CAM"));
   RenderManager::startUp();
   PhysicsManager::startUp();
 
   auto rm_cam = SceneGraph::createObject(_T("DuckCamera"));
   auto cam_cmp = rm_cam->createComponent<CameraComponent>();
-  rm_cam->getTransform().setPosition({ 0.0f, 200.0f, -400.0f });
-  rm_cam->getTransform().setRotation({ 25.0f * Math::DEGREE_TO_RADIAN, 0.0f, 0.0f });
+  rm_cam->getTransform().setPosition({ 0.0f, 200.0f, 400.0f });
+  rm_cam->getTransform().setRotation({ 25.0f * Math::DEGREE_TO_RADIAN, Math::PI, 0.0f });
   cam_cmp->setActive();
 
-  luminanceDelta = 0.0f;
-  RenderManager::instancePtr()->luminanceDelta = &luminanceDelta;
-
-  m_bRotate = false;
+  m_bSelected = false;
+  m_selectedGO = nullptr;
+  m_TransformMode = TransformMode::kPosition;
+  cubeLarge = 100.0f;
+  cubeDefault = 5.0f;
+  m_bOffseted = false;
+  m_fOffset = 0.0f;
 
   Vector4D LightPosition(0.0f, 100.0f, 150.0f, 1.0f);
   
@@ -132,15 +127,15 @@ RenderManApp::postInit() {
   float xOffset = (horizontalLights / 2.0f) * separationX;
   float zOffset = 1 * separationZ;
 
+  SceneGraph::SharedGameObject tmpObj;
+
   Vector4D lightPos;
   Vector4D lightColor;
-  float lightRange;
-  float lightIntensity;
   LightComponent* tmpLightCmp;
   for (Int32 xPos = 0; xPos < horizontalLights; ++xPos) {
     for (Int32 zPos = 0; zPos < verticalLights; ++zPos) {
-      m_selectedGO = SceneGraph::createObject(_T("Light") + StringUtils::toTString(lighIndex));
-      tmpLightCmp = m_selectedGO->createComponent<LightComponent>();
+      tmpObj = SceneGraph::createObject(_T("Light") + StringUtils::toTString(lighIndex));
+      tmpLightCmp = tmpObj->createComponent<LightComponent>();
 
       //Posicion
       lightPos = Vector4D((xPos * separationX) - xOffset,
@@ -148,7 +143,7 @@ RenderManApp::postInit() {
                           (zPos * separationZ) - zOffset,
                           1.0f);
 
-      m_selectedGO->getTransform().setPosition(Vector3D(lightPos.x,
+      tmpObj->getTransform().setPosition(Vector3D(lightPos.x,
                                                         lightPos.y,
                                                         lightPos.z));
       //Color
@@ -159,57 +154,32 @@ RenderManApp::postInit() {
                lightColor.y,
                lightColor.z);
 
-
-      //Range
-      //lightRange = 150.0f;
-      lightRange = 100.0f;
-      //lightRange = 50.0f;
-      //lightRange = proportion * 150.0f;
-      //  if (lighIndex > (RM_MAX_LIGHTS / 2)) lightRange *= -1;
-      //if (lighIndex % 3 != 0) lightRange *= -1;
-
-      //Intensidad
-      //tmpLight.m_vec4Color.w = (lighIndex / 128.0f);
-      //tmpLight.m_vec4Color.w = 1.0f;
-      lightIntensity = 2.0f;
-
+      tmpLightCmp->setEnabled(true);
       tmpLightCmp->SetColor(Vector3D(lightColor.x, lightColor.y, lightColor.z));
-      tmpLightCmp->SetRange(lightRange);
-      tmpLightCmp->SetIntensity(lightIntensity);
+      tmpLightCmp->SetRange(100.0f);
+      tmpLightCmp->SetIntensity(2.0f);
 
       proportion += (1.0f / RM_MAX_LIGHTS);
       ++lighIndex;
     }
   }
 
-  SceneGraph::instance().updateLightsList();
-
-  modelMovement = Vector3D(0.0f, 0.0f, 0.0f);
-
   loadResources();
 
+  RenderManager::instance().setSkySphere(ResourceManager::getReferenceT<Model>(_T("SkySphere.fbx")));
   RenderManager::instance().setCubeMap(ResourceManager::getReferenceT<TextureCore>(_T("GraceCubemap.tga")));
   RenderManager::instance().setEnviromentMap(ResourceManager::getReferenceT<TextureCore>(_T("GraceDiffuseCubemap.tga")));
   RenderManager::instance().setFilmLut(ResourceManager::getReferenceT<TextureCore>(_T("FilmLut.tga")));
-
+  
   m_vecGos.push_back(SceneGraph::createObject(_T("Floor")));
-  m_selectedGO = m_vecGos.back();
+  tmpObj = m_vecGos.back();
   auto ptrFloor = ResourceManager::getReferenceT<Model>(_T("plane.fbx"));
   if (ptrFloor) {
-    m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, 0.0f));
-    //m_selectedGO->getTransform().setScale(Vector3D(1000.0f, 1.0f, 1000.0f));
-    m_selectedGO->getTransform().setScale(Vector3D(100.0f, 1.0f, 100.0f));
-    //m_selectedGO->getTransform().setScale(Vector3D(5.0f, 1.0f, 5.0f));
-    //m_selectedGO->getTransform().setScale(Vector3D(4.0f, 1.0f, 4.0f));
+    tmpObj->getTransform().setPosition(Vector3D(0.0f, 0.0f, 100.0f));
+    tmpObj->getTransform().setScale(Vector3D(7.5f, 7.5f, 7.5f));
 
-    auto rgbod = m_selectedGO->createComponent<RigidBody3DComponent>();
-    rgbod->setType(RIGID_BODY_TYPE::kStatic);
-    m_selectedGO->createComponent<AABBCollider>(ptrFloor->aabb);
-    auto coll = m_selectedGO->createComponent<BoxCollider>(ptrFloor->aabb);
-    coll->m_body->onCollisionEnter = [](DrCollisionBody& coll) {std::cout << "Floor Enter" << std::endl; };
-    coll->m_body->onCollisionExit = [](DrCollisionBody& coll) {std::cout << "Floor Exit" << std::endl; };
-    coll->m_body->onCollisionStay = [](DrCollisionBody& coll) {std::cout << "Floor Stay" << std::endl; };
-    m_selectedGO->createComponent<RenderComponent>(ptrFloor);
+    tmpObj->createComponent<AABBCollider>(ptrFloor->aabb);
+    tmpObj->createComponent<RenderComponent>(ptrFloor);
 
     m_floorMat = ResourceManager::createMaterial(_T("FloorMaterial"));
 
@@ -239,179 +209,37 @@ RenderManApp::postInit() {
     m_floorMat->setTexture(sscolorTex, _T("SSColor"));
     m_floorMat->setTexture(thicknessTex, _T("Thickness"));
 
-    auto renderComp = m_selectedGO->getComponent<RenderComponent>();
+    auto renderComp = tmpObj->getComponent<RenderComponent>();
     renderComp->getMeshes().front().material = m_floorMat;
-  }
-  
-  m_vecGos.push_back(SceneGraph::createObject(_T("Bush")));
-  m_selectedGO = m_vecGos.back();
-  auto ptrBs = ResourceManager::getReferenceT<Model>(_T("FernBush.obj"));
-  if (ptrBs) {
-    auto renderComp = m_selectedGO->createComponent<RenderComponent>(ptrBs);
-    m_selectedGO->createComponent<AABBCollider>(ptrBs->aabb);
-    //m_selectedGO->getTransform().setPosition(Vector3D(110.0f, 0.0f, 110.0f));
-    //m_selectedGO->getTransform().setScale(Vector3D(0.05f, 0.05f, 0.05f));
-    m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, 2000.0f));
-    m_selectedGO->getTransform().setScale(Vector3D(0.25f, 0.25f, 0.25f));
-
-    m_BushMat = ResourceManager::createMaterial(_T("BushMaterial"));
-
-    auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("FernTarga.tga"));
-    m_BushMat->setTexture(albedoTex, _T("Albedo"));
-
-    std::vector<RenderMesh>& meshes = renderComp->getMeshes();
-    meshes.front().material = m_BushMat;
-  }
-
-  m_vecGos.push_back(SceneGraph::createObject(_T("Stormtrooper")));
-  m_selectedGO = m_vecGos.back();   
-  auto ptrStorm = ResourceManager::getReferenceT<Model>(_T("stormtrooper_dancing.fbx"));
-  if (ptrStorm) {
-    auto rComp = m_selectedGO->createComponent<RenderComponent>(ptrStorm);
-    auto aComp = m_selectedGO->createComponent<AnimatorComponent>();
-    m_selectedGO->createComponent<AABBCollider>(ptrStorm->aabb);
-    //m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, -50.0f));
-    //m_selectedGO->getTransform().setScale(Vector3D(30.0f, 30.0f, 30.0f));
-    //m_selectedGO->getTransform().setRotation(Vector3D(00.0f, Math::PI, 00.0f));
-    m_selectedGO->getTransform().setPosition(Vector3D(200.0f, 0.0f, 150.0f));
-    m_selectedGO->getTransform().setScale(Vector3D(50.0f, 50.0f, 50.0f));
-    m_selectedGO->getTransform().setRotation(Vector3D(00.0f, Math::PI * 1.25f, 00.0f));
-
-    m_StormtrooperMat = ResourceManager::createMaterial(_T("StormtrooperMaterial"));
-
-    auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("Stormtrooper_Diffuse.png"));
-    m_StormtrooperMat->setTexture(albedoTex, _T("Albedo"));
-
-    rComp->getMeshes().front().material = m_StormtrooperMat;
-
-    auto ws = ResourceManager::getReferenceT<Skeleton>(ptrStorm->skeletonName);
-    
-    aComp->setSkeleton(ws);
-
-    for (SizeT i = 0; i < ptrStorm->animationsNames.size(); ++i) {
-      auto wa = ResourceManager::getReferenceT<Animation>(ptrStorm->animationsNames[i]);
-
-      aComp->addAnimation(wa, ptrStorm->animationsNames[i]);
-    }
-
-    aComp->setCurrentAnimation(ptrStorm->animationsNames[0], false);
-    aComp->setTime(1.0f);
-  }
-
-  m_vecGos.push_back(SceneGraph::createObject(_T("Popuko")));
-  m_selectedGO = m_vecGos.back();
-  auto ptrpk = ResourceManager::getReferenceT<Model>(_T("popuko.fbx"));
-  if (ptrpk) {
-    m_selectedGO->createComponent<RenderComponent>(ptrpk);
-    m_selectedGO->createComponent<AABBCollider>(ptrpk->aabb);
-    m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, 200.0f));
-    m_selectedGO->getTransform().setScale(Vector3D(2.0f, 2.0f, 2.0f));
-    m_selectedGO->getTransform().setRotation(Vector3D(0.0f, Math::PI, 0.0f));
-  }
-
-  m_vecGos.push_back(SceneGraph::createObject(_T("HatKid")));
-  m_selectedGO = m_vecGos.back();
-  auto ptrHK = ResourceManager::getReferenceT<Model>(_T("HK_Teen.fbx"));
-  if (ptrHK) {
-    //m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, 25.0f));
-    //m_selectedGO->getTransform().setScale(Vector3D(100.0f, 100.0f, 100.0f));
-    //m_selectedGO->getTransform().setRotation(Vector3D(Math::Math::HALF_PI * 3.0f, Math::PI, 0.0f));
-    m_selectedGO->getTransform().setPosition(Vector3D(-50.0f, 0.0f, 0.0f));
-    m_selectedGO->getTransform().setScale(Vector3D(125.0f, 125.0f, 125.0f));
-    m_selectedGO->getTransform().setRotation(Vector3D(Math::Math::HALF_PI * 3.0f, Math::PI * 0.85f, 0.0f));
-
-    //auto rgbod = m_selectedGO->createComponent<RigidBody3DComponent>();
-    //m_selectedGO->createComponent<BoxCollider>(ptrHK->aabb);
-    m_selectedGO->createComponent<AABBCollider>(ptrHK->aabb);
-    m_selectedGO->createComponent<RenderComponent>(ptrHK);
-
-
-    m_hkBodyMat = ResourceManager::createMaterial(_T("HKBodyMaterial"));
-    m_hkBodySMat = ResourceManager::createMaterial(_T("HKBodySMaterial"));
-    m_hkEyeMat = ResourceManager::createMaterial(_T("HKEyeMaterial"));
-
-    auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_main_mat_BaseColor.tga"));
-    auto emissiveTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_main_mat_Emissive.tga"));
-    auto metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_main_mat_Metallic.tga"));
-    auto roughnessTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_main_mat_Roughness.tga"));
-    m_hkBodyMat->setTexture(albedoTex, _T("Albedo"));
-    m_hkBodyMat->setTexture(emissiveTex, _T("Emisivity"));
-    m_hkBodyMat->setTexture(metallicTex, _T("Metallic"));
-    m_hkBodyMat->setTexture(roughnessTex, _T("Roughness"));
-
-    albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_second_mat_BaseColor.tga"));
-    metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_second_mat_Metallic.tga"));
-    roughnessTex = ResourceManager::getReferenceT<TextureCore>(_T("hatkid_HK_second_mat_Roughness.tga"));
-    m_hkBodySMat->setTexture(albedoTex, _T("Albedo"));
-    m_hkBodySMat->setTexture(metallicTex, _T("Metallic"));
-    m_hkBodySMat->setTexture(roughnessTex, _T("Roughness"));
-
-    albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("HK_eye_dif.tga"));
-    metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("HK_eye_spc.tga"));
-    m_hkEyeMat->setTexture(albedoTex, _T("Albedo"));
-    m_hkEyeMat->setTexture(metallicTex, _T("Specular"));
-
-    auto renderComp = m_selectedGO->getComponent<RenderComponent>();
-    std::vector<RenderMesh>& meshes = renderComp->getMeshes();
-    meshes[0].material = m_hkBodySMat;
-    meshes[1].material = m_hkBodyMat;
-    meshes[2].material = m_hkEyeMat;
   }
 
   m_vecGos.push_back(SceneGraph::createObject(_T("Robot")));
-  m_selectedGO = m_vecGos.back();
-  auto ptrModel = ResourceManager::getReferenceT<Model>(_T("model.dae"));
+  tmpObj = m_vecGos.back();
+  auto ptrModel = ResourceManager::getReferenceT<Model>(_T("roboto.dae"));
   if (ptrModel) {
-    //m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 12.5f, -100.0f));
-    //m_selectedGO->getTransform().setScale(Vector3D(10.0f, 10.0f, 10.0f));
-    //m_selectedGO->getTransform().setRotation(Vector3D(0.0f, Math::PI*1.15f, 0.0f));
-    m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 850.0f, -100.0f));
-    m_selectedGO->getTransform().setScale(Vector3D(75.0f, 75.0f, 75.0f));
-    m_selectedGO->getTransform().setRotation(Vector3D(0.0f, Math::QUARTER_PI * 0.3f, 0.0f));
+    tmpObj->getTransform().setPosition(Vector3D(0.0f, 50.5f, 0.0f));
+    tmpObj->getTransform().setScale(Vector3D(100.0f, 100.0f, 100.0f));
 
-    auto rgbod = m_selectedGO->createComponent<RigidBody3DComponent>();
-    m_selectedGO->createComponent<AABBCollider>(ptrModel->aabb);
-    auto coll = m_selectedGO->createComponent<BoxCollider>(ptrModel->aabb);
-    coll->m_body->onCollisionEnter = [](DrCollisionBody& coll) {std::cout << "Robot Enter" << std::endl; };
-    coll->m_body->onCollisionExit = [](DrCollisionBody& coll) {std::cout << "Robot Exit" << std::endl; };
-    coll->m_body->onCollisionStay = [](DrCollisionBody& coll) {std::cout << "Robot Stay" << std::endl; };
-    //m_selectedGO->createComponent<SphereCollider>(1,Vector3D(0,0,0));
-    m_selectedGO->createComponent<RenderComponent>(ptrModel);
+    tmpObj->createComponent<AABBCollider>(ptrModel->aabb);
+    tmpObj->createComponent<RenderComponent>(ptrModel);
 
     m_modelMat = ResourceManager::createMaterial(_T("ModelMaterial"));
 
-    auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("default_albedo.tga"));
-    auto emissiveTex = ResourceManager::getReferenceT<TextureCore>(_T("default_emissive.tga"));
-    auto metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("default_metallic.tga"));
-    auto normalTex = ResourceManager::getReferenceT<TextureCore>(_T("default_normal.tga"));
-    auto roughnessTex = ResourceManager::getReferenceT<TextureCore>(_T("default_roughness.tga"));
+    auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("roboto_albedo.tga"));
+    auto emissiveTex = ResourceManager::getReferenceT<TextureCore>(_T("roboto_emissive.tga"));
+    auto metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("roboto_metallic.tga"));
+    auto normalTex = ResourceManager::getReferenceT<TextureCore>(_T("roboto_normal.tga"));
+    auto roughnessTex = ResourceManager::getReferenceT<TextureCore>(_T("roboto_roughness.tga"));
     m_modelMat->setTexture(albedoTex, _T("Albedo"));
     m_modelMat->setTexture(normalTex, _T("Normal"));
     m_modelMat->setTexture(emissiveTex, _T("Emisivity"));
     m_modelMat->setTexture(metallicTex, _T("Metallic"));
     m_modelMat->setTexture(roughnessTex, _T("Roughness"));
 
-    auto rComp = m_selectedGO->getComponent<RenderComponent>();
+    auto rComp = tmpObj->getComponent<RenderComponent>();
     rComp->getMeshes().front().material = m_modelMat;
   }
-
-  /*
-  m_vecGos.push_back(SceneGraph::createObject(_T("SkySphere")));
-  m_selectedGO = m_vecGos.back();
-  auto ptrSS = ResourceManager::getReferenceT<Model>(_T("SkySphere100.fbx"));
-  if (ptrSS) {
-    m_selectedGO->createComponent<RenderComponent>(ptrSS);
-    m_selectedGO->createComponent<AABBCollider>(ptrSS->aabb);
-    m_selectedGO->getTransform().setPosition(Vector3D(0.0f, 0.0f, 0.0f));
-  }
-
-  m_vecGos.push_back(rm_cam);
-  */
-
-  m_SzTGosIndex = m_vecGos.size() - 1;
-  //m_SzTGosIndex = 0;
-  m_selectedGO = m_vecGos[m_SzTGosIndex];
-
+  
   SceneGraph::start();
 
   initInputCallbacks();
@@ -430,74 +258,92 @@ RenderManApp::postUpdate() {
   SceneGraph::update();
   PhysicsManager::TestCollision();
 
-
-  if (m_bRotate) {
-    m_selectedGO->getTransform().rotate(Vector3D(0.0f, Math::QUARTER_PI * Time::getDelta(), 0.0f));
+  for (const auto& it : m_vecGos) {
+    auto testAABB = it->getComponent<AABBCollider>();
+    auto min = testAABB->getTransformedAABB();
+    auto max = testAABB->getAABB();
   }
 
+  if (m_bSelected) {
+    Matrix4x4 CubeMatrix = Matrix4x4::identityMat4x4;
+    Vector3D goPos;
+
+    Vector3D boxDimensions;
+    boxDimensions.x = m_selectedGO->getComponent<AABBCollider>()->getTransformedAABB().width;
+    boxDimensions.y = m_selectedGO->getComponent<AABBCollider>()->getTransformedAABB().height;
+    boxDimensions.z = m_selectedGO->getComponent<AABBCollider>()->getTransformedAABB().depth;
+    Matrix4x4 aabbMatrix = Matrix4x4::identityMat4x4;
+    aabbMatrix.Translation(m_selectedGO->getTransform().getPosition());
+    RenderManager::instance().drawDebugCube(boxDimensions, { 1,1,1 }, aabbMatrix);
+
+    if (TransformMode::kPosition == m_TransformMode) {
+      //X
+      CubeMatrix = Matrix4x4::identityMat4x4;
+      goPos = m_selectedGO->getTransform().getPosition();
+      goPos += Vector3D(cubeLarge * 0.5f, 0.0f, 0.0f);
+      CubeMatrix.Translation(goPos);
+      RenderManager::instance().drawDebugCube({ cubeLarge, cubeDefault, cubeDefault },
+                                              { 1.0f, 0.0f, 0.0f },
+                                              CubeMatrix);
+      //Y
+      CubeMatrix = Matrix4x4::identityMat4x4;
+      goPos = m_selectedGO->getTransform().getPosition();
+      goPos += Vector3D(0.0f, cubeLarge * 0.5f, 0.0f);
+      CubeMatrix.Translation(goPos);
+      RenderManager::instance().drawDebugCube({ cubeDefault, cubeLarge, cubeDefault },
+                                              { 0.0f, 1.0f, 0.0f },
+                                              CubeMatrix);
+      //Z
+      CubeMatrix = Matrix4x4::identityMat4x4;
+      goPos = m_selectedGO->getTransform().getPosition();
+      goPos += Vector3D(0.0f, 0.0f, cubeLarge * 0.5f);
+      CubeMatrix.Translation(goPos);
+      RenderManager::instance().drawDebugCube({ cubeDefault, cubeDefault, cubeLarge },
+                                              { 0.0f, 0.0f, 1.0f },
+                                              CubeMatrix);
+    }
+  }
+
+  //Change transform mode
+  if (Keyboard::isKeyDown(KEY_CODE::kQ)) {
+    m_TransformMode = TransformMode::kPosition;
+  }
+  else if (Keyboard::isKeyDown(KEY_CODE::kW)) {
+    m_TransformMode = TransformMode::kRotation;
+  }
+  else if (Keyboard::isKeyDown(KEY_CODE::kE)) {
+    m_TransformMode = TransformMode::kScale;
+  }
+
+  if (Mouse::isButtonDown(MOUSE_BUTTON::kLeft)) {
+    if (!m_bSelected) {
+      selectModel();
+    }
+    else {
+      if (TransformMode::E::kPosition == m_TransformMode) {
+        if (TransformAxis::kNone == m_SelectedMoveAxis) {
+          if (!selectMoveAxe()) {
+            selectModel();
+          }
+        }
+        else {
+          MoveOnAxe(m_SelectedMoveAxis);
+        }
+      }
+
+    }
+
+
+  }
+  if (!Mouse::isButtonDown(MOUSE_BUTTON::kLeft)) {
+    m_SelectedMoveAxis = TransformAxis::kNone;
+    m_bOffseted = false;
+    m_fOffset = 0.0f;
+  }
+
+  //Recompile shaders.
   if (Keyboard::isKeyDown(KEY_CODE::kP)) {
     RenderManager::instance().recompile();
-  }
-
-  const float fMovementSpeed = 500.0f;
-  if (Keyboard::isKeyDown(KEY_CODE::kA)) {
-    m_selectedGO->getTransform().move(Vector3D(-1.0f, 0.0f, 0.0f) * Time::getDelta()* fMovementSpeed);
-  }
-  if (Keyboard::isKeyDown(KEY_CODE::kD)) {
-    m_selectedGO->getTransform().move(Vector3D(1.0f, 0.0f, 0.0f) * Time::getDelta() * fMovementSpeed);
-  }
-  if (Keyboard::isKeyDown(KEY_CODE::kW)) {
-    m_selectedGO->getTransform().move(Vector3D(0.0f, 0.0f, 1.0f) * Time::getDelta() * fMovementSpeed);
-  }
-  if (Keyboard::isKeyDown(KEY_CODE::kS)) {
-    m_selectedGO->getTransform().move(Vector3D(0.0f, 0.0f, -1.0f) * Time::getDelta() * fMovementSpeed);
-  }
-  if (Keyboard::isKeyDown(KEY_CODE::kQ)) {
-    m_selectedGO->getTransform().move(Vector3D(0.0f, 1.0f, 0.0f) * Time::getDelta() * fMovementSpeed);
-  }
-  if (Keyboard::isKeyDown(KEY_CODE::kE)) {
-    m_selectedGO->getTransform().move(Vector3D(0.0f, -1.0f, 0.0f) * Time::getDelta() * fMovementSpeed);
-  }
-
-  if (Keyboard::isKeyDown(KEY_CODE::kR)) {
-    m_selectedGO->getTransform().scale(Vector3D(1.0f, 1.0f, 1.0f) + (Vector3D(1.0f, 1.0f, 1.0f) *  Time::getDelta()));
-  }
-  if (Keyboard::isKeyDown(KEY_CODE::kF)) {
-    m_selectedGO->getTransform().scale(Vector3D(1.0f, 1.0f, 1.0f) - (Vector3D(1.0f, 1.0f, 1.0f) *  Time::getDelta()));
-  }
-  if (Keyboard::isKeyDown(KEY_CODE::kT)) {
-    m_selectedGO->getComponent<RigidBody3DComponent>()->addTorque(Vector3D(0,0,200));
-  }
-
-
-  if (Keyboard::isKeyDown(KEY_CODE::k1)) {
-    luminanceDelta -= 0.01f;
-  }
-  if (Keyboard::isKeyDown(KEY_CODE::k2)) {
-    luminanceDelta += 0.01f;
-  }
-
-  if (Keyboard::isKeyDown(KEY_CODE::k0)) {
-    Matrix4x4 translateMat = Matrix4x4::identityMat4x4;
-    //translateMat.Scale(Vector3D(0.8, 0.5, 0.8));
-
-    std::vector<Vector3D> points;
-    points.push_back(Vector3D(-75,  50, 0));
-    points.push_back(Vector3D(  0, 150, 0));
-    points.push_back(Vector3D( 75,  50,  0));
-    points.push_back(Vector3D(-75,  50,  0));
-
-    translateMat.Translation(Vector3D(0, 50, -100));
-    RenderManager::instance().drawDebugLine(Vector3D(-50, 0, 0), Vector3D(50, 0, 0), Vector3D(1, 1, 0), translateMat);
-
-    translateMat.Translation(Vector3D(0, 50, 0));
-    RenderManager::instance().drawDebugLine(points, Vector3D(0, 1, 0), translateMat);
-
-    translateMat.Translation(Vector3D( 200, 100, 0));
-    RenderManager::instance().drawDebugCube(Vector3D(100, 100, 100), Vector3D(0, 0, 1), translateMat);
-
-    translateMat.Translation(Vector3D(-200, 100, 0));
-    RenderManager::instance().drawDebugSphere(50, Vector3D(1, 0, 0), translateMat);
   }
 
   //Screenshot!
@@ -607,86 +453,26 @@ RenderManApp::onResize() {
 
 void
 RenderManApp::initInputCallbacks() {
-  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
-                        KEY_CODE::kSPACE,
-                        std::bind(&RenderManApp::AutoRotateModel, this));
-  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
-                        KEY_CODE::kZ,
-                        std::bind(&RenderManApp::SelectModel, this, -1));
-  Keyboard::addCallback(KEYBOARD_EVENT::kKeyPressed,
-                        KEY_CODE::kX,
-                        std::bind(&RenderManApp::SelectModel, this, 1));
-  Mouse::addMovedCallback(std::bind(&RenderManApp::RotateModel, this));
-}
-
-void
-RenderManApp::RotateModel() {
-  Vector3D mouseDelta = Mouse::getDisplacement();
-  Vector3D rotation{0.0f, 0.0f, 0.0f};
-  float scale = 0.25f;
-
-  if (Mouse::isButtonDown(MOUSE_BUTTON::kLeft)) {
-    if (Math::abs(mouseDelta.x) < 3.0f) {
-      mouseDelta.x = 0.0f;
-    }
-    if (Math::abs(mouseDelta.y) < 3.0f) {
-      mouseDelta.y = 0.0f;
-    }
-
-    rotation.y = -mouseDelta.x;
-    rotation.x = -mouseDelta.y;
-
-    m_selectedGO->getTransform().rotate(rotation * scale * Time::getDelta());
-  }
-}
-
-void
-RenderManApp::AutoRotateModel() {
-  m_bRotate = !m_bRotate;
-}
-
-void
-RenderManApp::MoveModel(Vector3D direction) {
-  modelMovement += direction;
-}
-
-void
-RenderManApp::SelectModel(Int32 jump) {
-  m_SzTGosIndex += jump;
-
-  m_bRotate = false;
-
-  if (m_SzTGosIndex < 0) {
-    m_SzTGosIndex = m_vecGos.size() - 1;
-  }
-  else if (m_SzTGosIndex >= m_vecGos.size()) {
-    m_SzTGosIndex = 0;
-  }
-
-  m_selectedGO = m_vecGos[m_SzTGosIndex];
 }
 
 void
 RenderManApp::loadResources() {
   ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
 
+  //Cubemap
   ImageInfo cubeMapDesc;
   cubeMapDesc.width = 256;
   cubeMapDesc.height = 256;
   cubeMapDesc.textureDimension = DR_DIMENSION::kCUBE_MAP;
   cubeMapDesc.channels = DR_FORMAT::kB8G8R8A8_UNORM_SRGB;
 
+  ResourceManager::loadResource(_T("SkySphere.fbx"));
   ResourceManager::loadResource(_T("GraceCubemap.tga"), &cubeMapDesc);
   ResourceManager::loadResource(_T("GraceDiffuseCubemap.tga"), &cubeMapDesc);
   ResourceManager::loadResource(_T("FilmLut.tga"));
 
+  //Checker
   ResourceManager::loadResource(_T("plane.fbx"));
-  ResourceManager::loadResource(_T("FernBush.obj"));
-  ResourceManager::loadResource(_T("model.dae"));
-  ResourceManager::loadResource(_T("stormtrooper_dancing.fbx"));
-  ResourceManager::loadResource(_T("HK_Teen.fbx"));
-  ResourceManager::loadResource(_T("popuko.fbx"));
-
   ResourceManager::loadResource(_T("256_Checker_Diffuse.tga"));
   ResourceManager::loadResource(_T("256_Checker_Displacement.tga"));
   ResourceManager::loadResource(_T("256_Checker_Emissive.tga"));
@@ -698,25 +484,235 @@ RenderManApp::loadResources() {
   ResourceManager::loadResource(_T("256_Checker_SSColor.tga"));
   ResourceManager::loadResource(_T("256_Checker_Thickness.tga"));
 
-  ResourceManager::loadResource(_T("FernTarga.tga"));
+  //Roboto
+  ResourceManager::loadResource(_T("roboto.dae"));
+  ResourceManager::loadResource(_T("roboto_albedo.tga"));
+  ResourceManager::loadResource(_T("roboto_emissive.tga"));
+  ResourceManager::loadResource(_T("roboto_metallic.tga"));
+  ResourceManager::loadResource(_T("roboto_normal.tga"));
+  ResourceManager::loadResource(_T("roboto_roughness.tga"));
+}
 
-  ResourceManager::loadResource(_T("default_albedo.tga"));
-  ResourceManager::loadResource(_T("default_emissive.tga"));
-  ResourceManager::loadResource(_T("default_metallic.tga"));
-  ResourceManager::loadResource(_T("default_normal.tga"));
-  ResourceManager::loadResource(_T("default_roughness.tga"));
+bool
+RenderManApp::selectMoveAxe() {
+  bool selected = false;
 
-  ResourceManager::loadResource(_T("Stormtrooper_Diffuse.png"));
+  CameraManager::SharedCamera Cam = CameraManager::getActiveCamera();
 
-  ResourceManager::loadResource(_T("hatkid_HK_main_mat_BaseColor.tga"));
-  ResourceManager::loadResource(_T("hatkid_HK_main_mat_Emissive.tga"));
-  ResourceManager::loadResource(_T("hatkid_HK_main_mat_Metallic.tga"));
-  ResourceManager::loadResource(_T("hatkid_HK_main_mat_Roughness.tga"));
-  ResourceManager::loadResource(_T("hatkid_HK_second_mat_BaseColor.tga"));
-  ResourceManager::loadResource(_T("hatkid_HK_second_mat_Metallic.tga"));
-  ResourceManager::loadResource(_T("hatkid_HK_second_mat_Roughness.tga"));
-  ResourceManager::loadResource(_T("HK_eye_dif.tga"));
-  ResourceManager::loadResource(_T("HK_eye_spc.tga"));
+  Vector3D goPos;
+
+  std::vector<std::pair<AABB, TransformAxis::E>> axeBoxes;
+  //X
+  goPos = m_selectedGO->getTransform().getPosition();
+  goPos += Vector3D(cubeLarge * 0.5f, 0.0f, 0.0f);
+  axeBoxes.push_back(std::make_pair(AABB(cubeLarge, cubeDefault, cubeDefault, goPos),
+                                    TransformAxis::kX));
+  //Y
+  goPos = m_selectedGO->getTransform().getPosition();
+  goPos += Vector3D(0.0f, cubeLarge * 0.5f, 0.0f);
+  axeBoxes.push_back(std::make_pair(AABB(cubeDefault, cubeLarge, cubeDefault, goPos),
+                                    TransformAxis::kY));
+  //Z
+  goPos = m_selectedGO->getTransform().getPosition();
+  goPos += Vector3D(0.0f, 0.0f, cubeLarge * 0.5f);
+  axeBoxes.push_back(std::make_pair(AABB(cubeDefault, cubeDefault, cubeLarge, goPos),
+                                    TransformAxis::kZ));
+
+
+  Vector3D rayOrigin = Cam->getPosition();
+  Vector3D rayDirection = GetCameraMouseRayDirection(Cam);
+  Vector3D intersectPoint;
+  Vector3D lastIntersectPoint;
+
+  m_SelectedMoveAxis = TransformAxis::kNone;
+
+  for (auto currentAxe : axeBoxes) {
+    if (Intersect::rayAABB(currentAxe.first.getMaxPoint(),
+                           currentAxe.first.getMinPoint(),
+                           rayOrigin,
+                           rayDirection,
+                           &intersectPoint)) {
+      if (!selected) {
+        selected = true;
+        lastIntersectPoint = intersectPoint;
+        m_SelectedMoveAxis = currentAxe.second;
+      }
+      else {
+        if ((rayOrigin - intersectPoint).lengthSqr() <
+            (rayOrigin - lastIntersectPoint).lengthSqr()) {
+          lastIntersectPoint = intersectPoint;
+          m_SelectedMoveAxis = currentAxe.second;
+        }
+      }
+    }
+  }
+
+  return selected;
+}
+
+void
+RenderManApp::MoveOnAxe(TransformAxis::E axisToMoveOn) {
+  CameraManager::SharedCamera Cam = CameraManager::getActiveCamera();
+
+  Vector3D rayOrigin = Cam->getPosition();
+  Vector3D rayDirection = GetCameraMouseRayDirection(Cam);
+
+  Vector3D intersectPoint;
+  Vector3D lastIntersectPoint;
+
+  Vector3D planeNormal;
+
+  /*
+  * TODO: this is shit boi, why'd you hardcode this?
+  * Create a vector of Vec3, who'll contain all the
+  * axes normals.
+  * The plane normal we want, is the one which
+  * dot product with the camera direction its
+  * the closest to -1 (that means, the plane is looking
+  * to the camera).
+  *
+  * If the movement it's on 1 axis:
+  * Don't push the plane normals of the axis moving.
+  * In case of 2 moving axes:
+  * The plane normal its the cross product of
+  * both axes, and the normal should be pointing to
+  * the camera (there're only 2 planes, the positive
+  * and the negative one, same as above, keep the one with
+  * closest dot product to -1),
+  */
+  if (TransformAxis::kX == axisToMoveOn || TransformAxis::kZ == axisToMoveOn) {
+    planeNormal = { 0, 1, 0 };
+  }
+  else {
+    planeNormal = {0, 0, 1};
+  }
+
+  Vector3D planePoint = m_selectedGO->getTransform().getPosition();
+
+  float denom = planeNormal.dot(rayDirection);
+  if (Math::abs(denom) > Math::SMALL_NUMBER) {
+    Vector3D planeToRayOrigin = planePoint - rayOrigin;
+    float t = planeToRayOrigin.dot(planeNormal) / denom;
+    if (t >= 0) {
+      Vector3D newPos;
+      newPos = m_selectedGO->getTransform().getPosition();
+      Vector3D raycastPos;
+      raycastPos = rayOrigin + (rayDirection * t);
+
+      if (!m_bOffseted) {
+        if (TransformAxis::kX == axisToMoveOn) {
+          m_fOffset = newPos.x - raycastPos.x;
+        }
+        else if (TransformAxis::kY == axisToMoveOn) {
+          m_fOffset = newPos.y - raycastPos.y;
+        }
+        else if (TransformAxis::kZ == axisToMoveOn) {
+          m_fOffset = newPos.z - raycastPos.z;
+        }
+        m_bOffseted = true;
+      }
+
+      if (TransformAxis::kX == axisToMoveOn) {
+        newPos.x = raycastPos.x + m_fOffset;
+      }
+      else if (TransformAxis::kY == axisToMoveOn) {
+        newPos.y = raycastPos.y + m_fOffset;
+      }
+      else if (TransformAxis::kZ == axisToMoveOn) {
+        newPos.z = raycastPos.z + m_fOffset;
+      }
+
+      m_selectedGO->getTransform().setPosition(newPos);
+    }
+  }
+}
+
+void
+RenderManApp::selectModel() {
+  CameraManager::SharedCamera Cam = CameraManager::getActiveCamera();
+
+  Vector3D rayOrigin = Cam->getPosition();
+  Vector3D rayDirection = GetCameraMouseRayDirection(Cam);
+  Vector3D intersectPoint;
+  Vector3D lastIntersectPoint;
+
+  m_selectedGO = nullptr;
+  m_bSelected = false;
+
+  //Get all objects seen by the main camera.
+  RenderQuery rqRequest{*Cam,
+                        QUERY_ORDER::kFrontToBack,
+                        QUERY_PROPERTY::kOpaque |
+                        QUERY_PROPERTY::kDynamic |
+                        QUERY_PROPERTY::kStatic };
+  RenderCommandBuffer queryRequest = SceneGraph::query(rqRequest);
+
+  AABBCollider* testAABB;
+  for (const auto& go : queryRequest.commands) {
+    testAABB = go.gameObjectPtr->getComponent<AABBCollider>();
+    Vector3D minPoint = testAABB->getTransformedAABB().getMinPoint();
+    Vector3D maxPoint = testAABB->getTransformedAABB().getMaxPoint();
+
+    if (Intersect::rayAABB(maxPoint,
+                           minPoint,
+                           rayOrigin,
+                           rayDirection,
+                           &intersectPoint)) {
+      if (!m_bSelected) {
+        m_bSelected = true;
+        m_selectedGO = go.gameObjectPtr;
+        lastIntersectPoint = intersectPoint;
+      }
+      else {
+        float lastDist = (Cam->getPosition() - lastIntersectPoint).lengthSqr();
+        float  newDist = (Cam->getPosition() - intersectPoint).lengthSqr();
+        if (newDist < lastDist) {
+          lastIntersectPoint = intersectPoint;
+          m_selectedGO = go.gameObjectPtr;
+        }
+      }
+    }
+  }
+}
+
+Vector3D
+RenderManApp::GetCameraMouseRayDirection(CameraManager::SharedCamera Cam) {
+  Viewport viewport = Application::getViewPort();
+  float screenWidth =  viewport.width,
+        screenHeight = viewport.height;
+
+  Vector4D mouseInScreenPosition = Mouse::getPosition();
+  mouseInScreenPosition.x /= screenWidth;
+  mouseInScreenPosition.y /= screenHeight;
+
+  mouseInScreenPosition.x = Math::clamp(mouseInScreenPosition.x, 0.0f, 1.0f);
+  mouseInScreenPosition.y = 1.0f - Math::clamp(mouseInScreenPosition.y, 0.0f, 1.0f);
+  mouseInScreenPosition.z = 0.0f;
+  mouseInScreenPosition.w = 1.0f;
+
+  Vector4D mouseInViewPosition = mouseInScreenPosition;
+  mouseInViewPosition *= 2.0f;
+  mouseInViewPosition.x -= 1.0f;
+  mouseInViewPosition.y -= 1.0f;
+  mouseInViewPosition.z = 0.0f;
+  mouseInViewPosition.w = 1.0f;
+
+  Matrix4x4 invProj = Cam->getVP();
+  invProj = invProj.inverse();
+
+  mouseInViewPosition.z = 0.0f;
+  Vector4D startPosition = mouseInViewPosition * invProj;
+  startPosition /= startPosition.w;
+  
+  mouseInViewPosition.z = 1.0f;
+  Vector4D finalPosition = mouseInViewPosition * invProj;
+  finalPosition /= finalPosition.w;
+
+  Vector3D rayDirection;
+  rayDirection = finalPosition - startPosition;
+  rayDirection.normalize();
+
+  return rayDirection;
 }
 
 }

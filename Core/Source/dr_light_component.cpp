@@ -11,7 +11,6 @@ LightComponent::LightComponent(GameObject& _gameObject)
     m_vec3Color(Vector3D(1.0f, 1.0f, 1.0f)),
     m_fRange(1.0f),
     m_fIntensity(1.0f) {
-  SceneGraph::instance().registerLight(this);
 }
 
 void
@@ -82,6 +81,7 @@ LightComponent::deserialize(TString &data) {
 
 void
 LightComponent::onCreate() {
+  SceneGraph::instance().addLight(this);
 }
 
 void 
@@ -94,6 +94,7 @@ LightComponent::onRender() {
 
 void 
 LightComponent::onDestroy() {
+  SceneGraph::instance().removeLight(this);
 }
 
 UInt32

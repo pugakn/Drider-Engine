@@ -558,12 +558,12 @@ Intersect::aabbRay(const Vector3D& aabbMax,
   return tmax > Math::max(tmin, 0.0f);
 }
 
-bool Intersect::rayAABB(const Vector3D& aabbMax,
-                        const Vector3D& aabbMin,
-                        const Vector3D& rayOrigin,
-                        const Vector3D& rayDirection,
-                        Vector3D * point)
-{
+bool
+Intersect::rayAABB(const Vector3D& aabbMax,
+                   const Vector3D& aabbMin,
+                   const Vector3D& rayOrigin,
+                   const Vector3D& rayDirection,
+                   Vector3D* point) {
   enum Side
   {
     RIGHT = 0,
@@ -571,13 +571,13 @@ bool Intersect::rayAABB(const Vector3D& aabbMax,
     MIDDLE
   };
   Vector3D quadrant;
-  int i;
-  int whichPlane;
+  Int32 i;
+  Int32 whichPlane;
   Vector3D maxT;
   Vector3D candidatePlane;
   bool inside = true;
 
-  for (i = 0; i < 3; i++) {
+  for (i = 0; i < 3; ++i) {
     if (rayOrigin[i] < aabbMin[i]) {
       quadrant[i] = Side::LEFT;
       candidatePlane[i] = aabbMin[i];
@@ -597,25 +597,25 @@ bool Intersect::rayAABB(const Vector3D& aabbMax,
     (*point) = rayOrigin;
     return true;
   }
-  for (i = 0; i < 3; i++) {
-    if (quadrant[i] != MIDDLE && rayDirection[i] != 0.)
+  for (i = 0; i < 3; ++i) {
+    if (quadrant[i] != MIDDLE && rayDirection[i] != 0.0f)
       maxT[i] = (candidatePlane[i] - rayOrigin[i]) / rayDirection[i];
     else
-      maxT[i] = -1.;
+      maxT[i] = -1.0f;
   }
 
   /* Get largest of the maxT's for final choice of intersection */
   whichPlane = 0;
-  for (i = 1; i < 3; i++) {
+  for (i = 1; i < 3; ++i) {
     if (maxT[whichPlane] < maxT[i])
       whichPlane = i;
   }
 
   /* Check final candidate actually inside box */
-  if (maxT[whichPlane] < 0.) {
+  if (maxT[whichPlane] < 0.0f) {
     return false;
   }
-  for (i = 0; i < 3; i++) {
+  for (i = 0; i < 3; ++i) {
     if (whichPlane != i) {
       (*point)[i] = rayOrigin[i] + maxT[whichPlane] * rayDirection[i];
       if ((*point)[i] < aabbMin[i] || (*point)[i] > aabbMax[i])

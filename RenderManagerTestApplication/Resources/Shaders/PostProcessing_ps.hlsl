@@ -146,7 +146,7 @@ FS(PS_INPUT input) : SV_TARGET0 {
   #ifdef DEPTH_OF_FIELD
     const float RealDepth = PositionLDepthTex.Sample(SS, uv).w * CameraInfo.w;
     static const float fFocusDistance = CA_CoC_V.y;
-    //If focus Range is negative, everithing between the eye and the focus distance will be focus.
+    //If focus range is negative, everything between the eye and the focus distance, will be focused.
     static const float fFocusRange = -CA_CoC_V.z;
     float fCoC = (RealDepth - fFocusDistance) / abs(fFocusRange);
     
