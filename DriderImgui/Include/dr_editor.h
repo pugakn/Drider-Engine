@@ -9,6 +9,8 @@
 
 namespace driderSDK {
 
+class ScriptComponent;
+
 class Editor : public Application
 {
   // Inherited via
@@ -59,6 +61,7 @@ class Editor : public Application
   std::shared_ptr<Material> m_selectedMaterial;
 
   std::vector<TString> semantics;
+  std::vector<ScriptComponent*> m_scripts;
 };
 
 }

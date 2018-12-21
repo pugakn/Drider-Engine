@@ -79,15 +79,24 @@ class DR_CORE_EXPORT ScriptComponent : public GameComponent,
 
     FORCEINLINE bool
     isEmpty() {
-      return m_script == NULL;
+      return (m_script == NULL) || (type == NULL);
     };
     void
     setScript(std::shared_ptr<ScriptCore> _script);
+
+    void
+    addScriptSection();
 
     FORCEINLINE ScriptEngine*
     getScriptEngine() {
       return scriptEngine;
     };
+
+    FORCEINLINE void
+    discard() {
+      obj = 0;
+      type = 0;
+    }
 
     static BEGINING_REGISTER(ScriptComponent, 0, asOBJ_REF | asOBJ_NOCOUNT)
 
