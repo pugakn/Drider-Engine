@@ -13,39 +13,51 @@ namespace driderSDK {
     m_body->setTransform(newTransform);
   }
 
-  void
+  int
     DrRigidBody::AddBoxShape(Vector3D dimensions, Vector3D localPos, float mass)
   {
     const rp3d::Vector3 halfExtents(dimensions.x / 2.0f, dimensions.y / 2.0f, dimensions.z / 2.0f);
     // Create the box shape 
     rp3d::BoxShape* boxShape = new rp3d::BoxShape(halfExtents);
-    m_shapes.push_back(boxShape);
+    m_shapes[m_nextShapeID] = (boxShape);
     rp3d::Transform t;
     t.setPosition(rp3d::Vector3(localPos.x, localPos.y, localPos.z));
     t.setOrientation(rp3d::Quaternion::identity());
-    m_proxyShapes.push_back(m_body->addCollisionShape(boxShape, t, mass));
+    m_proxyShapes[m_nextShapeID] = (m_body->addCollisionShape(boxShape, t, mass));
+    return m_nextShapeID++;
   }
 
-  void
+  int
     DrRigidBody::AddSphereShape(float radius, Vector3D localPos, float mass)
   {
     rp3d::SphereShape* sphereShape = new rp3d::SphereShape(radius);
-    m_shapes.push_back(sphereShape);
+
+    m_shapes[m_nextShapeID] = (sphereShape);
     rp3d::Transform t;
     t.setPosition(rp3d::Vector3(localPos.x, localPos.y, localPos.z));
     t.setOrientation(rp3d::Quaternion::identity());
-    m_proxyShapes.push_back(m_body->addCollisionShape(sphereShape, t, mass));
+    m_proxyShapes[m_nextShapeID] = (m_body->addCollisionShape(sphereShape, t, mass));
+    return m_nextShapeID++;
   }
 
-  void
+  int
     DrRigidBody::AddCapsuleShape(float radius, float height, Vector3D localPos, float mass)
   {
     rp3d::CapsuleShape* shape = new rp3d::CapsuleShape(radius, height);
-    m_shapes.push_back(shape);
+    m_shapes[m_nextShapeID] = (shape);
     rp3d::Transform t;
     t.setPosition(rp3d::Vector3(localPos.x, localPos.y, localPos.z));
     t.setOrientation(rp3d::Quaternion::identity());
-    m_proxyShapes.push_back(m_body->addCollisionShape(shape, t, mass));
+    m_proxyShapes[m_nextShapeID] = (m_body->addCollisionShape(shape, t, mass));
+    return m_nextShapeID++;
+  }
+
+  void DrRigidBody::RemoveShape(const int shapeID)
+  {
+    if (m_shapes[shapeID] != nullptr) {
+      m_body->removeCollisionShape(m_proxyShapes[shapeID]);
+      delete m_shapes[shapeID];
+    }
   }
 
   void

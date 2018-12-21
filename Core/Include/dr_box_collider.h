@@ -12,7 +12,7 @@ namespace driderSDK {
   {
 
   public:
-    BoxCollider(GameObject& _gameObject, const AABB& aabb);
+    BoxCollider(GameObject& _gameObject, const AABB& aabb, const Vector3D& center);
     virtual void
       onCreate() override;
 
@@ -34,6 +34,12 @@ namespace driderSDK {
     void
     deserialize(TString &data) override;
 
+    void
+      setSize(const AABB& aabb);
+
+    void 
+      setLocalPosition(const Vector3D& center);
+
   private:
     virtual GameComponent*
       cloneIn(GameObject& _go) override;
@@ -41,8 +47,9 @@ namespace driderSDK {
     virtual COLLIDER_TYPE::E
       getType() override;
 
-    AABB m_originalAABB;
   private:
+    AABB m_aabb;
+    Vector3D m_center;
 
     // Inherited via ColliderComponent
   };

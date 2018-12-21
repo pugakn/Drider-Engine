@@ -22,10 +22,10 @@ SphereCollider::onCreate() {
   Vector3D r(m_radius, m_radius, m_radius);
   r = m_gameObject.getTransform().getMatrix() * r;
   if (rbody) {
-    rbody->m_rigidBody->AddSphereShape(r.x,m_center, 1);
+    m_rigidBodyShapeID = rbody->m_rigidBody->AddSphereShape(r.x,m_center, 1);
   }
   m_body = PhysicsManager::createCollisionBody(m_gameObject.getTransform());
-  m_body->AddSphereShape(r.x, m_center);
+  m_collisionShapeID = m_body->AddSphereShape(r.x, m_center);
 }
 
 void 
@@ -60,6 +60,36 @@ SphereCollider::serialize(File &data) {
 void
 SphereCollider::deserialize(TString &data) {
 
+}
+
+void 
+SphereCollider::setSize(float radius)
+{
+  RigidBody3DComponent* rbody = m_gameObject.getComponent<RigidBody3DComponent>();
+  m_radius = radius;
+  Vector3D r(m_radius, m_radius, m_radius);
+  r = m_gameObject.getTransform().getMatrix() * r;
+  if (rbody) {
+    rbody->m_rigidBody->RemoveShape(m_rigidBodyShapeID);
+    m_rigidBodyShapeID = rbody->m_rigidBody->AddSphereShape(r.x, m_center, 1);
+  }
+  m_body->RemoveShape(m_collisionShapeID);
+  m_collisionShapeID = m_body->AddSphereShape(r.x, m_center);
+}
+
+void 
+SphereCollider::setLocalPosition(const Vector3D & center)
+{
+  RigidBody3DComponent* rbody = m_gameObject.getComponent<RigidBody3DComponent>();
+  m_center = center;
+  Vector3D r(m_radius, m_radius, m_radius);
+  r = m_gameObject.getTransform().getMatrix() * r;
+  if (rbody) {
+    rbody->m_rigidBody->RemoveShape(m_rigidBodyShapeID);
+    m_rigidBodyShapeID = rbody->m_rigidBody->AddSphereShape(r.x, m_center, 1);
+  }
+  m_body->RemoveShape(m_collisionShapeID);
+  m_collisionShapeID = m_body->AddSphereShape(r.x, m_center);
 }
 
 GameComponent* 

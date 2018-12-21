@@ -33,6 +33,12 @@ namespace driderSDK {
     void  
     deserialize(TString &data) override;
 
+    void
+      setSize(float radius);
+
+    void
+      setLocalPosition(const Vector3D& center);
+
   private:
     virtual GameComponent*
       cloneIn(GameObject& _go) override;

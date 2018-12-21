@@ -36,6 +36,9 @@ class DR_CORE_EXPORT ColliderComponent : public GameComponent
   void
   deserialize(TString &data) override;
  protected:
+
+   int m_rigidBodyShapeID;
+   int m_collisionShapeID;
 };
 
 }
