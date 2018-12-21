@@ -595,6 +595,10 @@ Editor::loadMainMenu() {
 
 void
 driderSDK::Editor::initImguiMenus(float mainMenuBarheight) {
+  FileSystem fs;
+  if (fs.Exists(_T("imgui.ini"))) {
+    return;
+  }
 
   ImGuiWindowFlags flags = 0;
   float unitWidth = m_viewport.width * 0.25f;
