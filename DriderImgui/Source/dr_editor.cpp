@@ -536,12 +536,10 @@ Editor::initScriptEngine() {
 
 void
 Editor::loadMainMenu() {
-  if (ImGui::BeginMainMenuBar())
-  {
+  if (ImGui::BeginMainMenuBar()) {
     m_mainMenuBarheight = ImGui::GetWindowSize().y;
 
-    if (ImGui::BeginMenu("File"))
-    {
+    if (ImGui::BeginMenu("File")) {
       if (ImGui::MenuItem("Load Scene", "CTRL+L")) {
         showFileDilog = true;
       }
@@ -556,8 +554,7 @@ Editor::loadMainMenu() {
 
       ImGui::EndMenu();
     }
-    if (ImGui::BeginMenu("Windows"))
-    {
+    if (ImGui::BeginMenu("Windows")) {
       ImGui::Checkbox("Material Editor", &m_materialEditorWindow);
       ImGui::Checkbox("Render Configuration", &m_renderConfigWindow);
       ImGui::Checkbox("Hierarchy", &m_hierarchyWindow);
@@ -630,15 +627,13 @@ driderSDK::Editor::loadHierarchy() {
   if (ImGui::Button("Create"))
     ImGui::OpenPopup("menuHierarchy");
   ImGui::SameLine();
-  if (ImGui::BeginPopup("menuHierarchy"))
-  {
+  if (ImGui::BeginPopup("menuHierarchy")) {
     loadMenuHierarchy();
     ImGui::EndPopup();
   }
 
   if (ImGui::Button("DeleteNode")) {
-    if (SceneGraph::getRoot() != m_selectedGameObject)
-    {
+    if (SceneGraph::getRoot() != m_selectedGameObject) {
       m_selectedGameObject->getParent()->removeChild(m_selectedGameObject);
       m_selectedGameObject->destroy();
       m_selectedGameObject = SceneGraph::getRoot();
@@ -653,8 +648,7 @@ driderSDK::Editor::loadHierarchy() {
       auto id = it->getID();
       ImGui::PushID(id);
       ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | (m_selectedGameObject == it ? ImGuiTreeNodeFlags_Selected : 0);
-      if (it->getChildrenCount() == 0)
-      {
+      if (it->getChildrenCount() == 0) {
         node_flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
         ImGui::TreeNodeEx((void*)(intptr_t)id, node_flags, name.c_str());
         if (ImGui::IsItemClicked())
@@ -665,8 +659,7 @@ driderSDK::Editor::loadHierarchy() {
         bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)id, node_flags, name.c_str());
         if (ImGui::IsItemClicked())
           m_selectedGameObject = it;
-        if (node_open)
-        {
+        if (node_open) {
           auto children2 = it->getChildren();
           search(children2);
           ImGui::TreePop();
@@ -677,8 +670,7 @@ driderSDK::Editor::loadHierarchy() {
   };
   auto root = SceneGraph::getRoot();
   auto name = StringUtils::toString(root->getName());
-  if (ImGui::TreeNode(name.c_str()))
-  {
+  if (ImGui::TreeNode(name.c_str())) {
     if (ImGui::IsItemClicked())
       m_selectedGameObject = root;
     static bool align_label_with_current_x_position = false;
@@ -738,10 +730,8 @@ void driderSDK::Editor::materialEditor() {
       }
       ImGui::Text(StringUtils::toString(semantics[i]).c_str()); ImGui::SameLine();
       ImGui::InputText("##material", &temp, ImGuiInputTextFlags_ReadOnly);
-      if (ImGui::BeginDragDropTarget())
-      {
-        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILE_ITEM"))
-        {
+      if (ImGui::BeginDragDropTarget()) {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILE_ITEM")) {
           char* lu = (char*)payload->Data;
           auto ptr = ResourceManager::loadResource(StringUtils::toTString(lu));
           auto ptrTexture = std::dynamic_pointer_cast<TextureCore>(ptr);
@@ -766,8 +756,7 @@ void Editor::loadInspector()
 
   if (ImGui::Button("Add Component"))
     ImGui::OpenPopup("menuAddComponent");
-  if (ImGui::BeginPopup("menuAddComponent"))
-  {
+  if (ImGui::BeginPopup("menuAddComponent")) {
     loadMenuAddComponent();
     ImGui::EndPopup();
   }
@@ -865,15 +854,13 @@ void Editor::loadMenuAddComponent()
     m_selectedGameObject->createComponent<AnimatorComponent>();
   }
   if (ImGui::BeginMenu("Collider")) {
-    if (ImGui::MenuItem("Sphere"))
-    {
+    if (ImGui::MenuItem("Sphere")) {
       auto rigidBody = m_selectedGameObject->createComponent<RigidBody3DComponent>();
       rigidBody->enableGravity(false);
       rigidBody->setType(RIGID_BODY_TYPE::kStatic);
       m_selectedGameObject->createComponent<SphereCollider>(1.f, Vector3D(0, 0, 0));
     }
-    if (ImGui::MenuItem("Box"))
-    {
+    if (ImGui::MenuItem("Box")) {
       auto rigidBody = m_selectedGameObject->createComponent<RigidBody3DComponent>();
       rigidBody->enableGravity(false);
       rigidBody->setType(RIGID_BODY_TYPE::kStatic);
@@ -921,8 +908,7 @@ void Editor::loadFileManager()
           }
         }
          
-        if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
-        {
+        if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
           ImGui::SetDragDropPayload("FILE_ITEM", &tempName, sizeof(tempName));        // Set payload to carry the index of our item (could be anything)
           ImGui::Text("%s", tempName);
           ImGui::EndDragDropSource();
@@ -952,19 +938,7 @@ void Editor::loadFileManager()
     
 
     auto rootDir = "Resources";
-    ImGui::Text("hola");
-    if (ImGui::BeginDragDropTarget())
-    {
-      if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILE_ITEM"))
-      {
-        char* lu = (char*)payload->Data;
-        int i = 0;
-i = i+3;
-      }
-      ImGui::EndDragDropTarget();
-    }
-    if (ImGui::TreeNode(""))
-    {
+    if (ImGui::TreeNode("Resources")) {
 
       static bool align_label_with_current_x_position = false;
       if (align_label_with_current_x_position)
@@ -1062,8 +1036,7 @@ Editor::loadRenderWindow() {
   }
 }
 
-void Editor::drawDebugStuff()
-{
+void Editor::drawDebugStuff() {
   auto boxColliderComponent = m_selectedGameObject->getComponent<BoxCollider>();
   if (boxColliderComponent) {
     AABB aabb = boxColliderComponent->getAABB();
@@ -1087,15 +1060,13 @@ void Editor::drawDebugStuff()
 
 
 void driderSDK::Editor::loadScene() {
-  if (ImGuiFileDialog::Instance()->FileDialog("Choose File", ".txt\0\0", ".", ""))
-  {
+  if (ImGuiFileDialog::Instance()->FileDialog("Choose File", ".txt\0\0", ".", "")) {
     static std::string filePathName = "";
     static std::string path = "";
     static std::string fileName = "";
     static std::string filter = "";
 
-    if (ImGuiFileDialog::Instance()->IsOk == true)
-    {
+    if (ImGuiFileDialog::Instance()->IsOk == true) {
       filePathName = ImGuiFileDialog::Instance()->GetFilepathName();
       path = ImGuiFileDialog::Instance()->GetCurrentPath();
       fileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
@@ -1105,8 +1076,7 @@ void driderSDK::Editor::loadScene() {
       ResourceManager::clear();
       ResourceManager::loadScene(filePathName);
     }
-    else
-    {
+    else {
       filePathName = "";
       path = "";
       fileName = "";
@@ -1116,15 +1086,13 @@ void driderSDK::Editor::loadScene() {
 }
 
 void driderSDK::Editor::saveScene() {
-  if (ImGuiFileDialog::Instance()->FileDialog("Save Scene", ".txt\0\0", ".", ""))
-  {
+  if (ImGuiFileDialog::Instance()->FileDialog("Save Scene", ".txt\0\0", ".", "")) {
     static std::string filePathName = "";
     static std::string path = "";
     static std::string fileName = "";
     static std::string filter = "";
 
-    if (ImGuiFileDialog::Instance()->IsOk == true)
-    {
+    if (ImGuiFileDialog::Instance()->IsOk == true) {
       filePathName = ImGuiFileDialog::Instance()->GetFilepathName();
       path = ImGuiFileDialog::Instance()->GetCurrentPath();
       fileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
@@ -1132,8 +1100,7 @@ void driderSDK::Editor::saveScene() {
 
       ResourceManager::saveScene(filePathName);
     }
-    else
-    {
+    else {
       filePathName = "";
       path = "";
       fileName = "";
@@ -1143,15 +1110,13 @@ void driderSDK::Editor::saveScene() {
 }
 
 void driderSDK::Editor::createMat() {
-  if (ImGuiFileDialog::Instance()->FileDialog("Create Material", ".mat\0\0", ".", ""))
-  {
+  if (ImGuiFileDialog::Instance()->FileDialog("Create Material", ".mat\0\0", ".", "")) {
     static std::string filePathName = "";
     static std::string path = "";
     static std::string fileName = "";
     static std::string filter = "";
 
-    if (ImGuiFileDialog::Instance()->IsOk == true)
-    {
+    if (ImGuiFileDialog::Instance()->IsOk == true) {
       filePathName = ImGuiFileDialog::Instance()->GetFilepathName();
       path = ImGuiFileDialog::Instance()->GetCurrentPath();
       fileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
@@ -1160,8 +1125,7 @@ void driderSDK::Editor::createMat() {
       ResourceManager::saveMaterial(path + "//",
                                     fileName + filter);
     }
-    else
-    {
+    else {
       filePathName = "";
       path = "";
       fileName = "";
