@@ -7,8 +7,8 @@
 
 namespace driderSDK {
 
-BoxCollider::BoxCollider(GameObject& _gameObject, const AABB& aabb, const Vector3D& center)
-  : ColliderComponent(_gameObject, _T("BoxCollider")), m_aabb(aabb), m_center(center) {
+BoxCollider::BoxCollider(GameObject& _gameObject, const AABB& aabb)
+  : ColliderComponent(_gameObject, _T("BoxCollider")), m_aabb(aabb) {
 }
 
 void 
@@ -17,10 +17,10 @@ BoxCollider::onCreate() {
   AABB transformedAABB = m_aabb;
   transformedAABB.recalculate(m_gameObject.getTransform().getMatrix());
   if (rbody) {
-    m_rigidBodyShapeID = rbody->m_rigidBody->AddBoxShape(Vector3D(transformedAABB.width, transformedAABB.height, transformedAABB.depth), m_center, 1);
+    m_rigidBodyShapeID = rbody->m_rigidBody->AddBoxShape(Vector3D(transformedAABB.width, transformedAABB.height, transformedAABB.depth), transformedAABB.center, 1);
   }
    m_body = PhysicsManager::createCollisionBody(m_gameObject.getTransform());
-   m_collisionShapeID = m_body->AddBoxShape(Vector3D(transformedAABB.width, transformedAABB.height, transformedAABB.depth), m_center);
+   m_collisionShapeID = m_body->AddBoxShape(Vector3D(transformedAABB.width, transformedAABB.height, transformedAABB.depth), transformedAABB.center);
 }
 
 void 
@@ -59,7 +59,7 @@ BoxCollider::deserialize(TString &data) {
 
 }
 
-void BoxCollider::setSize(const AABB & aabb)
+void BoxCollider::setAABB(const AABB & aabb)
 {
   RigidBody3DComponent* rbody = m_gameObject.getComponent<RigidBody3DComponent>();
   m_aabb = aabb;
@@ -67,25 +67,12 @@ void BoxCollider::setSize(const AABB & aabb)
   transformedAABB.recalculate(m_gameObject.getTransform().getMatrix());
   if (rbody) {
     rbody->m_rigidBody->RemoveShape(m_rigidBodyShapeID);
-    m_rigidBodyShapeID = rbody->m_rigidBody->AddBoxShape(Vector3D(transformedAABB.width, transformedAABB.height, transformedAABB.depth), m_center, 1);
+    m_rigidBodyShapeID = rbody->m_rigidBody->AddBoxShape(Vector3D(transformedAABB.width, transformedAABB.height, transformedAABB.depth), transformedAABB.center, 1);
   }
   m_body->RemoveShape(m_collisionShapeID);
-  m_collisionShapeID = m_body->AddBoxShape(Vector3D(transformedAABB.width, transformedAABB.height, transformedAABB.depth), m_center);
+  m_collisionShapeID = m_body->AddBoxShape(Vector3D(transformedAABB.width, transformedAABB.height, transformedAABB.depth), transformedAABB.center);
 }
 
-void BoxCollider::setLocalPosition(const Vector3D & center)
-{
-  RigidBody3DComponent* rbody = m_gameObject.getComponent<RigidBody3DComponent>();
-  m_center = center;
-  AABB transformedAABB = m_aabb;
-  transformedAABB.recalculate(m_gameObject.getTransform().getMatrix());
-  if (rbody) {
-    rbody->m_rigidBody->RemoveShape(m_rigidBodyShapeID);
-    m_rigidBodyShapeID = rbody->m_rigidBody->AddBoxShape(Vector3D(transformedAABB.width, transformedAABB.height, transformedAABB.depth), m_center, 1);
-  }
-  m_body->RemoveShape(m_collisionShapeID);
-  m_collisionShapeID = m_body->AddBoxShape(Vector3D(transformedAABB.width, transformedAABB.height, transformedAABB.depth), m_center);
-}
 
 GameComponent* 
 BoxCollider::cloneIn(GameObject& _go) {
