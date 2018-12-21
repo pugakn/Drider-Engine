@@ -258,12 +258,6 @@ RenderManApp::postUpdate() {
   SceneGraph::update();
   PhysicsManager::TestCollision();
 
-  for (const auto& it : m_vecGos) {
-    auto testAABB = it->getComponent<AABBCollider>();
-    auto min = testAABB->getTransformedAABB();
-    auto max = testAABB->getAABB();
-  }
-
   if (m_bSelected) {
     Matrix4x4 CubeMatrix = Matrix4x4::identityMat4x4;
     Vector3D goPos;
@@ -304,6 +298,7 @@ RenderManApp::postUpdate() {
     }
   }
 
+  //TODO: Implement this
   //Change transform mode
   if (Keyboard::isKeyDown(KEY_CODE::kQ)) {
     m_TransformMode = TransformMode::kPosition;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <dr_application.h>
+#include <dr_camera_manager.h>
 #include <dr_depth_stencil.h>
 #include <dr_gfx_memory.h>
 #include <dr_render_target.h>
@@ -9,6 +10,26 @@
 #include <dr_viewport.h>
 
 namespace driderSDK {
+
+namespace TransformMode {
+enum E {
+  kPosition = 0,
+  kScale,
+  kRotation,
+  kSize
+};
+}
+namespace TransformAxis {
+enum E {
+  kX = 0,
+  kY,
+  kZ,
+  kXZ,
+  kXY,
+  kZY,
+  kNone
+};
+}
 
 class ScriptComponent;
 
@@ -43,7 +64,21 @@ class Editor : public Application
   void loadFileManager();
   void loadRenderWindow();
   void drawDebugStuff();
-  bool getMouseInScene(Vector2D* mousePosition);
+  bool getMouseInScene(Vector2D* mousePosition = nullptr);
+
+
+  bool
+  selectMoveAxe();
+
+  void
+  MoveOnAxe(TransformAxis::E axisToMoveOn);
+
+  void
+  selectModel();
+
+  Vector3D
+  GetCameraMouseRayDirection(CameraManager::SharedCamera Cam);
+
   GFXShared<RenderTarget> m_RT;
   GFXShared<DepthStencil> m_RTDPTH;
   Viewport m_sceneViewport;
@@ -59,6 +94,15 @@ class Editor : public Application
   GameObject* m_root;
 
   UInt32 m_selectedItem;
+
+  bool m_bSelected;
+
+  TransformMode::E m_TransformMode;
+  TransformAxis::E m_SelectedMoveAxis;
+  float cubeLarge;
+  float cubeDefault;
+  bool m_bOffseted;
+  float m_fOffset;
 
   bool showFileDilog;
   bool showSaveFileDialog;

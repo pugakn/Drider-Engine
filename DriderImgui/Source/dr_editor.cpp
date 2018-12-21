@@ -5,16 +5,17 @@
 #include <d3d11.h>
 //#include <stdlib.h>
 
+#include <dr_aabb_collider.h>
 #include <dr_animator_component.h>
 #include <dr_box_collider.h>
 #include <dr_camera_component.h>
-#include <dr_camera_manager.h>
 #include <dr_context_manager.h>
 #include <dr_device.h>
 #include <dr_depth_stencil_state.h>
 #include <dr_device_context.h>
 #include <dr_d3d_texture.h>
 #include <dr_export_script.h>
+#include <dr_file_system.h>
 #include <dr_graphics_api.h>
 #include <dr_graphics_driver.h>
 #include <dr_graph.h>
@@ -38,7 +39,6 @@
 #include <dr_sound_component.h>
 #include <dr_sphere_collider.h>
 #include <dr_time.h>
-#include <dr_file_system.h>
 
 #include "dr_input_editor.h"
 #include "imgui.h"
@@ -51,8 +51,8 @@
 
 namespace driderSDK {
 
-void Editor::postInit()
-{
+void
+Editor::postInit() {
   Logger::startUp();
   GraphicsDriver::startUp(DR_GRAPHICS_API::D3D11,
     m_viewport.width,
@@ -98,6 +98,13 @@ void Editor::postInit()
   initSceneGraph();
   initScriptEngine();
 
+  m_bSelected = false;
+  m_TransformMode = TransformMode::kPosition;
+  cubeLarge = 100.0f;
+  cubeDefault = 5.0f;
+  m_bOffseted = false;
+  m_fOffset = 0.0f;
+
   SceneGraph::start();
   m_selectedGameObject = SceneGraph::getRoot();
 
@@ -106,16 +113,11 @@ void Editor::postInit()
   ImGui_ImplDX11_Init(d3dDev, d3dDevCont);
   ImGui::StyleColorsDark();
 
-  /*_T("Albedo"), PROPERTY_TYPE::kVec3);
-modelMat->addProperty(_T("Normal"), PROPERTY_TYPE::kVec3);
-modelMat->addProperty(_T("Emisivity"), PROPERTY_TYPE::kVec3);
-modelMat->addProperty(_T("Metallic"), PROPERTY_TYPE::kVec3);
-modelMat->addProperty(_T("Roughness"*/
-  semantics.push_back(L"Albedo");
-  semantics.push_back(L"Normal");
-  semantics.push_back(L"Emisivity");
-  semantics.push_back(L"Metallic");
-  semantics.push_back(L"Roughness");
+  semantics.push_back(_T("Albedo"));
+  semantics.push_back(_T("Normal"));
+  semantics.push_back(_T("Emisivity"));
+  semantics.push_back(_T("Metallic"));
+  semantics.push_back(_T("Roughness"));
 }
 
 void
@@ -171,8 +173,9 @@ Editor::initInputs() {
     }
   });
 }
-void Editor::initCallbacks()
-{
+
+void
+Editor::initCallbacks() {
   auto mouseButtonDown =
     [](UInt32 b, bool down)
   {
@@ -235,8 +238,8 @@ void Editor::initCallbacks()
   Keyboard::addAnyKeyCallback(KEYBOARD_EVENT::kKeyReleased, keyUp);
 }
 
-void Editor::initRT()
-{
+void
+Editor::initRT() {
   DrTextureDesc backDesc;
   backDesc.width = m_sceneViewport.width;
   backDesc.height = m_sceneViewport.height;
@@ -257,8 +260,8 @@ void Editor::initRT()
   m_RTDPTH = dr_gfx_shared(GraphicsAPI::getDevice().createDepthStencil(depthTextureDesc));
 }
 
-void Editor::postUpdate()
-{
+void
+Editor::postUpdate() {
   Time::update();
   InputManager::update();
 
@@ -324,6 +327,90 @@ void Editor::postUpdate()
     loadFileManager();
     loadRenderWindow();
   }
+
+  
+  if (m_bSelected &&
+      SceneGraph::instance().getRoot() != m_selectedGameObject) {
+    Matrix4x4 CubeMatrix = Matrix4x4::identityMat4x4;
+    Vector3D goPos;
+
+    Vector3D boxDimensions;
+    RenderComponent* rc = m_selectedGameObject->getComponent<RenderComponent>();
+    if (nullptr != rc) {
+      boxDimensions.x = rc->getAABB().width;
+      boxDimensions.y = rc->getAABB().height;
+      boxDimensions.z = rc->getAABB().depth;
+      Matrix4x4 aabbMatrix = Matrix4x4::identityMat4x4;
+      aabbMatrix.Translation(m_selectedGameObject->getTransform().getPosition());
+      RenderManager::instance().drawDebugCube(boxDimensions, { 1,1,1 }, aabbMatrix);
+
+    }
+
+    if (TransformMode::kPosition == m_TransformMode) {
+        //X
+        CubeMatrix = Matrix4x4::identityMat4x4;
+        goPos = m_selectedGameObject->getTransform().getPosition();
+        goPos += Vector3D(cubeLarge * 0.5f, 0.0f, 0.0f);
+        CubeMatrix.Translation(goPos);
+        RenderManager::instance().drawDebugCube({ cubeLarge, cubeDefault, cubeDefault },
+                                                { 1.0f, 0.0f, 0.0f },
+                                                CubeMatrix);
+        //Y
+        CubeMatrix = Matrix4x4::identityMat4x4;
+        goPos = m_selectedGameObject->getTransform().getPosition();
+        goPos += Vector3D(0.0f, cubeLarge * 0.5f, 0.0f);
+        CubeMatrix.Translation(goPos);
+        RenderManager::instance().drawDebugCube({ cubeDefault, cubeLarge, cubeDefault },
+                                                { 0.0f, 1.0f, 0.0f },
+                                                CubeMatrix);
+        //Z
+        CubeMatrix = Matrix4x4::identityMat4x4;
+        goPos = m_selectedGameObject->getTransform().getPosition();
+        goPos += Vector3D(0.0f, 0.0f, cubeLarge * 0.5f);
+        CubeMatrix.Translation(goPos);
+        RenderManager::instance().drawDebugCube({ cubeDefault, cubeDefault, cubeLarge },
+                                                { 0.0f, 0.0f, 1.0f },
+                                                CubeMatrix);
+      }
+  }
+
+  //TODO: Implement this
+  //Change transform mode
+  if (Keyboard::isKeyDown(KEY_CODE::kQ)) {
+    m_TransformMode = TransformMode::kPosition;
+  }
+  else if (Keyboard::isKeyDown(KEY_CODE::kW)) {
+    m_TransformMode = TransformMode::kRotation;
+  }
+  else if (Keyboard::isKeyDown(KEY_CODE::kE)) {
+    m_TransformMode = TransformMode::kScale;
+  }
+
+  if (Mouse::isButtonDown(MOUSE_BUTTON::kLeft)) {
+    if (getMouseInScene()) {
+      if (!m_bSelected) {
+        selectModel();
+      }
+      else {
+        if (TransformMode::E::kPosition == m_TransformMode) {
+          if (TransformAxis::kNone == m_SelectedMoveAxis) {
+            if (!selectMoveAxe()) {
+              selectModel();
+            }
+          }
+          else {
+            MoveOnAxe(m_SelectedMoveAxis);
+          }
+        }
+      }
+    }
+  }
+  if (!Mouse::isButtonDown(MOUSE_BUTTON::kLeft)) {
+    m_SelectedMoveAxis = TransformAxis::kNone;
+    m_bOffseted = false;
+    m_fOffset = 0.0f;
+  }
+
 }
 
 void
@@ -595,7 +682,7 @@ Editor::loadMainMenu() {
 }
 
 void
-driderSDK::Editor::initImguiMenus(float mainMenuBarheight) {
+Editor::initImguiMenus(float mainMenuBarheight) {
   FileSystem fs;
   if (fs.Exists(_T("imgui.ini"))) {
     return;
@@ -628,7 +715,7 @@ driderSDK::Editor::initImguiMenus(float mainMenuBarheight) {
 }
 
 void
-driderSDK::Editor::loadHierarchy() {
+Editor::loadHierarchy() {
   if (ImGui::Button("Create"))
     ImGui::OpenPopup("menuHierarchy");
   ImGui::SameLine();
@@ -695,7 +782,8 @@ driderSDK::Editor::loadHierarchy() {
 
 }
 
-void driderSDK::Editor::loadMenuHierarchy()
+void
+Editor::loadMenuHierarchy()
 {
   if (ImGui::MenuItem("New Game Object")) {
     //TODO: Search parent name
@@ -712,7 +800,8 @@ void driderSDK::Editor::loadMenuHierarchy()
   }
 }
 
-void driderSDK::Editor::materialEditor() {
+void
+Editor::materialEditor() {
 
   if (m_selectedMaterial) {
     ImGui::Text(StringUtils::toString(m_selectedMaterial->m_name).c_str());
@@ -755,7 +844,8 @@ void driderSDK::Editor::materialEditor() {
   
 }
 
-void Editor::loadInspector()
+void
+Editor::loadInspector()
 {
 
   if (m_selectedGameObject == SceneGraph::getRoot()) { return; }
@@ -851,7 +941,8 @@ void Editor::loadInspector()
 
 }
 
-void Editor::loadMenuAddComponent()
+void
+Editor::loadMenuAddComponent()
 {
   if (m_selectedGameObject == SceneGraph::getRoot()) { return; }
 
@@ -890,7 +981,8 @@ void Editor::loadMenuAddComponent()
   }
 }
 
-void Editor::loadFileManager()
+void
+Editor::loadFileManager()
 {
   if (m_fileManagerWindow) {
     ImGui::Begin("File Manager", &m_fileManagerWindow);
@@ -1041,7 +1133,8 @@ Editor::loadRenderWindow() {
   }
 }
 
-void Editor::drawDebugStuff() {
+void
+Editor::drawDebugStuff() {
   auto boxColliderComponent = m_selectedGameObject->getComponent<BoxCollider>();
   if (boxColliderComponent) {
     AABB aabb = boxColliderComponent->getAABB();
@@ -1069,15 +1162,17 @@ Editor::getMouseInScene(Vector2D* mousePosition) {
      m_posMouseSceneWindow[1] >= 0.f &&
      m_posMouseSceneWindow[0] <= 1.f &&
      m_posMouseSceneWindow[1] <= 1) {
-    mousePosition->x = m_posMouseSceneWindow[0];
-    mousePosition->y = m_posMouseSceneWindow[1];
+    if (nullptr != mousePosition) {
+      mousePosition->x = m_posMouseSceneWindow[0];
+      mousePosition->y = m_posMouseSceneWindow[1];
+    }
     return true;
   }
   return false;
 }
 
-
-void driderSDK::Editor::loadScene() {
+void
+Editor::loadScene() {
   if (ImGuiFileDialog::Instance()->FileDialog("Choose File", ".txt\0\0", ".", "")) {
     static std::string filePathName = "";
     static std::string path = "";
@@ -1103,7 +1198,8 @@ void driderSDK::Editor::loadScene() {
   }
 }
 
-void driderSDK::Editor::saveScene() {
+void
+Editor::saveScene() {
   if (ImGuiFileDialog::Instance()->FileDialog("Save Scene", ".txt\0\0", ".", "")) {
     static std::string filePathName = "";
     static std::string path = "";
@@ -1127,7 +1223,8 @@ void driderSDK::Editor::saveScene() {
   }
 }
 
-void driderSDK::Editor::createMat() {
+void
+Editor::createMat() {
   if (ImGuiFileDialog::Instance()->FileDialog("Create Material", ".mat\0\0", ".", "")) {
     static std::string filePathName = "";
     static std::string path = "";
@@ -1151,4 +1248,228 @@ void driderSDK::Editor::createMat() {
     }
   }
 }
+
+bool
+Editor::selectMoveAxe() {
+  bool selected = false;
+
+  CameraManager::SharedCamera Cam = CameraManager::getActiveCamera();
+
+  Vector3D goPos;
+
+  std::vector<std::pair<AABB, TransformAxis::E>> axeBoxes;
+  //X
+  goPos = m_selectedGameObject->getTransform().getPosition();
+  goPos += Vector3D(cubeLarge * 0.5f, 0.0f, 0.0f);
+  axeBoxes.push_back(std::make_pair(AABB(cubeLarge, cubeDefault, cubeDefault, goPos),
+                                    TransformAxis::kX));
+  //Y
+  goPos = m_selectedGameObject->getTransform().getPosition();
+  goPos += Vector3D(0.0f, cubeLarge * 0.5f, 0.0f);
+  axeBoxes.push_back(std::make_pair(AABB(cubeDefault, cubeLarge, cubeDefault, goPos),
+                                    TransformAxis::kY));
+  //Z
+  goPos = m_selectedGameObject->getTransform().getPosition();
+  goPos += Vector3D(0.0f, 0.0f, cubeLarge * 0.5f);
+  axeBoxes.push_back(std::make_pair(AABB(cubeDefault, cubeDefault, cubeLarge, goPos),
+                                    TransformAxis::kZ));
+
+
+  Vector3D rayOrigin = Cam->getPosition();
+  Vector3D rayDirection = GetCameraMouseRayDirection(Cam);
+  Vector3D intersectPoint;
+  Vector3D lastIntersectPoint;
+
+  m_SelectedMoveAxis = TransformAxis::kNone;
+
+  for (auto currentAxe : axeBoxes) {
+    if (Intersect::rayAABB(currentAxe.first.getMaxPoint(),
+                           currentAxe.first.getMinPoint(),
+                           rayOrigin,
+                           rayDirection,
+                           &intersectPoint)) {
+      if (!selected) {
+        selected = true;
+        lastIntersectPoint = intersectPoint;
+        m_SelectedMoveAxis = currentAxe.second;
+      }
+      else {
+        if ((rayOrigin - intersectPoint).lengthSqr() <
+            (rayOrigin - lastIntersectPoint).lengthSqr()) {
+          lastIntersectPoint = intersectPoint;
+          m_SelectedMoveAxis = currentAxe.second;
+        }
+      }
+    }
+  }
+
+  return selected;
+}
+
+void
+Editor::MoveOnAxe(TransformAxis::E axisToMoveOn) {
+  CameraManager::SharedCamera Cam = CameraManager::getActiveCamera();
+
+  Vector3D rayOrigin = Cam->getPosition();
+  Vector3D rayDirection = GetCameraMouseRayDirection(Cam);
+
+  Vector3D intersectPoint;
+  Vector3D lastIntersectPoint;
+
+  Vector3D planeNormal;
+
+  /*
+  * TODO: this is shit boi, why'd you hardcode this?
+  * Create a vector of Vec3, who'll contain all the
+  * axes normals.
+  * The plane normal we want, is the one which
+  * dot product with the camera direction its
+  * the closest to -1 (that means, the plane is looking
+  * to the camera).
+  *
+  * If the movement it's on 1 axis:
+  * Don't push the plane normals of the axis moving.
+  * In case of 2 moving axes:
+  * The plane normal its the cross product of
+  * both axes, and the normal should be pointing to
+  * the camera (there're only 2 planes, the positive
+  * and the negative one, same as above, keep the one with
+  * closest dot product to -1),
+  */
+  if (TransformAxis::kX == axisToMoveOn || TransformAxis::kZ == axisToMoveOn) {
+    planeNormal = { 0, 1, 0 };
+  }
+  else {
+    planeNormal = {0, 0, 1};
+  }
+
+  Vector3D planePoint = m_selectedGameObject->getTransform().getPosition();
+
+  float denom = planeNormal.dot(rayDirection);
+  if (Math::abs(denom) > Math::SMALL_NUMBER) {
+    Vector3D planeToRayOrigin = planePoint - rayOrigin;
+    float t = planeToRayOrigin.dot(planeNormal) / denom;
+    if (t >= 0) {
+      Vector3D newPos;
+      newPos = m_selectedGameObject->getTransform().getPosition();
+      Vector3D raycastPos;
+      raycastPos = rayOrigin + (rayDirection * t);
+
+      if (!m_bOffseted) {
+        if (TransformAxis::kX == axisToMoveOn) {
+          m_fOffset = newPos.x - raycastPos.x;
+        }
+        else if (TransformAxis::kY == axisToMoveOn) {
+          m_fOffset = newPos.y - raycastPos.y;
+        }
+        else if (TransformAxis::kZ == axisToMoveOn) {
+          m_fOffset = newPos.z - raycastPos.z;
+        }
+        m_bOffseted = true;
+      }
+
+      if (TransformAxis::kX == axisToMoveOn) {
+        newPos.x = raycastPos.x + m_fOffset;
+      }
+      else if (TransformAxis::kY == axisToMoveOn) {
+        newPos.y = raycastPos.y + m_fOffset;
+      }
+      else if (TransformAxis::kZ == axisToMoveOn) {
+        newPos.z = raycastPos.z + m_fOffset;
+      }
+
+      m_selectedGameObject->getTransform().setPosition(newPos);
+    }
+  }
+}
+
+void
+Editor::selectModel() {
+  CameraManager::SharedCamera Cam = CameraManager::getActiveCamera();
+
+  Vector3D rayOrigin = Cam->getPosition();
+  Vector3D rayDirection = GetCameraMouseRayDirection(Cam);
+  Vector3D intersectPoint;
+  Vector3D lastIntersectPoint;
+
+  m_selectedGameObject = SceneGraph::instance().getRoot();
+  m_bSelected = false;
+
+  //Get all objects seen by the main camera.
+  RenderQuery rqRequest{*Cam,
+                        QUERY_ORDER::kFrontToBack,
+                        QUERY_PROPERTY::kOpaque |
+                        QUERY_PROPERTY::kDynamic |
+                        QUERY_PROPERTY::kStatic };
+  RenderCommandBuffer queryRequest = SceneGraph::query(rqRequest);
+
+  AABB testAABB;
+  for (const auto& go : queryRequest.commands) {
+    testAABB = go.gameObjectPtr->getComponent<RenderComponent>()->getAABB();
+    Vector3D minPoint = testAABB.getMinPoint();
+    Vector3D maxPoint = testAABB.getMaxPoint();
+
+    if (Intersect::rayAABB(maxPoint,
+                           minPoint,
+                           rayOrigin,
+                           rayDirection,
+                           &intersectPoint)) {
+      if (!m_bSelected) {
+        m_bSelected = true;
+        m_selectedGameObject = go.gameObjectPtr;
+        lastIntersectPoint = intersectPoint;
+      }
+      else {
+        float lastDist = (Cam->getPosition() - lastIntersectPoint).lengthSqr();
+        float  newDist = (Cam->getPosition() - intersectPoint).lengthSqr();
+        if (newDist < lastDist) {
+          lastIntersectPoint = intersectPoint;
+          m_selectedGameObject = go.gameObjectPtr;
+        }
+      }
+    }
+  }
+}
+
+Vector3D
+Editor::GetCameraMouseRayDirection(CameraManager::SharedCamera Cam) {
+  Vector2D mouseInScreen;
+  if (getMouseInScene(&mouseInScreen)) {
+
+  }
+
+  Vector4D mouseInScreenPosition = Mouse::getPosition();
+  mouseInScreenPosition.x = mouseInScreen.x;
+  mouseInScreenPosition.y = mouseInScreen.y;
+
+  mouseInScreenPosition.x = mouseInScreen.x;
+  mouseInScreenPosition.y = 1.0f - mouseInScreen.y;
+  mouseInScreenPosition.z = 0.0f;
+  mouseInScreenPosition.w = 1.0f;
+
+  Vector4D mouseInViewPosition = mouseInScreenPosition;
+  mouseInViewPosition *= 2.0f;
+  mouseInViewPosition.x -= 1.0f;
+  mouseInViewPosition.y -= 1.0f;
+  mouseInViewPosition.z = 0.0f;
+  mouseInViewPosition.w = 1.0f;
+
+  Matrix4x4 invProj = Cam->getVP();
+  invProj = invProj.inverse();
+
+  mouseInViewPosition.z = 0.0f;
+  Vector4D startPosition = mouseInViewPosition * invProj;
+  startPosition /= startPosition.w;
+  
+  mouseInViewPosition.z = 1.0f;
+  Vector4D finalPosition = mouseInViewPosition * invProj;
+  finalPosition /= finalPosition.w;
+
+  Vector3D rayDirection;
+  rayDirection = finalPosition - startPosition;
+  rayDirection.normalize();
+
+  return rayDirection;
+}
+
 }
