@@ -42,6 +42,7 @@
 
 #include "dr_input_editor.h"
 #include "imgui.h"
+#include "imguidock.h"
 #include "imgui_impl_dx11.h"
 #include "imgui_impl_win32.h"
 #include "ImGuiFileDialog.h"
@@ -92,6 +93,7 @@ void Editor::postInit()
   m_inpectorWindow = true;
   m_fileManagerWindow = true;
   m_mainMenuBarheight = 0;
+  //initInputs();
   initRT();
   initCallbacks();
   initSceneGraph();
@@ -101,6 +103,7 @@ void Editor::postInit()
   m_selectedGameObject = SceneGraph::getRoot();
 
   ImGui::CreateContext();
+  m_dockContext = ImGui::CreateDockContext();
   ImGui_ImplWin32_Init(m_hwnd);
   ImGui_ImplDX11_Init(d3dDev, d3dDevCont);
   ImGui::StyleColorsDark();
@@ -117,6 +120,59 @@ modelMat->addProperty(_T("Roughness"*/
   semantics.push_back(L"Roughness");
 }
 
+void
+Editor::initInputs() {
+  InputManager::getMouse()->addMovedCallback([this]()
+  {
+    auto dis = Mouse::getDisplacement();
+    auto pos = Mouse::getPosition();
+    auto cam = CameraManager::getActiveCamera();
+    if (dis.z) {
+      float vel = W_SCROLL_VEL;
+      if (m_GMOOnFocus) {
+        //vel = vel * (m_GMOOnFocus->getTransform().getPosition() - cam->getPosition()).lengthSqr() / 100000.0f;
+      }
+      cam->move(dis.z *vel, 0, 0);
+    }
+    if (m_rotWorldActive) {
+      cam->pan(0, dis.x * W_ROT_VEL, dis.y * W_ROT_VEL);
+    }
+    if (m_movWorldActive) {
+      cam->move(0, dis.x * W_MOVE_VEL, dis.y * W_MOVE_VEL);
+    }
+
+  });
+  InputManager::getMouse()->addAnyButtonCallback(MOUSE_INPUT_EVENT::kButtonPressed,
+    [this](MOUSE_BUTTON::E pressedId)
+  {
+    auto pos = Mouse::getPosition();
+
+    if (pressedId == MOUSE_BUTTON::kRight) {
+      m_rotWorldActive = true;
+
+    }
+    if (pressedId == MOUSE_BUTTON::kMiddle) {
+      m_movWorldActive = true;
+    }
+    if (pressedId == MOUSE_BUTTON::kLeft) {
+      m_movWorldActive = true;
+    }
+  });
+  InputManager::getMouse()->addAnyButtonCallback(MOUSE_INPUT_EVENT::kButtonReleased,
+    [this](MOUSE_BUTTON::E pressedId)
+  {
+    auto pos = Mouse::getPosition();
+    if (pressedId == MOUSE_BUTTON::kRight) {
+      m_rotWorldActive = false;
+    }
+    if (pressedId == MOUSE_BUTTON::kMiddle) {
+      m_movWorldActive = false;
+    }
+    if (pressedId == MOUSE_BUTTON::kLeft) {
+      m_movWorldActive = false;
+    }
+  });
+}
 void Editor::initCallbacks()
 {
   auto mouseButtonDown =
@@ -214,8 +270,8 @@ void Editor::postUpdate()
   ImGui_ImplDX11_NewFrame();
   ImGui_ImplWin32_NewFrame();
   ImGui::NewFrame();
-
-  ImGui::ShowTestWindow();
+  
+  dockerTest();
 
   if(showFileDilog) {
     ImGui::OpenPopup("Choose File");
@@ -292,22 +348,57 @@ Editor::postRender() {
 
   if (m_sceneWindow)
   {
-    ImGuiWindowFlags flags = 0;
-    if (ImGui::Begin("Scene", &m_sceneWindow, flags)) {
-      float width = ImGui::GetWindowWidth();
-      float height = ImGui::GetWindowHeight();
-      if (m_sceneViewport.width != width || m_sceneViewport.height != height)
-      {
-        m_sceneViewport.width = (UInt32)width;
-        m_sceneViewport.height = (UInt32)height;
-        initRT();
-        CameraManager::getActiveCamera()->setViewport(m_sceneViewport);
-      }
-      auto texture = static_cast<ID3D11ShaderResourceView*>(m_RT->getTexture(0).getAPIObject());
-      ImGui::Image(texture, { width, height });
-    }
-    ImGui::End();
+    //ImGuiWindowFlags flags = 0;
+    //if (ImGui::Begin("Scene", &m_sceneWindow, flags)) {
+    //  //son los margenes de la ventana
+    //  m_posMouseSceneWindow[0] = (ImGui::GetMousePos().x - ImGui::GetWindowPos().x + 7.f) / m_sceneViewport.width;
+    //  m_posMouseSceneWindow[1] = (ImGui::GetMousePos().y - ImGui::GetWindowPos().y + 27.f) / m_sceneViewport.height;
+    //  float size = ImGui::GetFontSize() + ImGui::GetFrameHeight() * 2.f;
+    //  float width = ImGui::GetWindowWidth() - 18;
+    //  float height = ImGui::GetWindowHeight()- size;
+    //  if (m_sceneViewport.width != width || m_sceneViewport.height != height)
+    //  {
+    //    m_sceneViewport.width = (UInt32)width;
+    //    m_sceneViewport.height = (UInt32)height;
+    //    initRT();
+    //    CameraManager::getActiveCamera()->setViewport(m_sceneViewport);
+    //  }
+        
+    //  auto texture = static_cast<ID3D11ShaderResourceView*>(m_RT->getTexture(0).getAPIObject());
+    //  ImGui::Image(texture, { width, height });
+    //}
+    //ImGui::End();
   }
+
+  //Using docker
+  auto visible = ImGui::Begin("imguidock window (= lumix engine's dock system)");
+  if (visible) {
+
+
+      ImGui::BeginDockspace(); //Dentro de aqui van todas las ventanas
+      if (ImGui::BeginDock("Scene")) {
+        ImGui::SetNextDock(ImGuiDockSlot_Bottom);
+        m_posMouseSceneWindow[0] = (ImGui::GetMousePos().x - ImGui::GetWindowPos().x + 7.f) / m_sceneViewport.width;
+        m_posMouseSceneWindow[1] = (ImGui::GetMousePos().y - ImGui::GetWindowPos().y + 27.f) / m_sceneViewport.height;
+        float size = ImGui::GetFontSize() + ImGui::GetFrameHeight() * 2.f;
+        float width = ImGui::GetWindowWidth() - 18;
+        float height = ImGui::GetWindowHeight()- size;
+        if (m_sceneViewport.width != width || m_sceneViewport.height != height)
+        {
+          m_sceneViewport.width = (UInt32)width;
+          m_sceneViewport.height = (UInt32)height;
+          initRT();
+          CameraManager::getActiveCamera()->setViewport(m_sceneViewport);
+        }
+
+        auto texture = static_cast<ID3D11ShaderResourceView*>(m_RT->getTexture(0).getAPIObject());
+        ImGui::Image(texture, { width, height });
+
+      }
+      ImGui::EndDock();
+      ImGui::EndDockspace();
+  }
+  ImGui::End();
 
 
   GraphicsAPI::getDepthStencilState(DR_DEPTH_STENCIL_STATES::kDepthRW).set(GraphicsAPI::getDeviceContext(), 1);
@@ -326,12 +417,13 @@ Editor::postDestroy() {
   ImGui_ImplDX11_Shutdown();
   ImGui_ImplWin32_Shutdown();
   ImGui::DestroyContext();
+
+  SceneGraph::shutDown();
   SoundAPI::shutDown();
   ScriptEngine::shutDown();
   PhysicsManager::shutDown();
   ContextManager::shutDown();
   ResourceManager::shutDown();
-  SceneGraph::shutDown();
   CameraManager::shutDown();
   InputManager::shutDown();
   RenderManager::shutDown();
@@ -481,12 +573,10 @@ Editor::initScriptEngine() {
 
 void
 Editor::loadMainMenu() {
-  if (ImGui::BeginMainMenuBar())
-  {
+  if (ImGui::BeginMainMenuBar()) {
     m_mainMenuBarheight = ImGui::GetWindowSize().y;
 
-    if (ImGui::BeginMenu("File"))
-    {
+    if (ImGui::BeginMenu("File")) {
       if (ImGui::MenuItem("Load Scene", "CTRL+L")) {
         showFileDilog = true;
       }
@@ -501,8 +591,7 @@ Editor::loadMainMenu() {
 
       ImGui::EndMenu();
     }
-    if (ImGui::BeginMenu("Windows"))
-    {
+    if (ImGui::BeginMenu("Windows")) {
       ImGui::Checkbox("Material Editor", &m_materialEditorWindow);
       ImGui::Checkbox("Render Configuration", &m_renderConfigWindow);
       ImGui::Checkbox("Hierarchy", &m_hierarchyWindow);
@@ -576,15 +665,13 @@ driderSDK::Editor::loadHierarchy() {
   if (ImGui::Button("Create"))
     ImGui::OpenPopup("menuHierarchy");
   ImGui::SameLine();
-  if (ImGui::BeginPopup("menuHierarchy"))
-  {
+  if (ImGui::BeginPopup("menuHierarchy")) {
     loadMenuHierarchy();
     ImGui::EndPopup();
   }
 
   if (ImGui::Button("DeleteNode")) {
-    if (SceneGraph::getRoot() != m_selectedGameObject)
-    {
+    if (SceneGraph::getRoot() != m_selectedGameObject) {
       m_selectedGameObject->getParent()->removeChild(m_selectedGameObject);
       m_selectedGameObject->destroy();
       m_selectedGameObject = SceneGraph::getRoot();
@@ -599,8 +686,7 @@ driderSDK::Editor::loadHierarchy() {
       auto id = it->getID();
       ImGui::PushID(id);
       ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | (m_selectedGameObject == it ? ImGuiTreeNodeFlags_Selected : 0);
-      if (it->getChildrenCount() == 0)
-      {
+      if (it->getChildrenCount() == 0) {
         node_flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
         ImGui::TreeNodeEx((void*)(intptr_t)id, node_flags, name.c_str());
         if (ImGui::IsItemClicked())
@@ -611,8 +697,7 @@ driderSDK::Editor::loadHierarchy() {
         bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)id, node_flags, name.c_str());
         if (ImGui::IsItemClicked())
           m_selectedGameObject = it;
-        if (node_open)
-        {
+        if (node_open) {
           auto children2 = it->getChildren();
           search(children2);
           ImGui::TreePop();
@@ -623,8 +708,7 @@ driderSDK::Editor::loadHierarchy() {
   };
   auto root = SceneGraph::getRoot();
   auto name = StringUtils::toString(root->getName());
-  if (ImGui::TreeNode(name.c_str()))
-  {
+  if (ImGui::TreeNode(name.c_str())) {
     if (ImGui::IsItemClicked())
       m_selectedGameObject = root;
     static bool align_label_with_current_x_position = false;
@@ -684,10 +768,8 @@ void driderSDK::Editor::materialEditor() {
       }
       ImGui::Text(StringUtils::toString(semantics[i]).c_str()); ImGui::SameLine();
       ImGui::InputText("##material", &temp, ImGuiInputTextFlags_ReadOnly);
-      if (ImGui::BeginDragDropTarget())
-      {
-        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILE_ITEM"))
-        {
+      if (ImGui::BeginDragDropTarget()) {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILE_ITEM")) {
           char* lu = (char*)payload->Data;
           auto ptr = ResourceManager::loadResource(StringUtils::toTString(lu));
           auto ptrTexture = std::dynamic_pointer_cast<TextureCore>(ptr);
@@ -708,12 +790,12 @@ void driderSDK::Editor::materialEditor() {
 
 void Editor::loadInspector()
 {
+
   if (m_selectedGameObject == SceneGraph::getRoot()) { return; }
 
   if (ImGui::Button("Add Component"))
     ImGui::OpenPopup("menuAddComponent");
-  if (ImGui::BeginPopup("menuAddComponent"))
-  {
+  if (ImGui::BeginPopup("menuAddComponent")) {
     loadMenuAddComponent();
     ImGui::EndPopup();
   }
@@ -796,7 +878,6 @@ void Editor::loadInspector()
 
   auto components = m_selectedGameObject->getComponents<GameComponent>();
   for (auto component : components) {
-    ImGui::Text(StringUtils::toString(component->getName()).c_str());
     auto inputEditor = InputEditor::createInputEditor(*component);
     inputEditor->getInputs();
   }
@@ -811,15 +892,13 @@ void Editor::loadMenuAddComponent()
     m_selectedGameObject->createComponent<AnimatorComponent>();
   }
   if (ImGui::BeginMenu("Collider")) {
-    if (ImGui::MenuItem("Sphere"))
-    {
+    if (ImGui::MenuItem("Sphere")) {
       auto rigidBody = m_selectedGameObject->createComponent<RigidBody3DComponent>();
       rigidBody->enableGravity(false);
       rigidBody->setType(RIGID_BODY_TYPE::kStatic);
       m_selectedGameObject->createComponent<SphereCollider>(1.f, Vector3D(0, 0, 0));
     }
-    if (ImGui::MenuItem("Box"))
-    {
+    if (ImGui::MenuItem("Box")) {
       auto rigidBody = m_selectedGameObject->createComponent<RigidBody3DComponent>();
       rigidBody->enableGravity(false);
       rigidBody->setType(RIGID_BODY_TYPE::kStatic);
@@ -867,8 +946,7 @@ void Editor::loadFileManager()
           }
         }
          
-        if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
-        {
+        if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
           ImGui::SetDragDropPayload("FILE_ITEM", &tempName, sizeof(tempName));        // Set payload to carry the index of our item (could be anything)
           ImGui::Text("%s", tempName);
           ImGui::EndDragDropSource();
@@ -898,19 +976,7 @@ void Editor::loadFileManager()
     
 
     auto rootDir = "Resources";
-    ImGui::Text("hola");
-    if (ImGui::BeginDragDropTarget())
-    {
-      if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILE_ITEM"))
-      {
-        char* lu = (char*)payload->Data;
-        int i = 0;
-i = i+3;
-      }
-      ImGui::EndDragDropTarget();
-    }
-    if (ImGui::TreeNode(""))
-    {
+    if (ImGui::TreeNode("Resources")) {
 
       static bool align_label_with_current_x_position = false;
       if (align_label_with_current_x_position)
@@ -929,7 +995,7 @@ i = i+3;
       if (align_label_with_current_x_position)
         ImGui::Indent(ImGui::GetTreeNodeToLabelSpacing());
       ImGui::TreePop();
-    }
+    } 
     ImGui::End();
   }
 }
@@ -937,49 +1003,78 @@ i = i+3;
 void
 Editor::loadRenderWindow() {
   if (m_renderConfigWindow) {
-    ImGui::Begin("Render Configuration", &m_renderConfigWindow);
-    if (ImGui::CollapsingHeader("Post-Processing"))
-    {
-      ImGui::Text("Post-Processing");
+
+     ImGui::Begin("Render Configuration", &m_renderConfigWindow);
+    if (ImGui::CollapsingHeader("Post-Processing")) {
+      ImGui::Indent(ImGui::GetTreeNodeToLabelSpacing());
+      if (ImGui::CollapsingHeader("Chromatic Aberration")) {
+        ImGui::Columns(2, "", false);
+        ImGui::Text("Displacement:");
+        ImGui::NextColumn();
+        ImGui::DragFloat("##cromaticPP", RenderManager::instance().getCAStrenght(), .001f, -0.5f, 0.5f);
+        ImGui::EndColumns();
+      }
+      if (ImGui::CollapsingHeader("Depth Of field")) {
+        ImGui::Checkbox("Front Focus:##frontFocusPP", RenderManager::instance().getDoFFrontFocus());
+        ImGui::Columns(2, "", false);
+        ImGui::Text("Distance:");
+        ImGui::NextColumn();
+        ImGui::DragFloat("##distancePP", RenderManager::instance().getDoFDistance(), 1.0f, 0.0f, 100000.0f);
+        ImGui::NextColumn();
+        ImGui::Text("Facus range:");
+        ImGui::NextColumn();
+        ImGui::DragFloat("##focusRangePP", RenderManager::instance().getDoFFocusRange(), 1.0f, 10.0f, 100000.0f);
+        ImGui::EndColumns();
+      }
+      if (ImGui::CollapsingHeader("Vignete")) {
+        float* tempRadius = &RenderManager::instance().getVignetteRadius()->x;
+        ImGui::Columns(2, "", false);
+        ImGui::Text("Radius:");
+        ImGui::NextColumn();
+        ImGui::DragFloat2("##radiusPP", tempRadius, 0.1f, 0.0f, 100.0f);
+
+        float* tempConcentration = &RenderManager::instance().getVignetteConcentration()->x;
+        ImGui::NextColumn();
+        ImGui::Text("Concentration:");
+        ImGui::NextColumn();
+        ImGui::DragFloat2("##concentrationPP", tempConcentration, 0.1f, 0.0f, 100.0f);
+
+        ImGui::NextColumn();
+        ImGui::Text("Scale:");
+        ImGui::NextColumn();
+        ImGui::DragFloat("##scaleVPP", RenderManager::instance().getVignetteScale(), 1.0f, 0.0f, 100.0f);
+        ImGui::EndColumns();
+      }
+      ImGui::Unindent(ImGui::GetTreeNodeToLabelSpacing());
     }
-    if (ImGui::CollapsingHeader("SSAO"))
-    {
-      ImGui::Checkbox("Enabled", &m_sceneWindow);
+    if (ImGui::CollapsingHeader("SSAO")) {
+      ImGui::Checkbox("Enabled", RenderManager::instance().getSSAOActive());
       ImGui::Columns(2, "", false);
       ImGui::Text("Sample Radio:");
       ImGui::NextColumn();
-      float sampleRadioSSAO = 0;
-      if (ImGui::DragFloat("##sampleRadioSSAO", &sampleRadioSSAO)) {
-      }
+      ImGui::DragFloat("##sampleRadioSSAO", RenderManager::instance().getSSAOSampleRadio(), 1.0f, 0.0f);
 
       ImGui::NextColumn();
       ImGui::Text("Intensity:");
       ImGui::NextColumn();
-      float intensitySSAO = 0;
-      if (ImGui::DragFloat("##intensitySSAO", &intensitySSAO)) {
-      }
+      ImGui::DragFloat("##intensitySSAO", RenderManager::instance().getSSAOIntensity(), 1.0f, 0.0f);
 
       ImGui::NextColumn();
       ImGui::Text("Scale:");
       ImGui::NextColumn();
-      float scaleSSAO = 0;
-      if (ImGui::DragFloat("##scaleSSAO", &scaleSSAO)) {
-      }
-
+      ImGui::DragFloat("##scaleSSAO", RenderManager::instance().getSSAOScale(), 1.0f, 0.0f);
       ImGui::NextColumn();
       ImGui::Text("Bias:");
       ImGui::NextColumn();
-      float biasSSAO = 0;
-      if (ImGui::DragFloat("##biasSSAO", &biasSSAO)) {
-      }
+      ImGui::DragFloat("##biasSSAO", RenderManager::instance().getSSAOBias(), 1.0f, 0.0f);
+      ImGui::EndColumns();
     }
 
     ImGui::End();
   }
 }
 
-void Editor::drawDebugStuff()
-{
+void Editor::drawDebugStuff() {
   auto boxColliderComponent = m_selectedGameObject->getComponent<BoxCollider>();
   if (boxColliderComponent) {
     AABB aabb = boxColliderComponent->getAABB();
@@ -1001,17 +1096,28 @@ void Editor::drawDebugStuff()
   }
 }
 
+bool
+Editor::getMouseInScene(Vector2D* mousePosition) {
+  if(m_posMouseSceneWindow[0] >= 0.f && 
+     m_posMouseSceneWindow[1] >= 0.f &&
+     m_posMouseSceneWindow[0] <= 1.f &&
+     m_posMouseSceneWindow[1] <= 1) {
+    mousePosition->x = m_posMouseSceneWindow[0];
+    mousePosition->y = m_posMouseSceneWindow[1];
+    return true;
+  }
+  return false;
+}
+
 
 void driderSDK::Editor::loadScene() {
-  if (ImGuiFileDialog::Instance()->FileDialog("Choose File", ".txt\0\0", ".", ""))
-  {
+  if (ImGuiFileDialog::Instance()->FileDialog("Choose File", ".txt\0\0", ".", "")) {
     static std::string filePathName = "";
     static std::string path = "";
     static std::string fileName = "";
     static std::string filter = "";
 
-    if (ImGuiFileDialog::Instance()->IsOk == true)
-    {
+    if (ImGuiFileDialog::Instance()->IsOk == true) {
       filePathName = ImGuiFileDialog::Instance()->GetFilepathName();
       path = ImGuiFileDialog::Instance()->GetCurrentPath();
       fileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
@@ -1021,8 +1127,7 @@ void driderSDK::Editor::loadScene() {
       ResourceManager::clear();
       ResourceManager::loadScene(filePathName);
     }
-    else
-    {
+    else {
       filePathName = "";
       path = "";
       fileName = "";
@@ -1032,15 +1137,13 @@ void driderSDK::Editor::loadScene() {
 }
 
 void driderSDK::Editor::saveScene() {
-  if (ImGuiFileDialog::Instance()->FileDialog("Save Scene", ".txt\0\0", ".", ""))
-  {
+  if (ImGuiFileDialog::Instance()->FileDialog("Save Scene", ".txt\0\0", ".", "")) {
     static std::string filePathName = "";
     static std::string path = "";
     static std::string fileName = "";
     static std::string filter = "";
 
-    if (ImGuiFileDialog::Instance()->IsOk == true)
-    {
+    if (ImGuiFileDialog::Instance()->IsOk == true) {
       filePathName = ImGuiFileDialog::Instance()->GetFilepathName();
       path = ImGuiFileDialog::Instance()->GetCurrentPath();
       fileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
@@ -1048,8 +1151,7 @@ void driderSDK::Editor::saveScene() {
 
       ResourceManager::saveScene(filePathName);
     }
-    else
-    {
+    else {
       filePathName = "";
       path = "";
       fileName = "";
@@ -1059,15 +1161,13 @@ void driderSDK::Editor::saveScene() {
 }
 
 void driderSDK::Editor::createMat() {
-  if (ImGuiFileDialog::Instance()->FileDialog("Create Material", ".mat\0\0", ".", ""))
-  {
+  if (ImGuiFileDialog::Instance()->FileDialog("Create Material", ".mat\0\0", ".", "")) {
     static std::string filePathName = "";
     static std::string path = "";
     static std::string fileName = "";
     static std::string filter = "";
 
-    if (ImGuiFileDialog::Instance()->IsOk == true)
-    {
+    if (ImGuiFileDialog::Instance()->IsOk == true) {
       filePathName = ImGuiFileDialog::Instance()->GetFilepathName();
       path = ImGuiFileDialog::Instance()->GetCurrentPath();
       fileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
@@ -1076,8 +1176,7 @@ void driderSDK::Editor::createMat() {
       ResourceManager::saveMaterial(path + "//",
                                     fileName + filter);
     }
-    else
-    {
+    else {
       filePathName = "";
       path = "";
       fileName = "";
@@ -1085,4 +1184,42 @@ void driderSDK::Editor::createMat() {
     }
   }
 }
+
+void 
+Editor::dockerTest() {
+  ImGui::SetCurrentDockContext(m_dockContext);
+  ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
+  ImGui::SetNextWindowPos({0,0});
+  const ImGuiWindowFlags flags =  (ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar);
+  const float oldWindowRounding = ImGui::GetStyle().WindowRounding;ImGui::GetStyle().WindowRounding = 0;
+  const bool visible = ImGui::Begin("imguidock window (= lumix engine's dock system)",NULL,ImVec2(0, 0),1.0f,flags);
+  ImGui::GetStyle().WindowRounding = oldWindowRounding;
+  if (visible) {
+
+
+      ImGui::BeginDockspace(); //Dentro de aqui van todas las ventanas
+
+      ImGui::SetNextDock(ImGuiDockSlot_Left);
+      if(ImGui::BeginDock("Hierarchy")) {
+          ImGui::Text("Cosas de herarchy");
+      }
+      ImGui::EndDock();
+
+      ImGui::SetNextDock(ImGuiDockSlot_Top);
+      if(ImGui::BeginDock("Resource")) {
+          ImGui::Text("Cosas de recursos");
+      }
+      ImGui::EndDock();      
+
+      ImGui::SetNextDock(ImGuiDockSlot_Right);
+      if(ImGui::BeginDock("Inspector")) {
+          ImGui::Text("Cosas de inspector");
+      }
+      ImGui::EndDock();      
+
+      ImGui::EndDockspace();
+  }
+  ImGui::End();
+}
+
 }

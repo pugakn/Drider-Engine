@@ -5,7 +5,10 @@
 #include <dr_gfx_memory.h>
 #include <dr_render_target.h>
 #include <dr_graph.h>
+#include <dr_vector2d.h>
 #include <dr_viewport.h>
+
+#include "imguidock.h"
 
 namespace driderSDK {
 
@@ -13,6 +16,9 @@ class ScriptComponent;
 
 class Editor : public Application
 {
+  const float W_SCROLL_VEL = 0.2f;
+  const float W_MOVE_VEL = 0.38f;
+  const float W_ROT_VEL = 1.f;
   // Inherited via
   private:
   void initCallbacks();
@@ -25,6 +31,7 @@ class Editor : public Application
 
   void initSceneGraph();
   void initScriptEngine();
+  void initInputs();
   void loadMainMenu();
   void initImguiMenus(float mainMenuBarheight);
   void loadHierarchy();
@@ -33,11 +40,13 @@ class Editor : public Application
   void loadScene();
   void saveScene();
   void createMat();
+  void dockerTest();
   void loadInspector();
   void loadMenuAddComponent();
   void loadFileManager();
   void loadRenderWindow();
   void drawDebugStuff();
+  bool getMouseInScene(Vector2D* mousePosition);
   GFXShared<RenderTarget> m_RT;
   GFXShared<DepthStencil> m_RTDPTH;
   Viewport m_sceneViewport;
@@ -57,11 +66,15 @@ class Editor : public Application
   bool showFileDilog;
   bool showSaveFileDialog;
   bool createMaterialFileDialog;
+  bool m_rotWorldActive = false;
+  bool m_movWorldActive = false;
+  float m_posMouseSceneWindow[2];
   SceneGraph::SharedGameObject m_selectedGameObject;
   std::shared_ptr<Material> m_selectedMaterial;
-
+  SceneGraph::SharedGameObject m_GMOOnFocus;
   std::vector<TString> semantics;
   std::vector<ScriptComponent*> m_scripts;
+  ImGui::DockContext* m_dockContext;
 };
 
 }
