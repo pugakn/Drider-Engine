@@ -17,8 +17,8 @@ RenderComponent::RenderComponent(GameObject& _gameObject,
                                  SharedModel resource)
   : GameComponent(_gameObject, _T("RenderComponent")),
     m_model(resource),
-    m_isModel(true) 
-{}
+    m_isModel(true) {
+}
 
 RenderComponent::RenderComponent(GameObject& _gameObject, 
                                  MeshList&& _materials,
@@ -45,8 +45,7 @@ RenderComponent::setMeshes(MeshList&& _meshes) {
 }
 
 const AABB& 
-RenderComponent::getAABB()
-{
+RenderComponent::getAABB() {
   return m_transformedAABB;
 }
 

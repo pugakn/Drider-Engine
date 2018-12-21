@@ -182,7 +182,7 @@ FS(PS_INPUT input) : SV_TARGET0 {
     //finalColor = Reinhard(finalColor.xyz, kExposure);
     //finalColor = Haarm_Peter_Duiker(finalColor, kExposure);
     //finalColor = Burgess_Dawson(finalColor, kExposure);
-    //finalColor = Uncharted2(finalColor, kExposure);
+    finalColor = Uncharted2(finalColor, kExposure);
   #endif //TONE_MAPPING
   
   #ifdef VIGNETTE
