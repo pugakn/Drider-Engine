@@ -840,43 +840,41 @@ Editor::loadMenuHierarchy()
 void
 Editor::materialEditor() {
 
-  if (m_selectedMaterial) {
-    ImGui::Text(StringUtils::toString(m_selectedMaterial->m_name).c_str());
+  if(m_selectedMaterial == NULL)
+    return;
 
-    if(ImGui::Button("Save Material")) {
-      ResourceManager::saveMaterial("Resources//Materials//", 
-                       StringUtils::toString(m_selectedMaterial->m_name));
-    }
-    ImGui::Text("Textures");
-    
-    for(int i = 0; i < 5; i++) {
-      TString temp = _T("");
-      auto prop = m_selectedMaterial->getProperty(semantics[i]);
-      if(prop) {
-        if(prop->texture.lock())  {
-          temp = prop->texture.lock()->getName();
-        } else {
-          temp = L"null";
-        }      
+  ImGui::Text(StringUtils::toString(m_selectedMaterial->m_name).c_str());
+
+  if (ImGui::Button("Save Material")) {
+    ResourceManager::saveMaterial("Resources//Materials//",
+                                  StringUtils::toString(m_selectedMaterial->m_name));
+  }
+  ImGui::Text("Textures");
+
+  for (int i = 0; i < 5; i++) {
+    TString temp = _T("");
+    auto prop = m_selectedMaterial->getProperty(semantics[i]);
+    if (prop) {
+      if (prop->texture.lock()) {
+        temp = prop->texture.lock()->getName();
       }
-      ImGui::Text(StringUtils::toString(semantics[i]).c_str()); ImGui::SameLine();
-      ImGui::InputText("##material", &temp, ImGuiInputTextFlags_ReadOnly);
-      if (ImGui::BeginDragDropTarget()) {
-        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILE_ITEM")) {
-          char* lu = (char*)payload->Data;
-          auto ptr = ResourceManager::loadResource(StringUtils::toTString(lu));
-          auto ptrTexture = std::dynamic_pointer_cast<TextureCore>(ptr);
-          
-          //m_selectedMaterial->addProperty(_T("Albedo"), PROPERTY_TYPE::kVec3);
-          m_selectedMaterial->setTexture(ptrTexture, semantics[i]);
-        }
-        ImGui::EndDragDropTarget();
+      else {
+        temp = L"null";
       }
     }
-    /*ImGui::Text("Normal"); ImGui::SameLine();
-    ImGui::Text("Specular"); ImGui::SameLine();
-    ImGui::Text("R"); ImGui::SameLine();
-    ImGui::Text("N"); ImGui::SameLine();*/
+    ImGui::Text(StringUtils::toString(semantics[i]).c_str()); ImGui::SameLine();
+    ImGui::InputText("##material", &temp, ImGuiInputTextFlags_ReadOnly);
+    if (ImGui::BeginDragDropTarget()) {
+      if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILE_ITEM")) {
+        char* lu = (char*)payload->Data;
+        auto ptr = ResourceManager::loadResource(StringUtils::toTString(lu));
+        auto ptrTexture = std::dynamic_pointer_cast<TextureCore>(ptr);
+
+        //m_selectedMaterial->addProperty(_T("Albedo"), PROPERTY_TYPE::kVec3);
+        m_selectedMaterial->setTexture(ptrTexture, semantics[i]);
+      }
+      ImGui::EndDragDropTarget();
+    }
   }
   
 }
@@ -1355,26 +1353,33 @@ Editor::dockerTest() {
 
       ImGui::BeginDockspace(); //Dentro de aqui van todas las ventanas
 
-      ImGui::SetNextDock(ImGuiDockSlot_Left);
+      ImGui::SetNextDock(ImGuiDockSlot_Tab);
       if(ImGui::BeginDock("Hierarchy")) {
           //ImGui::Text("Cosas de herarchy");
           loadHierarchy();
       }
       ImGui::EndDock();
 
-      ImGui::SetNextDock(ImGuiDockSlot_Top);
+      ImGui::SetNextDock(ImGuiDockSlot_Bottom);
       if(ImGui::BeginDock("Resource")) {
         //ImGui::Text("Cosas de recursos");
         loadFileManager();
       }
       ImGui::EndDock();      
 
-      ImGui::SetNextDock(ImGuiDockSlot_Right);
+      ImGui::SetNextDock(ImGuiDockSlot_Tab);
       if(ImGui::BeginDock("Inspector")) {
          //ImGui::Text("Cosas de inspector");
          loadInspector();
       }
-      ImGui::EndDock();      
+      ImGui::EndDock();  
+
+      ImGui::SetNextDock(ImGuiDockSlot_Bottom);
+      if (ImGui::BeginDock("Material Editor")) {
+        //ImGui::Text("Cosas de inspector");
+        materialEditor();
+      }
+      ImGui::EndDock();
 
       ImGui::EndDockspace();
   }
