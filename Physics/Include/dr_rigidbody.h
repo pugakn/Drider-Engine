@@ -7,7 +7,7 @@
 namespace driderSDK {
   namespace RIGID_BODY_TYPE {
     enum E {
-      kStatic,
+      kStatic = 0,
       kKinematic,
       kDynamic
     };
