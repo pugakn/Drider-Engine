@@ -42,6 +42,7 @@
 
 #include "dr_input_editor.h"
 #include "imgui.h"
+#include "imguidock.h"
 #include "imgui_impl_dx11.h"
 #include "imgui_impl_win32.h"
 #include "ImGuiFileDialog.h"
@@ -102,6 +103,7 @@ void Editor::postInit()
   m_selectedGameObject = SceneGraph::getRoot();
 
   ImGui::CreateContext();
+  m_dockContext = ImGui::CreateDockContext();
   ImGui_ImplWin32_Init(m_hwnd);
   ImGui_ImplDX11_Init(d3dDev, d3dDevCont);
   ImGui::StyleColorsDark();
@@ -268,6 +270,8 @@ void Editor::postUpdate()
   ImGui_ImplDX11_NewFrame();
   ImGui_ImplWin32_NewFrame();
   ImGui::NewFrame();
+  
+  dockerTest();
 
   if(showFileDilog) {
     ImGui::OpenPopup("Choose File");
@@ -344,26 +348,57 @@ Editor::postRender() {
 
   if (m_sceneWindow)
   {
-    ImGuiWindowFlags flags = 0;
-    if (ImGui::Begin("Scene", &m_sceneWindow, flags)) {
-      //son los margenes de la ventana
-      m_posMouseSceneWindow[0] = (ImGui::GetMousePos().x - ImGui::GetWindowPos().x + 7.f) / m_sceneViewport.width;
-      m_posMouseSceneWindow[1] = (ImGui::GetMousePos().y - ImGui::GetWindowPos().y + 27.f) / m_sceneViewport.height;
-      float size = ImGui::GetFontSize() + ImGui::GetFrameHeight() * 2.f;
-      float width = ImGui::GetWindowWidth() - 18;
-      float height = ImGui::GetWindowHeight()- size;
-      if (m_sceneViewport.width != width || m_sceneViewport.height != height)
-      {
-        m_sceneViewport.width = (UInt32)width;
-        m_sceneViewport.height = (UInt32)height;
-        initRT();
-        CameraManager::getActiveCamera()->setViewport(m_sceneViewport);
-      }
-      auto texture = static_cast<ID3D11ShaderResourceView*>(m_RT->getTexture(0).getAPIObject());
-      ImGui::Image(texture, { width, height });
-    }
-    ImGui::End();
+    //ImGuiWindowFlags flags = 0;
+    //if (ImGui::Begin("Scene", &m_sceneWindow, flags)) {
+    //  //son los margenes de la ventana
+    //  m_posMouseSceneWindow[0] = (ImGui::GetMousePos().x - ImGui::GetWindowPos().x + 7.f) / m_sceneViewport.width;
+    //  m_posMouseSceneWindow[1] = (ImGui::GetMousePos().y - ImGui::GetWindowPos().y + 27.f) / m_sceneViewport.height;
+    //  float size = ImGui::GetFontSize() + ImGui::GetFrameHeight() * 2.f;
+    //  float width = ImGui::GetWindowWidth() - 18;
+    //  float height = ImGui::GetWindowHeight()- size;
+    //  if (m_sceneViewport.width != width || m_sceneViewport.height != height)
+    //  {
+    //    m_sceneViewport.width = (UInt32)width;
+    //    m_sceneViewport.height = (UInt32)height;
+    //    initRT();
+    //    CameraManager::getActiveCamera()->setViewport(m_sceneViewport);
+    //  }
+        
+    //  auto texture = static_cast<ID3D11ShaderResourceView*>(m_RT->getTexture(0).getAPIObject());
+    //  ImGui::Image(texture, { width, height });
+    //}
+    //ImGui::End();
   }
+
+  //Using docker
+  auto visible = ImGui::Begin("imguidock window (= lumix engine's dock system)");
+  if (visible) {
+
+
+      ImGui::BeginDockspace(); //Dentro de aqui van todas las ventanas
+      if (ImGui::BeginDock("Scene")) {
+        ImGui::SetNextDock(ImGuiDockSlot_Bottom);
+        m_posMouseSceneWindow[0] = (ImGui::GetMousePos().x - ImGui::GetWindowPos().x + 7.f) / m_sceneViewport.width;
+        m_posMouseSceneWindow[1] = (ImGui::GetMousePos().y - ImGui::GetWindowPos().y + 27.f) / m_sceneViewport.height;
+        float size = ImGui::GetFontSize() + ImGui::GetFrameHeight() * 2.f;
+        float width = ImGui::GetWindowWidth() - 18;
+        float height = ImGui::GetWindowHeight()- size;
+        if (m_sceneViewport.width != width || m_sceneViewport.height != height)
+        {
+          m_sceneViewport.width = (UInt32)width;
+          m_sceneViewport.height = (UInt32)height;
+          initRT();
+          CameraManager::getActiveCamera()->setViewport(m_sceneViewport);
+        }
+
+        auto texture = static_cast<ID3D11ShaderResourceView*>(m_RT->getTexture(0).getAPIObject());
+        ImGui::Image(texture, { width, height });
+
+      }
+      ImGui::EndDock();
+      ImGui::EndDockspace();
+  }
+  ImGui::End();
 
 
   GraphicsAPI::getDepthStencilState(DR_DEPTH_STENCIL_STATES::kDepthRW).set(GraphicsAPI::getDeviceContext(), 1);
@@ -382,12 +417,13 @@ Editor::postDestroy() {
   ImGui_ImplDX11_Shutdown();
   ImGui_ImplWin32_Shutdown();
   ImGui::DestroyContext();
+
+  SceneGraph::shutDown();
   SoundAPI::shutDown();
   ScriptEngine::shutDown();
   PhysicsManager::shutDown();
   ContextManager::shutDown();
   ResourceManager::shutDown();
-  SceneGraph::shutDown();
   CameraManager::shutDown();
   InputManager::shutDown();
   RenderManager::shutDown();
@@ -1147,4 +1183,42 @@ void driderSDK::Editor::createMat() {
     }
   }
 }
+
+void 
+Editor::dockerTest() {
+  ImGui::SetCurrentDockContext(m_dockContext);
+  ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
+  ImGui::SetNextWindowPos({0,0});
+  const ImGuiWindowFlags flags =  (ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar);
+  const float oldWindowRounding = ImGui::GetStyle().WindowRounding;ImGui::GetStyle().WindowRounding = 0;
+  const bool visible = ImGui::Begin("imguidock window (= lumix engine's dock system)",NULL,ImVec2(0, 0),1.0f,flags);
+  ImGui::GetStyle().WindowRounding = oldWindowRounding;
+  if (visible) {
+
+
+      ImGui::BeginDockspace(); //Dentro de aqui van todas las ventanas
+
+      ImGui::SetNextDock(ImGuiDockSlot_Left);
+      if(ImGui::BeginDock("Hierarchy")) {
+          ImGui::Text("Cosas de herarchy");
+      }
+      ImGui::EndDock();
+
+      ImGui::SetNextDock(ImGuiDockSlot_Top);
+      if(ImGui::BeginDock("Resource")) {
+          ImGui::Text("Cosas de recursos");
+      }
+      ImGui::EndDock();      
+
+      ImGui::SetNextDock(ImGuiDockSlot_Right);
+      if(ImGui::BeginDock("Inspector")) {
+          ImGui::Text("Cosas de inspector");
+      }
+      ImGui::EndDock();      
+
+      ImGui::EndDockspace();
+  }
+  ImGui::End();
+}
+
 }
