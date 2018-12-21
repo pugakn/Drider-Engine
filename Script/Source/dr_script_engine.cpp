@@ -65,10 +65,13 @@ ScriptEngine::addScript(const TString& scriptName,
 
   asIScriptModule *mod = m_scriptEngine->GetModule(StringUtils::toString(module).c_str(),
                                                    asGM_CREATE_IF_NOT_EXISTS);
-  
-  Int8 result = mod->AddScriptSection(StringUtils::toString(scriptName).c_str(),
-                                      StringUtils::toString(script).c_str(),
-                                      script.length());
+  Int8 result = 0;
+  if(!typeExist(scriptName)) {
+    result = mod->AddScriptSection(StringUtils::toString(scriptName).c_str(),
+                                   StringUtils::toString(script).c_str(),
+                                   script.length());
+    m_scriptTypes.push_back(scriptName);
+  }
 
   if (result < 0) {
     addScriptLog(_T("AddScriptSection failed on file ") + scriptName, asMSGTYPE_ERROR);
@@ -249,6 +252,21 @@ ScriptEngine::addScriptLog(const TString& log, int type) {
 	else if (type == asMSGTYPE_ERROR) {
     Logger::instancePtr()->addError(__FILE__, __LINE__, signature + log);
 	}
+}
+
+bool
+ScriptEngine::typeExist(TString type) {
+  for(auto script: m_scriptTypes) {
+    if(script == type) {
+      return true;
+    }
+  }
+  return false;
+}
+
+void
+ScriptEngine::removeTypes() {
+  m_scriptTypes.clear();
 }
 
 }

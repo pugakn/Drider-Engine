@@ -164,6 +164,13 @@ class DR_SCRIPT_EXPORT ScriptEngine : public Module<ScriptEngine>
   std::vector<asIScriptModule*> m_scriptModules;
 	ScriptDebug* Debug;
 
+  bool
+  typeExist(TString type);
+
+  void
+  removeTypes();
+  
+
  protected:
   void
   onStartUp() override { }
@@ -172,6 +179,7 @@ class DR_SCRIPT_EXPORT ScriptEngine : public Module<ScriptEngine>
   onShutDown() override {}
 
  private:
+  std::vector<TString> m_scriptTypes;
 };
 
 }

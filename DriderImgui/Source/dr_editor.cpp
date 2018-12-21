@@ -566,6 +566,32 @@ Editor::loadMainMenu() {
       ImGui::Checkbox("File Manager", &m_fileManagerWindow);
       ImGui::EndMenu();
     }
+    if(ImGui::BeginMenu("Script")) {
+      auto mod = ScriptEngine::instance().m_scriptEngine->GetModule("GameModule");
+      if(ImGui::Button("Build")) {
+        mod->Discard();
+        for (auto &s : m_scripts) {
+          s->discard();
+        }
+        Int32 error = ScriptEngine::instance().m_scriptContext->Release();
+        ScriptEngine::instance().removeTypes();
+
+        initScriptEngine();
+        for (auto &s : m_scripts) {
+          s->addScriptSection();
+        }
+      }
+      if (ImGui::Button("Start")) {
+        mod->Build();
+        
+        for(auto &s: m_scripts) {
+          s->initScript();
+          s->start();
+        }
+      }
+
+      ImGui::EndMenu();
+    }
     ImGui::EndMainMenuBar();
   }
 }
@@ -865,7 +891,7 @@ void Editor::loadMenuAddComponent()
     m_selectedGameObject->createComponent<RenderComponent>(std::shared_ptr<Model>());
   }
   if (ImGui::MenuItem("Script")) {
-    m_selectedGameObject->createComponent<ScriptComponent>();
+    m_scripts.push_back(m_selectedGameObject->createComponent<ScriptComponent>());
   }
   if (ImGui::MenuItem("Sound")) {
     m_selectedGameObject->createComponent<SoundComponent>();

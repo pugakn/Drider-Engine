@@ -127,6 +127,8 @@ ScriptComponent::initScript() {
   //Get script object
   TString name = m_script->getName();
 
+  mod = scriptEngine->m_scriptEngine->GetModule("GameModule");
+
   scriptEngine->getScriptObject(name,
                                 mod,
                                 &obj,
@@ -225,7 +227,11 @@ ScriptComponent::getScript() {
 void
 ScriptComponent::setScript(std::shared_ptr<ScriptCore> _script) {
   m_script = _script;
+}
 
+void
+ScriptComponent::addScriptSection() {
+  
   scriptEngine->addScript(m_script->getName(),
                           m_script->getScript(),
                           _T("GameModule"));

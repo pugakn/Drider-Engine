@@ -27,11 +27,11 @@ ScriptInputs::getInputs() {
       script.setScript(ptrScript);
       
       //Build module
-      auto currentModule = ScriptEngine::instance().m_scriptEngine->GetModule("GameModule");
+      /*auto currentModule = ScriptEngine::instance().m_scriptEngine->GetModule("GameModule");
       Int32 result = currentModule->Build();
 
       script.initScript();
-      script.start();
+      script.start();*/
     }
     ImGui::EndDragDropTarget();
   }

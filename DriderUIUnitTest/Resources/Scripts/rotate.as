@@ -5,7 +5,7 @@ class rotate : driderBehavior {
 	}
 
 	void Update() {
-		Vector3D vectorUp(0.0,10.0 * getDelta(),0.0);
+		Vector3D vectorUp(0.0,2.0 * getDelta(),0.0);
 
 		
 		transform.rotate(vectorUp);

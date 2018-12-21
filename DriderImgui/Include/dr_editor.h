@@ -9,6 +9,8 @@
 
 namespace driderSDK {
 
+class ScriptComponent;
+
 class Editor : public Application
 {
   const float W_SCROLL_VEL = 0.2f;
@@ -65,6 +67,7 @@ class Editor : public Application
   std::shared_ptr<Material> m_selectedMaterial;
   SceneGraph::SharedGameObject m_GMOOnFocus;
   std::vector<TString> semantics;
+  std::vector<ScriptComponent*> m_scripts;
 };
 
 }
