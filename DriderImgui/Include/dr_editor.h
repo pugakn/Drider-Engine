@@ -11,6 +11,9 @@ namespace driderSDK {
 
 class Editor : public Application
 {
+  const float W_SCROLL_VEL = 0.2f;
+  const float W_MOVE_VEL = 0.38f;
+  const float W_ROT_VEL = 1.f;
   // Inherited via
   private:
   void initCallbacks();
@@ -23,6 +26,7 @@ class Editor : public Application
 
   void initSceneGraph();
   void initScriptEngine();
+  void initInputs();
   void loadMainMenu();
   void initImguiMenus(float mainMenuBarheight);
   void loadHierarchy();
@@ -55,9 +59,11 @@ class Editor : public Application
   bool showFileDilog;
   bool showSaveFileDialog;
   bool createMaterialFileDialog;
+  bool m_rotWorldActive = false;
+  bool m_movWorldActive = false;
   SceneGraph::SharedGameObject m_selectedGameObject;
   std::shared_ptr<Material> m_selectedMaterial;
-
+  SceneGraph::SharedGameObject m_GMOOnFocus;
   std::vector<TString> semantics;
 };
 

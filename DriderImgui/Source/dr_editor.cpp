@@ -92,6 +92,7 @@ void Editor::postInit()
   m_inpectorWindow = true;
   m_fileManagerWindow = true;
   m_mainMenuBarheight = 0;
+  //initInputs();
   initRT();
   initCallbacks();
   initSceneGraph();
@@ -117,6 +118,59 @@ modelMat->addProperty(_T("Roughness"*/
   semantics.push_back(L"Roughness");
 }
 
+void
+Editor::initInputs() {
+  InputManager::getMouse()->addMovedCallback([this]()
+  {
+    auto dis = Mouse::getDisplacement();
+    auto pos = Mouse::getPosition();
+    auto cam = CameraManager::getActiveCamera();
+    if (dis.z) {
+      float vel = W_SCROLL_VEL;
+      if (m_GMOOnFocus) {
+        //vel = vel * (m_GMOOnFocus->getTransform().getPosition() - cam->getPosition()).lengthSqr() / 100000.0f;
+      }
+      cam->move(dis.z *vel, 0, 0);
+    }
+    if (m_rotWorldActive) {
+      cam->pan(0, dis.x * W_ROT_VEL, dis.y * W_ROT_VEL);
+    }
+    if (m_movWorldActive) {
+      cam->move(0, dis.x * W_MOVE_VEL, dis.y * W_MOVE_VEL);
+    }
+
+  });
+  InputManager::getMouse()->addAnyButtonCallback(MOUSE_INPUT_EVENT::kButtonPressed,
+    [this](MOUSE_BUTTON::E pressedId)
+  {
+    auto pos = Mouse::getPosition();
+
+    if (pressedId == MOUSE_BUTTON::kRight) {
+      m_rotWorldActive = true;
+
+    }
+    if (pressedId == MOUSE_BUTTON::kMiddle) {
+      m_movWorldActive = true;
+    }
+    if (pressedId == MOUSE_BUTTON::kLeft) {
+      m_movWorldActive = true;
+    }
+  });
+  InputManager::getMouse()->addAnyButtonCallback(MOUSE_INPUT_EVENT::kButtonReleased,
+    [this](MOUSE_BUTTON::E pressedId)
+  {
+    auto pos = Mouse::getPosition();
+    if (pressedId == MOUSE_BUTTON::kRight) {
+      m_rotWorldActive = false;
+    }
+    if (pressedId == MOUSE_BUTTON::kMiddle) {
+      m_movWorldActive = false;
+    }
+    if (pressedId == MOUSE_BUTTON::kLeft) {
+      m_movWorldActive = false;
+    }
+  });
+}
 void Editor::initCallbacks()
 {
   auto mouseButtonDown =
@@ -294,8 +348,9 @@ Editor::postRender() {
   {
     ImGuiWindowFlags flags = 0;
     if (ImGui::Begin("Scene", &m_sceneWindow, flags)) {
+      float size = ImGui::GetFontSize() + ImGui::GetFrameHeight() * 2.f;
       float width = ImGui::GetWindowWidth();
-      float height = ImGui::GetWindowHeight();
+      float height = ImGui::GetWindowHeight()- size;
       if (m_sceneViewport.width != width || m_sceneViewport.height != height)
       {
         m_sceneViewport.width = (UInt32)width;
@@ -902,7 +957,7 @@ i = i+3;
       if (align_label_with_current_x_position)
         ImGui::Indent(ImGui::GetTreeNodeToLabelSpacing());
       ImGui::TreePop();
-    }
+    } 
     ImGui::End();
   }
 }
@@ -910,41 +965,71 @@ i = i+3;
 void
 Editor::loadRenderWindow() {
   if (m_renderConfigWindow) {
-    ImGui::Begin("Render Configuration", &m_renderConfigWindow);
-    if (ImGui::CollapsingHeader("Post-Processing"))
-    {
-      ImGui::Text("Post-Processing");
+
+     ImGui::Begin("Render Configuration", &m_renderConfigWindow);
+    if (ImGui::CollapsingHeader("Post-Processing")) {
+      ImGui::Indent(ImGui::GetTreeNodeToLabelSpacing());
+      if (ImGui::CollapsingHeader("Chromatic Aberration")) {
+        ImGui::Columns(2, "", false);
+        ImGui::Text("Displacement:");
+        ImGui::NextColumn();
+        ImGui::DragFloat("##cromaticPP", RenderManager::instance().getCAStrenght(), .001f, -0.5f, 0.5f);
+        ImGui::EndColumns();
+      }
+      if (ImGui::CollapsingHeader("Depth Of field")) {
+        ImGui::Checkbox("Front Focus:##frontFocusPP", RenderManager::instance().getDoFFrontFocus());
+        ImGui::Columns(2, "", false);
+        ImGui::Text("Distance:");
+        ImGui::NextColumn();
+        ImGui::DragFloat("##distancePP", RenderManager::instance().getDoFDistance(), 1.0f, 0.0f, 100000.0f);
+        ImGui::NextColumn();
+        ImGui::Text("Facus range:");
+        ImGui::NextColumn();
+        ImGui::DragFloat("##focusRangePP", RenderManager::instance().getDoFFocusRange(), 1.0f, 10.0f, 100000.0f);
+        ImGui::EndColumns();
+      }
+      if (ImGui::CollapsingHeader("Vignete")) {
+        float* tempRadius = &RenderManager::instance().getVignetteRadius()->x;
+        ImGui::Columns(2, "", false);
+        ImGui::Text("Radius:");
+        ImGui::NextColumn();
+        ImGui::DragFloat2("##radiusPP", tempRadius, 0.1f, 0.0f, 100.0f);
+
+        float* tempConcentration = &RenderManager::instance().getVignetteConcentration()->x;
+        ImGui::NextColumn();
+        ImGui::Text("Concentration:");
+        ImGui::NextColumn();
+        ImGui::DragFloat2("##concentrationPP", tempConcentration, 0.1f, 0.0f, 100.0f);
+
+        ImGui::NextColumn();
+        ImGui::Text("Scale:");
+        ImGui::NextColumn();
+        ImGui::DragFloat("##scaleVPP", RenderManager::instance().getVignetteScale(), 1.0f, 0.0f, 100.0f);
+        ImGui::EndColumns();
+      }
+      ImGui::Unindent(ImGui::GetTreeNodeToLabelSpacing());
     }
-    if (ImGui::CollapsingHeader("SSAO"))
-    {
-      ImGui::Checkbox("Enabled", &m_sceneWindow);
+    if (ImGui::CollapsingHeader("SSAO")) {
+      ImGui::Checkbox("Enabled", RenderManager::instance().getSSAOActive());
       ImGui::Columns(2, "", false);
       ImGui::Text("Sample Radio:");
       ImGui::NextColumn();
-      float sampleRadioSSAO = 0;
-      if (ImGui::DragFloat("##sampleRadioSSAO", &sampleRadioSSAO)) {
-      }
+      ImGui::DragFloat("##sampleRadioSSAO", RenderManager::instance().getSSAOSampleRadio(), 1.0f, 0.0f);
 
       ImGui::NextColumn();
       ImGui::Text("Intensity:");
       ImGui::NextColumn();
-      float intensitySSAO = 0;
-      if (ImGui::DragFloat("##intensitySSAO", &intensitySSAO)) {
-      }
+      ImGui::DragFloat("##intensitySSAO", RenderManager::instance().getSSAOIntensity(), 1.0f, 0.0f);
 
       ImGui::NextColumn();
       ImGui::Text("Scale:");
       ImGui::NextColumn();
-      float scaleSSAO = 0;
-      if (ImGui::DragFloat("##scaleSSAO", &scaleSSAO)) {
-      }
-
+      ImGui::DragFloat("##scaleSSAO", RenderManager::instance().getSSAOScale(), 1.0f, 0.0f);
       ImGui::NextColumn();
       ImGui::Text("Bias:");
       ImGui::NextColumn();
-      float biasSSAO = 0;
-      if (ImGui::DragFloat("##biasSSAO", &biasSSAO)) {
-      }
+      ImGui::DragFloat("##biasSSAO", RenderManager::instance().getSSAOBias(), 1.0f, 0.0f);
+      ImGui::EndColumns();
     }
 
     ImGui::End();
