@@ -306,7 +306,7 @@ void Editor::postUpdate()
   }
   else
   {
-    if (m_hierarchyWindow) {
+    /*if (m_hierarchyWindow) {
       ImGui::Begin("Hierarchy", &m_hierarchyWindow, flags);
       loadHierarchy();
       ImGui::End();
@@ -326,7 +326,7 @@ void Editor::postUpdate()
       ImGui::End();
     }
     loadFileManager();
-    loadRenderWindow();
+    loadRenderWindow();*/
   }
 }
 
@@ -925,79 +925,77 @@ void Editor::loadMenuAddComponent()
 
 void Editor::loadFileManager()
 {
-  if (m_fileManagerWindow) {
-    ImGui::Begin("File Manager", &m_fileManagerWindow);
+  //if (m_fileManagerWindow) {
+   //ImGui::Begin("File Manager", &m_fileManagerWindow);
    /* ImGuiFs::PathStringVector names;
-    ImGuiFs::DirectoryGetDirectories("Resources", names);
-    */
-    std::function<void(ImGuiFs::PathStringVector&)> showFiles = [&](ImGuiFs::PathStringVector& files) {
+   ImGuiFs::DirectoryGetDirectories("Resources", names);
+   */
+   std::function<void(ImGuiFs::PathStringVector&)> showFiles = [&](ImGuiFs::PathStringVector& files) {
 
-      ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
+     ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
 
-      for (size_t i = 0; i < files.size(); i++) {
-        char tempName[64] = "";
+     for (size_t i = 0; i < files.size(); i++) {
+       char tempName[64] = "";
 
-        ImGuiFs::PathGetFileName(files.Data[i], tempName);
-        ImGui::TreeNodeEx((std::string("##") + tempName + "FM").c_str(), node_flags, tempName);
-        if (ImGui::IsItemClicked()) {
-          TString extension = FileSystem::GetFileExtension(StringUtils::toTString(tempName));
-          if(extension == L"mat") {
-            m_selectedMaterial = ResourceManager::loadMaterial(tempName);
-          }
-        }
-         
-        if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
-          ImGui::SetDragDropPayload("FILE_ITEM", &tempName, sizeof(tempName));        // Set payload to carry the index of our item (could be anything)
-          ImGui::Text("%s", tempName);
-          ImGui::EndDragDropSource();
-        }
-      }
-    };
+       ImGuiFs::PathGetFileName(files.Data[i], tempName);
+       ImGui::TreeNodeEx((std::string("##") + tempName + "FM").c_str(), node_flags, tempName);
+       if (ImGui::IsItemClicked()) {
+         TString extension = FileSystem::GetFileExtension(StringUtils::toTString(tempName));
+         if(extension == L"mat") {
+           m_selectedMaterial = ResourceManager::loadMaterial(tempName);
+         }
+       }
+        
+       if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
+         ImGui::SetDragDropPayload("FILE_ITEM", &tempName, sizeof(tempName));        // Set payload to carry the index of our item (could be anything)
+         ImGui::Text("%s", tempName);
+         ImGui::EndDragDropSource();
+       }
+     }
+   };
 
-    std::function<void(ImGuiFs::PathStringVector&)> showDirectories = [&](ImGuiFs::PathStringVector& directories){
-      char tempName[64] = "";
+   std::function<void(ImGuiFs::PathStringVector&)> showDirectories = [&](ImGuiFs::PathStringVector& directories){
+     char tempName[64] = "";
 
-      ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
-      for (size_t i = 0; i < directories.size(); i++) {
-        ImGuiFs::PathGetFileName(directories.Data[i], tempName);
-        bool node_open = ImGui::TreeNodeEx((std::string("##") + tempName + "FM").c_str(), node_flags, tempName);
-        if (node_open) {
-          ImGuiFs::PathStringVector namesDirectories;
-          ImGuiFs::DirectoryGetDirectories(directories.Data[i], namesDirectories);
-          showDirectories(namesDirectories);
-          ImGuiFs::PathStringVector namesFiles;
-          ImGuiFs::DirectoryGetFiles(directories.Data[i], namesFiles);
-          showFiles(namesFiles);
-          ImGui::TreePop();
-        }
-      }
-    };
+     ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
+     for (size_t i = 0; i < directories.size(); i++) {
+       ImGuiFs::PathGetFileName(directories.Data[i], tempName);
+       bool node_open = ImGui::TreeNodeEx((std::string("##") + tempName + "FM").c_str(), node_flags, tempName);
+       if (node_open) {
+         ImGuiFs::PathStringVector namesDirectories;
+         ImGuiFs::DirectoryGetDirectories(directories.Data[i], namesDirectories);
+         showDirectories(namesDirectories);
+         ImGuiFs::PathStringVector namesFiles;
+         ImGuiFs::DirectoryGetFiles(directories.Data[i], namesFiles);
+         showFiles(namesFiles);
+         ImGui::TreePop();
+       }
+     }
+   };
 
-    
+   auto rootDir = "Resources";
+   if (ImGui::TreeNode("Resources")) {
 
-    auto rootDir = "Resources";
-    if (ImGui::TreeNode("Resources")) {
+     static bool align_label_with_current_x_position = false;
+     if (align_label_with_current_x_position)
+       ImGui::Unindent(ImGui::GetTreeNodeToLabelSpacing());
 
-      static bool align_label_with_current_x_position = false;
-      if (align_label_with_current_x_position)
-        ImGui::Unindent(ImGui::GetTreeNodeToLabelSpacing());
+     ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, ImGui::GetFontSize()); // Increase spacing to differentiate leaves from expanded contents.
+     
+     ImGuiFs::PathStringVector namesDirectories;
+     ImGuiFs::DirectoryGetDirectories(rootDir, namesDirectories);
+     showDirectories(namesDirectories);
+     ImGuiFs::PathStringVector namesFiles;
+     ImGuiFs::DirectoryGetFiles(rootDir, namesFiles);
+     showFiles(namesFiles);
 
-      ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, ImGui::GetFontSize()); // Increase spacing to differentiate leaves from expanded contents.
-      
-      ImGuiFs::PathStringVector namesDirectories;
-      ImGuiFs::DirectoryGetDirectories(rootDir, namesDirectories);
-      showDirectories(namesDirectories);
-      ImGuiFs::PathStringVector namesFiles;
-      ImGuiFs::DirectoryGetFiles(rootDir, namesFiles);
-      showFiles(namesFiles);
-
-      ImGui::PopStyleVar();
-      if (align_label_with_current_x_position)
-        ImGui::Indent(ImGui::GetTreeNodeToLabelSpacing());
-      ImGui::TreePop();
-    } 
-    ImGui::End();
-  }
+     ImGui::PopStyleVar();
+     if (align_label_with_current_x_position)
+       ImGui::Indent(ImGui::GetTreeNodeToLabelSpacing());
+     ImGui::TreePop();
+   } 
+   //ImGui::End();
+  
 }
 
 void
@@ -1201,19 +1199,22 @@ Editor::dockerTest() {
 
       ImGui::SetNextDock(ImGuiDockSlot_Left);
       if(ImGui::BeginDock("Hierarchy")) {
-          ImGui::Text("Cosas de herarchy");
+          //ImGui::Text("Cosas de herarchy");
+          loadHierarchy();
       }
       ImGui::EndDock();
 
       ImGui::SetNextDock(ImGuiDockSlot_Top);
       if(ImGui::BeginDock("Resource")) {
-          ImGui::Text("Cosas de recursos");
+        //ImGui::Text("Cosas de recursos");
+        loadFileManager();
       }
       ImGui::EndDock();      
 
       ImGui::SetNextDock(ImGuiDockSlot_Right);
       if(ImGui::BeginDock("Inspector")) {
-          ImGui::Text("Cosas de inspector");
+         //ImGui::Text("Cosas de inspector");
+         loadInspector();
       }
       ImGui::EndDock();      
 
