@@ -112,6 +112,8 @@ RenderManApp::postInit() {
   m_TransformMode = TransformMode::kPosition;
   cubeLarge = 100.0f;
   cubeDefault = 5.0f;
+  m_bOffseted = false;
+  m_fOffset = 0.0f;
 
   Vector4D LightPosition(0.0f, 100.0f, 150.0f, 1.0f);
   
@@ -335,6 +337,8 @@ RenderManApp::postUpdate() {
   }
   if (!Mouse::isButtonDown(MOUSE_BUTTON::kLeft)) {
     m_SelectedMoveAxis = TransformAxis::kNone;
+    m_bOffseted = false;
+    m_fOffset = 0.0f;
   }
 
   //Recompile shaders.
@@ -595,14 +599,27 @@ RenderManApp::MoveOnAxe(TransformAxis::E axisToMoveOn) {
       Vector3D raycastPos;
       raycastPos = rayOrigin + (rayDirection * t);
 
+      if (!m_bOffseted) {
+        if (TransformAxis::kX == axisToMoveOn) {
+          m_fOffset = newPos.x - raycastPos.x;
+        }
+        else if (TransformAxis::kY == axisToMoveOn) {
+          m_fOffset = newPos.y - raycastPos.y;
+        }
+        else if (TransformAxis::kZ == axisToMoveOn) {
+          m_fOffset = newPos.z - raycastPos.z;
+        }
+        m_bOffseted = true;
+      }
+
       if (TransformAxis::kX == axisToMoveOn) {
-        newPos.x = raycastPos.x;
+        newPos.x = raycastPos.x + m_fOffset;
       }
       else if (TransformAxis::kY == axisToMoveOn) {
-        newPos.y = raycastPos.y;
+        newPos.y = raycastPos.y + m_fOffset;
       }
       else if (TransformAxis::kZ == axisToMoveOn) {
-        newPos.z = raycastPos.z;
+        newPos.z = raycastPos.z + m_fOffset;
       }
 
       m_selectedGO->getTransform().setPosition(newPos);

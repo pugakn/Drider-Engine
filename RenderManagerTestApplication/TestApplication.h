@@ -77,6 +77,8 @@ class RenderManApp : public Application
   TransformAxis::E m_SelectedMoveAxis;
   float cubeLarge;
   float cubeDefault;
+  bool m_bOffseted;
+  float m_fOffset;
 
   std::vector<SceneGraph::SharedGameObject> m_vecGos;
   std::shared_ptr<Material> m_BushMat;
