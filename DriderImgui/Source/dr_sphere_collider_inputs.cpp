@@ -12,12 +12,12 @@ SphereColliderInputs::getInputs() {
     //AABB
     //ImGui::TextDisabled("Sphere(1.0, (0.0, 0.0, 0.0) )");
   
-    static float radius = sphereComponent.getRadius();
+    float radius = sphereComponent.getRadius();
     if(ImGui::InputFloat("Radius", &radius)) {
       sphereComponent.setSize(radius);
     }
 
-    static Vector3D pos = sphereComponent.getCenter();
+    Vector3D pos = sphereComponent.getCenter();
     if(ImGui::InputFloat3("Center", pos.ptr())) {
       sphereComponent.setLocalPosition(pos);
     }

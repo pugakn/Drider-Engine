@@ -9,6 +9,8 @@
 #include <dr_vector2d.h>
 #include <dr_viewport.h>
 
+#include "imguidock.h"
+
 namespace driderSDK {
 
 namespace TransformMode {
@@ -59,6 +61,7 @@ class Editor : public Application
   void loadScene();
   void saveScene();
   void createMat();
+  void dockerTest();
   void loadInspector();
   void loadMenuAddComponent();
   void loadFileManager();
@@ -115,6 +118,7 @@ class Editor : public Application
   SceneGraph::SharedGameObject m_GMOOnFocus;
   std::vector<TString> semantics;
   std::vector<ScriptComponent*> m_scripts;
+  ImGui::DockContext* m_dockContext;
 };
 
 }

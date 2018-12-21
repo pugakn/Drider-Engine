@@ -166,6 +166,7 @@
     <ClCompile Include="Source\dr_sound_inputs.cpp" />
     <ClCompile Include="Source\dr_sphere_collider_inputs.cpp" />
     <ClCompile Include="Source\imgui.cpp" />
+    <ClCompile Include="Source\imguidock.cpp" />
     <ClCompile Include="Source\imguifilesystem.cpp" />
     <ClCompile Include="Source\ImGuiFileDialog.cpp" />
     <ClCompile Include="Source\imgui_demo.cpp" />
@@ -191,6 +192,7 @@
     <ClInclude Include="Include\dr_sphere_collider_inputs.h" />
     <ClInclude Include="Include\imconfig.h" />
     <ClInclude Include="Include\imgui.h" />
+    <ClInclude Include="Include\imguidock.h" />
     <ClInclude Include="Include\imguifilesystem.h" />
     <ClInclude Include="Include\ImGuiFileDialog.h" />
     <ClInclude Include="Include\imgui_impl_dx11.h" />
