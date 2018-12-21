@@ -36,6 +36,9 @@ namespace driderSDK {
 
     void
       setAABB(const AABB& aabb);
+    
+    AABB
+    getAABB();
 
 
   private:

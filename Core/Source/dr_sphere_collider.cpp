@@ -103,4 +103,14 @@ SphereCollider::getType() {
   return COLLIDER_TYPE::kBOX;
 }
 
+float
+SphereCollider::getRadius() {
+  return m_radius;
+}
+
+Vector3D
+SphereCollider::getCenter() {
+  return m_center;
+}
+
 }

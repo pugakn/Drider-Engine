@@ -73,6 +73,11 @@ void BoxCollider::setAABB(const AABB & aabb)
   m_collisionShapeID = m_body->AddBoxShape(Vector3D(transformedAABB.width, transformedAABB.height, transformedAABB.depth), transformedAABB.center);
 }
 
+AABB
+BoxCollider::getAABB() {
+  return m_aabb;
+}
+
 
 GameComponent* 
 BoxCollider::cloneIn(GameObject& _go) {
