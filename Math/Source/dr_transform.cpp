@@ -74,9 +74,9 @@ Transform::getRotation() const {
     m_direction = quat.getDirection();
 
     //m_eulerAngles = rightDir.eulerAngles();
-    m_eulerAngles.x = Math::aCos(m_rotX.vector1.y);
-    m_eulerAngles.y = Math::aCos(m_rotY.vector0.x);
-    m_eulerAngles.z = Math::aCos(m_rotZ.vector0.x);
+    m_eulerAngles.x = Math::aTan2(m_rotX.vector1.z, m_rotX.vector1.y);
+    m_eulerAngles.y = Math::aTan2(m_rotY.vector2.x, m_rotY.vector2.z);
+    m_eulerAngles.z = Math::aTan2(m_rotZ.vector0.y, m_rotZ.vector0.x);
 
     /**
     * Set from 0 to 2PI
