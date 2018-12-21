@@ -782,20 +782,19 @@ void Editor::loadMenuAddComponent()
   if (ImGui::MenuItem("Animator")) {
     m_selectedGameObject->createComponent<AnimatorComponent>();
   }
-  if (ImGui::MenuItem("RigidBody")) {
-    auto rigidBodyComponent = m_selectedGameObject->createComponent<RigidBody3DComponent>();
-    rigidBodyComponent->enableGravity(true);
-    rigidBodyComponent->setType(RIGID_BODY_TYPE::kDynamic);
-  }
   if (ImGui::BeginMenu("Collider")) {
     if (ImGui::MenuItem("Sphere"))
     {
-      //m_selectedGameObject->createComponent<RigidBody3DComponent>();
+      auto rigidBody = m_selectedGameObject->createComponent<RigidBody3DComponent>();
+      rigidBody->enableGravity(false);
+      rigidBody->setType(RIGID_BODY_TYPE::kStatic);
       m_selectedGameObject->createComponent<SphereCollider>(1.f, Vector3D(0, 0, 0));
     }
     if (ImGui::MenuItem("Box"))
     {
-      //m_selectedGameObject->createComponent<RigidBody3DComponent>();
+      auto rigidBody = m_selectedGameObject->createComponent<RigidBody3DComponent>();
+      rigidBody->enableGravity(false);
+      rigidBody->setType(RIGID_BODY_TYPE::kStatic);
       m_selectedGameObject->createComponent<BoxCollider>(AABB(1.f, 1.f, 1.f, Vector3D(0, 0, 0)));
     }
     ImGui::EndMenu();
