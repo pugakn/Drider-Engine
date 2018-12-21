@@ -269,8 +269,6 @@ void Editor::postUpdate()
   ImGui_ImplWin32_NewFrame();
   ImGui::NewFrame();
 
-  ImGui::ShowTestWindow();
-
   if(showFileDilog) {
     ImGui::OpenPopup("Choose File");
     showFileDilog = false;
@@ -348,8 +346,11 @@ Editor::postRender() {
   {
     ImGuiWindowFlags flags = 0;
     if (ImGui::Begin("Scene", &m_sceneWindow, flags)) {
+      //son los margenes de la ventana
+      m_posMouseSceneWindow[0] = (ImGui::GetMousePos().x - ImGui::GetWindowPos().x + 7.f) / m_sceneViewport.width;
+      m_posMouseSceneWindow[1] = (ImGui::GetMousePos().y - ImGui::GetWindowPos().y + 27.f) / m_sceneViewport.height;
       float size = ImGui::GetFontSize() + ImGui::GetFrameHeight() * 2.f;
-      float width = ImGui::GetWindowWidth();
+      float width = ImGui::GetWindowWidth() - 18;
       float height = ImGui::GetWindowHeight()- size;
       if (m_sceneViewport.width != width || m_sceneViewport.height != height)
       {
@@ -756,6 +757,7 @@ void driderSDK::Editor::materialEditor() {
 
 void Editor::loadInspector()
 {
+
   if (m_selectedGameObject == SceneGraph::getRoot()) { return; }
 
   if (ImGui::Button("Add Component"))
@@ -843,7 +845,6 @@ void Editor::loadInspector()
 
   auto components = m_selectedGameObject->getComponents<GameComponent>();
   for (auto component : components) {
-    ImGui::Text(StringUtils::toString(component->getName()).c_str());
     auto inputEditor = InputEditor::createInputEditor(*component);
     inputEditor->getInputs();
   }
@@ -1060,6 +1061,19 @@ void Editor::drawDebugStuff() {
       Vector3D(1, 0, 1),
       tr.Move(center));
   }
+}
+
+bool
+Editor::getMouseInScene(Vector2D* mousePosition) {
+  if(m_posMouseSceneWindow[0] >= 0.f && 
+     m_posMouseSceneWindow[1] >= 0.f &&
+     m_posMouseSceneWindow[0] <= 1.f &&
+     m_posMouseSceneWindow[1] <= 1) {
+    mousePosition->x = m_posMouseSceneWindow[0];
+    mousePosition->y = m_posMouseSceneWindow[1];
+    return true;
+  }
+  return false;
 }
 
 
