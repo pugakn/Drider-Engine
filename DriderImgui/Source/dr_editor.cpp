@@ -1207,10 +1207,10 @@ Editor::getMouseInScene(Vector2D* mousePosition) {
 void
 Editor::loadScene() {
   if (ImGuiFileDialog::Instance()->FileDialog("Choose File", ".txt\0\0", ".", "")) {
-    static std::string filePathName = "";
-    static std::string path = "";
-    static std::string fileName = "";
-    static std::string filter = "";
+    std::string filePathName = "";
+    std::string path = "";
+    std::string fileName = "";
+    std::string filter = "";
 
     if (ImGuiFileDialog::Instance()->IsOk == true) {
       filePathName = ImGuiFileDialog::Instance()->GetFilepathName();
@@ -1222,22 +1222,19 @@ Editor::loadScene() {
       ResourceManager::clear();
       ResourceManager::loadScene(filePathName);
     }
-    else {
-      filePathName = "";
-      path = "";
-      fileName = "";
-      filter = "";
-    }
+    
+    ImGuiFileDialog::Instance()->Clear();
   }
 }
 
 void
 Editor::saveScene() {
+
   if (ImGuiFileDialog::Instance()->FileDialog("Save Scene", ".txt\0\0", ".", "")) {
-    static std::string filePathName = "";
-    static std::string path = "";
-    static std::string fileName = "";
-    static std::string filter = "";
+    std::string filePathName = "";
+    std::string path = "";
+    std::string fileName = "";
+    std::string filter = "";
 
     if (ImGuiFileDialog::Instance()->IsOk == true) {
       filePathName = ImGuiFileDialog::Instance()->GetFilepathName();
@@ -1247,22 +1244,18 @@ Editor::saveScene() {
 
       ResourceManager::saveScene(filePathName);
     }
-    else {
-      filePathName = "";
-      path = "";
-      fileName = "";
-      filter = "";
-    }
+    
+    ImGuiFileDialog::Instance()->Clear();
   }
 }
 
 void
 Editor::createMat() {
   if (ImGuiFileDialog::Instance()->FileDialog("Create Material", ".mat\0\0", ".", "")) {
-    static std::string filePathName = "";
-    static std::string path = "";
-    static std::string fileName = "";
-    static std::string filter = "";
+    std::string filePathName = "";
+    std::string path = "";
+    std::string fileName = "";
+    std::string filter = "";
 
     if (ImGuiFileDialog::Instance()->IsOk == true) {
       filePathName = ImGuiFileDialog::Instance()->GetFilepathName();
@@ -1273,12 +1266,8 @@ Editor::createMat() {
       ResourceManager::saveMaterial(path + "//",
                                     fileName + filter);
     }
-    else {
-      filePathName = "";
-      path = "";
-      fileName = "";
-      filter = "";
-    }
+
+    ImGuiFileDialog::Instance()->Clear();
   }
 }
 

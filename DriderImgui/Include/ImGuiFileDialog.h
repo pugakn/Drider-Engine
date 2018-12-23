@@ -24,8 +24,8 @@ private:
 	std::string m_CurrentFilterExt;
 
 public:
-	static char FileNameBuffer[MAX_FILE_DIALOG_NAME_BUFFER];
-	static int FilterIndex;
+	char FileNameBuffer[MAX_FILE_DIALOG_NAME_BUFFER];
+	int FilterIndex;
 	bool IsOk;
 
 public:
@@ -48,6 +48,7 @@ public:
 	std::string GetCurrentPath();
 	std::string GetCurrentFileName();
 	std::string GetCurrentFilter();
+  void Clear();
 
 private:
 	void ScanDir(std::string vPath);

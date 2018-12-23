@@ -61,9 +61,6 @@ inline void ResetBuffer(char* vBuffer)
 	vBuffer[0] = '\0';
 }
 
-char ImGuiFileDialog::FileNameBuffer[MAX_FILE_DIALOG_NAME_BUFFER] = "";
-int ImGuiFileDialog::FilterIndex = 0;
-
 ImGuiFileDialog::ImGuiFileDialog()
 {
 	
@@ -203,6 +200,7 @@ bool ImGuiFileDialog::FileDialog(const char* vName,
                                  std::string vPath, 
                                  std::string vDefaultFileName)
 {
+
 	bool res = false;
 
 	IsOk = false;
@@ -355,7 +353,7 @@ bool ImGuiFileDialog::FileDialog(const char* vName,
 
 	if (res == true)
 	{
-		m_FileList.clear();
+		m_FileList.clear();  
 	}
 
 	return res;
@@ -379,4 +377,15 @@ std::string ImGuiFileDialog::GetCurrentFileName()
 std::string ImGuiFileDialog::GetCurrentFilter()
 {
 	return m_CurrentFilterExt;
+}
+
+void ImGuiFileDialog::Clear() {
+  m_SelectedFileName = "";
+  m_CurrentPath = "";
+  m_CurrentPath_Decomposition.clear();
+  m_CurrentFilterExt = "";
+  char *emptyChar;
+  memset(FileNameBuffer, 0, MAX_FILE_DIALOG_NAME_BUFFER);
+  FilterIndex = 0;
+
 }
