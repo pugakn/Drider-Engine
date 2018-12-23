@@ -174,9 +174,9 @@ ScriptEngine::executeFunctionParam(TString function,
 
 void
 ScriptEngine::release() {
-	m_scriptContext->Release();
-	m_scriptEngine->ShutDownAndRelease();
-	delete Debug;
+  ScriptEngine::instance().m_scriptContext->Release();
+  ScriptEngine::instance().m_scriptEngine->ShutDownAndRelease();
+	delete ScriptEngine::instance().Debug;
 }
 
 void
@@ -267,6 +267,11 @@ ScriptEngine::typeExist(TString type) {
 void
 ScriptEngine::removeTypes() {
   m_scriptTypes.clear();
+}
+
+void
+ScriptEngine::onShutDown() {
+  release();
 }
 
 }

@@ -129,6 +129,10 @@ ScriptComponent::cloneIn(GameObject& _go) {
 void
 ScriptComponent::initScript() {
   //Get script object
+  if(m_script == NULL) {
+    return;
+  }
+
   TString name = m_script->getName();
 
   mod = scriptEngine->m_scriptEngine->GetModule("GameModule");
@@ -238,6 +242,10 @@ ScriptComponent::setScript(std::shared_ptr<ScriptCore> _script) {
 void
 ScriptComponent::addScriptSection() {
   
+  if(m_script == NULL) {
+    return;
+  }
+
   scriptEngine->addScript(m_script->getName(),
                           m_script->getScript(),
                           _T("GameModule"));

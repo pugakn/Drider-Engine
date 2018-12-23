@@ -39,6 +39,7 @@
 #include <dr_sound_component.h>
 #include <dr_sphere_collider.h>
 #include <dr_time.h>
+#include <dr_script_engine.h>
 
 #include "dr_input_editor.h"
 #include "imgui.h"
@@ -1220,6 +1221,10 @@ Editor::loadScene() {
       
       SceneGraph::instance().getRoot()->destroy();
       ResourceManager::clear();
+      ScriptEngine::release();
+    
+      initScriptEngine();      
+
       ResourceManager::loadScene(filePathName);
     }
     

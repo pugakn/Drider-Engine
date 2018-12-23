@@ -115,7 +115,7 @@ class DR_SCRIPT_EXPORT ScriptEngine : public Module<ScriptEngine>
 	* Shut down the script's engine.
 	*
 	*/
-	void
+	static void
 	release();
 
 	/**
@@ -176,7 +176,7 @@ class DR_SCRIPT_EXPORT ScriptEngine : public Module<ScriptEngine>
   onStartUp() override { }
 
   void
-  onShutDown() override {}
+  onShutDown() override;
 
  private:
   std::vector<TString> m_scriptTypes;
