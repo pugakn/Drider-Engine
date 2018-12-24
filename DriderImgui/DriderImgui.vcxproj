@@ -183,6 +183,7 @@
     <ClInclude Include="Include\dr_box_collider_inputs.h" />
     <ClInclude Include="Include\dr_camera_inputs.h" />
     <ClInclude Include="Include\dr_editor.h" />
+    <ClInclude Include="include\dr_imgui_helper.h" />
     <ClInclude Include="Include\dr_input_editor.h" />
     <ClInclude Include="Include\dr_light_inputs.h" />
     <ClInclude Include="Include\dr_render_inputs.h" />

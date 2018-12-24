@@ -1285,7 +1285,6 @@ struct DockContext
 };
 
 
-
 static DockContext *g_dock = NULL;
 
 DockContext* CreateDockContext()
