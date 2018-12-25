@@ -121,6 +121,7 @@ Editor::postInit() {
   semantics.push_back(_T("Emisivity"));
   semantics.push_back(_T("Metallic"));
   semantics.push_back(_T("Roughness"));
+
 }
 
 void
@@ -692,24 +693,24 @@ Editor::loadMainMenu() {
       auto mod = ScriptEngine::instance().m_scriptEngine->GetModule("GameModule");
       if(ImGui::Button("Build")) {
         mod->Discard();
-        for (auto &s : m_scripts) {
-          s->discard();
+        for (auto &s : ResourceManager::instancePtr()->m_scriptsComponents) {
+          s.second->discard();
         }
         Int32 error = ScriptEngine::instance().m_scriptContext->Release();
         ScriptEngine::instance().removeTypes();
 
         initScriptEngine();
-        for (auto &s : m_scripts) {
-          s->addScriptSection();
+        for (auto &s : ResourceManager::instancePtr()->m_scriptsComponents) {
+          s.second->addScriptSection();
         }
       }
       if (ImGui::Button("Start")) {
         mod->Build();
         
-        for(auto &s: m_scripts) {
-          s->initScript();
+        for(auto &s: ResourceManager::instancePtr()->m_scriptsComponents) {
+          s.second->initScript();
           //Int32 c = s->getObject()->GetPropertyCount();
-          s->start();
+          s.second->start();
         }
       }
 
@@ -764,8 +765,18 @@ Editor::loadHierarchy() {
 
   if (ImGui::Button("DeleteNode")) {
     if (SceneGraph::getRoot() != m_selectedGameObject) {
+
+      //Remove script componets from compile List
+      auto componentRe = ResourceManager::instancePtr()->m_scriptsComponents;
+      auto componentList = m_selectedGameObject->getComponents<ScriptComponent>();
+      for (auto scriptComponent : componentList) {
+        ResourceManager::removeCompilableScript(scriptComponent->getIDScript());
+      }
+
       m_selectedGameObject->getParent()->removeChild(m_selectedGameObject);
       m_selectedGameObject->destroy();
+
+
       m_selectedGameObject = SceneGraph::getRoot();
     }
   }
@@ -1010,7 +1021,8 @@ Editor::loadMenuAddComponent()
     m_selectedGameObject->createComponent<RenderComponent>(std::shared_ptr<Model>());
   }
   if (ImGui::MenuItem("Script")) {
-    m_scripts.push_back(m_selectedGameObject->createComponent<ScriptComponent>());
+    auto scriptComponent = m_selectedGameObject->createComponent<ScriptComponent>();
+    ResourceManager::insertCompilableScript(scriptComponent);
   }
   if (ImGui::MenuItem("Sound")) {
     m_selectedGameObject->createComponent<SoundComponent>();

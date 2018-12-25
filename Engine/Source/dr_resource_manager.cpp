@@ -20,6 +20,7 @@
 #include "dr_codec_material.h"
 #include "dr_script_core.h"
 #include "dr_scene_core.h"
+#include "dr_script_component.h"
 
 #include <dr_graph.h>
 #include <dr_gameObject.h>
@@ -33,6 +34,7 @@
 #include "dr_serializable_light.h"
 #include "dr_quaternion.h"
 #include "dr_transform.h"
+#include "dr_serializable_script.h"
 
 namespace driderSDK {
 
@@ -73,12 +75,14 @@ ResourceManager::onStartUp() {
   auto seRender = std::make_shared<sRender>();
   auto seCamera = std::make_shared<sCamera>();
   auto seLight = std::make_shared<sLight>();
+  auto seScript = std::make_shared<sScript>();
 
   componentLoaders[SerializableTypeID::Sound] = seSound;
   //componentLoaders[SerializableTypeID::AABB] = cAABB;
   componentLoaders[SerializableTypeID::Render] = seRender;
   componentLoaders[SerializableTypeID::Camera] = seCamera;
   componentLoaders[SerializableTypeID::Light] = seLight;
+  componentLoaders[SerializableTypeID::Script] = seScript;
 }
 
 void 
@@ -380,6 +384,19 @@ ResourceManager::loadGameObject(File &file) {
     loadComponent(file, obj);
   }
 
+  //father->setParent(father);
+  GameObject::SharedGameObj father;
+  if(name != "ROOT_NODE_X") {
+    String fatherName;
+    file.m_file >> fatherName;
+    if(fatherName == "ROOT_NODE_X") {
+      father = sg->getRoot();
+    } else {
+      father = sg->getRoot()->findNode(StringUtils::toTString(fatherName));
+    }
+    obj->setParent(father);
+  }
+
   Int32 numChilds;
   file.m_file >> numChilds;
   for(int j = 0; j < numChilds; j++) {
@@ -412,6 +429,20 @@ ResourceManager::loadComponent(File &file,
     sRender s;
     s.load(file, obj);
   }*/
+}
+
+void
+ResourceManager::insertCompilableScript(ScriptComponent* component) {
+  auto rm = ResourceManager::instancePtr();
+  UInt32 id = rm->idScripts++;
+  component->setIDScript(id);
+  rm->m_scriptsComponents.insert({{id,component}});
+}
+
+void
+ResourceManager::removeCompilableScript(UInt32 ID) {
+  auto rm = ResourceManager::instancePtr();
+  rm->m_scriptsComponents.erase(ID);
 }
 
 bool
@@ -613,6 +644,7 @@ void
 ResourceManager::clear() {
   ResourceManager::instance().m_resources.clear();
   ResourceManager::instance().m_materials.clear();
+  ResourceManager::instance().m_scriptsComponents.clear();
 }
 
 void 

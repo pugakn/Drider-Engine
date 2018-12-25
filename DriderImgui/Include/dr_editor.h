@@ -117,8 +117,9 @@ class Editor : public Application
   std::shared_ptr<Material> m_selectedMaterial;
   SceneGraph::SharedGameObject m_GMOOnFocus;
   std::vector<TString> semantics;
-  std::vector<ScriptComponent*> m_scripts;
-  ImGui::DockContext* m_dockContext;
+  //std::vector<ScriptComponent*> m_scripts;
+  ImGui::DockContext* m_dockContext;  
+  //UInt32 idScript;
 };
 
 }

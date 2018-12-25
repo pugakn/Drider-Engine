@@ -78,6 +78,9 @@
     <ClInclude Include="Include\dr_serializable_light.h">
       <Filter>Archivos de encabezado\Serializable</Filter>
     </ClInclude>
+    <ClInclude Include="Include\dr_serializable_script.h">
+      <Filter>Archivos de encabezado\Serializable</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_codec.cpp">
@@ -126,6 +129,9 @@
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
     <ClCompile Include="Source\dr_serializable_light.cpp">
+      <Filter>Archivos de código fuente\Serializable</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_serializable_script.cpp">
       <Filter>Archivos de código fuente\Serializable</Filter>
     </ClCompile>
   </ItemGroup>
