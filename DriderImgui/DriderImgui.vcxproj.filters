@@ -68,6 +68,9 @@
     <ClCompile Include="Source\imguidock.cpp">
       <Filter>Source Files\ImGui</Filter>
     </ClCompile>
+    <ClCompile Include="Source\imguihelper.cpp">
+      <Filter>Source Files\ImGui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\dirent_portable.h" />
@@ -141,6 +144,9 @@
       <Filter>Header Files\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="Include\imguidock.h">
+      <Filter>Header Files\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\imguihelper.h">
       <Filter>Header Files\ImGui</Filter>
     </ClInclude>
   </ItemGroup>

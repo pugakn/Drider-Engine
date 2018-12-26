@@ -78,6 +78,9 @@
     <ClInclude Include="Include\dr_message_type.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\dr_file_dialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Include\dr_compressor.cpp">
@@ -114,6 +117,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\dr_random.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_file_dialog_windows.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

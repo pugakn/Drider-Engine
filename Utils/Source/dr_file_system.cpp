@@ -106,10 +106,10 @@ FileSystem::GetFileName(const TString& filepath) {
   TString name;
 
   if (slashPos != TString::npos) {
-    name = filepath.substr(slashPos - 1, dotPos - slashPos);
+    name = filepath.substr(slashPos + 1, dotPos - slashPos - 1);
   } 
   else {
-    name = filepath.substr(0, dotPos - 1);
+    name = filepath.substr(0, dotPos);
   }
 
   return name;

@@ -144,6 +144,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Include\dr_file_dialog.h" />
     <ClInclude Include="Include\dr_hash.h" />
     <ClInclude Include="Include\dr_id_object.h" />
     <ClInclude Include="Include\dr_compressor.h" />
@@ -169,6 +170,7 @@
   <ItemGroup>
     <ClCompile Include="Include\dr_compressor.cpp" />
     <ClCompile Include="Source\dr_file.cpp" />
+    <ClCompile Include="Source\dr_file_dialog_windows.cpp" />
     <ClCompile Include="Source\dr_file_system.cpp" />
     <ClCompile Include="Source\dr_file_system_linux.cpp" />
     <ClCompile Include="Source\dr_file_system_win.cpp" />

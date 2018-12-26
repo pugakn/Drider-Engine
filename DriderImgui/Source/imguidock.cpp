@@ -33,7 +33,7 @@ SOFTWARE.
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui_internal.h>
 //-----------------------------------------------------------------------------------------------------------------
-
+#include "imguihelper.h"
 #include "imguidock.h"
 
 bool gImGuiDockReuseTabWindowTextureIfAvailable = true;

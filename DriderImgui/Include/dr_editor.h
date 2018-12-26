@@ -9,6 +9,7 @@
 #include <dr_vector2d.h>
 #include <dr_viewport.h>
 
+#include "imguihelper.h"
 #include "imguidock.h"
 
 namespace driderSDK {
@@ -58,8 +59,10 @@ class Editor : public Application
   void loadHierarchy();
   void loadMenuHierarchy();
   void materialEditor();
+  void loadSavedLayouts();
   void loadScene();
   void saveScene();
+  void saveCurrentLayout();
   void createMat();
   void dockerTest();
   void loadInspector();
@@ -119,6 +122,8 @@ class Editor : public Application
   std::vector<TString> semantics;
   std::vector<ScriptComponent*> m_scripts;
   ImGui::DockContext* m_dockContext;
+  std::vector<String> m_savedLayouts;
+  Int32 m_currentLayout = -1;
 };
 
 }

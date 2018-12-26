@@ -1,5 +1,6 @@
 #include "..\Include\dr_editor.h"
 
+#include <fstream>
 #include <iostream>
 
 #include <d3d11.h>
@@ -15,6 +16,7 @@
 #include <dr_device_context.h>
 #include <dr_d3d_texture.h>
 #include <dr_export_script.h>
+#include <dr_file_dialog.h>
 #include <dr_file_system.h>
 #include <dr_graphics_api.h>
 #include <dr_graphics_driver.h>
@@ -43,7 +45,6 @@
 
 #include "dr_input_editor.h"
 #include "imgui.h"
-#include "imguidock.h"
 #include "imgui_impl_dx11.h"
 #include "imgui_impl_win32.h"
 #include "ImGuiFileDialog.h"
@@ -94,6 +95,8 @@ Editor::postInit() {
   m_inpectorWindow = true;
   m_fileManagerWindow = true;
   m_mainMenuBarheight = 0;
+
+
   //initInputs();
   initRT();
   initCallbacks();
@@ -109,12 +112,22 @@ Editor::postInit() {
 
   SceneGraph::start();
   m_selectedGameObject = SceneGraph::getRoot();
-
+ 
   ImGui::CreateContext();
   m_dockContext = ImGui::CreateDockContext();
   ImGui_ImplWin32_Init(m_hwnd);
   ImGui_ImplDX11_Init(d3dDev, d3dDevCont);
   ImGui::StyleColorsDark();
+
+  ImGui::SetCurrentDockContext(m_dockContext);
+
+  loadSavedLayouts();
+
+  if (m_currentLayout == -1 && m_savedLayouts.size()) {
+    if (ImGui::LoadDock((m_savedLayouts.front() + ".lyt").c_str())) {
+      m_currentLayout = 0;
+    }
+  }
 
   semantics.push_back(_T("Albedo"));
   semantics.push_back(_T("Normal"));
@@ -715,8 +728,85 @@ Editor::loadMainMenu() {
 
       ImGui::EndMenu();
     }
-    ImGui::EndMainMenuBar();
-  }
+
+    if (ImGui::BeginMenu("Layout")) {
+
+      TString filter = _T("Layout#*.lyt#");
+
+      std::replace(filter.begin(), filter.end(), _T('#'), _T('\0'));
+
+	    if (ImGui::MenuItem("Save", nullptr, nullptr, m_currentLayout != -1)) {
+
+        auto filename = m_savedLayouts[m_currentLayout] + ".lyt";
+
+        if (ImGui::SaveDock(filename.c_str())) {
+          saveCurrentLayout();      
+        }
+	    }
+
+      auto checkLayoutChanges = [&](const TString& filename) {
+        auto file = StringUtils::toString(FileSystem::GetFileName(filename));
+        auto it = std::find(m_savedLayouts.begin(), m_savedLayouts.end(), file);
+
+        if (it == m_savedLayouts.end()) {
+          m_savedLayouts.push_back(file);
+          std::sort(m_savedLayouts.begin(), m_savedLayouts.end());             
+          it = std::find(m_savedLayouts.begin(), m_savedLayouts.end(), file);
+        }            
+        
+        m_currentLayout = it - m_savedLayouts.begin();
+
+        saveCurrentLayout();
+      };
+
+      if (ImGui::MenuItem("Save as...")) {
+        auto filename = FileDialog::getSaveFileName(_T("Select a save file"), filter);
+
+        if (!filename.empty()) {
+          auto filenameStr = StringUtils::toString(filename);
+          if (ImGui::SaveDock(filenameStr.c_str())) {
+            checkLayoutChanges(filename);
+          }
+        }
+	    }
+
+	    if (ImGui::MenuItem("Load")) {
+        auto filename = FileDialog::getOpenFileName(_T("Open a layout file"), filter);
+
+        if (!filename.empty()) {
+          
+          auto filenameStr = StringUtils::toString(filename);
+
+          if (ImGui::LoadDock(filenameStr.c_str())) {
+            checkLayoutChanges(filename);           
+          }
+        }
+	    }
+
+      String currentLayout = "Current Layout: ";
+
+      currentLayout += m_currentLayout > -1 ? m_savedLayouts[m_currentLayout] : "Default";
+
+      ImGui::Text(currentLayout.c_str());
+
+      ImGui::Separator();
+
+      Int32 index = 0;
+      for (auto& savedLayout : m_savedLayouts) {
+        if (ImGui::MenuItem(savedLayout.c_str())) {
+          if (ImGui::LoadDock((savedLayout + ".lyt").c_str())) {
+            m_currentLayout = index;
+            saveCurrentLayout();
+          }
+        }
+        ++index;
+      }
+
+      ImGui::EndMenu();
+    }
+
+      ImGui::EndMainMenuBar();
+    }
 }
 
 void
@@ -878,6 +968,41 @@ Editor::materialEditor() {
     }
   }
   
+}
+
+void Editor::loadSavedLayouts()
+{
+  FileSystem fs;
+ 
+  auto files = fs.GetDirectoryContent();
+
+  for (auto& file : files) {
+    if (FileSystem::GetFileExtension(file) == _T("lyt")) {
+      m_savedLayouts.push_back(StringUtils::toString(FileSystem::GetFileName(file)));
+    }
+  }
+
+  if (!m_savedLayouts.empty()) {
+    std::sort(m_savedLayouts.begin(), m_savedLayouts.end());
+  }
+
+  //Load last used layout
+
+  auto layoutCacheFilename = TString(_T("layout.cache"));
+
+  File file;
+
+  if (file.Open(layoutCacheFilename)) {
+    String data(file.Size(), 0);
+    file.Read(data.size(), const_cast<char*>(data.c_str()));
+    
+    auto it = std::find(m_savedLayouts.begin(), m_savedLayouts.end(), data);
+    if (it != m_savedLayouts.end()) {
+      if (ImGui::LoadDock((*it + ".lyt").c_str())) {
+        m_currentLayout = it - m_savedLayouts.begin();
+      }
+    }
+  }
 }
 
 void
@@ -1251,6 +1376,14 @@ Editor::saveScene() {
     }
     
     ImGuiFileDialog::Instance()->Clear();
+  }
+}
+
+void Editor::saveCurrentLayout() {
+  std::ofstream file("layout.cache");
+
+  if (file) {
+    file << m_savedLayouts[m_currentLayout];
   }
 }
 
