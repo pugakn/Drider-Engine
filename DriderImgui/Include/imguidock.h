@@ -74,6 +74,8 @@ SOFTWARE.
 #ifndef IMGUI_API
 #include <imgui.h>
 #endif //IMGUI_API
+
+//#include "dr_imgui_helper.h"
  
 typedef enum ImGuiDockSlot {
     ImGuiDockSlot_Left=0,
@@ -89,6 +91,7 @@ typedef enum ImGuiDockSlot {
 namespace ImGui{
 
 struct DockContext;
+
 
 // Create, destroy and change dock contexts (*).
 

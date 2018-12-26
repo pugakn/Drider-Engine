@@ -64,6 +64,14 @@ ScriptComponent::serialize(File &file) {
   file.m_file << SerializableTypeID::Script;
   file.m_file << StringUtils::toString(getName()) << "\n";
 
+  if(m_script) {
+    String scriptName = StringUtils::toString(m_script->getName());
+    file.m_file << scriptName << "\n";
+  } else {
+    file.m_file << "null\n";
+  }
+
+  
 }
 
 void

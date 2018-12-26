@@ -5,7 +5,6 @@
 
 #include "dr_core_prerequisites.h"
 #include "dr_gameComponent.h"
-#include "dr_gameComponent.h"
 
 #include <dr_export_script.h>
 #include <..\..\Script\Include\dr_script_engine.h>
@@ -109,6 +108,16 @@ class DR_CORE_EXPORT ScriptComponent : public GameComponent,
     isInitilized() {  
       return initialized;
     }
+    
+    FORCEINLINE void
+    setIDScript(UInt32 ID) {
+      idScriptInstance = ID;
+    }
+
+    FORCEINLINE UInt32 
+    getIDScript() {
+      return idScriptInstance;
+    }
 
     static BEGINING_REGISTER(ScriptComponent, 0, asOBJ_REF | asOBJ_NOCOUNT)
 
@@ -136,7 +145,8 @@ class DR_CORE_EXPORT ScriptComponent : public GameComponent,
     asIScriptObject *obj = 0;
     asITypeInfo *type = 0;    
 
-    bool initialized;
+    bool initialized; 
+    UInt32 idScriptInstance;
 
 };
 

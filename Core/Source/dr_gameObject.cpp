@@ -566,7 +566,10 @@ GameObject::serialize(File &file) {
     for(auto &component: m_components) {
       component.get()->serialize(file);
     }
+    //Father
+    file.m_file << StringUtils::toString(getParent()->getName()) << "\n";
   }
+
   //childres
   file.m_file << getChildrenCount() << "\n";
   for(auto &child: m_children) {

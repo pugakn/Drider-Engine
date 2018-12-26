@@ -120,7 +120,7 @@ class Editor : public Application
   std::shared_ptr<Material> m_selectedMaterial;
   SceneGraph::SharedGameObject m_GMOOnFocus;
   std::vector<TString> semantics;
-  std::vector<ScriptComponent*> m_scripts;
+  //std::vector<ScriptComponent*> m_scripts;
   ImGui::DockContext* m_dockContext;
   std::vector<String> m_savedLayouts;
   Int32 m_currentLayout = -1;

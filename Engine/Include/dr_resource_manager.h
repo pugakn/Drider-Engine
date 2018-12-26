@@ -16,6 +16,7 @@ class Resource;
 class Codec;
 class Material;
 class File;
+class ScriptComponent;
 /**
 * Load resources.
 *
@@ -171,6 +172,12 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager>
   static void
   clear();
 
+  static void 
+  insertCompilableScript(ScriptComponent* component);
+
+  static void
+  removeCompilableScript(UInt32 ID);
+
  private:
   void
   onStartUp();
@@ -242,6 +249,9 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager>
 
   /*std::unordered_map<std::shared_ptr<SerializableData>,
                      ResourceFactory> m_componentsLoaders;*/
+  UInt32 idScripts;
+ public:
+  std::unordered_map<UInt32, ScriptComponent*> m_scriptsComponents;
 };
 
 }

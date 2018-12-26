@@ -71,6 +71,7 @@ ScriptEngine::addScript(const TString& scriptName,
                                    StringUtils::toString(script).c_str(),
                                    script.length());
     m_scriptTypes.push_back(scriptName);
+    //m_scripts.push_back();
   }
 
   if (result < 0) {
