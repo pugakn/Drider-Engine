@@ -164,13 +164,12 @@ ResourceManager::saveScene(const String pathName) {
 }
 
 void
-ResourceManager::saveMaterial(const String path,
-                              const String name) {
+ResourceManager::saveMaterial(const String name) {
   auto &rm = ResourceManager::instance();
 
   FileSystem fileSystem;
   File matFile;
-  if (fileSystem.CreateAndOpen(StringUtils::toTString(path + name).c_str(),
+  if (fileSystem.CreateAndOpen(StringUtils::toTString(name).c_str(),
                                matFile)) {
    
     /*
@@ -179,13 +178,16 @@ ResourceManager::saveMaterial(const String path,
     num_properties: int;
     properties: vector<Propertie>;
     */
-    auto matResource = rm.getReference(StringUtils::toTString(name));
+    auto resourceName = FileSystem::GetFileName(StringUtils::toTString(name));
+    auto extension = L".mat";
+    auto matResource = rm.getReference(StringUtils::toTString(resourceName + extension));
     if(!matResource) {
-      matResource = rm.createMaterial(StringUtils::toTString(name), true);
+      matResource = rm.createMaterial(StringUtils::toTString(resourceName + extension), true);
 
       auto mat = std::dynamic_pointer_cast<Material>(matResource);
 
-      matFile.m_file << name << "\n";
+      auto realName = StringUtils::toString(resourceName + extension);
+      matFile.m_file << realName.c_str() << "\n";
       matFile.m_file << false << "\n";
 
       mat->addProperty(_T("Albedo"), PROPERTY_TYPE::kVec3);

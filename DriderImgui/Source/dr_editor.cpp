@@ -291,24 +291,19 @@ Editor::postUpdate() {
   
   dockerTest();
 
-  if(showFileDilog) {
-    ImGui::OpenPopup("Choose File");
-    showFileDilog = false;
-  }
-
-  if (showSaveFileDialog) {
+  /*if (showSaveFileDialog) {
     ImGui::OpenPopup("Save Scene");
     showSaveFileDialog = false;
   }
   
-  if(createMaterialFileDialog) {
+  /*if(createMaterialFileDialog) {
     ImGui::OpenPopup("Create Material");
     createMaterialFileDialog = false;
   } 
 
   loadScene();
   saveScene();
-  createMat();
+  createMat();*/
 
 
   static bool open = true;
@@ -680,15 +675,33 @@ Editor::loadMainMenu() {
 
     if (ImGui::BeginMenu("File")) {
       if (ImGui::MenuItem("Load Scene", "CTRL+L")) {
-        showFileDilog = true;
+       
+        TString filter = _T("Scene#*.txt#");
+        std::replace(filter.begin(), filter.end(), _T('#'), _T('\0'));
+        auto file = FileDialog::getOpenFileName(L"Choose File", filter);
+
+        SceneGraph::instance().getRoot()->destroy();
+        ResourceManager::clear();
+        ScriptEngine::release();
+        initScriptEngine();
+        ResourceManager::loadScene(StringUtils::toString(file));
       }
 
       if (ImGui::MenuItem("Save Scene", "CTRL+S")) {   
-        showSaveFileDialog = true;
+        //showSaveFileDialog = true;
+
+        TString filter = _T("Scene#*.txt#");
+        std::replace(filter.begin(), filter.end(), _T('#'), _T('\0'));
+        auto file = FileDialog::getSaveFileName(L"Save File", filter);
       }
 
       if (ImGui::MenuItem("Create Material")) {
-        createMaterialFileDialog = true;
+        //createMaterialFileDialog = true;
+        TString filter = _T("Material#*.mat#");
+        std::replace(filter.begin(), filter.end(), _T('#'), _T('\0'));
+        auto file = FileDialog::getSaveFileName(L"Save Material", filter);
+      
+        ResourceManager::saveMaterial(StringUtils::toString(file));
       }
 
       ImGui::EndMenu();
@@ -820,7 +833,6 @@ Editor::initImguiMenus(float mainMenuBarheight) {
   ImGuiWindowFlags flags = 0;
   float unitWidth = m_viewport.width * 0.25f;
   float unitHeight = (m_viewport.height - mainMenuBarheight) * 0.33f;
-  showFileDilog = false;
 
   ImGui::SetNextWindowPos({ 0, mainMenuBarheight });
   ImGui::SetNextWindowSize({ unitWidth, unitHeight * 2 });
@@ -948,8 +960,7 @@ Editor::materialEditor() {
   ImGui::Text(StringUtils::toString(m_selectedMaterial->m_name).c_str());
 
   if (ImGui::Button("Save Material")) {
-    ResourceManager::saveMaterial("Resources//Materials//",
-                                  StringUtils::toString(m_selectedMaterial->m_name));
+    ResourceManager::saveMaterial("Resources\\Materials\\" + StringUtils::toString(m_selectedMaterial->m_name));
   }
   ImGui::Text("Textures");
 
@@ -1342,54 +1353,54 @@ Editor::getMouseInScene(Vector2D* mousePosition) {
   return false;
 }
 
-void
-Editor::loadScene() {
-  if (ImGuiFileDialog::Instance()->FileDialog("Choose File", ".txt\0\0", ".", "")) {
-    std::string filePathName = "";
-    std::string path = "";
-    std::string fileName = "";
-    std::string filter = "";
+//void
+//Editor::loadScene() {
+//  if (ImGuiFileDialog::Instance()->FileDialog("Choose File", ".txt\0\0", ".", "")) {
+//    std::string filePathName = "";
+//    std::string path = "";
+//    std::string fileName = "";
+//    std::string filter = "";
+//
+//    if (ImGuiFileDialog::Instance()->IsOk == true) {
+//      filePathName = ImGuiFileDialog::Instance()->GetFilepathName();
+//      path = ImGuiFileDialog::Instance()->GetCurrentPath();
+//      fileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
+//      filter = ImGuiFileDialog::Instance()->GetCurrentFilter();
+//      
+//      SceneGraph::instance().getRoot()->destroy();
+//      ResourceManager::clear();
+//      ScriptEngine::release();
+//    
+//      initScriptEngine();      
+//
+//      ResourceManager::loadScene(filePathName);
+//    }
+//    
+//    ImGuiFileDialog::Instance()->Clear();
+//  }
+//}
 
-    if (ImGuiFileDialog::Instance()->IsOk == true) {
-      filePathName = ImGuiFileDialog::Instance()->GetFilepathName();
-      path = ImGuiFileDialog::Instance()->GetCurrentPath();
-      fileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
-      filter = ImGuiFileDialog::Instance()->GetCurrentFilter();
-      
-      SceneGraph::instance().getRoot()->destroy();
-      ResourceManager::clear();
-      ScriptEngine::release();
-    
-      initScriptEngine();      
-
-      ResourceManager::loadScene(filePathName);
-    }
-    
-    ImGuiFileDialog::Instance()->Clear();
-  }
-}
-
-void
-Editor::saveScene() {
-
-  if (ImGuiFileDialog::Instance()->FileDialog("Save Scene", ".txt\0\0", ".", "")) {
-    std::string filePathName = "";
-    std::string path = "";
-    std::string fileName = "";
-    std::string filter = "";
-
-    if (ImGuiFileDialog::Instance()->IsOk == true) {
-      filePathName = ImGuiFileDialog::Instance()->GetFilepathName();
-      path = ImGuiFileDialog::Instance()->GetCurrentPath();
-      fileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
-      filter = ImGuiFileDialog::Instance()->GetCurrentFilter();
-
-      ResourceManager::saveScene(filePathName);
-    }
-    
-    ImGuiFileDialog::Instance()->Clear();
-  }
-}
+//void
+//Editor::saveScene() {
+//
+//  if (ImGuiFileDialog::Instance()->FileDialog("Save Scene", ".txt\0\0", ".", "")) {
+//    std::string filePathName = "";
+//    std::string path = "";
+//    std::string fileName = "";
+//    std::string filter = "";
+//
+//    if (ImGuiFileDialog::Instance()->IsOk == true) {
+//      filePathName = ImGuiFileDialog::Instance()->GetFilepathName();
+//      path = ImGuiFileDialog::Instance()->GetCurrentPath();
+//      fileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
+//      filter = ImGuiFileDialog::Instance()->GetCurrentFilter();
+//
+//      ResourceManager::saveScene(filePathName);
+//    }
+//    
+//    ImGuiFileDialog::Instance()->Clear();
+//  }
+//}
 
 void Editor::saveCurrentLayout() {
   std::ofstream file("layout.cache");
@@ -1399,27 +1410,27 @@ void Editor::saveCurrentLayout() {
   }
 }
 
-void
-Editor::createMat() {
-  if (ImGuiFileDialog::Instance()->FileDialog("Create Material", ".mat\0\0", ".", "")) {
-    std::string filePathName = "";
-    std::string path = "";
-    std::string fileName = "";
-    std::string filter = "";
-
-    if (ImGuiFileDialog::Instance()->IsOk == true) {
-      filePathName = ImGuiFileDialog::Instance()->GetFilepathName();
-      path = ImGuiFileDialog::Instance()->GetCurrentPath();
-      fileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
-      filter = ImGuiFileDialog::Instance()->GetCurrentFilter();
-
-      ResourceManager::saveMaterial(path + "//",
-                                    fileName + filter);
-    }
-
-    ImGuiFileDialog::Instance()->Clear();
-  }
-}
+//void
+//Editor::createMat() {
+//  if (ImGuiFileDialog::Instance()->FileDialog("Create Material", ".mat\0\0", ".", "")) {
+//    std::string filePathName = "";
+//    std::string path = "";
+//    std::string fileName = "";
+//    std::string filter = "";
+//
+//    if (ImGuiFileDialog::Instance()->IsOk == true) {
+//      filePathName = ImGuiFileDialog::Instance()->GetFilepathName();
+//      path = ImGuiFileDialog::Instance()->GetCurrentPath();
+//      fileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
+//      filter = ImGuiFileDialog::Instance()->GetCurrentFilter();
+//
+//      ResourceManager::saveMaterial(path + "//",
+//                                    fileName + filter);
+//    }
+//
+//    ImGuiFileDialog::Instance()->Clear();
+//  }
+//}
 
 bool
 Editor::selectMoveAxe() {

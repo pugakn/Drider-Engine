@@ -107,8 +107,7 @@ class DR_ENGINE_EXPORT ResourceManager : public Module<ResourceManager>
   * Save a material file
   */
   static void
-  saveMaterial(const String path,
-               const String name);
+  saveMaterial(const String path);
 
   /**
   * Load Material

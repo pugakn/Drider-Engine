@@ -60,10 +60,10 @@ class Editor : public Application
   void loadMenuHierarchy();
   void materialEditor();
   void loadSavedLayouts();
-  void loadScene();
-  void saveScene();
+  //void loadScene();
+  //void saveScene();
   void saveCurrentLayout();
-  void createMat();
+  //void createMat();
   void dockerTest();
   void loadInspector();
   void loadMenuAddComponent();
@@ -110,9 +110,8 @@ class Editor : public Application
   bool m_bOffseted;
   float m_fOffset;
 
-  bool showFileDilog;
-  bool showSaveFileDialog;
-  bool createMaterialFileDialog;
+  //bool showSaveFileDialog;
+  //bool createMaterialFileDialog;
   bool m_rotWorldActive = false;
   bool m_movWorldActive = false;
   float m_posMouseSceneWindow[2];
