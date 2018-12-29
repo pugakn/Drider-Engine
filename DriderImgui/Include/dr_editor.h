@@ -123,6 +123,7 @@ class Editor : public Application
   ImGui::DockContext* m_dockContext;
   std::vector<String> m_savedLayouts;
   Int32 m_currentLayout = -1;
+  const String m_layoutsPath = "Resources\\Layouts";
 };
 
 }

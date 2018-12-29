@@ -124,7 +124,8 @@ Editor::postInit() {
   loadSavedLayouts();
 
   if (m_currentLayout == -1 && m_savedLayouts.size()) {
-    if (ImGui::LoadDock((m_savedLayouts.front() + ".lyt").c_str())) {
+    auto filePath = m_layoutsPath + "\\" + m_savedLayouts.front() + ".lyt";
+    if (ImGui::LoadDock(filePath.c_str())) {
       m_currentLayout = 0;
     }
   }
@@ -693,6 +694,10 @@ Editor::loadMainMenu() {
         TString filter = _T("Scene#*.txt#");
         std::replace(filter.begin(), filter.end(), _T('#'), _T('\0'));
         auto file = FileDialog::getSaveFileName(L"Save File", filter);
+
+        if (!file.empty()) {
+          ResourceManager::saveScene(StringUtils::toString(file));
+        }
       }
 
       if (ImGui::MenuItem("Create Material")) {
@@ -751,7 +756,7 @@ Editor::loadMainMenu() {
 
 	    if (ImGui::MenuItem("Save", nullptr, nullptr, m_currentLayout != -1)) {
 
-        auto filename = m_savedLayouts[m_currentLayout] + ".lyt";
+        auto filename = m_layoutsPath + "\\" + m_savedLayouts[m_currentLayout] + ".lyt";
 
         if (ImGui::SaveDock(filename.c_str())) {
           saveCurrentLayout();      
@@ -808,7 +813,8 @@ Editor::loadMainMenu() {
       Int32 index = 0;
       for (auto& savedLayout : m_savedLayouts) {
         if (ImGui::MenuItem(savedLayout.c_str())) {
-          if (ImGui::LoadDock((savedLayout + ".lyt").c_str())) {
+          auto filename = m_layoutsPath + "\\" + savedLayout + ".lyt";
+          if (ImGui::LoadDock(filename.c_str())) {
             m_currentLayout = index;
             saveCurrentLayout();
           }
@@ -995,8 +1001,10 @@ Editor::materialEditor() {
 void Editor::loadSavedLayouts()
 {
   FileSystem fs;
- 
-  auto files = fs.GetDirectoryContent();
+  
+  auto tstrLayoutsPath = StringUtils::toTString(m_layoutsPath);
+
+  auto files = fs.GetDirectoryContent(tstrLayoutsPath + _T("\\"));
 
   for (auto& file : files) {
     if (FileSystem::GetFileExtension(file) == _T("lyt")) {
@@ -1010,7 +1018,7 @@ void Editor::loadSavedLayouts()
 
   //Load last used layout
 
-  auto layoutCacheFilename = TString(_T("layout.cache"));
+  auto layoutCacheFilename = tstrLayoutsPath + _T("\\layout.cache");
 
   File file;
 
@@ -1020,7 +1028,8 @@ void Editor::loadSavedLayouts()
     
     auto it = std::find(m_savedLayouts.begin(), m_savedLayouts.end(), data);
     if (it != m_savedLayouts.end()) {
-      if (ImGui::LoadDock((*it + ".lyt").c_str())) {
+      auto filePath = m_layoutsPath + "\\" + *it + ".lyt";
+      if (ImGui::LoadDock(filePath.c_str())) {
         m_currentLayout = it - m_savedLayouts.begin();
       }
     }
@@ -1403,7 +1412,7 @@ Editor::getMouseInScene(Vector2D* mousePosition) {
 //}
 
 void Editor::saveCurrentLayout() {
-  std::ofstream file("layout.cache");
+  std::ofstream file(m_layoutsPath + "\\layout.cache");
 
   if (file) {
     file << m_savedLayouts[m_currentLayout];
