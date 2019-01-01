@@ -115,9 +115,10 @@ Editor::postInit() {
  
   ImGui::CreateContext();
   m_dockContext = ImGui::CreateDockContext();
+  initImGuiStyle();
   ImGui_ImplWin32_Init(m_hwnd);
   ImGui_ImplDX11_Init(d3dDev, d3dDevCont);
-  ImGui::StyleColorsDark();
+  //ImGui::StyleColorsDark();
 
   ImGui::SetCurrentDockContext(m_dockContext);
 
@@ -290,7 +291,7 @@ Editor::postUpdate() {
   ImGui_ImplWin32_NewFrame();
   ImGui::NewFrame();
   
-  dockerTest();
+  //dockerTest();
 
   /*if (showSaveFileDialog) {
     ImGui::OpenPopup("Save Scene");
@@ -310,7 +311,7 @@ Editor::postUpdate() {
   static bool open = true;
 
   ImGuiWindowFlags flags;
-  loadMainMenu();
+  //loadMainMenu();
   flags = 0;
 
   if (m_initFlag)
@@ -443,61 +444,8 @@ Editor::postRender() {
   GraphicsAPI::getBackBufferRT().set(GraphicsAPI::getDeviceContext(), GraphicsAPI::getDepthStencil());
   //.set(GraphicsAPI::getDeviceContext(), 0);
   //m_editorQuad.draw();
-
-  if (m_sceneWindow)
-  {
-    //ImGuiWindowFlags flags = 0;
-    //if (ImGui::Begin("Scene", &m_sceneWindow, flags)) {
-    //  //son los margenes de la ventana
-    //  m_posMouseSceneWindow[0] = (ImGui::GetMousePos().x - ImGui::GetWindowPos().x + 7.f) / m_sceneViewport.width;
-    //  m_posMouseSceneWindow[1] = (ImGui::GetMousePos().y - ImGui::GetWindowPos().y + 27.f) / m_sceneViewport.height;
-    //  float size = ImGui::GetFontSize() + ImGui::GetFrameHeight() * 2.f;
-    //  float width = ImGui::GetWindowWidth() - 18;
-    //  float height = ImGui::GetWindowHeight()- size;
-    //  if (m_sceneViewport.width != width || m_sceneViewport.height != height)
-    //  {
-    //    m_sceneViewport.width = (UInt32)width;
-    //    m_sceneViewport.height = (UInt32)height;
-    //    initRT();
-    //    CameraManager::getActiveCamera()->setViewport(m_sceneViewport);
-    //  }
-        
-    //  auto texture = static_cast<ID3D11ShaderResourceView*>(m_RT->getTexture(0).getAPIObject());
-    //  ImGui::Image(texture, { width, height });
-    //}
-    //ImGui::End();
-  }
-
-  //Using docker
-  auto visible = ImGui::Begin("imguidock window (= lumix engine's dock system)");
-  if (visible) {
-
-
-      ImGui::BeginDockspace(); //Dentro de aqui van todas las ventanas
-      if (ImGui::BeginDock("Scene")) {
-        ImGui::SetNextDock(ImGuiDockSlot_Bottom);
-        m_posMouseSceneWindow[0] = (ImGui::GetMousePos().x - ImGui::GetWindowPos().x + 7.f) / m_sceneViewport.width;
-        m_posMouseSceneWindow[1] = (ImGui::GetMousePos().y - ImGui::GetWindowPos().y + 27.f) / m_sceneViewport.height;
-        float size = ImGui::GetFontSize() + ImGui::GetFrameHeight() * 2.f;
-        float width = ImGui::GetWindowWidth() - 18;
-        float height = ImGui::GetWindowHeight()- size;
-        if (m_sceneViewport.width != width || m_sceneViewport.height != height)
-        {
-          m_sceneViewport.width = (UInt32)width;
-          m_sceneViewport.height = (UInt32)height;
-          initRT();
-          CameraManager::getActiveCamera()->setViewport(m_sceneViewport);
-        }
-
-        auto texture = static_cast<ID3D11ShaderResourceView*>(m_RT->getTexture(0).getAPIObject());
-        ImGui::Image(texture, { width, height });
-
-      }
-      ImGui::EndDock();
-      ImGui::EndDockspace();
-  }
-  ImGui::End();
-
+    
+  dockerTest();
 
   GraphicsAPI::getDepthStencilState(DR_DEPTH_STENCIL_STATES::kDepthRW).set(GraphicsAPI::getDeviceContext(), 1);
 
@@ -535,6 +483,61 @@ Editor::onResize() {
   ImGui_ImplDX11_InvalidateDeviceObjects();
   GraphicsDriver::API().resizeBackBuffer(m_viewport.width, m_viewport.height);
   ImGui_ImplDX11_CreateDeviceObjects();
+}
+
+void Editor::initImGuiStyle()
+{
+  ImGuiIO& io = ImGui::GetIO();
+  //io.Fonts->Clear();
+  /*ImFont* font = io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\segoeui.ttf", 18.0f);
+  if (font != NULL) {
+	  io.FontDefault = font;
+  } else {
+	  io.Fonts->AddFontDefault();
+  }
+  io.Fonts->Build();*/
+
+  ImGuiStyle* style = &ImGui::GetStyle();
+ 
+	style->Colors[ImGuiCol_Text] = ImVec4(0.80f, 0.80f, 0.83f, 1.00f);
+	style->Colors[ImGuiCol_TextDisabled] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
+	style->Colors[ImGuiCol_WindowBg] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
+	style->Colors[ImGuiCol_ChildWindowBg] = ImVec4(0.07f, 0.07f, 0.09f, 1.00f);
+	style->Colors[ImGuiCol_PopupBg] = ImVec4(0.07f, 0.07f, 0.09f, 1.00f);
+	style->Colors[ImGuiCol_Border] = ImVec4(0.80f, 0.80f, 0.83f, 0.88f);
+	style->Colors[ImGuiCol_BorderShadow] = ImVec4(0.92f, 0.91f, 0.88f, 0.00f);
+	style->Colors[ImGuiCol_FrameBg] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
+	style->Colors[ImGuiCol_FrameBgHovered] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
+	style->Colors[ImGuiCol_FrameBgActive] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
+	style->Colors[ImGuiCol_TitleBg] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
+	style->Colors[ImGuiCol_TitleBgCollapsed] = ImVec4(1.00f, 0.98f, 0.95f, 0.75f);
+	style->Colors[ImGuiCol_TitleBgActive] = ImVec4(0.07f, 0.07f, 0.09f, 1.00f);
+	style->Colors[ImGuiCol_MenuBarBg] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
+	style->Colors[ImGuiCol_ScrollbarBg] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
+	style->Colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.80f, 0.80f, 0.83f, 0.31f);
+	style->Colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
+	style->Colors[ImGuiCol_ScrollbarGrabActive] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
+	style->Colors[ImGuiCol_CheckMark] = ImVec4(0.80f, 0.80f, 0.83f, 0.31f);
+	style->Colors[ImGuiCol_SliderGrab] = ImVec4(0.80f, 0.80f, 0.83f, 0.31f);
+	style->Colors[ImGuiCol_SliderGrabActive] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
+	style->Colors[ImGuiCol_Button] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
+	style->Colors[ImGuiCol_ButtonHovered] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
+	style->Colors[ImGuiCol_ButtonActive] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
+	style->Colors[ImGuiCol_Header] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
+	style->Colors[ImGuiCol_HeaderHovered] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
+	style->Colors[ImGuiCol_HeaderActive] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
+	style->Colors[ImGuiCol_Column] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
+	style->Colors[ImGuiCol_ColumnHovered] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
+	style->Colors[ImGuiCol_ColumnActive] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
+	style->Colors[ImGuiCol_ResizeGrip] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+	style->Colors[ImGuiCol_ResizeGripHovered] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
+	style->Colors[ImGuiCol_ResizeGripActive] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
+	style->Colors[ImGuiCol_PlotLines] = ImVec4(0.40f, 0.39f, 0.38f, 0.63f);
+	style->Colors[ImGuiCol_PlotLinesHovered] = ImVec4(0.25f, 1.00f, 0.00f, 1.00f);
+	style->Colors[ImGuiCol_PlotHistogram] = ImVec4(0.40f, 0.39f, 0.38f, 0.63f);
+	style->Colors[ImGuiCol_PlotHistogramHovered] = ImVec4(0.25f, 1.00f, 0.00f, 1.00f);
+	style->Colors[ImGuiCol_TextSelectedBg] = ImVec4(0.25f, 1.00f, 0.00f, 0.43f);
+	style->Colors[ImGuiCol_ModalWindowDarkening] = ImVec4(1.00f, 0.98f, 0.95f, 0.73f);
 }
 
 void
@@ -1119,7 +1122,7 @@ Editor::loadInspector()
   auto rightPoint = ImVec2(leftPoint.x + ImGui::GetWindowWidth(), leftPoint.y);
 
   //Separador
-  ImGui::GetWindowDrawList()->AddLine(leftPoint, rightPoint, IM_COL32(75, 75, 255,255), 3.f);
+  ImGui::GetWindowDrawList()->AddLine(leftPoint, rightPoint, IM_COL32(255, 40, 40,255), 3.f);
 
   leftPoint.y += 5.f;
 
@@ -1500,49 +1503,79 @@ Editor::selectMoveAxe() {
 
 void 
 Editor::dockerTest() {
+
+  loadMainMenu();
+  
   ImGui::SetCurrentDockContext(m_dockContext);
+
   ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
   ImGui::SetNextWindowPos({0,0});
-  const ImGuiWindowFlags flags =  (ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar);
+  const ImGuiWindowFlags flags =  (ImGuiWindowFlags_NoBringToFrontOnFocus 
+                                   | ImGuiWindowFlags_NoResize 
+                                   | ImGuiWindowFlags_NoScrollbar  
+                                   | ImGuiWindowFlags_NoSavedSettings 
+                                   | ImGuiWindowFlags_NoCollapse
+                                   );
   const float oldWindowRounding = ImGui::GetStyle().WindowRounding;ImGui::GetStyle().WindowRounding = 0;
-  const bool visible = ImGui::Begin("imguidock window (= lumix engine's dock system)",NULL,ImVec2(0, 0),1.0f,flags);
+  const bool visible = ImGui::Begin("dockwindow", nullptr, ImVec2(0, 0), 1.0f, flags);
   ImGui::GetStyle().WindowRounding = oldWindowRounding;
   if (visible) {
-
 
       ImGui::BeginDockspace(); //Dentro de aqui van todas las ventanas
 
       ImGui::SetNextDock(ImGuiDockSlot_Tab);
-      if(ImGui::BeginDock("Hierarchy")) {
+      if(ImGui::BeginDock("Hierarchy", &m_hierarchyWindow)) {
           //ImGui::Text("Cosas de herarchy");
           loadHierarchy();
       }
       ImGui::EndDock();
 
       ImGui::SetNextDock(ImGuiDockSlot_Bottom);
-      if(ImGui::BeginDock("Resource")) {
+      if(ImGui::BeginDock("Resource", &m_fileManagerWindow)) {
         //ImGui::Text("Cosas de recursos");
         loadFileManager();
       }
       ImGui::EndDock();      
 
       ImGui::SetNextDock(ImGuiDockSlot_Tab);
-      if(ImGui::BeginDock("Inspector")) {
+      if(ImGui::BeginDock("Inspector", &m_inpectorWindow)) {
          //ImGui::Text("Cosas de inspector");
          loadInspector();
       }
       ImGui::EndDock();  
 
       ImGui::SetNextDock(ImGuiDockSlot_Bottom);
-      if (ImGui::BeginDock("Material Editor")) {
+      if (ImGui::BeginDock("Material Editor", &m_materialEditorWindow)) {
         //ImGui::Text("Cosas de inspector");
         materialEditor();
+      }
+      ImGui::EndDock();
+
+      ImGui::SetNextDock(ImGuiDockSlot_Bottom);
+      if (ImGui::BeginDock("Scene", &m_sceneWindow)) {
+        m_posMouseSceneWindow[0] = (ImGui::GetMousePos().x - ImGui::GetWindowPos().x + 7.f) / m_sceneViewport.width;
+        m_posMouseSceneWindow[1] = (ImGui::GetMousePos().y - ImGui::GetWindowPos().y + 27.f) / m_sceneViewport.height;
+        float size = ImGui::GetFontSize() + ImGui::GetFrameHeight() * 2.f;
+        float width = ImGui::GetWindowWidth() - 18;
+        float height = ImGui::GetWindowHeight()- size;
+        if (m_sceneViewport.width != width || m_sceneViewport.height != height)
+        {
+          m_sceneViewport.width = (UInt32)width;
+          m_sceneViewport.height = (UInt32)height;
+          initRT();
+          CameraManager::getActiveCamera()->setViewport(m_sceneViewport);
+        }
+
+        auto texture = static_cast<ID3D11ShaderResourceView*>(m_RT->getTexture(0).getAPIObject());
+        ImGui::Image(texture, { width, height });
+
       }
       ImGui::EndDock();
 
       ImGui::EndDockspace();
   }
   ImGui::End();
+
 }
 
 void

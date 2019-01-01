@@ -117,7 +117,7 @@ IMGUI_API void DestroyDockContext(DockContext* dock);
 IMGUI_API void SetCurrentDockContext(DockContext* dock);
 IMGUI_API DockContext* GetCurrentDockContext();
 
-
+IMGUI_API void RootDock(const ImVec2& pos, const ImVec2& size);
 
 IMGUI_API void BeginDockspace();
 IMGUI_API void EndDockspace();

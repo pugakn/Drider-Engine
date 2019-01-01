@@ -51,6 +51,7 @@ class Editor : public Application
   virtual void postDestroy() override;
   virtual void onResize() override;
 
+  void initImGuiStyle();
   void initSceneGraph();
   void initScriptEngine();
   void initInputs();
@@ -91,12 +92,12 @@ class Editor : public Application
   float m_luminanceDelta;
   float m_mainMenuBarheight;
   bool  m_initFlag;
-  bool m_renderConfigWindow;
-  bool m_hierarchyWindow;
-  bool m_sceneWindow;
-  bool m_inpectorWindow;
-  bool m_fileManagerWindow;
-  bool m_materialEditorWindow;
+  bool m_renderConfigWindow = true;
+  bool m_hierarchyWindow = true;
+  bool m_sceneWindow = true;
+  bool m_inpectorWindow = true;
+  bool m_fileManagerWindow = true;
+  bool m_materialEditorWindow = true;
   GameObject* m_root;
 
   UInt32 m_selectedItem;

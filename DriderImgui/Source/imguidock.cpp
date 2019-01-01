@@ -1313,6 +1313,12 @@ DockContext* GetCurrentDockContext()
     return g_dock;
 }
 
+void RootDock(const ImVec2& pos, const ImVec2& size)
+{
+    IM_ASSERT(g_dock != NULL && "No current context. Did you call ImGui::CreateDockContext() or ImGui::SetCurrentDockContext()?");
+    g_dock->rootDock(pos, size);
+}
+
 void ShutdownDock()
 {
     IM_ASSERT(g_dock != NULL && "No current context. Did you call ImGui::CreateDockContext() or ImGui::SetCurrentDockContext()?");
