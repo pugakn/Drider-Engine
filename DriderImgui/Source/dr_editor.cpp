@@ -88,14 +88,11 @@ Editor::postInit() {
 
   auto d3dDev = static_cast<ID3D11Device*>(deviceObj);
   auto d3dDevCont = static_cast<ID3D11DeviceContext*>(deviceContextObj);
-  m_initFlag = true;
   m_renderConfigWindow = false;
   m_hierarchyWindow = true;
   m_sceneWindow = true;
   m_inpectorWindow = true;
   m_fileManagerWindow = true;
-  m_mainMenuBarheight = 0;
-
 
   //initInputs();
   initRT();
@@ -310,41 +307,6 @@ Editor::postUpdate() {
 
   static bool open = true;
 
-  ImGuiWindowFlags flags;
-  //loadMainMenu();
-  flags = 0;
-
-  if (m_initFlag)
-  {
-    initImguiMenus(m_mainMenuBarheight);
-    m_initFlag = false;
-  }
-  else
-  {
-    /*if (m_hierarchyWindow) {
-      ImGui::Begin("Hierarchy", &m_hierarchyWindow, flags);
-      loadHierarchy();
-      ImGui::End();
-    }
-    if (m_inpectorWindow) {
-      ImGui::Begin("Inspector", &m_inpectorWindow, flags);
-      loadInspector();
-      ImGui::End();
-    }
-    if (m_fileManagerWindow) {
-      ImGui::Begin("File Manager", &m_fileManagerWindow, flags);
-      ImGui::End();
-    }
-    if(m_materialEditorWindow) {
-      ImGui::Begin("Material Editor", &m_materialEditorWindow, flags);
-      materialEditor();
-      ImGui::End();
-    }
-    loadFileManager();
-    loadRenderWindow();*/
-  }
-
-  
   if (m_bSelected &&
       SceneGraph::instance().getRoot() != m_selectedGameObject) {
     Matrix4x4 CubeMatrix = Matrix4x4::identityMat4x4;
@@ -675,7 +637,6 @@ Editor::initScriptEngine() {
 void
 Editor::loadMainMenu() {
   if (ImGui::BeginMainMenuBar()) {
-    m_mainMenuBarheight = ImGui::GetWindowSize().y;
 
     if (ImGui::BeginMenu("File")) {
       if (ImGui::MenuItem("Load Scene", "CTRL+L")) {
@@ -830,38 +791,6 @@ Editor::loadMainMenu() {
 
       ImGui::EndMainMenuBar();
     }
-}
-
-void
-Editor::initImguiMenus(float mainMenuBarheight) {
-  FileSystem fs;
-  if (fs.Exists(_T("imgui.ini"))) {
-    return;
-  }
-
-  ImGuiWindowFlags flags = 0;
-  float unitWidth = m_viewport.width * 0.25f;
-  float unitHeight = (m_viewport.height - mainMenuBarheight) * 0.33f;
-
-  ImGui::SetNextWindowPos({ 0, mainMenuBarheight });
-  ImGui::SetNextWindowSize({ unitWidth, unitHeight * 2 });
-  ImGui::Begin("Hierarchy", &m_hierarchyWindow, flags);
-  loadHierarchy();
-  ImGui::End();
-
-  ImGui::SetNextWindowPos({ unitWidth * 3, mainMenuBarheight });
-  ImGui::SetNextWindowSize({ unitWidth, unitHeight * 3 });
-  ImGui::Begin("Inspector", &m_inpectorWindow, flags);
-  loadInspector();
-  ImGui::End();
-
-  ImGui::SetNextWindowPos({ 0, mainMenuBarheight + 2 * unitHeight });
-  ImGui::SetNextWindowSize({ 3 * unitWidth, unitHeight });
-  ImGui::Begin("File Manager", &m_fileManagerWindow, flags);
-  ImGui::End();
-
-  ImGui::SetNextWindowPos({ unitWidth, mainMenuBarheight });
-  ImGui::SetNextWindowSize({ 2 * unitWidth, 2 * unitHeight });
 }
 
 void
@@ -1255,75 +1184,70 @@ Editor::loadFileManager()
 
 void
 Editor::loadRenderWindow() {
-  if (m_renderConfigWindow) {
 
-     ImGui::Begin("Render Configuration", &m_renderConfigWindow);
-    if (ImGui::CollapsingHeader("Post-Processing")) {
-      ImGui::Indent(ImGui::GetTreeNodeToLabelSpacing());
-      if (ImGui::CollapsingHeader("Chromatic Aberration")) {
-        ImGui::Columns(2, "", false);
-        ImGui::Text("Displacement:");
-        ImGui::NextColumn();
-        ImGui::DragFloat("##cromaticPP", RenderManager::instance().getCAStrenght(), .001f, -0.5f, 0.5f);
-        ImGui::EndColumns();
-      }
-      if (ImGui::CollapsingHeader("Depth Of field")) {
-        ImGui::Checkbox("Front Focus:##frontFocusPP", RenderManager::instance().getDoFFrontFocus());
-        ImGui::Columns(2, "", false);
-        ImGui::Text("Distance:");
-        ImGui::NextColumn();
-        ImGui::DragFloat("##distancePP", RenderManager::instance().getDoFDistance(), 1.0f, 0.0f, 100000.0f);
-        ImGui::NextColumn();
-        ImGui::Text("Facus range:");
-        ImGui::NextColumn();
-        ImGui::DragFloat("##focusRangePP", RenderManager::instance().getDoFFocusRange(), 1.0f, 10.0f, 100000.0f);
-        ImGui::EndColumns();
-      }
-      if (ImGui::CollapsingHeader("Vignete")) {
-        float* tempRadius = &RenderManager::instance().getVignetteRadius()->x;
-        ImGui::Columns(2, "", false);
-        ImGui::Text("Radius:");
-        ImGui::NextColumn();
-        ImGui::DragFloat2("##radiusPP", tempRadius, 0.1f, 0.0f, 100.0f);
-
-        float* tempConcentration = &RenderManager::instance().getVignetteConcentration()->x;
-        ImGui::NextColumn();
-        ImGui::Text("Concentration:");
-        ImGui::NextColumn();
-        ImGui::DragFloat2("##concentrationPP", tempConcentration, 0.1f, 0.0f, 100.0f);
-
-        ImGui::NextColumn();
-        ImGui::Text("Scale:");
-        ImGui::NextColumn();
-        ImGui::DragFloat("##scaleVPP", RenderManager::instance().getVignetteScale(), 1.0f, 0.0f, 100.0f);
-        ImGui::EndColumns();
-      }
-      ImGui::Unindent(ImGui::GetTreeNodeToLabelSpacing());
-    }
-    if (ImGui::CollapsingHeader("SSAO")) {
-      ImGui::Checkbox("Enabled", RenderManager::instance().getSSAOActive());
+  if (ImGui::CollapsingHeader("Post-Processing")) {
+    ImGui::Indent(ImGui::GetTreeNodeToLabelSpacing());
+    if (ImGui::CollapsingHeader("Chromatic Aberration")) {
       ImGui::Columns(2, "", false);
-      ImGui::Text("Sample Radio:");
+      ImGui::Text("Displacement:");
       ImGui::NextColumn();
-      ImGui::DragFloat("##sampleRadioSSAO", RenderManager::instance().getSSAOSampleRadio(), 1.0f, 0.0f);
+      ImGui::DragFloat("##cromaticPP", RenderManager::instance().getCAStrenght(), .001f, -0.5f, 0.5f);
+      ImGui::EndColumns();
+    }
+    if (ImGui::CollapsingHeader("Depth Of field")) {
+      ImGui::Checkbox("Front Focus:##frontFocusPP", RenderManager::instance().getDoFFrontFocus());
+      ImGui::Columns(2, "", false);
+      ImGui::Text("Distance:");
+      ImGui::NextColumn();
+      ImGui::DragFloat("##distancePP", RenderManager::instance().getDoFDistance(), 1.0f, 0.0f, 100000.0f);
+      ImGui::NextColumn();
+      ImGui::Text("Facus range:");
+      ImGui::NextColumn();
+      ImGui::DragFloat("##focusRangePP", RenderManager::instance().getDoFFocusRange(), 1.0f, 10.0f, 100000.0f);
+      ImGui::EndColumns();
+    }
+    if (ImGui::CollapsingHeader("Vignete")) {
+      float* tempRadius = &RenderManager::instance().getVignetteRadius()->x;
+      ImGui::Columns(2, "", false);
+      ImGui::Text("Radius:");
+      ImGui::NextColumn();
+      ImGui::DragFloat2("##radiusPP", tempRadius, 0.1f, 0.0f, 100.0f);
 
+      float* tempConcentration = &RenderManager::instance().getVignetteConcentration()->x;
       ImGui::NextColumn();
-      ImGui::Text("Intensity:");
+      ImGui::Text("Concentration:");
       ImGui::NextColumn();
-      ImGui::DragFloat("##intensitySSAO", RenderManager::instance().getSSAOIntensity(), 1.0f, 0.0f);
+      ImGui::DragFloat2("##concentrationPP", tempConcentration, 0.1f, 0.0f, 100.0f);
 
       ImGui::NextColumn();
       ImGui::Text("Scale:");
       ImGui::NextColumn();
-      ImGui::DragFloat("##scaleSSAO", RenderManager::instance().getSSAOScale(), 1.0f, 0.0f);
-      ImGui::NextColumn();
-      ImGui::Text("Bias:");
-      ImGui::NextColumn();
-      ImGui::DragFloat("##biasSSAO", RenderManager::instance().getSSAOBias(), 1.0f, 0.0f);
+      ImGui::DragFloat("##scaleVPP", RenderManager::instance().getVignetteScale(), 1.0f, 0.0f, 100.0f);
       ImGui::EndColumns();
     }
+    ImGui::Unindent(ImGui::GetTreeNodeToLabelSpacing());
+  }
+  if (ImGui::CollapsingHeader("SSAO")) {
+    ImGui::Checkbox("Enabled", RenderManager::instance().getSSAOActive());
+    ImGui::Columns(2, "", false);
+    ImGui::Text("Sample Radio:");
+    ImGui::NextColumn();
+    ImGui::DragFloat("##sampleRadioSSAO", RenderManager::instance().getSSAOSampleRadio(), 1.0f, 0.0f);
 
-    ImGui::End();
+    ImGui::NextColumn();
+    ImGui::Text("Intensity:");
+    ImGui::NextColumn();
+    ImGui::DragFloat("##intensitySSAO", RenderManager::instance().getSSAOIntensity(), 1.0f, 0.0f);
+
+    ImGui::NextColumn();
+    ImGui::Text("Scale:");
+    ImGui::NextColumn();
+    ImGui::DragFloat("##scaleSSAO", RenderManager::instance().getSSAOScale(), 1.0f, 0.0f);
+    ImGui::NextColumn();
+    ImGui::Text("Bias:");
+    ImGui::NextColumn();
+    ImGui::DragFloat("##biasSSAO", RenderManager::instance().getSSAOBias(), 1.0f, 0.0f);
+    ImGui::EndColumns();
   }
 }
 
@@ -1548,6 +1472,13 @@ Editor::dockerTest() {
       if (ImGui::BeginDock("Material Editor", &m_materialEditorWindow)) {
         //ImGui::Text("Cosas de inspector");
         materialEditor();
+      }
+      ImGui::EndDock();
+
+      ImGui::SetNextDock(ImGuiDockSlot_Tab);
+      if (ImGui::BeginDock("Render Configuration", &m_renderConfigWindow)) {
+        //ImGui::Text("Cosas de render");
+        loadRenderWindow();
       }
       ImGui::EndDock();
 

@@ -56,7 +56,6 @@ class Editor : public Application
   void initScriptEngine();
   void initInputs();
   void loadMainMenu();
-  void initImguiMenus(float mainMenuBarheight);
   void loadHierarchy();
   void loadMenuHierarchy();
   void materialEditor();
@@ -90,8 +89,6 @@ class Editor : public Application
   GFXShared<DepthStencil> m_RTDPTH;
   Viewport m_sceneViewport;
   float m_luminanceDelta;
-  float m_mainMenuBarheight;
-  bool  m_initFlag;
   bool m_renderConfigWindow = true;
   bool m_hierarchyWindow = true;
   bool m_sceneWindow = true;
