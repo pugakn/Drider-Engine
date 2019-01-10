@@ -571,9 +571,11 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   //Transform Lights to ScreenSpace.
   m_LWSLightsToSSData.ActiveCam = mainCam;
   m_LWSLightsToSSData.Lights = &lights;
+  m_LWSLightsToSSData.numberOfLights = numberOfLights;
   m_LightningPass.lightsToScreenSpace(&m_LWSLightsToSSData);
   //Tile Lights
   m_LTileLightsData.OutRt = m_RTLightning.get();
+  m_LTileLightsData.numberOfLights = numberOfLights;
   m_LightningPass.tileLights(&m_LTileLightsData);
   //Lightning Pass
   m_LightningDrawData.ActiveCam = mainCam;

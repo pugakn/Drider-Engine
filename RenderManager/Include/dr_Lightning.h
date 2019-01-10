@@ -19,10 +19,12 @@ struct LightningInitData : PassInitData {
 struct LightningLightsToSSData : PassDrawData {
   std::shared_ptr<Camera> ActiveCam;
   std::array<Light, RM_MAX_LIGHTS>* Lights;
+  Int32 numberOfLights;
 };
 
 struct LightningTileLightsSSData : PassDrawData {
   RenderTarget* OutRt;
+  Int32 numberOfLights;
 };
 
 struct LightningDrawData : PassDrawData {

@@ -796,8 +796,9 @@ Editor::loadMainMenu() {
 
 void
 Editor::loadHierarchy() {
-  if (ImGui::Button("Create"))
+  if (ImGui::Button("Create")) {
     ImGui::OpenPopup("menuHierarchy");
+  }
   ImGui::SameLine();
   if (ImGui::BeginPopup("menuHierarchy")) {
     loadMenuHierarchy();
@@ -817,7 +818,7 @@ Editor::loadHierarchy() {
       m_selectedGameObject->getParent()->removeChild(m_selectedGameObject);
       m_selectedGameObject->destroy();
 
-
+      m_bSelected = false;
       m_selectedGameObject = SceneGraph::getRoot();
     }
   }
@@ -833,14 +834,17 @@ Editor::loadHierarchy() {
       if (it->getChildrenCount() == 0) {
         node_flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
         ImGui::TreeNodeEx((void*)(intptr_t)id, node_flags, name.c_str());
-        if (ImGui::IsItemClicked())
+        if (ImGui::IsItemClicked()) {
           m_selectedGameObject = it;
+          m_bSelected = true;
+        }
       }
-      else
-      {
+      else {
         bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)id, node_flags, name.c_str());
-        if (ImGui::IsItemClicked())
+        if (ImGui::IsItemClicked()) {
           m_selectedGameObject = it;
+          m_bSelected = true;
+        }
         if (node_open) {
           auto children2 = it->getChildren();
           search(children2);
@@ -853,11 +857,13 @@ Editor::loadHierarchy() {
   auto root = SceneGraph::getRoot();
   auto name = StringUtils::toString(root->getName());
   if (ImGui::TreeNode(name.c_str())) {
-    if (ImGui::IsItemClicked())
+    if (ImGui::IsItemClicked()) {
       m_selectedGameObject = root;
+    }
     static bool align_label_with_current_x_position = false;
-    if (align_label_with_current_x_position)
+    if (align_label_with_current_x_position) {
       ImGui::Unindent(ImGui::GetTreeNodeToLabelSpacing());
+    }
 
     ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, ImGui::GetFontSize()); // Increase spacing to differentiate leaves from expanded contents.
 
@@ -865,8 +871,9 @@ Editor::loadHierarchy() {
     search(children);
 
     ImGui::PopStyleVar();
-    if (align_label_with_current_x_position)
+    if (align_label_with_current_x_position) {
       ImGui::Indent(ImGui::GetTreeNodeToLabelSpacing());
+    }
     ImGui::TreePop();
   }
 
@@ -1451,8 +1458,12 @@ Editor::dockerTest() {
 
       ImGui::SetNextDock(ImGuiDockSlot_Tab);
       if(ImGui::BeginDock("Hierarchy", &m_hierarchyWindow)) {
-          //ImGui::Text("Cosas de herarchy");
-          loadHierarchy();
+        //ImGui::Text("Cosas de herarchy");
+        if (ImGui::IsWindowHovered() && ImGui::IsMouseClicked(0)) {
+          m_bSelected = false;
+          m_selectedGameObject = SceneGraph::getRoot();
+        }
+        loadHierarchy();
       }
       ImGui::EndDock();
 

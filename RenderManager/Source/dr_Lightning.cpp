@@ -202,8 +202,10 @@ LightningPass::lightsToScreenSpace(LightningLightsToSSData* data) {
   m_CBWSLightsToSS->updateFromBuffer(dc, reinterpret_cast<byte*>(&m_CBWSLightsToSSData));
   m_CBWSLightsToSS->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
 
-  SizeT csDivisions = static_cast<SizeT>(Math::ceil(RM_MAX_LIGHTS / 32.0f));
-  dc.dispatch(csDivisions, 1, 1);
+  if (0 != data->numberOfLights) {
+    SizeT csDivisions = static_cast<SizeT>(Math::ceil(data->numberOfLights / 32.0f));
+    dc.dispatch(csDivisions, 1, 1);
+  }
 
   dc.setUAVsNull();
   dc.setResourcesNull();
@@ -241,6 +243,7 @@ LightningPass::tileLights(LightningTileLightsSSData* data) {
   m_CBTileLights->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
 
   SizeT passes = RM_MAX_LIGHTS / 512;
+  //SizeT passes = data->numberOfLights / 512;
   dc.dispatch(m_ComputeWidthBlocks, m_ComputeHeightBlocks, passes);
 
   dc.setUAVsNull();
