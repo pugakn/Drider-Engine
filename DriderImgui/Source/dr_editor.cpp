@@ -1641,7 +1641,6 @@ Vector3D
 Editor::GetCameraMouseRayDirection(CameraManager::SharedCamera Cam) {
   Vector2D mouseInScreen;
   if (getMouseInScene(&mouseInScreen)) {
-    std::cout << mouseInScreen.x << ", " << mouseInScreen.y << std::endl;
   }
 
   Vector4D mouseInScreenPosition = Mouse::getPosition();
