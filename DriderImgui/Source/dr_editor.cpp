@@ -58,12 +58,20 @@ void
 Editor::postInit() {
   Logger::startUp();
   GraphicsDriver::startUp(DR_GRAPHICS_API::D3D11,
-    m_viewport.width,
-    m_viewport.height,
-    m_hwnd);
+                          m_viewport.width,
+                          m_viewport.height,
+                          m_hwnd);
   InputManager::startUp(reinterpret_cast<SizeT>(m_hwnd));
   Time::startUp();
   CameraManager::startUp();
+  RenderManager::startUp();
+  ContextManager::startUp();
+  ScriptEngine::startUp();
+  SceneGraph::startUp();
+  ResourceManager::startUp();
+  PhysicsManager::startUp();
+  SoundAPI::startUp();
+
   CameraManager::createCamera(_T("PATO_CAM"),
                               { 0.0f, 150.0f, -400.0f },
                               { 0.0f, 50.f, 0.0f },
@@ -73,13 +81,6 @@ Editor::postInit() {
                               0.1f,
                               10000.f);
   CameraManager::setActiveCamera(_T("PATO_CAM"));
-  RenderManager::startUp();
-  ContextManager::startUp();
-  ScriptEngine::startUp();
-  SceneGraph::startUp();
-  ResourceManager::startUp();
-  PhysicsManager::startUp();
-  SoundAPI::startUp();
 
   m_sceneViewport = Viewport{ 0, 0, 480, 320 };
 
@@ -130,7 +131,7 @@ Editor::postInit() {
 
   semantics.push_back(_T("Albedo"));
   semantics.push_back(_T("Normal"));
-  semantics.push_back(_T("Emisivity"));
+  semantics.push_back(_T("Emissive"));
   semantics.push_back(_T("Metallic"));
   semantics.push_back(_T("Roughness"));
 
@@ -447,8 +448,8 @@ Editor::onResize() {
   ImGui_ImplDX11_CreateDeviceObjects();
 }
 
-void Editor::initImGuiStyle()
-{
+void
+Editor::initImGuiStyle() {
   ImGuiIO& io = ImGui::GetIO();
   //io.Fonts->Clear();
   /*ImFont* font = io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\segoeui.ttf", 18.0f);
@@ -930,8 +931,8 @@ Editor::materialEditor() {
   
 }
 
-void Editor::loadSavedLayouts()
-{
+void
+Editor::loadSavedLayouts() {
   FileSystem fs;
   
   auto tstrLayoutsPath = StringUtils::toTString(m_layoutsPath);
@@ -1338,7 +1339,8 @@ Editor::getMouseInScene(Vector2D* mousePosition) {
 //  }
 //}
 
-void Editor::saveCurrentLayout() {
+void
+Editor::saveCurrentLayout() {
   std::ofstream file(m_layoutsPath + "\\layout.cache");
 
   if (file) {
@@ -1483,14 +1485,14 @@ Editor::dockerTest() {
       ImGui::EndDock();
 
       ImGui::SetNextDock(ImGuiDockSlot_Bottom);
+      ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
       if (ImGui::BeginDock("Scene", &m_sceneWindow)) {
-        m_posMouseSceneWindow[0] = (ImGui::GetMousePos().x - ImGui::GetWindowPos().x + 7.f) / m_sceneViewport.width;
-        m_posMouseSceneWindow[1] = (ImGui::GetMousePos().y - ImGui::GetWindowPos().y + 27.f) / m_sceneViewport.height;
+        m_posMouseSceneWindow[0] = (ImGui::GetMousePos().x - ImGui::GetWindowPos().x) / m_sceneViewport.width;
+        m_posMouseSceneWindow[1] = (ImGui::GetMousePos().y - ImGui::GetWindowPos().y) / m_sceneViewport.height;
         float size = ImGui::GetFontSize() + ImGui::GetFrameHeight() * 2.f;
-        float width = ImGui::GetWindowWidth() - 18;
-        float height = ImGui::GetWindowHeight()- size;
-        if (m_sceneViewport.width != width || m_sceneViewport.height != height)
-        {
+        float width = ImGui::GetWindowWidth();
+        float height = ImGui::GetWindowHeight() - size;
+        if (m_sceneViewport.width != width || m_sceneViewport.height != height) {
           m_sceneViewport.width = (UInt32)width;
           m_sceneViewport.height = (UInt32)height;
           initRT();
@@ -1502,6 +1504,7 @@ Editor::dockerTest() {
 
       }
       ImGui::EndDock();
+      ImGui::PopStyleVar();
 
       ImGui::EndDockspace();
   }
@@ -1638,7 +1641,7 @@ Vector3D
 Editor::GetCameraMouseRayDirection(CameraManager::SharedCamera Cam) {
   Vector2D mouseInScreen;
   if (getMouseInScene(&mouseInScreen)) {
-
+    std::cout << mouseInScreen.x << ", " << mouseInScreen.y << std::endl;
   }
 
   Vector4D mouseInScreenPosition = Mouse::getPosition();

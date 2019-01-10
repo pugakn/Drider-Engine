@@ -13,7 +13,8 @@ Keyboard::Keyboard(Pass)
 Keyboard::~Keyboard() 
 {}
 
-bool Keyboard::isKeyDown(KEY_CODE::E key) {
+bool
+Keyboard::isKeyDown(KEY_CODE::E key) {
 
   Keyboard* keyboard = InputManager::getKeyboard();
 
@@ -202,8 +203,9 @@ Keyboard::getAsChar(KEY_CODE::E key) {
     //return ("a");
 }
 
-void Keyboard::callCallbacks(KEYBOARD_EVENT::E trigger, 
-                             KEY_CODE::E key) {
+void
+Keyboard::callCallbacks(KEYBOARD_EVENT::E trigger, 
+                        KEY_CODE::E key) {
 
   auto& callbacks = m_callbacks[trigger][key];
 
