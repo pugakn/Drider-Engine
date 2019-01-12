@@ -70,7 +70,7 @@ GBufferPass::draw(PassDrawData* drawData) {
   
   dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
   
-  const float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+  const float clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 
   data->OutRt->clear(dc, clearColor);
   data->dsOptions->clear(dc, 1, 0);
@@ -79,7 +79,7 @@ GBufferPass::draw(PassDrawData* drawData) {
   if (false) {
     dc.setResourcesNull();
 
-    data->cubeMapTex->textureGFX->set(dc, 0);  //Cubemap
+    data->cubeMapTex->textureGFX->set(dc, 0);  //Cubemapz
     //cubeMapTex->set(dc, 0);
 
     //CB.World = data->models->worlds[modelPair.worldID];

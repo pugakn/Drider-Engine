@@ -80,6 +80,7 @@ class RenderManApp : public Application
   bool m_bOffseted;
   float m_fOffset;
 
+  SceneGraph::SharedGameObject m_Camera;
   std::vector<SceneGraph::SharedGameObject> m_vecGos;
   std::shared_ptr<Material> m_BushMat;
   std::shared_ptr<Material> m_StormtrooperMat;

@@ -53,9 +53,11 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   const float3  emissive     = EmissiveRoughnessTex.SampleLevel(SS, uv, 0).xyz;
   const float   roughness    = EmissiveRoughnessTex.SampleLevel(SS, uv, 0).w;
   const float3  SSReflection = SSReflectionTex.SampleLevel(SS, uv, 0).xyz;
+  const float   SSRefProport = SSReflectionTex.SampleLevel(SS, uv, 0).w;
   const float3  diffusePBR   = (diffuse - (diffuse * metallic));
-  //const float3  specularPBR  = lerp(float3(0.04f, 0.04f, 0.04f), diffuse, metallic) * SSAO;
-  const float3  specularPBR  = lerp(float3(0.04f, 0.04f, 0.04f), SSReflection, metallic) * SSAO;
+  const float3  specularPBR  = lerp(float3(0.04f, 0.04f, 0.04f), diffuse, metallic) * SSAO;
+  //const float3  specularPBR  = lerp(float3(0.04f, 0.04f, 0.04f), SSReflection, metallic) * SSAO;
+  //const float3  specularPBR  = lerp(float3(0.04f, 0.04f, 0.04f) * SSReflection, diffuse, metallic) * SSAO;
   const float   alpha        = max(0.01f, roughness * roughness);
   const float   ShadowValue  = SSAO_SSShadowTex.SampleLevel(SS, uv, 0).g;
 
@@ -129,7 +131,8 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   const float3 reflectVector = reflect(-ViewDir, normal);
   const float mipIndex = alpha * 0.8f;
 
-  const float3 envColor = EnvironmentTex.SampleLevel(SS, reflectVector, mipIndex).xyz;
+  float3 envColor = EnvironmentTex.SampleLevel(SS, reflectVector, mipIndex).xyz;
+  envColor = lerp(envColor, SSReflection, SSRefProport);
   const float3 Irradiance = IrradianceTex.SampleLevel(SS, reflectVector, 0).xyz;
   
   const float3 IBL = (specularPBR * envColor) + (diffusePBR * Irradiance);
@@ -138,6 +141,8 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   const float3 resultColor = ((finalColor + IBL) * ShadowValue) + emissive;
 
   Lightning[uvScale] = float4(resultColor, 1.0f);
+  //Lightning[uvScale] = float4(envColor, 1.0f);
+  //Lightning[uvScale] = float4(Irradiance, 1.0f);
  
   return;
 }

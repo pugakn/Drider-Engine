@@ -23,9 +23,6 @@ PositionToUV(const float4 inPos) {
 
   float2 uv = uv = 0.5f + (0.5f * transformedPos.xy);
   uv.y = 1.0 - uv.y;
-  
-  uv.x = saturate(uv.x);
-  uv.y = saturate(uv.y);
 
   return uv;
 }
@@ -44,19 +41,28 @@ getCameraDepth(const float4 inPos) {
   return PositionDepthTex.SampleLevel(SS, uv, 1).w;
 }
 
-float3
+float4
 getColorFromPosition(const float4 posSample) {
   float2 uv = PositionToUV(posSample);
 
-  return ColorTex.SampleLevel(SS, uv, 1).rgb;
+  return float4(ColorTex.SampleLevel(SS, uv, 1).rgb, 1.0f);
 }
 
-float3
+float4
 SSReflectDetail(const float4 startPos,
                 const float4 finalPos,
                 const int qualitySteps,
                 const float baseDepth) {
-  static const float reflectionBias = 0.005f;
+  //static const float reflectionBias = 0.0005f;
+  //static const float reflectionBias = 0.001f;
+  //static const float reflectionBias = 0.005f;
+  //static const float reflectionBias = 0.004f;
+  //static const float reflectionBias = 0.003f;
+  //static const float reflectionBias = 0.002f;
+  //static const float reflectionBias = 0.001f;
+  //static const float reflectionBias = 0.0006f;
+  static const float reflectionBias = 0.0005f;
+  //static const float reflectionBias = 0.00005f;
   
   float4 currentPosition;
   float stepProportion = 0.0f;
@@ -64,18 +70,16 @@ SSReflectDetail(const float4 startPos,
   float positionDepth;
   float cameraDepth;
   
-  const float proportionScale = 1.0f / qualitySteps;
+  const float proportionScale = rcp(qualitySteps);
 
   [loop]
   for (int i = 0; i < qualitySteps; ++i) {
-    stepProportion = (i + 1.0f) * proportionScale;
+    stepProportion += proportionScale;
     currentPosition = lerp(startPos, finalPos, stepProportion);
-
-    //stepProportion = (i + 1.0f) * proportionScale;
     //currentPosition = lerp(startPos, finalPos, 1.0f - stepProportion);
 
     positionDepth = getPositionDepth(currentPosition);
-    cameraDepth = getCameraDepth(currentPosition);
+    //cameraDepth = getCameraDepth(currentPosition);
     
     //if (positionDepth > cameraDepth) {
     //if ((positionDepth - cameraDepth) < reflectionBias) {
@@ -85,7 +89,7 @@ SSReflectDetail(const float4 startPos,
     }
   }
 
-  return (0.0f).xxx;
+  return (0.0f).xxxx;
 }
 
 #define NUMTHREADS_X 8
@@ -106,11 +110,10 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   const float3  normal      = NormalCoCTex.SampleLevel(SS, uv, 0).xyz;
 
   const float3 ViewDir = normalize(position.xyz - kEyePosition.xyz);
-  
 
-  static const float reflectionBias = 1.0f;
-  static const float stepSize = 10.0f;
-  static const int nSteps = 50;
+  static const float reflectionBias = 0.01f;
+  static const float stepSize = 5.0f;
+  static const int nSteps = 100;
 
   const float3 reflectDir = normalize(reflect(ViewDir, normal));
   const float4 reflectStep = float4(reflectDir * stepSize, 0.0f);
@@ -119,22 +122,29 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   float positionDepth = 0.0f;
   float cameraDepth = 0.0f;
 
-  float reflectColor = (0.0f).xxxx;
-
+  float4 reflectColor = (0.0f).xxxx;
+  
+  float2 uvS;
   [loop]
   for (int i = 0; i < nSteps; ++i) {
     currentPosition += reflectStep;
 
     positionDepth = getPositionDepth(currentPosition);
     cameraDepth = getCameraDepth(currentPosition);
+    uvS = PositionToUV(currentPosition);
+    if (uvS.x >= 1.0f ||
+        uvS.y >= 1.0f ||
+        uvS.x <= 0.0f ||
+        uvS.y <= 0.0f) {
+      break;
+    }
     
     if (positionDepth > cameraDepth) {
       if ((positionDepth - cameraDepth) < reflectionBias) {
         //reflectColor = getColorFromPosition(currentPosition);
-        reflectColor = SSReflectDetail(currentPosition - reflectStep,
-                                       currentPosition,
-                                       10, cameraDepth);
-        reflectColor *= 1.0f - ((i * rcp(nSteps)));
+        reflectColor = SSReflectDetail(currentPosition - reflectStep, currentPosition, 10, cameraDepth);
+        //reflectColor *= 1.0f - ((i * rcp(nSteps)));
+        //reflectColor.w *= 1.0f - ((i * rcp(nSteps)));
         break;
       }
     }

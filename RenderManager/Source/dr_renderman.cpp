@@ -669,6 +669,7 @@ RenderManager::recompile() {
   m_HorBlurPass.recompileShader();
   m_VerBlurPass.recompileShader();
   m_ShadowPass.recompileShader();
+  m_SSReflectionPass.recompileShader();
   m_LightningPass.recompileShader();
   m_luminescencePass.recompileShader();
   m_PostProcessingPass.recompileShader();
