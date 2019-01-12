@@ -1,5 +1,5 @@
-#define QUALITY_BLUR
-//#define NORMAL_BLUR
+//#define QUALITY_BLUR
+#define NORMAL_BLUR
 //#define PERFORMANCE_BLUR
 
 cbuffer ConstantBuffer : register(b0) {

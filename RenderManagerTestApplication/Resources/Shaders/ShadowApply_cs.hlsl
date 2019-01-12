@@ -1,6 +1,6 @@
 //#define INTERVAL_BASED_SELECTION
-//#define MAP_BASED_SELECTION
-#define DR_SH_PCF_ENABLED
+#define MAP_BASED_SELECTION
+//#define DR_SH_PCF_ENABLED
 //#define CASCADE_BLUR
 
 cbuffer ConstantBuffer : register(b0) {

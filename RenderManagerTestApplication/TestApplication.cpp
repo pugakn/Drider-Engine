@@ -101,10 +101,10 @@ RenderManApp::postInit() {
   RenderManager::startUp();
   PhysicsManager::startUp();
 
-  auto rm_cam = SceneGraph::createObject(_T("DuckCamera"));
-  auto cam_cmp = rm_cam->createComponent<CameraComponent>();
-  rm_cam->getTransform().setPosition({ 0.0f, 200.0f, 400.0f });
-  rm_cam->getTransform().setRotation({ 25.0f * Math::DEGREE_TO_RADIAN, Math::PI, 0.0f });
+  m_Camera = SceneGraph::createObject(_T("DuckCamera"));
+  auto cam_cmp = m_Camera->createComponent<CameraComponent>();
+  m_Camera->getTransform().setPosition({ 0.0f, 200.0f, 400.0f });
+  m_Camera->getTransform().setRotation({ 25.0f * Math::DEGREE_TO_RADIAN, Math::PI * 1, 0.0f });
   cam_cmp->setActive();
 
   m_bSelected = false;
@@ -167,9 +167,17 @@ RenderManApp::postInit() {
   loadResources();
 
   RenderManager::instance().setSkySphere(ResourceManager::getReferenceT<Model>(_T("SkySphere.fbx")));
-  RenderManager::instance().setCubeMap(ResourceManager::getReferenceT<TextureCore>(_T("GraceCubemap.tga")));
-  RenderManager::instance().setEnviromentMap(ResourceManager::getReferenceT<TextureCore>(_T("GraceDiffuseCubemap.tga")));
+  //RenderManager::instance().setCubeMap(ResourceManager::getReferenceT<TextureCore>(_T("GraceEnviroment.tga")));
+  //RenderManager::instance().setEnviromentMap(ResourceManager::getReferenceT<TextureCore>(_T("GraceIrradiance.tga")));
+  //RenderManager::instance().setCubeMap(ResourceManager::getReferenceT<TextureCore>(_T("RoomEnviroment.tga")));
+  //RenderManager::instance().setEnviromentMap(ResourceManager::getReferenceT<TextureCore>(_T("RoomIrradiance.tga")));
+  RenderManager::instance().setCubeMap(ResourceManager::getReferenceT<TextureCore>(_T("SeaEnviroment.tga")));
+  RenderManager::instance().setEnviromentMap(ResourceManager::getReferenceT<TextureCore>(_T("SeaIrradiance.tga")));
+  //RenderManager::instance().setCubeMap(ResourceManager::getReferenceT<TextureCore>(_T("GardenEnviroment.tga")));
+  //RenderManager::instance().setEnviromentMap(ResourceManager::getReferenceT<TextureCore>(_T("GardenIrradiance.tga")));
   RenderManager::instance().setFilmLut(ResourceManager::getReferenceT<TextureCore>(_T("FilmLut.tga")));
+
+  //RenderManager::instance().setCubeMap(ResourceManager::getReferenceT<TextureCore>(_T("CubemapExample.tga")));
   
   m_vecGos.push_back(SceneGraph::createObject(_T("Floor")));
   tmpObj = m_vecGos.back();
@@ -215,7 +223,8 @@ RenderManApp::postInit() {
 
   m_vecGos.push_back(SceneGraph::createObject(_T("Robot")));
   tmpObj = m_vecGos.back();
-  auto ptrModel = ResourceManager::getReferenceT<Model>(_T("roboto.dae"));
+  //auto ptrModel = ResourceManager::getReferenceT<Model>(_T("Sphere.fbx"));
+  auto ptrModel = ResourceManager::getReferenceT<Model>(_T("Robot.dae"));
   if (ptrModel) {
     tmpObj->getTransform().setPosition(Vector3D(0.0f, 50.5f, 0.0f));
     tmpObj->getTransform().setScale(Vector3D(100.0f, 100.0f, 100.0f));
@@ -225,11 +234,11 @@ RenderManApp::postInit() {
 
     m_modelMat = ResourceManager::createMaterial(_T("ModelMaterial"));
 
-    auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("roboto_albedo.tga"));
-    auto emissiveTex = ResourceManager::getReferenceT<TextureCore>(_T("roboto_emissive.tga"));
-    auto metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("roboto_metallic.tga"));
-    auto normalTex = ResourceManager::getReferenceT<TextureCore>(_T("roboto_normal.tga"));
-    auto roughnessTex = ResourceManager::getReferenceT<TextureCore>(_T("roboto_roughness.tga"));
+    auto albedoTex = ResourceManager::getReferenceT<TextureCore>(_T("Robot_albedo.tga"));
+    auto emissiveTex = ResourceManager::getReferenceT<TextureCore>(_T("Robot_emissive.tga"));
+    auto metallicTex = ResourceManager::getReferenceT<TextureCore>(_T("Robot_metallic.tga"));
+    auto normalTex = ResourceManager::getReferenceT<TextureCore>(_T("Robot_normal.tga"));
+    auto roughnessTex = ResourceManager::getReferenceT<TextureCore>(_T("Robot_roughness.tga"));
     m_modelMat->setTexture(albedoTex, _T("Albedo"));
     m_modelMat->setTexture(normalTex, _T("Normal"));
     m_modelMat->setTexture(emissiveTex, _T("Emisivity"));
@@ -334,6 +343,13 @@ RenderManApp::postUpdate() {
     m_SelectedMoveAxis = TransformAxis::kNone;
     m_bOffseted = false;
     m_fOffset = 0.0f;
+  }
+
+  if (Keyboard::isKeyDown(KEY_CODE::kLEFT)) {
+    m_Camera->getTransform().move({ -100.0f * Time::getDelta(), 0.0f, 0.0f });
+  }
+  if (Keyboard::isKeyDown(KEY_CODE::kRIGHT)) {
+    m_Camera->getTransform().move({ 100.0f * Time::getDelta(), 0.0f, 0.0f });
   }
 
   //Recompile shaders.
@@ -455,15 +471,29 @@ RenderManApp::loadResources() {
   ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
 
   //Cubemap
-  ImageInfo cubeMapDesc;
-  cubeMapDesc.width = 256;
-  cubeMapDesc.height = 256;
-  cubeMapDesc.textureDimension = DR_DIMENSION::kCUBE_MAP;
-  cubeMapDesc.channels = DR_FORMAT::kB8G8R8A8_UNORM_SRGB;
+  ImageInfo churchDesc;
+  churchDesc.width = 256;
+  churchDesc.height = 256;
+  churchDesc.textureDimension = DR_DIMENSION::kCUBE_MAP;
+  churchDesc.channels = DR_FORMAT::kB8G8R8A8_UNORM_SRGB;
+  ImageInfo cubesDesc;
+  cubesDesc.width = 512;
+  cubesDesc.height = 512;
+  cubesDesc.textureDimension = DR_DIMENSION::kCUBE_MAP;
+  cubesDesc.channels = DR_FORMAT::kB8G8R8A8_UNORM_SRGB;
 
   ResourceManager::loadResource(_T("SkySphere.fbx"));
-  ResourceManager::loadResource(_T("GraceCubemap.tga"), &cubeMapDesc);
-  ResourceManager::loadResource(_T("GraceDiffuseCubemap.tga"), &cubeMapDesc);
+  ResourceManager::loadResource(_T("Sphere.fbx"));
+  ResourceManager::loadResource(_T("GraceEnviroment.tga"), &churchDesc);
+  ResourceManager::loadResource(_T("GraceIrradiance.tga"), &churchDesc);
+  ResourceManager::loadResource(_T("CubemapExample.tga"), &cubesDesc);
+  ResourceManager::loadResource(_T("RoomEnviroment.tga"), &cubesDesc);
+  ResourceManager::loadResource(_T("RoomIrradiance.tga"), &cubesDesc);
+  ResourceManager::loadResource(_T("SeaEnviroment.tga"), &cubesDesc);
+  ResourceManager::loadResource(_T("SeaIrradiance.tga"), &cubesDesc);
+  ResourceManager::loadResource(_T("GardenEnviroment.tga"), &cubesDesc);
+  ResourceManager::loadResource(_T("GardenIrradiance.tga"), &cubesDesc);
+
   ResourceManager::loadResource(_T("FilmLut.tga"));
 
   //Checker
@@ -480,12 +510,12 @@ RenderManApp::loadResources() {
   ResourceManager::loadResource(_T("256_Checker_Thickness.tga"));
 
   //Roboto
-  ResourceManager::loadResource(_T("roboto.dae"));
-  ResourceManager::loadResource(_T("roboto_albedo.tga"));
-  ResourceManager::loadResource(_T("roboto_emissive.tga"));
-  ResourceManager::loadResource(_T("roboto_metallic.tga"));
-  ResourceManager::loadResource(_T("roboto_normal.tga"));
-  ResourceManager::loadResource(_T("roboto_roughness.tga"));
+  ResourceManager::loadResource(_T("Robot.dae"));
+  ResourceManager::loadResource(_T("Robot_albedo.tga"));
+  ResourceManager::loadResource(_T("Robot_emissive.tga"));
+  ResourceManager::loadResource(_T("Robot_metallic.tga"));
+  ResourceManager::loadResource(_T("Robot_normal.tga"));
+  ResourceManager::loadResource(_T("Robot_roughness.tga"));
 }
 
 bool

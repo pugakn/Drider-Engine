@@ -92,7 +92,8 @@ SSReflectionsPass::draw(PassDrawData* drawData) {
 
   data->GbufferRT->getTexture(0).set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute, true);        //Position, linear depth
   data->GbufferRT->getTexture(1).set(dc, 1, DR_SHADER_TYPE_FLAG::kCompute, true);        //Normal, CoC
-  data->ColorRT->getTexture(0).set(dc, 2, DR_SHADER_TYPE_FLAG::kCompute, true);        //Normal, CoC
+  //data->GbufferRT->getTexture(2).set(dc, 2, DR_SHADER_TYPE_FLAG::kCompute, true);        //Color, Metallic
+  data->ColorRT->getTexture(0).set(dc, 2, DR_SHADER_TYPE_FLAG::kCompute, true);        //Lightning
 
   data->OutRt->getTexture(0).set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute, false);
 

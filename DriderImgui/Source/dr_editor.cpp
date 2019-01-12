@@ -131,7 +131,7 @@ Editor::postInit() {
 
   semantics.push_back(_T("Albedo"));
   semantics.push_back(_T("Normal"));
-  semantics.push_back(_T("Emissive"));
+  semantics.push_back(_T("Emisivity"));
   semantics.push_back(_T("Metallic"));
   semantics.push_back(_T("Roughness"));
 
@@ -543,16 +543,29 @@ Editor::initSceneGraph() {
     rComp->getMeshes().front().material = modelMat;
   }*/
 
-  ImageInfo cubeMapDesc;
-  cubeMapDesc.width = 256;
-  cubeMapDesc.height = 256;
-  cubeMapDesc.textureDimension = DR_DIMENSION::kCUBE_MAP;
-  cubeMapDesc.channels = DR_FORMAT::kB8G8R8A8_UNORM_SRGB;
-  ResourceManager::loadResource(_T("GraceCubemap.tga"), &cubeMapDesc);
-  ResourceManager::loadResource(_T("GraceDiffuseCubemap.tga"), &cubeMapDesc);
+  ImageInfo churchDesc;
+  churchDesc.width = 256;
+  churchDesc.height = 256;
+  churchDesc.textureDimension = DR_DIMENSION::kCUBE_MAP;
+  churchDesc.channels = DR_FORMAT::kB8G8R8A8_UNORM_SRGB;
+  ImageInfo cubesDesc;
+  cubesDesc.width = 512;
+  cubesDesc.height = 512;
+  cubesDesc.textureDimension = DR_DIMENSION::kCUBE_MAP;
+  cubesDesc.channels = DR_FORMAT::kB8G8R8A8_UNORM_SRGB;
   ResourceManager::loadResource(_T("FilmLut.tga"));
-  RenderManager::instance().setCubeMap(ResourceManager::getReferenceT<TextureCore>(_T("GraceCubemap.tga")));
-  RenderManager::instance().setEnviromentMap(ResourceManager::getReferenceT<TextureCore>(_T("GraceDiffuseCubemap.tga")));
+  ResourceManager::loadResource(_T("CubemapExample.tga"), &cubesDesc);
+  ResourceManager::loadResource(_T("GraceEnviroment.tga"), &churchDesc);
+  ResourceManager::loadResource(_T("GraceIrradiance.tga"), &churchDesc);
+  ResourceManager::loadResource(_T("RoomEnviroment.tga"), &cubesDesc);
+  ResourceManager::loadResource(_T("RoomIrradiance.tga"), &cubesDesc);
+  ResourceManager::loadResource(_T("SeaEnviroment.tga"), &cubesDesc);
+  ResourceManager::loadResource(_T("SeaIrradiance.tga"), &cubesDesc);
+  ResourceManager::loadResource(_T("GardenEnviroment.tga"), &cubesDesc);
+  ResourceManager::loadResource(_T("GardenIrradiance.tga"), &cubesDesc);
+
+  RenderManager::instance().setCubeMap(ResourceManager::getReferenceT<TextureCore>(_T("SeaEnviroment.tga")));
+  RenderManager::instance().setEnviromentMap(ResourceManager::getReferenceT<TextureCore>(_T("SeaIrradiance.tga")));
   RenderManager::instance().setFilmLut(ResourceManager::getReferenceT<TextureCore>(_T("FilmLut.tga")));
 }
 
