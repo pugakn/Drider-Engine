@@ -66,6 +66,8 @@ namespace RIGID_BODY_TYPE { enum E;  }
     RIGID_BODY_TYPE::E
     getMode();
 
+    Transform 
+    getTransform();
 
     DrRigidBody* m_rigidBody;
   protected:

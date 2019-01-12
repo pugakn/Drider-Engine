@@ -35,6 +35,9 @@
 #include "dr_quaternion.h"
 #include "dr_transform.h"
 #include "dr_serializable_script.h"
+#include "dr_serializable_boxcollider.h"
+#include "dr_serializable_spherecollider.h"
+#include "dr_serializable_rigidbody.h"
 
 namespace driderSDK {
 
@@ -76,6 +79,9 @@ ResourceManager::onStartUp() {
   auto seCamera = std::make_shared<sCamera>();
   auto seLight = std::make_shared<sLight>();
   auto seScript = std::make_shared<sScript>();
+  auto seBoxColl = std::make_shared<sBoxCollider>();
+  auto seSphereColl = std::make_shared<sSphereCollider>();
+  auto seRigidBody = std::make_shared<sRigidBody>();
 
   componentLoaders[SerializableTypeID::Sound] = seSound;
   //componentLoaders[SerializableTypeID::AABB] = cAABB;
@@ -83,6 +89,10 @@ ResourceManager::onStartUp() {
   componentLoaders[SerializableTypeID::Camera] = seCamera;
   componentLoaders[SerializableTypeID::Light] = seLight;
   componentLoaders[SerializableTypeID::Script] = seScript;
+  componentLoaders[SerializableTypeID::BoxCollider] = seBoxColl;
+  componentLoaders[SerializableTypeID::SphereCollider] = seSphereColl;
+  componentLoaders[SerializableTypeID::RigidBody] = seRigidBody;
+
 }
 
 void 

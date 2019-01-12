@@ -4,6 +4,7 @@
 #include "dr_rigidbody_component.h"
 #include "dr_gameObject.h"
 #include "dr_graph.h"
+#include <dr_file.h>
 
 namespace driderSDK {
 
@@ -51,8 +52,14 @@ SphereCollider::getClassID() {
 }
 
 void
-SphereCollider::serialize(File &data) {
+SphereCollider::serialize(File &file) {
+  file.m_file << SerializableTypeID::SphereCollider << "\n";
+  file.m_file << StringUtils::toString(getName()) << "\n";
 
+  file.m_file << m_radius << "\n";
+  file.m_file << m_center.x << "\n";
+  file.m_file << m_center.y << "\n";
+  file.m_file << m_center.z << "\n";
 }
 
 void

@@ -84,7 +84,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include;$(SolutionDir)Core\Include;$(SolutionDir)Math\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)Input\Include;$(SolutionDir)Sound\Include;$(SolutionDir)Sound\Include;$(SolutionDir)$(Projectname)\Include;$(DRIDER_DEPENDENCIES)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include;$(SolutionDir)Core\Include;$(SolutionDir)Math\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)Input\Include;$(SolutionDir)Sound\Include;$(SolutionDir)$(Projectname)\Include;$(DRIDER_DEPENDENCIES)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>ENGINE_EXPORTS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -98,7 +98,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include;$(SolutionDir)Core\Include;$(SolutionDir)Math\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)Input\Include;$(SolutionDir)Sound\Include;$(SolutionDir)Sound\Include;$(SolutionDir)$(Projectname)\Include;$(DRIDER_DEPENDENCIES)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Utils\Include;$(SolutionDir)Core\Include;$(SolutionDir)Math\Include;$(SolutionDir)Graphics\Include;$(SolutionDir)Input\Include;$(SolutionDir)Sound\Include;$(SolutionDir)$(Projectname)\Include;$(DRIDER_DEPENDENCIES)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>ENGINE_EXPORTS;$(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -158,12 +158,15 @@
     <ClInclude Include="Include\dr_scene.h" />
     <ClInclude Include="Include\dr_scene_manager.h" />
     <ClInclude Include="Include\dr_serializable_aabb.h" />
+    <ClInclude Include="Include\dr_serializable_boxcollider.h" />
     <ClInclude Include="Include\dr_serializable_camera.h" />
     <ClInclude Include="Include\dr_serializable_data.h" />
     <ClInclude Include="Include\dr_serializable_light.h" />
     <ClInclude Include="Include\dr_serializable_render.h" />
+    <ClInclude Include="Include\dr_serializable_rigidbody.h" />
     <ClInclude Include="Include\dr_serializable_script.h" />
     <ClInclude Include="Include\dr_serializable_sound.h" />
+    <ClInclude Include="Include\dr_serializable_spherecollider.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_codec.cpp" />
@@ -178,11 +181,14 @@
     <ClCompile Include="Source\dr_scene.cpp" />
     <ClCompile Include="Source\dr_scene_manager.cpp" />
     <ClCompile Include="Source\dr_serializable_aabb.cpp" />
+    <ClCompile Include="Source\dr_serializable_boxcollider.cpp" />
     <ClCompile Include="Source\dr_serializable_camera.cpp" />
     <ClCompile Include="Source\dr_serializable_light.cpp" />
     <ClCompile Include="Source\dr_serializable_render.cpp" />
+    <ClCompile Include="Source\dr_serializable_rigidbody.cpp" />
     <ClCompile Include="Source\dr_serializable_script.cpp" />
     <ClCompile Include="Source\dr_serializable_sound.cpp" />
+    <ClCompile Include="Source\dr_serializable_spherecollider.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

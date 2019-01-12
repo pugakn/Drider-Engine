@@ -49,7 +49,15 @@ BoxCollider::getClassID() {
 
 void
 BoxCollider::serialize(File &file) {
+  file.m_file << SerializableTypeID::BoxCollider << "\n";
+  file.m_file << StringUtils::toString(getName()) << "\n";
 
+  file.m_file << m_aabb.width << "\n";
+  file.m_file << m_aabb.height << "\n";
+  file.m_file << m_aabb.depth << "\n";
+  file.m_file << m_aabb.center.x << "\n";
+  file.m_file << m_aabb.center.y << "\n";
+  file.m_file << m_aabb.center.z << "\n";
 }
 
 void

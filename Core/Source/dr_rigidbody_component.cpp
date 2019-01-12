@@ -71,6 +71,17 @@ namespace driderSDK {
 
   void
   RigidBody3DComponent::serialize(File &file) {
+    file.m_file << SerializableTypeID::RigidBody << "\n";
+    file.m_file << StringUtils::toString(getName()) << "\n";
+
+    file.m_file << isGravity() << "\n";
+    file.m_file << getMode() << "\n";
+    
+    Transform trans;
+    trans = m_rigidBody->getTransform();   
+    file.m_file << trans.getPosition().x << "\n";
+    file.m_file << trans.getPosition().y << "\n";
+    file.m_file << trans.getPosition().z << "\n";
 
   }
   
@@ -87,5 +98,10 @@ namespace driderSDK {
   RIGID_BODY_TYPE::E
   RigidBody3DComponent::getMode() {
     return (RIGID_BODY_TYPE::E)m_rigidBody->getMode();
+  }
+
+  Transform
+  RigidBody3DComponent::getTransform() {
+    return m_rigidBody->getTransform();
   }
 }

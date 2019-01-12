@@ -13,7 +13,10 @@ namespace driderSDK {
       Sound,
       NetworkManager,
       NetworkTransform,
-      Light
+      Light,
+      BoxCollider,
+      SphereCollider,
+      RigidBody
     };
   }
 

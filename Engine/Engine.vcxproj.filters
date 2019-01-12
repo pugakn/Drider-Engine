@@ -81,6 +81,15 @@
     <ClInclude Include="Include\dr_serializable_script.h">
       <Filter>Archivos de encabezado\Serializable</Filter>
     </ClInclude>
+    <ClInclude Include="Include\dr_serializable_boxcollider.h">
+      <Filter>Archivos de encabezado\Serializable</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_serializable_spherecollider.h">
+      <Filter>Archivos de encabezado\Serializable</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_serializable_rigidbody.h">
+      <Filter>Archivos de encabezado\Serializable</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_codec.cpp">
@@ -132,6 +141,15 @@
       <Filter>Archivos de código fuente\Serializable</Filter>
     </ClCompile>
     <ClCompile Include="Source\dr_serializable_script.cpp">
+      <Filter>Archivos de código fuente\Serializable</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_serializable_boxcollider.cpp">
+      <Filter>Archivos de código fuente\Serializable</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_serializable_spherecollider.cpp">
+      <Filter>Archivos de código fuente\Serializable</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_serializable_rigidbody.cpp">
       <Filter>Archivos de código fuente\Serializable</Filter>
     </ClCompile>
   </ItemGroup>
