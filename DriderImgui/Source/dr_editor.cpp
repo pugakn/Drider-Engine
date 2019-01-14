@@ -118,6 +118,10 @@ Editor::postInit() {
   ImGui_ImplWin32_Init(m_hwnd);
   ImGui_ImplDX11_Init(d3dDev, d3dDevCont);
   //ImGui::StyleColorsDark();
+  ImGuiIO& io = ImGui::GetIO();
+  io.ConfigWindowsMoveFromTitleBarOnly = true;
+  //io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+  //io.ConfigDockingWithShift = false;
 
   ImGui::SetCurrentDockContext(m_dockContext);
 

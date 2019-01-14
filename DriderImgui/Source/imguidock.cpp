@@ -1,3 +1,4 @@
+#include <iostream>
 // based on https://github.com/nem0/LumixEngine/blob/master/external/imgui/imgui_dock.h
 // Lumix Engine Dock. From: https://github.com/nem0/LumixEngine/blob/master/src/editor/imgui/imgui_dock.h
 /*
@@ -322,7 +323,7 @@ DockContext::splits() {
       SetMouseCursor(cursor);
       SetHoveredID(GImGui->CurrentWindow->DC.LastItemId);
     }
-      
+
     if (IsItemHovered() && IsMouseClicked(0)) {
       dock.status = Status_Dragged;
     }
@@ -1019,9 +1020,12 @@ DockContext::begin(const char* label, bool* opened, ImGuiWindowFlags extra_flags
       ImGuiContext& g = *GImGui;
 
       if (g.ActiveId == GetCurrentWindow()->MoveId && g.IO.MouseDown[0]) {
+        float titleSz = ImGui::GetTextLineHeight() + ImGui::GetStyle().FramePadding.y * 2.0f;
         m_drag_offset = GetMousePos() - dock.pos;
-        doUndock(dock);
-        dock.status = Status_Dragged;
+        if (m_drag_offset.y <= titleSz) {
+          doUndock(dock);
+          dock.status = Status_Dragged;
+        }
       }
       return ret;
     }
