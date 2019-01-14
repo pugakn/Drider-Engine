@@ -462,6 +462,7 @@ Editor::initImGuiStyle() {
   io.Fonts->Build();*/
 
   ImGuiStyle* style = &ImGui::GetStyle();
+  //Original DR theme
   if (false) {
 	  style->Colors[ImGuiCol_Text] = ImVec4(0.80f, 0.80f, 0.83f, 1.00f);
 	  style->Colors[ImGuiCol_TextDisabled] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
@@ -503,7 +504,8 @@ Editor::initImGuiStyle() {
 	  style->Colors[ImGuiCol_TextSelectedBg] = ImVec4(0.25f, 1.00f, 0.00f, 0.43f);
 	  style->Colors[ImGuiCol_ModalWindowDarkening] = ImVec4(1.00f, 0.98f, 0.95f, 0.73f);
   }
-  if (true) {
+  //White theme
+  if (false) {
     style->Alpha = 1.0f;
     style->FrameRounding = 3.0f;
     style->Colors[ImGuiCol_Text] = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
@@ -549,6 +551,77 @@ Editor::initImGuiStyle() {
     style->Colors[ImGuiCol_PlotHistogramHovered] = ImVec4(1.00f, 0.60f, 0.00f, 1.00f);
     style->Colors[ImGuiCol_TextSelectedBg] = ImVec4(0.26f, 0.59f, 0.98f, 0.35f);
     style->Colors[ImGuiCol_ModalWindowDarkening] = ImVec4(0.20f, 0.20f, 0.20f, 0.35f);
+  }
+  //Cherry theme
+  if (true) {
+    // cherry colors, 3 intensities
+    #define HI(v)   ImVec4(0.502f, 0.075f, 0.256f, v)
+    #define MED(v)  ImVec4(0.455f, 0.198f, 0.301f, v)
+    #define LOW(v)  ImVec4(0.232f, 0.201f, 0.271f, v)
+    // backgrounds (@todo: complete with BG_MED, BG_LOW)
+    #define BG(v)   ImVec4(0.200f, 0.220f, 0.270f, v)
+    // text
+    #define TEXT(v) ImVec4(0.860f, 0.930f, 0.890f, v)
+
+    style->Colors[ImGuiCol_Text] = TEXT(0.78f);
+    style->Colors[ImGuiCol_TextDisabled] = TEXT(0.28f);
+    style->Colors[ImGuiCol_WindowBg] = ImVec4(0.13f, 0.14f, 0.17f, 1.00f);
+    style->Colors[ImGuiCol_ChildWindowBg] = BG(0.58f);
+    style->Colors[ImGuiCol_PopupBg] = BG(0.9f);
+    style->Colors[ImGuiCol_Border] = ImVec4(0.31f, 0.31f, 1.00f, 0.00f);
+    style->Colors[ImGuiCol_BorderShadow] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+    style->Colors[ImGuiCol_FrameBg] = BG(1.00f);
+    style->Colors[ImGuiCol_FrameBgHovered] = MED(0.78f);
+    style->Colors[ImGuiCol_FrameBgActive] = MED(1.00f);
+    style->Colors[ImGuiCol_TitleBg] = LOW(1.00f);
+    style->Colors[ImGuiCol_TitleBgActive] = HI(1.00f);
+    style->Colors[ImGuiCol_TitleBgCollapsed] = BG(0.75f);
+    style->Colors[ImGuiCol_MenuBarBg] = BG(0.47f);
+    style->Colors[ImGuiCol_ScrollbarBg] = BG(1.00f);
+    style->Colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.09f, 0.15f, 0.16f, 1.00f);
+    style->Colors[ImGuiCol_ScrollbarGrabHovered] = MED(0.78f);
+    style->Colors[ImGuiCol_ScrollbarGrabActive] = MED(1.00f);
+    style->Colors[ImGuiCol_CheckMark] = ImVec4(0.71f, 0.22f, 0.27f, 1.00f);
+    style->Colors[ImGuiCol_SliderGrab] = ImVec4(0.47f, 0.77f, 0.83f, 0.14f);
+    style->Colors[ImGuiCol_SliderGrabActive] = ImVec4(0.71f, 0.22f, 0.27f, 1.00f);
+    style->Colors[ImGuiCol_Button] = ImVec4(0.47f, 0.77f, 0.83f, 0.14f);
+    style->Colors[ImGuiCol_ButtonHovered] = MED(0.86f);
+    style->Colors[ImGuiCol_ButtonActive] = MED(1.00f);
+    style->Colors[ImGuiCol_Header] = MED(0.76f);
+    style->Colors[ImGuiCol_HeaderHovered] = MED(0.86f);
+    style->Colors[ImGuiCol_HeaderActive] = HI(1.00f);
+    style->Colors[ImGuiCol_Column] = ImVec4(0.14f, 0.16f, 0.19f, 1.00f);
+    style->Colors[ImGuiCol_ColumnHovered] = MED(0.78f);
+    style->Colors[ImGuiCol_ColumnActive] = MED(1.00f);
+    style->Colors[ImGuiCol_ResizeGrip] = ImVec4(0.47f, 0.77f, 0.83f, 0.04f);
+    style->Colors[ImGuiCol_ResizeGripHovered] = MED(0.78f);
+    style->Colors[ImGuiCol_ResizeGripActive] = MED(1.00f);
+    style->Colors[ImGuiCol_PlotLines] = TEXT(0.63f);
+    style->Colors[ImGuiCol_PlotLinesHovered] = MED(1.00f);
+    style->Colors[ImGuiCol_PlotHistogram] = TEXT(0.63f);
+    style->Colors[ImGuiCol_PlotHistogramHovered] = MED(1.00f);
+    style->Colors[ImGuiCol_TextSelectedBg] = MED(0.43f);
+    // [...]
+    style->Colors[ImGuiCol_ModalWindowDarkening] = BG(0.73f);
+
+    style->WindowPadding = ImVec2(6, 4);
+    style->WindowRounding = 0.0f;
+    style->FramePadding = ImVec2(5, 2);
+    style->FrameRounding = 3.0f;
+    style->ItemSpacing = ImVec2(7, 1);
+    style->ItemInnerSpacing = ImVec2(1, 1);
+    style->TouchExtraPadding = ImVec2(0, 0);
+    style->IndentSpacing = 6.0f;
+    style->ScrollbarSize = 12.0f;
+    style->ScrollbarRounding = 16.0f;
+    style->GrabMinSize = 20.0f;
+    style->GrabRounding = 2.0f;
+
+    style->WindowTitleAlign.x = 0.50f;
+
+    style->Colors[ImGuiCol_Border] = ImVec4(0.539f, 0.479f, 0.255f, 0.162f);
+    style->FrameBorderSize = 0.0f;
+    style->WindowBorderSize = 1.0f;
   }
 }
 
@@ -1559,16 +1632,13 @@ Editor::dockerTest() {
       ImGui::SetNextDock(ImGuiDockSlot_Bottom);
       ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
       if (ImGui::BeginDock("Scene", &m_sceneWindow)) {
-        ImGui::DockContext::Dock* cDock = m_dockContext->m_current;
-        if (ImGui::DockContext::Status_Float == cDock->status) {
-        }
         //float size = ImGui::GetFontSize() + ImGui::GetFrameHeight() * 2.f;
         float size = ImGui::GetTextLineHeight() + ImGui::GetStyle().FramePadding.y * 2.0f;
         float width = ImGui::GetWindowWidth();
-        float height = ImGui::GetWindowHeight() - size;
+        float height = ImGui::GetWindowHeight();
 
         m_posMouseSceneWindow[0] = (ImGui::GetMousePos().x - ImGui::GetWindowPos().x) / m_sceneViewport.width;
-        m_posMouseSceneWindow[1] = (ImGui::GetMousePos().y - ImGui::GetWindowPos().y) / (m_sceneViewport.height + size);
+        m_posMouseSceneWindow[1] = (ImGui::GetMousePos().y - ImGui::GetWindowPos().y) / (m_sceneViewport.height);
 
         if (m_sceneViewport.width != width || m_sceneViewport.height != height) {
           m_sceneViewport.width = (UInt32)width;
@@ -1578,7 +1648,12 @@ Editor::dockerTest() {
         }
 
         auto texture = static_cast<ID3D11ShaderResourceView*>(m_RT->getTexture(0).getAPIObject());
-        ImGui::Image(texture, { width, height + size});
+        if (ImGui::DockContext::Status_Float == m_dockContext->m_current->status) {
+          ImGui::Image(texture, { width, height - size });
+        }
+        else {
+          ImGui::Image(texture, { width, height });
+        }
       }
       ImGui::EndDock();
       ImGui::PopStyleVar();
