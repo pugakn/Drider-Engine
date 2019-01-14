@@ -88,7 +88,7 @@ typedef enum ImGuiDockSlot {
     ImGuiDockSlot_None
 } ImGuiDockSlot;
 
-namespace ImGui{
+namespace ImGui {
 
 struct DockContext;
 
@@ -150,4 +150,3 @@ extern bool gImGuiDockReuseTabWindowTextureIfAvailable; // [true] (used only whe
 
 
 #endif //IMGUIDOCK_H_
-
