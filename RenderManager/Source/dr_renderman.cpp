@@ -502,7 +502,6 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   static const float white[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
   m_RTSSAO_SSShadow->clear(dc, white);
 
-  //for all directional lights
   for (const auto& directionalLight : m_vecDirectionalLights) {
     m_RTShadow->clear(dc, white);
     updateShadowCameras(directionalLight);
