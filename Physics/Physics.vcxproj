@@ -33,7 +33,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{8314020C-CE33-4602-858C-ABF57B4339AC}</ProjectGuid>
     <RootNamespace>DriderUI</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
