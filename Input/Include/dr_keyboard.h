@@ -50,6 +50,18 @@ class DR_INPUT_EXPORT Keyboard
   isKeyDown(KEY_CODE::E key); 
 
   /**
+  * Gets the status (pressed/released) of a modifier key.
+  * 
+  * @param key
+  *  The modifier from which the status will be checked.
+  *
+  * @return
+  *   True if the modifier is pressed, false otherwise.
+  */
+  static bool 
+  isModifierDown(KEYBOARD_MOD::E mod);
+
+  /**
   * Adds a callback
   * 
   * @param trigger
@@ -158,7 +170,7 @@ class DR_INPUT_EXPORT Keyboard
   callCallbacks(KEYBOARD_EVENT::E trigger, KEY_CODE::E key);
 
   Helper m_helper;
-  const OIS::Keyboard* m_keyboardOIS;
+  OIS::Keyboard* m_keyboardOIS;
   Callbacks m_callbacks;
   AnyKeyCallbacks m_anyKeyCallbacks;
 };

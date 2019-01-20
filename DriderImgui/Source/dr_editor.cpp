@@ -243,7 +243,19 @@ Editor::initCallbacks() {
     [](KEY_CODE::E key)
   {
     auto& io = ImGui::GetIO();
+    
     UInt16 character = static_cast<UInt16>(Keyboard::getAsChar(key));
+
+    if (Math::inclusiveRange((UInt16)'a', (UInt16)'z', character)) {
+        //Toggle case
+        if (Keyboard::isModifierDown(KEYBOARD_MOD::kCapsLock)) {
+          character = ::islower(character) ? ::toupper(character) : ::tolower(character);
+        }
+        if (Keyboard::isModifierDown(KEYBOARD_MOD::kShift)) {
+          character = ::islower(character) ? ::toupper(character) : ::tolower(character);
+        }
+    }
+
     io.KeysDown[character] = true;
     io.AddInputCharacter(character);
   };

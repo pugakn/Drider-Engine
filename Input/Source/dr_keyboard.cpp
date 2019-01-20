@@ -23,6 +23,16 @@ Keyboard::isKeyDown(KEY_CODE::E key) {
   return keyboard->m_keyboardOIS->isKeyDown(keyOIS);
 }
 
+bool 
+Keyboard::isModifierDown(KEYBOARD_MOD::E mod) {
+
+  Keyboard* keyboard = InputManager::getKeyboard();
+  
+  auto keyMod = static_cast<OIS::Keyboard::Modifier>(mod);
+
+  return keyboard->m_keyboardOIS->isModifierDown(keyMod);
+}
+
 void 
 Keyboard::addCallback(KEYBOARD_EVENT::E trigger, 
                       KEY_CODE::E key, 
@@ -43,9 +53,7 @@ Keyboard::addAnyKeyCallback(KEYBOARD_EVENT::E trigger,
 
 const char
 Keyboard::getAsChar(KEY_CODE::E key) {
-
-  //Keyboard* keyboard = InputManager::getKeyboard();
-
+  
   static std::unordered_map<KEY_CODE::E, char> keysMap
   {
     {KEY_CODE::kLEFT, 37},
