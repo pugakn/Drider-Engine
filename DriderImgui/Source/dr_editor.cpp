@@ -609,6 +609,7 @@ Editor::initImGuiStyle() {
     style->Colors[ImGuiCol_HeaderHovered] = MED(0.86f);
     style->Colors[ImGuiCol_HeaderActive] = HI(1.00f);
     style->Colors[ImGuiCol_Column] = ImVec4(0.14f, 0.16f, 0.19f, 1.00f);
+    style->Colors[ImGuiCol_DragDropTarget] = ImVec4(1.f, 1.f, 1.f, 0.7f);
     style->Colors[ImGuiCol_ColumnHovered] = MED(0.78f);
     style->Colors[ImGuiCol_ColumnActive] = MED(1.00f);
     style->Colors[ImGuiCol_ResizeGrip] = ImVec4(0.47f, 0.77f, 0.83f, 0.04f);
@@ -950,6 +951,11 @@ Editor::loadMainMenu() {
 void
 Editor::loadHierarchy() {
 
+  ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 4));
+  ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(6, 4));
+  ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2, 2));
+  ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, 16.f);
+
   auto size = ImGui::GetWindowWidth();
   auto buttonSize = ImVec2(size * 0.5f, 22);
   if (ImGui::Button("Create", buttonSize)) {
@@ -982,6 +988,7 @@ Editor::loadHierarchy() {
   }
 
   m_makeParent = m_makeChild = nullptr;
+  m_insertIndex = -1;
   
   if (ImGui::BeginChild("objects")) {
     
@@ -989,14 +996,33 @@ Editor::loadHierarchy() {
           m_bSelected = false;
           m_selectedGameObject = SceneGraph::getRoot();
     }
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(6, 0));
+    
+    auto root = SceneGraph::getRoot();
 
-    //ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth() - ImGui::GetStyle().FramePadding.x);					
-    auto& children = SceneGraph::getRoot()->getChildren();
-    for (auto& child : children) {
-      showHierarchy(child);
+    auto& children = root->getChildren();
+
+    for (size_t i = 0; i < children.size(); ++i) {
+      showHierarchy(children[i], static_cast<Int32>(i));
     }
+
+    if (children.size()) {
+      showHierarchySeparator(root, root, -1);
+    }
+
+    ImGui::PopStyleVar();
+
     if (m_makeParent) {
-      m_makeParent->addChild(m_makeChild);
+      if (m_makeParent->isChild(m_makeChild)) {
+        auto index = m_makeParent->indexOf(m_makeChild);
+        if ((index != m_insertIndex) && (index + 1 != m_insertIndex)) {
+          m_insertIndex = m_insertIndex == -1 ? m_makeParent->getChildrenCount() : m_insertIndex;
+          m_makeParent->moveChildren(m_insertIndex, index);
+        }
+      }
+      else {
+        m_makeParent->addChild(m_makeChild, m_insertIndex);
+      }
     }
     //ImGui::PopItemWidth();
 	}
@@ -1009,6 +1035,8 @@ Editor::loadHierarchy() {
         }
 				ImGui::EndDragDropTarget();
 	}
+
+  ImGui::PopStyleVar(4);
 
   return;
 
@@ -1551,10 +1579,14 @@ Editor::saveCurrentLayout() {
   }
 }
 
-void Editor::showHierarchy(const std::shared_ptr<GameObject>& object) {
+void Editor::showHierarchy(const std::shared_ptr<GameObject>& object, Int32 index) {
+
+  showHierarchySeparator(object, object->getParent(), index);
+
+  auto id = object->getID();
 
   auto name = StringUtils::toString(object->getName());
-  auto id = object->getID();
+
   auto flags =   ImGuiTreeNodeFlags_OpenOnArrow 
                 | ImGuiTreeNodeFlags_OpenOnDoubleClick
                 | ImGuiTreeNodeFlags_AllowItemOverlap;
@@ -1568,6 +1600,7 @@ void Editor::showHierarchy(const std::shared_ptr<GameObject>& object) {
   if (!object->getChildrenCount()) {
     flags |= ImGuiTreeNodeFlags_Leaf;
   }
+
 
   bool open = ImGui::TreeNodeEx(name.c_str(), flags);
 
@@ -1589,7 +1622,7 @@ void Editor::showHierarchy(const std::shared_ptr<GameObject>& object) {
 	  auto droppedID = *(UInt32*)payload->Data;
 	  	if (droppedID != id) {
 	  		auto newChild = SceneGraph::getRoot()->findNode(droppedID);
-        if (!newChild->findNode(id)) {
+        if (!newChild->findNode(id) && object != newChild->getParent()) {
           m_makeParent = object;
           m_makeChild = newChild;
         }
@@ -1601,11 +1634,59 @@ void Editor::showHierarchy(const std::shared_ptr<GameObject>& object) {
   auto& children = object->getChildren();
 
   if (open) {
-    for (auto& child : children) {
-      showHierarchy(child);
-    }     
+    for (size_t i = 0; i < children.size(); ++i) {
+      showHierarchy(children[i], static_cast<Int32>(i));
+    }
+    if (children.size()) {
+      showHierarchySeparator(object, object, -1);
+    }
     ImGui::TreePop();
   }
+
+  //ImGui::PopStyleVar();
+}
+
+void Editor::showHierarchySeparator(const std::shared_ptr<GameObject>& object, 
+                                    const std::shared_ptr<GameObject>& parent, 
+                                    Int32 index) {
+
+  auto separatorSize = ImVec2(ImGui::GetWindowWidth(), 5.5f);
+
+  auto separatorID = "##sep" + StringUtils::toString(object->getID()) + StringUtils::toString(index);
+      
+  ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+  ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0, 0, 0, 0));
+  ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0, 0, 0, 0));
+
+  auto currentPos = ImGui::GetCursorScreenPos();
+
+  ImGui::Button(separatorID.c_str(), separatorSize);
+
+  ImGui::PopStyleColor(3);
+
+  if (ImGui::BeginDragDropTarget()) {
+		if (auto payload = ImGui::AcceptDragDropPayload("objectid", 
+                                                    ImGuiDragDropFlags_AcceptNoDrawDefaultRect |
+                                                    ImGuiDragDropFlags_AcceptBeforeDelivery)) {
+      if (payload->IsDelivery()) {
+        auto droppedID = *(UInt32*)payload->Data;
+        auto newChild = SceneGraph::getRoot()->findNode(droppedID);
+        if (!newChild->findNode(object->getID())) {
+          m_makeParent = parent;
+          m_makeChild = newChild;
+          m_insertIndex = index;
+        }
+      }
+      else {
+        currentPos.y += 2.75f;
+        auto left = currentPos;
+        auto right = currentPos;
+        right.x += ImGui::GetWindowWidth();
+        ImGui::GetWindowDrawList()->AddLine(left, right, IM_COL32(255, 255, 255, 178), 3.f);
+      }
+    }
+		ImGui::EndDragDropTarget();
+	}
 }
 
 //void
