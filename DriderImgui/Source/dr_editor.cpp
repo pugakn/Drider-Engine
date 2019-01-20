@@ -1771,7 +1771,7 @@ Editor::selectMoveAxe() {
 void 
 Editor::dockerTest() {
 
-  ImGui::ShowDemoWindow();
+  //ImGui::ShowDemoWindow();
 
   loadMainMenu();
   
