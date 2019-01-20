@@ -949,16 +949,21 @@ Editor::loadMainMenu() {
 
 void
 Editor::loadHierarchy() {
-  if (ImGui::Button("Create")) {
+
+  auto size = ImGui::GetWindowWidth();
+  auto buttonSize = ImVec2(size * 0.5f, 22);
+  if (ImGui::Button("Create", buttonSize)) {
     ImGui::OpenPopup("menuHierarchy");
   }
-  ImGui::SameLine();
+
   if (ImGui::BeginPopup("menuHierarchy")) {
     loadMenuHierarchy();
     ImGui::EndPopup();
   }
 
-  if (ImGui::Button("DeleteNode")) {
+  ImGui::SameLine();
+
+  if (ImGui::Button("Delete Node", buttonSize)) {
     if (SceneGraph::getRoot() != m_selectedGameObject) {
 
       //Remove script componets from compile List
@@ -976,59 +981,90 @@ Editor::loadHierarchy() {
     }
   }
 
-  std::function<void(const std::vector<std::shared_ptr<GameObject>>&)> search =
-    [&](const std::vector<std::shared_ptr<GameObject>>& children) {
+  m_makeParent = m_makeChild = nullptr;
+  
+  if (ImGui::BeginChild("objects")) {
+    
+    if (ImGui::IsWindowHovered() && ImGui::IsMouseClicked(0)) {
+          m_bSelected = false;
+          m_selectedGameObject = SceneGraph::getRoot();
+    }
 
-    for (auto &it : children) {
-      auto name = StringUtils::toString(it->getName());
-      auto id = it->getID();
-      ImGui::PushID(id);
-      ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | (m_selectedGameObject == it ? ImGuiTreeNodeFlags_Selected : 0);
-      if (it->getChildrenCount() == 0) {
-        node_flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
-        ImGui::TreeNodeEx((void*)(intptr_t)id, node_flags, name.c_str());
-        if (ImGui::IsItemClicked()) {
-          m_selectedGameObject = it;
-          m_bSelected = true;
+    //ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth() - ImGui::GetStyle().FramePadding.x);					
+    auto& children = SceneGraph::getRoot()->getChildren();
+    for (auto& child : children) {
+      showHierarchy(child);
+    }
+    if (m_makeParent) {
+      m_makeParent->addChild(m_makeChild);
+    }
+    //ImGui::PopItemWidth();
+	}
+	ImGui::EndChild();
+
+  if (ImGui::BeginDragDropTarget()) {
+				if (auto* payload = ImGui::AcceptDragDropPayload("objectid")) {
+	        auto droppedID = *(UInt32*)payload->Data;
+	  	    SceneGraph::getRoot()->addChild(SceneGraph::getRoot()->findNode(droppedID));
         }
-      }
-      else {
-        bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)id, node_flags, name.c_str());
-        if (ImGui::IsItemClicked()) {
-          m_selectedGameObject = it;
-          m_bSelected = true;
-        }
-        if (node_open) {
-          auto children2 = it->getChildren();
-          search(children2);
-          ImGui::TreePop();
-        }
-      }
-      ImGui::PopID();
-    }
-  };
-  auto root = SceneGraph::getRoot();
-  auto name = StringUtils::toString(root->getName());
-  if (ImGui::TreeNode(name.c_str())) {
-    if (ImGui::IsItemClicked()) {
-      m_selectedGameObject = root;
-    }
-    static bool align_label_with_current_x_position = false;
-    if (align_label_with_current_x_position) {
-      ImGui::Unindent(ImGui::GetTreeNodeToLabelSpacing());
-    }
+				ImGui::EndDragDropTarget();
+	}
 
-    ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, ImGui::GetFontSize()); // Increase spacing to differentiate leaves from expanded contents.
+  return;
 
-    auto children = SceneGraph::getRoot()->getChildren();
-    search(children);
+  //std::function<void(const std::vector<std::shared_ptr<GameObject>>&)> search =
+  //  [&](const std::vector<std::shared_ptr<GameObject>>& children) {
 
-    ImGui::PopStyleVar();
-    if (align_label_with_current_x_position) {
-      ImGui::Indent(ImGui::GetTreeNodeToLabelSpacing());
-    }
-    ImGui::TreePop();
-  }
+  //  for (auto &it : children) {
+  //    auto name = StringUtils::toString(it->getName());
+  //    auto id = it->getID();
+  //    ImGui::PushID(id);
+  //    ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | (m_selectedGameObject == it ? ImGuiTreeNodeFlags_Selected : 0);
+  //    if (it->getChildrenCount() == 0) {
+  //      node_flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
+  //      ImGui::TreeNodeEx((void*)(intptr_t)id, node_flags, name.c_str());
+  //      if (ImGui::IsItemClicked()) {
+  //        m_selectedGameObject = it;
+  //        m_bSelected = true;
+  //      }
+  //    }
+  //    else {
+  //      bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)id, node_flags, name.c_str());
+  //      if (ImGui::IsItemClicked()) {
+  //        m_selectedGameObject = it;
+  //        m_bSelected = true;
+  //      }
+  //      if (node_open) {
+  //        auto children2 = it->getChildren();
+  //        search(children2);
+  //        ImGui::TreePop();
+  //      }
+  //    }
+  //    ImGui::PopID();
+  //  }
+  //};
+  //auto root = SceneGraph::getRoot();
+  //auto name = StringUtils::toString(root->getName());
+  //if (ImGui::TreeNode(name.c_str())) {
+  //  if (ImGui::IsItemClicked()) {
+  //    m_selectedGameObject = root;
+  //  }
+  //  static bool align_label_with_current_x_position = false;
+  //  if (align_label_with_current_x_position) {
+  //    ImGui::Unindent(ImGui::GetTreeNodeToLabelSpacing());
+  //  }
+
+  //  ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, ImGui::GetFontSize()); // Increase spacing to differentiate leaves from expanded contents.
+
+  //  auto children = SceneGraph::getRoot()->getChildren();
+  //  search(children);
+
+  //  ImGui::PopStyleVar();
+  //  if (align_label_with_current_x_position) {
+  //    ImGui::Indent(ImGui::GetTreeNodeToLabelSpacing());
+  //  }
+  //  ImGui::TreePop();
+  //}
 
 }
 
@@ -1134,9 +1170,16 @@ Editor::loadInspector()
 {
 
   if (m_selectedGameObject == SceneGraph::getRoot()) { return; }
-
-  if (ImGui::Button("Add Component"))
+   
+  //ImGui::(-1);
+  auto size = ImVec2(ImGui::GetWindowWidth(), 25);
+  //ImGui::setnextpos(-10);
+  //ImGui::PUSH
+  if (ImGui::Button("Add Component", size)) {
     ImGui::OpenPopup("menuAddComponent");
+  }
+  //ImGui::PopItemWidth();
+
   if (ImGui::BeginPopup("menuAddComponent")) {
     loadMenuAddComponent();
     ImGui::EndPopup();
@@ -1508,6 +1551,63 @@ Editor::saveCurrentLayout() {
   }
 }
 
+void Editor::showHierarchy(const std::shared_ptr<GameObject>& object) {
+
+  auto name = StringUtils::toString(object->getName());
+  auto id = object->getID();
+  auto flags =   ImGuiTreeNodeFlags_OpenOnArrow 
+                | ImGuiTreeNodeFlags_OpenOnDoubleClick
+                | ImGuiTreeNodeFlags_AllowItemOverlap;
+
+  ImGui::PushID(id);
+
+  if (m_selectedGameObject == object) {
+    flags |= ImGuiTreeNodeFlags_Selected;
+  }
+
+  if (!object->getChildrenCount()) {
+    flags |= ImGuiTreeNodeFlags_Leaf;
+  }
+
+  bool open = ImGui::TreeNodeEx(name.c_str(), flags);
+
+  if (ImGui::IsItemClicked()) {
+    m_bSelected = true;
+    m_selectedGameObject = object;
+  }
+
+  ImGui::PopID();
+
+  if (ImGui::BeginDragDropSource()) {
+	  ImGui::Text("%s", name.c_str());
+	  ImGui::SetDragDropPayload("objectid", &id, sizeof(id));
+	  ImGui::EndDragDropSource();
+	}
+
+  if (ImGui::BeginDragDropTarget()) {
+    if (auto* payload = ImGui::AcceptDragDropPayload("objectid")) {
+	  auto droppedID = *(UInt32*)payload->Data;
+	  	if (droppedID != id) {
+	  		auto newChild = SceneGraph::getRoot()->findNode(droppedID);
+        if (!newChild->findNode(id)) {
+          m_makeParent = object;
+          m_makeChild = newChild;
+        }
+	  	}
+	  }
+		ImGui::EndDragDropTarget();
+  }
+
+  auto& children = object->getChildren();
+
+  if (open) {
+    for (auto& child : children) {
+      showHierarchy(child);
+    }     
+    ImGui::TreePop();
+  }
+}
+
 //void
 //Editor::createMat() {
 //  if (ImGuiFileDialog::Instance()->FileDialog("Create Material", ".mat\0\0", ".", "")) {
@@ -1590,7 +1690,7 @@ Editor::selectMoveAxe() {
 void 
 Editor::dockerTest() {
 
-  //ImGui::ShowDemoWindow();
+  ImGui::ShowDemoWindow();
 
   loadMainMenu();
   
@@ -1612,12 +1712,14 @@ Editor::dockerTest() {
 
       ImGui::SetNextDock(ImGuiDockSlot_Tab);
       if(ImGui::BeginDock("Hierarchy", &m_hierarchyWindow)) {
-        //ImGui::Text("Cosas de herarchy");
+        //ImGui::Text("Cosas de herarchy");s
+        
+        loadHierarchy();
+
         if (ImGui::IsWindowHovered() && ImGui::IsMouseClicked(0)) {
           m_bSelected = false;
           m_selectedGameObject = SceneGraph::getRoot();
         }
-        loadHierarchy();
       }
       ImGui::EndDock();
 
