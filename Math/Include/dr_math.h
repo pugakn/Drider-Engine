@@ -383,6 +383,46 @@ struct DR_MATH_EXPORT Math
   static float
   fast_aTan(float value); 
 
+  /**
+  * Checks if the given value is within the range [min, max]
+  */
+  template<typename T>
+  static bool
+  inclusiveRange(T min, T max, T value) 
+  {
+    return min <= value && value <= max;
+  }
+
+  /**
+  * Checks if the given value is within the range [min, max)
+  */
+  template<typename T>
+  static bool
+  inclusiveRangeMin(T min, T max, T value) 
+  {
+    return min <= value && value < max;
+  }
+
+  /**
+  * Checks if the given value is within the range (min, max]
+  */
+  template<typename T>
+  static bool
+  inclusiveRangeMax(T min, T max, T value) 
+  {
+    return min < value && value <= max;
+  }
+
+  /**
+  * Checks if the given value is within the range (min, max)
+  */
+  template<typename T>
+  static bool
+  exclusiveRange(T min, T max, T value) 
+  {
+    return min < value && value < max;
+  }
+
   //Enum used to describe the relationship between a point		
   //and a plane.		
   enum PLANE_INTERSECT

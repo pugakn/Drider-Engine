@@ -26,6 +26,7 @@
 #include <dr_keyboard.h>
 #include <dr_light_component.h>
 #include <dr_logger.h>
+#include <dr_math.h>
 #include <dr_material.h>
 #include <dr_model.h>
 #include <dr_mouse.h>
@@ -455,7 +456,8 @@ Editor::onResize() {
 
 void
 Editor::initImGuiStyle() {
-  ImGuiIO& io = ImGui::GetIO();
+  //ImGuiIO& io = ImGui::GetIO();
+  
   //io.Fonts->Clear();
   /*ImFont* font = io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\segoeui.ttf", 18.0f);
   if (font != NULL) {
@@ -464,7 +466,7 @@ Editor::initImGuiStyle() {
 	  io.Fonts->AddFontDefault();
   }
   io.Fonts->Build();*/
-
+  
   ImGuiStyle* style = &ImGui::GetStyle();
   //Original DR theme
   if (false) {
@@ -1575,6 +1577,8 @@ Editor::selectMoveAxe() {
 
 void 
 Editor::dockerTest() {
+
+  //ImGui::ShowDemoWindow();
 
   loadMainMenu();
   
