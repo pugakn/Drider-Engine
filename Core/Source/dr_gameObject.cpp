@@ -243,11 +243,22 @@ GameObject::addComponent(ComponentPtr component) {
 
 void 
 GameObject::addChild(SharedGameObj child) {
+  addChild(child, -1);
+}
+
+void GameObject::addChild(SharedGameObj child, Int32 index) {
   //if child already exist in children list don't add
   if (child && 
-      std::find(m_children.begin(), m_children.end(), child) == m_children.end()) {
+      !isChild(child)) {
 
-    m_children.push_back(child);
+    if (index == -1) {
+      m_children.push_back(child);
+    }
+    else {
+      DR_ASSERT(Math::inclusiveRangeMin(0, static_cast<Int32>(m_children.size()), index));
+      m_children.insert(m_children.begin() + index, child);
+    }
+
     auto thisPtr = shared_from_this();
     auto childPastParent = child->getParent();
 
@@ -258,6 +269,10 @@ GameObject::addChild(SharedGameObj child) {
 
     child->setParent(thisPtr);
   }
+}
+
+bool GameObject::isChild(SharedGameObj child) {
+  return getNodeIt(child) != m_children.end();
 }
 
 void 
@@ -285,12 +300,31 @@ GameObject::getParent() const {
 }
 
 void GameObject::removeChild(SharedGameObj child) {
-  auto it = std::find(m_children.begin(), m_children.end(), child);
+  auto it = getNodeIt(child);
 
   if (it != m_children.end()) {
     (*it)->setParent(nullptr);
     m_children.erase(it);
   }
+}
+
+void GameObject::swapChildren(UInt32 childAIndex, UInt32 childBIndex) {
+  DR_ASSERT(childAIndex != childBIndex);
+  DR_ASSERT(Math::inclusiveRangeMin(static_cast<UInt32>(0), static_cast<UInt32>(m_children.size()), childAIndex)); 
+  DR_ASSERT(Math::inclusiveRangeMin(static_cast<UInt32>(0), static_cast<UInt32>(m_children.size()), childBIndex));
+
+  std::swap(m_children[childAIndex], m_children[childBIndex]);
+}
+
+void GameObject::moveChildren(UInt32 newIndex, UInt32 oldIndex) {
+  //New index can be == to m_children.size() since it would mean at the end of the array
+  DR_ASSERT(Math::inclusiveRange(static_cast<UInt32>(0), static_cast<UInt32>(m_children.size()), newIndex));
+  DR_ASSERT(Math::inclusiveRangeMin(static_cast<UInt32>(0), static_cast<UInt32>(m_children.size()), oldIndex));
+
+  if (oldIndex >= newIndex) 
+      std::rotate(m_children.begin() + newIndex, m_children.begin() + oldIndex, m_children.begin() + oldIndex + 1);
+  else 
+      std::rotate(m_children.begin() + oldIndex, m_children.begin() + oldIndex + 1, m_children.begin() + newIndex);
 }
 
 void GameObject::removeChildren() {
@@ -370,6 +404,12 @@ GameObject::getChild(UInt32 id) {
   return ch;
 }
 
+Int32 GameObject::indexOf(SharedGameObj object)
+{
+  auto it = getNodeIt(object);
+  return it != m_children.end() ? std::distance(m_children.begin(), it) : -1;
+}
+
 GameObject::SharedGameObj 
 GameObject::findNode(const TString & nodeName) {
   
@@ -438,7 +478,13 @@ GameObject::changed() const {
   return m_change;
 }
 
-TString 
+GameObject::ChildrenList::iterator 
+GameObject::getNodeIt(SharedGameObj node)
+{
+  return std::find(m_children.begin(), m_children.end(), node);
+}
+
+TString
 GameObject::getValidName(TString name) {
 
   Int32 index = m_componentNames[name]++;

@@ -80,7 +80,9 @@ enum E
 {
   kShift = 0x0000001,
   kCtrl = 0x0000010,
-  kAlt = 0x0000100
+  kAlt =  0x0000100,
+  kCapsLock = 0x0001000,
+  kNumLock  = 0x0010000
 };
 }
 

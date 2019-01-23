@@ -44,6 +44,10 @@ class Editor : public Application
   //void loadScene();
   //void saveScene();
   void saveCurrentLayout();
+  void showHierarchy(const std::shared_ptr<GameObject>& object, Int32 index);
+  void showHierarchySeparator(const std::shared_ptr<GameObject>& object, 
+                              const std::shared_ptr<GameObject>& parent,
+                              Int32 index);
   //void createMat();
   void dockerTest();
   void loadInspector();
@@ -97,6 +101,10 @@ class Editor : public Application
   std::vector<String> m_savedLayouts;
   Int32 m_currentLayout = -1;
   const String m_layoutsPath = "Resources\\Layouts";
+  //std::vector<UInt32> m_selectedObjects;
+  SceneGraph::SharedGameObject m_makeParent;
+  SceneGraph::SharedGameObject m_makeChild;
+  Int32 m_insertIndex;
 };
 
 }

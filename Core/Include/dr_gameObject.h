@@ -230,6 +230,16 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   void 
   addChild(SharedGameObj child);
 
+  //Index == -1 is equal to call addChild(child)
+  void 
+  addChild(SharedGameObj child, Int32 index);
+
+  /**
+  * Checks if a node is child of this object
+  */
+  bool 
+  isChild(SharedGameObj child);
+
   /**
   * Sets 
   the parent of the node.
@@ -252,6 +262,16 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   */
   void
   removeChild(SharedGameObj child);
+
+  /**
+  * Swaps the position of the given children indices.
+  */
+  void 
+  swapChildren(UInt32 childAIndex, UInt32 childBIndex);
+
+
+  void
+  moveChildren(UInt32 newIndex, UInt32 oldIndex);
 
   /**
   * Removes all the children from the node.
@@ -311,15 +331,20 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   /**
   * Gets a child of the node.
   * 
-  * @param index
-  *  The index of the child in the children list.
+  * @param ID
+  *  The ID of the child in the children list.
   * 
   * @return
-  *   The child at the specified index. If the index is greater or equal to 
-  *   the number of childs nullptr.
+  *   The child with the specified ID. If no child has such ID, nullptr.
   */
   SharedGameObj
-  getChild(UInt32 index);
+  getChild(UInt32 id);
+
+  /**
+  * Gets the index in the internal array of the given child object. -1 If the object is not a child.
+  */
+  Int32
+  indexOf(SharedGameObj object);
   
   /**
   * Gets a node in the tree hierarchy. If the node isn't on the
@@ -419,6 +444,10 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   using NamesMap = std::unordered_map<TString, Int32>;
   
   using NamesSet = std::unordered_set<TString>;
+
+  ChildrenList::iterator
+  getNodeIt(SharedGameObj node);
+
   /**
   * Gets a validated name (not repeaded) for the proposed name.
   */

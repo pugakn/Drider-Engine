@@ -23,6 +23,16 @@ Keyboard::isKeyDown(KEY_CODE::E key) {
   return keyboard->m_keyboardOIS->isKeyDown(keyOIS);
 }
 
+bool 
+Keyboard::isModifierDown(KEYBOARD_MOD::E mod) {
+
+  Keyboard* keyboard = InputManager::getKeyboard();
+  
+  auto keyMod = static_cast<OIS::Keyboard::Modifier>(mod);
+
+  return keyboard->m_keyboardOIS->isModifierDown(keyMod);
+}
+
 void 
 Keyboard::addCallback(KEYBOARD_EVENT::E trigger, 
                       KEY_CODE::E key, 
@@ -43,9 +53,7 @@ Keyboard::addAnyKeyCallback(KEYBOARD_EVENT::E trigger,
 
 const char
 Keyboard::getAsChar(KEY_CODE::E key) {
-
-  //Keyboard* keyboard = InputManager::getKeyboard();
-
+  
   static std::unordered_map<KEY_CODE::E, char> keysMap
   {
     {KEY_CODE::kLEFT, 37},
@@ -64,6 +72,20 @@ Keyboard::getAsChar(KEY_CODE::E key) {
     {KEY_CODE::k8, '8'},
     {KEY_CODE::k9, '9'},
     {KEY_CODE::k0, '0'},
+    {KEY_CODE::kNUMPAD1, '1'},
+    {KEY_CODE::kNUMPAD2, '2'},
+    {KEY_CODE::kNUMPAD3, '3'},
+    {KEY_CODE::kNUMPAD4, '4'},
+    {KEY_CODE::kNUMPAD5, '5'},
+    {KEY_CODE::kNUMPAD6, '6'},
+    {KEY_CODE::kNUMPAD7, '7'},
+    {KEY_CODE::kNUMPAD8, '8'},
+    {KEY_CODE::kNUMPAD9, '9'},
+    {KEY_CODE::kNUMPAD0, '0'},
+    {KEY_CODE::kADD, '+'},
+    {KEY_CODE::kSUBTRACT, '-'},
+    {KEY_CODE::kDIVIDE, '/'},
+    {KEY_CODE::kDECIMAL, '.'},
     {KEY_CODE::kMINUS, '-'},    // - on main keyboard
     {KEY_CODE::kEQUALS, '='},
     {KEY_CODE::kBACK, 8},    // backspace
@@ -81,6 +103,7 @@ Keyboard::getAsChar(KEY_CODE::E key) {
     {KEY_CODE::kLBRACKET, '{'},
     {KEY_CODE::kRBRACKET, '}'},
     {KEY_CODE::kRETURN, 13},    // Enter on main keyboard
+    {KEY_CODE::kNUMPADENTER, 13},
     {KEY_CODE::kLCONTROL, 0},
     {KEY_CODE::kA, 'a'},
     {KEY_CODE::kS, 's'},
@@ -93,7 +116,7 @@ Keyboard::getAsChar(KEY_CODE::E key) {
     {KEY_CODE::kL, 'l'},
     {KEY_CODE::kSEMICOLON, ';'},
     {KEY_CODE::kAPOSTROPHE, '~'},
-    {KEY_CODE::kGRAVE, '´'},    // accent
+    {KEY_CODE::kGRAVE, 'ï¿½'},    // accent
     {KEY_CODE::kLSHIFT, 16},
     {KEY_CODE::kBACKSLASH, '\\'},
     {KEY_CODE::kZ, 'z'},

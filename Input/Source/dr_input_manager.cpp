@@ -47,10 +47,6 @@ InputManager::update() {
   for (auto& object : instance().m_objects) {
     object->capture();
   }
-
-  auto i = instance().m_objects.back()->getID();
-
-  int x = 0;
 }
 
 void 
