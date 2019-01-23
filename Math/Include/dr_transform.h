@@ -46,8 +46,19 @@ class DR_MATH_EXPORT Transform
   * @return 
   *   The transformation matrix.
   */
-  const Matrix4x4& 
+  const Matrix4x4&
   getMatrix() const;
+
+  
+  /**
+  * Computes the matrix containing the translation, orientation and
+  * scale.
+  *
+  * @return 
+  *   The transformation matrix.
+  */
+  Matrix4x4&
+  getMatrixRef();
 
   /**
   * Returns the position of the transform.
@@ -219,6 +230,9 @@ class DR_MATH_EXPORT Transform
   */
   void 
   scale(const Vector3D& scale);
+
+  void
+  forceUpdate();
 
   Transform
   operator*(const Transform& other) const;

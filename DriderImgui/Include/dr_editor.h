@@ -78,14 +78,10 @@ class Editor : public Application
   UInt32 m_selectedItem;
 
   bool m_bSelected;
+  bool m_bShowGizmos;
 
   ImGuizmo::OPERATION m_TransformMode;
   ImGuizmo::MODE m_space;
-
-  float cubeLarge;
-  float cubeDefault;
-  bool m_bOffseted;
-  float m_fOffset;
 
   //bool showSaveFileDialog;
   //bool createMaterialFileDialog;

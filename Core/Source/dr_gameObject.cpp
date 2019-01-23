@@ -346,6 +346,12 @@ GameObject::getTransform() {
   return m_localTransform;
 }
 
+void
+GameObject::setLocalTransform(const Transform& newLocalTransform) {
+  m_localTransform = newLocalTransform;
+  m_localTransform.m_change = true;
+}
+
 const TString& 
 GameObject::getTag() const {
   return m_tag.getName();

@@ -286,11 +286,10 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   getTransform();
 
   void
-  updateTransform();
+  setLocalTransform(const Transform& newLocalTransform);
 
   FORCEINLINE bool
-  isStarted()
-  {
+  isStarted() {
 	  return m_isStarted;
   }
 

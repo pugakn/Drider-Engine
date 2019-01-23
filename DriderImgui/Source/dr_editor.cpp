@@ -78,10 +78,10 @@ Editor::postInit() {
                               { 0.0f, 150.0f, -400.0f },
                               { 0.0f, 50.f, 0.0f },
                               m_viewport,
-                              45.f,
+                              45.0f,
                               //1024, 1024,
                               0.1f,
-                              10000.f);
+                              1000.f);
   CameraManager::setActiveCamera(_T("PATO_CAM"));
 
   m_sceneViewport = Viewport{ 0, 0, 480, 320 };
@@ -104,8 +104,8 @@ Editor::postInit() {
   initScriptEngine();
 
   m_bSelected = false;
+  m_bShowGizmos = false;
   m_TransformMode = ImGuizmo::OPERATION::TRANSLATE;
-  m_bOffseted = false;
 
   SceneGraph::start();
   m_selectedGameObject = SceneGraph::getRoot();
@@ -304,7 +304,8 @@ Editor::postUpdate() {
   ImGui_ImplWin32_NewFrame();
   ImGui::NewFrame();
   ImGuizmo::BeginFrame();
-  
+  ImGuizmo::Enable(true);
+
   //dockerTest();
 
   /*if (showSaveFileDialog) {
@@ -324,8 +325,6 @@ Editor::postUpdate() {
 
   if (m_bSelected &&
       SceneGraph::instance().getRoot() != m_selectedGameObject) {
-    ImGuizmo::Enable(true);
-
     //Draw cube.
     Matrix4x4 CubeMatrix = Matrix4x4::identityMat4x4;
     Vector3D goPos;
@@ -342,19 +341,22 @@ Editor::postUpdate() {
 
     }
   }
-  else {
-    ImGuizmo::Enable(false);
-  }
 
   //Change transform mode
   if (Keyboard::isKeyDown(KEY_CODE::kW)) {
     m_TransformMode = ImGuizmo::OPERATION::TRANSLATE;
+    m_bShowGizmos = true;
   }
   else if (Keyboard::isKeyDown(KEY_CODE::kE)) {
     m_TransformMode = ImGuizmo::OPERATION::ROTATE;
+    m_bShowGizmos = true;
   }
   else if (Keyboard::isKeyDown(KEY_CODE::kR)) {
     m_TransformMode = ImGuizmo::OPERATION::SCALE;
+    m_bShowGizmos = true;
+  }
+  else if (Keyboard::isKeyDown(KEY_CODE::kQ)) {
+    m_bShowGizmos = false;
   }
 
   if (Mouse::isButtonDown(MOUSE_BUTTON::kLeft)) {
@@ -1761,26 +1763,26 @@ Editor::dockerTest() {
           ImGui::Image(texture, { width, height - size });
         }
         else {
-          ImGuizmo::SetRect(0, 0, width, height);
+          ImGuizmo::SetRect(0, size, width, height);
           ImGui::Image(texture, { width, height });
         }
 
         if (m_bSelected &&
-          SceneGraph::instance().getRoot() != m_selectedGameObject) {
+          SceneGraph::instance().getRoot() != m_selectedGameObject &&
+          m_bShowGizmos) {
 
-          Transform newTrans = m_selectedGameObject->getWorldTransform();
-          Matrix4x4 GoMat = newTrans.getMatrix();
+          Transform& newTrans = m_selectedGameObject->getTransform();
+          Matrix4x4& GoMat = newTrans.getMatrixRef();
+          Transform parentTrans = m_selectedGameObject->getParent()->getWorldTransform();
+          Matrix4x4 PGMat = parentTrans.getMatrix();
           ImGuizmo::Manipulate(&CameraManager::instance().getActiveCamera()->getView().data[0].data[0],
                                &CameraManager::instance().getActiveCamera()->getProjection().data[0].data[0],
                                m_TransformMode,
-                               ImGuizmo::MODE::WORLD,
+                               ImGuizmo::MODE::LOCAL,
                                &GoMat.data[0].data[0]);
           ImGuizmo::SetDrawlist();
-          if (ImGuizmo::OPERATION::TRANSLATE == m_TransformMode) {
-          }
-          if (ImGuizmo::OPERATION::SCALE == m_TransformMode) {
-          }
-          if (ImGuizmo::OPERATION::ROTATE == m_TransformMode) {
+          if (ImGuizmo::IsUsing()) {
+            newTrans.forceUpdate();
           }
         }
       }

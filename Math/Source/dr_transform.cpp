@@ -24,8 +24,7 @@ Transform::Transform()
   refCount = 1;
 }
 
-Transform::Transform(const Transform& other)
-{
+Transform::Transform(const Transform& other) {
   *this = other;
 }
 
@@ -36,6 +35,15 @@ Transform::getMatrix() const {
     update();
   }
   
+  return m_transform;
+}
+
+Matrix4x4&
+Transform::getMatrixRef() {
+  if (m_outdatedTransform) {
+    update();
+  }
+
   return m_transform;
 }
 
@@ -183,6 +191,32 @@ void
 Transform::scale(const Vector3D & scale) {
   m_scale *= scale;
   invalidate();
+}
+
+void
+Transform::forceUpdate() {
+  m_position = m_transform.data[3];
+  m_scale = Vector3D(m_transform.data[0].x,
+                     m_transform.data[1].y,
+                     m_transform.data[2].z);
+  //Buggerino :(
+  /*
+  Vector3D angles = m_transform.eulerAngles();
+  //angles *= Math::DEGREE_TO_RADIAN;
+  //angles *= Math::RADIAN_TO_DEGREE;
+
+  m_rotX.identity();
+  m_rotX.RotationX(angles.x);
+  m_rotY.identity();
+  m_rotY.RotationY(angles.y);
+  m_rotZ.identity();
+  m_rotZ.RotationZ(angles.z);
+
+  */
+  invalidateRotation();
+
+  invalidate();
+  update();
 }
 
 Transform
