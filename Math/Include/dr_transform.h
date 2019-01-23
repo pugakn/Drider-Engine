@@ -232,7 +232,7 @@ class DR_MATH_EXPORT Transform
   scale(const Vector3D& scale);
 
   void
-  forceUpdate();
+  forceUpdate(const Vector3D& traRef, const Vector3D& rotRef, const Vector3D& scaRef);
 
   Transform
   operator*(const Transform& other) const;

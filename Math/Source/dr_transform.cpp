@@ -194,29 +194,19 @@ Transform::scale(const Vector3D & scale) {
 }
 
 void
-Transform::forceUpdate() {
-  m_position = m_transform.data[3];
-  m_scale = Vector3D(m_transform.data[0].x,
-                     m_transform.data[1].y,
-                     m_transform.data[2].z);
+Transform::forceUpdate(const Vector3D& traRef, const Vector3D& rotRef, const Vector3D& scaRef) {
+  m_position = traRef;
+
+  m_scale = scaRef;
+
   //Buggerino :(
-  /*
-  Vector3D angles = m_transform.eulerAngles();
-  //angles *= Math::DEGREE_TO_RADIAN;
-  //angles *= Math::RADIAN_TO_DEGREE;
+  setRotation(Degree(rotRef.x), AXIS::kX);
+  setRotation(Degree(rotRef.y), AXIS::kY);
+  setRotation(Degree(rotRef.z), AXIS::kZ);
 
-  m_rotX.identity();
-  m_rotX.RotationX(angles.x);
-  m_rotY.identity();
-  m_rotY.RotationY(angles.y);
-  m_rotZ.identity();
-  m_rotZ.RotationZ(angles.z);
-
-  */
-  invalidateRotation();
-
+  //invalidateRotation();
   invalidate();
-  update();
+  //update();
 }
 
 Transform

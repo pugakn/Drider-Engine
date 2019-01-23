@@ -1782,7 +1782,11 @@ Editor::dockerTest() {
                                &GoMat.data[0].data[0]);
           ImGuizmo::SetDrawlist();
           if (ImGuizmo::IsUsing()) {
-            newTrans.forceUpdate();
+            Vector3D traVec;
+            Vector3D rotVec;
+            Vector3D scaVec;
+            ImGuizmo::DecomposeMatrixToComponents(&GoMat.data[0].data[0], &traVec.data[0], &rotVec.data[0], &scaVec.data[0]);
+            newTrans.forceUpdate(traVec, rotVec, scaVec);
           }
         }
       }
