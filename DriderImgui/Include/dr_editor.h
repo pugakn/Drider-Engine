@@ -11,28 +11,9 @@
 
 #include "imguihelper.h"
 #include "imguidock.h"
+#include "ImGuizmo.h"
 
 namespace driderSDK {
-
-namespace TransformMode {
-enum E {
-  kPosition = 0,
-  kScale,
-  kRotation,
-  kSize
-};
-}
-namespace TransformAxis {
-enum E {
-  kX = 0,
-  kY,
-  kZ,
-  kXZ,
-  kXY,
-  kZY,
-  kNone
-};
-}
 
 class ScriptComponent;
 
@@ -72,13 +53,6 @@ class Editor : public Application
   void drawDebugStuff();
   bool getMouseInScene(Vector2D* mousePosition = nullptr);
 
-
-  bool
-  selectMoveAxe();
-
-  void
-  MoveOnAxe(TransformAxis::E axisToMoveOn);
-
   void
   selectModel();
 
@@ -101,8 +75,9 @@ class Editor : public Application
 
   bool m_bSelected;
 
-  TransformMode::E m_TransformMode;
-  TransformAxis::E m_SelectedMoveAxis;
+  ImGuizmo::OPERATION m_TransformMode;
+  ImGuizmo::MODE m_space;
+
   float cubeLarge;
   float cubeDefault;
   bool m_bOffseted;

@@ -265,6 +265,9 @@ class DR_CORE_EXPORT GameObject : public std::enable_shared_from_this<GameObject
   Transform&
   getTransform();
 
+  void
+  updateTransform();
+
   FORCEINLINE bool
   isStarted()
   {

@@ -103,11 +103,8 @@ Editor::postInit() {
   initScriptEngine();
 
   m_bSelected = false;
-  m_TransformMode = TransformMode::kPosition;
-  cubeLarge = 100.0f;
-  cubeDefault = 5.0f;
+  m_TransformMode = ImGuizmo::OPERATION::TRANSLATE;
   m_bOffseted = false;
-  m_fOffset = 0.0f;
 
   SceneGraph::start();
   m_selectedGameObject = SceneGraph::getRoot();
@@ -293,6 +290,7 @@ Editor::postUpdate() {
   ImGui_ImplDX11_NewFrame();
   ImGui_ImplWin32_NewFrame();
   ImGui::NewFrame();
+  ImGuizmo::BeginFrame();
   
   //dockerTest();
 
@@ -311,10 +309,11 @@ Editor::postUpdate() {
   createMat();*/
 
 
-  static bool open = true;
-
   if (m_bSelected &&
       SceneGraph::instance().getRoot() != m_selectedGameObject) {
+    ImGuizmo::Enable(true);
+
+    //Draw cube.
     Matrix4x4 CubeMatrix = Matrix4x4::identityMat4x4;
     Vector3D goPos;
 
@@ -329,45 +328,20 @@ Editor::postUpdate() {
       RenderManager::instance().drawDebugCube(boxDimensions, { 1,1,1 }, aabbMatrix);
 
     }
-
-    if (TransformMode::kPosition == m_TransformMode) {
-        //X
-        CubeMatrix = Matrix4x4::identityMat4x4;
-        goPos = m_selectedGameObject->getTransform().getPosition();
-        goPos += Vector3D(cubeLarge * 0.5f, 0.0f, 0.0f);
-        CubeMatrix.Translation(goPos);
-        RenderManager::instance().drawDebugCube({ cubeLarge, cubeDefault, cubeDefault },
-                                                { 1.0f, 0.0f, 0.0f },
-                                                CubeMatrix);
-        //Y
-        CubeMatrix = Matrix4x4::identityMat4x4;
-        goPos = m_selectedGameObject->getTransform().getPosition();
-        goPos += Vector3D(0.0f, cubeLarge * 0.5f, 0.0f);
-        CubeMatrix.Translation(goPos);
-        RenderManager::instance().drawDebugCube({ cubeDefault, cubeLarge, cubeDefault },
-                                                { 0.0f, 1.0f, 0.0f },
-                                                CubeMatrix);
-        //Z
-        CubeMatrix = Matrix4x4::identityMat4x4;
-        goPos = m_selectedGameObject->getTransform().getPosition();
-        goPos += Vector3D(0.0f, 0.0f, cubeLarge * 0.5f);
-        CubeMatrix.Translation(goPos);
-        RenderManager::instance().drawDebugCube({ cubeDefault, cubeDefault, cubeLarge },
-                                                { 0.0f, 0.0f, 1.0f },
-                                                CubeMatrix);
-      }
+  }
+  else {
+    ImGuizmo::Enable(false);
   }
 
-  //TODO: Implement this
   //Change transform mode
-  if (Keyboard::isKeyDown(KEY_CODE::kQ)) {
-    m_TransformMode = TransformMode::kPosition;
-  }
-  else if (Keyboard::isKeyDown(KEY_CODE::kW)) {
-    m_TransformMode = TransformMode::kRotation;
+  if (Keyboard::isKeyDown(KEY_CODE::kW)) {
+    m_TransformMode = ImGuizmo::OPERATION::TRANSLATE;
   }
   else if (Keyboard::isKeyDown(KEY_CODE::kE)) {
-    m_TransformMode = TransformMode::kScale;
+    m_TransformMode = ImGuizmo::OPERATION::ROTATE;
+  }
+  else if (Keyboard::isKeyDown(KEY_CODE::kR)) {
+    m_TransformMode = ImGuizmo::OPERATION::SCALE;
   }
 
   if (Mouse::isButtonDown(MOUSE_BUTTON::kLeft)) {
@@ -376,23 +350,11 @@ Editor::postUpdate() {
         selectModel();
       }
       else {
-        if (TransformMode::E::kPosition == m_TransformMode) {
-          if (TransformAxis::kNone == m_SelectedMoveAxis) {
-            if (!selectMoveAxe()) {
-              selectModel();
-            }
-          }
-          else {
-            MoveOnAxe(m_SelectedMoveAxis);
-          }
+        if (!ImGuizmo::IsOver() && !ImGuizmo::IsUsing()) {
+          selectModel();
         }
       }
     }
-  }
-  if (!Mouse::isButtonDown(MOUSE_BUTTON::kLeft)) {
-    m_SelectedMoveAxis = TransformAxis::kNone;
-    m_bOffseted = false;
-    m_fOffset = 0.0f;
   }
 
 }
@@ -1516,63 +1478,6 @@ Editor::saveCurrentLayout() {
 //  }
 //}
 
-bool
-Editor::selectMoveAxe() {
-  bool selected = false;
-
-  CameraManager::SharedCamera Cam = CameraManager::getActiveCamera();
-
-  Vector3D goPos;
-
-  std::vector<std::pair<AABB, TransformAxis::E>> axeBoxes;
-  //X
-  goPos = m_selectedGameObject->getTransform().getPosition();
-  goPos += Vector3D(cubeLarge * 0.5f, 0.0f, 0.0f);
-  axeBoxes.push_back(std::make_pair(AABB(cubeLarge, cubeDefault, cubeDefault, goPos),
-                                    TransformAxis::kX));
-  //Y
-  goPos = m_selectedGameObject->getTransform().getPosition();
-  goPos += Vector3D(0.0f, cubeLarge * 0.5f, 0.0f);
-  axeBoxes.push_back(std::make_pair(AABB(cubeDefault, cubeLarge, cubeDefault, goPos),
-                                    TransformAxis::kY));
-  //Z
-  goPos = m_selectedGameObject->getTransform().getPosition();
-  goPos += Vector3D(0.0f, 0.0f, cubeLarge * 0.5f);
-  axeBoxes.push_back(std::make_pair(AABB(cubeDefault, cubeDefault, cubeLarge, goPos),
-                                    TransformAxis::kZ));
-
-
-  Vector3D rayOrigin = Cam->getPosition();
-  Vector3D rayDirection = GetCameraMouseRayDirection(Cam);
-  Vector3D intersectPoint;
-  Vector3D lastIntersectPoint;
-
-  m_SelectedMoveAxis = TransformAxis::kNone;
-
-  for (auto currentAxe : axeBoxes) {
-    if (Intersect::rayAABB(currentAxe.first.getMaxPoint(),
-                           currentAxe.first.getMinPoint(),
-                           rayOrigin,
-                           rayDirection,
-                           &intersectPoint)) {
-      if (!selected) {
-        selected = true;
-        lastIntersectPoint = intersectPoint;
-        m_SelectedMoveAxis = currentAxe.second;
-      }
-      else {
-        if ((rayOrigin - intersectPoint).lengthSqr() <
-            (rayOrigin - lastIntersectPoint).lengthSqr()) {
-          lastIntersectPoint = intersectPoint;
-          m_SelectedMoveAxis = currentAxe.second;
-        }
-      }
-    }
-  }
-
-  return selected;
-}
-
 void 
 Editor::dockerTest() {
 
@@ -1653,10 +1558,31 @@ Editor::dockerTest() {
 
         auto texture = static_cast<ID3D11ShaderResourceView*>(m_RT->getTexture(0).getAPIObject());
         if (ImGui::DockContext::Status_Float == m_dockContext->m_current->status) {
+          ImGuizmo::SetRect(0, 0, width, height - size);
           ImGui::Image(texture, { width, height - size });
         }
         else {
+          ImGuizmo::SetRect(0, 0, width, height);
           ImGui::Image(texture, { width, height });
+        }
+
+        if (m_bSelected &&
+          SceneGraph::instance().getRoot() != m_selectedGameObject) {
+
+          Transform newTrans = m_selectedGameObject->getWorldTransform();
+          Matrix4x4 GoMat = newTrans.getMatrix();
+          ImGuizmo::Manipulate(&CameraManager::instance().getActiveCamera()->getView().data[0].data[0],
+                               &CameraManager::instance().getActiveCamera()->getProjection().data[0].data[0],
+                               m_TransformMode,
+                               ImGuizmo::MODE::WORLD,
+                               &GoMat.data[0].data[0]);
+          ImGuizmo::SetDrawlist();
+          if (ImGuizmo::OPERATION::TRANSLATE == m_TransformMode) {
+          }
+          if (ImGuizmo::OPERATION::SCALE == m_TransformMode) {
+          }
+          if (ImGuizmo::OPERATION::ROTATE == m_TransformMode) {
+          }
         }
       }
       ImGui::EndDock();
@@ -1666,83 +1592,6 @@ Editor::dockerTest() {
   }
   ImGui::End();
 
-}
-
-void
-Editor::MoveOnAxe(TransformAxis::E axisToMoveOn) {
-  CameraManager::SharedCamera Cam = CameraManager::getActiveCamera();
-
-  Vector3D rayOrigin = Cam->getPosition();
-  Vector3D rayDirection = GetCameraMouseRayDirection(Cam);
-
-  Vector3D intersectPoint;
-  Vector3D lastIntersectPoint;
-
-  Vector3D planeNormal;
-
-  /*
-  * TODO: this is shit boi, why'd you hardcode this?
-  * Create a vector of Vec3, who'll contain all the
-  * axes normals.
-  * The plane normal we want, is the one which
-  * dot product with the camera direction its
-  * the closest to -1 (that means, the plane is looking
-  * to the camera).
-  *
-  * If the movement it's on 1 axis:
-  * Don't push the plane normals of the axis moving.
-  * In case of 2 moving axes:
-  * The plane normal its the cross product of
-  * both axes, and the normal should be pointing to
-  * the camera (there're only 2 planes, the positive
-  * and the negative one, same as above, keep the one with
-  * closest dot product to -1),
-  */
-  if (TransformAxis::kX == axisToMoveOn || TransformAxis::kZ == axisToMoveOn) {
-    planeNormal = { 0, 1, 0 };
-  }
-  else {
-    planeNormal = {0, 0, 1};
-  }
-
-  Vector3D planePoint = m_selectedGameObject->getTransform().getPosition();
-
-  float denom = planeNormal.dot(rayDirection);
-  if (Math::abs(denom) > Math::SMALL_NUMBER) {
-    Vector3D planeToRayOrigin = planePoint - rayOrigin;
-    float t = planeToRayOrigin.dot(planeNormal) / denom;
-    if (t >= 0) {
-      Vector3D newPos;
-      newPos = m_selectedGameObject->getTransform().getPosition();
-      Vector3D raycastPos;
-      raycastPos = rayOrigin + (rayDirection * t);
-
-      if (!m_bOffseted) {
-        if (TransformAxis::kX == axisToMoveOn) {
-          m_fOffset = newPos.x - raycastPos.x;
-        }
-        else if (TransformAxis::kY == axisToMoveOn) {
-          m_fOffset = newPos.y - raycastPos.y;
-        }
-        else if (TransformAxis::kZ == axisToMoveOn) {
-          m_fOffset = newPos.z - raycastPos.z;
-        }
-        m_bOffseted = true;
-      }
-
-      if (TransformAxis::kX == axisToMoveOn) {
-        newPos.x = raycastPos.x + m_fOffset;
-      }
-      else if (TransformAxis::kY == axisToMoveOn) {
-        newPos.y = raycastPos.y + m_fOffset;
-      }
-      else if (TransformAxis::kZ == axisToMoveOn) {
-        newPos.z = raycastPos.z + m_fOffset;
-      }
-
-      m_selectedGameObject->getTransform().setPosition(newPos);
-    }
-  }
 }
 
 void

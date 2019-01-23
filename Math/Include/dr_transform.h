@@ -38,7 +38,7 @@ class DR_MATH_EXPORT Transform
   * Copy constructor
   */
   Transform(const Transform& other);
-
+  
   /**
   * Computes the matrix containing the translation, orientation and
   * scale.

@@ -39,7 +39,7 @@ Transform::getMatrix() const {
   return m_transform;
 }
 
-const Vector3D& 
+const Vector3D&
 Transform::getPosition() const {
   return m_position;
 }
@@ -185,7 +185,8 @@ Transform::scale(const Vector3D & scale) {
   invalidate();
 }
 
-Transform Transform::operator*(const Transform& other) const {
+Transform
+Transform::operator*(const Transform& other) const {
   
   Transform r;
   
@@ -213,7 +214,8 @@ Transform Transform::operator*(const Transform& other) const {
   return r;
 }
 
-Transform Transform::operator*(const Matrix4x4& mat) const {
+Transform
+Transform::operator*(const Matrix4x4& mat) const {
   
   Transform t;
 
