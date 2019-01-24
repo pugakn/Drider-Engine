@@ -1063,7 +1063,7 @@ Editor::loadHierarchy() {
 void
 Editor::loadMenuHierarchy()
 {
-  if (ImGui::MenuItem("New Game Object")) {
+  if (ImGui::MenuItem("Empty")) {
     //TODO: Search parent name
     if (!m_selectedGameObject)
     {
@@ -1075,6 +1075,57 @@ Editor::loadMenuHierarchy()
       m_selectedGameObject,
       { 0.0f, 0.0f, 0.0f },
       { 0.0f, 0.0f, 0.0f });
+  }
+
+  if (ImGui::MenuItem("Light")) {
+    //TODO: Search parent name
+    if (!m_selectedGameObject)
+    {
+      m_selectedGameObject = SceneGraph::getRoot();
+    }
+
+    auto obj = SceneGraph::createObject(_T("Light"));
+    SceneGraph::instanciate(obj,
+                            m_selectedGameObject,
+                            { 0.0f, 0.0f, 0.0f },
+                            { 0.0f, 0.0f, 0.0f });
+
+    obj->createComponent<LightComponent>();
+  }
+
+  if (ImGui::MenuItem("Cube")) {
+    //TODO: Search parent name
+    if (!m_selectedGameObject)
+    {
+      m_selectedGameObject = SceneGraph::getRoot();
+    }
+
+    auto obj = SceneGraph::createObject(_T("Cube"));
+    SceneGraph::instanciate(obj,
+                            m_selectedGameObject,
+                            { 0.0f, 0.0f, 0.0f },
+                            { 0.0f, 0.0f, 0.0f });
+    
+    auto cube = ResourceManager::loadResource(L"Cube.fbx");
+    auto model = std::dynamic_pointer_cast<Model>(cube);
+    auto renderComponent = obj->createComponent<RenderComponent>(model);
+    renderComponent->setModel(model);
+  }
+
+  if (ImGui::MenuItem("Camera")) {
+    //TODO: Search parent name
+    if (!m_selectedGameObject)
+    {
+      m_selectedGameObject = SceneGraph::getRoot();
+    }
+
+    auto obj = SceneGraph::createObject(_T("Camera"));
+    SceneGraph::instanciate(obj,
+                            m_selectedGameObject,
+                            { 0.0f, 1.0f, -10.0f },
+                            { 0.0f, 0.0f, 0.0f });
+
+    auto cameraComponent = obj->createComponent<CameraComponent>();
   }
 }
 
