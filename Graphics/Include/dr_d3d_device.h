@@ -9,11 +9,11 @@ class ShaderBytecode;
 class DR_GRAPHICS_EXPORT D3DDevice : public Device
 {
  public:
-   void*
-     getAPIObject() override;
-
-   void**
-     getAPIObjectReference() override;
+  void*
+  getAPIObject() override;
+  
+  void**
+  getAPIObjectReference() override;
 
   /**
   * TEST::

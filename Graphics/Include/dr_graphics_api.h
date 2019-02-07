@@ -4,6 +4,7 @@
 #include <dr_memory.h>
 #include <vector>
 #include "dr_graphics_defines.h"
+
 namespace driderSDK {
 
 class Device;
@@ -17,21 +18,21 @@ class BlendState;
 class DepthStencilState;
 
 namespace DR_BLEND_STATES {
-  enum E {
-    kAlphaBlend,
-    kAdditive,
-    kOpaque,
-    kCount
-  };
+enum E {
+  kAlphaBlend,
+  kAdditive,
+  kOpaque,
+  kCount
+};
 }
 
 namespace DR_DEPTH_STENCIL_STATES {
-  enum E{
-    kNone,
-    kDepthRW,
-    kDepthR,
-    kCount
-  };
+enum E{
+  kNone,
+  kDepthRW,
+  kDepthR,
+  kCount
+};
 }
 
 class DR_GRAPHICS_EXPORT GraphicsAPI {
@@ -39,20 +40,23 @@ class DR_GRAPHICS_EXPORT GraphicsAPI {
    
   virtual ~GraphicsAPI() {};
 
-  virtual 
-  void init(UInt32 w, UInt32 h, void* hwnd, DR_GRAPHICS_API::E api = DR_GRAPHICS_API::D3D11);
+  virtual void
+  init(UInt32 w,
+       UInt32 h,
+       void* hwnd,
+       DR_GRAPHICS_API::E api = DR_GRAPHICS_API::D3D11);
 
-  virtual 
-  void destroy();
+  virtual void
+  destroy();
 
-  virtual
-  void clear();
+  virtual void
+  clear();
 
-  virtual
-  void swapBuffers();
+  virtual void
+  swapBuffers();
 
-  virtual
-  void resizeBackBuffer(UInt32 w, UInt32 h);
+  virtual void
+  resizeBackBuffer(UInt32 w, UInt32 h);
 
   static Device& 
   getDevice();
@@ -95,4 +99,5 @@ class DR_GRAPHICS_EXPORT GraphicsAPI {
 
   void* m_hwnd;
 };
+
 }

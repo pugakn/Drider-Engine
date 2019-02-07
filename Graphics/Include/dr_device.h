@@ -22,17 +22,18 @@ class BlendState;
 class DR_GRAPHICS_EXPORT Device
 {
  public:
-   virtual void*
-     getAPIObject() = 0;
+  virtual void*
+  getAPIObject() = 0;
 
-   virtual void**
-     getAPIObjectReference() = 0;
+  virtual void**
+  getAPIObjectReference() = 0;
 
   /**
   * Class virtual destructor.
   */
   virtual
-  ~Device() {}
+  ~Device() {
+  }
 
   virtual void
   createDeviceAndDeviceContext(DeviceContext& deviceContext) = 0;
@@ -61,8 +62,6 @@ class DR_GRAPHICS_EXPORT Device
   virtual Buffer*
   createBuffer(const DrBufferDesc& desc,
                const byte* initialData = nullptr) const  = 0;
-
-
 
   /**
   * Create a shader from a plain text buffer
@@ -134,7 +133,9 @@ class DR_GRAPHICS_EXPORT Device
   virtual RenderTarget*
   createRenderTarget(const DrTextureDesc& desc, UInt32 numRTs) const = 0;
 
-
+  /**
+  *
+  */
   virtual RenderTarget*
   createRenderTarget(const std::vector<Texture*>& textures) const  = 0;
 

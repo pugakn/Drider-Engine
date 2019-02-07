@@ -25,6 +25,7 @@ void
 D3DSwapChain::create(const Device& device, const DrSwapChainDesc& desc) {
   const D3DDevice* dev = reinterpret_cast<const D3DDevice*>(&device);
   m_descriptor = desc;
+
   DXGI_SWAP_CHAIN_DESC apiDesc;
   ZeroMemory(&apiDesc, sizeof(DXGI_SWAP_CHAIN_DESC));
   apiDesc.BufferCount = desc.bufferCount;
@@ -43,17 +44,17 @@ D3DSwapChain::create(const Device& device, const DrSwapChainDesc& desc) {
   apiDesc.BufferDesc.RefreshRate.Denominator = desc.refreshRate.denominator;
   apiDesc.BufferDesc.RefreshRate.Numerator = desc.refreshRate.numerator;
 
-  IDXGIDevice * dxgiDevice = nullptr;
-  dev->D3D11Device->QueryInterface(__uuidof(IDXGIDevice), (void **)& dxgiDevice);
+  IDXGIDevice* dxgiDevice = nullptr;
+  dev->D3D11Device->QueryInterface(__uuidof(IDXGIDevice), (void**)&dxgiDevice);
 
-  IDXGIAdapter * dxgiAdapter = nullptr;
-  dxgiDevice->GetParent(__uuidof(IDXGIAdapter), (void **)& dxgiAdapter);
+  IDXGIAdapter* dxgiAdapter = nullptr;
+  dxgiDevice->GetParent(__uuidof(IDXGIAdapter), (void**)&dxgiAdapter);
 
-  IDXGIFactory * dxgiFactory = nullptr;
-  dxgiAdapter->GetParent(__uuidof(IDXGIFactory), (void **)& dxgiFactory);
+  IDXGIFactory* dxgiFactory = nullptr;
+  dxgiAdapter->GetParent(__uuidof(IDXGIFactory), (void**)&dxgiFactory);
 
 
-  dxgiFactory->CreateSwapChain(dev->D3D11Device,&apiDesc,&APISwapchain);
+  dxgiFactory->CreateSwapChain(dev->D3D11Device, &apiDesc, &APISwapchain);
   dxgiFactory->Release();
   dxgiAdapter->Release();
   dxgiDevice->Release();

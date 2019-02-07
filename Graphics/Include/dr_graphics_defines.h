@@ -52,14 +52,14 @@ enum E
 }
 
 namespace DR_BLEND_OP {
-  enum E
-  {
-    kBLEND_OP_ADD = 1,
-    kBLEND_OP_SUBTRACT = 2,
-    kBLEND_OP_REV_SUBTRACT = 3,
-    kBLEND_OP_MIN = 4,
-    kBLEND_OP_MAX = 5
-  };
+enum E
+{
+  kBLEND_OP_ADD = 1,
+  kBLEND_OP_SUBTRACT = 2,
+  kBLEND_OP_REV_SUBTRACT = 3,
+  kBLEND_OP_MIN = 4,
+  kBLEND_OP_MAX = 5
+};
 }
 
 namespace DR_FORMAT {
@@ -349,53 +349,53 @@ enum E  {
 
 namespace DR_BUFFER_TYPE {
 
-  enum E {
-    kVERTEX,
-    kINDEX,
-    kCONSTANT,
-    kCOMMAND,
-    kRWSTRUCTURE,
-    kSTRUCTURE,
-    kINDIRECT_DRAW_INSTANCED_INDEXED,
-    kINDIRECT_DISPATCH,
-  };
+enum E {
+  kVERTEX,
+  kINDEX,
+  kCONSTANT,
+  kCOMMAND,
+  kRWSTRUCTURE,
+  kSTRUCTURE,
+  kINDIRECT_DRAW_INSTANCED_INDEXED,
+  kINDIRECT_DISPATCH,
+};
 
 }
 
 namespace DR_DIMENSION {
 
-  enum E {
-    k1D,
-    k2D,
-    k3D,
-    kCUBE_MAP
-  };
+enum E {
+  k1D,
+  k2D,
+  k3D,
+  kCUBE_MAP
+};
 
 }
 
 namespace DR_IB_TYPE {
 
-  enum E {
-    k16,
-    k32
-  };
+enum E {
+  k16,
+  k32
+};
 
 }
 
 namespace DR_BIND_FLAGS
 {
-  enum E {
-    VERTEX_BUFFER = 0x1L,
-    INDEX_BUFFER = 0x2L,
-    CONSTANT_BUFFER = 0x4L,
-    SHADER_RESOURCE = 0x8L,
-    STREAM_OUTPUT = 0x10L,
-    RENDER_TARGET = 0x20L,
-    DEPTH_STENCIL = 0x40L,
-    UNORDERED_ACCESS = 0x80L,
-    DECODER = 0x200L,
-    VIDEO_ENCODER = 0x400L
-  };
+enum E {
+  VERTEX_BUFFER = 0x1L,
+  INDEX_BUFFER = 0x2L,
+  CONSTANT_BUFFER = 0x4L,
+  SHADER_RESOURCE = 0x8L,
+  STREAM_OUTPUT = 0x10L,
+  RENDER_TARGET = 0x20L,
+  DEPTH_STENCIL = 0x40L,
+  UNORDERED_ACCESS = 0x80L,
+  DECODER = 0x200L,
+  VIDEO_ENCODER = 0x400L
+};
 }
 
 namespace DR_GRAPHICS_API
@@ -405,18 +405,20 @@ namespace DR_GRAPHICS_API
   };
 }
 namespace DR_DEPTH_WRITE_MASK {
-  enum E
-  {
-    kMASK_ZERO = 0,
-    kMASK_ALL = 1
-  };
+enum E
+{
+  kMASK_ZERO = 0,
+  kMASK_ALL = 1
+};
 }
+
 namespace DR_INPUT_CLASSIFICATION {
-  enum E {
-    kPerVertex = 0,
-    kPerInstance = 1
-  };
+enum E {
+  kPerVertex = 0,
+  kPerInstance = 1
+};
 }
+
 struct DR_GRAPHICS_EXPORT DrInputElementDesc {
   String semanticName;
   UInt32 semanticIndex;
@@ -425,8 +427,7 @@ struct DR_GRAPHICS_EXPORT DrInputElementDesc {
   UInt32 offset;
   DR_INPUT_CLASSIFICATION::E slotClass;
   UInt32 stepRate;
-  DrInputElementDesc()
-  {
+  DrInputElementDesc() {
     format = DR_FORMAT::kB4G4R4A4_UNORM;
     inputSlot = 0;
     offset = 0;
@@ -489,7 +490,7 @@ struct DR_GRAPHICS_EXPORT DrTextureDesc {
   UInt32 CPUAccessFlags;
   UInt32 bindFlags;
   bool genMipMaps;
-  DrTextureDesc(){
+  DrTextureDesc() {
     Format = DR_FORMAT::kB4G4R4A4_UNORM;
     Usage = DR_BUFFER_USAGE::kDefault;
     width = 0;

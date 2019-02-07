@@ -17,6 +17,7 @@
 #include "dr_d3d_device.h"
 #include "dr_d3d_device_context.h"
 #endif
+
 namespace driderSDK {
 
 void 
@@ -92,10 +93,8 @@ GraphicsAPI::init(UInt32 w, UInt32 h, void* hwnd, DR_GRAPHICS_API::E api) {
   }
   ////Additive
   blendDesc.blendEnable = true;;
-  blendDesc.srcBlend =
-    blendDesc.srcBlendAlpha = DR_BLEND::kBLEND_SRC_ALPHA;
-  blendDesc.destBlend =
-    blendDesc.destBlendAlpha = DR_BLEND::kBLEND_ONE;
+  blendDesc.srcBlend = blendDesc.srcBlendAlpha = DR_BLEND::kBLEND_SRC_ALPHA;
+  blendDesc.destBlend = blendDesc.destBlendAlpha = DR_BLEND::kBLEND_ONE;
   blendDesc.blendOp = DR_BLEND_OP::kBLEND_OP_ADD;
   blendDesc.blendOpAlpha = DR_BLEND_OP::kBLEND_OP_ADD;
   {

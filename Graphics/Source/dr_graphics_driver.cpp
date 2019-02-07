@@ -4,8 +4,7 @@ namespace driderSDK {
 GraphicsDriver::GraphicsDriver(DR_GRAPHICS_API::E apiType, 
                                UInt32 w, 
                                UInt32 h, 
-                               void * hwnd)
-{
+                               void* hwnd) {
   m_api.init(w, h, hwnd, apiType);
 }
 GraphicsDriver::~GraphicsDriver()
@@ -21,13 +20,16 @@ GraphicsDriver::API() {
   return *APIPtr();
 }
 
-void GraphicsDriver::changeApi(DR_GRAPHICS_API::E api) {}
+void
+GraphicsDriver::changeApi(DR_GRAPHICS_API::E api) {}
 
-void GraphicsDriver::onStartUp()
-{}
+void
+GraphicsDriver::onStartUp() {
+}
 
-void GraphicsDriver::onShutDown()
-{
+void
+GraphicsDriver::onShutDown() {
   m_api.destroy();
 }
+
 }
