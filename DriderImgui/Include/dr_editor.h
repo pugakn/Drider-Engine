@@ -101,6 +101,11 @@ class Editor : public Application
   SceneGraph::SharedGameObject m_makeParent;
   SceneGraph::SharedGameObject m_makeChild;
   Int32 m_insertIndex;
+
+  Vector3D lastMousePos;
+  Vector3D currentMousePos;
+  Vector3D deltaMouse;
+
 };
 
 }

@@ -267,6 +267,21 @@ class DR_MATH_EXPORT Matrix4x4
   Matrix4x4&
   Rotation(const float Yaw, const float Pitch, const float Roll);
 
+  
+  /**
+  * TEST::Rotation
+  *
+  * Aplies a z, x, y rotation.
+  *
+  * @param angles
+  *   The x, y, z angles.
+  *
+  * @return
+  *   The resulting rotation matrix.
+  */
+  Matrix4x4&
+  Rotation(const Vector3D& u, float thetaRadians);
+
   /**
   * TEST::RotationX
   *

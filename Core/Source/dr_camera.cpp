@@ -164,7 +164,6 @@ Camera::getProjection() const {
 
 const Matrix4x4&
 Camera::getView() const {
-
   if (m_outdateView) {
     m_view.LookAt(m_position, m_target, m_up);
     m_outdateView = false;

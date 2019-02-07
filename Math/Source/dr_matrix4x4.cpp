@@ -254,6 +254,31 @@ Matrix4x4::Rotation(const float tetax, const float tetay, const float tetaz) {
 }
 
 Matrix4x4&
+Matrix4x4::Rotation(const Vector3D& u, float thetaRadians) {
+  float c = Math::cos(thetaRadians);
+  float l_c = 1 - c;
+
+  float s = Math::sin(thetaRadians);
+
+  //ROW MAJOR
+  vector0 = { u.x * u.x + (1.0f - u.x * u.x) * c,
+              u.x * u.y * l_c + u.z * s,
+              u.x * u.z * l_c - u.y * s,
+              0.0f };
+  vector1 = { u.x * u.y * l_c - u.z * s,
+              u.y * u.y + (1.0f - u.y * u.y) * c,
+              u.y * u.z * l_c + u.x * s,
+              0.0f };
+  vector2 = { u.x * u.z * l_c + u.y * s,
+              u.y * u.z * l_c - u.x * s,
+              u.z * u.z + (1.0f - u.z * u.z) * c,
+              0.0f };
+  vector3 = { 0.0f, 0.0f, 0.0f, 1.0f };
+
+  return *this;
+}
+
+Matrix4x4&
 Matrix4x4::RotationX(const float teta) {
   float tempCos = Math::cos(teta);
   float tempSin = Math::sin(teta);

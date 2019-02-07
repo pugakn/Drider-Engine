@@ -85,6 +85,7 @@ Editor::postInit() {
   CameraManager::setActiveCamera(_T("PATO_CAM"));
 
   m_sceneViewport = Viewport{ 0, 0, 480, 320 };
+  lastMousePos = Vector3D(0.0f, 0.0f, 0.0f);
 
   auto deviceObj = GraphicsDriver::API().getDevice().getAPIObject();
   auto deviceContextObj = GraphicsDriver::API().getDeviceContext().getAPIObject();
@@ -322,6 +323,9 @@ Editor::postUpdate() {
   saveScene();
   createMat();*/
 
+  currentMousePos = Mouse::getPosition();
+  deltaMouse = currentMousePos - lastMousePos;
+  lastMousePos = currentMousePos;
 
   if (m_bSelected &&
       SceneGraph::instance().getRoot() != m_selectedGameObject) {
@@ -1594,7 +1598,8 @@ Editor::saveCurrentLayout() {
   }
 }
 
-void Editor::showHierarchy(const std::shared_ptr<GameObject>& object, Int32 index) {
+void
+Editor::showHierarchy(const std::shared_ptr<GameObject>& object, Int32 index) {
 
   showHierarchySeparator(object, object->getParent(), index);
 
@@ -1661,9 +1666,10 @@ void Editor::showHierarchy(const std::shared_ptr<GameObject>& object, Int32 inde
   //ImGui::PopStyleVar();
 }
 
-void Editor::showHierarchySeparator(const std::shared_ptr<GameObject>& object, 
-                                    const std::shared_ptr<GameObject>& parent, 
-                                    Int32 index) {
+void
+Editor::showHierarchySeparator(const std::shared_ptr<GameObject>& object, 
+                               const std::shared_ptr<GameObject>& parent, 
+                               Int32 index) {
 
   auto separatorSize = ImVec2(ImGui::GetWindowWidth(), 5.5f);
 
@@ -1793,6 +1799,61 @@ Editor::dockerTest() {
       ImGui::SetNextDock(ImGuiDockSlot_Bottom);
       ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
       if (ImGui::BeginDock("Scene", &m_sceneWindow)) {
+        //Move camera
+        if (ImGui::IsMouseClicked(1, true)) {
+          float dt = Time::getDelta();
+          auto cam = CameraManager::getActiveCamera();
+
+          //Rotation
+          static const float horRotationScale = 10.0f * Math::PI;
+          static const float verRotationScale = 10.0f * Math::PI;
+
+          Vector3D mouseDelta = deltaMouse;
+          Vector3D newTargerPosition = cam->getPosition();
+
+          Vector3D front = cam->getDirection();
+          Vector3D right = cam->getLocalRight();
+
+          Matrix4x4 VerRot = Matrix4x4::identityMat4x4;
+          VerRot.Rotation(right, -mouseDelta.y * verRotationScale * dt);
+
+          front = VerRot * front;
+
+          Matrix4x4 HorRot = Matrix4x4::identityMat4x4;
+          HorRot.RotationY(-mouseDelta.x * horRotationScale * dt);
+
+          front = HorRot * front;
+
+          newTargerPosition.x += front.x;
+          newTargerPosition.y += front.y;
+          newTargerPosition.z += front.z;
+          cam->setTarget(newTargerPosition);
+
+          //Position
+          static const float forwardSpeed = 1500.0f;
+          static const float rightSpeed = 1500.0f;
+          static const float upSpeed = 1500.0f;
+
+          if (Keyboard::isKeyDown(KEY_CODE::kW)) {
+            cam->pan(front * forwardSpeed * dt);
+          }
+          if (Keyboard::isKeyDown(KEY_CODE::kS)) {
+            cam->pan(-front * forwardSpeed * dt);
+          }
+          if (Keyboard::isKeyDown(KEY_CODE::kD)) {
+            cam->pan(right * rightSpeed * dt);
+          }
+          if (Keyboard::isKeyDown(KEY_CODE::kA)) {
+            cam->pan(-right * rightSpeed * dt);
+          }
+          if (Keyboard::isKeyDown(KEY_CODE::kQ)) {
+            cam->pan(Vector3D(0.0f, 1.0f, 0.0f) * upSpeed * dt);
+          }
+          if (Keyboard::isKeyDown(KEY_CODE::kE)) {
+            cam->pan(Vector3D(0.0f, -1.0f, 0.0f) * upSpeed * dt);
+          }
+        }
+
         //float size = ImGui::GetFontSize() + ImGui::GetFrameHeight() * 2.f;
         float size = ImGui::GetTextLineHeight() + ImGui::GetStyle().FramePadding.y * 2.0f;
         float width = ImGui::GetWindowWidth();
