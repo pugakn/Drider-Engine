@@ -12,16 +12,40 @@
 #include "imguihelper.h"
 #include "imguidock.h"
 #include "ImGuizmo.h"
+#include "dr_client.h"
 
 namespace driderSDK {
 
 class ScriptComponent;
 
-class Editor : public Application
+class Editor : public Application,
+               public Client
 {
   const float W_SCROLL_VEL = 0.2f;
   const float W_MOVE_VEL = 0.38f;
   const float W_ROT_VEL = 1.f;
+protected:
+  virtual void
+  onJoinAccepted() override;
+
+  virtual void
+  onJoinDenied() override;
+
+  virtual void
+  onConnectionLoss() override;
+
+  virtual void
+  onLobbiesListReceived(LobbiesList&& lobbies) override;
+
+  virtual void
+  onGameStatusReceived(UInt8 num_players,
+                       std::vector<Vector3D> positions) override;
+
+  virtual void
+  onInstantiatePlayer(bool isLocalPlayer,
+                      const TString& name,
+                      const Vector3D& pos,
+                      const Vector3D& dir) override;
   // Inherited via
   private:
   void initCallbacks();
@@ -105,6 +129,16 @@ class Editor : public Application
   Vector3D lastMousePos;
   Vector3D currentMousePos;
   Vector3D deltaMouse;
+
+  //Connection values
+  bool m_err;
+  LobbiesList m_lobbies;
+  String m_nameStr;
+
+  bool m_connected;
+  bool m_valueRegistered;
+
+  std::vector<std::shared_ptr<GameObject>> m_players;
 
 };
 

@@ -74,6 +74,9 @@
     <ClCompile Include="Source\ImGuizmo.cpp">
       <Filter>Source Files\ImGui</Filter>
     </ClCompile>
+    <ClCompile Include="Source\dr_client.cpp">
+      <Filter>Source Files\Editor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\dirent_portable.h" />
@@ -154,6 +157,9 @@
     </ClInclude>
     <ClInclude Include="Include\ImGuizmo.h">
       <Filter>Header Files\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\dr_client.h">
+      <Filter>Header Files\Editor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

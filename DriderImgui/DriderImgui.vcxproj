@@ -93,7 +93,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Sound/Include;$(SolutionDir)Script/Include;$(SolutionDir)Physics/Include;$(SolutionDir)Engine/Include;$(SolutionDir)RenderManager/Include;$(SolutionDir)Core/Include;$(SolutionDir)Math/Include;$(SolutionDir)Utils/Include;$(SolutionDir)DriderImgui/include;$(SolutionDir)Graphics/Include;$(SolutionDir)Network/Include;$(SolutionDir)Input/Include;$(DRIDER_DEPENDENCIES)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Sound/Include;$(SolutionDir)Script/Include;$(SolutionDir)Physics/Include;$(SolutionDir)Engine/Include;$(SolutionDir)RenderManager/Include;$(SolutionDir)Core/Include;$(SolutionDir)Math/Include;$(SolutionDir)Utils/Include;$(SolutionDir)DriderImgui/include;$(SolutionDir)Graphics/Include;$(SolutionDir)Network/Include;$(SolutionDir)Input/Include;$(DRIDER_DEPENDENCIES)Include;%(AdditionalIncludeDirectories);$(SolutionDir)Network/Include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -107,7 +107,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Sound/Include;$(SolutionDir)Script/Include;$(SolutionDir)Physics/Include;$(SolutionDir)Engine/Include;$(SolutionDir)RenderManager/Include;$(SolutionDir)Core/Include;$(SolutionDir)Math/Include;$(SolutionDir)Utils/Include;$(SolutionDir)DriderImgui/include;$(SolutionDir)Graphics/Include;$(SolutionDir)Network/Include;$(SolutionDir)Input/Include;$(DRIDER_DEPENDENCIES)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Sound/Include;$(SolutionDir)Script/Include;$(SolutionDir)Physics/Include;$(SolutionDir)Engine/Include;$(SolutionDir)RenderManager/Include;$(SolutionDir)Core/Include;$(SolutionDir)Math/Include;$(SolutionDir)Utils/Include;$(SolutionDir)DriderImgui/include;$(SolutionDir)Graphics/Include;$(SolutionDir)Network/Include;$(SolutionDir)Input/Include;$(DRIDER_DEPENDENCIES)Include;%(AdditionalIncludeDirectories);$(SolutionDir)Network/Include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -123,7 +123,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Sound/Include;$(SolutionDir)Script/Include;$(SolutionDir)Physics/Include;$(SolutionDir)Engine/Include;$(SolutionDir)RenderManager/Include;$(SolutionDir)Core/Include;$(SolutionDir)Math/Include;$(SolutionDir)Utils/Include;$(SolutionDir)DriderImgui/include;$(SolutionDir)Graphics/Include;$(SolutionDir)Input/Include;$(DRIDER_DEPENDENCIES)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Sound/Include;$(SolutionDir)Script/Include;$(SolutionDir)Physics/Include;$(SolutionDir)Engine/Include;$(SolutionDir)RenderManager/Include;$(SolutionDir)Core/Include;$(SolutionDir)Math/Include;$(SolutionDir)Utils/Include;$(SolutionDir)DriderImgui/include;$(SolutionDir)Graphics/Include;$(SolutionDir)Input/Include;$(DRIDER_DEPENDENCIES)Include;%(AdditionalIncludeDirectories);$(SolutionDir)Network/Include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -141,7 +141,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Sound/Include;$(SolutionDir)Script/Include;$(SolutionDir)Physics/Include;$(SolutionDir)Engine/Include;$(SolutionDir)RenderManager/Include;$(SolutionDir)Core/Include;$(SolutionDir)Math/Include;$(SolutionDir)Utils/Include;$(SolutionDir)DriderImgui/include;$(SolutionDir)Graphics/Include;$(SolutionDir)Input/Include;$(DRIDER_DEPENDENCIES)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Sound/Include;$(SolutionDir)Script/Include;$(SolutionDir)Physics/Include;$(SolutionDir)Engine/Include;$(SolutionDir)RenderManager/Include;$(SolutionDir)Core/Include;$(SolutionDir)Math/Include;$(SolutionDir)Utils/Include;$(SolutionDir)DriderImgui/include;$(SolutionDir)Graphics/Include;$(SolutionDir)Input/Include;$(DRIDER_DEPENDENCIES)Include;%(AdditionalIncludeDirectories);$(SolutionDir)Network/Include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -156,6 +156,7 @@
     <ClCompile Include="Source\dr_animator_inputs.cpp" />
     <ClCompile Include="Source\dr_box_collider_inputs.cpp" />
     <ClCompile Include="Source\dr_camera_inputs.cpp" />
+    <ClCompile Include="Source\dr_client.cpp" />
     <ClCompile Include="Source\dr_editor.cpp" />
     <ClCompile Include="Source\dr_input_editor.cpp" />
     <ClCompile Include="Source\dr_light_inputs.cpp" />
@@ -184,6 +185,7 @@
     <ClInclude Include="Include\dr_animator_inputs.h" />
     <ClInclude Include="Include\dr_box_collider_inputs.h" />
     <ClInclude Include="Include\dr_camera_inputs.h" />
+    <ClInclude Include="Include\dr_client.h" />
     <ClInclude Include="Include\dr_editor.h" />
     <ClInclude Include="Include\dr_input_editor.h" />
     <ClInclude Include="Include\dr_light_inputs.h" />

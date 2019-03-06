@@ -43,6 +43,7 @@
 #include <dr_sphere_collider.h>
 #include <dr_time.h>
 #include <dr_script_engine.h>
+#include <dr_networkManager_component.h>
 
 #include "dr_input_editor.h"
 #include "imgui.h"
@@ -56,6 +57,93 @@
 
 namespace driderSDK {
 
+void
+Editor::onJoinAccepted() {
+  //IMPORTANT
+  auto temp = m_nameStr.substr(0, m_nameStr.find_first_of('\0'));
+  m_userName = StringUtils::toWString(temp);
+}
+
+void
+Editor::onJoinDenied() {
+  m_err = true;
+}
+
+void
+Editor::onConnectionLoss() {
+  m_err = true;
+}
+
+void
+Editor::onLobbiesListReceived(LobbiesList&& lobbies) {
+  m_lobbies = std::move(lobbies);
+}
+
+void
+Editor::onGameStatusReceived(UInt8 num_players,
+                                   std::vector<Vector3D> positions) {
+
+  if (num_players != m_players.size()) {
+    std::cout << "Players not instantiate\n";
+    return;
+  }
+
+  for (int i = 0; i < positions.size(); i++) {
+    m_players[i]->getTransform().setPosition(positions[i]);
+  }
+}
+
+void
+Editor::onInstantiatePlayer(bool isLocalPlayer,
+                            const TString& name,
+                            const Vector3D& pos,
+                            const Vector3D& dir) {
+
+  if (SceneGraph::getRoot()->findObject(name) != nullptr) {
+    return;
+  }
+
+  /*auto walkerModel = ResourceManager::getReferenceT<Model>(_T("Walking.fbx"));
+  auto& walkerAnimName = walkerModel->animationsNames[0];
+  auto wa = ResourceManager::getReferenceT<Animation>(walkerAnimName);
+  auto ws = ResourceManager::getReferenceT<Skeleton>(walkerModel->skeletonName);*/
+  auto model = ResourceManager::loadResource(_T("Cube.fbx"));
+  auto newPlayer = SceneGraph::createObject(name);
+
+  if (!model) {
+    Logger::addLog(_T("Trying to create object with null model"));
+  }
+  else {
+    auto renderComponent = newPlayer->createComponent<RenderComponent>(std::dynamic_pointer_cast<Model>(model));
+    //renderComponent->setModel(std::dynamic_pointer_cast<Model>(model));
+  }  
+
+  /*auto animator = newPlayer->createComponent<AnimatorComponent>();
+  animator->setSkeleton(ws);
+  animator->addAnimation(wa, walkerAnimName);
+  animator->setCurrentAnimation(walkerAnimName, true);*/
+
+  if (isLocalPlayer) {
+    newPlayer->createComponent<NetworkManagerComponent>();
+
+    ScriptEngine* scriptEngine = ScriptEngine::instancePtr();
+    ContextManager* ctxMag = ContextManager::instancePtr();
+
+    auto playerScript = ResourceManager::getReferenceT<ScriptCore>
+      (_T("player.as"));
+    auto scriptComponent = newPlayer->createComponent<ScriptComponent>(playerScript);
+    ResourceManager::insertCompilableScript(scriptComponent);
+
+  }
+  //newPlayer->createComponent<ScriptComponent>();
+
+  newPlayer->getTransform().setPosition(pos);
+  newPlayer->getTransform().setRotation(dir);
+
+  m_players.push_back(newPlayer);
+
+  SceneGraph::start();
+}
 void
 Editor::postInit() {
   Logger::startUp();
@@ -710,7 +798,7 @@ Editor::initScriptEngine() {
   result = GameComponent::registerFunctions(scriptEngine);
   result = SoundComponent::registerFunctions(scriptEngine);
   result = ScriptComponent::registerFunctions(scriptEngine);
-  //result = NetworkManagerComponent::registerFunctions(scriptEngine);
+  result = NetworkManagerComponent::registerFunctions(scriptEngine);
 
 
   result = Transform::registerFunctions(scriptEngine);
