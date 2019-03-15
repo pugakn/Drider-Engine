@@ -23,7 +23,7 @@ public:
   NetworkManagerComponent(GameObject &gameObject);
 
   virtual
-  ~NetworkManagerComponent();
+  ~NetworkManagerComponent() = default;
 
   void
   onCreate() override;

@@ -43,6 +43,7 @@ class player : driderBehavior {
 				GameObject@ player = Object.findObject("Player");
 				NetworkManagerComponent@ net = cast<NetworkManagerComponent>(player.getComponent("NetworkManagerComponent"));
 				net.move(vecRight);
+				Print("\nPlayer moved");
 			}
 
 			if(isKeyDown(kA)) {

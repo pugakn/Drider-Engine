@@ -8,10 +8,6 @@ namespace driderSDK {
 NetworkManagerComponent::NetworkManagerComponent(GameObject &gameObject) :
                          GameComponent(gameObject, _T("NetworkManagerComponent")) {}
 
-NetworkManagerComponent::~NetworkManagerComponent() {
-
-}
-
 void
 NetworkManagerComponent::onCreate() {
 

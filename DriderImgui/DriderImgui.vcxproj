@@ -161,6 +161,7 @@
     <ClCompile Include="Source\dr_input_editor.cpp" />
     <ClCompile Include="Source\dr_light_inputs.cpp" />
     <ClCompile Include="Source\dr_main.cpp" />
+    <ClCompile Include="Source\dr_network_inputs.cpp" />
     <ClCompile Include="Source\dr_render_inputs.cpp" />
     <ClCompile Include="Source\dr_rigidbody_inputs.cpp" />
     <ClCompile Include="Source\dr_script_inputs.cpp" />
@@ -189,6 +190,7 @@
     <ClInclude Include="Include\dr_editor.h" />
     <ClInclude Include="Include\dr_input_editor.h" />
     <ClInclude Include="Include\dr_light_inputs.h" />
+    <ClInclude Include="Include\dr_network_inputs.h" />
     <ClInclude Include="Include\dr_render_inputs.h" />
     <ClInclude Include="Include\dr_rigidbody_inputs.h" />
     <ClInclude Include="Include\dr_script_inputs.h" />

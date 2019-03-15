@@ -43,7 +43,11 @@
 #include <dr_sphere_collider.h>
 #include <dr_time.h>
 #include <dr_script_engine.h>
+
+#include <dr_networkTransform_component.h>
 #include <dr_networkManager_component.h>
+#include <dr_messenger.h>
+#include <dr_network_manager.h>
 
 #include "dr_input_editor.h"
 #include "imgui.h"
@@ -62,16 +66,19 @@ Editor::onJoinAccepted() {
   //IMPORTANT
   auto temp = m_nameStr.substr(0, m_nameStr.find_first_of('\0'));
   m_userName = StringUtils::toWString(temp);
+  m_connected = true;
 }
 
 void
 Editor::onJoinDenied() {
   m_err = true;
+  m_connected = false;
 }
 
 void
 Editor::onConnectionLoss() {
   m_err = true;
+  m_connected = false;
 }
 
 void
@@ -115,6 +122,7 @@ Editor::onInstantiatePlayer(bool isLocalPlayer,
   }
   else {
     auto renderComponent = newPlayer->createComponent<RenderComponent>(std::dynamic_pointer_cast<Model>(model));
+    newPlayer->createComponent<NetworkManagerComponent>();
     //renderComponent->setModel(std::dynamic_pointer_cast<Model>(model));
   }  
 
@@ -129,8 +137,7 @@ Editor::onInstantiatePlayer(bool isLocalPlayer,
     ScriptEngine* scriptEngine = ScriptEngine::instancePtr();
     ContextManager* ctxMag = ContextManager::instancePtr();
 
-    auto playerScript = ResourceManager::getReferenceT<ScriptCore>
-      (_T("player.as"));
+    auto playerScript = std::dynamic_pointer_cast<ScriptCore>(ResourceManager::loadResource(_T("player.as")));
     auto scriptComponent = newPlayer->createComponent<ScriptComponent>(playerScript);
     ResourceManager::insertCompilableScript(scriptComponent);
 
@@ -226,6 +233,14 @@ Editor::postInit() {
   semantics.push_back(_T("Emisivity"));
   semantics.push_back(_T("Metallic"));
   semantics.push_back(_T("Roughness"));
+
+  //Networ initialize
+  m_err = false;
+  m_connected = false;
+  NetworkManager::startUp();
+  Client::init();
+  m_userName = _T("MontiTest");
+  requestLobbies();
 
 }
 
@@ -383,6 +398,7 @@ Editor::initRT() {
 
 void
 Editor::postUpdate() {
+  Client::update();
   Time::update();
   InputManager::update();
 
@@ -813,8 +829,8 @@ Editor::initScriptEngine() {
   result = REGISTER_GLO_PROPERTIE("GameObject@ Object",
     &m_root);
 
-  //result = REGISTER_GLO_PROPERTIE("const bool isConnected",
-  //  &m_connected);
+  result = REGISTER_GLO_PROPERTIE("const bool isConnected",
+                                  &m_connected);
 
   //Get script references of the ResourceManager
   ResourceManager::loadResource(_T("driderBehavior.as"));
@@ -898,6 +914,7 @@ Editor::loadMainMenu() {
     if(ImGui::BeginMenu("Script")) {
       auto mod = ScriptEngine::instance().m_scriptEngine->GetModule("GameModule");
       if(ImGui::Button("Build")) {
+        //m_connected = false;
         mod->Discard();
         for (auto &s : ResourceManager::instancePtr()->m_scriptsComponents) {
           s.second->discard();
@@ -911,12 +928,19 @@ Editor::loadMainMenu() {
         }
       }
       if (ImGui::Button("Start")) {
-        mod->Build();
+        //system("start LobbyServerd.exe");
+        Int32 error = mod->Build();
         
-        for(auto &s: ResourceManager::instancePtr()->m_scriptsComponents) {
-          s.second->initScript();
-          //Int32 c = s->getObject()->GetPropertyCount();
-          s.second->start();
+        if(error == 0) {
+          for(auto &s: ResourceManager::instancePtr()->m_scriptsComponents) {
+            s.second->initScript();
+            //Int32 c = s->getObject()->GetPropertyCount();
+            s.second->start();
+          }
+      
+          //Connection
+          //m_connected = true;
+          requestConnection(m_lobbies[0].ip, m_lobbies[0].port); //!!Create UI
         }
       }
 
@@ -1408,6 +1432,10 @@ void
 Editor::loadMenuAddComponent()
 {
   if (m_selectedGameObject == SceneGraph::getRoot()) { return; }
+
+  if(ImGui::MenuItem("Network Manager")) { 
+    m_selectedGameObject->createComponent<NetworkManagerComponent>();
+  }
 
   if (ImGui::MenuItem("Animator")) {
     m_selectedGameObject->createComponent<AnimatorComponent>();
