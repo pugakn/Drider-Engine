@@ -132,13 +132,14 @@ Editor::onInstantiatePlayer(bool isLocalPlayer,
   animator->setCurrentAnimation(walkerAnimName, true);*/
 
   if (isLocalPlayer) {
-    newPlayer->createComponent<NetworkManagerComponent>();
+    //newPlayer->createComponent<NetworkManagerComponent>();
 
     ScriptEngine* scriptEngine = ScriptEngine::instancePtr();
     ContextManager* ctxMag = ContextManager::instancePtr();
 
     auto playerScript = std::dynamic_pointer_cast<ScriptCore>(ResourceManager::loadResource(_T("player.as")));
-    auto scriptComponent = newPlayer->createComponent<ScriptComponent>(playerScript);
+    auto scriptComponent = newPlayer->createComponent<ScriptComponent>();
+    scriptComponent->setScript(playerScript);
     ResourceManager::insertCompilableScript(scriptComponent);
 
   }
