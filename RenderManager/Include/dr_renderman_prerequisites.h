@@ -4,9 +4,11 @@
 #include <dr_defines.h>
 #include <dr_types.h>
 
-#define RM_MAX_LIGHTS 1024
-#define RM_MAX_LIGHTS_PER_BLOCK 64
-#define RM_TILE_LIGHTS_SZ 32
+#define RM_MAX_DIRECTIONAL_LIGHTS 8
+
+#define RM_MAX_POINT_LIGHTS 1024
+#define RM_MAX_POINT_LIGHTS_PER_BLOCK 64
+#define RM_TILE_POINT_LIGHTS_SZ 32
 
 /**********************************************************************
 *															                                  		  *

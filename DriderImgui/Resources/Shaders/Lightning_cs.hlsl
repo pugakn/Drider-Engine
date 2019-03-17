@@ -2,9 +2,11 @@
 
 cbuffer ConstantBuffer : register(b0) {
   float4 fViewportSzEnvIrr;             //XY: Vierport dimension, Z: Enviroment lightning scale, W: Irradiance lightning scale
-  float4 kEyePosition;                  //XYZ: EyePosition, W: Active Lights
-  float4 kLightPosition[RM_MAX_LIGHTS]; //XYZ: Light Position, W: Range
-  float4 kLightColor[RM_MAX_LIGHTS];    //XYZ: Light Color, W: Intensity
+  float4 kEyePosition;                  //XYZ: EyePosition, W: Active Directional Lights
+  float4 kPointLightPosition[RM_MAX_POINT_LIGHTS]; //XYZ: Light Position, W: Range
+  float4 kPointLightColor[RM_MAX_POINT_LIGHTS];    //XYZ: Light Color, W: Intensity
+  float4 kDirectionalLightDirection[RM_MAX_DIRECTIONAL_LIGHTS]; //XYZ: Light Direction, W: Shadow
+  float4 kDirectionalLightColor[RM_MAX_DIRECTIONAL_LIGHTS];    //XYZ: Light Color, W: Intensity
   float4 threadsInfo;                   //X: Number of thread groups in x, Y: Number of thread groups in Y, Z: Number of Tiles in X, W: Number of Tiles in Y
 };
 
@@ -34,8 +36,8 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   //Este indica en que index esta este group thread (como si fuese un array).
   const uint group = (groupID.y * threadsInfo.x) + groupID.x;
 
-  const int2 TileGroupID = uint2(floor(dispatchID.x / ((float)RM_TILE_LIGHTS_SZ)),
-                                 floor(dispatchID.y / ((float)RM_TILE_LIGHTS_SZ)));
+  const int2 TileGroupID = uint2(floor(dispatchID.x / ((float)RM_TILE_POINT_LIGHTS_SZ)),
+                                 floor(dispatchID.y / ((float)RM_TILE_POINT_LIGHTS_SZ)));
   
   const int TileGroup = (TileGroupID.y * threadsInfo.z) + TileGroupID.x;
   
@@ -86,28 +88,54 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
 
   float3 DiffAcc, SpecAcc;
 
-  const int activeLights = kEyePosition.w;
   
-  int actualLight;
-  //static const int totalLights = LightsIndex[uint2(TileGroup, RM_MAX_LIGHTS_PER_BLOCK)]; //This doesn't work for some reason
+  //static const int totalLights = LightsIndex[uint2(TileGroup, RM_MAX_POINT_LIGHTS_PER_BLOCK)]; //This doesn't work for some reason
   //const int totalLights = LightsIndex[uint2(TileGroup, 0)]; //This doesn't work for some reason
-  static const int totalLights = RM_MAX_LIGHTS_PER_BLOCK;
+  static const int totalLights = RM_MAX_POINT_LIGHTS_PER_BLOCK;
 
-  //Lightning[uvScale] = float4((totalLights / ((float)RM_MAX_LIGHTS_PER_BLOCK)).xxx, 1.0f); return;
-
+  //Lightning[uvScale] = float4((totalLights / ((float)RM_MAX_POINT_LIGHTS_PER_BLOCK)).xxx, 1.0f); return;
+  
+  //Point
+  int actualLight;
   [loop]
   for (int index = 0; index < totalLights; ++index) {
     actualLight = LightsIndex[uint2(TileGroup, index + 1)];
     if (actualLight < 0) { break; }
 
-    lightPosition  = kLightPosition[actualLight].xyz;
-    lightColor     = kLightColor[actualLight].xyz;
-    lightRange     = kLightPosition[actualLight].w;
-    lightIntensity = kLightColor[actualLight].w;
+    lightPosition  = kPointLightPosition[actualLight].xyz;
+    lightColor     = kPointLightColor[actualLight].xyz;
+    lightRange     = kPointLightPosition[actualLight].w;
+    lightIntensity = kPointLightColor[actualLight].w;
     
     LightPower = pow(saturate(1.0f - (length(lightPosition - position.xyz) / lightRange)), 2) * lightIntensity;
     
     LightViewDir = normalize(lightPosition - position.xyz);
+
+    H = normalize(LightViewDir + ViewDir);
+
+    NdotL = saturate(dot(normal, LightViewDir));
+    //LdotV = saturate(dot(LightViewDir, ViewDir));
+    
+    NdotH = saturate(dot(normal, H));
+    //VdotH = saturate(dot(ViewDir, H));
+    LdotH = saturate(dot(LightViewDir, H));
+
+    DiffAcc = Diffuse_Burley(NdotL, NdotV, LdotH, roughness) * diffuse;
+    SpecAcc = Specular_D(alpha, NdotH) *
+              Specular_F(specularPBR * lightColor, LdotH) *
+              Specular_G(alpha, LdotH);
+    SpecAcc *= rcp(4.0f * cos(NdotL) * cos(NdotV));
+    
+    finalColor += (DiffAcc + SpecAcc) * (NdotL * LightPower);
+  };
+
+  //Directional
+  const int activeLights = kEyePosition.w;
+  [loop]
+  for (int index = 0; index < activeLights; ++index) {
+    LightViewDir = kDirectionalLightDirection[index].xyz;
+    lightColor   = kDirectionalLightColor[index].xyz;
+    LightPower   = kDirectionalLightColor[index].w;
 
     H = normalize(LightViewDir + ViewDir);
 

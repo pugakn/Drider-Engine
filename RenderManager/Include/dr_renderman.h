@@ -100,7 +100,8 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   UInt32 screenHeight;
   UInt32 shadowWidth;
   UInt32 shadowHeight;
-  std::array<Light, RM_MAX_LIGHTS> lights;
+  std::array<PointLight, RM_MAX_POINT_LIGHTS> PointLights;
+  std::array<DirectionalLight, RM_MAX_DIRECTIONAL_LIGHTS> DirectionalLights;
   std::array<std::unique_ptr<Camera>, 4> vecShadowCamera;
   std::vector<float> partitions;
   std::vector<SceneGraph::SharedGameObject> vecGos;
@@ -467,7 +468,7 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   * Updates the shadow cameras.
   */
   void
-  updateShadowCameras(const Vector3D lightDir);
+  updateShadowCameras(const Vector4D lightDir);
 
   /*
   * Test::calculatePartitions

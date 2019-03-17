@@ -2,7 +2,7 @@
 
 #include "dr_file.h"
 #include "dr_gameObject.h"
-#include "dr_light_component.h"
+#include "dr_point_light_component.h"
 
 namespace driderSDK {
 void
@@ -12,7 +12,7 @@ sLight::load(File &file,
   String name;
   file.m_file >> name;
 
-  auto component = obj->createComponent<LightComponent>();
+  auto component = obj->createComponent<PointLightComponent>();
   //component->setName(StringUtils::toTString(name));
   
   Vector3D color;

@@ -18,7 +18,7 @@ struct LightningInitData : PassInitData {
 
 struct LightningLightsToSSData : PassDrawData {
   std::shared_ptr<Camera> ActiveCam;
-  std::array<Light, RM_MAX_LIGHTS>* Lights;
+  std::array<PointLight, RM_MAX_POINT_LIGHTS>* Lights;
   Int32 numberOfLights;
 };
 
@@ -29,7 +29,9 @@ struct LightningTileLightsSSData : PassDrawData {
 
 struct LightningDrawData : PassDrawData {
   std::shared_ptr<Camera> ActiveCam;
-  std::array<Light, RM_MAX_LIGHTS>* Lights;
+  std::array<PointLight, RM_MAX_POINT_LIGHTS>* PLights;
+  SizeT ActiveDirectionalLights;
+  std::array<DirectionalLight, RM_MAX_DIRECTIONAL_LIGHTS>* DLights;
   RenderTarget* GbufferRT;
   RenderTarget* SSAO_SSShadowRT;
   RenderTarget* SSReflection;
@@ -93,7 +95,7 @@ class LightningPass : public RenderPass {
 
     // [XYZ = LightPosition, W = Range]
     // W Sign: Positive = light is active, Negative = light is inactive
-    Vector4D LightPosition[RM_MAX_LIGHTS];
+    Vector4D LightPosition[RM_MAX_POINT_LIGHTS];
   };
 
   struct CBufferTiledLights {
@@ -103,8 +105,10 @@ class LightningPass : public RenderPass {
   struct CBufferDraw {
     Vector4D ViewportSzEnvIrr;
     Vector4D EyePosition;
-    Vector4D LightPosition[RM_MAX_LIGHTS];  //XYZ: Light Position, W: Range
-    Vector4D LightColor[RM_MAX_LIGHTS];     //XYZ: Light Color, W: Intensity
+    Vector4D PointLightPosition[RM_MAX_POINT_LIGHTS];  //XYZ: Light Position, W: Range
+    Vector4D PointLightColor[RM_MAX_POINT_LIGHTS];     //XYZ: Light Color, W: Intensity
+    Vector4D DirectionalLightPosition[RM_MAX_DIRECTIONAL_LIGHTS]; //XYZ: Light Position, W: Range
+    Vector4D DirectionalLightColor[RM_MAX_DIRECTIONAL_LIGHTS];    //XYZ: Light Color, W: Intensity
     Vector4D ThreadsInfo;
   };
 

@@ -9,11 +9,11 @@
 
 namespace driderSDK {
 
-class DR_CORE_EXPORT LightComponent : public GameComponent,
-								      public IDClass<LightComponent>
+class DR_CORE_EXPORT DirectionalLightComponent : public GameComponent,
+								      public IDClass<DirectionalLightComponent>
 {
  public:
-  LightComponent(GameObject& _gameObject);
+  DirectionalLightComponent(GameObject& _gameObject);
 
   /**
   * Sets the light color.
@@ -31,7 +31,7 @@ class DR_CORE_EXPORT LightComponent : public GameComponent,
   *  The light new range.
   */
   void
-  SetRange(const float newRange);
+  SetCastShadow(const bool newCastShadow);
 
   /**
   * Sets the light intensity.
@@ -50,7 +50,7 @@ class DR_CORE_EXPORT LightComponent : public GameComponent,
   *   Compressed vector4D.
   */
   Vector4D
-  GetPositionRange();
+  GetDirectionShadow();
 
   /**
   * Returns the color and intensity of the light
@@ -72,13 +72,13 @@ class DR_CORE_EXPORT LightComponent : public GameComponent,
   GetColor();
   
   /*
-  * Returns the light range.
+  * Returns the cast shadow.
   *
   * @return
-  *   Light range.
+  *   if light cast shadow.
   */
-  float
-  GetRange();
+  bool
+  GetCastShadow();
 
   /*
   * Returns the light intensity.
@@ -116,8 +116,8 @@ class DR_CORE_EXPORT LightComponent : public GameComponent,
   virtual GameComponent* 
   cloneIn(GameObject& _go) override;
 
+  bool m_bCastShadow;
   Vector3D m_vec3Color;
-  float m_fRange;
   float m_fIntensity;
 };
 

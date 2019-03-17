@@ -15,7 +15,8 @@
 #include <dr_aabb.h>
 #include <dr_plane.h>
 
-#include <dr_light_component.h>
+#include <dr_point_light_component.h>
+#include <dr_directional_light_component.h>
 
 namespace driderSDK {
 
@@ -179,20 +180,35 @@ class DR_CORE_EXPORT SceneGraph : public Module<SceneGraph>
   static GameObjectList
   queryGameObjects(const Camera& camera, QUERY_ORDER::E order);
 
-  const std::vector<LightComponent*>
-  getLightComponents();
+  const std::vector<PointLightComponent*>
+  getPointLightComponents();
+
+  const std::vector<DirectionalLightComponent*>
+  getDirectionalLightComponents();
+  
+  /**
+  *
+  */
+  void
+  addLight(PointLightComponent* light);
 
   /**
   *
   */
   void
-  addLight(LightComponent* light);
+  removeLight(PointLightComponent* light);
+  
+  /**
+  *
+  */
+  void
+  addLight(DirectionalLightComponent* light);
 
   /**
   *
   */
   void
-  removeLight(LightComponent* light);
+  removeLight(DirectionalLightComponent* light);
 
   //Called when all initial objects
   //and components are created
@@ -280,8 +296,10 @@ class DR_CORE_EXPORT SceneGraph : public Module<SceneGraph>
   RenderCommandBuffer m_buffers[2];
   RenderCommandBuffer* m_producer = nullptr;
   RenderCommandBuffer* m_consumer = nullptr;
-  std::vector<LightComponent*> m_vecLights;
-  std::unordered_map<TString, LightComponent*> m_umLights;
+  std::vector<PointLightComponent*> m_vecPLights;
+  std::vector<DirectionalLightComponent*> m_vecDLights;
+  std::unordered_map<TString, PointLightComponent*> m_umPLights;
+  std::unordered_map<TString, DirectionalLightComponent*> m_umDLights;
 };
 
 }

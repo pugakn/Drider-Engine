@@ -72,12 +72,12 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   //Este indica la luz que tiene que analizar este thread
   const uint lightIndex = groupIndex + (NUMTHREADS_X * groupID.z);
 
-  if (lightIndex >= RM_MAX_LIGHTS) {
+  if (lightIndex >= RM_MAX_POINT_LIGHTS) {
     return;
   }
   
   LightsIndexAux[uint2(group, lightIndex)] = -1;
-  LightsIndex[uint2(group, clamp(lightIndex, 0, RM_MAX_LIGHTS_PER_BLOCK - 1))] = -1;
+  LightsIndex[uint2(group, clamp(lightIndex, 0, RM_MAX_POINT_LIGHTS_PER_BLOCK - 1))] = -1;
   
   const float2 rectSize = float2(rcp(extraInfo.x), rcp(extraInfo.y));
   const float2 rectPos = float2(((rectSize.x * 0.5f) + (rectSize.x * groupID.x)),
@@ -118,7 +118,7 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   int counter = 0;
   [loop]
   for (int currentLight = 0;
-       (currentLight < RM_MAX_LIGHTS) && (counter < RM_MAX_LIGHTS_PER_BLOCK);
+       (currentLight < RM_MAX_POINT_LIGHTS) && (counter < RM_MAX_POINT_LIGHTS_PER_BLOCK);
        ++currentLight) {
     if (LightsIndexAux[uint2(group, currentLight)] > 0) {
       LightsIndex[uint2(group, counter + 1)] = currentLight;
@@ -126,7 +126,7 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
     }
   }
 
-  //LightsIndex[uint2(group, RM_MAX_LIGHTS_PER_BLOCK)] = counter;
+  //LightsIndex[uint2(group, RM_MAX_POINT_LIGHTS_PER_BLOCK)] = counter;
   LightsIndex[uint2(group, 0)] = counter;
 
   return;

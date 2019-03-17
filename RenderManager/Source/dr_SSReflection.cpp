@@ -84,8 +84,8 @@ SSReflectionsPass::draw(PassDrawData* drawData) {
 
   m_CBDrawData.ThreadsInfo.x = m_ComputeWidthBlocks;
   m_CBDrawData.ThreadsInfo.y = m_ComputeHeightBlocks;
-  m_CBDrawData.ThreadsInfo.z = Math::ceil(m_RTWidth / ((float)RM_TILE_LIGHTS_SZ));
-  m_CBDrawData.ThreadsInfo.w = Math::ceil(m_RTHeight / ((float)RM_TILE_LIGHTS_SZ));
+  m_CBDrawData.ThreadsInfo.z = Math::ceil(m_RTWidth / ((float)RM_TILE_POINT_LIGHTS_SZ));
+  m_CBDrawData.ThreadsInfo.w = Math::ceil(m_RTHeight / ((float)RM_TILE_POINT_LIGHTS_SZ));
 
   m_CBDraw->updateFromBuffer(dc, reinterpret_cast<byte*>(&m_CBDrawData));
   m_CBDraw->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
