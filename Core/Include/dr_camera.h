@@ -158,6 +158,9 @@ class DR_CORE_EXPORT Camera
 	void 
 	setTarget(const Vector3D& target);
 
+  Vector3D
+  getTarget() const;
+
 	/**
 	* TEST::getViewport
 	* Returns the camera's viewport

@@ -126,6 +126,12 @@ Camera::setTarget(const Vector3D& target) {
   invalidateView();
 }
 
+Vector3D 
+Camera::getTarget() const
+{
+  return m_target;
+}
+
 Viewport
 Camera::getViewport() {
   return m_viewport;

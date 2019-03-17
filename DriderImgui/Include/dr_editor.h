@@ -73,6 +73,8 @@ protected:
   void loadMenuHierarchy();
   void materialEditor();
   void loadSavedLayouts();
+  void loadEditorCamConfig();
+  void saveEditorCamConfig();
   //void loadScene();
   //void saveScene();
   void saveCurrentLayout();
@@ -150,7 +152,7 @@ protected:
 
   std::vector<std::shared_ptr<GameObject>> m_players;
   CameraProperties m_editorCamProperties;
-
+  
 };
 
 }

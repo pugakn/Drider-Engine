@@ -181,6 +181,8 @@ Editor::postInit() {
                               1000.f);
   CameraManager::setActiveCamera(_T("PATO_CAM"));
 
+  loadEditorCamConfig();
+
   m_sceneViewport = Viewport{ 0, 0, 480, 320 };
   lastMousePos = Vector3D(0.0f, 0.0f, 0.0f);
 
@@ -220,7 +222,7 @@ Editor::postInit() {
   //io.ConfigDockingWithShift = false;
 
   ImGui::SetCurrentDockContext(m_dockContext);
-
+  
   loadSavedLayouts();
 
   if (m_currentLayout == -1 && m_savedLayouts.size()) {
@@ -1068,17 +1070,90 @@ Editor::loadMainMenu() {
 
 void Editor::loadEditorCameraWindow()
 {
+  auto name = "Position";
+  
+  auto maxSize = ImGui::CalcTextSize(name);
+
+  ImGui::PushItemWidth(maxSize.x);
+
+  ImGui::LabelText((std::string("##") + name + "Label").c_str(), name);
+
+  ImGui::PopItemWidth();
+
+  ImGui::SameLine();
+
+  ImGui::PushItemWidth(-1);
+  
+  auto cam = CameraManager::getActiveCamera();
+  
+  auto pos = cam->getPosition();
+
+  if (ImGui::DragFloat3((std::string("##") + name + "Input").c_str(), pos.ptr(), 1.f)) {
+    cam->setPosition(pos);
+    saveEditorCamConfig();
+  }
+
+  ImGui::PopItemWidth();
+
+  name = "Target";
+
+  ImGui::PushItemWidth(maxSize.x);
+
+  ImGui::LabelText((std::string("##") + name + "Label").c_str(), name);
+
+  ImGui::PopItemWidth();
+
+  ImGui::SameLine();
+
+  ImGui::PushItemWidth(-1);
+
+  pos = cam->getTarget();
+
+  if (ImGui::DragFloat3((std::string("##") + name + "Input").c_str(), pos.ptr(), 1.f)) {
+    cam->setTarget(pos);
+    saveEditorCamConfig();
+  }
+
+  ImGui::PopItemWidth();
+  
+  name = "Pan";
+
+  ImGui::PushItemWidth(maxSize.x);
+
+  ImGui::LabelText((std::string("##") + name + "Label").c_str(), name);
+
+  ImGui::PopItemWidth();
+
+  ImGui::SameLine();
+
+  ImGui::PushItemWidth(-1);
+
+  pos = {0,0,0};
+
+  if (ImGui::DragFloat3((std::string("##") + name + "Input").c_str(), pos.ptr(), 1.f)) {
+    cam->pan(pos);
+    saveEditorCamConfig();
+  }
+
+  ImGui::PopItemWidth();
+
   ImGui::Text("Pan Velocity");
   ImGui::SameLine(ImGui::GetWindowWidth() / 2);
-  ImGui::DragFloat("##panVel", &m_editorCamProperties.panVelocity, 1.f, 50.f, 2000.f);
+  if (ImGui::DragFloat("##panVel", &m_editorCamProperties.panVelocity, 1.f, 50.f, 2000.f)) {
+    saveEditorCamConfig();
+  }
 
   ImGui::Text("Boost Multiplier");
   ImGui::SameLine(ImGui::GetWindowWidth() / 2);
-  ImGui::DragFloat("##boostMul", &m_editorCamProperties.boostMultiplier, 0.01f, 0.0f, 10.f);
+  if (ImGui::DragFloat("##boostMul", &m_editorCamProperties.boostMultiplier, 0.01f, 0.0f, 10.f)) {
+    saveEditorCamConfig();
+  }
 
   ImGui::Text("Rotation Velocity");
   ImGui::SameLine(ImGui::GetWindowWidth() / 2);
-  ImGui::DragFloat("##rotVel", &m_editorCamProperties.rotationVelocity, 1.f, 0.0f, 359.f);
+  if (ImGui::DragFloat("##rotVel", &m_editorCamProperties.rotationVelocity, 1.f, 0.0f, 359.f)) {
+    saveEditorCamConfig();
+  }
 
   
 }
@@ -1376,6 +1451,62 @@ Editor::loadSavedLayouts() {
       }
     }
   }
+}
+
+void Editor::loadEditorCamConfig()
+{
+  auto cam = CameraManager::getActiveCamera();
+
+  std::ifstream in("Resources/camera.config");
+
+  if (in) {
+    std::string tmp;
+    Vector3D pos;
+
+    in >> tmp;
+
+    for (Int32 i = 0; i < 3; ++i) {
+      in >> pos[i];
+    }
+
+    cam->setPosition(pos);
+
+    in >> tmp;
+
+    for (Int32 i = 0; i < 3; ++i) {
+      in >> pos[i];
+    }
+
+    cam->setTarget(pos);
+
+    in >> tmp >> m_editorCamProperties.panVelocity;
+    in >> tmp >> m_editorCamProperties.boostMultiplier;
+    in >> tmp >> m_editorCamProperties.rotationVelocity;
+  }
+}
+
+void Editor::saveEditorCamConfig()
+{
+  auto cam = CameraManager::getActiveCamera();
+
+  std::ofstream out("Resources/camera.config");
+
+  if (out) {
+    out << "position: ";
+
+    for (Int32 i = 0; i < 3; ++i) {
+      out << cam->getPosition()[i] << " ";
+    }
+
+    out << "\ntarget: ";
+    for (Int32 i = 0; i < 3; ++i) {
+      out << cam->getTarget()[i] << " ";
+    }
+
+    out << "\npanVel: " << m_editorCamProperties.panVelocity;
+    out << "\nboostMul: " << m_editorCamProperties.boostMultiplier;
+    out << "\nrotVel: " << m_editorCamProperties.rotationVelocity;
+  }    
 }
 
 void
@@ -2034,7 +2165,7 @@ Editor::dockerTest() {
           static const float rightSpeed = 1500.0f;
           static const float upSpeed = 1500.0f;*/
 
-          float boost = Keyboard::isModifierDown(KEYBOARD_MOD::kShift) ? m_editorCamProperties.boostMultiplier : 1.f;
+          float boost = Keyboard::isModifierDown(KEYBOARD_MOD::kCtrl) ? m_editorCamProperties.boostMultiplier : 1.f;
 
           if (Keyboard::isKeyDown(KEY_CODE::kW)) {
             cam->pan(front * m_editorCamProperties.panVelocity * boost * dt);
@@ -2048,10 +2179,10 @@ Editor::dockerTest() {
           if (Keyboard::isKeyDown(KEY_CODE::kA)) {
             cam->pan(-right * m_editorCamProperties.panVelocity * boost * dt);
           }
-          if (Keyboard::isKeyDown(KEY_CODE::kQ)) {
+          if (Keyboard::isKeyDown(KEY_CODE::kSPACE)) {
             cam->pan(Vector3D(0.0f, 1.0f, 0.0f) * m_editorCamProperties.panVelocity * boost * dt);
           }
-          if (Keyboard::isKeyDown(KEY_CODE::kE)) {
+          if (Keyboard::isKeyDown(KEY_CODE::kLSHIFT)) {
             cam->pan(Vector3D(0.0f, -1.0f, 0.0f) * m_editorCamProperties.panVelocity * boost * dt);
           }
         }
