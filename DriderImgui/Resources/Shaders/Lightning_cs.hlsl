@@ -1,11 +1,11 @@
 #include "Resources\\Shaders\\PBR_Math.hlsl"
 
 cbuffer ConstantBuffer : register(b0) {
-  float4 fViewportDimensions;
-  float4 kEyePosition;        //XYZ: EyePosition, W: Active Lights
+  float4 fViewportSzEnvIrr;             //XY: Vierport dimension, Z: Enviroment lightning scale, W: Irradiance lightning scale
+  float4 kEyePosition;                  //XYZ: EyePosition, W: Active Lights
   float4 kLightPosition[RM_MAX_LIGHTS]; //XYZ: Light Position, W: Range
   float4 kLightColor[RM_MAX_LIGHTS];    //XYZ: Light Color, W: Intensity
-  float4 threadsInfo; //X: Number of thread groups in x, Y: Number of thread groups in Y, Z: Number of Tiles in X, W: Number of Tiles in Y
+  float4 threadsInfo;                   //X: Number of thread groups in x, Y: Number of thread groups in Y, Z: Number of Tiles in X, W: Number of Tiles in Y
 };
 
 SamplerState SS : register(s0);
@@ -41,8 +41,8 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   
   const float2 uvScale = float2(dispatchID.x, dispatchID.y);
 	
-	const float2 uv = float2(dispatchID.x * rcp(fViewportDimensions.x),
-                           dispatchID.y * rcp(fViewportDimensions.y));
+	const float2 uv = float2(dispatchID.x * rcp(fViewportSzEnvIrr.x),
+                           dispatchID.y * rcp(fViewportSzEnvIrr.y));
 
   const float4  position     = float4(PositionDepthTex.SampleLevel(SS, uv, 0).xyz, 1.0f);
   const float   depth        = PositionDepthTex.SampleLevel(SS, uv, 0).w;
@@ -130,10 +130,13 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   //////////IBL//////////
   const float3 reflectVector = reflect(-ViewDir, normal);
   const float mipIndex = alpha * 0.8f;
+  
+  const float EnvScale = fViewportSzEnvIrr.z;
+  const float IrrScale = fViewportSzEnvIrr.w;
 
   float3 envColor = EnvironmentTex.SampleLevel(SS, reflectVector, mipIndex).xyz;
-  envColor = lerp(envColor, SSReflection, SSRefProport);
-  const float3 Irradiance = IrradianceTex.SampleLevel(SS, reflectVector, 0).xyz;
+  envColor = lerp(envColor, SSReflection, SSRefProport) * EnvScale;
+  const float3 Irradiance = IrradianceTex.SampleLevel(SS, reflectVector, 0).xyz * IrrScale;
   
   const float3 IBL = (specularPBR * envColor) + (diffusePBR * Irradiance);
 

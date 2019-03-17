@@ -35,7 +35,9 @@ struct LightningDrawData : PassDrawData {
   RenderTarget* SSReflection;
   RenderTarget* OutRt;
   TextureCore* EnviromentCubemap;
+  float* EnviromentScale;
   TextureCore* IrradianceCubemap;
+  float* IrradianceScale;
 };
 
 class LightningPass : public RenderPass {
@@ -99,7 +101,7 @@ class LightningPass : public RenderPass {
   };
 
   struct CBufferDraw {
-    Vector4D ViewportDimensions;
+    Vector4D ViewportSzEnvIrr;
     Vector4D EyePosition;
     Vector4D LightPosition[RM_MAX_LIGHTS];  //XYZ: Light Position, W: Range
     Vector4D LightColor[RM_MAX_LIGHTS];     //XYZ: Light Color, W: Intensity

@@ -272,8 +272,11 @@ LightningPass::draw(PassDrawData* drawData) {
 
   m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kCompute);
 
-  m_CBDrawData.ViewportDimensions.x = m_RTWidth;
-  m_CBDrawData.ViewportDimensions.y = m_RTHeight;
+  m_CBDrawData.ViewportSzEnvIrr.x = m_RTWidth;
+  m_CBDrawData.ViewportSzEnvIrr.y = m_RTHeight;
+  m_CBDrawData.ViewportSzEnvIrr.z = *data->EnviromentScale;
+  m_CBDrawData.ViewportSzEnvIrr.w = *data->IrradianceScale;
+
 
   m_CBDrawData.EyePosition = data->ActiveCam->getPosition();
   m_CBDrawData.EyePosition.w = 0.0f;

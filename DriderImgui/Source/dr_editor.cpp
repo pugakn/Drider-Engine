@@ -1553,6 +1553,42 @@ Editor::loadFileManager()
 void
 Editor::loadRenderWindow() {
 
+  if (ImGui::CollapsingHeader("SSAO")) {
+    ImGui::Checkbox("Enabled", RenderManager::instance().getSSAOActive());
+    ImGui::Columns(2, "", false);
+    ImGui::Text("Sample Radio:");
+    ImGui::NextColumn();
+    ImGui::DragFloat("##sampleRadioSSAO", RenderManager::instance().getSSAOSampleRadio(), 1.0f, 0.0f);
+
+    ImGui::NextColumn();
+    ImGui::Text("Intensity:");
+    ImGui::NextColumn();
+    ImGui::DragFloat("##intensitySSAO", RenderManager::instance().getSSAOIntensity(), 1.0f, 0.0f);
+
+    ImGui::NextColumn();
+    ImGui::Text("Scale:");
+    ImGui::NextColumn();
+    ImGui::DragFloat("##scaleSSAO", RenderManager::instance().getSSAOScale(), 1.0f, 0.0f);
+    ImGui::NextColumn();
+    ImGui::Text("Bias:");
+    ImGui::NextColumn();
+    ImGui::DragFloat("##biasSSAO", RenderManager::instance().getSSAOBias(), 1.0f, 0.0f);
+    ImGui::EndColumns();
+  }
+
+  if (ImGui::CollapsingHeader("Lightning")) {
+    ImGui::Columns(2, "", false);
+    ImGui::Text("Enviroment Intensity:");
+    ImGui::NextColumn();
+    ImGui::DragFloat("##enviromentIntensityLightning", RenderManager::instance().getEnviromentLightningScale(), 0.0f, 0.0f, 50.0f);
+
+    ImGui::NextColumn();
+    ImGui::Text("Irradiance Intensity:");
+    ImGui::NextColumn();
+    ImGui::DragFloat("##irradianceIntensityLightning", RenderManager::instance().getIrradianceLightningScale(), 0.0f, 0.0f, 50.0f);
+
+    ImGui::EndColumns();
+  }
   if (ImGui::CollapsingHeader("Post-Processing")) {
     ImGui::Indent(ImGui::GetTreeNodeToLabelSpacing());
     if (ImGui::CollapsingHeader("Chromatic Aberration")) {
@@ -1594,28 +1630,6 @@ Editor::loadRenderWindow() {
       ImGui::EndColumns();
     }
     ImGui::Unindent(ImGui::GetTreeNodeToLabelSpacing());
-  }
-  if (ImGui::CollapsingHeader("SSAO")) {
-    ImGui::Checkbox("Enabled", RenderManager::instance().getSSAOActive());
-    ImGui::Columns(2, "", false);
-    ImGui::Text("Sample Radio:");
-    ImGui::NextColumn();
-    ImGui::DragFloat("##sampleRadioSSAO", RenderManager::instance().getSSAOSampleRadio(), 1.0f, 0.0f);
-
-    ImGui::NextColumn();
-    ImGui::Text("Intensity:");
-    ImGui::NextColumn();
-    ImGui::DragFloat("##intensitySSAO", RenderManager::instance().getSSAOIntensity(), 1.0f, 0.0f);
-
-    ImGui::NextColumn();
-    ImGui::Text("Scale:");
-    ImGui::NextColumn();
-    ImGui::DragFloat("##scaleSSAO", RenderManager::instance().getSSAOScale(), 1.0f, 0.0f);
-    ImGui::NextColumn();
-    ImGui::Text("Bias:");
-    ImGui::NextColumn();
-    ImGui::DragFloat("##biasSSAO", RenderManager::instance().getSSAOBias(), 1.0f, 0.0f);
-    ImGui::EndColumns();
   }
 }
 

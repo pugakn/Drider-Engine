@@ -392,6 +392,9 @@ RenderManager::init() {
 
   m_SSReflectionPass.init(&m_SSReflectionInitData);
 
+  m_fEnviromentScale = 1.0f;
+  m_fIrradianceScale = 1.0f;
+
   m_LightningInitData.RTWidth = screenWidth;
   m_LightningInitData.RTHeight = screenHeight;
   m_LightningPass.init(&m_LightningInitData);
@@ -584,7 +587,9 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_LightningDrawData.SSReflection = m_RTSSReflection.get();
   m_LightningDrawData.OutRt = m_RTLightning.get();
   m_LightningDrawData.EnviromentCubemap = m_cubemap.get();
+  m_LightningDrawData.EnviromentScale = &m_fEnviromentScale;
   m_LightningDrawData.IrradianceCubemap = m_cubemapDiffuse.get();
+  m_LightningDrawData.IrradianceScale = &m_fIrradianceScale;
   m_LightningPass.draw(&m_LightningDrawData);
 
   m_luminescenceDrawData.InTexture = &m_RTLightning->getTexture(0);

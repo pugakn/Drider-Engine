@@ -284,6 +284,32 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
     return &m_fSSAOBias;
   };
 
+  /**
+  * Returns a float pointer to modify
+  * the enviroment lightning scale parameter.
+  *
+  * @return
+  *  A pointer to the float value
+  *  used for enviroment lightning scale.
+  */
+  FORCEINLINE float*
+  getEnviromentLightningScale() {
+    return &m_fEnviromentScale;
+  };
+
+  /**
+  * Returns a float pointer to modify
+  * the irradiance lightning scale parameter.
+  *
+  * @return
+  *  A pointer to the float value
+  *  used for irradiance lightning scale.
+  */
+  FORCEINLINE float*
+  getIrradianceLightningScale() {
+    return &m_fIrradianceScale;
+  };
+
   FORCEINLINE float* getCAStrenght() { return &m_fChromaticAberrationStrenght; };
   FORCEINLINE bool* getDoFFrontFocus() { return &m_bFrontFocus; };
   FORCEINLINE float* getDoFDistance() { return &m_fFocusDistance; };
@@ -372,6 +398,8 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   LightningLightsToSSData m_LWSLightsToSSData;
   LightningTileLightsSSData m_LTileLightsData;
   LightningDrawData m_LightningDrawData;
+  float m_fEnviromentScale;
+  float m_fIrradianceScale;
 
   //CS
   BloomPass m_BloomPass;
