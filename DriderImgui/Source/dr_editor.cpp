@@ -1519,6 +1519,11 @@ Editor::loadFileManager()
          showDirectories(namesDirectories);
          ImGuiFs::PathStringVector namesFiles;
          ImGuiFs::DirectoryGetFiles(directories.Data[i], namesFiles);
+         if (tempName == String("Materials")) {
+           ImGuiFs::PathString str;
+           strcpy(str, "DUMMY_MATERIAL");
+           namesFiles.push_front(str);
+         }
          showFiles(namesFiles);
          ImGui::TreePop();
        }

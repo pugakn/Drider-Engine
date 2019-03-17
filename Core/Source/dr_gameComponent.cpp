@@ -32,7 +32,7 @@ GameComponent::getGameObjectPtr() {
 
 void
 GameComponent::setName(const TString& name) {
-  setName(m_gameObject.getValidName(name));
+    NameObject::setName(m_gameObject.getValidName(name));
 }
 
 void 
