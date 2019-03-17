@@ -127,8 +127,8 @@ LightningPass::init(PassInitData* initData) {
 
   m_RTWidth = data->RTWidth;
   m_RTHeight = data->RTHeight;
-  SizeT totalTiles = Math::ceil(m_RTWidth / ((float)RM_TILE_POINT_LIGHTS_SZ)) *
-                     Math::ceil(m_RTHeight / ((float)RM_TILE_POINT_LIGHTS_SZ));
+  SizeT totalTiles = static_cast<SizeT>(Math::ceil(static_cast<float>(m_RTWidth / RM_TILE_POINT_LIGHTS_SZ)) *
+                                        Math::ceil(static_cast<float>(m_RTHeight / RM_TILE_POINT_LIGHTS_SZ)));
 
   //Lights index
   m_TexDesc.width = totalTiles;
@@ -158,8 +158,6 @@ void
 LightningPass::recompileShader(String vsPreText,
                                String psPreText,
                                String csPreText) {
-  Device& dc = GraphicsAPI::getDevice();
-  
   String precomputeString = "#define RM_MAX_POINT_LIGHTS " +
                             StringUtils::toString(RM_MAX_POINT_LIGHTS) +
                             "\n" +
@@ -236,14 +234,14 @@ LightningPass::tileLights(LightningTileLightsSSData* data) {
   m_RTWidth = outRTDesc.width;
   m_RTHeight = outRTDesc.height;
 
-  m_ComputeWidthBlocks  = Math::ceil(m_RTWidth / ((float)RM_TILE_POINT_LIGHTS_SZ));
-  m_ComputeHeightBlocks = Math::ceil(m_RTHeight / ((float)RM_TILE_POINT_LIGHTS_SZ));
+  m_ComputeWidthBlocks  = static_cast<SizeT>(Math::ceil(m_RTWidth / RM_TILE_POINT_LIGHTS_SZ));
+  m_ComputeHeightBlocks = static_cast<SizeT>(Math::ceil(m_RTHeight / RM_TILE_POINT_LIGHTS_SZ));
 
-  SizeT totalTiles = m_ComputeWidthBlocks * m_ComputeHeightBlocks;
+  //SizeT totalTiles = m_ComputeWidthBlocks * m_ComputeHeightBlocks;
 
-  m_CBTileLightsData.threadsInfo.x = m_ComputeWidthBlocks;
-  m_CBTileLightsData.threadsInfo.y = m_ComputeHeightBlocks;
-  m_CBTileLightsData.threadsInfo.z = m_RTHeight / ((float)m_RTWidth);
+  m_CBTileLightsData.threadsInfo.x = static_cast<float>(m_ComputeWidthBlocks);
+  m_CBTileLightsData.threadsInfo.y = static_cast<float>(m_ComputeHeightBlocks);
+  m_CBTileLightsData.threadsInfo.z = static_cast<float>(m_RTHeight / ((float)m_RTWidth));
 
   m_CBTileLights->updateFromBuffer(dc, reinterpret_cast<byte*>(&m_CBTileLightsData));
   m_CBTileLights->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
@@ -278,10 +276,10 @@ LightningPass::draw(PassDrawData* drawData) {
 
   m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kCompute);
 
-  m_CBDrawData.ViewportSzEnvIrr.x = m_RTWidth;
-  m_CBDrawData.ViewportSzEnvIrr.y = m_RTHeight;
-  m_CBDrawData.ViewportSzEnvIrr.z = *data->EnviromentScale;
-  m_CBDrawData.ViewportSzEnvIrr.w = *data->IrradianceScale;
+  m_CBDrawData.ViewportSzEnvIrr.x = static_cast<float>(m_RTWidth);
+  m_CBDrawData.ViewportSzEnvIrr.y = static_cast<float>(m_RTHeight);
+  m_CBDrawData.ViewportSzEnvIrr.z = static_cast<float>(*data->EnviromentScale);
+  m_CBDrawData.ViewportSzEnvIrr.w = static_cast<float>(*data->IrradianceScale);
 
   m_CBDrawData.EyePosition = data->ActiveCam->getPosition();
   m_CBDrawData.EyePosition.w = static_cast<float>(data->ActiveDirectionalLights);
@@ -299,10 +297,10 @@ LightningPass::draw(PassDrawData* drawData) {
     ++currentIndex;
   }
 
-  m_CBDrawData.ThreadsInfo.x = m_ComputeWidthBlocks;
-  m_CBDrawData.ThreadsInfo.y = m_ComputeHeightBlocks;
-  m_CBDrawData.ThreadsInfo.z = Math::ceil(m_RTWidth / ((float)RM_TILE_POINT_LIGHTS_SZ));
-  m_CBDrawData.ThreadsInfo.w = Math::ceil(m_RTHeight / ((float)RM_TILE_POINT_LIGHTS_SZ));
+  m_CBDrawData.ThreadsInfo.x = static_cast<float>(m_ComputeWidthBlocks);
+  m_CBDrawData.ThreadsInfo.y = static_cast<float>(m_ComputeHeightBlocks);
+  m_CBDrawData.ThreadsInfo.z = static_cast<float>(Math::ceil(m_RTWidth / RM_TILE_POINT_LIGHTS_SZ));
+  m_CBDrawData.ThreadsInfo.w = static_cast<float>(Math::ceil(m_RTHeight / RM_TILE_POINT_LIGHTS_SZ));
 
   m_CBDraw->updateFromBuffer(dc, reinterpret_cast<byte*>(&m_CBDrawData));
   m_CBDraw->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);

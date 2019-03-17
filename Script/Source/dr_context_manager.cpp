@@ -70,8 +70,8 @@ ContextManager::addContext(asIScriptEngine *engine,
     return 0;
 
   // Get the object type
-  asIScriptModule *module = engine->GetModule(StringUtils::toString(moduleName).c_str(),
-                                              asGM_CREATE_IF_NOT_EXISTS);
+  //asIScriptModule *module = engine->GetModule(StringUtils::toString(moduleName).c_str(),
+  //                                            asGM_CREATE_IF_NOT_EXISTS);
   
   // Set the context manager as user data with the context so it
   // can be retrieved by the functions registered with the engine

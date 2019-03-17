@@ -620,7 +620,7 @@ AnimatorComponent::serialize(File &file) {
 
 void
 AnimatorComponent::deserialize(TString& data) {
-  "Not implemented";
+  //Not implemented;
 }
 
 }

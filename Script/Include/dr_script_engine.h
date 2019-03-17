@@ -16,7 +16,7 @@ class Time;
 class ContextManager;
 class ScriptDebug;
 
-void stringPrint_g(asIScriptGeneric* gen);
+void stringPrint_g(asIScriptGeneric* gen = nullptr);
 
 /**
 *  Script engine class.
@@ -125,7 +125,7 @@ class DR_SCRIPT_EXPORT ScriptEngine : public Module<ScriptEngine>
 	*   Script context to check.
 	*/
 	void 
-	lineCallback(asIScriptContext *scriptContext);
+	lineCallback(asIScriptContext* scriptContext = nullptr);
 
 	/**
 	* Function to be called for each statement executed, called by AngelScript.

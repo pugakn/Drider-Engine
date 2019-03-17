@@ -12,7 +12,11 @@ namespace driderSDK {
 unsigned long g_timeout;
 
 
-void stringPrint_g(asIScriptGeneric* gen) {
+void
+stringPrint_g(asIScriptGeneric* gen) {
+  if (nullptr == gen) {
+
+  }
 	
 }
 

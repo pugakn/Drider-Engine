@@ -18,7 +18,6 @@ GBufferPass::~GBufferPass() {
 
 void
 GBufferPass::init(PassInitData* initData) {
-  GBufferInitData* data = static_cast<GBufferInitData*>(initData);
   Device& device = GraphicsAPI::getDevice();
 
   m_vsFilename = _T("Resources\\Shaders\\GBuffer1_vs.hlsl");
@@ -59,8 +58,8 @@ GBufferPass::draw(PassDrawData* drawData) {
 
   m_inputLayout->set(dc);
 
-  CB.CameraInfo.x  = data->activeCam->getViewportWidth() /
-                     data->activeCam->getViewportHeight();
+  CB.CameraInfo.x  = static_cast<float>(data->activeCam->getViewportWidth() /
+                                        data->activeCam->getViewportHeight());
   CB.CameraInfo.y  = data->activeCam->getFOV();
   CB.CameraInfo.z  = data->activeCam->getNearPlane();
   CB.CameraInfo.w  = data->activeCam->getFarPlane();
@@ -86,7 +85,7 @@ GBufferPass::draw(PassDrawData* drawData) {
     //CB.WorldView = CB.World * data->activeCam->getView();
     //CB.WVP = CB.World * data->activeCam->getVP();
 
-    std::memset(&CB.Bones[0].data[0], 0.0f, sizeof(CB.Bones));
+    std::memset(&CB.Bones[0].data[0], 0, sizeof(CB.Bones));
 
     m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
     m_constantBuffer->set(dc);
@@ -139,7 +138,7 @@ GBufferPass::draw(PassDrawData* drawData) {
     CB.WorldView = CB.World * data->activeCam->getView();
     CB.WVP = CB.World * data->activeCam->getVP();
 
-    std::memset(&CB.Bones[0].data[0], 0.0f, sizeof(CB.Bones));
+    std::memset(&CB.Bones[0].data[0], 0, sizeof(CB.Bones));
     
     if (modelPair.bonesID != -1) {
       auto& Bones = data->models->bonesTransforms[modelPair.bonesID];

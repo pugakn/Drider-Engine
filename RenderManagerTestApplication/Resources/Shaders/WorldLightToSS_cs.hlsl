@@ -7,7 +7,7 @@ cbuffer ConstantBuffer : register(b0) {
 
   //XYZ = LightPosition, W = Range
   //W Sign: Positive = light is active, Negative = light is inactive
-  float4 kLight[RM_MAX_LIGHTS];
+  float4 kLight[RM_MAX_POINT_LIGHTS];
 };
 
 RWTexture2D<float4> LightsTransformed : register(u0);
@@ -23,7 +23,7 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   
   const uint lightIndex = dispatchID.x;
 
-  if (lightIndex >= RM_MAX_LIGHTS) {
+  if (lightIndex >= RM_MAX_POINT_LIGHTS) {
     return;
   }
   //if sign returns -1, range is negative
@@ -46,7 +46,7 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   SSlightPos = (SSlightPos + (1.0f).xx) * 0.5f;
   SSlightPos.y = 1.0f - SSlightPos.y;
   
-  float2 SSLightUpPos = transformedLightUpPos.xyz / transformedLightUpPos.w;
+  float2 SSLightUpPos = transformedLightUpPos.xy / transformedLightUpPos.w;
   SSLightUpPos = (SSLightUpPos + (1.0f).xx) * 0.5f;
   SSLightUpPos.y = 1.0f - SSLightUpPos.y;
   
@@ -56,6 +56,7 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   const float lightLDepthRad = abs(LightPos.z - LightForwardPos.z) * rcp(cameraUp.w);
   
   LightsTransformed[uint2(lightIndex, 0)] = float4(SSlightPos.xy, SSlightRad, 1.0f);
+  
   LightsTransformed[uint2(lightIndex, 1)] = float4(lightLDepthPos, lightLDepthRad, 0.0f, 0.0f);
 
   return;

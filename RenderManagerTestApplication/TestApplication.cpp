@@ -122,7 +122,7 @@ RenderManApp::postInit() {
   float separationZ = 150.0f;
   float proportion = 0.0f;
   Int32 horizontalLights = 32;
-  Int32 verticalLights = (RM_MAX_LIGHTS / horizontalLights);
+  Int32 verticalLights = (RM_MAX_POINT_LIGHTS / horizontalLights);
 
   float xOffset = (horizontalLights / 2.0f) * separationX;
   float zOffset = 1 * separationZ;
@@ -131,11 +131,11 @@ RenderManApp::postInit() {
 
   Vector4D lightPos;
   Vector4D lightColor;
-  LightComponent* tmpLightCmp;
+  PointLightComponent* tmpLightCmp;
   for (Int32 xPos = 0; xPos < horizontalLights; ++xPos) {
     for (Int32 zPos = 0; zPos < verticalLights; ++zPos) {
       tmpObj = SceneGraph::createObject(_T("Light") + StringUtils::toTString(lighIndex));
-      tmpLightCmp = tmpObj->createComponent<LightComponent>();
+      tmpLightCmp = tmpObj->createComponent<PointLightComponent>();
 
       //Posicion
       lightPos = Vector4D((xPos * separationX) - xOffset,
@@ -159,7 +159,7 @@ RenderManApp::postInit() {
       tmpLightCmp->SetRange(100.0f);
       tmpLightCmp->SetIntensity(2.0f);
 
-      proportion += (1.0f / RM_MAX_LIGHTS);
+      proportion += (1.0f / RM_MAX_POINT_LIGHTS);
       ++lighIndex;
     }
   }
@@ -468,8 +468,6 @@ RenderManApp::initInputCallbacks() {
 
 void
 RenderManApp::loadResources() {
-  ResourceManager::loadResource(_T("ScreenAlignedQuad.3ds"));
-
   //Cubemap
   ImageInfo churchDesc;
   churchDesc.width = 256;

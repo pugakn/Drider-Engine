@@ -40,10 +40,14 @@ Camera::move(float forward, float strafe, float upVelocity, bool lockY) {
   auto upDir = m_up.normalize();
   auto strafeDir = (upDir.cross(dir)).normalize();
   m_position += dir * forward;
-  m_position += upDir * upVelocity;
+  if (!lockY) {
+    m_position += upDir * upVelocity;
+  }
   m_position += strafeDir * strafe;
   m_target += dir * forward;
-  m_target += upDir * upVelocity;
+  if (!lockY) {
+    m_target += upDir * upVelocity;
+  }
   m_target += strafeDir * strafe;
   invalidateView();
 }
@@ -60,7 +64,9 @@ Camera::pan(float forward, float strafe, float upVelocity, bool lockY) {
   auto upDir = m_up.normalize();
   auto strafeDir = (upDir.cross(dir)).normalize();
   m_position += dir * forward;
-  m_position += upDir * upVelocity;
+  if (!lockY) {
+    m_position += upDir * upVelocity;
+  }
   m_position += strafeDir * strafe;
   invalidateView();
 }

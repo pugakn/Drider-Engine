@@ -73,14 +73,14 @@ LuminescencePass::draw(PassDrawData* drawData) {
 
   m_resultBuffer->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
 
-  CB.fViewportDimensions.x = m_RTWidth;
-  CB.fViewportDimensions.y = m_RTHeight;
+  CB.fViewportDimensions.x = static_cast<float>(m_RTWidth);
+  CB.fViewportDimensions.y = static_cast<float>(m_RTHeight);
   CB.fViewportDimensions.z = data->LuminiscenceDelta;
 
-  CB.threadsInfo.x = m_ComputeWidthBlocks;
-  CB.threadsInfo.y = m_ComputeHeightBlocks;
-  CB.threadsInfo.z = m_ComputeWidthDivisions;
-  CB.threadsInfo.w = m_ComputeHeightDivisions;
+  CB.threadsInfo.x = static_cast<float>(m_ComputeWidthBlocks);
+  CB.threadsInfo.y = static_cast<float>(m_ComputeHeightBlocks);
+  CB.threadsInfo.z = static_cast<float>(m_ComputeWidthDivisions);
+  CB.threadsInfo.w = static_cast<float>(m_ComputeHeightDivisions);
 
   m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
   m_constantBuffer->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);

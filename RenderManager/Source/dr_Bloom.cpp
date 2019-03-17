@@ -19,7 +19,6 @@ BloomPass::~BloomPass() {
 
 void
 BloomPass::init(PassInitData* initData) {
-  BloomInitData* data = static_cast<BloomInitData*>(initData);
   Device& device = GraphicsAPI::getDevice();
 
   m_csFilename = _T("Resources\\Shaders\\Bloom_cs.hlsl");

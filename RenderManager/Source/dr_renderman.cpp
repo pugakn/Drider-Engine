@@ -68,8 +68,8 @@ RenderManager::init() {
   static const float blurScale = 0.5f;
 
   float shadowQualityMultiplier = 1.0f;
-  shadowWidth = 1024 * shadowQualityMultiplier;
-  shadowHeight = 1024 * shadowQualityMultiplier;
+  shadowWidth = static_cast<UInt32>(1024.0f * shadowQualityMultiplier);
+  shadowHeight = static_cast<UInt32>(1024.0f * shadowQualityMultiplier);
 
   //////////Shadows stuff//////////
   std::shared_ptr<Camera> mainCam = CameraManager::getActiveCamera();
@@ -239,8 +239,8 @@ RenderManager::init() {
   //Blur Aux
   {
     //RenderTarget
-    texDescDefault.width = screenWidth * blurScale;
-    texDescDefault.height = screenHeight * blurScale;
+    texDescDefault.width = static_cast<UInt32>(screenWidth * blurScale);
+    texDescDefault.height = static_cast<UInt32>(screenHeight * blurScale);
     texDescDefault.Format = DR_FORMAT::kR16G16B16A16_FLOAT;
     texDescDefault.pitch = texDescDefault.width * 3 * 2;
     texDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
@@ -258,8 +258,8 @@ RenderManager::init() {
   //Blurred SSAO & Shadow
   {
     //RenderTarget
-    texDescDefault.width = screenWidth * blurScale;
-    texDescDefault.height = screenHeight * blurScale;
+    texDescDefault.width = static_cast<UInt32>(screenWidth * blurScale);
+    texDescDefault.height = static_cast<UInt32>(screenHeight * blurScale);
     texDescDefault.Format = DR_FORMAT::kR16G16_FLOAT;
     texDescDefault.pitch = texDescDefault.width * 2 * 2;
     texDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
@@ -276,8 +276,8 @@ RenderManager::init() {
 
   //SSReflection
   {
-    texDescDefault.width = screenWidth * blurScale;
-    texDescDefault.height = screenHeight * blurScale;
+    texDescDefault.width = static_cast<UInt32>(screenWidth * blurScale);
+    texDescDefault.height = static_cast<UInt32>(screenHeight * blurScale);
     //texDescDefault.width = screenWidth;
     //texDescDefault.height = screenHeight;
     texDescDefault.Format = DR_FORMAT::kR8G8B8A8_UNORM;
@@ -297,8 +297,8 @@ RenderManager::init() {
   //Lightning & LightningBlur
   {
     //RenderTarget
-    texDescDefault.width = screenWidth;
-    texDescDefault.height = screenHeight;
+    texDescDefault.width = static_cast<UInt32>(screenWidth);
+    texDescDefault.height = static_cast<UInt32>(screenHeight);
     texDescDefault.Format = DR_FORMAT::kR16G16B16A16_FLOAT;
     texDescDefault.pitch = texDescDefault.width * 4;
     texDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
@@ -314,8 +314,8 @@ RenderManager::init() {
     vecTextures.clear();
     ColorTexure.release();
 
-    texDescDefault.width = screenWidth * blurScale;
-    texDescDefault.height = screenHeight * blurScale;
+    texDescDefault.width = static_cast<UInt32>(screenWidth * blurScale);
+    texDescDefault.height = static_cast<UInt32>(screenHeight * blurScale);
     texDescDefault.Format = DR_FORMAT::kR16G16B16A16_FLOAT;
     texDescDefault.pitch = texDescDefault.width * 4 * 2;
     texDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
@@ -332,8 +332,8 @@ RenderManager::init() {
 
   //Bloom
   {
-    texDescDefault.width = screenWidth;
-    texDescDefault.height = screenHeight;
+    texDescDefault.width = static_cast<UInt32>(screenWidth);
+    texDescDefault.height = static_cast<UInt32>(screenHeight);
     texDescDefault.Format = DR_FORMAT::kR16G16B16A16_FLOAT;
     texDescDefault.pitch = texDescDefault.width * 4 * 1;
     texDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
@@ -348,8 +348,8 @@ RenderManager::init() {
     BrightnessTexure.release();
 
     //RenderTarget
-    texDescDefault.width = screenWidth * blurScale;
-    texDescDefault.height = screenHeight * blurScale;
+    texDescDefault.width = static_cast<UInt32>(screenWidth * blurScale);
+    texDescDefault.height = static_cast<UInt32>(screenHeight * blurScale);
     texDescDefault.Format = DR_FORMAT::kR16G16B16A16_FLOAT;
     texDescDefault.pitch = texDescDefault.width * 4 * 1;
     texDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
@@ -806,7 +806,7 @@ RenderManager::drawDebugSphere(const float radius,
   std::vector<Vector3D> halfCircle;
   {
     Vector3D refPoint = Vector3D(0, radius, 0);
-    for (Int32 i = 0; i < verticalDivs; ++i) {
+    for (SizeT i = 0; i < verticalDivs; ++i) {
       halfCircle.push_back(refPoint);
       refPoint = verticalRotation * refPoint;
     }
@@ -817,7 +817,7 @@ RenderManager::drawDebugSphere(const float radius,
   {
     std::vector<Vector3D> verticalCircle = halfCircle;
 
-    for (Int32 i = 0; i < horizontalDivs; ++i) {
+    for (SizeT i = 0; i < horizontalDivs; ++i) {
       for (auto& currentVertex : verticalCircle) {
         currentVertex = horizontalRotation * currentVertex;
       }
@@ -830,9 +830,9 @@ RenderManager::drawDebugSphere(const float radius,
     std::vector<Vector3D> horizontalCircle;
     Vector3D horRef;
 
-    for (Int32 i = 1; i < verticalDivs; ++i) {
-      horRef = halfCircle[i];
-      for (Int32 i = 0; i < (horizontalDivs + 1); ++i) {
+    for (SizeT v = 1; v < verticalDivs; ++v) {
+      horRef = halfCircle[v];
+      for (SizeT h = 0; h < (horizontalDivs + 1); ++h) {
         horizontalCircle.push_back(horRef);
         horRef = horizontalRotation * horRef;
       }

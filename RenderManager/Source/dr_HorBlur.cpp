@@ -17,7 +17,6 @@ HorBlurPass::~HorBlurPass() {
 
 void
 HorBlurPass::init(PassInitData* initData) {
-  HorBlurInitData* data = static_cast<HorBlurInitData*>(initData);
   Device& device = GraphicsAPI::getDevice();
 
   m_csFilename = _T("Resources\\Shaders\\HorBlur_cs.hlsl");
@@ -68,8 +67,8 @@ HorBlurPass::draw(PassDrawData* drawData) {
 
   data->OutRt->getTexture(0).set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute);
 
-  CB.fViewportDimensions.x = m_RTWidth;
-  CB.fViewportDimensions.y = m_RTHeight;
+  CB.fViewportDimensions.x = static_cast<float>(m_RTWidth);
+  CB.fViewportDimensions.y = static_cast<float>(m_RTHeight);
 
   m_constantBuffer->updateFromBuffer(dc, reinterpret_cast<byte*>(&CB));
   m_constantBuffer->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);

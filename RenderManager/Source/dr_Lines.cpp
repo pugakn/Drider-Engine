@@ -18,7 +18,6 @@ LinesPass::~LinesPass() {
 
 void
 LinesPass::init(PassInitData* initData) {
-  LinesInitData* data = static_cast<LinesInitData*>(initData);
   Device& device = GraphicsAPI::getDevice();
 
   m_vsFilename = _T("Resources\\Shaders\\Line_vs.hlsl");
@@ -48,11 +47,11 @@ LinesPass::draw(PassDrawData* drawData) {
 
   m_inputLayout->set(dc);
 
-  CB.CameraInfo.x  = data->activeCam->getViewportWidth() /
-                     data->activeCam->getViewportHeight();
-  CB.CameraInfo.y  = data->activeCam->getFOV();
-  CB.CameraInfo.z  = data->activeCam->getNearPlane();
-  CB.CameraInfo.w  = data->activeCam->getFarPlane();
+  CB.CameraInfo.x  = static_cast<float>(data->activeCam->getViewportWidth() /
+                                        data->activeCam->getViewportHeight());
+  CB.CameraInfo.y  = static_cast<float>(data->activeCam->getFOV());
+  CB.CameraInfo.z  = static_cast<float>(data->activeCam->getNearPlane());
+  CB.CameraInfo.w  = static_cast<float>(data->activeCam->getFarPlane());
 
   CB.VP = data->activeCam->getVP();
 
@@ -196,8 +195,8 @@ LinesPass::drawStripLines() {
       ibDesc.usage = DR_BUFFER_USAGE::kDefault;
       ibDesc.sizeInBytes = totalPoints * sizeof(Int32);
 
-      for (Int32 i = 0; i < totalPoints; ++i) {
-        indexList.push_back(i);
+      for (SizeT i = 0; i < totalPoints; ++i) {
+        indexList.push_back(static_cast<UInt32>(i));
       }
       ib = static_cast<IndexBuffer*>(dev.createBuffer(ibDesc, reinterpret_cast<byte*>(&indexList[0])));
     }
