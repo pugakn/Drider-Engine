@@ -516,8 +516,8 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   }
 
   for (SizeT current = 0; current < numberOfDLights; ++current) {
+    m_RTShadow->clear(dc, white);
     if (DirectionalLights[current].m_vec4Direction.w > 0.5f) {
-      m_RTShadow->clear(dc, white);
       updateShadowCameras(DirectionalLights[current].m_vec4Direction);
 
       m_ShadowDrawData.dsOptions = m_ShadowDSoptions.get();
@@ -594,7 +594,9 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_LightningPass.tileLights(&m_LTileLightsData);
   //Lightning Pass
   m_LightningDrawData.ActiveCam = mainCam;
-  m_LightningDrawData.Lights = &PointLights;
+  m_LightningDrawData.PLights = &PointLights;
+  m_LightningDrawData.ActiveDirectionalLights = numberOfDLights;
+  m_LightningDrawData.DLights = &DirectionalLights;
   m_LightningDrawData.GbufferRT = m_RTGBuffer.get();
   m_LightningDrawData.SSAO_SSShadowRT = m_RTSSAO_SSShadowBlur.get();
   m_LightningDrawData.SSReflection = m_RTSSReflection.get();

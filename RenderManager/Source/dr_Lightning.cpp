@@ -34,6 +34,9 @@ LightningPass::init(PassInitData* initData) {
                             "\n" +
                             "#define RM_TILE_POINT_LIGHTS_SZ " +
                             StringUtils::toString(RM_TILE_POINT_LIGHTS_SZ) +
+                            "\n" +
+                            "#define RM_MAX_DIRECTIONAL_LIGHTS " +
+                            StringUtils::toString(RM_MAX_DIRECTIONAL_LIGHTS) +
                             "\n";
 
   //////////Compile WS Lights to SS Shader//////////
@@ -165,6 +168,9 @@ LightningPass::recompileShader(String vsPreText,
                             "\n" +
                             "#define RM_TILE_POINT_LIGHTS_SZ " +
                             StringUtils::toString(RM_TILE_POINT_LIGHTS_SZ) +
+                            "\n" +
+                            "#define RM_MAX_DIRECTIONAL_LIGHTS " +
+                            StringUtils::toString(RM_MAX_DIRECTIONAL_LIGHTS) +
                             "\n";
 
   RenderPass::recompileShader("", "", precomputeString);
@@ -279,12 +285,18 @@ LightningPass::draw(PassDrawData* drawData) {
 
 
   m_CBDrawData.EyePosition = data->ActiveCam->getPosition();
-  m_CBDrawData.EyePosition.w = 0.0f;
+  m_CBDrawData.EyePosition.w = static_cast<float>(data->ActiveDirectionalLights);
 
   SizeT currentIndex = 0;
-  for (auto& currentVec : *data->Lights) {
-    m_CBDrawData.LightPosition[currentIndex] = currentVec.m_vec4Position;
-    m_CBDrawData.LightColor[currentIndex] = currentVec.m_vec4Color;
+  for (auto& currentVec : *data->PLights) {
+    m_CBDrawData.PointLightPosition[currentIndex] = currentVec.m_vec4Position;
+    m_CBDrawData.PointLightColor[currentIndex] = currentVec.m_vec4Color;
+    ++currentIndex;
+  }
+  currentIndex = 0;
+  for (auto& currentVec : *data->DLights) {
+    m_CBDrawData.DirectionalLightPosition[currentIndex] = currentVec.m_vec4Direction;
+    m_CBDrawData.DirectionalLightColor[currentIndex] = currentVec.m_vec4Color;
     ++currentIndex;
   }
 
