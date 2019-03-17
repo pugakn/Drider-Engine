@@ -26,14 +26,14 @@ LightningPass::init(PassInitData* initData) {
   String shaderSrc;
   TString csName;
 
-  String precomputeString = "#define RM_MAX_LIGHTS " +
-                            StringUtils::toString(RM_MAX_LIGHTS) +
+  String precomputeString = "#define RM_MAX_POINT_LIGHTS " +
+                            StringUtils::toString(RM_MAX_POINT_LIGHTS) +
                             "\n" +
-                            "#define RM_MAX_LIGHTS_PER_BLOCK " +
-                            StringUtils::toString(RM_MAX_LIGHTS_PER_BLOCK) +
+                            "#define RM_MAX_POINT_LIGHTS_PER_BLOCK " +
+                            StringUtils::toString(RM_MAX_POINT_LIGHTS_PER_BLOCK) +
                             "\n" +
-                            "#define RM_TILE_LIGHTS_SZ " +
-                            StringUtils::toString(RM_TILE_LIGHTS_SZ) +
+                            "#define RM_TILE_POINT_LIGHTS_SZ " +
+                            StringUtils::toString(RM_TILE_POINT_LIGHTS_SZ) +
                             "\n";
 
   //////////Compile WS Lights to SS Shader//////////
@@ -103,7 +103,7 @@ LightningPass::init(PassInitData* initData) {
   //Lights in ScreenSpace
   DrTextureDesc m_TexDesc;
   m_TexDesc.dimension = DR_DIMENSION::k2D;
-  m_TexDesc.width = RM_MAX_LIGHTS;
+  m_TexDesc.width = RM_MAX_POINT_LIGHTS;
   m_TexDesc.height = 2;
   m_TexDesc.Format = DR_FORMAT::kR32G32B32A32_FLOAT;;
   m_TexDesc.pitch = m_TexDesc.width * 4 * 4;
@@ -124,12 +124,12 @@ LightningPass::init(PassInitData* initData) {
 
   m_RTWidth = data->RTWidth;
   m_RTHeight = data->RTHeight;
-  SizeT totalTiles = Math::ceil(m_RTWidth / ((float)RM_TILE_LIGHTS_SZ)) *
-                     Math::ceil(m_RTHeight / ((float)RM_TILE_LIGHTS_SZ));
+  SizeT totalTiles = Math::ceil(m_RTWidth / ((float)RM_TILE_POINT_LIGHTS_SZ)) *
+                     Math::ceil(m_RTHeight / ((float)RM_TILE_POINT_LIGHTS_SZ));
 
   //Lights index
   m_TexDesc.width = totalTiles;
-  m_TexDesc.height = 1 + RM_MAX_LIGHTS_PER_BLOCK;
+  m_TexDesc.height = 1 + RM_MAX_POINT_LIGHTS_PER_BLOCK;
   m_TexDesc.Format = DR_FORMAT::kR32_SINT;
   m_TexDesc.pitch = m_TexDesc.width * 4;
   
@@ -141,7 +141,7 @@ LightningPass::init(PassInitData* initData) {
   LightsIndexTex.release();
 
   //Lights index aux
-  m_TexDesc.height = RM_MAX_LIGHTS;
+  m_TexDesc.height = RM_MAX_POINT_LIGHTS;
 
   GFXUnique<Texture> LightsIndexAuxTex = dr_gfx_unique<Texture>(device.createEmptyTexture(m_TexDesc));
   m_vecTexture.push_back(LightsIndexAuxTex.get());
@@ -157,14 +157,14 @@ LightningPass::recompileShader(String vsPreText,
                                String csPreText) {
   Device& dc = GraphicsAPI::getDevice();
   
-  String precomputeString = "#define RM_MAX_LIGHTS " +
-                            StringUtils::toString(RM_MAX_LIGHTS) +
+  String precomputeString = "#define RM_MAX_POINT_LIGHTS " +
+                            StringUtils::toString(RM_MAX_POINT_LIGHTS) +
                             "\n" +
-                            "#define RM_MAX_LIGHTS_PER_BLOCK " +
-                            StringUtils::toString(RM_MAX_LIGHTS_PER_BLOCK) +
+                            "#define RM_MAX_POINT_LIGHTS_PER_BLOCK " +
+                            StringUtils::toString(RM_MAX_POINT_LIGHTS_PER_BLOCK) +
                             "\n" +
-                            "#define RM_TILE_LIGHTS_SZ " +
-                            StringUtils::toString(RM_TILE_LIGHTS_SZ) +
+                            "#define RM_TILE_POINT_LIGHTS_SZ " +
+                            StringUtils::toString(RM_TILE_POINT_LIGHTS_SZ) +
                             "\n";
 
   RenderPass::recompileShader("", "", precomputeString);
@@ -230,8 +230,8 @@ LightningPass::tileLights(LightningTileLightsSSData* data) {
   m_RTWidth = outRTDesc.width;
   m_RTHeight = outRTDesc.height;
 
-  m_ComputeWidthBlocks  = Math::ceil(m_RTWidth / ((float)RM_TILE_LIGHTS_SZ));
-  m_ComputeHeightBlocks = Math::ceil(m_RTHeight / ((float)RM_TILE_LIGHTS_SZ));
+  m_ComputeWidthBlocks  = Math::ceil(m_RTWidth / ((float)RM_TILE_POINT_LIGHTS_SZ));
+  m_ComputeHeightBlocks = Math::ceil(m_RTHeight / ((float)RM_TILE_POINT_LIGHTS_SZ));
 
   SizeT totalTiles = m_ComputeWidthBlocks * m_ComputeHeightBlocks;
 
@@ -242,7 +242,7 @@ LightningPass::tileLights(LightningTileLightsSSData* data) {
   m_CBTileLights->updateFromBuffer(dc, reinterpret_cast<byte*>(&m_CBTileLightsData));
   m_CBTileLights->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);
 
-  SizeT passes = RM_MAX_LIGHTS / 512;
+  SizeT passes = RM_MAX_POINT_LIGHTS / 512;
   //SizeT passes = data->numberOfLights / 512;
   dc.dispatch(m_ComputeWidthBlocks, m_ComputeHeightBlocks, passes);
 
@@ -290,8 +290,8 @@ LightningPass::draw(PassDrawData* drawData) {
 
   m_CBDrawData.ThreadsInfo.x = m_ComputeWidthBlocks;
   m_CBDrawData.ThreadsInfo.y = m_ComputeHeightBlocks;
-  m_CBDrawData.ThreadsInfo.z = Math::ceil(m_RTWidth / ((float)RM_TILE_LIGHTS_SZ));
-  m_CBDrawData.ThreadsInfo.w = Math::ceil(m_RTHeight / ((float)RM_TILE_LIGHTS_SZ));
+  m_CBDrawData.ThreadsInfo.z = Math::ceil(m_RTWidth / ((float)RM_TILE_POINT_LIGHTS_SZ));
+  m_CBDrawData.ThreadsInfo.w = Math::ceil(m_RTHeight / ((float)RM_TILE_POINT_LIGHTS_SZ));
 
   m_CBDraw->updateFromBuffer(dc, reinterpret_cast<byte*>(&m_CBDrawData));
   m_CBDraw->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);

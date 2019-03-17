@@ -7,7 +7,7 @@ cbuffer ConstantBuffer : register(b0) {
 
   //XYZ = LightPosition, W = Range
   //W Sign: Positive = light is active, Negative = light is inactive
-  float4 kLight[RM_MAX_LIGHTS];
+  float4 kLight[RM_MAX_POINT_LIGHTS];
 };
 
 RWTexture2D<float4> LightsTransformed : register(u0);
@@ -23,7 +23,7 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   
   const uint lightIndex = dispatchID.x;
 
-  if (lightIndex >= RM_MAX_LIGHTS) {
+  if (lightIndex >= RM_MAX_POINT_LIGHTS) {
     return;
   }
   //if sign returns -1, range is negative

@@ -19,7 +19,8 @@
 #include <dr_camera_component.h>
 #include <dr_gameComponent.h>
 #include <dr_id_object.h>
-#include <dr_light_component.h>
+#include <dr_point_light_component.h>
+#include <dr_directional_light_component.h>
 #include <dr_render_component.h>
 #include <dr_rigidbody_component.h>
 #include <dr_sphere_collider.h>
@@ -50,7 +51,8 @@ namespace driderSDK {
       {CLASS_NAME_ID(AnimatorComponent), dr_make_unique<AnimatorInputs, GameComponent&>},
       {CLASS_NAME_ID(BoxCollider), dr_make_unique<BoxColliderInputs, GameComponent&>},
       {CLASS_NAME_ID(CameraComponent), dr_make_unique<CameraInputs, GameComponent&>},
-      {CLASS_NAME_ID(LightComponent), dr_make_unique<LightInputs, GameComponent&>},
+      {CLASS_NAME_ID(PointLightComponent), dr_make_unique<PointLightInputs, GameComponent&>},
+      {CLASS_NAME_ID(DirectionalLightComponent), dr_make_unique<DirectionalLightInputs, GameComponent&>},
       {CLASS_NAME_ID(RenderComponent), dr_make_unique<RenderInputs, GameComponent&>},
       {CLASS_NAME_ID(RigidBody3DComponent), dr_make_unique<RigidbodyInputs, GameComponent&>},
       {CLASS_NAME_ID(SphereCollider), dr_make_unique<SphereColliderInputs, GameComponent&>},

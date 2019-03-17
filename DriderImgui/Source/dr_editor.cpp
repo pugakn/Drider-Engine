@@ -24,7 +24,8 @@
 #include <dr_image_info.h>
 #include <dr_input_manager.h>
 #include <dr_keyboard.h>
-#include <dr_light_component.h>
+#include <dr_point_light_component.h>
+#include <dr_directional_light_component.h>
 #include <dr_logger.h>
 #include <dr_math.h>
 #include <dr_material.h>
@@ -1207,7 +1208,7 @@ Editor::loadMenuHierarchy()
                             { 0.0f, 0.0f, 0.0f },
                             { 0.0f, 0.0f, 0.0f });
 
-    obj->createComponent<LightComponent>();
+    obj->createComponent<PointLightComponent>();
   }
 
   if (ImGui::MenuItem("Cube")) {
@@ -1459,8 +1460,11 @@ Editor::loadMenuAddComponent()
   if (ImGui::MenuItem("Camera")) {
     m_selectedGameObject->createComponent<CameraComponent>();
   }
-  if (ImGui::MenuItem("Ligth")) {
-    m_selectedGameObject->createComponent<LightComponent>();
+  if (ImGui::MenuItem("Point Ligth")) {
+    m_selectedGameObject->createComponent<PointLightComponent>();
+  }
+  if (ImGui::MenuItem("Directional Ligth")) {
+    m_selectedGameObject->createComponent<DirectionalLightComponent>();
   }
   if (ImGui::MenuItem("Render")) {
     m_selectedGameObject->createComponent<RenderComponent>(std::shared_ptr<Model>());
@@ -1575,7 +1579,6 @@ Editor::loadRenderWindow() {
     ImGui::DragFloat("##biasSSAO", RenderManager::instance().getSSAOBias(), 1.0f, 0.0f);
     ImGui::EndColumns();
   }
-
   if (ImGui::CollapsingHeader("Lightning")) {
     ImGui::Columns(2, "", false);
     ImGui::Text("Enviroment Intensity:");

@@ -505,35 +505,47 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   static const float white[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
   m_RTSSAO_SSShadow->clear(dc, white);
 
-  for (const auto& directionalLight : m_vecDirectionalLights) {
-    m_RTShadow->clear(dc, white);
-    updateShadowCameras(directionalLight);
+  //Directional lights
+  std::memset(&DirectionalLights[0], -1, RM_MAX_DIRECTIONAL_LIGHTS);
+  std::vector<DirectionalLightComponent*> allDLights = SceneGraph::instance().getDirectionalLightComponents();
+  SizeT numberOfDLights = allDLights.size();
+  numberOfDLights = Math::clamp(numberOfDLights, 0u, static_cast<SizeT>(RM_MAX_DIRECTIONAL_LIGHTS));
+  for (SizeT current = 0; current < numberOfDLights; ++current) {
+    DirectionalLights[current].m_vec4Direction = allDLights[current]->GetDirectionShadow();
+    DirectionalLights[current].m_vec4Color = allDLights[current]->GetColorIntensity();
+  }
 
-    m_ShadowDrawData.dsOptions = m_ShadowDSoptions.get();
-    for (SizeT camIndex = 0; camIndex < m_szActiveShadowCameras; ++camIndex) {
-      rqRequest.camera = *vecShadowCamera[camIndex];
-      queryRequest = SceneGraph::query(rqRequest);
-      m_ShadowDrawData.shadowCam = vecShadowCamera[camIndex].get();
-      m_ShadowDrawData.models = &queryRequest;
-      m_ShadowDrawData.OutRt = m_RTShadowDummy[camIndex].get();
-      m_ShadowPass.draw(&m_ShadowDrawData);
+  for (SizeT current = 0; current < numberOfDLights; ++current) {
+    if (DirectionalLights[current].m_vec4Direction.w > 0.5f) {
+      m_RTShadow->clear(dc, white);
+      updateShadowCameras(DirectionalLights[current].m_vec4Direction);
+
+      m_ShadowDrawData.dsOptions = m_ShadowDSoptions.get();
+      for (SizeT camIndex = 0; camIndex < m_szActiveShadowCameras; ++camIndex) {
+        rqRequest.camera = *vecShadowCamera[camIndex];
+        queryRequest = SceneGraph::query(rqRequest);
+        m_ShadowDrawData.shadowCam = vecShadowCamera[camIndex].get();
+        m_ShadowDrawData.models = &queryRequest;
+        m_ShadowDrawData.OutRt = m_RTShadowDummy[camIndex].get();
+        m_ShadowPass.draw(&m_ShadowDrawData);
+      }
+      m_ShadowPass.merge(m_RTShadowDummy, m_RTShadow.get());
+
+      m_ShadowDrawData.ShadowCameras = &vecShadowCamera;
+      m_ShadowDrawData.ShadowSliptDepths = partitions;
+      m_ShadowDrawData.ActivatedShadowCascades = m_szActiveShadowCameras;
+      m_ShadowDrawData.ShadowMapTextureSize = shadowWidth;
+      m_ShadowDrawData.LerpBetweenShadowCascade = 0.3f;
+      m_ShadowDrawData.ShadowSizesProportion[0] = 1.0f;
+      m_ShadowDrawData.ShadowSizesProportion[1] = m_ShadowSubFrustras[1].second /
+                                                  m_ShadowSubFrustras[0].second;
+      m_ShadowDrawData.ShadowSizesProportion[2] = m_ShadowSubFrustras[2].second /
+                                                  m_ShadowSubFrustras[0].second;
+      m_ShadowDrawData.ShadowSizesProportion[3] = m_ShadowSubFrustras[3].second /
+                                                  m_ShadowSubFrustras[0].second;
+
+      m_ShadowPass.apply(&m_ShadowDrawData, m_RTGBuffer.get(), m_RTShadow.get(), m_RTSSAO_SSShadow.get());
     }
-    m_ShadowPass.merge(m_RTShadowDummy, m_RTShadow.get());
-
-    m_ShadowDrawData.ShadowCameras = &vecShadowCamera;
-    m_ShadowDrawData.ShadowSliptDepths = partitions;
-    m_ShadowDrawData.ActivatedShadowCascades = m_szActiveShadowCameras;
-    m_ShadowDrawData.ShadowMapTextureSize = shadowWidth;
-    m_ShadowDrawData.LerpBetweenShadowCascade = 0.3f;
-    m_ShadowDrawData.ShadowSizesProportion[0] = 1.0f;
-    m_ShadowDrawData.ShadowSizesProportion[1] = m_ShadowSubFrustras[1].second /
-                                                m_ShadowSubFrustras[0].second;
-    m_ShadowDrawData.ShadowSizesProportion[2] = m_ShadowSubFrustras[2].second /
-                                                m_ShadowSubFrustras[0].second;
-    m_ShadowDrawData.ShadowSizesProportion[3] = m_ShadowSubFrustras[3].second /
-                                                m_ShadowSubFrustras[0].second;
-
-    m_ShadowPass.apply(&m_ShadowDrawData, m_RTGBuffer.get(), m_RTShadow.get(), m_RTSSAO_SSShadow.get());
   }
 
   if (m_bSSAO) {
@@ -561,27 +573,28 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_SSReflectionDrawData.OutRt = m_RTSSReflection.get();
   m_SSReflectionPass.draw(&m_SSReflectionDrawData);
 
-  std::memset(&lights[0], -1, RM_MAX_LIGHTS);
-  std::vector<LightComponent*> allLights = SceneGraph::instance().getLightComponents();
-  SizeT numberOfLights = allLights.size();
-  numberOfLights = Math::clamp(numberOfLights, 0u, static_cast<SizeT>(RM_MAX_LIGHTS));
-  for (SizeT current = 0; current < numberOfLights; ++current) {
-    lights[current].m_vec4Position = allLights[current]->GetPositionRange();
-    lights[current].m_vec4Color = allLights[current]->GetColorIntensity();
+  //Point lights
+  std::memset(&PointLights[0], -1, RM_MAX_POINT_LIGHTS);
+  std::vector<PointLightComponent*> allPLights = SceneGraph::instance().getPointLightComponents();
+  SizeT numberOfPLights = allPLights.size();
+  numberOfPLights = Math::clamp(numberOfPLights, 0u, static_cast<SizeT>(RM_MAX_POINT_LIGHTS));
+  for (SizeT current = 0; current < numberOfPLights; ++current) {
+    PointLights[current].m_vec4Position = allPLights[current]->GetPositionRange();
+    PointLights[current].m_vec4Color = allPLights[current]->GetColorIntensity();
   }
 
   //Transform Lights to ScreenSpace.
   m_LWSLightsToSSData.ActiveCam = mainCam;
-  m_LWSLightsToSSData.Lights = &lights;
-  m_LWSLightsToSSData.numberOfLights = numberOfLights;
+  m_LWSLightsToSSData.Lights = &PointLights;
+  m_LWSLightsToSSData.numberOfLights = numberOfPLights;
   m_LightningPass.lightsToScreenSpace(&m_LWSLightsToSSData);
   //Tile Lights
   m_LTileLightsData.OutRt = m_RTLightning.get();
-  m_LTileLightsData.numberOfLights = numberOfLights;
+  m_LTileLightsData.numberOfLights = numberOfPLights;
   m_LightningPass.tileLights(&m_LTileLightsData);
   //Lightning Pass
   m_LightningDrawData.ActiveCam = mainCam;
-  m_LightningDrawData.Lights = &lights;
+  m_LightningDrawData.Lights = &PointLights;
   m_LightningDrawData.GbufferRT = m_RTGBuffer.get();
   m_LightningDrawData.SSAO_SSShadowRT = m_RTSSAO_SSShadowBlur.get();
   m_LightningDrawData.SSReflection = m_RTSSReflection.get();
@@ -831,7 +844,10 @@ RenderManager::drawDebugSphere(const float radius,
 }
 
 void
-RenderManager::updateShadowCameras(const Vector3D lightDir) {
+RenderManager::updateShadowCameras(const Vector4D lightDir) {
+  Vector3D lightDir3;
+  lightDir3 = lightDir;
+
   std::shared_ptr<Camera> mainCam = CameraManager::getActiveCamera();
   Vector3D CamPos = mainCam->getPosition();
   Vector3D CamDir = mainCam->getDirection();
@@ -849,7 +865,7 @@ RenderManager::updateShadowCameras(const Vector3D lightDir) {
     TrueCenter = CamPos + (CamDir * m_ShadowSubFrustras[i].first);
 
     vecShadowCamera[i]->setPosition(TrueCenter -
-                                    (lightDir * m_fMaxDepth));
+                                    (lightDir3 * m_fMaxDepth));
     vecShadowCamera[i]->setTarget(TrueCenter);
     vecShadowCamera[i]->createProyection(Math::floor(SphereRad * 2.0f),
                                          Math::floor(SphereRad * 2.0f),

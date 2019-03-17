@@ -201,31 +201,54 @@ SceneGraph::queryGameObjects(const Camera& camera, QUERY_ORDER::E order) {
   return objsList;
 }
 
-const std::vector<LightComponent*>
-SceneGraph::getLightComponents() {
-  return m_vecLights;
+const std::vector<PointLightComponent*>
+SceneGraph::getPointLightComponents() {
+  return m_vecPLights;
+}
+
+const
+std::vector<DirectionalLightComponent*> SceneGraph::getDirectionalLightComponents() {
+  return m_vecDLights;
 }
 
 void
-SceneGraph::addLight(LightComponent* light) {
+SceneGraph::addLight(PointLightComponent* light) {
   TString key = light->getName() +
                 StringUtils::toTString(light->getGameObjectPtr()->getID());
 
-  m_vecLights.push_back(light);
-  SceneGraph::instance().m_umLights.insert(std::make_pair(key, light));
+  m_vecPLights.push_back(light);
+  SceneGraph::instance().m_umPLights.insert(std::make_pair(key, light));
 }
 
 void
-SceneGraph::removeLight(LightComponent* light) {
+SceneGraph::removeLight(PointLightComponent* light) {
   TString key = light->getName() +
                 StringUtils::toTString(light->getGameObjectPtr()->getID());
 
-  SceneGraph::instance().m_umLights.erase(key);
+  SceneGraph::instance().m_umPLights.erase(key);
 
-  m_vecLights.clear();
-  for (const auto& it : m_umLights) {
-    m_vecLights.push_back(it.second);
+  m_vecPLights.clear();
+  for (const auto& it : m_umPLights) {
+    m_vecPLights.push_back(it.second);
   }
+}
+
+void
+SceneGraph::addLight(DirectionalLightComponent* light) {
+  TString key = light->getName() +
+                StringUtils::toTString(light->getGameObjectPtr()->getID());
+
+  m_vecDLights.push_back(light);
+  SceneGraph::instance().m_umDLights.insert(std::make_pair(key, light));
+}
+
+void
+SceneGraph::removeLight(DirectionalLightComponent* light) {
+  TString key = light->getName() +
+                StringUtils::toTString(light->getGameObjectPtr()->getID());
+
+  m_vecDLights.push_back(light);
+  SceneGraph::instance().m_umDLights.insert(std::make_pair(key, light));
 }
 
 void 

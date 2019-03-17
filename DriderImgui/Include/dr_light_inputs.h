@@ -3,7 +3,17 @@
 #include "dr_input_editor.h"
 
 namespace driderSDK {
-class LightInputs : public InputEditor {
+class PointLightInputs : public InputEditor {
+ public:
+
+  using InputEditor::InputEditor;
+
+  void
+  getInputs();
+
+};
+
+class DirectionalLightInputs : public InputEditor {
  public:
 
   using InputEditor::InputEditor;

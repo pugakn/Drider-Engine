@@ -3,8 +3,8 @@
 cbuffer ConstantBuffer : register(b0) {
   float4 fViewportSzEnvIrr;             //XY: Vierport dimension, Z: Enviroment lightning scale, W: Irradiance lightning scale
   float4 kEyePosition;                  //XYZ: EyePosition, W: Active Lights
-  float4 kLightPosition[RM_MAX_LIGHTS]; //XYZ: Light Position, W: Range
-  float4 kLightColor[RM_MAX_LIGHTS];    //XYZ: Light Color, W: Intensity
+  float4 kLightPosition[RM_MAX_POINT_LIGHTS]; //XYZ: Light Position, W: Range
+  float4 kLightColor[RM_MAX_POINT_LIGHTS];    //XYZ: Light Color, W: Intensity
   float4 threadsInfo;                   //X: Number of thread groups in x, Y: Number of thread groups in Y, Z: Number of Tiles in X, W: Number of Tiles in Y
 };
 
@@ -34,8 +34,8 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   //Este indica en que index esta este group thread (como si fuese un array).
   const uint group = (groupID.y * threadsInfo.x) + groupID.x;
 
-  const int2 TileGroupID = uint2(floor(dispatchID.x / ((float)RM_TILE_LIGHTS_SZ)),
-                                 floor(dispatchID.y / ((float)RM_TILE_LIGHTS_SZ)));
+  const int2 TileGroupID = uint2(floor(dispatchID.x / ((float)RM_TILE_POINT_LIGHTS_SZ)),
+                                 floor(dispatchID.y / ((float)RM_TILE_POINT_LIGHTS_SZ)));
   
   const int TileGroup = (TileGroupID.y * threadsInfo.z) + TileGroupID.x;
   
@@ -89,11 +89,11 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   const int activeLights = kEyePosition.w;
   
   int actualLight;
-  //static const int totalLights = LightsIndex[uint2(TileGroup, RM_MAX_LIGHTS_PER_BLOCK)]; //This doesn't work for some reason
+  //static const int totalLights = LightsIndex[uint2(TileGroup, RM_MAX_POINT_LIGHTS_PER_BLOCK)]; //This doesn't work for some reason
   //const int totalLights = LightsIndex[uint2(TileGroup, 0)]; //This doesn't work for some reason
-  static const int totalLights = RM_MAX_LIGHTS_PER_BLOCK;
+  static const int totalLights = RM_MAX_POINT_LIGHTS_PER_BLOCK;
 
-  //Lightning[uvScale] = float4((totalLights / ((float)RM_MAX_LIGHTS_PER_BLOCK)).xxx, 1.0f); return;
+  //Lightning[uvScale] = float4((totalLights / ((float)RM_MAX_POINT_LIGHTS_PER_BLOCK)).xxx, 1.0f); return;
 
   [loop]
   for (int index = 0; index < totalLights; ++index) {
