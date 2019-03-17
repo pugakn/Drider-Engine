@@ -114,7 +114,7 @@ GraphicsApplication::postRender() {
 
   GraphicsDriver::API().clear();
 
-  Int32 queryFlags = QUERY_PROPERTY::kAny;
+  auto queryFlags = QUERY_PROPERTY::kAny;
 
   auto& camera = *CameraManager::getActiveCamera();
 
@@ -140,40 +140,33 @@ GraphicsApplication::postRender() {
 
     }    
 
-    std::vector<RenderCommand> queryRes;
 
     //ScopedTimer{},
-    queryRes = SceneGraph::query(*mainC,  
+    auto queryRes = SceneGraph::query({*mainC,  
                                   QUERY_ORDER::kBackToFront, 
-                                  queryFlags);
+                                  queryFlags});
 
     dc.setPrimitiveTopology(DR_PRIMITIVE_TOPOLOGY::kTriangleList);
 
-    for (auto& queryObj : queryRes) {
+    for (auto& command : queryRes.commands) {
     
       Technique* current;
 
-      if (queryObj.bones) {
-        current = m_animTech.get();
-        dynamic_cast<AnimationTechnique*>(current)->setBones(*queryObj.bones);
-      }
-      else {
-        current = m_staticTech.get();
-      }
+      current = m_staticTech.get();
 
-      current->setWorld(queryObj.world);
+      current->setWorld(&queryRes.worlds[command.worldID]);
 
-      auto material = queryObj.mesh.material.lock();
+      auto material = command.mesh.material.lock();
 
       if (material) {
         material->set();
       }
 
       if (current->prepareForDraw()) {
-        queryObj.mesh.indexBuffer->set(dc);
-        queryObj.mesh.vertexBuffer->set(dc);
+        command.mesh.indexBuffer->set(dc);
+        command.mesh.vertexBuffer->set(dc);
 
-        dc.draw(queryObj.mesh.indicesCount, 0, 0);
+        dc.draw(command.mesh.indicesCount, 0, 0);
       }
 
     }
@@ -362,6 +355,8 @@ GraphicsApplication::loadResources() {
                               45, 0.1f, 10000.f);
   
   CameraManager::setActiveCamera(_T("MAIN_CAM"));
+
+  ResourceManager::loadResource(_T("Kit_Window_Upper_Straight.obj"));
   
   ResourceManager::loadResource(_T("tiny_4anim.x"));
 
@@ -421,6 +416,10 @@ GraphicsApplication::createTechniques() {
 void 
 GraphicsApplication::createScene() {
   
+  auto build = addObject(_T("BbBB"), _T("Kit_Window_Upper_Straight.obj"), false);
+
+  build->getTransform().setScale({50, 50, 50});
+
   auto hip = addObject(_T("Grr"), _T("HipHopDancing.fbx"), true);
 
   hip->getTransform().setPosition({200, 0, 0});

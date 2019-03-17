@@ -42,6 +42,12 @@ class SkeletonDebug : public DrawableComponent {
                 Skeleton& skeleton,
                 Mesh& mesh);
 
+
+  // Inherited via DrawableComponent
+  virtual void serialize(File & file) override;
+
+  virtual void deserialize(TString & data) override;
+
   //std::vector<Vertex> m_points;
 };
 

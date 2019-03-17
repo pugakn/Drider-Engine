@@ -35,6 +35,10 @@ class AABBDebug : public DrawableComponent {
   std::vector<Mesh> m_meshesCore;
   bool m_updateFromGO;
   AABB m_aabbD;
+
+  // Inherited via DrawableComponent
+  virtual void serialize(File & file) override;
+  virtual void deserialize(TString & data) override;
 };
 
 }

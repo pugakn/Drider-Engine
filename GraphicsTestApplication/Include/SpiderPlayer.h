@@ -72,6 +72,10 @@ private:
   State m_state;
   Direction m_currDir;
   float m_velocity;
+
+  // Inherited via GameComponent
+  virtual void serialize(File & file) override;
+  virtual void deserialize(TString & data) override;
   //Command m_state;
 };
 

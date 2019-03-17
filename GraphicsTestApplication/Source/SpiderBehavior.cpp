@@ -67,4 +67,10 @@ SpiderBehavior::setAnimation(Animations anim, bool blend, bool copyElapsed) {
   }
 }
 
+void SpiderBehavior::serialize(File & file)
+{}
+
+void SpiderBehavior::deserialize(TString & data)
+{}
+
 }

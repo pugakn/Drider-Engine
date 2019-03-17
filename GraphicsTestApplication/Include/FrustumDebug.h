@@ -34,6 +34,10 @@ class FrustumDebug : public DrawableComponent
   create();
 
   Camera* m_camera;
+
+  // Inherited via DrawableComponent
+  virtual void serialize(File & file) override;
+  virtual void deserialize(TString & data) override;
 };
 
 }

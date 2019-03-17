@@ -483,7 +483,7 @@ Editor::postUpdate() {
       boxDimensions.y = rc->getAABB().height;
       boxDimensions.z = rc->getAABB().depth;
       Matrix4x4 aabbMatrix = Matrix4x4::identityMat4x4;
-      aabbMatrix.Translation(m_selectedGameObject->getTransform().getPosition());
+      //aabbMatrix.Translation(m_selectedGameObject->getTransform().getPosition());
       RenderManager::instance().drawDebugCube(boxDimensions, { 1,1,1 }, aabbMatrix);
 
     }

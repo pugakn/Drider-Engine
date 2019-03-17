@@ -100,6 +100,12 @@ SkeletonDebug::buildSkeleton(void* data,
   }*/
 }
 
+void SkeletonDebug::serialize(File & file)
+{}
+
+void SkeletonDebug::deserialize(TString & data)
+{}
+
 void
 SkeletonDebug::onCreate() {
   

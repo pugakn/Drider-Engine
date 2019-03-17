@@ -168,4 +168,8 @@ GameComponent*
 SpiderPlayer::cloneIn(GameObject& _go) {
   return _go.createComponent<SpiderPlayer>();
 }
+void SpiderPlayer::serialize(File & file)
+{}
+void SpiderPlayer::deserialize(TString & data)
+{}
 }

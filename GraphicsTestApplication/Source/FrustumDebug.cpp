@@ -100,6 +100,12 @@ FrustumDebug::create() {
 
 }
 
+void FrustumDebug::serialize(File & file)
+{}
+
+void FrustumDebug::deserialize(TString & data)
+{}
+
 UInt32 FrustumDebug::getClassID() {
   return CLASS_NAME_ID(FrustumDebug);
 }

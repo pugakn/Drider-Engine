@@ -69,6 +69,10 @@ class SpiderAI : public GameComponent {
   SpiderBehavior* m_behavior;
   PathHolder* m_path{nullptr};
   UInt32 m_pathIndex{0};
+
+  // Inherited via GameComponent
+  virtual void serialize(File & file) override;
+  virtual void deserialize(TString & data) override;
 };
 
 }

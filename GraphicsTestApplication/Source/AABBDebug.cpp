@@ -137,4 +137,10 @@ UInt32 AABBDebug::getClassID() {
   return CLASS_NAME_ID(AABBDebug);
 }
 
+void AABBDebug::serialize(File & file)
+{}
+
+void AABBDebug::deserialize(TString & data)
+{}
+
 }

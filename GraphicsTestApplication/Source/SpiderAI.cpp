@@ -174,4 +174,10 @@ SpiderAI::setPath(PathHolder* _path) {
   m_path = _path;
 }
 
+void SpiderAI::serialize(File & file)
+{}
+
+void SpiderAI::deserialize(TString & data)
+{}
+
 }

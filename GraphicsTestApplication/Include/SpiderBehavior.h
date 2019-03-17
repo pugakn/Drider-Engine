@@ -55,6 +55,10 @@ class SpiderBehavior : public GameComponent
  private:
  private:
   WeakModel m_model;
+
+  // Inherited via GameComponent
+  virtual void serialize(File & file) override;
+  virtual void deserialize(TString & data) override;
 };
 
 }
