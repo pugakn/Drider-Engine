@@ -247,8 +247,12 @@ SceneGraph::removeLight(DirectionalLightComponent* light) {
   TString key = light->getName() +
                 StringUtils::toTString(light->getGameObjectPtr()->getID());
 
-  m_vecDLights.push_back(light);
-  SceneGraph::instance().m_umDLights.insert(std::make_pair(key, light));
+  SceneGraph::instance().m_umDLights.erase(key);
+
+  m_vecDLights.clear();
+  for (const auto& it : m_umDLights) {
+    m_vecDLights.push_back(it.second);
+  }
 }
 
 void 

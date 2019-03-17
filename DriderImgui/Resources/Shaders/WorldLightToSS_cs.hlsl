@@ -56,6 +56,7 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   const float lightLDepthRad = abs(LightPos.z - LightForwardPos.z) * rcp(cameraUp.w);
   
   LightsTransformed[uint2(lightIndex, 0)] = float4(SSlightPos.xy, SSlightRad, 1.0f);
+  
   LightsTransformed[uint2(lightIndex, 1)] = float4(lightLDepthPos, lightLDepthRad, 0.0f, 0.0f);
 
   return;
