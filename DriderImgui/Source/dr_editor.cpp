@@ -1592,7 +1592,7 @@ Editor::loadRenderWindow() {
     ImGui::NextColumn();
     ImGui::Text("Irradiance Intensity:");
     ImGui::NextColumn();
-    ImGui::DragFloat("##irradianceIntensityLightning", RenderManager::instance().getIrradianceLightningScale(), 0.0f, 0.0f, 50.0f);
+    ImGui::DragFloat("##irradianceIntensityLightning", RenderManager::instance().getIrradianceLightningScale(), 0.0f, 0.0f, 500.0f);
 
     ImGui::EndColumns();
   }

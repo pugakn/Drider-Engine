@@ -57,7 +57,8 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   const float3  SSReflection = SSReflectionTex.SampleLevel(SS, uv, 0).xyz;
   const float   SSRefProport = SSReflectionTex.SampleLevel(SS, uv, 0).w;
   const float3  diffusePBR   = (diffuse - (diffuse * metallic));
-  const float3  specularPBR  = lerp(float3(0.04f, 0.04f, 0.04f), diffuse, metallic) * SSAO;
+  const float3  specularPBR  = lerp((0.04f).xxx, diffuse, metallic) * SSAO;
+  const float3  F0  = lerp((0.04f).xxx, diffuse, metallic);
   //const float3  specularPBR  = lerp(float3(0.04f, 0.04f, 0.04f), SSReflection, metallic) * SSAO;
   //const float3  specularPBR  = lerp(float3(0.04f, 0.04f, 0.04f) * SSReflection, diffuse, metallic) * SSAO;
   const float   alpha        = max(0.01f, roughness * roughness);
@@ -84,10 +85,9 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
          LdotH;
 
   const float3 ViewDir = normalize(kEyePosition.xyz - position.xyz);
-  const float  NdotV = saturate(dot(normal, -ViewDir));
+  const float  NdotV = saturate(dot(normal, ViewDir));
 
-  float3 DiffAcc, SpecAcc;
-
+  float3 diffAcc, specAcc;
   
   //static const int totalLights = LightsIndex[uint2(TileGroup, RM_MAX_POINT_LIGHTS_PER_BLOCK)]; //This doesn't work for some reason
   //const int totalLights = LightsIndex[uint2(TileGroup, 0)]; //This doesn't work for some reason
@@ -95,6 +95,12 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
 
   //Lightning[uvScale] = float4((totalLights / ((float)RM_MAX_POINT_LIGHTS_PER_BLOCK)).xxx, 1.0f); return;
   
+  float3 directLighting = (0.0).xxx;
+  
+  //Direct lightning
+  float3 F, D, G;
+  float3 kd;
+
   //Point
   int actualLight;
   [loop]
@@ -107,7 +113,7 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
     lightRange     = kPointLightPosition[actualLight].w;
     lightIntensity = kPointLightColor[actualLight].w;
     
-    LightPower = pow(saturate(1.0f - (length(lightPosition - position.xyz) / lightRange)), 2) * lightIntensity;
+    LightPower = pow(saturate(1.0f - (length(lightPosition - position.xyz) * rcp(lightRange))), 2) * lightIntensity;
     
     LightViewDir = normalize(lightPosition - position.xyz);
 
@@ -120,15 +126,18 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
     //VdotH = saturate(dot(ViewDir, H));
     LdotH = saturate(dot(LightViewDir, H));
 
-    DiffAcc = Diffuse_Burley(NdotL, NdotV, LdotH, roughness) * diffuse;
-    SpecAcc = Specular_D(alpha, NdotH) *
-              Specular_F(specularPBR * lightColor, LdotH) *
-              Specular_G(alpha, LdotH);
-    SpecAcc *= rcp(4.0f * cos(NdotL) * cos(NdotV));
-    
-    finalColor += (DiffAcc + SpecAcc) * (NdotL * LightPower);
-  };
+    F = Specular_F(specularPBR * lightColor, LdotH);
+    D = Specular_D(alpha, NdotH);
+    G = Specular_G(alpha, LdotH);
 
+    kd = lerp((1.0f).xxx - F, (0.0f).xxx, metallic);
+
+    diffAcc = kd * diffuse;
+    specAcc = (F * D * G) * rcp(max(EPSILON, 4.0f * cos(NdotL) * cos(NdotV)));
+    
+		directLighting += (diffAcc + specAcc) * lightColor * NdotL * LightPower;
+  };
+  
   //Directional
   const int activeLights = kEyePosition.w;
   [loop]
@@ -146,34 +155,47 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
     //VdotH = saturate(dot(ViewDir, H));
     LdotH = saturate(dot(LightViewDir, H));
 
-    DiffAcc = Diffuse_Burley(NdotL, NdotV, LdotH, roughness) * diffuse;
-    SpecAcc = Specular_D(alpha, NdotH) *
-              Specular_F(specularPBR * lightColor, LdotH) *
-              Specular_G(alpha, LdotH);
-    SpecAcc *= rcp(4.0f * cos(NdotL) * cos(NdotV));
-    
-    finalColor += (DiffAcc + SpecAcc) * (NdotL * LightPower);
-  };
-  
-  //////////IBL//////////
-  const float3 reflectVector = reflect(-ViewDir, normal);
-  const float mipIndex = alpha * 0.8f;
-  
-  const float EnvScale = fViewportSzEnvIrr.z;
-  const float IrrScale = fViewportSzEnvIrr.w;
+    F = Specular_F(specularPBR * lightColor, LdotH);
+    D = Specular_D(alpha, NdotH);
+    G = Specular_G(alpha, LdotH);
 
-  float3 envColor = EnvironmentTex.SampleLevel(SS, reflectVector, mipIndex).xyz;
-  envColor = lerp(envColor, SSReflection, SSRefProport) * EnvScale;
-  const float3 Irradiance = IrradianceTex.SampleLevel(SS, reflectVector, 0).xyz * IrrScale;
-  
-  const float3 IBL = (specularPBR * envColor) + (diffusePBR * Irradiance);
+    kd = lerp((1.0f).xxx - F, (0.0f).xxx, metallic);
+
+    diffAcc = kd * diffuse;
+    specAcc = (F * D * G) * rcp(max(EPSILON, 4.0f * cos(NdotL) * cos(NdotV)));
+    
+		directLighting += (diffAcc + specAcc) * lightColor * NdotL * LightPower;
+  };
+
+  //////////Image Based Lightning (IBL)//////////
+  float3 ambientLighting;
+  {
+    //Diffuse
+    const float irrScale = fViewportSzEnvIrr.w;
+    const float3 irradiance = IrradianceTex.SampleLevel(SS, normal, 0).xyz * irrScale;
+
+    float3 F = Specular_F(F0, NdotV);
+    
+		float3 kd = lerp((1.0f).xxx - F, 0.0f.xxx, metallic);
+    
+		float3 diffuseIBL = kd * diffuse * irradiance;
+    
+    //Specular
+    const float mipIndex = alpha * 0.8f;
+    const float3 reflectVector = reflect(-ViewDir, normal);
+    
+    const float EnvScale = fViewportSzEnvIrr.z;
+    float3 envColor = EnvironmentTex.SampleLevel(SS, reflectVector, mipIndex).xyz * EnvScale;
+    
+		float3 specularIBL = F0 * envColor;
+
+    ambientLighting = diffuseIBL + specularIBL;
+  }
 
   //////////Final//////////
-  const float3 resultColor = ((finalColor + IBL) * ShadowValue) + emissive;
+  const float3 resultColor = ((directLighting + ambientLighting) * ShadowValue) + emissive;
 
-  Lightning[uvScale] = float4(resultColor, 1.0f);
-  //Lightning[uvScale] = float4(envColor, 1.0f);
-  //Lightning[uvScale] = float4(Irradiance, 1.0f);
+  Lightning[uvScale] = float4(resultColor, 1.0);
  
   return;
 }

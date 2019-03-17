@@ -103,8 +103,8 @@ RenderManApp::postInit() {
 
   m_Camera = SceneGraph::createObject(_T("DuckCamera"));
   auto cam_cmp = m_Camera->createComponent<CameraComponent>();
-  m_Camera->getTransform().setPosition({ 0.0f, 200.0f, 400.0f });
-  m_Camera->getTransform().setRotation({ 25.0f * Math::DEGREE_TO_RADIAN, Math::PI * 1, 0.0f });
+  m_Camera->getTransform().setPosition({ 0.0f, 1000.0f, 2000.0f });
+  m_Camera->getTransform().setRotation({ 45.0f * Math::DEGREE_TO_RADIAN, Math::PI * 1, 0.0f });
   cam_cmp->setActive();
 
   m_bSelected = false;
@@ -119,7 +119,7 @@ RenderManApp::postInit() {
   
   SizeT lighIndex = 0;
   float separationX = 75.0f;
-  float separationZ = 150.0f;
+  float separationZ = 50.0f;
   float proportion = 0.0f;
   Int32 horizontalLights = 32;
   Int32 verticalLights = (RM_MAX_POINT_LIGHTS / horizontalLights);
@@ -130,7 +130,7 @@ RenderManApp::postInit() {
   SceneGraph::SharedGameObject tmpObj;
 
   Vector4D lightPos;
-  Vector4D lightColor;
+  Vector3D lightColor;
   PointLightComponent* tmpLightCmp;
   for (Int32 xPos = 0; xPos < horizontalLights; ++xPos) {
     for (Int32 zPos = 0; zPos < verticalLights; ++zPos) {
@@ -155,7 +155,7 @@ RenderManApp::postInit() {
                lightColor.z);
 
       tmpLightCmp->setEnabled(true);
-      tmpLightCmp->SetColor(Vector3D(lightColor.x, lightColor.y, lightColor.z));
+      tmpLightCmp->SetColor(lightColor);
       tmpLightCmp->SetRange(100.0f);
       tmpLightCmp->SetIntensity(2.0f);
 
@@ -184,7 +184,8 @@ RenderManApp::postInit() {
   auto ptrFloor = ResourceManager::getReferenceT<Model>(_T("plane.fbx"));
   if (ptrFloor) {
     tmpObj->getTransform().setPosition(Vector3D(0.0f, 0.0f, 100.0f));
-    tmpObj->getTransform().setScale(Vector3D(7.5f, 7.5f, 7.5f));
+    //tmpObj->getTransform().setScale(Vector3D(7.5f, 7.5f, 7.5f));
+    tmpObj->getTransform().setScale(Vector3D(100.0f, 1.0f, 100.0f));
 
     tmpObj->createComponent<AABBCollider>(ptrFloor->aabb);
     tmpObj->createComponent<RenderComponent>(ptrFloor);
