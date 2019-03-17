@@ -132,10 +132,10 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   //Directional
   const int activeLights = kEyePosition.w;
   [loop]
-  for (int index = 0; index < activeLights; ++index) {
-    LightViewDir = kDirectionalLightDirection[index].xyz;
-    lightColor   = kDirectionalLightColor[index].xyz;
-    LightPower   = kDirectionalLightColor[index].w;
+  for (int DLIndex = 0; DLIndex < activeLights; ++DLIndex) {
+    LightViewDir = kDirectionalLightDirection[DLIndex].xyz;
+    lightColor   = kDirectionalLightColor[DLIndex].xyz;
+    LightPower   = kDirectionalLightColor[DLIndex].w;
 
     H = normalize(LightViewDir + ViewDir);
 

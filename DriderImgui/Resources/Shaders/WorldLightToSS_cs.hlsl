@@ -46,7 +46,7 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   SSlightPos = (SSlightPos + (1.0f).xx) * 0.5f;
   SSlightPos.y = 1.0f - SSlightPos.y;
   
-  float2 SSLightUpPos = transformedLightUpPos.xyz / transformedLightUpPos.w;
+  float2 SSLightUpPos = transformedLightUpPos.xy / transformedLightUpPos.w;
   SSLightUpPos = (SSLightUpPos + (1.0f).xx) * 0.5f;
   SSLightUpPos.y = 1.0f - SSLightUpPos.y;
   
