@@ -95,7 +95,6 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   void
   recompile();
 
-  float luminanceDelta;
   UInt32 screenWidth;
   UInt32 screenHeight;
   UInt32 shadowWidth;
@@ -311,6 +310,9 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
     return &m_fIrradianceScale;
   };
 
+  FORCEINLINE float* getLuminanceDelta() { return &m_fLuminanceDelta; };
+  FORCEINLINE Vector3D* getBloomThreshold() { return &m_BloomThreshold; };
+
   FORCEINLINE float* getCAStrenght() { return &m_fChromaticAberrationStrenght; };
   FORCEINLINE bool* getDoFFrontFocus() { return &m_bFrontFocus; };
   FORCEINLINE float* getDoFDistance() { return &m_fFocusDistance; };
@@ -406,6 +408,8 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   BloomPass m_BloomPass;
   BloomInitData m_BloomInitData;
   BloomDrawData m_BloomDrawData;
+  float m_fLuminanceDelta;
+  Vector3D m_BloomThreshold;
 
   //CS
   //ParticleSystemPass m_particlePass;

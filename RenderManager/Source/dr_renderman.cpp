@@ -24,7 +24,8 @@ void
 RenderManager::init() {
   Device& dc = GraphicsAPI::getDevice();
 
-  //luminanceDelta = 0.0f;
+  m_fLuminanceDelta = 0.0f;
+  m_BloomThreshold = Vector3D(0.75f, 0.75f, 0.75f);
 
   ///////////Resolutions///////////
 
@@ -608,14 +609,12 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_LightningPass.draw(&m_LightningDrawData);
 
   m_luminescenceDrawData.InTexture = &m_RTLightning->getTexture(0);
-  //m_luminescenceDrawData.LuminiscenceDelta = *luminanceDelta; //TODO: Compute this value
-  m_luminescenceDrawData.LuminiscenceDelta = 0.0f;
+  m_luminescenceDrawData.LuminiscenceDelta = m_fLuminanceDelta;
   m_luminescenceDrawData.resultBuffer = &resultBuffer;
   m_luminescencePass.draw(&m_luminescenceDrawData);
 
-  m_BloomDrawData.BloomThreshold = Vector3D(0.75f, 0.75f, 0.75f);
-  //m_BloomDrawData.LuminiscenceDelta = *luminanceDelta; //TODO: Compute this value
-  m_BloomDrawData.LuminiscenceDelta = 0.0f;
+  m_BloomDrawData.BloomThreshold = m_BloomThreshold;
+  m_BloomDrawData.LuminiscenceDelta = m_fLuminanceDelta;
   m_BloomDrawData.ColorTexture = &m_RTLightning->getTexture(0);
   m_BloomDrawData.OutTex = &m_RTBrightness->getTexture(0);
   m_BloomPass.draw(&m_BloomDrawData);

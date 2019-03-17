@@ -24,8 +24,8 @@ PointLightInputs::getInputs() {
     
     ImGui::Text("Color:");
     Vector3D tempcolor = lightComponent.GetColor();
-    if (ImGui::ColorEdit3("Color##colorLightComponent", (float*)&tempcolor, ImGuiColorEditFlags_Float))
-    {
+    if (ImGui::ColorEdit3("Color##colorLightComponent",
+        (float*)&tempcolor, ImGuiColorEditFlags_Float)) {
       lightComponent.SetColor(tempcolor);
     }
 

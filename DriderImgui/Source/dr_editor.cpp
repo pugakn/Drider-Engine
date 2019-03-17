@@ -1195,14 +1195,13 @@ Editor::loadMenuHierarchy()
       { 0.0f, 0.0f, 0.0f });
   }
 
-  if (ImGui::MenuItem("Light")) {
+  if (ImGui::MenuItem("Point Light")) {
     //TODO: Search parent name
-    if (!m_selectedGameObject)
-    {
+    if (!m_selectedGameObject) {
       m_selectedGameObject = SceneGraph::getRoot();
     }
 
-    auto obj = SceneGraph::createObject(_T("Light"));
+    auto obj = SceneGraph::createObject(_T("Point Light"));
     SceneGraph::instanciate(obj,
                             m_selectedGameObject,
                             { 0.0f, 0.0f, 0.0f },
@@ -1460,10 +1459,10 @@ Editor::loadMenuAddComponent()
   if (ImGui::MenuItem("Camera")) {
     m_selectedGameObject->createComponent<CameraComponent>();
   }
-  if (ImGui::MenuItem("Point Ligth")) {
+  if (ImGui::MenuItem("Point Light")) {
     m_selectedGameObject->createComponent<PointLightComponent>();
   }
-  if (ImGui::MenuItem("Directional Ligth")) {
+  if (ImGui::MenuItem("Directional Light")) {
     m_selectedGameObject->createComponent<DirectionalLightComponent>();
   }
   if (ImGui::MenuItem("Render")) {
@@ -1589,6 +1588,22 @@ Editor::loadRenderWindow() {
     ImGui::Text("Irradiance Intensity:");
     ImGui::NextColumn();
     ImGui::DragFloat("##irradianceIntensityLightning", RenderManager::instance().getIrradianceLightningScale(), 0.0f, 0.0f, 50.0f);
+
+    ImGui::EndColumns();
+  }
+  if (ImGui::CollapsingHeader("Bloom")) {
+    ImGui::Columns(2, "", false);
+    ImGui::Text("Luminiscence Delta:");
+    ImGui::NextColumn();
+    ImGui::DragFloat("##luminiscenceDeltaBloom", RenderManager::instance().getLuminanceDelta(), 0.0f, -10.0f, 10.0f);
+
+    ImGui::Columns(2, "", false);
+    ImGui::Text("Threshold:");
+    Vector3D tempcolor = *RenderManager::instance().getBloomThreshold();
+    if (ImGui::ColorEdit3("Threshold##thresholdBloom",
+      (float*)&tempcolor, ImGuiColorEditFlags_Float)) {
+      *RenderManager::instance().getBloomThreshold() = tempcolor;
+    }
 
     ImGui::EndColumns();
   }

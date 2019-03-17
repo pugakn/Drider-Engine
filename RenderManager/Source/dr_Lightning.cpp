@@ -283,7 +283,6 @@ LightningPass::draw(PassDrawData* drawData) {
   m_CBDrawData.ViewportSzEnvIrr.z = *data->EnviromentScale;
   m_CBDrawData.ViewportSzEnvIrr.w = *data->IrradianceScale;
 
-
   m_CBDrawData.EyePosition = data->ActiveCam->getPosition();
   m_CBDrawData.EyePosition.w = static_cast<float>(data->ActiveDirectionalLights);
 
