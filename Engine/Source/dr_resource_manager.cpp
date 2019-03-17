@@ -1,5 +1,6 @@
 #include "dr_resource_manager.h"
 
+#include <algorithm>
 #include <exception>
 
 #include <dr_file_system.h>
@@ -654,9 +655,37 @@ ResourceManager::createMaterial(const TString& materialName, bool empty) {
 
 void
 ResourceManager::clear() {
-  ResourceManager::instance().m_resources.clear();
-  ResourceManager::instance().m_materials.clear();
-  ResourceManager::instance().m_scriptsComponents.clear();
+  auto& rm = instance();
+  
+  auto dummyResources = std::vector<TString>{_T("DUMMY_TEXTURE"), _T("DUMMY_NORMAL_TEXTURE"), 
+                                             _T("DUMMY_WHITE_TEXTURE"), _T("DUMMY_BLACK_TEXTURE"),
+                                             _T("DUMMY_MATERIAL")};
+  
+  using ResourceIt = decltype(rm.m_resources)::value_type;
+
+  for (auto beg = rm.m_resources.begin(); beg != rm.m_resources.end(); ) {
+    if (std::find(dummyResources.begin(), dummyResources.end(), beg->first) == dummyResources.end()) {
+      beg = rm.m_resources.erase(beg);
+    }
+    else {
+      ++beg;
+    }
+  }
+
+  //rm.m_materials.clear();
+
+  using MaterialIt = decltype(rm.m_materials)::value_type;
+
+  rm.m_materials.erase(std::remove_if(rm.m_materials.begin(), rm.m_materials.end(),
+                                      [&](const MaterialIt& r){
+                                        //Only remove if its not a dummy resource
+                                        return std::find(dummyResources.begin(), 
+                                                         dummyResources.end(), 
+                                                         r->getName()) == dummyResources.begin();
+                                      }),
+                       rm.m_materials.end());
+
+  rm.m_scriptsComponents.clear();
 }
 
 void 
@@ -710,6 +739,8 @@ ResourceManager::createDummyMaterial() {
                                        CHANNEL::kA)->texture = dummyBlackTexture;
 
   addResource(dummyMat, _T("DUMMY_MATERIAL"));
+
+  ResourceManager::instance().m_materials.push_back(dummyMat);
 }
 
 }

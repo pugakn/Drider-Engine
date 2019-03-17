@@ -19,7 +19,7 @@ sScript::load(File &file,
   
   if(scriptName == "null")  {
     auto component = obj->createComponent<ScriptComponent>();
-    component->setName(StringUtils::toTString(componentName));
+    //component->setName(StringUtils::toTString(componentName));
   } else {
     auto scriptResource = ResourceManager::loadResource(StringUtils::toTString(scriptName));
     auto script = std::dynamic_pointer_cast<ScriptCore>(scriptResource);
