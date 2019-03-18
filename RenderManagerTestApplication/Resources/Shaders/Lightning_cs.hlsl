@@ -123,10 +123,12 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
     //LdotV = saturate(dot(LightViewDir, ViewDir));
     
     NdotH = saturate(dot(normal, H));
-    //VdotH = saturate(dot(ViewDir, H));
+    VdotH = saturate(dot(ViewDir, H));
     LdotH = saturate(dot(LightViewDir, H));
 
-    F = Specular_F(specularPBR * lightColor, LdotH);
+    //F = Specular_F(specularPBR * lightColor, LdotH); //Original
+    //F = Specular_F(F0, LdotH); //Cool
+    F = Specular_F(F0, VdotH); //Real
     D = Specular_D(alpha, NdotH);
     G = Specular_G(alpha, LdotH);
 
@@ -152,10 +154,12 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
     //LdotV = saturate(dot(LightViewDir, ViewDir));
     
     NdotH = saturate(dot(normal, H));
-    //VdotH = saturate(dot(ViewDir, H));
+    VdotH = saturate(dot(ViewDir, H));
     LdotH = saturate(dot(LightViewDir, H));
 
-    F = Specular_F(specularPBR * lightColor, LdotH);
+    //F = Specular_F(specularPBR * lightColor, LdotH); //Original
+    //F = Specular_F(F0, LdotH); //Cool
+    F = Specular_F(F0, VdotH); //Real
     D = Specular_D(alpha, NdotH);
     G = Specular_G(alpha, LdotH);
 
@@ -185,7 +189,9 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
     const float3 reflectVector = reflect(-ViewDir, normal);
     
     const float EnvScale = fViewportSzEnvIrr.z;
-    float3 envColor = EnvironmentTex.SampleLevel(SS, reflectVector, mipIndex).xyz * EnvScale;
+    float3 envColor = EnvironmentTex.SampleLevel(SS, reflectVector, mipIndex).xyz;
+    //envColor = lerp(envColor, SSReflection, SSRefProport) * EnvScale;
+    envColor *= EnvScale;
     
 		float3 specularIBL = F0 * envColor;
 

@@ -10,9 +10,9 @@ static const float EPSILON = 1e-6f;
 float
 Specular_D_GGX(float alpha, float NdotH) {
   const float alpha2 = alpha * alpha;
-  const float lower = (NdotH * NdotH * (alpha2 - 1.0f)) + 1.0f;
-  //return alpha2 / max(EPSILON, M_PI * lower * lower);
-  return alpha2 * rcp(max(EPSILON, M_PI * lower * lower));
+
+  const float denom = (NdotH * NdotH) * (alpha2 - 1.0f) + 1.0f;
+  return alpha2 * rcp(max(EPSILON, M_PI * denom * denom));
 };
 
 /************************************************/

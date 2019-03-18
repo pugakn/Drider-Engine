@@ -865,7 +865,7 @@ RenderManager::updateShadowCameras(const Vector4D lightDir) {
     
     TrueCenter = CamPos + (CamDir * m_ShadowSubFrustras[i].first);
 
-    vecShadowCamera[i]->setPosition(TrueCenter -
+    vecShadowCamera[i]->setPosition(TrueCenter +
                                     (lightDir3 * m_fMaxDepth));
     vecShadowCamera[i]->setTarget(TrueCenter);
     vecShadowCamera[i]->createProyection(Math::floor(SphereRad * 2.0f),
