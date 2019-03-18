@@ -18,6 +18,13 @@ namespace driderSDK {
 
 class ScriptComponent;
 
+struct CameraProperties
+{
+  float panVelocity = 500.f;
+  float rotationVelocity = 60.f;
+  float boostMultiplier = 1.5f;
+};
+
 class Editor : public Application,
                public Client
 {
@@ -61,10 +68,13 @@ protected:
   void initScriptEngine();
   void initInputs();
   void loadMainMenu();
+  void loadEditorCameraWindow();
   void loadHierarchy();
   void loadMenuHierarchy();
   void materialEditor();
   void loadSavedLayouts();
+  void loadEditorCamConfig();
+  void saveEditorCamConfig();
   //void loadScene();
   //void saveScene();
   void saveCurrentLayout();
@@ -97,6 +107,7 @@ protected:
   bool m_inpectorWindow = true;
   bool m_fileManagerWindow = true;
   bool m_materialEditorWindow = true;
+  bool m_editorCamConfigWindow = true;
   GameObject* m_root;
 
   UInt32 m_selectedItem;
@@ -128,7 +139,7 @@ protected:
 
   Vector3D lastMousePos;
   Vector3D currentMousePos;
-  Vector3D deltaMouse;
+  //Vector3D deltaMouse;
 
   //Connection values
   bool m_err;
@@ -137,9 +148,11 @@ protected:
 
   bool m_connected;
   bool m_valueRegistered;
+  bool m_rotatingCamera = false;
 
   std::vector<std::shared_ptr<GameObject>> m_players;
-
+  CameraProperties m_editorCamProperties;
+  
 };
 
 }

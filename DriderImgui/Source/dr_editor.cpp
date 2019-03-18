@@ -181,6 +181,8 @@ Editor::postInit() {
                               1000.f);
   CameraManager::setActiveCamera(_T("PATO_CAM"));
 
+  loadEditorCamConfig();
+
   m_sceneViewport = Viewport{ 0, 0, 480, 320 };
   lastMousePos = Vector3D(0.0f, 0.0f, 0.0f);
 
@@ -220,7 +222,7 @@ Editor::postInit() {
   //io.ConfigDockingWithShift = false;
 
   ImGui::SetCurrentDockContext(m_dockContext);
-
+  
   loadSavedLayouts();
 
   if (m_currentLayout == -1 && m_savedLayouts.size()) {
@@ -266,7 +268,6 @@ Editor::initInputs() {
     if (m_movWorldActive) {
       cam->move(0, dis.x * W_MOVE_VEL, dis.y * W_MOVE_VEL);
     }
-
   });
   InputManager::getMouse()->addAnyButtonCallback(MOUSE_INPUT_EVENT::kButtonPressed,
     [this](MOUSE_BUTTON::E pressedId)
@@ -303,17 +304,53 @@ Editor::initInputs() {
 void
 Editor::initCallbacks() {
   auto mouseButtonDown =
-    [](UInt32 b, bool down)
+    [&](UInt32 b, bool down)
   {
     auto& io = ImGui::GetIO();
     io.MouseDown[b] = io.MouseClicked[b] = down;
+
+    if (b == MOUSE_BUTTON::kRight && !down) {
+      m_rotatingCamera = false;
+    }
   };
 
   auto mouseMove =
-    []() {
+    [&]() {
     auto& io = ImGui::GetIO();
     auto pos = Mouse::getPosition();
     io.MousePos.x = pos.x; io.MousePos.y = pos.y;
+  
+    if (m_rotatingCamera) {
+
+      auto deltaMouse = Mouse::getDisplacement();
+      
+      float dt = Time::getDelta();
+  
+      auto cam = CameraManager::getActiveCamera();
+
+      Vector3D newTargerPosition = cam->getPosition();
+
+      Vector3D front = cam->getDirection();
+      Vector3D right = cam->getLocalRight();
+      Matrix4x4 VerRot = Matrix4x4::identityMat4x4;
+    
+      float rotVel = m_editorCamProperties.rotationVelocity * Math::DEGREE_TO_RADIAN;
+
+      VerRot.Rotation(right, -deltaMouse.y * rotVel * dt);
+
+      front = VerRot * front;
+
+      Matrix4x4 HorRot = Matrix4x4::identityMat4x4;
+      HorRot.RotationY(-deltaMouse.x * rotVel * dt);
+
+      front = HorRot * front;
+      
+      newTargerPosition.x += front.x;
+      newTargerPosition.y += front.y;
+      newTargerPosition.z += front.z;
+
+      cam->setTarget(newTargerPosition);
+    }
   };
 
   auto wheelMoved =
@@ -430,7 +467,7 @@ Editor::postUpdate() {
   createMat();*/
 
   currentMousePos = Mouse::getPosition();
-  deltaMouse = currentMousePos - lastMousePos;
+  //deltaMouse = currentMousePos - lastMousePos;
   lastMousePos = currentMousePos;
 
   if (m_bSelected &&
@@ -676,7 +713,7 @@ Editor::initImGuiStyle() {
     style->Colors[ImGuiCol_CheckMark] = ImVec4(0.71f, 0.22f, 0.27f, 1.00f);
     style->Colors[ImGuiCol_SliderGrab] = ImVec4(0.47f, 0.77f, 0.83f, 0.14f);
     style->Colors[ImGuiCol_SliderGrabActive] = ImVec4(0.71f, 0.22f, 0.27f, 1.00f);
-    style->Colors[ImGuiCol_Button] = ImVec4(0.47f, 0.77f, 0.83f, 0.14f);
+    style->Colors[ImGuiCol_Button] = ImVec4(0.47f, 0.77f, 0.83f, 0.5f);
     style->Colors[ImGuiCol_ButtonHovered] = MED(0.86f);
     style->Colors[ImGuiCol_ButtonActive] = MED(1.00f);
     style->Colors[ImGuiCol_Header] = MED(0.76f);
@@ -907,6 +944,7 @@ Editor::loadMainMenu() {
     if (ImGui::BeginMenu("Windows")) {
       ImGui::Checkbox("Material Editor", &m_materialEditorWindow);
       ImGui::Checkbox("Render Configuration", &m_renderConfigWindow);
+      ImGui::Checkbox("Editor Camera Configuration", &m_editorCamConfigWindow);
       ImGui::Checkbox("Hierarchy", &m_hierarchyWindow);
       ImGui::Checkbox("Scene", &m_sceneWindow);
       ImGui::Checkbox("Inspector", &m_inpectorWindow);
@@ -1028,6 +1066,96 @@ Editor::loadMainMenu() {
 
       ImGui::EndMainMenuBar();
     }
+}
+
+void Editor::loadEditorCameraWindow()
+{
+  auto name = "Position";
+  
+  auto maxSize = ImGui::CalcTextSize(name);
+
+  ImGui::PushItemWidth(maxSize.x);
+
+  ImGui::LabelText((std::string("##") + name + "Label").c_str(), name);
+
+  ImGui::PopItemWidth();
+
+  ImGui::SameLine();
+
+  ImGui::PushItemWidth(-1);
+  
+  auto cam = CameraManager::getActiveCamera();
+  
+  auto pos = cam->getPosition();
+
+  if (ImGui::DragFloat3((std::string("##") + name + "Input").c_str(), pos.ptr(), 1.f)) {
+    cam->setPosition(pos);
+    saveEditorCamConfig();
+  }
+
+  ImGui::PopItemWidth();
+
+  name = "Target";
+
+  ImGui::PushItemWidth(maxSize.x);
+
+  ImGui::LabelText((std::string("##") + name + "Label").c_str(), name);
+
+  ImGui::PopItemWidth();
+
+  ImGui::SameLine();
+
+  ImGui::PushItemWidth(-1);
+
+  pos = cam->getTarget();
+
+  if (ImGui::DragFloat3((std::string("##") + name + "Input").c_str(), pos.ptr(), 1.f)) {
+    cam->setTarget(pos);
+    saveEditorCamConfig();
+  }
+
+  ImGui::PopItemWidth();
+  
+  name = "Pan";
+
+  ImGui::PushItemWidth(maxSize.x);
+
+  ImGui::LabelText((std::string("##") + name + "Label").c_str(), name);
+
+  ImGui::PopItemWidth();
+
+  ImGui::SameLine();
+
+  ImGui::PushItemWidth(-1);
+
+  pos = {0,0,0};
+
+  if (ImGui::DragFloat3((std::string("##") + name + "Input").c_str(), pos.ptr(), 1.f)) {
+    cam->pan(pos);
+    saveEditorCamConfig();
+  }
+
+  ImGui::PopItemWidth();
+
+  ImGui::Text("Pan Velocity");
+  ImGui::SameLine(ImGui::GetWindowWidth() / 2);
+  if (ImGui::DragFloat("##panVel", &m_editorCamProperties.panVelocity, 1.f, 50.f, 2000.f)) {
+    saveEditorCamConfig();
+  }
+
+  ImGui::Text("Boost Multiplier");
+  ImGui::SameLine(ImGui::GetWindowWidth() / 2);
+  if (ImGui::DragFloat("##boostMul", &m_editorCamProperties.boostMultiplier, 0.01f, 0.0f, 10.f)) {
+    saveEditorCamConfig();
+  }
+
+  ImGui::Text("Rotation Velocity");
+  ImGui::SameLine(ImGui::GetWindowWidth() / 2);
+  if (ImGui::DragFloat("##rotVel", &m_editorCamProperties.rotationVelocity, 1.f, 0.0f, 359.f)) {
+    saveEditorCamConfig();
+  }
+
+  
 }
 
 void
@@ -1323,6 +1451,62 @@ Editor::loadSavedLayouts() {
       }
     }
   }
+}
+
+void Editor::loadEditorCamConfig()
+{
+  auto cam = CameraManager::getActiveCamera();
+
+  std::ifstream in("Resources/camera.config");
+
+  if (in) {
+    std::string tmp;
+    Vector3D pos;
+
+    in >> tmp;
+
+    for (Int32 i = 0; i < 3; ++i) {
+      in >> pos[i];
+    }
+
+    cam->setPosition(pos);
+
+    in >> tmp;
+
+    for (Int32 i = 0; i < 3; ++i) {
+      in >> pos[i];
+    }
+
+    cam->setTarget(pos);
+
+    in >> tmp >> m_editorCamProperties.panVelocity;
+    in >> tmp >> m_editorCamProperties.boostMultiplier;
+    in >> tmp >> m_editorCamProperties.rotationVelocity;
+  }
+}
+
+void Editor::saveEditorCamConfig()
+{
+  auto cam = CameraManager::getActiveCamera();
+
+  std::ofstream out("Resources/camera.config");
+
+  if (out) {
+    out << "position: ";
+
+    for (Int32 i = 0; i < 3; ++i) {
+      out << cam->getPosition()[i] << " ";
+    }
+
+    out << "\ntarget: ";
+    for (Int32 i = 0; i < 3; ++i) {
+      out << cam->getTarget()[i] << " ";
+    }
+
+    out << "\npanVel: " << m_editorCamProperties.panVelocity;
+    out << "\nboostMul: " << m_editorCamProperties.boostMultiplier;
+    out << "\nrotVel: " << m_editorCamProperties.rotationVelocity;
+  }    
 }
 
 void
@@ -1950,61 +2134,56 @@ Editor::dockerTest() {
       }
       ImGui::EndDock();
 
+      ImGui::SetNextDock(ImGuiDockSlot_Tab);
+      if (ImGui::BeginDock("Editor Camera Configuration", &m_editorCamConfigWindow)) {
+        //ImGui::Text("Cosas de render");
+        loadEditorCameraWindow();
+      }
+      ImGui::EndDock();
+
       ImGui::SetNextDock(ImGuiDockSlot_Bottom);
       ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
       if (ImGui::BeginDock("Scene", &m_sceneWindow)) {
         //Move camera
-        if (ImGui::IsMouseClicked(1, true)) {
+        if (ImGui::IsMouseHoveringWindow() && ImGui::IsMouseClicked(1, true)) {
+          m_rotatingCamera = true;
+        }
+
+        if (m_rotatingCamera) {
           float dt = Time::getDelta();
+
           auto cam = CameraManager::getActiveCamera();
 
-          //Rotation
-          static const float horRotationScale = 10.0f * Math::PI;
-          static const float verRotationScale = 10.0f * Math::PI;
-
-          Vector3D mouseDelta = deltaMouse;
+          Vector3D mouseDelta = Mouse::getDisplacement();
           Vector3D newTargerPosition = cam->getPosition();
 
           Vector3D front = cam->getDirection();
           Vector3D right = cam->getLocalRight();
 
-          Matrix4x4 VerRot = Matrix4x4::identityMat4x4;
-          VerRot.Rotation(right, -mouseDelta.y * verRotationScale * dt);
-
-          front = VerRot * front;
-
-          Matrix4x4 HorRot = Matrix4x4::identityMat4x4;
-          HorRot.RotationY(-mouseDelta.x * horRotationScale * dt);
-
-          front = HorRot * front;
-
-          newTargerPosition.x += front.x;
-          newTargerPosition.y += front.y;
-          newTargerPosition.z += front.z;
-          cam->setTarget(newTargerPosition);
-
           //Position
-          static const float forwardSpeed = 1500.0f;
+          /*static const float forwardSpeed = 1500.0f;
           static const float rightSpeed = 1500.0f;
-          static const float upSpeed = 1500.0f;
+          static const float upSpeed = 1500.0f;*/
+
+          float boost = Keyboard::isModifierDown(KEYBOARD_MOD::kCtrl) ? m_editorCamProperties.boostMultiplier : 1.f;
 
           if (Keyboard::isKeyDown(KEY_CODE::kW)) {
-            cam->pan(front * forwardSpeed * dt);
+            cam->pan(front * m_editorCamProperties.panVelocity * boost * dt);
           }
           if (Keyboard::isKeyDown(KEY_CODE::kS)) {
-            cam->pan(-front * forwardSpeed * dt);
+            cam->pan(-front * m_editorCamProperties.panVelocity * boost * dt);
           }
           if (Keyboard::isKeyDown(KEY_CODE::kD)) {
-            cam->pan(right * rightSpeed * dt);
+            cam->pan(right * m_editorCamProperties.panVelocity * boost * dt);
           }
           if (Keyboard::isKeyDown(KEY_CODE::kA)) {
-            cam->pan(-right * rightSpeed * dt);
+            cam->pan(-right * m_editorCamProperties.panVelocity * boost * dt);
           }
-          if (Keyboard::isKeyDown(KEY_CODE::kQ)) {
-            cam->pan(Vector3D(0.0f, 1.0f, 0.0f) * upSpeed * dt);
+          if (Keyboard::isKeyDown(KEY_CODE::kSPACE)) {
+            cam->pan(Vector3D(0.0f, 1.0f, 0.0f) * m_editorCamProperties.panVelocity * boost * dt);
           }
-          if (Keyboard::isKeyDown(KEY_CODE::kE)) {
-            cam->pan(Vector3D(0.0f, -1.0f, 0.0f) * upSpeed * dt);
+          if (Keyboard::isKeyDown(KEY_CODE::kLSHIFT)) {
+            cam->pan(Vector3D(0.0f, -1.0f, 0.0f) * m_editorCamProperties.panVelocity * boost * dt);
           }
         }
 
@@ -2062,7 +2241,7 @@ Editor::dockerTest() {
       ImGui::EndDockspace();
   }
   ImGui::End();
-
+  //ImGui::ShowDemoWindow();
 }
 
 void
