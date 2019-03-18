@@ -92,6 +92,9 @@ class LinesPass : public RenderPass {
 
   CBuffer CB;
 
+  IndexBuffer* LineIB;
+  VertexBuffer* LineVB;
+
   
   std::queue<LineShape> debugLines;
   void

@@ -30,6 +30,39 @@ LinesPass::init(PassInitData* initData) {
   bdesc.type = DR_BUFFER_TYPE::kCONSTANT;
   bdesc.sizeInBytes = sizeof(CBuffer);
   m_constantBuffer = dr_gfx_unique((ConstantBuffer*)device.createBuffer(bdesc));
+
+  //Create an index buffer of 0 and 1.
+  {
+    DrBufferDesc ibDesc;
+    ibDesc.type = DR_BUFFER_TYPE::kINDEX;
+    ibDesc.usage = DR_BUFFER_USAGE::kDefault;
+    ibDesc.sizeInBytes = 2 * sizeof(Int32);
+
+    Int32 indexList[2];
+    indexList[0] = 0;
+    indexList[1] = 1;
+    LineIB = static_cast<IndexBuffer*>(device.createBuffer(ibDesc,
+                                       reinterpret_cast<byte*>(&indexList[0])));
+  }
+
+  //Create an index buffer of 2 vertex.
+  Vertex vertexList[2];
+  {
+    DrBufferDesc vbDesc;
+    vbDesc.type = DR_BUFFER_TYPE::kVERTEX;
+    vbDesc.usage = DR_BUFFER_USAGE::kDefault;
+    vbDesc.sizeInBytes = 2 * sizeof(Vertex);
+    vbDesc.stride = sizeof(Vertex);
+
+    Vertex tmpVertex;
+    tmpVertex.position = Vector4D(0.0f, 0.0f, 0.0f, 1.0f);
+    vertexList[0] = tmpVertex;
+    tmpVertex.position = Vector4D(0.0f, 0.0f, 0.0f, 1.0f);
+    vertexList[1] = tmpVertex;
+
+    LineVB = static_cast<VertexBuffer*>(device.createBuffer(vbDesc,
+                                                            reinterpret_cast<byte*>(&vertexList[0])));
+  }
 }
 
 void
@@ -94,52 +127,19 @@ LinesPass::addStripLineToQueue(const std::vector<Vector3D>& points,
 
 void
 LinesPass::drawLines() {
-  Device& dev = GraphicsAPI::getDevice();
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
-  //Create an index buffer of 0 and 1.
-  IndexBuffer* ib;
-  {
-    DrBufferDesc ibDesc;
-    ibDesc.type = DR_BUFFER_TYPE::kINDEX;
-    ibDesc.usage = DR_BUFFER_USAGE::kDefault;
-    ibDesc.sizeInBytes = 2 * sizeof(Int32);
-
-    Int32 indexList[2];
-    indexList[0] = 0;
-    indexList[1] = 1;
-    ib = static_cast<IndexBuffer*>(dev.createBuffer(ibDesc, reinterpret_cast<byte*>(&indexList[0])));
-  }
-
-  //Create an index buffer of 2 vertex.
-  Vertex vertexList[2];
-  VertexBuffer* vb;
-  {
-    DrBufferDesc vbDesc;
-    vbDesc.type = DR_BUFFER_TYPE::kVERTEX;
-    vbDesc.usage = DR_BUFFER_USAGE::kDefault;
-    vbDesc.sizeInBytes = 2 * sizeof(Vertex);
-    vbDesc.stride = sizeof(Vertex);
-
-    Vertex tmpVertex;
-    tmpVertex.position = Vector4D(0.0f, 0.0f, 0.0f, 1.0f);
-    vertexList[0] = tmpVertex;
-    tmpVertex.position = Vector4D(0.0f, 0.0f, 0.0f, 1.0f);
-    vertexList[1] = tmpVertex;
-
-    vb = static_cast<VertexBuffer*>(dev.createBuffer(vbDesc, reinterpret_cast<byte*>(&vertexList[0])));
-  }
-
-  ib->set(dc);
+  LineIB->set(dc);
   LineShape tmpLine;
   while (!debugLines.empty()) {
     tmpLine = debugLines.front();
     debugLines.pop();
 
+    Vertex vertexList[2];
     vertexList[0].position = tmpLine.start;
     vertexList[1].position = tmpLine.end;
-    vb->updateFromBuffer(dc, reinterpret_cast<byte*>(&vertexList));
-    vb->set(dc);
+    LineVB->updateFromBuffer(dc, reinterpret_cast<byte*>(&vertexList));
+    LineVB->set(dc);
 
     CB.LineColor = tmpLine.color;
     CB.W = tmpLine.transform;
@@ -148,9 +148,6 @@ LinesPass::drawLines() {
 
     dc.draw(2, 0, 0);
   }
-
-  vb->release();
-  ib->release();
 }
 
 void
