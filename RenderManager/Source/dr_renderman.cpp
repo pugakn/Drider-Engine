@@ -745,40 +745,45 @@ RenderManager::drawDebugLine(const std::vector<Vector3D>& points,
 }
 
 void
-RenderManager::drawDebugCube(const Vector3D& dimensions,
+RenderManager::drawDebugCube(const AABB& cube,
                              const Vector3D& color,
                              const Matrix4x4& transform) {
 #ifdef DR_DEBUG_MODE
   std::vector<Vector3D> square;
-  float width  = dimensions.x * 0.5f,
-        height = dimensions.y * 0.5f,
-        depth  = dimensions.z * 0.5f;
-  square.push_back(Vector3D(-width,  height, -depth));
-  square.push_back(Vector3D(-width,  height,  depth));
-  square.push_back(Vector3D( width,  height,  depth));
-  square.push_back(Vector3D( width,  height, -depth));
-  square.push_back(Vector3D(-width,  height, -depth));
+
+  auto min = cube.getMinPoint();
+
+  square.push_back(min);
+  square.push_back(min + Vector3D(cube.width, 0, 0));
+  square.push_back(min + Vector3D(cube.width, 0, cube.depth));
+  square.push_back(min + Vector3D(0, 0, cube.depth));
+  square.push_back(min);
 
   m_LinesPass.addStripLineToQueue(square, color, transform);
+
   for (auto& it : square) {
-    it.y = -height;
+    it.y += cube.height;
   }
   m_LinesPass.addStripLineToQueue(square, color, transform);
   
-  m_LinesPass.addLineToQueue(Vector3D(-width, -height, -depth),
-                             Vector3D(-width,  height, -depth),
+  m_LinesPass.addLineToQueue(min,
+                             min + Vector3D(0, cube.height, 0),
                              color,
                              transform);
-  m_LinesPass.addLineToQueue(Vector3D(-width, -height,  depth),
-                             Vector3D(-width,  height,  depth),
+
+  auto max = cube.getMaxPoint();
+
+  m_LinesPass.addLineToQueue(max,
+                             max - Vector3D(0, cube.height, 0),
                              color,
                              transform);
-  m_LinesPass.addLineToQueue(Vector3D( width, -height,  depth),
-                             Vector3D( width,  height,  depth),
+
+  m_LinesPass.addLineToQueue(max - Vector3D(cube.width, 0, 0),
+                             max - Vector3D(cube.width, cube.height, 0),
                              color,
                              transform);
-  m_LinesPass.addLineToQueue(Vector3D( width, -height, -depth),
-                             Vector3D( width,  height, -depth),
+  m_LinesPass.addLineToQueue(max - Vector3D(0, 0, cube.depth),
+                             max - Vector3D(0, cube.height, cube.depth),
                              color,
                              transform);
 #endif // DR_DEBUG_MODE

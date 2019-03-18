@@ -194,7 +194,7 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   *  Transform of the cube.
   */
   void
-  drawDebugCube(const Vector3D& dimensions,
+  drawDebugCube(const AABB& cube,
                 const Vector3D& color,
                 const Matrix4x4& transform = Matrix4x4::identityMat4x4);
  

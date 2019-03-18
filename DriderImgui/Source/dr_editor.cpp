@@ -476,15 +476,11 @@ Editor::postUpdate() {
     Matrix4x4 CubeMatrix = Matrix4x4::identityMat4x4;
     Vector3D goPos;
 
-    Vector3D boxDimensions;
     RenderComponent* rc = m_selectedGameObject->getComponent<RenderComponent>();
     if (nullptr != rc) {
-      boxDimensions.x = rc->getAABB().width;
-      boxDimensions.y = rc->getAABB().height;
-      boxDimensions.z = rc->getAABB().depth;
+      
       Matrix4x4 aabbMatrix = Matrix4x4::identityMat4x4;
-      //aabbMatrix.Translation(m_selectedGameObject->getTransform().getPosition());
-      RenderManager::instance().drawDebugCube(boxDimensions, { 1,1,1 }, aabbMatrix);
+      RenderManager::instance().drawDebugCube(rc->getAABB(), { 1,1,1 }, aabbMatrix);
 
     }
   }
@@ -1846,11 +1842,9 @@ Editor::drawDebugStuff() {
   if (boxColliderComponent) {
     AABB aabb = boxColliderComponent->getAABB();
     Matrix4x4 tr = boxColliderComponent->getGameObject().getTransform().getMatrix();
-    RenderManager::instance().drawDebugCube(Vector3D(aabb.width,
-      aabb.height,
-      aabb.depth),
-      Vector3D(1, 0, 1),
-      tr.Move(aabb.center));
+    RenderManager::instance().drawDebugCube(aabb,
+                                            Vector3D(1, 0, 1),
+                                            tr.Move(aabb.center));
   }
   auto sphereColliderComponent = m_selectedGameObject->getComponent<SphereCollider>();
   if (sphereColliderComponent) {
