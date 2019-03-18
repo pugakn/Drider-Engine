@@ -12,7 +12,19 @@
 #include <dr_vertex_buffer.h>
 #include <dr_index_buffer.h>
 
+#include <dr_time.h>
+#include <dr_timer.h>
+
 namespace driderSDK {
+
+void
+benchmark(Timer& timer, float& timeScope, String text) {
+  float currentTime = timer.getMicroseconds();
+  float deltaTime = currentTime - timeScope;
+  std::cout << text << deltaTime << std::endl;
+  timeScope = currentTime;
+}
+
 
 RenderManager::RenderManager() {
 }
@@ -480,6 +492,11 @@ void
 RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   DeviceContext& dc = GraphicsAPI::getDeviceContext();
 
+  //Timer chrono;
+  //chrono.init();
+  //float currentTime = chrono.getMicroseconds();
+
+
   auto mainCam = CameraManager::instance().getActiveCamera();
   auto mainCamRef = *CameraManager::instance().getActiveCamera();
 
@@ -489,6 +506,8 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
                         QUERY_PROPERTY::kDynamic |
                         QUERY_PROPERTY::kStatic };
   RenderCommandBuffer queryRequest = SceneGraph::query(rqRequest);
+  //system("CLS");
+  //benchmark(chrono, currentTime, "GBuffer Query: ");
 
   m_GBufferDrawData.activeCam = mainCam;
   m_GBufferDrawData.models = &queryRequest;
@@ -497,11 +516,13 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_GBufferDrawData.skysphere = &(*m_SkySphere);
   m_GBufferDrawData.cubeMapTex = m_cubemap.get();
   m_GBufferPass.draw(&m_GBufferDrawData);
+  //benchmark(chrono, currentTime, "GBuffer Pass: ");
 
   m_LinesDrawData.activeCam = mainCam;
   m_LinesDrawData.dsOptions = m_GBufferDSoptions.get();
   m_LinesDrawData.GBufferRT = m_RTGBuffer.get();
   m_LinesPass.draw(&m_LinesDrawData);
+  //benchmark(chrono, currentTime, "Lines Pass: ");
 
   static const float white[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
   m_RTSSAO_SSShadow->clear(dc, white);
@@ -548,6 +569,7 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
       m_ShadowPass.apply(&m_ShadowDrawData, m_RTGBuffer.get(), m_RTShadow.get(), m_RTSSAO_SSShadow.get());
     }
   }
+  //benchmark(chrono, currentTime, "Cascades Shadow Pass: ");
 
   if (m_bSSAO) {
     m_SSAODrawData.activeCam = mainCam;
@@ -558,21 +580,25 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
     m_SSAODrawData.Scale = m_fSSAOScale;
     m_SSAODrawData.Bias = m_fSSAOBias;
     m_SSAOPass.draw(&m_SSAODrawData);
+    //benchmark(chrono, currentTime, "SSAO Pass: ");
   }
 
   m_HorBlurDrawData.InTexture = &m_RTSSAO_SSShadow->getTexture(0);
   m_HorBlurDrawData.OutRt = m_RTBlurInit.get();
   m_HorBlurPass.draw(&m_HorBlurDrawData);
+  //benchmark(chrono, currentTime, "Horizontal Blur Pass: ");
 
   m_VerBlurDrawData.InTexture = &m_RTBlurInit->getTexture(0);
   m_VerBlurDrawData.OutRt = m_RTSSAO_SSShadowBlur.get();
   m_VerBlurPass.draw(&m_VerBlurDrawData);
+  //benchmark(chrono, currentTime, "Vertical Blur Pass: ");
 
   m_SSReflectionDrawData.ActiveCam = mainCam;
   m_SSReflectionDrawData.GbufferRT = m_RTGBuffer.get();
   m_SSReflectionDrawData.ColorRT = m_RTLightning.get();
   m_SSReflectionDrawData.OutRt = m_RTSSReflection.get();
   m_SSReflectionPass.draw(&m_SSReflectionDrawData);
+  //benchmark(chrono, currentTime, "Reflections Pass: ");
 
   //Point lights
   std::memset(&PointLights[0], -1, RM_MAX_POINT_LIGHTS);
@@ -589,10 +615,14 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_LWSLightsToSSData.Lights = &PointLights;
   m_LWSLightsToSSData.numberOfLights = numberOfPLights;
   m_LightningPass.lightsToScreenSpace(&m_LWSLightsToSSData);
+  //benchmark(chrono, currentTime, "Lights to SS Pass: ");
+
   //Tile Lights
   m_LTileLightsData.OutRt = m_RTLightning.get();
   m_LTileLightsData.numberOfLights = numberOfPLights;
   m_LightningPass.tileLights(&m_LTileLightsData);
+  //benchmark(chrono, currentTime, "Tile lights Pass: ");
+
   //Lightning Pass
   m_LightningDrawData.ActiveCam = mainCam;
   m_LightningDrawData.PLights = &PointLights;
@@ -607,35 +637,42 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_LightningDrawData.IrradianceCubemap = m_cubemapDiffuse.get();
   m_LightningDrawData.IrradianceScale = &m_fIrradianceScale;
   m_LightningPass.draw(&m_LightningDrawData);
+  //benchmark(chrono, currentTime, "Lightning Pass: ");
 
   m_luminescenceDrawData.InTexture = &m_RTLightning->getTexture(0);
   m_luminescenceDrawData.LuminiscenceDelta = m_fLuminanceDelta;
   m_luminescenceDrawData.resultBuffer = &resultBuffer;
   m_luminescencePass.draw(&m_luminescenceDrawData);
+  //benchmark(chrono, currentTime, "Luminescence Pass: ");
 
   m_BloomDrawData.BloomThreshold = m_BloomThreshold;
   m_BloomDrawData.LuminiscenceDelta = m_fLuminanceDelta;
   m_BloomDrawData.ColorTexture = &m_RTLightning->getTexture(0);
   m_BloomDrawData.OutTex = &m_RTBrightness->getTexture(0);
   m_BloomPass.draw(&m_BloomDrawData);
+  //benchmark(chrono, currentTime, "Bloom Pass: ");
 
   //Bloom Blur
   m_HorBlurDrawData.InTexture = &m_RTBrightness->getTexture(0);
   m_HorBlurDrawData.OutRt = m_RTBlurInit.get();
   m_HorBlurPass.draw(&m_HorBlurDrawData);
+  //benchmark(chrono, currentTime, "Horizontal Blur Pass: ");
 
   m_VerBlurDrawData.InTexture = &m_RTBlurInit->getTexture(0);
   m_VerBlurDrawData.OutRt = m_RTBloom.get();
   m_VerBlurPass.draw(&m_VerBlurDrawData);
+  //benchmark(chrono, currentTime, "Vertical Blur Pass: ");
 
   //DoF Blur
   m_HorBlurDrawData.InTexture = &m_RTLightning->getTexture(0);
   m_HorBlurDrawData.OutRt = m_RTBlurInit.get();
   m_HorBlurPass.draw(&m_HorBlurDrawData);
+  //benchmark(chrono, currentTime, "Horizontal Blur Pass: ");
 
   m_VerBlurDrawData.InTexture = &m_RTBlurInit->getTexture(0);
   m_VerBlurDrawData.OutRt = m_RTLightningBlur.get();
   m_VerBlurPass.draw(&m_VerBlurDrawData);
+  //benchmark(chrono, currentTime, "Vertical Blur Pass: ");
 
   //_out.set(dc, _outds);
 
@@ -664,6 +701,7 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_PostProcessingDrawData.OutRT = &_out;
   m_PostProcessingDrawData.OutDS = &_outds;
   m_PostProcessingPass.draw(&m_PostProcessingDrawData);
+  //benchmark(chrono, currentTime, "Post Processing Pass: ");
 
   /*
   ./ GBuffer:
@@ -870,7 +908,7 @@ RenderManager::updateShadowCameras(const Vector4D lightDir) {
     
     TrueCenter = CamPos + (CamDir * m_ShadowSubFrustras[i].first);
 
-    vecShadowCamera[i]->setPosition(TrueCenter -
+    vecShadowCamera[i]->setPosition(TrueCenter +
                                     (lightDir3 * m_fMaxDepth));
     vecShadowCamera[i]->setTarget(TrueCenter);
     vecShadowCamera[i]->createProyection(Math::floor(SphereRad * 2.0f),
