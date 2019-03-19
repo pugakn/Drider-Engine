@@ -140,7 +140,8 @@ GBufferPass::draw(PassDrawData* drawData) {
 
     std::memset(&CB.Bones[0].data[0], 0, sizeof(CB.Bones));
     
-    if (modelPair.bonesID != -1) {
+    //Using bones
+    if (CB.ConstantFlags[0] = modelPair.bonesID != -1) {
       auto& Bones = data->models->bonesTransforms[modelPair.bonesID];
       Int32 maxBones = Bones.size();
       if (maxBones)
