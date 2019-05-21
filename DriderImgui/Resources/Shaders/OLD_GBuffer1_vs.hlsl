@@ -4,6 +4,7 @@ cbuffer ConstantBuffer {
   float4x4 WVP;
   float4x4 Bones[200];
   float4   CameraInfo; //X: Aspect Ratio; Y: FOV; Z: Near Plane; W: Far Plane
+  bool     ConstantFlags[4]; //0 To check if we are using Bones
 };
 
 struct VS_INPUT {
@@ -28,22 +29,24 @@ VS(VS_INPUT input) {
   VS_OUTPUT Output;
   
   float4x4 BoneTransform = (float4x4)0;
-  int activationScale = 0;
-  int activeWeights = 0;
-  int boneIndex = 0;
   
-  [unroll]
-  for (int i = 0; i < 4; ++i) {
-    boneIndex = input.BonesIDs[i];
-    activationScale = (boneIndex > -1);
-    activeWeights += activationScale;
-    BoneTransform += mul(Bones[boneIndex], input.BonesWeights[i] * activationScale);
+  if (ConstantFlags[0]) {
+    int activationScale = 0;
+    int boneIndex = 0;
+    
+    [unroll]
+    for (int i = 0; i < 4; ++i) {
+      boneIndex = input.BonesIDs[i];
+      activationScale = (boneIndex > -1);
+      BoneTransform += mul(Bones[boneIndex], input.BonesWeights[i] * activationScale);
+    }
   }
-  
-  BoneTransform[0][0] += 1.0f * (activeWeights <= 0);
-  BoneTransform[1][1] += 1.0f * (activeWeights <= 0);
-  BoneTransform[2][2] += 1.0f * (activeWeights <= 0);
-  BoneTransform[3][3] += 1.0f * (activeWeights <= 0);
+  else {
+    BoneTransform[0][0] = 1.0f;
+    BoneTransform[1][1] = 1.0f;
+    BoneTransform[2][2] = 1.0f;
+    BoneTransform[3][3] = 1.0f;
+  }
   
 	float4 vertexTransformed = mul(BoneTransform, input.Position);
   float3 TransformedT = mul(BoneTransform, input.Tangent).xyz;
@@ -58,6 +61,6 @@ VS(VS_INPUT input) {
   Output.TBN[0] = normalize(mul((float3x3)World, TransformedT));
   Output.TBN[1] = normalize(mul((float3x3)World, TransformedB));
   Output.TBN[2] = normalize(mul((float3x3)World, TransformedN));
-  
+
   return Output;
 }

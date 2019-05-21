@@ -234,7 +234,8 @@ RenderManager::init() {
     //texDescDefault.height = screenHeight * blurScale;
     texDescDefault.width = screenWidth;
     texDescDefault.height = screenHeight;
-    texDescDefault.Format = DR_FORMAT::kR8G8_UNORM;
+    //texDescDefault.Format = DR_FORMAT::kR8G8_UNORM;
+    texDescDefault.Format = DR_FORMAT::kR16G16_FLOAT;
     texDescDefault.pitch = texDescDefault.width * 2 * 1;
     texDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
 
@@ -706,7 +707,7 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   /*
   ./ GBuffer:
   ./ SSAO:
-  ./ ShadowCascades: 
+  ./ ShadowCascades:  
    X Diffuse Acumulation: Fog
    X Specular Acumulation: SS Reflection
    X Lights y ZSkips:

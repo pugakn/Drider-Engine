@@ -4,6 +4,7 @@ cbuffer ConstantBuffer {
   float4x4 WVP;
   float4x4 Bones[200];
   float4   CameraInfo; //X: Aspect Ratio; Y: FOV; Z: Near Plane; W: Far Plane
+  bool     ConstantFlags[4]; //0 To check if we are using Bones
 };
 
 SamplerState SS;

@@ -85,7 +85,7 @@ D3DStructureBuffer::create(const Device& device,
     D3D11_UNORDERED_ACCESS_VIEW_DESC sbUAVDesc;
     ZeroMemory(&sbUAVDesc, sizeof(sbUAVDesc));
     sbUAVDesc.Buffer.FirstElement = 0;
-    sbUAVDesc.Buffer.Flags = D3D11_BUFFER_UAV_FLAG_APPEND; //TODO: config
+    //sbUAVDesc.Buffer.Flags = D3D11_BUFFER_UAV_FLAG_APPEND; //TODO: config
     sbUAVDesc.Buffer.NumElements = desc.sizeInBytes/desc.stride;
     sbUAVDesc.Format = DXGI_FORMAT_UNKNOWN;
     sbUAVDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;

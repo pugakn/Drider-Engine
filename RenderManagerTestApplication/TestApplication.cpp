@@ -278,7 +278,7 @@ RenderManApp::postUpdate() {
     boxDimensions.z = m_selectedGO->getComponent<AABBCollider>()->getTransformedAABB().depth;
     Matrix4x4 aabbMatrix = Matrix4x4::identityMat4x4;
     aabbMatrix.Translation(m_selectedGO->getTransform().getPosition());
-    RenderManager::instance().drawDebugCube(boxDimensions, { 1,1,1 }, aabbMatrix);
+    //RenderManager::instance().drawDebugCube(boxDimensions, { 1,1,1 }, aabbMatrix);
 
     if (TransformMode::kPosition == m_TransformMode) {
       //X

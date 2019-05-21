@@ -87,7 +87,9 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
 
   //Lightning[uvScale] = float4((totalLights / ((float)RM_MAX_POINT_LIGHTS_PER_BLOCK)).xxx, 1.0f); return;
 
+  ////////////////////////////////////
   //////////Direct lightning//////////
+  ////////////////////////////////////
   float3 directLighting = (0.0).xxx;
 
   float3 F, D, G;
