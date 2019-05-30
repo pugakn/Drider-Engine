@@ -78,7 +78,7 @@ GBufferPass::draw(PassDrawData* drawData) {
   if (false) {
     dc.setResourcesNull();
 
-    data->cubeMapTex->textureGFX->set(dc, 0);  //Cubemapz
+    data->cubeMapTex->textureGFX->set(dc, 0);  //Cubemaps
     //cubeMapTex->set(dc, 0);
 
     //CB.World = data->models->worlds[modelPair.worldID];
