@@ -72,6 +72,9 @@
     <ClInclude Include="Include\dr_Lines.h">
       <Filter>Archivos de encabezado\Passes</Filter>
     </ClInclude>
+    <ClInclude Include="Include\dr_Skybox.h">
+      <Filter>Archivos de encabezado\Passes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\dr_rendermanapp.cpp">
@@ -117,6 +120,9 @@
       <Filter>Archivos de código fuente\Passes</Filter>
     </ClCompile>
     <ClCompile Include="Source\dr_Lines.cpp">
+      <Filter>Archivos de código fuente\Passes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\dr_Skybox.cpp">
       <Filter>Archivos de código fuente\Passes</Filter>
     </ClCompile>
   </ItemGroup>

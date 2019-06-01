@@ -26,7 +26,15 @@ benchmark(Timer& timer, float& timeScope, String text) {
 }
 
 
-RenderManager::RenderManager() {
+RenderManager::RenderManager()
+  : screenWidth(0),
+    screenHeight(0) {
+}
+
+
+RenderManager::RenderManager(UInt32 width, UInt32 height) :
+  screenWidth(width),
+  screenHeight(height) {
 }
 
 RenderManager::~RenderManager() {
@@ -42,40 +50,41 @@ RenderManager::init() {
   ///////////Resolutions///////////
 
   //////////16:9//////////
+  if (screenWidth <= 0 || screenHeight <= 0) {
+    //8K
+    //screenWidth = 7680;
+    //screenHeight = 4320;
 
-  //8K
-  //screenWidth = 7680;
-  //screenHeight = 4320;
+    //4K
+    //screenWidth = 4096;
+    //screenHeight = 2304;
 
-  //4K
-  //screenWidth = 4096;
-  //screenHeight = 2304;
+    //UHD
+    //screenWidth = 3840;
+    //screenHeight = 2160;
 
-  //UHD
-  //screenWidth = 3840;
-  //screenHeight = 2160;
+    //2K
+    //screenWidth = 2048;
+    //screenHeight = 1152;
 
-  //2K
-  //screenWidth = 2048;
-  //screenHeight = 1152;
+    //1080p o FHD
+    //screenWidth = 1920;
+    //screenHeight = 1080;
 
-  //1080p o FHD
-  //screenWidth = 1920;
-  //screenHeight = 1080;
+    //720p o HD
+    screenWidth = 1280;
+    screenHeight = 720;
 
-  //720p o HD
-  screenWidth = 1280;
-  screenHeight = 720;
+    //////////21:9//////////
 
-  //////////21:9//////////
+    //1080p o FHD
+    //screenWidth = 2560;
+    //screenHeight = 1080;
 
-  //1080p o FHD
-  //screenWidth = 2560;
-  //screenHeight = 1080;
-
-  //720p o HD
-  //screenWidth = 1680;
-  //screenHeight = 720;
+    //720p o HD
+    //screenWidth = 1680;
+    //screenHeight = 720;
+  }
 
   static const float blurScale = 0.5f;
 
@@ -383,6 +392,8 @@ RenderManager::init() {
   }
 
   ////////initialization of passes////////
+  m_SkyboxPass.init(&m_SkyboxInitData);
+
   m_GBufferPass.init(&m_GBufferInitData);
 
   m_LinesPass.init(&m_LinesInitData);
@@ -497,9 +508,16 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   //chrono.init();
   //float currentTime = chrono.getMicroseconds();
 
-
   auto mainCam = CameraManager::instance().getActiveCamera();
   auto mainCamRef = *CameraManager::instance().getActiveCamera();
+
+  m_SkyboxDrawData.activeCam = mainCam;
+  m_SkyboxDrawData.SkyboxRotation = 0.0f;
+  m_SkyboxDrawData.EnviromentTex = m_EnviromentTex.get();
+  m_SkyboxDrawData.IrradianceTex = m_EnviromentTex.get();
+  m_SkyboxDrawData.OutRT = m_RTGBuffer.get();
+  m_SkyboxDrawData.OutDS = m_GBufferDSoptions.get();
+  m_SkyboxPass.draw(&m_SkyboxDrawData);
 
   RenderQuery rqRequest{ mainCamRef,
                         QUERY_ORDER::kFrontToBack,
@@ -515,7 +533,7 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_GBufferDrawData.OutRt = m_RTGBuffer.get();
   m_GBufferDrawData.dsOptions = m_GBufferDSoptions.get();
   m_GBufferDrawData.skysphere = &(*m_SkySphere);
-  m_GBufferDrawData.cubeMapTex = m_cubemap.get();
+  m_GBufferDrawData.cubeMapTex = m_EnviromentTex.get();
   m_GBufferPass.draw(&m_GBufferDrawData);
   //benchmark(chrono, currentTime, "GBuffer Pass: ");
 
@@ -633,9 +651,9 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_LightningDrawData.SSAO_SSShadowRT = m_RTSSAO_SSShadowBlur.get();
   m_LightningDrawData.SSReflection = m_RTSSReflection.get();
   m_LightningDrawData.OutRt = m_RTLightning.get();
-  m_LightningDrawData.EnviromentCubemap = m_cubemap.get();
+  m_LightningDrawData.EnviromentCubemap = m_EnviromentTex.get();
   m_LightningDrawData.EnviromentScale = &m_fEnviromentScale;
-  m_LightningDrawData.IrradianceCubemap = m_cubemapDiffuse.get();
+  m_LightningDrawData.IrradianceCubemap = m_IrradianceTex.get();
   m_LightningDrawData.IrradianceScale = &m_fIrradianceScale;
   m_LightningPass.draw(&m_LightningDrawData);
   //benchmark(chrono, currentTime, "Lightning Pass: ");
@@ -748,13 +766,13 @@ RenderManager::setSkySphere(std::shared_ptr<Model> skysphere) {
 }
 
 void
-RenderManager::setCubeMap(std::shared_ptr<TextureCore> cubemap) {
-  m_cubemap = cubemap;
+RenderManager::setEnviromentTexture(std::shared_ptr<TextureCore> cubemap) {
+  m_EnviromentTex = cubemap;
 }
 
 void
-RenderManager::setEnviromentMap(std::shared_ptr<TextureCore> enviromentmap) {
-  m_cubemapDiffuse = enviromentmap;
+RenderManager::setIrradianceTexture(std::shared_ptr<TextureCore> enviromentmap) {
+  m_IrradianceTex = enviromentmap;
 }
 
 void

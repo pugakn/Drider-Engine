@@ -6,6 +6,7 @@
 #include <dr_render_component.h>
 #include <dr_camera.h>
 #include <dr_sample_state.h>
+
 namespace driderSDK {
 
 struct GBufferInitData : PassInitData {

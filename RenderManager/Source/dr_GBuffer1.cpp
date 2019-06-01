@@ -71,7 +71,7 @@ GBufferPass::draw(PassDrawData* drawData) {
   
   const float clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 
-  data->OutRt->clear(dc, clearColor);
+  //data->OutRt->clear(dc, clearColor);
   data->dsOptions->clear(dc, 1, 0);
 
   //Skybox

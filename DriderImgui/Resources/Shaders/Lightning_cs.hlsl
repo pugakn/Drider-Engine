@@ -1,3 +1,5 @@
+#define PI 3.14152265f
+
 #include "Resources\\Shaders\\PBR_Math.hlsl"
 
 cbuffer ConstantBuffer : register(b0) {
@@ -19,10 +21,25 @@ Texture2D EmissiveRoughnessTex : register(t3);
 Texture2D SSAO_SSShadowTex     : register(t4);
 Texture2D SSReflectionTex      : register(t5);
 Texture2D<int> LightsIndex     : register(t6);
-TextureCube EnvironmentTex     : register(t7);
-TextureCube IrradianceTex      : register(t8);
+
+Texture2D EnvironmentTex : register(t7);
+Texture2D IrradianceTex  : register(t8);
 
 RWTexture2D<float4> Lightning  : register(u0);
+
+
+float3
+SkyboxColor(Texture2D panoramicTexture, float3 direction, int mipLevel) {
+  direction = normalize(direction);
+  //direction = normalize(mul(SkyboxRotation, float4(direction, 1.0f)).xyz);
+
+  float2 longlat = float2(atan2(direction.x , direction.z), acos(direction.y));
+  
+  float2 uv = longlat / float2(2.0f * PI, PI);
+  uv.x += 0.5f;
+  
+  return panoramicTexture.SampleLevel(samplerState, uv, mipLevel).xyz;
+}
 
 #define NUMTHREADS_X 8
 #define NUMTHREADS_Y 4
@@ -170,7 +187,8 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   {
     //Diffuse
     const float irrScale = fViewportSzEnvIrr.w;
-    const float3 irradiance = IrradianceTex.SampleLevel(samplerState, normal, 0).xyz * irrScale;
+    //const float3 irradiance = IrradianceTex.SampleLevel(samplerState, normal, 0).xyz * irrScale;
+    const float3 irradiance = SkyboxColor(IrradianceTex, normal, 0) * irrScale;
 
     F = Specular_F(specularF0, NdotV);
     
@@ -183,7 +201,8 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
     const float3 reflectVector = reflect(-ViewDir, normal);
     
     const float EnvScale = fViewportSzEnvIrr.z;
-    float3 envColor = EnvironmentTex.SampleLevel(samplerState, reflectVector, mipIndex).xyz;
+    //float3 envColor = EnvironmentTex.SampleLevel(samplerState, reflectVector, mipIndex).xyz;
+    float3 envColor = SkyboxColor(EnvironmentTex, reflectVector, mipIndex);
     //envColor = lerp(envColor, SSReflection, SSRefProport);
     envColor *= EnvScale;
     

@@ -160,9 +160,13 @@ Editor::postInit() {
                           m_viewport.width,
                           m_viewport.height,
                           m_hwnd);
+  m_sceneViewport = Viewport{ 0, 0, 480, 320 };
+  lastMousePos = Vector3D(0.0f, 0.0f, 0.0f);
+
   InputManager::startUp(reinterpret_cast<SizeT>(m_hwnd));
   Time::startUp();
   CameraManager::startUp();
+  //RenderManager::startUp(m_sceneViewport.width, m_sceneViewport.height);
   RenderManager::startUp();
   ContextManager::startUp();
   ScriptEngine::startUp();
@@ -176,15 +180,11 @@ Editor::postInit() {
                               { 0.0f, 50.f, 0.0f },
                               m_viewport,
                               45.0f,
-                              //1024, 1024,
                               0.1f,
-                              1000.f);
+                              10000.f);
   CameraManager::setActiveCamera(_T("PATO_CAM"));
 
   loadEditorCamConfig();
-
-  m_sceneViewport = Viewport{ 0, 0, 480, 320 };
-  lastMousePos = Vector3D(0.0f, 0.0f, 0.0f);
 
   auto deviceObj = GraphicsDriver::API().getDevice().getAPIObject();
   auto deviceContextObj = GraphicsDriver::API().getDeviceContext().getAPIObject();
@@ -234,7 +234,7 @@ Editor::postInit() {
 
   semantics.push_back(_T("Albedo"));
   semantics.push_back(_T("Normal"));
-  semantics.push_back(_T("Emisivity"));
+  semantics.push_back(_T("Emissive"));
   semantics.push_back(_T("Metallic"));
   semantics.push_back(_T("Roughness"));
 
@@ -791,29 +791,12 @@ Editor::initSceneGraph() {
     rComp->getMeshes().front().material = modelMat;
   }*/
 
-  ImageInfo churchDesc;
-  churchDesc.width = 256;
-  churchDesc.height = 256;
-  churchDesc.textureDimension = DR_DIMENSION::kCUBE_MAP;
-  churchDesc.channels = DR_FORMAT::kB8G8R8A8_UNORM_SRGB;
-  ImageInfo cubesDesc;
-  cubesDesc.width = 512;
-  cubesDesc.height = 512;
-  cubesDesc.textureDimension = DR_DIMENSION::kCUBE_MAP;
-  cubesDesc.channels = DR_FORMAT::kB8G8R8A8_UNORM_SRGB;
   ResourceManager::loadResource(_T("FilmLut.tga"));
-  ResourceManager::loadResource(_T("CubemapExample.tga"), &cubesDesc);
-  ResourceManager::loadResource(_T("GraceEnviroment.tga"), &churchDesc);
-  ResourceManager::loadResource(_T("GraceIrradiance.tga"), &churchDesc);
-  ResourceManager::loadResource(_T("RoomEnviroment.tga"), &cubesDesc);
-  ResourceManager::loadResource(_T("RoomIrradiance.tga"), &cubesDesc);
-  ResourceManager::loadResource(_T("SeaEnviroment.tga"), &cubesDesc);
-  ResourceManager::loadResource(_T("SeaIrradiance.tga"), &cubesDesc);
-  ResourceManager::loadResource(_T("GardenEnviroment.tga"), &cubesDesc);
-  ResourceManager::loadResource(_T("GardenIrradiance.tga"), &cubesDesc);
+  ResourceManager::loadResource(_T("shanghai_bund_enviroment_2k.tga"));
+  ResourceManager::loadResource(_T("shanghai_bund_irradiance_2k.tga"));
 
-  RenderManager::instance().setCubeMap(ResourceManager::getReferenceT<TextureCore>(_T("SeaEnviroment.tga")));
-  RenderManager::instance().setEnviromentMap(ResourceManager::getReferenceT<TextureCore>(_T("SeaIrradiance.tga")));
+  RenderManager::instance().setEnviromentTexture(ResourceManager::getReferenceT<TextureCore>(_T("shanghai_bund_enviroment_2k.tga")));
+  RenderManager::instance().setIrradianceTexture(ResourceManager::getReferenceT<TextureCore>(_T("shanghai_bund_irradiance_2k.tga")));
   RenderManager::instance().setFilmLut(ResourceManager::getReferenceT<TextureCore>(_T("FilmLut.tga")));
 }
 
@@ -1764,6 +1747,33 @@ Editor::loadRenderWindow() {
     ImGui::EndColumns();
   }
   if (ImGui::CollapsingHeader("Lightning")) {
+    TString temp = _T("EnvMap");
+    ImGui::Text("Enrivoment map: "); ImGui::SameLine();
+    ImGui::InputText("##material", &temp, ImGuiInputTextFlags_ReadOnly);
+    if (ImGui::BeginDragDropTarget()) {
+      if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILE_ITEM")) {
+        char* payloadData = (char*)payload->Data;
+        auto ptrResource = ResourceManager::loadResource(StringUtils::toTString(payloadData));
+        auto ptrTexture = std::dynamic_pointer_cast<TextureCore>(ptrResource);
+
+        RenderManager::instance().setEnviromentTexture(ptrTexture);
+      }
+      ImGui::EndDragDropTarget();
+    }
+    temp = _T("IrrMap");
+    ImGui::Text("Irradiance map: "); ImGui::SameLine();
+    ImGui::InputText("##material", &temp, ImGuiInputTextFlags_ReadOnly);
+    if (ImGui::BeginDragDropTarget()) {
+      if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILE_ITEM")) {
+        char* payloadData = (char*)payload->Data;
+        auto ptrResource = ResourceManager::loadResource(StringUtils::toTString(payloadData));
+        auto ptrTexture = std::dynamic_pointer_cast<TextureCore>(ptrResource);
+
+        RenderManager::instance().setIrradianceTexture(ptrTexture);
+      }
+      ImGui::EndDragDropTarget();
+    }
+
     ImGui::Columns(2, "", false);
     ImGui::Text("Enviroment Intensity:");
     ImGui::NextColumn();

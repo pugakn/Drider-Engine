@@ -311,7 +311,7 @@ Transform::invalidateRotation() {
 void
 Transform::update() const {
   m_outdatedTransform = false;
-                  
+
   m_transform.InitScale(m_scale);
   m_transform *= getRotation();
   m_transform.Translation(m_position);

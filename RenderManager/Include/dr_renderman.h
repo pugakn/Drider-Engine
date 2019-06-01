@@ -1,6 +1,7 @@
 #pragma once
 #include "dr_renderman_prerequisites.h"
 #include "dr_light.h"
+#include "dr_Skybox.h"
 #include "dr_GBuffer1.h"
 #include "dr_Lines.h"
 #include "dr_Shadow.h"
@@ -46,6 +47,13 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   * Default constructor.
   */
   RenderManager();
+
+  /**
+  * TEST::defaultConstructor
+  *
+  * Default constructor.
+  */
+  RenderManager(UInt32 width, UInt32 height);
 
   /**
   * TEST::destructor
@@ -129,13 +137,13 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   * 
   */
   void
-  setCubeMap(std::shared_ptr<TextureCore> cubemap);
+  setEnviromentTexture(std::shared_ptr<TextureCore> cubemap);
 
   /**
   *
   */
   void
-  setEnviromentMap(std::shared_ptr<TextureCore> enviromentmap);
+  setIrradianceTexture(std::shared_ptr<TextureCore> enviromentmap);
 
   /**
   *
@@ -323,10 +331,21 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
 
  protected:
 
-  std::shared_ptr<TextureCore> m_cubemap;
-  std::shared_ptr<TextureCore> m_cubemapDiffuse;
+  std::shared_ptr<TextureCore> m_EnviromentTex;
+  std::shared_ptr<TextureCore> m_IrradianceTex;
   std::shared_ptr<TextureCore> m_FilmLut;
   std::shared_ptr<Model> m_SkySphere;
+
+  /**
+  * Skybox
+  * Uses: Vertex and fragment shader.
+  * Vertex: Used to transform vertex to
+  *         view projection space.
+  * Fragment: Renders the skybox background.
+  */
+  SkyboxPass m_SkyboxPass;
+  SkyboxPassInitData m_SkyboxInitData;
+  SkyboxPassDrawData m_SkyboxDrawData;
 
   /**
   * GBuffer.
