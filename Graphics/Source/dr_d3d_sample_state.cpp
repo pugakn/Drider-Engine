@@ -38,25 +38,26 @@ D3D11SamplerState::create(const Device & device, const DrSampleDesc & desc)
 
 void
 D3D11SamplerState::set(const DeviceContext& deviceContext,
+                       UInt32 slot,
                        DR_SHADER_TYPE_FLAG::E typeFlag) const {
   const D3DDeviceContext* context = reinterpret_cast<const D3DDeviceContext*>(&deviceContext);
   if (typeFlag & DR_SHADER_TYPE_FLAG::kVertex) {
-    context->D3D11DeviceContext->VSSetSamplers(0, 1, &APIState);
+    context->D3D11DeviceContext->VSSetSamplers(slot, 1, &APIState);
   }
   if (typeFlag & DR_SHADER_TYPE_FLAG::kFragment) {
-    context->D3D11DeviceContext->PSSetSamplers(0, 1, &APIState);
+    context->D3D11DeviceContext->PSSetSamplers(slot, 1, &APIState);
   }
   if (typeFlag & DR_SHADER_TYPE_FLAG::kCompute) {
-    context->D3D11DeviceContext->CSSetSamplers(0, 1, &APIState);
+    context->D3D11DeviceContext->CSSetSamplers(slot, 1, &APIState);
   }
   if (typeFlag & DR_SHADER_TYPE_FLAG::kDomain) {
-    context->D3D11DeviceContext->DSSetSamplers(0, 1, &APIState);
+    context->D3D11DeviceContext->DSSetSamplers(slot, 1, &APIState);
   }
   if (typeFlag & DR_SHADER_TYPE_FLAG::kHull) {
-    context->D3D11DeviceContext->HSSetSamplers(0, 1, &APIState);
+    context->D3D11DeviceContext->HSSetSamplers(slot, 1, &APIState);
   }
   if (typeFlag & DR_SHADER_TYPE_FLAG::kGeometry) {
-    context->D3D11DeviceContext->GSSetSamplers(0, 1, &APIState);
+    context->D3D11DeviceContext->GSSetSamplers(slot, 1, &APIState);
   }
   if (typeFlag & DR_SHADER_TYPE_FLAG::kTeselation) {
     //Not implemented

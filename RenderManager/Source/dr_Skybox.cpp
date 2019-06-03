@@ -62,9 +62,9 @@ SkyboxPass::init(PassInitData* initData) {
   DrSampleDesc SSdesc;
   SSdesc.Filter = DR_TEXTURE_FILTER::kMIN_MAG_LINEAR_MIP_POINT;
   SSdesc.maxAnisotropy = 16;
-  SSdesc.addressU = DR_TEXTURE_ADDRESS::kWrap;
-  SSdesc.addressV = DR_TEXTURE_ADDRESS::kWrap;
-  SSdesc.addressW = DR_TEXTURE_ADDRESS::kWrap;
+  SSdesc.addressU = DR_TEXTURE_ADDRESS::kClamp;
+  SSdesc.addressV = SSdesc.addressU;
+  SSdesc.addressW = SSdesc.addressW;
   m_samplerState = dr_gfx_unique(device.createSamplerState(SSdesc));
 }
 
@@ -79,7 +79,7 @@ SkyboxPass::draw(PassDrawData* drawData) {
   m_vertexShader->set(dc);
   m_fragmentShader->set(dc);
 
-  m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kFragment);
+  m_samplerState->set(dc, 0, DR_SHADER_TYPE_FLAG::kFragment);
 
   data->EnviromentTex->textureGFX->set(dc, 0);
   data->IrradianceTex->textureGFX->set(dc, 1);
@@ -89,7 +89,7 @@ SkyboxPass::draw(PassDrawData* drawData) {
   CB.CameraInfo = data->activeCam->getPosition();
 
   CB.matSkyboxRotation = Matrix4x4(Math::FORCE_INIT::kIdentity);
-  CB.matSkyboxRotation.RotationY(0.0f);
+  CB.matSkyboxRotation.RotationY(data->SkyboxRotation * Math::DEGREE_TO_RADIAN);
 
   CB.matViewProjectionInverse = data->activeCam->getVP();
   CB.matViewProjectionInverse = CB.matViewProjectionInverse.inverse();

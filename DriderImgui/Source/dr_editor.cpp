@@ -1747,11 +1747,19 @@ Editor::loadRenderWindow() {
     ImGui::EndColumns();
   }
   if (ImGui::CollapsingHeader("Lightning")) {
+    ImGui::Columns(2, "", false);
+    ImGui::Text("Rotation:");
+    ImGui::NextColumn();
+    ImGui::DragFloat("##RotationLightning", RenderManager::instance().getSkyboxRotation(), 0.0f, 0.0f, 360.0f);
+    ImGui::NextColumn();
+
     TString temp = _T("EnvMap");
-    ImGui::Text("Enrivoment map: "); ImGui::SameLine();
+    ImGui::Text("Enrivoment map: ");
+    ImGui::NextColumn();
     ImGui::InputText("##material", &temp, ImGuiInputTextFlags_ReadOnly);
     if (ImGui::BeginDragDropTarget()) {
       if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILE_ITEM")) {
+      ImGui::NextColumn();
         char* payloadData = (char*)payload->Data;
         auto ptrResource = ResourceManager::loadResource(StringUtils::toTString(payloadData));
         auto ptrTexture = std::dynamic_pointer_cast<TextureCore>(ptrResource);
@@ -1760,8 +1768,11 @@ Editor::loadRenderWindow() {
       }
       ImGui::EndDragDropTarget();
     }
+    ImGui::NextColumn();
+
     temp = _T("IrrMap");
-    ImGui::Text("Irradiance map: "); ImGui::SameLine();
+    ImGui::Text("Irradiance map: ");
+    ImGui::NextColumn();
     ImGui::InputText("##material", &temp, ImGuiInputTextFlags_ReadOnly);
     if (ImGui::BeginDragDropTarget()) {
       if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILE_ITEM")) {
@@ -1773,13 +1784,13 @@ Editor::loadRenderWindow() {
       }
       ImGui::EndDragDropTarget();
     }
+    ImGui::NextColumn();
 
-    ImGui::Columns(2, "", false);
     ImGui::Text("Enviroment Intensity:");
     ImGui::NextColumn();
     ImGui::DragFloat("##enviromentIntensityLightning", RenderManager::instance().getEnviromentLightningScale(), 0.0f, 0.0f, 50.0f);
-
     ImGui::NextColumn();
+
     ImGui::Text("Irradiance Intensity:");
     ImGui::NextColumn();
     ImGui::DragFloat("##irradianceIntensityLightning", RenderManager::instance().getIrradianceLightningScale(), 0.0f, 0.0f, 500.0f);

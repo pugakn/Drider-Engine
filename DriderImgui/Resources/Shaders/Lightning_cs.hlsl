@@ -10,9 +10,11 @@ cbuffer ConstantBuffer : register(b0) {
   float4 kDirectionalLightDirection[RM_MAX_DIRECTIONAL_LIGHTS]; //XYZ: Light Direction, W: Shadow
   float4 kDirectionalLightColor[RM_MAX_DIRECTIONAL_LIGHTS]; //XYZ: Light Color, W: Intensity
   float4 threadsInfo; //X: Number of thread groups in x, Y: Number of thread groups in Y, Z: Number of Tiles in X, W: Number of Tiles in Y
+  float4x4 SkyboxRotation;
 };
 
-SamplerState samplerState : register(s0);
+SamplerState textureSS : register(s0);
+SamplerState skyboxSS : register(s1);
 
 Texture2D PositionDepthTex     : register(t0);
 Texture2D NormalCoCTex         : register(t1);
@@ -31,14 +33,14 @@ RWTexture2D<float4> Lightning  : register(u0);
 float3
 SkyboxColor(Texture2D panoramicTexture, float3 direction, int mipLevel) {
   direction = normalize(direction);
-  //direction = normalize(mul(SkyboxRotation, float4(direction, 1.0f)).xyz);
+  direction = normalize(mul(SkyboxRotation, float4(direction, 1.0f)).xyz);
 
   float2 longlat = float2(atan2(direction.x , direction.z), acos(direction.y));
   
   float2 uv = longlat / float2(2.0f * PI, PI);
   uv.x += 0.5f;
   
-  return panoramicTexture.SampleLevel(samplerState, uv, mipLevel).xyz;
+  return panoramicTexture.SampleLevel(skyboxSS, uv, mipLevel).xyz;
 }
 
 #define NUMTHREADS_X 8
@@ -62,20 +64,20 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
 	const float2 uv = float2(dispatchID.x * rcp(fViewportSzEnvIrr.x),
                            dispatchID.y * rcp(fViewportSzEnvIrr.y));
 
-  const float4  position        = float4(PositionDepthTex.SampleLevel(samplerState, uv, 0).xyz, 1.0f);
-  const float   depth           = PositionDepthTex.SampleLevel(samplerState, uv, 0).w;
-  const float   SSAO            = SSAO_SSShadowTex.SampleLevel(samplerState, uv, 0).r;
-  const float3  diffuse         = AlbedoMetallicTex.SampleLevel(samplerState, uv, 0).xyz * SSAO;
-  const float3  normal          = NormalCoCTex.SampleLevel(samplerState, uv, 0).xyz;
-  const float   metallic        = AlbedoMetallicTex.SampleLevel(samplerState, uv, 0).w;
-  const float3  emissive        = EmissiveRoughnessTex.SampleLevel(samplerState, uv, 0).xyz;
-  const float   roughness       = EmissiveRoughnessTex.SampleLevel(samplerState, uv, 0).w;
+  const float4  position        = float4(PositionDepthTex.SampleLevel(textureSS, uv, 0).xyz, 1.0f);
+  const float   depth           = PositionDepthTex.SampleLevel(textureSS, uv, 0).w;
+  const float   SSAO            = SSAO_SSShadowTex.SampleLevel(textureSS, uv, 0).r;
+  const float3  diffuse         = AlbedoMetallicTex.SampleLevel(textureSS, uv, 0).xyz * SSAO;
+  const float3  normal          = NormalCoCTex.SampleLevel(textureSS, uv, 0).xyz;
+  const float   metallic        = AlbedoMetallicTex.SampleLevel(textureSS, uv, 0).w;
+  const float3  emissive        = EmissiveRoughnessTex.SampleLevel(textureSS, uv, 0).xyz;
+  const float   roughness       = EmissiveRoughnessTex.SampleLevel(textureSS, uv, 0).w;
   const float   roughnessAlpha  = max(0.01f, roughness * roughness);
-  const float3  SSReflection    = SSReflectionTex.SampleLevel(samplerState, uv, 0).xyz;
-  const float   SSRefProport    = SSReflectionTex.SampleLevel(samplerState, uv, 0).w;
+  const float3  SSReflection    = SSReflectionTex.SampleLevel(textureSS, uv, 0).xyz;
+  const float   SSRefProport    = SSReflectionTex.SampleLevel(textureSS, uv, 0).w;
   const float3  diffusekd       = (diffuse - (diffuse * metallic));
   const float3  specularF0      = lerp((0.04f).xxx, diffuse, metallic);
-  const float   shadowValue     = SSAO_SSShadowTex.SampleLevel(samplerState, uv, 0).g;
+  const float   shadowValue     = SSAO_SSShadowTex.SampleLevel(textureSS, uv, 0).g;
   
   //////////Lightning//////////
   const float3 ViewDir = normalize(kEyePosition.xyz - position.xyz);
@@ -187,7 +189,7 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
   {
     //Diffuse
     const float irrScale = fViewportSzEnvIrr.w;
-    //const float3 irradiance = IrradianceTex.SampleLevel(samplerState, normal, 0).xyz * irrScale;
+    //const float3 irradiance = IrradianceTex.SampleLevel(textureSS, normal, 0).xyz * irrScale;
     const float3 irradiance = SkyboxColor(IrradianceTex, normal, 0) * irrScale;
 
     F = Specular_F(specularF0, NdotV);
@@ -201,7 +203,7 @@ CS(uint3 groupThreadID	: SV_GroupThreadID,
     const float3 reflectVector = reflect(-ViewDir, normal);
     
     const float EnvScale = fViewportSzEnvIrr.z;
-    //float3 envColor = EnvironmentTex.SampleLevel(samplerState, reflectVector, mipIndex).xyz;
+    //float3 envColor = EnvironmentTex.SampleLevel(textureSS, reflectVector, mipIndex).xyz;
     float3 envColor = SkyboxColor(EnvironmentTex, reflectVector, mipIndex);
     //envColor = lerp(envColor, SSReflection, SSRefProport);
     envColor *= EnvScale;

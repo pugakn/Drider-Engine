@@ -54,7 +54,7 @@ GBufferPass::draw(PassDrawData* drawData) {
   m_vertexShader->set(dc);
   m_fragmentShader->set(dc);
 
-  m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kFragment);
+  m_samplerState->set(dc, 0, DR_SHADER_TYPE_FLAG::kFragment);
 
   m_inputLayout->set(dc);
 

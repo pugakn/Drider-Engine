@@ -36,6 +36,7 @@ struct LightningDrawData : PassDrawData {
   RenderTarget* SSAO_SSShadowRT;
   RenderTarget* SSReflection;
   RenderTarget* OutRt;
+  float  SkyboxRotation;
   TextureCore* EnviromentCubemap;
   float* EnviromentScale;
   TextureCore* IrradianceCubemap;
@@ -103,13 +104,14 @@ class LightningPass : public RenderPass {
   };
 
   struct CBufferDraw {
-    Vector4D ViewportSzEnvIrr;
-    Vector4D EyePosition;
-    Vector4D PointLightPosition[RM_MAX_POINT_LIGHTS];  //XYZ: Light Position, W: Range
-    Vector4D PointLightColor[RM_MAX_POINT_LIGHTS];     //XYZ: Light Color, W: Intensity
-    Vector4D DirectionalLightPosition[RM_MAX_DIRECTIONAL_LIGHTS]; //XYZ: Light Position, W: Range
-    Vector4D DirectionalLightColor[RM_MAX_DIRECTIONAL_LIGHTS];    //XYZ: Light Color, W: Intensity
-    Vector4D ThreadsInfo;
+    Vector4D  ViewportSzEnvIrr;
+    Vector4D  EyePosition;
+    Vector4D  PointLightPosition[RM_MAX_POINT_LIGHTS];  //XYZ: Light Position, W: Range
+    Vector4D  PointLightColor[RM_MAX_POINT_LIGHTS];     //XYZ: Light Color, W: Intensity
+    Vector4D  DirectionalLightPosition[RM_MAX_DIRECTIONAL_LIGHTS]; //XYZ: Light Position, W: Range
+    Vector4D  DirectionalLightColor[RM_MAX_DIRECTIONAL_LIGHTS];    //XYZ: Light Color, W: Intensity
+    Vector4D  ThreadsInfo;
+    Matrix4x4 SkyboxRotation;
   };
 
   SizeT m_RTWidth;

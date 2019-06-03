@@ -91,11 +91,15 @@ LightningPass::init(PassInitData* initData) {
   DrSampleDesc SSdesc;
   SSdesc.Filter = DR_TEXTURE_FILTER::kMIN_MAG_LINEAR_MIP_POINT;
   SSdesc.maxAnisotropy = 16;
-  SSdesc.addressU = DR_TEXTURE_ADDRESS::kBorder;
+  SSdesc.addressU = DR_TEXTURE_ADDRESS::kClamp;
   SSdesc.addressV = SSdesc.addressU;
   SSdesc.addressW = SSdesc.addressV;
 
   m_samplerState = dr_gfx_unique(device.createSamplerState(SSdesc));
+  SSdesc.addressU = DR_TEXTURE_ADDRESS::kClamp;
+  SSdesc.addressV = SSdesc.addressU;
+  SSdesc.addressW = SSdesc.addressV;
+  m_samplerStateCubemap = dr_gfx_unique(device.createSamplerState(SSdesc));
 
   m_ComputeWidthDivisions = 8;
   m_ComputeHeightDivisions = 4;
@@ -274,7 +278,8 @@ LightningPass::draw(PassDrawData* drawData) {
 
   m_ComputeTotalBlocks = m_ComputeWidthBlocks * m_ComputeHeightBlocks;
 
-  m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kCompute);
+  m_samplerState->set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute);
+  m_samplerStateCubemap->set(dc, 1, DR_SHADER_TYPE_FLAG::kCompute);
 
   m_CBDrawData.ViewportSzEnvIrr.x = static_cast<float>(m_RTWidth);
   m_CBDrawData.ViewportSzEnvIrr.y = static_cast<float>(m_RTHeight);
@@ -301,6 +306,10 @@ LightningPass::draw(PassDrawData* drawData) {
   m_CBDrawData.ThreadsInfo.y = static_cast<float>(m_ComputeHeightBlocks);
   m_CBDrawData.ThreadsInfo.z = static_cast<float>(Math::ceil(m_RTWidth / RM_TILE_POINT_LIGHTS_SZ));
   m_CBDrawData.ThreadsInfo.w = static_cast<float>(Math::ceil(m_RTHeight / RM_TILE_POINT_LIGHTS_SZ));
+
+  Matrix4x4 rotMat = Matrix4x4::identityMat4x4;
+  rotMat.RotationY(data->SkyboxRotation * Math::DEGREE_TO_RADIAN);
+  m_CBDrawData.SkyboxRotation = rotMat;
 
   m_CBDraw->updateFromBuffer(dc, reinterpret_cast<byte*>(&m_CBDrawData));
   m_CBDraw->set(dc, DR_SHADER_TYPE_FLAG::kCompute, 0);

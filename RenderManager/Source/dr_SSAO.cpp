@@ -34,7 +34,7 @@ SSAOPass::init(PassInitData* initData) {
   DrSampleDesc SSdesc;
   SSdesc.Filter = DR_TEXTURE_FILTER::kMIN_MAG_LINEAR_MIP_POINT;
   SSdesc.maxAnisotropy = 16;
-  SSdesc.addressU = DR_TEXTURE_ADDRESS::kWrap;
+  SSdesc.addressU = DR_TEXTURE_ADDRESS::kClamp;
   SSdesc.addressV = SSdesc.addressU;
   SSdesc.addressW = SSdesc.addressV;
   m_samplerState = dr_gfx_unique(device.createSamplerState(SSdesc));
@@ -53,7 +53,7 @@ SSAOPass::draw(PassDrawData* drawData) {
 
   m_computeShader->set(dc);
 
-  m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kCompute);
+  m_samplerState->set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute);
 
   data->InRt->getTexture(0).set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute, true);
   data->InRt->getTexture(1).set(dc, 1, DR_SHADER_TYPE_FLAG::kCompute, true);

@@ -48,7 +48,8 @@ class DR_GRAPHICS_EXPORT SamplerState
   */
   virtual void
   set(const DeviceContext& deviceContext,
-      DR_SHADER_TYPE_FLAG::E typeFlag) const = 0;
+      UInt32 slot = 0,
+      DR_SHADER_TYPE_FLAG::E typeFlag = DR_SHADER_TYPE_FLAG::kFragment) const = 0;
 
   /**
   * Release the allocated memory

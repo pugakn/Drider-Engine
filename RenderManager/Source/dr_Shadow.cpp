@@ -47,9 +47,9 @@ ShadowPass::init(PassInitData* initData) {
   //SSdesc.Filter = DR_TEXTURE_FILTER::kANISOTROPIC;
   //SSdesc.Filter = DR_TEXTURE_FILTER::kCOMPARISON_ANISOTROPIC;
   SSdesc.maxAnisotropy = 16;
-  SSdesc.addressU = DR_TEXTURE_ADDRESS::kWrap;
-  SSdesc.addressV = DR_TEXTURE_ADDRESS::kWrap;
-  SSdesc.addressW = DR_TEXTURE_ADDRESS::kWrap;
+  SSdesc.addressU = DR_TEXTURE_ADDRESS::kClamp;
+  SSdesc.addressV = SSdesc.addressU;
+  SSdesc.addressW = SSdesc.addressV;
   m_samplerState = dr_gfx_unique(dc.createSamplerState(SSdesc));
 }
 
@@ -98,7 +98,7 @@ ShadowPass::draw(PassDrawData* drawData) {
   m_vertexShader->set(dc);
   m_fragmentShader->set(dc);
 
-  m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kFragment);
+  m_samplerState->set(dc, 0, DR_SHADER_TYPE_FLAG::kFragment);
 
   m_inputLayout->set(dc);
 
@@ -158,7 +158,7 @@ ShadowPass::merge(std::array<GFXUnique<RenderTarget>, 4>& m_RTShadowDummy,
 
   m_computeShader->set(dc);
 
-  m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kCompute);
+  m_samplerState->set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute);
 
   m_RTShadowDummy[0]->getTexture(0).set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute);
   m_RTShadowDummy[1]->getTexture(0).set(dc, 1, DR_SHADER_TYPE_FLAG::kCompute);
@@ -188,7 +188,7 @@ ShadowPass::apply(PassDrawData* drawData,
 
   m_computeShaderApply->set(dc);
 
-  m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kCompute);
+  m_samplerState->set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute);
 
   PositionDepthRt->getTexture(0).set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute, true);
   CompressedShadowsOutRt->getTexture(0).set(dc, 1, DR_SHADER_TYPE_FLAG::kCompute, true);

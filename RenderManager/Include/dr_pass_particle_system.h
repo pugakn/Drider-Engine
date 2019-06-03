@@ -56,7 +56,6 @@ class ParticleSystemPass : public RenderPass {
   };
   
   CBuff m_cbuff;
-  GFXUnique<SamplerState> m_samplerState;
   GFXUnique<VertexBuffer> m_VBQUAD;
   GFXUnique<IndexBuffer> m_IBQUAD;
   Vector4D m_vertex[4];

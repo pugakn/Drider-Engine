@@ -67,7 +67,7 @@ SSReflectionsPass::draw(PassDrawData* drawData) {
 
   m_ComputeTotalBlocks = m_ComputeWidthBlocks * m_ComputeHeightBlocks;
 
-  m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kCompute);
+  m_samplerState->set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute);
 
   m_CBDrawData.ViewportDimensions.x = m_RTWidth;
   m_CBDrawData.ViewportDimensions.y = m_RTHeight;

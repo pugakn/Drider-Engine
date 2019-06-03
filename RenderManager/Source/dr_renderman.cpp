@@ -243,9 +243,8 @@ RenderManager::init() {
     //texDescDefault.height = screenHeight * blurScale;
     texDescDefault.width = screenWidth;
     texDescDefault.height = screenHeight;
-    //texDescDefault.Format = DR_FORMAT::kR8G8_UNORM;
-    texDescDefault.Format = DR_FORMAT::kR16G16_FLOAT;
-    texDescDefault.pitch = texDescDefault.width * 2 * 1;
+    texDescDefault.Format = DR_FORMAT::kR32G32_FLOAT;
+    texDescDefault.pitch = texDescDefault.width * 2 * 4;
     texDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
 
     GFXUnique<Texture> SSAO_SSShadowTexure = dr_gfx_unique<Texture>(dc.createEmptyTexture(texDescDefault));
@@ -280,8 +279,8 @@ RenderManager::init() {
   //Blurred SSAO & Shadow
   {
     //RenderTarget
-    texDescDefault.width = static_cast<UInt32>(screenWidth * blurScale);
-    texDescDefault.height = static_cast<UInt32>(screenHeight * blurScale);
+    texDescDefault.width = static_cast<UInt32>(screenWidth);
+    texDescDefault.height = static_cast<UInt32>(screenHeight);
     texDescDefault.Format = DR_FORMAT::kR16G16_FLOAT;
     texDescDefault.pitch = texDescDefault.width * 2 * 2;
     texDescDefault.bindFlags |= DR_BIND_FLAGS::UNORDERED_ACCESS;
@@ -392,6 +391,7 @@ RenderManager::init() {
   }
 
   ////////initialization of passes////////
+  m_skyboxRotation = 0.0f;
   m_SkyboxPass.init(&m_SkyboxInitData);
 
   m_GBufferPass.init(&m_GBufferInitData);
@@ -407,10 +407,10 @@ RenderManager::init() {
   m_SSAOPass.init(&m_SSAOInitData);
 
   m_bSSAO = true;
-  m_fSSAOSampleRadio = 0.0008f;
-  m_fSSAOIntensity = 2.0f;
+  m_fSSAOSampleRadio = 0.05f;
+  m_fSSAOIntensity = 3.0f;
   m_fSSAOScale = 1.0f;
-  m_fSSAOBias = 0.0002f;
+  m_fSSAOBias = 0.08f;
 
   m_HorBlurPass.init(&m_HorBlurInitData);
   m_VerBlurPass.init(&m_VerBlurInitData);
@@ -512,7 +512,7 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   auto mainCamRef = *CameraManager::instance().getActiveCamera();
 
   m_SkyboxDrawData.activeCam = mainCam;
-  m_SkyboxDrawData.SkyboxRotation = 0.0f;
+  m_SkyboxDrawData.SkyboxRotation = m_skyboxRotation;
   m_SkyboxDrawData.EnviromentTex = m_EnviromentTex.get();
   m_SkyboxDrawData.IrradianceTex = m_EnviromentTex.get();
   m_SkyboxDrawData.OutRT = m_RTGBuffer.get();
@@ -651,6 +651,7 @@ RenderManager::draw(const RenderTarget& _out, const DepthStencil& _outds) {
   m_LightningDrawData.SSAO_SSShadowRT = m_RTSSAO_SSShadowBlur.get();
   m_LightningDrawData.SSReflection = m_RTSSReflection.get();
   m_LightningDrawData.OutRt = m_RTLightning.get();
+  m_LightningDrawData.SkyboxRotation = m_skyboxRotation;
   m_LightningDrawData.EnviromentCubemap = m_EnviromentTex.get();
   m_LightningDrawData.EnviromentScale = &m_fEnviromentScale;
   m_LightningDrawData.IrradianceCubemap = m_IrradianceTex.get();

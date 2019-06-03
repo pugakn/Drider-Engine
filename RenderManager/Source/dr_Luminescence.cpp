@@ -41,9 +41,9 @@ LuminescencePass::init(PassInitData* initData) {
   DrSampleDesc SSdesc;
   SSdesc.Filter = DR_TEXTURE_FILTER::kMIN_MAG_LINEAR_MIP_POINT;
   SSdesc.maxAnisotropy = 16;
-  SSdesc.addressU = DR_TEXTURE_ADDRESS::kWrap;
-  SSdesc.addressV = DR_TEXTURE_ADDRESS::kWrap;
-  SSdesc.addressW = DR_TEXTURE_ADDRESS::kWrap;
+  SSdesc.addressU = DR_TEXTURE_ADDRESS::kClamp;
+  SSdesc.addressV = SSdesc.addressU;
+  SSdesc.addressW = SSdesc.addressW;
   m_samplerState = dr_gfx_unique(dc.createSamplerState(SSdesc));
 }
 
@@ -67,7 +67,7 @@ LuminescencePass::draw(PassDrawData* drawData) {
 
   m_ComputeTotalBlocks = m_ComputeWidthBlocks * m_ComputeHeightBlocks;
 
-  m_samplerState->set(dc, DR_SHADER_TYPE_FLAG::kCompute);
+  m_samplerState->set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute);
 
   data->InTexture->set(dc, 0, DR_SHADER_TYPE_FLAG::kCompute, true);
 

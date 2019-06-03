@@ -294,6 +294,19 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
 
   /**
   * Returns a float pointer to modify
+  * the skybox rotation.
+  *
+  * @return
+  *  A pointer to the float value
+  *  used to rotate the skybox.
+  */
+  FORCEINLINE float*
+  getSkyboxRotation() {
+    return &m_skyboxRotation;
+  };
+
+  /**
+  * Returns a float pointer to modify
   * the enviroment lightning scale parameter.
   *
   * @return
@@ -346,6 +359,7 @@ class DR_RENDERMAN_EXPORT RenderManager : public Module<RenderManager> {
   SkyboxPass m_SkyboxPass;
   SkyboxPassInitData m_SkyboxInitData;
   SkyboxPassDrawData m_SkyboxDrawData;
+  float m_skyboxRotation;
 
   /**
   * GBuffer.

@@ -44,6 +44,7 @@ class DR_GRAPHICS_EXPORT D3D11SamplerState : public SamplerState
   */
   void
   set(const DeviceContext& deviceContext,
+      UInt32 slot,
       DR_SHADER_TYPE_FLAG::E typeFlag) const override;
 
   /**
