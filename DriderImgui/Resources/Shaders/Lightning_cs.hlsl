@@ -14,7 +14,7 @@ cbuffer ConstantBuffer : register(b0) {
 };
 
 SamplerState textureSS : register(s0);
-SamplerState skyboxSS : register(s1);
+SamplerState skyboxSS  : register(s1);
 
 Texture2D PositionDepthTex     : register(t0);
 Texture2D NormalCoCTex         : register(t1);

@@ -8,10 +8,10 @@
 Hierarchy
 
 [FLOAT-2:pos]
-1827.000 21.000
+6.000 21.000
 
 [FLOAT-2:size]
-345.000 690.000
+247.000 681.000
 
 [FLOAT-2:floatmode_size]
 0.000 0.000
@@ -38,7 +38,7 @@ Hierarchy
 -1
 
 [INT:parent]
-7
+10
 
 [INT:index]
 1
@@ -47,10 +47,10 @@ Hierarchy
 Resource
 
 [FLOAT-2:pos]
-6.000 711.000
+6.000 702.000
 
 [FLOAT-2:size]
-1821.000 302.000
+1238.000 302.000
 
 [FLOAT-2:floatmode_size]
 0.000 0.000
@@ -77,7 +77,7 @@ Resource
 -1
 
 [INT:parent]
-12
+11
 
 [INT:index]
 2
@@ -89,7 +89,7 @@ Resource
 6.000 21.000
 
 [FLOAT-2:size]
-2548.000 992.000
+1911.000 983.000
 
 [FLOAT-2:floatmode_size]
 0.000 0.000
@@ -113,7 +113,7 @@ Resource
 6
 
 [INT:child1]
-11
+9
 
 [INT:parent]
 -1
@@ -125,244 +125,10 @@ Resource
 Inspector
 
 [FLOAT-2:pos]
-2172.000 21.000
+1627.000 21.000
 
 [FLOAT-2:size]
-382.000 267.000
-
-[FLOAT-2:floatmode_size]
-0.000 0.000
-
-[ENUM:status]
-0
-
-[BOOL:active]
-1
-
-[BOOL:opened]
-1
-
-[INT:prev]
--1
-
-[INT:next]
--1
-
-[INT:child0]
--1
-
-[INT:child1]
--1
-
-[INT:parent]
-8
-
-[INT:index]
-4
-
-[STRING-15:label]
-Material Editor
-
-[FLOAT-2:pos]
-2172.000 288.000
-
-[FLOAT-2:size]
-382.000 423.000
-
-[FLOAT-2:floatmode_size]
-0.000 0.000
-
-[ENUM:status]
-0
-
-[BOOL:active]
-1
-
-[BOOL:opened]
-1
-
-[INT:prev]
--1
-
-[INT:next]
--1
-
-[INT:child0]
--1
-
-[INT:child1]
--1
-
-[INT:parent]
-8
-
-[INT:index]
-5
-
-[STRING-5:label]
-Scene
-
-[FLOAT-2:pos]
-6.000 21.000
-
-[FLOAT-2:size]
-1821.000 690.000
-
-[FLOAT-2:floatmode_size]
-0.000 0.000
-
-[ENUM:status]
-0
-
-[BOOL:active]
-1
-
-[BOOL:opened]
-1
-
-[INT:prev]
--1
-
-[INT:next]
--1
-
-[INT:child0]
--1
-
-[INT:child1]
--1
-
-[INT:parent]
-6
-
-[INT:index]
-6
-
-[STRING:label]
-
-
-[FLOAT-2:pos]
-6.000 21.000
-
-[FLOAT-2:size]
-2548.000 690.000
-
-[FLOAT-2:floatmode_size]
-0.000 0.000
-
-[ENUM:status]
-0
-
-[BOOL:active]
-1
-
-[BOOL:opened]
-0
-
-[INT:prev]
--1
-
-[INT:next]
--1
-
-[INT:child0]
-5
-
-[INT:child1]
-7
-
-[INT:parent]
-2
-
-[INT:index]
-7
-
-[STRING:label]
-
-
-[FLOAT-2:pos]
-1827.000 21.000
-
-[FLOAT-2:size]
-727.000 690.000
-
-[FLOAT-2:floatmode_size]
-0.000 0.000
-
-[ENUM:status]
-0
-
-[BOOL:active]
-1
-
-[BOOL:opened]
-0
-
-[INT:prev]
--1
-
-[INT:next]
--1
-
-[INT:child0]
-0
-
-[INT:child1]
-8
-
-[INT:parent]
-6
-
-[INT:index]
-8
-
-[STRING:label]
-
-
-[FLOAT-2:pos]
-2172.000 21.000
-
-[FLOAT-2:size]
-382.000 690.000
-
-[FLOAT-2:floatmode_size]
-0.000 0.000
-
-[ENUM:status]
-0
-
-[BOOL:active]
-1
-
-[BOOL:opened]
-0
-
-[INT:prev]
--1
-
-[INT:next]
--1
-
-[INT:child0]
-3
-
-[INT:child1]
-4
-
-[INT:parent]
-7
-
-[INT:index]
-9
-
-[STRING-20:label]
-Render Configuration
-
-[FLOAT-2:pos]
-1827.000 711.000
-
-[FLOAT-2:size]
-345.000 302.000
+290.000 543.000
 
 [FLOAT-2:floatmode_size]
 0.000 0.000
@@ -392,13 +158,130 @@ Render Configuration
 12
 
 [INT:index]
-10
+4
 
-[STRING-27:label]
-Editor Camera Configuration
+[STRING-15:label]
+Material Editor
 
 [FLOAT-2:pos]
-2172.000 711.000
+1626.000 702.000
+
+[FLOAT-2:size]
+291.000 302.000
+
+[FLOAT-2:floatmode_size]
+0.000 0.000
+
+[ENUM:status]
+0
+
+[BOOL:active]
+1
+
+[BOOL:opened]
+1
+
+[INT:prev]
+-1
+
+[INT:next]
+-1
+
+[INT:child0]
+-1
+
+[INT:child1]
+-1
+
+[INT:parent]
+9
+
+[INT:index]
+5
+
+[STRING-5:label]
+Scene
+
+[FLOAT-2:pos]
+253.000 21.000
+
+[FLOAT-2:size]
+1374.000 681.000
+
+[FLOAT-2:floatmode_size]
+0.000 0.000
+
+[ENUM:status]
+0
+
+[BOOL:active]
+1
+
+[BOOL:opened]
+1
+
+[INT:prev]
+-1
+
+[INT:next]
+-1
+
+[INT:child0]
+-1
+
+[INT:child1]
+-1
+
+[INT:parent]
+10
+
+[INT:index]
+6
+
+[STRING:label]
+
+
+[FLOAT-2:pos]
+6.000 21.000
+
+[FLOAT-2:size]
+1911.000 681.000
+
+[FLOAT-2:floatmode_size]
+0.000 0.000
+
+[ENUM:status]
+0
+
+[BOOL:active]
+1
+
+[BOOL:opened]
+0
+
+[INT:prev]
+-1
+
+[INT:next]
+-1
+
+[INT:child0]
+10
+
+[INT:child1]
+12
+
+[INT:parent]
+2
+
+[INT:index]
+7
+
+[STRING-20:label]
+Render Configuration
+
+[FLOAT-2:pos]
+1244.000 702.000
 
 [FLOAT-2:size]
 382.000 302.000
@@ -431,16 +314,55 @@ Editor Camera Configuration
 11
 
 [INT:index]
-11
+8
+
+[STRING-27:label]
+Editor Camera Configuration
+
+[FLOAT-2:pos]
+1627.000 564.000
+
+[FLOAT-2:size]
+290.000 138.000
+
+[FLOAT-2:floatmode_size]
+0.000 0.000
+
+[ENUM:status]
+0
+
+[BOOL:active]
+1
+
+[BOOL:opened]
+1
+
+[INT:prev]
+-1
+
+[INT:next]
+-1
+
+[INT:child0]
+-1
+
+[INT:child1]
+-1
+
+[INT:parent]
+12
+
+[INT:index]
+9
 
 [STRING:label]
 
 
 [FLOAT-2:pos]
-6.000 711.000
+6.000 702.000
 
 [FLOAT-2:size]
-2548.000 302.000
+1911.000 302.000
 
 [FLOAT-2:floatmode_size]
 0.000 0.000
@@ -461,13 +383,91 @@ Editor Camera Configuration
 -1
 
 [INT:child0]
-12
+11
 
 [INT:child1]
-10
+4
 
 [INT:parent]
 2
+
+[INT:index]
+10
+
+[STRING:label]
+
+
+[FLOAT-2:pos]
+6.000 21.000
+
+[FLOAT-2:size]
+1621.000 681.000
+
+[FLOAT-2:floatmode_size]
+0.000 0.000
+
+[ENUM:status]
+0
+
+[BOOL:active]
+1
+
+[BOOL:opened]
+0
+
+[INT:prev]
+-1
+
+[INT:next]
+-1
+
+[INT:child0]
+0
+
+[INT:child1]
+5
+
+[INT:parent]
+6
+
+[INT:index]
+11
+
+[STRING:label]
+
+
+[FLOAT-2:pos]
+6.000 702.000
+
+[FLOAT-2:size]
+1620.000 302.000
+
+[FLOAT-2:floatmode_size]
+0.000 0.000
+
+[ENUM:status]
+0
+
+[BOOL:active]
+1
+
+[BOOL:opened]
+0
+
+[INT:prev]
+-1
+
+[INT:next]
+-1
+
+[INT:child0]
+1
+
+[INT:child1]
+7
+
+[INT:parent]
+9
 
 [INT:index]
 12
@@ -476,10 +476,10 @@ Editor Camera Configuration
 
 
 [FLOAT-2:pos]
-6.000 711.000
+1627.000 21.000
 
 [FLOAT-2:size]
-2166.000 302.000
+290.000 681.000
 
 [FLOAT-2:floatmode_size]
 0.000 0.000
@@ -500,11 +500,11 @@ Editor Camera Configuration
 -1
 
 [INT:child0]
-1
+3
 
 [INT:child1]
-9
+8
 
 [INT:parent]
-11
+6
 
