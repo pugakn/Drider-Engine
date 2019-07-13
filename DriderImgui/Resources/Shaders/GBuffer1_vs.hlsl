@@ -4,6 +4,7 @@ cbuffer ConstantBuffer {
   float4x4 WVP;
   float4x4 Bones[200];
   float4   CameraInfo; //X: Aspect Ratio; Y: FOV; Z: Near Plane; W: Far Plane
+  bool ConstantFlags[16];
 };
 
 struct VS_INPUT {
@@ -34,16 +35,18 @@ VS(VS_INPUT input) {
   
   [unroll]
   for (int i = 0; i < 4; ++i) {
-    boneIndex = input.BonesIDs[i];
-    activationScale = (boneIndex > -1);
+    boneIndex = input.BonesIDs[i]; 
+    //Que tenga BoneID no necesariamente significa que tenga AnimationComponent
+    //Tambien debe de estar activa esa flag
+    activationScale = (boneIndex > -1) && ConstantFlags[0];
     activeWeights += activationScale;
     BoneTransform += mul(Bones[boneIndex], input.BonesWeights[i] * activationScale);
   }
   
-  BoneTransform[0][0] += 1.0f * (activeWeights <= 0);
-  BoneTransform[1][1] += 1.0f * (activeWeights <= 0);
-  BoneTransform[2][2] += 1.0f * (activeWeights <= 0);
-  BoneTransform[3][3] += 1.0f * (activeWeights <= 0);
+  BoneTransform[0][0] += 1.0f * (activeWeights == 0);
+  BoneTransform[1][1] += 1.0f * (activeWeights == 0);
+  BoneTransform[2][2] += 1.0f * (activeWeights == 0);
+  BoneTransform[3][3] += 1.0f * (activeWeights == 0);
   
 	float4 vertexTransformed = mul(BoneTransform, input.Position);
   float3 TransformedT = mul(BoneTransform, input.Tangent).xyz;

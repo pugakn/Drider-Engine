@@ -139,7 +139,7 @@ GBufferPass::draw(PassDrawData* drawData) {
     CB.WVP = CB.World * data->activeCam->getVP();
 
     std::memset(&CB.Bones[0].data[0], 0, sizeof(CB.Bones));
-    
+    std::memset(&CB.ConstantFlags, 0, sizeof(CB.ConstantFlags));
     //Using bones
     if (CB.ConstantFlags[0] = modelPair.bonesID != -1) {
       auto& Bones = data->models->bonesTransforms[modelPair.bonesID];
